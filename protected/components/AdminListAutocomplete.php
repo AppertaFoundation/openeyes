@@ -23,7 +23,15 @@ class AdminListAutocomplete extends Admin
 	 * @var string
 	 */
 	protected $customDeleteURL;
+	/**
+	 * @var string
+	 */
+	protected  $customSetDefaultURL;
 
+	/**
+	 *
+	 */
+	protected  $customRemoveDefaultURL;
 	/**
 	 * @var string
 	 */
@@ -80,12 +88,47 @@ class AdminListAutocomplete extends Admin
 	}
 
 	/**
+	 * @param $setDefaultURL
+	 */
+	public function setCustomSetDefaultURL($setDefaultURL)
+	{
+		$this->customSetDefaultURL = $setDefaultURL;
+	}
+
+	/**
+	 * @param $removeDefaultURL
+	 */
+	public function setCustomRemoveDefaultURL($removeDefaultURL)
+	{
+		$this->customRemoveDefaultURL = $removeDefaultURL;
+	}
+
+
+
+	/**
 	 * @return string
 	 */
 	public function getCustomDeleteURL()
 	{
 		return $this->customDeleteURL;
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getCustomSetDefaultURL()
+	{
+		return $this->customSetDefaultURL;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getCustomRemoveDefaultURL()
+	{
+		return $this->customRemoveDefaultURL;
+	}
+
 
 	/**
 	 * @param $saveURL

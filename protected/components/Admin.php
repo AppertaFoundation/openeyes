@@ -58,6 +58,11 @@ class Admin
 	protected $editFields = array();
 
 	/**
+	 * @var array
+	 */
+	protected $unsortableColumns = array('active');
+
+	/**
 	 * @var BaseAdminController
 	 */
 	protected $controller;
@@ -88,11 +93,42 @@ class Admin
 	protected $customCancelURL;
 
 	/**
+	 * @var bool
+	 */
+	protected $isSubList = false;
+
+	/**
 	 * @var int
 	 *
 	 */
 	public $displayOrder = 0;
 
+	/**
+	 * @var array
+	 */
+	protected $filterFields = array();
+
+	/**
+	 * Contains key value of parent object relation for a sublist
+	 * @var array
+	 */
+	protected $subListParent = array();
+
+	/**
+	 * @param $filters
+	 */
+	public function setFilterFields($filters)
+	{
+		$this->filterFields = $filters;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getFilterFields()
+	{
+		return $this->filterFields;
+	}
 
 	/**
 	 * @return BaseActiveRecord
@@ -263,6 +299,102 @@ class Admin
 	}
 
 	/**
+	 * @param $saveURL
+	 */
+	public function setCustomSaveURL($saveURL)
+	{
+		$this->customSaveURL = $saveURL;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getCustomSaveURL()
+	{
+		return $this->customSaveURL;
+	}
+
+	/**
+	 * @param $cancelURL
+	 */
+	public function setCustomCancelURL($cancelURL)
+	{
+		$this->customCancelURL = $cancelURL;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getCustomCancelURL()
+	{
+		return $this->customCancelURL;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isSubList()
+	{
+		return $this->isSubList;
+	}
+
+	/**
+	 * @param boolean $isSubList
+	 */
+	public function setIsSubList($isSubList)
+	{
+		$this->isSubList = $isSubList;
+	}
+
+	/**
+	 * @return BaseAdminController
+	 */
+	public function getController()
+	{
+		return $this->controller;
+	}
+
+	/**
+	 * @param BaseAdminController $controller
+	 */
+	public function setController($controller)
+	{
+		$this->controller = $controller;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getUnsortableColumns()
+	{
+		return $this->unsortableColumns;
+	}
+
+	/**
+	 * @param array $unsortableColumns
+	 */
+	public function setUnsortableColumns($unsortableColumns)
+	{
+		$this->unsortableColumns = $unsortableColumns;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getSubListParent()
+	{
+		return $this->subListParent;
+	}
+
+	/**
+	 * @param array $subListParent
+	 */
+	public function setSubListParent($subListParent)
+	{
+		$this->subListParent = $subListParent;
+	}
+
+	/**
 	 * @param BaseActiveRecord $model
 	 * @param BaseAdminController $controller
 	 */
@@ -272,7 +404,8 @@ class Admin
 		$this->controller = $controller;
 		$this->search = new ModelSearch($this->model);
 		$this->request = $request = Yii::app()->getRequest();
-
+		$this->assetManager = Yii::app()->getAssetManager();
+		$this->assetManager->registerScriptFile('js/oeadmin/OpenEyes.admin.js');
 	}
 
 	/**
@@ -292,6 +425,7 @@ class Admin
 			$this->displayOrder = 1;
 		}
 
+		$this->assetManager->registerScriptFile('js/oeadmin/list.js');
 		$this->audit('list');
 		$this->pagination = $this->getSearch()->initPagination();
 		$this->render($this->listTemplate, array('admin' => $this, 'displayOrder' => $this->displayOrder));
@@ -305,6 +439,7 @@ class Admin
 	 */
 	public function editModel()
 	{
+		$this->assetManager->registerScriptFile('js/oeadmin/edit.js');
 		$errors = array();
 		if (Yii::app()->request->isPostRequest) {
 			$post = Yii::app()->request->getPost($this->modelName);
@@ -325,7 +460,18 @@ class Admin
 				}
 
 				$this->audit('edit', $this->model->id);
-				$this->controller->redirect('/' . $this->controller->uniqueid . '/list');
+				$return = '/' . $this->controller->uniqueid . '/list';
+				if(Yii::app()->request->getPost('returnUriEdit')){
+					$return = urldecode(Yii::app()->request->getPost('returnUriEdit'));
+				}
+				$this->controller->redirect($return);
+			}
+		} else {
+			$defaults = Yii::app()->request->getParam('default', array());
+			foreach($defaults as $key => $defaultValue){
+				if($this->model->hasAttribute($key)){
+					$this->model->$key = $defaultValue;
+				}
 			}
 		}
 		$this->render($this->editTemplate, array('admin' => $this, 'errors' => $errors));
@@ -338,17 +484,55 @@ class Admin
 	{
 		$response = 1;
 		if (Yii::app()->request->isPostRequest) {
-			$ids = Yii::app()->request->getPost($this->modelName);
-			foreach ($ids as $id) {
-				$model = $this->model->findByPk($id);
-				if ($model) {
-					if (!$model->delete()) {
+			$post = Yii::app()->request->getPost($this->modelName);
+			if(array_key_exists('id', $post) && is_array($post['id'])){
+				foreach ($post['id'] as $id) {
+					$model = $this->model->findByPk($id);
+					if ($model && !$model->delete()) {
 						$response = 0;
 					}
 				}
 			}
 		}
+
 		echo $response;
+	}
+
+	/**
+	 * Saves the display_order
+	 *
+	 * @throws CHttpException
+	 */
+	public function sortModel()
+	{
+		if(!$this->model->hasAttribute('display_order')){
+			throw new CHttpException(400, 'This object cannot be ordered');
+		}
+
+		if (Yii::app()->request->isPostRequest) {
+			$post = Yii::app()->request->getPost($this->modelName);
+			$page = Yii::app()->request->getPost('page');
+			if(!array_key_exists('display_order', $post) || !is_array($post['display_order'])){
+				throw new CHttpException(400, 'No objects to order were provided');
+			}
+
+			foreach($post['display_order'] as $displayOrder => $id){
+				$model = $this->model->findByPk($id);
+				if(!$model){
+					throw new CHttpException(400, 'Object to be ordered not found');
+				}
+				//Add one because display_order not zero indexed.
+				//Times by page number to get correct order across pages.
+				$model->display_order = ($displayOrder + 1) * $page;
+				if (!$model->validate()) {
+					throw new CHttpException(400, 'Order was invalid');
+				}
+				if (!$model->save()) {
+					throw new CHttpException(500, 'Unable to save order');
+				}
+			}
+			$this->audit('sort');
+		}
 	}
 
 	/**
@@ -406,35 +590,87 @@ class Admin
 	}
 
 	/**
-	 * @param $saveURL
+	 * Returns wether a given column is sortable or not.
+	 *
+	 * @param $attribute
+	 * @return bool
 	 */
-	public function setCustomSaveURL($saveURL)
+	public function isSortableColumn($attribute)
 	{
-		$this->customSaveURL = $saveURL;
+		if($this->isSubList){
+			return false;
+		}
+
+		if(in_array('display_order', $this->listFields, true)){
+			return false;
+		}
+
+		if(strpos($attribute, 'has_') === 0){
+			return false;
+		}
+
+		if(in_array($attribute, $this->unsortableColumns, true)){
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
+	 * Takes the current URL, sets two values in it and returns it
+	 *
+	 * @param $attribute
+	 * @param $order
+	 * @param $queryString
 	 * @return string
 	 */
-	public function getCustomSaveURL()
+	public function sortQuery($attribute, $order, $queryString)
 	{
-		return $this->customSaveURL;
+		$queryArray = array();
+		parse_str($queryString, $queryArray);
+		$queryArray['c'] = $attribute;
+		$queryArray['d'] = $order;
+
+		return http_build_query($queryArray);
+	}
+
+	public function generateAdminForRelationList($relation, array $listFields)
+	{
+		$relatedModel = $this->relationClassFromRelation($relation);
+		$relatedAdmin = new Admin($relatedModel, $this->controller);
+		$relatedAdmin->setListFields($listFields);
+		$relatedAdmin->setIsSubList(true);
+		$relationField = $this->relationFieldFromRelation($relation);
+		if($relationField){
+			$criteria = $relatedAdmin->getSearch()->getCriteria();
+			$criteria->addCondition($relationField.' = '.$this->model->id);
+			$relatedAdmin->setSubListParent(array($relationField => $this->model->id));
+		}
+
+		return $relatedAdmin;
 	}
 
 	/**
-	 * @param $cancelURL
+	 * @param $relation
+	 * @return BaseActiveRecord
+	 * @throws CException
 	 */
-	public function setCustomCancelURL($cancelURL)
+	protected function relationClassFromRelation($relation)
 	{
-		$this->customCancelURL = $cancelURL;
+		$relationDefinition = $this->getRelationDefnition($relation);
+		$relationClass = $relationDefinition[1];
+		if(!class_exists($relationClass)){
+			throw new CException('Relation model does not exist');
+		}
+
+		return new $relationClass();
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getCustomCancelURL()
+	protected function relationFieldFromRelation($relation)
 	{
-		return $this->customCancelURL;
+		$relationDefinition = $this->getRelationDefnition($relation);
+
+		return $relationDefinition[2];
 	}
 
 	/**
@@ -453,5 +689,39 @@ class Admin
 	protected function audit($type, $data = null)
 	{
 		Audit::add('admin-' . $this->modelName, $type, $data);
+	}
+
+	/**
+	 * @param $relation
+	 * @return mixed
+	 * @throws CException
+	 */
+	protected function getRelationDefnition($relation)
+	{
+		$relations = $this->model->relations();
+		if (!array_key_exists($relation, $relations)) {
+			throw new CException('Relation does not exist');
+		}
+
+		$relationDefinition = $relations[$relation];
+
+		return $relationDefinition;
+	}
+
+	/**
+	 * @return string
+	 */
+	function generateReturnUrl($requestUri)
+	{
+
+		$split = explode('?', $requestUri);
+		if (count($split) > 1) {
+			$queryArray = array();
+			parse_str($split[1], $queryArray);
+			unset($queryArray['returnUri']);
+			$split[1] = urlencode(http_build_query($queryArray));
+		}
+		$returnUri = implode('?', $split);
+		return $returnUri;
 	}
 }

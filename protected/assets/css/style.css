@@ -6176,6 +6176,11 @@ tfoot.pagination-container .pagination-view-all {
 .edit .element, .edit .optional-elements {
   border-top: 2px dotted #8c949c;
 }
+
+.element-no-display {
+    border-style: none !important;
+    margin-top: -19px;
+}
 /* line 128, ../sass/openeyes/components/events/_elements.scss */
 .edit .element.on-demand, .edit .on-demand.optional-elements, .edit .sub-element.on-demand {
   -moz-border-radius: 10px;

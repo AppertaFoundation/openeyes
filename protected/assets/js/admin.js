@@ -30,27 +30,7 @@ $(document).ready(function () {
     });
 
     handleButton($('#et_cancel'), function (e) {
-        e.preventDefault();
-        var hrefArray,
-            page;
-
-        if ($(e.target).data('uri')) {
-            window.location.href = $(e.target).data('uri');
-        } else {
-            hrefArray = window.location.href.split('/');
-            page = false;
-
-            if (parseInt(hrefArray[hrefArray.length - 1])) {
-                page = Math.ceil(parseInt(hrefArray[hrefArray.length - 1]) / items_per_page);
-            }
-
-            for (var i = 0; i < hrefArray.length; i++) {
-                if (hrefArray[i] === 'admin') {
-                    var object = e[parseInt(i) + 1].replace(/^[a-z]+/, '').toLowerCase() + 's';
-                    window.location.href = baseUrl + '/admin/' + object + (page ? '/' + page : '');
-                }
-            }
-        }
+        window.history.back();
     });
 
     handleButton($('#et_contact_cancel'), function (e) {
@@ -105,8 +85,8 @@ $(document).ready(function () {
         }
 
         $form = $('#admin_' + object);
-        if($('#generic-admin-list').length){
-            $form = $('#generic-admin-list');
+        if($('#generic-admin-list, #generic-admin-form').length){
+            $form = $('#generic-admin-list, #generic-admin-form');
         }
         serializedForm = $form.serialize();
         if (serializedForm.length === 0) {
@@ -268,4 +248,25 @@ $(document).ready(function () {
     $('.box_admin_header_all').bind("click", function () {
         $('.box_admin_elements').toggle();
     });
+
+    if($("input:radio[name='User[is_doctor]']:checked").val() == 1) {
+        $('#div_User_registration_code').show();
+        $('#div_User_doctor_grade_id').show();
+    }else{
+        $('#div_User_registration_code').hide();
+        $('#div_User_doctor_grade_id').hide();
+    }
+
+    $("input[name='User[is_doctor]']").click(function(){
+        if($("input:radio[name='User[is_doctor]']:checked").val() == 1){
+            $('#div_User_registration_code').show();
+            $('#div_User_doctor_grade_id').show();
+        }else{
+            $('#div_User_registration_code').hide();
+            $('#div_User_doctor_grade_id').hide();
+            $("#User_registration_code").val(null);
+            $("#User_grade").val(null).change();
+        }
+    });
+
 });

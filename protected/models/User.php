@@ -74,24 +74,67 @@ class User extends BaseActiveRecordVersioned
 			// Added for uniqueness of username
 			array('username', 'unique', 'className' => 'User', 'attributeName' => 'username'),
 			array('id, username, first_name, last_name, email, active, global_firm_rights', 'safe', 'on'=>'search'),
-			array('username, first_name, last_name, email, active, global_firm_rights, is_doctor, title, qualifications, role, salt, password, is_clinical, is_consultant, is_surgeon, has_selected_firms', 'safe'),
+			array('username, first_name, last_name, email, active, global_firm_rights, is_doctor, title, qualifications, role, salt, password, is_clinical, is_consultant, is_surgeon, has_selected_firms,doctor_grade_id, registration_code', 'safe'),
 		);
 
 		if (Yii::app()->params['auth_source'] == 'BASIC') {
-			return array_merge(
-				$commonRules,
-				array(
-					array('username', 'match', 'pattern' => '/^[\w|\.\-_\+@]+$/', 'message' => 'Only letters, numbers and underscores are allowed for usernames.'),
-					array('username, email, first_name, last_name, active, global_firm_rights', 'required'),
-					array('username, password, first_name, last_name', 'length', 'max' => 40),
-					array('password', 'length', 'min' => 5, 'message' => 'Passwords must be at least 6 characters long.'),
-					array('email', 'length', 'max' => 80),
-					array('email', 'email'),
-					array('salt', 'length', 'max' => 10),
-					// Added for password comparison functionality
-					array('password_repeat', 'safe'),
-				)
-			);
+
+			$user = Yii::app()->request->getPost('User');
+
+			if($user['is_doctor']){
+
+				return array_merge(
+					$commonRules,
+					array(
+						array(
+							'username',
+							'match',
+							'pattern' => '/^[\w|\.\-_\+@]+$/',
+							'message' => 'Only letters, numbers and underscores are allowed for usernames.'
+						),
+						array('username, email, first_name, last_name, active, global_firm_rights, doctor_grade_id', 'required'),
+						array('username, password, first_name, last_name', 'length', 'max' => 40),
+						array(
+							'password',
+							'length',
+							'min' => 5,
+							'message' => 'Passwords must be at least 6 characters long.'
+						),
+						array('email', 'length', 'max' => 80),
+						array('email', 'email'),
+						array('salt', 'length', 'max' => 10),
+						// Added for password comparison functionality
+						array('password_repeat', 'safe'),
+					)
+				);
+
+			}else {
+
+				return array_merge(
+					$commonRules,
+					array(
+						array(
+							'username',
+							'match',
+							'pattern' => '/^[\w|\.\-_\+@]+$/',
+							'message' => 'Only letters, numbers and underscores are allowed for usernames.'
+						),
+						array('username, email, first_name, last_name, active, global_firm_rights', 'required'),
+						array('username, password, first_name, last_name', 'length', 'max' => 40),
+						array(
+							'password',
+							'length',
+							'min' => 5,
+							'message' => 'Passwords must be at least 6 characters long.'
+						),
+						array('email', 'length', 'max' => 80),
+						array('email', 'email'),
+						array('salt', 'length', 'max' => 10),
+						// Added for password comparison functionality
+						array('password_repeat', 'safe'),
+					)
+				);
+			}
 		} elseif (Yii::app()->params['auth_source'] == 'LDAP') {
 			return array_merge(
 				$commonRules,
@@ -123,6 +166,7 @@ class User extends BaseActiveRecordVersioned
 			'preferred_firms' => array(self::HAS_MANY, 'Firm', 'firm_id', 'through' => 'firm_preferences', 'order' => 'firm_preferences.position DESC', 'limit' => 6),
 			'firmSelections' => array(self::MANY_MANY, 'Firm', 'user_firm(firm_id, user_id)', 'condition' => 'firmSelections.active = 1', 'order' => 'name asc'),
 			'siteSelections' => array(self::MANY_MANY, 'Site', 'user_site(site_id, user_id)', 'order' => 'name asc'),
+			'grade' => array(self::BELONGS_TO, 'DoctorGrade', 'doctor_grade_id'),
 		);
 	}
 
@@ -172,6 +216,7 @@ class User extends BaseActiveRecordVersioned
 			'is_consultant' => 'Consultant',
 			'is_clinical' => 'Clinically trained',
 			'is_surgeon' => 'Surgeon',
+			'doctor_grade_id' => 'Grade'
 		);
 	}
 

@@ -65,6 +65,18 @@ class CorrespondenceContext extends PageObjectContext
         $Correspondence  = $this->getPage('Correspondence');
         $Correspondence->clinicDate($date);
     }
+    
+    /**
+     * @Then /^I fill the Correspondence Body "([^"]*)"$/
+     */
+    public function iFillTheCorrespondenceBody($body)
+    {
+    /**
+         * @var correspondence $Correspondence
+         */
+        $Correspondence  = $this->getPage('Correspondence');
+        $Correspondence->body($body);
+    }
 
     /**
      * @Then /^I choose an Introduction of "([^"]*)"$/

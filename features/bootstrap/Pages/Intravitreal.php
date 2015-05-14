@@ -387,22 +387,23 @@ class Intravitreal extends OpenEyesPage
 
         public function rightCountingFingersYes ()
         {
-            $this->getElement('rightCountingFingersYes')->check();
+            //$this->getElement('rightCountingFingersYes')->check();
+            $this->getElement('rightCountingFingersYes')->click();
         }
 
         public function rightCountingFingersNo ()
         {
-            $this->getElement('rightCountingFingersNo')->check();
+            $this->getElement('rightCountingFingersNo')->click();
         }
 
         public function rightIOPNeedsToBeCheckedYes ()
         {
-            $this->getElement('rightIOPCheckYes')->check();
+            $this->getElement('rightIOPCheckYes')->click();
         }
 
         public function rightIOPNeedsToBeCheckedNo ()
         {
-            $this->getElement('rightIOPCheckNo')->check();
+            $this->getElement('rightIOPCheckNo')->click();
         }
 
         public function rightPostInjectionDrops ($drops)
@@ -417,17 +418,17 @@ class Intravitreal extends OpenEyesPage
 
         public function leftCountingFingersNo ()
         {
-            $this->getElement('leftCountingFingersNo')->check();
+            $this->getElement('leftCountingFingersNo')->click();
         }
 
         public function leftIOPNeedsToBeCheckedYes ()
         {
-            $this->getElement('leftIOPCheckYes')->check();
+            $this->getElement('leftIOPCheckYes')->click();
         }
 
         public function leftIOPNeedsToBeCheckedNo ()
         {
-            $this->getElement('leftIOPCheckNo')->check();
+            $this->getElement('leftIOPCheckNo')->click();
         }
 
         public function leftPostInjectionDrops ($drops)

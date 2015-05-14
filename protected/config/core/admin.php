@@ -41,7 +41,8 @@ return array(
 				'Previous Ophthalmic Surgery' => '/admin/editpreviousoperation',
 				'Social History' => '/admin/socialhistory',
 				'Findings' => '/admin/managefindings',
-				'Anaesthetic Agent' => '/admin/viewAnaestheticAgent'
+				'Anaesthetic Agent' => '/admin/viewAnaestheticAgent',
+				'Risks' => '/oeadmin/risk/list'
 			),
 			'Procedure Management' => array(
 				'Procedures' => '/oeadmin/procedure/list',
@@ -55,8 +56,8 @@ return array(
 				'Common Medications List ' => '/oeadmin/commonMedications/list',
 				'Medication List' => '/oeadmin/medication/list',
 				'Formulary Drugs' => '/oeadmin/formularyDrugs/list',
-				'Per Op Drugs' => '/OphTrOperationnote/admin/viewPostOpDrugs',
-				'Per Op Drug Mappings' => '/OphTrOperationnote/admin/postOpDrugMappings',
+				'Per Op Drugs' => array('OphTrOperationnote' => '/OphTrOperationnote/admin/viewPostOpDrugs'),
+				'Per Op Drug Mappings' => array('OphTrOperationnote' => '/oeadmin/PostOpDrugMappings/list'),
 			),
 			'Disorders' => array(
 				'Common Ophthalmic Disorder Groups' => '/admin/editcommonophthalmicdisordergroups',
@@ -65,8 +66,8 @@ return array(
 				'Common Systemic Disorders' => '/oeadmin/CommonSystemicDisorder/list'
 			),
 			'Consent' => array(
-				'Leaflets' => '/oeadmin/Leaflets/list',
-				'Leaflet Subspecialty and Firm Assignment' => '/oeadmin/LeafletSubspecialtyFirm/list'
+				'Leaflets' => array('OphTrConsent' => '/oeadmin/Leaflets/list'),
+				'Leaflet Subspecialty and Firm Assignment' => array('OphTrConsent' => '/oeadmin/LeafletSubspecialtyFirm/list')
 			),
 			'Operation Notes' => array(
 				'Anaesthetic Agent Defaults' => '/oeadmin/AnaestheticAgentDefaults/list'

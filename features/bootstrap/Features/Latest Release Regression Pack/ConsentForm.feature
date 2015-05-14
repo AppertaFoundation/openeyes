@@ -1,5 +1,6 @@
 @consent @regression
 Feature: Create New Consent Form
+@Consent
          Regression coverage of this event is approx 70%
 
   Scenario: Route 1: Login and create a new Consent Form
@@ -19,7 +20,7 @@ Feature: Create New Consent Form
 
     Then I expand the Glaucoma sidebar
     And I add a New Event "Consent"
-    Then I select Unbooked Procedures
+    #Then I select Unbooked Procedures
     Then I select Add Consent Form
     And I choose Type "1"
 
@@ -52,7 +53,7 @@ Feature: Create New Consent Form
 
     Then I expand the Glaucoma sidebar
     And I add a New Event "Consent"
-    Then I select Unbooked Procedures
+    #Then I select Unbooked Procedures
     Then I select Add Consent Form
     And I choose Type "2"
 
@@ -80,7 +81,7 @@ Feature: Create New Consent Form
 
     Then I expand the Medical Retinal sidebar
     And I add a New Event "Consent"
-    Then I select Unbooked Procedures
+    #Then I select Unbooked Procedures
     Then I select Add Consent Form
     And I choose Type "3"
 
@@ -108,7 +109,7 @@ Feature: Create New Consent Form
 
     Then I expand the Glaucoma sidebar
     And I add a New Event "Consent"
-    Then I select Unbooked Procedures
+    #Then I select Unbooked Procedures
     Then I select Add Consent Form
     And I choose Type "4"
 
@@ -136,12 +137,13 @@ Feature: Create New Consent Form
 
     Then I expand the Glaucoma sidebar
     And I add a New Event "Consent"
-    Then I select Unbooked Procedures
+    #Then I select Unbooked Procedures
     Then I select Add Consent Form
 
     Then I save the Consent Form Draft
     Then I confirm that the Consent Validation error messages have been displayed
-
+    
+  @Consent_Route6A
   Scenario: Route 6A: Login and create a Operation Booking for Route 6B test
 
     Given I am logged in as "admin" with site "Queens" and firm "Anderson Firm (Cataract)"
@@ -161,15 +163,15 @@ Feature: Create New Consent Form
 
     Then I select No to Consultant required
 
-    And I select "No" for "Any other doctor to do"
+    And I select No for Any other doctor to do
 
-    And I select "No" for "Does the patient require pre-op assessment by an anaesthetist"
+    And I select No for Does the patient require pre-op assessment by an anaesthetist
 
     And I select a Anaesthetic type "LA"
 
-    And I select "Patient preference" for "Anaesthetic choice"
+    And I select Patient preference for Anaesthetic choice
 
-    And I select "No" for "Patient needs to stop medication"
+    And I select No for Patient needs to stop medication
 
     Then I select Yes to a Post Operative Stay
 
@@ -177,11 +179,11 @@ Feature: Create New Consent Form
 
     Then I select a Priority of Routine
 
-    And I select a decision date of "10"
+   # And I select a decision date of "10"
 
-    And I select "Yes" for "Admission discussed with patient"
+    And I select Yes for Admission discussed with patient
 
-    And I select "As soon as possible" for "Schedule options"
+    And I select As soon as possible for Schedule options
 
     Then I add comments of "Insert test comments here"
 
@@ -189,7 +191,7 @@ Feature: Create New Consent Form
 
     And I select OK to Duplicate procedure if requested
 
-    Then I select Next Month
+    #Then I select Next Month
 
     And I select an Available theatre slot date
     And I select an Available session time
