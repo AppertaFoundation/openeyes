@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "hash": "bd7c809fa65a9e47c55c31e244f7d007",
@@ -108,12 +108,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphCoCorrespondence.git",
-                "reference": "43272160ea8e0bba7e152d641a6f2591d1a31dbd"
+                "reference": "e40ced5b74fffcdf1795237d77d863950d183cad"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphCoCorrespondence/zipball/43272160ea8e0bba7e152d641a6f2591d1a31dbd",
-                "reference": "43272160ea8e0bba7e152d641a6f2591d1a31dbd",
+                "url": "https://api.github.com/repos/openeyes/OphCoCorrespondence/zipball/e40ced5b74fffcdf1795237d77d863950d183cad",
+                "reference": "e40ced5b74fffcdf1795237d77d863950d183cad",
                 "shasum": ""
             },
             "require": {
@@ -122,7 +122,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Correspondence module for OpenEyes, allows generation of letters",
-            "time": "2015-05-11 14:25:55"
+            "time": "2015-05-14 12:54:19"
         },
         {
             "name": "openeyes/oph-co-therapyapplication",
@@ -174,12 +174,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphInBiometry.git",
-                "reference": "c44c0d689c0ff345c4abd14a705620ed6b6b0688"
+                "reference": "e01a3310a376db584babe20839a6b842720eabfe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphInBiometry/zipball/c44c0d689c0ff345c4abd14a705620ed6b6b0688",
-                "reference": "c44c0d689c0ff345c4abd14a705620ed6b6b0688",
+                "url": "https://api.github.com/repos/openeyes/OphInBiometry/zipball/e01a3310a376db584babe20839a6b842720eabfe",
+                "reference": "e01a3310a376db584babe20839a6b842720eabfe",
                 "shasum": ""
             },
             "require": {
@@ -188,7 +188,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Biometry module for OpenEyes",
-            "time": "2015-05-12 14:52:57"
+            "time": "2015-05-14 15:05:27"
         },
         {
             "name": "openeyes/oph-in-visualfields",
@@ -375,12 +375,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrOperationnote.git",
-                "reference": "30f6d06c8c7b62058d1f6f4ce320a20a6575743c"
+                "reference": "514c43dac83e05c51ee909fb40440f4e2d0e5f5c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/30f6d06c8c7b62058d1f6f4ce320a20a6575743c",
-                "reference": "30f6d06c8c7b62058d1f6f4ce320a20a6575743c",
+                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/514c43dac83e05c51ee909fb40440f4e2d0e5f5c",
+                "reference": "514c43dac83e05c51ee909fb40440f4e2d0e5f5c",
                 "shasum": ""
             },
             "require": {
@@ -390,7 +390,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Operation note module for OpenEyes",
-            "time": "2015-05-12 10:58:23"
+            "time": "2015-05-14 14:46:09"
         },
         {
             "name": "openeyes/patient-ticketing",
