@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "bd7c809fa65a9e47c55c31e244f7d007",
+    "hash": "07fad9d08794bcbc167d603396737f23",
     "packages": [
         {
             "name": "openeyes/eyedraw",
@@ -60,7 +60,7 @@
         },
         {
             "name": "openeyes/oph-ci-examination",
-            "version": "dev-develop",
+            "version": "dev-release/v1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphCiExamination.git",
@@ -104,7 +104,7 @@
         },
         {
             "name": "openeyes/oph-co-correspondence",
-            "version": "dev-develop",
+            "version": "dev-release/v1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphCoCorrespondence.git",
@@ -148,7 +148,7 @@
         },
         {
             "name": "openeyes/oph-dr-prescription",
-            "version": "dev-develop",
+            "version": "dev-release/v1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphDrPrescription.git",
@@ -170,7 +170,7 @@
         },
         {
             "name": "openeyes/oph-in-biometry",
-            "version": "dev-develop",
+            "version": "dev-release/v1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphInBiometry.git",
@@ -259,7 +259,7 @@
         },
         {
             "name": "openeyes/oph-tr-consent",
-            "version": "dev-develop",
+            "version": "dev-release/v1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrConsent.git",
@@ -349,7 +349,7 @@
         },
         {
             "name": "openeyes/oph-tr-operationbooking",
-            "version": "dev-develop",
+            "version": "dev-release/v1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrOperationbooking.git",
@@ -371,7 +371,7 @@
         },
         {
             "name": "openeyes/oph-tr-operationnote",
-            "version": "dev-develop",
+            "version": "dev-release/v1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrOperationnote.git",
@@ -394,7 +394,7 @@
         },
         {
             "name": "openeyes/patient-ticketing",
-            "version": "dev-develop",
+            "version": "dev-release/v1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/PatientTicketing.git",
