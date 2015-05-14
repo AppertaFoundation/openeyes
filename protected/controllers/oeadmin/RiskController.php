@@ -16,20 +16,66 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-?>
-<section
-	class="<?php if (@$child) {?>sub-<?php }?>element <?php echo get_class($element)?>"
-	data-element-type-id="<?php echo $element->elementType->id?>"
-	data-element-type-class="<?php echo $element->elementType->class_name?>"
-	data-element-type-name="<?php echo $element->elementType->name?>"
-	data-element-display-order="<?php echo $element->elementType->display_order?>">
-	<?php if (!preg_match('/\[\-(.*)\-\]/', $element->elementType->name)) { ?>
-		<header class="<?php if (@$child) { ?>sub-<?php } ?>element-header">
-			<h3 class="<?php if (@$child) { ?>sub-<?php } ?>element-title"><?php echo $element->elementType->name ?></h3>
-		</header>
-	<?php } ?>
-	<?php echo $content ;?>
-	<div class="sub-elements">
-		<?php $this->renderChildOpenElements($element, 'view', @$form, @$data)?>
-	</div>
-</section>
+
+/**
+ * Class RiskController
+ */
+class RiskController extends BaseAdminController
+{
+	/**
+	 * @var string
+	 */
+	public $layout = 'admin';
+
+	/**
+	 * @var int
+	 */
+	public $itemsPerPage = 100;
+
+	/**
+	 * Lists procedures
+	 *
+	 * @throws CHttpException
+	 */
+	public function actionList()
+	{
+		$admin = new Admin(Risk::model(), $this);
+		$admin->setListFields(array(
+			'id',
+			'name',
+			'active'
+		));
+		$admin->searchAll();
+		$admin->getSearch()->addActiveFilter();
+		$admin->getSearch()->setItemsPerPage($this->itemsPerPage);
+		$admin->listModel();
+	}
+
+	/**
+	 * Edits or adds a Procedure
+	 *
+	 * @param bool|int $id
+	 * @throws CHttpException
+	 */
+	public function actionEdit($id = false)
+	{
+		$admin = new Admin(Risk::model(), $this);
+		if ($id) {
+			$admin->setModelId($id);
+		}
+		$admin->setEditFields(array(
+			'name' => 'text',
+			'active' => 'checkbox'
+		));
+		$admin->editModel();
+	}
+
+	/**
+	 * Deletes rows for the model
+	 */
+	public function actionDelete()
+	{
+		$admin = new Admin(Risk::model(), $this);
+		$admin->deleteModel();
+	}
+}

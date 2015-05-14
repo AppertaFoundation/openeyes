@@ -61,7 +61,8 @@ class PatientController extends BaseController
 				'roles' => array('OprnEditContact'),
 			),
 			array('allow',
-				'actions' => array('addAllergy', 'removeAllergy'),
+				'actions' => array('addAllergy', 'removeAllergy', 'addRisk', 'removeRisk'),
+				// TODO: check how to add new roles!!!
 				'roles' => array('OprnEditAllergy'),
 			),
 			array('allow',
@@ -624,6 +625,7 @@ class PatientController extends BaseController
 		$this->redirect(array('patient/view/'.$patient->id));
 	}
 
+
 	/**
 	 * Remove patient/allergy assignment
 	 *
@@ -648,6 +650,57 @@ class PatientController extends BaseController
 		!empty($allergy_ids) && $criteria->addNotInCondition('id',$allergy_ids);
 		$criteria->order = 'name asc';
 		return Allergy::model()->active()->findAll($criteria);
+	}
+
+	/**
+	 * Add patient/allergy assignment
+	 *
+	 * @throws Exception
+	 */
+	public function actionAddRisk()
+	{
+		if (!empty($_POST)) {
+			$patient = $this->fetchModel('Patient', @$_POST['patient_id']);
+
+			if (@$_POST['no_risks']) {
+				$patient->setNoRisks();
+			} else {
+				$risk = $this->fetchModel('Risk', @$_POST['risk_id']);
+				$patient->addRisk($risk, @$_POST['other'], @$_POST['comments']);
+			}
+		}
+
+		$this->redirect(array('patient/view/' . $patient->id));
+	}
+
+
+	/**
+	 * Remove patient/allergy assignment
+	 *
+	 * @throws Exception
+	 */
+	public function actionRemoveRisk()
+	{
+		PatientRiskAssignment::model()->deleteByPk(@$_GET['assignment_id']);
+		echo 'success';
+	}
+
+	/**
+	 * List of risks
+	 */
+	public function riskList()
+	{
+		$risk_ids = array();
+		foreach ($this->patient->risks as $risk) {
+			if ($risk->name != 'Other') {
+				$risk_ids[] = $risk->id;
+			}
+		}
+		$criteria = new CDbCriteria;
+		!empty($risk_ids) && $criteria->addNotInCondition('id', $risk_ids);
+		$criteria->order = 'name asc';
+
+		return Risk::model()->active()->findAll($criteria);
 	}
 
 	public function actionHideepisode()

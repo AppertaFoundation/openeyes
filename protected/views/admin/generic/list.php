@@ -17,39 +17,68 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+
+<?php
+if(!isset($displayOrder)){
+	$displayOrder = 0;
+}
+if(!isset($uniqueid)){
+	$uniqueid = $this->uniqueid;
+}
+?>
 <div class="admin box">
-
+	<?php if(!$admin->isSubList()):?>
 	<h2><?php echo $admin->getModelDisplayName(); ?></h2>
+	<?php endif;?>
+	<?php $this->widget('GenericSearch', array('search' => $admin->getSearch(), 'subList' => $admin->isSubList())); ?>
 
-	<?php $this->widget('GenericSearch', array('search' => $admin->getSearch())); ?>
+	<?php
+	$returnUri = '';
+	if($admin->isSubList()):?>
+	<div id="generic-admin-sublist">
+		<?php
+		if($admin->getSubListParent() && is_array($admin->getSubListParent())):
+			foreach($admin->getSubListParent() as $key => $value):
+		?>
+			<input type="hidden" name="default[<?=$key?>]" value="<?=$value?>" />
+		<?php
+			endforeach;
+		endif;
+		$returnUri = $admin->generateReturnUrl(Yii::app()->request->requestUri);
+		?>
+		<input type="hidden" name="returnUri" id="returnUri" value="<?=$returnUri ?>" />
+
+	<?php else: ?>
 	<form id="generic-admin-list">
 		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
+	<?php endif;?>
+		<input type="hidden" name="page" value="<?php echo Yii::app()->request->getParam('page', 1) ?>"/>
 		<table class="grid">
 			<thead>
 			<tr>
 				<th><input type="checkbox" name="selectall" id="selectall"/></th>
-				<?php foreach ($admin->getListFields() as $listItem): ?>
+				<?php
+				foreach ($admin->getListFields() as $listItem): ?>
 					<th>
-						<?php if (!preg_match('/^has_(.*)/', $listItem) && ($listItem != 'active')) { ?>
-						<a href="?<?php
-						$newQuery = preg_replace('/c=(.*)\&d=(.*)/', '', Yii::app()->request->getQueryString());
-						if ($newQuery != "") {
-							echo $newQuery . '&';
-						} ?>c=<?php echo $listItem; ?>&d=<?php echo $displayOrder; ?>"><?php echo $admin->getModel()->getAttributeLabel($listItem); ?></a>
-						<?php } else {
-							echo $admin->getModel()->getAttributeLabel($listItem);
-						} ?>
+						<?php if($admin->isSortableColumn($listItem)):?>
+							<a href="/<?php echo $uniqueid ?>/list?<?php echo $admin->sortQuery($listItem, $displayOrder, Yii::app()->request->getQueryString()) ?>">
+						<?php endif;?>
+							<?php echo $admin->getModel()->getAttributeLabel($listItem); ?>
+						<?php if($admin->isSortableColumn($listItem)):?>
+							</a>
+						<?php endif;?>
 					</th>
 				<?php endforeach; ?>
 			</tr>
 			</thead>
-			<tbody>
+			<tbody <?php if(in_array('display_order', $admin->getListFields())): echo 'class="sortable"'; endif; ?>>
 			<?php
 			foreach ($admin->getSearch()->retrieveResults() as $i => $row) { ?>
 				<tr class="clickable" data-id="<?php echo $row->id ?>"
-					data-uri="<?php echo $this->uniqueid ?>/edit/<?php echo $row->id ?>">
-					<td><input type="checkbox" name="<?php echo $admin->getModelName(); ?>[]"
-							   value="<?php echo $row->id ?>"/></td>
+					data-uri="<?php echo $uniqueid ?>/edit/<?php echo $row->id ?>?returnUri=<?=$returnUri?>">
+					<td>
+						<input type="checkbox" name="<?php echo $admin->getModelName(); ?>[id][]" value="<?php echo $row->id ?>"/>
+					</td>
 					<?php foreach ($admin->getListFields() as $listItem): ?>
 						<td>
 							<?php
@@ -59,9 +88,13 @@
 								else:
 									?><i class="fa fa-times"></i><?php
 								endif;
+							elseif($listItem === 'display_order'):
+								?>
+								&uarr;&darr;<input type="hidden" name="<?php echo $admin->getModelName(); ?>[display_order][]" value="<?php echo $row->id ?>">
+							<?php
 							else:
 								echo $admin->attributeValue($row, $listItem);
-							endif;
+							endif
 							?>
 						</td>
 					<?php endforeach; ?>
@@ -75,7 +108,11 @@
 						'Add',
 						'add',
 						array(),
-						array('class' => 'small', 'data-uri' => '/' . $this->uniqueid . '/edit')
+						array(
+							'class' => 'small',
+							'data-uri' => '/' . $uniqueid . '/edit',
+							'formmethod' => 'get'
+						)
 					)->toHtml() ?>
 					<?php echo EventAction::button(
 						'Delete',
@@ -83,7 +120,18 @@
 						array(),
 						array(
 							'class' => 'small',
-							'data-uri' => '/' . $this->uniqueid . '/delete',
+							'data-uri' => '/' . $uniqueid . '/delete',
+							'data-object' => $admin->getModelName()
+						)
+					)->toHtml() ?>
+					<?php echo EventAction::button(
+						'Sort',
+						'sort',
+						array(),
+						array(
+							'class' => 'small',
+							'style' => 'display:none;',
+							'data-uri' => '/' . $uniqueid . '/sort',
 							'data-object' => $admin->getModelName()
 						)
 					)->toHtml() ?>
@@ -94,5 +142,9 @@
 			</tr>
 			</tfoot>
 		</table>
+	<?php if($admin->isSubList()):?>
+	</div>
+	<?php else: ?>
 	</form>
+	<?php endif;?>
 </div>

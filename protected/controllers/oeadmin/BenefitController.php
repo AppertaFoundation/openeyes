@@ -18,7 +18,7 @@
  */
 
 /**
- * Class ProceduresController
+ * Class BenefitController
  */
 class BenefitController extends BaseAdminController
 {

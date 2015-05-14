@@ -1,5 +1,5 @@
 <?php
-/**
+ /**
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
@@ -17,19 +17,26 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<section
-	class="<?php if (@$child) {?>sub-<?php }?>element <?php echo get_class($element)?>"
-	data-element-type-id="<?php echo $element->elementType->id?>"
-	data-element-type-class="<?php echo $element->elementType->class_name?>"
-	data-element-type-name="<?php echo $element->elementType->name?>"
-	data-element-display-order="<?php echo $element->elementType->display_order?>">
-	<?php if (!preg_match('/\[\-(.*)\-\]/', $element->elementType->name)) { ?>
-		<header class="<?php if (@$child) { ?>sub-<?php } ?>element-header">
-			<h3 class="<?php if (@$child) { ?>sub-<?php } ?>element-title"><?php echo $element->elementType->name ?></h3>
-		</header>
-	<?php } ?>
-	<?php echo $content ;?>
-	<div class="sub-elements">
-		<?php $this->renderChildOpenElements($element, 'view', @$form, @$data)?>
+<div id="div_LetterString_name" class="row field-row">
+	<div class="large-2 column">
+		<label for="LetterString_name">Body:</label>
 	</div>
-</section>
+	<div class="large-5 column end">
+		<?php echo  CHtml::activeTextArea($model, 'body')?>
+	</div>
+</div>
+<div class="row field-row">
+	<div class="large-8 large-offset-2 column">
+		<div class="row field-row">
+			<div class="large-3 column">
+				<label for="shortcode">
+					Add shortcode:
+				</label>
+			</div>
+			<div class="large-6 column end">
+				<?php echo CHtml::dropDownList('shortcode','',CHtml::listData(PatientShortcode::model()->findAll(array('order' => 'description asc')),'code','description'),array('empty' => '- Select -'))?>
+			</div>
+		</div>
+	</div>
+</div>
+

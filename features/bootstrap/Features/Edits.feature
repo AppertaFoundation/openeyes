@@ -1,6 +1,6 @@
 @editdelete @regression
 Feature: These tests set up Events, Edit and Delete them.
-
+@EDITS
   Scenario: Route 1A: Login and create a Anaesthetic Satisfaction Audit Regression: Site 2 Kings, Firm 3 Anderson Glaucoma
 
     Given I am on the OpenEyes "master" homepage
@@ -16,7 +16,7 @@ Feature: These tests set up Events, Edit and Delete them.
     And I add a New Event "Satisfaction"
 
     Then I select an Anaesthetist "no"
-    And I select Satisfaction levels of Pain "2" Nausea "3"
+    #And I select Satisfaction levels of Pain "2" Nausea "3"
 
     And I tick the Vomited checkbox
 
@@ -43,7 +43,7 @@ Feature: These tests set up Events, Edit and Delete them.
     And I edit the Last Event
 
     Then I select an Anaesthetist "non"
-    And I select Satisfaction levels of Pain "4" Nausea "1"
+    #And I select Satisfaction levels of Pain "4" Nausea "1"
 
     And I untick the Vomited checkbox
 
@@ -68,7 +68,7 @@ Feature: These tests set up Events, Edit and Delete them.
     Then I select the Latest Event
 
     And I delete the Last Event
-
+  @Route_2A
   Scenario: Route 2A: Login and create a new Consent Form
 
     Given I am on the OpenEyes "master" homepage
@@ -82,7 +82,7 @@ Feature: These tests set up Events, Edit and Delete them.
 
     Then I expand the Glaucoma sidebar
     And I add a New Event "Consent"
-    Then I select Unbooked Procedures
+    #Then I select Unbooked Procedures
     Then I select Add Consent Form
     And I choose Type "1"
 
@@ -204,7 +204,7 @@ Scenario: Route 3A: Login and create a Phasing Event
     Then I select the Latest Event
 
     And I delete the Last Event
-
+  @Route_4A
   Scenario: Route 4A: Login and fill in a Correspondence
 
     Given I am on the OpenEyes "master" homepage
@@ -221,9 +221,11 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I select Site ID "1"
     And I select Address Target "Gp1"
-    Then I choose a Macro of "site1"
+    #Then I choose a Macro of "site1"
 
-    And I select Clinic Date "7"
+    #And I select Clinic Date "7"
+    
+    Then I fill the Correspondence Body "You are dead sir"
 
     And I choose CC Target "Patient19434"
 
@@ -247,7 +249,7 @@ Scenario: Route 3A: Login and create a Phasing Event
     Then I select Site ID "2"
     And I select Address Target "Patient19434"
 
-    And I select Clinic Date "11"
+    #And I select Clinic Date "11"
 
     And I choose CC Target "Gp1"
 
@@ -268,6 +270,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     And I delete the Last Event
 
+  @Route_5A
   Scenario: Route 5A: Login and create a New Intravitreal Event
 
     Given I am on the OpenEyes "master" homepage
@@ -403,6 +406,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     And I delete the Last Event
 
+  @Route_6A
   Scenario: Route 6A: Login and create a new Examination Event: Site 1:Queens, Firm:1 Anderson Cataract
 
     Given I am on the OpenEyes "master" homepage
@@ -423,17 +427,14 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I choose to expand the Visual Function section
 
-    Then I select a Left RAPD
     And I add Left RAPD comments of "Left RAPD Automation test comments"
 
-    Then I select a Right RAPD
     And I add Right RAPD comments of "Left RAPD Automation test comments"
 
     Then I choose to expand the Colour Vision section
     And I choose a Left Colour Vision of "1"
     And I choose A Left Colour Vision Value of "8"
     And I choose a Right Colour Vision of "2"
-    And I choose A Right Colour Vision Value of "4"
 
     Then I choose to expand the Visual Acuity section
     And I select a Visual Acuity of "2"
@@ -463,7 +464,8 @@ Scenario: Route 3A: Login and create a Phasing Event
     And I choose a Conclusion option of "booked for first eye, "
 
     Then I Save the Examination and confirm it has been created successfully
-
+    
+  @Route_6B
   Scenario: Route 6B: Edit previously created Examination Event: Site 1:Queens, Firm:1 Anderson Cataract
 
     Given I am on the OpenEyes "master" homepage
@@ -486,6 +488,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I Save the Examination
 
+  @Route_6C
   Scenario: Route 6C: Delete previously created/edited Examination From from Route 6A/6B
 
     Given I am on the OpenEyes "master" homepage
@@ -499,6 +502,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     And I delete the Last Event
 
+  @Route_7A
   Scenario: Route 7A: Login and create a Laser event
 
     Given I am on the OpenEyes "master" homepage
@@ -520,6 +524,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I save the Laser Event
 
+  @Route_7B
   Scenario: Route 7B: Edit previously created Laser event
 
     Given I am on the OpenEyes "master" homepage
@@ -539,6 +544,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I save the Laser Event
 
+  @Route_7C
   Scenario: Route 7C: Delete previously created/edited Laser From from Route 7A/7B
 
     Given I am on the OpenEyes "master" homepage
@@ -552,6 +558,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     And I delete the Last Event
 #
+  @Route_8A
   Scenario: 8A Login and create a new Prescription
 
     Given I am on the OpenEyes "master" homepage
@@ -577,6 +584,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I Save the Prescription Draft and confirm it has been created successfully
 
+  @Route_8B
   Scenario: 8B Login and edit previously created new Prescription
 
     Given I am on the OpenEyes "master" homepage
@@ -598,6 +606,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I Save the Prescription Draft
 
+  @Route_8C
   Scenario: Route 8C: Delete previously created/edited Prescription From from Route 8A/8B
 
     Given I am on the OpenEyes "master" homepage
@@ -611,6 +620,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     And I delete the Last Event
 
+  @Route_9A
   Scenario: Route 9A: Login and create a Operation Booking Anderson Glaucoma
 
     Given I am logged in as "admin" with site "Kings" and firm "Anderson Firm (Glaucoma)"
@@ -628,39 +638,40 @@ Scenario: Route 3A: Login and create a Phasing Event
     And I select a Procedure of "41"
 
     Then I select No to Consultant required
-    And I select "No" for "Any other doctor to do"
+    
+    
+    And I select No for Any other doctor to do
 
-    And I select "No" for "Does the patient require pre-op assessment by an anaesthetist"
+    And I select No for Does the patient require pre-op assessment by an anaesthetist
 
-    And I select a Anaesthetic type "Topical"
+    And I select a Anaesthetic type Topical
 
-    And I select "Patient preference" for "Anaesthetic choice"
+    And I select Patient preference for Anaesthetic choice
 
-    And I select "No" for "Patient needs to stop medication"
+    And I select No for Patient needs to stop medication
 
     Then I select Yes to a Post Operative Stay
-    Then I select No to a Post Operative Stay
 
     And I select a Operation Site of "1"
 
     Then I select a Priority of Urgent
 
-    And I select a decision date of "14"
+    And I select Yes for Admission discussed with patient
 
-    And I select "Yes" for "Admission discussed with patient"
-
-    And I select "As soon as possible" for "Schedule options"
+    And I select As soon as possible for Schedule options
 
     Then I select Save and Schedule now
 
     And I select OK to Duplicate procedure if requested
 
     And I select an Available theatre slot date
+
     And I select an Available session time
 
     Then I confirm the operation slot
-
-  Scenario: 9B Login and edit previously created new Operation Booking, Consultant Error Check
+    
+  @Route_9B
+  Scenario: 9B Login and edit previously created new Operation Booking
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -679,10 +690,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I select Save
 
-    And I select OK to Duplicate procedure if requested
-
-    Then I confirm that You must change the session or cancel the booking error is displayed
-
+  @Route_9C
   Scenario: Route 9C: Delete previously created/edited Prescription From from Route 9A/9B
 
     Given I am on the OpenEyes "master" homepage
@@ -696,6 +704,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     And I delete the Last Event
 
+  @Route_10A
   Scenario: Route 10A: Login and create a Operation Booking Anderson Glaucoma
 
     Given I am logged in as "admin" with site "Kings" and firm "Anderson Firm (Glaucoma)"
@@ -714,28 +723,25 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I select Yes to Consultant required
     And I select "Anderson Andrew" for "Named Consultant"
-    And I select "No" for "Any other doctor to do"
+    And I select No for Any other doctor to do
 
-    And I select "No" for "Does the patient require pre-op assessment by an anaesthetist"
+    And I select No for Does the patient require pre-op assessment by an anaesthetist
 
-    And I select a Anaesthetic type "Topical"
+    And I select a Anaesthetic type Topical
 
-    And I select "Patient preference" for "Anaesthetic choice"
+    And I select Patient preference for Anaesthetic choice
 
-    And I select "No" for "Patient needs to stop medication"
+    And I select No for Patient needs to stop medication
 
     Then I select Yes to a Post Operative Stay
-    Then I select No to a Post Operative Stay
 
     And I select a Operation Site of "1"
 
     Then I select a Priority of Urgent
 
-    And I select a decision date of "14"
+    And I select Yes for Admission discussed with patient
 
-    And I select "Yes" for "Admission discussed with patient"
-
-    And I select "As soon as possible" for "Schedule options"
+    And I select As soon as possible for Schedule options
 
     Then I select Save and Schedule now
 
@@ -746,6 +752,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I confirm the operation slot
 
+  @Route_10B
   Scenario: 10B Login and edit previously created new Operation Booking
 
     Given I am logged in as "admin" with site "Kings" and firm "Anderson Firm (Glaucoma)"
@@ -764,6 +771,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     And I select OK to Duplicate procedure if requested
 
+  @Route_10C
   Scenario: Route 10C: Delete previously created/edited Prescription From from Route 10A/10B
 
     Given I am on the OpenEyes "master" homepage

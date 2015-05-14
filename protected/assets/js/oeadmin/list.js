@@ -1,4 +1,3 @@
-<?php
 /**
  * OpenEyes
  *
@@ -16,20 +15,11 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-?>
-<section
-	class="<?php if (@$child) {?>sub-<?php }?>element <?php echo get_class($element)?>"
-	data-element-type-id="<?php echo $element->elementType->id?>"
-	data-element-type-class="<?php echo $element->elementType->class_name?>"
-	data-element-type-name="<?php echo $element->elementType->name?>"
-	data-element-display-order="<?php echo $element->elementType->display_order?>">
-	<?php if (!preg_match('/\[\-(.*)\-\]/', $element->elementType->name)) { ?>
-		<header class="<?php if (@$child) { ?>sub-<?php } ?>element-header">
-			<h3 class="<?php if (@$child) { ?>sub-<?php } ?>element-title"><?php echo $element->elementType->name ?></h3>
-		</header>
-	<?php } ?>
-	<?php echo $content ;?>
-	<div class="sub-elements">
-		<?php $this->renderChildOpenElements($element, 'view', @$form, @$data)?>
-	</div>
-</section>
+
+$(document).ready(function(){
+    var $genericLists = $('#generic-admin-list .sortable, #generic-admin-sublist .sortable');
+    OpenEyes.Admin.cacheList($genericLists);
+    $genericLists.sortable({
+        stop: OpenEyes.Admin.saveSorted
+    });
+});
