@@ -30,7 +30,35 @@ $(document).ready(function () {
     });
 
     handleButton($('#et_cancel'), function (e) {
-        window.history.back();
+        e.preventDefault();
+        var hrefArray,
+            page;
+
+        if ($(e.target).data('uri')) {
+            window.location.href = $(e.target).data('uri');
+        } else {
+            hrefArray = window.location.href.split('/');
+            page = false;
+
+            if (parseInt(hrefArray[hrefArray.length - 1])) {
+                page = Math.ceil(parseInt(hrefArray[hrefArray.length - 1]) / items_per_page);
+            }
+
+            for (var i = 0; i < hrefArray.length; i++) {
+                if (hrefArray[i] === 'admin') {
+                    object = ucfirst(hrefArray[parseInt(i) + 1].replace(/ies$/, 'y'));
+
+                    if(object === 'EditUser') {
+                        window.location.href = baseUrl + '/admin/users';
+                    }else if(object === 'EditFirm') {
+                        window.location.href = baseUrl + '/admin/firms';
+                    }else {
+                        var object = e[parseInt(i) + 1].replace(/^[a-z]+/, '').toLowerCase() + 's';
+                        window.location.href = baseUrl + '/admin/' + object + (page ? '/' + page : '');
+                    }
+                }
+            }
+        }
     });
 
     handleButton($('#et_contact_cancel'), function (e) {
