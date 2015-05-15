@@ -201,7 +201,7 @@ Feature: Create New Consent Form
 
     Then I confirm the operation slot
 
-
+  @Consent_Route6B
   Scenario: Route 6B: Login and create a new Consent Form choosing a previously created Operation Booking (from Route 6A)
             Site 2: Kings
             Firm: Anderson Glaucoma
