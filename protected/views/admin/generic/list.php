@@ -69,6 +69,7 @@ if(!isset($uniqueid)){
 						<?php endif;?>
 					</th>
 				<?php endforeach; ?>
+				<th>Action</th>
 			</tr>
 			</thead>
 			<tbody <?php if(in_array('display_order', $admin->getListFields())): echo 'class="sortable"'; endif; ?>>
@@ -98,6 +99,13 @@ if(!isset($uniqueid)){
 							?>
 						</td>
 					<?php endforeach; ?>
+					<td>
+						<?php if($listItem != "default")
+						{  ?>
+							&nbsp;&nbsp; <a href="edit1/2">Map Element</a>
+							&nbsp;&nbsp;|&nbsp;&nbsp; <a href="../../OphCiExamination/admin/manageElementAttributes?attribute_element_id=2">Manage Options</a>
+						<?php } ?>
+					</td>
 				</tr>
 			<?php } ?>
 			</tbody>
