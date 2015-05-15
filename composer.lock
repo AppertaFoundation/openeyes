@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "hash": "bd7c809fa65a9e47c55c31e244f7d007",
@@ -64,12 +64,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphCiExamination.git",
-                "reference": "01992e50616634d6b7f3e1be1480d9bec33f6129"
+                "reference": "7845e593624c9afeae4e663e47421f0f5badbcb4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/01992e50616634d6b7f3e1be1480d9bec33f6129",
-                "reference": "01992e50616634d6b7f3e1be1480d9bec33f6129",
+                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/7845e593624c9afeae4e663e47421f0f5badbcb4",
+                "reference": "7845e593624c9afeae4e663e47421f0f5badbcb4",
                 "shasum": ""
             },
             "require": {
@@ -78,7 +78,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Examination module for OpenEyes",
-            "time": "2015-05-12 15:23:39"
+            "time": "2015-05-13 16:03:08"
         },
         {
             "name": "openeyes/oph-ci-phasing",
@@ -108,12 +108,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphCoCorrespondence.git",
-                "reference": "43272160ea8e0bba7e152d641a6f2591d1a31dbd"
+                "reference": "e40ced5b74fffcdf1795237d77d863950d183cad"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphCoCorrespondence/zipball/43272160ea8e0bba7e152d641a6f2591d1a31dbd",
-                "reference": "43272160ea8e0bba7e152d641a6f2591d1a31dbd",
+                "url": "https://api.github.com/repos/openeyes/OphCoCorrespondence/zipball/e40ced5b74fffcdf1795237d77d863950d183cad",
+                "reference": "e40ced5b74fffcdf1795237d77d863950d183cad",
                 "shasum": ""
             },
             "require": {
@@ -122,7 +122,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Correspondence module for OpenEyes, allows generation of letters",
-            "time": "2015-05-11 14:25:55"
+            "time": "2015-05-14 12:54:19"
         },
         {
             "name": "openeyes/oph-co-therapyapplication",
@@ -174,12 +174,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphInBiometry.git",
-                "reference": "c44c0d689c0ff345c4abd14a705620ed6b6b0688"
+                "reference": "e01a3310a376db584babe20839a6b842720eabfe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphInBiometry/zipball/c44c0d689c0ff345c4abd14a705620ed6b6b0688",
-                "reference": "c44c0d689c0ff345c4abd14a705620ed6b6b0688",
+                "url": "https://api.github.com/repos/openeyes/OphInBiometry/zipball/e01a3310a376db584babe20839a6b842720eabfe",
+                "reference": "e01a3310a376db584babe20839a6b842720eabfe",
                 "shasum": ""
             },
             "require": {
@@ -188,7 +188,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Biometry module for OpenEyes",
-            "time": "2015-05-12 14:52:57"
+            "time": "2015-05-14 15:05:27"
         },
         {
             "name": "openeyes/oph-in-visualfields",
@@ -375,12 +375,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrOperationnote.git",
-                "reference": "30f6d06c8c7b62058d1f6f4ce320a20a6575743c"
+                "reference": "514c43dac83e05c51ee909fb40440f4e2d0e5f5c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/30f6d06c8c7b62058d1f6f4ce320a20a6575743c",
-                "reference": "30f6d06c8c7b62058d1f6f4ce320a20a6575743c",
+                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/514c43dac83e05c51ee909fb40440f4e2d0e5f5c",
+                "reference": "514c43dac83e05c51ee909fb40440f4e2d0e5f5c",
                 "shasum": ""
             },
             "require": {
@@ -390,7 +390,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Operation note module for OpenEyes",
-            "time": "2015-05-12 10:58:23"
+            "time": "2015-05-14 14:46:09"
         },
         {
             "name": "openeyes/patient-ticketing",
@@ -1068,12 +1068,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/annotations.git",
-                "reference": "b5202eb9e83f8db52e0e58867e0a46e63be8332e"
+                "reference": "c8927ad70c6fce36b3af52c17ed996c9aa4de89b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/annotations/zipball/b5202eb9e83f8db52e0e58867e0a46e63be8332e",
-                "reference": "b5202eb9e83f8db52e0e58867e0a46e63be8332e",
+                "url": "https://api.github.com/repos/doctrine/annotations/zipball/c8927ad70c6fce36b3af52c17ed996c9aa4de89b",
+                "reference": "c8927ad70c6fce36b3af52c17ed996c9aa4de89b",
                 "shasum": ""
             },
             "require": {
@@ -1128,7 +1128,7 @@
                 "docblock",
                 "parser"
             ],
-            "time": "2014-12-23 22:40:37"
+            "time": "2015-05-13 13:47:35"
         },
         {
             "name": "doctrine/instantiator",
@@ -1136,12 +1136,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/instantiator.git",
-                "reference": "cd3fe91baa28da6e119d619612439eb2db0d8d88"
+                "reference": "b70d22758c0813ea5fef9c22480caadd3a2b6a56"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/cd3fe91baa28da6e119d619612439eb2db0d8d88",
-                "reference": "cd3fe91baa28da6e119d619612439eb2db0d8d88",
+                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/b70d22758c0813ea5fef9c22480caadd3a2b6a56",
+                "reference": "b70d22758c0813ea5fef9c22480caadd3a2b6a56",
                 "shasum": ""
             },
             "require": {
@@ -1182,7 +1182,7 @@
                 "constructor",
                 "instantiate"
             ],
-            "time": "2015-05-10 22:20:19"
+            "time": "2015-05-13 13:33:36"
         },
         {
             "name": "doctrine/lexer",
@@ -4286,12 +4286,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/DependencyInjection.git",
-                "reference": "a4898461d50868c52a6a1326768bfa27f6493e7c"
+                "reference": "90a75274cb85bd6f9aaf4a017e5dee616ffe8a1d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/DependencyInjection/zipball/a4898461d50868c52a6a1326768bfa27f6493e7c",
-                "reference": "a4898461d50868c52a6a1326768bfa27f6493e7c",
+                "url": "https://api.github.com/repos/symfony/DependencyInjection/zipball/90a75274cb85bd6f9aaf4a017e5dee616ffe8a1d",
+                "reference": "90a75274cb85bd6f9aaf4a017e5dee616ffe8a1d",
                 "shasum": ""
             },
             "require": {
@@ -4328,17 +4328,17 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "Symfony DependencyInjection Component",
-            "homepage": "http://symfony.com",
-            "time": "2015-04-24 07:03:44"
+            "homepage": "https://symfony.com",
+            "time": "2015-05-12 15:16:46"
         },
         {
             "name": "symfony/dom-crawler",
@@ -4346,12 +4346,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/DomCrawler.git",
-                "reference": "c0beeb21688e1c0854cac8f15b601a0863f3b724"
+                "reference": "3a523d1725d5835e4a7277358190e7efae7d872f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/DomCrawler/zipball/c0beeb21688e1c0854cac8f15b601a0863f3b724",
-                "reference": "c0beeb21688e1c0854cac8f15b601a0863f3b724",
+                "url": "https://api.github.com/repos/symfony/DomCrawler/zipball/3a523d1725d5835e4a7277358190e7efae7d872f",
+                "reference": "3a523d1725d5835e4a7277358190e7efae7d872f",
                 "shasum": ""
             },
             "require": {
@@ -4381,17 +4381,17 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "Symfony DomCrawler Component",
-            "homepage": "http://symfony.com",
-            "time": "2015-04-24 07:03:44"
+            "homepage": "https://symfony.com",
+            "time": "2015-05-12 15:16:46"
         },
         {
             "name": "symfony/event-dispatcher",
@@ -4457,12 +4457,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Filesystem.git",
-                "reference": "41b7d35d812653a54fd931a6c8cf139767a95abb"
+                "reference": "6c4f6245440b53e55d4b5d3c3bd98532d6c6e11e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/41b7d35d812653a54fd931a6c8cf139767a95abb",
-                "reference": "41b7d35d812653a54fd931a6c8cf139767a95abb",
+                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/6c4f6245440b53e55d4b5d3c3bd98532d6c6e11e",
+                "reference": "6c4f6245440b53e55d4b5d3c3bd98532d6c6e11e",
                 "shasum": ""
             },
             "require": {
@@ -4488,17 +4488,17 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "Symfony Filesystem Component",
-            "homepage": "http://symfony.com",
-            "time": "2015-04-24 07:03:44"
+            "homepage": "https://symfony.com",
+            "time": "2015-05-12 15:16:46"
         },
         {
             "name": "symfony/finder",
@@ -4653,12 +4653,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Translation.git",
-                "reference": "ddb3b55f1a7d1bc67d94d01400d32be02936f086"
+                "reference": "f90ed6d09619791ea7c2db305e1b557c77b859f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Translation/zipball/ddb3b55f1a7d1bc67d94d01400d32be02936f086",
-                "reference": "ddb3b55f1a7d1bc67d94d01400d32be02936f086",
+                "url": "https://api.github.com/repos/symfony/Translation/zipball/f90ed6d09619791ea7c2db305e1b557c77b859f5",
+                "reference": "f90ed6d09619791ea7c2db305e1b557c77b859f5",
                 "shasum": ""
             },
             "require": {
@@ -4696,17 +4696,17 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "Symfony Translation Component",
-            "homepage": "http://symfony.com",
-            "time": "2015-05-06 09:17:03"
+            "homepage": "https://symfony.com",
+            "time": "2015-05-12 15:16:46"
         },
         {
             "name": "symfony/validator",
