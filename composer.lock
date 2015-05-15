@@ -174,12 +174,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphInBiometry.git",
-                "reference": "9e3e1f0b5591eed05e018cdc1829c88e2357ba50"
+                "reference": "37975bc45c824d8119d46cc5686cf850c9aa49b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphInBiometry/zipball/9e3e1f0b5591eed05e018cdc1829c88e2357ba50",
-                "reference": "9e3e1f0b5591eed05e018cdc1829c88e2357ba50",
+                "url": "https://api.github.com/repos/openeyes/OphInBiometry/zipball/37975bc45c824d8119d46cc5686cf850c9aa49b8",
+                "reference": "37975bc45c824d8119d46cc5686cf850c9aa49b8",
                 "shasum": ""
             },
             "require": {
@@ -188,7 +188,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Biometry module for OpenEyes",
-            "time": "2015-05-15 14:08:07"
+            "time": "2015-05-15 16:20:05"
         },
         {
             "name": "openeyes/oph-in-visualfields",
@@ -4506,12 +4506,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Finder.git",
-                "reference": "53a2e6de850dbaee04a933662a05551a5d7c80bb"
+                "reference": "fd26bdbb67bc8753884eff5767a4f1ee90e2284b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Finder/zipball/53a2e6de850dbaee04a933662a05551a5d7c80bb",
-                "reference": "53a2e6de850dbaee04a933662a05551a5d7c80bb",
+                "url": "https://api.github.com/repos/symfony/Finder/zipball/fd26bdbb67bc8753884eff5767a4f1ee90e2284b",
+                "reference": "fd26bdbb67bc8753884eff5767a4f1ee90e2284b",
                 "shasum": ""
             },
             "require": {
@@ -4547,7 +4547,7 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "https://symfony.com",
-            "time": "2015-05-12 15:16:46"
+            "time": "2015-05-15 14:11:12"
         },
         {
             "name": "symfony/process",
