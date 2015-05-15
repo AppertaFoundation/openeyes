@@ -54,11 +54,12 @@ class ExaminationElementAttributesController extends BaseAdminController
 
 
 		$admin->setListFields(array(
-			'id',
-			//'attribute_id',
+			//'id',
 			'name',
 			'label',
 			//'element_type_name',
+			//'element_type_id',
+			'attribute_elements1.id',
 			'attribute_elements.name'
 			//'element_type.name'
 		));
@@ -283,9 +284,16 @@ class ExaminationElementAttributesController extends BaseAdminController
 
 					$newOCEAE = new OEModule\OphCiExamination\models\OphCiExamination_AttributeElement();
 					//$element = $newOCEAE::model()->findByAttributes("attribute_id=:attribute_id", array(":attribute_id"=>$attributeId));
+
+
 					$element = $newOCEAE::model()->findByAttributes(array("attribute_id"=>$attributeId));
-					$element->element_type_id = $attributeElements;
-					$element->save();
+					if(is_object($element)) {
+						$element->element_type_id = $attributeElements;
+						$element->save();
+					}else{
+
+						//Add New row in Element Table
+					}
 
 					//$attributeElements
 

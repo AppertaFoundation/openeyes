@@ -74,6 +74,7 @@ if(!isset($uniqueid)){
 			</thead>
 			<tbody <?php if(in_array('display_order', $admin->getListFields())): echo 'class="sortable"'; endif; ?>>
 			<?php
+			//var_dump($admin->getSearch()->retrieveResults()); die;
 			foreach ($admin->getSearch()->retrieveResults() as $i => $row) { ?>
 				<tr class="clickable" data-id="<?php echo $row->id ?>"
 					data-uri="<?php echo $uniqueid ?>/edit/<?php echo $row->id ?>?returnUri=<?=$returnUri?>">
@@ -102,8 +103,7 @@ if(!isset($uniqueid)){
 					<td>
 						<?php if($listItem != "default")
 						{  ?>
-							&nbsp;&nbsp; <a href="edit1/2">Map Element</a>
-							&nbsp;&nbsp;|&nbsp;&nbsp; <a href="../../OphCiExamination/admin/manageElementAttributes?attribute_element_id=2">Manage Options</a>
+							<a href="../../OphCiExamination/admin/manageElementAttributes?attribute_element_id=2">Manage Options</a>
 						<?php } ?>
 					</td>
 				</tr>
