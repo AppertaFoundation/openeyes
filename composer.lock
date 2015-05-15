@@ -174,12 +174,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphInBiometry.git",
-                "reference": "e01a3310a376db584babe20839a6b842720eabfe"
+                "reference": "9e3e1f0b5591eed05e018cdc1829c88e2357ba50"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphInBiometry/zipball/e01a3310a376db584babe20839a6b842720eabfe",
-                "reference": "e01a3310a376db584babe20839a6b842720eabfe",
+                "url": "https://api.github.com/repos/openeyes/OphInBiometry/zipball/9e3e1f0b5591eed05e018cdc1829c88e2357ba50",
+                "reference": "9e3e1f0b5591eed05e018cdc1829c88e2357ba50",
                 "shasum": ""
             },
             "require": {
@@ -188,7 +188,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Biometry module for OpenEyes",
-            "time": "2015-05-14 15:05:27"
+            "time": "2015-05-15 14:08:07"
         },
         {
             "name": "openeyes/oph-in-visualfields",
@@ -4126,12 +4126,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Config.git",
-                "reference": "8555ecc6e2a47441b4be56dbfde5cea68c916755"
+                "reference": "291e3f1ce92fec71632eada0d492833b41531718"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Config/zipball/8555ecc6e2a47441b4be56dbfde5cea68c916755",
-                "reference": "8555ecc6e2a47441b4be56dbfde5cea68c916755",
+                "url": "https://api.github.com/repos/symfony/Config/zipball/291e3f1ce92fec71632eada0d492833b41531718",
+                "reference": "291e3f1ce92fec71632eada0d492833b41531718",
                 "shasum": ""
             },
             "require": {
@@ -4168,7 +4168,7 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "https://symfony.com",
-            "time": "2015-05-12 15:16:46"
+            "time": "2015-05-15 14:11:12"
         },
         {
             "name": "symfony/console",
@@ -4176,12 +4176,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "f649f4d2c5845e90a722f74f636e407be6c75e53"
+                "reference": "7e857a2b52b5833ed27d78a6b1b846bd440ee8bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/f649f4d2c5845e90a722f74f636e407be6c75e53",
-                "reference": "f649f4d2c5845e90a722f74f636e407be6c75e53",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/7e857a2b52b5833ed27d78a6b1b846bd440ee8bd",
+                "reference": "7e857a2b52b5833ed27d78a6b1b846bd440ee8bd",
                 "shasum": ""
             },
             "require": {
@@ -4225,7 +4225,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2015-05-12 15:16:46"
+            "time": "2015-05-15 14:11:12"
         },
         {
             "name": "symfony/css-selector",
@@ -4233,12 +4233,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/CssSelector.git",
-                "reference": "7fc8d4642711b8929f56b3ffc86fc0c554f4924f"
+                "reference": "5b0968a01e1f6fb724ecc8b7334d662ad4c8cda6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/CssSelector/zipball/7fc8d4642711b8929f56b3ffc86fc0c554f4924f",
-                "reference": "7fc8d4642711b8929f56b3ffc86fc0c554f4924f",
+                "url": "https://api.github.com/repos/symfony/CssSelector/zipball/5b0968a01e1f6fb724ecc8b7334d662ad4c8cda6",
+                "reference": "5b0968a01e1f6fb724ecc8b7334d662ad4c8cda6",
                 "shasum": ""
             },
             "require": {
@@ -4278,7 +4278,7 @@
             ],
             "description": "Symfony CssSelector Component",
             "homepage": "https://symfony.com",
-            "time": "2015-05-12 15:16:46"
+            "time": "2015-05-15 14:11:12"
         },
         {
             "name": "symfony/dependency-injection",
@@ -4457,12 +4457,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Filesystem.git",
-                "reference": "6c4f6245440b53e55d4b5d3c3bd98532d6c6e11e"
+                "reference": "45cc231f1ecac70a8790bf1c88a823af8ce57056"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/6c4f6245440b53e55d4b5d3c3bd98532d6c6e11e",
-                "reference": "6c4f6245440b53e55d4b5d3c3bd98532d6c6e11e",
+                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/45cc231f1ecac70a8790bf1c88a823af8ce57056",
+                "reference": "45cc231f1ecac70a8790bf1c88a823af8ce57056",
                 "shasum": ""
             },
             "require": {
@@ -4498,7 +4498,7 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "https://symfony.com",
-            "time": "2015-05-12 15:16:46"
+            "time": "2015-05-15 14:11:12"
         },
         {
             "name": "symfony/finder",
@@ -4555,12 +4555,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Process.git",
-                "reference": "a87e7b39515c3d09b52dc2b0c033e01683ff1c9a"
+                "reference": "daf96f1491cf0b8d8de60e6d3b5fda8e502b3798"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Process/zipball/a87e7b39515c3d09b52dc2b0c033e01683ff1c9a",
-                "reference": "a87e7b39515c3d09b52dc2b0c033e01683ff1c9a",
+                "url": "https://api.github.com/repos/symfony/Process/zipball/daf96f1491cf0b8d8de60e6d3b5fda8e502b3798",
+                "reference": "daf96f1491cf0b8d8de60e6d3b5fda8e502b3798",
                 "shasum": ""
             },
             "require": {
@@ -4596,7 +4596,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
-            "time": "2015-05-12 15:16:46"
+            "time": "2015-05-15 14:11:12"
         },
         {
             "name": "symfony/stopwatch",
@@ -4714,12 +4714,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Validator.git",
-                "reference": "9d33f0d42d7545a0035b04cca92cb5378b056cb4"
+                "reference": "37a94c48463b27f6d5ff3f2d00e804d80846dcaa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Validator/zipball/9d33f0d42d7545a0035b04cca92cb5378b056cb4",
-                "reference": "9d33f0d42d7545a0035b04cca92cb5378b056cb4",
+                "url": "https://api.github.com/repos/symfony/Validator/zipball/37a94c48463b27f6d5ff3f2d00e804d80846dcaa",
+                "reference": "37a94c48463b27f6d5ff3f2d00e804d80846dcaa",
                 "shasum": ""
             },
             "require": {
@@ -4776,7 +4776,7 @@
             ],
             "description": "Symfony Validator Component",
             "homepage": "https://symfony.com",
-            "time": "2015-05-12 15:16:46"
+            "time": "2015-05-15 11:18:22"
         },
         {
             "name": "symfony/yaml",
