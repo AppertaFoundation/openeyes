@@ -174,12 +174,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphInBiometry.git",
-                "reference": "37975bc45c824d8119d46cc5686cf850c9aa49b8"
+                "reference": "207c89148a08df4e2e3b7207ec4032d6b5224b83"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphInBiometry/zipball/37975bc45c824d8119d46cc5686cf850c9aa49b8",
-                "reference": "37975bc45c824d8119d46cc5686cf850c9aa49b8",
+                "url": "https://api.github.com/repos/openeyes/OphInBiometry/zipball/207c89148a08df4e2e3b7207ec4032d6b5224b83",
+                "reference": "207c89148a08df4e2e3b7207ec4032d6b5224b83",
                 "shasum": ""
             },
             "require": {
@@ -188,7 +188,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Biometry module for OpenEyes",
-            "time": "2015-05-15 16:20:05"
+            "time": "2015-05-15 16:26:03"
         },
         {
             "name": "openeyes/oph-in-visualfields",
@@ -4653,12 +4653,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Translation.git",
-                "reference": "f90ed6d09619791ea7c2db305e1b557c77b859f5"
+                "reference": "a0735db452c5e592cb742333a32c6634a6d1ece1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Translation/zipball/f90ed6d09619791ea7c2db305e1b557c77b859f5",
-                "reference": "f90ed6d09619791ea7c2db305e1b557c77b859f5",
+                "url": "https://api.github.com/repos/symfony/Translation/zipball/a0735db452c5e592cb742333a32c6634a6d1ece1",
+                "reference": "a0735db452c5e592cb742333a32c6634a6d1ece1",
                 "shasum": ""
             },
             "require": {
@@ -4706,7 +4706,7 @@
             ],
             "description": "Symfony Translation Component",
             "homepage": "https://symfony.com",
-            "time": "2015-05-12 15:16:46"
+            "time": "2015-05-15 14:11:12"
         },
         {
             "name": "symfony/validator",
@@ -4714,12 +4714,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Validator.git",
-                "reference": "37a94c48463b27f6d5ff3f2d00e804d80846dcaa"
+                "reference": "4c749e18e046d25763e4d6b4ecfecdd05b430bd1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Validator/zipball/37a94c48463b27f6d5ff3f2d00e804d80846dcaa",
-                "reference": "37a94c48463b27f6d5ff3f2d00e804d80846dcaa",
+                "url": "https://api.github.com/repos/symfony/Validator/zipball/4c749e18e046d25763e4d6b4ecfecdd05b430bd1",
+                "reference": "4c749e18e046d25763e4d6b4ecfecdd05b430bd1",
                 "shasum": ""
             },
             "require": {
@@ -4776,7 +4776,7 @@
             ],
             "description": "Symfony Validator Component",
             "homepage": "https://symfony.com",
-            "time": "2015-05-15 11:18:22"
+            "time": "2015-05-15 14:11:12"
         },
         {
             "name": "symfony/yaml",
