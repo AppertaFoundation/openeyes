@@ -58,17 +58,24 @@ if(!isset($uniqueid)){
 			<tr>
 				<th><input type="checkbox" name="selectall" id="selectall"/></th>
 				<?php
-				foreach ($admin->getListFields() as $listItem): ?>
+				foreach ($admin->getListFields() as $listItem):
+				if($listItem != "attribute_elements_id.id")
+				{?>
 					<th>
-						<?php if($admin->isSortableColumn($listItem)):?>
-							<a href="/<?php echo $uniqueid ?>/list?<?php echo $admin->sortQuery($listItem, $displayOrder, Yii::app()->request->getQueryString()) ?>">
-						<?php endif;?>
+						<?php if ($admin->isSortableColumn($listItem)): ?>
+						<a href="/<?php echo $uniqueid ?>/list?<?php echo $admin->sortQuery($listItem, $displayOrder,
+							Yii::app()->request->getQueryString()) ?>">
+							<?php endif;
+							?>
 							<?php echo $admin->getModel()->getAttributeLabel($listItem); ?>
-						<?php if($admin->isSortableColumn($listItem)):?>
-							</a>
-						<?php endif;?>
+							<?php if ($admin->isSortableColumn($listItem)): ?>
+						</a>
+					<?php endif;
+					?>
 					</th>
-				<?php endforeach; ?
+				<?php
+				}
+				endforeach; ?>
 				<?php if($listItem == "attribute_elements.name") { ?>
 				<th>Action</th>
 				<?php } ?>
@@ -82,7 +89,9 @@ if(!isset($uniqueid)){
 					<td>
 						<input type="checkbox" name="<?php echo $admin->getModelName(); ?>[id][]" value="<?php echo $row->id ?>"/>
 					</td>
-					<?php foreach ($admin->getListFields() as $listItem):?>
+					<?php foreach ($admin->getListFields() as $listItem):
+					if($listItem != "attribute_elements_id.id") {
+						?>
 						<td>
 							<?php
 							if (gettype($admin->attributeValue($row, $listItem)) === 'boolean'):
@@ -97,20 +106,21 @@ if(!isset($uniqueid)){
 							<?php
 							else:
 								echo $admin->attributeValue($row, $listItem);
-							endif;
-
-							if($listItem == "attribute_elements_id.id")
-							{
-								$mapping_id =  $admin->attributeValue($row, $listItem);
-							}
+							endif
 							?>
 						</td>
-					<?php endforeach; ?>
+					<?php }
+
+						if($listItem == "attribute_elements_id.id")
+						{
+							$mapping_id =  $admin->attributeValue($row, $listItem);
+						}
+					endforeach; ?>
 					<?php if($listItem == "attribute_elements.name")
 					{?>
 					<td>
 							<?php if(($mapping_id > 0)) {?>
-							<a href="../../OphCiExamination/admin/manageElementAttributes?attribute_element_id=<?php echo $mapping_id?>">Manage Options</a>
+							<a onMouseOver="this.style.color='#AFEEEE'" onMouseOut="this.style.color='#00F'" href="../../OphCiExamination/admin/manageElementAttributes?attribute_element_id=<?php echo $mapping_id?>">Manage Options</a>
 							<?php } ?>
 					</td>
 					<?php } ?>

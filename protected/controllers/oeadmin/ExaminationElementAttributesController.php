@@ -159,25 +159,6 @@ class ExaminationElementAttributesController extends BaseAdminController
 
 		}
 		$admin->setModelDisplayName('Element Attributes');
-		/*		$admin->setEditFields(array(
-					'id' => 'label',
-					'attribute_id' =>  array(
-						'widget' => 'DropDownList',
-						'options' => CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Attribute::model()->findAll(),'id', 'name'),
-						'htmlOptions' => null,
-						'hidden' => false,
-						'layoutColumns' => null
-					),
-					//'attribute.name' => 'text',
-					'element_type_id' => array(
-						'widget' => 'DropDownList',
-						'options' => CHtml::listData(ElementType::model()->findAll(),'id', 'name'),
-						'htmlOptions' => null,
-						'hidden' => false,
-						'layoutColumns' => null
-					)
-
-				));*/
 
 		$admin->setEditFields(array(
 			'id' => 'label',
@@ -191,8 +172,6 @@ class ExaminationElementAttributesController extends BaseAdminController
 			)
 
 		));
-
-//		echo 'Add';die;
 
 		$admin->editModel();
 	}
@@ -228,15 +207,12 @@ class ExaminationElementAttributesController extends BaseAdminController
 	{
 		error_reporting(E_ALL);
 		ini_set('display_errors', 1);
-/*
-		$this->request = Yii::app()->getRequest();*/
 
 		$newOCEA = new OEModule\OphCiExamination\models\OphCiExamination_Attribute();
+		$newOCEAE = new OEModule\OphCiExamination\models\OphCiExamination_AttributeElement();
 
-		//$this->modelName = 'OEModule\OphCiExamination\models\OphCiExamination_Attribute';
 
 
-		//$post = $_POST['OEModule_OphCiExamination_models_OphCiExamination_Attribute'];
 		$post = Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExamination_Attribute');
 
 		$attributeId = $post["id"];
@@ -245,55 +221,69 @@ class ExaminationElementAttributesController extends BaseAdminController
 		$attributeElements = $post["attribute_elements"];
 
 
-			$count = $newOCEA::model()->countByAttributes(array(
-				'name' => $attributeName,
-				'label' => $attributeLabel
-			));
+		$count = $newOCEA::model()->countByAttributes(array(
+			'name' => $attributeName,
+			'label' => $attributeLabel
+		));
 
-			//if($count == 0) {
+		if (!isset($attributeElements)) {
+			$newOCEA->name = $attributeName;
+			$newOCEA->label = $attributeLabel;
 
-//			echo 'attributeId->'.$attributeElements;
-//die;
-			if(!isset($attributeElements))
+			if ($newOCEA->save()) {
+
+				echo "success";
+				Yii::app()->request->redirect('list');
+
+			} else {
+				echo "error1";
+				print_r($newOCEA->getErrors(), true);
+			}
+		} else {
+			//Add New
+			if ($attributeId ==  "")
 			{
-
 				$newOCEA->name = $attributeName;
 				$newOCEA->label = $attributeLabel;
 
 				if ($newOCEA->save()) {
 
-					//$insert_id = Yii::app()->db->getLastInsertID();
+					$newAttributeId = Yii::app()->db->getLastInsertID();
 
-					echo "success";
+					$newOCEAE->attribute_id = $newAttributeId;
+					$newOCEAE->element_type_id = $attributeElements;
+
+					if($newOCEAE->save())
+					{
+						echo "success";
+					}
+					else
+					{
+						echo "error";
+						print_r($newOCEA->getErrors(), true);
+					}
+
 					Yii::app()->request->redirect('list');
 
 				} else {
-					echo "error1";
+					echo "error";
 					print_r($newOCEA->getErrors(), true);
 				}
-			}
-			else
-			{
+
+			} else {
+				//Edit
 				$attribute = $newOCEA::model()->findByPk($attributeId);
 				$attribute->name = $attributeName;
 				$attribute->label = $attributeLabel;
 
 				if ($attribute->save()) {
 
-					$newOCEAE = new OEModule\OphCiExamination\models\OphCiExamination_AttributeElement();
-					//$element = $newOCEAE::model()->findByAttributes("attribute_id=:attribute_id", array(":attribute_id"=>$attributeId));
 
-
-					$element = $newOCEAE::model()->findByAttributes(array("attribute_id"=>$attributeId));
-					if(is_object($element)) {
+					$element = $newOCEAE::model()->findByAttributes(array("attribute_id" => $attributeId));
+					if (is_object($element)) {
 						$element->element_type_id = $attributeElements;
 						$element->save();
-					}else{
-
-						//Add New row in Element Table
 					}
-
-					//$attributeElements
 
 					echo "success";
 					Yii::app()->request->redirect('list');
@@ -302,6 +292,7 @@ class ExaminationElementAttributesController extends BaseAdminController
 					print_r($newOCEA->getErrors(), true);
 				}
 			}
+		}
 
 	}
 
@@ -310,7 +301,34 @@ class ExaminationElementAttributesController extends BaseAdminController
 	 */
 	public function actionDelete()
 	{
-		$admin = new Admin(OEModule\OphCiExamination\models\OphCiExamination_AttributeElement::model(), $this);
-		$admin->deleteModel();
+		$post = Yii::app()->request->getPost('OEModule\OphCiExamination\models\OphCiExamination_Attribute');
+
+		$attributeIdsArray = $post["id"];
+
+		$newOCEA = new OEModule\OphCiExamination\models\OphCiExamination_Attribute();
+		$newOCEAE = new OEModule\OphCiExamination\models\OphCiExamination_AttributeElement();
+
+		foreach($attributeIdsArray as $key=>$attributeId) {
+
+			$element = $newOCEAE::model()->findByAttributes(array("attribute_id" => $attributeId));
+			if (is_object($element)) {
+				if ($element->delete()) {
+					//echo success;
+				} else {
+					echo "error";
+					print_r($element->getErrors(), true);
+				}
+			}
+
+			$attribute = $newOCEA::model()->findByAttributes(array("id" => $attributeId));
+			if (is_object($attribute)) {
+				if ($attribute->delete()) {
+					echo true;
+				} else {
+					echo "error";
+					print_r($attribute->getErrors(), true);
+				}
+			}
+		}
 	}
 }
