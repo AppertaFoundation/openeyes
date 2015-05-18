@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f20d231bef84242728929b01bc2ba53f",
+    "hash": "88b7d7909dec093a8ca074a459887dc6",
     "packages": [
         {
             "name": "openeyes/eyedraw",
@@ -60,16 +60,16 @@
         },
         {
             "name": "openeyes/oph-ci-examination",
-            "version": "dev-release/v1.10",
+            "version": "v1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphCiExamination.git",
-                "reference": "7845e593624c9afeae4e663e47421f0f5badbcb4"
+                "reference": "0d227f43b339e5be14a4e6fd431a5a1d058ad4a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/7845e593624c9afeae4e663e47421f0f5badbcb4",
-                "reference": "7845e593624c9afeae4e663e47421f0f5badbcb4",
+                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/0d227f43b339e5be14a4e6fd431a5a1d058ad4a9",
+                "reference": "0d227f43b339e5be14a4e6fd431a5a1d058ad4a9",
                 "shasum": ""
             },
             "require": {
@@ -78,7 +78,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Examination module for OpenEyes",
-            "time": "2015-05-13 16:03:08"
+            "time": "2015-05-18 12:31:46"
         },
         {
             "name": "openeyes/oph-ci-phasing",
@@ -104,16 +104,16 @@
         },
         {
             "name": "openeyes/oph-co-correspondence",
-            "version": "dev-release/v1.10",
+            "version": "v1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphCoCorrespondence.git",
-                "reference": "e40ced5b74fffcdf1795237d77d863950d183cad"
+                "reference": "7f6338a922e72ff6ff36d12476151e1db487130b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphCoCorrespondence/zipball/e40ced5b74fffcdf1795237d77d863950d183cad",
-                "reference": "e40ced5b74fffcdf1795237d77d863950d183cad",
+                "url": "https://api.github.com/repos/openeyes/OphCoCorrespondence/zipball/7f6338a922e72ff6ff36d12476151e1db487130b",
+                "reference": "7f6338a922e72ff6ff36d12476151e1db487130b",
                 "shasum": ""
             },
             "require": {
@@ -122,7 +122,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Correspondence module for OpenEyes, allows generation of letters",
-            "time": "2015-05-14 12:54:19"
+            "time": "2015-05-18 12:32:49"
         },
         {
             "name": "openeyes/oph-co-therapyapplication",
@@ -148,16 +148,16 @@
         },
         {
             "name": "openeyes/oph-dr-prescription",
-            "version": "dev-release/v1.10",
+            "version": "v1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphDrPrescription.git",
-                "reference": "a0d0e4a1ab16e1ce8e9a8d62545404305942a008"
+                "reference": "5cdc867b6069dcf7d90a99981ca96ab9e553a3d6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphDrPrescription/zipball/a0d0e4a1ab16e1ce8e9a8d62545404305942a008",
-                "reference": "a0d0e4a1ab16e1ce8e9a8d62545404305942a008",
+                "url": "https://api.github.com/repos/openeyes/OphDrPrescription/zipball/5cdc867b6069dcf7d90a99981ca96ab9e553a3d6",
+                "reference": "5cdc867b6069dcf7d90a99981ca96ab9e553a3d6",
                 "shasum": ""
             },
             "require": {
@@ -166,7 +166,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Module for generating prescriptions in OpenEyes",
-            "time": "2015-04-27 15:36:48"
+            "time": "2015-05-18 12:35:31"
         },
         {
             "name": "openeyes/oph-in-visualfields",
@@ -237,16 +237,16 @@
         },
         {
             "name": "openeyes/oph-tr-consent",
-            "version": "dev-release/v1.10",
+            "version": "v1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrConsent.git",
-                "reference": "a5994092405d110ea0da068d5dbfb8e70001086e"
+                "reference": "68730db9198d194976087e9be6a1bafda329991d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrConsent/zipball/a5994092405d110ea0da068d5dbfb8e70001086e",
-                "reference": "a5994092405d110ea0da068d5dbfb8e70001086e",
+                "url": "https://api.github.com/repos/openeyes/OphTrConsent/zipball/68730db9198d194976087e9be6a1bafda329991d",
+                "reference": "68730db9198d194976087e9be6a1bafda329991d",
                 "shasum": ""
             },
             "require": {
@@ -255,7 +255,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Generates consent forms for scheduled and unscheduled operations",
-            "time": "2015-04-29 10:24:52"
+            "time": "2015-05-18 12:36:38"
         },
         {
             "name": "openeyes/oph-tr-intravitreal-injection",
@@ -327,16 +327,16 @@
         },
         {
             "name": "openeyes/oph-tr-operationbooking",
-            "version": "dev-release/v1.10",
+            "version": "v1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrOperationbooking.git",
-                "reference": "feac97eccb13a6e9cadd7c1b7ef3f73105ed9c99"
+                "reference": "af32fdfa9b7aa376cbbc429d4ed1b242ea28fe31"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrOperationbooking/zipball/feac97eccb13a6e9cadd7c1b7ef3f73105ed9c99",
-                "reference": "feac97eccb13a6e9cadd7c1b7ef3f73105ed9c99",
+                "url": "https://api.github.com/repos/openeyes/OphTrOperationbooking/zipball/af32fdfa9b7aa376cbbc429d4ed1b242ea28fe31",
+                "reference": "af32fdfa9b7aa376cbbc429d4ed1b242ea28fe31",
                 "shasum": ""
             },
             "require": {
@@ -345,20 +345,20 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Module for booking operations in OpenEyes",
-            "time": "2015-04-28 15:17:17"
+            "time": "2015-05-18 12:40:22"
         },
         {
             "name": "openeyes/oph-tr-operationnote",
-            "version": "dev-release/v1.10",
+            "version": "v1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrOperationnote.git",
-                "reference": "514c43dac83e05c51ee909fb40440f4e2d0e5f5c"
+                "reference": "ad3de08c726428fddfb4aa948fc27117f09ba1fe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/514c43dac83e05c51ee909fb40440f4e2d0e5f5c",
-                "reference": "514c43dac83e05c51ee909fb40440f4e2d0e5f5c",
+                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/ad3de08c726428fddfb4aa948fc27117f09ba1fe",
+                "reference": "ad3de08c726428fddfb4aa948fc27117f09ba1fe",
                 "shasum": ""
             },
             "require": {
@@ -368,20 +368,20 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Operation note module for OpenEyes",
-            "time": "2015-05-14 14:46:09"
+            "time": "2015-05-18 12:37:52"
         },
         {
             "name": "openeyes/patient-ticketing",
-            "version": "dev-release/v1.10",
+            "version": "v1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/PatientTicketing.git",
-                "reference": "c02b1dafb3bd9e937fb59c1c60b2e86eec6cfab4"
+                "reference": "960b9a966625be17932f9fe7596c0684fc1ece4a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/PatientTicketing/zipball/c02b1dafb3bd9e937fb59c1c60b2e86eec6cfab4",
-                "reference": "c02b1dafb3bd9e937fb59c1c60b2e86eec6cfab4",
+                "url": "https://api.github.com/repos/openeyes/PatientTicketing/zipball/960b9a966625be17932f9fe7596c0684fc1ece4a",
+                "reference": "960b9a966625be17932f9fe7596c0684fc1ece4a",
                 "shasum": ""
             },
             "require": {
@@ -390,7 +390,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Provides a generic ticketing system to track patients through multiple pathways",
-            "time": "2015-03-17 13:24:58"
+            "time": "2015-05-18 12:41:18"
         },
         {
             "name": "yiisoft/yii",
@@ -2202,12 +2202,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/php-collection.git",
-                "reference": "94a2c04376f49c12d5936b16d846579a1b3605bc"
+                "reference": "f2bcff45c0da7c27991bbc1f90f47c4b7fb434a6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/php-collection/zipball/94a2c04376f49c12d5936b16d846579a1b3605bc",
-                "reference": "94a2c04376f49c12d5936b16d846579a1b3605bc",
+                "url": "https://api.github.com/repos/schmittjoh/php-collection/zipball/f2bcff45c0da7c27991bbc1f90f47c4b7fb434a6",
+                "reference": "f2bcff45c0da7c27991bbc1f90f47c4b7fb434a6",
                 "shasum": ""
             },
             "require": {
@@ -2230,10 +2230,8 @@
             ],
             "authors": [
                 {
-                    "name": "Johannes Schmitt",
-                    "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
-                    "role": "Developer of wrapped JMSSerializerBundle"
+                    "name": "Johannes M. Schmitt",
+                    "email": "schmittjoh@gmail.com"
                 }
             ],
             "description": "General-Purpose Collection Library for PHP",
@@ -2244,7 +2242,7 @@
                 "sequence",
                 "set"
             ],
-            "time": "2014-04-11 10:32:20"
+            "time": "2015-05-17 12:39:23"
         },
         {
             "name": "phpdocumentor/fileset",
@@ -4104,12 +4102,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Config.git",
-                "reference": "8555ecc6e2a47441b4be56dbfde5cea68c916755"
+                "reference": "291e3f1ce92fec71632eada0d492833b41531718"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Config/zipball/8555ecc6e2a47441b4be56dbfde5cea68c916755",
-                "reference": "8555ecc6e2a47441b4be56dbfde5cea68c916755",
+                "url": "https://api.github.com/repos/symfony/Config/zipball/291e3f1ce92fec71632eada0d492833b41531718",
+                "reference": "291e3f1ce92fec71632eada0d492833b41531718",
                 "shasum": ""
             },
             "require": {
@@ -4146,7 +4144,7 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "https://symfony.com",
-            "time": "2015-05-12 15:16:46"
+            "time": "2015-05-15 14:11:12"
         },
         {
             "name": "symfony/console",
@@ -4154,12 +4152,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "f649f4d2c5845e90a722f74f636e407be6c75e53"
+                "reference": "7e857a2b52b5833ed27d78a6b1b846bd440ee8bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/f649f4d2c5845e90a722f74f636e407be6c75e53",
-                "reference": "f649f4d2c5845e90a722f74f636e407be6c75e53",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/7e857a2b52b5833ed27d78a6b1b846bd440ee8bd",
+                "reference": "7e857a2b52b5833ed27d78a6b1b846bd440ee8bd",
                 "shasum": ""
             },
             "require": {
@@ -4203,7 +4201,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2015-05-12 15:16:46"
+            "time": "2015-05-15 14:11:12"
         },
         {
             "name": "symfony/css-selector",
@@ -4211,12 +4209,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/CssSelector.git",
-                "reference": "7fc8d4642711b8929f56b3ffc86fc0c554f4924f"
+                "reference": "5b0968a01e1f6fb724ecc8b7334d662ad4c8cda6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/CssSelector/zipball/7fc8d4642711b8929f56b3ffc86fc0c554f4924f",
-                "reference": "7fc8d4642711b8929f56b3ffc86fc0c554f4924f",
+                "url": "https://api.github.com/repos/symfony/CssSelector/zipball/5b0968a01e1f6fb724ecc8b7334d662ad4c8cda6",
+                "reference": "5b0968a01e1f6fb724ecc8b7334d662ad4c8cda6",
                 "shasum": ""
             },
             "require": {
@@ -4256,7 +4254,7 @@
             ],
             "description": "Symfony CssSelector Component",
             "homepage": "https://symfony.com",
-            "time": "2015-05-12 15:16:46"
+            "time": "2015-05-15 14:11:12"
         },
         {
             "name": "symfony/dependency-injection",
@@ -4435,12 +4433,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Filesystem.git",
-                "reference": "6c4f6245440b53e55d4b5d3c3bd98532d6c6e11e"
+                "reference": "45cc231f1ecac70a8790bf1c88a823af8ce57056"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/6c4f6245440b53e55d4b5d3c3bd98532d6c6e11e",
-                "reference": "6c4f6245440b53e55d4b5d3c3bd98532d6c6e11e",
+                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/45cc231f1ecac70a8790bf1c88a823af8ce57056",
+                "reference": "45cc231f1ecac70a8790bf1c88a823af8ce57056",
                 "shasum": ""
             },
             "require": {
@@ -4476,7 +4474,7 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "https://symfony.com",
-            "time": "2015-05-12 15:16:46"
+            "time": "2015-05-15 14:11:12"
         },
         {
             "name": "symfony/finder",
@@ -4484,12 +4482,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Finder.git",
-                "reference": "53a2e6de850dbaee04a933662a05551a5d7c80bb"
+                "reference": "fd26bdbb67bc8753884eff5767a4f1ee90e2284b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Finder/zipball/53a2e6de850dbaee04a933662a05551a5d7c80bb",
-                "reference": "53a2e6de850dbaee04a933662a05551a5d7c80bb",
+                "url": "https://api.github.com/repos/symfony/Finder/zipball/fd26bdbb67bc8753884eff5767a4f1ee90e2284b",
+                "reference": "fd26bdbb67bc8753884eff5767a4f1ee90e2284b",
                 "shasum": ""
             },
             "require": {
@@ -4525,7 +4523,7 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "https://symfony.com",
-            "time": "2015-05-12 15:16:46"
+            "time": "2015-05-15 14:11:12"
         },
         {
             "name": "symfony/process",
@@ -4533,12 +4531,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Process.git",
-                "reference": "a87e7b39515c3d09b52dc2b0c033e01683ff1c9a"
+                "reference": "daf96f1491cf0b8d8de60e6d3b5fda8e502b3798"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Process/zipball/a87e7b39515c3d09b52dc2b0c033e01683ff1c9a",
-                "reference": "a87e7b39515c3d09b52dc2b0c033e01683ff1c9a",
+                "url": "https://api.github.com/repos/symfony/Process/zipball/daf96f1491cf0b8d8de60e6d3b5fda8e502b3798",
+                "reference": "daf96f1491cf0b8d8de60e6d3b5fda8e502b3798",
                 "shasum": ""
             },
             "require": {
@@ -4574,7 +4572,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
-            "time": "2015-05-12 15:16:46"
+            "time": "2015-05-15 14:11:12"
         },
         {
             "name": "symfony/stopwatch",
@@ -4631,12 +4629,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Translation.git",
-                "reference": "f90ed6d09619791ea7c2db305e1b557c77b859f5"
+                "reference": "a0735db452c5e592cb742333a32c6634a6d1ece1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Translation/zipball/f90ed6d09619791ea7c2db305e1b557c77b859f5",
-                "reference": "f90ed6d09619791ea7c2db305e1b557c77b859f5",
+                "url": "https://api.github.com/repos/symfony/Translation/zipball/a0735db452c5e592cb742333a32c6634a6d1ece1",
+                "reference": "a0735db452c5e592cb742333a32c6634a6d1ece1",
                 "shasum": ""
             },
             "require": {
@@ -4684,7 +4682,7 @@
             ],
             "description": "Symfony Translation Component",
             "homepage": "https://symfony.com",
-            "time": "2015-05-12 15:16:46"
+            "time": "2015-05-15 14:11:12"
         },
         {
             "name": "symfony/validator",
@@ -4692,12 +4690,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Validator.git",
-                "reference": "9d33f0d42d7545a0035b04cca92cb5378b056cb4"
+                "reference": "4c749e18e046d25763e4d6b4ecfecdd05b430bd1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Validator/zipball/9d33f0d42d7545a0035b04cca92cb5378b056cb4",
-                "reference": "9d33f0d42d7545a0035b04cca92cb5378b056cb4",
+                "url": "https://api.github.com/repos/symfony/Validator/zipball/4c749e18e046d25763e4d6b4ecfecdd05b430bd1",
+                "reference": "4c749e18e046d25763e4d6b4ecfecdd05b430bd1",
                 "shasum": ""
             },
             "require": {
@@ -4754,7 +4752,7 @@
             ],
             "description": "Symfony Validator Component",
             "homepage": "https://symfony.com",
-            "time": "2015-05-12 15:16:46"
+            "time": "2015-05-15 14:11:12"
         },
         {
             "name": "symfony/yaml",
@@ -4851,12 +4849,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "206d54792002375a2d7a76f6988d21a064d133dd"
+                "reference": "d63ac2088e8d30137cde10f310ab89b06dab916b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/206d54792002375a2d7a76f6988d21a064d133dd",
-                "reference": "206d54792002375a2d7a76f6988d21a064d133dd",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/d63ac2088e8d30137cde10f310ab89b06dab916b",
+                "reference": "d63ac2088e8d30137cde10f310ab89b06dab916b",
                 "shasum": ""
             },
             "require": {
@@ -4900,7 +4898,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2015-05-07 15:16:34"
+            "time": "2015-05-16 14:17:41"
         },
         {
             "name": "zendframework/zend-cache",
@@ -5487,19 +5485,12 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "openeyes/oph-ci-examination": 20,
-        "openeyes/oph-co-correspondence": 20,
         "openeyes/oph-ci-phasing": 20,
         "openeyes/oph-co-therapyapplication": 20,
-        "openeyes/oph-dr-prescription": 20,
         "openeyes/oph-le-intravitrealinjection": 20,
         "openeyes/oph-ou-anaestheticsatisfactionaudit": 20,
-        "openeyes/oph-tr-consent": 20,
-        "openeyes/oph-tr-operationnote": 20,
-        "openeyes/oph-tr-operationbooking": 20,
         "openeyes/oph-tr-intravitrealinjection": 20,
         "openeyes/oph-tr-laser": 20,
-        "openeyes/patient-ticketing": 20,
         "openeyes/oph-in-visualfields": 20,
         "phpmd/phpmd": 0
     },
