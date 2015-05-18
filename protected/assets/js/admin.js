@@ -46,8 +46,16 @@ $(document).ready(function () {
 
             for (var i = 0; i < hrefArray.length; i++) {
                 if (hrefArray[i] === 'admin') {
-                    var object = e[parseInt(i) + 1].replace(/^[a-z]+/, '').toLowerCase() + 's';
-                    window.location.href = baseUrl + '/admin/' + object + (page ? '/' + page : '');
+                    object = ucfirst(hrefArray[parseInt(i) + 1].replace(/ies$/, 'y'));
+
+                    if(object === 'EditUser') {
+                        window.location.href = baseUrl + '/admin/users';
+                    }else if(object === 'EditFirm') {
+                        window.location.href = baseUrl + '/admin/firms';
+                    }else {
+                        var object = e[parseInt(i) + 1].replace(/^[a-z]+/, '').toLowerCase() + 's';
+                        window.location.href = baseUrl + '/admin/' + object + (page ? '/' + page : '');
+                    }
                 }
             }
         }
