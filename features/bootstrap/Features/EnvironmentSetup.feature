@@ -59,7 +59,7 @@ Feature: Environment Setup on clean database
     And I select the Yes option for Ready to Discharge
 
     Then I Save the Event
-
+  @SetupAndCat
   Scenario: Environment Setup Anderson Cataract
 
     Given I am on the OpenEyes "master" homepage

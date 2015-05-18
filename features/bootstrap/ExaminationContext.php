@@ -770,6 +770,7 @@ class ExaminationContext extends PageObjectContext
          */
         $examination= $this->getPage('Examination');
         $examination->suitableForSurgeon($surgeon);
+        //sleep(5);
     }
 
     /**
@@ -986,6 +987,7 @@ class ExaminationContext extends PageObjectContext
          * @var Examination $examination
          */
         $examination= $this->getPage('Examination');
+        sleep(5);
         $examination->rightCRTIncreaseLowerThanHundredYes();
     }
 

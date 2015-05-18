@@ -1,5 +1,6 @@
 @correspondence @regression
 Feature: Create New Correspondence
+@COR
          Regression coverage of this event is approx 95%
 
   Scenario: Route 1:Login and fill in a Correspondence Event
@@ -20,9 +21,9 @@ Feature: Create New Correspondence
 
     Then I select Site ID "1"
     And I select Address Target "Gp1"
-    Then I choose a Macro of "site1"
+    #Then I choose a Macro of "site1"
 
-    And I select Clinic Date "7"
+    #And I select Clinic Date "7"
 
     Then I choose an Introduction of "site21"
     And I choose a Diagnosis of "site541"
@@ -55,9 +56,9 @@ Feature: Create New Correspondence
 
     Then I select Site ID "1"
     And I select Address Target "Gp1"
-    Then I choose a Macro of "site1"
+    #Then I choose a Macro of "site1"
 
-    And I select Clinic Date "7"
+    #And I select Clinic Date "7"
 
     Then I choose an Introduction of "site21"
     And I choose a Diagnosis of "site81"
@@ -90,9 +91,9 @@ Feature: Create New Correspondence
 
     Then I select Site ID "1"
     And I select Address Target "Gp1"
-    Then I choose a Macro of "site1"
+    #Then I choose a Macro of "site1"
 
-    And I select Clinic Date "7"
+    #And I select Clinic Date "7"
 
     Then I choose an Introduction of "site41"
     And I choose a Diagnosis of "site541"
@@ -125,9 +126,9 @@ Feature: Create New Correspondence
 
     Then I select Site ID "1"
     And I select Address Target "Gp1"
-    Then I choose a Macro of "site1"
+    #hen I choose a Macro of "site1"
 
-    And I select Clinic Date "7"
+    #And I select Clinic Date "7"
 
     Then I choose an Introduction of "site61"
     And I choose a Diagnosis of "site81"

@@ -200,7 +200,12 @@ class BaseEventTypeElement extends BaseElement
 
 	public function getSetting($key)
 	{
-		return SettingMetadata::model()->getSetting($key, ElementType::model()->find('class_name=?',array(get_class($this))));
+		$setting = SettingMetadata::model()->getSetting($key, ElementType::model()->find('class_name=?',array(get_class($this))));
+		if(!$setting){
+			$setting = SettingMetadata::model()->getSetting($key, ElementType::model()->find('class_name=?',array(get_parent_class($this))));
+		}
+
+		return $setting;
 	}
 
 	/**

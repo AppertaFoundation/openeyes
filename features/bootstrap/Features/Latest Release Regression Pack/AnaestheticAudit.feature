@@ -1,5 +1,6 @@
 @asa @regression
 Feature: Anaesthetic Satisfaction Audit Regression Tests
+@ASA
   Regression coverage of this event is 100%
   Across 2 Sites and 4 Firms
 
