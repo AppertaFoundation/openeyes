@@ -31,8 +31,6 @@ class ExaminationElementAttributesController extends BaseAdminController
 
 		$admin = new Admin(OEModule\OphCiExamination\models\OphCiExamination_AttributeElement::model(), $this);
 
-		//ophciexamination_attribute_element
-
 		$admin->setListFields(array(
 			//'id',
 			//'attribute_id',
@@ -59,7 +57,7 @@ class ExaminationElementAttributesController extends BaseAdminController
 			'label',
 			//'element_type_name',
 			//'element_type_id',
-			'attribute_elements1.id',
+			'attribute_elements_id.id',
 			'attribute_elements.name'
 			//'element_type.name'
 		));

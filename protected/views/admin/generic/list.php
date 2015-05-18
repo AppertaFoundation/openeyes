@@ -68,20 +68,21 @@ if(!isset($uniqueid)){
 							</a>
 						<?php endif;?>
 					</th>
-				<?php endforeach; ?>
+				<?php endforeach; ?
+				<?php if($listItem == "attribute_elements.name") { ?>
 				<th>Action</th>
+				<?php } ?>
 			</tr>
 			</thead>
 			<tbody <?php if(in_array('display_order', $admin->getListFields())): echo 'class="sortable"'; endif; ?>>
 			<?php
-			//var_dump($admin->getSearch()->retrieveResults()); die;
 			foreach ($admin->getSearch()->retrieveResults() as $i => $row) { ?>
 				<tr class="clickable" data-id="<?php echo $row->id ?>"
 					data-uri="<?php echo $uniqueid ?>/edit/<?php echo $row->id ?>?returnUri=<?=$returnUri?>">
 					<td>
 						<input type="checkbox" name="<?php echo $admin->getModelName(); ?>[id][]" value="<?php echo $row->id ?>"/>
 					</td>
-					<?php foreach ($admin->getListFields() as $listItem): ?>
+					<?php foreach ($admin->getListFields() as $listItem):?>
 						<td>
 							<?php
 							if (gettype($admin->attributeValue($row, $listItem)) === 'boolean'):
@@ -96,16 +97,23 @@ if(!isset($uniqueid)){
 							<?php
 							else:
 								echo $admin->attributeValue($row, $listItem);
-							endif
+							endif;
+
+							if($listItem == "attribute_elements_id.id")
+							{
+								$mapping_id =  $admin->attributeValue($row, $listItem);
+							}
 							?>
 						</td>
 					<?php endforeach; ?>
+					<?php if($listItem == "attribute_elements.name")
+					{?>
 					<td>
-						<?php if($listItem != "default")
-						{  ?>
-							<a href="../../OphCiExamination/admin/manageElementAttributes?attribute_element_id=2">Manage Options</a>
-						<?php } ?>
+							<?php if(($mapping_id > 0)) {?>
+							<a href="../../OphCiExamination/admin/manageElementAttributes?attribute_element_id=<?php echo $mapping_id?>">Manage Options</a>
+							<?php } ?>
 					</td>
+					<?php } ?>
 				</tr>
 			<?php } ?>
 			</tbody>
