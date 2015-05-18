@@ -46,7 +46,7 @@ if (isset($htmlOptions['div_class'])) {
 }
 
 $found = false;
-foreach($selected_ids as $id) {
+foreach ($selected_ids as $id) {
 	if (isset($options[$id])) {
 		$found = true;
 		break;
@@ -70,7 +70,18 @@ $widgetOptionsJson = json_encode(array(
 		<div class="multi-select<?php if (!$inline) echo ' multi-select-list';?>" data-options='<?php echo $widgetOptionsJson;?>'>
 			<input type="hidden" name="<?php echo CHtml::modelName($element)?>[MultiSelectList_<?php echo $field?>]" class="multi-select-list-name" />
 			<div class="multi-select-dropdown-container">
-				<select id="<?php echo CHtml::getIdByName($field)?>" class="MultiSelectList<?php if ($showRemoveAllLink) {?> inline<?php }?><?php if (isset($htmlOptions['class'])) {?> <?php echo $htmlOptions['class']?><?php }?>" name=""<?php if (isset($htmlOptions['data-linked-fields'])) {?> data-linked-fields="<?php echo $htmlOptions['data-linked-fields']?>"<?php }?><?php if (isset($htmlOptions['data-linked-values'])) {?> data-linked-values="<?php echo $htmlOptions['data-linked-values']?>"<?php }?>>
+				<select id="<?php echo CHtml::getIdByName($field) ?>"
+						class="MultiSelectList<?php if ($showRemoveAllLink) { ?> inline<?php } ?><?php if (isset($htmlOptions['class'])) { ?> <?php echo $htmlOptions['class'] ?><?php } ?>"
+						name=""
+					<?php if (isset($htmlOptions['data-linked-fields'])) { ?>
+						data-linked-fields="<?php echo $htmlOptions['data-linked-fields'] ?>"
+					<?php } ?>
+					<?php if (isset($htmlOptions['data-linked-values'])) { ?>
+						data-linked-values="<?php echo $htmlOptions['data-linked-values'] ?>"
+					<?php } ?>
+						data-searchable="<?php echo (isset($htmlOptions['searchable']) && $htmlOptions['searchable'])?>"
+						data-placeholder="Add <?php echo (isset($htmlOptions['label']) && $htmlOptions['label']) ? 'a '. $htmlOptions['label'] : ''?>"
+					>
 					<option value=""><?php echo $htmlOptions['empty']?></option>
 					<?php foreach ($filtered_options as $value => $option) {
 						$attributes = array('value' => $value);
@@ -96,7 +107,7 @@ $widgetOptionsJson = json_encode(array(
 					if (isset($options[$id])) {?>
 						<li>
 							<span class="text">
-								<?php echo CHtml::encode($options[$id])?>
+								<?php echo strip_tags($options[$id]) ?>
 							</span>
 							<a href="#" data-text="<?php echo $options[$id] ?>" class="MultiSelectRemove remove-one<?php if (isset($htmlOptions['class'])) {?> <?php echo $htmlOptions['class']?><?php }?>"<?php if (isset($htmlOptions['data-linked-fields'])) {?> data-linked-fields="<?php echo $htmlOptions['data-linked-fields']?>"<?php }?><?php if (isset($htmlOptions['data-linked-values'])) {?> data-linked-values="<?php echo $htmlOptions['data-linked-values']?>"<?php }?>>Remove</a>
 							<input type="hidden" name="<?php echo $field?>[]" value="<?php echo $id?>"
@@ -116,6 +127,9 @@ $widgetOptionsJson = json_encode(array(
 </div>
 <?php }?>
 <?php
-	$this->assetFolder = Yii::app()->getAssetManager()->publish('protected/widgets/js');
+	$assetManager = Yii::app()->getAssetManager();
+	$widgetPath = $assetManager->publish('protected/widgets/js');
+	$assetManager->registerScriptFile('components/chosen/chosen.jquery.min.js');
+	$assetManager->registerCssFile('components/chosen/chosen.min.css');
+	Yii::app()->clientScript->registerScriptFile($widgetPath.'/MultiSelectList.js');
 ?>
-<script type="text/javascript" src="<?php echo $this->assetFolder?>/MultiSelectList.js"></script>

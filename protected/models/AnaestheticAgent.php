@@ -58,6 +58,13 @@ class AnaestheticAgent extends BaseActiveRecordVersioned
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
+			array('name', 'required'),
+			array(
+				'name',
+				'ext.validators.NotContainedInValidator',
+				'model' => 'OphTrOperationnote_OperationAnaestheticAgent',
+				'message' => $this->getCleanAttribute('name') . ' has been used in existing operation notes and cannot be edited'
+			)
 		);
 	}
 

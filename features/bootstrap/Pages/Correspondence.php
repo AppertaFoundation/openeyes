@@ -10,6 +10,7 @@ class Correspondence extends OpenEyesPage
         'macro' => array('xpath' => "//select[@id='macro']"),
         'clinicDate' => array('xpath' => "//*[@id='ElementLetter_clinic_date_0']"),
         'clinicDateCalendar' => array('xpath' => "//*[@id='ui-datepicker-div']"),
+    	'body' => array('xpath' => "//*[@id='ElementLetter_body']"),
         'introduction' => array('xpath' => "//select[@id='introduction']"),
         'findings' => array('xpath' => "//*[@id='findings']"),
         'diagnosis' => array('xpath' => "//select[@id='diagnosis']"),
@@ -45,7 +46,13 @@ class Correspondence extends OpenEyesPage
     public function clinicDate ($date)
     {
         $this->getElement('clinicDate')->click();
-        $this->getElement('clinicDateCalendar')->selectOption($date);
+        //$this->getElement('clinicDateCalendar')->selectOption($date);
+        $this->getElement('clinicDateCalendar')->setValue($date); 
+    }
+    
+    public function body ($body)
+    {
+    	$this->getElement('body')->setValue($body);
     }
 
     public function introduction ($intro)
@@ -89,8 +96,11 @@ class Correspondence extends OpenEyesPage
         $element = $this->getElement('addEnclosure');
         $this->scrollWindowToElement($element);
         $element->click();
+        //sleep(5);
         $this->waitForElementDisplayBlock('#enclosureItems');
         $this->getElement('enterEnclosure')->setValue($enclosure);
+        
+        
     }
 
     public function saveDraft ()

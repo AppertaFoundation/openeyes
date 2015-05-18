@@ -14,6 +14,7 @@
   "es3": false,
   "es5": false,
   "jquery": true,
+  "mocha": true,
   "globals": {
     "$": true,
     "jQuery": true,
@@ -21,6 +22,8 @@
     "require": false,
     "console": false,
     "OpenEyes": true,
-    "Mustache": true
+    "Mustache": true,
+    "sinon": true,
+    "expect": true
   }
 }

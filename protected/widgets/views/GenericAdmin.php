@@ -43,7 +43,10 @@
 			<thead>
 				<tr>
 					<th>Order</th>
-					<th><?= $model::model()->getAttributeLabel($label_field) ?></th>
+					<?php
+					if(!$label_extra_field):?>
+						<th><?= $model::model()->getAttributeLabel($label_field) ?></th>
+					<?php endif;?>
 					<?php foreach ($extra_fields as $field) {?>
 						<th>
 							<?php echo CHtml::hiddenField('_extra_fields[]',$field['field'])?>
@@ -66,7 +69,7 @@
 ?>
 
 <?php foreach ($items as $i => $row) {
-	$this->render('_generic_admin_row', array('i' => $i, 'row' => $row, 'label_field' => $label_field, 'extra_fields' => $extra_fields, 'model' => $model));
+	$this->render('_generic_admin_row', array('i' => $i, 'row' => $row, 'label_field' => $label_field, 'extra_fields' => $extra_fields, 'model' => $model, 'display_order' => $display_order, 'label_extra_field' => $label_extra_field));
 }
 
 if (!$get_row && $filters_ready) {

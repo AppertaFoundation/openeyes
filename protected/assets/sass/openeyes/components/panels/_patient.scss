@@ -154,12 +154,16 @@
 			}
 		}
 		&.warning {
-			@include background-image(image-url("_elements/icons/patient/patient-id_small-warning.png"), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%));
+			@include background(image-url("_elements/icons/patient/patient-id_small-warning.png"), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%));
 			.warning {
 				.messages {
 					display: none;
 				}
 			}
+          background: {
+            position: 98% 2px, top;
+            repeat: no-repeat, no-repeat;
+          };
 		}
 	}
 }

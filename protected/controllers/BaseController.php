@@ -94,7 +94,9 @@ class BaseController extends Controller
 
 		foreach (SettingMetadata::model()->findAll() as $metadata) {
 			if (!$metadata->element_type) {
-				Yii::app()->params[$metadata->key] = $metadata->getSetting($metadata->key);
+				if(!isset(Yii::app()->params[$metadata->key])){
+					Yii::app()->params[$metadata->key] = $metadata->getSetting($metadata->key);
+				}
 			}
 		}
 
@@ -207,5 +209,23 @@ class BaseController extends Controller
 		$model = $class_name::model()->findByPk($pk);
 		if (!$model) throw new CHttpException(404, "{$class_name} with PK '{$pk}' not found");
 		return $model;
+	}
+
+	/**
+	 * Renders data as JSON, turns off any to screen logging so output isn't broken
+	 *
+	 * @param $data
+	 */
+	protected function renderJSON($data)
+	{
+		header('Content-type: application/json');
+		echo CJSON::encode($data);
+
+		foreach (Yii::app()->log->routes as $route) {
+			if($route instanceof CWebLogRoute) {
+				$route->enabled = false; // disable any weblogroutes
+			}
+		}
+		Yii::app()->end();
 	}
 }

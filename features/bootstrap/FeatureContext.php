@@ -231,4 +231,60 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 			}
 		}
 	}
+
+    /**
+     * @Given /^I select a Right Consultant of "([^"]*)"$/
+     */
+    public function iSelectARightConsultantOf($arg1)
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Given /^I add a New Enclosure$/
+     */
+    public function iAddANewEnclosure()
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Given /^I select an Available session time with No Anaesthetist$/
+     */
+    public function iSelectAnAvailableSessionTimeWithNoAnaesthetist()
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Then /^I choose a diagnoses of "([^"]*)"$/
+     */
+    public function iChooseADiagnosesOf($arg1)
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Given /^I choose to expand Cataract Management$/
+     */
+    public function iChooseToExpandCataractManagement()
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Given /^I choose a laser of "([^"]*)"$/
+     */
+    public function iChooseALaserOf($arg1)
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Then /^I Save the Therapy Application$/
+     */
+    public function iSaveTheTherapyApplication()
+    {
+        throw new PendingException();
+    }
 }

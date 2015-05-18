@@ -60,6 +60,11 @@ $(document).ready(function(){
 		}
 	});
 
+	$(document).on('hover', '.dropdown', function(e)
+	{
+		$(this).find('ul').slideToggle('medium');
+	});
+
 	(function sidebarEventsToggle() {
 
 		var triggers = $('.sidebar.episodes-and-events .toggle-trigger');
@@ -192,12 +197,8 @@ $(document).ready(function(){
 		window.patientTicketChanged = true;
 	});
 
-	$("#event-content").on("change", function (e) {
-		window.formHasChanged = true;
-	});
-
-	$('#patient-summary-form-container').on("change", function (e) {
-		window.formHasChanged = true;
+	$("#event-content, #patient-summary-form-container").on("change", function (e) {
+		OpenEyes.Form.edit($(e.target).closest('form'));
 	});
 
 	//if the save button is on page
@@ -336,7 +337,7 @@ function selectSort(a, b) {
 		}
 
 		return (a.innerHTML > b.innerHTML) ? 1 : -1;
-};
+}
 
 var rootItem = null;
 

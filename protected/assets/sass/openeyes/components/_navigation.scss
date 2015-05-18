@@ -19,8 +19,8 @@
 // A navigation component for displaying page-specifc navigation links in a sidebar.
 
 .side-nav {
-	@include side-nav;
-	padding-top: 0;
+  @include side-nav;
+  padding-top: 0;
 }
 
 // User navigation
@@ -29,33 +29,53 @@
 // application navigation.
 
 .navigation {
-	&.user {
-		margin-bottom: 6px;
-		margin-left: 0;
-		li {
-			margin: 0 0 0 4px;
-			&.selected {
-				a {
-					background: #1e55c1;
-					color: white;
-				}
-			}
-		}
-		a {
-			background: #cdd9e3;
-			padding: 6px 4px 2px 4px;
-			&:hover,
-			&:focus {
-				background: white;
-			}
-		}
-		@media screen {
-			.stuck & {
-				display: none;
-			}
-		}
-		@media print {
-			display: none;
-		}
-	}
+  &.user {
+    margin-bottom: 6px;
+    margin-left: 0;
+    li {
+      margin: 0 0 0 4px;
+      &.selected {
+        a {
+          background: #1e55c1;
+          color: white;
+        }
+      }
+      &[data-dropdown] > a::after {
+        content: "\0025BC";
+      }
+    }
+
+    a {
+      background: #cdd9e3;
+      padding: 6px 4px 2px 4px;
+      &:hover,
+      &:focus {
+        background: white;
+      }
+    }
+    @media screen {
+      .stuck & {
+        display: none;
+      }
+    }
+    @media print {
+      display: none;
+    }
+    .sub-menu-item {
+      @include dropdown-container(list, false, 100px);
+      width: auto;
+      margin: 0;
+      padding: 0;
+      border-top: none;
+      li {
+        margin: 0;
+        padding: 0;
+        a {
+          width: 100%;
+          display: block;
+          padding: 2px;
+        }
+      }
+    }
+  }
 }

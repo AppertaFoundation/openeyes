@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "43d702a6013413252c61e8a43381c2ed",
+    "hash": "88b7d7909dec093a8ca074a459887dc6",
     "packages": [
         {
             "name": "openeyes/eyedraw",
@@ -60,16 +60,16 @@
         },
         {
             "name": "openeyes/oph-ci-examination",
-            "version": "dev-master",
+            "version": "v1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphCiExamination.git",
-                "reference": "c742140d50acb488f056f189de2e21c324851c40"
+                "reference": "0d227f43b339e5be14a4e6fd431a5a1d058ad4a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/c742140d50acb488f056f189de2e21c324851c40",
-                "reference": "c742140d50acb488f056f189de2e21c324851c40",
+                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/0d227f43b339e5be14a4e6fd431a5a1d058ad4a9",
+                "reference": "0d227f43b339e5be14a4e6fd431a5a1d058ad4a9",
                 "shasum": ""
             },
             "require": {
@@ -78,7 +78,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Examination module for OpenEyes",
-            "time": "2015-03-04 11:22:31"
+            "time": "2015-05-18 12:31:46"
         },
         {
             "name": "openeyes/oph-ci-phasing",
@@ -104,16 +104,16 @@
         },
         {
             "name": "openeyes/oph-co-correspondence",
-            "version": "dev-master",
+            "version": "v1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphCoCorrespondence.git",
-                "reference": "0bb04f1d8a744e874b8fd56e045bf301ea34e07c"
+                "reference": "7f6338a922e72ff6ff36d12476151e1db487130b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphCoCorrespondence/zipball/0bb04f1d8a744e874b8fd56e045bf301ea34e07c",
-                "reference": "0bb04f1d8a744e874b8fd56e045bf301ea34e07c",
+                "url": "https://api.github.com/repos/openeyes/OphCoCorrespondence/zipball/7f6338a922e72ff6ff36d12476151e1db487130b",
+                "reference": "7f6338a922e72ff6ff36d12476151e1db487130b",
                 "shasum": ""
             },
             "require": {
@@ -122,7 +122,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Correspondence module for OpenEyes, allows generation of letters",
-            "time": "2015-03-04 11:31:19"
+            "time": "2015-05-18 12:32:49"
         },
         {
             "name": "openeyes/oph-co-therapyapplication",
@@ -148,16 +148,16 @@
         },
         {
             "name": "openeyes/oph-dr-prescription",
-            "version": "dev-master",
+            "version": "v1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphDrPrescription.git",
-                "reference": "49784cbe7736c799b2aec978e0409b560fc49e02"
+                "reference": "5cdc867b6069dcf7d90a99981ca96ab9e553a3d6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphDrPrescription/zipball/49784cbe7736c799b2aec978e0409b560fc49e02",
-                "reference": "49784cbe7736c799b2aec978e0409b560fc49e02",
+                "url": "https://api.github.com/repos/openeyes/OphDrPrescription/zipball/5cdc867b6069dcf7d90a99981ca96ab9e553a3d6",
+                "reference": "5cdc867b6069dcf7d90a99981ca96ab9e553a3d6",
                 "shasum": ""
             },
             "require": {
@@ -166,7 +166,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Module for generating prescriptions in OpenEyes",
-            "time": "2015-03-04 11:34:13"
+            "time": "2015-05-18 12:35:31"
         },
         {
             "name": "openeyes/oph-in-visualfields",
@@ -237,16 +237,16 @@
         },
         {
             "name": "openeyes/oph-tr-consent",
-            "version": "dev-master",
+            "version": "v1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrConsent.git",
-                "reference": "1d1bb8f855d0c9b5e44c3d8e27512e0e91822ecf"
+                "reference": "68730db9198d194976087e9be6a1bafda329991d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrConsent/zipball/1d1bb8f855d0c9b5e44c3d8e27512e0e91822ecf",
-                "reference": "1d1bb8f855d0c9b5e44c3d8e27512e0e91822ecf",
+                "url": "https://api.github.com/repos/openeyes/OphTrConsent/zipball/68730db9198d194976087e9be6a1bafda329991d",
+                "reference": "68730db9198d194976087e9be6a1bafda329991d",
                 "shasum": ""
             },
             "require": {
@@ -255,7 +255,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Generates consent forms for scheduled and unscheduled operations",
-            "time": "2015-03-27 11:52:11"
+            "time": "2015-05-18 12:36:38"
         },
         {
             "name": "openeyes/oph-tr-intravitreal-injection",
@@ -282,16 +282,16 @@
         },
         {
             "name": "openeyes/oph-tr-intravitrealinjection",
-            "version": "dev-master",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrIntravitrealinjection.git",
-                "reference": "1df7a9fce3f3162f21085e935aefc52f2a6557ad"
+                "reference": "679f51cbd9f19a357c1f81e5260de9711a783666"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrIntravitrealinjection/zipball/1df7a9fce3f3162f21085e935aefc52f2a6557ad",
-                "reference": "1df7a9fce3f3162f21085e935aefc52f2a6557ad",
+                "url": "https://api.github.com/repos/openeyes/OphTrIntravitrealinjection/zipball/679f51cbd9f19a357c1f81e5260de9711a783666",
+                "reference": "679f51cbd9f19a357c1f81e5260de9711a783666",
                 "shasum": ""
             },
             "require": {
@@ -301,7 +301,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Records intravitreal injection events for patients within OpenEyes",
-            "time": "2015-03-05 15:21:26"
+            "time": "2015-03-17 12:34:26"
         },
         {
             "name": "openeyes/oph-tr-laser",
@@ -327,16 +327,16 @@
         },
         {
             "name": "openeyes/oph-tr-operationbooking",
-            "version": "dev-master",
+            "version": "v1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrOperationbooking.git",
-                "reference": "26a0ff90c3b9f687334dc413150f61245378c4d5"
+                "reference": "af32fdfa9b7aa376cbbc429d4ed1b242ea28fe31"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrOperationbooking/zipball/26a0ff90c3b9f687334dc413150f61245378c4d5",
-                "reference": "26a0ff90c3b9f687334dc413150f61245378c4d5",
+                "url": "https://api.github.com/repos/openeyes/OphTrOperationbooking/zipball/af32fdfa9b7aa376cbbc429d4ed1b242ea28fe31",
+                "reference": "af32fdfa9b7aa376cbbc429d4ed1b242ea28fe31",
                 "shasum": ""
             },
             "require": {
@@ -345,20 +345,20 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Module for booking operations in OpenEyes",
-            "time": "2015-03-05 15:18:52"
+            "time": "2015-05-18 12:40:22"
         },
         {
             "name": "openeyes/oph-tr-operationnote",
-            "version": "dev-master",
+            "version": "v1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrOperationnote.git",
-                "reference": "fabbb2846c64ee591b9410c0fcde1d46a9bef5ea"
+                "reference": "ad3de08c726428fddfb4aa948fc27117f09ba1fe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/fabbb2846c64ee591b9410c0fcde1d46a9bef5ea",
-                "reference": "fabbb2846c64ee591b9410c0fcde1d46a9bef5ea",
+                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/ad3de08c726428fddfb4aa948fc27117f09ba1fe",
+                "reference": "ad3de08c726428fddfb4aa948fc27117f09ba1fe",
                 "shasum": ""
             },
             "require": {
@@ -368,20 +368,20 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Operation note module for OpenEyes",
-            "time": "2015-03-05 15:16:02"
+            "time": "2015-05-18 12:37:52"
         },
         {
             "name": "openeyes/patient-ticketing",
-            "version": "dev-master",
+            "version": "v1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/PatientTicketing.git",
-                "reference": "7ff9efaf110d7e2dacc8019f393f68f914143525"
+                "reference": "960b9a966625be17932f9fe7596c0684fc1ece4a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/PatientTicketing/zipball/7ff9efaf110d7e2dacc8019f393f68f914143525",
-                "reference": "7ff9efaf110d7e2dacc8019f393f68f914143525",
+                "url": "https://api.github.com/repos/openeyes/PatientTicketing/zipball/960b9a966625be17932f9fe7596c0684fc1ece4a",
+                "reference": "960b9a966625be17932f9fe7596c0684fc1ece4a",
                 "shasum": ""
             },
             "require": {
@@ -390,7 +390,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Provides a generic ticketing system to track patients through multiple pathways",
-            "time": "2015-03-13 10:53:04"
+            "time": "2015-05-18 12:41:18"
         },
         {
             "name": "yiisoft/yii",
@@ -607,12 +607,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/minkphp/Mink.git",
-                "reference": "9975a1c31c70c84f1e13bdb0203225c362c15458"
+                "reference": "d95155ed2bc5ae940d78be286727a3b712c2513e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/minkphp/Mink/zipball/9975a1c31c70c84f1e13bdb0203225c362c15458",
-                "reference": "9975a1c31c70c84f1e13bdb0203225c362c15458",
+                "url": "https://api.github.com/repos/minkphp/Mink/zipball/d95155ed2bc5ae940d78be286727a3b712c2513e",
+                "reference": "d95155ed2bc5ae940d78be286727a3b712c2513e",
                 "shasum": ""
             },
             "require": {
@@ -654,7 +654,7 @@
                 "testing",
                 "web"
             ],
-            "time": "2015-05-01 07:58:29"
+            "time": "2015-05-07 15:18:18"
         },
         {
             "name": "behat/mink-browserkit-driver",
@@ -1046,12 +1046,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/annotations.git",
-                "reference": "b5202eb9e83f8db52e0e58867e0a46e63be8332e"
+                "reference": "c8927ad70c6fce36b3af52c17ed996c9aa4de89b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/annotations/zipball/b5202eb9e83f8db52e0e58867e0a46e63be8332e",
-                "reference": "b5202eb9e83f8db52e0e58867e0a46e63be8332e",
+                "url": "https://api.github.com/repos/doctrine/annotations/zipball/c8927ad70c6fce36b3af52c17ed996c9aa4de89b",
+                "reference": "c8927ad70c6fce36b3af52c17ed996c9aa4de89b",
                 "shasum": ""
             },
             "require": {
@@ -1106,7 +1106,7 @@
                 "docblock",
                 "parser"
             ],
-            "time": "2014-12-23 22:40:37"
+            "time": "2015-05-13 13:47:35"
         },
         {
             "name": "doctrine/instantiator",
@@ -1114,12 +1114,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/instantiator.git",
-                "reference": "fc999e2f0508e434645ec2bfadeb89d39fa6453c"
+                "reference": "b70d22758c0813ea5fef9c22480caadd3a2b6a56"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/fc999e2f0508e434645ec2bfadeb89d39fa6453c",
-                "reference": "fc999e2f0508e434645ec2bfadeb89d39fa6453c",
+                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/b70d22758c0813ea5fef9c22480caadd3a2b6a56",
+                "reference": "b70d22758c0813ea5fef9c22480caadd3a2b6a56",
                 "shasum": ""
             },
             "require": {
@@ -1160,7 +1160,7 @@
                 "constructor",
                 "instantiate"
             ],
-            "time": "2015-04-12 20:59:10"
+            "time": "2015-05-13 13:33:36"
         },
         {
             "name": "doctrine/lexer",
@@ -2009,12 +2009,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "5202b35099e880183e9bcbacdb01dc4346622800"
+                "reference": "bf2bff61743f20a13dc46ff1e3bbd0f19c997d2b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/5202b35099e880183e9bcbacdb01dc4346622800",
-                "reference": "5202b35099e880183e9bcbacdb01dc4346622800",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/bf2bff61743f20a13dc46ff1e3bbd0f19c997d2b",
+                "reference": "bf2bff61743f20a13dc46ff1e3bbd0f19c997d2b",
                 "shasum": ""
             },
             "require": {
@@ -2076,7 +2076,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2015-05-05 17:26:17"
+            "time": "2015-05-11 14:51:05"
         },
         {
             "name": "nikic/php-parser",
@@ -2202,12 +2202,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/php-collection.git",
-                "reference": "94a2c04376f49c12d5936b16d846579a1b3605bc"
+                "reference": "f2bcff45c0da7c27991bbc1f90f47c4b7fb434a6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/php-collection/zipball/94a2c04376f49c12d5936b16d846579a1b3605bc",
-                "reference": "94a2c04376f49c12d5936b16d846579a1b3605bc",
+                "url": "https://api.github.com/repos/schmittjoh/php-collection/zipball/f2bcff45c0da7c27991bbc1f90f47c4b7fb434a6",
+                "reference": "f2bcff45c0da7c27991bbc1f90f47c4b7fb434a6",
                 "shasum": ""
             },
             "require": {
@@ -2230,10 +2230,8 @@
             ],
             "authors": [
                 {
-                    "name": "Johannes Schmitt",
-                    "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
-                    "role": "Developer of wrapped JMSSerializerBundle"
+                    "name": "Johannes M. Schmitt",
+                    "email": "schmittjoh@gmail.com"
                 }
             ],
             "description": "General-Purpose Collection Library for PHP",
@@ -2244,7 +2242,7 @@
                 "sequence",
                 "set"
             ],
-            "time": "2014-04-11 10:32:20"
+            "time": "2015-05-17 12:39:23"
         },
         {
             "name": "phpdocumentor/fileset",
@@ -2489,12 +2487,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/ReflectionDocBlock.git",
-                "reference": "d1da796ba5565789a623052eb9f2cf59d57fec60"
+                "reference": "ae15da2ce234d3ffe5d7fafcdad19c7f1acf3568"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/d1da796ba5565789a623052eb9f2cf59d57fec60",
-                "reference": "d1da796ba5565789a623052eb9f2cf59d57fec60",
+                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/ae15da2ce234d3ffe5d7fafcdad19c7f1acf3568",
+                "reference": "ae15da2ce234d3ffe5d7fafcdad19c7f1acf3568",
                 "shasum": ""
             },
             "require": {
@@ -2504,7 +2502,6 @@
                 "phpunit/phpunit": "~4.0"
             },
             "suggest": {
-                "dflydev/markdown": "~1.0",
                 "erusev/parsedown": "~1.0",
                 "league/commonmark": "*"
             },
@@ -2531,7 +2528,7 @@
                     "email": "mike.vanriel@naenius.com"
                 }
             ],
-            "time": "2015-02-27 09:28:18"
+            "time": "2015-05-12 07:21:12"
         },
         {
             "name": "phpdocumentor/template-abstract",
@@ -4050,12 +4047,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/BrowserKit.git",
-                "reference": "bf40356a60dc8ffceab31b434cc715943f469204"
+                "reference": "491639704334283b5f1d87bb3298400f1f5cd2bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/BrowserKit/zipball/bf40356a60dc8ffceab31b434cc715943f469204",
-                "reference": "bf40356a60dc8ffceab31b434cc715943f469204",
+                "url": "https://api.github.com/repos/symfony/BrowserKit/zipball/491639704334283b5f1d87bb3298400f1f5cd2bf",
+                "reference": "491639704334283b5f1d87bb3298400f1f5cd2bf",
                 "shasum": ""
             },
             "require": {
@@ -4087,17 +4084,17 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "Symfony BrowserKit Component",
-            "homepage": "http://symfony.com",
-            "time": "2015-04-24 07:03:44"
+            "homepage": "https://symfony.com",
+            "time": "2015-05-12 15:16:46"
         },
         {
             "name": "symfony/config",
@@ -4105,12 +4102,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Config.git",
-                "reference": "b9a3893998ddb7a6e84088ac21a0540c4fa51627"
+                "reference": "291e3f1ce92fec71632eada0d492833b41531718"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Config/zipball/b9a3893998ddb7a6e84088ac21a0540c4fa51627",
-                "reference": "b9a3893998ddb7a6e84088ac21a0540c4fa51627",
+                "url": "https://api.github.com/repos/symfony/Config/zipball/291e3f1ce92fec71632eada0d492833b41531718",
+                "reference": "291e3f1ce92fec71632eada0d492833b41531718",
                 "shasum": ""
             },
             "require": {
@@ -4137,17 +4134,17 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "Symfony Config Component",
-            "homepage": "http://symfony.com",
-            "time": "2015-04-24 07:03:44"
+            "homepage": "https://symfony.com",
+            "time": "2015-05-15 14:11:12"
         },
         {
             "name": "symfony/console",
@@ -4155,12 +4152,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "36194c12ded9b0dc2b5d719ad626257b5bbc2d96"
+                "reference": "7e857a2b52b5833ed27d78a6b1b846bd440ee8bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/36194c12ded9b0dc2b5d719ad626257b5bbc2d96",
-                "reference": "36194c12ded9b0dc2b5d719ad626257b5bbc2d96",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/7e857a2b52b5833ed27d78a6b1b846bd440ee8bd",
+                "reference": "7e857a2b52b5833ed27d78a6b1b846bd440ee8bd",
                 "shasum": ""
             },
             "require": {
@@ -4194,17 +4191,17 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "Symfony Console Component",
-            "homepage": "http://symfony.com",
-            "time": "2015-04-24 07:03:44"
+            "homepage": "https://symfony.com",
+            "time": "2015-05-15 14:11:12"
         },
         {
             "name": "symfony/css-selector",
@@ -4212,12 +4209,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/CssSelector.git",
-                "reference": "33703308af68a86b937b750968473e1eb4f95c42"
+                "reference": "5b0968a01e1f6fb724ecc8b7334d662ad4c8cda6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/CssSelector/zipball/33703308af68a86b937b750968473e1eb4f95c42",
-                "reference": "33703308af68a86b937b750968473e1eb4f95c42",
+                "url": "https://api.github.com/repos/symfony/CssSelector/zipball/5b0968a01e1f6fb724ecc8b7334d662ad4c8cda6",
+                "reference": "5b0968a01e1f6fb724ecc8b7334d662ad4c8cda6",
                 "shasum": ""
             },
             "require": {
@@ -4243,21 +4240,21 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Jean-François Simon",
                     "email": "jeanfrancois.simon@sensiolabs.com"
                 },
                 {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "Symfony CssSelector Component",
-            "homepage": "http://symfony.com",
-            "time": "2015-04-24 07:03:44"
+            "homepage": "https://symfony.com",
+            "time": "2015-05-15 14:11:12"
         },
         {
             "name": "symfony/dependency-injection",
@@ -4265,12 +4262,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/DependencyInjection.git",
-                "reference": "a4898461d50868c52a6a1326768bfa27f6493e7c"
+                "reference": "90a75274cb85bd6f9aaf4a017e5dee616ffe8a1d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/DependencyInjection/zipball/a4898461d50868c52a6a1326768bfa27f6493e7c",
-                "reference": "a4898461d50868c52a6a1326768bfa27f6493e7c",
+                "url": "https://api.github.com/repos/symfony/DependencyInjection/zipball/90a75274cb85bd6f9aaf4a017e5dee616ffe8a1d",
+                "reference": "90a75274cb85bd6f9aaf4a017e5dee616ffe8a1d",
                 "shasum": ""
             },
             "require": {
@@ -4307,17 +4304,17 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "Symfony DependencyInjection Component",
-            "homepage": "http://symfony.com",
-            "time": "2015-04-24 07:03:44"
+            "homepage": "https://symfony.com",
+            "time": "2015-05-12 15:16:46"
         },
         {
             "name": "symfony/dom-crawler",
@@ -4325,12 +4322,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/DomCrawler.git",
-                "reference": "c0beeb21688e1c0854cac8f15b601a0863f3b724"
+                "reference": "3a523d1725d5835e4a7277358190e7efae7d872f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/DomCrawler/zipball/c0beeb21688e1c0854cac8f15b601a0863f3b724",
-                "reference": "c0beeb21688e1c0854cac8f15b601a0863f3b724",
+                "url": "https://api.github.com/repos/symfony/DomCrawler/zipball/3a523d1725d5835e4a7277358190e7efae7d872f",
+                "reference": "3a523d1725d5835e4a7277358190e7efae7d872f",
                 "shasum": ""
             },
             "require": {
@@ -4360,17 +4357,17 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "Symfony DomCrawler Component",
-            "homepage": "http://symfony.com",
-            "time": "2015-04-24 07:03:44"
+            "homepage": "https://symfony.com",
+            "time": "2015-05-12 15:16:46"
         },
         {
             "name": "symfony/event-dispatcher",
@@ -4378,12 +4375,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/EventDispatcher.git",
-                "reference": "44bde9645703fe92da9f5dd2755298f7c2c6fa92"
+                "reference": "8766cebf28beac9a45b511d7dba053da9d35eb9f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/44bde9645703fe92da9f5dd2755298f7c2c6fa92",
-                "reference": "44bde9645703fe92da9f5dd2755298f7c2c6fa92",
+                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/8766cebf28beac9a45b511d7dba053da9d35eb9f",
+                "reference": "8766cebf28beac9a45b511d7dba053da9d35eb9f",
                 "shasum": ""
             },
             "require": {
@@ -4418,17 +4415,17 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "Symfony EventDispatcher Component",
-            "homepage": "http://symfony.com",
-            "time": "2015-04-24 07:03:44"
+            "homepage": "https://symfony.com",
+            "time": "2015-05-12 15:16:46"
         },
         {
             "name": "symfony/filesystem",
@@ -4436,12 +4433,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Filesystem.git",
-                "reference": "41b7d35d812653a54fd931a6c8cf139767a95abb"
+                "reference": "45cc231f1ecac70a8790bf1c88a823af8ce57056"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/41b7d35d812653a54fd931a6c8cf139767a95abb",
-                "reference": "41b7d35d812653a54fd931a6c8cf139767a95abb",
+                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/45cc231f1ecac70a8790bf1c88a823af8ce57056",
+                "reference": "45cc231f1ecac70a8790bf1c88a823af8ce57056",
                 "shasum": ""
             },
             "require": {
@@ -4467,17 +4464,17 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "Symfony Filesystem Component",
-            "homepage": "http://symfony.com",
-            "time": "2015-04-24 07:03:44"
+            "homepage": "https://symfony.com",
+            "time": "2015-05-15 14:11:12"
         },
         {
             "name": "symfony/finder",
@@ -4485,12 +4482,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Finder.git",
-                "reference": "60e1a3c4699ac84b5d0acb4333b6b5cca3900af1"
+                "reference": "fd26bdbb67bc8753884eff5767a4f1ee90e2284b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Finder/zipball/60e1a3c4699ac84b5d0acb4333b6b5cca3900af1",
-                "reference": "60e1a3c4699ac84b5d0acb4333b6b5cca3900af1",
+                "url": "https://api.github.com/repos/symfony/Finder/zipball/fd26bdbb67bc8753884eff5767a4f1ee90e2284b",
+                "reference": "fd26bdbb67bc8753884eff5767a4f1ee90e2284b",
                 "shasum": ""
             },
             "require": {
@@ -4516,17 +4513,17 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "Symfony Finder Component",
-            "homepage": "http://symfony.com",
-            "time": "2015-04-24 07:03:44"
+            "homepage": "https://symfony.com",
+            "time": "2015-05-15 14:11:12"
         },
         {
             "name": "symfony/process",
@@ -4534,12 +4531,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Process.git",
-                "reference": "8382bc54f1d83ee36fb3983bb1b6b307d238622b"
+                "reference": "daf96f1491cf0b8d8de60e6d3b5fda8e502b3798"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Process/zipball/8382bc54f1d83ee36fb3983bb1b6b307d238622b",
-                "reference": "8382bc54f1d83ee36fb3983bb1b6b307d238622b",
+                "url": "https://api.github.com/repos/symfony/Process/zipball/daf96f1491cf0b8d8de60e6d3b5fda8e502b3798",
+                "reference": "daf96f1491cf0b8d8de60e6d3b5fda8e502b3798",
                 "shasum": ""
             },
             "require": {
@@ -4565,17 +4562,17 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "Symfony Process Component",
-            "homepage": "http://symfony.com",
-            "time": "2015-04-24 07:03:44"
+            "homepage": "https://symfony.com",
+            "time": "2015-05-15 14:11:12"
         },
         {
             "name": "symfony/stopwatch",
@@ -4583,12 +4580,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Stopwatch.git",
-                "reference": "20c8903372e2a924421d93d55928be80c617cf3a"
+                "reference": "548bdb98ca54e9121e603ad9789775aa8ddb153d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Stopwatch/zipball/20c8903372e2a924421d93d55928be80c617cf3a",
-                "reference": "20c8903372e2a924421d93d55928be80c617cf3a",
+                "url": "https://api.github.com/repos/symfony/Stopwatch/zipball/548bdb98ca54e9121e603ad9789775aa8ddb153d",
+                "reference": "548bdb98ca54e9121e603ad9789775aa8ddb153d",
                 "shasum": ""
             },
             "require": {
@@ -4614,17 +4611,17 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "Symfony Stopwatch Component",
-            "homepage": "http://symfony.com",
-            "time": "2015-04-24 07:03:44"
+            "homepage": "https://symfony.com",
+            "time": "2015-05-12 15:16:46"
         },
         {
             "name": "symfony/translation",
@@ -4632,12 +4629,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Translation.git",
-                "reference": "ddb3b55f1a7d1bc67d94d01400d32be02936f086"
+                "reference": "a0735db452c5e592cb742333a32c6634a6d1ece1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Translation/zipball/ddb3b55f1a7d1bc67d94d01400d32be02936f086",
-                "reference": "ddb3b55f1a7d1bc67d94d01400d32be02936f086",
+                "url": "https://api.github.com/repos/symfony/Translation/zipball/a0735db452c5e592cb742333a32c6634a6d1ece1",
+                "reference": "a0735db452c5e592cb742333a32c6634a6d1ece1",
                 "shasum": ""
             },
             "require": {
@@ -4675,17 +4672,17 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "Symfony Translation Component",
-            "homepage": "http://symfony.com",
-            "time": "2015-05-06 09:17:03"
+            "homepage": "https://symfony.com",
+            "time": "2015-05-15 14:11:12"
         },
         {
             "name": "symfony/validator",
@@ -4693,12 +4690,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Validator.git",
-                "reference": "c29cda6a497b8bfc1870de31c16c35393715ff53"
+                "reference": "4c749e18e046d25763e4d6b4ecfecdd05b430bd1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Validator/zipball/c29cda6a497b8bfc1870de31c16c35393715ff53",
-                "reference": "c29cda6a497b8bfc1870de31c16c35393715ff53",
+                "url": "https://api.github.com/repos/symfony/Validator/zipball/4c749e18e046d25763e4d6b4ecfecdd05b430bd1",
+                "reference": "4c749e18e046d25763e4d6b4ecfecdd05b430bd1",
                 "shasum": ""
             },
             "require": {
@@ -4745,17 +4742,17 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "Symfony Validator Component",
-            "homepage": "http://symfony.com",
-            "time": "2015-04-24 15:39:02"
+            "homepage": "https://symfony.com",
+            "time": "2015-05-15 14:11:12"
         },
         {
             "name": "symfony/yaml",
@@ -4763,12 +4760,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "4ededb1d00dc2c65fcd16ae3dafc785f92b3f95f"
+                "reference": "2396832f6f9ab2b8f62f00b5d3f2e722fc773d65"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/4ededb1d00dc2c65fcd16ae3dafc785f92b3f95f",
-                "reference": "4ededb1d00dc2c65fcd16ae3dafc785f92b3f95f",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/2396832f6f9ab2b8f62f00b5d3f2e722fc773d65",
+                "reference": "2396832f6f9ab2b8f62f00b5d3f2e722fc773d65",
                 "shasum": ""
             },
             "require": {
@@ -4794,17 +4791,17 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "Symfony Yaml Component",
-            "homepage": "http://symfony.com",
-            "time": "2015-04-24 07:03:44"
+            "homepage": "https://symfony.com",
+            "time": "2015-05-12 15:16:46"
         },
         {
             "name": "theseer/fdomdocument",
@@ -4852,12 +4849,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "f012ea296af1f4937376621c4f50282fc02415e3"
+                "reference": "d63ac2088e8d30137cde10f310ab89b06dab916b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/f012ea296af1f4937376621c4f50282fc02415e3",
-                "reference": "f012ea296af1f4937376621c4f50282fc02415e3",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/d63ac2088e8d30137cde10f310ab89b06dab916b",
+                "reference": "d63ac2088e8d30137cde10f310ab89b06dab916b",
                 "shasum": ""
             },
             "require": {
@@ -4901,7 +4898,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2015-04-29 13:28:48"
+            "time": "2015-05-16 14:17:41"
         },
         {
             "name": "zendframework/zend-cache",
@@ -5488,19 +5485,12 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "openeyes/oph-ci-examination": 20,
-        "openeyes/oph-co-correspondence": 20,
         "openeyes/oph-ci-phasing": 20,
         "openeyes/oph-co-therapyapplication": 20,
-        "openeyes/oph-dr-prescription": 20,
         "openeyes/oph-le-intravitrealinjection": 20,
         "openeyes/oph-ou-anaestheticsatisfactionaudit": 20,
-        "openeyes/oph-tr-consent": 20,
-        "openeyes/oph-tr-operationnote": 20,
-        "openeyes/oph-tr-operationbooking": 20,
         "openeyes/oph-tr-intravitrealinjection": 20,
         "openeyes/oph-tr-laser": 20,
-        "openeyes/patient-ticketing": 20,
         "openeyes/oph-in-visualfields": 20,
         "phpmd/phpmd": 0
     },

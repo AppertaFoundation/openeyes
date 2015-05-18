@@ -3,7 +3,7 @@ Feature: Environment Setup on clean database
   This feature is to be run first on a clean database
   It sets up 3 Firms Glaucoma, Medical Retina and Cataract
   Each with an event setup ready for the regression tag to be run
-
+  
   Scenario: Environment Setup Broom Glaucoma
 
     Given I am on the OpenEyes "master" homepage
@@ -19,7 +19,7 @@ Feature: Environment Setup on clean database
     And I add a New Event "Satisfaction"
 
     Then I select an Anaesthetist "no"
-    And I select Satisfaction levels of Pain "2" Nausea "3"
+    #And I select Satisfaction levels of Pain "2" Nausea "3"
 
     And I tick the Vomited checkbox
 
@@ -47,7 +47,7 @@ Feature: Environment Setup on clean database
     And I add a New Event "Satisfaction"
 
     Then I select an Anaesthetist "no"
-    And I select Satisfaction levels of Pain "2" Nausea "3"
+    #And I select Satisfaction levels of Pain "2" Nausea "3"
 
     And I tick the Vomited checkbox
 
@@ -75,7 +75,7 @@ Feature: Environment Setup on clean database
     And I add a New Event "Satisfaction"
 
     Then I select an Anaesthetist "no"
-    And I select Satisfaction levels of Pain "2" Nausea "3"
+    #And I select Satisfaction levels of Pain "2" Nausea "3"
 
     And I tick the Vomited checkbox
 
@@ -103,7 +103,7 @@ Feature: Environment Setup on clean database
     And I add a New Event "Satisfaction"
 
     Then I select an Anaesthetist "no"
-    And I select Satisfaction levels of Pain "2" Nausea "3"
+    #And I select Satisfaction levels of Pain "2" Nausea "3"
 
     And I tick the Vomited checkbox
 

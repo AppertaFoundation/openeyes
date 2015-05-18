@@ -22,6 +22,13 @@ class AdminController extends BaseAdminController
 	public $layout = 'admin';
 	public $items_per_page = 30;
 
+	/**
+	 * @var int
+	 *
+	 */
+	public $displayOrder = 0;
+
+
 	public function actionIndex()
 	{
 		$this->redirect(array('/admin/users'));
@@ -337,10 +344,10 @@ class AdminController extends BaseAdminController
 		Audit::add('admin-User','list');
 
 		$criteria = new CDbCriteria;
-		if (!empty($_REQUEST['search'])) {
-			$criteria->compare("LOWER(username)", strtolower($_REQUEST['search']),true, 'OR');
-			$criteria->compare("LOWER(first_name)",strtolower($_REQUEST['search']),true, 'OR');
-			$criteria->compare("LOWER(last_name)",strtolower($_REQUEST['search']),true, 'OR');
+		if (!empty($_POST['search'])) {
+			$criteria->compare("LOWER(username)", strtolower($_POST['search']),true, 'OR');
+			$criteria->compare("LOWER(first_name)",strtolower($_POST['search']),true, 'OR');
+			$criteria->compare("LOWER(last_name)",strtolower($_POST['search']),true, 'OR');
 		}
 
 		$pagination = $this->initPagination(User::model(), $criteria);
@@ -404,6 +411,11 @@ class AdminController extends BaseAdminController
 			if (!$user->validate()) {
 				$errors = $user->getErrors();
 			} else {
+
+				if($user->is_doctor != 1) {
+					$user->doctor_grade_id = '';
+				}
+
 				if (!$user->save()) {
 					throw new Exception("Unable to save user: ".print_r($user->getErrors(),true));
 				}
@@ -423,6 +435,9 @@ class AdminController extends BaseAdminController
 
 				if (!$user->contact) {
 					$user->contact_id = $contact->id;
+
+
+
 					if (!$user->save()) {
 						throw new Exception("Unable to save user: ".print_r($user->getErrors(),true));
 					}
@@ -472,19 +487,37 @@ class AdminController extends BaseAdminController
 		echo $result;
 	}
 
-	public function actionFirms($id=false)
+	/**
+	 * @param bool $id
+	 * @throws Exception
+	 */
+	public function actionFirms()
 	{
 		Audit::add('admin-Firm','list');
-
-		$criteria = new CdbCriteria;
-		$pagination = $this->initPagination(Firm::model(), $criteria);
+		$search = new ModelSearch(Firm::model());
+		$search->addSearchItem('name', array(
+			'type' => 'compare',
+			'compare_to' => array(
+				'id',
+				'pas_code',
+				'consultant.first_name',
+				'consultant.last_name',
+				'serviceSubspecialtyAssignment.subspecialty.name'
+			)
+		));
+		$search->addSearchItem('active', array('type' => 'boolean'));
 
 		$this->render('/admin/firms',array(
-			'firms' => Firm::model()->findAll($criteria),
-			'pagination' => $pagination,
+			'pagination' => $search->initPagination(),
+			'firms' => $search->retrieveResults(),
+			'search' => $search,
+			'displayOrder' => $this->displayOrder,
 		));
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function actionAddFirm()
 	{
 		$firm = new Firm;
@@ -531,9 +564,18 @@ class AdminController extends BaseAdminController
 			Audit::add('admin-Firm','view',$id);
 		}
 
+		$siteSecretaries = array();
+		if (isset(Yii::app()->modules['OphCoCorrespondence'])){
+			$firmSiteSecretaries = new FirmSiteSecretary();
+			$siteSecretaries = $firmSiteSecretaries->findSiteSecretaryForFirm($id);
+			$firmSiteSecretaries->firm_id = $id;
+			$siteSecretaries[] = $firmSiteSecretaries;
+		}
+
 		$this->render('/admin/editfirm',array(
 			'firm' => $firm,
 			'errors' => @$errors,
+			'siteSecretaries' => $siteSecretaries
 		));
 	}
 
@@ -616,13 +658,18 @@ class AdminController extends BaseAdminController
 		);
 	}
 
-	public function actionEditContact()
+	public function actionEditContact($id = Null)
 	{
-		if (!$contact = Contact::model()->findByPk(@$_GET['contact_id'])) {
-			throw new Exception("Contact not found: ".@$_GET['contact_id']);
+
+		if($id == null){
+			$id = @$_GET['contact_id'];
 		}
 
-		if (!empty($_POST)) {
+		if (!$contact = Contact::model()->findByPk($id)) {
+			throw new Exception("Contact not found: " . $id);
+		}
+
+        if (!empty($_POST)) {
 			$contact->attributes = $_POST['Contact'];
 
 			if (!$contact->validate()) {
@@ -635,7 +682,7 @@ class AdminController extends BaseAdminController
 				$this->redirect('/admin/contacts?q='.$contact->fullName);
 			}
 		} else {
-			Audit::add('admin-Contact','view',@$_GET['contact_id']);
+			Audit::add('admin-Contact','view',$id);
 		}
 
 		$this->render('/admin/editcontact',array(
@@ -735,12 +782,21 @@ class AdminController extends BaseAdminController
 	{
 		Audit::add('admin-Institution','list');
 
-		$criteria = new CDbCriteria;
-		$pagination = $this->initPagination(Institution::model(), $criteria);
+		$search = new ModelSearch(Institution::model());
+		$search->addSearchItem('name', array(
+			'type' => 'compare',
+			'compare_to' => array(
+				'remote_id',
+				'short_name'
+			)
+		));
+		$search->addSearchItem('active', array('type' => 'boolean'));
+
 
 		$this->render('/admin/institutions',array(
-			'institutions' => Institution::model()->findAll($criteria),
-			'pagination' => $pagination,
+			'pagination' => $search->initPagination(),
+			'institutions' => $search->retrieveResults(),
+			'search' => $search,
 		));
 	}
 
@@ -844,11 +900,86 @@ class AdminController extends BaseAdminController
 		Audit::add('admin-Site','list');
 
 		$criteria = new CDbCriteria;
+                $criteria->join = "JOIN contact ON contact_id = contact.id"
+                        . " join address on address.contact_id = contact.id";
+
+               if (!empty($_REQUEST['search'])) {
+                       $criteria->compare("LOWER(name)", strtolower($_REQUEST['search']),true, 'OR');
+                       $criteria->compare("LOWER(short_name)",strtolower($_REQUEST['search']),true, 'OR');
+                       $criteria->compare("LOWER(remote_id)",strtolower($_REQUEST['search']),true, 'OR');
+                       $criteria->compare("LOWER(postcode)",strtolower($_REQUEST['search']),true, 'OR');
+                       $criteria->compare("LOWER(address1)",strtolower($_REQUEST['search']),true, 'OR');
+                       $criteria->compare("LOWER(address2)",strtolower($_REQUEST['search']),true, 'OR');
+                       $criteria->compare("LOWER(city)",strtolower($_REQUEST['search']),true, 'OR');
+                       $criteria->compare("LOWER(county)",strtolower($_REQUEST['search']),true, 'OR');
+               }
+
 		$pagination = $this->initPagination(Site::model(), $criteria);
 
 		$this->render('/admin/sites',array(
 			'sites' => Site::model()->findAll($criteria),
 			'pagination' => $pagination,
+		));
+	}
+
+	public function actionAddSite()
+	{
+		$errors = array();
+		$site =	new Site;
+		$contact = new Contact;
+		$address = new Address;
+
+		/*
+		 * Set default blank contact to fulfill the current relationship with a site
+		 */
+
+		$contact->nick_name = 'NULL';
+		$contact->primary_phone = 'NULL';
+		$contact->title = NULL;
+		$contact->first_name = '';
+		$contact->last_name = '';
+		$contact->qualifications = NULL;
+
+		$contact->save();
+
+		$site->contact_id = $contact->id;
+		$address->contact_id = $contact->id;
+
+        if(!empty($_POST)){
+
+			$site->attributes = $_POST['Site'];
+
+            if (!$site->validate()) {
+				$errors = $site->getErrors();
+            }
+
+			$address->attributes = $_POST['Address'];
+
+			if(!$address->validate()) {
+				$errors = array_merge($errors, $address->getErrors());
+			}
+
+			if(!$errors){
+				if (!$site->save()) {
+					throw new Exception("Unable to save contact: ".print_r($site->getErrors(),true));
+				}
+
+				if (!$address->save()) {
+					throw new Exception("Unable to save address: ".print_r($address->getErrors(), true));
+				}
+
+				Audit::add('admin-Site','add',$site->id);
+
+				$this->redirect(array('/admin/editSite?site_id='.$site->id));
+			}
+		}
+
+
+        $this->render('/admin/addsite',array(
+			'site' => $site,
+			'errors' => $errors,
+			'address' => $address,
+			'contact' => $contact
 		));
 	}
 
@@ -1588,23 +1719,24 @@ class AdminController extends BaseAdminController
 
 		$errors = array();
 
-		foreach (SettingMetadata::model()->findAll('element_type_id is null') as $metadata) {
-			if (@$_POST[$metadata->key]) {
-				if (!$setting = $metadata->getSetting($metadata->key,null,true)) {
-					$setting = new SettingInstallation;
-					$setting->key = $metadata->key;
-				}
+		if(Yii::app()->request->isPostRequest) {
+			foreach (SettingMetadata::model()->findAll('element_type_id is null') as $metadata) {
+				if (@$_POST[$metadata->key]) {
+					if (!$setting = $metadata->getSetting($metadata->key, null, true)) {
+						$setting = new SettingInstallation;
+						$setting->key = $metadata->key;
+					}
 
-				$setting->value = @$_POST[$metadata->key];
+					$setting->value = @$_POST[$metadata->key];
 
-				if (!$setting->save()) {
-					$errors = $setting->errors;
-				} else {
-					$this->redirect(array('/admin/settings'));
+					if (!$setting->save()) {
+						$errors = $setting->errors;
+					} else {
+						$this->redirect(array('/admin/settings'));
+					}
 				}
 			}
 		}
-
 		$this->render('/admin/edit_setting',array('metadata' => $metadata, 'errors' => $errors));
 	}
 
@@ -1631,5 +1763,100 @@ class AdminController extends BaseAdminController
 	public function actionSocialHistoryAccommodation()
 	{
 		$this->genericAdmin(SocialHistory::model()->getAttributeLabel('accommodation_id'), 'SocialHistoryAccommodation');
+	}
+
+	/**
+	 * Lists and allows editing of AnaestheticAgent records
+	 *
+	 * @throws Exception
+	 */
+	public function actionViewAnaestheticAgent()
+	{
+		$this->genericAdmin('Edit Anaesthetic Agents', 'AnaestheticAgent');
+
+		/*Audit::add('admin', 'list', null, null, array('model'=>'AnaestheticAgent'));
+
+		$this->render('anaestheticagent');*/
+	}
+
+	public function actionAddAnaestheticAgent()
+	{
+		$agent = new AnaestheticAgent();
+		$errors = array();
+
+		if(Yii::app()->request->isPostRequest){
+			$agent->attributes = Yii::app()->request->getPost('AnaestheticAgent');
+
+			if(!$agent->validate()){
+				$errors = $agent->getErrors();
+			} else {
+				if(!$agent->save()){
+					throw new CHttpException(500, 'Unable to save Anaesthetic Agent: ' . $agent->name);
+				}
+
+				Audit::add('admin', 'add', $agent->id, null, array('model'=>'AnaestheticAgent'));
+				$this->redirect('/admin/viewAnaestheticAgent');
+			}
+		}
+
+		$this->render('/admin/editanaestheticagent', array(
+			'agent' => $agent,
+			'errors' => $errors,
+		));
+	}
+
+	public function actionEditAnaestheticAgent($id)
+	{
+		$agent = AnaestheticAgent::model()->findByPk($id);
+		$errors = array();
+
+		if(!$agent){
+			throw new CHttpException(404, 'Anaesthetic Agent not found: ' . $id);
+		}
+
+		if(Yii::app()->request->isPostRequest){
+			$agent->attributes = Yii::app()->request->getPost('AnaestheticAgent');
+
+			if(!$agent->validate()){
+				$errors = $agent->getErrors();
+			} else {
+				if(!$agent->save()){
+					throw new CHttpException(500, 'Unable to save Anaesthetic Agent: ' . $agent->name);
+				}
+
+				Audit::add('admin', 'edit', $id, null, array('model'=>'AnaestheticAgent'));
+				$this->redirect('/admin/viewAnaestheticAgent');
+			}
+		}
+
+		Audit::add('admin', 'view', $id, null, array('model'=>'AnaestheticAgent'));
+		$this->render('/admin/editanaestheticagent', array(
+			'agent' => $agent,
+			'errors' => $errors,
+		));
+	}
+
+	public function actionDeleteAnaestheticAgent($id)
+	{
+		$agent = AnaestheticAgent::model()->findByPk($id);
+
+		if(!$agent){
+			throw new CHttpException(404, 'Anaesthetic Agent not found: ' . $id);
+		}
+
+		if(Yii::app()->request->isPostRequest){
+			$agent->active = 0;
+			if(!$agent->save()){
+				throw new CHttpException(500, 'Unable to delete Anaesthetic Agent: ' . $agent->name);
+			}
+
+			Audit::add('admin', 'delete', $id, null, array('model'=>'AnaestheticAgent'));
+			$this->redirect('/admin/viewAnaestheticAgent');
+		}
+
+		Audit::add('admin', 'view', $id, null, array('model'=>'AnaestheticAgent'));
+		$this->render('/admin/deleteanaestheticagent', array(
+			'agent' => $agent,
+		));
 	}
 }

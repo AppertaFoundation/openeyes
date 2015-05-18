@@ -18,44 +18,47 @@
  */
 ?>
 
-<footer class="footer row">
+	<footer class="footer row">
 		<div class="large-3 medium-3 columns">
-				<div class="info">
-						<a href="<?php echo Yii::app()->createUrl('site/debuginfo')?>" id="support-info-link">Served, with love, by <?php echo trim(`hostname`)?></a>
-						<br />
-						<span class="copyright">&copy; Copyright OpenEyes Foundation 2011&#x2013;<?php echo date('Y'); ?></span>
-				</div>
+			<div class="info">
+				<a href="<?php echo Yii::app()->createUrl('site/debuginfo') ?>" id="support-info-link">Served, with
+					love, by <?php echo trim(`hostname`) ?></a>
+				<br/>
+				<span class="copyright">&copy; Copyright OpenEyes Foundation 2011&#x2013;<?php echo date('Y'); ?></span>
+			</div>
 		</div>
 		<div class="large-6 medium-6 large-centered medium-centered columns help">
-				<div class="panel">
-						<ul class="inline-list">
-								<li><strong>Need help?</strong></li>
-								<?php if (Yii::app()->params['helpdesk_email']) {?>
-									<li><?php echo Yii::app()->params['helpdesk_email']?></li>
-								<?php }?>
-								<?php if (Yii::app()->params['helpdesk_phone']) {?>
-									<li><strong><?php echo Yii::app()->params['helpdesk_phone'] ?></strong></li>
-								<?php } ?>
-								<?php if (Yii::app()->params['help_url']) {?>
-									<li><?php echo CHtml::link('Help Documentation', Yii::app()->params['help_url'], array('target'=>'_blank')) ?></li>
-								<?php } ?>
-						</ul>
-				</div>
+			<div class="panel">
+				<ul class="inline-list">
+					<li><strong>Need help?</strong></li>
+					<?php if (Yii::app()->params['helpdesk_email']) { ?>
+						<li><?php echo Yii::app()->params['helpdesk_email'] ?></li>
+					<?php } ?>
+					<?php if (Yii::app()->params['helpdesk_phone']) { ?>
+						<li><strong><?php echo Yii::app()->params['helpdesk_phone'] ?></strong></li>
+					<?php } ?>
+					<?php if (Yii::app()->params['help_url']) { ?>
+						<li><?php echo CHtml::link('Help Documentation', Yii::app()->params['help_url'],
+								array('target' => '_blank')) ?></li>
+					<?php } ?>
+				</ul>
+			</div>
 		</div>
-</footer>
+	</footer>
 
-<script type="text/javascript">
-$(document).ready(function() {
-	$('#support-info-link').live('click',function(e) {
-		e.preventDefault();
-		new OpenEyes.UI.Dialog({
-			url: this.href,
-			title: 'Support Information'
-		}).open();
-	});
-});
-</script>
+	<script type="text/javascript">
+		$(document).foundation();
+		$(document).ready(function () {
+			$('#support-info-link').live('click', function (e) {
+				e.preventDefault();
+				new OpenEyes.UI.Dialog({
+					url: this.href,
+					title: 'Support Information'
+				}).open();
+			});
+		});
+	</script>
 
 <?php
-	$this->renderPartial('//base/_script_templates', array());
+$this->renderPartial('//base/_script_templates', array());
 ?>

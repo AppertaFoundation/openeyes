@@ -214,6 +214,8 @@ return array(
 				array('api/badrequest', 'pattern' => 'api/(.*)'),
 
 				'<module:\w+>/<controller:\w+>/<action:\w+>/<id:\d+>' => '<module>/<controller>/<action>',
+				'<module:\w+>/oeadmin/<controller:\w+>/<action:\w+>' => '<module>/oeadmin/<controller>/<action>',
+				'<module:\w+>/oeadmin/<controller:\w+>/<action:\w+>/<id:\d+>' => '<module>/oeadmin/<controller>/<action>',
 				'<controller:\w+>/<id:\d+>' => '<controller>/view',
 				'<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
 				'<controller:\w+>/<action:\w+>' => '<controller>/<action>',
@@ -239,8 +241,6 @@ return array(
 		'ab_testing' => false,
 		'auth_source' => 'BASIC', // Options are BASIC or LDAP.
 		// This is used in contact page
-		'alerts_email' => 'alerts@example.com',
-		'adminEmail' => 'webmaster@example.com',
 		'ldap_server' => '',
 		'ldap_port' => '',
 		'ldap_admin_dn' => '',
@@ -254,10 +254,6 @@ return array(
 		'ldap_update_email' => true,
 		'environment' => 'dev',
 		'watermark' => '',
-		'watermark_admin' => 'You are logged in as admin. So this is OpenEyes Goldenrod Edition',
-		'watermark_description' => '',
-		'helpdesk_email' => 'helpdesk@example.com',
-		'helpdesk_phone' => '12345678',
 		'google_analytics_account' => '',
 		'local_users' => array(),
 		'log_events' => true,
@@ -278,11 +274,31 @@ return array(
 				'uri' => '',
 				'position' => 1,
 			),
-			'reports' => array(
-				'title' => 'Reports',
-				'uri' => 'report',
-				'position' => 50,
-				'restricted' => array('Report'),
+			'admin' => array(
+				'title' => 'Admin',
+				'uri' => '#',
+				'position' => 2,
+				'restricted' => array('admin', 'Report'),
+				'sub' => array(
+					'admin' => array(
+						'title' => 'Admin',
+						'uri' => 'admin',
+						'position' => 1,
+						'restricted' => array('admin'),
+					),
+					'audit' => array(
+						'title' => 'Audit',
+						'uri' => 'audit',
+						'position' => 2,
+						'restricted' => array('admin'),
+					),
+					'reports' => array(
+						'title' => 'Reports',
+						'uri' => 'report',
+						'position' => 3,
+						'restricted' => array('Report'),
+					),
+				)
 			),
 			'logout' => array(
 				'title' => 'Logout',

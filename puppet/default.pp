@@ -1,7 +1,12 @@
 node default {
 
+  exec { 'apt-mirror':
+    command => "/bin/sed -i 's,us.archive.ubuntu.com/ubuntu,mirror.vorboss.net/ubuntu-archive,' /etc/apt/sources.list",
+  }
+
 	exec { 'apt-update':
 		command => '/usr/bin/apt-get update',
+    require => Exec['apt-mirror'],
 	}
 
 	include core::apache2
@@ -13,6 +18,7 @@ node default {
 	include core::wkhtmltox
 	include core::openeyes
 	include core::composer
+
 
 	if $mode == 'dev' {
 		include dev::vim
@@ -30,6 +36,7 @@ node default {
 			remote_enable => 1,
 			remote_port => 9000
 		}
+    include dev::ant
 	}
 
 	if $mode == 'ci' {

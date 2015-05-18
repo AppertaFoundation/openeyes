@@ -22,7 +22,7 @@
 	$warnings = $this->patient->getWarnings($clinical);
 ?>
 
-<div class="panel patient<?php if ($warnings) echo " warning" ?>" id="patientID">
+<div class="panel patient<?php if ($warnings): echo " warning"; endif; ?>" id="patientID">
 	<div class="patient-details">
 		<?php echo CHtml::link($this->patient->getDisplayName(),array('/patient/view/'.$this->patient->id)) ?>
 		<span class="patient-age">(<?php if ($this->patient->isDeceased()) { ?>Deceased<?php } else { echo $this->patient->getAge(); } ?>)</span>
@@ -52,16 +52,19 @@
 				<?php echo $this->patient->getGenderString() ?>
 			</span>
 
-			<?php if ($widgets = Yii::app()->params['patient_summary_id_widgets']) {
+			<?php
+			$widgets = Yii::app()->params['patient_summary_id_widgets'];
+			if (is_array($widgets)) {
 				foreach ($widgets as $w) {
 					$this->widget($w['class'], array(
 									'patient' => $this->patient,
 							));
 				}
-			}?>
+			}
+			?>
 
 			<!-- Warnings -->
-			<?php if ($warnings) {
+			<?php if (is_array($warnings)) {
 				$msgs = array();
 				foreach ($warnings as $warn) {
 					$msgs[] = $warn['short_msg'];

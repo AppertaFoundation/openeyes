@@ -102,7 +102,7 @@ class Prescription extends OpenEyesPage
 
     public function item0DoseDrops ($drops)
     {
-        $this->getElement('prescriptionDoseItem0')->selectOption($drops);
+        $this->getElement('prescriptionDoseItem0')->setValue($drops);
     }
 
     public function item0Route ($route)

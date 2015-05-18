@@ -159,10 +159,11 @@
 			$('#btn-add_new_ophthalmic_diagnosis').attr('disabled',true);
 			$('#btn-add_new_ophthalmic_diagnosis').addClass('disabled');
 		});
-		$('button.btn_cancel_ophthalmic_diagnosis').click(function() {
+		$('button.btn_cancel_ophthalmic_diagnosis').click(function(e) {
 			$('#add_new_ophthalmic_diagnosis').slideToggle('fast');
 			$('#btn-add_new_ophthalmic_diagnosis').attr('disabled',false);
 			$('#btn-add_new_ophthalmic_diagnosis').removeClass('disabled');
+			OpenEyes.Form.reset($(e.target).closest('form'));
 			return false;
 		});
 		$('button.btn_save_ophthalmic_diagnosis').click(function() {

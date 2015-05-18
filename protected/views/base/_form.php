@@ -18,84 +18,53 @@
  */
 ?>
 <?php
-$uri = preg_replace('/^\//','',preg_replace('/\/$/','',$_SERVER['REQUEST_URI']));
+$uri = preg_replace('/^\//', '', preg_replace('/\/$/', '', $_SERVER['REQUEST_URI']));
 
 if (!Yii::app()->user->isGuest) {
 	$user = User::model()->findByPk(Yii::app()->user->id);
-	if (!preg_match('/^profile\//',$uri)) {
+	if (!preg_match('/^profile\//', $uri)) {
 		if (!$user->has_selected_firms && !$user->global_firm_rights && empty(Yii::app()->session['shown_reminder'])) {
 			Yii::app()->session['shown_reminder'] = true;
 			$this->widget('SiteAndFirmWidgetReminder');
-		} else if (!empty(Yii::app()->session['confirm_site_and_firm'])) {
-			$this->widget('SiteAndFirmWidget', array(
-				'returnUrl' => Yii::app()->request->requestUri,
-				)
-			);
+		} else {
+			if (!empty(Yii::app()->session['confirm_site_and_firm'])) {
+				$this->widget('SiteAndFirmWidget', array(
+						'returnUrl' => Yii::app()->request->requestUri,
+					)
+				);
+			}
 		}
 	}
 	if (empty(Yii::app()->session['user'])) {
 		Yii::app()->session['user'] = User::model()->findByPk(Yii::app()->user->id);
 	}
 	$user = Yii::app()->session['user'];
-	$menu = array();
-	foreach (Yii::app()->params['menu_bar_items'] as $menu_item) {
-		if (isset($menu_item['restricted'])) {
-			$allowed = false;
-			foreach ($menu_item['restricted'] as $authitem) {
-				if (Yii::app()->user->checkAccess($authitem)) {
-					$allowed = true;
-					break;
-				}
-			}
-			if (!$allowed) {
-				continue;
-			}
-		}
-		if (isset($menu_item['api'])) {
-			$api = Yii::app()->moduleAPI->get($menu_item['api']);
-			foreach ($api->getMenuItems($menu_item['position']) as $item) {
-				$menu[$item['position']] = $item;
-			}
-		}
-		else {
-			$menu[$menu_item['position']] = $menu_item;
-		}
-	}
-	ksort($menu);
+	$menuHelper = new MenuHelper(Yii::app()->params['menu_bar_items'], Yii::app()->user, $uri);
 	?>
 
 	<div class="panel user">
-		<ul class="inline-list navigation user right">
-			<?php foreach ($menu as $item) {?>
-				<?php if ($uri == $item['uri']) {?>
-					<li class="selected">
-				<?php } else { ?>
-					<li>
-				<?php }?>
-				<?php echo CHtml::link($item['title'], Yii::app()->getBaseUrl() . '/' . ltrim($item['uri'], '/'))?>
-				</li>
-			<?php }?>
-		</ul>
+		<?= $menuHelper->render() ?>
 		<div class="row">
 			<div class="large-3 column">
 				<div class="user-id">
 					You are logged in as:
 					<div class="user-name">
-						<?php if (Yii::app()->params['profile_user_can_edit']) {?>
-							<a href="<?php echo Yii::app()->createUrl('/profile');?>">
+						<?php if (Yii::app()->params['profile_user_can_edit']) { ?>
+							<a href="<?php echo Yii::app()->createUrl('/profile'); ?>">
 								<span class="icon-user-panel-cog"></span>
-								<strong><?php echo $user->first_name.' '.$user->last_name;?></strong>
+								<strong><?php echo $user->first_name . ' ' . $user->last_name; ?></strong>
 							</a>
-						<?php } else {?>
-							<strong><?php echo $user->first_name?> <?php echo $user->last_name?></strong>
-						<?php }?>
+						<?php } else { ?>
+							<strong><?php echo $user->first_name ?> <?php echo $user->last_name ?></strong>
+						<?php } ?>
 					</div>
 				</div>
 			</div>
 			<div class="large-9 column">
 				<div class="user-firm text-right">
 					Site: <strong><?php echo Site::model()->findByPk($this->selectedSiteId)->short_name; ?></strong>,
-					Firm: <strong><?php echo Firm::model()->findByPk($this->selectedFirmId)->getNameAndSubspecialty(); ?></strong>
+					Firm:
+					<strong><?php echo Firm::model()->findByPk($this->selectedFirmId)->getNameAndSubspecialty(); ?></strong>
 					<span class="change-firm">(<a href="#">Change</a>)</span>
 				</div>
 			</div>

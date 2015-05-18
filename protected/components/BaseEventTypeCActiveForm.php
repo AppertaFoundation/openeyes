@@ -19,6 +19,14 @@
 
 class BaseEventTypeCActiveForm extends FormLayout
 {
+	/**
+	 * @param CModel $model
+	 * @param string $field
+	 * @param array $data
+	 * @param array $htmlOptions
+	 * @param bool $hidden
+	 * @param array $layoutColumns
+	 */
 	public function dropDownList($model, $field, $data, $htmlOptions=array(), $hidden=false, $layoutColumns=array())
 	{
 		$this->widget('application.widgets.DropDownList', array(
@@ -31,6 +39,13 @@ class BaseEventTypeCActiveForm extends FormLayout
 		));
 	}
 
+	/**
+	 * @param $model
+	 * @param $fields
+	 * @param $datas
+	 * @param array $htmlOptions
+	 * @param array $layoutColumns
+	 */
 	public function dropDownListRow($model, $fields, $datas, $htmlOptions=array(), $layoutColumns=array())
 	{
 		if (!isset($layoutColumns['field'])) {
@@ -45,6 +60,13 @@ class BaseEventTypeCActiveForm extends FormLayout
 		));
 	}
 
+	/**
+	 * @param $id
+	 * @param $data
+	 * @param $selected_value
+	 * @param array $htmlOptions
+	 * @param array $layoutColumns
+	 */
 	public function dropDownListNoPost($id, $data, $selected_value, $htmlOptions=array(), $layoutColumns=array())
 	{
 		$this->widget('application.widgets.DropDownListNoPost', array(
@@ -56,6 +78,19 @@ class BaseEventTypeCActiveForm extends FormLayout
 		));
 	}
 
+
+	/**
+	 * @param $element
+	 * @param $field
+	 * @param $data
+	 * @param null $selected_item
+	 * @param bool $maxwidth
+	 * @param bool $hidden
+	 * @param bool $no_element
+	 * @param bool $label_above
+	 * @param array $htmlOptions
+	 * @param array $layoutColumns
+	 */
 	public function radioButtons($element, $field, $data, $selected_item=null, $maxwidth=false, $hidden=false, $no_element=false, $label_above=false, $htmlOptions=array(), $layoutColumns=array())
 	{
 		$this->widget('application.widgets.RadioButtonList', array(
@@ -73,6 +108,12 @@ class BaseEventTypeCActiveForm extends FormLayout
 		));
 	}
 
+	/**
+	 * @param $element
+	 * @param $field
+	 * @param array $htmlOptions
+	 * @param array $layoutColumns
+	 */
 	public function radioBoolean($element, $field, $htmlOptions=array(), $layoutColumns=array())
 	{
 		$this->widget('application.widgets.RadioButtonList', array(
@@ -89,6 +130,13 @@ class BaseEventTypeCActiveForm extends FormLayout
 		));
 	}
 
+	/**
+	 * @param $element
+	 * @param $field
+	 * @param array $options
+	 * @param array $htmlOptions
+	 * @param array $layoutColumns
+	 */
 	public function datePicker($element, $field, $options=array(), $htmlOptions=array(), $layoutColumns=array())
 	{
 		$this->widget('application.widgets.DatePicker', array(
@@ -101,6 +149,14 @@ class BaseEventTypeCActiveForm extends FormLayout
 		));
 	}
 
+	/**
+	 * @param CModel $element
+	 * @param string $field
+	 * @param array $options
+	 * @param bool $hidden
+	 * @param array $htmlOptions
+	 * @param array $layoutColumns
+	 */
 	public function textArea($element, $field, $options=array(), $hidden=false, $htmlOptions=array(), $layoutColumns=array())
 	{
 		$this->widget('application.widgets.TextArea', array_merge(array(
@@ -112,6 +168,13 @@ class BaseEventTypeCActiveForm extends FormLayout
 		), $options));
 	}
 
+	/**
+	 * @param CModel $element
+	 * @param string $field
+	 * @param array $htmlOptions
+	 * @param array $links
+	 * @param array $layoutColumns
+	 */
 	public function textField($element, $field, $htmlOptions=array(), $links=array(), $layoutColumns=array())
 	{
 		$this->widget('application.widgets.TextField', array(
@@ -124,6 +187,12 @@ class BaseEventTypeCActiveForm extends FormLayout
 		));
 	}
 
+	/**
+	 * @param CModel $element
+	 * @param string $field
+	 * @param array $htmlOptions
+	 * @param array $layoutColumns
+	 */
 	public function passwordField($element, $field, $htmlOptions=array(), $layoutColumns=array())
 	{
 		$htmlOptions['password'] = 1;
@@ -137,6 +206,13 @@ class BaseEventTypeCActiveForm extends FormLayout
 		));
 	}
 
+	/**
+	 * @param $element
+	 * @param $label
+	 * @param $name
+	 * @param array $htmlOptions
+	 * @param array $layoutColumns
+	 */
 	public function passwordConfirmField($element, $label, $name, $htmlOptions=array(), $layoutColumns=array())
 	{
 		$htmlOptions = array_merge(array(
@@ -153,6 +229,12 @@ class BaseEventTypeCActiveForm extends FormLayout
 		));
 	}
 
+	/**
+	 * @param CModel $element
+	 * @param string $field
+	 * @param array $htmlOptions
+	 * @param array $layoutColumns
+	 */
 	public function checkBox($element, $field, $htmlOptions=array(), $layoutColumns=array())
 	{
 		$this->widget('application.widgets.CheckBox', array(
@@ -163,6 +245,12 @@ class BaseEventTypeCActiveForm extends FormLayout
 		));
 	}
 
+	/**
+	 * @param $element
+	 * @param $labeltext
+	 * @param $fields
+	 * @param array $layoutColumns
+	 */
 	public function checkBoxArray($element, $labeltext, $fields, $layoutColumns=array())
 	{
 		$this->widget('application.widgets.CheckBoxArray', array(
@@ -173,6 +261,22 @@ class BaseEventTypeCActiveForm extends FormLayout
 		));
 	}
 
+	/**
+	 * @param $element
+	 * @param $field
+	 * @param $relation
+	 * @param $relation_id_field
+	 * @param $options
+	 * @param $default_options
+	 * @param array $htmlOptions
+	 * @param bool $hidden
+	 * @param bool $inline
+	 * @param null $noSelectionsMessage
+	 * @param bool $showRemoveAllLink
+	 * @param bool $sorted
+	 * @param array $layoutColumns
+	 * @param null $model
+	 */
 	public function multiSelectListFreeText($element, $field, $relation, $relation_id_field, $options, $default_options, $htmlOptions=array(), $hidden=false, $inline=false, $noSelectionsMessage=null, $showRemoveAllLink=false, $sorted=false, $layoutColumns=array(), $model=null)
 	{
 		$this->widget('application.widgets.MultiSelectListFreeText', array(
@@ -193,6 +297,21 @@ class BaseEventTypeCActiveForm extends FormLayout
 		));
 	}
 
+	/**
+	 * @param $element
+	 * @param $field
+	 * @param $relation
+	 * @param $relation_id_field
+	 * @param $options
+	 * @param $default_options
+	 * @param array $htmlOptions
+	 * @param bool $hidden
+	 * @param bool $inline
+	 * @param null $noSelectionsMessage
+	 * @param bool $showRemoveAllLink
+	 * @param bool $sorted
+	 * @param array $layoutColumns
+	 */
 	public function multiSelectList($element, $field, $relation, $relation_id_field, $options, $default_options, $htmlOptions=array(), $hidden=false, $inline=false, $noSelectionsMessage=null, $showRemoveAllLink=false, $sorted=false, $layoutColumns=array())
 	{
 		$this->widget('application.widgets.MultiSelectList', array(
@@ -212,6 +331,13 @@ class BaseEventTypeCActiveForm extends FormLayout
 		));
 	}
 
+	/**
+	 * @param $element
+	 * @param $text_field
+	 * @param $options
+	 * @param array $htmlOptions
+	 * @param array $layoutColumns
+	 */
 	public function dropDownTextSelection($element, $text_field, $options, $htmlOptions=array(), $layoutColumns=array())
 	{
 		$this->widget('application.widgets.DropDownTextSelection', array(
@@ -223,6 +349,13 @@ class BaseEventTypeCActiveForm extends FormLayout
 		));
 	}
 
+	/**
+	 * @param $element
+	 * @param $text_field
+	 * @param $options
+	 * @param $htmlOptions
+	 * @param array $layoutColumns
+	 */
 	public function multiDropDownTextSelection($element, $text_field, $options, $htmlOptions, $layoutColumns=array())
 	{
 		$this->widget('application.widgets.MultiDropDownTextSelection', array(
@@ -234,6 +367,13 @@ class BaseEventTypeCActiveForm extends FormLayout
 		));
 	}
 
+	/**
+	 * @param $element
+	 * @param $field
+	 * @param bool $value
+	 * @param array $htmlOptions
+	 * @param array $layoutColumns
+	 */
 	public function hiddenInput($element, $field, $value=false, $htmlOptions=array(), $layoutColumns=array())
 	{
 		$this->widget('application.widgets.HiddenField', array(
@@ -245,6 +385,13 @@ class BaseEventTypeCActiveForm extends FormLayout
 		));
 	}
 
+	/**
+	 * @param $element
+	 * @param $field
+	 * @param $options
+	 * @param array $htmlOptions
+	 * @param array $layoutColumns
+	 */
 	public function slider($element, $field, $options, $htmlOptions=array(), $layoutColumns=array())
 	{
 		$this->widget('application.widgets.Slider', array(
@@ -265,6 +412,12 @@ class BaseEventTypeCActiveForm extends FormLayout
 		));
 	}
 
+	/**
+	 * @param $element
+	 * @param $field
+	 * @param $data
+	 * @param array $layoutColumns
+	 */
 	public function sliderTable($element, $field, $data, $layoutColumns=array())
 	{
 		$this->widget('application.widgets.SliderTable', array(
@@ -275,6 +428,12 @@ class BaseEventTypeCActiveForm extends FormLayout
 		));
 	}
 
+	/**
+	 * @param CModel $element
+	 * @param string $field
+	 * @param array $htmlOptions
+	 * @param array $layoutColumns
+	 */
 	public function hiddenField($element, $field, $htmlOptions=array(), $layoutColumns=array()) {
 		$this->widget('application.widgets.HiddenField', array(
 			'element' => $element,
@@ -284,6 +443,11 @@ class BaseEventTypeCActiveForm extends FormLayout
 		));
 	}
 
+	/**
+	 * @param array $buttonOptions
+	 * @param array $htmlOptions
+	 * @param array $layoutColumns
+	 */
 	public function formActions($buttonOptions=array(), $htmlOptions=array(), $layoutColumns=array()) {
 		$this->widget('application.widgets.FormActions', array(
 			'buttonOptions' => $buttonOptions,
@@ -292,6 +456,13 @@ class BaseEventTypeCActiveForm extends FormLayout
 		));
 	}
 
+	/**
+	 * @param mixed $models
+	 * @param null $header
+	 * @param null $footer
+	 * @param array $htmlOptions
+	 * @return string
+	 */
 	public function errorSummary($models,$header=null,$footer=null,$htmlOptions=array()) {
 		if (!isset($htmlOptions['class'])) {
 			$htmlOptions['class'] = 'alert-box alert with-icon';

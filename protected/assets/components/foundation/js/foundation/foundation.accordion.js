@@ -4,11 +4,14 @@
   Foundation.libs.accordion = {
     name : 'accordion',
 
-    version : '5.0.3',
+    version : '5.5.1',
 
     settings : {
-      active_class: 'active',
-      toggleable: true
+      content_class : 'content',
+      active_class : 'active',
+      multi_expand : false,
+      toggleable : true,
+      callback : function () {}
     },
 
     init : function (scope, method, options) {
@@ -16,21 +19,44 @@
     },
 
     events : function () {
-      $(this.scope).off('.accordion').on('click.fndtn.accordion', '[data-accordion] > dd > a', function (e) {
-        var accordion = $(this).parent(),
-            target = $('#' + this.href.split('#')[1]),
-            siblings = $('> dd > .content', target.closest('[data-accordion]')),
-            settings = accordion.parent().data('accordion-init'),
-            active = $('> dd > .content.' + settings.active_class, accordion.parent());
+      var self = this;
+      var S = this.S;
+      S(this.scope)
+      .off('.fndtn.accordion')
+      .on('click.fndtn.accordion', '[' + this.attr_name() + '] > .accordion-navigation > a', function (e) {
+        var accordion = S(this).closest('[' + self.attr_name() + ']'),
+            groupSelector = self.attr_name() + '=' + accordion.attr(self.attr_name()),
+            settings = accordion.data(self.attr_name(true) + '-init') || self.settings,
+            target = S('#' + this.href.split('#')[1]),
+            aunts = $('> .accordion-navigation', accordion),
+            siblings = aunts.children('.' + settings.content_class),
+            active_content = siblings.filter('.' + settings.active_class);
 
         e.preventDefault();
 
-        if (active[0] == target[0] && settings.toggleable) {
-          return target.toggleClass(settings.active_class);
+        if (accordion.attr(self.attr_name())) {
+          siblings = siblings.add('[' + groupSelector + '] dd > ' + '.' + settings.content_class);
+          aunts = aunts.add('[' + groupSelector + '] .accordion-navigation');
         }
 
-        siblings.removeClass(settings.active_class);
-        target.addClass(settings.active_class);
+        if (settings.toggleable && target.is(active_content)) {
+          target.parent('.accordion-navigation').toggleClass(settings.active_class, false);
+          target.toggleClass(settings.active_class, false);
+          settings.callback(target);
+          target.triggerHandler('toggled', [accordion]);
+          accordion.triggerHandler('toggled', [target]);
+          return;
+        }
+
+        if (!settings.multi_expand) {
+          siblings.removeClass(settings.active_class);
+          aunts.removeClass(settings.active_class);
+        }
+
+        target.addClass(settings.active_class).parent().addClass(settings.active_class);
+        settings.callback(target);
+        target.triggerHandler('toggled', [accordion]);
+        accordion.triggerHandler('toggled', [target]);
       });
     },
 
@@ -38,4 +64,4 @@
 
     reflow : function () {}
   };
-}(jQuery, this, this.document));
+}(jQuery, window, window.document));
