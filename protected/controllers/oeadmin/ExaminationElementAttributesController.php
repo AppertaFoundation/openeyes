@@ -35,7 +35,7 @@ class ExaminationElementAttributesController extends BaseAdminController
 		));
 		$admin->searchAll();
 		$admin->setModelDisplayName('Element Attributes');
-		$admin->getSearch()->addActiveFilter();
+		//$admin->getSearch()->addActiveFilter();
 		$admin->getSearch()->setItemsPerPage($this->itemsPerPage);
 		$admin->listModel();
 
@@ -199,6 +199,37 @@ class ExaminationElementAttributesController extends BaseAdminController
 					print_r($attribute->getErrors(), true);
 				}
 			}
+		}
+	}
+
+	public function actionSearch()
+	{
+		if (Yii::app()->request->isAjaxRequest) {
+			$criteria = new CDbCriteria();
+			if (isset($_GET['term']) && strlen($term = $_GET['term']) > 0) {
+				$criteria->addCondition(array('LOWER(name) LIKE :term'),
+					'OR');
+				$params[':term'] = '%' . strtolower(strtr($term, array('%' => '\%'))) . '%';
+			}
+
+			$criteria->order = 'name';
+			$criteria->select = 'id, name';
+			$criteria->params = $params;
+
+			$newOCEA = new OEModule\OphCiExamination\models\OphCiExamination_Attribute();
+
+
+			$results = $newOCEA::model()->active()->findAll($criteria);
+
+			$return = array();
+			foreach ($results as $resultRow) {
+				$return[] = array(
+					'label' => $resultRow->name,
+					'value' => $resultRow->name,
+					'id' => $resultRow->id,
+				);
+			}
+			echo CJSON::encode($return);
 		}
 	}
 }
