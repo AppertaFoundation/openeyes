@@ -101,6 +101,7 @@ $config = array(
 		'specialty_codes' => array(130),
 		//'default_site_code' => '',
 		'specialty_sort' => array(130, 'SUP'),
+		'OphCoTherapyapplication_sender_email' => array('email@example.com' => 'Test'),
 	),
 );
 
