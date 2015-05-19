@@ -1,5 +1,6 @@
 @asa @regression
 Feature: Anaesthetic Satisfaction Audit Regression Tests
+@ASA
   Regression coverage of this event is 100%
   Across 2 Sites and 4 Firms
 
@@ -20,7 +21,7 @@ Feature: Anaesthetic Satisfaction Audit Regression Tests
     And I add a New Event "Satisfaction"
 
     Then I select an Anaesthetist "no"
-    And I select Satisfaction levels of Pain "2" Nausea "3"
+    #And I select Satisfaction levels of Pain "2" Nausea "3"
 
     And I tick the Vomited checkbox
 
@@ -50,7 +51,7 @@ Feature: Anaesthetic Satisfaction Audit Regression Tests
     And I add a New Event "Satisfaction"
 
     Then I select an Anaesthetist "non"
-    And I select Satisfaction levels of Pain "5" Nausea "1"
+    #And I select Satisfaction levels of Pain "5" Nausea "1"
 
     And I untick the Vomited checkbox
 
@@ -80,7 +81,7 @@ Feature: Anaesthetic Satisfaction Audit Regression Tests
     And I add a New Event "Satisfaction"
 
     Then I select an Anaesthetist "no"
-    And I select Satisfaction levels of Pain "7" Nausea "2"
+    #And I select Satisfaction levels of Pain "7" Nausea "2"
 
     And I tick the Vomited checkbox
 
@@ -110,7 +111,7 @@ Feature: Anaesthetic Satisfaction Audit Regression Tests
     And I add a New Event "Satisfaction"
 
     Then I select an Anaesthetist "non"
-    And I select Satisfaction levels of Pain "0" Nausea "0"
+    #And I select Satisfaction levels of Pain "0" Nausea "0"
 
     And I untick the Vomited checkbox
 

@@ -102,7 +102,8 @@ class Examination extends OpenEyesPage
         'discussedWithPatientNo' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_correction_discussed_0']"),
         'suitableForSurgeon' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_suitable_for_surgeon_id']"),
         'supervisedCheckbox' => array ('xpath' => "//input[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_supervised']"),
-        'previousRefractiveSurgeryYes' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_previous_refractive_surgery_1']"),
+        //'previousRefractiveSurgeryYes' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_previous_refractive_surgery_1']//*[@value='1']"),
+    	'previousRefractiveSurgeryYes' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_previous_refractive_surgery_1']"),
         'previousRefractiveSurgeryNo' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_previous_refractive_surgery_0']"),
         'VitrectomisedEyeYes' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_vitrectomised_eye_1']"),
         'VitrectomisedEyeNo' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_vitrectomised_eye_0']"),
@@ -244,7 +245,7 @@ class Examination extends OpenEyesPage
         'investigationValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Investigation: Description cannot be blank when there are no child elements')]"),
         'dilationValidationErrorLeft' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Dilation: Left Treatments cannot be blank.')]"),
         'dilationValidationErrorRight' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Dilation: Right Treatments cannot be blank.')]"),
-        'removeRefractionRightSide' => array('xpath' => "//*[@class='element-eye right-eye column side right']//*[@class='icon-remove-side remove-side']"),
+    	'removeRefractionRightSide' => array('xpath' => "//*[@class='element-eye right-eye column side right']"),
         'removeAllComorbidities' => array('xpath' => "//*[@class='field-row comorbidities-multi-select']//a[contains(text(),'Remove all')]"),
 
          #DR Grading
@@ -272,7 +273,8 @@ class Examination extends OpenEyesPage
         'leftEyeMissing' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_left_eye_missing']"),
         'rightEyeMissing' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_right_eye_missing']"),
         'rightRisks' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_InjectionManagementComplex_right_risks']"),
-        'leftRisks' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_InjectionManagementComplex_left_risks']"),
+        //'leftRisks' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_InjectionManagementComplex_left_risks']"),
+    	'leftRisks' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_InjectionManagementComplex_left_risks']//*[@value='1']"),
         'rightInjectionComments' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_InjectionManagementComplex_right_comments']"),
         'leftInjectionComments' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_InjectionManagementComplex_left_comments']"),
 
@@ -637,7 +639,7 @@ class Examination extends OpenEyesPage
 
         $element = $this->getElement('diagnosesLeftEye');
         $this->scrollWindowToElement($element);
-        $element->check();
+        $element->click();
         $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
 
@@ -648,12 +650,13 @@ class Examination extends OpenEyesPage
 
     public function diagnosesBothEyes ()
     {
-        $this->getElement('diagnosesBothEyes')->click();
+    	sleep(5);
+        $this->getElement('diagnosesBothEyes')->doubleClick();
     }
 
     public function principalDiagnosis ()
     {
-        $this->getElement('principalDiagnosis')->check();
+        $this->getElement('principalDiagnosis')->click();
     }
 
     public function expandInvestigation ()
@@ -729,20 +732,23 @@ class Examination extends OpenEyesPage
     {
         $element = $this->getElement('discussedWithPatientYes');
         $this->scrollWindowToElement($element);
-        $element->check();
+        $element->click();
     }
 
     public function discussedWithPatientNo ()
     {
         $element = $this->getElement('discussedWithPatientNo');
         $this->scrollWindowToElement($element);
-        $element->check();
+        $element->click();
     }
 
     public function suitableForSurgeon ($surgeon)
     {
         $this->getElement('suitableForSurgeon')->click();
         $this->getElement('suitableForSurgeon')->setValue($surgeon);
+        sleep(5);
+        //selenium.KeyPressNative("9");
+        //selenium.KeyPressNative("32");
     }
 
     public function supervisedCheckbox ()
@@ -752,7 +758,11 @@ class Examination extends OpenEyesPage
 
     public function previousRefractiveSurgeryYes ()
     {
-        $this->getElement('previousRefractiveSurgeryYes')->click();
+        //$this->getElement('previousRefractiveSurgeryYes')->Click();
+        sleep(5);
+        $this->getElement('previousRefractiveSurgeryYes')->doubleClick();
+        //$this->getSession()->wait(5000, 'window.$ && $.active == 0');
+        
     }
 
     public function previousRefractiveSurgeryNo ()
@@ -849,82 +859,84 @@ class Examination extends OpenEyesPage
 
     public function rightCRTIncreaseLowerThanHundredYes ()
     {
-        $this->getElement('rightCrtIncreaseLowerHundredYes')->click();
+        sleep(5);
+    	$this->getElement('rightCrtIncreaseLowerHundredYes')->doubleClick();
     }
 
     public function rightCRTIncreaseLowerThanHundredNo ()
     {
-        $this->getElement('rightCrtIncreaseLowerHundredNo')->click();
+        $this->getElement('rightCrtIncreaseLowerHundredNo')->doubleClick();
     }
 
     public function rightCRTIncreaseMoreThanHundredYes ()
     {
-        $this->getElement('rightCrtIncreaseMoreThanHundredYes')->click();
+        $this->getElement('rightCrtIncreaseMoreThanHundredYes')->doubleClick();
     }
 
     public function rightCRTIncreaseMoreThanHundredNo ()
     {
-        $this->getElement('rightCrtIncreaseMoreThanHundredNo')->click();
+        $this->getElement('rightCrtIncreaseMoreThanHundredNo')->doubleClick();
     }
 
     public function rightLossOfFiveLettersYes ()
     {
-        $this->getElement('rightLossOfFiveLettersYes')->click();
+        $this->getElement('rightLossOfFiveLettersYes')->doubleClick();
     }
 
     public function rightLossOfFiveLettersNo ()
     {
-        $this->getElement('rightLossOfFiveLettersNo')->click();
+        $this->getElement('rightLossOfFiveLettersNo')->doubleClick();
     }
 
     public function rightLossOfFiveLettersHigherThanFiveYes ()
     {
-        $this->getElement('rightLossOfFiveLettersHigherThanFiveYes')->click();
+        $this->getElement('rightLossOfFiveLettersHigherThanFiveYes')->doubleClick();
     }
 
     public function rightLossOfFiveLettersHigherThanFiveNo ()
     {
-        $this->getElement('rightLossOfFiveLettersHigherThanFiveNo')->click();
+        $this->getElement('rightLossOfFiveLettersHigherThanFiveNo')->doubleClick();
     }
 
     public function leftCRTIncreaseLowerThanHundredYes ()
     {
-        $this->getElement('leftCrtIncreaseLowerHundredYes')->click();
+        sleep(5);
+    	$this->getElement('leftCrtIncreaseLowerHundredYes')->doubleClick();
     }
 
     public function leftCRTIncreaseLowerThanHundredNo ()
     {
-        $this->getElement('leftCrtIncreaseLowerHundredNo')->click();
+        $this->getElement('leftCrtIncreaseLowerHundredNo')->doubleClick();
     }
 
     public function leftCRTIncreaseMoreThanHundredYes ()
     {
-        $this->getElement('leftCrtIncreaseMoreThanHundredYes')->click();
+        $this->getElement('leftCrtIncreaseMoreThanHundredYes')->doubleClick();
     }
 
     public function leftCRTIncreaseMoreThanHundredNo ()
     {
-        $this->getElement('leftCrtIncreaseMoreThanHundredNo')->click();
+        $this->getElement('leftCrtIncreaseMoreThanHundredNo')->doubleClick();
     }
 
     public function leftLossOfFiveLettersYes ()
     {
-        $this->getElement('leftLossOfFiveLettersYes')->click();
+        $this->getElement('leftLossOfFiveLettersYes')->doubleClick();
     }
 
     public function leftLossOfFiveLettersNo ()
     {
-        $this->getElement('leftLossOfFiveLettersNo')->click();
+        $this->getElement('leftLossOfFiveLettersNo')->doubleClick();
     }
 
     public function leftLossOfFiveLettersHigherThanFiveYes ()
     {
-        $this->getElement('leftLossOfFiveLettersHigherThanFiveYes')->click();
+        $this->getElement('leftLossOfFiveLettersHigherThanFiveYes')->doubleClick();
     }
 
     public function leftLossOfFiveLettersHigherThanFiveNo ()
     {
-        $this->getElement('leftLossOfFiveLettersHigherThanFiveNo')->click();
+        $this->getElement('leftLossOfFiveLettersHigherThanFiveNo')->doubleClick();
     }
 
     public function rightMacularRetinal ()
@@ -1109,7 +1121,7 @@ class Examination extends OpenEyesPage
     public function saveExaminationAndConfirm ()
     {
         $this->getElement('saveExamination')->click();
-
+        
         if ($this->hasExaminationSaved()) {
             print "Examination has been saved OK";
         }
@@ -1311,22 +1323,22 @@ class Examination extends OpenEyesPage
 
     public function leftRetinoPhotoYes ()
     {
-        $this->getElement('leftRetinoPhotoYes')->check();
+        $this->getElement('leftRetinoPhotoYes')->click();
     }
 
     public function leftRetinoPhotoNo ()
     {
-        $this->getElement('leftRetinoPhotoNo')->check();
+        $this->getElement('leftRetinoPhotoNo')->click();
     }
 
     public function rightRetinoPhotoYes ()
     {
-        $this->getElement('rightRetinoPhotoYes')->check();
+        $this->getElement('rightRetinoPhotoYes')->click();
     }
 
     public function rightRetinoPhotoNo ()
     {
-        $this->getElement('rightRetinoPhotoNo')->check();
+        $this->getElement('rightRetinoPhotoNo')->click();
     }
 
     public function leftClinicalGradingMaculo ($grading)
@@ -1351,42 +1363,42 @@ class Examination extends OpenEyesPage
 
     public function leftMaculoPhotoYes ()
     {
-        $this->getElement('leftMaculoPhotoYes')->check();
+        $this->getElement('leftMaculoPhotoYes')->click();
     }
 
     public function leftMaculoPhotoNo()
     {
-        $this->getElement('leftMaculoPhotoNo')->check();
+        $this->getElement('leftMaculoPhotoNo')->click();
     }
 
     public function rightMaculoPhotoYes ()
     {
-        $this->getElement('rightMaculoPhotoYes')->check();
+        $this->getElement('rightMaculoPhotoYes')->click();
     }
 
     public function rightMaculoPhotoNo()
     {
-        $this->getElement('rightMaculoPhotoNo')->check();
+        $this->getElement('rightMaculoPhotoNo')->click();
     }
 
     public function leftUnableAssess ()
     {
-        $this->getElement('leftUnableToAssess')->check();
+        $this->getElement('leftUnableToAssess')->click();
     }
 
     public function rightUnableAssess ()
     {
-        $this->getElement('rightUnableToAssess')->check();
+        $this->getElement('rightUnableToAssess')->click();
     }
 
     public function leftEyeMissing ()
     {
-        $this->getElement('leftEyeMissing')->check();
+        $this->getElement('leftEyeMissing')->click();
     }
 
     public function rightEyeMissing ()
     {
-        $this->getElement('rightEyeMissing')->check();
+        $this->getElement('rightEyeMissing')->click();
     }
 
     public function expandOverallManagement ()
@@ -1455,62 +1467,62 @@ class Examination extends OpenEyesPage
 
     public function referralOther ()
     {
-        $this->getElement('referralOtherService')->check();
+        $this->getElement('referralOtherService')->click();
     }
 
     public function referralRefraction ()
     {
-        $this->getElement('referralRefraction')->check();
+        $this->getElement('referralRefraction')->click();
     }
 
     public function referralLVA ()
     {
-        $this->getElement('referralLVA')->check();
+        $this->getElement('referralLVA')->click();
     }
 
     public function referralOrthoptics ()
     {
-        $this->getElement('referralOrthoptics')->check();
+        $this->getElement('referralOrthoptics')->click();
     }
 
     public function referralCLClinic ()
     {
-        $this->getElement('referralCLClinic')->check();
+        $this->getElement('referralCLClinic')->click();
     }
 
     public function investigationsVF ()
     {
-        $this->getElement('investigationsVF')->check();
+        $this->getElement('investigationsVF')->click();
     }
 
     public function investigationsUS ()
     {
-        $this->getElement('investigationsUS')->check();
+        $this->getElement('investigationsUS')->click();
     }
 
     public function investigationsBiometry ()
     {
-        $this->getElement('investigationsBiometry')->check();
+        $this->getElement('investigationsBiometry')->click();
     }
 
     public function investigationsOCT ()
     {
-        $this->getElement('investigationsOCT')->check();
+        $this->getElement('investigationsOCT')->click();
     }
 
     public function investigationsHRT ()
     {
-        $this->getElement('investigationsHRT')->check();
+        $this->getElement('investigationsHRT')->click();
     }
 
     public function investigationsDiscPhotos ()
     {
-        $this->getElement('investigationsDiscPhotos')->check();
+        $this->getElement('investigationsDiscPhotos')->click();
     }
 
     public function investigationsEDT ()
     {
-        $this->getElement('investigationsEDT')->check();
+        $this->getElement('investigationsEDT')->click();
     }
 
     public function leftGlaucomaStatus ($status)
@@ -1575,12 +1587,12 @@ class Examination extends OpenEyesPage
 
     public function leftRAPD ()
     {
-        $this->getElement('leftRAPD')->check();
+        $this->getElement('leftRAPD')->click();
     }
 
     public function rightRAPD ()
     {
-        $this->getElement('rightRAPD')->check();
+        $this->getElement('rightRAPD')->click();
     }
 
     public function leftRAPDComments ($comments)

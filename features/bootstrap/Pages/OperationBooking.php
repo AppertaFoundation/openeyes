@@ -16,11 +16,18 @@ class OperationBooking extends OpenEyesPage
         'operationProcedure' => array('xpath' => "//*[@id='select_procedure_id_procs']"),
         'consultantYes' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_consultant_required_1']"),
         'consultantNo' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_consultant_required_0']"),
-        'anaestheticTopical' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_anaesthetic_type_id_1']"),
+    	'otherdoctorNo' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_any_grade_of_doctor_0']"),
+    	'preopassessmentNo' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_anaesthetist_preop_assessment_0']"),
+    	'AnaestheticTypeTopical' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_anaesthetic_type_id_1']"),
+    	'stopmedicationNo' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_stop_medication_0']"),
+    	'admissiondiscussedYes' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_fast_track_discussed_with_patient_1']"),
+    	'scheduleOptASAP' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_ScheduleOperation_schedule_options_id_1']"),
+    	'anaestheticTopical' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_anaesthetic_type_id_1']"),
         'anaestheticLa' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_anaesthetic_type_id_3']"),
         'anaestheticLac' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_anaesthetic_type_id_2']"),
         'anaestheticLas' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_anaesthetic_type_id_4']"),
         'anaestheticGa' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_anaesthetic_type_id_5']"),
+    	'AnaestheticchoicePatientpreference' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_anaesthetic_choice_id_1']"),
         'postOpStatYes' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_overnight_stay_1']"),
         'postOpStatNo' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_overnight_stay_0']"),
         'operationSiteID' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_site_id']"),
@@ -102,7 +109,43 @@ class OperationBooking extends OpenEyesPage
     {
         $this->getElement('consultantNo')->click();
     }
-
+    
+    public function otherdoctorNo ()
+    {
+    	$this->getElement('otherdoctorNo')->click();
+    }
+    
+    public function preopassessmentNo ()
+    {
+    	$this->getElement('preopassessmentNo')->click();
+    }
+    
+    public function AnaestheticTypeTopical ()
+    {
+    	$this->getElement('AnaestheticTypeTopical')->click();
+    }
+    
+    public function AnaestheticchoicePatientpreference ()
+    {
+    	$this->getElement('AnaestheticchoicePatientpreference')->click();
+    }
+    
+    public function stopmedicationNo ()
+    {
+    	$this->getElement('stopmedicationNo')->click();
+    }
+    
+    public function admissiondiscussedYes ()
+    {
+    	$this->getElement('admissiondiscussedYes')->click();
+    }
+    
+    public function scheduleOptASAP ()
+    {
+    	$this->getElement('scheduleOptASAP')->click();
+    }
+    
+    
     public function selectAnaesthetic ($type)
     {
 		$element = null;
@@ -130,7 +173,7 @@ class OperationBooking extends OpenEyesPage
 
     public function postOpStayYes ()
     {
-        $this->getElement('postOpStatYes')->check();
+        $this->getElement('postOpStatYes')->click();
     }
 
     public function postOpStayNo ()
@@ -154,7 +197,7 @@ class OperationBooking extends OpenEyesPage
     {
         $element = $this->getElement('priorityUrgent');
         $this->scrollWindowToElement($element);
-        $element->check();
+        $element->click();
 
     }
 

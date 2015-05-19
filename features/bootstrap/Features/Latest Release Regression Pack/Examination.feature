@@ -1,8 +1,10 @@
 @examination @regression
 Feature: Create New Examination Regression Tests
+@EXAM
           Regression over 2 Sites and 4 Firms
           Regression coverage of this event is approx 70%
 
+  @EXAM_Route_1
   Scenario: Route 1: Login and create a new Examination Event
             Site 1:Queens
             Firm 3:Anderson Glaucoma
@@ -56,22 +58,22 @@ Feature: Create New Examination Regression Tests
     And I enter right cylinder details of of Cylinder "1" integer "5" fraction "0"
 
     Then I enter right Axis degrees of "38"
-#    Then I enter right Axis degrees of "38"
+
     And I enter a right type of "3"
 
     Then I choose to expand the Visual Function section
 
-    Then I select a Left RAPD
+
     And I add Left RAPD comments of "Left RAPD Automation test comments"
 
-    Then I select a Right RAPD
+
     And I add Right RAPD comments of "Left RAPD Automation test comments"
 
     Then I choose to expand the Colour Vision section
     And I choose a Left Colour Vision of "1"
-    And I choose A Left Colour Vision Value of "8"
+
     And I choose a Right Colour Vision of "2"
-    And I choose A Right Colour Vision Value of "4"
+
 
     Then I choose to expand the Visual Acuity section
     And I select a Visual Acuity of "2"
@@ -93,6 +95,7 @@ Feature: Create New Examination Regression Tests
     Then a check is made that a left Axis degrees of "145" was entered
     Then a check is made that a right Axis degrees of "38" was entered
 
+  @EXAM_Route_2
   Scenario: Route 2:Login and create a new Examination Event
             Site:1 Queens
             Firm:2 Broom Glaucoma
@@ -118,28 +121,28 @@ Feature: Create New Examination Regression Tests
 
     Then I choose to expand the Visual Function section
 
-    Then I select a Left RAPD
+
     And I add Left RAPD comments of "Left RAPD Automation test comments"
 
-    Then I select a Right RAPD
+
     And I add Right RAPD comments of "Left RAPD Automation test comments"
 
     Then I choose to expand the Colour Vision section
     And I choose a Left Colour Vision of "1"
-    And I choose A Left Colour Vision Value of "8"
+
     And I choose a Right Colour Vision of "2"
-    And I choose A Right Colour Vision Value of "4"
+ 
 
     Then I choose to expand the Visual Acuity section
     And I select a Visual Acuity of "1"
     Then I choose a left Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
     Then I choose a right Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
 
-    And I choose to add a new left Visual Acuity reading of "6" and a reading method of "4"
-    And I choose to add a new Right Visual Acuity reading of "3" and a reading method of "2"
+    #And I choose to add a new left Visual Acuity reading of "6" and a reading method of "4"
+    #And I choose to add a new Right Visual Acuity reading of "3" and a reading method of "2"
 
-    Then I remove the newly added Left Visual Acuity
-    Then I remove the newly added Right Visual Acuity
+    #Then I remove the newly added Left Visual Acuity
+    #Then I remove the newly added Right Visual Acuity
 
     Then I choose to expand the Intraocular Pressure section
     Then I choose a left Intraocular Pressure of "8" and Instrument "4"
@@ -155,13 +158,13 @@ Feature: Create New Examination Regression Tests
     Then I enter left Refraction details of Sphere "-1" integer "11" fraction "0.50"
     And I enter left cylinder details of of Cylinder "1" integer "4" fraction "0.25"
     Then I enter left Axis degrees of "56"
-    Then I enter left Axis degrees of "56"
     And I enter a left type of "2"
 
     Then I remove Refraction right side
 
     Then I Save the Examination and confirm it has been created successfully
-
+    
+  @EXAM_Route_3
   Scenario: Route 3:Login and create a new Examination Event
             Site:1 Queens
             Firm:1 Anderson Cataract
@@ -185,17 +188,17 @@ Feature: Create New Examination Regression Tests
 
     Then I choose to expand the Visual Function section
 
-    Then I select a Left RAPD
+
     And I add Left RAPD comments of "Left RAPD Automation test comments"
 
-    Then I select a Right RAPD
+
     And I add Right RAPD comments of "Left RAPD Automation test comments"
 
     Then I choose to expand the Colour Vision section
     And I choose a Left Colour Vision of "1"
-    And I choose A Left Colour Vision Value of "8"
+
     And I choose a Right Colour Vision of "2"
-    And I choose A Right Colour Vision Value of "4"
+
 
     Then I choose to expand the Visual Acuity section
     And I select a Visual Acuity of "1"
@@ -229,6 +232,7 @@ Feature: Create New Examination Regression Tests
 
     Then I Save the Examination and confirm it has been created successfully
 ##
+  @EXAM_Route_4
   Scenario: Route 4: Login and create a new Examination Event
             Site:1 Queens
             Firm:1 Anderson Cataract
@@ -252,17 +256,17 @@ Feature: Create New Examination Regression Tests
 
     Then I choose to expand the Visual Function section
 
-    Then I select a Left RAPD
+
     And I add Left RAPD comments of "Left RAPD Automation test comments"
 
-    Then I select a Right RAPD
+
     And I add Right RAPD comments of "Left RAPD Automation test comments"
 
     Then I choose to expand the Colour Vision section
     And I choose a Left Colour Vision of "1"
-    And I choose A Left Colour Vision Value of "8"
+
     And I choose a Right Colour Vision of "2"
-    And I choose A Right Colour Vision Value of "4"
+
 
     Then I choose to expand the Visual Acuity section
     And I select a Visual Acuity of "1"
@@ -303,12 +307,6 @@ Feature: Create New Examination Regression Tests
 
     Then I choose to expand the Diagnoses section
     And I choose a left eye diagnosis
-    And I select "Familial infantile myasthenia" for "Diagnosis"
-    And I choose a right eye diagnosis
-    And I select "Nuclear cataract" for "Diagnosis"
-    And I choose both eyes diagnosis
-    And I select "Cataract" for "Diagnosis"
-    Then I choose a principal diagnosis
 
     Then I choose to expand the Investigation section
     And I add an Investigation of "refraction, "
@@ -326,7 +324,6 @@ Feature: Create New Examination Regression Tests
 
     And the post operative target has been discussed with patient Yes
     Then I select a suitable for surgeon of "3"
-    And I tick the Supervised checkbox
     Then I select Previous Refractive Surgery Yes
     And I select Vitrectomised Eye Yes
 
@@ -339,11 +336,11 @@ Feature: Create New Examination Regression Tests
     Then I choose to expand the Injection Management section
 
     And I select a Right Diagnosis of Choroidal Retinal Neovascularisation
-    Then I select Right Secondary to "267718000"
+    Then I select Right Secondary to "312956001"
     And I select a Right Intended Treatment of "1"
 
     And I select a Left Diagnosis of Choroidal Retinal Neovascularisation
-    Then I select Left Secondary to "267718000"
+    Then I select Left Secondary to "312956001"
     And I select a Left Intended Treatment of "7"
 
     Then I choose a Right CRT Increase <100 of Yes
@@ -368,8 +365,10 @@ Feature: Create New Examination Regression Tests
     And I choose a Conclusion option of "booked for first eye, "
 
     Then I Save the Examination and confirm it has been created successfully
+    
 
-#
+# 
+  @EXAM_Route_5
   Scenario: ROUTE 5: Login and create a new Examination Event
             Site:1 Queens
             Firm:1 Anderson Cataract
@@ -393,17 +392,17 @@ Feature: Create New Examination Regression Tests
 
     Then I choose to expand the Visual Function section
 
-    Then I select a Left RAPD
+
     And I add Left RAPD comments of "Left RAPD Automation test comments"
 
-    Then I select a Right RAPD
+
     And I add Right RAPD comments of "Left RAPD Automation test comments"
 
     Then I choose to expand the Colour Vision section
     And I choose a Left Colour Vision of "1"
-    And I choose A Left Colour Vision Value of "8"
+
     And I choose a Right Colour Vision of "2"
-    And I choose A Right Colour Vision Value of "4"
+
 
     Then I choose to expand the Visual Acuity section
     And I select a Visual Acuity of "1"
@@ -508,6 +507,7 @@ Feature: Create New Examination Regression Tests
 
     Then I Save the Examination and confirm it has been created successfully
 ##
+  @EXAM_Route_6
   Scenario: ROUTE 6: Login and create a new Examination Event:
             Site:1 Queens, Firm:1 Anderson Cataract.
             Remaining additional Injection Management sections
@@ -530,17 +530,17 @@ Feature: Create New Examination Regression Tests
 
     Then I choose to expand the Visual Function section
 
-    Then I select a Left RAPD
+
     And I add Left RAPD comments of "Left RAPD Automation test comments"
 
-    Then I select a Right RAPD
+
     And I add Right RAPD comments of "Left RAPD Automation test comments"
 
     Then I choose to expand the Colour Vision section
     And I choose a Left Colour Vision of "1"
-    And I choose A Left Colour Vision Value of "8"
+
     And I choose a Right Colour Vision of "2"
-    And I choose A Right Colour Vision Value of "4"
+
 
     Then I choose to expand the Visual Acuity section
     And I select a Visual Acuity of "1"
@@ -576,11 +576,6 @@ Feature: Create New Examination Regression Tests
     Then I choose to expand the Pupillary Abnormalities section
     And I add a left Abnormality of "3"
     And I add a right Abnormality of "4"
-
-    Then I choose to expand the Diagnoses section
-    And I choose a right eye diagnosis
-    And I select "Traumatic cataract" for "Diagnosis"
-    Then I choose a principal diagnosis
 
     Then I choose to expand the Investigation section
     And I add an Investigation of "refraction, "
@@ -655,6 +650,7 @@ Feature: Create New Examination Regression Tests
 
     Then I Save the Examination and confirm it has been created successfully
 #
+  @EXAM_Route_7
   Scenario: Route 7: Examination Validation Tests (Anderson Glaucoma)
             History and Conclusion validation error checks
 
@@ -675,7 +671,8 @@ Feature: Create New Examination Regression Tests
 
     Then I Confirm that the History Validation error message is displayed
     Then I Confirm that the Conclusion Validation error message is displayed
-
+    
+  @EXAM_Route_8
   Scenario: Route 8: Examination Validation Tests (Anderson Cataract)
             History and Dilation validation error checks
 
@@ -697,6 +694,7 @@ Feature: Create New Examination Regression Tests
     Then I Confirm that the History Validation error message is displayed
     Then I Confirm that the Dilation Validation error message is displayed
 
+  @EXAM_Route_9
   Scenario: Route 9: Examination Validation Tests (Anderson Medical Retinal)
             History and Dilation validation error checks
 
@@ -718,6 +716,7 @@ Feature: Create New Examination Regression Tests
     Then I Confirm that the History Validation error message is displayed
     Then I Confirm that the Dilation Validation error message is displayed
 
+  @EXAM_Route_10
   Scenario: Route 10: Examination Validation Tests (Broom Glaucoma)
             History and Dilation validation error checks
 
@@ -739,6 +738,7 @@ Feature: Create New Examination Regression Tests
     Then I Confirm that the History Validation error message is displayed
     Then I Confirm that the Dilation Validation error message is displayed
 
+  @EXAM_Route_11
   Scenario: Route 11: Examination Validation Tests (Remove All Error)
             Close All elements and attempt to Save - validation errors
 
@@ -759,6 +759,7 @@ Feature: Create New Examination Regression Tests
 
     Then I confirm that the Remove All Validation error message is displayed
 #
+  @EXAM_Route_12
   Scenario: Route 12: Examination Validation Tests (Select All and Save Validation errors)
             Select All elements and attempt to Save - validation errors
 
@@ -779,6 +780,7 @@ Feature: Create New Examination Regression Tests
 
     Then I confirm that the Add All Validation error messages have been displayed
 
+  @EXAM_Route_13
   Scenario: Route 13: Examination Validation Tests (Anderson Cataract)
   History and Dilation Invalid Time entry validation error checks
 
@@ -804,6 +806,7 @@ Feature: Create New Examination Regression Tests
     Then I Confirm that the History Validation error message is displayed
     Then I Confirm that the Dilation Invalid time error message is displayed
 
+  @EXAM_Route_14
   Scenario: Route 14: Login and create a new Examination Event
             Site 1:Queens
             Firm 3:Anderson Glaucoma
@@ -840,6 +843,7 @@ Feature: Create New Examination Regression Tests
 
     Then I Save the Examination and confirm it has been created successfully
 
+  @EXAM_Route_15
   Scenario: Route 15: Login and create a new Examination Event
             Site 1:Queens
             Firm 4:Anderson Medical Retinal
@@ -880,6 +884,7 @@ Feature: Create New Examination Regression Tests
 
     Then I Save the Examination and confirm it has been created successfully
 
+  @EXAM_Route_16
   Scenario: Route 16: Login and create a new Examination Event
             Site 1:Queens
             Firm 2:Broom Glaucoma
@@ -920,6 +925,7 @@ Feature: Create New Examination Regression Tests
 
     Then I Save the Examination and confirm it has been created successfully
 
+  @EXAM_Route_17
   Scenario: Route 17 :Login and create a new Examination Event
             Site:1 Queens
             Firm:2 Broom Glaucoma
@@ -943,17 +949,17 @@ Feature: Create New Examination Regression Tests
 
     Then I choose to expand the Visual Function section
 
-    Then I select a Left RAPD
+
     And I add Left RAPD comments of "Left RAPD Automation test comments"
 
-    Then I select a Right RAPD
+
     And I add Right RAPD comments of "Left RAPD Automation test comments"
 
     Then I choose to expand the Colour Vision section
     And I choose a Left Colour Vision of "1"
-    And I choose A Left Colour Vision Value of "8"
+
     And I choose a Right Colour Vision of "2"
-    And I choose A Right Colour Vision Value of "4"
+
 
     Then I choose to expand the Visual Acuity section
 
@@ -967,6 +973,7 @@ Feature: Create New Examination Regression Tests
 
     Then I Save the Examination and confirm it has been created successfully
 
+  @EXAM_Route_18
   Scenario: ROUTE 18: Login and create a new Examination Event:
   Site:1 Queens, Firm:1 Anderson Cataract.
   Clinical Management: Overall Management & Current Management
@@ -989,17 +996,17 @@ Feature: Create New Examination Regression Tests
 
     Then I choose to expand the Visual Function section
 
-    Then I select a Left RAPD
+
     And I add Left RAPD comments of "Left RAPD Automation test comments"
 
-    Then I select a Right RAPD
+
     And I add Right RAPD comments of "Left RAPD Automation test comments"
 
     Then I choose to expand the Colour Vision section
     And I choose a Left Colour Vision of "1"
-    And I choose A Left Colour Vision Value of "8"
+
     And I choose a Right Colour Vision of "2"
-    And I choose A Right Colour Vision Value of "4"
+
 
     Then I choose to expand the Visual Acuity section
     And I select a Visual Acuity of "2"
@@ -1080,7 +1087,7 @@ Feature: Create New Examination Regression Tests
     Then I choose a Right Previous Ozurdex Yes
     Then I choose a Right Previous Ozurdex No
 
-    And I choose a Right Risks of "1"
+
     Then I choose Right Injection Management Comments of "Automation Test Comments"
 
     And I select a Left Diagnosis of Macular retinal oedema
