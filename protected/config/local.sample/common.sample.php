@@ -82,6 +82,20 @@ $config = array(
 	),
 
 	'modules' => array(
+		'eyedraw',
+		'OphCiExamination' => array( 'class' => '\OEModule\OphCiExamination\OphCiExaminationModule', ),
+		'OphCiPhasing',
+		'OphCoCorrespondence',
+		'OphCoTherapyapplication',
+		'OphDrPrescription',
+		'OphLeEpatientletter',
+		'OphOuAnaestheticsatisfactionaudit',
+		'OphTrConsent',
+		'OphTrIntravitrealinjection',
+		'OphTrLaser',
+		'OphTrOperationbooking',
+		'OphTrOperationnote',
+		'PatientTicketing' => array('class' => '\OEModule\PatientTicketing\PatientTicketingModule'),
 	),
 
 	'params'=>array(
