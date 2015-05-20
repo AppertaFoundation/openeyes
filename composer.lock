@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "88b7d7909dec093a8ca074a459887dc6",
+    "hash": "3bda7748105505056aa9745515ecddb1",
     "packages": [
         {
             "name": "openeyes/eyedraw",
@@ -60,16 +60,16 @@
         },
         {
             "name": "openeyes/oph-ci-examination",
-            "version": "v1.10",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphCiExamination.git",
-                "reference": "0d227f43b339e5be14a4e6fd431a5a1d058ad4a9"
+                "reference": "207e4bef4eb92af21bf652d2362637a851181630"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/0d227f43b339e5be14a4e6fd431a5a1d058ad4a9",
-                "reference": "0d227f43b339e5be14a4e6fd431a5a1d058ad4a9",
+                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/207e4bef4eb92af21bf652d2362637a851181630",
+                "reference": "207e4bef4eb92af21bf652d2362637a851181630",
                 "shasum": ""
             },
             "require": {
@@ -78,7 +78,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Examination module for OpenEyes",
-            "time": "2015-05-18 12:31:46"
+            "time": "2015-05-20 10:32:54"
         },
         {
             "name": "openeyes/oph-ci-phasing",
@@ -5485,6 +5485,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "openeyes/oph-ci-examination": 20,
         "openeyes/oph-ci-phasing": 20,
         "openeyes/oph-co-therapyapplication": 20,
         "openeyes/oph-le-intravitrealinjection": 20,
