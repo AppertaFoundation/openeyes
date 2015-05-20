@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "hash": "88b7d7909dec093a8ca074a459887dc6",
@@ -4906,12 +4906,12 @@
             "target-dir": "Zend/Cache",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/zend-cache.git",
+                "url": "https://github.com/zendframework/Component_ZendCache.git",
                 "reference": "4e01c4e515bf62dfa2e93cd2977e039cf24b308c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-cache/zipball/ead910ec8b0aa464ede58c959665d0292d9482b0",
+                "url": "https://api.github.com/repos/zendframework/Component_ZendCache/zipball/4e01c4e515bf62dfa2e93cd2977e039cf24b308c",
                 "reference": "4e01c4e515bf62dfa2e93cd2977e039cf24b308c",
                 "shasum": ""
             },
@@ -4961,12 +4961,12 @@
             "target-dir": "Zend/Config",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/zend-config.git",
+                "url": "https://github.com/zendframework/Component_ZendConfig.git",
                 "reference": "21bb8030c84f60deca1756e2d69f80eca46c7256"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-config/zipball/2077985e6de29bf2bd7df16d4f385dcb53062394",
+                "url": "https://api.github.com/repos/zendframework/Component_ZendConfig/zipball/21bb8030c84f60deca1756e2d69f80eca46c7256",
                 "reference": "21bb8030c84f60deca1756e2d69f80eca46c7256",
                 "shasum": ""
             },
@@ -5007,12 +5007,12 @@
             "target-dir": "Zend/EventManager",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/zend-eventmanager.git",
+                "url": "https://github.com/zendframework/Component_ZendEventManager.git",
                 "reference": "77f31b34c7fc78d58260282fd5e3cbc593b442b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-eventmanager/zipball/aa23086ec1d6d0dad7a33e4eaf3fc851c2bc851b",
+                "url": "https://api.github.com/repos/zendframework/Component_ZendEventManager/zipball/77f31b34c7fc78d58260282fd5e3cbc593b442b1",
                 "reference": "77f31b34c7fc78d58260282fd5e3cbc593b442b1",
                 "shasum": ""
             },
@@ -5048,12 +5048,12 @@
             "target-dir": "Zend/Filter",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/zend-filter.git",
+                "url": "https://github.com/zendframework/Component_ZendFilter.git",
                 "reference": "cfead716e69651a3c931fc59e5e17fb71acc0806"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-filter/zipball/790934a61b9bce2c00106ec75fbc024c029de4d0",
+                "url": "https://api.github.com/repos/zendframework/Component_ZendFilter/zipball/cfead716e69651a3c931fc59e5e17fb71acc0806",
                 "reference": "cfead716e69651a3c931fc59e5e17fb71acc0806",
                 "shasum": ""
             },
@@ -5099,12 +5099,12 @@
             "target-dir": "Zend/I18n",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/zend-i18n.git",
+                "url": "https://github.com/zendframework/Component_ZendI18n.git",
                 "reference": "0a9ffb7586d5aeaf3afef4a0a02e3448bc46927a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-i18n/zipball/6a5a65c1cdcf02877e2526c1b3e315de6a59bb8c",
+                "url": "https://api.github.com/repos/zendframework/Component_ZendI18n/zipball/0a9ffb7586d5aeaf3afef4a0a02e3448bc46927a",
                 "reference": "0a9ffb7586d5aeaf3afef4a0a02e3448bc46927a",
                 "shasum": ""
             },
@@ -5148,12 +5148,12 @@
             "target-dir": "Zend/Json",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/zend-json.git",
+                "url": "https://github.com/zendframework/Component_ZendJson.git",
                 "reference": "96cf77eee14c32f6ca3b87084201f9c9f950aeaa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-json/zipball/e0a2e72459b029c3d3785fe8a0b41312670bfd24",
+                "url": "https://api.github.com/repos/zendframework/Component_ZendJson/zipball/96cf77eee14c32f6ca3b87084201f9c9f950aeaa",
                 "reference": "96cf77eee14c32f6ca3b87084201f9c9f950aeaa",
                 "shasum": ""
             },
@@ -5193,12 +5193,12 @@
             "target-dir": "Zend/Math",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/zend-math.git",
+                "url": "https://github.com/zendframework/Component_ZendMath.git",
                 "reference": "1823c586dcb7ef0b022a85b865e1150021ebc850"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-math/zipball/0e5ba13e2bc64f6544f5508acf705dd2fc12d91d",
+                "url": "https://api.github.com/repos/zendframework/Component_ZendMath/zipball/1823c586dcb7ef0b022a85b865e1150021ebc850",
                 "reference": "1823c586dcb7ef0b022a85b865e1150021ebc850",
                 "shasum": ""
             },
@@ -5239,12 +5239,12 @@
             "target-dir": "Zend/Serializer",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/zend-serializer.git",
+                "url": "https://github.com/zendframework/Component_ZendSerializer.git",
                 "reference": "f213b205030bf511364c13851758bf628648ca79"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-serializer/zipball/aabfa157039e0c8ca0627a002e8e8f13e62393a8",
+                "url": "https://api.github.com/repos/zendframework/Component_ZendSerializer/zipball/f213b205030bf511364c13851758bf628648ca79",
                 "reference": "f213b205030bf511364c13851758bf628648ca79",
                 "shasum": ""
             },
@@ -5286,12 +5286,12 @@
             "target-dir": "Zend/ServiceManager",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/zend-servicemanager.git",
+                "url": "https://github.com/zendframework/Component_ZendServiceManager.git",
                 "reference": "cf1615c8bf000d9aefb9f1da32d3e634bb1033eb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-servicemanager/zipball/b9eaf9e3268d2e10ddca807e3a2980b3e662a8e0",
+                "url": "https://api.github.com/repos/zendframework/Component_ZendServiceManager/zipball/cf1615c8bf000d9aefb9f1da32d3e634bb1033eb",
                 "reference": "cf1615c8bf000d9aefb9f1da32d3e634bb1033eb",
                 "shasum": ""
             },
@@ -5329,12 +5329,12 @@
             "target-dir": "Zend/Stdlib",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/zend-stdlib.git",
+                "url": "https://github.com/zendframework/Component_ZendStdlib.git",
                 "reference": "69f7b2d620794482b9b355fa25376a5cc759ac22"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-stdlib/zipball/b42d784bd142e916058a9d68eeafcc10ff63c12e",
+                "url": "https://api.github.com/repos/zendframework/Component_ZendStdlib/zipball/69f7b2d620794482b9b355fa25376a5cc759ac22",
                 "reference": "69f7b2d620794482b9b355fa25376a5cc759ac22",
                 "shasum": ""
             },
