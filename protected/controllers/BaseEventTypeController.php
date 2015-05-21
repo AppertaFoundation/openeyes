@@ -1191,7 +1191,10 @@ class BaseEventTypeController extends BaseModuleController
 			foreach ($this->event->getElements() as $curr_element) {
 				if (!isset($oe_ids[get_class($curr_element)])
 					|| !in_array($curr_element->id, $oe_ids[get_class($curr_element)])) {
-					$curr_element->delete();
+					// make sure that the element have a primary key (it tried to delete null elements before!)
+					if ($curr_element->getPrimaryKey() !== null) {
+						$curr_element->delete();
+					}
 				}
 			}
 		}
