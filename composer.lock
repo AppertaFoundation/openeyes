@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "3bda7748105505056aa9745515ecddb1",
+    "hash": "72d7736d1a532b5173fdbc0cb0561430",
     "packages": [
         {
             "name": "openeyes/eyedraw",
@@ -64,12 +64,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphCiExamination.git",
-                "reference": "207e4bef4eb92af21bf652d2362637a851181630"
+                "reference": "4ba01a50144b15564cde8bf472f79146df23b964"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/207e4bef4eb92af21bf652d2362637a851181630",
-                "reference": "207e4bef4eb92af21bf652d2362637a851181630",
+                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/4ba01a50144b15564cde8bf472f79146df23b964",
+                "reference": "4ba01a50144b15564cde8bf472f79146df23b964",
                 "shasum": ""
             },
             "require": {
@@ -78,7 +78,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Examination module for OpenEyes",
-            "time": "2015-05-20 10:32:54"
+            "time": "2015-05-21 14:25:58"
         },
         {
             "name": "openeyes/oph-ci-phasing",
@@ -167,6 +167,28 @@
             "notification-url": "https://packagist.org/downloads/",
             "description": "Module for generating prescriptions in OpenEyes",
             "time": "2015-05-18 12:35:31"
+        },
+        {
+            "name": "openeyes/oph-in-biometry",
+            "version": "dev-develop",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/openeyes/OphInBiometry.git",
+                "reference": "1bb54b9dbaf8a1df5a79a7c1287f82f56c3e5dbd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/openeyes/OphInBiometry/zipball/1bb54b9dbaf8a1df5a79a7c1287f82f56c3e5dbd",
+                "reference": "1bb54b9dbaf8a1df5a79a7c1287f82f56c3e5dbd",
+                "shasum": ""
+            },
+            "require": {
+                "openeyes/module-installer": "*"
+            },
+            "type": "openeyes-module",
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Biometry module for OpenEyes",
+            "time": "2015-05-18 13:25:20"
         },
         {
             "name": "openeyes/oph-in-visualfields",
@@ -4629,12 +4651,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Translation.git",
-                "reference": "a0735db452c5e592cb742333a32c6634a6d1ece1"
+                "reference": "ae980a18f73b88b3394510e07ed0f343f252ca4f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Translation/zipball/a0735db452c5e592cb742333a32c6634a6d1ece1",
-                "reference": "a0735db452c5e592cb742333a32c6634a6d1ece1",
+                "url": "https://api.github.com/repos/symfony/Translation/zipball/ae980a18f73b88b3394510e07ed0f343f252ca4f",
+                "reference": "ae980a18f73b88b3394510e07ed0f343f252ca4f",
                 "shasum": ""
             },
             "require": {
@@ -4682,7 +4704,7 @@
             ],
             "description": "Symfony Translation Component",
             "homepage": "https://symfony.com",
-            "time": "2015-05-15 14:11:12"
+            "time": "2015-05-20 09:35:10"
         },
         {
             "name": "symfony/validator",
@@ -4906,12 +4928,12 @@
             "target-dir": "Zend/Cache",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/Component_ZendCache.git",
+                "url": "https://github.com/zendframework/zend-cache.git",
                 "reference": "4e01c4e515bf62dfa2e93cd2977e039cf24b308c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendCache/zipball/4e01c4e515bf62dfa2e93cd2977e039cf24b308c",
+                "url": "https://api.github.com/repos/zendframework/zend-cache/zipball/ead910ec8b0aa464ede58c959665d0292d9482b0",
                 "reference": "4e01c4e515bf62dfa2e93cd2977e039cf24b308c",
                 "shasum": ""
             },
@@ -4961,12 +4983,12 @@
             "target-dir": "Zend/Config",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/Component_ZendConfig.git",
+                "url": "https://github.com/zendframework/zend-config.git",
                 "reference": "21bb8030c84f60deca1756e2d69f80eca46c7256"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendConfig/zipball/21bb8030c84f60deca1756e2d69f80eca46c7256",
+                "url": "https://api.github.com/repos/zendframework/zend-config/zipball/2077985e6de29bf2bd7df16d4f385dcb53062394",
                 "reference": "21bb8030c84f60deca1756e2d69f80eca46c7256",
                 "shasum": ""
             },
@@ -5007,12 +5029,12 @@
             "target-dir": "Zend/EventManager",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/Component_ZendEventManager.git",
+                "url": "https://github.com/zendframework/zend-eventmanager.git",
                 "reference": "77f31b34c7fc78d58260282fd5e3cbc593b442b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendEventManager/zipball/77f31b34c7fc78d58260282fd5e3cbc593b442b1",
+                "url": "https://api.github.com/repos/zendframework/zend-eventmanager/zipball/aa23086ec1d6d0dad7a33e4eaf3fc851c2bc851b",
                 "reference": "77f31b34c7fc78d58260282fd5e3cbc593b442b1",
                 "shasum": ""
             },
@@ -5048,12 +5070,12 @@
             "target-dir": "Zend/Filter",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/Component_ZendFilter.git",
+                "url": "https://github.com/zendframework/zend-filter.git",
                 "reference": "cfead716e69651a3c931fc59e5e17fb71acc0806"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendFilter/zipball/cfead716e69651a3c931fc59e5e17fb71acc0806",
+                "url": "https://api.github.com/repos/zendframework/zend-filter/zipball/790934a61b9bce2c00106ec75fbc024c029de4d0",
                 "reference": "cfead716e69651a3c931fc59e5e17fb71acc0806",
                 "shasum": ""
             },
@@ -5099,12 +5121,12 @@
             "target-dir": "Zend/I18n",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/Component_ZendI18n.git",
+                "url": "https://github.com/zendframework/zend-i18n.git",
                 "reference": "0a9ffb7586d5aeaf3afef4a0a02e3448bc46927a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendI18n/zipball/0a9ffb7586d5aeaf3afef4a0a02e3448bc46927a",
+                "url": "https://api.github.com/repos/zendframework/zend-i18n/zipball/6a5a65c1cdcf02877e2526c1b3e315de6a59bb8c",
                 "reference": "0a9ffb7586d5aeaf3afef4a0a02e3448bc46927a",
                 "shasum": ""
             },
@@ -5148,12 +5170,12 @@
             "target-dir": "Zend/Json",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/Component_ZendJson.git",
+                "url": "https://github.com/zendframework/zend-json.git",
                 "reference": "96cf77eee14c32f6ca3b87084201f9c9f950aeaa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendJson/zipball/96cf77eee14c32f6ca3b87084201f9c9f950aeaa",
+                "url": "https://api.github.com/repos/zendframework/zend-json/zipball/e0a2e72459b029c3d3785fe8a0b41312670bfd24",
                 "reference": "96cf77eee14c32f6ca3b87084201f9c9f950aeaa",
                 "shasum": ""
             },
@@ -5193,12 +5215,12 @@
             "target-dir": "Zend/Math",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/Component_ZendMath.git",
+                "url": "https://github.com/zendframework/zend-math.git",
                 "reference": "1823c586dcb7ef0b022a85b865e1150021ebc850"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendMath/zipball/1823c586dcb7ef0b022a85b865e1150021ebc850",
+                "url": "https://api.github.com/repos/zendframework/zend-math/zipball/0e5ba13e2bc64f6544f5508acf705dd2fc12d91d",
                 "reference": "1823c586dcb7ef0b022a85b865e1150021ebc850",
                 "shasum": ""
             },
@@ -5239,12 +5261,12 @@
             "target-dir": "Zend/Serializer",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/Component_ZendSerializer.git",
+                "url": "https://github.com/zendframework/zend-serializer.git",
                 "reference": "f213b205030bf511364c13851758bf628648ca79"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendSerializer/zipball/f213b205030bf511364c13851758bf628648ca79",
+                "url": "https://api.github.com/repos/zendframework/zend-serializer/zipball/aabfa157039e0c8ca0627a002e8e8f13e62393a8",
                 "reference": "f213b205030bf511364c13851758bf628648ca79",
                 "shasum": ""
             },
@@ -5286,12 +5308,12 @@
             "target-dir": "Zend/ServiceManager",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/Component_ZendServiceManager.git",
+                "url": "https://github.com/zendframework/zend-servicemanager.git",
                 "reference": "cf1615c8bf000d9aefb9f1da32d3e634bb1033eb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendServiceManager/zipball/cf1615c8bf000d9aefb9f1da32d3e634bb1033eb",
+                "url": "https://api.github.com/repos/zendframework/zend-servicemanager/zipball/b9eaf9e3268d2e10ddca807e3a2980b3e662a8e0",
                 "reference": "cf1615c8bf000d9aefb9f1da32d3e634bb1033eb",
                 "shasum": ""
             },
@@ -5329,12 +5351,12 @@
             "target-dir": "Zend/Stdlib",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/Component_ZendStdlib.git",
+                "url": "https://github.com/zendframework/zend-stdlib.git",
                 "reference": "69f7b2d620794482b9b355fa25376a5cc759ac22"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendStdlib/zipball/69f7b2d620794482b9b355fa25376a5cc759ac22",
+                "url": "https://api.github.com/repos/zendframework/zend-stdlib/zipball/b42d784bd142e916058a9d68eeafcc10ff63c12e",
                 "reference": "69f7b2d620794482b9b355fa25376a5cc759ac22",
                 "shasum": ""
             },
@@ -5493,6 +5515,7 @@
         "openeyes/oph-tr-intravitrealinjection": 20,
         "openeyes/oph-tr-laser": 20,
         "openeyes/oph-in-visualfields": 20,
+        "openeyes/oph-in-biometry": 20,
         "phpmd/phpmd": 0
     },
     "prefer-stable": false,
