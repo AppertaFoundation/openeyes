@@ -27,6 +27,8 @@ class MigrateModulesCommand extends CConsoleCommand
 		return <<<EOD
 USAGE
   yiic migratemodules
+  OR
+  yiic migratemodules down [--level=N]  (default level is 1)
 
 DESCRIPTION
   This command runs the migrations for all configured modules.
@@ -65,4 +67,29 @@ EOD;
 		}
 	}
 
+	public function actionDown($level = 1)
+	{
+
+		$commandPath = Yii::getPathOfAlias('application.commands');
+		$modules = Yii::app()->modules;
+		$moduleDir = 'application.modules.';
+		$migrationNames = Yii::app()->db->createCommand()->select("version")->from("tbl_migration")->order("apply_time DESC")->limit($level)->queryAll();
+
+		foreach ($migrationNames as $migrationFile) {
+			foreach ($modules as $module => $module_settings) {
+				if (is_file(Yii::getPathOfAlias($moduleDir . $module . '.migrations') . "/" . $migrationFile["version"] . ".php")) {
+					echo $migrationFile["version"] . " is in module " . $module . "\n";
+					$args = array(
+						'yiic',
+						'oemigrate',
+						'down',
+						'--migrationPath=' . $moduleDir . $module . '.migrations'
+					);
+					$runner = new CConsoleCommandRunner();
+					$runner->addCommands($commandPath);
+					$runner->run($args);
+				}
+			}
+		}
+	}
 }
