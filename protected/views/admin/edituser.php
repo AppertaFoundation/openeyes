@@ -43,6 +43,9 @@
 		<?php echo $form->radioBoolean($user,'is_doctor')?>
 	    <?php echo $form->textField($user,'registration_code',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 	    <?php echo $form->dropDownList($user,'doctor_grade_id', CHtml::listData(DoctorGrade::model()->findAll(array('order' => 'display_order')), 'id', 'grade'), array('empty' => '- Select Doctor Grade -'));?>
+	<?php echo $form->radioBoolean($user, 'is_clinical') ?>
+	<?php echo $form->radioBoolean($user, 'is_consultant') ?>
+	<?php echo $form->radioBoolean($user, 'is_surgeon') ?>
 		<?php echo $form->passwordField($user,'password',array('autocomplete'=>Yii::app()->params['html_autocomplete']),array('empty' => '', array('empty' => '- None -')))?>
 		<?php echo $form->passwordConfirmField($user,'Confirm','User[password_repeat]')?>
 		<?php echo $form->multiSelectList($user, 'User[roles]', 'roles', 'name', CHtml::listData(Yii::app()->authManager->getRoles(), 'name', 'name'), array(), array('label' => 'Roles', 'empty' => '-- Add --'), false, false, null, false, false, array(), 'AuthItem');?>
