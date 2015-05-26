@@ -648,7 +648,7 @@ class PatientController extends BaseController
 		}
 		$criteria = new CDbCriteria;
 		!empty($allergy_ids) && $criteria->addNotInCondition('id',$allergy_ids);
-		$criteria->order = 'name asc';
+		$criteria->order = 'display_order';
 		return Allergy::model()->active()->findAll($criteria);
 	}
 
