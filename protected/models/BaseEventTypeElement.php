@@ -31,6 +31,7 @@ class BaseEventTypeElement extends BaseElement
 
 	protected $_element_type;
 	protected $_children;
+	protected $frontEndErrors = array();
 
 	private $settings = array();
 
@@ -292,6 +293,20 @@ class BaseEventTypeElement extends BaseElement
 	public function isEditable()
 	{
 		return true;
+	}
+
+	public function addError($attribute, $message)
+	{
+		$this->frontEndErrors[] = str_replace('\\', '_', get_class($this)) . '_' . $attribute;
+		parent::addError($attribute, $message);
+	}
+
+	/**
+	 *  returns the front-end attributes with errors
+	 */
+	public function getFrontEndErrors()
+	{
+		echo json_encode($this->frontEndErrors);
 	}
 
 	public function requiredIfSide($attribute, $params)

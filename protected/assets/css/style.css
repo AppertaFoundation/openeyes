@@ -7054,3 +7054,7 @@ tfoot.pagination-container .pagination-view-all {
 #generic-search-form > div div input[type=text], #generic-search-form > div div select {
   width: 95%;
 }
+
+.highlighted-error {
+    border: 2px solid red;
+}
