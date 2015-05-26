@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "ff53a39f74a6d22b5b04f44021933e7a",
+    "hash": "0c76faef13f618bd1755cb1a94ba260d",
     "packages": [
         {
             "name": "openeyes/eyedraw",
@@ -148,16 +148,16 @@
         },
         {
             "name": "openeyes/oph-dr-prescription",
-            "version": "v1.10",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphDrPrescription.git",
-                "reference": "5cdc867b6069dcf7d90a99981ca96ab9e553a3d6"
+                "reference": "a0d0e4a1ab16e1ce8e9a8d62545404305942a008"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphDrPrescription/zipball/5cdc867b6069dcf7d90a99981ca96ab9e553a3d6",
-                "reference": "5cdc867b6069dcf7d90a99981ca96ab9e553a3d6",
+                "url": "https://api.github.com/repos/openeyes/OphDrPrescription/zipball/a0d0e4a1ab16e1ce8e9a8d62545404305942a008",
+                "reference": "a0d0e4a1ab16e1ce8e9a8d62545404305942a008",
                 "shasum": ""
             },
             "require": {
@@ -166,7 +166,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Module for generating prescriptions in OpenEyes",
-            "time": "2015-05-18 12:35:31"
+            "time": "2015-04-27 15:36:48"
         },
         {
             "name": "openeyes/oph-in-biometry",
@@ -5510,6 +5510,7 @@
         "openeyes/oph-ci-examination": 20,
         "openeyes/oph-ci-phasing": 20,
         "openeyes/oph-co-therapyapplication": 20,
+        "openeyes/oph-dr-prescription": 20,
         "openeyes/oph-le-intravitrealinjection": 20,
         "openeyes/oph-ou-anaestheticsatisfactionaudit": 20,
         "openeyes/oph-tr-operationnote": 20,
