@@ -1472,7 +1472,8 @@ class BaseEventTypeController extends BaseModuleController
 	{
 		$this->renderPartial('//elements/form_errors',array(
 			'errors'=>$errors,
-			'bottom'=>$bottom
+			'bottom' => $bottom,
+			'elements' => $this->open_elements
 		));
 	}
 

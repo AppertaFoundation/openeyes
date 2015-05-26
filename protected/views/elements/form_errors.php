@@ -31,3 +31,18 @@
 		<?php }?>
 	</div>
 <?php }?>
+<script type="text/javascript">
+	$(document).ready(function () {
+		<?php
+			if( is_array($elements) ){
+				foreach( $elements as $element ){  ?>
+		var errorObject = <?php $element->getFrontEndErrors(); ?>;
+		for (k = 0; k < errorObject.length; k++) {
+			$('#' + errorObject[k]).addClass('highlighted-error');
+		}
+		<?php
+				}
+			 }?>
+	});
+
+</script>
