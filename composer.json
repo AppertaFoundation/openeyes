@@ -10,7 +10,6 @@
     "openeyes/oph-ci-phasing": "dev-master",
     "openeyes/oph-co-therapyapplication": "dev-master",
     "openeyes/oph-dr-prescription": "dev-develop",
-    "openeyes/oph-le-intravitrealinjection": "dev-master",
     "openeyes/oph-ou-anaestheticsatisfactionaudit": "dev-master",
     "openeyes/oph-tr-consent": "1.10",
     "openeyes/oph-tr-operationnote": "dev-develop",
