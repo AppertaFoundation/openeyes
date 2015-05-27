@@ -97,7 +97,7 @@ abstract class OpenEyesPage extends Page {
 		$this->scrollWindowToElement ( $element );
 	}
 	public function acceptAlert() {
-		print "******In OpenEyes Class*******";
+		//print "******In OpenEyes Class*******";
 		$wdSession = $this->getSession ()->getDriver ()->getWebDriverSession ();
 		$wdSession->accept_alert();
 		//$element = $wdSession->element ( 'xpath', $element->getXpath () );
