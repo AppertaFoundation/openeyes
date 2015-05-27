@@ -103,6 +103,7 @@ $config = array(
 			'practice_code' => 'http://example.com/practice_code',
 			'cb_code' => 'http://example.com/cb_code',
 		),
+		'OphCoTherapyapplication_sender_email' => array('email@example.com' => 'Test'),
 	),
 );
 

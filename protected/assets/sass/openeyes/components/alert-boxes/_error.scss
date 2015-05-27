@@ -14,55 +14,32 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
-// Alert boxes
+// Alert box
 //
-// Alert boxes are used to show important information to the user.
+// Markup:
+// <div class="alert-box alert {$modifiers}">
+//     Alert! Some information the user needs to see, good or bad.
+//     <a href="#" class="close">&times;</a>
+// </div>
 //
-// Styleguide 7
-
-// Base alert-box styling.
+// .with-icon     - Alert box with icon
+//
+// Styleguide 7.1
 .alert-box {
-	@include alert(#e2e2e2);
-	@include radius(5px);
-	.close {
-		@include alert-close;
-		top: 1em;
-	}
-	ul {
-		line-height: 1.4;
-		margin: 0;
-	}
-	li {
-		margin-left: 20px;
-	}
-	p {
-		margin-bottom: 12px;
-	}
-	&.with-icon {
-		background-position: left top;
-		background-repeat: no-repeat;
-		padding-left: 48px;
-		@media print {
-			-webkit-print-color-adjust: exact;
-			background-position: left top !important;
-			background-repeat: no-repeat !important;
-		}
-	}
-	&.bottom {
-		margin-bottom: 0;
-		margin-top: 16px;
-	}
-	.spinner {
-		float: left;
-		margin-right: 10px;
-	}
+  border-color: #f00;
+  &.error {
+    @include alert-style(#c90000);
+    border-color: #f00;
+    color: #ffffff;
+    &.with-icon {
+      background-image: image-url("_elements/icons/box/error.png");
+      min-height: 36px;
+      padding-bottom: 11px;
+      padding-top: 11px;
+      @media print {
+        background-color: #c90000 !important;
+        background-image: image-url("_elements/icons/box/error.png") !important;
+      }
+    }
+  }
 }
-
-@import "alert-boxes/alert";
-@import "alert-boxes/issue";
-@import "alert-boxes/patient";
-@import "alert-boxes/success";
-@import "alert-boxes/warning";
-@import "alert-boxes/error";
-@import "alert-boxes/watermark";
-@import "alert-boxes/injection-warning";

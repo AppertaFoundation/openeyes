@@ -18,7 +18,9 @@
  */
 ?>
 <?php if (isset($errors) && !empty($errors)) {?>
-	<div class="alert-box alert with-icon<?php if ($bottom) echo " bottom";?>">
+	<div class="alert-box error with-icon<?php if ($bottom) {
+		echo " bottom";
+	} ?>">
 		<p>Please fix the following input errors:</p>
 		<?php foreach ($errors as $field => $errs) {?>
 			<?php foreach ($errs as $err) {?>
@@ -31,3 +33,18 @@
 		<?php }?>
 	</div>
 <?php }?>
+<script type="text/javascript">
+	$(document).ready(function () {
+		<?php
+			if( is_array($elements) ){
+				foreach( $elements as $element ){  ?>
+		var errorObject = <?php $element->getFrontEndErrors(); ?>;
+		for (k = 0; k < errorObject.length; k++) {
+			$('#' + errorObject[k]).addClass('highlighted-error');
+		}
+		<?php
+				}
+			 }?>
+	});
+
+</script>

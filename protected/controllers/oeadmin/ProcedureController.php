@@ -120,7 +120,7 @@ class ProcedureController extends BaseAdminController
 						'relation_field_id' => 'id',
 						'label' => 'Operation Note Element',
 						'options' => CHtml::encodeArray(CHtml::listData(
-							ElementType::model()->findAllByAttributes(array('event_type_id' => 4)),
+							ElementType::model()->findAllByAttributes(array(), 'event_type_id in (select id from event_type where name = "Operation Note")'),
 							'id',
 							'name'
 						)),
