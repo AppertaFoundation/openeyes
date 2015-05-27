@@ -29,6 +29,7 @@ return array(
 				'Contacts' => '/admin/contacts',
 				'Contact labels' => '/admin/contactlabels',
 				'Data sources' => '/admin/datasources',
+				'Allergies' => '/admin/allergies',
 				'Institutions' => '/admin/institutions',
 				'Sites' => '/admin/sites',
 				'Commissioning bodies' => '/admin/commissioning_bodies',
