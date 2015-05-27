@@ -96,7 +96,7 @@ $(document).ready(function () {
                             'type': 'GET',
                             'url': baseUrl + '/patient/generateAllergySelect?patient_id=' + OE_patient_id,
                             'success': function (response) {
-                                $('#allergy_id').html = response;
+                                $('#allergy_id').html(response);
                             }
                         });
 					}
