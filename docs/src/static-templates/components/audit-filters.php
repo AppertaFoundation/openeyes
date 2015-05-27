@@ -23,34 +23,23 @@
 						</thead>
 						<tbody>
 							<tr>
-								<td>
-									<select>
+								<td><select>
 										<option>All sites</option>
-									</select>
-								</td>
-								<td>
-									<select>
+								</select></td>
+								<td><select>
 										<option>All firms</option>
-									</select>
+								</select></td>
+								<td><input type="text" placeholder="Type to search for users..." />
 								</td>
-								<td>
-									<input type="text" placeholder="Type to search for users..." />
-								</td>
-								<td>
-									<select>
+								<td><select>
 										<option>All actions</option>
-									</select>
-								</td>
-								<td>
-									<select>
+								</select></td>
+								<td><select>
 										<option>All targets</option>
-									</select>
-								</td>
-								<td>
-									<select>
+								</select></td>
+								<td><select>
 										<option>All event types</option>
-									</select>
-								</td>
+								</select></td>
 							</tr>
 						</tbody>
 					</table>
@@ -61,25 +50,18 @@
 				<div class="large-10 column">
 					<div class="search-filters-extra audit-filters clearfix">
 						<fieldset class="inline highlight">
-							<label class="inline">From:</label>
-							<input class="small fixed-width" type="text" name="date-start" />
-							<label class="inline">To:</label>
-							<input class="small fixed-width" type="text" name="date-end" />
-							<label class="inline">Hos num:</label>
-							<input class="small fixed-width" type="text" name="date-end" />
-							<a href="#" class="inline">
-								View all
-							</a>
-							<a href="#" class="inline">
-								Auto update on
-							</a>
+							<label class="inline">From:</label> <input
+								class="small fixed-width" type="text" name="date-start" /> <label
+								class="inline">To:</label> <input class="small fixed-width"
+								type="text" name="date-end" /> <label class="inline">Hos num:</label>
+							<input class="small fixed-width" type="text" name="date-end" /> <a
+								href="#" class="inline"> View all </a> <a href="#"
+								class="inline"> Auto update on </a>
 						</fieldset>
 					</div>
 				</div>
 				<div class="large-2 column text-right">
-					<button class="secondary">
-						Filter
-					</button>
+					<button class="secondary">Filter</button>
 				</div>
 			</div>
 		</div>

@@ -16,8 +16,7 @@
 				<div class="row">
 					<div class="large-12 column">
 						<div class="alert-box patient with-icon">
-							<strong>Patient has allergies</strong>
-							- Acetazolamide<br />
+							<strong>Patient has allergies</strong> - Acetazolamide<br />
 						</div>
 					</div>
 				</div>
@@ -30,10 +29,8 @@
 					<!-- Personal Details -->
 					<section class="box patient-info">
 						<h3 class="box-title">Personal Details:</h3>
-						<a href="#" class="toggle-trigger toggle-hide">
-							<span class="icon-showhide">
-								Show/hide this section
-							</span>
+						<a href="#" class="toggle-trigger toggle-hide"> <span
+							class="icon-showhide"> Show/hide this section </span>
 						</a>
 						<div class="row data-row">
 							<div class="large-4 column">
@@ -57,10 +54,7 @@
 							</div>
 							<div class="large-8 column">
 								<div class="data-value">
-									68 Pink Lane<br/>
-									Larbert<br/>
-									Essex<br/>
-									IQ68 5SD
+									68 Pink Lane<br /> Larbert<br /> Essex<br /> IQ68 5SD
 								</div>
 							</div>
 						</div>
@@ -69,9 +63,7 @@
 								<div class="data-label">Date of Birth:</div>
 							</div>
 							<div class="large-8 column">
-								<div class="data-value">
-									23 Jan 1937
-								</div>
+								<div class="data-value">23 Jan 1937</div>
 							</div>
 						</div>
 						<div class="row data-row">
@@ -79,9 +71,7 @@
 								<div class="data-label">Age:</div>
 							</div>
 							<div class="large-8 column">
-								<div class="data-value">
-									76
-								</div>
+								<div class="data-value">76</div>
 							</div>
 						</div>
 						<div class="row data-row">
@@ -89,9 +79,7 @@
 								<div class="data-label">Gender:</div>
 							</div>
 							<div class="large-8 column">
-								<div class="data-value">
-									Female
-								</div>
+								<div class="data-value">Female</div>
 							</div>
 						</div>
 						<div class="row data-row">
@@ -99,9 +87,7 @@
 								<div class="data-label">Ethnic Group:</div>
 							</div>
 							<div class="large-8 column">
-								<div class="data-value">
-									Unknown
-								</div>
+								<div class="data-value">Unknown</div>
 							</div>
 						</div>
 					</section>
@@ -109,10 +95,8 @@
 					<!-- Contact Details -->
 					<section class="box patient-info">
 						<h3 class="box-title">Contact details:</h3>
-						<a href="#" class="toggle-trigger toggle-show">
-							<span class="icon-showhide">
-								Show/hide this section
-							</span>
+						<a href="#" class="toggle-trigger toggle-show"> <span
+							class="icon-showhide"> Show/hide this section </span>
 						</a>
 						<div class="row data-row">
 							<div class="large-4 column">
@@ -143,10 +127,8 @@
 					<!-- General Practitioner -->
 					<section class="box patient-info">
 						<h3 class="box-title">General Practitioner:</h3>
-						<a href="#" class="toggle-trigger toggle-hide">
-							<span class="icon-showhide">
-								Show/hide this section
-							</span>
+						<a href="#" class="toggle-trigger toggle-hide"> <span
+							class="icon-showhide"> Show/hide this section </span>
 						</a>
 						<div class="row data-row">
 							<div class="large-4 column">
@@ -177,7 +159,8 @@
 								<div class="data-label">Practice Address:</div>
 							</div>
 							<div class="large-8 column">
-								<div class="data-value">83 Wintour Lane, Northop, Heald Green, Lothian, GH14 2DH</div>
+								<div class="data-value">83 Wintour Lane, Northop, Heald Green,
+									Lothian, GH14 2DH</div>
 							</div>
 						</div>
 						<div class="row data-row">
@@ -241,8 +224,7 @@
 						<header class="box-header">
 							<h3 class="box-title">All Episodes</h3>
 							<div class="box-info">
-								<strong>open 3</strong> |
-								closed 0
+								<strong>open 3</strong> | closed 0
 							</div>
 						</header>
 						<table class="patient-episodes grid">
@@ -258,9 +240,7 @@
 							</thead>
 							<tbody>
 								<tr class="speciality">
-									<td colspan="6">
-										Ophthalmology
-									</td>
+									<td colspan="6">Ophthalmology</td>
 								</tr>
 								<tr class="clickable">
 									<td>5 Dec 2011</td>
@@ -294,13 +274,11 @@
 					<section class="box patient-info associated-data">
 						<header class="box-header">
 							<h3 class="box-title">
-								<span class="icon-patient-clinician-hd_flag"></span>
-								Other ophthalmic diagnoses
+								<span class="icon-patient-clinician-hd_flag"></span> Other
+								ophthalmic diagnoses
 							</h3>
-							<a href="#" class="toggle-trigger toggle-hide">
-								<span class="icon-showhide">
-									Show/hide this section
-								</span>
+							<a href="#" class="toggle-trigger toggle-hide"> <span
+								class="icon-showhide"> Show/hide this section </span>
 							</a>
 						</header>
 						<table class="plain patient-data">
@@ -326,9 +304,7 @@
 						</table>
 
 						<div class="box-actions">
-							<button class="secondary small">
-								Add Ophthalmic Diagnosis
-							</button>
+							<button class="secondary small">Add Ophthalmic Diagnosis</button>
 						</div>
 
 						<form class="form add-data hide">
@@ -340,13 +316,11 @@
 					<section class="box patient-info associated-data">
 						<header class="box-header">
 							<h3 class="box-title">
-								<span class="icon-patient-clinician-hd_flag"></span>
-								Other ophthalmic diagnoses
+								<span class="icon-patient-clinician-hd_flag"></span> Other
+								ophthalmic diagnoses
 							</h3>
-							<a href="#" class="toggle-trigger toggle-hide">
-								<span class="icon-showhide">
-									Show/hide this section
-								</span>
+							<a href="#" class="toggle-trigger toggle-hide"> <span
+								class="icon-showhide"> Show/hide this section </span>
 							</a>
 						</header>
 						<table class="plain patient-data">
@@ -372,8 +346,7 @@
 						</table>
 
 						<div class="box-actions">
-							<button class="secondary small" disabled>
-								Add Ophthalmic Diagnosis
+							<button class="secondary small" disabled>Add Ophthalmic Diagnosis
 							</button>
 						</div>
 
@@ -381,7 +354,9 @@
 
 							<fieldset class="field-row">
 
-								<legend><strong>Add ophthalmic diagnosis</strong></legend>
+								<legend>
+									<strong>Add ophthalmic diagnosis</strong>
+								</legend>
 
 								<div class="field-row row">
 									<div class="large-3 column">
@@ -397,35 +372,24 @@
 											</select>
 										</div>
 										<div class="field-row">
-											<input type="text" placeholder="Or type the first few characters of a diagnosis" />
+											<input type="text"
+												placeholder="Or type the first few characters of a diagnosis" />
 										</div>
 									</div>
 								</div>
 
 								<fieldset class="row field-row">
-									<legend class="large-3 column">
-										Eye:
-									</legend>
+									<legend class="large-3 column"> Eye: </legend>
 									<div class="large-7 column end">
-										<label class="inline">
-											<input type="radio" />
-											Right
-										</label>
-										<label class="inline">
-											<input type="radio" />
-											Both
-										</label>
-										<label class="inline">
-											<input type="radio" />
-											Left
+										<label class="inline"> <input type="radio" /> Right
+										</label> <label class="inline"> <input type="radio" /> Both
+										</label> <label class="inline"> <input type="radio" /> Left
 										</label>
 									</div>
 								</fieldset>
 
 								<fieldset class="row field-row">
-									<legend class="large-3 column">
-										Date:
-									</legend>
+									<legend class="large-3 column"> Date: </legend>
 									<div class="large-2 column">
 										<select>
 											<option>Day</option>
@@ -444,12 +408,8 @@
 								</fieldset>
 
 								<div class="buttons">
-									<button type="submit" class="secondary small">
-										Save
-									</button>
-									<button class="warning small">
-										Cancel
-									</button>
+									<button type="submit" class="secondary small">Save</button>
+									<button class="warning small">Cancel</button>
 								</div>
 							</fieldset>
 						</form>
@@ -459,13 +419,11 @@
 					<section class="box patient-info associated-data">
 						<header class="box-header">
 							<h3 class="box-title">
-								<span class="icon-patient-clinician-hd_flag"></span>
-								Previous operations
+								<span class="icon-patient-clinician-hd_flag"></span> Previous
+								operations
 							</h3>
-							<a href="#" class="toggle-trigger toggle-hide">
-								<span class="icon-showhide">
-									Show/hide this section
-								</span>
+							<a href="#" class="toggle-trigger toggle-hide"> <span
+								class="icon-showhide"> Show/hide this section </span>
 							</a>
 						</header>
 						<table class="plain patient-data">
@@ -491,8 +449,7 @@
 						</table>
 
 						<div class="box-actions">
-							<button class="secondary small" disabled>
-								Add Ophthalmic Diagnosis
+							<button class="secondary small" disabled>Add Ophthalmic Diagnosis
 							</button>
 						</div>
 
@@ -500,7 +457,9 @@
 
 							<fieldset class="field-row">
 
-								<legend><strong>Add Previous operation</strong></legend>
+								<legend>
+									<strong>Add Previous operation</strong>
+								</legend>
 
 								<div class="field-row row">
 									<div class="large-3 column">
@@ -523,33 +482,18 @@
 								</div>
 
 								<fieldset class="row field-row">
-									<legend class="large-3 column">
-										Side:
-									</legend>
+									<legend class="large-3 column"> Side: </legend>
 									<div class="large-7 column end">
-										<label class="inline">
-											<input type="radio" />
-											None
-										</label>
-										<label class="inline">
-											<input type="radio" />
-											Right
-										</label>
-										<label class="inline">
-											<input type="radio" />
-											Both
-										</label>
-										<label class="inline">
-											<input type="radio" />
-											Left
+										<label class="inline"> <input type="radio" /> None
+										</label> <label class="inline"> <input type="radio" /> Right
+										</label> <label class="inline"> <input type="radio" /> Both
+										</label> <label class="inline"> <input type="radio" /> Left
 										</label>
 									</div>
 								</fieldset>
 
 								<fieldset class="row field-row">
-									<legend class="large-3 column">
-										Date:
-									</legend>
+									<legend class="large-3 column"> Date: </legend>
 									<div class="large-2 column">
 										<select>
 											<option>Day</option>
@@ -568,12 +512,8 @@
 								</fieldset>
 
 								<div class="buttons">
-									<button type="submit" class="secondary small">
-										Save
-									</button>
-									<button class="warning small">
-										Cancel
-									</button>
+									<button type="submit" class="secondary small">Save</button>
+									<button class="warning small">Cancel</button>
 								</div>
 							</fieldset>
 						</form>
@@ -583,13 +523,10 @@
 					<section class="box patient-info associated-data">
 						<header class="box-header">
 							<h3 class="box-title">
-								<span class="icon-patient-clinician-hd_flag"></span>
-								Medication
+								<span class="icon-patient-clinician-hd_flag"></span> Medication
 							</h3>
-							<a href="#" class="toggle-trigger toggle-hide">
-								<span class="icon-showhide">
-									Show/hide this section
-								</span>
+							<a href="#" class="toggle-trigger toggle-hide"> <span
+								class="icon-showhide"> Show/hide this section </span>
 							</a>
 						</header>
 						<table class="plain patient-data">
@@ -615,16 +552,16 @@
 						</table>
 
 						<div class="box-actions">
-							<button class="secondary small" disabled>
-								Add medication
-							</button>
+							<button class="secondary small" disabled>Add medication</button>
 						</div>
 
 						<form class="form add-data">
 
 							<fieldset class="field-row">
 
-								<legend><strong>Add medication</strong></legend>
+								<legend>
+									<strong>Add medication</strong>
+								</legend>
 
 								<div class="field-row row">
 									<div class="large-3 column">
@@ -685,12 +622,8 @@
 								</div>
 
 								<div class="buttons">
-									<button type="submit" class="secondary small">
-										Save
-									</button>
-									<button class="warning small">
-										Cancel
-									</button>
+									<button type="submit" class="secondary small">Save</button>
+									<button class="warning small">Cancel</button>
 								</div>
 							</fieldset>
 						</form>
@@ -700,13 +633,10 @@
 					<section class="box patient-info associated-data">
 						<header class="box-header">
 							<h3 class="box-title">
-								<span class="icon-patient-clinician-hd_flag"></span>
-								CVI Status
+								<span class="icon-patient-clinician-hd_flag"></span> CVI Status
 							</h3>
-							<a href="#" class="toggle-trigger toggle-hide">
-								<span class="icon-showhide">
-									Show/hide this section
-								</span>
+							<a href="#" class="toggle-trigger toggle-hide"> <span
+								class="icon-showhide"> Show/hide this section </span>
 							</a>
 						</header>
 						<table class="plain patient-data">
@@ -732,16 +662,16 @@
 						</table>
 
 						<div class="box-actions">
-							<button class="secondary small" disabled>
-								Edit
-							</button>
+							<button class="secondary small" disabled>Edit</button>
 						</div>
 
 						<form class="form add-data">
 
 							<fieldset class="field-row">
 
-								<legend><strong>Edit CVI Status</strong></legend>
+								<legend>
+									<strong>Edit CVI Status</strong>
+								</legend>
 
 								<div class="field-row row">
 									<div class="large-3 column">
@@ -755,9 +685,7 @@
 								</div>
 
 								<fieldset class="row field-row">
-									<legend class="large-3 column">
-										Date:
-									</legend>
+									<legend class="large-3 column"> Date: </legend>
 									<div class="large-2 column">
 										<select>
 											<option>Day</option>
@@ -776,12 +704,8 @@
 								</fieldset>
 
 								<div class="buttons">
-									<button type="submit" class="secondary small">
-										Save
-									</button>
-									<button class="warning small">
-										Cancel
-									</button>
+									<button type="submit" class="secondary small">Save</button>
+									<button class="warning small">Cancel</button>
 								</div>
 							</fieldset>
 						</form>
@@ -791,13 +715,10 @@
 					<section class="box patient-info associated-data">
 						<header class="box-header">
 							<h3 class="box-title">
-								<span class="icon-patient-clinician-hd_flag"></span>
-								CVI Status
+								<span class="icon-patient-clinician-hd_flag"></span> CVI Status
 							</h3>
-							<a href="#" class="toggle-trigger toggle-hide">
-								<span class="icon-showhide">
-									Show/hide this section
-								</span>
+							<a href="#" class="toggle-trigger toggle-hide"> <span
+								class="icon-showhide"> Show/hide this section </span>
 							</a>
 						</header>
 						<table class="plain patient-data">
@@ -823,16 +744,16 @@
 						</table>
 
 						<div class="box-actions">
-							<button class="secondary small" disabled>
-								Add allergy
-							</button>
+							<button class="secondary small" disabled>Add allergy</button>
 						</div>
 
 						<form class="form add-data">
 
 							<fieldset class="field-row">
 
-								<legend><strong>Add allergy</strong></legend>
+								<legend>
+									<strong>Add allergy</strong>
+								</legend>
 
 								<div class="field-row row">
 									<div class="large-3 column">
@@ -846,12 +767,8 @@
 								</div>
 
 								<div class="buttons">
-									<button type="submit" class="secondary small">
-										Save
-									</button>
-									<button class="warning small">
-										Cancel
-									</button>
+									<button type="submit" class="secondary small">Save</button>
+									<button class="warning small">Cancel</button>
 								</div>
 							</fieldset>
 						</form>
@@ -861,13 +778,11 @@
 					<section class="box patient-info associated-data">
 						<header class="box-header">
 							<h3 class="box-title">
-								<span class="icon-patient-clinician-hd_flag"></span>
-								Family history
+								<span class="icon-patient-clinician-hd_flag"></span> Family
+								history
 							</h3>
-							<a href="#" class="toggle-trigger toggle-hide">
-								<span class="icon-showhide">
-									Show/hide this section
-								</span>
+							<a href="#" class="toggle-trigger toggle-hide"> <span
+								class="icon-showhide"> Show/hide this section </span>
 							</a>
 						</header>
 						<table class="plain patient-data">
@@ -893,16 +808,16 @@
 						</table>
 
 						<div class="box-actions">
-							<button class="secondary small" disabled>
-								Add family history
-							</button>
+							<button class="secondary small" disabled>Add family history</button>
 						</div>
 
 						<form class="form add-data">
 
 							<fieldset class="field-row">
 
-								<legend><strong>Add allergy</strong></legend>
+								<legend>
+									<strong>Add allergy</strong>
+								</legend>
 
 								<div class="field-row row">
 									<div class="large-3 column">
@@ -958,12 +873,8 @@
 								</div>
 
 								<div class="buttons">
-									<button type="submit" class="secondary small">
-										Save
-									</button>
-									<button class="warning small">
-										Cancel
-									</button>
+									<button type="submit" class="secondary small">Save</button>
+									<button class="warning small">Cancel</button>
 								</div>
 							</fieldset>
 						</form>

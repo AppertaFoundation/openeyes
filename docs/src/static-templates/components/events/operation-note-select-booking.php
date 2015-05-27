@@ -1,14 +1,10 @@
 <div class="large-10 column event ophtroperationnote edit">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
-			<li class="selected">
-				<a href="#">Select a booking</a>
-			</li>
+			<li class="selected"><a href="#">Select a booking</a></li>
 		</ul>
 		<div class="button-bar right">
-			<a href="#" class="button small secondary">
-				Create Operation Note
-			</a>
+			<a href="#" class="button small secondary"> Create Operation Note </a>
 		</div>
 	</header>
 	<div class="event-content">
@@ -23,46 +19,27 @@
 					</header>
 					<div class="element-fields">
 						<div class="field-row">
-							<div class="field-value">
-								Please indicate whether this operation note relates to a booking or an unbooked emergency:
-							</div>
+							<div class="field-value">Please indicate whether this operation
+								note relates to a booking or an unbooked emergency:</div>
 						</div>
 						<fieldset class="row field-row">
-							<legend class="large-2 column">
-								Select:
-							</legend>
+							<legend class="large-2 column"> Select: </legend>
 							<div class="large-5 column end">
-								<label class="highlight booking">
-									<span class="row">
-										<span class="large-1 column">
-											<input type="radio" />
-										</span>
-										<span class="large-1 column">
-											<img src="<?php echo $assets_root_path?>assets/modules/OphTrOperationbooking/assets/img/small.png" />
-										</span>
-										<span class="large-3 column">
-											19 Sep 2013
-										</span>
-										<span class="large-3 column">
-											Operation
-										</span>
-										<span class="large-4 column">
-											Punctoplasty
-										</span>
-									</span>
+								<label class="highlight booking"> <span class="row"> <span
+										class="large-1 column"> <input type="radio" />
+									</span> <span class="large-1 column"> <img
+											src="<?php echo $assets_root_path?>assets/modules/OphTrOperationbooking/assets/img/small.png" />
+									</span> <span class="large-3 column"> 19 Sep 2013 </span> <span
+										class="large-3 column"> Operation </span> <span
+										class="large-4 column"> Punctoplasty </span>
+								</span>
 								</label>
-								<div class="alert-box alert with-icon">
-									Warning: this booking already has a consent form
-								</div>
-								<label class="highlight booking">
-									<span class="row">
-										<span class="large-1 column">
-											<input type="radio" />
-										</span>
-										<span class="large-11 column">
-											Emergency
-										</span>
-									</span>
+								<div class="alert-box alert with-icon">Warning: this booking
+									already has a consent form</div>
+								<label class="highlight booking"> <span class="row"> <span
+										class="large-1 column"> <input type="radio" />
+									</span> <span class="large-11 column"> Emergency </span>
+								</span>
 								</label>
 							</div>
 						</fieldset>

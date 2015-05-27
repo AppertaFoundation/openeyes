@@ -1,25 +1,18 @@
 <div class="large-10 column event ophcocorrespondence edit">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
-			<li class="selected">
-				<a href="#">Create</a>
-			</li>
+			<li class="selected"><a href="#">Create</a></li>
 		</ul>
 		<div class="button-bar right">
-			<a class="cancel event-action button small">
-				Cancel
-			</a>
-			<a href="#" class="button small secondary">
-				Save
-			</a>
+			<a class="cancel event-action button small"> Cancel </a> <a href="#"
+				class="button small secondary"> Save </a>
 		</div>
 	</header>
 	<div class="event-content">
 		<h2 class="event-title">Correspondence</h2>
 
-		<div class="alert-box alert with-icon">
-			Patient has no GP practice address, please correct in PAS before creating GP letter.
-		</div>
+		<div class="alert-box alert with-icon">Patient has no GP practice
+			address, please correct in PAS before creating GP letter.</div>
 
 		<div class="row">
 			<div class="large-12 column">
@@ -88,9 +81,7 @@ GH14 2DH</textarea>
 										<textarea>Dear Dr Who,</textarea>
 									</div>
 									<div class="large-4 column">
-										<label>
-											<input type="checkbox" />
-											Nickname
+										<label> <input type="checkbox" /> Nickname
 										</label>
 									</div>
 								</div>
@@ -167,9 +158,7 @@ GH14 2DH</textarea>
 							</div>
 						</div>
 						<fieldset class="row field-row">
-							<legend class="large-2 column">
-								Enclosures:
-							</legend>
+							<legend class="large-2 column"> Enclosures: </legend>
 							<div class="large-10 column">
 								<div class="field-row row collapse">
 									<div class="large-8 column">
@@ -192,9 +181,7 @@ GH14 2DH</textarea>
 									</div>
 								</div>
 								<div class="field-row">
-									<button class="secondary small">
-										Add
-									</button>
+									<button class="secondary small">Add</button>
 								</div>
 							</div>
 						</fieldset>

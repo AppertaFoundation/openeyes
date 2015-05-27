@@ -16,10 +16,10 @@
 				<div class="large-8 large-centered column">
 					<div class="box content">
 						<div class="panel">
-							<div class="alert-box alert with-icon">There are currently no episodes for this patient, please click the Add episode button to open a new episode.</div>
-							<button class="small">
-								Add episode
-							</button>
+							<div class="alert-box alert with-icon">There are currently no
+								episodes for this patient, please click the Add episode button
+								to open a new episode.</div>
+							<button class="small">Add episode</button>
 						</div>
 					</div>
 				</div>

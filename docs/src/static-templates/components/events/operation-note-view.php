@@ -1,12 +1,9 @@
-<div class="large-10 column event view ophtroperationnote highlight-fields">
+<div
+	class="large-10 column event view ophtroperationnote highlight-fields">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
-			<li class="selected">
-				<a href="#">View</a>
-			</li>
-			<li>
-				<a href="#">Edit</a>
-			</li>
+			<li class="selected"><a href="#">View</a></li>
+			<li><a href="#">Edit</a></li>
 		</ul>
 	</header>
 	<div class="event-content">
@@ -66,7 +63,8 @@
 												<div class="data-label">Details:</div>
 											</div>
 											<div class="large-8 column">
-												<div class="data-value">Posterior chamber IOL, corneal pocket incision at 3 o'clock, sideport at 12, and 6 o'clock</div>
+												<div class="data-value">Posterior chamber IOL, corneal
+													pocket incision at 3 o'clock, sideport at 12, and 6 o'clock</div>
 											</div>
 										</div>
 										<div class="row data-row">
@@ -78,9 +76,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="large-6 column">
-										(Eyedraw image goes here)
-									</div>
+									<div class="large-6 column">(Eyedraw image goes here)</div>
 								</div>
 							</div>
 						</section>
@@ -104,22 +100,19 @@
 								<div class="data-value">Anaesthetist</div>
 							</div>
 							<div class="large-2 column">
-									<h4 class="data-title">Agents</h4>
+								<h4 class="data-title">Agents</h4>
 								<div class="data-value none">None</div>
 							</div>
 							<div class="large-3 column">
 								<h4 class="data-title">Complications</h4>
 								<div class="data-value">
-									Retro bulbar / peribulbar haemorrage
-									<br />
-									Patient pain - Moderate
+									Retro bulbar / peribulbar haemorrage <br /> Patient pain -
+									Moderate
 								</div>
 							</div>
 							<div class="large-3 column">
 								<h4 class="data-title">Delivery</h4>
-								<div class="data-value">
-									Peribulbar
-								</div>
+								<div class="data-value">Peribulbar</div>
 							</div>
 						</div>
 					</div>
@@ -162,11 +155,10 @@
 				</section>
 
 				<div class="metadata">
-					<span class="info">
-						Operation note created by <span class="user">Enoch Root</span> on 1 Jan 2000 at 00:00
-					</span>
-					<span class="info">
-						Operation note last modified by <span class="user">Enoch Root</span> on 1 Jan 2000 at 00:00
+					<span class="info"> Operation note created by <span class="user">Enoch
+							Root</span> on 1 Jan 2000 at 00:00
+					</span> <span class="info"> Operation note last modified by <span
+						class="user">Enoch Root</span> on 1 Jan 2000 at 00:00
 					</span>
 				</div>
 			</div>
