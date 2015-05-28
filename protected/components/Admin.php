@@ -492,8 +492,15 @@ class Admin
 			if(array_key_exists('id', $post) && is_array($post['id'])){
 				foreach ($post['id'] as $id) {
 					$model = $this->model->findByPk($id);
-					if ($model && !$model->delete()) {
-						$response = 0;
+					if (isset($model->active)) {
+						$model->active = 0;
+						if ($model && !$model->save()) {
+							$response = 0;
+						}
+					} else {
+						if ($model && !$model->delete()) {
+							$response = 0;
+						}
 					}
 				}
 			}
