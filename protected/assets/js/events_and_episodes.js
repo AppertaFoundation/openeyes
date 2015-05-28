@@ -308,3 +308,9 @@ function hide_linked_field(element_name,field_name)
 		});
 	}
 }
+
+function scrollToElement(element) {
+    $('html, body').animate({
+        scrollTop: parseInt(element.offset().top - 100)
+    }, 1000);
+}

@@ -1,7 +1,9 @@
 @intravitreal @regression
 Feature: Create New Intravitreal Event
+@Intravitreal
          Regression coverage of this event is approx 75%
 
+  @Intravitreal_Route_0
   Scenario: Route 0:  Error tests : Login and create a New Intravitreal Event
             Site 1:  Queens
             Firm 1:  Anderson Cataract
