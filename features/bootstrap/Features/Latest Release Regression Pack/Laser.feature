@@ -1,5 +1,6 @@
 @laser @regression
 Feature: Create New Laser event
+@LASER
          Regression coverage of this event is 100%
 
   Scenario: Route 1: Login and create a Laser event
@@ -29,6 +30,7 @@ Feature: Create New Laser event
 
     Then I save the Laser Event and confirm it has been created successfully
 
+  @Laser_Route_2
   Scenario: Route 2: Login and validate a Laser Event.
             Site 2:  Kings
             Firm 3:  Anderson Glaucoma
