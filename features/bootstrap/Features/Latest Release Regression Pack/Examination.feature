@@ -1,6 +1,6 @@
-#@examination @regression
+@examination @regression
 Feature: Create New Examination Regression Tests
-#@EXAM
+@EXAM
           Regression over 2 Sites and 4 Firms
           Regression coverage of this event is approx 70%
 
