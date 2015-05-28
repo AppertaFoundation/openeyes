@@ -1,14 +1,10 @@
 <div class="large-10 column event ophtrlaser edit">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
-			<li class="selected">
-				<a href="#">Create</a>
-			</li>
+			<li class="selected"><a href="#">Create</a></li>
 		</ul>
 		<div class="button-bar right">
-			<a href="#" class="button small secondary">
-				Save
-			</a>
+			<a href="#" class="button small secondary"> Save </a>
 		</div>
 	</header>
 	<div class="event-content">
@@ -81,13 +77,9 @@
 											</select>
 										</div>
 										<ul class="multi-select-selections">
-											<li>
-												Cycloablation
-												<a href="#" class="remove-one">Remove</a>
+											<li>Cycloablation <a href="#" class="remove-one">Remove</a>
 											</li>
-											<li>
-												Laser iridoplasty
-												<a href="#" class="remove-one">Remove</a>
+											<li>Laser iridoplasty <a href="#" class="remove-one">Remove</a>
 											</li>
 										</ul>
 									</div>
@@ -113,9 +105,9 @@
 							<header class="sub-element-header">
 								<h4 class="sub-element-title">Anterior Segment</h4>
 								<div class="sub-element-actions">
-									<a href="#" class="button button-icon small">
-										<span class="icon-button-small-mini-cross"></span>
-										<span class="hide-offscreen">Remove sub-element</span>
+									<a href="#" class="button button-icon small"> <span
+										class="icon-button-small-mini-cross"></span> <span
+										class="hide-offscreen">Remove sub-element</span>
 									</a>
 								</div>
 							</header>
@@ -124,7 +116,8 @@
 									<a href="#" class="icon-remove-side">Remove eye</a>
 									<div class="eyedraw-row row field-row anterior-segment">
 										<div class="fixed column">
-											<img src="<?php echo $assets_root_path?>assets/img/eyedraw/large.png" />
+											<img
+												src="<?php echo $assets_root_path?>assets/img/eyedraw/large.png" />
 										</div>
 									</div>
 								</div>
@@ -132,7 +125,8 @@
 									<a href="#" class="icon-remove-side">Remove eye</a>
 									<div class="eyedraw-row row field-row anterior-segment">
 										<div class="fixed column">
-											<img src="<?php echo $assets_root_path?>assets/img/eyedraw/large.png" />
+											<img
+												src="<?php echo $assets_root_path?>assets/img/eyedraw/large.png" />
 										</div>
 									</div>
 								</div>
@@ -141,12 +135,8 @@
 					</div>
 					<div class="sub-elements inactive">
 						<ul class="sub-elements-list">
-							<li>
-								<a href="#">Posterior Pole</a>
-							</li>
-							<li>
-								<a href="#">Fundus</a>
-							</li>
+							<li><a href="#">Posterior Pole</a></li>
+							<li><a href="#">Fundus</a></li>
 						</ul>
 					</div>
 				</section>
@@ -173,20 +163,17 @@
 					<header class="optional-elements-header">
 						<h3 class="optional-elements-title">Optional Elements</h3>
 						<div class="optional-elements-actions">
-							<a href="#">
-								<span>Add all</span>
-								<img src="<?php echo $assets_root_path?>assets/img/_elements/icons/event-optional/element-added.png" alt="Add all" />
-							</a>
-							<a href="#">
-								<span>Remove all</span>
-								<img src="<?php echo $assets_root_path?>assets/img/_elements/icons/event-optional/element-remove.png" alt="Remove all" />
+							<a href="#"> <span>Add all</span> <img
+								src="<?php echo $assets_root_path?>assets/img/_elements/icons/event-optional/element-added.png"
+								alt="Add all" />
+							</a> <a href="#"> <span>Remove all</span> <img
+								src="<?php echo $assets_root_path?>assets/img/_elements/icons/event-optional/element-remove.png"
+								alt="Remove all" />
 							</a>
 						</div>
 					</header>
 					<ul class="optional-elements-list">
-						<li>
-							<a href="#">Comments</a>
-						</li>
+						<li><a href="#">Comments</a></li>
 					</ul>
 				</section>
 

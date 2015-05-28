@@ -1,21 +1,14 @@
 <div class="large-10 column event view ophciexamination">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
-			<li class="selected">
-				<a href="#">View</a>
-			</li>
-			<li>
-				<a href="#">Edit</a>
-			</li>
+			<li class="selected"><a href="#">View</a></li>
+			<li><a href="#">Edit</a></li>
 		</ul>
 		<div class="button-bar right">
-			<a href="#" class="delete event-action button button-icon small">
-				<span class="icon-button-small-trash-can"></span>
-				<span class="hide-offscreen">Delete</span>
-			</a>
-			<a href="#" class="button small">
-				Print
-			</a>
+			<a href="#" class="delete event-action button button-icon small"> <span
+				class="icon-button-small-trash-can"></span> <span
+				class="hide-offscreen">Delete</span>
+			</a> <a href="#" class="button small"> Print </a>
 		</div>
 	</header>
 	<div class="event-content">
@@ -31,9 +24,7 @@
 					</header>
 					<div class="element-data">
 						<div class="data-row">
-							<div class="data-value">
-								History test 123
-							</div>
+							<div class="data-value">History test 123</div>
 						</div>
 					</div>
 					<div class="sub-elements">
@@ -44,9 +35,7 @@
 							<div class="sub-element-data">
 								<div class="data-row">
 									<div class="data-value">
-										Angina, Ethnicity
-										<br />
-										Test 123
+										Angina, Ethnicity <br /> Test 123
 									</div>
 								</div>
 							</div>
@@ -64,12 +53,14 @@
 							<div class="data-row">
 								<div class="row refraction">
 									<div class="column fixed">
-										<img src="<?php echo $assets_root_path?>assets/img/eyedraw/small.png" class="canvas" alt="Eyedraw" />
+										<img
+											src="<?php echo $assets_root_path?>assets/img/eyedraw/small.png"
+											class="canvas" alt="Eyedraw" />
 									</div>
 									<div class="column fluid">
 										<div class="data-value">
-											0.00/0.00 @ 95° Auto-refraction<br>
-											Spherical equivalent: 0.00
+											0.00/0.00 @ 95° Auto-refraction<br> Spherical equivalent:
+											0.00
 										</div>
 									</div>
 								</div>
@@ -79,131 +70,114 @@
 							<div class="data-row">
 								<div class="row refraction">
 									<div class="column fixed">
-										<img src="<?php echo $assets_root_path?>assets/img/eyedraw/small.png" class="canvas" alt="Eyedraw" />
+										<img
+											src="<?php echo $assets_root_path?>assets/img/eyedraw/small.png"
+											class="canvas" alt="Eyedraw" />
 									</div>
 									<div class="column fluid">
 										<div class="data-value">
-											0.00/0.00 @ 95° Auto-refraction<br>
-											Spherical equivalent: 0.00
+											0.00/0.00 @ 95° Auto-refraction<br> Spherical equivalent:
+											0.00
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-					</section>
+				
+				</section>
 
-					<section class="element">
-						<header class="element-header">
-							<h3 class="element-title">Visual Acuity</h3>
-						</header>
-						<div class="element-data element-eyes row">
-							<div class="element-eye right-eye column">
-								<div class="data-row">
-									<div class="data-value">Not recorded</div>
-									<div class="data-value">Left eye Visual Acuity</div>
-								</div>
-							</div>
-							<div class="element-eye left-eye column">
-								<div class="data-row">
-									<div class="data-value">Not recorded</div>
-									<div class="data-value">Right eye Visual Acuity</div>
-								</div>
+				<section class="element">
+					<header class="element-header">
+						<h3 class="element-title">Visual Acuity</h3>
+					</header>
+					<div class="element-data element-eyes row">
+						<div class="element-eye right-eye column">
+							<div class="data-row">
+								<div class="data-value">Not recorded</div>
+								<div class="data-value">Left eye Visual Acuity</div>
 							</div>
 						</div>
-					</section>
+						<div class="element-eye left-eye column">
+							<div class="data-row">
+								<div class="data-value">Not recorded</div>
+								<div class="data-value">Right eye Visual Acuity</div>
+							</div>
+						</div>
+					</div>
+				</section>
 
-					<!-- Element with eye-draw (large-size) data for both eyes -->
-					<section class="element">
-						<header class="element-header">
-							<h3 class="element-title">Gonioscopy</h3>
-						</header>
-						<div class="element-data element-eyes row">
-							<div class="element-eye right-eye column">
-								<div class="row gonioscopy">
-									<div class="column fixed">
-										<img src="<?php echo $assets_root_path?>assets/img/eyedraw/medium.png" class="canvas" alt="Eyedraw" />
-									</div>
-									<div class="column fluid">
-										<div class="shaffer-grade">
-											<div class="data-label">Shaffer Grade:</div>
-											<div class="gonio-cross">
-												<div class="gonio-sup">
-													<span class="data-value">
-														4
-													</span>
-												</div>
-												<div class="gonio-tem">
-													<span class="data-value">
-														4
-													</span>
-												</div>
-												<div class="gonio-nas">
-													<span class="data-value">
-														4
-													</span>
-												</div>
-												<div class="gonio-inf">
-													<span class="data-value">
-														4
-													</span>
-												</div>
+				<!-- Element with eye-draw (large-size) data for both eyes -->
+				<section class="element">
+					<header class="element-header">
+						<h3 class="element-title">Gonioscopy</h3>
+					</header>
+					<div class="element-data element-eyes row">
+						<div class="element-eye right-eye column">
+							<div class="row gonioscopy">
+								<div class="column fixed">
+									<img
+										src="<?php echo $assets_root_path?>assets/img/eyedraw/medium.png"
+										class="canvas" alt="Eyedraw" />
+								</div>
+								<div class="column fluid">
+									<div class="shaffer-grade">
+										<div class="data-label">Shaffer Grade:</div>
+										<div class="gonio-cross">
+											<div class="gonio-sup">
+												<span class="data-value"> 4 </span>
+											</div>
+											<div class="gonio-tem">
+												<span class="data-value"> 4 </span>
+											</div>
+											<div class="gonio-nas">
+												<span class="data-value"> 4 </span>
+											</div>
+											<div class="gonio-inf">
+												<span class="data-value"> 4 </span>
 											</div>
 										</div>
-										<div class="data-row">
-											<span class="data-label">
-												Van Herick:
-											</span>
-											<span class="data-value">
-												NR
-											</span>
-										</div>
 									</div>
-								</div>
-							</div>
-							<div class="element-eye left-eye column">
-								<div class="row gonioscopy">
-									<div class="column fixed">
-										<img src="<?php echo $assets_root_path?>assets/img/eyedraw/medium.png" class="canvas" alt="Eyedraw" />
-									</div>
-									<div class="column fluid">
-										<div class="shaffer-grade">
-											<div class="data-label">Shaffer Grade:</div>
-											<div class="gonio-cross">
-												<div class="gonio-sup">
-													<span class="data-value">
-														4
-													</span>
-												</div>
-												<div class="gonio-tem">
-													<span class="data-value">
-														4
-													</span>
-												</div>
-												<div class="gonio-nas">
-													<span class="data-value">
-														4
-													</span>
-												</div>
-												<div class="gonio-inf">
-													<span class="data-value">
-														4
-													</span>
-												</div>
-											</div>
-										</div>
-										<div class="data-row">
-											<span class="data-label">
-												Van Herick:
-											</span>
-											<span class="data-value">
-												NR
-											</span>
-										</div>
+									<div class="data-row">
+										<span class="data-label"> Van Herick: </span> <span
+											class="data-value"> NR </span>
 									</div>
 								</div>
 							</div>
 						</div>
-					</section>
+						<div class="element-eye left-eye column">
+							<div class="row gonioscopy">
+								<div class="column fixed">
+									<img
+										src="<?php echo $assets_root_path?>assets/img/eyedraw/medium.png"
+										class="canvas" alt="Eyedraw" />
+								</div>
+								<div class="column fluid">
+									<div class="shaffer-grade">
+										<div class="data-label">Shaffer Grade:</div>
+										<div class="gonio-cross">
+											<div class="gonio-sup">
+												<span class="data-value"> 4 </span>
+											</div>
+											<div class="gonio-tem">
+												<span class="data-value"> 4 </span>
+											</div>
+											<div class="gonio-nas">
+												<span class="data-value"> 4 </span>
+											</div>
+											<div class="gonio-inf">
+												<span class="data-value"> 4 </span>
+											</div>
+										</div>
+									</div>
+									<div class="data-row">
+										<span class="data-label"> Van Herick: </span> <span
+											class="data-value"> NR </span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
 
 				<!-- Element with eye-draw (large-size) data for both eyes, with
 				sub-elements -->
@@ -216,13 +190,14 @@
 							<div class="data-row">
 								<div class="row anterior-segment">
 									<div class="column fixed">
-										<img src="<?php echo $assets_root_path?>assets/img/eyedraw/medium.png" class="canvas" alt="Eyedraw" />
+										<img
+											src="<?php echo $assets_root_path?>assets/img/eyedraw/medium.png"
+											class="canvas" alt="Eyedraw" />
 									</div>
 									<div class="column fluid">
 										<div class="data-row description">
-											<div class="data-value">
-												Moderate nuclear cataract, moderate cortical cataract
-											</div>
+											<div class="data-value">Moderate nuclear cataract, moderate
+												cortical cataract</div>
 										</div>
 										<div class="row data-row">
 											<div class="large-4 column">
@@ -272,13 +247,14 @@
 							<div class="data-row">
 								<div class="row anterior-segment">
 									<div class="column fixed">
-										<img src="<?php echo $assets_root_path?>assets/img/eyedraw/medium.png" class="canvas" alt="Eyedraw" />
+										<img
+											src="<?php echo $assets_root_path?>assets/img/eyedraw/medium.png"
+											class="canvas" alt="Eyedraw" />
 									</div>
 									<div class="column fluid">
 										<div class="data-row description">
-											<div class="data-value">
-												Moderate nuclear cataract, moderate cortical cataract
-											</div>
+											<div class="data-value">Moderate nuclear cataract, moderate
+												cortical cataract</div>
 										</div>
 										<div class="row data-row">
 											<div class="large-4 column">
@@ -326,23 +302,20 @@
 						</div>
 					</div>
 					<div class="sub-elements">
-						<section class="sub-element"> <!-- sub-element container -->
+						<section class="sub-element">
+							<!-- sub-element container -->
 							<header class="sub-element-header">
 								<h4 class="sub-element-title">CCT</h4>
 							</header>
 							<div class="sub-element-data sub-element-eyes row">
 								<div class="element-eye right-eye column">
 									<div class="data-row">
-										<div class="data-value">
-											234 µm (Ultrasound pachymetry)
-										</div>
+										<div class="data-value">234 µm (Ultrasound pachymetry)</div>
 									</div>
 								</div>
 								<div class="element-eye left-eye column">
 									<div class="data-row">
-										<div class="data-value">
-											234 µm (Ultrasound pachymetry)
-										</div>
+										<div class="data-value">234 µm (Ultrasound pachymetry)</div>
 									</div>
 								</div>
 							</div>
@@ -351,23 +324,20 @@
 				</section>
 
 				<!-- Custom element -->
-				<section class="element Element_OphCiExamination_IntraocularPressure">
+				<section
+					class="element Element_OphCiExamination_IntraocularPressure">
 					<header class="element-header">
 						<h3 class="element-title">Intraocular Pressure</h3>
 					</header>
 					<div class="element-data element-eyes row">
 						<div class="element-eye right-eye column">
 							<div class="data-row">
-								<div class="data-value">
-									Right eye
-								</div>
+								<div class="data-value">Right eye</div>
 							</div>
 						</div>
 						<div class="element-eye left-eye column">
 							<div class="data-row">
-								<div class="data-value">
-									Left eye
-								</div>
+								<div class="data-value">Left eye</div>
 							</div>
 						</div>
 					</div>
@@ -432,13 +402,13 @@
 							<div class="data-row">
 								<div class="row posterior-pole">
 									<div class="column fixed">
-										<img src="<?php echo $assets_root_path?>assets/img/eyedraw/medium.png" class="canvas" alt="Eyedraw" />
+										<img
+											src="<?php echo $assets_root_path?>assets/img/eyedraw/medium.png"
+											class="canvas" alt="Eyedraw" />
 									</div>
 									<div class="column fluid">
 										<div class="row">
-											<div class="data-value">
-												No abnormality
-											</div>
+											<div class="data-value">No abnormality</div>
 										</div>
 									</div>
 								</div>
@@ -448,13 +418,13 @@
 							<div class="data-row">
 								<div class="row posterior-pole">
 									<div class="column fixed">
-										<img src="<?php echo $assets_root_path?>assets/img/eyedraw/medium.png" class="canvas" alt="Eyedraw" />
+										<img
+											src="<?php echo $assets_root_path?>assets/img/eyedraw/medium.png"
+											class="canvas" alt="Eyedraw" />
 									</div>
 									<div class="column fluid">
 										<div class="row">
-											<div class="data-value">
-												No abnormality
-											</div>
+											<div class="data-value">No abnormality</div>
 										</div>
 									</div>
 								</div>
@@ -464,132 +434,90 @@
 					<div class="sub-elements">
 						<section class="sub-element">
 							<header class="sub-element-header">
-								<h4 class="sub-element-title">
-									DR Grading
-								</h4>
+								<h4 class="sub-element-title">DR Grading</h4>
 							</header>
 							<div class="sub-element-data sub-element-eyes row">
 								<div class="element-eye right-eye column">
 									<div class="row data-row">
 										<div class="large-4 column">
-											<div class="data-label">
-												Clinical Grading for retinopathy:
-											</div>
+											<div class="data-label">Clinical Grading for retinopathy:</div>
 										</div>
 										<div class="large-8 column">
-											<div class="data-value">
-												Mild nonproliferative retinopathy
-											</div>
+											<div class="data-value">Mild nonproliferative retinopathy</div>
 										</div>
 									</div>
 									<div class="row data-row">
 										<div class="large-4 column">
-											<div class="data-label">
-												NSC retinopathy:
-											</div>
+											<div class="data-label">NSC retinopathy:</div>
 										</div>
 										<div class="large-8 column">
-											<div class="data-value">
-												R2
-											</div>
+											<div class="data-value">R2</div>
 										</div>
 									</div>
 									<div class="row data-row">
 										<div class="large-4 column">
-											<div class="data-label">
-												Retinopathy photocoagulation:
-											</div>
+											<div class="data-label">Retinopathy photocoagulation:</div>
 										</div>
 										<div class="large-8 column">
-											<div class="data-value">
-												No
-											</div>
+											<div class="data-value">No</div>
 										</div>
 									</div>
 									<div class="row data-row">
 										<div class="large-4 column">
-											<div class="data-label">
-												NSC maculopathy:
-											</div>
+											<div class="data-label">NSC maculopathy:</div>
 										</div>
 										<div class="large-8 column">
-											<div class="data-value">
-												M1A
-											</div>
+											<div class="data-value">M1A</div>
 										</div>
 									</div>
 									<div class="row data-row">
 										<div class="large-4 column">
-											<div class="data-label">
-												Maculopathy photocoagulation:
-											</div>
+											<div class="data-label">Maculopathy photocoagulation:</div>
 										</div>
 										<div class="large-8 column">
-											<div class="data-value">
-												Yes
-											</div>
+											<div class="data-value">Yes</div>
 										</div>
 									</div>
 								</div>
 								<div class="element-eye left-eye column">
 									<div class="row data-row">
 										<div class="large-4 column">
-											<div class="data-label">
-												Clinical Grading for retinopathy:
-											</div>
+											<div class="data-label">Clinical Grading for retinopathy:</div>
 										</div>
 										<div class="large-8 column">
-											<div class="data-value">
-												Mild nonproliferative retinopathy
-											</div>
+											<div class="data-value">Mild nonproliferative retinopathy</div>
 										</div>
 									</div>
 									<div class="row data-row">
 										<div class="large-4 column">
-											<div class="data-label">
-												NSC retinopathy:
-											</div>
+											<div class="data-label">NSC retinopathy:</div>
 										</div>
 										<div class="large-8 column">
-											<div class="data-value">
-												R2
-											</div>
+											<div class="data-value">R2</div>
 										</div>
 									</div>
 									<div class="row data-row">
 										<div class="large-4 column">
-											<div class="data-label">
-												Retinopathy photocoagulation:
-											</div>
+											<div class="data-label">Retinopathy photocoagulation:</div>
 										</div>
 										<div class="large-8 column">
-											<div class="data-value">
-												No
-											</div>
+											<div class="data-value">No</div>
 										</div>
 									</div>
 									<div class="row data-row">
 										<div class="large-4 column">
-											<div class="data-label">
-												NSC maculopathy:
-											</div>
+											<div class="data-label">NSC maculopathy:</div>
 										</div>
 										<div class="large-8 column">
-											<div class="data-value">
-												M1A
-											</div>
+											<div class="data-value">M1A</div>
 										</div>
 									</div>
 									<div class="row data-row">
 										<div class="large-4 column">
-											<div class="data-label">
-												Maculopathy photocoagulation:
-											</div>
+											<div class="data-label">Maculopathy photocoagulation:</div>
 										</div>
 										<div class="large-8 column">
-											<div class="data-value">
-												Yes
-											</div>
+											<div class="data-value">Yes</div>
 										</div>
 									</div>
 								</div>
@@ -638,7 +566,8 @@
 												<td>0.0</td>
 											</tr>
 											<tr>
-												<th scope="row">The post operative refractive target has been discussed with the patient</th>
+												<th scope="row">The post operative refractive target has
+													been discussed with the patient</th>
 												<td>Yes</td>
 											</tr>
 											<tr>
@@ -671,9 +600,7 @@
 					</header>
 					<div class="element-data">
 						<div class="data-row">
-							<div class="data-value">
-								Risks
-							</div>
+							<div class="data-value">Risks</div>
 						</div>
 					</div>
 					<div class="sub-elements">
@@ -682,26 +609,19 @@
 								<h4 class="sub-element-title">Glaucoma Risk Stratification</h4>
 							</header>
 							<div class="sub-element-data">
-								<span class="pill high">
-									High
-								</span>
-								<span class="pill moderate">
-									Moderate
-								</span>
-								<span class="pill low">
-									Low
-								</span>
+								<span class="pill high"> High </span> <span
+									class="pill moderate"> Moderate </span> <span class="pill low">
+									Low </span>
 							</div>
 						</section>
 					</div>
 				</section>
 
 				<div class="metadata">
-					<span class="info">
-						Examination created by <span class="user">Enoch Root</span> on 1 Jan 2000 at 00:00
-					</span>
-					<span class="info">
-						Examination created by <span class="user">Enoch Root</span> on 1 Jan 2000 at 00:00
+					<span class="info"> Examination created by <span class="user">Enoch
+							Root</span> on 1 Jan 2000 at 00:00
+					</span> <span class="info"> Examination created by <span
+						class="user">Enoch Root</span> on 1 Jan 2000 at 00:00
 					</span>
 				</div>
 			</div>

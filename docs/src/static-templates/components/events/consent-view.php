@@ -1,12 +1,8 @@
 <div class="large-10 column event view ophtrconsent">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
-			<li class="selected">
-				<a href="#">View</a>
-			</li>
-			<li>
-				<a href="#">Edit</a>
-			</li>
+			<li class="selected"><a href="#">View</a></li>
+			<li><a href="#">Edit</a></li>
 		</ul>
 	</header>
 	<div class="event-content">
@@ -25,7 +21,8 @@
 								<div class="data-label">Type:</div>
 							</div>
 							<div class="large-9 column">
-								<div class="data-value">1. Patient agreement to investigation or treatment</div>
+								<div class="data-value">1. Patient agreement to investigation or
+									treatment</div>
 							</div>
 						</div>
 					</div>
@@ -99,7 +96,8 @@
 					<div class="element-data">
 						<div class="row data-row">
 							<div class="large-3 column">
-								<div class="data-label">Agree for use in audit, education and publication</div>
+								<div class="data-label">Agree for use in audit, education and
+									publication</div>
 							</div>
 							<div class="large-9 column">
 								<div class="data-value">Not applicable</div>
@@ -173,11 +171,10 @@
 				</section>
 
 				<div class="metadata">
-					<span class="info">
-						Consent form created by <span class="user">Enoch Root</span> on 1 Jan 2000 at 00:00
-					</span>
-					<span class="info">
-						Consent form last modified by <span class="user">Enoch Root</span> on 1 Jan 2000 at 00:00
+					<span class="info"> Consent form created by <span class="user">Enoch
+							Root</span> on 1 Jan 2000 at 00:00
+					</span> <span class="info"> Consent form last modified by <span
+						class="user">Enoch Root</span> on 1 Jan 2000 at 00:00
 					</span>
 				</div>
 			</div>

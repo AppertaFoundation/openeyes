@@ -277,3 +277,13 @@ $oe-element-edit-title-font-style: italic;
 .highlighted-error {
   border: 2px solid red;
 }
+
+.errorlink {
+  color: #FFFFFF;
+  text-decoration: dotted;
+}
+
+.errorlink:hover {
+  color: #CCCCCC;
+  text-decoration: underline;
+}

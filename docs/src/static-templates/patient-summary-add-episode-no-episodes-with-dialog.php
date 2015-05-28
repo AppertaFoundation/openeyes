@@ -16,10 +16,10 @@
 				<div class="large-8 large-centered column">
 					<div class="box content">
 						<div class="panel">
-							<div class="alert-box alert with-icon">There are currently no episodes for this patient, please click the Add episode button to open a new episode.</div>
-							<button class="small">
-								Add episode
-							</button>
+							<div class="alert-box alert with-icon">There are currently no
+								episodes for this patient, please click the Add episode button
+								to open a new episode.</div>
+							<button class="small">Add episode</button>
 						</div>
 					</div>
 				</div>
@@ -29,13 +29,19 @@
 	</div>
 
 	<div id="add-new-episode-dialog">
-		<form id="add-new-episode-form" action="/patient/addNewEpisode" method="post">
+		<form id="add-new-episode-form" action="/patient/addNewEpisode"
+			method="post">
 			<div class="details">
-				<p><span>Firm:</span> <strong>Abou-Rayyah Yassir</strong></p>
-				<p><span>Subspecialty:</span> <strong>Adnexal</strong></p>
+				<p>
+					<span>Firm:</span> <strong>Abou-Rayyah Yassir</strong>
+				</p>
+				<p>
+					<span>Subspecialty:</span> <strong>Adnexal</strong>
+				</p>
 			</div>
 			<div class="buttons">
-				<button class="secondary small confirm" type="button">Create new episode</button>
+				<button class="secondary small confirm" type="button">Create new
+					episode</button>
 				<button class="warning small cancel" type="button">Cancel</button>
 			</div>
 		</form>

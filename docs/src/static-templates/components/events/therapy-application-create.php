@@ -1,14 +1,10 @@
 <div class="large-10 column event ophcotherapyapplication edit">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
-			<li class="selected">
-				<a href="#">Create</a>
-			</li>
+			<li class="selected"><a href="#">Create</a></li>
 		</ul>
 		<div class="button-bar right">
-			<a href="#" class="button small secondary">
-				Save
-			</a>
+			<a href="#" class="button small secondary"> Save </a>
 		</div>
 	</header>
 	<div class="event-content">
@@ -27,9 +23,7 @@
 							<a href="#" class="icon-remove-side">Remove side</a>
 							<div class="row field-row">
 								<div class="large-4 column">
-									<label for="">
-										Diagnosis:
-									</label>
+									<label for=""> Diagnosis: </label>
 								</div>
 								<div class="large-8 column end">
 									<div class="row diagnosis-selection">
@@ -48,8 +42,8 @@
 												<div class="large-2 column">
 													<div class="postfix">
 														<button class="small button-icon small">
-															<span class="icon-button-small-search"></span>
-															<span class="hide-offscreen">Search</span>
+															<span class="icon-button-small-search"></span> <span
+																class="hide-offscreen">Search</span>
 														</button>
 													</div>
 												</div>
@@ -61,9 +55,7 @@
 
 							<div class="row field-row">
 								<div class="large-4 column">
-									<label for="">
-										Secondary To:
-									</label>
+									<label for=""> Secondary To: </label>
 								</div>
 								<div class="large-8 column">
 									<div class="row diagnosis-selection">
@@ -82,8 +74,8 @@
 												<div class="large-2 column">
 													<div class="postfix">
 														<button class="small button-icon small">
-															<span class="icon-button-small-search"></span>
-															<span class="hide-offscreen">Search</span>
+															<span class="icon-button-small-search"></span> <span
+																class="hide-offscreen">Search</span>
 														</button>
 													</div>
 												</div>
@@ -95,8 +87,7 @@
 						</div>
 						<div class="element-eye left-eye column">
 							<div class="add-side">
-								<a href="#">
-									Add left side <span class="icon-add-side"></span>
+								<a href="#"> Add left side <span class="icon-add-side"></span>
 								</a>
 							</div>
 						</div>
@@ -130,14 +121,11 @@
 							</div>
 							<div class="row field-row">
 								<div class="large-4 column">
-									<div class="field-label">
-										NICE Compliance
-									</div>
+									<div class="field-label">NICE Compliance</div>
 								</div>
 								<div class="large-8 column">
-									<div class="field-value">
-										Please select a treatment to determine compliance.
-									</div>
+									<div class="field-value">Please select a treatment to determine
+										compliance.</div>
 								</div>
 							</div>
 						</div>
@@ -174,15 +162,11 @@
 							</div>
 							<div class="row field-row">
 								<div class="large-4 column">
-									<div class="field-label">
-										NICE Compliance
-									</div>
+									<div class="field-label">NICE Compliance</div>
 								</div>
 								<div class="large-8 column">
 									<div class="compliance-container">
-										<div class="outcome non-compliant">
-											Non-Compliant
-										</div>
+										<div class="outcome non-compliant">Non-Compliant</div>
 									</div>
 								</div>
 							</div>
@@ -208,27 +192,21 @@
 							</div>
 							<div class="row field-row">
 								<div class="large-4 column">
-									<div class="field-label">
-										NICE Compliance
-									</div>
+									<div class="field-label">NICE Compliance</div>
 								</div>
 								<div class="large-5 column end">
 									<div class="compliance-container">
 										<div class="field-row">
-											<label for="">Patient has CNV?</label>
-											<select>
+											<label for="">Patient has CNV?</label> <select>
 												<option>- Select -</option>
 											</select>
 										</div>
 										<div class="field-row">
-											<label for="">CNV Secondary to AMD?</label>
-											<select>
+											<label for="">CNV Secondary to AMD?</label> <select>
 												<option>- Select -</option>
 											</select>
 										</div>
-										<div class="outcome unknown">
-											Unknown
-										</div>
+										<div class="outcome unknown">Unknown</div>
 									</div>
 								</div>
 							</div>
@@ -243,41 +221,29 @@
 					</header>
 					<div class="element-fields">
 						<fieldset class="row field-row">
-							<legend class="large-2 column">
-								Cerebrovascular accident:
-							</legend>
+							<legend class="large-2 column"> Cerebrovascular accident: </legend>
 							<div class="large-10 column">
-								<label class="inline highlight">
-									<input type="radio" /> Yes
-								</label>
-								<label class="inline highlight">
-									<input type="radio" /> No
+								<label class="inline highlight"> <input type="radio" /> Yes
+								</label> <label class="inline highlight"> <input type="radio" />
+									No
 								</label>
 							</div>
 						</fieldset>
 						<fieldset class="row field-row">
-							<legend class="large-2 column">
-								Ischaemic Attack:
-							</legend>
+							<legend class="large-2 column"> Ischaemic Attack: </legend>
 							<div class="large-10 column">
-								<label class="inline highlight">
-									<input type="radio" /> Yes
-								</label>
-								<label class="inline highlight">
-									<input type="radio" /> No
+								<label class="inline highlight"> <input type="radio" /> Yes
+								</label> <label class="inline highlight"> <input type="radio" />
+									No
 								</label>
 							</div>
 						</fieldset>
 						<fieldset class="row field-row">
-							<legend class="large-2 column">
-								Myocardial Infarction:
-							</legend>
+							<legend class="large-2 column"> Myocardial Infarction: </legend>
 							<div class="large-10 column">
-								<label class="inline highlight">
-									<input type="radio" /> Yes
-								</label>
-								<label class="inline highlight">
-									<input type="radio" /> No
+								<label class="inline highlight"> <input type="radio" /> Yes
+								</label> <label class="inline highlight"> <input type="radio" />
+									No
 								</label>
 							</div>
 						</fieldset>
@@ -311,15 +277,11 @@
 					<div class="element-fields element-eyes row">
 						<div class="element-eye left-eye column">
 							<fieldset class="row field-row">
-								<legend class="large-4 column">
-									Standard Intervention Exists
-								</legend>
+								<legend class="large-4 column"> Standard Intervention Exists </legend>
 								<div class="large-8 column">
-									<label class="inline highlight">
-										<input type="radio" /> Yes
-									</label>
-									<label class="inline highlight">
-										<input type="radio" /> No
+									<label class="inline highlight"> <input type="radio" /> Yes
+									</label> <label class="inline highlight"> <input type="radio" />
+										No
 									</label>
 								</div>
 							</fieldset>
@@ -334,34 +296,30 @@
 								</div>
 							</div>
 							<fieldset class="row field-row">
-								<legend class="large-4 column">
-									The standard intervention has been previously used
-								</legend>
+								<legend class="large-4 column"> The standard intervention has
+									been previously used </legend>
 								<div class="large-8 column">
-									<label class="inline highlight">
-										<input type="radio" /> Yes
-									</label>
-									<label class="inline highlight">
-										<input type="radio" /> No
+									<label class="inline highlight"> <input type="radio" /> Yes
+									</label> <label class="inline highlight"> <input type="radio" />
+										No
 									</label>
 								</div>
 							</fieldset>
 							<fieldset class="row field-row">
-								<legend class="large-4 column">
-									The (non-standard) intervention applying for funding to be used is
-								</legend>
+								<legend class="large-4 column"> The (non-standard) intervention
+									applying for funding to be used is </legend>
 								<div class="large-8 column">
-									<label>
-										<input type="radio" /> In addition to the standard (Additional)
-									</label>
-									<label>
-										<input type="radio" /> Instead of the standard (Deviation)
+									<label> <input type="radio" /> In addition to the standard
+										(Additional)
+									</label> <label> <input type="radio" /> Instead of the standard
+										(Deviation)
 									</label>
 								</div>
 							</fieldset>
 							<div class="row field-row">
 								<div class="large-4 column">
-									<label for="">How is the patient significantly different to others with the same condition?</label>
+									<label for="">How is the patient significantly different to
+										others with the same condition?</label>
 								</div>
 								<div class="large-8 column">
 									<textarea></textarea>
@@ -369,7 +327,8 @@
 							</div>
 							<div class="row field-row">
 								<div class="large-4 column">
-									<label for="">How is the patient likely to gain more benefit than otherwise?</label>
+									<label for="">How is the patient likely to gain more benefit
+										than otherwise?</label>
 								</div>
 								<div class="large-8 column">
 									<textarea></textarea>
@@ -441,13 +400,12 @@
 										</div>
 										<div class="field-row">
 											<label for="">Comments</label>
-											<textarea placeholder="Please provide pre and post treatment CMT"></textarea>
+											<textarea
+												placeholder="Please provide pre and post treatment CMT"></textarea>
 										</div>
 									</div>
 
-									<button class="secondary small">
-										Add
-									</button>
+									<button class="secondary small">Add</button>
 								</div>
 							</div>
 							<div class="row field-row">
@@ -516,25 +474,20 @@
 										</div>
 										<div class="field-row">
 											<label for="">Comments</label>
-											<textarea placeholder="Please provide pre and post treatment CMT"></textarea>
+											<textarea
+												placeholder="Please provide pre and post treatment CMT"></textarea>
 										</div>
 									</div>
 
-									<button class="secondary small">
-										Add
-									</button>
+									<button class="secondary small">Add</button>
 								</div>
 							</div>
 							<fieldset class="row field-row">
-								<legend class="large-4 column">
-									Patient Factors
-								</legend>
+								<legend class="large-4 column"> Patient Factors </legend>
 								<div class="large-8 column">
-									<label class="inline highlight">
-										<input type="radio" /> Yes
-									</label>
-									<label class="inline highlight">
-										<input type="radio" /> No
+									<label class="inline highlight"> <input type="radio" /> Yes
+									</label> <label class="inline highlight"> <input type="radio" />
+										No
 									</label>
 								</div>
 							</fieldset>

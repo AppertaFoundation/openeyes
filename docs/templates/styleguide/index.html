@@ -2,28 +2,30 @@
 <!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
 <!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
 <!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
 <head>
-	<meta charset="utf-8">
+<meta charset="utf-8">
 
-	<title>OpenEyes Styleguide</title>
+<title>OpenEyes Styleguide</title>
 
-	<meta name="description" content="">
-	<meta name="generator" content="kss-node" />
-	<meta name="viewport" content="width=device-width">
+<meta name="description" content="">
+<meta name="generator" content="kss-node" />
+<meta name="viewport" content="width=device-width">
 
-	<link rel="stylesheet" href="../assets/components/google-code-prettify/src/prettify.css" />
-	<link rel="stylesheet" href="../assets/css/style.css" />
-	<link rel="stylesheet" href="../assets/css/docs.css" />
+<link rel="stylesheet"
+	href="../assets/components/google-code-prettify/src/prettify.css" />
+<link rel="stylesheet" href="../assets/css/style.css" />
+<link rel="stylesheet" href="../assets/css/docs.css" />
 </head>
-<body data-section="{{#unless overview}}{{#eachSection rootNumber}}{{#whenDepth 1}}{{header}}{{/whenDepth}}{{/eachSection}}{{/unless}}">
+<body
+	data-section="{{#unless overview}}{{#eachSection rootNumber}}{{#whenDepth 1}}{{header}}{{/whenDepth}}{{/eachSection}}{{/unless}}">
 
 	<div class="container main" role="main">
 
 		<header class="header">
-			<a class="logo" href="../index.php">
-					OpenEyes
-			</a>
+			<a class="logo" href="../index.php"> OpenEyes </a>
 		</header>
 
 		<div class="content">
@@ -36,10 +38,9 @@
 					<div class="kss-box box generic navigation">
 						<h2>Navigation</h2>
 						<ul class="side-nav kss-side-nav">
-							<li><a href="index.html">0.0: Overview</a></li>
-							{{#eachRoot}}
-								<li><a href="section-{{reference}}.html">{{reference}}.0: {{header}}</a></li>
-							{{/eachRoot}}
+							<li><a href="index.html">0.0: Overview</a></li> {{#eachRoot}}
+							<li><a href="section-{{reference}}.html">{{reference}}.0:
+									{{header}}</a></li> {{/eachRoot}}
 						</ul>
 					</div>
 				</div>
@@ -51,83 +52,68 @@
 					<div class="main kss-main">
 
 						{{#if overview}}
-							<!-- <p>This is an example custom KSS template. This custom template should use the stylesheets that are used by your -->
-							<!-- site/application.</p> -->
-							<div class="kss-box kss-overview">
-								{{html overview}}
-							</div>
-						{{else}}
-
-							{{!
-								Find each section, in order.
-								If there's no markup or modifiers supplied, use a Markdown-only
-								layout instead.
-
-								The "root" element comes first in this loop, and can be detected using
-								the "#whenDepth 1" block as seen below.
-							}}
-							{{#eachSection rootNumber}}
-								<div class="kss-box">
-									{{#whenDepth 1}}
-										<h1 class="kss-title"><span class="kss-ref">{{ reference }}.0</span> - {{ header }}</h1>
-									{{else}}
-									 <section class="kss-depth-{{ refDepth }}">
-										<h2 class="kss-title"><span class="kss-ref">{{ reference }}</span> - {{ header }}</h2>
-									{{/whenDepth}}
-										{{#ifAny markup modifiers}}
+						<!-- <p>This is an example custom KSS template. This custom template should use the stylesheets that are used by your -->
+						<!-- site/application.</p> -->
+						<div class="kss-box kss-overview">{{html overview}}</div>
+						{{else}} {{! Find each section, in order. If there's no markup or
+						modifiers supplied, use a Markdown-only layout instead. The "root"
+						element comes first in this loop, and can be detected using the
+						"#whenDepth 1" block as seen below. }} {{#eachSection rootNumber}}
+						<div class="kss-box">
+							{{#whenDepth 1}}
+							<h1 class="kss-title">
+								<span class="kss-ref">{{ reference }}.0</span> - {{ header }}
+							</h1>
+							{{else}}
+							<section class="kss-depth-{{ refDepth }}">
+								<h2 class="kss-title">
+									<span class="kss-ref">{{ reference }}</span> - {{ header }}
+								</h2>
+								{{/whenDepth}} {{#ifAny markup modifiers}}
 
 
-											<div class="kss-description">{{html description}}</div>
+								<div class="kss-description">{{html description}}</div>
 
-											<!-- <h3 class="kss-sub-head">Examples:</h3> -->
-											<div class="kss-mod-list">
-												<div class="kss-mod">
-													<div class="row kss-mod-overview">
-														<div class="large-9 kss-mod-description column">
-															<p>Default styling</p>
-														</div>
-														<div class="large-3 column">
-														</div>
-													</div>
-													<div class="row">
-														<div class="large-12 column kss-mod-markup">
-															{{modifierMarkup}}
-														</div>
-													</div>
-												</div>
-												{{#eachModifier}}
-													<div class="kss-mod">
-														<div class="row kss-mod-overview">
-															<div class="large-9 column kss-mod-description">
-																{{html description}}
-															</div>
-															<div class="large-3 column kss-mod-name text-right">
-																<span>{{name}}</span>
-															</div>
-														</div>
-														<div class="row">
-															<div class="large-12 column kss-mod-markup">
-																{{modifierMarkup}}
-															</div>
-														</div>
-													</div>
-												{{/eachModifier}}
+								<!-- <h3 class="kss-sub-head">Examples:</h3> -->
+								<div class="kss-mod-list">
+									<div class="kss-mod">
+										<div class="row kss-mod-overview">
+											<div class="large-9 kss-mod-description column">
+												<p>Default styling</p>
 											</div>
-											<!-- <h3 class="kss-sub-head">Markup:</h3> -->
-											<div class="kss-markup">
-												<pre class="prettyprint lang-html">{{markup}}</pre>
+											<div class="large-3 column"></div>
+										</div>
+										<div class="row">
+											<div class="large-12 column kss-mod-markup">
+												{{modifierMarkup}}</div>
+										</div>
+									</div>
+									{{#eachModifier}}
+									<div class="kss-mod">
+										<div class="row kss-mod-overview">
+											<div class="large-9 column kss-mod-description">{{html
+												description}}</div>
+											<div class="large-3 column kss-mod-name text-right">
+												<span>{{name}}</span>
 											</div>
-										{{else}}
-												{{#if description}}
-													{{html description}}
-												{{/if}}
-										{{/ifAny}}
-									{{#whenDepth 1}} {{else}}
-										</section>
-									{{/whenDepth}}
-							</div>
-							{{/eachSection}}
-						{{/if}}
+										</div>
+										<div class="row">
+											<div class="large-12 column kss-mod-markup">
+												{{modifierMarkup}}</div>
+										</div>
+									</div>
+									{{/eachModifier}}
+								</div>
+								<!-- <h3 class="kss-sub-head">Markup:</h3> -->
+								<div class="kss-markup">
+									<pre class="prettyprint lang-html">{{markup}}</pre>
+								</div>
+								{{else}} {{#if description}} {{html description}} {{/if}}
+								{{/ifAny}} {{#whenDepth 1}} {{else}}
+							</section>
+							{{/whenDepth}}
+						</div>
+						{{/eachSection}} {{/if}}
 					</div>
 				</div>
 			</div>
@@ -135,11 +121,12 @@
 
 		<footer class="footer row kss-footer">
 			<div class="large-12 column">
-					<div class="info">
-							<span class="copyright">&copy; Copyright OpenEyes Foundation 2011–2013</span>
-					</div>
+				<div class="info">
+					<span class="copyright">&copy; Copyright OpenEyes Foundation
+						2011–2013</span>
+				</div>
 			</div>
-	</footer>
+		</footer>
 	</div>
 
 	<!--

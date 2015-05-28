@@ -24,34 +24,22 @@
 							</thead>
 							<tbody>
 								<tr>
-									<td>
-										<select>
+									<td><select>
 											<option>All sites</option>
-										</select>
-									</td>
-									<td>
-										<select>
+									</select></td>
+									<td><select>
 											<option>All theatres</option>
-										</select>
-									</td>
-									<td>
-										<select>
+									</select></td>
+									<td><select>
 											<option>All specialities</option>
-										</select>
-									</td>
-									<td>
-										<select>
+									</select></td>
+									<td><select>
 											<option>All firms</option>
-										</select>
-									</td>
-									<td>
-										<select>
+									</select></td>
+									<td><select>
 											<option>All wards</option>
-										</select>
-									</td>
-									<td>
-										<input type="checkbox" />
-									</td>
+									</select></td>
+									<td><input type="checkbox" /></td>
 								</tr>
 							</tbody>
 						</table>
@@ -64,29 +52,20 @@
 
 						<div class="search-filters-extra clearfix">
 
-							<label class="inline highlight">
-								<input type="radio" name="date-filter" />
-								Today
-							</label>
-
-							<label class="inline highlight">
-								<input type="radio" name="date-filter" />
-								Next 7 days
-							</label>
-
-							<label class="inline highlight">
-								<input type="radio" name="date-filter" />
-								Next 30 days
+							<label class="inline highlight"> <input type="radio"
+								name="date-filter" /> Today
+							</label> <label class="inline highlight"> <input type="radio"
+								name="date-filter" /> Next 7 days
+							</label> <label class="inline highlight"> <input type="radio"
+								name="date-filter" /> Next 30 days
 							</label>
 
 							<fieldset class="inline highlight">
-								<label>
-									<input type="radio" name="date-filter" />
-									or select date range:
-								</label>
-								<input class="small fixed-width" type="text" name="date-start" />
-								<span class="to">to</span>
-								<input class="small fixed-width" type="text" name="date-end" />
+								<label> <input type="radio" name="date-filter" /> or select date
+									range:
+								</label> <input class="small fixed-width" type="text"
+									name="date-start" /> <span class="to">to</span> <input
+									class="small fixed-width" type="text" name="date-end" />
 
 								<ul class="button-group small">
 									<li><a href="#" class="small button">Last week</a></li>
@@ -97,9 +76,7 @@
 					</div>
 
 					<div class="large-2 column text-right">
-						<button class="secondary">
-							Search
-						</button>
+						<button class="secondary">Search</button>
 					</div>
 				</div>
 			</div>

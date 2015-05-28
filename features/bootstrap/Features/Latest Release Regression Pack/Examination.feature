@@ -1,6 +1,6 @@
-@examination @regression
+#@examination @regression
 Feature: Create New Examination Regression Tests
-@EXAM
+#@EXAM
           Regression over 2 Sites and 4 Firms
           Regression coverage of this event is approx 70%
 
@@ -439,10 +439,10 @@ Feature: Create New Examination Regression Tests
     And I add a left Abnormality of "3"
     And I add a right Abnormality of "4"
 
-    Then I choose to expand the Diagnoses section
-    And I choose a left eye diagnosis
-    And I select "Pseudophakia" for "Diagnosis"
-    Then I choose a principal diagnosis
+    #Then I choose to expand the Diagnoses section
+    #And I choose a left eye diagnosis
+    #And I select "Pseudophakia" for "Diagnosis"
+    #Then I choose a principal diagnosis
 
     Then I choose to expand the Investigation section
     And I add an Investigation of "refraction, "
@@ -671,6 +671,8 @@ Feature: Create New Examination Regression Tests
 
     Then I Confirm that the History Validation error message is displayed
     Then I Confirm that the Conclusion Validation error message is displayed
+    
+    #Then I cancel the Examnination event
     
   @EXAM_Route_8
   Scenario: Route 8: Examination Validation Tests (Anderson Cataract)
@@ -1045,7 +1047,7 @@ Feature: Create New Examination Regression Tests
 
     Then I choose to expand the Diagnoses section
     And I choose both eyes diagnosis
-    And I select "Congenital cataract" for "Diagnosis"
+    #And I select "Congenital cataract" for "Diagnosis"
     Then I choose a principal diagnosis
 
     Then I choose to expand the Investigation section
@@ -1105,7 +1107,7 @@ Feature: Create New Examination Regression Tests
     Then I choose a Left Previous Anti VEGF of Yes
     Then I choose a Left Previous Anti VEGF of No
 
-    And I choose a Left Risks of "1"
+    #And I choose a Left Risks of "1"
     Then I choose Left Injection Management Comments of "Automation Test Comments"
 
     Then I choose to expand the Overall Management section

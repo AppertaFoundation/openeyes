@@ -1,14 +1,10 @@
 <div class="large-10 column event ophciphasing edit">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
-			<li class="selected">
-				<a href="#">Create</a>
-			</li>
+			<li class="selected"><a href="#">Create</a></li>
 		</ul>
 		<div class="button-bar right">
-			<a href="#" class="button small secondary">
-				Save
-			</a>
+			<a href="#" class="button small secondary"> Save </a>
 		</div>
 	</header>
 	<div class="event-content">
@@ -32,24 +28,16 @@
 								</div>
 							</div>
 							<fieldset class="row field-row">
-								<legend class="large-2 column">
-									Dilated:
-								</legend>
+								<legend class="large-2 column"> Dilated: </legend>
 								<div class="large-10 column">
-									<label class="inline highlight">
-										<input type="radio" />
-										Yes
-									</label>
-									<label class="inline highlight">
-										<input type="radio" />
+									<label class="inline highlight"> <input type="radio" /> Yes
+									</label> <label class="inline highlight"> <input type="radio" />
 										No
 									</label>
 								</div>
 							</fieldset>
 							<fieldset class="row field-row">
-								<legend class="large-2 column">
-									Readings:
-								</legend>
+								<legend class="large-2 column"> Readings: </legend>
 								<div class="large-10 column">
 									<table class="blank">
 										<thead>
@@ -101,24 +89,16 @@
 								</div>
 							</div>
 							<fieldset class="row field-row">
-								<legend class="large-2 column">
-									Dilated:
-								</legend>
+								<legend class="large-2 column"> Dilated: </legend>
 								<div class="large-10 column">
-									<label class="inline highlight">
-										<input type="radio" />
-										Yes
-									</label>
-									<label class="inline highlight">
-										<input type="radio" />
+									<label class="inline highlight"> <input type="radio" /> Yes
+									</label> <label class="inline highlight"> <input type="radio" />
 										No
 									</label>
 								</div>
 							</fieldset>
 							<fieldset class="row field-row">
-								<legend class="large-2 column">
-									Readings:
-								</legend>
+								<legend class="large-2 column"> Readings: </legend>
 								<div class="large-10 column">
 									<table class="blank">
 										<thead>

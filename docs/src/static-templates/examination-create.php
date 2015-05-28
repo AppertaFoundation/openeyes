@@ -3,9 +3,12 @@
 <html lang="en">
 <head>
 <? include 'components/head.php'; ?>
-<script src="<?php echo $assets_root_path;?>assets/modules/OphCiExamination/assets/js/module.js"></script>
-<link rel="stylesheet" href="<?php echo $assets_root_path?>assets/modules/OphCiExamination/assets/css/module.css" />
-<link rel="stylesheet" href="<?php echo $assets_root_path?>assets/modules/eyedraw/css/oe-eyedraw.css" />
+<script
+	src="<?php echo $assets_root_path;?>assets/modules/OphCiExamination/assets/js/module.js"></script>
+<link rel="stylesheet"
+	href="<?php echo $assets_root_path?>assets/modules/OphCiExamination/assets/css/module.css" />
+<link rel="stylesheet"
+	href="<?php echo $assets_root_path?>assets/modules/eyedraw/css/oe-eyedraw.css" />
 </head>
 <body class="open-eyes">
 	<div class="container main" role="main">

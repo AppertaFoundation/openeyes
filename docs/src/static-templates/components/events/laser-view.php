@@ -1,17 +1,11 @@
 <div class="large-10 column event view ophtrlaser">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
-			<li class="selected">
-				<a href="#">View</a>
-			</li>
-			<li>
-				<a href="#">Edit</a>
-			</li>
+			<li class="selected"><a href="#">View</a></li>
+			<li><a href="#">Edit</a></li>
 		</ul>
 		<div class="button-bar right">
-			<a href="#" class="button small">
-				Print
-			</a>
+			<a href="#" class="button small"> Print </a>
 		</div>
 	</header>
 	<div class="event-content">
@@ -83,12 +77,16 @@
 					<div class="element-data element-eyes row">
 						<div class="element-eye right-eye column">
 							<div class="data-row">
-								<img src="<?php echo $assets_root_path?>assets/img/eyedraw/medium.png" class="canvas" alt="Eyedraw">
+								<img
+									src="<?php echo $assets_root_path?>assets/img/eyedraw/medium.png"
+									class="canvas" alt="Eyedraw">
 							</div>
 						</div>
 						<div class="element-eye left-eye column">
 							<div class="data-row">
-								<img src="<?php echo $assets_root_path?>assets/img/eyedraw/medium.png" class="canvas" alt="Eyedraw">
+								<img
+									src="<?php echo $assets_root_path?>assets/img/eyedraw/medium.png"
+									class="canvas" alt="Eyedraw">
 							</div>
 						</div>
 					</div>
@@ -101,14 +99,10 @@
 					<div class="element-data">
 						<div class="row data-row">
 							<div class="large-2 column">
-								<div class="data-label">
-									Comments:
-								</div>
+								<div class="data-label">Comments:</div>
 							</div>
 							<div clas="row data-row">
-								<div class="data-value">
-									Here are some comments
-								</div>
+								<div class="data-value">Here are some comments</div>
 							</div>
 						</div>
 					</div>
@@ -116,11 +110,10 @@
 
 
 				<div class="metadata">
-					<span class="info">
-						Therapy application created by <span class="user">Enoch Root</span> on 1 Jan 2000 at 00:00
-					</span>
-					<span class="info">
-						Therapy application last modified by <span class="user">Enoch Root</span> on 1 Jan 2000 at 00:00
+					<span class="info"> Therapy application created by <span
+						class="user">Enoch Root</span> on 1 Jan 2000 at 00:00
+					</span> <span class="info"> Therapy application last modified by <span
+						class="user">Enoch Root</span> on 1 Jan 2000 at 00:00
 					</span>
 				</div>
 			</div>
