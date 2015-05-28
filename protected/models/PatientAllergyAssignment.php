@@ -26,7 +26,7 @@
  * @property integer $allergy_id
  * @property string $comments
  */
-class PatientAllergyAssignment extends BaseActiveRecordVersioned
+class PatientAllergyAssignment extends BaseEventTypeElement
 {
 	/**
 	 * Returns the static model of the specified AR class.
