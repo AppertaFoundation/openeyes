@@ -22,9 +22,9 @@ if (@$disabled) {
 	$html_options['disabled'] = 'disabled';
 }?>
 <tr class="<?= @$row_class ?>" data-row="<?= $i ?>" style="<?= @$row_style ?>">
-	<?php if($display_order){
-		echo CHtml::hiddenField("id[{$i}]",$row->id, $html_options);
-		?>
+	<?php
+	echo CHtml::hiddenField("id[{$i}]",$row->id, $html_options);
+	if($display_order){?>
 	<td class="reorder">
 		<span>&uarr;&darr;</span>
 		<?php
