@@ -68,7 +68,7 @@ if ($this->isHiddenInUI($element)) {
 
 			<!-- Remove element -->
 			<?php if (!@$child) {?>
-				<a href="#" class="tooltip button button-icon small js-remove-element <?=(!$this->isRequiredInUI($element)) ?: 'disabled' ?>" title="<?=(!$this->isRequiredInUI($element)) ?: 'mandatory' ?>">
+				<a href="#" class="button button-icon small js-remove-element <?=(!$this->isRequiredInUI($element)) ?: 'disabled' ?>" title="<?=(!$this->isRequiredInUI($element)) ?: 'mandatory' ?>">
 					<span class="icon-button-small-mini-cross"></span>
 					<span class="hide-offscreen">Remove element</span>
 				</a>
