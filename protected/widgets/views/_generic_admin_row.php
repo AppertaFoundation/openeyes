@@ -22,13 +22,16 @@ if (@$disabled) {
 	$html_options['disabled'] = 'disabled';
 }?>
 <tr class="<?= @$row_class ?>" data-row="<?= $i ?>" style="<?= @$row_style ?>">
+	<?php if($display_order){
+		echo CHtml::hiddenField("id[{$i}]",$row->id, $html_options);
+		?>
 	<td class="reorder">
 		<span>&uarr;&darr;</span>
-		<?php echo CHtml::hiddenField("id[{$i}]",$row->id, $html_options);
-		if($display_order){
+		<?php
 			echo CHtml::hiddenField("display_order[{$i}]",$row->display_order ? $row->display_order : $i, $html_options);
-		} ?>
+		?>
 	</td>
+	<?php } ?>
 	<?php if(!$label_extra_field):?>
 	<td>
 		<?php
