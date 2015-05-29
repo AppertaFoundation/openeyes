@@ -240,7 +240,7 @@ class OperationBooking extends OpenEyesPage {
 		$this->getElement ( 'postOpStatYes' )->click ();
 	}
 	public function postOpStayNo() {
-		$this->getElement ( 'postOpStatNo' )->check ();
+		$this->getElement ( 'postOpStatNo' )->click ();
 	}
 	public function operationSiteID($site) {
 		$this->getElement ( 'operationSiteID' )->selectOption ( $site );

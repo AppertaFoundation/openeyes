@@ -26,16 +26,17 @@ class Laser extends OpenEyesPage {
 					'xpath' => "//*[@id='flash-success']" 
 			),
 			'siteValidationError' => array (
-					'xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Site: Site cannot be blank.')]" 
+					//'xpath' => "//*[@class='alert-box errorlink with-icon']//*[contains(text(),'Site: Site cannot be blank.')]"
+					'xpath' => "//*[contains(text(),'Site cannot be blank.')]"
 			),
 			'laserValidationError' => array (
-					'xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Site: Laser cannot be blank.')]" 
+					'xpath' => "//*[contains(text(),'Laser cannot be blank.')]"
 			),
 			'treatmentLeftValidationError' => array (
-					'xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Treatment: Left Procedures cannot be blank.')]" 
+					'xpath' => "//*[contains(text(),'Left Procedures cannot be blank.')]"
 			),
 			'treatmentRightValidationError' => array (
-					'xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Treatment: Right Procedures cannot be blank.')]" 
+					'xpath' => "//*[contains(text(),'Right Procedures cannot be blank.')]"
 			),
 			'removeLastProcedure' => array (
 					'xpath' => "//a[contains(text(),'Remove')]" 
@@ -92,6 +93,11 @@ class Laser extends OpenEyesPage {
 	public function laserValidationError() {
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'siteValidationError' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'laserValidationError' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'treatmentLeftValidationError' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'treatmentRightValidationError' )->getXpath () );
 	}
+	
+/* 	public function laserValidationError() {
+	 return ( bool ) $this->find ( 'xpath', $this->getElement ( 'siteValidationError' )->getXpath () );
+} */
+	
 	public function laserValidationCheck() {
 		if ($this->laserValidationError ()) {
 			print "Laser validation errors have been displayed correctly";
