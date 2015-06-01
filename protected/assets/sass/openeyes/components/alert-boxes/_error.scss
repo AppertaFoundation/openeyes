@@ -26,7 +26,6 @@
 //
 // Styleguide 7.1
 .alert-box {
-  border-color: #f00;
   &.error {
     @include alert-style(#c90000);
     border-color: #f00;
