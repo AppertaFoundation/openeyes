@@ -303,7 +303,7 @@ $(document).ready(function() {
 		if($(this).closest('.element').length) {
 			$(this).closest('.element').find('.sub-elements.active .sub-element:not(.required)').each(function() {
 				removeElement(this, true);
-			})
+			});
 		} else {
 			$('.js-active-elements .sub-element:not(.required)').each(function() {
 				removeElement(this, true);
@@ -318,7 +318,7 @@ $(document).ready(function() {
 	/**
 	 * Remove an optional element
 	 */
-	$('.js-active-elements').on('.js-remove-element', 'click', function(e) {
+	$('#event-content').on('click', '.js-remove-element', function(e) {
 		if (!$(this).parents('.elements.active').length && !this.hasClass('disabled')) {
 			var element = $(this).closest('.element');
 			removeElement(element);
@@ -329,7 +329,7 @@ $(document).ready(function() {
 	/**
 	 * Remove a child element
 	 */
-	$(this).on('.js-remove-child-element', 'click', function(e) {
+	$('#event-content').on('click','.js-remove-child-element', function(e) {
         if(!this.hasClass('disabled')){
             var element = $(this).closest('.sub-element');
             removeElement(element, true);
@@ -340,7 +340,7 @@ $(document).ready(function() {
 	/**
 	 * Add optional child element
 	 */
-	$(".js-active-elements").on('.sub-elements-list li', 'click', function(e) {
+	$('#event-content').on('click', '.sub-elements-list li', function(e) {
 		if (!$(this).hasClass('clicked')) {
 			$(this).addClass('clicked');
 			addElement(this, true, true);
