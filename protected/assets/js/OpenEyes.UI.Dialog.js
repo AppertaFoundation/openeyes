@@ -141,8 +141,8 @@
 			content = this.getContent(options);
 		}
 		this.content.html(content);
-        if($(':input:visible', this.content).length){
-            $(':input:visible', this.content).get(0).focus();
+        if($(':input[type="submit"]', this.content).length){
+            $(':input[type="submit"]', this.content).get(0).focus();
         }
 	};
 
