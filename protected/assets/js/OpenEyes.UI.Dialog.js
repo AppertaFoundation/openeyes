@@ -141,6 +141,9 @@
 			content = this.getContent(options);
 		}
 		this.content.html(content);
+        if($(':input:visible', this.content).length){
+            $(':input:visible', this.content).get(0).focus();
+        }
 	};
 
 	/**

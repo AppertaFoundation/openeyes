@@ -28,10 +28,13 @@ if (!Yii::app()->user->isGuest) {
 			$this->widget('SiteAndFirmWidgetReminder');
 		} else {
 			if (!empty(Yii::app()->session['confirm_site_and_firm'])) {
-				$this->widget('SiteAndFirmWidget', array(
-						'returnUrl' => Yii::app()->request->requestUri,
-					)
-				);
+				?>
+				<script type="text/javascript">
+					$(document).ready(function(){
+						$('.change-firm a').trigger('click');
+					});
+				</script>
+				<?php
 			}
 		}
 	}
