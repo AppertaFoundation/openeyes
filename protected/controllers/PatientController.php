@@ -638,18 +638,11 @@ class PatientController extends BaseController
 	}
 
 	/**
-	 * List of allergies
+	 * List of allergies - changed to a wrap function to be able to use a common function from the model
 	 */
 	public function allergyList()
 	{
-		$allergy_ids = array();
-		foreach ($this->patient->allergies as $allergy) {
-			if ($allergy->name != 'Other') $allergy_ids[] = $allergy->id;
-		}
-		$criteria = new CDbCriteria;
-		!empty($allergy_ids) && $criteria->addNotInCondition('id',$allergy_ids);
-		$criteria->order = 'display_order';
-		return Allergy::model()->active()->findAll($criteria);
+		return PatientAllergyAssignment::model()->allergyList($this->patient->id);
 	}
 
 	/**

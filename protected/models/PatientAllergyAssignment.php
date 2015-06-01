@@ -110,4 +110,25 @@ class PatientAllergyAssignment extends BaseEventTypeElement
 	{
 		return $this->allergy->name == 'Other' ? $this->other : $this->allergy->name;
 	}
+
+
+	/**
+	 * List of allergies
+	 */
+	public function allergyList($patient_id)
+	{
+		$patient = Patient::model()->findByPk((int)$patient_id);
+
+		$allergy_ids = array();
+		foreach ($patient->allergies as $allergy) {
+			if ($allergy->name != 'Other') {
+				$allergy_ids[] = $allergy->id;
+			}
+		}
+		$criteria = new CDbCriteria;
+		!empty($allergy_ids) && $criteria->addNotInCondition('id', $allergy_ids);
+		$criteria->order = 'display_order';
+
+		return Allergy::model()->active()->findAll($criteria);
+	}
 }

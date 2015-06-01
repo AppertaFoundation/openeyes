@@ -43,6 +43,7 @@ return array(
 				'Social History' => '/admin/socialhistory',
 				'Findings' => '/admin/managefindings',
 				'Anaesthetic Agent' => '/admin/viewAnaestheticAgent',
+				'Anaesthetic Agent Defaults' => '/oeadmin/AnaestheticAgentDefaults/list',
 				'Risks' => '/oeadmin/risk/list'
 			),
 			'Procedure Management' => array(
@@ -70,9 +71,6 @@ return array(
 				'Leaflets' => array('OphTrConsent' => '/oeadmin/Leaflets/list'),
 				'Leaflet Subspecialty and Firm Assignment' => array('OphTrConsent' => '/oeadmin/LeafletSubspecialtyFirm/list')
 			),
-			'Operation Notes' => array(
-				'Anaesthetic Agent Defaults' => '/oeadmin/AnaestheticAgentDefaults/list'
-			)
 		)
 	)
 );
