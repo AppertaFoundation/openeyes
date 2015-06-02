@@ -319,7 +319,7 @@ $(document).ready(function() {
 	 * Remove an optional element
 	 */
 	$('#event-content').on('click', '.js-remove-element', function(e) {
-		if (!$(this).parents('.elements.active').length && !this.hasClass('disabled')) {
+		if (!$(this).parents('.elements.active').length && !$(this).hasClass('disabled')) {
 			var element = $(this).closest('.element');
 			removeElement(element);
 		}
@@ -330,7 +330,7 @@ $(document).ready(function() {
 	 * Remove a child element
 	 */
 	$('#event-content').on('click','.js-remove-child-element', function(e) {
-        if(!this.hasClass('disabled')){
+        if(!$(this).hasClass('disabled')){
             var element = $(this).closest('.sub-element');
             removeElement(element, true);
         }
