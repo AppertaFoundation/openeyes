@@ -64,12 +64,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphCiExamination.git",
-                "reference": "41965c842939086f50827bb70bd4ca68ae82fbb3"
+                "reference": "cfd081b2df4ba9d347789ff6ec38d63ea61a5aaf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/41965c842939086f50827bb70bd4ca68ae82fbb3",
-                "reference": "41965c842939086f50827bb70bd4ca68ae82fbb3",
+                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/cfd081b2df4ba9d347789ff6ec38d63ea61a5aaf",
+                "reference": "cfd081b2df4ba9d347789ff6ec38d63ea61a5aaf",
                 "shasum": ""
             },
             "require": {
@@ -78,7 +78,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Examination module for OpenEyes",
-            "time": "2015-06-02 12:22:28"
+            "time": "2015-06-02 14:19:32"
         },
         {
             "name": "openeyes/oph-ci-phasing",
@@ -3633,13 +3633,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/log.git",
-                "reference": "bf2c13de4300e227d7b2fd08027673a79c519987"
+                "reference": "9e45edca52cc9c954680072c93e621f8b71fab26"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/bf2c13de4300e227d7b2fd08027673a79c519987",
-                "reference": "bf2c13de4300e227d7b2fd08027673a79c519987",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/9e45edca52cc9c954680072c93e621f8b71fab26",
+                "reference": "9e45edca52cc9c954680072c93e621f8b71fab26",
                 "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
             },
             "type": "library",
             "extra": {
@@ -3668,7 +3671,7 @@
                 "psr",
                 "psr-3"
             ],
-            "time": "2015-03-26 14:39:45"
+            "time": "2015-06-02 13:48:41"
         },
         {
             "name": "sebastian/finder-facade",
