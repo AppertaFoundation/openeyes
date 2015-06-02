@@ -1766,6 +1766,17 @@ class AdminController extends BaseAdminController
 	}
 
 	/**
+	 * Lists and allows editing of Allergy records
+	 *
+	 * @throws Exception
+	 */
+	public function actionAllergies()
+	{
+		$this->genericAdmin('Edit Allergies', 'Allergy');
+
+	}
+
+	/**
 	 * Lists and allows editing of AnaestheticAgent records
 	 *
 	 * @throws Exception

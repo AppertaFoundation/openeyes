@@ -10,18 +10,16 @@
 			<div class="user-id">
 				You are logged in as:
 				<div class="user-name">
-					<a href="#">
-						<span class="icon-user-panel-cog"></span>
-						<strong>Enoch Root</strong>
+					<a href="#"> <span class="icon-user-panel-cog"></span> <strong>Enoch
+							Root</strong>
 					</a>
 				</div>
 			</div>
 		</div>
 		<div class="large-9 column">
 			<div class="user-firm text-right">
-				Site: <strong>City Road</strong>,
-				Firm: <strong>Barton Keith (Glaucoma)</strong>
-				(<a href="#">Change</a>)
+				Site: <strong>City Road</strong>, Firm: <strong>Barton Keith
+					(Glaucoma)</strong> (<a href="#">Change</a>)
 			</div>
 		</div>
 	</div>

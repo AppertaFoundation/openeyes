@@ -1,14 +1,11 @@
-<div class="large-10 column event ophouanaestheticsatisfactionaudit edit">
+<div
+	class="large-10 column event ophouanaestheticsatisfactionaudit edit">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
-			<li class="selected">
-				<a href="#">Create</a>
-			</li>
+			<li class="selected"><a href="#">Create</a></li>
 		</ul>
 		<div class="button-bar right">
-			<a href="#" class="button small secondary">
-				Save
-			</a>
+			<a href="#" class="button small secondary"> Save </a>
 		</div>
 	</header>
 	<div class="event-content">
@@ -48,11 +45,12 @@
 							</div>
 							<div class="large-10 column end">
 								<div class="field-row">
-									<span class="slider-value">0</span>
-									<input type="range" min="0" max="10" step="1" style="width:340px;" />
+									<span class="slider-value">0</span> <input type="range" min="0"
+										max="10" step="1" style="width: 340px;" />
 								</div>
 								<div class="field-row">
-									<img class="field_key" id="pain_key" src="<?php echo $assets_root_path?>/assets/modules/OphOuAnaestheticsatisfactionaudit/assets/img/painscale_adult.png" />
+									<img class="field_key" id="pain_key"
+										src="<?php echo $assets_root_path?>/assets/modules/OphOuAnaestheticsatisfactionaudit/assets/img/painscale_adult.png" />
 								</div>
 							</div>
 						</div>
@@ -167,15 +165,12 @@
 							</div>
 						</div>
 						<fieldset class="row field-row">
-							<legend class="large-2 column">
-								Ready for discharge from recovery:
-							</legend>
+							<legend class="large-2 column"> Ready for discharge from
+								recovery: </legend>
 							<div class="large-3 column end">
-								<label class="inline highlight">
-									<input type="radio"> Yes
-								</label>
-								<label class="inline highlight">
-									<input type="radio" /> No
+								<label class="inline highlight"> <input type="radio"> Yes
+								</label> <label class="inline highlight"> <input type="radio" />
+									No
 								</label>
 							</div>
 						</fieldset>

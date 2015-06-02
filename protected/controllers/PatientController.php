@@ -61,7 +61,7 @@ class PatientController extends BaseController
 				'roles' => array('OprnEditContact'),
 			),
 			array('allow',
-				'actions' => array('addAllergy', 'removeAllergy', 'addRisk', 'removeRisk'),
+				'actions' => array('addAllergy', 'removeAllergy', 'generateAllergySelect', 'addRisk', 'removeRisk'),
 				// TODO: check how to add new roles!!!
 				'roles' => array('OprnEditAllergy'),
 			),
@@ -648,8 +648,18 @@ class PatientController extends BaseController
 		}
 		$criteria = new CDbCriteria;
 		!empty($allergy_ids) && $criteria->addNotInCondition('id',$allergy_ids);
-		$criteria->order = 'name asc';
+		$criteria->order = 'display_order';
 		return Allergy::model()->active()->findAll($criteria);
+	}
+
+	/**
+	 * Generate the select to the frontend for the allergy selection
+	 */
+	public function actionGenerateAllergySelect()
+	{
+		$this->patient = $this->loadModel(Yii::app()->getRequest()->getQuery('patient_id'));
+		echo CHtml::dropDownList('allergy_id', null, CHtml::listData($this->allergyList(), 'id', 'name'),
+			array('empty' => '-- Select --'));
 	}
 
 	/**

@@ -55,9 +55,10 @@ class OperativeDevice extends BaseActiveRecordVersioned
 		// will receive user inputs.
 		return array(
 			array('name', 'required'),
+			array('name, active', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name', 'safe', 'on'=>'search'),
+			array('id, name', 'safe', 'on' => 'search'),
 		);
 	}
 

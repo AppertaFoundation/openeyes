@@ -16,19 +16,17 @@
 					<div class="panel error">
 						<h2>Page not found</h2>
 						<p class="panel">
-							<strong>There has been a problem trying to access OpenEyes, please try again in a moment.</strong>
+							<strong>There has been a problem trying to access OpenEyes,
+								please try again in a moment.</strong>
 						</p>
-						<p class="panel">
-							If there continues to be a problem please contact support.
-						</p>
+						<p class="panel">If there continues to be a problem please contact
+							support.</p>
 						<h3>Support Options</h3>
 						<ul>
 							<li>Immediate support (8:00am to 8:00pm) - Phone 12345678</li>
 							<li>Less urgent issues email <a href="#">helpdesk@example.com</a></li>
 						</ul>
-						<p class="date">
-							Tue, 24 Sep 2013 11:01:51 +0000
-						</p>
+						<p class="date">Tue, 24 Sep 2013 11:01:51 +0000</p>
 					</div>
 				</div>
 			</div>

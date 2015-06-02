@@ -1,6 +1,6 @@
 <?php
 function eyedraw($size = 'large', $id = 0) {
-return <<<HTML
+	return <<<HTML
 	<div class="eye-draw-widget" id="eyedrawwidget_right{$id}">
 		<ul class="ed_toolbar clearfix">
 			<li class="ed_img_button action" id="moveToFrontright{$id}">

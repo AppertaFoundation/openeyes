@@ -1,8 +1,6 @@
 <header class="header row">
 	<div class="large-2 columns">
-		<div class="logo">
-		  OpenEyes
-		</div>
+		<div class="logo">OpenEyes</div>
 	</div>
 	<div class="large-4 medium-5 columns">
 		<? include 'patient-panel.php'; ?>

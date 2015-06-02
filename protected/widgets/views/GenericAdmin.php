@@ -39,11 +39,13 @@
 	if ($filters_ready) { ?>
 		<?= CHtml::beginForm() ?>
 
-		<table class="generic-admin">
+		<table class="generic-admin <?= ($display_order)? 'sortable' : ''?>">
 			<thead>
 				<tr>
-					<th>Order</th>
+					<?php if($display_order) { ?>
+						<th>Order</th>
 					<?php
+					}
 					if(!$label_extra_field):?>
 						<th><?= $model::model()->getAttributeLabel($label_field) ?></th>
 					<?php endif;?>

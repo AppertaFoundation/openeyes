@@ -1,14 +1,10 @@
 <div class="large-10 column event ophtrconsent edit">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
-			<li class="selected">
-				<a href="#">Create</a>
-			</li>
+			<li class="selected"><a href="#">Create</a></li>
 		</ul>
 		<div class="button-bar right">
-			<a href="#" class="button small secondary">
-				Save
-			</a>
+			<a href="#" class="button small secondary"> Save </a>
 		</div>
 	</header>
 	<div class="event-content">
@@ -62,18 +58,13 @@
 					</header>
 					<div class="element-fields">
 						<fieldset class="row field-row">
-							<legend class="large-2 column">
-								Leaflets provided:
-							</legend>
+							<legend class="large-2 column"> Leaflets provided: </legend>
 							<div class="large-10 column">
-								<label class="inline highlight">
-									<input type="radio" /> Right
-								</label>
-								<label class="inline highlight">
-									<input type="radio" /> Both
-								</label>
-								<label class="inline highlight">
-									<input type="radio" /> Left
+								<label class="inline highlight"> <input type="radio" /> Right
+								</label> <label class="inline highlight"> <input type="radio" />
+									Both
+								</label> <label class="inline highlight"> <input type="radio" />
+									Left
 								</label>
 							</div>
 						</fieldset>
@@ -82,44 +73,32 @@
 								<div class="field-label">Procedures:</div>
 							</div>
 							<div class="large-4 column end">
-								<div class="panel procedures readonly">
-									Punctoplasty - 3 snp
-								</div>
+								<div class="panel procedures readonly">Punctoplasty - 3 snp</div>
 							</div>
 						</div>
 						<fieldset class="row field-row">
-							<legend class="large-2 column">
-								Anaesthetic type:
-							</legend>
+							<legend class="large-2 column"> Anaesthetic type: </legend>
 							<div class="large-10 column">
-								<label class="inline highlight">
-									<input type="radio" /> Topical
-								</label>
-								<label class="inline highlight">
-									<input type="radio" /> LA
-								</label>
-								<label class="inline highlight">
-									<input type="radio" /> LAC
-								</label>
-								<label class="inline highlight">
-									<input type="radio" /> LAS
-								</label>
-								<label class="inline highlight">
-									<input type="radio" /> GA
+								<label class="inline highlight"> <input type="radio" /> Topical
+								</label> <label class="inline highlight"> <input type="radio" />
+									LA
+								</label> <label class="inline highlight"> <input type="radio" />
+									LAC
+								</label> <label class="inline highlight"> <input type="radio" />
+									LAS
+								</label> <label class="inline highlight"> <input type="radio" />
+									GA
 								</label>
 							</div>
 						</fieldset>
 						<div class="row field-row">
 							<div class="large-2 column">
-								<label>
-									Procedures:
-								</label>
+								<label> Procedures: </label>
 							</div>
 							<div class="large-4 column">
 								<div class="field-row">
-									<div class="field-info">
-										Any extra procedures which may become necessary during the procedure.
-									</div>
+									<div class="field-info">Any extra procedures which may become
+										necessary during the procedure.</div>
 								</div>
 								<fieldset>
 									<legend>Add a procedure:</legend>
@@ -191,20 +170,13 @@
 					</header>
 					<div class="element-fields">
 						<fieldset class="row field-row">
-							<legend class="large-2 column">
-								Agree for use in audit, education and publication:
-							</legend>
+							<legend class="large-2 column"> Agree for use in audit, education
+								and publication: </legend>
 							<div class="large-10 column">
-								<label class="inline highlight">
-									<input type="radio" />
-									Yes
-								</label>
-								<label class="inline highlight">
-									<input type="radio" />
+								<label class="inline highlight"> <input type="radio" /> Yes
+								</label> <label class="inline highlight"> <input type="radio" />
 									No
-								</label>
-								<label class="inline highlight">
-									<input type="radio" />
+								</label> <label class="inline highlight"> <input type="radio" />
 									Not applicable
 								</label>
 							</div>
@@ -227,29 +199,24 @@
 									<input type="text" placeholder="Type to search for users..." />
 								</div>
 								<div class="field-row">
-									<input readonly="readonly" type="text" value="Mr Yassir Abou-Rayyah FRCS FRCOphth" />
+									<input readonly="readonly" type="text"
+										value="Mr Yassir Abou-Rayyah FRCS FRCOphth" />
 								</div>
 							</div>
 						</div>
 						<fieldset class="row field-row">
-							<legend class="large-2 column">
-								Other information:
-							</legend>
+							<legend class="large-2 column"> Other information: </legend>
 							<div class="large-10 column">
-								<label class="field-row">
-									<input type="checkbox"> An information leaflet has been provided
-								</label>
-								<label class="field-row">
-									<input type="checkbox"> Anaesthetic leaflet has been provided
-								</label>
-								<label class="field-row">
-									<input type="checkbox"> Witness required
-								</label>
-								<label class="field-row">
-									<input type="checkbox"> Interpreter required
-								</label>
-								<label class="field-row">
-									<input type="checkbox"> Include supplementary consent form
+								<label class="field-row"> <input type="checkbox"> An information
+									leaflet has been provided
+								</label> <label class="field-row"> <input type="checkbox">
+									Anaesthetic leaflet has been provided
+								</label> <label class="field-row"> <input type="checkbox">
+									Witness required
+								</label> <label class="field-row"> <input type="checkbox">
+									Interpreter required
+								</label> <label class="field-row"> <input type="checkbox">
+									Include supplementary consent form
 								</label>
 							</div>
 						</fieldset>

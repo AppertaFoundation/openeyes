@@ -69,6 +69,7 @@
 	 * @method
 	 */
 	StickyElement.prototype.wrapElement = function() {
+        this.element.find('script').remove();
 		this.element.wrap($('<div />', {
 			'class': this.options.wrapperClass
 		}));

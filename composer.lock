@@ -1,23 +1,23 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "3bda7748105505056aa9745515ecddb1",
+    "hash": "45797be95fe1252e419024066e7d56d9",
     "packages": [
         {
             "name": "openeyes/eyedraw",
-            "version": "dev-master",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/eyedraw.git",
-                "reference": "651b63ce75f1e3e43b0e0b5dc7d765d3c24c8526"
+                "reference": "b50f5c578d6e50068b10c1b1bdd001f9409a7397"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/eyedraw/zipball/651b63ce75f1e3e43b0e0b5dc7d765d3c24c8526",
-                "reference": "651b63ce75f1e3e43b0e0b5dc7d765d3c24c8526",
+                "url": "https://api.github.com/repos/openeyes/eyedraw/zipball/b50f5c578d6e50068b10c1b1bdd001f9409a7397",
+                "reference": "b50f5c578d6e50068b10c1b1bdd001f9409a7397",
                 "shasum": ""
             },
             "require": {
@@ -26,7 +26,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Electronic Patient Record system for use in Ophthalmology clinics",
-            "time": "2015-03-04 11:20:24"
+            "time": "2015-05-26 11:05:47"
         },
         {
             "name": "openeyes/module-installer",
@@ -64,12 +64,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphCiExamination.git",
-                "reference": "207e4bef4eb92af21bf652d2362637a851181630"
+                "reference": "f2dddbbeb13c058fe7142ccc6cee804a1e85eba8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/207e4bef4eb92af21bf652d2362637a851181630",
-                "reference": "207e4bef4eb92af21bf652d2362637a851181630",
+                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/f2dddbbeb13c058fe7142ccc6cee804a1e85eba8",
+                "reference": "f2dddbbeb13c058fe7142ccc6cee804a1e85eba8",
                 "shasum": ""
             },
             "require": {
@@ -78,7 +78,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Examination module for OpenEyes",
-            "time": "2015-05-20 10:32:54"
+            "time": "2015-06-01 10:40:56"
         },
         {
             "name": "openeyes/oph-ci-phasing",
@@ -148,16 +148,16 @@
         },
         {
             "name": "openeyes/oph-dr-prescription",
-            "version": "v1.10",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphDrPrescription.git",
-                "reference": "5cdc867b6069dcf7d90a99981ca96ab9e553a3d6"
+                "reference": "bf20f0025391b3fdc816b1fb1162680defb35e32"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphDrPrescription/zipball/5cdc867b6069dcf7d90a99981ca96ab9e553a3d6",
-                "reference": "5cdc867b6069dcf7d90a99981ca96ab9e553a3d6",
+                "url": "https://api.github.com/repos/openeyes/OphDrPrescription/zipball/bf20f0025391b3fdc816b1fb1162680defb35e32",
+                "reference": "bf20f0025391b3fdc816b1fb1162680defb35e32",
                 "shasum": ""
             },
             "require": {
@@ -166,7 +166,29 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Module for generating prescriptions in OpenEyes",
-            "time": "2015-05-18 12:35:31"
+            "time": "2015-05-26 13:19:36"
+        },
+        {
+            "name": "openeyes/oph-in-biometry",
+            "version": "dev-develop",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/openeyes/OphInBiometry.git",
+                "reference": "1bb54b9dbaf8a1df5a79a7c1287f82f56c3e5dbd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/openeyes/OphInBiometry/zipball/1bb54b9dbaf8a1df5a79a7c1287f82f56c3e5dbd",
+                "reference": "1bb54b9dbaf8a1df5a79a7c1287f82f56c3e5dbd",
+                "shasum": ""
+            },
+            "require": {
+                "openeyes/module-installer": "*"
+            },
+            "type": "openeyes-module",
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Biometry module for OpenEyes",
+            "time": "2015-05-18 13:25:20"
         },
         {
             "name": "openeyes/oph-in-visualfields",
@@ -189,29 +211,6 @@
             "notification-url": "https://packagist.org/downloads/",
             "description": "Module capable of communicating with Visual Fields machine to import images",
             "time": "2015-04-21 15:01:39"
-        },
-        {
-            "name": "openeyes/oph-le-intravitrealinjection",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/openeyes/OphLeIntravitrealinjection.git",
-                "reference": "e9f92ecdbd2bdac8f08813267c1f0ab60ab07db5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphLeIntravitrealinjection/zipball/e9f92ecdbd2bdac8f08813267c1f0ab60ab07db5",
-                "reference": "e9f92ecdbd2bdac8f08813267c1f0ab60ab07db5",
-                "shasum": ""
-            },
-            "require": {
-                "openeyes/module-installer": "*",
-                "openeyes/oph-tr-intravitreal-injection": "dev-master"
-            },
-            "type": "openeyes-module",
-            "notification-url": "https://packagist.org/downloads/",
-            "description": "Module for migrating legacy injection events in OpenEyes",
-            "time": "2015-03-05 15:26:07"
         },
         {
             "name": "openeyes/oph-ou-anaestheticsatisfactionaudit",
@@ -258,50 +257,26 @@
             "time": "2015-05-18 12:36:38"
         },
         {
-            "name": "openeyes/oph-tr-intravitreal-injection",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/openeyes/OphTrIntravitrealinjection.git",
-                "reference": "ae435f5f0f5e80d0aa3c523eee3a7757cfb6c0b4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrIntravitrealinjection/zipball/ae435f5f0f5e80d0aa3c523eee3a7757cfb6c0b4",
-                "reference": "ae435f5f0f5e80d0aa3c523eee3a7757cfb6c0b4",
-                "shasum": ""
-            },
-            "require": {
-                "openeyes/eyedraw": "dev-master",
-                "openeyes/module-installer": "*"
-            },
-            "type": "openeyes-module",
-            "notification-url": "https://packagist.org/downloads/",
-            "description": "Records intravitreal injection events for patients within OpenEyes",
-            "time": "2015-03-04 11:44:07"
-        },
-        {
             "name": "openeyes/oph-tr-intravitrealinjection",
             "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrIntravitrealinjection.git",
-                "reference": "679f51cbd9f19a357c1f81e5260de9711a783666"
+                "reference": "eefd4a5259135ebf34b1324f4b60001a602f65de"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrIntravitrealinjection/zipball/679f51cbd9f19a357c1f81e5260de9711a783666",
-                "reference": "679f51cbd9f19a357c1f81e5260de9711a783666",
+                "url": "https://api.github.com/repos/openeyes/OphTrIntravitrealinjection/zipball/eefd4a5259135ebf34b1324f4b60001a602f65de",
+                "reference": "eefd4a5259135ebf34b1324f4b60001a602f65de",
                 "shasum": ""
             },
             "require": {
-                "openeyes/eyedraw": "dev-master",
                 "openeyes/module-installer": "*"
             },
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Records intravitreal injection events for patients within OpenEyes",
-            "time": "2015-03-17 12:34:26"
+            "time": "2015-05-26 13:43:53"
         },
         {
             "name": "openeyes/oph-tr-laser",
@@ -349,26 +324,25 @@
         },
         {
             "name": "openeyes/oph-tr-operationnote",
-            "version": "v1.10",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrOperationnote.git",
-                "reference": "ad3de08c726428fddfb4aa948fc27117f09ba1fe"
+                "reference": "8cdf71af23530367fa71a6f416cae7cea7a97849"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/ad3de08c726428fddfb4aa948fc27117f09ba1fe",
-                "reference": "ad3de08c726428fddfb4aa948fc27117f09ba1fe",
+                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/8cdf71af23530367fa71a6f416cae7cea7a97849",
+                "reference": "8cdf71af23530367fa71a6f416cae7cea7a97849",
                 "shasum": ""
             },
             "require": {
-                "openeyes/eyedraw": "dev-master",
                 "openeyes/module-installer": "*"
             },
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Operation note module for OpenEyes",
-            "time": "2015-05-18 12:37:52"
+            "time": "2015-06-01 15:42:36"
         },
         {
             "name": "openeyes/patient-ticketing",
@@ -484,23 +458,23 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Behat/Behat.git",
-                "reference": "51d9a2fb1c802a681c2717e48b4b8d184595bd18"
+                "reference": "794f294f373acbfc5f8952adfb11471a93a2a864"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/Behat/zipball/51d9a2fb1c802a681c2717e48b4b8d184595bd18",
-                "reference": "51d9a2fb1c802a681c2717e48b4b8d184595bd18",
+                "url": "https://api.github.com/repos/Behat/Behat/zipball/794f294f373acbfc5f8952adfb11471a93a2a864",
+                "reference": "794f294f373acbfc5f8952adfb11471a93a2a864",
                 "shasum": ""
             },
             "require": {
                 "behat/gherkin": "~2.3.0",
                 "php": ">=5.3.1",
-                "symfony/config": "~2.0",
+                "symfony/config": "~2.3",
                 "symfony/console": "~2.0",
                 "symfony/dependency-injection": "~2.0",
                 "symfony/event-dispatcher": "~2.0",
                 "symfony/finder": "~2.0",
-                "symfony/translation": "~2.0",
+                "symfony/translation": "~2.3",
                 "symfony/yaml": "~2.0"
             },
             "require-dev": {
@@ -538,7 +512,7 @@
                 "Behat",
                 "Symfony2"
             ],
-            "time": "2015-01-23 22:15:44"
+            "time": "2015-06-01 09:37:07"
         },
         {
             "name": "behat/gherkin",
@@ -2915,20 +2889,20 @@
         },
         {
             "name": "phpmd/phpmd",
-            "version": "2.2.2",
+            "version": "2.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpmd/phpmd.git",
-                "reference": "7dc4a6b5c07b119ab5da7960b56303fa6855eb84"
+                "reference": "5eeb5a4d39c8304910b33ae49f8813905346cc35"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpmd/phpmd/zipball/7dc4a6b5c07b119ab5da7960b56303fa6855eb84",
-                "reference": "7dc4a6b5c07b119ab5da7960b56303fa6855eb84",
+                "url": "https://api.github.com/repos/phpmd/phpmd/zipball/5eeb5a4d39c8304910b33ae49f8813905346cc35",
+                "reference": "5eeb5a4d39c8304910b33ae49f8813905346cc35",
                 "shasum": ""
             },
             "require": {
-                "pdepend/pdepend": "2.0.*",
+                "pdepend/pdepend": "~2.0",
                 "php": ">=5.3.0",
                 "symfony/config": ">=2.4",
                 "symfony/dependency-injection": ">=2.4",
@@ -2973,7 +2947,7 @@
                 "phpmd",
                 "pmd"
             ],
-            "time": "2015-03-26 07:47:05"
+            "time": "2015-05-27 18:16:57"
         },
         {
             "name": "phpoption/phpoption",
@@ -4629,12 +4603,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Translation.git",
-                "reference": "a0735db452c5e592cb742333a32c6634a6d1ece1"
+                "reference": "ae980a18f73b88b3394510e07ed0f343f252ca4f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Translation/zipball/a0735db452c5e592cb742333a32c6634a6d1ece1",
-                "reference": "a0735db452c5e592cb742333a32c6634a6d1ece1",
+                "url": "https://api.github.com/repos/symfony/Translation/zipball/ae980a18f73b88b3394510e07ed0f343f252ca4f",
+                "reference": "ae980a18f73b88b3394510e07ed0f343f252ca4f",
                 "shasum": ""
             },
             "require": {
@@ -4682,7 +4656,7 @@
             ],
             "description": "Symfony Translation Component",
             "homepage": "https://symfony.com",
-            "time": "2015-05-15 14:11:12"
+            "time": "2015-05-20 09:35:10"
         },
         {
             "name": "symfony/validator",
@@ -4805,16 +4779,16 @@
         },
         {
             "name": "theseer/fdomdocument",
-            "version": "1.6.0",
+            "version": "1.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/theseer/fDOMDocument.git",
-                "reference": "d08cf070350f884c63fc9078d27893c2ab6c7cef"
+                "reference": "d9ad139d6c2e8edf5e313ffbe37ff13344cf0684"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/theseer/fDOMDocument/zipball/d08cf070350f884c63fc9078d27893c2ab6c7cef",
-                "reference": "d08cf070350f884c63fc9078d27893c2ab6c7cef",
+                "url": "https://api.github.com/repos/theseer/fDOMDocument/zipball/d9ad139d6c2e8edf5e313ffbe37ff13344cf0684",
+                "reference": "d9ad139d6c2e8edf5e313ffbe37ff13344cf0684",
                 "shasum": ""
             },
             "require": {
@@ -4841,7 +4815,7 @@
             ],
             "description": "The classes contained within this repository extend the standard DOM to use exceptions at all occasions of errors instead of PHP warnings or notices. They also add various custom methods and shortcuts for convenience and to simplify the usage of DOM.",
             "homepage": "https://github.com/theseer/fDOMDocument",
-            "time": "2014-09-13 10:57:19"
+            "time": "2015-05-27 22:58:02"
         },
         {
             "name": "twig/twig",
@@ -4906,12 +4880,12 @@
             "target-dir": "Zend/Cache",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/Component_ZendCache.git",
+                "url": "https://github.com/zendframework/zend-cache.git",
                 "reference": "4e01c4e515bf62dfa2e93cd2977e039cf24b308c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendCache/zipball/4e01c4e515bf62dfa2e93cd2977e039cf24b308c",
+                "url": "https://api.github.com/repos/zendframework/zend-cache/zipball/ead910ec8b0aa464ede58c959665d0292d9482b0",
                 "reference": "4e01c4e515bf62dfa2e93cd2977e039cf24b308c",
                 "shasum": ""
             },
@@ -4961,12 +4935,12 @@
             "target-dir": "Zend/Config",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/Component_ZendConfig.git",
+                "url": "https://github.com/zendframework/zend-config.git",
                 "reference": "21bb8030c84f60deca1756e2d69f80eca46c7256"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendConfig/zipball/21bb8030c84f60deca1756e2d69f80eca46c7256",
+                "url": "https://api.github.com/repos/zendframework/zend-config/zipball/2077985e6de29bf2bd7df16d4f385dcb53062394",
                 "reference": "21bb8030c84f60deca1756e2d69f80eca46c7256",
                 "shasum": ""
             },
@@ -5007,12 +4981,12 @@
             "target-dir": "Zend/EventManager",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/Component_ZendEventManager.git",
+                "url": "https://github.com/zendframework/zend-eventmanager.git",
                 "reference": "77f31b34c7fc78d58260282fd5e3cbc593b442b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendEventManager/zipball/77f31b34c7fc78d58260282fd5e3cbc593b442b1",
+                "url": "https://api.github.com/repos/zendframework/zend-eventmanager/zipball/aa23086ec1d6d0dad7a33e4eaf3fc851c2bc851b",
                 "reference": "77f31b34c7fc78d58260282fd5e3cbc593b442b1",
                 "shasum": ""
             },
@@ -5048,12 +5022,12 @@
             "target-dir": "Zend/Filter",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/Component_ZendFilter.git",
+                "url": "https://github.com/zendframework/zend-filter.git",
                 "reference": "cfead716e69651a3c931fc59e5e17fb71acc0806"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendFilter/zipball/cfead716e69651a3c931fc59e5e17fb71acc0806",
+                "url": "https://api.github.com/repos/zendframework/zend-filter/zipball/790934a61b9bce2c00106ec75fbc024c029de4d0",
                 "reference": "cfead716e69651a3c931fc59e5e17fb71acc0806",
                 "shasum": ""
             },
@@ -5099,12 +5073,12 @@
             "target-dir": "Zend/I18n",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/Component_ZendI18n.git",
+                "url": "https://github.com/zendframework/zend-i18n.git",
                 "reference": "0a9ffb7586d5aeaf3afef4a0a02e3448bc46927a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendI18n/zipball/0a9ffb7586d5aeaf3afef4a0a02e3448bc46927a",
+                "url": "https://api.github.com/repos/zendframework/zend-i18n/zipball/6a5a65c1cdcf02877e2526c1b3e315de6a59bb8c",
                 "reference": "0a9ffb7586d5aeaf3afef4a0a02e3448bc46927a",
                 "shasum": ""
             },
@@ -5148,12 +5122,12 @@
             "target-dir": "Zend/Json",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/Component_ZendJson.git",
+                "url": "https://github.com/zendframework/zend-json.git",
                 "reference": "96cf77eee14c32f6ca3b87084201f9c9f950aeaa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendJson/zipball/96cf77eee14c32f6ca3b87084201f9c9f950aeaa",
+                "url": "https://api.github.com/repos/zendframework/zend-json/zipball/e0a2e72459b029c3d3785fe8a0b41312670bfd24",
                 "reference": "96cf77eee14c32f6ca3b87084201f9c9f950aeaa",
                 "shasum": ""
             },
@@ -5193,12 +5167,12 @@
             "target-dir": "Zend/Math",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/Component_ZendMath.git",
+                "url": "https://github.com/zendframework/zend-math.git",
                 "reference": "1823c586dcb7ef0b022a85b865e1150021ebc850"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendMath/zipball/1823c586dcb7ef0b022a85b865e1150021ebc850",
+                "url": "https://api.github.com/repos/zendframework/zend-math/zipball/0e5ba13e2bc64f6544f5508acf705dd2fc12d91d",
                 "reference": "1823c586dcb7ef0b022a85b865e1150021ebc850",
                 "shasum": ""
             },
@@ -5239,12 +5213,12 @@
             "target-dir": "Zend/Serializer",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/Component_ZendSerializer.git",
+                "url": "https://github.com/zendframework/zend-serializer.git",
                 "reference": "f213b205030bf511364c13851758bf628648ca79"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendSerializer/zipball/f213b205030bf511364c13851758bf628648ca79",
+                "url": "https://api.github.com/repos/zendframework/zend-serializer/zipball/aabfa157039e0c8ca0627a002e8e8f13e62393a8",
                 "reference": "f213b205030bf511364c13851758bf628648ca79",
                 "shasum": ""
             },
@@ -5286,12 +5260,12 @@
             "target-dir": "Zend/ServiceManager",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/Component_ZendServiceManager.git",
+                "url": "https://github.com/zendframework/zend-servicemanager.git",
                 "reference": "cf1615c8bf000d9aefb9f1da32d3e634bb1033eb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendServiceManager/zipball/cf1615c8bf000d9aefb9f1da32d3e634bb1033eb",
+                "url": "https://api.github.com/repos/zendframework/zend-servicemanager/zipball/b9eaf9e3268d2e10ddca807e3a2980b3e662a8e0",
                 "reference": "cf1615c8bf000d9aefb9f1da32d3e634bb1033eb",
                 "shasum": ""
             },
@@ -5329,12 +5303,12 @@
             "target-dir": "Zend/Stdlib",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/Component_ZendStdlib.git",
+                "url": "https://github.com/zendframework/zend-stdlib.git",
                 "reference": "69f7b2d620794482b9b355fa25376a5cc759ac22"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendStdlib/zipball/69f7b2d620794482b9b355fa25376a5cc759ac22",
+                "url": "https://api.github.com/repos/zendframework/zend-stdlib/zipball/b42d784bd142e916058a9d68eeafcc10ff63c12e",
                 "reference": "69f7b2d620794482b9b355fa25376a5cc759ac22",
                 "shasum": ""
             },
@@ -5488,11 +5462,14 @@
         "openeyes/oph-ci-examination": 20,
         "openeyes/oph-ci-phasing": 20,
         "openeyes/oph-co-therapyapplication": 20,
-        "openeyes/oph-le-intravitrealinjection": 20,
+        "openeyes/oph-dr-prescription": 20,
         "openeyes/oph-ou-anaestheticsatisfactionaudit": 20,
+        "openeyes/oph-tr-operationnote": 20,
         "openeyes/oph-tr-intravitrealinjection": 20,
         "openeyes/oph-tr-laser": 20,
         "openeyes/oph-in-visualfields": 20,
+        "openeyes/oph-in-biometry": 20,
+        "openeyes/eyedraw": 20,
         "phpmd/phpmd": 0
     },
     "prefer-stable": false,

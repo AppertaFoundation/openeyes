@@ -15,9 +15,7 @@ include 'fragments/assets.php';
 
 		<header class="header row">
 			<div class="large-3 columns">
-				<a class="logo" href="?">
-					OpenEyes
-				</a>
+				<a class="logo" href="?"> OpenEyes </a>
 			</div>
 		</header>
 		<div class="container content">
@@ -45,9 +43,10 @@ include 'fragments/assets.php';
 					<div class="box generic">
 						<h2>Overview</h2>
 						<p>Welcome to the OpenEyes front-end documentation.</p>
-						<p>The documention should be used as a guide for developing the front-end
-						of the OpenEyes application.</p>
-						<p>Use the navigation on the left to select the area of documentation you would like to view.</p>
+						<p>The documention should be used as a guide for developing the
+							front-end of the OpenEyes application.</p>
+						<p>Use the navigation on the left to select the area of
+							documentation you would like to view.</p>
 					</div>
 				</div>
 			</div>

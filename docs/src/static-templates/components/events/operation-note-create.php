@@ -1,14 +1,10 @@
 <div class="large-10 column event ophtroperationnote edit">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
-			<li class="selected">
-				<a href="#">Create</a>
-			</li>
+			<li class="selected"><a href="#">Create</a></li>
 		</ul>
 		<div class="button-bar right">
-			<a href="#" class="button small secondary">
-				Save
-			</a>
+			<a href="#" class="button small secondary"> Save </a>
 		</div>
 	</header>
 	<div class="event-content">
@@ -24,26 +20,19 @@
 					</header>
 					<div class="element-fields">
 						<fieldset class="row field-row">
-							<legend class="large-2 column">
-								Eye:
-							</legend>
+							<legend class="large-2 column"> Eye: </legend>
 							<div class="large-10 column">
-								<label class="inline highlight">
-									<input type="radio" /> Right
-								</label>
-								<label class="inline highlight">
-									<input type="radio" /> Both
-								</label>
-								<label class="inline highlight">
-									<input type="radio" /> Left
+								<label class="inline highlight"> <input type="radio" /> Right
+								</label> <label class="inline highlight"> <input type="radio" />
+									Both
+								</label> <label class="inline highlight"> <input type="radio" />
+									Left
 								</label>
 							</div>
 						</fieldset>
 						<div class="row field-row">
 							<div class="large-2 column">
-								<label>
-									Procedures:
-								</label>
+								<label> Procedures: </label>
 							</div>
 							<div class="large-4 column">
 								<fieldset>
@@ -127,7 +116,8 @@
 							<div class="large-8 column">
 								<div class="row">
 									<div class="large-6 column">
-										<img src="<?php echo $assets_root_path?>assets/img/eyedraw/large.png" />
+										<img
+											src="<?php echo $assets_root_path?>assets/img/eyedraw/large.png" />
 									</div>
 									<div class="large-6 column">
 										<div class="row field-row">
@@ -180,36 +170,31 @@
 							<div class="large-4 column">
 								<div class="row field-row">
 									<div class="large-12 column">
-										<label for="">IOL type:</label>
-										<select>
+										<label for="">IOL type:</label> <select>
 											<option>-- Select --</option>
 										</select>
 									</div>
 								</div>
 								<div class="row field-row">
 									<div class="large-12 column">
-										<label for="">IOL power:</label>
-										<input type="text" />
+										<label for="">IOL power:</label> <input type="text" />
 									</div>
 								</div>
 								<div class="row field-row">
 									<div class="large-12 column">
-										<label for="">Predicted refraction:</label>
-										<input type="text" />
+										<label for="">Predicted refraction:</label> <input type="text" />
 									</div>
 								</div>
 								<div class="row field-row">
 									<div class="large-12 column">
-										<label for="">IOL position:</label>
-										<select>
+										<label for="">IOL position:</label> <select>
 											<option>-- Select --</option>
 										</select>
 									</div>
 								</div>
 								<div class="row field-row">
 									<div class="large-12 column">
-										<label for="">Devices:</label>
-										<select>
+										<label for="">Devices:</label> <select>
 											<option>-- Select --</option>
 										</select>
 									</div>
@@ -225,13 +210,9 @@
 											</div>
 											<div class="no-selections-msg pill">No selections message.</div>
 											<ul class="multi-select-selections field-row">
-												<li>
-													Decentered IOL
-													<a href="#" class="remove-one">Remove</a>
+												<li>Decentered IOL <a href="#" class="remove-one">Remove</a>
 												</li>
-												<li>
-													IOL exchange
-													<a href="#" class="remove-one">Remove</a>
+												<li>IOL exchange <a href="#" class="remove-one">Remove</a>
 												</li>
 											</ul>
 										</div>
@@ -334,74 +315,53 @@
 					</header>
 					<div class="element-fields">
 						<fieldset class="row field-row">
-							<legend class="large-2 column">
-								Type:
-							</legend>
+							<legend class="large-2 column"> Type: </legend>
 							<div class="large-10 column">
-								<label class="inline highlight">
-									<input type="radio" /> Topical
-								</label>
-								<label class="inline highlight">
-									<input type="radio" /> LA
-								</label>
-								<label class="inline highlight">
-									<input type="radio" /> LAC
-								</label>
-								<label class="inline highlight">
-									<input type="radio" /> LAS
-								</label>
-								<label class="inline highlight">
-									<input type="radio" /> GA
+								<label class="inline highlight"> <input type="radio" /> Topical
+								</label> <label class="inline highlight"> <input type="radio" />
+									LA
+								</label> <label class="inline highlight"> <input type="radio" />
+									LAC
+								</label> <label class="inline highlight"> <input type="radio" />
+									LAS
+								</label> <label class="inline highlight"> <input type="radio" />
+									GA
 								</label>
 							</div>
 						</fieldset>
 						<fieldset class="row field-row">
-							<legend class="large-2 column">
-								Given by:
-							</legend>
+							<legend class="large-2 column"> Given by: </legend>
 							<div class="large-10 column">
-								<label class="inline highlight">
-									<input type="radio" /> Anaesthetist
-								</label>
-								<label class="inline highlight">
-									<input type="radio" /> Surgeon
-								</label>
-								<label class="inline highlight">
-									<input type="radio" /> Nurse
-								</label>
-								<label class="inline highlight">
-									<input type="radio" /> Anaesthetic technician
-								</label>
-								<label class="inline highlight">
-									<input type="radio" /> Other
+								<label class="inline highlight"> <input type="radio" />
+									Anaesthetist
+								</label> <label class="inline highlight"> <input type="radio" />
+									Surgeon
+								</label> <label class="inline highlight"> <input type="radio" />
+									Nurse
+								</label> <label class="inline highlight"> <input type="radio" />
+									Anaesthetic technician
+								</label> <label class="inline highlight"> <input type="radio" />
+									Other
 								</label>
 							</div>
 						</fieldset>
 						<fieldset class="row field-row">
-							<legend class="large-2 column">
-								Delivery:
-							</legend>
+							<legend class="large-2 column"> Delivery: </legend>
 							<div class="large-10 column">
-								<label class="inline highlight">
-									<input type="radio" /> Retrobulbar
-								</label>
-								<label class="inline highlight">
-									<input type="radio" /> Peribulbar
-								</label>
-								<label class="inline highlight">
-									<input type="radio" /> Subtenons
-								</label>
-								<label class="inline highlight">
-									<input type="radio" /> Subconjunctival
-								</label>
-								<label class="inline highlight">
-									<input type="radio" /> Topical
-								</label>
-								<label class="inline highlight">
-									<input type="radio" /> Topical and intracameral
-								</label>
-								<label class="inline highlight">
-									<input type="radio" /> Other
+								<label class="inline highlight"> <input type="radio" />
+									Retrobulbar
+								</label> <label class="inline highlight"> <input type="radio" />
+									Peribulbar
+								</label> <label class="inline highlight"> <input type="radio" />
+									Subtenons
+								</label> <label class="inline highlight"> <input type="radio" />
+									Subconjunctival
+								</label> <label class="inline highlight"> <input type="radio" />
+									Topical
+								</label> <label class="inline highlight"> <input type="radio" />
+									Topical and intracameral
+								</label> <label class="inline highlight"> <input type="radio" />
+									Other
 								</label>
 							</div>
 						</fieldset>
@@ -427,13 +387,10 @@
 										</select>
 									</div>
 									<ul class="multi-select-selections">
-										<li>
-											Retro bulbar / peribulbar haemorrage
-											<a href="#" class="remove-one">Remove</a>
+										<li>Retro bulbar / peribulbar haemorrage <a href="#"
+											class="remove-one">Remove</a>
 										</li>
-										<li>
-											Patient pain - Moderate
-											<a href="#" class="remove-one">Remove</a>
+										<li>Patient pain - Moderate <a href="#" class="remove-one">Remove</a>
 										</li>
 									</ul>
 								</div>
@@ -455,16 +412,17 @@
 						<h3 class="element-title">Surgeon</h3>
 					</header>
 					<div class="element-fields">
-						<div id="div_Element_OphTrOperationnote_Surgeon" class="row field-row">
+						<div id="div_Element_OphTrOperationnote_Surgeon"
+							class="row field-row">
 							<div class="large-2 column">
 								<label for="Element_OphTrOperationnote_Surgeon_surgeon_id">
-									Surgeon:
-								</label>
+									Surgeon: </label>
 							</div>
 							<div class="large-4 column end">
 								<div class="row">
 									<div class="large-9 column end">
-										<select name="Element_OphTrOperationnote_Surgeon[surgeon_id]" id="Element_OphTrOperationnote_Surgeon_surgeon_id">
+										<select name="Element_OphTrOperationnote_Surgeon[surgeon_id]"
+											id="Element_OphTrOperationnote_Surgeon_surgeon_id">
 											<option value="">- Please select -</option>
 										</select>
 									</div>
@@ -472,28 +430,35 @@
 							</div>
 							<div class="large-2 column">
 								<label for="Element_OphTrOperationnote_Surgeon_assistant_id">
-									Assistant:
-								</label>
+									Assistant: </label>
 							</div>
 							<div class="large-4 column end">
 								<div class="row">
 									<div class="large-9 column end">
-										<select name="Element_OphTrOperationnote_Surgeon[assistant_id]" id="Element_OphTrOperationnote_Surgeon_assistant_id">
+										<select
+											name="Element_OphTrOperationnote_Surgeon[assistant_id]"
+											id="Element_OphTrOperationnote_Surgeon_assistant_id">
 											<option value="">- None -</option>
 										</select>
 									</div>
 								</div>
 							</div>
 						</div>
-						<div id="div_Element_OphTrOperationnote_Surgeon_supervising_surgeon_id" class="row field-row">
+						<div
+							id="div_Element_OphTrOperationnote_Surgeon_supervising_surgeon_id"
+							class="row field-row">
 
 							<div class="large-2 column">
-								<label for="Element_OphTrOperationnote_Surgeon_supervising_surgeon_id">Supervising surgeon:</label>
+								<label
+									for="Element_OphTrOperationnote_Surgeon_supervising_surgeon_id">Supervising
+									surgeon:</label>
 							</div>
 
 							<div class="large-3 column end">
 
-								<select name="Element_OphTrOperationnote_Surgeon[supervising_surgeon_id]" id="Element_OphTrOperationnote_Surgeon_supervising_surgeon_id">
+								<select
+									name="Element_OphTrOperationnote_Surgeon[supervising_surgeon_id]"
+									id="Element_OphTrOperationnote_Surgeon_supervising_surgeon_id">
 									<option value="">- None -</option>
 								</select>
 							</div>
