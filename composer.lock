@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "45797be95fe1252e419024066e7d56d9",
+    "hash": "12802ce9d5a7754814f08de424fa3c85",
     "packages": [
         {
             "name": "openeyes/eyedraw",
@@ -302,16 +302,16 @@
         },
         {
             "name": "openeyes/oph-tr-operationbooking",
-            "version": "v1.10",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrOperationbooking.git",
-                "reference": "af32fdfa9b7aa376cbbc429d4ed1b242ea28fe31"
+                "reference": "4fc7bae2373a4b2594fcd656b87b82ed0a809a7d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrOperationbooking/zipball/af32fdfa9b7aa376cbbc429d4ed1b242ea28fe31",
-                "reference": "af32fdfa9b7aa376cbbc429d4ed1b242ea28fe31",
+                "url": "https://api.github.com/repos/openeyes/OphTrOperationbooking/zipball/4fc7bae2373a4b2594fcd656b87b82ed0a809a7d",
+                "reference": "4fc7bae2373a4b2594fcd656b87b82ed0a809a7d",
                 "shasum": ""
             },
             "require": {
@@ -320,7 +320,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Module for booking operations in OpenEyes",
-            "time": "2015-05-18 12:40:22"
+            "time": "2015-06-03 15:07:34"
         },
         {
             "name": "openeyes/oph-tr-operationnote",
@@ -5549,6 +5549,7 @@
         "openeyes/oph-dr-prescription": 20,
         "openeyes/oph-ou-anaestheticsatisfactionaudit": 20,
         "openeyes/oph-tr-operationnote": 20,
+        "openeyes/oph-tr-operationbooking": 20,
         "openeyes/oph-tr-intravitrealinjection": 20,
         "openeyes/oph-tr-laser": 20,
         "openeyes/oph-in-visualfields": 20,

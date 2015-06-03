@@ -13,7 +13,7 @@
     "openeyes/oph-ou-anaestheticsatisfactionaudit": "dev-master",
     "openeyes/oph-tr-consent": "1.10",
     "openeyes/oph-tr-operationnote": "dev-develop",
-    "openeyes/oph-tr-operationbooking": "1.10",
+    "openeyes/oph-tr-operationbooking": "dev-develop",
     "openeyes/oph-tr-intravitrealinjection": "dev-develop",
     "openeyes/oph-tr-laser": "dev-master",
     "openeyes/patient-ticketing": "1.10",
