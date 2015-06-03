@@ -111,4 +111,10 @@ class Allergy extends BaseActiveRecordVersioned
 				'criteria'=>$criteria,
 		));
 	}
+
+
+	public function __toString()
+	{
+		return $this->name;
+	}
 }

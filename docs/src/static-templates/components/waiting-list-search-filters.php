@@ -19,33 +19,21 @@
 				</thead>
 				<tbody>
 					<tr>
-						<td>
-							<select>
+						<td><select>
 								<option>All specialties</option>
-							</select>
-						</td>
-						<td>
-							<select>
+						</select></td>
+						<td><select>
 								<option>All firms</option>
-							</select>
-						</td>
-						<td>
-							<select>
+						</select></td>
+						<td><select>
 								<option>Any</option>
-							</select>
-						</td>
-						<td>
-							<select>
+						</select></td>
+						<td><select>
 								<option>All sites</option>
-							</select>
-						</td>
-						<td>
-							<input type="text" />
-						</td>
+						</select></td>
+						<td><input type="text" /></td>
 						<td class="text-right">
-							<button class="secondary">
-								Search
-							</button>
+							<button class="secondary">Search</button>
 						</td>
 					</tr>
 				</tbody>

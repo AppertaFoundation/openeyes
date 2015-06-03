@@ -19,7 +19,8 @@
 								<label for="username" class="align">Username:</label>
 							</div>
 							<div class="large-8 column">
-								<input type="text" id="username" class="large" placeholder="Enter username...">
+								<input type="text" id="username" class="large"
+									placeholder="Enter username...">
 							</div>
 						</div>
 						<div class="row field-row">
@@ -27,15 +28,16 @@
 								<label for="password" class="align">Password:</label>
 							</div>
 							<div class="large-8 column">
-								<input type="password" id="password" class="large" placeholder="Enter password...">
+								<input type="password" id="password" class="large"
+									placeholder="Enter password...">
 							</div>
 						</div>
 						<div class="row field-row text-right">
 							<div class="large-12 column">
-								<img class="loader" src="<?php echo $assets_root_path;?>assets/img/ajax-loader.gif" alt="loading..." />
-								<button type="submit" class="button long">
-									Login
-								</button>
+								<img class="loader"
+									src="<?php echo $assets_root_path;?>assets/img/ajax-loader.gif"
+									alt="loading..." />
+								<button type="submit" class="button long">Login</button>
 							</div>
 						</div>
 					</form>

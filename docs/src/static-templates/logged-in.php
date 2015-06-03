@@ -14,8 +14,7 @@
 
 		<div class="container content">
 			<h1 class="badge">Page title</h1>
-			<div style="height:400px">
-			</div>
+			<div style="height: 400px"></div>
 		</div>
 
 		<? include 'components/footer.php'; ?>

@@ -17,8 +17,7 @@
 				<div class="large-9 column">
 					<div class="box generic">
 						<p>
-							<strong>50 patients found</strong>,
-							based on FIRST NAME: <strong>"violet"</strong>
+							<strong>50 patients found</strong>, based on FIRST NAME: <strong>"violet"</strong>
 						</p>
 					</div>
 					<div class="box generic">
@@ -118,7 +117,9 @@
 				<div class="large-3 column">
 					<div class="box generic">
 						<p>
-							<a href="#">Clear this search and <span class="highlight">start a new search</span>.</a>
+							<a href="#">Clear this search and <span class="highlight">start a
+									new search</span>.
+							</a>
 						</p>
 					</div>
 				</div>

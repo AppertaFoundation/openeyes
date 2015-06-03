@@ -15,7 +15,8 @@
 			<div class="panel">
 				<div class="row">
 					<div class="large-12 column">
-						<br /><br />
+						<br />
+						<br />
 						<p>
 							<button class="button primary">Button</button>
 							<button class="button primary long">Button</button>
@@ -34,7 +35,8 @@
 							<li><a href="#" class="small button">Button 1</a></li>
 							<li><a href="#" class="small button">Button 2</a></li>
 						</ul>
-						<br/><br/>
+						<br />
+						<br />
 					</div>
 				</div>
 			</div>

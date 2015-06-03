@@ -4,6 +4,7 @@
 			<span class="surname">KENDALL</span>, Ellen (1000440)
 		</div>
 		<h3 class="event-title">Schedule Operation</h3>
-		<div class="alert-box alert with-icon">You are booking into the Emergency list</div>
+		<div class="alert-box alert with-icon">You are booking into the
+			Emergency list</div>
 	</div>
 </div>

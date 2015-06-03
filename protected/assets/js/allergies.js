@@ -92,8 +92,13 @@ $(document).ready(function () {
 						$('.allergies_confirm_no').show();
 					}
 					if (allergy_name != "Other") {
-						$('#allergy_id').append('<option value="'+allergy_id+'">'+allergy_name+'</option>');
-						sort_selectbox($('#allergy_id'));
+                        $.ajax({
+                            'type': 'GET',
+                            'url': baseUrl + '/patient/generateAllergySelect?patient_id=' + OE_patient_id,
+                            'success': function (response) {
+                                $('#allergy_id').html(response);
+                            }
+                        });
 					}
 				} else {
 					new OpenEyes.UI.Dialog.Alert({

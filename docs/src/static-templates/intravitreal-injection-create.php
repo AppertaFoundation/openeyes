@@ -3,8 +3,10 @@
 <html lang="en">
 <head>
 <? include 'components/head.php'; ?>
-<link rel="stylesheet" href="<?php echo $assets_root_path?>assets/modules/OphTrIntravitrealinjection/assets/css/module.css" />
-<link rel="stylesheet" href="<?php echo $assets_root_path?>assets/modules/eyedraw/css/oe-eyedraw.css" />
+<link rel="stylesheet"
+	href="<?php echo $assets_root_path?>assets/modules/OphTrIntravitrealinjection/assets/css/module.css" />
+<link rel="stylesheet"
+	href="<?php echo $assets_root_path?>assets/modules/eyedraw/css/oe-eyedraw.css" />
 </head>
 <body class="open-eyes">
 	<div class="container main" role="main">

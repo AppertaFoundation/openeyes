@@ -4466,10 +4466,6 @@ tfoot.pagination-container .pagination-view-all {
   }
 }
 
-/* line 28, ../sass/openeyes/components/alert-boxes/_error.scss */
-.alert-box {
-  border-color: #f00;
-}
 /* line 30, ../sass/openeyes/components/alert-boxes/_error.scss */
 .alert-box.error {
   background-color: #c90000;
@@ -6358,7 +6354,7 @@ tfoot.pagination-container .pagination-view-all {
 
 /* line 277, ../sass/openeyes/components/events/_elements.scss */
 .highlighted-error {
-  border: 2px solid red;
+    border: 1px solid red;
 }
 
 /* line 18, ../sass/openeyes/components/events/_optional-elements.scss */
@@ -7086,4 +7082,14 @@ tfoot.pagination-container .pagination-view-all {
 /* line 21, ../sass/openeyes/components/_generic-search.scss */
 #generic-search-form > div div input[type=text], #generic-search-form > div div select {
   width: 95%;
+}
+
+.errorlink {
+    color: #FFFFFF;
+    text-decoration: underline;
+}
+
+.errorlink:hover {
+    color: #CCCCCC;
+    text-decoration: underline;
 }

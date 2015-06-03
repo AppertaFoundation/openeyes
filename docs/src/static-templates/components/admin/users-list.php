@@ -6,10 +6,15 @@
 			</div>
 			<div class="large-4 column">
 				<form id="searchform" action="/admin/users" method="post">
-					<div style="display:none"><input type="hidden" value="1b00da5bd1809025802ed01476dcdd2baa0a5b26" name="YII_CSRF_TOKEN"></div>
+					<div style="display: none">
+						<input type="hidden"
+							value="1b00da5bd1809025802ed01476dcdd2baa0a5b26"
+							name="YII_CSRF_TOKEN">
+					</div>
 					<div class="row">
 						<div class="large-12 column">
-							<input type="text" name="search" id="search" placeholder="Enter search query..." value="">
+							<input type="text" name="search" id="search"
+								placeholder="Enter search query..." value="">
 						</div>
 					</div>
 				</form>
@@ -159,8 +164,10 @@
 							<button class="small primary event-action" type="submit">Add</button>
 							<button class="small primary event-action" type="submit">Delete</button>
 							<ul class="pagination">
-								<li class="first unavailable"><a href="/admin/users">&lt;&lt; First</a></li>
-								<li class="previous unavailable"><a href="/admin/users">&lt; Previous</a></li>
+								<li class="first unavailable"><a href="/admin/users">&lt;&lt;
+										First</a></li>
+								<li class="previous unavailable"><a href="/admin/users">&lt;
+										Previous</a></li>
 								<li class="page current"><a href="/admin/users">1</a></li>
 								<li class="page"><a href="/admin/users?page=2">2</a></li>
 								<li class="page"><a href="/admin/users?page=3">3</a></li>
