@@ -6406,6 +6406,14 @@ tfoot.pagination-container .pagination-view-all {
   display: none;
 }
 
+/* line 316, ../sass/openeyes/components/events/_elements.scss */
+.pcr-exam-link {
+  position: relative;
+  left: 400px;
+  font-family: 'Arial';
+  font-style: normal;
+}
+
 /* line 18, ../sass/openeyes/components/events/_optional-elements.scss */
 .edit .optional-elements-header {
   background: #dae6f1;
