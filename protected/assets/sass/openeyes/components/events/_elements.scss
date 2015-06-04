@@ -287,3 +287,35 @@ $oe-element-edit-title-font-style: italic;
   color: #CCCCCC;
   text-decoration: underline;
 }
+
+.pcr-nk {
+  width: 140px;
+  height:10px;
+  top:-15px
+}
+.pcr-span {
+  background-color: white;
+  width: 100px;
+  font-weight: bold;
+}
+.pcr-erisk {
+  background-color: white;
+}
+#pcr-risk-div {
+  background-color: red;
+}
+.pcr-nkr {
+  height:35px;
+}
+.pcr-opnote-eye {
+  border-width:1px;
+  border-style: solid;
+  border-color: #ffffff;
+  display:none;
+}
+.pcr-exam-link{
+  position: relative;
+  left: 400px;
+  font-family:'Arial';
+  font-style: normal;
+}
