@@ -33,7 +33,8 @@ class BaseEventTypeElement extends BaseElement
 	protected $_children;
 	protected $frontEndErrors = array();
 	protected $errorExceptions = array(
-		'Element_OphTrOperationbooking_Operation_procedures' => 'select_procedure_id_procs'
+		'Element_OphTrOperationbooking_Operation_procedures' => 'select_procedure_id_procs',
+		'Element_OphDrPrescription_Details_items' => 'prescription_items'
 	);
 
 	private $settings = array();
