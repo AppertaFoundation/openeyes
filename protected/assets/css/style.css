@@ -4476,7 +4476,7 @@ tfoot.pagination-container .pagination-view-all {
 }
 /* line 33, ../sass/openeyes/components/alert-boxes/_error.scss */
 .alert-box.error.with-icon {
-  background-image: url('../img/_elements/icons/box/error.png?1433242048');
+  background-image: url('../img/_elements/icons/box/error.png?1433411280');
   min-height: 36px;
   padding-bottom: 11px;
   padding-top: 11px;
@@ -4485,7 +4485,7 @@ tfoot.pagination-container .pagination-view-all {
   /* line 33, ../sass/openeyes/components/alert-boxes/_error.scss */
   .alert-box.error.with-icon {
     background-color: #c90000 !important;
-    background-image: url('../img/_elements/icons/box/error.png?1433242048') !important;
+    background-image: url('../img/_elements/icons/box/error.png?1433411280') !important;
   }
 }
 
@@ -6409,7 +6409,7 @@ tfoot.pagination-container .pagination-view-all {
 /* line 316, ../sass/openeyes/components/events/_elements.scss */
 .pcr-exam-link {
   position: relative;
-  left: 400px;
+  left: 350px;
   font-family: 'Arial';
   font-style: normal;
 }
