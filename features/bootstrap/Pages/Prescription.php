@@ -16,7 +16,8 @@ class Prescription extends OpenEyesPage {
 					'xpath' => "//*[@id='drug_set_id']" 
 			),
 			'prescriptionDoseItem0' => array (
-					'xpath' => "//*[@id='prescription_item_0_dose']" 
+					//'xpath' => "//*[@id='prescription_item_0_dose']" 
+					'xpath' => "//*[@class='prescriptionItemDose']//*[@id='prescription_item_0_dose']"
 			),
 			'prescriptionRouteItem0' => array (
 					'xpath' => "//*[@id='prescription_item_0_route_id']" 
@@ -96,7 +97,9 @@ class Prescription extends OpenEyesPage {
 		$this->getElement ( 'addTaper' )->click ();
 	}
 	public function firstTaperDose($taper) {
-		$this->getElement ( 'firstTaperDose' )->selectOption ( $taper );
+		//$this->getElement ( 'firstTaperDose' )->selectOption ( $taper );
+		
+		$this->getElement ( 'firstTaperDose' )->setValue($taper);
 	}
 	public function firstTaperFrequency($frequency) {
 		$this->getElement ( 'firstTaperFrequency' )->selectOption ( $frequency );
@@ -105,7 +108,7 @@ class Prescription extends OpenEyesPage {
 		$this->getElement ( 'firstTaperDuration' )->selectOption ( $duration );
 	}
 	public function secondTaperDose($taper) {
-		$this->getElement ( 'secondTaperDose' )->selectOption ( $taper );
+		$this->getElement ( 'secondTaperDose' )->setValue ( $taper );
 	}
 	public function secondTaperFrequency($frequency) {
 		$this->getElement ( 'secondTaperFrequency' )->selectOption ( $frequency );
@@ -122,16 +125,18 @@ class Prescription extends OpenEyesPage {
 		$this->getElement ( 'noPreservative' )->check ();
 	}
 	public function prescriptionDropdown($drug) {
-		$this->getElement ( 'prescriptionCommonDrug' )->selectOption ( $drug );
-		$this->getSession ()->wait ( 3000 );
+
+		$this->getElement ('prescriptionCommonDrug')->selectOption ( $drug );
+		$this->getSession ()->wait ( 7000 );	
 	}
 	public function standardSet($set) {
 		$this->getElement ( 'prescriptionStandardSet' )->selectOption ( $set );
 		$this->getSession ()->wait ( 1000 );
 	}
 	public function item0DoseDrops($drops) {
+		sleep(3);
 		$this->getElement ( 'prescriptionDoseItem0' )->setValue ( $drops );
-	}
+		}
 	public function item0Route($route) {
 		$this->getElement ( 'prescriptionRouteItem0' )->selectOption ( $route );
 	}
