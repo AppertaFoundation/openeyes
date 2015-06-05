@@ -31,7 +31,9 @@ $(document).ready(function () {
 	function closeForms(e) {
 		$('.medication_form').slideUp('fast');
 		$('#medication_add').attr('disabled',false).removeClass('disabled');
-        OpenEyes.Form.reset($(e.target).closest('form'));
+        if($(e.target).closest('form').length){
+            OpenEyes.Form.reset($(e.target).closest('form'));
+        }
 	}
 
 	function selectMedication(id, name, type) {
@@ -68,8 +70,8 @@ $(document).ready(function () {
 			loadForm();
 		})
 
-		.on('click', '.medication_edit', function () {
-			closeForms();
+		.on('click', '.medication_edit', function (e) {
+			closeForms(e);
 			loadForm($(this).data('id'));
 			return false;
 		})
@@ -80,8 +82,8 @@ $(document).ready(function () {
 			return false;
 		})
 
-		.on('click', '.medication_stop', function () {
-			closeForms();
+		.on('click', '.medication_stop', function (e) {
+			closeForms(e);
 			$('#medication_stop [name=medication_id]').val($(this).data('id'));
 			$('#medication_stop .drug_name').text($(this).data('drug-name'));
 			$('#medication_stop').slideDown('fast');
@@ -149,7 +151,7 @@ $(document).ready(function () {
 				type: 'POST', data: form.serialize(),
 				success: function (res) {
 					$('#medication_list').html(res);
-					closeForms();
+					closeForms(e);
 				},
 				error: function (xhr) {
 					if (xhr.status != 422) return;
@@ -169,7 +171,7 @@ $(document).ready(function () {
 			});
 		})
 
-		.on('click', '#medication_stop .medication_save', function () {
+		.on('click', '#medication_stop .medication_save', function (e) {
 			var form = $('#medication_stop form');
 
 			form.find('[name=end_date]').val(getFuzzyDate('#medication_stop .medication_end_date'));
@@ -179,7 +181,7 @@ $(document).ready(function () {
 				type: "POST", data: form.serialize(),
 				success: function (res) {
 					$('#medication_list').html(res);
-					closeForms();
+					closeForms(e);
 					enableButtons('#medication .button');
 				},
 			});
