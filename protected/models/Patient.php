@@ -753,7 +753,7 @@ class Patient extends BaseActiveRecordVersioned
 	 * @param string $other
 	 * @throws Exception
 	 */
-	public function addAllergy(Allergy $allergy, $other = null, $comments = null)
+	public function addAllergy(Allergy $allergy, $other = null, $comments = null, $startTransaction = true)
 	{
 		if ($allergy->name == 'Other') {
 			if (!$other) throw new Exception("No 'other' allergy specified");
@@ -763,7 +763,9 @@ class Patient extends BaseActiveRecordVersioned
 			}
 		}
 
-		$transaction = Yii::app()->db->beginTransaction();
+		if ($startTransaction) {
+			$transaction = Yii::app()->db->beginTransaction();
+		}
 		try {
 			$paa = new PatientAllergyAssignment;
 			$paa->patient_id = $this->id;
@@ -782,9 +784,13 @@ class Patient extends BaseActiveRecordVersioned
 				};
 			}
 			$this->audit('patient','remove-noallergydate');
-			$transaction->commit();
+			if ($startTransaction) {
+				$transaction->commit();
+			}
 		} catch (Exception $e) {
-			$transaction->rollback();
+			if ($startTransaction) {
+				$transaction->rollback();
+			}
 			throw $e;
 		}
 	}

@@ -21,8 +21,7 @@
 	<footer class="footer row">
 		<div class="large-3 medium-3 columns">
 			<div class="info">
-				<a href="<?php echo Yii::app()->createUrl('site/debuginfo') ?>" id="support-info-link">Served, with
-					love, by <?php echo trim(`hostname`) ?></a>
+				<a href="<?php echo Yii::app()->createUrl('site/debuginfo') ?>" id="support-info-link">Served by <?php echo trim(`hostname`) ?></a>
 				<br/>
 				<span class="copyright">&copy; Copyright OpenEyes Foundation 2011&#x2013;<?php echo date('Y'); ?></span>
 			</div>

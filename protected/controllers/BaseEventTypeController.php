@@ -1080,12 +1080,12 @@ class BaseEventTypeController extends BaseModuleController
 				}
 			}
 			elseif ($element_type->required) {
-				$errors['Event'][] = $element_type->name . ' is required';
+				$errors[$this->event_type->name][] = $element_type->name . ' is required';
 				$elements[] = $element_type->getInstance();
 			}
 		}
 		if (!count($elements)) {
-			$errors['Event'][] = 'Cannot create an event without at least one element';
+			$errors[$this->event_type->name][] = 'Cannot create an event without at least one element';
 		}
 
 		// assign
@@ -1112,7 +1112,7 @@ class BaseEventTypeController extends BaseModuleController
 			if (!$event->validate()) {
 				foreach ($event->getErrors() as $errormsgs) {
 					foreach ($errormsgs as $error) {
-						$errors['Event'][] = $error;
+						$errors[$this->event_type->name][] = $error;
 					}
 				}
 			}

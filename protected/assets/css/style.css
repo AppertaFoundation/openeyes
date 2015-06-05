@@ -4466,10 +4466,6 @@ tfoot.pagination-container .pagination-view-all {
   }
 }
 
-/* line 28, ../sass/openeyes/components/alert-boxes/_error.scss */
-.alert-box {
-  border-color: #f00;
-}
 /* line 30, ../sass/openeyes/components/alert-boxes/_error.scss */
 .alert-box.error {
   background-color: #c90000;
