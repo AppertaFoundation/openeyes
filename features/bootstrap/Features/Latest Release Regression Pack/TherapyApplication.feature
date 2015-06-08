@@ -1,7 +1,9 @@
 @therapy @regression
 Feature: Create New Therapy Application Event
+@TA
          Regression coverage of this event is approx 40%
 
+    @TA_Route_1
     Scenario: Route 1: Login and create a new Therapy Application (Queens Site, Glaucoma Firm)
     Diagnosis: (Choroidal Retinal Neo) Secondary To: (Age related macular degeneration)
     Treatment: Avastin
@@ -85,7 +87,7 @@ Feature: Create New Therapy Application Event
 
     Then I Save the Therapy Application and confirm it has been created successfully
 
-
+  @TA_Route_2
   Scenario: Route 2: Login and create a new Therapy Application (Queens Site, Glaucoma Firm)
   Diagnosis: (Macular retinal oedema) Secondary To: (Venous retinal branch occlusion)
   Treatment: Lucentis
@@ -141,6 +143,7 @@ Feature: Create New Therapy Application Event
 
     Then I Save the Therapy Application and confirm it has been created successfully
 
+  @TA_Route_3
   Scenario: Route 3: Login and create a new Therapy Application (Queens Site, Glaucoma Firm)
   Right Diagnosis: (Central serous chorioretinopathy)
   Treatment: Eylea
@@ -206,6 +209,7 @@ Feature: Create New Therapy Application Event
 
     Then I Save the Therapy Application and confirm it has been created successfully
 
+  @TA_Route_4
   Scenario: Route 4: Login and create a new Therapy Application (Queens Site, Anderson Medical Retinal)
   Right Diagnosis: (Scleritis)
   Treatment: Lucentis

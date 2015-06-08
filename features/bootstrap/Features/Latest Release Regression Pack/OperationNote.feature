@@ -1,7 +1,9 @@
 @opnote @regression
 Feature: Create New Operation Note Event
+@OperationNote
   Regression coverage of this event is approx TBC%
 
+  @ON_ROUTE_1
   Scenario: Route 1: Login and create a Operation Note Event
             Site 2: Kings
             Firm 3: Anderson Glaucoma
@@ -50,6 +52,7 @@ Feature: Create New Operation Note Event
 
     Then I save the Operation Note and confirm it has been created successfully
 
+  @ON_ROUTE_2
   Scenario: Route 2: Login and create a Operation Note Event
   Site 2: Kings
   Firm 4: Medical Retinal
@@ -98,6 +101,7 @@ Feature: Create New Operation Note Event
 
     Then I save the Operation Note and confirm it has been created successfully
 
+  @ON_ROUTE_3
   Scenario: Route 3: Login and create a Operation Note Event
   Site 1: Queens
   Firm 3: Anderson Glaucoma
@@ -146,6 +150,7 @@ Feature: Create New Operation Note Event
 
     Then I save the Operation Note and confirm it has been created successfully
 
+  @ON_ROUTE_4
   Scenario: Route 4: Login and create a Operation Note Event
   Site 1: Queens
   Firm 2: Broom Glaucoma
@@ -194,6 +199,7 @@ Feature: Create New Operation Note Event
 
     Then I save the Operation Note and confirm it has been created successfully
 
+  @ON_ROUTE_5
   Scenario: Route 5: Login and create a Operation Note Event
   Site 1: Queens
   Firm 4: Medical Retinal
@@ -218,7 +224,7 @@ Feature: Create New Operation Note Event
 
     And I select a common Procedure of "41"
 
-    Then I choose Anaesthetic Type of GA
+    Then I choose Anaesthetic Type of LA
 
     And I choose Given by Other
 

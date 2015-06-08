@@ -267,31 +267,35 @@ class PatientViewNewDiagnosis extends OpenEyesPage {
 	}
 	public function selectEye($eye) {
 		if ($eye === ('Right')) {
-			$this->getElement ( 'opthRightEye' )->check ();
+			$this->getElement ( 'opthRightEye' )->click ();
 		}
 		if ($eye === ('Both')) {
-			$this->getElement ( 'opthBothEyes' )->check ();
+			$this->getElement ( 'opthBothEyes' )->click ();
 		}
 		if ($eye === ('Left')) {
-			$this->getElement ( 'opthLeftEye' )->check ();
+			$this->getElement ( 'opthLeftEye' )->click ();
 		}
 	}
 	public function addOpthalmicDate($day, $month, $year) {
+		sleep(5);
 		$this->getElement ( 'opthDay' )->selectOption ( $day );
 		$this->getElement ( 'opthMonth' )->selectOption ( $month );
 		$this->getElement ( 'opthYear' )->selectOption ( $year );
 	}
 	public function addSystemicDate($day, $month, $year) {
+		sleep(5);
 		$this->getElement ( 'sysDay' )->selectOption ( $day );
 		$this->getElement ( 'sysMonth' )->selectOption ( $month );
 		$this->getElement ( 'sysYear' )->selectOption ( $year );
 	}
 	public function addOperationDate($day, $month, $year) {
+		sleep(5);
 		$this->getElement ( 'operationDay' )->selectOption ( $day );
 		$this->getElement ( 'operationMonth' )->selectOption ( $month );
 		$this->getElement ( 'operationYear' )->selectOption ( $year );
 	}
 	public function addCVIDate($day, $month, $year) {
+		sleep(5);
 		$this->getElement ( 'CVIDay' )->selectOption ( $day );
 		$this->getElement ( 'CVIMonth' )->selectOption ( $month );
 		$this->getElement ( 'CVIYear' )->selectOption ( $year );
@@ -317,19 +321,19 @@ class PatientViewNewDiagnosis extends OpenEyesPage {
 		$el = null;
 		if ($side === ("None")) {
 			$el = $this->getElement ( 'sysNoEyes' );
-			$el->check ();
+			$el->click ();
 		}
 		if ($side === ("Right")) {
 			$el = $this->getElement ( 'sysRightEye' );
-			$el->check ();
+			$el->click ();
 		}
 		if ($side === ("Both")) {
 			$el = $this->getElement ( 'sysBothEyes' );
-			$el->check ();
+			$el->click ();
 		}
 		if ($side === ("Left")) {
 			$el = $this->getElement ( 'sysLeftEye' );
-			$el->check ();
+			$el->click ();
 		}
 		$this->getSession ()->wait ( 3000, "$(\"#add-systemic-diagnosis [name='diagnosis_eye']:checked\").val() == " . $el->getValue () );
 	}
@@ -349,16 +353,16 @@ class PatientViewNewDiagnosis extends OpenEyesPage {
 	}
 	public function operationSide($side) {
 		if ($side === ("None")) {
-			$this->getElement ( 'operationNoEyes' )->check ();
+			$this->getElement ( 'operationNoEyes' )->click ();
 		}
 		if ($side === ("Right")) {
-			$this->getElement ( 'operationRightEye' )->check ();
+			$this->getElement ( 'operationRightEye' )->click ();
 		}
 		if ($side === ("Both")) {
-			$this->getElement ( 'operationBothEyes' )->check ();
+			$this->getElement ( 'operationBothEyes' )->click ();
 		}
 		if ($side === ("Left")) {
-			$this->getElement ( 'operationLeftEye' )->check ();
+			$this->getElement ( 'operationLeftEye' )->click ();
 		}
 	}
 	public function savePreviousOperation() {

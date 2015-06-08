@@ -76,10 +76,12 @@ class Phasing extends OpenEyesPage {
 					'xpath' => "//*[@id='flash-success']" 
 			),
 			'rightReadingTimeInvalid' => array (
-					'xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Intraocular Pressure Phasing: Right reading (1): Invalid Time')]" 
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Right reading (1): Invalid Time')]"
+					//'xpath' => "//*[contains(text(),'Intraocular Pressure Phasing: Right reading (1): Invalid Time')]" 
 			),
 			'leftReadingTimeInvalid' => array (
-					'xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Intraocular Pressure Phasing: Left reading (1): Invalid Time')]" 
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Left reading (1): Invalid Time')]"
+					//'xpath' => "//*[contains(text(),'Intraocular Pressure Phasing: Left reading (1): Invalid Time')]" 
 			) 
 	);
 	protected function doesPhasingLogoExist() {
@@ -169,7 +171,9 @@ class Phasing extends OpenEyesPage {
 		}
 	}
 	protected function hasPhasingTimeErrorDisplayed() {
-		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'rightReadingTimeInvalid' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'leftReadingTimeInvalid' )->getXpath () );
+		sleep(3);
+		//return ( bool ) $this->find ( 'xpath', $this->getElement ( 'hasPhasingTimeErrorDisplayed' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'leftReadingTimeInvalid' )->getXpath () );
+		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'leftReadingTimeInvalid' )->getXpath () );
 	}
 	public function phasingTimeErrorValidation() {
 		if ($this->hasPhasingTimeErrorDisplayed ()) {

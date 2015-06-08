@@ -92,6 +92,7 @@ class PatientViewContext extends PageObjectContext {
 		 * @var PatientViewNewDiagnosis $patientView
 		 */
 		$patientView = $this->getPage ( 'PatientViewNewDiagnosis' );
+		sleep(5);
 		$patientView->addOpthalmicDate ( $day, $month, $year );
 	}
 	
@@ -188,6 +189,7 @@ class PatientViewContext extends PageObjectContext {
 		 * @var PatientViewNewDiagnosis $patientView
 		 */
 		$patientView = $this->getPage ( 'PatientViewNewDiagnosis' );
+		sleep(5);
 		$patientView->addOpthalmicDate ( $day, $month, $year );
 	}
 	
