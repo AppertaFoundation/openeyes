@@ -64,12 +64,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphCiExamination.git",
-                "reference": "9629ad7ebefb48b303cabc7d6c2e02f0c52f6dd3"
+                "reference": "8f09727513b299402a4722f945fe221e534b286c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/9629ad7ebefb48b303cabc7d6c2e02f0c52f6dd3",
-                "reference": "9629ad7ebefb48b303cabc7d6c2e02f0c52f6dd3",
+                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/8f09727513b299402a4722f945fe221e534b286c",
+                "reference": "8f09727513b299402a4722f945fe221e534b286c",
                 "shasum": ""
             },
             "require": {
@@ -78,7 +78,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Examination module for OpenEyes",
-            "time": "2015-06-05 09:55:43"
+            "time": "2015-06-08 09:43:01"
         },
         {
             "name": "openeyes/oph-ci-phasing",
@@ -1196,15 +1196,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/dompdf/dompdf.git",
-                "reference": "e6798543658b8a549689dd64416b0542766c497e"
+                "reference": "2954dd8c509b56ac22adf3f7c4d30404b9119242"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dompdf/dompdf/zipball/e6798543658b8a549689dd64416b0542766c497e",
-                "reference": "e6798543658b8a549689dd64416b0542766c497e",
+                "url": "https://api.github.com/repos/dompdf/dompdf/zipball/2954dd8c509b56ac22adf3f7c4d30404b9119242",
+                "reference": "2954dd8c509b56ac22adf3f7c4d30404b9119242",
                 "shasum": ""
             },
             "require": {
+                "ext-dom": "*",
+                "ext-gd": "*",
+                "ext-mbstring": "*",
                 "phenx/php-font-lib": "0.4.*",
                 "phenx/php-svg-lib": "0.1.*",
                 "php": ">=5.3.0"
@@ -1246,7 +1249,7 @@
             ],
             "description": "DOMPDF is a CSS 2.1 compliant HTML to PDF converter",
             "homepage": "https://github.com/dompdf/dompdf",
-            "time": "2015-06-05 04:29:57"
+            "time": "2015-06-06 13:28:03"
         },
         {
             "name": "erusev/parsedown",
@@ -1992,12 +1995,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "e064827e23d983fad07eb06841350d51bd19e509"
+                "reference": "77aef55318035d37dbd4e87ea0c37a191f3e766e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/e064827e23d983fad07eb06841350d51bd19e509",
-                "reference": "e064827e23d983fad07eb06841350d51bd19e509",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/77aef55318035d37dbd4e87ea0c37a191f3e766e",
+                "reference": "77aef55318035d37dbd4e87ea0c37a191f3e766e",
                 "shasum": ""
             },
             "require": {
@@ -2008,13 +2011,13 @@
                 "psr/log-implementation": "1.0.0"
             },
             "require-dev": {
-                "aws/aws-sdk-php": "~2.4, >2.4.8",
+                "aws/aws-sdk-php": "^2.4.9",
                 "doctrine/couchdb": "~1.0@dev",
                 "graylog2/gelf-php": "~1.0",
-                "php-console/php-console": "~3.1, >3.1.2",
-                "phpunit/phpunit": "~4.0",
+                "php-console/php-console": "^3.1.3",
+                "phpunit/phpunit": "~4.5",
                 "phpunit/phpunit-mock-objects": "2.3.0",
-                "raven/raven": "~0.5",
+                "raven/raven": "~0.8",
                 "ruflin/elastica": ">=0.90 <3.0",
                 "swiftmailer/swiftmailer": "~5.3",
                 "videlalvaro/php-amqplib": "~2.4"
@@ -2060,7 +2063,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2015-06-01 22:47:41"
+            "time": "2015-06-05 11:23:05"
         },
         {
             "name": "nikic/php-parser",
@@ -4125,12 +4128,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Config.git",
-                "reference": "291e3f1ce92fec71632eada0d492833b41531718"
+                "reference": "853f075d4eadaafde97ba75e142724a1c4bf2fb7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Config/zipball/291e3f1ce92fec71632eada0d492833b41531718",
-                "reference": "291e3f1ce92fec71632eada0d492833b41531718",
+                "url": "https://api.github.com/repos/symfony/Config/zipball/853f075d4eadaafde97ba75e142724a1c4bf2fb7",
+                "reference": "853f075d4eadaafde97ba75e142724a1c4bf2fb7",
                 "shasum": ""
             },
             "require": {
@@ -4167,7 +4170,7 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "https://symfony.com",
-            "time": "2015-05-15 14:11:12"
+            "time": "2015-06-05 17:28:18"
         },
         {
             "name": "symfony/console",
@@ -4175,12 +4178,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "b3883bdaf15d0b254f624771b301b7cdd301d4ea"
+                "reference": "39d6c23c9d2f8d52402c94144c3fc218a9d13cd2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/b3883bdaf15d0b254f624771b301b7cdd301d4ea",
-                "reference": "b3883bdaf15d0b254f624771b301b7cdd301d4ea",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/39d6c23c9d2f8d52402c94144c3fc218a9d13cd2",
+                "reference": "39d6c23c9d2f8d52402c94144c3fc218a9d13cd2",
                 "shasum": ""
             },
             "require": {
@@ -4224,7 +4227,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2015-06-04 20:21:09"
+            "time": "2015-06-05 16:29:33"
         },
         {
             "name": "symfony/css-selector",
@@ -4285,12 +4288,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/DependencyInjection.git",
-                "reference": "58544c9cd32c9c0bfec7f92433b3662ba4a929b4"
+                "reference": "3080164c5a80e687e1b887831898d8029b8b83c0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/DependencyInjection/zipball/58544c9cd32c9c0bfec7f92433b3662ba4a929b4",
-                "reference": "58544c9cd32c9c0bfec7f92433b3662ba4a929b4",
+                "url": "https://api.github.com/repos/symfony/DependencyInjection/zipball/3080164c5a80e687e1b887831898d8029b8b83c0",
+                "reference": "3080164c5a80e687e1b887831898d8029b8b83c0",
                 "shasum": ""
             },
             "require": {
@@ -4337,7 +4340,7 @@
             ],
             "description": "Symfony DependencyInjection Component",
             "homepage": "https://symfony.com",
-            "time": "2015-06-04 20:21:09"
+            "time": "2015-06-05 13:59:18"
         },
         {
             "name": "symfony/dom-crawler",
@@ -4652,12 +4655,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Translation.git",
-                "reference": "8ab31656d4438363b24b29fd94046fcf3b84401f"
+                "reference": "fa1c9e185b7addf06571be1ffcbaa27afea7fe9a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Translation/zipball/8ab31656d4438363b24b29fd94046fcf3b84401f",
-                "reference": "8ab31656d4438363b24b29fd94046fcf3b84401f",
+                "url": "https://api.github.com/repos/symfony/Translation/zipball/fa1c9e185b7addf06571be1ffcbaa27afea7fe9a",
+                "reference": "fa1c9e185b7addf06571be1ffcbaa27afea7fe9a",
                 "shasum": ""
             },
             "require": {
@@ -4705,7 +4708,7 @@
             ],
             "description": "Symfony Translation Component",
             "homepage": "https://symfony.com",
-            "time": "2015-06-04 20:21:09"
+            "time": "2015-06-05 16:29:33"
         },
         {
             "name": "symfony/validator",
@@ -4872,12 +4875,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "dfddd2e0ef39fd39e201fd89f469769740d5a4a1"
+                "reference": "e22fb8728b395b306a06785a3ae9b12f3fbc0294"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/dfddd2e0ef39fd39e201fd89f469769740d5a4a1",
-                "reference": "dfddd2e0ef39fd39e201fd89f469769740d5a4a1",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/e22fb8728b395b306a06785a3ae9b12f3fbc0294",
+                "reference": "e22fb8728b395b306a06785a3ae9b12f3fbc0294",
                 "shasum": ""
             },
             "require": {
@@ -4921,7 +4924,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2015-06-02 14:50:15"
+            "time": "2015-06-06 23:35:59"
         },
         {
             "name": "zendframework/zend-cache",
@@ -5539,12 +5542,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/zetacomponents/Document.git",
-                "reference": "0daf49aff981f175e2d2332735c5c1a3e91f8447"
+                "reference": "d444dd811659de20c112e13703ea4f48eb1c19ad"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zetacomponents/Document/zipball/0daf49aff981f175e2d2332735c5c1a3e91f8447",
-                "reference": "0daf49aff981f175e2d2332735c5c1a3e91f8447",
+                "url": "https://api.github.com/repos/zetacomponents/Document/zipball/d444dd811659de20c112e13703ea4f48eb1c19ad",
+                "reference": "d444dd811659de20c112e13703ea4f48eb1c19ad",
                 "shasum": ""
             },
             "require": {
@@ -5582,7 +5585,7 @@
             ],
             "description": "The Document components provides a general conversion framework for different semantic document markup languages like XHTML, Docbook, RST and similar.",
             "homepage": "https://github.com/zetacomponents",
-            "time": "2015-04-30 21:28:59"
+            "time": "2015-06-03 14:25:43"
         }
     ],
     "aliases": [],
