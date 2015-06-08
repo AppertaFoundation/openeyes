@@ -152,12 +152,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphDrPrescription.git",
-                "reference": "329d905acc4a52495026a9756885a4ff815aa9de"
+                "reference": "3a74874bb62811739eb49bcc4d4850636b961b86"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphDrPrescription/zipball/329d905acc4a52495026a9756885a4ff815aa9de",
-                "reference": "329d905acc4a52495026a9756885a4ff815aa9de",
+                "url": "https://api.github.com/repos/openeyes/OphDrPrescription/zipball/3a74874bb62811739eb49bcc4d4850636b961b86",
+                "reference": "3a74874bb62811739eb49bcc4d4850636b961b86",
                 "shasum": ""
             },
             "require": {
@@ -166,7 +166,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Module for generating prescriptions in OpenEyes",
-            "time": "2015-06-04 11:09:40"
+            "time": "2015-06-08 10:12:47"
         },
         {
             "name": "openeyes/oph-in-biometry",
@@ -306,12 +306,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrOperationbooking.git",
-                "reference": "4fc7bae2373a4b2594fcd656b87b82ed0a809a7d"
+                "reference": "37a51f3ff21ab325cbc317b8c7de3ce4e524ba6c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrOperationbooking/zipball/4fc7bae2373a4b2594fcd656b87b82ed0a809a7d",
-                "reference": "4fc7bae2373a4b2594fcd656b87b82ed0a809a7d",
+                "url": "https://api.github.com/repos/openeyes/OphTrOperationbooking/zipball/37a51f3ff21ab325cbc317b8c7de3ce4e524ba6c",
+                "reference": "37a51f3ff21ab325cbc317b8c7de3ce4e524ba6c",
                 "shasum": ""
             },
             "require": {
@@ -320,7 +320,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Module for booking operations in OpenEyes",
-            "time": "2015-06-03 15:07:34"
+            "time": "2015-06-08 10:10:31"
         },
         {
             "name": "openeyes/oph-tr-operationnote",
