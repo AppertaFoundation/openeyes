@@ -44,15 +44,13 @@ $event_type = $event->eventType->name;
 		</div>
 		<div class="large-4 column firm">
 			<?php if ($consultant = $this->event->episode->firm->consultant) {?>
-			<strong><?php echo $consultant->contact->getFullName() ?></strong>
-			<br>
+			<p><strong><?php echo $consultant->contact->getFullName() ?></strong></p>
 			<?php }?>
-			Service: <strong><?php echo $this->event->episode->firm->getSubspecialtyText() ?></strong>
+			<p>Service: <strong><?php echo $this->event->episode->firm->getSubspecialtyText() ?></strong></p>
 		</div>
-		<div class="large-4 column dates">
-			<?php echo $event_type;?> Created: <strong><?php echo Helper::convertDate2NHS($this->event->created_date) ?></strong>
-			<br />
-			<?php echo $event_type;?> Printed: <strong><?php echo Helper::convertDate2NHS(date('Y-m-d')) ?></strong>
+		<div class="dates" style="width: 33.33333%;float: left;">
+			<p><?php echo $event_type;?> Created: <strong><?php echo Helper::convertDate2NHS($this->event->created_date) ?></strong></p>
+			<p><?php echo $event_type;?> Printed: <strong><?php echo Helper::convertDate2NHS(date('Y-m-d')) ?></strong></p>
 		</div>
 	</div>
 </header>
