@@ -1196,12 +1196,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/dompdf/dompdf.git",
-                "reference": "2954dd8c509b56ac22adf3f7c4d30404b9119242"
+                "reference": "dd28662e92f485e5744ac6e1117c75eb94344f22"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dompdf/dompdf/zipball/2954dd8c509b56ac22adf3f7c4d30404b9119242",
-                "reference": "2954dd8c509b56ac22adf3f7c4d30404b9119242",
+                "url": "https://api.github.com/repos/dompdf/dompdf/zipball/dd28662e92f485e5744ac6e1117c75eb94344f22",
+                "reference": "dd28662e92f485e5744ac6e1117c75eb94344f22",
                 "shasum": ""
             },
             "require": {
@@ -1249,7 +1249,7 @@
             ],
             "description": "DOMPDF is a CSS 2.1 compliant HTML to PDF converter",
             "homepage": "https://github.com/dompdf/dompdf",
-            "time": "2015-06-06 13:28:03"
+            "time": "2015-06-08 22:36:36"
         },
         {
             "name": "erusev/parsedown",
@@ -4288,12 +4288,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/DependencyInjection.git",
-                "reference": "3080164c5a80e687e1b887831898d8029b8b83c0"
+                "reference": "36370ca98fa87f421c8a57fab043d5cdcd38655a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/DependencyInjection/zipball/3080164c5a80e687e1b887831898d8029b8b83c0",
-                "reference": "3080164c5a80e687e1b887831898d8029b8b83c0",
+                "url": "https://api.github.com/repos/symfony/DependencyInjection/zipball/36370ca98fa87f421c8a57fab043d5cdcd38655a",
+                "reference": "36370ca98fa87f421c8a57fab043d5cdcd38655a",
                 "shasum": ""
             },
             "require": {
@@ -4340,7 +4340,7 @@
             ],
             "description": "Symfony DependencyInjection Component",
             "homepage": "https://symfony.com",
-            "time": "2015-06-05 13:59:18"
+            "time": "2015-06-08 11:38:51"
         },
         {
             "name": "symfony/dom-crawler",
