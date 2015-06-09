@@ -740,8 +740,12 @@ class Patient extends BaseActiveRecordVersioned
 		}
 
 		$allergies = array();
-		foreach ($this->allergies as $allergy) {
-			$allergies[] = $allergy->name;
+		foreach ($this->allergyAssignments as $aa) {
+			if ($aa->allergy->name == 'Other') {
+				$allergies[] = $aa->other;
+			} else {
+				$allergies[] = $aa->allergy->name;
+			}
 		}
 		return 'Patient is allergic to: ' . implode(', ',$allergies);
 	}

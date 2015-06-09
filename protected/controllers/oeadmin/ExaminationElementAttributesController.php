@@ -28,6 +28,7 @@ class ExaminationElementAttributesController extends BaseAdminController
 
 
 		$admin->setListFields(array(
+			'display_order',
 			'name',
 			'label',
 			'attribute_elements_id.id',
@@ -231,5 +232,14 @@ class ExaminationElementAttributesController extends BaseAdminController
 			}
 			echo CJSON::encode($return);
 		}
+	}
+
+	/**
+	 * Save ordering of the objects
+	 */
+	public function actionSort()
+	{
+		$admin = new Admin(OEModule\OphCiExamination\models\OphCiExamination_Attribute::model(), $this);
+		$admin->sortModel();
 	}
 }

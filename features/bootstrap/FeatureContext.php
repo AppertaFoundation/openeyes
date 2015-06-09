@@ -139,7 +139,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 	private function stackScreenshots($event) {
 		try {
 			$driver = $this->mink->getSession ()->getDriver ();
-			
+			date_default_timezone_set('Europe/London');
 			if ($driver instanceof Behat\Mink\Driver\Selenium2Driver) {
 				$step = $event->getStep ();
 				$path = array (

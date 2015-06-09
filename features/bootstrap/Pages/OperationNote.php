@@ -105,70 +105,75 @@ class OperationNote extends OpenEyesPage {
 			) 
 	);
 	public function emergencyBooking() {
-		$this->getElement ( 'emergencyBooking' )->check ();
+		$this->getElement ( 'emergencyBooking' )->click ();
 	}
 	public function createOperationNote() {
 		$this->getElement ( 'createOperationNote' )->click ();
 	}
 	public function procedureRightEye() {
-		$this->getElement ( 'leftProcedureEye' )->check ();
+		$this->getElement ( 'leftProcedureEye' )->click ();
 	}
 	public function procedureLeftEye() {
-		$this->getElement ( 'rightProcedureEye' )->check ();
+		$this->getElement ( 'rightProcedureEye' )->click ();
 	}
 	public function commonProcedure($common) {
 		$this->getElement ( 'commonProcedure' )->selectOption ( $common );
 	}
 	public function typeTopical() {
-		$this->getElement ( 'anaestheticTopical' )->check ();
+		$this->getElement ( 'anaestheticTopical' )->click ();
 	}
 	public function typeLA() {
-		$this->getElement ( 'anaestheticLA' )->check ();
+		$this->getElement ( 'anaestheticLA' )->click ();
 	}
 	public function typeLAC() {
-		$this->getElement ( 'anaestheticLAC' )->check ();
+		$this->getElement ( 'anaestheticLAC' )->click ();
 	}
 	public function typeLAS() {
-		$this->getElement ( 'anaestheticLAS' )->check ();
+		$this->getElement ( 'anaestheticLAS' )->click ();
 	}
 	public function typeGA() {
-		$this->getElement ( 'anaestheticGA' )->check ();
+		$this->getElement ( 'anaestheticGA' )->click ();
 	}
 	public function givenAnaesthetist() {
-		$this->getElement ( 'givenAnaesthetist' )->check ();
+		sleep(3);
+		$this->getElement ( 'givenAnaesthetist' )->click ();
 	}
 	public function givenSurgeon() {
-		$this->getElement ( 'givenSurgeon' )->check ();
+		sleep(3);
+		$this->getElement ( 'givenSurgeon' )->click ();
 	}
 	public function givenNurse() {
-		$this->getElement ( 'givenNurse' )->check ();
+		sleep(3);
+		$this->getElement ( 'givenNurse' )->click ();
 	}
 	public function givenAnaesthetistTechnician() {
-		$this->getElement ( 'givenAnaestheticTechnician' )->check ();
+		sleep(5);
+		$this->getElement ( 'givenAnaestheticTechnician' )->click ();
 	}
 	public function givenOther() {
-		$this->getElement ( 'givenAnaestheticOther' )->check ();
+		sleep(5);
+		$this->getElement ( 'givenAnaestheticOther' )->click ();
 	}
 	public function deliveryRetrobulbar() {
-		$this->getElement ( 'deliveryRetrobulbar' )->check ();
+		$this->getElement ( 'deliveryRetrobulbar' )->click ();
 	}
 	public function deliveryPeribulbar() {
-		$this->getElement ( 'deliveryPeribulbar' )->check ();
+		$this->getElement ( 'deliveryPeribulbar' )->click ();
 	}
 	public function deliverySubtenon() {
-		$this->getElement ( 'deliverySubtenon' )->check ();
+		$this->getElement ( 'deliverySubtenon' )->click ();
 	}
 	public function deliverySubconjunctival() {
-		$this->getElement ( 'deliverySubconjunctival' )->check ();
+		$this->getElement ( 'deliverySubconjunctival' )->click ();
 	}
 	public function deliveryTopical() {
-		$this->getElement ( 'deliveryTopical' )->check ();
+		$this->getElement ( 'deliveryTopical' )->click ();
 	}
 	public function deliveryTopicalIntracameral() {
-		$this->getElement ( 'deliveryTopicalIntracameral' )->check ();
+		$this->getElement ( 'deliveryTopicalIntracameral' )->click ();
 	}
 	public function deliveryOther() {
-		$this->getElement ( 'deliveryOther' )->check ();
+		$this->getElement ( 'deliveryOther' )->click ();
 	}
 	public function anaestheticAgent($agent) {
 		// $this->getElement('anaestheticAgents')->selectOption($agent);
@@ -197,6 +202,7 @@ class OperationNote extends OpenEyesPage {
 		$this->getElement ( 'operationComments' )->setValue ( $comments );
 	}
 	public function postOpInstructions($instructions) {
+		sleep(4);
 		// $this->getElement('postOpInstructions')->selectOption($instructions);
 		// TODO TEST DATA REQUIRED HERE
 	}
@@ -208,6 +214,7 @@ class OperationNote extends OpenEyesPage {
 		;
 	}
 	public function saveOpNoteAndConfirm() {
+		sleep(5);
 		$this->getElement ( 'saveOpNote' )->click ();
 		
 		if ($this->hasOpNoteSaved ()) {

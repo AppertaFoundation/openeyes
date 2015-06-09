@@ -1,7 +1,9 @@
 @prescription @regression
 Feature: Create New Prescription
+@Prescription
          Regression coverage of this event is 100%
 
+  @Prescription_Route_1
   Scenario: Route 1: Login and create a new Prescription
             Site 1:Queens
             Firm 3:Anderson Glaucoma
@@ -35,28 +37,7 @@ Feature: Create New Prescription
 
     Then I Save the Prescription Draft and confirm it has been created successfully
 
-  Scenario: Route 1A: Repeat Prescription test
-  Site 1:Queens
-  Firm 3:Anderson Glaucoma
-
-    Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "3"
-
-    Then I search for hospital number "1009465"
-
-    Then I select Create or View Episodes and Events
-
-    Then I expand the Glaucoma sidebar
-    And I add a New Event "Prescription"
-
-    Then I select Repeat Prescription
-
-    And a check is made that the Repeat Prescription is applied
-
-    Then I Save the Prescription Draft and confirm it has been created successfully
-
+  @Prescription_Route_2
   Scenario: Route 2: Login and create a new Prescription
             Site 2:Kings
             Firm 3:Anderson Cataract
@@ -89,6 +70,7 @@ Feature: Create New Prescription
 
     Then I Save the Prescription Draft and confirm it has been created successfully
 
+  @Prescription_Route_3
   Scenario: Route 3: Login and create a new Prescription
             Site 2:Kings
             Firm 4:Anderson Medical Retinal
@@ -131,6 +113,7 @@ Feature: Create New Prescription
 
     Then I Save the Prescription Draft and confirm it has been created successfully
 
+  @Prescription_Route_4
   Scenario: Route 4: Login and create a new Prescription
             Site 1:Queens
             Firm 2:Broom Glaucoma
@@ -146,11 +129,11 @@ Feature: Create New Prescription
 
     Then I expand the Glaucoma sidebar
     And I add a New Event "Prescription"
-
+    Then I select a Common Drug "60"
+    
     Then I choose to filter by type "28"
+    
     And I select the No preservative checkbox
-
-    Then I select a Common Drug "569"
 
     Then I enter a Dose of "2" drops
     And I enter a route of "17"
