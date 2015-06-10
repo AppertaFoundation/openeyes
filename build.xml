@@ -64,16 +64,13 @@
         <mkdir dir="${basedir}/cache"/>
         <mkdir dir="${basedir}/protected/cache"/>
         <chmod file="${toolsdir}spin_up_docker_db.sh" perm="+x" />
-        <copy file="${basedir}/protected/config/local.sample/common.vagrant.php" tofile="${basedir}/protected/config/local/common.php" overwrite="false" />
+        <copy file="${basedir}/protected/config/local.sample/common.php" tofile="${basedir}/protected/config/local/common.php" overwrite="false" />
         <property name="prepare.done" value="true"/>
     </target>
 
     <!-- This task is used for creating a docker container with the DB in it so that unit tests which access it can
     do so without conflicting with each other. For that purporse it should only be run as part of an automated build task-->
     <target name="docker" description="Run up a docker container with the DB in it for unit testing against">
-        <copy todir="${basedir}/protected/config/local/">
-            <fileset dir="/var/www/openeyes/protected/config/local/"/>
-        </copy>
         <exec executable="/bin/bash" failonerror="true">
             <arg value="-c" />
             <arg value="${toolsdir}spin_up_docker_db.sh '${dockerName}'" />

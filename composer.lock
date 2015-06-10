@@ -4,11 +4,11 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "12802ce9d5a7754814f08de424fa3c85",
+    "hash": "25632397f8831c67cad639fd3d66095f",
     "packages": [
         {
             "name": "openeyes/eyedraw",
-            "version": "dev-develop",
+            "version": "dev-release/v1.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/eyedraw.git",
@@ -60,7 +60,7 @@
         },
         {
             "name": "openeyes/oph-ci-examination",
-            "version": "dev-develop",
+            "version": "dev-release/v1.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphCiExamination.git",
@@ -148,7 +148,7 @@
         },
         {
             "name": "openeyes/oph-dr-prescription",
-            "version": "dev-develop",
+            "version": "dev-release/v1.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphDrPrescription.git",
@@ -170,7 +170,7 @@
         },
         {
             "name": "openeyes/oph-in-biometry",
-            "version": "dev-develop",
+            "version": "dev-release/v1.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphInBiometry.git",
@@ -258,7 +258,7 @@
         },
         {
             "name": "openeyes/oph-tr-intravitrealinjection",
-            "version": "dev-develop",
+            "version": "dev-release/v1.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrIntravitrealinjection.git",
@@ -302,7 +302,7 @@
         },
         {
             "name": "openeyes/oph-tr-operationbooking",
-            "version": "dev-develop",
+            "version": "dev-release/v1.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrOperationbooking.git",
@@ -324,16 +324,16 @@
         },
         {
             "name": "openeyes/oph-tr-operationnote",
-            "version": "dev-develop",
+            "version": "dev-release/v1.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrOperationnote.git",
-                "reference": "4667c3522b343da3a35ec274ae0b8611928322c7"
+                "reference": "f878d6686b942f4a94ad0aa6a45f0b0591cb8b24"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/4667c3522b343da3a35ec274ae0b8611928322c7",
-                "reference": "4667c3522b343da3a35ec274ae0b8611928322c7",
+                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/f878d6686b942f4a94ad0aa6a45f0b0591cb8b24",
+                "reference": "f878d6686b942f4a94ad0aa6a45f0b0591cb8b24",
                 "shasum": ""
             },
             "require": {
@@ -342,7 +342,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Operation note module for OpenEyes",
-            "time": "2015-06-04 10:45:00"
+            "time": "2015-06-09 09:19:28"
         },
         {
             "name": "openeyes/patient-ticketing",
