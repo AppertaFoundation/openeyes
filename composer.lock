@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/eyedraw.git",
-                "reference": "b50f5c578d6e50068b10c1b1bdd001f9409a7397"
+                "reference": "c501352269e436f603fb575a524ba37fcaa459fa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/eyedraw/zipball/b50f5c578d6e50068b10c1b1bdd001f9409a7397",
-                "reference": "b50f5c578d6e50068b10c1b1bdd001f9409a7397",
+                "url": "https://api.github.com/repos/openeyes/eyedraw/zipball/c501352269e436f603fb575a524ba37fcaa459fa",
+                "reference": "c501352269e436f603fb575a524ba37fcaa459fa",
                 "shasum": ""
             },
             "require": {
@@ -26,7 +26,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Electronic Patient Record system for use in Ophthalmology clinics",
-            "time": "2015-05-26 11:05:47"
+            "time": "2015-06-09 09:48:36"
         },
         {
             "name": "openeyes/module-installer",
@@ -64,12 +64,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphCiExamination.git",
-                "reference": "8f09727513b299402a4722f945fe221e534b286c"
+                "reference": "c79bb5f01099fa898808ceb66ebb3c47025c8fa8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/8f09727513b299402a4722f945fe221e534b286c",
-                "reference": "8f09727513b299402a4722f945fe221e534b286c",
+                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/c79bb5f01099fa898808ceb66ebb3c47025c8fa8",
+                "reference": "c79bb5f01099fa898808ceb66ebb3c47025c8fa8",
                 "shasum": ""
             },
             "require": {
@@ -78,7 +78,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Examination module for OpenEyes",
-            "time": "2015-06-08 09:43:01"
+            "time": "2015-06-10 13:47:38"
         },
         {
             "name": "openeyes/oph-ci-phasing",
@@ -1196,12 +1196,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/dompdf/dompdf.git",
-                "reference": "dd28662e92f485e5744ac6e1117c75eb94344f22"
+                "reference": "62d72ad24b546e1482bf22c684857c2267046b5b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dompdf/dompdf/zipball/dd28662e92f485e5744ac6e1117c75eb94344f22",
-                "reference": "dd28662e92f485e5744ac6e1117c75eb94344f22",
+                "url": "https://api.github.com/repos/dompdf/dompdf/zipball/62d72ad24b546e1482bf22c684857c2267046b5b",
+                "reference": "62d72ad24b546e1482bf22c684857c2267046b5b",
                 "shasum": ""
             },
             "require": {
@@ -1249,7 +1249,7 @@
             ],
             "description": "DOMPDF is a CSS 2.1 compliant HTML to PDF converter",
             "homepage": "https://github.com/dompdf/dompdf",
-            "time": "2015-06-08 22:36:36"
+            "time": "2015-06-10 13:52:49"
         },
         {
             "name": "erusev/parsedown",
@@ -4128,12 +4128,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Config.git",
-                "reference": "853f075d4eadaafde97ba75e142724a1c4bf2fb7"
+                "reference": "7ae7ec3b933de8202e5ddad5f8d12e903fb29da6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Config/zipball/853f075d4eadaafde97ba75e142724a1c4bf2fb7",
-                "reference": "853f075d4eadaafde97ba75e142724a1c4bf2fb7",
+                "url": "https://api.github.com/repos/symfony/Config/zipball/7ae7ec3b933de8202e5ddad5f8d12e903fb29da6",
+                "reference": "7ae7ec3b933de8202e5ddad5f8d12e903fb29da6",
                 "shasum": ""
             },
             "require": {
@@ -4170,7 +4170,7 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "https://symfony.com",
-            "time": "2015-06-05 17:28:18"
+            "time": "2015-06-09 15:06:55"
         },
         {
             "name": "symfony/console",
@@ -4178,12 +4178,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "39d6c23c9d2f8d52402c94144c3fc218a9d13cd2"
+                "reference": "46bcae47b4362263fbb52c0b77b92925b9fdb156"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/39d6c23c9d2f8d52402c94144c3fc218a9d13cd2",
-                "reference": "39d6c23c9d2f8d52402c94144c3fc218a9d13cd2",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/46bcae47b4362263fbb52c0b77b92925b9fdb156",
+                "reference": "46bcae47b4362263fbb52c0b77b92925b9fdb156",
                 "shasum": ""
             },
             "require": {
@@ -4227,7 +4227,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2015-06-05 16:29:33"
+            "time": "2015-06-09 15:06:55"
         },
         {
             "name": "symfony/css-selector",
@@ -4716,12 +4716,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Validator.git",
-                "reference": "785b6da00dfa580fc13c80b8b1a8741aee93d9e3"
+                "reference": "71957230c62dd34bf920a3869bae66ea7c05d9d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Validator/zipball/785b6da00dfa580fc13c80b8b1a8741aee93d9e3",
-                "reference": "785b6da00dfa580fc13c80b8b1a8741aee93d9e3",
+                "url": "https://api.github.com/repos/symfony/Validator/zipball/71957230c62dd34bf920a3869bae66ea7c05d9d2",
+                "reference": "71957230c62dd34bf920a3869bae66ea7c05d9d2",
                 "shasum": ""
             },
             "require": {
@@ -4778,7 +4778,7 @@
             ],
             "description": "Symfony Validator Component",
             "homepage": "https://symfony.com",
-            "time": "2015-06-04 20:21:09"
+            "time": "2015-06-09 15:06:55"
         },
         {
             "name": "symfony/yaml",
@@ -4786,12 +4786,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "2396832f6f9ab2b8f62f00b5d3f2e722fc773d65"
+                "reference": "4a24e860650c88d1db61479f45dcdfa17d9dabdf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/2396832f6f9ab2b8f62f00b5d3f2e722fc773d65",
-                "reference": "2396832f6f9ab2b8f62f00b5d3f2e722fc773d65",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/4a24e860650c88d1db61479f45dcdfa17d9dabdf",
+                "reference": "4a24e860650c88d1db61479f45dcdfa17d9dabdf",
                 "shasum": ""
             },
             "require": {
@@ -4827,7 +4827,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2015-05-12 15:16:46"
+            "time": "2015-06-09 15:06:55"
         },
         {
             "name": "theseer/fdomdocument",
