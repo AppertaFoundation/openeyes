@@ -64,7 +64,7 @@
         <mkdir dir="${basedir}/cache"/>
         <mkdir dir="${basedir}/protected/cache"/>
         <chmod file="${toolsdir}spin_up_docker_db.sh" perm="+x" />
-        <copy file="${basedir}/protected/config/local.sample/common.php" tofile="${basedir}/protected/config/local/common.php" overwrite="false" />
+        <copy file="${basedir}/protected/config/local.sample/common.sample.php" tofile="${basedir}/protected/config/local/common.php" overwrite="false" />
         <property name="prepare.done" value="true"/>
     </target>
 
