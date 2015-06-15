@@ -2,6 +2,7 @@
 
 
 docker run -d --name $1 -p 3306 openeyestestdb
+sleep 5
 docker exec $1 /usr/local/bin/import.sh
 
 mysqlport=`docker ps -a | grep $1 | grep -Po '(\d+)->' | grep -o "[0-9]*"`
