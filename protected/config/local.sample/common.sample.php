@@ -82,6 +82,20 @@ $config = array(
 	),
 
 	'modules' => array(
+		'eyedraw',
+		'OphCiExamination' => array( 'class' => '\OEModule\OphCiExamination\OphCiExaminationModule', ),
+		'OphCiPhasing',
+		'OphCoCorrespondence',
+		'OphCoTherapyapplication',
+		'OphDrPrescription',
+		'OphLeEpatientletter',
+		'OphOuAnaestheticsatisfactionaudit',
+		'OphTrConsent',
+		'OphTrIntravitrealinjection',
+		'OphTrLaser',
+		'OphTrOperationbooking',
+		'OphTrOperationnote',
+		'PatientTicketing' => array('class' => '\OEModule\PatientTicketing\PatientTicketingModule'),
 	),
 
 	'params'=>array(
@@ -101,6 +115,7 @@ $config = array(
 		'specialty_codes' => array(130),
 		//'default_site_code' => '',
 		'specialty_sort' => array(130, 'SUP'),
+		'OphCoTherapyapplication_sender_email' => array('email@example.com' => 'Test'),
 	),
 );
 
