@@ -57,7 +57,8 @@ class ProtectedFileController extends BaseController
 		if (!$file = ProtectedFile::model()->findByPk($id)) {
 			throw new CHttpException(404, "File not found");
 		}
-		if (!file_exists($file->getPath())) {
+        $filepath = $file->getPath();
+        if (!file_exists($file->getPath())) {
 			throw new CException("File not found on filesystem: ".$file->getPath());
 		}
 		header('Content-Type: ' . $file->mimetype);
@@ -66,7 +67,7 @@ class ProtectedFileController extends BaseController
 		header('Content-Length: ' . $file->size);
 		ob_clean();
 		flush();
-		readfile($file->getPath());
+        readfile($filepath);
 	}
 
 	public function actionThumbnail($id, $dimensions, $name)
