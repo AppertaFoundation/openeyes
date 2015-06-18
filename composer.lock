@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/eyedraw.git",
-                "reference": "c501352269e436f603fb575a524ba37fcaa459fa"
+                "reference": "f561dada3848097a6c9994e70fe38b781f86fab0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/eyedraw/zipball/c501352269e436f603fb575a524ba37fcaa459fa",
-                "reference": "c501352269e436f603fb575a524ba37fcaa459fa",
+                "url": "https://api.github.com/repos/openeyes/eyedraw/zipball/f561dada3848097a6c9994e70fe38b781f86fab0",
+                "reference": "f561dada3848097a6c9994e70fe38b781f86fab0",
                 "shasum": ""
             },
             "require": {
@@ -26,7 +26,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Electronic Patient Record system for use in Ophthalmology clinics",
-            "time": "2015-06-09 09:48:36"
+            "time": "2015-06-18 15:34:40"
         },
         {
             "name": "openeyes/module-installer",
