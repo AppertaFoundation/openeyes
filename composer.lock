@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/eyedraw.git",
-                "reference": "c501352269e436f603fb575a524ba37fcaa459fa"
+                "reference": "f561dada3848097a6c9994e70fe38b781f86fab0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/eyedraw/zipball/c501352269e436f603fb575a524ba37fcaa459fa",
-                "reference": "c501352269e436f603fb575a524ba37fcaa459fa",
+                "url": "https://api.github.com/repos/openeyes/eyedraw/zipball/f561dada3848097a6c9994e70fe38b781f86fab0",
+                "reference": "f561dada3848097a6c9994e70fe38b781f86fab0",
                 "shasum": ""
             },
             "require": {
@@ -26,7 +26,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Electronic Patient Record system for use in Ophthalmology clinics",
-            "time": "2015-06-09 09:48:36"
+            "time": "2015-06-18 15:34:40"
         },
         {
             "name": "openeyes/module-installer",
@@ -34,16 +34,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OpenEyesInstaller.git",
-                "reference": "90210c694b7d34bff52a4c1868a93bf3dbe5a1a9"
+                "reference": "9021816e04453de8e0cd6f5c7e33ff5d62fc2f63"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OpenEyesInstaller/zipball/90210c694b7d34bff52a4c1868a93bf3dbe5a1a9",
-                "reference": "90210c694b7d34bff52a4c1868a93bf3dbe5a1a9",
+                "url": "https://api.github.com/repos/openeyes/OpenEyesInstaller/zipball/9021816e04453de8e0cd6f5c7e33ff5d62fc2f63",
+                "reference": "9021816e04453de8e0cd6f5c7e33ff5d62fc2f63",
                 "shasum": ""
             },
             "require": {
-                "composer-plugin-api": "1.0.0"
+                "composer-plugin-api": "^1.0.0"
             },
             "type": "composer-plugin",
             "extra": {
@@ -56,7 +56,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "description": "Instlaler plugin for OpenEyes modules",
-            "time": "2015-03-27 10:47:09"
+            "time": "2015-06-12 09:02:59"
         },
         {
             "name": "openeyes/oph-ci-examination",
@@ -1020,12 +1020,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/annotations.git",
-                "reference": "c8927ad70c6fce36b3af52c17ed996c9aa4de89b"
+                "reference": "f4a91702ca3cd2e568c3736aa031ed00c3752af4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/annotations/zipball/c8927ad70c6fce36b3af52c17ed996c9aa4de89b",
-                "reference": "c8927ad70c6fce36b3af52c17ed996c9aa4de89b",
+                "url": "https://api.github.com/repos/doctrine/annotations/zipball/f4a91702ca3cd2e568c3736aa031ed00c3752af4",
+                "reference": "f4a91702ca3cd2e568c3736aa031ed00c3752af4",
                 "shasum": ""
             },
             "require": {
@@ -1080,61 +1080,7 @@
                 "docblock",
                 "parser"
             ],
-            "time": "2015-05-13 13:47:35"
-        },
-        {
-            "name": "doctrine/instantiator",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/doctrine/instantiator.git",
-                "reference": "8e884e78f9f0eb1329e445619e04456e64d8051d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/8e884e78f9f0eb1329e445619e04456e64d8051d",
-                "reference": "8e884e78f9f0eb1329e445619e04456e64d8051d",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3,<8.0-DEV"
-            },
-            "require-dev": {
-                "athletic/athletic": "~0.1.8",
-                "ext-pdo": "*",
-                "ext-phar": "*",
-                "phpunit/phpunit": "~4.0",
-                "squizlabs/php_codesniffer": "~2.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Doctrine\\Instantiator\\": "src/Doctrine/Instantiator/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Marco Pivetta",
-                    "email": "ocramius@gmail.com",
-                    "homepage": "http://ocramius.github.com/"
-                }
-            ],
-            "description": "A small, lightweight utility to instantiate objects in PHP without invoking their constructors",
-            "homepage": "https://github.com/doctrine/instantiator",
-            "keywords": [
-                "constructor",
-                "instantiate"
-            ],
-            "time": "2015-06-14 21:17:01"
+            "time": "2015-06-17 12:21:22"
         },
         {
             "name": "doctrine/lexer",
@@ -1812,21 +1758,20 @@
         },
         {
             "name": "jms/serializer",
-            "version": "dev-master",
+            "version": "0.16.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/serializer.git",
-                "reference": "96f2e7a801e6d0e1def7af1c451e8ebadaab023c"
+                "reference": "c8a171357ca92b6706e395c757f334902d430ea9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/serializer/zipball/96f2e7a801e6d0e1def7af1c451e8ebadaab023c",
-                "reference": "96f2e7a801e6d0e1def7af1c451e8ebadaab023c",
+                "url": "https://api.github.com/repos/schmittjoh/serializer/zipball/c8a171357ca92b6706e395c757f334902d430ea9",
+                "reference": "c8a171357ca92b6706e395c757f334902d430ea9",
                 "shasum": ""
             },
             "require": {
                 "doctrine/annotations": "1.*",
-                "doctrine/instantiator": "~1.0.3",
                 "jms/metadata": "~1.1",
                 "jms/parser-lib": "1.*",
                 "php": ">=5.3.2",
@@ -1836,7 +1781,6 @@
                 "doctrine/orm": "~2.1",
                 "doctrine/phpcr-odm": "~1.0.1",
                 "jackalope/jackalope-doctrine-dbal": "1.0.*",
-                "phpunit/phpunit": "~4.0",
                 "propel/propel1": "~1.7",
                 "symfony/filesystem": "2.*",
                 "symfony/form": "~2.1",
@@ -1851,7 +1795,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.17-dev"
+                    "dev-master": "0.15-dev"
                 }
             },
             "autoload": {
@@ -1865,8 +1809,10 @@
             ],
             "authors": [
                 {
-                    "name": "Johannes M. Schmitt",
-                    "email": "schmittjoh@gmail.com"
+                    "name": "Johannes Schmitt",
+                    "email": "schmittjoh@gmail.com",
+                    "homepage": "https://github.com/schmittjoh",
+                    "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
             "description": "Library for (de-)serializing data of any complexity; supports XML, JSON, and YAML.",
@@ -1878,7 +1824,7 @@
                 "serialization",
                 "xml"
             ],
-            "time": "2015-06-12 17:29:46"
+            "time": "2014-03-18 08:39:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -2548,12 +2494,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phploc.git",
-                "reference": "ab893cbe5c4b63760b1560b370fedc001eb5717f"
+                "reference": "0798346c8161f45c442fc917048bb29f4be98564"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phploc/zipball/ab893cbe5c4b63760b1560b370fedc001eb5717f",
-                "reference": "ab893cbe5c4b63760b1560b370fedc001eb5717f",
+                "url": "https://api.github.com/repos/sebastianbergmann/phploc/zipball/0798346c8161f45c442fc917048bb29f4be98564",
+                "reference": "0798346c8161f45c442fc917048bb29f4be98564",
                 "shasum": ""
             },
             "require": {
@@ -2593,7 +2539,7 @@
             ],
             "description": "A tool for quickly measuring the size of a PHP project.",
             "homepage": "https://github.com/sebastianbergmann/phploc",
-            "time": "2015-06-04 13:18:14"
+            "time": "2015-06-17 12:45:38"
         },
         {
             "name": "phpmd/phpmd",
@@ -4371,12 +4317,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Validator.git",
-                "reference": "f521aa514e29dde6db33d17677aebd607fe6c247"
+                "reference": "7ccf1c9cf78b9e8a2f5e4127651c8380f6133ad9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Validator/zipball/f521aa514e29dde6db33d17677aebd607fe6c247",
-                "reference": "f521aa514e29dde6db33d17677aebd607fe6c247",
+                "url": "https://api.github.com/repos/symfony/Validator/zipball/7ccf1c9cf78b9e8a2f5e4127651c8380f6133ad9",
+                "reference": "7ccf1c9cf78b9e8a2f5e4127651c8380f6133ad9",
                 "shasum": ""
             },
             "require": {
@@ -4433,7 +4379,7 @@
             ],
             "description": "Symfony Validator Component",
             "homepage": "https://symfony.com",
-            "time": "2015-06-11 17:27:52"
+            "time": "2015-06-17 18:03:11"
         },
         {
             "name": "symfony/yaml",
