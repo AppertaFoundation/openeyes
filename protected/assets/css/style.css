@@ -7095,3 +7095,15 @@ tfoot.pagination-container .pagination-view-all {
 #generic-search-form > div div input[type=text], #generic-search-form > div div select {
   width: 95%;
 }
+
+/* line 18, ../sass/openeyes/components/_d3.scss */
+.axis path {
+  fill: none;
+  stroke: #777;
+  shape-rendering: crispEdges;
+}
+/* line 23, ../sass/openeyes/components/_d3.scss */
+.axis text {
+  font-family: Lato;
+  font-size: 13px;
+}
