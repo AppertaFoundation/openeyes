@@ -310,7 +310,6 @@ function getMonthShortName(i) {
 }
 
 function pcrCalculate(){
-        alert('PCR pcrCalculate called from main');
     $('#pcr_risk_div').attr('style', 'background-color: #43a844 !important');
 }
 
