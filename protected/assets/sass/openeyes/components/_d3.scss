@@ -14,14 +14,40 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
-.axis {
-  path {
-    fill: none;
-    stroke: #777;
-    shape-rendering: crispEdges;
+.d3 {
+  .axis {
+    path {
+      fill: none;
+      stroke: #777;
+      shape-rendering: crispEdges;
+    }
+    text {
+      font-family: Lato;
+      font-size: 13px;
+    }
   }
-  text {
-    font-family: Lato;
-    font-size: 13px;
+
+  #legend {
+    padding: 1.5em 0 0 1.5em;
   }
+
+  li.key {
+    border-top-width: 15px;
+    border-top-style: solid;
+    font-size: .75em;
+    width: 10%;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.chart-tooltip {
+  position: absolute;
+  min-height: 28px;
+  pointer-events: none;
+  font-size: 10px;
+  background-color: white;
+  opacity: 0.6;
+  width: auto;
+  padding: 2px;
 }

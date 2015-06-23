@@ -7096,14 +7096,39 @@ tfoot.pagination-container .pagination-view-all {
   width: 95%;
 }
 
-/* line 18, ../sass/openeyes/components/_d3.scss */
-.axis path {
+/* line 19, ../sass/openeyes/components/_d3.scss */
+.d3 .axis path {
   fill: none;
   stroke: #777;
   shape-rendering: crispEdges;
 }
-/* line 23, ../sass/openeyes/components/_d3.scss */
-.axis text {
+/* line 24, ../sass/openeyes/components/_d3.scss */
+.d3 .axis text {
   font-family: Lato;
   font-size: 13px;
+}
+/* line 30, ../sass/openeyes/components/_d3.scss */
+.d3 #legend {
+  padding: 1.5em 0 0 1.5em;
+}
+/* line 34, ../sass/openeyes/components/_d3.scss */
+.d3 li.key {
+  border-top-width: 15px;
+  border-top-style: solid;
+  font-size: .75em;
+  width: 10%;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* line 44, ../sass/openeyes/components/_d3.scss */
+.chart-tooltip {
+  position: absolute;
+  min-height: 28px;
+  pointer-events: none;
+  font-size: 10px;
+  background-color: white;
+  opacity: 0.6;
+  width: auto;
+  padding: 2px;
 }

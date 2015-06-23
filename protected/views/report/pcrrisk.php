@@ -1,11 +1,59 @@
 <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 
 <div class="row">
-	<div class="column large-12">
+	<div class="column large-12 d3">
 		<svg id="pcr-risk-chart" class="chart" style="width: 100%; height: 500px"></svg>
 	</div>
 </div>
 <script type="text/javascript">
+
+	// d3.legend.js
+	// (C) 2012 ziggy.jonsson.nyc@gmail.com
+	// MIT licence
+
+	(function() {
+		d3.legend = function(g) {
+			g.each(function() {
+				var g= d3.select(this),
+					items = {},
+					svg = d3.select(g.property("nearestViewportElement")),
+					li = g.selectAll(".legend-items").data([true]);
+
+				//lb.enter().append("rect").classed("legend-box",true)
+				li.enter().append("g").classed("legend-items",true);
+
+				svg.selectAll("[data-legend]").each(function() {
+					var self = d3.select(this);
+					items[self.attr("data-legend")] = {
+						pos : self.attr("data-legend-pos") || this.getBBox().y,
+						color : self.attr("data-legend-color") != undefined ? self.attr("data-legend-color") : self.style("fill") != 'none' ? self.style("fill") : self.style("stroke")
+					}
+				});
+
+				items = d3.entries(items).sort(function(a,b) { return a.value.pos-b.value.pos});
+
+
+				li.selectAll("text")
+					.data(items,function(d) { return d.key})
+					.call(function(d) { d.enter().append("text")})
+					.call(function(d) { d.exit().remove()})
+					.attr("y",function(d,i) { return i+"em"})
+					.attr("x","1em")
+					.text(function(d) {return d.key});
+
+				li.selectAll("circle")
+					.data(items,function(d) { return d.key})
+					.call(function(d) { d.enter().append("circle")})
+					.call(function(d) { d.exit().remove()})
+					.attr("cy",function(d,i) { return i-0.25+"em"})
+					.attr("cx",0)
+					.attr("r","0.4em")
+					.style("fill",function(d) {return d.value.color});
+
+			});
+			return g
+		}
+	})();
 //delete and calculate
 	var upper98 = [
 		{
@@ -806,13 +854,17 @@
 		}
 	];
 	var upper95 = [{"x": 10, "y": 63.75616972},{"x": 15, "y": 43.591758},{"x": 20, "y": 32.12395971},{"x": 25, "y": 25.29952064},{"x": 30, "y": 20.92077739},{"x": 35, "y": 17.92141817},{"x": 40, "y": 15.75693462},{"x": 45, "y": 14.12916247},{"x": 50, "y": 12.86399503},{"x": 55, "y": 11.85402032},{"x": 60, "y": 11.0298304},{"x": 65, "y": 10.34478712},{"x": 70, "y": 9.7664944},{"x": 75, "y": 9.27179992},{"x": 80, "y": 8.84374605},{"x": 85, "y": 8.4696437},{"x": 90, "y": 8.13981787},{"x": 95, "y": 7.84676826},{"x": 100, "y": 7.58459394},{"x": 105, "y": 7.34859057},{"x": 110, "y": 7.13496293},{"x": 115, "y": 6.94061616},{"x": 120, "y": 6.7630018},{"x": 125, "y": 6.60000253},{"x": 130, "y": 6.4498449},{"x": 135, "y": 6.31103229},{"x": 140, "y": 6.18229302},{"x": 145, "y": 6.06253958},{"x": 150, "y": 5.95083649},{"x": 155, "y": 5.8463746},{"x": 160, "y": 5.74845044},{"x": 165, "y": 5.65644952},{"x": 170, "y": 5.56983263},{"x": 175, "y": 5.48812466},{"x": 180, "y": 5.41090533},{"x": 185, "y": 5.33780146},{"x": 190, "y": 5.26848056},{"x": 195, "y": 5.20264538},{"x": 200, "y": 5.14002939},{"x": 205, "y": 5.08039285},{"x": 210, "y": 5.02351954},{"x": 215, "y": 4.96921394},{"x": 220, "y": 4.91729878},{"x": 225, "y": 4.86761295},{"x": 230, "y": 4.8200097},{"x": 235, "y": 4.77435507},{"x": 240, "y": 4.7305265},{"x": 245, "y": 4.68841166},{"x": 250, "y": 4.64790738},{"x": 255, "y": 4.60891873},{"x": 260, "y": 4.57135823},{"x": 265, "y": 4.53514508},{"x": 270, "y": 4.5002046},{"x": 275, "y": 4.46646759},{"x": 280, "y": 4.43386988},{"x": 285, "y": 4.40235186},{"x": 290, "y": 4.37185806},{"x": 295, "y": 4.34233683},{"x": 300, "y": 4.31373999},{"x": 305, "y": 4.28602256},{"x": 310, "y": 4.25914248},{"x": 315, "y": 4.23306036},{"x": 320, "y": 4.20773932},{"x": 325, "y": 4.18314474},{"x": 330, "y": 4.15924412},{"x": 335, "y": 4.1360069},{"x": 340, "y": 4.11340433},{"x": 345, "y": 4.09140932},{"x": 350, "y": 4.06999636},{"x": 355, "y": 4.04914134},{"x": 360, "y": 4.02882151},{"x": 365, "y": 4.00901537},{"x": 370, "y": 3.98970257},{"x": 375, "y": 3.97086385},{"x": 380, "y": 3.95248096},{"x": 385, "y": 3.93453659},{"x": 390, "y": 3.91701432},{"x": 395, "y": 3.89989855},{"x": 400, "y": 3.88317448},{"x": 405, "y": 3.866828},{"x": 410, "y": 3.85084571},{"x": 415, "y": 3.83521485},{"x": 420, "y": 3.81992324},{"x": 425, "y": 3.8049593},{"x": 430, "y": 3.79031197},{"x": 435, "y": 3.77597068},{"x": 440, "y": 3.76192536},{"x": 445, "y": 3.74816637},{"x": 450, "y": 3.73468451},{"x": 455, "y": 3.72147096},{"x": 460, "y": 3.70851729},{"x": 465, "y": 3.69581543},{"x": 470, "y": 3.68335764},{"x": 475, "y": 3.67113652},{"x": 480, "y": 3.65914495},{"x": 485, "y": 3.64737611},{"x": 490, "y": 3.63582346},{"x": 495, "y": 3.62448071},{"x": 500, "y": 3.61334183},{"x": 505, "y": 3.60240101},{"x": 510, "y": 3.59165267},{"x": 515, "y": 3.58109145},{"x": 520, "y": 3.57071218},{"x": 525, "y": 3.5605099},{"x": 530, "y": 3.55047982},{"x": 535, "y": 3.54061732},{"x": 540, "y": 3.53091796},{"x": 545, "y": 3.52137746},{"x": 550, "y": 3.51199169},{"x": 555, "y": 3.50275667},{"x": 560, "y": 3.49366854},{"x": 565, "y": 3.4847236},{"x": 570, "y": 3.47591825},{"x": 575, "y": 3.46724904},{"x": 580, "y": 3.45871262},{"x": 585, "y": 3.45030575},{"x": 590, "y": 3.44202531},{"x": 595, "y": 3.43386827},{"x": 600, "y": 3.4258317},{"x": 605, "y": 3.41791277},{"x": 610, "y": 3.41010874},{"x": 615, "y": 3.40241695},{"x": 620, "y": 3.39483483},{"x": 625, "y": 3.3873599},{"x": 630, "y": 3.37998972},{"x": 635, "y": 3.37272198},{"x": 640, "y": 3.36555438},{"x": 645, "y": 3.35848474},{"x": 650, "y": 3.35151092},{"x": 655, "y": 3.34463084},{"x": 660, "y": 3.3378425},{"x": 665, "y": 3.33114395},{"x": 670, "y": 3.32453328},{"x": 675, "y": 3.31800866},{"x": 680, "y": 3.31156829},{"x": 685, "y": 3.30521045},{"x": 690, "y": 3.29893343},{"x": 695, "y": 3.29273561},{"x": 700, "y": 3.28661537},{"x": 705, "y": 3.28057118},{"x": 710, "y": 3.27460152},{"x": 715, "y": 3.26870491},{"x": 720, "y": 3.26287994},{"x": 725, "y": 3.25712521},{"x": 730, "y": 3.25143935},{"x": 735, "y": 3.24582107},{"x": 740, "y": 3.24026906},{"x": 745, "y": 3.23478208},{"x": 750, "y": 3.2293589},{"x": 755, "y": 3.22399835},{"x": 760, "y": 3.21869926},{"x": 765, "y": 3.21346051},{"x": 770, "y": 3.20828099},{"x": 775, "y": 3.20315963},{"x": 780, "y": 3.19809538},{"x": 785, "y": 3.19308723},{"x": 790, "y": 3.18813418},{"x": 795, "y": 3.18323525},{"x": 800, "y": 3.1783895},{"x": 805, "y": 3.173596},{"x": 810, "y": 3.16885385},{"x": 815, "y": 3.16416217},{"x": 820, "y": 3.15952009},{"x": 825, "y": 3.15492678},{"x": 830, "y": 3.15038141},{"x": 835, "y": 3.14588317},{"x": 840, "y": 3.14143129},{"x": 845, "y": 3.137025},{"x": 850, "y": 3.13266355},{"x": 855, "y": 3.1283462},{"x": 860, "y": 3.12407224},{"x": 865, "y": 3.11984097},{"x": 870, "y": 3.11565171},{"x": 875, "y": 3.11150377},{"x": 880, "y": 3.10739652},{"x": 885, "y": 3.10332931},{"x": 890, "y": 3.0993015},{"x": 895, "y": 3.09531249},{"x": 900, "y": 3.09136168},{"x": 905, "y": 3.08744848},{"x": 910, "y": 3.08357231},{"x": 915, "y": 3.07973261},{"x": 920, "y": 3.07592883},{"x": 925, "y": 3.07216042},{"x": 930, "y": 3.06842687},{"x": 935, "y": 3.06472764},{"x": 940, "y": 3.06106223},{"x": 945, "y": 3.05743015},{"x": 950, "y": 3.05383091},{"x": 955, "y": 3.05026402},{"x": 960, "y": 3.04672902},{"x": 965, "y": 3.04322546},{"x": 970, "y": 3.03975288},{"x": 975, "y": 3.03631084},{"x": 980, "y": 3.0328989},{"x": 985, "y": 3.02951666},{"x": 990, "y": 3.02616368},{"x": 995, "y": 3.02283956},{"x": 1000, "y": 3.01954389}];
+	var surgeon = [{"x": 225, "y": 2.8}];
+	var surgeonx = [225];
+	var surgeony = [2.8];
+
 	var vis = d3.select("#pcr-risk-chart"),
 		WIDTH = 800,
 		HEIGHT = 500,
 		MARGINS = {
-			top: 20,
+			top: 50,
 			right: 20,
-			bottom: 20,
+			bottom: 50,
 			left: 50
 		},
 		average = [{"x": 0, "y": 1.95},{"x": 1000, "y": 1.95}],
@@ -829,7 +881,13 @@
 			})
 			.y(function(d) {
 				return yScale(d.y);
-			});
+			})
+		;
+
+	// add the tooltip area to the webpage
+	var tooltip = d3.select("body").append("div")
+		.attr("class", "chart-tooltip")
+		.style("opacity", 0);
 
 	vis.append("svg:g")
 		.attr("class","axis")
@@ -846,18 +904,66 @@
 		.attr('stroke', 'green')
 		.attr('stroke-width', 2)
 		.style('stroke-dasharray', ("3, 3"))
+		.attr("data-legend","Average Rate 1.95%")
 		.attr('fill', 'none');
 
 	vis.append('svg:path')
 		.attr('d', lineGen(upper98))
 		.attr('stroke', 'red')
 		.attr('stroke-width', 2)
+		.attr("data-legend","Upper 99.8%")
 		.attr('fill', 'none');
 
 	vis.append('svg:path')
 		.attr('d', lineGen(upper95))
 		.attr('stroke', 'orange')
 		.attr('stroke-width', 2)
+		.attr("data-legend","Upper 95%")
 		.attr('fill', 'none');
+
+	vis.selectAll(".point")
+		.data(surgeon)  // using the values in the ydata array
+		.enter().append("path")  // create a new circle for each value
+		.attr("class", "point")
+		.attr("d", d3.svg.symbol().type("diamond"))
+		.attr("transform", function(d) { return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")"; })
+		.attr("data-legend","Surgeon")
+		.on("mouseover", function(d, i) {
+			console.log(tooltip);
+			tooltip.transition()
+				.duration(200)
+				.style("opacity", .9);
+			tooltip.html("[Surgeons Name]<br/> ("+ d.y+"% from "+surgeonx[i]+" ops)")
+				.style("left", (d3.event.pageX + 5) + "px")
+				.style("top", (d3.event.pageY - 28) + "px");
+		})
+		.on("mouseout", function(d) {
+			tooltip.transition()
+				.duration(500)
+				.style("opacity", 0);
+		});
+
+	vis.append("text")
+		.attr("class", "x label")
+		.attr("text-anchor", "end")
+		.attr("x", WIDTH / 2 )
+		.attr("y", HEIGHT - 6)
+		.text("No. Operations");
+
+	vis.append("text")
+		.attr("class", "y label")
+		.attr("text-anchor", "end")
+		.attr("y", 6)
+		.attr("dy", ".75em")
+		.attr("dx", -(HEIGHT / 4))
+		.attr("transform", "rotate(-90)")
+		.text("Case Complexity Adjusted CR Rupture Rate");
+
+	legend = vis.append("svg:g")
+		.attr("class","legend")
+		.attr("dx", 500)
+		.attr("transform","translate("+(WIDTH - 100) +",100)")
+		.style("font-size","14px")
+		.call(d3.legend);
 
 </script>
