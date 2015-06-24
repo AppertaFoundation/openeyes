@@ -174,12 +174,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphInBiometry.git",
-                "reference": "1bb54b9dbaf8a1df5a79a7c1287f82f56c3e5dbd"
+                "reference": "8f88122a2403ae2293afbc0263ac9192c68d1fd3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphInBiometry/zipball/1bb54b9dbaf8a1df5a79a7c1287f82f56c3e5dbd",
-                "reference": "1bb54b9dbaf8a1df5a79a7c1287f82f56c3e5dbd",
+                "url": "https://api.github.com/repos/openeyes/OphInBiometry/zipball/8f88122a2403ae2293afbc0263ac9192c68d1fd3",
+                "reference": "8f88122a2403ae2293afbc0263ac9192c68d1fd3",
                 "shasum": ""
             },
             "require": {
@@ -188,7 +188,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Biometry module for OpenEyes",
-            "time": "2015-05-18 13:25:20"
+            "time": "2015-06-24 11:08:51"
         },
         {
             "name": "openeyes/oph-in-visualfields",
