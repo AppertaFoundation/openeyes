@@ -43,6 +43,7 @@
 		<?php echo $form->textField($site,'telephone',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 		<?php echo $form->textField($site,'fax',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 		<?php echo $form->dropDownList($address,'country_id','Country')?>
+		<?php echo $form->checkbox($site,'active')?>
 		<?php echo $form->formActions(array('cancel-uri' => '/admin/sites'));?>
 	<?php $this->endWidget()?>
 </div>
