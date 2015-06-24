@@ -235,7 +235,14 @@ class ModelSearch
 	 * @param bool $sensitive
 	 * @param string $operator
 	 */
-	protected function addCompare(CDbCriteria $criteria, $attribute, $value, $sensitive = false, $operator = 'AND',$exactmatch = false)
+	protected function addCompare(
+		CDbCriteria $criteria,
+		$attribute,
+		$value,
+		$sensitive = true,
+		$operator = 'AND',
+		$exactmatch = false
+	)
 	{
 		if(method_exists($this->model, 'get_'.$attribute)){
 			//It's a magic method attribute, doesn't exist in the db has to be dealt with elsewhere
