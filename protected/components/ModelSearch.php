@@ -172,7 +172,7 @@ class ModelSearch
 	{
 		if (is_array($attr)) {
 			$search = $attr;
-			$sensitive = false;
+			$sensitive = true;
 		} else {
 			$search = $this->request->getParam($attr);
 			$sensitive = $this->request->getParam('case_sensitive', false);
