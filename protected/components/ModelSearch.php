@@ -172,7 +172,7 @@ class ModelSearch
 	{
 		if (is_array($attr)) {
 			$search = $attr;
-			$sensitive = true;
+			$sensitive = false;
 		} else {
 			$search = $this->request->getParam($attr);
 			$sensitive = $this->request->getParam('case_sensitive', false);
@@ -239,7 +239,7 @@ class ModelSearch
 		CDbCriteria $criteria,
 		$attribute,
 		$value,
-		$sensitive = true,
+		$sensitive = false,
 		$operator = 'AND',
 		$exactmatch = false
 	)
@@ -253,7 +253,7 @@ class ModelSearch
 		$search = $this->relationalAttribute($criteria, $attribute, $search);
 
 		if($value !== '' ){
-			if ($sensitive) {
+			if (!$sensitive) {
 				$criteria->compare('LOWER(' . $search . ')', strtolower($value), true, $operator);
 			} elseif ($exactmatch) {
 				$criteria->compare($search, $value, false, $operator);
