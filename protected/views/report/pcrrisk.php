@@ -2,7 +2,7 @@
 
 <div class="row">
 	<div class="column large-12 d3">
-		<svg id="pcr-risk-chart" class="chart" style="width: 100%; height: 500px"></svg>
+		<svg id="pcr-risk-chart" class="chart" style="width: 100%; height: 500px;"></svg>
 	</div>
 </div>
 <script type="text/javascript">
@@ -37,7 +37,7 @@
 					.data(items,function(d) { return d.key})
 					.call(function(d) { d.enter().append("text")})
 					.call(function(d) { d.exit().remove()})
-					.attr("y",function(d,i) { return i+"em"})
+					.attr("y",function(d,i) { return (i * 1.5) +"em"})
 					.attr("x","1em")
 					.text(function(d) {return d.key});
 
@@ -45,7 +45,7 @@
 					.data(items,function(d) { return d.key})
 					.call(function(d) { d.enter().append("circle")})
 					.call(function(d) { d.exit().remove()})
-					.attr("cy",function(d,i) { return i-0.25+"em"})
+					.attr("cy",function(d,i) { return (i * 1.5)-0.3+"em"})
 					.attr("cx",0)
 					.attr("r","0.4em")
 					.style("fill",function(d) {return d.value.color});
@@ -881,8 +881,7 @@
 			})
 			.y(function(d) {
 				return yScale(d.y);
-			})
-		;
+			});
 
 	// add the tooltip area to the webpage
 	var tooltip = d3.select("body").append("div")
@@ -959,11 +958,20 @@
 		.attr("transform", "rotate(-90)")
 		.text("Case Complexity Adjusted CR Rupture Rate");
 
-	legend = vis.append("svg:g")
+	vis.append("svg:g")
 		.attr("class","legend")
 		.attr("dx", 500)
 		.attr("transform","translate("+(WIDTH - 100) +",100)")
 		.style("font-size","14px")
 		.call(d3.legend);
+
+	vis.append("text")
+		.attr("class", "chart-header")
+		.style("font-size","18px")
+		.attr("text-anchor", "middle")
+		.attr("font-weight", "bold")
+		.attr("x", WIDTH / 2 )
+		.attr("y", 30)
+		.text("Cataract Audit - Case Complexity Adjusted PCR Rate")
 
 </script>

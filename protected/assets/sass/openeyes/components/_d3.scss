@@ -15,6 +15,16 @@
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
 .d3 {
+
+  svg{
+    background-color: white;
+    border-radius: 5px;
+    &.pcr-risk-chart{
+      width: 100%;
+      height: 500px;
+    }
+  }
+
   .axis {
     path {
       fill: none;
