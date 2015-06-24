@@ -309,6 +309,15 @@ function getMonthShortName(i) {
 	return months[i];
 }
 
+function pcrCalculate(){
+    $('#pcr_risk_div').attr('style', 'background-color: #43a844 !important');
+}
+
+function showhidePCR(id) {
+    var e = document.getElementById(id);
+    e.style.display = (e.style.display == 'block') ? 'none' : 'block';
+}
+
 function getMonthNumberByShortName(m) {
 	var months = {'Jan':0,'Feb':1,'Mar':2,'Apr':3,'May':4,'Jun':5,'Jul':6,'Aug':7,'Sep':8,'Oct':9,'Nov':10,'Dec':11};
 	return months[m];

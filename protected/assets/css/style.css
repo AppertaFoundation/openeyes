@@ -4474,7 +4474,7 @@ tfoot.pagination-container .pagination-view-all {
   border-color: #f00;
   color: #ffffff;
 }
-/* line 33, ../sass/openeyes/components/alert-boxes/_error.scss */
+/* line 34, ../sass/openeyes/components/alert-boxes/_error.scss */
 .alert-box.error.with-icon {
   background-image: url('../img/_elements/icons/box/error.png?1434445344');
   min-height: 36px;
@@ -4482,7 +4482,7 @@ tfoot.pagination-container .pagination-view-all {
   padding-top: 11px;
 }
 @media print {
-  /* line 33, ../sass/openeyes/components/alert-boxes/_error.scss */
+  /* line 34, ../sass/openeyes/components/alert-boxes/_error.scss */
   .alert-box.error.with-icon {
     background-color: #c90000 !important;
     background-image: url('../img/_elements/icons/box/error.png?1434445344') !important;
@@ -6367,6 +6367,52 @@ tfoot.pagination-container .pagination-view-all {
 .errorlink:hover {
   color: #CCCCCC;
   text-decoration: underline;
+}
+
+
+/* line 291, ../sass/openeyes/components/events/_elements.scss */
+.pcr-nk {
+  width: 140px;
+  height: 10px;
+  top: -15px;
+}
+
+/* line 296, ../sass/openeyes/components/events/_elements.scss */
+.pcr-span {
+  background-color: white;
+  width: 100px;
+  font-weight: bold;
+}
+
+/* line 301, ../sass/openeyes/components/events/_elements.scss */
+.pcr-erisk {
+  background-color: white;
+}
+
+/* line 304, ../sass/openeyes/components/events/_elements.scss */
+#pcr-risk-div {
+  background-color: red;
+}
+
+/* line 307, ../sass/openeyes/components/events/_elements.scss */
+.pcr-nkr {
+  height: 35px;
+}
+
+/* line 310, ../sass/openeyes/components/events/_elements.scss */
+.pcr-opnote-eye {
+  border-width: 1px;
+  border-style: solid;
+  border-color: #ffffff;
+  display: none;
+}
+
+/* line 316, ../sass/openeyes/components/events/_elements.scss */
+.pcr-exam-link {
+  position: relative;
+  left: 350px;
+  font-family: 'Arial';
+  font-style: normal;
 }
 
 /* line 18, ../sass/openeyes/components/events/_optional-elements.scss */
