@@ -98,4 +98,32 @@ class SplitEventTypeElement extends BaseEventTypeElement
 		}
 	}
 
+	/**
+	 * Check numeric values within min and max range for the selected eye
+	 *
+	 * @param $attribute
+	 * @param $params
+	 */
+	public function checkNumericRangeIfSide($attribute, $params)
+	{
+		if (($params['side'] == 'left' && $this->eye_id != 2) || ($params['side'] == 'right' && $this->eye_id != 1)) {
+			if ($this->$attribute != null) {
+				if ($this->$attribute < $params['min']) {
+					if (!@$params['message']) {
+						$params['message'] = ucfirst($params['side']) . " {attribute} is too small (need to be more than " . $params['min'] . ").";
+					}
+					$params['{attribute}'] = $this->getAttributeLabel($attribute);
+				} elseif ($this->$attribute > $params['max']) {
+					if (!@$params['message']) {
+						$params['message'] = ucfirst($params['side']) . " {attribute} is too big (need to be less than " . $params['max'] . ").";
+					}
+					$params['{attribute}'] = $this->getAttributeLabel($attribute);
+				}
+				if (isset($params['message'])) {
+					$this->addError($attribute, strtr($params['message'], $params));
+				}
+			}
+		}
+	}
+
 }
