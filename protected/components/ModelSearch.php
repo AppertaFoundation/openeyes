@@ -253,7 +253,7 @@ class ModelSearch
 		$search = $this->relationalAttribute($criteria, $attribute, $search);
 
 		if($value !== '' ){
-			if (!$sensitive) {
+			if (!$sensitive && !$exactmatch) {
 				$criteria->compare('LOWER(' . $search . ')', strtolower($value), true, $operator);
 			} elseif ($exactmatch) {
 				$criteria->compare($search, $value, false, $operator);
