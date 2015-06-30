@@ -115,6 +115,9 @@ class BaseAdminController extends BaseController
 		if ($key !== null) {
 			$items = array($key => new $model);
 			$options['get_row'] = true;
+			if ($model::model()->hasAttribute('display_order')) {
+				$options['display_order'] = true;
+			}
 			$this->renderPartial('//admin/generic_admin', array(
 				'title' => $title,
 				'model' => $model,

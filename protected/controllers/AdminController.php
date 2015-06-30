@@ -824,6 +824,9 @@ class AdminController extends BaseAdminController
 				if (!$institution->save()) {
 					throw new Exception("Unable to save institution: ".print_r($institution->getErrors(),true));
 				}
+
+				$address->contact_id = $institution->contact_id;
+
 				if (!$address->save()) {
 					throw new Exception("Unable to save institution address: ".print_r($address->getErrors(),true));
 				}
