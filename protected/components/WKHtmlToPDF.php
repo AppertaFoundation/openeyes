@@ -38,13 +38,11 @@ class WKHtmlToPDF
 	{
 		if (Yii::app()->params['wkhtmltopdf_path']) {
 			if (!file_exists(Yii::app()->params['wkhtmltopdf_path'])) {
-				throw new Exception(Yii::app()->params['wkhtmltopdf_path'].' is missing.');
-			}
-
-			$this->wkhtmltopdf = Yii::app()->params['wkhtmltopdf_path'];
-		} else {
-			if (!$this->wkhtmltopdf = trim(`which wkhtmltopdf`)) {
-				throw new Exception("wkhtmltopdf not found in the current path.");
+				if (!$this->wkhtmltopdf = trim(`which wkhtmltopdf`)) {
+					throw new Exception("wkhtmltopdf not found in the current path.");
+				}
+			} else {
+				$this->wkhtmltopdf = Yii::app()->params['wkhtmltopdf_path'];
 			}
 		}
 
