@@ -17,21 +17,21 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-class AnaestheticAgentDefaultsController extends BaseAdminController
+class AnaestheticAgentMappingController extends BaseAdminController
 {
 
 	public function actionList()
 	{
-		$admin = new AdminListAutocomplete(SiteSubspecialtyAnaestheticAgentDefault::model(), $this);
+		$admin = new AdminListAutocomplete(SiteSubspecialtyAnaestheticAgent::model(), $this);
 
 		$admin->setListFields(array(
 			'id',
 			'agents.name'
 		));
 
-		$admin->setCustomDeleteURL('/oeadmin/AnaestheticAgentDefaults/delete');
-		$admin->setCustomSaveURL('/oeadmin/AnaestheticAgentDefaults/add');
-		$admin->setModelDisplayName('Operation Note Anaesthetic Agent Defaults');
+		$admin->setCustomDeleteURL('/oeadmin/AnaestheticAgentMapping/delete');
+		$admin->setCustomSaveURL('/oeadmin/AnaestheticAgentMapping/add');
+		$admin->setModelDisplayName('Operation Note Anaesthetic Agent Mapping');
 		$admin->setFilterFields(
 			array(
 				array(
@@ -69,7 +69,7 @@ class AnaestheticAgentDefaultsController extends BaseAdminController
 			array(
 				'fieldName' => 'anaesthetic_agent_id',
 				'allowBlankSearch' => 1,
-				'jsonURL' => '/oeadmin/AnaestheticAgentDefaults/search',
+				'jsonURL' => '/oeadmin/AnaestheticAgentMapping/search',
 				'placeholder' => 'search for adding anaesthetic agent'
 			)
 		);
@@ -85,7 +85,7 @@ class AnaestheticAgentDefaultsController extends BaseAdminController
 		if (!Yii::app()->request->isAjaxRequest) {
 			$this->render("errorpage", array("errorMessage" => "notajaxcall"));
 		} else {
-			if ($leafletSubspecialy = SiteSubspecialtyAnaestheticAgentDefault::model()->findByPk($itemId)) {
+			if ($leafletSubspecialy = SiteSubspecialtyAnaestheticAgent::model()->findByPk($itemId)) {
 				$leafletSubspecialy->delete();
 				echo "success";
 			} else {
@@ -106,38 +106,27 @@ class AnaestheticAgentDefaultsController extends BaseAdminController
 			if (!is_numeric($subspecialtyId) || !is_numeric($siteId) || !is_numeric($anaestheticAgentId)) {
 				echo "error";
 			} else {
-				$newSSAAD = new SiteSubspecialtyAnaestheticAgentDefault();
-				$newSSAAD->subspecialty_id = $subspecialtyId;
-				$newSSAAD->site_id = $siteId;
-				$newSSAAD->anaesthetic_agent_id = $anaestheticAgentId;
-				if ($newSSAAD->save()) {
-					// If an agent is selected that is not in the site_subspecialy_anaesthetic_agent table,
-					// then the selected agent should automatically be added to that table as well
-					$criteria = new CDbCriteria();
-					$criteria->condition = 'anaesthetic_agent_id=:anaesthetic_agent_id AND site_id=:site_id AND subspecialty_id=:subspecialty_id';
-					$criteria->params = array(
-						':anaesthetic_agent_id' => $anaestheticAgentId,
-						':site_id' => $siteId,
-						':subspecialty_id' => $subspecialtyId
-					);
-					$currentSSAA = SiteSubspecialtyAnaestheticAgent::model()->findall($criteria);
-					if (!$currentSSAA) {
-						$newSSAA = new SiteSubspecialtyAnaestheticAgent();
-						$newSSAA->subspecialty_id = $subspecialtyId;
-						$newSSAA->site_id = $siteId;
-						$newSSAA->anaesthetic_agent_id = $anaestheticAgentId;
-						if ($newSSAA->save()) {
-							echo "success added to SSAA";
-						} else {
-							echo "error";
-						}
+				$criteria = new CDbCriteria();
+				$criteria->condition = 'anaesthetic_agent_id=:anaesthetic_agent_id AND site_id=:site_id AND subspecialty_id=:subspecialty_id';
+				$criteria->params = array(
+					':anaesthetic_agent_id' => $anaestheticAgentId,
+					':site_id' => $siteId,
+					':subspecialty_id' => $subspecialtyId
+				);
+				$currentSSAA = SiteSubspecialtyAnaestheticAgent::model()->findall($criteria);
+				if (!$currentSSAA) {
+					$newSSAA = new SiteSubspecialtyAnaestheticAgent();
+					$newSSAA->subspecialty_id = $subspecialtyId;
+					$newSSAA->site_id = $siteId;
+					$newSSAA->anaesthetic_agent_id = $anaestheticAgentId;
+					if ($newSSAA->save()) {
+						echo "success added to SSAA";
 					} else {
-						echo "success";
+						echo "error";
 					}
 				} else {
-					echo "error";
+					echo "success";
 				}
-
 			}
 		}
 	}
