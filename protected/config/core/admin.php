@@ -43,6 +43,7 @@ return array(
 				'Social History' => '/admin/socialhistory',
 				'Findings' => '/admin/managefindings',
 				'Anaesthetic Agent' => '/admin/viewAnaestheticAgent',
+				'Anaesthetic Agent Mapping' => '/oeadmin/AnaestheticAgentMapping/list',
 				'Anaesthetic Agent Defaults' => '/oeadmin/AnaestheticAgentDefaults/list',
 				'Risks' => '/oeadmin/risk/list'
 			),
