@@ -48,9 +48,9 @@ class WKHtmlToPDF
 
 		$banner = $this->execute($this->wkhtmltopdf." 2>&1");
 
-		if (preg_match('/reduced functionality/i',$banner)) {
+		/*if (preg_match('/reduced functionality/i',$banner)) {
 			throw new Exception("wkhtmltopdf has not been compiled with patched QT and so cannot be used.");
-		}
+		}*/
 
 		$this->left = Yii::app()->params['wkhtmltopdf_footer_left'];
 		$this->middle = Yii::app()->params['wkhtmltopdf_footer_middle'];
