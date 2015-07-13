@@ -23,7 +23,7 @@ echo ""
 echo "I'm now installing OpenEyes branch $ins_bra"
 
 apt-get upgrade -y
-apt-get install chef -y
+DEBIAN_FRONTEND=noninteractive apt-get install chef -y
 
 /usr/bin/git clone -b master --recursive https://github.com/OpenEyes/oe_chef.git
 mkdir /var/www
