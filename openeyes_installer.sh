@@ -27,7 +27,7 @@ apt-get upgrade -y
 
 DEBIAN_FRONTEND=noninteractive apt-get install chef -y
 
-/usr/bin/git clone -b master --recursive https://github.com/OpenEyes/oe_chef.git
+/usr/bin/git clone -b aws --recursive https://github.com/OpenEyes/oe_chef.git
 mkdir /var/www
 cd /var/www && git clone -b $ins_bra  https://github.com/openeyes/OpenEyes.git openeyes
 cd /root/oe_chef
