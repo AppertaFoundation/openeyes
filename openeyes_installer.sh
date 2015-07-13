@@ -1,5 +1,6 @@
 #!/bin/bash
-DEBIAN_FRONTEND=noninteractive apt-get install git chef -y
+apt-get update
+DEBIAN_FRONTEND=noninteractive apt-get install git -y
 
 
 if [ $# -lt 1 ]
@@ -18,14 +19,13 @@ else
         $ins_bra = $1
 fi
 
-apt-get update
-apt-get upgrade -y
-
 echo ""
 echo "I'm now installing OpenEyes branch $ins_bra"
 
+apt-get upgrade -y
+apt-get install chef -y
 
-/usr/bin/git clone -b aws --recursive https://github.com/OpenEyes/oe_chef.git
+/usr/bin/git clone -b master --recursive https://github.com/OpenEyes/oe_chef.git
 mkdir /var/www
 cd /var/www && git clone -b $ins_bra  https://github.com/openeyes/OpenEyes.git openeyes
 cd /root/oe_chef
