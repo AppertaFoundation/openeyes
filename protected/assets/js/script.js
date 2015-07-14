@@ -309,9 +309,6 @@ function getMonthShortName(i) {
 	return months[i];
 }
 
-function pcrCalculate(){
-    $('#pcr_risk_div').attr('style', 'background-color: #43a844 !important');
-}
 
 function showhidePCR(id) {
     var e = document.getElementById(id);
