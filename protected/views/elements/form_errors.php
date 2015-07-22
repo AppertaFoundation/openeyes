@@ -40,11 +40,10 @@
 				foreach( $elements as $element ){  ?>
 		var errorObject = <?php $element->getFrontEndErrors(); ?>;
 		for (k = 0; k < errorObject.length; k++) {
-			//$('[id*=' + errorObject[k] + ']').addClass('highlighted-error');
 			if ($('#' + errorObject[k]).length) {
 				$('#' + errorObject[k]).wrap("<div class='highlighted-error'></div>");
 			} else {
-				$('[id*=' + errorObject[k] + ']').wrap("<div class='highlighted-error'></div>");
+				$('[id*="' + errorObject[k] + '"]').wrap("<div class='highlighted-error'></div>");
 			}
 		}
 		<?php
