@@ -328,12 +328,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrOperationnote.git",
-                "reference": "a60f9d8ab7a6c8ee8c4d505f3d4091a9e7744176"
+                "reference": "1ecc42aaa44807d804921f9df55435f5ab252e10"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/a60f9d8ab7a6c8ee8c4d505f3d4091a9e7744176",
-                "reference": "a60f9d8ab7a6c8ee8c4d505f3d4091a9e7744176",
+                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/1ecc42aaa44807d804921f9df55435f5ab252e10",
+                "reference": "1ecc42aaa44807d804921f9df55435f5ab252e10",
                 "shasum": ""
             },
             "require": {
@@ -342,7 +342,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Operation note module for OpenEyes",
-            "time": "2015-07-20 13:31:12"
+            "time": "2015-07-22 16:15:32"
         },
         {
             "name": "openeyes/patient-ticketing",
@@ -1877,12 +1877,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "c5b08724f4b11fd90a2c36a64d4868bcee7ba6a4"
+                "reference": "e4f45be5dcfeb54c45f85b50cdbb3ef8a2bfbd81"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/c5b08724f4b11fd90a2c36a64d4868bcee7ba6a4",
-                "reference": "c5b08724f4b11fd90a2c36a64d4868bcee7ba6a4",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/e4f45be5dcfeb54c45f85b50cdbb3ef8a2bfbd81",
+                "reference": "e4f45be5dcfeb54c45f85b50cdbb3ef8a2bfbd81",
                 "shasum": ""
             },
             "require": {
@@ -1945,7 +1945,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2015-07-14 09:27:59"
+            "time": "2015-07-20 18:31:46"
         },
         {
             "name": "nikic/php-parser",
@@ -3753,12 +3753,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/DependencyInjection.git",
-                "reference": "f279142fb6bc21e83fcd40e0a01a62ff527268be"
+                "reference": "4c1f684216b9dc349f4b1c617995c7ebf605f130"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/DependencyInjection/zipball/f279142fb6bc21e83fcd40e0a01a62ff527268be",
-                "reference": "f279142fb6bc21e83fcd40e0a01a62ff527268be",
+                "url": "https://api.github.com/repos/symfony/DependencyInjection/zipball/4c1f684216b9dc349f4b1c617995c7ebf605f130",
+                "reference": "4c1f684216b9dc349f4b1c617995c7ebf605f130",
                 "shasum": ""
             },
             "require": {
@@ -3805,7 +3805,7 @@
             ],
             "description": "Symfony DependencyInjection Component",
             "homepage": "https://symfony.com",
-            "time": "2015-07-16 10:10:53"
+            "time": "2015-07-22 11:24:41"
         },
         {
             "name": "symfony/dom-crawler",
