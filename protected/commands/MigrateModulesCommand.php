@@ -44,25 +44,35 @@ EOD;
 		$commandPath = Yii::getPathOfAlias('application.commands');
 		$modules = Yii::app()->modules;
 		$moduleDir = ($composer) ? 'composer.openeyes.' : 'application.modules.';
-		foreach ($modules as $module => $module_settings) {
-			if (is_dir(Yii::getPathOfAlias($moduleDir.$module.'.migrations'))) {
-				echo "Migrating $module:\n";
-				if(!$interactive) {
-					$args = array('yiic', 'oemigrate', '--interactive=0', '--migrationPath='.$moduleDir.$module.'.migrations');
-				} else {
-					$args = array('yiic', 'oemigrate', '--migrationPath='.$moduleDir.$module.'.migrations');
-				}
-				if($connectionID){
-					$args[] = '--connectionID=' . $connectionID;
-				}
-				if($testdata ){
-					$args[] = '--testdata' ;
-				}
-				//echo "\nMigratemodules ARGS : " . var_export( $args, true );
+		// default modules in $modules array: gii, oldadmin
+		if( count($modules) <= 2 ){
+			echo "No modules installed, please check your configuration \n";
+		}else {
+			foreach ($modules as $module => $module_settings) {
+				if (is_dir(Yii::getPathOfAlias($moduleDir . $module . '.migrations'))) {
+					echo "Migrating $module:\n";
+					if (!$interactive) {
+						$args = array(
+							'yiic',
+							'oemigrate',
+							'--interactive=0',
+							'--migrationPath=' . $moduleDir . $module . '.migrations'
+						);
+					} else {
+						$args = array('yiic', 'oemigrate', '--migrationPath=' . $moduleDir . $module . '.migrations');
+					}
+					if ($connectionID) {
+						$args[] = '--connectionID=' . $connectionID;
+					}
+					if ($testdata) {
+						$args[] = '--testdata';
+					}
+					//echo "\nMigratemodules ARGS : " . var_export( $args, true );
 
-				$runner = new CConsoleCommandRunner();
-				$runner->addCommands($commandPath);
-				$runner->run($args);
+					$runner = new CConsoleCommandRunner();
+					$runner->addCommands($commandPath);
+					$runner->run($args);
+				}
 			}
 		}
 	}
