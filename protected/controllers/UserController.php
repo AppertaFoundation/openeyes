@@ -50,7 +50,7 @@ class UserController extends BaseController
 
 		$this->renderJSON(array(
 			'id' => $user->doctor_grade_id,
-			'grade' => $user->grade->grade
+			'grade' => ($user->grade) ? $user->grade->grade : null
 		));
 	}
 }
