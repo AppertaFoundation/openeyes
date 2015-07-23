@@ -19,7 +19,7 @@ class UserController extends BaseController
 	{
 		return array(
 			array('allow',
-				'actions' => array('autoComplete'),
+				'actions' => array('autoComplete', 'surgeonGrade'),
 				'roles' => array('OprnViewClinical'),
 			),
 		);
@@ -42,5 +42,15 @@ class UserController extends BaseController
 		}
 
 		print json_encode($results);
+	}
+
+	public function actionSurgeonGrade($id)
+	{
+		$user = User::model()->with('grade')->findByPk($id);
+
+		$this->renderJSON(array(
+			'id' => $user->doctor_grade_id,
+			'grade' => $user->grade->grade
+		));
 	}
 }

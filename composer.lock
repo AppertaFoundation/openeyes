@@ -64,12 +64,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphCiExamination.git",
-                "reference": "a0c6a46d8a90a8e06d457abb06bf5f77808137a6"
+                "reference": "fa271ebf019a67029d91b1153cac323842a22da6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/a0c6a46d8a90a8e06d457abb06bf5f77808137a6",
-                "reference": "a0c6a46d8a90a8e06d457abb06bf5f77808137a6",
+                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/fa271ebf019a67029d91b1153cac323842a22da6",
+                "reference": "fa271ebf019a67029d91b1153cac323842a22da6",
                 "shasum": ""
             },
             "require": {
@@ -78,7 +78,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Examination module for OpenEyes",
-            "time": "2015-07-03 12:46:17"
+            "time": "2015-07-23 13:44:06"
         },
         {
             "name": "openeyes/oph-ci-phasing",
@@ -328,12 +328,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrOperationnote.git",
-                "reference": "1ecc42aaa44807d804921f9df55435f5ab252e10"
+                "reference": "67472dfa5af2f54086ad8691b0b588e06466327f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/1ecc42aaa44807d804921f9df55435f5ab252e10",
-                "reference": "1ecc42aaa44807d804921f9df55435f5ab252e10",
+                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/67472dfa5af2f54086ad8691b0b588e06466327f",
+                "reference": "67472dfa5af2f54086ad8691b0b588e06466327f",
                 "shasum": ""
             },
             "require": {
@@ -342,7 +342,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Operation note module for OpenEyes",
-            "time": "2015-07-22 16:15:32"
+            "time": "2015-07-23 10:02:50"
         },
         {
             "name": "openeyes/patient-ticketing",
@@ -793,12 +793,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/minkphp/MinkSelenium2Driver.git",
-                "reference": "7c96892dfce83b9bbf1f521262c2d869d618aea7"
+                "reference": "3472eb89a0825e25ed83ec5b8f268702b1221c04"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/minkphp/MinkSelenium2Driver/zipball/7c96892dfce83b9bbf1f521262c2d869d618aea7",
-                "reference": "7c96892dfce83b9bbf1f521262c2d869d618aea7",
+                "url": "https://api.github.com/repos/minkphp/MinkSelenium2Driver/zipball/3472eb89a0825e25ed83ec5b8f268702b1221c04",
+                "reference": "3472eb89a0825e25ed83ec5b8f268702b1221c04",
                 "shasum": ""
             },
             "require": {
@@ -843,7 +843,7 @@
                 "testing",
                 "webdriver"
             ],
-            "time": "2015-04-02 11:42:30"
+            "time": "2015-07-22 16:57:28"
         },
         {
             "name": "behat/yii-extension",
