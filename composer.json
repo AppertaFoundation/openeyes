@@ -11,7 +11,7 @@
     "openeyes/oph-co-therapyapplication": "dev-master",
     "openeyes/oph-dr-prescription": "dev-release/v1.11",
     "openeyes/oph-ou-anaestheticsatisfactionaudit": "dev-master",
-    "openeyes/oph-tr-consent": "1.10",
+    "openeyes/oph-tr-consent": "dev-release/v1.11",
     "openeyes/oph-tr-operationnote": "dev-release/v1.11",
     "openeyes/oph-tr-operationbooking": "dev-release/v1.11",
     "openeyes/oph-tr-intravitrealinjection": "dev-release/v1.11",

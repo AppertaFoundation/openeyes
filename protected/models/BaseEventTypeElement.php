@@ -34,7 +34,10 @@ class BaseEventTypeElement extends BaseElement
 	protected $frontEndErrors = array();
 	protected $errorExceptions = array(
 		'Element_OphTrOperationbooking_Operation_procedures' => 'select_procedure_id_procs',
-		'Element_OphDrPrescription_Details_items' => 'prescription_items'
+		'Element_OphDrPrescription_Details_items' => 'prescription_items',
+		'Element_OphTrConsent_Procedure_procedures' => 'typeProcedure',
+		'Element_OphTrLaser_Treatment_left_procedures' => 'treatment_left_procedures',
+		'Element_OphTrLaser_Treatment_right_procedures' => 'treatment_right_procedures',
 	);
 
 	private $settings = array();
