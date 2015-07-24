@@ -231,7 +231,7 @@ class BaseEventTypeController extends BaseModuleController
 		$elements = array();
 		if(is_array($this->open_elements)){
 			foreach ($this->open_elements as $element) {
-				if (!$element->getElementType()->isChild()) {
+				if($element->getElementType() && !$element->getElementType()->isChild()) {
 					$elements[] = $element;
 				}
 			}
@@ -252,7 +252,7 @@ class BaseEventTypeController extends BaseModuleController
 		if(is_array($this->open_elements)) {
 			foreach ($this->open_elements as $open) {
 				$et = $open->getElementType();
-				if ($et->isChild() && $et->parent_element_type->class_name == $parent_type->class_name) {
+				if ($et && $et->isChild() && $et->parent_element_type->class_name == $parent_type->class_name) {
 					$open_child_elements[] = $open;
 				}
 			}
@@ -293,7 +293,7 @@ class BaseEventTypeController extends BaseModuleController
 		if(is_array($this->open_elements)) {
 			foreach ($this->open_elements as $open) {
 				$et = $open->getElementType();
-				if ($et->isChild() && $et->parent_element_type->class_name == $parent_type->class_name) {
+				if ($et && $et->isChild() && $et->parent_element_type->class_name == $parent_type->class_name) {
 					$open_et[] = $et->class_name;
 				}
 			}
