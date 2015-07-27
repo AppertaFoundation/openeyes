@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "25632397f8831c67cad639fd3d66095f",
+    "hash": "726cab9848e700d51a9da1f2728f291d",
     "packages": [
         {
             "name": "openeyes/eyedraw",
@@ -64,12 +64,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphCiExamination.git",
-                "reference": "fa271ebf019a67029d91b1153cac323842a22da6"
+                "reference": "f997cc36bed21512b13934037f0e551d2b490881"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/fa271ebf019a67029d91b1153cac323842a22da6",
-                "reference": "fa271ebf019a67029d91b1153cac323842a22da6",
+                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/f997cc36bed21512b13934037f0e551d2b490881",
+                "reference": "f997cc36bed21512b13934037f0e551d2b490881",
                 "shasum": ""
             },
             "require": {
@@ -78,7 +78,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Examination module for OpenEyes",
-            "time": "2015-07-23 13:44:06"
+            "time": "2015-07-27 10:17:04"
         },
         {
             "name": "openeyes/oph-ci-phasing",
@@ -236,16 +236,16 @@
         },
         {
             "name": "openeyes/oph-tr-consent",
-            "version": "v1.10",
+            "version": "dev-release/v1.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrConsent.git",
-                "reference": "68730db9198d194976087e9be6a1bafda329991d"
+                "reference": "b847ea5d0cd653281416037549bc587432940b21"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrConsent/zipball/68730db9198d194976087e9be6a1bafda329991d",
-                "reference": "68730db9198d194976087e9be6a1bafda329991d",
+                "url": "https://api.github.com/repos/openeyes/OphTrConsent/zipball/b847ea5d0cd653281416037549bc587432940b21",
+                "reference": "b847ea5d0cd653281416037549bc587432940b21",
                 "shasum": ""
             },
             "require": {
@@ -254,7 +254,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Generates consent forms for scheduled and unscheduled operations",
-            "time": "2015-05-18 12:36:38"
+            "time": "2015-07-23 14:25:00"
         },
         {
             "name": "openeyes/oph-tr-intravitrealinjection",
@@ -2774,16 +2774,16 @@
         },
         {
             "name": "phpunit/php-timer",
-            "version": "1.0.6",
+            "version": "1.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-timer.git",
-                "reference": "83fe1bdc5d47658b727595c14da140da92b3d66d"
+                "reference": "3e82f4e9fc92665fafd9157568e4dcb01d014e5b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-timer/zipball/83fe1bdc5d47658b727595c14da140da92b3d66d",
-                "reference": "83fe1bdc5d47658b727595c14da140da92b3d66d",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-timer/zipball/3e82f4e9fc92665fafd9157568e4dcb01d014e5b",
+                "reference": "3e82f4e9fc92665fafd9157568e4dcb01d014e5b",
                 "shasum": ""
             },
             "require": {
@@ -2811,7 +2811,7 @@
             "keywords": [
                 "timer"
             ],
-            "time": "2015-06-13 07:35:30"
+            "time": "2015-06-21 08:01:12"
         },
         {
             "name": "phpunit/php-token-stream",
@@ -3643,12 +3643,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "fd85e7517e79a2bceafcee8f7e8b7bbd0919a90a"
+                "reference": "575782770a015042d2fe34f1388d5073bde784bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/fd85e7517e79a2bceafcee8f7e8b7bbd0919a90a",
-                "reference": "fd85e7517e79a2bceafcee8f7e8b7bbd0919a90a",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/575782770a015042d2fe34f1388d5073bde784bd",
+                "reference": "575782770a015042d2fe34f1388d5073bde784bd",
                 "shasum": ""
             },
             "require": {
@@ -3692,7 +3692,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2015-07-16 12:22:14"
+            "time": "2015-07-26 09:09:29"
         },
         {
             "name": "symfony/css-selector",
@@ -4181,12 +4181,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Validator.git",
-                "reference": "cd095c93e3bb62ea07f8fa02c6e634e996082635"
+                "reference": "e5d9a0c76e784b42f6d109913cf41f518d962fa2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Validator/zipball/cd095c93e3bb62ea07f8fa02c6e634e996082635",
-                "reference": "cd095c93e3bb62ea07f8fa02c6e634e996082635",
+                "url": "https://api.github.com/repos/symfony/Validator/zipball/e5d9a0c76e784b42f6d109913cf41f518d962fa2",
+                "reference": "e5d9a0c76e784b42f6d109913cf41f518d962fa2",
                 "shasum": ""
             },
             "require": {
@@ -4243,7 +4243,7 @@
             ],
             "description": "Symfony Validator Component",
             "homepage": "https://symfony.com",
-            "time": "2015-07-02 06:17:21"
+            "time": "2015-07-22 17:02:20"
         },
         {
             "name": "symfony/yaml",
@@ -4251,12 +4251,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "000e7fc2653335cd42c6d21405dac1c74224a387"
+                "reference": "b7bf092bc2b3af532ef916805e214febec89ae4b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/000e7fc2653335cd42c6d21405dac1c74224a387",
-                "reference": "000e7fc2653335cd42c6d21405dac1c74224a387",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/b7bf092bc2b3af532ef916805e214febec89ae4b",
+                "reference": "b7bf092bc2b3af532ef916805e214febec89ae4b",
                 "shasum": ""
             },
             "require": {
@@ -4292,7 +4292,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2015-07-01 14:16:54"
+            "time": "2015-07-26 09:09:29"
         },
         {
             "name": "theseer/fdomdocument",
@@ -5061,6 +5061,7 @@
         "openeyes/oph-co-therapyapplication": 20,
         "openeyes/oph-dr-prescription": 20,
         "openeyes/oph-ou-anaestheticsatisfactionaudit": 20,
+        "openeyes/oph-tr-consent": 20,
         "openeyes/oph-tr-operationnote": 20,
         "openeyes/oph-tr-operationbooking": 20,
         "openeyes/oph-tr-intravitrealinjection": 20,
