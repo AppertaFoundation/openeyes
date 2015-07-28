@@ -63,6 +63,7 @@ class DisorderController extends BaseController
 						'value' => $disorder->term,
 						'id' => $disorder->id,
 						'is_diabetes' => Disorder::model()->ancestorIdsMatch(array($disorder->id), Disorder::$SNOMED_DIABETES_SET),
+						'is_glaucoma' => (strpos(strtolower($disorder->term), 'glaucoma') !== false),
 				);
 			}
 			echo CJSON::encode($return);

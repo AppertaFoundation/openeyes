@@ -93,7 +93,7 @@
 						'select' => "js:function(event, ui) {
 							currFirst = getSelectedObj(firstSelection);
 							DiagnosisSelection_addCondition(currFirst);
-							".($callback ? $callback."('disorder', ui.item.id, ui.item.value, ui.item.is_diabetes);" : '')."
+							".($callback ? $callback."('disorder', ui.item.id, ui.item.value, ui.item.is_diabetes, ui.item.is_glaucoma);" : '')."
 							$('#{$class_field}_0').val('');
 							$('#{$class_field}').children('option').map(function() {
 								if ($(this).val() == ui.item.id) {
