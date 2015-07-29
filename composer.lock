@@ -64,12 +64,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphCiExamination.git",
-                "reference": "9d520e4799beb830f230b6a17ae13891c4bc3730"
+                "reference": "4a95f945bc5cfaa00fb0f897334824a553b1dcfd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/9d520e4799beb830f230b6a17ae13891c4bc3730",
-                "reference": "9d520e4799beb830f230b6a17ae13891c4bc3730",
+                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/4a95f945bc5cfaa00fb0f897334824a553b1dcfd",
+                "reference": "4a95f945bc5cfaa00fb0f897334824a553b1dcfd",
                 "shasum": ""
             },
             "require": {
@@ -78,7 +78,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Examination module for OpenEyes",
-            "time": "2015-07-28 15:14:12"
+            "time": "2015-07-29 11:16:51"
         },
         {
             "name": "openeyes/oph-ci-phasing",
@@ -3643,12 +3643,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "575782770a015042d2fe34f1388d5073bde784bd"
+                "reference": "eef94b47e4e21ab887ef03192d2fb65cc9929c76"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/575782770a015042d2fe34f1388d5073bde784bd",
-                "reference": "575782770a015042d2fe34f1388d5073bde784bd",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/eef94b47e4e21ab887ef03192d2fb65cc9929c76",
+                "reference": "eef94b47e4e21ab887ef03192d2fb65cc9929c76",
                 "shasum": ""
             },
             "require": {
@@ -3692,7 +3692,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2015-07-26 09:09:29"
+            "time": "2015-07-29 07:12:56"
         },
         {
             "name": "symfony/css-selector",
@@ -3753,12 +3753,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/DependencyInjection.git",
-                "reference": "4c1f684216b9dc349f4b1c617995c7ebf605f130"
+                "reference": "66a1bfb31e8a01657fbe68db9e80debc163b2993"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/DependencyInjection/zipball/4c1f684216b9dc349f4b1c617995c7ebf605f130",
-                "reference": "4c1f684216b9dc349f4b1c617995c7ebf605f130",
+                "url": "https://api.github.com/repos/symfony/DependencyInjection/zipball/66a1bfb31e8a01657fbe68db9e80debc163b2993",
+                "reference": "66a1bfb31e8a01657fbe68db9e80debc163b2993",
                 "shasum": ""
             },
             "require": {
@@ -3805,7 +3805,7 @@
             ],
             "description": "Symfony DependencyInjection Component",
             "homepage": "https://symfony.com",
-            "time": "2015-07-22 11:24:41"
+            "time": "2015-07-29 07:12:56"
         },
         {
             "name": "symfony/dom-crawler",
@@ -4251,12 +4251,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "b7bf092bc2b3af532ef916805e214febec89ae4b"
+                "reference": "6eef1477f3c4451b6024fadb1254009be4602908"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/b7bf092bc2b3af532ef916805e214febec89ae4b",
-                "reference": "b7bf092bc2b3af532ef916805e214febec89ae4b",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/6eef1477f3c4451b6024fadb1254009be4602908",
+                "reference": "6eef1477f3c4451b6024fadb1254009be4602908",
                 "shasum": ""
             },
             "require": {
@@ -4292,7 +4292,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2015-07-26 09:09:29"
+            "time": "2015-07-29 07:12:56"
         },
         {
             "name": "theseer/fdomdocument",
