@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "726cab9848e700d51a9da1f2728f291d",
+    "hash": "7311dfced159d6076c6b98e6e5da9681",
     "packages": [
         {
             "name": "openeyes/eyedraw",
@@ -64,12 +64,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphCiExamination.git",
-                "reference": "244b0098c539e0d162876d0630235ef2e8415c7e"
+                "reference": "51061fdf67375edabea84b992efb081fe79e19d8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/244b0098c539e0d162876d0630235ef2e8415c7e",
-                "reference": "244b0098c539e0d162876d0630235ef2e8415c7e",
+                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/51061fdf67375edabea84b992efb081fe79e19d8",
+                "reference": "51061fdf67375edabea84b992efb081fe79e19d8",
                 "shasum": ""
             },
             "require": {
@@ -78,7 +78,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Examination module for OpenEyes",
-            "time": "2015-07-29 12:41:00"
+            "time": "2015-07-30 16:04:35"
         },
         {
             "name": "openeyes/oph-ci-phasing",
@@ -167,28 +167,6 @@
             "notification-url": "https://packagist.org/downloads/",
             "description": "Module for generating prescriptions in OpenEyes",
             "time": "2015-07-03 10:34:41"
-        },
-        {
-            "name": "openeyes/oph-in-biometry",
-            "version": "dev-release/v1.11",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/openeyes/OphInBiometry.git",
-                "reference": "38a85e7cee55c5b6fdff225b8fbc39f85fa6e05c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphInBiometry/zipball/38a85e7cee55c5b6fdff225b8fbc39f85fa6e05c",
-                "reference": "38a85e7cee55c5b6fdff225b8fbc39f85fa6e05c",
-                "shasum": ""
-            },
-            "require": {
-                "openeyes/module-installer": "*"
-            },
-            "type": "openeyes-module",
-            "notification-url": "https://packagist.org/downloads/",
-            "description": "Biometry module for OpenEyes",
-            "time": "2015-06-26 14:31:05"
         },
         {
             "name": "openeyes/oph-in-visualfields",
@@ -5067,7 +5045,6 @@
         "openeyes/oph-tr-intravitrealinjection": 20,
         "openeyes/oph-tr-laser": 20,
         "openeyes/oph-in-visualfields": 20,
-        "openeyes/oph-in-biometry": 20,
         "openeyes/eyedraw": 20,
         "phpmd/phpmd": 0
     },
