@@ -18,7 +18,6 @@
     "openeyes/oph-tr-laser": "dev-master",
     "openeyes/patient-ticketing": "1.10",
     "openeyes/oph-in-visualfields": "dev-master",
-    "openeyes/oph-in-biometry": "dev-release/v1.11",
     "openeyes/eyedraw": "dev-release/v1.11"
   },
   "require-dev": {
