@@ -48,7 +48,7 @@ $(document).ready(function () {
                 if (hrefArray[i] === 'admin') {
                     object = ucfirst(hrefArray[parseInt(i) + 1].replace(/ies$/, 'y'));
 
-                    if(object === 'EditUser') {
+                    if((object === 'EditUser') || (object === 'AddUser')) {
                         window.location.href = baseUrl + '/admin/users';
                     }else if(object === 'EditFirm') {
                         window.location.href = baseUrl + '/admin/firms';

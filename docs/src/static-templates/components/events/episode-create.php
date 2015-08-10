@@ -1,23 +1,13 @@
 <div class="large-10 column event view episode highlight-fields">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
-			<li>
-				<a href="#">View</a>
-			</li>
-			<li class="selected">
-				<a href="#">Edit</a>
-			</li>
+			<li><a href="#">View</a></li>
+			<li class="selected"><a href="#">Edit</a></li>
 		</ul>
 		<div class="button-bar right">
-			<a href="#" class="button small">
-				Print 2nd Reminder letter
-			</a>
-			<a href="#" class="button secondary small">
-				Schedule now
-			</a>
-			<a href="#" class="button warning small">
-				Cancel operation
-			</a>
+			<a href="#" class="button small"> Print 2nd Reminder letter </a> <a
+				href="#" class="button secondary small"> Schedule now </a> <a
+				href="#" class="button warning small"> Cancel operation </a>
 		</div>
 	</header>
 	<div class="event-content">
@@ -40,7 +30,8 @@
 						</select>
 					</div>
 					<div class="field-row">
-						<input type="text" placeholder="or type the first few characters of a diagnosis" />
+						<input type="text"
+							placeholder="or type the first few characters of a diagnosis" />
 					</div>
 				</div>
 			</div>
@@ -49,14 +40,9 @@
 		<section class="element element-data">
 			<fieldset>
 				<legend class="data-title">Principle eye:</legend>
-				<label class="inline">
-					<input type="radio" /> Right
-				</label>
-				<label class="inline">
-					<input type="radio" /> Both
-				</label>
-				<label class="inline">
-					<input type="radio" /> Left
+				<label class="inline"> <input type="radio" /> Right
+				</label> <label class="inline"> <input type="radio" /> Both
+				</label> <label class="inline"> <input type="radio" /> Left
 				</label>
 			</fieldset>
 		</section>
@@ -88,7 +74,9 @@
 		</section>
 
 		<div class="metadata">
-			<span class="info">Adnexal: created by <span class="user">Enoch Root</span> on 1 Jan 2000 at 00:00</span>
+			<span class="info">Adnexal: created by <span class="user">Enoch Root</span>
+				on 1 Jan 2000 at 00:00
+			</span>
 		</div>
 
 		<section class="element element-data">
@@ -106,7 +94,9 @@
 		</section>
 
 		<div class="metadata">
-			<span class="info">Status last changed by <span class="user">Enoch Root</span> on 1 Jan 2000 at 00:00</span>
+			<span class="info">Status last changed by <span class="user">Enoch
+					Root</span> on 1 Jan 2000 at 00:00
+			</span>
 		</div>
 
 	</div>

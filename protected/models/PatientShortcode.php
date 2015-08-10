@@ -103,7 +103,7 @@ class PatientShortcode extends BaseActiveRecordVersioned
 		));
 	}
 
-	public function replaceText($text,$patient, $ucfirst=false)
+	public function replaceText($text, $patient, $ucfirst=false)
 	{
 		$code = $ucfirst ? ucfirst($this->code) : $this->code;
 

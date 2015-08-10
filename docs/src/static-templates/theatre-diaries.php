@@ -3,7 +3,8 @@
 <html lang="en">
 <head>
 <? include 'components/head.php'; ?>
-<link rel="stylesheet" href="<?php echo $assets_root_path;?>assets/modules/OphTrOperationbooking/assets/css/module.css" />
+<link rel="stylesheet"
+	href="<?php echo $assets_root_path;?>assets/modules/OphTrOperationbooking/assets/css/module.css" />
 </head>
 <body class="open-eyes">
 	<div class="container main" role="main">
@@ -17,9 +18,8 @@
 
 				<div class="panel panel actions row">
 					<div class="large-12 column">
-						<div class="label">
-							Use the filters below to view Theatre schedules:
-						</div>
+						<div class="label">Use the filters below to view Theatre
+							schedules:</div>
 						<div class="button-bar">
 							<? include 'components/theatre-diaries-button-bar.php'; ?>
 						</div>

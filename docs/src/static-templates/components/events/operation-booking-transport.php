@@ -5,49 +5,29 @@
 			<div class="row">
 				<div class="large-6 column date-filter">
 					<div class="field-row">
-						<label class="inline align" for="">
-							From:
-						</label>
-						<input type="text" class="inline fixed-width" />
-						<label class="inline align" for="">
-							To:
-						</label>
-						<input type="text" class="inline fixed-width" />
-						<button class="small">
-							Filter
-						</button>
-						<button class="small">
-							View all
-						</button>
+						<label class="inline align" for=""> From: </label> <input
+							type="text" class="inline fixed-width" /> <label
+							class="inline align" for=""> To: </label> <input type="text"
+							class="inline fixed-width" />
+						<button class="small">Filter</button>
+						<button class="small">View all</button>
 					</div>
 					<div class="field-row">
 						<fieldset class="inline">
 							<legend>Include:</legend>
-							<label class="inline">
-								<input type="checkbox" />
-								Bookings
-							</label>
-							<label class="inline">
-								<input type="checkbox" />
+							<label class="inline"> <input type="checkbox" /> Bookings
+							</label> <label class="inline"> <input type="checkbox" />
 								Reschedules
-							</label>
-							<label class="inline">
-								<input type="checkbox" />
+							</label> <label class="inline"> <input type="checkbox" />
 								Cancellations
 							</label>
 						</fieldset>
 					</div>
 				</div>
 				<div class="large-6 column text-right">
-					<button>
-						Confirm
-					</button>
-					<button>
-						Print list
-					</button>
-					<button>
-						Download CSV
-					</button>
+					<button>Confirm</button>
+					<button>Print list</button>
+					<button>Download CSV</button>
 				</div>
 			</div>
 		</form>
@@ -72,11 +52,8 @@
 			<tbody>
 				<tr class="status Grey">
 					<td>1000440</td>
-					<td class="patient">
-						<a href="#">
-							<strong>KENDALL</strong>, Ellen
-						</a>
-					</td>
+					<td class="patient"><a href="#"> <strong>KENDALL</strong>, Ellen
+					</a></td>
 					<td>29-Oct-2013</td>
 					<td>08:30:00</td>
 					<td>St George's</td>
@@ -90,11 +67,8 @@
 				</tr>
 				<tr class="status Green">
 					<td>1000440</td>
-					<td class="patient">
-						<a href="#">
-							<strong>KENDALL</strong>, Ellen
-						</a>
-					</td>
+					<td class="patient"><a href="#"> <strong>KENDALL</strong>, Ellen
+					</a></td>
 					<td>29-Oct-2013</td>
 					<td>08:30:00</td>
 					<td>St George's</td>
@@ -108,11 +82,8 @@
 				</tr>
 				<tr class="status Red">
 					<td>1000440</td>
-					<td class="patient">
-						<a href="#">
-							<strong>KENDALL</strong>, Ellen
-						</a>
-					</td>
+					<td class="patient"><a href="#"> <strong>KENDALL</strong>, Ellen
+					</a></td>
 					<td>29-Oct-2013</td>
 					<td>08:30:00</td>
 					<td>St George's</td>
@@ -129,8 +100,10 @@
 				<tr>
 					<td colspan="12">
 						<ul class="pagination right" id="yw0">
-							<li class="first unavailable"><a href="/admin/users">&lt;&lt; First</a></li>
-							<li class="previous unavailable"><a href="/admin/users">&lt; Previous</a></li>
+							<li class="first unavailable"><a href="/admin/users">&lt;&lt;
+									First</a></li>
+							<li class="previous unavailable"><a href="/admin/users">&lt;
+									Previous</a></li>
 							<li class="page current"><a href="/admin/users">1</a></li>
 							<li class="page"><a href="/admin/users?page=2">2</a></li>
 							<li class="page"><a href="/admin/users?page=3">3</a></li>
@@ -144,15 +117,9 @@
 			</tfoot>
 		</table>
 		<div class="text-right">
-			<button>
-				Confirm
-			</button>
-			<button>
-				Print list
-			</button>
-			<button>
-				Download CSV
-			</button>
+			<button>Confirm</button>
+			<button>Print list</button>
+			<button>Download CSV</button>
 		</div>
 	</div>
 </div>

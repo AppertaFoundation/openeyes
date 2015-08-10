@@ -443,6 +443,10 @@ class Admin
 		$errors = array();
 		if (Yii::app()->request->isPostRequest) {
 			$post = Yii::app()->request->getPost($this->modelName);
+			if(empty($post)){
+				$this->modelName = str_replace("\\","_",$this->modelName);
+				$post = $_POST[$this->modelName];
+			}
 			if (array_key_exists('id', $post) && $post['id']) {
 				$this->model->attributes = $post;
 			} else {
@@ -488,8 +492,15 @@ class Admin
 			if(array_key_exists('id', $post) && is_array($post['id'])){
 				foreach ($post['id'] as $id) {
 					$model = $this->model->findByPk($id);
-					if ($model && !$model->delete()) {
-						$response = 0;
+					if (isset($model->active)) {
+						$model->active = 0;
+						if ($model && !$model->save()) {
+							$response = 0;
+						}
+					} else {
+						if ($model && !$model->delete()) {
+							$response = 0;
+						}
 					}
 				}
 			}

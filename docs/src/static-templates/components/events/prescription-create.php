@@ -1,14 +1,10 @@
 <div class="large-10 column event ophdrprescription edit">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
-			<li class="selected">
-				<a href="#">Create</a>
-			</li>
+			<li class="selected"><a href="#">Create</a></li>
 		</ul>
 		<div class="button-bar right">
-			<a href="#" class="button small secondary">
-				Save
-			</a>
+			<a href="#" class="button small secondary"> Save </a>
 		</div>
 	</header>
 	<div class="event-content">
@@ -19,9 +15,7 @@
 				<div class="row field-row">
 					<div class="large-6 column">
 						<fieldset class="row field-row">
-							<legend class="large-4 column">
-								Add Item:
-							</legend>
+							<legend class="large-4 column"> Add Item: </legend>
 							<div class="large-8 column">
 								<div class="field-row">
 									<select>
@@ -36,14 +30,13 @@
 					</div>
 					<div class="large-6 column">
 						<fieldset>
-							<legend><em>Filtered by:</em></legend>
-							<label class="inline" for="">Type:</label>
-							<select class="inline">
+							<legend>
+								<em>Filtered by:</em>
+							</legend>
+							<label class="inline" for="">Type:</label> <select class="inline">
 								<option>-- Select --</option>
-							</select>
-							<label class="inline highlight">
-								No preservative
-								<input type="checkbox" />
+							</select> <label class="inline highlight"> No preservative <input
+								type="checkbox" />
 							</label>
 						</fieldset>
 					</div>
@@ -85,180 +78,110 @@
 			</thead>
 			<tbody>
 				<tr class="prescription-item odd">
-					<td class="prescription-label">
-						chlorAMPhenicol 0.5% eye drops
-					</td>
-					<td>
-						<input type="text" value="1 drop(s)" />
-					</td>
-					<td>
-						<select>
+					<td class="prescription-label">chlorAMPhenicol 0.5% eye drops</td>
+					<td><input type="text" value="1 drop(s)" /></td>
+					<td><select>
 							<option>-- Select --</option>
-						</select>
-					</td>
-					<td>
-						<select>
+					</select></td>
+					<td><select>
 							<option>-- Select --</option>
-						</select>
-					</td>
-					<td>
-						<select>
+					</select></td>
+					<td><select>
 							<option>-- Select --</option>
-						</select>
-					</td>
-					<td>
-						<select>
+					</select></td>
+					<td><select>
 							<option>-- Select --</option>
-						</select>
-					</td>
-					<td class="prescription-actions">
-						<a href="#">Remove</a> |
-						<a href="#">+Tapier</a>
+					</select></td>
+					<td class="prescription-actions"><a href="#">Remove</a> | <a
+						href="#">+Tapier</a></td>
+				</tr>
+				<tr class="prescription-tapier odd">
+					<td class="prescription-label"><span>then</span></td>
+					<td><input type="text" value="1 drop(s)" /></td>
+					<td colspan="2"></td>
+					<td><select>
+							<option value="">-- Select --</option>
+					</select></td>
+					<td><select>
+							<option value="">-- Select --</option>
+					</select></td>
+					<td class="prescription-actions"><a class="remove-taper" href="#">Remove</a>
 					</td>
 				</tr>
 				<tr class="prescription-tapier odd">
 					<td class="prescription-label"><span>then</span></td>
-					<td>
-						<input type="text" value="1 drop(s)" />
-					</td>
+					<td><input type="text" value="1 drop(s)" /></td>
 					<td colspan="2"></td>
-					<td>
-						<select>
+					<td><select>
 							<option value="">-- Select --</option>
-						</select>
-					</td>
-					<td>
-						<select>
+					</select></td>
+					<td><select>
 							<option value="">-- Select --</option>
-						</select>
-					</td>
-					<td class="prescription-actions">
-						<a class="remove-taper" href="#">Remove</a>
-					</td>
-				</tr>
-				<tr class="prescription-tapier odd">
-					<td class="prescription-label"><span>then</span></td>
-					<td>
-						<input type="text" value="1 drop(s)" />
-					</td>
-					<td colspan="2"></td>
-					<td>
-						<select>
-							<option value="">-- Select --</option>
-						</select>
-					</td>
-					<td>
-						<select>
-							<option value="">-- Select --</option>
-						</select>
-					</td>
-					<td class="prescription-actions">
-						<a class="remove-taper" href="#">Remove</a>
+					</select></td>
+					<td class="prescription-actions"><a class="remove-taper" href="#">Remove</a>
 					</td>
 				</tr>
 				<tr class="prescription-item even">
-					<td class="prescription-label">
-						chlorAMPhenicol 0.5% eye drops
-					</td>
-					<td>
-						<input type="text" value="1 drop(s)" />
-					</td>
-					<td>
-						<select>
+					<td class="prescription-label">chlorAMPhenicol 0.5% eye drops</td>
+					<td><input type="text" value="1 drop(s)" /></td>
+					<td><select>
 							<option>-- Select --</option>
-						</select>
-					</td>
-					<td>
-						<select>
+					</select></td>
+					<td><select>
 							<option>-- Select --</option>
-						</select>
-					</td>
-					<td>
-						<select>
+					</select></td>
+					<td><select>
 							<option>-- Select --</option>
-						</select>
-					</td>
-					<td>
-						<select>
+					</select></td>
+					<td><select>
 							<option>-- Select --</option>
-						</select>
-					</td>
-					<td class="prescription-actions">
-						<a href="#">Remove</a> |
-						<a href="#">+Tapier</a>
+					</select></td>
+					<td class="prescription-actions"><a href="#">Remove</a> | <a
+						href="#">+Tapier</a></td>
+				</tr>
+				<tr class="prescription-tapier even">
+					<td class="prescription-label"><span>then</span></td>
+					<td><input type="text" value="1 drop(s)" /></td>
+					<td colspan="2"></td>
+					<td><select>
+							<option value="">-- Select --</option>
+					</select></td>
+					<td><select>
+							<option value="">-- Select --</option>
+					</select></td>
+					<td class="prescription-actions"><a class="remove-taper" href="#">Remove</a>
 					</td>
 				</tr>
 				<tr class="prescription-tapier even">
 					<td class="prescription-label"><span>then</span></td>
-					<td>
-						<input type="text" value="1 drop(s)" />
-					</td>
+					<td><input type="text" value="1 drop(s)" /></td>
 					<td colspan="2"></td>
-					<td>
-						<select>
+					<td><select>
 							<option value="">-- Select --</option>
-						</select>
-					</td>
-					<td>
-						<select>
+					</select></td>
+					<td><select>
 							<option value="">-- Select --</option>
-						</select>
-					</td>
-					<td class="prescription-actions">
-						<a class="remove-taper" href="#">Remove</a>
-					</td>
-				</tr>
-				<tr class="prescription-tapier even">
-					<td class="prescription-label"><span>then</span></td>
-					<td>
-						<input type="text" value="1 drop(s)" />
-					</td>
-					<td colspan="2"></td>
-					<td>
-						<select>
-							<option value="">-- Select --</option>
-						</select>
-					</td>
-					<td>
-						<select>
-							<option value="">-- Select --</option>
-						</select>
-					</td>
-					<td class="prescription-actions">
-						<a class="remove-taper" href="#">Remove</a>
+					</select></td>
+					<td class="prescription-actions"><a class="remove-taper" href="#">Remove</a>
 					</td>
 				</tr>
 				<tr class="prescription-item odd">
-					<td class="prescription-label">
-						chlorAMPhenicol 0.5% eye drops
-					</td>
-					<td>
-						<input type="text" value="1 drop(s)" />
-					</td>
-					<td>
-						<select>
+					<td class="prescription-label">chlorAMPhenicol 0.5% eye drops</td>
+					<td><input type="text" value="1 drop(s)" /></td>
+					<td><select>
 							<option>-- Select --</option>
-						</select>
-					</td>
-					<td>
-						<select>
+					</select></td>
+					<td><select>
 							<option>-- Select --</option>
-						</select>
-					</td>
-					<td>
-						<select>
+					</select></td>
+					<td><select>
 							<option>-- Select --</option>
-						</select>
-					</td>
-					<td>
-						<select>
+					</select></td>
+					<td><select>
 							<option>-- Select --</option>
-						</select>
-					</td>
-					<td class="prescription-actions">
-						<a href="#">Remove</a> |
-						<a href="#">+Tapier</a>
-					</td>
+					</select></td>
+					<td class="prescription-actions"><a href="#">Remove</a> | <a
+						href="#">+Tapier</a></td>
 				</tr>
 			</tbody>
 		</table>

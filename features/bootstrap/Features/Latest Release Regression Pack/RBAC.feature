@@ -1,6 +1,8 @@
 @rbac @regression
 Feature: Open Eyes Login RBAC user levels
+@RBAC
 
+  @RBAC_Route
   Scenario: PREPARATION LASER EVENT: Login and create a Phasing Event
 
     Given I am on the OpenEyes "master" homepage

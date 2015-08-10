@@ -20,9 +20,7 @@ include 'fragments/assets.php';
 
 		<header class="header row">
 			<div class="large-3 columns">
-				<a class="logo" href="index.php">
-					OpenEyes
-				</a>
+				<a class="logo" href="index.php"> OpenEyes </a>
 			</div>
 		</header>
 		<div class="container content">
@@ -46,8 +44,8 @@ include 'fragments/assets.php';
 						<div class="row">
 							<div class="large-12 column">
 								<h2 id="overview">Overview</h2>
-								<p>Elements may have very different layouts. This page lists some of
-								the more common element layouts.</p>
+								<p>Elements may have very different layouts. This page lists
+									some of the more common element layouts.</p>
 							</div>
 						</div>
 
@@ -57,7 +55,8 @@ include 'fragments/assets.php';
 						<div class="row">
 							<div class="large-12 column">
 								<h2 id="form-layouts">Default layouts</h2>
-								<p>An element is essentially a form with different form controls.</p>
+								<p>An element is essentially a form with different form
+									controls.</p>
 
 								<!-- Default element -->
 								<div class="example">
@@ -71,9 +70,9 @@ include 'fragments/assets.php';
 											<header class="element-header">
 												<h3 class="element-title">Element title</h3>
 												<div class="element-actions">
-													<a href="#" class="button button-icon small">
-														<span class="icon-button-small-mini-cross"></span>
-														<span class="hide-offscreen">Remove element</span>
+													<a href="#" class="button button-icon small"> <span
+														class="icon-button-small-mini-cross"></span> <span
+														class="hide-offscreen">Remove element</span>
 													</a>
 												</div>
 											</header>
@@ -114,9 +113,9 @@ include 'fragments/assets.php';
 											<header class="element-header">
 												<h3 class="element-title">Element title</h3>
 												<div class="element-actions">
-													<a href="#" class="button button-icon small">
-														<span class="icon-button-small-mini-cross"></span>
-														<span class="hide-offscreen">Remove element</span>
+													<a href="#" class="button button-icon small"> <span
+														class="icon-button-small-mini-cross"></span> <span
+														class="hide-offscreen">Remove element</span>
 													</a>
 												</div>
 											</header>
@@ -142,12 +141,8 @@ include 'fragments/assets.php';
 											</div>
 											<div class="sub-elements inactive">
 												<ul class="sub-elements-list">
-													<li>
-														<a href="#">Sub-element 1</a>
-													</li>
-													<li>
-														<a href="#">Sub-element 2</a>
-													</li>
+													<li><a href="#">Sub-element 1</a></li>
+													<li><a href="#">Sub-element 2</a></li>
 												</ul>
 											</div>
 										</section>
@@ -167,9 +162,9 @@ include 'fragments/assets.php';
 											<header class="element-header">
 												<h3 class="element-title">Element title</h3>
 												<div class="element-actions">
-													<a href="#" class="button button-icon small">
-														<span class="icon-button-small-mini-cross"></span>
-														<span class="hide-offscreen">Remove element</span>
+													<a href="#" class="button button-icon small"> <span
+														class="icon-button-small-mini-cross"></span> <span
+														class="hide-offscreen">Remove element</span>
 													</a>
 												</div>
 											</header>
@@ -200,42 +195,34 @@ include 'fragments/assets.php';
 													<header class="sub-element-header">
 														<h4 class="sub-element-title">Sub-element title</h4>
 														<div class="sub-element-actions">
-															<a href="#" class="button button-icon small">
-																<span class="icon-button-small-mini-cross"></span>
-																<span class="hide-offscreen">Remove sub-element</span>
+															<a href="#" class="button button-icon small"> <span
+																class="icon-button-small-mini-cross"></span> <span
+																class="hide-offscreen">Remove sub-element</span>
 															</a>
 														</div>
 													</header>
 													<div class="sub-element-fields">
 														<div class="row field-row">
 															<div class="large-3 column">
-																<label>
-																	Eye:
-																</label>
+																<label> Eye: </label>
 															</div>
 															<div class="large-9 column">
-																<label class="inline highlight">
-																	<input type="radio" />
+																<label class="inline highlight"> <input type="radio" />
 																	First eye
-																</label>
-																<label class="inline highlight">
-																	<input type="radio" />
-																	Second eye
+																</label> <label class="inline highlight"> <input
+																	type="radio" /> Second eye
 																</label>
 															</div>
 														</div>
 														<div class="row field-row">
 															<div class="large-3 column">
-																<label>
-																	Suitable for surgeon:
-																</label>
+																<label> Suitable for surgeon: </label>
 															</div>
 															<div class="large-9 column">
 																<select>
 																	<option value="">- Please select -</option>
-																</select>
-																<label class="inline">
-																	<input type="checkbox" value="1" />	Supervised
+																</select> <label class="inline"> <input type="checkbox"
+																	value="1" /> Supervised
 																</label>
 															</div>
 														</div>

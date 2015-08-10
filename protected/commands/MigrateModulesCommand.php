@@ -27,6 +27,8 @@ class MigrateModulesCommand extends CConsoleCommand
 		return <<<EOD
 USAGE
   yiic migratemodules
+  OR
+  yiic migratemodules down [--level=N]  (default level is 1)
 
 DESCRIPTION
   This command runs the migrations for all configured modules.
@@ -42,27 +44,77 @@ EOD;
 		$commandPath = Yii::getPathOfAlias('application.commands');
 		$modules = Yii::app()->modules;
 		$moduleDir = ($composer) ? 'composer.openeyes.' : 'application.modules.';
-		foreach ($modules as $module => $module_settings) {
-			if (is_dir(Yii::getPathOfAlias($moduleDir.$module.'.migrations'))) {
-				echo "Migrating $module:\n";
-				if(!$interactive) {
-					$args = array('yiic', 'oemigrate', '--interactive=0', '--migrationPath='.$moduleDir.$module.'.migrations');
-				} else {
-					$args = array('yiic', 'oemigrate', '--migrationPath='.$moduleDir.$module.'.migrations');
-				}
-				if($connectionID){
-					$args[] = '--connectionID=' . $connectionID;
-				}
-				if($testdata ){
-					$args[] = '--testdata' ;
-				}
-				//echo "\nMigratemodules ARGS : " . var_export( $args, true );
+		// default modules in $modules array: gii, oldadmin
+		if( count($modules) <= 2 ){
+			echo "No modules installed, please check your configuration \n";
+		}else {
+			foreach ($modules as $module => $module_settings) {
+				if (is_dir(Yii::getPathOfAlias($moduleDir . $module . '.migrations'))) {
+					echo "Migrating $module:\n";
+					if (!$interactive) {
+						$args = array(
+							'yiic',
+							'oemigrate',
+							'--interactive=0',
+							'--migrationPath=' . $moduleDir . $module . '.migrations'
+						);
+					} else {
+						$args = array('yiic', 'oemigrate', '--migrationPath=' . $moduleDir . $module . '.migrations');
+					}
+					if ($connectionID) {
+						$args[] = '--connectionID=' . $connectionID;
+					}
+					if ($testdata) {
+						$args[] = '--testdata';
+					}
+					//echo "\nMigratemodules ARGS : " . var_export( $args, true );
 
-				$runner = new CConsoleCommandRunner();
-				$runner->addCommands($commandPath);
-				$runner->run($args);
+					$runner = new CConsoleCommandRunner();
+					$runner->addCommands($commandPath);
+					$runner->run($args);
+				}
 			}
 		}
 	}
 
+	public function actionDown($level = 1)
+	{
+
+		$commandPath = Yii::getPathOfAlias('application.commands');
+		$modules = Yii::app()->modules;
+		$moduleDir = 'application.modules.';
+		$migrationNames = Yii::app()->db->createCommand()->select("version")->from("tbl_migration")->order("version DESC")->limit($level)->queryAll();
+
+		$moduleFile = false;
+
+		foreach ($migrationNames as $migrationFile) {
+			foreach ($modules as $module => $module_settings) {
+				if (is_file(Yii::getPathOfAlias($moduleDir . $module . '.migrations') . "/" . $migrationFile["version"] . ".php")) {
+					$moduleFile = true;
+					echo $migrationFile["version"] . " is in module " . $module . "\n";
+					$args = array(
+						'yiic',
+						'oemigrate',
+						'down',
+						'--migrationPath=' . $moduleDir . $module . '.migrations'
+					);
+				}
+			}
+			// migration was not found in the modules
+			if ($moduleFile === false) {
+				echo $migrationFile["version"] . " is not a module migration!\n";
+				$args = array(
+					'yiic',
+					'oemigrate',
+					'down'
+				);
+			}
+			$runner = new CConsoleCommandRunner();
+			$runner->addCommands($commandPath);
+			$runner->run($args);
+
+			$moduleFile = false;
+			unset($args);
+		}
+	}
 }

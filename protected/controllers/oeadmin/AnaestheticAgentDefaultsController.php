@@ -68,6 +68,7 @@ class AnaestheticAgentDefaultsController extends BaseAdminController
 		$admin->setAutocompleteField(
 			array(
 				'fieldName' => 'anaesthetic_agent_id',
+				'allowBlankSearch' => 1,
 				'jsonURL' => '/oeadmin/AnaestheticAgentDefaults/search',
 				'placeholder' => 'search for adding anaesthetic agent'
 			)
@@ -145,7 +146,8 @@ class AnaestheticAgentDefaultsController extends BaseAdminController
 	{
 		if (Yii::app()->request->isAjaxRequest) {
 			$criteria = new CDbCriteria();
-			if (isset($_GET['term']) && strlen($term = $_GET['term']) > 0) {
+			if (isset($_GET['term'])) {
+				$term = $_GET['term'];
 				$criteria->addCondition(array('LOWER(name) LIKE :term'),
 					'OR');
 				$params[':term'] = '%' . strtolower(strtr($term, array('%' => '\%'))) . '%';

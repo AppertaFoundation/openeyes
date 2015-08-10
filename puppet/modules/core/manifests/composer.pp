@@ -25,7 +25,7 @@ class core::composer {
 
 		exec { "run_composer_install":
 			cwd => '/var/www',
-			command => "/var/www/composer.phar install --prefer-source --no-interaction --working-dir /var/www",
+			command => "/var/www/composer.phar update --prefer-source --no-interaction --working-dir /var/www",
 			#command => "/var/www/composer.phar install --no-interaction",
       require => [Exec["download_composer"], Package['php5-curl', 'php5-cli']],
 			timeout => 0, # This can take a long time

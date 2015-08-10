@@ -275,7 +275,7 @@ return array(
 				'position' => 1,
 			),
 			'admin' => array(
-				'title' => 'Admin',
+				'title' => 'More',
 				'uri' => '#',
 				'position' => 2,
 				'restricted' => array('admin', 'Report'),
@@ -327,5 +327,6 @@ return array(
 		'wkhtmltopdf_left_margin' => '20mm',
 		'wkhtmltopdf_right_margin' => '20mm',
 		'wkhtmltopdf_nice_level' => false,
+		'OphCoTherapyapplication_sender_email' => array('email@example.com' => 'Test'),
 	),
 );

@@ -31,6 +31,16 @@ class BaseEventTypeElement extends BaseElement
 
 	protected $_element_type;
 	protected $_children;
+	protected $frontEndErrors = array();
+	protected $errorExceptions = array(
+		'Element_OphTrOperationbooking_Operation_procedures' => 'select_procedure_id_procs',
+		'Element_OphDrPrescription_Details_items' => 'prescription_items',
+		'Element_OphTrConsent_Procedure_procedures' => 'typeProcedure',
+		'Element_OphTrLaser_Treatment_left_procedures' => 'treatment_left_procedures',
+		'Element_OphTrLaser_Treatment_right_procedures' => 'treatment_right_procedures',
+		'OEModule_OphCiExamination_models_Element_OphCiExamination_Dilation_left_treatments' => 'dilation_drug_left',
+		'OEModule_OphCiExamination_models_Element_OphCiExamination_Dilation_right_treatments' => 'dilation_drug_right',
+	);
 
 	private $settings = array();
 
@@ -200,7 +210,12 @@ class BaseEventTypeElement extends BaseElement
 
 	public function getSetting($key)
 	{
-		return SettingMetadata::model()->getSetting($key, ElementType::model()->find('class_name=?',array(get_class($this))));
+		$setting = SettingMetadata::model()->getSetting($key, ElementType::model()->find('class_name=?',array(get_class($this))));
+		if(!$setting){
+			$setting = SettingMetadata::model()->getSetting($key, ElementType::model()->find('class_name=?',array(get_parent_class($this))));
+		}
+
+		return $setting;
 	}
 
 	/**
@@ -287,6 +302,37 @@ class BaseEventTypeElement extends BaseElement
 	public function isEditable()
 	{
 		return true;
+	}
+
+	public function addError($attribute, $message)
+	{
+		$this->frontEndErrors[] = $this->errorAttributeException(str_replace('\\', '_', get_class($this)) . '_' . $attribute);
+		$message = '<a class="errorlink" onClick="scrollToElement($(\'.' . str_replace('\\', '_',
+				get_class($this)) . '\'))">' . $message . '</a>';
+		parent::addError($attribute, $message);
+	}
+
+	/**
+	 * Allows for exceptions where the element displayed is not the one required. eg for ajax control elements.
+	 *
+	 * @param $attribute
+	 * @return mixed
+	 */
+	protected function errorAttributeException($attribute)
+	{
+		if(array_key_exists($attribute, $this->errorExceptions)){
+			return $this->errorExceptions[$attribute];
+		}
+
+		return $attribute;
+	}
+
+	/**
+	 *  returns the front-end attributes with errors
+	 */
+	public function getFrontEndErrors()
+	{
+		echo json_encode($this->frontEndErrors);
 	}
 
 	public function requiredIfSide($attribute, $params)

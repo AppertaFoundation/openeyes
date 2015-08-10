@@ -1,20 +1,12 @@
 <div class="large-10 column event ophtroperationbooking edit">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
-			<li>
-				<a href="#">View</a>
-			</li>
-			<li class="selected">
-				<a href="#">Edit</a>
-			</li>
+			<li><a href="#">View</a></li>
+			<li class="selected"><a href="#">Edit</a></li>
 		</ul>
 		<div class="button-bar right">
-			<a href="#" class="button secondary small">
-				Save
-			</a>
-			<a href="#" class="button warning small">
-				Cancel
-			</a>
+			<a href="#" class="button secondary small"> Save </a> <a href="#"
+				class="button warning small"> Cancel </a>
 		</div>
 	</header>
 	<div class="event-content">
@@ -30,16 +22,10 @@
 						<label for="username">Eyes:</label>
 					</div>
 					<div class="large-10 column">
-						<label class="inline highlight">
-							<input type="radio" />
-							Right
-						</label>
-						<label class="inline highlight">
-							<input type="radio" />
+						<label class="inline highlight"> <input type="radio" /> Right
+						</label> <label class="inline highlight"> <input type="radio" />
 							Both
-						</label>
-						<label class="inline highlight">
-							<input type="radio" />
+						</label> <label class="inline highlight"> <input type="radio" />
 							Left
 						</label>
 					</div>
@@ -58,7 +44,8 @@
 								</select>
 							</div>
 							<div class="field-row">
-								<input type="text" placeholder="or type the first few characters of a diagnosis" />
+								<input type="text"
+									placeholder="or type the first few characters of a diagnosis" />
 							</div>
 						</fieldset>
 					</div>
@@ -76,25 +63,17 @@
 						<label for="username">Eyes:</label>
 					</div>
 					<div class="large-10 column">
-						<label class="inline highlight">
-							<input type="radio" />
-							Right
-						</label>
-						<label class="inline highlight">
-							<input type="radio" />
+						<label class="inline highlight"> <input type="radio" /> Right
+						</label> <label class="inline highlight"> <input type="radio" />
 							Both
-						</label>
-						<label class="inline highlight">
-							<input type="radio" />
+						</label> <label class="inline highlight"> <input type="radio" />
 							Left
 						</label>
 					</div>
 				</div>
 				<div class="row field-row">
 					<div class="large-2 column">
-						<label>
-							Procedures:
-						</label>
+						<label> Procedures: </label>
 					</div>
 					<div class="large-4 column">
 						<fieldset class="panel procedure">
@@ -136,18 +115,10 @@
 							<table class="grid">
 								<tfoot>
 									<tr>
-										<td>
-											Calculated Total Duration:
-										</td>
-										<td>
-											115 mins
-										</td>
-										<td>
-											Estimated Total Duration:
-										</td>
-										<td>
-											<input type="text" />
-										</td>
+										<td>Calculated Total Duration:</td>
+										<td>115 mins</td>
+										<td>Estimated Total Duration:</td>
+										<td><input type="text" /></td>
 									</tr>
 								</tfoot>
 							</table>
@@ -159,12 +130,8 @@
 						<label>Consultant required:</label>
 					</div>
 					<div class="large-4 column end">
-						<label class="inline highlight">
-							<input type="radio" />
-							Yes
-						</label>
-						<label class="inline highlight">
-							<input type="radio" />
+						<label class="inline highlight"> <input type="radio" /> Yes
+						</label> <label class="inline highlight"> <input type="radio" />
 							No
 						</label>
 					</div>
@@ -179,9 +146,7 @@
 				</div>
 				<div class="row field-row">
 					<div class="large-2 column">
-						<label>
-							Site:
-						</label>
+						<label> Site: </label>
 					</div>
 					<div class="large-4 column end">
 						<select>
@@ -207,14 +172,11 @@
 			<fieldset class="element-fields">
 				<div class="row field-row">
 					<div class="large-2 column">
-						<label>
-							Schedule options
-						</label>
+						<label> Schedule options </label>
 					</div>
 					<div class="large-4 column end">
-						<label class="inline highlight">
-							<input type="radio" />
-							As soon as possible
+						<label class="inline highlight"> <input type="radio" /> As soon as
+							possible
 						</label>
 					</div>
 				</div>

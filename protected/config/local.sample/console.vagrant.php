@@ -26,7 +26,7 @@ return array(
 		),
 		'testdb' => array(
 			'class'=> 'CDbConnection',
-			'connectionString' => "mysql:host=localhost;dbname=openeyestest",
+			'connectionString' => "mysql:host=localhost;port=3333;dbname=openeyes",
 			'username' => 'openeyes',
 			'password' => 'oe_test',
 		),

@@ -1,7 +1,9 @@
   @phasing @regression
   Feature: Create New Phasing Event
+  @Phasing
            Regression coverage of this event is 100%
 
+  @Phasing_Route_1
   Scenario: Route 1: Login and create a Phasing Event
 
     Given I am on the OpenEyes "master" homepage
@@ -16,7 +18,7 @@
     Then I expand the Glaucoma sidebar
     And I add a New Event "Phasing"
 
-    Then I choose a right eye Intraocular Pressure Instrument  of "1"
+    #Then I choose a right eye Intraocular Pressure Instrument  of "1"
 
     And I choose right eye Dilation of Yes
 
@@ -24,7 +26,7 @@
     Then I choose a right eye Intraocular Pressure Reading of "5"
     And I add right eye comments of "Right eye comments here"
 
-    Then I choose a left eye Intraocular Pressure Instrument  of "5"
+    #Then I choose a left eye Intraocular Pressure Instrument  of "5"
 
     And I choose left eye Dilation of Yes
 
@@ -34,6 +36,7 @@
 
     Then I Save the Phasing Event and confirm it has been created successfully
 
+    @Phasing_Route_2
     Scenario: Route 2: Login and create a Phasing Event
 
       Given I am on the OpenEyes "master" homepage
@@ -48,7 +51,7 @@
       Then I expand the Cataract sidebar
       And I add a New Event "Phasing"
 
-      Then I choose a right eye Intraocular Pressure Instrument  of "3"
+      #Then I choose a right eye Intraocular Pressure Instrument  of "3"
 
       And I choose right eye Dilation of No
 
@@ -56,7 +59,7 @@
       Then I choose a right eye Intraocular Pressure Reading of "14"
       And I add right eye comments of "Right eye comments here"
 
-      Then I choose a left eye Intraocular Pressure Instrument  of "4"
+      #Then I choose a left eye Intraocular Pressure Instrument  of "4"
 
       And I choose left eye Dilation of Yes
 
@@ -66,6 +69,7 @@
 
       Then I Save the Phasing Event and confirm it has been created successfully
 
+    @Phasing_Route_3
     Scenario: Route 3: Login and create a Phasing Event
 
       Given I am on the OpenEyes "master" homepage
@@ -80,7 +84,7 @@
       Then I expand the Glaucoma sidebar
       And I add a New Event "Phasing"
 
-      Then I choose a right eye Intraocular Pressure Instrument  of "3"
+      #Then I choose a right eye Intraocular Pressure Instrument  of "3"
 
       And I choose right eye Dilation of No
 
@@ -88,7 +92,7 @@
       Then I choose a right eye Intraocular Pressure Reading of "5"
       And I add right eye comments of "Right eye comments here"
 
-      Then I choose a left eye Intraocular Pressure Instrument  of "3"
+      #Then I choose a left eye Intraocular Pressure Instrument  of "3"
 
       And I choose left eye Dilation of Yes
 
@@ -98,6 +102,7 @@
 
       Then I Save the Phasing Event and confirm it has been created successfully
 
+    @Phasing_Route_4
     Scenario: Route 4: Login and create a Phasing Event
 
       Given I am on the OpenEyes "master" homepage
@@ -112,7 +117,7 @@
       Then I expand the Medical Retinal sidebar
       And I add a New Event "Phasing"
 
-      Then I choose a right eye Intraocular Pressure Instrument  of "4"
+      #Then I choose a right eye Intraocular Pressure Instrument  of "4"
 
       And I choose right eye Dilation of No
 
@@ -120,7 +125,7 @@
       Then I choose a right eye Intraocular Pressure Reading of "5"
       And I add right eye comments of "Right eye comments here"
 
-      Then I choose a left eye Intraocular Pressure Instrument  of "1"
+      #Then I choose a left eye Intraocular Pressure Instrument  of "1"
 
       And I choose left eye Dilation of Yes
 
@@ -141,6 +146,7 @@
 
       Then I Save the Phasing Event and confirm it has been created successfully
 
+    @Phasing_Route_5
     Scenario: Route 5: Login and create a Phasing Event
               Invalid time entry validation tests (Intraocular Pressing Reading Times)
 
@@ -156,7 +162,7 @@
       Then I expand the Glaucoma sidebar
       And I add a New Event "Phasing"
 
-      Then I choose a right eye Intraocular Pressure Instrument  of "1"
+      #Then I choose a right eye Intraocular Pressure Instrument  of "1"
 
       And I choose right eye Dilation of Yes
 
@@ -164,7 +170,7 @@
       Then I choose a right eye Intraocular Pressure Reading of "5"
       And I add right eye comments of "Right eye comments here"
 
-      Then I choose a left eye Intraocular Pressure Instrument  of "5"
+      #Then I choose a left eye Intraocular Pressure Instrument  of "5"
 
       And I choose left eye Dilation of Yes
 

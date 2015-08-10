@@ -29,5 +29,9 @@ return array(
 		'service_id' => 2,
 		'subspecialty_id' => 2,
 	),
+	'servicespecialtyassignment3' => array(
+		'id' => 3,
+		'subspecialty_id' => 2,
+	),
 );
 

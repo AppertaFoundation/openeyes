@@ -20,7 +20,7 @@
 $config = array(
 	'components' => array(
 		'db' => array(
-			'connectionString' => 'mysql:host=localhost;port=3306;dbname=openeyes',
+			'connectionString' => 'mysql:host=127.0.0.1;port=3306;dbname=openeyes',
 			'username' => 'root',
 			'password' => '',
 		),
@@ -84,18 +84,18 @@ $config = array(
 	'modules' => array(
 		'eyedraw',
 		'OphCiExamination' => array( 'class' => '\OEModule\OphCiExamination\OphCiExaminationModule', ),
-		'OphCiPhasing',
 		'OphCoCorrespondence',
+		'OphCiPhasing',
 		'OphCoTherapyapplication',
 		'OphDrPrescription',
-		'OphLeEpatientletter',
-		'OphOuAnaestheticsatisfactionaudit',
+		'OphOuAnaestheticsatisfactionaudits',
 		'OphTrConsent',
+		'OphTrOperationnote',
+		'OphTrOperationbooking',
 		'OphTrIntravitrealinjection',
 		'OphTrLaser',
-		'OphTrOperationbooking',
-		'OphTrOperationnote',
-		'PatientTicketing' => array('class' => '\OEModule\PatientTicketing\PatientTicketingModule'),
+		'PatientTicketing' => array( 'class' => '\OEModule\PatientTicketing\PatientTicketingModule', ),
+		'OphInVisualfields',
 	),
 
 	'params'=>array(

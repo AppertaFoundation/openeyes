@@ -89,7 +89,7 @@
 			'success': function(resp) {
 				if (resp == "0") {
 					new OpenEyes.UI.Dialog.Alert({
-						content: "This contact location is currently assocated with one or more patients and so cannot be removed.\n\nYou can click on the location row to view the patients involved."
+						content: "This contact location is currently associated with one or more patients and so cannot be removed.\n\nYou can click on the location row to view the patients involved."
 					}).open();
 				} else if (resp == "-1") {
 					new OpenEyes.UI.Dialog.Alert({

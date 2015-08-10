@@ -273,3 +273,49 @@ $oe-element-edit-title-font-style: italic;
   border-style: none !important;
   margin-top: -19px;
 }
+
+.highlighted-error {
+  border: 2px solid red;
+}
+
+.errorlink {
+  color: #FFFFFF;
+  text-decoration: dotted;
+}
+
+.errorlink:hover {
+  color: #CCCCCC;
+  text-decoration: underline;
+}
+
+.pcr-nk {
+  width: 140px;
+  height:10px;
+  top:-15px
+}
+.pcr-span {
+  background-color: white;
+  width: 100px;
+  font-weight: bold;
+}
+.pcr-erisk {
+  background-color: white;
+}
+#pcr-risk-div {
+  background-color: red;
+}
+.pcr-nkr {
+  height:35px;
+}
+.pcr-opnote-eye {
+  border-width:1px;
+  border-style: solid;
+  border-color: #ffffff;
+  display:none;
+}
+.pcr-exam-link{
+  position: relative;
+  left: 350px;
+  font-family:'Arial';
+  font-style: normal;
+}

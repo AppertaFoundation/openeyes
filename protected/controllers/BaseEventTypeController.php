@@ -231,7 +231,7 @@ class BaseEventTypeController extends BaseModuleController
 		$elements = array();
 		if(is_array($this->open_elements)){
 			foreach ($this->open_elements as $element) {
-				if (!$element->getElementType()->isChild()) {
+				if($element->getElementType() && !$element->getElementType()->isChild()) {
 					$elements[] = $element;
 				}
 			}
@@ -252,7 +252,7 @@ class BaseEventTypeController extends BaseModuleController
 		if(is_array($this->open_elements)) {
 			foreach ($this->open_elements as $open) {
 				$et = $open->getElementType();
-				if ($et->isChild() && $et->parent_element_type->class_name == $parent_type->class_name) {
+				if ($et && $et->isChild() && $et->parent_element_type->class_name == $parent_type->class_name) {
 					$open_child_elements[] = $open;
 				}
 			}
@@ -293,7 +293,7 @@ class BaseEventTypeController extends BaseModuleController
 		if(is_array($this->open_elements)) {
 			foreach ($this->open_elements as $open) {
 				$et = $open->getElementType();
-				if ($et->isChild() && $et->parent_element_type->class_name == $parent_type->class_name) {
+				if ($et && $et->isChild() && $et->parent_element_type->class_name == $parent_type->class_name) {
 					$open_et[] = $et->class_name;
 				}
 			}
@@ -1080,12 +1080,12 @@ class BaseEventTypeController extends BaseModuleController
 				}
 			}
 			elseif ($element_type->required) {
-				$errors['Event'][] = $element_type->name . ' is required';
+				$errors[$this->event_type->name][] = $element_type->name . ' is required';
 				$elements[] = $element_type->getInstance();
 			}
 		}
 		if (!count($elements)) {
-			$errors['Event'][] = 'Cannot create an event without at least one element';
+			$errors[$this->event_type->name][] = 'Cannot create an event without at least one element';
 		}
 
 		// assign
@@ -1112,7 +1112,7 @@ class BaseEventTypeController extends BaseModuleController
 			if (!$event->validate()) {
 				foreach ($event->getErrors() as $errormsgs) {
 					foreach ($errormsgs as $error) {
-						$errors['Event'][] = $error;
+						$errors[$this->event_type->name][] = $error;
 					}
 				}
 			}
@@ -1191,7 +1191,10 @@ class BaseEventTypeController extends BaseModuleController
 			foreach ($this->event->getElements() as $curr_element) {
 				if (!isset($oe_ids[get_class($curr_element)])
 					|| !in_array($curr_element->id, $oe_ids[get_class($curr_element)])) {
-					$curr_element->delete();
+					// make sure that the element have a primary key (it tried to delete null elements before!)
+					if ($curr_element->getPrimaryKey() !== null) {
+						$curr_element->delete();
+					}
 				}
 			}
 		}
@@ -1469,7 +1472,8 @@ class BaseEventTypeController extends BaseModuleController
 	{
 		$this->renderPartial('//elements/form_errors',array(
 			'errors'=>$errors,
-			'bottom'=>$bottom
+			'bottom' => $bottom,
+			'elements' => $this->open_elements
 		));
 	}
 
