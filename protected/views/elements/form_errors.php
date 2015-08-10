@@ -17,38 +17,55 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php if (isset($errors) && !empty($errors)) {?>
+<?php if (isset($errors) && !empty($errors)) {
+    ?>
 	<div class="alert-box error with-icon<?php if ($bottom) {
-		echo " bottom";
-	} ?>">
+    echo " bottom";
+}
+    ?>">
 		<p>Please fix the following input errors:</p>
-		<?php foreach ($errors as $field => $errs) {?>
-			<?php foreach ($errs as $err) {?>
+		<?php foreach ($errors as $field => $errs) {
+    ?>
+			<?php foreach ($errs as $err) {
+    ?>
 				<ul>
 					<li>
 						<?php echo $field.': '.$err?>
 					</li>
 				</ul>
-			<?php }?>
-		<?php }?>
+			<?php 
+}
+    ?>
+		<?php 
+}
+    ?>
 	</div>
-<?php }?>
+<?php 
+}?>
 <script type="text/javascript">
 	$(document).ready(function () {
 		<?php
-			if( isset($elements) && is_array($elements) ){
-				foreach( $elements as $element ){  ?>
-		var errorObject = <?php $element->getFrontEndErrors(); ?>;
+            if (isset($elements) && is_array($elements)) {
+                foreach ($elements as $element) {
+                    ?>
+		var errorObject = <?php $element->getFrontEndErrors();
+                    ?>;
 		for (k = 0; k < errorObject.length; k++) {
+			//$('[id*=' + errorObject[k] + ']').addClass('highlighted-error');
 			if ($('#' + errorObject[k]).length) {
-				$('#' + errorObject[k]).wrap("<div class='highlighted-error'></div>");
+				if(! $('#' + errorObject[k]).parent().hasClass('highlighted-error')) {
+					$('#' + errorObject[k]).wrap("<div class='highlighted-error'></div>");
+				}
 			} else {
-				$('[id*="' + errorObject[k] + '"]').wrap("<div class='highlighted-error'></div>");
+				if(! $('[id*="' + errorObject[k] + '"]').parent().hasClass('highlighted-error')) {
+					$('[id*="' + errorObject[k] + '"]').wrap("<div class='highlighted-error'></div>");
+				}
 			}
 		}
 		<?php
-				}
-			 }?>
+
+                }
+            }?>
 	});
 
 </script>
