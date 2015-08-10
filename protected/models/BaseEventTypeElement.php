@@ -38,6 +38,8 @@ class BaseEventTypeElement extends BaseElement
 		'Element_OphTrConsent_Procedure_procedures' => 'typeProcedure',
 		'Element_OphTrLaser_Treatment_left_procedures' => 'treatment_left_procedures',
 		'Element_OphTrLaser_Treatment_right_procedures' => 'treatment_right_procedures',
+		'OEModule_OphCiExamination_models_Element_OphCiExamination_Dilation_left_treatments' => 'dilation_drug_left',
+		'OEModule_OphCiExamination_models_Element_OphCiExamination_Dilation_right_treatments' => 'dilation_drug_right',
 	);
 
 	private $settings = array();
