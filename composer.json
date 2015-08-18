@@ -5,7 +5,7 @@
   "require": {
     "openeyes/module-installer": "*",
     "yiisoft/yii": "1.1.14",
-    "openeyes/oph-ci-examination": "1.11",
+    "openeyes/oph-ci-examination": "hotfix/1.11.1",
     "openeyes/oph-co-correspondence": "1.10",
     "openeyes/oph-ci-phasing": "dev-master",
     "openeyes/oph-co-therapyapplication": "dev-master",
@@ -13,7 +13,7 @@
     "openeyes/oph-ou-anaestheticsatisfactionaudit": "dev-master",
     "openeyes/oph-tr-consent": "1.11",
     "openeyes/oph-tr-operationnote": "1.11",
-    "openeyes/oph-tr-operationbooking": "1.11",
+    "openeyes/oph-tr-operationbooking": "hotfix/1.11.1",
     "openeyes/oph-tr-intravitrealinjection": "1.11",
     "openeyes/oph-tr-laser": "dev-master",
     "openeyes/patient-ticketing": "1.10",
