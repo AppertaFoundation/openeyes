@@ -2763,14 +2763,20 @@ html, body {
   background: #d4d1cd;
 }
 
+@media print{
+  html, body {
+    background: #ffffff;
+  }
+}
+
 /* line 21, ../sass/openeyes/components/_global.scss */
 .end {
   float: left !important;
 }
 
 /* line 25, ../sass/openeyes/components/_global.scss */
-.print {
-  background: #ffffff;
+.print{
+  background: #ffffff !important;
 }
 
 /* line 17, ../sass/openeyes/components/_containers.scss */
