@@ -31,22 +31,23 @@ $event_type = $event->eventType->name;
 		<div class="large-4 column patient">
 			<strong><?php echo $this->patient->contact->fullName?></strong>
 			<br />
+			<p>
 			<?php echo $this->patient->getLetterAddress(array(
 				'delimiter' => '<br/>',
 			))?>
-			<br />
-			<br />
-			Hospital No: <strong><?php echo $this->patient->hos_num ?></strong>
-			<br />
-			NHS No: <strong><?php echo $this->patient->nhsnum ?></strong>
-			<br />
-			DOB: <strong><?php echo Helper::convertDate2NHS($this->patient->dob) ?> (<?php echo $this->patient->getAge()?>)</strong>
+			</p>
 		</div>
 		<div class="large-4 column firm">
 			<?php if ($consultant = $this->event->episode->firm->consultant) {?>
 			<p><strong><?php echo $consultant->contact->getFullName() ?></strong></p>
 			<?php }?>
 			<p>Service: <strong><?php echo $this->event->episode->firm->getSubspecialtyText() ?></strong></p>
+			<p>Hospital No: <strong><?php echo $this->patient->hos_num ?></strong>
+			<br />
+			NHS No: <strong><?php echo $this->patient->nhsnum ?></strong>
+			<br />
+			DOB: <strong><?php echo Helper::convertDate2NHS($this->patient->dob) ?> (<?php echo $this->patient->getAge()?>)</strong>
+			</p>
 		</div>
 		<div class="dates" style="width: 33.33333%;float: left;">
 			<p><?php echo $event_type;?> Created: <strong><?php echo Helper::convertDate2NHS($this->event->created_date) ?></strong></p>
