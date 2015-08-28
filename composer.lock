@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "3b4a0ebd14670f7aaa3fde3e51693358",
+    "hash": "9620ca781a8f59dca498fdf362349b14",
     "packages": [
         {
             "name": "openeyes/eyedraw",
@@ -167,6 +167,28 @@
             "notification-url": "https://packagist.org/downloads/",
             "description": "Module for generating prescriptions in OpenEyes",
             "time": "2015-08-07 15:07:12"
+        },
+        {
+            "name": "openeyes/oph-in-biometry",
+            "version": "dev-release/v1.11",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/openeyes/OphInBiometry.git",
+                "reference": "b5dcc997e95dbb7ae3cf674beef916b75cf86de3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/openeyes/OphInBiometry/zipball/b5dcc997e95dbb7ae3cf674beef916b75cf86de3",
+                "reference": "b5dcc997e95dbb7ae3cf674beef916b75cf86de3",
+                "shasum": ""
+            },
+            "require": {
+                "openeyes/module-installer": "*"
+            },
+            "type": "openeyes-module",
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Biometry module for OpenEyes",
+            "time": "2015-08-03 11:32:28"
         },
         {
             "name": "openeyes/oph-in-visualfields",
@@ -440,6 +462,7 @@
         "openeyes/oph-tr-operationbooking": 20,
         "openeyes/oph-tr-laser": 20,
         "openeyes/oph-in-visualfields": 20,
+        "openeyes/oph-in-biometry": 20,
         "phpmd/phpmd": 0
     },
     "prefer-stable": false,
