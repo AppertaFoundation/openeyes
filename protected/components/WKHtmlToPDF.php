@@ -299,7 +299,7 @@ class WKHtmlToPDF
 
 		$nice = Yii::app()->params['wkhtmltopdf_nice_level'] ? 'nice -n'.Yii::app()->params['wkhtmltopdf_nice_level'].' ' : '';
 
-		$res = $this->execute($nice . escapeshellarg($this->wkhtmltopdf)." --no-background --footer-html ".escapeshellarg($footer_file)." --print-media-type $top_margin $bottom_margin $left_margin $right_margin ".escapeshellarg($html_file)." ".escapeshellarg($pdf_file)." 2>&1");
+		$res = $this->execute($nice . escapeshellarg($this->wkhtmltopdf)." --footer-html ".escapeshellarg($footer_file)." --print-media-type $top_margin $bottom_margin $left_margin $right_margin ".escapeshellarg($html_file)." ".escapeshellarg($pdf_file)." 2>&1");
 
 		if (!$this->fileExists($pdf_file) || $this->fileSize($pdf_file) == 0) {
 			if ($this->fileSize($pdf_file) == 0) {
