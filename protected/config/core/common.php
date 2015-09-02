@@ -253,7 +253,7 @@ return array(
 		'ldap_update_name' => false,
 		'ldap_update_email' => true,
 		'environment' => 'dev',
-		'watermark' => '',
+		//'watermark' => '',
 		'google_analytics_account' => '',
 		'local_users' => array(),
 		'log_events' => true,
