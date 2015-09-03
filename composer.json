@@ -6,7 +6,7 @@
     "openeyes/module-installer": "*",
     "yiisoft/yii": "1.1.14",
     "openeyes/oph-ci-examination": "dev-hotfix/1.11.1",
-    "openeyes/oph-co-correspondence": "1.10",
+    "openeyes/oph-co-correspondence": "dev-hotfix/1.11.1",
     "openeyes/oph-ci-phasing": "dev-master",
     "openeyes/oph-co-therapyapplication": "dev-master",
     "openeyes/oph-dr-prescription": "1.11",
