@@ -415,6 +415,61 @@ class m150902_091538_nod_export extends CDbMigration
 			DELIMITER ;
 
 
+			DELIMITER
+			DROP PROCEDURE IF EXISTS get_episode_treatment;
+			CREATE DEFINER=`root`@`localhost` PROCEDURE get_episode_treatment(IN dir VARCHAR(255))
+			  BEGIN
+
+			  	CREATE VIEW nod_episode_treatment AS SELECT pa.id AS TreatmentId, pl.event_id AS OperationId,
+			  	                                     (SELECT CASE WHEN pl.eye_id = 1 THEN 'L' WHEN pl.eye_id = 2 THEN 'R' END) As Eye,
+			  	                                     pa.proc_id AS TreatmentTypeId
+			  	                                     FROM ophtroperationnote_procedurelist_procedure_assignment pa
+			  	                                     JOIN et_ophtroperationnote_procedurelist pl ON pa.procedurelist_id = pl.event_id;
+
+			  	SET @file = concat(dir, '/episode_treatment_', @time_now, '.csv');
+			  	SET @cms = concat("(SELECT 'TreatmentId', 'OperationId', 'Eye', 'TreatmentTypeId')
+			  	           UNION (SELECT TreatmentId, OperationId, Eye, TreatmentTypeId FROM nod_episode_treatment INTO OUTFILE '", @file,
+			  	           "'  FIELDS ENCLOSED BY '\"' TERMINATED BY ';'",
+						   "  LINES TERMINATED BY '\r\n')");
+
+                PREPARE statement FROM @cmd;
+				EXECUTE statement;
+
+				DROP VIEW nod_episode_treatment;
+
+			  END $$
+			DELIMITER ;
+
+
+			DELIMITER
+			DROP PROCEDURE IF EXISTS get_episode_treatment_cataract;
+			CREATE DEFINER=`root`@`localhost` PROCEDURE get_episode_treatment_cataract(IN dir VARCHAR(255))
+			  BEGIN
+				CREATE VIEW nod_episode_treatment_cataract AS SELECT pa1.id,
+				 											  (	SELECT CASE WHEN pl.eye_id = 1 THEN 'L' WHEN pl.eye_id = 2 THEN 'R' END
+															   	FROM et_ophtroperationnote_procedurelist pl
+															   	JOIN ophtroperationnote_procedurelist_procedure_assignment pa ON pa.procedurelist_id = pl.event_id
+															   	JOIN event e ON e.id = pl.event_id
+																JOIN episode ep ON ep.id = e.episode_id
+																GROUP BY ep.patient_id
+																ORDER BY pl.last_modified_date desc
+																WHERE pa.id = pa1.id
+																) AS Eye,
+																NULL AS PreparationDrugId
+															  FROM ophtroperationnote_procedurelist_procedure_assignment pa1
+															  JOIN et_ophtroperationnote_procedurelist pl1 ON pa1.procedurelist_id = pl1.event_id;
+
+
+			  END
+			DELIMITER ;
+
+
+
+
+
+
+
+
 
 			DELIMITER $$
 			DROP PROCEDURE IF EXISTS run_nod_export_generator;
@@ -431,8 +486,7 @@ class m150902_091538_nod_export extends CDbMigration
 				call get_EpisodePreOpAssessment(dir);
 				call get_episode_refraction(dir);
 				call get_episode_visual_acuity(dir);
-
-
+				call get_episode_treatment(dir);
 
 			  END $$
 			DELIMITER ;
@@ -447,8 +501,18 @@ EOL;
 
 	public function down()
 	{
-		echo "m150902_091538_nod_export does not support migration down.\n";
-		return false;
+		$this->execute('DROP PROCEDURE IF EXISTS get_surgeons;');
+		$this->execute('DROP PROCEDURE IF EXISTS get_patients;');
+		$this->execute('DROP PROCEDURE IF EXISTS get_patient_cvi_status;');
+		$this->execute('DROP PROCEDURE IF EXISTS get_nod_episodes;');
+		$this->execute('DROP PROCEDURE IF EXISTS get_episodes_diagnosis;');
+		$this->execute('DROP PROCEDURE IF EXISTS get_episode_diabetic_diagnosis;');
+		$this->execute('DROP PROCEDURE IF EXISTS get_episode_drug;');
+		$this->execute('DROP PROCEDURE IF EXISTS get_EpisodePreOpAssessment;');
+		$this->execute('DROP PROCEDURE IF EXISTS get_episode_refraction;');
+		$this->execute('DROP PROCEDURE IF EXISTS get_episode_visual_acuity;');
+		$this->execute('DROP PROCEDURE IF EXISTS get_episode_treatment;');
+		$this->execute('DROP PROCEDURE IF EXISTS run_nod_export_generator;');
 	}
 
 	/*
