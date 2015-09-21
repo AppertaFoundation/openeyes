@@ -58,7 +58,7 @@
 				}
 			} else {
 				if(! $('[id*="' + errorObject[k] + '"]').parent().hasClass('highlighted-error')) {
-					$('[id*="' + errorObject[k] + '"]').wrap("<div class='highlighted-error'></div>");
+					$('[id*="' + errorObject[k] + '"]:not(:hidden)').wrap("<div class='highlighted-error'></div>");
 				}
 			}
 		}

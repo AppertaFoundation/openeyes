@@ -253,7 +253,7 @@ return array(
 		'ldap_update_name' => false,
 		'ldap_update_email' => true,
 		'environment' => 'dev',
-		'watermark' => '',
+		//'watermark' => '',
 		'google_analytics_account' => '',
 		'local_users' => array(),
 		'log_events' => true,
@@ -327,6 +327,6 @@ return array(
 		'wkhtmltopdf_left_margin' => '20mm',
 		'wkhtmltopdf_right_margin' => '20mm',
 		'wkhtmltopdf_nice_level' => false,
-		'OphCoTherapyapplication_sender_email' => array('email@example.com' => 'Test'),
+		'OphCoTherapyapplication_sender_email' => array('openeyes.servicedesk@moorfields.nhs.uk' => 'OpenEyes Therapy Application'),
 	),
 );

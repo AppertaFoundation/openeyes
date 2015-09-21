@@ -61,7 +61,7 @@
 			?>
 
 			<!-- Warnings -->
-			<?php if (is_array($warnings)) {
+			<?php if (is_array($warnings) && count($warnings) > 0 ) {
 				$msgs = array();
 				foreach ($warnings as $warn) {
 					$msgs[] = $warn['short_msg'];

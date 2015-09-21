@@ -18,6 +18,12 @@ html, body {
 	background: $body-bg;
 }
 
+@media print{
+  html, body {
+	background: #ffffff;
+  }
+}
+
 .end {
 	float: left !important;
 }
