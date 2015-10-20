@@ -1,4 +1,4 @@
-/** 8
+/** 
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
