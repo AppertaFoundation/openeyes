@@ -216,7 +216,7 @@ class Procedure extends BaseActiveRecordVersioned
 			->from('proc')
 			->join('proc_subspecialty_assignment psa', 'psa.proc_id = proc.id')
 			->where('psa.subspecialty_id = :id and proc.active = 1'.$where, array(':id' => $subspecialtyId))
-			->order('proc.term ASC')
+			->order('display_order, proc.term ASC')
 			->queryAll();
 
 		$data = array();

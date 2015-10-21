@@ -6444,6 +6444,14 @@ tfoot.pagination-container .pagination-view-all {
   font-size:10px;
 }
 
+.pcr-risk-data-link{
+  left:200px;
+}
+.pcr-risk-data-link label, .pcr-risk-data-link a{
+  font-size:10px;
+}
+
+
 /* line 18, ../sass/openeyes/components/events/_optional-elements.scss */
 .edit .optional-elements-header {
   background: #dae6f1;
