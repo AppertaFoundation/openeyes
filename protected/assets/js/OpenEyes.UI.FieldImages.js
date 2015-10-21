@@ -1,4 +1,4 @@
-/**
+/** 
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
@@ -80,10 +80,13 @@
 		for(var sval in fieldElId['selects']){
 			var imgPath = null;
 			if(fieldElId['id'] in this.options.images){
-				if(sval in this.options.images[fieldElId['id']]){
+/*				if(sval in this.options.images[fieldElId['id']]){
 					imgPath = this.options.images[fieldElId['id']][sval];
 				}
+*/
+				imgPath = OE_core_asset_path + '/img/fieldImages/' + fieldElId['id'] + '-' + sval + '.jpg';
 			}
+
 			var el = $('<div/>', {
 					class: 'ui-field-image'
 			}).click({
