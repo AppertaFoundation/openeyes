@@ -1,7 +1,0 @@
-{
-	"title": "Dialog",
-	"children": [
-		"dialog_alert",
-		"dialog_confirm"
-	]
-}

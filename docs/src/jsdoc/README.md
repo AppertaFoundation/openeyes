@@ -1,1 +1,0 @@
-## OpenEyes Javascript API Documentation.
