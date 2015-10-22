@@ -18,7 +18,7 @@
  */
 $dirname = dirname ( __FILE__ );
 
-$yii = $dirname . '/vendor/yiisoft/yii/framework/yii.php';
+$yii = $dirname . '/protected/yii/framework/yii.php';
 $config = $dirname . '/protected/config/main.php';
 $common_config = $dirname . '/protected/config/core/common.php';
 $local_common_config = $dirname . '/protected/config/local/common.php';
