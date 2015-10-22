@@ -20,9 +20,9 @@
 $config = array(
 	'components' => array(
 		'db' => array(
-			'connectionString' => 'mysql:host=127.0.0.1;port=3306;dbname=openeyes',
-			'username' => 'root',
-			'password' => '',
+			'connectionString' => 'mysql:host=localhost;port=3306;dbname=openeyes',
+			'username' => 'openeyes',
+			'password' => 'openeyes',
 		),
 		'session' => array(
 			'timeout' => 86400
