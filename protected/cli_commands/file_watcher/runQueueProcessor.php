@@ -30,7 +30,7 @@
 	
 	function isRunning($pid){
 		try{
-			// display elapsed time
+			// get elapsed time
 			$result = shell_exec(sprintf("ps -p %d -o etimes=", $pid));
 			if( $result != "" ){
 				

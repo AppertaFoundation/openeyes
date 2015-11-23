@@ -2,7 +2,7 @@ create table dicom_file_queue(
 	id int(11) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	filename varchar(500) NOT NULL,
 	detected_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	last_modified_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	last_modified_date TIMESTAMP NOT NULL,
 	status_id int(10) NOT NULL DEFAULT 0
 );
 

@@ -6,11 +6,10 @@ include_once('./fileWatcherConfig.php');
 // maybe we can move this into the config file!!
 
 // we should be able to start more processes here!
-//$f = new FileAlterationMonitor($dicomConfig["biometry"]["inputFolder"]);
 
 $fam_res = fam_open ();
 $dir_res = fam_monitor_directory  ( $fam_res, $dicomConfig["biometry"]["inputFolder"]);
-var_dump($dir_res);
+var_dump($dicomConfig["biometry"]["inputFolder"]);
 
 while (TRUE)
 {
