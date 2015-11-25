@@ -1,11 +1,11 @@
 <?php
 
-class m151123_173403_create_dicom_file_log_table extends OEMigration
+class m151123_173403_create_dicom_file_watcher_tables extends CDbMigration
 {
 	public function up()
 	{
 		$this->createTable('dicom_file_log', array(
-			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY',
 			'event_date_time' => 'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
 			'filename' => 'varchar(500) NOT NULL',
 			'status' => 'varchar(20)',
