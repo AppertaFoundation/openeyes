@@ -17,7 +17,7 @@ class m151123_173403_create_dicom_file_watcher_tables extends CDbMigration
 			'filename' => 'varchar(500) NOT NULL',
 			'detected_date' => 'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
 			'last_modified_date' => 'TIMESTAMP NOT NULL',
-			'status_id' => 'int(10) NOT NULL DEFAULT 0'
+			'status_id' => 'int(10) unsigned NOT NULL'
 		));
 
 		$this->createTable('dicom_process_status', array(
