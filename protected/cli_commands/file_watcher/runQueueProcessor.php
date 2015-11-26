@@ -2,6 +2,7 @@
 	include_once('./queueProcessorClass.php');
 	include_once('./connectDatabase.php');
 	include_once('./fileWatcherConfig.php');
+	include_once('./loggerClass.php');
 	
 	// TODO: change this to be able to process other type of input files, not just biometry
 	
@@ -18,7 +19,8 @@
 		echo "CurrentPID: ".$currentPid."\n";
 		if(!isRunning($currentPid)){
 			saveMyPid($pidfile);
-			processQueue($mysqli, $dicomConfig);
+			$logger = new eventLogger($mysqli);
+			processQueue($mysqli, $dicomConfig, $logger);
 		}else{
 			echo "Process still running! Exiting.\n";
 			die;
@@ -49,8 +51,8 @@
 		fclose($fh);
 	}
 	
-	function processQueue($mysqli, $dicomConfig){
-		$queueProcessor = new queueProcessor($mysqli, $dicomConfig["biometry"]["importerCommand"]);
+	function processQueue($mysqli, $dicomConfig, $logger){
+		$queueProcessor = new queueProcessor($mysqli, $dicomConfig["biometry"]["importerCommand"], $logger);
 		$queueProcessor->checkEntries();
 	}	
 
