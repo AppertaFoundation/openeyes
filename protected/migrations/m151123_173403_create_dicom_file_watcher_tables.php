@@ -21,7 +21,7 @@ class m151123_173403_create_dicom_file_watcher_tables extends CDbMigration
 		));
 
 		$this->createTable('dicom_process_status', array(
-			'id'=> 'int(2) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY',
+			'id'=> 'int(10) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY',
 			'name' => 'varchar(255)'
 		));
 
