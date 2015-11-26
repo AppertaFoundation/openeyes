@@ -1,5 +1,5 @@
 <div class="admin box">
-    <h1 class="badge admin">DICOM File Watcher</h1>
+    <h1 class="badge admin">DICOM Log Viewer</h1>
     <form id="dicom_file_watcher">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
         <table class="grid">
