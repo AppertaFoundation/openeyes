@@ -9,16 +9,19 @@ node default {
     require => Exec['apt-mirror'],
 	}
 
-	include core::apache2
+  class { 'wkhtmltox':
+    ensure => 'present'
+  }
+
+  include core::apache2
 	include core::mysql
 	include core::curl
 	include core::git
 	include core::mail
 	include core::php5
-	include core::wkhtmltox
+	#include core::wkhtmltox
 	include core::openeyes
 	include core::composer
-
 
 	if $mode == 'dev' {
 		include dev::vim

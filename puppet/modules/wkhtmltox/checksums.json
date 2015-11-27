@@ -1,0 +1,11 @@
+{
+  "CHANGELOG": "27c10f8a88c7a405f3591e73b86a86d7",
+  "README.md": "ec95ff74d5d96ec2f12c92ea721f58fc",
+  "Rakefile": "20b80e526e351a74df2001f504e756d2",
+  "manifests/init.pp": "a25474b67ac88cdb9845a3d24d9b5b5a",
+  "manifests/params.pp": "bb60c1c00516dd1f0126b6be852e6307",
+  "metadata.json": "d56aedd2466f7a230f626d16b9f2cbab",
+  "spec/classes/init_spec.rb": "4583ecab6c9b800d7aa3cb3423d62d96",
+  "spec/spec_helper.rb": "a55d1e6483344f8ec6963fcb2c220372",
+  "tests/init.pp": "00185d0956765dd5e45dbc0bcb7ecbdd"
+}

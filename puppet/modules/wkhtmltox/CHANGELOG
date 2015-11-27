@@ -1,0 +1,32 @@
+2016-07-13 - Version 1.0.9
+
+Bugfixes:
+- Fix dependency issue with centOS packages
+- Added support for x86_64 not just amd64
+
+2016-07-13 - Version 1.0.7
+
+Bugfixes:
+- Updated URL for downloads
+
+2016-02-02 - Version 1.06
+
+Bugfixes:
+- Added additional (font) dependencies.
+
+2015-01-12 - Version 1.0.4
+
+Bugfixes:
+- Updated minor release version of wkhtmltox
+
+2014-12-08 - Version 1.0.3
+
+Bugfixes:
+- User submitted fix for missing $filename variable.
+
+2014-09-19 - Version 0.0.1
+
+Summary: Initial module release
+
+Bugfixes:
+- None
