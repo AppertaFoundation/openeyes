@@ -1,0 +1,81 @@
+{
+  "name": "darin/zypprepo",
+  "version": "1.0.2",
+  "source": "git://github.com/deadpoint/puppet-zypprepo.git",
+  "author": "darin",
+  "license": "ASL2",
+  "summary": "A Puppet description of a zypper repository",
+  "description": "zypprepo is a client-side description or type of a zypper repository for OpenSUSE/SuSE systems.",
+  "project_page": "https://github.com/deadpoint/puppet-zypprepo",
+  "dependencies": [
+
+  ],
+  "types": [
+    {
+      "name": "zypprepo",
+      "doc": "The client-side description of a zypper repository. Repository\n      configurations are found by parsing `/etc/zypp/zypper.conf` and\n      the files indicated by the `reposdir` option in that file\n      (see `zypper(8)` for details).\n\n      Most parameters are identical to the ones documented\n      in the `zypper(8)` man page.\n\n      Continuation lines that zypper supports (for the `baseurl`, for example)\n      are not supported. This type does not attempt to read or verify the\n      exinstence of files listed in the `include` attribute.",
+      "properties": [
+        {
+          "name": "descr",
+          "doc": "A human-readable description of the repository.\n        This corresponds to the name parameter in `zypper(8)`.\n        Set this to `absent` to remove it from the file completely.  Valid values are `absent`.  Values can match `/.*/`."
+        },
+        {
+          "name": "mirrorlist",
+          "doc": "The URL that holds the list of mirrors for this repository.\n        Set this to `absent` to remove it from the file completely.  Valid values are `absent`.  Values can match `/.*/`."
+        },
+        {
+          "name": "baseurl",
+          "doc": "The URL for this repository. Set this to `absent` to remove it from the file completely.  Valid values are `absent`.  Values can match `/.*/`."
+        },
+        {
+          "name": "path",
+          "doc": "The path relative to the baseurl. Set this to `absent` to remove it from the file completely.  Valid values are `absent`.  Values can match `/.*/`."
+        },
+        {
+          "name": "enabled",
+          "doc": "Whether this repository is enabled, as represented by a\n        `0` or `1`. Set this to `absent` to remove it from the file completely.  Valid values are `absent`.  Values can match `/(0|1)/`."
+        },
+        {
+          "name": "gpgcheck",
+          "doc": "Whether to check the GPG signature on packages installed\n        from this repository, as represented by a `0` or `1`.\n        Set this to `absent` to remove it from the file completely.  Valid values are `absent`.  Values can match `/(0|1)/`."
+        },
+        {
+          "name": "gpgkey",
+          "doc": "The URL for the GPG key with which packages from this\n        repository are signed. Set this to `absent` to remove it from the file completely.  Valid values are `absent`.  Values can match `/.*/`."
+        },
+        {
+          "name": "priority",
+          "doc": "Priority of this repository from 1-99. Set this to `absent` to remove it from the file completely.  Valid values are `absent`.  Values can match `/[1-9][0-9]?/`."
+        },
+        {
+          "name": "autorefresh",
+          "doc": "Enable autorefresh of the repository, as represented by a\n        `0` or `1`. Set this to `absent` to remove it from the file completely.  Valid values are `absent`.  Values can match `/(0|1)/`."
+        },
+        {
+          "name": "keeppackages",
+          "doc": "Enable RPM files caching, as represented by a\n        `0` or `1`. Set this to `absent` to remove it from the file completely.  Valid values are `absent`.  Values can match `/(0|1)/`."
+        },
+        {
+          "name": "type",
+          "doc": "The type of software repository. Values can match\n         `yast2` or `rpm-md` or `plaindir` or `yum`. Set this to `absent` to remove it from the file completely.  Valid values are `absent`.  Values can match `/yast2|rpm-md|plaindir|yum/`."
+        }
+      ],
+      "parameters": [
+        {
+          "name": "name",
+          "doc": "The name of the repository.  This corresponds to the\n        `repositoryid` parameter in `zypper(8)`."
+        }
+      ]
+    }
+  ],
+  "checksums": {
+    "Modulefile": "ce9df9d68cab6ce624dc0965c40139b4",
+    "README": "50c90e7ef3b96cdb7165ea3bdbb5ae66",
+    "_gitignore": "6843107db15169cdc781f5d35e1538d7",
+    "lib/puppet/type/zypprepo.rb": "81f249c4403b0bc1228896da6041eabc",
+    "manifests/init.pp": "5084cb2f990419665521fde20dd28b04",
+    "spec/spec.opts": "a600ded995d948e393fbe2320ba8e51c",
+    "spec/spec_helper.rb": "ca19ec4f451ebc7fdb035b52eae6e909",
+    "tests/init.pp": "08998185eb9685baddf28e1d63fa5db7"
+  }
+}

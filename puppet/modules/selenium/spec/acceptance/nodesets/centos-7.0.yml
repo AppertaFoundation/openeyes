@@ -1,0 +1,9 @@
+HOSTS:
+  centos-7.0:
+    roles:
+      - master
+    platform: el-7-x86_64
+    box: chef/centos-7.0
+    hypervisor: vagrant
+CONFIG:
+  type: foss
