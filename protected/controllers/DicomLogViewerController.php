@@ -221,6 +221,6 @@ class DicomLogViewerController extends BaseController
     public function actionLog(){
         //echo 'hi';
         $data  = DicomFileLog::model()->findAll((array('order'=>'id desc')));
-        $this->render('dicom_file_log_viewer', array( 'data' => $data));
+        $this->render('//dicomlogviewer/dicom_file_log_viewer', array( 'data' => $data));
     }
 }
