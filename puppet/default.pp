@@ -17,7 +17,7 @@ node default {
 
   class { 'selenium::server':}
 
-  class {'google_chrome':}
+  include 'google_chrome'
 
   include core::apache2
 	include core::mysql
@@ -26,7 +26,7 @@ node default {
 	include core::mail
 	include core::php5
 	include core::openeyes
-	#include core::composer
+	include core::composer
 
 	if $mode == 'dev' {
 		include dev::vim

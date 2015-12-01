@@ -18,6 +18,7 @@ class core::composer {
 	else{
 		exec { "download_composer":
 			cwd => '/var/www',
+      environment => 'COMPOSER_HOME=/home/vagrant',
 			command => "/usr/bin/curl -sS https://getcomposer.org/installer | /usr/bin/php &&  cp composer.phar /usr/local/bin/composer",
 			creates => "/var/www/composer.phar",
 			require => Package['curl','git', 'php5-cli']
@@ -25,7 +26,8 @@ class core::composer {
 
 		exec { "run_composer_install":
 			cwd => '/var/www',
-			command => "/var/www/composer.phar update --prefer-source --no-interaction --working-dir /var/www",
+      environment => 'COMPOSER_HOME=/home/vagrant',
+			command => "/var/www/composer.phar install --no-interaction --working-dir /var/www",
 			#command => "/var/www/composer.phar install --no-interaction",
       require => [Exec["download_composer"], Package['php5-curl', 'php5-cli']],
 			timeout => 0, # This can take a long time
