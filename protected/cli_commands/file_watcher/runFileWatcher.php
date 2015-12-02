@@ -17,6 +17,7 @@ checkExistingFiles();
 while (TRUE)
 {
 	$newfile = false;
+	fam_resume_monitor($fam_res, $dir_res);
 	while(fam_pending($fam_res)){
 		$arr = fam_next_event($fam_res);
 				
