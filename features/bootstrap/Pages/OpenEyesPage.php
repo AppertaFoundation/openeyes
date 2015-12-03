@@ -1,9 +1,22 @@
 <?php
-use \SensioLabs\Behat\PageObjectExtension\PageObject\Page;
-use \Behat\Mink\Exception\ElementTextException;
+use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
+use Behat\Mink\Exception\ElementTextException;
+use Behat\Mink\Session;
+use SensioLabs\Behat\PageObjectExtension\Context\PageFactoryInterface;
+
+
 abstract class OpenEyesPage extends Page {
 	
-	/**
+	public function __construct(Session $session, PageFactoryInterface $pageFactory, array $parameters = array())
+    {
+        parent::__construct($session, $pageFactory, $parameters);
+
+        // this should obviously be configurable, but I've put this in to ensure that we are able
+        // to always see the save button.
+        $this->getDriver()->resizeWindow(1280,800);
+    }
+
+    /**
 	 * ription checks that the title is equal to the expected value
 	 * 
 	 * @param string $expectedTitle
@@ -11,14 +24,17 @@ abstract class OpenEyesPage extends Page {
 	 * @return bool
 	 * @throws Behat\Mink\Exception\ElementTextException
 	 */
-	public function checkOpenEyesTitle($expectedTitle) {
-		$titleElement = $this->find ( 'css', 'h1.badge' );
-		$title = trim ( $titleElement->getHtml () );
-		if ($expectedTitle != $title) {
-			throw new ElementTextException ( "Title was  " . $title . " instead of " . $expectedTitle, $this->getSession (), $titleElement );
-		}
-		return true;
-	}
+    public function checkOpenEyesTitle($expectedTitle) {
+        if (!$titleElement = $this->find ( 'css', 'h1.badge' )) {
+            throw new ExpectationException("Could not find title element");
+        }
+
+        $title = trim ( $titleElement->getHtml () );
+        if ($expectedTitle != $title) {
+            throw new ElementTextException ( "Title was  " . $title . " instead of " . $expectedTitle, $this->getSession (), $titleElement );
+        }
+        return true;
+    }
 	
 	/**
 	 * ription waits for the title of the page included in the OpenEyes specific class to become equal to the expected value
@@ -137,4 +153,11 @@ JS;
 	private function getWaitTime($waitTime) {
 		return $waitTime = $waitTime != null ? ( int ) $waitTime : 15000;
 	}
+
+    /**
+     * This should be the same behaviour for every OE page
+     */
+    public function saveEvent() {
+        $this->getElement ( 'save' )->click ();
+    }
 }
