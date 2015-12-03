@@ -50,7 +50,7 @@ ci:
 selenium-local:
     extensions:
         Behat\MinkExtension\Extension:
-            base_url:           http://localhost:8888
+            base_url:           http://localhost
             default_session:    selenium2
             javascript_session: selenium2
 
