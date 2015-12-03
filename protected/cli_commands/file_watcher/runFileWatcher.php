@@ -29,7 +29,7 @@ while (TRUE)
 			if(! $fileid = fileEntryExists($dicomConfig["biometry"]["inputFolder"]."/".$arr["filename"], $filedata)){
 				$fileid = createFileEntry($dicomConfig["biometry"]["inputFolder"]."/".$arr["filename"], $filedata);
 			}
-			var_dump("Fileid: ".$fileid);
+			//var_dump("Fileid: ".$fileid);
 			$mysqli->query("INSERT INTO dicom_file_queue (filename, detected_date, last_modified_date, status_id) VALUES ('".$dicomConfig["biometry"]["inputFolder"]."/".$arr["filename"]."', now(), now(), (SELECT id FROM dicom_process_status WHERE name = 'new'))");
 			$logger->addLogEntry($dicomConfig["biometry"]["inputFolder"]."/".$arr["filename"], 'new', basename($_SERVER["SCRIPT_FILENAME"]));
 			// add log entry
@@ -55,7 +55,7 @@ while (TRUE)
 function fileEntryExists($fullfilename, $filedata){
 	global $mysqli;
 	
-	var_dump($filedata);
+	//var_dump($filedata);
 	$checkQuery = $mysqli->query("SELECT id FROM dicom_files WHERE filename='".$fullfilename."' AND filesize ='".$filedata["size"]."' AND filedate='".date("Y-m-d H:i:s",$filedata["mtime"])."'");
 	if($isFileEntryExists = $checkQuery->fetch_row()){
 		return $isFileEntryExists[0];
