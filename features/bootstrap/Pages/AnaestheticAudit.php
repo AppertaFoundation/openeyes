@@ -152,13 +152,14 @@ class AnaestheticAudit extends OpenEyesPage
 		$this->getSession ()->wait ( 5000, 'window.$ && $(".event-actions .selected a").text() == "Edit"' );
 	}
 	protected function deleteSuccessCheck() {
+        $this->getDriver()->wait ( 1000, "window.$ && $('#flash-success').css('display') == 'inline-block'" );
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'deleteSuccess' )->getXpath () );
 	}
 	public function deleteEvent() {
 		$this->getElement ( 'deleteEvent' )->click ();
-		$this->getSession ()->wait ( 5000, "window.$ && $('#et_deleteevent').css('display') == 'inline-block'" );
+		$this->getDriver()->wait ( 5000, "window.$ && $('#et_deleteevent').css('display') == 'inline-block'" );
 		$this->getElement ( 'confirmDeleteEvent' )->click ();
-		
+
 		if ($this->deleteSuccessCheck ()) {
 			print "Event Delete was Successful";
 		} else {
