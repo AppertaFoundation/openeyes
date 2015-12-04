@@ -56,7 +56,7 @@ abstract class OpenEyesPage extends Page {
 	 *        	- css selector for the element we need to check for its display property
 	 */
 	public function waitForElementDisplayBlock($selector, $waitTime = null) {
-		$this->getSession ()->wait ( $this->getWaitTime ( $waitTime ), "window.$ && ($('" . $selector . "').css('display') == 'block' || $('" . $selector . "').css('display') == 'inline-block' )" );
+		$this->getDriver()->wait ( $this->getWaitTime ( $waitTime ), "window.$ && ($(\"" . $selector . "\").css('display') == 'block' || $(\"" . $selector . "\").css('display') == 'inline-block' )" );
 	}
 	
 	/**
@@ -125,7 +125,7 @@ abstract class OpenEyesPage extends Page {
 	 *        	The element to scroll to.
 	 */
 	public function scrollWindowToElement(Behat\Mink\Element\NodeElement $element) {
-		$wdSession = $this->getSession ()->getDriver ()->getWebDriverSession ();
+		$wdSession = $this->getDriver ()->getWebDriverSession ();
 		$element = $wdSession->element ( 'xpath', $element->getXpath () );
 		$elementID = $element->getID ();
 		$script = <<<JS
@@ -137,8 +137,10 @@ var t = element.offset().top - (element.height() / 2);
 $(window).scrollTop(t).trigger('scroll');
 
 // Now we offset the height of the sticky elements.
-$('.stuck').not('.watermark').each(function() { t -= $(this).outerHeight(true, true); });
-$(window).scrollTop(t);
+var new_t = t;
+$('.stuck').not('.watermark').each(function() {
+    if (t - this.getBoundingClientRect().bottom < new_t) { new_t = t - this.getBoundingClientRect().bottom; }});
+$(window).scrollTop(new_t);
 
 JS;
 		$wdSession->execute ( array (
