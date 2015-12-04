@@ -161,7 +161,7 @@ EOH;
     {
         $target_config = Yii::app()->basePath . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'local' . DIRECTORY_SEPARATOR . 'common.php';
         if (file_exists($target_config)) {
-            copy($target_config, $target_config . 'bak');
+            copy($target_config, $target_config . '.bak');
             echo "Backed up previous configuration to {$target_config}.bak\n";
         }
         copy($config_file, $target_config);
@@ -202,14 +202,13 @@ EOH;
      */
     protected function runMigrations()
     {
-        $command_path = Yii::app()->getBasePath() . DIRECTORY_SEPARATOR . 'commands';
+        // run as separate shell command calls to ensure changes to configuration are loaded
+        $cmd_base = Yii::app()->getBasePath() . DIRECTORY_SEPARATOR . "yiic ";
+        $migrate = $cmd_base . "migrate";
+        $migratemodules = $cmd_base . "migratemodules";
 
-        $runner = new CConsoleCommandRunner();
-        $runner->addCommands($command_path);
-        $args = array('yiic', 'oemigrate', '--interactive=0');
-        $runner->run($args);
-        $args = array('yiic', 'migratemodules', '--interactive=0');
-        $runner->run($args);
+        echo `$migrate`;
+        echo `$migratemodules`;
     }
 
     /**
