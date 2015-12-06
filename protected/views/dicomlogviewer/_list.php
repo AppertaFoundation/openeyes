@@ -52,7 +52,7 @@
 					</thead>
 					<tbody id="auditListData">
 						<?php foreach ($data['files_data'] as $i => $log) {
-							$this->renderPartial('_list_row',array('i'=>$i,'log'=>$log));
+							$this->renderPartial('//dicomlogviewer/_list_row',array('i'=>$i,'log'=>$log));
 						}?>
 					</tbody>
 				</table>

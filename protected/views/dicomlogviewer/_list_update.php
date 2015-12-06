@@ -18,5 +18,5 @@
  */
 ?>
 <?php foreach ($data['items'] as $i => $log) {
-	$this->renderPartial('_list_row',array('i'=>$i,'log'=>$log,'hidden'=>true));
+	$this->renderPartial('//dicomlogviewer/_list_row',array('i'=>$i,'log'=>$log,'hidden'=>true));
 }?>

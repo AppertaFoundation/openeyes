@@ -47,7 +47,7 @@ class DicomLogViewerController extends BaseController
      */
     public function actionLog(){
         $data  = DicomFileLog::model()->with('dicom_file_id')->findAll();
-        $this->render('//dicomlogviewer/dicom_file_log_viewer', array( 'data' => $data));
+        $this->render('//dicomlogviewer/index', array( 'data' => $data));
     }
 
     /**
@@ -60,7 +60,7 @@ class DicomLogViewerController extends BaseController
 
     public  function actionList()
     {
-        $this->render('index');
+        $this->render('//dicomlogviewer/index');
     }
     /////////////
 
@@ -73,9 +73,9 @@ class DicomLogViewerController extends BaseController
         }
 
         Yii::app()->assetManager->registerScriptFile('js/audit.js');
-        $this->renderPartial('_list', array('data' => $data), false, true);
+        $this->renderPartial('//dicomlogviewer/_list', array('data' => $data), false, true);
         echo "<!-------------------------->";
-        $this->renderPartial('_pagination', array('data' => $data), false, true);
+        $this->renderPartial('//dicomlogviewer/_pagination', array('data' => $data), false, true);
     }
 
     public function criteria($count=false)

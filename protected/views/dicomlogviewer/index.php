@@ -31,7 +31,7 @@
 		<input type="hidden" id="previous_date_from" value="<?php echo @$_POST['date_from']?>" />
 		<input type="hidden" id="previous_date_to" value="<?php echo @$_POST['date_to']?>" />
 		<input type="hidden" id="previous_hos_num" value="<?php echo @$_POST['hos_num']?>" />
-		<?php echo $this->renderPartial('_filters');?>
+		<?php echo $this->renderPartial('//dicomlogviewer/_filters');?>
 		<div id="searchResults"></div>
 		<div id="search-loading-msg" class="large-12 column hidden">
 			<div class="alert-box">
@@ -55,7 +55,7 @@
 			$('#page').val(1);
 
 			$.ajax({
-				'url': '<?php echo Yii::app()->createUrl('dicomlogviewer/search'); ?>',
+				'url': '<?php echo Yii::app()->createUrl('//DicomLogViewer/search'); ?>',
 				'type': 'POST',
 				'data': $('#auditList-filter').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 				'success': function(data) {
