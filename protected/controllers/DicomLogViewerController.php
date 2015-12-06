@@ -233,16 +233,14 @@ class DicomLogViewerController extends BaseController
             dil.raw_importer_output,dil.machine_manufacturer,dil.machine_model, dil.machine_software_version
             ')
             ->from('dicom_files as df')
-            ->join('dicom_import_log as dil', 'df.id = dil.dicom_file_id')
+            ->leftJoin('dicom_import_log as dil', 'df.id = dil.dicom_file_id')
             //  ->where('ep.patient_id=:pid and e.deleted=:del', array(':pid' => $patientId, ':del' => 0))
             ->order($sc.' '.$so)
             ->limit( $this->items_per_page)
             ->offset(($page-1)*$this->items_per_page)
             ->queryAll();
-        //->getText();
-
+     //   ->getText(); echo $data; die;
         foreach ($data as $k =>$y ){
-           // echo ($y['id']);
             $data[$k] = $y;
             $data[$k]['watcher_log'] = $this->getFileWatcherLog($y['id']);
         }

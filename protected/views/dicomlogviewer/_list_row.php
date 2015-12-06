@@ -17,95 +17,92 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<script>
+    $(function () {
+        $('div[id^=more_]').each(function (i, el) {
+            var j = i + 1;
+            $('#more_' + j).click(function () {
+                $("#dialog_" + j).dialog({
+                    width: "40%",
+                    maxWidth: "700px"
+                });
+                return false;
+            });
+        });
+    });
+</script>
+<tr data-id="<?php echo $i + 1 ?>" filename="<?php echo basename($log['filename']); ?>"
+    processor_id="<?php echo $log['processor_id']; ?>" status="<?php echo $log['status']; ?>">
+    <td> <?php echo wordwrap(basename($log['filename']), 12, "\n", true); ?></td>
+    <td> <?php echo $log['import_datetime']; ?></td>
+    <td> <?php echo $log['study_datetime']; ?></td>
+    <td> <?php echo $log['station_id']; ?></td>
+    <td> <?php echo $log['study_location']; ?></td>
+    <td> <?php echo $log['report_type']; ?></td>
+    <td> <?php echo $log['patient_number']; ?></td>
+    <td> <?php echo $log['status']; ?></td>
+    <td> <?php echo wordwrap($log['study_instance_id'], 12, "\n", true); ?></td>
+    <td> <?php echo $log['comment']; ?></td>
+    <td><i>
+            <div id="more_<?php echo $i + 1 ?>"><a>More</a></div>
+        </i>
 
-<head>
-	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
-	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-	<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-	<script>
-		$(function() {
-			//$("#dialog_1" ).dialog();
-			$('#more_1').click(function () {
-				//alert('hi');
-				//$('#dialog_1').dialog('open');
-				//$('#dialog_1').show();
-				$("#dialog_1" ).dialog({
-					width: "40%",
-					maxWidth: "700px"
-				});
-				//alert('bi');
-				return false;
-			});
-		});
-	</script>
-</head>
-<body>
+        <div style="display:none; width:500px;" class="dialogbox" id="dialog_<?php echo $i + 1 ?>" title="More Info"
+             data-id="<?php echo $i + 1 ?>">
+            <p><b><?php echo basename($log['filename']) ?></b></p>
 
-</body>
-<tr>
-	<td> <?php echo wordwrap($log['filename'], 12, "\n", true);?></td>
-	<td> <?php echo $log['import_datetime'];?></td>
-	<td> <?php echo $log['study_datetime'];?></td>
-	<td> <?php echo $log['station_id'];?></td>
-	<td> <?php echo $log['study_location'];?></td>
-	<td> <?php echo $log['report_type'];?></td>
-	<td> <?php echo $log['patient_number'];?></td>
-	<td> <?php echo $log['status'];?></td>
-	<td> <?php echo wordwrap($log['study_instance_id'], 12, "\n", true) ;?></td>
-	<td> <?php echo $log['comment'];?></td>
-	<td> <i><div id="more_<?php echo $log['did']?>"><a>More</a></div></i>
-		<div style="display:none; width:500px;" class="dialogbox" id="dialog_<?php echo $log['did']?>" title="More Info">
-			<p><b><?php echo $log['filename']?></b></p>
-			<p><b>History</b> <br>
-			<table class="grid audit-logs">
-				<thead>
-				<tr>
-					<th>Status</th>
-					<th>Time Stamp</th>
-					<th>Process Name</th>
-					<th>Process Server ID</th>
-				</tr>
-				</thead>
-				<tbody id="auditListData">
-				<?php foreach ($log['watcher_log'] as $k => $y) {
-					?>
-					<tr data-id="<?php echo $k;?>" filename="<?php echo $log['filename'];?>" status="<?php echo $y['status'];?>">
-						<td><?php echo $y['status']?></td>
-						<td><?php echo $y['event_date_time']?></td>
-						<td><?php echo $y['process_name']?></td>
-						<td><?php echo $log['processor_id']?></td>
+            <p><b>History</b> <br>
+            <table class="grid audit-logs">
+                <thead>
+                <tr>
+                    <th>Status</th>
+                    <th>Time Stamp</th>
+                    <th>Process Name</th>
+                    <th>Process Server ID</th>
+                </tr>
+                </thead>
+                <tbody id="fileWatcherHistoryData">
+                <?php
+                foreach ($log['watcher_log'] as $k => $y) {
+                    ?>
+                    <tr data-id="<?php echo $k + 1; ?>" filename="<?php echo basename($log['filename']); ?>"
+                        status="<?php echo $y['status']; ?>">
+                        <td><?php echo $y['status'] ?></td>
+                        <td><?php echo $y['event_date_time'] ?></td>
+                        <td><?php echo $y['process_name'] ?></td>
+                        <td><?php echo $log['processor_id'] ?></td>
+                    </tr>
+                    <?php
+                } ?>
+                </tbody>
+            </table>
+            </p>
 
-					</tr>
-				<?php
-				}?>
-				</tbody>
-			</table>
-			</p>
+            <p><b>Machine Details</b></p>
+            <table class="grid audit-logs">
+                <tbody id="machineDetailsData">
+                <tr>
+                    <td>Make :</td>
+                    <td><?php echo $log['machine_manufacturer'] ?></td>
+                </tr>
+                <tr>
+                    <td>Model :</td>
+                    <td><?php echo $log['machine_model'] ?></td>
+                </tr>
+                <tr>
+                    <td>Software Version :</td>
+                    <td><?php echo $log['machine_software_version'] ?></td>
+                </tr>
+                </tbody>
+            </table>
 
-			<p><b>Machine Details</b></p>
-			<table class="grid audit-logs">
-				<tbody id="auditListData">
-					<tr>
-						<td>Make :</td>
-						<td><?php echo $log['machine_manufacturer']?></td>
-					</tr>
-					<tr>
-						<td>Model : </td>
-						<td><?php echo $log['machine_model']?></td>
-					</tr>
-					<tr>
-						<td>Software Version : </td>
-						<td><?php echo $log['machine_software_version']?></td>
-					</tr>
-				</tbody>
-			</table>
+            <p><b>Debug data :</b></p>
 
-			<p> <b>Debug data :</b> </p>
-			<p>
-			<textarea rows="10" cols="50">
+            <p>
+			<textarea rows="10" cols="50" id="debug_data">
 				<?php echo trim($log['raw_importer_output']); ?>
 			</textarea>
-			</p>
-		</div>
-	</td>
+            </p>
+        </div>
+    </td>
 </tr>
