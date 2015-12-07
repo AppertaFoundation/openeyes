@@ -169,11 +169,15 @@ class DicomLogViewerController extends BaseController
     {
         $data = array();
 
-        if ($_data = Audit::model()->with('event')->find($this->criteria(true))) {
+/*        if ($_data = Audit::model()->with('event')->find($this->criteria(true))) {
             $data['total_items'] = $_data->count;
         } else {
             $data['total_items'] = 0;
-        }
+        }*/
+
+        $data['total_items'] = count($this->getDicomFiles($page));
+        $data['pages'] =1;
+        $data['page'] =1;
 
         $criteria = $this->criteria();
 
@@ -184,8 +188,7 @@ class DicomLogViewerController extends BaseController
         } else {
             $criteria->offset = (($page-1) * $this->items_per_page);
         }
-
-        $data['items'] = Audit::model()->findAll($criteria);
+       // $data['items'] = Audit::model()->findAll($criteria);
         $data['pages'] = ceil($data['total_items'] / $this->items_per_page);
         if ($data['pages'] <1) {
             $data['pages'] = 1;
@@ -196,8 +199,8 @@ class DicomLogViewerController extends BaseController
         if (!$id) {
             $data['page'] = $page;
         }
-        $data['files_data'] = $this->getDicomFiles($page);
-        //$data['files_data1'] = $this->getDicomFiles1($page);
+
+        $data['items'] = $data['files_data'] = $this->getDicomFiles($page);
         return $data;
     }
 
@@ -212,19 +215,7 @@ class DicomLogViewerController extends BaseController
 
     ///////////////
 
-    protected function getDicomFiles1($page, $sc='import_datetime', $so='asc')
-    {
-        return Yii::app()->db->createCommand()
-            ->select('df.id, df.filename, dil.id as did, dil.import_datetime, dil.study_datetime, dil.study_instance_id, dil.station_id, dil.study_location, dil.report_type, dil.patient_number, dil.status,dil.comment')
-            ->from('dicom_files as df')
-            ->join('dicom_import_log as dil', 'df.id = dil.dicom_file_id')
-          //  ->where('ep.patient_id=:pid and e.deleted=:del', array(':pid' => $patientId, ':del' => 0))
-            ->order($sc.' '.$so)
-            ->limit( $this->items_per_page)
-            ->offset(($page-1)*$this->items_per_page)
-            ->queryAll();
-            //->getText();
-    }
+
 
     protected function getDicomFiles($page, $sc='import_datetime', $so='asc')
     {
