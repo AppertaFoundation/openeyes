@@ -9,6 +9,8 @@ class google_chrome::config() inherits google_chrome::params {
       }
     }
     'Debian': {
+      Exec['apt_update'] -> Package["${google_chrome::params::package_name}-${google_chrome::version}"]
+
       apt::source { $google_chrome::params::repo_name:
         location => $google_chrome::params::repo_base_url,
         release  => 'stable',
