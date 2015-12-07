@@ -309,4 +309,17 @@ class PrescriptionContext extends PageObjectContext {
 		$prescription = $this->getPage ( 'Prescription' );
 		$prescription->repeatPrescriptionCheck ();
 	}
+
+    /**
+     * @Given /^I select OK to Duplicate prescription if requested$/
+     */
+    public function okToDuplicatePresciption() {
+        /**
+         *
+         * @var OperationBooking $operationBooking
+         */
+        $prescription = $this->getPage ( 'Prescription' );
+        $prescription->duplicatePrescriptionOk ();
+    }
+
 }

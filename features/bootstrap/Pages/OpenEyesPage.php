@@ -162,4 +162,13 @@ JS;
     public function saveEvent() {
         $this->getElement ( 'save' )->click ();
     }
+
+    public function popupOk($element_name)
+    {
+        $element = $this->getElement($element_name);
+        if (( bool ) $this->find ( 'xpath', $element->getXpath () )) {
+            $element->click ();
+        }
+    }
+
 }

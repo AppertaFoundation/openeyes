@@ -105,6 +105,8 @@ Feature: Open Eyes Login RBAC user levels
     Then I expand the Glaucoma sidebar
     And I add a New Event "Prescription"
 
+    Then I select OK to Duplicate prescription if requested
+
     Then I select a Common Drug "75"
     And I select a Standard Set of "10"
 
