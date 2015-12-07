@@ -110,55 +110,58 @@ Feature: Create New Operation Booking Event
 
     Then I confirm the operation slot
 
-  @OB_Route_3
-  Scenario: Route 3: Login and create a Operation Booking Anderson Medical Retinal
+# Medical retinal firm doesn't have any theatre sessions in the test data, so have commented out for now -
+# also not really sure what additional testing this provides just switching to a different firm
 
-    Given I am logged in as "admin" with site "Kings" and firm "Anderson Firm (Medical Retinal)"
-
-    Then I search for hospital number "1009465"
-
-    Then I select the Latest Event
-
-    Then I expand the Medical Retinal sidebar
-    And I add a New Event "OpBooking"
-
-    Then I select Diagnosis Eyes of "Both"
-    And I select a Diagnosis of "255024002"
-    Then I select Operation Eyes of "Both"
-    And I select a Procedure of "327"
-
-    Then I select No to Consultant required
-    And I select No for Any other doctor to do
-
-    And I select No for Does the patient require pre-op assessment by an anaesthetist
-
-    And I select a Anaesthetic type Topical
-
-    And I select Patient preference for Anaesthetic choice
-
-    And I select No for Patient needs to stop medication
-
-    Then I select No to a Post Operative Stay
-
-    And I select a Operation Site of "2"
-
-    Then I select a Priority of Urgent
-
-    Then I add comments of "Insert test comments here"
-
-    And I select Yes for Admission discussed with patient
-
-    And I select As soon as possible for Schedule options
-
-    Then I select Save and Schedule now
-
-    And I select OK to Duplicate procedure if requested
-
-    And I select an Available theatre slot date
-
-    And I select an Available session time
-    
-    Then I add Session comments of "Insert session comments here"
-    And I add Operation comments of "Insert operation comments here"
-
-    Then I confirm the operation slot
+#  @OB_Route_3
+#  Scenario: Route 3: Login and create a Operation Booking Anderson Medical Retinal
+#
+#    Given I am logged in as "admin" with site "Kings" and firm "Anderson Firm (Medical Retinal)"
+#
+#    Then I search for hospital number "1009465"
+#
+#    Then I select the Latest Event
+#
+#    Then I expand the Medical Retinal sidebar
+#    And I add a New Event "OpBooking"
+#
+#    Then I select Diagnosis Eyes of "Both"
+#    And I select a Diagnosis of "255024002"
+#    Then I select Operation Eyes of "Both"
+#    And I select a Procedure of "327"
+#
+#    Then I select No to Consultant required
+#    And I select No for Any other doctor to do
+#
+#    And I select No for Does the patient require pre-op assessment by an anaesthetist
+#
+#    And I select a Anaesthetic type Topical
+#
+#    And I select Patient preference for Anaesthetic choice
+#
+#    And I select No for Patient needs to stop medication
+#
+#    Then I select No to a Post Operative Stay
+#
+#    And I select a Operation Site of "2"
+#
+#    Then I select a Priority of Urgent
+#
+#    Then I add comments of "Insert test comments here"
+#
+#    And I select Yes for Admission discussed with patient
+#
+#    And I select As soon as possible for Schedule options
+#
+#    Then I select Save and Schedule now
+#
+#    And I select OK to Duplicate procedure if requested
+#
+#    And I select an Available theatre slot date
+#
+#    And I select an Available session time
+#
+#    Then I add Session comments of "Insert session comments here"
+#    And I add Operation comments of "Insert operation comments here"
+#
+#    Then I confirm the operation slot
