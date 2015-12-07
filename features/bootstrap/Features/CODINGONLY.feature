@@ -8,8 +8,8 @@ Feature: Coding only
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
-    And I select Site "4"
-    Then I select a firm of "1"
+    And I select Site "2"
+    Then I select a firm of "3"
 
     Then I search for hospital number "1009465"
 
