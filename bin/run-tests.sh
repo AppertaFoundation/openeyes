@@ -21,4 +21,6 @@ fi
 
 sh $SCRIPTPATH/load-testdata.sh
 
-sh $SCRIPTPATH/../vendor/b
+$SCRIPTPATH/../protected/yiic generatesessions "+1 week"
+
+$SCRIPTPATH/behat --stop-on-failure --profile=selenium-local
