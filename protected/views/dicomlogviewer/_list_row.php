@@ -96,13 +96,16 @@
                 </tbody>
             </table>
 
+            <div id="debug_data">
             <p><b>Debug data :</b></p>
 
-            <p>
-			<textarea rows="10" cols="50" id="debug_data">
+            <p >
+			<textarea rows="10" cols="50" >
 				<?php echo trim($log['raw_importer_output']); ?>
 			</textarea>
             </p>
+            </div>
+            
         </div>
     </td>
 </tr>
