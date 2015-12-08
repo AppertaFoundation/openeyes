@@ -22,7 +22,7 @@ return array(
 		'admin_structure' => array(
 			'System' => array(
 				'Settings' => '/admin/settings',
-				'DICOM Log Viewer' => '/DicomLogViewer/log',
+				'DICOM Log Viewer' => '/DicomLogViewer/list',
 			),
 			'Core' => array(
 				'Users' => '/admin/users',

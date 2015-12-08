@@ -27,6 +27,13 @@ class DicomFileLog extends BaseActiveRecordVersioned
         return 'dicom_file_log';
     }
 
+    public function relations()
+    {
+        return array(
+            'dicom_file_id' => array(self::HAS_MANY, 'DicomFiles', 'id'),
+        );
+    }
+
     /**
      * @return array validation rules for model attributes.
      */

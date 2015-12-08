@@ -7178,3 +7178,52 @@ tfoot.pagination-container .pagination-view-all {
 #generic-search-form > div div input[type=text], #generic-search-form > div div select {
   width: 95%;
 }
+
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+table.grid tr:last-child {
+  border: 0 none;
+}
+table.grid tr {
+  border-bottom: 1px solid #ccd;
+}
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+.box.generic {
+  color: #333333;
+}
+body {
+  color: #222;
+  cursor: auto;
+  font-family: "Helvetica",Helvetica,Arial,sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1.5;
+}
+html, body {
+  font-size: 100%;
+}
+html, body {
+  font-size: 100%;
+}
+html {
+  font-family: sans-serif;
+}
+#dialogbox {
+  display: block;
+  height: auto;
+  left: 802px;
+  position: absolute;
+  top: 331px;
+  width: 700px;
+}
