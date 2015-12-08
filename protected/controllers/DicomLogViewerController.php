@@ -82,13 +82,14 @@ class DicomLogViewerController extends BaseController
     {
         $criteria = new CDbCriteria;
 
-        if ($count) {
-            $criteria->select = 'count(*) as count';
+        if (@$_REQUEST['hos_num']) {
+            $criteria->addCondition('`dil`.`patient_number` = :hos_num');
+            $criteria->params[':hos_num'] = $_REQUEST['hos_num'];
         }
 
-        if (@$_REQUEST['site_id']) {
-            $criteria->addCondition('site_id = :site_id');
-            $criteria->params[':site_id'] = $_REQUEST['site_id'];
+        if (@$_REQUEST['file_name']) {
+            $criteria->addCondition('file_name = :file_name');
+            $criteria->params[':file_name'] = $_REQUEST['file_name'];
         }
 
         if (@$_REQUEST['firm_id']) {
@@ -100,25 +101,6 @@ class DicomLogViewerController extends BaseController
             if (!empty($firm_ids)) {
                 $criteria->addInCondition('firm_id',$firm_ids);
             }
-        }
-
-        if (@$_REQUEST['user']) {
-            $user_ids = array();
-
-            $criteria2 = new CDbCriteria;
-            $criteria2->addCondition(array("active = :active"));
-            $criteria2->addCondition(array("LOWER(concat_ws(' ',first_name,last_name)) = :term"));
-
-            $params[':active'] = 1;
-            $params[':term'] = strtolower($_REQUEST['user']);
-
-            $criteria2->params = $params;
-
-            foreach (User::model()->findAll($criteria2) as $user) {
-                $user_ids[] = $user->id;
-            }
-
-            $criteria->addInCondition('user_id',$user_ids);
         }
 
         if (@$_REQUEST['action']) {
@@ -148,19 +130,9 @@ class DicomLogViewerController extends BaseController
             $criteria->params[':date_to'] = $date_to;
         }
 
-        if (@$_REQUEST['hos_num']) {
-            if ($patient = Patient::model()->find('hos_num=?',array($_REQUEST['hos_num']))) {
-                $criteria->addCondition('patient_id='.$patient->id);
-            } else {
-                if ($patient = Patient::model()->find('hos_num=?',array(str_pad($_REQUEST['hos_num'],7,'0',STR_PAD_LEFT)))) {
-                    $criteria->addCondition('patient_id='.$patient->id);
-                } else {
-                    $criteria->addCondition('patient_id=0');
-                }
-            }
-        }
 
-        !($count) && $criteria->join = 'left join event on t.event_id = event.id left join event_type on event.event_type_id = event_type.id';
+     //  !($count) && $criteria->join = 'left join event on t.event_id = event.id left join event_type on event.event_type_id = event_type.id';
+
 
         return $criteria;
     }
@@ -200,6 +172,8 @@ class DicomLogViewerController extends BaseController
             $data['page'] = $page;
         }
 
+       // print_r($criteria);
+
         $data['items'] = $data['files_data'] = $this->getDicomFiles($page);
         return $data;
     }
@@ -216,26 +190,66 @@ class DicomLogViewerController extends BaseController
     ///////////////
 
 
-
-    protected function getDicomFiles($page, $sc='import_datetime', $so='asc')
+    protected function getDicomFiles($page, $sc = 'import_datetime', $so = 'asc')
     {
-        $data =  Yii::app()->db->createCommand()
-            ->select('df.id, df.filename,df.processor_id, dil.id as did, dil.import_datetime, dil.study_datetime, dil.study_instance_id, dil.station_id, dil.study_location, dil.report_type, dil.patient_number, dil.status,dil.comment,
+        $command = Yii::app()->db->createCommand()
+            ->select('df.id, df.filename, df.processor_id, dil.id as did, dil.import_datetime, dil.study_datetime, dil.study_instance_id, dil.station_id, dil.study_location, dil.report_type, dil.patient_number, dil.status, dil.comment,
             dil.raw_importer_output,dil.machine_manufacturer,dil.machine_model, dil.machine_software_version
             ')
             ->from('dicom_files as df')
             ->leftJoin('dicom_import_log as dil', 'df.id = dil.dicom_file_id')
-            //  ->where('ep.patient_id=:pid and e.deleted=:del', array(':pid' => $patientId, ':del' => 0))
-            ->order($sc.' '.$so)
-            ->limit( $this->items_per_page)
-            ->offset(($page-1)*$this->items_per_page)
-            ->queryAll();
-     //   ->getText(); echo $data; die;
-        foreach ($data as $k =>$y ){
+            ->order($sc . ' ' . $so)
+            ->limit($this->items_per_page)
+            ->offset(($page - 1) * $this->items_per_page);
+
+        if (@$_REQUEST['hos_num']) {
+            $command->andWhere(['like', 'dil.patient_number', $_REQUEST['hos_num']]);
+        }
+
+        if (@$_REQUEST['file_name']) {
+            $command->andWhere(['like', 'df.filename', '%' . $_REQUEST['file_name'] . '%']);
+        }
+        if (@$_REQUEST['study_id']) {
+            $command->andWhere(['like', 'dil.study_instance_id', '%' . $_REQUEST['study_id'] . '%']);
+        }
+        if (@$_REQUEST['location']) {
+            $command->andWhere(['like', 'dil.study_location', '%' . $_REQUEST['location'] . '%']);
+        }
+        if (@$_REQUEST['station_id']) {
+            $command->andWhere(['like', 'dil.station_id', $_REQUEST['station_id']]);
+        }
+
+        if (@$_REQUEST['status']) {
+            $command->andWhere(['like', 'dil.status', $_REQUEST['status']]);
+        }
+
+        if (@$_REQUEST['type']) {
+            $command->andWhere(['like', 'dil.report_type', $_REQUEST['type']]);
+        }
+
+        /*        if ($_REQUEST['date_type'] == 1) {
+                    $dt1= $_REQUEST['date_from'];
+                   // $command->andWhere(['like', 'dil.report_type', $_REQUEST['type']]);
+                   // $command->addBetweenCondition('dil.import_datetime',$_REQUEST['date_from'],$_REQUEST['date_to'],'AND');
+                   // $command->andWhere('dil.import_datetime > :start AND dil.import_datetime < :end', array(':start' => $_REQUEST['date_from'],':end' => $_REQUEST['date_to']));
+                    $command->andWhere('dil.import_datetime > '.$_REQUEST['date_from'].' AND dil.import_datetime < '.$_REQUEST['date_to']);
+
+                    // $command->andWhere('dil.import_datetime > :start1', array(':start1' => $dt1));
+                  //  $command->andWhere('dil.import_datetime < :end1', array(':end1' => $_REQUEST['date_to']));
+
+                }else{
+                   // $command->addBetweenCondition('dil.study_datetime',$_REQUEST['date_from'],$_REQUEST['date_to'],'AND');
+                    $command->andWhere('dil.study_datetime > :start AND dil.import_datetime < :end', array(':start' => $_REQUEST['date_from'],':end' => $_REQUEST['date_to']));
+                }*/
+
+
+        //echo $command->getText();die;
+        $data = $command->queryAll();
+        foreach ($data as $k => $y) {
             $data[$k] = $y;
             $data[$k]['watcher_log'] = $this->getFileWatcherLog($y['id']);
         }
-        return($data);
+        return ($data);
 
 
     }

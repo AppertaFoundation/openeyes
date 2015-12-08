@@ -26,7 +26,6 @@
 			<div class="panel">
 				<div class="row">
 					<div class="large-12 column">
-
 						<table class="grid">
 							<thead>
 								<tr>
@@ -38,10 +37,10 @@
 							</thead>
 							<tbody>
 								<tr>
-									<td><?php echo CHtml::textField('site_id',@$_POST['station_id'],array('class'=>'small fixed-width')); ?></td>
-									<td><?php echo CHtml::textField('firm_id',@$_POST['firm_id'],array('class'=>'small fixed-width')); ?></td>
-									<td><?php echo CHtml::textField('user',@$_POST['user'],array('class'=>'small fixed-width')); ?></td>
-									<td><?php echo CHtml::dropDownList('status', 'status',array('All' => 'All', 'success' => 'Success', 'failed' =>'Failed'));?></td>
+									<td><?php echo CHtml::textField('station_id',@$_POST['station_id'],array('class'=>'small fixed-width')); ?></td>
+									<td><?php echo CHtml::textField('location',@$_POST['location'],array('class'=>'small fixed-width')); ?></td>
+									<td><?php echo CHtml::textField('hos_num',@$_POST['hos_num'],array('class'=>'small fixed-width')); ?></td>
+									<td><?php echo CHtml::dropDownList('status', 'status',array('' => 'All', 'success' => 'Success', 'failed' =>'Failed'));?></td>
 								</tr>
 							</tbody>
 						</table>
@@ -49,7 +48,6 @@
 				</div>
 				<div class="row">
 					<div class="large-12 column">
-
 						<table class="grid">
 							<thead>
 							<tr>
@@ -62,15 +60,14 @@
 							<tr>
 								<td>
 									<?php
-									echo CHtml::dropDownList('type', 'type',array('All' => 'All', 'Biometry' => 'Biometry'));
+									echo CHtml::dropDownList('type', 'type',array('' => 'All', 'biometry' => 'Biometry'));
 									?>
 								</td>
 								<td>
-									<?php //echo CHtml::textField('firm_id',@$_POST['firm_id'],array('class'=>'small fixed-width')); ?>
 									<?php
 									$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-										'id'=>'firm_id',
-										'name'=>'firm_id',
+										'id'=>'study_id',
+										'name'=>'study_id',
 										'value'=>'',
 										'sourceUrl'=>array('audit/users'),
 										'options'=>array(
@@ -85,8 +82,8 @@
 								<td>
 									<?php
 									$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-										'id'=>'user',
-										'name'=>'user',
+										'id'=>'file_name',
+										'name'=>'file_name',
 										'value'=>'',
 										'sourceUrl'=>array('audit/users'),
 										'options'=>array(
@@ -108,19 +105,19 @@
 					<div class="large-10 column">
 						<div class="search-filters-extra audit-filters clearfix">
 							<fieldset class="inline highlight">
-								<label class="inline" for="hos_num">Import Date:</label>
+								<label class="inline" for="import_date">Import Date:</label>
 								<?php
-								echo CHtml::radioButton('btn', true, array(
+								echo CHtml::radioButton('date_type', true, array(
 									'value'=>'1',
 									'id'=>'import_date',
 									'name' => 'date',
 									'uncheckValue'=>null
 								));?>
-								<label class="inline" for="hos_num">Study Date:</label>
+								<label class="inline" for="study_date">Study Date:</label>
 								<?php
-								echo CHtml::radioButton('btn', false, array(
+								echo CHtml::radioButton('date_type', false, array(
 									'value'=>'2',
-									'id'=>'stude_date',
+									'id'=>'study_date',
 									'name' => 'date',
 									'uncheckValue'=>null
 								));
