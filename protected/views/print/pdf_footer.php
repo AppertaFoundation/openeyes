@@ -63,13 +63,13 @@
 	}
 	</script>
 	<body style="margin: 0; padding: 0; margin-bottom: 68.6em;" onload="subst()">
-		<div class="wkhtmltopdf-footer-left" style="width: 45%; float: left; margin: 0; font-size: 6pt;">
+		<div class="wkhtmltopdf-footer-left" style="width: 45%; float: left; margin: 0; font-size: 8pt;">
 			{{FOOTER_LEFT}}
 		</div>
-		<div class="wkhtmltopdf-footer-middle" style="width: 10%; float: left; margin: 0 auto; text-align: center; font-size: 6pt;">
+		<div class="wkhtmltopdf-footer-middle" style="width: 10%; float: left; margin: 0 auto; text-align: center; font-size: 8pt;">
 			{{FOOTER_MIDDLE}}
 		</div>
-		<div class="wkhtmltopdf-footer-right" style="width: 45%; float: right; margin: 0; text-align: right; font-size: 6pt;">
+		<div class="wkhtmltopdf-footer-right" style="width: 45%; float: right; margin: 0; text-align: right; font-size: 8pt;">
 			{{FOOTER_RIGHT}}
 		</div>
 	</body>
