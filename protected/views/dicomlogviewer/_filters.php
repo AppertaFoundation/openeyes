@@ -66,7 +66,21 @@
 									?>
 								</td>
 								<td>
-									<?php echo CHtml::dropDownList('firm_id', @$_POST['firm_id'], Firm::model()->getList(), array('empty'=>'All firms'))?>
+									<?php //echo CHtml::textField('firm_id',@$_POST['firm_id'],array('class'=>'small fixed-width')); ?>
+									<?php
+									$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+										'id'=>'firm_id',
+										'name'=>'firm_id',
+										'value'=>'',
+										'sourceUrl'=>array('audit/users'),
+										'options'=>array(
+											'minLength'=>'3',
+										),
+										'htmlOptions'=>array(
+											'placeholder' => 'Type to search for Study Instance ID...'
+										),
+									));
+									?>
 								</td>
 								<td>
 									<?php
@@ -79,7 +93,7 @@
 											'minLength'=>'3',
 										),
 										'htmlOptions'=>array(
-											'placeholder' => 'Type to search for users...'
+											'placeholder' => 'Type to search for File name...'
 										),
 									));
 									?>
