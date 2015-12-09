@@ -20,6 +20,9 @@ class TherapyApplication extends OpenEyesPage {
 			'leftSecondaryTo' => array (
 					'xpath' => "//*[@id='Element_OphCoTherapyapplication_Therapydiagnosis_left_diagnosis2_id']" 
 			),
+            'leftSideClose' => array (
+                'xpath' => "//div[contains(@class,'left-eye')]//a[contains(@class,'icon-remove-side')]"
+            ),
 			
 			// Patient Suitability
 			'rightTreatment' => array (
@@ -90,7 +93,7 @@ class TherapyApplication extends OpenEyesPage {
 					'xpath' => "//*[@id='Element_OphCoTherapyapplication_ExceptionalCircumstances_right_description']" 
 			),
 			'reasonForNotUsingIntervention' => array (
-					'xpath' => "//*[@id='Element_OphCoTherapyapplication_ExceptionalCircumstances_right_deviation_fields']" 
+					'xpath' => "//select[@id='Element_OphCoTherapyapplication_ExceptionalCircumstances_right_deviationreasons']"
 			),
 			'patientSignificantDifferent' => array (
 					'xpath' => "//*[@id='Element_OphCoTherapyapplication_ExceptionalCircumstances_right_patient_different']" 
@@ -113,6 +116,9 @@ class TherapyApplication extends OpenEyesPage {
 			'anticipatedStartDate' => array (
 					'xpath' => "//select[@id='Element_OphCoTherapyapplication_ExceptionalCircumstances_right_start_period_id']" 
 			),
+            'rightClinicalReasonForUrgency' => array (
+                    'xpath' => "//textarea[@id='Element_OphCoTherapyapplication_ExceptionalCircumstances_right_urgency_reason']"
+            ),
 			
 			// LEFT Exceptional Circumstances
 			'leftstandardExistsYes' => array (
@@ -163,15 +169,15 @@ class TherapyApplication extends OpenEyesPage {
 			'leftanticipatedStartDate' => array (
 					'xpath' => "//select[@id='Element_OphCoTherapyapplication_ExceptionalCircumstances_left_start_period_id']" 
 			),
-			
-			'patientVenousYes' => array (
+            'leftClinicalReasonForUrgency' => array (
+                'xpath' => "//textarea[@id='Element_OphCoTherapyapplication_ExceptionalCircumstances_left_urgency_reason']"
+            ),
+
+        'patientVenousYes' => array (
 					'xpath' => "//select[@name='Element_OphCoTherapyapplication_PatientSuitability[right_DecisionTreeResponse][48]']" 
 			),
 			'CRVOYes' => array (
 					'xpath' => "//select[@name='Element_OphCoTherapyapplication_PatientSuitability[right_DecisionTreeResponse][49]']" 
-			),
-			'intendedSite' => array (
-					'xpath' => "//*[@id='Element_OphCoTherapyapplication_MrServiceInformation_site_id']" 
 			),
 			'saveTherapyApplication' => array (
 					'xpath' => "//button[@id='et_save']" 
@@ -195,10 +201,10 @@ class TherapyApplication extends OpenEyesPage {
 					'xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_2']//*[@value=0]" 
 			),
 			'rightPatientHasCnvYes' => array (
-					'xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_2']//*[@value=1]" 
+					'xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_33']//*[@value=1]" 
 			),
 			'rightPatientHasCnvNo' => array (
-					'xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_2']//*[@value=0]" 
+					'xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_33']//*[@value=0]" 
 			),
 			'rightPatientNoCnvPDTRoute' => array (
 					'xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_33']//*[@value=0]" 
@@ -265,9 +271,16 @@ class TherapyApplication extends OpenEyesPage {
 			),
 			'leftCRVOYes' => array (
 					'xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_49']//*[@value=1]" 
-			) 
-	)
-	;
+			) ,
+            // MR Service Information
+            'consultantOf' => array(
+                    'xpath' => "//*[@id='Element_OphCoTherapyapplication_MrServiceInformation_consultant_id']"
+            ),
+            'intendedSite' => array (
+                'xpath' => "//*[@id='Element_OphCoTherapyapplication_MrServiceInformation_site_id']"
+            )
+	);
+
 	public function removeRightEye() {
 		$this->getElement ( 'removeRightEye' )->click ();
 	}
@@ -312,35 +325,35 @@ class TherapyApplication extends OpenEyesPage {
 		// $this->getSession()->wait(3000);
 		$this->getElement ( 'calendarDate' )->click ();
 	}
-	public function RightCerebYes() {
+	public function rightCerebYes() {
 		$element = $this->getElement ( 'cerebrovascularYes' );
 		$this->scrollWindowToElement ( $element );
-		$element->check ();
+		$element->click();
 	}
 	public function RightCerebNo() {
 		$element = $this->getElement ( 'cerebrovascularNo' );
 		$this->scrollWindowToElement ( $element );
-		$element->check ();
+		$element->click();
 	}
 	public function RightIschaemicYes() {
 		$element = $this->getElement ( 'ischaemicYes' );
 		$this->scrollWindowToElement ( $element );
-		$element->check ();
+		$element->click();
 	}
 	public function RightIschaemicNo() {
 		$element = $this->getElement ( 'ischaemicNo' );
 		$this->scrollWindowToElement ( $element );
-		$element->check ();
+		$element->click();
 	}
 	public function RightMyocardialYes() {
 		$element = $this->getElement ( 'myocardialYes' );
 		$this->scrollWindowToElement ( $element );
-		$element->click ();
+		$element->click();
 	}
 	public function RightMyocardialNo() {
 		$element = $this->getElement ( 'myocardialNo' );
 		$this->scrollWindowToElement ( $element );
-		$element->check ();
+		$element->click();
 		;
 	}
 	public function RightIntendedSite($site) {
@@ -348,27 +361,32 @@ class TherapyApplication extends OpenEyesPage {
 		$this->scrollWindowToElement ( $element );
 		$element->setValue ( $site );
 	}
+    public function consultantOf($id) {
+        $element = $this->getElement('consultantOf');
+        $element->setValue($id);
+    }
+
 	public function RightStandardExistsYes() {
-		$this->getElement ( 'standardExistsYes' )->check ();
+		$this->getElement ( 'standardExistsYes' )->click ();
 	}
 	public function RightStandardExistsNo() {
-		$this->getElement ( 'standardExistsNo' )->check ();
+		$this->getElement ( 'standardExistsNo' )->click ();
 	}
 	public function RightStandardIntervention($standard) {
 		$this->getElement ( 'standardIntervention' )->selectOption ( $standard );
 	}
 	public function RightStandardPreviousYes() {
-		$this->getElement ( 'standardPreviousYes' )->check ();
+		$this->getElement ( 'standardPreviousYes' )->click ();
 	}
 	public function RightStandardPreviousNo() {
-		$this->getElement ( 'standardPreviousNo' )->check ();
+		$this->getElement ( 'standardPreviousNo' )->click ();
 	}
 	public function RightStandardAdditional() {
-		$this->getElement ( 'standardAdditional' )->check ();
+		$this->getElement ( 'standardAdditional' )->click ();
 		// $this->getSession()->wait(3000);
 	}
 	public function RightStandardDeviation() {
-		$this->getElement ( 'standardDeviation' )->check ();
+		$this->getElement ( 'standardDeviation' )->click ();
 		// $this->getSession()->wait(3000);
 	}
 	public function RightAdditionalOrDeviationComments($details) {
@@ -384,10 +402,10 @@ class TherapyApplication extends OpenEyesPage {
 		$this->getElement ( 'patientMoreBenefit' )->setValue ( $comments );
 	}
 	public function RightPatientFactorsYes() {
-		$this->getElement ( 'patientFactorsYes' )->check ();
+		$this->getElement ( 'patientFactorsYes' )->click ();
 	}
 	public function RightPatientFactorsNo() {
-		$this->getElement ( 'patientFactorsNo' )->check ();
+		$this->getElement ( 'patientFactorsNo' )->click ();
 	}
 	public function RightPatientFactorDetails($comments) {
 		$this->getElement ( 'patientFactorDetails' )->setValue ( $comments );
@@ -399,28 +417,28 @@ class TherapyApplication extends OpenEyesPage {
 		$this->getElement ( 'anticipatedStartDate' )->selectOption ( $date );
 	}
 	public function LeftStandardExistsYes() {
-		$this->getElement ( 'leftstandardExistsYes' )->check ();
+		$this->getElement ( 'leftstandardExistsYes' )->click ();
 	}
 	public function LeftStandardExistsNo() {
-		$this->getElement ( 'leftstandardExistsNo' )->check ();
+		$this->getElement ( 'leftstandardExistsNo' )->click ();
 		// TO CODE
 	}
 	public function LeftStandardIntervention($standard) {
 		$this->getElement ( 'leftstandardIntervention' )->selectOption ( $standard );
 	}
 	public function LeftStandardPreviousYes() {
-		$this->getElement ( 'leftstandardPreviousYes' )->check ();
+		$this->getElement ( 'leftstandardPreviousYes' )->click ();
 	}
 	public function LeftStandardPreviousNo() {
-		$this->getElement ( 'leftstandardPreviousNo' )->check ();
+		$this->getElement ( 'leftstandardPreviousNo' )->click ();
 		// TO CODE
 	}
 	public function LeftStandardAdditional() {
-		$this->getElement ( 'leftstandardAdditional' )->check ();
+		$this->getElement ( 'leftstandardAdditional' )->click ();
 		// $this->getSession()->wait(3000);
 	}
 	public function LeftStandardDeviation() {
-		$this->getElement ( 'leftstandardDeviation' )->check ();
+		$this->getElement ( 'leftstandardDeviation' )->click ();
 		// $this->getSession()->wait(3000);
 	}
 	public function LeftAdditionalOrDeviationComments($details) {
@@ -476,9 +494,28 @@ class TherapyApplication extends OpenEyesPage {
 			throw new BehaviorException ( "WARNING!!!  Therapy has NOT been saved!!  WARNING!!" );
 		}
 	}
+
+    public function getDecisionTreeQuestionElementId($side, $question, $waitTime = 2000)
+    {
+        $id = "OphCoTherapyapplication_ComplianceCalculator_" . $side;
+        $selector = "#" . $id;
+        $driver = $this->getDriver();
+        $driver->wait($waitTime, "window.$ && ($(\"" . $selector . "\").attr('data-defn') != undefined && ($(\"" . $selector . "\").attr('data-defn') !== false))" );
+        $this->elements['decisionTreeElement'] = array('xpath' => "//*[contains(text(),'$question')]");
+        $element = $this->getElement('decisionTreeElement');
+        return $element->getAttribute('for');
+    }
+
+    protected function getNoOptionXpathForQuestion($side, $question)
+    {
+        return "//select[@id='" .
+        $this->getDecisionTreeQuestionElementId($side, $question) .
+        "']//*[@value=0]";
+    }
+
 	public function rightPatientCnvNO() {
-		$this->waitForElementDisplayBlock ( '#Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_2' );
-		$this->getElement ( 'rightPatientHasCnvNo' )->click ();
+        $this->elements['rightPatientCnvNOElement'] = array('xpath' => $this->getNoOptionXpathForQuestion('right', 'Patient has CNV'));
+		$this->getElement( 'rightPatientCnvNOElement' )->click ();
 	}
 	public function rightMacularOdemaYes() {
 		$this->waitForElementDisplayBlock ( '#Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_14' );
@@ -537,6 +574,15 @@ class TherapyApplication extends OpenEyesPage {
 		$this->waitForElementDisplayBlock ( '#Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_49' );
 		$this->getElement ( 'leftCRVOYes' )->click ();
 	}
+    public function removeLeftSide() {
+        $this->getElement('leftSideClose')->click();
+        #TODO: check that the left diagnosis dropdown is no longer visible
+    }
+
+    public function addRightClinicalReasonForUrgency($reason)
+    {
+        $this->getElement ( 'rightClinicalReasonForUrgency' )->setValue ( $reason );
+    }
 }
 
 

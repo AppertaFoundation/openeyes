@@ -38,7 +38,7 @@ class PatientViewNewDiagnosis extends OpenEyesPage {
 					'xpath' => "//*[@class='diagnosis_eye row field-row']//*[@value='3']" 
 			),
 			'opthDay' => array (
-					'xpath' => "//*[@id='add-ophthalmic-diagnosis']//select[@name='fuzzy_day']" 
+                        'xpath' => "//*[@id='add-ophthalmic-diagnosis']//select[@name='fuzzy_day']"
 			),
 			'opthMonth' => array (
 					'xpath' => "//*[@id='add-ophthalmic-diagnosis']//select[@name='fuzzy_month']" 
@@ -277,8 +277,9 @@ class PatientViewNewDiagnosis extends OpenEyesPage {
 		}
 	}
 	public function addOpthalmicDate($day, $month, $year) {
-		sleep(5);
-		$this->getElement ( 'opthDay' )->selectOption ( $day );
+		#TODO fix this to be a wait for element to be visible
+        sleep(5);
+        $this->getElement ( 'opthDay' )->selectOption ( $day );
 		$this->getElement ( 'opthMonth' )->selectOption ( $month );
 		$this->getElement ( 'opthYear' )->selectOption ( $year );
 	}

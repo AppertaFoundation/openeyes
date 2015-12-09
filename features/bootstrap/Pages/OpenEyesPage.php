@@ -105,7 +105,7 @@ abstract class OpenEyesPage extends Page {
 	 */
 	public function scrollWindowToLink($locator) {
 		$element = $this->findLink ( $locator );
-		
+		print $locator;
 		if ($element === null) {
 			throw new ElementNotFoundException ( $this->getSession (), 'element', 'id|title|alt|text', $locator );
 		}
