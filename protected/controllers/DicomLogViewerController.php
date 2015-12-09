@@ -190,7 +190,7 @@ class DicomLogViewerController extends BaseController
     ///////////////
 
 
-    protected function getDicomFiles($page, $sc = 'import_datetime', $so = 'asc')
+    protected function getDicomFiles($page, $sc = 'entry_date_time', $so = 'desc')
     {
         $command = Yii::app()->db->createCommand()
             ->select('df.id, df.filename, df.processor_id, dil.id as did, dil.import_datetime, dil.study_datetime, dil.study_instance_id, dil.station_id, dil.study_location, dil.report_type, dil.patient_number, dil.status, dil.comment,
