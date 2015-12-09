@@ -4,14 +4,14 @@ include_once('./connectDatabase.php');
 include_once('./fileWatcherConfig.php');
 include_once('./loggerClass.php');
 
-$logger = new eventLogger($mysqli);
+
 // we should be able to start more processes here!
 
 $fam_res = fam_open ();
 
 // if we have subdirectories we need the monitor collection instead of directory
 //$dir_res = fam_monitor_directory  ( $fam_res, $dicomConfig["biometry"]["inputFolder"]);
-$dir_res = fam_monitor_collection   ( $fam_res, $dicomConfig["biometry"]["inputFolder"], 1);
+$dir_res = fam_monitor_collection   ( $fam_res, $dicomConfig["biometry"]["inputFolder"], 1, 'dcm');
 echo 'Monitoring '.$dicomConfig["biometry"]["inputFolder"]."\n\n";
 //var_dump($dicomConfig["biometry"]["inputFolder"]);
 
@@ -21,6 +21,7 @@ while (TRUE)
 {
 	$newfile = false;
 	$mysqli = connectDatabase();
+	$logger = new eventLogger($mysqli);
 	//fam_resume_monitor($fam_res, $dir_res);
 	while(fam_pending($fam_res)){
 		$arr = fam_next_event($fam_res);
@@ -77,10 +78,11 @@ function createFileEntry($fullfilename, $filedata, $mysqli){
 function checkNotProcessed($existing, $processed){
 	$notFound= array();
 	foreach($existing as $filename=>$fileData){
-		if(!($processed[$filename]["filesize"]==$fileData["size"] && $processed[$filename]["filedate"] == date('Y-m-d H:i:s', $fileData["mtime"]))){
+		if(!(isset($processed[$filename]))||!($processed[$filename]["filesize"]==$fileData["size"] && $processed[$filename]["filedate"] == date('Y-m-d H:i:s', $fileData["mtime"]))){
 			$notFound[$filename] = $fileData;
 		}
 	}
+	return $notFound;
 }
 
 function checkExistingFiles(){
@@ -92,6 +94,7 @@ function checkExistingFiles(){
 	$newfile = false;
 	while(fam_pending($fam_res)){
 		$arr = fam_next_event($fam_res);
+		var_dump($arr);
 		// FAMExists == 8
 		if($arr["code"] == 8){
 			if(is_file($dicomConfig["biometry"]["inputFolder"]."/".$arr["filename"])){
@@ -101,25 +104,20 @@ function checkExistingFiles(){
 		}
 	}
 
-	if(is_array($existingFiles) && count($existingFiles) > 0){
+	if(isset($existingFilesData) && is_array($existingFilesData) && count($existingFilesData) > 0){
 		$processedFiles = array();
 		$processedFilesQ = $mysqli->query("SELECT id,filename, filesize, filedate FROM dicom_files");
 		while($filerow = $processedFilesQ->fetch_assoc()){
 			$processedFiles[$filerow["filename"]] = $filerow;
 		}
 
-		$notProcessed = checkNotProcessed($existingFiles, $processedFiles);
+		$notProcessed = checkNotProcessed($existingFilesData, $processedFiles);
 		
 		var_dump($notProcessed);
 		
-		/*if(count($notProcessed) > 0){
-			$newfile = true;
-			foreach($notProcessed as $fileEntry){
-				echo 'New file arrived: '.$fileEntry."\n";
-				$mysqli->query("INSERT INTO dicom_file_queue (filename, detected_date, last_modified_date, status_id) VALUES ('".$fileEntry."', now(), now(), (SELECT id FROM dicom_process_status WHERE name = 'new'))");
-				$logger->addLogEntry($fileEntry, 'new', basename($_SERVER["SCRIPT_FILENAME"]));
-			}
-		}*/
+		foreach($notProcessed as $filename=>$filedata){
+			createFileEntry($filename, $filedata, $mysqli);
+		}
 
 	}
 	$mysqli->close();

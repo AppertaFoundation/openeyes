@@ -1,8 +1,8 @@
 <?php
-	function connectDatabase(){
-		// we will read the connection data from the Yii configuration
-		include_once('../../config/local/common.php');
+	include_once('../../config/local/common.php');
 
+	function connectDatabase(){
+		global $config;
 		// $config array defined in Yii config file!
 		$connectionData = explode(';',str_replace('mysql:','',$config["components"]["db"]["connectionString"]));
 		

@@ -7,6 +7,7 @@
 	// TODO: change this to be able to process other type of input files, not just biometry
 	
 	$pidfile = '/tmp/DicomFileQueue.pid';
+	$mysqli = connectDatabase();
 	
 	if(file_exists($pidfile)){
 		$currentPid = implode("",file($pidfile));
