@@ -23,4 +23,6 @@ sh $SCRIPTPATH/load-testdata.sh
 
 $SCRIPTPATH/../protected/yiic generatesessions "+1 week"
 
-$SCRIPTPATH/behat --stop-on-failure --profile=selenium-local
+# added regression tag to get around the fact that it's not clear what
+# test data should be loaded for the other tests to run
+$SCRIPTPATH/behat --tags=regression --stop-on-failure --profile=selenium-local
