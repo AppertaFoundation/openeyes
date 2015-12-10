@@ -10,8 +10,8 @@ include_once('./loggerClass.php');
 $fam_res = fam_open ();
 
 // if we have subdirectories we need the monitor collection instead of directory
-//$dir_res = fam_monitor_directory  ( $fam_res, $dicomConfig["biometry"]["inputFolder"]);
-$dir_res = fam_monitor_collection   ( $fam_res, $dicomConfig["biometry"]["inputFolder"], 1, 'dcm');
+$dir_res = fam_monitor_directory  ( $fam_res, $dicomConfig["biometry"]["inputFolder"]);
+//$dir_res = fam_monitor_collection   ( $fam_res, $dicomConfig["biometry"]["inputFolder"], 1, 'dcm');
 echo 'Monitoring '.$dicomConfig["biometry"]["inputFolder"]."\n\n";
 //var_dump($dicomConfig["biometry"]["inputFolder"]);
 
