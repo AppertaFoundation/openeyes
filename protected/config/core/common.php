@@ -316,14 +316,14 @@ return array(
 		),
 		'html_autocomplete' => 'off',
 		// html|pdf, pdf requires wkhtmltopdf with patched QT
-		'event_print_method' => 'html',
+		'event_print_method' => 'pdf',
 		// use this to set a specific path to the wkhtmltopdf binary. if this is not set it will search the current path.
 		'wkhtmltopdf_path' => '/usr/local/bin/wkhtmltopdf',
-		'wkhtmltopdf_footer_left' => '{{DOCREF}}{{BARCODE}}{{PATIENT_NAME}}{{PATIENT_HOSNUM}}{{PATIENT_NHSNUM}}',
+		'wkhtmltopdf_footer_left' => '{{DOCREF}}{{BARCODE}}{{PATIENT_NAME}}{{PATIENT_HOSNUM}}{{PATIENT_NHSNUM}}{{PATIENT_DOB}}',
 		'wkhtmltopdf_footer_middle' => 'Page {{PAGE}} of {{PAGES}}',
 		'wkhtmltopdf_footer_right' => 'OpenEyes',
 		'wkhtmltopdf_top_margin' => '10mm',
-		'wkhtmltopdf_bottom_margin' => '18mm',
+		'wkhtmltopdf_bottom_margin' => '25mm',
 		'wkhtmltopdf_left_margin' => '20mm',
 		'wkhtmltopdf_right_margin' => '20mm',
 		'wkhtmltopdf_nice_level' => false,
