@@ -117,6 +117,8 @@ $config = array(
 		//'default_site_code' => '',
 		'specialty_sort' => array(130, 'SUP'),
 		'OphCoTherapyapplication_sender_email' => array('email@example.com' => 'Test'),
+		'event_print_method' => 'pdf',
+		'wkhtmltopdf_nice_level' => 19,
 	),
 );
 
