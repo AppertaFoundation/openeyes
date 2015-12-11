@@ -32,6 +32,7 @@
 		var patient_names = {{PATIENT_NAMES}};
 		var patient_hosnums = {{PATIENT_HOSNUMS}};
 		var patient_nhsnums = {{PATIENT_NHSNUMS}};
+		var patient_dobs = {{PATIENT_DOBS}};
 		var y = document.getElementsByClassName('patient_name');
 		for (var j=0; j<y.length; j++) {
 			y[j].innerHTML = patient_names[document_no] + "<br/>";
@@ -45,6 +46,11 @@
 		var y = document.getElementsByClassName('patient_nhsnum');
 		for (var j=0; j<y.length; j++) {
 			y[j].innerHTML = ", NHS No: " + patient_nhsnums[document_no];
+		}
+
+		var y = document.getElementsByClassName('patient_dob');
+		for (var j=0; j<y.length; j++) {
+			y[j].innerHTML = "<br/>DOB: " + patient_dobs[document_no];
 		}
 
 		var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
