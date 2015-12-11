@@ -55,7 +55,15 @@
 					</button>
 				</div>
 			</div>
-		<?php $this->endWidget(); ?>
+
+        <?php $this->endWidget(); ?>
+
+        <div class="row" id="dashboard">
+            <?php
+                $d = new DashboardHelper();
+                echo $d->render();
+            ?>
+        </div>
 	</div>
 </div>
 
