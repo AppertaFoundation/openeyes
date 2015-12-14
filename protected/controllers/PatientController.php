@@ -144,6 +144,8 @@ class PatientController extends BaseController
 			$this->patient->first_name.' '.$this->patient->last_name. '('.$this->patient->hos_num.')',
 		);
 
+		$this->checkImportedBiometryEvent();
+
 		$this->render('view', array(
 			'tab' => $tabId,
 			'event' => $eventId,
@@ -1415,5 +1417,17 @@ class PatientController extends BaseController
 	{
 		$oprn = 'OprnCreate' . ($event_type->class_name == 'OphDrPrescription' ? 'Prescription' : 'Event');
 		return $this->checkAccess($oprn, $this->firm, $episode, $event_type);
+	}
+
+	private function checkImportedBiometryEvent(){
+		if(isset(Yii::app()->modules["OphInBiometry"])) {
+			$criteria = new CDbCriteria;
+			$criteria->addCondition("is_linked=0 AND patient_id='".$this->patient->id."'");
+			$resultSet = OphInBiometry_Imported_Events::model()->findAll($criteria);
+			if($resultSet){
+				Yii::app()->user->setFlash('alert.unlinked_biometry_event',
+					"A new biometry report is available for this patient - please create a biometry event to view it ");
+			}
+		}
 	}
 }
