@@ -51,5 +51,15 @@ module.exports = {
 				dest: 'docs/public/assets'
 			}
 		]
-	}
+	},
+    compass: {
+        files: [
+            {
+                cwd: 'protected/assets/components/font-awesome',
+                expand: true,
+                src: ['fonts/*'],
+                dest: 'protected/assets/img/fa'
+            }
+        ]
+    }
 };

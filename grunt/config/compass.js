@@ -10,7 +10,8 @@ module.exports = {
 			httpPath: '',
 			noLineComments: false,
 			importPath: [
-				'protected/assets/components/foundation/scss'
+				'protected/assets/components/foundation/scss',
+                'protected/assets/components/font-awesome/scss'
 			]
 		}
 	}
