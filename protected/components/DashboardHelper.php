@@ -72,7 +72,6 @@ class DashboardHelper {
         $renders = array();
 
         foreach ($this->items as $item) {
-            OELog::log(print_r($item, true));
             if (isset($item['restricted'])) {
                 $allowed = false;
                 foreach ($item['restricted'] as $authitem) {
