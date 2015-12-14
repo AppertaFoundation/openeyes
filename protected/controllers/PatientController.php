@@ -1419,7 +1419,11 @@ class PatientController extends BaseController
 		return $this->checkAccess($oprn, $this->firm, $episode, $event_type);
 	}
 
+	/**
+	 * Check for new imported biometry event
+	 */
 	private function checkImportedBiometryEvent(){
+		// we need to be sure that Biometry module is installed
 		if(isset(Yii::app()->modules["OphInBiometry"])) {
 			$criteria = new CDbCriteria;
 			$criteria->addCondition("is_linked=0 AND patient_id='".$this->patient->id."'");
