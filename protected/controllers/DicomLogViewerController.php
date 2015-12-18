@@ -248,10 +248,10 @@ class DicomLogViewerController extends BaseController
         foreach ($data as $k => $y) {
             $data[$k] = $y;
             $data[$k]['watcher_log'] = $this->getFileWatcherLog($y['id']);
+            $patientInfo = Patient::model()->findByAttributes(array('hos_num'=> $y['patient_number']),'id');
+            $data[$k]['patient_id'] =  $patientInfo['id'];
         }
         return ($data);
-
-
     }
     protected function getFileWatcherLog($file_id){
         //select * from dicom_file_log where dicom_file_id=1;

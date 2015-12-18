@@ -39,7 +39,7 @@
     <td> <?php echo $log['station_id']; ?></td>
     <td> <?php echo $log['study_location']; ?></td>
     <td> <?php echo $log['report_type']; ?></td>
-    <td> <?php echo $log['patient_number']; ?></td>
+    <td> <a href="/patient/view/<?php echo $log['patient_id']?>"> <?php echo $log['patient_number']; ?></a></td>
     <td> <?php echo $log['status']; ?></td>
     <td> <?php echo wordwrap($log['study_instance_id'], 12, "\n", true); ?></td>
     <td> <?php echo $log['comment']; ?></td>

@@ -82,9 +82,25 @@ class TestHarnessController extends BaseAdminController
             }
         }
         $d->close();
+        return $this->aasort($retval,"name");
 
-        return $retval;
     }
+
+    private function aasort (&$array, $key) {
+        $sorter=array();
+        $ret=array();
+        reset($array);
+        foreach ($array as $ii => $va) {
+            $sorter[$ii]=$va[$key];
+        }
+        asort($sorter);
+        foreach ($sorter as $ii => $va) {
+            $ret[$ii]=$array[$ii];
+        }
+       return $array=$ret;
+    }
+
+//aasort($your_array,"order");
 
 
 }
