@@ -8,11 +8,12 @@ class DashboardHelperTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->_orig_moduleAPI = Yii::app()->moduleAPI;
+        $this->_orig_moduleAPI = \Yii::app()->moduleAPI;
 
         $this->moduleAPI = $this->getMockBuilder('ModuleAPI')->disableOriginalConstructor()->getMock();
         \Yii::app()->setComponent('moduleAPI', $this->moduleAPI);
-        $this->controller = new \CController('phpunit');
+        $this->controller = $this->getMockBuilder('CController')->disableOriginalConstructor()->getMock();
+        //new \CController('phpunit');
         \Yii::app()->setController($this->controller);
         parent::setUp();
     }
@@ -34,6 +35,13 @@ class DashboardHelperTest extends PHPUnit_Framework_TestCase
 
     public function testRender_correct()
     {
+        $first_db = array(
+            'title' => 'first',
+            'content' => 'first render');
+        $second_db = array(
+            'title' => 'second',
+            'content' => 'second render');
+
         // two different module APIs for dashboard generation
         $first = $this->getMockBuilder('BaseAPI')->disableOriginalConstructor()->setMethods(array('renderDashboard'))->getMock();
         $second = $this->getMockBuilder('BaseAPI')->disableOriginalConstructor()->setMethods(array('renderDashboard'))->getMock();
@@ -41,10 +49,10 @@ class DashboardHelperTest extends PHPUnit_Framework_TestCase
         // static render values for these mock apis
         $first->expects($this->any())
             ->method('renderDashboard')
-            ->will($this->returnValue('first render'));
+            ->will($this->returnValue($first_db));
         $second->expects($this->any())
             ->method('renderDashboard')
-            ->will($this->returnValue('second render'));
+            ->will($this->returnValue($second_db));
 
         // return the appropriate module api mocks
         $this->moduleAPI->expects($this->any())
@@ -78,6 +86,19 @@ class DashboardHelperTest extends PHPUnit_Framework_TestCase
                 'api' => 'secondModule'
             )
         ), $user);
+
+        $this->controller->expects($this->at(0))
+            ->method('renderPartial')
+            ->with($this->anything(), array('items' => array(
+                $first_db)), true, false)
+            ->will($this->returnValue('first render'));
+
+        $this->controller->expects($this->at(1))
+            ->method('renderPartial')
+            ->with($this->anything(), array('items' => array(
+                $first_db, $second_db
+            )), true, false)
+            ->will($this->returnValue('first rendersecond render'));
 
         $this->assertEquals('first render', $test->render());
         $this->assertEquals('first rendersecond render', $test->render());
