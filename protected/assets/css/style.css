@@ -7721,7 +7721,7 @@ tfoot.pagination-container .pagination-view-all {
 .box.dashboard .box-title {
   font-size: 0.8125rem;
   color: #e49f10;
-  margin: 0;
+  margin: 0 100px 0 0;
   padding: 0 0 8px 0;
 }
 @media print {
@@ -7739,6 +7739,23 @@ tfoot.pagination-container .pagination-view-all {
   margin-bottom: 3px;
   margin-top: 0;
   line-height: 1;
+}
+
+/* line 28, ../sass/openeyes/components/boxes/_dashboard.scss */
+.sortable-anchor {
+  color: #0b59da;
+  right: 25px;
+  top: 4px;
+  position: absolute;
+  font-size: 0.5em;
+  padding: 1px;
+  border: #0b59da 1px solid;
+  cursor: pointer;
+}
+
+/* line 39, ../sass/openeyes/components/boxes/_dashboard.scss */
+.dashboard-container .ui-sortable-helper .sortable-anchor {
+  cursor: move;
 }
 
 /* line 23, ../sass/openeyes/components/_icons.scss */
