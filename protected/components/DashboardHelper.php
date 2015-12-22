@@ -92,6 +92,9 @@ class DashboardHelper {
                 }
                 $renders[] = $api->renderDashboard();
             }
+            elseif (isset($item['demo'])) {
+                $renders[] = $item['demo'];
+            }
             else {
                 throw new Exception("Invalid dashboard configuration, api definition required");
             }
