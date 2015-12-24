@@ -198,7 +198,7 @@ class DicomLogViewerController extends BaseController
             ')
             ->from('dicom_files as df')
             ->leftJoin('dicom_import_log as dil', 'df.id = dil.dicom_file_id')
-            ->join('patient as p', 'p.hos_num = dil.patient_number')
+            ->leftJoin('patient as p', 'dil.patient_number = p.hos_num')
             ->order($sc . ' ' . $so)
             ->limit($this->items_per_page)
             ->offset(($page - 1) * $this->items_per_page);
