@@ -115,7 +115,7 @@ $config = array(
 	'params'=>array(
 		//'pseudonymise_patient_details' => false,
 		//'ab_testing' => false,
-		'auth_source' => 'LDAP',
+		'auth_source' => 'BASIC',	// BASIC or LDAP
 		// This is used in contact page
 		'ldap_server' => 'ldap.example.com',
 		//'ldap_port' => '',
