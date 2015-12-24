@@ -17,12 +17,25 @@
 * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 */
 
+if(file_exists('/etc/openeyes/db.conf')) {
+	$db = parse_ini_file('/etc/openeyes/db.conf');
+} else {
+	$db = array(
+		'host' => '127.0.0.1',
+		'port'	=> '=3306',
+		'dbname'	=> 'openeyes',
+		'username'	=> 'openeyes',
+		'password'	=> 'openeyes',
+	);
+}
+
+
 $config = array(
 	'components' => array(
 		'db' => array(
-			'connectionString' => 'mysql:host=localhost;port=3306;dbname=openeyes',
-			'username' => 'openeyes',
-			'password' => 'openeyes',
+			'connectionString' => "mysql:host={$db['host']};port={$db['port']};dbname={$db['dbname']}",
+			'username' => $db['username'],
+			'password' => $db['password'],
 		),
 		'session' => array(
 			'timeout' => 86400
