@@ -19,54 +19,54 @@
 ?>
 <?php $this->renderPartial('search_header'); ?>
 <div class="row">
-	<div class="large-8 medium-9 small-12 small-centered medium-centered large-centered column">
-		<div class="panel search-examples">
-			Find a patient by
-			<strong>Hospital Number</strong>,
-			<strong>NHS Number</strong>,
-			<strong>Firstname Surname</strong> or
-			<strong>Surname, Firstname</strong>.
-		</div>
-	</div>
+
 </div>
 
 <div class="row">
-	<div class="large-8 large-centered column">
+    <div class="large-8 large-centered column">
 
-		<?php $this->renderPartial('//base/_messages'); ?>
+        <?php $this->renderPartial('//base/_messages'); ?>
 
-		<?php
-			$this->beginWidget('CActiveForm', array(
-				'id' => 'search-form',
-				'focus' => '#query',
-				'action' => Yii::app()->createUrl('site/search'),
-				'htmlOptions' => array(
-					'class' => 'form panel search'
-				)
-			));?>
-			<div class="row">
-				<div class="large-9 column">
-					<?php echo CHtml::textField('query', '', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'large', 'placeholder' => 'Enter search...')); ?>
-				</div>
-				<div class="large-3 column text-right">
-					<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="margin-right: 10px; display: none;" />
-					<button type="submit" class="primary long">
-						Search
-					</button>
-				</div>
-			</div>
+        <?php
+        $this->beginWidget('CActiveForm', array(
+            'id' => 'search-form',
+            'focus' => '#query',
+            'action' => Yii::app()->createUrl('site/search'),
+            'htmlOptions' => array(
+                'class' => 'form panel search'
+            )
+        )); ?>
+        <div class="row">
+            <div class="search-examples">
+                Find a patient by
+                <strong>Hospital Number</strong>,
+                <strong>NHS Number</strong>,
+                <strong>Firstname Surname</strong> or
+                <strong>Surname, Firstname</strong>.
+            </div>
+            <div class="large-9 column">
+                <?php echo CHtml::textField('query', '', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'large', 'placeholder' => 'Enter search...')); ?>
+            </div>
+            <div class="large-3 column text-right">
+                <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>"
+                     alt="loading..." style="margin-right: 10px; display: none;"/>
+                <button type="submit" class="primary long">
+                    Search
+                </button>
+            </div>
+        </div>
 
         <?php $this->endWidget(); ?>
 
-        <div class="row" id="dashboard">
+        <div id="dashboard">
             <?php
-                $d = new DashboardHelper();
-                echo $d->render();
+            $d = new DashboardHelper();
+            echo $d->render();
             ?>
         </div>
-	</div>
+    </div>
 </div>
 
 <script type="text/javascript">
-	handleButton($('#search-form button'));
+    handleButton($('#search-form button'));
 </script>
