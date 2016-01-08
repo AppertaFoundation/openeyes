@@ -245,7 +245,11 @@ class DicomLogViewerController extends BaseController
 
 
         //echo $command->getText();die;
-        $data = $command->queryAll();
+        $data = array();
+       if ((!empty($_REQUEST['hos_num']) || !empty($_REQUEST['file_name']) || !empty($_REQUEST['study_id']) || !empty($_REQUEST['location']) || !empty($_REQUEST['station_id']) || !empty($_REQUEST['status']) || !empty($_REQUEST['type']))) {
+           $data = $command->queryAll();
+       }
+
         foreach ($data as $k => $y) {
             $data[$k] = $y;
             $data[$k]['watcher_log'] = $this->getFileWatcherLog($y['id']);

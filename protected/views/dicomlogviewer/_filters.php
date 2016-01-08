@@ -105,25 +105,25 @@
 					<div class="large-10 column">
 						<div class="search-filters-extra audit-filters clearfix">
 							<fieldset class="inline highlight">
-								<label class="inline" for="import_date">Import Date:</label>
+<!--								<label class="inline" for="import_date">Import Date:</label>
 								<?php
-								echo CHtml::radioButton('date_type', true, array(
+/*								echo CHtml::radioButton('date_type', true, array(
 									'value'=>'1',
 									'id'=>'import_date',
 									'name' => 'date',
 									'uncheckValue'=>null
-								));?>
+								));*/?>
 								<label class="inline" for="study_date">Study Date:</label>
 								<?php
-								echo CHtml::radioButton('date_type', false, array(
+/*								echo CHtml::radioButton('date_type', false, array(
 									'value'=>'2',
 									'id'=>'study_date',
 									'name' => 'date',
 									'uncheckValue'=>null
 								));
-								?>
+								*/?>
 								<label class="inline" for="date_from">From:</label>
-								<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+								<?php /*$this->widget('zii.widgets.jui.CJuiDatePicker', array(
 									'name' => 'date_from',
 									'id' => 'date_from',
 									'options' => array(
@@ -134,9 +134,9 @@
 									'htmlOptions' => array(
 										'class' => 'small fixed-width'
 									)
-								))?>
+								))*/?>
 								<label class="inline" for="date_to">To:</label>
-								<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+								--><?php /*$this->widget('zii.widgets.jui.CJuiDatePicker', array(
 									'name' => 'date_to',
 									'id' => 'date_to',
 									'options' => array(
@@ -147,7 +147,7 @@
 									'htmlOptions' => array(
 										'class' => 'small fixed-width'
 									)
-								))?>
+								))*/?>
 
 <!--								<?php /*echo CHtml::textField('hos_num',@$_POST['hos_num'],array('autocomplete'=>Yii::app()->params['html_autocomplete'],'class'=>'small fixed-width'))*/?>
 								<?php /*echo CHtml::link('View all',array('audit/'),array('class'=>'inline'))*/?>
