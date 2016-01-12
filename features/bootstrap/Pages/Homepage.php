@@ -3,9 +3,9 @@ use Behat\Behat\Exception\BehaviorException;
 class Homepage extends OpenEyesPage {
 	protected $path = '/';
 	protected $elements = array (
-			'siteID' => array (
-					'xpath' => "//*[@id='SiteAndFirmForm_site_id']" 
-			),
+			//'siteID' => array (
+			//		'xpath' => "//*[@id='SiteAndFirmForm_site_id']"
+			//),
 			'firmDropdown' => array (
 					'xpath' => "//*[@id='SiteAndFirmForm_firm_id']" 
 			),
@@ -74,9 +74,29 @@ class Homepage extends OpenEyesPage {
 			),
 			'prescriptionDisabled' => array (
 					'xpath' => "//*[@title='You do not have permission to add Prescription']" 
-			) 
+			),
+		'closeSiteAndFirmPopup' => array(
+			'xpath' => "//*[@class='ui-dialog-titlebar-close ui-corner-all']//*[contains(text(),'close')]"
+		),
+		'moreTab' => array(
+			'xpath' => "//*[@data-dropdown='menu-item-more-sub']"
+		),
+		'adminOption' => array(
+			'xpath' => "//*[contains(text(),'Admin')]"
+		),
+		'auditOption' => array(
+			'xpath' => "//*[contains(text(),'Audit')]"
+		),
+		'reportsOption' => array(
+			'xpath' => "//*[contains(text(),'Reports')]"
+		)
 	);
 	public function selectSiteID($siteAddress) {
+		$mysite = 'SiteAndFirmForm_site_id';
+		$this->elements['siteID'] = array (
+			'xpath' => "//*[@id='{$mysite}']"
+		);
+		$this->waitForElementDisplayBlock('siteID');
 		$this->getElement ( 'siteID' )->selectOption ( $siteAddress );
 	}
 	public function selectFirm($firm) {
@@ -212,4 +232,51 @@ class Homepage extends OpenEyesPage {
 			throw new BehaviorException ( "WARNING!!! Level 4 RBAC Prescription IS enabled WARNING!!!" );
 		}
 	}
+
+	public function closePopup(){
+     sleep(3);
+		$this->getElement ( 'closeSiteAndFirmPopup' )->click();
+	}
+
+	public function selectTab($pageTab){
+     $this->waitForElementDisplayBlock('moreTab');
+		$this->getElement('moreTab')->mouseOver();
+		if($pageTab=='Admin'){
+			$this->getElement('adminOption')->click();
+		}
+		elseif($pageTab=='Audit'){
+			$this->getElement('auditOption')->click();
+		}
+		elseif($pageTab=='Reports'){
+			$this->getElement('reportsOption')->click();
+		}
+		else{
+			throw new BehaviorException ( "Invalid Option Selected!!" );
+		}
+
+	}
+
+	public function openUrl($url){
+		$this->getDriver()->visit($url);
+	}
+
+	public function homepageAlert($alert){
+		$this->elements['homepageAlert'] = array (
+			'xpath' => "//*[//*[@class='messages patient']//*[contains(text(),'$alert')]]"
+		);
+		if($this->getElement('homepageAlert')->isVisible()){
+			print "Alert Displayed Correctly!";
+		}
+		else{
+			throw new BehaviorException("Alert not displayed correctly!");
+		}
+	}
+
+	public function clickOnTab($tab){
+		$this->elements['tabID'] = array (
+			'xpath' => "//*[@class='inline-list navigation user right']//*[contains(text(),'$tab')]"
+		);
+		$this->getElement('tabID')->click();
+	}
+
 }

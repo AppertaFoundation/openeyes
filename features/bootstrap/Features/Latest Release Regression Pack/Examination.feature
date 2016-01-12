@@ -4,8 +4,8 @@ Feature: Create New Examination Regression Tests
           Regression over 2 Sites and 4 Firms
           Regression coverage of this event is approx 70%
 
-  @EXAM_Route_1
-  Scenario: Route 1: Login and create a new Examination Event
+  @EXAM_Route_1 @OE-5606 @sprint22
+  Scenario Outline: Route 1: Login and create a new Examination Event
             Site 1:Queens
             Firm 3:Anderson Glaucoma
             Add and then remove all Comorbidities
@@ -13,15 +13,15 @@ Feature: Create New Examination Regression Tests
             Confirm that Refraction Axis entries are correctly validated when the Examination is saved
 
     Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "3"
+    And I enter login credentials "<uname>" and "<pwd>"
+    And I select Site "<site>"
+    Then I select a firm of "<firm>"
 
-    Then I search for hospital number "1009465"
+    Then I search for hospital number "<hospNo.>"
 
-    Then I select the Latest Event
-    Then I expand the Glaucoma sidebar
-    And I add a New Event "Examination"
+    Then I select Create or View Episodes and Events
+    Then I expand the "<speciality>" sidebar
+    And I add a New Event "<event>"
 
     Then I select a History of Blurred Vision, Mild Severity, Onset 1 Week, Left Eye, 1 Week
 
@@ -95,6 +95,10 @@ Feature: Create New Examination Regression Tests
     Then a check is made that a left Axis degrees of "145" was entered
     Then a check is made that a right Axis degrees of "38" was entered
 
+    Examples:
+    |uname|pwd  |site|firm|hospNo.|speciality|event      |
+    |admin|admin|1   |  2 |1009465|Glaucoma  |Examination|
+
   @EXAM_Route_2
   Scenario: Route 2:Login and create a new Examination Event
             Site:1 Queens
@@ -110,7 +114,7 @@ Feature: Create New Examination Regression Tests
 
     Then I search for patient name last name "Coffin," and first name "Violet"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
     Then I expand the Glaucoma sidebar
     And I add a New Event "Examination"
 
@@ -131,7 +135,7 @@ Feature: Create New Examination Regression Tests
     And I choose a Left Colour Vision of "1"
 
     And I choose a Right Colour Vision of "2"
- 
+
 
     Then I choose to expand the Visual Acuity section
     And I select a Visual Acuity of "1"
@@ -163,7 +167,7 @@ Feature: Create New Examination Regression Tests
     Then I remove Refraction right side
 
     Then I Save the Examination and confirm it has been created successfully
-    
+
   @EXAM_Route_3
   Scenario: Route 3:Login and create a new Examination Event
             Site:1 Queens
@@ -177,7 +181,7 @@ Feature: Create New Examination Regression Tests
 
     Then I search for patient name last name "Coffin," and first name "Violet"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
     Then I expand the Cataract sidebar
     And I add a New Event "Examination"
 
@@ -245,7 +249,7 @@ Feature: Create New Examination Regression Tests
 
     Then I search for patient name last name "Coffin," and first name "Violet"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
     Then I expand the Cataract sidebar
     And I add a New Event "Examination"
 
@@ -307,6 +311,7 @@ Feature: Create New Examination Regression Tests
 
     Then I choose to expand the Diagnoses section
     And I choose a left eye diagnosis
+    And I select Diagnosis of Cataract
 
     Then I choose to expand the Investigation section
     And I add an Investigation of "refraction, "
@@ -321,6 +326,8 @@ Feature: Create New Examination Regression Tests
     Then I select First Eye
 
     And I choose Straightforward case
+
+    And I select a post operative refractive target in dioptres of "2"
 
     And the post operative target has been discussed with patient Yes
     Then I select a suitable for surgeon of "3"
@@ -365,9 +372,9 @@ Feature: Create New Examination Regression Tests
     And I choose a Conclusion option of "booked for first eye, "
 
     Then I Save the Examination and confirm it has been created successfully
-    
 
-# 
+
+#
   @EXAM_Route_5
   Scenario: ROUTE 5: Login and create a new Examination Event
             Site:1 Queens
@@ -381,7 +388,7 @@ Feature: Create New Examination Regression Tests
 
     Then I search for patient name last name "Coffin," and first name "Violet"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
     Then I expand the Cataract sidebar
     And I add a New Event "Examination"
 
@@ -458,6 +465,7 @@ Feature: Create New Examination Regression Tests
 
     And I choose Straightforward case
 
+    And I select a post operative refractive target in dioptres of "2"
     And the post operative target has been discussed with patient No
     Then I select a suitable for surgeon of "3"
     And I tick the Supervised checkbox
@@ -519,7 +527,7 @@ Feature: Create New Examination Regression Tests
 
     Then I search for patient name last name "Coffin," and first name "Violet"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
     Then I expand the Cataract sidebar
     And I add a New Event "Examination"
 
@@ -590,6 +598,7 @@ Feature: Create New Examination Regression Tests
     Then I select First Eye
 
     And I choose Straightforward case
+    And I select a post operative refractive target in dioptres of "2"
 
     And the post operative target has been discussed with patient No
     Then I select a suitable for surgeon of "3"
@@ -661,7 +670,7 @@ Feature: Create New Examination Regression Tests
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
     Then I expand the Glaucoma sidebar
     And I add a New Event "Examination"
 
@@ -671,9 +680,9 @@ Feature: Create New Examination Regression Tests
 
     Then I Confirm that the History Validation error message is displayed
     Then I Confirm that the Conclusion Validation error message is displayed
-    
+
     #Then I cancel the Examnination event
-    
+
   @EXAM_Route_8
   Scenario: Route 8: Examination Validation Tests (Anderson Cataract)
             History and Dilation validation error checks
@@ -685,7 +694,7 @@ Feature: Create New Examination Regression Tests
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
     Then I expand the Cataract sidebar
     And I add a New Event "Examination"
 
@@ -707,7 +716,7 @@ Feature: Create New Examination Regression Tests
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
     Then I expand the Medical Retinal sidebar
     And I add a New Event "Examination"
 
@@ -729,7 +738,7 @@ Feature: Create New Examination Regression Tests
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
     Then I expand the Glaucoma sidebar
     And I add a New Event "Examination"
 
@@ -751,7 +760,7 @@ Feature: Create New Examination Regression Tests
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
     Then I expand the Glaucoma sidebar
     And I add a New Event "Examination"
 
@@ -772,7 +781,7 @@ Feature: Create New Examination Regression Tests
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
     Then I expand the Glaucoma sidebar
     And I add a New Event "Examination"
 
@@ -793,7 +802,7 @@ Feature: Create New Examination Regression Tests
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
     Then I expand the Cataract sidebar
     And I add a New Event "Examination"
 
@@ -821,7 +830,7 @@ Feature: Create New Examination Regression Tests
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
     Then I expand the Glaucoma sidebar
     And I add a New Event "Examination"
 
@@ -858,7 +867,7 @@ Feature: Create New Examination Regression Tests
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
     Then I expand the Medical Retinal sidebar
     And I add a New Event "Examination"
 
@@ -899,7 +908,7 @@ Feature: Create New Examination Regression Tests
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
     Then I expand the Glaucoma sidebar
     And I add a New Event "Examination"
 
@@ -940,7 +949,7 @@ Feature: Create New Examination Regression Tests
 
     Then I search for patient name last name "Coffin," and first name "Violet"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
     Then I expand the Glaucoma sidebar
     And I add a New Event "Examination"
 
@@ -987,7 +996,7 @@ Feature: Create New Examination Regression Tests
 
     Then I search for patient name last name "Coffin," and first name "Violet"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
     Then I expand the Cataract sidebar
     And I add a New Event "Examination"
 
@@ -1047,7 +1056,7 @@ Feature: Create New Examination Regression Tests
 
     Then I choose to expand the Diagnoses section
     And I choose both eyes diagnosis
-    #And I select "Congenital cataract" for "Diagnosis"
+    And I select "Congenital cataract" for "Diagnosis"
     Then I choose a principal diagnosis
 
     Then I choose to expand the Investigation section
@@ -1063,6 +1072,7 @@ Feature: Create New Examination Regression Tests
     Then I select First Eye
 
     And I choose Straightforward case
+    And I select a post operative refractive target in dioptres of "2"
 
     And the post operative target has been discussed with patient No
     Then I select a suitable for surgeon of "3"
@@ -1165,3 +1175,137 @@ Feature: Create New Examination Regression Tests
     And I choose a Conclusion option of "booked for first eye, "
 
     Then I Save the Examination and confirm it has been created successfully
+
+  @EXAM_Route_19 @SP23_OE-5318 @SP23_OE-5343
+  Scenario: Route 2:Login and create a new Examination Event
+  Site:1 Queens
+  Firm:2 Broom Glaucoma
+  Clinical Management: Overall Management & Current Management
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "2"
+
+    Then I search for patient name last name "Coffin," and first name "Violet"
+
+    Then I select Create or View Episodes and Events
+    Then I expand the Glaucoma sidebar
+    And I add a New Event "Examination"
+
+    Then I select a History of Blurred Vision, Mild Severity, Onset 1 Week, Left Eye, 1 Week
+
+    Then I choose to expand the Visual Function section
+
+
+    And I add Left RAPD comments of "Left RAPD Automation test comments"
+
+
+    And I add Right RAPD comments of "Left RAPD Automation test comments"
+
+    Then I choose to expand the Near Visual Acuity section
+    And I select a Near Visual Acuity of "7"
+    Then I choose a left Near Visual Acuity ETDRS Letters Snellen Metre "50" and a reading method of "2"
+    Then I choose a right Near Visual Acuity ETDRS Letters Snellen Metre "50" and a reading method of "2"
+
+    Then I choose to expand the Anterior Segment section
+    And I select a Segment of Tube patch and Material drop down of "Cornea"
+    And I add Anterior Segment Description of "Anterior Segment Description"
+    #And I check the colour of the tube patch is Grey
+
+    Then I Save the Examination and confirm it has been created successfully
+
+    @eyedraw
+    Scenario: Route 2:Login and create a new Examination Event
+    Site:1 Queens
+    Firm:2 Broom Glaucoma
+    Clinical Management: Overall Management & Current Management
+
+      Given I am on the OpenEyes "master" homepage
+      And I enter login credentials "admin" and "admin"
+      And I select Site "1"
+      Then I select a firm of "2"
+
+      Then I search for patient name last name "Coffin," and first name "Violet"
+
+      Then I select Create or View Episodes and Events
+      Then I expand the Glaucoma sidebar
+      And I add a New Event "Examination"
+
+      Then I select a History of Blurred Vision, Mild Severity, Onset 1 Week, Left Eye, 1 Week
+
+      Then I choose to expand the Optic Disc section
+      Then I add the changes to left eye
+
+      Then I Save the Examination and confirm it has been created successfully
+
+
+      @OE-5695 @sprint25
+      Scenario Outline: To check whether the reference link in PCR Risk is present and active
+        Given I am on the OpenEyes "<page>" homepage
+        And I enter login credentials "<username>" and "<password>"
+        And I select Site "<site1>"
+        Then I select a firm of "<site2>"
+
+        Then I search for hospital number "<searchItem>"
+
+        Then I select Create or View Episodes and Events
+        Then I expand the "<specialty>" sidebar
+        And I add a New Event "<event>"
+        Then I choose to expand the Clinical Management section
+        And I choose to expand Cataract Surgical Management
+        Then I click on Right Eye PCR Risk
+        Then I click on Left Eye PCR Risk
+
+        #Validation1
+        Then I should see reference link on PCR Right Eye block
+        Then I should see reference link on PCR Left Eye block
+
+        Then I click on reference link on PCR Right Eye block
+        #Validation2
+        Then I should see the reference Page
+
+        Then I click on reference link on PCR Left Eye block
+        #Validation3
+        Then I should see the reference Page
+
+        Examples:
+        |page  |username|password|site1|site2|searchItem|specialty |event       |
+        |master|admin   |admin   |15   |5    |1009465   |cataract  | Examination|
+
+
+  @OE-5742 @sprint25
+  Scenario Outline: Route 2:Login and create a new Examination Event
+  Site:1 Queens
+  Firm:2 Broom Glaucoma
+  Clinical Management: Overall Management & Current Management
+
+    Given I am on the OpenEyes "<page>" homepage
+    And I enter login credentials "<username>" and "<password>"
+    And I select Site "<site1>"
+    Then I select a firm of "<site2>"
+
+    Then I search for hospital number "<searchItem>"
+
+    Then I select Create or View Episodes and Events
+    Then I expand the Cataract sidebar
+    And I add a New Event "<event>"
+    Then I choose to expand the Clinical Management section
+    And I choose to expand Cataract Surgical Management
+
+    Then I click on Right Eye PCR Risk
+
+    Then I click on Left Eye PCR Risk
+
+    Examples:
+      |page|username|password|site1|site2|searchItem|event       |type|drug|dose|route|option|frequency|duration|comments|
+      |master|admin |admin   |15    |5    |1009465   |Examination|28  |280 |3   |1    |1     |4        |1       |TEST    |
+
+
+  #//*[@id="ophCiExaminationPCRRiskLeftEye"]//*[contains(text(),'Calculation data derived from')]
+
+  #//*[@id="ophCiExaminationPCRRiskRightEye"]//*[contains(text(),'Calculation data derived from')]
+
+  #//*[contains(text(),'Right Eye - PCR Risk')]
+
+  #//*[contains(text(),'Left Eye - PCR Risk')]

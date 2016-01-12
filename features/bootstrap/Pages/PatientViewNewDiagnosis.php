@@ -38,7 +38,7 @@ class PatientViewNewDiagnosis extends OpenEyesPage {
 					'xpath' => "//*[@class='diagnosis_eye row field-row']//*[@value='3']" 
 			),
 			'opthDay' => array (
-					'xpath' => "//*[@id='add-ophthalmic-diagnosis']//select[@name='fuzzy_day']" 
+					'xpath' => "//*[@id='add-ophthalmic-diagnosis']//select[@name='fuzzy_day']"
 			),
 			'opthMonth' => array (
 					'xpath' => "//*[@id='add-ophthalmic-diagnosis']//select[@name='fuzzy_month']" 
@@ -256,7 +256,10 @@ class PatientViewNewDiagnosis extends OpenEyesPage {
 			),
 			'saveSocialHistory' => array (
 					'xpath' => "//*[@class='secondary small btn_save_social_history']" 
-			) 
+			),
+		'CreateNewEpisode' => array (
+			'xpath' => "//*[contains(text(),'Create new episode')]"
+		)
 	)
 	;
 	public function addOpthalmicDiagnosis($diagnosis) {
@@ -453,14 +456,15 @@ class PatientViewNewDiagnosis extends OpenEyesPage {
 		} else {
 			$this->selectLatestEvent ();
 		}
-		$this->getSession ()->wait ( 5000 );
+		sleep(5);
 	}
 	public function createNewEpisodeAndEvent() {
 		$this->getElement ( 'createNewEpisodeAddEvent' )->click ();
 	}
 	public function addEpisode() {
 		$this->getElement ( 'addEpisodeButton' )->click ();
-		$this->getSession ()->wait ( 3000, false );
+		//$this->getSession ()->wait ( 3000, false );
+		$this->waitForElementDisplayBlock('CreateNewEpisode');
 		$this->getElement ( 'confirmCreateEpisode' )->click ();
 		$this->getSession ()->wait ( 3000, false );
 	}
@@ -470,6 +474,7 @@ class PatientViewNewDiagnosis extends OpenEyesPage {
 		$this->getElement ( 'confirmCreateEpisode' )->click ();
 	}
 	public function selectLatestEvent() {
+		$this->getSession ()->wait ( 3000, false );
 		$this->getElement ( 'latestEvent' )->click ();
 		// make sure the Episodes and Events page is shown after clicking latest event link
 		$this->waitForTitle ( 'Episodes and events' );

@@ -4,6 +4,7 @@ Feature: Create New Correspondence using Support Firm
   As an automation tester
   I want to build a template with supporting code for each web page
 
+  @SupportFirm_Route_1
   Scenario: Login and create a new Correspondence using Support Firm
 
     Given I am on the OpenEyes "master" homepage
@@ -13,7 +14,7 @@ Feature: Create New Correspondence using Support Firm
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     Then I expand the Support Firm sidebar
     And I add a New Event "Correspondence"

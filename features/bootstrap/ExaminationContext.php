@@ -6,453 +6,984 @@ use Behat\MinkExtension\Context\MinkContext;
 use Behat\Mink\Driver\Selenium2Driver;
 use \SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 use WebDriver\WebDriver;
-class ExaminationContext extends PageObjectContext {
-	public function __construct(array $parameters) {
+class ExaminationContext extends PageObjectContext
+{
+	public function __construct(array $parameters)
+	{
 	}
-	
+
 	/**
 	 * @Then /^I select a History of Blurred Vision, Mild Severity, Onset (\d+) Week, Left Eye, (\d+) Week$/
 	 */
-	public function iSelectAHistoryOfBlurredVision() {
+	public function iSelectAHistoryOfBlurredVision()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->history ();
+		$examination = $this->getPage('Examination');
+		$examination->history();
 	}
-	
-	/**
-	 * @Given /^I choose to expand the Comorbidities section$/
-	 */
-	public function iChooseToExpandTheComorbiditiesSection() {
-		/**
-		 *
-		 * @var Examination $examination
-		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->openComorbidities ();
-	}
-	
+
 	/**
 	 * @Then /^I Add a Comorbiditiy of "([^"]*)"$/
 	 */
-	public function iAddAComorbiditiyOf($com) {
+	public function iAddAComorbiditiyOf($com)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->addComorbiditiy ( $com );
+		$examination = $this->getPage('Examination');
+		$examination->addComorbiditiy($com);
 	}
-	
+
 	/**
-	 * @Then /^I choose to expand the Visual Function section$/
+	 * @Then /^I choose to expand the "([^"]*)" section$/
 	 */
-	public function iChooseToExpandTheVisualFunctionSection() {
+	public function iChooseToExpandTheSection($section)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->openVisualFunction ();
+		$examination = $this->getPage('Examination');
+		if($section=='visualFunction') {
+			$examination->openVisualFunction();
+		}
+		elseif($section=='visualAcuity') {
+			$examination->openVisualAcuity();
+		}
+		elseif($section=='nearVisualAcuity') {
+			$examination->openNearVisualAcuity();
+		}
+		elseif($section=='anteriorSegment') {
+			$examination->openAnteriorSegment();
+		}
+		elseif($section=='refraction'){
+			$examination->openRefraction();
+		}
+		elseif($section=='intraocularPressure'){
+			$examination->expandIntraocularPressure();
+		}
+		elseif($section=='dilation'){
+			$examination->openDilation();
+		}
+		elseif($section=='visualFields'){
+			$examination->expandVisualFields();
+		}
+		elseif($section=='gonioscopy'){
+			$examination->expandGonioscopy();
+		}
+		elseif($section=='adnexalComorbidity'){
+			$examination->expandAdnexalComorbidity();
+		}
+		elseif($section=='conclusion'){
+			$examination->expandConclusion();
+		}
+		elseif($section=='pupillaryAbnormalities'){
+			$examination->expandPupillaryAbnormalities();
+		}
+		elseif($section=='DRGrading'){
+			$examination->expandDRGrading();
+		}
+		elseif($section=='opticDisc'){
+			$examination->expandOpticDisc();
+		}
+		elseif($section=='posteriorPole'){
+			$examination->expandPosteriorPole();
+		}
+		elseif($section=='diagnoses'){
+			$examination->expandDiagnoses();
+		}
+		elseif($section=='investigation'){
+			$examination->expandInvestigation();
+		}
+		elseif($section=='clinicalManagement'){
+			$examination->expandClinicalManagement();
+		}
+		elseif($section=='cataractSurgicalManagement'){
+			$examination->expandCataractSurgicalManagement();
+		}
+		elseif($section=='laserManagement'){
+			$examination->expandLaserManagement();
+		}
+		elseif($section=='injectionManagement'){
+			$examination->expandInjectionManagement();
+		}
+		elseif($section=='risks'){
+			$examination->expandRisks();
+		}
+		elseif($section=='clinicalOutcome'){
+			$examination->expandClinicalOutcome();
+		}
+		elseif($section=='overallManagement'){
+			$examination->expandOverallManagement();
+		}
+		elseif($section=='currentManagement'){
+			$examination->expandCurrentManagement();
+		}
+		elseif($section=='colourVision'){
+			$examination->openColourVision();
+		}
+		elseif($section=='comorbidities'){
+			$examination->openComorbidities();
+		}
+		elseif($section==''){
+
+		}
 	}
-	
+
 	/**
-	 * @Then /^I choose to expand the Visual Acuity section$/
+	 * @Given /^I choose to expand the Comorbidities section$/
 	 */
-	public function iChooseToExpandTheVisualAcuitySection() {
+	public function iChooseToExpandTheComorbiditiesSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->openVisualAcuity ();
+		$examination = $this->getPage('Examination');
+		$examination->openComorbidities();
 	}
-	
+
 	/**
-	 * @Given /^I select a Visual Acuity of "([^"]*)"$/
+	 * @Then /^I choose to expand the Conclusion section$/
 	 */
-	public function iSelectAVisualAcuityOf($unit) {
+	public function iChooseToExpandTheConclusionSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->selectVisualAcuity ( $unit );
+		$examination = $this->getPage('Examination');
+		$examination->expandConclusion();
 	}
-	
+
 	/**
-	 * @Then /^I choose a left Visual Acuity Snellen Metre "([^"]*)" and a reading method of "([^"]*)"$/
+	 * @Then /^I choose to expand the Pupillary Abnormalities section$/
 	 */
-	public function SnellenMetreAndAReading($metre, $method) {
+	public function iChooseToExpandThePupillaryAbnormalitiesSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->selectLeftVA ( $metre, $method );
+		$examination = $this->getPage('Examination');
+		$examination->expandPupillaryAbnormalities();
 	}
-	
+
+
 	/**
-	 * @Then /^I choose a right Visual Acuity Snellen Metre "([^"]*)" and a reading method of "([^"]*)"$/
+	 * @Then /^I choose to expand the DR Grading section$/
 	 */
-	public function RightVisualAcuitySnellenMetre($metre, $method) {
+	public function iChooseToExpandTheDRGradingSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->selectRightVA ( $metre, $method );
+		$examination = $this->getPage('Examination');
+		$examination->expandDRGrading();
 	}
-	
+
 	/**
-	 * @Then /^I choose a left Visual Acuity ETDRS Letters Snellen Metre "([^"]*)" and a reading method of "([^"]*)"$/
+	 * @Then /^I choose to expand the Optic Disc section$/
 	 */
-	public function iChooseALeftVisualAcuityEtdrsLettersSnellenMetreAndAReadingMethodOf($metre, $method) {
+	public function iChooseToExpandTheOpticDiscSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->selectLeftVA ( $metre, $method );
+		$examination = $this->getPage('Examination');
+		$examination->expandOpticDisc();
 	}
-	
+
 	/**
-	 * @Then /^I choose a right Visual Acuity ETDRS Letters Snellen Metre "([^"]*)" and a reading method of "([^"]*)"$/
+	 * @Then /^I choose to expand the Posterior Pole section$/
 	 */
-	public function iChooseARightVisualAcuityEtdrsLettersSnellenMetreAndAReadingMethodOf($metre, $method) {
+	public function iChooseToExpandThePosteriorPoleSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->selectRightVA ( $metre, $method );
+		$examination = $this->getPage('Examination');
+		$examination->expandPosteriorPole();
 	}
-	
+
 	/**
-	 * @Then /^I choose to expand the Intraocular Pressure section$/
+	 * @Then /^I choose to expand the Diagnoses section$/
 	 */
-	public function iChooseToExpandTheIntraocularPressureSection() {
+	public function iChooseToExpandTheDiagnosesSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->expandIntraocularPressure ();
+		$examination = $this->getPage('Examination');
+		$examination->expandDiagnoses();
 	}
-	
+
+
+
 	/**
-	 * @Then /^I choose a left Intraocular Pressure of "([^"]*)" and Instrument "([^"]*)"$/
+	 * @Then /^I choose to expand the Investigation section$/
 	 */
-	public function iChooseALeftIntraocularPressureOfAndInstrument($pressure, $instrument) {
+	public function iChooseToExpandTheInvestigationSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftIntracocular ( $pressure, $instrument );
+		$examination = $this->getPage('Examination');
+		$examination->expandInvestigation();
 	}
-	
+
 	/**
-	 * @Then /^I choose a right Intraocular Pressure of "([^"]*)" and Instrument "([^"]*)"$/
+	 * @Then /^I choose to expand the Clinical Management section$/
 	 */
-	public function iChooseARightIntraocularPressureOfAndInstrument($pressure, $instrument) {
+	public function iChooseToExpandTheClinicalManagementSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightIntracocular ( $pressure, $instrument );
+		$examination = $this->getPage('Examination');
+		$examination->expandClinicalManagement();
 	}
-	
+
 	/**
-	 * @Then /^I choose to expand the Dilation section$/
+	 * @Given /^I choose to expand Cataract Surgical Management$/
 	 */
-	public function iChooseToExpandTheDilationSection() {
+	public function iChooseToExpandCataractSurgicalManagement()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->openDilation ();
+		$examination = $this->getPage('Examination');
+		$examination->expandCataractSurgicalManagement();
 	}
-	
+
 	/**
-	 * @Then /^I choose left Dilation of "([^"]*)" and drops of "([^"]*)"$/
+	 * @Then /^I choose to expand the Laser Management section$/
 	 */
-	public function iChooseLeftDilationOfAndDropsOf($dilation, $drops) {
+	public function iChooseToExpandTheLaserManagementSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->dilationLeft ( $dilation, $drops );
-		$examination->dilationLeft ( $dilation, $drops );
+		$examination = $this->getPage('Examination');
+		$examination->expandLaserManagement();
 	}
-	
+
 	/**
-	 * @Then /^I choose right Dilation of "([^"]*)" and drops of "([^"]*)"$/
+	 * @Then /^I choose to expand the Injection Management section$/
 	 */
-	public function iChooseRightDilationOfAndDropsOf($dilation, $drops) {
+	public function iChooseToExpandTheInjectionManagementSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->dilationRight ( $dilation, $drops );
+		$examination = $this->getPage('Examination');
+		$examination->expandInjectionManagement();
 	}
-	
+
 	/**
-	 * @Given /^I enter a left Dilation time of "([^"]*)"$/
+	 * @Then /^I choose to expand the Risks section$/
 	 */
-	public function iEnterALeftDilationTimeOf($time) {
+	public function iChooseToExpandTheRisksSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->dilationLeftTime ( $time );
+		$examination = $this->getPage('Examination');
+		$examination->expandRisks();
 	}
-	
+
 	/**
-	 * @Given /^I enter a right Dilation time of "([^"]*)"$/
+	 * @Then /^I choose to expand the Clinic Outcome section$/
 	 */
-	public function iEnterARightDilationTimeOf($time) {
+	public function iChooseToExpandTheClinicOutcomeSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->dilationRightTime ( $time );
+		$examination = $this->getPage('Examination');
+		$examination->expandClinicalOutcome();
 	}
-	
+
 	/**
-	 * @Then /^I Confirm that the Dilation Invalid time error message is displayed$/
+	 * @Then /^I choose to expand the Overall Management section$/
 	 */
-	public function iConfirmThatTheDilationInvalidTimeErrorMessageIsDisplayed() {
+	public function iChooseToExpandTheOverallManagementSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->dilationTimeErrorValidation ();
-		
-		$homepage = $this->getPage ( 'HomePage' );
-		
-		
-		$homepage->open ();
-		sleep(5);
-		$homepage ->acceptAlert();
+		$examination = $this->getPage('Examination');
+		$examination->expandOverallManagement();
 	}
-	
+
 	/**
-	 * @Then /^I choose to remove left Dilation treatment$/
+	 * @Then /^I choose to expand the Current Management section$/
 	 */
-	public function iChooseToRemoveLeftDilation() {
+	public function iChooseToExpandTheCurrentManagementSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->removeLeftDilation ();
+		$examination = $this->getPage('Examination');
+		$examination->expandCurrentManagement();
 	}
-	
+
+	/**
+	 * @Then /^I choose to expand the Colour Vision section$/
+	 */
+	public function iChooseToExpandTheColourVisionSection()
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->openColourVision();
+	}
+
+
+
+
+
+	/**
+	 * @Then /^I choose to expand the Visual Fields section$/
+	 */
+	public function iChooseToExpandTheVisualFieldsSection()
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->expandVisualFields();
+	}
+
+	/**
+	 * @Then /^I choose to expand the Gonioscopy section$/
+	 */
+	public function iChooseToExpandTheGonioscopySection()
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->expandGonioscopy();
+	}
+
+	/**
+	 * @Then /^I choose to expand the Adnexal Comorbidity section$/
+	 */
+	public function iChooseToExpandTheAdnexalComorbiditySection()
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->expandAdnexalComorbidity();
+	}
+
 	/**
 	 * @Then /^I choose to expand the Refraction section$/
 	 */
-	public function iChooseToExpandTheRefractionSection() {
+	public function iChooseToExpandTheRefractionSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->openRefraction ();
+		$examination = $this->getPage('Examination');
+		$examination->openRefraction();
 	}
-	
+
+	/**
+	 * @Then /^I choose to expand the Dilation section$/
+	 */
+	public function iChooseToExpandTheDilationSection()
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->openDilation();
+	}
+
+	/**
+	 * @Then /^I choose to expand the Intraocular Pressure section$/
+	 */
+	public function iChooseToExpandTheIntraocularPressureSection()
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->expandIntraocularPressure();
+	}
+
+	/**
+	 * @Then /^I choose to expand the Visual Function section$/
+	 */
+	public function iChooseToExpandTheVisualFunctionSection()
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->openVisualFunction();
+	}
+
+	/**
+	 * @Then /^I choose to expand the Visual Acuity section$/
+	 */
+	public function iChooseToExpandTheVisualAcuitySection()
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->openVisualAcuity();
+	}
+
+	/**
+	 * @Then /^I choose to expand the Near Visual Acuity section$/
+	 */
+	public function iChooseToExpandTheNearVisualAcuitySection()
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->openNearVisualAcuity();
+	}
+
+	/**
+	 * @Then /^I choose to expand the Anterior Segment section$/
+	 */
+	public function iChooseToExpandTheAnteriorSegmentSection()
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->openAnteriorSegment();
+	}
+
+	/**
+	 * @Then /^I select a Segment of Tube patch and Material drop down of "([^"]*)"$/
+	 */
+	public function iSelectASegmentAndMaterial($material)
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->selectASegmentAndMaterial($material);
+	}
+
+	/**
+	 * @Given /^I choose a left eye diagnosis$/
+	 */
+	public function iChooseALeftEyeDiagnosis()
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->diagnosesLeftEye();
+	}
+
+	/**
+	 * @Given /^I add Anterior Segment Description of "([^"]*)"$/
+	 */
+	public function iAddAnteriorSegmentDescriptionOf($description)
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->anteriorSegmentDescription($description);
+	}
+
+	/**
+	 * @Given /^I select a Visual Acuity of "([^"]*)"$/
+	 */
+	public function iSelectAVisualAcuityOf($unit)
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->selectVisualAcuity($unit);
+	}
+
+	/**
+	 * @Given /^I select a Near Visual Acuity of "([^"]*)"$/
+	 */
+	public function iSelectANearVisualAcuityOf($unit)
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->selectNearVisualAcuity($unit);
+	}
+
+	/**
+	 * @Then /^I choose a left Visual Acuity Snellen Metre "([^"]*)" and a reading method of "([^"]*)"$/
+	 */
+	public function SnellenMetreAndAReading($metre, $method)
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->selectLeftVA($metre, $method);
+	}
+
+	/**
+	 * @Then /^I choose a right Visual Acuity Snellen Metre "([^"]*)" and a reading method of "([^"]*)"$/
+	 */
+	public function RightVisualAcuitySnellenMetre($metre, $method)
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->selectRightVA($metre, $method);
+	}
+
+	/**
+	 * @Then /^I choose a left Visual Acuity ETDRS Letters Snellen Metre "([^"]*)" and a reading method of "([^"]*)"$/
+	 */
+	public function iChooseALeftVisualAcuityEtdrsLettersSnellenMetreAndAReadingMethodOf($metre, $method)
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->selectLeftVA($metre, $method);
+	}
+
+	/**
+	 * @Then /^I choose a right Visual Acuity ETDRS Letters Snellen Metre "([^"]*)" and a reading method of "([^"]*)"$/
+	 */
+	public function iChooseARightVisualAcuityEtdrsLettersSnellenMetreAndAReadingMethodOf($metre, $method)
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->selectRightVA($metre, $method);
+	}
+
+	/**
+	 * @Then /^I choose a left Near Visual Acuity ETDRS Letters Snellen Metre "([^"]*)" and a reading method of "([^"]*)"$/
+	 */
+	public function iChooseALeftNearVisualAcuityEtdrsLettersSnellenMetreAndAReadingMethodOf($metre, $method)
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->selectLeftNVA($metre, $method);
+	}
+
+	/**
+	 * @Then /^I choose a right Near Visual Acuity ETDRS Letters Snellen Metre "([^"]*)" and a reading method of "([^"]*)"$/
+	 */
+	public function iChooseARightNearVisualAcuityEtdrsLettersSnellenMetreAndAReadingMethodOf($metre, $method)
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->selectRightNVA($metre, $method);
+	}
+
+	/**
+	 * @Then /^I choose to expand the Intraocular Pressure section$/
+	 */
+	public function iChooseToExpandTheIntraocularPressureSection()
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->expandIntraocularPressure();
+	}
+
+	/**
+	 * @Then /^I choose a left Intraocular Pressure of "([^"]*)" and Instrument "([^"]*)"$/
+	 */
+	public function iChooseALeftIntraocularPressureOfAndInstrument($pressure, $instrument)
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->leftIntracocular($pressure, $instrument);
+	}
+
+	/**
+	 * @Then /^I choose a right Intraocular Pressure of "([^"]*)" and Instrument "([^"]*)"$/
+	 */
+	public function iChooseARightIntraocularPressureOfAndInstrument($pressure, $instrument)
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->rightIntracocular($pressure, $instrument);
+	}
+
+	/**
+	 * @Then /^I choose to expand the Dilation section$/
+	 */
+	public function iChooseToExpandTheDilationSection()
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->openDilation();
+	}
+
+	/**
+	 * @Then /^I choose left Dilation of "([^"]*)" and drops of "([^"]*)"$/
+	 */
+	public function iChooseLeftDilationOfAndDropsOf($dilation, $drops)
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->dilationLeft($dilation, $drops);
+		$examination->dilationLeft($dilation, $drops);
+	}
+
+	/**
+	 * @Then /^I choose right Dilation of "([^"]*)" and drops of "([^"]*)"$/
+	 */
+	public function iChooseRightDilationOfAndDropsOf($dilation, $drops)
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->dilationRight($dilation, $drops);
+	}
+
+	/**
+	 * @Given /^I enter a left Dilation time of "([^"]*)"$/
+	 */
+	public function iEnterALeftDilationTimeOf($time)
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->dilationLeftTime($time);
+	}
+
+	/**
+	 * @Given /^I enter a right Dilation time of "([^"]*)"$/
+	 */
+	public function iEnterARightDilationTimeOf($time)
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->dilationRightTime($time);
+	}
+
+	/**
+	 * @Then /^I Confirm that the Dilation Invalid time error message is displayed$/
+	 */
+	public function iConfirmThatTheDilationInvalidTimeErrorMessageIsDisplayed()
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->dilationTimeErrorValidation();
+
+		$homepage = $this->getPage('HomePage');
+
+
+		$homepage->open();
+		sleep(5);
+		$homepage->acceptAlert();
+	}
+
+	/**
+	 * @Then /^I choose to remove left Dilation treatment$/
+	 */
+	public function iChooseToRemoveLeftDilation()
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->removeLeftDilation();
+	}
+
+	/**
+	 * @Then /^I choose to expand the Refraction section$/
+	 */
+	public function iChooseToExpandTheRefractionSection()
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->openRefraction();
+	}
+
 	/**
 	 * @Then /^I enter left Refraction details of Sphere "([^"]*)" integer "([^"]*)" fraction "([^"]*)"$/
 	 */
-	public function LeftRefractionDetails($sphere, $integer, $fraction) {
+	public function LeftRefractionDetails($sphere, $integer, $fraction)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftRefractionDetails ( $sphere, $integer, $fraction );
+		$examination = $this->getPage('Examination');
+		$examination->leftRefractionDetails($sphere, $integer, $fraction);
 	}
-	
+
 	/**
 	 * @Given /^I enter left cylinder details of of Cylinder "([^"]*)" integer "([^"]*)" fraction "([^"]*)"$/
 	 */
-	public function iEnterLeftCylinderDetails($cylinder, $integer, $fraction) {
+	public function iEnterLeftCylinderDetails($cylinder, $integer, $fraction)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftCyclinderDetails ( $cylinder, $integer, $fraction );
+		$examination = $this->getPage('Examination');
+		$examination->leftCyclinderDetails($cylinder, $integer, $fraction);
 	}
-	
+
 	/**
 	 * @Then /^I enter left Axis degrees of "([^"]*)"$/
 	 */
-	public function iEnterLeftAxisDegreesOf($axis) {
+	public function iEnterLeftAxisDegreesOf($axis)
+	{
 		// HACK! I have entered the value twice in the code to stop the Axis from spinning
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftAxis ( $axis );
+		$examination = $this->getPage('Examination');
+		$examination->leftAxis($axis);
 	}
-	
+
 	/**
 	 * @Given /^I enter a left type of "([^"]*)"$/
 	 */
-	public function iEnterALeftTypeOf($type) {
+	public function iEnterALeftTypeOf($type)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftType ( $type );
+		$examination = $this->getPage('Examination');
+		$examination->leftType($type);
 	}
-	
+
 	/**
 	 * @Then /^I select a Right Intended Treatment of "([^"]*)"$/
 	 */
-	public function iSelectARightIntendedTreatmentOf($treatment) {
+	public function iSelectARightIntendedTreatmentOf($treatment)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightIntendedTreatment ( $treatment );
+		$examination = $this->getPage('Examination');
+		$examination->rightIntendedTreatment($treatment);
 	}
-	
+
 	/**
 	 * @Then /^I select a Left Intended Treatment of "([^"]*)"$/
 	 */
-	public function iSelectALeftIntendedTreatmentOf($treatment) {
+	public function iSelectALeftIntendedTreatmentOf($treatment)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftIntendedTreatment ( $treatment );
+		$examination = $this->getPage('Examination');
+		$examination->leftIntendedTreatment($treatment);
 	}
-	
+
 	/**
 	 * @Then /^I enter right Refraction details of Sphere "([^"]*)" integer "([^"]*)" fraction "([^"]*)"$/
 	 */
-	public function iEnterRightRefractionDetailsOfSphereIntegerFraction($sphere, $integer, $fraction) {
+	public function iEnterRightRefractionDetailsOfSphereIntegerFraction($sphere, $integer, $fraction)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->RightRefractionDetails ( $sphere, $integer, $fraction );
+		$examination = $this->getPage('Examination');
+		$examination->RightRefractionDetails($sphere, $integer, $fraction);
 	}
-	
+
 	/**
 	 * @Given /^I enter right cylinder details of of Cylinder "([^"]*)" integer "([^"]*)" fraction "([^"]*)"$/
 	 */
-	public function iEnterRightCylinderDetailsOfOfCylinderIntegerFraction($cylinder, $integer, $fraction) {
+	public function iEnterRightCylinderDetailsOfOfCylinderIntegerFraction($cylinder, $integer, $fraction)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->RightCyclinderDetails ( $cylinder, $integer, $fraction );
+		$examination = $this->getPage('Examination');
+		$examination->RightCyclinderDetails($cylinder, $integer, $fraction);
 	}
-	
+
 	/**
 	 * @Then /^I enter right Axis degrees of "([^"]*)"$/
 	 */
-	public function iEnterRightAxisDegreesOf($axis) {
+	public function iEnterRightAxisDegreesOf($axis)
+	{
 		// We need a Clear Field function here
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->RightAxis ( $axis );
+		$examination = $this->getPage('Examination');
+		$examination->RightAxis($axis);
 		// We need to Press the tab key here
 	}
-	
+
 	/**
 	 * @Given /^I enter a right type of "([^"]*)"$/
 	 */
-	public function iEnterARightTypeOf($type) {
+	public function iEnterARightTypeOf($type)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->RightType ( $type );
+		$examination = $this->getPage('Examination');
+		$examination->RightType($type);
 	}
-	
+
 	/**
 	 * @Then /^I choose to expand the Visual Fields section$/
 	 */
-	public function iChooseToExpandTheVisualFieldsSection() {
+	public function iChooseToExpandTheVisualFieldsSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->expandVisualFields ();
+		$examination = $this->getPage('Examination');
+		$examination->expandVisualFields();
 	}
-	
+
 	/**
 	 * @Then /^I choose to expand the Gonioscopy section$/
 	 */
-	public function iChooseToExpandTheGonioscopySection() {
+	public function iChooseToExpandTheGonioscopySection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->expandGonioscopy ();
+		$examination = $this->getPage('Examination');
+		$examination->expandGonioscopy();
 	}
-	
+
 	/**
 	 * @Then /^I choose to expand the Adnexal Comorbidity section$/
 	 */
-	public function iChooseToExpandTheAdnexalComorbiditySection() {
+	public function iChooseToExpandTheAdnexalComorbiditySection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->expandAdnexalComorbidity ();
+		$examination = $this->getPage('Examination');
+		$examination->expandAdnexalComorbidity();
 	}
-	
+
 	/**
 	 * @Given /^I add a left Adnexal Comorbidity of "([^"]*)"$/
 	 */
-	public function iAddALeftAdnexalComorbidityOf($left) {
+	public function iAddALeftAdnexalComorbidityOf($left)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftAdnexal ( $left );
+		$examination = $this->getPage('Examination');
+		$examination->leftAdnexal($left);
 	}
-	
+
 	/**
 	 * @Given /^I add a right Adnexal Comorbidity of "([^"]*)"$/
 	 */
-	public function iAddARightAdnexalComorbidityOf($right) {
+	public function iAddARightAdnexalComorbidityOf($right)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightAdnexal ( $right );
+		$examination = $this->getPage('Examination');
+		$examination->rightAdnexal($right);
 	}
-	
+
 	/**
 	 * @Then /^I choose to expand the Anterior Segment section$/
 	 */
@@ -468,2149 +999,2443 @@ class ExaminationContext extends PageObjectContext {
 	/**
 	 * @Then /^I choose to expand the Pupillary Abnormalities section$/
 	 */
-	public function iChooseToExpandThePupillaryAbnormalitiesSection() {
+	public function iChooseToExpandThePupillaryAbnormalitiesSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->expandPupillaryAbnormalities ();
+		$examination = $this->getPage('Examination');
+		$examination->expandPupillaryAbnormalities();
 	}
-	
+
 	/**
 	 * @Given /^I add a left Abnormality of "([^"]*)"$/
 	 */
-	public function iAddALeftAbnormalityOf($left) {
+	public function iAddALeftAbnormalityOf($left)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftPupillaryAbnormality ( $left );
+		$examination = $this->getPage('Examination');
+		$examination->leftPupillaryAbnormality($left);
 	}
-	
+
 	/**
 	 * @Given /^I add a right Abnormality of "([^"]*)"$/
 	 */
-	public function iAddARightAbnormalityOf($right) {
+	public function iAddARightAbnormalityOf($right)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightPupillaryAbnormality ( $right );
+		$examination = $this->getPage('Examination');
+		$examination->rightPupillaryAbnormality($right);
 	}
-	
+
 	/**
 	 * @Then /^I choose to expand the DR Grading section$/
 	 */
-	public function iChooseToExpandTheDRGradingSection() {
+	public function iChooseToExpandTheDRGradingSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->expandDRGrading ();
+		$examination = $this->getPage('Examination');
+		$examination->expandDRGrading();
 	}
-	
+
 	/**
 	 * @Then /^I choose to expand the Optic Disc section$/
 	 */
-	public function iChooseToExpandTheOpticDiscSection() {
+	public function iChooseToExpandTheOpticDiscSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->expandOpticDisc ();
+		$examination = $this->getPage('Examination');
+		$examination->expandOpticDisc();
 	}
-	
+
 	/**
 	 * @Then /^I choose to expand the Posterior Pole section$/
 	 */
-	public function iChooseToExpandThePosteriorPoleSection() {
+	public function iChooseToExpandThePosteriorPoleSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->expandPosteriorPole ();
+		$examination = $this->getPage('Examination');
+		$examination->expandPosteriorPole();
 	}
-	
+
 	/**
 	 * @Then /^I choose to expand the Diagnoses section$/
 	 */
-	public function iChooseToExpandTheDiagnosesSection() {
+	public function iChooseToExpandTheDiagnosesSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->expandDiagnoses ();
+		$examination = $this->getPage('Examination');
+		$examination->expandDiagnoses();
 	}
-	
+
 	/**
 	 * @Given /^I choose a left eye diagnosis$/
 	 */
-	public function iChooseALeftEyeDiagnosis() {
+	public function iChooseALeftEyeDiagnosis()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->diagnosesLeftEye ();
+		$examination = $this->getPage('Examination');
+		$examination->diagnosesLeftEye();
 	}
-	
+
+	/**
+	 * @Given /^I select Diagnosis of Cataract$/
+	 */
+	public function iSelectDiagnosisOfCataract()
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->diagnosesOfCataract();
+	}
+
 	/**
 	 * @Given /^I choose a right eye diagnosis$/
 	 */
-	public function iChooseARightEyeDiagnosis() {
+	public function iChooseARightEyeDiagnosis()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->diagnosesRightEye ();
+		$examination = $this->getPage('Examination');
+		$examination->diagnosesRightEye();
 	}
-	
+
 	/**
 	 * @Given /^I choose both eyes diagnosis$/
 	 */
-	public function iChooseBothEyesDiagnosis() {
+	public function iChooseBothEyesDiagnosis()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->diagnosesBothEyes ();
+		$examination = $this->getPage('Examination');
+		$examination->diagnosesBothEyes();
 	}
-	
+
 	/**
 	 * @Given /^I choose a principal diagnosis$/
 	 */
-	public function principalDiagnosis() {
+	public function principalDiagnosis()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->principalDiagnosis ();
+		$examination = $this->getPage('Examination');
+		$examination->principalDiagnosis();
 	}
-	
+
 	/**
 	 * @Then /^I choose to expand the Investigation section$/
 	 */
-	public function iChooseToExpandTheInvestigationSection() {
+	public function iChooseToExpandTheInvestigationSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->expandInvestigation ();
+		$examination = $this->getPage('Examination');
+		$examination->expandInvestigation();
 	}
-	
+
 	/**
 	 * @Given /^I add an Investigation of "([^"]*)"$/
 	 */
-	public function iAddAnInvestigationOf($investigation) {
+	public function iAddAnInvestigationOf($investigation)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->addInvestigation ( $investigation );
+		$examination = $this->getPage('Examination');
+		$examination->addInvestigation($investigation);
 	}
-	
+
 	/**
 	 * @Then /^I choose to expand the Clinical Management section$/
 	 */
-	public function iChooseToExpandTheClinicalManagementSection() {
+	public function iChooseToExpandTheClinicalManagementSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->expandClinicalManagement ();
+		$examination = $this->getPage('Examination');
+		$examination->expandClinicalManagement();
 	}
-	
+
 	/**
 	 * @Given /^I choose to expand Cataract Surgical Management$/
 	 */
-	public function iChooseToExpandCataractSurgicalManagement() {
+	public function iChooseToExpandCataractSurgicalManagement()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->expandCataractSurgicalManagement ();
+		$examination = $this->getPage('Examination');
+		$examination->expandCataractSurgicalManagement();
 	}
-	
+
 	/**
 	 * @Given /^I add Cataract Management Comments of "([^"]*)"$/
 	 */
-	public function iAddCataractManagementCommentsOf($comments) {
+	public function iAddCataractManagementCommentsOf($comments)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->cataractManagementComments ( $comments );
+		$examination = $this->getPage('Examination');
+		$examination->cataractManagementComments($comments);
 	}
-	
+
 	/**
 	 * @Then /^I select First Eye$/
 	 */
-	public function iSelectFirstEye() {
+	public function iSelectFirstEye()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->selectFirstEye ();
+		$examination = $this->getPage('Examination');
+		$examination->selectFirstEye();
 	}
-	
+
 	/**
 	 * @Then /^I select Second Eye$/
 	 */
-	public function iSelectSecondEye() {
+	public function iSelectSecondEye()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->selectSecondEye ();
+		$examination = $this->getPage('Examination');
+		$examination->selectSecondEye();
 	}
-	
+
 	/**
 	 * @Given /^I choose City Road$/
 	 */
-	public function iChooseCityRoad() {
+	public function iChooseCityRoad()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->cityRoad ();
+		$examination = $this->getPage('Examination');
+		$examination->cityRoad();
 	}
-	
+
 	/**
 	 * @Given /^I choose At Satellite$/
 	 */
-	public function iChooseAtSatellite() {
+	public function iChooseAtSatellite()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->satellite ();
+		$examination = $this->getPage('Examination');
+		$examination->satellite();
 	}
-	
+
 	/**
 	 * @Given /^I choose Straightforward case$/
 	 */
-	public function iChooseStraightforwardCase() {
+	public function iChooseStraightforwardCase()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->straightforward ();
+		$examination = $this->getPage('Examination');
+		$examination->straightforward();
 	}
-	
+
 	/**
 	 * @Then /^I select a post operative refractive target in dioptres of "([^"]*)"$/
 	 */
-	public function iSelectAPostOperativeRefractiveTargetInDioptresOf($target) {
+	public function iSelectAPostOperativeRefractiveTargetInDioptresOf($target)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->postOpRefractiveTarget ( $target );
+		$examination = $this->getPage('Examination');
+		$examination->postOpRefractiveTarget($target);
 	}
-	
+
 	/**
 	 * @Given /^the post operative target has been discussed with patient Yes$/
 	 */
-	public function thePostOperativeTargetHasBeenDiscussedWithPatientYes() {
+	public function thePostOperativeTargetHasBeenDiscussedWithPatientYes()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->discussedWithPatientYes ();
+		$examination = $this->getPage('Examination');
+		$examination->discussedWithPatientYes();
 	}
-	
+
 	/**
 	 * @Given /^the post operative target has been discussed with patient No$/
 	 */
-	public function thePostOperativeTargetHasBeenDiscussedWithPatientNo() {
+	public function thePostOperativeTargetHasBeenDiscussedWithPatientNo()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->discussedWithPatientNo ();
+		$examination = $this->getPage('Examination');
+		$examination->discussedWithPatientNo();
 	}
-	
+
 	/**
 	 * @Then /^I select a suitable for surgeon of "([^"]*)"$/
 	 */
-	public function iSelectASuitableForSurgeonOf($surgeon) {
+	public function iSelectASuitableForSurgeonOf($surgeon)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->suitableForSurgeon ( $surgeon );
+		$examination = $this->getPage('Examination');
+		$examination->suitableForSurgeon($surgeon);
 		// sleep(5);
 	}
-	
+
 	/**
 	 * @Given /^I tick the Supervised checkbox$/
 	 */
-	public function iTickTheSupervisedCheckbox() {
+	public function iTickTheSupervisedCheckbox()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->supervisedCheckbox ();
+		$examination = $this->getPage('Examination');
+		$examination->supervisedCheckbox();
 	}
-	
+
 	/**
 	 * @Then /^I select Previous Refractive Surgery Yes$/
 	 */
-	public function iSelectPreviousRefractiveSurgeryYes() {
+	public function iSelectPreviousRefractiveSurgeryYes()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->previousRefractiveSurgeryYes ();
+		$examination = $this->getPage('Examination');
+		$examination->previousRefractiveSurgeryYes();
 	}
-	
+
 	/**
 	 * @Then /^I select Previous Refractive Surgery No$/
 	 */
-	public function iSelectPreviousRefractiveSurgeryNo() {
+	public function iSelectPreviousRefractiveSurgeryNo()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->previousRefractiveSurgeryNo ();
+		$examination = $this->getPage('Examination');
+		$examination->previousRefractiveSurgeryNo();
 	}
-	
+
 	/**
 	 * @Given /^I select Vitrectomised Eye Yes$/
 	 */
-	public function iSelectVitrectomisedEyeYes() {
+	public function iSelectVitrectomisedEyeYes()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->vitrectomisedEyeYes ();
+		$examination = $this->getPage('Examination');
+		$examination->vitrectomisedEyeYes();
 	}
-	
+
 	/**
 	 * @Given /^I select Vitrectomised Eye No$/
 	 */
-	public function iSelectVitrectomisedEyeNo() {
+	public function iSelectVitrectomisedEyeNo()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->vitrectomisedEyeNo ();
+		$examination = $this->getPage('Examination');
+		$examination->vitrectomisedEyeNo();
 	}
-	
+
 	/**
 	 * @Then /^I choose to expand the Laser Management section$/
 	 */
-	public function iChooseToExpandTheLaserManagementSection() {
+	public function iChooseToExpandTheLaserManagementSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->expandLaserManagement ();
+		$examination = $this->getPage('Examination');
+		$examination->expandLaserManagement();
 	}
-	
+
 	/**
 	 * @Given /^I choose a right laser choice of "([^"]*)"$/
 	 */
-	public function iChooseARightLaserOf($laser) {
+	public function iChooseARightLaserOf($laser)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->RightLaserStatusChoice ( $laser );
+		$examination = $this->getPage('Examination');
+		$examination->RightLaserStatusChoice($laser);
 	}
-	
+
 	/**
 	 * @Given /^I choose a left laser choice of "([^"]*)"$/
 	 */
-	public function iChooseALeftLaserOf($laser) {
+	public function iChooseALeftLaserOf($laser)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->LeftLaserStatusChoice ( $laser );
+		$examination = $this->getPage('Examination');
+		$examination->LeftLaserStatusChoice($laser);
 	}
-	
+
 	/**
 	 * @Given /^I choose a left laser type of "([^"]*)"$/
 	 */
-	public function iChooseALeftLaserTypeOf($laser) {
+	public function iChooseALeftLaserTypeOf($laser)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftLaser ( $laser );
+		$examination = $this->getPage('Examination');
+		$examination->leftLaser($laser);
 	}
-	
+
 	/**
 	 * @Given /^I choose a right laser type of "([^"]*)"$/
 	 */
-	public function iChooseARightLaserTypeOf($laser) {
+	public function iChooseARightLaserTypeOf($laser)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightLaser ( $laser );
+		$examination = $this->getPage('Examination');
+		$examination->rightLaser($laser);
 	}
-	
+
 	/**
 	 * @Then /^I choose to expand the Injection Management section$/
 	 */
-	public function iChooseToExpandTheInjectionManagementSection() {
+	public function iChooseToExpandTheInjectionManagementSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->expandInjectionManagement ();
+		$examination = $this->getPage('Examination');
+		$examination->expandInjectionManagement();
 	}
-	
+
 	/**
 	 * @Given /^I tick the No Treatment checkbox$/
 	 */
-	public function iTickTheNoTreatmentCheckbox() {
+	public function iTickTheNoTreatmentCheckbox()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->noTreatment ();
+		$examination = $this->getPage('Examination');
+		$examination->noTreatment();
 	}
-	
+
 	/**
 	 * @Then /^I select a reason for No Treatment of "([^"]*)"$/
 	 */
-	public function iSelectAReasonForNoTreatmentOf($treatment) {
+	public function iSelectAReasonForNoTreatmentOf($treatment)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->noTreatmentReason ( $treatment );
+		$examination = $this->getPage('Examination');
+		$examination->noTreatmentReason($treatment);
 	}
-	
+
 	/**
 	 * @Given /^I select a Right Diagnosis of Choroidal Retinal Neovascularisation$/
 	 */
-	public function iSelectADiagnosisOfChoroidalRetinalNeovascularisation() {
+	public function iSelectADiagnosisOfChoroidalRetinalNeovascularisation()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightChoroidalRetinal ();
+		$examination = $this->getPage('Examination');
+		$examination->rightChoroidalRetinal();
 	}
-	
+
 	/**
 	 * @Then /^I select Right Secondary to "([^"]*)"$/
 	 */
-	public function iSelectSecondaryTo($secondary) {
+	public function iSelectSecondaryTo($secondary)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightSecondaryTo ( $secondary );
+		$examination = $this->getPage('Examination');
+		$examination->rightSecondaryTo($secondary);
 	}
-	
+
 	/**
 	 * @Given /^I select a Left Diagnosis of Choroidal Retinal Neovascularisation$/
 	 */
-	public function iSelectALeftDiagnosisOfChoroidalRetinalNeovascularisation() {
+	public function iSelectALeftDiagnosisOfChoroidalRetinalNeovascularisation()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftChoroidalRetinal ();
+		$examination = $this->getPage('Examination');
+		$examination->leftChoroidalRetinal();
 	}
-	
+
 	/**
 	 * @Then /^I select Left Secondary to "([^"]*)"$/
 	 */
-	public function iSelectLeftSecondaryTo($secondary) {
+	public function iSelectLeftSecondaryTo($secondary)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftSecondaryTo ( $secondary );
+		$examination = $this->getPage('Examination');
+		$examination->leftSecondaryTo($secondary);
 	}
-	
+
 	/**
 	 * @Then /^I choose a Right CRT Increase <(\d+) of Yes$/
 	 */
-	public function iChooseACrtIncreaseOfYes($arg1) {
+	public function iChooseACrtIncreaseOfYes($arg1)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		sleep ( 5 );
-		$examination->rightCRTIncreaseLowerThanHundredYes ();
+		$examination = $this->getPage('Examination');
+		sleep(5);
+		$examination->rightCRTIncreaseLowerThanHundredYes();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Right CRT Increase <(\d+) of No$/
 	 */
-	public function iChooseACrtIncreaseOfNo($arg1) {
+	public function iChooseACrtIncreaseOfNo($arg1)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightCRTIncreaseLowerThanHundredNo ();
+		$examination = $this->getPage('Examination');
+		$examination->rightCRTIncreaseLowerThanHundredNo();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Right CRT >=(\d+) of Yes$/
 	 */
-	public function iChooseACrtOfYes($arg1) {
+	public function iChooseACrtOfYes($arg1)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightCRTIncreaseMoreThanHundredYes ();
+		$examination = $this->getPage('Examination');
+		$examination->rightCRTIncreaseMoreThanHundredYes();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Right CRT >=(\d+) of No$/
 	 */
-	public function iChooseACrtOfNo($arg1) {
+	public function iChooseACrtOfNo($arg1)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightCRTIncreaseMoreThanHundredNo ();
+		$examination = $this->getPage('Examination');
+		$examination->rightCRTIncreaseMoreThanHundredNo();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Right Loss of (\d+) letters Yes$/
 	 */
-	public function iChooseALossOfLettersYes($arg1) {
+	public function iChooseALossOfLettersYes($arg1)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightLossOfFiveLettersYes ();
+		$examination = $this->getPage('Examination');
+		$examination->rightLossOfFiveLettersYes();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Right Loss of (\d+) letters No$/
 	 */
-	public function iChooseALossOfLettersNo($arg1) {
+	public function iChooseALossOfLettersNo($arg1)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightLossOfFiveLettersNo ();
+		$examination = $this->getPage('Examination');
+		$examination->rightLossOfFiveLettersNo();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Right Loss of (\d+) letters >(\d+) Yes$/
 	 */
-	public function iChooseALossOfLettersYes2($arg1, $arg2) {
+	public function iChooseALossOfLettersYes2($arg1, $arg2)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightLossOfFiveLettersHigherThanFiveYes ();
+		$examination = $this->getPage('Examination');
+		$examination->rightLossOfFiveLettersHigherThanFiveYes();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Right Loss of (\d+) letters >(\d+) No$/
 	 */
-	public function iChooseALossOfLettersNo2($arg1, $arg2) {
+	public function iChooseALossOfLettersNo2($arg1, $arg2)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightLossOfFiveLettersHigherThanFiveNo ();
+		$examination = $this->getPage('Examination');
+		$examination->rightLossOfFiveLettersHigherThanFiveNo();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Left CRT Increase <(\d+) of Yes$/
 	 */
-	public function iChooseALeftCrtIncreaseOfYes($arg1) {
+	public function iChooseALeftCrtIncreaseOfYes($arg1)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftCRTIncreaseLowerThanHundredYes ();
+		$examination = $this->getPage('Examination');
+		$examination->leftCRTIncreaseLowerThanHundredYes();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Left CRT Increase <(\d+) of No$/
 	 */
-	public function iChooseALeftCrtIncreaseOfNo($arg1) {
+	public function iChooseALeftCrtIncreaseOfNo($arg1)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftCRTIncreaseLowerThanHundredNo ();
+		$examination = $this->getPage('Examination');
+		$examination->leftCRTIncreaseLowerThanHundredNo();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Left CRT >=(\d+) of Yes$/
 	 */
-	public function iChooseALeftCrtOfYes($arg1) {
+	public function iChooseALeftCrtOfYes($arg1)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftCRTIncreaseMoreThanHundredYes ();
+		$examination = $this->getPage('Examination');
+		$examination->leftCRTIncreaseMoreThanHundredYes();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Left CRT >=(\d+) of No$/
 	 */
-	public function iChooseALeftCrtOfNo($arg1) {
+	public function iChooseALeftCrtOfNo($arg1)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftCRTIncreaseMoreThanHundredNo ();
+		$examination = $this->getPage('Examination');
+		$examination->leftCRTIncreaseMoreThanHundredNo();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Left Loss of (\d+) letters Yes$/
 	 */
-	public function iChooseALeftLossOfLettersYes($arg1) {
+	public function iChooseALeftLossOfLettersYes($arg1)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftLossOfFiveLettersYes ();
+		$examination = $this->getPage('Examination');
+		$examination->leftLossOfFiveLettersYes();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Left Loss of (\d+) letters No$/
 	 */
-	public function iChooseALeftLossOfLettersNo($arg1) {
+	public function iChooseALeftLossOfLettersNo($arg1)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftLossOfFiveLettersNo ();
+		$examination = $this->getPage('Examination');
+		$examination->leftLossOfFiveLettersNo();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Left Loss of (\d+) letters >(\d+) Yes$/
 	 */
-	public function iChooseALeftLossOfLettersYes2($arg1, $arg2) {
+	public function iChooseALeftLossOfLettersYes2($arg1, $arg2)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftLossOfFiveLettersHigherThanFiveYes ();
+		$examination = $this->getPage('Examination');
+		$examination->leftLossOfFiveLettersHigherThanFiveYes();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Left Loss of (\d+) letters >(\d+) No$/
 	 */
-	public function iChooseALeftLossOfLettersNo2($arg1, $arg2) {
+	public function iChooseALeftLossOfLettersNo2($arg1, $arg2)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftLossOfFiveLettersHigherThanFiveNo ();
+		$examination = $this->getPage('Examination');
+		$examination->leftLossOfFiveLettersHigherThanFiveNo();
 	}
-	
+
 	/**
 	 * @Given /^I select a Right Diagnosis of Macular retinal oedema$/
 	 */
-	public function iSelectARightDiagnosisOfMacularRetinalOedema() {
+	public function iSelectARightDiagnosisOfMacularRetinalOedema()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightMacularRetinal ();
+		$examination = $this->getPage('Examination');
+		$examination->rightMacularRetinal();
 	}
-	
+
 	/**
 	 * @Then /^I select Right Secondary of Venous retinal branch occlusion$/
 	 */
-	public function iSelectRightSecondaryOfVenousRetinalBranchOcclusion() {
+	public function iSelectRightSecondaryOfVenousRetinalBranchOcclusion()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightSecondaryVenousRetinalBranchOcclusion ();
+		$examination = $this->getPage('Examination');
+		$examination->rightSecondaryVenousRetinalBranchOcclusion();
 	}
-	
+
 	/**
 	 * @Given /^I select a Left Diagnosis of Macular retinal oedema$/
 	 */
-	public function iSelectALeftDiagnosisOfMacularRetinalOedema() {
+	public function iSelectALeftDiagnosisOfMacularRetinalOedema()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftMacularRetinal ();
+		$examination = $this->getPage('Examination');
+		$examination->leftMacularRetinal();
 	}
-	
+
 	/**
 	 * @Then /^I select Left Secondary of Diabetic macular oedema$/
 	 */
-	public function iSelectLeftSecondaryOfDiabeticMacularOedema() {
+	public function iSelectLeftSecondaryOfDiabeticMacularOedema()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftSecondaryDiabeticMacularOedema ();
+		$examination = $this->getPage('Examination');
+		$examination->leftSecondaryDiabeticMacularOedema();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Right Failed Laser of Yes$/
 	 */
-	public function iChooseARightFailedLaserOfYes() {
+	public function iChooseARightFailedLaserOfYes()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightFailedLaserYes ();
+		$examination = $this->getPage('Examination');
+		$examination->rightFailedLaserYes();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Right Failed Laser of No$/
 	 */
-	public function iChooseARightFailedLaserOfNo() {
+	public function iChooseARightFailedLaserOfNo()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightFailedLaserNo ();
+		$examination = $this->getPage('Examination');
+		$examination->rightFailedLaserNo();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Right Unsuitable Laser of Yes$/
 	 */
-	public function iChooseARightUnsuitableLaserOfYes() {
+	public function iChooseARightUnsuitableLaserOfYes()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightUnsuitableForLaserYes ();
+		$examination = $this->getPage('Examination');
+		$examination->rightUnsuitableForLaserYes();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Right Unsuitable Laser of No$/
 	 */
-	public function iChooseARightUnsuitableLaserOfNo() {
+	public function iChooseARightUnsuitableLaserOfNo()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightUnsuitableForLaserNo ();
+		$examination = $this->getPage('Examination');
+		$examination->rightUnsuitableForLaserNo();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Right Previous Ozurdex Yes$/
 	 */
-	public function iChooseARightPreviousOzurdexYes() {
+	public function iChooseARightPreviousOzurdexYes()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightPreviousOzurdexYes ();
+		$examination = $this->getPage('Examination');
+		$examination->rightPreviousOzurdexYes();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Right Previous Ozurdex No$/
 	 */
-	public function iChooseARightPreviousOzurdexNo() {
+	public function iChooseARightPreviousOzurdexNo()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightPreviousOzurdexNo ();
+		$examination = $this->getPage('Examination');
+		$examination->rightPreviousOzurdexNo();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Left CRT above Four Hundred of Yes$/
 	 */
-	public function iChooseALeftCrtAboveFourHundredOfYes() {
+	public function iChooseALeftCrtAboveFourHundredOfYes()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftCrtIncreaseMoreThanFourHundredYes ();
+		$examination = $this->getPage('Examination');
+		$examination->leftCrtIncreaseMoreThanFourHundredYes();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Left CRT above Four Hundred of No$/
 	 */
-	public function iChooseALeftCrtAboveFourHundredOfNo() {
+	public function iChooseALeftCrtAboveFourHundredOfNo()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftCrtIncreaseMoreThanFourHundredNo ();
+		$examination = $this->getPage('Examination');
+		$examination->leftCrtIncreaseMoreThanFourHundredNo();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Left Foveal Structure Damage Yes$/
 	 */
-	public function iChooseALeftFovealStructureDamageYes() {
+	public function iChooseALeftFovealStructureDamageYes()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftFovealDamageYes ();
+		$examination = $this->getPage('Examination');
+		$examination->leftFovealDamageYes();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Left Foveal Structure Damage No$/
 	 */
-	public function iChooseALeftFovealStructureDamageNo() {
+	public function iChooseALeftFovealStructureDamageNo()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftFovealDamageNo ();
+		$examination = $this->getPage('Examination');
+		$examination->leftFovealDamageNo();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Left Failed Laser of Yes$/
 	 */
-	public function iChooseALeftFailedLaserOfYes() {
+	public function iChooseALeftFailedLaserOfYes()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftFailedLaserYes ();
+		$examination = $this->getPage('Examination');
+		$examination->leftFailedLaserYes();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Left Failed Laser of No$/
 	 */
-	public function iChooseALeftFailedLaserOfNo() {
+	public function iChooseALeftFailedLaserOfNo()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftFailedLaserNo ();
+		$examination = $this->getPage('Examination');
+		$examination->leftFailedLaserNo();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Left Unsuitable Laser of Yes$/
 	 */
-	public function iChooseALeftUnsuitableLaserOfYes() {
+	public function iChooseALeftUnsuitableLaserOfYes()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftUnsuitableForLaserYes ();
+		$examination = $this->getPage('Examination');
+		$examination->leftUnsuitableForLaserYes();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Left Unsuitable Laser of No$/
 	 */
-	public function iChooseALeftUnsuitableLaserOfNo() {
+	public function iChooseALeftUnsuitableLaserOfNo()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftUnsuitableForLaserNo ();
+		$examination = $this->getPage('Examination');
+		$examination->leftUnsuitableForLaserNo();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Left Previous Anti VEGF of Yes$/
 	 */
-	public function iChooseALeftPreviousAntiVegfOfYes() {
+	public function iChooseALeftPreviousAntiVegfOfYes()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftPreviousAntiVEGFyes ();
+		$examination = $this->getPage('Examination');
+		$examination->leftPreviousAntiVEGFyes();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Left Previous Anti VEGF of No$/
 	 */
-	public function iChooseALeftPreviousAntiVegfOfNo() {
+	public function iChooseALeftPreviousAntiVegfOfNo()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftPreviousAntiVEGFno ();
+		$examination = $this->getPage('Examination');
+		$examination->leftPreviousAntiVEGFno();
 	}
-	
+
 	/**
 	 * @Then /^I choose to expand the Risks section$/
 	 */
-	public function iChooseToExpandTheRisksSection() {
+	public function iChooseToExpandTheRisksSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->expandRisks ();
+		$examination = $this->getPage('Examination');
+		$examination->expandRisks();
 	}
-	
+
 	/**
 	 * @Given /^I add comments to the Risk section of "([^"]*)"$/
 	 */
-	public function iAddCommentsToTheRiskSectionOf($comments) {
+	public function iAddCommentsToTheRiskSectionOf($comments)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->riskComments ( $comments );
+		$examination = $this->getPage('Examination');
+		$examination->riskComments($comments);
 	}
-	
+
 	/**
 	 * @Then /^I choose to expand the Clinic Outcome section$/
 	 */
-	public function iChooseToExpandTheClinicOutcomeSection() {
+	public function iChooseToExpandTheClinicOutcomeSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->expandClinicalOutcome ();
+		$examination = $this->getPage('Examination');
+		$examination->expandClinicalOutcome();
 	}
-	
+
 	/**
 	 * @Given /^I choose a Clinical Outcome Status of Discharge$/
 	 */
-	public function iChooseAClinicalOutcomeStatusOfDischarge() {
+	public function iChooseAClinicalOutcomeStatusOfDischarge()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->clinicalOutcomeDischarge ();
+		$examination = $this->getPage('Examination');
+		$examination->clinicalOutcomeDischarge();
 	}
-	
+
 	/**
 	 * @Given /^I choose a Clinical Outcome Status of Follow Up$/
 	 */
-	public function iChooseAClinicalOutcomeStatusOfFollowUp() {
+	public function iChooseAClinicalOutcomeStatusOfFollowUp()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->clinicalOutcomeFollowUp ();
+		$examination = $this->getPage('Examination');
+		$examination->clinicalOutcomeFollowUp();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Follow Up quantity of "([^"]*)"$/
 	 */
-	public function iChooseAFollowUpQuantityOf($quantity) {
+	public function iChooseAFollowUpQuantityOf($quantity)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->clinicalFollowUpQuantity ( $quantity );
+		$examination = $this->getPage('Examination');
+		$examination->clinicalFollowUpQuantity($quantity);
 	}
-	
+
 	/**
 	 * @Given /^I choose a Follow Up period of "([^"]*)"$/
 	 */
-	public function iChooseAFollowUpPeriodOf($period) {
+	public function iChooseAFollowUpPeriodOf($period)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->clinicalFollowUpPeriod ( $period );
+		$examination = $this->getPage('Examination');
+		$examination->clinicalFollowUpPeriod($period);
 	}
-	
+
 	/**
 	 * @Given /^I tick the Patient Suitable for Community Patient Tariff$/
 	 */
-	public function iTickThePatientSuitableForCommunityPatientTariff() {
+	public function iTickThePatientSuitableForCommunityPatientTariff()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->clinicalSuitablePatient ();
+		$examination = $this->getPage('Examination');
+		$examination->clinicalSuitablePatient();
 	}
-	
+
 	/**
 	 * @Then /^I choose a Role of "([^"]*)"$/
 	 */
-	public function iChooseARoleOf($role) {
+	public function iChooseARoleOf($role)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->clinicalRole ( $role );
+		$examination = $this->getPage('Examination');
+		$examination->clinicalRole($role);
 	}
-	
+
 	/**
 	 * @Then /^I choose to expand the Conclusion section$/
 	 */
-	public function iChooseToExpandTheConclusionSection() {
+	public function iChooseToExpandTheConclusionSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->expandConclusion ();
+		$examination = $this->getPage('Examination');
+		$examination->expandConclusion();
 	}
-	
+
 	/**
 	 * @Given /^I choose a Conclusion option of "([^"]*)"$/
 	 */
-	public function iChooseAConclusionOptionOf($option) {
+	public function iChooseAConclusionOptionOf($option)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->conclusionOption ( $option );
+		$examination = $this->getPage('Examination');
+		$examination->conclusionOption($option);
 	}
-	
+
 	/**
 	 * @Then /^I Save the Examination$/
 	 */
-	public function iSaveTheExamination() {
+	public function iSaveTheExamination()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->saveExaminationOnly ();
+		$examination = $this->getPage('Examination');
+		$examination->saveExaminationOnly();
 	}
-	
+
 	/**
 	 * @Then /^I Save the Examination and confirm it has been created successfully$/
 	 */
-	public function iSaveTheExaminationAndConfirm() {
+	public function iSaveTheExaminationAndConfirm()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->saveExaminationAndConfirm ();
+		$examination = $this->getPage('Examination');
+		$examination->saveExaminationAndConfirm();
 	}
-	
+
 	// VALIDATION TESTS
-	
+
 	/**
 	 * @Then /^a check is made that a right Axis degrees of "([^"]*)" was entered$/
 	 */
-	public function aCheckIsMadeThatARightAxisDegreesOfWasEntered($axis) {
+	public function aCheckIsMadeThatARightAxisDegreesOfWasEntered($axis)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightAxisCheck ( $axis );
+		$examination = $this->getPage('Examination');
+		$examination->rightAxisCheck($axis);
 	}
-	
+
 	/**
 	 * @Then /^a check is made that a left Axis degrees of "([^"]*)" was entered$/
 	 */
-	public function aCheckIsMadeThatALeftAxisDegreesOfWasEntered($axis) {
+	public function aCheckIsMadeThatALeftAxisDegreesOfWasEntered($axis)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftAxisCheck ( $axis );
+		$examination = $this->getPage('Examination');
+		$examination->leftAxisCheck($axis);
 	}
-	
+
 	/**
 	 * @Then /^I select Add All optional elements$/
 	 */
-	public function iSelectAddAllOptionalElements() {
+	public function iSelectAddAllOptionalElements()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->addAllElements ();
+		$examination = $this->getPage('Examination');
+		$examination->addAllElements();
 	}
-	
+
 	/**
 	 * @Then /^I confirm that the Add All Validation error messages have been displayed$/
 	 */
-	public function iConfirmThatTheAddAllValidationErrorMessagesHaveBeenDisplayed() {
+	public function iConfirmThatTheAddAllValidationErrorMessagesHaveBeenDisplayed()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->addAllElementsValidationCheck ();
-		
-		$homepage = $this->getPage ( 'HomePage' );
-		
-		
-		$homepage->open ();
+		$examination = $this->getPage('Examination');
+		$examination->addAllElementsValidationCheck();
+
+		$homepage = $this->getPage('HomePage');
+
+
+		$homepage->open();
 		sleep(5);
-		$homepage ->acceptAlert();
+		$homepage->acceptAlert();
 	}
-	
+
 	/**
 	 * @Then /^I select Close All elements$/
 	 */
-	public function iSelectCloseAllElements() {
+	public function iSelectCloseAllElements()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->removeAllElements ();
+		$examination = $this->getPage('Examination');
+		$examination->removeAllElements();
 	}
-	
+
 	/**
 	 * @Then /^I confirm that the Remove All Validation error message is displayed$/
 	 */
-	public function iConfirmThatTheRemoveAllValidationErrorMessageIsDisplayed() {
+	public function iConfirmThatTheRemoveAllValidationErrorMessageIsDisplayed()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->removeAllValidationCheck ();
-		
-		$homepage = $this->getPage ( 'HomePage' );
-		
-		
-		$homepage->open ();
+		$examination = $this->getPage('Examination');
+		$examination->removeAllValidationCheck();
+
+		$homepage = $this->getPage('HomePage');
+
+
+		$homepage->open();
 		sleep(5);
-		$homepage ->acceptAlert();
+		$homepage->acceptAlert();
 	}
-	
+
 	/**
 	 * @Then /^I Confirm that the History Validation error message is displayed$/
 	 */
-	public function iConfirmThatHistoryErrorMessageIsDisplayed() {
+	public function iConfirmThatHistoryErrorMessageIsDisplayed()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->historyValidationCheck ();
+		$examination = $this->getPage('Examination');
+		$examination->historyValidationCheck();
 	}
-	
-	
-	
+
+
 	/**
 	 * @Then /^I Confirm that the Conclusion Validation error message is displayed$/
 	 */
-	public function iConfirmConlusionValidation() {
+	public function iConfirmConlusionValidation()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->conclusionValidationCheck ();
-		
-		$homepage = $this->getPage ( 'HomePage' );
-		
-		
-		$homepage->open ();
+		$examination = $this->getPage('Examination');
+		$examination->conclusionValidationCheck();
+
+		$homepage = $this->getPage('HomePage');
+
+
+		$homepage->open();
 		sleep(5);
-		$homepage ->acceptAlert();
+		$homepage->acceptAlert();
 	}
-	
+
 	/**
 	 * @Then /^I Confirm to leave the page$/
 	 */
 	public function iConfirmToLeaveThePage()
 	{
 		//$examination = $this->getPage ( 'Examination' );
-		Sleep ( 5 );
-		$homepage = $this->getPage ( 'Homepage' );
-		$homepage->ConfirmLeavePage ();
+		Sleep(5);
+		$homepage = $this->getPage('Homepage');
+		$homepage->ConfirmLeavePage();
 	}
-	
-	
+
+
 	/**
 	 * @Then /^I cancel the Examnination event$/
 	 */
-	public function iCancelTheExamninationEvent() {
-		$examination = $this->getPage ( 'Examination' );
-		Sleep ( 5 );
-		$examination->CancelExaminationEvent ();
+	public function iCancelTheExamninationEvent()
+	{
+		$examination = $this->getPage('Examination');
+		Sleep(5);
+		$examination->CancelExaminationEvent();
 	}
-	
+
 	/**
 	 * @Then /^I Confirm that the Dilation Validation error message is displayed$/
 	 */
-	public function iConfirmDilationValidation() {
+	public function iConfirmDilationValidation()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->dilationValidationCheck ();
-		
+		$examination = $this->getPage('Examination');
+		$examination->dilationValidationCheck();
 
-		$homepage = $this->getPage ( 'HomePage' );
-		
-		
-		$homepage->open ();
+
+		$homepage = $this->getPage('HomePage');
+
+
+		$homepage->open();
 		sleep(5);
-		$homepage ->acceptAlert();
+		$homepage->acceptAlert();
 	}
-	
+
 	/**
 	 * @Then /^I remove Refraction right side$/
 	 */
-	public function iRemoveRefractionRightSide() {
+	public function iRemoveRefractionRightSide()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->removeRefractionRightSide ();
+		$examination = $this->getPage('Examination');
+		$examination->removeRefractionRightSide();
 	}
-	
+
 	/**
 	 * @Then /^I remove all comorbidities$/
 	 */
-	public function removeComorbidties() {
+	public function removeComorbidties()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->removeAllComorbidities ();
+		$examination = $this->getPage('Examination');
+		$examination->removeAllComorbidities();
 	}
-	
+
 	/**
 	 * @Given /^I choose to add a new left Visual Acuity reading of "([^"]*)" and a reading method of "([^"]*)"$/
 	 */
-	public function iChooseToAddANewLeftVisualAcuityReadingOfAndAReadingMethodOf($reading, $method) {
+	public function iChooseToAddANewLeftVisualAcuityReadingOfAndAReadingMethodOf($reading, $method)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->addLeftVA ( $reading, $method );
+		$examination = $this->getPage('Examination');
+		$examination->addLeftVA($reading, $method);
 	}
-	
+
 	/**
 	 * @Given /^I choose to add a new Right Visual Acuity reading of "([^"]*)" and a reading method of "([^"]*)"$/
 	 */
-	public function iChooseToAddANewRightVisualAcuityReadingOfAndAReadingMethodOf($reading, $method) {
+	public function iChooseToAddANewRightVisualAcuityReadingOfAndAReadingMethodOf($reading, $method)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->addRightVA ( $reading, $method );
+		$examination = $this->getPage('Examination');
+		$examination->addRightVA($reading, $method);
 	}
-	
+
 	/**
 	 * @Then /^I remove the initial Left Visual Acuity$/
 	 */
-	public function iRemoveTheInitialLeftVisualAcuity() {
-		$examination = $this->getPage ( 'Examination' );
-		$examination->removeFirstLeftVA ();
+	public function iRemoveTheInitialLeftVisualAcuity()
+	{
+		$examination = $this->getPage('Examination');
+		$examination->removeFirstLeftVA();
 	}
-	
+
 	/**
 	 * @Then /^I remove the initial Right Visual Acuity$/
 	 */
-	public function iRemoveTheInitialRightVisualAcuity() {
-		$examination = $this->getPage ( 'Examination' );
-		$examination->removeFirstRightVA ();
+	public function iRemoveTheInitialRightVisualAcuity()
+	{
+		$examination = $this->getPage('Examination');
+		$examination->removeFirstRightVA();
 	}
-	
+
 	/**
 	 * @Then /^I remove the newly added Left Visual Acuity$/
 	 */
-	public function iRemoveTheNewlyAddedLeftVisualAcuity() {
+	public function iRemoveTheNewlyAddedLeftVisualAcuity()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->removeSecondLeftVA ();
+		$examination = $this->getPage('Examination');
+		$examination->removeSecondLeftVA();
 	}
-	
+
 	/**
 	 * @Then /^I remove the newly added Right Visual Acuity$/
 	 */
-	public function iRemoveTheNewlyAddedRightVisualAcuity() {
+	public function iRemoveTheNewlyAddedRightVisualAcuity()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->removeSecondRightVA ();
+		$examination = $this->getPage('Examination');
+		$examination->removeSecondRightVA();
 	}
-	
+
 	/**
 	 * @Then /^I select a Diabetes type of Mellitus Type one$/
 	 */
-	public function iSelectADiabetesTypeOfMellitusTypeone() {
+	public function iSelectADiabetesTypeOfMellitusTypeone()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->diabetesTypeOne ();
+		$examination = $this->getPage('Examination');
+		$examination->diabetesTypeOne();
 	}
-	
+
 	/**
 	 * @Then /^I select a Diabetes type of Mellitus Type two$/
 	 */
-	public function iSelectADiabetesTypeOfMellitusTypetwo() {
+	public function iSelectADiabetesTypeOfMellitusTypetwo()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->diabetesTypeTwo ();
+		$examination = $this->getPage('Examination');
+		$examination->diabetesTypeTwo();
 	}
-	
+
 	/**
 	 * @Given /^I select a left Clinical Grading for Retinopathy of "([^"]*)"$/
 	 */
-	public function iSelectALeftClinicalGradingForRetinopathyOf($grading) {
+	public function iSelectALeftClinicalGradingForRetinopathyOf($grading)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftClinicalGradingRetino ( $grading );
+		$examination = $this->getPage('Examination');
+		$examination->leftClinicalGradingRetino($grading);
 	}
-	
+
 	/**
 	 * @Given /^I select a left NSC Retinopathy of "([^"]*)"$/
 	 */
-	public function iSelectALeftNscRetinopathyOf($nsc) {
+	public function iSelectALeftNscRetinopathyOf($nsc)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftNSCRetino ( $nsc );
+		$examination = $this->getPage('Examination');
+		$examination->leftNSCRetino($nsc);
 	}
-	
+
 	/**
 	 * @Given /^I select a left Retinopathy photocoagulation of Yes$/
 	 */
-	public function iSelectALeftRetinopathyPhotocoagulationOfYes() {
+	public function iSelectALeftRetinopathyPhotocoagulationOfYes()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftRetinoPhotoYes ();
+		$examination = $this->getPage('Examination');
+		$examination->leftRetinoPhotoYes();
 	}
-	
+
 	/**
 	 * @Given /^I select a left Retinopathy photocoagulation of No$/
 	 */
-	public function iSelectALeftRetinopathyPhotocoagulationOfNo() {
+	public function iSelectALeftRetinopathyPhotocoagulationOfNo()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftRetinoPhotoNo ();
+		$examination = $this->getPage('Examination');
+		$examination->leftRetinoPhotoNo();
 	}
-	
+
 	/**
 	 * @Given /^I select a left Clinical Grading for maculopathy of "([^"]*)"$/
 	 */
-	public function iSelectALeftClinicalGradingForMaculopathyOf($grading) {
+	public function iSelectALeftClinicalGradingForMaculopathyOf($grading)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftClinicalGradingMaculo ( $grading );
+		$examination = $this->getPage('Examination');
+		$examination->leftClinicalGradingMaculo($grading);
 	}
-	
+
 	/**
 	 * @Given /^I select a left NSC maculopathy of "([^"]*)"$/
 	 */
-	public function iSelectALeftNscMaculopathyOf($nsc) {
+	public function iSelectALeftNscMaculopathyOf($nsc)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftNSCMaculo ( $nsc );
+		$examination = $this->getPage('Examination');
+		$examination->leftNSCMaculo($nsc);
 	}
-	
+
 	/**
 	 * @Given /^I select a left Maculopathy photocoagulation of Yes$/
 	 */
-	public function iSelectALeftMaculopathyPhotocoagulationOfYes() {
+	public function iSelectALeftMaculopathyPhotocoagulationOfYes()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftMaculoPhotoYes ();
+		$examination = $this->getPage('Examination');
+		$examination->leftMaculoPhotoYes();
 	}
-	
+
 	/**
 	 * @Given /^I select a left Maculopathy photocoagulation of No$/
 	 */
-	public function iSelectALeftMaculopathyPhotocoagulationOfNo() {
+	public function iSelectALeftMaculopathyPhotocoagulationOfNo()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftMaculoPhotoNo ();
+		$examination = $this->getPage('Examination');
+		$examination->leftMaculoPhotoNo();
 	}
-	
+
 	/**
 	 * @Given /^I select a right Clinical Grading for Retinopathy of "([^"]*)"$/
 	 */
-	public function iSelectARightClinicalGradingForRetinopathyOf($grading) {
+	public function iSelectARightClinicalGradingForRetinopathyOf($grading)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightClinicalGradingRetino ( $grading );
+		$examination = $this->getPage('Examination');
+		$examination->rightClinicalGradingRetino($grading);
 	}
-	
+
 	/**
 	 * @Given /^I select a right NSC Retinopathy of "([^"]*)"$/
 	 */
-	public function iSelectARightNscRetinopathyOf($nsc) {
+	public function iSelectARightNscRetinopathyOf($nsc)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightNSCRetino ( $nsc );
+		$examination = $this->getPage('Examination');
+		$examination->rightNSCRetino($nsc);
 	}
-	
+
 	/**
 	 * @Given /^I select a right Retinopathy photocoagulation of Yes$/
 	 */
-	public function iSelectARightRetinopathyPhotocoagulationOfYes() {
+	public function iSelectARightRetinopathyPhotocoagulationOfYes()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightRetinoPhotoYes ();
+		$examination = $this->getPage('Examination');
+		$examination->rightRetinoPhotoYes();
 	}
-	
+
 	/**
 	 * @Given /^I select a right Retinopathy photocoagulation of No$/
 	 */
-	public function iSelectARightRetinopathyPhotocoagulationOfNo() {
+	public function iSelectARightRetinopathyPhotocoagulationOfNo()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightRetinoPhotoNo ();
+		$examination = $this->getPage('Examination');
+		$examination->rightRetinoPhotoNo();
 	}
-	
+
 	/**
 	 * @Given /^I select a right Clinical Grading for maculopathy of "([^"]*)"$/
 	 */
-	public function iSelectARightClinicalGradingForMaculopathyOf($grading) {
+	public function iSelectARightClinicalGradingForMaculopathyOf($grading)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightClinicalGradingMaculo ( $grading );
+		$examination = $this->getPage('Examination');
+		$examination->rightClinicalGradingMaculo($grading);
 	}
-	
+
 	/**
 	 * @Given /^I select a right NSC maculopathy of "([^"]*)"$/
 	 */
-	public function iSelectARightNscMaculopathyOf($nsc) {
+	public function iSelectARightNscMaculopathyOf($nsc)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightNSCMaculo ( $nsc );
+		$examination = $this->getPage('Examination');
+		$examination->rightNSCMaculo($nsc);
 	}
-	
+
 	/**
 	 * @Given /^I select a right Maculopathy photocoagulation of Yes$/
 	 */
-	public function iSelectARightMaculopathyPhotocoagulationOfYes() {
+	public function iSelectARightMaculopathyPhotocoagulationOfYes()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightMaculoPhotoYes ();
+		$examination = $this->getPage('Examination');
+		$examination->rightMaculoPhotoYes();
 	}
-	
+
 	/**
 	 * @Given /^I select a right Maculopathy photocoagulation of No$/
 	 */
-	public function iSelectARightMaculopathyPhotocoagulationOfNo() {
+	public function iSelectARightMaculopathyPhotocoagulationOfNo()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightMaculoPhotoNo ();
+		$examination = $this->getPage('Examination');
+		$examination->rightMaculoPhotoNo();
 	}
-	
+
 	/**
 	 * @Given /^I select Left Unable to assess checkbox$/
 	 */
-	public function iSelectLeftUnableToAssessCheckbox() {
+	public function iSelectLeftUnableToAssessCheckbox()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftUnableAssess ();
+		$examination = $this->getPage('Examination');
+		$examination->leftUnableAssess();
 	}
-	
+
 	/**
 	 * @Given /^I select Left Eye Missing checkbox$/
 	 */
-	public function iSelectLeftEyeMissingCheckbox() {
+	public function iSelectLeftEyeMissingCheckbox()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftEyeMissing ();
+		$examination = $this->getPage('Examination');
+		$examination->leftEyeMissing();
 	}
-	
+
 	/**
 	 * @Given /^I select Right Unable to assess checkbox$/
 	 */
-	public function iSelectRightUnableToAssessCheckbox() {
+	public function iSelectRightUnableToAssessCheckbox()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightUnableAssess ();
+		$examination = $this->getPage('Examination');
+		$examination->rightUnableAssess();
 	}
-	
+
 	/**
 	 * @Given /^I select Right Eye Missing checkbox$/
 	 */
-	public function iSelectRightEyeMissingCheckbox() {
+	public function iSelectRightEyeMissingCheckbox()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightEyeMissing ();
+		$examination = $this->getPage('Examination');
+		$examination->rightEyeMissing();
 	}
-	
+
 	/**
 	 * @Then /^I choose to expand the Overall Management section$/
 	 */
-	public function iChooseToExpandTheOverallManagementSection() {
+	public function iChooseToExpandTheOverallManagementSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->expandOverallManagement ();
+		$examination = $this->getPage('Examination');
+		$examination->expandOverallManagement();
 	}
-	
+
 	/**
 	 * @Given /^I choose a Clinical Interval of "([^"]*)"$/
 	 */
-	public function iChooseAClinicalIntervalOf($interval) {
+	public function iChooseAClinicalIntervalOf($interval)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->clinicalInterval ( $interval );
+		$examination = $this->getPage('Examination');
+		$examination->clinicalInterval($interval);
 	}
-	
+
 	/**
 	 * @Given /^I choose a Photo of "([^"]*)"$/
 	 */
-	public function iChooseAPhotoOf($photo) {
+	public function iChooseAPhotoOf($photo)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->photo ( $photo );
+		$examination = $this->getPage('Examination');
+		$examination->photo($photo);
 	}
-	
+
 	/**
 	 * @Given /^I choose a OCT of "([^"]*)"$/
 	 */
-	public function iChooseAOctOf($oct) {
+	public function iChooseAOctOf($oct)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->OCT ( $oct );
+		$examination = $this->getPage('Examination');
+		$examination->OCT($oct);
 	}
-	
+
 	/**
 	 * @Given /^I choose a Visual Fields of "([^"]*)"$/
 	 */
-	public function iChooseAVisualFieldsOf($visual) {
+	public function iChooseAVisualFieldsOf($visual)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->visualFields ( $visual );
+		$examination = $this->getPage('Examination');
+		$examination->visualFields($visual);
 	}
-	
+
 	/**
 	 * @Given /^I choose Overall Management Section Comments of "([^"]*)"$/
 	 */
-	public function iChooseOverallManagementSectionCommentsOf($comments) {
+	public function iChooseOverallManagementSectionCommentsOf($comments)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->overallComments ( $comments );
+		$examination = $this->getPage('Examination');
+		$examination->overallComments($comments);
 	}
-	
+
 	/**
 	 * @Given /^I choose a Gonio of "([^"]*)"$/
 	 */
-	public function iChooseAGonioOf($gonio) {
+	public function iChooseAGonioOf($gonio)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->gonioDropdown ( $gonio );
+		$examination = $this->getPage('Examination');
+		$examination->gonioDropdown($gonio);
 	}
-	
+
 	/**
 	 * @Given /^I choose a Right Target IOP of "([^"]*)"$/
 	 */
-	public function iChooseARightTargetIopOf($iop) {
+	public function iChooseARightTargetIopOf($iop)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightIOP ( $iop );
+		$examination = $this->getPage('Examination');
+		$examination->rightIOP($iop);
 	}
-	
+
 	/**
 	 * @Given /^I choose a Right Gonio of "([^"]*)"$/
 	 */
-	public function iChooseARightGonioOf($gonio) {
+	public function iChooseARightGonioOf($gonio)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightGonio ( $gonio );
+		$examination = $this->getPage('Examination');
+		$examination->rightGonio($gonio);
 	}
-	
+
 	/**
 	 * @Given /^I choose a Left Target IOP of "([^"]*)"$/
 	 */
-	public function iChooseALeftTargetIopOf($iop) {
+	public function iChooseALeftTargetIopOf($iop)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftIOP ( $iop );
+		$examination = $this->getPage('Examination');
+		$examination->leftIOP($iop);
 	}
-	
+
 	/**
 	 * @Given /^I choose a Left Gonio of "([^"]*)"$/
 	 */
-	public function iChooseALeftGonioOf($gonio) {
+	public function iChooseALeftGonioOf($gonio)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftGonio ( $gonio );
+		$examination = $this->getPage('Examination');
+		$examination->leftGonio($gonio);
 	}
-	
+
 	/**
 	 * @Then /^I choose to expand the Current Management section$/
 	 */
-	public function iChooseToExpandTheCurrentManagementSection() {
+	public function iChooseToExpandTheCurrentManagementSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->expandCurrentManagement ();
+		$examination = $this->getPage('Examination');
+		$examination->expandCurrentManagement();
 	}
-	
+
 	/**
 	 * @Given /^I choose a Referral of Other Service$/
 	 */
-	public function iChooseAReferralOfOtherService() {
+	public function iChooseAReferralOfOtherService()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->referralOther ();
+		$examination = $this->getPage('Examination');
+		$examination->referralOther();
 	}
-	
+
 	/**
 	 * @Given /^I choose a Referral of Refraction$/
 	 */
-	public function iChooseAReferralOfRefraction() {
+	public function iChooseAReferralOfRefraction()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->referralRefraction ();
+		$examination = $this->getPage('Examination');
+		$examination->referralRefraction();
 	}
-	
+
 	/**
 	 * @Given /^I choose a Referral of LVA$/
 	 */
-	public function iChooseAReferralOfLva() {
+	public function iChooseAReferralOfLva()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->referralLVA ();
+		$examination = $this->getPage('Examination');
+		$examination->referralLVA();
 	}
-	
+
 	/**
 	 * @Given /^I choose a Referral of Orthopics$/
 	 */
-	public function iChooseAReferralOfOrthopics() {
+	public function iChooseAReferralOfOrthopics()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->referralOrthoptics ();
+		$examination = $this->getPage('Examination');
+		$examination->referralOrthoptics();
 	}
-	
+
 	/**
 	 * @Given /^I choose a Referral of CL clinic$/
 	 */
-	public function iChooseAReferralOfClClinic() {
+	public function iChooseAReferralOfClClinic()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->referralCLClinic ();
+		$examination = $this->getPage('Examination');
+		$examination->referralCLClinic();
 	}
-	
+
 	/**
 	 * @Then /^I choose Investigations of VF$/
 	 */
-	public function iChooseInvestigationsOfVf() {
+	public function iChooseInvestigationsOfVf()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->investigationsVF ();
+		$examination = $this->getPage('Examination');
+		$examination->investigationsVF();
 	}
-	
+
 	/**
 	 * @Then /^I choose Investigations of US$/
 	 */
-	public function iChooseInvestigationsOfUs() {
+	public function iChooseInvestigationsOfUs()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->investigationsUS ();
+		$examination = $this->getPage('Examination');
+		$examination->investigationsUS();
 	}
-	
+
 	/**
 	 * @Then /^I choose Investigations of Biometry$/
 	 */
-	public function iChooseInvestigationsOfBiometry() {
+	public function iChooseInvestigationsOfBiometry()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->investigationsBiometry ();
+		$examination = $this->getPage('Examination');
+		$examination->investigationsBiometry();
 	}
-	
+
 	/**
 	 * @Then /^I choose Investigations of OCT$/
 	 */
-	public function iChooseInvestigationsOfOct() {
+	public function iChooseInvestigationsOfOct()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->investigationsOCT ();
+		$examination = $this->getPage('Examination');
+		$examination->investigationsOCT();
 	}
-	
+
 	/**
 	 * @Then /^I choose Investigations of HRT$/
 	 */
-	public function iChooseInvestigationsOfHrt() {
+	public function iChooseInvestigationsOfHrt()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->investigationsHRT ();
+		$examination = $this->getPage('Examination');
+		$examination->investigationsHRT();
 	}
-	
+
 	/**
 	 * @Then /^I choose Investigations of Disc Photos$/
 	 */
-	public function iChooseInvestigationsOfDiscPhotos() {
+	public function iChooseInvestigationsOfDiscPhotos()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->investigationsDiscPhotos ();
+		$examination = $this->getPage('Examination');
+		$examination->investigationsDiscPhotos();
 	}
-	
+
 	/**
 	 * @Then /^I choose Investigations of EDT$/
 	 */
-	public function iChooseInvestigationsOfEdt() {
+	public function iChooseInvestigationsOfEdt()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->investigationsEDT ();
+		$examination = $this->getPage('Examination');
+		$examination->investigationsEDT();
 	}
-	
+
 	/**
 	 * @Given /^I select a Left Glaucoma Status of "([^"]*)"$/
 	 */
-	public function iSelectALeftGlaucomaStatusOf($status) {
+	public function iSelectALeftGlaucomaStatusOf($status)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftGlaucomaStatus ( $status );
+		$examination = $this->getPage('Examination');
+		$examination->leftGlaucomaStatus($status);
 	}
-	
+
 	/**
 	 * @Given /^I select a Left Drop related problem of "([^"]*)"$/
 	 */
-	public function iSelectALeftDropRelatedProblemOf($problem) {
+	public function iSelectALeftDropRelatedProblemOf($problem)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftDropProblems ( $problem );
+		$examination = $this->getPage('Examination');
+		$examination->leftDropProblems($problem);
 	}
-	
+
 	/**
 	 * @Given /^I select a Left Drops of "([^"]*)"$/
 	 */
-	public function iSelectALeftDropsOf($drops) {
+	public function iSelectALeftDropsOf($drops)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftDrops ( $drops );
+		$examination = $this->getPage('Examination');
+		$examination->leftDrops($drops);
 	}
-	
+
 	/**
 	 * @Given /^I select a Left Surgery of "([^"]*)"$/
 	 */
-	public function iSelectALeftSurgeryOf($surgery) {
+	public function iSelectALeftSurgeryOf($surgery)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftSurgery ( $surgery );
+		$examination = $this->getPage('Examination');
+		$examination->leftSurgery($surgery);
 	}
-	
+
 	/**
 	 * @Given /^I select a Right Glaucoma Status of "([^"]*)"$/
 	 */
-	public function iSelectARightGlaucomaStatusOf($status) {
+	public function iSelectARightGlaucomaStatusOf($status)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightGlaucomaStatus ( $status );
+		$examination = $this->getPage('Examination');
+		$examination->rightGlaucomaStatus($status);
 	}
-	
+
 	/**
 	 * @Given /^I select a Right Drop related problem of "([^"]*)"$/
 	 */
-	public function iSelectARightDropRelatedProblemOf($problem) {
+	public function iSelectARightDropRelatedProblemOf($problem)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightDropProblems ( $problem );
+		$examination = $this->getPage('Examination');
+		$examination->rightDropProblems($problem);
 	}
-	
+
 	/**
 	 * @Given /^I select a Right Drops of "([^"]*)"$/
 	 */
-	public function iSelectARightDropsOf($drops) {
+	public function iSelectARightDropsOf($drops)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightDrops ( $drops );
+		$examination = $this->getPage('Examination');
+		$examination->rightDrops($drops);
 	}
-	
+
 	/**
 	 * @Given /^I select a Right Surgery of "([^"]*)"$/
 	 */
-	public function iSelectARightSurgeryOf($surgery) {
+	public function iSelectARightSurgeryOf($surgery)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightSurgery ( $surgery );
+		$examination = $this->getPage('Examination');
+		$examination->rightSurgery($surgery);
 	}
-	
+
 	/**
 	 * @Given /^I choose a Right Risks of "([^"]*)"$/
 	 */
-	public function iChooseARightRisksOf($risks) {
+	public function iChooseARightRisksOf($risks)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightRisks ( $risks );
+		$examination = $this->getPage('Examination');
+		$examination->rightRisks($risks);
 	}
-	
+
 	/**
 	 * @Then /^I choose Right Injection Management Comments of "([^"]*)"$/
 	 */
-	public function iChooseRightInjectionManagementCommentsOf($comments) {
+	public function iChooseRightInjectionManagementCommentsOf($comments)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightInjectionComments ( $comments );
+		$examination = $this->getPage('Examination');
+		$examination->rightInjectionComments($comments);
 	}
-	
+
 	/**
 	 * @Given /^I choose a Left Risks of "([^"]*)"$/
 	 */
-	public function iChooseALeftRisksOf($risks) {
+	public function iChooseALeftRisksOf($risks)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		sleep ( 5 );
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftRisks ( $risks );
+		sleep(5);
+		$examination = $this->getPage('Examination');
+		$examination->leftRisks($risks);
 	}
-	
+
 	/**
 	 * @Then /^I choose Left Injection Management Comments of "([^"]*)"$/
 	 */
-	public function iChooseLeftInjectionManagementCommentsOf($comments) {
+	public function iChooseLeftInjectionManagementCommentsOf($comments)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftInjectionComments ( $comments );
+		$examination = $this->getPage('Examination');
+		$examination->leftInjectionComments($comments);
 	}
-	
+
 	/**
 	 * @Then /^I select a Left RAPD$/
 	 */
-	public function iSelectALeftRapd() {
+	public function iSelectALeftRapd()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftRAPD ();
+		$examination = $this->getPage('Examination');
+		$examination->leftRAPD();
 	}
-	
+
 	/**
 	 * @Given /^I add Left RAPD comments of "([^"]*)"$/
 	 */
-	public function iAddLeftRapdCommentsOf($comments) {
+	public function iAddLeftRapdCommentsOf($comments)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftRAPDComments ( $comments );
+		$examination = $this->getPage('Examination');
+		$examination->leftRAPDComments($comments);
 	}
-	
+
 	/**
 	 * @Then /^I select a Right RAPD$/
 	 */
-	public function iSelectARightRapd() {
+	public function iSelectARightRapd()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightRAPD ();
+		$examination = $this->getPage('Examination');
+		$examination->rightRAPD();
 	}
-	
+
 	/**
 	 * @Given /^I add Right RAPD comments of "([^"]*)"$/
 	 */
-	public function iAddRightRapdCommentsOf($comments) {
+	public function iAddRightRapdCommentsOf($comments)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightRAPDComments ( $comments );
+		$examination = $this->getPage('Examination');
+		$examination->rightRAPDComments($comments);
 	}
-	
+
 	/**
 	 * @Then /^I choose to expand the Colour Vision section$/
 	 */
-	public function iChooseToExpandTheColourVisionSection() {
+	public function iChooseToExpandTheColourVisionSection()
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->openColourVision ();
+		$examination = $this->getPage('Examination');
+		$examination->openColourVision();
 	}
-	
+
 	/**
 	 * @Given /^I choose a Left Colour Vision of "([^"]*)"$/
 	 */
-	public function iChooseALeftColourVisionOf($vision) {
+	public function iChooseALeftColourVisionOf($vision)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftColourVision ( $vision );
+		$examination = $this->getPage('Examination');
+		$examination->leftColourVision($vision);
 	}
-	
+
 	/**
 	 * @Given /^I choose A Left Colour Vision Value of "([^"]*)"$/
 	 */
-	public function iChooseALeftColourVisionValueOf($value) {
+	public function iChooseALeftColourVisionValueOf($value)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->leftColourVisionValue ( $value );
+		$examination = $this->getPage('Examination');
+		$examination->leftColourVisionValue($value);
 	}
-	
+
 	/**
 	 * @Given /^I choose a Right Colour Vision of "([^"]*)"$/
 	 */
-	public function iChooseARightColourVisionOf($vision) {
+	public function iChooseARightColourVisionOf($vision)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightColourVision ( $vision );
+		$examination = $this->getPage('Examination');
+		$examination->rightColourVision($vision);
 	}
-	
+
 	/**
 	 * @Given /^I choose A Right Colour Vision Value of "([^"]*)"$/
 	 */
-	public function iChooseARightColourVisionValueOf($value) {
+	public function iChooseARightColourVisionValueOf($value)
+	{
 		/**
 		 *
 		 * @var Examination $examination
 		 */
-		$examination = $this->getPage ( 'Examination' );
-		$examination->rightColourVisionValue ( $value );
+		$examination = $this->getPage('Examination');
+		$examination->rightColourVisionValue($value);
+	}
+
+	/**
+	 * @Then /^I add the changes to left eye$/
+	 */
+	public function iAddTheChangesToLeftEye()
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->$this->iAddTheChangesToLeftEye();
+
+		//throw new PendingException();
+	}
+
+	/**
+	 * @Then /^I click on Right Eye PCR Risk$/
+	 */
+	public function iClickOnRightEyePCRRISK()
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->clickOnRightEyePCRRISK();
+	}
+
+	/**
+	 * @Then /^I click on Left Eye PCR Risk$/
+	 */
+	public function iClickOnLeftEyePCRRISK()
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->clickOnLeftEyePCRRISK();
+	}
+
+	/**
+	 * @Then /^I should see reference link on PCR Right Eye block$/
+	 */
+	public function iShouldSeeReferenceLinkOnPCRRightEyeBlock()
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->referenceLinkOnPCRRightEyeBlock();
+	}
+
+	/**
+	 * @Then /^I should see reference link on PCR Left Eye block$/
+	 */
+	public function iShouldSeeReferenceLinkOnPCRLeftEyeBlock()
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->referenceLinkOnPCRLeftEyeBlock();
+	}
+
+	/**
+	 * @Then /^I click on reference link on PCR Right Eye block$/
+	 */
+	public function iClickOnReferenceLinkOnPCRRightEyeBlock()
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->clickOnReferenceLinkOnPCRRightEyeBlock();
+	}
+
+	/**
+	 * @Then /^I click on reference link on PCR Left Eye block$/
+	 */
+	public function iClickOnReferenceLinkOnPCRLeftEyeBlock()
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->clickOnReferenceLinkOnPCRLeftEyeBlock();
+	}
+
+	/**
+	 * @Then /^I should see the reference Page$/
+	 */
+	public function iShouldSeeTheReferencePage()
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->onPCRReferencePage();
 	}
 }

@@ -55,13 +55,13 @@ class Correspondence extends OpenEyesPage {
 					'xpath' => "//*[@id='flash-success']" 
 			),
 			'letterBlankError' => array (
-					'xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Letter: Address cannot be blank.')]" 
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Address cannot be blank.')]" 
 			),
 			'letterSalutationBlankError' => array (
-					'xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Letter: Salutation cannot be blank.')]" 
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Salutation cannot be blank.')]" 
 			),
 			'letterBodyBlankError' => array (
-					'xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Letter: Body cannot be blank.')]" 
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Body cannot be blank.')]" 
 			) 
 	);
 	public function siteDropdown($site) {
@@ -77,7 +77,9 @@ class Correspondence extends OpenEyesPage {
 	public function clinicDate($date) {
 		$this->getElement ( 'clinicDate' )->click ();
 		// $this->getElement('clinicDateCalendar')->selectOption($date);
-		$this->getElement ( 'clinicDateCalendar' )->setValue ( $date );
+		//$this->waitForElementDisplayBlock ( 'clinicDateCalendar' );
+		////$this->getElement ( 'clinicDateCalendar' )->selectOption( $date );
+		$this->findLink($date)->click();
 	}
 	public function body($body) {
 		$this->getElement ( 'body' )->setValue ( $body );
@@ -112,15 +114,19 @@ class Correspondence extends OpenEyesPage {
 		$this->getElement ( 'enterEnclosure' )->setValue ( $enclosure );
 	}
 	public function saveDraft() {
+		$this->getSession ()->wait ( 5000 );
 		$this->getElement ( 'saveDraft' )->click ();
 	}
 	protected function hasConsentSaved() {
+		//$this->waitForElementDisplayBlock('saveCorrespondenceOK');
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'saveCorrespondenceOK' )->getXpath () );
 		;
 	}
 	public function saveCorrespondenceAndConfirm() {
+		$this->getSession ()->wait ( 5000 );
 		$this->getElement ( 'saveDraft' )->click ();
-		
+		$this->getSession ()->wait ( 5000 );
+		//$this->waitForElementDisplayBlock('saveCorrespondenceOK');
 		if ($this->hasConsentSaved ()) {
 			print "Correspondence has been saved OK";
 		} 
@@ -130,6 +136,7 @@ class Correspondence extends OpenEyesPage {
 		}
 	}
 	protected function hasCorrespondenceErrorsDisplayed() {
+		sleep(5);
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'letterBlankError' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'letterSalutationBlankError' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'letterBodyBlankError' )->getXpath () );
 	}
 	public function correspondenceMandatoryFieldsErrorValidation() {

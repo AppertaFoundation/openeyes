@@ -81,16 +81,18 @@ class ConsentForm extends OpenEyesPage
 					'xpath' => "//*[@id='select_procedure_id_additional']" 
 			),
 			'benefitValidationError' => array (
-					'xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Benefits and risks: Benefits cannot be blank')]" 
+					//'xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Benefits and risks: Benefits cannot be blank')]"
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Benefits cannot be blank')]"
 			),
 			'riskValidationError' => array (
-					'xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Benefits and risks: Risks cannot be blank')]" 
+					//'xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Benefits and risks: Risks cannot be blank')]"
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Risks cannot be blank')]"
 			),
 			'procedureValidationError' => array (
-					'xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Other: At least one procedure must be entered')]" 
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'At least one procedure must be entered')]"
 			),
 			'existingOperationBooking' => array (
-					'xpath' => "//*[@class='highlight booking']//*[contains(text(),'Extracapsular cataract extraction')]" 
+					'xpath' => "//*[@class='highlight booking']//*[contains(text(),'Extracapsular cataract extraction')]"
 			) 
 	);
 	public function unbookedProcedure() {
@@ -98,7 +100,7 @@ class ConsentForm extends OpenEyesPage
 	}
 	public function existingOperation($value) {
 		$this->getElement ( 'existingOperationBooking' )->click ();
-		// $this->getSession()->wait(5000);
+		$this->getSession()->wait(5000);
 	}
 	public function createConsentForm() {
 		$this->getElement ( 'createConsentForm' )->click ();
@@ -180,7 +182,8 @@ class ConsentForm extends OpenEyesPage
 	}
 	public function saveConsentAndConfirm() {
 		$this->getElement ( 'saveConsentFormDraft' )->click ();
-		
+
+		$this->getSession ()->wait ( 5000 );
 		if ($this->hasConsentSaved ()) {
 			print "Consent has been saved OK";
 		} 
