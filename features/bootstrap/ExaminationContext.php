@@ -428,19 +428,6 @@ class ExaminationContext extends PageObjectContext
 	}
 
 	/**
-	 * @Then /^I choose to expand the Intraocular Pressure section$/
-	 */
-	public function iChooseToExpandTheIntraocularPressureSection()
-	{
-		/**
-		 *
-		 * @var Examination $examination
-		 */
-		$examination = $this->getPage('Examination');
-		$examination->expandIntraocularPressure();
-	}
-
-	/**
 	 * @Then /^I choose to expand the Visual Function section$/
 	 */
 	public function iChooseToExpandTheVisualFunctionSection()
