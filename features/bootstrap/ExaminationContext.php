@@ -414,18 +414,6 @@ class ExaminationContext extends PageObjectContext
 		$examination->openRefraction();
 	}
 
-	/**
-	 * @Then /^I choose to expand the Dilation section$/
-	 */
-	public function iChooseToExpandTheDilationSection()
-	{
-		/**
-		 *
-		 * @var Examination $examination
-		 */
-		$examination = $this->getPage('Examination');
-		$examination->openDilation();
-	}
 
 	/**
 	 * @Then /^I choose to expand the Visual Function section$/
