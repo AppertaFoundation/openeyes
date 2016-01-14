@@ -6,8 +6,8 @@ Feature: Create New Examination Regression Tests
 
   @EXAM_Route_1 @OE-5606 @sprint22
   Scenario Outline: Route 1: Login and create a new Examination Event
-            Site 1:Queens
-            Firm 3:Anderson Glaucoma
+            Site 1:Croydon
+            Firm 3:A K Hamilton (Glaucoma)
             Add and then remove all Comorbidities
             Viusal Fields, Intraocular Pressure, Dilation
             Confirm that Refraction Axis entries are correctly validated when the Examination is saved
@@ -25,7 +25,7 @@ Feature: Create New Examination Regression Tests
 
     Then I select a History of Blurred Vision, Mild Severity, Onset 1 Week, Left Eye, 1 Week
 
-    And I choose to expand the Comorbidities section
+    And I choose to expand the "<sectionName1>" section
     Then I Add a Comorbiditiy of "1"
     Then I Add a Comorbiditiy of "2"
     Then I Add a Comorbiditiy of "3"
@@ -44,7 +44,7 @@ Feature: Create New Examination Regression Tests
 
     Then I remove all comorbidities
 
-    Then I choose to expand the Refraction section
+    Then I choose to expand the "<sectionName2>" section
 
     Then I enter left Refraction details of Sphere "1" integer "6" fraction "0.75"
     And I enter left cylinder details of of Cylinder "-1" integer "7" fraction "0.75"
@@ -61,7 +61,7 @@ Feature: Create New Examination Regression Tests
 
     And I enter a right type of "3"
 
-    Then I choose to expand the Visual Function section
+    Then I choose to expand the "<sectionName3>" section
 
 
     And I add Left RAPD comments of "Left RAPD Automation test comments"
@@ -69,22 +69,22 @@ Feature: Create New Examination Regression Tests
 
     And I add Right RAPD comments of "Left RAPD Automation test comments"
 
-    Then I choose to expand the Colour Vision section
+    Then I choose to expand the "<sectionName4>" section
     And I choose a Left Colour Vision of "1"
 
     And I choose a Right Colour Vision of "2"
 
 
-    Then I choose to expand the Visual Acuity section
+    Then I choose to expand the "<sectionName5>" section
     And I select a Visual Acuity of "2"
     Then I choose a left Visual Acuity Snellen Metre "4" and a reading method of "5"
     Then I choose a right Visual Acuity Snellen Metre "4" and a reading method of "5"
 
-    Then I choose to expand the Intraocular Pressure section
+    Then I choose to expand the "<sectionName6>" section
     Then I choose a left Intraocular Pressure of "19" and Instrument "2"
     Then I choose a right Intraocular Pressure of "29" and Instrument "2"
 
-    Then I choose to expand the Dilation section
+    Then I choose to expand the "<sectionName7>" section
     Then I choose left Dilation of "2" and drops of "5"
     Then I choose right Dilation of "6" and drops of "3"
     And I enter a left Dilation time of "10:00"
@@ -96,34 +96,34 @@ Feature: Create New Examination Regression Tests
     Then a check is made that a right Axis degrees of "38" was entered
 
     Examples:
-    |uname|pwd  |site|firm|hospNo.|speciality|event      |
-    |admin|admin|1   |  2 |1009465|Glaucoma  |Examination|
+    |uname|pwd  |site   |firm                   |hospNo.|speciality|event      |sectionName1 |sectionName2|sectionName3  |sectionName4|sectionName5|sectionName6       |sectionName7|
+    |admin|admin|Croydon|A K Hamilton (Glaucoma)|1009465|glaucoma  |Examination|comorbidities|refraction  |visualFunction|colourVision|visualAcuity|intraocularPressure|dilation    |
 
   @EXAM_Route_2
-  Scenario: Route 2:Login and create a new Examination Event
-            Site:1 Queens
-            Firm:2 Broom Glaucoma
+  Scenario Outline: Route 2:Login and create a new Examination Event
+            Site:1 Ludwig
+            Firm:2 A Dulku (Glaucoma)
             Viusal Fields, Intraocular Pressure, Dilation, Refraction
             Add a second Visual Acuity reading and then remove it
             Removal of one side test
 
     Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "2"
+    And I enter login credentials "<uname>" and "<pwd>"
+    And I select Site "<site>"
+    Then I select a firm of "<firm>"
 
     Then I search for patient name last name "Coffin," and first name "Violet"
 
     Then I select Create or View Episodes and Events
-    Then I expand the Glaucoma sidebar
-    And I add a New Event "Examination"
+    Then I expand the "<speciality>" sidebar
+    And I add a New Event "<event>"
 
     Then I select a History of Blurred Vision, Mild Severity, Onset 1 Week, Left Eye, 1 Week
 
-    And I choose to expand the Comorbidities section
+    And I choose to expand the "<sectionName1>" section
     Then I Add a Comorbiditiy of "4"
 
-    Then I choose to expand the Visual Function section
+    Then I choose to expand the "<sectionName2>" section
 
 
     And I add Left RAPD comments of "Left RAPD Automation test comments"
@@ -131,13 +131,13 @@ Feature: Create New Examination Regression Tests
 
     And I add Right RAPD comments of "Left RAPD Automation test comments"
 
-    Then I choose to expand the Colour Vision section
+    Then I choose to expand the "<sectionName3>" section
     And I choose a Left Colour Vision of "1"
 
     And I choose a Right Colour Vision of "2"
 
 
-    Then I choose to expand the Visual Acuity section
+    Then I choose to expand the "<sectionName4>" section
     And I select a Visual Acuity of "1"
     Then I choose a left Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
     Then I choose a right Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
@@ -148,17 +148,17 @@ Feature: Create New Examination Regression Tests
     #Then I remove the newly added Left Visual Acuity
     #Then I remove the newly added Right Visual Acuity
 
-    Then I choose to expand the Intraocular Pressure section
+    Then I choose to expand the "<sectionName5>" section
     Then I choose a left Intraocular Pressure of "8" and Instrument "4"
     Then I choose a right Intraocular Pressure of "77" and Instrument "1"
 
-    Then I choose to expand the Dilation section
+    Then I choose to expand the "<sectionName6>" section
     Then I choose left Dilation of "5" and drops of "4"
     Then I choose right Dilation of "2" and drops of "2"
     And I enter a left Dilation time of "20:00"
     And I enter a right Dilation time of "16:11"
 
-    Then I choose to expand the Refraction section
+    Then I choose to expand the "<sectionName7>" section
     Then I enter left Refraction details of Sphere "-1" integer "11" fraction "0.50"
     And I enter left cylinder details of of Cylinder "1" integer "4" fraction "0.25"
     Then I enter left Axis degrees of "56"
@@ -168,10 +168,14 @@ Feature: Create New Examination Regression Tests
 
     Then I Save the Examination and confirm it has been created successfully
 
+    Examples:
+      |uname|pwd  |site  |firm              |speciality|event      |sectionName1 |sectionName2  |sectionName3|sectionName4|sectionName5       |sectionName6|sectionName7|
+      |admin|admin|Ludwig|A Dulku (Glaucoma)|glaucoma  |Examination|comorbidities|visualFunction|colourVision|visualAcuity|intraocularPressure|dilation    |refraction  |
+
   @EXAM_Route_3
   Scenario: Route 3:Login and create a new Examination Event
-            Site:1 Queens
-            Firm:1 Anderson Cataract
+            Site:1 Barking
+            Firm:1 Paul Godinho (Cataract)
             Viusal Fields, Intraocular Pressure, Dilation, Refraction, Conclusion
 
     Given I am on the OpenEyes "master" homepage
@@ -182,12 +186,12 @@ Feature: Create New Examination Regression Tests
     Then I search for patient name last name "Coffin," and first name "Violet"
 
     Then I select Create or View Episodes and Events
-    Then I expand the Cataract sidebar
+    Then I expand the "<speciality>" sidebar
     And I add a New Event "Examination"
 
     Then I select a History of Blurred Vision, Mild Severity, Onset 1 Week, Left Eye, 1 Week
 
-    And I choose to expand the Comorbidities section
+    And I choose to expand the "<sectionName1>" section
     Then I Add a Comorbiditiy of "8"
 
     Then I choose to expand the Visual Function section
@@ -235,27 +239,31 @@ Feature: Create New Examination Regression Tests
     And I choose a Conclusion option of "booked for first eye, "
 
     Then I Save the Examination and confirm it has been created successfully
+
+  Examples:
+  |uname|pwd  |site   |firm                   |speciality|event      |sectionName1 |
+  |admin|admin|Barking|Paul Godinho (Cataract)|cataract  |Examination|comorbidities|
 ##
   @EXAM_Route_4
-  Scenario: Route 4: Login and create a new Examination Event
-            Site:1 Queens
-            Firm:1 Anderson Cataract
+  Scenario Outline: Route 4: Login and create a new Examination Event
+            Site:1 Barking
+            Firm:1 Paul Godinho (Cataract)
             Opening every additional Optional Element that can be included in Automation tests (excluding EyeDraw elements)
 
     Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "1"
+    And I enter login credentials "<uname>" and "<pwd>"
+    And I select Site "<site>"
+    Then I select a firm of "<firm>"
 
     Then I search for patient name last name "Coffin," and first name "Violet"
 
     Then I select Create or View Episodes and Events
-    Then I expand the Cataract sidebar
-    And I add a New Event "Examination"
+    Then I expand the "<speciality>" sidebar
+    And I add a New Event "<event>"
 
     Then I select a History of Blurred Vision, Mild Severity, Onset 1 Week, Left Eye, 1 Week
 
-    And I choose to expand the Comorbidities section
+    And I choose to expand the "<sectionName1>" section
     Then I Add a Comorbiditiy of "8"
 
     Then I choose to expand the Visual Function section
@@ -373,28 +381,30 @@ Feature: Create New Examination Regression Tests
 
     Then I Save the Examination and confirm it has been created successfully
 
-
+    Examples:
+      |uname|pwd  |site   |firm                   |speciality|event      |sectionName1 |
+      |admin|admin|Barking|Paul Godinho (Cataract)|cataract  |Examination|comorbidities|
 #
   @EXAM_Route_5
-  Scenario: ROUTE 5: Login and create a new Examination Event
-            Site:1 Queens
-            Firm:1 Anderson Cataract
+  Scenario Outline: ROUTE 5: Login and create a new Examination Event
+            Site:1 Barking
+            Firm:1 Paul Godinho (Cataract)
             Injection management route
 
     Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "1"
+    And I enter login credentials "<uname>" and "<pwd>"
+    And I select Site "<site>"
+    Then I select a firm of "<firm>"
 
     Then I search for patient name last name "Coffin," and first name "Violet"
 
     Then I select Create or View Episodes and Events
-    Then I expand the Cataract sidebar
-    And I add a New Event "Examination"
+    Then I expand the "<speciality>" sidebar
+    And I add a New Event "<event>"
 
     Then I select a History of Blurred Vision, Mild Severity, Onset 1 Week, Left Eye, 1 Week
 
-    And I choose to expand the Comorbidities section
+    And I choose to expand the "<sectionName1>" section
     Then I Add a Comorbiditiy of "8"
 
     Then I choose to expand the Visual Function section
@@ -514,26 +524,31 @@ Feature: Create New Examination Regression Tests
     And I choose a Conclusion option of "glasses prescribed, "
 
     Then I Save the Examination and confirm it has been created successfully
+
+  Examples:
+  |uname|pwd  |site   |firm                   |speciality|event      |sectionName1 |
+  |admin|admin|Barking|Paul Godinho (Cataract)|cataract  |Examination|comorbidities|
 ##
   @EXAM_Route_6
-  Scenario: ROUTE 6: Login and create a new Examination Event:
-            Site:1 Queens, Firm:1 Anderson Cataract.
+  Scenario Outline: ROUTE 6: Login and create a new Examination Event:
+            Site: Barking
+            Firm: Paul Godinho (Cataract)
             Remaining additional Injection Management sections
 
     Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "1"
+    And I enter login credentials "<uname>" and "<pwd>"
+    And I select Site "<site>"
+    Then I select a firm of "<firm>"
 
     Then I search for patient name last name "Coffin," and first name "Violet"
 
     Then I select Create or View Episodes and Events
-    Then I expand the Cataract sidebar
-    And I add a New Event "Examination"
+    Then I expand the "<speciality>" sidebar
+    And I add a New Event "<event>"
 
     Then I select a History of Blurred Vision, Mild Severity, Onset 1 Week, Left Eye, 1 Week
 
-    And I choose to expand the Comorbidities section
+    And I choose to expand the "<sectionName1>" section
     Then I Add a Comorbiditiy of "8"
 
     Then I choose to expand the Visual Function section
@@ -658,23 +673,27 @@ Feature: Create New Examination Regression Tests
     And I choose a Conclusion option of "booked for first eye, "
 
     Then I Save the Examination and confirm it has been created successfully
+
+    Examples:
+      |uname|pwd  |site   |firm                   |speciality|event      |sectionName1 |
+      |admin|admin|Barking|Paul Godinho (Cataract)|cataract  |Examination|comorbidities|
 #
   @EXAM_Route_7
-  Scenario: Route 7: Examination Validation Tests (Anderson Glaucoma)
+  Scenario Outline: Route 7: Examination Validation Tests
             History and Conclusion validation error checks
 
     Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "3"
+    And I enter login credentials "<uname>" and "<pwd>"
+    And I select Site "<site>"
+    Then I select a firm of "<firm>"
 
-    Then I search for hospital number "1009465"
+    Then I search for hospital number "<hospNum>"
 
     Then I select Create or View Episodes and Events
-    Then I expand the Glaucoma sidebar
-    And I add a New Event "Examination"
+    Then I expand the "<speciality>" sidebar
+    And I add a New Event "<event>"
 
-    Then I choose to expand the Conclusion section
+    Then I choose to expand the "<sectionName1>" section
 
     Then I Save the Examination
 
@@ -682,6 +701,10 @@ Feature: Create New Examination Regression Tests
     Then I Confirm that the Conclusion Validation error message is displayed
 
     #Then I cancel the Examnination event
+
+  Examples:
+    |uname|pwd  |site  |firm                  |hospNum|speciality|event      |sectionName1|
+    |admin|admin|Ealing|Adam Digpal (Glaucoma)|1009465|glaucoma  |Examination|conclusion  |
 
   @EXAM_Route_8
   Scenario: Route 8: Examination Validation Tests (Anderson Cataract)
@@ -1177,21 +1200,20 @@ Feature: Create New Examination Regression Tests
     Then I Save the Examination and confirm it has been created successfully
 
   @EXAM_Route_19 @SP23_OE-5318 @SP23_OE-5343
-  Scenario: Route 2:Login and create a new Examination Event
-  Site:1 Queens
-  Firm:2 Broom Glaucoma
+  Scenario Outline: Route 2:Login and create a new Examination Event
+
   Clinical Management: Overall Management & Current Management
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "2"
+    And I select Site "<site>"
+    Then I select a firm of "<firm>"
 
     Then I search for patient name last name "Coffin," and first name "Violet"
 
     Then I select Create or View Episodes and Events
-    Then I expand the Glaucoma sidebar
-    And I add a New Event "Examination"
+    Then I expand the "<speciality>" sidebar
+    And I add a New Event "<event>"
 
     Then I select a History of Blurred Vision, Mild Severity, Onset 1 Week, Left Eye, 1 Week
 
@@ -1215,29 +1237,35 @@ Feature: Create New Examination Regression Tests
 
     Then I Save the Examination and confirm it has been created successfully
 
+    Examples:
+    |uname|pwd  |site|firm|speciality|event      |sectionName1  |sectionName2|sectionName3   |
+    |admin|admin|1   |2   |glaucoma  |Examination|visualFunction|visualAcuity|anteriorSegment|
+
     @eyedraw
-    Scenario: Route 2:Login and create a new Examination Event
-    Site:1 Queens
-    Firm:2 Broom Glaucoma
+    Scenario Outline: Route 2:Login and create a new Examination Event
     Clinical Management: Overall Management & Current Management
 
       Given I am on the OpenEyes "master" homepage
-      And I enter login credentials "admin" and "admin"
-      And I select Site "1"
-      Then I select a firm of "2"
+      And I enter login credentials "<uname>" and "<pwd>"
+      And I select Site "<site>"
+      Then I select a firm of "<firm>"
 
       Then I search for patient name last name "Coffin," and first name "Violet"
 
       Then I select Create or View Episodes and Events
-      Then I expand the Glaucoma sidebar
-      And I add a New Event "Examination"
+      Then I expand the "<speciality>" sidebar
+      And I add a New Event "<event>"
 
       Then I select a History of Blurred Vision, Mild Severity, Onset 1 Week, Left Eye, 1 Week
 
-      Then I choose to expand the Optic Disc section
+      Then I choose to expand the "<sectionName1>" section
       Then I add the changes to left eye
 
       Then I Save the Examination and confirm it has been created successfully
+
+      Examples:
+      |uname|pwd  |site   |firm                   |speciality|event       |sectionName1|
+      |admin|admin|Barking|A K Hamilton (Glaucoma)|glaucoma  |Examiniation|opticDisc   |
 
 
       @OE-5695 @sprint25
@@ -1252,8 +1280,8 @@ Feature: Create New Examination Regression Tests
         Then I select Create or View Episodes and Events
         Then I expand the "<specialty>" sidebar
         And I add a New Event "<event>"
-        Then I choose to expand the Clinical Management section
-        And I choose to expand Cataract Surgical Management
+        Then I choose to expand the "<sectionName1>" section
+        Then I choose to expand the "<sectionName2>" section
         Then I click on Right Eye PCR Risk
         Then I click on Left Eye PCR Risk
 
@@ -1270,8 +1298,8 @@ Feature: Create New Examination Regression Tests
         Then I should see the reference Page
 
         Examples:
-        |page  |username|password|site1|site2|searchItem|specialty |event       |
-        |master|admin   |admin   |15   |5    |1009465   |cataract  | Examination|
+        |page  |username|password|site1|site2|searchItem|specialty |event       |sectionName1      |sectionName2              |
+        |master|admin   |admin   |15   |5    |1009465   |cataract  | Examination|clinicalManagement|cataractSurgicalManagement|
 
 
   @OE-5742 @sprint25
@@ -1288,24 +1316,16 @@ Feature: Create New Examination Regression Tests
     Then I search for hospital number "<searchItem>"
 
     Then I select Create or View Episodes and Events
-    Then I expand the Cataract sidebar
+    Then I expand the "<speciality>" sidebar
     And I add a New Event "<event>"
-    Then I choose to expand the Clinical Management section
-    And I choose to expand Cataract Surgical Management
+    Then I choose to expand the "<sectionName1>" section
+    Then I choose to expand the "<sectionName2>" section
 
     Then I click on Right Eye PCR Risk
 
     Then I click on Left Eye PCR Risk
 
     Examples:
-      |page|username|password|site1|site2|searchItem|event       |type|drug|dose|route|option|frequency|duration|comments|
-      |master|admin |admin   |15    |5    |1009465   |Examination|28  |280 |3   |1    |1     |4        |1       |TEST    |
+      |page  |username|password|site1|site2|searchItem|speciality|event      |sectionName1      |sectionName2              |
+      |master|admin   |admin   |15   |5    |1009465   |cataract  |Examination|clinicalManagement|cataractSurgicalManagement|
 
-
-  #//*[@id="ophCiExaminationPCRRiskLeftEye"]//*[contains(text(),'Calculation data derived from')]
-
-  #//*[@id="ophCiExaminationPCRRiskRightEye"]//*[contains(text(),'Calculation data derived from')]
-
-  #//*[contains(text(),'Right Eye - PCR Risk')]
-
-  #//*[contains(text(),'Left Eye - PCR Risk')]
