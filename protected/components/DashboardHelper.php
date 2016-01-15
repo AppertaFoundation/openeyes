@@ -84,21 +84,46 @@ class DashboardHelper {
                     continue;
                 }
             }
+            
+            if ( isset($item['module']) )
+            {
+                $module_name = $item['module'];
 
-            if (isset($item['api'])) {
-                $api = Yii::app()->moduleAPI->get($item['api']);
-                if (!$api) {
-                    throw new Exception("API not found");
+                $module = Yii::app()->moduleAPI->get($module_name);
+
+                if (!$module) {
+                    throw new Exception("$module_name not found");
                 }
-                $renders[] = $api->renderDashboard();
-            }
-            elseif (isset($item['demo'])) {
-                $renders[] = $item['demo'];
-            }
-            else {
-                throw new Exception("Invalid dashboard configuration, api definition required");
+
+                if( isset($item['actions']) && is_array($item['actions']) ) {
+                    $renders = $this->renderActions($module, $item['actions']);
+                }
+                else if( method_exists($module, 'renderDashboard') ) {
+                    $renders[] = $module->renderDashboard();
+                }
+                
+            } else if ( isset($item['title']) && isset($item['content']) ) {
+                $renders[] = $item;
             }
         }
+        return $renders;
+    }
+    
+    protected function renderActions($module, $actions)
+    {
+        $renders = array();
+        
+        foreach($actions as $method_name)
+        {
+            if( method_exists($module, $method_name) )
+            {
+                $renders[] = $module->$method_name();
+            } else
+            {
+                throw new Exception("$method_name method not found");
+            }
+        }
+        
         return $renders;
     }
 }
