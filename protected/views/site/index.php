@@ -60,8 +60,8 @@
 
         <div id="dashboard">
             <?php
-            $d = new DashboardHelper();
-            echo $d->render();
+                $dashboardHelper = new DashboardHelper();
+                echo $dashboardHelper->render();
             ?>
         </div>
     </div>
