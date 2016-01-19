@@ -1,0 +1,25 @@
+{
+  "Line1": {
+    "type": "string",
+    "required": true
+  },
+  "Line2": {
+    "type": "string"
+  },
+  "City": {
+    "type": "string"
+  },
+  "County": {
+    "type": "string"
+  },
+  "Postcode": {
+    "type": "string"
+  },
+  "Country": {
+    "type": "string"
+  },
+  "Type": {
+    "type": "choice",
+    "choices": ["HOME", "WORK"]
+  }
+}
