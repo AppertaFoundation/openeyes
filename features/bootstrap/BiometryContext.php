@@ -62,4 +62,92 @@ class BiometryContext extends PageObjectContext
         $biometry = $this->getPage('Biometry');
         $biometry->verifyEventIsAuto();
     }
+
+    /**
+     * @Then /^I select a auto generated biometry event$/
+     */
+    public function iSelectAutoBiometryEvent(){
+        /**
+         *
+         * @var Biometry $biometry
+         */
+        $biometry = $this->getPage('Biometry');
+        $biometry->selectAutoBiometryEvent();
+    }
+
+    /**
+     * @Then /^I select a auto generated biometry event with "([^"]*)"$/
+     */
+    public function iSelectAutoBiometryEventDateTime($dateTime){
+        /**
+         *
+         * @var Biometry $biometry
+         */
+        $biometry = $this->getPage('Biometry');
+        $biometry->selectAutoBiometryEventByDateTime($dateTime);
+    }
+
+    /**
+     * @Then /^I select the "([^"]*)" on event summary page$/
+     */
+    public function iSelectTabOnEventSummaryPage($eventTab){
+        /**
+         *
+         * @var Biometry $biometry
+         */
+        $biometry = $this->getPage('Biometry');
+        $biometry->selectTabOnEventSummaryPage($eventTab);
+    }
+
+    /**
+     * @Then /^I look for "([^"]*)" in the "([^"]*)" biometry event "([^"]*)"$/
+     */
+    public function iLookDataInBiometryPage($value,$eyeSide,$tabType){
+        /**
+         *
+         * @var Biometry $biometry
+         */
+        $biometry = $this->getPage('Biometry');
+        $biometry->lookDataInBiometryPage($value,$eyeSide,$tabType);
+    }
+
+
+    /**
+     * @Then /^I look for "([^"]*)" on event summary page$/
+     */
+
+    public function iLookForEventSummaryInfoAlert($infoAlert){
+        /**
+         *
+         * @var Biometry $biometry
+         */
+        $biometry = $this->getPage('Biometry');
+        $biometry->lookForEventSummaryInfoAlert($infoAlert);
+    }
+
+    /**
+     * @Then /^I check for "([^"]*)" in Lens dropdown for "([^"]*)"$/
+     */
+
+    public function iCheckLensDropDown($lensType,$eyeSide){
+        /**
+         *
+         * @var Biometry $biometry
+         */
+        $biometry = $this->getPage('Biometry');
+        $biometry->checkLensDropDown($lensType,$eyeSide);
+    }
+
+    /**
+     * @Then /^I check for "([^"]*)" in formula dropdown for "([^"]*)"$/
+     */
+
+    public function iCheckFormulaDropDown($formula,$eyeSide){
+        /**
+         *
+         * @var Biometry $biometry
+         */
+        $biometry = $this->getPage('Biometry');
+        $biometry->checkFormulaDropDown($formula,$eyeSide);
+    }
 }
