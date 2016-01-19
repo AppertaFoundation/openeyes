@@ -30,6 +30,18 @@ class Biometry extends OpenEyesPage
         ),
         'createdByIOLMasterDesc'=> array(
             'xpath'=> "//*[@class='row field-row']//*[contains(text(),'Created by IOL Master input')]"
+        ),
+        'biometryReport'=> array(
+            'xpath'=> "//*[@class='highlight booking']"
+        ),
+        'biometryContinue'=> array(
+            'xpath'=> "//*[@class='event-header']//*[contains(text(),'Continue')]"
+        ),
+        'eventHeader'=> array(
+            'xpath'=> "//*[@class='event-header']"
+        ),
+        'eventContent'=> array(
+            'xpath'=> "//*[@class='event-content']"
         )
     );
     public function saveBiometry()
@@ -76,6 +88,100 @@ class Biometry extends OpenEyesPage
         }
         else{
             print "Event not created from IOL Master!!";
+        }
+    }
+
+    public function selectAutoBiometryEvent(){
+        $this->waitForElementDisplayNone('biometryReport');
+        $this->getElement('biometryReport')->click();
+        $this->getElement('biometryContinue')->click();
+    }
+
+    public function selectAutoBiometryEventByDateTime($dateTime){
+        $this->waitForElementDisplayNone('biometryReport');
+        $this->elements['biometryReportByDateTime'] = array(
+            'xpath' => "//*[@class='element-fields']//*[contains(text(),'$dateTime')]"
+        );
+        $this->getElement('biometryReportByDateTime')->click();
+        $this->getElement('biometryContinue')->click();
+    }
+
+    public function selectTabOnEventSummaryPage($eventTab){
+        $this->waitForElementDisplayNone('eventHeader');
+        $this->elements['eventHeaderTab'] = array(
+            'xpath' => "//*[@class='event-header']//*[contains(text(),'$eventTab')]"
+        );
+        $this->getElement('eventHeaderTab')->click();
+    }
+
+    public function lookDataInBiometryPage($value,$eyeSide,$tabType){
+        $this->waitForElementDisplayNone('eventContent');
+        if($tabType=='Edit') {
+            $this->elements['eyeSideData'] = array(
+                'xpath' => "//*[@id='$eyeSide-eye-lens']//*[contains(text(),'$value')]"
+            );
+        }
+        elseif($tabType=='View'){
+            $this->elements['eyeSideData'] = array(
+                'xpath' => "//*[@class='element-eye $eyeSide-eye column']//*[contains(text(),'$value')]"
+            );
+        }
+        else{
+            throw new BehaviorException ( "WARNING!!! INVALID EYE SELECTION PROVIDED! TEST FAILED!!");
+        }
+
+        if($this->getElement('eyeSideData')->isVisible()){
+            print "Value Displayed Correctly!";
+        }
+        else{
+            throw new BehaviorException ( "WARNING!!! INVALID VALUE DISPLAYED! TEST FAILED!!");
+        }
+    }
+
+    public function lookForEventSummaryInfoAlert($infoAlert){
+        $this->waitForElementDisplayNone('eventContent');
+        $this->elements['eventPageInfoAlert'] = array(
+            'xpath' => "//*[@class='row']//*[contains(text(),'$infoAlert')]"
+        );
+        if($this->getElement('eventPageInfoAlert')->isVisible()){
+            print "Alert Displayed Correctly!";
+        }
+        else{
+            throw new BehaviorException ( "WARNING!!! INVALID ALERT DISPLAYED! TEST FAILED!!");
+        }
+    }
+
+    public function checkLensDropDown($lensType,$eyeSide){
+        $this->waitForElementDisplayNone('eventContent');
+        $this->elements['eyeTypeLensDropDown'] = array(
+            'xpath' => "//*[@id='Element_OphInBiometry_Selection_lens_id_$eyeSide']"
+        );
+        $this->getElement('eyeTypeLensDropDown')->click();
+        $this->elements['eyeTypeLensDropDownValue'] = array(
+            'xpath' => "//*[contains(text(),'$lensType')]"
+        );
+        if($this->getElement('eyeTypeLensDropDownValue')->isVisible()){
+            print "Lens Displayed correctly!";
+        }
+        else{
+            throw new BehaviorException ( "WARNING!!! LENS NOT DISPLAYED! TEST FAILED!!");
+        }
+    }
+
+    public function checkFormulaDropDown($formula,$eyeSide){
+        $this->waitForElementDisplayNone('eventContent');
+        $this->elements['eyeTypeFormulaDropDown'] = array(
+            'xpath' => "//*[@id='Element_OphInBiometry_Selection_formula_id_$eyeSide']"
+        );
+        $this->getElement('eyeTypeFormulaDropDown')->click();
+        $this->elements['eyeTypeFormulaDropDownValue'] = array(
+            'xpath' => "//*[contains(text(),'$formula')]"
+        );
+        if($this->getElement('eyeTypeFormulaDropDownValue')->isVisible()){
+            print "Formula Displayed correctly!";
+        }
+        else{
+            throw new BehaviorException ( "WARNING!!! FORMULA NOT DISPLAYED! TEST FAILED!!");
         }
     }
 
