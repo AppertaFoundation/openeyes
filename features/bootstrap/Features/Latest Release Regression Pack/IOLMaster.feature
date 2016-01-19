@@ -158,16 +158,14 @@ Feature: To Test the process of IOLMaster imports to Biometry event
      Then I check for "SRK/T" in formula dropdown for "<eyeside1>"
      Then I check for "SRK/T" in formula dropdown for "<eyeside2>"
 
-
-
     Examples:
       |mainPage|uname|pwd  |siteName/Number|firmName/Number         |page |tab   |subTab      |DICOMFile                                                                            |message                  |url                                                          |primaryTab|hospNum|biometryEventExists|speciality|eventDateTime|biometryTab1|biometryTab2|info-alert1|ALValue1|K1Value1|K2Value1|SNRValue1|DeltaK1|ACD1|K1Deg1|K2Deg1|DeltaKDeg1|eyeStatus1|ALValue2|K1Value2|K2Value2|SNRValue2|DeltaK2|ACD2|K1Deg2|K2Deg2|DeltaKDeg2|eyeStatus2|eyeSide1|eyeSide2|
       |master  |admin|admin|Barking        |Cataract firm (Cataract)|Admin|System|File Watcher|1.2.276.0.75.2.1.10.0.2.150909105354671.15295058.30971_0000_000001_14417922420056.dcm|File Copied Successfully!|http://iolmaster.openeyes.org.uk/TestHarness/DICOMFileWatcher|Home      |1009600|                   |cataract  |             |View        |Edit        |           |23.82   |42.45   |44.29   |276.2    |-1.84  |3.86|8     |98    |8         |Phakic    |24.00   |42.83   |44.12   |399.7    |-1.29  |3.91|172   |82    |172       |Phakic    |right   |left    |
 
 
 
-  @iolTest_1.2
-  Scenario Outline: Test Scenarios for base file format import
+ @iolTest_1.2
+  Scenario Outline: Test Scenarios for base file format import. Multi-Formula, Single-Lens Format
     Given I am on the OpenEyes "<mainPage>" homepage
     And I enter login credentials "<uname>" and "<pwd>"
 #And I close the site and firm selection popup
@@ -210,15 +208,18 @@ Feature: To Test the process of IOLMaster imports to Biometry event
     Then I look for "<K2Deg>" in the "<eyeSide>" biometry event "<biometryTab2>"
     Then I look for "<DeltaKDeg>" in the "<eyeSide>" biometry event "<biometryTab2>"
     Then I look for "<eyeStatus>" in the "<eyeSide>" biometry event "<biometryTab2>"
-    Then I check for "<lensType>" in Lens dropdown for "<eyeside1>"
+    Then I check for "<lensType1>" in Lens dropdown for "<eyeside1>"
+    Then I check for "<lensType2>" in Lens dropdown for "<eyeside2>"
     Then I check for "<formula>" in formula dropdown for "<eyeside1>"
-
+    Then I check for "<formula1>" in formula dropdown for "<eyeside1>"
+    Then I check for "<formula2>" in formula dropdown for "<eyeside1>"
+    Then I check for "<formula3>" in formula dropdown for "<eyeside2>"
+    Then I check for "<formula4>" in formula dropdown for "<eyeside2>"
 
 
     Examples:
       |mainPage|uname|pwd  |siteName/Number|firmName/Number         |page |tab   |subTab      |DICOMFile                                                                            |message                  |url                                                          |primaryTab|hospNum|biometryEventExists|speciality|eventDateTime|biometryTab|ALValue|K1Value|K2Value|eyeSide|
-      |master  |admin|admin|Barking        |Cataract firm (Cataract)|Admin|System|File Watcher|1.2.276.0.75.2.1.10.0.2.150909105354671.15295058.30971_0000_000001_14417922420056.dcm|File Copied Successfully!|http://iolmaster.openeyes.org.uk/TestHarness/DICOMFileWatcher|Home      |       |                   |          |             |           |       |       |       |       |
-
+      |master  |admin|admin|Barking        |Cataract firm (Cataract)|Admin|System|File Watcher|1.2.276.0.75.2.1.10.0.2.150909
 
   @iolTest_1.3
   Scenario Outline: Test Scenarios for base file format import
