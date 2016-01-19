@@ -150,4 +150,43 @@ class BiometryContext extends PageObjectContext
         $biometry = $this->getPage('Biometry');
         $biometry->checkFormulaDropDown($formula,$eyeSide);
     }
+
+    /**
+     * @Then /^I should see measurements not recorded for "([^"]*)" in "([^"]*)"$/
+     */
+
+    public function iSeeMeasurementsNotRecorded($eyeSide,$tabType){
+        /**
+         *
+         * @var Biometry $biometry
+         */
+        $biometry = $this->getPage('Biometry');
+        $biometry->checkMeasurementsNotRecorded($eyeSide,$tabType);
+    }
+
+    /**
+     * @Then /^I should see no lens recorded for "([^"]*)"$/
+     */
+
+    public function iSeeLensNotRecorded($eyeSide){
+        /**
+         *
+         * @var Biometry $biometry
+         */
+        $biometry = $this->getPage('Biometry');
+        $biometry->checkLensNotRecorded($eyeSide);
+    }
+
+    /**
+     * @Then /^I should see no formula recorded for "([^"]*)"$/
+     */
+
+    public function iSeeFormulaNotRecorded($eyeSide){
+        /**
+         *
+         * @var Biometry $biometry
+         */
+        $biometry = $this->getPage('Biometry');
+        $biometry->checkFormulaNotRecorded($eyeSide);
+    }
 }
