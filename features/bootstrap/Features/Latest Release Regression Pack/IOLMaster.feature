@@ -538,7 +538,7 @@ Feature: To Test the process of IOLMaster imports to Biometry event
       |master  |admin|admin|Barking        |Cataract firm (Cataract)|Admin|System|File Watcher|1.2.276.0.75.2.1.10.0.2.150909105354671.15295058.30971_0000_000001_14417922420056.dcm|File Copied Successfully!|http://iolmaster.openeyes.org.uk/TestHarness/DICOMFileWatcher|Home      |       |                   |          |             |           |       |       |       |       |
 
 
- @iolTest_1.9
+@iolTest_1.9
   Scenario Outline: Test Scenarios for base file format import, with no lens or formula, checks for the warning
     Given I am on the OpenEyes "<mainPage>" homepage
     And I enter login credentials "<uname>" and "<pwd>"
@@ -615,7 +615,7 @@ Feature: To Test the process of IOLMaster imports to Biometry event
 
     Examples:
       |mainPage|uname|pwd  |siteName/Number|firmName/Number         |page |tab   |subTab      |DICOMFile                                                                            |message                  |url                                                          |primaryTab|hospNum|biometryEventExists|speciality|eventDateTime|biometryTab1|biometryTab2|info-alert1                              |lensWarning1                                                                            |ALValue1|K1Value1|K2Value1|SNRValue1|DeltaK1|ACD1|K1Deg1|K2Deg1|DeltaKDeg1|eyeStatus1|ALValue2|K1Value2|K2Value2|SNRValue2|DeltaK2|ACD2|K1Deg2|K2Deg2|DeltaKDeg2|eyeStatus2|eyeSide1|eyeSide2|
-      |master  |admin|admin|Barking        |Cataract firm (Cataract)|Admin|System|File Watcher|1.2.276.0.75.2.1.10.0.2.150909105354671.15295058.30971_0000_000001_14417921130053.dcm|File Copied Successfully!|http://iolmaster.openeyes.org.uk/TestHarness/DICOMFileWatcher|Home      |1009600|                   |cataract  |             |View        |Edit        |The event has been added to this episode.|No lens options were received from device - Please calculate lenses on device and resend|23.82   |42.45   |44.29   |276.2    |-1.84  |3.86|8     |98    |8         |Phakic    |24.00   |42.83   |44.12   |399.7    |-1.29  |3.91|172   |82    |172       |Phakic    |right   |left    |
+      |master  |admin|admin|Barking        |Cataract firm (Cataract)|Admin|System|File Watcher|1.2.276.0.75.2.1.10.0.2.150609120420625.15295058.21701_0000_000001_143385387600c5.dcm|File Copied Successfully!|http://iolmaster.openeyes.org.uk/TestHarness/DICOMFileWatcher|Home      |1007918|                   |cataract  |             |View        |Edit        |The event has been added to this episode.|No lens options were received from device - Please calculate lenses on device and resend|28.70   |43.66   |44.35   |355.6    |-0.69  |3.00|      |      |          |Unknown   |29.44   |43.72   |44.35   |178.9    |-0.63  |3.19|      |      |          |Unknown    |right   |left    |
 
 
   @iolTest_1.10
