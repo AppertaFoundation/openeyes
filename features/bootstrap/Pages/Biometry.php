@@ -185,4 +185,67 @@ class Biometry extends OpenEyesPage
         }
     }
 
+    public function checkMeasurementsNotRecorded($eyeSide,$tabType){
+        $this->waitForElementDisplayNone('eventContent');
+        if($tabType=='View') {
+            $this->elements['measurementNotRecorded'] = array(
+                'xpath' => "//*[@class='element Element_OphInBiometry_Measurement']//*[@class='element-eye $eyeSide-eye column']//*[contains(text(),'Not recorded')]"
+            );
+        }
+        elseif($tabType=='Edit'){
+            if($eyeSide=='right') {
+                $this->elements['measurementNotRecorded'] = array(
+                    'xpath' => "//*[@id='right-eye-lens']//*[contains(text(),'Add Right side')]"
+                );
+            }
+            elseif($eyeSide=='left') {
+                $this->elements['measurementNotRecorded'] = array(
+                    'xpath' => "//*[@id='left-eye-lens']//*[contains(text(),'Add left side')]"
+                );
+            }
+                else{
+                    throw new BehaviorException ( "WARNING!!! INVALID EYE PROVIDED! TEST FAILED!!");
+                }
+            }
+        else{
+            throw new BehaviorException ( "WARNING!!! INVALID TAB VIEW SELECTED! TEST FAILED!!");
+        }
+
+        if($this->getElement('measurementNotRecorded')->isVisible()){
+            print "Measurement data not recorded! Test Step Passed!";
+        }
+        else{
+            throw new BehaviorException ( "WARNING!!! MEASUREMENT IS DISPLAYED ! TEST FAILED!!");
+        }
+
+    }
+
+    public function checkLensNotRecorded($eyeSide){
+        $this->waitForElementDisplayNone('eventContent');
+        $this->elements['lensNotRecorded'] = array(
+            'xpath' => "//*[@id='$eyeSide-eye-selection']//*[contains(text(),'Set $eyeSide side lens type')]"
+        );
+
+        if($this->getElement('lensNotRecorded')->isVisible()){
+            print "Lens data not recorded! Test Step Passed!";
+        }
+        else{
+            throw new BehaviorException ( "WARNING!!! LENS IS DISPLAYED ! TEST FAILED!!");
+        }
+    }
+
+    public function checkFormulaNotRecorded($eyeSide){
+        $this->waitForElementDisplayNone('eventContent');
+        $this->elements['formulaNotRecorded'] = array(
+            'xpath' => "//*[@data-element-type-class='Element_OphInBiometry_Calculation']//*[contains(text(),'Set $eyeSide side lens type')]"
+        );
+
+        if($this->getElement('formulaNotRecorded')->isVisible()){
+            print "Formula data not recorded! Test Step Passed!";
+        }
+        else{
+            throw new BehaviorException ( "WARNING!!! FORMULA IS DISPLAYED ! TEST FAILED!!");
+        }
+    }
+
 }
