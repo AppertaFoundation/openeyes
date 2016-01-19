@@ -18,7 +18,10 @@ Feature: Ticket related and Regression tests for biometry
      Examples:
      |uname|pwd  |siteName/Number|firmName/Number         |hospitalNumber|speciality|event|
      |admin|admin|Barking        |Cataract firm (Cataract)|1009465       |cataract|Biometry|
-
+     |admin|admin|Barking        |Cataract firm (Cataract)|9999992       |cataract|Biometry|
+     |admin|admin|Barking        |Cataract firm (Cataract)|9999997       |cataract|Biometry|
+     |admin|admin|Barking        |Cataract firm (Cataract)|9999991       |cataract|Biometry|
+     |admin|admin|Barking        |Cataract firm (Cataract)|9999998       |cataract|Biometry|
 
 
    @OE-5791 @sprint25 @BIO
@@ -108,10 +111,13 @@ Feature: Ticket related and Regression tests for biometry
       Then I add a New Event "<event>"
       Then I select a auto generated biometry event with "<eventDateTime>"
     Then I click on continue
-    Then I should see "<alert>" on biometry event page
+    Then I should see "<alert>" on biometry "<viewType>" page
     Then I select <"biometryTab">
 
+
     Examples:
+      |uname|pwd  |siteName/Number|firmName/Number       |hospitalNumber|speciality|event   |
+      |admin|admin|Barking        |Buddhi Wang (Cataract)|1009465       |cataract  |Biometry|
 
 
 
