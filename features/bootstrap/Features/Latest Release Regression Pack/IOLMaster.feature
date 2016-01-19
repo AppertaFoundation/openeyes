@@ -79,3 +79,55 @@ Feature: To Test the process of IOLMaster imports to Biometry event
        |master  |admin|admin|Barking        |Cataract firm (Cataract)|Admin|System|Log Viewer|1.2.276.0.75.2.1.10.0.2.150909105354671.15295058.30971_0000_000001_14417922420056.dcm|new          |runFileWatcher.php|         |        |             |      |    |               |        |        |         |       |    |     |               |          |           |              |         |       |          |          |      |      |          |              |       |               |       |           |           |       |       |           |               |        |                |        |
 
 
+   @iolTest_1.1
+   Scenario Outline: Test Scenarios for base file format import
+    Given I am on the OpenEyes "<mainPage>" homepage
+    And I enter login credentials "<uname>" and "<pwd>"
+    #And I close the site and firm selection popup
+    And I select Site "<siteName/Number>"
+    Then I select a firm of "<firmName/Number>"
+    Then I open url "<url>"
+    Then I choose the "<DICOMFile>" from DICOM file list
+    Then I click on submit
+    Then I should see "<message>" on the DICOM File Watcher page
+     Then I click on "<primaryTab>" in primary selection tab
+     Then I search for hospital number "<hospNum>"
+     #Then I look for the "<biometryEventExists>" alert on the patient summary page
+     Then I select Create or View Episodes and Events
+     Then I click to expand the "<speciality>" sidebar
+     Then I add a New Event "Biometry"
+     Then I select a auto generated biometry event
+     #Then I select a auto generated biometry event with "<eventDateTime>"
+     Then I select the "<biometryTab1>" on event summary page
+     Then I look for "<info-alert1>" on event summary page
+     ##Look for the values in View Mode
+     Then I look for "<ALValue>" in the "<eyeSide1>" biometry event "<biometryTab1>"
+     Then I look for "<K1Value>" in the "<eyeSide1>" biometry event "<biometryTab1>"
+     Then I look for "<K2Value>" in the "<eyeSide>" biometry event "<biometryTab1>"
+     Then I look for "<SNRValue>" in the "<eyeSide>" biometry event "<biometryTab1>"
+     Then I look for "<DeltaK>" in the "<eyeSide>" biometry event "<biometryTab1>"
+     Then I look for "<ACD>" in the "<eyeSide>" biometry event "<biometryTab1>"
+     Then I look for "<K1Deg>" in the "<eyeSide>" biometry event "<biometryTab1>"
+     Then I look for "<K2Deg>" in the "<eyeSide>" biometry event "<biometryTab1>"
+     Then I look for "<DeltaKDeg>" in the "<eyeSide>" biometry event "<biometryTab1>"
+     Then I look for "<eyeStatus>" in the "<eyeSide>" biometry event "<biometryTab1>"
+     Then I select the "<biometryTab2>" on event summary page
+     ##Look for the values in Edit mode
+     Then I look for "<ALValue>" in the "<eyeSide1>" biometry event "<biometryTab2>"
+     Then I look for "<K1Value>" in the "<eyeSide1>" biometry event "<biometryTab2>"
+     Then I look for "<K2Value>" in the "<eyeSide>" biometry event "<biometryTab2>"
+     Then I look for "<SNRValue>" in the "<eyeSide>" biometry event "<biometryTab2>"
+     Then I look for "<DeltaK>" in the "<eyeSide>" biometry event "<biometryTab2>"
+     Then I look for "<ACD>" in the "<eyeSide>" biometry event "<biometryTab2>"
+     Then I look for "<K1Deg>" in the "<eyeSide>" biometry event "<biometryTab2>"
+     Then I look for "<K2Deg>" in the "<eyeSide>" biometry event "<biometryTab2>"
+     Then I look for "<DeltaKDeg>" in the "<eyeSide>" biometry event "<biometryTab2>"
+     Then I look for "<eyeStatus>" in the "<eyeSide>" biometry event "<biometryTab2>"
+     Then I check for "<lensType>" in Lens dropdown for "<eyeside1>"
+     Then I check for "<formula>" in formula dropdown for "<eyeside1>"
+
+
+
+    Examples:
+      |mainPage|uname|pwd  |siteName/Number|firmName/Number         |page |tab   |subTab      |DICOMFile                                                                            |message                  |url                                                          |primaryTab|hospNum|biometryEventExists|speciality|eventDateTime|biometryTab|ALValue|K1Value|K2Value|eyeSide|
+      |master  |admin|admin|Barking        |Cataract firm (Cataract)|Admin|System|File Watcher|1.2.276.0.75.2.1.10.0.2.150909105354671.15295058.30971_0000_000001_14417922420056.dcm|File Copied Successfully!|http://iolmaster.openeyes.org.uk/TestHarness/DICOMFileWatcher|Home      |       |                   |          |             |           |       |       |       |       |
