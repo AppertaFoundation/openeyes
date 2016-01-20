@@ -16,11 +16,19 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+use \UserIdentity;
+
 class v1Controller extends \CController
 {
 
     static protected $resources = array('Patient');
     static protected $version = "v1";
+    static protected $supported_formats = array('xml');
+
+    /**
+     * @var string output format defaults to xml
+     */
+    protected $output_format = 'xml';
 
     /**
      * This overrides the default behaviour for supported resources by pushing the resource
@@ -49,6 +57,46 @@ class v1Controller extends \CController
 
         return parent::createAction($actionID);
     }
+
+    /**
+     *
+     * @TODO: resolve output text to XML for warnings etc
+     * @param \CAction $action
+     * @return bool
+     */
+    public function beforeAction($action)
+    {
+        foreach (\Yii::app()->request->preferredAcceptTypes as $type) {
+            if ($type['baseType'] == 'xml' || $type['subType'] == 'xml' || $type['subType'] == '*') {
+                $this->output_format = 'xml';
+                break;
+            }
+            else {
+                $this->output_format = $type['baseType'];
+            }
+        }
+
+        if (!in_array($this->output_format, static::$supported_formats)) {
+            $this->sendResponse(406, 'PASAPI only supports ' . implode(",",  $this->supported_formats));
+        }
+
+        if (!isset($_SERVER['PHP_AUTH_USER'])) {
+            $this->sendResponse(401);
+        }
+        $identity = new UserIdentity($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']);
+        if (!$identity->authenticate()) {
+            $this->sendResponse(401);
+        }
+
+        \Yii::app()->user->login($identity);
+
+        if (!\Yii::app()->user->checkAccess('OprnApi')) {
+            $this->sendResponse(403);
+        }
+
+        return parent::beforeAction($action);
+    }
+
 
     public function actionUpdate($resource_type, $id)
     {
