@@ -114,7 +114,7 @@ Feature: To Test the process of IOLMaster imports to Biometry event
      Then I look for "<eyeStatus1>" in the "<eyeSide1>" biometry event "<biometryTab1>"
      ##Left Eye Values
      Then I look for "<ALValue2>" in the "<eyeSide2>" biometry event "<biometryTab1>"
-     Then I look for "<K1Value2>" in the "<eyeSide1>" biometry event "<biometryTab1>"
+     Then I look for "<K1Value2>" in the "<eyeSide2>" biometry event "<biometryTab1>"
      Then I look for "<K2Value2>" in the "<eyeSide2>" biometry event "<biometryTab1>"
      Then I look for "<SNRValue2>" in the "<eyeSide2>" biometry event "<biometryTab1>"
      Then I look for "<DeltaK2>" in the "<eyeSide2>" biometry event "<biometryTab1>"
@@ -138,7 +138,7 @@ Feature: To Test the process of IOLMaster imports to Biometry event
      Then I look for "<eyeStatus1>" in the "<eyeSide1>" biometry event "<biometryTab2>"
      ##Left Eye Values
      Then I look for "<ALValue2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
-     Then I look for "<K1Value2>" in the "<eyeSide1>" biometry event "<biometryTab2>"
+     Then I look for "<K1Value2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
      Then I look for "<K2Value2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
      Then I look for "<SNRValue2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
      Then I look for "<DeltaK2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
