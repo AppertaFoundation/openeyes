@@ -53,6 +53,8 @@ class Patient extends BaseResource
 
             if ($transaction)
                 $transaction->commit();
+
+            return $model->id;
         }
         catch (\Exception $e) {
             if ($transaction)

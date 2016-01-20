@@ -60,7 +60,6 @@ class v1Controller extends \CController
 
     /**
      *
-     * @TODO: resolve output text to XML for warnings etc
      * @param \CAction $action
      * @return bool
      */
@@ -97,11 +96,14 @@ class v1Controller extends \CController
         return parent::beforeAction($action);
     }
 
-
+    /**
+     * @param $resource_type
+     * @param $id
+     */
     public function actionUpdate($resource_type, $id)
     {
         if (!in_array($resource_type, static::$resources))
-            $this->sendResponse(404, "Unrecognised Resource type {$resource_type}");
+            $this->sendErrorResponse(404, "Unrecognised Resource type {$resource_type}");
 
         if (!$id)
             $this->sendResponse(404, "External Resource ID required");
@@ -114,30 +116,53 @@ class v1Controller extends \CController
 
         $resource->id = $id;
         try {
-            $resource->save();
+            $internal_id = $resource->save();
+            $response = array(
+                'Id' => $internal_id
+            );
 
             if ($resource->isNewResource) {
                 $status_code = 201;
-                $message = $resource_type . " created.";
+                $response['Message'] = $resource_type . " created.";
             }
             else {
                 $status_code = 200;
-                $message = $resource_type . " updated.";
+                $response['Message'] = $resource_type . " updated.";
             }
 
             if ($resource->warnings) {
-                $message .= "\nWARNINGS:\n" . implode("\n", $resource->warnings);
+                $response['Warnings'] = $resource->warnings;
             }
 
-            $this->sendResponse($status_code, $message);
+            $this->sendSuccessResponse($status_code, $response);
         }
         catch (\Exception $e)
         {
-            $this->sendResponse(500, YII_DEBUG ? $e->getMessage() : "Could not save resource");
+            $errors = array(YII_DEBUG ? $e->getMessage() : "Could not save resource");
+            $this->sendErrorResponse(500, $errors);
         }
 
 
 
+    }
+
+    protected function sendErrorResponse($status, $messages = array())
+    {
+        $body = "<Errors><Error>"  . implode("</Error><Error>", $messages) . "</Error></Errors>";
+
+        $this->sendResponse($status, $body);
+    }
+
+    protected function sendSuccessResponse($status, $response)
+    {
+        $body = "<Success><Id>{$response['Id']}</Id><Message>{$response['Message']}</Message>";
+
+        if (isset($response['Warnings']))
+            $body .= "<Warnings><Warning>" . implode('</Warning><Warning>', $response['Warnings']) . "</Warning></Warnings>";
+
+        $body .= "</Success>";
+
+        $this->sendResponse($status, $body);
     }
 
     protected function sendResponse($status = 200, $body = '')
