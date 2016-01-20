@@ -30,7 +30,7 @@ class AdminPage extends OpenEyesPage
         ),
         'dicomLogViewerPage1'=> array('xpath' => "//*[@class='admin box']//*[contains(text(),'')]"
         ),
-        'dicomFileList'=> array('xpath' => "//*[@class='grid audit-logs']"
+        'dicomFileList'=> array('xpath' => "//*[@name='dicomfiles']"
         ),
         'dicomFileSubmit'=> array('xpath' => "//*[@name='move_dicom_file']"
         ),
