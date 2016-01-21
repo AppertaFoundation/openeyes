@@ -81,5 +81,4 @@ class PASAPI_Test extends RestTestCase
         $this->put('Patient/XYZ', '<Patient />');
     }
 
-
 }

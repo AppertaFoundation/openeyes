@@ -114,6 +114,10 @@ class v1Controller extends \CController
 
         $resource = $resource_model::fromXml(static::$version, $body);
 
+        if ($resource->errors) {
+            $this->sendErrorResponse(400, $resource->errors);
+        }
+
         $resource->id = $id;
         try {
             $internal_id = $resource->save();

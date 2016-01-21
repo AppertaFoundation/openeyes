@@ -22,7 +22,7 @@ class Patient extends BaseResource
 {
 
     static protected $resource_type = 'Patient';
-    public $warnings = array();
+
     public $isNewResource;
 
     /**
@@ -120,7 +120,7 @@ class Patient extends BaseResource
         $eg = null;
         if ($this->EthnicGroup) {
             if (!$eg = \EthnicGroup::model()->findByAttributes(array('code' => $this->EthnicGroup)))
-                $this->warnings[] = "Unrecognised ethnic group code " . $this->EthnicGroup;
+                $this->addWarning("Unrecognised ethnic group code " . $this->EthnicGroup);
         }
         $patient->ethnic_group_id = $eg ? $eg->id : null;
     }
@@ -131,7 +131,7 @@ class Patient extends BaseResource
         if ($this->GpCode) {
             $gp = \GP::model()->findByAttributes(array('nat_id' => $this->GpCode));
             if (!$gp)
-                $this->warnings[] = "Could not find GP for code " . $this->GpCode;
+                $this->addWarning("Could not find GP for code " . $this->GpCode);
         }
         $patient->gp_id = $gp ? $gp->id : null;
     }
@@ -142,7 +142,7 @@ class Patient extends BaseResource
         if ($this->PracticeCode) {
             $practice = \Practice::model()->findByAttributes(array('code' => $this->PracticeCode));
             if (!$practice)
-                $this->warnings[] = "Could not find Practice for code " . $this->PracticeCode;
+                $this->addWarning("Could not find Practice for code " . $this->PracticeCode);
         }
         $patient->practice_id = $practice ? $practice->id : null;
     }
@@ -162,7 +162,7 @@ class Patient extends BaseResource
     {
         $matched_address_ids = array();
         if (property_exists($this,"AddressList")) {
-            foreach ($this->AddressList as $address_resource) {
+            foreach ($this->AddressList as $idx => $address_resource) {
                 $matched_clause = ($matched_address_ids) ? ' AND id NOT IN ('.implode(',',$matched_address_ids).')' : '';
                 $address_model = \Address::model()->find(array(
                     'condition' => "contact_id = :contact_id AND REPLACE(postcode,' ','') = :postcode" . $matched_clause,
@@ -174,8 +174,17 @@ class Patient extends BaseResource
                     $address_model->contact_id = $contact->id;
                 }
 
-                $address_resource->saveModel($address_model);
-                $matched_address_ids[] = $address_model->id;
+                if ($address_resource->saveModel($address_model)) {
+                    $matched_address_ids[] = $address_model->id;
+                    foreach ($address_resource->warnings as $warn)
+                        $this->addWarning("Address {$idx}: {$warn}");
+                }
+                else {
+                    $this->addWarning("Address {$idx} not added");
+                    foreach($address_resource->errors as $err)
+                        $this->addWarning("Address {$idx}: {$err}");
+                }
+
             }
         }
 

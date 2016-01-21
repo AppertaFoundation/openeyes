@@ -21,11 +21,28 @@ abstract class BaseResource
 
     static protected $resource_type;
 
+    public $warnings = array();
+    public $errors = array();
+
     static protected function getSchema($version)
     {
         $type = static::$resource_type;
 
         return json_decode(file_get_contents(implode(DIRECTORY_SEPARATOR, array(__DIR__, "..", "components", "schemas", $version, "{$type}.json"))), true);
+    }
+
+    /**
+     * @param $errors array
+     * @return static
+     */
+    static protected function errorInit($errors)
+    {
+        $obj = new static();
+        \OELog::log(var_dump($errors));
+        foreach ($errors as $error)
+            $obj->addError($error);
+
+        return $obj;
     }
 
     /**
@@ -37,11 +54,20 @@ abstract class BaseResource
     static public function fromXml($version, $xml)
     {
         $doc = new \DOMDocument();
-        \OELog::log($xml);
-        if (!$doc->loadXML($xml)) return null;
+
+        if (!$xml) return static::errorInit(array("Missing Resource Body"));
+        libxml_use_internal_errors(true);
+        if (!$doc->loadXML($xml)) {
+            $errors = array();
+            foreach (libxml_get_errors() as $err) {
+                $errors[] = $err->message;
+            }
+            $obj = static::errorInit($errors);
+            libxml_clear_errors();
+            return $obj;
+        }
 
         return static::fromXmlDom($version, $doc->documentElement);
-
     }
 
     static public function fromXmlDom($version, $element)
@@ -95,4 +121,15 @@ abstract class BaseResource
             }
         }
     }
+
+    protected function addError($msg)
+    {
+        $this->errors[] = $msg;
+    }
+
+    protected function addWarning($msg)
+    {
+        $this->warnings[] = $msg;
+    }
+
 }
