@@ -31,6 +31,16 @@ class v1Controller extends \CController
     protected $output_format = 'xml';
 
     /**
+     * @TODO: map from output_format when we support multiple.
+     *
+     * @return string
+     */
+    protected function getContentType()
+    {
+        return "application/xml";
+    }
+
+    /**
      * This overrides the default behaviour for supported resources by pushing the resource
      * into the GET parameter and updating the actionID
      *
@@ -76,7 +86,7 @@ class v1Controller extends \CController
         }
 
         if (!in_array($this->output_format, static::$supported_formats)) {
-            $this->sendResponse(406, 'PASAPI only supports ' . implode(",",  $this->supported_formats));
+            $this->sendResponse(406, 'PASAPI only supports ' . implode(",",  static::$supported_formats));
         }
 
         if (!isset($_SERVER['PHP_AUTH_USER'])) {
@@ -172,6 +182,7 @@ class v1Controller extends \CController
     protected function sendResponse($status = 200, $body = '')
     {
         header('HTTP/1.1 ' . $status);
+        header('Content-type: ' . $this->getContentType());
         if ($status == 401) header('WWW-Authenticate: Basic realm="OpenEyes"');
         // TODO: configure allowed methods per resource
         if ($status == 405) header('Allow: PUT');

@@ -24,6 +24,12 @@ abstract class BaseResource
     public $warnings = array();
     public $errors = array();
 
+    /**
+     * Get the schema for the resource type based on the given version
+     *
+     * @param $version
+     * @return mixed
+     */
     static protected function getSchema($version)
     {
         $type = static::$resource_type;
@@ -70,7 +76,15 @@ abstract class BaseResource
         return static::fromXmlDom($version, $doc->documentElement);
     }
 
-    static public function fromXmlDom($version, $element)
+    /**
+     * instantiates a resource with the given XML Document
+     *
+     * @param $version
+     * @param $element \DOMElement
+     * @return static
+     * @throws \Exception
+     */
+    static public function fromXmlDom($version, \DOMElement $element)
     {
         if ($element->tagName != static::$resource_type) {
             throw new \Exception("Mismatched root tag {$element->tagName} for resource type " . static::$resource_type);
@@ -122,11 +136,21 @@ abstract class BaseResource
         }
     }
 
+    /**
+     * Error logger
+     *
+     * @param $msg
+     */
     protected function addError($msg)
     {
         $this->errors[] = $msg;
     }
 
+    /**
+     * Warning logger
+     *
+     * @param $msg
+     */
     protected function addWarning($msg)
     {
         $this->warnings[] = $msg;

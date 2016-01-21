@@ -81,4 +81,19 @@ class PASAPI_Test extends RestTestCase
         $this->put('Patient/XYZ', '<Patient />');
     }
 
+    /**
+     * Get accepts error for wrong format type
+     */
+    public function testErrorForJsonAccept() {
+        $this->initialiseClient(array(
+            Client::REQUEST_OPTIONS => array(
+                'auth' => array('level1', 'password'),
+                'headers' => array(
+                    'Accept' => 'application/json',
+                ),
+            )
+        ));
+        $this->setExpectedHttpError(406);
+        $this->put('Patient/XYZ', '<Patient />');
+    }
 }
