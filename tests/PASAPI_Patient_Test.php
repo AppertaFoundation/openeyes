@@ -102,6 +102,39 @@ class PASAPI_Patient_Test extends RestTestCase
         $this->put('TEST01', '<Patient>');
     }
 
+    public function testMismatchedRootTag()
+    {
+        $this->setExpectedHttpError(400);
+        $this->put('BADTAG', '<OEPatient />');
+    }
+
+    public function testPatientResourceValidation()
+    {
+        $xml = <<<EOF
+<Patient>
+    <HospitalNumber>92312423</HospitalNumber>
+</Patient>
+EOF;
+        $this->setExpectedHttpError(400);
+        $this->put('TESTVALIDATION', $xml);
+        $this->assertXPathFound("/Failure");
+    }
+
+    public function testPatientModelValidation()
+    {
+        $xml = <<<EOF
+<Patient>
+    <HospitalNumber>92312423123123123231231232142342453453453656546456456</HospitalNumber>
+    <FirstName>Test</FirstName>
+    <Surname>API</Surname>
+    <DateOfBirth>1978-03-01</DateOfBirth>
+</Patient>
+EOF;
+        $this->setExpectedHttpError(400);
+        $this->put('TESTMODELVALIDATION', $xml);
+        $this->assertXPathFound("/Failure");
+    }
+
     /**
      * @TODO: clean this up into separate file and test in more detail (and fix GP references etc)
      */
@@ -109,33 +142,33 @@ class PASAPI_Patient_Test extends RestTestCase
     {
         $xml = <<<EOF
 <Patient>
-        <NHSNumber>0123456789</NHSNumber>
-        <HospitalNumber>92312423</HospitalNumber>
-        <Title>MRS</Title>
-        <FirstName>Test</FirstName>
-        <Surname>API</Surname>
-        <DateOfBirth>1978-03-01</DateOfBirth>
-        <Gender>F</Gender>
-        <AddressList>
-            <Address>
-                <Line1>82 Scarisbrick Lane</Line1>
-                <Line2/>
-                <City>Bethersden</City>
-                <County>West Yorkshire</County>
-                <Postcode>QA88 2GC</Postcode>
-                <Country>GB</Country>
-                <Type>HOME</Type>
-            </Address>
-        </AddressList>
-        <TelephoneNumber>03040 6024378</TelephoneNumber>
-        <EthnicGroup>A</EthnicGroup>
-        <DateOfDeath/>
-        <PracticeCode>F001</PracticeCode>
-        <GpCode>G0102926</GpCode>
-    </Patient>
+    <NHSNumber>0123456789</NHSNumber>
+    <HospitalNumber>92312423</HospitalNumber>
+    <Title>MRS</Title>
+    <FirstName>Test</FirstName>
+    <Surname>API</Surname>
+    <DateOfBirth>1978-03-01</DateOfBirth>
+    <Gender>F</Gender>
+    <AddressList>
+        <Address>
+            <Line1>82 Scarisbrick Lane</Line1>
+            <Line2/>
+            <City>Bethersden</City>
+            <County>West Yorkshire</County>
+            <Postcode>QA88 2GC</Postcode>
+            <Country>GB</Country>
+            <Type>HOME</Type>
+        </Address>
+    </AddressList>
+    <TelephoneNumber>03040 6024378</TelephoneNumber>
+    <EthnicGroup>A</EthnicGroup>
+    <DateOfDeath/>
+    <PracticeCode>F001</PracticeCode>
+    <GpCode>G0102926</GpCode>
+</Patient>
 EOF;
         $this->put('TEST02', $xml);
-        
+
         $id = $this->xPathQuery("/Success//Id")->item(0)->nodeValue;
 
         $patient = Patient::model()->findByPk($id);

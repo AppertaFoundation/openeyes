@@ -23,6 +23,20 @@ abstract class BaseResource
 
     public $warnings = array();
     public $errors = array();
+    protected $version;
+    protected $schema;
+
+    public function __construct($version)
+    {
+        if (!$version) {
+            throw new \Exception("Schema version required to create resource");
+        }
+        $this->version = $version;
+        $this->schema = static::getSchema($version);
+
+        if (!$this->schema)
+            throw new \Exception("Schema not found for resource " . static::$resource_type);
+    }
 
     /**
      * Get the schema for the resource type based on the given version
@@ -38,13 +52,15 @@ abstract class BaseResource
     }
 
     /**
+     * Convenience function to create a resource instance with error messages
+     *
      * @param $errors array
      * @return static
      */
-    static protected function errorInit($errors)
+    static protected function errorInit($version, $errors)
     {
-        $obj = new static();
-        \OELog::log(var_dump($errors));
+        $obj = new static($version);
+
         foreach ($errors as $error)
             $obj->addError($error);
 
@@ -61,14 +77,14 @@ abstract class BaseResource
     {
         $doc = new \DOMDocument();
 
-        if (!$xml) return static::errorInit(array("Missing Resource Body"));
+        if (!$xml) return static::errorInit($version, array("Missing Resource Body"));
         libxml_use_internal_errors(true);
         if (!$doc->loadXML($xml)) {
             $errors = array();
             foreach (libxml_get_errors() as $err) {
                 $errors[] = $err->message;
             }
-            $obj = static::errorInit($errors);
+            $obj = static::errorInit($version, $errors);
             libxml_clear_errors();
             return $obj;
         }
@@ -87,22 +103,19 @@ abstract class BaseResource
     static public function fromXmlDom($version, \DOMElement $element)
     {
         if ($element->tagName != static::$resource_type) {
-            throw new \Exception("Mismatched root tag {$element->tagName} for resource type " . static::$resource_type);
+            return static::errorInit($version, array("Mismatched root tag {$element->tagName} for resource type " . static::$resource_type));
         }
 
-        $obj = new static();
+        $obj = new static($version);
 
-        $obj->parseXml($version, $element);
+        $obj->parseXml($element);
 
         return $obj;
     }
 
-    public function parseXml($version, $root)
+    public function parseXml($root)
     {
-        $schema = static::getSchema($version);
-
-        if (!$schema)
-            throw new \Exception("Schema not found for resource " . static::$resource_type);
+        $schema = $this->schema;
 
         foreach ($root->childNodes as $child) {
             if (!$child instanceof \DOMElement) continue;
@@ -116,7 +129,7 @@ abstract class BaseResource
                     foreach ($child->childNodes as $list_item) {
                         if (!$list_item instanceof \DOMElement) continue;
                         $cls = __NAMESPACE__ . "\\" . $schema[$local_name]['resource'];
-                        $this->{$local_name}[] = $cls::fromXmlDom($version, $list_item);
+                        $this->{$local_name}[] = $cls::fromXmlDom($this->version, $list_item);
                     }
                     break;
                 case 'date':
@@ -132,6 +145,41 @@ abstract class BaseResource
                     break;
                 default:
                     $this->{$local_name} = $child->textContent;
+            }
+        }
+    }
+
+    public function getAssignedProperty($name)
+    {
+        return property_exists($this, $name) ? $this->$name : null;
+    }
+
+    /**
+     * Base validator of resource from schema definition
+     *
+     * @return bool
+     */
+    public function validate()
+    {
+        foreach($this->schema as $tag => $defn) {
+            if (@$defn['required']) {
+                if (!property_exists($this, $tag)) {
+                    $this->addError("{$tag} is required");
+                }
+            }
+        }
+        return count($this->errors) === 0;
+    }
+
+    /**
+     * Convenience wrapper for handling model validation errors
+     *
+     * @param $errors
+     */
+    protected function addModelErrors($errors) {
+        foreach ($errors as $fld => $field_errors) {
+            foreach ($field_errors as $err) {
+                $this->addError("{$fld}: {$err}");
             }
         }
     }

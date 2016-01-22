@@ -122,15 +122,17 @@ class v1Controller extends \CController
 
         $resource_model = "\\OEModule\\PASAPI\\resources\\{$resource_type}";
 
-        $resource = $resource_model::fromXml(static::$version, $body);
-
-        if ($resource->errors) {
-            $this->sendErrorResponse(400, $resource->errors);
-        }
-
-        $resource->id = $id;
         try {
-            $internal_id = $resource->save();
+            $resource = $resource_model::fromXml(static::$version, $body);
+
+            if ($resource->errors)
+                $this->sendErrorResponse(400, $resource->errors);
+
+            $resource->id = $id;
+
+            if (!$internal_id = $resource->save())
+                $this->sendErrorResponse(400, $resource->errors);
+
             $response = array(
                 'Id' => $internal_id
             );
@@ -162,7 +164,7 @@ class v1Controller extends \CController
 
     protected function sendErrorResponse($status, $messages = array())
     {
-        $body = "<Errors><Error>"  . implode("</Error><Error>", $messages) . "</Error></Errors>";
+        $body = "<Failure><Errors><Error>"  . implode("</Error><Error>", $messages) . "</Error></Errors></Failure>";
 
         $this->sendResponse($status, $body);
     }

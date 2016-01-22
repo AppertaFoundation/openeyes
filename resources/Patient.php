@@ -26,14 +26,26 @@ class Patient extends BaseResource
     public $isNewResource;
 
     /**
+     * As a primary resource (i.e. mapped to external resource) we need to ensure we have an id for tracking
+     * the resource in the system
+     *
+     * @return bool
+     */
+    public function validate() {
+        if (!$this->id) {
+            $this->addError("Resource ID required");
+        }
+        return parent::validate();
+    }
+
+    /**
      * If this Patient resource points to an already existing Patient, then update
      * otherwise create a new one.
      */
     public function save()
     {
-        if (!$this->id) {
-            throw new \Exception("Cannot save resource without id");
-        }
+        if (!$this->validate())
+            return null;
 
         $transaction = \Yii::app()->db->getCurrentTransaction() === null
             ? \Yii::app()->db->beginTransaction()
@@ -46,15 +58,20 @@ class Patient extends BaseResource
             // want to ensure we track whether we create a new record or not
             $this->isNewResource = $model->isNewRecord;
 
-            $this->saveModel($model);
-            $assignment->internal_id = $model->id;
-            $assignment->save();
-            $assignment->unlock();
+            if ($this->saveModel($model)) {
+                $assignment->internal_id = $model->id;
+                $assignment->save();
+                $assignment->unlock();
 
-            if ($transaction)
-                $transaction->commit();
+                if ($transaction)
+                    $transaction->commit();
 
-            return $model->id;
+                return $model->id;
+            }
+            else {
+                if ($transaction)
+                    $transaction->rollback();
+            }
         }
         catch (\Exception $e) {
             if ($transaction)
@@ -73,36 +90,46 @@ class Patient extends BaseResource
      */
     public function saveModel(\Patient $patient)
     {
-        $patient->nhs_num = $this->NHSNumber;
-        $patient->hos_num = $this->HospitalNumber;
-        $patient->dob = $this->DateOfBirth;
-        $patient->date_of_death = property_exists($this, "DateOfDeath") ?
-            $this->DateOfDeath :
-            null;
+        $patient->nhs_num = $this->getAssignedProperty('NHSNumber');
+        $patient->hos_num = $this->getAssignedProperty('HospitalNumber');
+        $patient->dob = $this->getAssignedProperty('DateOfBirth');
+        $patient->date_of_death = $this->getAssignedProperty('DateOfDeath');
 
         $this->mapGender($patient);
         $this->mapEthnicGroup($patient);
         $this->mapGp($patient);
         $this->mapPractice($patient);
 
+        if (!$patient->validate()) {
+            $this->addModelErrors($patient->getErrors());
+            return;
+        }
         $patient->save();
 
         // Set the contact details
         $contact = $patient->contact;
 
-        $contact->title = $this->Title;
-        $contact->first_name = $this->FirstName;
-        $contact->last_name = $this->Surname;
-        $contact->primary_phone = $this->TelephoneNumber;
+        $contact->title = $this->getAssignedProperty('Title');
+        $contact->first_name = $this->getAssignedProperty('FirstName');
+        $contact->last_name = $this->getAssignedProperty('Surname');
+        $contact->primary_phone = $this->getAssignedProperty('TelephoneNumber');
+
+        if (!$contact->validate()) {
+            $this->addModelErrors($contact->getErrors());
+            return;
+        }
 
         $contact->save();
 
         $this->mapAddresses($contact);
+
+        if (!$this->errors)
+            return true;
     }
 
     private function mapGender(\Patient $patient)
     {
-        if ($gender = strtoupper($this->Gender)) {
+        if ($gender = strtoupper($this->getAssignedProperty('Gender'))) {
             if (in_array($gender, array('M', 'F'))) {
                 $patient->gender = $gender;
             }
@@ -118,9 +145,9 @@ class Patient extends BaseResource
     private function mapEthnicGroup(\Patient $patient)
     {
         $eg = null;
-        if ($this->EthnicGroup) {
-            if (!$eg = \EthnicGroup::model()->findByAttributes(array('code' => $this->EthnicGroup)))
-                $this->addWarning("Unrecognised ethnic group code " . $this->EthnicGroup);
+        if ($code = $this->getAssignedProperty('EthnicGroup')) {
+            if (!$eg = \EthnicGroup::model()->findByAttributes(array('code' => $code)))
+                $this->addWarning("Unrecognised ethnic group code " . $code);
         }
         $patient->ethnic_group_id = $eg ? $eg->id : null;
     }
@@ -128,10 +155,10 @@ class Patient extends BaseResource
     private function mapGp(\Patient $patient)
     {
         $gp = null;
-        if ($this->GpCode) {
-            $gp = \GP::model()->findByAttributes(array('nat_id' => $this->GpCode));
+        if ($code = $this->getAssignedProperty('GpCode')) {
+            $gp = \GP::model()->findByAttributes(array('nat_id' => $code));
             if (!$gp)
-                $this->addWarning("Could not find GP for code " . $this->GpCode);
+                $this->addWarning("Could not find GP for code " . $code);
         }
         $patient->gp_id = $gp ? $gp->id : null;
     }
@@ -139,10 +166,10 @@ class Patient extends BaseResource
     private function mapPractice(\Patient $patient)
     {
         $practice = null;
-        if ($this->PracticeCode) {
-            $practice = \Practice::model()->findByAttributes(array('code' => $this->PracticeCode));
+        if ($code = $this->getAssignedProperty('PracticeCode')) {
+            $practice = \Practice::model()->findByAttributes(array('code' => $code));
             if (!$practice)
-                $this->addWarning("Could not find Practice for code " . $this->PracticeCode);
+                $this->addWarning("Could not find Practice for code " . $code);
         }
         $patient->practice_id = $practice ? $practice->id : null;
     }
