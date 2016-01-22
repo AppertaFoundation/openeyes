@@ -159,7 +159,7 @@ class AdminPage extends OpenEyesPage
     }
 
     public function chooseFromList($dicom){
-        $this->waitForElementDisplayBlock('fileWatcherPage');
+        $this->waitForElementDisplayBlock('dicomFileList');
         $this->getElement('dicomFileList')->selectOption($dicom);
     }
 
