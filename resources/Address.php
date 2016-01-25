@@ -24,19 +24,22 @@ class Address extends BaseResource
 
     public function saveModel(\Address $model)
     {
-        $model->address1 = $this->Line1;
-        $model->address2 = $this->Line2;
-        $model->city = $this->City;
-        $model->county = $this->County;
-        if (!$country = \Country::model()->findByAttributes(array('code' => strtoupper($this->Country)))) {
-            throw new \Exception("Unrecognised country code " . $this->Country);
-        };
-        $model->postcode = $this->Postcode;
+        $model->address1 = $this->getAssignedProperty('Line1');
+        $model->address2 = $this->getAssignedProperty('Line2');
+        $model->city = $this->getAssignedProperty('City');
+        $model->county = $this->getAssignedProperty('County');
 
-        $model->country_id = $country->id;
-        $model->address_type_id = static::getAddressType($this->Type);
+        $model->postcode = $this->getAssignedProperty('Postcode');
 
-        $model->save();
+        $model->address_type_id = static::getAddressType($this->getAssignedProperty('Type'));
+
+        $this->mapCountry($model);
+
+        if (!$model->validate()) {
+            $this->addModelErrors($model->getErrors());
+            return;
+        }
+        return $model->save();
     }
 
     static private function getAddressType($addr_type)
@@ -46,5 +49,15 @@ class Address extends BaseResource
         }
 
         return null;
+    }
+
+    private function mapCountry(\Address $address)
+    {
+        $country = null;
+        if ($code = $this->getAssignedProperty('Country')) {
+            if (!$country = \Country::model()->findByAttributes(array('code' => $code)))
+                $this->addWarning("Unrecognised country code " . $code);
+        }
+        $address->country_id = $country ? $country->id : null;
     }
 }
