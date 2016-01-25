@@ -127,6 +127,13 @@ class AuthRules
 
 		if (($module_allows_editing = $event->moduleAllowsEditing()) !== null) return $module_allows_editing;
 
-		return (date('Ymd') < date('Ymd', strtotime($event->created_date) + (86400 * (Yii::app()->params['event_lock_days'] + 1))));
+		// request: When I am logged in as a user that has edit rights (but NOT admin rights) for the biometry event,
+		// I need to be able to edit the event at any time (i.e., the usual 24 hour limit does not apply)
+		if($event->eventType->name == "Biometry"){
+			return true;
+		}else {
+			return (date('Ymd') < date('Ymd',
+					strtotime($event->created_date) + (86400 * (Yii::app()->params['event_lock_days'] + 1))));
+		}
 	}
 }
