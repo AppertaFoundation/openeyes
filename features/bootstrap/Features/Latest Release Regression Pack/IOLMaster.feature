@@ -14,7 +14,7 @@ Feature: To Test the process of IOLMaster imports to Biometry event
 
   Examples:
   |mainPage|uname|pwd  |siteName/Number|firmName/Number         |page |tab   |subTab      |DICOMFile                                                                            |message                  |url                                                          |
-  |master  |admin|admin|Barking        |Cataract firm (Cataract)|Admin|System|File Watcher|1.2.276.0.75.2.1.10.0.2.150909105354671.15295058.30971_0000_000001_14417922420056.dcm|File Copied Successfully!|http://jenkins.openeyes.org.uk/TestHarness/DICOMFileWatcher|
+  |master  |admin|admin|Barking        |Cataract firm (Cataract)|Admin|System|File Watcher|1.2.276.0.75.2.1.10.0.2.150909105354671.15295058.30971_0000_000001_14417922420056.dcm|File Copied Successfully!|http://localhost:8888/TestHarness/DICOMFileWatcher|
 
 
    @logview
@@ -79,7 +79,7 @@ Feature: To Test the process of IOLMaster imports to Biometry event
        |master  |admin|admin|Barking        |Cataract firm (Cataract)|Admin|System|Log Viewer|1.2.276.0.75.2.1.10.0.2.150909105354671.15295058.30971_0000_000001_14417922420056.dcm|new          |runFileWatcher.php|         |        |             |      |    |               |        |        |         |       |    |     |               |          |           |              |         |       |          |          |      |      |          |              |       |               |       |           |           |       |       |           |               |        |                |        |
 
 
-   @iolTest_1.1
+   @iolTest_1.1.1
    Scenario Outline: Test Scenarios for base file format import
     Given I am on the OpenEyes "<mainPage>" homepage
     And I enter login credentials "<uname>" and "<pwd>"
@@ -94,7 +94,7 @@ Feature: To Test the process of IOLMaster imports to Biometry event
      Then I search for hospital number "<hospNum>"
      #Then I look for the "<biometryEventExists>" alert on the patient summary page
      Then I select Create or View Episodes and Events
-     Then I click to expand the "<speciality>" sidebar
+     Then I expand the "<speciality>" sidebar
      Then I add a New Event "Biometry"
      Then I select a auto generated biometry event
      #Then I select a auto generated biometry event with "<eventDateTime>"
@@ -147,25 +147,194 @@ Feature: To Test the process of IOLMaster imports to Biometry event
      Then I look for "<K2Deg2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
      Then I look for "<DeltaKDeg2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
      Then I look for "<eyeStatus2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
-     Then I check for "OptA119.1MA60AC" in Lens dropdown for "<eyeside1>"
-     Then I check for "Opt A119.0SN60WF" in Lens dropdown for "<eyeside1>"
-     Then I check for "Opt A118.7SA60AT" in Lens dropdown for "<eyeside1>"
-     Then I check for "OPT 115.54 MTA3U0" in Lens dropdown for "<eyeside1>"
-     Then I check for "OptA119.1MA60AC" in Lens dropdown for "<eyeside2>"
-     Then I check for "Opt A119.0SN60WF" in Lens dropdown for "<eyeside2>"
-     Then I check for "Opt A118.7SA60AT" in Lens dropdown for "<eyeside2>"
-     Then I check for "OPT 115.54 MTA3U0" in Lens dropdown for "<eyeside2>"
-     Then I check for "<formula>" in formula dropdown for "<eyeside1>"
-     Then I check for "<formula>" in formula dropdown for "<eyeside2>"
+     Then I check for "OptA119.1MA60AC" in Lens dropdown for "<eyeSide1>"
+     Then I check for "Opt A119.0SN60WF" in Lens dropdown for "<eyeSide1>"
+     Then I check for "Opt A118.7SA60AT" in Lens dropdown for "<eyeSide1>"
+     Then I check for "OPT 115.54 MTA3U0" in Lens dropdown for "<eyeSide1>"
+     Then I check for "OptA119.1MA60AC" in Lens dropdown for "<eyeSide2>"
+     Then I check for "Opt A119.0SN60WF" in Lens dropdown for "<eyeSide2>"
+     Then I check for "Opt A118.7SA60AT" in Lens dropdown for "<eyeSide2>"
+     Then I check for "OPT 115.54 MTA3U0" in Lens dropdown for "<eyeSide2>"
+     Then I check for "<formula>" in formula dropdown for "<eyeSide1>"
+     Then I check for "<formula>" in formula dropdown for "<eyeSide2>"
+     Then I Save the Biometry
 
     Examples:
-      |mainPage|uname|pwd  |siteName/Number|firmName/Number         |page |tab   |subTab      |DICOMFile                                                                             |message                  |url                                                          |primaryTab|hospNum|biometryEventExists|speciality|eventDateTime|biometryTab1|biometryTab2|info-alert1                              |ALValue1|K1Value1|K2Value1|SNRValue1|DeltaK1|ACD1|K1Deg1|K2Deg1|DeltaKDeg1|eyeStatus1            |ALValue2|K1Value2|K2Value2|SNRValue2|DeltaK2|ACD2|K1Deg2|K2Deg2|DeltaKDeg2|eyeStatus2|eyeSide1|eyeSide2|formula|
+      |mainPage|uname|pwd  |siteName/Number|firmName/Number         |page |tab   |subTab      |DICOMFile                                                                             |message                  |url                                                          |primaryTab|hospNum|biometryEventExists|speciality|eventDateTime|biometryTab1|biometryTab2|info-alert1                   |ALValue1|K1Value1|K2Value1|SNRValue1|DeltaK1|ACD1|K1Deg1|K2Deg1|DeltaKDeg1|eyeStatus1            |ALValue2|K1Value2|K2Value2|SNRValue2|DeltaK2|ACD2|K1Deg2|K2Deg2|DeltaKDeg2|eyeStatus2|eyeSide1|eyeSide2|formula|
       |master  |admin|admin|Barking        |Cataract firm (Cataract)|Admin|System|File Watcher|1.2.276.0.75.2.1.10.0.2.150909105354671.15295058.30971_0000_000001_14417921130053.dcm |File Copied Successfully!|http://localhost:8888/TestHarness/DICOMFileWatcher|Home      |1009600|                   |cataract  |             |View        |Edit        |The event has been added to this episode.|23.82   |42.45   |44.29   |276.2    |-1.84  |3.86|8     |98    |8         |Phakic                |24.00   |42.83   |44.12   |399.7    |-1.29  |3.91|172   |82    |172       |Phakic    |right   |left    |SRK/T  |
+
+
+  @iolTest_1.1.2
+  Scenario Outline: Test Scenarios for base file format import
+    Given I am on the OpenEyes "<mainPage>" homepage
+    And I enter login credentials "<uname>" and "<pwd>"
+#And I close the site and firm selection popup
+    And I select Site "<siteName/Number>"
+    Then I select a firm of "<firmName/Number>"
+    Then I open url "<url>"
+    Then I choose the "<DICOMFile>" from DICOM file list
+    Then I click on submit
+    Then I should see "<message>" on the DICOM File Watcher page
+    Then I click on "<primaryTab>" in primary selection tab
+    Then I search for hospital number "<hospNum>"
+ #Then I look for the "<biometryEventExists>" alert on the patient summary page
+    Then I select Create or View Episodes and Events
+    Then I expand the "<speciality>" sidebar
+    Then I add a New Event "Biometry"
+    Then I select a auto generated biometry event
+ #Then I select a auto generated biometry event with "<eventDateTime>"
+    Then I select the "<biometryTab1>" on event summary page
+ #Then I look for "<info-alert1>" on event summary page
+ ##Look for the values in View Mode
+ ##Right Eye Values
+    Then I look for "<ALValue1>" in the "<eyeSide1>" biometry event "<biometryTab1>"
+    Then I look for "<K1Value1>" in the "<eyeSide1>" biometry event "<biometryTab1>"
+    Then I look for "<K2Value1>" in the "<eyeSide1>" biometry event "<biometryTab1>"
+    Then I look for "<SNRValue1>" in the "<eyeSide1>" biometry event "<biometryTab1>"
+    Then I look for "<DeltaK1>" in the "<eyeSide1>" biometry event "<biometryTab1>"
+    Then I look for "<ACD1>" in the "<eyeSide1>" biometry event "<biometryTab1>"
+    Then I look for "<K1Deg1>" in the "<eyeSide1>" biometry event "<biometryTab1>"
+    Then I look for "<K2Deg1>" in the "<eyeSide1>" biometry event "<biometryTab1>"
+    Then I look for "<DeltaKDeg1>" in the "<eyeSide1>" biometry event "<biometryTab1>"
+    Then I look for "<eyeStatus1>" in the "<eyeSide1>" biometry event "<biometryTab1>"
+ ##Left Eye Values
+    Then I look for "<ALValue2>" in the "<eyeSide2>" biometry event "<biometryTab1>"
+    Then I look for "<K1Value2>" in the "<eyeSide2>" biometry event "<biometryTab1>"
+    Then I look for "<K2Value2>" in the "<eyeSide2>" biometry event "<biometryTab1>"
+    Then I look for "<SNRValue2>" in the "<eyeSide2>" biometry event "<biometryTab1>"
+    Then I look for "<DeltaK2>" in the "<eyeSide2>" biometry event "<biometryTab1>"
+    Then I look for "<ACD2>" in the "<eyeSide2>" biometry event "<biometryTab1>"
+    Then I look for "<K1Deg2>" in the "<eyeSide2>" biometry event "<biometryTab1>"
+    Then I look for "<K2Deg2>" in the "<eyeSide2>" biometry event "<biometryTab1>"
+    Then I look for "<DeltaKDeg2>" in the "<eyeSide2>" biometry event "<biometryTab1>"
+    Then I look for "<eyeStatus2>" in the "<eyeSide2>" biometry event "<biometryTab1>"
+    Then I select the "<biometryTab2>" on event summary page
+ ##Look for the values in Edit mode
+ ##Right Eye Values
+    Then I look for "<ALValue1>" in the "<eyeSide1>" biometry event "<biometryTab2>"
+    Then I look for "<K1Value1>" in the "<eyeSide1>" biometry event "<biometryTab2>"
+    Then I look for "<K2Value1>" in the "<eyeSide1>" biometry event "<biometryTab2>"
+    Then I look for "<SNRValue1>" in the "<eyeSide1>" biometry event "<biometryTab2>"
+    Then I look for "<DeltaK1>" in the "<eyeSide1>" biometry event "<biometryTab2>"
+    Then I look for "<ACD1>" in the "<eyeSide1>" biometry event "<biometryTab2>"
+    Then I look for "<K1Deg1>" in the "<eyeSide1>" biometry event "<biometryTab2>"
+    Then I look for "<K2Deg1>" in the "<eyeSide1>" biometry event "<biometryTab2>"
+    Then I look for "<DeltaKDeg1>" in the "<eyeSide1>" biometry event "<biometryTab2>"
+    Then I look for "<eyeStatus1>" in the "<eyeSide1>" biometry event "<biometryTab2>"
+ ##Left Eye Values
+    Then I look for "<ALValue2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
+    Then I look for "<K1Value2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
+    Then I look for "<K2Value2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
+    Then I look for "<SNRValue2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
+    Then I look for "<DeltaK2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
+    Then I look for "<ACD2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
+    Then I look for "<K1Deg2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
+    Then I look for "<K2Deg2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
+    Then I look for "<DeltaKDeg2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
+    Then I look for "<eyeStatus2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
+    Then I check for "OptA119.1MA60AC" in Lens dropdown for "<eyeSide1>"
+    Then I check for "Opt A119.0SN60WF" in Lens dropdown for "<eyeSide1>"
+    Then I check for "Opt A118.7SA60AT" in Lens dropdown for "<eyeSide1>"
+    Then I check for "OPT 115.54 MTA3U0" in Lens dropdown for "<eyeSide1>"
+    Then I check for "OptA119.1MA60AC" in Lens dropdown for "<eyeSide2>"
+    Then I check for "Opt A119.0SN60WF" in Lens dropdown for "<eyeSide2>"
+    Then I check for "Opt A118.7SA60AT" in Lens dropdown for "<eyeSide2>"
+    Then I check for "OPT 115.54 MTA3U0" in Lens dropdown for "<eyeSide2>"
+    Then I check for "<formula>" in formula dropdown for "<eyeSide1>"
+    Then I check for "<formula>" in formula dropdown for "<eyeSide2>"
+    Then I Save the Biometry
+
+    Examples:
+      |mainPage|uname|pwd  |siteName/Number|firmName/Number         |page |tab   |subTab      |DICOMFile                                                                             |message                  |url                                                          |primaryTab|hospNum|biometryEventExists|speciality|eventDateTime|biometryTab1|biometryTab2|info-alert1                   |ALValue1|K1Value1|K2Value1|SNRValue1|DeltaK1|ACD1|K1Deg1|K2Deg1|DeltaKDeg1|eyeStatus1            |ALValue2|K1Value2|K2Value2|SNRValue2|DeltaK2|ACD2|K1Deg2|K2Deg2|DeltaKDeg2|eyeStatus2|eyeSide1|eyeSide2|formula|
       |master  |admin|admin|Barking        |Cataract firm (Cataract)|Admin|System|File Watcher|1.2.276.0.75.2.1.10.0.2.150730144435359.15295058.931_0000_000001_14386161070010.dcm   |File Copied Successfully!|http://localhost:8888/TestHarness/DICOMFileWatcher|Home      |1007919|                   |cataract  |             |View        |Edit        |The event has been added to this episode.|21.73   |45.79   |46.23   |327.6    |-0.44  |2.88|96    |6     |96        |Phakic                |21.68   |46.11   |46.30   |542.5    |-0.19  |2.75|94    |4     |94        |Phakic    |right   |left    |HofferQ|
-      |master  |admin|admin|Barking        |Cataract firm (Cataract)|Admin|System|File Watcher|1.2.276.0.75.2.1.10.0.2.150910141835062.15295058.25364_0000_000001_14418912110087.dcm |File Copied Successfully!|http://localhost:8888/TestHarness/DICOMFileWatcher|Home      |1007927|                   |cataract  |             |View        |Edit        |The event has been added to this episode.|24.98   |38.75   |38.93   |264.6    |-0.18  |4.92|6     |96    |6         |Pseudophakic acrylate |24.95   |38.57   |38.88   |131.8    |-0.31  |3.59|94    |4     |94        |Phakic    |right   |left    |Haigis-L|
 
 
-@iolTest_1.2
+
+  @iolTest_1.1.3
+  Scenario Outline: Test Scenarios for base file format import
+    Given I am on the OpenEyes "<mainPage>" homepage
+    And I enter login credentials "<uname>" and "<pwd>"
+#And I close the site and firm selection popup
+    And I select Site "<siteName/Number>"
+    Then I select a firm of "<firmName/Number>"
+    Then I open url "<url>"
+    Then I choose the "<DICOMFile>" from DICOM file list
+    Then I click on submit
+    Then I should see "<message>" on the DICOM File Watcher page
+    Then I click on "<primaryTab>" in primary selection tab
+    Then I search for hospital number "<hospNum>"
+#Then I look for the "<biometryEventExists>" alert on the patient summary page
+    Then I select Create or View Episodes and Events
+    Then I expand the "<speciality>" sidebar
+    Then I add a New Event "Biometry"
+    Then I select a auto generated biometry event
+#Then I select a auto generated biometry event with "<eventDateTime>"
+    Then I select the "<biometryTab1>" on event summary page
+#Then I look for "<info-alert1>" on event summary page
+##Look for the values in View Mode
+##Right Eye Values
+    Then I look for "<ALValue1>" in the "<eyeSide1>" biometry event "<biometryTab1>"
+    Then I look for "<K1Value1>" in the "<eyeSide1>" biometry event "<biometryTab1>"
+    Then I look for "<K2Value1>" in the "<eyeSide1>" biometry event "<biometryTab1>"
+    Then I look for "<SNRValue1>" in the "<eyeSide1>" biometry event "<biometryTab1>"
+    Then I look for "<DeltaK1>" in the "<eyeSide1>" biometry event "<biometryTab1>"
+    Then I look for "<ACD1>" in the "<eyeSide1>" biometry event "<biometryTab1>"
+    Then I look for "<K1Deg1>" in the "<eyeSide1>" biometry event "<biometryTab1>"
+    Then I look for "<K2Deg1>" in the "<eyeSide1>" biometry event "<biometryTab1>"
+    Then I look for "<DeltaKDeg1>" in the "<eyeSide1>" biometry event "<biometryTab1>"
+    Then I look for "<eyeStatus1>" in the "<eyeSide1>" biometry event "<biometryTab1>"
+##Left Eye Values
+    Then I look for "<ALValue2>" in the "<eyeSide2>" biometry event "<biometryTab1>"
+    Then I look for "<K1Value2>" in the "<eyeSide2>" biometry event "<biometryTab1>"
+    Then I look for "<K2Value2>" in the "<eyeSide2>" biometry event "<biometryTab1>"
+    Then I look for "<SNRValue2>" in the "<eyeSide2>" biometry event "<biometryTab1>"
+    Then I look for "<DeltaK2>" in the "<eyeSide2>" biometry event "<biometryTab1>"
+    Then I look for "<ACD2>" in the "<eyeSide2>" biometry event "<biometryTab1>"
+    Then I look for "<K1Deg2>" in the "<eyeSide2>" biometry event "<biometryTab1>"
+    Then I look for "<K2Deg2>" in the "<eyeSide2>" biometry event "<biometryTab1>"
+    Then I look for "<DeltaKDeg2>" in the "<eyeSide2>" biometry event "<biometryTab1>"
+    Then I look for "<eyeStatus2>" in the "<eyeSide2>" biometry event "<biometryTab1>"
+    Then I select the "<biometryTab2>" on event summary page
+##Look for the values in Edit mode
+##Right Eye Values
+    Then I look for "<ALValue1>" in the "<eyeSide1>" biometry event "<biometryTab2>"
+    Then I look for "<K1Value1>" in the "<eyeSide1>" biometry event "<biometryTab2>"
+    Then I look for "<K2Value1>" in the "<eyeSide1>" biometry event "<biometryTab2>"
+    Then I look for "<SNRValue1>" in the "<eyeSide1>" biometry event "<biometryTab2>"
+    Then I look for "<DeltaK1>" in the "<eyeSide1>" biometry event "<biometryTab2>"
+    Then I look for "<ACD1>" in the "<eyeSide1>" biometry event "<biometryTab2>"
+    Then I look for "<K1Deg1>" in the "<eyeSide1>" biometry event "<biometryTab2>"
+    Then I look for "<K2Deg1>" in the "<eyeSide1>" biometry event "<biometryTab2>"
+    Then I look for "<DeltaKDeg1>" in the "<eyeSide1>" biometry event "<biometryTab2>"
+    Then I look for "<eyeStatus1>" in the "<eyeSide1>" biometry event "<biometryTab2>"
+##Left Eye Values
+    Then I look for "<ALValue2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
+    Then I look for "<K1Value2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
+    Then I look for "<K2Value2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
+    Then I look for "<SNRValue2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
+    Then I look for "<DeltaK2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
+    Then I look for "<ACD2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
+    Then I look for "<K1Deg2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
+    Then I look for "<K2Deg2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
+    Then I look for "<DeltaKDeg2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
+    Then I look for "<eyeStatus2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
+    Then I check for "OptA119.1MA60AC" in Lens dropdown for "<eyeSide1>"
+    Then I check for "Opt A119.0SN60WF" in Lens dropdown for "<eyeSide1>"
+    Then I check for "Opt A118.7SA60AT" in Lens dropdown for "<eyeSide1>"
+    Then I check for "OPT 115.54 MTA3U0" in Lens dropdown for "<eyeSide1>"
+    Then I check for "OptA119.1MA60AC" in Lens dropdown for "<eyeSide2>"
+    Then I check for "Opt A119.0SN60WF" in Lens dropdown for "<eyeSide2>"
+    Then I check for "Opt A118.7SA60AT" in Lens dropdown for "<eyeSide2>"
+    Then I check for "OPT 115.54 MTA3U0" in Lens dropdown for "<eyeSide2>"
+    Then I check for "<formula>" in formula dropdown for "<eyeSide1>"
+    Then I check for "<formula>" in formula dropdown for "<eyeSide2>"
+    Then I cancel the event creation
+
+    Examples:
+      |mainPage|uname|pwd  |siteName/Number|firmName/Number         |page |tab   |subTab      |DICOMFile                                                                             |message                  |url                                               |primaryTab|hospNum|biometryEventExists|speciality|eventDateTime|biometryTab1|biometryTab2|info-alert1                              |ALValue1|K1Value1|K2Value1|SNRValue1|DeltaK1|ACD1|K1Deg1|K2Deg1|DeltaKDeg1|eyeStatus1|ALValue2|K1Value2|K2Value2|SNRValue2|DeltaK2|ACD2|K1Deg2|K2Deg2|DeltaKDeg2|eyeStatus2|eyeSide1|eyeSide2|formula|
+      |master  |admin|admin|Barking        |Cataract firm (Cataract)|Admin|System|File Watcher|1.2.276.0.75.2.1.10.0.2.150910141835062.15295058.25364_0000_000001_14418912110087.dcm |File Copied Successfully!|http://localhost:8888/TestHarness/DICOMFileWatcher|Home      |1007927|                   |cataract  |             |View        |Edit        |The event has been added to this episode.|24.98   |38.75   |38.93   |264.6    |-0.18  |4.92|6     |96    |6         |Unknown   |24.95   |38.57   |38.88   |131.8    |-0.31  |3.59|94    |4     |94        |Phakic    |right   |left    |Haigis-L|
+
+  @iolTest_1.2
   Scenario Outline: Test Scenarios for base file format import. Multi-Formula, Single-Lens Format
    Given I am on the OpenEyes "<mainPage>" homepage
    And I enter login credentials "<uname>" and "<pwd>"
@@ -233,16 +402,16 @@ Feature: To Test the process of IOLMaster imports to Biometry event
    Then I look for "<K2Deg2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
    Then I look for "<DeltaKDeg2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
    Then I look for "<eyeStatus2>" in the "<eyeSide2>" biometry event "<biometryTab2>"
-    Then I check for "Opt A118.7SA60AT" in Lens dropdown for "<eyeside1>"
-    Then I check for "Opt A118.7SA60AT" in Lens dropdown for "<eyeside2>"
-    Then I check for "SRK/ II" in formula dropdown for "<eyeside1>"
-    Then I check for "Haigis" in formula dropdown for "<eyeside1>"
-    Then I check for "Holladay 2" in formula dropdown for "<eyeside1>"
-    Then I check for "SRK/T" in formula dropdown for "<eyeside1>"
-   Then I check for "SRK/ II" in formula dropdown for "<eyeside2>"
-   Then I check for "Haigis" in formula dropdown for "<eyeside2>"
-   Then I check for "Holladay 2" in formula dropdown for "<eyeside2>"
-   Then I check for "SRK/T" in formula dropdown for "<eyeside2>"
+    Then I check for "Opt A118.7SA60AT" in Lens dropdown for "<eyeSide1>"
+    Then I check for "Opt A118.7SA60AT" in Lens dropdown for "<eyeSide2>"
+    Then I check for "SRK/ II" in formula dropdown for "<eyeSide1>"
+    Then I check for "Haigis" in formula dropdown for "<eyeSide1>"
+    Then I check for "Holladay 2" in formula dropdown for "<eyeSide1>"
+    Then I check for "SRK/T" in formula dropdown for "<eyeSide1>"
+   Then I check for "SRK/ II" in formula dropdown for "<eyeSide2>"
+   Then I check for "Haigis" in formula dropdown for "<eyeSide2>"
+   Then I check for "Holladay 2" in formula dropdown for "<eyeSide2>"
+   Then I check for "SRK/T" in formula dropdown for "<eyeSide2>"
 
 
     Examples:
