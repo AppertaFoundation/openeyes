@@ -173,7 +173,7 @@ Feature: Create New Examination Regression Tests
       |admin|admin|Ludwig|A Dulku (Glaucoma)|glaucoma  |Examination|comorbidities|visualFunction|colourVision|visualAcuity|intraocularPressure|dilation    |refraction  |
 
   @EXAM_Route_3
-  Scenario: Route 3:Login and create a new Examination Event
+  Scenario Outline: Route 3:Login and create a new Examination Event
             Site:1 Barking
             Firm:1 Paul Godinho (Cataract)
             Viusal Fields, Intraocular Pressure, Dilation, Refraction, Conclusion
