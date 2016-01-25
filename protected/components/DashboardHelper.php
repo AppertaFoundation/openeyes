@@ -23,10 +23,17 @@ class DashboardHelper {
     protected $user;
 
     /**
+     * Flag to toggle the drag and drop sorting controls for widgets
+     * @TODO: this will be switched to true in the future when we set up controls for storing user preference for widgets
+     * @var bool
+     */
+    public $sortable;
+
+    /**
      * @param array $items expected to be of the form:
      *  [
      *      [
-     *          'api' => 'ModuleName',
+     *          'module' => 'ModuleName',
      *          'restricted' => <array of auth items that will grant access to this dashboard> (optional)
      *      ]
      *  ]
@@ -45,6 +52,9 @@ class DashboardHelper {
         if (is_null($this->user)) {
             $this->user = Yii::app()->user;
         }
+
+        // uses a config variable for ease of turning on the demo.
+        $this->sortable = Yii::app()->params['dashboard_sortable'] ?: false;
     }
 
     /**
@@ -58,7 +68,8 @@ class DashboardHelper {
         return Yii::app()->controller->renderPartial(
             '//base/_dashboard',
             array(
-                'items' => $this->renderItems()
+                'items' => $this->renderItems(),
+                'sortable' => $this->sortable,
             ),
             true
         );
@@ -94,7 +105,6 @@ class DashboardHelper {
                 if (!$module) {
                     throw new Exception("$module_name not found");
                 }
-
                 if( isset($item['actions']) && is_array($item['actions']) ) {
                     $renders = $this->renderActions($module, $item['actions']);
                 }
@@ -104,6 +114,9 @@ class DashboardHelper {
                 
             } else if ( isset($item['title']) && isset($item['content']) ) {
                 $renders[] = $item;
+            }
+            else {
+                throw new Exception("Invalid dashboard configuration, module or static content definition required");
             }
         }
         return $renders;

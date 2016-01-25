@@ -28,7 +28,7 @@ class DashboardHelperTest extends PHPUnit_Framework_TestCase
     {
         $user =  $this->getMock('OEWebUser', array('checkAccess'));
         $test = new DashboardHelper(array('restricted' => 1), $user);
-        $this->setExpectedException('Exception', "Invalid dashboard configuration, api definition required");
+        $this->setExpectedException('Exception', "Invalid dashboard configuration, module or static content definition required");
 
         $test->render();
     }
@@ -79,28 +79,29 @@ class DashboardHelperTest extends PHPUnit_Framework_TestCase
 
         $test = new DashboardHelper(array(
             array(
-                'api' => 'firstModule',
+                'module' => 'firstModule',
             ),
             array(
                 'restricted' => array('onlysecond'),
-                'api' => 'secondModule'
+                'module' => 'secondModule'
             )
         ), $user);
 
         $this->controller->expects($this->at(0))
             ->method('renderPartial')
             ->with($this->anything(), array('items' => array(
-                $first_db)), true, false)
+                $first_db), 'sortable' => false), true, false)
             ->will($this->returnValue('first render'));
 
         $this->controller->expects($this->at(1))
             ->method('renderPartial')
             ->with($this->anything(), array('items' => array(
                 $first_db, $second_db
-            )), true, false)
+            ), 'sortable' => true), true, false)
             ->will($this->returnValue('first rendersecond render'));
 
         $this->assertEquals('first render', $test->render());
+        $test->sortable = true;
         $this->assertEquals('first rendersecond render', $test->render());
     }
 }
