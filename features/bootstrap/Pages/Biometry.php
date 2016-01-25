@@ -42,7 +42,8 @@ class Biometry extends OpenEyesPage
         ),
         'eventContent'=> array(
             'xpath'=> "//*[@class='event-content']"
-        )
+        ),
+
     );
     public function saveBiometry()
     {
@@ -109,7 +110,7 @@ class Biometry extends OpenEyesPage
     public function selectTabOnEventSummaryPage($eventTab){
         $this->waitForElementDisplayNone('eventHeader');
         $this->elements['eventHeaderTab'] = array(
-            'xpath' => "//*[@class='event-header']//*[contains(text(),'$eventTab')]"
+            'xpath' => "//*[@class='inline-list tabs event-actions']//*[contains(text(),'$eventTab')]"
         );
         $this->getElement('eventHeaderTab')->click();
     }
@@ -152,37 +153,41 @@ class Biometry extends OpenEyesPage
     }
 
     public function checkLensDropDown($lensType,$eyeSide){
-        $this->waitForElementDisplayNone('eventContent');
+        //$this->waitForElementDisplayNone('eventContent');
         $this->elements['eyeTypeLensDropDown'] = array(
             'xpath' => "//*[@id='Element_OphInBiometry_Selection_lens_id_$eyeSide']"
         );
-        $this->getElement('eyeTypeLensDropDown')->click();
-        $this->elements['eyeTypeLensDropDownValue'] = array(
-            'xpath' => "//*[contains(text(),'$lensType')]"
-        );
-        if($this->getElement('eyeTypeLensDropDownValue')->isVisible()){
+        //$this->getElement('eyeTypeLensDropDown')->click();
+        //$this->elements['eyeTypeLensDropDownValue'] = array(
+          //  'xpath' => "//*[contains(text(),'$lensType')]"
+       // );
+        $this->getElement('eyeTypeLensDropDown')->selectOption($lensType);
+        print "Lens Displayed correctly!";
+        /*if($this->getElement('eyeTypeLensDropDown')->selectOption($lensType)){
             print "Lens Displayed correctly!";
         }
         else{
             throw new BehaviorException ( "WARNING!!! LENS NOT DISPLAYED! TEST FAILED!!");
-        }
+        }*/
     }
 
     public function checkFormulaDropDown($formula,$eyeSide){
-        $this->waitForElementDisplayNone('eventContent');
+        //$this->waitForElementDisplayNone('eventContent');
         $this->elements['eyeTypeFormulaDropDown'] = array(
             'xpath' => "//*[@id='Element_OphInBiometry_Selection_formula_id_$eyeSide']"
         );
-        $this->getElement('eyeTypeFormulaDropDown')->click();
-        $this->elements['eyeTypeFormulaDropDownValue'] = array(
-            'xpath' => "//*[contains(text(),'$formula')]"
-        );
-        if($this->getElement('eyeTypeFormulaDropDownValue')->isVisible()){
+        //$this->getElement('eyeTypeFormulaDropDown')->click();
+        //$this->elements['eyeTypeFormulaDropDownValue'] = array(
+          //  'xpath' => "//*[contains(text(),'$formula')]"
+        //);
+        $this->getElement('eyeTypeFormulaDropDown')->selectOption($formula);
+        print "Formula Displayed correctly!";
+        /*if($this->getElement('eyeTypeFormulaDropDown')->selectOption($formula)) {
             print "Formula Displayed correctly!";
         }
         else{
             throw new BehaviorException ( "WARNING!!! FORMULA NOT DISPLAYED! TEST FAILED!!");
-        }
+        }*/
     }
 
     public function checkMeasurementsNotRecorded($eyeSide,$tabType){
@@ -246,6 +251,18 @@ class Biometry extends OpenEyesPage
         else{
             throw new BehaviorException ( "WARNING!!! FORMULA IS DISPLAYED ! TEST FAILED!!");
         }
+    }
+
+    public function cancelEventCreation(){
+        /*$buttonValue="Cancel";
+        //*[@class='button-bar right']//*[contains(text(),'Save')]
+        $this->elements['cancelButton'] = array(
+            'xpath' => "//*[@class='button-bar right']//*[contains(text(),'$buttonValue')]"
+        );*/
+            //print "******In OpenEyes Class*******";
+            $wdSession = $this->getSession ()->getDriver ()->getWebDriverSession ();
+            $wdSession->accept_alert();
+            //$element = $wdSession->element ( 'xpath', $element->getXpath () );
     }
 
 }
