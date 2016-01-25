@@ -63,6 +63,8 @@ class Patient extends BaseResource
                 $assignment->save();
                 $assignment->unlock();
 
+                $this->audit($this->isNewResource ? 'create' : 'update', null, null, array('patient_id' => $model->id));
+
                 if ($transaction)
                     $transaction->commit();
 

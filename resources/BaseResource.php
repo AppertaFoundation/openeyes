@@ -25,6 +25,7 @@ abstract class BaseResource
     public $errors = array();
     protected $version;
     protected $schema;
+    private $_audit_data;
 
     public function __construct($version)
     {
@@ -68,6 +69,8 @@ abstract class BaseResource
     }
 
     /**
+     * Create an instance from an XML string
+     *
      * @param $version
      * @param $xml
      * @return null|BaseResource
@@ -89,7 +92,9 @@ abstract class BaseResource
             return $obj;
         }
 
-        return static::fromXmlDom($version, $doc->documentElement);
+        $obj = static::fromXmlDom($version, $doc->documentElement);
+        $obj->addAuditData('input', \CHtml::encode($xml));
+        return $obj;
     }
 
     /**
@@ -113,6 +118,12 @@ abstract class BaseResource
         return $obj;
     }
 
+    /**
+     * Parses XML to define resource attributes
+     *
+     * @param $root
+     * @throws \Exception
+     */
     public function parseXml($root)
     {
         $schema = $this->schema;
@@ -204,4 +215,66 @@ abstract class BaseResource
         $this->warnings[] = $msg;
     }
 
+    /**
+     * Simple wrapper to retrieve a type for auditing
+     *
+     * @return string
+     */
+    public function getAuditTarget()
+    {
+        return strtolower(static::$resource_type);
+    }
+
+    /**
+     * Add to audit data property
+     *
+     * @param $key
+     * @param $value
+     */
+    public function addAuditData($key, $value)
+    {
+        if (isset($this->_audit_data[$key])) {
+            $this->_audit_data[$key] = array($this->_audit_data[$key]);
+            $this->_audit_data[$key][] = $value;
+        }
+        else {
+            $this->_audit_data[$key] = $value;
+        }
+    }
+
+    /**
+     * Returns the json encoded audit data for logging
+     *
+     * @return string
+     */
+    public function getAuditData()
+    {
+        if (!isset($this->_audit_data['resource_id'])) {
+            $this->_audit_data['resource_id'] = $this->id;
+        }
+        return json_encode($this->_audit_data);
+    }
+
+    /**
+     * Wrapper for auditing calls on resource changes
+     *
+     * @param $audit_type
+     * @param null $data
+     * @param null $msg
+     * @param array $properties
+     * @throws \Exception
+     */
+    public function audit($audit_type, $data = null, $msg = null, $properties = array())
+    {
+
+        if ($data) {
+            $data = array_merge($this->getAuditData(), $data);
+        }
+        else {
+            $data = $this->getAuditData();
+        }
+
+
+        \Audit::add($this->getAuditTarget(), $audit_type, $data, null, $properties);
+    }
 }
