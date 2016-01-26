@@ -101,7 +101,7 @@ $config = array(
 		'OphCiPhasing',
 		'OphCoTherapyapplication',
 		'OphDrPrescription',
-		'OphOuAnaestheticsatisfactionaudits',
+		'OphOuAnaestheticsatisfactionaudit',
 		'OphTrConsent',
 		'OphTrOperationnote',
 		'OphTrOperationbooking',
