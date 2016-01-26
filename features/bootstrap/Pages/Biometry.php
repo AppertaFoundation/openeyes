@@ -161,8 +161,13 @@ class Biometry extends OpenEyesPage
         //$this->elements['eyeTypeLensDropDownValue'] = array(
           //  'xpath' => "//*[contains(text(),'$lensType')]"
        // );
-        $this->getElement('eyeTypeLensDropDown')->selectOption($lensType);
-        print "Lens Displayed correctly!";
+        if($this->getElement('eyeTypeLensDropDown')->isVisible()) {
+            $this->getElement('eyeTypeLensDropDown')->selectOption($lensType);
+            print "Lens Displayed correctly!";
+        }
+        else{
+            print "No Lens option for $eyeSide eye";
+        }
         /*if($this->getElement('eyeTypeLensDropDown')->selectOption($lensType)){
             print "Lens Displayed correctly!";
         }
