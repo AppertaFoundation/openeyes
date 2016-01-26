@@ -161,12 +161,12 @@ class Biometry extends OpenEyesPage
         //$this->elements['eyeTypeLensDropDownValue'] = array(
           //  'xpath' => "//*[contains(text(),'$lensType')]"
        // );
-        if($this->getElement('eyeTypeLensDropDown')->isVisible()) {
-            $this->getElement('eyeTypeLensDropDown')->selectOption($lensType);
-            print "Lens Displayed correctly!";
+        if($this->noLensDropDown()) {
+            print "No Lens option for $eyeSide eye";
         }
         else{
-            print "No Lens option for $eyeSide eye";
+            $this->getElement('eyeTypeLensDropDown')->selectOption($lensType);
+            print "Lens Displayed correctly!";
         }
         /*if($this->getElement('eyeTypeLensDropDown')->selectOption($lensType)){
             print "Lens Displayed correctly!";
@@ -174,6 +174,10 @@ class Biometry extends OpenEyesPage
         else{
             throw new BehaviorException ( "WARNING!!! LENS NOT DISPLAYED! TEST FAILED!!");
         }*/
+    }
+
+    public function noLensDropDown(){
+        return $this->find ( 'xpath', $this->getElement ( 'eyeTypeLensDropDown' )->getXpath () );
     }
 
     public function checkFormulaDropDown($formula,$eyeSide){
@@ -185,14 +189,23 @@ class Biometry extends OpenEyesPage
         //$this->elements['eyeTypeFormulaDropDownValue'] = array(
           //  'xpath' => "//*[contains(text(),'$formula')]"
         //);
-        $this->getElement('eyeTypeFormulaDropDown')->selectOption($formula);
-        print "Formula Displayed correctly!";
+        if($this->noFormulaDropDown()) {
+            print "No Formula option for $eyeSide eye";
+        }
+        else {
+            $this->getElement('eyeTypeFormulaDropDown')->selectOption($formula);
+            print "Formula Displayed correctly!";
+        }
         /*if($this->getElement('eyeTypeFormulaDropDown')->selectOption($formula)) {
             print "Formula Displayed correctly!";
         }
         else{
             throw new BehaviorException ( "WARNING!!! FORMULA NOT DISPLAYED! TEST FAILED!!");
         }*/
+    }
+
+    public function noFormulaDropDown(){
+        return $this->find ( 'xpath', $this->getElement ( 'eyeTypeFormulaDropDown' )->getXpath () );
     }
 
     public function checkMeasurementsNotRecorded($eyeSide,$tabType){
