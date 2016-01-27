@@ -50,7 +50,7 @@ class OperationBooking extends OpenEyesPage {
 					'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_fast_track_discussed_with_patient_1']" 
 			),
 			'scheduleOptASAP' => array (
-					'xpath' => "//*[@id='Element_OphTrOperationbooking_ScheduleOperation_schedule_options_id_1']" 
+					'xpath' => "//*[@id='Element_OphTrOperationbooking_ScheduleOperation_schedule_options_id_4']"
 			),
 			'anaestheticTopical' => array (
 					'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_anaesthetic_type_id_1']" 
@@ -96,7 +96,7 @@ class OperationBooking extends OpenEyesPage {
 			),
 			'scheduleNow' => array (
 					//'xpath' => "//*[@id='et_save_and_schedule']"
-					'xpath' => "//*[@id='et_save']"
+					'xpath' => "//*[@id='et_save_and_schedule']"
 			),
 			'duplicateProcedureOk' => array (
 					'xpath' => "//*[@class='secondary small confirm ok']" 
@@ -182,6 +182,7 @@ class OperationBooking extends OpenEyesPage {
 			$this->getElement ( 'operationLeftEye' )->click ();
 		}
 	}
+
 	public function procedure($procedure) {
 		$this->getElement ( 'operationProcedure' )->setValue ( $procedure );
 		$this->getSession ()->wait ( 2000 );
