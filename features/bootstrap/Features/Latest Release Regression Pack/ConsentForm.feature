@@ -38,8 +38,8 @@ Feature: Create New Consent Form
     Then I save the Consent Form and confirm it has been created successfully
 
     Examples:
-    |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality|event  |type|eyeProcedure|commonProcedure|addProc1|addProc2|
-    |admin|admin|2              |3              |1009465   |glaucoma  |Consent|1   |Both        |127            |41      |42      |
+    |uname|pwd  |siteName/Number|firmName/Number        |hospNumber|speciality|event  |type|eyeProcedure|commonProcedure|addProc1|addProc2|
+    |admin|admin|Barking        |A K Hamilton (Glaucoma)|1009465   |glaucoma  |Consent|1   |Both        |127            |41      |42      |
 
 
   Scenario Outline: Route 2: Login and create a new Consent Form
@@ -71,8 +71,8 @@ Feature: Create New Consent Form
     Then I save the Consent Form and confirm it has been created successfully
 
     Examples:
-      |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality|event  |type|eyeProcedure|commonProcedure|
-      |admin|admin|2              |2              |1009465   |glaucoma  |Consent|2   |Left        |129            |
+      |uname|pwd  |siteName/Number|firmName/Number        |hospNumber|speciality|event  |type|eyeProcedure|commonProcedure|
+      |admin|admin|Barking        |A K Hamilton (Glaucoma)|1009465   |glaucoma  |Consent|2   |Left        |129            |
 
 
   Scenario Outline: Route 3: Login and create a new Consent Form
@@ -104,8 +104,8 @@ Feature: Create New Consent Form
     Then I save the Consent Form and confirm it has been created successfully
 
     Examples:
-      |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality    |event  |type|eyeProcedure|commonProcedure|
-      |admin|admin|1              |4              |1009465   |medicalRetinal|Consent|3   |Left        |327            |
+      |uname|pwd  |siteName/Number|firmName/Number                |hospNumber|speciality    |event  |type|eyeProcedure|commonProcedure|
+      |admin|admin|Barking        |Angela Glasby (Medical Retinal)|1009465   |medicalRetinal|Consent|3   |Left        |327            |
 
 
   Scenario Outline: Route 4: Login and create a new Consent Form
@@ -137,8 +137,8 @@ Feature: Create New Consent Form
     Then I save the Consent Form and confirm it has been created successfully
 
   Examples:
-  |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality|event  |type|eyeProcedure|commonProcedure|
-  |admin|admin|2              |3              |1009465   |glaucoma  |Consent|4   |Left        |129            |
+  |uname|pwd  |siteName/Number|firmName/Number        |hospNumber|speciality|event  |type|eyeProcedure|commonProcedure|
+  |admin|admin|Mile End       |A K Hamilton (Glaucoma)|1009465   |glaucoma  |Consent|4   |Left        |129            |
 
   @Consent_Route5
   Scenario Outline: Route 5: Login and create a new Consent Form
@@ -164,8 +164,8 @@ Feature: Create New Consent Form
     Then I confirm that the Consent Validation error messages have been displayed
 
   Examples:
-  |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality|event  |
-  |admin|admin|2              |3              |1009465   |glaucoma  |Consent|
+  |uname|pwd  |siteName/Number|firmName/Number        |hospNumber|speciality|event  |
+  |admin|admin|Mile End       |A K Hamilton (Glaucoma)|1009465   |glaucoma  |Consent|
 
 
   @Consent_Route6A
@@ -230,8 +230,8 @@ Feature: Create New Consent Form
     Then I confirm the operation slot
 
     Examples:
-      |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality|event    |diagEye|diag    |opEye|proc|anaestheticType|opSite|comments|sessionComments|opComments|
-      |admin|admin|1              |1              |1009465   |cataract  |OpBooking|Right  |24010005|Right|79  |LA             |2     |Test    |Test           |Test      |
+      |uname|pwd  |siteName/Number|firmName/Number         |hospNumber|speciality|event    |diagEye|diag    |opEye|proc|anaestheticType|opSite|comments|sessionComments|opComments|
+      |admin|admin|Croydon        |Cataract firm (Cataract)|1009465   |cataract  |OpBooking|Right  |24010005|Right|79  |LA             |2     |Test    |Test           |Test      |
 
 
   @Consent_Route6B
@@ -260,8 +260,8 @@ Feature: Create New Consent Form
     Then I save the Consent Form and confirm it has been created successfully
 
     Examples:
-      |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality|event  |prevOp    |diagEye|opEye|
-      |admin|admin|1              |1              |1009465   |cataract  |Consent|booking152|Right  |Right|
+      |uname|pwd  |siteName/Number|firmName/Number         |hospNumber|speciality|event  |prevOp    |diagEye|opEye|
+      |admin|admin|Croydon        |Cataract firm (Cataract)|1009465   |cataract  |Consent|booking152|Right  |Right|
 
 
 
