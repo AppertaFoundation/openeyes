@@ -159,7 +159,8 @@ class AdminPage extends OpenEyesPage
     }
 
     public function chooseFromList($dicom){
-        $this->waitForElementDisplayBlock('dicomFileList');
+        //$this->waitForElementDisplayBlock('fileWatcherPage');
+        sleep(5);
         $this->getElement('dicomFileList')->selectOption($dicom);
     }
 
@@ -173,6 +174,8 @@ class AdminPage extends OpenEyesPage
         );
         if($this->getElement('dicomMessage')->isVisible()){
             print ("Message displayed successfully.");
+            print ("WAITING FOR THE DICOM FILE TO BE PROCESSED AND PARSED!");
+            sleep(10);
         }
         else{
             throw new BehaviorException ("Message not displayed!");

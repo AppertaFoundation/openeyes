@@ -189,4 +189,17 @@ class BiometryContext extends PageObjectContext
         $biometry = $this->getPage('Biometry');
         $biometry->checkFormulaNotRecorded($eyeSide);
     }
+
+    /**
+     * @Then /^I cancel the event creation$/
+     */
+    public function iCancelTheEventCreation(){
+        /**
+         *
+         * @var Biometry $biometry
+         */
+        $biometry = $this->getPage('Biometry');
+        $biometry->cancelEventCreation();
+    }
+
 }

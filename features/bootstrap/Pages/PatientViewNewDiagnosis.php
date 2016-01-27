@@ -259,6 +259,9 @@ class PatientViewNewDiagnosis extends OpenEyesPage {
 			),
 		'CreateNewEpisode' => array (
 			'xpath' => "//*[contains(text(),'Create new episode')]"
+		),
+		'noEpisodeCreated' => array(
+			'xpath' => "//*[@class='box patient-info episodes']//*[contains(text(),'No episodes')]"
 		)
 	)
 	;
@@ -450,16 +453,22 @@ class PatientViewNewDiagnosis extends OpenEyesPage {
 	}
 	public function addEpisodeAndEvent() {
 		$this->getSession ()->wait ( 5000, 'window.$ && $.active == 10' );
-		
-		if ($this->episodesAndEventsAreNotPresent ()) {
-			$this->createNewEpisodeAndEvent ();
-		} else {
-			$this->selectLatestEvent ();
+		if ($this->noEpisodeCreated()){
+		$this->createNewEpisodeAndEvent();
+			$this->addEpisode();
 		}
-		sleep(5);
+		else {
+			if ($this->episodesAndEventsAreNotPresent()) {
+				$this->createNewEpisodeAndEvent();
+			} else {
+				$this->selectLatestEvent();
+			}
+			sleep(5);
+		}
 	}
 	public function createNewEpisodeAndEvent() {
 		$this->getElement ( 'createNewEpisodeAddEvent' )->click ();
+		sleep(5);
 	}
 	public function addEpisode() {
 		$this->getElement ( 'addEpisodeButton' )->click ();
@@ -480,6 +489,10 @@ class PatientViewNewDiagnosis extends OpenEyesPage {
 		$this->waitForTitle ( 'Episodes and events' );
 		// $this->getSession()->wait(15000, "$('h1.badge').html() == 'Episodes and events' ");
 	}
+	protected function noEpisodeCreated(){
+		return $this->find ( 'xpath', $this->getElement ( 'noEpisodeCreated' )->getXpath () );
+	}
+
 	protected function episodesAndEventsAreNotPresent() {
 		return $this->find ( 'xpath', $this->getElement ( 'createNewEpisodeAddEvent' )->getXpath () );
 	}
