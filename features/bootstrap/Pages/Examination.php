@@ -829,6 +829,27 @@ class Examination extends OpenEyesPage {
 		)
 	)
 	;
+
+
+	public function sectionListOpen($sectionName){
+		$this->elements['examinationSectionListHeader'] = array(
+			'xpath' => "//*[@class='sub-elements-list']//*[contains(text(),'$sectionName')]"
+		);
+		return $this->find ( 'xpath', $this->getElement ( 'examinationSectionListHeader' )->getXpath () );
+	}
+
+	public function openExaminationSectionList($sectionName){
+		if($this->sectionListOpen($sectionName)){
+			$this->getElement('examinationSectionListHeader')->click();
+		}
+		else{
+			print "Section Already Open!";
+		}
+	}
+
+
+
+
 	public function history() {
 		$this->getElement ( 'history' )->click ();
 		$this->getElement ( 'severity' )->click ();
