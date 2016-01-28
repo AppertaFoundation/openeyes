@@ -172,7 +172,7 @@ Feature: Create New Examination Regression Tests
       |uname|pwd  |site  |firm              |speciality|event      |sectionName1 |sectionName2  |sectionName3|sectionName4|sectionName5       |sectionName6|sectionName7|
       |admin|admin|Ludwig|A Dulku (Glaucoma)|glaucoma  |Examination|comorbidities|visualFunction|colourVision|visualAcuity|intraocularPressure|dilation    |refraction  |
 
-  @EXAM_Route_3
+    @EXAM_Route_3
   Scenario Outline: Route 3:Login and create a new Examination Event
             Site:1 Barking
             Firm:1 Paul Godinho (Cataract)
@@ -194,36 +194,41 @@ Feature: Create New Examination Regression Tests
     And I choose to expand the "<sectionName1>" section
     Then I Add a Comorbiditiy of "8"
 
-    Then I choose to expand the Visual Function section
-
+    #Then I choose to expand the Visual Function section
+    Then I choose to expand the "<sectionName2>" section
 
     And I add Left RAPD comments of "Left RAPD Automation test comments"
 
 
     And I add Right RAPD comments of "Left RAPD Automation test comments"
 
-    Then I choose to expand the Colour Vision section
+    #Then I choose to expand the Colour Vision section
+    Then I choose to expand the "<sectionName3>" section
     And I choose a Left Colour Vision of "1"
 
     And I choose a Right Colour Vision of "2"
 
 
-    Then I choose to expand the Visual Acuity section
+    #Then I choose to expand the Visual Acuity section
+    Then I choose to expand the "<sectionName4>" section
     And I select a Visual Acuity of "1"
     Then I choose a left Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
     Then I choose a right Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
 
-    Then I choose to expand the Intraocular Pressure section
+    #Then I choose to expand the Intraocular Pressure section
+    Then I choose to expand the "<sectionName5>" section
     Then I choose a left Intraocular Pressure of "8" and Instrument "4"
     Then I choose a right Intraocular Pressure of "77" and Instrument "1"
 
-    Then I choose to expand the Dilation section
+    #Then I choose to expand the Dilation section
+    Then I choose to expand the "<sectionName6>" section
     Then I choose left Dilation of "5" and drops of "4"
     Then I choose right Dilation of "2" and drops of "2"
     And I enter a left Dilation time of "08:35"
     And I enter a right Dilation time of "22:12"
 
-    Then I choose to expand the Refraction section
+    #Then I choose to expand the Refraction section
+    Then I choose to expand the "<sectionName7>" section
     Then I enter left Refraction details of Sphere "-1" integer "11" fraction "0.50"
     And I enter left cylinder details of of Cylinder "1" integer "4" fraction "0.25"
     Then I enter left Axis degrees of "56"
@@ -235,14 +240,15 @@ Feature: Create New Examination Regression Tests
     Then I enter right Axis degrees of "167"
     And I enter a right type of "3"
 
-    Then I choose to expand the Conclusion section
+    #Then I choose to expand the Conclusion section
+    Then I choose to expand the "<sectionName8>" section
     And I choose a Conclusion option of "booked for first eye, "
 
     Then I Save the Examination and confirm it has been created successfully
 
   Examples:
-  |uname|pwd  |site   |firm                   |speciality|event      |sectionName1 |
-  |admin|admin|Barking|Paul Godinho (Cataract)|cataract  |Examination|comorbidities|
+  |uname|pwd  |site   |firm                   |speciality|event      |sectionName1 |sectionName2  |sectionName3|sectionName4|sectionName5       |sectionName6|sectionName7|sectionName8      |
+  |admin|admin|Barking|Paul Godinho (Cataract)|cataract  |Examination|comorbidities|visualFunction|colourVision|visualAcuity|intraocularPressure|dilation    |refraction  |conclusion        |
 ##
   @EXAM_Route_4
   Scenario Outline: Route 4: Login and create a new Examination Event
