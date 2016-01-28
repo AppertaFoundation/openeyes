@@ -59,5 +59,19 @@ bin/oe-git-status
 composer.phar
 features/bootstrap/Features/Templates/CODINGONLY.feature
 selenium-server-standalone-2.35.0.jar
+<<<<<<< HEAD
 assets
 bin
+=======
+bin/jsonlint
+bin/pdepend
+bin/phpcbf
+bin/phpcpd
+bin/phpcs
+bin/phpdoc
+bin/phpdoc.php
+bin/phploc
+bin/phpmd
+bin/validate-json
+bin/yiic
+>>>>>>> refs/remotes/origin/develop
