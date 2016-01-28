@@ -247,8 +247,8 @@ Feature: Create New Examination Regression Tests
     Then I Save the Examination and confirm it has been created successfully
 
   Examples:
-  |uname|pwd  |site   |firm                   |speciality|event      |sectionName1 |sectionName2  |sectionName3|sectionName4|sectionName5       |sectionName6|sectionName7|sectionName8      |
-  |admin|admin|Barking|Paul Godinho (Cataract)|cataract  |Examination|comorbidities|visualFunction|colourVision|visualAcuity|intraocularPressure|dilation    |refraction  |conclusion        |
+  |uname|pwd  |site   |firm                   |speciality|event      |sectionName1 |sectionName2   |sectionName3 |sectionName4 |sectionName5        |sectionName6|sectionName7|sectionName8      |
+  |admin|admin|Barking|Paul Godinho (Cataract)|cataract  |Examination|Comorbidities|Visual Function|Colour Vision|Visual Acuity|Intraocular Pressure|Dilation    |Refraction  |Conclusion        |
 ##
   @EXAM_Route_4
   Scenario Outline: Route 4: Login and create a new Examination Event
