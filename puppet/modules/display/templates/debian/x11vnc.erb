@@ -1,0 +1,25 @@
+#!/bin/sh
+
+DISPLAY=:<%= scope.lookupvar('display::display') %>
+
+BINARY=/usr/bin/x11vnc
+ARGS="-forever -display $DISPLAY"
+PIDFILE=/var/run/x11vnc.pid
+
+case "$1" in
+  start)
+    start-stop-daemon --start --quiet --pidfile $PIDFILE --make-pidfile --background --exec $BINARY -- $ARGS
+    ;;
+  stop)
+    start-stop-daemon --stop --quiet --pidfile $PIDFILE
+    ;;
+  restart)
+    $0 stop
+    $0 start
+    ;;
+  *)
+    echo "Usage: /etc/init.d/x11vnc {start|stop|restart}"
+    exit 1
+esac
+
+exit 0

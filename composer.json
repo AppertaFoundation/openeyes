@@ -3,23 +3,7 @@
   "description": "Electronic Patient Record system for use in Ophthalmology clinics",
   "minimum-stability": "dev",
   "require": {
-    "openeyes/module-installer": "*",
-    "yiisoft/yii": "1.1.14",
-    "openeyes/oph-ci-examination": "v1.11.2",
-    "openeyes/oph-co-correspondence": "v1.11.2",
-    "openeyes/oph-ci-phasing": "v1.11.2",
-    "openeyes/oph-co-therapyapplication": "v1.11.2",
-    "openeyes/oph-dr-prescription": "v1.11.2",
-    "openeyes/oph-ou-anaestheticsatisfactionaudit": "v1.11.2",
-    "openeyes/oph-tr-consent": "v1.11.2",
-    "openeyes/oph-tr-operationnote": "v1.11.2",
-    "openeyes/oph-tr-operationbooking": "v1.11.2",
-    "openeyes/oph-tr-intravitrealinjection": "v1.11.2",
-    "openeyes/oph-tr-laser": "v1.11.2",
-    "openeyes/patient-ticketing": "v1.11.2",
-    "openeyes/oph-in-visualfields": "v1.11.2",
-    "openeyes/eyedraw": "v1.11.2",
-    "openeyes/oph-in-biometry": "v1.11.2"
+    "yiisoft/yii": "1.1.14"
   },
   "require-dev": {
     "behat/behat": "~2",

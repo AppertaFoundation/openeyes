@@ -20,6 +20,8 @@ Feature: Create New Prescription
     Then I expand the Glaucoma sidebar
     And I add a New Event "Prescription"
 
+    Then I select OK to Duplicate prescription if requested
+
     Then I select a Common Drug "75"
     And I select a Standard Set of "10"
 
@@ -54,6 +56,8 @@ Feature: Create New Prescription
     Then I expand the Cataract sidebar
     And I add a New Event "Prescription"
 
+    Then I select OK to Duplicate prescription if requested
+
     Then I choose to filter by type "28"
     And I select the No preservative checkbox
 
@@ -87,6 +91,8 @@ Feature: Create New Prescription
 
     Then I expand the Medical Retinal sidebar
     And I add a New Event "Prescription"
+
+    Then I select OK to Duplicate prescription if requested
 
     Then I select a Common Drug "176"
 
@@ -129,6 +135,9 @@ Feature: Create New Prescription
 
     Then I expand the Glaucoma sidebar
     And I add a New Event "Prescription"
+
+    Then I select OK to Duplicate prescription if requested
+
     Then I select a Common Drug "60"
     
     Then I choose to filter by type "28"

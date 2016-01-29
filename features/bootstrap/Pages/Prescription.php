@@ -86,8 +86,11 @@ class Prescription extends OpenEyesPage {
 					'xpath' => "//*[@class='prescription-item prescriptionItem even']//*[contains(text(),'dexamethasone 0.1% eye drops')]" 
 			),
 			'repeatPrescription' => array (
-					'xpath' => "//*[@id='repeat_prescription']" 
-			) 
+					'xpath' => "//*[@id='repeat_prescription']"
+			),
+            'duplicatePrescriptionOk' => array (
+                'xpath' => "//*[@id='prescription-yes']"
+            ),
 	)
 	;
 	public function filterBy($filter) {
@@ -205,4 +208,8 @@ class Prescription extends OpenEyesPage {
 			throw new BehaviorException ( "WARNING!!!  Repeat Prescription has NOT been applied!!  WARNING!!" );
 		}
 	}
+
+    public function duplicatePrescriptionOk() {
+        $this->popupOk('duplicatePrescriptionOk');
+    }
 }

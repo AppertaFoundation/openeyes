@@ -11,6 +11,7 @@ module.exports = {
 			noLineComments: false,
 			importPath: [
 				'protected/assets/components/foundation/scss',
+                		'protected/assets/components/font-awesome/scss',
 				'protected/assets/components/material-design-lite/src'
 			]
 		}

@@ -86,29 +86,30 @@ $config = array(
 		'OphCiExamination' => array( 'class' => '\OEModule\OphCiExamination\OphCiExaminationModule', ),
 		'OphCoCorrespondence',
 		'OphCiPhasing',
-		'OphCoTherapyapplication',
+        'OphTrIntravitrealinjection',
+        'OphCoTherapyapplication',
 		'OphDrPrescription',
-		'OphOuAnaestheticsatisfactionaudits',
+		'OphOuAnaestheticsatisfactionaudit',
 		'OphTrConsent',
 		'OphTrOperationnote',
 		'OphTrOperationbooking',
-		'OphTrIntravitrealinjection',
 		'OphTrLaser',
 		'PatientTicketing' => array( 'class' => '\OEModule\PatientTicketing\PatientTicketingModule', ),
 		'OphInVisualfields',
+        'OphCoMessaging' => array( 'class' => '\OEModule\OphCoMessaging\OphCoMessagingModule', )
 	),
 
 	'params'=>array(
 		//'pseudonymise_patient_details' => false,
 		//'ab_testing' => false,
-		'auth_source' => 'LDAP',
+		'auth_source' => 'BASIC',
 		// This is used in contact page
 		'ldap_server' => 'ldap.example.com',
 		//'ldap_port' => '',
 		'ldap_admin_dn' => 'CN=openeyes,CN=Users,dc=example,dc=com',
 		'ldap_password' => '',
 		'ldap_dn' => 'CN=Users,dc=example,dc=com',
-		'environment' => 'live',
+		'environment' => 'dev',
 		'google_analytics_account' => '',
 		'local_users' => array('admin','username'),
 		//'log_events' => true,
@@ -116,6 +117,8 @@ $config = array(
 		//'default_site_code' => '',
 		'specialty_sort' => array(130, 'SUP'),
 		'OphCoTherapyapplication_sender_email' => array('email@example.com' => 'Test'),
+		// flag to turn on drag and drop sorting for dashboards
+		// 'dashboard_sortable' => true
 	),
 );
 

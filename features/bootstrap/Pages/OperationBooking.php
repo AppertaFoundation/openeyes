@@ -271,13 +271,9 @@ class OperationBooking extends OpenEyesPage {
 		$this->getSession ()->wait ( 15000, "window.$ && $('.event-title').html() == 'Schedule Operation' " );
 	}
 	public function duplicateProcedureOk() {
-		if ($this->isDuplicateProcedurePopUpShown ()) {
-			$this->getElement ( 'duplicateProcedureOk' )->click ();
-		}
-	}
-	public function isDuplicateProcedurePopUpShown() {
-		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'duplicateProcedureOk' )->getXpath () );
-	}
+        $this->popupOk('duplicateProcedureOk');
+    }
+
 	public function EmergencyList() {
 		$this->getElement ( 'EmergencyList' )->selectOption ( "EMG" );
 		// alert is not happening anymore so call is commented out

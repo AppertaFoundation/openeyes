@@ -1,6 +1,35 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+$puppet_install_script = <<SCRIPT
+apt-get install --yes lsb-release
+DISTRIB_CODENAME=$(lsb_release --codename --short)
+DEB="puppetlabs-release-${DISTRIB_CODENAME}.deb"
+DEB_PROVIDES="/etc/apt/sources.list.d/puppetlabs.list"
+if [ ! -e $DEB_PROVIDES ]
+then
+    # Print statement useful for debugging, but automated runs of this will interpret any output as an error
+    # print "Could not find $DEB_PROVIDES - fetching and installing $DEB"
+    wget -q http://apt.puppetlabs.com/$DEB
+    sudo dpkg -i $DEB
+fi
+sudo apt-get update
+sudo apt-get install --yes puppet=3.8.4-1puppetlabs1
+SCRIPT
+
+# quick solution (hopefully) for installing the chromedriver for use with selenium
+$chromedriver_install_script = <<SCRIPT
+if [ ! -e "/usr/bin/chromedriver" ]
+then
+    sudo apt-get install unzip
+    wget -N http://chromedriver.storage.googleapis.com/2.20/chromedriver_linux64.zip -P /tmp/
+    unzip -o /tmp/chromedriver_linux64.zip -d /tmp
+    chmod a+x /tmp/chromedriver
+    sudo mv /tmp/chromedriver /usr/local/share/chromedriver
+    sudo ln -fs /usr/local/share/chromedriver /usr/bin/chromedriver
+fi
+SCRIPT
+
 Vagrant.configure("2") do |config|
 
 	vagrant_version = Vagrant::VERSION.sub(/^v/, '')
@@ -17,9 +46,17 @@ Vagrant.configure("2") do |config|
 
 	config.vm.synced_folder "./", "/var/www", id: "vagrant-root"
 
+    # for display
+    config.vm.network :forwarded_port, guest: 5900, host: 5900
+
 	config.vm.provider "virtualbox" do |v|
 		v.customize ["modifyvm", :id, "--memory", 2024]
+		# to enable selenium testing
+		v.gui = true
 	end
+
+    config.vm.provision "shell", inline: $puppet_install_script
+    config.vm.provision "shell", inline: $chromedriver_install_script
 
 	config.vm.provision :puppet do |puppet|
 		puppet.manifests_path = "puppet"

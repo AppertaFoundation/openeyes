@@ -1,0 +1,15 @@
+{
+  "Gemfile": "af636da1c2ce3f6f88267d9dc5580a76",
+  "LICENSE": "9b1435eb48024dfa60ca81a6378f13eb",
+  "Modulefile": "23172758818b45964921d863df8c251c",
+  "README.md": "69e1b0232d8b4ba943a18b278cd574d6",
+  "Rakefile": "0254db5d3fc38c67a2c160d7296a24f8",
+  "circle.yml": "028cbbacc524418f9760b58e66018e32",
+  "manifests/config.pp": "589ec5190354fef4f747732bb409aca5",
+  "manifests/init.pp": "6dea0497bdff6fa1cd84d37b2b332b72",
+  "manifests/install.pp": "7e680da8d063965a85cac547b24cd2b6",
+  "manifests/params.pp": "4b9c5440d5c3b10e888e986e13ed980a",
+  "metadata.json": "98294feda2475dd2af062b9ddf4d3f0a",
+  "spec/classes/chrome_browser_spec.rb": "9badcbd8c834db235ecd2fb74d044b74",
+  "spec/spec_helper.rb": "0db89c9a486df193c0e40095422e19dc"
+}
