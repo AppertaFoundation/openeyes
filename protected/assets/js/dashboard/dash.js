@@ -18,10 +18,10 @@
 
 $(document).ready(function() {
     OpenEyes.Dash.init('#dash-grid');
-    OpenEyes.Dash.addBespokeReport('http://localhost/report/ajaxReport?report=pcrrisk', 'http://d3js.org/d3.v3.min.js');
+    OpenEyes.Dash.addBespokeReport('http://localhost/report/ajaxReport?report=pcr_risk');
     OpenEyes.Dash.addVisualizeReport('/public/Cataract_Complications_Report');
     OpenEyes.Dash.addVisualizeReport('/public/PPOR_POR_Report');
-    OpenEyes.Dash.addBespokeReport('http://localhost/report/ajaxReport?report=visual_acuity', 'https://code.highcharts.com/highcharts.js');
+    OpenEyes.Dash.addBespokeReport('http://localhost/report/ajaxReport?report=visual_acuity');
 
 });
 

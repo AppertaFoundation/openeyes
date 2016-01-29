@@ -17,9 +17,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
-
-<script src="https://code.highcharts.com/highcharts.js"></script>
 
 <div id="container" style="height: 400px; min-width: 310px; max-width: 600px; margin: 0 auto"></div>
 
@@ -33,7 +30,7 @@
                 enabled: false
             },
             title: {
-                text: 'PPOR - POR'
+                text: 'Visual Acuity'
             },
             xAxis: {
                 gridLineWidth: 1,
