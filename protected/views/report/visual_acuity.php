@@ -18,10 +18,10 @@
  */
 ?>
 
-<div id="container" style="height: 400px; min-width: 310px; max-width: 600px; margin: 0 auto"></div>
+<div id="visual-acuity" style="height: 400px; min-width: 310px; max-width: 600px; margin: 0 auto"></div>
 
 <script>
-        $('#container').highcharts({
+        $('#visual-acuity').highcharts({
             chart: {
                 type: 'scatter',
                 zoomType: 'xy'

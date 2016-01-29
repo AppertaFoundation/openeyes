@@ -1,9 +1,9 @@
 
 
-<div id="container" style="height: 400px; min-width: 310px; max-width: 600px; margin: 0 auto"></div>
+<div id="pcr-risk" style="height: 400px; min-width: 310px; max-width: 600px; margin: 0 auto"></div>
 
 <script type="text/javascript">
-    $('#container').highcharts({
+    $('#pcr-risk').highcharts({
         title: {
             text: 'Cataract Audit',
             x: -20 //center
