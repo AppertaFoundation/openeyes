@@ -1,0 +1,49 @@
+/* line 17, ../sass/dashboard.scss */
+.drawer {
+  border: none;
+}
+/* line 21, ../sass/dashboard.scss */
+.drawer .mdl-navigation .mdl-navigation__link {
+  display: -webkit-box !important;
+  display: -webkit-flex !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.56);
+  font-weight: 500;
+}
+/* line 37, ../sass/dashboard.scss */
+.drawer .mdl-navigation .mdl-navigation__link:hover {
+  background-color: #00BCD4;
+  color: #37474F;
+}
+/* line 41, ../sass/dashboard.scss */
+.drawer .mdl-navigation .mdl-navigation__link i {
+  margin-right: 25px;
+}
+
+/* line 48, ../sass/dashboard.scss */
+.mdl-layout--fixed-drawer > .mdl-layout__content {
+  margin-left: 0;
+}
+
+/* line 52, ../sass/dashboard.scss */
+.mdl-layout--fixed-drawer.is-upgraded:not(.is-small-screen) > .mdl-layout__header {
+  margin-left: 0;
+  width: 100%;
+}
+
+/* line 59, ../sass/dashboard.scss */
+#dash-grid .mdl-cell {
+  background-color: white;
+  min-height: 200px;
+  padding: 0;
+}

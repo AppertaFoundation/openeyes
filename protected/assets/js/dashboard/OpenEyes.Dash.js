@@ -1,0 +1,149 @@
+/**
+ * OpenEyes
+ *
+ * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+ * (C) OpenEyes Foundation, 2011-2013
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ */
+
+(function(exports) {
+    /**
+     * OpenEyes Dash namespace
+     * @namespace OpenEyes.Dash
+     * @memberOf OpenEyes
+     */
+    var Dash = {
+        visualize: false,
+        reports: {},
+        itemWrapper: '<div id="{$id}" class="mdl-cell mdl-cell--{$size}-col"><div class="mdl-spinner mdl-js-spinner is-active"></div></div>'
+    };
+
+    function appendDashWrapper(report, size) {
+        var container,
+            id;
+
+        if(size == undefined){
+            size = 6;
+        }
+
+        id = report.replace(new RegExp('[\W/:?=]', 'g'), '_');
+        Dash.$container.append($(Dash.itemWrapper.replace('{$id}', id).replace('{$size}', size)));
+        container = '#' + id;
+        return container;
+    }
+
+    /**
+     * Load the visualize reports that have been listed.
+     */
+    function loadVisualizeReports(){
+        var report;
+
+        if(Dash.visualize){
+            for(var key in Dash.reports){
+                if(!Dash.reports.hasOwnProperty(key)){
+                    continue;
+                }
+                report = Dash.v.report({
+                    resource: key,
+                    container: Dash.reports[key],
+                    error: Dash.visualizeError
+                });
+
+                delete Dash.reports[key];
+            }
+        }
+    }
+
+    /**
+     * Loads a piece of HTML in to a dash container.
+     *
+     * @param report
+     * @param container
+     */
+    function loadBespokeHtml(report, container) {
+        $.ajax({
+                url: report,
+                dataType: 'html',
+                success: function (data, textStatus, jqXHR) {
+                    $(container).html(data);
+                }
+            }
+        );
+    }
+
+    /**
+     * Inits the Dash.
+     *
+     * @param container
+     */
+    Dash.init = function(container)
+    {
+        Dash.$container = $(container);
+    };
+
+    /**
+     * Loads the visualize library
+     */
+    Dash.loadVisualize = function()
+    {
+        $.getScript('http://reports.acrossopeneyes.com:8080/jasperserver-pro/client/visualize.js', function( data, textStatus, jqxhr){
+            Dash.visualize = true;
+            visualize({
+                auth: {
+                    name: 'superuser',
+                    password: 'superuser'
+                }
+            }, function(v){
+                Dash.visualize = true;
+                Dash.v = v;
+                loadVisualizeReports();
+            });
+        });
+    };
+
+    /**
+     * Deal with an error from visualize
+     * @param err
+     */
+    Dash.visualizeError = function(err){
+        alert(err.message);
+    };
+
+    /**
+     * Add a visualize report to the list
+     *
+     * @param report
+     */
+    Dash.addVisualizeReport = function(report)
+    {
+        Dash.reports[report] = appendDashWrapper(report);
+        loadVisualizeReports();
+    };
+
+    Dash.addBespokeReport = function(report, dependency, size)
+    {
+        var container;
+
+        container = appendDashWrapper(report, size);
+        if(dependency){
+            $.getScript(dependency, function(){
+                loadBespokeHtml(report, container);
+            });
+        } else {
+            loadBespokeHtml(report, container);
+        }
+
+    };
+
+    exports.Dash = Dash;
+}(this.OpenEyes));
