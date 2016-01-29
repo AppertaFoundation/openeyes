@@ -18,10 +18,10 @@
 
 $(document).ready(function() {
     OpenEyes.Dash.init('#dash-grid');
-    OpenEyes.Dash.addBespokeReport('http://localhost/report/ajaxReport?report=pcr_risk');
+    OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=pcr_risk');
     OpenEyes.Dash.addVisualizeReport('/public/Cataract_Complications_Report');
     OpenEyes.Dash.addVisualizeReport('/public/PPOR_POR_Report');
-    OpenEyes.Dash.addBespokeReport('http://localhost/report/ajaxReport?report=visual_acuity');
+    OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=visual_acuity');
 
 });
 
