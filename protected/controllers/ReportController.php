@@ -23,7 +23,7 @@ class ReportController extends BaseReportController
 	{
 		return array(
 			array('allow',
-				'actions' => array('index', 'diagnoses', 'runReport', 'downloadReport'),
+				'actions' => array('index', 'diagnoses', 'runReport', 'downloadReport', 'ajaxReport'),
 				'roles' => array('admin','OprnGenerateReport'),
 			)
 		);
@@ -37,5 +37,15 @@ class ReportController extends BaseReportController
 	public function actionDiagnoses()
 	{
 		$this->render('diagnoses');
+	}
+
+	public function actionAjaxReport()
+	{
+		$report = Yii::app()->request->getParam('report');
+		if($report && file_exists(Yii::getPathOfAlias('application.views.report').'/'.$report.'.php')){
+			$this->renderPartial('//report/'.$report);
+		} else {
+			throw new CHttpException(404, 'Report not found');
+		}
 	}
 }
