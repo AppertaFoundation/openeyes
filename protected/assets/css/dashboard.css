@@ -47,3 +47,15 @@
   min-height: 200px;
   padding: 0;
 }
+/* line 65, ../sass/dashboard.scss */
+#dash-grid .highcharts-xaxis-labels text, #dash-grid .highcharts-yaxis-labels text {
+  font-size: 0.8em !important;
+}
+/* line 69, ../sass/dashboard.scss */
+#dash-grid .highcharts-legend {
+  display: none !important;
+}
+/* line 72, ../sass/dashboard.scss */
+#dash-grid .highcharts-container text[x="590"] {
+  display: none;
+}

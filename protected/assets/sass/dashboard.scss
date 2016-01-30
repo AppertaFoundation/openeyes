@@ -61,4 +61,15 @@
     min-height: 200px;
     padding: 0;
   }
+  .highcharts-xaxis-labels, .highcharts-yaxis-labels {
+    text {
+      font-size: 0.8em !important;
+    }
+  }
+  .highcharts-legend {
+    display: none !important;
+  }
+  .highcharts-container text[x="590"] {
+    display: none;
+  }
 }

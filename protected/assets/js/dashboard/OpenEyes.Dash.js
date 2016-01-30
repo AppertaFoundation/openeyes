@@ -89,6 +89,13 @@
     Dash.init = function(container)
     {
         Dash.$container = $(container);
+        Highcharts.setOptions({
+            chart: {
+                style: {
+                    fontFamily: "'DejaVu Sans', Arial, Helvetica, sans-serif"
+                }
+            }
+        });
     };
 
     /**
