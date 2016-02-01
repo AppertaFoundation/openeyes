@@ -4,21 +4,27 @@ Feature: Create New Operation Booking Event
          Regression coverage of this event is approx 50%
 
   @OB_Route_1
-  Scenario: Route 1: Login and create a Operation Booking Anderson Glaucoma
+  Scenario Outline: Route 1: Login and create a Operation Booking Anderson Glaucoma
 
-    Given I am logged in as "admin" with site "Kings" and firm "Anderson Firm (Glaucoma)"
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "<uname>" and "<pwd>"
+    And I select Site "<siteName/Number>"
+    Then I select a firm of "<firmName/Number>"
 
-    Then I search for hospital number "1009465"
+    #Then I search for hospital number "1009465"
+    #Given I am logged in as "admin" with site "Kings" and firm "Anderson Firm (Glaucoma)"
 
-    Then I select the Latest Event
+    Then I search for hospital number "<hospNumber>"
 
-    Then I expand the Glaucoma sidebar
-    And I add a New Event "OpBooking"
+    Then I select Create or View Episodes and Events
 
-    Then I select Diagnosis Eyes of "Left"
+    Then I expand the "<speciality>" sidebar
+    And I add a New Event "<event>"
+
+    Then I select Diagnosis Eyes of "<diagEye>"
     And I select a Diagnosis of "30041005"
-    Then I select Operation Eyes of "Left"
-    And I select a Procedure of "41"
+    Then I select Operation Eyes of "<opEye>"
+    And I select a Procedure of "<procedure>"
 
     Then I select No to Consultant required
     And I select No for Any other doctor to do
@@ -33,7 +39,7 @@ Feature: Create New Operation Booking Event
 
     Then I select No to a Post Operative Stay
 
-    And I select a Operation Site of "1"
+    And I select a Operation Site of "<opSite>"
 
     Then I select a Priority of Urgent
 
@@ -49,29 +55,38 @@ Feature: Create New Operation Booking Event
     And I select an Available session time
 
 #    Then I select a Ward of "2"
-    And enter an admission time of "11:20"
-    Then I add Session comments of "Session Comments Session Comments Session Comments Session Comments Session Comments"
-    And I add Operation comments of "Operation Comments Operation Comments Operation Comments Operation Comments Operation Comments"
-    And enter RTT comments of "RTT Comments RTT Comments RTT Comments RTT Comments RTT Comments RTT Comments RTT Comments"
+    And enter an admission time of "<admTime>"
+    Then I add Session comments of "<sessionComments>"
+    And I add Operation comments of "<opComments>"
+    And enter RTT comments of "<RRTComments>"
 
     Then I confirm the operation slot
 
+    Examples:
+    |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality|event    |diagEye|opEye|procedure|opSite|admTime|sessionComments                  |opComments                           |RRTComments              |
+    |admin|admin|2              |3              |1009465   |glaucoma  |OpBooking|Left   |Left |41       |1     |11:20  |Session Comments Session Comments|Operation Comments Operation Comments|RTT Comments RTT Comments|
+
   @OB_Route_2
-  Scenario: Route 2: Login and create a Operation Booking Anderson Cataract
+  Scenario Outline: Route 2: Login and create a Operation Booking Anderson Cataract
 
-    Given I am logged in as "admin" with site "Queens" and firm "Anderson Firm (Cataract)"
+    #Given I am logged in as "admin" with site "Queens" and firm "Anderson Firm (Cataract)"
 
-    Then I search for hospital number "1009465"
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "<uname>" and "<pwd>"
+    And I select Site "<siteName/Number>"
+    Then I select a firm of "<firmName/Number>"
 
-    Then I select the Latest Event
+    Then I search for hospital number "<hospNumber>"
 
-    Then I expand the Cataract sidebar
-    And I add a New Event "OpBooking"
+    Then I select Create or View Episodes and Events
 
-    Then I select Diagnosis Eyes of "Right"
+    Then I expand the "<speciality>" sidebar
+    And I add a New Event "<event>"
+
+    Then I select Diagnosis Eyes of "<diagEye>"
     And I select a Diagnosis of "24010005"
-    Then I select Operation Eyes of "Right"
-    And I select a Procedure of "79"
+    Then I select Operation Eyes of "<opEye>"
+    And I select a Procedure of "<procedure>"
 
     Then I select Yes to Consultant required
     And I select "Anderson Andrew" for "Named Consultant"
@@ -88,11 +103,11 @@ Feature: Create New Operation Booking Event
 
     Then I select Yes to a Post Operative Stay
 
-    And I select a Operation Site of "2"
+    And I select a Operation Site of "<opSite>"
 
     Then I select a Priority of Routine
 
-    Then I add comments of "Insert test comments here"
+    Then I add comments of "<comments>"
 
     And I select Yes for Admission discussed with patient
 
@@ -105,27 +120,31 @@ Feature: Create New Operation Booking Event
     And I select an Available theatre slot date
     And I select an Available session time
 
-    Then I add Session comments of "Insert session comments here"
-    And I add Operation comments of "Insert operation comments here"
+    Then I add Session comments of "<sessionComments>"
+    And I add Operation comments of "<opComments>"
 
     Then I confirm the operation slot
 
+  Examples:
+  |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality|event    |diagEye|opEye|procedure|opSite|comments |sessionComments                  |opComments                           |
+  |admin|admin|1              |1              |1009465   |cataract  |OpBooking|Right  |Right|79       |2     |Test Test|Session Comments Session Comments|Operation Comments Operation Comments|
+
   @OB_Route_3
-  Scenario: Route 3: Login and create a Operation Booking Anderson Medical Retinal
+  Scenario Outline: Route 3: Login and create a Operation Booking Anderson Medical Retinal
 
-    Given I am logged in as "admin" with site "Kings" and firm "Anderson Firm (Medical Retinal)"
+    Given I am logged in as "<uname>" with site "<siteName/Number>" and firm "<firmName/Number>"
 
-    Then I search for hospital number "1009465"
+    Then I search for hospital number "<hospNumber>"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
-    Then I expand the Medical Retinal sidebar
-    And I add a New Event "OpBooking"
+    Then I expand the "<speciality>" sidebar
+    And I add a New Event "<event>"
 
-    Then I select Diagnosis Eyes of "Both"
+    Then I select Diagnosis Eyes of "<diagEye>"
     And I select a Diagnosis of "255024002"
-    Then I select Operation Eyes of "Both"
-    And I select a Procedure of "327"
+    Then I select Operation Eyes of "<opEye>"
+    And I select a Procedure of "<procedure>"
 
     Then I select No to Consultant required
     And I select No for Any other doctor to do
@@ -140,11 +159,11 @@ Feature: Create New Operation Booking Event
 
     Then I select No to a Post Operative Stay
 
-    And I select a Operation Site of "2"
+    And I select a Operation Site of "<opSite>"
 
     Then I select a Priority of Urgent
 
-    Then I add comments of "Insert test comments here"
+    Then I add comments of "<comments>"
 
     And I select Yes for Admission discussed with patient
 
@@ -158,7 +177,11 @@ Feature: Create New Operation Booking Event
 
     And I select an Available session time
     
-    Then I add Session comments of "Insert session comments here"
-    And I add Operation comments of "Insert operation comments here"
+    Then I add Session comments of "<sessionComments>"
+    And I add Operation comments of "<opComments>"
 
     Then I confirm the operation slot
+
+  Examples:
+  |uname|pwd  |siteName/Number|firmName/Number                |hospNumber|speciality    |event    |diagEye|opEye|procedure|opSite|comments |sessionComments                  |opComments                           |
+  |admin|admin|Kings          |Anderson Firm (Medical Retinal)|1009465   |medicalRetinal|OpBooking|Both   |Both |327      |2     |Test Test|Session Comments Session Comments|Operation Comments Operation Comments|

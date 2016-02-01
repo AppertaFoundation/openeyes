@@ -5,6 +5,7 @@ use Behat\MinkExtension\Context\MinkContext;
 
 use Behat\Mink\Driver\Selenium2Driver;
 use \SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
+use Behat\Behat\Exception\BehaviorException;
 class AddingNewEventContext extends PageObjectContext {
 	public function __construct(array $parameters) {
 	}
@@ -62,6 +63,36 @@ class AddingNewEventContext extends PageObjectContext {
 	}
 	
 	/**
+	 * @Then /^I expand the "([^"]*)" sidebar$/
+	 */
+	public function iExpandTheSidebar($firm) {
+		/**
+		 *
+		 * @var AddingNewEvent $addNewEvent
+		 */
+		$addNewEvent = $this->getPage ( 'AddingNewEvent' );
+		if($firm==="cataract")
+		{
+			$addNewEvent->expandCataract ();
+		}
+		elseif($firm==="glaucoma")
+		{
+			$addNewEvent->expandGlaucoma ();
+		}
+		elseif($firm==="medicalRetinal")
+			{
+				$addNewEvent->expandMedicalRetinal ();
+			}
+		elseif($firm==="supportfirm")
+		{
+			$addNewEvent->expandSupportFirm ();
+		}
+		else{
+			throw new BehaviorException ( "WARNING!!! Invalid Event selected" );
+		}
+	}
+
+	/**
 	 * @Then /^I expand the Glaucoma sidebar$/
 	 */
 	public function iExpandTheGlaucomaSidebar() {
@@ -96,4 +127,4 @@ class AddingNewEventContext extends PageObjectContext {
 		$addNewEvent = $this->getPage ( 'AddingNewEvent' );
 		$addNewEvent->expandSupportFirm ();
 	}
-}
+	}

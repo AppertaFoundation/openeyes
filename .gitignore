@@ -25,6 +25,10 @@ tags
 /protected/config/local
 /protected/views/patient/custom/info/php
 /protected/commands/
+/protected/yii
+/protected/vendors
+/protected/assets
+*zip
 vendor
 /.sass-cache
 /node_modules
@@ -55,6 +59,10 @@ bin/oe-git-status
 composer.phar
 features/bootstrap/Features/Templates/CODINGONLY.feature
 selenium-server-standalone-2.35.0.jar
+<<<<<<< HEAD
+assets
+bin
+=======
 bin/jsonlint
 bin/pdepend
 bin/phpcbf
@@ -66,3 +74,4 @@ bin/phploc
 bin/phpmd
 bin/validate-json
 bin/yiic
+>>>>>>> refs/remotes/origin/develop

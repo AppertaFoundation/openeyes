@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes
  *
@@ -17,42 +16,48 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-class ComplicationTest extends CDbTestCase
-{
-	/**
-	 * @var Complication
-	 */
-	public $model;
+?>
+<div class="row">
+	<div class="large-12 column">
+		<h2>Results:</h2>
+	</div>
+</div>
 
-	/**
-	 * Sets up the fixture, for example, opens a network connection.
-	 * This method is called before a test is executed.
-	 */
-	protected function setUp() {
-		$this->model = new Complication;
-	}
-
-	/**
-	 * @covers Complication::model
-	 */
-	public function testModel() {
-		$this->assertEquals('Complication', get_class(Complication::model()), 'Class name should match model.');
-	}
-
-	/**
-	 * @covers Complication::tableName
-	 */
-	public function testTableName()
-	{
-		$this->assertEquals('complication', $this->model->tableName());
-	}
-
-	/**
-	 * @covers Complication::rules
-	 */
-	public function testRules()
-	{
-		$this->assertTrue($this->model->validate());
-		$this->assertEmpty($this->model->errors);
-	}
-}
+<div class="row">
+	<div class="large-12 column">
+		<div class="box generic">
+			<?php
+			if (empty($data['items'])) {?>
+				<div class="alert-box">
+					No Dicom logs match the search criteria.
+				</div>
+			<?php
+			} else {?>
+				<div class="pagination"></div>
+				<table class="grid audit-logs">
+					<thead>
+						<tr>
+							<th>File Name</th>
+							<th>Import Date</th>
+							<th>Study date</th>
+							<th>Station ID</th>
+							<th>Location</th>
+							<th>Type</th>
+							<th>Patient Number</th>
+							<th>Status</th>
+							<th>Study Instance ID</th>
+							<th>Comment</th>
+							<th><i>More</i></th>
+						</tr>
+					</thead>
+					<tbody id="auditListData">
+						<?php foreach ($data['files_data'] as $i => $log) {
+							$this->renderPartial('//dicomlogviewer/_list_row',array('i'=>$i,'log'=>$log));
+						}?>
+					</tbody>
+				</table>
+				<div class="pagination last"></div>
+			<?php }?>
+		</div>
+	</div>
+</div>

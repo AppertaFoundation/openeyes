@@ -1,6 +1,6 @@
-@editdelete @regression
+@editdelete     @reg1
 Feature: These tests set up Events, Edit and Delete them.
-@EDITS
+@EDITS @reg1
   Scenario: Route 1A: Login and create a Anaesthetic Satisfaction Audit Regression: Site 2 Kings, Firm 3 Anderson Glaucoma
 
     Given I am on the OpenEyes "master" homepage
@@ -10,7 +10,7 @@ Feature: These tests set up Events, Edit and Delete them.
 
     Then I search for patient name last name "Coffin," and first name "Violet"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     Then I expand the Glaucoma sidebar
     And I add a New Event "Satisfaction"
@@ -38,7 +38,7 @@ Feature: These tests set up Events, Edit and Delete them.
 
     Then I search for patient name last name "Coffin," and first name "Violet"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     And I edit the Last Event
 
@@ -65,7 +65,7 @@ Feature: These tests set up Events, Edit and Delete them.
 
     Then I search for patient name last name "Coffin," and first name "Violet"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     And I delete the Last Event
   @Route_2A
@@ -78,7 +78,7 @@ Feature: These tests set up Events, Edit and Delete them.
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     Then I expand the Glaucoma sidebar
     And I add a New Event "Consent"
@@ -103,7 +103,7 @@ Feature: These tests set up Events, Edit and Delete them.
 
     Then I search for patient name last name "Coffin," and first name "Violet"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     And I edit the Last Event
 
@@ -125,7 +125,7 @@ Feature: These tests set up Events, Edit and Delete them.
 
     Then I search for patient name last name "Coffin," and first name "Violet"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     And I delete the Last Event
 
@@ -138,7 +138,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I search for hospital number "1009465 "
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     Then I expand the Glaucoma sidebar
     And I add a New Event "Phasing"
@@ -170,7 +170,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I search for patient name last name "Coffin," and first name "Violet"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     And I edit the Last Event
 
@@ -201,7 +201,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I search for patient name last name "Coffin," and first name "Violet"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     And I delete the Last Event
   @Route_4A
@@ -242,7 +242,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I search for patient name last name "Coffin," and first name "Violet"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     And I edit the Last Event
 
@@ -266,7 +266,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I search for patient name last name "Coffin," and first name "Violet"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     And I delete the Last Event
 
@@ -280,7 +280,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     Then I expand the Cataract sidebar
     And I add a New Event "Intravitreal"
@@ -350,7 +350,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I search for patient name last name "Coffin," and first name "Violet"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     And I edit the Last Event
 
@@ -402,7 +402,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I search for patient name last name "Coffin," and first name "Violet"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     And I delete the Last Event
 
@@ -416,7 +416,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
     Then I expand the Cataract sidebar
     And I add a New Event "Examination"
 
@@ -475,7 +475,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     And I edit the Last Event
 
@@ -498,7 +498,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I search for patient name last name "Coffin," and first name "Violet"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     And I delete the Last Event
 
@@ -512,7 +512,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
     Then I expand the Glaucoma sidebar
     And I add a New Event "Laser"
 
@@ -534,7 +534,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     And I edit the Last Event
 
@@ -554,7 +554,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I search for patient name last name "Coffin," and first name "Violet"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     And I delete the Last Event
 #
@@ -568,7 +568,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     Then I expand the Glaucoma sidebar
     And I add a New Event "Prescription"
@@ -594,7 +594,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     And I edit the Last Event
 
@@ -616,7 +616,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I search for patient name last name "Coffin," and first name "Violet"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     And I delete the Last Event
 
@@ -627,7 +627,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     Then I expand the Glaucoma sidebar
     And I add a New Event "OpBooking"
@@ -680,7 +680,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     And I edit the Last Event
 
@@ -700,7 +700,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I search for patient name last name "Coffin," and first name "Violet"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     And I delete the Last Event
 
@@ -711,7 +711,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     Then I expand the Glaucoma sidebar
     And I add a New Event "OpBooking"
@@ -759,7 +759,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     And I edit the Last Event
 
@@ -781,6 +781,6 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I search for patient name last name "Coffin," and first name "Violet"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     And I delete the Last Event

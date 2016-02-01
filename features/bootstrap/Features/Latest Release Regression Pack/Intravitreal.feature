@@ -4,47 +4,54 @@ Feature: Create New Intravitreal Event
          Regression coverage of this event is approx 75%
 
   @Intravitreal_Route_0
-  Scenario: Route 0:  Error tests : Login and create a New Intravitreal Event
+  Scenario Outline: Route 0:  Error tests : Login and create a New Intravitreal Event
             Site 1:  Queens
             Firm 1:  Anderson Cataract
             Mandatory fields - validation error tests
 
     Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "1"
+    And I enter login credentials "<uname>" and "<pwd>"
+    And I select Site "<siteName/Number>"
+    Then I select a firm of "<firmName/Number>"
 
-    Then I search for hospital number "1009465"
+    Then I search for hospital number "<hospNumber>"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
-    Then I expand the Cataract sidebar
-    And I add a New Event "Intravitreal"
+    Then I expand the "<speciality>" sidebar
+    And I add a New Event "<event>"
 
+    #Then I select Add Right Side
     Then I select Add Left Side
 
     Then I Save the Intravitreal injection
 
     Then I Confirm that Intravitreal Mandatory fields validation error messages are displayed
 
-  Scenario: Route 1: Login and create a New Intravitreal Event
+    Examples:
+    |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality|event       |
+    |admin|admin|1              |1              |1009465   |cataract  |Intravitreal|
+
+
+  @Intravitreal_Route_1
+  Scenario Outline: Route 1: Login and create a New Intravitreal Event
             Site 1:  Queens
             Firm 1:  Anderson Cataract
 
     Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "1"
+    And I enter login credentials "<uname>" and "<pwd>"
+    And I select Site "<siteName/Number>"
+    Then I select a firm of "<firmName/Number>"
 
-    Then I search for hospital number "1009465"
+    Then I search for hospital number "<hospNumber>"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
-    Then I expand the Cataract sidebar
-    And I add a New Event "Intravitreal"
+    Then I expand the "<speciality>" sidebar
+    And I add a New Event "<event>"
 
 #    Then I remove the Right Side
-    Then I select Add Left Side
+    Then I select Add Right Side
     Then I choose Right Anaesthetic Type of Topical
     Then I choose Right Anaesthetic Type of LA
 
@@ -52,6 +59,7 @@ Feature: Create New Intravitreal Event
 
     And I choose Right Anaesthetic Agent "5"
 
+    Then I select Add Left Side
     Then I choose Left Anaesthetic Type of Topical
     Then I choose Left Anaesthetic Type of LA
 
@@ -98,22 +106,27 @@ Feature: Create New Intravitreal Event
     And I select Left Complications "5"
 
     Then I Save the Intravitreal injection and confirm it has been created successfully
-#
-  Scenario: Route 2: Login and create a New Intravitreal Event
+
+  Examples:
+  |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality|event       |
+  |admin|admin|1              |1              |1009465   |cataract  |Intravitreal|
+
+  @Intravitreal_Route_2
+  Scenario Outline: Route 2: Login and create a New Intravitreal Event
             Site 2:  Kings
             Firm 2:  Broom Glaucoma
 
     Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "2"
-    Then I select a firm of "2"
+    And I enter login credentials "<uname>" and "<pwd>"
+    And I select Site "<siteName/Number>"
+    Then I select a firm of "<firmName/Number>"
 
-    Then I search for hospital number "1009465"
+    Then I search for hospital number "<hospNumber>"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
-    Then I expand the Glaucoma sidebar
-    And I add a New Event "Intravitreal"
+    Then I expand the "<speciality>" sidebar
+    And I add a New Event "<event>"
 
     Then I select Add Right Side
     Then I choose Right Anaesthetic Type of Topical
@@ -170,23 +183,29 @@ Feature: Create New Intravitreal Event
 
     Then I Save the Intravitreal injection and confirm it has been created successfully
 
-  Scenario: Route 3: Login and create a New Intravitreal Event
+    Examples:
+      |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality|event       |
+      |admin|admin|2              |2              |1009465   |glaucoma  |Intravitreal|
+
+  
+  @Intravitreal_Route_3
+  Scenario Outline: Route 3: Login and create a New Intravitreal Event
             Site 1:  Queens
             Firm 1:  Anderson Cataract
 
     Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "1"
+    And I enter login credentials "<uname>" and "<pwd>"
+    And I select Site "<siteName/Number>"
+    Then I select a firm of "<firmName/Number>"
 
-    Then I search for hospital number "1009465"
+    Then I search for hospital number "<hospNumber>"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
-    Then I expand the Cataract sidebar
-    And I add a New Event "Intravitreal"
-
-    Then I select Add Left Side
+    Then I expand the "<speciality>" sidebar
+    And I add a New Event "<event>"
+    
+    Then I select Add Right Side
 
     Then I choose Right Anaesthetic Type of LA
 
@@ -194,6 +213,7 @@ Feature: Create New Intravitreal Event
 
     And I choose Right Anaesthetic Agent "5"
 
+    Then I select Add Left Side
     Then I choose Left Anaesthetic Type of LA
 
     Then I choose Left Anaesthetic Delivery of Subtenons
@@ -239,23 +259,29 @@ Feature: Create New Intravitreal Event
 
     Then I Save the Intravitreal injection and confirm it has been created successfully
 
-  Scenario: Route 4: Login and create a New Intravitreal Event
+    Examples:
+      |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality|event       |
+      |admin|admin|1              |1              |1009465   |cataract  |Intravitreal|
+
+
+  @Intravitreal_Route_4
+  Scenario Outline: Route 4: Login and create a New Intravitreal Event
             Site 1:  Queens
             Firm 4:  Anderson Medical Retinal
 
     Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "4"
+    And I enter login credentials "<uname>" and "<pwd>"
+    And I select Site "<siteName/Number>"
+    Then I select a firm of "<firmName/Number>"
 
-    Then I search for hospital number "1009465"
+    Then I search for hospital number "<hospNumber>"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
-    Then I expand the Medical Retinal sidebar
-    And I add a New Event "Intravitreal"
+    Then I expand the "<speciality>" sidebar
+    And I add a New Event "<event>"
 
-    Then I select Add Left Side
+    Then I select Add Right Side
     Then I choose Right Anaesthetic Type of Topical
 
     Then I choose Right Anaesthetic Delivery of Subconjunctival
@@ -307,25 +333,30 @@ Feature: Create New Intravitreal Event
 
     Then I Save the Intravitreal injection
 
-  Scenario: Route 5: Login and create a New Intravitreal Event
+    Examples:
+      |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality    |event       |
+      |admin|admin|1              |4              |1009465   |medicalRetinal|Intravitreal|
+
+  @Intravitreal_Route_5
+  Scenario Outline: Route 5: Login and create a New Intravitreal Event
   Site 1:  Queens
   Firm 1:  Anderson Cataract
   Other complication and comment fields
 
     Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "1"
+    And I enter login credentials "<uname>" and "<pwd>"
+    And I select Site "<siteName/Number>"
+    Then I select a firm of "<firmName/Number>"
 
-    Then I search for hospital number "1009465"
+    Then I search for hospital number "<hospNumber>"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
-    Then I expand the Cataract sidebar
-    And I add a New Event "Intravitreal"
+    Then I expand the "<speciality>" sidebar
+    And I add a New Event "<event>"
 
   #    Then I remove the Right Side
-    Then I select Add Left Side
+    Then I select Add Right Side
     Then I choose Right Anaesthetic Type of Topical
     Then I choose Right Anaesthetic Type of LA
 
@@ -333,6 +364,7 @@ Feature: Create New Intravitreal Event
 
     And I choose Right Anaesthetic Agent "5"
 
+    Then I select Add Left Side
     Then I choose Left Anaesthetic Type of Topical
     Then I choose Left Anaesthetic Type of LA
 
@@ -383,4 +415,10 @@ Feature: Create New Intravitreal Event
     Then I add Left Complications Comments of "Test Right complication comments"
 
     Then I Save the Intravitreal injection and confirm it has been created successfully
+
+    Examples:
+      |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality|event       |
+      |admin|admin|1              |1              |1009465   |cataract  |Intravitreal|
+
+
 

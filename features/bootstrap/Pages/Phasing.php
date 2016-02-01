@@ -161,7 +161,8 @@ class Phasing extends OpenEyesPage {
 	}
 	public function savePhasingAndConfirm() {
 		$this->getElement ( 'savePhasingEvent' )->click ();
-		
+
+		sleep(5);
 		if ($this->hasPhasingSaved ()) {
 			print "Phasing has been saved OK";
 		} 

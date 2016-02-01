@@ -3,20 +3,20 @@ Feature: Create New Laser event
 @LASER
          Regression coverage of this event is 100%
 
-  Scenario: Route 1: Login and create a Laser event
+  Scenario Outline: Route 1: Login and create a Laser event
             Site 2:  Kings
             Firm 3:  Anderson Glaucoma
 
     Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "2"
-    Then I select a firm of "3"
+    And I enter login credentials "<uname>" and "<pwd>"
+    And I select Site "<siteName/Number>"
+    Then I select a firm of "<firmName/Number>"
 
-    Then I search for hospital number "1009465"
+    Then I search for hospital number "<hospNumber>"
 
-    Then I select the Latest Event
-    Then I expand the Glaucoma sidebar
-    And I add a New Event "Laser"
+    Then I select Create or View Episodes and Events
+    Then I expand the "<speciality>" sidebar
+    And I add a New Event "<event>"
 
     Then I select a Laser site ID "1"
     And I select a Laser of "2"
@@ -30,42 +30,52 @@ Feature: Create New Laser event
 
     Then I save the Laser Event and confirm it has been created successfully
 
+    Examples:
+    |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality|event|
+    |admin|admin|2              |3              |1009465   |glaucoma  |Laser|
+
+
   @Laser_Route_2
-  Scenario: Route 2: Login and validate a Laser Event.
+  Scenario Outline: Route 2: Login and validate a Laser Event.
             Site 2:  Kings
             Firm 3:  Anderson Glaucoma
             Save without mandatory fields validation check
 
     Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "2"
-    Then I select a firm of "3"
+    And I enter login credentials "<uname>" and "<pwd>"
+    And I select Site "<siteName/Number>"
+    Then I select a firm of "<firmName/Number>"
 
-    Then I search for hospital number "1009465"
+    Then I search for hospital number "<hospNumber>"
 
-    Then I select the Latest Event
-    Then I expand the Glaucoma sidebar
-    And I add a New Event "Laser"
+    Then I select Create or View Episodes and Events
+    Then I expand the "<speciality>" sidebar
+    And I add a New Event "<event>"
 
     Then I save the Laser Event
 
     And I Confirm that the Laser Validation error messages are displayed
 
-  Scenario: Route 3: Login and create a Laser event
+    Examples:
+      |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality|event|
+      |admin|admin|2              |3              |1009465   |glaucoma  |Laser|
+
+  @Laser_Route_3
+  Scenario Outline: Route 3: Login and create a Laser event
             Site 1: Queens
             Firm 2: Broom Glaucoma
 
 
     Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "2"
+    And I enter login credentials "<uname>" and "<pwd>"
+    And I select Site "<siteName/Number>"
+    Then I select a firm of "<firmName/Number>"
 
-    Then I search for hospital number "1009465"
+    Then I search for hospital number "<hospNumber>"
 
-    Then I select the Latest Event
-    Then I expand the Glaucoma sidebar
-    And I add a New Event "Laser"
+    Then I select Create or View Episodes and Events
+    Then I expand the "<speciality>" sidebar
+    And I add a New Event "<event>"
 
     Then I select a Laser site ID "1"
     And I select a Laser of "2"
@@ -83,3 +93,9 @@ Feature: Create New Laser event
     Then I remove the Comments section
 
     Then I save the Laser Event and confirm it has been created successfully
+
+    Examples:
+      |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality|event|
+      |admin|admin|1              |2              |1009465   |glaucoma  |Laser|
+
+

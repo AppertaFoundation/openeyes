@@ -54,8 +54,9 @@ class Laser extends OpenEyesPage {
 					'xpath' => "//*[@id='Element_OphTrLaser_Comments_comments']" 
 			),
 			'collapseComments' => array (
-					'xpath' => "//*[@class='icon-button-small-mini-cross']" 
-			) 
+					//'xpath' => "//*[@class='icon-button-small-mini-cross']"
+					'xpath' => "//*[@class='button button-icon small js-remove-element 1']//*[@class='icon-button-small-mini-cross']"
+			)
 	);
 	public function laserSiteID($site) {
 		$this->getElement ( 'laserSiteID' )->selectOption ( $site );
@@ -81,7 +82,8 @@ class Laser extends OpenEyesPage {
 	}
 	public function saveLaserAndConfirm() {
 		$this->getElement ( 'saveLaser' )->click ();
-		
+
+		$this->getSession ()->wait ( 5000, 'window.$ && $.active == 0' );
 		if ($this->hasLaserSaved ()) {
 			print "Laser has been saved OK";
 		} 
@@ -125,8 +127,8 @@ class Laser extends OpenEyesPage {
 	}
 	public function removeComments() {
 		$element = $this->getElement ( 'collapseComments' );
-		$this->scrollWindowToElement ( $element );
-		$element->click ();
+		//$this->scrollWindowToElement ( $element );
+		$element->click();
 		$this->getSession ()->wait ( 5000, 'window.$ && $.active == 0' );
 	}
 }

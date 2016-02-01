@@ -1,4 +1,5 @@
 <?php
+include('OpenEyesPage.php');
 class AddingNewEvent extends OpenEyesPage {
 	protected $path = "OphCiExamination/default/view/{eventId}}";
 	protected $elements = array (
@@ -15,7 +16,7 @@ class AddingNewEvent extends OpenEyesPage {
 					'xpath' => "//*[@id='episodes_sidebar']//*[contains(text(),'Add episode')]" 
 			),
 			'expandCataractEpisode' => array (
-					'xpath' => "//*[@class='episode-title']//*[contains(text(),'Cataract')]" 
+					'xpath' => "//*[@class='episode-title']//*[contains(text(),'Cataract')]"
 			),
 			'expandGlaucomaEpisode' => array (
 					'xpath' => "//*[@class='episode-title']//*[contains(text(),'Glaucoma')]" 
@@ -73,7 +74,10 @@ class AddingNewEvent extends OpenEyesPage {
 			),
 			'therapyApplication' => array (
 					'xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Therapy Application')]" 
-			) 
+			),
+		'biometry' => array(
+			'xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Biometry')]"
+		)
 	);
 	public function addFirstNewEpisode() {
 		$this->getElement ( 'addFirstNewEpisode' )->click ();
@@ -123,6 +127,7 @@ class AddingNewEvent extends OpenEyesPage {
 			$this->getElement ( 'operationBooking' )->click ();
 		}
 		if ($event === "OpNote") {
+			sleep(3);
 			$this->getElement ( 'operationNote' )->click ();
 		}
 		if ($event === "Phasing") {
@@ -139,6 +144,9 @@ class AddingNewEvent extends OpenEyesPage {
 		}
 		if ($event === "Therapy") {
 			$this->getElement ( 'therapyApplication' )->click ();
+		}
+		if ($event === "Biometry") {
+			$this->getElement ( 'biometry' )->click ();
 		}
 	}
 }
