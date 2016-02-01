@@ -22,6 +22,9 @@
 
 <script>
         $('#visual-acuity').highcharts({
+            credits: {
+                enabled: false
+            },
             chart: {
                 type: 'scatter',
                 zoomType: 'xy'

@@ -4,6 +4,9 @@
 
 <script type="text/javascript">
     $('#pcr-risk').highcharts({
+        credits: {
+            enabled: false
+        },
         title: {
             text: 'Cataract Audit',
             x: -20 //center

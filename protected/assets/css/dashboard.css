@@ -55,7 +55,3 @@
 #dash-grid .highcharts-legend {
   display: none !important;
 }
-/* line 72, ../sass/dashboard.scss */
-#dash-grid .highcharts-container text[x="590"] {
-  display: none;
-}
