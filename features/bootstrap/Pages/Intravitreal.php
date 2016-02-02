@@ -298,9 +298,10 @@ class Intravitreal extends OpenEyesPage {
 	}
 	public function addRightSide() {
 		if ($this->isRightSideOpen ()) {
-			$element = $this->getElement ( 'addRightSide' );
-			$this->scrollWindowToElement ( $element );
-			$element->click ();
+			//$element =
+				$this->getElement ( 'addRightSide' )->click();
+			//$this->scrollWindowToElement ( $element );
+			//$element->click ();
 			$this->getSession ()->wait ( 5000, 'window.$ && $.active == 0' );
 		}
 		
@@ -518,12 +519,12 @@ class Intravitreal extends OpenEyesPage {
 		}
 	}
 	protected function hasIntravitrealErrorsDisplayed() {
-		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'anaestheticLeftTypeBlank' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'anaestheticLeftTypeDeliveryBlank' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'anaestheticLeftTypeAgent' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'anaestheticRightTypeBlank' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'anaestheticRightTypeDeliveryBlank' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'anaestheticRightTypeAgent' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'treatmentLeftPreInjectionAntisepticBlank' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'treatmentLeftPreInjectionSkinCleanserBlank' )->getXpath () ) && 
-		// (bool) $this->find('xpath', $this->getElement('treatmentLeftDrugBlank')->getXpath()) &&
-		// (bool) $this->find('xpath', $this->getElement('treatmentLeftNumberOfInjectionsBlank')->getXpath()) &&
-		( bool ) $this->find ( 'xpath', $this->getElement ( 'treatmentLeftBatchNumberBlank' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'treatementRightPreInjectionAntisepticBlank' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'treatmentRightPreInjectionSkinCleanserBlank' )->getXpath () ) && 
-		// (bool) $this->find('xpath', $this->getElement('treatmentRightDrugBlank')->getXpath()) &&
-		// (bool) $this->find('xpath', $this->getElement('treatmentRightNumberOfInjectionsBlank')->getXpath()) &&
+		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'leftInjectionGivenBy' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'rightInjectionGivenBy' )->getXpath () ) &&( bool ) $this->find ( 'xpath', $this->getElement ( 'anaestheticLeftTypeDeliveryBlank' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'anaestheticRightTypeDeliveryBlank' )->getXpath ()) &&
+		(bool) $this->find('xpath', $this->getElement('treatmentLeftDrugBlank')->getXpath()) &&
+		(bool) $this->find('xpath', $this->getElement('treatmentLeftNumberOfInjectionsBlank')->getXpath()) &&
+		(bool ) $this->find ( 'xpath', $this->getElement ( 'treatmentLeftBatchNumberBlank' )->getXpath () ) &&
+		(bool) $this->find('xpath', $this->getElement('treatmentRightDrugBlank')->getXpath()) &&
+		(bool) $this->find('xpath', $this->getElement('treatmentRightNumberOfInjectionsBlank')->getXpath()) &&
 		( bool ) $this->find ( 'xpath', $this->getElement ( 'treatmentRightBatchNumberBlank' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'anteriorSegmentLeftLensBlank' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'anteriorSegmentRightLensBlank' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'postInjectionExamLeftPostDropsBlank' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'postInjectionExamRightPostDropsBlank' )->getXpath () );
 	}
 	

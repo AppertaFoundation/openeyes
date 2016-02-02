@@ -182,15 +182,15 @@ class OperationBooking extends OpenEyesPage {
 			$this->getElement ( 'operationLeftEye' )->click ();
 		}
 	}
-
 	public function procedure($procedure) {
 		$this->getElement ( 'operationProcedure' )->setValue ( $procedure );
 		$this->getSession ()->wait ( 2000 );
 	}
 	public function consultantYes() {
-		$element = $this->getElement ( 'consultantYes' );
-		$this->scrollWindowToElement ( $element );
-		$element->click ();
+		//$element = $this->getElement ( 'consultantYes' );
+		//$this->scrollWindowToElement ( $element );
+		//$element->click ();
+		$this->getElement ( 'consultantYes' )->click ();
 	}
 	public function consultantNo() {
 		$this->getElement ( 'consultantNo' )->click ();

@@ -96,9 +96,18 @@ class Prescription extends OpenEyesPage {
 		'previousPrescription' => array (
 			'xpath' => 'repeatDrugCheck'
 		),
+
 		'prescriptionExist' => array(
-			'xpath' => "//*[@class='event-type']//*[@src='/assets/e7c09e12/img/small.png']"
+            'xpath' => "//*[@class='events']//*[@class='tooltip quicklook']//*[contains(text(),'Prescription')]"
+        ),
+
+		'prescriptionHover'=>array(
+			'xpath'=>"//*[@class='event-type']"
 		),
+		'prescriptionHoverText'=>array(
+			'xpath'=>"//*[@class='events-container show']//*[contains(text(),'Prescription')]"
+		),
+
 		'deleteEvent' => array(
 			'xpath' => "//*[@class=' delete event-action button button-icon small']"
 		),
@@ -107,6 +116,10 @@ class Prescription extends OpenEyesPage {
 		),
 		'prescriptionExistWarning' => array(
 			'xpath'=> "//*[@class='alert-box alert with-icon']//*[contains(text(),'WARNING: A Prescription has already been created for this patient today. ')]"
+		),
+
+		'prescriptionExistWarning2' => array(
+			'xpath'=> "//*[@class='alert-box alert with-icon']//*[contains(text(),'WARNING: Prescriptions have already been created for this patient today.')]"
 		),
 		'prescriptionExistsYesOption' => array(
 			'xpath'=>"//*[@id='prescription-yes']"
@@ -256,9 +269,12 @@ class Prescription extends OpenEyesPage {
 		$this->prescriptionExists();
 	}
 
+
 	protected function prescriptionExists(){
 		//if($this->find ( 'xpath', $this->getElement ( 'prescriptionExist' )->getXpath () )){
-		if($this->getElement ( 'prescriptionExist' )->isVisible()){
+		$this->getElement('prescriptionHover')->mouseOver();
+
+		if($this->getElement ( 'prescriptionHoverText' )->isVisible()){
 			$this->deletePrescription();
 			sleep(5);
 			$this->removePrescriptionEvents();
@@ -271,9 +287,8 @@ class Prescription extends OpenEyesPage {
 	}
 
 	protected function deletePrescription(){
-		if($this->getElement ( 'prescriptionExist' )->isVisible()){
-		$this->getElement ( 'prescriptionExist' )->click ();
-		}
+			$this->getElement ( 'prescriptionHover' )->click ();
+
 		sleep(3);
 		$this->getElement('deleteEvent')->click();
 		sleep(2);
@@ -282,9 +297,10 @@ class Prescription extends OpenEyesPage {
 
 	public function checkWarningShown(){
 		sleep(3);
-		if ($this->doesWarningShow()) {
+		if ($this->doesWarningShow()||$this->doesWarningShow2()) {
 			if($this->getElement('prescriptionExistsYesOption')->getXpath()&&$this->getElement('prescriptionExistsNoOption')->getXpath()){
 				print "Warning is displayed OK";
+
 			}
 			else{
 				print "Yes/No options missing on the warning!";
@@ -295,7 +311,11 @@ class Prescription extends OpenEyesPage {
 	}
 
 	protected function doesWarningShow(){
-		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'prescriptionExistWarning' )->getXpath () );
+		return ( bool ) ($this->find ( 'xpath', $this->getElement ( 'prescriptionExistWarning' )->getXpath () ) );
+	}
+
+	protected function doesWarningShow2(){
+		return ( bool ) ($this->find ( 'xpath', $this->getElement ( 'prescriptionExistWarning2' )->getXpath () ) );
 	}
 
 	public function iClickOnYes(){
@@ -311,6 +331,7 @@ class Prescription extends OpenEyesPage {
 
 	public function iClickOnNo(){
 		$this->getElement('prescriptionExistsNoOption')->click();
+		sleep(3);
 		if($this->iAmOnLatestEventPage()){
 			print "Test Passed!!";
 		}

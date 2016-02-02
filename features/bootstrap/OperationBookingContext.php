@@ -80,7 +80,7 @@ class OperationBookingContext extends PageObjectContext {
 		$operationBooking = $this->getPage ( 'OperationBooking' );
 		$operationBooking->consultantNo ();
 	}
-	
+
 	/**
 	 * @Given /^I select No for Any other doctor to do$/
 	 */
