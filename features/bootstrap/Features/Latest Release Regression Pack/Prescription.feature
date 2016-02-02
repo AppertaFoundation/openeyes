@@ -39,7 +39,7 @@ Feature: Create New Prescription
 
     Examples:
     |uname|pwd  |siteName/Number|firmName/Number      |hospNumber|speciality|event       |commonDrug|standardSet|dose|route|frequency|duration|presComm|
-    |admin|admin|Bridge Lane    |Amit Blann (Glaucoma)|1009465   |glaucoma  |Prescription|75        |10         |2   |1    |4        |1       |TEST    |
+    |admin|admin|Bridge Lane    |Amit Blann (Glaucoma)|1009465   |glaucoma  |Prescription|7         |10         |2   |1    |4        |3       |TEST    |
 
 
 
@@ -60,6 +60,10 @@ Feature: Create New Prescription
     Then I expand the "<speciality>" sidebar
     And I add a New Event "<event>"
 
+    #code for popup
+    Then I check prescription already exists
+
+
     Then I choose to filter by type "<filterType>"
     And I select the No preservative checkbox
 
@@ -77,8 +81,8 @@ Feature: Create New Prescription
     Then I Save the Prescription Draft and confirm it has been created successfully
 
     Examples:
-      |uname|pwd  |siteName/Number|firmName/Number         |hospNumber|speciality|event       |filterType|commonDrug|standardSet|dose|route|eyesOption|frequency|duration|presComm|
-      |admin|admin|Ealing         |Coral Johnson (Cataract)|1009465   |cataract  |Prescription|28        |280       |10         |3   |1    |1         |4        |1       |TEST    |
+      |uname|pwd  |siteName/Number|firmName/Number         |hospNumber|speciality|event       |filterType|commonDrug                                  |standardSet|dose|route|eyesOption|frequency|duration|presComm|
+      |admin|admin|Ealing         |Coral Johnson (Cataract)|1009465   |cataract  |Prescription|32        |adrenaline 0.01% eye drops (No Preservative)|10         |3   |1    |1         |4        |3       |TEST    |
 
   @Prescription_Route_3
   Scenario Outline: Route 3: Login and create a new Prescription
@@ -97,6 +101,9 @@ Feature: Create New Prescription
 
     Then I expand the "<speciality>" sidebar
     And I add a New Event "<event>"
+
+    #code for popup
+    Then I check prescription already exists
 
     Then I select a Common Drug "<commonDrug>"
 
@@ -124,8 +131,8 @@ Feature: Create New Prescription
     Then I Save the Prescription Draft and confirm it has been created successfully
 
   Examples:
-  |uname|pwd  |siteName/Number|firmName/Number                |hospNumber|speciality    |event       |filterType|commonDrug|standardSet|dose|route|eyesOption|frequency|duration|taperDose|taperFreq|taperDuration|taperDose-2|taperFreq-2|taperDuration-2|presComm|
-  |admin|admin|Bridge Lane    |Angela Glasby (Medical Retinal)|1009465   |medicalRetinal|Prescription|28        |176       |10         |2   |3    |1         |5        |3       |4        |2        |6            |3          |7          |2              |TEST    |
+  |uname|pwd  |siteName/Number|firmName/Number                |hospNumber|speciality    |event       |filterType|commonDrug                                  |standardSet|dose|route|eyesOption|frequency|duration|taperDose|taperFreq|taperDuration|taperDose-2|taperFreq-2|taperDuration-2|presComm|
+  |admin|admin|Bridge Lane    |Angela Glasby (Medical Retinal)|1009465   |medicalRetinal|Prescription|32        |adrenaline 0.01% eye drops (No Preservative)|10         |2   |3    |1         |5        |3       |4        |2        |6            |3          |7          |2              |TEST    |
 
   @Prescription_Route_4
   Scenario Outline: Route 4: Login and create a new Prescription
@@ -143,6 +150,10 @@ Feature: Create New Prescription
 
     Then I expand the "<speciality>" sidebar
     And I add a New Event "<event>"
+
+    #code for popup
+    Then I check prescription already exists
+
     Then I select a Common Drug "<commonDrug>"
     
     Then I choose to filter by type "<filterType>"
@@ -160,12 +171,12 @@ Feature: Create New Prescription
     Then I Save the Prescription Draft and confirm it has been created successfully
 
   Examples:
-  |uname|pwd  |siteName/Number|firmName/Number      |hospNumber|speciality|event       |commonDrug|filterType|standardSet|dose|route|eyesOption|frequency|duration|taperDose|taperFreq|taperDuration|taperDose-2|taperFreq-2|taperDuration-2|presComm|
-  |admin|admin|Barking        |Amit Blann (Glaucoma)|1009465   |glaucoma  |Prescription|60        |28        |10         |2   |17   |1         |6        |6       |4        |2        |6            |3          |7          |2              |TEST    |
+  |uname|pwd  |siteName/Number|firmName/Number      |hospNumber|speciality|event       |commonDrug                                  |filterType|standardSet|dose|route|eyesOption|frequency|duration|taperDose|taperFreq|taperDuration|taperDose-2|taperFreq-2|taperDuration-2|presComm|
+  |admin|admin|Barking        |Amit Blann (Glaucoma)|1009465   |glaucoma  |Prescription|adrenaline 0.01% eye drops (No Preservative)|32        |10         |2   |17   |1         |6        |6       |4        |2        |6            |3          |7          |2              |TEST    |
 
 
 
-  @OEM-495 @postRelease_v1.11
+  @Prescription_Route_5 @OEM-495 @postRelease_v1.11
   Scenario Outline: Prescription previously saved
     Given I am on the OpenEyes "<page>" homepage
     And I enter login credentials "<username>" and "<password>"
@@ -179,13 +190,16 @@ Feature: Create New Prescription
     Then I expand the "<speciality>" sidebar
     And I add a New Event "<event>"
 
+    #code for popup
+    Then I check prescription already exists
+
     Then I choose to filter by type "<filterType>"
     And I select the No preservative checkbox
 
     Then I select a Common Drug "<commonDrug>"
     Then I enter a Dose of "<dose>" drops
     And I enter a route of "<route>"
-    Then I enter a eyes option "<option>"
+    Then I enter a eyes option "<eyesOption>"
 
     And I enter a frequency of "<frequency>"
     Then I enter a duration of "<duration>"
@@ -196,17 +210,19 @@ Feature: Create New Prescription
 
     Then I expand the "<speciality>" sidebar
     And I add a New Event "<event>"
+    #code for popup
+    Then I check prescription already exists
 
     Then I select Repeat Prescription
-    And I should see the drug from the previous prescription
+#    And I should see the drug from the previous prescription
 
     Examples:
-    |page  |username|password|siteName/Number|firmName/Number      |searchItem|speciality|event       |filterType|commonDrug|dose|route|eyesOption|frequency|duration|presComm|
-    |master|admin   |admin   |Barking        |Amit Blann (Glaucoma)|1009465   |glaucoma  |Prescription|28        |280       |3   |1    |1         |4        |1       |TEST    |
+    |page  |username|password|siteName/Number|firmName/Number      |searchItem|speciality|event       |filterType|commonDrug                                  |dose|route|eyesOption|frequency|duration|presComm|
+    |master|admin   |admin   |Barking        |Amit Blann (Glaucoma)|1009465   |glaucoma  |Prescription|32        |adrenaline 0.01% eye drops (No Preservative)|3   |1    |1         |4        |3       |TEST    |
 
 
 
-  @OE-5667 @sprint25 @test1
+  @OE-5667 @sprint25 @test1 @Prescription_Route_6
   Scenario Outline: To check if the warning message is shown if the prescription already exists
     Given I am on the OpenEyes "<page>" homepage
     And I enter login credentials "<username>" and "<password>"
@@ -220,6 +236,8 @@ Feature: Create New Prescription
     Then I delete all the previous prescription events created
     Then I expand the "<speciality>" sidebar
     And I add a New Event "<event>"
+
+    Then I check prescription already exists
 
     #Then I choose to filter by type "<type>"
     #And I select the No preservative checkbox
@@ -236,7 +254,7 @@ Feature: Create New Prescription
 
     Then I Save the Prescription Draft and confirm it has been created successfully
 
-    Then I expand the "<firm>" sidebar
+    Then I expand the "<speciality>" sidebar
     And I add a New Event "<event>"
     #Validation1
     Then I should see prescription already exists message
@@ -246,8 +264,8 @@ Feature: Create New Prescription
 
 
     Examples:
-      |page  |username|password|siteName/Number|firmName/Number       |searchItem|speciality|event       |type|commonDrug|dose|route|eyesOption|frequency|duration|presComm|warningOption|
-      |master|admin   |admin   |Bridge Lane    |Buddhi Wang (Cataract)|1009465   |cataract  |Prescription|28  |7         |3   |1    |1         |4        |3       |TEST    |no           |
+      |page  |username|password|siteName/Number|firmName/Number      |searchItem|speciality|event       |type|commonDrug                                  |dose|route|eyesOption|frequency|duration|presComm|warningOption|
+      |master|admin   |admin   |Barking        |Amit Blann (Glaucoma)|1009465   |glaucoma  |Prescription|32  |adrenaline 0.01% eye drops (No Preservative)|3   |1    |1         |4        |3       |TEST    |no           |
 
 
 
@@ -264,7 +282,8 @@ Feature: Create New Prescription
 
     Then I select Create or View Episodes and Events
 
-    Then I check
+    Then I check prescription already exists
+
     Then I expand the "<speciality>" sidebar
     And I add a New Event "<event>"
 
@@ -289,7 +308,7 @@ Feature: Create New Prescription
 
 
     Examples:
-      |page|username|password|siteName/Number|firmName/Number         |searchItem|speciality|event       |filterType|commonDrug|dose|route|eyesOption|frequency|duration|presComm|
-      |master|admin |admin   |Barking        |Cataract firm (Cataract)|1009465   |cataract  |Prescription|28        |280       |3   |1    |1         |4        |1       |TEST    |
+      |page|username|password|siteName/Number|firmName/Number         |searchItem|speciality|event       |filterType|commonDrug                                  |dose|route|eyesOption|frequency|duration|presComm|
+      |master|admin |admin   |Barking        |Cataract firm (Cataract)|1009465   |cataract  |Prescription|32        |adrenaline 0.01% eye drops (No Preservative)|3   |1    |1         |4        |1       |TEST    |
 
 

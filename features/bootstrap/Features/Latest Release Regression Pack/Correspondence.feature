@@ -38,8 +38,8 @@ Feature: Create New Correspondence
     Then I Save the Correspondence Draft and confirm it has been created successfully
 
     Examples:
-    |uname|pwd  |site|firm|hospNo |speciality|event         |siteId|addressTarget|intro |diag   |management|drugs  |outcome|CCTarget    |enclosure     |
-    |admin|admin|1   |3   |1009465|glaucoma  |Correspondence|1     |Gp1          |site21|site541|site181   |site301|site341|Patient19434|Test Enclosure|
+    |uname|pwd  |site           |firm                   |hospNo |speciality|event         |siteId      |addressTarget|intro |diag   |management|drugs  |outcome|CCTarget    |enclosure     |
+    |admin|admin|Example        |A K Hamilton (Glaucoma)|1009465|glaucoma  |Correspondence|Example     |Gp1          |site21|site541|site181   |site301|site341|Patient19434|Test Enclosure|
 
   Scenario Outline: Route 2:Login and fill in a Correspondence Event
             Site 1:  Queens
@@ -65,10 +65,10 @@ Feature: Create New Correspondence
     #And I select Clinic Date "7"
 
     Then I choose an Introduction of "site21"
-    And I choose a Diagnosis of "site81"
+    And I choose a Diagnosis of "site85"
     Then I choose a Management of "site161"
-    And I choose Drugs "site261"
-    Then I choose Outcome "site321"
+    And I choose Drugs "site265"
+    Then I choose Outcome "site325"
 
     And I choose CC Target "Patient19434"
 
@@ -77,8 +77,8 @@ Feature: Create New Correspondence
     Then I Save the Correspondence Draft and confirm it has been created successfully
 
     Examples:
-    |uname|pwd  |site|firm|hospNo |speciality|event         |siteId|
-    |admin|admin|1   |3   |1009465|glaucoma  |Correspondence|1     |
+    |uname|pwd  |site           |firm                   |hospNo |speciality|event         |siteId     |
+    |admin|admin|Example        |A K Hamilton (Glaucoma)|1009465|glaucoma  |Correspondence|Example    |
 
   Scenario Outline: Route 3:Login and fill in a Correspondence Event
             Site 1:  Queens
@@ -116,8 +116,8 @@ Feature: Create New Correspondence
     Then I Save the Correspondence Draft and confirm it has been created successfully
 
     Examples:
-      |uname|pwd  |site|firm|hospNo |speciality|event         |siteId|
-      |admin|admin|1   |3   |1009465|glaucoma  |Correspondence|1     |
+      |uname|pwd  |site           |firm                   |hospNo |speciality|event         |siteId      |
+      |admin|admin|Example        |A K Hamilton (Glaucoma)|1009465|glaucoma  |Correspondence|Barking     |
 
   Scenario Outline: Route 4:Login and fill in a Correspondence Event
             Site 1:  Queens
@@ -143,9 +143,9 @@ Feature: Create New Correspondence
     #And I select Clinic Date "7"
 
     Then I choose an Introduction of "site61"
-    And I choose a Diagnosis of "site81"
+    And I choose a Diagnosis of "site85"
     Then I choose a Management of "site121"
-    And I choose Drugs "site261"
+    And I choose Drugs "site265"
     Then I choose Outcome "site401"
 
     And I choose CC Target "Patient19434"
@@ -155,8 +155,8 @@ Feature: Create New Correspondence
     Then I Save the Correspondence Draft and confirm it has been created successfully
 
     Examples:
-    |uname|pwd  |site|firm|hospNo |speciality|event         |siteId|
-    |admin|admin|1   |3   |1009465|glaucoma  |Correspondence|1     |
+    |uname|pwd  |site           |firm                   |hospNo |speciality|event         |siteId      |
+    |admin|admin|Example        |A K Hamilton (Glaucoma)|1009465|glaucoma  |Correspondence|Barking     |
 
   @COR_Scenario_5
   Scenario Outline: Route 5:Login and fill in a Correspondence Event
@@ -181,5 +181,5 @@ Feature: Create New Correspondence
     Then I Confirm that the Mandatory Correspondence fields validation error messages are displayed
 
     Examples:
-    |uname|pwd  |site|firm|hospNo |speciality|event         |
-    |admin|admin|1   |3   |1009465|glaucoma  |Correspondence|
+    |uname|pwd  |site           |firm                   |hospNo |speciality|event         |
+    |admin|admin|Example        |A K Hamilton (Glaucoma)|1009465|glaucoma  |Correspondence|
