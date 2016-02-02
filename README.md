@@ -16,7 +16,7 @@ The external identifier is used for defining a patient instance, and is tracked 
  
  Patient addresses have no external identifier for tracking their changes. As a result, the system verifies that an address is the same as a previously provided address by comparing postcodes. If there is a postcode match, then an address will be updated, rather than a new Address instance created.
  
-## Example
+## Example(s)
  
  The URL pattern for the PUT call is as follows:
  
@@ -50,12 +50,36 @@ The XML for defining a patient is as follows.
         <PracticeCode>F001</PracticeCode>
         <GpCode>G0102926</GpCode>
     </Patient>
+    
+The response XML is as follows:
+
+    <Success>
+        <Message>Patient created</Message>
+        <Id>[internal patient id]</Id>
+    </Success>
+    
+The following elements will generate warnings if the provided codes are not provided
  
- The following elements will generate warnings if the provided codes are not provided
+* Gender
+* EthnicGroup
+* PracticeCode
+* GpCode
+
+e.g.
+
+    <Success>
+        <Message>Patient created</Message>
+        <Id>[internal patient id]</Id>
+        <Warnings>
+            <Warning>Unrecognised Gender X</Warning>
+        </Warnings>
+    </Success>
  
- * Gender
- * EthnicGroup
- * PracticeCode
- * GpCode
+### Update only
  
- 
+If the intention is for the patient to only be updated, and not created if it doesn't exist, the updateOnly attribute should be used:
+
+    <Patient updateOnly="1">
+         <NHSNumber>0123456789</NHSNumber>
+         ...
+         
