@@ -351,6 +351,19 @@ class PrescriptionContext extends PageObjectContext {
 	}
 
 	/**
+	 * @Then /^I check prescription already exists$/
+	 */
+	public function icheckPrescriptionAlreadyExists(){
+		/**
+		 *
+		 * @var Prescription $prescription
+		 */
+		$prescription = $this->getPage ( 'Prescription' );
+		$prescription->checkWarningShown();
+		$prescription->iClickOnYes();
+
+	}
+	/**
 	 * @Then /^I click on "([^"]*)" and should see respective pages$/
 	 */
 	public function iClickOn($option){

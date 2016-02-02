@@ -21,7 +21,7 @@ Feature: Create New Intravitreal Event
     Then I expand the "<speciality>" sidebar
     And I add a New Event "<event>"
 
-    #Then I select Add Right Side
+    Then I select Add Right Side
     Then I select Add Left Side
 
     Then I Save the Intravitreal injection
@@ -29,8 +29,8 @@ Feature: Create New Intravitreal Event
     Then I Confirm that Intravitreal Mandatory fields validation error messages are displayed
 
     Examples:
-    |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality|event       |
-    |admin|admin|1              |1              |1009465   |cataract  |Intravitreal|
+    |uname|pwd  |siteName/Number|firmName/Number         |hospNumber|speciality|event       |
+    |admin|admin|Croydon        |Cataract firm (Cataract)|1009465   |cataract  |Intravitreal|
 
 
   @Intravitreal_Route_1
@@ -75,7 +75,7 @@ Feature: Create New Intravitreal Event
     And I enter "2" number of Right injections
     Then I enter Right batch number "123"
 
-    Then I choose Right Injection Given By "1"
+    Then I choose Right Injection Given By "11"
     And I enter a Right Injection time of "09:30"
 
     Then I choose Left Pre Injection Antiseptic "1"
@@ -86,7 +86,7 @@ Feature: Create New Intravitreal Event
     And I enter "2" number of Left injections
     Then I enter Left batch number "123"
 
-    Then I choose Left Injection Given By "1"
+    Then I choose Left Injection Given By "11"
     And I enter a Left Injection time of "09:30"
 
     Then I choose A Right Lens Status of "1"
@@ -108,8 +108,8 @@ Feature: Create New Intravitreal Event
     Then I Save the Intravitreal injection and confirm it has been created successfully
 
   Examples:
-  |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality|event       |
-  |admin|admin|1              |1              |1009465   |cataract  |Intravitreal|
+  |uname|pwd  |siteName/Number|firmName/Number         |hospNumber|speciality|event       |
+  |admin|admin|Croydon        |Cataract firm (Cataract)|1009465   |cataract  |Intravitreal|
 
   @Intravitreal_Route_2
   Scenario Outline: Route 2: Login and create a New Intravitreal Event
@@ -150,7 +150,7 @@ Feature: Create New Intravitreal Event
     And I enter "2" number of Right injections
     Then I enter Right batch number "567"
 
-    Then I choose Right Injection Given By "2"
+    Then I choose Right Injection Given By "11"
     And I enter a Right Injection time of "09:30"
 
     Then I choose Left Pre Injection Antiseptic "2"
@@ -161,7 +161,7 @@ Feature: Create New Intravitreal Event
     And I enter "1" number of Left injections
     Then I enter Left batch number "456"
 
-    Then I choose Left Injection Given By "1"
+    Then I choose Left Injection Given By "11"
     And I enter a Left Injection time of "09:30"
 
     Then I choose A Right Lens Status of "1"
@@ -184,8 +184,8 @@ Feature: Create New Intravitreal Event
     Then I Save the Intravitreal injection and confirm it has been created successfully
 
     Examples:
-      |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality|event       |
-      |admin|admin|2              |2              |1009465   |glaucoma  |Intravitreal|
+      |uname|pwd  |siteName/Number|firmName/Number        |hospNumber|speciality|event       |
+      |admin|admin|Croydon        |A K Hamilton (Glaucoma)|1009465   |glaucoma  |Intravitreal|
 
   
   @Intravitreal_Route_3
@@ -227,7 +227,7 @@ Feature: Create New Intravitreal Event
     And I enter "2" number of Right injections
     Then I enter Right batch number "567"
 
-    Then I choose Right Injection Given By "1"
+    Then I choose Right Injection Given By "11"
     And I enter a Right Injection time of "09:30"
 
     Then I choose Left Pre Injection Antiseptic "1"
@@ -237,7 +237,7 @@ Feature: Create New Intravitreal Event
     And I enter "1" number of Left injections
     Then I enter Left batch number "789"
 
-    Then I choose Left Injection Given By "3"
+    Then I choose Left Injection Given By "11"
     And I enter a Left Injection time of "09:30"
 
     Then I choose A Right Lens Status of "1"
@@ -260,8 +260,8 @@ Feature: Create New Intravitreal Event
     Then I Save the Intravitreal injection and confirm it has been created successfully
 
     Examples:
-      |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality|event       |
-      |admin|admin|1              |1              |1009465   |cataract  |Intravitreal|
+      |uname|pwd  |siteName/Number|firmName/Number         |hospNumber|speciality|event       |
+      |admin|admin|Croydon        |Cataract firm (Cataract)|1009465   |cataract  |Intravitreal|
 
 
   @Intravitreal_Route_4
@@ -301,7 +301,7 @@ Feature: Create New Intravitreal Event
     And I enter "4" number of Right injections
     Then I enter Right batch number "890"
 
-    Then I choose Right Injection Given By "2"
+    Then I choose Right Injection Given By "11"
     And I enter a Right Injection time of "11:00"
 
     Then I choose Left Pre Injection Antiseptic "2"
@@ -311,7 +311,7 @@ Feature: Create New Intravitreal Event
     And I enter "3" number of Left injections
     Then I enter Left batch number "890"
 
-    Then I choose Left Injection Given By "2"
+    Then I choose Left Injection Given By "11"
     And I enter a Left Injection time of "08:30"
 
     Then I choose A Right Lens Status of "2"
@@ -334,8 +334,8 @@ Feature: Create New Intravitreal Event
     Then I Save the Intravitreal injection
 
     Examples:
-      |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality    |event       |
-      |admin|admin|1              |4              |1009465   |medicalRetinal|Intravitreal|
+      |uname|pwd  |siteName/Number|firmName/Number                |hospNumber|speciality    |event       |
+      |admin|admin|Croydon        |Angela Glasby (Medical Retinal)|1009465   |medicalRetinal|Intravitreal|
 
   @Intravitreal_Route_5
   Scenario Outline: Route 5: Login and create a New Intravitreal Event
@@ -380,7 +380,7 @@ Feature: Create New Intravitreal Event
     And I enter "2" number of Right injections
     Then I enter Right batch number "123"
 
-    Then I choose Right Injection Given By "1"
+    Then I choose Right Injection Given By "11"
     And I enter a Right Injection time of "09:30"
 
     Then I choose Left Pre Injection Antiseptic "1"
@@ -391,7 +391,7 @@ Feature: Create New Intravitreal Event
     And I enter "2" number of Left injections
     Then I enter Left batch number "123"
 
-    Then I choose Left Injection Given By "1"
+    Then I choose Left Injection Given By "11"
     And I enter a Left Injection time of "09:30"
 
     Then I choose A Right Lens Status of "1"
@@ -417,8 +417,8 @@ Feature: Create New Intravitreal Event
     Then I Save the Intravitreal injection and confirm it has been created successfully
 
     Examples:
-      |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality|event       |
-      |admin|admin|1              |1              |1009465   |cataract  |Intravitreal|
+      |uname|pwd  |siteName/Number|firmName/Number         |hospNumber|speciality|event       |
+      |admin|admin|Croydon        |Cataract firm (Cataract)|1009465   |cataract  |Intravitreal|
 
 
 

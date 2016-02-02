@@ -136,8 +136,8 @@ class ExaminationContext extends PageObjectContext
 		elseif($section=='opticDisc') {
 			$examination->expandOpticDisc();
 		}*/
-		
-		
+
+
 
 	}
 

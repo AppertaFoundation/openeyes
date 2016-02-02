@@ -231,7 +231,7 @@ Feature: Create New Consent Form
 
     Examples:
       |uname|pwd  |siteName/Number|firmName/Number         |hospNumber|speciality|event    |diagEye|diag    |opEye|proc|anaestheticType|opSite|comments|sessionComments|opComments|
-      |admin|admin|Croydon        |Cataract firm (Cataract)|1009465   |cataract  |OpBooking|Right  |24010005|Right|79  |LA             |2     |Test    |Test           |Test      |
+      |admin|admin|Croydon        |Cataract firm (Cataract)|1009465   |cataract  |OpBooking|Right  |24010005|Right|79  |LA            |Croydon     |Test    |Test           |Test      |
 
 
   @Consent_Route6B
