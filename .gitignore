@@ -42,6 +42,22 @@ vendor
 /docs/public
 /protected/assets/img/fieldImages/*
 
+# Include core modules
+#!/protected/modules/OphCiExamination/  
+#!/protected/modules/OphCiPhasing/
+#!/protected/modules/OphCoCorrespondence/
+#!/protected/modules/OphCoTherapyapplication/
+#!/protected/modules/OphDrPrescription/
+#!/protected/modules/OphInBiometry/
+#!/protected/modules/OphTrConsent/
+#!/protected/modules/OphTrIntravitrealinjection/
+#!/protected/modules/OphTrLaser/
+#!/protected/modules/OphTrOperationbooking/
+#!/protected/modules/OphTrOperationnote/
+#!/protected/modules/PatientTicketing/
+#!/protected/modules/OphOuAnaestheticsatisfactionaudit/
+#!/protected/modules/OphInVisualfields
+
 # Tests
 /bin/.enabled-modules
 /jm_behat_report.html
@@ -59,5 +75,15 @@ bin/oe-git-status
 composer.phar
 features/bootstrap/Features/Templates/CODINGONLY.feature
 selenium-server-standalone-2.35.0.jar
-assets
-bin
+bin/jsonlint
+bin/pdepend
+bin/phpcbf
+bin/phpcpd
+bin/phpcs
+bin/phpdoc
+bin/phpdoc.php
+bin/phploc
+bin/phpmd
+bin/validate-json
+bin/yiic
+
