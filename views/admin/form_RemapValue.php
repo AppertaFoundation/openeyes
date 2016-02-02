@@ -14,25 +14,9 @@
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+?>
 
-return array(
-    'components' =>
-    array(
-        'request' => array(
-            'noCsrfValidationRoutes'=>array(
-                'PASAPI/'
-            )
-        ),
-        'urlManager' => array(
-            'rules' => array(
-                // add a rule so that letters can be used in the external id for the resource
-                array('PASAPI/v1/update', 'pattern' => 'PASAPI/<controller:\w+>/<resource_type:\w+>/<id:\w+>', 'verb' => 'PUT'),
-            )
-        ),
-    ),
-    'params' => array(
-        'admin_menu' => array(
-            'Value Remaps' => '/PASAPI/admin/viewXpathRemaps'
-        )
-    )
-);
+<?php echo $form->hiddenField($model, 'id')?>
+<?php echo $form->hiddenField($model, 'xpath_id')?>
+<?php echo $form->textField($model, 'input', array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+<?php echo $form->textField($model, 'output', array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>

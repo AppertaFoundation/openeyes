@@ -1,4 +1,4 @@
-<?php namespace OEModule\PASAPI\resources;
+<?php
 
 /**
  * OpenEyes
@@ -15,6 +15,10 @@
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
+namespace OEModule\PASAPI\resources;
+
+use OEModule\PASAPI\models\XpathRemap;
 
 abstract class BaseResource
 {
@@ -99,6 +103,8 @@ abstract class BaseResource
             return $obj;
         }
 
+        static::remapValues($doc);
+
         $obj = static::fromXmlDom($version, $doc->documentElement);
         $obj->addAuditData('input', \CHtml::encode($xml));
         return $obj;
@@ -123,6 +129,28 @@ abstract class BaseResource
         $obj->parseXml($element);
 
         return $obj;
+    }
+
+    static public function remapValues($doc)
+    {
+        $remaps = XpathRemap::model()->findAll();
+        if ($remaps) {
+            $xdoc = new \DOMXPath($doc);
+            foreach ($remaps as $remap) {
+                if ($el = $xdoc->query($remap->xpath)) {
+                    $lookup = array();
+                    foreach ($remap->values as $val) {
+                        $lookup[$val->input] = $val->output;
+                    }
+                    for ($i = 0; $i < $el->length; $i++) {
+                        if (isset($lookup[$el->item($i)->textContent])) {
+
+                            $el->item($i)->nodeValue = $lookup[$el->item($i)->textContent];
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
