@@ -58,6 +58,10 @@ class Patient extends BaseResource
             // want to ensure we track whether we create a new record or not
             $this->isNewResource = $model->isNewRecord;
 
+            if ($this->isNewResource && $this->update_only) {
+                return null;
+            }
+
             if ($this->saveModel($model)) {
                 $assignment->internal_id = $model->id;
                 $assignment->save();

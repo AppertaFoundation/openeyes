@@ -20,12 +20,19 @@ abstract class BaseResource
 {
 
     static protected $resource_type;
-
-    public $warnings = array();
-    public $errors = array();
     protected $version;
     protected $schema;
     private $_audit_data;
+
+    public $warnings = array();
+    public $errors = array();
+
+    /**
+     * Property that will prevent a model being created if its set to true
+     *
+     * @var bool
+     */
+    public $update_only = false;
 
     public function __construct($version)
     {
@@ -121,12 +128,19 @@ abstract class BaseResource
     /**
      * Parses XML to define resource attributes
      *
-     * @param $root
+     * @param \DOMElement $root
      * @throws \Exception
      */
-    public function parseXml($root)
+    public function parseXml(\DOMElement $root)
     {
         $schema = $this->schema;
+
+        if ($root->hasAttribute('updateOnly')) {
+            $update_only = $root->hasAttribute('updateOnly');
+            if (in_array(strtolower($update_only), array('1', 'true') )) {
+                $this->update_only = true;
+            }
+        }
 
         foreach ($root->childNodes as $child) {
             if (!$child instanceof \DOMElement) continue;

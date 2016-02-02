@@ -130,8 +130,15 @@ class v1Controller extends \CController
 
             $resource->id = $id;
 
-            if (!$internal_id = $resource->save())
-                $this->sendErrorResponse(400, $resource->errors);
+            if (!$internal_id = $resource->save()) {
+                if (!$resource->update_only || $resource->errors) {
+                    $this->sendErrorResponse(400, $resource->errors);
+                }
+                else {
+                    // assuming that this was an update only resource request
+                    $this->sendSuccessResponse(200, array('Message' => $resource_type . ' not created'));
+                }
+            }
 
             $response = array(
                 'Id' => $internal_id
@@ -171,7 +178,11 @@ class v1Controller extends \CController
 
     protected function sendSuccessResponse($status, $response)
     {
-        $body = "<Success><Id>{$response['Id']}</Id><Message>{$response['Message']}</Message>";
+        $body = "<Success>";
+        if (isset($response['Id']))
+            $body .= "<Id>{$response['Id']}</Id>";
+
+        $body .= "<Message>{$response['Message']}</Message>";
 
         if (isset($response['Warnings']))
             $body .= "<Warnings><Warning>" . implode('</Warning><Warning>', $response['Warnings']) . "</Warning></Warnings>";
