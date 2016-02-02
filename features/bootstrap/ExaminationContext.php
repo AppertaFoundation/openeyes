@@ -48,7 +48,8 @@ class ExaminationContext extends PageObjectContext
 		 * @var Examination $examination
 		 */
 		$examination = $this->getPage('Examination');
-		if($section=='visualFunction') {
+		$examination->openExaminationSectionList($section);
+		/*if($section=='visualFunction') {
 			$examination->openVisualFunction();
 		}
 		elseif($section=='visualAcuity') {
@@ -134,7 +135,9 @@ class ExaminationContext extends PageObjectContext
 		}
 		elseif($section=='opticDisc') {
 			$examination->expandOpticDisc();
-		}
+		}*/
+
+
 
 	}
 
