@@ -20,10 +20,10 @@ Feature: Create New Laser event
 
     Then I select a Laser site ID "1"
     And I select a Laser of "2"
-    And I select a Laser Operator of "2"
+    And I select a Laser Operator of "96"
     Then I select a Right Procedure of "62"
     Then I select a Right Procedure of "177"
-    Then I select a Left Procedure of "363"
+    Then I select a Left Procedure of "364"
     Then I select a Left Procedure of "128"
 
     And I remove the last added Procedure
@@ -31,8 +31,8 @@ Feature: Create New Laser event
     Then I save the Laser Event and confirm it has been created successfully
 
     Examples:
-    |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality|event|
-    |admin|admin|2              |3              |1009465   |glaucoma  |Laser|
+    |uname|pwd  |siteName/Number|firmName/Number        |hospNumber|speciality|event|
+    |admin|admin|Croydon        |A K Hamilton (Glaucoma)|1009465   |glaucoma  |Laser|
 
 
   @Laser_Route_2
@@ -57,8 +57,8 @@ Feature: Create New Laser event
     And I Confirm that the Laser Validation error messages are displayed
 
     Examples:
-      |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality|event|
-      |admin|admin|2              |3              |1009465   |glaucoma  |Laser|
+      |uname|pwd  |siteName/Number|firmName/Number        |hospNumber|speciality|event|
+      |admin|admin|Croydon        |A K Hamilton (Glaucoma)|1009465   |glaucoma  |Laser|
 
   @Laser_Route_3
   Scenario Outline: Route 3: Login and create a Laser event
@@ -79,14 +79,14 @@ Feature: Create New Laser event
 
     Then I select a Laser site ID "1"
     And I select a Laser of "2"
-    And I select a Laser Operator of "2"
+    And I select a Laser Operator of "96"
 
     Then I remove the right eye
 
     And I add the right eye
 
     Then I select a Right Procedure of "62"
-    Then I select a Left Procedure of "363"
+    Then I select a Left Procedure of "364"
 
     Then I add expand the Comments section
     And I add "Test comments" into the Comments section
@@ -95,7 +95,7 @@ Feature: Create New Laser event
     Then I save the Laser Event and confirm it has been created successfully
 
     Examples:
-      |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality|event|
-      |admin|admin|1              |2              |1009465   |glaucoma  |Laser|
+      |uname|pwd  |siteName/Number|firmName/Number        |hospNumber|speciality|event|
+      |admin|admin|Croydon        |A K Hamilton (Glaucoma)|1009465   |glaucoma  |Laser|
 
 
