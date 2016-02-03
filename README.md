@@ -58,7 +58,7 @@ The response XML is as follows:
         <Id>[internal patient id]</Id>
     </Success>
     
-The following elements will generate warnings if the provided codes are not provided
+The following elements will generate warnings if the given values do not match valid values in the system:
  
 * Gender
 * EthnicGroup
@@ -83,3 +83,12 @@ If the intention is for the patient to only be updated, and not created if it do
          <NHSNumber>0123456789</NHSNumber>
          ...
          
+## Remapping values
+
+To deal with the issue of external sources not mapping to internal resource values within OpenEyes, a remapping of values can be configured through the admin.
+
+Each XpathRemap object has zero or more RemapValue attributes that will swap any matching input values for a different output value.
+
+These can be managed through the module admin screen.
+
+(note that whilst in the admin one can only provide an empty string, the code supports a null value which will lead the entire node to be removed, rather than emptied.
