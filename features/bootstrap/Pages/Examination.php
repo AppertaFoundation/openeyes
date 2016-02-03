@@ -61,10 +61,10 @@ class Examination extends OpenEyesPage {
 		),
 		'rightTubePatch' => array (
 			//'xpath' => "//*[@id='Patchright_5']//*[@class='icon-ed-Patch']"
-			'xpath' => "//*[@id='Patchright_5']//*[@class='ed-button']"
+			'xpath' => "//*[@id='Patchright_315']//*[@class='ed-button']"
 		),
 		'rightMaterial' => array (
-			'xpath' => "//*[@id='ed_canvas_edit_right_5_material_control']"
+			'xpath' => "//*[@id='ed_canvas_edit_right_315_material_control']"
 		),
 		'removeFirstRightVisualAcuity' => array (
 			'css' => ".OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .right-eye .va_readings tr:nth-of-type(1) .removeReading"
@@ -843,9 +843,10 @@ class Examination extends OpenEyesPage {
 			||$sectionName=='Injection Management'
 			||$sectionName=='Visual Acuity'
 			||$sectionName=='Near Visual Acuity'
-			||$sectionName=='Anterior Segment'
 			||$sectionName=='Laser Management'
-			||$sectionName=='Cataract Surgical Management')
+			||$sectionName=='Cataract Surgical Management'
+			||$sectionName=='Glaucoma Overall Management plan'
+			||$sectionName=='Glaucoma Current Management plan')
 		{
 			$this->elements['examinationSectionListHeader'] = array(
 				'xpath' => "//*[@class='sub-elements-list']//*[contains(text(),'$sectionName')]"
@@ -864,7 +865,7 @@ class Examination extends OpenEyesPage {
 	public function openExaminationSectionList($sectionName){
 		if($this->sectionListOpen($sectionName)){
 			$this->getElement('examinationSectionListHeader')->click();
-			$this->getSession ()->wait ( 5000, 'window.$ && $.active == 0' );
+			sleep(3);
 		}
 		else{
 			print "Section Already Open!";
