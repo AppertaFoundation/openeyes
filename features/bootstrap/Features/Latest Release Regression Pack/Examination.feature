@@ -100,8 +100,8 @@ Feature: Create New Examination Regression Tests
     Then a check is made that a right Axis degrees of "38" was entered
 
     Examples:
-    |uname|pwd  |site   |firm                   |hospNo.|speciality|event      |sectionName1 |sectionName2|sectionName3  |sectionName4|sectionName5|sectionName6       |sectionName7|
-    |admin|admin|Croydon|A K Hamilton (Glaucoma)|1009465|glaucoma  |Examination|comorbidities|refraction  |visualFunction|colourVision|visualAcuity|intraocularPressure|dilation    |
+    |uname|pwd  |site   |firm                   |hospNo.|speciality|event      |sectionName1 |sectionName2|sectionName3   |sectionName4 |sectionName5 |sectionName6         |sectionName7|
+    |admin|admin|Croydon|A K Hamilton (Glaucoma)|1009465|glaucoma  |Examination|Comorbidities|Refraction  |Visual Function|Colour Vision|Visual Acuity|Intraocular Pressure|Dilation     |
 
   @EXAM_Route_2
   Scenario Outline: Route 2:Login and create a new Examination Event
@@ -173,8 +173,8 @@ Feature: Create New Examination Regression Tests
     Then I Save the Examination and confirm it has been created successfully
 
     Examples:
-      |uname|pwd  |site  |firm              |speciality|event      |sectionName1 |sectionName2  |sectionName3|sectionName4|sectionName5       |sectionName6|sectionName7|
-      |admin|admin|Ludwig|A Dulku (Glaucoma)|glaucoma  |Examination|comorbidities|visualFunction|colourVision|visualAcuity|intraocularPressure|dilation    |refraction  |
+      |uname|pwd  |site  |firm              |speciality|event      |sectionName1 |sectionName2   |sectionName3 |sectionName4 |sectionName5        |sectionName6|sectionName7|
+      |admin|admin|Ludwig|A Dulku (Glaucoma)|glaucoma  |Examination|Comorbidities|Visual Function|Colour Vision|Visual Acuity|Intraocular Pressure|Dilation    |Refraction  |
 
   @EXAM_Route_3
   Scenario Outline: Route 3:Login and create a new Examination Event
@@ -215,6 +215,7 @@ Feature: Create New Examination Regression Tests
     Then I choose a left Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
     Then I choose a right Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
 
+    And I choose to expand the "Near Visual Acuity" section
     And I select a Near Visual Acuity of "7"
     Then I choose a left Near Visual Acuity ETDRS Letters Snellen Metre "50" and a reading method of "2"
     Then I choose a right Near Visual Acuity ETDRS Letters Snellen Metre "50" and a reading method of "2"
@@ -293,6 +294,7 @@ Feature: Create New Examination Regression Tests
     Then I choose a left Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
     Then I choose a right Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
 
+    And I choose to expand the "Near Visual Acuity" section
     And I select a Near Visual Acuity of "7"
     Then I choose a left Near Visual Acuity ETDRS Letters Snellen Metre "50" and a reading method of "2"
     Then I choose a right Near Visual Acuity ETDRS Letters Snellen Metre "50" and a reading method of "2"
@@ -447,6 +449,7 @@ Feature: Create New Examination Regression Tests
     Then I choose a left Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
     Then I choose a right Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
 
+    And I choose to expand the "Near Visual Acuity" section
     And I select a Near Visual Acuity of "7"
     Then I choose a left Near Visual Acuity ETDRS Letters Snellen Metre "50" and a reading method of "2"
     Then I choose a right Near Visual Acuity ETDRS Letters Snellen Metre "50" and a reading method of "2"
@@ -607,6 +610,7 @@ Feature: Create New Examination Regression Tests
     Then I choose a left Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
     Then I choose a right Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
 
+    And I choose to expand the "Near Visual Acuity" section
     And I select a Near Visual Acuity of "7"
     Then I choose a left Near Visual Acuity ETDRS Letters Snellen Metre "50" and a reading method of "2"
     Then I choose a right Near Visual Acuity ETDRS Letters Snellen Metre "50" and a reading method of "2"
@@ -915,6 +919,7 @@ Feature: Create New Examination Regression Tests
     Then I choose a left Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
     Then I choose a right Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
 
+    And I choose to expand the "Near Visual Acuity" section
     And I select a Near Visual Acuity of "7"
     Then I choose a left Near Visual Acuity ETDRS Letters Snellen Metre "50" and a reading method of "2"
     Then I choose a right Near Visual Acuity ETDRS Letters Snellen Metre "50" and a reading method of "2"
@@ -961,6 +966,7 @@ Feature: Create New Examination Regression Tests
     Then I choose a left Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
     Then I choose a right Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
 
+    And I choose to expand the "Near Visual Acuity" section
     And I select a Near Visual Acuity of "7"
     Then I choose a left Near Visual Acuity ETDRS Letters Snellen Metre "50" and a reading method of "2"
     Then I choose a right Near Visual Acuity ETDRS Letters Snellen Metre "50" and a reading method of "2"
@@ -1015,6 +1021,7 @@ Feature: Create New Examination Regression Tests
     Then I choose a left Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
     Then I choose a right Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
 
+    And I choose to expand the "Near Visual Acuity" section
     And I select a Near Visual Acuity of "7"
     Then I choose a left Near Visual Acuity ETDRS Letters Snellen Metre "50" and a reading method of "2"
     Then I choose a right Near Visual Acuity ETDRS Letters Snellen Metre "50" and a reading method of "2"
@@ -1087,6 +1094,7 @@ Feature: Create New Examination Regression Tests
     And I select Right Unable to assess checkbox
     And I select Right Eye Missing checkbox
 
+    And I choose to expand the "Near Visual Acuity" section
     And I select a Near Visual Acuity of "7"
     Then I choose a left Near Visual Acuity ETDRS Letters Snellen Metre "50" and a reading method of "2"
     Then I choose a right Near Visual Acuity ETDRS Letters Snellen Metre "50" and a reading method of "2"
@@ -1128,6 +1136,7 @@ Feature: Create New Examination Regression Tests
     Then I choose a left Visual Acuity Snellen Metre "4" and a reading method of "5"
     Then I choose a right Visual Acuity Snellen Metre "4" and a reading method of "5"
 
+    And I choose to expand the "Near Visual Acuity" section
     And I select a Near Visual Acuity of "7"
     Then I choose a left Near Visual Acuity ETDRS Letters Snellen Metre "50" and a reading method of "2"
     Then I choose a right Near Visual Acuity ETDRS Letters Snellen Metre "50" and a reading method of "2"
