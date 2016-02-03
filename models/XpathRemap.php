@@ -89,4 +89,19 @@ class XpathRemap extends \BaseActiveRecordVersioned
         ));
     }
 
+    /**
+     * Simple wrapper function for getting the remaps for a specific Xpath
+     *
+     * @param string $xpath
+     * @return \CActiveRecord[]
+     */
+    public function findAllByXpath($xpath = "/")
+    {
+        $condition = "xpath like :xpath";
+        $params  = array(':xpath' => "{$xpath}%");
+
+        return $this->findAll($condition, $params);
+    }
+
+
 }

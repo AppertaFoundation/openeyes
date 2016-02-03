@@ -103,7 +103,7 @@ abstract class BaseResource
             return $obj;
         }
 
-        static::remapValues($doc);
+        static::remapValues($doc, "/" . static::$resource_type);
 
         $obj = static::fromXmlDom($version, $doc->documentElement);
         $obj->addAuditData('input', \CHtml::encode($xml));
@@ -131,10 +131,16 @@ abstract class BaseResource
         return $obj;
     }
 
-    static public function remapValues($doc)
+    /**
+     * Update the given doc nodes as per the provided remaps
+     *
+     * @param $doc
+     * @param XpathRemap[] $remaps
+     */
+    static public function remapValues($doc, $remaps = array())
     {
-        $remaps = XpathRemap::model()->findAll();
-        if ($remaps) {
+        if (count($remaps)) {
+            // no point in instantiating DOMXPath if nothing to remap
             $xdoc = new \DOMXPath($doc);
             foreach ($remaps as $remap) {
                 if ($el = $xdoc->query($remap->xpath)) {
@@ -142,11 +148,22 @@ abstract class BaseResource
                     foreach ($remap->values as $val) {
                         $lookup[$val->input] = $val->output;
                     }
-                    for ($i = 0; $i < $el->length; $i++) {
-                        if (isset($lookup[$el->item($i)->textContent])) {
+                    // track index for item removal
+                    $remove_list = array();
 
-                            $el->item($i)->nodeValue = $lookup[$el->item($i)->textContent];
+                    for ($i = 0; $i < $el->length; $i++) {
+                        $current = $el->item($i)->textContent;
+                        if (array_key_exists($current, $lookup)) {
+                            if (is_null($lookup[$current])) {
+                                $remove_list[] = $i;
+                            }
+                            else {
+                                $el->item($i)->nodeValue = $lookup[$current];
+                            }
                         }
+                    }
+                    foreach($remove_list as $remove) {
+                        $el->item($remove)->parentNode->removeChild($el->item($remove));
                     }
                 }
             }
