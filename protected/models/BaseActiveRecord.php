@@ -51,8 +51,13 @@ class BaseActiveRecord extends CActiveRecord
 	protected $auto_update_relations = false;
 
 	protected $originalAttributes = array();
-        
-        public $save_only_if_changed = false;
+
+	/**
+	 * Flag to indicate that model should only save to the db if actual changes have taken place on the model
+	 *
+	 * @var bool
+	 */
+	public $save_only_if_changed = false;
 
 	public function canAutocomplete()
 	{
