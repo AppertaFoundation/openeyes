@@ -51,6 +51,8 @@ class BaseActiveRecord extends CActiveRecord
 	protected $auto_update_relations = false;
 
 	protected $originalAttributes = array();
+        
+        public $save_only_if_changed = false;
 
 	public function canAutocomplete()
 	{
@@ -190,6 +192,11 @@ class BaseActiveRecord extends CActiveRecord
 	 */
 	public function save($runValidation=true, $attributes=null, $allow_overriding=false)
 	{
+            // Saving the model only if it is dirty / turn on/off with $this->save_only_if_changed
+            if ( $this->save_only_if_changed === true && $this->isModelDirty() === false) {
+                return true;
+            }
+
 		$user_id = null;
 
 		try {
@@ -462,12 +469,33 @@ class BaseActiveRecord extends CActiveRecord
 	 */
 	public function isAttributeDirty($attrName)
 	{
-		if(!isset($this->originalAttributes[$attrName])){
-			return true;
+		if(!array_key_exists($attrName, $this->originalAttributes)){
+                    return true;
 		}
 
 		return $this->getAttribute($attrName) !== $this->originalAttributes[$attrName];
 	}
+        
+        /**
+         * Check if the model dirty
+         * 
+         * @return boolean true if the model dirty
+         */
+        public function isModelDirty()
+        {          
+            $exclude = array(
+                'last_modified_user_id',
+                'last_modified_date',
+            );
+
+            foreach($this->getAttributes() as $attrName => $attribute){                
+                if( !in_array($attrName, $exclude) && $this->isAttributeDirty($attrName) ){
+                    return true;
+                }
+            }
+            
+            return false;
+        }
 
 	/**
 	 * Gets the clean version of an attribute, returns empty string if there was no clean version.
