@@ -282,10 +282,10 @@ Feature: Create New Prescription
 
     Then I select Create or View Episodes and Events
 
-    Then I check prescription already exists
-
     Then I expand the "<speciality>" sidebar
     And I add a New Event "<event>"
+
+    Then I check prescription already exists
 
     Then I choose to filter by type "<filterType>"
     And I select the No preservative checkbox
