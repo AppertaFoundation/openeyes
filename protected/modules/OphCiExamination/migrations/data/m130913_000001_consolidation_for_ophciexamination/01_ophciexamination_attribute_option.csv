@@ -1,0 +1,7 @@
+id,value,delimiter,subspecialty_id,attribute_element_id
+1,"blurred vision",",",NULL,1
+2,"difficulty with reading",",",NULL,1
+3,"follow up visit",",",NULL,1
+4,"glare",",",NULL,1
+5,"gradual deterioration of vision",",",NULL,1
+6,"pseudophakia",",",NULL,1

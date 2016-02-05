@@ -1,0 +1,7 @@
+id,name,description,display_order,booking_weeks,class
+1,"R0","No retinopathy",1,NULL,"none"
+2,"R1","Background retinopathy<ul><li>Microaneurysms</li><li>Retinal haemorrhages</li><li>Venous loop</li><li>Any exudate in the presence of other non-referable features of DR</li><li>Any number of cotton wool spots (CWS) in the presence of other non-referable features of DR</li></ul>",2,NULL,"background"
+3,"R2","Pre-proliferative retinopathy<ul><li>Venous beading</li><li>Venous reduplication</li><li>Multiple blot haemorrhages</li><li>Intraretinal microvascular abnormality (IRMA)</li></ul>",3,NULL,"pre-prolif"
+4,"R3S","Evidence of Peripheral Retinal Laser Treatment AND stable retina from photograph taken at or shortly after discharge from the Hospital Eye service (HES)",4,NULL,"peripheral"
+5,"R3A","Active Proliferative Retinopathy<ul><li>New vessels on disc (NVD)</li><li>New vessels elsewhere (NVE)</li><li>Pre-retinal or vitreous haemorrhage</li><li>Pre-retinal fibrosis +/- tractional retinal detachment</li></ul>",5,2,"proliferative"
+6,"U","Ungradable",6,NULL,"ungradable"

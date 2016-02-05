@@ -1,0 +1,7 @@
+id,name,display_order,enabled,other
+1,"DNA",1,1,0
+2,"Infection",2,1,0
+3,"CVA",3,1,0
+4,"MI",4,1,0
+5,"Spontaneous improvement",5,1,0
+6,"Other",6,1,1
