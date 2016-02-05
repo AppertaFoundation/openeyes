@@ -1,0 +1,3 @@
+id,site_id => site.name,name,long_name,directions,restriction,code,last_modified_user_id,last_modified_date,created_user_id,created_date
+1,"Kings Hospital","Kings Ward One","Kings Ward One","",0,"KW1",1,"2013-06-28 10:59:07",1,"2013-06-28 10:58:09"
+2,"Queens Hospital","Queens Ward One","Queens Ward One","",0,"QW1",1,"2013-06-28 10:59:15",1,"2013-06-28 10:58:32"

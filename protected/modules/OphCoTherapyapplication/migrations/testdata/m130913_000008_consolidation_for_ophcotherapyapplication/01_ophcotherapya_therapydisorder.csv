@@ -1,0 +1,30 @@
+disorder_id => disorder.term,parent_id,display_order
+"Choroidal retinal neovascularisation",NULL,1
+"Age related macular degeneration",1,1
+"Myopia",1,2
+"Punctate inner choroidopathy",1,3
+"Ocular histoplasmosis syndrome",1,4
+"Idiopathic choroidal neovascular membrane",1,5
+"Angioid streaks of choroid",1,6
+"Naevus of choroid",1,7
+"Osteoma of choroid",1,8
+"Choroidal rupture",1,9
+"Macular retinal oedema",NULL,2
+"Venous retinal branch occlusion",11,2
+"Central retinal vein occlusion",11,3
+"Hereditary macular dystrophy",11,5
+"Central serous chorioretinopathy",NULL,3
+"Idiopathic polypoidal choroidal vasculopathy",NULL,4
+"Coats' disease",NULL,5
+"Scleritis",NULL,7
+"Sarcoidosis",1,10
+"Multifocal choroiditis",1,11
+"Toxoplasma retinitis",1,12
+"Uveitis related cystoid macular oedema",11,6
+"Capillary haemangioma of retina",NULL,16
+"Central serous chorioretinopathy",1,14
+"Diabetic macular oedema",11,7
+"Cystoid macular oedema",11,8
+"Hereditary macular dystrophy",1,15
+"Parafoveal telangiectasia",NULL,17
+"Uveitis",NULL,18

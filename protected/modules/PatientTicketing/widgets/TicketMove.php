@@ -1,0 +1,63 @@
+<?php
+/**
+ * OpenEyes
+ *
+ * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+ * (C) OpenEyes Foundation, 2011-2014
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+ * @copyright Copyright (c) 2011-2014, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ */
+
+namespace OEModule\PatientTicketing\widgets;
+use Yii;
+
+class TicketMove extends \CWidget {
+	public $event_types;
+	public $ticket_info;
+	public $current_queue_name;
+	public $outcome_options;
+	public $ticket;
+
+	protected $outcome_queue_id;
+
+	public $assetFolder;
+	public $shortName;
+
+	public function run()
+	{
+		//TODO: genericise this behaviour
+		$cls_name = explode('\\', get_class($this));
+		$this->shortName = array_pop($cls_name);
+		if (file_exists(dirname(__FILE__) . "/js/".$this->shortName.".js")) {
+			$this->assetFolder = Yii::app()->getAssetManager()->publish(dirname(__FILE__) . "/js/");
+			Yii::app()->getClientScript()->registerScriptFile($this->assetFolder . '/' . $this->shortName.".js");
+			Yii::app()->getAssetManager()->registerCssFile('css/module.css', 'application.modules.PatientTicketing.assets', 10, \AssetManager::OUTPUT_ALL);
+		}
+
+		if ($this->ticket) {
+			$this->event_types = $this->ticket->current_queue->getRelatedEventTypes();
+			$this->ticket_info = $this->ticket->getInfoData(false);
+			$this->current_queue_name =  $this->ticket->current_queue->name;
+			$this->outcome_options = array();
+			$od = $this->ticket->current_queue->getOutcomeData(false);
+			foreach ($od as $out) {
+				$this->outcome_options[$out['id']] = $out['name'];
+			};
+			if (count($od) == 1) {
+				$this->outcome_queue_id = $od[0]['id'];
+			}
+		}
+
+		$this->render('TicketMove');
+	}
+
+}

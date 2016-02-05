@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Mocha</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<!-- Add spec CSS here -->
+		<!-- <link rel="stylesheet" type="text/css" href="style.css" /> -->
+
+		<!-- Framework CSS -->
+		<link rel="stylesheet" href="../../../../../assets/components/mocha/mocha.css" />
+		<style type="text/css">
+		html, body { background: #fff; }
+		</style>
+	</head>
+	<body>
+
+        <div id="skeleton">
+            <form id="deleteSecretaryForm" action="/OphCoCorrespondence/admin/deleteSiteSecretary/" method="post">
+                <div style="display:none"><input type="hidden" value="54acc313d65aa2f5305e11de1df0ca6fb8244518" name="YII_CSRF_TOKEN"></div>
+            </form>
+            <form id="editSecretaryForm" action="/admin/editFirm/2" method="post">
+                <div style="display:none"><input type="hidden" value="54acc313d65aa2f5305e11de1df0ca6fb8244518" name="YII_CSRF_TOKEN"></div>	<table>
+                <thead>
+                <tr>
+                    <td>Site</td>
+                    <td>Direct Line</td>
+                    <td>Fax</td>
+                    <td>Action</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="secretaryFormRow">
+                    <td>
+                        <input name="FirmSiteSecretary[0][firm_id]" id="FirmSiteSecretary_0_firm_id" type="hidden" value="2">					<input name="FirmSiteSecretary[0][id]" id="FirmSiteSecretary_0_id" type="hidden" value="41">					<select name="FirmSiteSecretary[0][site_id]" id="FirmSiteSecretary_0_site_id">
+                        <option value="">- None -</option>
+                        <option value="2">Bedford Hospital</option>
+                        <option value="11">Boots Opticians</option>
+                        <option value="10" selected="selected">Bridge Lane Health Centre</option>
+                        <option value="1">City Road</option>
+                        <option value="3">Ealing Hospital</option>
+                        <option value="18">Homerton Hospital</option>
+                        <option value="12">Loxford Polyclinic</option>
+                        <option value="17">Mayday Hospital</option>
+                        <option value="6">Mile End Hospital</option>
+                        <option value="4">Northwick Park Hospital</option>
+                        <option value="7">Potters Bar Community Hospital</option>
+                        <option value="19">Princess Alexandra Hospital</option>
+                        <option value="8">Queen Mary's Hospital</option>
+                        <option value="9">St Ann's Hospital</option>
+                        <option value="5">St George's Hospital</option>
+                        <option value="14">Teddington Memorial Hospital</option>
+                        <option value="15">Upney Lane Health Centre</option>
+                        <option value="16">Visioncare Eye Medical Centre</option>
+                        <option value="20">Watford General Hospital</option>
+                    </select>				</td>
+                    <td>
+                        <input autocomplete="off" name="FirmSiteSecretary[0][direct_line]" id="FirmSiteSecretary_0_direct_line" type="text" value="546457664">				</td>
+                    <td>
+                        <input autocomplete="off" name="FirmSiteSecretary[0][fax]" id="FirmSiteSecretary_0_fax" type="text" value="3574567">				</td>
+                    <td>
+                        <button type="submit" form="deleteSecretaryForm" name="id" class="small" value="41">Delete</button>
+                    </td>
+                </tr>
+                <tr class="secretaryFormRow">
+                    <td>
+                        <input name="FirmSiteSecretary[1][firm_id]" id="FirmSiteSecretary_1_firm_id" type="hidden" value="2">					<input name="FirmSiteSecretary[1][id]" id="FirmSiteSecretary_1_id" type="hidden" value="42">					<select name="FirmSiteSecretary[1][site_id]" id="FirmSiteSecretary_1_site_id">
+                        <option value="">- None -</option>
+                        <option value="2" selected="selected">Bedford Hospital</option>
+                        <option value="11">Boots Opticians</option>
+                        <option value="10">Bridge Lane Health Centre</option>
+                        <option value="1">City Road</option>
+                        <option value="3">Ealing Hospital</option>
+                        <option value="18">Homerton Hospital</option>
+                        <option value="12">Loxford Polyclinic</option>
+                        <option value="17">Mayday Hospital</option>
+                        <option value="6">Mile End Hospital</option>
+                        <option value="4">Northwick Park Hospital</option>
+                        <option value="7">Potters Bar Community Hospital</option>
+                        <option value="19">Princess Alexandra Hospital</option>
+                        <option value="8">Queen Mary's Hospital</option>
+                        <option value="9">St Ann's Hospital</option>
+                        <option value="5">St George's Hospital</option>
+                        <option value="14">Teddington Memorial Hospital</option>
+                        <option value="15">Upney Lane Health Centre</option>
+                        <option value="16">Visioncare Eye Medical Centre</option>
+                        <option value="20">Watford General Hospital</option>
+                    </select>				</td>
+                    <td>
+                        <input autocomplete="off" name="FirmSiteSecretary[1][direct_line]" id="FirmSiteSecretary_1_direct_line" type="text" value="1234567890">				</td>
+                    <td>
+                        <input autocomplete="off" name="FirmSiteSecretary[1][fax]" id="FirmSiteSecretary_1_fax" type="text" value="0987654321">				</td>
+                    <td>
+                        <button type="submit" form="deleteSecretaryForm" name="id" class="small" value="42">Delete</button>
+                    </td>
+                </tr>
+                <tr class="secretaryFormRow">
+                    <td>
+                        <input name="FirmSiteSecretary[2][firm_id]" id="FirmSiteSecretary_2_firm_id" type="hidden" value="2">					<input name="FirmSiteSecretary[2][id]" id="FirmSiteSecretary_2_id" type="hidden" value="43">					<select name="FirmSiteSecretary[2][site_id]" id="FirmSiteSecretary_2_site_id">
+                        <option value="">- None -</option>
+                        <option value="2">Bedford Hospital</option>
+                        <option value="11" selected="selected">Boots Opticians</option>
+                        <option value="10">Bridge Lane Health Centre</option>
+                        <option value="1">City Road</option>
+                        <option value="3">Ealing Hospital</option>
+                        <option value="18">Homerton Hospital</option>
+                        <option value="12">Loxford Polyclinic</option>
+                        <option value="17">Mayday Hospital</option>
+                        <option value="6">Mile End Hospital</option>
+                        <option value="4">Northwick Park Hospital</option>
+                        <option value="7">Potters Bar Community Hospital</option>
+                        <option value="19">Princess Alexandra Hospital</option>
+                        <option value="8">Queen Mary's Hospital</option>
+                        <option value="9">St Ann's Hospital</option>
+                        <option value="5">St George's Hospital</option>
+                        <option value="14">Teddington Memorial Hospital</option>
+                        <option value="15">Upney Lane Health Centre</option>
+                        <option value="16">Visioncare Eye Medical Centre</option>
+                        <option value="20">Watford General Hospital</option>
+                    </select>				</td>
+                    <td>
+                        <input autocomplete="off" name="FirmSiteSecretary[2][direct_line]" id="FirmSiteSecretary_2_direct_line" type="text" value="345345634">				</td>
+                    <td>
+                        <input autocomplete="off" name="FirmSiteSecretary[2][fax]" id="FirmSiteSecretary_2_fax" type="text" value="34534534">				</td>
+                    <td>
+                        <button type="submit" form="deleteSecretaryForm" name="id" class="small" value="43">Delete</button>
+                    </td>
+                </tr>
+                <tr class="secretaryFormRow">
+                    <td>
+                        <input name="FirmSiteSecretary[3][firm_id]" id="FirmSiteSecretary_3_firm_id" type="hidden" value="2">					<input name="FirmSiteSecretary[3][id]" id="FirmSiteSecretary_3_id" type="hidden">					<select name="FirmSiteSecretary[3][site_id]" id="FirmSiteSecretary_3_site_id">
+                        <option value="">- None -</option>
+                        <option value="2">Bedford Hospital</option>
+                        <option value="11">Boots Opticians</option>
+                        <option value="10">Bridge Lane Health Centre</option>
+                        <option value="1">City Road</option>
+                        <option value="3">Ealing Hospital</option>
+                        <option value="18">Homerton Hospital</option>
+                        <option value="12">Loxford Polyclinic</option>
+                        <option value="17">Mayday Hospital</option>
+                        <option value="6">Mile End Hospital</option>
+                        <option value="4">Northwick Park Hospital</option>
+                        <option value="7">Potters Bar Community Hospital</option>
+                        <option value="19">Princess Alexandra Hospital</option>
+                        <option value="8">Queen Mary's Hospital</option>
+                        <option value="9">St Ann's Hospital</option>
+                        <option value="5">St George's Hospital</option>
+                        <option value="14">Teddington Memorial Hospital</option>
+                        <option value="15">Upney Lane Health Centre</option>
+                        <option value="16">Visioncare Eye Medical Centre</option>
+                        <option value="20">Watford General Hospital</option>
+                    </select>				</td>
+                    <td>
+                        <input autocomplete="off" name="FirmSiteSecretary[3][direct_line]" id="FirmSiteSecretary_3_direct_line" type="text">				</td>
+                    <td>
+                        <input autocomplete="off" name="FirmSiteSecretary[3][fax]" id="FirmSiteSecretary_3_fax" type="text">				</td>
+                    <td>
+                        <button type="submit" form="deleteSecretaryForm" name="id" class="small" value="">Delete</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="row field-row">
+                            <div class="large-10 large-offset-2 column">
+                                <button class="button small primary event-action" name="save" type="submit" id="et_save">Save</button>		<button class="warning button small primary event-action" name="cancel" type="submit" id="et_cancel">Cancel</button>				<img class="loader" src="/assets/9ed1557e/img/ajax-loader.gif" alt="loading..." style="display: none;">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            </form>
+        </div>
+
+		<div id="mocha"></div>
+
+		<!-- Framework dependencies -->
+		<script src="../../../../../assets/components/mocha/mocha.js"></script>
+		<script src="../../../../../assets/components/chai/chai.js"></script>
+		<script src="../../../../../assets/components/sinonjs-built/pkg/sinon-1.7.3.js"></script>
+
+		<script>
+			this.expect = chai.expect;
+			this.assert = chai.assert;
+			mocha.setup('bdd');
+		</script>
+
+		<!-- Add spec dependencies here -->
+		<script type="text/javascript" src="../../../../../assets/components/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="../../../../../assets/components/mustache/mustache.js"></script>
+		<script type="text/javascript" src="../../../../../assets/js/OpenEyes.js"></script>
+		<script type="text/javascript" src="../../../assets/js/module.js"></script>
+        <script type="text/javascript" src="../../../assets/js/siteSecretary.js"></script>
+
+		<!-- Add spec files here -->
+		<script src="../module.spec.js"></script>
+
+		<!-- Run the tests -->
+		<script>
+		if (navigator.userAgent.indexOf('PhantomJS') < 0) {
+			mocha.run(function done() {});
+		}
+		</script>
+	</body>
+</html>

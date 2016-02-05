@@ -1,0 +1,1011 @@
+<?php
+/**
+ * OpenEyes
+ *
+ * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+ * (C) OpenEyes Foundation, 2011-2013
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ */
+class OphCoCorrespondence_ReportLettersTest extends CDbTestCase
+{
+	public $fixtures = array(
+		'events' => 'Event',
+		'event_types' => 'EventType',
+		'letters' => 'ElementLetter',
+		'episodes' => 'Episode',
+		'users' => 'User',
+		'legacy_letters' => 'Element_OphLeEpatientletter_EpatientLetter',
+	);
+
+	public function setUp()
+	{
+		if (!file_exists(Yii::app()->basePath."/modules/OphLeEpatientletter/models/Element_OphLeEpatientletter_EpatientLetter.php") ||
+			!Yii::app()->db->schema->getTable('et_ophleepatientletter_epatientletter')) {
+			unset($this->fixtures['legacy_letters']);
+		}
+
+		parent::setUp();
+	}
+
+	public function testAfterValidate_Phrases_Empty()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+
+		$r->validate();
+
+		$this->assertTrue(isset($r->errors['phrases']));
+		$this->assertEquals(array('Phrases cannot be blank.'),$r->errors['phrases']);
+	}
+
+	public function testAfterValidate_Phrases_OnlyBlankItems()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+
+		$r->phrases = array('','','');
+
+		$r->validate();
+
+		$this->assertTrue(isset($r->errors['phrases']));
+		$this->assertEquals(array('Phrases cannot be blank.'),$r->errors['phrases']);
+	}
+
+	public function testAfterValidate_Phrases_HasData()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+
+		$r->phrases = array('one','');
+
+		$r->validate();
+
+		$this->assertFalse(isset($r->errors['phrases']));
+	}
+
+	public function testAfterValidate_NoType()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+
+		$r->validate();
+
+		$this->assertTrue(isset($r->errors['match_correspondence']));
+		$this->assertEquals(array('Please select which type of letters you want to search'),$r->errors['match_correspondence']);
+	}
+
+	public function testAfterValidate_CorrespondenceOnly()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+		$r->match_correspondence = 1;
+
+		$r->validate();
+
+		$this->assertFalse(isset($r->errors['match_correspondence']));
+		$this->assertFalse(isset($r->errors['match_legacy_letters']));
+	}
+
+	public function testAfterValidate_LegacyOnly()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+		$r->match_legacy_letters = 1;
+
+		$r->validate();
+
+		$this->assertFalse(isset($r->errors['match_correspondence']));
+		$this->assertFalse(isset($r->errors['match_legacy_letters']));
+	}
+
+	public function testAfterValidate_Both()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+		$r->match_correspondence = 1;
+		$r->match_legacy_letters = 1;
+
+		$r->validate();
+
+		$this->assertFalse(isset($r->errors['match_correspondence']));
+		$this->assertFalse(isset($r->errors['match_legacy_letters']));
+	}
+
+	public function testRun_MatchCorrespondence_JoinApplied()
+	{
+		$r = $this->getMockBuilder('OphCoCorrespondence_ReportLetters')
+			->disableOriginalConstructor()
+			->setMethods(array('getDbCommand','joinLetters','executeQuery'))
+			->getMock();
+
+		$cmd = $this->getMockBuilder('CDbCommand')
+			->disableOriginalConstructor()
+			->setMethods(array('select','where','join','leftJoin','queryAll'))
+			->getMock();
+
+		$r->expects($this->once())
+			->method('getDbCommand')
+			->will($this->returnValue($cmd));
+
+		$r->expects($this->once())
+			->method('joinLetters')
+			->with(
+				'Correspondence',
+				$cmd,
+				array('c.first_name','c.last_name','p.dob','p.hos_num','e.created_date','ep.patient_id'),
+				array(),
+				array(),
+				' or '
+			);
+
+		$r->condition_type = 'or';
+		$r->match_correspondence = 1;
+
+		$r->run();
+	}
+
+	public function testRun_MatchLegacy_JoinApplied()
+	{
+		$r = $this->getMockBuilder('OphCoCorrespondence_ReportLetters')
+			->disableOriginalConstructor()
+			->setMethods(array('getDbCommand','joinLetters','executeQuery'))
+			->getMock();
+			
+		$cmd = $this->getMockBuilder('CDbCommand')
+			->disableOriginalConstructor()
+			->setMethods(array('select','where','join','leftJoin','queryAll'))
+			->getMock();
+
+		$r->expects($this->once())
+			->method('getDbCommand')
+			->will($this->returnValue($cmd));
+
+		$r->expects($this->once())
+			->method('joinLetters')
+			->with(
+				'Legacy',
+				$cmd,
+				array('c.first_name','c.last_name','p.dob','p.hos_num','e.created_date','ep.patient_id'),
+				array(),
+				array(),
+				' or '
+			);
+			
+		$r->condition_type = 'or';
+		$r->match_legacy_letters = 1;
+
+		$r->run();
+	}
+
+	public function testRun_MatchCorrespondenceAndLegacy_BothJoinsApplied()
+	{
+		$r = $this->getMockBuilder('OphCoCorrespondence_ReportLetters')
+			->disableOriginalConstructor()
+			->setMethods(array('getDbCommand','joinLetters','executeQuery'))
+			->getMock();
+
+		$cmd = $this->getMockBuilder('CDbCommand')
+			->disableOriginalConstructor()
+			->setMethods(array('select','where','join','leftJoin','queryAll'))
+			->getMock();
+
+		$r->expects($this->once())
+			->method('getDbCommand')
+			->will($this->returnValue($cmd));
+
+		$r->expects($this->at(1))
+			->method('joinLetters')
+			->with(
+				'Correspondence',
+				$cmd,
+				array('c.first_name','c.last_name','p.dob','p.hos_num','e.created_date','ep.patient_id'),
+				array(),
+				array(),
+				' or '
+			);
+
+		$r->expects($this->at(2))
+			->method('joinLetters')
+			->with(
+				'Legacy',
+				$cmd,
+				array('c.first_name','c.last_name','p.dob','p.hos_num','e.created_date','ep.patient_id'),
+				array(),
+				array(),
+				' or '
+			);
+
+		$r->condition_type = 'or';
+		$r->match_correspondence = 1;
+		$r->match_legacy_letters = 1;
+
+		$r->run();
+	}
+
+	public function testRun_NoStartDate_DontApplyStartDate()
+	{
+		$r = $this->getMockBuilder('OphCoCorrespondence_ReportLetters')
+			->disableOriginalConstructor()
+			->setMethods(array('joinLetters','executeQuery','applyStartDate'))
+			->getMock();
+
+		$r->expects($this->never())
+			->method('applyStartDate');
+
+		$r->condition_type = 'or';
+		$r->match_correspondence = 1;
+
+		$r->run();
+	}
+
+	public function testRun_StartDate_ApplyStartDate()
+	{
+		$r = $this->getMockBuilder('OphCoCorrespondence_ReportLetters')
+			->disableOriginalConstructor()
+			->setMethods(array('joinLetters','executeQuery','applyStartDate'))
+			->getMock();
+
+		$r->expects($this->once())
+			->method('applyStartDate')
+			->with(' ('.' '.' '.') ',array());
+
+		$r->condition_type = 'or';
+		$r->match_correspondence = 1;
+		$r->start_date = '11 Jun 2012';
+
+		$r->run();
+	}
+
+	public function testRun_StartDate_DontApplyEndDate()
+	{
+		$r = $this->getMockBuilder('OphCoCorrespondence_ReportLetters')
+			->disableOriginalConstructor()
+			->setMethods(array('joinLetters','executeQuery','applyStartDate','applyEndDate'))
+			->getMock();
+
+		$r->expects($this->once())
+			->method('applyStartDate')
+			->with(' ('.' '.' '.') ',array());
+
+		$r->expects($this->never())
+			->method('applyEndDate');
+
+		$r->condition_type = 'or';
+		$r->match_correspondence = 1;
+		$r->start_date = '11 Jun 2012';
+
+		$r->run();
+	}
+
+	public function testRun_NoEndDate_DontApplyEndDate()
+	{
+		$r = $this->getMockBuilder('OphCoCorrespondence_ReportLetters')
+			->disableOriginalConstructor()
+			->setMethods(array('joinLetters','executeQuery','applyEndDate'))
+			->getMock();
+
+		$r->expects($this->never())
+			->method('applyEndDate');
+
+		$r->condition_type = 'or';
+		$r->match_correspondence = 1;
+
+		$r->run();
+	}
+
+	public function testRun_EndDate_ApplyEndDate()
+	{
+		$r = $this->getMockBuilder('OphCoCorrespondence_ReportLetters')
+			->disableOriginalConstructor()
+			->setMethods(array('joinLetters','executeQuery','applyStartDate','applyEndDate'))
+			->getMock();
+			
+		$r->expects($this->never())
+			->method('applyStartDate');
+		
+		$r->expects($this->once())
+			->method('applyEndDate')
+			->with(' ('.' '.' '.') ',array());
+
+		$r->condition_type = 'or';
+		$r->match_correspondence = 1;
+		$r->end_date = '11 Jun 2012';
+
+		$r->run();
+	}
+
+	public function testRun_BothDates_ApplyBothDates()
+	{
+		$r = $this->getMockBuilder('OphCoCorrespondence_ReportLetters')
+			->disableOriginalConstructor()
+			->setMethods(array('joinLetters','executeQuery','applyStartDate','applyEndDate'))
+			->getMock();
+
+		$r->expects($this->once())
+			->method('applyStartDate')
+			->with(' ('.' '.' '.') ',array());
+
+		$r->expects($this->once())
+			->method('applyEndDate')
+			->with(' ('.' '.' '.') ',array());
+
+		$r->condition_type = 'or';
+		$r->match_correspondence = 1;
+		$r->start_date = '11 Jan 2012';
+		$r->end_date = '11 Jun 2012';
+
+		$r->run();
+	}
+
+	public function testRun_WhereClause()
+	{
+		$r = $this->getMockBuilder('OphCoCorrespondence_ReportLetters')
+			->disableOriginalConstructor()
+			->setMethods(array('getDbCommand','joinLetters','executeQuery'))
+			->getMock();
+
+		$cmd = $this->getMockBuilder('CDbCommand')
+			->disableOriginalConstructor()
+			->setMethods(array('select','where','join','leftJoin','queryAll'))
+			->getMock();
+
+		$r->expects($this->once())
+			->method('getDbCommand')
+			->will($this->returnValue($cmd));
+
+		$cmd->expects($this->once())
+			->method('where')
+			->with(' ('.' '.' ) '.' and e.created_date >= :dateFrom',array(':dateFrom' => '2012-06-11 00:00:00'));
+
+		$r->condition_type = 'or';
+		$r->match_correspondence = 1;
+		$r->start_date = '11 Jun 2012';
+
+		$r->run();
+	}
+
+	public function testRun_SelectClause()
+	{
+		$r = $this->getMockBuilder('OphCoCorrespondence_ReportLetters')
+			->disableOriginalConstructor()
+			->setMethods(array('getDbCommand','joinLetters','executeQuery'))
+			->getMock();
+
+		$cmd = $this->getMockBuilder('CDbCommand')
+			->disableOriginalConstructor()
+			->setMethods(array('select','where','join','leftJoin','queryAll'))
+			->getMock();
+
+		$r->expects($this->once())
+			->method('getDbCommand')
+			->will($this->returnValue($cmd));
+
+		$cmd->expects($this->once())
+			->method('select')
+			->with('c.first_name,c.last_name,p.dob,p.hos_num,e.created_date,ep.patient_id');
+
+		$r->condition_type = 'or';
+		$r->match_correspondence = 1;
+
+		$r->run();
+	}
+
+	public function testRun_ExecuteQuery()
+	{
+		$r = $this->getMockBuilder('OphCoCorrespondence_ReportLetters')
+			->disableOriginalConstructor()
+			->setMethods(array('getDbCommand','joinLetters','executeQuery'))
+			->getMock();
+
+		$cmd = $this->getMockBuilder('CDbCommand')
+			->disableOriginalConstructor()
+			->setMethods(array('select','where','join','leftJoin','queryAll'))
+			->getMock();
+
+		$r->expects($this->once())
+			->method('getDbCommand')
+			->will($this->returnValue($cmd));
+
+		$r->expects($this->once())
+			->method('executeQuery')
+			->with($cmd);
+
+		$r->condition_type = 'or';
+		$r->match_correspondence = 1;
+
+		$r->run();
+	}
+
+	public function testGetDbCommand()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+
+		$cmd = $r->getDbCommand();
+
+		$this->assertInstanceOf('CDbCommand',$cmd);
+		$this->assertEquals('`event` `e`',$cmd->from);
+		$this->assertCount(3,$cmd->join);
+		$this->assertEquals('JOIN `episode` `ep` ON e.episode_id = ep.id',$cmd->join[0]);
+		$this->assertEquals('JOIN `patient` `p` ON ep.patient_id = p.id',$cmd->join[1]);
+		$this->assertEquals('JOIN `contact` `c` ON p.contact_id = c.id',$cmd->join[2]);
+		$this->assertEquals('`e`.`created_date` ASC',$cmd->order);
+	}
+
+	public function testJoinLetters_Correspondence_Join()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+
+		$cmd = $this->getMockBuilder('CDbCommand')
+			->disableOriginalConstructor()
+			->setMethods(array('select','where','join','leftJoin','queryAll'))
+			->getMock();
+
+		$cmd->expects($this->once())
+			->method('leftJoin')
+			->with('et_ophcocorrespondence_letter l','l.event_id = e.id');
+
+		$select = array();
+		$where_clauses = array();
+		$where_params = array();
+
+		$r->phrases = array('diagnosed','appointment');
+		$r->joinLetters('Correspondence',$cmd,$select,$where_clauses,$where_params,' or ');
+	}
+
+	public function testJoinLetters_Correspondence_Select()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+
+		$cmd = $this->getMockBuilder('CDbCommand')
+			->disableOriginalConstructor()
+			->setMethods(array('select','where','join','leftJoin','queryAll'))
+			->getMock();
+			
+		$select = array();
+		$where_clauses = array();
+		$where_params = array();
+
+		$r->phrases = array('diagnosed','appointment');
+		$r->joinLetters('Correspondence',$cmd,$select,$where_clauses,$where_params,' or ');
+
+		$this->assertCount(2,$select);
+		$this->assertEquals('l.id as lid',$select[0]);
+		$this->assertEquals('l.event_id',$select[1]);
+	}
+
+	public function testJoinLetters_Correspondence_WhereClauses()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+
+		$cmd = $this->getMockBuilder('CDbCommand')
+			->disableOriginalConstructor()
+			->setMethods(array('select','where','join','leftJoin','queryAll'))
+			->getMock();
+
+		$select = array();
+		$where_clauses = array();
+		$where_params = array();
+
+		$r->phrases = array('diagnosed','appointment');
+		$r->joinLetters('Correspondence',$cmd,$select,$where_clauses,$where_params,' or ');
+
+		$this->assertCount(1,$where_clauses);
+		$this->assertEquals('(l.id is not null and e.event_type_id = :et_l_id and ( '.' lower(l.body) like :bodyl0 or '.' lower(l.body) like :bodyl1 ) )',$where_clauses[0]);
+	}
+
+	public function testJoinLetters_Correspondence_WhereParams()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+	 
+		$cmd = $this->getMockBuilder('CDbCommand')
+			->disableOriginalConstructor()
+			->setMethods(array('select','where','join','leftJoin','queryAll'))
+			->getMock();
+
+		$select = array();
+		$where_clauses = array();
+		$where_params = array();
+
+		$r->phrases = array('diagnosed','appointment');
+		$r->joinLetters('Correspondence',$cmd,$select,$where_clauses,$where_params,' or ');
+
+		$this->assertCount(3,$where_params);
+		$this->assertEquals(1007,$where_params[':et_l_id']);
+		$this->assertEquals('%diagnosed%',$where_params[':bodyl0']);
+		$this->assertEquals('%appointment%',$where_params[':bodyl1']);
+	}
+
+	public function testApplyStartDate()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+
+		$r->start_date = '11 Jan 2012';
+
+		$where = 'testing123';
+		$where_params = array('some','stuff');
+
+		$r->applyStartDate($where,$where_params);
+
+		$this->assertEquals('testing123 and e.created_date >= :dateFrom',$where);
+		$this->assertCount(3,$where_params);
+		$this->assertEquals('2012-01-11 00:00:00',$where_params[':dateFrom']);
+	}
+
+	public function testApplyEndDate()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+
+		$r->end_date = '11 Oct 2012';
+
+		$where = 'testing456';
+		$where_params = array();
+
+		$r->applyEndDate($where,$where_params);
+
+		$this->assertEquals('testing456 and e.created_date <= :dateTo',$where);
+		$this->assertCount(1,$where_params);
+		$this->assertEquals('2012-10-11 23:59:59',$where_params[':dateTo']);
+	}
+
+	public function testExecuteQuery()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+		$r->letters = array();
+
+		$cmd = $this->getMockBuilder('CDbCommand')
+			->disableOriginalConstructor()
+			->setMethods(array('select','where','join','leftJoin','queryAll'))
+			->getMock();
+
+		$cmd->expects($this->once())
+			->method('queryAll')
+			->will($this->returnValue(array(
+				array(
+					'lid' => 123,
+					'event_id' => 345,
+				),
+				array(
+					'l2id' => 789,
+					'l2_event_id' => 707,
+				),
+			)));
+
+		$r->executeQuery($cmd);
+
+		$this->assertCount(2,$r->letters);
+
+		$this->assertEquals(123,$r->letters[0]['lid']);
+		$this->assertEquals(345,$r->letters[0]['event_id']);
+		$this->assertEquals('Correspondence',$r->letters[0]['type']);
+		$this->assertEquals('http:///OphCoCorrespondence/default/view/345',$r->letters[0]['link']);
+
+		$this->assertEquals(789,$r->letters[1]['l2id']);
+		$this->assertEquals(707,$r->letters[1]['l2_event_id']);
+		$this->assertEquals('Legacy letter',$r->letters[1]['type']);
+		$this->assertEquals('http:///OphLeEpatientletter/default/view/707',$r->letters[1]['link']);
+	}
+
+	public function testRun_Correspondence_AnyPhrase()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+		$r->condition_type = 'or';
+		$r->match_correspondence = 1;
+		$r->phrases = array('diagnosed','randomtextthatwontbeintheletter','discharged');
+		$r->start_date = date('j M Y',strtotime('-2 years'));
+		$r->end_date = date('j M Y',strtotime('+ 5 months'));
+
+		$r->run();
+
+		$this->assertCount(2,$r->letters);
+
+		$this->assertEquals('Edward',$r->letters[0]['first_name']);
+		$this->assertEquals('Allan',$r->letters[0]['last_name']);
+		$this->assertEquals('1960-01-01',$r->letters[0]['dob']);
+		$this->assertEquals('34567',$r->letters[0]['hos_num']);
+		$this->assertEquals('1',$r->letters[0]['lid']);
+		$this->assertEquals('6',$r->letters[0]['event_id']);
+		$this->assertEquals('Correspondence',$r->letters[0]['type']);
+		$this->assertEquals('http:///OphCoCorrespondence/default/view/6',$r->letters[0]['link']);
+
+		$this->assertEquals('Bob',$r->letters[1]['first_name']);
+		$this->assertEquals('Collin',$r->letters[1]['last_name']);
+		$this->assertEquals('1972-01-01',$r->letters[1]['dob']);
+		$this->assertEquals('23456',$r->letters[1]['hos_num']);
+		$this->assertEquals('2',$r->letters[1]['lid']);
+		$this->assertEquals('7',$r->letters[1]['event_id']);
+		$this->assertEquals('Correspondence',$r->letters[1]['type']);
+		$this->assertEquals('http:///OphCoCorrespondence/default/view/7',$r->letters[1]['link']);
+	}
+
+	public function testRun_Correspondence_AllPhrases()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+		$r->condition_type = 'and';
+		$r->match_correspondence = 1;
+		$r->phrases = array('diagnosed','condition');
+		$r->start_date = date('j M Y',strtotime('-2 years'));
+		$r->end_date = date('j M Y',strtotime('+ 5 months'));
+
+		$r->run();
+
+		$this->assertCount(1,$r->letters);
+
+		$this->assertEquals('Edward',$r->letters[0]['first_name']);
+		$this->assertEquals('Allan',$r->letters[0]['last_name']);
+		$this->assertEquals('1960-01-01',$r->letters[0]['dob']);
+		$this->assertEquals('34567',$r->letters[0]['hos_num']);
+		$this->assertEquals('1',$r->letters[0]['lid']);
+		$this->assertEquals('6',$r->letters[0]['event_id']);
+		$this->assertEquals('Correspondence',$r->letters[0]['type']);
+		$this->assertEquals('http:///OphCoCorrespondence/default/view/6',$r->letters[0]['link']);
+	}
+
+	public function testRun_Correspondence_MatchCorrespondence()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+		$r->condition_type = 'or';
+		$r->match_correspondence = 1;
+		$r->phrases = array('diagnosed','condition','tolerance','allergy');
+		$r->start_date = date('j M Y',strtotime('-2 years'));
+		$r->end_date = date('j M Y',strtotime('+ 5 months'));
+
+		$r->run();
+
+		$this->assertCount(2,$r->letters);
+
+		$this->assertEquals('Edward',$r->letters[0]['first_name']);
+		$this->assertEquals('Allan',$r->letters[0]['last_name']);
+		$this->assertEquals('1960-01-01',$r->letters[0]['dob']);
+		$this->assertEquals('34567',$r->letters[0]['hos_num']);
+		$this->assertEquals('1',$r->letters[0]['lid']);
+		$this->assertEquals('6',$r->letters[0]['event_id']);
+		$this->assertEquals('Correspondence',$r->letters[0]['type']);
+		$this->assertEquals('http:///OphCoCorrespondence/default/view/6',$r->letters[0]['link']);
+
+		$this->assertEquals('Bob',$r->letters[1]['first_name']);
+		$this->assertEquals('Collin',$r->letters[1]['last_name']);
+		$this->assertEquals('1972-01-01',$r->letters[1]['dob']);
+		$this->assertEquals('23456',$r->letters[1]['hos_num']);
+		$this->assertEquals('2',$r->letters[1]['lid']);
+		$this->assertEquals('7',$r->letters[1]['event_id']);
+		$this->assertEquals('Correspondence',$r->letters[1]['type']);
+		$this->assertEquals('http:///OphCoCorrespondence/default/view/7',$r->letters[1]['link']);
+	}
+
+	public function testRun_Correspondence_MatchLegacy()
+	{
+		if (!isset($this->fixtures['legacy_letters'])) return;
+
+		$r = new OphCoCorrespondence_ReportLetters;
+		$r->condition_type = 'or';
+		$r->match_legacy_letters = 1;
+		$r->phrases = array('diagnosed','condition','tolerance','allergy');
+		$r->start_date = date('j M Y',strtotime('-2 years'));
+		$r->end_date = date('j M Y',strtotime('+ 5 months'));
+
+		$r->run();
+
+		$this->assertCount(2,$r->letters);
+
+		$this->assertEquals('Bob',$r->letters[0]['first_name']);
+		$this->assertEquals('Collin',$r->letters[0]['last_name']);
+		$this->assertEquals('1972-01-01',$r->letters[0]['dob']);
+		$this->assertEquals('23456',$r->letters[0]['hos_num']);
+		$this->assertEquals('1',$r->letters[0]['l2id']);
+		$this->assertEquals('8',$r->letters[0]['l2_event_id']);
+		$this->assertEquals('Legacy letter',$r->letters[0]['type']);
+		$this->assertEquals('http:///OphLeEpatientletter/default/view/8',$r->letters[0]['link']);
+
+		$this->assertEquals('Edward',$r->letters[1]['first_name']);
+		$this->assertEquals('Allan',$r->letters[1]['last_name']);
+		$this->assertEquals('1960-01-01',$r->letters[1]['dob']);
+		$this->assertEquals('34567',$r->letters[1]['hos_num']);
+		$this->assertEquals('2',$r->letters[1]['l2id']);
+		$this->assertEquals('9',$r->letters[1]['l2_event_id']);
+		$this->assertEquals('Legacy letter',$r->letters[1]['type']);
+		$this->assertEquals('http:///OphLeEpatientletter/default/view/9',$r->letters[1]['link']);
+	}
+
+	public function testRun_Correspondence_MatchCorrespondenceAndLegacy()
+	{
+		if (!isset($this->fixtures['legacy_letters'])) return;
+
+		$r = new OphCoCorrespondence_ReportLetters;
+		$r->condition_type = 'or';
+		$r->match_correspondence = 1;
+		$r->match_legacy_letters = 1;
+		$r->phrases = array('diagnosed','condition','tolerance','allergy');
+		$r->start_date = date('j M Y',strtotime('-2 years'));
+		$r->end_date = date('j M Y',strtotime('+ 5 months'));
+
+		$r->run();
+
+		$this->assertCount(4,$r->letters);
+
+		$this->assertEquals('Edward',$r->letters[0]['first_name']);
+		$this->assertEquals('Allan',$r->letters[0]['last_name']);
+		$this->assertEquals('1960-01-01',$r->letters[0]['dob']);
+		$this->assertEquals('34567',$r->letters[0]['hos_num']);
+		$this->assertEquals('1',$r->letters[0]['lid']);
+		$this->assertEquals('6',$r->letters[0]['event_id']);
+		$this->assertNull($r->letters[0]['l2id']);
+		$this->assertNull($r->letters[0]['l2_event_id']);
+		$this->assertEquals('Correspondence',$r->letters[0]['type']);
+		$this->assertEquals('http:///OphCoCorrespondence/default/view/6',$r->letters[0]['link']);
+
+		$this->assertEquals('Bob',$r->letters[1]['first_name']);
+		$this->assertEquals('Collin',$r->letters[1]['last_name']);
+		$this->assertEquals('1972-01-01',$r->letters[1]['dob']);
+		$this->assertEquals('23456',$r->letters[1]['hos_num']);
+		$this->assertEquals('2',$r->letters[1]['lid']);
+		$this->assertEquals('7',$r->letters[1]['event_id']);
+		$this->assertNull($r->letters[1]['l2id']);
+		$this->assertNull($r->letters[1]['l2_event_id']);
+		$this->assertEquals('Correspondence',$r->letters[1]['type']);
+		$this->assertEquals('http:///OphCoCorrespondence/default/view/7',$r->letters[1]['link']);
+
+		$this->assertEquals('Bob',$r->letters[2]['first_name']);
+		$this->assertEquals('Collin',$r->letters[2]['last_name']);
+		$this->assertEquals('1972-01-01',$r->letters[2]['dob']);
+		$this->assertEquals('23456',$r->letters[2]['hos_num']);
+		$this->assertNull($r->letters[2]['lid']);
+		$this->assertNull($r->letters[2]['event_id']);
+		$this->assertEquals('1',$r->letters[2]['l2id']);
+		$this->assertEquals('8',$r->letters[2]['l2_event_id']);
+		$this->assertEquals('Legacy letter',$r->letters[2]['type']);
+		$this->assertEquals('http:///OphLeEpatientletter/default/view/8',$r->letters[2]['link']);
+
+		$this->assertEquals('Edward',$r->letters[3]['first_name']);
+		$this->assertEquals('Allan',$r->letters[3]['last_name']);
+		$this->assertEquals('1960-01-01',$r->letters[3]['dob']);
+		$this->assertEquals('34567',$r->letters[3]['hos_num']);
+		$this->assertNull($r->letters[3]['lid']);
+		$this->assertNull($r->letters[3]['event_id']);
+		$this->assertEquals('2',$r->letters[3]['l2id']);
+		$this->assertEquals('9',$r->letters[3]['l2_event_id']);
+		$this->assertEquals('Legacy letter',$r->letters[3]['type']);
+		$this->assertEquals('http:///OphLeEpatientletter/default/view/9',$r->letters[3]['link']);
+	}
+
+	public function testRun_CorrespondenceAndLegacy_DateFrom()
+	{
+		if (!isset($this->fixtures['legacy_letters'])) return;
+
+		$r = new OphCoCorrespondence_ReportLetters;
+		$r->condition_type = 'or';
+		$r->match_correspondence = 1;
+		$r->match_legacy_letters = 1;
+		$r->phrases = array('diagnosed','condition','tolerance','allergy');
+		$r->start_date = date('j M Y',strtotime('-60 days'));
+		$r->end_date = date('j M Y',strtotime('+1 day'));
+		$r->run();
+
+		$this->assertCount(3,$r->letters);
+
+		$r->start_date = date('j M Y',strtotime('-30 days'));
+		$r->run();
+
+		$this->assertCount(2,$r->letters);
+
+		$r->start_date = date('j M Y',strtotime('-10 days'));
+		$r->run();
+
+		$this->assertCount(1,$r->letters);
+
+		$r->start_date = date('j M Y',strtotime('-2 days'));
+		$r->run();
+
+		$this->assertCount(0,$r->letters);
+	}
+
+	public function testRun_CorrespondenceAndLegacy_DateTo()
+	{
+		if (!isset($this->fixtures['legacy_letters'])) return;
+
+		$r = new OphCoCorrespondence_ReportLetters;
+		$r->condition_type = 'or';
+		$r->match_correspondence = 1;
+		$r->match_legacy_letters = 1;
+		$r->phrases = array('diagnosed','condition','tolerance','allergy');
+		$r->start_date = date('j M Y',strtotime('-4 months'));
+		$r->end_date = date('j M Y',strtotime('-4 days'));
+		$r->run();
+
+		$this->assertCount(3,$r->letters);
+
+		$r->end_date = date('j M Y',strtotime('-18 days'));
+		$r->run();
+
+		$this->assertCount(2,$r->letters);
+
+		$r->end_date = date('j M Y',strtotime('-46 days'));
+		$r->run();
+
+		$this->assertCount(1,$r->letters);
+
+		$r->end_date = date('j M Y',strtotime('-3 months -1 day'));
+		$r->run();
+
+		$this->assertCount(0,$r->letters);
+	}
+
+	public function testRun_CorrespondenceAndLegacy_Author()
+	{
+		if (!isset($this->fixtures['legacy_letters'])) return;
+
+		$r = new OphCoCorrespondence_ReportLetters;
+		$r->condition_type = 'or';
+		$r->match_correspondence = 1;
+		$r->match_legacy_letters = 1;
+		$r->phrases = array('diagnosed','condition','tolerance','allergy');
+		$r->start_date = date('j M Y',strtotime('-4 months'));
+		$r->end_date = date('j M Y');
+		$r->author_id = 2;
+		$r->run();
+
+		$this->assertCount(2,$r->letters);
+
+		$this->assertEquals('Edward',$r->letters[0]['first_name']);
+		$this->assertEquals('Allan',$r->letters[0]['last_name']);
+		$this->assertEquals('1960-01-01',$r->letters[0]['dob']);
+		$this->assertEquals('34567',$r->letters[0]['hos_num']);
+		$this->assertEquals('1',$r->letters[0]['lid']);
+		$this->assertEquals('6',$r->letters[0]['event_id']);
+		$this->assertNull($r->letters[0]['l2id']);
+		$this->assertNull($r->letters[0]['l2_event_id']);
+		$this->assertEquals('Correspondence',$r->letters[0]['type']);
+		$this->assertEquals('http:///OphCoCorrespondence/default/view/6',$r->letters[0]['link']);
+
+		$this->assertEquals('Bob',$r->letters[1]['first_name']);
+		$this->assertEquals('Collin',$r->letters[1]['last_name']);
+		$this->assertEquals('1972-01-01',$r->letters[1]['dob']);
+		$this->assertEquals('23456',$r->letters[1]['hos_num']);
+		$this->assertNull($r->letters[1]['lid']);
+		$this->assertNull($r->letters[1]['event_id']);
+		$this->assertEquals('1',$r->letters[1]['l2id']);
+		$this->assertEquals('8',$r->letters[1]['l2_event_id']);
+		$this->assertEquals('Legacy letter',$r->letters[1]['type']);
+		$this->assertEquals('http:///OphLeEpatientletter/default/view/8',$r->letters[1]['link']);
+	}
+
+	public function testDescription_MatchCorrespondence()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+		$r->match_correspondence = 1;
+		$r->phrases = array();
+
+		$this->assertRegExp('/^Correspondence/',$r->description());
+	}
+
+	public function testDescription_MatchLegacyLetters()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+		$r->match_legacy_letters = 1;
+		$r->phrases = array();
+
+		$this->assertRegExp('/^Legacy letters/',$r->description());
+	}
+
+	public function testDescription_MatchCorrespondenceAndLegacy()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+		$r->match_correspondence = 1;
+		$r->match_legacy_letters = 1;
+		$r->phrases = array();
+
+		$this->assertRegExp('/^Correspondence and legacy letters/',$r->description());
+	}
+
+	public function testDescription_Phrases_Any()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+		$r->match_correspondence = 1;
+		$r->phrases = array('apple','grapefruit','clemantine');
+
+		$this->assertRegExp('/Correspondence containing any of these phrases:\napple\ngrapefruit\nclemantine/',$r->description());
+	}
+
+	public function testDescription_Phrases_All()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+		$r->match_correspondence = 1;
+		$r->condition_type = 'and';
+		$r->phrases = array('apple','grapefruit','clemantine');
+
+		$this->assertRegExp('/Correspondence containing all of these phrases:\napple\ngrapefruit\nclemantine/',$r->description());
+	}
+	
+	public function testDescription_StartDate()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+		$r->start_date = '1 May 2012';
+		$r->match_correspondence = 1;
+		$r->phrases = array();
+
+		$this->assertRegExp('/written after 1 May 2012/',$r->description());
+	}
+
+	public function testDescription_EndDate()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+		$r->end_date = '1 May 2012';
+		$r->match_correspondence = 1;
+		$r->phrases = array();
+
+		$this->assertRegExp('/written before 1 May 2012/',$r->description());
+	}
+
+	public function testDescription_StartAndEndDate()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+		$r->start_date = '1 May 2012';
+		$r->end_date = '1 May 2013';
+		$r->match_correspondence = 1;
+		$r->phrases = array();
+
+		$this->assertRegExp('/written between 1 May 2012 and 1 May 2013/',$r->description());
+	}
+
+	public function testDescription_Author()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+		$r->match_correspondence = 1;
+		$r->phrases = array();
+		$r->author_id = 2;
+
+		$this->assertRegExp('/written by Jane Bloggs/',$r->description());
+	}
+
+	public function testDescription_StartAndEndDateAndAuthor()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+		$r->start_date = '1 May 2012';
+		$r->end_date = '1 May 2013';
+		$r->match_correspondence = 1;
+		$r->phrases = array();
+		$r->author_id = 2;
+
+		$this->assertRegExp('/written between 1 May 2012 and 1 May 2013 by Jane Bloggs/',$r->description());
+	}
+
+	public function testToCSV()
+	{
+		$r = new OphCoCorrespondence_ReportLetters;
+		$r->match_correspondence = 1;
+		$r->start_date = '1 May 2012';
+		$r->phrases = array('one');
+
+		$r->letters = array(
+			array(
+				'hos_num' => 123,
+				'dob' => '1980-04-05',
+				'first_name' => 'Jerome',
+				'last_name' => 'Jeronimo',
+				'created_date' => '2012-01-04 13:11:11',
+				'type' => 'Correspondence',
+				'link' => 'http://blah1',
+			),
+			array(
+				'hos_num' => 345,
+				'dob' => '1977-04-05',
+				'first_name' => 'Jim',
+				'last_name' => 'Dave',
+				'created_date' => '2013-01-04 13:11:11',
+				'type' => 'Legacy',
+				'link' => 'http://blah2',
+			),
+		);
+
+		$this->assertEquals('Correspondence containing any of these phrases:
+one
+written after 1 May 2012
+
+Hospital Number,Date of Birth,First Name,Last Name,Date,Type,Link
+"123","5 Apr 1980","Jerome","Jeronimo","4 Jan 2012","Correspondence","http://blah1"
+"345","5 Apr 1977","Jim","Dave","4 Jan 2013","Legacy","http://blah2"
+', $r->toCSV());
+	}
+}

@@ -1,0 +1,3 @@
+event_type_id => event_type.class_name,default_code,code,method,description
+OphTrOperationbooking,"opl","opl","getLetterProcedures","Operations listed for"
+OphTrOperationbooking,"adm","adm","getAdmissionDate","Admission date for most recent booking"

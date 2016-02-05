@@ -1,0 +1,2 @@
+id,name,recipient_patient,recipient_doctor,use_nickname,body,cc_patient,display_order,episode_status_id,site_id,cc_doctor
+1,"Referral",0,1,0,"Thank you very much for referring this [age] year old [sub] who I saw in the clinic today.",1,1,NULL,1,0
