@@ -57,7 +57,19 @@ class BaseActiveRecord extends CActiveRecord
 	 *
 	 * @var bool
 	 */
-	public $save_only_if_changed = false;
+	private $save_only_if_changed = false;
+    
+    /**
+     * Set the flag to indicate that model should only save to the db if the model is dirty
+     * 
+     * @param bool $enable
+     * @return \BaseActiveRecord
+     */
+    public function saveIfDirty($enable = true)
+    {
+        $this->save_only_if_changed = $enable;
+        return $this;
+    }
 
 	public function canAutocomplete()
 	{
@@ -197,11 +209,11 @@ class BaseActiveRecord extends CActiveRecord
 	 */
 	public function save($runValidation=true, $attributes=null, $allow_overriding=false)
 	{
-            // Saving the model only if it is dirty / turn on/off with $this->save_only_if_changed
-            if ( $this->save_only_if_changed === true && $this->isModelDirty() === false) {
-                return true;
-            }
-
+        // Saving the model only if it is dirty / turn on/off with $this->save_only_if_changed
+        if ( $this->save_only_if_changed === true && $this->isModelDirty() === false) {
+            return true;
+        }
+        
 		$user_id = null;
 
 		try {

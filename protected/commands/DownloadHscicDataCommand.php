@@ -55,6 +55,13 @@ class DownloadHscicDataCommand extends CConsoleCommand
         if (!file_exists($this->path)) {
             mkdir($this->path, 0777, true);
         }
+        
+        parent::__construct(null, null);
+    }
+    
+    public function getName()
+    {
+        return 'HSCIC data download Command.';
     }
     
     /**
@@ -62,23 +69,26 @@ class DownloadHscicDataCommand extends CConsoleCommand
      */
     public function actionIndex()
     {
-        $this->actionHelp();
+        $this->getHelp();
     }
     
-    public function actionHelp()
-    {
-        echo "\n";
-        echo "HSCIC data downloader\n\n";
-        echo "USAGE \n  yiic.php downloadhscicdata [action] [parameter]";
-        echo "\n";
-        echo "\n";
-        echo "Following actions are available:";
-        echo "\n";
-        echo " - full\n";
-        echo " - monthly\n";
-        echo " - quarterly\n";
-        echo " - import [--type=gp|practice|ccg|ccgAssignment --interval=full|monthly|quarterly] *for ccg and ccgAssignment only full file available\n";
-        echo "\n";
+    public function getHelp()
+    {        
+        echo <<<EOH
+        
+
+HSCIC data downloader
+        
+USAGE \n  yiic.php downloadhscicdata [action] [parameter]
+        
+Following actions are available:
+ - full
+ - monthly
+ - quarterly
+ - import [--type=gp|practice|ccg|ccgAssignment --interval=full|monthly|quarterly] *for ccg and ccgAssignment only full file available
+
+
+EOH;
     }
     
     /**
@@ -123,19 +133,12 @@ class DownloadHscicDataCommand extends CConsoleCommand
     public function actionDownload($type, $interval)
     {
         if( !isset(self::$files[$interval]) ){
-            echo "Interval not found: $interval\n\n";
-            echo "Available intervals:\n";
-            foreach( array_keys(self::$files) as $interval ){
-                echo "$interval\n";
-            }
+            $this->usageError("Interval not found: $interval");
            
         } else if( !isset(self::$files[$interval][$type]) ){
             
             echo "Type not found: $type\n\n";
-            echo "Available types:\n";
-            foreach( array_keys(self::$files[$interval]) as $type ){
-                echo "$type\n";
-            }
+            $this->usageError("Type not found: $type");
             
         } else {
             $fileName = $this->getFileFromUrl(self::$files[$interval][$type]['url']);

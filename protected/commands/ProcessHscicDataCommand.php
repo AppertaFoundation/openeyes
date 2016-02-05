@@ -22,7 +22,17 @@ class ProcessHscicDataCommand extends CConsoleCommand
     public $path = null;
     public $tempPath = null;
 
-    public $force = false; 
+    /**
+     * Force already imported files to process it again
+     * @var type 
+     */
+    public $force = false;
+    
+    /**
+     * Audit can be disabled (eg for the first import we probably don't want to generate 78000 'GP imported' audit rows)
+     * @var type
+     */
+    public $audit = true;
     
     private $pcu;
     private $countryId;
@@ -70,7 +80,17 @@ class ProcessHscicDataCommand extends CConsoleCommand
             mkdir($this->tempPath, 0777, true);
         }
         
+
         parent::__construct(null, null);
+    }
+    
+    /**
+     * Returns the command name/short description.
+     * @return string
+     */
+    public function getName()
+    {
+        return 'HSCIC data import Command.';
     }
     
     /**
@@ -78,34 +98,50 @@ class ProcessHscicDataCommand extends CConsoleCommand
      */
     public function actionIndex()
     {
-        $this->actionHelp();
+        $this->getHelp();
     }
     
     /**
      * Help
      */
-    public function actionHelp()
-    {
-        echo "\n";
-        echo "HSCIC data importer\n\n";
-        echo "USAGE \n  yiic.php processhscicdata [action] [parameter]";
-        echo "\n";
-        echo "\n";
-        echo "Following actions are available:";
-        echo "\n";
-        echo " - full\n";
-        echo " - monthly\n";
-        echo " - quarterly\n";
-        echo " - import [--type=gp|practice|ccg|ccgAssignment --interval=full|monthly|quarterly] *for ccg and ccgAssignment only full file available\n";
-        echo " - checkremovedfromfile [--type=gp|practice]\n";
-        echo "\n";
-        echo "EXAMPLES\n\n";
-        echo " * yiic.php processhscicdata monthly\n";
-        echo "   importing the monthly files (gp and practice)\n\n";
-        echo " * yiic.php processhscicdata import --type=gp --interval=full --force";
-        echo "\n   importing the full GP file, forcing it as it was already processed";
-        echo "\n";
-        echo "\n";
+    public function getHelp()
+    {        
+        echo <<<EOH
+
+        
+HSCIC data importer
+        
+The importer is processing zipped CSV files downloaded from HSCIC websie
+http://systems.hscic.gov.uk/data/ods/datadownloads/gppractice
+
+.zip files must be placed to /protected/data/hscic/temp
+
+USAGE
+  yiic.php processhscicdata [action] [parameter]
+        
+Following actions are available:
+        
+ - full
+ - monthly
+ - quarterly
+ - import [--type=gp|practice|ccg|ccgAssignment --interval=full|monthly|quarterly] *for ccg and ccgAssignment only full file available
+ - checkremovedfromfile [--type=gp|practice]
+        
+Following parameters are available:
+        
+ - force  :  force import for the give file, even if it was already processed before
+ - audit  :  Do not generate audit message (can be useful for the first run, we do not need 78000 'GP imported' audit message)
+
+EXAMPLES
+        
+ * yiic.php processhscicdata monthly
+   importing the monthly files (gp and practice)
+        
+ * yiic.php processhscicdata import --type=gp --interval=full --force
+   importing the full GP file, forcing it as it was already processed
+
+
+EOH;
         
     }
     
@@ -122,20 +158,9 @@ class ProcessHscicDataCommand extends CConsoleCommand
     public function actionImport($type, $interval = 'full')
     {
         if( !isset(self::$files[$interval]) ){
-            echo "Interval not found: $interval\n\n";
-            echo "Available intervals:\n";
-            foreach( array_keys(self::$files) as $interval ){
-                echo "$interval\n";
-            }
-           
+            $this->usageError("Interval not found: $interval");
         } else if( !isset(self::$files[$interval][$type]) ){
-            
-            echo "Type not found: $type\n\n";
-            echo "Available types:\n";
-            foreach( array_keys(self::$files[$interval]) as $type ){
-                echo "$type\n";
-            }
-            
+            $this->usageError("Type not found: $type");
         } else {
             $this->processFile($type, self::$files[$interval][$type]);
         }      
@@ -186,9 +211,7 @@ class ProcessHscicDataCommand extends CConsoleCommand
         $isNewResource = false;
         
         if( !file_exists($tempFile)){
-            echo "File not found: " . $tempFile ."\n";
-            echo "Please download it (eg. using DownloadHscicData command) " ."\n";
-            
+            $this->usageError("File not found: " . $tempFile);
         } else if ( !file_exists($permanentFile) ){
             // No previously processed file found
             $isNewResource = true;
@@ -236,12 +259,13 @@ class ProcessHscicDataCommand extends CConsoleCommand
      * @return int line count
      * @throws Exception
      */
-    private function getLineCountFromZip($file){
+    private function getLineCountFromZip($file)
+    {
         $pathInfo = pathinfo($file);
         
         $zip = new ZipArchive();
         if (($res = $zip->open($file)) !== true) {
-            throw new Exception("Failed to open zip file at '{$zip_path}': " . $res);
+            $this->usageError("Failed to open zip file at '{$zip_path}': " . $res);
         }
         
         $fileName = str_replace('.zip', '.csv', $pathInfo['basename']);
@@ -290,7 +314,6 @@ class ProcessHscicDataCommand extends CConsoleCommand
         $permanentFile = $this->path . '/' . $pathParts['filename'] . '/' . $pathParts['basename'];
         $tempFile =  $this->tempPath . '/' . $pathParts['basename'];
 
-        // I am not sure about the fn name
         // check if the current file(url) is already processed or not
         if( $this->isNewResourceFile($tempFile, $permanentFile) ){
 
@@ -320,7 +343,7 @@ class ProcessHscicDataCommand extends CConsoleCommand
         $this->countryId = Country::model()->findByAttributes(array('code' => 'GB'))->id;
         $this->cbtId = CommissioningBodyType::model()->findByAttributes(array('shortname' => 'CCG'))->id;
         
-        echo  "Type: {$type}\n";
+        echo "Type: $type\n";
         echo "Total rows : $lineCount\n";
         
         echo "Progress :          ";
@@ -336,17 +359,16 @@ class ProcessHscicDataCommand extends CConsoleCommand
             $data = array_combine(array_pad($fields, count($row), ""), $row);
             $transaction = Yii::app()->db->beginTransaction();
             try {
-                    $this->{"import{$type}"}($data);
-                    $transaction->commit();
+                $this->{"import{$type}"}($data);
+                $transaction->commit();
             } catch(Exception $e) {
-                    $message = "Error processing {$type} row:\n" . CVarDumper::dumpAsString($row) . "\n$e";
-                    Yii::log($message, CLogger::LEVEL_ERROR);
-                    print "$message\n";
-                    $transaction->rollback();
-                    echo "Progress :          ";
+                $message = "Error processing {$type} row:\n" . CVarDumper::dumpAsString($row) . "\n$e";
+                Yii::log($message, CLogger::LEVEL_ERROR);
+                print "$message\n";
+                $transaction->rollback();
+                echo "Progress :          ";
             }
             $i++;
-      
         }
         echo "\n";
 
@@ -365,17 +387,27 @@ class ProcessHscicDataCommand extends CConsoleCommand
                 $gp->obj_prof = $data['code'];
         }
         
-        // only save when model is dirty
-        $gp->save_only_if_changed = true;
+        $isNewRecord = $gp->isNewRecord;
         
         $gp->is_active = $data['status'] == 'A' || $data['status'] == 'P' ? '1' : '0';
 
-        if (!$gp->save()) throw new Exception("Failed to save GP: " . print_r($gp->errors, true));
+        if (!$gp->saveIfDirty()->save()) throw new Exception("Failed to save GP: " . print_r($gp->errors, true));
+        
+        if( $gp->isModelDirty() && $this->audit) {
+            Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' GP');
+        }
 
         $contact = $gp->contact;
-        $contact->save_only_if_changed = true;
         $contact->primary_phone = $data['phone'];
 
+        /**
+         * Regexp
+         * the first part match a word (any number of char, no whithespace)
+         * than (after the first word) can follow any number of whitepace 
+         * and for the last part the string must end 1 to 4 characters[A-Z]
+         * 
+         * Examples (egpam.zip): WELLINGS D, DONOGHUE CA, COLLOMBON MPM
+         */
         if (preg_match("/^([\S]+)\s+([A-Z]{1,4})$/i", trim($data['name']), $m)) {
             $contact->title = 'Dr';
             $contact->first_name = $m[2];
@@ -383,8 +415,14 @@ class ProcessHscicDataCommand extends CConsoleCommand
         } else {
             $contact->last_name = $data['name'];
         }
-
-        if (!$contact->save()) throw new Exception("Failed to save contact: " . print_r($contact->errors, true));
+        
+        $isNewRecord = $contact->isNewRecord;
+        
+        if (!$contact->saveIfDirty()->save()) throw new Exception("Failed to save contact: " . print_r($contact->errors, true));
+        
+        if($contact->isModelDirty() && $this->audit){
+            Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' GP-Contact');
+        }
 
         if (!($address = $contact->address)) {
             $address = new Address;
@@ -394,9 +432,13 @@ class ProcessHscicDataCommand extends CConsoleCommand
         $this->importAddress($address, array($data['addr1'], $data['addr2'], $data['addr3'], $data['addr4'], $data['addr5']));
         $address->postcode = $data['postcode'];
         $address->country_id = $this->countryId;
-
-        $address->save_only_if_changed = true;
-        if (!$address->save()) throw new Exception("Failed to save address: " . print_r($address->errors, true));
+        
+        $isNewRecord = $address->isNewRecord;
+        if (!$address->saveIfDirty()->save()) throw new Exception("Failed to save address: " . print_r($address->errors, true));
+        
+        if($address->isModelDirty() && $this->audit ){
+            Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' GP-Address');
+        }
         
         $gp = null;
     }
@@ -412,30 +454,43 @@ class ProcessHscicDataCommand extends CConsoleCommand
             $practice = new Practice;
             $practice->code = $data['code'];
         }
+        $isNewRecord = $practice->isNewRecord;
         
-        $practice->is_active = $data['status'] == 'A' || $data['status'] == 'P' ? 1 : 0;
+        $practice->is_active = $data['status'] == 'A' || $data['status'] == 'P' ? '1' : '0';
         
         $practice->phone = $data['phone'];
         
-        $practice->save_only_if_changed = true;
-        if (!$practice->save()) throw new Exception("Failed to save practice: " . print_r($practice->errors, true));
+        if (!$practice->saveIfDirty(true)->save()) throw new Exception("Failed to save practice: " . print_r($practice->errors, true));
+        
+        if( $practice->isModelDirty() && $this->audit) {
+            Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' Practice');
+        }
 
         $contact = $practice->contact;
         $contact->primary_phone = $practice->phone;
         
-        $contact->save_only_if_changed = true;
-        if (!$contact->save()) throw new Exception("Failed to save contact: " . print_r($contact->errors, true));
+        $isNewRecord = $contact->isNewRecord;
+        if (!$contact->saveIfDirty()->save()) throw new Exception("Failed to save contact: " . print_r($contact->errors, true));
+        
+        if( $contact->isModelDirty() && $this->audit) {
+            Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' Practice-Contact');
+        }
 
         if (!($address = $contact->address)) {
             $address = new Address;
             $address->contact_id = $contact->id;
         }
+        $isNewRecord = $address->isNewRecord;
+        
         $this->importAddress($address, array($data['name'], $data['addr1'], $data['addr2'], $data['addr3'], $data['addr4'], $data['addr5']));
         $address->postcode = $data['postcode'];
         $address->country_id = $this->countryId;
         
-        $address->save_only_if_changed = true;
-        if (!$address->save()) throw new Exception("Failed to save address: " . print_r($address->errors, true));
+        if (!$address->saveIfDirty()->save()) throw new Exception("Failed to save address: " . print_r($address->errors, true));
+        
+        if( $address->isModelDirty() && $this->audit) {
+            Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' Practice-Address');
+        }
     }
     
     /**
@@ -449,24 +504,30 @@ class ProcessHscicDataCommand extends CConsoleCommand
             $ccg->code = $data['code'];
             $ccg->commissioning_body_type_id = $this->cbtId;
         }
+        $isNewRecord = $ccg->isNewRecord;
         $ccg->name = $data['name'];
         
-        $ccg->save_only_if_changed = true;
-        if (!$ccg->save()) throw new Exception("Failed to save CCG: " . print_r($ccg->errors, true));
-
-        $contact = $ccg->contact;
-        $contact->save_only_if_changed = true;
+        if (!$ccg->saveIfDirty()->save()) throw new Exception("Failed to save CCG: " . print_r($ccg->errors, true));
         
+        if( $ccg->isModelDirty() && $this->audit) {
+            Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' CCG');
+        }
+
+        $contact = $ccg->contact;        
         if (!($address = $contact->address)) {
                 $address = new Address;
                 $address->contact_id = $contact->id;
         }
+        $isNewRecord = $address->isNewRecord;
         $this->importAddress($address, array($data['addr1'], $data['addr2'], $data['addr3'], $data['addr4'], $data['addr5']));
         $address->postcode = $data['postcode'];
         $address->country_id = $this->countryId;
         
-        $address->save_only_if_changed = true; 
-        if (!$address->save()) throw new Exception("Failed to save address: " . print_r($address->errors, true));
+        if (!$address->saveIfDirty()->save()) throw new Exception("Failed to save address: " . print_r($address->errors, true));
+        
+        if( $address->isModelDirty() && $this->audit) {
+            Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' CCG-Address');
+        }
     }
     
     /**
@@ -486,7 +547,12 @@ class ProcessHscicDataCommand extends CConsoleCommand
             if ($assignment->commissioning_body_id == $ccg->id) {
                 $found = true;
             } else {
-                if ($assignment->commissioning_body->commissioning_body_type_id == $this->cbtId)  $assignment->delete();
+                if ($assignment->commissioning_body->commissioning_body_type_id == $this->cbtId){  
+                   
+                    if( $assignment->delete() && $this->audit) {
+                        Audit::add('ProcessHscicDataCommand', 'Assignment Deleted');
+                    }
+                }
             }
         }
 
@@ -496,6 +562,10 @@ class ProcessHscicDataCommand extends CConsoleCommand
             $assignment->practice_id = $practice->id;
             
             if (!$assignment->save()) throw new Exception("Failed to save commissioning body assignment: " . print_r($assignment->errors, true));
+            if($this->audit) {
+                Audit::add('ProcessHscicDataCommand', 'Assignment Saved');
+            }
+            
         }
     }
     
@@ -531,49 +601,90 @@ class ProcessHscicDataCommand extends CConsoleCommand
     }
     
     /**
-     * Compare the DB against the DB, if a DB row not exsist in the CSV anymore the script set the is_active flag to 0
+     * Checking models if they are present in the CSV files
+     * If not we set the is_active flag to 0
+     *  
      * @param type $type
      * @throws Exception
      */
     public function actionCheckRemovedFromFile($type = 'gp')
     {
-        if ( !isset(self::$files['test'][$type]['filename'])){
-            throw new Exception("Invalid type: $type");
-        }
-                
-        switch ($type){
-            case 'gp':
-            case 'practice':
-                $dbTable = $type;
-                break;
-            case 'ccg':
-                $dbTable = 'commissioning_body';
-            default:
-                throw new Exception("Invalid type: $type");
+        if ( !isset(self::$files['full'][$type]['filename']) || ($type != 'gp' && $type != 'practice') ){
+            $this->usageError("Invalid type: $type");
         }
         
-        $dbTable = addslashes($dbTable);
-        
-        // drop temp table if exsist
-        $query = "DROP TABLE if exists temp_$dbTable;";
-        
-        // create temp table
-        $query .= "CREATE TEMPORARY TABLE temp_$dbTable LIKE $dbTable";
-        
-        echo "Creating temp table... ";
-        Yii::app()->db->createCommand($query)->execute();
-        echo "OK\n";
-        
-        $i = 0;
+        $dbTable = $this->getTableNameByType($type);
+       
+        $this->createTempTable($dbTable);
 
         $file = self::$files['full'][$type]['filename'];
+        $this->fillTempTable($type, $file);
+
+        $this->markInactiveMissingModels($dbTable);
+         
+        // drop temp table
+        $query = "DROP TABLE if exists temp_$dbTable;";
+        Yii::app()->db->createCommand($query)->execute();
+    }
+    
+    private function createTempTable($dbTable)
+    {
+        $tableName = addslashes($dbTable);
+        
+        // drop temp table if exsist
+        $query = "DROP TABLE if exists temp_$tableName;";
+        
+        // create temp table
+        $query .= "CREATE TEMPORARY TABLE temp_$tableName LIKE $tableName;";
+        
+        $column = $dbTable == 'gp' ? 'nat_id' : 'code';
+        
+        $query .= "ALTER TABLE temp_$tableName ADD INDEX `$column` (`$column`)";
+        
+        echo "Creating temp table... ";
+        \Yii::app()->db->createCommand($query)->execute();
+        echo "OK\n";
+
+    }
+    
+    /**
+     * Returns the database table name based on the give type
+     * 
+     * @param string $type gp|practice|ccg
+     * @return string database table name
+     */
+    private function getTableNameByType($type)
+    {
+        switch ($type){
+           case 'gp':
+           case 'practice':
+               $dbTable = $type;
+               break;
+           case 'ccg':
+               $dbTable = 'commissioning_body';
+           default:
+               $this->usageError("Invalid type: $type");
+       }
+       
+       return $dbTable;
+    }
+    
+    /**
+     * 
+     * @param string $dbTable database table name : gp|practice|
+     * @param string $type
+     * @param type $file
+     */
+    private function fillTempTable($type, $file)
+    {
+        $dbTable = $this->getTableNameByType($type);
         
         $fileHandler = $this->getFilePointer($this->tempPath . '/' . $file);
         
         echo "Inserting rows into temp table... ";
         
-        $command = Yii::app()->db->createCommand();
-        
+        $i = 0;
+        $insertBulkData = array();
         while (($row = fgetcsv($fileHandler))) {
                     
             $data = array_combine(array_pad(self::$files['full'][$type]['fields'], count($row), ""), $row);
@@ -589,31 +700,37 @@ class ProcessHscicDataCommand extends CConsoleCommand
                 );
             }
             
-            $command->insert("temp_$dbTable", $insertData);
-            
-            $command->reset();
+            $insertBulkData[] = $insertData;
         }
-        echo "OK\n\n";
         
+        $builder = Yii::app()->db->schema->commandBuilder;
+        
+        $command = $builder->createMultipleInsertCommand("temp_$dbTable", $insertBulkData);
+        $command->execute();
+        
+        echo "OK\n\n";
+    }
+    
+    private function markInactiveMissingModels($type)
+    {
+        $dbTable = $this->getTableNameByType($type);
         $column = $dbTable == 'gp' ? 'nat_id' : 'code';
         
-        $criteria=new CDbCriteria(); 
+        $criteria=new CDbCriteria();
         $criteria->select = array("t.*");
         $criteria->join = "LEFT JOIN temp_$dbTable ON t.$column = temp_$dbTable.$column";
         $criteria->addCondition("temp_$dbTable.$column IS NULL");
+        $criteria->addCondition("t.is_active = 1");
         
         $modelName = ucfirst($dbTable);
         $not_in_file = $modelName::model()->findAll($criteria);
        
         echo "Set " . count($not_in_file) . " $type to inactive... ";
         foreach($not_in_file as $removed_instance){
+            
             $removed_instance->is_active = '0';
             $removed_instance->save();
         }
         echo "OK\n\n";
-         
-        // drop temp table
-        $query = "DROP TABLE if exists temp_$dbTable;";
-        Yii::app()->db->createCommand($query)->execute(array(':tableName' => $dbTable));
     }
 }
