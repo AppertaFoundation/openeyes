@@ -101,7 +101,7 @@
         </div>
         <div class="large-4 column">
             <div class="data-value"
-                 id="k1_<?php echo $side ?>"><?php echo CHtml::encode($element->{'delta_k_' . $side}) ?>&nbsp;D&nbsp;<b>@</b>&nbsp;<?php echo CHtml::encode($element->{'delta_k_axis_' . $side}) ?>&deg;
+                 id="k1_<?php echo $side ?>"><?php if (($element->{'delta_k_'.$side}) > 0 ) echo '+'; echo CHtml::encode($element->{'delta_k_' . $side}) ?>&nbsp;D&nbsp;<b>@</b>&nbsp;<?php echo CHtml::encode($element->{'delta_k_axis_' . $side}) ?>&deg;
             </div>
         </div>
     </div>
