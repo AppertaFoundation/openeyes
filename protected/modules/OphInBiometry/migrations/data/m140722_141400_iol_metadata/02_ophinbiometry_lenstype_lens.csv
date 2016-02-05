@@ -1,0 +1,5 @@
+id,name,description,position_id,comments,acon,sf,pACD,a0,a1,a2
+1,MA60AC,Acrysof® Multi-Piece Intraocular Lens,1,Available from 5 to 35D,118.9,1.90,null,null,null,null
+2,SN60WF,Acrysof® IQ Intraocular lens,1,Available from 5 to 35D,118.0,1.85,null,null,null,null
+3,SA60AT,Acrysof® Intraocular lens,1,"+6.0 to +30.0 in 0.5D steps, +31.0 to +40.0 in 1D steps",118.7,null,5.41,-0.091,0.231,0.179
+4,MTA3UO,Acrysof® Intraocular lens,2,"+6.0 to +30.0 in 0.5D steps, +31.0 to +40.0 in 1D steps",115.54,null,3.53,-0.705,0.4,0.1

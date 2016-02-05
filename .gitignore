@@ -49,7 +49,7 @@ vendor
 #!/protected/modules/OphCoCorrespondence/
 #!/protected/modules/OphCoTherapyapplication/
 #!/protected/modules/OphDrPrescription/
-#!/protected/modules/OphInBiometry/
+!/protected/modules/OphInBiometry/
 #!/protected/modules/OphTrConsent/
 #!/protected/modules/OphTrIntravitrealinjection/
 #!/protected/modules/OphTrLaser/
