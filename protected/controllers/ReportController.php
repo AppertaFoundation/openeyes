@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -16,36 +17,60 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class ReportController extends BaseReportController
 {
-	public function accessRules()
-	{
-		return array(
-			array('allow',
-				'actions' => array('index', 'diagnoses', 'runReport', 'downloadReport', 'ajaxReport'),
-				'roles' => array('admin','OprnGenerateReport'),
-			)
-		);
-	}
+    public function accessRules()
+    {
+        return array(
+            array(
+                'allow',
+                'actions' => array('index', 'diagnoses', 'runReport', 'downloadReport', 'ajaxReport', 'reportData'),
+                'roles' => array('admin', 'OprnGenerateReport'),
+            )
+        );
+    }
 
-	public function actionIndex()
-	{
-		$this->redirect(array('diagnoses'));
-	}
+    public function actionIndex()
+    {
+        $this->redirect(array('diagnoses'));
+    }
 
-	public function actionDiagnoses()
-	{
-		$this->render('diagnoses');
-	}
+    public function actionDiagnoses()
+    {
+        $this->render('diagnoses');
+    }
 
-	public function actionAjaxReport()
-	{
-		$report = Yii::app()->request->getParam('report');
-		if($report && file_exists(Yii::getPathOfAlias('application.views.report').'/'.$report.'.php')){
-			$this->renderPartial('//report/'.$report);
-		} else {
-			throw new CHttpException(404, 'Report not found');
-		}
-	}
+    public function actionAjaxReport()
+    {
+        $reportObj = $this->loadReport();
+
+        $this->renderPartial($reportObj->getTemplate(), array(
+            'report' => $reportObj
+        ));
+    }
+
+    public function actionReportData()
+    {
+        $reportObj = $this->loadReport();
+
+        $this->renderJSON($reportObj->dataSet());
+    }
+
+    /**
+     * @return ReportInterface
+     * @throws CHttpException
+     */
+    private function loadReport()
+    {
+        $report = Yii::app()->request->getParam('report') . 'Report';
+
+        if ($report && class_exists($report)) {
+            $reportObj = new $report(Yii::app());
+        } else {
+            throw new CHttpException(404, 'Report not found');
+        }
+
+        return $reportObj;
+
+    }
 }

@@ -28,6 +28,13 @@
         itemWrapper: '<div id="{$id}" class="mdl-cell mdl-cell--{$size}-col"><div class="mdl-spinner mdl-js-spinner is-active"></div></div>'
     };
 
+    /**
+     * appends a wrapper to the grid for a dash item
+     *
+     * @param report
+     * @param size
+     * @returns {string}
+     */
     function appendDashWrapper(report, size) {
         var container,
             id;
@@ -36,7 +43,7 @@
             size = 6;
         }
 
-        id = report.replace(new RegExp('[\W/:?=]', 'g'), '_');
+        id = report.replace(new RegExp('[\W/:?=\\\\]', 'g'), '_');
         Dash.$container.append($(Dash.itemWrapper.replace('{$id}', id).replace('{$size}', size)));
         container = '#' + id;
         return container;
@@ -70,7 +77,7 @@
      * @param report
      * @param container
      */
-    function loadBespokeHtml(report, container) {
+    function loadBespokeHtml(report, container, data) {
         $.ajax({
                 url: report,
                 dataType: 'html',
@@ -137,19 +144,28 @@
         loadVisualizeReports();
     };
 
-    Dash.addBespokeReport = function(report, dependency, size)
+    Dash.addBespokeReport = function(report, dependency, size, data)
     {
         var container;
 
         container = appendDashWrapper(report, size);
+        Dash.loadBespokeReport(report, dependency, container, data)
+    };
+
+    Dash.updateBespokeReport = function(report, container, data)
+    {
+        loadBespokeHtml(report, container, data);
+    };
+
+    Dash.loadBespokeReport = function(report, dependency, container, data)
+    {
         if(dependency){
             $.getScript(dependency, function(){
-                loadBespokeHtml(report, container);
+                loadBespokeHtml(report, container, data);
             });
         } else {
-            loadBespokeHtml(report, container);
+            loadBespokeHtml(report, container, data);
         }
-
     };
 
     exports.Dash = Dash;

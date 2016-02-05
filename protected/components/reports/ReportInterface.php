@@ -1,3 +1,4 @@
+<?php
 /**
  * OpenEyes
  *
@@ -16,14 +17,17 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-$(document).ready(function() {
-    OpenEyes.Dash.init('#dash-grid');
-    OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\VisualAcuity');
-    OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=pcr_risk');
-    OpenEyes.Dash.addVisualizeReport('/public/Cataract_Complications_Report');
-    OpenEyes.Dash.addVisualizeReport('/public/PPOR_POR_Report');
+/**
+ * Class ReportInterface
+ */
+interface ReportInterface {
 
+    public function dataSet();
 
-});
+    public function dataSetJson();
 
-OpenEyes.Dash.loadVisualize();
+    public function graphConfig();
+
+    public function graphId();
+
+}
