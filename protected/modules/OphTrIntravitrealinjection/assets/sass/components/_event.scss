@@ -23,3 +23,9 @@
 		background-image: image-url("medium.png");
 	}
 }
+
+.wrapper { padding: 5px; border-radius: 5px; display: inline-block; }
+
+.allergyWarning {
+	background-color: #f66 !important;
+}
