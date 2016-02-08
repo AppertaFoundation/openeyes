@@ -17,7 +17,9 @@ class m160202_132954_change_operationnote_biometry_view_new_a_constant extends C
 							k2_axis_left, k2_axis_right, delta_k_left, delta_k_right, delta_k_axis_left, delta_k_axis_right, acd_left, acd_right,
 							(SELECT name FROM dicom_eye_status oes WHERE oes.id=lens_id_left) as status_left,
 							(SELECT name FROM dicom_eye_status oes WHERE oes.id=lens_id_right) as status_right,
-							comments, eoc.event_id
+							comments, eoc.event_id,
+							(SELECT name FROM ophinbiometry_calculation_formula ocf WHERE ocf.id=eos.formula_id_left) as formula_left,
+							(SELECT name FROM ophinbiometry_calculation_formula ocf WHERE ocf.id=eos.formula_id_right) as formula_right
 							FROM et_ophinbiometry_measurement eol
 							JOIN et_ophinbiometry_calculation eoc ON eoc.event_id=eol.event_id
 							JOIN et_ophinbiometry_selection eos ON eos.event_id=eol.event_id

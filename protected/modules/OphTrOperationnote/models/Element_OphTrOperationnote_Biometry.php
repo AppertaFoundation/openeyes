@@ -109,6 +109,8 @@ class Element_OphTrOperationnote_Biometry extends Element_OnDemand
 			'status_right' => 'Status',
 			'delta_k_left' => 'K',
 			'delta_k_right' => 'K',
+			'formula_id_left' => 'Formula Used',
+			'formula_id_right' => 'Formula Used'
 		);
 	}
 
