@@ -43,6 +43,8 @@ $(document).ready(function() {
 		var s = d[0].split('_');
 		$("#Element_OphInBiometry_Selection_iol_power_"+s[0]).val($("#iolval-"+d[0]+"__"+d[1]).val());
 		$("#Element_OphInBiometry_Selection_predicted_refraction_"+s[0]).val($("#refval-"+d[0]+"__"+d[1]).val());
+		updateIolRefRow('left');
+		updateIolRefRow('right');
 	});
 
 	handleButton($('#et_cancel'),function(e) {
@@ -187,6 +189,7 @@ $(document).ready(function() {
 	$('#Element_OphInBiometry_Selection_formula_id_right').die('change').live('change',function() {
 		updateIolRefTable('right');
 	})
+
 
 	renderCalculatedValues('left');
 	renderCalculatedValues('right');
