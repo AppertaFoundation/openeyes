@@ -57,11 +57,11 @@
                     <div class="mdl-layout-spacer"></div>
                     <form id="search-form">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input class="mdl-textfield__input" type="text" id="from-date">
+                            <input class="mdl-textfield__input" type="text" id="from-date" name="from">
                             <label class="mdl-textfield__label" for="from-date">From...</label>
                         </div>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input class="mdl-textfield__input" type="text" id="to-date">
+                            <input class="mdl-textfield__input" type="text" id="to-date" name="to">
                             <label class="mdl-textfield__label" for="to-date">To...</label>
                         </div>
                         <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="submit" name="action">Submit

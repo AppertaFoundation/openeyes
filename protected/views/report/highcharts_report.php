@@ -41,66 +41,32 @@
             }, 300);
         });
 
+        $('.report-search-form').on('submit', function(e){
+            e.preventDefault();
+            var chart,
+                searchForm = this;
+
+            $.ajax({
+                url: $(this).attr('action'),
+                data: $(searchForm).serialize() + '&' + $('#search-form').serialize(),
+                dataType: 'json',
+                success: function (data, textStatus, jqXHR) {
+                    chart = <?=$report->graphId();?>;
+                    for(var i = 0; i < chart.series.length; i++){
+                        chart.series[i].setData(data[i]);
+                    }
+                    $(searchForm).parent('.report-search').animate({
+                        height: '0'
+                    }, 300, function(){
+                        $(this).addClass('visuallyhidden');
+                    });
+                }
+            });
+        });
     });
 
-    $('#<?=$report->graphId();?>').highcharts({
-        credits: {
-            enabled: false
-        },
-        chart: {
-            type: 'scatter',
-            zoomType: 'xy'
-        },
-        legend: {
-            enabled: false
-        },
-        title: {
-            text: 'Visual Acuity'
-        },
-        xAxis: {
-            gridLineWidth: 1,
-            title: {
-                text: 'At Surgery'
-            },
-            labels: {
-                format: '{value}'
-            }
-        },
-        yAxis: {
-            gridLineWidth: 1,
-            title: {
-                text: '4 months after Surgery'
-            },
-            labels: {
-                format: '{value}'
-            }
-        },
-        plotOptions: {
-            scatter: {
-                marker: {
-                    radius: 5,
-                    states: {
-                        hover: {
-                            enabled: true,
-                            lineColor: 'rgb(100,100,100)'
-                        }
-                    }
-                },
-                states: {
-                    hover: {
-                        marker: {
-                            enabled: false
-                        }
-                    }
-                },
-                tooltip: {
-                    headerFormat: '<b>Visual Acuity</b><br>',
-                    pointFormat: 'Before Surgery {point.x}, And after {point.y}'
-                }
-            }
-        },
-        series: [{
-            data: <?= $report->dataSetJson();?>
-        }]
-    });
+    var <?=$report->graphId();?> = new Highcharts.Chart($.extend(
+            JSON.parse('<?= $report->graphConfig();?>'),
+            {series: [{data: <?= $report->dataSetJson();?>}]}
+        ));
 </script>

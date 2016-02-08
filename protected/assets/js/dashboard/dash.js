@@ -20,7 +20,7 @@ $(document).ready(function() {
     OpenEyes.Dash.init('#dash-grid');
     OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\VisualAcuity');
     OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=pcr_risk');
-    OpenEyes.Dash.addVisualizeReport('/public/Cataract_Complications_Report');
+    OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=CataractComplications');
     OpenEyes.Dash.addVisualizeReport('/public/PPOR_POR_Report');
 
 

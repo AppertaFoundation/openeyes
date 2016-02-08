@@ -20,6 +20,16 @@
 class Report {
 
     /**
+     * @var string
+     */
+    protected $from;
+
+    /**
+     * @var string
+     */
+    protected $to;
+
+    /**
      * Template to render
      *
      * @var string
@@ -40,6 +50,19 @@ class Report {
      * @var string
      */
     protected $searchTemplate;
+
+    /**
+     * @var int
+     */
+    protected $surgeon;
+
+    /**
+     * @var array
+     */
+    protected $globalGraphConfig = array(
+        'credits' => array('enabled' => false),
+        'legend' => array('enabled' => false)
+    );
 
     /**
      * @return string
@@ -79,7 +102,10 @@ class Report {
     public function __construct($app)
     {
         $this->app = $app;
+        $this->from = $app->getRequest()->getQuery('from', '');
+        $this->to = $app->getRequest()->getQuery('to', '');
         $this->command = $app->db->createCommand();
+        $this->surgeon = $app->user->id;
     }
 
     /**

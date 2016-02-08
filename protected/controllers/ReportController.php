@@ -63,6 +63,12 @@ class ReportController extends BaseReportController
     private function loadReport()
     {
         $report = Yii::app()->request->getParam('report') . 'Report';
+        //Load the modules for when a report is defined there.
+        foreach(Yii::app()->modules as $module => $moduleData){
+            if(strpos($module, 'Oph') === 0){
+                Yii::app()->getModule($module);
+            }
+        }
 
         if ($report && class_exists($report)) {
             $reportObj = new $report(Yii::app());
