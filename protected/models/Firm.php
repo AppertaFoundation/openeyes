@@ -65,7 +65,7 @@ class Firm extends BaseActiveRecordVersioned
 		return array(
 			array('name', 'required'),
 			array('service_subspecialty_assignment_id', 'length', 'max'=>10),
-			array('pas_code', 'length', 'max'=>4),
+			array('pas_code', 'length', 'max'=>20),
 			array('name', 'length', 'max'=>40),
 			array('name, pas_code, subspecialty_id, consultant_id, active', 'safe'),
 			// The following rule is used by search().
