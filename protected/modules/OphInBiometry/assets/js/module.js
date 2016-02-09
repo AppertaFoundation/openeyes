@@ -35,7 +35,7 @@ $(document).ready(function() {
 	handleButton($('#et_save'),function() {
 	});
 
-	$('input[id^="iolrefrad-"]').click(function(event) {
+	$('input[id^="iolrefrad-"], tr[id^="iolreftr-"]').click(function(event) {
 		var id = event.target.id;
 	//	alert ('radio  -  ' + id);
 		id = id.split("-").pop();
