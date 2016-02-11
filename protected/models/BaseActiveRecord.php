@@ -209,10 +209,10 @@ class BaseActiveRecord extends CActiveRecord
 	 */
 	public function save($runValidation=true, $attributes=null, $allow_overriding=false)
 	{
-        // Saving the model only if it is dirty / turn on/off with $this->save_only_if_dirty
-        if ( $this->save_only_if_dirty === true && $this->isModelDirty() === false) {
-            return true;
-        }
+            // Saving the model only if it is dirty / turn on/off with $this->save_only_if_dirty
+            if ( $this->save_only_if_dirty === true && $this->isModelDirty() === false) {
+                return false;
+            }
         
 		$user_id = null;
 
@@ -463,6 +463,7 @@ class BaseActiveRecord extends CActiveRecord
 				}
 			}
 		}
+		$this->originalAttributes = $this->getAttributes();
 		parent::afterSave();
 	}
 

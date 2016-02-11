@@ -121,25 +121,44 @@ USAGE
         
 Following actions are available:
         
- - full
- - monthly
- - quarterly
- - import [--type=gp|practice|ccg|ccgAssignment --interval=full|monthly|quarterly] *for ccg and ccgAssignment only full file available
- - checkremovedfromfile [--type=gp|practice]
+ - full         : Importing the full version of the GP, Practice, 
+                  CCG and CCG Assignment files
+ - monthly      : Importing the monthly files of the GP
+ - quarterly    : Importing the quarterly files of the GP
+        
+ - import       [--type --interval] : Importing a specific file based on the given type and iterval
+                Available intervals by type : 
+                    GP              : full|quarterly|monthly
+                    Practice        : full
+                    CCG:            : full
+                    CCGAssignment   : full
+        
+- checkremovedfromfile  : Checking if a database row no longer exists in the file, and if it's the case, we set the status inactive
+                          Supported types : GP and Practice
+        
         
 Following parameters are available:
         
  - force  :  force import for the give file, even if it was already processed before
  - audit  :  Do not generate audit message (can be useful for the first run, we do not need 78000 'GP imported' audit message)
+             Usage: --audit=false
 
 EXAMPLES
         
+ * yiic.php processhscicdata full
+   importing the full files (GP, Practice, CCG, CCG Assignment)
+        
  * yiic.php processhscicdata monthly
-   importing the monthly files (gp and practice)
+   importing the monthly files (GP)
+        
+ * yiic.php processhscicdata monthly
+   importing the quarterly files (GP)
         
  * yiic.php processhscicdata import --type=gp --interval=full --force
    importing the full GP file, forcing it as it was already processed
 
+ * yiic.php processhscicdata import --type=gp --interval=full --audit=false
+   importing the full GP file without generating audit message
 
 EOH;
         
@@ -148,7 +167,7 @@ EOH;
     
     
     /**
-     * imports a specific file 
+     * imports a specific file based on the given type and interval
      * eg.: ProcessHscicData import --type=Gp --interval=monthly
      * 
      * @param string $type gp|Practice|Ccg|CcgAssignment
@@ -167,7 +186,7 @@ EOH;
     }
     
     /**
-     * Importing all files listed under the self::files['full']
+     * Importing all files listed under the self::files['full'] as GP, Practice, CCG, CCG Assignment
      * ProcessHscicData full
      */
     public function actionFull(){
@@ -177,7 +196,7 @@ EOH;
     }
     
     /**
-     * Importing all files listed under the self::files['monthly']
+     * Importing all files listed under the self::files['monthly'] as GP
      * ProcessHscicData monthly
      */
     public function actionMonthly()
@@ -188,7 +207,7 @@ EOH;
     }
     
     /**
-     * Importing all files listed under the self::files['quarterly']
+     * Importing all files listed under the self::files['quarterly'] as GP
      * ProcessHscicData quarterly
      */
     public function actionQuarterly()
@@ -232,7 +251,7 @@ EOH;
      * 
      * @param string $file path and filename
      * @return resource a file pointer (resource)
-     * @throws Exception
+     * @throws Exception if fails open the zip or fails to extract the CSV file
      */
     private function getFilePointer($file)
     {
@@ -257,7 +276,7 @@ EOH;
      * 
      * @param string $file file pathe and name
      * @return int line count
-     * @throws Exception
+     * @throws Exception if fails open the zip or fails to extract the CSV file
      */
     private function getLineCountFromZip($file)
     {
@@ -309,7 +328,6 @@ EOH;
     {
         echo "\n";
         $pathParts = pathinfo($file['filename']);
-        //echo "<pre>" . print_r($pathParts, true) . "</pre>";die;
 
         $permanentFile = $this->path . '/' . $pathParts['filename'] . '/' . $pathParts['basename'];
         $tempFile =  $this->tempPath . '/' . $pathParts['basename'];
@@ -391,10 +409,12 @@ EOH;
         
         $gp->is_active = $data['status'] == 'A' || $data['status'] == 'P' ? '1' : '0';
 
-        if (!$gp->saveIfDirty()->save()) throw new Exception("Failed to save GP: " . print_r($gp->errors, true));
-        
-        if( $gp->isModelDirty() && $this->audit) {
-            Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' GP');
+        if ($gp->saveOnlyIfDirty()->save()){
+            if($this->audit !== 'false') {
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' GP');
+            }
+        } else {
+            // save has not been carried out, either mode was not dirty or save() failed
         }
 
         $contact = $gp->contact;
@@ -420,11 +440,14 @@ EOH;
         
         $isNewRecord = $contact->isNewRecord;
         
-        if (!$contact->saveOnlyIfDirty()->save()) throw new Exception("Failed to save contact: " . print_r($contact->errors, true));
-        
-        if($contact->isModelDirty() && $this->audit){
-            Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' GP-Contact');
+        if ($contact->saveOnlyIfDirty()->save()){
+            if($this->audit !== 'false') {
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' GP-Contact');
+            }
+        } else {
+            // save has not been carried out, either mode was not dirty or save() failed
         }
+        
 
         if (!($address = $contact->address)) {
             $address = new Address;
@@ -436,10 +459,13 @@ EOH;
         $address->country_id = $this->countryId;
         
         $isNewRecord = $address->isNewRecord;
-        if (!$address->saveOnlyIfDirty()->save()) throw new Exception("Failed to save address: " . print_r($address->errors, true));
         
-        if($address->isModelDirty() && $this->audit ){
-            Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' GP-Address');
+        if ($address->saveOnlyIfDirty()->save()){
+            if($this->audit !== 'false') {
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' GP-Address');
+            }
+        } else {
+            // save has not been carried out, either mode was not dirty or save() failed
         }
         
         $gp = null;
@@ -462,21 +488,27 @@ EOH;
         
         $practice->phone = $data['phone'];
         
-        if (!$practice->saveOnlyIfDirty()->save()) throw new Exception("Failed to save practice: " . print_r($practice->errors, true));
-        
-        if( $practice->isModelDirty() && $this->audit) {
-            Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' Practice');
+        if ($practice->saveOnlyIfDirty()->save()){
+            if($this->audit !== 'false') {
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' Practice');
+            }
+        } else {
+            // save has not been carried out, either mode was not dirty or save() failed
         }
 
         $contact = $practice->contact;
         $contact->primary_phone = $practice->phone;
         
         $isNewRecord = $contact->isNewRecord;
-        if (!$contact->saveOnlyIfDirty()->save()) throw new Exception("Failed to save contact: " . print_r($contact->errors, true));
-        
-        if( $contact->isModelDirty() && $this->audit) {
-            Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' Practice-Contact');
+
+        if ($contact->saveOnlyIfDirty()->save()){
+            if($this->audit !== 'false') {
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' Practice-Contact');
+            }
+        } else {
+            // save has not been carried out, either mode was not dirty or save() failed
         }
+        
 
         if (!($address = $contact->address)) {
             $address = new Address;
@@ -488,10 +520,12 @@ EOH;
         $address->postcode = $data['postcode'];
         $address->country_id = $this->countryId;
         
-        if (!$address->saveOnlyIfDirty()->save()) throw new Exception("Failed to save address: " . print_r($address->errors, true));
-        
-        if( $address->isModelDirty() && $this->audit) {
-            Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' Practice-Address');
+        if ($address->saveOnlyIfDirty()->save()){
+            if($this->audit !== 'false') {
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' Practice-Address');
+            }
+        } else {
+            // save has not been carried out, either mode was not dirty or save() failed
         }
     }
     
@@ -509,10 +543,12 @@ EOH;
         $isNewRecord = $ccg->isNewRecord;
         $ccg->name = $data['name'];
         
-        if (!$ccg->saveOnlyIfDirty()->save()) throw new Exception("Failed to save CCG: " . print_r($ccg->errors, true));
-        
-        if( $ccg->isModelDirty() && $this->audit) {
-            Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' CCG');
+        if ($ccg->saveOnlyIfDirty()->save()){
+            if($this->audit !== 'false') {
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' CCG');
+            }
+        } else {
+            // save has not been carried out, either mode was not dirty or save() failed
         }
 
         $contact = $ccg->contact;        
@@ -525,24 +561,28 @@ EOH;
         $address->postcode = $data['postcode'];
         $address->country_id = $this->countryId;
         
-        if (!$address->saveOnlyIfDirty()->save()) throw new Exception("Failed to save address: " . print_r($address->errors, true));
-        
-        if( $address->isModelDirty() && $this->audit) {
-            Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' CCG-Address');
+        if ($address->saveOnlyIfDirty()->save()){
+            if($this->audit !== 'false') {
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' CCG-Address');
+            }
+        } else {
+            // save has not been carried out, either mode was not dirty or save() failed
         }
     }
     
     /**
-     * imports the 'CcgAssignment' file
+     * Imports the 'CcgAssignment' file
      * 
      * @param array $data
+     * @return NULL if Practice or CCG does not exsist
+     * @throws Exception If Failed to save commissioning body assignment
      */
     private function importCcgAssignment(array $data)
     {
         $practice = Practice::model()->findByAttributes(array('code' => $data['practice_code']));
         $ccg = CommissioningBody::model()->findByAttributes(array('code' => $data['ccg_code'], 'commissioning_body_type_id' => $this->cbtId));
 
-        if (!$practice || !$ccg) return;
+        if (!$practice || !$ccg) return null;
 
         $found = false;
         foreach ($practice->commissioningbodyassigments as $assignment) {
@@ -551,7 +591,7 @@ EOH;
             } else {
                 if ($assignment->commissioning_body->commissioning_body_type_id == $this->cbtId){  
                    
-                    if( $assignment->delete() && $this->audit) {
+                    if( $assignment->delete() && $this->audit !== 'false') {
                         Audit::add('ProcessHscicDataCommand', 'Assignment Deleted');
                     }
                 }
@@ -563,8 +603,10 @@ EOH;
             $assignment->commissioning_body_id = $ccg->id;
             $assignment->practice_id = $practice->id;
             
-            if (!$assignment->save()) throw new Exception("Failed to save commissioning body assignment: " . print_r($assignment->errors, true));
-            if($this->audit) {
+            if (!$assignment->save()) {
+                throw new Exception("Failed to save commissioning body assignment: " . print_r($assignment->errors, true));
+            }
+            if($this->audit !== 'false') {
                 Audit::add('ProcessHscicDataCommand', 'Assignment Saved');
             }
             
@@ -573,6 +615,7 @@ EOH;
     
     /**
      * Imports the Address
+     * 
      * @param Address $address
      * @param array $lines
      */
@@ -587,6 +630,12 @@ EOH;
         $lines = null;
     }
     
+    /**
+     * Transform the address line to uppercase all the words
+     * 
+     * @param string $string
+     * @return string
+     */
     private function tidy($string)
     {
         $string = ucwords(strtolower(trim($string)));
@@ -603,11 +652,9 @@ EOH;
     }
     
     /**
-     * Checking models if they are present in the CSV files
-     * If not we set the is_active flag to 0
-     *  
+     * Checking if a database row no longer exists in the file, and if it's the case, we set the status inactive
+     * 
      * @param type $type
-     * @throws Exception
      */
     public function actionCheckRemovedFromFile($type = 'gp')
     {
@@ -629,6 +676,11 @@ EOH;
         Yii::app()->db->createCommand($query)->execute();
     }
     
+    /**
+     * Creating temporary table for CheckRemovedFromFile() method
+     * 
+     * @param type $dbTable
+     */
     private function createTempTable($dbTable)
     {
         $tableName = addslashes($dbTable);
@@ -672,9 +724,9 @@ EOH;
     }
     
     /**
+     * Fill temp table for CheckRemovedFromFile() method
      * 
-     * @param string $dbTable database table name : gp|practice|
-     * @param string $type
+     * @param string $type GP
      * @param type $file
      */
     private function fillTempTable($type, $file)
@@ -713,6 +765,10 @@ EOH;
         echo "OK\n\n";
     }
     
+    /**
+     * Set status to inactive on models missing from the CSV file
+     * @param type $type GP
+     */
     private function markInactiveMissingModels($type)
     {
         $dbTable = $this->getTableNameByType($type);
