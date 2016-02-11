@@ -405,7 +405,9 @@ EOH;
          * the first part match a word (any number of char, no whithespace)
          * than (after the first word) can follow any number of whitepace 
          * and for the last part the string must end 1 to 4 characters[A-Z]
-         * 
+         *
+         * The goal is to extract the name initials from the field and use as a first name with the doctor title.
+         *
          * Examples (egpam.zip): WELLINGS D, DONOGHUE CA, COLLOMBON MPM
          */
         if (preg_match("/^([\S]+)\s+([A-Z]{1,4})$/i", trim($data['name']), $m)) {
