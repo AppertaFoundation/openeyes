@@ -57,7 +57,7 @@ class BaseActiveRecord extends CActiveRecord
 	 *
 	 * @var bool
 	 */
-	private $save_only_if_changed = false;
+	private $save_only_if_dirty = false;
     
     /**
      * Set the flag to indicate that model should only save to the db if the model is dirty
@@ -65,9 +65,9 @@ class BaseActiveRecord extends CActiveRecord
      * @param bool $enable
      * @return \BaseActiveRecord
      */
-    public function saveIfDirty($enable = true)
+    public function saveOnlyIfDirty($enable = true)
     {
-        $this->save_only_if_changed = $enable;
+        $this->save_only_if_dirty = $enable;
         return $this;
     }
 
@@ -209,8 +209,8 @@ class BaseActiveRecord extends CActiveRecord
 	 */
 	public function save($runValidation=true, $attributes=null, $allow_overriding=false)
 	{
-        // Saving the model only if it is dirty / turn on/off with $this->save_only_if_changed
-        if ( $this->save_only_if_changed === true && $this->isModelDirty() === false) {
+        // Saving the model only if it is dirty / turn on/off with $this->save_only_if_dirty
+        if ( $this->save_only_if_dirty === true && $this->isModelDirty() === false) {
             return true;
         }
         

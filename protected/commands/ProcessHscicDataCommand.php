@@ -418,7 +418,7 @@ EOH;
         
         $isNewRecord = $contact->isNewRecord;
         
-        if (!$contact->saveIfDirty()->save()) throw new Exception("Failed to save contact: " . print_r($contact->errors, true));
+        if (!$contact->saveOnlyIfDirty()->save()) throw new Exception("Failed to save contact: " . print_r($contact->errors, true));
         
         if($contact->isModelDirty() && $this->audit){
             Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' GP-Contact');
@@ -434,7 +434,7 @@ EOH;
         $address->country_id = $this->countryId;
         
         $isNewRecord = $address->isNewRecord;
-        if (!$address->saveIfDirty()->save()) throw new Exception("Failed to save address: " . print_r($address->errors, true));
+        if (!$address->saveOnlyIfDirty()->save()) throw new Exception("Failed to save address: " . print_r($address->errors, true));
         
         if($address->isModelDirty() && $this->audit ){
             Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' GP-Address');
@@ -460,7 +460,7 @@ EOH;
         
         $practice->phone = $data['phone'];
         
-        if (!$practice->saveIfDirty(true)->save()) throw new Exception("Failed to save practice: " . print_r($practice->errors, true));
+        if (!$practice->saveOnlyIfDirty()->save()) throw new Exception("Failed to save practice: " . print_r($practice->errors, true));
         
         if( $practice->isModelDirty() && $this->audit) {
             Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' Practice');
@@ -470,7 +470,7 @@ EOH;
         $contact->primary_phone = $practice->phone;
         
         $isNewRecord = $contact->isNewRecord;
-        if (!$contact->saveIfDirty()->save()) throw new Exception("Failed to save contact: " . print_r($contact->errors, true));
+        if (!$contact->saveOnlyIfDirty()->save()) throw new Exception("Failed to save contact: " . print_r($contact->errors, true));
         
         if( $contact->isModelDirty() && $this->audit) {
             Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' Practice-Contact');
@@ -486,7 +486,7 @@ EOH;
         $address->postcode = $data['postcode'];
         $address->country_id = $this->countryId;
         
-        if (!$address->saveIfDirty()->save()) throw new Exception("Failed to save address: " . print_r($address->errors, true));
+        if (!$address->saveOnlyIfDirty()->save()) throw new Exception("Failed to save address: " . print_r($address->errors, true));
         
         if( $address->isModelDirty() && $this->audit) {
             Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' Practice-Address');
@@ -507,7 +507,7 @@ EOH;
         $isNewRecord = $ccg->isNewRecord;
         $ccg->name = $data['name'];
         
-        if (!$ccg->saveIfDirty()->save()) throw new Exception("Failed to save CCG: " . print_r($ccg->errors, true));
+        if (!$ccg->saveOnlyIfDirty()->save()) throw new Exception("Failed to save CCG: " . print_r($ccg->errors, true));
         
         if( $ccg->isModelDirty() && $this->audit) {
             Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' CCG');
@@ -523,7 +523,7 @@ EOH;
         $address->postcode = $data['postcode'];
         $address->country_id = $this->countryId;
         
-        if (!$address->saveIfDirty()->save()) throw new Exception("Failed to save address: " . print_r($address->errors, true));
+        if (!$address->saveOnlyIfDirty()->save()) throw new Exception("Failed to save address: " . print_r($address->errors, true));
         
         if( $address->isModelDirty() && $this->audit) {
             Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' CCG-Address');
