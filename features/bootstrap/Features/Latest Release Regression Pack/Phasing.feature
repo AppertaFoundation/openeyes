@@ -4,180 +4,201 @@
            Regression coverage of this event is 100%
 
   @Phasing_Route_1
-  Scenario: Route 1: Login and create a Phasing Event
+  Scenario Outline: Route 1: Login and create a Phasing Event
 
     Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "3"
+    And I enter login credentials "<uname>" and "<pwd>"
+    And I select Site "<siteName/Number>"
+    Then I select a firm of "<firmNmae/Number>"
 
-    Then I search for hospital number "1009465 "
+    Then I search for hospital number "<hospNumber> "
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     Then I expand the Glaucoma sidebar
-    And I add a New Event "Phasing"
+    And I add a New Event "<event>"
 
     #Then I choose a right eye Intraocular Pressure Instrument  of "1"
 
     And I choose right eye Dilation of Yes
 
-    Then I choose a right eye Intraocular Pressure Reading Time of "14:00"
-    Then I choose a right eye Intraocular Pressure Reading of "5"
-    And I add right eye comments of "Right eye comments here"
+    Then I choose a right eye Intraocular Pressure Reading Time of "<rightEyeIPRTime>"
+    Then I choose a right eye Intraocular Pressure Reading of "<rightEyeIPR>"
+    And I add right eye comments of "<rightEyeComm>"
 
     #Then I choose a left eye Intraocular Pressure Instrument  of "5"
 
     And I choose left eye Dilation of Yes
 
-    Then I choose a left eye Intraocular Pressure Reading Time of "14:42"
-    Then I choose a left eye Intraocular Pressure Reading of "7"
-    And I add left eye comments of "Left eye comments here"
+    Then I choose a left eye Intraocular Pressure Reading Time of "<leftEyeIPRTime>"
+    Then I choose a left eye Intraocular Pressure Reading of "<leftEyeIPR>"
+    And I add left eye comments of "<leftEyeComm>"
 
     Then I Save the Phasing Event and confirm it has been created successfully
 
+    Examples:
+    |uname|pwd  |siteName/Number|firmNmae/Number|hospNumber|event  |rightEyeIPRTime|rightEyeIPR|rightEyeComm|leftEyeIPRTime|leftEyeIPR|leftEyeComm|
+    |admin|admin|1              |3              |1009465   |Phasing|14:00          |5          |R TEST      |14:42         |7          |L TEST    |
+
+
     @Phasing_Route_2
-    Scenario: Route 2: Login and create a Phasing Event
+    Scenario Outline: Route 2: Login and create a Phasing Event
 
       Given I am on the OpenEyes "master" homepage
-      And I enter login credentials "admin" and "admin"
-      And I select Site "1"
-      Then I select a firm of "1"
+      And I enter login credentials "<uname>" and "<pwd>"
+      And I select Site "<siteName/Number>"
+      Then I select a firm of "<firmNmae/Number>"
 
-      Then I search for hospital number "1009465 "
+      Then I search for hospital number "<hospNumber> "
 
-      Then I select the Latest Event
+      Then I select Create or View Episodes and Events
 
-      Then I expand the Cataract sidebar
-      And I add a New Event "Phasing"
+      Then I expand the "<speciality>" sidebar
+      And I add a New Event "<event>"
 
       #Then I choose a right eye Intraocular Pressure Instrument  of "3"
 
       And I choose right eye Dilation of No
 
-      Then I choose a right eye Intraocular Pressure Reading Time of "21:00"
-      Then I choose a right eye Intraocular Pressure Reading of "14"
-      And I add right eye comments of "Right eye comments here"
+      Then I choose a right eye Intraocular Pressure Reading Time of "<rightEyeIPRTime>"
+      Then I choose a right eye Intraocular Pressure Reading of "<rightEyeIPR>"
+      And I add right eye comments of "<rightEyeComm>"
 
       #Then I choose a left eye Intraocular Pressure Instrument  of "4"
 
       And I choose left eye Dilation of Yes
 
-      Then I choose a left eye Intraocular Pressure Reading Time of "04:42"
-      Then I choose a left eye Intraocular Pressure Reading of "12"
-      And I add left eye comments of "Left eye comments here"
+      Then I choose a left eye Intraocular Pressure Reading Time of "<leftEyeIPRTime>"
+      Then I choose a left eye Intraocular Pressure Reading of "<leftEyeIPR>"
+      And I add left eye comments of "<leftEyeComm>"
 
       Then I Save the Phasing Event and confirm it has been created successfully
 
+    Examples:
+    |uname|pwd  |siteName/Number|firmNmae/Number|hospNumber|speciality|event  |rightEyeIPRTime|rightEyeIPR|rightEyeComm|leftEyeIPRTime|leftEyeIPR|leftEyeComm|
+    |admin|admin|1              |1              |1009465   |cataract  |Phasing|21:00          |14         |R TEST      |04:42         |12         |L TEST     |
+
     @Phasing_Route_3
-    Scenario: Route 3: Login and create a Phasing Event
+    Scenario Outline: Route 3: Login and create a Phasing Event
 
       Given I am on the OpenEyes "master" homepage
-      And I enter login credentials "admin" and "admin"
-      And I select Site "2"
-      Then I select a firm of "3"
+      And I enter login credentials "<uname>" and "<pwd>"
+      And I select Site "<siteName/Number>"
+      Then I select a firm of "<firmNmae/Number>"
 
-      Then I search for hospital number "1009465 "
+      Then I search for hospital number "<hospNumber> "
 
-      Then I select the Latest Event
+      Then I select Create or View Episodes and Events
 
-      Then I expand the Glaucoma sidebar
-      And I add a New Event "Phasing"
+      Then I expand the "<speciality>" sidebar
+      And I add a New Event "<event>"
 
       #Then I choose a right eye Intraocular Pressure Instrument  of "3"
 
       And I choose right eye Dilation of No
 
-      Then I choose a right eye Intraocular Pressure Reading Time of "08:00"
-      Then I choose a right eye Intraocular Pressure Reading of "5"
-      And I add right eye comments of "Right eye comments here"
+      Then I choose a right eye Intraocular Pressure Reading Time of "<rightEyeIPRTime>"
+      Then I choose a right eye Intraocular Pressure Reading of "<rightEyeIPR>"
+      And I add right eye comments of "<rightEyeComm>"
 
       #Then I choose a left eye Intraocular Pressure Instrument  of "3"
 
       And I choose left eye Dilation of Yes
 
-      Then I choose a left eye Intraocular Pressure Reading Time of "14:42"
-      Then I choose a left eye Intraocular Pressure Reading of "9"
-      And I add left eye comments of "Left eye comments here"
+      Then I choose a left eye Intraocular Pressure Reading Time of "<leftEyeIPRTime>"
+      Then I choose a left eye Intraocular Pressure Reading of "<leftEyeIPR>"
+      And I add left eye comments of "<leftEyeComm>"
 
       Then I Save the Phasing Event and confirm it has been created successfully
 
+      Examples:
+        |uname|pwd  |siteName/Number|firmNmae/Number|hospNumber|speciality|event  |rightEyeIPRTime|rightEyeIPR|rightEyeComm|leftEyeIPRTime|leftEyeIPR|leftEyeComm|
+        |admin|admin|2              |3              |1009465   |glaucoma  |Phasing|08:00          |5          |R TEST      |14:42         |9          |L TEST    |
+
     @Phasing_Route_4
-    Scenario: Route 4: Login and create a Phasing Event
+    Scenario Outline: Route 4: Login and create a Phasing Event
 
       Given I am on the OpenEyes "master" homepage
-      And I enter login credentials "admin" and "admin"
-      And I select Site "1"
-      Then I select a firm of "4"
+      And I enter login credentials "<uname>" and "<pwd>"
+      And I select Site "<siteName/Number>"
+      Then I select a firm of "<firmNmae/Number>"
 
-      Then I search for hospital number "1009465 "
+      Then I search for hospital number "<hospNumber>"
 
-      Then I select the Latest Event
+      Then I select Create or View Episodes and Events
 
-      Then I expand the Medical Retinal sidebar
-      And I add a New Event "Phasing"
+      Then I expand the "<speciality>" sidebar
+      And I add a New Event "<event>"
 
       #Then I choose a right eye Intraocular Pressure Instrument  of "4"
 
       And I choose right eye Dilation of No
 
-      Then I choose a right eye Intraocular Pressure Reading Time of "08:00"
-      Then I choose a right eye Intraocular Pressure Reading of "5"
-      And I add right eye comments of "Right eye comments here"
+      Then I choose a right eye Intraocular Pressure Reading Time of "<rightEyeIPRTime>"
+      Then I choose a right eye Intraocular Pressure Reading of "<rightEyeIPR>"
+      And I add right eye comments of "<rightEyeComm>"
 
       #Then I choose a left eye Intraocular Pressure Instrument  of "1"
 
       And I choose left eye Dilation of Yes
 
-      Then I choose a left eye Intraocular Pressure Reading Time of "14:42"
-      Then I choose a left eye Intraocular Pressure Reading of "9"
-      And I add left eye comments of "Left eye comments here"
+      Then I choose a left eye Intraocular Pressure Reading Time of "<leftEyeIPRTime>"
+      Then I choose a left eye Intraocular Pressure Reading of "<leftEyeIPR>"
+      And I add left eye comments of "<leftEyeComm>"
 
       Then I add a new Left Reading
-      Then I choose a second left eye Intraocular Pressure Reading Time of "11:07"
-      Then I choose a second left eye Intraocular Pressure Reading of "6"
+      Then I choose a second left eye Intraocular Pressure Reading Time of "<leftEyeIPRTime-2>"
+      Then I choose a second left eye Intraocular Pressure Reading of "<leftEyeIPR-2>"
 
       Then I add a new Right Reading
 #      Then I choose a second right eye Intraocular Pressure Reading Time of "15:43"
-      Then I choose a second right eye Intraocular Pressure Reading of "20"
+      Then I choose a second right eye Intraocular Pressure Reading of "<rightEyeIPR-2>"
 
       Then I remove the last Right Reading
       Then I remove the last Left Reading
 
       Then I Save the Phasing Event and confirm it has been created successfully
 
+      Examples:
+        |uname|pwd  |siteName/Number|firmNmae/Number|hospNumber|speciality    |event  |rightEyeIPRTime|rightEyeIPR|rightEyeComm|leftEyeIPRTime|leftEyeIPR|leftEyeComm|leftEyeIPRTime-2|leftEyeIPR-2|rightEyeIPR-2|
+        |admin|admin|1              |4              |1009465   |medicalRetinal|Phasing|08:00          |5          |R TEST      |14:89         |9         |L TEST     |11:07           |6           |20           |
+
     @Phasing_Route_5
-    Scenario: Route 5: Login and create a Phasing Event
+    Scenario Outline: Route 5: Login and create a Phasing Event
               Invalid time entry validation tests (Intraocular Pressing Reading Times)
 
       Given I am on the OpenEyes "master" homepage
-      And I enter login credentials "admin" and "admin"
-      And I select Site "1"
-      Then I select a firm of "3"
+      And I enter login credentials "<uname>" and "<pwd>"
+      And I select Site "<siteName/Number>"
+      Then I select a firm of "<firmNmae/Number>"
 
-      Then I search for hospital number "1009465 "
+      Then I search for hospital number "<hospNumber>"
 
-      Then I select the Latest Event
+      Then I select Create or View Episodes and Events
 
-      Then I expand the Glaucoma sidebar
-      And I add a New Event "Phasing"
+      Then I expand the "<speciality>" sidebar
+      And I add a New Event "<event>"
 
       #Then I choose a right eye Intraocular Pressure Instrument  of "1"
 
       And I choose right eye Dilation of Yes
 
-      Then I choose a right eye Intraocular Pressure Reading Time of "25:12"
-      Then I choose a right eye Intraocular Pressure Reading of "5"
-      And I add right eye comments of "Right eye comments here"
+      Then I choose a right eye Intraocular Pressure Reading Time of "<rightEyeIPRTime>"
+      Then I choose a right eye Intraocular Pressure Reading of "<rightEyeIPR>"
+      And I add right eye comments of "<rightEyeComm>"
 
       #Then I choose a left eye Intraocular Pressure Instrument  of "5"
 
       And I choose left eye Dilation of Yes
 
-      Then I choose a left eye Intraocular Pressure Reading Time of "09:67"
-      Then I choose a left eye Intraocular Pressure Reading of "7"
-      And I add left eye comments of "Left eye comments here"
+      Then I choose a left eye Intraocular Pressure Reading Time of "<leftEyeIPRTime>"
+      Then I choose a left eye Intraocular Pressure Reading of "<leftEyeIPR>"
+      And I add left eye comments of "<leftEyeComm>"
 
       Then I Save the Phasing Event
 
       Then I Confirm that the Readings Invalid time error messages are displayed
+
+      Examples:
+        |uname|pwd  |siteName/Number|firmNmae/Number|hospNumber|speciality|event  |rightEyeIPRTime|rightEyeIPR|rightEyeComm|leftEyeIPRTime|leftEyeIPR|leftEyeComm|
+        |admin|admin|1              |3              |1009465   |glaucoma  |Phasing|25:12          |5          |R TEST      |34:47         |7         |L TEST     |

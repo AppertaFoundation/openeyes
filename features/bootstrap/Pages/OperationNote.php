@@ -102,7 +102,25 @@ class OperationNote extends OpenEyesPage {
 			),
 			'savedOkMessage' => array (
 					'xpath' => "//*[@id='flash-success'][@class='alert-box with-icon info'][contains(text(), 'Operation Note created.')]" 
-			) 
+			),
+		'cataractComplicationErrorMessage' => array(
+			'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Cataract Complications cannot be blank')]"
+		),
+		'anaestheticComplicationErrorMessage' =>array(
+			'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Anaesthetic Complications cannot be blank')]"
+		),
+		'selectPCRRisk' => array(
+			'xpath' => "//*[@id='ophCiExaminationPCRRiskEyeLabel']"
+		),
+		'referencePCRRisk' => array(
+			'xpath' => "//*[contains(text(),'Calculation data derived from')]"
+		),
+		'referencePCRRiskLink' => array(
+			'xpath' => "//*[contains(text(),'Narendran et al. The Cataract National Dataset electronic multicentre audit of 55,567 operations')][1]"
+		),
+		'scrollTo' => array(
+			'xpath' => "//*[@class='element-header']//*[contains(text(),'Anaesthetic')]"
+		)
 	);
 	public function emergencyBooking() {
 		$this->getElement ( 'emergencyBooking' )->click ();
@@ -207,16 +225,16 @@ class OperationNote extends OpenEyesPage {
 		// TODO TEST DATA REQUIRED HERE
 	}
 	public function saveOpNote() {
+		sleep(3);
 		$this->getElement ( 'saveOpNote' )->click ();
 	}
 	protected function hasOpNoteSaved() {
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'savedOkMessage' )->getXpath () );
-		;
 	}
 	public function saveOpNoteAndConfirm() {
-		sleep(5);
 		$this->getElement ( 'saveOpNote' )->click ();
-		
+
+		$this->getSession ()->wait ( 5000, 'window.$ && $.active == 0' );
 		if ($this->hasOpNoteSaved ()) {
 			print "Operation Note has been saved OK";
 		} 
@@ -225,4 +243,41 @@ class OperationNote extends OpenEyesPage {
 			throw new BehaviorException ( "WARNING!!!  Operation Note has NOT been saved!!  WARNING!!" );
 		}
 	}
-}
+
+	public function cataractComplicationErrorMessage(){
+		if($this->find ( 'xpath', $this->getElement ( 'cataractComplicationErrorMessage' )->getXpath () )){
+				print "Complications Missing Error is shown, Test Passed!";
+		}
+		else{
+			throw new BehaviorException ( "WARNING!!! Complications missing error Message not shown!!  WARNING!!" );
+		}
+	}
+
+	public function anaestheticComplicationErrorMessage(){
+		if($this->find ( 'xpath', $this->getElement ( 'anaestheticComplicationErrorMessage' )->getXpath () )){
+			print "Complications Missing Error is shown, Test Passed!";
+		}
+		else{
+			throw new BehaviorException ( "WARNING!!! Complications missing error Message not shown!!  WARNING!!" );
+		}
+	}
+
+	public function iSelectPCRRisk(){
+		sleep(3);
+		$this->getElement('selectPCRRisk')->click();
+		sleep(5);
+	}
+
+	public function referencePCRRisk(){
+		$this->getElement('referencePCRRisk');
+	}
+
+	public function clickReferencePCRRiskLink(){
+		//$this->getDriver()->();
+		//$this->scrollWindowTo('selectPCRRisk');
+		//$this->scrollWindowTo('scrollTo');
+		$this->getElement('referencePCRRiskLink')->click();
+		sleep(3);
+	}
+
+	}

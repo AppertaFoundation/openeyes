@@ -107,6 +107,19 @@ class TherapyApplicationContext extends PageObjectContext {
 	}
 	
 	/**
+	 * @Given /^I select Yes for Patient consents to share data$/
+	 */
+	public function iSelectYesForPatientConsentsToShareData()
+	{
+		/**
+		 *
+		 * @var TherapyApplication $TherapyApplication
+		 */
+		$TherapyApplication = $this->getPage ( "TherapyApplication" );
+		$TherapyApplication->PatientConsentYes ();
+	}
+	
+	/**
 	 * @Then /^I select Right Cerebrovascular accident No$/
 	 */
 	public function iSelectCerebrovascularAccidentNo() {
