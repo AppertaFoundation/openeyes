@@ -73,8 +73,8 @@ class ProcessHscicDataCommand extends CConsoleCommand
     
     function __construct()
     {
-       $this->path = Yii::app()->basePath . '/data/hscic';
-       $this->tempPath = $this->path . '/temp';
+        $this->path = Yii::app()->params['hscic']['data']['path'];
+        $this->tempPath = Yii::app()->params['hscic']['data']['temp_path'];
        
         if (!file_exists($this->tempPath)) {
             mkdir($this->tempPath, 0777, true);
@@ -309,10 +309,10 @@ EOH;
      */
     private function tempToPermanent($tempFile, $permanentFile)
     {
-        $pathParts = pathinfo($permanentFile);     
+        $pathParts = pathinfo($permanentFile);
         
-       if (!file_exists($pathParts['dirname'])) {
-            mkdir($pathParts['dirname'], 0777, true);
+        if (!file_exists($this->path . '/' . $pathParts['dirname'])) {
+            mkdir($this->path . '/' . $pathParts['dirname'], 0777, true);
         }
         
         copy($tempFile, $permanentFile);

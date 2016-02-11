@@ -19,7 +19,7 @@
 
 class DownloadHscicDataCommand extends CConsoleCommand
 {
-    public $path = null;
+    public $tempPath = null;
     
     static private $files = array(
         'full' => array(
@@ -50,10 +50,10 @@ class DownloadHscicDataCommand extends CConsoleCommand
     
     function __construct()
     {
-        $this->path = Yii::app()->basePath . '/data/hscic/temp';
+        $this->tempPath = Yii::app()->params['hscic']['data']['temp_path'];
              
-        if (!file_exists($this->path)) {
-            mkdir($this->path, 0777, true);
+        if (!file_exists($this->tempPath)) {
+            mkdir($this->tempPath, 0777, true);
         }
         
         parent::__construct(null, null);
@@ -183,6 +183,6 @@ EOH;
         $urlParts = parse_url($url);
         $pathParts = pathinfo($urlParts['path']);
           
-        return $this->path . '/' . $pathParts['basename'];
+        return $this->tempPath . '/' . $pathParts['basename'];
     }
 }
