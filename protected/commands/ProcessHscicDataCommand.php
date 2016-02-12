@@ -41,31 +41,31 @@ class ProcessHscicDataCommand extends CConsoleCommand
     static private $files = array(
         'full' => array(
             'gp' => array(
-                    'filename' => 'egpcur.zip',
+                    'url' => 'http://systems.hscic.gov.uk/data/ods/datadownloads/data-files/egpcur.zip',
                     'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
              ),
             'practice' => array(  // http://systems.hscic.gov.uk/data/ods/supportinginfo/filedescriptions#_Toc350757591
-                    'filename' => 'epraccur.zip',
+                    'url' => 'http://systems.hscic.gov.uk/data/ods/datadownloads/data-files/epraccur.zip',
                     'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
             ),
             'ccg' => array(
-                    'filename' => 'eccg.zip',
+                    'url' => 'http://systems.hscic.gov.uk/data/ods/datadownloads/data-files/eccg.zip',
                     'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode'),
             ),
             'ccgAssignment' => array(
-                    'filename' => 'epcmem.zip',
+                    'url' => 'http://systems.hscic.gov.uk/data/ods/datadownloads/data-files/epcmem.zip',
                     'fields' => array('practice_code', 'ccg_code'),
             ),
         ),
         'monthly' => array(
             'gp' => array(
-                'filename' => 'egpam.zip',
+                'url' => 'http://systems.hscic.gov.uk/data/ods/datadownloads/monthamend/current/egpam.zip',
                 'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
             ),
         ),
         'quarterly' => array(
             'gp' => array(
-                'filename' => 'egpaq.zip',
+                'url' => 'http://systems.hscic.gov.uk/data/ods/datadownloads/quartamend/current/egpaq.zip',
                 'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
             )
         ),
@@ -90,7 +90,7 @@ class ProcessHscicDataCommand extends CConsoleCommand
      */
     public function getName()
     {
-        return 'HSCIC data import Command.';
+        return 'HSCIC data download and import Command.';
     }
     
     /**
@@ -109,32 +109,32 @@ class ProcessHscicDataCommand extends CConsoleCommand
         echo <<<EOH
 
         
-HSCIC data importer
+HSCIC data downloader and importer
         
-The importer is processing zipped CSV files downloaded from HSCIC websie
+The command downloads (from HSCIC website) and processes zipped CSV files
 http://systems.hscic.gov.uk/data/ods/datadownloads/gppractice
-
-.zip files must be placed to /protected/data/hscic/temp
 
 USAGE
   yiic.php processhscicdata [action] [parameter]
         
 Following actions are available:
+
+ - download     [--type --interval] : downloads a specific file based on the given type (e.g.: GP) and interval (e.g.: full)
         
- - full         : Importing the full version of the GP, Practice, 
-                  CCG and CCG Assignment files
- - monthly      : Importing the monthly files of the GP
- - quarterly    : Importing the quarterly files of the GP
+ - downloadall                      : downloads all the full files, GP, Practice, CCG, CCG Assignment
         
  - import       [--type --interval] : Importing a specific file based on the given type and iterval
-                Available intervals by type : 
-                    GP              : full|quarterly|monthly
-                    Practice        : full
-                    CCG:            : full
-                    CCGAssignment   : full
+ 
+- importall                         : imports all the full files, GP, Practice, CCG, CCG Assignment
         
-- checkremovedfromfile  : Checking if a database row no longer exists in the file, and if it's the case, we set the status inactive
-                          Supported types : GP and Practice
+- checkremovedfromfile  [--type]    : Checking if a database row no longer exists in the file, and if it's the case, we set the status inactive
+                                      Supported types : GP and Practice
+
+Available intervals by type :
+    GP              : full|quarterly|monthly
+    Practice        : full
+    CCG             : full
+    CCGAssignment   : full
         
         
 Following parameters are available:
@@ -144,21 +144,20 @@ Following parameters are available:
              Usage: --audit=false
 
 EXAMPLES
-        
- * yiic.php processhscicdata full
-   importing the full files (GP, Practice, CCG, CCG Assignment)
-        
- * yiic.php processhscicdata monthly
-   importing the monthly files (GP)
-        
- * yiic.php processhscicdata monthly
-   importing the quarterly files (GP)
-        
- * yiic.php processhscicdata import --type=gp --interval=full --force
-   importing the full GP file, forcing it as it was already processed
+ * yiic.php processhscicdata download --type=practice --interval=full
+   Downloads the full Practice file
 
- * yiic.php processhscicdata import --type=gp --interval=full --audit=false
-   importing the full GP file without generating audit message
+ * yiic.php processhscicdata download --type=gp --interval=monthly
+   Downloads the monthly Gp file
+     
+ * yiic.php processhscicdata import --type=gp --interval=full --force
+   Importing the full GP file, forcing it as it was already processed
+
+ * yiic.php processhscicdata import --type=gp --interval=quarterly --audit=false
+   Importing the quarterly GP file without generating audit message
+
+ * yiic.php processhscicdata checkremovedfromfile --type=gp
+   Compares the full GP files with database and set models to inactive which are missing from the file
 
 EOH;
         
@@ -186,33 +185,11 @@ EOH;
     }
     
     /**
-     * Importing all files listed under the self::files['full'] as GP, Practice, CCG, CCG Assignment
-     * ProcessHscicData full
+     * Imports all the full files listed in self::$files['full'], Gp, Practice, CCG, CCG Assignment
      */
-    public function actionFull(){
-        foreach (self::$files['full'] as $type => $file) {
-            $this->processFile($type, $file);
-        }
-    }
-    
-    /**
-     * Importing all files listed under the self::files['monthly'] as GP
-     * ProcessHscicData monthly
-     */
-    public function actionMonthly()
+    public function actionImportall()
     {
-        foreach (self::$files['monthly'] as $type => $file) {
-            $this->processFile($type, $file);
-        }
-    }
-    
-    /**
-     * Importing all files listed under the self::files['quarterly'] as GP
-     * ProcessHscicData quarterly
-     */
-    public function actionQuarterly()
-    {
-        foreach (self::$files['quarterly'] as $type => $file) {
+        foreach(self::$files['full'] as $type => $file){
             $this->processFile($type, $file);
         }
     }
@@ -327,7 +304,8 @@ EOH;
     private function processFile($type, $file)
     {
         echo "\n";
-        $pathParts = pathinfo($file['filename']);
+        
+        $pathParts = pathinfo( $this->getFileFromUrl($file['url']) );
 
         $permanentFile = $this->path . '/' . $pathParts['filename'] . '/' . $pathParts['basename'];
         $tempFile =  $this->tempPath . '/' . $pathParts['basename'];
@@ -335,7 +313,7 @@ EOH;
         // check if the current file(url) is already processed or not
         if( $this->isNewResourceFile($tempFile, $permanentFile) ){
 
-            echo "Processing " . $file['filename'] . "\n";
+            echo "Processing " . $pathParts['basename'] . "\n";
 
             $this->tempToPermanent($tempFile, $permanentFile);
 
@@ -658,7 +636,7 @@ EOH;
      */
     public function actionCheckRemovedFromFile($type = 'gp')
     {
-        if ( !isset(self::$files['full'][$type]['filename']) || ($type != 'gp' && $type != 'practice') ){
+        if ( !isset(self::$files['full'][$type]['url']) || ($type != 'gp' && $type != 'practice') ){
             $this->usageError("Invalid type: $type");
         }
         
@@ -666,7 +644,7 @@ EOH;
        
         $this->createTempTable($dbTable);
 
-        $file = self::$files['full'][$type]['filename'];
+        $file = $this->getFileFromUrl( self::$files['full'][$type]['url'] );
         $this->fillTempTable($type, $file);
 
         $this->markInactiveMissingModels($dbTable);
@@ -787,8 +765,84 @@ EOH;
         foreach($not_in_file as $removed_instance){
             
             $removed_instance->is_active = '0';
-            $removed_instance->save();
+            if($removed_instance->save() && $this->audit !== 'false'){
+                Audit::add('ProcessHscicDataCommand', "$type ({$removed_instance->$column}) set to inactive");
+            }
+            
         }
         echo "OK\n\n";
+    }
+    
+    /**
+     * Assamble the file path and name from the url
+     * @param string $url
+     * @return string the path and file name
+     */
+    private function getFileFromUrl($url)
+    {
+        $urlParts = parse_url($url);
+        $pathParts = pathinfo($urlParts['path']);
+          
+        return $pathParts['basename'];
+    }
+    
+    
+    /***    Download HSCIC Data    ***/
+    
+    
+    /**
+     * Allows to download a specified file based on the type and interval
+     * 
+     * @param string $type like 'Gp'
+     * @param string $interval like 'monthly'
+     */
+    public function actionDownload($type, $interval = 'full')
+    {
+        if( !isset(self::$files[$interval]) ){
+            $this->usageError("Interval not found: $interval");
+           
+        } else if( !isset(self::$files[$interval][$type]) ){
+            $this->usageError("\n$type has no $interval file");
+        } else {
+            $fileName = $this->getFileFromUrl(self::$files[$interval][$type]['url']);
+            $this->download(self::$files[$interval][$type]['url'], $this->tempPath . '/' . $fileName);
+        }
+    }
+    
+    /**
+     * Downloads all the full files listed in self::$files['full'] , Gp, Practice, CCG, CCG Assignment
+     * can be useful on the first run
+     */
+    public function actionDownloadall(){
+        foreach(self::$files['full'] as $file){
+            $fileName = $this->getFileFromUrl($file['url']);
+            $this->download($file['url'], $this->tempPath . '/' . $fileName);
+        }
+    }
+    
+    /**
+     * Downloads the file(url) and puts to the provided path/filename
+     * 
+     * @param type $url
+     * @param type $file
+     * @return bool true if file is readabe and size > 0
+     */
+    private function download($url, $file)
+    {
+        echo "Downloading... " . basename($file);
+        $file_handler = fopen($file, 'w');
+        
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_FILE, $file_handler);
+        curl_exec($curl);
+        curl_close($curl);
+        
+        fclose($file_handler);
+        $result = is_readable($file) && filesize($file);
+        
+        echo ($result ? ' ... OK' : '... ERROR');
+        echo "\n";
+        
+        return $result;
     }
 }
