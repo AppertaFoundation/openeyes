@@ -6,6 +6,7 @@ use Behat\MinkExtension\Context\MinkContext;
 use Behat\YiiExtension\Context\YiiAwareContextInterface;
 use Behat\Mink\Driver\Selenium2Driver;
 use \SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
+use Behat\Behat\Exception\BehaviorException;
 class PrescriptionContext extends PageObjectContext {
 	public function __construct(array $paramters) {
 	}
@@ -155,9 +156,9 @@ class PrescriptionContext extends PageObjectContext {
 	}
 	
 	/**
-	 * @Given /^I enter a first Taper does of "([^"]*)"$/
+	 * @Given /^I enter a first Taper dose of "([^"]*)"$/
 	 */
-	public function iEnterAFirstTaperDoesOf($taper) {
+	public function iEnterAFirstTaperDoseOf($taper) {
 		/**
 		 *
 		 * @var Prescription $prescription
@@ -309,4 +310,80 @@ class PrescriptionContext extends PageObjectContext {
 		$prescription = $this->getPage ( 'Prescription' );
 		$prescription->repeatPrescriptionCheck ();
 	}
+
+	/**
+	 * @Then /^I should see the drug from the previous prescription$/
+	 */
+	public function iShouldSeeDrugTheFromThePreviousPrescription(){
+		/**
+		 *
+		 * @var Prescription $prescription
+		 */
+		$prescription = $this->getPage ( 'Prescription' );
+		$prescription->previousPrescriptionCheck();
+
+	}
+
+	/**
+	 * @Then /^I delete all the previous prescription events created$/
+	 */
+	public function iDeleteAllThePreviousPrescriptionEventsCreated(){
+		/**
+		 *
+		 * @var Prescription $prescription
+		 */
+		$prescription = $this->getPage ( 'Prescription' );
+		$prescription->removePrescriptionEvents();
+
+	}
+
+	/**
+	 * @Then /^I should see prescription already exists message$/
+	 */
+	public function iShouldSeePrescriptionAlreadyExistsMessage(){
+		/**
+		 *
+		 * @var Prescription $prescription
+		 */
+		$prescription = $this->getPage ( 'Prescription' );
+		$prescription->checkWarningShown();
+
+	}
+
+	/**
+	 * @Then /^I check prescription already exists$/
+	 */
+	public function icheckPrescriptionAlreadyExists(){
+		/**
+		 *
+		 * @var Prescription $prescription
+		 */
+		$prescription = $this->getPage ( 'Prescription' );
+		$prescription->checkWarningShown();
+		$prescription->iClickOnYes();
+
+	}
+	/**
+	 * @Then /^I click on "([^"]*)" and should see respective pages$/
+	 */
+	public function iClickOn($option){
+		/**
+		 *
+		 * @var Prescription $prescription
+		 */
+		$yes="yes"; $no="no";
+		if($option==$yes) {
+			$prescription = $this->getPage ( 'Prescription' );
+			$prescription->iClickOnYes();
+		}
+		elseif($option==$no){
+			$prescription = $this->getPage ( 'Prescription' );
+			$prescription->iClickOnNo();
+		}
+		else{
+			throw new BehaviorException ("Given option does not exist! Please select yes or no");
+		}
+
+	}
+
 }

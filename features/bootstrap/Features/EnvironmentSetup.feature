@@ -4,19 +4,19 @@ Feature: Environment Setup on clean database
   It sets up 3 Firms Glaucoma, Medical Retina and Cataract
   Each with an event setup ready for the regression tag to be run
   
-  Scenario: Environment Setup Broom Glaucoma
+  Scenario Outline: Environment Setup Broom Glaucoma
 
     Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "2"
-    Then I select a firm of "2"
+    And I enter login credentials "<uname>" and "<pwd>"
+    And I select Site "<site>"
+    Then I select a firm of "<firm>"
 
-    Then I search for hospital number "1009465"
+    Then I search for hospital number "<hospNum>"
 
     Then I select Add First New Episode and Confirm
-    Then I expand the Glaucoma sidebar
+    Then I expand the "<speciality>" sidebar
 
-    And I add a New Event "Satisfaction"
+    And I add a New Event "<event>"
 
     Then I select an Anaesthetist "no"
     #And I select Satisfaction levels of Pain "2" Nausea "3"
@@ -32,19 +32,22 @@ Feature: Environment Setup on clean database
 
     Then I Save the Event
 
-  Scenario: Environment Setup Medical Retinal
+    Examples:
+    |uname|pwd  |site   |firm                   |hospNum|speciality|event       |
+    |admin|admin|Barking|A K Hamilton (Glaucoma)|1009465|glaucoma  |Satisfaction|
+
+  Scenario Outline: Environment Setup Medical Retinal
 
     Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "2"
-    Then I select a firm of "4"
+    And I enter login credentials "<uname>" and "<pwd>"
+    And I select Site "<site>"
+    Then I select a firm of "<firm>"
 
-    Then I search for hospital number "1009465"
+    Then I search for hospital number "<hospNum>"
 
     Then I select Add First New Episode and Confirm
-    Then I expand the Medical Retinal sidebar
-
-    And I add a New Event "Satisfaction"
+    Then I expand the "<speciality>" sidebar
+    And I add a New Event "<event>"
 
     Then I select an Anaesthetist "no"
     #And I select Satisfaction levels of Pain "2" Nausea "3"
@@ -59,20 +62,25 @@ Feature: Environment Setup on clean database
     And I select the Yes option for Ready to Discharge
 
     Then I Save the Event
+
+  Examples:
+  |uname|pwd  |site       |firm                           |hospNum|speciality    |event       |
+  |admin|admin|Bridge Lane|Angela Glasby (Medical Retinal)|1009465|medicalRetinal|Satisfaction|
+
   @SetupAndCat
-  Scenario: Environment Setup Anderson Cataract
+  Scenario Outline: Environment Setup Anderson Cataract
 
     Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "2"
-    Then I select a firm of "1"
+    And I enter login credentials "<uname>" and "<pwd>"
+    And I select Site "<site>"
+    Then I select a firm of "<firm>"
 
-    Then I search for hospital number "1009465"
+    Then I search for hospital number "<hospNum>"
 
     Then I select Add First New Episode and Confirm
-    Then I expand the Cataract sidebar
+    Then I expand the "<speciality>" sidebar
 
-    And I add a New Event "Satisfaction"
+    And I add a New Event "<event>"
 
     Then I select an Anaesthetist "no"
     #And I select Satisfaction levels of Pain "2" Nausea "3"
@@ -88,19 +96,23 @@ Feature: Environment Setup on clean database
 
     Then I Save the Event
 
-  Scenario: Environment Setup Anderson Glaucoma
+    Examples:
+      |uname|pwd  |site   |firm                    |hospNum|speciality|event       |
+      |admin|admin|Barking|Cataract firm (Cataract)|1009465|cataract  |Satisfaction|
+
+  Scenario Outline: Environment Setup Anderson Glaucoma
 
     Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "2"
-    Then I select a firm of "3"
+    And I enter login credentials "<uname>" and "<pwd>"
+    And I select Site "<site>"
+    Then I select a firm of "<firm>"
 
-    Then I search for hospital number "1009465"
+    Then I search for hospital number "<hospNum>"
 
     Then I select the Latest Event
-    Then I expand the Glaucoma sidebar
+    Then I expand the "<speciality>" sidebar
 
-    And I add a New Event "Satisfaction"
+    And I add a New Event "<event>"
 
     Then I select an Anaesthetist "no"
     #And I select Satisfaction levels of Pain "2" Nausea "3"
@@ -115,6 +127,10 @@ Feature: Environment Setup on clean database
     And I select the Yes option for Ready to Discharge
 
     Then I Save the Event
+
+    Examples:
+      |uname|pwd  |site  |firm                      |hospNum|speciality|event       |
+      |admin|admin|Ealing|Coral Woodhouse (Glaucoma)|1009465|cataract  |Satisfaction|
 
 
 #  Scenario: Environment Setup Support Firm

@@ -61,28 +61,36 @@ class AnaestheticAudit extends OpenEyesPage
 					'xpath' => "//button[@id='et_deleteevent']" 
 			),
 			'anaesthetistValidationError' => array (
-					'xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Anaesthetist: Anaesthetist cannot be blank.')]" 
+					//'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Anaesthetist: Anaesthetist cannot be blank.')]"
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Anaesthetist cannot be blank.')]"
 			),
 			'vitalRespiratoryValidationError' => array (
-					'xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Vital Signs: Respiratory Rate cannot be blank.')]" 
+					//'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Vital Signs: Respiratory Rate cannot be blank.')]"
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Respiratory Rate cannot be blank.')]"
 			),
 			'vitalOxygenSaturationValidationError' => array (
-					'xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Vital Signs: Oxygen Saturation cannot be blank.')]" 
+					//'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Vital Signs: Oxygen Saturation cannot be blank.')]"
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Oxygen Saturation cannot be blank.')]"
 			),
 			'vitalSystolicBloodPressureValidationError' => array (
-					'xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Vital Signs: Systolic Blood Pressure cannot be blank.')]" 
+					//'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Vital Signs: Systolic Blood Pressure cannot be blank.')]"
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Systolic Blood Pressure cannot be blank.')]"
 			),
 			'vitalBodyTempValidationError' => array (
-					'xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Vital Signs: Body Temperature cannot be blank.')]" 
+					//'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Vital Signs: Body Temperature cannot be blank.')]"
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Body Temperature cannot be blank.')]"
 			),
 			'vitalHeartRateValidationError' => array (
-					'xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Vital Signs: Heart Rate cannot be blank.')]" 
+					//'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Vital Signs: Heart Rate cannot be blank.')]"
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Heart Rate cannot be blank.')]"
 			),
 			'vitalAVPUValidationError' => array (
-					'xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Vital Signs: Conscious Level AVPU cannot be blank.')]" 
+					//'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Vital Signs: Conscious Level AVPU cannot be blank.')]"
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Conscious Level AVPU cannot be blank.')]"
 			),
 			'readyForDischargeValidationError' => array (
-					'xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Notes: Ready for discharge from recovery cannot be blank.')]" 
+					//'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Notes: Ready for discharge from recovery cannot be blank.')]"
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Ready for discharge from recovery cannot be blank.')]"
 			),
 			'deleteSuccess' => array (
 					'xpath' => "//*[contains(text(), 'An event was deleted, please ensure the episode status is still correct.')]" 
@@ -140,7 +148,8 @@ class AnaestheticAudit extends OpenEyesPage
 	}
 	public function saveASAAndConfirm() {
 		$this->getElement ( 'save' )->click ();
-		
+
+		$this->getSession ()->wait ( 5000, 'window.$ && $.active == 0' );
 		if ($this->hasASASaved ()) {
 			print "ASA has been saved OK";
 		} 
@@ -171,6 +180,8 @@ class AnaestheticAudit extends OpenEyesPage
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'anaesthetistValidationError' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'vitalRespiratoryValidationError' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'vitalOxygenSaturationValidationError' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'vitalSystolicBloodPressureValidationError' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'vitalBodyTempValidationError' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'vitalHeartRateValidationError' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'vitalAVPUValidationError' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'readyForDischargeValidationError' )->getXpath () );
 	}
 	public function validationErrorCheck() {
+		$this->getSession ()->wait ( 5000, 'window.$ && $.active == 0' );
+
 		if ($this->validationErrors ()) {
 			print "All Validation errors have been displayed correctly";
 		} else {

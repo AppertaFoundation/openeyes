@@ -1422,33 +1422,16 @@ class Patient extends BaseActiveRecordVersioned
 	public function getDistinctCommissioningBodiesByType()
 	{
 		$res = array();
-		$seen_bodies = array();
-
-		foreach ($this->commissioningbodies as $body) {
-			if (in_array($body->id, $seen_bodies)) {
-				continue;
-			}
-			if (array_key_exists($body->type->id, $res)) {
-				$res[$body->type->id][] = $body;
-			}
-			else {
-				$res[$body->type->id] = array($body);
-			}
-			$seen_bodies[] = $body->id;
-		}
 
 		if ($this->practice) {
 			foreach ($this->practice->commissioningbodies as $body) {
-				if (in_array($body->id, $seen_bodies)) {
-					continue;
-				}
 				if (array_key_exists($body->type->id, $res)) {
 					$res[$body->type->id][] = $body;
 				}
 				else {
 					$res[$body->type->id] = array($body);
 				}
-				$seen_bodies[] = $body->id;
+
 			}
 		}
 

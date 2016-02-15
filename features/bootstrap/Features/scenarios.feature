@@ -47,7 +47,7 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     Then I expand the Cataract sidebar
     And I add a New Event "Intravitreal"
@@ -63,7 +63,7 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     Then I expand the Cataract sidebar
     And I add a New Event "Prescription"
@@ -79,12 +79,13 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     Then I expand the Cataract sidebar
     And I add a New Event "OpNote"
 
     Then a check is made that the Allergy "Tetracycline" warning is displayed
+
 
   Scenario: Route 2A: Login and create a new Examination Event
             Create a Correspondence event including Findings from the Examination
@@ -96,7 +97,7 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
     Then I expand the Glaucoma sidebar
     And I add a New Event "Examination"
 
@@ -148,9 +149,9 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
 
     Then I choose to expand the Colour Vision section
     And I choose a Left Colour Vision of "1"
-    And I choose A Left Colour Vision Value of "8"
+    #And I choose A Left Colour Vision Value of "8"
     And I choose a Right Colour Vision of "2"
-    And I choose A Right Colour Vision Value of "4"
+    #And I choose A Right Colour Vision Value of "4"
 
     Then I choose to expand the Visual Acuity section
     And I select a Visual Acuity of "2"
@@ -172,6 +173,7 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
     Then a check is made that a left Axis degrees of "145" was entered
     Then a check is made that a right Axis degrees of "38" was entered
 
+
   Scenario: 2B Login and fill in a Correspondence
 
     Given I am on the OpenEyes "master" homepage
@@ -188,9 +190,9 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
 
     Then I select Site ID "1"
     And I select Address Target "Gp1"
-    Then I choose a Macro of "site1"
+    Then I choose a Macro of "1"
 
-    And I select Clinic Date "7"
+    And I select Clinic Date "1"
 
     Then I choose an Introduction of "site21"
     And I add Findings of "examination1"
@@ -205,6 +207,7 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
 
     Then I Save the Correspondence Draft and confirm it has been created successfully
 
+
   Scenario: 3B: Login and create a new Prescription. Check for Validation error upon Saving
             Site 1:Queens
             Firm 3:Anderson Glaucoma
@@ -216,7 +219,7 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     Then I expand the Glaucoma sidebar
     And I add a New Event "Prescription"
@@ -225,4 +228,103 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
 
     And I confirm the prescription validation error has been displayed
 
+@OEM-496 @postRelease
+  Scenario Outline: Login and Search for sessions with dates including 31st of a month
+  Given I am on the OpenEyes "master" homepage
+  And I enter login credentials "admin" and "admin"
+  And I select Site "<site1>"
+  Then I select a firm of "<site2>"
 
+
+  Then I select Theatre Diaries tab
+  And I search with start date as "<start>" and end date as "<end>"
+
+  Then I should not see Invalid date note
+
+  Examples:
+    |site1|site2|start|end|
+    |1|3        |08 Jul 2015|31 Aug 2015|
+    |2|2        |31 Aug 2015|08 Sep 2015|
+
+
+  @OE-4654 @sprint22
+    Scenario Outline: Login, make changes to the patient risk and make sure that the changes are displayed in patient summary
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "<site1>"
+    Then I select a firm of "<site2>"
+
+    Then I search for hospital number "<hospitalNumber>"
+    Then I remove all the risks specified
+    #Validation1
+    And I confirm they are removed from the warning on patient summary page
+
+
+    Then I go to the admin page
+    And I select the Risks tab
+
+    Then I add the "<newRisk>" and make it active
+
+    Examples:
+      |site1|site2|hospitalNumber|newRisk|
+      |1    |3    |1009465       |Test   |
+
+
+   @OE-4654_2 @sprint22
+   Scenario Outline: Login, make changes to the patient risk and make sure that the changes are displayed in patient summary
+     Given I am on the OpenEyes "master" homepage
+     And I enter login credentials "admin" and "admin"
+     And I select Site "<site1>"
+     Then I select a firm of "<site2>"
+
+     Then I search for hospital number "<hospitalNumber>"
+
+     #Validation2
+     Then I verify that all the risks from the NOD requirements are present in the list
+    #Risks from the NOD requirements:
+   #1.Cannot Lie Flat (matches NOD term "Inability to lie flat for cardiopulmonary or orthopaedic reasons")
+   #2.Extreme fear (matches NOD term "Inability to cooperate adequately- Extreme fear/anxiety")
+   #3.Learning Difficulty (matches NOD term "Inability to co-operate adequately- Learning difficulty")
+   #4.Inability to co-operate adequately
+   #5.Other (specify) (matches NOD term of same name)
+   #6.MRSA Risk
+   #7.CJD Risk
+   #8.Dementia
+   #9.CPR (Child Protection Risk)
+
+     Examples:
+       |site1|site2|hospitalNumber|
+       |1|3        |1009465|
+
+  @OE-4654_3 @sprint22
+  Scenario Outline: Login, make changes to the patient risk and make sure that the changes are displayed in patient summary
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "<site1>"
+    Then I select a firm of "<site2>"
+
+    Then I search for hospital number "<hospitalNumber>"
+    When I add "<risk1>","<risk2>","<risk3>"
+    #Validation3
+    Then I should see "<risk1>","<risk2>","<risk3>" warnings in the patient summary
+
+    Examples:
+      |site1|site2|hospitalNumber|risk1|risk2|risk3|
+      |1|3        |1009465|Cannot Lie Flat|Extreme fear|CJD Risk|
+
+  @OE-4654_4 @sprint22
+  Scenario Outline: Login, make changes to the patient risk and make sure that the changes are displayed in patient summary
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "<site1>"
+    Then I select a firm of "<site2>"
+
+    Then I search for hospital number "<hospitalNumber>"
+
+    Then I remove all the risks specified
+  #Validation4
+    And I confirm that the are removed from the warning on patient summary page
+
+    Examples:
+      |site1|site2|hospitalNumber|
+      |1|3        |1009465|

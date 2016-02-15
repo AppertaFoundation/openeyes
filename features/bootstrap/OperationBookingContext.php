@@ -80,7 +80,7 @@ class OperationBookingContext extends PageObjectContext {
 		$operationBooking = $this->getPage ( 'OperationBooking' );
 		$operationBooking->consultantNo ();
 	}
-	
+
 	/**
 	 * @Given /^I select No for Any other doctor to do$/
 	 */
@@ -282,7 +282,7 @@ class OperationBookingContext extends PageObjectContext {
 		 * @var OperationBooking $operationBooking
 		 */
 		$operationBooking = $this->getPage ( 'OperationBooking' );
-		// $operationBooking->getSession()->wait(3000);
+		//$operationBooking->getSession()->wait(3000);
 		$operationBooking->scheduleNow ();
 	}
 	

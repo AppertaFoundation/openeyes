@@ -50,7 +50,7 @@ class OperationBooking extends OpenEyesPage {
 					'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_fast_track_discussed_with_patient_1']" 
 			),
 			'scheduleOptASAP' => array (
-					'xpath' => "//*[@id='Element_OphTrOperationbooking_ScheduleOperation_schedule_options_id_1']" 
+					'xpath' => "//*[@id='Element_OphTrOperationbooking_ScheduleOperation_schedule_options_id_4']"
 			),
 			'anaestheticTopical' => array (
 					'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_anaesthetic_type_id_1']" 
@@ -95,7 +95,8 @@ class OperationBooking extends OpenEyesPage {
 					'xpath' => "//*[@id='et_schedulelater']" 
 			),
 			'scheduleNow' => array (
-					'xpath' => "//*[@id='et_save_and_schedule']" 
+					//'xpath' => "//*[@id='et_save_and_schedule']"
+					'xpath' => "//*[@id='et_save_and_schedule']"
 			),
 			'duplicateProcedureOk' => array (
 					'xpath' => "//*[@class='secondary small confirm ok']" 
@@ -107,7 +108,8 @@ class OperationBooking extends OpenEyesPage {
 					'xpath' => "//*[@class='available']" 
 			),
 			'availableTheatreSlotDateOutsideRTT' => array (
-					'xpath' => "//*[@class='available outside_rtt']" 
+					'xpath' => "//*[@class='available']"
+					//'xpath' => "//*[@class='available outside_rtt']"
 			),
 			'availableThreeWeeksTime' => array (
 					'xpath' => "//*[@id='calendar']//*[contains(text(),'27')]" 
@@ -185,9 +187,10 @@ class OperationBooking extends OpenEyesPage {
 		$this->getSession ()->wait ( 2000 );
 	}
 	public function consultantYes() {
-		$element = $this->getElement ( 'consultantYes' );
-		$this->scrollWindowToElement ( $element );
-		$element->click ();
+		//$element = $this->getElement ( 'consultantYes' );
+		//$this->scrollWindowToElement ( $element );
+		//$element->click ();
+		$this->getElement ( 'consultantYes' )->click ();
 	}
 	public function consultantNo() {
 		$this->getElement ( 'consultantNo' )->click ();
@@ -231,7 +234,7 @@ class OperationBooking extends OpenEyesPage {
 			$element = $this->getElement ( 'anaestheticGa' );
 		}
 		// $element->focus();
-		$this->scrollWindowToElement ( $element );
+	//	$this->scrollWindowToElement ( $element );
 		$this->getSession ()->wait ( 2000 );
 		$element->click ();
 		$this->getSession ()->wait ( 3000 );
@@ -247,12 +250,12 @@ class OperationBooking extends OpenEyesPage {
 	}
 	public function priorityRoutine() {
 		$element = $this->getElement ( 'priorityRoutine' );
-		$this->scrollWindowToElement ( $element );
+		//$this->scrollWindowToElement ( $element );
 		$element->click ();
 	}
 	public function priorityUrgent() {
 		$element = $this->getElement ( 'priorityUrgent' );
-		$this->scrollWindowToElement ( $element );
+		//$this->scrollWindowToElement ( $element );
 		$element->click ();
 	}
 	public function decisionDate($date) {
@@ -267,8 +270,9 @@ class OperationBooking extends OpenEyesPage {
 	}
 	public function scheduleNow() {
 		// $this->getElement('scheduleNow')->keyPress(2191);
+		//$this->getSession ()->wait ( 5000 );
 		$this->getElement ( 'scheduleNow' )->click ();
-		$this->getSession ()->wait ( 15000, "window.$ && $('.event-title').html() == 'Schedule Operation' " );
+		$this->getSession ()->wait ( 8000, "window.$ && $('.event-title').html() == 'Schedule Operation' " );
 	}
 	public function duplicateProcedureOk() {
 		if ($this->isDuplicateProcedurePopUpShown ()) {

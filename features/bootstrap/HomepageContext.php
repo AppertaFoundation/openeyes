@@ -191,4 +191,68 @@ class HomepageContext extends PageObjectContext {
 		$homepage = $this->getPage ( 'Homepage' );
 		$homepage->levelFourAccess ();
 	}
+
+	/**
+	 * @And /^I close the site and firm selection popup$/
+	 */
+	public function iCloseTheSiteAndFirmSelectionPopup()
+	{
+		/**
+		 *
+		 * @var Homepage $homepage
+		 */
+		$homepage = $this->getPage ( 'Homepage' );
+		$homepage->closePopup();
+	}
+
+	/**
+	 * @Then /^I select "([^"]*)" from more tab$/
+	 */
+	public function iSelectFromTabs($pageTab)
+	{
+		/**
+		 *
+		 * @var Homepage $homepage
+		 */
+		$homepage = $this->getPage ( 'Homepage' );
+		$homepage->selectTab($pageTab);
+	}
+
+	/**
+	 * @Then /^I open url "([^"]*)"$/
+	 */
+	public function iOpenUrl($url){
+		/**
+		 *
+		 * @var Homepage $homepage
+		 */
+		$homepage = $this->getPage ( 'Homepage' );
+		$homepage->openUrl($url);
+	}
+
+	/**
+	 * @Then /^I look for the "([^"]*)" alert on the patient summary page$/
+	 */
+	public function iLookForAlert($alert)
+	{
+		/**
+		 *
+		 * @var Homepage $homepage
+		 */
+		$homepage = $this->getPage ( 'Homepage' );
+			$homepage->homepageAlert($alert);
+	}
+
+	/**
+	 * @Then /^I click on "([^"]*)" in primary selection tab$/
+	 */
+	public function iClickPrimaryTabs($tab){
+		/**
+		 *
+		 * @var Homepage $homepage
+		 */
+		$homepage = $this->getPage ( 'Homepage' );
+		$homepage->clickOnTab($tab);
+	}
+
 }
