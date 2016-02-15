@@ -24,7 +24,7 @@ interface ReportInterface {
 
     public function dataSet();
 
-    public function dataSetJson();
+    public function seriesJson();
 
     public function graphConfig();
 

@@ -30,43 +30,11 @@
         <i class="mdl-color-text--blue-grey-400 material-icons search-icon" role="presentation">search</i>
         <?= $report->renderSearch(); ?>
     <?php endif;?>
-    <div id="<?=$report->graphId();?>"></div>
+    <div id="<?=$report->graphId();?>" class="chart-container"></div>
 </div>
 <script>
-
-    $(document).ready(function() {
-        $('.search-icon').on('click', function(){
-            $(this).parent('.report-container').find('.report-search').removeClass('visuallyhidden').animate({
-                height: '100%'
-            }, 300);
-        });
-
-        $('.report-search-form').on('submit', function(e){
-            e.preventDefault();
-            var chart,
-                searchForm = this;
-
-            $.ajax({
-                url: $(this).attr('action'),
-                data: $(searchForm).serialize() + '&' + $('#search-form').serialize(),
-                dataType: 'json',
-                success: function (data, textStatus, jqXHR) {
-                    chart = <?=$report->graphId();?>;
-                    for(var i = 0; i < chart.series.length; i++){
-                        chart.series[i].setData(data[i]);
-                    }
-                    $(searchForm).parent('.report-search').animate({
-                        height: '0'
-                    }, 300, function(){
-                        $(this).addClass('visuallyhidden');
-                    });
-                }
-            });
-        });
-    });
-
     var <?=$report->graphId();?> = new Highcharts.Chart($.extend(
-            JSON.parse('<?= $report->graphConfig();?>'),
-            {series: [{data: <?= $report->dataSetJson();?>}]}
+            {series: <?= $report->seriesJson();?>},
+            JSON.parse('<?= $report->graphConfig();?>')
         ));
 </script>

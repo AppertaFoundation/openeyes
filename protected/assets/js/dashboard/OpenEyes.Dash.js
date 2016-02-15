@@ -96,12 +96,41 @@
     Dash.init = function(container)
     {
         Dash.$container = $(container);
-        Highcharts.setOptions({
-            chart: {
-                style: {
-                    fontFamily: "'DejaVu Sans', Arial, Helvetica, sans-serif"
+
+        Dash.$container.on('click', '.search-icon', function(){
+            $(this).parent('.report-container').find('.report-search').removeClass('visuallyhidden').animate({
+                height: '100%'
+            }, 300);
+        });
+
+        Dash.$container.on('submit', '.report-search-form', function(e){
+            e.preventDefault();
+            var chart,
+                $searchForm = $(this)
+                chartId = $searchForm.parent().siblings('.chart-container').attr('id');
+
+            $.ajax({
+                url: $(this).attr('action'),
+                data: $searchForm.serialize() + '&' + $('#search-form').serialize(),
+                dataType: 'json',
+                success: function (data, textStatus, jqXHR) {
+                    chart = window[chartId];
+
+                    if(data.length && data[1].length){
+                        for(var i = 0; i < chart.series.length; i++){
+                            chart.series[i].setData(data[i]);
+                        }
+                    } else {
+                        chart.series[0].setData(data);
+                    }
+
+                    $searchForm.parent('.report-search').animate({
+                        height: '0'
+                    }, 300, function(){
+                        $(this).addClass('visuallyhidden');
+                    });
                 }
-            }
+            });
         });
     };
 

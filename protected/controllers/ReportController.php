@@ -40,6 +40,10 @@ class ReportController extends BaseReportController
         $this->render('diagnoses');
     }
 
+    /**
+     * @throws CException
+     * @throws CHttpException
+     */
     public function actionAjaxReport()
     {
         $reportObj = $this->loadReport();
@@ -49,6 +53,9 @@ class ReportController extends BaseReportController
         ));
     }
 
+    /**
+     * @throws CHttpException
+     */
     public function actionReportData()
     {
         $reportObj = $this->loadReport();

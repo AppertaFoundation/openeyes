@@ -59,9 +59,20 @@ class Report {
     /**
      * @var array
      */
+    protected $examinationEvent;
+
+    /**
+     * @var array
+     */
+    protected $series = array();
+
+    /**
+     * @var array
+     */
     protected $globalGraphConfig = array(
         'credits' => array('enabled' => false),
-        'legend' => array('enabled' => false)
+        'legend' => array('enabled' => false),
+        'chart' => array('style' => array('fontFamily'=> 'Roboto,Helvetica,Arial,sans-serif'))
     );
 
     /**
@@ -106,6 +117,19 @@ class Report {
         $this->to = $app->getRequest()->getQuery('to', '');
         $this->command = $app->db->createCommand();
         $this->surgeon = $app->user->id;
+    }
+
+    /**
+     * @return array|CDbDataReader|mixed
+     */
+    protected function getExaminationEvent()
+    {
+        if(!$this->examinationEvent){
+            $this->examinationEvent = $this->command->select('id')->from('event_type')->where('`name` = "Examination"')->queryRow();
+            $this->command->reset();
+        }
+
+        return $this->examinationEvent;
     }
 
     /**
