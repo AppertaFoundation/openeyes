@@ -14,10 +14,12 @@
         </div>
         <?php
     } else {
-        $data = OphInBiometry_Calculation_Formula::Model()->findAllByAttributes(
-            array(
-                'id' => $this->selectionValues[0]->{"formula_id_$side"},
-            ));
+		if($this->selectionValues){
+			$data = OphInBiometry_Calculation_Formula::Model()->findAllByAttributes(
+				array(
+					'id' => $this->selectionValues[0]->{"formula_id_$side"},
+				));
+		}
         ?>
         <div class="row data-row">
             <div class="large-6 column">
@@ -36,7 +38,7 @@
                 </div>
             </div>
             <div class="large-6 column">
-                <div class="field-info"><?php  foreach ($data as $k => $v) { echo $v->{"name"}; break; }?>&nbsp;</div>
+                <div class="field-info"><?php  if(isset($data)){foreach ($data as $k => $v) { echo $v->{"name"}; break; }}?>&nbsp;</div>
             </div>
         </div>
         <div class="row field-row">
