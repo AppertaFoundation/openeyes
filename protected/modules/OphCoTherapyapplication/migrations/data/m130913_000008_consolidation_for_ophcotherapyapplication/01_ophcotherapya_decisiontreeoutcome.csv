@@ -1,0 +1,3 @@
+id,name,outcome_type,last_modified_user_id,last_modified_date,created_user_id,created_date
+1,"Compliant","COMP",1,"1901-01-01 00:00:00",1,"1901-01-01 00:00:00"
+2,"Non-Compliant","NCOM",1,"1901-01-01 00:00:00",1,"1901-01-01 00:00:00"

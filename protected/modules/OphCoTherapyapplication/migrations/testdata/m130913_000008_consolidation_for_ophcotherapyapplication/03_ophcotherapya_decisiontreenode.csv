@@ -1,0 +1,61 @@
+id,decisiontree_id => ophcotherapya_decisiontree.name,parent_id,question,outcome_id => ophcotherapya_decisiontreeoutcome.name,default_function,default_value,response_type_id => ophcotherapya_decisiontreenode_responsetype.label
+1,"Non-compliant",NULL,"","Non-Compliant","","",NULL
+2,"Lucentis",NULL,"Patient has CNV?",NULL,"","","yes/no"
+3,"Lucentis",2,"CNV Secondary to AMD?",NULL,"","","yes/no"
+4,"Lucentis",3,"Visual Acuity",NULL,"bestVisualAcuityForEye","","Visual Acuity"
+5,"Lucentis",4,"Foveal Damage?",NULL,"","","yes/no"
+6,"Lucentis",5,"Recent progression?",NULL,"","","yes/no"
+7,"Lucentis",6,"CNV size <=12?",NULL,"","","yes/no"
+8,"Lucentis",7,"","Compliant","","",NULL
+9,"Lucentis",7,"","Non-Compliant","","",NULL
+10,"Lucentis",6,"","Non-Compliant","","",NULL
+11,"Lucentis",5,"","Non-Compliant","","",NULL
+12,"Lucentis",4,"","Non-Compliant","","",NULL
+13,"Lucentis",3,"","Non-Compliant","","",NULL
+14,"Lucentis",2,"Patient has Macular oedema?",NULL,"","","yes/no"
+15,"Lucentis",14,"Diabetic macular oedema?",NULL,"","","yes/no"
+16,"Lucentis",15,"CRT >=400?",NULL,"","","yes/no"
+17,"Lucentis",16,"","Non-Compliant","","",NULL
+18,"Lucentis",16,"","Compliant","","",NULL
+19,"Lucentis",15,"Retinal vein occlusion?",NULL,"","","yes/no"
+20,"Lucentis",19,"CRVO?",NULL,"","","yes/no"
+21,"Lucentis",20,"","Compliant","","",NULL
+22,"Lucentis",20,"BRVO?",NULL,"","","yes/no"
+23,"Lucentis",22,"Previously received Ozurdex treatment?",NULL,"","","yes/no"
+24,"Lucentis",23,"","Compliant","","",NULL
+25,"Lucentis",23,"Suitable for Laser photocoagulation?",NULL,"","","yes/no"
+26,"Lucentis",25,"","Compliant","","",NULL
+27,"Lucentis",25,"Was it beneficial?",NULL,"","","yes/no"
+28,"Lucentis",27,"","Compliant","","",NULL
+29,"Lucentis",27,"","Non-Compliant","","",NULL
+30,"Lucentis",22,"","Non-Compliant","","",NULL
+31,"Lucentis",19,"","Non-Compliant","","",NULL
+32,"Lucentis",14,"","Non-Compliant","","",NULL
+33,"PDT",NULL,"Patient has CNV?",NULL,"","","yes/no"
+34,"PDT",33,"Secondary to AMD",NULL,"","","yes/no"
+35,"PDT",34,"Visual Acuity",NULL,"","","Visual Acuity"
+36,"PDT",35,"","Non-Compliant","","",NULL
+37,"PDT",35,"CNV is classic/predominant classic?",NULL,"","","yes/no"
+38,"PDT",37,"Foveal Damage?",NULL,"","","yes/no"
+39,"PDT",38,"Recent progression?",NULL,"","","yes/no"
+40,"PDT",39,"CNV size <=12?",NULL,"","","yes/no"
+41,"PDT",40,"","Compliant","","",NULL
+42,"PDT",40,"","Non-Compliant","","",NULL
+43,"PDT",39,"","Non-Compliant","","",NULL
+44,"PDT",38,"","Non-Compliant","","",NULL
+45,"PDT",37,"","Non-Compliant","","",NULL
+46,"PDT",34,"","Non-Compliant","","",NULL
+47,"PDT",33,"","Non-Compliant","","",NULL
+48,"Ozurdex",NULL,"Patient has Venous occlusion?",NULL,"","","yes/no"
+49,"Ozurdex",48,"CRVO?",NULL,"","","yes/no"
+50,"Ozurdex",49,"","Compliant","","",NULL
+51,"Ozurdex",49,"BRVO?",NULL,"","","yes/no"
+52,"Ozurdex",51,"Previously received Ozurdex treatment?",NULL,"","","yes/no"
+53,"Ozurdex",52,"","Compliant","","",NULL
+54,"Ozurdex",52,"Suitable for Laser photocoagulation?",NULL,"","","yes/no"
+55,"Ozurdex",54,"","Compliant","","",NULL
+56,"Ozurdex",54,"Was it beneficial?",NULL,"","","yes/no"
+57,"Ozurdex",56,"","Compliant","","",NULL
+58,"Ozurdex",56,"","Non-Compliant","","",NULL
+59,"Ozurdex",51,"","Non-Compliant","","",NULL
+60,"Ozurdex",48,"","Non-Compliant","","",NULL

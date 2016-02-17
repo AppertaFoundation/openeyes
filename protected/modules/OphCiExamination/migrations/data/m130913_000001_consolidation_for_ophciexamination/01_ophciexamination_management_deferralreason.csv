@@ -1,0 +1,6 @@
+id,name,display_order,other
+1,"Cataract",1,0
+2,"Retinal detachment",2,0
+3,"Vitreous haemorrhage",3,0
+4,"Patient choice",4,0
+5,"Other",5,1

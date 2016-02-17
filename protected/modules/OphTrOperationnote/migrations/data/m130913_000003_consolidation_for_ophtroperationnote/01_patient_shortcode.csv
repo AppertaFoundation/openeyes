@@ -1,0 +1,3 @@
+event_type_id => event_type.class_name ,default_code,code,method,description
+OphTrOperationnote,"opr","opr","getLetterProcedures","Operations carried out"
+OphTrOperationnote,"ops","ops","getLetterProceduresSNOMED","Operations carried out with SNOMED terms"

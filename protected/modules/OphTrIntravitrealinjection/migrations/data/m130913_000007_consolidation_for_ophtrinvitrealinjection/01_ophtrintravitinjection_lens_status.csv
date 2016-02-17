@@ -1,0 +1,4 @@
+id,name,display_order,default_distance
+1,"Phakic",1,4.0
+2,"Aphakic",2,3.5
+3,"Pseudophakic",3,3.5

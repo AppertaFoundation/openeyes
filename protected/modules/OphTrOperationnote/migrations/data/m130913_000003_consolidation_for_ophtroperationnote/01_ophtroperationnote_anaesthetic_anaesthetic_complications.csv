@@ -1,0 +1,11 @@
+id,name,display_order
+1,"Eyelid haemorrage/bruising",1
+2,"Conjunctivital chemosis",2
+3,"Retro bulbar / peribulbar haemorrage",3
+4,"Globe/optic nerve penetration",4
+5,"Inadequate akinesia",5
+6,"Patient pain - Mild",6
+7,"Patient pain - Moderate",7
+8,"Patient pain - Severe",8
+9,"Systemic problems",9
+10,"Operation cancelled due to complication",10

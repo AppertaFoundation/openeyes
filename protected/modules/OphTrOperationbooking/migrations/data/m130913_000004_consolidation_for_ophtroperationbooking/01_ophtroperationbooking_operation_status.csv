@@ -1,0 +1,7 @@
+id,name
+1,"Requires scheduling"
+2,"Scheduled"
+3,"Requires rescheduling"
+4,"Rescheduled"
+5,"Cancelled"
+6,"Completed"

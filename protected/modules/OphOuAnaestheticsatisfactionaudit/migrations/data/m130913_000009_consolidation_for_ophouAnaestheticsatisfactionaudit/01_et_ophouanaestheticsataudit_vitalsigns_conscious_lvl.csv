@@ -1,0 +1,5 @@
+id,name,display_order,score,last_modified_user_id,last_modified_date,created_user_id,created_date
+2,"Alert",2,0,1,"1901-01-01 00:00:00",1,"1901-01-01 00:00:00"
+3,"Responds to VERBAL commands",3,1,1,"1901-01-01 00:00:00",1,"1901-01-01 00:00:00"
+4,"Responds to PAIN",4,2,1,"1901-01-01 00:00:00",1,"1901-01-01 00:00:00"
+5,"Unresponsive",5,3,1,"1901-01-01 00:00:00",1,"1901-01-01 00:00:00"

@@ -1,0 +1,6 @@
+id,name,other,display_order
+1,Haemorrhage,0,1
+2,Endothelial damage,0,2
+3,Iris damage,0,3
+4,Lens damage,0,4
+5,Other,1,5

@@ -1,0 +1,7 @@
+id,letter_string_group_id,name,body,display_order,site_id,event_type,element_type
+1,2,"Visual acuity","The best corrected visual acuity was [vbb]",10,1,"OphCiExamination","Element_OphCiExamination_VisualAcuity"
+2,2,"Anterior segment","Anterior segment examination showed [asr] on the right and [asl] on the left",20,1,"OphCiExamination","Element_OphCiExamination_AnteriorSegment"
+3,2,"Intraocular pressure","The intraocular pressure is [ipb]",30,1,"OphCiExamination","Element_OphCiExamination_IntraocularPressure"
+4,2,"Posterior segment","Posterior segment examination showed [psr] on the right and [psl] on the left",40,1,"OphCiExamination","Element_OphCiExamination_PosteriorSegment"
+5,2,"Adnexal comorbidity","Adnexal Comorbidity was [add] on the right and [adl] on the left",15,1,"OphCiExamination","Element_OphCiExamination_AdnexalComorbidity"
+6,2,"History","[pro] gave a history of [hpc]",5,1,"OphCiExamination","Element_OphCiExamination_History"

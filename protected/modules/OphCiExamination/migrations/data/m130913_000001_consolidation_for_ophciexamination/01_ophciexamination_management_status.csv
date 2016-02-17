@@ -1,0 +1,5 @@
+id,name,display_order,deferred,book,event
+1,"Not Required",1,0,0,0
+2,"Deferred",2,1,0,0
+3,"Booked for a future date",3,0,1,0
+4,"Performed today",4,0,0,1

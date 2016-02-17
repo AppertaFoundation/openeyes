@@ -1,0 +1,31 @@
+Release History
+===============
+
+This document is intended to summarise the changes made for each release. It should be noted that this document was only introduced with version 1.4, and therefore doesn't cover earlier releases.
+
+1.7.0
+-----
++ compatibility with 1.7 core
+
+1.6.0
+-----
++ Asset refactoring
++ Rationalise db character set and collation
++ Rename wrongly named tables
+
+1.5.1
+-----
++ Support event locking and delete reason/request
+
+1.5.0
+-----
++ Consolidated migrations
++ Removed Moorfields specific data
++ Refactored views to match core
+
+1.4.1
+-----
++ comment field formatting
+ 
+1.4
+---

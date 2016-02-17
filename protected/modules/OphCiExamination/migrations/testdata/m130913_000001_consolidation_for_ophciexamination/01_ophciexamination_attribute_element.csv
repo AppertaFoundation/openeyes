@@ -1,0 +1,10 @@
+id,attribute_id,element_type_id => element_type.class_name
+1,1,"Element_OphCiExamination_History"
+2,2,"Element_OphCiExamination_History"
+3,3,"Element_OphCiExamination_History"
+4,4,"Element_OphCiExamination_History"
+5,5,"Element_OphCiExamination_History"
+6,7,"Element_OphCiExamination_Investigation"
+7,8,"Element_OphCiExamination_Conclusion"
+8,9,"Element_OphCiExamination_AdnexalComorbidity"
+9,10,"Element_OphCiExamination_CataractManagement"

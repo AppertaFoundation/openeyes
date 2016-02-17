@@ -1,0 +1,16 @@
+id,name,display_order
+1,"Angina",10
+2,"Asthma",20
+3,"Blood Loss",30
+4,"Cardiac Surgery",40
+5,"CVA",50
+6,"FOH",60
+7,"Hyperopia",70
+8,"Hypotension",80
+9,"Myopia",90
+10,"Migraine",100
+11,"Raynaud's",110
+12,"SOB",120
+13,"Ethnicity",55
+14,"Other",9999
+15,"Refractive Surgery",115

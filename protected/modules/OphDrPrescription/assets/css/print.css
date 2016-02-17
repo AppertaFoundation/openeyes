@@ -1,0 +1,135 @@
+/**
+ * OpenEyes
+*
+* (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+* (C) OpenEyes Foundation, 2011-2013
+* This file is part of OpenEyes.
+* OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+* OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+*
+* @package OpenEyes
+* @link http://www.openeyes.org.uk
+* @author OpenEyes <info@openeyes.org.uk>
+* @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+* @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+* @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+*/
+
+h1 {
+	font-size: 1.5em;
+	margin: 10px 0;
+	vertical-align: bottom;
+	margin-top: 3em;
+	float: left;
+}
+
+h2 {
+	font-size: 1.2em;
+	margin: 10px 0 5px;
+}
+
+table {
+	margin: 10px 0;
+	width: 100%;
+}
+
+.banner {
+	position: relative;
+}
+
+tr.handWritten td {
+	height: 30px;
+}
+
+.banner {
+	height: 100px;
+}
+
+.banner .letter-seal {
+	width: 50% !important;
+	display: inline-block;
+}
+
+.banner .letter-seal img {
+	width: 80px !important;
+}
+
+.banner .ophdrprescription-letter-logo {
+	width: 49%;
+	display: inline-block;
+}
+
+.banner .ophdrprescription-letter-logo img {
+	width: 350px;
+}
+
+.print-form-div {
+	padding: 30px;
+	page-break-after: always;
+}
+
+h2 {
+	font-size: 1.2em;
+	line-height: 1em;
+}
+
+td, th {
+	border: 2px #ccc solid;
+	padding: 5px !important;
+}
+
+.prescription_header th {
+	width: 20%;
+}
+
+.prescription_header td {
+	width: 30%;
+}
+.prescription_items td,
+.prescription_items th {
+	width: 12%;
+}
+
+.prescription_items .prescriptionLabel {
+	width: 28%;
+}
+
+.prescription_items .prescriptionTaper td.prescriptionLabel {
+	text-align: right;
+}
+.pharmacy_checkboxes th {
+	width: 30%;
+}
+
+.pharmacy_checkboxes td {
+	width: 20%;
+}
+.done_bys th {
+	width: 22%;
+}
+
+.done_bys td	{
+	width: 28%;
+}
+
+tr.handWritten td {
+	height: 30px;
+}
+
+.from-address {
+	float: right;
+	width: 300px;
+	text-align: right;
+}
+
+.watermark {
+	position: relative;
+}
+
+.watermark img {
+	position: absolute;
+	z-index: -1;
+	top: 120px;
+	left: 60px;
+}
