@@ -354,6 +354,9 @@ function pcrCalculate( side ){
     $('#ophCiExaminationPCRRiskEyeLabel').find('a').css('color', pcrColor);
     $('#ophCiExaminationPCRRiskEyeLabel').find('.pcr-span1').html(pcrRisk);
     //$('#ophCiExaminationPCRRisk'+side+'EyeLabel').find('.pcr-span1').css('color', pcrColor);
+    if(pcrRisk !== 'N/A'){
+        $('#Element_OphTrOperationnote_Cataract_pcr_risk').val(pcrRisk);
+    }
 }
 
 $(document).ready(function()

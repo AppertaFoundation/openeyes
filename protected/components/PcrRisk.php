@@ -101,7 +101,7 @@ class PcrRisk
 
         $pcr['anteriorsegment'] = $this->getPatientAnteriorSegment($patientId, $side, $pcrRiskValues);
         $pcr['doctor_grade_id'] = $doctor_grade_id;
-        $pcr['axial_length_group'] = ($this->getAxialLength($patientId, $side)) ? $this->getAxialLength($patientId, $side) : $pcrRiskValues->axial_length_group;
+        $pcr['axial_length_group'] = ($this->getAxialLength($patientId, $side) !== 'N') ? $this->getAxialLength($patientId, $side) : $pcrRiskValues->axial_length_group;
         $pcr['arb'] = $pcrRiskValues->alpha_receptor_blocker;
         return $pcr;
     }
