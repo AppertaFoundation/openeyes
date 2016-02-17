@@ -224,10 +224,6 @@ $(document).ready(function() {
 
 	updateIolRefRow('left');
 	updateIolRefRow('right');
-
-	//updateCloset('left');
-	//updateCloset('right');
-
 });
 
 function update(side)
