@@ -160,3 +160,6 @@ tr:hover,tr.even:hover, tr:nth-of-type(even):hover, tr.alt.hover {
 .ui-dialog-titlebar-close {
   visibility: hidden;
 }
+.closet{
+  font-weight: bold;
+}

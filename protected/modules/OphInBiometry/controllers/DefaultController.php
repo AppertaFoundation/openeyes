@@ -6,6 +6,7 @@ class DefaultController extends BaseEventTypeController
 	public $is_auto=0;
 	public $iolRefValues = array();
 	public $selectionValues = array();
+	public $calculationValues = array();
 	public $quality=0;
 	public $checkalqual=array();
 	const BADCOMSNRLIMIT = 10;
@@ -239,6 +240,10 @@ class DefaultController extends BaseEventTypeController
 					'event_id' => $this->event->id,
 				));
 			$this->selectionValues  = Element_OphInBiometry_Selection::Model()->findAllByAttributes(
+				array(
+					'event_id' => $this->event->id,
+				));
+			$this->calculationValues  = Element_OphInBiometry_Calculation::Model()->findAllByAttributes(
 				array(
 					'event_id' => $this->event->id,
 				));
