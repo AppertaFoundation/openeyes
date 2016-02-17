@@ -157,3 +157,6 @@ tr:hover,tr.even:hover, tr:nth-of-type(even):hover, tr.alt.hover {
   background-color: #dddddd;
   width: 1025px;
 }
+.closest{
+  font-weight: bold;
+}

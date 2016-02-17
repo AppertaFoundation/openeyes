@@ -220,20 +220,21 @@
                                     $iolData = $this->orderIOLData(json_decode($value, true));
                                     $divid = $side . '_' . $k . '_' . $key;
                                     $found = 0;
-                                    $closet = $this->getClosest($emmetropiadata['left'][$k][$key],$iolData['IOL']);
+                                   // $closet = $this->getClosest($emmetropiadata['left'][$k][$key],$iolData['IOL']);
+                                    $closest = $this->getClosest($this->calculationValues[0]->{"target_refraction_left"},$iolData['REF']);
                                     echo '<table id=' . $divid . '><tr><th>#</th> <th>IOL</th><th>REF</th>';
                                     for ($j = 0; $j < count($iolData['IOL']); $j++) {
                                         $radid = $side . '_' . $k . '_' . $key . '__' . $j;
                                         if (($this->selectionValues[0]->{"predicted_refraction_left"} == $iolData["REF"][$j]) && ($this->selectionValues[0]->{"iol_power_left"} == $iolData["IOL"][$j])) {
                                             $found = 1;
-                                            if($iolData["IOL"][$j] == $closet ) {
-                                                echo "<tr  class='highlighted closet' id='iolreftr-$radid'><td><input type='radio' checked  id='iolrefrad-$radid' name='iolrefval_left'></td><td>" . number_format((float)$iolData["IOL"][$j], 2, '.', '') . "</td><td>" . $iolData["REF"][$j] . "</td></tr>";
+                                            if($iolData["REF"][$j] == $closest ) {
+                                                echo "<tr  class='highlighted closest' id='iolreftr-$radid'><td><input type='radio' checked  id='iolrefrad-$radid' name='iolrefval_left'></td><td>" . number_format((float)$iolData["IOL"][$j], 2, '.', '') . "</td><td>" . $iolData["REF"][$j] . "</td></tr>";
                                             } else {
                                                 echo "<tr  class='highlighted' id='iolreftr-$radid'><td><input type='radio' checked  id='iolrefrad-$radid' name='iolrefval_left'></td><td>" . number_format((float)$iolData["IOL"][$j], 2, '.', '') . "</td><td>" . $iolData["REF"][$j] . "</td></tr>";
                                             }
                                         } else {
-                                            if($iolData["IOL"][$j] == $closet ) {
-                                                echo "<tr class='closet' id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_left'></td><td>" . number_format((float)$iolData["IOL"][$j], 2, '.', '') . "</td><td>" . $iolData["REF"][$j] . "</td></tr>";
+                                            if($iolData["REF"][$j] == $closest ) {
+                                                echo "<tr class='closest' id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_left'></td><td>" . number_format((float)$iolData["IOL"][$j], 2, '.', '') . "</td><td>" . $iolData["REF"][$j] . "</td></tr>";
                                             } else {
                                                 echo "<tr id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_left'></td><td>" . number_format((float)$iolData["IOL"][$j], 2, '.', '') . "</td><td>" . $iolData["REF"][$j] . "</td></tr>";
                                             }
@@ -254,20 +255,21 @@
                                     $iolData = $this->orderIOLData(json_decode($value, true));
                                     $divid = $side . '_' . $k . '_' . $key;
                                     $found = 0;
-                                    $closet = $this->getClosest($emmetropiadata['right'][$k][$key],$iolData['IOL']);
+                                    //$closet = $this->getClosest($emmetropiadata['right'][$k][$key],$iolData['IOL']);
+                                    $closest = $this->getClosest($this->calculationValues[0]->{"target_refraction_right"},$iolData['REF']);
                                     echo '<table id=' . $divid . '><tr><th>#</th> <th>IOL</th><th>REF</th>';
                                     for ($j = 0; $j < count($iolData['IOL']); $j++) {
                                         $radid = $side . '_' . $k . '_' . $key . '__' . $j;
                                         if (($this->selectionValues[0]->{"predicted_refraction_right"} == $iolData["REF"][$j]) && ($this->selectionValues[0]->{"iol_power_right"} == $iolData["IOL"][$j])) {
                                             $found = 1;
-                                            if($iolData["IOL"][$j] == $closet ) {
-                                                echo "<tr class='highlighted closet' id='iolreftr-$radid'><td><input type='radio' checked id='iolrefrad-$radid' name='iolrefval_right'></td><td>" . number_format((float)$iolData["IOL"][$j], 2, '.', '') . "</td><td>" . $iolData["REF"][$j] . "</td></tr>";
+                                            if($iolData["REF"][$j] == $closest ) {
+                                                echo "<tr class='highlighted closest' id='iolreftr-$radid'><td><input type='radio' checked id='iolrefrad-$radid' name='iolrefval_right'></td><td>" . number_format((float)$iolData["IOL"][$j], 2, '.', '') . "</td><td>" . $iolData["REF"][$j] . "</td></tr>";
                                             }else{
                                                 echo "<tr class='highlighted' id='iolreftr-$radid'><td><input type='radio' checked id='iolrefrad-$radid' name='iolrefval_right'></td><td>" . number_format((float)$iolData["IOL"][$j], 2, '.', '') . "</td><td>" . $iolData["REF"][$j] . "</td></tr>";
                                             }
                                         } else {
-                                            if($iolData["IOL"][$j] == $closet ) {
-                                                echo "<tr class='closet' id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_right'></td><td>" . number_format((float)$iolData["IOL"][$j], 2, '.', '') . "</td><td>" . $iolData["REF"][$j] . "</td></tr>";
+                                            if($iolData["REF"][$j] == $closest ) {
+                                                echo "<tr class='closest' id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_right'></td><td>" . number_format((float)$iolData["IOL"][$j], 2, '.', '') . "</td><td>" . $iolData["REF"][$j] . "</td></tr>";
                                             } else {
                                                 echo "<tr id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_right'></td><td>" . number_format((float)$iolData["IOL"][$j], 2, '.', '') . "</td><td>" . $iolData["REF"][$j] . "</td></tr>";
                                             }

@@ -1,8 +1,33 @@
 
 $(document).ready(function() {
-
 	var show_disable_manual_warning = false;
 	var sdmw = $('#show_disable_manual_warning').val();
+	$("#Element_OphInBiometry_Calculation_target_refraction_right").on("keyup", function() {
+		var tarref = $("#Element_OphInBiometry_Calculation_target_refraction_right" ).val();
+		if(tarref < 0){
+			if (tarref.length > 2) {
+				updateClosest ('right');
+			}
+		}else {
+			if (tarref.length > 1) {
+				updateClosest ('right');
+			}
+		}
+	});
+
+	$("#Element_OphInBiometry_Calculation_target_refraction_left").on("keyup", function() {
+		var tarref = $("#Element_OphInBiometry_Calculation_target_refraction_left" ).val();
+		if(tarref < 0){
+			if (tarref.length > 2) {
+				updateClosest ('left');
+			}
+		}else {
+			if (tarref.length > 1) {
+				updateClosest ('left');
+			}
+		}
+	});
+
 	if(sdmw ==1 ){
 		$("#event-content").hide();
 		$(".sticky-wrapper-event-header").hide();
@@ -31,6 +56,9 @@ $(document).ready(function() {
 			hide_dialog();
 		});
 	}
+
+
+
 
 	handleButton($('#et_save'),function() {
 	});
@@ -196,7 +224,6 @@ $(document).ready(function() {
 
 	updateIolRefRow('left');
 	updateIolRefRow('right');
-
 });
 
 function update(side)
@@ -340,8 +367,48 @@ function updateIolRefTable(side) {
 	}
 }
 
+function updateClosest (side) {
+		var tarref = $("#Element_OphInBiometry_Calculation_target_refraction_"+side ).val();
+		var l_id = ($('#Element_OphInBiometry_Selection_lens_id_' + side + ' option:selected').val());
+		var f_id = ($('#Element_OphInBiometry_Selection_formula_id_' + side + ' option:selected').val());
 
+		if (!isNaN(parseInt(l_id)) && !isNaN(parseInt(f_id))) {
+			var swtb = side + '_' + l_id + '_' + f_id;
+			var trstr = '#' + side + '_' + l_id + '_' + f_id + ' tr';
+			var ref = new Array();
+			$(trstr).each(function (i, el) {
+				var swref = '#refval-' + side + '_' + l_id + '_' + f_id+'__'+i;
+				var refval = $(swref).val();
+				if(!isNaN(refval))
+				{
+					ref.push(refval);
+				}
+				var oldclosest = '#iolreftr-'+side+'_'+l_id + '_' + f_id+'__'+i;
+				$(oldclosest).removeClass("closest");
+			});
+			var closest = closestNew(ref,tarref );
+			var trstr1 = '#' + side + '_' + l_id + '_' + f_id+ ' tr';
+			$(trstr1).each(function(i,el) {
+				var swref1 = '#refval-' + side + '_' + l_id + '_' + f_id+'__'+i;
+				var refval1 = $(swref1).val();
+				if(parseFloat(closest) == parseFloat(refval1) )
+				{
+					var newclosest = '#iolreftr-'+side+'_'+l_id + '_' + f_id+'__'+i;
+					$(newclosest).addClass("closest");
+				}
+			});
+		}
+}
 
+function closestNew(theArray, closestTo) {
+	var closest = null;
+	$.each(theArray, function () {
+		if (closest == null || Math.abs(this - closestTo) < Math.abs(closest - closestTo)) {
+			closest = this;
+		}
+	});
+	return closest;
+}
 
 function updateIolData(index,side) {
 
