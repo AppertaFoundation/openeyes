@@ -383,29 +383,21 @@ function updateClosest (side) {
 				{
 					ref.push(refval);
 				}
-				var oldcloset = '#iolreftr-'+side+'_'+l_id + '_' + f_id+'__'+i;
-				$(oldcloset).removeClass("closet");
+				var oldclosest = '#iolreftr-'+side+'_'+l_id + '_' + f_id+'__'+i;
+				$(oldclosest).removeClass("closest");
 			});
-			var closet = closestNew(ref,tarref );
+			var closest = closestNew(ref,tarref );
 			var trstr1 = '#' + side + '_' + l_id + '_' + f_id+ ' tr';
 			$(trstr1).each(function(i,el) {
 				var swref1 = '#refval-' + side + '_' + l_id + '_' + f_id+'__'+i;
 				var refval1 = $(swref1).val();
-				if(parseFloat(closet) == parseFloat(refval1) )
+				if(parseFloat(closest) == parseFloat(refval1) )
 				{
-					var newcooset = '#iolreftr-'+side+'_'+l_id + '_' + f_id+'__'+i;
-					$(newcooset).addClass("closet");
+					var newclosest = '#iolreftr-'+side+'_'+l_id + '_' + f_id+'__'+i;
+					$(newclosest).addClass("closest");
 				}
 			});
 		}
-}
-
-function closest(arr, closestTo){
-	var closest1 = Math.max.apply(null, arr);
-	for(var i = 0; i < arr.length; i++){
-		if(arr[i] >= closestTo && arr[i] < closes1) closest1 = arr[i];
-	}
-	return closest1;
 }
 
 function closestNew(theArray, closestTo) {
