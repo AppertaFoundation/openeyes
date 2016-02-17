@@ -16,7 +16,7 @@ DROP PROCEDURE IF EXISTS get_surgeons;
 CREATE DEFINER=`root`@`localhost` PROCEDURE get_surgeons(IN dir VARCHAR(255))
 BEGIN
 SET @time_now = UNIX_TIMESTAMP(NOW());
-SET @file = CONCAT( dir, '/surgeons_', @time_now, '.csv');
+SET @file = CONCAT(dir, '/surgeons_', @time_now, '.csv');
 SET @cmd = CONCAT("(SELECT 'id','registration code','title', 'first name')
 		UNION (SELECT id, IFNULL(registration_code, 'NULL'), IFNULL(title, 'NULL'), IFNULL(first_name, 'NULL') FROM user INTO OUTFILE '",@file,
 		"' FIELDS ENCLOSED BY '\"' TERMINATED BY ';'",
@@ -38,7 +38,7 @@ UPDATE temp_patients SET gender = (SELECT CASE WHEN gender='F' THEN 2 WHEN gende
 
 #TODO: Add IMDScore and IsPrivate fields & confirm output type for ethnicity
 
-SET @file = CONCAT( dir,'/ patients_', @time_now, '.csv');
+SET @file = CONCAT(dir, '/patients_', @time_now, '.csv');
 SET @cmd = CONCAT("(SELECT 'id','gender','ethnic_group_id', 'dob', 'date of death')
 		  UNION (SELECT id, IFNULL(gender, 'NULL'), IFNULL(ethnic_group_id, 'NULL'), IFNULL(dob, 'NULL'), IFNULL(date_of_death, 'NULL') FROM temp_patients INTO OUTFILE '",@file,
 		  "' FIELDS ENCLOSED BY '\"' TERMINATED BY ';'",
@@ -81,7 +81,7 @@ DROP PROCEDURE IF EXISTS get_nod_episodes;
 CREATE DEFINER=`root`@`localhost` PROCEDURE get_nod_episodes(IN dir VARCHAR(255))
 BEGIN
 SET @time_now = UNIX_TIMESTAMP(NOW());
-SET @file = CONCAT(dir,'/episodes_', @time_now, '.csv');
+SET @file = CONCAT(dir, '/episodes_', @time_now, '.csv');
 
 SET @cmd = CONCAT("(SELECT 'PatientId', 'EpisodeId', 'Date')
    UNION (SELECT patient_id, id, start_date FROM episode INTO OUTFILE '",@file,
@@ -123,7 +123,7 @@ END WHILE;
 
 #TODO: Map conditionId and DiagnosisTermId
 
-SET @file = CONCAT(dir,'/episode_diagnosis_', @time_now, '.csv');
+SET @file = CONCAT(dir, '/episode_diagnosis_', @time_now, '.csv');
 SET @cmd = CONCAT("(SELECT 'EpisodeId', 'Eye', 'Date', 'SurgeonId', 'ConditionId', 'DiagnosisTermId')
 		   UNION (SELECT id, Eye, last_modified_date, SurgeonId, ConditionId, disorder_id FROM temp_episodes_diagnosis INTO OUTFILE '", @file ,
 		   "' FIELDS ENCLOSED BY '\"' TERMINATED BY ';'",
@@ -194,7 +194,7 @@ EXECUTE update_statement;
 
 
 
-SET @file = CONCAT('/tmp/episode_diabetic_diagnosis_', @time_now, '.csv');
+SET @file = CONCAT(dir, '/episode_diabetic_diagnosis_', @time_now, '.csv');
 SET @cmd = CONCAT("(SELECT 'EpisodeId', 'IsDiabetic', 'DiabetesTypeId', 'DiabetesRegimeId', 'AgeAtDiagnosis')
   UNION (SELECT id, IsDiabetic, DiabetesTypeId, DiabetesRegimeId, AgeAtDiagnosis FROM temp_episode_diabetic_diagnosis INTO OUTFILE '", @file ,
 		  "' FIELDS ENCLOSED BY '\"' TERMINATED BY ';'",
@@ -213,7 +213,7 @@ DROP PROCEDURE IF EXISTS get_episode_drug;
 CREATE DEFINER=`root`@`localhost` PROCEDURE get_episode_drug(IN dir VARCHAR(255))
 BEGIN
 SET @time_now = UNIX_TIMESTAMP(NOW());
-CREATE VIEW nod_episode_drug AS SELECT e.id AS EpisodeId , dr.id AS DrugRouteId,
+CREATE OR REPLACE VIEW nod_episode_drug AS SELECT e.id AS EpisodeId , dr.id AS DrugRouteId,
 						  (SELECT CASE WHEN option_id = 1 THEN 'L' WHEN option_id = 2 THEN 'R' WHEN option_id = 3 THEN 'B'  ELSE 'N' END) AS Eye,
 						  (SELECT CASE WHEN m.drug_id IS NOT NULL THEN (SELECT NAME FROM drug WHERE id = m.drug_id) WHEN m.drug_id IS NULL THEN ''
 								  WHEN m.medication_drug_id IS NOT NULL THEN (SELECT NAME FROM medication_drug WHERE id = m.drug_id) WHEN m.medication_drug_id IS NULL THEN '' END) AS DrugId,
@@ -231,8 +231,8 @@ LEFT JOIN event_type evt ON evt.id = ev.event_type_id
 LEFT JOIN et_ophdrprescription_details etp ON etp.event_id = ev.id
 LEFT JOIN ophdrprescription_item opi ON etp.id = opi.prescription_id
 GROUP BY episode_id;
-
-SET @file = CONCAT('/tmp/episode_drug_', @time_now, '.csv');
+                        
+SET @file = CONCAT(dir, '/episode_drug_', @time_now, '.csv');
 SET @cmd = CONCAT("(SELECT 'EpisodeId', 'Eye', 'DrugId', 'DrugRouteId', 'StartDate', 'StopDate', 'IsAddedByPrescription', 'IsContinueIndefinitely', 'IsStartDateApprox')
 		  UNION (SELECT EpisodeId, Eye, DrugId, DrugRouteId, StartDate, StopDate, IsAddedByPrescription, IsContinueIndefinitely, IsStartDateApprox FROM nod_episode_drug INTO OUTFILE '", @file,
 		  "' FIELDS ENCLOSED BY '\"' TERMINATED BY ';'",
@@ -251,7 +251,7 @@ DROP PROCEDURE IF EXISTS get_episode_biometry;
 CREATE DEFINER=`root`@`localhost` PROCEDURE get_episode_biometry(IN dir VARCHAR(255))
 BEGIN
 SET @time_now = UNIX_TIMESTAMP(NOW());
-CREATE VIEW nod_episode_biometry AS SELECT e.id AS EpisodeId
+CREATE OR REPLACE VIEW nod_episode_biometry AS SELECT e.id AS EpisodeId
 							FROM episode e
 							LEFT JOIN `event` ev ON ev.episode_id = e.id
 							LEFT JOIN event_type et ON et.id = ev.event_type_id
@@ -266,7 +266,7 @@ DROP PROCEDURE IF EXISTS get_episode_iop;
 CREATE DEFINER=`root`@`localhost` PROCEDURE get_episode_iop(IN dir VARCHAR(255))
 BEGIN
 SET @time_now = UNIX_TIMESTAMP(NOW());
-CREATE VIEW nod_episode_iop AS SELECT e.id AS EpisodeId, oipv.reading_id,
+CREATE OR REPLACE VIEW nod_episode_iop AS SELECT e.id AS EpisodeId, oipv.reading_id,
 					   (SELECT CASE WHEN oipv.eye_id = 1 THEN 'L' WHEN oipv.eye_id = 2 THEN 'R' END) AS Eye
 					   FROM episode e
 					   JOIN `event` ev ON ev.episode_id = e.id
@@ -286,7 +286,7 @@ DROP PROCEDURE IF EXISTS get_EpisodePreOpAssessment;
 CREATE DEFINER=`root`@`localhost` PROCEDURE get_EpisodePreOpAssessment(IN dir VARCHAR(255))
 BEGIN
 SET @time_now = UNIX_TIMESTAMP(NOW());
-CREATE VIEW nod_episode_preop_assessment AS SELECT e.id AS EpisodeId,
+CREATE OR REPLACE VIEW nod_episode_preop_assessment AS SELECT e.id AS EpisodeId,
 									(SELECT CASE WHEN pl.eye_id = 1 THEN 'L' WHEN pl.eye_id = 2 THEN 'R' WHEN pl.eye_id = 3 THEN 'B' END) AS Eye,
 									(SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 1 THEN 1 ELSE 0 END) AS IsAbleToLieFlat,
 									(SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 4 THEN 1 ELSE 0 END) AS IsInabilityToCooperate
@@ -296,7 +296,7 @@ CREATE VIEW nod_episode_preop_assessment AS SELECT e.id AS EpisodeId,
 									LEFT JOIN patient_risk_assignment pr ON pr.patient_id = e.patient_id
 									GROUP BY e.id;
 
-SET @file = CONCAT('/tmp/episode_preop_assessment_', @time_now, '.csv');
+SET @file = CONCAT(dir, '/episode_preop_assessment_', @time_now, '.csv');
 SET @cmd = CONCAT("(SELECT 'EpisodeId', 'Eye', 'IsAbleToLieFlat', 'IsInabilityToCooperate')
 	UNION (SELECT EpisodeId, Eye, IsAbleToLieFlat, IsInabilityToCooperate FROM nod_episode_preop_assessment INTO OUTFILE '", @file,
 	"' FIELDS ENCLOSED BY '\"' TERMINATED BY ';'",
@@ -315,7 +315,7 @@ DROP PROCEDURE IF EXISTS get_episode_refraction;
 CREATE DEFINER=`root`@`localhost` PROCEDURE get_episode_refraction(IN dir VARCHAR(255))
 BEGIN
 SET @time_now = UNIX_TIMESTAMP(NOW());
-CREATE VIEW nod_episode_refraction AS (SELECT e.episode_id AS EpisodeId, r.left_sphere AS Sphere, r.left_cylinder AS Cylinder, r.left_axis AS Axis, '' AS RefractionTypeId, '' AS ReadingAdd,
+CREATE OR REPLACE VIEW nod_episode_refraction AS (SELECT e.episode_id AS EpisodeId, r.left_sphere AS Sphere, r.left_cylinder AS Cylinder, r.left_axis AS Axis, '' AS RefractionTypeId, '' AS ReadingAdd,
 							  (SELECT CASE WHEN r.eye_id = 1 THEN 'L' END) AS Eye
 							  FROM `event` e
 							  INNER JOIN et_ophciexamination_refraction r ON r.event_id = e.id
@@ -328,7 +328,7 @@ CREATE VIEW nod_episode_refraction AS (SELECT e.episode_id AS EpisodeId, r.left_
 							  WHERE r.eye_id = 2);
 
 
-SET @file = CONCAT('/tmp/episode_refraction_', @time_now, '.csv');
+SET @file = CONCAT(dir, '/episode_refraction_', @time_now, '.csv');
 SET @cmd = CONCAT("(SELECT 'EpisodeId', 'Eye', 'RefractionTypeId', 'Sphere', 'Cylinder', 'Axis', 'ReadingAdd')
 		  UNION (SELECT EpisodeId, Eye, RefractionTypeId, Sphere, Cylinder, Axis, ReadingAdd FROM  nod_episode_refraction INTO OUTFILE '", @file,
 		  "' FIELDS ENCLOSED BY '\"' TERMINATED BY ';'",
@@ -347,7 +347,7 @@ DROP PROCEDURE IF EXISTS get_episode_visual_acuity;
 CREATE DEFINER=`root`@`localhost` PROCEDURE get_episode_visual_acuity(IN dir VARCHAR(255))
 BEGIN
 SET @time_now = UNIX_TIMESTAMP(NOW());
-CREATE VIEW nod_episode_visual_acuity AS SELECT e.episode_id AS EpisodeId, v.unit_id AS NotationRecordedId,
+CREATE OR REPLACE VIEW nod_episode_visual_acuity AS SELECT e.episode_id AS EpisodeId, v.unit_id AS NotationRecordedId,
 								   (SELECT CASE WHEN v.eye_id = 1 THEN 'L' WHEN v.eye_id = 2 THEN 'R' END) AS Eye,
 								   (SELECT MAX(VALUE) FROM ophciexamination_visualacuity_reading r JOIN et_ophciexamination_visualacuity va ON va.id = r.element_id WHERE r.element_id = v.id AND va.unit_id = (SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter')) AS BestMeasure,
 								   #(SELECT value from ophciexamination_visualacuity_reading r JOIN et_ophciexamination_visualacuity va ON va.id = r.element_id WHERE r.element_id = v.id AND method_id = 1) AS Unaided,
@@ -357,7 +357,7 @@ CREATE VIEW nod_episode_visual_acuity AS SELECT e.episode_id AS EpisodeId, v.uni
 								 WHERE v.eye_id != 3;
 #TODO: Unaided, Pinhole, BestCorrected
 
-SET @file = CONCAT('/tmp/episode_visual_acuity_', @time_now, '.csv');
+SET @file = CONCAT(dir, '/episode_visual_acuity_', @time_now, '.csv');
 SET @cmd = CONCAT("(SELECT 'EpisodeId', 'Eye', 'NotationRecordedId', 'BestMeasure', 'Unaided', 'Pinhole', 'BestCorrected')
    UNION (SELECT EpisodeId, Eye, NotationRecordedId, BestMeasure, Unaided, Pinhole, BestCorrected FROM nod_episode_visual_acuity INTO OUTFILE '", @file,
    "'  FIELDS ENCLOSED BY '\"' TERMINATED BY ';'",
@@ -376,7 +376,7 @@ DROP PROCEDURE IF EXISTS get_episode_operation;
 CREATE DEFINER=`root`@`localhost` PROCEDURE get_episode_operation(IN dir VARCHAR(255))
 BEGIN
 SET @time_now = UNIX_TIMESTAMP(NOW());
-CREATE VIEW nod_episode_operation AS SELECT e.id AS OperationId, e.episode_id AS EpisodeId, /*pr.snomed_term AS Description,*/ NULL AS IsHypertensive, e.event_date AS ListedDate, s.surgeon_id AS SurgeonId
+CREATE OR REPLACE VIEW nod_episode_operation AS SELECT e.id AS OperationId, e.episode_id AS EpisodeId, /*pr.snomed_term AS Description,*/ NULL AS IsHypertensive, e.event_date AS ListedDate, s.surgeon_id AS SurgeonId
 							 FROM `event` e
 							 JOIN event_type evt ON evt.id = e.event_type_id
 							 #INNER JOIN et_ophtroperationnote_procedurelist pl ON pl.booking_event_id = e.id
@@ -432,7 +432,7 @@ CALL get_episode_operation(dir);
 #Not returning in this phase
                         
 #EpisodeTreatmentTrabeculectomy
-#Not returning in this phase                        
+#Not returning in this phase
                         
 #EpisodeTreatmentInjection
 #Not returning in this phase
