@@ -33,11 +33,16 @@ class PcrRisk
     public function getPCRData($patientId, $side, $element)
     {
         $pcr = array();
-
         $this->patient = Patient::model()->findByPk((int) $patientId);
-
-
         $patientAge = $this->patient->getAge();
+        $eye = Eye::model()->find('LOWER(name) = ?', array(strtolower($side)));
+        $pcrRiskValues = new PcrRiskValues();
+        if($eye){
+            $storedValues = PcrRiskValues::model()->findByAttributes(array('eye_id' => $eye->id, 'patient_id' => $patientId));
+            if($storedValues){
+                $pcrRiskValues = $storedValues;
+            }
+        }
 
         $ageGroup = 0;
         if ($patientAge < 60) {
@@ -54,12 +59,12 @@ class PcrRisk
 
         $gender = ucfirst($this->patient->getGenderString());
 
-        $is_diabetic = 'NK';
+        $is_diabetic = (!is_null($pcrRiskValues->diabetic)) ? $pcrRiskValues->diabetic : 'NK';
         if ($this->patient->getDiabetes()) {
             $is_diabetic = 'Y';
         }
 
-        $is_glaucoma = 'NK';
+        $is_glaucoma = (!is_null($pcrRiskValues->glaucoma)) ? $pcrRiskValues->glaucoma : 'NK';
         if (strpos($this->patient->getSdl(), 'glaucoma') !== false) {
             $is_glaucoma = 'Y';
         }
@@ -74,6 +79,10 @@ class PcrRisk
         $user_data = User::model()->findByPk($user_id);
         $doctor_grade_id = $user_data['originalAttributes']['doctor_grade_id'];
 
+        if(!$doctor_grade_id){
+            $doctor_grade_id = $pcrRiskValues->doctor_grade_id;
+        }
+
 
         $pcr['patient_id'] = $patientId;
         $pcr['side'] = $side;
@@ -81,21 +90,19 @@ class PcrRisk
         $pcr['gender'] = $gender;
         $pcr['diabetic'] = $is_diabetic;
         $pcr['glaucoma'] = $is_glaucoma;
-        $pcr['lie_flat'] = $this->getCannotLieFlat($patientId);
+        $pcr['lie_flat'] = ($this->getCannotLieFlat($patientId)) ? $this->getCannotLieFlat($patientId) : $pcrRiskValues->can_lie_flat;
 
-        $no_view = 'NK';
+        $no_view = (!is_null($pcrRiskValues->no_fundal_view)) ? $pcrRiskValues->no_fundal_view : 'NK';
         $no_view_data =  $this->getOpticDisc($patientId, $side);
         if (count($no_view_data) >= 1) {
             $no_view = 'Y';
         }
         $pcr['noview'] = $no_view;
 
-        $pcr['allod'] = $this->getOpticDisc($patientId, $side, true);
-
-        $pcr['anteriorsegment'] = $this->getPatientAnteriorSegment($patientId, $side);
+        $pcr['anteriorsegment'] = $this->getPatientAnteriorSegment($patientId, $side, $pcrRiskValues);
         $pcr['doctor_grade_id'] = $doctor_grade_id;
-        $pcr['axial_length_group'] = $this->getAxialLength($patientId, $side);
-
+        $pcr['axial_length_group'] = ($this->getAxialLength($patientId, $side)) ? $this->getAxialLength($patientId, $side) : $pcrRiskValues->axial_length_group;
+        $pcr['arb'] = $pcrRiskValues->alpha_receptor_blocker;
         return $pcr;
     }
 
@@ -188,13 +195,13 @@ class PcrRisk
      * @return mixed
      */
 
-    public function getPatientAnteriorSegment($patientId, $side)
+    public function getPatientAnteriorSegment($patientId, $side, PcrRiskValues $storedValues)
     {
-        $as['pxf_phako'] = 'NK';
+        $as['pxf_phako'] = (!is_null($storedValues->pxf))? $storedValues->pxf : 'NK';
         $as['pxe'] = null;
         $as['phakodonesis'] = null;
-        $as['pupil_size'] = "Medium";
-        $as['brunescent_white_cataract'] = 'NK';
+        $as['pupil_size'] = (!is_null($storedValues->pupil_size))? $storedValues->pupil_size : "Medium";
+        $as['brunescent_white_cataract'] = (!is_null($storedValues->brunescent_white_cataract))? $storedValues->brunescent_white_cataract : 'NK';
         $as['pxf_phako_nk'] = 0;
         $anteriorsegment = Yii::app()->db->createCommand()
             ->select('as.*')

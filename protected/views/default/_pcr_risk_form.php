@@ -182,7 +182,7 @@ $criteria = new CDbCriteria();
 			</div>
 			<div class="large-2 column">
 				<?php
-				echo CHtml::dropDownList('PcrRisk['.$side.'][arb]', 'NK',
+				echo CHtml::dropDownList('PcrRisk['.$side.'][arb]', $pcr['arb'],
 					array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
 					array('id' => 'pcrrisk_'.$side.'_arb', 'class' => 'pcrrisk_arb')
 				);
