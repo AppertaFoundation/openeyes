@@ -15,7 +15,6 @@ $(document).ready(function() {
 		}
 	});
 
-	//$( "#Element_OphInBiometry_Calculation_target_refraction_left" ).keypress(function() {
 	$("#Element_OphInBiometry_Calculation_target_refraction_left").on("keyup", function() {
 		var tarref = $("#Element_OphInBiometry_Calculation_target_refraction_left" ).val();
 		if(tarref < 0){
