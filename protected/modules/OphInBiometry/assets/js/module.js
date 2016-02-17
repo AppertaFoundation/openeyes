@@ -528,7 +528,7 @@ function isView()
 function IolConstants(side)
 {
 	if(isCreate()) {
-	this.acon=parseFloat(document.getElementById('acon_'+side).innerHTML);
+	//this.acon=parseFloat(document.getElementById('acon_'+side).innerHTML);
 	//this.sf=parseFloat(document.getElementById('sf_'+side).innerHTML);
 	}
 }
