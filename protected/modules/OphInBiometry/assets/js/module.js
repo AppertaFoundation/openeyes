@@ -6,24 +6,25 @@ $(document).ready(function() {
 		var tarref = $("#Element_OphInBiometry_Calculation_target_refraction_right" ).val();
 		if(tarref < 0){
 			if (tarref.length > 2) {
-				updateCloset('right');
+				updateClosest ('right');
 			}
 		}else {
 			if (tarref.length > 1) {
-				updateCloset('right');
+				updateClosest ('right');
 			}
 		}
 	});
 
-	$( "#Element_OphInBiometry_Calculation_target_refraction_left" ).keypress(function() {
+	//$( "#Element_OphInBiometry_Calculation_target_refraction_left" ).keypress(function() {
+	$("#Element_OphInBiometry_Calculation_target_refraction_left").on("keyup", function() {
 		var tarref = $("#Element_OphInBiometry_Calculation_target_refraction_left" ).val();
 		if(tarref < 0){
 			if (tarref.length > 2) {
-				updateCloset('left');
+				updateClosest ('left');
 			}
 		}else {
 			if (tarref.length > 1) {
-				updateCloset('left');
+				updateClosest ('left');
 			}
 		}
 	});
@@ -367,7 +368,7 @@ function updateIolRefTable(side) {
 	}
 }
 
-function updateCloset(side) {
+function updateClosest (side) {
 		var tarref = $("#Element_OphInBiometry_Calculation_target_refraction_"+side ).val();
 		var l_id = ($('#Element_OphInBiometry_Selection_lens_id_' + side + ' option:selected').val());
 		var f_id = ($('#Element_OphInBiometry_Selection_formula_id_' + side + ' option:selected').val());
