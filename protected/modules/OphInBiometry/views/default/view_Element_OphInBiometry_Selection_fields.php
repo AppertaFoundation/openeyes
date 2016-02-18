@@ -47,7 +47,7 @@
             </div>
             <div class="large-6 column">
                 <div class="field-info"
-                     id="acon_<?php echo $side ?>"><?php echo(($element->{'lens_' . $side}) ? number_format($element->{'lens_' . $side}->acon, 1) : 'None') ?></div>
+                     id="acon_<?php echo $side ?>"><?php echo(($element->{'lens_' . $side}) ? $this->formatAconst($element->{'lens_' . $side}->acon) : 'None') ?></div>
             </div>
         </div>
         <div class="row data-row">
