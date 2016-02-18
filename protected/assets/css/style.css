@@ -8330,6 +8330,7 @@ tfoot.pagination-container .pagination-view-all {
 .panel .search-examples {
   font-size: 0.8125rem;
   margin-left: 12px;
+  margin-bottom: 8px;
 }
 /* line 39, ../sass/openeyes/components/panels/_search.scss */
 .panel.search {
