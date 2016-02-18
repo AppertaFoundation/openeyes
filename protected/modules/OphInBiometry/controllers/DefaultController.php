@@ -213,14 +213,14 @@ class DefaultController extends BaseEventTypeController
 		$measurementData = $measurementValues[0];
 		if($eye == 1)
 		{
-			if (($measurementData->{'axial_length_left'})>0 && ($measurementData->{'k1_left'})>0 && ($measurementData->{'k2_left'})>0)
+			if (($measurementData->{'axial_length_left'})>0 || ($measurementData->{'k1_left'})>0 || ($measurementData->{'k2_left'})>0)
 			{
 				$available =1;
 			}
 		}
 		elseif($eye == 2)
 		{
-			if (($measurementData->{'axial_length_right'})>0 && ($measurementData->{'k1_right'})>0 && ($measurementData->{'k2_right'})>0)
+			if (($measurementData->{'axial_length_right'})>0 || ($measurementData->{'k1_right'})>0 || ($measurementData->{'k2_right'})>0)
 			{
 				$available =1;
 			}
