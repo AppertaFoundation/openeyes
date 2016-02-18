@@ -17,12 +17,25 @@
 * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 */
 
+if(file_exists('/etc/openeyes/db.conf')) {
+	$db = parse_ini_file('/etc/openeyes/db.conf');
+} else {
+	$db = array(
+		'host' => '127.0.0.1',
+		'port'	=> '=3306',
+		'dbname'	=> 'openeyes',
+		'username'	=> 'openeyes',
+		'password'	=> 'openeyes',
+	);
+}
+
+
 $config = array(
 	'components' => array(
 		'db' => array(
-			'connectionString' => 'mysql:host=127.0.0.1;port=3306;dbname=openeyes',
-			'username' => 'root',
-			'password' => '',
+			'connectionString' => "mysql:host={$db['host']};port={$db['port']};dbname={$db['dbname']}",
+			'username' => $db['username'],
+			'password' => $db['password'],
 		),
 		'session' => array(
 			'timeout' => 86400
@@ -86,23 +99,24 @@ $config = array(
 		'OphCiExamination' => array( 'class' => '\OEModule\OphCiExamination\OphCiExaminationModule', ),
 		'OphCoCorrespondence',
 		'OphCiPhasing',
-        'OphTrIntravitrealinjection',
-        'OphCoTherapyapplication',
+		'OphCoTherapyapplication',
 		'OphDrPrescription',
 		'OphOuAnaestheticsatisfactionaudit',
 		'OphTrConsent',
 		'OphTrOperationnote',
 		'OphTrOperationbooking',
+		'OphTrIntravitrealinjection',
 		'OphTrLaser',
 		'PatientTicketing' => array( 'class' => '\OEModule\PatientTicketing\PatientTicketingModule', ),
 		'OphInVisualfields',
-        'OphCoMessaging' => array( 'class' => '\OEModule\OphCoMessaging\OphCoMessagingModule', )
+		'OphInBiometry',
+		'OphCoMessaging' => array( 'class' => '\OEModule\OphCoMessaging\OphCoMessagingModule', )
 	),
 
 	'params'=>array(
 		//'pseudonymise_patient_details' => false,
 		//'ab_testing' => false,
-		'auth_source' => 'BASIC',
+		'auth_source' => 'BASIC',	// BASIC or LDAP
 		// This is used in contact page
 		'ldap_server' => 'ldap.example.com',
 		//'ldap_port' => '',
@@ -117,6 +131,8 @@ $config = array(
 		//'default_site_code' => '',
 		'specialty_sort' => array(130, 'SUP'),
 		'OphCoTherapyapplication_sender_email' => array('email@example.com' => 'Test'),
+		'event_print_method' => 'pdf',
+		'wkhtmltopdf_nice_level' => 19,
 		// flag to turn on drag and drop sorting for dashboards
 		// 'dashboard_sortable' => true
 	),
