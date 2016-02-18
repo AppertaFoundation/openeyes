@@ -1724,7 +1724,8 @@ class AdminController extends BaseAdminController
 
 		if(Yii::app()->request->isPostRequest) {
 			foreach (SettingMetadata::model()->findAll('element_type_id is null') as $metadata) {
-				if (@$_POST[$metadata->key]) {
+
+				if (@$_POST["hidden_" . $metadata->key]) {
 					if (!$setting = $metadata->getSetting($metadata->key, null, true)) {
 						$setting = new SettingInstallation;
 						$setting->key = $metadata->key;
