@@ -149,7 +149,7 @@
                                     foreach ($v as $key => $value) {
                                         if (!empty($value)) {
                                             $spanid = 'aconstant_'.$side . '_' . $k . '_' . $key;
-                                            echo '<span id='.$spanid.' class="field-value">'.$acon['left'][$k][$key].'</span>';
+                                            echo '<span id='.$spanid.' class="field-value">'.$this->formatAconst($acon['left'][$k][$key]).'</span>';
                                         }
                                     }
                                 }
@@ -161,7 +161,7 @@
                                     foreach ($v as $key => $value) {
                                         if (!empty($value)) {
                                             $spanid = 'aconstant_'.$side . '_' . $k . '_' . $key;
-                                            echo '<span id='.$spanid.' class="field-value">'.$acon['right'][$k][$key].'</span>';
+                                            echo '<span id='.$spanid.' class="field-value">'.$this->formatAconst($acon['right'][$k][$key]).'</span>';
                                         }
                                     }
                                 }
