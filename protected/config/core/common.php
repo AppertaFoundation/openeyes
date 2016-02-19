@@ -332,11 +332,11 @@ return array(
 		'hscic' => array(
 			'data' => array(
 				// to store processed zip files
-				'path' => realpath(dirname(__FILE__) . '/../..' . '/data/hscic'),
+				'path' => realpath(dirname(__FILE__) . '/../..') . '/data/hscic' ,
 
 				// to store downloaded zip files which will be processed if they are different from the already processed ones
 				// otherwise ignored and will be overwritten on then next download
-				'temp_path' => realpath(dirname(__FILE__) . '/../..' . '/data/hscic/temp')
+				'temp_path' => realpath(dirname(__FILE__) . '/../..') . '/data/hscic/temp',
 			)
 		),
 	),
