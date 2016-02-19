@@ -320,17 +320,29 @@ DROP PROCEDURE IF EXISTS get_episode_iop;
 CREATE DEFINER=`root`@`localhost` PROCEDURE get_episode_iop(IN dir VARCHAR(255))
 BEGIN
 SET @time_now = UNIX_TIMESTAMP(NOW());
-CREATE VIEW nod_episode_iop AS SELECT e.id AS EpisodeId, oipv.reading_id,
-					   (SELECT CASE WHEN oipv.eye_id = 1 THEN 'L' WHEN oipv.eye_id = 2 THEN 'R' END) AS Eye
-					   FROM episode e
-					   JOIN `event` ev ON ev.episode_id = e.id
-					   JOIN event_type et ON et.id = ev.event_type_id
-					   JOIN et_ophciexamination_intraocularpressure etoi ON etoi.event_id = ev.id
-					   JOIN ophciexamination_intraocularpressure_value oipv ON oipv.element_id = etoi.id
-					   WHERE et.name = 'Examination'
-					   GROUP BY e.id;
+SET @file = CONCAT(dir, '/episode_iop_', @time_now, '.csv');
+CREATE VIEW nod_episode_iop AS SELECT e.id AS EpisodeId,
+                               (SELECT CASE WHEN oipv.eye_id = 1 THEN 'L' WHEN oipv.eye_id = 2 THEN 'R' END) AS Eye,
+                                NULL AS TYPE,
+                                9 AS GlaucomaMedicationStatusId,
+                                oipvr.value AS VALUE
+                            FROM episode e
+                            JOIN `event` ev ON ev.episode_id = e.id
+                            JOIN event_type et ON et.id = ev.event_type_id
+                            JOIN et_ophciexamination_intraocularpressure etoi ON etoi.event_id = ev.id
+                            JOIN ophciexamination_intraocularpressure_value oipv ON oipv.element_id = etoi.id
+                            JOIN ophciexamination_intraocularpressure_reading oipvr ON oipv.`reading_id` = oipvr.id
+                            WHERE et.name = 'Examination'
+                            GROUP BY e.id;
 
-#TODO complete query after talk with Toby
+SET @cmd = CONCAT("(SELECT 'EpisodeId', 'Eye', 'Type', 'GlaucomaMedicationStatusId', 'Value')
+		  UNION (SELECT * FROM nod_episode_iop INTO OUTFILE '", @file,
+		  "' FIELDS ENCLOSED BY '\"' TERMINATED BY ';'",
+		  "  LINES TERMINATED BY '\r\n')");                        
+
+PREPARE statement FROM @cmd;
+EXECUTE statement;
+    
 DROP VIEW nod_episode_iop;
 END;
 
@@ -487,7 +499,6 @@ CREATE TABLE nod_episode_operation AS SELECT e.id AS OperationId, e.episode_id A
             WHERE evt.name = 'Operation booking';
 
 SET @file = CONCAT(dir, '/episode_operation_', @time_now, '.csv');
-#SET @cmd = ();
                         
 SET @cmd = CONCAT("
                 (SELECT 'OperationId', 'EpisodeId', 'ListedDate', 'SurgeonId', 'SurgeonGradeId')
@@ -573,6 +584,85 @@ EXECUTE statement;
 DROP TEMPORARY TABLE IF EXISTS tmp_complication_type;
 
 END;
+                        
+                        -- EpisodeOperationIndication --
+
+DROP PROCEDURE IF EXISTS get_episode_operation_indication;
+CREATE DEFINER=`root`@`localhost` PROCEDURE get_episode_operation_indication(IN dir VARCHAR(255))
+BEGIN
+SET @time_now = UNIX_TIMESTAMP(NOW());
+SET @file = CONCAT(dir, '/episode_operation_indication_', @time_now, '.csv');
+SET @cmd = CONCAT(" (SELECT 'OperationId', 'Eye', 'ComplicationTypeId' )
+                    UNION
+                    ( 
+                            SELECT pl.`event_id` AS OperationId, (SELECT CASE WHEN pl.eye_id = 1 THEN 'L' WHEN pl.eye_id = 2 THEN 'R' END) AS Eye, 
+                            (
+                                    SELECT IF(	pl.`booking_event_id`,
+                                                    d.`disorder_id`, 
+                                                    (
+                                                            SELECT disorder_id
+                                                            FROM episode
+                                                            WHERE e.`episode_id` = episode.id
+                                                    )
+                                            ) 
+                            ) AS IndicationId
+                            FROM `event` e
+                            JOIN event_type evt ON evt.id = e.event_type_id
+                            JOIN et_ophtroperationnote_procedurelist pl ON e.id = pl.event_id
+                            JOIN `et_ophtroperationbooking_diagnosis` d ON e.id = d.`event_id`
+                            WHERE evt.name = 'Operation booking'
+                        INTO OUTFILE '", @file,
+                    "' FIELDS ENCLOSED BY '\"' TERMINATED BY ';'",
+                    "  LINES TERMINATED BY '\r\n')");
+
+PREPARE statement FROM @cmd;
+EXECUTE statement;
+                        
+END;
+
+                        -- EpisodeOperationAnaesthesia --
+
+DROP PROCEDURE IF EXISTS get_episode_operation_anaesthesia;
+CREATE DEFINER=`root`@`localhost` PROCEDURE get_episode_operation_anaesthesia(IN dir VARCHAR(255))
+BEGIN
+SET @time_now = UNIX_TIMESTAMP(NOW());
+SET @file = CONCAT(dir, '/episode_operation_anaesthesia_', @time_now, '.csv');
+
+CREATE TEMPORARY TABLE tmp_anesthesia_type(
+	`code` INT(3),
+	`desc` VARCHAR(50)
+);
+
+INSERT INTO tmp_anesthesia_type(`code`, `desc`)
+VALUE
+(0, 'No anaesthesia'),
+(1, 'General anaesthesia alone'),
+(2, 'Local anaesthesia alone'),
+(3, 'General + Local anaesthesia'),
+(4, 'Topical anaesthesia alone'),
+(5, 'Topical + Local anaesthesia'),
+(9, 'Unknown');
+                        
+SET @cmd = CONCAT(" (SELECT 'OperationId', 'AnaesthesiaTypeId')
+                    UNION
+                    ( 
+                        SELECT event_id AS OperationId, 
+                        (SELECT `desc` FROM tmp_anesthesia_type WHERE at.`name` = `desc`) AS AnaesthesiaTypeId
+                        FROM et_ophtroperationnote_anaesthetic a 
+                        JOIN `anaesthetic_type` `at` ON a.`anaesthetic_type_id` = at.`id`
+                        
+                        INTO OUTFILE '", @file,
+                        "' FIELDS ENCLOSED BY '\"' TERMINATED BY ';'",
+                        "  LINES TERMINATED BY '\r\n')");
+
+PREPARE statement FROM @cmd;
+EXECUTE statement;
+    
+DROP TEMPORARY TABLE tmp_anesthesia_type;                
+END;
+                     
+                        
+                        
 
                         -- Run Export Generation --
                         
@@ -587,8 +677,10 @@ CALL get_nod_episodes(dir);
 CALL get_episodes_diagnosis(dir);
 CALL get_episode_diabetic_diagnosis(dir);
 CALL get_episode_drug(dir);
-CALL get_episode_biometry(dir);
-CALL get_episode_iop(dir);
+                        
+    CALL get_episode_biometry(dir);
+                        
+CALL get_episode_iop(dir);                        
 CALL get_EpisodePreOpAssessment(dir);
 CALL get_episode_refraction(dir);
 CALL get_episode_visual_acuity(dir);
@@ -596,10 +688,13 @@ CALL get_episode_operation(dir);
 CALL get_episode_operation_complication(dir);
    
 #EpisodeOperationIndication
+CALL get_episode_operation_indication(dir);
                         
-#EpisodeOperationCoPathology
+    #EpisodeOperationCoPathology
+
                         
 #EpisodeOperationAnaesthesia
+# Different Anaesthesia types, cannot map             
                         
 #EpisodeTreatment
                         
