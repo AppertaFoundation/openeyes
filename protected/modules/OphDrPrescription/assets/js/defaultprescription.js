@@ -311,7 +311,7 @@ $(document).ready(function() {
         var topdist = position.left+400;
         var leftdist = position.top + 500;
 
-        var dialog_msg = '<div class="ui-dialog ui-widget ui-widget-content ui-corner-all dialog" id="dialog-msg" tabindex="-1" role="dialog" aria-labelledby="ui-id-1" style="outline: 0px; z-index: 10002; height: auto; width: 600px;  position: fixed; top: 50%; left: 50%; margin-top: -80px; margin-left: -200px;">' +
+        var dialog_msg = '<div class="ui-dialog ui-widget ui-widget-content ui-corner-all dialog" id="dialog-msg" tabindex="-1" role="dialog" aria-labelledby="ui-id-1" style="outline: 0px; z-index: 10002; height: auto; width: 600px;  position: fixed; top: 50%; left: 50%; margin-top: -50px; margin-left: -200px;">' +
             '<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">' +
             '<span id="ui-id-1" class="ui-dialog-title">Confirm Prescription</span>' +
             '</div><div id="site-and-firm-dialog" class="ui-dialog-content ui-widget-content" scrolltop="0" scrollleft="0" style="display: block; width: auto; min-height: 0px; height: auto;">' +
