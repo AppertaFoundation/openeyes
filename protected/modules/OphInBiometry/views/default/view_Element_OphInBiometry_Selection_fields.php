@@ -50,8 +50,10 @@
                      id="acon_<?php echo $side ?>"><?php
                         $iolrefValues = Element_OphInBiometry_IolRefValues::model()->findAllByAttributes(array("event_id" => $element->event->id));
                         foreach($iolrefValues as $iolrefData){
-                            if($iolrefData->lens_id == $element->{'lens_' . $side}->id && $iolrefData->formula_id == $data[0]->id){
-                                echo $this->formatAconst($iolrefData->constant);
+                            if(isset($data)) {
+                                if ($iolrefData->lens_id == $element->{'lens_' . $side}->id && $iolrefData->formula_id == $data[0]->id) {
+                                    echo $this->formatAconst($iolrefData->constant);
+                                }
                             }
                         }
 
