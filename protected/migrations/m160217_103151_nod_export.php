@@ -595,7 +595,7 @@ SET @file = CONCAT(dir, '/episode_operation_indication_', @time_now, '.csv');
 SET @cmd = CONCAT(" (SELECT 'OperationId', 'Eye', 'ComplicationTypeId' )
                     UNION
                     ( 
-                            SELECT pl.`event_id` AS OperationId, (SELECT CASE WHEN pl.eye_id = 1 THEN 'L' WHEN pl.eye_id = 2 THEN 'R' END) AS Eye, 
+                            SELECT pl.`event_id` AS OperationId, (SELECT CASE WHEN pl.eye_id = 1 THEN 'L' WHEN pl.eye_id = 2 THEN 'R' END) AS Eye,
                             (
                                     SELECT IF(	pl.`booking_event_id`,
                                                     d.`disorder_id`, 
@@ -645,7 +645,7 @@ VALUE
                         
 SET @cmd = CONCAT(" (SELECT 'OperationId', 'AnaesthesiaTypeId')
                     UNION
-                    ( 
+                    (
                         SELECT event_id AS OperationId, 
                         (SELECT `desc` FROM tmp_anesthesia_type WHERE at.`name` = `desc`) AS AnaesthesiaTypeId
                         FROM et_ophtroperationnote_anaesthetic a 
@@ -660,9 +660,29 @@ EXECUTE statement;
     
 DROP TEMPORARY TABLE tmp_anesthesia_type;                
 END;
-                     
-                        
-                        
+
+                        -- EpisodeTreatment --
+
+DROP PROCEDURE IF EXISTS get_episode_treatment;
+CREATE DEFINER=`root`@`localhost` PROCEDURE get_episode_treatment(IN dir VARCHAR(255))
+BEGIN
+SET @time_now = UNIX_TIMESTAMP(NOW());
+SET @file = CONCAT(dir, '/episode_treatment_', @time_now, '.csv');
+SET @cmd = CONCAT(" (SELECT 'TreatmentId', 'OperationId', 'Eye', 'TreatmentTypeId' )
+                    UNION
+                    (SELECT pa.id AS TreatmentId, pl.`event_id` AS OperationId, (SELECT CASE WHEN pl.eye_id = 1 THEN 'L' WHEN pl.eye_id = 2 THEN 'R' END) AS Eye, 
+                           proc.`snomed_code` AS TreatmentTyeId
+                    FROM ophtroperationnote_procedurelist_procedure_assignment pa
+                    JOIN et_ophtroperationnote_procedurelist pl ON pa.`procedurelist_id` = pl.id
+                    JOIN proc ON pa.`proc_id` = proc.`id`
+                INTO OUTFILE '", @file,
+                "' FIELDS ENCLOSED BY '\"' TERMINATED BY ';'",
+                "  LINES TERMINATED BY '\r\n')");
+                    
+PREPARE statement FROM @cmd;
+EXECUTE statement;
+    
+END;
 
                         -- Run Export Generation --
                         
@@ -691,12 +711,13 @@ CALL get_episode_operation_complication(dir);
 CALL get_episode_operation_indication(dir);
                         
     #EpisodeOperationCoPathology
-
-                        
+                 
 #EpisodeOperationAnaesthesia
-# Different Anaesthesia types, cannot map             
+#Different Anaesthesia types, cannot map
+CALL get_episode_operation_anaesthesia(dir);
                         
 #EpisodeTreatment
+CALL get_episode_treatment(dir);
                         
 #EpisodeTreatmentRetinopexy
 #Not returning in this phase
