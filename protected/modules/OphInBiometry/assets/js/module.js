@@ -2,6 +2,15 @@
 $(document).ready(function() {
 	var show_disable_manual_warning = false;
 	var sdmw = $('#show_disable_manual_warning').val();
+
+	$("#Element_OphInBiometry_Measurement_k1_right, #Element_OphInBiometry_Measurement_k2_right, #Element_OphInBiometry_Measurement_k2_axis_right").on("keyup", function() {
+		calculateDeltaValues('right');
+	});
+
+	$("#Element_OphInBiometry_Measurement_k1_left, #Element_OphInBiometry_Measurement_k2_left, #Element_OphInBiometry_Measurement_k2_axis_left").on("keyup", function() {
+		calculateDeltaValues('left');
+	});
+
 	$("#Element_OphInBiometry_Calculation_target_refraction_right").on("keyup", function() {
 		var tarref = $("#Element_OphInBiometry_Calculation_target_refraction_right" ).val();
 		if(tarref < 0){
@@ -225,6 +234,11 @@ $(document).ready(function() {
 	updateIolRefRow('left');
 	updateIolRefRow('right');
 });
+
+function calculateDeltaValues(side){
+	$('#Element_OphInBiometry_Measurement_delta_k_'+side+', #input_Element_OphInBiometry_Measurement_delta_k_'+side).val($('#Element_OphInBiometry_Measurement_k2_'+side).val() - $('#Element_OphInBiometry_Measurement_k1_'+side).val());
+	$('#Element_OphInBiometry_Measurement_delta_k_axis_'+side+', #input_Element_OphInBiometry_Measurement_delta_k_axis_'+side).val($('#Element_OphInBiometry_Measurement_k2_axis_'+side).val());
+}
 
 function update(side)
 {

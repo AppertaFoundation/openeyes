@@ -46,15 +46,19 @@
                 <div class="field-info"><b>A constant</b>:</div>
             </div>
             <div class="large-6 column">
-                <div class="field-info"
-                     id="acon_<?php echo $side ?>"><?php
-                        $iolrefValues = Element_OphInBiometry_IolRefValues::model()->findAllByAttributes(array("event_id" => $element->event->id));
-                        foreach($iolrefValues as $iolrefData){
-                            if(isset($data)) {
-                                if ($iolrefData->lens_id == $element->{'lens_' . $side}->id && $iolrefData->formula_id == $data[0]->id) {
-                                    echo $this->formatAconst($iolrefData->constant);
+                <div class="field-info" id="acon_<?php echo $side ?>">
+                    <?php
+                        if($this->is_auto) {
+                            $iolrefValues = Element_OphInBiometry_IolRefValues::model()->findAllByAttributes(array("event_id" => $element->event->id));
+                            foreach ($iolrefValues as $iolrefData) {
+                                if (isset($data)) {
+                                    if ($iolrefData->lens_id == $element->{'lens_' . $side}->id && $iolrefData->formula_id == $data[0]->id) {
+                                        echo $this->formatAconst($iolrefData->constant);
+                                    }
                                 }
                             }
+                        }else{
+                            echo(($element->{'lens_' . $side}) ? $this->formatAconst($element->{'lens_' . $side}->acon) : 'None');
                         }
 
                     ?></div>
