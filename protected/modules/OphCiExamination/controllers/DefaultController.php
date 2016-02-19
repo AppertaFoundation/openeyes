@@ -274,6 +274,8 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function afterUpdateElements($event)
     {
+        $this->persistPcrRisk();
+
         if ($this->step) {
             // Advance the workflow
             if (!$assignment = models\OphCiExamination_Event_ElementSet_Assignment::model()->find('event_id = ?', array($event->id))) {
@@ -289,6 +291,11 @@ class DefaultController extends \BaseEventTypeController
                 throw new \CException('Cannot save assignment');
             }
         }
+    }
+
+    protected function afterCreateElements($event)
+    {
+        $this->persistPcrRisk();
     }
 
     public function getOptionalElements()
