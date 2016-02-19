@@ -47,7 +47,15 @@
             </div>
             <div class="large-6 column">
                 <div class="field-info"
-                     id="acon_<?php echo $side ?>"><?php echo(($element->{'lens_' . $side}) ? $this->formatAconst($element->{'lens_' . $side}->acon) : 'None') ?></div>
+                     id="acon_<?php echo $side ?>"><?php
+                        $iolrefValues = Element_OphInBiometry_IolRefValues::model()->findAllByAttributes(array("event_id" => $element->event->id));
+                        foreach($iolrefValues as $iolrefData){
+                            if($iolrefData->lens_id == $element->{'lens_' . $side}->id && $iolrefData->formula_id == $data[0]->id){
+                                echo $this->formatAconst($iolrefData->constant);
+                            }
+                        }
+
+                    ?></div>
             </div>
         </div>
         <div class="row data-row">
