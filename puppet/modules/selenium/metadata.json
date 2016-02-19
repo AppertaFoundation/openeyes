@@ -1,0 +1,51 @@
+{
+  "name": "jhoblitt-selenium",
+  "version": "1.1.0",
+  "author": "Joshua Hoblitt <jhoblitt@cpan.org>",
+  "summary": "Manages Selenium Server 2 - Standalone and Grid",
+  "license": "Apache-2.0",
+  "source": "https://github.com/jhoblitt/puppet-selenium.git",
+  "project_page": "https://github.com/jhoblitt/puppet-selenium",
+  "issues_url": "https://github.com/jhoblitt/puppet-selenium/issues",
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Scientific",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Debian",
+      "operatingsystemrelease": [
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "12.04",
+        "14.04"
+      ]
+    }
+  ],
+  "dependencies": [
+    {"name":"puppetlabs/stdlib","version_requirement":">= 4.6.0 <5.0.0"},
+    {"name":"maestrodev/wget","version_requirement":">= 1.2.2 <2.0.0"},
+    {"name":"rodjek/logrotate","version_requirement":">= 1.1.1 <2.0.0"}
+  ]
+}

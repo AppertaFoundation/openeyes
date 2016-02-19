@@ -1,0 +1,9 @@
+HOSTS:
+  centos-6.6:
+    roles:
+      - master
+    platform: el-6-x86_64
+    box: chef/centos-6.6
+    hypervisor: vagrant
+CONFIG:
+  type: foss

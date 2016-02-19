@@ -113,7 +113,7 @@
 
 		<?php
 		$form = $this->beginWidget('FormLayout', array(
-			'id'=>'add-previous_operation',
+			'id'=>'add-social_history',
 			'enableAjaxValidation'=>false,
 			'htmlOptions' => array('class'=>'form add-data'),
 			'action'=>array('patient/editSocialHistory'),

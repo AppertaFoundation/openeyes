@@ -1,0 +1,161 @@
+// * OpenEyes
+// *
+// * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+// * (C) OpenEyes Foundation, 2011-2013
+// * This file is part of OpenEyes.
+// * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+// *
+// * @package OpenEyes
+// * @link http://www.openeyes.org.uk
+// * @author OpenEyes <info@openeyes.org.uk>
+// * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+// * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+// * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+$color-black: "0,0,0";
+$select-background-color: transparent;
+$select-border-color: unquote("rgba(#{$color-black}, 0.12)") !default;
+$select-font-size: 16px;
+$select-color: unquote("rgba(#{$color-black}, 0.26)") !default;
+$select-padding: 4px;
+
+/* Style Select Field */
+select {
+  font-family: inherit;
+  background-color: transparent;
+  width: 100%;
+  padding: $select-padding 0;
+  font-size: $select-font-size;
+  color: $select-color;
+  border: none;
+  border-bottom: 1px solid $select-border-color;
+}
+
+/* Remove focus */
+select:focus {
+  outline: none}
+
+/* Use custom arrow */
+.mdl-selectfield select {appearance: none}
+.mdl-selectfield {
+  font-family: 'Roboto','Helvetica','Arial',sans-serif;
+  position: relative;
+  select:after {
+    position: absolute;
+    top: 0.75em;
+    right: 0.5em;
+    /* Styling the down arrow */
+    width: 0;
+    height: 0;
+    padding: 0;
+    content: '';
+    border-left: .25em solid transparent;
+    border-right: .25em solid transparent;
+    border-top: .375em solid $select-border-color;
+    pointer-events: none;
+  }
+}
+
+.drawer {
+  border: none;
+
+  .mdl-navigation {
+    .mdl-navigation__link {
+      display: -webkit-box !important;
+      display: -webkit-flex !important;
+      display: -ms-flexbox !important;
+      display: flex !important;
+      -webkit-box-orient: horizontal;
+      -webkit-box-direction: normal;
+      -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+      flex-direction: row;
+      -webkit-box-align: center;
+      -webkit-align-items: center;
+      -ms-flex-align: center;
+      align-items: center;
+      color: rgba(255, 255, 255, 0.56);
+      font-weight: 500;
+      &:hover {
+        background-color: #00BCD4;
+        color: #37474F;
+      }
+      i {
+        margin-right: 25px;
+      }
+    }
+  }
+}
+
+.mdl-layout--fixed-drawer>.mdl-layout__content{
+  margin-left: 0;
+}
+
+.mdl-layout--fixed-drawer.is-upgraded:not(.is-small-screen)>.mdl-layout__header {
+  margin-left: 0;
+  width: 100%;
+}
+
+
+#dash-grid{
+  .mdl-cell {
+    background-color: white;
+    height: 350px;
+    padding: 0;
+    overflow: hidden;
+  }
+  .highcharts-xaxis-labels, .highcharts-yaxis-labels {
+    text {
+      font-size: 0.8em !important;
+    }
+  }
+  .highcharts-legend {
+    display: none !important;
+  }
+}
+
+.report-container {
+  position: relative;
+  height: 100%;
+  .search-icon {
+    position: absolute;
+    right: 0;
+    top:0;
+    z-index: 1;
+    cursor: pointer;
+    &:after {
+      font-family: "Roboto","Helvetica","Arial",sans-serif;
+      font-size: 0.7em;
+      line-height: 1.5em;
+      vertical-align: top;
+      content: 'Search';
+      transition: width 1s;
+      width: 0;
+      display: inline-block;
+    }
+    &:hover:after {
+      //left: 0;
+      width: 55px;
+    }
+  }
+  div {
+    height: 100%;
+  }
+  .report-search {
+    height: 0;
+    fieldset{
+      width: 60%;
+      margin: auto;
+      div{
+        margin: 20px;
+        .mdl-radio {
+          margin-right: 20px;
+        }
+        button[type="submit"]{
+          float: right;
+        }
+      }
+    }
+  }
+}

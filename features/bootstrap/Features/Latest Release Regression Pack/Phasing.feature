@@ -18,7 +18,7 @@
     Then I expand the Glaucoma sidebar
     And I add a New Event "<event>"
 
-    #Then I choose a right eye Intraocular Pressure Instrument  of "1"
+    Then I choose a right eye Intraocular Pressure Instrument  of "1"
 
     And I choose right eye Dilation of Yes
 
@@ -26,7 +26,7 @@
     Then I choose a right eye Intraocular Pressure Reading of "<rightEyeIPR>"
     And I add right eye comments of "<rightEyeComm>"
 
-    #Then I choose a left eye Intraocular Pressure Instrument  of "5"
+    Then I choose a left eye Intraocular Pressure Instrument  of "5"
 
     And I choose left eye Dilation of Yes
 
@@ -56,7 +56,7 @@
       Then I expand the "<speciality>" sidebar
       And I add a New Event "<event>"
 
-      #Then I choose a right eye Intraocular Pressure Instrument  of "3"
+      Then I choose a right eye Intraocular Pressure Instrument  of "3"
 
       And I choose right eye Dilation of No
 
@@ -64,7 +64,7 @@
       Then I choose a right eye Intraocular Pressure Reading of "<rightEyeIPR>"
       And I add right eye comments of "<rightEyeComm>"
 
-      #Then I choose a left eye Intraocular Pressure Instrument  of "4"
+      Then I choose a left eye Intraocular Pressure Instrument  of "4"
 
       And I choose left eye Dilation of Yes
 
@@ -93,7 +93,7 @@
       Then I expand the "<speciality>" sidebar
       And I add a New Event "<event>"
 
-      #Then I choose a right eye Intraocular Pressure Instrument  of "3"
+      Then I choose a right eye Intraocular Pressure Instrument  of "3"
 
       And I choose right eye Dilation of No
 
@@ -101,7 +101,7 @@
       Then I choose a right eye Intraocular Pressure Reading of "<rightEyeIPR>"
       And I add right eye comments of "<rightEyeComm>"
 
-      #Then I choose a left eye Intraocular Pressure Instrument  of "3"
+      Then I choose a left eye Intraocular Pressure Instrument  of "3"
 
       And I choose left eye Dilation of Yes
 
@@ -130,7 +130,7 @@
       Then I expand the "<speciality>" sidebar
       And I add a New Event "<event>"
 
-      #Then I choose a right eye Intraocular Pressure Instrument  of "4"
+      Then I choose a right eye Intraocular Pressure Instrument  of "4"
 
       And I choose right eye Dilation of No
 
@@ -138,7 +138,7 @@
       Then I choose a right eye Intraocular Pressure Reading of "<rightEyeIPR>"
       And I add right eye comments of "<rightEyeComm>"
 
-      #Then I choose a left eye Intraocular Pressure Instrument  of "1"
+      Then I choose a left eye Intraocular Pressure Instrument  of "1"
 
       And I choose left eye Dilation of Yes
 
@@ -179,7 +179,7 @@
       Then I expand the "<speciality>" sidebar
       And I add a New Event "<event>"
 
-      #Then I choose a right eye Intraocular Pressure Instrument  of "1"
+      Then I choose a right eye Intraocular Pressure Instrument  of "1"
 
       And I choose right eye Dilation of Yes
 
@@ -187,7 +187,7 @@
       Then I choose a right eye Intraocular Pressure Reading of "<rightEyeIPR>"
       And I add right eye comments of "<rightEyeComm>"
 
-      #Then I choose a left eye Intraocular Pressure Instrument  of "5"
+      Then I choose a left eye Intraocular Pressure Instrument  of "5"
 
       And I choose left eye Dilation of Yes
 

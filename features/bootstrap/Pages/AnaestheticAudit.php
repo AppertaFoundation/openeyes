@@ -139,9 +139,7 @@ class AnaestheticAudit extends OpenEyesPage
 	public function dischargeNo() {
 		$this->getElement ( 'dischargeNo' )->click ();
 	}
-	public function saveEvent() {
-		$this->getElement ( 'save' )->click ();
-	}
+
 	protected function hasASASaved() {
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'ASASavedOk' )->getXpath () );
 		;
@@ -163,29 +161,44 @@ class AnaestheticAudit extends OpenEyesPage
 		$this->getSession ()->wait ( 5000, 'window.$ && $(".event-actions .selected a").text() == "Edit"' );
 	}
 	protected function deleteSuccessCheck() {
+        $this->getDriver()->wait ( 1000, "window.$ && $('#flash-success').css('display') == 'inline-block'" );
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'deleteSuccess' )->getXpath () );
 	}
 	public function deleteEvent() {
 		$this->getElement ( 'deleteEvent' )->click ();
-		$this->getSession ()->wait ( 5000, "window.$ && $('#et_deleteevent').css('display') == 'inline-block'" );
+		$this->getDriver()->wait ( 5000, "window.$ && $('#et_deleteevent').css('display') == 'inline-block'" );
 		$this->getElement ( 'confirmDeleteEvent' )->click ();
-		
+
 		if ($this->deleteSuccessCheck ()) {
 			print "Event Delete was Successful";
 		} else {
 			throw new BehaviorException ( "WARNING!!! Deletion of event has NOT been successful WARNING!!!" );
 		}
 	}
-	public function validationErrors() {
-		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'anaesthetistValidationError' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'vitalRespiratoryValidationError' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'vitalOxygenSaturationValidationError' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'vitalSystolicBloodPressureValidationError' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'vitalBodyTempValidationError' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'vitalHeartRateValidationError' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'vitalAVPUValidationError' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'readyForDischargeValidationError' )->getXpath () );
+
+    public function validationErrors() {
+        foreach (array(
+                     'anaesthetistValidationError',
+                     'vitalRespiratoryValidationError',
+                     'vitalOxygenSaturationValidationError',
+                     'vitalSystolicBloodPressureValidationError',
+                     'vitalBodyTempValidationError',
+                     'vitalHeartRateValidationError',
+                     'vitalAVPUValidationError',
+                     'readyForDischargeValidationError'
+
+                 ) as $error)
+        if (!$this->find ( 'xpath', $this->getElement ( $error )->getXpath () )) {
+            throw new BehaviorException("Didn't find validation error message for $error");
+        }
+        return true;
 	}
+
 	public function validationErrorCheck() {
 		$this->getSession ()->wait ( 5000, 'window.$ && $.active == 0' );
 
 		if ($this->validationErrors ()) {
 			print "All Validation errors have been displayed correctly";
-		} else {
-			throw new BehaviorException ( "VALIDATION ERRORS HAVE NOT BEEN DISPLAYED CORRECTLY!!!" );
 		}
 	}
 }

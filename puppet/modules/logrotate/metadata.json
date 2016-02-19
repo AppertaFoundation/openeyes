@@ -1,0 +1,41 @@
+{
+  "name": "rodjek-logrotate",
+  "version": "1.1.1",
+  "source": "https://github.com/rodjek/puppet-logrotate",
+  "author": "rodjek",
+  "license": "MIT",
+  "summary": "Logrotate module",
+  "description": "Manage logrotate on your servers with Puppet",
+  "project_page": "https://github.com/rodjek/puppet-logrotate",
+  "dependencies": [
+
+  ],
+  "types": [
+
+  ],
+  "checksums": {
+    "CONTRIBUTING.md": "9d4650b0c17401453034e7d4068f312b",
+    "LICENSE": "6389e1067da7bb541013ee175cf8c415",
+    "Modulefile": "33bb87edf67cfb9bd40df08bd1430244",
+    "README.md": "e0eb0ad2e8a8af39aa65cc81f4527ca7",
+    "files/etc/cron.daily/logrotate": "6a0757af3746ccb223c54ae6deacc415",
+    "files/etc/cron.hourly/logrotate": "a7896d29088325ad319fe5a0b262aa35",
+    "files/etc/logrotate.conf": "caef77f31ea5251c48c64447a0a0ebbd",
+    "manifests/base.pp": "7b2667196805ab8383c252a56f20d837",
+    "manifests/defaults/debian.pp": "4c3995ac8d2540b4dbdc0ae5e89dac14",
+    "manifests/defaults/redhat.pp": "f964343c8210f247b659bbfd5fe3eac3",
+    "manifests/defaults/suse.pp": "b25c54d1a5e3594eaf31da94e7230804",
+    "manifests/hourly.pp": "77d640e51efa03df6309016578c5932c",
+    "manifests/init.pp": "d41d8cd98f00b204e9800998ecf8427e",
+    "manifests/rule.pp": "c4ad2feb919e2f3fea9d27c6ef46b2df",
+    "script/bootstrap": "8df11a4aec93900079a20869f64660fa",
+    "script/cibuild": "cf5b54322510bae19d51ee0880016d21",
+    "script/package": "84b50e42f7558e9dee1732c38100ab28",
+    "spec/classes/base_spec.rb": "f4721f022a14b49ef7d39a816f35a156",
+    "spec/classes/defaults_debian_spec.rb": "ed757dd4936c6b6a227e9faf3d1a04eb",
+    "spec/classes/hourly_spec.rb": "1100a2e1907d225c26512584b3d7a76b",
+    "spec/defines/rule_spec.rb": "ed7f34b937d1df9c34e3bad08558f951",
+    "spec/spec_helper.rb": "d5f3f46cba1721d2ad62fe96aad002c6",
+    "templates/etc/logrotate.d/rule.erb": "d9cebd6e77bfe4950995626a251c5242"
+  }
+}

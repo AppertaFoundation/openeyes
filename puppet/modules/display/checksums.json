@@ -1,0 +1,15 @@
+{
+  "Modulefile": "63239e07f678f45650385649233cb390",
+  "README.md": "1467643a2bea0d3744bd72fc5045e43d",
+  "manifests/env.pp": "0acaba58251186a8b208e288e857efe2",
+  "manifests/init.pp": "86ea9fd38cd00e2f7ffc8973a7542b3d",
+  "manifests/params.pp": "d189eeec47f3951f574e8f1bc8ab5ba1",
+  "manifests/x11vnc.pp": "20122ed3ff87f669b53529c4f37241d3",
+  "manifests/xvfb.pp": "f574de2359a23ad74b37ab676103c09c",
+  "metadata.json": "e7955018b93b2ce946d3920ad51137ae",
+  "templates/debian/x11vnc.erb": "93bbae3f1b8ed526c7ae9b09d541da22",
+  "templates/debian/xvfb.erb": "0ec7b8462ffad1b91201c0dccab143d7",
+  "templates/redhat/x11vnc.erb": "b8f6df7495a67f8f804b2568346c5db5",
+  "templates/redhat/xvfb.erb": "43162dd9fbc732e3ae28d13a01a1894e",
+  "tests/init.pp": "1288c21a57bb06cbdd111e9bac9d9fa9"
+}

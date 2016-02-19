@@ -1,0 +1,158 @@
+/* Style Select Field */
+/* line 24, ../sass/dashboard.scss */
+select {
+  font-family: inherit;
+  background-color: transparent;
+  width: 100%;
+  padding: 4px 0;
+  font-size: 16px;
+  color: rgba(0,0,0, 0.26);
+  border: none;
+  border-bottom: 1px solid rgba(0,0,0, 0.12);
+}
+
+/* Remove focus */
+/* line 36, ../sass/dashboard.scss */
+select:focus {
+  outline: none;
+}
+
+/* Use custom arrow */
+/* line 40, ../sass/dashboard.scss */
+.mdl-selectfield select {
+  appearance: none;
+}
+
+/* line 41, ../sass/dashboard.scss */
+.mdl-selectfield {
+  font-family: 'Roboto','Helvetica','Arial',sans-serif;
+  position: relative;
+}
+/* line 44, ../sass/dashboard.scss */
+.mdl-selectfield select:after {
+  position: absolute;
+  top: 0.75em;
+  right: 0.5em;
+  /* Styling the down arrow */
+  width: 0;
+  height: 0;
+  padding: 0;
+  content: '';
+  border-left: .25em solid transparent;
+  border-right: .25em solid transparent;
+  border-top: 0.375em solid rgba(0,0,0, 0.12);
+  pointer-events: none;
+}
+
+/* line 60, ../sass/dashboard.scss */
+.drawer {
+  border: none;
+}
+/* line 64, ../sass/dashboard.scss */
+.drawer .mdl-navigation .mdl-navigation__link {
+  display: -webkit-box !important;
+  display: -webkit-flex !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.56);
+  font-weight: 500;
+}
+/* line 80, ../sass/dashboard.scss */
+.drawer .mdl-navigation .mdl-navigation__link:hover {
+  background-color: #00BCD4;
+  color: #37474F;
+}
+/* line 84, ../sass/dashboard.scss */
+.drawer .mdl-navigation .mdl-navigation__link i {
+  margin-right: 25px;
+}
+
+/* line 91, ../sass/dashboard.scss */
+.mdl-layout--fixed-drawer > .mdl-layout__content {
+  margin-left: 0;
+}
+
+/* line 95, ../sass/dashboard.scss */
+.mdl-layout--fixed-drawer.is-upgraded:not(.is-small-screen) > .mdl-layout__header {
+  margin-left: 0;
+  width: 100%;
+}
+
+/* line 102, ../sass/dashboard.scss */
+#dash-grid .mdl-cell {
+  background-color: white;
+  height: 350px;
+  padding: 0;
+  overflow: hidden;
+}
+/* line 109, ../sass/dashboard.scss */
+#dash-grid .highcharts-xaxis-labels text, #dash-grid .highcharts-yaxis-labels text {
+  font-size: 0.8em !important;
+}
+/* line 113, ../sass/dashboard.scss */
+#dash-grid .highcharts-legend {
+  display: none !important;
+}
+
+/* line 118, ../sass/dashboard.scss */
+.report-container {
+  position: relative;
+  height: 100%;
+}
+/* line 121, ../sass/dashboard.scss */
+.report-container .search-icon {
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 1;
+  cursor: pointer;
+}
+/* line 127, ../sass/dashboard.scss */
+.report-container .search-icon:after {
+  font-family: "Roboto","Helvetica","Arial",sans-serif;
+  font-size: 0.7em;
+  line-height: 1.5em;
+  vertical-align: top;
+  content: 'Search';
+  transition: width 1s;
+  width: 0;
+  display: inline-block;
+}
+/* line 137, ../sass/dashboard.scss */
+.report-container .search-icon:hover:after {
+  width: 55px;
+}
+/* line 142, ../sass/dashboard.scss */
+.report-container div {
+  height: 100%;
+}
+/* line 145, ../sass/dashboard.scss */
+.report-container .report-search {
+  height: 0;
+}
+/* line 147, ../sass/dashboard.scss */
+.report-container .report-search fieldset {
+  width: 60%;
+  margin: auto;
+}
+/* line 150, ../sass/dashboard.scss */
+.report-container .report-search fieldset div {
+  margin: 20px;
+}
+/* line 152, ../sass/dashboard.scss */
+.report-container .report-search fieldset div .mdl-radio {
+  margin-right: 20px;
+}
+/* line 155, ../sass/dashboard.scss */
+.report-container .report-search fieldset div button[type="submit"] {
+  float: right;
+}

@@ -138,7 +138,9 @@ class OperationNote extends OpenEyesPage {
 		$this->getElement ( 'commonProcedure' )->selectOption ( $common );
 	}
 	public function typeTopical() {
-		$this->getElement ( 'anaestheticTopical' )->click ();
+		$element = $this->getElement ( 'anaestheticTopical' );
+        $this->scrollWindowToElement ( $element );
+        $element->click ();
 	}
 	public function typeLA() {
 		$this->getElement ( 'anaestheticLA' )->click ();
