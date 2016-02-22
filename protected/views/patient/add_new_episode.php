@@ -55,8 +55,21 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 		e.preventDefault();
 	});
 	$('#add-new-episode-dialog button.cancel').click(function(e) {
+
 		$('#add-new-episode-dialog').dialog('close');
-		$('#add-new-episode-dialog').remove();
+		$('#add-new-episode-dialog').hide();
+		$('.details').hide();
+		$('.buttons').hide();
+
 		e.preventDefault();
 	});
+
+	$('.ui-dialog-titlebar-close').click(function(e) {
+		$('#add-new-episode-dialog').dialog('close');
+		$('#add-new-episode-dialog').hide();
+		$('.details').hide();
+		$('.buttons').hide();
+		e.preventDefault();
+	});
+
 </script>
