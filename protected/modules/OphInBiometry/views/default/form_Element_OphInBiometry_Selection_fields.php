@@ -54,19 +54,18 @@
             <div class="large-12 column">
                 <?php
                 $criteria = new CDbCriteria();
-                if ($side == "left") {
-                    if (!empty($lens_left)) {
-                        echo $form->dropDownList($element, 'lens_id_' . $side, CHtml::listData(
-                            OphInBiometry_LensType_Lens::model()->findAll($criteria->condition = "id in (" . implode(",", array_unique($lens_left)) . ")", array('order' => 'display_order')), 'id', 'name'
-                        ), array('empty' => '- Please select -'), null, array('label' => 4, 'field' => 6));
-                    }
-                } else {
-                    if (!empty($lens_right)) {
-                        echo $form->dropDownList($element, 'lens_id_' . $side, CHtml::listData(
-                            OphInBiometry_LensType_Lens::model()->findAll($criteria->condition = "id in (" . implode(",", array_unique($lens_right)) . ")", array('order' => 'display_order')), 'id', 'name'
-                        ), array('empty' => '- Please select -'), null, array('label' => 4, 'field' => 6));
 
+                if (!empty(${"lens_".$side})) {
+                    $numberOfLens = count(OphInBiometry_LensType_Lens::model()->findAll($criteria->condition = " id in (" . implode(",", array_unique(${"lens_".$side})) . ")"));
+                    if($numberOfLens == 1){
+                        $please_select = null;
+                    }else{
+                        $please_select = array('empty' => '- Please select -');
                     }
+
+                    echo $form->dropDownList($element, 'lens_id_' . $side, CHtml::listData(
+                        OphInBiometry_LensType_Lens::model()->findAll($criteria->condition = "id in (" . implode(",", array_unique(${"lens_".$side})) . ")", array('order' => 'display_order')), 'id', 'name'
+                    ), $please_select, null, array('label' => 4, 'field' => 6));
                 }
                 ?>
             </div>
@@ -116,18 +115,15 @@
         <div class="row">
             <div class="large-12 column">
                 <?php
-                if ($side == "left") {
-                    if (!empty($formulas_left)) {
-                        echo $form->dropDownList($element, 'formula_id_' . $side, CHtml::listData(
-                            OphInBiometry_Calculation_Formula::model()->findAll($criteria->condition = "id in (" . implode(",", array_unique($formulas_left)) . ")", array('order' => 'display_order')), 'id', 'name'
-                        ), array('empty' => '- Please select -'), null, array('label' => 4, 'field' => 6));
+                if (!empty(${"formulas_$side"})) {
+                    if(count(OphInBiometry_Calculation_Formula::model()->findAll($criteria->condition = "id in (" . implode(",", array_unique(${"formulas_$side"})). ")")) == 1){
+                        $please_select = null;
+                    }else{
+                        $please_select = array('empty' => '- Please select -');
                     }
-                } else {
-                    if (!empty($formulas_right)) {
-                        echo $form->dropDownList($element, 'formula_id_' . $side, CHtml::listData(
-                            OphInBiometry_Calculation_Formula::model()->findAll($criteria->condition = "id in (" . implode(",", array_unique($formulas_right)) . ")", array('order' => 'display_order')), 'id', 'name'
-                        ), array('empty' => '- Please select -'), null, array('label' => 4, 'field' => 6));
-                    }
+                    echo $form->dropDownList($element, 'formula_id_' . $side, CHtml::listData(
+                        OphInBiometry_Calculation_Formula::model()->findAll($criteria->condition = "id in (" . implode(",", array_unique(${"formulas_$side"})) . ")", array('order' => 'display_order')), 'id', 'name'
+                    ), $please_select, null, array('label' => 4, 'field' => 6));
                 }
                 ?>
             </div>
@@ -149,7 +145,7 @@
                                     foreach ($v as $key => $value) {
                                         if (!empty($value)) {
                                             $spanid = 'aconstant_'.$side . '_' . $k . '_' . $key;
-                                            echo '<span id='.$spanid.' class="field-value">'.$acon['left'][$k][$key].'</span>';
+                                            echo '<span id='.$spanid.' class="field-value">'.$this->formatAconst($acon['left'][$k][$key]).'</span>';
                                         }
                                     }
                                 }
@@ -161,7 +157,7 @@
                                     foreach ($v as $key => $value) {
                                         if (!empty($value)) {
                                             $spanid = 'aconstant_'.$side . '_' . $k . '_' . $key;
-                                            echo '<span id='.$spanid.' class="field-value">'.$acon['right'][$k][$key].'</span>';
+                                            echo '<span id='.$spanid.' class="field-value">'.$this->formatAconst($acon['right'][$k][$key]).'</span>';
                                         }
                                     }
                                 }
@@ -220,20 +216,21 @@
                                     $iolData = $this->orderIOLData(json_decode($value, true));
                                     $divid = $side . '_' . $k . '_' . $key;
                                     $found = 0;
-                                    $closet = $this->getClosest($emmetropiadata['left'][$k][$key],$iolData['IOL']);
+                                   // $closet = $this->getClosest($emmetropiadata['left'][$k][$key],$iolData['IOL']);
+                                    $closest = $this->getClosest($this->calculationValues[0]->{"target_refraction_left"},$iolData['REF']);
                                     echo '<table id=' . $divid . '><tr><th>#</th> <th>IOL</th><th>REF</th>';
                                     for ($j = 0; $j < count($iolData['IOL']); $j++) {
                                         $radid = $side . '_' . $k . '_' . $key . '__' . $j;
                                         if (($this->selectionValues[0]->{"predicted_refraction_left"} == $iolData["REF"][$j]) && ($this->selectionValues[0]->{"iol_power_left"} == $iolData["IOL"][$j])) {
                                             $found = 1;
-                                            if($iolData["IOL"][$j] == $closet ) {
-                                                echo "<tr  class='highlighted closet' id='iolreftr-$radid'><td><input type='radio' checked  id='iolrefrad-$radid' name='iolrefval_left'></td><td>" . number_format((float)$iolData["IOL"][$j], 2, '.', '') . "</td><td>" . $iolData["REF"][$j] . "</td></tr>";
+                                            if($iolData["REF"][$j] == $closest ) {
+                                                echo "<tr  class='highlighted closest' id='iolreftr-$radid'><td><input type='radio' checked  id='iolrefrad-$radid' name='iolrefval_left'></td><td>" . number_format((float)$iolData["IOL"][$j], 2, '.', '') . "</td><td>" . $iolData["REF"][$j] . "</td></tr>";
                                             } else {
                                                 echo "<tr  class='highlighted' id='iolreftr-$radid'><td><input type='radio' checked  id='iolrefrad-$radid' name='iolrefval_left'></td><td>" . number_format((float)$iolData["IOL"][$j], 2, '.', '') . "</td><td>" . $iolData["REF"][$j] . "</td></tr>";
                                             }
                                         } else {
-                                            if($iolData["IOL"][$j] == $closet ) {
-                                                echo "<tr class='closet' id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_left'></td><td>" . number_format((float)$iolData["IOL"][$j], 2, '.', '') . "</td><td>" . $iolData["REF"][$j] . "</td></tr>";
+                                            if($iolData["REF"][$j] == $closest ) {
+                                                echo "<tr class='closest' id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_left'></td><td>" . number_format((float)$iolData["IOL"][$j], 2, '.', '') . "</td><td>" . $iolData["REF"][$j] . "</td></tr>";
                                             } else {
                                                 echo "<tr id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_left'></td><td>" . number_format((float)$iolData["IOL"][$j], 2, '.', '') . "</td><td>" . $iolData["REF"][$j] . "</td></tr>";
                                             }
@@ -254,20 +251,21 @@
                                     $iolData = $this->orderIOLData(json_decode($value, true));
                                     $divid = $side . '_' . $k . '_' . $key;
                                     $found = 0;
-                                    $closet = $this->getClosest($emmetropiadata['right'][$k][$key],$iolData['IOL']);
+                                    //$closet = $this->getClosest($emmetropiadata['right'][$k][$key],$iolData['IOL']);
+                                    $closest = $this->getClosest($this->calculationValues[0]->{"target_refraction_right"},$iolData['REF']);
                                     echo '<table id=' . $divid . '><tr><th>#</th> <th>IOL</th><th>REF</th>';
                                     for ($j = 0; $j < count($iolData['IOL']); $j++) {
                                         $radid = $side . '_' . $k . '_' . $key . '__' . $j;
                                         if (($this->selectionValues[0]->{"predicted_refraction_right"} == $iolData["REF"][$j]) && ($this->selectionValues[0]->{"iol_power_right"} == $iolData["IOL"][$j])) {
                                             $found = 1;
-                                            if($iolData["IOL"][$j] == $closet ) {
-                                                echo "<tr class='highlighted closet' id='iolreftr-$radid'><td><input type='radio' checked id='iolrefrad-$radid' name='iolrefval_right'></td><td>" . number_format((float)$iolData["IOL"][$j], 2, '.', '') . "</td><td>" . $iolData["REF"][$j] . "</td></tr>";
+                                            if($iolData["REF"][$j] == $closest ) {
+                                                echo "<tr class='highlighted closest' id='iolreftr-$radid'><td><input type='radio' checked id='iolrefrad-$radid' name='iolrefval_right'></td><td>" . number_format((float)$iolData["IOL"][$j], 2, '.', '') . "</td><td>" . $iolData["REF"][$j] . "</td></tr>";
                                             }else{
                                                 echo "<tr class='highlighted' id='iolreftr-$radid'><td><input type='radio' checked id='iolrefrad-$radid' name='iolrefval_right'></td><td>" . number_format((float)$iolData["IOL"][$j], 2, '.', '') . "</td><td>" . $iolData["REF"][$j] . "</td></tr>";
                                             }
                                         } else {
-                                            if($iolData["IOL"][$j] == $closet ) {
-                                                echo "<tr class='closet' id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_right'></td><td>" . number_format((float)$iolData["IOL"][$j], 2, '.', '') . "</td><td>" . $iolData["REF"][$j] . "</td></tr>";
+                                            if($iolData["REF"][$j] == $closest ) {
+                                                echo "<tr class='closest' id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_right'></td><td>" . number_format((float)$iolData["IOL"][$j], 2, '.', '') . "</td><td>" . $iolData["REF"][$j] . "</td></tr>";
                                             } else {
                                                 echo "<tr id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_right'></td><td>" . number_format((float)$iolData["IOL"][$j], 2, '.', '') . "</td><td>" . $iolData["REF"][$j] . "</td></tr>";
                                             }

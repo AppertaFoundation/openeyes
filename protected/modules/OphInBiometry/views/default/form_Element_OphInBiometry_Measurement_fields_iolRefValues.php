@@ -21,7 +21,7 @@
                     <span class="field-info">A const:</span>
                 </div>
                 <div class="large-6 column">
-                    <span><?php echo $iolRefValues->lens->acon; ?></span>
+                    <span><?php echo $this->formatAconst($iolRefValues->lens->acon); ?></span>
                 </div>
             </div>
 

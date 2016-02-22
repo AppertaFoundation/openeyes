@@ -101,21 +101,21 @@ class FormularyDrugsController extends BaseAdminController
 			'default_route_id' => array(
 				'widget' => 'DropDownList',
 				'options' => CHtml::listData(DrugRoute::model()->findAll(),'id', 'name'),
-				'htmlOptions' => null,
+				'htmlOptions' => array('empty'=>'-- Please select --'),
 				'hidden' => false,
 				'layoutColumns' => null
 			),
 			'default_frequency_id' => array(
 				'widget' => 'DropDownList',
 				'options' => CHtml::listData(DrugFrequency::model()->findAll(),'id', 'name'),
-				'htmlOptions' => null,
+				'htmlOptions' => array('empty'=>'-- Please select --'),
 				'hidden' => false,
 				'layoutColumns' => null
 			),
 			'default_duration_id' => array(
 				'widget' => 'DropDownList',
 				'options' => CHtml::listData(DrugDuration::model()->findAll(),'id', 'name'),
-				'htmlOptions' => null,
+				'htmlOptions' => array('empty'=>'-- Please select --'),
 				'hidden' => false,
 				'layoutColumns' => null
 			),

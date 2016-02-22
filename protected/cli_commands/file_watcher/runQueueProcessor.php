@@ -8,7 +8,9 @@
 	
 	$pidfile = '/tmp/DicomFileQueue.pid';
 	$mysqli = connectDatabase();
-	
+
+	checkFileWatcher();
+
 	if(file_exists($pidfile)){
 		$currentPid = implode("",file($pidfile));
 	}else{
@@ -30,7 +32,18 @@
 		saveMyPid($pidfile);
 		processQueue($mysqli, $dicomConfig);
 	}
-	
+
+	function checkFileWatcher(){
+		echo "Checking file watcher status...\n";
+		$result = shell_exec("sudo service dicom-file-watcher status");
+		echo "result: ".$result;
+		if(trim($result) == "dicom-file-watcher stop/waiting"){
+			echo "File watcher is not running, trying to start...\n";
+			shell_exec("sudo service dicom-file-watcher start");
+			checkFileWatcher();
+		}
+	}
+
 	function isRunning($pid){
 		try{
 			// get elapsed time

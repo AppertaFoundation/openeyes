@@ -157,6 +157,6 @@ tr:hover,tr.even:hover, tr:nth-of-type(even):hover, tr.alt.hover {
   background-color: #dddddd;
   width: 1025px;
 }
-.ui-dialog-titlebar-close {
-  visibility: hidden;
+.closest{
+  font-weight: bold;
 }

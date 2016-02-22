@@ -17,4 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php echo CHtml::textField($metadata->key, $metadata->getSettingName()) ?>
+<?php $currentValue = $metadata->getSettingName();
+      if(!isset($currentValue) || $currentValue == null){
+            // we need this to prevent HTML value without =
+            $currentValue = "";
+      }
+      echo CHtml::textField($metadata->key, $currentValue);
+      echo CHtml::hiddenField("hidden_".$metadata->key, 1);  ?>
