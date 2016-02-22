@@ -32,18 +32,20 @@ if ($model->rules) {
 			$this->renderPartial('view_OphCoTherapyapplication_DecisionTreeNodeRule', array(
 					'model' => $rule,
 			));
-		}
-		if ($model->canAddRule()) {?>
-			<div>
-				<a href="#" class="add_rule" data-node_id="<?php echo $model->id ?>">Add rule</a>
-			</div>
-		<?php } ?>
+		}?>
 	</div>
 <?php
 }
 ?>
+		<?php
+			if ($model->canAddRule()) {?>
+		<div>
+			<a href="#" class="add_rule" data-node_id="<?php echo $model->id ?>">Add rule</a>
+		</div>
+		<?php } ?>
 
-<div class="node curvybox white">
+
+		<div class="node curvybox white">
 <?php if ($model->question) { ?>
 		<div class="question">
 		<b>Question:</b><?php echo $model->question; ?>
