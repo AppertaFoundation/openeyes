@@ -274,4 +274,16 @@ class DicomLogViewerController extends BaseController
         //->getText();
 
     }
+
+    public function actionReprocess(){
+        // check if it's an ajax call
+
+        if(Yii::app()->request->isAjaxRequest){
+            $request = Yii::app()->getRequest();
+            $filename = $request->getQuery( 'filename');
+            if($filename != ""){
+                Yii::app()->db->createCommand("update dicom_file_queue set status_id=1 where filename = '".$filename."'")->execute();
+            }
+        }
+    }
 };
