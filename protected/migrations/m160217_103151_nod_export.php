@@ -574,6 +574,141 @@ DROP TEMPORARY TABLE IF EXISTS tmp_complication_type;
 
 END;
 
+                        -- EpisodeOperationCoPathology --
+
+DROP PROCEDURE IF EXISTS get_episode_operation_pathology;
+CREATE DEFINER=`root`@`localhost` PROCEDURE get_episode_operation_pathology(IN dir VARCHAR(255))
+BEGIN
+SET @time_now = UNIX_TIMESTAMP(NOW());
+SET @file = CONCAT(dir, '/episode_operation_pathology_', @time_now, '.csv');
+
+DROP TEMPORARY TABLE IF EXISTS tmp_pathology_type;
+CREATE TEMPORARY TABLE tmp_pathology_type (
+	`nodcode` INT(10) UNSIGNED NOT NULL,
+	`term` VARCHAR(100)
+);
+
+INSERT INTO tmp_pathology_type (`nodcode`, `term`)
+VALUES
+    (0, 'None'),
+    (1, 'Age related macular degeneration'),
+    (2, 'Amblyopia'),
+    (4, 'Diabetic retinopathy'),
+    (5, 'Glaucoma'),
+    (7, 'Degenerative progressive high myopia'),
+    (8, 'Ocular Hypertension'),
+    (11, 'Stickler Syndrome'),
+    (12, 'Uveitis'),
+    (13, 'Pseudoexfoliation'),
+    (13, 'phacodonesis'),
+    (18, 'macular hole'),
+    (19, 'epiretinal membrane'),
+    (20, 'retinal detachment ');
+
+SET @cmd = CONCAT(" (SELECT 'OperationId', 'Eye', 'ComplicationTypeId' )
+                    UNION
+                    (SELECT
+                        op_event.id AS OperationId,
+                        (SELECT
+                                CASE
+                                        WHEN (proc_list.eye_id = 3) THEN 'B'
+                                        WHEN (proc_list.eye_id = 2) THEN 'R'
+                                        WHEN (proc_list.eye_id = 1) THEN 'L'
+                                    END
+                            ) AS Eye,
+                        IF(element_type.`name` = 'Trabeculectomy', 25,23)  AS ComplicationTypeId
+                    FROM
+                        `event` AS op_event
+                            JOIN
+                        `episode` ON op_event.episode_id = episode.id
+                            JOIN
+                        `event` AS previous_op_event ON previous_op_event.episode_id = episode.id
+                            AND previous_op_event.event_type_id = (SELECT id FROM event_type WHERE `name` = 'Operation Note')
+                            AND previous_op_event.created_date <= op_event.created_date
+                            JOIN
+                        `et_ophtroperationnote_procedurelist` AS proc_list ON proc_list.event_id = previous_op_event.id
+                            JOIN
+                        `ophtroperationnote_procedurelist_procedure_assignment` AS proc_list_asgn ON proc_list_asgn.procedurelist_id = proc_list.id
+                            JOIN
+                        proc ON proc_list_asgn.proc_id = proc.id
+                            JOIN
+                        ophtroperationnote_procedure_element ON ophtroperationnote_procedure_element.procedure_id = proc.id
+                            JOIN
+                        element_type ON ophtroperationnote_procedure_element.element_type_id = element_type.id
+                    WHERE
+                        element_type.`name` in ('Vitrectomy', 'Trabeculectomy')
+                        AND op_event.event_type_id = (SELECT id FROM event_type WHERE `name` = 'Operation Note'))
+                    UNION
+                    (SELECT
+                    op_event.id AS OperationId,
+                    (SELECT
+                            CASE
+                                    WHEN (proc_list.eye_id = 3) THEN 'B'
+                                    WHEN (proc_list.eye_id = 2) THEN 'R'
+                                    WHEN (proc_list.eye_id = 1) THEN 'L'
+                                END
+                        ) AS Eye,
+                    21 AS ComplicationTypeId
+                    FROM
+                        `event` AS op_event
+                            JOIN
+                        `episode` ON op_event.episode_id = episode.id
+                            JOIN
+                        `event` AS previous_op_event ON previous_op_event.episode_id = episode.id
+                            AND previous_op_event.event_type_id = (SELECT id FROM event_type WHERE `name` = 'Operation Note')
+                            AND previous_op_event.created_date <= op_event.created_date
+                            JOIN `et_ophtroperationnote_procedurelist` AS proc_list ON proc_list.event_id = previous_op_event.id
+                            JOIN `ophtroperationnote_procedurelist_procedure_assignment` AS proc_list_asgn ON proc_list_asgn.procedurelist_id = proc_list.id
+                            JOIN proc ON proc_list_asgn.proc_id = proc.id
+                            JOIN procedure_benefit ON procedure_benefit.proc_id = proc.id
+                            JOIN benefit ON procedure_benefit.benefit_id = benefit.id
+                    WHERE
+                        benefit.`name` = 'to prevent retinal detachment'
+                        AND op_event.event_type_id = (SELECT id FROM event_type WHERE `name` = 'Operation Note'))
+                    UNION
+                    (SELECT op_event.id AS OperationId,
+                    (SELECT CASE
+                        WHEN (left_cortical_id = 4 OR left_nuclear_id = 4) AND (right_cortical_id = 4 OR right_nuclear_id = 4) THEN 'B'
+                        WHEN (left_cortical_id = 4 OR left_nuclear_id = 4) THEN 'L'
+                        WHEN (right_cortical_id = 4 OR right_nuclear_id = 4) THEN 'R'
+                        END
+                    ) AS Eye,
+                    14 AS ComplicationTypeId
+                    From et_ophciexamination_anteriorsegment
+                    JOIN `event` AS exam_event on et_ophciexamination_anteriorsegment.event_id = exam_event.id
+                    JOIN `episode` ON exam_event.episode_id = episode.id
+                    JOIN `event` AS op_event
+                    ON episode.id = op_event.episode_id
+                    AND op_event.event_type_id = (select id from event_type where `name` = 'Operation Note')
+                    AND op_event.created_date >= exam_event.created_date
+                    HAVING Eye IS NOT NULL)
+                    UNION
+                    (SELECT
+                        event.id AS OperationId,
+                        (SELECT CASE
+                            WHEN secondary_diagnosis.eye_id = 1 THEN 'L'
+                            WHEN secondary_diagnosis.eye_id = 2 THEN 'R'
+                            WHEN secondary_diagnosis.eye_id = 3 THEN 'B'
+                            END
+                        ) AS Eye,
+                        tmp_pathology_type.nodcode as ComplicationTypeId
+                    FROM `event`
+                    JOIN `episode` ON `event`.episode_id = episode.id
+                    JOIN secondary_diagnosis ON episode.`patient_id` = secondary_diagnosis.`patient_id`
+                    JOIN `disorder` ON  secondary_diagnosis.`disorder_id` = `disorder`.id
+                    JOIN tmp_pathology_type on LOWER(disorder.term) = LOWER(tmp_pathology_type.term)
+                    WHERE event_type_id = (SELECT id from event_type where `name` = 'Operation Note')
+                INTO OUTFILE '", @file,
+                "' FIELDS ENCLOSED BY '\"' TERMINATED BY ';'",
+                "  LINES TERMINATED BY '\r\n')");
+
+PREPARE statement FROM @cmd;
+EXECUTE statement;
+
+DROP TEMPORARY TABLE IF EXISTS tmp_pathology_type;
+
+END;
+
                         -- Run Export Generation --
                         
 DROP PROCEDURE IF EXISTS run_nod_export_generator;
@@ -651,8 +786,8 @@ DROP PROCEDURE IF EXISTS get_episode_refraction;
 DROP PROCEDURE IF EXISTS get_episode_visual_acuity;
 DROP PROCEDURE IF EXISTS get_episode_operation;
 DROP PROCEDURE IF EXISTS get_episode_operation_complication;
+DROP PROCEDURE IF EXISTS get_episode_operation_pathology;
 DROP PROCEDURE IF EXISTS run_nod_export_generator;
-
 EOL;
 		$this->execute($storedProcedure);
                 return true;
