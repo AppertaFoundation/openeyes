@@ -942,4 +942,28 @@ class DefaultController extends BaseEventTypeController
 		}
 
 	}
+
+	public function formatAconst($aconst){
+		/* based on the requirements:
+		Valid results*
+		* 118.0
+		* 118.1*
+		* 118.12*
+		* 118.123*
+		* 118.102
+		* 118.001*
+
+		*Invalid results*
+		* 118
+		* 118.000
+		* 118.100
+		* 118.120
+
+		*/
+		$formatted = (float)$aconst;
+		if($formatted == (int)$formatted){
+			$formatted .= ".0";
+		}
+		return $formatted;
+	}
 }
