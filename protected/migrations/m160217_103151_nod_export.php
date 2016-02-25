@@ -4,6 +4,24 @@ class m160217_103151_nod_export extends CDbMigration
 {
 	public function up()
 	{
+        $this->addColumn('et_ophtroperationnote_cataract', 'pupil_size', 'VARCHAR(10)');
+        $this->addColumn('et_ophtroperationnote_cataract_version', 'pupil_size', 'VARCHAR(10)');
+
+        $cataracts = $this->getDbConnection()->createCommand()->select('id, eyedraw')->from('et_ophtroperationnote_cataract')->queryAll();
+
+        foreach($cataracts as $cataract){
+            $eyedraw = json_decode($cataract['eyedraw']);
+            $pupilSize = null;
+            foreach($eyedraw as $eyedrawEl){
+                if(property_exists($eyedrawEl, 'pupilSize')){
+                    $pupilSize = $eyedrawEl->pupilSize;
+                    break;
+                }
+            }
+            if($pupilSize){
+                $this->update('et_ophtroperationnote_cataract', array('pupil_size' => $pupilSize), 'id='.$cataract['id']);
+            }
+        }
 
 		$storedProcedure = <<<EOL
 -- Configuration settings for this script --
@@ -737,6 +755,72 @@ EXECUTE statement;
     
 END;
 
+                        -- EpisodeTreatmentCataract --
+
+DROP PROCEDURE IF EXISTS get_episode_treatment_cataract;
+CREATE DEFINER=`root`@`localhost` PROCEDURE get_episode_treatment_cataract(IN dir VARCHAR(255))
+BEGIN
+SET @time_now = UNIX_TIMESTAMP(NOW());
+DROP TEMPORARY TABLE IF EXISTS tmp_iol_positions;
+CREATE TEMPORARY TABLE tmp_iol_positions (
+	`nodcode` INT(10) UNSIGNED NOT NULL,
+	`term` VARCHAR(100)
+);
+
+INSERT INTO tmp_iol_positions (`nodcode`, `term`)
+VALUES
+    (0, 'None'),
+    (8, 'In the bag'),
+    (9, 'Partly in the bag'),
+    (6, 'In the sulcus'),
+    (2, 'Anterior chamber'),
+    (12, 'Sutured posterior chamber'),
+    (5, 'Iris fixated'),
+    (13, 'Other');
+
+SET @file = CONCAT(dir, '/episode_treatment_cataract', @time_now, '.csv');
+SET @cmd = CONCAT(" (SELECT 'TreatmentId', 'IsFirstEye', 'PreparationDrugId', 'IncisionSiteId', 'IncisionLengthId', 'IncisionPlanesId', 'IncisionMerideanId', 'PupilSizeId', 'IOLPositionId', 'IOLModelId', 'IOLPower', 'PredictedPostOperativeRefraction', 'WoundClosureId')
+                    UNION
+                    (select pa.id AS TreatmentId,
+					IFNULL((select
+						IF(eye.`name` = 'First eye', 1, 0)
+						from ophciexamination_cataractsurgicalmanagement_eye eye
+						join et_ophciexamination_cataractsurgicalmanagement mng on eye.id = mng.eye_id
+						join `event` as exam_event on mng.event_id = exam_event.id
+						where exam_event.episode_id = episode.id
+						and exam_event.event_date <= op_event.event_date
+						order by exam_event.event_date desc
+						limit 1
+					), 1) as IsFirstEye,
+					'' as PreparationDrugId,
+					if(inc_site.`name` = 'Limbal', 5, IF(inc_site.`name` = 'Scleral', 8, 4)) as IncisionSiteId,
+					cataract.length as IncisionLengthId,
+					4 as IncisionPlanesId, #unkown
+					cataract.meridian as IncisionMerideanId,
+					if(cataract.pupil_size = 'Small', 1, if(cataract.pupil_size = 'Medium', 2, if(cataract.pupil_size = 'Large', 3, ''))) as PupilSizeId,
+					tmp_iol_positions.nodcode as IolPositionId,
+					ophtroperationnote_cataract_iol_type.`name` as IOLModelId,
+					cataract.iol_power as IOLPower,
+					cataract.predicted_refraction as PredictedPostOperativeRefraction,
+					'' as WoundClosureId
+					FROM ophtroperationnote_procedurelist_procedure_assignment pa
+					JOIN et_ophtroperationnote_procedurelist ON pa.procedurelist_id = et_ophtroperationnote_procedurelist.id
+					join `event` as op_event on et_ophtroperationnote_procedurelist.event_id = op_event.id
+					join episode on op_event.episode_id = episode.id
+					join et_ophtroperationnote_cataract as cataract on op_event.id = cataract.event_id
+					join ophtroperationnote_cataract_incision_site as inc_site on cataract.incision_site_id = inc_site.id
+					join ophtroperationnote_cataract_iol_position iol_pos on cataract.iol_position_id = iol_pos.id
+					join tmp_iol_positions on iol_pos.`name` = tmp_iol_positions.term
+					join ophtroperationnote_cataract_iol_type on cataract.iol_type_id = ophtroperationnote_cataract_iol_type.id
+                INTO OUTFILE '", @file,
+                "' FIELDS ENCLOSED BY '\"' TERMINATED BY ';'",
+                "  LINES TERMINATED BY '\r\n')");
+
+PREPARE statement FROM @cmd;
+EXECUTE statement;
+
+END;
+
                         -- EpisodeOperationCoPathology --
 
 DROP PROCEDURE IF EXISTS get_episode_operation_pathology;
@@ -910,6 +994,8 @@ CALL get_episode_visual_acuity(dir);
 CALL get_episode_operation(dir);
 CALL get_episode_operation_complication(dir);
 CALL get_episode_operation_indication(dir);
+CALL get_episode_operation_pathology(dir);
+CALL get_episode_treatment_cataract(dir);
                         
 #EpisodeOperationCoPathology
                  
@@ -938,6 +1024,9 @@ EOL;
 
 	public function down()
 	{
+        $this->dropColumn('et_ophtroperationnote_cataract', 'pupil_size');
+        $this->dropColumn('et_ophtroperationnote_cataract_version', 'pupil_size');
+
                 $storedProcedure = <<<EOL
 
 DROP PROCEDURE IF EXISTS get_surgeons;
