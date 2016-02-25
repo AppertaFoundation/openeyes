@@ -20,8 +20,8 @@ $(document).ready(function() {
     OpenEyes.Dash.init('#dash-grid');
     OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=PcrRisk');
     OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=CataractComplications');
-    /*OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\VisualAcuity');
-    OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\RefractiveOutcome');
+    OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\VisualOutcome');
+    /*OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\RefractiveOutcome');
     */
 
 });

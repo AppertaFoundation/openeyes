@@ -20,13 +20,18 @@
 namespace OEModule\OphCiExamination\components;
 
 
+use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading;
+use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit;
+
 class VisualOutcomeReport extends \Report implements \ReportInterface
 {
+    protected $months;
+
     protected $graphConfig = array(
         'chart' => array('renderTo' => ''),
         'title' => array('text' => 'Visual Acuity'),
         'xAxis' => array(
-            'title' => array('text' => 'At Surgery'),
+            'title' => array('text' => 'After Surgery'),
         ),
         'yAxis' => array(
             'title' => array('text' => 'Months after Surgery'),
@@ -39,63 +44,19 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         ))
     );
 
+    public function __construct($app)
+    {
+        $this->months = $app->getRequest()->getQuery('months', 4);
+
+        parent::__construct($app);
+    }
+
     protected function queryData($surgeon, $dateFrom, $dateTo, $months)
     {
-        $this->command->select('SELECT
-   pre_examination.episode_id,
-   note_event.episode_id,
-   note_event.id,
-   note_event.event_date op_date,
-   note_event.id,
-   op_procedure.eye_id,
-   pre_examination.event_date as pre_exam_date,
-   post_examination.event_date post_exam_date,
-   pre_examination.id,
-   pre_reading.value as pre_value,
-   post_reading.value as post_value
-FROM
-   openeyes.et_ophtroperationnote_surgeon
-       JOIN
-   `event` AS note_event ON note_event.id = et_ophtroperationnote_surgeon.event_id #Get the operation note
-       JOIN
-   et_ophtroperationnote_procedurelist AS op_procedure ON op_procedure.event_id = note_event.id #And the operation notes procedures
-       JOIN
-   episode ON note_event.episode_id = episode.id #Get the episode to find the examinations
-       JOIN
-   `event` AS pre_examination ON pre_examination.episode_id = note_event.episode_id #Then get the examinations previous to the op not
-       AND pre_examination.event_type_id = :examination
-       AND pre_examination.event_date <= note_event.event_date
-       JOIN
-   `event` AS post_examination ON post_examination.episode_id = note_event.episode_id
-       AND post_examination.event_type_id = :examination
-       AND post_examination.event_date >= DATE_ADD(note_event.event_date, INTERVAL :months MONTH) #and the examinations n months after examination
-       JOIN
-   et_ophciexamination_visualacuity AS pre_acuity ON pre_examination.id = pre_acuity.event_id #Find the visual acuity for that eye (or both) from the examination
-       AND (pre_acuity.eye_id = op_procedure.eye_id
-       OR pre_acuity.eye_id = 3)
-       JOIN
-   et_ophciexamination_visualacuity AS post_acuity ON post_examination.id = post_acuity.event_id #And again for after the op note
-       AND (post_acuity.eye_id = op_procedure.eye_id
-       OR post_acuity.eye_id = 3)
-       JOIN
-   ophciexamination_visualacuity_reading AS pre_reading ON pre_acuity.id = pre_reading.element_id #Then get the values of the reading
-       AND IF(op_procedure.eye_id = 1, pre_reading.side = 1, IF(op_procedure.eye_id = 2,
-                               pre_reading.side = 0,
-                               pre_reading.side IS NOT NULL)) #procedures have an eye_id  (1,2, or 3, left, right or both). Visual Acuity has a side (0 or 1, right or left).
-       JOIN
-   ophciexamination_visualacuity_reading AS post_reading ON post_acuity.id = post_reading.element_id
-       AND post_reading.side = pre_reading.side
-       AND post_reading.method_id = pre_reading.method_id #Get the post acuity reading that is the same method and side as pre
-WHERE
-   surgeon_id = :surgeon
-   order by pre_examination.event_date desc, post_examination.event_date asc;', array(
-            'examination' => $this->examinationEvent['id'],
-            'months' => $months,
-            'surgeon' => $surgeon
-        ));
+        $this->getExaminationEvent();
 
-        $this->command->select('pre_examination.episode_id, note_event.episode_id, note_event.id, note_event.event_date as op_date, note_event.id, op_procedure.eye_id,
-        pre_examination.event_date as pre_exam_date, post_examination.event_date as post_exam_date, pre_examination.id, pre_reading.value as pre_value, post_reading.value as post_value')
+        $this->command->select('pre_examination.episode_id, note_event.episode_id, note_event.event_date as op_date, note_event.id, op_procedure.eye_id, pre_reading.method_id,
+        pre_examination.event_date as pre_exam_date, post_examination.event_date as post_exam_date, pre_examination.id as pre_id, post_examination.id as post_id, pre_reading.value as pre_value, post_reading.value as post_value')
             ->from('et_ophtroperationnote_surgeon')
             ->join('event note_event', 'note_event.id = et_ophtroperationnote_surgeon.event_id')
             ->join('et_ophtroperationnote_procedurelist op_procedure', 'op_procedure.event_id = note_event.id #And the operation notes procedures')
@@ -106,7 +67,7 @@ WHERE
                 array('examination' => $this->examinationEvent['id'])
             )->join('event post_examination', 'post_examination.episode_id = note_event.episode_id
                AND post_examination.event_type_id = :examination
-               AND post_examination.event_date BETWEEN DATE_SUB(note_event.event_date, INTERVAL :monthsBefore MONTH) AND DATE_ADD(note_event.event_date, INTERVAL :monthsAfter MONTH)',
+               AND post_examination.event_date BETWEEN DATE_ADD(note_event.event_date, INTERVAL :monthsBefore MONTH) AND DATE_ADD(note_event.event_date, INTERVAL :monthsAfter MONTH)',
                 array(
                     'examination' => $this->examinationEvent['id'],
                     'monthsBefore' => ($months - 1),
@@ -128,7 +89,8 @@ WHERE
             )->join('ophciexamination_visualacuity_reading post_reading', 'post_acuity.id = post_reading.element_id
                AND post_reading.side = pre_reading.side
                AND post_reading.method_id = pre_reading.method_id')
-            ->where('surgeon = :surgeon', array('surgeon' => $surgeon));
+            ->where('surgeon_id = :surgeon', array('surgeon' => $surgeon))
+            ->order('pre_exam_date asc, post_exam_date desc');
 
         if($dateFrom){
             $this->command->andWhere('event.event_date > :dateFrom', array('dateFrom' => $dateFrom));
@@ -143,12 +105,41 @@ WHERE
 
     public function dataSet()
     {
-        // TODO: Implement dataSet() method.
+        $data = $this->queryData($this->surgeon, $this->from, $this->to, $this->months);
+
+        $dataCheck = array();
+        $dataSet = array();
+        foreach($data as $row){
+            if(!isset($dataCheck[$row['id']])){//Do we have data for this operation?
+                $dataCheck[$row['id']] = array();
+            }
+            if(!isset($dataCheck[$row['id']][$row['eye_id']])){ //and specifically for this eye in the op
+                $dataCheck[$row['id']][$row['eye_id']] = array();
+            }
+            if(!isset($dataCheck[$row['id']][$row['eye_id']][$row['method_id']])){ //and then for this method
+                $dataCheck[$row['id']][$row['eye_id']][$row['method_id']] = true;
+                //get the pre/post values now. Only the first time, order in SQL query means the first one we come
+                //across is the one closest to the op pre and post.
+                $dataSet[] = array(
+                    $this->convertVisualAcuity($row['pre_value']),
+                    $this->convertVisualAcuity($row['post_value'])
+                );
+            }
+        }
+
+        return $dataSet;
     }
 
     public function seriesJson()
     {
-        // TODO: Implement seriesJson() method.
+        $this->series = array(
+            array(
+            'data' => $this->dataSet(),
+            'type' => 'scatter',
+            'name' => 'Visual Outcome'
+        ));
+
+        return json_encode($this->series);
     }
 
     public function graphConfig()
@@ -158,4 +149,11 @@ WHERE
         return json_encode(array_merge_recursive($this->globalGraphConfig, $this->graphConfig));
     }
 
+    protected function convertVisualAcuity($baseValue)
+    {
+        $logMar = OphCiExamination_VisualAcuityUnit::model()->find('name = "logMAR"');
+        $reading = new OphCiExamination_VisualAcuity_Reading();
+
+        return (float)$reading->convertTo($baseValue, $logMar['id']);
+    }
 }
