@@ -65,7 +65,7 @@
         </div>
         <div class="large-4 column">
             <div class="data-value"
-                 id="acon_<?php echo $side ?>"><?php echo $element->{'lens_acon_' . $side} ? $element->{'lens_acon_' . $side} : 'None' ?></div>
+                 id="acon_<?php echo $side ?>"><?php echo $element->{'lens_acon_' . $side} ? $this->formatAconst($element->{'lens_acon_' . $side}) : 'None' ?></div>
         </div>
     </div>
 
