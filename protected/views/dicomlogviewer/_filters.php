@@ -102,28 +102,27 @@
 				</div>
 
 				<div class="row">
-					<div class="large-10 column">
+					<div class="large-7 column">
 						<div class="search-filters-extra audit-filters clearfix">
-							<fieldset class="inline highlight">
-<!--								<label class="inline" for="import_date">Import Date:</label>
+							<fieldset class="inline highlight" style="border: 1px solid #ccd;">
+								<span class="inline" for="import_date">&nbsp;Import Date:
 								<?php
-/*								echo CHtml::radioButton('date_type', true, array(
+								echo CHtml::radioButton('date_type', true, array(
 									'value'=>'1',
 									'id'=>'import_date',
 									'name' => 'date',
 									'uncheckValue'=>null
-								));*/?>
-								<label class="inline" for="study_date">Study Date:</label>
+								));?> Study Date:
 								<?php
-/*								echo CHtml::radioButton('date_type', false, array(
+								echo CHtml::radioButton('date_type', false, array(
 									'value'=>'2',
 									'id'=>'study_date',
 									'name' => 'date',
 									'uncheckValue'=>null
 								));
-								*/?>
+								?></span>&nbsp;
 								<label class="inline" for="date_from">From:</label>
-								<?php /*$this->widget('zii.widgets.jui.CJuiDatePicker', array(
+								<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 									'name' => 'date_from',
 									'id' => 'date_from',
 									'options' => array(
@@ -134,9 +133,9 @@
 									'htmlOptions' => array(
 										'class' => 'small fixed-width'
 									)
-								))*/?>
+								))?>
 								<label class="inline" for="date_to">To:</label>
-								--><?php /*$this->widget('zii.widgets.jui.CJuiDatePicker', array(
+								<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 									'name' => 'date_to',
 									'id' => 'date_to',
 									'options' => array(
@@ -147,7 +146,7 @@
 									'htmlOptions' => array(
 										'class' => 'small fixed-width'
 									)
-								))*/?>
+								))?>
 
 <!--								<?php /*echo CHtml::textField('hos_num',@$_POST['hos_num'],array('autocomplete'=>Yii::app()->params['html_autocomplete'],'class'=>'small fixed-width'))*/?>
 								<?php /*echo CHtml::link('View all',array('audit/'),array('class'=>'inline'))*/?>
@@ -155,6 +154,8 @@
 							</fieldset>
 						</div>
 					</div>
+					<div class="large-3 column">
+						</div>
 					<div class="large-2 column text-right">
 						<img class="loader hidden" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif');?>" alt="loading..." style="margin-right:10px" />
 						<button type="submit" class="secondary long">Search</button>

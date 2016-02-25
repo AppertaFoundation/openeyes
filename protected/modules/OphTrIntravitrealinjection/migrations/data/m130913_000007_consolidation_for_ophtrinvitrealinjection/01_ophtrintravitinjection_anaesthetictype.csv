@@ -1,0 +1,3 @@
+anaesthetic_type_id  => anaesthetic_type.name,display_order
+Topical,1
+LA,2

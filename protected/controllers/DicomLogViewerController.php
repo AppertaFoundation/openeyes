@@ -228,25 +228,19 @@ class DicomLogViewerController extends BaseController
             $command->andWhere(['like', 'dil.report_type', $_REQUEST['type']]);
         }
 
-        /*        if ($_REQUEST['date_type'] == 1) {
-                    $dt1= $_REQUEST['date_from'];
-                   // $command->andWhere(['like', 'dil.report_type', $_REQUEST['type']]);
-                   // $command->addBetweenCondition('dil.import_datetime',$_REQUEST['date_from'],$_REQUEST['date_to'],'AND');
-                   // $command->andWhere('dil.import_datetime > :start AND dil.import_datetime < :end', array(':start' => $_REQUEST['date_from'],':end' => $_REQUEST['date_to']));
-                    $command->andWhere('dil.import_datetime > '.$_REQUEST['date_from'].' AND dil.import_datetime < '.$_REQUEST['date_to']);
 
-                    // $command->andWhere('dil.import_datetime > :start1', array(':start1' => $dt1));
-                  //  $command->andWhere('dil.import_datetime < :end1', array(':end1' => $_REQUEST['date_to']));
-
-                }else{
-                   // $command->addBetweenCondition('dil.study_datetime',$_REQUEST['date_from'],$_REQUEST['date_to'],'AND');
-                    $command->andWhere('dil.study_datetime > :start AND dil.import_datetime < :end', array(':start' => $_REQUEST['date_from'],':end' => $_REQUEST['date_to']));
-                }*/
-
-
-        //echo $command->getText();die;
+        if ($_REQUEST['date_type'] == 1) {
+            if(@$_REQUEST['date_from'] && @$_REQUEST['date_to']) {
+                $command->andWhere('dil.import_datetime > \'' . date("Y-m-d H:i:s", strtotime($_REQUEST['date_from'])) . '\' AND dil.import_datetime < \'' . date("Y-m-d H:i:s", strtotime($_REQUEST['date_to']. ' + 24 Hours')) . '\'');
+            }
+        }else{
+            if(@$_REQUEST['date_from'] && @$_REQUEST['date_to']) {
+                $command->andWhere('dil.study_datetime > \'' . date("Y-m-d H:i:s", strtotime($_REQUEST['date_from'])) . '\' AND dil.import_datetime < \'' . date("Y-m-d H:i:s", strtotime($_REQUEST['date_to']. ' + 24 Hours')) . '\'');
+            }
+       }
+       // echo $command->getText();die;
         $data = array();
-       if ((!empty($_REQUEST['hos_num']) || !empty($_REQUEST['file_name']) || !empty($_REQUEST['study_id']) || !empty($_REQUEST['location']) || !empty($_REQUEST['station_id']) || !empty($_REQUEST['status']) || !empty($_REQUEST['type']))) {
+       if ((!empty($_REQUEST['hos_num']) || !empty($_REQUEST['file_name']) || !empty($_REQUEST['study_id']) || !empty($_REQUEST['location']) || !empty($_REQUEST['station_id']) || !empty($_REQUEST['status']) || !empty($_REQUEST['type'] || !empty($_REQUEST['date_from']) || !empty($_REQUEST['date_to'])))) {
            $data = $command->queryAll();
        }
 
@@ -273,5 +267,17 @@ class DicomLogViewerController extends BaseController
             ->queryAll();
         //->getText();
 
+    }
+
+    public function actionReprocess(){
+        // check if it's an ajax call
+
+        if(Yii::app()->request->isAjaxRequest){
+            $request = Yii::app()->getRequest();
+            $filename = $request->getQuery( 'filename');
+            if($filename != ""){
+                Yii::app()->db->createCommand("update dicom_file_queue set status_id=1 where filename = '".$filename."'")->execute();
+            }
+        }
     }
 };

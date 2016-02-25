@@ -1,0 +1,3 @@
+name,display_order,followup,"episode_status_id => episode_status.name",patientticket
+"Refer to VC",3,0,"Follow-up",1
+"Suitable for stable monitoring clinic",4,1,"Under investigation",0

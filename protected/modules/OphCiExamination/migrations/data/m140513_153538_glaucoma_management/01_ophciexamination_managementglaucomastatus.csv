@@ -1,0 +1,6 @@
+id,name,display_order
+1,Insufficient Data,1
+2,Stable,2
+3,Possible progression,3
+4,Likely progression,4
+5,Definite progression,5

@@ -44,20 +44,20 @@ vendor
 /assets/
 
 # Include core modules
-#!/protected/modules/OphCiExamination/  
-#!/protected/modules/OphCiPhasing/
-#!/protected/modules/OphCoCorrespondence/
-#!/protected/modules/OphCoTherapyapplication/
-#!/protected/modules/OphDrPrescription/
-#!/protected/modules/OphInBiometry/
-#!/protected/modules/OphTrConsent/
-#!/protected/modules/OphTrIntravitrealinjection/
-#!/protected/modules/OphTrLaser/
-#!/protected/modules/OphTrOperationbooking/
-#!/protected/modules/OphTrOperationnote/
-#!/protected/modules/PatientTicketing/
-#!/protected/modules/OphOuAnaestheticsatisfactionaudit/
-#!/protected/modules/OphInVisualfields
+!/protected/modules/OphCiExamination/  
+!/protected/modules/OphCiPhasing/
+!/protected/modules/OphCoCorrespondence/
+!/protected/modules/OphCoTherapyapplication/
+!/protected/modules/OphDrPrescription/
+!/protected/modules/OphInBiometry/
+!/protected/modules/OphTrConsent/
+!/protected/modules/OphTrIntravitrealinjection/
+!/protected/modules/OphTrLaser/
+!/protected/modules/OphTrOperationbooking/
+!/protected/modules/OphTrOperationnote/
+!/protected/modules/PatientTicketing/
+!/protected/modules/OphOuAnaestheticsatisfactionaudit/
+!/protected/modules/OphInVisualfields/
 
 # Tests
 /bin/.enabled-modules

@@ -199,6 +199,10 @@ class SettingMetadata extends BaseActiveRecordVersioned
 
 		$value = $this->getSetting($key);
 
+		if($value == ""){
+			$value = $this->default_value;
+		}
+
 		if ($data = @unserialize($this->data)) {
 			return $data[$value];
 		}

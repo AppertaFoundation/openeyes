@@ -30,6 +30,18 @@
             });
         });
     });
+
+    function reprocessFile(fileName, buttonObj){
+        $(buttonObj).hide();
+
+        $.ajax({
+            method: "POST",
+            url: "/DicomLogViewer/reprocess",
+            data: { filename: fileName }
+        }).done(function() {
+            $(buttonObj).html('OK - Reprocess has been scheduled').show();
+        });
+    }
 </script>
 <tr data-id="<?php echo $i + 1 ?>" filename="<?php echo basename($log['filename']); ?>"
     processor_id="<?php echo $log['processor_id']; ?>" status="<?php echo $log['status']; ?>">
@@ -50,7 +62,7 @@
         <div style="display:none; width:500px;" class="dialogbox" id="dialog_<?php echo $i + 1 ?>" title="More Info"
              data-id="<?php echo $i + 1 ?>">
             <p><b><?php echo basename($log['filename']) ?></b></p>
-
+            <button onclick="reprocessFile('<?php echo $log["filename"]?>', this)" style="float:right;margin-bottom: 20px;">Reprocess file</button>
             <p><b>History</b> <br>
             <table class="grid audit-logs">
                 <thead>
@@ -104,6 +116,7 @@
 				<?php echo trim($log['raw_importer_output']); ?>
 			</textarea>
             </p>
+
             </div>
             
         </div>

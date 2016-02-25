@@ -1,0 +1,7 @@
+id,name,display_order,other,enabled
+1,"Focal",1,0,1
+2,"Grid",2,0,1
+3,"Macular (focal/grid)",3,0,1
+4,"PRP",4,0,1
+5,"PRP & macular",5,0,1
+6,"Other",6,1,1

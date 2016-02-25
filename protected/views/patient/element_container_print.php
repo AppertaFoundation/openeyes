@@ -17,23 +17,32 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<section
-	class="<?php if (@$child) {?>sub-<?php }?>element <?php echo get_class($element)?>"
-	data-element-type-id="<?php echo $element->elementType->id?>"
-	data-element-type-class="<?php echo $element->elementType->class_name?>"
-	data-element-type-name="<?php echo $element->elementType->name?>"
-	data-element-display-order="<?php echo $element->elementType->display_order?>">
-	<div class="details">
-		<!-- Element title -->
-		<?php if (!@$child) {?>
-			<h3 class="element-title"><?php echo $element->elementType->name?></h3>
-		<?php }else{?>
-			<h4 class="sub-element-title"><?php echo $element->elementType->name?></h4>
-		<?php }?>
+<?php if (!preg_match('/\[\-(.*)\-\]/', $element->elementType->name)) { ?>
+	<section
+		class="<?php if (@$child) {?>sub-<?php }?>element <?php echo get_class($element)?>"
+		data-element-type-id="<?php echo $element->elementType->id?>"
+		data-element-type-class="<?php echo $element->elementType->class_name?>"
+		data-element-type-name="<?php echo $element->elementType->name?>"
+		data-element-display-order="<?php echo $element->elementType->display_order?>">
+		<div class="details">
+			<!-- Element title -->
+			<?php if (!@$child) {?>
+				<h3 class="element-title"><?php echo $element->elementType->name?></h3>
+			<?php }else{?>
+				<h4 class="sub-element-title"><?php echo $element->elementType->name?></h4>
+			<?php }?>
 
-		<?php echo $content ;?>
-		<div class="sub-elements">
-			<?php $this->renderChildOpenElements($element, 'print', @$form, @$data)?>
+			<?php echo $content ;?>
+			<div class="sub-elements">
+				<?php $this->renderChildOpenElements($element, 'print', @$form, @$data)?>
+			</div>
 		</div>
-	</div>
-</section>
+	</section>
+<?php }else{ ?>
+	<section class="element-no-display">
+     	<?php echo $content ;?>
+     	<div class="sub-elements">
+        	 <?php $this->renderChildOpenElements($element, 'print', @$form, @$data)?>
+     	</div>
+	</section>
+<?php } ?>

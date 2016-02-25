@@ -1,0 +1,6 @@
+anaesthetic_agent_id => anaesthetic_agent.name,display_order
+G Amethocaine,1
+G Benoxinate,2
+G Proxymetacaine,3
+Lignocaine 1%,4
+Bupivocaine,5

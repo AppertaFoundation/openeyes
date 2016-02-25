@@ -1,0 +1,91 @@
+id,value,delimiter,subspecialty_id,attribute_element_id
+1,"amblyopia",",",4,1
+2,"blurred vision",",",NULL,1
+3,"difficulty watching TV",",",4,1
+4,"difficulty with night driving",",",4,1
+5,"difficulty with reading",",",NULL,1
+6,"difficulty with road signs",",",4,1
+7,"first post-op cataract follow up",",",4,1
+8,"follow up visit",",",NULL,1
+9,"glare",",",NULL,1
+10,"glare with headlights",",",4,1
+11,"gradual deterioration of vision",",",NULL,1
+12,"history of Strabismus",",",4,1
+13,"new referral to cataract service",",",4,1
+14,"pseudophakia",",",NULL,1
+15,"reduced vision",",",4,1
+16,"sudden loss of vision",",",8,1
+17,"trauma",",",4,1
+18,"mild",",",NULL,2
+19,"moderate",",",NULL,2
+20,"severe",",",NULL,2
+21,"detected by diabetic screening",",",4,3
+22,"gradual onset",",",NULL,3
+23,"noticed by optometrist",",",NULL,3
+24,"noticed by parent",",",NULL,3
+25,"sudden onset",",",NULL,3
+26,"both eyes",",",NULL,4
+27,"left eye",",",NULL,4
+28,"left more than right",",",NULL,4
+29,"right eye",",",NULL,4
+30,"right more than left",",",NULL,4
+31,"1 day",",",NULL,5
+32,"1 month",",",NULL,5
+33,"1 week",",",NULL,5
+34,"2 weeks",",",NULL,5
+35,"2-3 days",",",NULL,5
+36,"6 months",",",NULL,5
+37,"one year",",",4,5
+38,"two years",",",4,5
+39,"Fluorescein angiography",",",NULL,6
+40,"OCT",",",NULL,6
+41,"field test",",",NULL,6
+42,"refraction",",",NULL,6
+43,"ultrasound",",",NULL,6
+44,"Cataract: Corneal disease limiting postoperative outcome",",",4,7
+45,"Cataract: Early cataract, not for surgery at present",",",4,7
+46,"Cataract: Glaucoma disease limiting postoperative outcome",",",4,7
+47,"Cataract: Macular disease limiting postoperative outcome",",",4,7
+48,"Cataract: No significant cataract, surgery not required",",",4,7
+49,"Optician: Review refraction with own optician",",",NULL,7
+50,"YAG laser capsulotomy was performed with no complications",",",4,7
+51,"booked for first eye",",",4,7
+52,"booked for second eye",",",4,7
+53,"booked for surgery",",",NULL,7
+54,"copy of clinical details provided for Optician",",",NULL,7
+55,"discharge",",",NULL,7
+56,"discharge, to be reviewed as necessary via A&E or the GP",",",NULL,7
+57,"glasses prescribed",",",NULL,7
+58,"good outcome from surgery listed for second eye",",",4,7
+59,"offer of surgery declined by patient",",",NULL,7
+60,"personal information leaflet provided to patient",",",NULL,7
+61,"removal of suture is done",",",4,7
+62,"satisfactory post operative progress",",",NULL,7
+63,"wean off topical medication",",",NULL,7
+64,"blepharitis",",",NULL,8
+65,"blepharochalasis",",",4,8
+66,"blepharospasm",",",NULL,8
+67,"conjunctivitis",",",NULL,8
+68,"crusting of lashes",",",NULL,8
+69,"difficult access",",",NULL,8
+70,"discharge",",",NULL,8
+71,"dry eyes",",",NULL,8
+72,"ectropion",",",NULL,8
+73,"entropion",",",NULL,8
+74,"injected lid margins",",",NULL,8
+75,"lower lid ectropion",",",NULL,8
+76,"none",",",NULL,8
+77,"poor tear film",",",NULL,8
+78,"punctal ectropian",",",NULL,8
+79,"squint",",",NULL,8
+80,"discharged and glasses not required",",",NULL,9
+81,"discharged with glasses",",",NULL,9
+82,"discharged with prescription for glasses",",",NULL,9
+83,"good outcome from the first eye surgery and is booked for second eye",",",NULL,9
+84,"listed for left cataract surgery under LA",",",NULL,9
+85,"listed for right cataract surgery under LA",",",NULL,9
+86,"new glasses prescribed",",",NULL,9
+87,"patient declined surgery",",",NULL,9
+88,"patient managing well and not keen for surgery",",",NULL,9
+89,"removal of suture at next visit",",",NULL,9
+90,"wean off the medication",",",NULL,9

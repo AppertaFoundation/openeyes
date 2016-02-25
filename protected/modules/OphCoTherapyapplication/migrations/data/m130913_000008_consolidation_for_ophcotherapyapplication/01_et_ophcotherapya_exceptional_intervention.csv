@@ -1,0 +1,3 @@
+id,name,description_label,is_deviation,display_order,last_modified_user_id,last_modified_date,created_user_id,created_date
+1,"In addition to the standard (Additional)","Details of additional",0,1,1,"1901-01-01 00:00:00",1,"1901-01-01 00:00:00"
+2,"Instead of the standard (Deviation)","Details of deviation",1,2,1,"1901-01-01 00:00:00",1,"1901-01-01 00:00:00"
