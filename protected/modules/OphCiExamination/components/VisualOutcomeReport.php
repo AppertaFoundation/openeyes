@@ -27,6 +27,8 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
 {
     protected $months;
 
+    protected $searchTemplate = 'application.modules.OphCiExamination.views.reports.visual_acuity_search';
+
     protected $graphConfig = array(
         'chart' => array('renderTo' => ''),
         'title' => array('text' => 'Visual Acuity'),
@@ -155,5 +157,10 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         $reading = new OphCiExamination_VisualAcuity_Reading();
 
         return (float)$reading->convertTo($baseValue, $logMar['id']);
+    }
+
+    public function renderSearch()
+    {
+        return $this->app->controller->renderPartial($this->searchTemplate, array('report' => $this));
     }
 }

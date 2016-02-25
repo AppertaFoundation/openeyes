@@ -92,6 +92,16 @@ class Report {
     }
 
     /**
+     * @return CWebApplication
+     */
+    public function getApp()
+    {
+        return $this->app;
+    }
+
+
+
+    /**
      * @return CDbCommand
      */
     public function getCommand()
