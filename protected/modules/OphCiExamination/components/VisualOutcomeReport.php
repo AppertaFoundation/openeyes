@@ -22,10 +22,15 @@ namespace OEModule\OphCiExamination\components;
 
 use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading;
 use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit;
+use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method;
 
 class VisualOutcomeReport extends \Report implements \ReportInterface
 {
     protected $months;
+
+    protected $method;
+
+    protected $type;
 
     protected $searchTemplate = 'application.modules.OphCiExamination.views.reports.visual_acuity_search';
 
@@ -49,12 +54,19 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
     public function __construct($app)
     {
         $this->months = $app->getRequest()->getQuery('months', 4);
+        $this->method = $app->getRequest()->getQuery('method', 0);
+        $this->type = $app->getRequest()->getQuery('type', 'distance');
 
         parent::__construct($app);
     }
 
-    protected function queryData($surgeon, $dateFrom, $dateTo, $months)
+    protected function queryData($surgeon, $dateFrom, $dateTo, $months = 4, $method = 0, $type='distance')
     {
+        $table = 'ophciexamination_visualacuity_reading';
+        if($type !== 'distance'){
+            $table = 'ophciexamination_nearvisualacuity_reading';
+        }
+
         $this->getExaminationEvent();
 
         $this->command->select('pre_examination.episode_id, note_event.episode_id, note_event.event_date as op_date, note_event.id, op_procedure.eye_id, pre_reading.method_id,
@@ -83,12 +95,12 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
                 'post_examination.id = post_acuity.event_id
                 AND (post_acuity.eye_id = op_procedure.eye_id
                 OR post_acuity.eye_id = 3)'
-            )->join('ophciexamination_visualacuity_reading pre_reading',
+            )->join($table.' pre_reading',
                 'pre_acuity.id = pre_reading.element_id
                 AND IF(op_procedure.eye_id = 1, pre_reading.side = 1, IF(op_procedure.eye_id = 2,
                                                                            pre_reading.side = 0,
                                                                            pre_reading.side IS NOT NULL))'
-            )->join('ophciexamination_visualacuity_reading post_reading', 'post_acuity.id = post_reading.element_id
+            )->join($table.' post_reading', 'post_acuity.id = post_reading.element_id
                AND post_reading.side = pre_reading.side
                AND post_reading.method_id = pre_reading.method_id')
             ->where('surgeon_id = :surgeon', array('surgeon' => $surgeon))
@@ -102,12 +114,16 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
             $this->command->andWhere('event.event_date < :dateTo', array('dateFrom' => $dateTo));
         }
 
+        if($method){
+            $this->command->andWhere('pre_reading.method_id = :method', array('method' => $method));
+        }
+
         return $this->command->queryAll();
     }
 
     public function dataSet()
     {
-        $data = $this->queryData($this->surgeon, $this->from, $this->to, $this->months);
+        $data = $this->queryData($this->surgeon, $this->from, $this->to, $this->months, $this->method, $this->type);
 
         $dataCheck = array();
         $dataSet = array();
@@ -161,6 +177,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
 
     public function renderSearch()
     {
-        return $this->app->controller->renderPartial($this->searchTemplate, array('report' => $this));
+        $visualAcuityMethods = OphCiExamination_VisualAcuity_Method::model()->findAll('name != "Unaided"');
+        return $this->app->controller->renderPartial($this->searchTemplate, array('report' => $this, 'methods' => $visualAcuityMethods));
     }
 }

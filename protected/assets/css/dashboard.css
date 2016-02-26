@@ -6,7 +6,7 @@ select {
   width: 100%;
   padding: 4px 0;
   font-size: 16px;
-  color: rgba(0,0,0, 0.26);
+  color: inherit;
   border: none;
   border-bottom: 1px solid rgba(0,0,0, 0.12);
 }
@@ -138,21 +138,26 @@ select:focus {
 /* line 145, ../sass/dashboard.scss */
 .report-container .report-search {
   height: 0;
+  overflow: hidden;
 }
-/* line 147, ../sass/dashboard.scss */
+/* line 148, ../sass/dashboard.scss */
 .report-container .report-search fieldset {
   width: 60%;
   margin: auto;
 }
-/* line 150, ../sass/dashboard.scss */
+/* line 151, ../sass/dashboard.scss */
 .report-container .report-search fieldset div {
   margin: 20px;
 }
-/* line 152, ../sass/dashboard.scss */
+/* line 153, ../sass/dashboard.scss */
 .report-container .report-search fieldset div .mdl-radio {
   margin-right: 20px;
 }
-/* line 155, ../sass/dashboard.scss */
+/* line 156, ../sass/dashboard.scss */
 .report-container .report-search fieldset div button[type="submit"] {
   float: right;
+}
+/* line 162, ../sass/dashboard.scss */
+.report-container .chart-container {
+  z-index: 5;
 }

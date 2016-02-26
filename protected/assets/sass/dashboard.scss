@@ -27,7 +27,7 @@ select {
   width: 100%;
   padding: $select-padding 0;
   font-size: $select-font-size;
-  color: $select-color;
+  color: inherit;
   border: none;
   border-bottom: 1px solid $select-border-color;
 }
@@ -144,6 +144,7 @@ select:focus {
   }
   .report-search {
     height: 0;
+    overflow: hidden;
     fieldset{
       width: 60%;
       margin: auto;
@@ -157,5 +158,8 @@ select:focus {
         }
       }
     }
+  }
+  .chart-container {
+    z-index: 5;
   }
 }

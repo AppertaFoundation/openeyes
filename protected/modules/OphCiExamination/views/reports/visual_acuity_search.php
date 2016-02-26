@@ -20,18 +20,50 @@
 ?>
 
 <div class="report-search">
-    <form class="report-search-form" action="/report/reportData">
+    <form class="report-search-form mdl-color-text--grey-600" action="/report/reportData">
         <input type="hidden" name="report" value="<?= $report->getApp()->getRequest()->getQuery('report'); ?>" />
         <fieldset>
             <div class="mdl-selectfield">
-                <label>Standard Select</label>
-                <select class="browser-default">
-                    <option value="" disabled selected>Choose your option</option>
-                    <option value="1">Option 1</option>
-                    <option value="2">Option 2</option>
-                    <option value="3">Option 3</option>
+                <label for="visual-acuity-months">Months Post Op</label>
+                <select name="months" id="visual-acuity-months" class="browser-default">
+                    <?php foreach(range(1,300) as $month): ?>
+                        <option value="<?=$month?>" <?=($month == 4) ? 'selected' : '' ?>><?=$month?></option>
+                    <?php endforeach ?>
                 </select>
+            </div>
+            <div class="mdl-selectfield">
+                <label for="visual-acuity-methods">Method</label>
+                <select name="method" id="visual-acuity-methods" class="browser-default">
+                    <option value="">All</option>
+                    <?php foreach($methods as $method):?>
+                    <option value="<?=$method['id']?>"><?=$method['name']?></option>
+                    <?php endforeach;?>
+                </select>
+            </div>
+            <div>
+                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="visual-acuity-distance">
+                    <input checked class="mdl-radio__button" id="visual-acuity-distance" name="type" type="radio" value="distance">
+                    <span class="mdl-radio__label">Distance</span>
+                </label>
+                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="visual-acuity-near">
+                    <input class="mdl-radio__button" id="visual-acuity-near" name="type" type="radio" value="near">
+                    <span class="mdl-radio__label">Near</span>
+                </label>
+            </div>
+            <div>
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="submit" name="action">Submit
+                    <i class="material-icons right">send</i>
+                </button>
             </div>
         </fieldset>
     </form>
 </div>
+<script>
+    if(typeof componentHandler !== "undefined"){
+        var radios = document.querySelectorAll('.mdl-radio');
+        for(var i = 0; i < radios.length; i++){
+            componentHandler.upgradeElement(radios[i], 'MaterialRadio');
+        }
+
+    }
+</script>

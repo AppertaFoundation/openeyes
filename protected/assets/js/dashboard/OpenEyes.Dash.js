@@ -106,7 +106,7 @@
         Dash.$container.on('submit', '.report-search-form', function(e){
             e.preventDefault();
             var chart,
-                $searchForm = $(this)
+                $searchForm = $(this),
                 chartId = $searchForm.parent().siblings('.chart-container').attr('id');
 
             $.ajax({
@@ -115,14 +115,7 @@
                 dataType: 'json',
                 success: function (data, textStatus, jqXHR) {
                     chart = window[chartId];
-
-                    if(data.length && data[1].length){
-                        for(var i = 0; i < chart.series.length; i++){
-                            chart.series[i].setData(data[i]);
-                        }
-                    } else {
-                        chart.series[0].setData(data);
-                    }
+                    chart.series[0].setData(data);
 
                     $searchForm.parent('.report-search').animate({
                         height: '0'
