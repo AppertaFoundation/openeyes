@@ -23,7 +23,6 @@
      * @memberOf OpenEyes
      */
     var Dash = {
-        visualize: false,
         reports: {},
         itemWrapper: '<div id="{$id}" class="mdl-cell mdl-cell--{$size}-col"><div class="mdl-spinner mdl-js-spinner is-active"></div></div>'
     };
@@ -49,27 +48,6 @@
         return container;
     }
 
-    /**
-     * Load the visualize reports that have been listed.
-     */
-    function loadVisualizeReports(){
-        var report;
-
-        if(Dash.visualize){
-            for(var key in Dash.reports){
-                if(!Dash.reports.hasOwnProperty(key)){
-                    continue;
-                }
-                report = Dash.v.report({
-                    resource: key,
-                    container: Dash.reports[key],
-                    error: Dash.visualizeError
-                });
-
-                delete Dash.reports[key];
-            }
-        }
-    }
 
     /**
      * Loads a piece of HTML in to a dash container.
@@ -77,7 +55,7 @@
      * @param report
      * @param container
      */
-    function loadBespokeHtml(report, container, data) {
+    function loadBespokeHtml(report, container) {
         $.ajax({
                 url: report,
                 dataType: 'html',
@@ -127,66 +105,27 @@
         });
     };
 
-    /**
-     * Loads the visualize library
-     */
-    Dash.loadVisualize = function()
-    {
-        $.getScript('http://reports.acrossopeneyes.com:8080/jasperserver-pro/client/visualize.js', function( data, textStatus, jqxhr){
-            Dash.visualize = true;
-            visualize({
-                auth: {
-                    name: 'superuser',
-                    password: 'superuser'
-                }
-            }, function(v){
-                Dash.visualize = true;
-                Dash.v = v;
-                loadVisualizeReports();
-            });
-        });
-    };
-
-    /**
-     * Deal with an error from visualize
-     * @param err
-     */
-    Dash.visualizeError = function(err){
-        alert(err.message);
-    };
-
-    /**
-     * Add a visualize report to the list
-     *
-     * @param report
-     */
-    Dash.addVisualizeReport = function(report)
-    {
-        Dash.reports[report] = appendDashWrapper(report);
-        loadVisualizeReports();
-    };
-
-    Dash.addBespokeReport = function(report, dependency, size, data)
+    Dash.addBespokeReport = function(report, dependency, size)
     {
         var container;
 
         container = appendDashWrapper(report, size);
-        Dash.loadBespokeReport(report, dependency, container, data)
+        Dash.loadBespokeReport(report, dependency, container)
     };
 
-    Dash.updateBespokeReport = function(report, container, data)
+    Dash.updateBespokeReport = function(report, container)
     {
-        loadBespokeHtml(report, container, data);
+        loadBespokeHtml(report, container);
     };
 
-    Dash.loadBespokeReport = function(report, dependency, container, data)
+    Dash.loadBespokeReport = function(report, dependency, container)
     {
         if(dependency){
             $.getScript(dependency, function(){
-                loadBespokeHtml(report, container, data);
+                loadBespokeHtml(report, container);
             });
         } else {
-            loadBespokeHtml(report, container, data);
+            loadBespokeHtml(report, container);
         }
     };
 

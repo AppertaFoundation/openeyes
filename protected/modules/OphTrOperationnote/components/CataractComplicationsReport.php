@@ -15,7 +15,7 @@ class CataractComplicationsReport extends Report implements ReportInterface
         'chart' => array('renderTo' => '', 'type' => 'bar'),
         'title' => array('text' => 'Case Complexity Adjusted PCR Rate'),
         'xAxis' => array(
-            'categories'=> array(),
+            'categories' => array(),
             'title' => array('text' => 'Complication'),
             'labels' => array('style' => array('fontSize' => '0.5em'))
         )
@@ -40,11 +40,11 @@ class CataractComplicationsReport extends Report implements ReportInterface
             ->where('surgeon_id = :surgeon', array('surgeon' => $surgeon))
             ->group('complication_id');
 
-        if($dateFrom){
+        if ($dateFrom) {
             $this->command->andWhere('event.event_date > :dateFrom', array('dateFrom' => $dateFrom));
         }
 
-        if($dateTo){
+        if ($dateTo) {
             $this->command->andWhere('event.event_date < :dateTo', array('dateFrom' => $dateTo));
         }
 
@@ -60,9 +60,9 @@ class CataractComplicationsReport extends Report implements ReportInterface
         $seriesCount = array();
         $this->setComplicationCategories();
 
-        foreach($this->graphConfig['xAxis']['categories'] as $category){
-            foreach($data as $complicationData){
-                if($category === $complicationData['name']){
+        foreach ($this->graphConfig['xAxis']['categories'] as $category) {
+            foreach ($data as $complicationData) {
+                if ($category === $complicationData['name']) {
                     $seriesCount[] = (int)$complicationData['complication_count'];
                     continue 2;
                 }
@@ -116,7 +116,7 @@ class CataractComplicationsReport extends Report implements ReportInterface
      */
     public function setComplicationCategories()
     {
-        if(!$this->graphConfig['xAxis']['categories']){
+        if (!$this->graphConfig['xAxis']['categories']) {
             $complications = $this->allComplications();
             foreach ($complications as $complication) {
                 $this->graphConfig['xAxis']['categories'][] = $complication['name'];

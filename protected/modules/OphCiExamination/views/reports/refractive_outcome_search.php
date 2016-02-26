@@ -1,3 +1,4 @@
+<?php
 /**
  * OpenEyes
  *
@@ -16,11 +17,25 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-$(document).ready(function() {
-    OpenEyes.Dash.init('#dash-grid');
-    OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=PcrRisk');
-    OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=CataractComplications');
-    OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\VisualOutcome');
-    OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\RefractiveOutcome');
-});
+?>
 
+<div class="report-search">
+    <form class="report-search-form mdl-color-text--grey-600" action="/report/reportData">
+        <input type="hidden" name="report" value="<?= $report->getApp()->getRequest()->getQuery('report'); ?>" />
+        <fieldset>
+            <div class="mdl-selectfield">
+                <label for="refractive-outcome-months">Months Post Op</label>
+                <select name="months" id="refractive-outcome-months" class="browser-default">
+                    <?php foreach(range(1,300) as $month): ?>
+                        <option value="<?=$month?>" <?=($month == 4) ? 'selected' : '' ?>><?=$month?></option>
+                    <?php endforeach ?>
+                </select>
+            </div>
+            <div>
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="submit" name="action">Submit
+                    <i class="material-icons right">send</i>
+                </button>
+            </div>
+        </fieldset>
+    </form>
+</div>

@@ -26,14 +26,29 @@ use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method;
 
 class VisualOutcomeReport extends \Report implements \ReportInterface
 {
+    /**
+     * @var int
+     */
     protected $months;
 
+    /**
+     * @var int
+     */
     protected $method;
 
+    /**
+     * @var string
+     */
     protected $type;
 
+    /**
+     * @var string
+     */
     protected $searchTemplate = 'application.modules.OphCiExamination.views.reports.visual_acuity_search';
 
+    /**
+     * @var array
+     */
     protected $graphConfig = array(
         'chart' => array('renderTo' => ''),
         'title' => array('text' => 'Visual Acuity'),
@@ -51,6 +66,9 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         ))
     );
 
+    /**
+     * @param $app
+     */
     public function __construct($app)
     {
         $this->months = $app->getRequest()->getQuery('months', 4);
@@ -60,10 +78,19 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         parent::__construct($app);
     }
 
-    protected function queryData($surgeon, $dateFrom, $dateTo, $months = 4, $method = 0, $type='distance')
+    /**
+     * @param $surgeon
+     * @param $dateFrom
+     * @param $dateTo
+     * @param int $months
+     * @param int $method
+     * @param string $type
+     * @return array|\CDbDataReader
+     */
+    protected function queryData($surgeon, $dateFrom, $dateTo, $months = 4, $method = 0, $type = 'distance')
     {
         $table = 'ophciexamination_visualacuity_reading';
-        if($type !== 'distance'){
+        if ($type !== 'distance') {
             $table = 'ophciexamination_nearvisualacuity_reading';
         }
 
@@ -95,46 +122,50 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
                 'post_examination.id = post_acuity.event_id
                 AND (post_acuity.eye_id = op_procedure.eye_id
                 OR post_acuity.eye_id = 3)'
-            )->join($table.' pre_reading',
+            )->join($table . ' pre_reading',
                 'pre_acuity.id = pre_reading.element_id
                 AND IF(op_procedure.eye_id = 1, pre_reading.side = 1, IF(op_procedure.eye_id = 2,
                                                                            pre_reading.side = 0,
                                                                            pre_reading.side IS NOT NULL))'
-            )->join($table.' post_reading', 'post_acuity.id = post_reading.element_id
+            )->join($table . ' post_reading', 'post_acuity.id = post_reading.element_id
                AND post_reading.side = pre_reading.side
                AND post_reading.method_id = pre_reading.method_id')
             ->where('surgeon_id = :surgeon', array('surgeon' => $surgeon))
+            ->andWhere('pre_examination.deleted <> 1 and post_examination.deleted <> 1 and note_event.deleted <> 1')
             ->order('pre_exam_date asc, post_exam_date desc');
 
-        if($dateFrom){
+        if ($dateFrom) {
             $this->command->andWhere('event.event_date > :dateFrom', array('dateFrom' => $dateFrom));
         }
 
-        if($dateTo){
+        if ($dateTo) {
             $this->command->andWhere('event.event_date < :dateTo', array('dateFrom' => $dateTo));
         }
 
-        if($method){
+        if ($method) {
             $this->command->andWhere('pre_reading.method_id = :method', array('method' => $method));
         }
 
         return $this->command->queryAll();
     }
 
+    /**
+     * @return array
+     */
     public function dataSet()
     {
         $data = $this->queryData($this->surgeon, $this->from, $this->to, $this->months, $this->method, $this->type);
 
         $dataCheck = array();
         $dataSet = array();
-        foreach($data as $row){
-            if(!isset($dataCheck[$row['id']])){//Do we have data for this operation?
+        foreach ($data as $row) {
+            if (!isset($dataCheck[$row['id']])) {//Do we have data for this operation?
                 $dataCheck[$row['id']] = array();
             }
-            if(!isset($dataCheck[$row['id']][$row['eye_id']])){ //and specifically for this eye in the op
+            if (!isset($dataCheck[$row['id']][$row['eye_id']])) { //and specifically for this eye in the op
                 $dataCheck[$row['id']][$row['eye_id']] = array();
             }
-            if(!isset($dataCheck[$row['id']][$row['eye_id']][$row['method_id']])){ //and then for this method
+            if (!isset($dataCheck[$row['id']][$row['eye_id']][$row['method_id']])) { //and then for this method
                 $dataCheck[$row['id']][$row['eye_id']][$row['method_id']] = true;
                 //get the pre/post values now. Only the first time, order in SQL query means the first one we come
                 //across is the one closest to the op pre and post.
@@ -148,18 +179,24 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         return $dataSet;
     }
 
+    /**
+     * @return string
+     */
     public function seriesJson()
     {
         $this->series = array(
             array(
-            'data' => $this->dataSet(),
-            'type' => 'scatter',
-            'name' => 'Visual Outcome'
-        ));
+                'data' => $this->dataSet(),
+                'type' => 'scatter',
+                'name' => 'Visual Outcome'
+            ));
 
         return json_encode($this->series);
     }
 
+    /**
+     * @return string
+     */
     public function graphConfig()
     {
         $this->graphConfig['chart']['renderTo'] = $this->graphId();
@@ -167,6 +204,10 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         return json_encode(array_merge_recursive($this->globalGraphConfig, $this->graphConfig));
     }
 
+    /**
+     * @param $baseValue
+     * @return float
+     */
     protected function convertVisualAcuity($baseValue)
     {
         $logMar = OphCiExamination_VisualAcuityUnit::model()->find('name = "logMAR"');
@@ -175,6 +216,9 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         return (float)$reading->convertTo($baseValue, $logMar['id']);
     }
 
+    /**
+     * @return mixed|string
+     */
     public function renderSearch()
     {
         $visualAcuityMethods = OphCiExamination_VisualAcuity_Method::model()->findAll('name != "Unaided"');
