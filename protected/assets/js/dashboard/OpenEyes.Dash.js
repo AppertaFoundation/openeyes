@@ -73,12 +73,28 @@
      */
     Dash.init = function(container)
     {
+        var $dateInputs = $('#from-date, #to-date');
         Dash.$container = $(container);
 
         Dash.$container.on('click', '.search-icon', function(){
             $(this).parent('.report-container').find('.report-search').removeClass('visuallyhidden').animate({
                 height: '100%'
             }, 300);
+        });
+
+
+        $dateInputs.on('focus', function(){
+            $(this).parent().addClass('is-dirty');
+        });
+        $dateInputs.datepicker({
+            prevText: "<i class='material-icons'>chevron_left</i>",
+            nextText: "<i class='material-icons'>chevron_right</i>",
+            dateFormat: 'd M yy',
+            onClose: function(date, inst) {
+                if(!date){
+                    $(inst.input).parent().removeClass('is-dirty');
+                }
+            }
         });
 
         $('#search-form').on('submit', function(e){

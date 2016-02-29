@@ -122,8 +122,17 @@ class Report {
     public function __construct($app)
     {
         $this->app = $app;
-        $this->from = $app->getRequest()->getQuery('from', '');
-        $this->to = $app->getRequest()->getQuery('to', '');
+
+        if($app->getRequest()->getQuery('from', '')){
+            $from = new DateTime($app->getRequest()->getQuery('from', ''));
+            $this->from = $from->format('Y-m-d');
+        }
+
+        if($app->getRequest()->getQuery('to', '')){
+            $to = new DateTime($app->getRequest()->getQuery('to', ''));
+            $this->to = $to->format('Y-m-d');
+
+        }
         $this->command = $app->db->createCommand();
         $this->surgeon = $app->user->id;
     }

@@ -1,5 +1,5 @@
 /* Style Select Field */
-/* line 24, ../sass/dashboard.scss */
+/* line 25, ../sass/dashboard.scss */
 select {
   font-family: inherit;
   background-color: transparent;
@@ -12,23 +12,23 @@ select {
 }
 
 /* Remove focus */
-/* line 36, ../sass/dashboard.scss */
+/* line 37, ../sass/dashboard.scss */
 select:focus {
   outline: none;
 }
 
 /* Use custom arrow */
-/* line 40, ../sass/dashboard.scss */
+/* line 41, ../sass/dashboard.scss */
 .mdl-selectfield select {
   appearance: none;
 }
 
-/* line 41, ../sass/dashboard.scss */
+/* line 42, ../sass/dashboard.scss */
 .mdl-selectfield {
   font-family: 'Roboto','Helvetica','Arial',sans-serif;
   position: relative;
 }
-/* line 44, ../sass/dashboard.scss */
+/* line 45, ../sass/dashboard.scss */
 .mdl-selectfield select:after {
   position: absolute;
   top: 0.75em;
@@ -44,11 +44,117 @@ select:focus {
   pointer-events: none;
 }
 
-/* line 60, ../sass/dashboard.scss */
+/* line 61, ../sass/dashboard.scss */
+.ui-datepicker {
+  padding: 0;
+  border: none;
+  box-shadow: 0 12px 36px 16px rgba(0, 0, 0, 0.24);
+  width: 295px !important;
+  font-family: 'Roboto','Helvetica','Arial',sans-serif;
+  z-index: 10;
+  background-color: white;
+}
+
+/* line 71, ../sass/dashboard.scss */
+.ui-corner-all {
+  border-radius: 0;
+}
+
+/* line 75, ../sass/dashboard.scss */
+.ui-widget-header {
+  border: 0;
+}
+
+/* line 79, ../sass/dashboard.scss */
+.ui-datepicker-header {
+  text-align: center;
+  background: white;
+  padding-bottom: 15px;
+  font-weight: 300;
+}
+/* line 85, ../sass/dashboard.scss */
+.ui-datepicker-header .ui-datepicker-prev,
+.ui-datepicker-header .ui-datepicker-next,
+.ui-datepicker-header .ui-datepicker-title {
+  border: none;
+  outline: none;
+  margin: 5px;
+}
+/* line 92, ../sass/dashboard.scss */
+.ui-datepicker-header .ui-datepicker-prev,
+.ui-datepicker-header .ui-datepicker-next {
+  cursor: pointer;
+  color: #3f51b5;
+}
+
+/* line 99, ../sass/dashboard.scss */
+.ui-datepicker-prev.ui-state-hover,
+.ui-datepicker-next.ui-state-hover {
+  border: none;
+  outline: none;
+}
+
+/* line 106, ../sass/dashboard.scss */
+.ui-datepicker-calendar .ui-state-default {
+  background: none;
+  border: none;
+  text-align: center;
+  height: 33px;
+  width: 33px;
+  line-height: 36px;
+}
+/* line 115, ../sass/dashboard.scss */
+.ui-datepicker-calendar .ui-state-highlight {
+  color: #3f51b5;
+}
+/* line 119, ../sass/dashboard.scss */
+.ui-datepicker-calendar .ui-state-active {
+  border-radius: 50%;
+  background-color: #3f51b5;
+  color: white;
+}
+/* line 125, ../sass/dashboard.scss */
+.ui-datepicker-calendar thead th {
+  color: #999999;
+  font-weight: 400;
+}
+/* line 130, ../sass/dashboard.scss */
+.ui-datepicker-calendar a {
+  color: #757575;
+  padding: 0;
+}
+
+/* line 136, ../sass/dashboard.scss */
+.ui-datepicker-buttonpane {
+  border: none;
+}
+/* line 139, ../sass/dashboard.scss */
+.ui-datepicker-buttonpane .ui-state-default {
+  background: white;
+  border: none;
+}
+/* line 144, ../sass/dashboard.scss */
+.ui-datepicker-buttonpane .ui-datepicker-close,
+.ui-datepicker-buttonpane .ui-datepicker-current {
+  background: white;
+  color: #3f51b5;
+  text-transform: uppercase;
+  border: none;
+  opacity: 1;
+  font-weight: 200;
+  outline: none;
+}
+/* line 154, ../sass/dashboard.scss */
+.ui-datepicker-buttonpane .ui-datepicker-close:hover,
+.ui-datepicker-buttonpane .ui-datepicker-current:hover {
+  background: #f7f8fc;
+}
+
+/* line 160, ../sass/dashboard.scss */
 .drawer {
   border: none;
 }
-/* line 64, ../sass/dashboard.scss */
+/* line 164, ../sass/dashboard.scss */
 .drawer .mdl-navigation .mdl-navigation__link {
   display: -webkit-box !important;
   display: -webkit-flex !important;
@@ -66,45 +172,51 @@ select:focus {
   color: rgba(255, 255, 255, 0.56);
   font-weight: 500;
 }
-/* line 80, ../sass/dashboard.scss */
+/* line 180, ../sass/dashboard.scss */
 .drawer .mdl-navigation .mdl-navigation__link:hover {
   background-color: #00BCD4;
   color: #37474F;
 }
-/* line 84, ../sass/dashboard.scss */
+/* line 184, ../sass/dashboard.scss */
 .drawer .mdl-navigation .mdl-navigation__link i {
   margin-right: 25px;
 }
 
-/* line 91, ../sass/dashboard.scss */
+/* line 191, ../sass/dashboard.scss */
 .mdl-layout--fixed-drawer > .mdl-layout__content {
   margin-left: 0;
 }
 
-/* line 95, ../sass/dashboard.scss */
+/* line 195, ../sass/dashboard.scss */
 .mdl-layout--fixed-drawer.is-upgraded:not(.is-small-screen) > .mdl-layout__header {
   margin-left: 0;
   width: 100%;
 }
 
-/* line 102, ../sass/dashboard.scss */
+/* line 200, ../sass/dashboard.scss */
+#from-date, #to-date {
+  position: relative;
+  z-index: 50;
+}
+
+/* line 207, ../sass/dashboard.scss */
 #dash-grid .mdl-cell {
   background-color: white;
   height: 350px;
   padding: 0;
   overflow: hidden;
 }
-/* line 109, ../sass/dashboard.scss */
+/* line 214, ../sass/dashboard.scss */
 #dash-grid .highcharts-xaxis-labels text, #dash-grid .highcharts-yaxis-labels text {
   font-size: 0.8em !important;
 }
 
-/* line 116, ../sass/dashboard.scss */
+/* line 221, ../sass/dashboard.scss */
 .report-container {
   position: relative;
   height: 100%;
 }
-/* line 119, ../sass/dashboard.scss */
+/* line 224, ../sass/dashboard.scss */
 .report-container .search-icon {
   position: absolute;
   right: 0;
@@ -112,7 +224,7 @@ select:focus {
   z-index: 1;
   cursor: pointer;
 }
-/* line 125, ../sass/dashboard.scss */
+/* line 230, ../sass/dashboard.scss */
 .report-container .search-icon:after {
   font-family: "Roboto","Helvetica","Arial",sans-serif;
   font-size: 0.7em;
@@ -123,37 +235,37 @@ select:focus {
   width: 0;
   display: inline-block;
 }
-/* line 135, ../sass/dashboard.scss */
+/* line 240, ../sass/dashboard.scss */
 .report-container .search-icon:hover:after {
   width: 55px;
 }
-/* line 140, ../sass/dashboard.scss */
+/* line 245, ../sass/dashboard.scss */
 .report-container div {
   height: 100%;
 }
-/* line 143, ../sass/dashboard.scss */
+/* line 248, ../sass/dashboard.scss */
 .report-container .report-search {
   height: 0;
   overflow: hidden;
 }
-/* line 146, ../sass/dashboard.scss */
+/* line 251, ../sass/dashboard.scss */
 .report-container .report-search fieldset {
   width: 60%;
   margin: auto;
 }
-/* line 149, ../sass/dashboard.scss */
+/* line 254, ../sass/dashboard.scss */
 .report-container .report-search fieldset div {
   margin: 20px;
 }
-/* line 151, ../sass/dashboard.scss */
+/* line 256, ../sass/dashboard.scss */
 .report-container .report-search fieldset div .mdl-radio {
   margin-right: 20px;
 }
-/* line 154, ../sass/dashboard.scss */
+/* line 259, ../sass/dashboard.scss */
 .report-container .report-search fieldset div button[type="submit"] {
   float: right;
 }
-/* line 160, ../sass/dashboard.scss */
+/* line 265, ../sass/dashboard.scss */
 .report-container .chart-container {
   z-index: 5;
 }
