@@ -18,6 +18,10 @@ class CataractComplicationsReport extends Report implements ReportInterface
             'categories' => array(),
             'title' => array('text' => 'Complication'),
             'labels' => array('style' => array('fontSize' => '0.5em'))
+        ),
+        'tooltip' => array(
+            'headerFormat' => '<b>Cataract Complications</b><br>',
+            'pointFormat' => '<i>Complication</i>: {point.x} <br /> <i>Num Occurrences </i>: {point.y}'
         )
     );
 
@@ -45,7 +49,7 @@ class CataractComplicationsReport extends Report implements ReportInterface
         }
 
         if ($dateTo) {
-            $this->command->andWhere('event.event_date < :dateTo', array('dateFrom' => $dateTo));
+            $this->command->andWhere('event.event_date < :dateTo', array('dateTo' => $dateTo));
         }
 
         return $this->command->queryAll();

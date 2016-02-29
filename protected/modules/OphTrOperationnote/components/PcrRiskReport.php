@@ -25,6 +25,10 @@ class PcrRiskReport extends Report implements ReportInterface
             )),
             'max' => 30
         ),
+        'tooltip' => array(
+            'headerFormat' => '<b>PCR Risk</b><br>',
+            'pointFormat' => '<i>Number of surgeries</i>: {point.x} <br /> <i>PCR Avg</i>: {point.y}'
+        )
     );
 
     /**
@@ -47,7 +51,7 @@ class PcrRiskReport extends Report implements ReportInterface
         }
 
         if ($dateTo) {
-            $this->command->andWhere('event.event_date < :dateTo', array('dateFrom' => $dateTo));
+            $this->command->andWhere('event.event_date < :dateTo', array('dateTo' => $dateTo));
         }
 
         return $this->command->queryRow();

@@ -48,6 +48,10 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         'yAxis' => array(
             'title' => array('text' => 'Number of patients'),
         ),
+        'tooltip' => array(
+            'headerFormat' => '<b>Refractive Outcome</b><br>',
+            'pointFormat' => '<i>Diff Post Op</i>: {point.x} <br /> <i>Num Patients</i>: {point.y}'
+        )
     );
 
     /**
@@ -93,11 +97,11 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
             ->order('post_exam_date desc');
 
         if ($dateFrom) {
-            $this->command->andWhere('event.event_date > :dateFrom', array('dateFrom' => $dateFrom));
+            $this->command->andWhere('note_event.event_date > :dateFrom', array('dateFrom' => $dateFrom));
         }
 
         if ($dateTo) {
-            $this->command->andWhere('event.event_date < :dateTo', array('dateFrom' => $dateTo));
+            $this->command->andWhere('note_event.event_date < :dateTo', array('dateTo' => $dateTo));
         }
 
         return $this->command->queryAll();
@@ -145,7 +149,10 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
     public function seriesJson()
     {
         $this->series = array(
-            array('data' => $this->dataSet())
+            array(
+                'data' => $this->dataSet(),
+                'name' => 'Refractive Outcome',
+            ),
         );
 
         return json_encode($this->series);

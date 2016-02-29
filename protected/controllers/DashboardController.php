@@ -25,6 +25,7 @@ class DashboardController extends BaseDashboardController
             array('allow',
                 'actions' => array('index', 'cataract'),
                 'roles' => array('admin','OprnGenerateReport'),
+                'expression' => 'Yii::app()->user->isSurgeon()'
             )
         );
     }

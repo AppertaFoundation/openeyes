@@ -81,11 +81,18 @@
             }, 300);
         });
 
+        $('#search-form').on('submit', function(e){
+            e.preventDefault();
+
+            $('.report-search-form').trigger('submit');
+
+        });
+
         Dash.$container.on('submit', '.report-search-form', function(e){
             e.preventDefault();
             var chart,
                 $searchForm = $(this),
-                chartId = $searchForm.parent().siblings('.chart-container').attr('id');
+                chartId = $searchForm.parents('.report-container').find('.chart-container').attr('id');
 
             $.ajax({
                 url: $(this).attr('action'),
