@@ -1,0 +1,3 @@
+id,name,display_order,followup,"episode_status_id => episode_status.name"
+1,"Follow-up",1,1,"Follow-up"
+2,"Discharge",2,0,"Discharged"

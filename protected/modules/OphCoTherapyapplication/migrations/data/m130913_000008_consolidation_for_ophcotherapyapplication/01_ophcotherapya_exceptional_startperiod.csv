@@ -1,0 +1,6 @@
+id,name,urgent,display_order,enabled,last_modified_user_id,last_modified_date,created_user_id,created_date,application_description
+1,"One month",1,3,1,1,"1901-01-01 00:00:00",1,"1901-01-01 00:00:00","IFR request for treatment where the patient requires a funding decision within one month"
+2,"2 weeks",1,4,1,1,"1901-01-01 00:00:00",1,"1901-01-01 00:00:00","IFR request for treatment where the patient requires a funding decision within two weeks"
+3,"Immediate quality of life sustaining measures",1,5,1,1,"1901-01-01 00:00:00",1,"1901-01-01 00:00:00","IFR for patients whose condition requires immediate life/quality of life sustaining measures"
+4,"Routine",0,1,1,1,"1901-01-01 00:00:00",1,"1901-01-01 00:00:00","IFR request for planned/elective treatment"
+5,"Two months",0,2,1,1,"1901-01-01 00:00:00",1,"1901-01-01 00:00:00","IFR request for treatment where the patient requires a funding decision within two months"

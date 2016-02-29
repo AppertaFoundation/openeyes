@@ -1,0 +1,6 @@
+id,name,tooltip,information
+1,"ETDRS Letters",1,"ETDRS letters score is at 1m. For tests done at 4m, 30 letters should be added, at 2m, 15 letters should be added."
+2,"Snellen Metre",1,NULL
+3,"Snellen Foot",0,NULL
+4,"logMAR",1,"logMAR score is at 1m. For tests done at 4m, subtract 0.6 logMAR, at 2m, subtract 0.3 logMar."
+5,"Decimal",0,NULL

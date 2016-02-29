@@ -1,0 +1,5 @@
+id,name,display_order,last_modified_user_id,last_modified_date,created_user_id,created_date
+1,"1. Patient agreement to investigation or treatment",1,1,"1901-01-01 00:00:00",1,"1901-01-01 00:00:00"
+2,"2. Parental agreement to investigation or treatment for a child or young person",2,1,"1901-01-01 00:00:00",1,"1901-01-01 00:00:00"
+3,"3. Patient/parental agreement to investigation or treatment (procedures where consciousness not impaired)",3,1,"1901-01-01 00:00:00",1,"1901-01-01 00:00:00"
+4,"4. Form for adults who are unable to consent to investigation or treatment",4,1,"1901-01-01 00:00:00",1,"1901-01-01 00:00:00"

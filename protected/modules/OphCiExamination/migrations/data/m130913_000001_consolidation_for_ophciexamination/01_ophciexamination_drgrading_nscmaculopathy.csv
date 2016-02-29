@@ -1,0 +1,5 @@
+id,name,description,display_order,booking_weeks,class
+1,"M0","No maculopathy",1,NULL,"none"
+2,"M1A","Any of the following:<ul><li>Exudate within 1 disc diameter (DD) of the centre of the fovea</li><li>Group of exudates within the macula</li><li>Retinal thickening within 1DD of the centre of the fovea (if stereo available)</li><li>Any microaneurysm or haemorrhage within 1DD of the centre of the fovea only if associated with a best VA of <= 6/12 (if no stereo)</li></ul>",3,13,"maculopathy"
+3,"M1S","Stable maculopathy needs no further treatment",2,NULL,"moderate"
+4,"U","Ungradable/unobtainable",4,NULL,"ungradable"

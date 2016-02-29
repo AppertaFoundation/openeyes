@@ -1,0 +1,5 @@
+id,name,site_id => site.name,code,last_modified_user_id,last_modified_date,created_user_id,created_date,display_order,ward_id => ophtroperationbooking_operation_ward.name ,deleted
+1,"Kings Theatre One","Kings Hospital","KT1",1,"2013-06-28 10:59:32",1,"2013-06-28 10:57:28",1,"Kings Ward One",0
+2,"Kings Theatre Two","Kings Hospital","KT2",1,"2013-06-28 10:59:43",1,"2013-06-28 10:57:43",1,"Kings Ward One",0
+3,"Queens Theatre One","Queens Hospital","QT1",1,"2013-06-28 11:00:03",1,"2013-06-28 11:00:03",1,"Queens Ward One",0
+4,"Queens Theatre Two","Queens Hospital","QT2",1,"2013-06-28 11:00:23",1,"2013-06-28 11:00:23",1,"Queens Ward One",0

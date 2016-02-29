@@ -1,0 +1,6 @@
+id,name,display_order,requires_comment
+1,"Consultant",10,0
+2,"Non Consultant Doctor",20,0
+3,"Optometrist",30,0
+4,"Clinic Nurse",40,0
+5,"Other",9999,1

@@ -140,17 +140,21 @@ class WKHtmlToPDF
 		$patient_names = array();
 		$patient_hosnums = array();
 		$patient_nhsnums = array();
+		$patient_dobs = array();
 
 		foreach ($this->patients as $patient) {
 			$patient_names[] = $patient->getHSCICName(true);
 			$patient_hosnums[] = $patient->hos_num;
 			$patient_nhsnums[] = $patient->nhsnum;
+			$patient_dobs[] = date("d-m-Y",strtotime($patient->dob));
+
 		}
 
 		while (count($patient_names) < $this->documents) {
 			$patient_names[] = $patient_names[count($patient_names)-1];
 			$patient_hosnums[] = $patient_hosnums[count($patient_hosnums)-1];
 			$patient_nhsnums[] = $patient_nhsnums[count($patient_nhsnums)-1];
+			$patient_dobs[] = $patient_dobs[count($patient_dobs)-1];
 		}
 
 		while (count($this->barcodes) < $this->documents) {
@@ -167,9 +171,11 @@ class WKHtmlToPDF
 		$footer = str_replace('{{PATIENT_NAMES}}',CJavaScript::encode($patient_names),$footer);
 		$footer = str_replace('{{PATIENT_HOSNUMS}}',CJavaScript::encode($patient_hosnums),$footer);
 		$footer = str_replace('{{PATIENT_NHSNUMS}}',CJavaScript::encode($patient_nhsnums),$footer);
+		$footer = str_replace('{{PATIENT_DOBS}}',CJavaScript::encode($patient_dobs),$footer);
 		$footer = str_replace('{{PATIENT_NAME}}','<span class="patient_name"></span>',$footer);
 		$footer = str_replace('{{PATIENT_HOSNUM}}','<span class="patient_hosnum"></span>',$footer);
 		$footer = str_replace('{{PATIENT_NHSNUM}}','<span class="patient_nhsnum"></span>',$footer);
+		$footer = str_replace('{{PATIENT_DOB}}','<span class="patient_dob"></span>',$footer);
 		$footer = str_replace('{{BARCODES}}',CJavaScript::encode($this->barcodes),$footer);
 		$footer = str_replace('{{BARCODE}}','<span class="barcode"></span>',$footer);
 		$footer = str_replace('{{DOCREF}}','<span class="docref"></span>',$footer);
@@ -177,8 +183,7 @@ class WKHtmlToPDF
 		$footer = str_replace('{{DOCUMENTS}}',$this->documents,$footer);
 		$footer = str_replace('{{PAGE}}','<span class="page"></span>',$footer);
 		$footer = str_replace('{{PAGES}}','<span class="topage"></span>',$footer);
-		$footer = str_replace('{{CUSTOM_TAGS}}',CJavaScript::encode($this->custom_tags),$footer);
-
+		$footer = str_replace('{{CUSTOM_TAGS}}',CJavaScript::encode($this->custom_tags),$footer);	
 		return $footer;
 	}
 

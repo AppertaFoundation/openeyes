@@ -212,7 +212,7 @@ class Intravitreal extends OpenEyesPage {
 			),
 			
 			'existingAllergyCheck' => array (
-					'xpath' => "//*[contains(text(),'Patient is allergic to: Tetracycline')]" 
+					'xpath' => "//*[contains(text(),'Tetracycline')]" 
 			),
 			'removeRightEye' => array (
 					'xpath' => "//*[@class='element-eye right-eye left side column']//*[contains(text(),'Remove side')]" 
@@ -223,64 +223,64 @@ class Intravitreal extends OpenEyesPage {
 			
 			// error messages
 			'anaestheticLeftTypeBlank' => array (
-					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Anaesthetic: Left Anaesthetic Type cannot be blank.')]" 
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Left Anaesthetic Type cannot be blank.')]" 
 			),
 			'anaestheticLeftTypeDeliveryBlank' => array (
-					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Anaesthetic: Left Anaesthetic Delivery cannot be blank.')]" 
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Left Anaesthetic Delivery cannot be blank.')]" 
 			),
 			'anaestheticLeftTypeAgent' => array (
-					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Anaesthetic: Left Anaesthetic Agent cannot be blank.')]" 
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Left Anaesthetic Agent cannot be blank.')]" 
 			),
 			'anaestheticRightTypeBlank' => array (
-					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Anaesthetic: Right Anaesthetic Type cannot be blank.')]" 
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Right Anaesthetic Type cannot be blank.')]" 
 			),
 			'anaestheticRightTypeDeliveryBlank' => array (
-					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Anaesthetic: Right Anaesthetic Delivery cannot be blank.')]" 
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Right Anaesthetic Delivery cannot be blank.')]" 
 			),
 			'anaestheticRightTypeAgent' => array (
-					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Anaesthetic: Right Anaesthetic Agent cannot be blank.')]" 
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Right Anaesthetic Agent cannot be blank.')]" 
 			),
 			'treatmentLeftPreInjectionAntisepticBlank' => array (
-					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Treatment: Left Pre Injection Antiseptic cannot be blank.')]" 
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Left Pre Injection Antiseptic cannot be blank.')]" 
 			),
 			'treatmentLeftPreInjectionSkinCleanserBlank' => array (
-					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Treatment: Left Pre Injection Skin Cleanser cannot be blank.')]" 
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Left Pre Injection Skin Cleanser cannot be blank.')]" 
 			),
 			'treatmentLeftDrugBlank' => array (
-					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Treatment: Left Drug cannot be blank.')]" 
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Left Drug cannot be blank.')]" 
 			),
 			'treatmentLeftNumberOfInjectionsBlank' => array (
-					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Treatment: Left Number of Injections cannot be blank.')]" 
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Left Number of Injections cannot be blank.')]" 
 			),
 			'treatmentLeftBatchNumberBlank' => array (
-					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Treatment: Left Batch Number cannot be blank.')]" 
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Left Batch Number cannot be blank.')]" 
 			),
 			'treatementRightPreInjectionAntisepticBlank' => array (
-					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Treatment: Right Pre Injection Antiseptic cannot be blank.')]" 
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Right Pre Injection Antiseptic cannot be blank.')]" 
 			),
 			'treatmentRightPreInjectionSkinCleanserBlank' => array (
-					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Treatment: Right Pre Injection Skin Cleanser cannot be blank.')]" 
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Right Pre Injection Skin Cleanser cannot be blank.')]" 
 			),
 			'treatmentRightDrugBlank' => array (
-					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Treatment: Right Drug cannot be blank.')]" 
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Right Drug cannot be blank.')]" 
 			),
 			'treatmentRightNumberOfInjectionsBlank' => array (
-					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Treatment: Right Number of Injections cannot be blank.')]" 
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Right Number of Injections cannot be blank.')]" 
 			),
 			'treatmentRightBatchNumberBlank' => array (
-					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Treatment: Right Batch Number cannot be blank.')]" 
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Right Batch Number cannot be blank.')]" 
 			),
 			'anteriorSegmentLeftLensBlank' => array (
-					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Anterior Segment: Left Lens Status cannot be blank.')]" 
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Left Lens Status cannot be blank.')]" 
 			),
 			'anteriorSegmentRightLensBlank' => array (
-					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Anterior Segment: Right Lens Status cannot be blank.')]" 
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Right Lens Status cannot be blank.')]" 
 			),
 			'postInjectionExamLeftPostDropsBlank' => array (
-					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Post Injection Examination: Left Post Injection Drops cannot be blank.')]" 
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Left Post Injection Drops cannot be blank.')]" 
 			),
 			'postInjectionExamRightPostDropsBlank' => array (
-					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Post Injection Examination: Right Post Injection Drops cannot be blank.')]" 
+					'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Right Post Injection Drops cannot be blank.')]" 
 			),
 			
 			'leftComplicationsComments' => array (
@@ -298,9 +298,10 @@ class Intravitreal extends OpenEyesPage {
 	}
 	public function addRightSide() {
 		if ($this->isRightSideOpen ()) {
-			$element = $this->getElement ( 'addRightSide' );
-			$this->scrollWindowToElement ( $element );
-			$element->click ();
+			//$element =
+				$this->getElement ( 'addRightSide' )->click();
+			//$this->scrollWindowToElement ( $element );
+			//$element->click ();
 			$this->getSession ()->wait ( 5000, 'window.$ && $.active == 0' );
 		}
 		
@@ -331,13 +332,12 @@ class Intravitreal extends OpenEyesPage {
 	}
 	public function rightTypeTopical() {
 		$element = $this->getElement ( 'rightAnaestheticTopical' );
-		$this->scrollWindowToElement ( $element );
-		$element->click ();
+		//$this->scrollWindowToElement ( $element );
+		$element->doubleClick();
 	}
 	public function rightTypeLA() {
 		$element = $this->getElement ( 'rightAnaestheticLA' );
-		$this->scrollWindowToElement ( $element );
-		$element->click ();
+		$element->doubleClick ();
 	}
 	public function rightDeliveryRetrobulbar() {
 		$this->getElement ( 'rightDeliveryRetrobulbar' )->click ();
@@ -367,12 +367,12 @@ class Intravitreal extends OpenEyesPage {
 	// Left
 	public function leftTypeTopical() {
 		$element = $this->getElement ( 'leftAnaestheticTopical' );
-		$this->scrollWindowToElement ( $element );
+		//$this->scrollWindowToElement ( $element );
 		$element->click ();
 	}
 	public function leftTypeLA() {
 		$element = $this->getElement ( 'leftAnaestheticLA' );
-		$this->scrollWindowToElement ( $element );
+		//$this->scrollWindowToElement ( $element );
 		$element->click ();
 	}
 	public function leftDeliveryRetrobulbar() {
@@ -499,6 +499,7 @@ class Intravitreal extends OpenEyesPage {
 		$this->getElement ( 'leftComplicationsDropdown' )->selectOption ( $complication );
 	}
 	public function saveIntravitrealInjection() {
+		sleep(5);
 		$this->getElement ( 'saveIntravitrealInjection' )->click ();
 	}
 	protected function hasIntravitrealSaved() {
@@ -507,7 +508,8 @@ class Intravitreal extends OpenEyesPage {
 	}
 	public function saveIntravitrealAndConfirm() {
 		$this->getElement ( 'saveIntravitrealInjection' )->click ();
-		
+
+		$this->getSession ()->wait ( 5000 );
 		if ($this->hasIntravitrealSaved ()) {
 			print "Intravitreal has been saved OK";
 		} 
@@ -517,12 +519,12 @@ class Intravitreal extends OpenEyesPage {
 		}
 	}
 	protected function hasIntravitrealErrorsDisplayed() {
-		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'anaestheticLeftTypeBlank' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'anaestheticLeftTypeDeliveryBlank' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'anaestheticLeftTypeAgent' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'anaestheticRightTypeBlank' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'anaestheticRightTypeDeliveryBlank' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'anaestheticRightTypeAgent' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'treatmentLeftPreInjectionAntisepticBlank' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'treatmentLeftPreInjectionSkinCleanserBlank' )->getXpath () ) && 
-		// (bool) $this->find('xpath', $this->getElement('treatmentLeftDrugBlank')->getXpath()) &&
-		// (bool) $this->find('xpath', $this->getElement('treatmentLeftNumberOfInjectionsBlank')->getXpath()) &&
-		( bool ) $this->find ( 'xpath', $this->getElement ( 'treatmentLeftBatchNumberBlank' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'treatementRightPreInjectionAntisepticBlank' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'treatmentRightPreInjectionSkinCleanserBlank' )->getXpath () ) && 
-		// (bool) $this->find('xpath', $this->getElement('treatmentRightDrugBlank')->getXpath()) &&
-		// (bool) $this->find('xpath', $this->getElement('treatmentRightNumberOfInjectionsBlank')->getXpath()) &&
+		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'leftInjectionGivenBy' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'rightInjectionGivenBy' )->getXpath () ) &&( bool ) $this->find ( 'xpath', $this->getElement ( 'anaestheticLeftTypeDeliveryBlank' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'anaestheticRightTypeDeliveryBlank' )->getXpath ()) &&
+		(bool) $this->find('xpath', $this->getElement('treatmentLeftDrugBlank')->getXpath()) &&
+		(bool) $this->find('xpath', $this->getElement('treatmentLeftNumberOfInjectionsBlank')->getXpath()) &&
+		(bool ) $this->find ( 'xpath', $this->getElement ( 'treatmentLeftBatchNumberBlank' )->getXpath () ) &&
+		(bool) $this->find('xpath', $this->getElement('treatmentRightDrugBlank')->getXpath()) &&
+		(bool) $this->find('xpath', $this->getElement('treatmentRightNumberOfInjectionsBlank')->getXpath()) &&
 		( bool ) $this->find ( 'xpath', $this->getElement ( 'treatmentRightBatchNumberBlank' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'anteriorSegmentLeftLensBlank' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'anteriorSegmentRightLensBlank' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'postInjectionExamLeftPostDropsBlank' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'postInjectionExamRightPostDropsBlank' )->getXpath () );
 	}
 	

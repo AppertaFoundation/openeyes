@@ -32,21 +32,22 @@
 //
 // Styleguide 13.4
 .panel {
-	&.search-examples {
-		font-size: rem-calc(13px);
-		padding: 8px;
-	}
-	&.search {
-		padding-left: 8px;
-		padding-right: 8px;
-		padding-top: 15px;
-		padding-bottom: 15px;
-		input {
-			margin: 0;
-			&.large {
-				padding-top: 9px;
-				padding-bottom: 9px;
-			}
-		}
-	}
+  .search-examples {
+    font-size: rem-calc(13px);
+    margin-left: 13px;
+    margin-bottom: 8px;
+  }
+  &.search {
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    input {
+      margin: 0;
+      &.large {
+        padding-top: 9px;
+        padding-bottom: 9px;
+      }
+    }
+  }
 }

@@ -1,0 +1,3 @@
+id,"clinicoutcome_status_id => ophciexamination_clinicoutcome_status.name","subspecialty_id => subspecialty.name"
+1,"Refer to VC","Glaucoma"
+2,"Suitable for stable monitoring clinic","Glaucoma"

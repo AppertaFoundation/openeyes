@@ -1,0 +1,56 @@
+"id","letter_string_group_id","name","body","display_order","last_modified_user_id","last_modified_date","created_user_id","created_date","site_id","event_type","element_type"
+61,1,"A&E Walk in","This [age] year old [sub] attended the Accident and Emergency department, and was referred on to the clinic",61,1,"2012-09-03 20:04:38",1,"2012-09-03 20:04:38",1,NULL,NULL
+62,1,"A&E Walk in","This [age] year old [sub] attended the Accident and Emergency department, and was referred on to the clinic",62,1,"2012-09-03 20:04:38",1,"2012-09-03 20:04:38",2,NULL,NULL
+501,2,"Adnexal comorbidity","Adnexal Comorbidity was [add] on the right and [adl] on the left",15,1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",1,"OphCiExamination","Element_OphCiExamination_AdnexalComorbidity"
+503,2,"Adnexal comorbidity","Adnexal Comorbidity was [add] on the right and [adl] on the left",15,1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",2,"OphCiExamination","Element_OphCiExamination_AdnexalComorbidity"
+422,2,"Anterior segment","Anterior segment examination showed [asr] on the right and [asl] on the left",20,1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",1,"OphCiExamination","Element_OphCiExamination_AnteriorSegment"
+426,2,"Anterior segment","Anterior segment examination showed [asr] on the right and [asl] on the left",20,1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",2,"OphCiExamination","Element_OphCiExamination_AnteriorSegment"
+101,4,"Benefit","I think [pro] would benefit from surgery and I explained the risks and benefits to [obj]",10,1,"2012-09-03 20:04:39",1,"2012-09-03 20:04:39",1,NULL,NULL
+102,4,"Benefit","I think [pro] would benefit from surgery and I explained the risks and benefits to [obj]",20,1,"2012-09-03 20:04:39",1,"2012-09-03 20:04:39",2,NULL,NULL
+181,4,"Declined surgery","The benefits and risks of surgery were fully discussed, but [pro] decided against",81,1,"2012-09-03 20:04:41",1,"2012-09-03 20:04:41",1,NULL,NULL
+182,4,"Declined surgery","The benefits and risks of surgery were fully discussed, but [pro] decided against",82,1,"2012-09-03 20:04:41",1,"2012-09-03 20:04:41",2,NULL,NULL
+401,6,"Discharge","No further follow up is required, and I have discharged [obj]",81,1,"2012-09-03 20:04:48",1,"2012-09-03 20:04:48",1,NULL,NULL
+402,6,"Discharge","No further follow up is required, and I have discharged [obj]",82,1,"2012-09-03 20:04:48",1,"2012-09-03 20:04:48",2,NULL,NULL
+21,1,"Follow up visit","This [age] year old [sub] attended the clinic for a routine follow up visit",21,1,"2012-09-03 20:04:36",1,"2012-09-03 20:04:36",1,NULL,NULL
+22,1,"Follow up visit","This [age] year old [sub] attended the clinic for a routine follow up visit",22,1,"2012-09-03 20:04:36",1,"2012-09-03 20:04:36",2,NULL,NULL
+502,2,"History","[pro] gave a history of [hpc]",5,1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",1,"OphCiExamination","Element_OphCiExamination_History"
+504,2,"History","[pro] gave a history of [hpc]",5,1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",2,"OphCiExamination","Element_OphCiExamination_History"
+423,2,"Intraocular pressure","The intraocular pressure is [ipb]",30,1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",1,"OphCiExamination","Element_OphCiExamination_IntraocularPressure"
+427,2,"Intraocular pressure","The intraocular pressure is [ipb]",30,1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",2,"OphCiExamination","Element_OphCiExamination_IntraocularPressure"
+161,4,"Listed no date","[pro] has been listed for [opl] and an admission date will be arranged shortly",61,1,"2012-09-03 20:04:41",1,"2012-09-03 20:04:41",1,NULL,NULL
+162,4,"Listed no date","[pro] has been listed for [opl] and an admission date will be arranged shortly",62,1,"2012-09-03 20:04:41",1,"2012-09-03 20:04:41",2,NULL,NULL
+141,4,"Listed with date","[pro] has been listed for [opl] and will be admitted on [adm]",41,1,"2012-09-03 20:04:40",1,"2012-09-03 20:04:40",1,NULL,NULL
+142,4,"Listed with date","[pro] has been listed for [opl] and will be admitted on [adm]",42,1,"2012-09-03 20:04:40",1,"2012-09-03 20:04:40",2,NULL,NULL
+201,4,"No treatment","[pro] requires no treatment at the present time",101,1,"2012-09-03 20:04:42",1,"2012-09-03 20:04:42",1,NULL,NULL
+202,4,"No treatment","[pro] requires no treatment at the present time",102,1,"2012-09-03 20:04:42",1,"2012-09-03 20:04:42",2,NULL,NULL
+241,4,"Observation","[pro] will be observed in the outpatient clinic for the time being",141,1,"2012-09-03 20:04:43",1,"2012-09-03 20:04:43",1,NULL,NULL
+242,4,"Observation","[pro] will be observed in the outpatient clinic for the time being",142,1,"2012-09-03 20:04:43",1,"2012-09-03 20:04:43",2,NULL,NULL
+341,6,"Optician","[pro] should visit [pos] optician in the near future for a refraction",21,1,"2012-09-03 20:04:46",1,"2012-09-03 20:04:46",1,NULL,NULL
+342,6,"Optician","[pro] should visit [pos] optician in the near future for a refraction",22,1,"2012-09-03 20:04:46",1,"2012-09-03 20:04:46",2,NULL,NULL
+424,2,"Posterior segment","Posterior segment examination showed [psr] on the right and [psl] on the left",40,1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",1,"OphCiExamination","Element_OphCiExamination_PosteriorSegment"
+428,2,"Posterior segment","Posterior segment examination showed [psr] on the right and [psl] on the left",40,1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",2,"OphCiExamination","Element_OphCiExamination_PosteriorSegment"
+281,5,"Prescription","[pro] has been prescribed [pre]",21,1,"2012-09-03 20:04:44",1,"2012-09-03 20:04:44",1,NULL,NULL
+282,5,"Prescription","[pro] has been prescribed [pre]",22,1,"2012-09-03 20:04:44",1,"2012-09-03 20:04:44",2,NULL,NULL
+81,3,"Principal","[pos] principal diagnosis is [eps] [epd]",10,1,"2012-09-03 20:04:38",1,"2012-09-03 20:04:38",1,NULL,NULL
+82,3,"Principal","[pos] principal diagnosis is [eps] [epd]",20,1,"2012-09-03 20:04:38",1,"2012-09-03 20:04:38",2,NULL,NULL
+261,5,"Reducing","[pro] is on a reducing dose of topical medication",10,1,"2012-09-03 20:04:44",1,"2012-09-03 20:04:44",1,NULL,NULL
+262,5,"Reducing","[pro] is on a reducing dose of topical medication",20,1,"2012-09-03 20:04:44",1,"2012-09-03 20:04:44",2,NULL,NULL
+542,1,"Refer","I would be very grateful if you would take over the management of this [age] year old [sub]",10,1,"2012-09-03 20:04:35",1,"2012-09-03 20:04:35",1,NULL,NULL
+543,1,"Refer","I would be very grateful if you would take over the management of this [age] year old [sub]",20,1,"2012-09-03 20:04:35",1,"2012-09-03 20:04:35",2,NULL,NULL
+361,6,"Refer to Cataract","[pro] has been referred to the Cataract Service for further management",41,1,"2012-09-03 20:04:47",1,"2012-09-03 20:04:47",1,NULL,NULL
+362,6,"Refer to Cataract","[pro] has been referred to the Cataract Service for further management",42,1,"2012-09-03 20:04:47",1,"2012-09-03 20:04:47",2,NULL,NULL
+41,1,"Referral","Thank you very much for referring this [age] year old [sub] whom I saw in the clinic today",41,1,"2012-09-03 20:04:37",1,"2012-09-03 20:04:37",1,NULL,NULL
+42,1,"Referral","Thank you very much for referring this [age] year old [sub] whom I saw in the clinic today",42,1,"2012-09-03 20:04:37",1,"2012-09-03 20:04:37",2,NULL,NULL
+541,3,"Secondary","[pos] secondary diagnoses are: [sdl]",20,1,"2013-04-10 17:37:44",1,"2013-04-10 17:37:44",1,NULL,NULL
+301,5,"Stopped","I have stopped all [pos] topical medication",41,1,"2012-09-03 20:04:45",1,"2012-09-03 20:04:45",1,NULL,NULL
+302,5,"Stopped","I have stopped all [pos] topical medication",42,1,"2012-09-03 20:04:45",1,"2012-09-03 20:04:45",2,NULL,NULL
+121,4,"Tail off topical medication","We have tailed off [pos] topical medication and will see [obj] again in six weeks time",21,1,"2012-09-03 20:04:39",1,"2012-09-03 20:04:39",1,NULL,NULL
+122,4,"Tail off topical medication","We have tailed off [pos] topical medication and will see [obj] again in six weeks time",22,1,"2012-09-03 20:04:39",1,"2012-09-03 20:04:39",2,NULL,NULL
+321,6,"Take back","I would be very grateful if you would take [obj] back for routine review",10,1,"2012-09-03 20:04:46",1,"2012-09-03 20:04:46",1,NULL,NULL
+322,6,"Take back","I would be very grateful if you would take [obj] back for routine review",20,1,"2012-09-03 20:04:46",1,"2012-09-03 20:04:46",2,NULL,NULL
+221,4,"Thinking","The benefits and risks of surgery were fully discussed, and [pro] is going to think about whether [pro] would like to proceed to surgery",121,1,"2012-09-03 20:04:42",1,"2012-09-03 20:04:42",1,NULL,NULL
+222,4,"Thinking","The benefits and risks of surgery were fully discussed, and [pro] is going to think about whether [pro] would like to proceed to surgery",122,1,"2012-09-03 20:04:42",1,"2012-09-03 20:04:42",2,NULL,NULL
+381,6,"VR follow up","[pro] will be seen again in the clinic in",61,1,"2012-09-03 20:04:48",1,"2012-09-03 20:04:48",1,NULL,NULL
+382,6,"VR follow up","[pro] will be seen again in the clinic in",62,1,"2012-09-03 20:04:48",1,"2012-09-03 20:04:48",2,NULL,NULL
+421,2,"Visual acuity","The best corrected visual acuity was [vbb]",10,1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",1,"OphCiExamination","Element_OphCiExamination_VisualAcuity"
+425,2,"Visual acuity","The best corrected visual acuity was [vbb]",10,1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",2,"OphCiExamination","Element_OphCiExamination_VisualAcuity"

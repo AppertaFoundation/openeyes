@@ -1,0 +1,7 @@
+id,name,display_order,default,description_required,last_modified_user_id,last_modified_date,created_user_id,created_date
+1,"Subconjunctival haemorrhage",1,0,0,1,"1901-01-01 00:00:00",1,"1901-01-01 00:00:00"
+2,"Conjunctival damage (e.g. tear)",2,0,0,1,"1901-01-01 00:00:00",1,"1901-01-01 00:00:00"
+3,"Corneal abrasion",3,0,0,1,"1901-01-01 00:00:00",1,"1901-01-01 00:00:00"
+4,"Lens damage",4,0,0,1,"1901-01-01 00:00:00",1,"1901-01-01 00:00:00"
+5,"Retinal damage",5,0,0,1,"1901-01-01 00:00:00",1,"1901-01-01 00:00:00"
+6,"Other",6,0,1,1,"1901-01-01 00:00:00",1,"1901-01-01 00:00:00"

@@ -1,0 +1,8 @@
+anaesthetic_delivery_id => anaesthetic_delivery.name,display_order
+Retrobulbar,1
+Peribulbar,2
+Subtenons,3
+Subconjunctival,4
+Topical,5
+Topical and intracameral,6
+Other,7

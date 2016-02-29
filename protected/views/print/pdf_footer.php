@@ -32,6 +32,7 @@
 		var patient_names = {{PATIENT_NAMES}};
 		var patient_hosnums = {{PATIENT_HOSNUMS}};
 		var patient_nhsnums = {{PATIENT_NHSNUMS}};
+		var patient_dobs = {{PATIENT_DOBS}};
 		var y = document.getElementsByClassName('patient_name');
 		for (var j=0; j<y.length; j++) {
 			y[j].innerHTML = patient_names[document_no] + "<br/>";
@@ -45,6 +46,11 @@
 		var y = document.getElementsByClassName('patient_nhsnum');
 		for (var j=0; j<y.length; j++) {
 			y[j].innerHTML = ", NHS No: " + patient_nhsnums[document_no];
+		}
+
+		var y = document.getElementsByClassName('patient_dob');
+		for (var j=0; j<y.length; j++) {
+			y[j].innerHTML = "<br/>DOB: " + patient_dobs[document_no];
 		}
 
 		var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
@@ -63,13 +69,13 @@
 	}
 	</script>
 	<body style="margin: 0; padding: 0; margin-bottom: 68.6em;" onload="subst()">
-		<div class="wkhtmltopdf-footer-left" style="width: 45%; float: left; margin: 0; font-size: 6pt;">
+		<div class="wkhtmltopdf-footer-left" style="width: 45%; float: left; margin: 0; font-size: 8pt;">
 			{{FOOTER_LEFT}}
 		</div>
-		<div class="wkhtmltopdf-footer-middle" style="width: 10%; float: left; margin: 0 auto; text-align: center; font-size: 6pt;">
+		<div class="wkhtmltopdf-footer-middle" style="width: 10%; float: left; margin: 0 auto; text-align: center; font-size: 8pt;">
 			{{FOOTER_MIDDLE}}
 		</div>
-		<div class="wkhtmltopdf-footer-right" style="width: 45%; float: right; margin: 0; text-align: right; font-size: 6pt;">
+		<div class="wkhtmltopdf-footer-right" style="width: 45%; float: right; margin: 0; text-align: right; font-size: 8pt;">
 			{{FOOTER_RIGHT}}
 		</div>
 	</body>

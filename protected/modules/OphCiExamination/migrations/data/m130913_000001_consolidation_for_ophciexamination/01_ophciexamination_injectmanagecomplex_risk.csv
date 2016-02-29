@@ -1,0 +1,7 @@
+id,name,display_order,enabled
+1,"Pre-existing glaucoma",1,1
+2,"Previous glaucoma surgery (trabeculectomy bleb, glaucoma draining device)",2,1
+3,"Allergy to povidone iodine",3,1
+4,"Previous interocular surgery",4,1
+5,"CVA",5,1
+6,"MI",6,1

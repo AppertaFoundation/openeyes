@@ -38,7 +38,7 @@ class PatientViewNewDiagnosis extends OpenEyesPage {
 					'xpath' => "//*[@class='diagnosis_eye row field-row']//*[@value='3']" 
 			),
 			'opthDay' => array (
-					'xpath' => "//*[@id='add-ophthalmic-diagnosis']//select[@name='fuzzy_day']" 
+					'xpath' => "//*[@id='add-ophthalmic-diagnosis']//select[@name='fuzzy_day']"
 			),
 			'opthMonth' => array (
 					'xpath' => "//*[@id='add-ophthalmic-diagnosis']//select[@name='fuzzy_month']" 
@@ -256,7 +256,13 @@ class PatientViewNewDiagnosis extends OpenEyesPage {
 			),
 			'saveSocialHistory' => array (
 					'xpath' => "//*[@class='secondary small btn_save_social_history']" 
-			) 
+			),
+		'CreateNewEpisode' => array (
+			'xpath' => "//*[contains(text(),'Create new episode')]"
+		),
+		'noEpisodeCreated' => array(
+			'xpath' => "//*[@class='box patient-info episodes']//*[contains(text(),'No episodes')]"
+		)
 	)
 	;
 	public function addOpthalmicDiagnosis($diagnosis) {
@@ -447,20 +453,27 @@ class PatientViewNewDiagnosis extends OpenEyesPage {
 	}
 	public function addEpisodeAndEvent() {
 		$this->getSession ()->wait ( 5000, 'window.$ && $.active == 10' );
-		
-		if ($this->episodesAndEventsAreNotPresent ()) {
-			$this->createNewEpisodeAndEvent ();
-		} else {
-			$this->selectLatestEvent ();
+		if ($this->noEpisodeCreated()){
+		$this->createNewEpisodeAndEvent();
+			$this->addEpisode();
 		}
-		$this->getSession ()->wait ( 5000 );
+		else {
+			if ($this->episodesAndEventsAreNotPresent()) {
+				$this->createNewEpisodeAndEvent();
+			} else {
+				$this->selectLatestEvent();
+			}
+			sleep(5);
+		}
 	}
 	public function createNewEpisodeAndEvent() {
 		$this->getElement ( 'createNewEpisodeAddEvent' )->click ();
+		sleep(5);
 	}
 	public function addEpisode() {
 		$this->getElement ( 'addEpisodeButton' )->click ();
-		$this->getSession ()->wait ( 3000, false );
+		//$this->getSession ()->wait ( 3000, false );
+		$this->waitForElementDisplayBlock('CreateNewEpisode');
 		$this->getElement ( 'confirmCreateEpisode' )->click ();
 		$this->getSession ()->wait ( 3000, false );
 	}
@@ -470,11 +483,16 @@ class PatientViewNewDiagnosis extends OpenEyesPage {
 		$this->getElement ( 'confirmCreateEpisode' )->click ();
 	}
 	public function selectLatestEvent() {
+		$this->getSession ()->wait ( 3000, false );
 		$this->getElement ( 'latestEvent' )->click ();
 		// make sure the Episodes and Events page is shown after clicking latest event link
 		$this->waitForTitle ( 'Episodes and events' );
 		// $this->getSession()->wait(15000, "$('h1.badge').html() == 'Episodes and events' ");
 	}
+	protected function noEpisodeCreated(){
+		return $this->find ( 'xpath', $this->getElement ( 'noEpisodeCreated' )->getXpath () );
+	}
+
 	protected function episodesAndEventsAreNotPresent() {
 		return $this->find ( 'xpath', $this->getElement ( 'createNewEpisodeAddEvent' )->getXpath () );
 	}

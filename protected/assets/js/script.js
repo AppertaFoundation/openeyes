@@ -34,6 +34,7 @@ $(document).ready(function(){
 
 		var trigger = $(this);
 		var container = trigger.closest('.js-toggle-container');
+		var toggleState = 0;
 
 		if (!container.length) {
 			throw new Error('Unable to find js-toggle container.')
@@ -45,12 +46,18 @@ $(document).ready(function(){
 			throw new Error('Unable to find js-toggle body.')
 		}
 
+		// close
 		if (trigger.hasClass('toggle-hide')) {
+			// set state to close
+			toggleState = 0;
 			trigger
 			.removeClass('toggle-hide')
 			.addClass('toggle-show');
 			body.slideUp('fast');
+		// open
 		} else {
+			// set state to open
+			toggleState = 1;
 			trigger
 			.removeClass('toggle-show')
 			.addClass('toggle-hide');
@@ -58,6 +65,9 @@ $(document).ready(function(){
 				body.css('overflow', 'visible');
 			});
 		}
+
+		// session cookie to save open/closed state of the box
+		$.cookie( container.attr('id') + '-state', toggleState);
 	});
 
 	$(document).on('hover', '.dropdown', function(e)

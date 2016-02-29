@@ -1,0 +1,8 @@
+id,name,display_order
+1,"Ultrasound pachymetry",10
+2,"Corneal specular microscopy",20
+3,"Optical coherence tomography",30
+4,"Optical low-coherence reflectometry",40
+5,"Scheimpflug",50
+6,"Confocal scanning laser ophthalmoscopy",60
+7,"Interferometric corneal topography",70

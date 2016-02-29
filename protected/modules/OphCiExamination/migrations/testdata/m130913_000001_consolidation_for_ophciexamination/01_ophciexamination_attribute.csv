@@ -1,0 +1,10 @@
+id,name,label
+1,"history","History"
+2,"severity","Severity"
+3,"onset","Onset"
+4,"eye","Eye"
+5,"duration","Duration"
+7,"investigation","Add"
+8,"conclusion","Add"
+9,"adnexal_comorbidity","Add"
+10,"management","Add"

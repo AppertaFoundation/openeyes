@@ -5,6 +5,7 @@ use Behat\MinkExtension\Context\MinkContext;
 
 use Behat\Mink\Driver\Selenium2Driver;
 use \SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
+use Behat\Behat\Exception\BehaviorException;
 class OperationNoteContext extends PageObjectContext {
 	public function __construct(array $parameters) {
 	}
@@ -403,5 +404,108 @@ class OperationNoteContext extends PageObjectContext {
 		 */
 		$opNote = $this->getPage ( 'OperationNote' );
 		$opNote->saveOpNoteAndConfirm ();
+	}
+
+	/**
+	 * @Then /^I click save button$/
+	 */
+	public function iClickSaveButton()
+	{
+		/**
+		 *
+		 * @var OperationNote $opNote
+		 */
+		$opNote = $this->getPage ( 'OperationNote' );
+		$opNote->saveOpNote();
+	}
+
+	/**
+	 * @Then /^I should see cataract complications empty error message$/
+	 */
+	public function iShouldSeeCataractComplicationsEmptyErrorMessage()
+	{
+		/**
+		 *
+		 * @var OperationNote $opNote
+		 */
+		$opNote = $this->getPage ( 'OperationNote' );
+		$opNote->CataractComplicationErrorMessage();
+	}
+
+	/**
+	 * @Then /^I should see anaesthetic complications empty error message$/
+	 */
+	public function iShouldSeeAnaestheticComplicationsEmptyErrorMessage()
+	{
+		/**
+		 *
+		 * @var OperationNote $opNote
+		 */
+		$opNote = $this->getPage ( 'OperationNote' );
+		$opNote->AnaestheticComplicationErrorMessage();
+	}
+
+	/**
+	 * @Then /^I select procedure "([^"]*)" eye$/
+	 */
+	public function iSelectEyeProcedure($side)
+	{
+		/**
+		 *
+		 * @var OperationNote $opNote
+		 */
+		$opNote = $this->getPage ( 'OperationNote' );
+		if($side==="left")
+		{
+			$opNote->procedureLeftEye ();
+		}
+		elseif($side==="right")
+		{
+			$opNote->procedureRightEye ();
+		}
+		else
+		{
+			throw new BehaviorException ( "WARNING!!! Select 'left' or 'right' eye!  WARNING!!" );
+		}
+	}
+
+	/**
+	 * @Then /^I select PCR Risk$/
+	 */
+	public function iSelectThePCRRisk()
+	{
+		/**
+		 *
+		 * @var OperationNote $opNote
+		 */
+		$opNote = $this->getPage ( 'OperationNote' );
+		$opNote->iSelectPCRRisk();
+	}
+
+
+	/**
+	 * @Then /^I should see PCR reference$/
+	 */
+	public function iShouldSeePCRReference()
+	{
+		/**
+		 *
+		 * @var OperationNote $opNote
+		 */
+		$opNote = $this->getPage ( 'OperationNote' );
+		$opNote->referencePCRRisk();
+	}
+
+	/**
+	 * @Then /^I click on reference link on PCR block$/
+	 */
+	public function iClickOnPCRReferenceLink()
+	{
+		/**
+		 *
+		 * @var OperationNote $opNote
+		 */
+		$opNote = $this->getPage ( 'OperationNote' );
+		$opNote->clickReferencePCRRiskLink();
 	}
 }

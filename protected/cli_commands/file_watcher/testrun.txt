@@ -1,0 +1,28 @@
+CurrentPID: 32303
+New PID file created: /tmp/DicomFileQueue.pid : 315
+
+Warning: fopen(/tmp/DicomFileQueue.pid): failed to open stream: Permission denied in /var/www/openeyes/protected/cli_commands/file_watcher/runQueueProcessor.php on line 50
+
+Warning: fwrite() expects parameter 1 to be resource, boolean given in /var/www/openeyes/protected/cli_commands/file_watcher/runQueueProcessor.php on line 51
+
+Warning: fclose() expects parameter 1 to be resource, boolean given in /var/www/openeyes/protected/cli_commands/file_watcher/runQueueProcessor.php on line 52
+Running: cd ../../javamodules/IOLMasterImport/dist && java -cp ./lib/antlr-2.7.7.jar:./lib/dcm4che-core-3.3.7.jar:./lib/dom4j-1.6.1.jar:./lib/geronimo-jta_1.1_spec-1.1.1.jar:./lib/hibernate-commons-annotations-5.0.0.Final.jar:./lib/hibernate-core-5.0.0.Final.jar:./lib/hibernate-jpa-2.1-api-1.0.0.Final.jar:./lib/jandex-1.2.2.Final.jar:./lib/javassist-3.18.1-GA.jar:./lib/jboss-logging-3.3.0.Final.jar:./lib/log4j-1.2.17.jar:./lib/slf4j-api-1.7.5.jar:./lib/slf4j-log4j12-1.7.5.jar:./lib/mysql-connector-java-5.1.23-bin.jar:./lib/json-simple-1.1.1.jar:./lib/commons-cli-1.3.1.jar:./lib/jaxen-1.1.6.jar:./OE_IOLMasterImport.jar uk.org.openeyes.OE_IOLMasterImport -c /etc/openeyes/hibernate.cfg.xml -d -f  /home/iolmaster/incoming/test/1.2.276.0.75.2.1.10.0.2.150925111615937.15295058.118_0000_000001_144317611300ad.dcm
+
+int(1)
+Process failed, exit code: 1
+
+Running: cd ../../javamodules/IOLMasterImport/dist && java -cp ./lib/antlr-2.7.7.jar:./lib/dcm4che-core-3.3.7.jar:./lib/dom4j-1.6.1.jar:./lib/geronimo-jta_1.1_spec-1.1.1.jar:./lib/hibernate-commons-annotations-5.0.0.Final.jar:./lib/hibernate-core-5.0.0.Final.jar:./lib/hibernate-jpa-2.1-api-1.0.0.Final.jar:./lib/jandex-1.2.2.Final.jar:./lib/javassist-3.18.1-GA.jar:./lib/jboss-logging-3.3.0.Final.jar:./lib/log4j-1.2.17.jar:./lib/slf4j-api-1.7.5.jar:./lib/slf4j-log4j12-1.7.5.jar:./lib/mysql-connector-java-5.1.23-bin.jar:./lib/json-simple-1.1.1.jar:./lib/commons-cli-1.3.1.jar:./lib/jaxen-1.1.6.jar:./OE_IOLMasterImport.jar uk.org.openeyes.OE_IOLMasterImport -c /etc/openeyes/hibernate.cfg.xml -d -f  /home/iolmaster/incoming/1.2.276.0.75.2.1.10.0.2.150925111615937.15295058.118_0000_000001_144317611300ad.dcm
+
+int(1)
+Process failed, exit code: 1
+
+Running: cd ../../javamodules/IOLMasterImport/dist && java -cp ./lib/antlr-2.7.7.jar:./lib/dcm4che-core-3.3.7.jar:./lib/dom4j-1.6.1.jar:./lib/geronimo-jta_1.1_spec-1.1.1.jar:./lib/hibernate-commons-annotations-5.0.0.Final.jar:./lib/hibernate-core-5.0.0.Final.jar:./lib/hibernate-jpa-2.1-api-1.0.0.Final.jar:./lib/jandex-1.2.2.Final.jar:./lib/javassist-3.18.1-GA.jar:./lib/jboss-logging-3.3.0.Final.jar:./lib/log4j-1.2.17.jar:./lib/slf4j-api-1.7.5.jar:./lib/slf4j-log4j12-1.7.5.jar:./lib/mysql-connector-java-5.1.23-bin.jar:./lib/json-simple-1.1.1.jar:./lib/commons-cli-1.3.1.jar:./lib/jaxen-1.1.6.jar:./OE_IOLMasterImport.jar uk.org.openeyes.OE_IOLMasterImport -c /etc/openeyes/hibernate.cfg.xml -d -f  /home/iolmaster/incoming/1.2.276.0.75.2.1.10.0.2.150925111615937.15295058.118_0000_000001_144317636500b1.dcm
+
+int(1)
+Process failed, exit code: 1
+
+Running: cd ../../javamodules/IOLMasterImport/dist && java -cp ./lib/antlr-2.7.7.jar:./lib/dcm4che-core-3.3.7.jar:./lib/dom4j-1.6.1.jar:./lib/geronimo-jta_1.1_spec-1.1.1.jar:./lib/hibernate-commons-annotations-5.0.0.Final.jar:./lib/hibernate-core-5.0.0.Final.jar:./lib/hibernate-jpa-2.1-api-1.0.0.Final.jar:./lib/jandex-1.2.2.Final.jar:./lib/javassist-3.18.1-GA.jar:./lib/jboss-logging-3.3.0.Final.jar:./lib/log4j-1.2.17.jar:./lib/slf4j-api-1.7.5.jar:./lib/slf4j-log4j12-1.7.5.jar:./lib/mysql-connector-java-5.1.23-bin.jar:./lib/json-simple-1.1.1.jar:./lib/commons-cli-1.3.1.jar:./lib/jaxen-1.1.6.jar:./OE_IOLMasterImport.jar uk.org.openeyes.OE_IOLMasterImport -c /etc/openeyes/hibernate.cfg.xml -d -f  /home/iolmaster/incoming/test2/code_test1.docx
+
+int(1)
+Process failed, exit code: 1
+

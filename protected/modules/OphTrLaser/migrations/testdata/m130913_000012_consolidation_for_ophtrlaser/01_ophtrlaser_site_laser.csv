@@ -1,0 +1,2 @@
+id,name,type,wavelength,site_id => site.name
+2,TestLaser,Military,11,"Queens Hospital"

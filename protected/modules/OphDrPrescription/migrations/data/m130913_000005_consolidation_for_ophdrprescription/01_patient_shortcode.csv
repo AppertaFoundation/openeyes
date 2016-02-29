@@ -1,0 +1,2 @@
+event_type_id => event_type.class_name,default_code,code,method,description
+OphDrPrescription,"pre","pre","getLetterPrescription","Prescription"

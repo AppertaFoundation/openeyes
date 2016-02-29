@@ -1,0 +1,9 @@
+id,name,display_order
+1,"In the bag",2
+2,"Partly in the bag",3
+3,"In the sulcus",4
+4,"Anterior chamber",5
+5,"Sutured posterior chamber",6
+6,"Iris fixated",7
+7,"Other",8
+8,"None",1
