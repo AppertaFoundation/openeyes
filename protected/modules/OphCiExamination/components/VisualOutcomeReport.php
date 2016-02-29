@@ -51,6 +51,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
      */
     protected $graphConfig = array(
         'chart' => array('renderTo' => ''),
+        'legend' => array('enabled' => false),
         'title' => array('text' => 'Visual Acuity'),
         'xAxis' => array(
             'title' => array('text' => 'After Surgery'),

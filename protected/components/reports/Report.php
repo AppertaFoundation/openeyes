@@ -71,7 +71,6 @@ class Report {
      */
     protected $globalGraphConfig = array(
         'credits' => array('enabled' => false),
-        'legend' => array('enabled' => false),
         'chart' => array('style' => array('fontFamily'=> 'Roboto,Helvetica,Arial,sans-serif'))
     );
 

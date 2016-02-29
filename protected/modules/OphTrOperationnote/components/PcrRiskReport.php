@@ -28,7 +28,16 @@ class PcrRiskReport extends Report implements ReportInterface
         'tooltip' => array(
             'headerFormat' => '<b>PCR Risk</b><br>',
             'pointFormat' => '<i>Number of surgeries</i>: {point.x} <br /> <i>PCR Avg</i>: {point.y}'
-        )
+        ),
+        'legend' => array(
+            'align' => 'right',
+            'verticalAlign' => 'top',
+            'layout' => 'vertical',
+            'x' => 0,
+            'y' => 50,
+            'floating' => true,
+            'borderWidth' => 1
+        ),
     );
 
     /**

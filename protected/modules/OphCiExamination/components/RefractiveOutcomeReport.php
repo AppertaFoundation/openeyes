@@ -37,6 +37,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
      */
     protected $graphConfig = array(
         'chart' => array('renderTo' => '', 'type' => 'column'),
+        'legend' => array('enabled' => false),
         'title' => array('text' => 'Refractive Outcome'),
         'xAxis' => array(
             'title' => array('text' => 'PPOR - POR'),
