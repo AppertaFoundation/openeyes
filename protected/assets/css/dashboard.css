@@ -194,29 +194,60 @@ select:focus {
 }
 
 /* line 200, ../sass/dashboard.scss */
-#from-date, #to-date {
+.mdl-layout__header-row {
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  height: auto;
+}
+/* line 205, ../sass/dashboard.scss */
+.mdl-layout__header-row > * {
+  width: 100%;
+}
+@media screen and (min-width: 800px) {
+  /* line 205, ../sass/dashboard.scss */
+  .mdl-layout__header-row > * {
+    width: auto;
+  }
+}
+/* line 211, ../sass/dashboard.scss */
+.mdl-layout__header-row #search-form {
+  margin-bottom: 5px;
+}
+/* line 213, ../sass/dashboard.scss */
+.mdl-layout__header-row #search-form div {
+  width: 100%;
+}
+@media screen and (min-width: 800px) {
+  /* line 213, ../sass/dashboard.scss */
+  .mdl-layout__header-row #search-form div {
+    width: auto;
+  }
+}
+/* line 218, ../sass/dashboard.scss */
+.mdl-layout__header-row #search-form div #from-date, .mdl-layout__header-row #search-form div #to-date {
   position: relative;
   z-index: 50;
 }
 
-/* line 207, ../sass/dashboard.scss */
+/* line 228, ../sass/dashboard.scss */
 #dash-grid .mdl-cell {
   background-color: white;
   height: 350px;
   padding: 0;
   overflow: hidden;
 }
-/* line 214, ../sass/dashboard.scss */
+/* line 235, ../sass/dashboard.scss */
 #dash-grid .highcharts-xaxis-labels text, #dash-grid .highcharts-yaxis-labels text {
   font-size: 0.8em !important;
 }
 
-/* line 221, ../sass/dashboard.scss */
+/* line 242, ../sass/dashboard.scss */
 .report-container {
   position: relative;
   height: 100%;
 }
-/* line 224, ../sass/dashboard.scss */
+/* line 245, ../sass/dashboard.scss */
 .report-container .search-icon {
   position: absolute;
   right: 0;
@@ -224,7 +255,7 @@ select:focus {
   z-index: 1;
   cursor: pointer;
 }
-/* line 230, ../sass/dashboard.scss */
+/* line 251, ../sass/dashboard.scss */
 .report-container .search-icon:after {
   font-family: "Roboto","Helvetica","Arial",sans-serif;
   font-size: 0.7em;
@@ -235,37 +266,37 @@ select:focus {
   width: 0;
   display: inline-block;
 }
-/* line 240, ../sass/dashboard.scss */
+/* line 261, ../sass/dashboard.scss */
 .report-container .search-icon:hover:after {
   width: 55px;
 }
-/* line 245, ../sass/dashboard.scss */
+/* line 266, ../sass/dashboard.scss */
 .report-container div {
   height: 100%;
 }
-/* line 248, ../sass/dashboard.scss */
+/* line 269, ../sass/dashboard.scss */
 .report-container .report-search {
   height: 0;
   overflow: hidden;
 }
-/* line 251, ../sass/dashboard.scss */
+/* line 272, ../sass/dashboard.scss */
 .report-container .report-search fieldset {
   width: 60%;
   margin: auto;
 }
-/* line 254, ../sass/dashboard.scss */
+/* line 275, ../sass/dashboard.scss */
 .report-container .report-search fieldset div {
   margin: 20px;
 }
-/* line 256, ../sass/dashboard.scss */
+/* line 277, ../sass/dashboard.scss */
 .report-container .report-search fieldset div .mdl-radio {
   margin-right: 20px;
 }
-/* line 259, ../sass/dashboard.scss */
+/* line 280, ../sass/dashboard.scss */
 .report-container .report-search fieldset div button[type="submit"] {
   float: right;
 }
-/* line 265, ../sass/dashboard.scss */
+/* line 286, ../sass/dashboard.scss */
 .report-container .chart-container {
   z-index: 5;
 }

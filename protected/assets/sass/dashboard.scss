@@ -197,9 +197,30 @@ select:focus {
   width: 100%;
 }
 
-#from-date, #to-date {
-  position: relative;
-  z-index: 50;
+.mdl-layout__header-row {
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  height: auto;
+  &>*{
+    width: 100%;
+    @media screen and (min-width: 800px){
+      width: auto;
+    }
+  }
+  #search-form {
+    margin-bottom: 5px;
+    div {
+      width: 100%;
+      @media screen and (min-width: 800px){
+        width: auto;
+      }
+      #from-date, #to-date {
+        position: relative;
+        z-index: 50;
+      }
+    }
+  }
 }
 
 
