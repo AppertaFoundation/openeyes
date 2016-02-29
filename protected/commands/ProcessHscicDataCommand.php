@@ -33,6 +33,12 @@ class ProcessHscicDataCommand extends CConsoleCommand
      * @var type
      */
     public $audit = true;
+
+    /**
+     * Override the default URL, e.g. to process a specific monthly file.
+     * @var type
+     */
+    public $url = '';
     
     private $pcu;
     private $countryId;
@@ -44,7 +50,7 @@ class ProcessHscicDataCommand extends CConsoleCommand
                     'url' => 'http://systems.hscic.gov.uk/data/ods/datadownloads/data-files/egpcur.zip',
                     'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
              ),
-            'practice' => array(  // http://systems.hscic.gov.uk/data/ods/supportinginfo/filedescriptions#_Toc350757591
+            'practice' => array(
                     'url' => 'http://systems.hscic.gov.uk/data/ods/datadownloads/data-files/epraccur.zip',
                     'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
             ),
@@ -129,23 +135,24 @@ Following actions are available:
         
  - import       [--type --interval] : Importing a specific file based on the given type and iterval
  
-- importall                         : imports all the full files, GP, Practice, CCG, CCG Assignment
+ - importall                        : imports all the full files, GP, Practice, CCG, CCG Assignment
         
-- checkremovedfromfile  [--type]    : Checking if a database row no longer exists in the file, and if it's the case, we set the status inactive
+ - checkremovedfromfile  [--type]   : Checking if a database row no longer exists in the file, and if it's the case, we set the status inactive
                                       Supported types : GP and Practice
 
 Available intervals by type :
-    GP              : full|quarterly|monthly
-    Practice        : full
-    CCG             : full
-    CCGAssignment   : full
-        
+    gp              : full|quarterly|monthly
+    practice        : full
+    ccg             : full
+    ccgAssignment   : full
         
 Following parameters are available:
         
- - force  :  force import for the give file, even if it was already processed before
- - audit  :  Do not generate audit message (can be useful for the first run, we do not need 78000 'GP imported' audit message)
-             Usage: --audit=false
+ - force  : Force import for the give file, even if it was already processed before
+ - audit  : Do not generate audit message (can be useful for the first run, we do not need 78000 'GP imported' audit message)
+            Usage: --audit=false
+ - url    : Override the default URL, e.g. to process a specific monthly file
+            Usage: --url=http://systems.hscic.gov.uk/data/ods/datadownloads/monthamend/december/egpam.zip
 
 EXAMPLES
  * yiic.php processhscicdata download --type=practice --interval=full
@@ -184,7 +191,7 @@ EOH;
         } else if( !isset(self::$files[$interval][$type]) ){
             $this->usageError("Type not found: $type");
         } else {
-            $this->processFile($type, self::$files[$interval][$type]);
+            $this->processFile($type, $interval, self::$files[$interval][$type]);
         }      
     }
     
@@ -194,7 +201,7 @@ EOH;
     public function actionImportall()
     {
         foreach(self::$files['full'] as $type => $file){
-            $this->processFile($type, $file);
+            $this->processFile($type, 'full', $file);
         }
     }
     
@@ -284,7 +291,7 @@ EOH;
     }
     
     /**
-     * Checks if the destination folder exsist (makes it if not) than copies the file
+     * Checks if the destination folder exists (makes it if not) than copies the file
      * @param type $tempFile
      * @param type $permanentFile
      */
@@ -303,9 +310,10 @@ EOH;
      * Processing the given file
      * 
      * @param string $type like 'Gp'
+     * @param string $interval full|monthly|quarterly
      * @param array $file (based on self::files['full']['Gp'])
      */
-    private function processFile($type, $file)
+    private function processFile($type, $interval, $file)
     {
         echo "\n";
         
@@ -321,20 +329,21 @@ EOH;
 
             $this->tempToPermanent($tempFile, $permanentFile);
 
-            $this->processCSV($type, $file['fields'], $permanentFile);
+            $this->processCSV($type, $interval, $file['fields'], $permanentFile);
         } else {
             echo $type . " - " . basename($permanentFile) . " is already processed\n";
         }
     }
     
     /**
-     * Gets the zip file, extracts the CSV file(from the zip) and processes it
+     * Gets the zip file, extracts the CSV file (from the zip) and processes it
      * 
      * @param string $type like 'Gp'
+     * @param string $interval full|monthly|quarterly
      * @param array $fields 
      * @param string $file the zip file
      */
-    private function processCSV($type, $fields, $file)
+    private function processCSV($type, $interval, $fields, $file)
     {
         $lineCount = $this->getLineCountFromZip($file);
         $fileHandler = $this->getFilePointer($file);
@@ -359,14 +368,25 @@ EOH;
             $data = array_combine(array_pad($fields, count($row), ""), $row);
             $transaction = Yii::app()->db->beginTransaction();
             try {
-                $this->{"import{$type}"}($data);
+                if ($type == 'gp' && ($interval == 'monthly' || $interval == 'quarterly')) {
+                    // Monthly and quarterly files contain both GPs and Practices.
+                    if (preg_match('/^G\d{7}$/', $data['code'])) {
+                        $this->importGp($data);
+                    } else if (preg_match('/^([A-Z]\d{5}|[A-Z]{3}\d{3})$/', $data['code'])) {
+                        $this->importPractice($data);
+                    } else {
+                        throw new Exception("Unknown code format: {$data['code']}");
+                    }
+                } else {
+                    $this->{"import{$type}"}($data);
+                }
                 $transaction->commit();
             } catch(Exception $e) {
                 $message = "Error processing {$type} row:\n" . CVarDumper::dumpAsString($row) . "\n$e";
                 Yii::log($message, CLogger::LEVEL_ERROR);
-                print "$message\n";
+                print "\n$message\n";
                 $transaction->rollback();
-                echo "Progress :          ";
+                throw $e;
             }
             $i++;
         }
@@ -808,8 +828,8 @@ EOH;
         } else if( !isset(self::$files[$interval][$type]) ){
             $this->usageError("\n$type has no $interval file");
         } else {
-            $fileName = $this->getFileFromUrl(self::$files[$interval][$type]['url']);
-            $this->download(self::$files[$interval][$type]['url'], $this->tempPath . '/' . $fileName);
+            $fileName = $this->getFileFromUrl($this->url == '' ? self::$files[$interval][$type]['url'] : $this->url);
+            $this->download($this->url == '' ? self::$files[$interval][$type]['url'] : $this->url, $this->tempPath . '/' . $fileName);
         }
     }
     
