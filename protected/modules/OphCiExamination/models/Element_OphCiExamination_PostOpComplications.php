@@ -68,13 +68,28 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
             // NOTE: you should only define rules for those attributes that
             // will receive user inputs.
             return array(
-                    array('eye_id', 'required'),
+                    array('eye_id', 'complicationForBothEyes'),
                    // array('left_complication_id', 'side' => 'left'),
                     //  array('right_complication_id', 'side' => 'right'),
                     // The following rule is used by search().
                     // Please remove those attributes that should not be searched.
-                    array('id, event_id, left_complication_id, right_complication_id, eye_id', 'safe', 'on' => 'search'),
+                    array('id, event_id, eye_id', 'safe', 'on' => 'search'),
             );
+        }
+        
+        public function complicationForBothEyes($attribute,$params)
+        {
+            $complication_items = \Yii::app()->request->getParam('complication_items', array());
+            
+            if( !isset($complication_items['R']) || empty($complication_items['R'])){
+                $this->addError($attribute, 'Complication must be recorded for both eyes: missing Right Eye');
+            }
+            
+            
+            if( !isset($complication_items['L']) || empty($complication_items['L'])){
+                $this->addError($attribute, 'Complication must be recorded for both eyes: missing Left Eye');
+            }
+            
         }
 
 	/**

@@ -44,11 +44,9 @@ $subspecialty_id = $element->firm->getSubspecialtyID();
 	<?php 
             echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'));            
         ?>
-	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {
-    ?> inactive<?php 
-}?>" data-side="right">
+	<div class="element-eye right-eye column left side" data-side="right">
 		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
+			
 			<?php 
                                 $right_eye_data = OEModule\OphCiExamination\models\OphCiExamination_PostOpComplications::model()->getPostOpComplicationsList($opration_note_id,$subspecialty_id);
                                
@@ -97,11 +95,9 @@ $subspecialty_id = $element->firm->getSubspecialtyID();
 			</div>
 		</div>
 	</div>
-	<div class="element-eye left-eye column right side<?php if (!$element->hasLeft()) {
-    ?> inactive<?php 
-}?>" data-side="left">
+	<div class="element-eye left-eye column right side" data-side="left">
 		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
+			
 			<?php echo $form->dropDownList(OEModule\OphCiExamination\models\OphCiExamination_Et_PostOpComplications::model(), 'complication_id', OEModule\OphCiExamination\models\OphCiExamination_PostOpComplications::model()->getPostOpComplicationsList($opration_note_id, $subspecialty_id), 
                                     array(
                                         'empty' => '-- Select --',
