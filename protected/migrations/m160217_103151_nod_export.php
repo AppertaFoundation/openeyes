@@ -955,6 +955,34 @@ EXECUTE statement;
 DROP TEMPORARY TABLE IF EXISTS tmp_pathology_type;
 
 END;
+                        -- EpisodePostOpComplication --
+
+DROP PROCEDURE IF EXISTS get_episode_post_op_complication;
+CREATE DEFINER=`root`@`localhost` PROCEDURE get_episode_post_op_complication(IN dir VARCHAR(255))
+BEGIN
+SET @time_now = UNIX_TIMESTAMP(NOW());
+SET @file = CONCAT(dir, '/episode_post_op_complication_', @time_now, '.csv');
+SET @cmd = CONCAT(" (SELECT 'EpisodeId', 'OperationId', 'Eye', 'ComplicationTypeId')
+                    UNION
+                    (SELECT 
+                        episode.id AS EpisodeId, 
+                        ophciexamination_postop_et_complications.`operation_note_id` AS OperationId, 
+                        (SELECT CASE WHEN ophciexamination_postop_et_complications.`eye_id` = 1 THEN 'L' WHEN ophciexamination_postop_et_complications.`eye_id` = 2 THEN 'R' END ),
+                        ophciexamination_postop_complications.`code` AS ComplicationTypeId
+                        FROM episode
+                        JOIN `event` ON episode.id = `event`.`episode_id`
+                        JOIN et_ophciexamination_postop_complications ON `event`.id = et_ophciexamination_postop_complications.`event_id`
+                        JOIN ophciexamination_postop_et_complications ON et_ophciexamination_postop_complications.id = ophciexamination_postop_et_complications.`element_id`
+                        JOIN ophciexamination_postop_complications ON ophciexamination_postop_et_complications.`complication_id` = ophciexamination_postop_complications.id
+                    
+                INTO OUTFILE '", @file,
+                "' FIELDS ENCLOSED BY '\"' TERMINATED BY ';'",
+                "  LINES TERMINATED BY '\r\n')");
+
+PREPARE statement FROM @cmd;
+EXECUTE statement;
+
+END;
 
                         -- Run Export Generation --
                         
@@ -996,6 +1024,7 @@ CALL get_episode_operation_complication(dir);
 CALL get_episode_operation_indication(dir);
 CALL get_episode_operation_pathology(dir);
 CALL get_episode_treatment_cataract(dir);
+CALL get_episode_post_op_complication(dir);
                         
 #EpisodeOperationCoPathology
                  
@@ -1024,8 +1053,8 @@ EOL;
 
 	public function down()
 	{
-        $this->dropColumn('et_ophtroperationnote_cataract', 'pupil_size');
-        $this->dropColumn('et_ophtroperationnote_cataract_version', 'pupil_size');
+            $this->dropColumn('et_ophtroperationnote_cataract', 'pupil_size');
+            $this->dropColumn('et_ophtroperationnote_cataract_version', 'pupil_size');
 
                 $storedProcedure = <<<EOL
 
@@ -1045,6 +1074,7 @@ DROP PROCEDURE IF EXISTS get_episode_operation;
 DROP PROCEDURE IF EXISTS get_episode_operation_complication;
 DROP PROCEDURE IF EXISTS get_episode_operation_pathology;
 DROP PROCEDURE IF EXISTS run_nod_export_generator;
+DROP PROCEDURE IF EXSIST get_episode_post_op_complication;
 EOL;
 		$this->execute($storedProcedure);
                 return true;
