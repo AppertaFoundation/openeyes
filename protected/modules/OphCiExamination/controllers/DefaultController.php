@@ -35,6 +35,7 @@ class DefaultController extends \BaseEventTypeController
         'loadInjectionQuestions' => self::ACTION_TYPE_FORM,
         'getScaleForInstrument' => self::ACTION_TYPE_FORM,
         'getPreviousIOPAverage' => self::ACTION_TYPE_FORM,
+        'getPostOpComplicationList' => self::ACTION_TYPE_FORM,
     );
 
     // if set to true, we are advancing the current event step
@@ -1124,5 +1125,37 @@ class DefaultController extends \BaseEventTypeController
             $this->set = $set;
             $this->mandatoryElements = $set->MandatoryElementTypes;
         }
+    }
+    
+    public function actionGetPostOpComplicationList()
+    {
+       
+        $element_id = \Yii::app()->request->getParam('element_id', null);
+        $opration_note_id = \Yii::app()->request->getParam('operation_note_id', null);
+        
+        if($element_id){
+            $element = models\Element_OphCiExamination_PostOpComplications::model()->findByPk($element_id);
+        } else {
+            $element = new models\Element_OphCiExamination_PostOpComplications;
+        }
+        
+        $right_complications = $element->getRecordedComplications(\Eye::RIGHT, $opration_note_id);
+        $left_complications = $element->getRecordedComplications(\Eye::LEFT, $opration_note_id);
+        
+        $right_data = array();
+        $left_data = array();
+        foreach($right_complications as $right_complication){
+            $right_data[] = array( 'id' => $right_complication->complication->id, 'name' => $right_complication->complication->name);
+        }
+        
+        foreach($left_complications as $left_complication){
+            $left_data[] = array( 'id' => $left_complication->complication->id, 'name' => $left_complication->complication->name);
+        }
+        
+        echo json_encode(array(
+            "right_values" => $right_data,
+            "left_values" => $left_data
+            )
+        );
     }
 }

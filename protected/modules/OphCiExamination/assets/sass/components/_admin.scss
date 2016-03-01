@@ -31,3 +31,17 @@
 		}
 	}
 }
+
+
+#postop-complications{
+    
+    #draggablelist{
+        
+        #draggablelist-items{
+            .available-items{
+                max-height:500;
+                overflow: auto;
+            }
+        }
+        
+    }
