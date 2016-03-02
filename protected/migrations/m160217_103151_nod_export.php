@@ -367,8 +367,8 @@ CREATE TEMPORARY TABLE tmp_biometry AS
         JOIN `event` AS opnote ON ep.id = opnote.`episode_id`
 		AND opnote.event_type_id = 4 AND opnote.created_date < ev.created_date
         JOIN ophinbiometry_imported_events ON ev.id = ophinbiometry_imported_events.`event_id`
-	JOIN et_ophinbiometry_selection ON ev.id = et_ophinbiometry_selection.`event_id`
-	JOIN ophinbiometry_calculation_formula ON et_ophinbiometry_selection.`formula_id_left` = ophinbiometry_calculation_formula.id 
+	JOIN et_ophinbiometry_selection ON ev.id = et_ophinbiometry_selection.`event_id` AND et_ophinbiometry_selection.eye_id = 1 OR et_ophinbiometry_selection.eye_id = 3
+	JOIN ophinbiometry_calculation_formula ON et_ophinbiometry_selection.`formula_id_left` = ophinbiometry_calculation_formula.id
         WHERE et.id = 37
         AND ms.deleted = 0
         AND ev.deleted = 0
@@ -399,7 +399,7 @@ UNION
         JOIN `event` AS opnote ON ep.id = opnote.`episode_id`
 		AND opnote.event_type_id = 4 AND opnote.created_date < ev.created_date
         JOIN ophinbiometry_imported_events ON ev.id = ophinbiometry_imported_events.`event_id`
-	JOIN et_ophinbiometry_selection ON ev.id = et_ophinbiometry_selection.`event_id`
+	JOIN et_ophinbiometry_selection ON ev.id = et_ophinbiometry_selection.`event_id` AND et_ophinbiometry_selection.eye_id = 2 OR et_ophinbiometry_selection.eye_id = 3
 	JOIN ophinbiometry_calculation_formula ON et_ophinbiometry_selection.`formula_id_left` = ophinbiometry_calculation_formula.id
         WHERE et.id = 37
         AND ms.deleted = 0
