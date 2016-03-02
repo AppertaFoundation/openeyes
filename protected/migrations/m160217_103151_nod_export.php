@@ -323,6 +323,23 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE get_episode_biometry(IN dir VARCHAR(
 BEGIN
 SET @time_now = UNIX_TIMESTAMP(NOW());
 SET @file = CONCAT(dir, '/episode_biometry_', @time_now, '.csv');
+
+   DROP TABLE IF EXISTS tmp_biometry_formula;
+
+CREATE TABLE tmp_biometry_formula (
+	`code` INT(10) UNSIGNED NOT NULL,
+	`desc` VARCHAR(100)
+);
+INSERT INTO tmp_biometry_formula (`code`, `desc`)
+VALUES
+(1, 'Haigis'),
+(2, 'Holladay'),
+(3, 'Holladay II'),
+(4, 'SRK/T'),
+(5, 'SRK II'),
+(6, 'Hoffer Q'),
+(7, 'Average of SRK/T + Holladay + Hoffer Q'),
+(9, 'Not recorded');
                         
 CREATE TEMPORARY TABLE tmp_biometry AS 
 (
@@ -331,18 +348,27 @@ CREATE TEMPORARY TABLE tmp_biometry AS
                 'L' AS Eye,
                 axial_length_left AS AxialLength,
                 NULL AS BiometryAScanId,
-                NULL AS BiometryKeratometerId,
-                NULL AS BiometryFormulaId,
+                (SELECT CASE
+			WHEN ophinbiometry_imported_events.`device_model` = 'IOLmaster 500'  THEN 1
+			WHEN ophinbiometry_imported_events.`device_model` = 'Haag-Streit LensStar' THEN 2
+			WHEN ophinbiometry_imported_events.`device_model` = 'Other' THEN 9
+		 END) AS BiometryKeratometerId,
+                ( SELECT `code` FROM tmp_biometry_formula WHERE tmp_biometry_formula.`desc` = ophinbiometry_calculation_formula.name ) AS BiometryFormulaId,
                 k1_left AS K1PreOperative,
                 k2_left AS K2PreOperative,
                 axis_k1_left AS AxisK1,
-                null AS AxisK2
+                ms.k2_axis_left AS AxisK2,
+                ms.acd_left AS ACDepth,
+                ms.snr_left AS SNR
         FROM episode ep
         JOIN `event` ev ON ep.id =  ev.`episode_id`
         JOIN event_type et ON ev.`event_type_id` = et.`id`
         JOIN et_ophinbiometry_measurement ms ON ev.id = ms.event_id
-        JOIN `event` AS opnote ON opnote.id = ev.id 
-                AND opnote.event_type_id = 4 AND opnote.created_date > ev.created_date
+        JOIN `event` AS opnote ON ep.id = opnote.`episode_id`
+		AND opnote.event_type_id = 4 AND opnote.created_date < ev.created_date
+        JOIN ophinbiometry_imported_events ON ev.id = ophinbiometry_imported_events.`event_id`
+	JOIN et_ophinbiometry_selection ON ev.id = et_ophinbiometry_selection.`event_id`
+	JOIN ophinbiometry_calculation_formula ON et_ophinbiometry_selection.`formula_id_left` = ophinbiometry_calculation_formula.id 
         WHERE et.id = 37
         AND ms.deleted = 0
         AND ev.deleted = 0
@@ -354,24 +380,33 @@ UNION
                 'R' AS Eye,
                 axial_length_right AS AxialLength,
                 NULL AS BiometryAScanId,
-                NULL AS BiometryKeratometerId,
-                NULL AS BiometryFormulaId,
-                k1_right AS K1PreOperative,
-                k2_right AS K2PreOperative,
-                axis_k1_right AS AxisK1,
-                null AS AxisK2
+                (SELECT CASE
+			WHEN ophinbiometry_imported_events.`device_model` = 'IOLmaster 500'  THEN 1
+			WHEN ophinbiometry_imported_events.`device_model` = 'Haag-Streit LensStar' THEN 2
+			WHEN ophinbiometry_imported_events.`device_model` = 'Other' THEN 9
+		 END) AS BiometryKeratometerId,
+                ( SELECT `code` FROM tmp_biometry_formula WHERE tmp_biometry_formula.`desc` = ophinbiometry_calculation_formula.name ) AS BiometryFormulaId,
+                k1_left AS K1PreOperative,
+                k2_left AS K2PreOperative,
+                axis_k1_left AS AxisK1,
+                ms.k2_axis_left AS AxisK2,
+                ms.acd_left AS ACDepth,
+                ms.snr_left AS SNR
         FROM episode ep
         JOIN `event` ev ON ep.id =  ev.`episode_id`
         JOIN event_type et ON ev.`event_type_id` = et.`id`
         JOIN et_ophinbiometry_measurement ms ON ev.id = ms.event_id
-        JOIN `event` AS opnote ON opnote.id = ev.id 
-                AND opnote.event_type_id = 4 AND opnote.created_date > ev.created_date
+        JOIN `event` AS opnote ON ep.id = opnote.`episode_id`
+		AND opnote.event_type_id = 4 AND opnote.created_date < ev.created_date
+        JOIN ophinbiometry_imported_events ON ev.id = ophinbiometry_imported_events.`event_id`
+	JOIN et_ophinbiometry_selection ON ev.id = et_ophinbiometry_selection.`event_id`
+	JOIN ophinbiometry_calculation_formula ON et_ophinbiometry_selection.`formula_id_left` = ophinbiometry_calculation_formula.id
         WHERE et.id = 37
         AND ms.deleted = 0
         AND ev.deleted = 0
 );
                                                
-SET @cmd = CONCAT("(SELECT 'EpisodeId', 'Eye', 'AxialLength', 'BiometryAScanId', 'BiometryKeratometerId', 'BiometryFormulaId', 'K1PreOperative', 'K2PreOperative', 'AxisK1', 'AxisK2')
+SET @cmd = CONCAT("(SELECT 'EpisodeId', 'Eye', 'AxialLength', 'BiometryAScanId', 'BiometryKeratometerId', 'BiometryFormulaId', 'K1PreOperative', 'K2PreOperative', 'AxisK1', 'AxisK2', 'ACDepth', 'SNR')
 		  UNION 
                       (SELECT * FROM tmp_biometry
                     INTO OUTFILE '", @file,
@@ -1023,24 +1058,10 @@ CALL get_episode_operation(dir);
 CALL get_episode_operation_complication(dir);
 CALL get_episode_operation_indication(dir);
 CALL get_episode_operation_pathology(dir);
+CALL get_episode_operation_anaesthesia(dir);
+CALL get_episode_treatment(dir);                        
 CALL get_episode_treatment_cataract(dir);
 CALL get_episode_post_op_complication(dir);
-                        
-#EpisodeOperationCoPathology
-                 
-#EpisodeOperationAnaesthesia
-#Different Anaesthesia types, cannot map
-CALL get_episode_operation_anaesthesia(dir);
-                        
-#EpisodeTreatment
-CALL get_episode_treatment(dir);
-                        
-#EpisodeTreatmentCataract                  
-#Where ophtroperationnote_procedurelist_procedure_assignment contains a proc_id that matches the cataract element_type_id in ophtroperationnote_procedure_element
-
-                        
-#EpisodePostOpComplication          
-#This functionality does not exist at time of writing. It needs adding and is in Jira as ticket OE-5690
 
 END;
 
