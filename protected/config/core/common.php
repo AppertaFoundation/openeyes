@@ -299,6 +299,12 @@ return array(
 						'position' => 3,
 						'restricted' => array('Report'),
 					),
+					'cataract' => array(
+						'title' => 'Cataract Audit',
+						'uri' => 'dashboard/cataract',
+						'position' => 4,
+						'options' => array('target' => '_blank')
+					),
 				)
 			),
 			'logout' => array(
