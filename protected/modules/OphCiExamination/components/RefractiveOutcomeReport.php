@@ -39,6 +39,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         'chart' => array('renderTo' => '', 'type' => 'column'),
         'legend' => array('enabled' => false),
         'title' => array('text' => 'Refractive Outcome'),
+        'subtitle' => array('text' => 'Total eyes: {{eyes}}, ±0.5D: {{0.5}}, ±1D: {{1}}'),
         'xAxis' => array(
             'title' => array('text' => 'PPOR - POR'),
             'categories' => array(
@@ -164,6 +165,35 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
      */
     public function graphConfig()
     {
+        if(!isset($this->series[0]['data'])){
+            $data = $this->dataSet();
+        } else {
+            $data = $this->series[0]['data'];
+        }
+
+        $totalEyes = 0;
+        $plusOrMinusOne = 0;
+        $plusOrMinusHalf = 0;
+
+        foreach($data as $i => $category){
+            $totalEyes += $category;
+            $categoryText = $this->graphConfig['xAxis']['categories'][$i];
+            if($categoryText === '-1.0' || $categoryText === '1.0'){
+                $plusOrMinusOne += $category;
+            }
+            if($categoryText === '-0.5' || $categoryText === '0.5'){
+                $plusOrMinusHalf += $category;
+            }
+        }
+
+        $plusOrMinusOnePercent = ($totalEyes / 100) * $plusOrMinusOne;
+        $plusOrMinusHalfPercent = ($totalEyes / 100) * $plusOrMinusHalf;
+        $this->graphConfig['subtitle']['text'] = str_replace(
+            array('{{eyes}}', '{{0.5}}', '{{1}}'),
+            array($totalEyes, $plusOrMinusOnePercent, $plusOrMinusHalfPercent),
+            $this->graphConfig['subtitle']['text']
+        );
+
         $this->graphConfig['chart']['renderTo'] = $this->graphId();
 
         return json_encode(array_merge_recursive($this->globalGraphConfig, $this->graphConfig));

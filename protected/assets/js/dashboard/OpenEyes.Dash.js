@@ -118,6 +118,10 @@
                     chart = window[chartId];
                     chart.series[0].setData(data);
 
+                    if(typeof Dash.postUpdate[chartId] === 'function'){
+                        Dash.postUpdate[chartId](data);
+                    }
+
                     $searchForm.parent('.report-search').animate({
                         height: '0'
                     }, 300, function(){
@@ -149,6 +153,31 @@
             });
         } else {
             loadBespokeHtml(report, container);
+        }
+    };
+
+    Dash.postUpdate = {
+        'OEModule_OphCiExamination_components_RefractiveOutcomeReport': function(data){
+            var total = 0,
+                plusOrMinusOne = 0,
+                plusOrMinusHalf = 0,
+                plusOrMinusOnePercent = 0,
+                plusOrMinusHalfPercent = 0,
+                chart = window['OEModule_OphCiExamination_components_RefractiveOutcomeReport'];
+
+            for(var i = 0; i < data.length; i++){
+                total += data[i];
+                if(chart.axes[0].categories[i] === '-1.0' || chart.axes[0].categories[i] === '1.0'){
+                    plusOrMinusOne += data[i];
+                }
+                if(chart.axes[0].categories[i] === '-0.5' || chart.axes[0].categories[i] === '0.5'){
+                    plusOrMinusHalf += data[i];
+                }
+            }
+
+            plusOrMinusOnePercent = (total / 100) * plusOrMinusOne;
+            plusOrMinusHalfPercent = (total / 100) * plusOrMinusHalf;
+            chart.setTitle(null, {text: 'Total eyes: ' + total + ', ±0.5D: ' + plusOrMinusOnePercent + ', ±1D: ' + plusOrMinusHalfPercent});
         }
     };
 
