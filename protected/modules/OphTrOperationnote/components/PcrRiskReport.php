@@ -48,12 +48,13 @@ class PcrRiskReport extends Report implements ReportInterface
      */
     protected function queryData($surgeon, $dateFrom, $dateTo)
     {
-        $this->command->select('COUNT(et_ophtroperationnote_cataract.id) as count, AVG(pcr_risk) as risk')
+        $this->command->select('ophtroperationnote_cataract_complications.name as complication, pcr_risk as risk')
             ->from('et_ophtroperationnote_cataract')
             ->join('event', 'et_ophtroperationnote_cataract.event_id = event.id')
             ->join('et_ophtroperationnote_surgeon', 'et_ophtroperationnote_surgeon.event_id = event.id')
-            ->where('surgeon_id = :surgeon', array('surgeon' => $surgeon))
-            ->group('surgeon_id');
+            ->leftJoin('ophtroperationnote_cataract_complication', 'et_ophtroperationnote_cataract.id = ophtroperationnote_cataract_complication.cataract_id')
+            ->leftJoin('ophtroperationnote_cataract_complications', 'ophtroperationnote_cataract_complications.id = ophtroperationnote_cataract_complication.complication_id')
+            ->where('surgeon_id = :surgeon', array('surgeon' => $surgeon));
 
         if ($dateFrom) {
             $this->command->andWhere('event.event_date > :dateFrom', array('dateFrom' => $dateFrom));
@@ -63,7 +64,7 @@ class PcrRiskReport extends Report implements ReportInterface
             $this->command->andWhere('event.event_date < :dateTo', array('dateTo' => $dateTo));
         }
 
-        return $this->command->queryRow();
+        return $this->command->queryAll();
     }
 
     /**
@@ -73,7 +74,26 @@ class PcrRiskReport extends Report implements ReportInterface
     {
         $data = $this->queryData($this->surgeon, $this->from, $this->to);
 
-        return array(array((int)$data['count'], (float)$data['risk']));
+        $total = 0;
+        $pcrCases = 0;
+        $pcrRiskTotal = 0;
+        $adjustedPcrRate = 0;
+
+        foreach($data as $case){
+            $total++;
+            if(isset($case['complication']) && $case['complication'] === 'PC rupture with vitreous loss' || $case['complication'] === 'PC rupture no vitreous loss'){
+                $pcrCases++;
+            }
+            if(isset($case['risk'])){
+                $pcrRiskTotal++;
+            }
+        }
+
+        if($total !== 0 && $pcrRiskTotal !== 0){
+            $adjustedPcrRate = (($pcrCases / $total) / ($pcrRiskTotal / $total)) * $this->average();
+        }
+
+        return array(array($total, $adjustedPcrRate));
 
     }
 
