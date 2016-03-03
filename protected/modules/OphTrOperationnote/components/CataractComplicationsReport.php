@@ -23,7 +23,7 @@ class CataractComplicationsReport extends Report implements ReportInterface
         ),
         'tooltip' => array(
             'headerFormat' => '<b>Cataract Complications</b><br>',
-            'pointFormat' => '<i>Complication</i>: {point.x} <br /> <i>Num Occurrences </i>: {point.y}'
+            'pointFormat' => '<i>Complication</i>: {point.category} <br /> <i>Percentage </i>: {point.y}'
         )
     );
 
