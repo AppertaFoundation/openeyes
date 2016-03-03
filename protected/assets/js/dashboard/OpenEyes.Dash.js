@@ -178,6 +178,14 @@
             plusOrMinusOnePercent = (total / 100) * plusOrMinusOne;
             plusOrMinusHalfPercent = (total / 100) * plusOrMinusHalf;
             chart.setTitle(null, {text: 'Total eyes: ' + total + ', ±0.5D: ' + plusOrMinusOnePercent + ', ±1D: ' + plusOrMinusHalfPercent});
+        },
+        'CataractComplicationsReport': function(data){
+            var total = 0,
+                chart = window['CataractComplicationsReport'];
+            for(var i = 0; i < data.length; i++){
+                total += data[i];
+            }
+            chart.setTitle(null, {text: 'Total Complications: ' + total} );
         }
     };
 

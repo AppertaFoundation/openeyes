@@ -15,6 +15,7 @@ class CataractComplicationsReport extends Report implements ReportInterface
         'chart' => array('renderTo' => '', 'type' => 'bar'),
         'legend' => array('enabled' => false),
         'title' => array('text' => 'Case Complexity Adjusted PCR Rate'),
+        'subtitle' => array('text' => 'Total Complications: '),
         'xAxis' => array(
             'categories' => array(),
             'title' => array('text' => 'Complication'),
@@ -34,6 +35,7 @@ class CataractComplicationsReport extends Report implements ReportInterface
      */
     protected function queryData($surgeon, $dateFrom, $dateTo)
     {
+        $this->command->reset();
         $this->command->select('COUNT(cataract_id) as complication_count, ophtroperationnote_cataract_complications.name')
             ->from('ophtroperationnote_cataract_complication')
             ->join('et_ophtroperationnote_cataract', 'ophtroperationnote_cataract_complication.cataract_id = et_ophtroperationnote_cataract.id')
@@ -64,11 +66,12 @@ class CataractComplicationsReport extends Report implements ReportInterface
         $data = $this->queryData($this->surgeon, $this->from, $this->to);
         $seriesCount = array();
         $this->setComplicationCategories();
+        $total = $this->getTotalComplications();
 
         foreach ($this->graphConfig['xAxis']['categories'] as $category) {
             foreach ($data as $complicationData) {
                 if ($category === $complicationData['name']) {
-                    $seriesCount[] = (int)$complicationData['complication_count'];
+                    $seriesCount[] = ($complicationData['complication_count'] / $total ) * 100;
                     continue 2;
                 }
             }
@@ -100,6 +103,7 @@ class CataractComplicationsReport extends Report implements ReportInterface
     {
         $this->setComplicationCategories();
         $this->graphConfig['chart']['renderTo'] = $this->graphId();
+        $this->graphConfig['subtitle']['text'] .= $this->getTotalComplications();
 
         return json_encode(array_merge_recursive($this->globalGraphConfig, $this->graphConfig));
     }
@@ -119,7 +123,7 @@ class CataractComplicationsReport extends Report implements ReportInterface
     /**
      *
      */
-    public function setComplicationCategories()
+    protected function setComplicationCategories()
     {
         if (!$this->graphConfig['xAxis']['categories']) {
             $complications = $this->allComplications();
@@ -128,5 +132,16 @@ class CataractComplicationsReport extends Report implements ReportInterface
             }
         }
 
+    }
+
+    protected function getTotalComplications()
+    {
+        $data = $this->queryData($this->surgeon, $this->from, $this->to);
+        $total = 0;
+        foreach($data as $complication){
+            $total += $complication['complication_count'];
+        }
+
+        return $total;
     }
 }
