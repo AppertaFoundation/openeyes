@@ -235,48 +235,59 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
             $response = array();
             $short_format = array();
 
-            $procedureList = new \Element_OphTrOperationnote_ProcedureList();
-            
-            $procedureLists = $procedureList->findAll();
-            
             $criteria = new \CDbCriteria;
-         
-            $criteria->select = "*";
-            $criteria->join = "JOIN event ON t.event_id = event.id AND event.event_type_id = 4";
-            $criteria->join .= " JOIN episode ON event.episode_id = episode.id";
-       
-            $criteria->order = "event.created_date desc";
-       
-            $procedureLists = $procedureList->findAll($criteria);
             
-            foreach($procedureLists as $procedureList){
+            $event = new \Event();
+            
+            $criteria->addCondition("patient_id = :patient_id");
+            $criteria->addCondition("event_type_id = :event_type_id");
+            $criteria->params['patient_id'] = $this->event->episode->patient->id;
+            $criteria->params['event_type_id'] = 4; //TODO findOne
+            
+            $eventLists = $event->with('episode')->findAll($criteria);
+            
+            foreach($eventLists as $event){
                 
-                if ( isset($procedureList->event) ){
-                    $procesdures = $procedureList->procedures;
+                $procedureListModel = new \Element_OphTrOperationnote_ProcedureList();
+                
+                $criteria = new \CDbCriteria;
+                
+                $criteria->addCondition("event_id = :event_id");
+                $criteria->params['event_id'] = $event->id;
+                
+                $procedureList = $procedureListModel->findAll($criteria);
 
-                    $date = new \DateTime($procedureList->event->created_date);
+                $date = new \DateTime($event->created_date);
+                $name = $date->format("d M Y") . " ";
 
-                    $name = $date->format("d M Y") . " ";
-
-                    $name .= ($procedureList->eye_id != 3 ? ($procedureList->eye->name) : '') . " ";
-                    $short_format = array();
-
-                    foreach($procesdures as $procesdure){
+                $short_format = array();
+                
+                foreach($procedureList as $procesdures){
+                    
+                    $name .= ($procesdures->eye_id != 3 ? ($procesdures->eye->name) : '') . " ";
+                    
+                    foreach($procesdures->procedures as $procesdure){
+                            
                         $short_format[] = $procesdure->short_format;
                     }
+                    
                     $name .= implode(" + ", $short_format);
 
                     if( strlen ($name) > 60){
                         $name = substr($name, 0, 57);
                         $name .= "...";
                     }
-
-                    $response[$procedureList->event->id] = $name;
                 }
+                
+
+                $response[$event->id] = $name;
+
             }
-           
+       
             return $response;
         }
+        
+        
         public function getFullComplicationList($eye_id)
         {
             /*$criteria = new \CDbCriteria;

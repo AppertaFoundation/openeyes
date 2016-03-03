@@ -1234,7 +1234,10 @@ $(document).ready(function() {
             var selected_text = $( '#' + $(this).attr('id') + " option:selected").text();
             var select_value = $(this).val();
             
-            addPostOpComplicationTr(selected_text, table_id, select_value, $(this).find('option:selected').data('display_order')  );
+            if(select_value){
+                addPostOpComplicationTr(selected_text, table_id, select_value, $(this).find('option:selected').data('display_order')  );
+            }
+            
             
             $(this).find('option:selected').remove();
             
