@@ -42,6 +42,7 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
 {
 	public $service;
         public $firm;
+        public $subspecialty_id;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -105,8 +106,16 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
                     'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
                     'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
                 
-                    'right_values' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_Et_PostOpComplications', 'element_id', 'on' => 'right_values.eye_id = ' . \Eye::RIGHT),
-                    'left_values' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_Et_PostOpComplications', 'element_id', 'on' => 'left_values.eye_id = ' . \Eye::LEFT),
+//                    'right_values' => array(
+//                        self::STAT, 'OEModule\OphCiExamination\models\OphCiExamination_Et_PostOpComplications', 'element_id', 
+//                        'condition' => 'eye_id = ' . \Eye::RIGHT,
+//                        'select' => 'DISTINCT complication_id'
+//                    ),
+//                    'left_values' => array(
+//                        self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_Et_PostOpComplications', 'element_id', 
+//                        'on' => 'left_values.eye_id = ' . \Eye::LEFT,
+//                        'select' => 'DISTINCT right_values.complication_id'
+//                    ),
                     'operation_notes' => array(self::BELONGS_TO, 'Event', 'event_id', 'on' => 'operation_notes.event_type_id = 4'),
             );
         }
@@ -126,6 +135,7 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
         public function init()
         {
             $this->firm = \Firm::model()->findByPk(\Yii::app()->session['selected_firm_id']);
+            $this->subspecialty_id = $this->firm->serviceSubspecialtyAssignment ? $this->firm->serviceSubspecialtyAssignment->subspecialty_id : null;
         }
 
 	/**
@@ -267,4 +277,24 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
            
             return $response;
         }
+        public function getFullComplicationList($eye_id)
+        {
+            /*$criteria = new \CDbCriteria;
+            $criteria->select = "DISTINCT ophciexamination_postop_et_complications.complication_id";
+            $criteria->join = "JOIN ophciexamination_postop_et_complications ON t.id = ophciexamination_postop_et_complications.complication_id";
+            $criteria->addCondition("eye_id = :eye_id");
+            $criteria->params['eye_id'] = $eye_id;*/
+            
+            $list = \Yii::app()->db->createCommand()
+                ->selectDistinct('c.name')
+                ->from('et_ophciexamination_postop_complications t')
+                ->join('ophciexamination_postop_et_complications etc', 't.id = etc.element_id')
+                ->join('ophciexamination_postop_complications c', 'etc.complication_id = c.id')
+                ->where('etc.eye_id=:eye_id', array(':eye_id' => $eye_id))
+                ->order("etc.created_date DESC")
+                ->queryAll();
+            
+            return $list;
+        }
+        
 }

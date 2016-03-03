@@ -78,6 +78,7 @@ class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
 	{
             return array(
                 'id' => 'Common Complications',
+                'name' => 'Common Complications',
             );
 	}
 
@@ -96,28 +97,33 @@ class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
         ));
     }
     
-    public function getPostOpComplicationsList($operation_note_id = null, $subspecialty_id = null)
-    {
+    public function getPostOpComplicationsList($element_id, $operation_note_id, $subspecialty_id, $eye_id, $term = null)
+    {  
         $criteria = new \CDbCriteria;
-
-        $criteria->order = 't.display_order ASC';
         $criteria->addCondition('active = 1');
-        $criteria->join = "";
-        
-       /* if($operation_note_id){
-            $criteria->join .= "JOIN ophciexamination_postop_et_complications ON t.id != ophciexamination_postop_et_complications.complication_id ";
-            $criteria->addCondition('ophciexamination_postop_et_complications.operation_note_id = :operation_note_id');
-            $criteria->params['operation_note_id'] = $operation_note_id;
-        }*/
 
-        if($subspecialty_id){
-            $criteria->join .= "JOIN ophciexamination_postop_complications_subspecialty ON t.id = ophciexamination_postop_complications_subspecialty.complication_id";
+        $criteria->addCondition('t.id NOT IN (SELECT DISTINCT complication_id '
+                                                . 'FROM ophciexamination_postop_et_complications '
+                                                . 'WHERE element_id = :element_id AND operation_note_id = :operation_note_id AND eye_id = :eye_id) ');
+        
+        
+        $criteria->params['element_id'] = $element_id;
+        $criteria->params['operation_note_id'] = $operation_note_id;
+        $criteria->params['eye_id'] = $eye_id;
+        
+        if($term && strlen($term) >0){
+            
+            $term = addcslashes($term, '%_');            
+            $criteria->addSearchCondition('t.name', $term);
+            
+        } else {
+            $criteria->join = "JOIN ophciexamination_postop_complications_subspecialty ON t.id = ophciexamination_postop_complications_subspecialty.complication_id";
             $criteria->addCondition('subspecialty_id = :subspecialty_id');
             $criteria->params['subspecialty_id'] = $subspecialty_id;
             $criteria->order = 'ophciexamination_postop_complications_subspecialty.display_order ASC';
         }
-        
-        return \CHtml::listData($this->findAll($criteria), 'id', 'name');
+
+        return $this->findAll($criteria);
     }
     
     /**

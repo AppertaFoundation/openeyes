@@ -24,11 +24,14 @@
                 <?php if ($element->hasRight()):?>
                 
                     <?php //echo $element->right_values ?>
-                    <?php 
-                        foreach($element->right_values as $value){
-                            echo $value->complication->name . ", ";
-                        }
-                    ?>
+                
+                    <table id="right-complication-list" class="recorded-postop-complications" data-sideletter="R">
+                    <?php foreach($element->getFullComplicationList(\Eye::RIGHT) as $value): ?>
+                            <tr> 
+                                <td class=postop-complication-name><?php echo $value['name']; ?></td>
+                            </tr>
+                    <?php endforeach; ?>
+                    </table>
                    
                 <?php else: ?>
                         Not recorded
@@ -40,12 +43,15 @@
         <div class="data-row">
             <div class="data-value">
                 <?php if ($element->hasLeft()):?>
-
+                    
+                   <table id="left-complication-list" class="recorded-postop-complications" data-sideletter="L">
                    <?php 
-                        foreach($element->left_values as $value){
-                            echo $value->complication->name . ", ";
-                        }
-                    ?>
+                        foreach($element->getFullComplicationList(\Eye::LEFT) as $value): ?>
+                           <tr> 
+                                <td class=postop-complication-name><?php echo $value['name']; ?></td>
+                            </tr>
+                    <?php endforeach; ?>
+                    </table>
 
                 <?php else: ?>
                     Not recorded

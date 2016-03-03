@@ -16,12 +16,24 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
+use OEModule\OphCiExamination\models\OphCiExamination_PostOpComplications;
+use OEModule\OphCiExamination\models\OphCiExamination_Et_PostOpComplications;
 ?>
 <?php
 
 $operationNoteList = $element->getOperationNoteList();
-$opration_note_id = \Yii::app()->request->getParam('OphCiExamination_postop_complication_operation_note_id', ( is_array($operationNoteList) ? key($operationNoteList) : null) );
+$operation_note_id = \Yii::app()->request->getParam('OphCiExamination_postop_complication_operation_note_id', ( is_array($operationNoteList) ? key($operationNoteList) : null) );
 $subspecialty_id = $element->firm->getSubspecialtyID();
+
+$right_eye = OphCiExamination_PostOpComplications::model()->getPostOpComplicationsList($this->id, $operation_note_id, $subspecialty_id, \Eye::RIGHT);
+
+$right_eye_data = \CHtml::listData($right_eye, 'id', 'name');
+
+$left_eye = OphCiExamination_PostOpComplications::model()->getPostOpComplicationsList($this->id, $operation_note_id, $subspecialty_id, \Eye::LEFT);
+$left_eye_data = \CHtml::listData($left_eye, 'id', 'name');
+
+$defaultURL = "/" . Yii::app()->getModule('OphCiExamination')->id . "/" . Yii::app()->getModule('OphCiExamination')->defaultController;
 
 ?>
 
@@ -33,7 +45,7 @@ $subspecialty_id = $element->firm->getSubspecialtyID();
         <label for="Element_OphTrOperationnote_ProcedureList_id" class="right">Operation:</label>
     </div>
     <div class="large-5 column end">
-	<?php echo CHtml::dropDownList('OphCiExamination_postop_complication_operation_note_id', $opration_note_id,
+	<?php echo CHtml::dropDownList('OphCiExamination_postop_complication_operation_note_id', $operation_note_id,
             $operationNoteList,
             array('id' => 'OphCiExamination_postop_complication_operation_note_id-select', 'name' => 'OphCiExamination_postop_complication_operation_note_id')
         );?>		
@@ -48,21 +60,48 @@ $subspecialty_id = $element->firm->getSubspecialtyID();
 		<div class="active-form">
 			
 			<?php 
-                                $right_eye_data = OEModule\OphCiExamination\models\OphCiExamination_PostOpComplications::model()->getPostOpComplicationsList($opration_note_id,$subspecialty_id);
-                               
                                 echo $form->dropDownList(
-                                    OEModule\OphCiExamination\models\OphCiExamination_Et_PostOpComplications::model(),
-                                    'complication_id', $right_eye_data,
+                                    OphCiExamination_PostOpComplications::model(),
+                                    'name', $right_eye_data,
                                     array('empty' => '-- Select --',
                                         'id' => 'right-complication-select'
                                     ), 
                                     false, 
                                     array('label' => 4, 'field' => 6)
-                                ); ?>
+                                ); 
+                                
+                                 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+					'name' => 'right_complication_autocomplete_id',
+					'id' => 'right_complication_autocomplete_id',
+					'source' => "js:function(request, response) {
+									$.getJSON('" . $defaultURL . "/getPostOpComplicationAutocopleteList', {
+										term : request.term,
+										eye_id: '". \Eye::RIGHT ."',
+										element_id: '" . $this->id . "',
+                                                                                operation_note_id: '" . $operation_note_id . "',
+                                                                                ajax: 'ajax',
+									}, response);
+                                                                       
+								}",
+					'options' => array(
+						'select' => "js:function(event, ui) {
+										addPostOpComplicationTr(ui.item.label, 'right-complication-list', ui.item.value, 0  );
+										return false;
+									}",
+					),
+					'htmlOptions' => array(
+						'placeholder' => 'search for complications',
+					)
+				));
+                                
+                                
+                                
+                                ?>              
+                    
                          <hr>
 		</div>
                
-            <?php $right_values = $element->getRecordedComplications(\Eye::RIGHT, $opration_note_id); ?>
+            <?php $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_id); ?>
             
                 <div class="active-form">
                    
@@ -98,15 +137,43 @@ $subspecialty_id = $element->firm->getSubspecialtyID();
 	<div class="element-eye left-eye column right side" data-side="left">
 		<div class="active-form">
 			
-			<?php echo $form->dropDownList(OEModule\OphCiExamination\models\OphCiExamination_Et_PostOpComplications::model(), 'complication_id', OEModule\OphCiExamination\models\OphCiExamination_PostOpComplications::model()->getPostOpComplicationsList($opration_note_id, $subspecialty_id), 
+			<?php echo $form->dropDownList(OphCiExamination_PostOpComplications::model(), 'name', $left_eye_data, 
                                     array(
                                         'empty' => '-- Select --',
                                         'id' => 'left-complication-select'
                                     ), 
-                                    false, array('label' => 4, 'field' => 6)); ?>
+                                    false, array('label' => 4, 'field' => 6)); 
+                        
+                        $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+					'name' => 'left_complication_autocomplete_id',
+					'id' => 'left_complication_autocomplete_id',
+					'source' => "js:function(request, response) {
+									$.getJSON('" . $defaultURL . "/getPostOpComplicationAutocopleteList', {
+										term : request.term,
+										eye_id: '". \Eye::LEFT ."',
+										element_id: '" . $this->id . "',
+                                                                                operation_note_id: '" . $operation_note_id . "',
+                                                                                ajax: 'ajax',
+									}, response);
+                                                                       
+								}",
+					'options' => array(
+						'select' => "js:function(event, ui) {
+                                                                                console.log(ui);
+										addPostOpComplicationTr(ui.item.label, 'left-complication-list', ui.item.value, 0  );
+										return false;
+									}",
+					),
+					'htmlOptions' => array(
+						'placeholder' => 'search for complications',
+					)
+				));
+                        
+                        
+                        ?>
                         <hr>
                 </div>
-                <?php $left_values = $element->getRecordedComplications(\Eye::LEFT, $opration_note_id); ?>
+                <?php $left_values = $element->getRecordedComplications(\Eye::LEFT, $operation_note_id); ?>
                 <div class="active-form">
                     
                     <h5 class="left-recorded-complication-text recorded <?php echo $left_values ? '' : 'hide'?>">Recorded Complications</h5>

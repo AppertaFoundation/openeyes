@@ -1183,7 +1183,7 @@ $(document).ready(function() {
 		$(this).next('select').val(value);
 	});
         
-                /** Post Operative Complication **/
+        /** Post Operative Complication  Event Bindings **/
 
         $('#event-content').on('change', '#OphCiExamination_postop_complication_operation_note_id-select', function(){
             
@@ -1195,7 +1195,7 @@ $(document).ready(function() {
                 element_string = '/element_id/' + element_id;
             }
             
-            $.getJSON( baseUrl + '/OphCiExamination/default/getPostOpComplicationList' + element_string + '/operation_note_id/' + operation_note_id , function( data ) {
+            $.getJSON( baseUrl + '/OphCiExamination/default/getPostOpComplicationList' + element_string + '/operation_note_id/' + operation_note_id, function( data ) {
                 
                 var $right_table = $('#right-complication-list');
                 var $left_table = $('#left-complication-list');
@@ -1203,14 +1203,27 @@ $(document).ready(function() {
                 $('#right-complication-list tr, #left-complication-list tr').remove();
                 
                 $.each( data.right_values, function( key, val ) {
-                    addPostOpComplicationTr(val.name, 'right-complication-list', val.id);
+                    addPostOpComplicationTr(val.name, 'right-complication-list', val.id, val.display_order);
                     
                 });
                 $.each( data.left_values, function( key, val ) {
-                    addPostOpComplicationTr(val.name, 'left-complication-list', val.id);
+                    addPostOpComplicationTr(val.name, 'left-complication-list', val.id, val.display_order);
                 });
                 
                 setPostOpComplicationTableText();
+                
+                $('#left-complication-select option').remove();
+                $('#right-complication-select option').remove();
+                
+                $('#right-complication-select').append( $('<option>').text("-- Select --") );
+                $.each( data.right_select, function( key, val ) {
+                    $('#right-complication-select').append( $('<option>', {value: val.id, 'data-display_order':val.display_order}).text(val.name) );
+                });
+                
+                $('#left-complication-select').append( $('<option>').text("-- Select --") );
+                $.each( data.left_select, function( key, val ) {
+                    $('#left-complication-select').append( $('<option>', {value: val.id, 'data-display_order':val.display_order}).text(val.name) );
+                });
                 
             });
         });
@@ -1221,64 +1234,85 @@ $(document).ready(function() {
             var selected_text = $( '#' + $(this).attr('id') + " option:selected").text();
             var select_value = $(this).val();
             
-            addPostOpComplicationTr(selected_text, table_id, select_value);
+            addPostOpComplicationTr(selected_text, table_id, select_value, $(this).find('option:selected').data('display_order')  );
+            
+            $(this).find('option:selected').remove();
             
         });
-        
-        function addPostOpComplicationTr(selected_text, table_id, select_value)
-        {
-            
-            var $table = $('#' + table_id);
-          
-            var $tr = $('<tr>');
-            var $td_name = $('<td>', {class: "postop-complication-name"}).text(selected_text);
-            
-            var $hidden_input = $("<input>", {
-                type:"hidden", 
-                id:'complication_items_' + $table.data('sideletter') + '_' + $('#' + table_id + ' tr').length,
-                name: 'complication_items[' + $table.data('sideletter') + '][' + $('#' + table_id + ' tr').length +']',
-                value: select_value
-            });
-            
-            var $td_action = $('<td>',{class:'right'}).html( "<a class='postop-complication-remove-btn' href='#'>Remove</a>" );
-            $td_action.append($hidden_input);
-            
-            $tr.append($td_name);
-            $tr.append($td_action);
-            $table.append( $tr );
-        }
         
         $('#event-content').on('click','a.postop-complication-remove-btn', function(){
+            
+            var value = $(this).parent().find('input[type=hidden]').val();
+            var text = $(this).closest('tr').find('.postop-complication-name').text();
+
+            var select_id = $(this).closest('table').attr('id').replace('list', 'select');
+            
+            $select = $('#' + select_id);
+            $select.append( $('<option>',{value: value}).text(text));
+            
             $(this).closest('tr').remove();
+            
+            setPostOpComplicationTableText();
+            
         });
         
-        function setPostOpComplicationTableText()
-        {
-            var $right_table = $('#right-complication-list');
-            var $left_table = $('#left-complication-list');
-            
-            var $active_form = $right_table.closest('.active-form');
-            
-            if( $right_table.find('tr').length === 0  ){
-                $active_form.find('h5.recorded').hide();
-                $active_form.find('h5.no-recorded').show();
-            } else {
-                $active_form.find('h5.recorded').show();
-                $active_form.find('h5.no-recorded').hide();
-            }
-            
-            $active_form = $left_table.closest('.active-form');
-            if( $left_table.find('tr').length === 0  ){
-                $active_form.find('h5.recorded').hide();
-                $active_form.find('h5.no-recorded').show();
-            } else {
-                $active_form.find('h5.recorded').show();
-                $active_form.find('h5.no-recorded').hide();
-            }
-        }
+       
         
-        /** End of Post Operative Complication **/ 
+        /** End of Post Operative Complication Event Bindings **/ 
 });
+
+    /** Post Operative Complication function **/
+     function setPostOpComplicationTableText()
+    {
+        var $right_table = $('#right-complication-list');
+        var $left_table = $('#left-complication-list');
+
+        var $active_form = $right_table.closest('.active-form');
+
+        if( $right_table.find('tr').length === 0  ){
+            $active_form.find('h5.recorded').hide();
+            $active_form.find('h5.no-recorded').show();
+        } else {
+            $active_form.find('h5.recorded').show();
+            $active_form.find('h5.no-recorded').hide();
+        }
+
+        $active_form = $left_table.closest('.active-form');
+        if( $left_table.find('tr').length === 0  ){
+            $active_form.find('h5.recorded').hide();
+            $active_form.find('h5.no-recorded').show();
+        } else {
+            $active_form.find('h5.recorded').show();
+            $active_form.find('h5.no-recorded').hide();
+        }
+    }
+        
+    function addPostOpComplicationTr(selected_text, table_id, select_value, display_order)
+    {
+
+        var $table = $('#' + table_id);
+
+        var $tr = $('<tr>');
+        var $td_name = $('<td>', {class: "postop-complication-name"}).text(selected_text);
+
+        var $hidden_input = $("<input>", {
+            type:"hidden", 
+            id:'complication_items_' + $table.data('sideletter') + '_' + $('#' + table_id + ' tr').length,
+            name: 'complication_items[' + $table.data('sideletter') + '][' + $('#' + table_id + ' tr').length +']',
+            value: select_value,
+        });
+        $hidden_input.data('display_order', display_order);
+
+        var $td_action = $('<td>',{class:'right'}).html( "<a class='postop-complication-remove-btn' href='#'>Remove</a>" );
+        $td_action.append($hidden_input);
+
+        $tr.append($td_name);
+        $tr.append($td_action);
+        $table.append( $tr );
+    }
+    
+    /** End of Post Operative Complication function **/
+
 
 function updateTextMacros() {
 	var active_element_ids = [];
