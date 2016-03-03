@@ -26,11 +26,11 @@ $operationNoteList = $element->getOperationNoteList();
 $operation_note_id = \Yii::app()->request->getParam('OphCiExamination_postop_complication_operation_note_id', ( is_array($operationNoteList) ? key($operationNoteList) : null) );
 $subspecialty_id = $element->firm->getSubspecialtyID();
 
-$right_eye = OphCiExamination_PostOpComplications::model()->getPostOpComplicationsList($this->id, $operation_note_id, $subspecialty_id, \Eye::RIGHT);
+$right_eye = OphCiExamination_PostOpComplications::model()->getPostOpComplicationsList($element->id, $operation_note_id, $subspecialty_id, \Eye::RIGHT);
 
 $right_eye_data = \CHtml::listData($right_eye, 'id', 'name');
 
-$left_eye = OphCiExamination_PostOpComplications::model()->getPostOpComplicationsList($this->id, $operation_note_id, $subspecialty_id, \Eye::LEFT);
+$left_eye = OphCiExamination_PostOpComplications::model()->getPostOpComplicationsList($element->id, $operation_note_id, $subspecialty_id, \Eye::LEFT);
 $left_eye_data = \CHtml::listData($left_eye, 'id', 'name');
 
 $defaultURL = "/" . Yii::app()->getModule('OphCiExamination')->id . "/" . Yii::app()->getModule('OphCiExamination')->defaultController;
