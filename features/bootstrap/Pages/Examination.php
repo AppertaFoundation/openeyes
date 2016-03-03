@@ -822,10 +822,10 @@ class Examination extends OpenEyesPage {
 			'xpath' => "//*[@id='ophCiExaminationPCRRiskLeftEye']//*[contains(text(),'Calculation data derived from')]"
 		),
 		'referenceLinkOnPCRRightEyeBlockLink' => array(
-			'xpath' => "//*[@id='ophCiExaminationPCRRiskRightEye']//*[@class='large-12 column pcr-risk-data-link']//*[contains(text(),'The Cataract National Dataset')]"
+			'xpath' => "//*[@id='ophCiExaminationPCRRiskRightEye']//*[@class='large-8 column pcr-risk-data-link']//*[contains(text(),'The Cataract National Dataset')]"
 		),
 		'referenceLinkOnPCRLeftEyeBlockLink' => array(
-			'xpath' => "//*[@id='ophCiExaminationPCRRiskLeftEye']//*[@class='large-12 column pcr-risk-data-link']//*[contains(text(),'The Cataract National Dataset')]"
+			'xpath' => "//*[@id='ophCiExaminationPCRRiskLeftEye']//*[@class='large-8 column pcr-risk-data-link']//*[contains(text(),'The Cataract National Dataset')]"
 		),
 		'referencePage' => array(
 			'xpath' => "//*[contains(text(),'The Cataract National Dataset')]"

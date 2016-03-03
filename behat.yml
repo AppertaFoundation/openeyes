@@ -44,14 +44,14 @@ ci:
             load_db_cmd: "mysql -uroot openeyes < %s; bin/migrate-all.sh"
     extensions:
         Behat\MinkExtension\Extension:
-            base_url:           http://localhost
+            base_url:           http://localhost:8888
             default_session:    saucelabs
             javascript_session: saucelabs
 
 selenium-local:
     extensions:
         Behat\MinkExtension\Extension:
-            base_url:           http://localhost
+            base_url:           http://localhost:8888
             default_session:    selenium2
             javascript_session: selenium2
 
