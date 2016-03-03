@@ -1241,6 +1241,8 @@ $(document).ready(function() {
             
             $(this).find('option:selected').remove();
             
+            setPostOpComplicationTableText();
+            
         });
         
         $('#event-content').on('click','a.postop-complication-remove-btn', function(){

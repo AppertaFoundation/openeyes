@@ -232,56 +232,63 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
         
         public function getOperationNoteList()
         {
+            $patient_id = \Yii::app()->request->getParam("patient_id");
+            
             $response = array();
-            $short_format = array();
-
-            $criteria = new \CDbCriteria;
             
-            $event = new \Event();
-            
-            $criteria->addCondition("patient_id = :patient_id");
-            $criteria->addCondition("event_type_id = :event_type_id");
-            $criteria->params['patient_id'] = $this->event->episode->patient->id;
-            $criteria->params['event_type_id'] = 4; //TODO findOne
-            
-            $eventLists = $event->with('episode')->findAll($criteria);
-            
-            foreach($eventLists as $event){
+            if($patient_id){
                 
-                $procedureListModel = new \Element_OphTrOperationnote_ProcedureList();
-                
-                $criteria = new \CDbCriteria;
-                
-                $criteria->addCondition("event_id = :event_id");
-                $criteria->params['event_id'] = $event->id;
-                
-                $procedureList = $procedureListModel->findAll($criteria);
-
-                $date = new \DateTime($event->created_date);
-                $name = $date->format("d M Y") . " ";
-
                 $short_format = array();
                 
-                foreach($procedureList as $procesdures){
-                    
-                    $name .= ($procesdures->eye_id != 3 ? ($procesdures->eye->name) : '') . " ";
-                    
-                    foreach($procesdures->procedures as $procesdure){
-                            
-                        $short_format[] = $procesdure->short_format;
-                    }
-                    
-                    $name .= implode(" + ", $short_format);
+                $event_type = \EventType::model()->find("name = 'Operation Note'");
 
-                    if( strlen ($name) > 60){
-                        $name = substr($name, 0, 57);
-                        $name .= "...";
+                $criteria = new \CDbCriteria;
+
+                $event = new \Event();
+
+                $criteria->addCondition("patient_id = :patient_id");
+                $criteria->addCondition("event_type_id = :event_type_id");
+                $criteria->params['patient_id'] = $patient_id;
+                $criteria->params['event_type_id'] = $event_type->id;
+
+                $eventLists = $event->with('episode')->findAll($criteria);
+
+                foreach($eventLists as $event){
+
+                    $procedureListModel = new \Element_OphTrOperationnote_ProcedureList();
+
+                    $criteria = new \CDbCriteria;
+
+                    $criteria->addCondition("event_id = :event_id");
+                    $criteria->params['event_id'] = $event->id;
+
+                    $procedureList = $procedureListModel->findAll($criteria);
+
+                    $date = new \DateTime($event->created_date);
+                    $name = $date->format("d M Y") . " ";
+
+                    $short_format = array();
+
+                    foreach($procedureList as $procesdures){
+
+                        $name .= ($procesdures->eye_id != \Eye::BOTH ? ($procesdures->eye->name) : '') . " ";
+
+                        foreach($procesdures->procedures as $procesdure){
+
+                            $short_format[] = $procesdure->short_format;
+                        }
+
+                        $name .= implode(" + ", $short_format);
+
+                        if( strlen ($name) > 60){
+                            $name = substr($name, 0, 57);
+                            $name .= "...";
+                        }
                     }
+
+                    $response[$event->id] = $name;
+
                 }
-                
-
-                $response[$event->id] = $name;
-
             }
        
             return $response;
