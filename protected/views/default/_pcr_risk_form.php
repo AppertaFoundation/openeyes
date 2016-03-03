@@ -224,7 +224,8 @@ $criteria = new CDbCriteria();
 			<div class="large-2 column">
 				<?php
 				echo CHtml::dropDownList('PcrRisk['.$side.'][abletolieflat]', $pcr['lie_flat'], array('N' => 'No', 'Y' => 'Yes'),
-					array('id' => 'pcrrisk_'.$side.'_abletolieflat'));
+					array('id' => 'pcrrisk_'.$side.'_abletolieflat',
+						'class' => 'pcrrisk_lie_flat'));
 				?>
 			</div>
 			<div class="large-2 column pcr-nkr">

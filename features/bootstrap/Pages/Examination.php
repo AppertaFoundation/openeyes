@@ -809,6 +809,12 @@ class Examination extends OpenEyesPage {
 		'leftAnteriorSegmentDescription' => array (
 			'xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_description']"
 		),
+		'rightEyePCRRiskContainer' => array(
+			'xpath' => "//*[@id='ophCiExaminationPCRRiskRightEye']"
+		),
+		'leftEyePCRRiskContainer' => array(
+			'xpath' => "//*[@id='ophCiExaminationPCRRiskLeftEye']"
+		),
 		'rightEyePCRRisk' =>array(
 			'xpath' => "//*[@id='ophCiExaminationPCRRiskRightEyeLabel']//*[contains(text(),'Right Eye - PCR Risk')]"
 		),
@@ -1857,5 +1863,37 @@ class Examination extends OpenEyesPage {
 		else{
 			throw new BehaviorException ( "Page not Displayed!!" );
 		}
+	}
+
+	public function checkPcrDefaultValues()
+	{
+        $defaults = array(
+            '.pcrrisk_glaucoma' => 'NK',
+            '.pcrrisk_diabetic' => 'NK',
+            '.pcrrisk_no_fundal_view' => 'NK',
+            '.pcrrisk_brunescent_white_cataract' => 'NK',
+            '.pcr_doctor_grade' => '1',
+            '.pcrrisk_pxf_phako' => 'NK',
+            '.pcrrisk_pupil_size' => 'Medium',
+            '.pcrrisk_axial_length' => 'NK',
+            '.pcrrisk_arb' => 'NK',
+            '.pcrrisk_lie_flat' => 'Y'
+        );
+
+		foreach(array(
+                    $this->getElement('rightEyePCRRiskContainer'),
+                    $this->getElement('leftEyePCRRiskContainer')
+                ) as $pcrBlock){
+            foreach($defaults as $input => $defaultValue){
+
+                $element = $pcrBlock->find('css', $input);
+				if(!$element){
+					throw new Exception($input . ' does not exist');
+				}
+                if($element->getValue() !== $defaultValue){
+                    throw new Exception($input . ' does not have a default value');
+                }
+            }
+        }
 	}
 }

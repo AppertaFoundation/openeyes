@@ -1357,6 +1357,8 @@ Feature: Create New Examination Regression Tests
         Then I click on Right Eye PCR Risk
         Then I click on Left Eye PCR Risk
 
+        Then I should have the default PCR values
+
         #Validation1
         Then I should see reference link on PCR Right Eye block
         Then I should see reference link on PCR Left Eye block
@@ -1368,6 +1370,8 @@ Feature: Create New Examination Regression Tests
         Then I click on reference link on PCR Left Eye block
         #Validation3
         Then I should see the reference Page
+
+
 
         Examples:
         |page  |username|password|site1   |firm                       |searchItem|specialty |event      |sectionName1       |sectionName2                |
