@@ -940,6 +940,15 @@ class DefaultController extends BaseEventTypeController
 					'empty'=>'-- Please select --')
 				);
 		}
+	}
 
+	protected function afterUpdateElements($event)
+	{
+		$this->persistPcrRisk();
+	}
+
+	protected function afterCreateElements($event)
+	{
+		$this->persistPcrRisk();
 	}
 }
