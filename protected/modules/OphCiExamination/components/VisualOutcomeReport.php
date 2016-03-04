@@ -110,6 +110,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
             )->join('event post_examination', 'post_examination.episode_id = note_event.episode_id
                AND post_examination.event_type_id = :examination
                AND post_examination.event_date >= note_event.event_date
+               AND post_examination.created_date > note_event.created_date
                AND post_examination.event_date BETWEEN DATE_ADD(note_event.event_date, INTERVAL :monthsBefore MONTH) AND DATE_ADD(note_event.event_date, INTERVAL :monthsAfter MONTH)',
                 array(
                     'examination' => $this->examinationEvent['id'],
