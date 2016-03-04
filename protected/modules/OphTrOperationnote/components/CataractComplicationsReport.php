@@ -48,6 +48,7 @@ class CataractComplicationsReport extends Report implements ReportInterface
                 'ophtroperationnote_cataract_complication.complication_id = ophtroperationnote_cataract_complications.id'
             )
             ->where('surgeon_id = :surgeon', array('surgeon' => $surgeon))
+            ->andWhere('ophtroperationnote_cataract_complications.name <> "None"')
             ->group('complication_id');
 
         if ($dateFrom) {
@@ -120,6 +121,7 @@ class CataractComplicationsReport extends Report implements ReportInterface
 
         return $this->command->select('name')
             ->from('ophtroperationnote_cataract_complications')
+            ->where('ophtroperationnote_cataract_complications.name <> "None"')
             ->queryAll();
     }
 
