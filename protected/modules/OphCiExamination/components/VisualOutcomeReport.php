@@ -54,10 +54,10 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         'legend' => array('enabled' => false),
         'title' => array('text' => 'Visual Acuity'),
         'xAxis' => array(
-            'title' => array('text' => 'Operations'),
+            'title' => array('text' => 'Postoperative VA'),
         ),
         'yAxis' => array(
-            'title' => array('text' => 'Preoperative (BCVA), X-axis Post Operative (BCVA) '),
+            'title' => array('text' => 'Preoperative VA'),
         ),
         'plotOptions' => array('scatter' => array(
             'tooltip' => array(
