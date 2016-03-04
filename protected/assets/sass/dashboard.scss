@@ -223,21 +223,26 @@ select:focus {
   }
 }
 
-
-#dash-grid{
-  .mdl-cell {
-    background-color: white;
-    height: 350px;
-    padding: 0;
-    overflow: hidden;
-  }
-  .highcharts-xaxis-labels, .highcharts-yaxis-labels {
-    text {
-      font-size: 0.8em !important;
+.mdl-layout__content {
+  height: calc(100% - 64px);
+  #dash-grid{
+    height: calc(100% - 64px);
+    .mdl-cell {
+      background-color: white;
+      padding: 0;
+      min-height: 350px;
+      height: 50%;
+      overflow: hidden;
     }
-  }
+    .highcharts-xaxis-labels, .highcharts-yaxis-labels {
+      text {
+        font-size: 0.8em !important;
+      }
+    }
 
+  }
 }
+
 
 .report-container {
   position: relative;
