@@ -43,8 +43,6 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         'xAxis' => array(
             'title' => array('text' => 'PPOR - POR'),
             'categories' => array(
-                '-5.0', '-4.5', '-4.0', '-3.5', '-3.0', '-2.5', '-2.0', '-1.5', '-1.0', '-0.5', '0',
-                '0.5', '1.0', '1.5', '2.0', '2.5', '3.0', '3.5', '4.0', '4.5', '5.0'
             ),
         ),
         'yAxis' => array(
@@ -131,10 +129,13 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
             $diff = number_format($diff, 1);
             if (!array_key_exists("$diff", $count)) {
                 $count["$diff"] = 0;
+                $this->graphConfig['xAxis']['categories'][] = $diff;
             }
             $count["$diff"]++;
         }
 
+        sort($this->graphConfig['xAxis']['categories'], SORT_NUMERIC);
+        $this->padCategories();
         $dataSet = array();
 
         foreach ($this->graphConfig['xAxis']['categories'] as $graphCategory) {
@@ -148,6 +149,26 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         }
 
         return $dataSet;
+    }
+
+    /**
+     *
+     */
+    protected function padCategories()
+    {
+        $top = array_pop($this->graphConfig['xAxis']['categories']);
+        $bottom = array_shift($this->graphConfig['xAxis']['categories']);
+        $bigger = $bottom;
+        if($top > $bottom){
+            $bigger = $top;
+        }
+
+        $this->graphConfig['xAxis']['categories'] = array();
+        $upperLimit = abs($bigger);
+        $lowerLimit = 0 - $upperLimit;
+        for($i = $lowerLimit; $i <= $upperLimit; $i += 0.5 ){
+            $this->graphConfig['xAxis']['categories'][] = "$i";
+        }
     }
 
     /**
