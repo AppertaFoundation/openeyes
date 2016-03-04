@@ -734,26 +734,29 @@ BEGIN
 SET @time_now = UNIX_TIMESTAMP(NOW());
 SET @file = CONCAT(dir, '/episode_operation_anaesthesia_', @time_now, '.csv');
 
+DROP TEMPORARY TABLE IF EXISTS tmp_anesthesia_type;
+
 CREATE TEMPORARY TABLE tmp_anesthesia_type(
-	`code` INT(3),
-	`desc` VARCHAR(50)
+	`id` INT(10) UNSIGNED NOT NULL,
+	`name` VARCHAR(50),
+	`code` VARCHAR(50),
+	`nod_code` VARCHAR(50),
+	`nod_desc` VARCHAR(50)
 );
 
-INSERT INTO tmp_anesthesia_type(`code`, `desc`)
+INSERT INTO tmp_anesthesia_type(`id`, `name`, `code`, `nod_code`, `nod_desc`)
 VALUE
-(0, 'No anaesthesia'),
-(1, 'General anaesthesia alone'),
-(2, 'Local anaesthesia alone'),
-(3, 'General + Local anaesthesia'),
-(4, 'Topical anaesthesia alone'),
-(5, 'Topical + Local anaesthesia'),
-(9, 'Unknown');
+(1, 'Topical', 'Top', 4, 'Topical anaesthesia alone'),
+(2, 'LAC',     'LAC', 2, 'Local anaesthesia alone'),
+(3, 'LA',      'LA',  2, 'Local anaesthesia alone'),
+(4, 'LAS',     'LAS', 2, 'Local anaesthesia alone'),
+(5, 'GA',      'GA',  1, 'General anaesthesia alone');
                         
 SET @cmd = CONCAT(" (SELECT 'OperationId', 'AnaesthesiaTypeId')
                     UNION
                     (
                         SELECT event_id AS OperationId, 
-                        (SELECT `desc` FROM tmp_anesthesia_type WHERE at.`name` = `desc`) AS AnaesthesiaTypeId
+                        (SELECT `nod_code` FROM tmp_anesthesia_type WHERE at.`name` = `name`) AS AnaesthesiaTypeId
                         FROM et_ophtroperationnote_anaesthetic a 
                         JOIN `anaesthetic_type` `at` ON a.`anaesthetic_type_id` = at.`id`
                         
@@ -764,7 +767,7 @@ SET @cmd = CONCAT(" (SELECT 'OperationId', 'AnaesthesiaTypeId')
 PREPARE statement FROM @cmd;
 EXECUTE statement;
     
-DROP TEMPORARY TABLE tmp_anesthesia_type;                
+DROP TEMPORARY TABLE tmp_anesthesia_type;
 END;
 
                         -- EpisodeTreatment --
