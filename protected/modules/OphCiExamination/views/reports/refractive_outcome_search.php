@@ -26,8 +26,8 @@
             <div class="mdl-selectfield">
                 <label for="refractive-outcome-months">Months Post Op</label>
                 <select name="months" id="refractive-outcome-months" class="browser-default">
-                    <?php foreach(range(1,300) as $month): ?>
-                        <option value="<?=$month?>" <?=($month == 4) ? 'selected' : '' ?>><?=$month?></option>
+                    <?php foreach(range(0,300) as $month): ?>
+                        <option value="<?=$month?>"><?=($month) ? $month : 'All'?></option>
                     <?php endforeach ?>
                 </select>
             </div>

@@ -61,7 +61,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
      */
     public function __construct($app)
     {
-        $this->months = $app->getRequest()->getQuery('months', 4);
+        $this->months = $app->getRequest()->getQuery('months', 0);
 
         parent::__construct($app);
     }
@@ -73,7 +73,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
      * @param int $months
      * @return array|\CDbDataReader
      */
-    protected function queryData($surgeon, $dateFrom, $dateTo, $months = 4)
+    protected function queryData($surgeon, $dateFrom, $dateTo, $months = 0)
     {
         $this->getExaminationEvent();
 
@@ -85,12 +85,10 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
             ->join('episode', 'note_event.episode_id = episode.id')
             ->join('event post_examination', 'post_examination.episode_id = note_event.episode_id
                AND post_examination.event_type_id = :examination
-               AND post_examination.event_date BETWEEN DATE_ADD(note_event.event_date, INTERVAL :monthsBefore MONTH) AND DATE_ADD(note_event.event_date, INTERVAL :monthsAfter MONTH)',
+               AND post_examination.event_date >= note_event.event_date',
                 array(
                     'examination' => $this->examinationEvent['id'],
-                    'monthsBefore' => ($months - 1),
-                    'monthsAfter' => ($months + 1)
-                )
+                    )
             )
             ->join('et_ophciexamination_refraction', 'post_examination.id = et_ophciexamination_refraction.event_id')
             ->join('et_ophtroperationnote_cataract', 'note_event.id = et_ophtroperationnote_cataract.event_id')
@@ -106,6 +104,13 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
             $this->command->andWhere('note_event.event_date < :dateTo', array('dateTo' => $dateTo));
         }
 
+        if($months){
+            $this->command->andWhere('post_examination.event_date BETWEEN DATE_ADD(note_event.event_date, INTERVAL :monthsBefore MONTH) AND DATE_ADD(note_event.event_date, INTERVAL :monthsAfter MONTH)',
+                array(
+                    'monthsBefore' => ($months - 1),
+                    'monthsAfter' => ($months + 1)
+                ));
+        }
         return $this->command->queryAll();
     }
 
