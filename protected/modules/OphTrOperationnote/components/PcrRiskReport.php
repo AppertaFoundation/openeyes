@@ -10,7 +10,7 @@ class PcrRiskReport extends Report implements ReportInterface
 {
     protected $graphConfig = array(
         'chart' => array('renderTo' => ''),
-        'title' => array('text' => 'Case Complexity Adjusted PCR Rate'),
+        'title' => array('text' => 'Complications'),
         'xAxis' => array(
             'title' => array('text' => 'No. Operations')
         ),
@@ -27,7 +27,7 @@ class PcrRiskReport extends Report implements ReportInterface
         ),
         'tooltip' => array(
             'headerFormat' => '<b>PCR Risk</b><br>',
-            'pointFormat' => '<i>Number of surgeries</i>: {point.x} <br /> <i>PCR Avg</i>: {point.y}'
+            'pointFormat' => '<i>Operations</i>: {point.x} <br /> <i>PCR Avg</i>: {point.y:.2f}'
         ),
         'legend' => array(
             'align' => 'right',

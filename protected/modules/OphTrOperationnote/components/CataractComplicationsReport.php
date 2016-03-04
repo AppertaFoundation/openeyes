@@ -21,9 +21,12 @@ class CataractComplicationsReport extends Report implements ReportInterface
             'title' => array('text' => 'Complication'),
             'labels' => array('style' => array('fontSize' => '0.5em'))
         ),
+        'yAxis' => array(
+            'title' => array('text' => 'Percent of cases')
+        ),
         'tooltip' => array(
             'headerFormat' => '<b>Cataract Complications</b><br>',
-            'pointFormat' => '<i>Complication</i>: {point.category} <br /> <i>Percentage </i>: {point.y}'
+            'pointFormat' => '<i>Complication</i>: {point.category} <br /> <i>Percentage </i>: {point.y:.2f}'
         )
     );
 
