@@ -35,6 +35,7 @@
                 <label for="visual-acuity-methods">Method</label>
                 <select name="method" id="visual-acuity-methods" class="browser-default">
                     <option value="">All</option>
+                    <option value="best" selected>Best Corrected</option>
                     <?php foreach($methods as $method):?>
                     <option value="<?=$method['id']?>"><?=$method['name']?></option>
                     <?php endforeach;?>

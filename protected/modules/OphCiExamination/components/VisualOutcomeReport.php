@@ -73,7 +73,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
     public function __construct($app)
     {
         $this->months = $app->getRequest()->getQuery('months', 4);
-        $this->method = $app->getRequest()->getQuery('method', 0);
+        $this->method = $app->getRequest()->getQuery('method', 'best');
         $this->type = $app->getRequest()->getQuery('type', 'distance');
 
         parent::__construct($app);
@@ -84,11 +84,11 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
      * @param $dateFrom
      * @param $dateTo
      * @param int $months
-     * @param int $method
+     * @param int|string $method
      * @param string $type
      * @return array|\CDbDataReader
      */
-    protected function queryData($surgeon, $dateFrom, $dateTo, $months = 4, $method = 0, $type = 'distance')
+    protected function queryData($surgeon, $dateFrom, $dateTo, $months = 4, $method = 'best', $type = 'distance')
     {
         $table = 'ophciexamination_visualacuity_reading';
         if ($type !== 'distance') {
@@ -146,7 +146,13 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         }
 
         if ($method) {
-            $this->command->andWhere('pre_reading.method_id = :method', array('method' => $method));
+            if(is_int($method)){
+                $this->command->andWhere('pre_reading.method_id = :method', array('method' => $method));
+            } else {
+                $this->command
+                    ->join('ophciexamination_visualacuity_method', 'ophciexamination_visualacuity_method.id = pre_reading.method_id')
+                    ->andWhere('ophciexamination_visualacuity_method.name = "Glasses" OR ophciexamination_visualacuity_method.name = "Contact lens"');
+            }
         }
 
         return $this->command->queryAll();
@@ -161,6 +167,8 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
 
         $dataCheck = array();
         $dataSet = array();
+        $eyeDiffs = array();
+        $bestValues = array();
         foreach ($data as $row) {
             if (!isset($dataCheck[$row['id']])) {//Do we have data for this operation?
                 $dataCheck[$row['id']] = array();
@@ -168,18 +176,37 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
             if (!isset($dataCheck[$row['id']][$row['eye_id']])) { //and specifically for this eye in the op
                 $dataCheck[$row['id']][$row['eye_id']] = array();
             }
-            if (!isset($dataCheck[$row['id']][$row['eye_id']][$row['method_id']])) { //and then for this method
+            if (!isset($dataCheck[$row['id']][$row['eye_id']][$row['method_id']]) || $this->method === 'best') { //and then for this method
                 $dataCheck[$row['id']][$row['eye_id']][$row['method_id']] = true;
-                //get the pre/post values now. Only the first time, order in SQL query means the first one we come
-                //across is the one closest to the op pre and post.
-                $dataSet[] = array(
-                    $this->convertVisualAcuity($row['pre_value']),
-                    $this->convertVisualAcuity($row['post_value'])
-                );
+                if($this->method === 'best'){
+                    $diffForEye = $row['pre_value'] - $row['post_value'];
+                    if(!isset($eyeDiffs[$row['id'].'_'.$row['eye_id']])){
+                        $eyeDiffs[$row['id'].'_'.$row['eye_id']] = $diffForEye;
+                        $bestValues[$row['id'].'_'.$row['eye_id']] = array(
+                            $this->convertVisualAcuity($row['pre_value']),
+                            $this->convertVisualAcuity($row['post_value'])
+                        );
+                    } elseif( $diffForEye > $eyeDiffs[$row['id'].'_'.$row['eye_id']]){
+                        $eyeDiffs[$row['id'].'_'.$row['eye_id']] = $diffForEye;
+                        $bestValues[$row['id'].'_'.$row['eye_id']] = array(
+                            $this->convertVisualAcuity($row['pre_value']),
+                            $this->convertVisualAcuity($row['post_value'])
+                        );
+                    }
+                } else {
+
+                    //get the pre/post values now. Only the first time, order in SQL query means the first one we come
+                    //across is the one closest to the op pre and post.
+                    $dataSet[] = array(
+                        $this->convertVisualAcuity($row['pre_value']),
+                        $this->convertVisualAcuity($row['post_value'])
+                    );
+                }
+
             }
         }
 
-        return $dataSet;
+        return array_merge($dataSet, $bestValues);
     }
 
     /**
