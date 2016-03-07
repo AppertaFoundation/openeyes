@@ -41,7 +41,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         'title' => array('text' => 'Refractive Outcome'),
         'subtitle' => array('text' => 'Total eyes: {{eyes}}, ±0.5D: {{0.5}}, ±1D: {{1}}'),
         'xAxis' => array(
-            'title' => array('text' => 'PPOR - POR'),
+            'title' => array('text' => 'PPOR - POR (Dioptres)'),
             'categories' => array('0'),
         ),
         'yAxis' => array(

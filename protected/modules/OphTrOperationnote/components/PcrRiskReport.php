@@ -9,8 +9,8 @@
 class PcrRiskReport extends Report implements ReportInterface
 {
     protected $graphConfig = array(
-        'chart' => array('renderTo' => ''),
-        'title' => array('text' => 'Complications'),
+        'chart' => array('renderTo' => '', 'type' => 'spline'),
+        'title' => array('text' => 'PCR Rate (risk adjusted)'),
         'xAxis' => array(
             'title' => array('text' => 'No. Operations')
         ),
@@ -18,7 +18,7 @@ class PcrRiskReport extends Report implements ReportInterface
             'title' => array('text' => 'PCR Rate'),
             'plotLines' => array(array(
                 'value' => 0,
-                'color' => 'yellow',
+                'color' => 'black',
                 'dashStyle' => 'shortdash',
                 'width' => 1,
                 'label' => array('text' => 'Average')
@@ -38,6 +38,10 @@ class PcrRiskReport extends Report implements ReportInterface
             'floating' => true,
             'borderWidth' => 1
         ),
+        'plotOptions' => array('spline' => array('marker' => array(
+            'enabled' => false,
+            'states' => array('hover' => array('enabled' => false))
+        )))
     );
 
     /**
@@ -111,10 +115,12 @@ class PcrRiskReport extends Report implements ReportInterface
             array(
                 'name' => 'Upper 98%',
                 'data' => $this->upper98(),
+                'color' => 'red',
             ),
             array(
                 'name' => 'Upper 95%',
                 'data' => $this->upper95(),
+                'color' => 'green',
             )
         );
 

@@ -14,7 +14,7 @@ class CataractComplicationsReport extends Report implements ReportInterface
     protected $graphConfig = array(
         'chart' => array('renderTo' => '', 'type' => 'bar'),
         'legend' => array('enabled' => false),
-        'title' => array('text' => 'Complications'),
+        'title' => array('text' => 'Complication Profile'),
         'subtitle' => array('text' => 'Total Complications: '),
         'xAxis' => array(
             'categories' => array(),
