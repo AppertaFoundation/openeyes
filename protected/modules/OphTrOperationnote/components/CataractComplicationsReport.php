@@ -17,7 +17,7 @@ class CataractComplicationsReport extends Report implements ReportInterface
         'title' => array('text' => 'Complications'),
         'subtitle' => array('text' => 'Total Complications: '),
         'xAxis' => array(
-            'categories' => array('0'),
+            'categories' => array(),
             'title' => array('text' => 'Complication'),
             'labels' => array('style' => array('fontSize' => '0.5em'))
         ),
