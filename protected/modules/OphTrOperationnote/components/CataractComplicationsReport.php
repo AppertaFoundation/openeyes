@@ -28,7 +28,6 @@ class CataractComplicationsReport extends Report implements ReportInterface
             'headerFormat' => '<b>Cataract Complications</b><br>',
             'pointFormat' => '<i>Complication</i>: {point.category} <br /> <i>Percentage </i>: {point.y:.2f}'
         ),
-        'noData' => array()
     );
 
     /**
@@ -81,6 +80,10 @@ class CataractComplicationsReport extends Report implements ReportInterface
                 }
             }
             $seriesCount[] = 0;
+        }
+
+        if(array_sum($seriesCount) === 0){
+            $seriesCount = array();
         }
 
         return $seriesCount;
