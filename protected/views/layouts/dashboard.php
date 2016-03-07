@@ -32,6 +32,8 @@
         <script src="<?= Yii::app()->assetManager->createUrl('components/jquery-ui/ui/jquery.ui.datepicker.js')?>"></script>
         <script src="<?= Yii::app()->assetManager->createUrl('components/material-design-lite/material.min.js')?>"></script>
         <script src="<?= Yii::app()->assetManager->createUrl('components/highcharts/highcharts.js')?>"></script>
+        <script src="<?= Yii::app()->assetManager->createUrl('components/highcharts/modules/exporting.js')?>"></script>
+        <script src="<?= Yii::app()->assetManager->createUrl('components/highcharts/modules/no-data-to-display.js')?>"></script>
 
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -70,7 +72,11 @@
                         <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="submit" name="action">Submit
                             <i class="material-icons right">send</i>
                         </button>
+                        <span>
+                            <i class="material-icons" id="export">print</i>
+                        </span>
                     </form>
+
                 </div>
             </header>
             <!--<div class="drawer mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">

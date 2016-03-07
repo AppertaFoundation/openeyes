@@ -31,7 +31,7 @@
     <div id="<?=$report->graphId();?>" class="chart-container"></div>
 </div>
 <script>
-    var <?=$report->graphId();?> = new Highcharts.Chart($.extend(
+    OpenEyes.Dash.reports['<?=$report->graphId();?>'] = new Highcharts.Chart($.extend(
             {series: <?= $report->seriesJson();?>},
             JSON.parse('<?= $report->graphConfig();?>')
         ));

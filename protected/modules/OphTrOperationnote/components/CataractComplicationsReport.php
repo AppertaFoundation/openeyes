@@ -27,7 +27,8 @@ class CataractComplicationsReport extends Report implements ReportInterface
         'tooltip' => array(
             'headerFormat' => '<b>Cataract Complications</b><br>',
             'pointFormat' => '<i>Complication</i>: {point.category} <br /> <i>Percentage </i>: {point.y:.2f}'
-        )
+        ),
+        'noData' => array()
     );
 
     /**
@@ -139,6 +140,9 @@ class CataractComplicationsReport extends Report implements ReportInterface
 
     }
 
+    /**
+     * @return int
+     */
     protected function getTotalComplications()
     {
         $data = $this->queryData($this->surgeon, $this->from, $this->to);

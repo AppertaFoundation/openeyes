@@ -71,7 +71,10 @@ class Report {
      */
     protected $globalGraphConfig = array(
         'credits' => array('enabled' => false),
-        'chart' => array('style' => array('fontFamily'=> 'Roboto,Helvetica,Arial,sans-serif'))
+        'chart' => array('style' => array('fontFamily'=> 'Roboto,Helvetica,Arial,sans-serif')),
+        'exporting' => array(
+            'buttons' => array('contextButton' => array('align' => 'left')),
+        )
     );
 
     /**

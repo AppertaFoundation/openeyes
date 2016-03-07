@@ -115,7 +115,7 @@
                 data: $searchForm.serialize() + '&' + $('#search-form').serialize(),
                 dataType: 'json',
                 success: function (data, textStatus, jqXHR) {
-                    chart = window[chartId];
+                    chart = OpenEyes.Dash.reports[chartId];
                     chart.series[0].setData(data);
 
                     if(typeof Dash.postUpdate[chartId] === 'function'){
@@ -163,7 +163,7 @@
                 plusOrMinusHalf = 0,
                 plusOrMinusOnePercent = 0,
                 plusOrMinusHalfPercent = 0,
-                chart = window['OEModule_OphCiExamination_components_RefractiveOutcomeReport'];
+                chart = OpenEyes.Dash.reports['OEModule_OphCiExamination_components_RefractiveOutcomeReport'];
 
             for(var i = 0; i < data.length; i++){
                 total += data[i];
@@ -181,7 +181,7 @@
         },
         'CataractComplicationsReport': function(data){
             var total = 0,
-                chart = window['CataractComplicationsReport'];
+                chart = OpenEyes.Dash.reports['CataractComplicationsReport'];
             for(var i = 0; i < data.length; i++){
                 total += data[i];
             }

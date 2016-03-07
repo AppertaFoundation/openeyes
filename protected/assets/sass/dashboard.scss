@@ -221,6 +221,10 @@ select:focus {
       }
     }
   }
+  #export {
+    cursor: pointer;
+    vertical-align: middle;
+  }
 }
 
 .mdl-layout__content {
@@ -239,7 +243,6 @@ select:focus {
         font-size: 0.8em !important;
       }
     }
-
   }
 }
 
@@ -268,7 +271,7 @@ select:focus {
       width: 55px;
     }
   }
-  div {
+  &>div {
     height: 100%;
   }
   .report-search {

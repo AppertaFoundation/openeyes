@@ -229,16 +229,21 @@ select:focus {
   position: relative;
   z-index: 50;
 }
+/* line 224, ../sass/dashboard.scss */
+.mdl-layout__header-row #export {
+  cursor: pointer;
+  vertical-align: middle;
+}
 
-/* line 226, ../sass/dashboard.scss */
+/* line 230, ../sass/dashboard.scss */
 .mdl-layout__content {
   height: calc(100% - 64px);
 }
-/* line 228, ../sass/dashboard.scss */
+/* line 232, ../sass/dashboard.scss */
 .mdl-layout__content #dash-grid {
   height: calc(100% - 64px);
 }
-/* line 230, ../sass/dashboard.scss */
+/* line 234, ../sass/dashboard.scss */
 .mdl-layout__content #dash-grid .mdl-cell {
   background-color: white;
   padding: 0;
@@ -246,17 +251,17 @@ select:focus {
   height: 50%;
   overflow: hidden;
 }
-/* line 238, ../sass/dashboard.scss */
+/* line 242, ../sass/dashboard.scss */
 .mdl-layout__content #dash-grid .highcharts-xaxis-labels text, .mdl-layout__content #dash-grid .highcharts-yaxis-labels text {
   font-size: 0.8em !important;
 }
 
-/* line 247, ../sass/dashboard.scss */
+/* line 250, ../sass/dashboard.scss */
 .report-container {
   position: relative;
   height: 100%;
 }
-/* line 250, ../sass/dashboard.scss */
+/* line 253, ../sass/dashboard.scss */
 .report-container .search-icon {
   position: absolute;
   right: 0;
@@ -264,7 +269,7 @@ select:focus {
   z-index: 1;
   cursor: pointer;
 }
-/* line 256, ../sass/dashboard.scss */
+/* line 259, ../sass/dashboard.scss */
 .report-container .search-icon:after {
   font-family: "Roboto","Helvetica","Arial",sans-serif;
   font-size: 0.7em;
@@ -275,37 +280,37 @@ select:focus {
   width: 0;
   display: inline-block;
 }
-/* line 266, ../sass/dashboard.scss */
+/* line 269, ../sass/dashboard.scss */
 .report-container .search-icon:hover:after {
   width: 55px;
 }
-/* line 271, ../sass/dashboard.scss */
-.report-container div {
+/* line 274, ../sass/dashboard.scss */
+.report-container > div {
   height: 100%;
 }
-/* line 274, ../sass/dashboard.scss */
+/* line 277, ../sass/dashboard.scss */
 .report-container .report-search {
   height: 0;
   overflow: hidden;
 }
-/* line 277, ../sass/dashboard.scss */
+/* line 280, ../sass/dashboard.scss */
 .report-container .report-search fieldset {
   width: 60%;
   margin: auto;
 }
-/* line 280, ../sass/dashboard.scss */
+/* line 283, ../sass/dashboard.scss */
 .report-container .report-search fieldset div {
   margin: 20px;
 }
-/* line 282, ../sass/dashboard.scss */
+/* line 285, ../sass/dashboard.scss */
 .report-container .report-search fieldset div .mdl-radio {
   margin-right: 20px;
 }
-/* line 285, ../sass/dashboard.scss */
+/* line 288, ../sass/dashboard.scss */
 .report-container .report-search fieldset div button[type="submit"] {
   float: right;
 }
-/* line 291, ../sass/dashboard.scss */
+/* line 294, ../sass/dashboard.scss */
 .report-container .chart-container {
   z-index: 5;
 }
