@@ -206,7 +206,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
             }
         }
 
-        return array_merge($dataSet, $bestValues);
+        return array_merge($dataSet, array_values($bestValues));
     }
 
     /**
