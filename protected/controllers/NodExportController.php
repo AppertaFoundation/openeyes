@@ -48,29 +48,35 @@ class NodExportController extends BaseController
 		return parent::beforeAction($action);
 	}
         
-        public function init()
-        {
-            $date = date('YmdHi');
-            $this->export_path = realpath(dirname(__FILE__) . '/..') . '/runtime/nod-export/' . $this->institution_code . '/' . $date;
-            $this->zip_name = $this->institution_code . '_' . $date . '_NOD_Export';
-            
-            if (!file_exists($this->export_path)) {
-                mkdir($this->export_path, 0777, true);
-            }
-			
-			//TODO: need to set start date and end date
-			// TODO: we need to use values from the POST array
+	public function init()
+	{
+		$date = date('YmdHi');
+		$this->export_path = realpath(dirname(__FILE__) . '/..') . '/runtime/nod-export/' . $this->institution_code . '/' . $date;
+		$this->zip_name = $this->institution_code . '_' . $date . '_NOD_Export';
+		
+		if (!file_exists($this->export_path)) {
+			mkdir($this->export_path, 0777, true);
+		}
+		
+		//TODO: need to set start date and end date
+		// TODO: we need to use values from the POST array
 
-			$this->startDate = '2015-01-01';
-			$this->endDate = '2016-03-08';
-			
-            parent::init();
-        }
-
+		$this->startDate = '2015-01-01';
+		$this->endDate = '2016-03-08';
+		
+		parent::init();
+	}
+	
+	public function actionGetAllEpisodeId(){
+		// TODO: we need to call all extraction functions from here!
+		$this->allEpisodeIds = array_merge($this->getEpisodePostOpComplication(), $this->actionEpisodeOperationCoPathology());
+		
+		print_r($this->allEpisodeIds);
+	}
+	
 	public function actionIndex()
 	{
-		echo "Hello";
-		die;
+		// TODO: need to create views!!!
 		$this->render('index');
 	}
         
@@ -176,14 +182,6 @@ EOL;
             return ob_get_clean();
         }
       
-	
-	public function actionGetAllEpisodeId(){
-		// TODO: we need to call all extraction functions from here!
-		$this->allEpisodeIds = array_merge($this->getEpisodePostOpComplication(), $this->actionEpisodeOperationCoPathology());
-		
-		print_r($this->allEpisodeIds);
-	}
-
 	private function getDateWhere($tablename){
 		if($this->startDate != ""){
 			$dateWhereStart = $tablename.".last_modified_date >= '".$this->startDate."'";
