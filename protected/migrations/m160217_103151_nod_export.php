@@ -110,10 +110,10 @@ UPDATE temp_patients SET gender = (SELECT CASE WHEN gender='F' THEN 2 WHEN gende
 #TODO: Add IMDScore and IsPrivate fields & confirm output type for ethnicity
 
 SET @file = CONCAT(dir, '/patients_', @time_now, '.csv');
-SET @cmd = CONCAT("(SELECT 'PatientId','GenderId','EthnicityId', 'DateOfBirth', 'DateOfDeath')
-		  UNION (SELECT id, IFNULL(gender, 'NULL'), IFNULL(ethnic_group_id, 'NULL'), IFNULL(dob, 'NULL'), IFNULL(date_of_death, 'NULL') FROM temp_patients INTO OUTFILE '",@file,
-		  "' FIELDS ENCLOSED BY '\"' TERMINATED BY ';'",
-		  "  LINES TERMINATED BY '\r\n')");
+SET @cmd = CONCAT("(SELECT 'PatientId','GenderId','EthnicityId', 'DateOfBirth', 'DateOfDeath', 'IMDScore', 'IsPrivate')
+  UNION (SELECT id, IFNULL(gender, 'NULL'), IFNULL(ethnic_group_id, 'NULL'), IFNULL(dob, 'NULL'), IFNULL(date_of_death, 'NULL'), '', '' FROM temp_patients INTO OUTFILE '",@file,
+  "' FIELDS ENCLOSED BY '\"' TERMINATED BY ';'",
+  "  LINES TERMINATED BY '\r\n')");
 
 PREPARE statement FROM @cmd;
 EXECUTE statement;
@@ -188,7 +188,7 @@ IF ( @surgeon_id IS NULL) THEN
 SET @surgeon_id = (SELECT last_modified_user_id FROM episode WHERE id=@id);
 END IF;
 
-UPDATE temp_episodes_diagnosis SET SurgeonId = @surgeon_id, ConditionId = @condition_id, Eye= (SELECT CASE WHEN eye_id = 1 THEN 'L' WHEN eye_id = 2 THEN 'R' WHEN eye_id = 3 THEN 'Both' WHEN eye_id IS NULL THEN 'N' END ) WHERE id = @id;
+UPDATE temp_episodes_diagnosis SET SurgeonId = @surgeon_id, ConditionId = @condition_id, Eye= (SELECT CASE WHEN eye_id = 1 THEN 'L' WHEN eye_id = 2 THEN 'R' WHEN eye_id = 3 THEN 'B' ELSE 'N' END ) WHERE id = @id;
 
 END WHILE;
 
@@ -386,12 +386,12 @@ UNION
 			WHEN ophinbiometry_imported_events.`device_model` = 'Other' THEN 9
 		 END) AS BiometryKeratometerId,
                 ( SELECT `code` FROM tmp_biometry_formula WHERE tmp_biometry_formula.`desc` = ophinbiometry_calculation_formula.name ) AS BiometryFormulaId,
-                k1_left AS K1PreOperative,
-                k2_left AS K2PreOperative,
-                axis_k1_left AS AxisK1,
-                ms.k2_axis_left AS AxisK2,
-                ms.acd_left AS ACDepth,
-                ms.snr_left AS SNR
+                k1_right AS K1PreOperative,
+                k2_right AS K2PreOperative,
+                axis_k1_right AS AxisK1,
+                ms.k2_axis_right AS AxisK2,
+                ms.acd_right AS ACDepth,
+                ms.snr_right AS SNR
         FROM episode ep
         JOIN `event` ev ON ep.id =  ev.`episode_id`
         JOIN event_type et ON ev.`event_type_id` = et.`id`
