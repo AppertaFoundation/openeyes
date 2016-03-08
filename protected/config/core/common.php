@@ -298,6 +298,12 @@ return array(
 						'position' => 3,
 						'restricted' => array('Report'),
 					),
+					'nodexport' => array(
+						'title' => 'NOD Export',
+						'uri' => 'NodExport',
+						'position' => 4,
+						'restricted' => array('admin'),
+					),
 				)
 			),
 			'logout' => array(
