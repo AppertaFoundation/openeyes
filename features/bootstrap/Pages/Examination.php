@@ -821,6 +821,39 @@ class Examination extends OpenEyesPage {
 		'leftEyePCRRisk' =>array(
 			'xpath' => "//*[@id='ophCiExaminationPCRRiskLeftEyeLabel']//*[contains(text(),'Left Eye - PCR Risk')]"
 		),
+		'pcrGlaucoma' => array(
+			'xpath' => "//*[@class='pcrrisk_glaucoma']"
+		),
+		'pcrPXF' => array(
+			'xpath' => "//*[@class='pcrrisk_pxf_phako']"
+		),
+		'pcrDiabetic' => array(
+			'xpath' => "//*[@class='pcrrisk_diabetic']"
+		),
+		'pcrPupil' => array(
+			'xpath' => "//*[@class='pcrrisk_pupil_size']"
+		),
+		'pcrFundal' => array(
+			'xpath' => "//*[@class='pcrrisk_no_fundal_view']"
+		),
+		'pcrAxial' => array(
+			'xpath' => "//*[@class='pcrrisk_axial_length']"
+		),
+		'pcrCataract' => array(
+			'xpath' => "//*[@class='pcrrisk_brunescent_white_cataract']"
+		),
+		'pcrARB' => array(
+			'xpath' => "//*[@class='pcrrisk_arb']"
+		),
+		'pcrDoctor' => array(
+			'xpath' => "//*[@class='pcr_doctor_grade']"
+		),
+		'pcrLie' => array(
+			'xpath' => "//*[@class='pcrrisk_lie_flat']"
+		),
+		'pcrValue' => array(
+			'xpath' => "//*[@class='pcr-span']"
+		),
 		'referenceLinkOnPCRRightEyeBlock' => array(
 			'xpath' => "//*[@id='ophCiExaminationPCRRiskRightEye']//*[contains(text(),'Calculation data derived from')]"
 		),
@@ -1895,5 +1928,22 @@ class Examination extends OpenEyesPage {
                 }
             }
         }
+	}
+
+	public function setPcrValue($side, $option, $value)
+	{
+		$side = $this->getElement(strtolower($side).'EyePCRRiskContainer');
+		$option = $side->find('xpath', $this->elements['pcr'.$option]['xpath']);
+		$option->selectOption($value);
+	}
+
+	public function checkPcrCalculatedValue($side, $value)
+	{
+		$side = $this->getElement(strtolower($side).'EyePCRRiskContainer');
+		$element = $side->find('xpath', $this->elements['pcrValue']['xpath']);
+
+		if($element->getText() !== $value){
+			throw new Exception('PCR value does not match');
+		}
 	}
 }
