@@ -24,11 +24,11 @@ class NodExportController extends BaseController
 	 */
 	public $layout='//layouts/main';
         
-        protected $export_path;
-        protected $zip_name;
+        protected $exportPath;
+        protected $zipName;
 
-    protected $institution_code = "000001";
-
+        protected $institutionCode = "000001";
+    
 	private	$startDate;
 	private	$endDate;
 
@@ -51,15 +51,15 @@ class NodExportController extends BaseController
 	public function init()
 	{
 		$date = date('YmdHi');
-		$this->export_path = realpath(dirname(__FILE__) . '/..') . '/runtime/nod-export/' . $this->institution_code . '/' . $date;
-		$this->zip_name = $this->institution_code . '_' . $date . '_NOD_Export';
+		$this->exportPath = realpath(dirname(__FILE__) . '/..') . '/runtime/nod-export/' . $this->institutionCode . '/' . $date;
+		$this->zipName = $this->institutionCode . '_' . $date . '_NOD_Export.zip';
 		
-		if (!file_exists($this->export_path)) {
-			mkdir($this->export_path, 0777, true);
+		if (!file_exists($this->exportPath)) {
+			mkdir($this->exportPath, 0777, true);
 		}
 
-		$this->startDate = Yii::app()->request->getParam("startDate", '2015-01-01');
-		$this->endDate =  Yii::app()->request->getParam("endDate", '2016-03-08');
+		$this->startDate = Yii::app()->request->getParam("date_from", '2015-01-01');
+		$this->endDate =  Yii::app()->request->getParam("date_to", '2016-03-08');
 		
 		parent::init();
 	}
@@ -74,10 +74,12 @@ class NodExportController extends BaseController
                                                     $this->actionGetEpisodeBiometry(),
                                                     $this->actionGetEpisodeIOP(),
                                                     $this->getEpisodePostOpComplication(), 
-                                                    $this->actionEpisodeOperationCoPathology()
+                                                    $this->actionEpisodeOperationCoPathology(),
+                        
+                                                    $this->actionEpisodePreOpAssessment()
                                                  );
 		
-		print_r($this->allEpisodeIds);
+		//print_r($this->allEpisodeIds);
 	}
 	
         /**
@@ -93,7 +95,7 @@ class NodExportController extends BaseController
 		$data = Yii::app()->db->createCommand($dataQuery)->queryAll();
 		$csv = $this->array2Csv($data);
           
-        file_put_contents($this->export_path . '/'.$filename.'.csv' , $csv);
+        file_put_contents($this->exportPath . '/'.$filename.'.csv' , $csv);
 		return $data;
 	}
 	
@@ -334,7 +336,6 @@ EOL;
             $this->saveCSVfile($dataQuery, 'Patients');
         }
         
-        
         public function actionGetPatientCviStatus()
         {
             //$dateWhere = "AND episode.id IN ( SELECT id from tmp_episode_ids )"; 
@@ -570,10 +571,6 @@ EOL;
 		
             return $this->getIdArray($data, 'EpisodeId');
         }
-        
-        
-        
-        
         
         protected function array2Csv(array $data)
         {
@@ -922,5 +919,44 @@ EOL;
 		
 		return $this->getIdArray($data, 'EpisodeId');
 	}
+        
+        private function createZipFile()
+        {
+            
+            $zip = new ZipArchive();
+    
+            if ($zip->open($this->exportPath . '/' . $this->zipName, ZIPARCHIVE::CREATE ) !== true) {
+                exit("cannot open <$name>\n");
+            }
+            
+            foreach (glob($this->exportPath . "/*.csv") as $filename) {
+               $zip->addFile($filename, basename($filename));
+            }
+            $zip->close();
+        }
+        
+        public function actionGenerate()
+        {
+            
+            $this->generateExport();
+            
+            $this->createZipFile();
+            
+            if( file_exists( $this->exportPath . '/' . $this->zipName ) ){
+                Yii::app()->getRequest()->sendFile( $this->zipName , file_get_contents( $this->exportPath . '/' . $this->zipName ) );
+            }
+            else{               
+            }
+        }
+        
+        public function generateExport()
+        {
+            
+            $this->createAllTempTables();
+            $this->actionGetAllEpisodeId();
+            $this->clearAllTempTables();
+            
+        }
+        
 	
 }
