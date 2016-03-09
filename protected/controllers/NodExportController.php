@@ -72,18 +72,27 @@ class NodExportController extends BaseController
 		print_r($this->allEpisodeIds);
 	}
 	
-	private function saveCSVfile($dataQuery, $filename, $episodeIdField){
+        /**
+         * Save CSV file and returns episodeIDs if $episodeIdField isset
+         * 
+         * @param string $dataQuery SQL query
+         * @param string $filename
+         * @param string $episodeIdField
+         * @return null|array
+         */
+	private function saveCSVfile($dataQuery, $filename, $episodeIdField = null){
 		
 		$data = Yii::app()->db->createCommand($dataQuery)->queryAll();
 		$csv = $this->array2Csv($data);
           
         file_put_contents($this->export_path . '/'.$filename.'.csv' , $csv);
 		
-		foreach($data as $row){
-			$episodeIds[] = $row[$episodeIdField];
-		}
-		
-		return $episodeIds;
+                if($episodeIdField){
+                    foreach($data as $row){
+                     $episodeIds[] = $row[$episodeIdField];
+                    }
+                    return $episodeIds;
+                }
 	}
 	
 	public function actionIndex()
@@ -146,7 +155,7 @@ EOL;
             
                 Yii::app()->db->createCommand($create_tmp_doctor_grade_sql)->execute();
         
-$sql = <<<EOL
+$dataQuery = <<<EOL
     SELECT id as Surgeonid, IFNULL(registration_code, 'NULL') as GMCnumber, IFNULL(title, 'NULL') as Title, IFNULL(first_name, 'NULL') as FirstName,
     (
         SELECT `code` 
@@ -156,18 +165,11 @@ $sql = <<<EOL
 FROM user 
 WHERE is_surgeon = 1 AND active = 1
 EOL;
-
-            $surgeons = Yii::app()->db->createCommand($sql)->queryAll();
+            
+            $this->saveCSVfile($dataQuery, 'Surgeons');
             
             // cleanup
             Yii::app()->db->createCommand("DROP TABLE tmp_doctor_grade;")->execute();
-            
-            $csv = $this->array2Csv($surgeons);
-            
-            file_put_contents($this->export_path . '/surgeons.csv' , $csv);
-            
-            echo "<pre>" . print_r($csv, true) . "</pre>";
-            die;
         }
         
         /**
@@ -185,32 +187,55 @@ EOL;
                                 . "FROM patient"
                                 . " " . $dateWhere;
             
-            $patients = Yii::app()->db->createCommand($dataQuery)->queryAll();
-            
-            $csv = $this->array2Csv($patients);
-            file_put_contents($this->export_path . '/patients.csv' , $csv);
-            echo "<pre>" . print_r($csv, true) . "</pre>";
-            
-            die;
-            
+            $this->saveCSVfile($dataQuery, 'Patients');
         }
         
         
         public function actionGetPatientCviStatus()
         {
-            $dataQuery = "SELECT id AS PatientId, cvi_status_date AS `Date`, 
-                            (SELECT CASE WHEN DAYNAME(DATE) IS NULL THEN 1 END) AS IsDateApprox, 
-                            (SELECT CASE WHEN cvi_status_id=4 THEN 1 END) AS IsCVIBlind, 
-                            (SELECT CASE WHEN cvi_status_id=3 THEN 1 END) AS IsCVIPartial
-                            FROM patient_oph_info";
-                            //@TODO JOIN episode id
+            $dataQuery = "SELECT 
+                                episode.`patient_id` AS PatientId,
+                                cvi_status_date AS `Date`,
+                                (SELECT CASE WHEN DAYNAME(DATE) IS NULL THEN 1 END) AS IsDateApprox, 
+                                (SELECT CASE WHEN cvi_status_id=4 THEN 1 END) AS IsCVIBlind, 
+                                (SELECT CASE WHEN cvi_status_id=3 THEN 1 END) AS IsCVIPartial
+                        FROM episode
+                        JOIN patient ON episode.`patient_id` = patient.id
+                        JOIN patient_oph_info ON patient.id = patient_oph_info.`patient_id`
+                        WHERE episode.`patient_id` IN ( SELECT id FROM patient )";
             
-            $patientCviStatus = Yii::app()->db->createCommand($dataQuery)->queryAll();
-            
-            $csv = $this->array2Csv($patientCviStatus);
-            file_put_contents($this->export_path . '/patientcvistatus.csv' , $csv);
+            $this->saveCSVfile($dataQuery, 'PatientCviStatus');
+        }
+        
+        public function actionGetEpisode()
+        {
+            $dataQuery = "SELECT patient_id, id, start_date FROM episode";
+            $this->saveCSVfile($dataQuery, 'Episodes');
+        }
+        
+        public function actionGetEpisodeDiagnosis()
+        {
+            $dataQuery = "SELECT 
+                        id AS EpisodeId, 
+                        (SELECT CASE WHEN eye_id = 1 THEN 'L' WHEN eye_id = 2 THEN 'R' WHEN eye_id = 3 THEN 'B' ELSE 'N' END ) AS Eye, 
+                        last_modified_date AS `Date`,
+                        (
+                                SELECT (
+                                        IFNULL(
+                                                (SELECT last_modified_user_id FROM episode_version WHERE ep.id=id ORDER BY last_modified_date ASC LIMIT 1), 
+                                                (SELECT last_modified_user_id FROM episode WHERE id = ep.id)
+                                        )
+                                )
+                        ) AS SurgeonId,
+                        (
+                                SELECT service_subspecialty_assignment_id FROM firm WHERE id = ep.`firm_id`
 
-            //return $episodeIds;
+                        ) AS ConditionId,
+                        disorder_id AS DiagnosisTermId
+                FROM episode ep";
+                
+                return $this->saveCSVfile($dataQuery, 'EpisodePostOpComplication', 'EpisodeId');
+                
         }
         
         
