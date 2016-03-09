@@ -91,10 +91,12 @@ class NodExportController extends BaseController
 	
 	private function getIdArray($data, $IdField){
 		if($IdField && $data){
+			$objectIds = array();
 			foreach($data as $row){
 				$objectIds[] = $row[$IdField];
 			}
 			return $objectIds;
+			
 		}
 	}
 	
@@ -654,9 +656,10 @@ EOL;
 	
 	public function actionEpisodeTreatment(){
 		$dataQuery = "SELECT pa.id AS TreatmentId, pl.`event_id` AS OperationId, (SELECT CASE WHEN pl.eye_id = 1 THEN 'L' WHEN pl.eye_id = 2 THEN 'R' END) AS Eye, 
-                           proc.`snomed_code` AS TreatmentTyeId
+                           proc.snomed_code AS TreatmentTyeId
                     FROM ophtroperationnote_procedurelist_procedure_assignment pa
-                    JOIN et_ophtroperationnote_procedurelist pl ON pa.`procedurelist_id` = pl.id 
+                    JOIN et_ophtroperationnote_procedurelist pl ON pa.procedurelist_id = pl.id 
+					JOIN proc ON pa.`proc_id` = proc.`id`
 					WHERE 1=1 ".$this->getDateWhere('pa');
 					
 		$data = $this->saveCSVfile($dataQuery, 'EpisodeTreatment');		
@@ -698,4 +701,160 @@ EOL;
 		return $this->getIdArray($data, 'OperationId');
 	}
 
+	public function actionEpisodeOperationIndication(){
+		$dataQuery = "SELECT pl.`event_id` AS OperationId, (SELECT CASE WHEN pl.eye_id = 1 THEN 'L' WHEN pl.eye_id = 2 THEN 'R' END) AS Eye,
+                            (
+                                    SELECT IF(	pl.`booking_event_id`,
+                                                    d.`disorder_id`, 
+                                                    (
+                                                            SELECT disorder_id
+                                                            FROM episode
+                                                            WHERE e.`episode_id` = episode.id
+                                                    )
+                                            ) 
+                            ) AS IndicationId
+                            FROM `event` e
+                            JOIN event_type evt ON evt.id = e.event_type_id
+                            JOIN et_ophtroperationnote_procedurelist pl ON e.id = pl.event_id
+                            JOIN `et_ophtroperationbooking_diagnosis` d ON e.id = d.`event_id`
+                            WHERE evt.name = 'Operation booking' ".$this->getDateWhere('e');
+		
+		$data = $this->saveCSVfile($dataQuery, 'EpisodeOperationIndication');
+		
+		return $this->getIdArray($data, 'OperationId');
+		
+	}
+	
+	public function actionEpisodeOperationComplication(){
+		$tempTableQuery = <<<EOL
+		DROP TEMPORARY TABLE IF EXISTS tmp_complication_type;
+
+		CREATE TEMPORARY TABLE tmp_complication_type (
+	`code` INT(10) UNSIGNED NOT NULL,
+	`name` VARCHAR(100)
+);
+
+INSERT INTO tmp_complication_type (`code`, `name`)
+VALUES
+    (0, 'None'),
+    (1, 'choroidal / suprachoroidal haemorrhage'),
+    (2, 'corneal burn'),
+    (3, 'corneal epithelial abrasion'),
+    (4, 'corneal oedema'),
+    (5, 'endothelial damage / Descemet\'s tear'),
+    (6, 'epithelial abrasion'),
+    (7, 'hyphaema'),
+    (8, 'IOL into the vitreous'),
+    (9, 'iris prolapse'),
+    (10, 'iris trauma'),
+    (11, 'lens exchange required / other IOL problems'),
+    (12, 'nuclear / epinuclear fragment into vitreous'),
+    (13, 'PC rupture - no vitreous loss'),
+    (14, 'PC rupture - vitreous loss'),
+    (15, 'phaco burn / wound problems'),
+    (16, 'suprachoroidal haemorrhage'),
+    (17, 'torn iris / damage from the phaco'),
+    (18, 'vitreous loss'),
+    (19, 'vitreous to the section at end of surgery'),
+    (20, 'zonule dialysis'),
+    (21, 'zonule rupture - vitreous loss'),
+    (25, 'Not recorded'),
+    (999, 'other');
+EOL;
+		
+		Yii::app()->db->createCommand($tempTableQuery)->execute();	
+
+		$dataQuery = "SELECT
+                        event.id AS OperationId, 
+                        (SELECT CASE 
+                            WHEN et_ophtroperationnote_procedurelist.eye_id = 1 THEN 'L' 
+                            WHEN et_ophtroperationnote_procedurelist.eye_id = 2 THEN 'R' 
+                            WHEN et_ophtroperationnote_procedurelist.eye_id = 3 THEN 'B' 
+                            END
+                        ) AS Eye,
+                        (SELECT `code` 
+                            FROM tmp_complication_type 
+                            WHERE tmp_complication_type.`name` = ophtroperationnote_cataract_complications.name
+                        ) AS ComplicationTypeId
+                    FROM ophtroperationnote_cataract_complication
+                    INNER JOIN `et_ophtroperationnote_cataract` ON `ophtroperationnote_cataract_complication`.cataract_id = et_ophtroperationnote_cataract.id
+                    INNER JOIN ophtroperationnote_cataract_complications ON ophtroperationnote_cataract_complication.`complication_id` = ophtroperationnote_cataract_complications.`id`
+                    INNER JOIN `event` ON  et_ophtroperationnote_cataract.`event_id` = `event`.id
+                    INNER JOIN et_ophtroperationnote_procedurelist ON event.id = et_ophtroperationnote_procedurelist.event_id 
+					WHERE 1=1 ".$this->getDateWhere('ophtroperationnote_cataract_complication');
+					
+		$data = $this->saveCSVfile($dataQuery, 'EpisodeOperationComplication');
+		
+		return $this->getIdArray($data, 'OperationId');
+	}
+	
+	public function actionEpisodeOperation(){
+		$tempTableQuery = <<<EOL
+			DROP TEMPORARY TABLE IF EXISTS tmp_doctor_grade;
+				
+			CREATE TEMPORARY TABLE tmp_doctor_grade (
+				`code` INT(10) UNSIGNED NOT NULL,
+				`desc` VARCHAR(100)
+			);
+
+			INSERT INTO tmp_doctor_grade (`code`, `desc`)
+			VALUES
+			(0, 'Consultant'),
+			(1, 'Locum Consultant'),
+			(2, 'corneal burn'),
+			(3, 'Associate Specialist'),
+			(4, 'Fellow'),
+			(5, 'Registrar'),
+			(6, 'Staff Grade'),
+			(7, 'Trust Doctor'),
+			(8, 'Senior House Officer'),
+			(9, 'Specialty trainee (year 1)'),
+			(10, 'Specialty trainee (year 2)'),
+			(11, 'Specialty trainee (year 3)'),
+			(12, 'Specialty trainee (year 4)'),
+			(13, 'Specialty trainee (year 5)'),
+			(14, 'Specialty trainee (year 6)'),
+			(15, 'Specialty trainee (year 7)'),
+			(16, 'Foundation Year 1 Doctor'),
+			(17, 'Foundation Year 2 Doctor'),
+			(18, 'GP with a special interest in ophthalmology'),
+			(19, 'Community ophthalmologist'),
+			(20, 'Anaesthetist'),
+			(21, 'Orthoptist'),
+			(22, 'Optometrist'),
+			(23, 'Clinical nurse specialist'),
+			(24, 'Nurse'),
+			(25, 'Health Care Assistant'),
+			(26, 'Ophthalmic Technician'),
+			(27, 'Surgical Care Practitioner'),
+			(28, 'Clinical Assistant'),
+			(29, 'RG1'),
+			(30, 'RG2'),
+			(31, 'ODP'),
+			(32, 'Administration staff'),
+			(33, 'Other');	
+			
+			CREATE TABLE nod_episode_operation AS SELECT e.id AS OperationId, e.episode_id AS EpisodeId, e.event_date AS ListedDate, 
+    s.surgeon_id AS SurgeonId, 
+    (
+        SELECT `code`
+        FROM tmp_doctor_grade, doctor_grade
+        WHERE user.`doctor_grade_id` = doctor_grade.id AND doctor_grade.`grade` = tmp_doctor_grade.desc
+    ) AS SurgeonGradeId
+            FROM `event` e
+            JOIN event_type evt ON evt.id = e.event_type_id
+            LEFT JOIN et_ophtroperationnote_surgeon s ON s.event_id = e.id
+            INNER JOIN `user` ON s.`surgeon_id` = `user`.`id`
+            WHERE evt.name = 'Operation booking';
+EOL;
+		
+		Yii::app()->db->createCommand($tempTableQuery)->execute();	
+		
+		$dataQuery = "SELECT * FROM nod_episode_operation";
+		
+		$data = $this->saveCSVfile($dataQuery, 'EpisodeOperation');
+		
+		return $this->getIdArray($data, 'OperationId');
+	}
+	
 }
