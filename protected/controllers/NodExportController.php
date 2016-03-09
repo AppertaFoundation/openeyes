@@ -67,7 +67,15 @@ class NodExportController extends BaseController
 	public function actionGetAllEpisodeId()
         {
 		// TODO: we need to call all extraction functions from here!
-		$this->allEpisodeIds = array_merge($this->getEpisodePostOpComplication(), $this->actionEpisodeOperationCoPathology(), $this->actionGetEpisodeDiagnosis());
+		$this->allEpisodeIds = array_merge( 
+                                                    $this->actionGetEpisodeDiagnosis(),
+                                                    $this->actionGetEpisodeDiabeticDiagnosis(),
+                                                    $this->actionGetEpisodeDrug(),
+                                                    $this->actionGetEpisodeBiometry(),
+                                                    $this->actionGetEpisodeIOP(),
+                                                    $this->getEpisodePostOpComplication(), 
+                                                    $this->actionEpisodeOperationCoPathology()
+                                                 );
 		
 		print_r($this->allEpisodeIds);
 	}
@@ -158,7 +166,9 @@ VALUES
 EOL;
             
                 Yii::app()->db->createCommand($create_tmp_doctor_grade_sql)->execute();
-        
+                
+                $dateWhere = $this->getDateWhere('doctor_grade');
+                
 $dataQuery = <<<EOL
     SELECT id as Surgeonid, IFNULL(registration_code, 'NULL') as GMCnumber, IFNULL(title, 'NULL') as Title, IFNULL(first_name, 'NULL') as FirstName,
     (
@@ -167,7 +177,7 @@ $dataQuery = <<<EOL
         WHERE user.`doctor_grade_id` = doctor_grade.id AND doctor_grade.`grade` = tmp_doctor_grade.desc
     ) AS CurrentGradeId
 FROM user 
-WHERE is_surgeon = 1 AND active = 1
+WHERE is_surgeon = 1 AND active = 1 $dateWhere
 EOL;
             
             $this->saveCSVfile($dataQuery, 'Surgeons');
@@ -182,14 +192,14 @@ EOL;
          */
         public function actionGetPatients()
         {
-            $dateWhere = "";
+            $dateWhere = $this->getDateWhere('patient');
             
             $dataQuery = "SELECT id as PatientId, IFNULL( (SELECT CASE WHEN gender='F' THEN 2 WHEN gender='M' THEN 1 ELSE 9 END) , '') as GenderId, "
                                   . "IFNULL(ethnic_group_id, 'NULL') as EthnicityId, "
                                   . "IFNULL(dob, 'NULL') as DateOfBirth, "
                                   . "IFNULL(date_of_death, '') as DateOfDeath, '' as IMDScore, '' as IsPrivate "
                                 . "FROM patient"
-                                . " " . $dateWhere;
+                                . "WHERE 1=1 " . $dateWhere;
             
             $this->saveCSVfile($dataQuery, 'Patients');
         }
@@ -197,6 +207,8 @@ EOL;
         
         public function actionGetPatientCviStatus()
         {
+            //$dateWhere = "AND episode.id IN ( SELECT id from tmp_episode_ids )"; 
+            
             $dataQuery = "SELECT 
                                 episode.`patient_id` AS PatientId,
                                 cvi_status_date AS `Date`,
@@ -206,22 +218,25 @@ EOL;
                         FROM episode
                         JOIN patient ON episode.`patient_id` = patient.id
                         JOIN patient_oph_info ON patient.id = patient_oph_info.`patient_id`
-                        WHERE episode.`patient_id` IN ( SELECT id FROM patient )";
+                        WHERE episode.`patient_id` IN ( SELECT id FROM patient ) " /*. $dateWhere*/;
             
             $this->saveCSVfile($dataQuery, 'PatientCviStatus');
         }
         
         public function actionGetEpisode()
         {
-            $dataQuery = "SELECT patient_id, id, start_date FROM episode";
+            //$dateWhere = "AND episode.id IN ( SELECT id from tmp_episode_ids )"; 
+            $dataQuery = "SELECT patient_id, id, start_date FROM episode WHERE 1=1 " /*. $dateWhere*/;
             $this->saveCSVfile($dataQuery, 'Episodes');
         }
         
         public function actionGetEpisodeDiagnosis()
         {
-            $dataQuery = "SELECT 
-                        id AS EpisodeId, 
-                        (SELECT CASE WHEN eye_id = 1 THEN 'L' WHEN eye_id = 2 THEN 'R' WHEN eye_id = 3 THEN 'B' ELSE 'N' END ) AS Eye, 
+           //$dateWhere = "AND episode.id IN ( SELECT id from tmp_episode_ids )"; 
+            
+            $dataQuery = "SELECT
+                        id AS EpisodeId,
+                        (SELECT CASE WHEN eye_id = 1 THEN 'L' WHEN eye_id = 2 THEN 'R' WHEN eye_id = 3 THEN 'B' ELSE 'N' END ) AS Eye,
                         last_modified_date AS `Date`,
                         (
                                 SELECT (
@@ -236,7 +251,7 @@ EOL;
 
                         ) AS ConditionId,
                         disorder_id AS DiagnosisTermId
-                FROM episode ep";
+                FROM episode ep WHERE 1=1 " /*. $dateWhere*/;
                 
                 $data = $this->saveCSVfile($dataQuery, 'EpisodePostOpComplication');
 				
@@ -245,6 +260,8 @@ EOL;
         
         public function actionGetEpisodeDiabeticDiagnosis()
         {
+            $dateWhere = $this->getDateWhere('s');
+            
             $disorder = Disorder::model()->findByPk(Disorder::SNOMED_DIABETES);
             $disorder_ids = implode(",", $disorder->descendentIds());
             
@@ -280,7 +297,7 @@ EOL;
             JOIN disorder d ON d.id = s.disorder_id
             JOIN episode e ON e.patient_id = s.patient_id
             JOIN patient p ON e.patient_id = p.id
-            WHERE d.id IN ( $disorder_ids )
+            WHERE d.id IN ( $disorder_ids ) $dateWhere
 EOL;
             
             $data = $this->saveCSVfile($dataQuery, 'EpisodeDiabeticDiagnosis' );
@@ -290,20 +307,20 @@ EOL;
         
         public function actionGetEpisodeDrug()
         {
+            
+            $dateWhere = $this->getDateWhere('m');
+            
             $dataQuery = <<<EOL
                     SELECT e.id AS EpisodeId , 
                     (SELECT CASE WHEN option_id = 1 THEN 'L' WHEN option_id = 2 THEN 'R' WHEN option_id = 3 THEN 'B'  ELSE 'N' END) AS Eye,
                     (SELECT CASE WHEN m.drug_id IS NOT NULL THEN (SELECT NAME FROM drug WHERE id = m.drug_id) WHEN m.drug_id IS NULL THEN ''
                                     WHEN m.medication_drug_id IS NOT NULL THEN (SELECT NAME FROM medication_drug WHERE id = m.drug_id) WHEN m.medication_drug_id IS NULL THEN '' END) AS DrugId,
                     dr.id AS DrugRouteId,
-                     (SELECT CASE WHEN m.start_date IS NULL THEN '' ELSE m.start_date END) AS StartDate,
+                    (SELECT CASE WHEN m.start_date IS NULL THEN '' ELSE m.start_date END) AS StartDate,
                     (SELECT CASE WHEN m.end_date IS NULL THEN '' ELSE m.end_date END) AS StopDate,
                     (SELECT CASE WHEN opi.prescription_id IS NOT NULL THEN 1 ELSE 0 END ) AS IsAddedByPrescription, 
-
-
-
                     (SELECT CASE WHEN opi.continue_by_gp IS NULL THEN 0 ELSE opi.continue_by_gp END) AS IsContinueIndefinitely,
-                     (SELECT CASE WHEN DAYNAME(m.start_date) IS NULL THEN 1 ELSE 0 END) AS IsStartDateApprox
+                    (SELECT CASE WHEN DAYNAME(m.start_date) IS NULL THEN 1 ELSE 0 END) AS IsStartDateApprox
 
                   FROM episode e
                   INNER JOIN medication m ON e.patient_id = m.patient_id
@@ -312,6 +329,7 @@ EOL;
                   LEFT JOIN event_type evt ON evt.id = ev.event_type_id
                   LEFT JOIN et_ophdrprescription_details etp ON etp.event_id = ev.id
                   LEFT JOIN ophdrprescription_item opi ON etp.id = opi.prescription_id
+                  WHERE 1=1 $dateWhere 
                   GROUP BY episode_id;
 EOL;
             
@@ -323,6 +341,7 @@ EOL;
         public function actionGetEpisodeBiometry()
         {
             
+            $dateWhere = $this->getDateWhere('et');
             
             $prepareQuery = "DROP TABLE IF EXISTS tmp_biometry_formula;
                             CREATE TABLE tmp_biometry_formula (
@@ -362,6 +381,7 @@ EOL;
                 WHERE et.id = 37
                 AND ms.deleted = 0
                 AND ev.deleted = 0
+                $dateWhere
              )
         UNION
         (
@@ -394,12 +414,38 @@ EOL;
             WHERE et.id = 37
             AND ms.deleted = 0
             AND ev.deleted = 0
-         )
-                    
+            $dateWhere
+         )               
 EOL;
+            
+            $data = $this->saveCSVfile($dataQuery, 'GetEpisodeBiometry' );
+		
+            return $this->getIdArray($data, 'EpisodeId');
             
         }
         
+        public function actionGetEpisodeIOP()
+        {
+            $dateWhere = $this->getDateWhere('oipvr');
+            
+            $dataQuery = "SELECT e.id AS EpisodeId,
+                        (SELECT CASE WHEN oipv.eye_id = 1 THEN 'L' WHEN oipv.eye_id = 2 THEN 'R' END) AS Eye,
+                        '' AS `type`,
+                        9 AS GlaucomaMedicationStatusId,
+                        oipvr.value AS VALUE
+                        FROM episode e
+                        JOIN `event` ev ON ev.episode_id = e.id
+                        JOIN event_type et ON et.id = ev.event_type_id
+                        JOIN et_ophciexamination_intraocularpressure etoi ON etoi.event_id = ev.id
+                        JOIN ophciexamination_intraocularpressure_value oipv ON oipv.element_id = etoi.id
+                        JOIN ophciexamination_intraocularpressure_reading oipvr ON oipv.`reading_id` = oipvr.id
+                        WHERE et.name = 'Examination' $dateWhere 
+                        GROUP BY e.id;";
+            
+            $data = $this->saveCSVfile($dataQuery, 'GetEpisodeIOP' );
+		
+            return $this->getIdArray($data, 'EpisodeId');
+        }
         
         
         
