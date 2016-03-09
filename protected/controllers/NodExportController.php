@@ -72,6 +72,20 @@ class NodExportController extends BaseController
 		print_r($this->allEpisodeIds);
 	}
 	
+	private function saveCSVfile($dataQuery, $filename, $episodeIdField){
+		
+		$data = Yii::app()->db->createCommand($dataQuery)->queryAll();
+		$csv = $this->array2Csv($data);
+          
+        file_put_contents($this->export_path . '/'.$filename.'.csv' , $csv);
+		
+		foreach($data as $row){
+			$episodeIds[] = $row[$episodeIdField];
+		}
+		
+		return $episodeIds;
+	}
+	
 	public function actionIndex()
 	{
 		// TODO: need to create views!!!
@@ -244,16 +258,7 @@ EOL;
                         JOIN ophciexamination_postop_complications ON ophciexamination_postop_et_complications.`complication_id` = ophciexamination_postop_complications.id 
 						".$dateWhere;
 		
-		$data = Yii::app()->db->createCommand($dataQuery)->queryAll();
-		$csv = $this->array2Csv($data);
-          
-        file_put_contents($this->export_path . '/EpisodePostOpComplication.csv' , $csv);
-		
-		foreach($data as $row){
-			$episodeIds[] = $row["EpisodeId"];
-		}
-		
-		return $episodeIds;
+		return $this->saveCSVfile($dataQuery, 'EpisodePostOpComplication', 'EpisodeId');
 	}
 	
 	public function actionEpisodeOperationCoPathology()
@@ -377,16 +382,7 @@ EOL;
                     JOIN tmp_pathology_type on LOWER(disorder.term) = LOWER(tmp_pathology_type.term)
                     WHERE event_type_id = (SELECT id from event_type where `name` = 'Operation Note'))";
 		
-		$data = Yii::app()->db->createCommand($dataQuery)->queryAll();
-		$csv = $this->array2Csv($data);
-          
-        file_put_contents($this->export_path . '/EpisodeOperationCoPathology.csv' , $csv);
-		
-		foreach($data as $row){
-			$episodeIds[] = $row["OperationId"];
-		}
-		
-		return $episodeIds;
+		return $this->saveCSVfile($dataQuery, 'EpisodeOperationCoPathology', 'OperationId');
 	}
 
 }
