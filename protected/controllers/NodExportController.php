@@ -67,7 +67,7 @@ class NodExportController extends BaseController
 	public function actionGetAllEpisodeId()
         {
 		// TODO: we need to call all extraction functions from here!
-		$this->allEpisodeIds = array_merge($this->getEpisodePostOpComplication(), $this->actionEpisodeOperationCoPathology());
+		$this->allEpisodeIds = array_merge($this->getEpisodePostOpComplication(), $this->actionEpisodeOperationCoPathology(), $this->actionGetEpisodeDiagnosis);
 		
 		print_r($this->allEpisodeIds);
 	}
@@ -90,7 +90,7 @@ class NodExportController extends BaseController
 	}
 	
 	private function getIdArray($data, $IdField){
-		if($IdField){
+		if($IdField && $data){
 			foreach($data as $row){
 				$objectIds[] = $row[$IdField];
 			}
@@ -239,7 +239,7 @@ EOL;
                 
                 $data = $this->saveCSVfile($dataQuery, 'EpisodePostOpComplication');
 				
-				return $this->getIdArray($data, 'EpisodeId');
+		return $this->getIdArray($data, 'EpisodeId');
         }
         
         public function actionGetEpisodeDiabeticDiagnosis()
@@ -282,8 +282,126 @@ EOL;
             WHERE d.id IN ( $disorder_ids )
 EOL;
             
-            die;
+            $data = $this->saveCSVfile($dataQuery, 'EpisodeDiabeticDiagnosis' );
+		
+            return $this->getIdArray($data, 'EpisodeId');
         }
+        
+        public function actionGetEpisodeDrug()
+        {
+            $dataQuery = <<<EOL
+                    SELECT e.id AS EpisodeId , 
+                    (SELECT CASE WHEN option_id = 1 THEN 'L' WHEN option_id = 2 THEN 'R' WHEN option_id = 3 THEN 'B'  ELSE 'N' END) AS Eye,
+                    (SELECT CASE WHEN m.drug_id IS NOT NULL THEN (SELECT NAME FROM drug WHERE id = m.drug_id) WHEN m.drug_id IS NULL THEN ''
+                                    WHEN m.medication_drug_id IS NOT NULL THEN (SELECT NAME FROM medication_drug WHERE id = m.drug_id) WHEN m.medication_drug_id IS NULL THEN '' END) AS DrugId,
+                    dr.id AS DrugRouteId,
+                     (SELECT CASE WHEN m.start_date IS NULL THEN '' ELSE m.start_date END) AS StartDate,
+                    (SELECT CASE WHEN m.end_date IS NULL THEN '' ELSE m.end_date END) AS StopDate,
+                    (SELECT CASE WHEN opi.prescription_id IS NOT NULL THEN 1 ELSE 0 END ) AS IsAddedByPrescription, 
+
+
+
+                    (SELECT CASE WHEN opi.continue_by_gp IS NULL THEN 0 ELSE opi.continue_by_gp END) AS IsContinueIndefinitely,
+                     (SELECT CASE WHEN DAYNAME(m.start_date) IS NULL THEN 1 ELSE 0 END) AS IsStartDateApprox
+
+                  FROM episode e
+                  INNER JOIN medication m ON e.patient_id = m.patient_id
+                  LEFT JOIN drug_route dr ON dr.id = m.route_id
+                  LEFT JOIN `event` ev ON ev.episode_id = e.id
+                  LEFT JOIN event_type evt ON evt.id = ev.event_type_id
+                  LEFT JOIN et_ophdrprescription_details etp ON etp.event_id = ev.id
+                  LEFT JOIN ophdrprescription_item opi ON etp.id = opi.prescription_id
+                  GROUP BY episode_id;
+EOL;
+            
+            $data = $this->saveCSVfile($dataQuery, 'GetEpisodeDrug' );
+		
+            return $this->getIdArray($data, 'EpisodeId');
+        }
+        
+        public function actionGetEpisodeBiometry()
+        {
+            
+            
+            $prepareQuery = "DROP TABLE IF EXISTS tmp_biometry_formula;
+                            CREATE TABLE tmp_biometry_formula (
+                                    `code` INT(10) UNSIGNED NOT NULL,
+                                    `desc` VARCHAR(100)
+                            )";
+
+            $dataQuery = <<<EOL
+
+            (
+                 SELECT
+                    ev.`episode_id` AS EpisodeId,
+                    'L' AS Eye,
+                    axial_length_left AS AxialLength,
+                    NULL AS BiometryAScanId,
+                    (SELECT CASE
+                            WHEN ophinbiometry_imported_events.`device_model` = 'IOLmaster 500'  THEN 1
+                            WHEN ophinbiometry_imported_events.`device_model` = 'Haag-Streit LensStar' THEN 2
+                            WHEN ophinbiometry_imported_events.`device_model` = 'Other' THEN 9
+                     END) AS BiometryKeratometerId,
+                    ( SELECT `code` FROM tmp_biometry_formula WHERE tmp_biometry_formula.`desc` = ophinbiometry_calculation_formula.name ) AS BiometryFormulaId,
+                    k1_left AS K1PreOperative,
+                    k2_left AS K2PreOperative,
+                    axis_k1_left AS AxisK1,
+                    ms.k2_axis_left AS AxisK2,
+                    ms.acd_left AS ACDepth,
+                    ms.snr_left AS SNR
+                FROM episode ep
+                JOIN `event` ev ON ep.id =  ev.`episode_id`
+                JOIN event_type et ON ev.`event_type_id` = et.`id`
+                JOIN et_ophinbiometry_measurement ms ON ev.id = ms.event_id
+                JOIN `event` AS opnote ON ep.id = opnote.`episode_id`
+                        AND opnote.event_type_id = 4 AND opnote.created_date < ev.created_date
+                JOIN ophinbiometry_imported_events ON ev.id = ophinbiometry_imported_events.`event_id`
+                JOIN et_ophinbiometry_selection ON ev.id = et_ophinbiometry_selection.`event_id` AND et_ophinbiometry_selection.eye_id = 1 OR et_ophinbiometry_selection.eye_id = 3
+                JOIN ophinbiometry_calculation_formula ON et_ophinbiometry_selection.`formula_id_left` = ophinbiometry_calculation_formula.id
+                WHERE et.id = 37
+                AND ms.deleted = 0
+                AND ev.deleted = 0
+             )
+        UNION
+        (
+                SELECT
+                    ev.`episode_id` AS EpisodeId,
+                    'R' AS Eye,
+                    axial_length_right AS AxialLength,
+                    NULL AS BiometryAScanId,
+                    (SELECT CASE
+                            WHEN ophinbiometry_imported_events.`device_model` = 'IOLmaster 500'  THEN 1
+                            WHEN ophinbiometry_imported_events.`device_model` = 'Haag-Streit LensStar' THEN 2
+                            WHEN ophinbiometry_imported_events.`device_model` = 'Other' THEN 9
+                     END) AS BiometryKeratometerId,
+                    ( SELECT `code` FROM tmp_biometry_formula WHERE tmp_biometry_formula.`desc` = ophinbiometry_calculation_formula.name ) AS BiometryFormulaId,
+                    k1_right AS K1PreOperative,
+                    k2_right AS K2PreOperative,
+                    axis_k1_right AS AxisK1,
+                    ms.k2_axis_right AS AxisK2,
+                    ms.acd_right AS ACDepth,
+                    ms.snr_right AS SNR
+            FROM episode ep
+            JOIN `event` ev ON ep.id =  ev.`episode_id`
+            JOIN event_type et ON ev.`event_type_id` = et.`id`
+            JOIN et_ophinbiometry_measurement ms ON ev.id = ms.event_id
+            JOIN `event` AS opnote ON ep.id = opnote.`episode_id`
+                    AND opnote.event_type_id = 4 AND opnote.created_date < ev.created_date
+            JOIN ophinbiometry_imported_events ON ev.id = ophinbiometry_imported_events.`event_id`
+            JOIN et_ophinbiometry_selection ON ev.id = et_ophinbiometry_selection.`event_id` AND et_ophinbiometry_selection.eye_id = 2 OR et_ophinbiometry_selection.eye_id = 3
+            JOIN ophinbiometry_calculation_formula ON et_ophinbiometry_selection.`formula_id_left` = ophinbiometry_calculation_formula.id
+            WHERE et.id = 37
+            AND ms.deleted = 0
+            AND ev.deleted = 0
+         )
+                    
+EOL;
+            
+        }
+        
+        
+        
+        
         
         
         protected function array2Csv(array $data)
