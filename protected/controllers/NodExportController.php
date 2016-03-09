@@ -24,9 +24,9 @@ class NodExportController extends BaseController
 	 */
 	public $layout='//layouts/main';
         
-    protected $export_path;
-    protected $zip_name;
-        
+        protected $export_path;
+        protected $zip_name;
+
     protected $institution_code = "000001";
 
 	private	$startDate;
@@ -57,19 +57,17 @@ class NodExportController extends BaseController
 		if (!file_exists($this->export_path)) {
 			mkdir($this->export_path, 0777, true);
 		}
-		
-		//TODO: need to set start date and end date
-		// TODO: we need to use values from the POST array
 
-		$this->startDate = '2015-01-01';
-		$this->endDate = '2016-03-08';
+		$this->startDate = Yii::app()->request->getParam("startDate", '2015-01-01');
+		$this->endDate =  Yii::app()->request->getParam("endDate", '2016-03-08');
 		
 		parent::init();
 	}
 	
-	public function actionGetAllEpisodeId(){
+	public function actionGetAllEpisodeId()
+    {
 		// TODO: we need to call all extraction functions from here!
-		$this->allEpisodeIds = array_merge($this->getEpisodePostOpComplication(), $this->actionEpisodeOperationCoPathology());
+		$this->allEpisodeIds = array_merge($this->getEpisodePostOpComplication(), $this->actionEpisodeOperationCoPathology(), $this->actionGetPatientCviStatus());
 		
 		print_r($this->allEpisodeIds);
 	}
@@ -134,15 +132,15 @@ EOL;
             
                 Yii::app()->db->createCommand($create_tmp_doctor_grade_sql)->execute();
         
-                $sql = <<<EOL
-                    SELECT id as Surgeonid, IFNULL(registration_code, 'NULL') as GMCnumber, IFNULL(title, 'NULL') as Title, IFNULL(first_name, 'NULL') as FirstName,
-                    (
-			SELECT `code` 
-			FROM tmp_doctor_grade, doctor_grade
-			WHERE user.`doctor_grade_id` = doctor_grade.id AND doctor_grade.`grade` = tmp_doctor_grade.desc
-                    ) AS CurrentGradeId
-                FROM user 
-                WHERE is_surgeon = 1 AND active = 1
+$sql = <<<EOL
+    SELECT id as Surgeonid, IFNULL(registration_code, 'NULL') as GMCnumber, IFNULL(title, 'NULL') as Title, IFNULL(first_name, 'NULL') as FirstName,
+    (
+        SELECT `code` 
+        FROM tmp_doctor_grade, doctor_grade
+        WHERE user.`doctor_grade_id` = doctor_grade.id AND doctor_grade.`grade` = tmp_doctor_grade.desc
+    ) AS CurrentGradeId
+FROM user 
+WHERE is_surgeon = 1 AND active = 1
 EOL;
 
             $surgeons = Yii::app()->db->createCommand($sql)->queryAll();
@@ -164,8 +162,34 @@ EOL;
          */
         public function actionGetPatients()
         {
+            $dateWhere = "";
+            
+            $dataQuery = "SELECT id as PatientId, IFNULL( (SELECT CASE WHEN gender='F' THEN 2 WHEN gender='M' THEN 1 ELSE 9 END) , '') as GenderId, "
+                                  . "IFNULL(ethnic_group_id, 'NULL') as EthnicityId, "
+                                  . "IFNULL(dob, 'NULL') as DateOfBirth, "
+                                  . "IFNULL(date_of_death, '') as DateOfDeath, '' as IMDScore, '' as IsPrivate "
+                                . "FROM patient"
+                                . " " . $dateWhere;
+            
+            $patients = Yii::app()->db->createCommand($dataQuery)->queryAll();
+            
+            $csv = $this->array2Csv($patients);
+            file_put_contents($this->export_path . '/patients.csv' , $csv);
+            echo "<pre>" . print_r($csv, true) . "</pre>";
+            
+            die;
             
         }
+        
+        
+        public function actionGetPatientCviStatus()
+        {
+            
+            $episodeIds = array();
+            
+            return $episodeIds;
+        }
+        
         
         protected function array2Csv(array $data)
         {
@@ -182,7 +206,8 @@ EOL;
             return ob_get_clean();
         }
       
-	private function getDateWhere($tablename){
+	private function getDateWhere($tablename)
+    {
 		if($this->startDate != ""){
 			$dateWhereStart = $tablename.".last_modified_date >= '".$this->startDate."'";
 		}
@@ -202,7 +227,8 @@ EOL;
 		return $dateWhere;
 	}
 	
-	private function getEpisodePostOpComplication(){
+       private function getEpisodePostOpComplication()
+       {
 		
 		$dateWhere = $this->getDateWhere('et_ophciexamination_postop_complications');
 		
@@ -230,7 +256,8 @@ EOL;
 		return $episodeIds;
 	}
 	
-	public function actionEpisodeOperationCoPathology(){
+	public function actionEpisodeOperationCoPathology()
+    {
 		$tempTableQuery = <<<EOL
 			DROP TEMPORARY TABLE IF EXISTS tmp_pathology_type;
 			CREATE TEMPORARY TABLE tmp_pathology_type (
