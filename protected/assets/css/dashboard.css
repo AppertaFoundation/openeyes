@@ -302,15 +302,20 @@ select:focus {
 .report-container .report-search fieldset div {
   margin: 20px;
 }
-/* line 285, ../sass/dashboard.scss */
+/* line 286, ../sass/dashboard.scss */
+.report-container .report-search fieldset div.checkbox-select {
+  height: 200px;
+  overflow-y: scroll;
+}
+/* line 290, ../sass/dashboard.scss */
 .report-container .report-search fieldset div .mdl-radio {
   margin-right: 20px;
 }
-/* line 288, ../sass/dashboard.scss */
+/* line 293, ../sass/dashboard.scss */
 .report-container .report-search fieldset div button[type="submit"] {
   float: right;
 }
-/* line 294, ../sass/dashboard.scss */
+/* line 299, ../sass/dashboard.scss */
 .report-container .chart-container {
   z-index: 5;
 }

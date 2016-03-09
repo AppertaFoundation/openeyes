@@ -59,12 +59,3 @@
         </fieldset>
     </form>
 </div>
-<script>
-    if(typeof componentHandler !== "undefined"){
-        var radios = document.querySelectorAll('.mdl-radio');
-        for(var i = 0; i < radios.length; i++){
-            componentHandler.upgradeElement(radios[i], 'MaterialRadio');
-        }
-
-    }
-</script>

@@ -282,6 +282,11 @@ select:focus {
       margin: auto;
       div{
         margin: 20px;
+
+        &.checkbox-select{
+          height: 200px;
+          overflow-y: scroll;
+        }
         .mdl-radio {
           margin-right: 20px;
         }

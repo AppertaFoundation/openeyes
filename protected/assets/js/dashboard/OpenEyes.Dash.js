@@ -50,17 +50,19 @@
 
 
     /**
-     * Loads a piece of HTML in to a dash container.
+     * Loads a piece of HTML in to a dash wrapper.
      *
      * @param report
-     * @param container
+     * @param wrapper
      */
-    function loadBespokeHtml(report, container) {
+    function loadBespokeHtml(report, wrapper) {
         $.ajax({
                 url: report,
                 dataType: 'html',
                 success: function (data, textStatus, jqXHR) {
-                    $(container).html(data);
+                    $(wrapper).html(data);
+                    Dash.upgradeMaterial();
+                    Dash.selectCheckList(wrapper);
                 }
             }
         );
@@ -132,27 +134,67 @@
         });
     };
 
+    /**
+     * Upgrade elements from ajax with material design javascript
+     */
+    Dash.upgradeMaterial = function()
+    {
+        var mdlUpgrades = {
+            MaterialRadio: '.mdl-radio',
+            MaterialCheckbox: '.mdl-checkbox'
+        };
+        for(var upgrade in mdlUpgrades){
+            if(!mdlUpgrades.hasOwnProperty(upgrade)){
+                continue;
+            }
+            if(typeof componentHandler !== "undefined"){
+                var elements = document.querySelectorAll(mdlUpgrades[upgrade]);
+                for(var i = 0; i < elements.length; i++){
+                    componentHandler.upgradeElement(elements[i], upgrade);
+                }
+            }
+        }
+    };
+
+    Dash.selectCheckList = function(wrapper)
+    {
+
+        $(wrapper).find('.checkbox-select').each(function(){
+            var $checkboxes;
+
+            $checkboxes = $(this).find(':input[type="checkbox"]');
+            console.log($checkboxes);
+            $checkboxes.on('change', function(){
+                if(this.value == 'all' && this.checked){
+                    $checkboxes.filter(':input[value!="all"]').removeAttr('checked').parents('label').removeClass('is-checked');
+                } else {
+                    $checkboxes.filter(':input[value="all"]').removeAttr('checked').parents('label').removeClass('is-checked');
+                }
+            })
+        });
+    };
+
     Dash.addBespokeReport = function(report, dependency, size)
     {
-        var container;
+        var wrapper;
 
-        container = appendDashWrapper(report, size);
-        Dash.loadBespokeReport(report, dependency, container)
+        wrapper = appendDashWrapper(report, size);
+        Dash.loadBespokeReport(report, dependency, wrapper)
     };
 
-    Dash.updateBespokeReport = function(report, container)
+    Dash.updateBespokeReport = function(report, wrapper)
     {
-        loadBespokeHtml(report, container);
+        loadBespokeHtml(report, wrapper);
     };
 
-    Dash.loadBespokeReport = function(report, dependency, container)
+    Dash.loadBespokeReport = function(report, dependency, wrapper)
     {
         if(dependency){
             $.getScript(dependency, function(){
-                loadBespokeHtml(report, container);
+                loadBespokeHtml(report, wrapper);
             });
         } else {
-            loadBespokeHtml(report, container);
+            loadBespokeHtml(report, wrapper);
         }
     };
 

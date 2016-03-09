@@ -35,4 +35,5 @@
             {series: <?= $report->seriesJson();?>},
             JSON.parse('<?= $report->graphConfig();?>')
         ));
+
 </script>

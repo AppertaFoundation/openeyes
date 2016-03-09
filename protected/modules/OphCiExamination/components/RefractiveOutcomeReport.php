@@ -28,6 +28,11 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
     protected $months;
 
     /**
+     * @var array
+     */
+    protected $procedures = array();
+
+    /**
      * @var string
      */
     protected $searchTemplate = 'application.modules.OphCiExamination.views.reports.refractive_outcome_search';
@@ -59,6 +64,12 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
     public function __construct($app)
     {
         $this->months = $app->getRequest()->getQuery('months', 0);
+        $this->procedures = $app->getRequest()->getQuery('procedures', array());
+
+        //if they selected all set to empty array to ignore procedure check in query
+        if(in_array('all', $this->procedures)){
+            $this->procedures = array();
+        }
 
         parent::__construct($app);
     }
@@ -68,9 +79,10 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
      * @param $dateFrom
      * @param $dateTo
      * @param int $months
+     * @param array $procedures
      * @return array|\CDbDataReader
      */
-    protected function queryData($surgeon, $dateFrom, $dateTo, $months = 0)
+    protected function queryData($surgeon, $dateFrom, $dateTo, $months = 0, $procedures = array())
     {
         $this->getExaminationEvent();
 
@@ -109,6 +121,13 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
                     'monthsAfter' => ($months + 1)
                 ));
         }
+
+        if($procedures){
+            $this->command
+                ->join('ophtroperationnote_procedurelist_procedure_assignment proc_ass', 'proc_ass.procedurelist_id = op_procedure.id')
+                ->join('ophtroperationnote_procedure_element opnote', 'opnote.procedure_id = proc_ass.proc_id and proc_ass.proc_id in (:procedures)', array('procedures' => join(',', $procedures)));
+        }
+
         return $this->command->queryAll();
     }
 
@@ -117,7 +136,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
      */
     public function dataSet()
     {
-        $data = $this->queryData($this->surgeon, $this->from, $this->to, $this->months);
+        $data = $this->queryData($this->surgeon, $this->from, $this->to, $this->months, $this->procedures);
         $count = array();
 
         foreach ($data as $row) {
@@ -226,10 +245,25 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
     }
 
     /**
+     * @return array
+     */
+    protected function cataractProcedures()
+    {
+        $cataractProcedures = array();
+        $cataractElement = \ElementType::model()->findByAttributes(array('name' => 'Cataract'));
+        if($cataractElement){
+            $procedure = new \Procedure();
+            $cataractProcedures = $procedure->getProceduresByOpNote($cataractElement['id']);
+        }
+
+        return $cataractProcedures;
+    }
+
+    /**
      * @return mixed|string
      */
     public function renderSearch()
     {
-        return $this->app->controller->renderPartial($this->searchTemplate, array('report' => $this));
+        return $this->app->controller->renderPartial($this->searchTemplate, array('report' => $this, 'procedures' => $this->cataractProcedures()));
     }
 }

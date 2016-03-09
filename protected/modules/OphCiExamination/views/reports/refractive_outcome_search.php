@@ -31,6 +31,19 @@
                     <?php endforeach ?>
                 </select>
             </div>
+            <div class="checkbox-select">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="refractive-outcome-proc-all">
+                    <input type="checkbox" id="refractive-outcome-proc-all" class="mdl-checkbox__input" name="procedures[]" value="all" checked>
+                    <span class="mdl-checkbox__label">All</span>
+                </label>
+                <?php
+                foreach($procedures as $id => $procedure):?>
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="refractive-outcome-proc-<?= $id?>">
+                        <input type="checkbox" id="refractive-outcome-proc-<?= $id?>" class="mdl-checkbox__input" name="procedures[]" value="<?= $id?>">
+                        <span class="mdl-checkbox__label"><?= $procedure?></span>
+                    </label>
+                <?php endforeach;?>
+            </div>
             <div>
                 <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="submit" name="action">Submit
                     <i class="material-icons right">send</i>
