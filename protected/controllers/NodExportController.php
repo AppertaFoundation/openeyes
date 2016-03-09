@@ -65,7 +65,7 @@ class NodExportController extends BaseController
 	}
 	
 	public function actionGetAllEpisodeId()
-    {
+        {
 		// TODO: we need to call all extraction functions from here!
 		$this->allEpisodeIds = array_merge($this->getEpisodePostOpComplication(), $this->actionEpisodeOperationCoPathology(), $this->actionGetPatientCviStatus());
 		
@@ -184,10 +184,19 @@ EOL;
         
         public function actionGetPatientCviStatus()
         {
+            $dataQuery = "SELECT id AS PatientId, cvi_status_date AS `Date`, 
+                            (SELECT CASE WHEN DAYNAME(DATE) IS NULL THEN 1 END) AS IsDateApprox, 
+                            (SELECT CASE WHEN cvi_status_id=4 THEN 1 END) AS IsCVIBlind, 
+                            (SELECT CASE WHEN cvi_status_id=3 THEN 1 END) AS IsCVIPartial
+                            FROM patient_oph_info";
+                            //@TODO JOIN episode id
             
-            $episodeIds = array();
+            $patientCviStatus = Yii::app()->db->createCommand($dataQuery)->queryAll();
             
-            return $episodeIds;
+            $csv = $this->array2Csv($patientCviStatus);
+            file_put_contents($this->export_path . '/patientcvistatus.csv' , $csv);
+
+            //return $episodeIds;
         }
         
         
@@ -207,7 +216,7 @@ EOL;
         }
       
 	private function getDateWhere($tablename)
-    {
+        {
 		if($this->startDate != ""){
 			$dateWhereStart = $tablename.".last_modified_date >= '".$this->startDate."'";
 		}
@@ -247,7 +256,7 @@ EOL;
 		$data = Yii::app()->db->createCommand($dataQuery)->queryAll();
 		$csv = $this->array2Csv($data);
           
-        file_put_contents($this->export_path . '/EpisodePostOpComplication.csv' , $csv);
+                file_put_contents($this->export_path . '/EpisodePostOpComplication.csv' , $csv);
 		
 		foreach($data as $row){
 			$episodeIds[] = $row["EpisodeId"];
@@ -257,7 +266,7 @@ EOL;
 	}
 	
 	public function actionEpisodeOperationCoPathology()
-    {
+       {
 		$tempTableQuery = <<<EOL
 			DROP TEMPORARY TABLE IF EXISTS tmp_pathology_type;
 			CREATE TEMPORARY TABLE tmp_pathology_type (
