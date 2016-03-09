@@ -67,7 +67,7 @@ class NodExportController extends BaseController
 	public function actionGetAllEpisodeId()
         {
 		// TODO: we need to call all extraction functions from here!
-		$this->allEpisodeIds = array_merge($this->getEpisodePostOpComplication(), $this->actionEpisodeOperationCoPathology(), $this->actionGetEpisodeDiagnosis);
+		$this->allEpisodeIds = array_merge($this->getEpisodePostOpComplication(), $this->actionEpisodeOperationCoPathology(), $this->actionGetEpisodeDiagnosis());
 		
 		print_r($this->allEpisodeIds);
 	}
@@ -90,14 +90,13 @@ class NodExportController extends BaseController
 	}
 	
 	private function getIdArray($data, $IdField){
+                $objectIds = array();
 		if($IdField && $data){
-			$objectIds = array();
 			foreach($data as $row){
-				$objectIds[] = $row[$IdField];
+                            $objectIds[] = $row[$IdField];
 			}
-			return $objectIds;
-			
 		}
+                return $objectIds;
 	}
 	
 	public function actionIndex()
