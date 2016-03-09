@@ -67,7 +67,7 @@ class NodExportController extends BaseController
 	public function actionGetAllEpisodeId()
         {
 		// TODO: we need to call all extraction functions from here!
-		$this->allEpisodeIds = array_merge($this->getEpisodePostOpComplication(), $this->actionEpisodeOperationCoPathology(), $this->actionGetPatientCviStatus());
+		$this->allEpisodeIds = array_merge($this->getEpisodePostOpComplication(), $this->actionEpisodeOperationCoPathology());
 		
 		print_r($this->allEpisodeIds);
 	}
@@ -80,19 +80,22 @@ class NodExportController extends BaseController
          * @param string $episodeIdField
          * @return null|array
          */
-	private function saveCSVfile($dataQuery, $filename, $episodeIdField = null){
+	private function saveCSVfile($dataQuery, $filename){
 		
 		$data = Yii::app()->db->createCommand($dataQuery)->queryAll();
 		$csv = $this->array2Csv($data);
           
         file_put_contents($this->export_path . '/'.$filename.'.csv' , $csv);
-		
-                if($episodeIdField){
-                    foreach($data as $row){
-                     $episodeIds[] = $row[$episodeIdField];
-                    }
-                    return $episodeIds;
-                }
+		return $data;
+	}
+	
+	private function getIdArray($data, $IdField){
+		if($IdField){
+			foreach($data as $row){
+				$objectIds[] = $row[$IdField];
+			}
+			return $objectIds;
+		}
 	}
 	
 	public function actionIndex()
@@ -234,7 +237,9 @@ EOL;
                         disorder_id AS DiagnosisTermId
                 FROM episode ep";
                 
-                return $this->saveCSVfile($dataQuery, 'EpisodePostOpComplication', 'EpisodeId');
+                $data = $this->saveCSVfile($dataQuery, 'EpisodePostOpComplication');
+				
+				return $this->getIdArray($data, 'EpisodeId');
         }
         
         public function actionGetEpisodeDiabeticDiagnosis()
@@ -307,11 +312,11 @@ EOL;
 		
 		$dateWhere = "";
 		if(isset($dateWhereStart) && isset($dateWhereEnd)){
-			$dateWhere = "WHERE ".$dateWhereStart." AND ".$dateWhereEnd;
+			$dateWhere = "AND ".$dateWhereStart." AND ".$dateWhereEnd;
 		}else if(isset($dateWhereStart)){
-			$dateWhere = "WHERE ".$dateWhereStart;
+			$dateWhere = "AND ".$dateWhereStart;
 		}else if(isset($dateWhereEnd)){
-			$dateWhere = "WHERE ".$dateWhereEnd;
+			$dateWhere = "AND ".$dateWhereEnd;
 		}
 		
 		return $dateWhere;
@@ -332,9 +337,11 @@ EOL;
                         JOIN et_ophciexamination_postop_complications ON `event`.id = et_ophciexamination_postop_complications.`event_id`
                         JOIN ophciexamination_postop_et_complications ON et_ophciexamination_postop_complications.id = ophciexamination_postop_et_complications.`element_id`
                         JOIN ophciexamination_postop_complications ON ophciexamination_postop_et_complications.`complication_id` = ophciexamination_postop_complications.id 
-						".$dateWhere;
+						WHERE 1=1 ".$dateWhere;
 		
-		return $this->saveCSVfile($dataQuery, 'EpisodePostOpComplication', 'EpisodeId');
+		$data = $this->saveCSVfile($dataQuery, 'EpisodePostOpComplication' );
+		
+		return $this->getIdArray($data, 'EpisodeId');
 	}
 	
 	public function actionEpisodeOperationCoPathology()
@@ -395,7 +402,7 @@ EOL;
                         element_type ON ophtroperationnote_procedure_element.element_type_id = element_type.id
                     WHERE
                         element_type.`name` in ('Vitrectomy', 'Trabeculectomy')
-                        AND op_event.event_type_id = (SELECT id FROM event_type WHERE `name` = 'Operation Note'))
+                        AND op_event.event_type_id = (SELECT id FROM event_type WHERE `name` = 'Operation Note') ".$this->getDateWhere('op_event').")
                     UNION
                     (SELECT
                     op_event.id AS OperationId,
@@ -422,7 +429,7 @@ EOL;
                             JOIN benefit ON procedure_benefit.benefit_id = benefit.id
                     WHERE
                         benefit.`name` = 'to prevent retinal detachment'
-                        AND op_event.event_type_id = (SELECT id FROM event_type WHERE `name` = 'Operation Note'))
+                        AND op_event.event_type_id = (SELECT id FROM event_type WHERE `name` = 'Operation Note') ".$this->getDateWhere('op_event')." )
                     UNION
                     (SELECT op_event.id AS OperationId,
 						(SELECT CASE
@@ -439,7 +446,8 @@ EOL;
                     ON episode.id = op_event.episode_id
                     AND op_event.event_type_id = (select id from event_type where `name` = 'Operation Note')
                     AND op_event.created_date >= exam_event.created_date
-                    HAVING Eye IS NOT NULL)
+                    WHERE 1=1 ".$this->getDateWhere('et_ophciexamination_anteriorsegment')."
+					HAVING Eye IS NOT NULL)
                     UNION
                     (SELECT
                         event.id AS OperationId,
@@ -455,9 +463,121 @@ EOL;
                     JOIN secondary_diagnosis ON episode.`patient_id` = secondary_diagnosis.`patient_id`
                     JOIN `disorder` ON  secondary_diagnosis.`disorder_id` = `disorder`.id
                     JOIN tmp_pathology_type on LOWER(disorder.term) = LOWER(tmp_pathology_type.term)
-                    WHERE event_type_id = (SELECT id from event_type where `name` = 'Operation Note'))";
+                    WHERE event_type_id = (SELECT id from event_type where `name` = 'Operation Note') ".$this->getDateWhere('event').")";
 		
-		return $this->saveCSVfile($dataQuery, 'EpisodeOperationCoPathology', 'OperationId');
+		$data = $this->saveCSVfile($dataQuery, 'EpisodeOperationCoPathology' );
+		
+		return $this->getIdArray($data, 'OperationId');
+	}
+	
+	public function actionEpisodeTreatmentCataract(){
+		$tempTableQuery = <<<EOL
+			DROP TEMPORARY TABLE IF EXISTS tmp_iol_positions;
+			CREATE TEMPORARY TABLE tmp_iol_positions (
+				`nodcode` INT(10) UNSIGNED NOT NULL,
+				`term` VARCHAR(100)
+			);
+
+			INSERT INTO tmp_iol_positions (`nodcode`, `term`)
+			VALUES
+				(0, 'None'),
+				(8, 'In the bag'),
+				(9, 'Partly in the bag'),
+				(6, 'In the sulcus'),
+				(2, 'Anterior chamber'),
+				(12, 'Sutured posterior chamber'),
+				(5, 'Iris fixated'),
+				(13, 'Other');
+EOL;
+		
+	
+        Yii::app()->db->createCommand($tempTableQuery)->execute();		
+		
+		$dataQuery = "
+                    select pa.id AS TreatmentId,
+					IFNULL((select
+						IF(eye.`name` = 'First eye', 1, 0)
+						from ophciexamination_cataractsurgicalmanagement_eye eye
+						join et_ophciexamination_cataractsurgicalmanagement mng on eye.id = mng.eye_id
+						join `event` as exam_event on mng.event_id = exam_event.id
+						where exam_event.episode_id = episode.id
+						and exam_event.event_date <= op_event.event_date
+						order by exam_event.event_date desc
+						limit 1
+					), 1) as IsFirstEye,
+					'' as PreparationDrugId,
+					if(inc_site.`name` = 'Limbal', 5, IF(inc_site.`name` = 'Scleral', 8, 4)) as IncisionSiteId,
+					cataract.length as IncisionLengthId,
+					4 as IncisionPlanesId, #unkown
+					cataract.meridian as IncisionMerideanId,
+					if(cataract.pupil_size = 'Small', 1, if(cataract.pupil_size = 'Medium', 2, if(cataract.pupil_size = 'Large', 3, ''))) as PupilSizeId,
+					tmp_iol_positions.nodcode as IolPositionId,
+					ophtroperationnote_cataract_iol_type.`name` as IOLModelId,
+					cataract.iol_power as IOLPower,
+					cataract.predicted_refraction as PredictedPostOperativeRefraction,
+					'' as WoundClosureId
+					FROM ophtroperationnote_procedurelist_procedure_assignment pa
+					JOIN et_ophtroperationnote_procedurelist ON pa.procedurelist_id = et_ophtroperationnote_procedurelist.id
+					join `event` as op_event on et_ophtroperationnote_procedurelist.event_id = op_event.id
+					join episode on op_event.episode_id = episode.id
+					join et_ophtroperationnote_cataract as cataract on op_event.id = cataract.event_id
+					join ophtroperationnote_cataract_incision_site as inc_site on cataract.incision_site_id = inc_site.id
+					join ophtroperationnote_cataract_iol_position iol_pos on cataract.iol_position_id = iol_pos.id
+					join tmp_iol_positions on iol_pos.`name` = tmp_iol_positions.term
+					join ophtroperationnote_cataract_iol_type on cataract.iol_type_id = ophtroperationnote_cataract_iol_type.id
+					WHERE 1=1 ".$this->getDateWhere('pa');
+					
+		$data = $this->saveCSVfile($dataQuery, 'EpisodeTreatmentCataract');
+		
+		//TODO: need to select episodeIds here!
+		return $this->getIdArray($data, 'TreatmentId');
+		
+	}
+	
+	public function actionEpisodeTreatment(){
+		$dataQuery = "SELECT pa.id AS TreatmentId, pl.`event_id` AS OperationId, (SELECT CASE WHEN pl.eye_id = 1 THEN 'L' WHEN pl.eye_id = 2 THEN 'R' END) AS Eye, 
+                           proc.`snomed_code` AS TreatmentTyeId
+                    FROM ophtroperationnote_procedurelist_procedure_assignment pa
+                    JOIN et_ophtroperationnote_procedurelist pl ON pa.`procedurelist_id` = pl.id 
+					WHERE 1=1 ".$this->getDateWhere('pa');
+					
+		$data = $this->saveCSVfile($dataQuery, 'EpisodeTreatment');		
+		//TODO: need to select episodeIds here!		
+		return $this->getIdArray($data, 'TreatmentId');
+		
+	}
+	
+	public function actionEpisodeOperationAnaesthesia(){
+		$tempTableQuery = <<<EOL
+			DROP TEMPORARY TABLE IF EXISTS tmp_anesthesia_type;
+
+			CREATE TEMPORARY TABLE tmp_anesthesia_type(
+				`id` INT(10) UNSIGNED NOT NULL,
+				`name` VARCHAR(50),
+				`code` VARCHAR(50),
+				`nod_code` VARCHAR(50),
+				`nod_desc` VARCHAR(50)
+			);
+
+			INSERT INTO tmp_anesthesia_type(`id`, `name`, `code`, `nod_code`, `nod_desc`)
+			VALUE
+			(1, 'Topical', 'Top', 4, 'Topical anaesthesia alone'),
+			(2, 'LAC',     'LAC', 2, 'Local anaesthesia alone'),
+			(3, 'LA',      'LA',  2, 'Local anaesthesia alone'),
+			(4, 'LAS',     'LAS', 2, 'Local anaesthesia alone'),
+			(5, 'GA',      'GA',  1, 'General anaesthesia alone');
+EOL;
+
+        Yii::app()->db->createCommand($tempTableQuery)->execute();		
+
+		$dataQuery = "SELECT event_id AS OperationId, 
+                        (SELECT `nod_code` FROM tmp_anesthesia_type WHERE at.`name` = `name`) AS AnaesthesiaTypeId
+                        FROM et_ophtroperationnote_anaesthetic a 
+                        JOIN `anaesthetic_type` `at` ON a.`anaesthetic_type_id` = at.`id`";
+						
+		$data = $this->saveCSVfile($dataQuery, 'EpisodeOperationAnaesthesia');	
+		
+		return $this->getIdArray($data, 'OperationId');
 	}
 
 }
