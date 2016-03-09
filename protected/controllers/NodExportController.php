@@ -112,6 +112,182 @@ class NodExportController extends BaseController
 		// TODO: need to create views!!!
 		$this->render('index');
 	}
+	
+	public function actionTest(){
+		
+		$this->createAllTempTables();
+		print_r( $this->actionEpisodePreOpAssessment());
+		$this->clearAllTempTables();
+	}
+	
+	private function createAllTempTables(){
+		$createTempQuery = <<<EOL
+			DROP TEMPORARY TABLE IF EXISTS tmp_doctor_grade;
+			CREATE TEMPORARY TABLE tmp_doctor_grade (
+			`code` INT(10) UNSIGNED NOT NULL,
+			`desc` VARCHAR(100)
+			);
+			INSERT INTO tmp_doctor_grade (`code`, `desc`)
+			VALUES
+			(0, 'Consultant'),
+			(1, 'Locum Consultant'),
+			(2, 'corneal burn'),
+			(3, 'Associate Specialist'),
+			(4, 'Fellow'),
+			(5, 'Registrar'),
+			(6, 'Staff Grade'),
+			(7, 'Trust Doctor'),
+			(8, 'Senior House Officer'),
+			(9, 'Specialty trainee (year 1)'),
+			(10, 'Specialty trainee (year 2)'),
+			(11, 'Specialty trainee (year 3)'),
+			(12, 'Specialty trainee (year 4)'),
+			(13, 'Specialty trainee (year 5)'),
+			(14, 'Specialty trainee (year 6)'),
+			(15, 'Specialty trainee (year 7)'),
+			(16, 'Foundation Year 1 Doctor'),
+			(17, 'Foundation Year 2 Doctor'),
+			(18, 'GP with a special interest in ophthalmology'),
+			(19, 'Community ophthalmologist'),
+			(20, 'Anaesthetist'),
+			(21, 'Orthoptist'),
+			(22, 'Optometrist'),
+			(23, 'Clinical nurse specialist'),
+			(24, 'Nurse'),
+			(25, 'Health Care Assistant'),
+			(26, 'Ophthalmic Technician'),
+			(27, 'Surgical Care Practitioner'),
+			(28, 'Clinical Assistant'),
+			(29, 'RG1'),
+			(30, 'RG2'),
+			(31, 'ODP'),
+			(32, 'Administration staff'),
+			(33, 'Other');
+					
+			DROP TEMPORARY TABLE IF EXISTS tmp_pathology_type;
+			CREATE TEMPORARY TABLE tmp_pathology_type (
+				`nodcode` INT(10) UNSIGNED NOT NULL,
+				`term` VARCHAR(100)
+			);
+			INSERT INTO tmp_pathology_type (`nodcode`, `term`)
+			VALUES
+				(0, 'None'),
+				(1, 'Age related macular degeneration'),
+				(2, 'Amblyopia'),
+				(4, 'Diabetic retinopathy'),
+				(5, 'Glaucoma'),
+				(7, 'Degenerative progressive high myopia'),
+				(8, 'Ocular Hypertension'),
+				(11, 'Stickler Syndrome'),
+				(12, 'Uveitis'),
+				(13, 'Pseudoexfoliation'),
+				(13, 'phacodonesis'),
+				(18, 'macular hole'),
+				(19, 'epiretinal membrane'),
+				(20, 'retinal detachment ');
+							
+			DROP TEMPORARY TABLE IF EXISTS tmp_iol_positions;
+			CREATE TEMPORARY TABLE tmp_iol_positions (
+				`nodcode` INT(10) UNSIGNED NOT NULL,
+				`term` VARCHAR(100)
+			);
+
+			INSERT INTO tmp_iol_positions (`nodcode`, `term`)
+			VALUES
+				(0, 'None'),
+				(8, 'In the bag'),
+				(9, 'Partly in the bag'),
+				(6, 'In the sulcus'),
+				(2, 'Anterior chamber'),
+				(12, 'Sutured posterior chamber'),
+				(5, 'Iris fixated'),
+				(13, 'Other');
+							
+			DROP TEMPORARY TABLE IF EXISTS tmp_anesthesia_type;
+
+			CREATE TEMPORARY TABLE tmp_anesthesia_type(
+				`id` INT(10) UNSIGNED NOT NULL,
+				`name` VARCHAR(50),
+				`code` VARCHAR(50),
+				`nod_code` VARCHAR(50),
+				`nod_desc` VARCHAR(50)
+			);
+
+			INSERT INTO tmp_anesthesia_type(`id`, `name`, `code`, `nod_code`, `nod_desc`)
+			VALUE
+			(1, 'Topical', 'Top', 4, 'Topical anaesthesia alone'),
+			(2, 'LAC',     'LAC', 2, 'Local anaesthesia alone'),
+			(3, 'LA',      'LA',  2, 'Local anaesthesia alone'),
+			(4, 'LAS',     'LAS', 2, 'Local anaesthesia alone'),
+			(5, 'GA',      'GA',  1, 'General anaesthesia alone');
+			
+					
+		DROP TEMPORARY TABLE IF EXISTS tmp_complication_type;
+
+		CREATE TEMPORARY TABLE tmp_complication_type (
+			`code` INT(10) UNSIGNED NOT NULL,
+			`name` VARCHAR(100)
+		);
+
+		INSERT INTO tmp_complication_type (`code`, `name`)
+		VALUES
+			(0, 'None'),
+			(1, 'choroidal / suprachoroidal haemorrhage'),
+			(2, 'corneal burn'),
+			(3, 'corneal epithelial abrasion'),
+			(4, 'corneal oedema'),
+			(5, 'endothelial damage / Descemet\'s tear'),
+			(6, 'epithelial abrasion'),
+			(7, 'hyphaema'),
+			(8, 'IOL into the vitreous'),
+			(9, 'iris prolapse'),
+			(10, 'iris trauma'),
+			(11, 'lens exchange required / other IOL problems'),
+			(12, 'nuclear / epinuclear fragment into vitreous'),
+			(13, 'PC rupture - no vitreous loss'),
+			(14, 'PC rupture - vitreous loss'),
+			(15, 'phaco burn / wound problems'),
+			(16, 'suprachoroidal haemorrhage'),
+			(17, 'torn iris / damage from the phaco'),
+			(18, 'vitreous loss'),
+			(19, 'vitreous to the section at end of surgery'),
+			(20, 'zonule dialysis'),
+			(21, 'zonule rupture - vitreous loss'),
+			(25, 'Not recorded'),
+			(999, 'other');
+                        
+                        
+                        CREATE TEMPORARY TABLE tmp_biometry_formula (
+                                `code` INT(10) UNSIGNED NOT NULL,
+                                `desc` VARCHAR(100)
+                        )";
+                        
+                        INSERT INTO tmp_biometry_formula (`code`, `desc`)
+                        VALUES
+                        (1, 'Haigis'),
+                        (2, 'Holladay'),
+                        (3, 'Holladay II'),
+                        (4, 'SRK/T'),
+                        (5, 'SRK II'),
+                        (6, 'Hoffer Q'),
+                        (7, 'Average of SRK/T + Holladay + Hoffer Q'),
+                        (9, 'Not recorded');
+EOL;
+		Yii::app()->db->createCommand($createTempQuery)->execute();	
+	}
+	
+	private function clearAllTempTables(){
+			$cleanQuery = <<<EOL
+							DROP TEMPORARY TABLE IF EXISTS tmp_complication_type;
+							DROP TEMPORARY TABLE IF EXISTS tmp_anesthesia_type;
+							DROP TEMPORARY TABLE IF EXISTS tmp_iol_positions;
+							DROP TEMPORARY TABLE IF EXISTS tmp_pathology_type;
+							DROP TEMPORARY TABLE IF EXISTS tmp_doctor_grade;
+                                                        DROP TEMPORARY TABLE IF EXISTS tmp_biometry_formula;
+EOL;
+			
+			Yii::app()->db->createCommand($cleanQuery)->execute();				
+	}
         
         /**
          * This table will contain the only person identifiable data (surgeon’s GMC number or national code
@@ -122,50 +298,6 @@ class NodExportController extends BaseController
          */
         public function actionGetSurgeons()
         {
-            $create_tmp_doctor_grade_sql = <<<EOL
-CREATE TABLE tmp_doctor_grade (
-`code` INT(10) UNSIGNED NOT NULL,
-`desc` VARCHAR(100)
-);
-INSERT INTO tmp_doctor_grade (`code`, `desc`)
-VALUES
-(0, 'Consultant'),
-(1, 'Locum Consultant'),
-(2, 'corneal burn'),
-(3, 'Associate Specialist'),
-(4, 'Fellow'),
-(5, 'Registrar'),
-(6, 'Staff Grade'),
-(7, 'Trust Doctor'),
-(8, 'Senior House Officer'),
-(9, 'Specialty trainee (year 1)'),
-(10, 'Specialty trainee (year 2)'),
-(11, 'Specialty trainee (year 3)'),
-(12, 'Specialty trainee (year 4)'),
-(13, 'Specialty trainee (year 5)'),
-(14, 'Specialty trainee (year 6)'),
-(15, 'Specialty trainee (year 7)'),
-(16, 'Foundation Year 1 Doctor'),
-(17, 'Foundation Year 2 Doctor'),
-(18, 'GP with a special interest in ophthalmology'),
-(19, 'Community ophthalmologist'),
-(20, 'Anaesthetist'),
-(21, 'Orthoptist'),
-(22, 'Optometrist'),
-(23, 'Clinical nurse specialist'),
-(24, 'Nurse'),
-(25, 'Health Care Assistant'),
-(26, 'Ophthalmic Technician'),
-(27, 'Surgical Care Practitioner'),
-(28, 'Clinical Assistant'),
-(29, 'RG1'),
-(30, 'RG2'),
-(31, 'ODP'),
-(32, 'Administration staff'),
-(33, 'Other');
-EOL;
-            
-                Yii::app()->db->createCommand($create_tmp_doctor_grade_sql)->execute();
                 
                 $dateWhere = $this->getDateWhere('doctor_grade');
                 
@@ -181,9 +313,7 @@ WHERE is_surgeon = 1 AND active = 1 $dateWhere
 EOL;
             
             $this->saveCSVfile($dataQuery, 'Surgeons');
-            
-            // cleanup
-            Yii::app()->db->createCommand("DROP TABLE tmp_doctor_grade;")->execute();
+
         }
         
         /**
@@ -343,12 +473,6 @@ EOL;
             
             $dateWhere = $this->getDateWhere('et');
             
-            $prepareQuery = "DROP TABLE IF EXISTS tmp_biometry_formula;
-                            CREATE TABLE tmp_biometry_formula (
-                                    `code` INT(10) UNSIGNED NOT NULL,
-                                    `desc` VARCHAR(100)
-                            )";
-
             $dataQuery = <<<EOL
 
             (
@@ -511,31 +635,6 @@ EOL;
 	
 	public function actionEpisodeOperationCoPathology()
        {
-		$tempTableQuery = <<<EOL
-			DROP TEMPORARY TABLE IF EXISTS tmp_pathology_type;
-			CREATE TEMPORARY TABLE tmp_pathology_type (
-				`nodcode` INT(10) UNSIGNED NOT NULL,
-				`term` VARCHAR(100)
-			);
-			INSERT INTO tmp_pathology_type (`nodcode`, `term`)
-			VALUES
-				(0, 'None'),
-				(1, 'Age related macular degeneration'),
-				(2, 'Amblyopia'),
-				(4, 'Diabetic retinopathy'),
-				(5, 'Glaucoma'),
-				(7, 'Degenerative progressive high myopia'),
-				(8, 'Ocular Hypertension'),
-				(11, 'Stickler Syndrome'),
-				(12, 'Uveitis'),
-				(13, 'Pseudoexfoliation'),
-				(13, 'phacodonesis'),
-				(18, 'macular hole'),
-				(19, 'epiretinal membrane'),
-				(20, 'retinal detachment ');
-EOL;
-		
-        Yii::app()->db->createCommand($tempTableQuery)->execute();
 		
 		$dataQuery = "(SELECT
                         op_event.id AS OperationId,
@@ -636,28 +735,7 @@ EOL;
 	}
 	
 	public function actionEpisodeTreatmentCataract(){
-		$tempTableQuery = <<<EOL
-			DROP TEMPORARY TABLE IF EXISTS tmp_iol_positions;
-			CREATE TEMPORARY TABLE tmp_iol_positions (
-				`nodcode` INT(10) UNSIGNED NOT NULL,
-				`term` VARCHAR(100)
-			);
-
-			INSERT INTO tmp_iol_positions (`nodcode`, `term`)
-			VALUES
-				(0, 'None'),
-				(8, 'In the bag'),
-				(9, 'Partly in the bag'),
-				(6, 'In the sulcus'),
-				(2, 'Anterior chamber'),
-				(12, 'Sutured posterior chamber'),
-				(5, 'Iris fixated'),
-				(13, 'Other');
-EOL;
-		
 	
-        Yii::app()->db->createCommand($tempTableQuery)->execute();		
-		
 		$dataQuery = "
                     select pa.id AS TreatmentId,
 					IFNULL((select
@@ -701,7 +779,7 @@ EOL;
 	
 	public function actionEpisodeTreatment(){
 		$dataQuery = "SELECT pa.id AS TreatmentId, pl.`event_id` AS OperationId, (SELECT CASE WHEN pl.eye_id = 1 THEN 'L' WHEN pl.eye_id = 2 THEN 'R' END) AS Eye, 
-                           proc.snomed_code AS TreatmentTyeId
+                           proc.snomed_code AS TreatmentTypeId
                     FROM ophtroperationnote_procedurelist_procedure_assignment pa
                     JOIN et_ophtroperationnote_procedurelist pl ON pa.procedurelist_id = pl.id 
 					JOIN proc ON pa.`proc_id` = proc.`id`
@@ -714,28 +792,6 @@ EOL;
 	}
 	
 	public function actionEpisodeOperationAnaesthesia(){
-		$tempTableQuery = <<<EOL
-			DROP TEMPORARY TABLE IF EXISTS tmp_anesthesia_type;
-
-			CREATE TEMPORARY TABLE tmp_anesthesia_type(
-				`id` INT(10) UNSIGNED NOT NULL,
-				`name` VARCHAR(50),
-				`code` VARCHAR(50),
-				`nod_code` VARCHAR(50),
-				`nod_desc` VARCHAR(50)
-			);
-
-			INSERT INTO tmp_anesthesia_type(`id`, `name`, `code`, `nod_code`, `nod_desc`)
-			VALUE
-			(1, 'Topical', 'Top', 4, 'Topical anaesthesia alone'),
-			(2, 'LAC',     'LAC', 2, 'Local anaesthesia alone'),
-			(3, 'LA',      'LA',  2, 'Local anaesthesia alone'),
-			(4, 'LAS',     'LAS', 2, 'Local anaesthesia alone'),
-			(5, 'GA',      'GA',  1, 'General anaesthesia alone');
-EOL;
-
-        Yii::app()->db->createCommand($tempTableQuery)->execute();		
-
 		$dataQuery = "SELECT event_id AS OperationId, 
                         (SELECT `nod_code` FROM tmp_anesthesia_type WHERE at.`name` = `name`) AS AnaesthesiaTypeId
                         FROM et_ophtroperationnote_anaesthetic a 
@@ -771,42 +827,7 @@ EOL;
 	}
 	
 	public function actionEpisodeOperationComplication(){
-		$tempTableQuery = <<<EOL
-		DROP TEMPORARY TABLE IF EXISTS tmp_complication_type;
 
-		CREATE TEMPORARY TABLE tmp_complication_type (
-	`code` INT(10) UNSIGNED NOT NULL,
-	`name` VARCHAR(100)
-);
-
-INSERT INTO tmp_complication_type (`code`, `name`)
-VALUES
-    (0, 'None'),
-    (1, 'choroidal / suprachoroidal haemorrhage'),
-    (2, 'corneal burn'),
-    (3, 'corneal epithelial abrasion'),
-    (4, 'corneal oedema'),
-    (5, 'endothelial damage / Descemet\'s tear'),
-    (6, 'epithelial abrasion'),
-    (7, 'hyphaema'),
-    (8, 'IOL into the vitreous'),
-    (9, 'iris prolapse'),
-    (10, 'iris trauma'),
-    (11, 'lens exchange required / other IOL problems'),
-    (12, 'nuclear / epinuclear fragment into vitreous'),
-    (13, 'PC rupture - no vitreous loss'),
-    (14, 'PC rupture - vitreous loss'),
-    (15, 'phaco burn / wound problems'),
-    (16, 'suprachoroidal haemorrhage'),
-    (17, 'torn iris / damage from the phaco'),
-    (18, 'vitreous loss'),
-    (19, 'vitreous to the section at end of surgery'),
-    (20, 'zonule dialysis'),
-    (21, 'zonule rupture - vitreous loss'),
-    (25, 'Not recorded'),
-    (999, 'other');
-EOL;
-		
 		Yii::app()->db->createCommand($tempTableQuery)->execute();	
 
 		$dataQuery = "SELECT
@@ -834,72 +855,72 @@ EOL;
 	}
 	
 	public function actionEpisodeOperation(){
-		$tempTableQuery = <<<EOL
-			DROP TEMPORARY TABLE IF EXISTS tmp_doctor_grade;
-				
-			CREATE TEMPORARY TABLE tmp_doctor_grade (
-				`code` INT(10) UNSIGNED NOT NULL,
-				`desc` VARCHAR(100)
-			);
 
-			INSERT INTO tmp_doctor_grade (`code`, `desc`)
-			VALUES
-			(0, 'Consultant'),
-			(1, 'Locum Consultant'),
-			(2, 'corneal burn'),
-			(3, 'Associate Specialist'),
-			(4, 'Fellow'),
-			(5, 'Registrar'),
-			(6, 'Staff Grade'),
-			(7, 'Trust Doctor'),
-			(8, 'Senior House Officer'),
-			(9, 'Specialty trainee (year 1)'),
-			(10, 'Specialty trainee (year 2)'),
-			(11, 'Specialty trainee (year 3)'),
-			(12, 'Specialty trainee (year 4)'),
-			(13, 'Specialty trainee (year 5)'),
-			(14, 'Specialty trainee (year 6)'),
-			(15, 'Specialty trainee (year 7)'),
-			(16, 'Foundation Year 1 Doctor'),
-			(17, 'Foundation Year 2 Doctor'),
-			(18, 'GP with a special interest in ophthalmology'),
-			(19, 'Community ophthalmologist'),
-			(20, 'Anaesthetist'),
-			(21, 'Orthoptist'),
-			(22, 'Optometrist'),
-			(23, 'Clinical nurse specialist'),
-			(24, 'Nurse'),
-			(25, 'Health Care Assistant'),
-			(26, 'Ophthalmic Technician'),
-			(27, 'Surgical Care Practitioner'),
-			(28, 'Clinical Assistant'),
-			(29, 'RG1'),
-			(30, 'RG2'),
-			(31, 'ODP'),
-			(32, 'Administration staff'),
-			(33, 'Other');	
-			
-			CREATE TABLE nod_episode_operation AS SELECT e.id AS OperationId, e.episode_id AS EpisodeId, e.event_date AS ListedDate, 
-    s.surgeon_id AS SurgeonId, 
-    (
-        SELECT `code`
-        FROM tmp_doctor_grade, doctor_grade
-        WHERE user.`doctor_grade_id` = doctor_grade.id AND doctor_grade.`grade` = tmp_doctor_grade.desc
-    ) AS SurgeonGradeId
-            FROM `event` e
-            JOIN event_type evt ON evt.id = e.event_type_id
-            LEFT JOIN et_ophtroperationnote_surgeon s ON s.event_id = e.id
-            INNER JOIN `user` ON s.`surgeon_id` = `user`.`id`
-            WHERE evt.name = 'Operation booking';
-EOL;
-		
-		Yii::app()->db->createCommand($tempTableQuery)->execute();	
-		
-		$dataQuery = "SELECT * FROM nod_episode_operation";
+		$dataQuery = "SELECT e.id AS OperationId, e.episode_id AS EpisodeId, e.event_date AS ListedDate, 
+			s.surgeon_id AS SurgeonId, 
+			(
+				SELECT `code`
+				FROM tmp_doctor_grade, doctor_grade
+				WHERE user.`doctor_grade_id` = doctor_grade.id AND doctor_grade.`grade` = tmp_doctor_grade.desc
+			) AS SurgeonGradeId
+					FROM `event` e
+					JOIN event_type evt ON evt.id = e.event_type_id
+					LEFT JOIN et_ophtroperationnote_surgeon s ON s.event_id = e.id
+					INNER JOIN `user` ON s.`surgeon_id` = `user`.`id`
+					WHERE evt.name = 'Operation booking' ".$this->getDateWhere('e');
 		
 		$data = $this->saveCSVfile($dataQuery, 'EpisodeOperation');
 		
 		return $this->getIdArray($data, 'OperationId');
+	}
+	
+	public function actionEpisodeVisualAcuity(){
+		$dataQuery = "SELECT e.episode_id AS EpisodeId, v.unit_id AS NotationRecordedId,
+								   (SELECT CASE WHEN v.eye_id = 1 THEN 'L' WHEN v.eye_id = 2 THEN 'R' END) AS Eye,
+								   (SELECT MAX(VALUE) FROM ophciexamination_visualacuity_reading r JOIN et_ophciexamination_visualacuity va ON va.id = r.element_id WHERE r.element_id = v.id AND va.unit_id = (SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter')) AS BestMeasure,
+								   #(SELECT value from ophciexamination_visualacuity_reading r JOIN et_ophciexamination_visualacuity va ON va.id = r.element_id WHERE r.element_id = v.id AND method_id = 1) AS Unaided,
+								   NULL AS Unaided, NULL AS Pinhole, NULL AS BestCorrected
+								 FROM `event` e
+								 INNER JOIN et_ophciexamination_visualacuity v ON v.event_id = e.id
+								 WHERE v.eye_id != 3 ".$this->getDateWhere('v');
+		
+		$data = $this->saveCSVfile($dataQuery, 'EpisodeVisualAcuity');
+		
+		return $this->getIdArray($data, 'EpisodeId');
+	}
+	
+	public function actionEpisodeRefraction(){
+		$dataQuery = "(SELECT e.episode_id AS EpisodeId, r.left_sphere AS Sphere, r.left_cylinder AS Cylinder, r.left_axis AS Axis, '' AS RefractionTypeId, '' AS ReadingAdd,
+							  (SELECT CASE WHEN r.eye_id = 1 THEN 'L' END) AS Eye
+							  FROM `event` e
+							  INNER JOIN et_ophciexamination_refraction r ON r.event_id = e.id
+							  WHERE r.eye_id = 1 ".$this->getDateWhere('r').")
+							  UNION
+							  (SELECT e.episode_id AS EpisodeId, r.right_sphere AS Sphere, r.right_cylinder AS Cylinder, r.right_axis AS Axis, '' AS RefractionTypeId, '' AS ReadingAdd,
+							  (SELECT CASE WHEN r.eye_id = 2 THEN 'R' END) AS Eye
+							  FROM `event` e
+							  INNER JOIN et_ophciexamination_refraction r ON r.event_id = e.id
+							  WHERE r.eye_id = 2 ".$this->getDateWhere('r').")";
+							  
+		$data = $this->saveCSVfile($dataQuery, 'EpisodeRefraction');
+		
+		return $this->getIdArray($data, 'EpisodeId');
+	}
+	
+	public function actionEpisodePreOpAssessment(){
+		$dataQuery = "SELECT e.id AS EpisodeId,
+									(SELECT CASE WHEN pl.eye_id = 1 THEN 'L' WHEN pl.eye_id = 2 THEN 'R' WHEN pl.eye_id = 3 THEN 'B' END) AS Eye,
+									(SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 1 THEN 1 ELSE 0 END) AS IsAbleToLieFlat,
+									(SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 4 THEN 1 ELSE 0 END) AS IsInabilityToCooperate
+									FROM episode e
+									LEFT JOIN `event` ev ON ev.episode_id = e.id
+									JOIN et_ophtroperationnote_procedurelist pl ON pl.event_id = ev.id
+									LEFT JOIN patient_risk_assignment pr ON pr.patient_id = e.patient_id
+									GROUP BY e.id";
+		
+		$data = $this->saveCSVfile($dataQuery, 'EpisodePreOpAssessment');
+		
+		return $this->getIdArray($data, 'EpisodeId');
 	}
 	
 }
