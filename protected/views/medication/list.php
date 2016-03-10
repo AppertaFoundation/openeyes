@@ -51,7 +51,9 @@ $medications = $current ? $patient->medications : $patient->previous_medications
                                data-drug-name="<?= $medication->getDrugLabel() ?>">
                                 Stop</a> |
                         <?php } ?>
+                        <?php if(!$medication->prescription_event_id):?>
                         <a href="#" class="medication_delete" data-id="<?= $medication->id ?>">Delete</a>
+                        <?php endif;?>
                     </td>
                 </tr>
             <?php endif ?>
