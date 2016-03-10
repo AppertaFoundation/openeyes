@@ -16,36 +16,45 @@
 $medications = $current ? $patient->medications : $patient->previous_medications;
 ?>
 <?php if ($medications): ?>
-	<h4><?= $current ? "Current" : "Previous" ?></h4>
-	<?php foreach ($medications as $medication): ?>
-		<table class="plain patient-data">
-			<tr><th width="128">Medication</th><td><?= $medication->getDrugLabel() ?></td></tr>
-			<tr>
-				<th>Administration</th>
-				<td><?= $medication->dose ?> <?= $medication->route->name?> <?= $medication->option ? "({$medication->option->name})" : "" ?> <?= $medication->frequency->name?></td>
-			</tr>
-			<tr>
-				<th>Date</th>
-				<td>
-					<?php
-						echo Helper::formatFuzzyDate($medication->start_date) . " - ";
-						if (!$current) {
-							echo Helper::formatFuzzyDate($medication->end_date);
-							if ($medication->stop_reason) echo " (reason for stopping: {$medication->stop_reason->name})";
-						}
-					?>
-				</td>
-			</tr>
-			<?php if ($this->checkAccess('OprnEditMedication')): ?>
-				<tr>
-					<th>Actions</th>
-					<td>
-						<a href="#" class="medication_edit" data-id="<?= $medication->id ?>">Edit</a> |
-						<?php if ($current) { ?><a href="#" class="medication_stop" data-id="<?= $medication->id ?>" data-drug-name="<?= $medication->getDrugLabel() ?>">Stop</a> |<?php } ?>
-						<a href="#" class="medication_delete" data-id="<?= $medication->id ?>">Delete</a>
-					</td>
-				</tr>
-			<?php endif ?>
-		</table>
-	<?php endforeach ?>
+    <h4><?= $current ? "Current" : "Previous" ?></h4>
+    <?php foreach ($medications as $medication): ?>
+        <table class="plain patient-data">
+            <tr>
+                <th width="128">Medication</th>
+                <td><?= $medication->getDrugLabel() ?></td>
+            </tr>
+            <tr>
+                <th>Administration</th>
+                <td><?= $medication->dose ?> <?= $medication->route->name ?> <?= $medication->option ? "({$medication->option->name})" : "" ?> <?= $medication->frequency->name ?></td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>
+                    <?php
+                    echo Helper::formatFuzzyDate($medication->start_date) . " - ";
+                    if (!$current) {
+                        echo Helper::formatFuzzyDate($medication->end_date);
+                        if ($medication->stop_reason) echo " (reason for stopping: {$medication->stop_reason->name})";
+                    }
+                    ?>
+                </td>
+            </tr>
+            <?php if ($this->checkAccess('OprnEditMedication')): ?>
+                <tr>
+                    <th>Actions</th>
+                    <td>
+                        <a href="#" class="medication_edit" data-id="<?= $medication->id ?>"
+                            data-prescription-id="<?= $medication->prescription_event_id ?>">Edit</a> |
+                        <?php if ($current) { ?>
+                            <a href="#" class="medication_stop" data-id="<?= $medication->id ?>"
+                               data-prescription-id="<?= $medication->prescription_event_id ?>"
+                               data-drug-name="<?= $medication->getDrugLabel() ?>">
+                                Stop</a> |
+                        <?php } ?>
+                        <a href="#" class="medication_delete" data-id="<?= $medication->id ?>">Delete</a>
+                    </td>
+                </tr>
+            <?php endif ?>
+        </table>
+    <?php endforeach ?>
 <?php endif ?>
