@@ -78,3 +78,63 @@
         </form>
     </div>
 </div>
+
+<div class="box content">
+    
+    <div class="row">
+        <div class="large-12 column">
+            <h2>How to submit the Export to the RCOphth</h2>
+        </div>
+    </div>
+   
+    <div class="row">
+        <div class="large-12 column">
+            <div class="panel">
+                <div class="row">
+                    <div class="large-10 column">
+                        Once NOD export data has been produced it needs to be submitted to the National Ophthalmology Database.<br>
+                        RCOphth provide a secure web portal for submission (<a href="https://www.nodaudit.org.uk">https://www.nodaudit.org.uk</a>)
+                    </div>
+                    <div class="large-2 column">2 </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="large-12 column">
+            <h2>Registration</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="large-12 column">
+            <div class="panel">
+                <div class="row">
+                    <div class="large-12 column">
+                        <img src="https://jira-connect.gliffy.net/diagrams/889482a0-e51b-11e5-8e64-7b3c12e2684e/preview?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJqaXJhOjg2OTM2OTIiLCJpYXQiOjE0NTc2MTgyOTUsImV4cCI6MTQ1NzY0NzA5NSwicXNoIjoiZGUwMGIyNTU2YzVlZTk5NGY2ODdmNDk4MDI0OTE1YjEzZmZhYmUyOTQ0ZTA0ODg5MDA0YmRiMjZiNzg3MDljNSJ9.30KSBQ8DDT_9tbSO3Zbsz14NS5IJNORKVetG0AtxBsU">
+                    </div>
+                   
+
+                </div>
+            </div>
+        </div>
+    </div>
+     <div class="row">
+        <div class="large-12 column">
+            <h2>Submission</h2>
+        </div>
+    </div>
+    <div class="row">
+      <div class="large-12 column">
+          <div class="panel">
+              <div class="row">
+                  <div class="large-12 column">
+                      <img src="https://jira-connect.gliffy.net/diagrams/83fc83f0-e51b-11e5-9765-257fe704567e/preview?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJqaXJhOjg2OTM2OTIiLCJpYXQiOjE0NTc2MTgyOTUsImV4cCI6MTQ1NzY0NzA5NSwicXNoIjoiMTkyOWYxMzM0MWIzZmE2NWEwNzMyMWFjMTQ2MDVhNDU5Nzk3ZjQxNDU0YWM3NjgxNjYzODI2NWUzZDhlMzBmZCJ9.E0xeuT4P0b3UWExSo-o-yDrKH8m5Lt6BxrDQ0wSBY2A">
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
+    
+</div>
