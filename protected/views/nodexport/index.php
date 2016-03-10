@@ -18,59 +18,63 @@
  */
 ?>
 <h1 class="badge">Nod Export</h1>
-<div class="row">
-	<div class="large-12 column">
-		<h2>Filter by:</h2>
-	</div>
-</div>
-<div class="search-filters theatre-diaries">
-    <form method="post" action="/NodExport/Generate" id="nod-export-filter" class="clearfix">
-        <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
-	<div class="row">
-		<div class="large-12 column">
-			<div class="panel">
-				
-				<div class="row">
-					<div class="large-10 column">
-						<div class="search-filters-extra audit-filters clearfix">
-							<fieldset class="inline highlight">
-								<label class="inline" for="date_from">From:</label>
-								<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-									'name' => 'date_from',
-									'id' => 'date_from',
-									'options' => array(
-										'showAnim'=>'fold',
-										'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
-									),
-									'value' => Yii::app()->request->getParam('date_from'),
-									'htmlOptions' => array(
-										'class' => 'small fixed-width'
-									)
-								))?>
-								<label class="inline" for="date_to">To:</label>
-								<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-									'name' => 'date_to',
-									'id' => 'date_to',
-									'options' => array(
-										'showAnim'=>'fold',
-										'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
-									),
-									'value' => Yii::app()->request->getParam('date_to'),
-									'htmlOptions' => array(
-										'class' => 'small fixed-width'
-									)
-								))?>
-							
-							</fieldset>
-						</div>
-					</div>
-					<div class="large-2 column text-right">
-						<img class="loader hidden" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif');?>" alt="loading..." style="margin-right:10px" />
-						<button type="submit" class="secondary long">Filter</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-    </form>
+
+<div class="box content">
+    
+    <div class="row">
+        <div class="large-12 column">
+            <h2>Generate</h2>
+        </div>
+    </div>
+    
+    <div class="search-filters theatre-diaries">
+        <form method="post" action="/NodExport/Generate" id="nod-export-filter" class="clearfix">
+            <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
+            <div class="row">
+                <div class="large-12 column">
+                    <div class="panel">
+                        <div class="row">
+                            <div class="large-10 column">
+                                <div class="search-filters-extra audit-filters clearfix">
+                                    <fieldset class="inline highlight">
+                                        <label class="inline" for="date_from">From:</label>
+                                        <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+                                                'name' => 'date_from',
+                                                'id' => 'date_from',
+                                                'options' => array(
+                                                        'showAnim'=>'fold',
+                                                                    'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
+                                                            ),
+                                                            'value' => Yii::app()->request->getParam('date_from'),
+                                                            'htmlOptions' => array(
+                                                                    'class' => 'small fixed-width'
+                                                            )
+                                                    ))?>
+                                        <label class="inline" for="date_to">To:</label>
+                                        <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+                                                'name' => 'date_to',
+                                                'id' => 'date_to',
+                                                'options' => array(
+                                                        'showAnim'=>'fold',
+                                                        'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
+                                                ),
+                                                'value' => Yii::app()->request->getParam('date_to'),
+                                                'htmlOptions' => array(
+                                                        'class' => 'small fixed-width'
+                                                )
+                                        ))?>
+
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div class="large-2 column text-right">
+                                <img class="loader hidden" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif');?>" alt="loading..." style="margin-right:10px" />
+                                <button type="submit" class="secondary long">Generate</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
