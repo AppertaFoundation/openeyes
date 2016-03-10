@@ -419,6 +419,7 @@ EOL;
                                                               190411003,190412005,190416008,190447002,199226008,199228009,199231005,237600004,237601000,237603002,237611007,237612000,
                                                               237616002,237617006,237620003,238981002,275918005,276560009,408540003,413183008,420422005,420683009,421256007,421895002,
                                                               422088007,422183001,422275004,426705001,426875007,427089005,441628001,91352004,399144008) THEN 9
+                                    ELSE ""
                                     END 
 
                     ) AS DiabetesTypeId,
@@ -555,9 +556,9 @@ EOL;
             
             $dataQuery = "SELECT e.id AS EpisodeId,
                         (SELECT CASE WHEN oipv.eye_id = 1 THEN 'L' WHEN oipv.eye_id = 2 THEN 'R' END) AS Eye,
-                        '' AS `type`,
+                        '' AS `Type`,
                         9 AS GlaucomaMedicationStatusId,
-                        oipvr.value AS VALUE
+                        oipvr.value AS Value
                         FROM episode e
                         JOIN `event` ev ON ev.episode_id = e.id
                         JOIN event_type et ON et.id = ev.event_type_id
@@ -790,7 +791,11 @@ EOL;
 	
 	public function actionEpisodeOperationAnaesthesia(){
 		$dataQuery = "SELECT event_id AS OperationId, 
-                        (SELECT `nod_code` FROM tmp_anesthesia_type WHERE at.`name` = `name`) AS AnaesthesiaTypeId
+                        (SELECT `nod_code` FROM tmp_anesthesia_type WHERE at.`name` = `name`) AS AnaesthesiaTypeId,
+                        '' as AnaesthesiaNeedle,
+                        '' as Sedation,
+                        '' as SurgeonId,
+                        '' as ComplicationId
                         FROM et_ophtroperationnote_anaesthetic a 
                         JOIN `anaesthetic_type` `at` ON a.`anaesthetic_type_id` = at.`id`";
 						
@@ -835,10 +840,12 @@ EOL;
                             WHEN et_ophtroperationnote_procedurelist.eye_id = 3 THEN 'B' 
                             END
                         ) AS Eye,
-                        (SELECT `code` 
-                            FROM tmp_complication_type 
-                            WHERE tmp_complication_type.`name` = ophtroperationnote_cataract_complications.name
-                        ) AS ComplicationTypeId
+                        IFNULL(
+                            (SELECT `code`
+                                    FROM tmp_complication_type 
+                                    WHERE tmp_complication_type.`name` = ophtroperationnote_cataract_complications.name
+                            ),
+                            '') AS ComplicationTypeId
                     FROM ophtroperationnote_cataract_complication
                     INNER JOIN `et_ophtroperationnote_cataract` ON `ophtroperationnote_cataract_complication`.cataract_id = et_ophtroperationnote_cataract.id
                     INNER JOIN ophtroperationnote_cataract_complications ON ophtroperationnote_cataract_complication.`complication_id` = ophtroperationnote_cataract_complications.`id`
@@ -859,7 +866,10 @@ EOL;
 				SELECT `code`
 				FROM tmp_doctor_grade, doctor_grade
 				WHERE user.`doctor_grade_id` = doctor_grade.id AND doctor_grade.`grade` = tmp_doctor_grade.desc
-			) AS SurgeonGradeId
+			) AS SurgeonGradeId,
+                        '' as AssistantId,
+                        '' as AssistantGrade,
+                        '' as ConsultantId
 					FROM `event` e
 					JOIN event_type evt ON evt.id = e.event_type_id
 					LEFT JOIN et_ophtroperationnote_surgeon s ON s.event_id = e.id
@@ -876,7 +886,9 @@ EOL;
 								   (SELECT CASE WHEN v.eye_id = 1 THEN 'L' WHEN v.eye_id = 2 THEN 'R' END) AS Eye,
 								   (SELECT MAX(VALUE) FROM ophciexamination_visualacuity_reading r JOIN et_ophciexamination_visualacuity va ON va.id = r.element_id WHERE r.element_id = v.id AND va.unit_id = (SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter')) AS BestMeasure,
 								   #(SELECT value from ophciexamination_visualacuity_reading r JOIN et_ophciexamination_visualacuity va ON va.id = r.element_id WHERE r.element_id = v.id AND method_id = 1) AS Unaided,
-								   NULL AS Unaided, NULL AS Pinhole, NULL AS BestCorrected
+								   '' AS Unaided, 
+                                   '' AS Pinhole, 
+                                   '' AS BestCorrected
 								 FROM `event` e
 								 INNER JOIN et_ophciexamination_visualacuity v ON v.event_id = e.id
 								 WHERE v.eye_id != 3 ".$this->getDateWhere('v');
