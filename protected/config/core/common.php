@@ -302,7 +302,7 @@ return array(
 						'title' => 'NOD Export',
 						'uri' => 'NodExport',
 						'position' => 4,
-						'restricted' => array('admin'),
+						'restricted' => array('admin', 'NOD Export'),
 					),
 				)
 			),

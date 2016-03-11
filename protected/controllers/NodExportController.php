@@ -36,12 +36,11 @@ class NodExportController extends BaseController
 	
 	public function accessRules()
 	{
-		// TODO need to add NOD Export RBAC rule here!! now we restrict to admin only
-		return array(
-			array('allow',
-				'roles' => array('admin'),
-			),
-		);
+            return array(
+                array('allow',
+                    'roles' => array('admin', 'NOD Export'),
+                ),
+            );
 	}
 	public function beforeAction($action)
 	{
@@ -66,23 +65,23 @@ class NodExportController extends BaseController
 	
 	public function actionGetAllEpisodeId()
         {
-		// TODO: we need to call all extraction functions from here!
-		$this->saveIds('tmp_episode_ids', $this->actionGetEpisodeDiagnosis());
-        $this->saveIds('tmp_episode_ids', $this->actionGetEpisodeDiabeticDiagnosis());
-        $this->saveIds('tmp_episode_ids', $this->actionGetEpisodeDrug());
-        $this->saveIds('tmp_episode_ids', $this->actionGetEpisodeBiometry());
-        $this->saveIds('tmp_episode_ids', $this->getEpisodePostOpComplication());
-		$this->saveIds('tmp_episode_ids', $this->actionEpisodePreOpAssessment());
-        $this->saveIds('tmp_episode_ids', $this->actionGetEpisodeIOP());
-        $this->saveIds('tmp_episode_ids', $this->actionEpisodeVisualAcuity());
-        $this->saveIds('tmp_episode_ids', $this->actionEpisodeRefraction());
-        $this->saveIds('tmp_operation_ids', $this->actionEpisodeOperationCoPathology());
-        $this->saveIds('tmp_operation_ids', $this->actionEpisodeOperationAnaesthesia());
-        $this->saveIds('tmp_operation_ids', $this->actionEpisodeOperationIndication());
-        $this->saveIds('tmp_operation_ids', $this->actionEpisodeOperationComplication());
-		$this->saveIds('tmp_treatment_ids', $this->actionEpisodeTreatmentCataract());
-		$this->actionEpisodeTreatment();
-		//print_r($this->allEpisodeIds);
+            // TODO: we need to call all extraction functions from here!
+            $this->saveIds('tmp_episode_ids', $this->getEpisodeDiagnosis());
+            $this->saveIds('tmp_episode_ids', $this->getEpisodeDiabeticDiagnosis());
+            $this->saveIds('tmp_episode_ids', $this->getEpisodeDrug());
+            $this->saveIds('tmp_episode_ids', $this->getEpisodeBiometry());
+            $this->saveIds('tmp_episode_ids', $this->getEpisodePostOpComplication());
+            $this->saveIds('tmp_episode_ids', $this->getEpisodePreOpAssessment());
+            $this->saveIds('tmp_episode_ids', $this->getEpisodeIOP());
+            $this->saveIds('tmp_episode_ids', $this->getEpisodeVisualAcuity());
+            $this->saveIds('tmp_episode_ids', $this->getEpisodeRefraction());
+            $this->saveIds('tmp_episode_ids', $this->getEpisodeOperation());
+            $this->saveIds('tmp_operation_ids', $this->getEpisodeOperationCoPathology());
+            $this->saveIds('tmp_operation_ids', $this->getEpisodeOperationAnaesthesia());
+            $this->saveIds('tmp_operation_ids', $this->getEpisodeOperationIndication());
+            $this->saveIds('tmp_operation_ids', $this->getEpisodeOperationComplication());
+            $this->saveIds('tmp_treatment_ids', $this->getEpisodeTreatmentCataract());
+            $this->getEpisodeTreatment();
 	}
 	
         /**
@@ -95,7 +94,6 @@ class NodExportController extends BaseController
          */
 	private function saveCSVfile($dataQuery, $filename){
 	    
-            
             if(!isset($dataQuery['query'])){
                 throw new Exception('Query not found: array key "query" not exsist' . print_r($firm->getErrors(),true));
             }
@@ -307,16 +305,16 @@ EOL;
 	}
 	
 	private function clearAllTempTables(){
-			$cleanQuery = <<<EOL
-							DROP TEMPORARY TABLE IF EXISTS tmp_complication_type;
-							DROP TEMPORARY TABLE IF EXISTS tmp_anesthesia_type;
-							DROP TEMPORARY TABLE IF EXISTS tmp_iol_positions;
-							DROP TEMPORARY TABLE IF EXISTS tmp_pathology_type;
-							DROP TEMPORARY TABLE IF EXISTS tmp_doctor_grade;
-                            DROP TEMPORARY TABLE IF EXISTS tmp_biometry_formula;
-							DROP TEMPORARY TABLE IF EXISTS tmp_episode_ids;
-							DROP TEMPORARY TABLE IF EXISTS tmp_operation_ids;
-							DROP TEMPORARY TABLE IF EXISTS tmp_treatment_ids;
+            $cleanQuery = <<<EOL
+                DROP TEMPORARY TABLE IF EXISTS tmp_complication_type;
+                DROP TEMPORARY TABLE IF EXISTS tmp_anesthesia_type;
+                DROP TEMPORARY TABLE IF EXISTS tmp_iol_positions;
+                DROP TEMPORARY TABLE IF EXISTS tmp_pathology_type;
+                DROP TEMPORARY TABLE IF EXISTS tmp_doctor_grade;
+                DROP TEMPORARY TABLE IF EXISTS tmp_biometry_formula;
+                DROP TEMPORARY TABLE IF EXISTS tmp_episode_ids;
+                DROP TEMPORARY TABLE IF EXISTS tmp_operation_ids;
+                DROP TEMPORARY TABLE IF EXISTS tmp_treatment_ids;
 
 
 EOL;
@@ -331,7 +329,7 @@ EOL;
          * record if they move between centres. This was not done with the ‘legacy’ data already in
          *  NOD and therefore at present we do not have the ability to identify individual surgeons.
          */
-        public function actionGetSurgeons()
+        private function getSurgeons()
         {
                
                 
@@ -359,7 +357,7 @@ EOL;
          * The extraction of patient data is psuedoanonymised. All tables prefixed with “Patient” link back to the 
          * “Patient” table via the ‘PatientId’ variable. Each patient on the RCOphth NOD will have one row in the “Patient” table.
          */
-        public function actionGetPatients()
+        private function getPatients()
         {
             
             $query = "SELECT id as PatientId, IFNULL( (SELECT CASE WHEN gender='F' THEN 2 WHEN gender='M' THEN 1 ELSE 9 END) , '') as GenderId, "
@@ -368,14 +366,14 @@ EOL;
                                   . "IFNULL(date_of_death, '') as DateOfDeath, '' as IMDScore, '' as IsPrivate "
                                 . "FROM patient "
                                 . "WHERE patient.id IN (SELECT patient_id FROM episode WHERE episode.id IN 
-								(SELECT id FROM ((SELECT id FROM tmp_episode_ids) 
-									UNION ALL
-								(SELECT episode_id AS id FROM event WHERE event.id in (SELECT id FROM tmp_operation_ids)) 
-									UNION ALL
-								(SELECT episode_id AS id FROM event e 
-									JOIN et_ophtroperationnote_procedurelist eop ON eop.event_id = e.id 
-									JOIN ophtroperationnote_procedurelist_procedure_assignment oppa ON oppa.procedurelist_id = eop.id 
-									WHERE oppa.id IN (SELECT id FROM tmp_treatment_ids))) a )) ";
+                                    (SELECT id FROM ((SELECT id FROM tmp_episode_ids) 
+                                            UNION ALL
+                                    (SELECT episode_id AS id FROM event WHERE event.id in (SELECT id FROM tmp_operation_ids)) 
+                                            UNION ALL
+                                    (SELECT episode_id AS id FROM event e 
+                                            JOIN et_ophtroperationnote_procedurelist eop ON eop.event_id = e.id 
+                                            JOIN ophtroperationnote_procedurelist_procedure_assignment oppa ON oppa.procedurelist_id = eop.id 
+                                            WHERE oppa.id IN (SELECT id FROM tmp_treatment_ids))) a )) ";
             
             $dataQuery = array(
                 'query' => $query,
@@ -385,7 +383,7 @@ EOL;
             $this->saveCSVfile($dataQuery, 'Patients');
         }
         
-        public function actionGetPatientCviStatus()
+        private function getPatientCviStatus()
         {
             //$dateWhere = "AND episode.id IN ( SELECT id from tmp_episode_ids )"; 
             
@@ -416,7 +414,7 @@ EOL;
             $this->saveCSVfile($dataQuery, 'PatientCviStatus');
         }
         
-        public function actionGetEpisode()
+        private function getEpisode()
         {
 
             $query = "SELECT patient_id, id, start_date FROM episode WHERE episode.id IN 
@@ -437,7 +435,7 @@ EOL;
             $this->saveCSVfile($dataQuery, 'Episodes');
         }
         
-        public function actionGetEpisodeDiagnosis()
+        private function getEpisodeDiagnosis()
         {
            //$dateWhere = "AND episode.id IN ( SELECT id from tmp_episode_ids )"; 
             
@@ -470,7 +468,7 @@ EOL;
 		return $this->getIdArray($data, 'EpisodeId');
         }
         
-        public function actionGetEpisodeDiabeticDiagnosis()
+        private function getEpisodeDiabeticDiagnosis()
         {
             $dateWhere = $this->getDateWhere('s');
             
@@ -523,7 +521,7 @@ EOL;
             return $this->getIdArray($data, 'EpisodeId');
         }
         
-        public function actionGetEpisodeDrug()
+        private function getEpisodeDrug()
         {
             
             $dateWhere = $this->getDateWhere('m');
@@ -561,7 +559,7 @@ EOL;
             return $this->getIdArray($data, 'EpisodeId');
         }
         
-        public function actionGetEpisodeBiometry()
+        private function getEpisodeBiometry()
         {
             
             $dateWhere = $this->getDateWhere('et');
@@ -659,7 +657,7 @@ EOL;
             
         }
         
-        public function actionGetEpisodeIOP()
+        private function getEpisodeIOP()
         {
             $dateWhere = $this->getDateWhere('oipvr');
             
@@ -754,7 +752,7 @@ EOL;
 		return $this->getIdArray($data, 'EpisodeId');
 	}
 	
-	public function actionEpisodeOperationCoPathology()
+	private function getEpisodeOperationCoPathology()
         {
 		
 		$query = "(SELECT
@@ -860,7 +858,7 @@ EOL;
 		return $this->getIdArray($data, 'OperationId');
 	}
 	
-	public function actionEpisodeTreatmentCataract(){
+	private function getEpisodeTreatmentCataract(){
 	
 		$query = "
                     select pa.id AS TreatmentId,
@@ -922,7 +920,7 @@ EOL;
 		
 	}
 	
-	public function actionEpisodeTreatment(){
+	private function getEpisodeTreatment(){
 		$query = "  SELECT pa.id AS TreatmentId, 
                                 pl.`event_id` AS OperationId, 
                                 (SELECT CASE WHEN pl.eye_id = 1 THEN 'L' WHEN pl.eye_id = 2 THEN 'R' END) AS Eye, 
@@ -943,7 +941,7 @@ EOL;
 		
 	}
 	
-	public function actionEpisodeOperationAnaesthesia(){
+	private function getEpisodeOperationAnaesthesia(){
 		$query = "SELECT event_id AS OperationId,
                         (SELECT `nod_code` FROM tmp_anesthesia_type WHERE at.`name` = `name`) AS AnaesthesiaTypeId,
                         '' as AnaesthesiaNeedle,
@@ -963,7 +961,7 @@ EOL;
 		return $this->getIdArray($data, 'OperationId');
 	}
 
-	public function actionEpisodeOperationIndication(){
+	private function getEpisodeOperationIndication(){
 		$query = "SELECT pl.`event_id` AS OperationId, (SELECT CASE WHEN pl.eye_id = 1 THEN 'L' WHEN pl.eye_id = 2 THEN 'R' END) AS Eye,
                             (
                                     SELECT IF(	pl.`booking_event_id`,
@@ -993,7 +991,7 @@ EOL;
 		
 	}
 	
-	public function actionEpisodeOperationComplication(){
+	private function getEpisodeOperationComplication(){
 
 		$query = "SELECT
                         event.id AS OperationId, 
@@ -1026,7 +1024,7 @@ EOL;
 		return $this->getIdArray($data, 'OperationId');
 	}
 	
-	public function actionEpisodeOperation(){
+	private function getEpisodeOperation(){
 
 		$query = "SELECT e.id AS OperationId, e.episode_id AS EpisodeId, e.event_date AS ListedDate, 
 			s.surgeon_id AS SurgeonId, 
@@ -1054,7 +1052,7 @@ EOL;
 		return $this->getIdArray($data, 'OperationId');
 	}
 	
-	public function actionEpisodeVisualAcuity(){
+	private function getEpisodeVisualAcuity(){
             
 		$query = "SELECT e.episode_id AS EpisodeId, v.unit_id AS NotationRecordedId,
 								   (SELECT CASE WHEN v.eye_id = 1 THEN 'L' WHEN v.eye_id = 2 THEN 'R' END) AS Eye,
@@ -1077,7 +1075,7 @@ EOL;
 		return $this->getIdArray($data, 'EpisodeId');
 	}
 	
-	public function actionEpisodeRefraction(){
+	private function getEpisodeRefraction(){
             
 		$query = "(SELECT e.episode_id AS EpisodeId, r.left_sphere AS Sphere, r.left_cylinder AS Cylinder, r.left_axis AS Axis, '' AS RefractionTypeId, '' AS ReadingAdd,
 							  (SELECT CASE WHEN r.eye_id = 1 THEN 'L' END) AS Eye
@@ -1101,7 +1099,7 @@ EOL;
 		return $this->getIdArray($data, 'EpisodeId');
 	}
 	
-	public function actionEpisodePreOpAssessment(){
+	private function getEpisodePreOpAssessment(){
             
 		$query = "SELECT e.id AS EpisodeId,
                                 (SELECT CASE WHEN pl.eye_id = 1 THEN 'L' WHEN pl.eye_id = 2 THEN 'R' WHEN pl.eye_id = 3 THEN 'B' END) AS Eye,
@@ -1124,9 +1122,9 @@ EOL;
 	}
 	
 	private function saveIds($tableName, $idArray){
-			foreach($idArray as $id){
-				Yii::app()->db->createCommand("INSERT IGNORE INTO ".$tableName." (id) VALUES (".$id.")")->execute();	
-			}
+            foreach($idArray as $id){
+                Yii::app()->db->createCommand("INSERT IGNORE INTO ".$tableName." (id) VALUES (".$id.")")->execute();
+            }
 	}
         
         private function createZipFile()
@@ -1163,10 +1161,10 @@ EOL;
             
             $this->createAllTempTables();
             $this->actionGetAllEpisodeId();
-			$this->actionGetEpisode();
-			$this->actionGetSurgeons();
-			$this->actionGetPatientCviStatus();
-			$this->actionGetPatients();
+			$this->getEpisode();
+			$this->getSurgeons();
+			$this->getPatientCviStatus();
+			$this->getPatients();
             $this->clearAllTempTables();
             
         }
