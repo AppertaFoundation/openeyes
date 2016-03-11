@@ -67,18 +67,21 @@ class NodExportController extends BaseController
 	public function actionGetAllEpisodeId()
         {
 		// TODO: we need to call all extraction functions from here!
-		$this->allEpisodeIds = array_merge( 
-                                                    $this->actionGetEpisodeDiagnosis(),
-                                                    $this->actionGetEpisodeDiabeticDiagnosis(),
-                                                    $this->actionGetEpisodeDrug(),
-                                                    $this->actionGetEpisodeBiometry(),
-                                                    $this->actionGetEpisodeIOP(),
-                                                    $this->getEpisodePostOpComplication(), 
-                                                    $this->actionEpisodeOperationCoPathology(),
-                        
-                                                    $this->actionEpisodePreOpAssessment()
-                                                 );
-		
+		$this->saveIds('tmp_episode_ids', $this->actionGetEpisodeDiagnosis());
+        $this->saveIds('tmp_episode_ids', $this->actionGetEpisodeDiabeticDiagnosis());
+        $this->saveIds('tmp_episode_ids', $this->actionGetEpisodeDrug());
+        $this->saveIds('tmp_episode_ids', $this->actionGetEpisodeBiometry());
+        $this->saveIds('tmp_episode_ids', $this->getEpisodePostOpComplication());
+		$this->saveIds('tmp_episode_ids', $this->actionEpisodePreOpAssessment());
+        $this->saveIds('tmp_episode_ids', $this->actionGetEpisodeIOP());
+        $this->saveIds('tmp_episode_ids', $this->actionEpisodeVisualAcuity());
+        $this->saveIds('tmp_episode_ids', $this->actionEpisodeRefraction());
+        $this->saveIds('tmp_operation_ids', $this->actionEpisodeOperationCoPathology());
+        $this->saveIds('tmp_operation_ids', $this->actionEpisodeOperationAnaesthesia());
+        $this->saveIds('tmp_operation_ids', $this->actionEpisodeOperationIndication());
+        $this->saveIds('tmp_operation_ids', $this->actionEpisodeOperationComplication());
+		$this->saveIds('tmp_treatment_ids', $this->actionEpisodeTreatmentCataract());
+		$this->actionEpisodeTreatment();
 		//print_r($this->allEpisodeIds);
 	}
 	
@@ -130,6 +133,24 @@ class NodExportController extends BaseController
 	
 	private function createAllTempTables(){
 		$createTempQuery = <<<EOL
+			DROP TEMPORARY TABLE IF EXISTS tmp_episode_ids;
+			
+			CREATE TEMPORARY TABLE tmp_episode_ids(
+				id  int(10) UNSIGNED NOT NULL UNIQUE
+			);
+			
+			DROP TEMPORARY TABLE IF EXISTS tmp_operation_ids;
+			
+			CREATE TEMPORARY TABLE tmp_operation_ids(
+				id  int(10) UNSIGNED NOT NULL UNIQUE
+			);
+			
+			DROP TEMPORARY TABLE IF EXISTS tmp_treatment_ids;
+			
+			CREATE TEMPORARY TABLE tmp_treatment_ids(
+				id  int(10) UNSIGNED NOT NULL UNIQUE
+			);
+			
 			DROP TEMPORARY TABLE IF EXISTS tmp_doctor_grade;
 			CREATE TEMPORARY TABLE tmp_doctor_grade (
 			`code` INT(10) UNSIGNED NOT NULL,
@@ -282,6 +303,7 @@ class NodExportController extends BaseController
                         (9, 'Not recorded');
 EOL;
 		Yii::app()->db->createCommand($createTempQuery)->execute();	
+
 	}
 	
 	private function clearAllTempTables(){
@@ -291,7 +313,12 @@ EOL;
 							DROP TEMPORARY TABLE IF EXISTS tmp_iol_positions;
 							DROP TEMPORARY TABLE IF EXISTS tmp_pathology_type;
 							DROP TEMPORARY TABLE IF EXISTS tmp_doctor_grade;
-                                                        DROP TEMPORARY TABLE IF EXISTS tmp_biometry_formula;
+                            DROP TEMPORARY TABLE IF EXISTS tmp_biometry_formula;
+							DROP TEMPORARY TABLE IF EXISTS tmp_episode_ids;
+							DROP TEMPORARY TABLE IF EXISTS tmp_operation_ids;
+							DROP TEMPORARY TABLE IF EXISTS tmp_treatment_ids;
+
+
 EOL;
 			
 			Yii::app()->db->createCommand($cleanQuery)->execute();
@@ -306,8 +333,7 @@ EOL;
          */
         public function actionGetSurgeons()
         {
-                
-                $dateWhere = $this->getDateWhere('doctor_grade');
+               
                 
 $query = <<<EOL
     SELECT id as Surgeonid, IFNULL(registration_code, 'NULL') as GMCnumber, IFNULL(title, 'NULL') as Title, IFNULL(first_name, 'NULL') as FirstName,
@@ -317,7 +343,7 @@ $query = <<<EOL
         WHERE user.`doctor_grade_id` = doctor_grade.id AND doctor_grade.`grade` = tmp_doctor_grade.desc
     ) AS CurrentGradeId
 FROM user 
-WHERE is_surgeon = 1 AND active = 1 $dateWhere
+WHERE is_surgeon = 1 AND active = 1 
 EOL;
             
             $dataQuery = array(
@@ -325,7 +351,7 @@ EOL;
                 'header' => array('Surgeonid', 'GMCnumber', 'Title', 'FirstName', 'CurrentGradeId'),
             );
     
-            $this->saveCSVfile($dataQuery);
+            $this->saveCSVfile($dataQuery, 'Surgeons');
 
         }
         
@@ -335,14 +361,21 @@ EOL;
          */
         public function actionGetPatients()
         {
-            $dateWhere = $this->getDateWhere('patient');
             
             $query = "SELECT id as PatientId, IFNULL( (SELECT CASE WHEN gender='F' THEN 2 WHEN gender='M' THEN 1 ELSE 9 END) , '') as GenderId, "
                                   . "IFNULL(ethnic_group_id, 'NULL') as EthnicityId, "
                                   . "IFNULL(dob, 'NULL') as DateOfBirth, "
                                   . "IFNULL(date_of_death, '') as DateOfDeath, '' as IMDScore, '' as IsPrivate "
-                                . "FROM patient"
-                                . "WHERE 1=1 " . $dateWhere;
+                                . "FROM patient "
+                                . "WHERE patient.id IN (SELECT patient_id FROM episode WHERE episode.id IN 
+								(SELECT id FROM ((SELECT id FROM tmp_episode_ids) 
+									UNION ALL
+								(SELECT episode_id AS id FROM event WHERE event.id in (SELECT id FROM tmp_operation_ids)) 
+									UNION ALL
+								(SELECT episode_id AS id FROM event e 
+									JOIN et_ophtroperationnote_procedurelist eop ON eop.event_id = e.id 
+									JOIN ophtroperationnote_procedurelist_procedure_assignment oppa ON oppa.procedurelist_id = eop.id 
+									WHERE oppa.id IN (SELECT id FROM tmp_treatment_ids))) a )) ";
             
             $dataQuery = array(
                 'query' => $query,
@@ -365,7 +398,15 @@ EOL;
                         FROM episode
                         JOIN patient ON episode.`patient_id` = patient.id
                         JOIN patient_oph_info ON patient.id = patient_oph_info.`patient_id`
-                        WHERE episode.`patient_id` IN ( SELECT id FROM patient ) " /*. $dateWhere*/;
+                        WHERE episode.`patient_id` IN (SELECT patient_id FROM episode WHERE episode.id IN 
+								(SELECT id FROM ((SELECT id FROM tmp_episode_ids) 
+									UNION ALL
+								(SELECT episode_id AS id FROM event WHERE event.id in (SELECT id FROM tmp_operation_ids)) 
+									UNION ALL
+								(SELECT episode_id AS id FROM event e 
+									JOIN et_ophtroperationnote_procedurelist eop ON eop.event_id = e.id 
+									JOIN ophtroperationnote_procedurelist_procedure_assignment oppa ON oppa.procedurelist_id = eop.id 
+									WHERE oppa.id IN (SELECT id FROM tmp_treatment_ids))) a ))" ;
             
             $dataQuery = array(
                 'query' => $query,
@@ -377,14 +418,22 @@ EOL;
         
         public function actionGetEpisode()
         {
-            //$dateWhere = "AND episode.id IN ( SELECT id from tmp_episode_ids )"; 
-            $query = "SELECT patient_id as PatientId, id as EpisodeId, start_date as Date FROM episode WHERE 1=1 " /*. $dateWhere*/;
-            
-            $dataQuery = array(
+
+            $query = "SELECT patient_id, id, start_date FROM episode WHERE episode.id IN 
+								(SELECT id FROM ((SELECT id FROM tmp_episode_ids) 
+									UNION ALL
+								(SELECT episode_id AS id FROM event WHERE event.id in (SELECT id FROM tmp_operation_ids)) 
+									UNION ALL
+								(SELECT episode_id AS id FROM event e 
+									JOIN et_ophtroperationnote_procedurelist eop ON eop.event_id = e.id 
+									JOIN ophtroperationnote_procedurelist_procedure_assignment oppa ON oppa.procedurelist_id = eop.id 
+									WHERE oppa.id IN (SELECT id FROM tmp_treatment_ids))) a ) " /*. $dateWhere*/;
+
+			$dataQuery = array(
                 'query' => $query,
                 'header' => array('PatientId', 'EpisodeId', 'Date'),
             );
-            
+
             $this->saveCSVfile($dataQuery, 'Episodes');
         }
         
@@ -874,20 +923,20 @@ EOL;
 	}
 	
 	public function actionEpisodeTreatment(){
-		$dataQuery = "  SELECT pa.id AS TreatmentId, 
+		$query = "  SELECT pa.id AS TreatmentId, 
                                 pl.`event_id` AS OperationId, 
                                 (SELECT CASE WHEN pl.eye_id = 1 THEN 'L' WHEN pl.eye_id = 2 THEN 'R' END) AS Eye, 
                                 proc.snomed_code AS TreatmentTypeId
                     FROM ophtroperationnote_procedurelist_procedure_assignment pa
                     JOIN et_ophtroperationnote_procedurelist pl ON pa.procedurelist_id = pl.id 
 					JOIN proc ON pa.`proc_id` = proc.`id`
-					WHERE 1=1 ".$this->getDateWhere('pa');
+					WHERE pa.id in (SELECT id FROM tmp_treatment_ids)";
 		
-                $dataQuery = array(
-                    'query' => $query,
-                    'header' => array('TreatmentId', 'OperationId', 'Eye', 'TreatmentTypeId'),
-                );
-                 
+		$dataQuery = array(
+			'query' => $query,
+			'header' => array('TreatmentId', 'OperationId', 'Eye', 'TreatmentTypeId'),
+		);
+			 
 		$data = $this->saveCSVfile($dataQuery, 'EpisodeTreatment');		
 		//TODO: need to select episodeIds here!		
 		return $this->getIdArray($data, 'TreatmentId');
@@ -946,8 +995,6 @@ EOL;
 	
 	public function actionEpisodeOperationComplication(){
 
-		Yii::app()->db->createCommand($tempTableQuery)->execute();	
-
 		$query = "SELECT
                         event.id AS OperationId, 
                         (SELECT CASE 
@@ -995,7 +1042,7 @@ EOL;
 					JOIN event_type evt ON evt.id = e.event_type_id
 					LEFT JOIN et_ophtroperationnote_surgeon s ON s.event_id = e.id
 					INNER JOIN `user` ON s.`surgeon_id` = `user`.`id`
-					WHERE evt.name = 'Operation booking' ".$this->getDateWhere('e');
+					WHERE evt.name = 'Operation booking' AND e.id in (SELECT id FROM tmp_operation_ids)";
 		
                 
                 $dataQuery = array(
@@ -1075,6 +1122,12 @@ EOL;
 		
 		return $this->getIdArray($data, 'EpisodeId');
 	}
+	
+	private function saveIds($tableName, $idArray){
+			foreach($idArray as $id){
+				Yii::app()->db->createCommand("INSERT IGNORE INTO ".$tableName." (id) VALUES (".$id.")")->execute();	
+			}
+	}
         
         private function createZipFile()
         {
@@ -1102,7 +1155,7 @@ EOL;
                 Yii::app()->getRequest()->sendFile( $this->zipName , file_get_contents( $this->exportPath . '/' . $this->zipName ) );
             }
             else{               
-            }
+            } 
         }
         
         public function generateExport()
@@ -1110,6 +1163,10 @@ EOL;
             
             $this->createAllTempTables();
             $this->actionGetAllEpisodeId();
+			$this->actionGetEpisode();
+			$this->actionGetSurgeons();
+			$this->actionGetPatientCviStatus();
+			$this->actionGetPatients();
             $this->clearAllTempTables();
             
         }
