@@ -318,7 +318,7 @@ EOL;
                 DROP TEMPORARY TABLE IF EXISTS tmp_iol_positions;
                 DROP TEMPORARY TABLE IF EXISTS tmp_pathology_type;
                 DROP TEMPORARY TABLE IF EXISTS tmp_doctor_grade;
-                DROP TEMPORARY TABLE IF EXISTS tmp_biometry_formula;
+                DROP TABLE IF EXISTS tmp_biometry_formula;
                 DROP TEMPORARY TABLE IF EXISTS tmp_episode_ids;
                 DROP TEMPORARY TABLE IF EXISTS tmp_operation_ids;
                 DROP TEMPORARY TABLE IF EXISTS tmp_treatment_ids;
@@ -415,16 +415,16 @@ EOL;
 
         $dataQuery = array(
             'query' => $query,
-            'header' => array('PatientId', 'Date', 'IsDateApprox', 'IsCVIBlind', 'IsCVIPartial'),
+            'header' => array('PatientId', 'EpisodeId', 'Date'),
         );
 
-        $this->saveCSVfile($dataQuery, 'PatientCviStatus');
+        $this->saveCSVfile($dataQuery, 'Episodes');
     }
 
-    private function getEpisode()
-    {
+private function getEpisode()
+{
 
-        $query = "SELECT patient_id, id, start_date FROM episode WHERE episode.id IN
+	$query = "SELECT patient_id, id, start_date FROM episode WHERE episode.id IN
 								(SELECT id FROM ((SELECT id FROM tmp_episode_ids) 
 									UNION ALL
 								(SELECT episode_id AS id FROM event WHERE event.id in (SELECT id FROM tmp_operation_ids)) 
@@ -433,15 +433,15 @@ EOL;
 									JOIN et_ophtroperationnote_procedurelist eop ON eop.event_id = e.id 
 									JOIN ophtroperationnote_procedurelist_procedure_assignment oppa ON oppa.procedurelist_id = eop.id 
 									WHERE oppa.id IN (SELECT id FROM tmp_treatment_ids))) a ) " /*. $dateWhere*/
-        ;
+	;
 
-        $dataQuery = array(
-            'query' => $query,
-            'header' => array('PatientId', 'EpisodeId', 'Date'),
-        );
+	$dataQuery = array(
+		'query' => $query,
+		'header' => array('PatientId', 'EpisodeId', 'Date'),
+	);
 
-        $this->saveCSVfile($dataQuery, 'Episodes');
-    }
+	$this->saveCSVfile($dataQuery, 'Episodes');
+}
 
     private function getEpisodeDiagnosis()
     {
@@ -464,27 +464,26 @@ EOL;
 
                         ) AS ConditionId,
                         disorder_id AS DiagnosisTermId
-                FROM episode ep WHERE 1=1 " /*. $dateWhere*/
-        ;
-
-        $dataQuery = array(
-            'query' => $query,
-            'header' => array('EpisodeId', 'Eye', 'Date', 'SurgeonId', 'ConditionId', 'DiagnosisTermId'),
-        );
-
-        $data = $this->saveCSVfile($dataQuery, 'EpisodePostOpComplication');
-
-        return $this->getIdArray($data, 'EpisodeId');
-    }
-
-    private function getEpisodeDiabeticDiagnosis()
-    {
-        $dateWhere = $this->getDateWhere('s');
-
-        $disorder = Disorder::model()->findByPk(Disorder::SNOMED_DIABETES);
-        $disorder_ids = implode(",", $disorder->descendentIds());
-
-        $query = <<<EOL
+                FROM episode ep WHERE 1=1 " /*. $dateWhere*/;
+                
+                 $dataQuery = array(
+                    'query' => $query,
+                    'header' => array('EpisodeId', 'Eye', 'Date', 'SurgeonId', 'ConditionId', 'DiagnosisTermId'),
+                );
+                 
+                $data = $this->saveCSVfile($dataQuery, 'EpisodeDiagnosis');
+				
+		return $this->getIdArray($data, 'EpisodeId');
+        }
+        
+        private function getEpisodeDiabeticDiagnosis()
+        {
+            $dateWhere = $this->getDateWhere('s');
+            
+            $disorder = Disorder::model()->findByPk(Disorder::SNOMED_DIABETES);
+            $disorder_ids = implode(",", $disorder->descendentIds());
+            
+            $query = <<<EOL
                     SELECT 	
                     e.id AS EpisodeId, 
                     1 AS IsDiabetic,
