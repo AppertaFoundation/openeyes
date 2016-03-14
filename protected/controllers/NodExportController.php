@@ -284,10 +284,10 @@ class NodExportController extends BaseController
 			(999, 'other');
                         
                         
-                        CREATE TEMPORARY TABLE tmp_biometry_formula (
+                        CREATE TABLE tmp_biometry_formula (
                                 `code` INT(10) UNSIGNED NOT NULL,
                                 `desc` VARCHAR(100)
-                        )";
+                        );
                         
                         INSERT INTO tmp_biometry_formula (`code`, `desc`)
                         VALUES
@@ -311,7 +311,7 @@ EOL;
                 DROP TEMPORARY TABLE IF EXISTS tmp_iol_positions;
                 DROP TEMPORARY TABLE IF EXISTS tmp_pathology_type;
                 DROP TEMPORARY TABLE IF EXISTS tmp_doctor_grade;
-                DROP TEMPORARY TABLE IF EXISTS tmp_biometry_formula;
+                DROP TABLE IF EXISTS tmp_biometry_formula;
                 DROP TEMPORARY TABLE IF EXISTS tmp_episode_ids;
                 DROP TEMPORARY TABLE IF EXISTS tmp_operation_ids;
                 DROP TEMPORARY TABLE IF EXISTS tmp_treatment_ids;
@@ -418,14 +418,14 @@ EOL;
         {
 
             $query = "SELECT patient_id, id, start_date FROM episode WHERE episode.id IN 
-								(SELECT id FROM ((SELECT id FROM tmp_episode_ids) 
-									UNION ALL
-								(SELECT episode_id AS id FROM event WHERE event.id in (SELECT id FROM tmp_operation_ids)) 
-									UNION ALL
-								(SELECT episode_id AS id FROM event e 
-									JOIN et_ophtroperationnote_procedurelist eop ON eop.event_id = e.id 
-									JOIN ophtroperationnote_procedurelist_procedure_assignment oppa ON oppa.procedurelist_id = eop.id 
-									WHERE oppa.id IN (SELECT id FROM tmp_treatment_ids))) a ) " /*. $dateWhere*/;
+                        (SELECT id FROM ((SELECT id FROM tmp_episode_ids) 
+                                UNION ALL
+                        (SELECT episode_id AS id FROM event WHERE event.id in (SELECT id FROM tmp_operation_ids)) 
+                                UNION ALL
+                        (SELECT episode_id AS id FROM event e 
+                                JOIN et_ophtroperationnote_procedurelist eop ON eop.event_id = e.id 
+                                JOIN ophtroperationnote_procedurelist_procedure_assignment oppa ON oppa.procedurelist_id = eop.id 
+                                WHERE oppa.id IN (SELECT id FROM tmp_treatment_ids))) a ) " /*. $dateWhere*/;
 
 			$dataQuery = array(
                 'query' => $query,
@@ -463,7 +463,7 @@ EOL;
                     'header' => array('EpisodeId', 'Eye', 'Date', 'SurgeonId', 'ConditionId', 'DiagnosisTermId'),
                 );
                  
-                $data = $this->saveCSVfile($dataQuery, 'EpisodePostOpComplication');
+                $data = $this->saveCSVfile($dataQuery, 'EpisodeDiagnosis');
 				
 		return $this->getIdArray($data, 'EpisodeId');
         }
