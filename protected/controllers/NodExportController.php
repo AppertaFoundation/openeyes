@@ -58,8 +58,8 @@ class NodExportController extends BaseController
             mkdir($this->exportPath, 0777, true);
         }
 
-        $this->startDate = Yii::app()->request->getParam("date_from", '2015-01-01');
-        $this->endDate = Yii::app()->request->getParam("date_to", '2016-03-08');
+        $this->startDate = Yii::app()->request->getParam("date_from", '');
+        $this->endDate = Yii::app()->request->getParam("date_to", '');
 
         parent::init();
     }
@@ -341,7 +341,7 @@ EOL;
 
 
         $query = <<<EOL
-    SELECT id as Surgeonid, IFNULL(registration_code, 'NULL') as GMCnumber, IFNULL(title, 'NULL') as Title, IFNULL(first_name, 'NULL') as FirstName,
+    SELECT id as Surgeonid, IFNULL(registration_code, '') as GMCnumber, IFNULL(title, '') as Title, IFNULL(first_name, '') as FirstName,
     (
         SELECT `code` 
         FROM tmp_doctor_grade, doctor_grade
@@ -392,7 +392,6 @@ EOL;
 
     private function getPatientCviStatus()
     {
-        //$dateWhere = "AND episode.id IN ( SELECT id from tmp_episode_ids )";
 
         $query = "SELECT
                                 episode.`patient_id` AS PatientId,
@@ -418,7 +417,7 @@ EOL;
             'header' => array('PatientId', 'EpisodeId', 'Date'),
         );
 
-        $this->saveCSVfile($dataQuery, 'Episodes');
+        $this->saveCSVfile($dataQuery, 'PatientCviStatus');
     }
 
     private function getEpisode()
@@ -432,7 +431,7 @@ EOL;
 								(SELECT episode_id AS id FROM event e 
 									JOIN et_ophtroperationnote_procedurelist eop ON eop.event_id = e.id 
 									JOIN ophtroperationnote_procedurelist_procedure_assignment oppa ON oppa.procedurelist_id = eop.id 
-									WHERE oppa.id IN (SELECT id FROM tmp_treatment_ids))) a ) " /*. $dateWhere*/
+									WHERE oppa.id IN (SELECT id FROM tmp_treatment_ids))) a ) "
         ;
 
         $dataQuery = array(
@@ -445,7 +444,6 @@ EOL;
 
     private function getEpisodeDiagnosis()
     {
-        //$dateWhere = "AND episode.id IN ( SELECT id from tmp_episode_ids )";
 
         $query = "SELECT
                         id AS EpisodeId,
@@ -464,7 +462,7 @@ EOL;
 
                         ) AS ConditionId,
                         disorder_id AS DiagnosisTermId
-                FROM episode ep WHERE 1=1 " /*. $dateWhere*/
+                FROM episode ep WHERE 1=1 "
         ;
 
         $dataQuery = array(
@@ -676,7 +674,7 @@ EOL;
             ),
         );
 
-        $data = $this->saveCSVfile($dataQuery, 'GetEpisodeBiometry');
+        $data = $this->saveCSVfile($dataQuery, 'EpisodeBiometry');
 
         return $this->getIdArray($data, 'EpisodeId');
 
@@ -705,7 +703,7 @@ EOL;
             'header' => array('EpisodeId', 'Eye', 'Type', 'GlaucomaMedicationStatusId', 'Value'),
         );
 
-        $data = $this->saveCSVfile($dataQuery, 'GetEpisodeIOP');
+        $data = $this->saveCSVfile($dataQuery, 'EpisodeIOP');
 
         return $this->getIdArray($data, 'EpisodeId');
     }
