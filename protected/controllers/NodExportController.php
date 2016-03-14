@@ -57,8 +57,8 @@ class NodExportController extends BaseController
 			mkdir($this->exportPath, 0777, true);
 		}
 
-		$this->startDate = Yii::app()->request->getParam("date_from", '2015-01-01');
-		$this->endDate =  Yii::app()->request->getParam("date_to", '2016-03-08');
+		$this->startDate = Yii::app()->request->getParam("date_from", '');
+		$this->endDate =  Yii::app()->request->getParam("date_to", '');
 		
 		parent::init();
 	}
@@ -334,14 +334,14 @@ EOL;
                
                 
 $query = <<<EOL
-    SELECT id as Surgeonid, IFNULL(registration_code, 'NULL') as GMCnumber, IFNULL(title, 'NULL') as Title, IFNULL(first_name, 'NULL') as FirstName,
+    SELECT id as Surgeonid, IFNULL(registration_code, '') as GMCnumber, IFNULL(title, '') as Title, IFNULL(first_name, '') as FirstName,
     (
-        SELECT `code` 
+        SELECT `code`
         FROM tmp_doctor_grade, doctor_grade
         WHERE user.`doctor_grade_id` = doctor_grade.id AND doctor_grade.`grade` = tmp_doctor_grade.desc
     ) AS CurrentGradeId
 FROM user 
-WHERE is_surgeon = 1 AND active = 1 
+WHERE is_surgeon = 1 AND active = 1
 EOL;
             
             $dataQuery = array(
@@ -416,7 +416,7 @@ EOL;
         
         private function getEpisode()
         {
-
+            
             $query = "SELECT patient_id, id, start_date FROM episode WHERE episode.id IN 
                         (SELECT id FROM ((SELECT id FROM tmp_episode_ids) 
                                 UNION ALL
@@ -425,7 +425,7 @@ EOL;
                         (SELECT episode_id AS id FROM event e 
                                 JOIN et_ophtroperationnote_procedurelist eop ON eop.event_id = e.id 
                                 JOIN ophtroperationnote_procedurelist_procedure_assignment oppa ON oppa.procedurelist_id = eop.id 
-                                WHERE oppa.id IN (SELECT id FROM tmp_treatment_ids))) a ) " /*. $dateWhere*/;
+                                WHERE oppa.id IN (SELECT id FROM tmp_treatment_ids))) a )";
 
 			$dataQuery = array(
                 'query' => $query,
@@ -437,7 +437,6 @@ EOL;
         
         private function getEpisodeDiagnosis()
         {
-           //$dateWhere = "AND episode.id IN ( SELECT id from tmp_episode_ids )"; 
             
             $query = "SELECT
                         id AS EpisodeId,
@@ -456,7 +455,7 @@ EOL;
 
                         ) AS ConditionId,
                         disorder_id AS DiagnosisTermId
-                FROM episode ep WHERE 1=1 " /*. $dateWhere*/;
+                FROM episode ep WHERE 1=1 ";
                 
                  $dataQuery = array(
                     'query' => $query,
@@ -554,7 +553,7 @@ EOL;
                 'header' => array('EpisodeId', 'Eye', 'DrugId', 'DrugRouteId', 'StartDate', 'StopDate', 'IsAddedByPrescription', 'IsContinueIndefinitely', 'IsStartDateApprox' ),
             );
             
-            $data = $this->saveCSVfile($dataQuery, 'GetEpisodeDrug' );
+            $data = $this->saveCSVfile($dataQuery, 'EpisodeDrug' );
 		
             return $this->getIdArray($data, 'EpisodeId');
         }
@@ -651,7 +650,7 @@ EOL;
                 ),
             );
             
-            $data = $this->saveCSVfile($dataQuery, 'GetEpisodeBiometry' );
+            $data = $this->saveCSVfile($dataQuery, 'EpisodeBiometry' );
 		
             return $this->getIdArray($data, 'EpisodeId');
             
@@ -680,7 +679,7 @@ EOL;
                 'header' => array('EpisodeId', 'Eye', 'Type', 'GlaucomaMedicationStatusId', 'Value'),
             );
              
-            $data = $this->saveCSVfile($dataQuery, 'GetEpisodeIOP' );
+            $data = $this->saveCSVfile($dataQuery, 'EpisodeIOP' );
 		
             return $this->getIdArray($data, 'EpisodeId');
         }
@@ -707,10 +706,10 @@ EOL;
 	private function getDateWhere($tablename)
         {
 		if($this->startDate != ""){
-			$dateWhereStart = $tablename.".last_modified_date >= '".$this->startDate."'";
+                    $dateWhereStart = $tablename.".last_modified_date >= '".$this->startDate."'";
 		}
 		if($this->endDate != ""){
-			$dateWhereEnd = $tablename.".last_modified_date <= '".$this->endDate."'";
+                    $dateWhereEnd = $tablename.".last_modified_date <= '".$this->endDate."'";
 		}
 		
 		$dateWhere = "";
