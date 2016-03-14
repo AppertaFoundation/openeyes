@@ -18,6 +18,11 @@
  */
 ?>
 
+<?php
+	$assetManager = Yii::app()->getAssetManager();
+	$widgetPath = $assetManager->publish('protected/widgets/js');
+	Yii::app()->clientScript->registerScriptFile($widgetPath.'/MultiSelectList.js');
+?>
 <div class="box admin">
 	<header class="box-header">
 		<h2 class="box-title"><?php echo $title ?></h2>

@@ -120,7 +120,7 @@ class OphCoTherapyapplication_DecisionTreeNode extends BaseActiveRecordVersioned
 
 		// check the parent response type, and the number of rules already extant
 		// if there is room for another one, return true
-		if ($limit = $this->parent->response_type->ruleLimit()) {
+		if ($this->parent && $limit = $this->parent->response_type->ruleLimit()) {
 			if ($limit <= count($this->rules) ) {
 				return false;
 			}

@@ -1,8 +1,42 @@
 
 $(document).ready(function() {
-
 	var show_disable_manual_warning = false;
 	var sdmw = $('#show_disable_manual_warning').val();
+
+	$("#Element_OphInBiometry_Measurement_k1_right, #Element_OphInBiometry_Measurement_k2_right, #Element_OphInBiometry_Measurement_k2_axis_right").on("keyup", function() {
+		calculateDeltaValues('right');
+	});
+
+	$("#Element_OphInBiometry_Measurement_k1_left, #Element_OphInBiometry_Measurement_k2_left, #Element_OphInBiometry_Measurement_k2_axis_left").on("keyup", function() {
+		calculateDeltaValues('left');
+	});
+
+	$("#Element_OphInBiometry_Calculation_target_refraction_right").on("keyup", function() {
+		var tarref = $("#Element_OphInBiometry_Calculation_target_refraction_right" ).val();
+		if(tarref < 0){
+			if (tarref.length > 2) {
+				updateClosest ('right');
+			}
+		}else {
+			if (tarref.length > 1) {
+				updateClosest ('right');
+			}
+		}
+	});
+
+	$("#Element_OphInBiometry_Calculation_target_refraction_left").on("keyup", function() {
+		var tarref = $("#Element_OphInBiometry_Calculation_target_refraction_left" ).val();
+		if(tarref < 0){
+			if (tarref.length > 2) {
+				updateClosest ('left');
+			}
+		}else {
+			if (tarref.length > 1) {
+				updateClosest ('left');
+			}
+		}
+	});
+
 	if(sdmw ==1 ){
 		$("#event-content").hide();
 		$(".sticky-wrapper-event-header").hide();
@@ -12,7 +46,7 @@ $(document).ready(function() {
 
 	if(show_disable_manual_warning) {
 		var warning_message = 'No new biometry reports are available for this patient. Please generate a new event on your linked device first (e.g., IOL Master).';
-		var dialog_msg = '<div class="ui-dialog ui-widget ui-widget-content ui-corner-all dialog" id="dialog-msg" tabindex="-1" role="dialog" aria-labelledby="ui-id-1" style="outline: 0px; z-index: 10002; height: auto; width: 600px; top: 450px; left: 600px; display: block;">' +
+		var dialog_msg = '<div class="ui-dialog ui-widget ui-widget-content ui-corner-all dialog" id="dialog-msg" tabindex="-1" role="dialog" aria-labelledby="ui-id-1" style="outline: 0px; z-index: 10002; height: auto; width: 600px; position: fixed; top: 50%; left: 50%; margin-top: -110px; margin-left: -200px;">' +
 			'<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">' +
 			'<span id="ui-id-1" class="ui-dialog-title">No New Biometry Reports</span>' +
 			'</div><div id="site-and-firm-dialog" class="ui-dialog-content ui-widget-content" scrolltop="0" scrollleft="0" style="display: block; width: auto; min-height: 0px; height: auto;">' +
@@ -31,6 +65,9 @@ $(document).ready(function() {
 			hide_dialog();
 		});
 	}
+
+
+
 
 	handleButton($('#et_save'),function() {
 	});
@@ -196,8 +233,12 @@ $(document).ready(function() {
 
 	updateIolRefRow('left');
 	updateIolRefRow('right');
-
 });
+
+function calculateDeltaValues(side){
+	$('#Element_OphInBiometry_Measurement_delta_k_'+side+', #input_Element_OphInBiometry_Measurement_delta_k_'+side).val($('#Element_OphInBiometry_Measurement_k2_'+side).val() - $('#Element_OphInBiometry_Measurement_k1_'+side).val());
+	$('#Element_OphInBiometry_Measurement_delta_k_axis_'+side+', #input_Element_OphInBiometry_Measurement_delta_k_axis_'+side).val($('#Element_OphInBiometry_Measurement_k2_axis_'+side).val());
+}
 
 function update(side)
 {
@@ -340,8 +381,48 @@ function updateIolRefTable(side) {
 	}
 }
 
+function updateClosest (side) {
+		var tarref = $("#Element_OphInBiometry_Calculation_target_refraction_"+side ).val();
+		var l_id = ($('#Element_OphInBiometry_Selection_lens_id_' + side + ' option:selected').val());
+		var f_id = ($('#Element_OphInBiometry_Selection_formula_id_' + side + ' option:selected').val());
 
+		if (!isNaN(parseInt(l_id)) && !isNaN(parseInt(f_id))) {
+			var swtb = side + '_' + l_id + '_' + f_id;
+			var trstr = '#' + side + '_' + l_id + '_' + f_id + ' tr';
+			var ref = new Array();
+			$(trstr).each(function (i, el) {
+				var swref = '#refval-' + side + '_' + l_id + '_' + f_id+'__'+i;
+				var refval = $(swref).val();
+				if(!isNaN(refval))
+				{
+					ref.push(refval);
+				}
+				var oldclosest = '#iolreftr-'+side+'_'+l_id + '_' + f_id+'__'+i;
+				$(oldclosest).removeClass("closest");
+			});
+			var closest = closestNew(ref,tarref );
+			var trstr1 = '#' + side + '_' + l_id + '_' + f_id+ ' tr';
+			$(trstr1).each(function(i,el) {
+				var swref1 = '#refval-' + side + '_' + l_id + '_' + f_id+'__'+i;
+				var refval1 = $(swref1).val();
+				if(parseFloat(closest) == parseFloat(refval1) )
+				{
+					var newclosest = '#iolreftr-'+side+'_'+l_id + '_' + f_id+'__'+i;
+					$(newclosest).addClass("closest");
+				}
+			});
+		}
+}
 
+function closestNew(theArray, closestTo) {
+	var closest = null;
+	$.each(theArray, function () {
+		if (closest == null || Math.abs(this - closestTo) < Math.abs(closest - closestTo)) {
+			closest = this;
+		}
+	});
+	return closest;
+}
 
 function updateIolData(index,side) {
 
@@ -528,7 +609,7 @@ function isView()
 function IolConstants(side)
 {
 	if(isCreate()) {
-	this.acon=parseFloat(document.getElementById('acon_'+side).innerHTML);
+	//this.acon=parseFloat(document.getElementById('acon_'+side).innerHTML);
 	//this.sf=parseFloat(document.getElementById('sf_'+side).innerHTML);
 	}
 }

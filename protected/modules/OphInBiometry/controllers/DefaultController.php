@@ -6,6 +6,7 @@ class DefaultController extends BaseEventTypeController
 	public $is_auto=0;
 	public $iolRefValues = array();
 	public $selectionValues = array();
+	public $calculationValues = array();
 	public $quality=0;
 	public $checkalqual=array();
 	const BADCOMSNRLIMIT = 10;
@@ -212,14 +213,14 @@ class DefaultController extends BaseEventTypeController
 		$measurementData = $measurementValues[0];
 		if($eye == 1)
 		{
-			if (($measurementData->{'axial_length_left'})>0 && ($measurementData->{'k1_left'})>0 && ($measurementData->{'k2_left'})>0)
+			if (($measurementData->{'axial_length_left'})>0 || ($measurementData->{'k1_left'})>0 || ($measurementData->{'k2_left'})>0)
 			{
 				$available =1;
 			}
 		}
 		elseif($eye == 2)
 		{
-			if (($measurementData->{'axial_length_right'})>0 && ($measurementData->{'k1_right'})>0 && ($measurementData->{'k2_right'})>0)
+			if (($measurementData->{'axial_length_right'})>0 || ($measurementData->{'k1_right'})>0 || ($measurementData->{'k2_right'})>0)
 			{
 				$available =1;
 			}
@@ -239,6 +240,10 @@ class DefaultController extends BaseEventTypeController
 					'event_id' => $this->event->id,
 				));
 			$this->selectionValues  = Element_OphInBiometry_Selection::Model()->findAllByAttributes(
+				array(
+					'event_id' => $this->event->id,
+				));
+			$this->calculationValues  = Element_OphInBiometry_Calculation::Model()->findAllByAttributes(
 				array(
 					'event_id' => $this->event->id,
 				));
@@ -602,6 +607,30 @@ class DefaultController extends BaseEventTypeController
 		}else {
 			return false;
 		}
+	}
+
+	public function formatAconst($aconst){
+		/* based on the requirements:
+		Valid results*
+		* 118.0
+		* 118.1*
+		* 118.12*
+		* 118.123*
+		* 118.102
+		* 118.001*
+
+		*Invalid results*
+		* 118
+		* 118.000
+		* 118.100
+		* 118.120
+
+		*/
+		$formatted = (float)$aconst;
+		if($formatted == (int)$formatted){
+			$formatted .= ".0";
+		}
+		return $formatted;
 	}
 }
 

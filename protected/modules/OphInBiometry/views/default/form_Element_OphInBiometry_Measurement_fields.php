@@ -107,7 +107,8 @@
 					else
 					{
 					?>
-					<input type="text" id="Element_OphInBiometry_Measurement_delta_k_<?php echo $side; ?>" name="Element_OphInBiometry_Measurement[delta_k_<?php echo $side; ?>]" value="<?php echo $element->{"delta_k_$side"}?>"><span class="field-info">D</span>
+					<input type="text" disabled id="input_Element_OphInBiometry_Measurement_delta_k_<?php echo $side; ?>" name="input_Element_OphInBiometry_Measurement[delta_k_<?php echo $side; ?>]" value="<?php echo $element->{"delta_k_$side"}?>"><span class="field-info">D</span>
+					<input type="hidden" id="Element_OphInBiometry_Measurement_delta_k_<?php echo $side; ?>" name="Element_OphInBiometry_Measurement[delta_k_<?php echo $side; ?>]" value="<?php echo $element->{"delta_k_$side"}?>">
 						<?php
 					}
 					?>
@@ -134,7 +135,8 @@
 					else
 					{
 						?>
-						<input type="text" id="Element_OphInBiometry_Measurement_delta_k_axis_<?php echo $side; ?>" name="Element_OphInBiometry_Measurement[delta_k_axis_<?php echo $side; ?>]" value="<?php echo $element->{"delta_k_axis_$side"}?>">&deg;
+						<input type="text" disabled id="input_Element_OphInBiometry_Measurement_delta_k_axis_<?php echo $side; ?>" name="input_Element_OphInBiometry_Measurement[delta_k_axis_<?php echo $side; ?>]" value="<?php echo $element->{"delta_k_axis_$side"}?>">&deg;
+						<input type="hidden" id="Element_OphInBiometry_Measurement_delta_k_axis_<?php echo $side; ?>" name="Element_OphInBiometry_Measurement[delta_k_axis_<?php echo $side; ?>]" value="<?php echo $element->{"delta_k_axis_$side"}?>">
 						<?php
 					}
 					?>
