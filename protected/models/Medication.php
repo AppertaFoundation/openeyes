@@ -30,7 +30,7 @@
  * @property integer $frequency_id
  * @property string $start_date
  * @property string $end_date
- * @property integer $prescription_event_id
+ * @property integer $prescription_item_id
  */
 class Medication extends BaseActiveRecordVersioned
 {
@@ -48,7 +48,7 @@ class Medication extends BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-            array('medication_drug_id, drug_id, route_id, option_id, dose, frequency_id, start_date, end_date, stop_reason_id, prescription_event_id', 'safe'),
+            array('medication_drug_id, drug_id, route_id, option_id, dose, frequency_id, start_date, end_date, stop_reason_id, prescription_item_id', 'safe'),
             array('route_id, frequency_id, start_date', 'required'),
             array('start_date', 'OEFuzzyDateValidatorNotFuture'),
             array('end_date', 'OEFuzzyDateValidator'),
@@ -172,7 +172,7 @@ class Medication extends BaseActiveRecordVersioned
         if ($endDate) {
             $this->end_date = $endDate->format('Y-m-d');
         }
-        $this->prescription_event_id = $item->id;
+        $this->prescription_item_id = $item->id;
     }
 
     /**

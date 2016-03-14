@@ -534,8 +534,8 @@ class Patient extends BaseActiveRecordVersioned
         $medications = $this->patientMedications(new CDbCriteria());
         $medicationsFromPrescriptions = array();
         foreach ($medications as $medication) {
-            if ($medication->prescription_event_id) {
-                $medicationsFromPrescriptions[] = $medication->prescription_event_id;
+            if ($medication->prescription_item_id) {
+                $medicationsFromPrescriptions[] = $medication->prescription_item_id;
             }
         }
 
