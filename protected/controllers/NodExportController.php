@@ -38,7 +38,7 @@ class NodExportController extends BaseController
     {
         return array(
             array('allow',
-                'roles' => array('admin', 'NOD Export'),
+                'roles' => array('NOD Export'),
             ),
         );
     }
