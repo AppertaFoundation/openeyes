@@ -163,7 +163,6 @@
             var $checkboxes;
 
             $checkboxes = $(this).find(':input[type="checkbox"]');
-            console.log($checkboxes);
             $checkboxes.on('change', function(){
                 if(this.value == 'all' && this.checked){
                     $checkboxes.filter(':input[value!="all"]').removeAttr('checked').parents('label').removeClass('is-checked');
@@ -222,12 +221,12 @@
             chart.setTitle(null, {text: 'Total eyes: ' + total + ', ±0.5D: ' + plusOrMinusOnePercent + ', ±1D: ' + plusOrMinusHalfPercent});
         },
         'CataractComplicationsReport': function(data){
-            var total = 0,
-                chart = OpenEyes.Dash.reports['CataractComplicationsReport'];
-            for(var i = 0; i < data.length; i++){
-                total += data[i];
-            }
-            chart.setTitle(null, {text: 'Total Complications: ' + total} );
+            $.ajax({
+                url: "/OphTrOperationnote/report/cataractComplicationTotal",
+                success: function (data, textStatus, jqXHR) {
+                    chart.setTitle(null, {text: 'Total Complications: ' + data} );
+                }
+            });
         }
     };
 

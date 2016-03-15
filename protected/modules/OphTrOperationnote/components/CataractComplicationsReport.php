@@ -146,7 +146,7 @@ class CataractComplicationsReport extends Report implements ReportInterface
     /**
      * @return int
      */
-    protected function getTotalComplications()
+    public function getTotalComplications()
     {
         $data = $this->queryData($this->surgeon, $this->from, $this->to);
         $total = 0;

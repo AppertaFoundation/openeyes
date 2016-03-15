@@ -24,7 +24,7 @@ class ReportController extends BaseReportController
 	{
 		return array(
 			array('allow',
-				'actions' => array('index', 'operation', 'runReport', 'downloadReport'),
+				'actions' => array('index', 'operation', 'runReport', 'downloadReport', 'cataractComplicationTotal'),
 				'roles' => array('OprnGenerateReport', 'admin'),
 			)
 		);
@@ -281,5 +281,12 @@ class ReportController extends BaseReportController
 		}
 
 		return array('operations'=>$operations);
+	}
+
+	public function actionCataractComplicationTotal()
+	{
+		$reportObj = new CataractComplicationsReport(Yii::app());
+
+		$this->renderJSON($reportObj->getTotalComplications());
 	}
 }
