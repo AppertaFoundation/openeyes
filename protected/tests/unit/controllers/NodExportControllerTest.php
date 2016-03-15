@@ -130,8 +130,8 @@ class NodExportControllerTest extends CDbTestCase
         public function testPatientCviStatus()
         {
             $file = $this->exportPath . '/' . 'PatientCviStatus.csv';
-            $this->assertFileExists( $this->exportPath . '/' . 'PatientCviStatus.csv' );
-            $this->assertGreaterThan(0, filesize($this->exportPath . '/' . 'PatientCviStatus.csv'));
+            $this->assertFileExists( $file );
+            $this->assertGreaterThan(0, filesize($file));
             $header = $this->getCSVHeader($file);
             $this->assertEquals($header, array(
                 'PatientId', 'Date', 'IsDateApprox', 'IsCVIBlind', 'IsCVIPartial'
@@ -144,8 +144,8 @@ class NodExportControllerTest extends CDbTestCase
         public function testEpisodes()
         {
             $file = $this->exportPath . '/' . 'Episodes.csv';
-            $this->assertFileExists( $this->exportPath . '/' . 'Episodes.csv' );
-            $this->assertGreaterThan(0, filesize($this->exportPath . '/' . 'Episodes.csv'));
+            $this->assertFileExists( $file );
+            $this->assertGreaterThan(0, filesize($file));
             $header = $this->getCSVHeader($file);
             
              $this->assertEquals($header, array(
@@ -161,8 +161,8 @@ class NodExportControllerTest extends CDbTestCase
         public function testEpisodeDiagnosis()
         {
             $file = $this->exportPath . '/' . 'EpisodeDiagnosis.csv';
-            $this->assertFileExists( $this->exportPath . '/' . 'EpisodeDiagnosis.csv' );
-            $this->assertGreaterThan(0, filesize($this->exportPath . '/' . 'EpisodeDiagnosis.csv'));
+            $this->assertFileExists( $file );
+            $this->assertGreaterThan(0, filesize($file));
             $header = $this->getCSVHeader($file);
              
             $this->assertEquals($header, array(
@@ -177,8 +177,8 @@ class NodExportControllerTest extends CDbTestCase
         public function testEpisodeDiabeticDiagnosis()
         {
             $file = $this->exportPath . '/' . 'EpisodeDiabeticDiagnosis.csv';
-            $this->assertFileExists( $this->exportPath . '/' . 'EpisodeDiabeticDiagnosis.csv' );
-            $this->assertGreaterThan(0, filesize($this->exportPath . '/' . 'EpisodeDiabeticDiagnosis.csv'));
+            $this->assertFileExists( $file );
+            $this->assertGreaterThan(0, filesize($file));
             $header = $this->getCSVHeader($file);
              
             $this->assertEquals($header, array(
@@ -193,8 +193,8 @@ class NodExportControllerTest extends CDbTestCase
         public function testEpisodeDrug()
         {
             $file = $this->exportPath . '/' . 'EpisodeDrug.csv';
-            $this->assertFileExists( $this->exportPath . '/' . 'EpisodeDrug.csv' );
-            $this->assertGreaterThan(0, filesize($this->exportPath . '/' . 'EpisodeDrug.csv'));
+            $this->assertFileExists( $file );
+            $this->assertGreaterThan(0, filesize($file));
             $header = $this->getCSVHeader($file);
              
             $this->assertEquals($header, array(
@@ -208,8 +208,8 @@ class NodExportControllerTest extends CDbTestCase
         public function testEpisodeBiometry()
         {
             $file = $this->exportPath . '/' . 'EpisodeBiometry.csv';
-            $this->assertFileExists( $this->exportPath . '/' . 'EpisodeBiometry.csv' );
-            $this->assertGreaterThan(0, filesize($this->exportPath . '/' . 'EpisodeBiometry.csv'));
+            $this->assertFileExists( $file );
+            $this->assertGreaterThan(0, filesize($file));
             $header = $this->getCSVHeader($file);
              
             $this->assertEquals($header, array(
@@ -225,8 +225,8 @@ class NodExportControllerTest extends CDbTestCase
         public function testEpisodeIOP()
         {
             $file = $this->exportPath . '/' . 'EpisodeIOP.csv';
-            $this->assertFileExists( $this->exportPath . '/' . 'EpisodeIOP.csv' );
-            $this->assertGreaterThan(0, filesize($this->exportPath . '/' . 'EpisodeIOP.csv'));
+            $this->assertFileExists( $file );
+            $this->assertGreaterThan(0, filesize($file));
             $header = $this->getCSVHeader($file);
              
             $this->assertEquals($header, array(
@@ -240,8 +240,8 @@ class NodExportControllerTest extends CDbTestCase
         public function testEpisodePreOpAssessment()
         {
             $file = $this->exportPath . '/' . 'EpisodePreOpAssessment.csv';
-            $this->assertFileExists( $this->exportPath . '/' . 'EpisodePreOpAssessment.csv' );
-            $this->assertGreaterThan(0, filesize($this->exportPath . '/' . 'EpisodePreOpAssessment.csv'));
+            $this->assertFileExists( $file );
+            $this->assertGreaterThan(0, filesize($file));
             $header = $this->getCSVHeader($file);
              
             $this->assertEquals($header, array(
@@ -256,8 +256,8 @@ class NodExportControllerTest extends CDbTestCase
         public function testEpisodeRefraction()
         {
             $file = $this->exportPath . '/' . 'EpisodeRefraction.csv';
-            $this->assertFileExists( $this->exportPath . '/' . 'EpisodeRefraction.csv' );
-            $this->assertGreaterThan(0, filesize($this->exportPath . '/' . 'EpisodeRefraction.csv'));
+            $this->assertFileExists( $file );
+            $this->assertGreaterThan(0, filesize($file));
             $header = $this->getCSVHeader($file);
              
             $this->assertEquals($header, array(
@@ -271,8 +271,8 @@ class NodExportControllerTest extends CDbTestCase
         public function testEpisodeVisualAcuity()
         {
             $file = $this->exportPath . '/' . 'EpisodeVisualAcuity.csv';
-            $this->assertFileExists( $this->exportPath . '/' . 'EpisodeVisualAcuity.csv' );
-            $this->assertGreaterThan(0, filesize($this->exportPath . '/' . 'EpisodeVisualAcuity.csv'));
+            $this->assertFileExists( $file );
+            $this->assertGreaterThan(0, filesize($file));
             $header = $this->getCSVHeader($file);
              
             $this->assertEquals($header, array(
@@ -286,8 +286,8 @@ class NodExportControllerTest extends CDbTestCase
         public function testEpisodeOperation()
         {
             $file = $this->exportPath . '/' . 'EpisodeOperation.csv';
-            $this->assertFileExists( $this->exportPath . '/' . 'EpisodeOperation.csv' );
-            $this->assertGreaterThan(0, filesize($this->exportPath . '/' . 'EpisodeOperation.csv'));
+            $this->assertFileExists( $file );
+            $this->assertGreaterThan(0, filesize($file));
             $header = $this->getCSVHeader($file);
              
             $this->assertEquals($header, array(
@@ -302,8 +302,8 @@ class NodExportControllerTest extends CDbTestCase
         public function testEpisodeOperationComplication()
         {
             $file = $this->exportPath . '/' . 'EpisodeOperationComplication.csv';
-            $this->assertFileExists( $this->exportPath . '/' . 'EpisodeOperationComplication.csv' );
-            $this->assertGreaterThan(0, filesize($this->exportPath . '/' . 'EpisodeOperationComplication.csv'));
+            $this->assertFileExists( $file );
+            $this->assertGreaterThan(0, filesize($file));
             $header = $this->getCSVHeader($file);
              
             $this->assertEquals($header, array(
@@ -317,8 +317,8 @@ class NodExportControllerTest extends CDbTestCase
         public function testEpisodeOperationIndication()
         {
             $file = $this->exportPath . '/' . 'EpisodeOperationIndication.csv';
-            $this->assertFileExists( $this->exportPath . '/' . 'EpisodeOperationIndication.csv' );
-            $this->assertGreaterThan(0, filesize($this->exportPath . '/' . 'EpisodeOperationIndication.csv'));
+            $this->assertFileExists( $file );
+            $this->assertGreaterThan(0, filesize($file));
             $header = $this->getCSVHeader($file);
              
             $this->assertEquals($header, array(
@@ -332,8 +332,8 @@ class NodExportControllerTest extends CDbTestCase
         public function testEpisodeOperationCoPathology()
         {
             $file = $this->exportPath . '/' . 'EpisodeOperationCoPathology.csv';
-            $this->assertFileExists( $this->exportPath . '/' . 'EpisodeOperationCoPathology.csv' );
-            $this->assertGreaterThan(0, filesize($this->exportPath . '/' . 'EpisodeOperationCoPathology.csv'));
+            $this->assertFileExists( $file );
+            $this->assertGreaterThan(0, filesize($file));
             $header = $this->getCSVHeader($file);
              
             $this->assertEquals($header, array(
@@ -348,8 +348,8 @@ class NodExportControllerTest extends CDbTestCase
         public function testEpisodeOperationAnaesthesia()
         {
             $file = $this->exportPath . '/' . 'EpisodeOperationAnaesthesia.csv';
-            $this->assertFileExists( $this->exportPath . '/' . 'EpisodeOperationAnaesthesia.csv' );
-            $this->assertGreaterThan(0, filesize($this->exportPath . '/' . 'EpisodeOperationAnaesthesia.csv'));
+            $this->assertFileExists( $file );
+            $this->assertGreaterThan(0, filesize($file));
             $header = $this->getCSVHeader($file);
              
             $this->assertEquals($header, array(
@@ -363,8 +363,8 @@ class NodExportControllerTest extends CDbTestCase
         public function testEpisodeTreatment()
         {
             $file = $this->exportPath . '/' . 'EpisodeTreatment.csv';
-            $this->assertFileExists( $this->exportPath . '/' . 'EpisodeTreatment.csv' );
-            $this->assertGreaterThan(0, filesize($this->exportPath . '/' . 'EpisodeTreatment.csv'));
+            $this->assertFileExists( $file );
+            $this->assertGreaterThan(0, filesize($file));
             $header = $this->getCSVHeader($file);
              
             $this->assertEquals($header, array(
@@ -378,8 +378,8 @@ class NodExportControllerTest extends CDbTestCase
         public function testEpisodeTreatmentCataract()
         {
             $file = $this->exportPath . '/' . 'EpisodeTreatmentCataract.csv';
-            $this->assertFileExists( $this->exportPath . '/' . 'EpisodeTreatmentCataract.csv' );
-            $this->assertGreaterThan(0, filesize($this->exportPath . '/' . 'EpisodeTreatmentCataract.csv'));
+            $this->assertFileExists( $file );
+            $this->assertGreaterThan(0, filesize($file));
             $header = $this->getCSVHeader($file);
              
             $this->assertEquals($header, array(
@@ -394,8 +394,8 @@ class NodExportControllerTest extends CDbTestCase
         public function testEpisodePostOpComplication()
         {
             $file = $this->exportPath . '/' . 'EpisodePostOpComplication.csv';
-            $this->assertFileExists( $this->exportPath . '/' . 'EpisodePostOpComplication.csv' );
-            $this->assertGreaterThan(0, filesize($this->exportPath . '/' . 'EpisodePostOpComplication.csv'));
+            $this->assertFileExists( $file );
+            $this->assertGreaterThan(0, filesize($file));
             $header = $this->getCSVHeader($file);
              
             $this->assertEquals($header, array(
