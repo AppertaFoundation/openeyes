@@ -27,7 +27,7 @@ class NodExportController extends BaseController
     protected $exportPath;
     protected $zipName;
 
-    protected $institutionCode = "000001";
+    protected $institutionCode;
 
     private $startDate;
     private $endDate;
@@ -50,6 +50,7 @@ class NodExportController extends BaseController
 
     public function init()
     {
+        $this->institutionCode = Yii::app()->params['institution_code'];
         $date = date('YmdHi');
         $this->exportPath = realpath(dirname(__FILE__) . '/..') . '/runtime/nod-export/' . $this->institutionCode . '/' . $date;
         $this->zipName = $this->institutionCode . '_' . $date . '_NOD_Export.zip';
@@ -68,8 +69,6 @@ class NodExportController extends BaseController
 
     public function actionGetAllEpisodeId()
     {
-        // TODO: we need to call all extraction functions from here!
-        $this->saveIds('tmp_episode_ids', $this->getEpisodeDiagnosis());
         $this->saveIds('tmp_episode_ids', $this->getEpisodeDiabeticDiagnosis());
         $this->saveIds('tmp_episode_ids', $this->getEpisodeDrug());
         $this->saveIds('tmp_episode_ids', $this->getEpisodeBiometry());
@@ -358,7 +357,7 @@ EOL;
             'header' => array('Surgeonid', 'GMCnumber', 'Title', 'FirstName', 'CurrentGradeId'),
         );
 
-        $this->saveCSVfile($dataQuery, 'Surgeons');
+        $this->saveCSVfile($dataQuery, 'Surgeon');
 
     }
 
@@ -391,7 +390,7 @@ EOL;
             'header' => array('PatientId', 'GenderId', 'EthnicityId', 'DateOfBirth', 'DateOfDeath', 'IMDScore', 'IsPrivate'),
         );
 
-        $this->saveCSVfile($dataQuery, 'Patients');
+        $this->saveCSVfile($dataQuery, 'Patient');
     }
 
     private function getPatientCviStatus()
@@ -421,7 +420,7 @@ EOL;
             'header' => array('PatientId', 'Date', 'IsDateApprox', 'IsCVIBlind', 'IsCVIPartial'),
         );
 
-        $this->saveCSVfile($dataQuery, 'PatientCviStatus');
+        $this->saveCSVfile($dataQuery, 'PatientCVIStatus');
     }
 
     private function getEpisode()
@@ -443,7 +442,7 @@ EOL;
             'header' => array('PatientId', 'EpisodeId', 'Date'),
         );
 
-        $this->saveCSVfile($dataQuery, 'Episodes');
+        $this->saveCSVfile($dataQuery, 'Episode');
     }
 
     private function getEpisodeDiagnosis()
@@ -597,11 +596,9 @@ EOL;
     private function getEpisodeBiometry()
     {
 
-        $dateWhere = $this->getDateWhere('et');
+        $dateWhere = $this->getDateWhere('ev');
 
-        $query = <<<EOL
-
-            (
+        $query = "(
                  SELECT
                     ev.`episode_id` AS EpisodeId,
                     'L' AS Eye,
@@ -625,13 +622,13 @@ EOL;
                 JOIN et_ophinbiometry_measurement ms ON ev.id = ms.event_id
                 JOIN `event` AS opnote ON ep.id = opnote.`episode_id`
                         AND opnote.event_type_id = 4 AND opnote.created_date < ev.created_date
-                JOIN ophinbiometry_imported_events ON ev.id = ophinbiometry_imported_events.`event_id`
-                JOIN et_ophinbiometry_selection ON ev.id = et_ophinbiometry_selection.`event_id` AND et_ophinbiometry_selection.eye_id = 1 OR et_ophinbiometry_selection.eye_id = 3
-                JOIN ophinbiometry_calculation_formula ON et_ophinbiometry_selection.`formula_id_left` = ophinbiometry_calculation_formula.id
+                LEFT JOIN ophinbiometry_imported_events ON ev.id = ophinbiometry_imported_events.`event_id`
+                LEFT JOIN et_ophinbiometry_selection ON ev.id = et_ophinbiometry_selection.`event_id` AND et_ophinbiometry_selection.eye_id = 1 OR et_ophinbiometry_selection.eye_id = 3
+                LEFT JOIN ophinbiometry_calculation_formula ON et_ophinbiometry_selection.`formula_id_left` = ophinbiometry_calculation_formula.id
                 WHERE et.id = 37
                 AND ms.deleted = 0
                 AND ev.deleted = 0
-                $dateWhere
+                ".$dateWhere."
              )
         UNION
         (
@@ -658,15 +655,14 @@ EOL;
             JOIN et_ophinbiometry_measurement ms ON ev.id = ms.event_id
             JOIN `event` AS opnote ON ep.id = opnote.`episode_id`
                     AND opnote.event_type_id = 4 AND opnote.created_date < ev.created_date
-            JOIN ophinbiometry_imported_events ON ev.id = ophinbiometry_imported_events.`event_id`
-            JOIN et_ophinbiometry_selection ON ev.id = et_ophinbiometry_selection.`event_id` AND et_ophinbiometry_selection.eye_id = 2 OR et_ophinbiometry_selection.eye_id = 3
-            JOIN ophinbiometry_calculation_formula ON et_ophinbiometry_selection.`formula_id_left` = ophinbiometry_calculation_formula.id
+            LEFT JOIN ophinbiometry_imported_events ON ev.id = ophinbiometry_imported_events.`event_id`
+            LEFT JOIN et_ophinbiometry_selection ON ev.id = et_ophinbiometry_selection.`event_id` AND et_ophinbiometry_selection.eye_id = 2 OR et_ophinbiometry_selection.eye_id = 3
+            LEFT JOIN ophinbiometry_calculation_formula ON et_ophinbiometry_selection.`formula_id_left` = ophinbiometry_calculation_formula.id
             WHERE et.id = 37
             AND ms.deleted = 0
             AND ev.deleted = 0
-            $dateWhere
-         )               
-EOL;
+            ".$dateWhere."
+         )";
 
         $dataQuery = array(
             'query' => $query,
@@ -694,7 +690,7 @@ EOL;
 
     private function getEpisodeIOP()
     {
-        $dateWhere = $this->getDateWhere('oipvr');
+        $dateWhere = $this->getDateWhere('etoi');
 
         $query = "SELECT e.id AS EpisodeId,
                         (SELECT CASE WHEN oipv.eye_id = 1 THEN 'L' WHEN oipv.eye_id = 2 THEN 'R' END) AS Eye,
@@ -990,7 +986,8 @@ EOL;
                         '' as SurgeonId,
                         '' as ComplicationId
                         FROM et_ophtroperationnote_anaesthetic a 
-                        JOIN `anaesthetic_type` `at` ON a.`anaesthetic_type_id` = at.`id`";
+                        JOIN `anaesthetic_type` `at` ON a.`anaesthetic_type_id` = at.`id`
+                        WHERE 1=1 ".$this->getDateWhere('a');
 
         $dataQuery = array(
             'query' => $query,
@@ -1018,7 +1015,7 @@ EOL;
                             FROM `event` e
                             JOIN event_type evt ON evt.id = e.event_type_id
                             JOIN et_ophtroperationnote_procedurelist pl ON e.id = pl.event_id
-                            JOIN `et_ophtroperationbooking_diagnosis` d ON e.id = d.`event_id`
+                            LEFT JOIN `et_ophtroperationbooking_diagnosis` d ON e.id = d.`event_id`
                             WHERE evt.name = 'Operation booking' " . $this->getDateWhere('e');
 
 
@@ -1139,14 +1136,14 @@ EOL;
                     '' AS ReadingAdd
 
                     FROM `event` e
-                    INNER JOIN et_ophciexamination_refraction r ON r.event_id = e.id
-                    WHERE r.eye_id = 1 " . $this->getDateWhere('r') . ")
+                    JOIN et_ophciexamination_refraction r ON r.event_id = e.id
+                    WHERE r.eye_id = 1 OR r.eye_id = 3 " . $this->getDateWhere('r') . ")
                     UNION
                     (SELECT e.episode_id AS EpisodeId, r.right_sphere AS Sphere, r.right_cylinder AS Cylinder, r.right_axis AS Axis, '' AS RefractionTypeId, '' AS ReadingAdd,
                     (SELECT CASE WHEN r.eye_id = 2 THEN 'R' END) AS Eye
                     FROM `event` e
-                    INNER JOIN et_ophciexamination_refraction r ON r.event_id = e.id
-                    WHERE r.eye_id = 2 " . $this->getDateWhere('r') . ")";
+                    JOIN et_ophciexamination_refraction r ON r.event_id = e.id
+                    WHERE r.eye_id = 2 OR r.eye_id = 3 " . $this->getDateWhere('r') . ")";
 
         $dataQuery = array(
             'query' => $query,
@@ -1169,6 +1166,7 @@ EOL;
                                 LEFT JOIN `event` ev ON ev.episode_id = e.id
                                 JOIN et_ophtroperationnote_procedurelist pl ON pl.event_id = ev.id
                                 LEFT JOIN patient_risk_assignment pr ON pr.patient_id = e.patient_id
+                                WHERE 1=1 ".$this->getDateWhere('pl')."
                                 GROUP BY e.id";
 
         $dataQuery = array(
@@ -1236,6 +1234,7 @@ EOL;
 
         $this->createAllTempTables();
         $this->actionGetAllEpisodeId();
+        $this->getEpisodeDiagnosis();
         $this->getEpisode();
         $this->getSurgeons();
         $this->getPatientCviStatus();
