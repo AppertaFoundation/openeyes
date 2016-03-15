@@ -172,7 +172,7 @@ class Medication extends BaseActiveRecordVersioned
         if ($endDate) {
             $this->end_date = $endDate->format('Y-m-d');
         }
-        $this->prescription_event_id = $item->id;
+        $this->prescription_item_id = $item->id;
     }
 
     /**
