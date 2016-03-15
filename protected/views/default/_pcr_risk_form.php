@@ -207,7 +207,6 @@ $criteria = new CDbCriteria();
 						'grade'
 					),
 					array(
-						'empty' => '- Select Doctor Grade -',
 						'id' => 'pcrrisk_'.$side.'_doctor_grade_id',
 						'class' => 'pcr_doctor_grade'
 					)

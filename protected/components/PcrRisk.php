@@ -320,7 +320,7 @@ class PcrRisk
         if($existing){
             $pcrRiskValues = $existing;
         }
-
+        $data['doctor_grade_id'] = '1';
         $pcrRiskValues->glaucoma = (isset($data['glaucoma']) && $data['glaucoma'] != 'NK') ? $data['glaucoma'] : null;
         $pcrRiskValues->pxf = (isset($data['pxf_phako']) && $data['pxf_phako'] != 'NK') ? $data['pxf_phako'] : null;
         $pcrRiskValues->diabetic = (isset($data['diabetic']) && $data['diabetic'] != 'NK') ? $data['diabetic'] : null;
@@ -329,7 +329,7 @@ class PcrRisk
         $pcrRiskValues->axial_length_group = (isset($data['axial_length']) && $data['axial_length'] != 'NK') ? $data['axial_length'] : null;
         $pcrRiskValues->brunescent_white_cataract = (isset($data['brunescent_white_cataract']) && $data['brunescent_white_cataract'] != 'NK') ? $data['brunescent_white_cataract'] : null;
         $pcrRiskValues->alpha_receptor_blocker = (isset($data['arb']) && $data['arb'] != 'NK') ? $data['arb'] : null;
-        $pcrRiskValues->doctor_grade_id = (isset($data['doctor_grade_id']) && $data['doctor_grade_id'] != 'NK') ? $data['doctor_grade_id'] : null;
+        $pcrRiskValues->doctor_grade_id = (isset($data['doctor_grade_id']) && $data['doctor_grade_id'] != '') ? $data['doctor_grade_id'] : null;
         $pcrRiskValues->can_lie_flat = (isset($data['abletolieflat']) && $data['abletolieflat'] != 'NK') ? $data['abletolieflat'] : null;
 
         if(!$pcrRiskValues->save()){
