@@ -35,6 +35,9 @@ $left_eye_data = \CHtml::listData($left_eye, 'id', 'name');
 
 $defaultURL = "/" . Yii::app()->getModule('OphCiExamination')->id . "/" . Yii::app()->getModule('OphCiExamination')->defaultController;
 
+$left_values = $element->getRecordedComplications(\Eye::LEFT, $operation_note_id);
+$right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_id);
+
 ?>
 
 <?php if($operationNoteList): ?>
@@ -54,7 +57,7 @@ $defaultURL = "/" . Yii::app()->getModule('OphCiExamination')->id . "/" . Yii::a
 
 <div class="element-fields element-eyes row">
 	<?php 
-            echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'));            
+            echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'));
         ?>
 	<div class="element-eye right-eye column left side" data-side="right">
 		<div class="active-form">
@@ -100,8 +103,6 @@ $defaultURL = "/" . Yii::app()->getModule('OphCiExamination')->id . "/" . Yii::a
                     
                          <hr>
 		</div>
-               
-            <?php $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_id); ?>
             
                 <div class="active-form">
                    
@@ -115,9 +116,9 @@ $defaultURL = "/" . Yii::app()->getModule('OphCiExamination')->id . "/" . Yii::a
                     <?php 
                         foreach($right_values as $key => $value): ?>
                             <tr> 
-                                <td class=postop-complication-name><?php echo $value->complication->name; ?></td>
+                                <td class=postop-complication-name><?php echo $value['name']; ?></td>
                                 <td class='right'>
-                                        <?php echo \CHtml::hiddenField("complication_items[R][$key]",$value->complication->id , array('id' => "complication_items_R_$key")); ?>
+                                        <?php echo \CHtml::hiddenField("complication_items[R][$key]",$value['id'] , array('id' => "complication_items_R_$key")); ?>
                                         <a class="postop-complication-remove-btn" href="#">Remove</a>
                                 </td></tr>
                         
@@ -173,7 +174,7 @@ $defaultURL = "/" . Yii::app()->getModule('OphCiExamination')->id . "/" . Yii::a
                         ?>
                         <hr>
                 </div>
-                <?php $left_values = $element->getRecordedComplications(\Eye::LEFT, $operation_note_id); ?>
+                
                 <div class="active-form">
                     
                     <h5 class="left-recorded-complication-text recorded <?php echo $left_values ? '' : 'hide'?>">Recorded Complications</h5>
@@ -184,9 +185,9 @@ $defaultURL = "/" . Yii::app()->getModule('OphCiExamination')->id . "/" . Yii::a
                     <?php 
                         foreach($left_values as $key => $value): ?>
                             <tr> 
-                                <td class=postop-complication-name><?php echo $value->complication->name; ?></td>
+                                <td class=postop-complication-name><?php echo $value['name']; ?></td>
                                 <td class='right'>
-                                        <?php echo \CHtml::hiddenField("complication_items[L][$key]", $value->complication->id , array('id' => "complication_items_L_$key")); ?>
+                                        <?php echo \CHtml::hiddenField("complication_items[L][$key]",$value['id'] , array('id' => "complication_items_L_$key")); ?>
                                         <a class="postop-complication-remove-btn" href="#">Remove</a>
                                 </td>
                             </tr>
