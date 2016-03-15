@@ -1335,7 +1335,6 @@ Feature: Create New Examination Regression Tests
     Then I select a suitable for surgeon of "3"
     Then I select Previous Refractive Surgery Yes
     Then I click on Left Eye PCR Risk
-    Then I should have the default PCR values
     Then I set the "Left" PCR option "Glaucoma" to be "No Glaucoma"
     Then I set the "Left" PCR option "PXF" to be "No"
     Then I set the "Left" PCR option "Diabetic" to be "No Diabetes"
