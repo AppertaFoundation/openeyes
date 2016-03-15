@@ -58,9 +58,11 @@ class NodExportController extends BaseController
             mkdir($this->exportPath, 0777, true);
         }
 
-        $this->startDate = Yii::app()->request->getParam("date_from", '');
-        $this->endDate = Yii::app()->request->getParam("date_to", '');
+        $startDate = new DateTime(Yii::app()->request->getParam("date_from", ''));
+        $endDate = new DateTime(Yii::app()->request->getParam("date_to", ''));
 
+		$this->startDate = $startDate->format('Y-m-d');
+		$this->endDate	= $endDate->format('Y-m-d');
         parent::init();
     }
 
@@ -464,7 +466,15 @@ EOL;
 
                         ) AS ConditionId,
                         disorder_id AS DiagnosisTermId
-                FROM episode ep WHERE 1=1 "
+                FROM episode ep WHERE ep.id IN
+								(SELECT id FROM ((SELECT id FROM tmp_episode_ids) 
+									UNION ALL
+								(SELECT episode_id AS id FROM event WHERE event.id in (SELECT id FROM tmp_operation_ids)) 
+									UNION ALL
+								(SELECT episode_id AS id FROM event e 
+									JOIN et_ophtroperationnote_procedurelist eop ON eop.event_id = e.id 
+									JOIN ophtroperationnote_procedurelist_procedure_assignment oppa ON oppa.procedurelist_id = eop.id 
+									WHERE oppa.id IN (SELECT id FROM tmp_treatment_ids))) a )"
         ;
 
         $dataQuery = array(
