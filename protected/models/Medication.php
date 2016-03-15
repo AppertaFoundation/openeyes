@@ -48,7 +48,7 @@ class Medication extends BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-            array('medication_drug_id, drug_id, route_id, option_id, dose, frequency_id, start_date, end_date, stop_reason_id, prescription_event_id', 'safe'),
+            array('medication_drug_id, drug_id, route_id, option_id, dose, frequency_id, start_date, end_date, stop_reason_id, prescription_item_id', 'safe'),
             array('route_id, frequency_id, start_date', 'required'),
             array('start_date', 'OEFuzzyDateValidatorNotFuture'),
             array('end_date', 'OEFuzzyDateValidator'),

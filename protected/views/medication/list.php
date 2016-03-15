@@ -44,14 +44,14 @@ $medications = $current ? $patient->medications : $patient->previous_medications
                     <th>Actions</th>
                     <td>
                         <a href="#" class="medication_edit" data-id="<?= $medication->id ?>"
-                            data-prescription-id="<?= $medication->prescription_event_id ?>">Edit</a> |
+                            data-prescription-id="<?= $medication->prescription_item_id ?>">Edit</a> |
                         <?php if ($current) { ?>
                             <a href="#" class="medication_stop" data-id="<?= $medication->id ?>"
-                               data-prescription-id="<?= $medication->prescription_event_id ?>"
+                               data-prescription-id="<?= $medication->prescription_item_id ?>"
                                data-drug-name="<?= $medication->getDrugLabel() ?>">
                                 Stop</a> |
                         <?php } ?>
-                        <?php if(!$medication->prescription_event_id):?>
+                        <?php if(!$medication->prescription_item_id):?>
                         <a href="#" class="medication_delete" data-id="<?= $medication->id ?>">Delete</a>
                         <?php endif;?>
                     </td>

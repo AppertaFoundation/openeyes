@@ -22,7 +22,7 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
 
         <input type="hidden" name="medication_id" id="medication_id" value="<?= $medication->id ?>"/>
         <input type="hidden" name="patient_id" id="medication_id" value="<?= $patient->id ?>"/>
-        <input type="hidden" name="prescription_event_id" id="prescription_event_id" value="<?= $medication->prescription_event_id ?>"/>
+        <input type="hidden" name="prescription_item_id" id="prescription_item_id" value="<?= $medication->prescription_item_id ?>"/>
 
         <div class="field-row row">
             <div class="<?= $form->columns('label'); ?>">
