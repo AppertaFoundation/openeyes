@@ -278,7 +278,7 @@ return array(
 				'title' => 'More',
 				'uri' => '#',
 				'position' => 2,
-				'restricted' => array('admin', 'Report'),
+				'restricted' => array('admin', 'Report', 'NOD Export'),
 				'sub' => array(
 					'admin' => array(
 						'title' => 'Admin',
@@ -302,7 +302,7 @@ return array(
 						'title' => 'NOD Export',
 						'uri' => 'NodExport',
 						'position' => 4,
-						'restricted' => array('admin', 'NOD Export'),
+						'restricted' => array('NOD Export'),
 					),
 				)
 			),
