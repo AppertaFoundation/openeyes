@@ -66,7 +66,8 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
                                 echo $form->dropDownList(
                                     OphCiExamination_PostOpComplications::model(),
                                     'name', $right_eye_data,
-                                    array('empty' => '-- Select --',
+                                    array(
+                                        'empty' => array('-1' => '-- Select --'),
                                         'id' => 'right-complication-select'
                                     ), 
                                     false, 
@@ -118,7 +119,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
                                 <td class=postop-complication-name><?php echo $value['name']; ?></td>
                                 <td class='right'>
                                         <?php echo \CHtml::hiddenField("complication_items[R][$key]",$value['id'] , array('id' => "complication_items_R_$key")); ?>
-                                        <a class="postop-complication-remove-btn" href="#">Remove</a>
+                                        <a class="postop-complication-remove-btn" href="javascript:void(0)">Remove</a>
                                 </td></tr>
                         
                     <?php endforeach; ?>
@@ -139,7 +140,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
 			<a href="#" class="icon-remove-side remove-side">Remove side</a>
 			<?php echo $form->dropDownList(OphCiExamination_PostOpComplications::model(), 'name', $left_eye_data,
                                     array(
-                                        'empty' => '-- Select --',
+                                        'empty' => array('-1' => '-- Select --'),
                                         'id' => 'left-complication-select'
                                     ), 
                                     false, array('label' => 4, 'field' => 6)); 
@@ -187,7 +188,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
                                 <td class=postop-complication-name><?php echo $value['name']; ?></td>
                                 <td class='right'>
                                         <?php echo \CHtml::hiddenField("complication_items[L][$key]",$value['id'] , array('id' => "complication_items_L_$key")); ?>
-                                        <a class="postop-complication-remove-btn" href="#">Remove</a>
+                                        <a class="postop-complication-remove-btn" href="javascript:void(0)">Remove</a>
                                 </td>
                             </tr>
                         

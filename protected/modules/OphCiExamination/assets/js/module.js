@@ -1230,18 +1230,20 @@ $(document).ready(function() {
         
         $("#event-content").on('change', '#right-complication-select, #left-complication-select', function(){
             
+            // https://bugs.jquery.com/ticket/9335
+            // Chrome triggers "change" on .blur() if the value of the select has changed, so we do a blur before any changes
+            $(this).blur();
+            
             var table_id = $(this).attr('id').replace('select', 'list');
             var selected_text = $( '#' + $(this).attr('id') + " option:selected").text();
             var select_value = $(this).val();
             
-            if(select_value){
+            console.log(select_value);
+            if(select_value >= 0){
                 addPostOpComplicationTr(selected_text, table_id, select_value, $(this).find('option:selected').data('display_order')  );
+                $(this).find('option:selected').remove();
+                setPostOpComplicationTableText();
             }
-            
-            
-            $(this).find('option:selected').remove();
-            
-            setPostOpComplicationTableText();
             
         });
         
@@ -1308,7 +1310,7 @@ $(document).ready(function() {
         });
         $hidden_input.data('display_order', display_order);
 
-        var $td_action = $('<td>',{class:'right'}).html( "<a class='postop-complication-remove-btn' href='#'>Remove</a>" );
+        var $td_action = $('<td>',{class:'right'}).html( "<a class='postop-complication-remove-btn' href='javascript:void(0)'>Remove</a>" );
         $td_action.append($hidden_input);
 
         $tr.append($td_name);
