@@ -89,7 +89,7 @@ class PcrRiskReport extends Report implements ReportInterface
                 $pcrCases++;
             }
             if(isset($case['risk'])){
-                $pcrRiskTotal++;
+                $pcrRiskTotal += $case['risk'];
             }
         }
 
@@ -144,7 +144,6 @@ class PcrRiskReport extends Report implements ReportInterface
     protected function upper98()
     {
         return array(
-            array(0, 100),
             array(100, 15.67042149),
             array(200, 8.80658139),
             array(300, 6.73926036),
@@ -164,7 +163,6 @@ class PcrRiskReport extends Report implements ReportInterface
     protected function upper95()
     {
         return array(
-            array(0, 100),
             array(100, 7.58459394),
             array(200, 5.14002939),
             array(300, 4.31373999),

@@ -41,6 +41,7 @@ return array(
 		'application.helpers.*',
 		'application.gii.*',
 		'system.gii.generators.module.*',
+		'application.modules.OphTrOperationnote.components.*',
 	),
 
 	'aliases' => array(
