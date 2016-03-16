@@ -19,6 +19,9 @@
  */
 class PcrRiskReportTest extends PHPUnit_Framework_TestCase
 {
+    /**
+     * Test the actual calculation
+     */
     public function testCalculatedPcrRisk()
     {
         $pcr = $this->getMockBuilder('PcrRiskReport')
@@ -55,6 +58,9 @@ class PcrRiskReportTest extends PHPUnit_Framework_TestCase
 
     }
 
+    /**
+     * Test the series generation for the graph
+     */
     public function testSeries()
     {
         $dataSet = array(8, 1.56);
@@ -80,6 +86,9 @@ class PcrRiskReportTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Upper 95%', $seriesDecoded[2]['name']);
     }
 
+    /**
+     * Test the configuration for the graph
+     */
     public function testConfig()
     {
         $pcr = new PcrRiskReport(Yii::app());
