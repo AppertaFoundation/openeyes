@@ -93,7 +93,7 @@ class PcrRiskReport extends Report implements ReportInterface
             }
         }
 
-        if($total !== 0 && $pcrRiskTotal !== 0){
+        if($total !== 0 && (int)$pcrRiskTotal !== 0){
             $adjustedPcrRate = (($pcrCases / $total) / ($pcrRiskTotal / $total)) * $this->average();
         }
 
