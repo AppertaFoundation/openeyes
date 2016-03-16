@@ -1147,11 +1147,11 @@ class DefaultController extends \BaseEventTypeController
         $right_data = array();
         $left_data = array();
         foreach($right_complications as $right_complication){
-            $right_data[] = array( 'id' => $right_complication->complication->id, 'name' => $right_complication->complication->name);
+            $right_data[] = array( 'id' => $right_complication['id'], 'name' => $right_complication['name']);
         }
         
         foreach($left_complications as $left_complication){
-            $left_data[] = array( 'id' => $left_complication->complication->id, 'name' => $left_complication->complication->name);
+            $left_data[] = array( 'id' => $left_complication['id'], 'name' => $left_complication['name']);
         }
         
         $firm = \Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);

@@ -23,12 +23,12 @@
             <div class="data-value">
                 <?php if ($element->hasRight()):?>
                 
-                    <?php //echo $element->right_values ?>
-                
                     <table id="right-complication-list" class="recorded-postop-complications" data-sideletter="R">
                     <?php foreach($element->getFullComplicationList(\Eye::RIGHT) as $value): ?>
                             <tr> 
+                                <?php if($value['name'] != 'none'): ?>
                                 <td class=postop-complication-name><?php echo $value['name']; ?></td>
+                                <?php endif; ?>
                             </tr>
                     <?php endforeach; ?>
                     </table>
@@ -48,7 +48,9 @@
                    <?php 
                         foreach($element->getFullComplicationList(\Eye::LEFT) as $value): ?>
                            <tr> 
+                                <?php if($value['name'] != 'none'): ?>
                                 <td class=postop-complication-name><?php echo $value['name']; ?></td>
+                                <?php endif; ?>
                             </tr>
                     <?php endforeach; ?>
                     </table>
