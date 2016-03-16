@@ -1099,9 +1099,9 @@ EOL;
     private function getEpisodeVisualAcuity()
     {
 
-        $query = "SELECT 
+        $query = "(SELECT
                     e.episode_id AS EpisodeId, 
-                    (SELECT CASE WHEN v.eye_id = 1 THEN 'L' WHEN v.eye_id = 2 THEN 'R' END) AS Eye,
+                    'L' AS Eye,
                     v.unit_id AS NotationRecordedId,
 
                     (SELECT MAX(VALUE) FROM ophciexamination_visualacuity_reading r JOIN et_ophciexamination_visualacuity va ON va.id = r.element_id WHERE r.element_id = v.id AND va.unit_id = (SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter')) AS BestMeasure,
@@ -1111,7 +1111,21 @@ EOL;
                     '' AS BestCorrected
                     FROM `event` e
                     INNER JOIN et_ophciexamination_visualacuity v ON v.event_id = e.id
-                    WHERE v.eye_id != 3 " . $this->getDateWhere('v');
+                    WHERE v.eye_id = 1 OR v.eye_id=3 " . $this->getDateWhere('v').")
+                    UNION
+                    (SELECT
+                    e.episode_id AS EpisodeId,
+                    'R' AS Eye,
+                    v.unit_id AS NotationRecordedId,
+
+                    (SELECT MAX(VALUE) FROM ophciexamination_visualacuity_reading r JOIN et_ophciexamination_visualacuity va ON va.id = r.element_id WHERE r.element_id = v.id AND va.unit_id = (SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter')) AS BestMeasure,
+                    #(SELECT value from ophciexamination_visualacuity_reading r JOIN et_ophciexamination_visualacuity va ON va.id = r.element_id WHERE r.element_id = v.id AND method_id = 1) AS Unaided,
+                    '' AS Unaided,
+                    '' AS Pinhole,
+                    '' AS BestCorrected
+                    FROM `event` e
+                    INNER JOIN et_ophciexamination_visualacuity v ON v.event_id = e.id
+                    WHERE v.eye_id = 2 OR v.eye_id=3 " . $this->getDateWhere('v').")";
 
         $dataQuery = array(
             'query' => $query,
@@ -1128,7 +1142,7 @@ EOL;
 
         $query = "(SELECT 
                     e.episode_id AS EpisodeId, 
-                    (SELECT CASE WHEN r.eye_id = 1 THEN 'L' END) AS Eye,
+                    'L' AS Eye,
                     '' AS RefractionTypeId,
                     r.left_sphere AS Sphere,
                     r.left_cylinder AS Cylinder,
@@ -1139,8 +1153,14 @@ EOL;
                     JOIN et_ophciexamination_refraction r ON r.event_id = e.id
                     WHERE r.eye_id = 1 OR r.eye_id = 3 " . $this->getDateWhere('r') . ")
                     UNION
-                    (SELECT e.episode_id AS EpisodeId, r.right_sphere AS Sphere, r.right_cylinder AS Cylinder, r.right_axis AS Axis, '' AS RefractionTypeId, '' AS ReadingAdd,
-                    (SELECT CASE WHEN r.eye_id = 2 THEN 'R' END) AS Eye
+                    (SELECT
+                     e.episode_id AS EpisodeId,
+                    'R' AS Eye,
+                    '' AS RefractionTypeId,
+                    r.right_sphere AS Sphere,
+                    r.right_cylinder AS Cylinder,
+                    r.right_axis AS Axis,
+                    '' AS ReadingAdd
                     FROM `event` e
                     JOIN et_ophciexamination_refraction r ON r.event_id = e.id
                     WHERE r.eye_id = 2 OR r.eye_id = 3 " . $this->getDateWhere('r') . ")";
