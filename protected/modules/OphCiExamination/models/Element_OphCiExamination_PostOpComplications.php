@@ -69,7 +69,7 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
             // NOTE: you should only define rules for those attributes that
             // will receive user inputs.
             return array(
-                    array('eye_id', 'complicationForBothEyes'),
+                    array('eye_id', 'checkComplicationEyePanels'),
                    // array('left_complication_id', 'side' => 'left'),
                     //  array('right_complication_id', 'side' => 'right'),
                     // The following rule is used by search().
@@ -84,17 +84,20 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
          * @param type $attribute
          * @param type $params
          */
-        public function complicationForBothEyes($attribute,$params)
+        public function checkComplicationEyePanels($attribute,$params)
         {
+            $elementData = \Yii::app()->request->getParam('OEModule_OphCiExamination_models_Element_OphCiExamination_PostOpComplications', null);
+            $eye_id = isset($elementData['eye_id']) ? $elementData['eye_id'] : null;
+            
             $complication_items = \Yii::app()->request->getParam('complication_items', array());
             
-            if( !isset($complication_items['R']) || empty($complication_items['R'])){
-                $this->addError($attribute, 'Complication must be recorded for both eyes: missing Right Eye');
+            if( !isset($complication_items['R']) && ($eye_id == \Eye::BOTH || $eye_id == \Eye::RIGHT) ){
+                $this->addError($attribute, 'Post Op Complication for Right Eye is missing, select complication or close the Right Eye panel');
             }
             
             
-            if( !isset($complication_items['L']) || empty($complication_items['L'])){
-                $this->addError($attribute, 'Complication must be recorded for both eyes: missing Left Eye');
+            if( !isset($complication_items['L']) && ($eye_id == \Eye::BOTH || $eye_id == \Eye::LEFT) ){
+                $this->addError($attribute, 'Post Op Complication for Left Eye is missing, select complication or close the Left Eye panel');
             }
             
         }
@@ -229,11 +232,21 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
             return $recordedComplications;
         }
         
+        public function beforeSave(){
+            // Always both eyes because we record default values to "not recorded" eyes/panels
+            $this->eye_id = \Eye::BOTH;
+            
+            return parent::beforeSave();
+        }
+        
         public function afterSave()
         {
 
             $complication_items = \Yii::app()->request->getParam('complication_items', false);
             $operation_note_id = \Yii::app()->request->getParam('OphCiExamination_postop_complication_operation_note_id', null);
+            
+            $elementData = \Yii::app()->request->getParam('OEModule_OphCiExamination_models_Element_OphCiExamination_PostOpComplications', null);
+            $eye_id = isset($elementData['eye_id']) ? $elementData['eye_id'] : null;
             
             $model = new OphCiExamination_Et_PostOpComplications;
             
@@ -244,37 +257,45 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
 
             if($complication_items){
                 
-                if( isset($complication_items['R']) ){
-                    foreach($complication_items['R'] as $cKey => $complication_id){
+                if( !isset($complication_items['R']) || ( $eye_id == \Eye::LEFT )){
+                    $complication_items['R'][0] = OphCiExamination_PostOpComplications::model()->findByAttributes(array('name' => 'none'))->id;
+                }
+           
+                foreach($complication_items['R'] as $cKey => $complication_id){
 
-                        $model = new OphCiExamination_Et_PostOpComplications();
- 
-                        $model->element_id = $this->id;
-                        $model->complication_id = $complication_id;
-                        $model->eye_id = \Eye::RIGHT;
-                        $model->operation_note_id = $operation_note_id;
+                    $et_Complication = new OphCiExamination_Et_PostOpComplications();
 
-                        if(!$model->save()){
-                           throw new Exception('Unable to save post op complication: '.print_r($model->getErrors(), true));
-                        }
+                    $et_Complication->element_id = $this->id;
+                    $et_Complication->complication_id = $complication_id;
+                    $et_Complication->eye_id = \Eye::RIGHT;
+                    $et_Complication->operation_note_id = $operation_note_id;
 
+                    if(!$et_Complication->save()){
+                       throw new Exception('Unable to save post op complication: '.print_r($et_Complication->getErrors(), true));
                     }
                 }
-                if( isset($complication_items['L']) ){
-                    foreach($complication_items['L'] as $cKey => $complication_id){
-                        
-                        $et_Complication = new OphCiExamination_Et_PostOpComplications();
-                        
-                        $et_Complication->element_id = $this->id;
-                        $et_Complication->complication_id = $complication_id;
-                        $et_Complication->eye_id = \Eye::LEFT;
-                        $et_Complication->operation_note_id = $operation_note_id;
+                    
+                $et_Complication = null;
+                
+                
+                if( !isset($complication_items['L']) || $eye_id == \Eye::RIGHT ){
+                    $complication_items['L'][0] = OphCiExamination_PostOpComplications::model()->findByAttributes(array('name' => 'none'))->id;
+                }
+                
+                foreach($complication_items['L'] as $cKey => $complication_id){
 
-                        if(!$et_Complication->save()){
-                            throw new Exception('Unable to save post op complication: '.print_r($et_Complication->getErrors(), true));
-                        }
+                    $et_Complication = new OphCiExamination_Et_PostOpComplications();
+
+                    $et_Complication->element_id = $this->id;
+                    $et_Complication->complication_id = $complication_id;
+                    $et_Complication->eye_id = \Eye::LEFT;
+                    $et_Complication->operation_note_id = $operation_note_id;
+
+                    if(!$et_Complication->save()){
+                        throw new Exception('Unable to save post op complication: '.print_r($et_Complication->getErrors(), true));
                     }
                 }
+                $et_Complication = null;
             }
             
             parent::afterSave();

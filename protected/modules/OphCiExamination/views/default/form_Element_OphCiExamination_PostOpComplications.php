@@ -61,7 +61,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
         ?>
 	<div class="element-eye right-eye column left side" data-side="right">
 		<div class="active-form">
-			
+			<a href="#" class="icon-remove-side remove-side">Remove side</a>
 			<?php 
                                 echo $form->dropDownList(
                                     OphCiExamination_PostOpComplications::model(),
@@ -77,15 +77,15 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
 					'name' => 'right_complication_autocomplete_id',
 					'id' => 'right_complication_autocomplete_id',
 					'source' => "js:function(request, response) {
-									$.getJSON('" . $defaultURL . "/getPostOpComplicationAutocopleteList', {
-										term : request.term,
-										eye_id: '". \Eye::RIGHT ."',
-										element_id: '" . $this->id . "',
-                                                                                operation_note_id: '" . $operation_note_id . "',
-                                                                                ajax: 'ajax',
-									}, response);
+                                                        $.getJSON('" . $defaultURL . "/getPostOpComplicationAutocopleteList', {
+                                                                term : request.term,
+                                                                eye_id: '". \Eye::RIGHT ."',
+                                                                element_id: '" . $this->id . "',
+                                                                operation_note_id: '" . $operation_note_id . "',
+                                                                ajax: 'ajax',
+                                                        }, response);
                                                                        
-								}",
+                                                    }",
 					'options' => array(
 						'select' => "js:function(event, ui) {
 										addPostOpComplicationTr(ui.item.label, 'right-complication-list', ui.item.value, 0  );
@@ -109,8 +109,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
                     <h5 class="right-recorded-complication-text recorded <?php echo $right_values ? '' : 'hide'?>">Recorded Complications</h5>
                     <h5 class="right-no-recorded-complication-text no-recorded <?php echo $right_values ? 'hide' : ''?>">No Recorded Complications</h5>
                     
-                    <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-                    <?php echo $form->hiddenInput($element, 'id', false, array('class' => 'sideField')); ?>
+                    <?php echo $form->hiddenInput($element, 'id', false); ?>
                     
                     <table id="right-complication-list" class="recorded-postop-complications" data-sideletter="R">
                     <?php 
@@ -137,8 +136,8 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
 	</div>
 	<div class="element-eye left-eye column right side" data-side="left">
 		<div class="active-form">
-			
-			<?php echo $form->dropDownList(OphCiExamination_PostOpComplications::model(), 'name', $left_eye_data, 
+			<a href="#" class="icon-remove-side remove-side">Remove side</a>
+			<?php echo $form->dropDownList(OphCiExamination_PostOpComplications::model(), 'name', $left_eye_data,
                                     array(
                                         'empty' => '-- Select --',
                                         'id' => 'left-complication-select'
@@ -149,15 +148,15 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
 					'name' => 'left_complication_autocomplete_id',
 					'id' => 'left_complication_autocomplete_id',
 					'source' => "js:function(request, response) {
-									$.getJSON('" . $defaultURL . "/getPostOpComplicationAutocopleteList', {
-										term : request.term,
-										eye_id: '". \Eye::LEFT ."',
-										element_id: '" . $this->id . "',
-                                                                                operation_note_id: '" . $operation_note_id . "',
-                                                                                ajax: 'ajax',
-									}, response);
-                                                                       
-								}",
+                                                        $.getJSON('" . $defaultURL . "/getPostOpComplicationAutocopleteList', {
+                                                                term : request.term,
+                                                                eye_id: '". \Eye::LEFT ."',
+                                                                element_id: '" . $this->id . "',
+                                                                operation_note_id: '" . $operation_note_id . "',
+                                                                ajax: 'ajax',
+                                                        }, response);
+
+                                                }",
 					'options' => array(
 						'select' => "js:function(event, ui) {
                                                                                 console.log(ui);
