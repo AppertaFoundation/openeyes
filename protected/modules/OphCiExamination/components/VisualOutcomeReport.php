@@ -50,7 +50,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
      * @var array
      */
     protected $graphConfig = array(
-        'chart' => array('renderTo' => ''),
+        'chart' => array('renderTo' => '', 'type' => 'bubble'),
         'legend' => array('enabled' => false),
         'title' => array('text' => 'Visual Acuity (Near/Distance)'),
         'xAxis' => array(
@@ -98,7 +98,8 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         $this->getExaminationEvent();
 
         $this->command->select('pre_examination.episode_id, note_event.episode_id, note_event.event_date as op_date, note_event.id, op_procedure.eye_id, pre_reading.method_id,
-        pre_examination.event_date as pre_exam_date, post_examination.event_date as post_exam_date, pre_examination.id as pre_id, post_examination.id as post_id, pre_reading.value as pre_value, post_reading.value as post_value')
+        pre_examination.event_date as pre_exam_date, post_examination.event_date as post_exam_date, pre_examination.id as pre_id, post_examination.id as post_id,
+        pre_reading.value as pre_value, post_reading.value as post_value')
             ->from('et_ophtroperationnote_surgeon')
             ->join('event note_event', 'note_event.id = et_ophtroperationnote_surgeon.event_id')
             ->join('et_ophtroperationnote_procedurelist op_procedure', 'op_procedure.event_id = note_event.id #And the operation notes procedures')
@@ -206,7 +207,25 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
             }
         }
 
-        return array_merge($dataSet, array_values($bestValues));
+        $counts = array();
+        $dataSet = array_merge($dataSet, array_values($bestValues));
+        foreach($dataSet as $data){
+            if(!array_key_exists($data[0].'_'.$data[1], $counts)){
+                $counts[$data[0].'_'.$data[1]] = 0;
+            }
+            $counts[$data[0].'_'.$data[1]]++;
+        }
+        $returnData = array();
+        foreach($counts as $key => $count){
+            $points = explode('_', $key);
+            $returnData[] = array(
+                (float)$points[0],
+                (float)$points[1],
+                $count
+            );
+        }
+
+        return $returnData;
     }
 
     /**
@@ -217,7 +236,6 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         $this->series = array(
             array(
                 'data' => $this->dataSet(),
-                'type' => 'scatter',
                 'name' => 'Visual Outcome'
             ));
 
