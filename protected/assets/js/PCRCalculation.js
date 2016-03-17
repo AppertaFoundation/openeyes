@@ -277,14 +277,14 @@ function calculateORValue( inputValues ){
     // multipliers for the attributes and selected values
     OR.age = {'1':1, '2':1.14, '3':1.42, '4':1.58, '5':2.37};
     OR.gender = {'Male':1.28, 'Female':1, 'Other':1.14, 'Unknown':1.14};
-    OR.glaucoma = {'Y':1.30, 'N':1};
-    OR.diabetic = {'Y':1.63, 'N':1};
-    OR.fundalview = {'Y':2.46, 'N':1};
-    OR.brunescentwhitecataract = {'Y':2.99, 'N':1};
-    OR.pxf = {'Y':2.92, 'N':1};
-    OR.pupilsize = {'Small': 1.45, 'Medium':1.14, 'Large':1};
+    OR.glaucoma = {'Y':1.30, 'N':1, 'NK':1};
+    OR.diabetic = {'Y':1.63, 'N':1, 'NK':1};
+    OR.fundalview = {'Y':2.46, 'N':1, 'NK':1};
+    OR.brunescentwhitecataract = {'Y':2.99, 'N':1, 'NK':1};
+    OR.pxf = {'Y':2.92, 'N':1, 'NK':1};
+    OR.pupilsize = {'Small': 1.45, 'Medium':1.14, 'Large':1, 'NK':1};
     OR.axiallength = {'1':1, '2':1.47};
-    OR.alpareceptorblocker = {'Y':1.51, 'N':1};
+    OR.alpareceptorblocker = {'Y':1.51, 'N':1, 'NK':1};
     OR.abletolieflat = {'Y':1, 'N':1.27};
     /*
      1 - Consultant
@@ -301,11 +301,9 @@ function calculateORValue( inputValues ){
         if(!inputValues.hasOwnProperty(key)){
             continue;
         }
-        if( inputValues[key] == "NK" || inputValues[key] == 0){
-            return false;
-        }
         ORMultiplicated *= OR[key][inputValues[key]];
     }
+
     return ORMultiplicated;
 }
 
