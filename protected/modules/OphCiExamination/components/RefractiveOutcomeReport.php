@@ -47,7 +47,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         'subtitle' => array('text' => 'Total eyes: {{eyes}}, ±0.5D: {{0.5}}, ±1D: {{1}}'),
         'xAxis' => array(
             'title' => array('text' => 'PPOR - POR (Dioptres)'),
-            'categories' => array('0'),
+            'categories' => array('-0.5', '0', '0.5'),
         ),
         'yAxis' => array(
             'title' => array('text' => 'Number of patients'),
@@ -87,7 +87,8 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         $this->getExaminationEvent();
 
         $this->command->select('post_examination.episode_id, note_event.episode_id, note_event.event_date as op_date, note_event.id, op_procedure.eye_id,
-        post_examination.event_date as post_exam_date, post_examination.event_date as post_exam_date, post_examination.id as post_id, left_sphere, right_sphere, predicted_refraction')
+        post_examination.event_date as post_exam_date, post_examination.event_date as post_exam_date, post_examination.id as post_id,
+        left_sphere, right_sphere, left_cylinder, right_cylinder, predicted_refraction')
             ->from('et_ophtroperationnote_surgeon')
             ->join('event note_event', 'note_event.id = et_ophtroperationnote_surgeon.event_id')
             ->join('et_ophtroperationnote_procedurelist op_procedure', 'op_procedure.event_id = note_event.id #And the operation notes procedures')
@@ -144,7 +145,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
             if ($row['eye_id'] === '1') {
                 $side = 'left';
             }
-            $diff = (float)$row['predicted_refraction'] - (float)$row[$side . '_sphere'];
+            $diff = (float)$row['predicted_refraction'] - ((float)$row[$side . '_sphere'] - ((float)$row[$side . '_cylinder'] / 2));
             $diff = number_format($diff, 1);
             if (!array_key_exists("$diff", $count)) {
                 $count["$diff"] = 0;
@@ -156,7 +157,6 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         sort($this->graphConfig['xAxis']['categories'], SORT_NUMERIC);
         $this->padCategories();
         $dataSet = array();
-
         foreach ($this->graphConfig['xAxis']['categories'] as $graphCategory) {
             $rowTotal = 0;
             foreach ($count as $category => $total) {
@@ -178,7 +178,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         $top = array_pop($this->graphConfig['xAxis']['categories']);
         $bottom = array_shift($this->graphConfig['xAxis']['categories']);
         $bigger = $bottom;
-        if($top > $bottom){
+        if(abs($top) > abs($bottom)){
             $bigger = $top;
         }
 
