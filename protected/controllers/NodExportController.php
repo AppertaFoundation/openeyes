@@ -369,14 +369,14 @@ EOL;
     {
 
         $query = "SELECT id as PatientId, "
-                . "IFNULL( (SELECT CASE WHEN gender='F' THEN 2 WHEN gender='M' THEN 1 ELSE 9 END) , '') as GenderId, "
-            . "IFNULL(ethnic_group_id, 'NULL') as EthnicityId, "
-            . "IFNULL(dob, 'NULL') as DateOfBirth, "
+            . "(SELECT CASE WHEN gender='F' THEN 2 WHEN gender='M' THEN 1 ELSE 9 END) as GenderId, "
+            . "IFNULL((SELECT `code` FROM ethnic_group WHERE ethnic_group.id = patient.ethnic_group_id), 'Z') AS EthnicityId, "
+            . "IFNULL( DATE_ADD(dob, INTERVAL ROUND((RAND() * (3-1))+1) MONTH) , '') AS DateOfBirth, "
             . "IFNULL(date_of_death, '') as DateOfDeath, "
             . "'' as IMDScore, '' as IsPrivate "
             . "FROM patient "
             . "WHERE patient.id IN (SELECT patient_id FROM episode WHERE episode.id IN
-                                    (SELECT id FROM ((SELECT id FROM tmp_episode_ids) 
+                                    (SELECT id FROM ((SELECT id FROM tmp_episode_ids)
                                             UNION ALL
                                     (SELECT episode_id AS id FROM event WHERE event.id in (SELECT id FROM tmp_operation_ids)) 
                                             UNION ALL

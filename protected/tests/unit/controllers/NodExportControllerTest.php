@@ -102,6 +102,18 @@ class NodExportControllerTest extends CDbTestCase
         }
         
         /**
+         * Validate date structure
+         * 
+         * @param string $date
+         * @return boolean
+         */
+        function validateDate($format, $date)
+        {
+            $d = DateTime::createFromFormat($format, $date);           
+            return $d && $d->format($format) == $date;
+        }
+
+        /**
          * Test the Surgeon CSV files if they are exsist and the file size > 0
          * also check the headers
          */
@@ -110,12 +122,41 @@ class NodExportControllerTest extends CDbTestCase
             $file = $this->exportPath . '/' . 'Surgeon.csv';
             $this->assertFileExists( $file );
             $this->assertGreaterThan(0, filesize($file));
+
+            $handle = fopen($file, "r");
+            if ($handle !== false) {
+                
+                $header = fgetcsv($handle, 1000, ",");
+                
+                $this->assertEquals($header, array(
+                    'Surgeonid', 'GMCnumber', 'Title', 'FirstName', 'CurrentGradeId'
+                ));
+                
+                $doctorGradeData = $user = Yii::app()->db->createCommand()
+                                ->select('code')
+                                ->from('tmp_doctor_grade')
+                                ->queryAll();
+                
+                foreach($doctorGradeData as $grade){
+                    $doctorGrades[] = $grade['code'];
+                }
+                
+                while (($data = fgetcsv($handle, 1000, ",")) !== false) {
+                    
+                    $this->assertTrue(is_numeric($data[0]), "Surgeon - Surgeonid must be numeric");
+                    $this->assertTrue(is_string($data[1]), "Surgeon - GMCnumber must be string");
+                    $this->assertTrue(is_string($data[2]), "Surgeon - Title must be string");
+                    $this->assertTrue(is_string($data[3]), "Surgeon - FirstName must be string");
+                    
+                    // doctor grade
+                    // $this->assertTrue(is_numeric($data[4]), "Surgeon - CurrentGradeId must be numeric" );
+                    // $this->assertContains( $data[4], $doctorGrades, "Surgeon - CurrentGradeId can't find in tmp_doctor_grade table" );
+
+                }
+                fclose($handle);
+            }
             
-            $header = $this->getCSVHeader($file);
             
-            $this->assertEquals($header, array(
-                'Surgeonid', 'GMCnumber', 'Title', 'FirstName', 'CurrentGradeId'
-            ));
         }
         
         /**
@@ -127,11 +168,47 @@ class NodExportControllerTest extends CDbTestCase
             $this->assertFileExists( $file );
             $this->assertGreaterThan(0, filesize($file));
             
-            $header = $this->getCSVHeader($file);
-           
-            $this->assertEquals($header, array(
-                'PatientId', 'GenderId', 'EthnicityId', 'DateOfBirth', 'DateOfDeath', 'IMDScore', 'IsPrivate'
-            ));
+              $ethnicityData = $user = Yii::app()->db->createCommand()
+                                ->select('code')
+                                ->from('ethnic_group')
+                                ->queryAll();
+                
+            foreach($ethnicityData as $data){
+                $ethnicity[] = $data['code'];
+            }
+             
+            $handle = fopen($file, "r");
+            if ($handle !== false) {
+                
+                $header = fgetcsv($handle, 1000, ",");
+                $this->assertEquals($header, array(
+                    'PatientId', 'GenderId', 'EthnicityId', 'DateOfBirth', 'DateOfDeath', 'IMDScore', 'IsPrivate'
+                ));
+                
+                while (($data = fgetcsv($handle, 1000, ",")) !== false) {
+                    $this->assertTrue(is_numeric($data[0]), "Patient - PatientId must be numeric");
+                    
+                    // GenderId
+                    $this->assertTrue(is_numeric($data[1]), "Patient - GenderId must be a string");
+                    $this->assertContains( $data[1], array(1,2,9), "Patient - GenderId if not recorded than it supposed to be '9'" );
+                    
+                    // EthnicityId
+                    $this->assertTrue(is_string($data[2]), "Patient - EthnicityId must be string");
+                    $this->assertContains( $data[2], $ethnicity, "Patient - EthnicityId if not recorded than it supposed to be 'Z'" );
+                    
+                    // DateOfBirth - anonymised by ±3 months
+                    $this->assertTrue(is_string($data[3]), "Patient - DateOfBirth must be string");
+                                       
+                    $this->assertTrue($this->validateDate("Y-m-d", $data[3]), "Patient - Invalid date of birth format" );
+                    
+                    if(!empty($data[4])){
+                        $this->assertTrue($this->validateDate("Y-m-d", $data[4]), "Patient - Invalid date of death format" );
+                    }
+                    
+                    $this->assertEmpty($data[5], "Patient - IMDScore is not recorded at this time, supposed to be an empty string");
+                    $this->assertEmpty($data[6], "Patient - IsPrivate is not recorded at this time, supposed to be an empty string");
+                }
+            }
         }
         
         /**
