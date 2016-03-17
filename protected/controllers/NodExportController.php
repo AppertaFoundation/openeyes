@@ -67,7 +67,7 @@ class NodExportController extends BaseController
         parent::init();
     }
 
-    public function actionGetAllEpisodeId()
+    private function getAllEpisodeId()
     {
         $this->saveIds('tmp_episode_ids', $this->getEpisodeDiabeticDiagnosis());
         $this->saveIds('tmp_episode_ids', $this->getEpisodeDrug());
@@ -131,7 +131,7 @@ class NodExportController extends BaseController
     {
 
         $this->createAllTempTables();
-        $this->actionGetAllEpisodeId();
+        $this->getAllEpisodeId();
         $this->clearAllTempTables();
     }
 
@@ -1253,7 +1253,7 @@ EOL;
     {
 
         $this->createAllTempTables();
-        $this->actionGetAllEpisodeId();
+        $this->getAllEpisodeId();
         $this->getEpisodeDiagnosis();
         $this->getEpisode();
         $this->getSurgeons();

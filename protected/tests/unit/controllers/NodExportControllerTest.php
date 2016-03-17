@@ -35,7 +35,7 @@ class NodExportControllerTest extends CDbTestCase
             
             $institutionCode = $reflectionClass->getProperty('institutionCode');
             $institutionCode->setAccessible(true);
-            $institutionCode->setValue($this->mock, 'TEST_INSTITUTION');
+            $institutionCode->setValue($this->mock, Yii::app()->params['institution_code']);
             
             $exportPath = $reflectionClass->getProperty('exportPath');
             $exportPath->setAccessible(true);
@@ -65,23 +65,33 @@ class NodExportControllerTest extends CDbTestCase
 	public function testgenerateExport()
 	{
             
-            $actionGetAllEpisodeId = $this->controller->getMethod('actionGetAllEpisodeId');
-            $actionGetAllEpisodeId->setAccessible(true);
-            $actionGetAllEpisodeId->invoke($this->mock);
-            
+            /**
+             * generateExport will generate all the CSV files
+             */
             $generateExportMethod = $this->controller->getMethod('generateExport');
             $generateExportMethod->setAccessible(true);
             $generateExportMethod->invoke($this->mock);
-        
+            
+            /**
+             * createZipFile will generate the zip file
+             */
             $createZipFileMethod = $this->controller->getMethod('createZipFile');
             $createZipFileMethod->setAccessible(true);
             $createZipFileMethod->invoke($this->mock);
             
+            // check if the zip file exsist
             $this->assertFileExists( $this->exportPath . '/' . $this->zipName );
             
+            // and not empty
             $this->assertGreaterThan(0, filesize($this->exportPath . '/' . $this->zipName));
         }
         
+        /**
+         * Fetch the header of the CSV file (first line)
+         * 
+         * @param string $file path and name
+         * @return type
+         */
         protected function getCSVHeader($file)
         {
             $file = fopen($file, 'r');
@@ -97,7 +107,7 @@ class NodExportControllerTest extends CDbTestCase
          */
         public function testSurgeons()
         {
-            $file = $this->exportPath . '/' . 'Surgeons.csv';
+            $file = $this->exportPath . '/' . 'Surgeon.csv';
             $this->assertFileExists( $file );
             $this->assertGreaterThan(0, filesize($file));
             
@@ -113,7 +123,7 @@ class NodExportControllerTest extends CDbTestCase
          */
         public function testPatients()
         {
-            $file = $this->exportPath . '/' . 'Patients.csv';
+            $file = $this->exportPath . '/' . 'Patient.csv';
             $this->assertFileExists( $file );
             $this->assertGreaterThan(0, filesize($file));
             
@@ -143,7 +153,7 @@ class NodExportControllerTest extends CDbTestCase
          */
         public function testEpisodes()
         {
-            $file = $this->exportPath . '/' . 'Episodes.csv';
+            $file = $this->exportPath . '/' . 'Episode.csv';
             $this->assertFileExists( $file );
             $this->assertGreaterThan(0, filesize($file));
             $header = $this->getCSVHeader($file);
