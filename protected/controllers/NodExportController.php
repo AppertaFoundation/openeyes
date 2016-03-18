@@ -306,6 +306,32 @@ class NodExportController extends BaseController
                         (6, 'Hoffer Q'),
                         (7, 'Average of SRK/T + Holladay + Hoffer Q'),
                         (9, 'Not recorded');
+                        
+                        CREATE TABLE tmp_episode_diagnosis (
+                           `oe_subspecialty_name` VARCHAR(50),
+                           `rco_condition_name` VARCHAR(50),
+                           `oe_subspecialty_id` INT(10) UNSIGNED NOT NULL,
+                           `rco_condition_id` INT(10) UNSIGNED NOT NULL
+                        );
+                
+                        INSERT INTO tmp_episode_diagnosis (`oe_subspecialty_name`, `rco_condition_name`, `oe_subspecialty_id`, `rco_condition_id`)
+                        VALUES
+                        ('Adnexal', 'Lacrimal Orbital & Socket', 2, 12),
+                        ('Cataract', 'Cataract', 4, 2),
+                        ('External', 'External', 6, 20),
+                        ('Refractive', 'Refractive', 13, 17),
+                        ('Accident & Emergency', 'Eye Casualty', 1, 7),
+                        ('General Ophthalmology', 'General', 12, 10),
+                        ('Glaucoma', 'Glaucoma', 7, 11),
+                        ('Medical Retinal', 'Medical retina', 8, 13),
+                        ('Uveitis', 'Medical retina', 15, 13),
+                        ('Oncology', 'Ocular Oncology', 10, 21),
+                        ('Neuro-ophthalmology', 'Neuroophthalmology', 9, 14),
+                        ('Strabismus', 'Strabismus & Paediatric', 14, 18),
+                        ('Paediatrics', 'Strabismus & Paediatric', 11, 18),
+                        ('Vitreoretinal', 'Vitreoretinal', 16, 19);
+                        
+                        
 EOL;
         Yii::app()->db->createCommand($createTempQuery)->execute();
 
@@ -426,7 +452,7 @@ EOL;
     private function getEpisode()
     {
 
-        $query = "SELECT patient_id as PatientId, id as EpisodeId, start_date as Date FROM episode WHERE episode.id IN
+        $query = "SELECT patient_id as PatientId, id as EpisodeId, DATE(start_date) as Date FROM episode WHERE episode.id IN
 								(SELECT id FROM ((SELECT id FROM tmp_episode_ids) 
 									UNION ALL
 								(SELECT episode_id AS id FROM event WHERE event.id in (SELECT id FROM tmp_operation_ids)) 
@@ -451,7 +477,7 @@ EOL;
         $query = "SELECT
                         id AS EpisodeId,
                         (SELECT CASE WHEN eye_id = 1 THEN 'L' WHEN eye_id = 2 THEN 'R' WHEN eye_id = 3 THEN 'B' ELSE 'N' END ) AS Eye,
-                        last_modified_date AS `Date`,
+                        DATE(last_modified_date) AS `Date`,
                         (
                                 SELECT (
                                         IFNULL(
@@ -461,12 +487,15 @@ EOL;
                                 )
                         ) AS SurgeonId,
                         (
-                                SELECT service_subspecialty_assignment_id FROM firm WHERE id = ep.`firm_id`
-
+                                SELECT rco_condition_id FROM tmp_episode_diagnosis WHERE oe_subspecialty_id = (
+                                SELECT service_subspecialty_assignment.`subspecialty_id` FROM firm 
+                                JOIN service_subspecialty_assignment ON firm.service_subspecialty_assignment_id = service_subspecialty_assignment.`id`
+                                WHERE firm.id = ep.`firm_id`)
+                                
                         ) AS ConditionId,
-                        disorder_id AS DiagnosisTermId
+                        IFNULL(disorder_id, '') AS DiagnosisTermId
                 FROM episode ep WHERE ep.id IN
-								(SELECT id FROM ((SELECT id FROM tmp_episode_ids) 
+								(SELECT id FROM ((SELECT id FROM tmp_episode_ids)
 									UNION ALL
 								(SELECT episode_id AS id FROM event WHERE event.id in (SELECT id FROM tmp_operation_ids)) 
 									UNION ALL
@@ -521,7 +550,7 @@ EOL;
 
                     ) AS DiabetesTypeId,
                     "" AS DiabetesRegimeId,
-                    IFNULL((DATEDIFF(`date`, dob)/365 ), "") AS AgeAtDiagnosis
+                    IFNULL((DATE_FORMAT(`date`, '%Y') - DATE_FORMAT(dob, '%Y') - (DATE_FORMAT(`date`, '00-%m-%d') < DATE_FORMAT(dob, '00-%m-%d'))),"") AS AgeAtDiagnosis
             FROM secondary_diagnosis s
             JOIN disorder d ON d.id = s.disorder_id
             JOIN episode e ON e.patient_id = s.patient_id
@@ -566,8 +595,8 @@ EOL;
                     (SELECT CASE WHEN route_option_id = 1 THEN 'L' WHEN route_option_id = 2 THEN 'R' WHEN route_option_id = 3 THEN 'B'  ELSE 'N' END) AS Eye,
                     drug.`name` as DrugId,
                     opi.route_id AS DrugRouteId,
-                    `event`.event_date as StartDate,
-                    drug_duration.`name` as EndDate,
+                    DATE(`event`.event_date) as StartDate,
+                    DATE(drug_duration.`name`) as EndDate,
                     1 AS IsAddedByPrescription,
                     continue_by_gp AS IsContinueIndefinitely,
                     0 AS IsStartDateApprox

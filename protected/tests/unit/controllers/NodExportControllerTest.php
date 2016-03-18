@@ -149,13 +149,14 @@ class NodExportControllerTest extends CDbTestCase
                     $this->assertTrue(is_string($data[3]), "Surgeon - FirstName must be string");
                     
                     // doctor grade
+                    
                     // $this->assertTrue(is_numeric($data[4]), "Surgeon - CurrentGradeId must be numeric" );
                     // $this->assertContains( $data[4], $doctorGrades, "Surgeon - CurrentGradeId can't find in tmp_doctor_grade table" );
 
                 }
                 fclose($handle);
             }
-            
+            $this->markTestIncomplete('Surgeon - Tests not implemented yet : CurrentGradeId');
             
         }
         
@@ -168,7 +169,7 @@ class NodExportControllerTest extends CDbTestCase
             $this->assertFileExists( $file );
             $this->assertGreaterThan(0, filesize($file));
             
-              $ethnicityData = $user = Yii::app()->db->createCommand()
+            $ethnicityData = $user = Yii::app()->db->createCommand()
                                 ->select('code')
                                 ->from('ethnic_group')
                                 ->queryAll();
@@ -205,10 +206,13 @@ class NodExportControllerTest extends CDbTestCase
                         $this->assertTrue($this->validateDate("Y-m-d", $data[4]), "Patient - Invalid date of death format" );
                     }
                     
+                    // Not part of the minimal dataset so we just return empty string
                     $this->assertEmpty($data[5], "Patient - IMDScore is not recorded at this time, supposed to be an empty string");
                     $this->assertEmpty($data[6], "Patient - IsPrivate is not recorded at this time, supposed to be an empty string");
                 }
+                fclose($handle);
             }
+            
         }
         
         /**
@@ -219,10 +223,26 @@ class NodExportControllerTest extends CDbTestCase
             $file = $this->exportPath . '/' . 'PatientCviStatus.csv';
             $this->assertFileExists( $file );
             $this->assertGreaterThan(0, filesize($file));
-            $header = $this->getCSVHeader($file);
-            $this->assertEquals($header, array(
-                'PatientId', 'Date', 'IsDateApprox', 'IsCVIBlind', 'IsCVIPartial'
-            ));
+            
+            $handle = fopen($file, "r");
+            if ($handle !== false) {
+                $header = fgetcsv($handle, 1000, ",");
+                
+                $this->assertEquals($header, array(
+                  'PatientId', 'Date', 'IsDateApprox', 'IsCVIBlind', 'IsCVIPartial'
+                ));
+                
+                while (($data = fgetcsv($handle, 1000, ",")) !== false) {
+                    $this->assertTrue(is_numeric($data[0]), "PatientCviStatus - PatientId must be numeric");
+                    $this->assertTrue($this->validateDate("Y-m-d", $data[1]), "PatientCviStatus - Invalid date" );
+                    $this->assertContains( $data[2], array(1,2), "PatientCviStatus - IsDateApprox value must be either 0 or 1" );
+                    $this->assertContains( $data[3], array(1,2), "PatientCviStatus - IsCVIBlind value must be either 0 or 1" );
+                    $this->assertContains( $data[4], array(1,2), "PatientCviStatus - IsCVIPartial value must be either 0 or 1" );
+                }
+                fclose($handle);
+            }
+            
+            
         }
         
         /**
@@ -233,11 +253,25 @@ class NodExportControllerTest extends CDbTestCase
             $file = $this->exportPath . '/' . 'Episode.csv';
             $this->assertFileExists( $file );
             $this->assertGreaterThan(0, filesize($file));
-            $header = $this->getCSVHeader($file);
+                      
+            $handle = fopen($file, "r");
             
-             $this->assertEquals($header, array(
-                'PatientId', 'EpisodeId', 'Date'
-            ));
+            if ($handle !== false) {
+                $header = fgetcsv($handle, 1000, ",");
+            
+                $this->assertEquals($header, array(
+                    'PatientId', 'EpisodeId', 'Date'
+                ));
+                
+                while (($data = fgetcsv($handle, 1000, ",")) !== false) {
+                    $this->assertTrue(is_numeric($data[0]), "Episode - PatientId must be numeric");
+                    $this->assertTrue(is_numeric($data[1]), "Episode - EpisodeId must be numeric");
+                    $this->assertTrue($this->validateDate("Y-m-d", $data[2]), "Episode - Invalid date" );
+
+                }
+                fclose($handle);
+            }
+           
             
 
         }
@@ -250,11 +284,46 @@ class NodExportControllerTest extends CDbTestCase
             $file = $this->exportPath . '/' . 'EpisodeDiagnosis.csv';
             $this->assertFileExists( $file );
             $this->assertGreaterThan(0, filesize($file));
-            $header = $this->getCSVHeader($file);
-             
-            $this->assertEquals($header, array(
-                'EpisodeId', 'Eye', 'Date', 'SurgeonId', 'ConditionId', 'DiagnosisTermId'
-            ));
+
+            $diagnosisData = $user = Yii::app()->db->createCommand()
+                                ->select('rco_condition_id')
+                                ->from('tmp_episode_diagnosis')
+                                ->queryAll();
+                
+            foreach($diagnosisData as $data){
+                $diagnosisIds[] = $data['rco_condition_id'];
+            }
+            
+            
+            $handle = fopen($file, "r");
+            if ($handle !== false) {
+                $header = fgetcsv($handle, 1000, ",");
+            
+                $this->assertEquals($header, array(
+                    'EpisodeId', 'Eye', 'Date', 'SurgeonId', 'ConditionId', 'DiagnosisTermId'
+                ));
+                
+                while (($data = fgetcsv($handle, 1000, ",")) !== false) {
+                    $this->assertTrue(is_numeric($data[0]), "EpisodeDiagnosis - EpisodeId must be numeric");
+                    $this->assertContains( $data[1], array('L','R','B','N'), "EpisodeDiagnosis - Eye must be a letter L,R,B,N" );
+                    $this->assertTrue($this->validateDate("Y-m-d", $data[2]), "EpisodeDiagnosis - Invalid date" );
+
+                    $this->assertTrue(is_numeric($data[3]), "EpisodeDiagnosis - SurgeonId must be numeric");
+                    
+                    // ConditionId
+                    // if the ConditionId is empty most likely the episode.firm_id is null
+                    if( !empty($data[5])){
+                        $this->assertTrue(is_numeric($data[4]), "EpisodeDiagnosis - ConditionId must be numeric");
+                        $this->assertContains( $data[4], $diagnosisIds, "EpisodeDiagnosis - ConditionId must be part of the RCO ConditionID list" );
+                    }
+                    
+                    // DiagnosisTermId as episode.disorder_id
+                    if( !empty($data[5])){
+                        $this->assertTrue(is_numeric($data[5]), "EpisodeDiagnosis - DiagnosisTermId must be numeric");
+                    }
+                }
+                fclose($handle);
+            }
         }
         
         
@@ -265,12 +334,43 @@ class NodExportControllerTest extends CDbTestCase
         {
             $file = $this->exportPath . '/' . 'EpisodeDiabeticDiagnosis.csv';
             $this->assertFileExists( $file );
-            $this->assertGreaterThan(0, filesize($file));
-            $header = $this->getCSVHeader($file);
-             
-            $this->assertEquals($header, array(
-                'EpisodeId', 'IsDiabetic', 'DiabetesTypeId', 'DiabetesRegimeId', 'AgeAtDiagnosis'
-            ));
+            $this->assertGreaterThan(0, filesize($file));       
+         
+            $handle = fopen($file, "r");
+            if ($handle !== false) {
+                $header = fgetcsv($handle, 1000, ",");
+                
+                $this->assertEquals($header, array(
+                     'EpisodeId', 'IsDiabetic', 'DiabetesTypeId', 'DiabetesRegimeId', 'AgeAtDiagnosis'
+                ));
+                
+                while (($data = fgetcsv($handle, 1000, ",")) !== false) {
+                    
+                    $this->assertTrue(is_numeric($data[0]), "EpisodeDiabeticDiagnosis - EpisodeId must be numeric");
+                    
+                    $this->assertTrue(is_numeric($data[1]), "EpisodeDiabeticDiagnosis - IsDiabetic must be numeric");
+                    $this->assertEquals(1, $data[1], "EpisodeDiabeticDiagnosis - IsDiabetic always 1 as the sql query always returns 1");
+                    //$this->assertContains( $data[1], array(0,1), "EpisodeDiabeticDiagnosis - IsDiabetic must be a boolean 0 or 1" );
+                    
+                    // DiabetesTypeId
+                    $this->assertTrue(is_numeric($data[2]), "EpisodeDiabeticDiagnosis - DiabetesTypeId must be numeric");
+                    $this->assertContains( $data[2], array(1,2,3,4,5,9), "EpisodeDiabeticDiagnosis - DiabetesTypeId must be either 1,2,3,4,5 or 9" );
+                    
+                    // Not part of the minimal dataset so we just return empty string
+                    $this->assertEmpty($data[3], "EpisodeDiabeticDiagnosis - DiabetesRegimeId is not recorded at this time, supposed to be an empty string");
+                    
+                    // AgeAtDiagnosis empty if the secondary_diagnosis.date is null/empty
+                    if(!empty($data[4])){
+                        $this->assertTrue(is_numeric($data[4]), "EpisodeDiabeticDiagnosis - AgeAtDiagnosis must be numeric : " . $data[4]);
+                        $this->assertLessThan(130, $data[4], "EpisodeDiabeticDiagnosis - AgeAtDiagnosis the number is suprisingly heigh");
+                        $this->assertGreaterThan(0, $data[4], "EpisodeDiabeticDiagnosis - AgeAtDiagnosis fetus diagnoses ?");
+                    
+                    }
+                }
+            
+                
+                fclose($handle); 
+            }
         }
         
         
@@ -284,9 +384,33 @@ class NodExportControllerTest extends CDbTestCase
             $this->assertGreaterThan(0, filesize($file));
             $header = $this->getCSVHeader($file);
              
-            $this->assertEquals($header, array(
-                'EpisodeId', 'Eye', 'DrugId', 'DrugRouteId', 'StartDate', 'StopDate', 'IsAddedByPrescription', 'IsContinueIndefinitely', 'IsStartDateApprox'
-            ));
+            $handle = fopen($file, "r");
+            
+            if ($handle !== false) {
+                $header = fgetcsv($handle, 1000, ",");
+                
+                $this->assertEquals($header, array(
+                        'EpisodeId', 'Eye', 'DrugId', 'DrugRouteId', 'StartDate', 'StopDate', 'IsAddedByPrescription', 'IsContinueIndefinitely', 'IsStartDateApprox'
+                ));
+                
+                while (($data = fgetcsv($handle, 1000, ",")) !== false) {
+                    $this->assertTrue(is_numeric($data[0]), "EpisodeDrug - EpisodeId must be numeric");
+                    $this->assertContains( $data[1], array('L','R','B','N'), "EpisodeDrug - Eye must be a letter L,R,B,N" );
+                    
+                    $this->assertNotEmpty($data[2], "EpisodeDrug - DrugId should be the name of the drug (i.e., medication_drug.name) see the doc");
+                    $this->assertTrue(is_numeric($data[3]), "EpisodeDrug - DrugRouteId must be numeric");
+                    
+                    $this->assertTrue($this->validateDate("Y-m-d", $data[4]), "EpisodeDrug - Invalid StartDate" );
+                    $this->assertTrue($this->validateDate("Y-m-d", $data[5]), "EpisodeDrug - Invalid StopDate" );
+                    
+                    $this->assertEquals('1', $data[6], "EpisodeDrug - IsAddedByPrescription always 1 as the sql query returns always 1" );
+                    $this->assertContains( $data[7], array(0,1), "EpisodeDrug - IsContinueIndefinitely must be eiter 0 or 1 ,boolean" );
+                    
+                    $this->assertEquals('0', $data[8], "EpisodeDrug - IsStartDateApprox always 0 as the sql query returns always 0" );
+                }  
+                
+                fclose($handle); 
+            }
         }
         
         /**
