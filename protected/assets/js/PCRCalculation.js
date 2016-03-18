@@ -12,29 +12,29 @@ function mapExaminationToPcr()
                 "init": true
             },
             "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_nuclear_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_nuclear_id": {
-                "pcr": '.pcr_brunescent_white_cataract',
+                "pcr": '.pcrrisk_brunescent_white_cataract',
                 "func": setPcrBrunescent
             },
             ":input[id*='_pxe_control']": {
-                "pcr":  '.pcr_pxf_phako',
+                "pcr":  '.pcrrisk_pxf_phako',
                 "func": setPcrPxf
             },
             ":input[id*='_pupilSize_control']": {
-                "pcr":  '.pcr_pupil_size',
+                "pcr":  '.pcrrisk_pupil_size',
                 "func": setPcrPupil
             },
             ":input[name^='diabetic_diagnoses']": {
-                "pcr": '.pcr_diabetic',
+                "pcr": '.pcrrisk_diabetic',
                 "func": setDiabeticDisorder,
                 "init": true
             },
             ":input[name^='glaucoma_diagnoses']": {
-                "pcr": '.pcr_glaucoma',
+                "pcr": '.pcrrisk_glaucoma',
                 "func": setGlaucomaDisorder,
                 "init": true
             },
             "#OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_right_cd_ratio_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_left_cd_ratio_id": {
-                "pcr": '.pcr_no_fundal_view',
+                "pcr": '.pcrrisk_no_fundal_view',
                 "func": setFundalView,
                 "init": true
             }

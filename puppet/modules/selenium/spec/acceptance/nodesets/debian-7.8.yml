@@ -1,9 +1,0 @@
-HOSTS:
-  debian-7.8:
-    roles:
-      - master
-    platform: debian-7-amd64
-    box: chef/debian-7.8
-    hypervisor: vagrant
-CONFIG:
-  type: foss
