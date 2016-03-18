@@ -60,6 +60,22 @@ class NodExportControllerTest extends CDbTestCase
 	}
         
         /**
+         * Checking if the string actually is a float value like "24.6"
+         * note: floatval("24.0") returns 24
+         * 
+         * @param string $string
+         * @return boolean if the string is a float value
+         */
+        private function isStringFloat($string)
+        {
+            if(is_numeric($string) && strpos($string, ".") !== false){
+                return true;
+            }
+            return false;
+        }
+ 
+        
+        /**
          * Generates CSV and zip file then test the zip if exsist and size > 0
          */
 	public function testgenerateExport()
@@ -421,12 +437,41 @@ class NodExportControllerTest extends CDbTestCase
             $file = $this->exportPath . '/' . 'EpisodeBiometry.csv';
             $this->assertFileExists( $file );
             $this->assertGreaterThan(0, filesize($file));
-            $header = $this->getCSVHeader($file);
-             
-            $this->assertEquals($header, array(
-                'EpisodeId', 'Eye', 'AxialLength', 'BiometryAScanId', 'BiometryKeratometerId', 
-                'BiometryFormulaId', 'K1PreOperative', 'K2PreOperative', 'AxisK1', 'AxisK2', 'ACDepth', 'SNR'
-            ));
+            
+            $handle = fopen($file, "r");
+            
+            if ($handle !== false) {
+                $header = fgetcsv($handle, 1000, ",");
+                
+                 $this->assertEquals($header, array(
+                    'EpisodeId', 'Eye', 'AxialLength', 'BiometryAScanId', 'BiometryKeratometerId', 
+                    'BiometryFormulaId', 'K1PreOperative', 'K2PreOperative', 'AxisK1', 'AxisK2', 'ACDepth', 'SNR'
+                ));
+                 
+                // Stop here and mark this test as incomplete.
+                $this->markTestIncomplete(
+                  'Without any data this test cannot be ran and tested'
+                );
+                 
+                while (($data = fgetcsv($handle, 1000, ",")) !== false) {
+                    $this->assertTrue(is_numeric($data[0]), "EpisodeBiometry - EpisodeId must be numeric");
+                    $this->assertContains($data[1], array('L','R'), "EpisodeBiometry - Eye must be a letter L or R" );
+                    $this-assertTrue($this->isStringFloat($data[2]), "EpisodeBiometry - AxialLength must be a float value");
+                    $this->assertEmpty($data[3], "EpisodeBiometry - BiometryAScanId must be an empty string, not recorded in OE");
+                    
+                    $this->assertTrue(is_numeric($data[4]), "EpisodeBiometry - BiometryKeratometerId must be numeric");
+                    $this->assertTrue(is_numeric($data[5]), "EpisodeBiometry - BiometryFormulaId must be numeric");
+                    
+                    $this-assertTrue($this->isStringFloat($data[6]), "EpisodeBiometry - K1PreOperative must be a float value");
+                    $this-assertTrue($this->isStringFloat($data[7]), "EpisodeBiometry - K2PreOperative must be a float value");
+                    
+                    $this-assertTrue($this->isStringFloat($data[8]), "EpisodeBiometry - AxisK1 must be a float value");
+                    $this-assertTrue($this->isStringFloat($data[9]), "EpisodeBiometry - AxisK2 must be a float value");
+                    $this-assertTrue($this->isStringFloat($data[10]), "EpisodeBiometry - ACDepth must be a float value");
+                    $this-assertTrue($this->isStringFloat($data[9]), "EpisodeBiometry - SNR must be a float value");
+                } 
+                fclose($handle); 
+            }
         }
         
         
@@ -438,11 +483,29 @@ class NodExportControllerTest extends CDbTestCase
             $file = $this->exportPath . '/' . 'EpisodeIOP.csv';
             $this->assertFileExists( $file );
             $this->assertGreaterThan(0, filesize($file));
-            $header = $this->getCSVHeader($file);
-             
-            $this->assertEquals($header, array(
-                'EpisodeId', 'Eye', 'Type', 'GlaucomaMedicationStatusId', 'Value', 
-            ));
+
+            $handle = fopen($file, "r");
+            
+            if ($handle !== false) {
+                $header = fgetcsv($handle, 1000, ",");
+                
+                $this->assertEquals($header, array(
+                    'EpisodeId', 'Eye', 'Type', 'GlaucomaMedicationStatusId', 'Value',
+                ));
+                
+                while (($data = fgetcsv($handle, 1000, ",")) !== false) {
+                    
+                    $this->assertTrue(is_numeric($data[0]), "EpisodeIOP - EpisodeId must be numeric");
+                    $this->assertContains($data[1], array('L','R'), "EpisodeIOP - Eye must be a letter L or R" );
+                    $this->assertEmpty($data[2], "EpisodeIOP - BiometryAScanId must be an empty string, not recorded in OE");
+                    $this->assertEquals('9', $data[3], "EpisodeIOP - GlaucomaMedicationStatusId must be 9 as not known in OE)");
+                    
+                    $this->assertTrue($this->isStringFloat($data[4]), "EpisodeIOP - Value must be a float value");
+                }
+                
+                fclose($handle); 
+                
+            }
         }
         
         /**
@@ -454,10 +517,24 @@ class NodExportControllerTest extends CDbTestCase
             $this->assertFileExists( $file );
             $this->assertGreaterThan(0, filesize($file));
             $header = $this->getCSVHeader($file);
-             
-            $this->assertEquals($header, array(
-                'EpisodeId', 'Eye', 'IsAbleToLieFlat', 'IsInabilityToCooperate',
-            ));
+            
+            $handle = fopen($file, "r");
+            
+            if ($handle !== false) {
+                $header = fgetcsv($handle, 1000, ",");
+                
+                $this->assertEquals($header, array(
+                    'EpisodeId', 'Eye', 'IsAbleToLieFlat', 'IsInabilityToCooperate',
+                ));
+                
+                while (($data = fgetcsv($handle, 1000, ",")) !== false) {
+                    
+                    $this->assertTrue(is_numeric($data[0]), "EpisodePreOpAssessment - EpisodeId must be numeric");
+                    $this->assertContains($data[1], array('L','R','B'), "EpisodePreOpAssessment - Eye must be a letter L or R" );
+                    $this->assertContains( $data[2], array(0,1), "EpisodePreOpAssessment - IsAbleToLieFlat must be eiter 0 or 1 ,boolean" );
+                    $this->assertContains( $data[3], array(0,1), "EpisodePreOpAssessment - IsInabilityToCooperate must be eiter 0 or 1 ,boolean" );
+                }                
+            }
         }
         
         

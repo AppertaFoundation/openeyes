@@ -725,7 +725,7 @@ EOL;
                         (SELECT CASE WHEN oipv.eye_id = 1 THEN 'L' WHEN oipv.eye_id = 2 THEN 'R' END) AS Eye,
                         '' AS `Type`,
                         9 AS GlaucomaMedicationStatusId,
-                        oipvr.value AS Value
+                        (oipvr.value + 0.0) AS Value
                         FROM episode e
                         JOIN `event` ev ON ev.episode_id = e.id
                         JOIN event_type et ON et.id = ev.event_type_id
