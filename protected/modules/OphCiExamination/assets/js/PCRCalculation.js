@@ -323,7 +323,7 @@ function calculateORValue( inputValues ){
      6 - Senior House Officer
      7 - House officer  -- ???? no value specified!! using: 1
      */
-    OR.doctorgrade = {'1':1, '2':0.87, '3':0.36, '4':1.65, '5':1.60, '6': 3.73, '7':1};
+    OR.doctorgrade = {'1':1, '2':1, '3':0.87 ,'4':1.65 , '5':1.60 ,'6':0.36 ,'7':0.36 , '8':1.60 ,'9':1.60 , '10':1.60 ,'11':1.60 , '12':1.60 , '13':1.60 , '14':1.60 , '15':1.60 , '16':1 , '17':3.73 , '18':0.36 , '19':0.36};
 
     for (var key in inputValues) {
         if( inputValues[key] == "NK" || inputValues[key] == 0){
