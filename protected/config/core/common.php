@@ -280,6 +280,7 @@ return array(
 				'title' => 'More',
 				'uri' => '#',
 				'position' => 2,
+				'userrule' => 'isSurgeon',
 				'restricted' => array('admin', 'Report'),
 				'sub' => array(
 					'admin' => array(
@@ -304,6 +305,8 @@ return array(
 						'title' => 'Cataract Audit',
 						'uri' => 'dashboard/cataract',
 						'position' => 4,
+						'userrule' => 'isSurgeon',
+						'restricted' => array('admin'),
 						'options' => array('target' => '_blank')
 					),
 				)
