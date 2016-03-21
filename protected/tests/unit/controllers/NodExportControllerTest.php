@@ -328,10 +328,8 @@ class NodExportControllerTest extends CDbTestCase
                     
                     // ConditionId
                     // if the ConditionId is empty most likely the episode.firm_id is null
-                    if( !empty($data[5])){
-                        $this->assertTrue(is_numeric($data[4]), "EpisodeDiagnosis - ConditionId must be numeric");
-                        $this->assertContains( $data[4], $diagnosisIds, "EpisodeDiagnosis - ConditionId must be part of the RCO ConditionID list" );
-                    }
+                    $this->assertTrue(is_numeric($data[4]), "EpisodeDiagnosis - ConditionId must be numeric");
+                    $this->assertContains( $data[4], $diagnosisIds, "EpisodeDiagnosis - ConditionId must be part of the RCO ConditionID list" );
                     
                     // DiagnosisTermId as episode.disorder_id
                     if( !empty($data[5])){

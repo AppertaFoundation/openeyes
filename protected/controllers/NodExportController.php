@@ -318,6 +318,7 @@ class NodExportController extends BaseController
                         VALUES
                         ('Adnexal', 'Lacrimal Orbital & Socket', 2, 12),
                         ('Cataract', 'Cataract', 4, 2),
+                        ('Cornea', 'Corneal', 5, 4),
                         ('External', 'External', 6, 20),
                         ('Refractive', 'Refractive', 13, 17),
                         ('Accident & Emergency', 'Eye Casualty', 1, 7),
@@ -543,7 +544,9 @@ EOL;
                     (SELECT episode_id AS id FROM event e 
                             JOIN et_ophtroperationnote_procedurelist eop ON eop.event_id = e.id 
                             JOIN ophtroperationnote_procedurelist_procedure_assignment oppa ON oppa.procedurelist_id = eop.id 
-                            WHERE oppa.id IN (SELECT id FROM tmp_treatment_ids))) a )"
+                            WHERE oppa.id IN (SELECT id FROM tmp_treatment_ids))) a )
+                HAVING ConditionId IS NOT NULL
+                "
         ;
 
         $dataQuery = array(
