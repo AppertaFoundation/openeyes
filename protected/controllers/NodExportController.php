@@ -330,8 +330,45 @@ class NodExportController extends BaseController
                         ('Strabismus', 'Strabismus & Paediatric', 14, 18),
                         ('Paediatrics', 'Strabismus & Paediatric', 11, 18),
                         ('Vitreoretinal', 'Vitreoretinal', 16, 19);
+                
                         
                         
+                        
+                    DROP TABLE IF EXISTS tmp_episode_drug_route;
+                
+                    CREATE TABLE tmp_episode_drug_route (
+                        `oe_route_id` INT(10) UNSIGNED, `oe_route_name` VARCHAR(50), 
+                        `oe_option_id` INT(10) UNSIGNED DEFAULT NULL, `oe_option_name` VARCHAR(50), 
+                        `nod_id` INT(10) UNSIGNED DEFAULT NULL, `nod_name` VARCHAR(50) 
+                    ); 
+                
+                    INSERT INTO `tmp_episode_drug_route` ( `oe_route_id`, `oe_route_name`, `oe_option_id`, `oe_option_name`, `nod_id`, `nod_name` )
+                        VALUES
+                         (1, 'Eye', 1, 'Left', 1, 'Left eye'), 
+                         (1, 'Eye', 2, 'Right', 2, 'Right eye'), 
+                         (1, 'Eye', 3, 'Both', 4, 'Both eyes'), 
+                         (2, 'IM', NULL, "", 7, 'Intramuscular injection'), 
+                         (3, 'Inhalation', NULL, "", 6, 'Inhaled'), 
+                         (4, 'Intracameral', NULL, "", 5,'Intracameral'), 
+                         (5, 'Intradermal', NULL, "", 99, 'Other'), 
+                         (6, 'Intravitreal', NULL, "", 99, 'Other'), 
+                         (7, 'IV', NULL, "", 9, 'Intravenously'), 
+                         (8, 'Nose', NULL, "", 8, 'Intranasally'), 
+                         (9, 'Ocular muscle', NULL, "", 7, 'Intramuscular injection'), 
+                         (10, 'PO', NULL, "", 12, 'Orally'), 
+                         (11, 'PR', NULL, "", 15, 'Per rectum'), 
+                         (12, 'PV', NULL, "", 99, 'Other'), 
+                         (13, 'Sub-Conj', NULL, "", 18, 'Subconjunctival'), 
+                         (14, 'Sub-lingual', NULL, "", 19, 'Sub-lingual'), 
+                         (15, 'Subcutaneous', NULL, "", 17, 'Subcutaneously'), 
+                         (16, 'To Nose', NULL, "", 8, 'Intranasally'), 
+                         (17, 'To skin', NULL, "", 24, 'Trans-cutaneous'), 
+                         (18, 'Topical', NULL, "", 23, 'Topically'), 
+                         (19, 'n/a', NULL, "", 99, 'Other'), 
+                         (20, 'Other', NULL, "", 99, 'Other');
+
+             
+                
 EOL;
         Yii::app()->db->createCommand($createTempQuery)->execute();
 
@@ -340,6 +377,7 @@ EOL;
     private function clearAllTempTables()
     {
         $cleanQuery = <<<EOL
+                
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication_type;
                 DROP TEMPORARY TABLE IF EXISTS tmp_anesthesia_type;
                 DROP TEMPORARY TABLE IF EXISTS tmp_iol_positions;
@@ -494,15 +532,18 @@ EOL;
                                 
                         ) AS ConditionId,
                         IFNULL(disorder_id, '') AS DiagnosisTermId
-                FROM episode ep WHERE ep.id IN
-								(SELECT id FROM ((SELECT id FROM tmp_episode_ids)
-									UNION ALL
-								(SELECT episode_id AS id FROM event WHERE event.id in (SELECT id FROM tmp_operation_ids)) 
-									UNION ALL
-								(SELECT episode_id AS id FROM event e 
-									JOIN et_ophtroperationnote_procedurelist eop ON eop.event_id = e.id 
-									JOIN ophtroperationnote_procedurelist_procedure_assignment oppa ON oppa.procedurelist_id = eop.id 
-									WHERE oppa.id IN (SELECT id FROM tmp_treatment_ids))) a )"
+                FROM episode ep 
+                WHERE 
+                ep.`firm_id` IS NOT NULL AND
+                ep.id IN
+                    (SELECT id FROM ((SELECT id FROM tmp_episode_ids)
+                            UNION ALL
+                    (SELECT episode_id AS id FROM event WHERE event.id in (SELECT id FROM tmp_operation_ids))
+                            UNION ALL
+                    (SELECT episode_id AS id FROM event e 
+                            JOIN et_ophtroperationnote_procedurelist eop ON eop.event_id = e.id 
+                            JOIN ophtroperationnote_procedurelist_procedure_assignment oppa ON oppa.procedurelist_id = eop.id 
+                            WHERE oppa.id IN (SELECT id FROM tmp_treatment_ids))) a )"
         ;
 
         $dataQuery = array(
@@ -580,7 +621,12 @@ EOL;
                     (SELECT CASE WHEN m.drug_id IS NOT NULL THEN (SELECT `name`  FROM drug WHERE id = m.drug_id)
                                     WHEN m.medication_drug_id IS NOT NULL THEN (SELECT `name` FROM medication_drug WHERE id = m.medication_drug_id)
                                     WHEN m.medication_drug_id IS NULL THEN '' END) AS DrugId,
-                    m.route_id AS DrugRouteId,
+                     IFNULL(
+                     (
+                          SELECT nod_name FROM tmp_episode_drug_route
+                          WHERE opi.route_id = tmp_episode_drug_route.oe_route_id AND (tmp_episode_drug_route.`oe_option_id` = opi.route_option_id))
+                          , ""
+                      ) AS DrugRouteId,
                     (SELECT CASE WHEN m.start_date IS NULL THEN '' ELSE m.start_date END) AS StartDate,
                     (SELECT CASE WHEN m.end_date IS NULL THEN '' ELSE m.end_date END) AS StopDate,
                     (SELECT CASE WHEN opi.prescription_id IS NOT NULL THEN 1 ELSE 0 END ) AS IsAddedByPrescription,

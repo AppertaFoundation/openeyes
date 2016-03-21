@@ -414,7 +414,12 @@ class NodExportControllerTest extends CDbTestCase
                     $this->assertContains( $data[1], array('L','R','B','N'), "EpisodeDrug - Eye must be a letter L,R,B,N" );
                     
                     $this->assertNotEmpty($data[2], "EpisodeDrug - DrugId should be the name of the drug (i.e., medication_drug.name) see the doc");
-                    $this->assertTrue(is_numeric($data[3]), "EpisodeDrug - DrugRouteId must be numeric");
+                    
+                    // DrugRouteId
+                    // if empty check the mapping
+                    if(!empty($data[3])){
+                        $this->assertTrue(is_numeric($data[3]), "EpisodeDrug - DrugRouteId must be numeric");
+                    }
                     
                     $this->assertTrue($this->validateDate("Y-m-d", $data[4]), "EpisodeDrug - Invalid StartDate" );
                     $this->assertTrue($this->validateDate("Y-m-d", $data[5]), "EpisodeDrug - Invalid StopDate" );
@@ -423,6 +428,8 @@ class NodExportControllerTest extends CDbTestCase
                     $this->assertContains( $data[7], array(0,1), "EpisodeDrug - IsContinueIndefinitely must be eiter 0 or 1 ,boolean" );
                     
                     $this->assertEquals('0', $data[8], "EpisodeDrug - IsStartDateApprox always 0 as the sql query returns always 0" );
+                    
+                    
                 }  
                 
                 fclose($handle); 
