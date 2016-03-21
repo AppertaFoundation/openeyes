@@ -43,7 +43,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
     protected $graphConfig = array(
         'chart' => array('renderTo' => '', 'type' => 'column'),
         'legend' => array('enabled' => false),
-        'title' => array('text' => 'Refractive Outcome'),
+        'title' => array('text' => 'Refractive Outcome: mean sphere (D)'),
         'subtitle' => array('text' => 'Total eyes: {{eyes}}, ±0.5D: {{0.5}}, ±1D: {{1}}'),
         'xAxis' => array(
             'title' => array('text' => 'PPOR - POR (Dioptres)'),

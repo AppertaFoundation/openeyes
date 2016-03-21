@@ -144,6 +144,10 @@ class PcrRiskReport extends Report implements ReportInterface
     protected function upper98()
     {
         return array(
+            array(10, 95.887181),
+            array(30, 54.0491068),
+            array(50, 31.9228705),
+            array(80, 19.4788865),
             array(100, 15.67042149),
             array(200, 8.80658139),
             array(300, 6.73926036),
@@ -163,6 +167,10 @@ class PcrRiskReport extends Report implements ReportInterface
     protected function upper95()
     {
         return array(
+            array(10, 63.7561697),
+            array(30, 20.9207774),
+            array(50, 12.863995),
+            array(80, 8.843746),
             array(100, 7.58459394),
             array(200, 5.14002939),
             array(300, 4.31373999),
