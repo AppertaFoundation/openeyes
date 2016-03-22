@@ -202,7 +202,7 @@ $criteria = new CDbCriteria();
 				<?php echo
 				CHtml::dropDownList('PcrRisk['.$side.'][doctor_grade_id]', $pcr['doctor_grade_id'],
 					CHtml::listData(
-						DoctorGrade::model()->findAll($criteria->condition = "grade != 'House officer'", array('order' => 'display_order')),
+						DoctorGrade::model()->findAll($criteria->condition = "has_pcr_risk", array('order' => 'display_order')),
 						'id',
 						'grade'
 					),
