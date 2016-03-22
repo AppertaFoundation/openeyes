@@ -389,7 +389,7 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
                 ->from('et_ophciexamination_postop_complications t')
                 ->join('ophciexamination_postop_et_complications etc', 't.id = etc.element_id')
                 ->join('ophciexamination_postop_complications c', 'etc.complication_id = c.id')
-                ->where('etc.eye_id=:eye_id', array(':eye_id' => $eye_id))
+                ->where('(etc.eye_id=:eye_id) AND t.event_id = :event_id', array(':eye_id' => $eye_id, ':event_id' => $this->event->id))
                 ->order("etc.created_date DESC")
                 ->queryAll();
             
