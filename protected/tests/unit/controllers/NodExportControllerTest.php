@@ -397,6 +397,15 @@ class NodExportControllerTest extends CDbTestCase
             $this->assertFileExists( $file );
             $this->assertGreaterThan(0, filesize($file));
             $header = $this->getCSVHeader($file);
+            
+             $drugRouteData = $user = Yii::app()->db->createCommand()
+                                ->select('nod_id')
+                                ->from('tmp_episode_drug_route')
+                                ->queryAll();
+                
+            foreach($drugRouteData as $data){
+                $drugRouteIds[] = $data['nod_id'];
+            }
              
             $handle = fopen($file, "r");
             
@@ -414,10 +423,8 @@ class NodExportControllerTest extends CDbTestCase
                     $this->assertNotEmpty($data[2], "EpisodeDrug - DrugId should be the name of the drug (i.e., medication_drug.name) see the doc");
                     
                     // DrugRouteId
-                    // if empty check the mapping
-                    if(!empty($data[3])){
-                        $this->assertTrue(is_numeric($data[3]), "EpisodeDrug - DrugRouteId must be numeric");
-                    }
+                    $this->assertTrue(is_numeric($data[3]), "EpisodeDrug - DrugRouteId must be numeric");
+                    $this->assertContains( $data[3], $drugRouteIds, "EpisodeDrug - DrugRouteId must be part of the RCO DrugRouteId list" );
                     
                     $this->assertTrue($this->validateDate("Y-m-d", $data[4]), "EpisodeDrug - Invalid StartDate" );
                     $this->assertTrue($this->validateDate("Y-m-d", $data[5]), "EpisodeDrug - Invalid StopDate" );
@@ -427,8 +434,7 @@ class NodExportControllerTest extends CDbTestCase
                     
                     $this->assertEquals('0', $data[8], "EpisodeDrug - IsStartDateApprox always 0 as the sql query returns always 0" );
                     
-                    
-                }  
+                }
                 
                 fclose($handle); 
             }

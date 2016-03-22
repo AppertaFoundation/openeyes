@@ -338,9 +338,12 @@ class NodExportController extends BaseController
                     DROP TABLE IF EXISTS tmp_episode_drug_route;
                 
                     CREATE TABLE tmp_episode_drug_route (
-                        `oe_route_id` INT(10) UNSIGNED, `oe_route_name` VARCHAR(50), 
-                        `oe_option_id` INT(10) UNSIGNED DEFAULT NULL, `oe_option_name` VARCHAR(50), 
-                        `nod_id` INT(10) UNSIGNED DEFAULT NULL, `nod_name` VARCHAR(50) 
+                        `oe_route_id` INT(10) UNSIGNED, 
+                        `oe_route_name` VARCHAR(50), 
+                        `oe_option_id` INT(10) UNSIGNED DEFAULT NULL, 
+                        `oe_option_name` VARCHAR(50), 
+                        `nod_id` INT(10) UNSIGNED DEFAULT NULL, 
+                        `nod_name` VARCHAR(50)
                     ); 
                 
                     INSERT INTO `tmp_episode_drug_route` ( `oe_route_id`, `oe_route_name`, `oe_option_id`, `oe_option_name`, `nod_id`, `nod_name` )
@@ -624,12 +627,14 @@ EOL;
                     (SELECT CASE WHEN m.drug_id IS NOT NULL THEN (SELECT `name`  FROM drug WHERE id = m.drug_id)
                                     WHEN m.medication_drug_id IS NOT NULL THEN (SELECT `name` FROM medication_drug WHERE id = m.medication_drug_id)
                                     WHEN m.medication_drug_id IS NULL THEN '' END) AS DrugId,
-                     IFNULL(
-                     (
-                          SELECT nod_name FROM tmp_episode_drug_route
-                          WHERE opi.route_id = tmp_episode_drug_route.oe_route_id AND (tmp_episode_drug_route.`oe_option_id` = opi.route_option_id))
+                    IFNULL(
+                    (
+                          SELECT nod_id FROM tmp_episode_drug_route
+                          WHERE 
+                         (opi.route_id = tmp_episode_drug_route.oe_route_id AND tmp_episode_drug_route.`oe_option_id` = opi.route_option_id) OR
+                         (opi.route_id = tmp_episode_drug_route.oe_route_id AND tmp_episode_drug_route.`oe_option_id` IS NULL) )
                           , ""
-                      ) AS DrugRouteId,
+                    ) AS DrugRouteId,
                     (SELECT CASE WHEN m.start_date IS NULL THEN '' ELSE m.start_date END) AS StartDate,
                     (SELECT CASE WHEN m.end_date IS NULL THEN '' ELSE m.end_date END) AS StopDate,
                     (SELECT CASE WHEN opi.prescription_id IS NOT NULL THEN 1 ELSE 0 END ) AS IsAddedByPrescription,
@@ -643,7 +648,15 @@ EOL;
                     select  episode.id AS EpisodeId ,
                     (SELECT CASE WHEN route_option_id = 1 THEN 'L' WHEN route_option_id = 2 THEN 'R' WHEN route_option_id = 3 THEN 'B'  ELSE 'N' END) AS Eye,
                     drug.`name` as DrugId,
-                    opi.route_id AS DrugRouteId,
+                
+                    IFNULL(
+                    (
+                          SELECT nod_id FROM tmp_episode_drug_route
+                          WHERE 
+                          (opi.route_id = tmp_episode_drug_route.oe_route_id AND tmp_episode_drug_route.`oe_option_id` = opi.route_option_id) OR
+                          (opi.route_id = tmp_episode_drug_route.oe_route_id AND tmp_episode_drug_route.`oe_option_id` IS NULL) )
+                          , ""
+                      ) AS DrugRouteId,
                     DATE(`event`.event_date) as StartDate,
                     DATE(drug_duration.`name`) as EndDate,
                     1 AS IsAddedByPrescription,
