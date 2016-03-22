@@ -307,7 +307,7 @@ return array(
 						'position' => 4,
 						'userrule' => 'isSurgeon',
 						'restricted' => array('admin'),
-						'options' => array('target' => '_blank'),
+						'options' => array('target' => '_blank')),
 					'nodexport' => array(
 						'title' => 'NOD Export',
 						'uri' => 'NodExport',
