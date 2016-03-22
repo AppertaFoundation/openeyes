@@ -281,7 +281,7 @@ return array(
 				'uri' => '#',
 				'position' => 2,
 				'userrule' => 'isSurgeon',
-				'restricted' => array('admin', 'Report'),
+				'restricted' => array('admin', 'Report', 'NOD Export'),
 				'sub' => array(
 					'admin' => array(
 						'title' => 'Admin',
@@ -307,7 +307,12 @@ return array(
 						'position' => 4,
 						'userrule' => 'isSurgeon',
 						'restricted' => array('admin'),
-						'options' => array('target' => '_blank')
+						'options' => array('target' => '_blank'),
+					'nodexport' => array(
+						'title' => 'NOD Export',
+						'uri' => 'NodExport',
+						'position' => 4,
+						'restricted' => array('NOD Export'),
 					),
 				)
 			),

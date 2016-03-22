@@ -343,3 +343,14 @@ table.bleb-assessment th, table.bleb-assessment td {
 #admin_workflow_steps .selected td {
   color: #fff;
 }
+
+OEModule_OphCiExamination_models_Element_OphCiExamination_PostOpComplications td.postop-complication-remove-btn{
+    text-align:right;
+}
+
+/* line 63, ../sass/openeyes/components/admin/_boxes.scss */
+#postop-complications #draggablelist #draggablelist-items .available-items{
+    max-height:500px;
+    overflow: auto;
+}
+

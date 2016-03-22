@@ -16,91 +16,98 @@
 $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' => 3, 'field' => 9),));
 
 ?>
-<fieldset class="field-row">
+    <fieldset class="field-row">
 
-	<legend><strong><?= $medication->isNewRecord ? "Add" : "Edit" ?> medication</strong></legend>
+        <legend><strong><?= $medication->isNewRecord ? "Add" : "Edit" ?> medication</strong></legend>
 
-	<input type="hidden" name="medication_id" id="medication_id" value="<?= $medication->id ?>"/>
-	<input type="hidden" name="patient_id" id="medication_id" value="<?= $patient->id ?>"/>
+        <input type="hidden" name="medication_id" id="medication_id" value="<?= $medication->id ?>"/>
+        <input type="hidden" name="patient_id" id="medication_id" value="<?= $patient->id ?>"/>
+        <input type="hidden" name="prescription_item_id" id="prescription_item_id" value="<?= $medication->prescription_item_id ?>"/>
 
-	<div class="field-row row">
-		<div class="<?= $form->columns('label');?>">
-			<label for="drug_id">Medication:</label>
-		</div>
-		<div class="<?= $form->columns('field');?>">
+        <div class="field-row row">
+            <div class="<?= $form->columns('label'); ?>">
+                <label for="drug_id">Medication:</label>
+            </div>
+            <div class="<?= $form->columns('field'); ?>">
 
-			<input type="hidden" name="drug_id" value="<?= $medication->drug_id ?>"/>
-			<input type="hidden" name="medication_drug_id" value="<?= $medication->medication_drug_id ?>"/>
-			<div class="field-row data-value" id="medication_drug_name"><?= CHtml::encode($medication->getDrugLabel()) ?></div>
+                <input type="hidden" name="drug_id" value="<?= $medication->drug_id ?>"/>
+                <input type="hidden" name="medication_drug_id" value="<?= $medication->medication_drug_id ?>"/>
 
-			<div class="field-row">
-				<?= CHtml::dropDownList('drug_select','', Drug::model()->listBySubspecialtyWithCommonMedications($firm->getSubspecialtyID()), array('empty' => '- Select -'))?>
-			</div>
+                <div class="field-row data-value"
+                     id="medication_drug_name"><?= CHtml::encode($medication->getDrugLabel()) ?></div>
 
-			<div class="field-row">
-				<div class="label"></div>
-				<?php
+                <div class="field-row">
+                    <?= CHtml::dropDownList('drug_select', '', Drug::model()->listBySubspecialtyWithCommonMedications($firm->getSubspecialtyID()), array('empty' => '- Select -')) ?>
+                </div>
 
-				$this->widget('zii.widgets.jui.CJuiAutoComplete',
-					array(
-						'name' => 'drug_autocomplete',
-						'source' => new CJavaScriptExpression(
-							'function (req, res) { $.getJSON(' . json_encode($this->createUrl('medication/finddrug')) . ', req, res); }'
-						),
-						'options' => array(
-							'minLength' => 3,
-							'focus' => "js:function(e,ui) {
-								$('#drug_autocomplete').val(ui.item.label);
-								e.preventDefault();
-							}"
-						),
-						'htmlOptions' => array('placeholder' => 'or search'),
-					)
-				);
-				?>
-			</div>
-		</div>
-	</div>
+                <div class="field-row">
+                    <div class="label"></div>
+                    <?php
 
-	<?php $form->widget('application.widgets.TextField', array('element' => $medication, 'field' => 'dose', 'name' => 'dose')); ?>
+                    $this->widget('zii.widgets.jui.CJuiAutoComplete',
+                        array(
+                            'name' => 'drug_autocomplete',
+                            'source' => new CJavaScriptExpression(
+                                'function (req, res) { $.getJSON(' . json_encode($this->createUrl('medication/finddrug')) . ', req, res); }'
+                            ),
+                            'options' => array(
+                                'minLength' => 3,
+                                'focus' => "js:function(e,ui) {
+                                $('#drug_autocomplete').val(ui.item.label);
+                                e.preventDefault();
+                            }"
+                            ),
+                            'htmlOptions' => array('placeholder' => 'or search'),
+                        )
+                    );
+                    ?>
+                </div>
+            </div>
+        </div>
 
-	<?php $form->widget('application.widgets.DropDownList', array('element' => $medication, 'field' => 'route_id', 'data' => 'DrugRoute', 'htmlOptions' => array('name' => 'route_id', 'empty' => '- Select -'))); ?>
+        <?php $form->widget('application.widgets.TextField', array('element' => $medication, 'field' => 'dose', 'name' => 'dose')); ?>
 
-	<div id="medication_route_option">
-		<?php if ($medication->route) $this->renderPartial('route_option', array('medication' => $medication, 'route' => $medication->route)); ?>
-	</div>
+        <?php $form->widget('application.widgets.DropDownList', array('element' => $medication, 'field' => 'route_id', 'data' => 'DrugRoute', 'htmlOptions' => array('name' => 'route_id', 'empty' => '- Select -'))); ?>
 
-	<?php $form->widget('application.widgets.DropDownList', array('element' => $medication, 'field' => 'frequency_id', 'data' => 'DrugFrequency', 'htmlOptions' => array('name' => 'frequency_id', 'empty' => '- Select -'))); ?>
+        <div id="medication_route_option">
+            <?php if ($medication->route) $this->renderPartial('route_option', array('medication' => $medication, 'route' => $medication->route)); ?>
+        </div>
 
-	<input type="hidden" name="start_date">
-	<?php $this->renderPartial('/patient/_fuzzy_date', array('form' => $form, 'date' => $medication->start_date, 'class' => 'medication_start_date', 'label' => 'Date from')); ?>
+        <?php $form->widget('application.widgets.DropDownList', array('element' => $medication, 'field' => 'frequency_id', 'data' => 'DrugFrequency', 'htmlOptions' => array('name' => 'frequency_id', 'empty' => '- Select -'))); ?>
 
-	<div class="row field-row">
-		<div class="<?= $form->columns('label') ?>"><label for="current">Current:</label></div>
-		<div class="<?= $form->columns('field') ?>">
-			<label class="inline"><?= CHtml::radioButton('current', !$medication->end_date, array('value' => true)) ?> Yes</label>
-			<label class="inline"><?= CHtml::radioButton('current', $medication->end_date, array('value' => false)) ?> No</label>
-			<button id="medication_from_today" type="button" class="tiny right">From today</button>
-		</div>
-	</div>
+        <input type="hidden" name="start_date">
+        <?php $this->renderPartial('/patient/_fuzzy_date', array('form' => $form, 'date' => $medication->start_date, 'class' => 'medication_start_date', 'label' => 'Date from')); ?>
 
-	<div id="medication_end" class="<?= $medication->end_date ? "" : "hidden" ?>">
-		<input type="hidden" name="end_date">
-		<?php
+        <div class="row field-row">
+            <div class="<?= $form->columns('label') ?>"><label for="current">Current:</label></div>
+            <div class="<?= $form->columns('field') ?>">
+                <label
+                    class="inline"><?= CHtml::radioButton('current', !$medication->end_date, array('value' => true)) ?>
+                    Yes</label>
+                <label
+                    class="inline"><?= CHtml::radioButton('current', $medication->end_date, array('value' => false)) ?>
+                    No</label>
+                <button id="medication_from_today" type="button" class="tiny right">From today</button>
+            </div>
+        </div>
 
-		$this->renderPartial('/patient/_fuzzy_date', array('form' => $form, 'date' => $medication->end_date, 'class' => 'medication_end_date', 'label' => 'Date to'));
-		$this->renderPartial('stop_reason', array('form' => $form, 'medication' => $medication));
+        <div id="medication_end" class="<?= $medication->end_date ? "" : "hidden" ?>">
+            <input type="hidden" name="end_date">
+            <?php
 
-		?>
-	</div>
+            $this->renderPartial('/patient/_fuzzy_date', array('form' => $form, 'date' => $medication->end_date, 'class' => 'medication_end_date', 'label' => 'Date to'));
+            $this->renderPartial('stop_reason', array('form' => $form, 'medication' => $medication));
 
-	<div id="medication_form_errors" class="alert-box alert hide"></div>
+            ?>
+        </div>
 
-	<div class="buttons">
-		<button type="button" class="medication_save secondary small">Save</button>
-		<button type="button" class="medication_cancel warning small">Cancel</button>
-	</div>
-</fieldset>
+        <div id="medication_form_errors" class="alert-box alert hide"></div>
+
+        <div class="buttons">
+            <button type="button" class="medication_save secondary small">Save</button>
+            <button type="button" class="medication_cancel warning small">Cancel</button>
+        </div>
+    </fieldset>
 <?php
 
 $this->endWidget();

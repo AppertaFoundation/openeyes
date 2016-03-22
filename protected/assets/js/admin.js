@@ -216,19 +216,30 @@ $(document).ready(function () {
     );
 
     var showHideEmpty = function (el, min) {
-        if (el.find('.episode-summary-item').length > min) {
-            el.find('.episode-summary-empty').hide();
-        } else {
-            el.find('.episode-summary-empty').show();
-        }
-    };
+        if (el.find('.draggablelist-item').length > min) {
+            el.find('.draggablelist-empty').hide();
+         } else {
 
-    var items_enabled = $('#episode-summary-items-enabled');
-    var items_available = $('#episode-summary-items-available');
+           el.find('.draggablelist-empty').show();
+         }
+      };
+    
+        //-----------------------------------------------
+ 	// Common Post-Op Complications
+ 	//-----------------------------------------------
+ 
+     $('#postop-complications #subspecialty_id').change(
+         function () {
+             window.location.href = baseUrl + '/OphCiExamination/admin/postOpComplications?subspecialty_id=' + this.value;
+         }
+     );
+
+    var items_enabled = $('#draggablelist-items-enabled');
+    var items_available = $('#draggablelist-items-available');
 
     var extractItemIds = function () {
-        $('#episode-summary #item_ids').val(
-            items_enabled.find('.episode-summary-item').map(
+        $('#draggablelist #item_ids').val(	// remove -items 
+            items_enabled.find('.draggablelist-item').map(
                 function () {
                     return $(this).data('item-id');
                 }
@@ -241,8 +252,8 @@ $(document).ready(function () {
     extractItemIds();
 
     var options = {
-        containment: '#episode-summary-items',
-        items: '.episode-summary-item',
+        containment: '#draggablelist-items',
+        items: '.draggablelist-item',
         change: function (e, ui) {
             showHideEmpty($(this), 0);
             if (ui.sender) showHideEmpty(ui.sender, 1);
@@ -252,8 +263,8 @@ $(document).ready(function () {
     items_enabled.sortable($.extend({connectWith: items_available}, options));
     items_available.sortable($.extend({connectWith: items_enabled}, options));
 
-    $('#episode-summary form').submit(extractItemIds);
-    $('#episode-summary-cancel').click(function () {
+    $('#draggablelist form').submit(extractItemIds);
+    $('#draggablelist-cancel').click(function () {
         location.reload();
     });
 
