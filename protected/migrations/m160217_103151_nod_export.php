@@ -12,10 +12,12 @@ class m160217_103151_nod_export extends CDbMigration
         foreach($cataracts as $cataract){
             $eyedraw = json_decode($cataract['eyedraw']);
             $pupilSize = null;
-            foreach($eyedraw as $eyedrawEl){
-                if(property_exists($eyedrawEl, 'pupilSize')){
-                    $pupilSize = $eyedrawEl->pupilSize;
-                    break;
+            if(is_array($eyedraw)) {
+                foreach ($eyedraw as $eyedrawEl) {
+                    if (property_exists($eyedrawEl, 'pupilSize')) {
+                        $pupilSize = $eyedrawEl->pupilSize;
+                        break;
+                    }
                 }
             }
             if($pupilSize){
