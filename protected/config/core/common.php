@@ -311,7 +311,7 @@ return array(
 					'nodexport' => array(
 						'title' => 'NOD Export',
 						'uri' => 'NodExport',
-						'position' => 4,
+						'position' => 5,
 						'restricted' => array('NOD Export'),
 					),
 				)
