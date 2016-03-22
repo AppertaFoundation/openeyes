@@ -124,7 +124,7 @@ class NodExportController extends BaseController
     public function actionIndex()
     {
         // TODO: need to create views!!!
-        $this->render('index');
+        $this->render('//nodexport/index');
     }
 
     public function actionTest()
