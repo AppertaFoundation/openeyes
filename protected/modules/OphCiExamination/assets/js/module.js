@@ -276,17 +276,35 @@ function posteriorListener(_drawing) {
  * @param _drawing
  */
 function anteriorListener(_drawing) {
-	this.drawing = _drawing;
+    this.drawing = _drawing;
 
-	this.drawing.registerForNotifications(this, 'callBack', ['doodleAdded']);
+    this.drawing.registerForNotifications(this, 'callBack', ['doodleAdded']);
 
-	this.callBack = function (_messageArray) {
-		var obj = _messageArray.object;
-		if (obj.className == 'TrabyFlap' || obj.className == 'Tube') {
-			obj.isDeletable = true;
-			this.drawing.selectDoodle(obj);
-		}
-	}
+    this.callBack = function (_messageArray) {
+        var obj = _messageArray.object;
+        if (obj.className == 'TrabyFlap' || obj.className == 'Tube') {
+                obj.isDeletable = true;
+                this.drawing.selectDoodle(obj);
+        }
+    }
+}
+function pupilListener(_drawing) {
+    this.drawing = _drawing;
+    
+    this.drawing.registerForNotifications(this, 'trigger', ['parameterChanged']);
+    
+    this.trigger = function(_messageArray) {
+        var param = _messageArray.object.parameter;
+
+        if(param === 'pupilSize'){
+            $("select[id*='_pupilSize_control']").trigger('change');
+        }
+     
+        if(param === 'grade'){
+            console.log($("select[id*='_nuclear_id']"));
+            $("select[id*='_nuclear_id']").trigger('change');
+        }
+    } 
 }
 
 $(document).ready(function() {
@@ -2166,8 +2184,8 @@ function OphCiExamination_AddDiagnosis(disorderId, name, eyeId, isDiabetic, isGl
 	$('.js-diagnoses').append(row);
 	OphCiExamination_RefreshCommonOphDiagnoses();
 	//Adding new element to array doesn't trigger change so do it manually
-	$(":input[name^='diabetic_diagnoses']").trigger('change',  ['select[name="diabetic"]']);
-	$(":input[name^='glaucoma_diagnoses']").trigger('change',  ['select[name="glaucoma"]']);
+	$(":input[name^='diabetic_diagnoses']").trigger('change');
+	$(":input[name^='glaucoma_diagnoses']").trigger('change');
 }
 
 function OphCiExamination_Gonioscopy_Eyedraw_Controller(drawing) {
