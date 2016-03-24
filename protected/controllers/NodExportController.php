@@ -700,7 +700,7 @@ EOL;
                             WHEN ophinbiometry_imported_events.`device_model` = 'Haag-Streit LensStar' THEN 2
                             WHEN ophinbiometry_imported_events.`device_model` = 'Other' THEN 9
                      END) AS BiometryKeratometerId,
-                    ( SELECT `code` FROM tmp_biometry_formula WHERE tmp_biometry_formula.`desc` = ophinbiometry_calculation_formula.name ) AS BiometryFormulaId,
+                    ( SELECT `code` FROM tmp_biometry_formula WHERE tmp_biometry_formula.`desc` = ophinbiometry_calculation_formula.name COLLATE utf8_general_ci) AS BiometryFormulaId,
                     k1_left AS K1PreOperative,
                     k2_left AS K2PreOperative,
                     axis_k1_left AS AxisK1,
@@ -733,7 +733,7 @@ EOL;
                             WHEN ophinbiometry_imported_events.`device_model` = 'Haag-Streit LensStar' THEN 2
                             WHEN ophinbiometry_imported_events.`device_model` = 'Other' THEN 9
                      END) AS BiometryKeratometerId,
-                    ( SELECT `code` FROM tmp_biometry_formula WHERE tmp_biometry_formula.`desc` = ophinbiometry_calculation_formula.name ) AS BiometryFormulaId,
+                    ( SELECT `code` FROM tmp_biometry_formula WHERE tmp_biometry_formula.`desc` = ophinbiometry_calculation_formula.name COLLATE utf8_general_ci) AS BiometryFormulaId,
                     k1_right AS K1PreOperative,
                     k2_right AS K2PreOperative,
                     axis_k1_right AS AxisK1,
