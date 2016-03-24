@@ -50,14 +50,30 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
      * @var array
      */
     protected $graphConfig = array(
-        'chart' => array('renderTo' => '', 'type' => 'bubble'),
+        'chart' => array(
+            'renderTo' => '', 
+            'type' => 'bubble',
+        ),
+        'tooltip' => array(
+                'useHTML' => true,
+                'headerFormat' => '<b>{series.name}</b><br>',
+                'pointFormat' => 'Size: {point.z}'
+        ),
         'legend' => array('enabled' => false),
         'title' => array('text' => 'Visual Acuity (Near/Distance)'),
         'xAxis' => array(
-            'title' => array('text' => 'Postoperative VA'),
+            'title' => array('text' => 'Visual acuity at surgery (LogMAR)'),
+            'categories' => array('>1.20', '>1.0-1.2',  '>0.80-1.0', '>0.60-0.80',  '>0.40-0.60', '>0.20-0.40', '>0.00-0.20', '<= 0.00'),
+            'min' => 0,
+            'max' => 7,
         ),
         'yAxis' => array(
-            'title' => array('text' => 'Preoperative VA'),
+            'title' => array('text' => 'Visual acuity 4 months after surgery (LogMAR)'),
+            'categories' => array('>1.20', '>1.0-1.2',  '>0.80-1.0', '>0.60-0.80',  '>0.40-0.60', '>0.20-0.40', '>0.00-0.20', '<= 0.00'),
+            'min' => 0,
+            'max' => 7,
+            'gridLineWidth' => 0,
+            'minorGridLineWidth' => 0
         ),
         'plotOptions' => array('scatter' => array(
             'tooltip' => array(
@@ -215,7 +231,9 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
             }
             $counts[$data[0].'_'.$data[1]]++;
         }
-        $returnData = array();
+        // original processing left here for debug purposes, remove if not necessary
+     /* 
+      * $returnData = array();
         foreach($counts as $key => $count){
             $points = explode('_', $key);
             $returnData[] = array(
@@ -223,6 +241,104 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
                 (float)$points[1],
                 $count
             );
+        }
+       */
+         
+        $matrix = array();
+        
+        foreach($counts as $key => $count){
+            $xAxsis = null;
+            $yAxsis = null;
+            
+            $points = explode('_', $key);
+            
+            $xPoint = (float)$points[1];
+            $yPoint = (float)$points[0];
+            
+            
+            if( $xPoint <= 0 ){
+                $xAxsis = 7;
+            }
+            
+            if( $xPoint >= 0 && $xPoint <= 0.20 ){
+                $xAxsis = 6;
+            }
+            
+            if( $xPoint > 0.20 && $xPoint <= 0.40 ){
+                $xAxsis = 5;
+            }
+            
+            if( $xPoint > 0.40 && $xPoint <= 0.60 ){
+                $xAxsis = 4;
+            }
+            
+            if( $xPoint > 0.60 && $xPoint <= 0.80 ){
+                $xAxsis = 3;
+            }
+            
+            if( $xPoint > 0.80 && $xPoint <= 1 ){
+                $xAxsis = 2;
+            }
+            
+            if( $xPoint > 1 && $xPoint <= 1.2 ){
+                $xAxsis = 1;
+            }
+            
+            if( $xPoint > 1.2 ){
+                $xAxsis = 0;
+            }
+            
+            // yAxsis
+            
+            if( $yPoint <= 0 ){
+                $yAxsis = 7;
+            }
+            
+            if( $yPoint >= 0 && $yPoint <= 0.20 ){
+                $yAxsis = 6;
+            }
+            
+            if( $yPoint > 0.20 && $yPoint <= 0.40 ){
+                $yAxsis = 5;
+            }
+            
+            if( $yPoint > 0.40 && $yPoint <= 0.60 ){
+                $yAxsis = 4;
+            }
+            
+            if( $yPoint > 0.60 && $yPoint <= 0.80 ){
+                $yAxsis = 3;
+            }
+            
+            if( $yPoint > 0.80 && $yPoint <= 1 ){
+                $yAxsis = 2;
+            }
+            
+            if( $yPoint > 1 && $yPoint <= 1.2 ){
+                $yAxsis = 1;
+            }
+            
+            if( $yPoint > 1.2 ){
+                $yAxsis = 0;
+            }
+            
+            
+            if( isset($matrix[$xAxsis][$yAxsis]) ){
+                $matrix[$xAxsis][$yAxsis] += $count;
+            } else {
+                $matrix[$xAxsis][$yAxsis] = $count;
+            }
+
+        }
+        
+        foreach($matrix as $xCoord => $bubbleX){
+            foreach($bubbleX as $yCoord => $value){
+                $returnData[] = array(
+                    $xCoord,
+                    $yCoord,
+                    $value
+                );
+            }
         }
 
         return $returnData;
@@ -236,9 +352,29 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         $this->series = array(
             array(
                 'data' => $this->dataSet(),
-                'name' => 'Visual Outcome'
-            ));
+                'name' => 'Visual Outcome',
+                'dataLabels' => array(
+                    'enabled' => true,
+                    'y' => -10, // 0 pixels down from the top
+                    'style' => array(
+                        'fontSize' => '13px',
+                        'fontFamily' => 'Verdana, sans-serif',
+                    ),
+                )
+            ),
+            array(
+                'type' => 'line',
+                'data' => array(
+                    array(-1,-1),
+                    array(8,8),
+                ),
+                'dashStyle' =>  'longdash',
+                'marker' =>  array( 'enabled' =>  false ),
+                'enableMouseTracking' =>  false,
+            ),
+        );
 
+        
         return json_encode($this->series);
     }
 
