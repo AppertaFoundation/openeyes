@@ -62,6 +62,13 @@ class NodExportController extends BaseController
         $startDate = new DateTime(Yii::app()->request->getParam("date_from", ''));
         $endDate = new DateTime(Yii::app()->request->getParam("date_to", ''));
 
+        // if start date is greater than end date we exchange the two dates
+        if($endDate < $startDate){
+            $tempDate = $endDate;
+            $endDate = $startDate;
+            $startDate = $tempDate;
+        }
+
 		$this->startDate = $startDate->format('Y-m-d');
 		$this->endDate	= $endDate->format('Y-m-d');
         parent::init();
