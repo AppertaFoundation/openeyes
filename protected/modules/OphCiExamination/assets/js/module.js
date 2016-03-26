@@ -301,8 +301,8 @@ function pupilListener(_drawing) {
         }
      
         if(param === 'grade'){
-            console.log($("select[id*='_nuclear_id']"));
             $("select[id*='_nuclear_id']").trigger('change');
+            $("select[id*='_cortical_id']").trigger('change');
         }
     } 
 }

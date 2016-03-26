@@ -12,13 +12,35 @@ function mapExaminationToPcr()
                 "init": true
             },
             "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_nuclear_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_nuclear_id": {
-                "pcr": '.pcrrisk_brunescent_white_cataract',
+                "pcr": {    "related" : {
+                                "left" : "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_cortical_id",
+                                "right" : "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_cortical_id"
+                            }, 
+                            "pcr" : '.pcrrisk_brunescent_white_cataract'},
                 "func": setPcrBrunescent
             },
-            ":input[id*='_pxe_control']": {
-                "pcr":  '.pcrrisk_pxf_phako',
+            "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_cortical_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_cortical_id": {
+                "pcr": {    "related": {
+                                "left" : "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_nuclear_id",
+                                "right" : "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_nuclear_id"
+                            } , 
+                            "pcr": '.pcrrisk_brunescent_white_cataract'},
+                "func": setPcrBrunescent
+            },
+            
+            ":checkbox[id*='_pxe_control']": {
+                "pcr":  {   "related": ":checkbox[id*='_phako']", 
+                            "pcr": '.pcrrisk_pxf_phako'
+                        },
                 "func": setPcrPxf
             },
+            ":checkbox[id*='_phako']": {
+                "pcr":  {   "related": ":checkbox[id*='_pxe_control']",
+                            "pcr": '.pcrrisk_pxf_phako'
+                        },
+                "func": setPcrPxf
+            },
+            
             ":input[id*='_pupilSize_control']": {
                 "pcr":  '.pcrrisk_pupil_size',
                 "func": setPcrPupil
@@ -176,12 +198,18 @@ function setSurgeonFromNote(ev, pcrEl)
 function setPcrBrunescent(ev, pcrEl)
 {
     if(!pcrEl){
-        pcrEl = ev.data;
+        pcrEl = ev.data.pcr;
     }
 
     var $container = getPcrContainer(ev);
     var $cataractDrop = $(ev.target);
-    if($cataractDrop.find(':selected').data('value') === 'Brunescent'){
+    
+    var isRight = (ev.target.id.indexOf('right') > -1);
+    var $related = isRight ? $(ev.data.related.right) : $(ev.data.related.left);
+
+    var value = $cataractDrop.find(':selected').data('value');
+    var related_value = $related.find(':selected').data('value');
+    if( (value === 'Brunescent' || value === 'White') || (related_value === "Brunescent" || related_value === "White") ){
         $container.find(pcrEl).val('Y');
     } else {
         $container.find(pcrEl).val('N');
@@ -196,14 +224,15 @@ function setPcrBrunescent(ev, pcrEl)
  * @param pcrEl
  */
 function setPcrPxf(ev, pcrEl)
-{
+{    
     if(!pcrEl){
-        pcrEl = ev.data;
+        pcrEl = ev.data.pcr;
     }
 
     var $container = getPcrContainer(ev);
-
-    if(ev.target.checked){
+    var $related = $(ev.data.related);
+    
+    if(ev.target.checked || $related.is(':checked') ){
         $container.find(pcrEl).val('Y');
     } else {
         $container.find(pcrEl).val('N');
