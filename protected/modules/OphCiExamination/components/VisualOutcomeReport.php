@@ -331,6 +331,8 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
 
         }
         
+        $returnData = array();
+        
         foreach($matrix as $xCoord => $bubbleX){
             foreach($bubbleX as $yCoord => $value){
                 $returnData[] = array(
