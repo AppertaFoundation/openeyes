@@ -17,7 +17,8 @@ function mapExaminationToPcr()
                                 "right" : "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_cortical_id"
                             }, 
                             "pcr" : '.pcrrisk_brunescent_white_cataract'},
-                "func": setPcrBrunescent
+                "func": setPcrBrunescent,
+                "init": true
             },
             "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_cortical_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_cortical_id": {
                 "pcr": {    "related": {
@@ -25,25 +26,29 @@ function mapExaminationToPcr()
                                 "right" : "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_nuclear_id"
                             } , 
                             "pcr": '.pcrrisk_brunescent_white_cataract'},
-                "func": setPcrBrunescent
+                "func": setPcrBrunescent,
+                "init": true
             },
             
             ":checkbox[id*='_pxe_control']": {
                 "pcr":  {   "related": ":checkbox[id*='_phako']", 
                             "pcr": '.pcrrisk_pxf_phako'
                         },
-                "func": setPcrPxf
+                "func": setPcrPxf,
+                "init": true
             },
             ":checkbox[id*='_phako']": {
                 "pcr":  {   "related": ":checkbox[id*='_pxe_control']",
                             "pcr": '.pcrrisk_pxf_phako'
                         },
-                "func": setPcrPxf
+                "func": setPcrPxf,
+                "init": true
             },
             
             ":input[id*='_pupilSize_control']": {
                 "pcr":  '.pcrrisk_pupil_size',
-                "func": setPcrPupil
+                "func": setPcrPupil,
+                "init": true
             },
             ":input[name^='diabetic_diagnoses']": {
                 "pcr": '.pcrrisk_diabetic',
@@ -72,7 +77,12 @@ function mapExaminationToPcr()
             }
             //Some stuff is set from PHP on page load, some is not so we need to init them
             if(typeof examinationObj.init !== 'undefined' && examinationObj.init){
-                $(examinationEl).trigger('change', [examinationObj.pcr]);
+                
+                if(typeof examinationObj.pcr === 'object'){
+                    $(examinationEl).trigger('change', [examinationObj.pcr.pcr]);
+                }else{
+                    $(examinationEl).trigger('change', [examinationObj.pcr]);
+                }
             }
         }
     }
