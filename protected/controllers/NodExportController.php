@@ -1117,7 +1117,7 @@ EOL;
                             JOIN event_type evt ON evt.id = e.event_type_id
                             JOIN et_ophtroperationnote_procedurelist pl ON e.id = pl.event_id
                             LEFT JOIN `et_ophtroperationbooking_diagnosis` d ON e.id = d.`event_id`
-                            WHERE evt.name = 'Operation booking' " . $this->getDateWhere('e');
+                            WHERE evt.name = 'Operation Note' " . $this->getDateWhere('e');
 
 
         $dataQuery = array(
@@ -1185,7 +1185,7 @@ EOL;
 					JOIN event_type evt ON evt.id = e.event_type_id
 					LEFT JOIN et_ophtroperationnote_surgeon s ON s.event_id = e.id
 					INNER JOIN `user` ON s.`surgeon_id` = `user`.`id`
-					WHERE evt.name = 'Operation booking' AND e.id in (SELECT id FROM tmp_operation_ids)";
+					WHERE evt.name = 'Operation Note' AND e.id in (SELECT id FROM tmp_operation_ids)";
 
 
         $dataQuery = array(
