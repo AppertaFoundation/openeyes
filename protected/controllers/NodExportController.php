@@ -301,7 +301,7 @@ class NodExportController extends BaseController
 			(999, 'other');
                         
                         
-                        CREATE TABLE tmp_biometry_formula (
+                        CREATE TEMPORARY TABLE tmp_biometry_formula (
                                 `code` INT(10) UNSIGNED NOT NULL,
                                 `desc` VARCHAR(100)
                         );
@@ -317,7 +317,7 @@ class NodExportController extends BaseController
                         (7, 'Average of SRK/T + Holladay + Hoffer Q'),
                         (9, 'Not recorded');
                         
-                        CREATE TABLE tmp_episode_diagnosis (
+                        CREATE TEMPORARY TABLE tmp_episode_diagnosis (
                            `oe_subspecialty_name` VARCHAR(50),
                            `rco_condition_name` VARCHAR(50),
                            `oe_subspecialty_id` INT(10) UNSIGNED NOT NULL,
@@ -345,9 +345,9 @@ class NodExportController extends BaseController
                         
                         
                         
-                    DROP TABLE IF EXISTS tmp_episode_drug_route;
+                    DROP TEMPORARY TABLE IF EXISTS tmp_episode_drug_route;
                 
-                    CREATE TABLE tmp_episode_drug_route (
+                    CREATE TEMPORARY TABLE tmp_episode_drug_route (
                         `oe_route_id` INT(10) UNSIGNED, 
                         `oe_route_name` VARCHAR(50), 
                         `oe_option_id` INT(10) UNSIGNED DEFAULT NULL, 
@@ -397,7 +397,9 @@ EOL;
                 DROP TEMPORARY TABLE IF EXISTS tmp_iol_positions;
                 DROP TEMPORARY TABLE IF EXISTS tmp_pathology_type;
                 DROP TEMPORARY TABLE IF EXISTS tmp_doctor_grade;
-                DROP TABLE IF EXISTS tmp_biometry_formula;
+                DROP TEMPORARY TABLE IF EXISTS tmp_biometry_formula;
+                DROP TEMPORARY TABLE IF EXISTS tmp_episode_diagnosis;
+                DROP TEMPORARY TABLE IF EXISTS tmp_episode_drug_route;
                 DROP TEMPORARY TABLE IF EXISTS tmp_episode_ids;
                 DROP TEMPORARY TABLE IF EXISTS tmp_operation_ids;
                 DROP TEMPORARY TABLE IF EXISTS tmp_treatment_ids;
