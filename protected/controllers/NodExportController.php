@@ -144,6 +144,9 @@ class NodExportController extends BaseController
 
     private function createAllTempTables()
     {
+        // DROP all tables if exsist before createing them
+        $this->clearAllTempTables();
+        
         $createTempQuery = <<<EOL
 			DROP TEMPORARY TABLE IF EXISTS tmp_episode_ids;
 			
@@ -1202,8 +1205,7 @@ EOL;
                     'L' AS Eye,
                     v.unit_id AS NotationRecordedId,
 
-                    (SELECT MAX(VALUE) FROM ophciexamination_visualacuity_reading r JOIN et_ophciexamination_visualacuity va ON va.id = r.element_id WHERE r.element_id = v.id AND va.unit_id = (SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter')) AS BestMeasure,
-                    #(SELECT value from ophciexamination_visualacuity_reading r JOIN et_ophciexamination_visualacuity va ON va.id = r.element_id WHERE r.element_id = v.id AND method_id = 1) AS Unaided,
+                    ( SELECT value FROM ophciexamination_visual_acuity_unit_value WHERE base_value = (SELECT MAX(VALUE) FROM ophciexamination_visualacuity_reading r JOIN et_ophciexamination_visualacuity va ON va.id = r.element_id WHERE r.element_id = v.id) AND unit_id = (SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter')) AS BestMeasure,
                     '' AS Unaided, 
                     '' AS Pinhole, 
                     '' AS BestCorrected
@@ -1216,8 +1218,7 @@ EOL;
                     'R' AS Eye,
                     v.unit_id AS NotationRecordedId,
 
-                    (SELECT MAX(VALUE) FROM ophciexamination_visualacuity_reading r JOIN et_ophciexamination_visualacuity va ON va.id = r.element_id WHERE r.element_id = v.id AND va.unit_id = (SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter')) AS BestMeasure,
-                    #(SELECT value from ophciexamination_visualacuity_reading r JOIN et_ophciexamination_visualacuity va ON va.id = r.element_id WHERE r.element_id = v.id AND method_id = 1) AS Unaided,
+                    ( SELECT value FROM ophciexamination_visual_acuity_unit_value WHERE base_value = (SELECT MAX(VALUE) FROM ophciexamination_visualacuity_reading r JOIN et_ophciexamination_visualacuity va ON va.id = r.element_id WHERE r.element_id = v.id) AND unit_id = (SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter')) AS BestMeasure,
                     '' AS Unaided,
                     '' AS Pinhole,
                     '' AS BestCorrected
