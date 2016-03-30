@@ -84,11 +84,11 @@ class NodExportController extends BaseController
         $this->saveIds('tmp_episode_ids', $this->getEpisodeIOP());
         $this->saveIds('tmp_episode_ids', $this->getEpisodeVisualAcuity());
         $this->saveIds('tmp_episode_ids', $this->getEpisodeRefraction());
-        $this->saveIds('tmp_episode_ids', $this->getEpisodeOperation());
         $this->saveIds('tmp_operation_ids', $this->getEpisodeOperationCoPathology());
         $this->saveIds('tmp_operation_ids', $this->getEpisodeOperationAnaesthesia());
         $this->saveIds('tmp_operation_ids', $this->getEpisodeOperationIndication());
         $this->saveIds('tmp_operation_ids', $this->getEpisodeOperationComplication());
+        $this->saveIds('tmp_episode_ids', $this->getEpisodeOperation());
         $this->saveIds('tmp_treatment_ids', $this->getEpisodeTreatmentCataract());
         $this->getEpisodeTreatment();
     }
