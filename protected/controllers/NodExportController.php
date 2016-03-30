@@ -166,48 +166,7 @@ class NodExportController extends BaseController
 				id  int(10) UNSIGNED NOT NULL UNIQUE
 			);
 			
-			DROP TEMPORARY TABLE IF EXISTS tmp_doctor_grade;
-			CREATE TEMPORARY TABLE tmp_doctor_grade (
-			`code` INT(10) UNSIGNED NOT NULL,
-			`desc` VARCHAR(100)
-			);
-			INSERT INTO tmp_doctor_grade (`code`, `desc`)
-			VALUES
-			(0, 'Consultant'),
-			(1, 'Locum Consultant'),
-			(2, 'corneal burn'),
-			(3, 'Associate Specialist'),
-			(4, 'Fellow'),
-			(5, 'Registrar'),
-			(6, 'Staff Grade'),
-			(7, 'Trust Doctor'),
-			(8, 'Senior House Officer'),
-			(9, 'Specialty trainee (year 1)'),
-			(10, 'Specialty trainee (year 2)'),
-			(11, 'Specialty trainee (year 3)'),
-			(12, 'Specialty trainee (year 4)'),
-			(13, 'Specialty trainee (year 5)'),
-			(14, 'Specialty trainee (year 6)'),
-			(15, 'Specialty trainee (year 7)'),
-			(16, 'Foundation Year 1 Doctor'),
-			(17, 'Foundation Year 2 Doctor'),
-			(18, 'GP with a special interest in ophthalmology'),
-			(19, 'Community ophthalmologist'),
-			(20, 'Anaesthetist'),
-			(21, 'Orthoptist'),
-			(22, 'Optometrist'),
-			(23, 'Clinical nurse specialist'),
-			(24, 'Nurse'),
-			(25, 'Health Care Assistant'),
-			(26, 'Ophthalmic Technician'),
-			(27, 'Surgical Care Practitioner'),
-			(28, 'Clinical Assistant'),
-			(29, 'RG1'),
-			(30, 'RG2'),
-			(31, 'ODP'),
-			(32, 'Administration staff'),
-			(33, 'Other');
-					
+
 			DROP TEMPORARY TABLE IF EXISTS tmp_pathology_type;
 			CREATE TEMPORARY TABLE tmp_pathology_type (
 				`nodcode` INT(10) UNSIGNED NOT NULL,
@@ -301,7 +260,7 @@ class NodExportController extends BaseController
 			(999, 'other');
                         
                         
-                        CREATE TEMPORARY TABLE tmp_biometry_formula (
+                        CREATE TABLE tmp_biometry_formula (
                                 `code` INT(10) UNSIGNED NOT NULL,
                                 `desc` VARCHAR(100)
                         );
@@ -317,7 +276,7 @@ class NodExportController extends BaseController
                         (7, 'Average of SRK/T + Holladay + Hoffer Q'),
                         (9, 'Not recorded');
                         
-                        CREATE TEMPORARY TABLE tmp_episode_diagnosis (
+                        CREATE TABLE tmp_episode_diagnosis (
                            `oe_subspecialty_name` VARCHAR(50),
                            `rco_condition_name` VARCHAR(50),
                            `oe_subspecialty_id` INT(10) UNSIGNED NOT NULL,
@@ -345,7 +304,7 @@ class NodExportController extends BaseController
                         
                         
                         
-                    DROP TEMPORARY TABLE IF EXISTS tmp_episode_drug_route;
+                    DROP TABLE IF EXISTS tmp_episode_drug_route;
                 
                     CREATE TEMPORARY TABLE tmp_episode_drug_route (
                         `oe_route_id` INT(10) UNSIGNED, 
@@ -396,10 +355,9 @@ EOL;
                 DROP TEMPORARY TABLE IF EXISTS tmp_anesthesia_type;
                 DROP TEMPORARY TABLE IF EXISTS tmp_iol_positions;
                 DROP TEMPORARY TABLE IF EXISTS tmp_pathology_type;
-                DROP TEMPORARY TABLE IF EXISTS tmp_doctor_grade;
-                DROP TEMPORARY TABLE IF EXISTS tmp_biometry_formula;
-                DROP TEMPORARY TABLE IF EXISTS tmp_episode_diagnosis;
-                DROP TEMPORARY TABLE IF EXISTS tmp_episode_drug_route;
+                DROP TABLE IF EXISTS tmp_biometry_formula;
+                DROP TABLE IF EXISTS tmp_episode_diagnosis;
+                DROP TABLE IF EXISTS tmp_episode_drug_route;
                 DROP TEMPORARY TABLE IF EXISTS tmp_episode_ids;
                 DROP TEMPORARY TABLE IF EXISTS tmp_operation_ids;
                 DROP TEMPORARY TABLE IF EXISTS tmp_treatment_ids;
@@ -423,11 +381,7 @@ EOL;
 
         $query = <<<EOL
     SELECT id as Surgeonid, IFNULL(registration_code, '') as GMCnumber, IFNULL(title, '') as Title, IFNULL(first_name, '') as FirstName,
-    (
-        SELECT `code` 
-        FROM tmp_doctor_grade, doctor_grade
-        WHERE user.`doctor_grade_id` = doctor_grade.id AND doctor_grade.`grade` = tmp_doctor_grade.desc
-    ) AS CurrentGradeId
+    user.`doctor_grade_id`  AS CurrentGradeId
 FROM user 
 WHERE is_surgeon = 1 AND active = 1 
 EOL;
@@ -1175,11 +1129,7 @@ EOL;
                 '' as IsHypertensive,
                 e.event_date AS ListedDate,
 			s.surgeon_id AS SurgeonId, 
-			(
-				SELECT `code`
-				FROM tmp_doctor_grade, doctor_grade
-				WHERE user.`doctor_grade_id` = doctor_grade.id AND doctor_grade.`grade` = tmp_doctor_grade.desc
-			) AS SurgeonGradeId,
+			user.`doctor_grade_id` AS SurgeonGradeId,
                         '' as AssistantId,
                         '' as AssistantGradeId,
                         '' as ConsultantId
