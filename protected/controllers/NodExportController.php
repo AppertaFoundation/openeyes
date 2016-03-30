@@ -306,8 +306,8 @@ class NodExportController extends BaseController
                         
                     DROP TABLE IF EXISTS tmp_episode_drug_route;
                 
-                    CREATE TEMPORARY TABLE tmp_episode_drug_route (
-                        `oe_route_id` INT(10) UNSIGNED, 
+                    CREATE TABLE tmp_episode_drug_route (
+                        `oe_route_id` INT(10) UNSIGNED,
                         `oe_route_name` VARCHAR(50), 
                         `oe_option_id` INT(10) UNSIGNED DEFAULT NULL, 
                         `oe_option_name` VARCHAR(50), 
