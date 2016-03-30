@@ -63,15 +63,15 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         'title' => array('text' => 'Visual Acuity (Near/Distance)'),
         'xAxis' => array(
             'title' => array('text' => 'Visual acuity at surgery (LogMAR)'),
-            'categories' => array('>1.20', '>1.0-1.2',  '>0.80-1.0', '>0.60-0.80',  '>0.40-0.60', '>0.20-0.40', '>0.00-0.20', '<= 0.00'),
+            'categories' => array('-0.20-0.10', '0.10-0.40', '0.40-0.70', '0.70-0.10' ),
             'min' => 0,
-            'max' => 7,
+            'max' => 3,
         ),
         'yAxis' => array(
             'title' => array('text' => 'Visual acuity 4 months after surgery (LogMAR)'),
-            'categories' => array('>1.20', '>1.0-1.2',  '>0.80-1.0', '>0.60-0.80',  '>0.40-0.60', '>0.20-0.40', '>0.00-0.20', '<= 0.00'),
+            'categories' => array('-0.20-0.10', '0.10-0.40', '0.40-0.70', '0.70-0.10' ),
             'min' => 0,
-            'max' => 7,
+            'max' => 3,
             'gridLineWidth' => 0,
             'minorGridLineWidth' => 0
         ),
@@ -256,70 +256,38 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
             $yPoint = (float)$points[0];
             
             
-            if( $xPoint <= 0 ){
-                $xAxsis = 7;
+            if( $xPoint > -0.20 && $xPoint <= 0.10 ){
+                $xAxsis = 0;
             }
             
-            if( $xPoint >= 0 && $xPoint <= 0.20 ){
-                $xAxsis = 6;
-            }
-            
-            if( $xPoint > 0.20 && $xPoint <= 0.40 ){
-                $xAxsis = 5;
-            }
-            
-            if( $xPoint > 0.40 && $xPoint <= 0.60 ){
-                $xAxsis = 4;
-            }
-            
-            if( $xPoint > 0.60 && $xPoint <= 0.80 ){
-                $xAxsis = 3;
-            }
-            
-            if( $xPoint > 0.80 && $xPoint <= 1 ){
-                $xAxsis = 2;
-            }
-            
-            if( $xPoint > 1 && $xPoint <= 1.2 ){
+            if( $xPoint > 0.10 && $xPoint <= 0.40 ){
                 $xAxsis = 1;
             }
             
-            if( $xPoint > 1.2 ){
-                $xAxsis = 0;
+            if( $xPoint > 0.40 && $xPoint <= 0.70 ){
+                $xAxsis = 2;
+            }
+            
+            if( $xPoint > 0.70 && $xPoint <= 1 ){
+                $xAxsis = 3;
             }
             
             // yAxsis
             
-            if( $yPoint <= 0 ){
-                $yAxsis = 7;
+            if( $yPoint > -0.20 && $yPoint <= 0.10 ){
+                $yAxsis = 0;
             }
             
-            if( $yPoint >= 0 && $yPoint <= 0.20 ){
-                $yAxsis = 6;
-            }
-            
-            if( $yPoint > 0.20 && $yPoint <= 0.40 ){
-                $yAxsis = 5;
-            }
-            
-            if( $yPoint > 0.40 && $yPoint <= 0.60 ){
-                $yAxsis = 4;
-            }
-            
-            if( $yPoint > 0.60 && $yPoint <= 0.80 ){
-                $yAxsis = 3;
-            }
-            
-            if( $yPoint > 0.80 && $yPoint <= 1 ){
-                $yAxsis = 2;
-            }
-            
-            if( $yPoint > 1 && $yPoint <= 1.2 ){
+            if( $yPoint > 0.10 && $yPoint <= 0.40 ){
                 $yAxsis = 1;
             }
             
-            if( $yPoint > 1.2 ){
-                $yAxsis = 0;
+            if( $yPoint > 0.40 && $yPoint <= 0.70 ){
+                $yAxsis = 2;
+            }
+            
+            if( $yPoint > 0.70 && $yPoint <= 1 ){
+                $yAxsis = 3;
             }
             
             
@@ -357,7 +325,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
                 'name' => 'Visual Outcome',
                 'dataLabels' => array(
                     'enabled' => true,
-                    'y' => -10, // 0 pixels down from the top
+                    'y' => -10, // -10 pixels down from the top
                     'style' => array(
                         'fontSize' => '13px',
                         'fontFamily' => 'Verdana, sans-serif',
@@ -368,7 +336,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
                 'type' => 'line',
                 'data' => array(
                     array(-1,-1),
-                    array(8,8),
+                    array(4,4),
                 ),
                 'dashStyle' =>  'longdash',
                 'marker' =>  array( 'enabled' =>  false ),
