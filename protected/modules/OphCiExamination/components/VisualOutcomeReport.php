@@ -273,7 +273,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
             }
             
             if( $xPoint > 0.90 && $xPoint <= 1.2 ){
-                $xAxsis = 3;
+                $xAxsis = 1;
             }
             
             if( $xPoint > 1.2 ){
