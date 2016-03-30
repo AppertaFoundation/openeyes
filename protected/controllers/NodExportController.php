@@ -1185,7 +1185,7 @@ EOL;
 					JOIN event_type evt ON evt.id = e.event_type_id
 					LEFT JOIN et_ophtroperationnote_surgeon s ON s.event_id = e.id
 					INNER JOIN `user` ON s.`surgeon_id` = `user`.`id`
-					WHERE evt.name = 'Operation Note' AND e.id in (SELECT id FROM tmp_operation_ids)";
+					WHERE e.id in (SELECT id FROM tmp_operation_ids)";
 
 
         $dataQuery = array(
