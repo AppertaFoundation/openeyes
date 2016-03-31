@@ -35,5 +35,10 @@
             {series: <?= $report->seriesJson();?>},
             JSON.parse('<?= $report->graphConfig();?>')
         ));
-
 </script>
+
+<?php $additional_file = $report->graphId() .'_additional'; ?>
+
+<?php if( is_file(__DIR__ . '/' . $additional_file .'.php' ) ): ?>
+    <?php echo $this->renderPartial('//report/'.$additional_file, array('report' => $report) );?>
+<?php endif; ?>

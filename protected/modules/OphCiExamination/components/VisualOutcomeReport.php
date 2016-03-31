@@ -60,7 +60,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
                 'pointFormat' => 'Size: {point.z}'
         ),
         'legend' => array('enabled' => false),
-        'title' => array('text' => 'Visual Acuity (Near/Distance)'),
+        'title' => array('text' => 'Visual Acuity (Distance)'),
         'xAxis' => array(
             'title' => array('text' => 'Visual acuity at surgery (LogMAR)'),
             'categories' => array('>1.20', '>0.90-1.20', '>0.60-0.90', '>0.30-0.60', '>0.00-0.30', '<= 0.00'),
