@@ -103,7 +103,7 @@ abstract class BaseResource
             return $obj;
         }
 
-        static::remapValues($doc, "/" . static::$resource_type);
+        static::remapValues($doc, XpathRemap::model()->findAllByXpath("/" . static::$resource_type));
 
         $obj = static::fromXmlDom($version, $doc->documentElement);
         $obj->addAuditData('input', \CHtml::encode($xml));

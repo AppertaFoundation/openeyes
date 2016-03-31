@@ -11,6 +11,12 @@ At the time of development, a core API does exist in the OpenEyes core, but it i
 The basic design is to support a PUT call to openeyes with the details of a patient. If the patient doesn't exist, it will be created. If it does already exist, then the details of the patient will be updated. Within this, the patient GP and Practice relations will be defined using the standard external identifiers that have been imported on those records.
 
 The external identifier is used for defining a patient instance, and is tracked internally in the module via the PasApiAssignment model.
+
+## Configuration
+
+The usual configuration for the module must be added to the modules array:
+
+    'PASAPI' => array( 'class' => '\OEModule\PASAPI\PASAPIModule', )
  
 ### Patient Addresses
  
@@ -20,7 +26,7 @@ The external identifier is used for defining a patient instance, and is tracked 
  
  The URL pattern for the PUT call is as follows:
  
-    http://[oe-base-url]/PASAPI/v1/Patient/[external-id]
+    http://[oe-base-url]/PASAPI/V1/Patient/[external-id]
     
 The XML for defining a patient is as follows.
 
@@ -87,8 +93,13 @@ If the intention is for the patient to only be updated, and not created if it do
 
 To deal with the issue of external sources not mapping to internal resource values within OpenEyes, a remapping of values can be configured through the admin.
 
-Each XpathRemap object has zero or more RemapValue attributes that will swap any matching input values for a different output value.
+Each XpathRemap object is defined as having an xpath and a name attribute (which is simply a descriptive label). This has zero or more RemapValue attributes that will swap any matching input values for a different output value.
 
 These can be managed through the module admin screen.
 
-(note that whilst in the admin one can only provide an empty string, the code supports a null value which will lead the entire node to be removed, rather than emptied.
+(note that whilst in the admin one can only provide an empty string, the code supports a null value which will lead the entire node to be removed, rather than emptied).
+
+For example, if the code AX is coming through from the message sender for ethnic group:
+
+1. Create an XpathRemap object with Xpath /Patient/EthnicGroup and name "Ethnic Group Remapping".
+1. Click on the value count (which will be zero initially), and add an entry with input AX, and output A.

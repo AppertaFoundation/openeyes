@@ -17,6 +17,6 @@
 
 return array(
     'params' => array(
-        'pas_api_test_base_url' => 'http://localhost/PASAPI/v1/',
+        'pas_api_test_base_url' => 'http://localhost/PASAPI/V1/',
     )
 );

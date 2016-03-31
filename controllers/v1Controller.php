@@ -18,11 +18,11 @@
 
 use \UserIdentity;
 
-class v1Controller extends \CController
+class V1Controller extends \CController
 {
 
     static protected $resources = array('Patient');
-    static protected $version = "v1";
+    static protected $version = "V1";
     static protected $supported_formats = array('xml');
 
     /**
