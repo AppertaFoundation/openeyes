@@ -75,12 +75,18 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
             'gridLineWidth' => 0,
             'minorGridLineWidth' => 0
         ),
-        'plotOptions' => array('scatter' => array(
-            'tooltip' => array(
-                'headerFormat' => '<b>Visual Acuity</b><br>',
-                'pointFormat' => '<i>Before Surgery: {point.x}</i><br /> <i>After surgery:<i/> {point.y}'
+        'plotOptions' => array(
+            'scatter' => array(
+                'tooltip' => array(
+                    'headerFormat' => '<b>Visual Acuity</b><br>',
+                    'pointFormat' => '<i>Before Surgery: {point.x}</i><br /> <i>After surgery:<i/> {point.y}'
+                ),
+            ),
+            'bubble' => array(
+                'minSize' => "3%",
+                'maxSize' => "17%",
             )
-        ))
+        )
     );
 
     /**
@@ -252,8 +258,8 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
             
             $points = explode('_', $key);
             
-            $xPoint = (float)$points[1];
-            $yPoint = (float)$points[0];
+            $xPoint = (float)$points[0];
+            $yPoint = (float)$points[1];
             
             
             if( $xPoint <= 0 ){
