@@ -30,7 +30,7 @@ class ReportController extends BaseReportController
             
             array(
                 'allow',
-                'actions' => array('ajaxReport'),
+                'actions' => array('ajaxReport', 'reportData'),
                 'expression' => 'Yii::app()->user->isSurgeon()'
             ),
             
