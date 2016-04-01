@@ -24,9 +24,16 @@ class ReportController extends BaseReportController
         return array(
             array(
                 'allow',
-                'actions' => array('index', 'diagnoses', 'runReport', 'downloadReport', 'ajaxReport', 'reportData'),
+                'actions' => array('index', 'diagnoses', 'runReport', 'downloadReport', 'reportData'),
                 'roles' => array('OprnGenerateReport'),
-            )
+            ),
+            
+            array(
+                'allow',
+                'actions' => array('ajaxReport'),
+                'expression' => 'Yii::app()->request->isAjaxRequest'
+            ),
+            
         );
     }
 
