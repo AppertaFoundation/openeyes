@@ -204,6 +204,15 @@ select:focus {
 .mdl-layout__header-row > * {
   width: 100%;
 }
+
+.mdl-layout__header-row .mdl-layout-title {
+    background: rgba(0, 0, 0, 0) url("../img/_elements/graphic/openeyes_logo_transparent.png") no-repeat scroll 0 0;
+    height: 65px;
+    line-height: 65px;
+    padding-left: 75px;
+}
+
+
 @media screen and (min-width: 800px) {
   /* line 205, ../sass/dashboard.scss */
   .mdl-layout__header-row > * {
