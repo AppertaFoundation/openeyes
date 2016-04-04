@@ -11,6 +11,7 @@ class PcrRiskReport extends Report implements ReportInterface
     protected $graphConfig = array(
         'chart' => array('renderTo' => '', 'type' => 'spline'),
         'title' => array('text' => 'PCR Rate (risk adjusted)'),
+        'subtitle' => array('text' => 'Total Operations: 0'),
         'xAxis' => array(
             'title' => array('text' => 'No. Operations')
         ),
@@ -96,6 +97,9 @@ class PcrRiskReport extends Report implements ReportInterface
         if($total !== 0 && (int)$pcrRiskTotal !== 0){
             $adjustedPcrRate = (($pcrCases / $total) / ($pcrRiskTotal / $total)) * $this->average();
         }
+        
+        // set the graph subtitle here, so we don't have to run this query more than once
+        $this->graphConfig['subtitle']['text'] = "Total Operations: $total";
 
         return array(array($total, $adjustedPcrRate));
 

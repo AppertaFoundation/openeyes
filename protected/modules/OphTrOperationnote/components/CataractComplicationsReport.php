@@ -26,7 +26,7 @@ class CataractComplicationsReport extends Report implements ReportInterface
         ),
         'tooltip' => array(
             'headerFormat' => '<b>Cataract Complications</b><br>',
-            'pointFormat' => '<i>Complication</i>: {point.category} <br /> <i>Percentage </i>: {point.y:.2f}'
+            'pointFormat' => '<i>Complication</i>: {point.category} <br /> <i>Percentage </i>: {point.y:.2f}% <br /> Total Operations: {point.total}'
         ),
     );
 
@@ -75,15 +75,15 @@ class CataractComplicationsReport extends Report implements ReportInterface
         foreach ($this->graphConfig['xAxis']['categories'] as $category) {
             foreach ($data as $complicationData) {
                 if ($category === $complicationData['name']) {
-                    $seriesCount[] = ($complicationData['complication_count'] / $total ) * 100;
+                    $seriesCount[] = array(
+                        'y' => (($complicationData['complication_count'] / $total ) * 100),
+                        'total' => $complicationData['complication_count']
+                    );
+
                     continue 2;
                 }
             }
             $seriesCount[] = 0;
-        }
-
-        if(array_sum($seriesCount) === 0){
-            $seriesCount = array();
         }
 
         return $seriesCount;

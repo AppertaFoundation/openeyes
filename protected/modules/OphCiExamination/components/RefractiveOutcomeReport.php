@@ -54,7 +54,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         ),
         'tooltip' => array(
             'headerFormat' => '<b>Refractive Outcome</b><br>',
-            'pointFormat' => '<i>Diff Post Op</i>: {point.category} <br /> <i>Num Patients</i>: {point.y}'
+            'pointFormat' => '<i>Diff Post Op</i>: {point.category} <br /> <i>Num Eyes</i>: {point.y}'
         )
     );
 

@@ -227,6 +227,14 @@
                     chart.setTitle(null, {text: 'Total Complications: ' + data} );
                 }
             });
+        },
+        'OEModule_OphCiExamination_components_VisualOutcomeReport':function(){
+            var months = $('#visual-acuity-months').val();
+            var type = $('input[name="type"]:checked').val();
+            var type_text = type.charAt(0).toUpperCase() + type.slice(1);
+            
+            OpenEyes.Dash.reports['OEModule_OphCiExamination_components_VisualOutcomeReport'].yAxis[0].setTitle({ text: "Visual acuity " + months + " month" + (months > 1 ? 's' : '') + " after surgery (LogMAR)" });
+            OpenEyes.Dash.reports['OEModule_OphCiExamination_components_VisualOutcomeReport'].setTitle({ text: "Visual Acuity (" + type_text + ")" });
         }
     };
 

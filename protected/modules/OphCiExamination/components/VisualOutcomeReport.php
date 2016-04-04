@@ -57,7 +57,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         'tooltip' => array(
                 'useHTML' => true,
                 'headerFormat' => '<b>{series.name}</b><br>',
-                'pointFormat' => 'Size: {point.z}'
+                'pointFormat' => 'Number of eyes: {point.z}'
         ),
         'legend' => array('enabled' => false),
         'title' => array('text' => 'Visual Acuity (Distance)'),
