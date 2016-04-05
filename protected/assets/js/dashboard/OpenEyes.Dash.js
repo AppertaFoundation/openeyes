@@ -208,17 +208,17 @@
 
             for(var i = 0; i < data.length; i++){
                 total += data[i];
-                if(chart.axes[0].categories[i] === '-1.0' || chart.axes[0].categories[i] === '1.0'){
+                if(chart.axes[0].categories[i] >= -1.0 && chart.axes[0].categories[i] <= 1.0){
                     plusOrMinusOne += data[i];
                 }
-                if(chart.axes[0].categories[i] === '-0.5' || chart.axes[0].categories[i] === '0.5'){
+                if(chart.axes[0].categories[i] >= -0.5 && chart.axes[0].categories[i] <= 0.5){
                     plusOrMinusHalf += data[i];
                 }
             }
 
-            plusOrMinusOnePercent = (total / 100) * plusOrMinusOne;
-            plusOrMinusHalfPercent = (total / 100) * plusOrMinusHalf;
-            chart.setTitle(null, {text: 'Total eyes: ' + total + ', ±0.5D: ' + plusOrMinusOnePercent + ', ±1D: ' + plusOrMinusHalfPercent});
+            plusOrMinusOnePercent = (plusOrMinusOne / total) * 100;
+            plusOrMinusHalfPercent = (plusOrMinusHalf / total) * 100;
+            chart.setTitle(null, {text: 'Total eyes: ' + total + ', ±0.5D: ' + plusOrMinusOnePercent + '%, ±1D: ' + plusOrMinusHalfPercent + '%'});
         },
         'CataractComplicationsReport': function(data){
             $.ajax({

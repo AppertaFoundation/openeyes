@@ -44,7 +44,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         'chart' => array('renderTo' => '', 'type' => 'column'),
         'legend' => array('enabled' => false),
         'title' => array('text' => 'Refractive Outcome: mean sphere (D)'),
-        'subtitle' => array('text' => 'Total eyes: {{eyes}}, ±0.5D: {{0.5}}, ±1D: {{1}}'),
+        'subtitle' => array('text' => 'Total eyes: {{eyes}}, ±0.5D: {{0.5}}%, ±1D: {{1}}%'),
         'xAxis' => array(
             'title' => array('text' => 'PPOR - POR (Dioptres)'),
             'categories' => array('-0.5', '0', '0.5'),
@@ -219,23 +219,35 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         $totalEyes = 0;
         $plusOrMinusOne = 0;
         $plusOrMinusHalf = 0;
+        $plusOrMinusHalfPercent = 0;
+        $plusOrMinusOnePercent = 0;
 
         foreach($data as $i => $category){
             $totalEyes += $category;
             $categoryText = $this->graphConfig['xAxis']['categories'][$i];
-            if($categoryText === '-1.0' || $categoryText === '1.0'){
+            
+            $categoryFloat = number_format($categoryText, 2, '.', '');
+            if($categoryFloat >= -1 && $categoryFloat <= 1){
                 $plusOrMinusOne += $category;
             }
-            if($categoryText === '-0.5' || $categoryText === '0.5'){
+            
+            if($categoryFloat >= -0.5 && $categoryFloat <= 0.5){
                 $plusOrMinusHalf += $category;
             }
+            
         }
-
-        $plusOrMinusOnePercent = ($totalEyes / 100) * $plusOrMinusOne;
-        $plusOrMinusHalfPercent = ($totalEyes / 100) * $plusOrMinusHalf;
+     
+        if($plusOrMinusOne > 0){
+            $plusOrMinusOnePercent = number_format((($plusOrMinusOne / $totalEyes) * 100), 1, '.', '' );
+        }
+        
+        if($plusOrMinusHalf > 0){
+            $plusOrMinusHalfPercent = number_format((($plusOrMinusHalf / $totalEyes) * 100) ,1, '.', '');
+        }
+        
         $this->graphConfig['subtitle']['text'] = str_replace(
             array('{{eyes}}', '{{0.5}}', '{{1}}'),
-            array($totalEyes, $plusOrMinusOnePercent, $plusOrMinusHalfPercent),
+            array($totalEyes, $plusOrMinusHalfPercent, $plusOrMinusOnePercent),
             $this->graphConfig['subtitle']['text']
         );
 
