@@ -29,8 +29,8 @@ class NodExportController extends BaseController
 
     protected $institutionCode;
 
-    private $startDate;
-    private $endDate;
+    private $startDate = '';
+    private $endDate = '';
 
     private $allEpisodeIds;
 
@@ -58,19 +58,37 @@ class NodExportController extends BaseController
         if (!file_exists($this->exportPath)) {
             mkdir($this->exportPath, 0777, true);
         }
-
-        $startDate = new DateTime(Yii::app()->request->getParam("date_from", ''));
-        $endDate = new DateTime(Yii::app()->request->getParam("date_to", ''));
-
-        // if start date is greater than end date we exchange the two dates
-        if($endDate < $startDate){
-            $tempDate = $endDate;
-            $endDate = $startDate;
-            $startDate = $tempDate;
+        
+        $startDate = Yii::app()->request->getParam("date_from", '');
+        $endDate =  Yii::app()->request->getParam("date_to", '');
+        
+        $startDateTime = null;
+        $endDateTime = null;
+        
+        if($startDate){
+            $startDateTime = new DateTime($startDate);
+        }
+        
+        if($endDate){
+            $endDateTime = new DateTime($endDate);
         }
 
-		$this->startDate = $startDate->format('Y-m-d');
-		$this->endDate	= $endDate->format('Y-m-d');
+        // if start date is greater than end date we exchange the two dates
+        if(($startDateTime instanceof DateTime && $endDateTime instanceof DateTime) && $endDateTime < $startDateTime){
+            $tempDate = $endDateTime;
+            $endDateTime = $startDateTime;
+            $startDateTime = $tempDate;
+            $tempDate = null;
+        }
+        
+        if($startDate){
+            $this->startDate = $startDateTime->format('Y-m-d');
+        }
+        
+        if($endDate){
+            $this->endDate = $endDateTime->format('Y-m-d');
+        }
+
         parent::init();
     }
 
