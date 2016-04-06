@@ -20,10 +20,14 @@
  */
 Highcharts.getSVG = function(charts) {
     var svgArr = [],
-        top = 0,
-        width = 0;
+        top = 60,
+        width = 0,
+        header = '',
+        hasDates = $('#from-date').val() || $('#to-date').val();
 
     $.each(charts, function(i, chart) {
+        var currentWidth = chart.chartWidth;
+        chart.setSize(700, chart.chartHeight);
         var svg = chart.getSVG();
         svg = svg.replace('<svg', '<g transform="translate(0,' + top + ')" ');
         svg = svg.replace('</svg>', '</g>');
@@ -32,9 +36,32 @@ Highcharts.getSVG = function(charts) {
         width = Math.max(width, chart.chartWidth);
 
         svgArr.push(svg);
+        chart.setSize(currentWidth, chart.chartHeight);
     });
     width += 50;
-    return '<svg height="'+ top +'" width="' + width + '" version="1.1" xmlns="http://www.w3.org/2000/svg">' + svgArr.join('') + '</svg>';
+
+    header = '<svg height="60" width="' + width + '" ><text y="20" x="' + (width / 2) + '" text-anchor="middle">'
+        + $('.mdl-layout-title').text() + '</text>';
+
+    if(hasDates){
+        header += '<text y="40" x="' + (width / 2) + '" text-anchor="middle">';
+
+        if($('#from-date').val()){
+            header += 'From: ' +  $('#from-date').val() + ' ';
+        } else {
+            header += ' From: All time ';
+        }
+
+        if($('#to-date').val()){
+            header += 'To: ' +  $('#to-date').val();
+        } else {
+            header += 'To: Present day';
+        }
+
+        header += '</text></svg>';
+    }
+
+    return '<svg height="'+ top +'" width="' + width + '" version="1.1" xmlns="http://www.w3.org/2000/svg">' + header + svgArr.join('') + '</svg>';
 };
 
 /**
