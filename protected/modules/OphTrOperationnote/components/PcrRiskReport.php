@@ -90,7 +90,7 @@ class PcrRiskReport extends Report implements ReportInterface
             if(isset($case['complication']) && $case['complication'] === 'PC rupture with vitreous loss' || $case['complication'] === 'PC rupture no vitreous loss'){
                 $pcrCases++;
             }
-            if(isset($case['risk'])){
+            if(isset($case['risk']) && $case['risk'] != ""){
                 $pcrRiskTotal += $case['risk'];
             }else{
                 $pcrRiskTotal += 1.92;
@@ -103,7 +103,9 @@ class PcrRiskReport extends Report implements ReportInterface
         
         // set the graph subtitle here, so we don't have to run this query more than once
         $this->graphConfig['subtitle']['text'] = "Total Operations: $total";
-        $this->totalOperations = $total;
+        if($total > 1000) {
+            $this->totalOperations = $total;
+        }
 
         return array(array($total, $adjustedPcrRate));
 

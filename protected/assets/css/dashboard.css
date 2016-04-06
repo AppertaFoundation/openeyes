@@ -204,55 +204,46 @@ select:focus {
 .mdl-layout__header-row > * {
   width: 100%;
 }
-
-.mdl-layout__header-row .mdl-layout-title {
-    background: rgba(0, 0, 0, 0) url("../img/_elements/graphic/openeyes_logo_transparent.png") no-repeat scroll 0 0;
-    height: 65px;
-    line-height: 65px;
-    padding-left: 75px;
-}
-
-
 @media screen and (min-width: 800px) {
   /* line 205, ../sass/dashboard.scss */
   .mdl-layout__header-row > * {
     width: auto;
   }
 }
-/* line 211, ../sass/dashboard.scss */
+/* line 212, ../sass/dashboard.scss */
 .mdl-layout__header-row #search-form {
   margin-bottom: 5px;
 }
-/* line 213, ../sass/dashboard.scss */
+/* line 214, ../sass/dashboard.scss */
 .mdl-layout__header-row #search-form div {
   width: 100%;
 }
 @media screen and (min-width: 800px) {
-  /* line 213, ../sass/dashboard.scss */
+  /* line 214, ../sass/dashboard.scss */
   .mdl-layout__header-row #search-form div {
     width: auto;
   }
 }
-/* line 218, ../sass/dashboard.scss */
+/* line 219, ../sass/dashboard.scss */
 .mdl-layout__header-row #search-form div #from-date, .mdl-layout__header-row #search-form div #to-date {
   position: relative;
   z-index: 50;
 }
-/* line 224, ../sass/dashboard.scss */
+/* line 225, ../sass/dashboard.scss */
 .mdl-layout__header-row #export {
   cursor: pointer;
   vertical-align: middle;
 }
 
-/* line 230, ../sass/dashboard.scss */
+/* line 231, ../sass/dashboard.scss */
 .mdl-layout__content {
   height: calc(100% - 64px);
 }
-/* line 232, ../sass/dashboard.scss */
+/* line 233, ../sass/dashboard.scss */
 .mdl-layout__content #dash-grid {
   height: calc(100% - 64px);
 }
-/* line 234, ../sass/dashboard.scss */
+/* line 235, ../sass/dashboard.scss */
 .mdl-layout__content #dash-grid .mdl-cell {
   background-color: white;
   padding: 0;
@@ -260,17 +251,17 @@ select:focus {
   height: 50%;
   overflow: hidden;
 }
-/* line 242, ../sass/dashboard.scss */
+/* line 243, ../sass/dashboard.scss */
 .mdl-layout__content #dash-grid .highcharts-xaxis-labels text, .mdl-layout__content #dash-grid .highcharts-yaxis-labels text {
   font-size: 0.8em !important;
 }
 
-/* line 250, ../sass/dashboard.scss */
+/* line 251, ../sass/dashboard.scss */
 .report-container {
   position: relative;
   height: 100%;
 }
-/* line 253, ../sass/dashboard.scss */
+/* line 254, ../sass/dashboard.scss */
 .report-container .search-icon {
   position: absolute;
   right: 0;
@@ -278,7 +269,7 @@ select:focus {
   z-index: 1;
   cursor: pointer;
 }
-/* line 259, ../sass/dashboard.scss */
+/* line 260, ../sass/dashboard.scss */
 .report-container .search-icon:after {
   font-family: "Roboto","Helvetica","Arial",sans-serif;
   font-size: 0.7em;
@@ -289,42 +280,42 @@ select:focus {
   width: 0;
   display: inline-block;
 }
-/* line 269, ../sass/dashboard.scss */
+/* line 270, ../sass/dashboard.scss */
 .report-container .search-icon:hover:after {
   width: 55px;
 }
-/* line 274, ../sass/dashboard.scss */
+/* line 275, ../sass/dashboard.scss */
 .report-container > div {
   height: 100%;
 }
-/* line 277, ../sass/dashboard.scss */
+/* line 278, ../sass/dashboard.scss */
 .report-container .report-search {
   height: 0;
   overflow: hidden;
 }
-/* line 280, ../sass/dashboard.scss */
+/* line 281, ../sass/dashboard.scss */
 .report-container .report-search fieldset {
   width: 60%;
   margin: auto;
 }
-/* line 283, ../sass/dashboard.scss */
+/* line 284, ../sass/dashboard.scss */
 .report-container .report-search fieldset div {
   margin: 20px;
 }
-/* line 286, ../sass/dashboard.scss */
+/* line 287, ../sass/dashboard.scss */
 .report-container .report-search fieldset div.checkbox-select {
   height: 200px;
   overflow-y: scroll;
 }
-/* line 290, ../sass/dashboard.scss */
+/* line 291, ../sass/dashboard.scss */
 .report-container .report-search fieldset div .mdl-radio {
   margin-right: 20px;
 }
-/* line 293, ../sass/dashboard.scss */
+/* line 294, ../sass/dashboard.scss */
 .report-container .report-search fieldset div button[type="submit"] {
   float: right;
 }
-/* line 299, ../sass/dashboard.scss */
+/* line 300, ../sass/dashboard.scss */
 .report-container .chart-container {
   z-index: 5;
 }
