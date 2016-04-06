@@ -45,6 +45,7 @@ class PcrRiskReport extends Report implements ReportInterface
         )))
     );
 
+    protected $totalOperations = 1000;
     /**
      * @param $surgeon
      * @param $dateFrom
@@ -91,6 +92,8 @@ class PcrRiskReport extends Report implements ReportInterface
             }
             if(isset($case['risk'])){
                 $pcrRiskTotal += $case['risk'];
+            }else{
+                $pcrRiskTotal += 1.92;
             }
         }
 
@@ -100,6 +103,7 @@ class PcrRiskReport extends Report implements ReportInterface
         
         // set the graph subtitle here, so we don't have to run this query more than once
         $this->graphConfig['subtitle']['text'] = "Total Operations: $total";
+        $this->totalOperations = $total;
 
         return array(array($total, $adjustedPcrRate));
 
@@ -347,6 +351,7 @@ class PcrRiskReport extends Report implements ReportInterface
             array(990,3.88875626306332),
             array(995,3.88208373400813),
             array(1000,3.87547217569059),
+            array(ceil($this->totalOperations / 100) * 100, 3.87547217569059),
         );
     }
 
@@ -555,6 +560,7 @@ class PcrRiskReport extends Report implements ReportInterface
             array(990,3.02616367529908),
             array(995,3.02283955507188),
             array(1000,3.01954389499152),
+            array(ceil($this->totalOperations / 100) * 100, 3.01954389499152),
         );
     }
 
