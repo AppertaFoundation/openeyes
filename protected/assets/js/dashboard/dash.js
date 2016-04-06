@@ -49,7 +49,7 @@ Highcharts.getSVG = function(charts) {
         if($('#from-date').val()){
             header += 'From: ' +  $('#from-date').val() + ' ';
         } else {
-            header += ' From: All time ';
+            header += 'From: All time ';
         }
 
         if($('#to-date').val()){
