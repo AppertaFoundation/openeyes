@@ -1090,7 +1090,7 @@ EOL;
                             FROM `event` e
                             JOIN event_type evt ON evt.id = e.event_type_id
                             JOIN et_ophtroperationnote_procedurelist pl ON e.id = pl.event_id
-                            LEFT JOIN `et_ophtroperationbooking_diagnosis` d ON e.id = d.`event_id`
+                            LEFT JOIN `et_ophtroperationbooking_diagnosis` d ON pl.booking_event_id = d.`event_id`
                             WHERE evt.name = 'Operation Note' " . $this->getDateWhere('e');
 
 
