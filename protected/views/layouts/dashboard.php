@@ -60,7 +60,10 @@
         <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
             <header class="mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-600">
                 <div class="mdl-layout__header-row">
-                    <span class="mdl-layout-title">Cataract Personal Audit: <?= $this->user->getFullNameAndTitle() ?></span>
+                    <span class="mdl-layout-title">
+                        <img src="<?= Yii::app()->assetManager->createUrl('img/_elements/graphic/OpenEyes_logo_transparent.png')?>" alt="OpenEyes logo" />
+                        Cataract Personal Audit: <?= $this->user->getFullNameAndTitle() ?>
+                    </span>
                     <div class="mdl-layout-spacer"></div>
                     <form id="search-form">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
