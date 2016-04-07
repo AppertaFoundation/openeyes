@@ -162,7 +162,7 @@ class Patient extends BaseResource
     {
         $gp = null;
         if ($code = $this->getAssignedProperty('GpCode')) {
-            $gp = \GP::model()->findByAttributes(array('nat_id' => $code));
+            $gp = \Gp::model()->findByAttributes(array('nat_id' => $code));
             if (!$gp)
                 $this->addWarning("Could not find GP for code " . $code);
         }
