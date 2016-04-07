@@ -18,28 +18,29 @@
  */
 
 return array(
-	'params' => array(
-		// fixed details for admin functionality
-		'admin_menu' => array(
-			'Diagnoses' => '/OphCoTherapyapplication/admin/viewDiagnoses',
-			'Treatments' => '/OphCoTherapyapplication/admin/viewTreatments',
-			'Decision Trees' => '/OphCoTherapyapplication/admin/viewDecisionTrees',
-			'File Collections' => '/OphCoTherapyapplication/admin/viewFileCollections',
-			'Email Recipients' => '/OphCoTherapyapplication/admin/viewEmailRecipients',
-		),
-		'reports' => array(
-			'Therapy applications' => '/OphCoTherapyapplication/report/applications',
-		),
-		// The email address that sends therapy applications (key/value pair of address to name)
-		// 'OphCoTherapyapplication_sender_email' => array('email@test.com' => 'Test'),
-		// The email address displayed in the standard non-compliant form
-		// 'OphCoTherapyapplication_applicant_email' => 'armd@nhs.net',
-		// postal details of the chief pharmacist (string of name and address)
-		// 'OphCoTherapyapplication_chief_pharmacist' => '',
-		// contact details of the chief pharmacist (string)
-		// 'OphCoTherapyapplication_chief_pharmacist_contact' => '',
-		//'OphCoTherapyapplication_email_size_limit' => '10MB',
-		// whether the user submitting the application should receive a copy of the submission email
-		//'OphCoTherapyapplication_cc_applicant' => true,
-	),
+    'params' => array(
+        // fixed details for admin functionality
+        'admin_menu' => array(
+            'Diagnoses' => '/OphCoTherapyapplication/admin/viewDiagnoses',
+            'Treatments' => '/OphCoTherapyapplication/admin/viewTreatments',
+            'Decision Trees' => '/OphCoTherapyapplication/admin/viewDecisionTrees',
+            'File Collections' => '/OphCoTherapyapplication/admin/viewFileCollections',
+            'Email Recipients' => '/OphCoTherapyapplication/admin/viewEmailRecipients',
+        ),
+        'reports' => array(
+            'Therapy applications' => '/OphCoTherapyapplication/report/applications',
+            'Pending applications' => '/OphCoTherapyapplication/report/pendingApplications',
+        ),
+        // The email address that sends therapy applications (key/value pair of address to name)
+        // 'OphCoTherapyapplication_sender_email' => array('email@test.com' => 'Test'),
+        // The email address displayed in the standard non-compliant form
+        // 'OphCoTherapyapplication_applicant_email' => 'armd@nhs.net',
+        // postal details of the chief pharmacist (string of name and address)
+        // 'OphCoTherapyapplication_chief_pharmacist' => '',
+        // contact details of the chief pharmacist (string)
+        // 'OphCoTherapyapplication_chief_pharmacist_contact' => '',
+        //'OphCoTherapyapplication_email_size_limit' => '10MB',
+        // whether the user submitting the application should receive a copy of the submission email
+        //'OphCoTherapyapplication_cc_applicant' => true,
+    ),
 );

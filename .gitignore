@@ -58,6 +58,7 @@ vendor
 !/protected/modules/PatientTicketing/
 !/protected/modules/OphOuAnaestheticsatisfactionaudit/
 !/protected/modules/OphInVisualfields/
+!/protected/modules/OphCoMessaging/
 
 # Tests
 /bin/.enabled-modules
