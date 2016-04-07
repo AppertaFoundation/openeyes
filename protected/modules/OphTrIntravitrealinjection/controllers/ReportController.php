@@ -40,8 +40,8 @@ class ReportController extends BaseReportController {
 	public function actionArvoPresentation($startDate, $endDate){
 		// this is a fixed report for now, need to be updated
 
-		$leftSummary = array("superior"=>0,"interior"=>0,"neutral"=>0);
-		$rightSummary = array("superior"=>0,"interior"=>0,"neutral"=>0);
+		$leftSummary = array("superior"=>0,"inferior"=>0,"neutral"=>0);
+		$rightSummary = array("superior"=>0,"inferior"=>0,"neutral"=>0);
 
 		$dataValues = Yii::app()->db->createCommand("SELECT left_eyedraw, right_eyedraw
 														FROM et_ophtrintravitinjection_anteriorseg eoa
@@ -65,7 +65,7 @@ class ReportController extends BaseReportController {
 		echo "Dates: ".$startDate." - ".$endDate;
 		echo "<table>";
 		echo "<tr><th></th><th>Left</th><th>Right</th></tr>";
-		echo "<tr><td>Interior:</td><td>".$leftSummary["interior"]."</td><td>".$rightSummary["interior"]."</td></tr>";
+		echo "<tr><td>Inferior:</td><td>".$leftSummary["interior"]."</td><td>".$rightSummary["interior"]."</td></tr>";
 		echo "<tr><td>Superior:</td><td>".$leftSummary["superior"]."</td><td>".$rightSummary["superior"]."</td></tr>";
 		echo "<tr><td>Neutral (90, 270):</td><td>".$leftSummary["neutral"]."</td><td>".$rightSummary["neutral"]."</td></tr>";
 		echo "</table>";
@@ -73,9 +73,9 @@ class ReportController extends BaseReportController {
 
 	private function getArvo($rotation){
 		if($rotation > 90 && $rotation < 270){
-			return "superior";
+			return "inferior";
 		}else if($rotation > 270 || $rotation < 90){
-			return "interior";
+			return "superior";
 		}else{
 			return "neutral";
 		}
