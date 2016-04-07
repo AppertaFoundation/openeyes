@@ -53,11 +53,11 @@ class ReportController extends BaseReportController {
 			$jsonDataLeft = json_decode($data["left_eyedraw"]);
 			$jsonDataRight = json_decode($data["right_eyedraw"]);
 
-			if(isset($jsonDataLeft) && isset($jsonDataLeft[1])) {
-				$leftSummary[$this->getArvo($jsonDataLeft[1]->rotation)]++;
+			if(isset($jsonDataLeft) && isset($jsonDataLeft[count($jsonDataLeft)-1]->rotation)) {
+				$leftSummary[$this->getArvo($jsonDataLeft[count($jsonDataLeft)-1]->rotation)]++;
 			}
-			if(isset($jsonDataRight) && isset($jsonDataRight[1])) {
-				$rightSummary[$this->getArvo($jsonDataRight[1]->rotation)]++;
+			if(isset($jsonDataRight) && isset($jsonDataRight[count($jsonDataRight)-1]->rotation)) {
+				$rightSummary[$this->getArvo($jsonDataRight[count($jsonDataRight)-1]->rotation)]++;
 			}
 
 		}
