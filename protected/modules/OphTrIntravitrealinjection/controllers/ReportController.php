@@ -65,7 +65,7 @@ class ReportController extends BaseReportController {
 		echo "Dates: ".$startDate." - ".$endDate;
 		echo "<table>";
 		echo "<tr><th></th><th>Left</th><th>Right</th></tr>";
-		echo "<tr><td>Inferior:</td><td>".$leftSummary["interior"]."</td><td>".$rightSummary["interior"]."</td></tr>";
+		echo "<tr><td>Inferior:</td><td>".$leftSummary["inferior"]."</td><td>".$rightSummary["inferior"]."</td></tr>";
 		echo "<tr><td>Superior:</td><td>".$leftSummary["superior"]."</td><td>".$rightSummary["superior"]."</td></tr>";
 		echo "<tr><td>Neutral (90, 270):</td><td>".$leftSummary["neutral"]."</td><td>".$rightSummary["neutral"]."</td></tr>";
 		echo "</table>";
