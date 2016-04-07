@@ -58,8 +58,9 @@ Highcharts.getSVG = function(charts) {
             header += 'To: Present day';
         }
 
-        header += '</text></svg>';
+        header += '</text>';
     }
+    header += '</svg>';
 
     return '<svg height="'+ top +'" width="' + width + '" version="1.1" xmlns="http://www.w3.org/2000/svg">' + header + svgArr.join('') + '</svg>';
 };
@@ -78,7 +79,7 @@ Highcharts.exportCharts = function(charts, options) {
     // create the form
     form = Highcharts.createElement('form', {
         method: 'post',
-        action: options.url
+        action: '/dashboard/printSvg'
     }, {
         display: 'none'
     }, document.body);
@@ -96,6 +97,12 @@ Highcharts.exportCharts = function(charts, options) {
             }[name]
         }, null, form);
     });
+
+    var input = document.createElement("input");
+    input.type = "hidden";
+    input.name = "YII_CSRF_TOKEN";
+    input.value = YII_CSRF_TOKEN;
+    form.appendChild(input);
     //console.log(svg); return;
     // submit
     form.submit();

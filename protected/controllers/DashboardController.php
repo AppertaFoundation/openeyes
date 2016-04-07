@@ -23,7 +23,7 @@ class DashboardController extends BaseDashboardController
     {
         return array(
             array('allow',
-                'actions' => array('index', 'cataract'),
+                'actions' => array('index', 'cataract', 'printSvg'),
                 'expression' => 'Yii::app()->user->isSurgeon()'
             ),
             array('allow',
@@ -45,5 +45,130 @@ class DashboardController extends BaseDashboardController
         $assetManager->registerScriptFile('js/dashboard/dash.js', null, null, AssetManager::OUTPUT_ALL, false);
 
         $this->render('//dashboard/dash');
+    }
+
+    public function actionPrintSvg()
+    {
+        /**
+         * This file is part of the exporting module for Highcharts JS.
+         * www.highcharts.com/license
+         *
+         *
+         * Available POST variables:
+         *
+         * $filename  string   The desired filename without extension
+         * $type      string   The MIME type for export.
+         * $width     int      The pixel width of the exported raster image. The height is calculated.
+         * $svg       string   The SVG source code to convert.
+         */
+
+
+// Options
+        define ('BATIK_PATH', 'rasterizer');
+
+///////////////////////////////////////////////////////////////////////////////
+        ini_set('magic_quotes_gpc', 'off');
+
+        $type = $_POST['type'];
+        $svg = (string) $_POST['svg'];
+        $filename = (string) $_POST['filename'];
+
+// prepare variables
+        if (!$filename or !preg_match('/^[A-Za-z0-9\-_ ]+$/', $filename)) {
+            $filename = 'chart';
+        }
+        if (get_magic_quotes_gpc()) {
+            $svg = stripslashes($svg);
+        }
+
+// check for malicious attack in SVG
+        if(strpos($svg,"<!ENTITY") !== false || strpos($svg,"<!DOCTYPE") !== false){
+            throw new CHttpException(500, "Malicious code detected in SVG");
+        }
+
+        $tempName = md5(rand());
+        $highchartsDir = 'protected/runtime/highcharts';
+
+        if(!is_dir($highchartsDir )){
+            mkdir($highchartsDir, 0777);
+
+        }
+
+// allow no other than predefined types
+        if ($type == 'image/png') {
+            $typeString = '-m image/png';
+            $ext = 'png';
+
+        } elseif ($type == 'image/jpeg') {
+            $typeString = '-m image/jpeg';
+            $ext = 'jpg';
+
+        } elseif ($type == 'application/pdf') {
+            $typeString = '-m application/pdf';
+            $ext = 'pdf';
+
+        } elseif ($type == 'image/svg+xml') {
+            $ext = 'svg';
+
+        } else { // prevent fallthrough from global variables
+            $ext = 'txt';
+        }
+
+        $outfile = "$highchartsDir/$tempName.$ext";
+
+        if (isset($typeString)) {
+
+            // size
+            $width = '';
+            if ($_POST['width']) {
+                $width = (int)$_POST['width'];
+                if ($width) $width = "-w $width";
+            }
+
+            // generate the temporary file
+            if (!file_put_contents("$highchartsDir/$tempName.svg", $svg)) {
+                throw new CHttpException(500, "Couldn't create temporary file. Check that the directory permissions for
+			the /temp directory are set to 777.");
+            }
+
+            // Troubleshooting snippet
+
+            /*$command = BATIK_PATH ." $typeString -d $outfile   protected/runtime/highcharts/$tempName.svg 2>&1";
+            $output = shell_exec($command);
+            echo "<pre>Command: $command <br>";
+            echo "Output: $output</pre>";
+            die;*/
+            //
+
+            // Do the conversion
+            $output = shell_exec(BATIK_PATH ." $typeString -d $outfile $highchartsDir/$tempName.svg");
+
+            // catch error
+            if (!is_file($outfile) || filesize($outfile) < 10) {
+                throw new CHttpException(500, "Error while converting SVG. ");
+            }
+
+
+            // stream it
+            else {
+                header("Content-Disposition: attachment; filename=\"$filename.$ext\"");
+                header("Content-Type: $type");
+                echo file_get_contents($outfile);
+            }
+
+            // delete it
+            unlink("protected/runtime/highcharts/$tempName.svg");
+            unlink($outfile);
+
+            // SVG can be streamed directly back
+        } else if ($ext == 'svg') {
+            header("Content-Disposition: attachment; filename=\"$filename.$ext\"");
+            header("Content-Type: $type");
+            echo $svg;
+
+        } else {
+            throw new CHttpException(400, "Invalid Type");
+        }
+
     }
 }
