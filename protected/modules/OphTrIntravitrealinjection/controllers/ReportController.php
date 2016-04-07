@@ -39,7 +39,7 @@ class ReportController extends BaseReportController {
 
 	public function actionArvoPresentation($startDate, $endDate){
 		// this is a fixed report for now, need to be updated
-		
+
 		$leftSummary = array("superior"=>0,"interior"=>0,"neutral"=>0);
 		$rightSummary = array("superior"=>0,"interior"=>0,"neutral"=>0);
 
@@ -53,10 +53,10 @@ class ReportController extends BaseReportController {
 			$jsonDataLeft = json_decode($data["left_eyedraw"]);
 			$jsonDataRight = json_decode($data["right_eyedraw"]);
 
-			if(isset($jsonDataLeft)) {
+			if(isset($jsonDataLeft) && isset($jsonDataLeft[1])) {
 				$leftSummary[$this->getArvo($jsonDataLeft[1]->rotation)]++;
 			}
-			if(isset($jsonDataRight)) {
+			if(isset($jsonDataRight) && isset($jsonDataRight[1])) {
 				$rightSummary[$this->getArvo($jsonDataRight[1]->rotation)]++;
 			}
 
