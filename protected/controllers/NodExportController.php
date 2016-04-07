@@ -1076,7 +1076,7 @@ EOL;
 
     private function getEpisodeOperationIndication()
     {
-        $query = "SELECT pl.`event_id` AS OperationId, (SELECT CASE WHEN pl.eye_id = 1 THEN 'L' WHEN pl.eye_id = 2 THEN 'R' END) AS Eye,
+        $query = "(SELECT pl.`event_id` AS OperationId, 'L' AS Eye,
                             (
                                     SELECT IF(	pl.`booking_event_id`,
                                                     d.`disorder_id`, 
@@ -1091,7 +1091,29 @@ EOL;
                             JOIN event_type evt ON evt.id = e.event_type_id
                             JOIN et_ophtroperationnote_procedurelist pl ON e.id = pl.event_id
                             LEFT JOIN `et_ophtroperationbooking_diagnosis` d ON pl.booking_event_id = d.`event_id`
-                            WHERE evt.name = 'Operation Note' " . $this->getDateWhere('e');
+                            WHERE evt.name = 'Operation Note' " . $this->getDateWhere('e') ."
+                            AND (pl.eye_id = 1 OR pl.eye_id = 3))
+                    UNION
+                            (
+                                SELECT pl.`event_id` AS OperationId, 'R' AS Eye,
+                                (
+                                        SELECT IF(	pl.`booking_event_id`,
+                                                        d.`disorder_id`, 
+                                                        (
+                                                                SELECT disorder_id
+                                                                FROM episode
+                                                                WHERE e.`episode_id` = episode.id
+                                                        )
+                                                ) 
+                                ) AS IndicationId
+                                FROM `event` e
+                                JOIN event_type evt ON evt.id = e.event_type_id
+                                JOIN et_ophtroperationnote_procedurelist pl ON e.id = pl.event_id
+                                LEFT JOIN `et_ophtroperationbooking_diagnosis` d ON pl.booking_event_id = d.`event_id`
+                                WHERE evt.name = 'Operation Note' " . $this->getDateWhere('e') ."
+                                AND (pl.eye_id = 2 OR pl.eye_id = 3)
+                            )
+                            ";
 
 
         $dataQuery = array(
@@ -1175,9 +1197,36 @@ EOL;
                     'L' AS Eye,
                     v.unit_id AS NotationRecordedId,
 
-                    ( SELECT value FROM ophciexamination_visual_acuity_unit_value WHERE base_value = (SELECT MAX(VALUE) FROM ophciexamination_visualacuity_reading r JOIN et_ophciexamination_visualacuity va ON va.id = r.element_id WHERE r.element_id = v.id) AND unit_id = (SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter')) AS BestMeasure,
-                    '' AS Unaided, 
-                    '' AS Pinhole, 
+                    (   SELECT value 
+                        FROM ophciexamination_visual_acuity_unit_value 
+                        WHERE base_value = (
+                                SELECT MAX(VALUE) 
+                                FROM ophciexamination_visualacuity_reading r 
+                                JOIN et_ophciexamination_visualacuity va ON va.id = r.element_id 
+                                WHERE r.element_id = v.id) AND unit_id = (SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter')
+                    ) AS BestMeasure,
+                    IFNULL(
+                        (
+                            SELECT r.value
+                            FROM ophciexamination_visualacuity_reading r
+                            JOIN ophciexamination_visualacuity_method m ON r.`method_id` = m.`id`
+                            WHERE r.element_id = v.id
+                            AND m.name = 'Unaided'
+                            AND side = 1
+                        ), 
+                        ''
+                    ) AS Unaided,
+                    IFNULL(
+                        (
+                            SELECT r.value
+                            FROM ophciexamination_visualacuity_reading r
+                            JOIN ophciexamination_visualacuity_method m ON r.`method_id` = m.`id`
+                            WHERE r.element_id = v.id
+                            AND m.name = 'Pinhole'
+                            AND side = 1
+                        ), 
+                        ''
+                    ) AS Pinhole, 
                     '' AS BestCorrected
                     FROM `event` e
                     INNER JOIN et_ophciexamination_visualacuity v ON v.event_id = e.id
@@ -1188,9 +1237,38 @@ EOL;
                     'R' AS Eye,
                     v.unit_id AS NotationRecordedId,
 
-                    ( SELECT value FROM ophciexamination_visual_acuity_unit_value WHERE base_value = (SELECT MAX(VALUE) FROM ophciexamination_visualacuity_reading r JOIN et_ophciexamination_visualacuity va ON va.id = r.element_id WHERE r.element_id = v.id) AND unit_id = (SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter')) AS BestMeasure,
-                    '' AS Unaided,
-                    '' AS Pinhole,
+                    (   SELECT value 
+                        FROM ophciexamination_visual_acuity_unit_value 
+                        WHERE base_value = (
+                                SELECT MAX(VALUE) 
+                                FROM ophciexamination_visualacuity_reading r 
+                                JOIN et_ophciexamination_visualacuity va ON va.id = r.element_id 
+                                WHERE r.element_id = v.id) 
+                                AND unit_id = (
+                                    SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter')
+                    ) AS BestMeasure,
+                    IFNULL(
+                        (
+                            SELECT r.value
+                            FROM ophciexamination_visualacuity_reading r
+                            JOIN ophciexamination_visualacuity_method m ON r.`method_id` = m.`id`
+                            WHERE r.element_id = v.id
+                            AND m.name = 'Unaided'
+                            AND side = 0
+                        ),
+                        ''
+                    ) AS Unaided,
+                    IFNULL(
+                        (
+                            SELECT r.value
+                            FROM ophciexamination_visualacuity_reading r
+                            JOIN ophciexamination_visualacuity_method m ON r.`method_id` = m.`id`
+                            WHERE r.element_id = v.id
+                            AND m.name = 'Pinhole'
+                            AND side = 0
+                        ), 
+                        ''
+                    ) AS Pinhole,
                     '' AS BestCorrected
                     FROM `event` e
                     INNER JOIN et_ophciexamination_visualacuity v ON v.event_id = e.id
