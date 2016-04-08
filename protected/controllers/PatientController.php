@@ -172,8 +172,9 @@ class PatientController extends BaseController
 			if (isset($_GET[$search_term]) && $search_value = trim($_GET[$search_term])) {
 
 				// Pad hos_num
-				if ($search_term == 'hos_num') {
-					$search_value = sprintf('%07s',$search_value);
+				if ($search_term == 'hos_num'
+					&& Yii::app()->params['pad_hos_num']) {
+					$search_value = sprintf(Yii::app()->params['pad_hos_num'],$search_value);
 				}
 
 				$search_terms[$search_term] = $search_value;
