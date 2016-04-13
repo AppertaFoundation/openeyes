@@ -45,6 +45,11 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
      * @var string
      */
     protected $searchTemplate = 'application.modules.OphCiExamination.views.reports.visual_acuity_search';
+    
+    /**
+     * @var int
+     */
+    protected $totalEyes = 0;
 
     /**
      * @var array
@@ -61,6 +66,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         ),
         'legend' => array('enabled' => false),
         'title' => array('text' => 'Visual Acuity (Distance)'),
+        'subtitle' => array('text' => 'Total Eyes: 0'),
         'xAxis' => array(
             'title' => array('text' => 'Visual acuity at surgery (LogMAR)'),
             'categories' => array('>1.20', '>0.90-1.20', '>0.60-0.90', '>0.30-0.60', '>0.00-0.30', '<= 0.00'),
@@ -320,6 +326,8 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
                     $yCoord,
                     $value
                 );
+                
+                $this->totalEyes += $value;
             }
         }
 
@@ -366,6 +374,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
     public function graphConfig()
     {
         $this->graphConfig['chart']['renderTo'] = $this->graphId();
+        $this->graphConfig['subtitle']['text'] = "Total Eyes: " . $this->totalEyes;
 
         return json_encode(array_merge_recursive($this->globalGraphConfig, $this->graphConfig));
     }

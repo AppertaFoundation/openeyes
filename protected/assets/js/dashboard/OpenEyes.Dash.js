@@ -233,13 +233,20 @@
                 }
             });
         },
-        'OEModule_OphCiExamination_components_VisualOutcomeReport':function(){
+        'OEModule_OphCiExamination_components_VisualOutcomeReport':function(data){
             var months = $('#visual-acuity-months').val();
             var type = $('input[name="type"]:checked').val();
             var type_text = type.charAt(0).toUpperCase() + type.slice(1);
             
+            var length = data[0].length;
+            var total = 0;
+            for(var i = 0; i < length; i++){
+                total += data[i][2];
+              
+            }
+            
             OpenEyes.Dash.reports['OEModule_OphCiExamination_components_VisualOutcomeReport'].yAxis[0].setTitle({ text: "Visual acuity " + months + " month" + (months > 1 ? 's' : '') + " after surgery (LogMAR)" });
-            OpenEyes.Dash.reports['OEModule_OphCiExamination_components_VisualOutcomeReport'].setTitle({ text: "Visual Acuity (" + type_text + ")" });
+            OpenEyes.Dash.reports['OEModule_OphCiExamination_components_VisualOutcomeReport'].setTitle({ text: "Visual Acuity (" + type_text + ")" },{text: "Total Eyes: " + total});
         }
     };
 
