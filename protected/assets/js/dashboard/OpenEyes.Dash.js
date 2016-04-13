@@ -198,6 +198,10 @@
     };
 
     Dash.postUpdate = {
+        'PcrRiskReport': function(data){
+            var chart = OpenEyes.Dash.reports['PcrRiskReport'];
+            chart.setTitle(null, {text: 'Total Operations: ' +  data[0][0]} );
+        },
         'OEModule_OphCiExamination_components_RefractiveOutcomeReport': function(data){
             var total = 0,
                 plusOrMinusOne = 0,
@@ -225,7 +229,7 @@
                 url: "/OphTrOperationnote/report/cataractComplicationTotal",
                 success: function (data, textStatus, jqXHR) {
                     var chart = OpenEyes.Dash.reports['CataractComplicationsReport'];
-                    chart.setTitle(null, {text: 'Total Complications: ' + data} );
+                    chart.setTitle(null, {text: 'Total Complications: ' + data[0] + " Total Operations: " + data[1]} );
                 }
             });
         },

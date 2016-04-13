@@ -287,6 +287,6 @@ class ReportController extends BaseReportController
 	{
 		$reportObj = new CataractComplicationsReport(Yii::app());
 
-		$this->renderJSON($reportObj->getTotalComplications());
+		$this->renderJSON(array($reportObj->getTotalComplications(), $reportObj->getTotalOperations()));
 	}
 }

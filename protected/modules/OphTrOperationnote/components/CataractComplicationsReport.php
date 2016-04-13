@@ -112,6 +112,7 @@ class CataractComplicationsReport extends Report implements ReportInterface
         $this->setComplicationCategories();
         $this->graphConfig['chart']['renderTo'] = $this->graphId();
         $this->graphConfig['subtitle']['text'] .= $this->getTotalComplications();
+        $this->graphConfig['subtitle']['text'] .= " Total Operations: " . $this->getTotalOperations();
 
         return json_encode(array_merge_recursive($this->globalGraphConfig, $this->graphConfig));
     }
@@ -156,4 +157,25 @@ class CataractComplicationsReport extends Report implements ReportInterface
 
         return $total;
     }
+    
+    public function getTotalOperations()
+    {
+         $this->command->select('id')
+            ->from('et_ophtroperationnote_cataract')
+            ->join('event', 'et_ophtroperationnote_cataract.event_id = event.id')
+            ->join('et_ophtroperationnote_surgeon', 'et_ophtroperationnote_surgeon.event_id = event.id')
+            ->where('surgeon_id = :surgeon', array('surgeon' => $this->surgeon));
+
+        if ($this->from) {
+            $this->command->andWhere('event.event_date > :dateFrom', array('dateFrom' => $this->from));
+        }
+
+        if ($this->to) {
+            $this->command->andWhere('event.event_date < :dateTo', array('dateTo' => $this->to));
+        }
+
+        return count($this->command->queryAll());
+    }
+    
+    
 }
