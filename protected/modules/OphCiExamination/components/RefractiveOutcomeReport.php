@@ -108,11 +108,11 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
             ->order('post_exam_date desc');
 
         if ($dateFrom) {
-            $this->command->andWhere('note_event.event_date > :dateFrom', array('dateFrom' => $dateFrom));
+            $this->command->andWhere('note_event.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
         }
 
         if ($dateTo) {
-            $this->command->andWhere('note_event.event_date < :dateTo', array('dateTo' => $dateTo));
+            $this->command->andWhere('note_event.event_date <= :dateTo', array('dateTo' => $dateTo));
         }
 
         if($months){

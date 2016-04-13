@@ -52,11 +52,11 @@ class CataractComplicationsReport extends Report implements ReportInterface
             ->group('complication_id');
 
         if ($dateFrom) {
-            $this->command->andWhere('event.event_date > :dateFrom', array('dateFrom' => $dateFrom));
+            $this->command->andWhere('event.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
         }
 
         if ($dateTo) {
-            $this->command->andWhere('event.event_date < :dateTo', array('dateTo' => $dateTo));
+            $this->command->andWhere('event.event_date <= :dateTo', array('dateTo' => $dateTo));
         }
 
         return $this->command->queryAll();
