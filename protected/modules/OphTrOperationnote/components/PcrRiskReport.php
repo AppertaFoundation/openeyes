@@ -87,7 +87,7 @@ class PcrRiskReport extends Report implements ReportInterface
 
         foreach($data as $case){
             $total++;
-            if(isset($case['complication']) && $case['complication'] === 'PC rupture with vitreous loss' || $case['complication'] === 'PC rupture no vitreous loss'){
+            if(isset($case['complication']) && $case['complication']== 'PC Rupture' && $case['complication'] === 'PC rupture with vitreous loss' || $case['complication'] === 'PC rupture no vitreous loss'){
                 $pcrCases++;
             }
             if(isset($case['risk']) && $case['risk'] != "" ){
