@@ -161,11 +161,11 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
             ->order('pre_exam_date asc, post_exam_date desc');
 
         if ($dateFrom) {
-            $this->command->andWhere('note_event.event_date > :dateFrom', array('dateFrom' => $dateFrom));
+            $this->command->andWhere('note_event.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
         }
 
         if ($dateTo) {
-            $this->command->andWhere('note_event.event_date < :dateTo', array('dateTo' => $dateTo));
+            $this->command->andWhere('note_event.event_date <= :dateTo', array('dateTo' => $dateTo));
         }
 
         if ($method) {

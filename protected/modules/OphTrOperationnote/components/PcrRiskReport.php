@@ -63,11 +63,11 @@ class PcrRiskReport extends Report implements ReportInterface
             ->where('surgeon_id = :surgeon', array('surgeon' => $surgeon));
 
         if ($dateFrom) {
-            $this->command->andWhere('event.event_date > :dateFrom', array('dateFrom' => $dateFrom));
+            $this->command->andWhere('event.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
         }
 
         if ($dateTo) {
-            $this->command->andWhere('event.event_date < :dateTo', array('dateTo' => $dateTo));
+            $this->command->andWhere('event.event_date <= :dateTo', array('dateTo' => $dateTo));
         }
 
         return $this->command->queryAll();
