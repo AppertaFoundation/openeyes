@@ -239,18 +239,6 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
             }
             $counts[$data[0].'_'.$data[1]]++;
         }
-        // original processing left here for debug purposes, remove if not necessary
-     /* 
-      * $returnData = array();
-        foreach($counts as $key => $count){
-            $points = explode('_', $key);
-            $returnData[] = array(
-                (float)$points[0],
-                (float)$points[1],
-                $count
-            );
-        }
-       */
          
         $matrix = array();
         

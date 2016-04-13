@@ -208,10 +208,10 @@
 
             for(var i = 0; i < data.length; i++){
                 total += data[i];
-                if(chart.axes[0].categories[i] >= -1.0 && chart.axes[0].categories[i] <= 1.0){
+                if(chart.axes[0].categories[i] < -1.0 || chart.axes[0].categories[i] > 1.0){
                     plusOrMinusOne += data[i];
                 }
-                if(chart.axes[0].categories[i] >= -0.5 && chart.axes[0].categories[i] <= 0.5){
+                if(chart.axes[0].categories[i] < -0.5 || chart.axes[0].categories[i] > 0.5){
                     plusOrMinusHalf += data[i];
                 }
             }

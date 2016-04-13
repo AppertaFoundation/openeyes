@@ -227,11 +227,11 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
             $categoryText = $this->graphConfig['xAxis']['categories'][$i];
             
             $categoryFloat = number_format($categoryText, 2, '.', '');
-            if($categoryFloat >= -1 && $categoryFloat <= 1){
+            if($categoryFloat < -1 || $categoryFloat > 1){
                 $plusOrMinusOne += $category;
             }
             
-            if($categoryFloat >= -0.5 && $categoryFloat <= 0.5){
+            if($categoryFloat < -0.5 || $categoryFloat > 0.5){
                 $plusOrMinusHalf += $category;
             }
             
