@@ -26,7 +26,12 @@ class ReportController extends BaseReportController
 			array('allow',
 				'actions' => array('index', 'operation', 'runReport', 'downloadReport', 'cataractComplicationTotal'),
 				'roles' => array('OprnGenerateReport', 'admin'),
-			)
+			),
+                        array(
+                            'allow',
+                            'actions' => array('cataractComplicationTotal'),
+                            'expression' => 'Yii::app()->user->isSurgeon()'
+                         ),
 		);
 	}
 
