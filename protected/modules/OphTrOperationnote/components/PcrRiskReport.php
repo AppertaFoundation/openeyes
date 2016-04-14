@@ -137,7 +137,7 @@ class PcrRiskReport extends Report implements ReportInterface
     }
 
     /**
-     * @return mixed
+     * @return integer
      */
     public function getTotalOperations()
     {
@@ -157,7 +157,7 @@ class PcrRiskReport extends Report implements ReportInterface
         }
 
         $totalData = $this->command->queryAll();
-        return $totalData[0]["total"];
+        return (int)$totalData[0]["total"];
     }
 
     /**
