@@ -105,7 +105,8 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
             ->join('et_ophtroperationnote_cataract', 'note_event.id = et_ophtroperationnote_cataract.event_id')
             ->where('surgeon_id = :surgeon', array('surgeon' => $surgeon))
             ->andWhere('post_examination.deleted <> 1 and note_event.deleted <> 1')
-            ->andWhere('event.deleted=0')
+            ->andWhere('post_examination.deleted=0')
+            ->andWhere('note_event.deleted=0')
             ->order('post_exam_date desc');
 
         if ($dateFrom) {
