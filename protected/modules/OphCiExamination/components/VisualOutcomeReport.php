@@ -396,7 +396,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
      */
     public function renderSearch()
     {
-        $visualAcuityMethods = OphCiExamination_VisualAcuity_Method::model()->findAll('name != "Unaided"');
+        $visualAcuityMethods = OphCiExamination_VisualAcuity_Method::model()->findAll();
         return $this->app->controller->renderPartial($this->searchTemplate, array('report' => $this, 'methods' => $visualAcuityMethods));
     }
 }
