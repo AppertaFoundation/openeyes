@@ -60,7 +60,9 @@ class PcrRiskReport extends Report implements ReportInterface
             ->join('et_ophtroperationnote_surgeon', 'et_ophtroperationnote_surgeon.event_id = event.id')
             ->leftJoin('ophtroperationnote_cataract_complication', 'et_ophtroperationnote_cataract.id = ophtroperationnote_cataract_complication.cataract_id')
             ->leftJoin('ophtroperationnote_cataract_complications', 'ophtroperationnote_cataract_complications.id = ophtroperationnote_cataract_complication.complication_id')
-            ->where('surgeon_id = :surgeon', array('surgeon' => $surgeon));
+            ->where('surgeon_id = :surgeon', array('surgeon' => $surgeon))
+            ->andWhere('event.deleted=0');
+
 
         if ($dateFrom) {
             $this->command->andWhere('event.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
@@ -146,7 +148,8 @@ class PcrRiskReport extends Report implements ReportInterface
             ->from('et_ophtroperationnote_cataract')
             ->join('event', 'et_ophtroperationnote_cataract.event_id = event.id')
             ->join('et_ophtroperationnote_surgeon', 'et_ophtroperationnote_surgeon.event_id = event.id')
-            ->where('surgeon_id = :surgeon', array('surgeon' => $this->surgeon));
+            ->where('surgeon_id = :surgeon', array('surgeon' => $this->surgeon))
+            ->andWhere('event.deleted=0');
 
         if ($this->from) {
             $this->command->andWhere('event.event_date >= :dateFrom', array('dateFrom' => $this->from));

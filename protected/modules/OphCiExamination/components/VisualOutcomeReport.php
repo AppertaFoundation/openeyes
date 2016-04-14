@@ -164,6 +164,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
                AND post_reading.method_id = pre_reading.method_id')
             ->where('surgeon_id = :surgeon', array('surgeon' => $surgeon))
             ->andWhere('pre_examination.deleted <> 1 and post_examination.deleted <> 1 and note_event.deleted <> 1')
+            ->andWhere('event.deleted=0')
             ->order('pre_exam_date asc, post_exam_date desc');
 
         if ($dateFrom) {
