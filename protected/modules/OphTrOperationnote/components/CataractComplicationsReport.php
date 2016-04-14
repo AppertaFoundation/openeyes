@@ -160,21 +160,23 @@ class CataractComplicationsReport extends Report implements ReportInterface
     
     public function getTotalOperations()
     {
-         $this->command->select('id')
+        $this->command->reset();
+        $this->command->select('COUNT(*) as total')
             ->from('et_ophtroperationnote_cataract')
             ->join('event', 'et_ophtroperationnote_cataract.event_id = event.id')
             ->join('et_ophtroperationnote_surgeon', 'et_ophtroperationnote_surgeon.event_id = event.id')
             ->where('surgeon_id = :surgeon', array('surgeon' => $this->surgeon));
 
         if ($this->from) {
-            $this->command->andWhere('event.event_date > :dateFrom', array('dateFrom' => $this->from));
+            $this->command->andWhere('event.event_date >= :dateFrom', array('dateFrom' => $this->from));
         }
 
         if ($this->to) {
-            $this->command->andWhere('event.event_date < :dateTo', array('dateTo' => $this->to));
+            $this->command->andWhere('event.event_date <= :dateTo', array('dateTo' => $this->to));
         }
 
-        return count($this->command->queryAll());
+        $totalData = $this->command->queryAll();
+        return $totalData[0]["total"];
     }
     
     

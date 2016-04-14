@@ -226,6 +226,7 @@
         },
         'CataractComplicationsReport': function(data){
             $.ajax({
+                data: $('#search-form').serialize(),
                 url: "/OphTrOperationnote/report/cataractComplicationTotal",
                 success: function (data, textStatus, jqXHR) {
                     var chart = OpenEyes.Dash.reports['CataractComplicationsReport'];
