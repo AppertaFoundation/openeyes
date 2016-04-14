@@ -188,6 +188,9 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         for($i = $lowerLimit; $i <= $upperLimit; $i += 0.5 ){
             $this->graphConfig['xAxis']['categories'][] = "$i";
         }
+        
+        $this->graphConfig['xAxis']['min'] = 0;
+        $this->graphConfig['xAxis']['max'] = count($this->graphConfig['xAxis']['categories'])-1;
     }
 
     /**
