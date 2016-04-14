@@ -80,13 +80,12 @@ class PcrRiskReport extends Report implements ReportInterface
     {
         $data = $this->queryData($this->surgeon, $this->from, $this->to);
 
-        $total = 0;
+        $total = $this->getTotalOperations();
         $pcrCases = 0;
         $pcrRiskTotal = 0;
         $adjustedPcrRate = 0;
 
         foreach($data as $case){
-            $total++;
             if(isset($case['complication']) && $case['complication']== 'PC Rupture' && $case['complication'] === 'PC rupture with vitreous loss' || $case['complication'] === 'PC rupture no vitreous loss'){
                 $pcrCases++;
             }
@@ -135,6 +134,30 @@ class PcrRiskReport extends Report implements ReportInterface
         );
 
         return json_encode($this->series);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTotalOperations()
+    {
+        $this->command->reset();
+        $this->command->select('COUNT(*) as total')
+            ->from('et_ophtroperationnote_cataract')
+            ->join('event', 'et_ophtroperationnote_cataract.event_id = event.id')
+            ->join('et_ophtroperationnote_surgeon', 'et_ophtroperationnote_surgeon.event_id = event.id')
+            ->where('surgeon_id = :surgeon', array('surgeon' => $this->surgeon));
+
+        if ($this->from) {
+            $this->command->andWhere('event.event_date >= :dateFrom', array('dateFrom' => $this->from));
+        }
+
+        if ($this->to) {
+            $this->command->andWhere('event.event_date <= :dateTo', array('dateTo' => $this->to));
+        }
+
+        $totalData = $this->command->queryAll();
+        return $totalData[0]["total"];
     }
 
     /**
