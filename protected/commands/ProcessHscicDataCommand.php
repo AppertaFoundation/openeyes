@@ -854,15 +854,29 @@ EOH;
     private function download($url, $file)
     {
         echo "Downloading... " . basename($file);
+        $result = true;
+
         $file_handler = fopen($file, 'w');
         
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_FILE, $file_handler);
         curl_exec($curl);
+
+        if (curl_errno($curl)) {
+            echo ' Curl error: ' . curl_errno($curl);
+            $result = false;
+        }
+        else {
+            $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            if ($status != 200) {
+                echo ' Bad Status Code: ' . $status;
+                $result = false;
+            }
+        }
         curl_close($curl);
         
         fclose($file_handler);
-        $result = is_readable($file) && filesize($file);
+        $result = $result && is_readable($file) && filesize($file);
         
         echo ($result ? ' ... OK' : '... ERROR');
         echo "\n";
