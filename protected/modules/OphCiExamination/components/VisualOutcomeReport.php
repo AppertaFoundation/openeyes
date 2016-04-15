@@ -175,7 +175,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         }
 
         if ($method) {
-            if(is_int($method)){
+            if(is_numeric($method)){
                 $this->command->andWhere('pre_reading.method_id = :method', array('method' => $method));
             } else {
                 $this->command
