@@ -840,7 +840,9 @@ EOH;
     public function actionDownloadall(){
         foreach(self::$files['full'] as $file){
             $fileName = $this->getFileFromUrl($file['url']);
-            $this->download($file['url'], $this->tempPath . '/' . $fileName);
+            if (!$this->download($file['url'], $this->tempPath . '/' . $fileName)) {
+                echo "Browse to " . $file['url'] . " for more details ...\n";
+            };
         }
     }
     
