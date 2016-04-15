@@ -272,7 +272,7 @@ EOH;
         
         $zip = new ZipArchive();
         if (($res = $zip->open($file)) !== true) {
-            $this->usageError("Failed to open zip file at '{$zip_path}': " . $res);
+            $this->usageError("Failed to open zip file '{$file}': " . $res);
         }
         
         $fileName = str_replace('.zip', '.csv', $pathInfo['basename']);
