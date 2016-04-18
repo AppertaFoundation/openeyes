@@ -1207,7 +1207,7 @@ EOL;
                     ) AS BestMeasure,
                     IFNULL(
                         (
-                            SELECT r.value
+                            SELECT MAX(r.value)
                             FROM ophciexamination_visualacuity_reading r
                             JOIN ophciexamination_visualacuity_method m ON r.`method_id` = m.`id`
                             WHERE r.element_id = v.id
@@ -1218,7 +1218,7 @@ EOL;
                     ) AS Unaided,
                     IFNULL(
                         (
-                            SELECT r.value
+                            SELECT MAX(r.value)
                             FROM ophciexamination_visualacuity_reading r
                             JOIN ophciexamination_visualacuity_method m ON r.`method_id` = m.`id`
                             WHERE r.element_id = v.id
@@ -1249,7 +1249,7 @@ EOL;
                     ) AS BestMeasure,
                     IFNULL(
                         (
-                            SELECT r.value
+                            SELECT MAX(r.value)
                             FROM ophciexamination_visualacuity_reading r
                             JOIN ophciexamination_visualacuity_method m ON r.`method_id` = m.`id`
                             WHERE r.element_id = v.id
@@ -1260,7 +1260,7 @@ EOL;
                     ) AS Unaided,
                     IFNULL(
                         (
-                            SELECT r.value
+                            SELECT MAX(r.value)
                             FROM ophciexamination_visualacuity_reading r
                             JOIN ophciexamination_visualacuity_method m ON r.`method_id` = m.`id`
                             WHERE r.element_id = v.id
