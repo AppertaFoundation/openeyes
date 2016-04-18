@@ -180,7 +180,6 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
             } else {
                 $this->command
                     ->join('ophciexamination_visualacuity_method', 'ophciexamination_visualacuity_method.id = pre_reading.method_id')
-                    ->join('ophciexamination_visualacuity_method', 'ophciexamination_visualacuity_method.id = pre_reading.method_id')
                     ->andWhere('ophciexamination_visualacuity_method.name = "Glasses"
                                 OR ophciexamination_visualacuity_method.name = "Contact lens"
                                 OR ophciexamination_visualacuity_method.name = "Unaided"');
