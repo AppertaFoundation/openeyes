@@ -130,27 +130,27 @@ class NodExportController extends BaseController
         }
 
         while (true) {
-            $dataCmd = Yii::app()->db->createCommand($dataQuery['query']);
-            $dataCmd->offset($offset);
-	        $dataCmd->limit($chunk);
+            $runQuery = $dataQuery['query']. " LIMIT ".$chunk." OFFSET ".$offset.";";
+            $dataCmd = Yii::app()->db->createCommand($runQuery);
 
             $data = $dataCmd->queryAll();
 
-            if(!count($data))
+            if(count($data) > 0)
             {
+                $csv = $this->array2Csv($data, ($offset == 0 && isset($dataQuery['header'])) ? $dataQuery['header'] : null, $dataFormatter);
+
+                file_put_contents($this->exportPath . '/' . $filename . '.csv', $csv, FILE_APPEND);
+
+                foreach($data as $d)
+                {
+                    $resultIds[] = $d[$IdField];
+                }
+
+                $offset+=$chunk;
+                unset($data);
+            }else {
                 break;
             }
-
-            $csv = $this->array2Csv($data, ($offset == 0 && isset($dataQuery['header'])) ? $dataQuery['header'] : null, $dataFormatter);
-
-            file_put_contents($this->exportPath . '/' . $filename . '.csv', $csv, FILE_APPEND);
-
-            foreach($data as $d)
-            {
-                $resultIds[] = $d[$IdField];
-            }
-
-	        $offset+=$chunk;
         }
         return $resultIds;
     }
@@ -675,7 +675,7 @@ EOL;
                     left join medication on medication.prescription_item_id = opi.id
                     where medication.id is null
                      $dateWhereScript
-                  );
+                  )
 EOL;
 
         $dataQuery = array(
@@ -799,7 +799,7 @@ EOL;
                         JOIN ophciexamination_intraocularpressure_value oipv ON oipv.element_id = etoi.id
                         JOIN ophciexamination_intraocularpressure_reading oipvr ON oipv.`reading_id` = oipvr.id
                         WHERE et.name = 'Examination' $dateWhere 
-                        GROUP BY e.id;";
+                        GROUP BY e.id ";
 
         $dataQuery = array(
             'query' => $query,
