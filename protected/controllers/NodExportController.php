@@ -119,11 +119,11 @@ class NodExportController extends BaseController
      * @param string $episodeIdField
      * @return null|array
      */
-    private function saveCSVfile($dataQuery, $filename, $dataFormatter = null, $IdField)
+    private function saveCSVfile($dataQuery, $filename, $dataFormatter = null, $IdField = null)
     {
         $resultIds = array();
         $offset = 0;
-        $chunk = 2000;
+        $chunk = 10000;
 
         if (!isset($dataQuery['query'])) {
             throw new Exception('Query not found: array key "query" not exist');
@@ -135,15 +135,20 @@ class NodExportController extends BaseController
 
             $data = $dataCmd->queryAll();
 
+            if($offset == 0 && (!count($data)>0)){
+                file_put_contents($this->exportPath . '/' . $filename . '.csv', $dataQuery['header'], FILE_APPEND);
+            }
+
             if(count($data) > 0)
             {
                 $csv = $this->array2Csv($data, ($offset == 0 && isset($dataQuery['header'])) ? $dataQuery['header'] : null, $dataFormatter);
 
                 file_put_contents($this->exportPath . '/' . $filename . '.csv', $csv, FILE_APPEND);
 
-                foreach($data as $d)
-                {
-                    $resultIds[] = $d[$IdField];
+                if($IdField) {
+                    foreach ($data as $d) {
+                        $resultIds[] = $d[$IdField];
+                    }
                 }
 
                 $offset+=$chunk;
