@@ -119,20 +119,40 @@ class NodExportController extends BaseController
      * @param string $episodeIdField
      * @return null|array
      */
-    private function saveCSVfile($dataQuery, $filename, $dataFormatter = null)
+    private function saveCSVfile($dataQuery, $filename, $dataFormatter = null, $IdField)
     {
+        $resultIds = array();
+        $offset = 0;
+        $chunk = 2000;
 
         if (!isset($dataQuery['query'])) {
             throw new Exception('Query not found: array key "query" not exist');
         }
 
-        $data = Yii::app()->db->createCommand($dataQuery['query'])->queryAll();
+        while (true) {
+            $dataCmd = Yii::app()->db->createCommand($dataQuery['query']);
+            $dataCmd->offset($offset);
+	        $dataCmd->limit($chunk);
 
-        $csv = $this->array2Csv($data, isset($dataQuery['header']) ? $dataQuery['header'] : null, $dataFormatter);
+            $data = $dataCmd->queryAll();
 
-        file_put_contents($this->exportPath . '/' . $filename . '.csv', $csv);
+            if(!count($data))
+            {
+                break;
+            }
 
-        return $data;
+            $csv = $this->array2Csv($data, ($offset == 0 && isset($dataQuery['header'])) ? $dataQuery['header'] : null, $dataFormatter);
+
+            file_put_contents($this->exportPath . '/' . $filename . '.csv', $csv, FILE_APPEND);
+
+            foreach($data as $d)
+            {
+                $resultIds[] = $d[$IdField];
+            }
+
+	        $offset+=$chunk;
+        }
+        return $resultIds;
     }
 
     private function getIdArray($data, $IdField)
@@ -541,9 +561,9 @@ EOL;
             'header' => array('EpisodeId', 'Eye', 'Date', 'SurgeonId', 'ConditionId', 'DiagnosisTermId'),
         );
 
-        $data = $this->saveCSVfile($dataQuery, 'EpisodeDiagnosis');
+        return $this->saveCSVfile($dataQuery, 'EpisodeDiagnosis', null, 'EpisodeId');
 
-        return $this->getIdArray($data, 'EpisodeId');
+        //return $this->getIdArray($data, 'EpisodeId');
     }
 
     private function getEpisodeDiabeticDiagnosis()
@@ -594,9 +614,9 @@ EOL;
             'header' => array('EpisodeId', 'IsDiabetic', 'DiabetesTypeId', 'DiabetesRegimeId', 'AgeAtDiagnosis'),
         );
 
-        $data = $this->saveCSVfile($dataQuery, 'EpisodeDiabeticDiagnosis');
+        return $this->saveCSVfile($dataQuery, 'EpisodeDiabeticDiagnosis', null, 'EpisodeId');
 
-        return $this->getIdArray($data, 'EpisodeId');
+        //return $this->getIdArray($data, 'EpisodeId');
     }
 
     private function getEpisodeDrug()
@@ -663,9 +683,9 @@ EOL;
             'header' => array('EpisodeId', 'Eye', 'DrugId', 'DrugRouteId', 'StartDate', 'StopDate', 'IsAddedByPrescription', 'IsContinueIndefinitely', 'IsStartDateApprox'),
         );
 
-        $data = $this->saveCSVfile($dataQuery, 'EpisodeDrug', 'prescriptionItemFormat');
+        return $this->saveCSVfile($dataQuery, 'EpisodeDrug', 'prescriptionItemFormat', 'EpisodeId');
 
-        return $this->getIdArray($data, 'EpisodeId');
+        //return $this->getIdArray($data, 'EpisodeId');
     }
 
     private function getEpisodeBiometry()
@@ -757,9 +777,9 @@ EOL;
             ),
         );
 
-        $data = $this->saveCSVfile($dataQuery, 'EpisodeBiometry');
+        return $this->saveCSVfile($dataQuery, 'EpisodeBiometry', null, 'EpisodeId');
 
-        return $this->getIdArray($data, 'EpisodeId');
+        //return $this->getIdArray($data, 'EpisodeId');
 
     }
 
@@ -786,9 +806,9 @@ EOL;
             'header' => array('EpisodeId', 'Eye', 'Type', 'GlaucomaMedicationStatusId', 'Value'),
         );
 
-        $data = $this->saveCSVfile($dataQuery, 'EpisodeIOP');
+        return $this->saveCSVfile($dataQuery, 'EpisodeIOP', null, 'EpisodeId');
 
-        return $this->getIdArray($data, 'EpisodeId');
+        //return $this->getIdArray($data, 'EpisodeId');
     }
 
     protected function array2Csv(array $data, $header = null, $dataFormatter = null)
@@ -856,9 +876,9 @@ EOL;
             'header' => array('EpisodeId', 'OperationId', 'Eye', 'ComplicationTypeId'),
         );
 
-        $data = $this->saveCSVfile($dataQuery, 'EpisodePostOpComplication');
+        return $this->saveCSVfile($dataQuery, 'EpisodePostOpComplication', null, 'EpisodeId');
 
-        return $this->getIdArray($data, 'EpisodeId');
+        //return $this->getIdArray($data, 'EpisodeId');
     }
 
     private function getEpisodeOperationCoPathology()
@@ -962,9 +982,9 @@ EOL;
             'header' => array('OperationId', 'Eye', 'CoPathologyId'),
         );
 
-        $data = $this->saveCSVfile($dataQuery, 'EpisodeOperationCoPathology');
+        return $this->saveCSVfile($dataQuery, 'EpisodeOperationCoPathology', null, 'OperationId');
 
-        return $this->getIdArray($data, 'OperationId');
+        //return $this->getIdArray($data, 'OperationId');
     }
 
     private function getEpisodeTreatmentCataract()
@@ -1023,10 +1043,10 @@ EOL;
             ),
         );
 
-        $data = $this->saveCSVfile($dataQuery, 'EpisodeTreatmentCataract');
+        return $this->saveCSVfile($dataQuery, 'EpisodeTreatmentCataract', null, 'TreatmentId');
 
         //TODO: need to select episodeIds here!
-        return $this->getIdArray($data, 'TreatmentId');
+        //return $this->getIdArray($data, 'TreatmentId');
 
     }
 
@@ -1046,9 +1066,9 @@ EOL;
             'header' => array('TreatmentId', 'OperationId', 'Eye', 'TreatmentTypeId'),
         );
 
-        $data = $this->saveCSVfile($dataQuery, 'EpisodeTreatment');
+        return $this->saveCSVfile($dataQuery, 'EpisodeTreatment', null, 'TreatmentId');
         //TODO: need to select episodeIds here!
-        return $this->getIdArray($data, 'TreatmentId');
+        //return $this->getIdArray($data, 'TreatmentId');
 
     }
 
@@ -1069,9 +1089,9 @@ EOL;
             'header' => array('OperationId', 'AnaesthesiaTypeId', 'AnaesthesiaNeedle', 'Sedation', 'SurgeonId', 'ComplicationId'),
         );
 
-        $data = $this->saveCSVfile($dataQuery, 'EpisodeOperationAnaesthesia');
+        return $this->saveCSVfile($dataQuery, 'EpisodeOperationAnaesthesia', null, 'OperationId');
 
-        return $this->getIdArray($data, 'OperationId');
+        //return $this->getIdArray($data, 'OperationId');
     }
 
     private function getEpisodeOperationIndication()
@@ -1121,9 +1141,9 @@ EOL;
             'header' => array('OperationId', 'Eye', 'IndicationId'),
         );
 
-        $data = $this->saveCSVfile($dataQuery, 'EpisodeOperationIndication');
+        return $this->saveCSVfile($dataQuery, 'EpisodeOperationIndication', null, 'OperationId');
 
-        return $this->getIdArray($data, 'OperationId');
+        //return $this->getIdArray($data, 'OperationId');
 
     }
 
@@ -1156,9 +1176,9 @@ EOL;
             'header' => array('OperationId', 'Eye', 'ComplicationTypeId'),
         );
 
-        $data = $this->saveCSVfile($dataQuery, 'EpisodeOperationComplication');
+        return $this->saveCSVfile($dataQuery, 'EpisodeOperationComplication', null, 'OperationId');
 
-        return $this->getIdArray($data, 'OperationId');
+        //return $this->getIdArray($data, 'OperationId');
     }
 
     private function getEpisodeOperation()
@@ -1184,9 +1204,9 @@ EOL;
             'query' => $query,
             'header' => array('OperationId', 'EpisodeId', 'Description', 'IsHypertensive', 'ListedDate', 'SurgeonId', 'SurgeonGradeId', 'AssistantId', 'AssistantGradeId','ConsultantId'),
         );
-        $data = $this->saveCSVfile($dataQuery, 'EpisodeOperation');
+        return $this->saveCSVfile($dataQuery, 'EpisodeOperation', null, 'OperationId');
 
-        return $this->getIdArray($data, 'OperationId');
+        //return $this->getIdArray($data, 'OperationId');
     }
 
     private function getEpisodeVisualAcuity()
@@ -1279,9 +1299,9 @@ EOL;
             'header' => array('EpisodeId', 'Eye', 'NotationRecordedId', 'BestMeasure', 'Unaided', 'Pinhole', 'BestCorrected'),
         );
 
-        $data = $this->saveCSVfile($dataQuery, 'EpisodeVisualAcuity');
+        return $this->saveCSVfile($dataQuery, 'EpisodeVisualAcuity', null, 'EpisodeId');
 
-        return $this->getIdArray($data, 'EpisodeId');
+        //return $this->getIdArray($data, 'EpisodeId');
     }
 
     private function getEpisodeRefraction()
@@ -1317,9 +1337,9 @@ EOL;
             'header' => array('EpisodeId', 'Sphere', 'Cylinder', 'Axis', 'RefractionTypeId', 'ReadingAdd', 'Eye'),
         );
 
-        $data = $this->saveCSVfile($dataQuery, 'EpisodeRefraction');
+        return $this->saveCSVfile($dataQuery, 'EpisodeRefraction', null, 'EpisodeId');
 
-        return $this->getIdArray($data, 'EpisodeId');
+        //return $this->getIdArray($data, 'EpisodeId');
     }
 
     private function getEpisodePreOpAssessment()
@@ -1341,9 +1361,9 @@ EOL;
             'header' => array('EpisodeId', 'Eye', 'IsAbleToLieFlat', 'IsInabilityToCooperate'),
         );
 
-        $data = $this->saveCSVfile($dataQuery, 'EpisodePreOpAssessment');
+        return $this->saveCSVfile($dataQuery, 'EpisodePreOpAssessment', null, 'EpisodeId');
 
-        return $this->getIdArray($data, 'EpisodeId');
+        //return $this->getIdArray($data, 'EpisodeId');
     }
     
     /**
