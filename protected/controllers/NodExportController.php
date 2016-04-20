@@ -194,19 +194,22 @@ class NodExportController extends BaseController
 			DROP TEMPORARY TABLE IF EXISTS tmp_episode_ids;
 			
 			CREATE TEMPORARY TABLE tmp_episode_ids(
-				id  int(10) UNSIGNED NOT NULL UNIQUE
+				id  int(10) UNSIGNED NOT NULL UNIQUE,
+				KEY `tmp_episode_ids_id` (`id`)
 			);
 			
 			DROP TEMPORARY TABLE IF EXISTS tmp_operation_ids;
 			
 			CREATE TEMPORARY TABLE tmp_operation_ids(
-				id  int(10) UNSIGNED NOT NULL UNIQUE
+				id  int(10) UNSIGNED NOT NULL UNIQUE,
+				KEY `tmp_operation_ids_id` (`id`)
 			);
 			
 			DROP TEMPORARY TABLE IF EXISTS tmp_treatment_ids;
 			
 			CREATE TEMPORARY TABLE tmp_treatment_ids(
-				id  int(10) UNSIGNED NOT NULL UNIQUE
+				id  int(10) UNSIGNED NOT NULL UNIQUE,
+				KEY `tmp_treatment_ids_id` (`id`)
 			);
 			
 
