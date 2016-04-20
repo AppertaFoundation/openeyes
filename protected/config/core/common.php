@@ -313,6 +313,11 @@ return array(
 						'uri' => 'NodExport',
 						'position' => 5,
 						'restricted' => array('NOD Export'),
+					'patientmerge' => array(
+						'title' => 'Patient Merge',
+						'uri' => 'patientmerge/mergerequest',
+						'position' => 6,
+						'restricted' => array('admin'),
 					),
 				)
 			),
