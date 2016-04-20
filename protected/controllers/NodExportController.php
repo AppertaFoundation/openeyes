@@ -1244,24 +1244,30 @@ EOL;
                     ) AS BestMeasure,
                     IFNULL(
                         (
+                        SELECT value
+                        FROM ophciexamination_visual_acuity_unit_value
+                        WHERE base_value = (
                             SELECT MAX(r.value)
                             FROM ophciexamination_visualacuity_reading r
                             JOIN ophciexamination_visualacuity_method m ON r.`method_id` = m.`id`
                             WHERE r.element_id = v.id
                             AND m.name = 'Unaided'
                             AND side = 1
-                        ), 
+                        ) AND unit_id = (SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter')),
                         ''
                     ) AS Unaided,
                     IFNULL(
                         (
+                        SELECT value
+                        FROM ophciexamination_visual_acuity_unit_value
+                        WHERE base_value = (
                             SELECT MAX(r.value)
                             FROM ophciexamination_visualacuity_reading r
                             JOIN ophciexamination_visualacuity_method m ON r.`method_id` = m.`id`
                             WHERE r.element_id = v.id
                             AND m.name = 'Pinhole'
                             AND side = 1
-                        ), 
+                        ) AND unit_id = (SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter')),
                         ''
                     ) AS Pinhole, 
                     '' AS BestCorrected
@@ -1285,25 +1291,30 @@ EOL;
                                     SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter')
                     ) AS BestMeasure,
                     IFNULL(
-                        (
+                      ( SELECT value
+                        FROM ophciexamination_visual_acuity_unit_value
+                        WHERE base_value = (
                             SELECT MAX(r.value)
                             FROM ophciexamination_visualacuity_reading r
                             JOIN ophciexamination_visualacuity_method m ON r.`method_id` = m.`id`
                             WHERE r.element_id = v.id
                             AND m.name = 'Unaided'
                             AND side = 0
-                        ),
+                        ) AND unit_id = (SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter') ),
                         ''
                     ) AS Unaided,
                     IFNULL(
                         (
+                        SELECT value
+                        FROM ophciexamination_visual_acuity_unit_value
+                        WHERE base_value = (
                             SELECT MAX(r.value)
                             FROM ophciexamination_visualacuity_reading r
                             JOIN ophciexamination_visualacuity_method m ON r.`method_id` = m.`id`
                             WHERE r.element_id = v.id
                             AND m.name = 'Pinhole'
                             AND side = 0
-                        ), 
+                        ) AND unit_id = (SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter')),
                         ''
                     ) AS Pinhole,
                     '' AS BestCorrected
