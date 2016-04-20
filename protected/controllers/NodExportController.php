@@ -804,8 +804,26 @@ EOL;
     {
         $dateWhere = $this->getDateWhere('etoi');
 
-        $query = "SELECT e.id AS EpisodeId,
-                        (SELECT CASE WHEN oipv.eye_id = 1 THEN 'L' WHEN oipv.eye_id = 2 THEN 'R' END) AS Eye,
+        $query = " (    
+                        SELECT e.id AS EpisodeId,
+                        'L' AS Eye,
+                        '' AS `Type`,
+                        9 AS GlaucomaMedicationStatusId,
+                        (oipvr.value + 0.0) AS Value
+                        FROM episode e
+                        JOIN `event` ev ON ev.episode_id = e.id
+                        JOIN event_type et ON et.id = ev.event_type_id
+                        JOIN et_ophciexamination_intraocularpressure etoi ON etoi.event_id = ev.id
+                        JOIN ophciexamination_intraocularpressure_value oipv ON oipv.element_id = etoi.id
+                        JOIN ophciexamination_intraocularpressure_reading oipvr ON oipv.`reading_id` = oipvr.id
+                        WHERE et.name = 'Examination' $dateWhere
+                        AND (oipv.eye_id = 1 OR oipv.eye_id = 3)
+                        GROUP BY e.id 
+                    )
+                    UNION
+                    (
+                        SELECT e.id AS EpisodeId,
+                        'R' AS Eye,
                         '' AS `Type`,
                         9 AS GlaucomaMedicationStatusId,
                         (oipvr.value + 0.0) AS Value
@@ -816,7 +834,11 @@ EOL;
                         JOIN ophciexamination_intraocularpressure_value oipv ON oipv.element_id = etoi.id
                         JOIN ophciexamination_intraocularpressure_reading oipvr ON oipv.`reading_id` = oipvr.id
                         WHERE et.name = 'Examination' $dateWhere 
-                        GROUP BY e.id ";
+                        AND (oipv.eye_id = 2 OR oipv.eye_id = 3)
+                        GROUP BY e.id
+                    )
+                        ";
+        
 
         $dataQuery = array(
             'query' => $query,
@@ -876,17 +898,37 @@ EOL;
 
         $dateWhere = $this->getDateWhere('et_ophciexamination_postop_complications');
 
-        $query = "SELECT
-                        episode.id AS EpisodeId, 
-                        ophciexamination_postop_et_complications.`operation_note_id` AS OperationId, 
-                        (SELECT CASE WHEN ophciexamination_postop_et_complications.`eye_id` = 1 THEN 'L' WHEN ophciexamination_postop_et_complications.`eye_id` = 2 THEN 'R' END ) AS Eye,
-                        ophciexamination_postop_complications.`code` AS ComplicationTypeId
-                        FROM episode
-                        JOIN `event` ON episode.id = `event`.`episode_id`
-                        JOIN et_ophciexamination_postop_complications ON `event`.id = et_ophciexamination_postop_complications.`event_id`
-                        JOIN ophciexamination_postop_et_complications ON et_ophciexamination_postop_complications.id = ophciexamination_postop_et_complications.`element_id`
-                        JOIN ophciexamination_postop_complications ON ophciexamination_postop_et_complications.`complication_id` = ophciexamination_postop_complications.id 
-						WHERE 1=1 " . $dateWhere;
+        $query = "(
+                    SELECT
+                    episode.id AS EpisodeId, 
+                    ophciexamination_postop_et_complications.`operation_note_id` AS OperationId, 
+                    'L' AS Eye,
+                    ophciexamination_postop_complications.`code` AS ComplicationTypeId
+                    FROM episode
+                    JOIN `event` ON episode.id = `event`.`episode_id`
+                    JOIN et_ophciexamination_postop_complications ON `event`.id = et_ophciexamination_postop_complications.`event_id`
+                    JOIN ophciexamination_postop_et_complications ON et_ophciexamination_postop_complications.id = ophciexamination_postop_et_complications.`element_id`
+                    JOIN ophciexamination_postop_complications ON ophciexamination_postop_et_complications.`complication_id` = ophciexamination_postop_complications.id 
+                    WHERE 1=1 " . $dateWhere . "
+                    AND ( ophciexamination_postop_et_complications.`eye_id` = 1 OR ophciexamination_postop_et_complications.`eye_id` = 3)
+                )
+                UNION
+                (
+                    SELECT
+                    episode.id AS EpisodeId, 
+                    ophciexamination_postop_et_complications.`operation_note_id` AS OperationId, 
+                    (SELECT CASE WHEN ophciexamination_postop_et_complications.`eye_id` = 1 THEN 'L' WHEN ophciexamination_postop_et_complications.`eye_id` = 2 THEN 'R' END ) AS Eye,
+                    ophciexamination_postop_complications.`code` AS ComplicationTypeId
+                    FROM episode
+                    JOIN `event` ON episode.id = `event`.`episode_id`
+                    JOIN et_ophciexamination_postop_complications ON `event`.id = et_ophciexamination_postop_complications.`event_id`
+                    JOIN ophciexamination_postop_et_complications ON et_ophciexamination_postop_complications.id = ophciexamination_postop_et_complications.`element_id`
+                    JOIN ophciexamination_postop_complications ON ophciexamination_postop_et_complications.`complication_id` = ophciexamination_postop_complications.id 
+                    WHERE 1=1 " . $dateWhere . "
+                    AND ( ophciexamination_postop_et_complications.`eye_id` = 2 OR ophciexamination_postop_et_complications.`eye_id` = 3)
+
+                )"
+                ;
 
         $dataQuery = array(
             'query' => $query,
