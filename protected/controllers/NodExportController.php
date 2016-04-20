@@ -259,7 +259,8 @@ class NodExportController extends BaseController
 				`name` VARCHAR(50),
 				`code` VARCHAR(50),
 				`nod_code` VARCHAR(50),
-				`nod_desc` VARCHAR(50)
+				`nod_desc` VARCHAR(50),
+				KEY `tmp_anesthesia_type_name` (`name`)
 			);
 
 			INSERT INTO tmp_anesthesia_type(`id`, `name`, `code`, `nod_code`, `nod_desc`)
@@ -1415,16 +1416,34 @@ EOL;
     private function getEpisodePreOpAssessment()
     {
 
-        $query = "SELECT e.id AS EpisodeId,
-                                (SELECT CASE WHEN pl.eye_id = 1 THEN 'L' WHEN pl.eye_id = 2 THEN 'R' WHEN pl.eye_id = 3 THEN 'B' END) AS Eye,
-                                (SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 1 THEN 1 ELSE 0 END) AS IsAbleToLieFlat,
-                                (SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 4 THEN 1 ELSE 0 END) AS IsInabilityToCooperate
-                                FROM episode e
-                                LEFT JOIN `event` ev ON ev.episode_id = e.id
-                                JOIN et_ophtroperationnote_procedurelist pl ON pl.event_id = ev.id
-                                LEFT JOIN patient_risk_assignment pr ON pr.patient_id = e.patient_id
-                                WHERE 1=1 ".$this->getDateWhere('pl')."
-                                GROUP BY e.id";
+        $query = "(
+                    SELECT e.id AS EpisodeId,
+                    'L' AS Eye,
+                    (SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 1 THEN 1 ELSE 0 END) AS IsAbleToLieFlat,
+                    (SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 4 THEN 1 ELSE 0 END) AS IsInabilityToCooperate
+                    FROM episode e
+                    LEFT JOIN `event` ev ON ev.episode_id = e.id
+                    JOIN et_ophtroperationnote_procedurelist pl ON pl.event_id = ev.id
+                    LEFT JOIN patient_risk_assignment pr ON pr.patient_id = e.patient_id
+                    WHERE 1=1 ".$this->getDateWhere('pl')."
+                    AND (pl.eye_id = 1 OR pl.eye_id = 3)
+                    GROUP BY e.id
+                )
+                UNION 
+                (
+                    SELECT e.id AS EpisodeId,
+                    'R' AS Eye,
+                    (SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 1 THEN 1 ELSE 0 END) AS IsAbleToLieFlat,
+                    (SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 4 THEN 1 ELSE 0 END) AS IsInabilityToCooperate
+                    FROM episode e
+                    LEFT JOIN `event` ev ON ev.episode_id = e.id
+                    JOIN et_ophtroperationnote_procedurelist pl ON pl.event_id = ev.id
+                    LEFT JOIN patient_risk_assignment pr ON pr.patient_id = e.patient_id
+                    WHERE 1=1 ".$this->getDateWhere('pl')."
+                    AND (pl.eye_id = 2 OR pl.eye_id = 3)
+                    GROUP BY e.id
+                )
+                ";
 
         $dataQuery = array(
             'query' => $query,
