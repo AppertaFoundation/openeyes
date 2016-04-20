@@ -355,7 +355,8 @@ class NodExportController extends BaseController
                         `oe_option_id` INT(10) UNSIGNED DEFAULT NULL, 
                         `oe_option_name` VARCHAR(50), 
                         `nod_id` INT(10) UNSIGNED DEFAULT NULL, 
-                        `nod_name` VARCHAR(50)
+                        `nod_name` VARCHAR(50),
+                        KEY `tmp_episode_drug_route_oe_route_id` (`oe_route_id`)
                     ); 
                 
                     INSERT INTO `tmp_episode_drug_route` ( `oe_route_id`, `oe_route_name`, `oe_option_id`, `oe_option_name`, `nod_id`, `nod_name` )
