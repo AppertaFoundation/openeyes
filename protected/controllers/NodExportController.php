@@ -667,7 +667,15 @@ EOL;
                           , ""
                       ) AS DrugRouteId,
                     DATE(`event`.event_date) as StartDate,
-                    DATE(drug_duration.`name`) as EndDate,
+                    CASE WHEN LOCATE(drug_duration.name, 'day') THEN
+                            DATE_ADD(event.event_date, INTERVAL SUBSTR(drug_duration.name, 1, LOCATE(drug_duration.name, 'day')-1) DAY)
+                         WHEN LOCATE(drug_duration.name, 'month') THEN
+                            DATE_ADD(event.event_date, INTERVAL SUBSTR(drug_duration.name, 1, LOCATE(drug_duration.name, 'month')-1) MONTH)
+                         WHEN LOCATE(drug_duration.name, 'week') THEN
+                            DATE_ADD(event.event_date, INTERVAL SUBSTR(drug_duration.name, 1, LOCATE(drug_duration.name, 'week')-1) WEEK)
+                         ELSE ''
+                        END
+                    AS StopDate,
                     1 AS IsAddedByPrescription,
                     continue_by_gp AS IsContinueIndefinitely,
                     0 AS IsStartDateApprox
