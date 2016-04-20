@@ -194,19 +194,22 @@ class NodExportController extends BaseController
 			DROP TEMPORARY TABLE IF EXISTS tmp_episode_ids;
 			
 			CREATE TEMPORARY TABLE tmp_episode_ids(
-				id  int(10) UNSIGNED NOT NULL UNIQUE
+				id  int(10) UNSIGNED NOT NULL UNIQUE,
+				KEY `tmp_episode_ids_id` (`id`)
 			);
 			
 			DROP TEMPORARY TABLE IF EXISTS tmp_operation_ids;
 			
 			CREATE TEMPORARY TABLE tmp_operation_ids(
-				id  int(10) UNSIGNED NOT NULL UNIQUE
+				id  int(10) UNSIGNED NOT NULL UNIQUE,
+				KEY `tmp_operation_ids_id` (`id`)
 			);
 			
 			DROP TEMPORARY TABLE IF EXISTS tmp_treatment_ids;
 			
 			CREATE TEMPORARY TABLE tmp_treatment_ids(
-				id  int(10) UNSIGNED NOT NULL UNIQUE
+				id  int(10) UNSIGNED NOT NULL UNIQUE,
+				KEY `tmp_treatment_ids_id` (`id`)
 			);
 			
 
@@ -355,7 +358,8 @@ class NodExportController extends BaseController
                         `oe_option_id` INT(10) UNSIGNED DEFAULT NULL, 
                         `oe_option_name` VARCHAR(50), 
                         `nod_id` INT(10) UNSIGNED DEFAULT NULL, 
-                        `nod_name` VARCHAR(50)
+                        `nod_name` VARCHAR(50),
+                        KEY `tmp_episode_drug_route_oe_route_id` (`oe_route_id`)
                     ); 
                 
                     INSERT INTO `tmp_episode_drug_route` ( `oe_route_id`, `oe_route_name`, `oe_option_id`, `oe_option_name`, `nod_id`, `nod_name` )
