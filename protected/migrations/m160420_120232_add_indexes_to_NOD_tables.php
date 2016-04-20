@@ -15,6 +15,12 @@ class m160420_120232_add_indexes_to_NOD_tables extends CDbMigration
             $this->createIndex('ophciexamination_visualacuity_reading_side', 'ophciexamination_visualacuity_reading', 'side');
             $this->createIndex('et_ophciexamination_visualacuity_last_modified_date', 'et_ophciexamination_visualacuity', 'last_modified_date');
             
+            // EpisodeIOP
+            $this->createIndex('et_ophciexamination_intraocularpressure_last_modified_date', 'et_ophciexamination_intraocularpressure', 'last_modified_date');
+            
+            
+            
+            
 	}
 
 	public function down()
@@ -29,6 +35,9 @@ class m160420_120232_add_indexes_to_NOD_tables extends CDbMigration
             $this->dropIndex('ophciexamination_visualacuity_method_name', 'ophciexamination_visualacuity_method');
             $this->dropIndex('ophciexamination_visualacuity_reading_side', 'ophciexamination_visualacuity_reading');
             $this->dropIndex('et_ophciexamination_visualacuity_last_modified_date', 'et_ophciexamination_visualacuity');
+            
+            // EpisodeIOP
+            $this->dropIndex('et_ophciexamination_intraocularpressure_last_modified_date', 'et_ophciexamination_intraocularpressure');
             
 	}
 }
