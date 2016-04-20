@@ -123,7 +123,7 @@ class NodExportController extends BaseController
     {
         $resultIds = array();
         $offset = 0;
-        $chunk = 10000;
+        $chunk = 200000;
 
         if (!isset($dataQuery['query'])) {
             throw new Exception('Query not found: array key "query" not exist');
