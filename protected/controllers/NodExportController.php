@@ -700,7 +700,7 @@ EOL;
             'header' => array('EpisodeId', 'Eye', 'DrugId', 'DrugRouteId', 'StartDate', 'StopDate', 'IsAddedByPrescription', 'IsContinueIndefinitely', 'IsStartDateApprox'),
         );
 
-        return $this->saveCSVfile($dataQuery, 'EpisodeDrug', 'prescriptionItemFormat', 'EpisodeId');
+        return $this->saveCSVfile($dataQuery, 'EpisodeDrug', null, 'EpisodeId');
 
         //return $this->getIdArray($data, 'EpisodeId');
     }
