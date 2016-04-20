@@ -1069,14 +1069,23 @@ EOL;
 
     private function getEpisodeTreatment()
     {
-        $query = "  SELECT pa.id AS TreatmentId,
+        $query = "  (SELECT pa.id AS TreatmentId,
                                 pl.`event_id` AS OperationId, 
-                                (SELECT CASE WHEN pl.eye_id = 1 THEN 'L' WHEN pl.eye_id = 2 THEN 'R' END) AS Eye, 
+                                'L' AS Eye,
                                 proc.snomed_code AS TreatmentTypeId
                     FROM ophtroperationnote_procedurelist_procedure_assignment pa
                     JOIN et_ophtroperationnote_procedurelist pl ON pa.procedurelist_id = pl.id 
 					JOIN proc ON pa.`proc_id` = proc.`id`
-					WHERE pa.id in (SELECT id FROM tmp_treatment_ids)";
+					WHERE pa.id in (SELECT id FROM tmp_treatment_ids) AND (pl.eye_id=1 OR pl.eye_id=3))
+					UNION
+					(SELECT pa.id AS TreatmentId,
+                                pl.`event_id` AS OperationId,
+                                'R' AS Eye,
+                                proc.snomed_code AS TreatmentTypeId
+                    FROM ophtroperationnote_procedurelist_procedure_assignment pa
+                    JOIN et_ophtroperationnote_procedurelist pl ON pa.procedurelist_id = pl.id
+					JOIN proc ON pa.`proc_id` = proc.`id`
+					WHERE pa.id in (SELECT id FROM tmp_treatment_ids) AND (pl.eye_id=2 OR pl.eye_id=3))";
 
         $dataQuery = array(
             'query' => $query,
