@@ -205,9 +205,9 @@ class NodExportController extends BaseController
 				KEY `tmp_operation_ids_id` (`id`)
 			);
 			
-			DROP TEMPORARY TABLE IF EXISTS tmp_treatment_ids;
+			DROP TABLE IF EXISTS tmp_treatment_ids;
 			
-			CREATE TEMPORARY TABLE tmp_treatment_ids(
+			CREATE TABLE tmp_treatment_ids(
 				id  int(10) UNSIGNED NOT NULL UNIQUE,
 				KEY `tmp_treatment_ids_id` (`id`)
 			);
@@ -407,7 +407,7 @@ EOL;
                 DROP TABLE IF EXISTS tmp_episode_drug_route;
                 DROP TEMPORARY TABLE IF EXISTS tmp_episode_ids;
                 DROP TEMPORARY TABLE IF EXISTS tmp_operation_ids;
-                DROP TEMPORARY TABLE IF EXISTS tmp_treatment_ids;
+                DROP TABLE IF EXISTS tmp_treatment_ids;
 
 
 EOL;
@@ -1258,9 +1258,9 @@ EOL;
                 e.event_date AS ListedDate,
 			s.surgeon_id AS SurgeonId, 
 			user.`doctor_grade_id` AS SurgeonGradeId,
-                        '' as AssistantId,
-                        '' as AssistantGradeId,
-                        '' as ConsultantId
+                        s.assistant_id as AssistantId,
+                        (SELECT doctor_grade_id FROM user WHERE id = s.assistant_id) as AssistantGradeId,
+                        s.supervising_surgeon_id as ConsultantId
 					FROM `event` e
 					JOIN event_type evt ON evt.id = e.event_type_id
 					LEFT JOIN et_ophtroperationnote_surgeon s ON s.event_id = e.id
