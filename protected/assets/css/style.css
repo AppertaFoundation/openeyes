@@ -8281,7 +8281,7 @@ tfoot.pagination-container .pagination-view-all {
   }
 }
 /* line 131, ../sass/openeyes/components/panels/_patient.scss */
-.panel.patient .nhs-number {
+/*.panel.patient */.nhs-number {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   border-radius: 3px;

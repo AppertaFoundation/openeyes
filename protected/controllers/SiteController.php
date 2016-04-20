@@ -47,21 +47,47 @@ class SiteController extends BaseController
 	 */
 	public function actionSearch()
 	{
-		if (isset($_POST['query']) && $query = trim($_POST['query'])) {
+            if (isset($_POST['query']) && $query = trim($_POST['query'])) {
 
-			// Event ID
-			if (preg_match('/^(E|Event)\s*[:;]\s*([0-9]+)$/i',$query,$matches)) {
-				$event_id = $matches[2];
-				if ($event = Event::model()->findByPk($event_id)) {
-					$event_class_name = $event->eventType->class_name;
-					$this->redirect(array($event_class_name.'/default/view/'.$event_id));
-				} else {
-					Yii::app()->user->setFlash('warning.search_error', 'Event ID not found');
-					$this->redirect('/');
-				}
-				return;
-			}
+                //empty string
+                if (strlen($query) == 0) {
+                    Yii::app()->user->setFlash('warning.search_error', "Please enter either a hospital number or a firstname and lastname.");
+                } else{
+                    
+                    // Event ID
+                    if (preg_match('/^(E|Event)\s*[:;]\s*([0-9]+)$/i',$query,$matches)) {
+                            $event_id = $matches[2];
+                            if ($event = Event::model()->findByPk($event_id)) {
+                                    $event_class_name = $event->eventType->class_name;
+                                    $this->redirect(array($event_class_name.'/default/view/'.$event_id));
+                            } else {
+                                    Yii::app()->user->setFlash('warning.search_error', 'Event ID not found');
+                                    $this->redirect('/');
+                            }
+                            return;
+                    }
+                    else {
+                            
+                        $patientSearch = new PatientSearch();
+                        
+                        // lets check if it is a NHS number, Hospital number or Patient name
 
+                        if( $patientSearch->getNHSnumber($query) || $patientSearch->getHospitalNumber($query) || $patientSearch->getPatientName($query) ){
+                            $this->redirect(array('patient/search', 'term' => $query));
+                        } else {
+                            // not a valid search
+                            Yii::app()->user->setFlash('warning.search_error', '<strong>"'.CHtml::encode($query).'"</strong> is not a valid search.');
+                        }
+                        
+                    }
+                    
+                }
+
+                   
+
+			
+            }
+/*
 			// NHS number (assume 10 digit number is an NHS number)
 			if(preg_match('/^(N|NHS)\s*[:;]\s*([0-9\- ]+)$/i',$query,$matches)
 					|| preg_match('/^([0-9]{3}[- ]?[0-9]{3}[- ]?[0-9]{4})$/i',$query,$matches)) {
@@ -91,17 +117,17 @@ class SiteController extends BaseController
 
 				$this->redirect(array('patient/search', 'first_name' => trim($firstname), 'last_name' => trim($surname)));
 			}
-		}
+                } */
 
-		if (isset($query)) {
+		/*if (isset($query)) {
 			if (strlen($query) == 0) {
 				Yii::app()->user->setFlash('warning.search_error', "Please enter either a hospital number or a firstname and lastname.");
 			} else {
 				Yii::app()->user->setFlash('warning.search_error', '<strong>"'.CHtml::encode($query).'"</strong> is not a valid search.');
 			}
-		}
+		}*/
 
-		$this->redirect('/');
+            $this->redirect('/');
 	}
 
 	/**

@@ -298,6 +298,12 @@ return array(
 						'position' => 3,
 						'restricted' => array('Report'),
 					),
+					'patientmerge' => array(
+						'title' => 'Patient Merge',
+						'uri' => 'patientmerge/mergerequest',
+						'position' => 6,
+						'restricted' => array('admin'),
+					),
 				)
 			),
 			'logout' => array(

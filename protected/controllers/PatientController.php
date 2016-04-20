@@ -162,7 +162,7 @@ class PatientController extends BaseController
 	public function actionSearch()
 	{
 		// Check that we have a valid set of search criteria
-		$search_terms = array(
+		/*$search_terms = array(
 				'hos_num' => null,
 				'nhs_num' => null,
 				'first_name' => null,
@@ -180,7 +180,7 @@ class PatientController extends BaseController
 			}
 		}
 
-		 $search_terms = CHtml::encodeArray($search_terms);
+                $search_terms = CHtml::encodeArray($search_terms);*/
 
 		switch (@$_GET['sort_by']) {
 			case 0:
@@ -208,9 +208,10 @@ class PatientController extends BaseController
 				$sort_by = 'hos_num*1';
 		}
 
-		$sort_dir = (@$_GET['sort_dir'] == 0 ? 'asc' : 'desc');
+                $page_size = 20;
+		/*$sort_dir = (@$_GET['sort_dir'] == 0 ? 'asc' : 'desc');
 		$page_num = (integer) @$_GET['page_num'];
-		$page_size = 20;
+		
 
 		$model = new Patient();
 		$model->hos_num = $search_terms['hos_num'];
@@ -226,9 +227,19 @@ class PatientController extends BaseController
 		$nr = $model->search_nr(array(
 			'first_name' => CHtml::decode($search_terms['first_name']),
 			'last_name' => CHtml::decode($search_terms['last_name']),
-		));
+		));*/
+                
+                $term = \Yii::app()->request->getParam("term", "");
+                
+                $patientSearch = new PatientSearch();
+                $dataProvider = $patientSearch->search($term);
 
-		if ($nr == 0) {
+                $itemCount = $dataProvider->itemCount;
+                
+                $search_terms = $patientSearch->getSearchTerms();
+                
+		if ($itemCount == 0) {
+		//if ($nr == 0) {
 			Audit::add('search','search-results',implode(',',$search_terms) ." : No results");
 
 			$message = 'Sorry, no results ';
@@ -245,22 +256,22 @@ class PatientController extends BaseController
 
 			$this->redirect(Yii::app()->homeUrl);
 
-		} elseif ($nr == 1) {
+		} elseif ($itemCount == 1) {
 			foreach ($dataProvider->getData() as $item) {
 				$this->redirect(array('patient/view/' . $item->id));
 			}
 		} else {
 			$this->renderPatientPanel = false;
-			$pages = ceil($nr/$page_size);
+			$pages = ceil($itemCount/$page_size);
 			$this->render('results', array(
 				'data_provider' => $dataProvider,
 				'pages' => $pages,
-				'page_num' => $page_num,
+				'page_num' => \Yii::app()->request->getParam('page_num', 0),
 				'items_per_page' => $page_size,
-				'total_items' => $nr,
-				'search_terms' => $search_terms,
-				'sort_by' => (integer) @$_GET['sort_by'],
-				'sort_dir' => (integer) @$_GET['sort_dir']
+				'total_items' => $itemCount,
+				'search_terms' => $patientSearch->getSearchTerms(),
+				'sort_by' => (integer) \Yii::app()->request->getParam('sort_by', null),
+				'sort_dir' => (integer) \Yii::app()->request->getParam('sort_dir', null),
 			));
 		}
 
