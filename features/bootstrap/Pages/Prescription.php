@@ -351,4 +351,8 @@ class Prescription extends OpenEyesPage {
 	protected function iAmOnLatestEventPage(){
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'eventSummaryPage' )->getXpath () );
 	}
+
+    public function duplicatePrescriptionOk() {
+        $this->popupOk('duplicatePrescriptionOk');
+    }
 }

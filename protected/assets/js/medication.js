@@ -13,12 +13,12 @@
  */
 
 $(document).ready(function () {
-	function loadForm(medication_id) {
+	function loadForm(medication_id, prescription_id) {
 		disableButtons('#medication .button');
 
 		$.get(
 			baseUrl + "/medication/form",
-			{ patient_id: OE_patient_id, medication_id: medication_id},
+			{ patientId: OE_patient_id, medicationId: medication_id, prescriptionItemId: prescription_id},
 			function (form) {
 				$("#medication_form").html(form).slideDown('fast');
 				$('body').animate({ scrollTop: $('#medication_form').offset().top - 90 });
@@ -72,7 +72,7 @@ $(document).ready(function () {
 
 		.on('click', '.medication_edit', function (e) {
 			closeForms(e);
-			loadForm($(this).data('id'));
+			loadForm($(this).data('id'), $(this).data('prescription-id'));
 			return false;
 		})
 

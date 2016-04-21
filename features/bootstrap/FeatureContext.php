@@ -100,7 +100,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 		
 		if (($fieldset = $page->find ( 'xpath', ".//fieldset[(./legend[contains(normalize-space(string(.)), '${label}')])]" ))) {
 			if (($field = $fieldset->find ( 'xpath', ".//label[contains(normalize-space(string(.)), '${option}')]/input[@type='checkbox' or @type='radio']" ))) {
-				$field->check ();
+				$field->click();
 			} else if ($select = $fieldset->find ( 'css', 'select' )) {
 				$select->selectOption ( $option );
 			} else {
@@ -225,13 +225,6 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 				}
 			}
 		}
-	}
-	
-	/**
-	 * @Given /^I select a Right Consultant of "([^"]*)"$/
-	 */
-	public function iSelectARightConsultantOf($arg1) {
-		throw new PendingException ();
 	}
 	
 	/**

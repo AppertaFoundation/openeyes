@@ -27,7 +27,6 @@ tags
 /protected/commands/
 /protected/yii
 /protected/vendors
-/protected/assets
 *zip
 vendor
 /.sass-cache

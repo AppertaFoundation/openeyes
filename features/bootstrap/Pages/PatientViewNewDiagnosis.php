@@ -283,8 +283,9 @@ class PatientViewNewDiagnosis extends OpenEyesPage {
 		}
 	}
 	public function addOpthalmicDate($day, $month, $year) {
-		sleep(5);
-		$this->getElement ( 'opthDay' )->selectOption ( $day );
+		#TODO fix this to be a wait for element to be visible
+        sleep(5);
+        $this->getElement ( 'opthDay' )->selectOption ( $day );
 		$this->getElement ( 'opthMonth' )->selectOption ( $month );
 		$this->getElement ( 'opthYear' )->selectOption ( $year );
 	}

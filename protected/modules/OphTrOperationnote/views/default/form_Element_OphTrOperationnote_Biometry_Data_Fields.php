@@ -53,11 +53,11 @@
     <div class="row data-row">
         <div class="large-2 column">
             <div class="data-label">
-                <b><?php echo CHtml::encode($element->getAttributeLabel('formula_id_' . $side)) ?></b></div>
+                <b><?php echo CHtml::encode($element->getAttributeLabel('formula_' . $side)) ?></b></div>
         </div>
         <div class="large-4 column">
             <div class="data-value"
-                 id="acon_<?php echo $side ?>"><?php echo $element->{'formula_' . $side} ? $element->{'formula_' . $side} : 'None' ?>&nbsp;</div>
+                 id="formula_<?php echo $side ?>"><?php echo $element->{'formula_' . $side} ? $element->{'formula_' . $side} : 'None' ?>&nbsp;</div>
         </div>
         <div class="large-2 column">
             <div class="data-label">

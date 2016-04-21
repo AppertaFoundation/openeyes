@@ -102,12 +102,12 @@
 </div>
 	<div id="ophCiExaminationPCRRiskLeftEye" class="pcr-opnote-eye">
 		<?php
-        $this->renderPartial('form_Element_OphCiExamination_PCRRisk', array('side' => 'left', 'element' => $element));
+        $this->renderPartial('application.views.default._pcr_risk_form', array('side' => 'left', 'element' => $element));
         ?>
 	</div>
 	<div id="ophCiExaminationPCRRiskRightEye" class="pcr-opnote-eye">
 		<?php
-        $this->renderPartial('form_Element_OphCiExamination_PCRRisk', array('side' => 'right', 'element' => $element));
+        $this->renderPartial('application.views.default._pcr_risk_form', array('side' => 'right', 'element' => $element));
         ?>
 	</div>
 </div>

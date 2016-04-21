@@ -194,6 +194,18 @@
 					</div>
 				</div>
 			</div>
+			<div class="row">
+				<div class="large-6 column">
+					<div class="data-label">
+						<?php echo CHtml::encode($element->getAttributeLabel('pcr_risk'))?>:
+					</div>
+				</div>
+				<div class="large-6 column">
+					<div class="data-value">
+						<?php echo $element->pcr_risk?>
+					</div>
+				</div>
+			</div>
 
 		</div>
 	</div>

@@ -30,6 +30,7 @@ return array(
 		'application.models.*',
 		'application.models.elements.*',
 		'application.components.*',
+		'application.components.reports.*',
 		'application.extensions.tcpdf.*',
 		'application.modules.*',
 		'application.commands.*',
@@ -40,6 +41,7 @@ return array(
 		'application.helpers.*',
 		'application.gii.*',
 		'system.gii.generators.module.*',
+		'application.modules.OphTrOperationnote.components.*',
 	),
 
 	'aliases' => array(
@@ -278,7 +280,8 @@ return array(
 				'title' => 'More',
 				'uri' => '#',
 				'position' => 2,
-				'restricted' => array('admin', 'Report'),
+				'userrule' => 'isSurgeon',
+				'restricted' => array('admin', 'Report', 'NOD Export'),
 				'sub' => array(
 					'admin' => array(
 						'title' => 'Admin',
@@ -297,6 +300,19 @@ return array(
 						'uri' => 'report',
 						'position' => 3,
 						'restricted' => array('Report'),
+					),
+					'cataract' => array(
+						'title' => 'Cataract Audit',
+						'uri' => 'dashboard/cataract',
+						'position' => 4,
+						'userrule' => 'isSurgeon',
+						'restricted' => array('admin'),
+						'options' => array('target' => '_blank')),
+					'nodexport' => array(
+						'title' => 'NOD Export',
+						'uri' => 'NodExport',
+						'position' => 5,
+						'restricted' => array('NOD Export'),
 					),
 				)
 			),
