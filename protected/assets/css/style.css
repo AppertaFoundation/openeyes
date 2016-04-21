@@ -10192,4 +10192,70 @@ html {
  .container.content { background: none; }
  .metadata { display:none; }
 }
+/* line 19, ../sass/openeyes/components/_patient-merge.scss */
+#patienMergeWrapper .large-2.column.text-center > h2 {
+  font-size: 25px;
+  margin: 75px 0 0px 0;
+}
+/* line 24, ../sass/openeyes/components/_patient-merge.scss */
+#patienMergeWrapper img.into-arrow {
+  margin: 5px 0 55px 0;
+}
+/* line 31, ../sass/openeyes/components/_patient-merge.scss */
+#patienMergeWrapper .ui-menu .ui-menu-item a, #patienMergeWrapper .ui-menu .ui-menu-item a.ui-state-focus {
+  border: 1px solid #4a4a4a;
+  margin: 0 0 5px;
+  padding: 10px 5px;
+}
+/* line 36, ../sass/openeyes/components/_patient-merge.scss */
+#patienMergeWrapper .ui-menu .ui-menu-item a .nhs-number, #patienMergeWrapper .ui-menu .ui-menu-item a.ui-state-focus .nhs-number {
+  float: right;
+}
+/* line 45, ../sass/openeyes/components/_patient-merge.scss */
+#patienMergeWrapper h2.secondaryPatient {
+  background-color: #aaa;
+  border-radius: 3px;
+  color: #fff;
+  letter-spacing: 2px;
+  padding: 5px;
+  text-align: center;
+  text-transform: uppercase;
+}
+/* line 54, ../sass/openeyes/components/_patient-merge.scss */
+#patienMergeWrapper h2.primaryPatient {
+  background-color: #105dae;
+  border-radius: 3px;
+  color: #fff;
+  letter-spacing: 2px;
+  padding: 5px;
+  text-align: center;
+  text-transform: uppercase;
+}
+/* line 66, ../sass/openeyes/components/_patient-merge.scss */
+#patienMergeWrapper .ui-dialog button.disabled, #patienMergeWrapper .ui-dialog button.inactive, #patienMergeWrapper .ui-dialog .button.inactive, #patienMergeWrapper .ui-dialog input[type="submit"].inactive {
+  cursor: pointer;
+}
+/* line 69, ../sass/openeyes/components/_patient-merge.scss */
+#patienMergeWrapper .ui-dialog .patient-mrg-btn.ui-state-hover,
+#patienMergeWrapper .ui-dialog .patient-mrg-btn {
+  text-shadow: none;
+}
+/* line 73, ../sass/openeyes/components/_patient-merge.scss */
+#patienMergeWrapper .ui-dialog #primaryPatientBtn {
+  background: transparent linear-gradient(#107be9, #1469bf) repeat scroll 0 0;
+}
+/* line 76, ../sass/openeyes/components/_patient-merge.scss */
+#patienMergeWrapper .ui-dialog #primaryPatientBtn.ui-state-hover, #patienMergeWrapper .ui-dialog #primaryPatientBtn.ui-state-focus {
+  background: transparent linear-gradient(#118afb, #1279e3) repeat scroll 0 0;
+  border-color: #1974d1;
+  border-top-width: 0px;
+  border-right-width: 0px;
+  border-bottom-width: 2px;
+  border-left-width: 0px;
+  color: #fff;
+}
+/* line 88, ../sass/openeyes/components/_patient-merge.scss */
+#patienMergeWrapper #patientDialog h2 {
+  padding-bottom: 15px;
+}
 
