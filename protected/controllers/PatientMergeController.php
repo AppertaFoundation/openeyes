@@ -19,6 +19,7 @@
 
 class PatientMergeController extends BaseController
 {
+    public $firm;
     
     /**
      * @var string the default layout for the views
@@ -42,14 +43,14 @@ class PatientMergeController extends BaseController
 
     public function beforeAction($action)
     {
+        parent::storeData();
+        $this->firm = Firm::model()->findByPk($this->selectedFirmId);
         return parent::beforeAction($action);
     }
     
     public function actionMergeRequest()
-    {   
-        $patient = $this->loadModel(19434);
-
-        $this->render('//patientmerge/merge_request', array('patient' => $patient));
+    {
+        $this->render('//patientmerge/merge_request');
     }
     
     /**
@@ -81,6 +82,20 @@ class PatientMergeController extends BaseController
         if($patientSearch->isValidSearchTerm($term)){
             $dataProvider = $patientSearch->search($term);
             foreach($dataProvider->getData() as $patient){
+
+                $episodes = $patient->episodes;
+    
+                $episodes_open = 0;
+                $episodes_closed = 0;
+
+                foreach ($episodes as $episode) {
+                    if ($episode->end_date === null) {
+                        $episodes_open++;
+                    } else {
+                        $episodes_closed++;
+                    }
+                }
+                
                 $result[] =  array(
                     'value' => $patient->id, 
                     'first_name' => $patient->first_name,
@@ -90,6 +105,14 @@ class PatientMergeController extends BaseController
                     'dob' => ($patient->dob) ? $patient->NHSDate('dob') : 'Unknown',
                     'hos_num' => $patient->hos_num, 
                     'nhsnum' => $patient->nhsnum,
+                    'all-episodes' => $this->renderPartial('//patient/_patient_all_episodes',array(
+					'episodes' => $episodes,
+					'ordered_episodes' => $patient->getOrderedEpisodes(),
+					'legacyepisodes' => $patient->legacyepisodes,
+					'episodes_open' => $episodes_open,
+					'episodes_closed' => $episodes_closed,
+					'firm' => $this->firm,
+				), true),
                 );
             }
         }
@@ -99,4 +122,31 @@ class PatientMergeController extends BaseController
        Yii::app()->end();
        
    }
+   
+   public function convertModelToArray($models) {
+        if (is_array($models))
+            $arrayMode = true;
+        else {
+            $models = array($models);
+            $arrayMode = false;
+        }
+
+        $result = array();
+        foreach ($models as $model) {
+            $attributes = $model->getAttributes();
+            $relations = array();
+            foreach ($model->relations() as $key => $related) {
+                if ($model->hasRelated($key)) {
+                    $relations[$key] = convertModelToArray($model->$key);
+                }
+            }
+            $all = array_merge($attributes, $relations);
+
+            if ($arrayMode)
+                array_push($result, $all);
+            else
+                $result = $all;
+        }
+        return $result;
+    }
 }

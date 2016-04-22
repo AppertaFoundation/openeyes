@@ -24,22 +24,6 @@
     img.into-arrow{
         margin: 5px 0 55px 0;
     }
-    
-    .ui-menu{
-        .ui-menu-item{
-            
-            a, a.ui-state-focus{
-                border: 1px solid #4a4a4a;
-                margin: 0 0 5px;
-                padding: 10px 5px;
-                
-                .nhs-number{
-                    float:right;
-                }
-            }
-            
-        }
-    }
 
     h2{
         &.secondaryPatient {
@@ -88,6 +72,21 @@
         h2{
             padding-bottom: 15px;
         }   
+    }
+}
+
+ .ui-menu{
+    .ui-menu-item{
+
+        a, a.ui-state-focus{
+            border: 1px solid #4a4a4a;
+            margin: 0 0 5px;
+            padding: 10px 5px;
+
+            .nhs-number{
+                float:right;
+            }
+        }
     }
 }
 

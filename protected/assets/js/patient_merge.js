@@ -11,11 +11,15 @@ var patientMerge = {
     },
     
     updateDOM: function(type){
-        $section = $('section.'+type);
+        $section = $('section.' + type);
         Object.keys(this.patients[type]).forEach(function (key) {
-            $section.find('.' + key).text(patientMerge.patients[type][key]);
-            $section.find('.' + key + '-input').val(patientMerge.patients[type][key]);
+            $section.find('.' + key).html(patientMerge.patients[type][key]);
+            $section.find('.' + key + '-input').val(patientMerge.patients[type][key]);            
         });
+        $section.next('section').remove();
+        $section.after(patientMerge.patients[type]['all-episodes']);
+        $section.next('section').removeClass('episodes');
+        
     },
     
     swapPatients: function(){
@@ -38,9 +42,11 @@ $(document).ready(function(){
         },
         select: function (event, ui) {
 
+console.log(ui);
             if(Object.keys(patientMerge.patients.secondary).length === 0){
                 patientMerge.patients.secondary = ui.item;
-                patientMerge.updateDOM('secondary');
+                patientMerge.updateDOM('secondary');      
+                                
             } else if (Object.keys(patientMerge.patients.primary).length === 0){
                 patientMerge.patients.primary = ui.item;
                 patientMerge.updateDOM('primary');

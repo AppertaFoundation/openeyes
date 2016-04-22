@@ -80,6 +80,7 @@
                     </div>
                     <div class="large-8 column">
                             <div class="data-value dob"></div>
+                            <input type="hidden" class="dob-input" name="Patients[<?php echo $type; ?>][dob]" value="">
                     </div>
             </div>
 
@@ -89,8 +90,12 @@
 			</div>
 			<div class="large-8 column">
 				<div class="data-value gender"></div>
+                                <input type="hidden" class="gender-input" name="Patients[<?php echo $type; ?>][gender]" value="">
 			</div>
 		</div>
-		
 	</div>
 </section>
+
+
+
+
