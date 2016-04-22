@@ -17,78 +17,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<style>
-    
-/* just for fooling around with css, final form will be moved to the proper place */
-    /*
-.large-2.column.text-center > h2 {
-    font-size: 25px;
-    margin: 75px 0 0px 0;
-}
-img.into-arrow{
-    margin: 5px 0 55px 0;
-}
-
-.ui-menu .ui-menu-item a,
-.ui-menu .ui-menu-item a.ui-state-focus
-{
-    border: 1px solid #4a4a4a;
-    margin: 0 0 5px;
-    padding: 10px 5px;
-}
-
-.ui-menu .ui-menu-item a .nhs-number{
-    float:right;
-}
-
-h2.secondaryPatient {
-    background-color: #aaa;
-    border-radius: 3px;
-    color: #fff;
-    letter-spacing: 2px;
-    padding: 5px;
-    text-align: center;
-    text-transform: uppercase;
-}
-
-h2.primaryPatient {
-    background-color: #105dae;
-    border-radius: 3px;
-    color: #fff;
-    letter-spacing: 2px;
-    padding: 5px;
-    text-align: center;
-    text-transform: uppercase;
-}
-.ui-dialog button.disabled{
-    cursor: pointer;
-}
-#patientDialog h2{
-        padding-bottom: 15px;
-}
-
-
-.ui-dialog .patient-mrg-btn.ui-state-hover,
-.ui-dialog .patient-mrg-btn {
-    text-shadow: none;
-}
-
-.ui-dialog #primaryPatientBtn {
-    background: rgba(0, 0, 0, 0) linear-gradient(#107be9, #1469bf) repeat scroll 0 0;
-}
-
-.ui-dialog #primaryPatientBtn.ui-state-hover, .ui-dialog #primaryPatientBtn.ui-state-focus {
-    background: rgba(0, 0, 0, 0) linear-gradient(#118afb, #1279e3) repeat scroll 0 0;
-    border-color: #1974d1;
-    border-top-width:0px;
-    border-right-width: 0px;
-    border-bottom-width: 2px;
-    border-left-width: 0px;
-    color:#fff;
-}
-    */
-</style>
-
 <h1 class="badge">Patient Merge Request</h1>
 
     <div id="patienMergeWrapper" class="container content">
@@ -103,7 +31,7 @@ h2.primaryPatient {
             <div class="row">
                 <div class="large-5 column">
                     <h2 class="secondaryPatient">Secondary</h2>
-                    <?php $this->renderPartial('_patient_details', array('patient' => $patient, 'type' => 'secondary'))?>
+                    <?php $this->renderPartial('_patient_details', array('type' => 'secondary'))?>
                 </div>  
 
                 <div class="large-2 column text-center">
@@ -114,7 +42,7 @@ h2.primaryPatient {
 
                 <div class="large-5 column">
                     <h2 class="primaryPatient">Primary</h2>
-                    <?php $this->renderPartial('_patient_details', array('patient' => $patient, 'type' => 'primary'))?>
+                    <?php $this->renderPartial('_patient_details', array('type' => 'primary'))?>
                 </div>
 
             </div>
