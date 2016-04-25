@@ -21,6 +21,8 @@
 <section class="<?php echo $type; ?> box patient-info js-toggle-container">
 	<h3 class="box-title">Personal Details:</h3>
 	
+        <?php echo CHtml::activeHiddenField($model, "{$type}_id", array('class' => 'id-input')); ?>
+        
 	<div class="js-toggle-body">
             
             <div class="row data-row">
@@ -31,7 +33,7 @@
                     <div class="data-value">
                         <div class="hospital-number">
                             <span class="hos_num"></span>
-                            <input type="hidden" class="hos_num-input" name="Patients[<?php echo $type; ?>][hos_num]" value="">
+                            <?php echo CHtml::activeHiddenField($model, "{$type}_hos_num", array('class' => 'hos_num-input')); ?>
                         </div>
                     </div>
                 </div>
@@ -47,8 +49,8 @@
                                 <span class="hide-text print-only">
                                         NHS number:
                                 </span>
-                                <span class="nhsnum">000 000 000</span>
-                                <input type="hidden" class="nhsnum-input" name="Patients[<?php echo $type; ?>][nhsnum]" value="000 000 000">
+                                <span class="nhsnum">000 000 0000</span>
+                                <?php echo CHtml::activeHiddenField($model, "{$type}_nhsnum", array('class' => 'nhsnum-input')); ?>
                         </div>
                     </div>
                 </div>
@@ -80,7 +82,7 @@
                     </div>
                     <div class="large-8 column">
                             <div class="data-value dob"></div>
-                            <input type="hidden" class="dob-input" name="Patients[<?php echo $type; ?>][dob]" value="">
+                            <?php echo CHtml::activeHiddenField($model, "{$type}_dob", array('class' => 'dob-input')); ?>
                     </div>
             </div>
 
@@ -90,12 +92,8 @@
 			</div>
 			<div class="large-8 column">
 				<div class="data-value gender"></div>
-                                <input type="hidden" class="gender-input" name="Patients[<?php echo $type; ?>][gender]" value="">
+                                <?php echo CHtml::activeHiddenField($model, "{$type}_gender", array('class' => 'genderletter-input')); ?>
 			</div>
 		</div>
 	</div>
 </section>
-
-
-
-
