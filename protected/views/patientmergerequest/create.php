@@ -19,19 +19,19 @@
 ?>
 <h1 class="badge">Patient Merge Request</h1>
 
-    <div id="patienMergeWrapper" class="container content">
+    <div id="patientMergeWrapper" class="container content">
 
         <div class="row">
             <div class="large-7 column large-centered">
                 <?php $this->renderPartial('_patient_search',array('patient_type' => 'patient1'))?>
             </div>
         </div>
-        <form id="grid_header_form" action="/patientmerge/save" method="post">
+        <form id="grid_header_form" action="<?php echo Yii::app()->createUrl('/patientmergerequest/create')?>" method="post">
             <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
             <div class="row">
                 <div class="large-5 column">
                     <h2 class="secondaryPatient">Secondary</h2>
-                    <?php $this->renderPartial('_patient_details', array('type' => 'secondary'))?>
+                    <?php $this->renderPartial('_patient_details', array('model' => $model, 'type' => 'secondary'))?>
                 </div>  
 
                 <div class="large-2 column text-center">
@@ -42,19 +42,23 @@
 
                 <div class="large-5 column">
                     <h2 class="primaryPatient">Primary</h2>
-                    <?php $this->renderPartial('_patient_details', array('type' => 'primary'))?>
+                    <?php $this->renderPartial('_patient_details', array('model' => $model, 'type' => 'primary'))?>
                 </div>
 
             </div>
             <hr>
             <div class="row">
-                <div class="large-5 column">Comment:<textarea name="Commnet"></textarea></div>
+                <div class="large-5 column">Comment:
+                    <?php echo CHTML::activeTextArea($model, "comment"); ?>
+                </div>
 
             </div>
 
             <div class="row">
-                <div class="large-2 column text-right large-offset-10">
-                    <input type="submit" value="Submit">
+                <div class="large-3 column text-right large-offset-9">
+                    <input class="warning" type="submit" value="Save and Merge">
+                    <input type="submit" value="Save">
+                    
                 </div>
             </div>
         </form>

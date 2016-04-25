@@ -14,7 +14,7 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
-#patienMergeWrapper{
+#patientMergeWrapper{
     
     .large-2.column.text-center > h2{
         font-size: 25px;
@@ -73,6 +73,26 @@
             padding-bottom: 15px;
         }   
     }
+    
+    table#patientMergeList{
+        
+        tr{
+            &:hover{
+                background-color:lightblue;
+            }
+            
+            td{
+                &.actions{
+                    a{
+                        &.button{
+                            margin-right: 5px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
 }
 
  .ui-menu{
@@ -87,7 +107,7 @@
                 float:right;
             }
         }
-    }
+    }    
 }
 
 
