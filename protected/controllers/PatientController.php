@@ -108,6 +108,7 @@ class PatientController extends BaseController
 	 */
 	public function actionView($id)
 	{
+            
 		Yii::app()->assetManager->registerScriptFile('js/patientSummary.js');
 
 		$this->patient = $this->loadModel($id);
