@@ -508,4 +508,62 @@ class OperationNoteContext extends PageObjectContext {
 		$opNote = $this->getPage ( 'OperationNote' );
 		$opNote->clickReferencePCRRiskLink();
 	}
+
+	/**
+	 * @Then /^I set the "([^"]*)" OpNote PCR option "([^"]*)" to be "([^"]*)"$/
+	 */
+	public function iSetThePcrOptionTo($side, $option, $value)
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$opNote = $this->getPage('OperationNote');
+		$opNote->setPcrValue($side, $option, $value);
+	}
+
+	/**
+	 * @Then /^I select a cataract complication of "([^"]*)"$/
+	 */
+	public function iSelectCataractComplication($complication)
+	{
+		$opNote = $this->getPage ( 'OperationNote' );
+		$opNote->selectCataractComplication($complication);
+	}
+
+	/**
+	 * @Then /^I select a anaesthetic complication of "([^"]*)"$/
+	 */
+	public function iSelectAnaestheticComplications($complication)
+	{
+		$opNote = $this->getPage ( 'OperationNote' );
+		$opNote->selectAnaestheticComplication($complication);
+	}
+
+	/**
+	 * @Then /^I select an iol type of "([^"]*)"$/
+	 */
+	public function iSelectIolType($type)
+	{
+		$opNote = $this->getPage ( 'OperationNote' );
+		$opNote->selectIolType($type);
+	}
+
+	/**
+	 * @Then /^I set an iol power of "([^"]*)"$/
+	 */
+	public function iSetIolPower($power)
+	{
+		$opNote = $this->getPage ( 'OperationNote' );
+		$opNote->setIolPower($power);
+	}
+
+	/**
+	 * @Then /^I set predicted refraction of "([^"]*)"$/
+	 */
+	public function iSetPredictedRefraction($power)
+	{
+		$opNote = $this->getPage ( 'OperationNote' );
+		$opNote->setPredictedRefraction($power);
+	}
 }

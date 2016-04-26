@@ -172,8 +172,9 @@ class PatientController extends BaseController
 			if (isset($_GET[$search_term]) && $search_value = trim($_GET[$search_term])) {
 
 				// Pad hos_num
-				if ($search_term == 'hos_num') {
-					$search_value = sprintf('%07s',$search_value);
+				if ($search_term == 'hos_num'
+					&& Yii::app()->params['pad_hos_num']) {
+					$search_value = sprintf(Yii::app()->params['pad_hos_num'],$search_value);
 				}
 
 				$search_terms[$search_term] = $search_value;
@@ -540,7 +541,7 @@ class PatientController extends BaseController
 				$contacts = Contact::model()->findByLabel($term, $specialty->default_title, true, 'person');
 				break;
 			default:
-				$contacts = Contact::model()->findByLabel($term, @$_GET['filter'], false, 'person');
+				$contacts = Contact::model()->findByLabel($term, @$_GET['filter'], false, null);
 		}
 
 		echo CJavaScript::jsonEncode($contacts);

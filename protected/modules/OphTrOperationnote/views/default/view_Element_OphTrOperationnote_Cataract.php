@@ -98,6 +98,14 @@
 						<div class="data-value"><?php echo CHtml::encode($element->iol_position->name)?></div>
 					</div>
 				</div>
+				<div class="row data-row">
+					<div class="large-4 column">
+						<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('pcr_risk'))?>:</div>
+					</div>
+					<div class="large-8 column">
+						<div class="data-value"><?php echo CHtml::encode($element->pcr_risk)?></div>
+					</div>
+				</div>
 				<?php if ($element->getSetting('fife')) {?>
 					<div class="row data-row">
 						<div class="large-4 column">

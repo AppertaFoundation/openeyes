@@ -1,0 +1,139 @@
+default:
+    context:
+        parameters:
+            sample_db:   "protected/modules/sample/sql/openeyes+ophtroperationbooking.sql"
+            load_db_cmd: "vagrant ssh -c 'mysql -uroot openeyes < /var/www/%s; cd /var/www; ./bin/migrate-all.sh'"
+
+    extensions:
+        features/bootstrap/extension.php: ~
+        SensioLabs\Behat\PageObjectExtension\Extension: ~
+
+        Behat\YiiExtension\Extension:
+            framework_script: vendor/yiisoft/yii/framework/yii.php
+            config_script:    protected/config/main.php
+
+        Behat\MinkExtension\Extension:
+            base_url:           http://localhost:8888
+            javascript_session: selenium2
+            goutte:             ~
+            selenium2:
+                browser: 'chrome'
+            saucelabs:
+                connect:  true
+                browser:  'chrome'
+                capabilities:
+                    version:  ''
+                    platform: 'Windows 7'
+
+selenium:
+    extensions:
+        Behat\MinkExtension\Extension:
+            base_url:           http://192.168.0.100
+            default_session:    selenium2
+            javascript_session: selenium2
+
+sauce:
+    extensions:
+        Behat\MinkExtension\Extension:
+            default_session:    saucelabs
+            javascript_session: saucelabs
+
+ci:
+    context:
+        parameters:
+            load_db_cmd: "mysql -uroot openeyes < %s; bin/migrate-all.sh"
+    extensions:
+        Behat\MinkExtension\Extension:
+            base_url:           http://localhost:8888
+            default_session:    saucelabs
+            javascript_session: saucelabs
+
+selenium-local:
+    extensions:
+        Behat\MinkExtension\Extension:
+            base_url:           http://localhost:8888
+            default_session:    selenium2
+            javascript_session: selenium2
+
+selenium-develop:
+    extensions:
+        Behat\MinkExtension\Extension:
+            base_url:           http://admin:openeyesdevel@develop.test.openeyes.org.uk
+            default_session:    selenium2
+            javascript_session: selenium2
+
+selenium-master:
+    extensions:
+        Behat\MinkExtension\Extension:
+            base_url:           http://admin:openeyesdevel@master.test.openeyes.org.uk
+            default_session:    selenium2
+            javascript_session: selenium2
+
+selenium-orbis:
+    extensions:
+        Behat\MinkExtension\Extension:
+            base_url:           http://admin:openeyesdevel@orbis-master.dev.openeyes.org.uk
+            default_session:    selenium2
+            javascript_session: selenium2
+
+phantomjs:
+    extensions:
+        Behat\MinkExtension\Extension:
+            base_url:           http://localhost:8888
+            browser_name:       "phantomjs"
+            goutte: ~
+            default_session:    selenium2
+            javascript_session: selenium2
+            selenium2:
+              browser: 'phantomjs'
+
+    formatter:
+        name:               pretty,junit,html
+        parameters:
+            output_path:    null,junit_behat_reports,jm_behat_report.html
+phantomjs-ci:
+    extensions:
+        Behat\MinkExtension\Extension:
+            base_url:           http://localhost:8888
+            browser_name:       "phantomjs"
+            goutte: ~
+            default_session:    selenium2
+            javascript_session: selenium2
+            selenium2:
+              browser: 'phantomjs'
+              wd_host: 10.0.2.2:4444/wd/hub
+              capabilities: { "browser": "phantomjs"}
+
+    formatter:
+        name:               pretty,junit,html
+        parameters:
+            output_path:    null,junit_behat_reports,jm_behat_report.html
+phantomjs-ci-sub:
+    extensions:
+        Behat\MinkExtension\Extension:
+            base_url:           http://localhost:8888/subfolder
+            browser_name:       "phantomjs"
+            goutte: ~
+            default_session:    selenium2
+            javascript_session: selenium2
+            selenium2:
+              browser: 'phantomjs'
+              wd_host: 10.0.2.2:4444/wd/hub
+              capabilities: { "browser": "phantomjs"}
+
+    formatter:
+        name:               pretty,junit,html
+        parameters:
+            output_path:    null,/var/www/subfolder/junit_behat_reports,/var/www/subfolder/jm_behat_report.html
+selenium-ci:
+    extensions:
+        Behat\MinkExtension\Extension:
+            base_url:           http://localhost:8888
+            browser_name:       "chrome"
+            goutte: ~
+            default_session:    selenium2
+            javascript_session: selenium2
+            selenium2:
+              browser: 'chrome'
+              wd_host: 10.0.2.2:4444/wd/hub
+              capabilities: { "browser": "chrome"}

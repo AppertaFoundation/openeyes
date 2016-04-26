@@ -40,7 +40,8 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         'OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'.$side.'_nuclear_id' => '',
         'OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'.$side.'_cortical_id' => '',
     ),
-    'listenerArray' => array('anteriorListener'),
+    'listenerArray' => array('anteriorListener', 'pupilListener'),
+    
     'idSuffix' => $side.'_'.$element->elementType->id,
     'side' => ($side == 'right') ? 'R' : 'L',
     'mode' => 'edit',

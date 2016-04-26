@@ -3394,19 +3394,23 @@ table.grid tfoot tr {
   background: #f00;
   color: #fff;
 }
-/* line 45, ../sass/openeyes/components/_pills.scss */
+/* line 44, ../sass/openeyes/components/_pills.scss */
+.pill.high > select, .high.field-highlight > select, .multi-select-selections li.high > select, .multi-select-free-text-selections li.high > select, .pill.severe > select, .severe.field-highlight > select, .multi-select-selections li.severe > select, .multi-select-free-text-selections li.severe > select, .pill.high-risk > select, .high-risk.field-highlight > select, .multi-select-selections li.high-risk > select, .multi-select-free-text-selections li.high-risk > select, .pill.proliferative > select, .proliferative.field-highlight > select, .multi-select-selections li.proliferative > select, .multi-select-free-text-selections li.proliferative > select, .pill.maculopathy > select, .maculopathy.field-highlight > select, .multi-select-selections li.maculopathy > select, .multi-select-free-text-selections li.maculopathy > select {
+  color: initial;
+}
+/* line 48, ../sass/openeyes/components/_pills.scss */
 .pill.moderate, .moderate.field-highlight, .multi-select-selections li.moderate, .multi-select-free-text-selections li.moderate, .pill.pre-prolif, .pre-prolif.field-highlight, .multi-select-selections li.pre-prolif, .multi-select-free-text-selections li.pre-prolif {
   background: #fc0;
 }
-/* line 49, ../sass/openeyes/components/_pills.scss */
+/* line 52, ../sass/openeyes/components/_pills.scss */
 .pill.mild, .mild.field-highlight, .multi-select-selections li.mild, .multi-select-free-text-selections li.mild, .pill.early, .early.field-highlight, .multi-select-selections li.early, .multi-select-free-text-selections li.early, .pill.background, .background.field-highlight, .multi-select-selections li.background, .multi-select-free-text-selections li.background, .pill.peripheral, .peripheral.field-highlight, .multi-select-selections li.peripheral, .multi-select-free-text-selections li.peripheral, .pill.ungradable, .ungradable.field-highlight, .multi-select-selections li.ungradable, .multi-select-free-text-selections li.ungradable {
   background: #36f;
 }
-/* line 56, ../sass/openeyes/components/_pills.scss */
+/* line 59, ../sass/openeyes/components/_pills.scss */
 .pill.low, .low.field-highlight, .multi-select-selections li.low, .multi-select-free-text-selections li.low, .pill.none, .none.field-highlight, .multi-select-selections li.none, .multi-select-free-text-selections li.none {
   background: #9c0;
 }
-/* line 60, ../sass/openeyes/components/_pills.scss */
+/* line 63, ../sass/openeyes/components/_pills.scss */
 .pill.risk, .risk.field-highlight, .multi-select-selections li.risk, .multi-select-free-text-selections li.risk {
   display: block;
   margin: 0;
@@ -5385,6 +5389,19 @@ tfoot.pagination-container .pagination-view-all {
   .stuck .panel.patient .hospital-number {
     float: left;
   }
+}
+/* line 131, ../sass/openeyes/components/panels/_patient.scss */
+.panel.patient .nhs-number {
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  background-color: #107ebd;
+  background-image: url('../img/_elements/icons/nhs_tiny.png?1456827980');
+  background-position: center left;
+  background-repeat: no-repeat;
+  color: white;
+  display: inline-block;
+  padding: 2px 3px 1px 33px;
 }
 @media print {
   /* line 131, ../sass/openeyes/components/panels/_patient.scss */

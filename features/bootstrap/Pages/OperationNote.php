@@ -120,7 +120,61 @@ class OperationNote extends OpenEyesPage {
 		),
 		'scrollTo' => array(
 			'xpath' => "//*[@class='element-header']//*[contains(text(),'Anaesthetic')]"
-		)
+		),
+		'pcrGlaucoma' => array(
+			'xpath' => "//*[@class='pcrrisk_glaucoma']"
+		),
+		'pcrPXF' => array(
+			'xpath' => "//*[@class='pcrrisk_pxf_phako']"
+		),
+		'pcrDiabetic' => array(
+			'xpath' => "//*[@class='pcrrisk_diabetic']"
+		),
+		'pcrPupil' => array(
+			'xpath' => "//*[@class='pcrrisk_pupil_size']"
+		),
+		'pcrFundal' => array(
+			'xpath' => "//*[@class='pcrrisk_no_fundal_view']"
+		),
+		'pcrAxial' => array(
+			'xpath' => "//*[@class='pcrrisk_axial_length']"
+		),
+		'pcrCataract' => array(
+			'xpath' => "//*[@class='pcrrisk_brunescent_white_cataract']"
+		),
+		'pcrARB' => array(
+			'xpath' => "//*[@class='pcrrisk_arb']"
+		),
+		'pcrDoctor' => array(
+			'xpath' => "//*[@class='pcr_doctor_grade']"
+		),
+		'pcrLie' => array(
+			'xpath' => "//*[@class='pcrrisk_lie_flat']"
+		),
+		'pcrValue' => array(
+			'xpath' => "//*[@class='pcr-span']"
+		),
+		'cataractComplications' => array(
+			'xpath' => "//select[@id='OphTrOperationnote_CataractComplications']"
+		),
+		'anaestheticComplications' => array(
+			'xpath' => "//select[@id='OphTrOperationnote_AnaestheticComplications']"
+		),
+		'iolType' => array(
+			'xpath' => "//select[@id='Element_OphTrOperationnote_Cataract_iol_type_id']"
+		),
+		'ophCiExaminationPCRRiskLeftEye' => array(
+			'xpath' => "//div[@id='ophCiExaminationPCRRiskLeftEye']"
+		),
+		'ophCiExaminationPCRRiskRightEye' => array(
+			'xpath' => "//div[@id='ophCiExaminationPCRRiskRightEye']"
+		),
+		'iolPower' => array(
+			'xpath' => "//input[@id='Element_OphTrOperationnote_Cataract_iol_power']"
+		),
+		'predictedRefraction' => array(
+			'xpath' => "//input[@id='Element_OphTrOperationnote_Cataract_predicted_refraction']"
+		),
 	);
 	public function emergencyBooking() {
 		$this->getElement ( 'emergencyBooking' )->click ();
@@ -129,16 +183,19 @@ class OperationNote extends OpenEyesPage {
 		$this->getElement ( 'createOperationNote' )->click ();
 	}
 	public function procedureRightEye() {
-		$this->getElement ( 'leftProcedureEye' )->click ();
+		$this->getElement ( 'rightProcedureEye' )->click ();
 	}
 	public function procedureLeftEye() {
-		$this->getElement ( 'rightProcedureEye' )->click ();
+		$this->getElement ('leftProcedureEye' )->click ();
 	}
 	public function commonProcedure($common) {
 		$this->getElement ( 'commonProcedure' )->selectOption ( $common );
+		sleep(3);
 	}
 	public function typeTopical() {
-		$this->getElement ( 'anaestheticTopical' )->click ();
+		$element = $this->getElement ( 'anaestheticTopical' );
+        $this->scrollWindowToElement ( $element );
+        $element->click ();
 	}
 	public function typeLA() {
 		$this->getElement ( 'anaestheticLA' )->click ();
@@ -280,4 +337,45 @@ class OperationNote extends OpenEyesPage {
 		sleep(3);
 	}
 
+	public function setPcrValue($side, $option, $value)
+	{
+		$side = $this->getElement('ophCiExaminationPCRRisk'.ucfirst($side).'Eye');
+		$option = $side->find('xpath', $this->elements['pcr'.$option]['xpath']);
+		$option->selectOption($value);
 	}
+
+	public function checkPcrCalculatedValue($side, $value)
+	{
+		$side = $this->getElement('ophCiExaminationPCRRisk'.ucfirst($side).'Eye');
+		$element = $side->find('xpath', $this->elements['pcrValue']['xpath']);
+
+		if($element->getText() !== $value){
+			throw new Exception('PCR value does not match');
+		}
+	}
+
+	public function selectCataractComplication($complication)
+	{
+		$this->getElement ( 'cataractComplications' )->selectOption ( $complication );
+	}
+
+	public function selectAnaestheticComplication($complication)
+	{
+		$this->getElement ( 'anaestheticComplications' )->selectOption ( $complication );
+	}
+
+	public function selectIolType($type)
+	{
+		$this->getElement ( 'iolType' )->selectOption ( $type );
+	}
+
+	public function setIolPower($power)
+	{
+		$this->getElement ( 'iolPower' )->setValue( $power );
+	}
+
+	public function setPredictedRefraction($refraction)
+	{
+		$this->getElement ( 'predictedRefraction' )->setValue( $refraction );
+	}
+}

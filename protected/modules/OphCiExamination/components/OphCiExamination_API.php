@@ -805,7 +805,7 @@ class OphCiExamination_API extends \BaseAPI
                 if ($disorder2_id) {
                     $criteria->compare($side . '_diagnosis2_id', $disorder2_id);
                 } else {
-                    $criteria->addCondition($side . '_diagnosis2_id IS NULL');
+                    $criteria->addCondition($side . '_diagnosis2_id IS NULL OR ' . $side . '_diagnosis2_id = 0');
                 }
 
                 if ($el = models\Element_OphCiExamination_InjectionManagementComplex::model()->find($criteria)) {

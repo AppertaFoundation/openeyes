@@ -58,7 +58,7 @@ class PhasingContext extends PageObjectContext {
 		$phasing = $this->getPage ( 'Phasing' );
 		$phasing->rightPressureTime ( $time );
 	}
-	
+
 	/**
 	 * @Then /^I choose a right eye Intraocular Pressure Reading of "([^"]*)"$/
 	 */
@@ -70,7 +70,7 @@ class PhasingContext extends PageObjectContext {
 		$phasing = $this->getPage ( 'Phasing' );
 		$phasing->rightPressure ( $righteye );
 	}
-	
+
 	/**
 	 * @Given /^I add right eye comments of "([^"]*)"$/
 	 */
@@ -81,18 +81,6 @@ class PhasingContext extends PageObjectContext {
 		 */
 		$phasing = $this->getPage ( 'Phasing' );
 		$phasing->rightComments ( $comments );
-	}
-	
-	/**
-	 * @Then /^I choose a left eye Intraocular Pressure Instrument of "([^"]*)"$/
-	 */
-	public function iChooseALeftEyeIntraocularPressureInstrumentOf($leftEye) {
-		/**
-		 *
-		 * @var Phasing $phasing
-		 */
-		$phasing = $this->getPage ( 'Phasing' );
-		$phasing->leftInstrument ( $leftEye );
 	}
 	
 	/**
@@ -286,4 +274,21 @@ class PhasingContext extends PageObjectContext {
 		$phasing = $this->getPage ( 'Phasing' );
 		$phasing->phasingTimeErrorValidation ();
 	}
+
+    /**
+     * @Then /^I choose a right eye Intraocular Pressure Instrument  of "([^"]*)"$/
+     */
+    public function iChooseARightEyeIntraocularPressureInstrumentOf($arg1) {
+        $phasing = $this->getPage( 'Phasing');
+        $phasing->rightInstrument($arg1);
+    }
+
+    /**
+     * @Then /^I choose a left eye Intraocular Pressure Instrument  of "([^"]*)"$/
+     */
+    public function iChooseALeftEyeIntraocularPressureInstrumentOf($arg1) {
+        $phasing = $this->getPage( 'Phasing');
+        $phasing->leftInstrument($arg1);
+    }
+
 }

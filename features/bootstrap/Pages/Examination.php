@@ -809,11 +809,50 @@ class Examination extends OpenEyesPage {
 		'leftAnteriorSegmentDescription' => array (
 			'xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_description']"
 		),
+		'rightEyePCRRiskContainer' => array(
+			'xpath' => "//*[@id='ophCiExaminationPCRRiskRightEye']"
+		),
+		'leftEyePCRRiskContainer' => array(
+			'xpath' => "//*[@id='ophCiExaminationPCRRiskLeftEye']"
+		),
 		'rightEyePCRRisk' =>array(
 			'xpath' => "//*[@id='ophCiExaminationPCRRiskRightEyeLabel']//*[contains(text(),'Right Eye - PCR Risk')]"
 		),
 		'leftEyePCRRisk' =>array(
 			'xpath' => "//*[@id='ophCiExaminationPCRRiskLeftEyeLabel']//*[contains(text(),'Left Eye - PCR Risk')]"
+		),
+		'pcrGlaucoma' => array(
+			'xpath' => "//*[@class='pcrrisk_glaucoma']"
+		),
+		'pcrPXF' => array(
+			'xpath' => "//*[@class='pcrrisk_pxf_phako']"
+		),
+		'pcrDiabetic' => array(
+			'xpath' => "//*[@class='pcrrisk_diabetic']"
+		),
+		'pcrPupil' => array(
+			'xpath' => "//*[@class='pcrrisk_pupil_size']"
+		),
+		'pcrFundal' => array(
+			'xpath' => "//*[@class='pcrrisk_no_fundal_view']"
+		),
+		'pcrAxial' => array(
+			'xpath' => "//*[@class='pcrrisk_axial_length']"
+		),
+		'pcrCataract' => array(
+			'xpath' => "//*[@class='pcrrisk_brunescent_white_cataract']"
+		),
+		'pcrARB' => array(
+			'xpath' => "//*[@class='pcrrisk_arb']"
+		),
+		'pcrDoctor' => array(
+			'xpath' => "//*[@class='pcr_doctor_grade']"
+		),
+		'pcrLie' => array(
+			'xpath' => "//*[@class='pcrrisk_lie_flat']"
+		),
+		'pcrValue' => array(
+			'xpath' => "//*[@class='pcr-span']"
 		),
 		'referenceLinkOnPCRRightEyeBlock' => array(
 			'xpath' => "//*[@id='ophCiExaminationPCRRiskRightEye']//*[contains(text(),'Calculation data derived from')]"
@@ -822,10 +861,10 @@ class Examination extends OpenEyesPage {
 			'xpath' => "//*[@id='ophCiExaminationPCRRiskLeftEye']//*[contains(text(),'Calculation data derived from')]"
 		),
 		'referenceLinkOnPCRRightEyeBlockLink' => array(
-			'xpath' => "//*[@id='ophCiExaminationPCRRiskRightEye']//*[@class='large-12 column pcr-risk-data-link']//*[contains(text(),'The Cataract National Dataset')]"
+			'xpath' => "//*[@id='ophCiExaminationPCRRiskRightEye']//*[@class='large-8 column pcr-risk-data-link']//*[contains(text(),'The Cataract National Dataset')]"
 		),
 		'referenceLinkOnPCRLeftEyeBlockLink' => array(
-			'xpath' => "//*[@id='ophCiExaminationPCRRiskLeftEye']//*[@class='large-12 column pcr-risk-data-link']//*[contains(text(),'The Cataract National Dataset')]"
+			'xpath' => "//*[@id='ophCiExaminationPCRRiskLeftEye']//*[@class='large-8 column pcr-risk-data-link']//*[contains(text(),'The Cataract National Dataset')]"
 		),
 		'referencePage' => array(
 			'xpath' => "//*[contains(text(),'The Cataract National Dataset')]"
@@ -1856,6 +1895,55 @@ class Examination extends OpenEyesPage {
 		}
 		else{
 			throw new BehaviorException ( "Page not Displayed!!" );
+		}
+	}
+
+	public function checkPcrDefaultValues()
+	{
+        $defaults = array(
+            '.pcrrisk_glaucoma' => 'NK',
+            '.pcrrisk_diabetic' => 'NK',
+            '.pcrrisk_no_fundal_view' => 'NK',
+            '.pcrrisk_brunescent_white_cataract' => 'NK',
+            '.pcr_doctor_grade' => '1',
+            '.pcrrisk_pxf_phako' => 'NK',
+            '.pcrrisk_pupil_size' => 'Medium',
+            '.pcrrisk_axial_length' => 'NK',
+            '.pcrrisk_arb' => 'NK',
+            '.pcrrisk_lie_flat' => 'Y'
+        );
+
+		foreach(array(
+                    $this->getElement('rightEyePCRRiskContainer'),
+                    $this->getElement('leftEyePCRRiskContainer')
+                ) as $pcrBlock){
+            foreach($defaults as $input => $defaultValue){
+
+                $element = $pcrBlock->find('css', $input);
+				if(!$element){
+					throw new Exception($input . ' does not exist');
+				}
+                if($element->getValue() !== $defaultValue){
+                    throw new Exception($input . ' does not have a default value');
+                }
+            }
+        }
+	}
+
+	public function setPcrValue($side, $option, $value)
+	{
+		$side = $this->getElement(strtolower($side).'EyePCRRiskContainer');
+		$option = $side->find('xpath', $this->elements['pcr'.$option]['xpath']);
+		$option->selectOption($value);
+	}
+
+	public function checkPcrCalculatedValue($side, $value)
+	{
+		$side = $this->getElement(strtolower($side).'EyePCRRiskContainer');
+		$element = $side->find('xpath', $this->elements['pcrValue']['xpath']);
+
+		if($element->getText() !== $value){
+			throw new Exception('PCR value does not match');
 		}
 	}
 }

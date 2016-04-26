@@ -30,6 +30,7 @@ return array(
 		'application.models.*',
 		'application.models.elements.*',
 		'application.components.*',
+		'application.components.reports.*',
 		'application.extensions.tcpdf.*',
 		'application.modules.*',
 		'application.commands.*',
@@ -40,6 +41,7 @@ return array(
 		'application.helpers.*',
 		'application.gii.*',
 		'system.gii.generators.module.*',
+		'application.modules.OphTrOperationnote.components.*',
 	),
 
 	'aliases' => array(
@@ -278,7 +280,8 @@ return array(
 				'title' => 'More',
 				'uri' => '#',
 				'position' => 2,
-				'restricted' => array('admin', 'Report'),
+				'userrule' => 'isSurgeon',
+				'restricted' => array('admin', 'Report', 'NOD Export'),
 				'sub' => array(
 					'admin' => array(
 						'title' => 'Admin',
@@ -298,7 +301,20 @@ return array(
 						'position' => 3,
 						'restricted' => array('Report'),
 					),
-					'patientmergerequest' => array(
+					'cataract' => array(
+						'title' => 'Cataract Audit',
+						'uri' => 'dashboard/cataract',
+						'position' => 4,
+						'userrule' => 'isSurgeon',
+						'restricted' => array('admin'),
+						'options' => array('target' => '_blank')),
+					'nodexport' => array(
+						'title' => 'NOD Export',
+						'uri' => 'NodExport',
+						'position' => 5,
+						'restricted' => array('NOD Export'),
+					),
+                                        'patientmergerequest' => array(
 						'title' => 'Patient Merge',
 						'uri' => 'patientmergerequest/index',
 						'position' => 6,
@@ -334,5 +350,16 @@ return array(
 		'wkhtmltopdf_right_margin' => '20mm',
 		'wkhtmltopdf_nice_level' => false,
 		'OphCoTherapyapplication_sender_email' => array('openeyes.servicedesk@moorfields.nhs.uk' => 'OpenEyes Therapy Application'),
+
+		'hscic' => array(
+			'data' => array(
+				// to store processed zip files
+				'path' => realpath(dirname(__FILE__) . '/../..') . '/data/hscic' ,
+
+				// to store downloaded zip files which will be processed if they are different from the already processed ones
+				// otherwise ignored and will be overwritten on then next download
+				'temp_path' => realpath(dirname(__FILE__) . '/../..') . '/data/hscic/temp',
+			)
+		),
 	),
 );
