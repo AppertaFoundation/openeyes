@@ -298,9 +298,9 @@ return array(
 						'position' => 3,
 						'restricted' => array('Report'),
 					),
-					'patientmerge' => array(
+					'patientmergerequest' => array(
 						'title' => 'Patient Merge',
-						'uri' => 'patientmerge/mergerequest',
+						'uri' => 'patientmergerequest/index',
 						'position' => 6,
 						'restricted' => array('admin'),
 					),
