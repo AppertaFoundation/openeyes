@@ -30,7 +30,7 @@ class PatientMergeRequestController extends BaseController
     {
         return array(
             array('allow',
-                'actions' => array('index', 'create', 'view', 'search'),
+                'actions' => array('index', 'create', 'view', 'merge', 'editConflict', 'search'),
                 'roles' => array('admin'),
             )
         );
@@ -100,22 +100,22 @@ class PatientMergeRequestController extends BaseController
             
             $mergeHandler = new PatientMerge;
             
-            // use load to set the properties
+            // Load data from PatientMergeRequest AR record
             $mergeHandler->load($mergeRequest);
             
             if($mergeHandler->merge()){
                 $this->redirect(array('view', 'id' => $mergeRequest->id));
             } else {
-                $this->redirect(array('conflict', 'id' => $mergeRequest->id));
+                $this->redirect(array('editConflict', 'id' => $mergeRequest->id));
             }
         } 
         
         $this->render('merge', array(
-            'model' => $mergeRequest,
+            'model' => $mergeRequest
         ));
     }
     
-    public function actionConflict($id){
+    public function actionEditConflict($id){
         echo "Lollipop: $id"; die;
     }
     
@@ -130,8 +130,8 @@ class PatientMergeRequestController extends BaseController
      */
     public function loadModel($id)
     {
-        $model=PatientMergeRequest::model()->findByPk($id);
-        if($model===null)
+        $model = PatientMergeRequest::model()->findByPk($id);
+        if($model === null)
             throw new CHttpException(404,'The requested page does not exist.');
         return $model;
     }

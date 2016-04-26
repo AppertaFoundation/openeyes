@@ -184,6 +184,7 @@ class Patient extends BaseActiveRecordVersioned
 		$criteria->compare('gender',$this->gender,false);
 		$criteria->compare('hos_num',$this->hos_num,false);
 		$criteria->compare('nhs_num',$this->nhs_num,false);
+                $criteria->compare('deleted', 0);
 
 		return $this->count($criteria);
 	}
@@ -212,6 +213,8 @@ class Patient extends BaseActiveRecordVersioned
 		} else {
 			$criteria->compare('hos_num',$this->hos_num, false);
 		}
+                
+                $criteria->compare('deleted', 0);
 
 		$criteria->order = $params['sortBy'] . ' ' . $params['sortDir'];
 

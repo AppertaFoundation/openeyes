@@ -56,9 +56,7 @@
 
             <div class="row">
                 <div class="large-3 column text-right large-offset-9">
-                    <input class="warning" type="submit" value="Save and Merge">
                     <input type="submit" value="Save">
-                    
                 </div>
             </div>
         </form>
