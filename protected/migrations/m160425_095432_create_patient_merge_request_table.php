@@ -28,10 +28,16 @@ class m160425_095432_create_patient_merge_request_table extends OEMigration
                 ),
                 true
             );
+            
+            $this->addForeignKey('patient_merge_request_fk1', 'patient_merge_request', 'primary_id', 'patient', 'id');
+            $this->addForeignKey('patient_merge_request_fk2', 'patient_merge_request', 'secondary_id', 'patient', 'id');
 	}
 
 	public function down()
 	{
+            $this->dropForeignKey('patient_merge_request_fk1', 'patient_merge_request');
+            $this->dropForeignKey('patient_merge_request_fk2', 'patient_merge_request');
+            
             $this->dropOETable('patient_merge_request', true);
 	}
 }

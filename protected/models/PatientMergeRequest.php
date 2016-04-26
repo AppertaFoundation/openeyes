@@ -71,8 +71,8 @@ class PatientMergeRequest extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'primary' => array(self::BELONGS_TO, 'Patient', 'primary_id'),
-            'secondary' => array(self::BELONGS_TO, 'Patient', 'secondary_id'),
+            'primaryPatient' => array(self::BELONGS_TO, 'Patient', 'primary_id'),
+            'secondaryPatient' => array(self::BELONGS_TO, 'Patient', 'secondary_id'),
 
         );
     }

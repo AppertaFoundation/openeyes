@@ -22,24 +22,109 @@ class PatientMerge
     private $primaryPatient;
     private $secondaryPatient;
     
-    public function setPrimaryPatient($id){
-        $this->patient = Patient::model()->findByPk($id);
+    /**
+     * Set primary patient by id
+     * @param int $id
+     */
+    public function setPrimaryPatientById($id){
+        $this->primaryPatient = Patient::model()->findByPk($id);
     }
     
-    public function setSecondaryPatient($id){
-        $this->patient = Patient::model()->findByPk($id);
+    /**
+     * Returns the Primary patient
+     * @return Patient AR record
+     */
+    public function getPrimaryPatient(){
+        return $this->primaryPatient;
     }
     
+    /**
+     * Set secondaty patient by id
+     * @param int $id
+     */
+    public function setSecondaryPatientById($id){
+        $this->secondaryPatient = Patient::model()->findByPk($id);
+    }
+    
+    /**
+     * Returns the secondary patient
+     * @return Patient AR record
+     */
+    public function getSecondaryPatient(){
+        return $this->secondaryPatient;
+    }
+    
+    
+    
+    /**
+     * Load data from PatientMergeRequest AR record
+     * 
+     * @param PatientMergeRequest $request
+     */
     public function load(PatientMergeRequest $request){
-        $this->setPrimaryPatient( $request->primary_id );
-        $this->setSecondaryPatient( $request->secondary_id );
+        $this->setPrimaryPatientById( $request->primary_id );
+        $this->setSecondaryPatientById( $request->secondary_id );
     }
     
     /**
      * Compare data in the patient table
+     * 
+     * @param patient AR record $primary
+     * @param patient AR record $secondary
      */
-    public function comparePatientDetails($primary, $secondary){
+    public function comparePatientDetails(Patient $primary, Patient $secondary)
+    {
         
-        // return conflict or clear
+        //columns to be compared in patient table
+        $columns = array(
+            'dob', 'gender', /*'hos_num',*/ 'nhs_num', 'date_of_death', 'ethnic_group_id', 'contact_id',
+        );
+        
+        $conflict = array();
+        
+        foreach($columns as $column){
+            if( $this->primaryPatient->$column !== $this->secondaryPatient->$column ){
+                $conflict[] = array(
+                    'column' => $column,
+                    'primary' => $this->primaryPatient->$column,
+                    'secondary' => $this->secondaryPatient->$column,
+                );
+            }
+        }
+        
+        return array(
+            'isConflict' => !empty($conflict),
+            'details' => $conflict
+        );
+    }
+    
+    public function merge()
+    {
+        
+        $mergeSuccess = false;
+        
+        $patinet_details_result = $this->comparePatientDetails($this->primaryPatient, $this->secondaryPatient);
+        
+        // handle episodes here, eg.: reassign, update patient ID...
+        
+        if( isset($patinet_details_result['isConflict']) && $patinet_details_result['isConflict'] === true){
+            
+            $mergeSuccess = false;
+            
+            //null NHS num, hos num
+            
+            echo "<pre>" . print_r($patinet_details_result, true) . "</pre>";
+            
+            die;
+
+        } else {
+            
+            // no conflict
+            
+            // do the actual merging
+                        
+        }
+        
+        return $mergeSuccess;
     }
 }

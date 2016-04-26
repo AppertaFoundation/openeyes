@@ -32,7 +32,7 @@
                 <div class="large-8 column">
                     <div class="data-value">
                         <div class="hospital-number">
-                            <span class="hos_num"></span>
+                            <span class="hos_num"><?php echo $model->isNewRecord ? '' : $model->{"{$type}_hos_num"}; ?></span>
                             <?php echo CHtml::activeHiddenField($model, "{$type}_hos_num", array('class' => 'hos_num-input')); ?>
                         </div>
                     </div>
@@ -47,9 +47,9 @@
                         <!-- NHS number -->
                         <div class="nhs-number">
                                 <span class="hide-text print-only">
-                                        NHS number:
+                                    NHS number:
                                 </span>
-                                <span class="nhsnum">000 000 0000</span>
+                                <span class="nhsnum"><?php echo $model->isNewRecord ? '000 000 0000' : $model->{"{$type}_nhsnum"}; ?></span>
                                 <?php echo CHtml::activeHiddenField($model, "{$type}_nhsnum", array('class' => 'nhsnum-input')); ?>
                         </div>
                     </div>
@@ -63,7 +63,9 @@
                             <div class="data-label">First name(s):</div>
                     </div>
                     <div class="large-8 column">
-                            <div class="data-value first_name"></div>
+                        <div class="data-value first_name">
+                           <?php echo $model->isNewRecord ? '' : $model->{"{$type}Patient"}->first_name; ?>
+                        </div>
                     </div>
             </div>
 
@@ -72,7 +74,7 @@
                             <div class="data-label">Last name:</div>
                     </div>
                     <div class="large-8 column">
-                            <div class="data-value last_name"></div>
+                            <div class="data-value last_name"><?php echo $model->isNewRecord ? '' : $model->{"{$type}Patient"}->last_name; ?></div>
                     </div>
             </div>
            
@@ -81,7 +83,7 @@
                             <div class="data-label">Date of Birth:</div>
                     </div>
                     <div class="large-8 column">
-                            <div class="data-value dob"></div>
+                            <div class="data-value dob"><?php echo $model->isNewRecord ? '' : $model->{"{$type}Patient"}->NHSDate('dob'); ?></div>
                             <?php echo CHtml::activeHiddenField($model, "{$type}_dob", array('class' => 'dob-input')); ?>
                     </div>
             </div>
@@ -91,7 +93,7 @@
 				<div class="data-label">Gender:</div>
 			</div>
 			<div class="large-8 column">
-				<div class="data-value gender"></div>
+				<div class="data-value gender"><?php echo $model->isNewRecord ? '' : $model->{"{$type}Patient"}->getGenderString(); ?></div>
                                 <?php echo CHtml::activeHiddenField($model, "{$type}_gender", array('class' => 'genderletter-input')); ?>
 			</div>
 		</div>
