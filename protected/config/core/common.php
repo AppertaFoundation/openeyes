@@ -313,9 +313,9 @@ return array(
 						'uri' => 'NodExport',
 						'position' => 5,
 						'restricted' => array('NOD Export'),
-					'patientmerge' => array(
+					'patientmergerequest' => array(
 						'title' => 'Patient Merge',
-						'uri' => 'patientmerge/mergerequest',
+						'uri' => 'patientmergerequest/index',
 						'position' => 6,
 						'restricted' => array('admin'),
 					),
