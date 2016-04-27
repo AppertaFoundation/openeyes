@@ -22,6 +22,12 @@ class ProcessHscicDataCommand extends CConsoleCommand
     public $path = null;
     public $tempPath = null;
 
+    public static $DOWNLOAD_FAILED = 1;
+    public static $DOWNLOAD_EMPTY = 2;
+    public static $UNEXPECTED_FILE_PROBLEM = 3;
+    public static $UNRECOGNISED_CODE = 4;
+    public static $UNKNOWN_ERROR = 9;
+
     /**
      * Force already imported files to process it again
      * @var type 
@@ -39,7 +45,12 @@ class ProcessHscicDataCommand extends CConsoleCommand
      * @var type
      */
     public $url = '';
-    
+
+    /**
+     * @var integer
+     */
+    public $timeout = 30;
+
     private $pcu;
     private $countryId;
     private $cbtId;
@@ -93,7 +104,7 @@ class ProcessHscicDataCommand extends CConsoleCommand
 
         parent::__construct(null, null);
     }
-    
+
     /**
      * Returns the command name/short description.
      * @return string
@@ -153,6 +164,7 @@ Following parameters are available:
             Usage: --audit=false
  - url    : Override the default URL, e.g. to process a specific monthly file
             Usage: --url=http://systems.hscic.gov.uk/data/ods/datadownloads/monthamend/december/egpam.zip
+ - timeout : Set the connection timeout value downloading a file (defaults to 30 seconds)
 
 EXAMPLES
  * yiic.php processhscicdata download --type=practice --interval=full
@@ -191,17 +203,41 @@ EOH;
         } else if( !isset(self::$files[$interval][$type]) ){
             $this->usageError("Type not found: $type");
         } else {
-            $this->processFile($type, $interval, self::$files[$interval][$type]);
+            try {
+                $this->processFile($type, $interval, self::$files[$interval][$type]);
+            }
+            catch (Exception $e) {
+                return $this->handleException($e);
+            }
+
         }      
     }
-    
+
+    /**
+     * Simple routine for consistently handling generated Exceptions
+     *
+     * @param $e
+     * @return mixed
+     */
+    protected function handleException(Exception $e)
+    {
+        echo $e->getMessage();
+
+        return $e->getCode() ?: static::$UNKNOWN_ERROR;
+    }
+
     /**
      * Imports all the full files listed in self::$files['full'], Gp, Practice, CCG, CCG Assignment
      */
     public function actionImportall()
     {
-        foreach(self::$files['full'] as $type => $file){
-            $this->processFile($type, 'full', $file);
+        try {
+            foreach(self::$files['full'] as $type => $file){
+                $this->processFile($type, 'full', $file);
+            }
+        }
+        catch (Exception $e) {
+            return $this->handleException($e);
         }
     }
     
@@ -247,13 +283,13 @@ EOH;
         
         $zip = new ZipArchive(); 
         if (($res = $zip->open($file)) !== true) {
-            throw new Exception("Failed to open zip file '{$file}': " . $res);
+            throw new Exception("Failed to open zip file '{$file}': " . $res, static::$UNEXPECTED_FILE_PROBLEM);
         }
         
         $fileName = str_replace('.zip', '.csv', $pathInfo['basename']);
       
         if (!($stream = $zip->getStream($fileName))) {
-            throw new Exception("Failed to extract '{$fileName}' from zip file at '{$file}'");
+            throw new Exception("Failed to extract '{$fileName}' from zip file at '{$file}'", static::$UNEXPECTED_FILE_PROBLEM);
         }
         
         return $stream;
@@ -278,7 +314,7 @@ EOH;
         $fileName = str_replace('.zip', '.csv', $pathInfo['basename']);
       
         if (!($stream = $zip->getStream($fileName))) {
-            throw new Exception("Failed to extract '{$fileName}' from zip file at '{$file}'");
+            throw new Exception("Failed to extract '{$fileName}' from zip file at '{$file}'", static::$UNEXPECTED_FILE_PROBLEM);
         }
         
         $lineCount = 0;
@@ -375,7 +411,7 @@ EOH;
                     } else if (preg_match('/^([A-Z]\d{5}|[A-Z]{3}\d{3})$/', $data['code'])) {
                         $this->importPractice($data);
                     } else {
-                        throw new Exception("Unknown code format: {$data['code']}");
+                        throw new Exception("Unknown code format: {$data['code']}", static::$UNRECOGNISED_CODE);
                     }
                 } else {
                     $this->{"import{$type}"}($data);
@@ -663,19 +699,24 @@ EOH;
         if ( !isset(self::$files['full'][$type]['url']) || ($type != 'gp' && $type != 'practice') ){
             $this->usageError("Invalid type: $type");
         }
-        
-        $dbTable = $this->getTableNameByType($type);
-       
-        $this->createTempTable($dbTable);
 
-        $file = $this->getFileFromUrl( self::$files['full'][$type]['url'] );
-        $this->fillTempTable($type, $file);
+        try {
+            $dbTable = $this->getTableNameByType($type);
 
-        $this->markInactiveMissingModels($dbTable);
-         
-        // drop temp table
-        $query = "DROP TABLE if exists temp_$dbTable;";
-        Yii::app()->db->createCommand($query)->execute();
+            $this->createTempTable($dbTable);
+
+            $file = $this->getFileFromUrl( self::$files['full'][$type]['url'] );
+            $this->fillTempTable($type, $file);
+
+            $this->markInactiveMissingModels($dbTable);
+
+            // drop temp table
+            $query = "DROP TABLE if exists temp_$dbTable;";
+            Yii::app()->db->createCommand($query)->execute();
+        }
+        catch (Exception $e) {
+            return $this->handleException($e);
+        }
     }
     
     /**
@@ -828,8 +869,13 @@ EOH;
         } else if( !isset(self::$files[$interval][$type]) ){
             $this->usageError("\n$type has no $interval file");
         } else {
-            $fileName = $this->getFileFromUrl($this->url == '' ? self::$files[$interval][$type]['url'] : $this->url);
-            $this->download($this->url == '' ? self::$files[$interval][$type]['url'] : $this->url, $this->tempPath . '/' . $fileName);
+            try {
+                $fileName = $this->getFileFromUrl($this->url == '' ? self::$files[$interval][$type]['url'] : $this->url);
+                $this->download($this->url == '' ? self::$files[$interval][$type]['url'] : $this->url, $this->tempPath . '/' . $fileName);
+            }
+            catch (Exception $e) {
+                return $this->handleException($e);
+            }
         }
     }
     
@@ -838,51 +884,55 @@ EOH;
      * can be useful on the first run
      */
     public function actionDownloadall(){
-        foreach(self::$files['full'] as $file){
-            $fileName = $this->getFileFromUrl($file['url']);
-            if (!$this->download($file['url'], $this->tempPath . '/' . $fileName)) {
-                echo "Browse to " . $file['url'] . " for more details ...\n";
-            };
+        try {
+            foreach(self::$files['full'] as $file){
+                $fileName = $this->getFileFromUrl($file['url']);
+                $this->download($file['url'], $this->tempPath . '/' . $fileName);
+            }
+        }
+        catch (Exception $e) {
+            return $this->handleException($e);
         }
     }
-    
+
     /**
      * Downloads the file(url) and puts to the provided path/filename
-     * 
+     *
      * @param type $url
      * @param type $file
-     * @return bool true if file is readabe and size > 0
+     * @throws Exception
      */
     private function download($url, $file)
     {
         echo "Downloading... " . basename($file);
-        $result = true;
+        $error_message = null;
 
         $file_handler = fopen($file, 'w');
         
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_FILE, $file_handler);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
         curl_exec($curl);
 
         if (curl_errno($curl)) {
-            echo ' Curl error: ' . curl_errno($curl);
-            $result = false;
+            $error_message = ' Curl error: ' . curl_errno($curl);
         }
         else {
             $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             if ($status != 200) {
-                echo ' Bad Status Code: ' . $status;
-                $result = false;
+                $error_message = ' Bad Status Code: ' . $status;
             }
         }
         curl_close($curl);
         
         fclose($file_handler);
-        $result = $result && is_readable($file) && filesize($file);
+        if ($error_message)
+            throw new Exception($error_message, static::$DOWNLOAD_FAILED);
+
+        if (!is_readable($file) || !filesize($file))
+            throw new Exception("Downloaded file is empty/unreadable", static::$DOWNLOAD_EMPTY);
         
-        echo ($result ? ' ... OK' : '... ERROR');
+        echo ' ... OK';
         echo "\n";
-        
-        return $result;
     }
 }
