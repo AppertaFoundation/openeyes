@@ -20,6 +20,16 @@
 <h1 class="badge">Patient Merge Request</h1>
 
     <div id="patientMergeWrapper" class="container content">
+        
+        <div class="row">
+            <div class="large-3 column large-centered text-right large-offset-9">
+                <section class="box dashboard">
+                <?php 
+                    echo CHtml::link('list',array('patientmergerequest/index'), array('class' => 'button small'));
+                ?>
+                </section>
+            </div>
+        </div>
 
         <div class="row">
             <div class="large-7 column large-centered">

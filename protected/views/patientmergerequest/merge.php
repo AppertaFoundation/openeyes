@@ -31,45 +31,62 @@ $form = $this->beginWidget('CActiveForm', array(
 
  <div id="patientMergeWrapper" class="container content">
            
+    <div class="row">
+        <div class="large-3 column large-centered text-right large-offset-9">
+            <section class="box dashboard">
+            <?php 
+                echo CHtml::link('list',array('patientmergerequest/index'), array('class' => 'button small'));
+            ?>
+            </section>
+        </div>
+    </div>
+    <div class="row">
+        <div class="large-5 column">
+            <h2 class="secondaryPatient">Secondary</h2>
+            <?php $this->renderPartial('_patient_details', array(
+                    'model' => $model, 
+                    'type' => 'secondary',
+                ))?>
+        </div>  
+
+        <div class="large-2 column text-center">
+            <h2>INTO</h2>
+            <img class="into-arrow" src="<?= Yii::app()->assetManager->createUrl('img/_elements/graphic/right-black-arrow_128_30.png')?>" alt="OpenEyes logo" />
+        </div>
+
+        <div class="large-5 column">
+            <h2 class="primaryPatient">Primary</h2>
+            <?php $this->renderPartial('_patient_details', array(
+                    'model' => $model, 
+                    'type' => 'primary',
+                ))?>
+        </div>
+
+    </div>
+     
+     
+     
+    <hr>
+    <div class="row">
+        <div class="large-5 column">Comment:
+            <?php echo CHTML::activeTextArea($model, "comment"); ?>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="large-5 column text-right large-offset-7">
             <div class="row">
-                <div class="large-5 column">
-                    <h2 class="secondaryPatient">Secondary</h2>
-                    <?php $this->renderPartial('_patient_details', array(
-                            'model' => $model, 
-                            'type' => 'secondary',
-                            'mergeHandler' => isset($mergehandler) ? $mergehandler : null
-                        ))?>
-                </div>  
-
-                <div class="large-2 column text-center">
-                    <h2>INTO</h2>
-                    <img class="into-arrow" src="<?= Yii::app()->assetManager->createUrl('img/_elements/graphic/right-black-arrow_128_30.png')?>" alt="OpenEyes logo" />
+                <div class="large-9 column text-right"><label>
+                    <?php echo CHTML::checkBox('PatientMergeRequest[confirm]', false); ?> I declare under penalty of perjury I reviewed the details and I would like process with the merge.</label>
                 </div>
-
-                <div class="large-5 column">
-                    <h2 class="primaryPatient">Primary</h2>
-                    <?php $this->renderPartial('_patient_details', array(
-                            'model' => $model, 
-                            'type' => 'primary',
-                            'mergeHandler' => isset($mergehandler) ? $mergehandler : null
-                        ))?>
-                </div>
-
-            </div>
-            <hr>
-            <div class="row">
-                <div class="large-5 column">Comment:
-                    <?php echo CHTML::activeTextArea($model, "comment"); ?>
-                </div>
-
-            </div>
-
-            <div class="row">
-                <div class="large-3 column text-right large-offset-9">
+                <div class="large-3 column text-right">
                     <input class="warning" type="submit" value="Merge">
                 </div>
             </div>
-        <br>
+        </div>
+    </div>
+<br>
 
     </div>
     
