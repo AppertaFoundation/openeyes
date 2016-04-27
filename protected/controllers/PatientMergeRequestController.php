@@ -96,7 +96,7 @@ class PatientMergeRequestController extends BaseController
     {
         $mergeRequest = $this->loadModel($id);
         
-        if(isset($_POST['PatientMergeRequest']) && $_POST['PatientMergeRequest']['confirm']) {
+        if(isset($_POST['PatientMergeRequest']) && isset($_POST['PatientMergeRequest']['confirm'])) {
             
             $mergeHandler = new PatientMerge;
             
@@ -104,6 +104,8 @@ class PatientMergeRequestController extends BaseController
             $mergeHandler->load($mergeRequest);
             
             if($mergeHandler->merge()){
+                $mergeRequest->status = $mergeRequest::STATUS_MERGED;
+                $mergeRequest->save();
                 $this->redirect(array('view', 'id' => $mergeRequest->id));
             } else {
                 $this->redirect(array('editConflict', 'id' => $mergeRequest->id));
@@ -146,21 +148,6 @@ class PatientMergeRequestController extends BaseController
         if($patientSearch->isValidSearchTerm($term)){
             $dataProvider = $patientSearch->search($term);
             foreach($dataProvider->getData() as $patient){
-
-                $episodes = $patient->episodes;
-    
-                $episodes_open = 0;
-                $episodes_closed = 0;
-
-                foreach ($episodes as $episode) {
-                    if ($episode->end_date === null) {
-                        $episodes_open++;
-                    } else {
-                        $episodes_closed++;
-                    }
-                }
-                
-                $helper = new Helper;
                 
                 $result[] =  array(
                     'id' => $patient->id,
@@ -172,14 +159,7 @@ class PatientMergeRequestController extends BaseController
                     'dob' => ($patient->dob) ? $patient->NHSDate('dob') : 'Unknown',
                     'hos_num' => $patient->hos_num, 
                     'nhsnum' => $patient->nhsnum,
-                    'all-episodes' => $this->renderPartial('//patient/_patient_all_episodes',array(
-                                                    'episodes' => $episodes,
-                                                    'ordered_episodes' => $patient->getOrderedEpisodes(),
-                                                    'legacyepisodes' => $patient->legacyepisodes,
-                                                    'episodes_open' => $episodes_open,
-                                                    'episodes_closed' => $episodes_closed,
-                                                    'firm' => $this->firm,
-                                            ), true),
+                    'all-episodes' => $this->getEpisodesHTML($patient)
                 );
             }
         }
@@ -187,6 +167,37 @@ class PatientMergeRequestController extends BaseController
        echo CJavaScript::jsonEncode($result);
        Yii::app()->end();
        
+   }
+   
+    public function getEpisodesHTML($patient)
+    {
+       
+       $episodes = $patient->episodes;
+    
+        $episodes_open = 0;
+        $episodes_closed = 0;
+
+        foreach ($episodes as $episode) {
+            if ($episode->end_date === null) {
+                $episodes_open++;
+            } else {
+                $episodes_closed++;
+            }
+        }
+        
+        
+                
+       $html = $this->renderPartial('//patient/_patient_all_episodes',array(
+                                                    'episodes' => $episodes,
+                                                    'ordered_episodes' => $patient->getOrderedEpisodes(),
+                                                    'legacyepisodes' => $patient->legacyepisodes,
+                                                    'episodes_open' => $episodes_open,
+                                                    'episodes_closed' => $episodes_closed,
+                                                    'firm' => $this->firm,
+                                            ), true);
+       
+       // you don't know how much I hate this str_replace here, but now it seems a painless method to remove a class
+       return str_replace("box patient-info episodes", "box patient-info", $html);
    }
    
    
