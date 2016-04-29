@@ -47,10 +47,11 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         'subtitle' => array('text' => 'Total eyes: {{eyes}}, ±0.5D: {{0.5}}%, ±1D: {{1}}%'),
         'xAxis' => array(
             'title' => array('text' => 'PPOR - POR (Dioptres)'),
-            'categories' => array('-0.5', '0', '0.5'),
+            'min'=>-10,
+            'max'=>10
         ),
         'yAxis' => array(
-            'title' => array('text' => 'Number of patients'),
+            'title' => array('text' => 'Number of eyes'),
         ),
         'tooltip' => array(
             'headerFormat' => '<b>Refractive Outcome</b><br>',
@@ -147,25 +148,19 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
             }
             $diff = (float)$row['predicted_refraction'] - ((float)$row[$side . '_sphere'] - ((float)$row[$side . '_cylinder'] / 2));
             $diff = number_format($diff, 1);
-            if (!array_key_exists("$diff", $count)) {
-                $count["$diff"] = 0;
-                $this->graphConfig['xAxis']['categories'][] = $diff;
+            if (!array_key_exists($diff, $count)) {
+                $count[$diff] = 0;
             }
-            $count["$diff"]++;
+            $count[$diff]++;
         }
 
-        sort($this->graphConfig['xAxis']['categories'], SORT_NUMERIC);
-        $this->padCategories();
+        //sort($this->graphConfig['xAxis']['categories'], SORT_NUMERIC);
+        //$this->padCategories();
         $dataSet = array();
-        foreach ($this->graphConfig['xAxis']['categories'] as $graphCategory) {
-            $rowTotal = 0;
-            foreach ($count as $category => $total) {
-                if ($category == $graphCategory) {
-                    $rowTotal = $total;
-                }
-            }
-            $dataSet[] = $rowTotal;
+        foreach ($count as $category => $total) {
+            $rowTotal = array((int)$category, $total);
         }
+        $dataSet[] = $rowTotal;
 
         return $dataSet;
     }
@@ -225,21 +220,17 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         $plusOrMinusHalfPercent = 0;
         $plusOrMinusOnePercent = 0;
 
-        foreach($data as $i => $category){
-            $totalEyes += $category;
-            $categoryText = $this->graphConfig['xAxis']['categories'][$i];
-            
-            $categoryFloat = number_format($categoryText, 2, '.', '');
-            if($categoryFloat < -1 || $categoryFloat > 1){
-                $plusOrMinusOne += $category;
+        foreach($data as $dataRow){
+            $totalEyes += $dataRow[1];
+            if($dataRow[0] < -1 || $dataRow[0] > 1){
+                $plusOrMinusOne += $dataRow[0];
             }
-            
-            if($categoryFloat < -0.5 || $categoryFloat > 0.5){
-                $plusOrMinusHalf += $category;
+
+            if($dataRow[0] < -0.5 || $dataRow[0] > 0.5){
+                $plusOrMinusHalf += $dataRow[0];
             }
-            
         }
-     
+
         if($plusOrMinusOne > 0){
             $plusOrMinusOnePercent = number_format((($plusOrMinusOne / $totalEyes) * 100), 1, '.', '' );
         }
