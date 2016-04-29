@@ -148,19 +148,21 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
             }
             $diff = (float)$row['predicted_refraction'] - ((float)$row[$side . '_sphere'] - ((float)$row[$side . '_cylinder'] / 2));
             $diff = number_format($diff, 1);
-            if (!array_key_exists($diff, $count)) {
-                $count[$diff] = 0;
+            if($diff >= -10 && $diff <= 10) {
+                if (!array_key_exists($diff, $count)) {
+                    $count[$diff] = 0;
+                }
+                $count[$diff]++;
             }
-            $count[$diff]++;
         }
 
-        //sort($this->graphConfig['xAxis']['categories'], SORT_NUMERIC);
+        sort($count, SORT_NUMERIC);
         //$this->padCategories();
         $dataSet = array();
         foreach ($count as $category => $total) {
             $rowTotal = array((int)$category, $total);
+            $dataSet[] = $rowTotal;
         }
-        $dataSet[] = $rowTotal;
 
         return $dataSet;
     }
@@ -221,13 +223,13 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         $plusOrMinusOnePercent = 0;
 
         foreach($data as $dataRow){
-            $totalEyes += $dataRow[1];
+            $totalEyes += (int)$dataRow[1];
             if($dataRow[0] < -1 || $dataRow[0] > 1){
-                $plusOrMinusOne += $dataRow[0];
+                $plusOrMinusOne += (int)$dataRow[0];
             }
 
             if($dataRow[0] < -0.5 || $dataRow[0] > 0.5){
-                $plusOrMinusHalf += $dataRow[0];
+                $plusOrMinusHalf += (int)$dataRow[0];
             }
         }
 
