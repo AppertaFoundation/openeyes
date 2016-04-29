@@ -78,7 +78,7 @@ $form = $this->beginWidget('CActiveForm', array(
         <div class="large-5 column text-right large-offset-7">
             <div class="row">
                 <div class="large-9 column text-right"><label>
-                    <?php echo CHTML::checkBox('PatientMergeRequest[confirm]', false); ?> I declare under penalty of perjury I reviewed the details and I would like process with the merge.</label>
+                    <?php echo CHTML::checkBox('PatientMergeRequest[confirm]', false); ?> I declare under penalty of perjury I reviewed the details and I would like to proceed to merge.</label>
                 </div>
                 <div class="large-3 column text-right">
                     <input class="warning" type="submit" value="Merge">

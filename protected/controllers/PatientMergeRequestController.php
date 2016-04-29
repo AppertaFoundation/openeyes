@@ -67,7 +67,7 @@ class PatientMergeRequestController extends BaseController
         if(isset($_POST['PatientMergeRequest'])) {
             $model->attributes = $_POST['PatientMergeRequest'];
             if($model->save()){
-                $this->redirect(array('view', 'id' => $model->id));
+                $this->redirect(array('index'));
             }
         }
        
@@ -106,19 +106,19 @@ class PatientMergeRequestController extends BaseController
             if($mergeHandler->merge()){
                 $mergeRequest->status = $mergeRequest::STATUS_MERGED;
                 $mergeRequest->save();
+                Audit::add('Patient Merge', "Merge Request " . $mergeRequest->secondaryPatient->hos_num . " INTO " . $mergeRequest->primaryPatient->hos_num . "(hos_num) successfully done.");
                 $this->redirect(array('view', 'id' => $mergeRequest->id));
             } else {
-                $this->redirect(array('editConflict', 'id' => $mergeRequest->id));
+                $mergeRequest->status = $mergeRequest::STATUS_CONFLICT;
+                $mergeRequest->save();
+                Yii::app()->user->setFlash('warning.search_error', "Merge failed.");
+                $this->redirect(array('index'));
             }
         } 
         
         $this->render('merge', array(
             'model' => $mergeRequest
         ));
-    }
-    
-    public function actionEditConflict($id){
-        echo "Lollipop: $id"; die;
     }
     
     

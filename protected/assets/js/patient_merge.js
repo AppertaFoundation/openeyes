@@ -88,8 +88,9 @@ $(document).ready(function(){
             return false;
         },
         close: function (event, ui) {
-            if ( Object.keys(patientMerge.patients.primary).length === 0 || Object.keys(patientMerge.patients.secondary).length === 0 ){
-                $("ul.ui-autocomplete").show(); 
+            
+            if ( ($('.ui-menu li').length > 1 ) && (Object.keys(patientMerge.patients.primary).length === 0 || Object.keys(patientMerge.patients.secondary).length === 0) ){
+                $("ul.ui-autocomplete").show();
             }
         }
     });
@@ -106,4 +107,9 @@ $(document).ready(function(){
         patientMerge.updateDOM('primary');
         patientMerge.updateDOM('secondary');
     });
+    
+    $('#patient1-search-form').on('click', 'button', function(){
+        $("#patient_merge_search").autocomplete('search', $('#patient_merge_search').val());
+    });
+    
 });

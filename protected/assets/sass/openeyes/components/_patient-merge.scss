@@ -71,10 +71,10 @@
     #patientDialog {
         h2{
             padding-bottom: 15px;
-        }   
+        }
     }
     
-    table#patientMergeList{
+    #patientMergeList{
         
         tr{
             &:hover{
@@ -82,17 +82,40 @@
             }
             
             td{
+                
+                &.secondary{
+                    border-right-width: 0px;
+                    width:100px;
+                }
+                
+                &.into{
+                    border-right-width: 0px;
+                    width:61px;
+                }
+                
+                &.primary{
+                    width:100px;
+                }
+                
+                &.status{
+                    width:145px;
+                }
+                
                 &.actions{
+                    max-width: 100px;
                     a{
                         &.button{
                             margin-right: 5px;
                         }
                     }
+                    
+                    .mergedOn{
+                        font-size: 11px;
+                    }
                 }
             }
         }
     }
-    
 }
 
  .ui-menu{
@@ -110,5 +133,23 @@
     }    
 }
 
-
+.circle {
+    
+    border-radius: 50%;
+    display: inline-block;
+    height: 10px;
+    width: 10px;
+    
+    &.not-processed{
+        background-color: lightgray;
+    }
+    
+    &.merged{
+        background-color: green;
+    }
+    
+    &.conflict{
+        background-color: red;
+    }
+}
 
