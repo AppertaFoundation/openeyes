@@ -18,7 +18,7 @@
  */
 
 # Violet Coffin hos_num = 1009465 , patient.id = 19434
-# Episode ids : 600430 600432 600435 600451 600452 600454
+# Episode ids : 600430, 600432, 600435, 600451, 600452, 600454
 
 class PatientMerge
 {
@@ -84,6 +84,7 @@ class PatientMerge
         
         foreach($columns as $column){
             if( $primary->$column !== $secondary->$column ){
+                Yii::app()->user->setFlash('warning.merge_error', "Patients have different personal details.");
                 $conflict[] = array(
                     'column' => $column,
                     'primary' => $primary->$column,
@@ -98,15 +99,6 @@ class PatientMerge
         );
     }
     
-    public function isMegeable(Patient $primaryPatient, Patient $secondaryPatient)
-    {
-        $episode_merge_result = $this->compareEpisodes($primaryPatient, $secondaryPatient);
-        $patinet_details_result = $this->comparePatientDetails($primaryPatient, $secondaryPatient);
-        
-        return ($episode_merge_result && $patinet_details_result );
-        
-    }
-    
     /**
      * Do the actual merging
      * 
@@ -114,79 +106,64 @@ class PatientMerge
      */
     public function merge()
     {
-        $isMerged = false;
-        // check if we can merge, compare personal details and episodes
-        $isMergeable = $this->isMegeable($this->primaryPatient, $this->secondaryPatient);
         
-        if( $isMergeable ){
-            
+        $isMerged = false;
+        
+        $isPatientConflict = $this->comparePatientDetails($this->primaryPatient, $this->secondaryPatient);
+        
+        if ( $isPatientConflict && $this->updateEpisodes($this->primaryPatient, $this->secondaryPatient) ){
+            $isMerged = true;
+        }
+
+        if(!$isPatientConflict && $isMerged) {
             $secondaryPatient = $this->secondaryPatient;
-            
+
             $secondaryPatient->deleted = 1;
-            
+
             if($secondaryPatient->save()){
                 Audit::add('Patient Merge', "Patient id: " . $this->secondaryPatient->id . " flagged as deleted.");
-                $isMerged = true;
-            }
-            
-            // TODO refactor
-            // have to check the what $this->secondaryPatient->episodes  returns when empty null ? empty array ?
-            $secondary_episodes = $this->secondaryPatient->episodes ? $this->secondaryPatient->episodes : array();
-            
-            if ( $this->updateEpisodesPatientId($this->primaryPatient->id, $secondary_episodes) ){
                 $isMerged = $isMerged && true;
-            }
-
-        } else {
-            $isMerged = false;
+            } else {
+                throw new Exception("Failed to save Patient: " . print_r($secondaryPatient->errors, true));
+            }      
         }
         
         return $isMerged;
     }
     
-    /**
-     * Merging the episodes of Primary and Secondary Patients
-     * 
-     * @param Patient $primaryPatient
-     * @param Patient $secondaryPatient
-     */
-    public function compareEpisodes(Patient $primaryPatient, Patient $secondaryPatient)
-    {
-        $conflict = array();
-        
+    public function updateEpisodes(Patient $primaryPatient, Patient $secondaryPatient)
+    {        
+        $result = false;
         $primaryHasEpisodes = $primaryPatient->episodes;
         $secondaryHasEpisodes = $secondaryPatient->episodes;
         
         // if primary has no episodes than we just assign the secondary patient's episodes to the primary
         if( !$primaryHasEpisodes && $secondaryHasEpisodes){
             // this case is fine, we can assign the episodes from secondary to primary
+            $result = $this->updateEpisodesPatientId($primaryPatient->id, $secondaryPatient->episodes);
+                    
         } else if ( $primaryHasEpisodes && !$secondaryHasEpisodes ){
             // primary has episodes but secondary has not, nothing to do here
+            $result = true;
         } else {
+            // Both have episodes, we have to compare the subspecialties
             
-            foreach($secondaryHasEpisodes as $secondaryHasEpisode){
-                $secondary_subspecialty = $secondaryHasEpisode->getSubspecialtyID();
-                
-                foreach($primaryHasEpisodes as $primaryHasEpisode){
-                    $primary_subspecialty = $primaryHasEpisode->getSubspecialtyID();
-                    
+            foreach($secondaryPatient->episodes as $secondaryEpisode){
+                $secondary_subspecialty = $secondaryEpisode->getSubspecialtyID();
+
+                foreach($primaryHasEpisodes as $primaryEpisode){
+                    $primary_subspecialty = $primaryEpisode->getSubspecialtyID();
+
                     if( $secondary_subspecialty == $primary_subspecialty ){
                         // Both primary and secondary patient have episodes
-                        // at this time auto mere is not supported
-                        $conflict = array(
-                            'type' => 'episodes conflict',
-                            'message' => 'Primary and Secundary patient has the same episode subspecialty',
-                            'subspecialtyID' => $secondary_subspecialty
-                        );
+                        $result = $result && $this->updateEventsEpisodeId($primaryEpisode->id, $secondaryEpisode);
                     }
                 }
+                
+                $this->updateEpisodesPatientId($primaryPatient->id, $secondaryPatient->episodes);
+                
             }
         }
-        
-        return array(
-            'isConflict' => !empty($conflict),
-            'details' => $conflict
-        );
     }
     
     /**
@@ -198,11 +175,46 @@ class PatientMerge
     public function updateEpisodesPatientId($newPatientId, $episodes){
         
         foreach($episodes as $episode){
+            
+            $msg = "Episode " . $episode->id . " moved from patient " . $episode->patient_id . " to " . $newPatientId;
             $episode->patient_id = $newPatientId;
             
             if( $episode->save() ){
-                Audit::add('Patient Merge', "Episode " . $episode->id . " moved from patient " . $episode->patient_id . " to " . $newPatientId);
+                Audit::add('Patient Merge', $msg);
+            } else {
+                throw new Exception("Failed to save Episode: " . print_r($secondaryPatient->errors, true));
             }
         }
+        
+        return true;
+    }
+
+    public function updateEventsEpisodeId($newEpisodeId, $events)
+    {
+        foreach($events as $event){
+            
+            $msg = "Event " . $event->id . " moved from Episode " . $event->episode_id . " to " . $newEpisodeId;
+        
+            $event->episode_id = $newEpisodeId;
+            
+            if($event->save()){
+                Audit::add('Patient Merge', $msg);
+            } else {
+                throw new Exception("Failed to save Event: " . print_r($event->errors, true));
+            }
+        }
+        
+        $episode = Episode::model()->findByPk($event->episode_id);
+        $episode->deleted = 1;
+        
+        if( $episode->save() ){
+            Audit::add('Patient Merge', "Episode deleted: " . $episode->id );
+            return true;
+        } else {
+            throw new Exception("Failed to save Episode: " . print_r($episode->errors, true));
+        }
+        
+        
+        
     }
 }

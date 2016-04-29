@@ -109,7 +109,7 @@ class PatientMergeRequest extends BaseActiveRecordVersioned
             return array(
                     'OeDateFormat' => array(
                         'class' => 'application.behaviors.OeDateFormat',
-                        'date_columns' => array('primary_dob', 'secondary_dob'),
+                        'date_columns' => array('primary_dob', 'secondary_dob', 'last_modified_date'),
                     ),
             );
     }

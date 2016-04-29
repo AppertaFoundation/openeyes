@@ -5390,19 +5390,6 @@ tfoot.pagination-container .pagination-view-all {
     float: left;
   }
 }
-/* line 131, ../sass/openeyes/components/panels/_patient.scss */
-.panel.patient .nhs-number {
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  background-color: #107ebd;
-  background-image: url('../img/_elements/icons/nhs_tiny.png?1456827980');
-  background-position: center left;
-  background-repeat: no-repeat;
-  color: white;
-  display: inline-block;
-  padding: 2px 3px 1px 33px;
-}
 @media print {
   /* line 131, ../sass/openeyes/components/panels/_patient.scss */
   .panel.patient .patient-summary-anchor {
@@ -7262,6 +7249,53 @@ tfoot.pagination-container .pagination-view-all {
   width: 95%;
 }
 
+/* line 19, ../sass/openeyes/components/_d3.scss */
+.d3 svg {
+  background-color: white;
+  border-radius: 5px;
+}
+/* line 22, ../sass/openeyes/components/_d3.scss */
+.d3 svg.pcr-risk-chart {
+  width: 100%;
+  height: 500px;
+}
+/* line 29, ../sass/openeyes/components/_d3.scss */
+.d3 .axis path {
+  fill: none;
+  stroke: #777;
+  shape-rendering: crispEdges;
+}
+/* line 34, ../sass/openeyes/components/_d3.scss */
+.d3 .axis text {
+  font-family: Lato;
+  font-size: 13px;
+}
+/* line 40, ../sass/openeyes/components/_d3.scss */
+.d3 #legend {
+  padding: 1.5em 0 0 1.5em;
+}
+/* line 44, ../sass/openeyes/components/_d3.scss */
+.d3 li.key {
+  border-top-width: 15px;
+  border-top-style: solid;
+  font-size: .75em;
+  width: 10%;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* line 54, ../sass/openeyes/components/_d3.scss */
+.chart-tooltip {
+  position: absolute;
+  min-height: 28px;
+  pointer-events: none;
+  font-size: 10px;
+  background-color: white;
+  opacity: 0.6;
+  width: auto;
+  padding: 2px;
+}
+
 /* line 19, ../sass/openeyes/components/_patient-merge.scss */
 #patientMergeWrapper .large-2.column.text-center > h2 {
   font-size: 25px;
@@ -7319,21 +7353,67 @@ tfoot.pagination-container .pagination-view-all {
   padding-bottom: 15px;
 }
 /* line 80, ../sass/openeyes/components/_patient-merge.scss */
-#patientMergeWrapper table#patientMergeList tr:hover {
+#patientMergeWrapper #patientMergeList tr:hover {
   background-color: lightblue;
 }
-/* line 87, ../sass/openeyes/components/_patient-merge.scss */
-#patientMergeWrapper table#patientMergeList tr td.actions a.button {
+/* line 86, ../sass/openeyes/components/_patient-merge.scss */
+#patientMergeWrapper #patientMergeList tr td.secondary {
+  border-right-width: 0px;
+  width: 100px;
+}
+/* line 91, ../sass/openeyes/components/_patient-merge.scss */
+#patientMergeWrapper #patientMergeList tr td.into {
+  border-right-width: 0px;
+  width: 61px;
+}
+/* line 96, ../sass/openeyes/components/_patient-merge.scss */
+#patientMergeWrapper #patientMergeList tr td.primary {
+  width: 100px;
+}
+/* line 100, ../sass/openeyes/components/_patient-merge.scss */
+#patientMergeWrapper #patientMergeList tr td.status {
+  width: 145px;
+}
+/* line 104, ../sass/openeyes/components/_patient-merge.scss */
+#patientMergeWrapper #patientMergeList tr td.actions {
+  max-width: 100px;
+}
+/* line 107, ../sass/openeyes/components/_patient-merge.scss */
+#patientMergeWrapper #patientMergeList tr td.actions a.button {
   margin-right: 5px;
 }
+/* line 112, ../sass/openeyes/components/_patient-merge.scss */
+#patientMergeWrapper #patientMergeList tr td.actions .mergedOn {
+  font-size: 11px;
+}
 
-/* line 101, ../sass/openeyes/components/_patient-merge.scss */
+/* line 128, ../sass/openeyes/components/_patient-merge.scss */
 .ui-menu .ui-menu-item a, .ui-menu .ui-menu-item a.ui-state-focus {
   border: 1px solid #4a4a4a;
   margin: 0 0 5px;
   padding: 10px 5px;
 }
-/* line 106, ../sass/openeyes/components/_patient-merge.scss */
+/* line 133, ../sass/openeyes/components/_patient-merge.scss */
 .ui-menu .ui-menu-item a .nhs-number, .ui-menu .ui-menu-item a.ui-state-focus .nhs-number {
   float: right;
+}
+
+/* line 140, ../sass/openeyes/components/_patient-merge.scss */
+.circle {
+  border-radius: 50%;
+  display: inline-block;
+  height: 10px;
+  width: 10px;
+}
+/* line 147, ../sass/openeyes/components/_patient-merge.scss */
+.circle.not-processed {
+  background-color: lightgray;
+}
+/* line 151, ../sass/openeyes/components/_patient-merge.scss */
+.circle.merged {
+  background-color: green;
+}
+/* line 155, ../sass/openeyes/components/_patient-merge.scss */
+.circle.conflict {
+  background-color: red;
 }
