@@ -16,78 +16,13 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-use Guzzle\Http\Client;
-
-class PASAPI_Patient_Test extends RestTestCase
+class PASAPI_Patient_Test extends PASAPI_BaseTest
 {
-
-    static protected $namespaces = array(
-        'atom' => 'http://www.w3.org/2005/Atom'
-    );
-
-    /**
-     * @var Client
-     */
-    protected $client;
-    /**
-     * @var User
-     */
-    protected $user;
-
-    protected function cleanUpTestUser()
+    public function testMissingID()
     {
-        if (!$this->user) {
-            $this->user = User::model()->findByAttributes(array('username' => 'autotestapi'));
-            if (!$this->user)
-                return;
-        }
-
-        // clear out all the data we've touched, and the user
-        foreach (array('Audit', 'OEModule\\PASAPI\\models\\PasApiAssignment', 'Patient', 'Address', 'Contact') as $cls) {
-            $cls::model()->deleteAllByAttributes(array('created_user_id' => $this->user->id));
-        }
-
-        Audit::model()->deleteAllByAttributes(array('user_id' => $this->user->id));
-        $this->user->saveRoles(array());
-        $this->user->delete();
-    }
-
-    public function setUp()
-    {
-        // do this so if there was an error that prevented clean up in the last test run we can still test again.
-        $this->cleanUpTestUser();
-
-        $this->user = new User();
-        $this->user->attributes = array(
-            'active' => 1,
-            'global_firm_rights' => 1,
-            'first_name' => 'Auto-Test',
-            'last_name' => 'API',
-            'password' => 'password',
-            'password_repeat' => 'password',
-            'username' => 'autotestapi',
-            'email' => 'auto@test.com'
-        );
-
-        $this->user->noVersion()->save();
-        $this->user->saveRoles(array('User', 'API access'));
-
-        $this->client = new Client(
-            Yii::app()->params['pas_api_test_base_url'] . '/Patient',
-            array(
-                Client::REQUEST_OPTIONS => array(
-                    'auth' => array($this->user->username, 'password'),
-                    'headers' => array(
-                        'Accept' => 'application/xml',
-                    )
-                )
-            )
-        );
-    }
-
-    public function tearDown()
-    {
-        $this->cleanUpTestUser();
+        $this->setExpectedHttpError(400);
+        $this->put('', null);
+        $this->assertXPathFound("/Failure");
     }
 
     public function testEmptyPatient()

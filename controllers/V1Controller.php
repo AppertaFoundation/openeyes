@@ -107,6 +107,25 @@ class V1Controller extends \CController
     }
 
     /**
+     * Simple wrapper to encapsulate the arguments required for any of the API actions
+     */
+    public function expectedParametersForAction($action)
+    {
+        return array(
+            'update' => 'id'
+        )[strtolower($action->id)];
+    }
+
+    /**
+     * @param \CAction $action
+     * @throws CHttpException
+     */
+    public function invalidActionParams($action)
+    {
+        $this->sendErrorResponse(400, array("Missing request parameter(s). Required parameter(s) are: " . $this->expectedParametersForAction($action)));
+    }
+
+    /**
      * @param $resource_type
      * @param $id
      */

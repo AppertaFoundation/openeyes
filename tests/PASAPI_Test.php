@@ -18,19 +18,14 @@
 
 use Guzzle\Http\Client;
 
-class PASAPI_Test extends RestTestCase
+class PASAPI_Test extends PASAPI_BaseTest
 {
-
-    /**
-     * @var Client
-     */
-    protected $client;
 
     protected function initialiseClient($options = array())
     {
         if (!isset($options[Client::REQUEST_OPTIONS])) {
             $options[Client::REQUEST_OPTIONS] = array(
-                'auth' => array('api', 'password'),
+                'auth' => array($this->user->username, 'password'),
                 'headers' => array(
                     'Accept' => 'application/xml',
                 ),
@@ -38,7 +33,6 @@ class PASAPI_Test extends RestTestCase
         }
 
         $this->client = new Client(
-            #'http://localhost/PASAPI/v1/',
             Yii::app()->params['pas_api_test_base_url'],
             $options
         );
@@ -46,6 +40,8 @@ class PASAPI_Test extends RestTestCase
 
     public function setUp()
     {
+        $this->cleanUpTestUser();
+        $this->createTestUser();
         $this->initialiseClient();
     }
 
@@ -69,14 +65,10 @@ class PASAPI_Test extends RestTestCase
      * Check that just logging in with any user doesn't give us access
      */
     public function testAuthNeedsAccess() {
-        $this->initialiseClient(array(
-            Client::REQUEST_OPTIONS => array(
-                'auth' => array('level1', 'password'),
-                'headers' => array(
-                    'Accept' => 'application/xml',
-                ),
-            )
-        ));
+
+        //strip the API role from the test user
+        $this->user->saveRoles(array('User'));
+
         $this->setExpectedHttpError(403);
         $this->put('Patient/XYZ', '<Patient />');
     }

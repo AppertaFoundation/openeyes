@@ -32,7 +32,7 @@ class AddressTest extends \PHPUnit_Framework_TestCase
             ->method('getErrors')
             ->will($this->returnValue(array('field' => array('Test Error'))));
 
-        $test = new \OEModule\PASAPI\resources\Address('v1');
+        $test = new \OEModule\PASAPI\resources\Address('V1');
         $this->assertNull($test->saveModel($address));
         $this->assertEquals(array("field: Test Error"), $test->errors);
     }
@@ -52,7 +52,7 @@ class AddressTest extends \PHPUnit_Framework_TestCase
             ->method('save')
             ->will($this->returnValue(true));
 
-        $test = new \OEModule\PASAPI\resources\Address('v1');
+        $test = new \OEModule\PASAPI\resources\Address('V1');
         $this->assertTrue($test->saveModel($address));
     }
 }
