@@ -47,8 +47,6 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         'subtitle' => array('text' => 'Total eyes: {{eyes}}, ±0.5D: {{0.5}}%, ±1D: {{1}}%'),
         'xAxis' => array(
             'title' => array('text' => 'PPOR - POR (Dioptres)'),
-            'min'=>-10,
-            'max'=>10
         ),
         'yAxis' => array(
             'title' => array('text' => 'Number of eyes'),
@@ -141,15 +139,25 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         $data = $this->queryData($this->surgeon, $this->from, $this->to, $this->months, $this->procedures);
         $count = array();
 
+        $this->padCategories();
+        
+        // fill up the array with 0, have to send 0 to highcharts if there is no data
+        foreach($this->graphConfig['xAxis']['categories'] as $xCat){
+            $count["$xCat"] = 0;
+        }
+        
         foreach ($data as $row) {
             $side = 'right';
             if ($row['eye_id'] === '1') {
                 $side = 'left';
             }
             $diff = (float)$row['predicted_refraction'] - ((float)$row[$side . '_sphere'] - ((float)$row[$side . '_cylinder'] / 2));
-            $diff = number_format($diff, 1);
+                          
+            $diff = round($diff * 2) / 2;
 
-            if($diff >= -10 && $diff <= 10) {
+            $diff = array_search($diff, $this->graphConfig['xAxis']['categories']);
+
+            if($diff >= 0 && $diff <= (count($this->graphConfig['xAxis']['categories'])-1)) {
                 if (!array_key_exists("$diff", $count)) {
                     $count["$diff"] = 0;
                 }
@@ -158,7 +166,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         }
 
         ksort($count, SORT_NUMERIC);
-        //$this->padCategories();
+        
         $dataSet = array();
         foreach ($count as $category => $total) {
             $rowTotal = array((float)$category, $total);
@@ -173,22 +181,13 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
      */
     protected function padCategories()
     {
-        $top = array_pop($this->graphConfig['xAxis']['categories']);
-        $bottom = array_shift($this->graphConfig['xAxis']['categories']);
-        $bigger = $bottom;
-        if(abs($top) > abs($bottom)){
-            $bigger = $top;
-        }
-
-        $this->graphConfig['xAxis']['categories'] = array();
-        $upperLimit = abs($bigger);
-        $lowerLimit = 0 - $upperLimit;
-        for($i = $lowerLimit; $i <= $upperLimit; $i += 0.5 ){
-            $this->graphConfig['xAxis']['categories'][] = "$i";
+        for($i = -10; $i <= 10; $i += 0.5 ){
+            $this->graphConfig['xAxis']['categories'][] = $i;
         }
         
         $this->graphConfig['xAxis']['min'] = 0;
         $this->graphConfig['xAxis']['max'] = count($this->graphConfig['xAxis']['categories'])-1;
+
     }
 
     /**

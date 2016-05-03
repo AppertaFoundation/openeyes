@@ -211,17 +211,17 @@
                 chart = OpenEyes.Dash.reports['OEModule_OphCiExamination_components_RefractiveOutcomeReport'];
 
             for(var i = 0; i < data.length; i++){
-                total += data[i];
+                total += parseInt(data[i], 10);
                 if(chart.axes[0].categories[i] < -1.0 || chart.axes[0].categories[i] > 1.0){
-                    plusOrMinusOne += data[i];
+                    plusOrMinusOne += parseFloat(data[i], 10);
                 }
                 if(chart.axes[0].categories[i] < -0.5 || chart.axes[0].categories[i] > 0.5){
-                    plusOrMinusHalf += data[i];
+                    plusOrMinusHalf += parseFloat(data[i], 10);
                 }
             }
 
-            plusOrMinusOnePercent = (plusOrMinusOne / total) * 100;
-            plusOrMinusHalfPercent = (plusOrMinusHalf / total) * 100;
+            plusOrMinusOnePercent = plusOrMinusOnePercent ? ( (plusOrMinusOne / total) * 100 ) : 0;
+            plusOrMinusHalfPercent = plusOrMinusHalfPercent ? ( (plusOrMinusHalf / total) * 100 ) : 0;
             chart.setTitle(null, {text: 'Total eyes: ' + total + ', ±0.5D: ' + plusOrMinusOnePercent + '%, ±1D: ' + plusOrMinusHalfPercent + '%'});
         },
         'CataractComplicationsReport': function(data){
