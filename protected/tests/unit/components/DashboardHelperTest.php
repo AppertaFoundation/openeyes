@@ -104,4 +104,14 @@ class DashboardHelperTest extends PHPUnit_Framework_TestCase
         $test->sortable = true;
         $this->assertEquals('first rendersecond render', $test->render());
     }
+
+    public function testRender_Class()
+    {
+        $test = new DashboardHelper(array(
+            array(
+                'class' => 'TestDashboardClass',
+                'method' => ''
+            )
+        ));
+    }
 }

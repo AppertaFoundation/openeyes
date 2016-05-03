@@ -112,8 +112,15 @@ class DashboardHelper {
                     $renders[] = $module->renderDashboard();
                 }
                 
-            } else if ( isset($item['title']) && isset($item['content']) ) {
+            }
+            else if ( isset($item['title']) && isset($item['content']) ) {
                 $renders[] = $item;
+            }
+            else if ( isset($item['class']) && isset($item['method']) ) {
+                $class_name = $item['class'];
+                $method = $item['method'];
+                $obj = new $class_name;
+                $renders[] = $obj->$method();
             }
             else {
                 throw new Exception("Invalid dashboard configuration, module or static content definition required");
