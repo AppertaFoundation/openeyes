@@ -103,3 +103,9 @@ For example, if the code AX is coming through from the message sender for ethnic
 
 1. Create an XpathRemap object with Xpath /Patient/EthnicGroup and name "Ethnic Group Remapping".
 1. Click on the value count (which will be zero initially), and add an entry with input AX, and output A.
+
+## Running tests
+
+The tests will currently only run within the context of the wider OpenEyes implementation, and relies on the Rest Test Case in core (which in turn relies on guzzle - this may not be present if you haven't got the right composer setup in place). 
+
+__NB__ You need to be using the shell wrapper to phpunit to ensure everything is bootstrapped appropriately.
