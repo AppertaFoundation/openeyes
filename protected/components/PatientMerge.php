@@ -77,14 +77,14 @@ class PatientMerge
     {
         //columns to be compared in patient table
         $columns = array(
-            'dob', 'gender', /*'hos_num',*/ 'nhs_num', 'date_of_death', 'ethnic_group_id', 'contact_id',
+            'dob', 'gender', /*'hos_num', 'nhs_num', 'date_of_death', 'ethnic_group_id', 'contact_id', */
         );
         
         $conflict = array();
         
         foreach($columns as $column){
             if( $primary->$column !== $secondary->$column ){
-                Yii::app()->user->setFlash('warning.merge_error', "Patients have different personal details.");
+                Yii::app()->user->setFlash("warning.merge_error_$column", "Patients have different personal details : $column");
                 $conflict[] = array(
                     'column' => $column,
                     'primary' => $primary->$column,
@@ -109,13 +109,24 @@ class PatientMerge
         
         $isMerged = false;
         
+        // Compare personal details, now we only check DOB and Gender
         $isPatientConflict = $this->comparePatientDetails($this->primaryPatient, $this->secondaryPatient);
         
-        if ( $isPatientConflict && $this->updateEpisodes($this->primaryPatient, $this->secondaryPatient) ){
+        // Update episodes
+        if ( !$isPatientConflict && $this->updateEpisodes($this->primaryPatient, $this->secondaryPatient) ){
             $isMerged = true;
         }
 
-        if(!$isPatientConflict && $isMerged) {
+        // Update allergyAssignments
+        $isMerged = $isMerged && $this->updateAllergyAssignments($this->primaryPatient->id, $this->secondaryPatient->allergyAssignments);
+ 
+        // Updates riskAssignments
+        $isMerged = $isMerged && $this->updateRiskAssignments($this->primaryPatient->id, $this->secondaryPatient->riskAssignments);
+        
+        // Update previousOperations
+        $isMerged = $isMerged && $this->updatePreviousOperations($this->primaryPatient->id, $this->secondaryPatient->previousOperations);
+        
+        if($isMerged) {
             $secondaryPatient = $this->secondaryPatient;
 
             $secondaryPatient->deleted = 1;
@@ -124,7 +135,7 @@ class PatientMerge
                 Audit::add('Patient Merge', "Patient id: " . $this->secondaryPatient->id . " flagged as deleted.");
                 $isMerged = $isMerged && true;
             } else {
-                throw new Exception("Failed to save Patient: " . print_r($secondaryPatient->errors, true));
+                throw new Exception("Failed to update Patient: " . print_r($secondaryPatient->errors, true));
             }      
         }
         
@@ -132,7 +143,7 @@ class PatientMerge
     }
     
     public function updateEpisodes(Patient $primaryPatient, Patient $secondaryPatient)
-    {        
+    {
         $result = false;
         $primaryHasEpisodes = $primaryPatient->episodes;
         $secondaryHasEpisodes = $secondaryPatient->episodes;
@@ -161,16 +172,68 @@ class PatientMerge
                 }
                 
                 $this->updateEpisodesPatientId($primaryPatient->id, $secondaryPatient->episodes);
-                
+            }
+        }
+    }
+    
+    /**
+     * Updates the patient id in the Allergy Assigment
+     * 
+     * @param int $newPatientId Primary patient id
+     * @param array of AR $allergies
+     * @throws Exception AllergyAssigment cannot be saved
+     */
+    public function updateAllergyAssignments($newPatientId, $allergies)
+    {
+        foreach($allergies as $allergy){
+            $msg = "AllergyAssignment " . $allergy->id ." moved from patient " . $allergy->patient_id . " to " . $newPatientId;
+            $allergy->patient_id = $newPatientId;
+            if( $allergy->save() ){
+                 Audit::add('Patient Merge', $msg);
+            } else {
+                throw new Exception("Failed to update AllergyAssigment: " . $allergy->id . " " . print_r($allergy->errors, true));
+            }
+        }
+    }
+    
+    /**
+     * Updates patient id in Risk Assignment
+     * 
+     * @param int $newPatientId
+     * @param array of AR $risks
+     * @throws Exception Failed to save RiskAssigment
+     */
+    public function updateRiskAssignments($newPatientId, $risks)
+    {
+        foreach($risks as $risk){
+            $msg = "RiskAssignment " . $risk->id ." moved from patient " . $risk->patient_id . " to " . $newPatientId;
+            $risk->patient_id = $newPatientId;
+            if( $risk->save() ){
+                Audit::add('Patient Merge', $msg);
+            } else {
+                throw new Exception("Failed to update RiskAssigment: " . $risk->id . " " . print_r($risk->errors, true));
+            }
+        }
+    }
+    
+    public function updatePreviousOperations($newPatientId, $previousOperations)
+    {
+        foreach($previousOperations as $previousOperation){
+            $msg = "Previous Operation " . $previousOperation->id ." moved from Patient " . $previousOperation->patient_id . " to " . $newPatientId;
+            $previousOperation->patient_id = $newPatientId;
+            if( $previousOperation->save() ){
+                Audit::add('Patient Merge', $msg);
+            } else {
+                throw new Exception("Failed to update Previous Operation: " . $previousOperation->id . " " . print_r($previousOperation->errors, true));
             }
         }
     }
     
     /**
      * Assign episodes to a new paient id
-     * @param type $patientId
-     * @param type $episodes
-     * @return boolean
+     * @param int $patientId the primary Patient Id
+     * @param array of AR $episodes
+     * @return boolean true if no error thrown
      */
     public function updateEpisodesPatientId($newPatientId, $episodes){
         

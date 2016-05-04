@@ -184,7 +184,7 @@ class PatientMergeRequest extends BaseActiveRecordVersioned
                 $text = 'Not processed';
                 break;
             case self::STATUS_CONFLICT:
-                $text = "Has Conclit";
+                $text = "Conflict";
                 break;
             case self::STATUS_MERGED:
                 $text = "Merged";
