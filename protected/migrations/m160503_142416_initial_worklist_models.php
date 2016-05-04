@@ -2,74 +2,80 @@
 
 class m160503_142416_initial_worklist_models extends OEMigration
 {
-	public function up()
-	{
-		$this->createOETable('worklist_type',
-			array(
-				'id' => 'pk',
-				'name' => 'varchar(32) NOT NULL',
-				'scheduled' => 'boolean default false'
-			),
-			true
-		);
+    public function up()
+    {
+        $this->createOETable('worklist',
+            array(
+                'id' => 'pk',
+                'name' => 'varchar(255) NOT NULL',
+                'description' => 'text',
+                'start' => 'datetime',
+                'end' => 'datetime',
+                'scheduled' => 'boolean default false NOT NULL',
+                'deleted' => 'boolean default false NOT NULL'
+            ),
+            true
+        );
 
-		$this->createOETable('worklist',
-			array(
-				'id' => 'pk',
-				'name' => 'varchar(255) NOT NULL',
-				'description' => 'text',
-				'start' => 'datetime',
-				'end' => 'datetime',
-				'worklist_type_id' => 'int(11) NOT NULL',
-				'CONSTRAINT `worklist_type_f_id_fk` FOREIGN KEY (`worklist_type_id`) REFERENCES `worklist_type` (`id`)',
-			),
-			true
-		);
+        $this->createOETable('worklist_attribute',
+            array(
+                'id' => 'pk',
+                'worklist_id' => 'int(11) NOT NULL',
+                'name' => 'varchar(255) NOT NULL',
+                'display_order' => 'int(3) NOT NULL',
+                'UNIQUE KEY `worklist_attribute_unique_order` (`display_order`)'
+            ));
+        $this->addForeignKey('worklist_attribute_wl_fk', 'worklist_attribute', 'worklist_id', 'worklist', 'id', 'CASCADE');
 
-		$this->createOETable('worklist_attribute',
-			array(
-				'id' => 'pk',
-				'worklist_id' => 'int(11) NOT NULL',
-				'name' => 'varchar(255) NOT NULL',
-				'display_order' => 'int(3) NOT NULL',
-				'UNIQUE KEY `worklist_attribute_unique_order` (`display_order`)'
-			));
-		$this->addForeignKey('worklist_attribute_wl_fk', 'worklist_attribute', 'worklist_id', 'worklist', 'id', 'CASCADE');
+        $this->createOETable('worklist_display_context',
+            array(
+                'id' => 'pk',
+                'worklist_id' => 'int(11) NOT NULL',
+                'firm_id' => 'int(10) unsigned',
+                'subspecialty_id' => 'int(10) unsigned',
+                'site_id' => 'int(10) unsigned',
+            ));
 
-		$this->createOETable('worklist_display_context',
-			array(
-				'id' => 'pk',
-				'worklist_id' => 'int(11) NOT NULL',
-				'firm_id' => 'int(10) unsigned',
-				'subspecialty_id' => 'int(10) unsigned',
-				'site_id' => 'int(10) unsigned',
-			));
+        $this->addForeignKey('worklist_dispctxt_wl_fk', 'worklist_display_context', 'worklist_id', 'worklist', 'id', 'CASCADE');
+        $this->addForeignKey('worklist_dispctxt_firm_fk', 'worklist_display_context', 'firm_id', 'firm', 'id', 'CASCADE');
+        $this->addForeignKey('worklist_dispctxt_subspecialty_fk', 'worklist_display_context', 'subspecialty_id', 'subspecialty', 'id', 'CASCADE');
+        $this->addForeignKey('worklist_dispctxt_site_fk', 'worklist_display_context', 'site_id', 'site', 'id', 'CASCADE');
 
-		$this->addForeignKey('worklist_dispctxt_wl_fk', 'worklist_display_context', 'worklist_id', 'worklist', 'id', 'CASCADE');
-		$this->addForeignKey('worklist_dispctxt_firm_fk', 'worklist_display_context', 'firm_id', 'firm', 'id', 'CASCADE');
-		$this->addForeignKey('worklist_dispctxt_subspecialty_fk', 'worklist_display_context', 'subspecialty_id', 'subspecialty', 'id', 'CASCADE');
-		$this->addForeignKey('worklist_dispctxt_site_fk', 'worklist_display_context', 'site_id', 'site', 'id', 'CASCADE');
+        // TODO: implement user privileges
 
-		// NOTE not currently implement user privileges
-		
-	}
+        $this->createOETable('worklist_patient',
+            array(
+                'id' => 'pk',
+                'worklist_id' => 'int(11) NOT NULL',
+                'patient_id' => 'int(10) unsigned NOT NULL',
+                'when' => 'datetime',
+            ), true);
 
-	public function down()
-	{
-		$this->dropOETable('worklist_display_context');
-		$this->dropOETable('worklist_attribute');
-		$this->dropOETable('worklist', true);
-		$this->dropOETable('worklist_type', true);
-	}
+        $this->addForeignKey('worklist_patient_wl_fk', 'worklist_patient', 'worklist_id', 'worklist', 'id');
+        $this->addForeignKey('worklist_patient_p_fk', 'worklist_patient', 'patient_id', 'patient', 'id');
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+        $this->createOETable('worklist_patient_attribute',
+            array(
+                'id' => 'pk',
+                'worklist_attribute_id' => 'int(11) NOT NULL',
+                'worklist_patient_id' => 'int(11) NOT NULL',
+                'attribute_value' => 'string'
+            ),
+            true);
 
-	public function safeDown()
-	{
-	}
-	*/
+        $this->addForeignKey('worklist_patient_attribute_attr_fk', 'worklist_patient_attribute',
+            'worklist_attribute_id', 'worklist_attribute', 'id');
+        $this->addForeignKey('worklist_patient_attribute_pat_fk', 'worklist_patient_attribute', 'worklist_patient_id',
+            'worklist_patient', 'id');
+    }
+
+    public function down()
+    {
+        $this->dropOETable('worklist_patient_attribute', true);
+        $this->dropOETable('worklist_patient', true);
+        $this->dropOETable('worklist_display_context');
+        $this->dropOETable('worklist_attribute');
+        $this->dropOETable('worklist', true);
+    }
+
 }
