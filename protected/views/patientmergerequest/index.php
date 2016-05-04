@@ -96,7 +96,8 @@
                     }
                     
                     if($data->status == $data::STATUS_CONFLICT){
-                        $html = CHtml::link('edit conflict',array('patientmergerequest/editConflict', 'id' => $data->id), array('class' => 'warning button small right'));
+                        //$html = CHtml::link('edit conflict',array('patientmergerequest/editConflict', 'id' => $data->id), array('class' => 'warning button small right'));
+                        $html = '<span class="mergedOn">NOT MERGED - Manual merge needed.</span>';
                     }
                     
                     if($data->status == $data::STATUS_MERGED){
