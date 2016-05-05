@@ -79,7 +79,9 @@ class UniqueCodes extends BaseActiveRecord
 	 */
 	public function attributeLabels()
 	{
-		return array();
+		return array(
+                    
+                );
 	}
 
 	public function behaviors()
