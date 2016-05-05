@@ -21,14 +21,33 @@
  *
  * Class WorklistManager
  */
-class WorklistManager
+class WorklistManager extends CComponent
 {
-
+    /**
+     * @var array
+     */
     protected $errors = [];
 
-    public function getPatientForWorklist(Patient $patient, Worklist $worklist)
+    /**
+     * @param Worklist $worklist
+     * @param Patient $patient
+     * @return array|CActiveRecord|mixed|null
+     */
+    public function getWorklistPatient(Worklist $worklist, Patient $patient)
     {
         return WorklistPatient::model()->findByAttributes(array('patient_id' => $patient->id, 'worklist_id' => $worklist->id));
+    }
+
+    /**
+     * Wrapper for starting a transaction
+     *
+     * @return CDbTransaction|null
+     */
+    protected function startTransaction()
+    {
+        return Yii::app()->db->getCurrentTransaction() === null
+            ? Yii::app()->db->beginTransaction()
+            : null;
     }
 
     /**
@@ -45,14 +64,12 @@ class WorklistManager
         $this->reset();
 
 
-        if ($this->getPatientForWorklist($patient, $worklist)) {
+        if ($this->getWorklistPatient($worklist, $patient)) {
             $this->addError("Patient is already on the given worklist.");
             return false;
         }
 
-        $transaction = Yii::app()->db->getCurrentTransaction() === null
-            ? Yii::app()->db->beginTransaction()
-            : false;
+        $transaction = $this->startTransaction();
 
         $valid_attributes = array();
         foreach ($worklist->mapping_attributes as $attr)
@@ -92,21 +109,33 @@ class WorklistManager
         return true;
     }
 
-    protected function addError($message)
-    {
-        $this->errors[] = $message;
-    }
-
+    /**
+     * Internal method to reset state for error tracking
+     */
     protected function reset()
     {
         $this->errors = array();
     }
 
+    /**
+     * @param string $message
+     */
+    protected function addError($message)
+    {
+        $this->errors[] = $message;
+    }
+
+    /**
+     * @return array
+     */
     public function getErrors()
     {
         return $this->errors;
     }
 
+    /**
+     * @return bool
+     */
     public function hasErrors()
     {
         return !empty($this->errors);
