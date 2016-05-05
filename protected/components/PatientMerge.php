@@ -149,7 +149,7 @@ class PatientMerge
         // if primary has no episodes than we just assign the secondary patient's episodes to the primary
         if( !$primaryHasEpisodes && $secondaryHasEpisodes){
             // this case is fine, we can assign the episodes from secondary to primary
-            $result = $this->updateEpisodesPatientId($primaryPatient->id, $secondaryPatient->episodes);
+            $this->updateEpisodesPatientId($primaryPatient->id, $secondaryPatient->episodes);
                     
         } else if ( $primaryHasEpisodes && !$secondaryHasEpisodes ){
             // primary has episodes but secondary has not, nothing to do here
@@ -165,7 +165,7 @@ class PatientMerge
 
                     if( $secondary_subspecialty == $primary_subspecialty ){
                         // Both primary and secondary patient have episodes
-                        $result = $result && $this->updateEventsEpisodeId($primaryEpisode->id, $secondaryEpisode);
+                        $this->updateEventsEpisodeId($primaryEpisode->id, $secondaryEpisode);
                     }
                 }
                 
