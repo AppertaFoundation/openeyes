@@ -109,13 +109,12 @@ class PatientMerge
         
         $isMerged = false;
         
+        /** This is handled in the controller, we ask extra confirmation if there are conflicts in personal details **/
         // Compare personal details, now we only check DOB and Gender
-        $isPatientConflict = $this->comparePatientDetails($this->primaryPatient, $this->secondaryPatient);
+        //$isPatientConflict = $this->comparePatientDetails($this->primaryPatient, $this->secondaryPatient);
         
-        // Update episodes
-        if ( !$isPatientConflict && $this->updateEpisodes($this->primaryPatient, $this->secondaryPatient) ){
-            $isMerged = true;
-        }
+        // Update Episode
+        $isMerged = $this->updateEpisodes($this->primaryPatient, $this->secondaryPatient);
 
         // Update allergyAssignments
         $isMerged = $isMerged && $this->updateAllergyAssignments($this->primaryPatient->id, $this->secondaryPatient->allergyAssignments);
