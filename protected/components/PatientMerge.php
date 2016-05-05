@@ -165,7 +165,7 @@ class PatientMerge
 
                     if( $secondary_subspecialty == $primary_subspecialty ){
                         // Both primary and secondary patient have episodes
-                        $this->updateEventsEpisodeId($primaryEpisode->id, $secondaryEpisode);
+                        $this->updateEventsEpisodeId($primaryEpisode->id, $secondaryEpisode->events);
                     }
                 }
                 
