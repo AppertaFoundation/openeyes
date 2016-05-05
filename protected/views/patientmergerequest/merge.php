@@ -35,7 +35,7 @@ $form = $this->beginWidget('CActiveForm', array(
         <div class="large-3 column large-centered text-right large-offset-9">
             <section class="box dashboard">
             <?php 
-                echo CHtml::link('list',array('patientmergerequest/index'), array('class' => 'button small'));
+                echo CHtml::link('list',array('patientMergeRequest/index'), array('class' => 'button small'));
             ?>
             </section>
         </div>
@@ -56,7 +56,7 @@ $form = $this->beginWidget('CActiveForm', array(
 
         <div class="large-5 column">
             <h2 class="primaryPatient">Primary</h2>
-            <?php $this->renderPartial('_patient_details', array(
+            <?php $this->renderPartial('//patientmergerequest/_patient_details', array(
                     'model' => $model, 
                     'type' => 'primary',
                 ))?>

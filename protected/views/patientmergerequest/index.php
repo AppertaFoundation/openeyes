@@ -15,7 +15,7 @@
         <div class="large-3 column large-centered text-right large-offset-9">
             <section class="box dashboard">
             <?php 
-                echo CHtml::link('create',array('patientmergerequest/create'), array('class' => 'button small secondary'));
+                echo CHtml::link('create',array('patientMergeRequest/create'), array('class' => 'button small secondary'));
             ?>
             </section>
         </div>
@@ -92,11 +92,11 @@
                     $html = "";
                 
                     if($data->status == $data::STATUS_NOT_PROCESSED){
-                        $html = CHtml::link('merge',array('patientmergerequest/merge', 'id' => $data->id), array('class' => 'warning button small right'));
+                        $html = CHtml::link('merge',array('patientMergeRequest/merge', 'id' => $data->id), array('class' => 'warning button small right'));
                     }
                     
                     if($data->status == $data::STATUS_CONFLICT){
-                        //$html = CHtml::link('edit conflict',array('patientmergerequest/editConflict', 'id' => $data->id), array('class' => 'warning button small right'));
+                        //$html = CHtml::link('edit conflict',array('patientMergeRequest/editConflict', 'id' => $data->id), array('class' => 'warning button small right'));
                         $html = '<span class="mergedOn">NOT MERGED - Manual merge needed.</span>';
                     }
                     
