@@ -126,7 +126,7 @@ class PatientMergeRequestController extends BaseController
         
         $this->render('//patientmergerequest/merge', array(
             'model' => $mergeRequest,
-            'personalDetailsConflictConfirm' => $personalDetailsConflictConfirm
+            'personalDetailsConflictConfirm' => $personalDetailsConflictConfirm['isConflict']
         ));
     }
     
