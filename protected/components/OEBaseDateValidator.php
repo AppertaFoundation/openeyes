@@ -18,6 +18,7 @@
 abstract class OEBaseDateValidator extends CValidator
 {
     public $include_time = false;
+    public $time_required = false;
 
     public function parseDateValue($value)
     {
@@ -26,7 +27,8 @@ abstract class OEBaseDateValidator extends CValidator
             switch (count($matches))
             {
                 case 1:
-                    $res = DateTime::createFromFormat('Y-m-d H:i:s', $value . ' 00:00:00');
+                    if (!$this->time_required)
+                        $res = DateTime::createFromFormat('Y-m-d H:i:s', $value . ' 00:00:00');
                     break;
                 case 2:
                     $res = DateTime::createFromFormat('Y-m-d H:i:s', $value . ':00');

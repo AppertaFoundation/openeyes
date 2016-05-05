@@ -15,25 +15,14 @@
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-/**
- * Class Worklist
- *
- * The followings are the available columns in table:
- * @property integer $id
- * @property string $name
- * @property boolean $scheduled
- *
- * @property WorklistAttribute[] $mapping_attributes
- */
-class Worklist extends BaseActiveRecordVersionedSoftDelete
+class WorklistDisplayContext extends BaseActiveRecord
 {
     /**
      * @return string the associated database table name
      */
     public function tableName()
     {
-        return 'worklist';
+        return 'worklist_display_context';
     }
 
     /**
@@ -44,17 +33,10 @@ class Worklist extends BaseActiveRecordVersionedSoftDelete
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name', 'required'),
-            array('name', 'length', 'max'=>100),
-            array('description', 'length', 'max' => 1000),
-            array('start', 'OEDateValidator'),
-            array('end', 'OEDateValidator'),
-            array('start', 'OEDateCompareValidator', 'compareAttribute' => 'end', 'allowEmpty' => true,
-                'operator' => '<=', 'message' => '{attribute} must be on or before {compareAttribute}'),
-            array('scheduled', 'boolean', 'allowEmpty' => false),
+            array('worklist_id', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, name, start, end, description, scheduled', 'safe', 'on'=>'search'),
+            array('id, worklist_id, site_id, subspecialty_id, firm_id', 'safe', 'on'=>'search'),
         );
     }
 
@@ -66,7 +48,10 @@ class Worklist extends BaseActiveRecordVersionedSoftDelete
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'mapping_attributes' => array(self::HAS_MANY, 'WorklistAttribute', 'worklist_id')
+            'worklist' => array(self::BELONGS_TO, 'Worklist', 'worklist_id'),
+            'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
+            'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
+            'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id')
         );
     }
 
@@ -76,8 +61,6 @@ class Worklist extends BaseActiveRecordVersionedSoftDelete
     public function attributeLabels()
     {
         return array(
-            'start' => 'Start Date',
-            'end' => 'End Date',
         );
     }
 
@@ -93,11 +76,10 @@ class Worklist extends BaseActiveRecordVersionedSoftDelete
         $criteria=new CDbCriteria;
 
         $criteria->compare('id',$this->id,true);
-        $criteria->compare('name',$this->name,true);
-        $criteria->compare('description',$this->description,true);
-        $criteria->compare('scheduled', $this->scheduled, true);
-
-        // TODO: proper support for date/time search
+        $criteria->compare('worklist_id',$this->worklist_id,true);
+        $criteria->compare('site_id',$this->site_id,true);
+        $criteria->compare('subspecialty_id',$this->subspecialty_id,true);
+        $criteria->compare('firm_id',$this->firm_id,true);
 
         return new CActiveDataProvider(get_class($this), array(
             'criteria'=>$criteria,

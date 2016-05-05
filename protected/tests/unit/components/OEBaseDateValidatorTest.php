@@ -43,6 +43,31 @@ class OEBaseDateValidatorTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected_result, $validator->parseDateValue($value));
     }
+
+    public function datetimeProvider()
+    {
+        return array(
+            array('2015-02-29', false),
+            array('2016-02-29', false),
+            array('2015-01-12 10:61', false),
+            array('2015-01-12 10:54', new DateTime('2015-01-12 10:54')),
+            array('2015-01-12 07:54', new DateTime('2015-01-12 07:54')),
+            array('2015-01-12 07:54:12', new DateTime('2015-01-12 07:54:12')),
+            array('2015-01-12 07:54:2', false),
+            array('garbage', false)
+        );
+    }
+
+    /**
+     * @dataProvider datetimeProvider
+     */
+    public function test_datetime_parsing($value, $expected_result)
+    {
+        $validator = new TestOEBaseDateValidator();
+        $validator->time_required = true;
+
+        $this->assertEquals($expected_result, $validator->parseDateValue($value));
+    }
 }
 
 class TestOEBaseDateValidator extends OEBaseDateValidator

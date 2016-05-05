@@ -17,23 +17,23 @@
  */
 
 /**
- * Class Worklist
+ * Class WorklistPatient
  *
- * The followings are the available columns in table:
- * @property integer $id
- * @property string $name
- * @property boolean $scheduled
+ * @property integer $patient_id
+ * @property integer $worklist_id
+ * @property datetime $when
  *
- * @property WorklistAttribute[] $mapping_attributes
+ * @property Patient $patient
+ * @property Worklist $worklist
  */
-class Worklist extends BaseActiveRecordVersionedSoftDelete
+class WorklistPatient extends BaseActiveRecordVersioned
 {
     /**
      * @return string the associated database table name
      */
     public function tableName()
     {
-        return 'worklist';
+        return 'worklist_patient';
     }
 
     /**
@@ -44,17 +44,11 @@ class Worklist extends BaseActiveRecordVersionedSoftDelete
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name', 'required'),
-            array('name', 'length', 'max'=>100),
-            array('description', 'length', 'max' => 1000),
-            array('start', 'OEDateValidator'),
-            array('end', 'OEDateValidator'),
-            array('start', 'OEDateCompareValidator', 'compareAttribute' => 'end', 'allowEmpty' => true,
-                'operator' => '<=', 'message' => '{attribute} must be on or before {compareAttribute}'),
-            array('scheduled', 'boolean', 'allowEmpty' => false),
+            array('patient_id, worklist_id', 'required'),
+            array('when', 'OEDatetimeValidator', 'allowEmpty' => true),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, name, start, end, description, scheduled', 'safe', 'on'=>'search'),
+            array('id, patient_id, worklist_id', 'safe', 'on'=>'search'),
         );
     }
 
@@ -66,7 +60,8 @@ class Worklist extends BaseActiveRecordVersionedSoftDelete
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'mapping_attributes' => array(self::HAS_MANY, 'WorklistAttribute', 'worklist_id')
+            'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
+            'worklist' => array(self::BELONGS_TO, 'Worklist', 'worklist_id')
         );
     }
 
@@ -76,8 +71,9 @@ class Worklist extends BaseActiveRecordVersionedSoftDelete
     public function attributeLabels()
     {
         return array(
-            'start' => 'Start Date',
-            'end' => 'End Date',
+            'when' => 'When',
+            'patient' => 'Patient',
+            'Worklist' => 'Worklist'
         );
     }
 
@@ -93,14 +89,14 @@ class Worklist extends BaseActiveRecordVersionedSoftDelete
         $criteria=new CDbCriteria;
 
         $criteria->compare('id',$this->id,true);
-        $criteria->compare('name',$this->name,true);
-        $criteria->compare('description',$this->description,true);
-        $criteria->compare('scheduled', $this->scheduled, true);
+        $criteria->compare('worklist_id',$this->worklist_id,true);
+        $criteria->compare('patient_id',$this->patient_id,true);
 
-        // TODO: proper support for date/time search
+        // TODO: proper support for date/time "when" search
 
         return new CActiveDataProvider(get_class($this), array(
             'criteria'=>$criteria,
         ));
     }
+
 }
