@@ -143,7 +143,6 @@ class PatientMerge
     
     public function updateEpisodes(Patient $primaryPatient, Patient $secondaryPatient)
     {
-        $result = false;
         $primaryHasEpisodes = $primaryPatient->episodes;
         $secondaryHasEpisodes = $secondaryPatient->episodes;
         
@@ -154,7 +153,7 @@ class PatientMerge
                     
         } else if ( $primaryHasEpisodes && !$secondaryHasEpisodes ){
             // primary has episodes but secondary has not, nothing to do here
-            $result = true;
+
         } else {
             // Both have episodes, we have to compare the subspecialties
             
@@ -173,6 +172,9 @@ class PatientMerge
                 $this->updateEpisodesPatientId($primaryPatient->id, $secondaryPatient->episodes);
             }
         }
+        
+        // if the save() functions not throwing errors than we can just return true
+        return true;
     }
     
     /**
@@ -193,6 +195,8 @@ class PatientMerge
                 throw new Exception("Failed to update AllergyAssigment: " . $allergyAssignment->id . " " . print_r($allergyAssignment->errors, true));
             }
         }
+        
+        return true;
     }
     
     /**
@@ -213,6 +217,8 @@ class PatientMerge
                 throw new Exception("Failed to update RiskAssigment: " . $riskAssignment->id . " " . print_r($riskAssignment->errors, true));
             }
         }
+        
+        return true;
     }
     
     public function updatePreviousOperations($newPatientId, $previousOperations)
@@ -226,6 +232,8 @@ class PatientMerge
                 throw new Exception("Failed to update Previous Operation: " . $previousOperation->id . " " . print_r($previousOperation->errors, true));
             }
         }
+        
+        return true;
     }
     
     /**
@@ -275,5 +283,7 @@ class PatientMerge
         } else {
             throw new Exception("Failed to save Episode: " . print_r($episode->errors, true));
         }
+        
+        return true;
     }
 }
