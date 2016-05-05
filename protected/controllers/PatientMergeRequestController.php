@@ -55,7 +55,7 @@ class PatientMergeRequestController extends BaseController
     {
         $dataProvider = new CActiveDataProvider('PatientMergeRequest');
         
-        $this->render('index', array(
+        $this->render('//patientmergerequest/index', array(
             'dataProvider'=>$dataProvider,
         ));
     }
@@ -71,7 +71,7 @@ class PatientMergeRequestController extends BaseController
             }
         }
        
-        $this->render('create',array(
+        $this->render('//patientmergerequest/create',array(
             'model' => $model,
         ));
     }
@@ -82,7 +82,7 @@ class PatientMergeRequestController extends BaseController
      */
     public function actionView($id)
     {
-        $this->render('view', array(
+        $this->render('//patientmergerequest/view', array(
             'model' => $this->loadModel($id),
         ));
     }
@@ -124,7 +124,7 @@ class PatientMergeRequestController extends BaseController
             }
         } 
         
-        $this->render('merge', array(
+        $this->render('//patientmergerequest/merge', array(
             'model' => $mergeRequest,
             'personalDetailsConflictConfirm' => $personalDetailsConflictConfirm
         ));
