@@ -34,7 +34,7 @@ $(document).ready(function(){
     dialog = $("#patient_merge_search").autocomplete({
         minLength: 0,
         source: function(request, response) {
-            $.getJSON('/patientmergerequest/search', {
+            $.getJSON('/patientMergeRequest/search', {
                     term : request.term,
                     ajax: 'ajax',
             }, response);
