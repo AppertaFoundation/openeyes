@@ -41,9 +41,10 @@ class OEDateCompareValidatorTest extends PHPUnit_Framework_TestCase
 
         $validator->compareAttribute = 'compareAttr';
 
-        $obj = new StdClass;
-        $obj->compareAttr = $compare_attr;
-        $obj->attr = $attr;
+        $obj = ComponentStubGenerator::generate('CActiveRecord', array(
+            'compareAttr' => $compare_attr,
+            'attr' => $attr
+        ));
 
         if ($expect_message) {
             $validator->expects($this->at(2))
@@ -75,6 +76,108 @@ class OEDateCompareValidatorTest extends PHPUnit_Framework_TestCase
     public function test_validateAttributeFailure()
     {
         $this->doValidateAttribute(true);
+    }
+
+    public function test_validateAttributeEmptyValue()
+    {
+        $obj = ComponentStubGenerator::generate('CActiveRecord', array(
+            'compareAttr' => 'misc',
+            'attr' => ''
+        ));
+
+        $validator = $this->getMockBuilder('OEDateCompareValidator')
+            ->disableOriginalConstructor()
+            ->setMethods(array('addError'))
+            ->getMock();
+
+        $validator->message = "test message";
+
+        $validator->expects($this->at(0))
+            ->method('addError');
+
+        $validator->validateAttribute($obj, 'attr');
+    }
+
+    public function test_validateAttributeEmptyValue_allowed()
+    {
+        $obj = ComponentStubGenerator::generate('CActiveRecord', array(
+            'compareAttr' => 'misc',
+            'attr' => ''
+        ));
+
+        $validator = $this->getMockBuilder('OEDateCompareValidator')
+            ->disableOriginalConstructor()
+            ->setMethods(array('addError'))
+            ->getMock();
+
+        $validator->allowEmpty = true;
+        $validator->message = "test message";
+
+        $validator->expects($this->never())
+            ->method('addError');
+
+        $validator->validateAttribute($obj, 'attr');
+    }
+
+    public function test_validateAttributeCompareEmptyValue()
+    {
+        $obj = ComponentStubGenerator::generate('CActiveRecord', array(
+            'compareAttr' => '',
+            'attr' => 'misc'
+        ));
+
+        $validator = $this->getMockBuilder('OEDateCompareValidator')
+            ->disableOriginalConstructor()
+            ->setMethods(array('addError'))
+            ->getMock();
+
+        $validator->message = "test message";
+
+        $validator->expects($this->at(0))
+            ->method('addError');
+
+        $validator->validateAttribute($obj, 'attr');
+    }
+
+    public function test_validateAttributeCompareEmptyValue_allowed()
+    {
+        $obj = ComponentStubGenerator::generate('CActiveRecord', array(
+            'compareAttr' => '',
+            'attr' => 'misc'
+        ));
+
+        $validator = $this->getMockBuilder('OEDateCompareValidator')
+            ->disableOriginalConstructor()
+            ->setMethods(array('addError'))
+            ->getMock();
+
+        $validator->allowCompareEmpty = true;
+        $validator->message = "test message";
+
+        $validator->expects($this->never())
+            ->method('addError');
+
+        $validator->validateAttribute($obj, 'attr');
+    }
+
+    public function test_validateAttributeInvalidValues()
+    {
+        $obj = ComponentStubGenerator::generate('CActiveRecord', array(
+            'compareAttr' => 'misc',
+            'attr' => 'misc'
+        ));
+
+        $validator = $this->getMockBuilder('OEDateCompareValidator')
+            ->disableOriginalConstructor()
+            ->setMethods(array('addError'))
+            ->getMock();
+
+        $validator->message = "test message";
+
+        $validator->expects($this->at(0))
+            ->method('addError');
+
+        $validator->validateAttribute($obj, 'attr');
     }
 
     public function compareProvider()

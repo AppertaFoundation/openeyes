@@ -15,6 +15,8 @@
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
+
 class OEBaseDateValidatorTest extends PHPUnit_Framework_TestCase
 {
 
@@ -28,6 +30,7 @@ class OEBaseDateValidatorTest extends PHPUnit_Framework_TestCase
             array('2015-01-12 07:54', new DateTime('2015-01-12 07:54')),
             array('2015-01-12 07:54:12', new DateTime('2015-01-12 07:54:12')),
             array('2015-01-12 07:54:2', false),
+            array('garbage', false)
         );
     }
 
@@ -36,8 +39,14 @@ class OEBaseDateValidatorTest extends PHPUnit_Framework_TestCase
      */
     public function test_date_parsing($value, $expected_result)
     {
-        $validator = new OEBaseDateValidator();
+        $validator = new TestOEBaseDateValidator();
 
         $this->assertEquals($expected_result, $validator->parseDateValue($value));
     }
 }
+
+class TestOEBaseDateValidator extends OEBaseDateValidator
+{
+    public function validateAttribute($object, $attribute) {}
+}
+

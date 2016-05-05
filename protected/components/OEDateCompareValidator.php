@@ -27,12 +27,12 @@ class OEDateCompareValidator extends OEBaseDateValidator
      * @var boolean whether the attribute value can be null or empty. Defaults to false.
      * If this is true, it means the attribute is considered valid when it is empty.
      */
-    public $allowEmpty=false;
+    public $allowEmpty = false;
     /**
      * @var boolean whether the compare attribute value can be null or empty. Defaults to false.
-     * If this is true, it means the attribute is considered valid when it is empty.
+     * If this is true, it means the attribute is considered valid when the compare value is empty.
      */
-    public $allowCompareEmpty=false;
+    public $allowCompareEmpty = false;
     /**
      * @var string the operator for comparison. Defaults to '='.
      * The followings are valid operators:
@@ -51,10 +51,28 @@ class OEDateCompareValidator extends OEBaseDateValidator
 
     public function validateAttribute($object, $attribute)
     {
-        $value = $this->parseDateValue($object->$attribute);
-        $compareValue = $this->parseDateValue($object->{$this->compareAttribute});
+        $message = null;
 
-        $message = $this->doComparison($value, $compareValue);
+        if (!$object->$attribute) {
+            if (!$this->allowEmpty)
+                $message = $this->message ?: Yii::t('yii', '{attribute} cannot be empty.');
+        }
+        elseif (!$object->{$this->compareAttribute}) {
+            if (!$this->allowCompareEmpty)
+                $message = $this->message ?: Yii::t('yii', '{compareAttribute} cannot be empty.');
+        }
+        else {
+            $value = $this->parseDateValue($object->$attribute);
+            $compareValue = $this->parseDateValue($object->{$this->compareAttribute});
+
+            if ($value && $compareValue) {
+                $message = $this->doComparison($value, $compareValue);
+            }
+            else {
+                $message = $this->message ?: Yii::t('yii', '{attribute} and {compareAttribute} must be dates for comparison');
+            }
+        }
+
         if ($message)
             $this->addError($object, $attribute, $message, array(
                 '{compareAttribute}'=> $object->getAttributeLabel($this->compareAttribute),
