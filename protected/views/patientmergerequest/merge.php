@@ -69,11 +69,29 @@ $form = $this->beginWidget('CActiveForm', array(
     <hr>
     <div class="row">
         <div class="large-5 column">Comment:
-            <?php echo CHTML::activeTextArea($model, "comment"); ?>
+            <?php echo CHTML::activeTextArea($model, "comment", array('disabled'=>'disabled')); ?>
         </div>
 
     </div>
-
+    <br>
+    <?php if($personalDetailsConflictConfirm):?>
+        <div class="row">
+            <div class="large-10 large-offset-1 column alert-box with-icon warning">
+                <h2> Personal details are conflicting. </h2>
+                Please confirm you selected the right patients. <br>
+                Note, the primary patient's personal details will <strong>NOT</strong> be overwritten.<br><br>
+                <label>
+                <?php echo CHTML::checkBox('PatientMergeRequest[personalDetailsConflictConfirm]', false); ?> I hereby confirm that I selected the right patients.</label>
+            </div>
+        </div>
+    
+        <div class="row">
+            <div class="large-12 column text-left">
+            </div>
+        </div>
+    
+    <?php endif; ?>
+    
     <div class="row">
         <div class="large-5 column text-right large-offset-7">
             <div class="row">

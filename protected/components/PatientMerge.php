@@ -136,7 +136,7 @@ class PatientMerge
                 $isMerged = $isMerged && true;
             } else {
                 throw new Exception("Failed to update Patient: " . print_r($secondaryPatient->errors, true));
-            }      
+            }
         }
         
         return $isMerged;
@@ -183,15 +183,15 @@ class PatientMerge
      * @param array of AR $allergies
      * @throws Exception AllergyAssigment cannot be saved
      */
-    public function updateAllergyAssignments($newPatientId, $allergies)
+    public function updateAllergyAssignments($newPatientId, $allergyAssignments)
     {
-        foreach($allergies as $allergy){
-            $msg = "AllergyAssignment " . $allergy->id ." moved from patient " . $allergy->patient_id . " to " . $newPatientId;
-            $allergy->patient_id = $newPatientId;
-            if( $allergy->save() ){
-                 Audit::add('Patient Merge', $msg);
+        foreach($allergyAssignments as $allergyAssignment){
+            $msg = "AllergyAssignment " . $allergyAssignment->id ." moved from patient " . $allergyAssignment->patient_id . " to " . $newPatientId;
+            $allergyAssignment->patient_id = $newPatientId;
+            if( $allergyAssignment->save() ){
+                Audit::add('Patient Merge', $msg);
             } else {
-                throw new Exception("Failed to update AllergyAssigment: " . $allergy->id . " " . print_r($allergy->errors, true));
+                throw new Exception("Failed to update AllergyAssigment: " . $allergyAssignment->id . " " . print_r($allergyAssignment->errors, true));
             }
         }
     }
@@ -203,15 +203,15 @@ class PatientMerge
      * @param array of AR $risks
      * @throws Exception Failed to save RiskAssigment
      */
-    public function updateRiskAssignments($newPatientId, $risks)
+    public function updateRiskAssignments($newPatientId, $riskAssignments)
     {
-        foreach($risks as $risk){
-            $msg = "RiskAssignment " . $risk->id ." moved from patient " . $risk->patient_id . " to " . $newPatientId;
-            $risk->patient_id = $newPatientId;
-            if( $risk->save() ){
+        foreach($riskAssignments as $riskAssignment){
+            $msg = "RiskAssignment " . $riskAssignment->id ." moved from patient " . $riskAssignment->patient_id . " to " . $newPatientId;
+            $riskAssignment->patient_id = $newPatientId;
+            if( $riskAssignment->save() ){
                 Audit::add('Patient Merge', $msg);
             } else {
-                throw new Exception("Failed to update RiskAssigment: " . $risk->id . " " . print_r($risk->errors, true));
+                throw new Exception("Failed to update RiskAssigment: " . $riskAssignment->id . " " . print_r($riskAssignment->errors, true));
             }
         }
     }
@@ -276,8 +276,5 @@ class PatientMerge
         } else {
             throw new Exception("Failed to save Episode: " . print_r($episode->errors, true));
         }
-        
-        
-        
     }
 }
