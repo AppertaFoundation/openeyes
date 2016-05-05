@@ -157,19 +157,31 @@ class PatientMerge
         } else {
             // Both have episodes, we have to compare the subspecialties
             
+            
             foreach($secondaryPatient->episodes as $secondaryEpisode){
                 $secondary_subspecialty = $secondaryEpisode->getSubspecialtyID();
 
+                $isSameSubspecialty = false;
                 foreach($primaryHasEpisodes as $primaryEpisode){
                     $primary_subspecialty = $primaryEpisode->getSubspecialtyID();
 
                     if( $secondary_subspecialty == $primary_subspecialty ){
                         // Both primary and secondary patient have episodes
                         $this->updateEventsEpisodeId($primaryEpisode->id, $secondaryEpisode->events);
+                        $isSameSubspecialty = true;
                     }
                 }
                 
-                $this->updateEpisodesPatientId($primaryPatient->id, $secondaryPatient->episodes);
+                if( !$isSameSubspecialty ){
+                    $this->updateEpisodesPatientId($primaryPatient->id, array($secondaryEpisode));
+                } else {
+                    $secondaryEpisode->deleted = 1;
+                    if( $secondaryEpisode->save()){
+                        Audit::add('Patient Merge', "Episode " . $secondaryEpisode->id . "marked as deleted, events moved under the primary patient's same firm episode.");
+                    } else {
+                        throw new Exception("Failed to update Episode: " . $secondaryEpisode->id . " " . print_r($secondaryEpisode->errors, true));
+                    }
+                }
             }
         }
         
