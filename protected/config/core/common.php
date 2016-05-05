@@ -315,7 +315,7 @@ return array(
 						'restricted' => array('NOD Export'),
 					'patientmergerequest' => array(
 						'title' => 'Patient Merge',
-						'uri' => 'patientmergerequest/index',
+						'uri' => 'patientMergeRequest/index',
 						'position' => 6,
 						'restricted' => array('admin'),
 					),
