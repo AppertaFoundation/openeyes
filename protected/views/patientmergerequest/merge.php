@@ -43,7 +43,7 @@ $form = $this->beginWidget('CActiveForm', array(
     <div class="row">
         <div class="large-5 column">
             <h2 class="secondaryPatient">Secondary</h2>
-            <?php $this->renderPartial('_patient_details', array(
+            <?php $this->renderPartial('//patientmergerequest/_patient_details', array(
                     'model' => $model, 
                     'type' => 'secondary',
                 ))?>
