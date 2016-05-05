@@ -105,7 +105,7 @@ class PatientMergeRequestController extends BaseController
                 
             // if personal details are not conflictin than its fine, 
             // but if there is a conflict we need the extra confirmation
-            if( !$personalDetailsConflictConfirm || ($personalDetailsConflictConfirm && isset($_POST['PatientMergeRequest']['personalDetailsConflictConfirm'])) ){
+            if( !$personalDetailsConflictConfirm['isConflict'] || ($personalDetailsConflictConfirm['isConflict'] && isset($_POST['PatientMergeRequest']['personalDetailsConflictConfirm'])) ){
 
                 // Load data from PatientMergeRequest AR record
                 $mergeHandler->load($mergeRequest);
