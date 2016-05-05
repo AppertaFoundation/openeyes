@@ -115,6 +115,9 @@ class PatientMerge
         
         // Update Episode
         $isMerged = $this->updateEpisodes($this->primaryPatient, $this->secondaryPatient);
+        
+// Update legacy episodes
+// $isMerged = $isMerged && $this->updatelegacyEpisodes($this->primaryPatient->id, $this->secondaryPatient->previousOperations);
 
         // Update allergyAssignments
         $isMerged = $isMerged && $this->updateAllergyAssignments($this->primaryPatient->id, $this->secondaryPatient->allergyAssignments);
@@ -284,16 +287,6 @@ class PatientMerge
             } else {
                 throw new Exception("Failed to save Event: " . print_r($event->errors, true));
             }
-        }
-        
-        $episode = Episode::model()->findByPk($event->episode_id);
-        $episode->deleted = 1;
-        
-        if( $episode->save() ){
-            Audit::add('Patient Merge', "Episode deleted: " . $episode->id );
-            return true;
-        } else {
-            throw new Exception("Failed to save Episode: " . print_r($episode->errors, true));
         }
         
         return true;
