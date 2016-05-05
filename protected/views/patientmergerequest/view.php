@@ -12,8 +12,8 @@
         <div class="large-3 column large-centered text-right large-offset-9">
             <section class="box dashboard">
             <?php 
-                echo CHtml::link('list',array('patientmergerequest/index'), array('class' => 'button small'));
-                echo CHtml::link('create',array('patientmergerequest/create'), array('class' => 'button small secondary'));
+                echo CHtml::link('list',array('patientMergeRequest/index'), array('class' => 'button small'));
+                echo CHtml::link('create',array('patientMergeRequest/create'), array('class' => 'button small secondary'));
             ?>
             </section>
         </div>

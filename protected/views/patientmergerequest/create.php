@@ -25,7 +25,7 @@
             <div class="large-3 column large-centered text-right large-offset-9">
                 <section class="box dashboard">
                 <?php 
-                    echo CHtml::link('list',array('patientmergerequest/index'), array('class' => 'button small'));
+                    echo CHtml::link('list',array('patientMergeRequest/index'), array('class' => 'button small'));
                 ?>
                 </section>
             </div>
@@ -33,15 +33,15 @@
 
         <div class="row">
             <div class="large-7 column large-centered">
-                <?php $this->renderPartial('_patient_search',array('patient_type' => 'patient1'))?>
+                <?php $this->renderPartial('//patientmergerequest/_patient_search',array('patient_type' => 'patient1'))?>
             </div>
         </div>
-        <form id="grid_header_form" action="<?php echo Yii::app()->createUrl('/patientmergerequest/create')?>" method="post">
+        <form id="grid_header_form" action="<?php echo Yii::app()->createUrl('/patientMergeRequest/create')?>" method="post">
             <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
             <div class="row">
                 <div class="large-5 column">
                     <h2 class="secondaryPatient">Secondary</h2>
-                    <?php $this->renderPartial('_patient_details', array('model' => $model, 'type' => 'secondary'))?>
+                    <?php $this->renderPartial('//patientmergerequest/_patient_details', array('model' => $model, 'type' => 'secondary'))?>
                 </div>  
 
                 <div class="large-2 column text-center">
@@ -52,7 +52,7 @@
 
                 <div class="large-5 column">
                     <h2 class="primaryPatient">Primary</h2>
-                    <?php $this->renderPartial('_patient_details', array('model' => $model, 'type' => 'primary'))?>
+                    <?php $this->renderPartial('//patientmergerequest/_patient_details', array('model' => $model, 'type' => 'primary'))?>
                 </div>
 
             </div>
