@@ -96,28 +96,37 @@ class PatientMergeRequestController extends BaseController
     {
         $mergeRequest = $this->loadModel($id);
         
-        if(isset($_POST['PatientMergeRequest']) && isset($_POST['PatientMergeRequest']['confirm'])) {
-            
-            $mergeHandler = new PatientMerge;
-            
-            // Load data from PatientMergeRequest AR record
-            $mergeHandler->load($mergeRequest);
-            
-            if($mergeHandler->merge()){
-                $mergeRequest->status = $mergeRequest::STATUS_MERGED;
-                $mergeRequest->save();
-                Audit::add('Patient Merge', "Merge Request " . $mergeRequest->secondaryPatient->hos_num . " INTO " . $mergeRequest->primaryPatient->hos_num . "(hos_num) successfully done.");
-                $this->redirect(array('view', 'id' => $mergeRequest->id));
-            } else {
-                $mergeRequest->status = $mergeRequest::STATUS_CONFLICT;
-                $mergeRequest->save();
-                Yii::app()->user->setFlash('warning.search_error', "Merge failed.");
-                $this->redirect(array('index'));
+        $mergeHandler = new PatientMerge;
+        
+        // if the personal details are conflictng (DOB and Gender at the moment) we need extra confirmation
+        $personalDetailsConflictConfirm = $mergeHandler->comparePatientDetails($mergeRequest->primaryPatient, $mergeRequest->secondaryPatient);
+        
+        if(isset($_POST['PatientMergeRequest']) && isset($_POST['PatientMergeRequest']['confirm'])){
+                
+            // if personal details are not conflictin than its fine, 
+            // but if there is a conflict we need the extra confirmation
+            if( !$personalDetailsConflictConfirm || ($personalDetailsConflictConfirm && isset($_POST['PatientMergeRequest']['personalDetailsConflictConfirm'])) ){
+
+                // Load data from PatientMergeRequest AR record
+                $mergeHandler->load($mergeRequest);
+
+                if($mergeHandler->merge()){
+                    $mergeRequest->status = $mergeRequest::STATUS_MERGED;
+                    $mergeRequest->save();
+                    Audit::add('Patient Merge', "Merge Request " . $mergeRequest->secondaryPatient->hos_num . " INTO " . $mergeRequest->primaryPatient->hos_num . "(hos_num) successfully done.");
+                    $this->redirect(array('view', 'id' => $mergeRequest->id));
+                } else {
+                    $mergeRequest->status = $mergeRequest::STATUS_CONFLICT;
+                    $mergeRequest->save();
+                    Yii::app()->user->setFlash('warning.search_error', "Merge failed.");
+                    $this->redirect(array('index'));
+                }
             }
         } 
         
         $this->render('merge', array(
-            'model' => $mergeRequest
+            'model' => $mergeRequest,
+            'personalDetailsConflictConfirm' => $personalDetailsConflictConfirm
         ));
     }
     
