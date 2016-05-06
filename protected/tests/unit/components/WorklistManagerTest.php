@@ -36,8 +36,155 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($manager->hasErrors());
     }
 
-    public function test_adding_patient_to_worklist()
+    public function test_adding_patient_to_worklist_fails_when_worklistpatient_does_not_save()
     {
-        $this->markTestIncomplete();
+        $manager = $this->getMockBuilder('WorklistManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getInstanceForClass'))
+            ->getMock();
+
+        $wp = $this->getMockBuilder('WorklistPatient')
+            ->disableOriginalConstructor()
+            ->setMethods(array('save'))
+            ->getMock();
+
+        $wp->expects($this->any())
+            ->method('save')
+            ->will($this->returnValue(false));
+
+        $manager->expects($this->once())
+            ->method('getInstanceForClass')
+            ->will($this->returnValue($wp));
+
+        $patient = new Patient();
+        $worklist = new Worklist();
+
+        $this->assertFalse($manager->addPatientToWorklist($patient, $worklist));
+        $this->assertTrue($manager->hasErrors());
+    }
+
+    public function test_adding_patient_to_worklist_succeeds()
+    {
+        $manager = $this->getMockBuilder('WorklistManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getInstanceForClass'))
+            ->getMock();
+
+        $wp = $this->getMockBuilder('WorklistPatient')
+            ->disableOriginalConstructor()
+            ->setMethods(array('save'))
+            ->getMock();
+
+        $wp->expects($this->any())
+            ->method('save')
+            ->will($this->returnValue(true));
+
+        $manager->expects($this->once())
+            ->method('getInstanceForClass')
+            ->will($this->returnValue($wp));
+
+        $patient = new Patient();
+        $worklist = new Worklist();
+
+        $this->assertTrue($manager->addPatientToWorklist($patient, $worklist));
+        $this->assertFalse($manager->hasErrors());
+    }
+
+    public function test_adding_patient_to_worklist_with_attributes_succeeds()
+    {
+        $patient = new Patient();
+        $worklist = new Worklist();
+        $when = '11:30';
+        $attributes = array(
+            'key1' => 'val1',
+            'key2' => 'val2'
+        );
+
+        $manager = $this->getMockBuilder('WorklistManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getInstanceForClass', 'startTransaction', 'setAttributesForWorklistPatient'))
+            ->getMock();
+
+        $wp = $this->getMockBuilder('WorklistPatient')
+            ->disableOriginalConstructor()
+            ->setMethods(array('save'))
+            ->getMock();
+
+        $wp->expects($this->any())
+            ->method('save')
+            ->will($this->returnValue(true));
+
+        $transaction = $this->getMockBuilder('CDbTransaction')
+            ->disableOriginalConstructor()
+            ->setMethods(array('commit'))
+            ->getMock();
+
+        $transaction->expects($this->once())
+            ->method('commit');
+
+        $manager->expects($this->at(0))
+            ->method('startTransaction')
+            ->will($this->returnValue($transaction));
+
+        $manager->expects($this->at(1))
+            ->method('getInstanceForClass')
+            ->with('WorklistPatient')
+            ->will($this->returnValue($wp));
+
+        $manager->expects($this->at(2))
+            ->method('setAttributesForWorklistPatient')
+            ->with($wp, $attributes)
+            ->will($this->returnValue(true));
+
+        $this->assertTrue($manager->addPatientToWorklist($patient, $worklist, $when, $attributes));
+
+        $this->assertFalse($manager->hasErrors());
+        $this->assertEquals($when, $wp->when);
+    }
+
+    public function test_setAttributesForWorklistPatient()
+    {
+        $attributes = array(
+            'key1' => 'val1',
+            'key2' => 'val2'
+        );
+
+        $manager = $this->getMockBuilder('WorklistManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getInstanceForClass', 'startTransaction'))
+            ->getMock();
+
+        $wpa = $this->getMockBuilder('WorklistPatientAttribute')
+            ->disableOriginalConstructor()
+            ->setMethods(array('save'))
+            ->getMock();
+
+        $wpa->expects($this->any())
+            ->method('save')
+            ->will($this->returnValue(true));
+
+        $manager->expects($this->any())
+            ->method('getInstanceForClass')
+            ->with('WorklistPatientAttribute')
+            ->will($this->returnValue($wpa));
+
+        $mapping_attributes = array();
+        foreach ($attributes as $k => $v) {
+            $wla = new WorklistAttribute();
+            $wla->name = $k;
+            $mapping_attributes[] = $wla;
+        }
+        $w = ComponentStubGenerator::generate('Worklist', array(
+            'mapping_attributes' => $mapping_attributes
+        ));
+
+        $wp = new WorklistPatient();
+        $wp->worklist = $w;
+
+        $manager->setAttributesForWorklistPatient($wp,array(
+            'key1' => 'val1',
+            'key2' => 'val2'
+        ));
+
     }
 }

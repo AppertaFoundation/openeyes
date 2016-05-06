@@ -28,14 +28,14 @@ class WorklistManager extends CComponent
      */
     protected $errors = [];
 
-    /**
-     * @param Worklist $worklist
-     * @param Patient $patient
-     * @return array|CActiveRecord|mixed|null
-     */
-    public function getWorklistPatient(Worklist $worklist, Patient $patient)
+    protected function getModelForClass($class)
     {
-        return WorklistPatient::model()->findByAttributes(array('patient_id' => $patient->id, 'worklist_id' => $worklist->id));
+        return $class::model();
+    }
+
+    protected function getInstanceForClass($class)
+    {
+        return new $class();
     }
 
     /**
@@ -48,6 +48,52 @@ class WorklistManager extends CComponent
         return Yii::app()->db->getCurrentTransaction() === null
             ? Yii::app()->db->beginTransaction()
             : null;
+    }
+
+    /**
+     * @param Worklist $worklist
+     * @param Patient $patient
+     * @return array|CActiveRecord|mixed|null
+     */
+    public function getWorklistPatient(Worklist $worklist, Patient $patient)
+    {
+        return $this->getModelForClass('WorklistPatient')->findByAttributes(array('patient_id' => $patient->id, 'worklist_id' => $worklist->id));
+    }
+
+    /**
+     * @param WorklistPatient $worklist_patient
+     * @param array $attributes
+     */
+    public function setAttributesForWorklistPatient(WorklistPatient $worklist_patient, $attributes = array())
+    {
+        $transaction = $this->startTransaction();
+        $worklist = $worklist_patient->worklist;
+
+        try {
+            $valid_attributes = array();
+            foreach ($worklist->mapping_attributes as $attr)
+                $valid_attributes[$attr->name] = $attr->id;
+
+            foreach ($attributes as $attr => $val) {
+                if (!array_key_exists($attr, $valid_attributes))
+                    throw new Exception("Unrecognised attribute {$attr} for {$worklist->name}");
+                $wlattr = $this->getInstanceForClass('WorklistPatientAttribute');
+                $wlattr->attributes = array(
+                    'worklist_patient_id' => $worklist_patient->id,
+                    'worklist_attribute_id' => $valid_attributes[$attr],
+                    'attribute_value' => $val
+                );
+                if (!$wlattr->save())
+                    throw new Exception("Unable to save attribute {$attr} for patient worklist.");
+            }
+        }
+        catch (Exception $e)
+        {
+            $this->addError($e->getMessage());
+            if ($transaction)
+                $transaction->rollback();
+            throw $e;
+        }
     }
 
     /**
@@ -71,31 +117,19 @@ class WorklistManager extends CComponent
 
         $transaction = $this->startTransaction();
 
-        $valid_attributes = array();
-        foreach ($worklist->mapping_attributes as $attr)
-            $valid_attributes[$attr->name] = $attr->id;
-
         try {
-            $wp = new WorklistPatient();
+            $wp = $this->getInstanceForClass('WorklistPatient');
             $wp->patient_id = $patient->id;
             $wp->worklist_id = $worklist->id;
             if ($when)
                 $wp->when = $when;
 
-            $wp->save();
+            if (!$wp->save())
+                throw new Exception("Unable to save patient to worklist.");
 
-            foreach ($attributes as $attr => $val)
-            {
-                if (!array_key_exists($attr, $valid_attributes))
-                    throw new Exception("Unrecognised attribute {$attr} for {$worklist->name}");
-                $wlattr = new WorklistPatientAttribute();
-                $wlattr->attributes = array(
-                    'worklist_patient_id' => $wp->id,
-                    'worklist_attribute_id' => $valid_attributes[$attr],
-                    'attribute_value' => $val
-                );
-                $wlattr->save();
-            }
+            if (count($attributes))
+                $this->setAttributesForWorklistPatient($wp, $attributes);
+
             if ($transaction)
                 $transaction->commit();
         }
@@ -122,7 +156,8 @@ class WorklistManager extends CComponent
      */
     protected function addError($message)
     {
-        $this->errors[] = $message;
+        if (!in_array($message, $this->errors))
+            $this->errors[] = $message;
     }
 
     /**
