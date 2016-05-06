@@ -62,6 +62,108 @@ class WorklistManager extends CComponent
             : null;
     }
 
+    protected function getCurrentUser()
+    {
+        return Yii::app()->user;
+    }
+
+    public function addWorklistToUserDisplay($worklist, $user, $display_order = null)
+    {
+        if (is_null($display_order)) {
+            $criteria = new CDbCriteria();
+            $criteria->addColumnCondition(array('user_id' => $user->id));
+            $criteria->select = 'max(display_order) as maxDisplay';
+            $row = $this->getModelForClass('WorklistDisplayOrder')->find($criteria);
+
+            $max_display_order = $row['maxDisplay'];
+            $display_order = $max_display_order ? $max_display_order+1 : 1;
+        }
+
+        $wdo = $this->getInstanceForClass('WorklistDisplayOrder');
+        $wdo->worklist_id = $worklist->id;
+        $wdo->user_id = $user->id;
+        $wdo->display_order = $display_order;
+
+        return $wdo->save();
+    }
+
+
+    /**
+     * @param Worklist $worklist
+     * @param null $user
+     * @param bool $display
+     * @return bool
+     * @throws CDbException
+     */
+    public function createWorklistForUser(Worklist $worklist, $user = null, $display = true)
+    {
+        if (!$user) {
+            $user = $this->getCurrentUser();
+        }
+
+        $transaction = $this->startTransaction();
+
+        try {
+            $worklist->created_user_id = $user->id;
+            $worklist->last_modified_user_id = $user->id;
+
+            // save call must force the parent class to accept the set owner id
+            if (!$worklist->save(true, null, true)) {
+                // TODO: handle different structure for errors
+                throw new Exception("Could not create Worklist.");
+            }
+
+            if ($display)
+                if (!$this->addWorklistToUserDisplay($worklist, $user))
+                    throw new Exception("Could not set new worklist display order.");
+
+            if ($transaction)
+                $transaction->commit();
+
+        }
+        catch (Exception $e) {
+            $this->addError($e->getMessage());
+            if ($transaction)
+                $transaction->rollback();
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param $user
+     * @return array
+     */
+    public function getCurrentManualWorklistsForUser($user)
+    {
+        $worklists = array();
+        foreach ($this->getModelForClass('WorklistDisplayOrder')->with('worklist')->findAll(array(
+            'condition' => 'user_id=:uid',
+            'order' => 'display_order asc',
+            'params' => array(':uid' => $user->id))) as $wdo) {
+            $worklists[] = $wdo->worklist;
+        }
+
+        return $worklists;
+    }
+
+    /**
+     * @param $user
+     * @return mixed
+     */
+    public function getAvailableManualWorklistsForUser($user)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->addNotInCondition('id', array_map(
+            function($v) {return $v->id;},
+            $this->getCurrentManualWorklistsForUser($user)));
+        $criteria->addColumnCondition(array('created_user_id' => $user->id));
+        $criteria->order = 'created_date desc';
+
+        return $this->getModelForClass('Worklist')->findAll($criteria);
+    }
+
     /**
      * @param Worklist $worklist
      * @param Patient $patient
@@ -75,6 +177,7 @@ class WorklistManager extends CComponent
     /**
      * @param WorklistPatient $worklist_patient
      * @param array $attributes
+     * @return bool
      * @throws CDbException
      * @throws Exception
      */
@@ -100,6 +203,9 @@ class WorklistManager extends CComponent
                 if (!$wlattr->save())
                     throw new Exception("Unable to save attribute {$attr} for patient worklist.");
             }
+
+            if ($transaction)
+                $transaction->commit();
         }
         catch (Exception $e)
         {

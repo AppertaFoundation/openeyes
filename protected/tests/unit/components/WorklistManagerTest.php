@@ -17,6 +17,21 @@
  */
 class WorklistManagerTest extends PHPUnit_Framework_TestCase
 {
+    protected function getTransactionMock($methods = array())
+    {
+        $transaction = $this->getMockBuilder('CDbTransaction')
+            ->disableOriginalConstructor()
+            ->setMethods($methods)
+            ->getMock();
+
+        foreach ($methods as $method) {
+            $transaction->expects($this->once())
+                ->method($method);
+        }
+
+        return $transaction;
+    }
+
     public function test_cannot_add_duplicate_patient_to_worklist()
     {
         $manager = $this->getMockBuilder('WorklistManager')
@@ -114,13 +129,7 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
             ->method('save')
             ->will($this->returnValue(true));
 
-        $transaction = $this->getMockBuilder('CDbTransaction')
-            ->disableOriginalConstructor()
-            ->setMethods(array('commit'))
-            ->getMock();
-
-        $transaction->expects($this->once())
-            ->method('commit');
+        $transaction = $this->getTransactionMock(array('commit'));
 
         $manager->expects($this->at(0))
             ->method('startTransaction')
@@ -157,6 +166,11 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
             ->setMethods(array('getInstanceForClass', 'startTransaction', 'setAttributesForWorklistPatient'))
             ->getMock();
 
+        $transaction = $this->getTransactionMock(array('rollback'));
+        $manager->expects($this->at(0))
+            ->method('startTransaction')
+            ->will($this->returnValue($transaction));
+
         $wp = $this->getMockBuilder('WorklistPatient')
             ->disableOriginalConstructor()
             ->setMethods(array('save'))
@@ -165,18 +179,6 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $wp->expects($this->any())
             ->method('save')
             ->will($this->returnValue(true));
-
-        $transaction = $this->getMockBuilder('CDbTransaction')
-            ->disableOriginalConstructor()
-            ->setMethods(array('rollback'))
-            ->getMock();
-
-        $transaction->expects($this->once())
-            ->method('rollback');
-
-        $manager->expects($this->at(0))
-            ->method('startTransaction')
-            ->will($this->returnValue($transaction));
 
         $manager->expects($this->at(1))
             ->method('getInstanceForClass')
@@ -204,6 +206,12 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->setMethods(array('getInstanceForClass', 'startTransaction'))
             ->getMock();
+
+        $transaction = $this->getTransactionMock(array('commit'));
+
+        $manager->expects($this->at(0))
+            ->method('startTransaction')
+            ->will($this->returnValue($transaction));
 
         $wpa = $this->getMockBuilder('WorklistPatientAttribute')
             ->disableOriginalConstructor()
@@ -238,6 +246,5 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         )));
 
         $this->assertFalse($manager->hasErrors());
-
     }
 }

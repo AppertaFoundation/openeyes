@@ -316,6 +316,11 @@ return array(
 					),
 				)
 			),
+			'worklist' => array(
+				'title' => 'Worklists',
+				'uri' => '/worklist',
+				'position' => 3,
+			),
 			'logout' => array(
 				'title' => 'Logout',
 				'uri' => 'site/logout',

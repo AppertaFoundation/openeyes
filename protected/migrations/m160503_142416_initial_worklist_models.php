@@ -67,10 +67,23 @@ class m160503_142416_initial_worklist_models extends OEMigration
             'worklist_attribute_id', 'worklist_attribute', 'id');
         $this->addForeignKey('worklist_patient_attribute_pat_fk', 'worklist_patient_attribute', 'worklist_patient_id',
             'worklist_patient', 'id');
+
+        $this->createOETable('worklist_display_order',
+            array(
+                'id' => 'pk',
+                'worklist_id' => 'int(11) NOT NULL',
+                'user_id' => 'int(10) unsigned NOT NULL',
+                'display_order' => 'int(3) NOT NULL'
+            ));
+
+        $this->addForeignKey('worklist_disporder_wl_fk', 'worklist_display_order', 'worklist_id', 'worklist', 'id');
+        $this->addForeignKey('worklist_disporder_u_fk', 'worklist_display_order', 'user_id', 'user', 'id');
+
     }
 
     public function down()
     {
+        $this->dropOETable('worklist_display_order');
         $this->dropOETable('worklist_patient_attribute', true);
         $this->dropOETable('worklist_patient', true);
         $this->dropOETable('worklist_display_context');
