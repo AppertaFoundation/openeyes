@@ -28,11 +28,23 @@ class WorklistManager extends CComponent
      */
     protected $errors = [];
 
+    /**
+     * Abstraction for getting model instance of class
+     *
+     * @param $class
+     * @return mixed
+     */
     protected function getModelForClass($class)
     {
         return $class::model();
     }
 
+    /**
+     * Abstraction for getting instance of class
+     *
+     * @param $class
+     * @return mixed
+     */
     protected function getInstanceForClass($class)
     {
         return new $class();
@@ -63,6 +75,8 @@ class WorklistManager extends CComponent
     /**
      * @param WorklistPatient $worklist_patient
      * @param array $attributes
+     * @throws CDbException
+     * @throws Exception
      */
     public function setAttributesForWorklistPatient(WorklistPatient $worklist_patient, $attributes = array())
     {
@@ -92,8 +106,10 @@ class WorklistManager extends CComponent
             $this->addError($e->getMessage());
             if ($transaction)
                 $transaction->rollback();
-            throw $e;
+            return false;
         }
+
+        return true;
     }
 
     /**
@@ -128,7 +144,8 @@ class WorklistManager extends CComponent
                 throw new Exception("Unable to save patient to worklist.");
 
             if (count($attributes))
-                $this->setAttributesForWorklistPatient($wp, $attributes);
+                if (!$this->setAttributesForWorklistPatient($wp, $attributes))
+                    throw new Exception("Could not set attributes for patient on worklist");
 
             if ($transaction)
                 $transaction->commit();

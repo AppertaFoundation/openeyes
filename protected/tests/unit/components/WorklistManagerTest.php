@@ -142,6 +142,57 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($when, $wp->when);
     }
 
+    public function test_adding_patient_to_worklist_with_attributes_handles_attribute_failure()
+    {
+        $patient = new Patient();
+        $worklist = new Worklist();
+        $when = '11:30';
+        $attributes = array(
+            'key1' => 'val1',
+            'key2' => 'val2'
+        );
+
+        $manager = $this->getMockBuilder('WorklistManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getInstanceForClass', 'startTransaction', 'setAttributesForWorklistPatient'))
+            ->getMock();
+
+        $wp = $this->getMockBuilder('WorklistPatient')
+            ->disableOriginalConstructor()
+            ->setMethods(array('save'))
+            ->getMock();
+
+        $wp->expects($this->any())
+            ->method('save')
+            ->will($this->returnValue(true));
+
+        $transaction = $this->getMockBuilder('CDbTransaction')
+            ->disableOriginalConstructor()
+            ->setMethods(array('rollback'))
+            ->getMock();
+
+        $transaction->expects($this->once())
+            ->method('rollback');
+
+        $manager->expects($this->at(0))
+            ->method('startTransaction')
+            ->will($this->returnValue($transaction));
+
+        $manager->expects($this->at(1))
+            ->method('getInstanceForClass')
+            ->with('WorklistPatient')
+            ->will($this->returnValue($wp));
+
+        $manager->expects($this->at(2))
+            ->method('setAttributesForWorklistPatient')
+            ->with($wp, $attributes)
+            ->will($this->returnValue(false));
+
+        $this->assertFalse($manager->addPatientToWorklist($patient, $worklist, $when, $attributes));
+
+        $this->assertTrue($manager->hasErrors());
+    }
+
     public function test_setAttributesForWorklistPatient()
     {
         $attributes = array(
@@ -181,10 +232,12 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $wp = new WorklistPatient();
         $wp->worklist = $w;
 
-        $manager->setAttributesForWorklistPatient($wp,array(
+        $this->assertTrue($manager->setAttributesForWorklistPatient($wp,array(
             'key1' => 'val1',
             'key2' => 'val2'
-        ));
+        )));
+
+        $this->assertFalse($manager->hasErrors());
 
     }
 }
