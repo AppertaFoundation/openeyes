@@ -47,10 +47,9 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         'subtitle' => array('text' => 'Total eyes: {{eyes}}, ±0.5D: {{0.5}}%, ±1D: {{1}}%'),
         'xAxis' => array(
             'title' => array('text' => 'PPOR - POR (Dioptres)'),
-            'categories' => array('-0.5', '0', '0.5'),
         ),
         'yAxis' => array(
-            'title' => array('text' => 'Number of patients'),
+            'title' => array('text' => 'Number of eyes'),
         ),
         'tooltip' => array(
             'headerFormat' => '<b>Refractive Outcome</b><br>',
@@ -140,30 +139,37 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         $data = $this->queryData($this->surgeon, $this->from, $this->to, $this->months, $this->procedures);
         $count = array();
 
+        $this->padCategories();
+        
+        // fill up the array with 0, have to send 0 to highcharts if there is no data
+        foreach($this->graphConfig['xAxis']['categories'] as $xCat){
+            $count["$xCat"] = 0;
+        }
+        
         foreach ($data as $row) {
             $side = 'right';
             if ($row['eye_id'] === '1') {
                 $side = 'left';
             }
             $diff = (float)$row['predicted_refraction'] - ((float)$row[$side . '_sphere'] - ((float)$row[$side . '_cylinder'] / 2));
-            $diff = number_format($diff, 1);
-            if (!array_key_exists("$diff", $count)) {
-                $count["$diff"] = 0;
-                $this->graphConfig['xAxis']['categories'][] = $diff;
+                          
+            $diff = round($diff * 2) / 2;
+
+            $diff = array_search($diff, $this->graphConfig['xAxis']['categories']);
+
+            if($diff >= 0 && $diff <= (count($this->graphConfig['xAxis']['categories'])-1)) {
+                if (!array_key_exists("$diff", $count)) {
+                    $count["$diff"] = 0;
+                }
+                $count["$diff"]++;
             }
-            $count["$diff"]++;
         }
 
-        sort($this->graphConfig['xAxis']['categories'], SORT_NUMERIC);
-        $this->padCategories();
+        ksort($count, SORT_NUMERIC);
+        
         $dataSet = array();
-        foreach ($this->graphConfig['xAxis']['categories'] as $graphCategory) {
-            $rowTotal = 0;
-            foreach ($count as $category => $total) {
-                if ($category == $graphCategory) {
-                    $rowTotal = $total;
-                }
-            }
+        foreach ($count as $category => $total) {
+            $rowTotal = array((float)$category, $total);
             $dataSet[] = $rowTotal;
         }
 
@@ -175,22 +181,13 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
      */
     protected function padCategories()
     {
-        $top = array_pop($this->graphConfig['xAxis']['categories']);
-        $bottom = array_shift($this->graphConfig['xAxis']['categories']);
-        $bigger = $bottom;
-        if(abs($top) > abs($bottom)){
-            $bigger = $top;
-        }
-
-        $this->graphConfig['xAxis']['categories'] = array();
-        $upperLimit = abs($bigger);
-        $lowerLimit = 0 - $upperLimit;
-        for($i = $lowerLimit; $i <= $upperLimit; $i += 0.5 ){
-            $this->graphConfig['xAxis']['categories'][] = "$i";
+        for($i = -10; $i <= 10; $i += 0.5 ){
+            $this->graphConfig['xAxis']['categories'][] = $i;
         }
         
         $this->graphConfig['xAxis']['min'] = 0;
         $this->graphConfig['xAxis']['max'] = count($this->graphConfig['xAxis']['categories'])-1;
+
     }
 
     /**
@@ -225,21 +222,17 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         $plusOrMinusHalfPercent = 0;
         $plusOrMinusOnePercent = 0;
 
-        foreach($data as $i => $category){
-            $totalEyes += $category;
-            $categoryText = $this->graphConfig['xAxis']['categories'][$i];
-            
-            $categoryFloat = number_format($categoryText, 2, '.', '');
-            if($categoryFloat < -1 || $categoryFloat > 1){
-                $plusOrMinusOne += $category;
+        foreach($data as $dataRow){
+            $totalEyes += (int)$dataRow[1];
+            if($dataRow[0] < -1 || $dataRow[0] > 1){
+                $plusOrMinusOne += (int)$dataRow[1];
             }
-            
-            if($categoryFloat < -0.5 || $categoryFloat > 0.5){
-                $plusOrMinusHalf += $category;
+
+            if($dataRow[0] < -0.5 || $dataRow[0] > 0.5){
+                $plusOrMinusHalf += (int)$dataRow[1];
             }
-            
         }
-     
+
         if($plusOrMinusOne > 0){
             $plusOrMinusOnePercent = number_format((($plusOrMinusOne / $totalEyes) * 100), 1, '.', '' );
         }
