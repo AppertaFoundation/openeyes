@@ -12,7 +12,7 @@ while (!file_exists($yiic)) {
 	$yiic= $dirname .str_repeat('/..',$n++).'/yii/framework/yiic.php';
 
 	if ($n >= 15) {
-		$yiic = $dirname .'/../protected/yii/framework/yiic.php';
+		$yiic = $dirname .'/../vendor/yiisoft/yii/framework/yiic.php';
 		if(!file_exists($yiic)){
 			echo "Couldn't find yiic.php.\n";
 			exit;

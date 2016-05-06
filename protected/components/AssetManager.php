@@ -124,6 +124,14 @@ class AssetManager extends CAssetManager
 	protected $cacheBuster;
 
 	/**
+	 * @return ClientScript
+	 */
+	public function getClientScript()
+	{
+		return $this->clientScript;
+	}
+
+	/**
 	 * Initializes the component.
 	 */
 	public function init()

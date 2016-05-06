@@ -1,9 +1,22 @@
 <?php
-use \SensioLabs\Behat\PageObjectExtension\PageObject\Page;
-use \Behat\Mink\Exception\ElementTextException;
+use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
+use Behat\Mink\Exception\ElementTextException;
+use Behat\Mink\Session;
+use SensioLabs\Behat\PageObjectExtension\Context\PageFactoryInterface;
+
+
 abstract class OpenEyesPage extends Page {
 	
-	/**
+	public function __construct(Session $session, PageFactoryInterface $pageFactory, array $parameters = array())
+    {
+        parent::__construct($session, $pageFactory, $parameters);
+
+        // this should obviously be configurable, but I've put this in to ensure that we are able
+        // to always see the save button.
+        $this->getDriver()->resizeWindow(1280,800);
+    }
+
+    /**
 	 * ription checks that the title is equal to the expected value
 	 * 
 	 * @param string $expectedTitle
@@ -11,14 +24,17 @@ abstract class OpenEyesPage extends Page {
 	 * @return bool
 	 * @throws Behat\Mink\Exception\ElementTextException
 	 */
-	public function checkOpenEyesTitle($expectedTitle) {
-		$titleElement = $this->find ( 'css', 'h1.badge' );
-		$title = trim ( $titleElement->getHtml () );
-		if ($expectedTitle != $title) {
-			throw new ElementTextException ( "Title was  " . $title . " instead of " . $expectedTitle, $this->getSession (), $titleElement );
-		}
-		return true;
-	}
+    public function checkOpenEyesTitle($expectedTitle) {
+        if (!$titleElement = $this->find ( 'css', 'h1.badge' )) {
+            throw new ExpectationException("Could not find title element");
+        }
+
+        $title = trim ( $titleElement->getHtml () );
+        if ($expectedTitle != $title) {
+            throw new ElementTextException ( "Title was  " . $title . " instead of " . $expectedTitle, $this->getSession (), $titleElement );
+        }
+        return true;
+    }
 	
 	/**
 	 * ription waits for the title of the page included in the OpenEyes specific class to become equal to the expected value
@@ -40,7 +56,7 @@ abstract class OpenEyesPage extends Page {
 	 *        	- css selector for the element we need to check for its display property
 	 */
 	public function waitForElementDisplayBlock($selector, $waitTime = null) {
-		$this->getSession ()->wait ( $this->getWaitTime ( $waitTime ), "window.$ && ($('" . $selector . "').css('display') == 'block' || $('" . $selector . "').css('display') == 'inline-block' )" );
+		$this->getDriver()->wait ( $this->getWaitTime ( $waitTime ), "window.$ && ($(\"" . $selector . "\").css('display') == 'block' || $(\"" . $selector . "\").css('display') == 'inline-block' )" );
 	}
 	
 	/**
@@ -89,7 +105,7 @@ abstract class OpenEyesPage extends Page {
 	 */
 	public function scrollWindowToLink($locator) {
 		$element = $this->findLink ( $locator );
-		
+		print $locator;
 		if ($element === null) {
 			throw new ElementNotFoundException ( $this->getSession (), 'element', 'id|title|alt|text', $locator );
 		}
@@ -109,7 +125,7 @@ abstract class OpenEyesPage extends Page {
 	 *        	The element to scroll to.
 	 */
 	public function scrollWindowToElement(Behat\Mink\Element\NodeElement $element) {
-		$wdSession = $this->getSession ()->getDriver ()->getWebDriverSession ();
+		$wdSession = $this->getDriver ()->getWebDriverSession ();
 		$element = $wdSession->element ( 'xpath', $element->getXpath () );
 		$elementID = $element->getID ();
 		$script = <<<JS
@@ -121,8 +137,10 @@ var t = element.offset().top - (element.height() / 2);
 $(window).scrollTop(t).trigger('scroll');
 
 // Now we offset the height of the sticky elements.
-$('.stuck').not('.watermark').each(function() { t -= $(this).outerHeight(true, true); });
-$(window).scrollTop(t);
+var new_t = t;
+$('.stuck').not('.watermark').each(function() {
+    if (t - this.getBoundingClientRect().bottom < new_t) { new_t = t - this.getBoundingClientRect().bottom; }});
+$(window).scrollTop(new_t);
 
 JS;
 		$wdSession->execute ( array (
@@ -137,4 +155,20 @@ JS;
 	private function getWaitTime($waitTime) {
 		return $waitTime = $waitTime != null ? ( int ) $waitTime : 15000;
 	}
+
+    /**
+     * This should be the same behaviour for every OE page
+     */
+    public function saveEvent() {
+        $this->getElement ( 'save' )->click ();
+    }
+
+    public function popupOk($element_name)
+    {
+        $element = $this->getElement($element_name);
+        if (( bool ) $this->find ( 'xpath', $element->getXpath () )) {
+            $element->click ();
+        }
+    }
+
 }

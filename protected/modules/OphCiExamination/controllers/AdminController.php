@@ -729,4 +729,26 @@ class AdminController extends \ModuleAdminController
             )
         );
     }
+    
+    public function actionPostOpComplications($subspecialty_id = null)
+    {        
+        $this->render('list_OphCiExamination_PostOpComplications', array(
+                'subspecialty_id' => $subspecialty_id,
+                'enabled_items' => models\OphCiExamination_PostOpComplications::model()->enabled($subspecialty_id)->findAll(),
+                'available_items' => models\OphCiExamination_PostOpComplications::model()->available($subspecialty_id)->findAll(),
+        ));
+        
+    }
+
+    public function actionUpdatePostOpComplications()
+    {
+        $item_ids = Yii::app()->request->getParam('item_ids', array());
+        $subspecialty_id = Yii::app()->request->getParam('subspecialty_id', null);
+
+        $tx = Yii::app()->db->beginTransaction();
+        models\OphCiExamination_PostOpComplications::model()->assign($item_ids, $subspecialty_id);
+        $tx->commit();
+
+        $this->redirect(array('/OphCiExamination/admin/postOpComplications', 'subspecialty_id' => $subspecialty_id));
+    }
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 #make sure selenium is running before going ahead
-SELENIUM=`ps aux | grep -c selenium`
+SELENIUM=`ps aux | grep jar | grep -c selenium`
 if [ "$SELENIUM" -gt 1 ]
   then
     echo GOOD - Looks like selenium is running

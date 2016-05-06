@@ -103,7 +103,7 @@ class TherapyApplicationContext extends PageObjectContext {
 		 * @var TherapyApplication $TherapyApplication
 		 */
 		$TherapyApplication = $this->getPage ( "TherapyApplication" );
-		$TherapyApplication->RightCerebYes ();
+		$TherapyApplication->rightCerebYes ();
 	}
 	
 	/**
@@ -644,6 +644,14 @@ class TherapyApplicationContext extends PageObjectContext {
 		$TherapyApplication = $this->getPage ( "TherapyApplication" );
 		$TherapyApplication->rightPatientCnvNO ();
 	}
+
+    /**
+     * @Given /^I select a Right Consultant of "([^"]*)"$/
+     */
+    public function iSelectARightConsultantOf($id) {
+        $TherapyApplication = $this->getPage ( "TherapyApplication" );
+        $TherapyApplication->consultantOf($id);
+    }
 	
 	/**
 	 * @Then /^I select a Right Patient has Macular Oedema of Yes$/
@@ -812,4 +820,29 @@ class TherapyApplicationContext extends PageObjectContext {
 		$TherapyApplication = $this->getPage ( "TherapyApplication" );
 		$TherapyApplication->leftPatientCRVOYes ();
 	}
+
+    /**
+     * @Given /^I remove the left side$/
+     */
+    public function iRemoveLeftSide() {
+        /**
+         *
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage ( "TherapyApplication" );
+        $TherapyApplication->removeLeftSide ();
+    }
+
+    /**
+     * @Then /^I add Right Clinical Reason for Urgency of "([^"]*)"$/
+     */
+    public function iAddRightClinicalReasonForUrgencyOf($reason)
+    {
+        /**
+         *
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage ( "TherapyApplication" );
+        $TherapyApplication->addRightClinicalReasonForUrgency($reason);
+    }
 }

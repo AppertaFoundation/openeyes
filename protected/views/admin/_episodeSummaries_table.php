@@ -22,11 +22,11 @@
 	<?php
 
 	foreach ($items as $item) {
-		?><tr class="episode-summary-item" data-item-id="<?= $item->id ?>"><td><?= $item->event_type->name ?></td><td><?= $item->name ?></td></tr><?php
+		?><tr class="draggablelist-item" data-item-id="<?= $item->id ?>"><td><?= $item->event_type->name ?></td><td><?= $item->name ?></td></tr><?php
 	}
 
 	?>
-	<tr class="episode-summary-empty" style="display: none"><td colspan="2" class="text-center">(drag items here)</td></tr>
+	<tr class="draggablelist-empty" style="display: none"><td colspan="2" class="text-center">(drag items here)</td></tr>
 	</tbody>
 </table>
 

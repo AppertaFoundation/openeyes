@@ -1867,4 +1867,15 @@ class BaseEventTypeController extends BaseModuleController
 		header('Content-Length: '.filesize($path));
 		readfile($path);
 	}
+
+	/**
+	 * @throws CException
+	 */
+	protected function persistPcrRisk(){
+		$pcrRisk = new \PcrRisk();
+		$pcrData = Yii::app()->request->getPost('PcrRisk', array());
+		foreach($pcrData as $side => $sideData){
+			$pcrRisk->persist($side, $this->patient, $sideData);
+		}
+	}
 }

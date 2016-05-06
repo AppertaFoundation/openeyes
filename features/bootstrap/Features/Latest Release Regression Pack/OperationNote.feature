@@ -352,6 +352,62 @@ Feature: Create New Operation Note Event
         |uname|pwd  |site           |firm                    |hospitalNumber|speciality|event |procedureId    |
         |admin|admin|Croydon        |Cataract firm (Cataract)|1009465       |cataract  |OpNote|173            |
 
+  @ON_ROUTE_8
+  Scenario Outline: To check that PCR Risk saves
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "<uname>" and "<pwd>"
+    And I select Site "<site>"
+    Then I select a firm of "<firm>"
+
+    Then I search for hospital number "<hospitalNumber>"
+
+    Then I select Create or View Episodes and Events
+
+    Then I expand the "<speciality>" sidebar
+    And I add a New Event "<event>"
+
+    Then I select an Emergency Operation Note
+    And I select Create Operation Note
+
+    Then I select Procedure Left Eye
+    And I select a common Procedure of "<procedureId>"
+      #procedure id are listed below in the comments
+    Then I select a cataract complication of "None"
+    Then I select an iol type of "SN60WF"
+    Then I set an iol power of "1.34"
+    Then I set predicted refraction of "-2.00"
+
+    Then I select PCR Risk
+    Then I set the "Left" OpNote PCR option "Glaucoma" to be "No Glaucoma"
+    Then I set the "Left" OpNote PCR option "PXF" to be "No"
+    Then I set the "Left" OpNote PCR option "Diabetic" to be "No Diabetes"
+    Then I set the "Left" OpNote PCR option "Pupil" to be "Small"
+    Then I set the "Left" OpNote PCR option "Fundal" to be "No"
+    Then I set the "Left" OpNote PCR option "Axial" to be "< 26"
+    Then I set the "Left" OpNote PCR option "Cataract" to be "Yes"
+    Then I set the "Left" OpNote PCR option "ARB" to be "No"
+    Then I set the "Left" OpNote PCR option "Doctor" to be "Associate specialist"
+    Then I set the "Left" OpNote PCR option "Lie" to be "No"
+
+    Then I select a anaesthetic complication of "None"
+    Then I choose Anaesthetic Type of GA
+
+    Then I choose a Surgeon of "<surgeon>"
+    And I choose a Supervising Surgeon of "<supervisingSurgeon>"
+    Then I choose an Assistant of "<assistant>"
+
+    Then I choose Per Operative Drugs of "<opDrugs>"
+
+    And I choose Operation comments of "<opComments>"
+
+    Then I choose Post Op instructions of "<postOpInstructions>"
+
+    Then I save the Operation Note and confirm it has been created successfully
+
+    Examples:
+      |uname|pwd  |site           |firm                    |hospitalNumber|speciality|event |procedureId    |surgeon|supervisingSurgeon|assistant|opDrugs|opComments   |postOpInstructions|
+      |admin|admin|Croydon        |Cataract firm (Cataract)|1009465       |cataract  |OpNote|173            |3      |2                 |3        |1      |Test Comments|1                 |
+
     #procedure id 79,323,173,308,46,45,322 contains doodles and other PCR, whereas other ids contain only comments box.
 
     #<select name="select_procedure_id_procs" id="select_procedure_id_procs">

@@ -45,13 +45,13 @@ $form->layoutColumns = array('label' => 3, 'field' => 9);
 	<div id="ophTrOperationnotePCRRiskDiv">
 		<div id="ophCiExaminationPCRRiskLeftEye" class="pcr-exam-link-opnote">
 			<?php
-			$this->renderPartial('//../modules/OphCiExamination/views/default/form_Element_OphCiExamination_PCRRisk',
+			$this->renderPartial('application.views.default._pcr_risk_form',
 				array('form' => $form, 'element' => $element, 'side' => 'left'));
 			?>
 		</div>
 		<div id="ophCiExaminationPCRRiskRightEye" class="pcr-exam-link-opnote">
 			<?php
-			$this->renderPartial('//../modules/OphCiExamination/views/default/form_Element_OphCiExamination_PCRRisk',
+			$this->renderPartial('application.views.default._pcr_risk_form',
 				array('form' => $form, 'element' => $element, 'side' => 'right'));
 			?>
 		</div>

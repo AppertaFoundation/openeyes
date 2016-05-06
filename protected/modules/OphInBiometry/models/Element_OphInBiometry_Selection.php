@@ -94,14 +94,14 @@ class Element_OphInBiometry_Selection extends SplitEventTypeElement
 			$lensCount = count(Element_OphInBiometry_IolRefValues::model()->findAll(array('select'=>'lens_id','condition' => 'event_id='.$this->event_id,'distinct' => 'true')));
 			$formulaCount = count(Element_OphInBiometry_IolRefValues::model()->findAll(array('select'=>'formula_id','condition' => 'event_id='.$this->event_id,'distinct' => 'true')));
 
-			if ($params['selectData'] == "left_lens" && $formulaCount > 1) {
+			if ($params['selectData'] == "left_lens" && $formulaCount > 1 && $lensCount > 1) {
 				if (((empty($this->formula_id_left)) && ((!empty($this->lens_id_left))))
 					|| ((!empty($this->formula_id_left)) && ((empty($this->lens_id_left))))
 				) {
 					if (empty($this->lens_id_left))
 						$this->addError('lens_id_left', "Lens and Formula must be selected or left blank (Left side).");
 				}
-			} elseif ($params['selectData'] == "left_formula" && $lensCount > 1) {
+			} elseif ($params['selectData'] == "left_formula" && $lensCount > 1 &&  $formulaCount > 1) {
 				if (((empty($this->formula_id_left)) && ((!empty($this->lens_id_left))))
 					|| ((!empty($this->formula_id_left)) && ((empty($this->lens_id_left))))
 				) {
@@ -109,7 +109,7 @@ class Element_OphInBiometry_Selection extends SplitEventTypeElement
 					if (empty($this->formula_id_left))
 						$this->addError('formula_id_left', "Lens and Formula must be selected or left blank (Left side).");
 				}
-			} elseif ($params['selectData'] == "right_lens" && $formulaCount > 1) {
+			} elseif ($params['selectData'] == "right_lens" && $formulaCount > 1 && $lensCount > 1) {
 				if (((empty($this->formula_id_right)) && ((!empty($this->lens_id_right))))
 					|| ((!empty($this->formula_id_right)) && ((empty($this->lens_id_right))))
 				) {
@@ -118,7 +118,7 @@ class Element_OphInBiometry_Selection extends SplitEventTypeElement
 
 				}
 
-			} elseif ($params['selectData'] == "right_formula" && $lensCount > 1) {
+			} elseif ($params['selectData'] == "right_formula" && $lensCount > 1 &&  $formulaCount > 1) {
 				if (((empty($this->formula_id_right)) && ((!empty($this->lens_id_right))))
 					|| ((!empty($this->formula_id_right)) && ((empty($this->lens_id_right))))
 				) {

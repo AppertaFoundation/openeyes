@@ -19,7 +19,7 @@ Feature: Create New Prescription
 
     Then I expand the "<speciality>" sidebar
     And I add a New Event "<event>"
-
+    
     Then I select a Common Drug "<commonDrug>"
     And I select a Standard Set of "<standardSet>"
 

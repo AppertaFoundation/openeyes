@@ -8,8 +8,8 @@ Feature: Coding only
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
-    And I select Site "4"
-    Then I select a firm of "1"
+    And I select Site "2"
+    Then I select a firm of "3"
 
     Then I search for hospital number "1009465"
 
@@ -17,6 +17,8 @@ Feature: Coding only
 
     Then I expand the Glaucoma sidebar
     And I add a New Event "Therapy"
+
+    And I remove the left side
 
     And I select a Right Side Diagnosis of "360455002"
 
@@ -32,6 +34,7 @@ Feature: Coding only
 
     And I select a Right Consultant of "4"
     And I select an Intended Site of "1"
+    And I select "Yes" for "Patient consents to share data"
 
     Then I select a Right Standard Intervention Exists of Yes
 
@@ -51,6 +54,8 @@ Feature: Coding only
     And I add Right Patient Expectations of "Patient Expectations comments"
 
     Then I add Right Anticipated Start Date of "3"
+
+    Then I add Right Clinical Reason for Urgency of "Reason for Urgency"
 
     Then I Save the Therapy Application and confirm it has been created successfully
 

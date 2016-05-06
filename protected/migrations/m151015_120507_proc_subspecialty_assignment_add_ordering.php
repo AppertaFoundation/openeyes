@@ -18,11 +18,12 @@ class m151015_120507_proc_subspecialty_assignment_add_ordering extends CDbMigrat
         }
 		
 		//  Fetch the id of the proc record that matches 'Phokomulsification and IOL'
-		$row = Yii::app()->db->createCommand()->select('id')->from('proc')->where('term="Phakoemulsification and IOL"')->queryRow();
-		$recId = $row['id'];
+		if ($row = Yii::app()->db->createCommand()->select('id')->from('proc')->where('term="Phakoemulsification and IOL"')->queryRow()) {
+            $recId = $row['id'];
 
-        // modify the entry 'Phokomulsification and IOL' to be display_order 1.
-		$this->update('proc_subspecialty_assignment',array('display_order' => 1), "proc_id = $recId");		
+            // modify the entry 'Phokomulsification and IOL' to be display_order 1.
+            $this->update('proc_subspecialty_assignment',array('display_order' => 1), "proc_id = $recId");
+        }
     }
 
     public function down()

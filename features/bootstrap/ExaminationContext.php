@@ -2789,4 +2789,43 @@ class ExaminationContext extends PageObjectContext
 		$examination = $this->getPage('Examination');
 		$examination->onPCRReferencePage();
 	}
+
+	/**
+	 * @Then /^I should have the default PCR values$/
+	 */
+	public function iShouldHaveDefaultPcrValues()
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->checkPcrDefaultValues();
+	}
+
+	/**
+	 * @Then /^I set the "([^"]*)" PCR option "([^"]*)" to be "([^"]*)"$/
+	 */
+	public function iSetThePcrOptionTo($side, $option, $value)
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->setPcrValue($side, $option, $value);
+	}
+
+	/**
+	 * @Then /^I should have a calculated "([^"]*)" PCR value of "([^"]*)"$/
+	 */
+	public function iShouldHaveCalculatedPcrValue($side, $value)
+	{
+		/**
+		 *
+		 * @var Examination $examination
+		 */
+		$examination = $this->getPage('Examination');
+		$examination->checkPcrCalculatedValue($side, $value);
+	}
 }

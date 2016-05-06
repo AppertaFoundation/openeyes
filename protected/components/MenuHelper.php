@@ -47,7 +47,14 @@ class MenuHelper {
 					}
 				}
 				if (!$allowed) {
-					continue;
+					if (isset($menu_item['userrule'])) {
+						if($this->user->{$menu_item['userrule']}()){
+							$allowed = true;
+						}
+					}
+					if (!$allowed) {
+						continue;
+					}
 				}
 			}
 

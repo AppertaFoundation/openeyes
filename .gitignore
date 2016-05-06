@@ -27,7 +27,6 @@ tags
 /protected/commands/
 /protected/yii
 /protected/vendors
-/protected/assets
 *zip
 vendor
 /.sass-cache
@@ -58,6 +57,7 @@ vendor
 !/protected/modules/PatientTicketing/
 !/protected/modules/OphOuAnaestheticsatisfactionaudit/
 !/protected/modules/OphInVisualfields/
+!/protected/modules/OphCoMessaging/
 
 # Tests
 /bin/.enabled-modules

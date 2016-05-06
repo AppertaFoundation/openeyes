@@ -24,9 +24,14 @@ class ReportController extends BaseReportController
 	{
 		return array(
 			array('allow',
-				'actions' => array('index', 'operation', 'runReport', 'downloadReport'),
+				'actions' => array('index', 'operation', 'runReport', 'downloadReport', 'cataractComplicationTotal'),
 				'roles' => array('OprnGenerateReport', 'admin'),
-			)
+			),
+                        array(
+                            'allow',
+                            'actions' => array('cataractComplicationTotal'),
+                            'expression' => 'Yii::app()->user->isSurgeon()'
+                         ),
 		);
 	}
 
@@ -281,5 +286,12 @@ class ReportController extends BaseReportController
 		}
 
 		return array('operations'=>$operations);
+	}
+
+	public function actionCataractComplicationTotal()
+	{
+		$reportObj = new CataractComplicationsReport(Yii::app());
+
+		$this->renderJSON(array($reportObj->getTotalComplications(), $reportObj->getTotalOperations()));
 	}
 }

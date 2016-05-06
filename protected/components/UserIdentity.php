@@ -77,12 +77,12 @@ class UserIdentity extends CUserIdentity
 		/**
 		 * Here we diverge depending on the authentication source.
 		 */
-		if (Yii::app()->params['auth_source'] == 'LDAP') {
+        if (Yii::app()->params['auth_source'] == 'LDAP') {
 			/**
 			 * Required for LDAP authentication
 			 */
 			if (Yii::app()->params['ldap_method'] == 'zend') {
-				Yii::import('application.vendors.*');
+                Yii::import('application.vendors.*');
 				require_once('Zend/Ldap.php');
 
 				/**
@@ -134,9 +134,15 @@ class UserIdentity extends CUserIdentity
 				);
 
 			} else {
-				if (!$link = ldap_connect(Yii::app()->params['ldap_server'])) {
-					throw new Exception('Unable to connect to LDAP server.');
-				}
+                // verify we can reach the server, as ldap_connect doesn't timeout correctly
+                if ($fp = @fsockopen(Yii::app()->params['ldap_server'], 389, $errno, $errstr, 5)) {
+                    if (!$link = ldap_connect(Yii::app()->params['ldap_server'])) {
+                        throw new Exception('Unable to connect to LDAP server.');
+                    }
+                }
+                else {
+                    throw new Exception("Unable to reach ldap server: "  .Yii::app()->params['ldap_server'] . ": " . $errstr);
+                }
 
 				ldap_set_option($link, LDAP_OPT_NETWORK_TIMEOUT, Yii::app()->params['ldap_native_timeout']);
 

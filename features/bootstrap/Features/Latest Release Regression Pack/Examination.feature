@@ -1328,6 +1328,24 @@ Feature: Create New Examination Regression Tests
     Then I choose a left Near Visual Acuity ETDRS Letters Snellen Metre "50" and a reading method of "2"
     Then I choose a right Near Visual Acuity ETDRS Letters Snellen Metre "50" and a reading method of "2"
 
+    Then I choose to expand the "Clinical Management" section
+    Then I choose to expand the "Cataract Surgical Management" section
+    Then I select a post operative refractive target in dioptres of "-2"
+    And the post operative target has been discussed with patient Yes
+    Then I select a suitable for surgeon of "3"
+    Then I select Previous Refractive Surgery Yes
+    Then I click on Left Eye PCR Risk
+    Then I set the "Left" PCR option "Glaucoma" to be "No Glaucoma"
+    Then I set the "Left" PCR option "PXF" to be "No"
+    Then I set the "Left" PCR option "Diabetic" to be "No Diabetes"
+    Then I set the "Left" PCR option "Pupil" to be "Small"
+    Then I set the "Left" PCR option "Fundal" to be "No"
+    Then I set the "Left" PCR option "Axial" to be "< 26"
+    Then I set the "Left" PCR option "Cataract" to be "Yes"
+    Then I set the "Left" PCR option "ARB" to be "No"
+    Then I set the "Left" PCR option "Doctor" to be "Associate specialist"
+    Then I set the "Left" PCR option "Lie" to be "No"
+
     Then I choose to expand the "Anterior Segment" section
     And I select a Segment of Tube patch and Material drop down of "Sclera"
     And I add Anterior Segment Description of "Anterior Segment Description"
@@ -1341,7 +1359,7 @@ Feature: Create New Examination Regression Tests
 
 
   @EXAM_Route_20 @sprint25
-      Scenario Outline: To check whether the reference link in PCR Risk is present and active
+      Scenario Outline: To check whether PCR Risk is present and working
         Given I am on the OpenEyes "<page>" homepage
         And I enter login credentials "<username>" and "<password>"
         And I select Site "<site1>"
@@ -1356,6 +1374,17 @@ Feature: Create New Examination Regression Tests
         Then I choose to expand the "<sectionName2>" section
         Then I click on Right Eye PCR Risk
         Then I click on Left Eye PCR Risk
+        Then I set the "Left" PCR option "Glaucoma" to be "No Glaucoma"
+        Then I set the "Left" PCR option "PXF" to be "No"
+        Then I set the "Left" PCR option "Diabetic" to be "No Diabetes"
+        Then I set the "Left" PCR option "Pupil" to be "Small"
+        Then I set the "Left" PCR option "Fundal" to be "No"
+        Then I set the "Left" PCR option "Axial" to be "< 26"
+        Then I set the "Left" PCR option "Cataract" to be "Yes"
+        Then I set the "Left" PCR option "ARB" to be "No"
+        Then I set the "Left" PCR option "Doctor" to be "Associate specialist"
+        Then I set the "Left" PCR option "Lie" to be "No"
+        Then I should have a calculated "Left" PCR value of "4.80"
 
         #Validation1
         Then I should see reference link on PCR Right Eye block
@@ -1368,6 +1397,8 @@ Feature: Create New Examination Regression Tests
         Then I click on reference link on PCR Left Eye block
         #Validation3
         Then I should see the reference Page
+
+
 
         Examples:
         |page  |username|password|site1   |firm                       |searchItem|specialty |event      |sectionName1       |sectionName2                |
@@ -1396,6 +1427,8 @@ Feature: Create New Examination Regression Tests
     Then I click on Right Eye PCR Risk
 
     Then I click on Left Eye PCR Risk
+
+    Then I should have the default PCR values
 
     Examples:
       |page  |username|password|site1   |site2                     |searchItem|speciality|event      |sectionName1       |sectionName2                |
