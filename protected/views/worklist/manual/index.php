@@ -24,7 +24,7 @@
 
             <?php if ($current_worklists || $available_worklists) { ?>
             <div id="draggablelist">
-                <?= CHtml::beginForm(array('/worklist/manual/updateDisplay'), 'post'); ?>
+                <?= CHtml::beginForm(array('/worklist/manualUpdateDisplayOrder'), 'post'); ?>
                 <?= CHtml::hiddenField('item_ids'); ?>
                 <div id="draggablelist-items" class="row">
                     <div class="large-6 column">
@@ -52,6 +52,7 @@
     </div>
 </div>
 <script type="text/javascript">
+    // TODO: move this into a self contained library
     $(document).ready(function() {
         var showHideEmpty = function (el, min) {
             if (el.find('.draggablelist-item').length > min) {

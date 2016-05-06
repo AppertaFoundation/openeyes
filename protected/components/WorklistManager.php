@@ -165,6 +165,53 @@ class WorklistManager extends CComponent
     }
 
     /**
+     *
+     * @TODO: clean up and test
+     * 
+     * @param $user
+     * @param array $worklist_ids
+     * @return bool
+     * @throws CDbException
+     */
+    public function setWorklistDisplayOrderForUser($user, $worklist_ids = array())
+    {
+        $transaction = $this->startTransaction();
+        $model = $this->getModelForClass('WorklistDisplayOrder');
+        try {
+            $model->getDbConnection()->createCommand()->delete(
+                $model->tableName(),
+                'user_id = :user_id',
+                array(':user_id' => $user->id)
+            );
+
+            if ($worklist_ids) {
+                $rows = array();
+                foreach ($worklist_ids as $display_order => $worklist_id) {
+                    $rows[] = array(
+                        'item_id' => $worklist_id,
+                        'user_id' => $user->id,
+                        'display_order' => $display_order,
+                    );
+                }
+
+                $model->getDbConnection()->getCommandBuilder()->createMultipleInsertCommand(
+                    $this->getModelForClass('WorklistDisplayOrder')->tableName(), $rows)->execute();
+            }
+
+            if ($transaction)
+                $transaction->commit();
+        }
+        catch (Exception $e) {
+            $this->addError($e->getMessage());
+            if ($transaction)
+                $transaction->rollback();
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * @param Worklist $worklist
      * @param Patient $patient
      * @return array|CActiveRecord|mixed|null

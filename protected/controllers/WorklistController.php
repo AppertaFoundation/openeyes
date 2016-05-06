@@ -73,7 +73,6 @@ class WorklistController extends BaseController
             }
             else {
                 $errors = $worklist->getErrors();
-                print_r($this->manager->getErrors());
             }
         }
 
@@ -83,4 +82,18 @@ class WorklistController extends BaseController
         ));
     }
 
+    /**
+     * Update the worklist display order for the current user based on the submitted ids
+     */
+    public function actionManualUpdateDisplayOrder()
+    {
+        $worklist_ids = @$_POST['item_ids'] ? explode(',', $_POST['item_ids']) : array();
+
+        if (!$this->manager->setWorklistDisplayOrderForUser(Yii::app()->user, $worklist_ids)) {
+            echo print_r($this->manager->getErrors(), true);
+            exit();
+        }
+
+        $this->redirect('/worklist/manual');
+    }
 }
