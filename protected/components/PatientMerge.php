@@ -116,8 +116,8 @@ class PatientMerge
         // Update Episode
         $isMerged = $this->updateEpisodes($this->primaryPatient, $this->secondaryPatient);
         
-// Update legacy episodes
-// $isMerged = $isMerged && $this->updatelegacyEpisodes($this->primaryPatient->id, $this->secondaryPatient->previousOperations);
+        // Update legacy episodes
+        $isMerged = $isMerged && $this->updateLegacyEpisodes($this->primaryPatient, $this->secondaryPatient);
 
         // Update allergyAssignments
         $isMerged = $isMerged && $this->updateAllergyAssignments($this->primaryPatient->id, $this->secondaryPatient->allergyAssignments);
@@ -144,6 +144,8 @@ class PatientMerge
         return $isMerged;
     }
     
+  
+    
     public function updateEpisodes(Patient $primaryPatient, Patient $secondaryPatient)
     {
         $primaryHasEpisodes = $primaryPatient->episodes;
@@ -153,7 +155,7 @@ class PatientMerge
         if( !$primaryHasEpisodes && $secondaryHasEpisodes){
             // this case is fine, we can assign the episodes from secondary to primary
             $this->updateEpisodesPatientId($primaryPatient->id, $secondaryPatient->episodes);
-                    
+
         } else if ( $primaryHasEpisodes && !$secondaryHasEpisodes ){
             // primary has episodes but secondary has not, nothing to do here
 
@@ -184,6 +186,43 @@ class PatientMerge
                     } else {
                         throw new Exception("Failed to update Episode: " . $secondaryEpisode->id . " " . print_r($secondaryEpisode->errors, true));
                     }
+                }
+            }
+        }
+        
+        // if the save() functions not throwing errors than we can just return true
+        return true;
+    }
+    
+    public function updateLegacyEpisodes($primaryPatient, $secondaryPatient)
+    {
+        // if the secondary patient has legacy episodes
+        if( $secondaryPatient->legacyepisodes ){
+            
+            // if primary patient doesn't have legacy episode we can just update the episode's patient_id to assign it to the primary patient
+            if( !$primaryPatient->legacyepisodes ){
+
+                // Patient can have only one legacy episode
+                $legacyEpisode = $secondaryPatient->legacyepisodes[0];
+
+                $legacyEpisode->patient_id = $primaryPatient->id;
+                if( $legacyEpisode->save() ){
+                    Audit::add('Patient Merge', "Legacy Episode " . $legacyEpisode->id . " moved from patient " . $secondaryPatient->id . " to " . $primaryPatient->id);
+                } else {
+                    throw new Exception("Failed to update (legacy) Episode: " . $legacyEpisode->id . " " . print_r($legacyEpisode->errors, true));
+                }
+
+            } else {
+                // we move the events from the secondaty patient's legacy episod to the primary patient's legacy epiode
+                $this->updateEventsEpisodeId($primaryPatient->legacyepisodes[0]->id, $secondaryPatient->legacyepisodes[0]->events);
+                
+                // Flag secondary patient's legacy episode deleted as it will be empty
+                $legacyEpisode = $secondaryPatient->legacyepisodes[0];
+                $legacyEpisode->deleted = 1;
+                if( $legacyEpisode->save()){
+                    Audit::add('Patient Merge', "Legacy Episode " . $legacyEpisode->id . "marked as deleted, events moved under the primary patient's same firm episode.");
+                } else {
+                    throw new Exception("Failed to update Episode: " . $secondaryEpisode->id . " " . print_r($secondaryEpisode->errors, true));
                 }
             }
         }
