@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-// phpunit --filter testFunction PatientMergeTest unit/components/PatientMergeTest.php
+// phpunit --filter PatientMergeTest unit/components/PatientMergeTest.php
 // 
 // /var/www/openeyes/protected/tests>phpunit --filter PatientMerge unit/components/PatientMergeTest.php
 
@@ -63,6 +63,7 @@ class PatientMergeTest extends PHPUnit_Framework_TestCase
     {
         $mergeHandler = new PatientMerge;
         
+        // these patients are created in setUp() 
         $primaryPatient = Patient::model()->findByAttributes(array('hos_num' => 3423435));
         $secondaryPatient = Patient::model()->findByAttributes(array('hos_num' => 4353423));
         
@@ -96,6 +97,7 @@ class PatientMergeTest extends PHPUnit_Framework_TestCase
         $primaryPatient = Patient::model()->findByAttributes(array('hos_num' => 3423435));
         $secondaryPatient = Patient::model()->findByAttributes(array('hos_num' => 4353423));
         
+        // here we are COPY Viloet's episode to the secondary patient, if you like, duplicate the episodes and assign it to the secondary patient
         $this->copyVioletCoffinEpisodes($secondaryPatient->id);
         
         $violetsEpisodes = Episode::model()->findAllByAttributes(array('patient_id' => 19434));
@@ -111,11 +113,11 @@ class PatientMergeTest extends PHPUnit_Framework_TestCase
             $secondaryPatientEpisodeIds[$secondaryEpisode->id] = $secondaryEpisode->id;
         }
         
-        // move the episodes
+        // move the episodes , (secondary INTO primary)
         $result = $mergeHandler->updateEpisodes($primaryPatient, $secondaryPatient);
         
         // refresh the relation $primaryPatient->episodes
-        $primaryPatient = Patient::model()->findByAttributes(array('hos_num' => 3423435));
+        $primaryPatient->refresh();
         
         //the episodes were copied from Violet coffin originally so we can test her count
         $this->assertEquals( count($violetsEpisodes), count($primaryPatient->episodes) );
@@ -126,9 +128,78 @@ class PatientMergeTest extends PHPUnit_Framework_TestCase
         
     }
     
-    public function testUpdateEpisodesWhenBothHaveEpisodesNoConflict(){}
+    public function testUpdateEpisodesWhenBothHaveEpisodesNoConflict()
+    {
+        $mergeHandler = new PatientMerge;
+        
+        // primary patient  ST LOUIS-ROBERTS, Gordon	(60)  has 3 episodes that are not conflicting with Violet's episodes
+        $primaryPatient = Patient::model()->findByAttributes(array('hos_num' => 3423435));
+        
+        $secondaryPatient = Patient::model()->findByAttributes(array('hos_num' => 4353423));
+        
+        // Copy Violet's Episodes to the secondary 
+        $this->copyVioletCoffinEpisodes($secondaryPatient->id);
+        
+        $violetsEpisodes = Episode::model()->findAllByAttributes(array('patient_id' => 19434));
+        $secondaryEpisodes = Episode::model()->findAllByAttributes(array('patient_id' => $secondaryPatient->id));    
+        $this->assertEquals(count($secondaryEpisodes), count($violetsEpisodes) );
+        $this->assertEquals(count($secondaryEpisodes), count($secondaryPatient->episodes) );
+        
+        /**  **/
+        
+        
+        // lets copy ST LOUIS-ROBERTS, Gordon 's episodes to the primary patients
+            
+        $gordon = Patient::model()->findByPk(1985666);
+        
+        foreach($gordon->episodes as $gEpisode){
+
+            $newEpisode = new Episode;
+            
+            $newEpisode->attributes = $gEpisode->attributes;
+            $newEpisode->patient_id = $primaryPatient->id;
+            
+            $newEpisode->save();
+        }
+        
+        $primaryPatient->refresh();
+        $secondaryPatient->refresh();
+        
+        // lets check the counts of the episodes, this could be done in a more proper way but now it is just enough
+        $this->assertEquals(count($gordon->episodes), count($primaryPatient->episodes) );
+        
+        
+        /** at this point we have a primary and secondary patient with non conflicting episodes **/
+        
+        
+        $secondaryEpisodeIds = array();
+        foreach($secondaryPatient->episodes as $sEpisode){
+            $secondaryEpisodeIds[$sEpisode->id] =  $sEpisode->id;
+        }
+        
+        // move the episodes , (secondary INTO primary)
+        $result = $mergeHandler->updateEpisodes($primaryPatient, $secondaryPatient);
+        
+        $primaryPatient->refresh();
+        
+        // collect the primary 
+        $primaryEpisodeIds = array();
+        foreach($primaryPatient->episodes as $pEpisodes){
+            $primaryEpisodeIds[$pEpisodes->id] = $pEpisodes->id;
+        }
+        
+        //lets check if the secondary episodes are assigned to the primary
+        foreach($secondaryEpisodeIds as $sEpisodeId){
+            if( !in_array($sEpisodeId, $primaryEpisodeIds) ){
+                $this->fail("Episode $sEpisodeId not found in primary patient's episode");
+            }
+        }
+    }
     
-    public function testUpdateEpisodesWhenBothHaveEpisodesConflict(){}
+    public function testUpdateEpisodesWhenBothHaveEpisodesConflict()
+    {
+        
+    }
     
     public function testUpdateLegacyEpisodes(){}
     
