@@ -106,7 +106,7 @@ class DashboardHelper {
                     throw new Exception("$module_name not found");
                 }
                 if( isset($item['actions']) && is_array($item['actions']) ) {
-                    $renders = $this->renderActions($module, $item['actions']);
+                    $renders = array_merge($renders, $this->renderActions($module, $item['actions']));
                 }
                 else if( method_exists($module, 'renderDashboard') ) {
                     $renders[] = $module->renderDashboard();
