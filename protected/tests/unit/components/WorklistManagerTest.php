@@ -82,7 +82,7 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
     {
         $manager = $this->getMockBuilder('WorklistManager')
             ->disableOriginalConstructor()
-            ->setMethods(array('getInstanceForClass'))
+            ->setMethods(array('getInstanceForClass', 'audit'))
             ->getMock();
 
         $wp = $this->getMockBuilder('WorklistPatient')
@@ -97,6 +97,9 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $manager->expects($this->once())
             ->method('getInstanceForClass')
             ->will($this->returnValue($wp));
+
+        $manager->expects($this->once())
+            ->method('audit');
 
         $patient = new Patient();
         $worklist = new Worklist();
@@ -117,7 +120,7 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
 
         $manager = $this->getMockBuilder('WorklistManager')
             ->disableOriginalConstructor()
-            ->setMethods(array('getInstanceForClass', 'startTransaction', 'setAttributesForWorklistPatient'))
+            ->setMethods(array('getInstanceForClass', 'startTransaction', 'setAttributesForWorklistPatient', 'audit'))
             ->getMock();
 
         $wp = $this->getMockBuilder('WorklistPatient')
@@ -144,6 +147,9 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
             ->method('setAttributesForWorklistPatient')
             ->with($wp, $attributes)
             ->will($this->returnValue(true));
+
+        $manager->expects($this->once())
+            ->method('audit');
 
         $this->assertTrue($manager->addPatientToWorklist($patient, $worklist, $when, $attributes));
 
@@ -246,5 +252,47 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         )));
 
         $this->assertFalse($manager->hasErrors());
+    }
+
+    public function test_setWorklistDisplayOrderForUser()
+    {
+        $manager = $this->getMockBuilder('WorklistManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getModelForClass', 'getInstanceForClass', 'audit'))
+            ->getMock();
+
+        $u = ComponentStubGenerator::generate('User', array(
+            'id' => 5
+        ));
+
+        $wdo = $this->getMockBuilder('WorklistDisplayOrder')
+            ->disableOriginalConstructor()
+            ->setMethods(array('deleteAllByAttributes', 'save'))
+            ->getMock();
+
+        // clear all previous entries out
+        $wdo->expects($this->once())
+            ->method('deleteAllByAttributes')
+            ->will($this->returnValue(true));
+
+        // save the new entry
+        $wdo->expects($this->once())
+            ->method('save')
+            ->will($this->returnValue(true));
+
+        $manager->expects($this->once())
+            ->method('getModelForClass')
+            ->with('WorklistDisplayOrder')
+            ->will($this->returnValue($wdo));
+
+        $manager->expects($this->any())
+            ->method('getInstanceForClass')
+            ->with('WorklistDisplayOrder')
+            ->will($this->returnValue($wdo));
+
+        $manager->expects($this->once())
+            ->method('audit');
+
+        $this->assertTrue($manager->setWorklistDisplayOrderForUser($u, array(5)));
     }
 }

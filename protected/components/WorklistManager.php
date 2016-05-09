@@ -23,6 +23,8 @@
  */
 class WorklistManager extends CComponent
 {
+    public static $AUDIT_TARGET_MANUAL = "Manual Worklist";
+
     /**
      * @var array
      */
@@ -62,11 +64,41 @@ class WorklistManager extends CComponent
             : null;
     }
 
+    /**
+     * Wrapper for retrieving current active User
+     *
+     * @return mixed
+     */
     protected function getCurrentUser()
     {
         return Yii::app()->user;
     }
 
+    /**
+     * @param $target
+     * @param $action
+     * @param null $data
+     * @param null $log_message
+     * @param array $properties
+     * @throws Exception
+     */
+    protected function audit($target, $action, $data=null, $log_message=null, $properties=array())
+    {
+        if (!isset($properties['user_id']))
+            $properties['user_id'] = $this->getCurrentUser()->id;
+
+        if (is_array($data)) {
+            $data = json_encode($data);
+        }
+        Audit::add($target, $action, $data, $log_message, $properties);
+    }
+
+    /**
+     * @param $worklist
+     * @param $user
+     * @param null $display_order
+     * @return mixed
+     */
     public function addWorklistToUserDisplay($worklist, $user, $display_order = null)
     {
         if (is_null($display_order)) {
@@ -116,6 +148,10 @@ class WorklistManager extends CComponent
             if ($display)
                 if (!$this->addWorklistToUserDisplay($worklist, $user))
                     throw new Exception("Could not set new worklist display order.");
+
+            $this->audit(self::$AUDIT_TARGET_MANUAL, 'create',
+                array('worklist_id' => $worklist->id, 'owner_id' => $user->id),
+                "Worklist created.");
 
             if ($transaction)
                 $transaction->commit();
@@ -178,25 +214,24 @@ class WorklistManager extends CComponent
         $transaction = $this->startTransaction();
         $model = $this->getModelForClass('WorklistDisplayOrder');
         try {
-            $model->getDbConnection()->createCommand()->delete(
-                $model->tableName(),
-                'user_id = :user_id',
-                array(':user_id' => $user->id)
-            );
+            $model->deleteAllByAttributes(array('user_id' => $user->id));
 
             if ($worklist_ids) {
                 $rows = array();
                 foreach ($worklist_ids as $display_order => $worklist_id) {
-                    $rows[] = array(
+                    $order = $this->getInstanceForClass('WorklistDisplayOrder');
+                    $order->attributes = array(
                         'worklist_id' => $worklist_id,
                         'user_id' => $user->id,
                         'display_order' => $display_order,
                     );
+                    if (!$order->save())
+                        throw new Exception("Could not save order entry");
                 }
-
-                $model->getDbConnection()->getCommandBuilder()->createMultipleInsertCommand(
-                    $this->getModelForClass('WorklistDisplayOrder')->tableName(), $rows)->execute();
             }
+
+            $this->audit(self::$AUDIT_TARGET_MANUAL, 'ordered', array('user_id' => $user->id),
+                'Worklists reordered for user.');
 
             if ($transaction)
                 $transaction->commit();
@@ -299,6 +334,10 @@ class WorklistManager extends CComponent
             if (count($attributes))
                 if (!$this->setAttributesForWorklistPatient($wp, $attributes))
                     throw new Exception("Could not set attributes for patient on worklist");
+
+            $this->audit(self::$AUDIT_TARGET_MANUAL, 'add-patient',
+                array('worklist_id' => $worklist->id), "Patient added to worklist",
+                array('patient_id' => $patient->id));
 
             if ($transaction)
                 $transaction->commit();
