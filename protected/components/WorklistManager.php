@@ -188,7 +188,7 @@ class WorklistManager extends CComponent
                 $rows = array();
                 foreach ($worklist_ids as $display_order => $worklist_id) {
                     $rows[] = array(
-                        'item_id' => $worklist_id,
+                        'worklist_id' => $worklist_id,
                         'user_id' => $user->id,
                         'display_order' => $display_order,
                     );

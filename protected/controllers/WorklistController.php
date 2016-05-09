@@ -90,8 +90,8 @@ class WorklistController extends BaseController
         $worklist_ids = @$_POST['item_ids'] ? explode(',', $_POST['item_ids']) : array();
 
         if (!$this->manager->setWorklistDisplayOrderForUser(Yii::app()->user, $worklist_ids)) {
-            echo print_r($this->manager->getErrors(), true);
-            exit();
+            OELog::log(print_r($this->manager->getErrors(), true));
+            throw new Exception("Unable to save new display order for worklists");
         }
 
         $this->redirect('/worklist/manual');
