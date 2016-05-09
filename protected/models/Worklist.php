@@ -66,7 +66,8 @@ class Worklist extends BaseActiveRecordVersionedSoftDelete
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'mapping_attributes' => array(self::HAS_MANY, 'WorklistAttribute', 'worklist_id')
+            'mapping_attributes' => array(self::HAS_MANY, 'WorklistAttribute', 'worklist_id'),
+            'worklist_patients' => array(self::HAS_MANY, 'WorklistPatient', 'worklist_id')
         );
     }
 
@@ -103,4 +104,5 @@ class Worklist extends BaseActiveRecordVersionedSoftDelete
             'criteria'=>$criteria,
         ));
     }
+
 }

@@ -65,6 +65,18 @@ class WorklistManager extends CComponent
     }
 
     /**
+     * Wrapper for partial rendering to encapsulate the call out to the static app for retrieving the controller object.
+     *
+     * @param $view
+     * @param array $parameters
+     * @return mixed
+     */
+    protected function renderPartial($view, $parameters = array())
+    {
+        return Yii::app()->controller->renderPartial($view, $parameters,true);
+    }
+
+    /**
      * Wrapper for retrieving current active User
      *
      * @return mixed
@@ -75,6 +87,8 @@ class WorklistManager extends CComponent
     }
 
     /**
+     * Audit Wrapper
+     *
      * @param $target
      * @param $action
      * @param null $data
@@ -350,6 +364,63 @@ class WorklistManager extends CComponent
         }
 
         return true;
+    }
+
+    public function renderManualDashboard($user = null)
+    {
+        if (!$user)
+            $user = $this->getCurrentUser();
+
+        $worklists = $this->getCurrentManualWorklistsForUser($user);
+
+        $content = $this->renderPartial('//worklist/dashboard', array(
+            'worklists' => $worklists
+        ));
+
+        return array(
+            'title' => "Manual Worklists" ,
+            'content' => $content,
+            'options' => array(
+                'container-id' => \Yii::app()->user->id.'-manual-worklists-container',
+                'js-toggle-open' => true,
+            )
+        );
+    }
+
+    /**
+     *
+     * @FIXME: investigate alternate abstractions ... might be some issues here
+     * @TODO: test me
+     * @param $worklist
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function getPatientsForWorklist($worklist, $limit = null, $offset = null)
+    {
+        $wp_model = $this->getModelForClass('WorklistPatient');
+        $p_model = $this->getModelForClass('Patient');
+
+        $wp_table = $wp_model->tableName();
+        $p_table = $p_model->tableName();
+
+        $criteria = new CDbCriteria();
+        $criteria->join = "LEFT JOIN  {$wp_table} on {$wp_table}.patient_id = t.id";
+        $criteria->addColumnCondition(array("{$wp_table}.worklist_id" => $worklist->id));
+
+        if ($limit)
+            $criteria->limit = $limit;
+        if ($offset)
+            $criteria->offset = $offset;
+
+        if ($worklist->scheduled) {
+            $criteria->order = "{$wp_table}.when";
+        }
+        else {
+            $criteria->order = "LOWER(contact.last_name), LOWER(contact.first_name)";
+        }
+
+        return $p_model->with('contact')->findAll($criteria);
     }
 
     /**

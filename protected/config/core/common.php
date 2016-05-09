@@ -329,6 +329,12 @@ return array(
 		),
 		'admin_menu' => array(
 		),
+		'dashboard_items' => array(
+			array(
+				'class' => 'WorklistManager',
+				'method' => 'renderManualDashboard'
+			)
+		),
 		'admin_email' => '',
 		'enable_transactions' => true,
 		'event_lock_days' => 0,
