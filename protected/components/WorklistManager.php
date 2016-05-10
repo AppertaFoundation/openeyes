@@ -216,8 +216,6 @@ class WorklistManager extends CComponent
 
     /**
      *
-     * @TODO: clean up and test
-     * 
      * @param $user
      * @param array $worklist_ids
      * @return bool
@@ -366,16 +364,32 @@ class WorklistManager extends CComponent
         return true;
     }
 
+    /**
+     * @param $worklist
+     * @return mixed
+     */
+    protected function renderWorklistForDashboard($worklist)
+    {
+        return $this->renderPartial('//worklist/dashboard', array(
+                'worklist' => $worklist,
+                'worklist_patients' => $this->getPatientsForWorklist($worklist)
+            )
+        );
+    }
+
+    /**
+     * @param User|null $user
+     * @return array
+     */
     public function renderManualDashboard($user = null)
     {
         if (!$user)
             $user = $this->getCurrentUser();
 
-        $worklists = $this->getCurrentManualWorklistsForUser($user);
-
-        $content = $this->renderPartial('//worklist/dashboard', array(
-            'worklists' => $worklists
-        ));
+        $content = "";
+        foreach ($this->getCurrentManualWorklistsForUser($user) as $worklist) {
+            $content .= $this->renderWorklistForDashboard($worklist);
+        }
 
         return array(
             'title' => "Manual Worklists" ,
@@ -399,14 +413,9 @@ class WorklistManager extends CComponent
     public function getPatientsForWorklist($worklist, $limit = null, $offset = null)
     {
         $wp_model = $this->getModelForClass('WorklistPatient');
-        $p_model = $this->getModelForClass('Patient');
-
-        $wp_table = $wp_model->tableName();
-        $p_table = $p_model->tableName();
 
         $criteria = new CDbCriteria();
-        $criteria->join = "LEFT JOIN  {$wp_table} on {$wp_table}.patient_id = t.id";
-        $criteria->addColumnCondition(array("{$wp_table}.worklist_id" => $worklist->id));
+        $criteria->addColumnCondition(array("t.worklist_id" => $worklist->id));
 
         if ($limit)
             $criteria->limit = $limit;
@@ -414,13 +423,13 @@ class WorklistManager extends CComponent
             $criteria->offset = $offset;
 
         if ($worklist->scheduled) {
-            $criteria->order = "{$wp_table}.when";
+            $criteria->order = "t.when";
         }
         else {
             $criteria->order = "LOWER(contact.last_name), LOWER(contact.first_name)";
         }
 
-        return $p_model->with('contact')->findAll($criteria);
+        return $wp_model->with(array('patient','patient.contact'))->findAll($criteria);
     }
 
     /**

@@ -14,21 +14,14 @@
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-$wm = new WorklistManager();
-
-foreach ($worklists as $worklist) {
 ?>
     <h1><?=$worklist->name?></h1>
     <ul>
         <?php
-        foreach ($wm->getPatientsForWorklist($worklist) as $patient) {
+        foreach ($worklist_patients as $wp) {
         ?>
-            <li><?= $patient->HSCICName ?></li>
+            <li><?= $wp->patient->HSCICName ?></li>
         <?php
         }
         ?>
     </ul>
-<?php
-}
-?>
