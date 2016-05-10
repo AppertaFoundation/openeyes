@@ -20,7 +20,8 @@
 <?php
 	$this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
 		'doodleToolBarArray' => array(
-			array('PhakoIncision','SidePort','IrisHook','PCIOL','ACIOL','PI','MattressSuture','CapsularTensionRing','CornealSuture','ToricPCIOL','LimbalRelaxingIncision'),
+			array('PhakoIncision','SidePort','IrisHook','Malyugin','PCIOL','ACIOL','PI','MattressSuture',
+				'CapsularTensionRing','CornealSuture','ToricPCIOL','LimbalRelaxingIncision'),
 		),
 		'onReadyCommandArray' => array(
 			array('addDoodle', array('AntSeg')),
