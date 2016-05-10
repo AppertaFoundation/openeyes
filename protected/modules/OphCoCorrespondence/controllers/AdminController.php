@@ -152,7 +152,7 @@ class AdminController extends \ModuleAdminController
                                 $macro->short_code = $shortCode;
                                 Audit::add('admin','create',$macro->id,null,array('module'=>'OphCoCorrespondence','model'=>'LetterMacro'));
                                 $avatar=LetterMacro::model()->findByPk(array('id'=>$macroId));
-                                $avatar->attributes=array('short_code'=>$shortCode);
+                                $avatar->short_code = $shortCode;
                                 $avatar->save(); 
                                 $this->redirect('/OphCoCorrespondence/admin/letterMacros');
 			}
