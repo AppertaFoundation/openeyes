@@ -30,7 +30,7 @@ Feature: Create New Intravitreal Event
 
     Examples:
     |uname|pwd  |siteName/Number|firmName/Number         |hospNumber|speciality|event       |
-    |admin|admin|Croydon        |Cataract firm (Cataract)|1009465   |cataract  |Intravitreal|
+    |admin|admin|Croydon        |Cataract firm (Cataract)|1009465   |Cataract  |Intravitreal|
 
 
   @Intravitreal_Route_1
@@ -109,7 +109,7 @@ Feature: Create New Intravitreal Event
 
   Examples:
   |uname|pwd  |siteName/Number|firmName/Number         |hospNumber|speciality|event       |
-  |admin|admin|Croydon        |Cataract firm (Cataract)|1009465   |cataract  |Intravitreal|
+  |admin|admin|Croydon        |Cataract firm (Cataract)|1009465   |Cataract  |Intravitreal|
 
   @Intravitreal_Route_2
   Scenario Outline: Route 2: Login and create a New Intravitreal Event
@@ -185,7 +185,7 @@ Feature: Create New Intravitreal Event
 
     Examples:
       |uname|pwd  |siteName/Number|firmName/Number        |hospNumber|speciality|event       |
-      |admin|admin|Croydon        |A K Hamilton (Glaucoma)|1009465   |glaucoma  |Intravitreal|
+      |admin|admin|Croydon        |A K Hamilton (Glaucoma)|1009465   |Glaucoma  |Intravitreal|
 
   
   @Intravitreal_Route_3
@@ -261,7 +261,7 @@ Feature: Create New Intravitreal Event
 
     Examples:
       |uname|pwd  |siteName/Number|firmName/Number         |hospNumber|speciality|event       |
-      |admin|admin|Croydon        |Cataract firm (Cataract)|1009465   |cataract  |Intravitreal|
+      |admin|admin|Croydon        |Cataract firm (Cataract)|1009465   |Cataract  |Intravitreal|
 
 
   @Intravitreal_Route_4
@@ -335,7 +335,7 @@ Feature: Create New Intravitreal Event
 
     Examples:
       |uname|pwd  |siteName/Number|firmName/Number                |hospNumber|speciality    |event       |
-      |admin|admin|Croydon        |Angela Glasby (Medical Retinal)|1009465   |medicalRetinal|Intravitreal|
+      |admin|admin|Croydon        |Angela Glasby (Medical Retinal)|1009465   |Medical Retinal|Intravitreal|
 
   @Intravitreal_Route_5
   Scenario Outline: Route 5: Login and create a New Intravitreal Event
@@ -418,7 +418,7 @@ Feature: Create New Intravitreal Event
 
     Examples:
       |uname|pwd  |siteName/Number|firmName/Number         |hospNumber|speciality|event       |
-      |admin|admin|Croydon        |Cataract firm (Cataract)|1009465   |cataract  |Intravitreal|
+      |admin|admin|Croydon        |Cataract firm (Cataract)|1009465   |Cataract  |Intravitreal|
 
 
 
