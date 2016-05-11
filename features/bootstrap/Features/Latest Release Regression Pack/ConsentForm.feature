@@ -39,7 +39,7 @@ Feature: Create New Consent Form
 
     Examples:
     |uname|pwd  |siteName/Number|firmName/Number        |hospNumber|speciality|event  |type|eyeProcedure|commonProcedure|addProc1|addProc2|
-    |admin|admin|Barking        |A K Hamilton (Glaucoma)|1009465   |glaucoma  |Consent|1   |Both        |127            |41      |42      |
+    |admin|admin|Barking        |A K Hamilton (Glaucoma)|1009465   |Glaucoma  |Consent|1   |Both        |127            |41      |42      |
 
 
   Scenario Outline: Route 2: Login and create a new Consent Form
@@ -72,7 +72,7 @@ Feature: Create New Consent Form
 
     Examples:
       |uname|pwd  |siteName/Number|firmName/Number        |hospNumber|speciality|event  |type|eyeProcedure|commonProcedure|
-      |admin|admin|Barking        |A K Hamilton (Glaucoma)|1009465   |glaucoma  |Consent|2   |Left        |129            |
+      |admin|admin|Barking        |A K Hamilton (Glaucoma)|1009465   |Glaucoma  |Consent|2   |Left        |129            |
 
 
   Scenario Outline: Route 3: Login and create a new Consent Form
@@ -105,7 +105,7 @@ Feature: Create New Consent Form
 
     Examples:
       |uname|pwd  |siteName/Number|firmName/Number                |hospNumber|speciality    |event  |type|eyeProcedure|commonProcedure|
-      |admin|admin|Barking        |Angela Glasby (Medical Retinal)|1009465   |medicalRetinal|Consent|3   |Left        |327            |
+      |admin|admin|Barking        |Angela Glasby (Medical Retinal)|1009465   |Medical Retinal|Consent|3   |Left        |327            |
 
 
   Scenario Outline: Route 4: Login and create a new Consent Form
@@ -138,7 +138,7 @@ Feature: Create New Consent Form
 
   Examples:
   |uname|pwd  |siteName/Number|firmName/Number        |hospNumber|speciality|event  |type|eyeProcedure|commonProcedure|
-  |admin|admin|Mile End       |A K Hamilton (Glaucoma)|1009465   |glaucoma  |Consent|4   |Left        |129            |
+  |admin|admin|Mile End       |A K Hamilton (Glaucoma)|1009465   |Glaucoma  |Consent|4   |Left        |129            |
 
   @Consent_Route5
   Scenario Outline: Route 5: Login and create a new Consent Form
@@ -165,7 +165,7 @@ Feature: Create New Consent Form
 
   Examples:
   |uname|pwd  |siteName/Number|firmName/Number        |hospNumber|speciality|event  |
-  |admin|admin|Mile End       |A K Hamilton (Glaucoma)|1009465   |glaucoma  |Consent|
+  |admin|admin|Mile End       |A K Hamilton (Glaucoma)|1009465   |Glaucoma  |Consent|
 
 
   @Consent_Route6A
@@ -231,7 +231,7 @@ Feature: Create New Consent Form
 
     Examples:
       |uname|pwd  |siteName/Number|firmName/Number         |hospNumber|speciality|event    |diagEye|diag    |opEye|proc|anaestheticType|opSite|comments|sessionComments|opComments|
-      |admin|admin|Croydon        |Cataract firm (Cataract)|1009465   |cataract  |OpBooking|Right  |24010005|Right|79  |LA            |Croydon     |Test    |Test           |Test      |
+      |admin|admin|Croydon        |Cataract firm (Cataract)|1009465   |Cataract  |OpBooking|Right  |24010005|Right|79  |LA            |Croydon     |Test    |Test           |Test      |
 
 
   @Consent_Route6B
@@ -261,7 +261,7 @@ Feature: Create New Consent Form
 
     Examples:
       |uname|pwd  |siteName/Number|firmName/Number         |hospNumber|speciality|event  |prevOp    |diagEye|opEye|
-      |admin|admin|Croydon        |Cataract firm (Cataract)|1009465   |cataract  |Consent|booking152|Right  |Right|
+      |admin|admin|Croydon        |Cataract firm (Cataract)|1009465   |Cataract  |Consent|booking152|Right  |Right|
 
 
 
