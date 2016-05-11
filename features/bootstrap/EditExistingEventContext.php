@@ -48,6 +48,9 @@ class EditExistingEventContext extends PageObjectContext
 //        }
 //    }
 
+        /**
+         * @Then /^I click to expand the "([^"]*)" sidebar$/
+         */
     public function iClickToExpandTheSidebar($firm) {
         /**
          *
