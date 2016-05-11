@@ -134,6 +134,7 @@ $config = array(
 		// 'dashboard_sortable' => true
 		'event_print_method' => 'pdf',
 		'wkhtmltopdf_nice_level' => 19,
+                'salt' => 'SALTFORUNIQUECODES',
 	),
 );
 
