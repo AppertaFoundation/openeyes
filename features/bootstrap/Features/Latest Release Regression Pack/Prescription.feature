@@ -39,7 +39,7 @@ Feature: Create New Prescription
 
     Examples:
     |uname|pwd  |siteName/Number|firmName/Number      |hospNumber|speciality|event       |commonDrug|standardSet|dose|route|frequency|duration|presComm|
-    |admin|admin|Bridge Lane    |Amit Blann (Glaucoma)|1009465   |glaucoma  |Prescription|7         |10         |2   |1    |4        |3       |TEST    |
+    |admin|admin|Bridge Lane    |Amit Blann (Glaucoma)|1009465   |Glaucoma  |Prescription|7         |10         |2   |1    |4        |3       |TEST    |
 
 
 
@@ -82,7 +82,7 @@ Feature: Create New Prescription
 
     Examples:
       |uname|pwd  |siteName/Number|firmName/Number         |hospNumber|speciality|event       |filterType|commonDrug                                  |standardSet|dose|route|eyesOption|frequency|duration|presComm|
-      |admin|admin|Ealing         |Coral Johnson (Cataract)|1009465   |cataract  |Prescription|32        |adrenaline 0.01% eye drops (No Preservative)|10         |3   |1    |1         |4        |3       |TEST    |
+      |admin|admin|Ealing         |Coral Johnson (Cataract)|1009465   |Cataract  |Prescription|32        |adrenaline 0.01% eye drops (No Preservative)|10         |3   |1    |1         |4        |3       |TEST    |
 
   @Prescription_Route_3
   Scenario Outline: Route 3: Login and create a new Prescription
@@ -131,8 +131,8 @@ Feature: Create New Prescription
     Then I Save the Prescription Draft and confirm it has been created successfully
 
   Examples:
-  |uname|pwd  |siteName/Number|firmName/Number                |hospNumber|speciality    |event       |filterType|commonDrug                                  |standardSet|dose|route|eyesOption|frequency|duration|taperDose|taperFreq|taperDuration|taperDose-2|taperFreq-2|taperDuration-2|presComm|
-  |admin|admin|Bridge Lane    |Angela Glasby (Medical Retinal)|1009465   |medicalRetinal|Prescription|32        |adrenaline 0.01% eye drops (No Preservative)|10         |2   |3    |1         |5        |3       |4        |2        |6            |3          |7          |2              |TEST    |
+  |uname|pwd  |siteName/Number|firmName/Number                |hospNumber|speciality     |event       |filterType|commonDrug                                  |standardSet|dose|route|eyesOption|frequency|duration|taperDose|taperFreq|taperDuration|taperDose-2|taperFreq-2|taperDuration-2|presComm|
+  |admin|admin|Bridge Lane    |Angela Glasby (Medical Retinal)|1009465   |Medical Retinal|Prescription|32        |adrenaline 0.01% eye drops (No Preservative)|10         |2   |3    |1         |5        |3       |4        |2        |6            |3          |7          |2              |TEST    |
 
   @Prescription_Route_4
   Scenario Outline: Route 4: Login and create a new Prescription
@@ -172,7 +172,7 @@ Feature: Create New Prescription
 
   Examples:
   |uname|pwd  |siteName/Number|firmName/Number      |hospNumber|speciality|event       |commonDrug                                  |filterType|standardSet|dose|route|eyesOption|frequency|duration|taperDose|taperFreq|taperDuration|taperDose-2|taperFreq-2|taperDuration-2|presComm|
-  |admin|admin|Barking        |Amit Blann (Glaucoma)|1009465   |glaucoma  |Prescription|adrenaline 0.01% eye drops (No Preservative)|32        |10         |2   |17   |1         |6        |6       |4        |2        |6            |3          |7          |2              |TEST    |
+  |admin|admin|Barking        |Amit Blann (Glaucoma)|1009465   |Glaucoma  |Prescription|adrenaline 0.01% eye drops (No Preservative)|32        |10         |2   |17   |1         |6        |6       |4        |2        |6            |3          |7          |2              |TEST    |
 
 
 
@@ -218,7 +218,7 @@ Feature: Create New Prescription
 
     Examples:
     |page  |username|password|siteName/Number|firmName/Number      |searchItem|speciality|event       |filterType|commonDrug                                  |dose|route|eyesOption|frequency|duration|presComm|
-    |master|admin   |admin   |Barking        |Amit Blann (Glaucoma)|1009465   |glaucoma  |Prescription|32        |adrenaline 0.01% eye drops (No Preservative)|3   |1    |1         |4        |3       |TEST    |
+    |master|admin   |admin   |Barking        |Amit Blann (Glaucoma)|1009465   |Glaucoma  |Prescription|32        |adrenaline 0.01% eye drops (No Preservative)|3   |1    |1         |4        |3       |TEST    |
 
 
 
@@ -265,7 +265,7 @@ Feature: Create New Prescription
 
     Examples:
       |page  |username|password|siteName/Number|firmName/Number      |searchItem|speciality|event       |type|commonDrug                                  |dose|route|eyesOption|frequency|duration|presComm|warningOption|
-      |master|admin   |admin   |Barking        |Amit Blann (Glaucoma)|1009465   |glaucoma  |Prescription|32  |adrenaline 0.01% eye drops (No Preservative)|3   |1    |1         |4        |3       |TEST    |no           |
+      |master|admin   |admin   |Barking        |Amit Blann (Glaucoma)|1009465   |Glaucoma  |Prescription|32  |adrenaline 0.01% eye drops (No Preservative)|3   |1    |1         |4        |3       |TEST    |no           |
 
 
 
@@ -309,6 +309,6 @@ Feature: Create New Prescription
 
     Examples:
       |page|username|password|siteName/Number|firmName/Number         |searchItem|speciality|event       |filterType|commonDrug                                  |dose|route|eyesOption|frequency|duration|presComm|
-      |master|admin |admin   |Barking        |Cataract firm (Cataract)|1009465   |cataract  |Prescription|32        |adrenaline 0.01% eye drops (No Preservative)|3   |1    |1         |4        |1       |TEST    |
+      |master|admin |admin   |Barking        |Cataract firm (Cataract)|1009465   |Cataract  |Prescription|32        |adrenaline 0.01% eye drops (No Preservative)|3   |1    |1         |4        |1       |TEST    |
 
 
