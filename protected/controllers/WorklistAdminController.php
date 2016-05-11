@@ -20,9 +20,38 @@ class WorklistAdminController extends BaseAdminController
     public $layout = 'admin';
     public $items_per_page = 30;
 
+    /**
+     * @var WorklistManager
+     */
+    private $manager;
+
+    protected function beforeAction($action)
+    {
+        $this->manager = new WorklistManager();
+
+        return parent::beforeAction($action);
+    }
+
     public function actionDefinitions()
     {
-        $this->genericAdmin('Automatic Worklist Definitions', 'WorklistDefinition');
+        $definitions = $this->manager->getWorklistDefinitions();
+
+        $this->render('//admin/worklists/definitions', array(
+            'definitions' => $definitions,
+            'errors' => @$errors
+        ));
+    }
+
+    public function actionDefinition($id = null)
+    {
+        $definition = is_null($id) ? new WorklistDefinition() : $this->manager->getWorklistDefinition($id);
+        if (!$definition)
+            throw new CHttpException(404, "Worklist definition not found");
+
+        $this->render('//admin/worklists/definition', array(
+            'definition' => $definition,
+            'errors' => array()
+        ));
     }
 
 }

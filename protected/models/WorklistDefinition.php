@@ -26,6 +26,16 @@ class WorklistDefinition extends BaseActiveRecordVersionedSoftDelete
     }
 
     /**
+     * Default to ordering by the display order property
+     *
+     * @return array
+     */
+    public function defaultScope()
+    {
+        return array('order' => $this->getTableAlias(true, false) . '.display_order');
+    }
+
+    /**
      * @return array validation rules for model attributes.
      */
     public function rules()
@@ -36,13 +46,13 @@ class WorklistDefinition extends BaseActiveRecordVersionedSoftDelete
             array('name', 'required'),
             array('name', 'length', 'max'=>100),
             array('description', 'length', 'max' => 1000),
-            array('start', 'OEDateValidator'),
-            array('end', 'OEDateValidator'),
-            array('start', 'OEDateCompareValidator', 'compareAttribute' => 'end', 'allowEmpty' => true,
+            array('start_time, end_time', 'OETimeValidator'),
+            array('active_from, active_until', 'OEDateValidator'),
+            array('active_from', 'OEDateCompareValidator', 'compareAttribute' => 'end', 'allowEmpty' => true,
                 'allowCompareEmpty' => true, 'operator' => '<=',
                 'message' => '{attribute} must be on or before {compareAttribute}'),
-            array('start', 'default', 'setOnEmpty' => true, 'value' => date("Y-m-d H:i:s", time())),
-            array('end', 'default', 'setOnEmpty' => true, 'value' => null),
+            array('active_from', 'default', 'setOnEmpty' => true, 'value' => date("Y-m-d H:i:s", time())),
+            array('active_until', 'default', 'setOnEmpty' => true, 'value' => null),
             array('scheduled', 'boolean', 'allowEmpty' => false),
             array('display_order', 'numerical', 'integerOnly' => true),
             // The following rule is used by search().
@@ -69,8 +79,14 @@ class WorklistDefinition extends BaseActiveRecordVersionedSoftDelete
     public function attributeLabels()
     {
         return array(
-            'start' => 'Start Date',
-            'end' => 'End Date',
+        );
+    }
+
+    public function attributeDefaults()
+    {
+        return array(
+            'start_time' => WorklistManager::defaultStartTime(),
+            'end_time' => WorklistManager::defaultEndTime()
         );
     }
 

@@ -49,7 +49,7 @@ return array(
 				'Risks' => '/oeadmin/risk/list'
 			),
 			'Worklists' => array(
-				'Automatic Worklists Definitions' => '/worklistadmin/definitions',
+				'Automatic Worklists Definitions' => '/worklistAdmin/definitions',
 			),
 			'Procedure Management' => array(
 				'Procedures' => '/oeadmin/procedure/list',

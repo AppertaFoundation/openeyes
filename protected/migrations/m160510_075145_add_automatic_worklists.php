@@ -11,8 +11,10 @@ class m160510_075145_add_automatic_worklists extends OEMigration
 				'description' => 'text',
 				'worklist_name' => 'string',
 				'rrule' => 'text',
-				'start' => 'datetime NOT NULL',
-				'end' => 'datetime',
+				'start_time' => 'time NOT NULL',
+				'end_time' => 'time NOT NULL',
+				'active_from' => 'datetime NOT NULL',
+				'active_until' => 'datetime',
 				'scheduled' => 'boolean default false NOT NULL',
 				'deleted' => 'boolean default false NOT NULL',
 				'display_order' => 'int(8) NOT NULL'

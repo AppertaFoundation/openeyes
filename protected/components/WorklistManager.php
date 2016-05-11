@@ -107,6 +107,24 @@ class WorklistManager extends CComponent
         Audit::add($target, $action, $data, $log_message, $properties);
     }
 
+    public static $DEFAULT_WORKLIST_START_TIME = '09:00';
+    public static $DEFAULT_WORKLIST_END_TIME = '17:00';
+
+    public static function getDefaultStartTime()
+    {
+        return Yii::app()->param('default_worklist_start_time') ?: static::$DEFAULT_WORKLIST_START_TIME;
+    }
+
+    public static function getDefaultEndTime()
+    {
+        return Yii::app()->param('default_worklist_end_time') ?: static::$DEFAULT_WORKLIST_END_TIME;
+    }
+
+    public function getWorklistDefinitions()
+    {
+        return $this->getModelForClass('WorklistDefinition')->findAll();
+    }
+
     /**
      * @param $worklist
      * @param $user
