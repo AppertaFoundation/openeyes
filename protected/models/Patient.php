@@ -1424,17 +1424,20 @@ class Patient extends BaseActiveRecordVersioned
 		$criteria->limit = 1;
                 $event = Event::model()->with('episode')->find($criteria);
                 return $this->getUniqueCodeForEvent($event->id);
+                    
 	}
         
         public function getUniqueCodeForEvent($id){
-            foreach (Yii::app()->db->createCommand()
-			->select("uc.code")
-                        ->from("unique_codes uc")
-                        ->join("unique_codes_mapping ucm", "uc.id = ucm.unique_code_id")
-                        ->where("ucm.event_id = $id")->queryAll() as $row) {
-                        return $row['code'];
-                    }
-                        
+            if(!empty($id)) {
+                foreach (Yii::app()->db->createCommand()
+                    ->select("uc.code")
+                    ->from("unique_codes uc")
+                    ->join("unique_codes_mapping ucm", "uc.id = ucm.unique_code_id")
+                    ->where("ucm.event_id = $id")->queryAll() as $row) {
+                    return (!empty($row[$code]) ? $row['code'] : '');
+                }
+            }     
+            return '';
         }
 
         /**
