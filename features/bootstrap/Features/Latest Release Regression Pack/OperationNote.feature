@@ -54,7 +54,7 @@ Feature: Create New Operation Note Event
 
     Examples:
     |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality|event |commonProcedure|ASAgent|complication|ASComments   |surgeon|supervisingSurgeon|assistant|opDrugs|opComments   |postOpInstructions|
-    |admin|admin|Ludwig|A Dulku (Glaucoma)      |1009465   |glaucoma  |OpNote|41             |1      |1           |Test Comments|2      |3                 |3        |1      |Test Comments|1                 |
+    |admin|admin|Ludwig|A Dulku (Glaucoma)      |1009465   |Glaucoma  |OpNote|41             |1      |1           |Test Comments|2      |3                 |3        |1      |Test Comments|1                 |
 
   @ON_ROUTE_2
   Scenario Outline: Route 2: Login and create a Operation Note Event
@@ -106,8 +106,8 @@ Feature: Create New Operation Note Event
     Then I save the Operation Note and confirm it has been created successfully
 
   Examples:
-  |uname|pwd  |siteName/Number|firmName/Number             |hospNumber|speciality    |event |commonProcedure|ASAgent|complication|ASComments   |surgeon|supervisingSurgeon|assistant|opDrugs|opComments   |postOpInstructions|
-  |admin|admin|Barking        |Admin User (Medical Retinal)|1009465   |medicalRetinal|OpNote|321            |1      |6           |Test Comments|3      |2                 |2        |1      |Test Comments|1                 |
+  |uname|pwd  |siteName/Number|firmName/Number             |hospNumber|speciality     |event |commonProcedure|ASAgent|complication|ASComments   |surgeon|supervisingSurgeon|assistant|opDrugs|opComments   |postOpInstructions|
+  |admin|admin|Barking        |Admin User (Medical Retinal)|1009465   |Medical Retinal|OpNote|321            |1      |6           |Test Comments|3      |2                 |2        |1      |Test Comments|1                 |
 
 
 
@@ -162,7 +162,7 @@ Feature: Create New Operation Note Event
 
   Examples:
   |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality|event |ASAgent|complication|ASComments   |surgeon|supervisingSurgeon|assistant|opDrugs|opComments   |postOpInstructions|
-  |admin|admin|Ludwig|A Dulku (Glaucoma)      |1009465   |glaucoma  |OpNote|1      |9           |Test Comments|3      |3                 |3        |1      |Test Comments|1                 |
+  |admin|admin|Ludwig|A Dulku (Glaucoma)      |1009465   |Glaucoma  |OpNote|1      |9           |Test Comments|3      |3                 |3        |1      |Test Comments|1                 |
 
   @ON_ROUTE_4
   Scenario Outline: Route 4: Login and create a Operation Note Event
@@ -215,7 +215,7 @@ Feature: Create New Operation Note Event
 
   Examples:
   |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality|event |commonProcedure|ASAgent|complication|ASComments   |surgeon|supervisingSurgeon|assistant|opDrugs|opComments   |postOpInstructions|
-  |admin|admin|Ludwig|A Dulku (Glaucoma)      |1009465   |glaucoma  |OpNote|41             |1      |4           |Test Comments|3      |2                 |3        |1      |Test Comments|1                 |
+  |admin|admin|Ludwig|A Dulku (Glaucoma)      |1009465   |Glaucoma  |OpNote|41             |1      |4           |Test Comments|3      |2                 |3        |1      |Test Comments|1                 |
 
 
 
@@ -271,8 +271,8 @@ Feature: Create New Operation Note Event
     Then I save the Operation Note and confirm it has been created successfully
 
   Examples:
-  |uname|pwd  |siteName/Number|firmName/Number             |hospNumber|speciality    |event |commonProcedure|ASAgent|complication|ASComments   |surgeon|supervisingSurgeon|assistant|opDrugs|opComments   |postOpInstructions|
-  |admin|admin|Barking        |Admin User (Medical Retinal)|1009465   |medicalRetinal|OpNote|41             |1      |5           |Test Comments|3      |2                 |3        |1      |Test Comments|1                 |
+  |uname|pwd  |siteName/Number|firmName/Number             |hospNumber|speciality     |event |commonProcedure|ASAgent|complication|ASComments   |surgeon|supervisingSurgeon|assistant|opDrugs|opComments   |postOpInstructions|
+  |admin|admin|Barking        |Admin User (Medical Retinal)|1009465   |Medical Retinal|OpNote|41             |1      |5           |Test Comments|3      |2                 |3        |1      |Test Comments|1                 |
 
   @ON_ROUTE_6
   Scenario Outline: Route 6: Login and create a Operation Note Event
@@ -315,8 +315,8 @@ Feature: Create New Operation Note Event
     Then I save the Operation Note and confirm it has been created successfully
 
     Examples:
-      |uname|pwd  |siteName/Number|firmName/Number             |hospNumber|speciality    |event |commonProcedure|ASAgent|complication|ASComments   |surgeon|supervisingSurgeon|assistant|opDrugs|opComments   |postOpInstructions|
-      |admin|admin|Barking        |Admin User (Medical Retinal)|1009465   |medicalRetinal|OpNote|41             |1      |5           |Test Comments|3      |2                 |3        |1      |Test Comments|1                 |
+      |uname|pwd  |siteName/Number|firmName/Number             |hospNumber|speciality     |event |commonProcedure|ASAgent|complication|ASComments   |surgeon|supervisingSurgeon|assistant|opDrugs|opComments   |postOpInstructions|
+      |admin|admin|Barking        |Admin User (Medical Retinal)|1009465   |Medical Retinal|OpNote|41             |1      |5           |Test Comments|3      |2                 |3        |1      |Test Comments|1                 |
 
 
 
@@ -350,7 +350,7 @@ Feature: Create New Operation Note Event
 
       Examples:
         |uname|pwd  |site           |firm                    |hospitalNumber|speciality|event |procedureId    |
-        |admin|admin|Croydon        |Cataract firm (Cataract)|1009465       |cataract  |OpNote|173            |
+        |admin|admin|Croydon        |Cataract firm (Cataract)|1009465       |Cataract  |OpNote|173            |
 
   @ON_ROUTE_8
   Scenario Outline: To check that PCR Risk saves
@@ -406,7 +406,7 @@ Feature: Create New Operation Note Event
 
     Examples:
       |uname|pwd  |site           |firm                    |hospitalNumber|speciality|event |procedureId    |surgeon|supervisingSurgeon|assistant|opDrugs|opComments   |postOpInstructions|
-      |admin|admin|Croydon        |Cataract firm (Cataract)|1009465       |cataract  |OpNote|173            |3      |2                 |3        |1      |Test Comments|1                 |
+      |admin|admin|Croydon        |Cataract firm (Cataract)|1009465       |Cataract  |OpNote|173            |3      |2                 |3        |1      |Test Comments|1                 |
 
     #procedure id 79,323,173,308,46,45,322 contains doodles and other PCR, whereas other ids contain only comments box.
 
