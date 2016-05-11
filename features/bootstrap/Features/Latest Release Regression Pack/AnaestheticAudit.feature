@@ -37,7 +37,7 @@ Feature: Anaesthetic Satisfaction Audit Regression Tests
 
     Examples:
     |uname|pwd  |siteName/Number|firmName/Number        |lastName|firstName|speciality|event       |comments    |
-    |admin|admin|Barking        |A K Hamilton (Glaucoma)|Coffin, |Violet   |glaucoma  |Satisfaction|This is test|
+    |admin|admin|Barking        |A K Hamilton (Glaucoma)|Coffin, |Violet   |Glaucoma  |Satisfaction|This is test|
 
 
   Scenario Outline: Route 2: Login and create a Anaesthetic Satisfaction Audit:
@@ -72,7 +72,7 @@ Feature: Anaesthetic Satisfaction Audit Regression Tests
 
     Examples:
     |uname|pwd  |siteName/Number|firmName/Number         |hospNo |speciality|event       |comments    |
-    |admin|admin|Croydon        |Cataract firm (Cataract)|1009465|cataract  |Satisfaction|This is test|
+    |admin|admin|Croydon        |Cataract firm (Cataract)|1009465|Cataract  |Satisfaction|This is test|
 
   Scenario Outline: Route 3: Login and create a Anaesthetic Satisfaction Audit:
             Site 1: Queens
@@ -107,7 +107,7 @@ Feature: Anaesthetic Satisfaction Audit Regression Tests
     Examples:
 
       |uname|pwd  |siteName/Number|firmName/Number        |firstName|lastName|speciality|event       |comments    |
-      |admin|admin|Mile End       |A K Hamilton (Glaucoma)|Violet   |Coffin, |glaucoma  |Satisfaction|This is test|
+      |admin|admin|Mile End       |A K Hamilton (Glaucoma)|Violet   |Coffin, |Glaucoma  |Satisfaction|This is test|
 
   Scenario Outline: Route 4: Login and create a Anaesthetic Satisfaction Audit:
             Site 2: Kings
@@ -141,7 +141,7 @@ Feature: Anaesthetic Satisfaction Audit Regression Tests
 
     Examples:
       |uname|pwd  |siteName/Number|firmName/Number                |firstName|lastName|speciality    |event       |
-      |admin|admin|Barking        |Angela Glasby (Medical Retinal)|Violet   |Coffin, |medicalRetinal|Satisfaction|
+      |admin|admin|Barking        |Angela Glasby (Medical Retinal)|Violet   |Coffin, |Medical Retinal|Satisfaction|
 
   @ASA_RT5
   Scenario Outline: Route 5: Validation Tests
@@ -166,4 +166,4 @@ Feature: Anaesthetic Satisfaction Audit Regression Tests
 Examples:
 
   |uname|pwd  |siteName/Number|firmName/Number        |firstName|lastName|speciality    |event       |
-  |admin|admin|Mile End       |A K Hamilton (Glaucoma)|Violet   |Coffin, |glaucoma      |Satisfaction|
+  |admin|admin|Mile End       |A K Hamilton (Glaucoma)|Violet   |Coffin, |Glaucoma      |Satisfaction|
