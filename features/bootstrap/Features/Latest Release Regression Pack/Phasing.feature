@@ -76,7 +76,7 @@
 
     Examples:
     |uname|pwd  |siteName/Number|firmNmae/Number|hospNumber|speciality|event  |rightEyeIPRTime|rightEyeIPR|rightEyeComm|leftEyeIPRTime|leftEyeIPR|leftEyeComm|
-    |admin|admin|1              |1              |1009465   |cataract  |Phasing|21:00          |14         |R TEST      |04:42         |12         |L TEST     |
+    |admin|admin|1              |1              |1009465   |Cataract  |Phasing|21:00          |14         |R TEST      |04:42         |12         |L TEST     |
 
     @Phasing_Route_3
     Scenario Outline: Route 3: Login and create a Phasing Event
@@ -113,7 +113,7 @@
 
       Examples:
         |uname|pwd  |siteName/Number|firmNmae/Number|hospNumber|speciality|event  |rightEyeIPRTime|rightEyeIPR|rightEyeComm|leftEyeIPRTime|leftEyeIPR|leftEyeComm|
-        |admin|admin|2              |3              |1009465   |glaucoma  |Phasing|08:00          |5          |R TEST      |14:42         |9          |L TEST    |
+        |admin|admin|2              |3              |1009465   |Glaucoma  |Phasing|08:00          |5          |R TEST      |14:42         |9          |L TEST    |
 
     @Phasing_Route_4
     Scenario Outline: Route 4: Login and create a Phasing Event
@@ -160,8 +160,8 @@
       Then I Save the Phasing Event and confirm it has been created successfully
 
       Examples:
-        |uname|pwd  |siteName/Number|firmNmae/Number|hospNumber|speciality    |event  |rightEyeIPRTime|rightEyeIPR|rightEyeComm|leftEyeIPRTime|leftEyeIPR|leftEyeComm|leftEyeIPRTime-2|leftEyeIPR-2|rightEyeIPR-2|
-        |admin|admin|1              |4              |1009465   |medicalRetinal|Phasing|08:00          |5          |R TEST      |14:89         |9         |L TEST     |11:07           |6           |20           |
+        |uname|pwd  |siteName/Number|firmNmae/Number|hospNumber|speciality     |event  |rightEyeIPRTime|rightEyeIPR|rightEyeComm|leftEyeIPRTime|leftEyeIPR|leftEyeComm|leftEyeIPRTime-2|leftEyeIPR-2|rightEyeIPR-2|
+        |admin|admin|1              |4              |1009465   |Medical Retinal|Phasing|08:00          |5          |R TEST      |14:89         |9         |L TEST     |11:07           |6           |20           |
 
     @Phasing_Route_5
     Scenario Outline: Route 5: Login and create a Phasing Event
@@ -201,4 +201,4 @@
 
       Examples:
         |uname|pwd  |siteName/Number|firmNmae/Number|hospNumber|speciality|event  |rightEyeIPRTime|rightEyeIPR|rightEyeComm|leftEyeIPRTime|leftEyeIPR|leftEyeComm|
-        |admin|admin|1              |3              |1009465   |glaucoma  |Phasing|25:12          |5          |R TEST      |34:47         |7         |L TEST     |
+        |admin|admin|1              |3              |1009465   |Glaucoma  |Phasing|25:12          |5          |R TEST      |34:47         |7         |L TEST     |
