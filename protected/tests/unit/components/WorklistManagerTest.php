@@ -295,4 +295,47 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
 
         $this->assertTrue($manager->setWorklistDisplayOrderForUser($u, array(5)));
     }
+
+    public function defaultsDataProvider()
+    {
+        return array(
+            array('getDefaultStartTime', 'default_worklist_start_time', null, 'DEFAULT_WORKLIST_START_TIME'),
+            array('getDefaultStartTime', 'default_worklist_start_time', 'misc', null),
+            array('getDefaultEndTime', 'default_worklist_end_time', null, 'DEFAULT_WORKLIST_END_TIME'),
+            array('getDefaultEndTime', 'default_worklist_end_time', 'misc', null)
+        );
+    }
+
+    /**
+     * @dataProvider defaultsDataProvider
+     * @param $method
+     * @param $key
+     * @param $app_val
+     * @param $prop
+     */
+    public function test_getDefaultMethods($method, $key, $app_val, $prop)
+    {
+        $manager = $this->getMockBuilder('WorklistManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getAppParam'))
+            ->getMock();
+
+        $manager->expects($this->once())
+            ->method('getAppParam')
+            ->with($key)
+            ->will($this->returnValue($app_val));
+
+        if ($prop) {
+            $r = new ReflectionClass($manager);
+            $p = $r->getProperty($prop);
+            $p->setAccessible(true);
+            $expected = $p->getValue($manager);
+        }
+        else {
+            $expected = $app_val;
+        }
+
+        $this->assertEquals($expected, $manager->$method());
+    }
+
 }
