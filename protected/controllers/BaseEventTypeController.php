@@ -65,7 +65,7 @@ class BaseEventTypeController extends BaseModuleController
         private $unique_code_elements = array(
             array('event' => 'OphTrOperationnote', 'element' => array('Element_OphTrOperationnote_Cataract')),
         );
-        
+
 	static private $base_action_types = array(
 		'create' => self::ACTION_TYPE_CREATE,
 		'view' => self::ACTION_TYPE_VIEW,
@@ -1696,11 +1696,11 @@ class BaseEventTypeController extends BaseModuleController
 	{
             $this->updateUniqueCode($event);
 	}
-        
+
         /**
          * Update Unique code for the event associated the specific procedures
          */
-        private function updateUniqueCode($event) 
+        private function updateUniqueCode($event)
         {
             foreach($this->unique_code_elements as $unique) {
                 if ($event->eventType->class_name === $unique['event']) {
@@ -1718,7 +1718,7 @@ class BaseEventTypeController extends BaseModuleController
                 }
             }
         }
-        
+
         /**
          * Getting the unused active unique codes
          * @return type
@@ -1739,7 +1739,7 @@ class BaseEventTypeController extends BaseModuleController
                     return $record->id;
             }
         }
-        
+
 	/**
 	 * set base js vars for use in the standard scripts for the controller
 	 */

@@ -276,6 +276,7 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function afterUpdateElements($event)
     {
+        parent::afterUpdateElements($event);
         $this->persistPcrRisk();
 
         if ($this->step) {
@@ -297,6 +298,7 @@ class DefaultController extends \BaseEventTypeController
 
     protected function afterCreateElements($event)
     {
+        parent::afterCreateElements($event);
         $this->persistPcrRisk();
     }
 
@@ -1134,48 +1136,48 @@ class DefaultController extends \BaseEventTypeController
             $this->mandatoryElements = $set->MandatoryElementTypes;
         }
     }
-    
+
     public function actionGetPostOpComplicationList()
     {
-       
+
         $element_id = \Yii::app()->request->getParam('element_id', null);
         $operation_note_id = \Yii::app()->request->getParam('operation_note_id', null);
         $eye_id = \Yii::app()->request->getParam('eye_id', null);
-        
+
         if($element_id){
             $element = models\Element_OphCiExamination_PostOpComplications::model()->findByPk($element_id);
         } else {
             $element = new models\Element_OphCiExamination_PostOpComplications;
         }
-        
+
         $right_complications = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_id);
         $left_complications = $element->getRecordedComplications(\Eye::LEFT, $operation_note_id);
-        
+
         $right_data = array();
         $left_data = array();
         foreach($right_complications as $right_complication){
             $right_data[] = array( 'id' => $right_complication['id'], 'name' => $right_complication['name']);
         }
-        
+
         foreach($left_complications as $left_complication){
             $left_data[] = array( 'id' => $left_complication['id'], 'name' => $left_complication['name']);
         }
-        
+
         $firm = \Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
         $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
-                
+
         $right_select_values = models\OphCiExamination_PostOpComplications::model()->getPostOpComplicationsList($element_id, $operation_note_id, $subspecialty_id, \Eye::RIGHT);
-        
+
         $right_select = array();
         foreach($right_select_values as $right_select_value){
             $right_select[] = array('id' => $right_select_value->id, 'name' => $right_select_value->name, 'display_order' => $right_select_value->display_order);
         }
-        
+
         $left_select_values = models\OphCiExamination_PostOpComplications::model()->getPostOpComplicationsList($element_id, $operation_note_id, $subspecialty_id, \Eye::LEFT);
         foreach($left_select_values as $left_select_value){
             $left_select[] = array('id' => $left_select_value->id, 'name' => $left_select_value->name, 'display_order' => $left_select_value->display_order);
         }
-        
+
         echo \CJSON::encode(array(
             "right_values" => $right_data,
             "left_values" => $left_data,
@@ -1188,23 +1190,23 @@ class DefaultController extends \BaseEventTypeController
     public function actionGetPostOpComplicationAutocopleteList()
     {
         $isAjax = \Yii::app()->request->getParam('ajax', false);
-      
+
         if (\Yii::app()->request->isAjaxRequest || $isAjax) {
-        
+
             $term = \Yii::app()->request->getParam('term', false);
-            
+
             $element_id = \Yii::app()->request->getParam('element_id', null);
             $operation_note_id = \Yii::app()->request->getParam('operation_note_id', null);
             $eye_id = \Yii::app()->request->getParam('eye_id', null);
 
             $firm = \Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
             $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
-        
+
             if (isset($_GET['term']) && strlen($term = $_GET['term']) >0) {
-                
+
                 $select_values = models\OphCiExamination_PostOpComplications::model()->getPostOpComplicationsList(
                             $element_id, $operation_note_id, $subspecialty_id, $eye_id, $term);
-                
+
                 $select = array();
                 foreach($select_values as $select_value){
                     $select[] = array('value' => $select_value->id, 'label' => $select_value->name);
@@ -1213,7 +1215,7 @@ class DefaultController extends \BaseEventTypeController
             }
 
             echo \CJSON::encode($select);
-            
+
         }
     }
 }
