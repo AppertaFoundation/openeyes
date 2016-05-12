@@ -160,20 +160,21 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
             $diff = array_search($diff, $this->graphConfig['xAxis']['categories']);
 
             if($diff >= 0 && $diff <= (count($this->graphConfig['xAxis']['categories'])-1)) {
-                if (!array_key_exists($row["patient_id"], $bestvalues)){
+                if (!array_key_exists($row['patient_id'], $bestvalues)){
                     $bestvalues[$row["patient_id"]] = $diff;
-                }else if($diff< $bestvalues[$row["patient_id"]]){
+                }else if( $diff < $bestvalues[$row["patient_id"]]){
                     $bestvalues[$row["patient_id"]] = $diff;
                 }
-            }
-            foreach($bestvalues as $row => $diff){
-                if (!array_key_exists("$diff", $count)) {
-                    $count["$diff"] = 0;
-                }
-                $count["$diff"]++;
             }
         }
 
+        foreach($bestvalues as $key => $diff){
+            if (!array_key_exists("$diff", $count)) {
+                $count["$diff"] = 0;
+            }
+            $count["$diff"]++;
+        }
+        
         ksort($count, SORT_NUMERIC);
         
         $dataSet = array();
