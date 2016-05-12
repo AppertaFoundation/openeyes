@@ -22,6 +22,10 @@ class OETimeValidator extends CValidator
 {
 	public $allowEmpty = false;
 
+	/**
+	 * @param $value
+	 * @return bool
+	 */
 	public function validateValue($value) {
 		if (!preg_match("/^(([01]?[0-9])|(2[0-3])):[0-5][0-9]$/", $value)) {
 			return false;
@@ -29,6 +33,10 @@ class OETimeValidator extends CValidator
 		return true;
 	}
 
+	/**
+	 * @param CModel $object
+	 * @param string $attribute
+	 */
 	protected function validateAttribute($object, $attribute)
 	{
 		$message = null;

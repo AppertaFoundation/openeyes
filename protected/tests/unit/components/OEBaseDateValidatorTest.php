@@ -72,6 +72,6 @@ class OEBaseDateValidatorTest extends PHPUnit_Framework_TestCase
 
 class TestOEBaseDateValidator extends OEBaseDateValidator
 {
-    public function validateAttribute($object, $attribute) {}
+    protected function validateAttribute($object, $attribute) {}
 }
 
