@@ -100,6 +100,16 @@ class BaseActiveRecord extends CActiveRecord
 	}
 
 	/**
+	 * Default to the lower case of the class to match naming convention for model tables
+	 * 
+	 * @return string
+	 */
+	public function tableName()
+	{
+		return strtolower(get_class($this));
+	}
+
+	/**
 	 * If an array of arrays is passed for a HAS_MANY relation attribute, will create appropriate objects
 	 * to assign to the attribute. Sets up the afterSave method to saves these objects if they have validated.
 	 *
