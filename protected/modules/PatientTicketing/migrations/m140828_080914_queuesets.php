@@ -38,7 +38,7 @@ class m140828_080914_queuesets extends OEMigration
 				'patientticketing_queueset', 'id');
 
 		$this->insert('patientticketing_queuesetcategory', array('name' => 'Virtual Clinic'));
-		$vc_id = Yii::app()->db->getLastInsertID();
+		$vc_id = $this->dbConnection->getLastInsertID();
 
 		$initial_queues = $this->dbConnection->createCommand("SELECT * FROM patientticketing_queue WHERE is_initial = 1")->queryAll();
 
