@@ -1,4 +1,3 @@
-.gitignore
 .DS_Store
 .*swp
 .idea
@@ -24,7 +23,6 @@ tags
 /protected/config/db_muu.php
 /protected/config/local
 /protected/views/patient/custom/info/php
-/protected/commands/
 /protected/yii
 /protected/vendors
 *zip
@@ -43,7 +41,7 @@ vendor
 /assets/
 
 # Include core modules
-!/protected/modules/OphCiExamination/  
+!/protected/modules/OphCiExamination/
 !/protected/modules/OphCiPhasing/
 !/protected/modules/OphCoCorrespondence/
 !/protected/modules/OphCoTherapyapplication/
