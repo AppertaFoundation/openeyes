@@ -110,6 +110,13 @@ return array(
 					),
 					'basePath' => 'application.assets',
 					'depends' => array('jquery'),
+				),
+				'rrule' => array(
+					'js' => array(
+						'components/rrule/lib/rrule.js',
+						'components/rrule/lib/nlp.js'
+					),
+					'basePath' => 'application.assets'
 				)
 			),
 		),
