@@ -43,6 +43,7 @@ class WorklistDefinition extends BaseActiveRecordVersionedSoftDelete
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
+            array('name, rrule, worklist_name, start_time, end_time, description', 'safe'),
             array('name', 'required'),
             array('name', 'length', 'max'=>100),
             array('description', 'length', 'max' => 1000),
@@ -57,7 +58,7 @@ class WorklistDefinition extends BaseActiveRecordVersionedSoftDelete
             array('display_order', 'numerical', 'integerOnly' => true),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, name, rrule, worklist_name, start, end, description, scheduled', 'safe', 'on'=>'search'),
+            array('id, name, rrule, worklist_name, start_time, end_time, description, scheduled', 'safe', 'on'=>'search'),
         );
     }
 
@@ -79,6 +80,7 @@ class WorklistDefinition extends BaseActiveRecordVersionedSoftDelete
     public function attributeLabels()
     {
         return array(
+            'rrule' => 'Frequency'
         );
     }
 
@@ -104,5 +106,17 @@ class WorklistDefinition extends BaseActiveRecordVersionedSoftDelete
         return new CActiveDataProvider(get_class($this), array(
             'criteria'=>$criteria,
         ));
+    }
+
+    // NOT ENTIRELY SURE ABOUT THIS
+    /**
+     * @var array
+     */
+    public $rrule_byday = array();
+
+    public function setRRule($rrule)
+    {
+        parent::setAttribute('rrule', $rrule);
+        $this->rrule_byday = \RRule\RRule::parseRfcString($rrule)['BYDAY'];
     }
 }

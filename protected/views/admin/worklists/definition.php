@@ -30,8 +30,14 @@
             'field' => 5
         )
     ))?>
+
     <?php echo $form->textField($definition,'name', array('autocomplete' => Yii::app()->params['html_autocomplete']), null, array('field' => 2))?>
     <?php echo $form->textArea($definition,'description')?>
+    <?php $this->widget('application.widgets.RRuleField', array(
+        'element' => $definition,
+        'field' => 'rrule',
+        'name' => CHtml::modelName($definition) . '[rrule]'
+    ));?>
     <?php echo $form->textField($definition,'start_time', array('autocomplete' => Yii::app()->params['html_autocomplete']), null, array('field' => 1))?>
     <?php echo $form->textField($definition,'end_time', array('autocomplete' => Yii::app()->params['html_autocomplete']), null, array('field' => 1))?>
 

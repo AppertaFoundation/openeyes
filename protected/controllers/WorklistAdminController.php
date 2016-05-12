@@ -42,6 +42,7 @@ class WorklistAdminController extends BaseAdminController
         ));
     }
 
+
     public function actionDefinition($id = null)
     {
         $definition = $this->manager->getWorklistDefinition($id);
@@ -49,9 +50,21 @@ class WorklistAdminController extends BaseAdminController
         if (!$definition)
             throw new CHttpException(404, "Worklist definition not found");
 
+        if (isset($_POST['WorklistDefinition'])) {
+            // TODO: abstract to manager
+            $definition->attributes = $_POST['WorklistDefinition'];
+            if (!$definition->save()) {
+                $errors = $definition->getErrors();
+            }
+            else {
+                return $this->redirect(array('/worklistAdmin/definitions'));
+            }
+
+        }
+
         $this->render('//admin/worklists/definition', array(
             'definition' => $definition,
-            'errors' => array()
+            'errors' => @$errors
         ));
     }
 
