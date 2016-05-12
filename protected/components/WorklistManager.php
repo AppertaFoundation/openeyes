@@ -154,6 +154,25 @@ class WorklistManager extends CComponent
     }
 
     /**
+     * @param null $id
+     * @return mixed
+     */
+    public function getWorklistDefinition($id = null)
+    {
+        if (is_null($id)) {
+            $definition = $this->getInstanceForClass('WorklistDefinition');
+            $definition->attributes = array(
+                'start_time' => $this->getDefaultStartTime(),
+                'end_time' => $this->getDefaultEndTime()
+            );
+        } else {
+            $definition = $this->getModelForClass('WorklistDefinition')->findByPk($id);
+        }
+
+        return $definition;
+
+    }
+    /**
      * @param $worklist
      * @param $user
      * @param null $display_order

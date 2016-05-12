@@ -338,4 +338,58 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $manager->$method());
     }
 
+    public function test_getWorklistDefinition_new()
+    {
+        $manager = $this->getMockBuilder('WorklistManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getInstanceForClass', 'getDefaultStartTime', 'getDefaultEndTime'))
+            ->getMock();
+
+        $wd = new WorklistDefinition();
+
+        $manager->expects($this->once())
+            ->method('getInstanceForClass')
+            ->with('WorklistDefinition')
+            ->will($this->returnValue($wd));
+
+        $st = '10';
+        $et = '14';
+        $manager->expects($this->once())
+            ->method('getDefaultStartTime')
+            ->will($this->returnValue($st));
+
+        $manager->expects($this->once())
+            ->method('getDefaultEndTime')
+            ->will($this->returnValue($et));
+
+        $this->assertEquals($wd, $manager->getWorklistDefinition());
+        $this->assertEquals($st, $wd->start_time);
+        $this->assertEquals($et, $wd->end_time);
+    }
+
+    public function test_getWorklistDefinition_existing()
+    {
+        $pk = 123;
+        $manager = $this->getMockBuilder('WorklistManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getModelForClass'))
+            ->getMock();
+
+        $model = $this->getMockBuilder('WorklistDefinition')
+            ->disableOriginalConstructor()
+            ->setMethods(array('findByPk'))
+            ->getMock();
+
+        $manager->expects($this->once())
+            ->method('getModelForClass')
+            ->with('WorklistDefinition')
+            ->will($this->returnValue($model));
+
+        $model->expects($this->once())
+            ->method('findByPk')
+            ->with($pk)
+            ->will($this->returnValue('result'));
+
+        $this->assertEquals('result', $manager->getWorklistDefinition($pk));
+    }
 }

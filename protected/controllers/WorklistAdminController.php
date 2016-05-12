@@ -44,7 +44,8 @@ class WorklistAdminController extends BaseAdminController
 
     public function actionDefinition($id = null)
     {
-        $definition = is_null($id) ? new WorklistDefinition() : $this->manager->getWorklistDefinition($id);
+        $definition = $this->manager->getWorklistDefinition($id);
+
         if (!$definition)
             throw new CHttpException(404, "Worklist definition not found");
 
