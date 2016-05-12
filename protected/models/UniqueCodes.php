@@ -80,7 +80,7 @@ class UniqueCodes extends BaseActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-                    
+
                 );
 	}
 
@@ -108,5 +108,22 @@ class UniqueCodes extends BaseActiveRecord
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria' => $criteria,
 		));
+	}
+
+	/**
+	 * @param $code
+	 * @return CActiveRecord
+	 */
+	public function eventFromUniqueCode($code)
+	{
+		$eventId = $this->dbConnection->createCommand()
+			->select('event.id')
+			->from('unique_codes')
+			->join('unique_codes_mapping', 'unique_codes.id = unique_codes_mapping.unique_code_id')
+			->join('event', 'unique_codes_mapping.event_id = event.id')
+			->where('unique_codes.code = ? ', array($code))
+			->queryRow();
+
+		return Event::model()->findByPk($eventId['id']);
 	}
 }
