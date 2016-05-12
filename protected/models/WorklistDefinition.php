@@ -82,14 +82,6 @@ class WorklistDefinition extends BaseActiveRecordVersionedSoftDelete
         );
     }
 
-    public function attributeDefaults()
-    {
-        return array(
-            'start_time' => WorklistManager::defaultStartTime(),
-            'end_time' => WorklistManager::defaultEndTime()
-        );
-    }
-
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
