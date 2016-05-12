@@ -144,7 +144,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         
         // fill up the array with 0, have to send 0 to highcharts if there is no data
         foreach($this->graphConfig['xAxis']['categories'] as $xCat){
-            $count["$xCat"] = 0;
+            $count[] = 0;
         }
         $bestvalues = array();
 
@@ -234,15 +234,18 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
 
         foreach($data as $dataRow){
             $totalEyes += (int)$dataRow[1];
-            if($dataRow[0] < -1 || $dataRow[0] > 1){
-                $plusOrMinusOne += (int)$dataRow[1];
-            }
-
-            if($dataRow[0] < -0.5 || $dataRow[0] > 0.5){
+            
+            // 19 and 21 are the indexes of the -0.5 and +0.5 columns
+            if( $dataRow[0] < 19 || $dataRow[0] > 21 ){
                 $plusOrMinusHalf += (int)$dataRow[1];
             }
+            
+            // 18 and 22 are the indexes of the -1 and +1 columns
+            if( $dataRow[0] < 18 || $dataRow[0] > 22 ){
+                $plusOrMinusOne += (int)$dataRow[1];
+            }
+ 
         }
-
         if($plusOrMinusOne > 0){
             $plusOrMinusOnePercent = number_format((($plusOrMinusOne / $totalEyes) * 100), 1, '.', '' );
         }
