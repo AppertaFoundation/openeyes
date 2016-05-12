@@ -130,26 +130,28 @@ if(!isset($uniqueid)){
 			<tfoot class="pagination-container">
 			<tr>
 				<td colspan="<?php echo count($admin->getListFields()) + 1; ?>">
-					<?php echo EventAction::button(
-						'Add',
-						'add',
-						array(),
-						array(
-							'class' => 'small',
-							'data-uri' => '/' . $uniqueid . '/edit',
-							'formmethod' => 'get'
-						)
-					)->toHtml() ?>
-					<?php echo EventAction::button(
-						'Delete',
-						'delete',
-						array(),
-						array(
-							'class' => 'small',
-							'data-uri' => '/' . $uniqueid . '/delete',
-							'data-object' => $admin->getModelName()
-						)
-					)->toHtml() ?>
+                                        <?php if(isset($buttons) && ($buttons == true)) { ?>
+                                            <?php echo EventAction::button(
+                                                    'Add',
+                                                    'add',
+                                                    array(),
+                                                    array(
+                                                            'class' => 'small',
+                                                            'data-uri' => '/' . $uniqueid . '/edit',
+                                                            'formmethod' => 'get'
+                                                    )
+                                            )->toHtml() ?>
+                                            <?php echo EventAction::button(
+                                                    'Delete',
+                                                    'delete',
+                                                    array(),
+                                                    array(
+                                                            'class' => 'small',
+                                                            'data-uri' => '/' . $uniqueid . '/delete',
+                                                            'data-object' => $admin->getModelName()
+                                                    )
+                                            )->toHtml() ?>
+                                        <?php } ?>
 					<?php echo EventAction::button(
 						'Sort',
 						'sort',

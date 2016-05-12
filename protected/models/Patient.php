@@ -1455,7 +1455,34 @@ class Patient extends BaseActiveRecordVersioned
 
         return Event::model()->with('episode')->find($criteria);
 
-    }
+	}
+
+	public function getLatestOperationNoteEventUniqueCode()
+	{
+		$event_type = EventType::model()->find('class_name=?',array('OphTrOperationnote'));
+		$criteria = new CDbCriteria();
+		$criteria->addCondition('episode.patient_id = :pid');
+		$criteria->addCondition('t.event_type_id = :event_type_id');
+		$criteria->params = array(':pid' => $this->id, ':event_type_id' => $event_type->id);
+		$criteria->order = "t.event_date DESC, t.created_date DESC";
+		$criteria->limit = 1;
+		$event = Event::model()->with('episode')->find($criteria);
+		return $this->getUniqueCodeForEvent($event->id);
+
+	}
+
+	public function getUniqueCodeForEvent($id){
+		if(!empty($id)) {
+			foreach (Yii::app()->db->createCommand()
+								 ->select("uc.code")
+								 ->from("unique_codes uc")
+								 ->join("unique_codes_mapping ucm", "uc.id = ucm.unique_code_id")
+								 ->where("ucm.event_id = $id")->queryAll() as $row) {
+				return (!empty($row[$code]) ? $row['code'] : '');
+			}
+		}
+		return '';
+	}
 
     /**
      * get an associative array of CommissioningBody for this patient and the patient's practice

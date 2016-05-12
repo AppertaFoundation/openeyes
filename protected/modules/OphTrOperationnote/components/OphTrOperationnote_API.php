@@ -92,4 +92,15 @@ class OphTrOperationnote_API extends BaseAPI
 				->find($criteria);
 		}
 	}
+        
+        public function getPatientUniqueCode($patient) {
+                $patient_latest_event = $patient->getLatestOperationNoteEventUniqueCode();
+                $event_unique_code = '';
+                if(!empty($patient_latest_event)) {
+                    $check_digit1 = new CheckDigitGenerator(Yii::app()->params['institution_code'] . $patient_latest_event, Yii::app()->params['salt']);
+                    $check_digit2 = new CheckDigitGenerator($patient_latest_event . $patient->dob, Yii::app()->params['salt']);
+                    $event_unique_code = Yii::app()->params['institution_code'] . $check_digit1->generateCheckDigit() . '-' . $patient_latest_event . '-' . $check_digit2->generateCheckDigit();
+                }
+                return $event_unique_code;
+        }
 }

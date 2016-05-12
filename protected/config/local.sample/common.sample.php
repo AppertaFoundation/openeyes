@@ -131,8 +131,11 @@ $config = array(
 		//'default_site_code' => '',
 		'specialty_sort' => array(130, 'SUP'),
 		'OphCoTherapyapplication_sender_email' => array('email@example.com' => 'Test'),
+		// flag to turn on drag and drop sorting for dashboards
+		// 'dashboard_sortable' => true
 		'event_print_method' => 'pdf',
 		'wkhtmltopdf_nice_level' => 19,
+         'salt' => 'SALTFORUNIQUECODES',
 		// flag to turn on drag and drop sorting for dashboards
 		// 'dashboard_sortable' => true
 	),
