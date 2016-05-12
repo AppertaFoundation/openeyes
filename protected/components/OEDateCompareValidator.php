@@ -49,7 +49,12 @@ class OEDateCompareValidator extends OEBaseDateValidator
      */
     public $operator='=';
 
-    public function validateAttribute($object, $attribute)
+    /**
+     * @param CModel $object
+     * @param string $attribute
+     * @throws CException
+     */
+    protected function validateAttribute($object, $attribute)
     {
         $message = null;
 

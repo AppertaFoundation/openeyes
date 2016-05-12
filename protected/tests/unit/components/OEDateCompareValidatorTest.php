@@ -18,6 +18,14 @@
 class OEDateCompareValidatorTest extends PHPUnit_Framework_TestCase
 {
 
+    protected static function getProtectedMethod($obj, $method_name)
+    {
+        $r = new ReflectionClass($obj);
+        $m = $r->getMethod($method_name);
+        $m->setAccessible(true);
+        return $m;
+    }
+
     public function doValidateAttribute($expect_message = false)
     {
         $attr = new DateTime('2015-05-06');
@@ -65,7 +73,8 @@ class OEDateCompareValidatorTest extends PHPUnit_Framework_TestCase
                 ->method('addError');
         }
 
-        $validator->validateAttribute($obj,'attr');
+        $m = static::getProtectedMethod($validator, 'validateAttribute');
+        $m->invokeArgs($validator, array($obj, 'attr'));
     }
 
     public function test_validateAttributeSuccess()
@@ -95,7 +104,9 @@ class OEDateCompareValidatorTest extends PHPUnit_Framework_TestCase
         $validator->expects($this->at(0))
             ->method('addError');
 
-        $validator->validateAttribute($obj, 'attr');
+        $m = static::getProtectedMethod($validator, 'validateAttribute');
+
+        $m->invokeArgs($validator, array($obj, 'attr'));
     }
 
     public function test_validateAttributeEmptyValue_allowed()
@@ -116,7 +127,9 @@ class OEDateCompareValidatorTest extends PHPUnit_Framework_TestCase
         $validator->expects($this->never())
             ->method('addError');
 
-        $validator->validateAttribute($obj, 'attr');
+        $m = static::getProtectedMethod($validator, 'validateAttribute');
+
+        $m->invokeArgs($validator, array($obj, 'attr'));
     }
 
     public function test_validateAttributeCompareEmptyValue()
@@ -136,7 +149,9 @@ class OEDateCompareValidatorTest extends PHPUnit_Framework_TestCase
         $validator->expects($this->at(0))
             ->method('addError');
 
-        $validator->validateAttribute($obj, 'attr');
+        $m = static::getProtectedMethod($validator, 'validateAttribute');
+
+        $m->invokeArgs($validator, array($obj, 'attr'));
     }
 
     public function test_validateAttributeCompareEmptyValue_allowed()
@@ -157,7 +172,9 @@ class OEDateCompareValidatorTest extends PHPUnit_Framework_TestCase
         $validator->expects($this->never())
             ->method('addError');
 
-        $validator->validateAttribute($obj, 'attr');
+        $m = static::getProtectedMethod($validator, 'validateAttribute');
+
+        $m->invokeArgs($validator, array($obj, 'attr'));
     }
 
     public function test_validateAttributeInvalidValues()
@@ -177,7 +194,9 @@ class OEDateCompareValidatorTest extends PHPUnit_Framework_TestCase
         $validator->expects($this->at(0))
             ->method('addError');
 
-        $validator->validateAttribute($obj, 'attr');
+        $m = static::getProtectedMethod($validator, 'validateAttribute');
+
+        $m->invokeArgs($validator, array($obj, 'attr'));
     }
 
     public function compareProvider()
