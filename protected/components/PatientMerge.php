@@ -162,7 +162,6 @@ class PatientMerge
         } else {
             // Both have episodes, we have to compare the subspecialties
             
-            
             foreach($secondaryPatient->episodes as $secondaryEpisode){
                 $secondary_subspecialty = $secondaryEpisode->getSubspecialtyID();
 
@@ -171,21 +170,43 @@ class PatientMerge
                     $primary_subspecialty = $primaryEpisode->getSubspecialtyID();
 
                     if( $secondary_subspecialty == $primary_subspecialty ){
-                        // Both primary and secondary patient have episodes
-                        $this->updateEventsEpisodeId($primaryEpisode->id, $secondaryEpisode->events);
+                        
+                        /** We need to keep the older episode so we compare the dates **/ 
+                        
+                        if( $primaryEpisode->created_date > $secondaryEpisode->created_date ){
+                            
+                            // the primary episode is older than the secondary so we move the events from the Secondary into the Primary
+                            $this->updateEventsEpisodeId($primaryEpisode->id, $secondaryEpisode->events);
+                            
+                            // after all events are moved we flag the secondary episode as deleted
+                            $secondaryEpisode->deleted = 1;
+                            if( $secondaryEpisode->save()){
+                                Audit::add('Patient Merge', "Episode " . $secondaryEpisode->id . "marked as deleted, events moved under the primary patient's same firm episode.");
+                            } else {
+                                throw new Exception("Failed to update Episode: " . $secondaryEpisode->id . " " . print_r($secondaryEpisode->errors, true));
+                            }
+                            
+                        } else {
+                            
+                            // the secondary episode is older than the primary so we move the events from the Primary into the Secondary
+                            $this->updateEventsEpisodeId($secondaryEpisode->id, $primaryEpisode->events);
+                            
+                            /** BUT do not forget we have to delete the primary episode AND move the secondary episode to the primary patient **/
+                            $primaryEpisode->deleted = 1;
+                            $primaryEpisode->save();
+                            
+                            $this->updateEpisodesPatientId($primaryPatient->id, array($secondaryEpisode));
+                        }
+                        
                         $isSameSubspecialty = true;
                     }
                 }
                 
+                // if there is no conflict we still need to move the secondary episode to the primary patient
                 if( !$isSameSubspecialty ){
                     $this->updateEpisodesPatientId($primaryPatient->id, array($secondaryEpisode));
                 } else {
-                    $secondaryEpisode->deleted = 1;
-                    if( $secondaryEpisode->save()){
-                        Audit::add('Patient Merge', "Episode " . $secondaryEpisode->id . "marked as deleted, events moved under the primary patient's same firm episode.");
-                    } else {
-                        throw new Exception("Failed to update Episode: " . $secondaryEpisode->id . " " . print_r($secondaryEpisode->errors, true));
-                    }
+                    // there was a conflict and the episode was already moved in the foreach above
                 }
             }
         }
