@@ -15,16 +15,8 @@
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-class OEDateCompareValidatorTest extends PHPUnit_Framework_TestCase
+class OEDateCompareValidatorTest extends BasePHPUnit
 {
-
-    protected static function getProtectedMethod($obj, $method_name)
-    {
-        $r = new ReflectionClass($obj);
-        $m = $r->getMethod($method_name);
-        $m->setAccessible(true);
-        return $m;
-    }
 
     public function doValidateAttribute($expect_message = false)
     {
