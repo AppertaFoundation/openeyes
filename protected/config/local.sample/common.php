@@ -142,7 +142,7 @@ $config = array(
 				'examinations' => '/examinations/searches'
 			),
 			'credentials' => array(
-				'username' => 'peter.s.gallagher@gmail.com',
+				'username' => 'user@example.com',
 				'password' => 'apipass',
 				'grant_type' => 'password',
 				'client_id' => 'f3d259ddd3ed8ff3843839b',
