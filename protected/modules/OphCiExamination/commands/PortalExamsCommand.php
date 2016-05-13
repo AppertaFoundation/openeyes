@@ -46,6 +46,10 @@ class PortalExamsCommand extends CConsoleCommand
 			$uidArray = explode('-', $examination['patient']['unique_identifier']);
 			$uniqueCode = $uidArray[1];
 			$opNoteEvent = UniqueCodes::model()->eventFromUniqueCode($uniqueCode);
+			if(!$opNoteEvent){
+				echo 'No Event found for identifier: '.$examination['patient']['unique_identifier'];
+				continue;
+			}
 			$transaction = $opNoteEvent->getDbConnection()->beginInternalTransaction();
 
 			try {
@@ -125,6 +129,7 @@ class PortalExamsCommand extends CConsoleCommand
 				continue;
 			}
 			$transaction->commit();
+			echo 'Examination imported';
 		}
 	}
 
