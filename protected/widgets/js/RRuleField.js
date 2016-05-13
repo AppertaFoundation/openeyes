@@ -18,7 +18,15 @@
 
     RRuleField.prototype.init = function()
     {
-        this._rrule = RRule.fromString(this.element.val());
+        try {
+            this._rrule = RRule.fromString(this.element.val());
+        }
+        catch (e) {
+            // simple error handling here. In theory should never arise, but this will at
+            // least prevent the widget from masking any issues by still rendering the form
+            console.log(this.element.val() + ' is not a valid for rrule');
+            return;
+        }
         this.render();
     };
 
