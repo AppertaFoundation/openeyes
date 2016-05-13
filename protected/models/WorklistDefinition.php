@@ -15,6 +15,9 @@
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
+use \RRule\RRule;
+
 class WorklistDefinition extends BaseActiveRecordVersionedSoftDelete
 {
     /**
@@ -44,7 +47,8 @@ class WorklistDefinition extends BaseActiveRecordVersionedSoftDelete
         // will receive user inputs.
         return array(
             array('name, rrule, worklist_name, start_time, end_time, description', 'safe'),
-            array('name', 'required'),
+            array('rrule', 'validateRrule'),
+            array('name, rrule', 'required'),
             array('name', 'length', 'max'=>100),
             array('description', 'length', 'max' => 1000),
             array('start_time, end_time', 'OETimeValidator'),
@@ -108,15 +112,32 @@ class WorklistDefinition extends BaseActiveRecordVersionedSoftDelete
         ));
     }
 
-    // NOT ENTIRELY SURE ABOUT THIS
     /**
-     * @var array
+     * Simple wrapper around RRule construction to validate the string definition
+     *
+     * @param $attribute
      */
-    public $rrule_byday = array();
-
-    public function setRRule($rrule)
+    public function validateRrule($attribute)
     {
-        parent::setAttribute('rrule', $rrule);
-        $this->rrule_byday = \RRule\RRule::parseRfcString($rrule)['BYDAY'];
+        if (empty($this->$attribute))
+            return;
+
+        $valid = true;
+        try {
+            if (strpos($this->$attribute, '=') === false) {
+                // rrule instantiation falls over if no equals is found during parsing
+                // so this is a bit of a dirty hack to deal with that.
+                $valid = false;
+            }
+            else {
+                $rrule = new RRule($this->$attribute);
+            }
+        }
+        catch (Exception $e)
+        {
+            $valid = false;
+        }
+        if (!$valid)
+            $this->addError($attribute, $this->getAttributeLabel($attribute) . ' is not valid');
     }
 }
