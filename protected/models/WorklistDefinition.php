@@ -49,7 +49,7 @@ class WorklistDefinition extends BaseActiveRecordVersionedSoftDelete
             array('description', 'length', 'max' => 1000),
             array('start_time, end_time', 'OETimeValidator'),
             array('active_from, active_until', 'OEDateValidator'),
-            array('active_from', 'OEDateCompareValidator', 'compareAttribute' => 'end', 'allowEmpty' => true,
+            array('active_from', 'OEDateCompareValidator', 'compareAttribute' => 'active_until', 'allowEmpty' => true,
                 'allowCompareEmpty' => true, 'operator' => '<=',
                 'message' => '{attribute} must be on or before {compareAttribute}'),
             array('active_from', 'default', 'setOnEmpty' => true, 'value' => date("Y-m-d H:i:s", time())),
