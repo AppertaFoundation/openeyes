@@ -20,11 +20,11 @@
 class GenerateUniqueCodeCommand extends CConsoleCommand {
 
     protected $unique_code;
-    
+
     protected $allowable_character_length;
-    
+
     protected $limit = 1000;
-    
+
     const UNIQUE_CODE_LENGTH = 6;
 
     public function getHelp() {
@@ -35,21 +35,19 @@ class GenerateUniqueCodeCommand extends CConsoleCommand {
      * Generate six characters unique code, and store them into the db
      */
     public function run($args) {
-        
+
         $this->setAlphabet(
                 implode(range('A', 'Z'))
-                . implode(range(0, 9))
+                . implode(range(2, 9))
         );
         if (!empty($args[0])) {
             $this->limit = (int)$args[0];
         }
-        
+
         for ($generation = 1; $generation <= $this->limit; $generation++) {
             $values = $this->generate(self::UNIQUE_CODE_LENGTH);
             $this->insert($values);
         }
-        
-
     }
 
     /**
@@ -104,7 +102,7 @@ class GenerateUniqueCodeCommand extends CConsoleCommand {
 
         return ($min + $rnd);
     }
-    
+
     protected function insert($record)
     {
         try {

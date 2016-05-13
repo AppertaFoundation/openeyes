@@ -135,6 +135,20 @@ $config = array(
 		// 'dashboard_sortable' => true
 		'event_print_method' => 'pdf',
 		'wkhtmltopdf_nice_level' => 19,
+		'portal' => array(
+			'uri' => 'http://api.localhost:8000',
+			'endpoints' => array(
+				'auth' => '/oauth/access',
+				'examinations' => '/examinations/searches'
+			),
+			'credentials' => array(
+				'username' => 'user@example.com',
+				'password' => 'apipass',
+				'grant_type' => 'password',
+				'client_id' => 'f3d259ddd3ed8ff3843839b',
+				'client_secret' => '4c7f6f8fa93d59c45502c0ae8c4a95b',
+			)
+		)
 	),
 );
 
