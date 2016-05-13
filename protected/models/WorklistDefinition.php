@@ -112,6 +112,15 @@ class WorklistDefinition extends BaseActiveRecordVersionedSoftDelete
         ));
     }
 
+    public function afterFind()
+    {
+        // strip out the seconds from the time field
+        foreach (array('start_time', 'end_time') as $time_attr) {
+            $this->$time_attr = substr($this->$time_attr,0, 5);
+        }
+        parent::afterFind();
+    }
+
     /**
      * Simple wrapper around RRule construction to validate the string definition
      *
