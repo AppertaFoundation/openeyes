@@ -50,18 +50,48 @@ class AddingNewEventContext extends PageObjectContext {
 		$addNewEvent->addNewEvent ( $event );
 	}
 	
-	/**
-	 * @Then /^I expand the Cataract sidebar$/
-	 */
-	public function iExpandTheCataractSidebar() {
-		/**
-		 *
-		 * @var AddingNewEvent $addNewEvent
-		 */
-		$addNewEvent = $this->getPage ( 'AddingNewEvent' );
-		$addNewEvent->expandCataract ();
-	}
+//	/**
+//	 * @Then /^I expand the Cataract sidebar$/
+//	 */
+//	public function iExpandTheCataractSidebar() {
+//		/**
+//		 *
+//		 * @var AddingNewEvent $addNewEvent
+//		 */
+//		$addNewEvent = $this->getPage ( 'AddingNewEvent' );
+//		$addNewEvent->expandCataract ();
+//	}
 	
+//	/**
+//	 * @Then /^I expand the "([^"]*)" sidebar$/
+//	 */
+//	public function iExpandTheSidebar($firm) {
+//		/**
+//		 *
+//		 * @var AddingNewEvent $addNewEvent
+//		 */
+//		$addNewEvent = $this->getPage ( 'AddingNewEvent' );
+//		if($firm==="cataract")
+//		{
+//			$addNewEvent->expandCataract ();
+//		}
+//		elseif($firm==="glaucoma")
+//		{
+//			$addNewEvent->expandGlaucoma ();
+//		}
+//		elseif($firm==="medicalRetinal")
+//			{
+//				$addNewEvent->expandMedicalRetinal ();
+//			}
+//		elseif($firm==="supportfirm")
+//		{
+//			$addNewEvent->expandSupportFirm ();
+//		}
+//		else{
+//			throw new BehaviorException ( "WARNING!!! Invalid Event selected" );
+//		}
+//	}
+
 	/**
 	 * @Then /^I expand the "([^"]*)" sidebar$/
 	 */
@@ -71,60 +101,49 @@ class AddingNewEventContext extends PageObjectContext {
 		 * @var AddingNewEvent $addNewEvent
 		 */
 		$addNewEvent = $this->getPage ( 'AddingNewEvent' );
-		if($firm==="cataract")
-		{
-			$addNewEvent->expandCataract ();
-		}
-		elseif($firm==="glaucoma")
-		{
-			$addNewEvent->expandGlaucoma ();
-		}
-		elseif($firm==="medicalRetinal")
-			{
-				$addNewEvent->expandMedicalRetinal ();
-			}
-		elseif($firm==="supportfirm")
-		{
-			$addNewEvent->expandSupportFirm ();
+		if($firm==="Cataract"|| $firm==="Glaucoma" || $firm==="Medical Retinal"|| $firm==="Support Firm"){
+			$addNewEvent->expandFirmSidebar($firm);
 		}
 		else{
-			throw new BehaviorException ( "WARNING!!! Invalid Event selected" );
+			throw new BehaviorException ( "WARNING!!! Invalid Event selected, not in the list!" );
 		}
 	}
 
-	/**
-	 * @Then /^I expand the Glaucoma sidebar$/
-	 */
-	public function iExpandTheGlaucomaSidebar() {
-		/**
-		 *
-		 * @var AddingNewEvent $addNewEvent
-		 */
-		$addNewEvent = $this->getPage ( 'AddingNewEvent' );
-		$addNewEvent->expandGlaucoma ();
-	}
-	
-	/**
-	 * @Then /^I expand the Medical Retinal sidebar$/
-	 */
-	public function iExpandTheMedicalRetinalSidebar() {
-		/**
-		 *
-		 * @var AddingNewEvent $addNewEvent
-		 */
-		$addNewEvent = $this->getPage ( 'AddingNewEvent' );
-		$addNewEvent->expandMedicalRetinal ();
-	}
-	
-	/**
-	 * @Then /^I expand the Support Firm sidebar$/
-	 */
-	public function iExpandTheSupportFirmSidebar() {
-		/**
-		 *
-		 * @var AddingNewEvent $addNewEvent
-		 */
-		$addNewEvent = $this->getPage ( 'AddingNewEvent' );
-		$addNewEvent->expandSupportFirm ();
-	}
+
+//	/**
+//	 * @Then /^I expand the Glaucoma sidebar$/
+//	 */
+//	public function iExpandTheGlaucomaSidebar() {
+//		/**
+//		 *
+//		 * @var AddingNewEvent $addNewEvent
+//		 */
+//		$addNewEvent = $this->getPage ( 'AddingNewEvent' );
+//		$addNewEvent->expandGlaucoma ();
+//	}
+//
+//	/**
+//	 * @Then /^I expand the Medical Retinal sidebar$/
+//	 */
+//	public function iExpandTheMedicalRetinalSidebar() {
+//		/**
+//		 *
+//		 * @var AddingNewEvent $addNewEvent
+//		 */
+//		$addNewEvent = $this->getPage ( 'AddingNewEvent' );
+//		$addNewEvent->expandMedicalRetinal ();
+//	}
+//
+//	/**
+//	 * @Then /^I expand the Support Firm sidebar$/
+//	 */
+//	public function iExpandTheSupportFirmSidebar() {
+//		/**
+//		 *
+//		 * @var AddingNewEvent $addNewEvent
+//		 */
+//		$addNewEvent = $this->getPage ( 'AddingNewEvent' );
+//		$addNewEvent->expandSupportFirm ();
+//	}
+
 	}
