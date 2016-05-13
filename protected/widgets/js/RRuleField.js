@@ -92,7 +92,7 @@
     {
         var self = this;
 
-        var fields = "<label>Day(s) of the Week:</label>";
+        var fields = "<h4>Day(s) of the Week:</h4>";
         for (var i in dayCodes) {
             fields += '<label class="inline"><input type="checkbox" name="dayOfWeek[]" value="' + i + '" class="'+ this.options.changeClass +'"';
             if (self.isDaySelected(i)) {
@@ -114,7 +114,7 @@
     {
         var self = this;
 
-        var weekSelection = $('<div style="padding-left: 50px;" />');
+        var weekSelection = $('<div style="padding-top: 20px;" />');
         container.append(weekSelection);
 
         // flag to determine set the everyweek box checked
@@ -133,7 +133,7 @@
         weekFields += '</span>';
 
         // defining this afterward so we can apply the checked property correctly.
-        var everyWeekField = '<label class="inline"><input type="checkbox" name="every-week" class="every-week '+ this.options.changeClass +'";';
+        var everyWeekField = '<h4>Weeks of the Month:</h4><label class="inline"><input type="checkbox" name="every-week" class="every-week '+ this.options.changeClass +'";';
         if (everyWeek)
             everyWeekField += ' checked';
         everyWeekField += '/>Every Week</label>';
