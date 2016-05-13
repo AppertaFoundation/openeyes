@@ -41,10 +41,12 @@
         // create a container in which we can store all our input fields for defining the RRule
         self.container = $("<div />").insertAfter(self.element);
 
+        self.renderDescription(self.container);
         // render the days of the week selection
         self.renderDaysOfWeek(self.container);
         self.renderWeekSelection(self.container);
 
+        self.updateField();
         // update the field every time the rrule field form is changed
         $(self.container).on('change', '.'+self.options.changeClass, function(e) {self.updateField()});
     };
@@ -89,6 +91,16 @@
             }
         }
         return false;
+    };
+
+    /**
+     * Display the rrule description as the form is updated.
+     * 
+     * @param container
+     */
+    RRuleField.prototype.renderDescription = function(container)
+    {
+        $(container).append('<div class="rrule-description" style="font-style: italic; font-size:0.7em;"></div><hr style="margin: 5px;"/>');
     };
 
     /**
@@ -199,8 +211,14 @@
         }
 
         if ($(self.container).find('input[name="every-week"]').prop('checked')) {
-            rruleOptions.freq = RRule.WEEKLY;
-            rruleOptions.byweekday = weekdays;
+            if (weekdays.length == dayMap.length) {
+                rruleOptions.freq = RRule.DAILY;
+            }
+            else {
+                rruleOptions.freq = RRule.WEEKLY;
+                rruleOptions.byweekday = weekdays;
+            }
+
         }
         else {
             rruleOptions.freq = RRule.MONTHLY;
@@ -212,6 +230,11 @@
             }
         }
         self._rrule = new RRule(rruleOptions);
+
+        var description = self._rrule.toText();
+        description = description[0].toUpperCase() + description.slice(1);
+
+        $(self.container).find('.rrule-description').text(description);
         $(self.element).val(self._rrule.toString());
     };
 
