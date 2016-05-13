@@ -68,4 +68,14 @@ class WorklistAdminController extends BaseAdminController
         ));
     }
 
+    public function actionDefinitionGenerate($id)
+    {
+        $definition = $this->manager->getWorklistDefinition($id);
+
+        if (!$definition)
+            throw new CHttpException(404, "Worklist definition not found");
+
+        $this->manager->generateAutomaticWorklists($definition);
+    }
+
 }

@@ -47,9 +47,13 @@ class WorklistManager extends CComponent
      * @param $class
      * @return mixed
      */
-    protected function getInstanceForClass($class)
+    protected function getInstanceForClass($class, $args = array())
     {
-        return new $class();
+        if (empty($args))
+            return new $class();
+
+        $cls = new ReflectionClass($class);
+        return $cls->newInstanceArgs($args);
     }
 
     /**
@@ -129,6 +133,11 @@ class WorklistManager extends CComponent
     protected static $DEFAULT_WORKLIST_END_TIME = '17:00';
 
     /**
+     * @var string
+     */
+    protected static $DEFAULT_GENERATION_LIMIT = '1 month';
+
+    /**
      * Wrapper for managing default start time for scheduled worklists
      *
      * @return string
@@ -151,6 +160,14 @@ class WorklistManager extends CComponent
     public function getWorklistDefinitions()
     {
         return $this->getModelForClass('WorklistDefinition')->findAll();
+    }
+
+    public function getGenerationTimeLimitDate()
+    {
+        $limit = $this->getAppParam('default_generation_limit') ?: self::$DEFAULT_GENERATION_LIMIT;
+        $interval = DateInterval::createFromDateString($limit);
+
+        return (new DateTime())->add($interval);
     }
 
     /**
@@ -496,6 +513,38 @@ class WorklistManager extends CComponent
 
         return $wp_model->with(array('patient','patient.contact'))->findAll($criteria);
     }
+
+    public function setDateLimitOnRrule($rrule, $limit) {
+        if (strpos($rrule, 'UNTIL=')) {
+            preg_replace('/UNTIL=[^;]*/', 'UNTIL='.$limit->format('Y-m-d'), $rrule);
+        }
+        else {
+            $rrule .= ';UNTIL='.$limit->format('Y-m-d');
+        }
+        return $rrule;
+    }
+
+    protected function createAutomaticWorklist($definition, $date) {
+        //TODO: Implement this function - needs to check for already existing instance on the given date
+    }
+    
+    /**
+     * @param WorklistDefinition $worklist
+     * @param DateTime $date_limit
+     */
+    public function generateAutomaticWorklists($definition, $date_limit = null)
+    {
+        if (is_null($date_limit))
+            $date_limit = $this->getGenerationTimeLimit();
+
+        $rrule_str = $this->setDateLimitOnRrule($definition->rrule, $date_limit);
+        $rrule = $this->getInstanceForClass('\RRule\RRule',array($rrule_str));
+
+        foreach ($rrule as $occurence) {
+            $this->createAutomaticWorklist($definition, $occurence);
+        }
+    }
+
 
     /**
      * Internal method to reset state for error tracking
