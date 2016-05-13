@@ -416,6 +416,46 @@ var anaestheticSlide = new AnaestheticSlide;
 var anaestheticGivenBySlide = new AnaestheticGivenBySlide;
 var iol_position;
 
+/**
+ * simply checks if any IOL related doodles are in the eyedraw, and hides or shows the related fields
+ * accordingly
+ * 
+ * @param _drawing
+ */
+function showHideIOLFields(_drawing) {
+    var iolPresent = false;
+
+    for (var i in _drawing.doodleArray) {
+        if ($.inArray(_drawing.doodleArray[i].className, eyedraw_iol_classes) > -1) {
+            iolPresent = true;
+            break;
+        }
+    }
+    if (iolPresent) {
+        $('#div_Element_OphTrOperationnote_Cataract_iol_type_id').show();
+        $('#div_Element_OphTrOperationnote_Cataract_iol_power').show();
+        $('#div_Element_OphTrOperationnote_Cataract_iol_position_id').show();
+        if ($('#Element_OphTrOperationnote_Cataract_iol_position_id').children('option:selected').text() == 'None') {
+            $('#Element_OphTrOperationnote_Cataract_iol_position_id').children('option').map(function () {
+                if ($(this).text() == '- Please select -') {
+                    $(this).attr('selected', 'selected');
+                }
+            });
+        }
+    }
+    else {
+        $('#div_Element_OphTrOperationnote_Cataract_iol_type_id').hide();
+        $('#div_Element_OphTrOperationnote_Cataract_iol_power').hide();
+        $('#div_Element_OphTrOperationnote_Cataract_iol_position_id').hide();
+        $('#Element_OphTrOperationnote_Cataract_iol_position_id').children('option').map(function () {
+            if ($(this).text() == 'None') {
+                $(this).attr('selected', 'selected');
+            }
+        });
+    }
+
+}
+
 function sidePortController(_drawing) {
     var phakoIncision;
     var sidePort1;
@@ -428,7 +468,7 @@ function sidePortController(_drawing) {
     var meridian;
 
     // Register controller for notifications
-    _drawing.registerForNotifications(this, 'notificationHandler', ['ready', 'beforeReset', 'reset', 'resetEdit', 'parameterChanged', 'doodleAdded', 'doodleDeleted']);
+    _drawing.registerForNotifications(this, 'notificationHandler', ['ready', 'beforeReset', 'reset', 'resetEdit', 'parameterChanged', 'doodleAdded', 'doodleDeleted', 'doodlesLoaded']);
 
     // Method called for notification
     this.notificationHandler = function (_messageArray) {
@@ -466,6 +506,7 @@ function sidePortController(_drawing) {
                 sidePort1 = _drawing.addDoodle('SidePort', {rotation: 0});
                 sidePort2 = _drawing.addDoodle('SidePort', {rotation: Math.PI});
                 _drawing.deselectDoodles();
+                break;
             case 'resetEdit':
                 $('#Element_OphTrOperationnote_Cataract_iol_position_id').val(iol_position);
                 $('#Element_OphTrOperationnote_Cataract_incision_site_id').val(site_id);
@@ -504,30 +545,13 @@ function sidePortController(_drawing) {
                 }
                 break;
             case 'doodleDeleted':
-                if ($.inArray(_messageArray['object'], eyedraw_iol_classes) != -1) {
-                    $('#div_Element_OphTrOperationnote_Cataract_iol_type_id').hide();
-                    $('#div_Element_OphTrOperationnote_Cataract_iol_power').hide();
-                    $('#div_Element_OphTrOperationnote_Cataract_iol_position_id').hide();
-                    $('#Element_OphTrOperationnote_Cataract_iol_position_id').children('option').map(function () {
-                        if ($(this).text() == 'None') {
-                            $(this).attr('selected', 'selected');
-                        }
-                    });
-                }
+                showHideIOLFields(_drawing);
                 break;
             case 'doodleAdded':
-                if ($.inArray(_messageArray['object']['className'], eyedraw_iol_classes) != -1) {
-                    $('#div_Element_OphTrOperationnote_Cataract_iol_type_id').show();
-                    $('#div_Element_OphTrOperationnote_Cataract_iol_power').show();
-                    $('#div_Element_OphTrOperationnote_Cataract_iol_position_id').show();
-                    if ($('#Element_OphTrOperationnote_Cataract_iol_position_id').children('option:selected').text() == 'None') {
-                        $('#Element_OphTrOperationnote_Cataract_iol_position_id').children('option').map(function () {
-                            if ($(this).text() == '- Please select -') {
-                                $(this).attr('selected', 'selected');
-                            }
-                        });
-                    }
-                }
+                showHideIOLFields(_drawing);
+                break;
+            case 'doodlesLoaded':
+                showHideIOLFields(_drawing);
                 break;
         }
     }
