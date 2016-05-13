@@ -34,7 +34,7 @@
                 <tr class="clickable">
                     <td class="reorder">&uarr;&darr;<input type="hidden" name="<?php echo get_class($definition) ?>[display_order][]" value="<?php echo $i ?>"></td>
                     <td><?=$definition->name?></td>
-                    <td>Edit</td>
+                    <td><a href="/worklistAdmin/definition/<?=$definition->id?>">Edit</a></td>
                 </tr>
             <?php } ?>
             </tbody>
