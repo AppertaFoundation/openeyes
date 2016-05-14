@@ -84,7 +84,7 @@ $(document).ready(function(){
                 });
                 
             }
-
+            $('#patient_merge_search').val("");
             return false;
         },
         close: function (event, ui) {

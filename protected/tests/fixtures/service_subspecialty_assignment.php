@@ -33,5 +33,9 @@ return array(
 		'id' => 3,
 		'subspecialty_id' => 2,
 	),
+	'servicespecialtyassignment4' => array(
+		'id' => 4,
+		'subspecialty_id' => 3,
+	),
 );
 

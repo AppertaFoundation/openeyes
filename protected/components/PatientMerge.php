@@ -173,8 +173,7 @@ class PatientMerge
                         
                         /** We need to keep the older episode so we compare the dates **/ 
                         
-                        if( $primaryEpisode->created_date > $secondaryEpisode->created_date ){
-                            
+                        if( $primaryEpisode->created_date < $secondaryEpisode->created_date ){
                             // the primary episode is older than the secondary so we move the events from the Secondary into the Primary
                             $this->updateEventsEpisodeId($primaryEpisode->id, $secondaryEpisode->events);
                             
@@ -190,11 +189,17 @@ class PatientMerge
                             
                             // the secondary episode is older than the primary so we move the events from the Primary into the Secondary
                             $this->updateEventsEpisodeId($secondaryEpisode->id, $primaryEpisode->events);
-                            
+                            $id = $primaryEpisode->id;
                             /** BUT do not forget we have to delete the primary episode AND move the secondary episode to the primary patient **/
                             $primaryEpisode->deleted = 1;
-                            $primaryEpisode->save();
-                            
+                     
+                            if( $primaryEpisode->save()){
+                                Audit::add('Patient Merge', "Episode " . $primaryEpisode->id . "marked as deleted, events moved under the secondary patient's same firm episode.");
+                            } else {
+                                throw new Exception("Failed to update Episode: " . $primaryEpisode->id . " " . print_r($primaryEpisode->errors, true));
+                            }
+                                                        
+                            //then we move the episode to the pri1mary
                             $this->updateEpisodesPatientId($primaryPatient->id, array($secondaryEpisode));
                         }
                         
