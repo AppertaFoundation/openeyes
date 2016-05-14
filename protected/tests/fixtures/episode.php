@@ -61,4 +61,49 @@ return array(
 		'eye_id' => 1,
 		'disorder_id' => 7,
 	),
+	
+	'episode7' => array(
+                'id' => 7,
+		'patient_id' => 7,
+		'firm_id' => 1,
+		'start_date' => date('Y-m-d H:i:s', strtotime('-30 days')),
+		'end_date'=>date('Y-m-d H:i:s'),
+		'created_date' => date('Y-m-d H:i:s', strtotime('-30 days')),
+		'disorder_id' => 1,
+		'eye_id' => 1,
+	),
+	'episode8' => array(
+                'id' => 8,
+		'patient_id' => 7,
+		'firm_id' => 2,
+		'start_date' => date('Y-m-d H:i:s', strtotime('-30 days')),
+		'end_date'=>date('Y-m-d H:i:s'),
+		'created_date' => date('Y-m-d H:i:s'),
+		'disorder_id' => 1,
+		'eye_id' => 1,
+	),
+	'episode9' => array(
+                'id' => 9,
+		'patient_id' => 8,
+		'firm_id' => 1,
+		'start_date' => date('Y-m-d H:i:s', strtotime('-15 days')),
+		'end_date'=>date('Y-m-d H:i:s'),
+		'created_date' => date('Y-m-d H:i:s', strtotime('-15 days')),
+		'disorder_id' => 1,
+		'eye_id' => 1,
+	),
+    
+	'episode10' => array(
+                'id' => 10,
+		'patient_id' => 8,
+		'firm_id' => 6,
+		'start_date' => date('Y-m-d H:i:s', strtotime('-30 days')),
+		'end_date'=>date('Y-m-d H:i:s'),
+		'created_date' => date('Y-m-d H:i:s'),
+		'disorder_id' => 1,
+		'eye_id' => 1,
+	),
+
+	
+	
 );

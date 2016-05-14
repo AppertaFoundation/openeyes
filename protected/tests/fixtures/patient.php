@@ -103,4 +103,37 @@ return array(
 		'address_id' => 4,
 		'contact_id' => 6
 	),
+	
+	'patient7' => array(
+		'id' => 7,
+		'pas_key' => '1010',
+		'title' => 'Mrs',
+		'first_name' => 'Carla',
+		'last_name' => 'Bruni',
+		'dob' => '1977-01-01',
+		'gender' => 'F',
+		'hos_num' => 34322,
+		'nhs_num' => 76568,
+		'practice_id' => 3,
+		'practice_id' => 3,
+		'address_id' => 4,
+		'contact_id' => 5
+	),
+	'patient8' => array(
+		'id' => 8,
+		'pas_key' => '10107',
+		'title' => 'Mrs',
+		'first_name' => 'Carla',
+		'last_name' => 'Bruni',
+		'dob' => '1977-01-01',
+		'gender' => 'F',
+		'hos_num' => 34323,
+		'nhs_num' => 76569,
+		'practice_id' => 3,
+		'practice_id' => 3,
+		'address_id' => 4,
+		'contact_id' => 6
+	),
+	
+	
 );
