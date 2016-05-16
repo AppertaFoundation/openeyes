@@ -103,7 +103,5 @@ return array(
 		'disorder_id' => 1,
 		'eye_id' => 1,
 	),
-
-	
 	
 );
