@@ -21,7 +21,15 @@
 
 <div class="row">
     <div class="large-8 column large-centered">
-        <?php $this->widget('zii.widgets.CDetailView', array(
+        
+        <?php
+			// @TODO: display it nicely
+            foreach($log['log'] as $lg){
+                echo $lg . "<br>";
+            }
+        ?>
+        
+        <?php /*$this->widget('zii.widgets.CDetailView', array(
                 'data'=>$model,
                 'attributes'=>array(
                         'id',
@@ -43,7 +51,7 @@
                         'created_user_id',
                         'created_date',
                 ),
-        )); ?>
+        ));*/ ?>
         <br>
     </div>
 </div>
