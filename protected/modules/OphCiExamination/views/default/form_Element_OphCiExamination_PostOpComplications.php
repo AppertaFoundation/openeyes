@@ -24,7 +24,9 @@ use OEModule\OphCiExamination\models\OphCiExamination_Et_PostOpComplications;
 
 $operationNoteList = $element->getOperationNoteList();
 $operation_note_id = \Yii::app()->request->getParam('OphCiExamination_postop_complication_operation_note_id', ( is_array($operationNoteList) ? key($operationNoteList) : null) );
-$subspecialty_id = $element->firm->getSubspecialtyID();
+
+$firm = \Firm::model()->findByPk(\Yii::app()->session['selected_firm_id']);
+$subspecialty_id = $this->firm->serviceSubspecialtyAssignment ? $this->firm->serviceSubspecialtyAssignment->subspecialty_id : null;
 
 $right_eye = OphCiExamination_PostOpComplications::model()->getPostOpComplicationsList($element->id, $operation_note_id, $subspecialty_id, \Eye::RIGHT);
 
@@ -51,29 +53,29 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
 	<?php echo CHtml::dropDownList('OphCiExamination_postop_complication_operation_note_id', $operation_note_id,
             $operationNoteList,
             array('id' => 'OphCiExamination_postop_complication_operation_note_id-select', 'name' => 'OphCiExamination_postop_complication_operation_note_id')
-        );?>		
+        );?>
     </div>
 </div>
 
 <div class="element-fields element-eyes row">
-	<?php 
+	<?php
             echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'));
         ?>
 	<div class="element-eye right-eye column left side" data-side="right">
 		<div class="active-form">
 			<a href="#" class="icon-remove-side remove-side">Remove side</a>
-			<?php 
+			<?php
                                 echo $form->dropDownList(
                                     OphCiExamination_PostOpComplications::model(),
                                     'name', $right_eye_data,
                                     array(
                                         'empty' => array('-1' => '-- Select --'),
                                         'id' => 'right-complication-select'
-                                    ), 
-                                    false, 
+                                    ),
+                                    false,
                                     array('label' => 4, 'field' => 6)
-                                ); 
-                                
+                                );
+
                                  $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 					'name' => 'right_complication_autocomplete_id',
 					'id' => 'right_complication_autocomplete_id',
@@ -97,36 +99,36 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
 						'placeholder' => 'search for complications',
 					)
 				));
-                                
-                                
-                                
-                                ?>              
-                    
+
+
+
+                                ?>
+
                          <hr>
 		</div>
-            
+
                 <div class="active-form">
-                   
+
                     <h5 class="right-recorded-complication-text recorded <?php echo $right_values ? '' : 'hide'?>">Recorded Complications</h5>
                     <h5 class="right-no-recorded-complication-text no-recorded <?php echo $right_values ? 'hide' : ''?>">No Recorded Complications</h5>
-                    
+
                     <?php echo $form->hiddenInput($element, 'id', false); ?>
-                    
+
                     <table id="right-complication-list" class="recorded-postop-complications" data-sideletter="R">
-                    <?php 
+                    <?php
                         foreach($right_values as $key => $value): ?>
-                            <tr> 
+                            <tr>
                                 <td class=postop-complication-name><?php echo $value['name']; ?></td>
                                 <td class='right'>
                                         <?php echo \CHtml::hiddenField("complication_items[R][$key]",$value['id'] , array('id' => "complication_items_R_$key")); ?>
                                         <a class="postop-complication-remove-btn" href="javascript:void(0)">Remove</a>
                                 </td></tr>
-                        
+
                     <?php endforeach; ?>
                     </table>
-                   
+
 		</div>
-           
+
 		<div class="inactive-form">
 			<div class="add-side">
 				<a href="#">
@@ -142,9 +144,9 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
                                     array(
                                         'empty' => array('-1' => '-- Select --'),
                                         'id' => 'left-complication-select'
-                                    ), 
-                                    false, array('label' => 4, 'field' => 6)); 
-                        
+                                    ),
+                                    false, array('label' => 4, 'field' => 6));
+
                         $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 					'name' => 'left_complication_autocomplete_id',
 					'id' => 'left_complication_autocomplete_id',
@@ -169,29 +171,29 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
 						'placeholder' => 'search for complications',
 					)
 				));
-                        
-                        
+
+
                         ?>
                         <hr>
                 </div>
-                
+
                 <div class="active-form">
-                    
+
                     <h5 class="left-recorded-complication-text recorded <?php echo $left_values ? '' : 'hide'?>">Recorded Complications</h5>
                     <h5 class="left-no-recorded-complication-text no-recorded <?php echo $left_values ? 'hide' : ''?>">No Recorded Complications</h5>
-                  
-                    
+
+
                     <table id="left-complication-list" class="recorded-postop-complications" data-sideletter="L">
-                    <?php 
+                    <?php
                         foreach($left_values as $key => $value): ?>
-                            <tr> 
+                            <tr>
                                 <td class=postop-complication-name><?php echo $value['name']; ?></td>
                                 <td class='right'>
                                         <?php echo \CHtml::hiddenField("complication_items[L][$key]",$value['id'] , array('id' => "complication_items_L_$key")); ?>
                                         <a class="postop-complication-remove-btn" href="javascript:void(0)">Remove</a>
                                 </td>
                             </tr>
-                        
+
                     <?php endforeach; ?>
                     </table>
 		</div>
@@ -202,7 +204,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
 				</a>
 			</div>
 		</div>
-                
+
 	</div>
 </div>
 
@@ -213,5 +215,5 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
         There are no recorded operations for this patient
     </div>
 </div>
-    
+
 <?php endif;

@@ -47,7 +47,7 @@ class PortalExamsCommand extends CConsoleCommand
 			$uniqueCode = $uidArray[1];
 			$opNoteEvent = UniqueCodes::model()->eventFromUniqueCode($uniqueCode);
 			if(!$opNoteEvent){
-				echo 'No Event found for identifier: '.$examination['patient']['unique_identifier'];
+				echo 'No Event found for identifier: '.$examination['patient']['unique_identifier']. PHP_EOL;
 				continue;
 			}
 			$transaction = $opNoteEvent->getDbConnection()->beginInternalTransaction();
@@ -77,6 +77,15 @@ class PortalExamsCommand extends CConsoleCommand
 						throw new CDbException('iop failed: '.print_r($iop->getErrors(), true));
 					}
 					$iop->refresh();
+
+					$complications = new \OEModule\OphCiExamination\models\Element_OphCiExamination_PostOpComplications();
+					$complications->event_id = $examinationEvent->id;
+					$complications->created_user_id = $complications->last_modified_user_id = $portalUserId;
+					$complications->eye_id = $eyeIds['both'];
+					if(!$complications->save()){
+						throw new CDbException('Complcaitions failed: '.print_r($iop->getErrors(), true));
+					}
+					$complications->refresh();
 
 					foreach($examination['patient']['eyes'] as $eye){
 						$eyeLabel = strtolower($eye['label']);
@@ -110,6 +119,26 @@ class PortalExamsCommand extends CConsoleCommand
 							throw new CDbException('iop value failed: '.print_r($iop->getErrors(), true));
 						}
 
+						if(count($eye['complications'])){
+							foreach($eye['complications'] as $complicationArray){
+								$eyeComplication = new \OEModule\OphCiExamination\models\OphCiExamination_Et_PostOpComplications();
+								$eyeComplication->element_id = $complications->id;
+								$complicationToAdd = \OEModule\OphCiExamination\models\OphCiExamination_PostOpComplications::model()->find('name = "'.$complicationArray['complication'].'"');
+								$eyeComplication->complication_id = $complicationToAdd->id;
+								$eyeComplication->operation_note_id = $opNoteEvent->id;
+								$eyeComplication->eye_id = $eyeIds[$eyeLabel];
+								$eyeComplication->save();
+							}
+						} else {
+							$eyeComplication = new \OEModule\OphCiExamination\models\OphCiExamination_Et_PostOpComplications();
+							$eyeComplication->element_id = $complications->id;
+							$complicationToAdd = \OEModule\OphCiExamination\models\OphCiExamination_PostOpComplications::model()->find('name = "none"');
+							$eyeComplication->complication_id = $complicationToAdd->id;
+							$eyeComplication->operation_note_id = $opNoteEvent->id;
+							$eyeComplication->eye_id = $eyeIds[$eyeLabel];
+							$eyeComplication->save();
+						}
+
 					}
 
 					$refraction->eye_id =  $eyeIds['both'];
@@ -119,17 +148,17 @@ class PortalExamsCommand extends CConsoleCommand
 				} else {
 					echo 'Examination save failed: '. PHP_EOL;
 					foreach($examinationEvent->getErrors() as $key => $error){
-						echo $key . ' invalid: '. implode(', ', $error);
+						echo $key . ' invalid: '. implode(', ', $error). PHP_EOL;
 					}
 				}
 
 			}catch (Exception $e) {
 				$transaction->rollback();
-				echo 'Failed for examination ' . $examination['patient']['unique_identifier']. 'with exception: '.$e->getMessage();
+				echo 'Failed for examination ' . $examination['patient']['unique_identifier']. 'with exception: '.$e->getMessage(). PHP_EOL;
 				continue;
 			}
 			$transaction->commit();
-			echo 'Examination imported';
+			echo 'Examination imported: '.$examinationEvent->id . PHP_EOL;
 		}
 	}
 
