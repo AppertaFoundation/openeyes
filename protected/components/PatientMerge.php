@@ -120,7 +120,7 @@ class PatientMerge
         $isMerged = $isMerged && $this->updateLegacyEpisodes($this->primaryPatient, $this->secondaryPatient);
 
         // Update allergyAssignments
-        $isMerged = $isMerged && $this->updateAllergyAssignments($this->primaryPatient->id, $this->secondaryPatient->allergyAssignments);
+        $isMerged = $isMerged && $this->updateAllergyAssignments($this->primaryPatient, $this->secondaryPatient);
  
         // Updates riskAssignments
         $isMerged = $isMerged && $this->updateRiskAssignments($this->primaryPatient->id, $this->secondaryPatient->riskAssignments);
@@ -189,7 +189,7 @@ class PatientMerge
                             
                             // the secondary episode is older than the primary so we move the events from the Primary into the Secondary
                             $this->updateEventsEpisodeId($secondaryEpisode->id, $primaryEpisode->events);
-                            $id = $primaryEpisode->id;
+
                             /** BUT do not forget we have to delete the primary episode AND move the secondary episode to the primary patient **/
                             $primaryEpisode->deleted = 1;
                      
@@ -239,16 +239,40 @@ class PatientMerge
                 }
 
             } else {
-                // we move the events from the secondaty patient's legacy episod to the primary patient's legacy epiode
-                $this->updateEventsEpisodeId($primaryPatient->legacyepisodes[0]->id, $secondaryPatient->legacyepisodes[0]->events);
                 
-                // Flag secondary patient's legacy episode deleted as it will be empty
-                $legacyEpisode = $secondaryPatient->legacyepisodes[0];
-                $legacyEpisode->deleted = 1;
-                if( $legacyEpisode->save()){
-                    Audit::add('Patient Merge', "Legacy Episode " . $legacyEpisode->id . "marked as deleted, events moved under the primary patient's same firm episode.");
+                $primaryLegacyEpisode = $primaryPatient->legacyepisodes[0];
+                $secondaryLegacyEpisode = $secondaryPatient->legacyepisodes[0];
+                
+                if( $primaryLegacyEpisode->created_date < $secondaryLegacyEpisode->created_date ){
+                    // we move the events from the secondaty patient's legacy episod to the primary patient's legacy epiode
+                    $this->updateEventsEpisodeId($primaryLegacyEpisode->id, $secondaryLegacyEpisode->events);
+
+                    // Flag secondary patient's legacy episode deleted as it will be empty
+                    
+                    $secondaryLegacyEpisode->deleted = 1;
+                    if( $secondaryLegacyEpisode->save()){
+                        Audit::add('Patient Merge', "Legacy Episode " . $secondaryLegacyEpisode->id . "marked as deleted, events moved under the primary patient's same firm episode.");
+                    } else {
+                        throw new Exception("Failed to update (legacy) Episode: " . $secondaryLegacyEpisode->id . " " . print_r($secondaryLegacyEpisode->errors, true));
+                    }
                 } else {
-                    throw new Exception("Failed to update Episode: " . $secondaryEpisode->id . " " . print_r($secondaryEpisode->errors, true));
+                    // in this case the secondary legacy episode is older than the primary
+                    // so move the primary legacy episode's events to the secondary legacy episode
+                    // then move the secondary legacy episode to the Primary patient
+                    // then flag the primary's legacy episode as deleted // as only 1 legacy episode can be assigned to the patient
+                    
+                    $this->updateEventsEpisodeId($secondaryLegacyEpisode->id, $primaryLegacyEpisode->events);
+                    
+                    $primaryLegacyEpisode->deleted = 1;
+                     
+                    if( $primaryLegacyEpisode->save()){
+                        Audit::add('Patient Merge', "Legacy Episode " . $primaryLegacyEpisode->id . "marked as deleted, events moved under the secondary patient's same firm episode.");
+                    } else {
+                        throw new Exception("Failed to update (legacy) Episode: " . $primaryLegacyEpisode->id . " " . print_r($primaryLegacyEpisode->errors, true));
+                    }
+                    
+                    //then we move the episode to the pri1mary
+                    $this->updateEpisodesPatientId($primaryPatient->id, array($secondaryLegacyEpisode));
                 }
             }
         }
@@ -264,15 +288,61 @@ class PatientMerge
      * @param array of AR $allergies
      * @throws Exception AllergyAssigment cannot be saved
      */
-    public function updateAllergyAssignments($newPatientId, $allergyAssignments)
+    public function updateAllergyAssignments($primaryPatient, $secondaryPatient)
     {
-        foreach($allergyAssignments as $allergyAssignment){
-            $msg = "AllergyAssignment " . $allergyAssignment->id ." moved from patient " . $allergyAssignment->patient_id . " to " . $newPatientId;
-            $allergyAssignment->patient_id = $newPatientId;
-            if( $allergyAssignment->save() ){
-                Audit::add('Patient Merge', $msg);
-            } else {
-                throw new Exception("Failed to update AllergyAssigment: " . $allergyAssignment->id . " " . print_r($allergyAssignment->errors, true));
+        $primaryAssignments = $primaryPatient->allergyAssignments;
+        $secondaryAssignments = $secondaryPatient->allergyAssignments;
+        
+        if( !$primaryAssignments && $secondaryAssignments ){
+            
+            foreach($secondaryAssignments as $allergyAssignment){
+                $msg = "AllergyAssignment " . $allergyAssignment->id ." moved from patient " . $allergyAssignment->patient_id . " to " . $primaryPatient->id;
+                $allergyAssignment->patient_id = $primaryPatient->id;
+                if( $allergyAssignment->save() ){
+                    Audit::add('Patient Merge', $msg);
+                } else {
+                    throw new Exception("Failed to update AllergyAssigment: " . $allergyAssignment->id . " " . print_r($allergyAssignment->errors, true));
+                }
+            }
+        } else if( $primaryAssignments && $secondaryAssignments ){
+            
+            foreach($secondaryAssignments as $secondaryAssignment){
+                
+                $sameAssignment = false;
+                foreach($primaryAssignments as $primaryAssignment)
+                {
+                    if( $primaryAssignment->allergy_id ==  $secondaryAssignment->allergy_id){
+                        // the allergy is already present in the primary patient's record so we just update the 'comment' and 'other' fields
+                        
+                        $sameAssignment = true;
+                        
+                        $comments = $primaryAssignment->comments . " ; " . $secondaryAssignment->comments;
+                        $other = $primaryAssignment->other . " ; " . $secondaryAssignment->other;
+          
+                        $primaryAssignment->comments = $comments;
+                        $primaryAssignment->other = $other;
+                        
+                        if( $primaryAssignment->save() ){
+                            Audit::add('Patient Merge', "AllergyAssignment 'comments' and 'other' updated");
+                        } else {
+                            throw new Exception("Failed to update AllergyAssigment: " . $primaryAssignment->id . " " . print_r($primaryAssignment->errors, true));
+                        }
+                        
+                        // as we just copied the comments and other fields we remove the assignment
+                        $secondaryAssignment->delete();
+                        
+                    }
+                }
+                
+                // This means we have to move the assignment from secondary to primary
+                if(!$sameAssignment){
+                    $secondaryAssignment->patient_id = $primaryPatient->id;
+                    if( $secondaryAssignment->save() ){
+                        Audit::add('Patient Merge', "AllergyAssignment " . $secondaryAssignment->id ." moved from patient " . $secondaryPatient->id . " to " . $primaryPatient->id);
+                    } else {
+                        throw new Exception("Failed to update AllergyAssigment: " . $allergyAssignment->id . " " . print_r($allergyAssignment->errors, true));
+                    }
+                }   
             }
         }
         
