@@ -44,6 +44,7 @@ class Worklist extends BaseActiveRecordVersionedSoftDelete
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
+            array('name, start, end, description, scheduled, worklist_definition_id', 'safe'),
             array('name', 'required'),
             array('name', 'length', 'max'=>100),
             array('description', 'length', 'max' => 1000),
@@ -54,7 +55,7 @@ class Worklist extends BaseActiveRecordVersionedSoftDelete
             array('scheduled', 'boolean', 'allowEmpty' => false),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, name, start, end, description, scheduled', 'safe', 'on'=>'search'),
+            array('id, name, start, end, description, scheduled, worklist_definition_id', 'safe', 'on'=>'search'),
         );
     }
 

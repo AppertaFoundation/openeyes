@@ -25,6 +25,8 @@ class WorklistManager extends CComponent
 {
     public static $AUDIT_TARGET_MANUAL = "Manual Worklist";
 
+    public static $AUDIT_TARGET_AUTO = "Automatic Worklists";
+
     /**
      * @var array
      */
@@ -524,25 +526,79 @@ class WorklistManager extends CComponent
         return $rrule;
     }
 
-    protected function createAutomaticWorklist($definition, $date) {
-        //TODO: Implement this function - needs to check for already existing instance on the given date
+    /**
+     * Generates a Worklist instance name from the given definition and date
+     *
+     * @TODO: implement support for a name definition that can be used to define what worklist instance names should look like
+     *
+     * @param $definition
+     * @param DateTime $date
+     * @return string
+     */
+    public function generateWorklistName($definition, DateTime $date)
+    {
+        return $definition->name . ' - ' . $date->format(Helper::NHS_DATE_FORMAT);
+    }
+
+    /**
+     * Create a worklist instance from the given definition for the given date
+     *
+     * @param $definition
+     * @param DateTime $date
+     * @return bool
+     */
+    protected function createAutomaticWorklist(WorklistDefinition $definition, DateTime $date) {
+        $model = $this->getModelForClass('Worklist');
+        $range_date = clone $date;
+        $range_date->setTime(substr($definition->start_time,0,2), substr($definition->start_time,3,2));
+
+        $start_time = $range_date->format("Y-m-d H:i:s");
+
+        if (!$instance = $model->findByAttributes(array('worklist_definition_id' => $definition->id, 'start' => $start_time))) {
+            $instance = $this->getInstanceForClass('Worklist');
+            $range_date->setTime(substr($definition->end_time,0,2), substr($definition->end_time, 3,2));
+
+            $instance->attributes = array(
+                'worklist_definition_id' => $definition->id,
+                'start' => $start_time,
+                'end' => $range_date->format("Y-m-d H:i:s"),
+                'scheduled' => true,
+                'description' => $definition->description,
+                'name' => $this->generateWorklistName($definition, $date),
+            );
+
+            $instance->save();
+
+            return true;
+        };
+
+        return false;
     }
     
     /**
      * @param WorklistDefinition $worklist
      * @param DateTime $date_limit
      */
-    public function generateAutomaticWorklists($definition, $date_limit = null)
+    public function generateAutomaticWorklists(WorklistDefinition $definition, DateTime $date_limit = null)
     {
         if (is_null($date_limit))
-            $date_limit = $this->getGenerationTimeLimit();
+            $date_limit = $this->getGenerationTimeLimitDate();
 
         $rrule_str = $this->setDateLimitOnRrule($definition->rrule, $date_limit);
         $rrule = $this->getInstanceForClass('\RRule\RRule',array($rrule_str));
 
+        $new_count = 0;
+
         foreach ($rrule as $occurence) {
-            $this->createAutomaticWorklist($definition, $occurence);
+            if ($this->createAutomaticWorklist($definition, $occurence))
+                $new_count++;
         }
+
+        $this->audit(self::$AUDIT_TARGET_AUTO, 'generate',
+            array('worklist_definition_id' => $definition->id, 'generated' => $new_count),
+            "Worklists generated");
+
+        return $new_count;
     }
 
 

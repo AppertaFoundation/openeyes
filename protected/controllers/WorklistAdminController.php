@@ -32,6 +32,11 @@ class WorklistAdminController extends BaseAdminController
         return parent::beforeAction($action);
     }
 
+    protected function flashMessage($type = 'success', $message)
+    {
+        Yii::app()->user->setFlash($type, $message);
+    }
+
     public function actionDefinitions()
     {
         $definitions = $this->manager->getWorklistDefinitions();
@@ -75,7 +80,10 @@ class WorklistAdminController extends BaseAdminController
         if (!$definition)
             throw new CHttpException(404, "Worklist definition not found");
 
-        $this->manager->generateAutomaticWorklists($definition);
-    }
+        $new_count = $this->manager->generateAutomaticWorklists($definition);
 
+        $this->flashMessage("success", "Worklist Generation Completed for {$definition->name}. {$new_count} new instances created.");
+
+        $this->redirect(array('/worklistAdmin/definitions'));
+    }
 }

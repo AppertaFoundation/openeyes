@@ -392,4 +392,67 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals('result', $manager->getWorklistDefinition($pk));
     }
+
+    /**
+     * Wrapper for testing this method in two slightly different ways
+     *
+     * @param null $limit
+     */
+    public function generateAutomaticWorklists($limit = null)
+    {
+        $manager = $this->getMockBuilder('WorklistManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getGenerationTimeLimitDate', 'getInstanceForClass', 'setDateLimitOnRrule', 'createAutomaticWorklist', 'audit'))
+            ->getMock();
+
+        if (is_null($limit)) {
+            $manager->expects($this->once())
+                ->method('getGenerationTimeLimitDate');
+        }
+        else {
+            $manager->expects($this->never())
+                ->method('getGenerationTimeLimitDate');
+        }
+
+        $orig_rrule = 'original';
+
+        $definition = ComponentStubGenerator::generate('WorklistDefinition', array('rrule' => $orig_rrule));
+
+        $rrule_str = 'test';
+        $manager->expects($this->once())
+            ->method('setDateLimitOnRrule')
+            ->with($orig_rrule)
+            ->will($this->returnValue($rrule_str));
+
+        $date = new DateTime();
+        $fake_rrule = array($date, $date, $date);
+
+        $manager->expects($this->once())
+            ->method('getInstanceForClass')
+            ->with('\RRule\RRule', array($rrule_str))
+            ->will($this->returnValue($fake_rrule));
+
+        $manager->expects($this->exactly(3))
+            ->method('createAutomaticWorklist');
+
+        $manager->expects($this->once())
+            ->method('audit');
+
+        $manager->generateAutomaticWorklists($definition, $limit);
+    }
+
+    public function test_generateAutomaticWorklists_with_limit()
+    {
+        $this->generateAutomaticWorklists(new DateTime());
+    }
+
+    public function test_generateAutomaticWorklists_without_limit()
+    {
+        $this->generateAutomaticWorklists();
+    }
+
+    public function test_generateWorklistName()
+    {
+        $this->markTestIncomplete("Waiting to implement actual intended functionality");
+    }
 }
