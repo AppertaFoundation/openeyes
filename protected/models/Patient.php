@@ -1509,8 +1509,11 @@ class Patient extends BaseActiveRecordVersioned
         $criteria->order = 't.event_date DESC, t.created_date DESC';
         $criteria->limit = 1;
         $event = Event::model()->with('episode')->find($criteria);
-
-        return $this->getUniqueCodeForEvent($event->id);
+        if(!empty($event)) {
+            return $this->getUniqueCodeForEvent($event->id);
+        } else {
+           return '';
+        }
     }
 
     public function getUniqueCodeForEvent($id)
