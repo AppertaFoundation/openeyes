@@ -600,6 +600,7 @@ class WorklistManager extends CComponent
     }
     
     /**
+     * @TODO: add transaction
      * @param WorklistDefinition $worklist
      * @param DateTime $date_limit
      */
@@ -625,6 +626,67 @@ class WorklistManager extends CComponent
         return $new_count;
     }
 
+    /**
+     *
+     * @TODO: support null display_order
+     * @param WorklistDefinitionMapping $mapping
+     * @param $key
+     * @param $values
+     * @return bool
+     */
+    public function updateWorklistDefinitionMapping(WorklistDefinitionMapping $mapping, $key, $values)
+    {
+        $display_order = 1;
+        foreach ($mapping->worklist_definition->mappings as $m) {
+            if ($m->display_order > $display_order)
+                $display_order = $m->display_order +1;
+
+            if (($m->id != $mapping->id) && $m->key == $key) {
+                $this->addError("Mapping key {$key} already exists for definition");
+                return false;
+            }
+        }
+
+        $mapping->key = $key;
+        $values = explode(",", $values);
+        if (!count($values)) {
+            $this->addError("At least one mapping value must be provided");
+            return false;
+        }
+
+        $transaction = $this->startTransaction();
+
+        try {
+            $mapping->display_order = $display_order;
+            if (!$mapping->save())
+                throw new Exception("Could not save mapping");
+
+            foreach ($mapping->values as $mv) {
+                $mv->delete();
+            }
+
+            foreach ($values as $v) {
+                $mv = new WorklistDefinitionMappingValue();
+                $mv->worklist_definition_mapping_id = $mapping->id;
+                $mv->mapping_value = $v;
+                $mv->save();
+            }
+
+            $this->audit(self::$AUDIT_TARGET_AUTO, 'mapping-update');
+
+            if ($transaction)
+                $transaction->commit();
+        }
+        catch (Exception $e) {
+            $this->addError($e->getMessage());
+            if ($transaction)
+                $transaction->commit();
+            return false;
+        }
+
+        return true;
+
+    }
 
     /**
      * Internal method to reset state for error tracking

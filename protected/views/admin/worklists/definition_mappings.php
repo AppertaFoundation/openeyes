@@ -19,8 +19,8 @@
 
 <div class="admin box">
     <h2>Automatic Worklist Definitions</h2>
-    <?php echo EventAction::link('Add Definition', '/worklistAdmin/definition/', array(), array('class' => 'button primary small'))->toHtml()?>
-    <?php if ($definitions) {?>
+    <?php echo EventAction::link('Add Mapping', '/worklistAdmin/addDefinitionMapping/' . $definition->id, array(), array('class' => 'button primary small'))->toHtml()?>
+    <?php if ($definition->mappings) {?>
         <table class="generic-admin grid">
             <thead>
             <tr>
@@ -30,19 +30,18 @@
             </tr>
             </thead>
             <tbody class="sortable">
-            <?php foreach ($definitions as $i => $definition) {?>
+            <?php foreach ($definition->mappings as $i => $mapping) {?>
                 <tr class="clickable">
-                    <td class="reorder">&uarr;&darr;<input type="hidden" name="<?php echo get_class($definition) ?>[display_order][]" value="<?php echo $i ?>"></td>
-                    <td><?=$definition->name?></td>
-                    <td><a href="/worklistAdmin/definition/<?=$definition->id?>">Edit</a> |
-                        <a href="/worklistAdmin/definitionMappings/<?=$definition->id?>">Mapping Items(<?=count($definition->mappings)?>)</a> |
-                        <a href="/worklistAdmin/definitionGenerate/<?=$definition->id?>">Generate(<?=count($definition->worklists)?>)</a></td>
+                    <td class="reorder">&uarr;&darr;<input type="hidden" name="<?php echo get_class($mapping) ?>[display_order][]" value="<?php echo $i ?>"></td>
+                    <td><?=$mapping->key?></td>
+                    <td><a href="/worklistAdmin/updateDefinitionMapping/<?=$mapping->id?>">Edit</a> |
+                        <a href="/worklistAdmin/deleteDefinitionMapping/<?=$mapping->id?>" disabled="disabled">Delete</a></td>
                 </tr>
             <?php } ?>
             </tbody>
         </table>
     <?php } else {?>
-        <div class="alert-box info">No automatic worklists have been defined. You may add one by clicking the button above ...</div>
+        <div class="alert-box info">No mapping items have been defined for this Worklist Definition. You may add one by clicking the button above ...</div>
     <?php } ?>
 </div>
 

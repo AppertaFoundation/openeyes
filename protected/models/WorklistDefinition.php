@@ -18,6 +18,23 @@
 
 use \RRule\RRule;
 
+/**
+ * Class WorklistDefinition
+ *
+ * The followings are the available columns in table:
+ * @property integer $id
+ * @property string $name
+ * @property string $rrule
+ * @property string $description
+ * @property string $worklist_name
+ * @property string $start_time
+ * @property string $end_time
+ * @property DateTime $active_from
+ * @property DateTime $active_until
+ *
+ * @property Worklist[] $worklists
+ * @property WorklistDefinitionMapping[] $mappings
+ */
 class WorklistDefinition extends BaseActiveRecordVersionedSoftDelete
 {
     /**
@@ -75,6 +92,7 @@ class WorklistDefinition extends BaseActiveRecordVersionedSoftDelete
         // class name for the relations automatically generated below.
         return array(
             'worklists' => array(self::HAS_MANY, 'Worklist', 'worklist_definition_id'),
+            'mappings' => array(self::HAS_MANY, 'WorklistDefinitionMapping', 'worklist_definition_id')
         );
     }
 

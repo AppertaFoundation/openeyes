@@ -117,6 +117,16 @@ return array(
 						'components/rrule/lib/nlp.js'
 					),
 					'basePath' => 'application.assets'
+				),
+				'tagsinput' => array(
+					'css' => array(
+						'components/jquery.tagsinput/src/jquery.tagsinput.css'
+					),
+					'js' => array(
+						'components/jquery.tagsinput/src/jquery.tagsinput.js'
+					),
+					'basePath' => 'application.assets',
+					'depends' => array('jquery')
 				)
 			),
 		),

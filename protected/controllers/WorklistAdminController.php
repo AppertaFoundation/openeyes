@@ -74,12 +74,24 @@ class WorklistAdminController extends BaseAdminController
         ));
     }
 
-    public function actionDefinitionGenerate($id)
+    /**
+     * @param $id
+     * @return null|WorklistDefinition
+     * @throws CHttpException
+     */
+    protected function getWorklistDefinition($id)
     {
         $definition = $this->manager->getWorklistDefinition($id);
 
         if (!$definition)
             throw new CHttpException(404, "Worklist definition not found");
+
+        return $definition;
+    }
+
+    public function actionDefinitionGenerate($id)
+    {
+        $definition = $this->getWorklistDefinition($id);
 
         $new_count = $this->manager->generateAutomaticWorklists($definition);
 
@@ -87,5 +99,75 @@ class WorklistAdminController extends BaseAdminController
 
         $this->redirect(array('/worklistAdmin/definitions'));
     }
-    
+
+    public function actionDefinitionMappings($id)
+    {
+        $definition = $this->getWorklistDefinition($id);
+
+        $this->render('//admin/worklists/definition_mappings', array(
+            'definition' => $definition,
+        ));
+    }
+
+    public function actionAddDefinitionMapping($id)
+    {
+        $definition = $this->getWorklistDefinition($id);
+
+        $mapping = new WorklistDefinitionMapping();
+        $mapping->worklist_definition_id = $definition->id;
+        $mapping->worklist_definition = $definition;
+
+        if (isset($_POST['WorklistDefinitionMapping'])) {
+            $mapping->attributes = $_POST['WorklistDefinitionMapping'];
+            if ($this->manager->updateWorklistDefinitionMapping($mapping,
+                $_POST['WorklistDefinitionMapping']['key'],
+                $_POST['WorklistDefinitionMapping']['valuelist'])) {
+                $this->flashMessage('success', 'Worklist Definition Mapping saved.');
+                $this->redirect(array('/worklistAdmin/definitions'));
+            }
+            else {
+                //$mapping->valuelist = $_POST['WorklistDefinitionMapping']['valuelist'];
+                $errors = $mapping->getErrors();
+                $errors[] = $this->manager->getErrors();
+            }
+        }
+
+        $this->render('//admin/worklists/definition_mapping', array(
+            'mapping' => $mapping,
+            'errors' => @$errors
+        ));
+
+    }
+
+    public function actionUpdateDefinitionMapping($id)
+    {
+        if (!$mapping = WorklistDefinitionMapping::model()->    findByPk($id))
+            throw new CHttpException(404, "Worklist Definition Mapping not found.");
+
+        if (isset($_POST['WorklistDefinitionMapping'])) {
+            if ($this->manager->updateWorklistDefinitionMapping($mapping,
+                $_POST['WorklistDefinitionMapping']['key'],
+                $_POST['WorklistDefinitionMapping']['valuelist'])) {
+                $this->flashMessage('success', 'Worklist Definition Mapping saved.');
+                $this->redirect(array('/worklistAdmin/definitions'));
+            }
+            else {
+                $mapping->valuelist = $_POST['WorklistDefinitionMapping']['valuelist'];
+                $errors = $mapping->getErrors();
+                $errors[] = $this->manager->getErrors();
+            }
+        }
+
+        $this->render('//admin/worklists/definition_mapping', array(
+            'mapping' => $mapping,
+            'errors' => @$errors
+        ));
+    }
+
+    public function actionDeleteDefinitionMapping($id)
+    {
+
+    }
+
+
 }
