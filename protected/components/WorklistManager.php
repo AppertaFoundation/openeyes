@@ -174,7 +174,7 @@ class WorklistManager extends CComponent
 
     /**
      * @param null $id
-     * @return mixed
+     * @return WorklistDefinition|null
      */
     public function getWorklistDefinition($id = null)
     {
@@ -189,8 +189,32 @@ class WorklistManager extends CComponent
         }
 
         return $definition;
-
     }
+
+    public function saveWorklistDefinition($definition)
+    {
+        $action = $definition->isNewRecord ? "create" : "update";
+
+        $transaction = $this->startTransaction();
+
+        try {
+            if (!$definition->save())
+                throw Exception("Couldn't save definition");
+
+            $this->audit(self::$AUDIT_TARGET_AUTO, $action, array(
+                'worklist_definition_id' => $definition->id
+            ));
+        }
+        catch (Exception $e) {
+            $this->addError($e->getMessage());
+            if ($transaction)
+                $transaction->rollback();
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * @param $worklist
      * @param $user
@@ -239,7 +263,7 @@ class WorklistManager extends CComponent
 
             // save call must force the parent class to accept the set owner id
             if (!$worklist->save(true, null, true)) {
-                // TODO: handle different structure for errors
+                // TODO: handle different error structure (i.e. the model errors)
                 throw new Exception("Could not create Worklist.");
             }
 

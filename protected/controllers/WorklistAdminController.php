@@ -58,10 +58,11 @@ class WorklistAdminController extends BaseAdminController
         if (isset($_POST['WorklistDefinition'])) {
             // TODO: abstract to manager
             $definition->attributes = $_POST['WorklistDefinition'];
-            if (!$definition->save()) {
+            if (!$this->manager->saveWorklistDefinition($definition)) {
                 $errors = $definition->getErrors();
             }
             else {
+                $this->flashMessage('success', 'Worklist Definition saved');
                 return $this->redirect(array('/worklistAdmin/definitions'));
             }
 
@@ -86,4 +87,5 @@ class WorklistAdminController extends BaseAdminController
 
         $this->redirect(array('/worklistAdmin/definitions'));
     }
+    
 }
