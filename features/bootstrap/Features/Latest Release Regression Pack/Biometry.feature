@@ -17,11 +17,11 @@ Feature: Ticket related and Regression tests for biometry
 
      Examples:
      |uname|pwd  |siteName/Number|firmName/Number         |hospitalNumber|speciality|event|
-     |admin|admin|Barking        |Cataract firm (Cataract)|1009465       |cataract|Biometry|
-     |admin|admin|Barking        |Cataract firm (Cataract)|9999992       |cataract|Biometry|
-     |admin|admin|Barking        |Cataract firm (Cataract)|9999997       |cataract|Biometry|
-     |admin|admin|Barking        |Cataract firm (Cataract)|9999991       |cataract|Biometry|
-     |admin|admin|Barking        |Cataract firm (Cataract)|9999998       |cataract|Biometry|
+     |admin|admin|Barking        |Cataract firm (Cataract)|1009465       |Cataract|Biometry|
+     |admin|admin|Barking        |Cataract firm (Cataract)|9999992       |Cataract|Biometry|
+     |admin|admin|Barking        |Cataract firm (Cataract)|9999997       |Cataract|Biometry|
+     |admin|admin|Barking        |Cataract firm (Cataract)|9999991       |Cataract|Biometry|
+     |admin|admin|Barking        |Cataract firm (Cataract)|9999998       |Cataract|Biometry|
 
 
    @OE-5791 @sprint25 @BIO
@@ -41,7 +41,7 @@ Feature: Ticket related and Regression tests for biometry
 
     Examples:
      |uname|pwd  |siteName/Number|firmName/Number         |hospitalNumber|speciality|event|
-     |admin|admin|St Ann's       |Cataract firm (Cataract)|1009465       |cataract  |Biometry|
+     |admin|admin|St Ann's       |Cataract firm (Cataract)|1009465       |Cataract  |Biometry|
 
 
 
@@ -64,7 +64,7 @@ Feature: Ticket related and Regression tests for biometry
      Then I look for the "<info-alert>"
     Examples:
    |uname|pwd  |siteName/Number|firmName/Number       |hospitalNumber|speciality|event   |info-alert|
-   |admin|admin|Barking        |Buddhi Wang (Cataract)|1009465       |cataract  |Biometry|          |
+   |admin|admin|Barking        |Buddhi Wang (Cataract)|1009465       |Cataract  |Biometry|          |
 
 
 
@@ -88,7 +88,7 @@ Feature: Ticket related and Regression tests for biometry
 
   Examples:
    |uname|pwd  |siteName/Number|firmName/Number       |hospitalNumber|speciality|event   |
-   |admin|admin|Barking        |Buddhi Wang (Cataract)|1009465       |cataract  |Biometry|
+   |admin|admin|Barking        |Buddhi Wang (Cataract)|1009465       |Cataract  |Biometry|
 
 
 
@@ -117,7 +117,7 @@ Feature: Ticket related and Regression tests for biometry
 
     Examples:
       |uname|pwd  |siteName/Number|firmName/Number       |hospitalNumber|speciality|event   |
-      |admin|admin|Barking        |Buddhi Wang (Cataract)|1009465       |cataract  |Biometry|
+      |admin|admin|Barking        |Buddhi Wang (Cataract)|1009465       |Cataract  |Biometry|
 
 
 

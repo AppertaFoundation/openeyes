@@ -39,7 +39,7 @@ Feature: Create New Correspondence
 
     Examples:
     |uname|pwd  |site           |firm                   |hospNo |speciality|event         |siteId      |addressTarget|intro |diag   |management|drugs  |outcome|CCTarget    |enclosure     |
-    |admin|admin|Example        |A K Hamilton (Glaucoma)|1009465|glaucoma  |Correspondence|Example     |Gp1          |site21|site541|site181   |site301|site341|Patient19434|Test Enclosure|
+    |admin|admin|Example        |A K Hamilton (Glaucoma)|1009465|Glaucoma  |Correspondence|Example     |Gp1          |site21|site541|site181   |site301|site341|Patient19434|Test Enclosure|
 
   Scenario Outline: Route 2:Login and fill in a Correspondence Event
             Site 1:  Queens
@@ -78,7 +78,7 @@ Feature: Create New Correspondence
 
     Examples:
     |uname|pwd  |site           |firm                   |hospNo |speciality|event         |siteId     |
-    |admin|admin|Example        |A K Hamilton (Glaucoma)|1009465|glaucoma  |Correspondence|Example    |
+    |admin|admin|Example        |A K Hamilton (Glaucoma)|1009465|Glaucoma  |Correspondence|Example    |
 
   Scenario Outline: Route 3:Login and fill in a Correspondence Event
             Site 1:  Queens
@@ -117,7 +117,7 @@ Feature: Create New Correspondence
 
     Examples:
       |uname|pwd  |site           |firm                   |hospNo |speciality|event         |siteId      |
-      |admin|admin|Example        |A K Hamilton (Glaucoma)|1009465|glaucoma  |Correspondence|Barking     |
+      |admin|admin|Example        |A K Hamilton (Glaucoma)|1009465|Glaucoma  |Correspondence|Barking     |
 
   Scenario Outline: Route 4:Login and fill in a Correspondence Event
             Site 1:  Queens
@@ -156,7 +156,7 @@ Feature: Create New Correspondence
 
     Examples:
     |uname|pwd  |site           |firm                   |hospNo |speciality|event         |siteId      |
-    |admin|admin|Example        |A K Hamilton (Glaucoma)|1009465|glaucoma  |Correspondence|Barking     |
+    |admin|admin|Example        |A K Hamilton (Glaucoma)|1009465|Glaucoma  |Correspondence|Barking     |
 
   @COR_Scenario_5
   Scenario Outline: Route 5:Login and fill in a Correspondence Event
@@ -182,4 +182,4 @@ Feature: Create New Correspondence
 
     Examples:
     |uname|pwd  |site           |firm                   |hospNo |speciality|event         |
-    |admin|admin|Example        |A K Hamilton (Glaucoma)|1009465|glaucoma  |Correspondence|
+    |admin|admin|Example        |A K Hamilton (Glaucoma)|1009465|Glaucoma  |Correspondence|

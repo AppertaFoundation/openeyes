@@ -101,7 +101,7 @@ Feature: Create New Examination Regression Tests
 
     Examples:
     |uname|pwd  |site   |firm                   |hospNo.|speciality|event      |sectionName1 |sectionName2|sectionName3   |sectionName4 |sectionName5 |sectionName6         |sectionName7|
-    |admin|admin|Croydon|A K Hamilton (Glaucoma)|1009465|glaucoma  |Examination|Comorbidities|Refraction  |Visual Function|Colour Vision|Visual Acuity|Intraocular Pressure|Dilation     |
+    |admin|admin|Croydon|A K Hamilton (Glaucoma)|1009465|Glaucoma  |Examination|Comorbidities|Refraction  |Visual Function|Colour Vision|Visual Acuity|Intraocular Pressure|Dilation     |
 
   @EXAM_Route_2
   Scenario Outline: Route 2:Login and create a new Examination Event
@@ -174,7 +174,7 @@ Feature: Create New Examination Regression Tests
 
     Examples:
       |uname|pwd  |site  |firm              |speciality|event      |sectionName1 |sectionName2   |sectionName3 |sectionName4 |sectionName5        |sectionName6|sectionName7|
-      |admin|admin|Ludwig|A Dulku (Glaucoma)|glaucoma  |Examination|Comorbidities|Visual Function|Colour Vision|Visual Acuity|Intraocular Pressure|Dilation    |Refraction  |
+      |admin|admin|Ludwig|A Dulku (Glaucoma)|Glaucoma  |Examination|Comorbidities|Visual Function|Colour Vision|Visual Acuity|Intraocular Pressure|Dilation    |Refraction  |
 
   @EXAM_Route_3
   Scenario Outline: Route 3:Login and create a new Examination Event
@@ -253,7 +253,7 @@ Feature: Create New Examination Regression Tests
     Then I Save the Examination and confirm it has been created successfully
     Examples:
       |uname|pwd  |site   |firm                   |speciality|event      |sectionName1 |sectionName2   |sectionName3 |sectionName4 |sectionName5        |sectionName6|sectionName7|sectionName8      |
-      |admin|admin|Barking|Paul Godinho (Cataract)|cataract  |Examination|Comorbidities|Visual Function|Colour Vision|Visual Acuity|Intraocular Pressure|Dilation    |Refraction  |Conclusion        |
+      |admin|admin|Barking|Paul Godinho (Cataract)|Cataract  |Examination|Comorbidities|Visual Function|Colour Vision|Visual Acuity|Intraocular Pressure|Dilation    |Refraction  |Conclusion        |
 ##
   @EXAM_Route_4
   Scenario Outline: Route 4: Login and create a new Examination Event
@@ -408,7 +408,7 @@ Feature: Create New Examination Regression Tests
 
     Examples:
       |uname|pwd  |site   |firm                   |speciality|event      |sectionName1 |
-      |admin|admin|Ludwig|A Dulku (Glaucoma)      |glaucoma  |Examination|comorbidities|
+      |admin|admin|Ludwig|A Dulku (Glaucoma)      |Glaucoma  |Examination|comorbidities|
 #
   @EXAM_Route_5
   Scenario Outline: ROUTE 5: Login and create a new Examination Event
@@ -569,7 +569,7 @@ Feature: Create New Examination Regression Tests
 
   Examples:
   |uname|pwd  |site   |firm                   |speciality|event      |sectionName1 |
-  |admin|admin|Ludwig|A Dulku (Glaucoma)      |glaucoma  |Examination|Comorbidities|
+  |admin|admin|Ludwig|A Dulku (Glaucoma)      |Glaucoma  |Examination|Comorbidities|
 ##
   @EXAM_Route_6
   Scenario Outline: ROUTE 6: Login and create a new Examination Event:
@@ -732,7 +732,7 @@ Feature: Create New Examination Regression Tests
 
     Examples:
       |uname|pwd  |site   |firm                   |speciality|event      |sectionName1 |
-      |admin|admin|Ludwig|A Dulku (Glaucoma)      |glaucoma  |Examination|Comorbidities|
+      |admin|admin|Ludwig|A Dulku (Glaucoma)      |Glaucoma  |Examination|Comorbidities|
 #
   @EXAM_Route_7
   Scenario Outline: Route 7: Examination Validation Tests
@@ -760,7 +760,7 @@ Feature: Create New Examination Regression Tests
 
   Examples:
     |uname|pwd  |site  |firm                  |hospNum|speciality|event      |sectionName1|
-    |admin|admin|Ealing|Adam Digpal (Glaucoma)|1009465|glaucoma  |Examination|Conclusion  |
+    |admin|admin|Ealing|Adam Digpal (Glaucoma)|1009465|Glaucoma  |Examination|Conclusion  |
 
   @EXAM_Route_8
   Scenario: Route 8: Examination Validation Tests (Anderson Cataract)
@@ -1355,7 +1355,7 @@ Feature: Create New Examination Regression Tests
 
     Examples:
     |uname|pwd  |site  |firm              |speciality|event      |
-    |admin|admin|Ludwig|A Dulku (Glaucoma)|glaucoma  |Examination|
+    |admin|admin|Ludwig|A Dulku (Glaucoma)|Glaucoma  |Examination|
 
 
   @EXAM_Route_20 @sprint25
@@ -1402,7 +1402,7 @@ Feature: Create New Examination Regression Tests
 
         Examples:
         |page  |username|password|site1   |firm                       |searchItem|specialty |event      |sectionName1       |sectionName2                |
-        |master|admin   |admin   |Barking |Paul Godinho (Cataract)    |1009465   |cataract  |Examination|Clinical Management|Cataract Surgical Management|
+        |master|admin   |admin   |Barking |Paul Godinho (Cataract)    |1009465   |Cataract  |Examination|Clinical Management|Cataract Surgical Management|
 
 
   @EXAM_Route_21 @sprint25
@@ -1432,5 +1432,5 @@ Feature: Create New Examination Regression Tests
 
     Examples:
       |page  |username|password|site1   |site2                     |searchItem|speciality|event      |sectionName1       |sectionName2                |
-      |master|admin   |admin   |Barking |Paul Godinho (Cataract)   |1009465   |cataract  |Examination|Clinical Management|Cataract Surgical Management|
+      |master|admin   |admin   |Barking |Paul Godinho (Cataract)   |1009465   |Cataract  |Examination|Clinical Management|Cataract Surgical Management|
 

@@ -32,7 +32,7 @@ Feature: Create New Laser event
 
     Examples:
     |uname|pwd  |siteName/Number|firmName/Number        |hospNumber|speciality|event|
-    |admin|admin|Croydon        |A K Hamilton (Glaucoma)|1009465   |glaucoma  |Laser|
+    |admin|admin|Croydon        |A K Hamilton (Glaucoma)|1009465   |Glaucoma  |Laser|
 
 
   @Laser_Route_2
@@ -58,7 +58,7 @@ Feature: Create New Laser event
 
     Examples:
       |uname|pwd  |siteName/Number|firmName/Number        |hospNumber|speciality|event|
-      |admin|admin|Croydon        |A K Hamilton (Glaucoma)|1009465   |glaucoma  |Laser|
+      |admin|admin|Croydon        |A K Hamilton (Glaucoma)|1009465   |Glaucoma  |Laser|
 
   @Laser_Route_3
   Scenario Outline: Route 3: Login and create a Laser event
@@ -96,6 +96,6 @@ Feature: Create New Laser event
 
     Examples:
       |uname|pwd  |siteName/Number|firmName/Number        |hospNumber|speciality|event|
-      |admin|admin|Croydon        |A K Hamilton (Glaucoma)|1009465   |glaucoma  |Laser|
+      |admin|admin|Croydon        |A K Hamilton (Glaucoma)|1009465   |Glaucoma  |Laser|
 
 
