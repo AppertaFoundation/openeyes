@@ -116,6 +116,19 @@
             }
         }
     }
+    
+    form{
+        &.panel{
+            &.search{
+                .no-result-patients {
+                    font-weight: bold;
+                    line-height: 25px;
+                    margin: 5px 0 0;
+                    padding: 0;
+                }
+            }
+        }
+    }
 }
 
  .ui-menu{

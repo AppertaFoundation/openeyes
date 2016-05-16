@@ -24,6 +24,7 @@ class PatientMerge
 {
     private $primaryPatient;
     private $secondaryPatient;
+    private $log = array();
     
     /**
      * Set primary patient by id
@@ -55,6 +56,19 @@ class PatientMerge
      */
     public function getSecondaryPatient(){
         return $this->secondaryPatient;
+    }
+    
+    public function addLog($msg){
+        $this->log[] = $msg;
+    }
+    
+    /**
+     * Returns the log messages
+     * 
+     * @return type
+     */
+    public function getLog(){
+        return $this->log;
     }
     
     /**
@@ -134,7 +148,9 @@ class PatientMerge
             $secondaryPatient->deleted = 1;
 
             if($secondaryPatient->save()){
-                Audit::add('Patient Merge', "Patient id: " . $this->secondaryPatient->id . " flagged as deleted.");
+                $msg = "Patient id: " . $this->secondaryPatient->id . " flagged as deleted.";
+                $this->addLog($msg);
+                Audit::add('Patient Merge', $msg);
                 $isMerged = $isMerged && true;
             } else {
                 throw new Exception("Failed to update Patient: " . print_r($secondaryPatient->errors, true));
@@ -180,7 +196,9 @@ class PatientMerge
                             // after all events are moved we flag the secondary episode as deleted
                             $secondaryEpisode->deleted = 1;
                             if( $secondaryEpisode->save()){
-                                Audit::add('Patient Merge', "Episode " . $secondaryEpisode->id . "marked as deleted, events moved under the primary patient's same firm episode.");
+                                $msg = "Episode " . $secondaryEpisode->id . "marked as deleted, events moved under the primary patient's same firm episode.";
+                                $this->addLog($msg);
+                                Audit::add('Patient Merge', $msg);
                             } else {
                                 throw new Exception("Failed to update Episode: " . $secondaryEpisode->id . " " . print_r($secondaryEpisode->errors, true));
                             }
@@ -194,7 +212,9 @@ class PatientMerge
                             $primaryEpisode->deleted = 1;
                      
                             if( $primaryEpisode->save()){
-                                Audit::add('Patient Merge', "Episode " . $primaryEpisode->id . "marked as deleted, events moved under the secondary patient's same firm episode.");
+                                $msg = "Episode " . $primaryEpisode->id . "marked as deleted, events moved under the secondary patient's same firm episode.";
+                                $this->addLog($msg);
+                                Audit::add('Patient Merge', $msg);
                             } else {
                                 throw new Exception("Failed to update Episode: " . $primaryEpisode->id . " " . print_r($primaryEpisode->errors, true));
                             }
@@ -233,7 +253,9 @@ class PatientMerge
 
                 $legacyEpisode->patient_id = $primaryPatient->id;
                 if( $legacyEpisode->save() ){
-                    Audit::add('Patient Merge', "Legacy Episode " . $legacyEpisode->id . " moved from patient " . $secondaryPatient->id . " to " . $primaryPatient->id);
+                    $msg = "Legacy Episode " . $legacyEpisode->id . " moved from patient " . $secondaryPatient->id . " to " . $primaryPatient->id;
+                    $this->addLog($msg);
+                    Audit::add('Patient Merge', $msg);
                 } else {
                     throw new Exception("Failed to update (legacy) Episode: " . $legacyEpisode->id . " " . print_r($legacyEpisode->errors, true));
                 }
@@ -251,7 +273,9 @@ class PatientMerge
                     
                     $secondaryLegacyEpisode->deleted = 1;
                     if( $secondaryLegacyEpisode->save()){
-                        Audit::add('Patient Merge', "Legacy Episode " . $secondaryLegacyEpisode->id . "marked as deleted, events moved under the primary patient's same firm episode.");
+                        $msg = "Legacy Episode " . $secondaryLegacyEpisode->id . "marked as deleted, events moved under the primary patient's same firm episode.";
+                        $this->addLog($msg);
+                        Audit::add('Patient Merge', $msg);
                     } else {
                         throw new Exception("Failed to update (legacy) Episode: " . $secondaryLegacyEpisode->id . " " . print_r($secondaryLegacyEpisode->errors, true));
                     }
@@ -266,7 +290,9 @@ class PatientMerge
                     $primaryLegacyEpisode->deleted = 1;
                      
                     if( $primaryLegacyEpisode->save()){
-                        Audit::add('Patient Merge', "Legacy Episode " . $primaryLegacyEpisode->id . "marked as deleted, events moved under the secondary patient's same firm episode.");
+                        $msg = "Legacy Episode " . $primaryLegacyEpisode->id . "marked as deleted, events moved under the secondary patient's same firm episode.";
+                        $this->addLog($msg);
+                        Audit::add('Patient Merge', $msg);
                     } else {
                         throw new Exception("Failed to update (legacy) Episode: " . $primaryLegacyEpisode->id . " " . print_r($primaryLegacyEpisode->errors, true));
                     }
@@ -299,6 +325,7 @@ class PatientMerge
                 $msg = "AllergyAssignment " . $allergyAssignment->id ." moved from patient " . $allergyAssignment->patient_id . " to " . $primaryPatient->id;
                 $allergyAssignment->patient_id = $primaryPatient->id;
                 if( $allergyAssignment->save() ){
+                    $this->addLog($msg);
                     Audit::add('Patient Merge', $msg);
                 } else {
                     throw new Exception("Failed to update AllergyAssigment: " . $allergyAssignment->id . " " . print_r($allergyAssignment->errors, true));
@@ -323,7 +350,9 @@ class PatientMerge
                         $primaryAssignment->other = $other;
                         
                         if( $primaryAssignment->save() ){
-                            Audit::add('Patient Merge', "AllergyAssignment 'comments' and 'other' updated");
+                            $msg = "AllergyAssignment 'comments' and 'other' updated";
+                            $this->addLog($msg);
+                            Audit::add('Patient Merge', $msg);
                         } else {
                             throw new Exception("Failed to update AllergyAssigment: " . $primaryAssignment->id . " " . print_r($primaryAssignment->errors, true));
                         }
@@ -338,7 +367,9 @@ class PatientMerge
                 if(!$sameAssignment){
                     $secondaryAssignment->patient_id = $primaryPatient->id;
                     if( $secondaryAssignment->save() ){
-                        Audit::add('Patient Merge', "AllergyAssignment " . $secondaryAssignment->id ." moved from patient " . $secondaryPatient->id . " to " . $primaryPatient->id);
+                        $msg = "AllergyAssignment " . $secondaryAssignment->id ." moved from patient " . $secondaryPatient->id . " to " . $primaryPatient->id;
+                        $this->addLog($msg);
+                        Audit::add('Patient Merge', $msg);
                     } else {
                         throw new Exception("Failed to update AllergyAssigment: " . $allergyAssignment->id . " " . print_r($allergyAssignment->errors, true));
                     }
@@ -362,6 +393,7 @@ class PatientMerge
             $msg = "RiskAssignment " . $riskAssignment->id ." moved from patient " . $riskAssignment->patient_id . " to " . $newPatientId;
             $riskAssignment->patient_id = $newPatientId;
             if( $riskAssignment->save() ){
+                $this->addLog($msg);
                 Audit::add('Patient Merge', $msg);
             } else {
                 throw new Exception("Failed to update RiskAssigment: " . $riskAssignment->id . " " . print_r($riskAssignment->errors, true));
@@ -377,6 +409,7 @@ class PatientMerge
             $msg = "Previous Operation " . $previousOperation->id ." moved from Patient " . $previousOperation->patient_id . " to " . $newPatientId;
             $previousOperation->patient_id = $newPatientId;
             if( $previousOperation->save() ){
+                $this->addLog($msg);
                 Audit::add('Patient Merge', $msg);
             } else {
                 throw new Exception("Failed to update Previous Operation: " . $previousOperation->id . " " . print_r($previousOperation->errors, true));
@@ -400,6 +433,7 @@ class PatientMerge
             $episode->patient_id = $newPatientId;
             
             if( $episode->save() ){
+                $this->addLog($msg);
                 Audit::add('Patient Merge', $msg);
             } else {
                 throw new Exception("Failed to save Episode: " . print_r($secondaryPatient->errors, true));
@@ -418,6 +452,7 @@ class PatientMerge
             $event->episode_id = $newEpisodeId;
             
             if($event->save()){
+                $this->addLog($msg);
                 Audit::add('Patient Merge', $msg);
             } else {
                 throw new Exception("Failed to save Event: " . print_r($event->errors, true));

@@ -82,8 +82,11 @@ class PatientMergeRequestController extends BaseController
      */
     public function actionView($id)
     {
+        $model = $this->loadModel($id);
+
         $this->render('//patientmergerequest/view', array(
-            'model' => $this->loadModel($id),
+            'model' => $model,
+            'log' => json_decode($model->merge_json, true),
         ));
     }
     
@@ -112,11 +115,13 @@ class PatientMergeRequestController extends BaseController
 
                 if($mergeHandler->merge()){
                     $mergeRequest->status = $mergeRequest::STATUS_MERGED;
+                    $mergeRequest->merge_json = json_encode( array( 'log' => $mergeHandler->getLog() ) );
                     $mergeRequest->save();
                     Audit::add('Patient Merge', "Merge Request " . $mergeRequest->secondaryPatient->hos_num . " INTO " . $mergeRequest->primaryPatient->hos_num . "(hos_num) successfully done.");
                     $this->redirect(array('view', 'id' => $mergeRequest->id));
                 } else {
                     $mergeRequest->status = $mergeRequest::STATUS_CONFLICT;
+                    $mergeRequest->merge_json = json_encode( array( 'log' => $mergeHandler->getLog() ) );
                     $mergeRequest->save();
                     Yii::app()->user->setFlash('warning.search_error', "Merge failed.");
                     $this->redirect(array('index'));

@@ -40,6 +40,9 @@ $(document).ready(function(){
             }, response);
 
         },
+        search: function(){
+            $('.loader').show();
+        },
         select: function (event, ui) {
 
             if(Object.keys(patientMerge.patients.secondary).length === 0){
@@ -87,8 +90,15 @@ $(document).ready(function(){
             $('#patient_merge_search').val("");
             return false;
         },
+        response: function(event, ui){
+            $('.loader').hide();
+            if( ui.content.length === 0 ){
+                $('.no-result-patients').slideDown();
+            } else {
+                $('.no-result-patients').slideUp();
+            }
+        },
         close: function (event, ui) {
-            
             if ( ($('.ui-menu li').length > 1 ) && (Object.keys(patientMerge.patients.primary).length === 0 || Object.keys(patientMerge.patients.secondary).length === 0) ){
                 $("ul.ui-autocomplete").show();
             }

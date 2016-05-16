@@ -33,7 +33,7 @@
 
         <div class="row">
             <div class="large-7 column large-centered">
-                <?php $this->renderPartial('//patientmergerequest/_patient_search',array('patient_type' => 'patient1'))?>
+                <?php $this->renderPartial('//patientmergerequest/_patient_search',array('patient_type' => 'patient'))?>
             </div>
         </div>
         <form id="grid_header_form" action="<?php echo Yii::app()->createUrl('/patientMergeRequest/create')?>" method="post">
