@@ -541,4 +541,9 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($wls[2], $m->invokeArgs($manager, array($test_date, $attributes)));
     }
+
+    public function test_updateWorklistPatientFromMapping()
+    {
+        $this->markTestIncomplete("New method. not had chance to write test yet.");
+    }
 }

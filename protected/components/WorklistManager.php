@@ -457,7 +457,9 @@ class WorklistManager extends CComponent
                 if (!$this->setAttributesForWorklistPatient($wp, $attributes))
                     throw new Exception("Could not set attributes for patient on worklist");
 
-            $this->audit(self::$AUDIT_TARGET_MANUAL, 'add-patient',
+            $target = $worklist->worklist_definition_id ? self::$AUDIT_TARGET_AUTO : self::$AUDIT_TARGET_MANUAL;
+
+            $this->audit($target, 'add-patient',
                 array('worklist_id' => $worklist->id), "Patient added to worklist",
                 array('patient_id' => $patient->id));
 
@@ -711,6 +713,11 @@ class WorklistManager extends CComponent
     }
 
 
+    /**
+     * @param DateTime $when
+     * @param array $attributes
+     * @return Worklist|null
+     */
     protected function getWorklistForMapping(DateTime $when, $attributes = array())
     {
         $model = $this->getModelForClass('Worklist');
@@ -733,9 +740,15 @@ class WorklistManager extends CComponent
         else {
             $this->addError("No worklist found for criteria");
         }
-        return false;
+        return null;
     }
 
+    /**
+     * @param Patient $patient
+     * @param DateTime $when
+     * @param array $attributes
+     * @return bool
+     */
     public function mapPatientToWorklistDefinition(Patient $patient, DateTime $when, $attributes = array())
     {
         $worklist = $this->getWorklistForMapping($when, $attributes);
@@ -743,6 +756,33 @@ class WorklistManager extends CComponent
             return false;
 
         return $this->addPatientToWorklist($patient, $worklist, $when, $attributes);
+    }
+
+    public function updateWorklistPatientFromMapping(WorklistPatient $worklist_patient, DateTime $when, $attributes = array())
+    {
+        $worklist = $this->getWorklistForMapping($when, $attributes);
+        if (!$worklist)
+            return false;
+
+        $transaction  = $this->startTransaction();
+
+        try {
+            $worklist_patient->worklist_id = $worklist->id;
+            $worklist_patient->when = $when->format('H:i:00');
+            $this->setAttributesForWorklistPatient($worklist_patient, $attributes);
+
+            $worklist_patient->save();
+
+            $transaction->commit();
+        }
+        catch (Exception $e) {
+            $this->addError($e->getMessage());
+            if ($transaction)
+                $transaction->rollback();
+            return false;
+        }
+
+        return true;
     }
 
     /**
