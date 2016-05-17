@@ -99,4 +99,21 @@ class WorklistPatient extends BaseActiveRecordVersioned
         ));
     }
 
+    /**
+     * Only set when for scheduled worklist entries
+     */
+    public function afterValidate()
+    {
+        if ($this->worklist->scheduled) {
+            if (empty($this->when))
+                $this->addError('when', $this->getAttributeLabel('when') . ' is required when the Worklist is scheduled.');
+        }
+        else {
+            if (!empty($this->when))
+                $this->addError('when', $this->getAttributeLabel('when') . ' cannot be set when the Worklist not scheduled.');
+        }
+
+        parent::afterValidate();
+    }
+
 }
