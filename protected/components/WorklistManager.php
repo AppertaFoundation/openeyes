@@ -436,7 +436,6 @@ class WorklistManager extends CComponent
     {
         $this->reset();
 
-
         if ($this->getWorklistPatient($worklist, $patient)) {
             $this->addError("Patient is already on the given worklist.");
             return false;
@@ -688,7 +687,62 @@ class WorklistManager extends CComponent
         }
 
         return true;
+    }
 
+    protected function checkWorklistMappingMatch(Worklist $wl, $attributes)
+    {
+        if (!$wl->worklist_definition)
+            throw new Exception("Cannot match Worklist that doesn't have a WorklistDefinition.");
+
+        foreach ($wl->worklist_definition->mappings as $mapping) {
+            if (!array_key_exists($mapping->key, $attributes))
+                return false;
+
+            $match = false;
+            foreach ($mapping->values as $val) {
+                if ($val == $attributes[$mapping->key])
+                    $match = true;
+            }
+            if (!$match)
+                return false;
+        }
+        // get to the end and no mismatch found. must match.
+        return true;
+    }
+
+
+    protected function getWorklistForMapping(DateTime $when, $attributes = array())
+    {
+        $model = $this->getModelForClass('Worklist');
+        $model->on = $when;
+        $model->automatic = true;
+
+        $candidates = array();
+        foreach ($model->search() as $wl)
+        {
+            if ($this->checkWorklistMatch($wl, $attributes))
+                $candidates[] = $wl;
+        }
+
+        if (count($candidates) == 1) {
+            return $candidates[0];
+        }
+        elseif (count($candidates) > 1) {
+            $this->addError("More than worklist matched criteria");
+        }
+        else {
+            $this->addError("No worklist found for criteria");
+        }
+        return false;
+    }
+
+    public function mapPatientToWorklistDefinition(Patient $patient, DateTime $when, $attributes = array())
+    {
+        $worklist = $this->getWorklistForMapping($when, $attributes);
+        if (!$worklist)
+            return false;
+
+        return $this->addPatientToWorklist($patient, $worklist, $when, $attributes);
     }
 
     /**

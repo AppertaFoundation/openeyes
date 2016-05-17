@@ -25,9 +25,25 @@
  * @property boolean $scheduled
  *
  * @property WorklistAttribute[] $mapping_attributes
+ * @property WorklistPatient[] $worklist_patients
+ * @property WorklistDefinition $worklist_definition
  */
 class Worklist extends BaseActiveRecordVersionedSoftDelete
 {
+    /**
+     * A search attribute to allow searching on a given date
+     *
+     * @var DateTime
+     */
+    public $on;
+
+    /**
+     * A search attribute to specify if we only want to search for worklists that are automatic or manual
+     *
+     * @var bool
+     */
+    public $automatic;
+
     /**
      * @return string the associated database table name
      */
@@ -68,7 +84,8 @@ class Worklist extends BaseActiveRecordVersionedSoftDelete
         // class name for the relations automatically generated below.
         return array(
             'mapping_attributes' => array(self::HAS_MANY, 'WorklistAttribute', 'worklist_id'),
-            'worklist_patients' => array(self::HAS_MANY, 'WorklistPatient', 'worklist_id')
+            'worklist_patients' => array(self::HAS_MANY, 'WorklistPatient', 'worklist_id'),
+            'worklist_definition' => array(self::BELONGS_TO, 'WorklistDefinition', 'worklist_definition_id')
         );
     }
 
@@ -97,9 +114,28 @@ class Worklist extends BaseActiveRecordVersionedSoftDelete
         $criteria->compare('id',$this->id,true);
         $criteria->compare('name',$this->name,true);
         $criteria->compare('description',$this->description,true);
-        $criteria->compare('scheduled', $this->scheduled, true);
+        $criteria->compare('scheduled', $this->scheduled, false);
 
-        // TODO: proper support for date/time search
+        if ($this->on) {
+            $sdate = $this->on->format('Y-m-d') . " 00:00:00";
+            $edate = $this->on->format('Y-m-d') . " 23:59:59";
+            $criteria->addCondition(':sd <= start_date AND :ed >= end_date');
+            $criteria->params = array_merge($criteria->params, array(
+                ':sd' => $sdate,
+                ':ed' => $edate
+            ));
+        }
+
+        if (!is_null($this->automatic))
+        {
+            if ($this->automatic) {
+                $criteria->addCondition('worklist_definition_id IS NOT NULL');
+            }
+            else {
+                $criteria->addCondition('worklist_definition_id IS NULL');
+            }
+
+        }
 
         return new CActiveDataProvider(get_class($this), array(
             'criteria'=>$criteria,

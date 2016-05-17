@@ -455,4 +455,90 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
     {
         $this->markTestIncomplete("Waiting to implement actual intended functionality");
     }
+
+    public function test_mapPatientToWorklistDefinition()
+    {
+        $patient = ComponentStubGenerator::generate('Patient');
+        $test_date = new DateTime();
+        $attributes = array('key1' => 'value');
+
+        $manager = $this->getMockBuilder('WorklistManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getWorklistForMapping', 'getModelForClass', 'getInstanceForClass', 'addPatientToWorklist', 'audit'))
+            ->getMock();
+
+        $wi = ComponentStubGenerator::generate('Worklist');
+        $manager->expects($this->at(0))
+            ->method('getWorklistForMapping')
+            ->with($test_date, $attributes)
+            ->will($this->returnValue($wi));
+
+        $manager->expects($this->at(1))
+            ->method('addPatientToWorklist')
+            ->with($patient, $wi, $test_date, $attributes)
+            ->will($this->returnValue(true));
+
+        $this->assertTrue($manager->mapPatientToWorklistDefinition($patient, $test_date, $attributes));
+    }
+
+    protected function getWorklistMocks($count = 1, $methods = array())
+    {
+        $res = array();
+        for ($i = 0; $i < $count; $i++)
+            $res[] = $this->getMockBuilder('Worklist')
+                ->disableOriginalConstructor()
+                ->setMethods($methods)
+                ->getMock();
+
+        return $res;
+    }
+
+    public function test_getWorklistForMapping()
+    {
+        $test_date = new DateTime();
+        $attributes = array('k' => 'v', 'k2' => 'v2');
+
+        $manager = $this->getMockBuilder('WorklistManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getModelForClass', 'checkWorklistMappingMatch'))
+            ->getMock();
+
+        $wm = $this->getMockBuilder('Worklist')
+            ->disableOriginalConstructor()
+            ->setMethods(array('search'))
+            ->getMock();
+
+        $manager->expects($this->at(0))
+            ->method('getModelForClass')
+            ->with('Worklist')
+            ->will($this->returnValue($wm));
+
+        $wls = $this->getWorklistMocks(3);
+
+        $wm->expects($this->once())
+            ->method('search')
+            ->will($this->returnValue($wls));
+
+        $manager->expects($this->at(1))
+            ->method('checkWorklistMappingMatch')
+            ->with($wls[0])
+            ->will($this->returnValue(false));
+
+        $manager->expects($this->at(2))
+            ->method('checkWorklistMappingMatch')
+            ->with($wls[1])
+            ->will($this->returnValue(false));
+
+        $manager->expects($this->at(3))
+            ->method('checkWorklistMappingMatch')
+            ->with($wls[2])
+            ->will($this->returnValue(true));
+
+        $r = new ReflectionClass('WorklistManager');
+        $m = $r->getMethod('getWorklistForMapping');
+        $m->setAccessible(true);
+
+
+        $this->assertEquals($wls[2], $m->invokeArgs($manager, array($test_date, $attributes)));
+    }
 }
