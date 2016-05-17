@@ -41,7 +41,7 @@ class m160510_075145_add_automatic_worklists extends OEMigration
 			));
 
 		$this->addForeignKey('worklist_definition_mapping_value_wldm_fk', 'worklist_definition_mapping_value',
-			'worklist_definition_mapping_id', 'worklist_definition_mapping', 'id');
+			'worklist_definition_mapping_id', 'worklist_definition_mapping', 'id', 'CASCADE');
 
 		$this->createOETable('worklist_definition_display_context',
 		array(

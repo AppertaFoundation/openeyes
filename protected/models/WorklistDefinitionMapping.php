@@ -28,6 +28,11 @@
  */
 class WorklistDefinitionMapping extends BaseActiveRecord
 {
+    /**
+     * Convenience variable for storing the string representation of the mapping values
+     *
+     * @var string
+     */
     private $_valuelist;
 
     /**
@@ -97,6 +102,8 @@ class WorklistDefinitionMapping extends BaseActiveRecord
     }
 
     /**
+     * Convenience getter for managing a string representation of the set of mapped values
+     *
      * @return string
      */
     public function getValueList()
@@ -112,6 +119,14 @@ class WorklistDefinitionMapping extends BaseActiveRecord
         return $this->_valuelist;
     }
 
+    /**
+     * Convenience setter for managing a string representation of the set of mapped values
+     *
+     * Note that this does not affect the actual related models for this item, so care should be taken around
+     * keeping them in sync where necessary
+     *
+     * @param $valuelist
+     */
     public function setValueList($valuelist)
     {
         $this->_valuelist = $valuelist;

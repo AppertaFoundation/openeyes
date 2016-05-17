@@ -199,11 +199,14 @@ class WorklistManager extends CComponent
 
         try {
             if (!$definition->save())
-                throw Exception("Couldn't save definition");
+                throw new Exception("Couldn't save definition");
 
             $this->audit(self::$AUDIT_TARGET_AUTO, $action, array(
                 'worklist_definition_id' => $definition->id
             ));
+
+            if ($transaction)
+                $transaction->commit();
         }
         catch (Exception $e) {
             $this->addError($e->getMessage());

@@ -100,6 +100,12 @@ class WorklistAdminController extends BaseAdminController
         $this->redirect(array('/worklistAdmin/definitions'));
     }
 
+    /**
+     * List the WorklistDefinitionMappings for the given id
+     *
+     * @param $id
+     * @throws CHttpException
+     */
     public function actionDefinitionMappings($id)
     {
         $definition = $this->getWorklistDefinition($id);
@@ -109,6 +115,12 @@ class WorklistAdminController extends BaseAdminController
         ));
     }
 
+    /**
+     * Create a new WorkflowDefinitionMapping for the given WorkflowDefinition
+     *
+     * @param $id
+     * @throws CHttpException
+     */
     public function actionAddDefinitionMapping($id)
     {
         $definition = $this->getWorklistDefinition($id);
@@ -123,10 +135,9 @@ class WorklistAdminController extends BaseAdminController
                 $_POST['WorklistDefinitionMapping']['key'],
                 $_POST['WorklistDefinitionMapping']['valuelist'])) {
                 $this->flashMessage('success', 'Worklist Definition Mapping saved.');
-                $this->redirect(array('/worklistAdmin/definitions'));
+                $this->redirect(array('/worklistAdmin/definitionMappings/' . $id));
             }
             else {
-                //$mapping->valuelist = $_POST['WorklistDefinitionMapping']['valuelist'];
                 $errors = $mapping->getErrors();
                 $errors[] = $this->manager->getErrors();
             }
@@ -139,9 +150,15 @@ class WorklistAdminController extends BaseAdminController
 
     }
 
+    /**
+     * Update a WorkflowDefinitionMapping
+     *
+     * @param $id
+     * @throws CHttpException
+     */
     public function actionUpdateDefinitionMapping($id)
     {
-        if (!$mapping = WorklistDefinitionMapping::model()->    findByPk($id))
+        if (!$mapping = WorklistDefinitionMapping::model()->findByPk($id))
             throw new CHttpException(404, "Worklist Definition Mapping not found.");
 
         if (isset($_POST['WorklistDefinitionMapping'])) {
@@ -149,7 +166,7 @@ class WorklistAdminController extends BaseAdminController
                 $_POST['WorklistDefinitionMapping']['key'],
                 $_POST['WorklistDefinitionMapping']['valuelist'])) {
                 $this->flashMessage('success', 'Worklist Definition Mapping saved.');
-                $this->redirect(array('/worklistAdmin/definitions'));
+                $this->redirect(array('/worklistAdmin/definitionMappings/' . $mapping->worklist_definition_id));
             }
             else {
                 $mapping->valuelist = $_POST['WorklistDefinitionMapping']['valuelist'];
@@ -166,7 +183,17 @@ class WorklistAdminController extends BaseAdminController
 
     public function actionDeleteDefinitionMapping($id)
     {
+        if (!$mapping = WorklistDefinitionMapping::model()->findByPk($id))
+            throw new CHttpException(404, "Worklist Definition Mapping not found.");
 
+        if ($mapping->delete()) {
+            $this->flashMessage('success', "Mapping removed.");
+        }
+        else {
+            $this->flashMessage('error', "Cannot delete mapping.");
+        }
+
+        $this->redirect(array('/worklistAdmin/definitionMappings/' . $mapping->worklist_definition_id));
     }
 
 
