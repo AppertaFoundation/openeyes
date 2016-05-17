@@ -80,4 +80,15 @@ class OphCiExamination_VisualAcuityUnitValue extends \BaseActiveRecordVersioned
                 'criteria'=>$criteria,
         ));
     }
+
+	public function getBaseValue($unitId, $value)
+	{
+		$criteria = new \CDbCriteria();
+		$criteria->select = array('base_value');
+		$criteria->condition = 'unit_id = :unit_id AND value = :value';
+		$criteria->params = array(':unit_id' => $unitId, ':value' => $value);
+		$baseValue = OphCiExamination_VisualAcuityUnitValue::model()->find($criteria);
+
+		return $baseValue->base_value;
+	}
 }

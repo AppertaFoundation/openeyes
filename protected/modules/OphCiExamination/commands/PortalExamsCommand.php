@@ -83,20 +83,37 @@ class PortalExamsCommand extends CConsoleCommand
 					$complications->created_user_id = $complications->last_modified_user_id = $portalUserId;
 					$complications->eye_id = $eyeIds['both'];
 					if(!$complications->save()){
-						throw new CDbException('Complcaitions failed: '.print_r($iop->getErrors(), true));
+						throw new CDbException('Complications failed: '.print_r($complications->getErrors(), true));
 					}
 					$complications->refresh();
+					if(count($examination['patient']['eyes'][0]['reading'][0]['visual_acuity'])){
+						//create VisualFunction, required for visual acuity to show.
+						$visualFunction = new \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualFunction();
+						$visualFunction->event_id = $examinationEvent->id;
+						$visualFunction->eye_id = $eyeIds['both'];
+						$visualFunction->left_rapd = 0;
+						$visualFunction->right_rapd = 0;
+						$visualFunction->created_user_id = $visualFunction->last_modified_user_id = $portalUserId;
+						if(!$visualFunction->save()){
+							throw new CDbException('Visual Function failed: '.print_r($visualFunction->getErrors(), true));
+						}
+
+						$measure = $examination['patient']['eyes'][0]['reading'][0]['visual_acuity'][0]['measure'];
+						$unit = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->find('name = :measure', array('measure' => $measure));
+						//Create visual acuity
+						$visualAcuity = new \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity();
+						$visualAcuity->event_id = $examinationEvent->id;
+						$visualAcuity->created_user_id = $visualAcuity->last_modified_user_id = $portalUserId;
+						$visualAcuity->eye_id = $eyeIds['both'];
+						$visualAcuity->unit_id = $unit->id;
+						if(!$visualAcuity->save(false)){
+							throw new CDbException('Visual Acuity failed: '.print_r($visualAcuity->getErrors(), true));
+						}
+						$visualAcuity->refresh();
+					}
 
 					foreach($examination['patient']['eyes'] as $eye){
 						$eyeLabel = strtolower($eye['label']);
-
-						/*$unit = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->find('name = ?', array($examination['patient']));
-                      //Create visual acuity
-                      $visualAcuity = new \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity();
-                      $visualAcuity->event_id = $examinationEvent->id;
-                      $visualAcuity->created_user_id = $visualAcuity->last_modified_user_id = $portalUserId;
-                      $visualAcuity->eye_id = $both;*/
-
 						$refractionReading = $eye['reading'][0]['refraction'];
 						$typeSide = $eyeLabel.'_type_id';
 						$sphereSide = $eyeLabel.'_sphere';
@@ -106,6 +123,19 @@ class PortalExamsCommand extends CConsoleCommand
 						$refraction->$sphereSide = $refractionReading['sphere'];
 						$refraction->$cylinderSide = $refractionReading['cylinder'];
 						$refraction->$axisSide = $refractionReading['axis'];
+
+						foreach($eye['reading'][0]['visual_acuity'] as $vaData){
+							$vaReading = new \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading();
+							$vaReading->element_id = $visualAcuity->id;
+							$baseValue = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue::model()->getBaseValue($unit->id, $vaData['reading']);
+							$vaReading->value = $baseValue;
+							$vaReading->method_id = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method::model()->find('name = :name', array('name' => $vaData['method']))->id;
+							$vaReading->side = ($eyeLabel === 'left') ? \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading::LEFT : \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading::RIGHT;
+							$vaReading->created_user_id = $vaReading->last_modified_user_id = $portalUserId;
+							if(!$vaReading->save()){
+								throw new CDbException('Visual Acuity Reading failed: '.print_r($vaReading->getErrors(), true));
+							}
+						}
 
 						$iopReading = $eye['reading'][0]['iop'];
 						$iopValue = new \OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Value();
@@ -145,6 +175,9 @@ class PortalExamsCommand extends CConsoleCommand
 					if(!$refraction->save()){
 						throw new CDbException('Refraction failed: '.print_r($iop->getErrors(), true));
 					}
+
+
+
 				} else {
 					echo 'Examination save failed: '. PHP_EOL;
 					foreach($examinationEvent->getErrors() as $key => $error){
@@ -154,7 +187,7 @@ class PortalExamsCommand extends CConsoleCommand
 
 			}catch (Exception $e) {
 				$transaction->rollback();
-				echo 'Failed for examination ' . $examination['patient']['unique_identifier']. 'with exception: '.$e->getMessage(). PHP_EOL;
+				echo 'Failed for examination ' . $examination['patient']['unique_identifier']. ' with exception: '.$e->getMessage() . 'on line '.$e->getLine(). ' in file '.$e->getFile(). PHP_EOL.$e->getTraceAsString();
 				continue;
 			}
 			$transaction->commit();
