@@ -21,7 +21,7 @@ use \UserIdentity;
 class V1Controller extends \CController
 {
 
-    static protected $resources = array('Patient');
+    static protected $resources = array('Patient', 'PatientAppointment');
     static protected $version = "V1";
     static protected $supported_formats = array('xml');
 

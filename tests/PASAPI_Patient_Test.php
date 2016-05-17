@@ -16,8 +16,12 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+require_once(__DIR__ . '/PASAPI_BaseTest.php');
+
 class PASAPI_Patient_Test extends PASAPI_BaseTest
 {
+    protected $base_url_stub = 'Patient';
+
     public function testMissingID()
     {
         $this->setExpectedHttpError(400);

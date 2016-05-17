@@ -1,0 +1,12 @@
+{
+  "AppointmentDate": {
+    "type": "date",
+    "required": true
+  },
+  "AppointmentTime": {
+    "type": "time"
+  },
+  "AppointmentMappingItems": {
+    "resource": "AppointmentMapping"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "PatientId": {
+    "resource": "PatientId",
+    "required": true
+  },
+  "Appointment": {
+    "resource": "Appointment",
+    "required": true
+  }
+}

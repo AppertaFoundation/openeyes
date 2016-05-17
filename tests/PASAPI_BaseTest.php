@@ -74,6 +74,8 @@ abstract class PASAPI_BaseTest extends RestTestCase
         $this->user->saveRoles(array('User', 'API access'));
     }
 
+    protected $base_url_stub;
+
     public function setUp()
     {
         // do this so if there was an error that prevented clean up in the last test run we can still test again.
@@ -81,7 +83,7 @@ abstract class PASAPI_BaseTest extends RestTestCase
         $this->createTestUser();
 
         $this->client = new Client(
-            Yii::app()->params['pas_api_test_base_url'] . 'Patient',
+            Yii::app()->params['pas_api_test_base_url'] . $this->base_url_stub,
             array(
                 Client::REQUEST_OPTIONS => array(
                     'auth' => array($this->user->username, $this->user_password),
