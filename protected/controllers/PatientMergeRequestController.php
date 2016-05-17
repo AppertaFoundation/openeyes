@@ -31,8 +31,14 @@ class PatientMergeRequestController extends BaseController
         return array(
             array('allow',
                 'actions' => array('index', 'create', 'view', 'merge', 'editConflict', 'search'),
-                'roles' => array('admin'),
-            )
+                'roles' => array('Patient Merge'),
+            ),
+            
+            array('allow',
+                'actions' => array('index', 'create', 'view', 'search'),
+                'roles' => array('Patient Merge Request'),
+            ),
+            
         );
     }
     
@@ -83,10 +89,18 @@ class PatientMergeRequestController extends BaseController
     public function actionView($id)
     {
         $model = $this->loadModel($id);
-
+        
+        $log = array();
+        foreach(json_decode($model->merge_json, true)['log'] as $key => $log_row){
+            $log[] = array(
+                'id' => $key,
+                'log' => $log_row
+            );
+        }
+        
         $this->render('//patientmergerequest/view', array(
             'model' => $model,
-            'log' => json_decode($model->merge_json, true),
+            'dataProvider' => new CArrayDataProvider( $log ),
         ));
     }
     
@@ -114,12 +128,16 @@ class PatientMergeRequestController extends BaseController
                 $mergeHandler->load($mergeRequest);
 
                 if($mergeHandler->merge()){
+                    $msg = "Merge Request " . $mergeRequest->secondaryPatient->hos_num . " INTO " . $mergeRequest->primaryPatient->hos_num . "(hos_num) successfully done.";
+                    $mergeHandler->addLog($msg);
                     $mergeRequest->status = $mergeRequest::STATUS_MERGED;
                     $mergeRequest->merge_json = json_encode( array( 'log' => $mergeHandler->getLog() ) );
                     $mergeRequest->save();
-                    Audit::add('Patient Merge', "Merge Request " . $mergeRequest->secondaryPatient->hos_num . " INTO " . $mergeRequest->primaryPatient->hos_num . "(hos_num) successfully done.");
+                    Audit::add('Patient Merge', $msg);
                     $this->redirect(array('view', 'id' => $mergeRequest->id));
                 } else {
+                    $msg = "Merge Request " . $mergeRequest->secondaryPatient->hos_num . " INTO " . $mergeRequest->primaryPatient->hos_num . " FAILED.";
+                    $mergeHandler->addLog($msg);
                     $mergeRequest->status = $mergeRequest::STATUS_CONFLICT;
                     $mergeRequest->merge_json = json_encode( array( 'log' => $mergeHandler->getLog() ) );
                     $mergeRequest->save();
