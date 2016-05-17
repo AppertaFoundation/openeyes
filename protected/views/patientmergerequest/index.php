@@ -92,7 +92,13 @@
                     $html = "";
                 
                     if($data->status == $data::STATUS_NOT_PROCESSED){
-                        $html = CHtml::link('merge',array('patientMergeRequest/merge', 'id' => $data->id), array('class' => 'warning button small right'));
+                        
+                        if( Yii::app()->user->checkAccess('Patient Merge') ){
+                            $html = CHtml::link('merge',array('patientMergeRequest/merge', 'id' => $data->id), array('class' => 'warning button small right'));
+                        } else {
+                            $html = CHtml::link('merge',array(''), array('class' => 'disabled warning button small right'));
+                        }
+                        
                     }
                     
                     if($data->status == $data::STATUS_CONFLICT){
@@ -102,10 +108,9 @@
                     }
                     
                     if($data->status == $data::STATUS_MERGED){
-                        $html = '<span class="mergedOn">Merged on ' . $data->last_modified_date . '</span>';
+                        $html = CHtml::link('view',array('patientMergeRequest/view', 'id' => $data->id), array('class' => 'button small right'));
                     }
                     
-
                     return $html;
                     
                 },

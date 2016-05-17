@@ -21,37 +21,16 @@
 
 <div class="row">
     <div class="large-8 column large-centered">
-        
-        <?php
-			// @TODO: display it nicely
-            foreach($log['log'] as $lg){
-                echo $lg . "<br>";
-            }
-        ?>
-        
-        <?php /*$this->widget('zii.widgets.CDetailView', array(
-                'data'=>$model,
-                'attributes'=>array(
-                        'id',
-                        'primary_id',
-                        'primary_hos_num',
-                        'primary_nhsnum',
-                        'primary_dob',
-                        'primary_gender',
-                        'secondary_id',
-                        'secondary_hos_num',
-                        'secondary_nhsnum',
-                        'secondary_dob',
-                        'secondary_gender',
-                        'merge_json',
-                        'comment',
-                        'status',
-                        'last_modified_user_id',
-                        'last_modified_date',
-                        'created_user_id',
-                        'created_date',
-                ),
-        ));*/ ?>
+
+
+        <?php $this->widget('zii.widgets.grid.CGridView', array(
+                    'itemsCssClass' => 'grid',
+                    'dataProvider' => $dataProvider,
+                    'summaryText' => '<h3><small> {start}-{end} of {count} </small></h3>',
+                    'htmlOptions' => array('id' => 'patientMergeList'),
+                    'columns' => array('log')
+                ));
+            ?>
         <br>
     </div>
 </div>
