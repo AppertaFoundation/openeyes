@@ -59,6 +59,8 @@ class PortalExamsCommand extends CConsoleCommand
 				$examinationEvent->created_user_id = $examinationEvent->last_modified_user_id = $portalUserId;
 				$examinationEvent->event_date = $examination['examination_date'];
 				$examinationEvent->event_type_id = $eventType['id'];
+				$examinationEvent->is_automated = 1;
+				$examinationEvent->automated_source = json_encode($examination['op_tom']);
 
 				if($examinationEvent->save()){
 					$examinationEvent->refresh();

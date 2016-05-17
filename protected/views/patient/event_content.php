@@ -10,7 +10,7 @@
 
 	<div class="event-content" id="event-content">
 
-		<h2 class="event-title"><?php echo $this->title?></h2>
+		<h2 class="event-title"><?php echo $this->title?> <?php $this->renderPartial('//patient/event_automated'); ?></h2>
 
 		<?php $this->renderPartial('//base/_messages'); ?>
 
