@@ -170,7 +170,12 @@ class PatientAppointment extends BaseResource
             }
         }
         else {
-            $this->worklist_manager->updateWorklistPatientFromMapping($model, $when, $attributes);
+            if (!$this->worklist_manager->updateWorklistPatientFromMapping($model, $when, $attributes)) {
+                foreach ($this->worklist_manager->getErrors() as $err) {
+                    $this->addError($err);
+                }
+                throw new \Exception("Could not update patient worklist entry");
+            };
         }
 
         return $model;
