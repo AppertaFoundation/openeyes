@@ -180,7 +180,14 @@ class V1Controller extends \CController
         }
         catch (\Exception $e)
         {
-            $errors = array(YII_DEBUG ? $e->getMessage() : "Could not save resource");
+            if (YII_DEBUG) {
+                $errors = $resource->errors;
+                $errors[] = $e->getMessage();
+            }
+            else {
+                $errors = array("Could not save resource");
+            }
+
             $this->sendErrorResponse(500, $errors);
         }
 
