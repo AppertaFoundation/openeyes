@@ -122,6 +122,7 @@ class WorklistManager extends CComponent
         if (is_array($data)) {
             $data = json_encode($data);
         }
+
         Audit::add($target, $action, $data, $log_message, $properties);
     }
 
@@ -390,7 +391,6 @@ class WorklistManager extends CComponent
     {
         $transaction = $this->startTransaction();
         $worklist = $worklist_patient->worklist;
-
         try {
             $valid_attributes = array();
             foreach ($worklist->mapping_attributes as $attr)
@@ -399,12 +399,14 @@ class WorklistManager extends CComponent
             foreach ($attributes as $attr => $val) {
                 if (!array_key_exists($attr, $valid_attributes))
                     throw new Exception("Unrecognised attribute {$attr} for {$worklist->name}");
+
                 $wlattr = $this->getInstanceForClass('WorklistPatientAttribute');
                 $wlattr->attributes = array(
                     'worklist_patient_id' => $worklist_patient->id,
                     'worklist_attribute_id' => $valid_attributes[$attr],
                     'attribute_value' => $val
                 );
+
                 if (!$wlattr->save())
                     throw new Exception("Unable to save attribute {$attr} for patient worklist.");
             }
@@ -428,11 +430,11 @@ class WorklistManager extends CComponent
      *
      * @param Patient $patient
      * @param Worklist $worklist
-     * @param datetime $when
+     * @param DateTime $when
      * @param array $attributes
      * @return WorklistPatient|null
      */
-    public function addPatientToWorklist(Patient $patient, Worklist $worklist, $when=null, $attributes = array())
+    public function addPatientToWorklist(Patient $patient, Worklist $worklist, DateTime $when=null, $attributes = array())
     {
         $this->reset();
 
@@ -448,7 +450,7 @@ class WorklistManager extends CComponent
             $wp->patient_id = $patient->id;
             $wp->worklist_id = $worklist->id;
             if ($when)
-                $wp->when = $when;
+                $wp->when = $when->format("Y-m-d H:i:s");
 
             if (!$wp->save())
                 throw new Exception("Unable to save patient to worklist.");
@@ -584,6 +586,8 @@ class WorklistManager extends CComponent
         $start_time = $range_date->format("Y-m-d H:i:s");
 
         if (!$instance = $model->findByAttributes(array('worklist_definition_id' => $definition->id, 'start' => $start_time))) {
+
+            //TODO: consider a transaction loop here
             $instance = $this->getInstanceForClass('Worklist');
             $range_date->setTime(substr($definition->end_time,0,2), substr($definition->end_time, 3,2));
 
@@ -598,6 +602,19 @@ class WorklistManager extends CComponent
 
             $instance->save();
 
+            // assign the possible attributes for worklist
+            foreach ($definition->mappings as $mapping) {
+                $worklist_attribute = $this->getInstanceForClass('WorklistAttribute');
+                $worklist_attribute->name = $mapping->key;
+                $worklist_attribute->display_order = $mapping->display_order;
+                $worklist_attribute->worklist_id = $instance->id;
+                if (!$worklist_attribute->save()) {
+                    foreach ($worklist_attribute->getErrors() as $err) {
+                        $this->addError($err);
+                    }
+                    throw new Exception("Couldn't create worklist attribute");
+                };
+            }
             return true;
         };
 
@@ -698,16 +715,20 @@ class WorklistManager extends CComponent
             throw new Exception("Cannot match Worklist that doesn't have a WorklistDefinition.");
 
         foreach ($wl->worklist_definition->mappings as $mapping) {
-            if (!array_key_exists($mapping->key, $attributes))
+            if (!array_key_exists($mapping->key, $attributes)) {
+                $this->addError("Missing key {$mapping->key}");
                 return false;
+            }
 
             $match = false;
             foreach ($mapping->values as $val) {
-                if ($val == $attributes[$mapping->key])
+                if ($val->mapping_value == $attributes[$mapping->key])
                     $match = true;
             }
-            if (!$match)
+            if (!$match) {
+                $this->addError($attributes[$mapping->key] . " not valid for key '{$mapping->key}''");
                 return false;
+            }
         }
         // get to the end and no mismatch found. must match.
         return true;
@@ -726,9 +747,9 @@ class WorklistManager extends CComponent
         $model->automatic = true;
 
         $candidates = array();
-        foreach ($model->search() as $wl)
+        foreach ($model->search()->getData() as $wl)
         {
-            if ($this->checkWorklistMatch($wl, $attributes))
+            if ($this->checkWorklistMappingMatch($wl, $attributes))
                 $candidates[] = $wl;
         }
 
