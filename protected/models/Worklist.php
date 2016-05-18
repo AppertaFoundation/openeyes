@@ -119,7 +119,7 @@ class Worklist extends BaseActiveRecordVersionedSoftDelete
         if ($this->on) {
             $sdate = $this->on->format('Y-m-d') . " 00:00:00";
             $edate = $this->on->format('Y-m-d') . " 23:59:59";
-            $criteria->addCondition(':sd <= start_date AND :ed >= end_date');
+            $criteria->addCondition(':sd <= start AND :ed >= end');
             $criteria->params = array_merge($criteria->params, array(
                 ':sd' => $sdate,
                 ':ed' => $edate
