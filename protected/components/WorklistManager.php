@@ -430,7 +430,7 @@ class WorklistManager extends CComponent
      * @param Worklist $worklist
      * @param datetime $when
      * @param array $attributes
-     * @return bool
+     * @return WorklistPatient|null
      */
     public function addPatientToWorklist(Patient $patient, Worklist $worklist, $when=null, $attributes = array())
     {
@@ -438,7 +438,7 @@ class WorklistManager extends CComponent
 
         if ($this->getWorklistPatient($worklist, $patient)) {
             $this->addError("Patient is already on the given worklist.");
-            return false;
+            return null;
         }
 
         $transaction = $this->startTransaction();
@@ -465,15 +465,16 @@ class WorklistManager extends CComponent
 
             if ($transaction)
                 $transaction->commit();
+
+            return $wp;
         }
         catch (Exception $e) {
             $this->addError($e->getMessage());
             if ($transaction)
                 $transaction->rollback();
-            return false;
+            return null;
         }
 
-        return true;
     }
 
     /**

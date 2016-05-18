@@ -74,7 +74,7 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $patient = new Patient();
         $worklist = new Worklist();
 
-        $this->assertFalse($manager->addPatientToWorklist($patient, $worklist));
+        $this->assertNull($manager->addPatientToWorklist($patient, $worklist));
         $this->assertTrue($manager->hasErrors());
     }
 
@@ -104,7 +104,7 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $patient = new Patient();
         $worklist = new Worklist();
 
-        $this->assertTrue($manager->addPatientToWorklist($patient, $worklist));
+        $this->assertEquals($wp, $manager->addPatientToWorklist($patient, $worklist));
         $this->assertFalse($manager->hasErrors());
     }
 
@@ -151,7 +151,7 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $manager->expects($this->once())
             ->method('audit');
 
-        $this->assertTrue($manager->addPatientToWorklist($patient, $worklist, $when, $attributes));
+        $this->assertEquals($wp, $manager->addPatientToWorklist($patient, $worklist, $when, $attributes));
 
         $this->assertFalse($manager->hasErrors());
         $this->assertEquals($when, $wp->when);
@@ -196,7 +196,7 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
             ->with($wp, $attributes)
             ->will($this->returnValue(false));
 
-        $this->assertFalse($manager->addPatientToWorklist($patient, $worklist, $when, $attributes));
+        $this->assertNull($manager->addPatientToWorklist($patient, $worklist, $when, $attributes));
 
         $this->assertTrue($manager->hasErrors());
     }
