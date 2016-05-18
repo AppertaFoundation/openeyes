@@ -44,7 +44,7 @@ class WorklistAttribute extends BaseActiveRecord
         // will receive user inputs.
         return array(
             array('worklist_id, name, display_order', 'required'),
-            array('display_order', 'integer'),
+            array('display_order', 'numerical', 'integerOnly' => true),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, worklist_id, name', 'safe', 'on'=>'search'),
