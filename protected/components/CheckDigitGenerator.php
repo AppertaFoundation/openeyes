@@ -23,7 +23,7 @@ class CheckDigitGenerator
 {
     private $string_for_conversion;
     private $salt;
-    
+
     /*
      * @param string $string_for_conversion
      * @param string $salt
@@ -32,19 +32,19 @@ class CheckDigitGenerator
         $this->string_for_conversion = $string_for_conversion;
         $this->salt = $salt;
     }
-    
+
     /**
     * @param string $checkdigit
     */
     public function generateCheckDigit() {
         $sum = 0;
-        $string = $this->string_for_conversion . $this->salt;  
+        $string = $this->string_for_conversion . $this->salt;
         $string = strrev($string); 
-        for ($i = 0; $i < strlen($string); $i++) { 
-         $char = str_replace(range('A','Z'),range('1','26'),$string[$i]);  
-         $sum += array_sum(str_split(($char * pow(2,(($i+1) % 2)))));  
+        for ($i = 0; $i < strlen($string); $i++) {
+         $char = str_replace(range('A','Z'),range('1','26'),$string[$i]);
+         $sum += array_sum(str_split(($char * pow(2,(($i+1) % 2)))));
         }
         return (($sum * 9) % 10);
     }
-    
+
 }
