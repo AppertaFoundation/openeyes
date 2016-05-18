@@ -22,7 +22,23 @@ class PatientId extends BaseResource
 
     public $isNewResource;
 
+    /**
+     * Valid tags for defining a patient identifier
+     *
+     * @var array
+     */
     protected $id_tags = array("Id", "PasId", "NHSNumber", "HospitalNumber");
+
+    /**
+     * Abstraction for getting model instance of class
+     *
+     * @param $class
+     * @return mixed
+     */
+    protected function getModelForClass($class)
+    {
+        return $class::model();
+    }
 
     /**
      * As a primary resource (i.e. mapped to external resource) we need to ensure we have an id for tracking
@@ -30,7 +46,8 @@ class PatientId extends BaseResource
      *
      * @return bool
      */
-    public function validate() {
+    public function validate()
+    {
         $has_id = false;
         foreach ($this->id_tags as $attr) {
             if ($this->$attr)
@@ -41,4 +58,73 @@ class PatientId extends BaseResource
 
         return parent::validate();
     }
+
+    /**
+     * Function to resolve the referenced Patient model for this id resource
+     *
+     * @return \Patient
+     * @throws \Exception
+     */
+    public function getModel()
+    {
+        foreach ($this->id_tags as $attr) {
+            if (property_exists($this, $attr))
+                return $this->{"resolveModel" . $attr}();
+        }
+        // should never reach here assuming the resource has been validated
+        throw new \Exception("No appropriate id tag provided.");
+    }
+
+    /**
+     * Wrapper for patient not found behaviour
+     *
+     * @throws \Exception
+     */
+    protected function patientNotFound()
+    {
+        throw new \Exception("Patient not found.");
+    }
+
+    /**
+     * Convenience wrapper for marking a method not implemented (to generalise the exception for this)
+     *
+     * @param $method_name
+     * @throws \Exception
+     */
+    protected function methodNotImplemented($method_name)
+    {
+        throw new \Exception("{$method_name} not yet supported.");
+    }
+
+    /**
+     * Resolve the model by the given Patient Id
+     * @return mixed
+     * @throws \Exception
+     */
+    protected function resolveModelId()
+    {
+        $model = $this->getModelForClass("Patient");
+        $instance = $model->findByPk($this->Id);
+
+        if ($instance)
+            return $instance;
+
+        $this->patientNotFound();
+    }
+
+    protected function resolveModelPasId()
+    {
+        $this->methodNotImplemented('resolvePasId');
+    }
+
+    protected function resolveModelNHSNumber()
+    {
+        $this->methodNotImplemented('resolveModelNHSNumber');
+    }
+
+    protected function resolvePasIdHospitalNumber()
+    {
+        $this->methodNotImplemented('resolvePasIdHospitalNumber');
+    }
+
 }
