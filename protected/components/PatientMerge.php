@@ -196,7 +196,7 @@ class PatientMerge
                             // after all events are moved we flag the secondary episode as deleted
                             $secondaryEpisode->deleted = 1;
                             if( $secondaryEpisode->save()){
-                                $msg = "Episode " . $secondaryEpisode->id . "marked as deleted, events moved under the primary patient's same firm episode.";
+                                $msg = "Episode " . $secondaryEpisode->id . " marked as deleted, events moved under the primary patient's same firm episode.";
                                 $this->addLog($msg);
                                 Audit::add('Patient Merge', $msg);
                             } else {
@@ -212,7 +212,7 @@ class PatientMerge
                             $primaryEpisode->deleted = 1;
                      
                             if( $primaryEpisode->save()){
-                                $msg = "Episode " . $primaryEpisode->id . "marked as deleted, events moved under the secondary patient's same firm episode.";
+                                $msg = "Episode " . $primaryEpisode->id . " marked as deleted, events moved under the secondary patient's same firm episode.";
                                 $this->addLog($msg);
                                 Audit::add('Patient Merge', $msg);
                             } else {
