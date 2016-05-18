@@ -16,8 +16,29 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+/**
+ * Class Appointment
+ * @package OEModule\PASAPI\resources
+ *
+ * @property string $AppointmentDate
+ * @property string $AppointmentTime
+ * @property MappingItems $MappingItems
+ */
 class Appointment extends BaseResource
 {
     static protected $resource_type = 'Appointment';
+
+    /**
+     * @return \DateTime
+     */
+    public function getWhen()
+    {
+        $result = \DateTime::createFromFormat('Y-m-d H:i:00', substr($this->AppointmentDate,0,10) . $this->AppointmentTime);
+
+        if (!$result)
+            throw new \Exception("Could not parse date and time values");
+
+        return $result;
+    }
 
 }
