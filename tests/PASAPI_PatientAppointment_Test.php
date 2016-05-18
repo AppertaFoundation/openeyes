@@ -45,4 +45,86 @@ class PASAPI_PatientAppointment_Test extends PASAPI_BaseTest
         $this->setExpectedHttpError(400);
         $this->put('BADTAG', '<OEAppoint />');
     }
+
+    public function validationProvider()
+    {
+        $base_valid = <<<EOF
+<PatientAppointment>
+	<PatientId>
+		<Id>123456</Id>
+	</PatientId>
+	<Appointment>
+        <AppointmentDate>2016-05-23</AppointmentDate>
+        <AppointmentTime>11:30</AppointmentTime>
+        <AppointmentMappingItems>
+            <AppointmentMapping>
+                <Key>Clinic Code</Key>
+                <Value>E-CATARACTS</Value>
+            </AppointmentMapping>
+            <AppointmentMapping>
+                <Key>Doctor Code</Key>
+                <Value>RMC01</Value>
+            </AppointmentMapping>
+            <AppointmentMapping>
+                <Key>Doctor Name</Key>
+                <Value>Dr G. Aylward</Value>
+            </AppointmentMapping>
+        </AppointmentMappingItems>
+    </Appointment>
+</PatientAppointment>
+EOF;
+
+        $missing_mapping_item = <<<EOF
+<PatientAppointment>
+	<PatientId>
+		<Id>123456</Id>
+	</PatientId>
+	<Appointment>
+        <AppointmentDate>2016-05-23</AppointmentDate>
+        <AppointmentTime>11:30</AppointmentTime>
+        <AppointmentMappingItems>
+            <AppointmentMapping>
+                <Key>Clinic Code</Key>
+            </AppointmentMapping>
+            <AppointmentMapping>
+                <Key>Doctor Code</Key>
+                <Value>RMC01</Value>
+            </AppointmentMapping>
+            <AppointmentMapping>
+                <Key>Doctor Name</Key>
+                <Value>Dr G. Aylward</Value>
+            </AppointmentMapping>
+        </AppointmentMappingItems>
+    </Appointment>
+</PatientAppointment>
+EOF;
+
+        return array(
+            array('<WrongTag></WrongTag>', false),
+            array('<PatientAppointment />', false),
+            array($base_valid, true),
+            array($missing_mapping_item, false),
+        );
+    }
+
+    /**
+     * This test is possibly in the wrong place - it's not a unit test, but it's not full integration either. It's just
+     * handy to be able to throw some XML at the resource and test it handles it
+     * @dataProvider validationProvider
+     */
+    public function testValidation($xml, $valid)
+    {
+
+        $test = \OEModule\PASAPI\resources\PatientAppointment::fromXml("V1", $xml);
+        $test->id = 'test';
+
+        $res = $test->validate();
+        // just a handy debugger for when adding other XML inputs
+        if ($valid && !$res) {
+            var_dump($test->errors);
+        }
+        $this->assertEquals($valid, $res);
+
+    }
+
 }

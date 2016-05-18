@@ -90,7 +90,6 @@ abstract class BaseResource
     static public function fromXml($version, $xml)
     {
         $doc = new \DOMDocument();
-
         if (!$xml) return static::errorInit($version, array("Missing Resource Body"));
         libxml_use_internal_errors(true);
         if (!$doc->loadXML($xml)) {
@@ -203,6 +202,7 @@ abstract class BaseResource
                     }
                     break;
                 case 'date':
+                    // TODO: Move parsing into specific object types to after validation. Validate first to check eligible?
                     if (!strlen($child->textContent))
                         break;
 
@@ -212,6 +212,20 @@ abstract class BaseResource
                     else {
                         throw new \Exception("invalid date format for {$local_name}");
                     }
+                    break;
+                case 'time':
+                    if (!strlen($child->textContent))
+                        break;
+                    if (preg_match('/^\d\d:\d\d$/', $child->textContent)) {
+                        $this->{$local_name} = $child->textContent;
+                    }
+                    else {
+                        throw new \Exception("invalid time format for {$local_name}");
+                    }
+                    break;
+                case 'resource':
+                    $cls = __NAMESPACE__ . "\\" . $schema[$local_name]['resource'];
+                    $this->{$local_name} = $cls::fromXmlDom($this->version, $child);
                     break;
                 default:
                     $this->{$local_name} = $child->textContent;
@@ -235,6 +249,17 @@ abstract class BaseResource
             if (@$defn['required']) {
                 if (!property_exists($this, $tag)) {
                     $this->addError("{$tag} is required");
+                }
+            }
+            if (isset($defn['resource']) && property_exists($this, $tag)) {
+                $resources_to_validate = is_array($this->$tag) ? $this->$tag : array($this->$tag);
+                foreach ($resources_to_validate as $idx => $resource) {
+                    if (!$resource->validate()) {
+                        $tag_pos = count($resources_to_validate) > 1 ? ":" . ($idx+1) : null;
+                        foreach ($resource->errors as $err) {
+                            $this->addError("{$tag}{$tag_pos} error: {$err}");
+                        }
+                    }
                 }
             }
         }

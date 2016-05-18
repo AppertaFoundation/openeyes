@@ -50,7 +50,7 @@ class PatientId extends BaseResource
     {
         $has_id = false;
         foreach ($this->id_tags as $attr) {
-            if ($this->$attr)
+            if (isset($this->$attr))
                 $has_id = true;
         }
         if (!$has_id)

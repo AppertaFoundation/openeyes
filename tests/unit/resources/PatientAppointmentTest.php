@@ -27,15 +27,12 @@ class PatientAppointmentTest extends PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->setMethods($methods)
             ->getMock();
-
     }
 
-    public function test_save_success_update()
+    public function test_save_success()
     {
         $pa = $this->getMockResource('PatientAppointment',
             array('validate','getInstanceForClass','startTransaction', 'saveModel', 'audit'));
-
-
 
         $papi_ass = $this->getMockBuilder('OEModule\\PASAPI\\models\\PasApiAssignment')
             ->disableOriginalConstructor()
@@ -55,11 +52,11 @@ class PatientAppointmentTest extends PHPUnit_Framework_TestCase
             ->with("OEModule\\PASAPI\\models\\PasApiAssignment")
             ->will($this->returnValue($papi_ass));
 
+        $worklist_patient = ComponentStubGenerator::generate('WorklistPatient', array('id' => 5));
+
         $pa->expects($this->once())
             ->method('saveModel')
-            ->will($this->returnValue(true));
-
-        $worklist_patient = ComponentStubGenerator::generate('WorklistPatient', array('id' => 5));
+            ->will($this->returnValue($worklist_patient));
 
         $papi_ass->expects($this->once())
             ->method('findByResource')
@@ -83,4 +80,36 @@ class PatientAppointmentTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(5, $pa->save());
     }
+
+    public function test_saveModel_update()
+    {
+        $pa = $this->getMockResource('PatientAppointment',
+            array('resolvePatient', 'resolveWhen', 'resolveAttributes'));
+
+        $manager = $this->getMockBuilder("WorklistManager")
+            ->disableOriginalConstructor()
+            ->setMethods(array('updateWorklistPatientFromMapping'))
+            ->getMock();
+
+        $rc = new ReflectionClass($pa);
+        $p = $rc->getProperty('worklist_manager');
+        $p->setAccessible(true);
+        $p->setValue($pa, $manager);
+
+        $pa->expects($this->once())
+            ->method('resolvePatient');
+        $pa->expects($this->once())
+            ->method('resolveWhen')
+            ->will($this->returnValue(new DateTime()));
+        $pa->expects($this->once())
+            ->method('resolveAttributes')
+            ->will($this->returnValue(array()));
+
+        $manager->expects($this->once())
+            ->method('updateWorklistPatientFromMapping');
+
+        $model = ComponentStubGenerator::generate("WorklistPatient", array('isNewRecord' => false));
+        $pa->saveModel($model);
+    }
+
 }

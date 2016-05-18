@@ -22,23 +22,55 @@
  *
  * @property string $AppointmentDate
  * @property string $AppointmentTime
- * @property MappingItems $MappingItems
+ * @property AppointmentMappingItems $AppointmentMappingItems
  */
 class Appointment extends BaseResource
 {
     static protected $resource_type = 'Appointment';
+
+    public function validate()
+    {
+        $mapping_keys = array();
+        if (isset($this->AppointmentMappingItems)) {
+            foreach ($this->AppointmentMappingItems as $item) {
+                if (in_array($item->Key, $mapping_keys))
+                    $this->addError("Duplicate key {$item->Key} is not allowed.");
+            }
+        }
+
+        return parent::validate();
+    }
 
     /**
      * @return \DateTime
      */
     public function getWhen()
     {
-        $result = \DateTime::createFromFormat('Y-m-d H:i:00', substr($this->AppointmentDate,0,10) . $this->AppointmentTime);
+        $concatenated = substr($this->AppointmentDate,0,10) . " " . $this->AppointmentTime;
+        $result = \DateTime::createFromFormat('Y-m-d H:i', $concatenated);
 
         if (!$result)
-            throw new \Exception("Could not parse date and time values");
+            throw new \Exception("Could not parse date and time values ({$concatenated}):" . print_r(\DateTime::getLastErrors(), true));
 
         return $result;
     }
+
+    /**
+     * Parse all the mapping items and return them as a key value array
+     *
+     * Note, expects resource to have been validated
+     *
+     * @return array
+     */
+    public function getMappingsArray()
+    {
+        $res = array();
+        foreach ($this->AppointmentMappingItems as $item) {
+            $res[$item->Key] = $item->Value;
+        }
+
+        return $res;
+    }
+
 
 }

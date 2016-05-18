@@ -1,9 +1,11 @@
 {
   "PatientId": {
+    "type": "resource",
     "resource": "PatientId",
     "required": true
   },
   "Appointment": {
+    "type": "resource",
     "resource": "Appointment",
     "required": true
   }

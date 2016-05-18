@@ -16,12 +16,45 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+/**
+ * Class PatientAppointment
+ * @package OEModule\PASAPI\resources
+ *
+ * @property PatientId $PatientId
+ * @property Appointment $Appointment
+ */
 class PatientAppointment extends BaseResource
 {
     static protected $resource_type = 'PatientAppointment';
+    /**
+     * Class of model that is stored internally for this resource
+     *
+     * @var string
+     */
+    static protected $model_class = 'WorklistPatient';
 
     public $isNewResource;
     public $id;
+
+    /**
+     * @var WorklistManager
+     */
+    protected $worklist_manager;
+
+    /**
+     * PatientAppointment constructor.
+     * @param $version
+     * @param \WorklistManager|null $worklist_manager
+     */
+    public function __construct($version, \WorklistManager $worklist_manager = null)
+    {
+        parent::__construct($version);
+
+        if (is_null($worklist_manager))
+            $worklist_manager = new \WorklistManager();
+
+        $this->worklist_manager = $worklist_manager;
+    }
 
     /**
      * Abstraction for getting instance of class
@@ -45,8 +78,8 @@ class PatientAppointment extends BaseResource
      */
     protected function startTransaction()
     {
-        return Yii::app()->db->getCurrentTransaction() === null
-            ? Yii::app()->db->beginTransaction()
+        return \Yii::app()->db->getCurrentTransaction() === null
+            ? \Yii::app()->db->beginTransaction()
             : null;
     }
 
@@ -71,23 +104,24 @@ class PatientAppointment extends BaseResource
 
         try {
             $finder = $this->getInstanceForClass("OEModule\\PASAPI\\models\\PasApiAssignment");
-            $assignment = $finder->findByResource(static::$resource_type, $this->id);
+            $assignment = $finder->findByResource(static::$resource_type, $this->id, static::$model_class);
             $model = $assignment->getInternal();
 
             // track whether we are creating or updating
             $this->isNewResource = $model->isNewRecord;
 
-            if ($this->saveModel($model)) {
+            if ($model = $this->saveModel($model)) {
                 $assignment->internal_id = $model->id;
                 $assignment->save();
                 $assignment->unlock();
 
-                $this->audit($this->isNewResource ? 'create' : 'update', null, null, array('patient_id' => $model->id));
+                $this->audit($this->isNewResource ? 'create' : 'update', null, null, null);
 
                 if ($transaction)
                     $transaction->commit();
+
+                return $model->id;
             }
-            return $model->id;
         }
         catch (\Exception $e) {
             if ($transaction)
@@ -97,21 +131,49 @@ class PatientAppointment extends BaseResource
         }
     }
 
-    public function saveModel(WorklistPatient $model)
+    /**
+     * @return \Patient
+     * @throws \Exception
+     */
+    protected function resolvePatient()
     {
-        $manager = new \WorklistManager();
+        return $this->PatientId->getModel();
+    }
 
-        // Not yet implemented
-        return false;
+    protected function resolveWhen()
+    {
+        return $this->Appointment->getWhen();
+    }
+
+    protected function resolveAttributes()
+    {
+        return $this->Appointment->getMappingsArray();
+    }
+
+    /**
+     * @param \WorklistPatient $model
+     * @return bool|\WorklistPatient
+     */
+    public function saveModel(\WorklistPatient $model)
+    {
         // extract the values to be passed to the manager instance for mapping
+        $patient = $this->resolvePatient();
+        $when = $this->resolveWhen();
+        $attributes = $this->resolveAttributes();
 
         if ($model->isNewRecord) {
-            $manager->mapPatientToWorklistDefinition($patient, $when, $attributes);
+            if (!$model = $this->worklist_manager->mapPatientToWorklistDefinition($patient, $when, $attributes)) {
+                foreach ($this->worklist_manager->getErrors() as $err) {
+                    $this->addError($err);
+                }
+                throw new \Exception("Could not add patient to worklist");
+            }
         }
         else {
-            // we should verify that the patient id still points to the same patient.
-            $manager->updateWorklistPatientFromMapping($model, $when, $attributes);
+            $this->worklist_manager->updateWorklistPatientFromMapping($model, $when, $attributes);
         }
+
+        return $model;
     }
 
 }

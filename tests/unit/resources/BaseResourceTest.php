@@ -19,6 +19,7 @@
 namespace OEModule\PASAPI\tests\unit\resources;
 
 
+use OEModule\OphCiExamination\OphCiExaminationModule;
 use OEModule\PASAPI\models\RemapValue;
 use OEModule\PASAPI\models\XpathRemap;
 use OEModule\PASAPI\resources\BaseResource;
@@ -92,4 +93,36 @@ class BaseResourceTest extends \PHPUnit_Framework_TestCase
 
         $this->assertXmlStringEqualsXmlString($expected, $doc->saveXML());
     }
+
+    public function test_validate_checks_child_resources()
+    {
+        $test = $this->getMockBuilder("\\OEModule\\PASAPI\\resources\\BaseResource")
+            ->disableOriginalConstructor()
+            ->setMethods(array())
+            ->getMockForAbstractClass();
+
+        $rc = new \ReflectionClass($test);
+        $p = $rc->getProperty('schema');
+        $p->setAccessible(true);
+        $p->setValue($test, array(
+            'sampleResource' => array(
+                'resource' => 'sampleResource'
+            )
+        ));
+
+        $test->sampleResource = $this->getMockBuilder("\\OEModule\\PASAPI\\resources\\BaseResource")
+            ->disableOriginalConstructor()
+            ->setMethods(array('validate'))
+            ->getMockForAbstractClass();
+
+        $test->sampleResource->expects($this->once())
+            ->method('validate')
+            ->will($this->returnValue(false));
+
+        $test->sampleResource->errors = ['test error'];
+
+        $this->assertFalse($test->validate());
+        $this->assertEquals(array("sampleResource error: test error"), $test->errors);
+    }
 }
+

@@ -21,7 +21,7 @@ class AppointmentTest extends PHPUnit_Framework_TestCase
     {
         return array(
             array(
-                '2016-05-04 12:13:12', '15:10:00', '2016-05-04 15:10:00',
+                '2016-05-04 12:13:12', '15:10', '2016-05-04 15:10:00',
             ),
             array(
                 'asdad', 'asdsaf', null
@@ -50,8 +50,59 @@ class AppointmentTest extends PHPUnit_Framework_TestCase
             $this->setExpectedException("Exception");
         }
         $when = $app->getWhen();
-
+        var_dump($when);
         if ($expected)
             $this->assertEquals($expected, $when->format('Y-m-d H:i:s'));
     }
+
+    public function getMappingsArrayProvider()
+    {
+        return array(
+            array(
+                array('key1', 'value1','key2', 'value2'),
+                array(
+                    'key1' => 'value1',
+                    'key2' => 'value2',
+                )
+            ),
+            // duplicate key overrides, should be prevented by validation
+            array(
+                array('key1', 'value1','key1', 'value2'),
+                array(
+                    'key1' => 'value2',
+                )
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider getMappingsArrayProvider
+     *
+     * @param $items
+     * @param $expected
+     */
+    public function test_getMappingsArray($items, $expected)
+    {
+        $mapping_items = array();
+        for ($i = 0; $i < count($items); $i+=2) {
+            $mi = $this->getMockBuilder("OEModule\\PASAPI\\resources\\AppointmentMapping")
+                ->disableOriginalConstructor()
+                ->setMethods(null)
+                ->getMock();
+            $mi->Key = $items[$i];
+            $mi->Value = $items[$i+1];
+            $mapping_items[] = $mi;
+        }
+
+        $a = $this->getMockBuilder("OEModule\\PASAPI\\resources\\Appointment")
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $a->AppointmentMappingItems = $mapping_items;
+
+        $this->assertEquals($expected, $a->getMappingsArray());
+    }
+
+
 }

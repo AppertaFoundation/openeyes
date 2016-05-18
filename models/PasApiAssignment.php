@@ -67,9 +67,11 @@ class PasApiAssignment extends \BaseActiveRecord
      * @param string $resource_id
      * @return PasApiAssignment
      */
-    public function findByResource($resource_type, $resource_id)
+    public function findByResource($resource_type, $resource_id, $internal_type = null)
     {
         $this->lock($resource_type, $resource_id);
+        if (is_null($internal_type))
+            $internal_type = $resource_type;
 
         $record = $this->findByAttributes(array('resource_type' => $resource_type, 'resource_id' => $resource_id));
         if (!$record) {
@@ -77,7 +79,7 @@ class PasApiAssignment extends \BaseActiveRecord
             $record->resource_type = $resource_type;
             $record->resource_id = $resource_id;
             // assuming all models are in the root namespace at this point
-            $record->internal_type = '\\' . $resource_type;
+            $record->internal_type = '\\' . $internal_type;
         }
 
         return $record;
