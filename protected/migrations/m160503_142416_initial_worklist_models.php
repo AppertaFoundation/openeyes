@@ -23,7 +23,7 @@ class m160503_142416_initial_worklist_models extends OEMigration
                 'worklist_id' => 'int(11) NOT NULL',
                 'name' => 'varchar(255) NOT NULL',
                 'display_order' => 'int(3) NOT NULL',
-                'UNIQUE KEY `worklist_attribute_unique_order` (`display_order`)'
+                'UNIQUE KEY `worklist_attribute_unique_order` (`display_order`,`worklist_id`)'
             ));
         $this->addForeignKey('worklist_attribute_wl_fk', 'worklist_attribute', 'worklist_id', 'worklist', 'id', 'CASCADE');
 
