@@ -769,42 +769,57 @@ class WorklistManager extends CComponent
      * @param Patient $patient
      * @param DateTime $when
      * @param array $attributes
-     * @return bool
+     * @return WorklistPatient|null
      */
     public function mapPatientToWorklistDefinition(Patient $patient, DateTime $when, $attributes = array())
     {
         $worklist = $this->getWorklistForMapping($when, $attributes);
         if (!$worklist)
-            return false;
+            return null;
 
         return $this->addPatientToWorklist($patient, $worklist, $when, $attributes);
     }
 
+    /**
+     * @param WorklistPatient $worklist_patient
+     * @param DateTime $when
+     * @param array $attributes
+     * @return WorklistPatient|null
+     */
     public function updateWorklistPatientFromMapping(WorklistPatient $worklist_patient, DateTime $when, $attributes = array())
     {
         $worklist = $this->getWorklistForMapping($when, $attributes);
         if (!$worklist)
-            return false;
+            return null;
 
         $transaction  = $this->startTransaction();
 
         try {
             $worklist_patient->worklist_id = $worklist->id;
-            $worklist_patient->when = $when->format('H:i:00');
+            $worklist_patient->when = $when->format('Y-m-d H:i:s');
             $this->setAttributesForWorklistPatient($worklist_patient, $attributes);
 
-            $worklist_patient->save();
+            if (!$worklist_patient->save()) {
+                foreach ($worklist_patient->getErrors() as $key => $error) {
+                    foreach ($error as $message) {
+                        $this->addError("{$key}: {$message}");
+                    }
+                    throw new Exception("Could not update WorklistPatient");
+                }
+            }
 
-            $transaction->commit();
+            if ($transaction)
+                $transaction->commit();
+
+            return $worklist_patient;
         }
         catch (Exception $e) {
             $this->addError($e->getMessage());
             if ($transaction)
                 $transaction->rollback();
-            return false;
+            return null;
         }
 
-        return true;
     }
 
     /**
