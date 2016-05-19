@@ -431,7 +431,7 @@ class WorklistManager extends CComponent
             $valid_attributes = array();
             foreach ($worklist->mapping_attributes as $attr)
                 $valid_attributes[$attr->name] = $attr->id;
-
+            OELog::log(print_r($valid_attributes, true));
             foreach ($attributes as $attr => $val) {
                 if (!array_key_exists($attr, $valid_attributes))
                     throw new Exception("Unrecognised attribute {$attr} for {$worklist->name}");
@@ -683,7 +683,6 @@ class WorklistManager extends CComponent
     }
     
     /**
-     * @TODO: add transaction
      * @param WorklistDefinition $worklist
      * @param DateTime $date_limit
      */
@@ -697,16 +696,31 @@ class WorklistManager extends CComponent
 
         $new_count = 0;
 
-        foreach ($rrule as $occurence) {
-            if ($this->createAutomaticWorklist($definition, $occurence))
-                $new_count++;
+        $transaction = $this->startTransaction();
+
+        try {
+            foreach ($rrule as $occurence) {
+                if ($this->createAutomaticWorklist($definition, $occurence))
+                    $new_count++;
+            }
+            
+            $this->audit(self::$AUDIT_TARGET_AUTO, 'generate',
+                array('worklist_definition_id' => $definition->id, 'generated' => $new_count),
+                "Worklists generated");
+
+            if ($transaction)
+                $transaction->commit();
+
+            return $new_count;
         }
+        catch (Exception $e)
+        {
+            $this->addError($e->getMessage());
+            if ($transaction)
+                $transaction->commit();
 
-        $this->audit(self::$AUDIT_TARGET_AUTO, 'generate',
-            array('worklist_definition_id' => $definition->id, 'generated' => $new_count),
-            "Worklists generated");
-
-        return $new_count;
+            return false;
+        }
     }
 
     /**
@@ -721,7 +735,7 @@ class WorklistManager extends CComponent
     {
         $display_order = 1;
         foreach ($mapping->worklist_definition->mappings as $m) {
-            if ($m->display_order > $display_order)
+            if ($m->display_order >= $display_order)
                 $display_order = $m->display_order +1;
 
             if (($m->id != $mapping->id) && $m->key == $key) {
@@ -787,7 +801,7 @@ class WorklistManager extends CComponent
                     $match = true;
             }
             if (!$match) {
-                $this->addError($attributes[$mapping->key] . " not valid for key '{$mapping->key}''");
+                $this->addError($attributes[$mapping->key] . " not valid for key '{$mapping->key}'");
                 return false;
             }
         }
