@@ -18,7 +18,7 @@
 ?>
 
 <div class="admin box">
-    <h2>Automatic Worklist Definitions</h2>
+    <h2>Mapping Items for <?= $definition->name ?></h2>
     <?php echo EventAction::link('Add Mapping', '/worklistAdmin/addDefinitionMapping/' . $definition->id, array(), array('class' => 'button primary small'))->toHtml()?>
     <?php if ($definition->mappings) {?>
         <table class="generic-admin grid">
