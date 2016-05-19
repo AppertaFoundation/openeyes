@@ -31,11 +31,19 @@
 class Worklist extends BaseActiveRecordVersionedSoftDelete
 {
     /**
-     * A search attribute to allow searching on a given date
+     * A search attribute to allow searching for worklists that are valid for a particular date
      *
      * @var DateTime
      */
     public $on;
+
+    /**
+     * A search attribute to allow searching for worklists where the given date & time would be valid
+     * for the Worklist
+     *
+     * @var DateTime
+     */
+    public $at;
 
     /**
      * A search attribute to specify if we only want to search for worklists that are automatic or manual
@@ -116,7 +124,14 @@ class Worklist extends BaseActiveRecordVersionedSoftDelete
         $criteria->compare('description',$this->description,true);
         $criteria->compare('scheduled', $this->scheduled, false);
 
-        if ($this->on) {
+        if ($this->at) {
+            $check_date = $this->at->format('Y-m-d H:i:s');
+            $criteria->addCondition(':cd >= start AND :cd <= end');
+            $criteria->params = array_merge($criteria->params, array(
+                ':cd' => $check_date
+            ));
+        }
+        elseif ($this->on) {
             $sdate = $this->on->format('Y-m-d') . " 00:00:00";
             $edate = $this->on->format('Y-m-d') . " 23:59:59";
             $criteria->addCondition(':sd <= start AND :ed >= end');

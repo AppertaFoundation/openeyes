@@ -481,16 +481,31 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($manager->mapPatientToWorklistDefinition($patient, $test_date, $attributes));
     }
 
-    protected function getWorklistMocks($count = 1, $methods = array())
+    protected function getMockArray($class, $count = 1, $methods = array())
     {
         $res = array();
         for ($i = 0; $i < $count; $i++)
-            $res[] = $this->getMockBuilder('Worklist')
+            $res[] = $this->getMockBuilder($class)
                 ->disableOriginalConstructor()
                 ->setMethods($methods)
                 ->getMock();
 
         return $res;
+    }
+
+    protected function getActiveDataProviderMock($class, $count, $class_methods = array())
+    {
+        $mock = $this->getMockBuilder("CActiveDataProvider")
+            ->disableOriginalConstructor()
+            ->setMethods(array('getData'))
+            ->getMock();
+
+        $mock->expects($this->any())
+            ->method('getData')
+            ->will($this->returnValue($this->getMockArray($class, $count,$class_methods)));
+
+        return $mock;
+
     }
 
     public function test_getWorklistForMapping()
@@ -513,11 +528,12 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
             ->with('Worklist')
             ->will($this->returnValue($wm));
 
-        $wls = $this->getWorklistMocks(3);
+        $adp = $this->getActiveDataProviderMock('Worklist', 3);
+        $wls = $adp->getData();
 
         $wm->expects($this->once())
             ->method('search')
-            ->will($this->returnValue($wls));
+            ->will($this->returnValue($adp));
 
         $manager->expects($this->at(1))
             ->method('checkWorklistMappingMatch')
@@ -538,8 +554,11 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $m = $r->getMethod('getWorklistForMapping');
         $m->setAccessible(true);
 
-
         $this->assertEquals($wls[2], $m->invokeArgs($manager, array($test_date, $attributes)));
+
+        // check search criteria was applied to the worklist model
+        $this->assertEquals($test_date, $wm->at);
+        $this->assertTrue($wm->automatic);
     }
 
     public function test_updateWorklistPatientFromMapping()

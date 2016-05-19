@@ -552,6 +552,11 @@ class WorklistManager extends CComponent
         );
     }
 
+    /**
+     * Render the automatic dashboard for the given user.
+     * @param CWebUser $user
+     * @return array
+     */
     public function renderAutomaticDashboard($user = null)
     {
         if (!$user)
@@ -818,7 +823,7 @@ class WorklistManager extends CComponent
     protected function getWorklistForMapping(DateTime $when, $attributes = array())
     {
         $model = $this->getModelForClass('Worklist');
-        $model->on = $when;
+        $model->at = $when;
         $model->automatic = true;
 
         $candidates = array();
