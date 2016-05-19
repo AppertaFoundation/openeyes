@@ -32,9 +32,14 @@ class WorklistAdminController extends BaseAdminController
         return parent::beforeAction($action);
     }
 
-    protected function flashMessage($type = 'success', $message)
+    /**
+     * @param string $type - the classification of the message
+     * @param $message - the message to display
+     * @param string $id - the flash element id suffix. defaults to message
+     */
+    protected function flashMessage($type = 'success', $message, $id = "message")
     {
-        Yii::app()->user->setFlash($type, $message);
+        Yii::app()->user->setFlash("{$type}.{$id}", $message);
     }
 
     public function actionDefinitions()
@@ -95,7 +100,13 @@ class WorklistAdminController extends BaseAdminController
 
         $new_count = $this->manager->generateAutomaticWorklists($definition);
 
-        $this->flashMessage("success", "Worklist Generation Completed for {$definition->name}. {$new_count} new instances created.");
+        if ($new_count === false) {
+            OELog::log(print_r($this->manager->getErrors(), true));
+            $this->flashMessage('error', "There was a problem generating worklists for {$definition->name}.");
+        }
+        else {
+            $this->flashMessage("success", "Worklist Generation Completed for {$definition->name}. {$new_count} new instances created.");
+        }
 
         $this->redirect(array('/worklistAdmin/definitions'));
     }
