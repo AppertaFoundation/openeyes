@@ -15,13 +15,44 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-    <h1><?=$worklist->name?></h1>
-    <ul>
+<h1><?=$worklist->name?></h1>
+<div class="row">
+
+    <div class="large-12 column">
         <?php
-        foreach ($worklist_patients as $wp) {
-        ?>
-            <li><?= $wp->patient->HSCICName ?></li>
-        <?php
-        }
-        ?>
-    </ul>
+        if (!count($worklist_patients)) {?>
+            <div class="alert-box">
+                No patients in this worklist.
+            </div>
+            <?php
+        } else {?>
+
+            <table class="grid audit-logs" id="worklist-table-<?=$worklist->id?>">
+                <thead>
+                <tr>
+                    <?php if ($worklist->scheduled) {?>
+                    <th>Time</th>
+                    <?php } ?>
+                    <th>Hospital No.</th>
+                    <th class="large-2">Patient</th>
+                    <th>Gender</th>
+                    <th>DOB</th>
+                </tr>
+                </thead>
+                <tbody id="worklist-<?=$worklist->id?>-patients">
+                <?php foreach ($worklist_patients as $i => $wp) {?>
+                    <tr>
+                        <?php if ($worklist->scheduled) {?>
+                            <td><?=$wp->when?></td>
+                        <?php } ?>
+                        <td><?=$wp->patient->hos_num?></td>
+                        <td style="white-space: nowrap;"><?=$wp->patient->HSCICName?></td>
+                        <td><?=$wp->patient->genderString?></td>
+                        <td><?=Helper::convertDate2NHS($wp->patient->dob)?></td>
+                    </tr>
+                <?php } ?>
+                </tbody>
+            </table>
+        <?php }?>
+    </div>
+</div>
