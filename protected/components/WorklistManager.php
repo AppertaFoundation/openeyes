@@ -93,6 +93,28 @@ class WorklistManager extends CComponent
     }
 
     /**
+     * @return Site|null
+     */
+    protected function getCurrentSite()
+    {
+        if (!$site_id = Yii::app()->session['selected_site_id'])
+            return null;
+
+        return $this->getModelForClass("Site")->findByPk($site_id);
+    }
+
+    /**
+     * @return Firm|null
+     */
+    protected function getCurrentFirm()
+    {
+        if (!$firm_id = Yii::app()->session->get('selected_firm_id'))
+            return null;
+
+        return $this->getModelForClass('Firm')->findByPk($firm_id);
+    }
+
+    /**
      * Wrapper for retrieve app parameters
      *
      * @param $name
@@ -310,6 +332,20 @@ class WorklistManager extends CComponent
         return $worklists;
     }
 
+    public function getCurrentAutomaticWorklistsForUserContext($user, Site $site, Firm $firm, DateTime $when)
+    {
+        $worklists = array();
+        $model = $this->getModelForClass('Worklist');
+        $model->automatic = true;
+        //TODO: need to workl out how to pick by day, rather than time
+        $model->on = $when;
+        foreach ($model->with('worklist_patients')->search()->getData() as $wl) {
+            $worklists[] = $wl;
+        }
+
+        return $worklists;
+    }
+
     /**
      * @param $user
      * @return mixed
@@ -515,6 +551,31 @@ class WorklistManager extends CComponent
             )
         );
     }
+
+    public function renderAutomaticDashboard($user = null)
+    {
+        if (!$user)
+            $user = $this->getCurrentUser();
+        $site = $this->getCurrentSite();
+        $firm = $this->getCurrentFirm();
+
+        $content = "";
+        //TODO: remove hardcoded date, and think about configuration for how many days in advance to render
+        $when = DateTime::createFromFormat('Y-m-d', "2016-05-23");
+        foreach ($this->getCurrentAutomaticWorklistsForUserContext($user, $site, $firm, $when) as $worklist)
+            $content .= $this->renderWorklistForDashboard($worklist);
+
+        return array(
+            'title' => "Automatic Worklists",
+            'content' => $content,
+            'options' => array(
+                'container-id' => \Yii::app()->user->id.'-automatic-worklists-container',
+                'js-toggle-open' => true,
+            )
+        );
+
+    }
+
 
     /**
      *

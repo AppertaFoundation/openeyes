@@ -349,6 +349,10 @@ return array(
 		'dashboard_items' => array(
 			array(
 				'class' => 'WorklistManager',
+				'method' => 'renderAutomaticDashboard'
+			),
+			array(
+				'class' => 'WorklistManager',
 				'method' => 'renderManualDashboard'
 			)
 		),
