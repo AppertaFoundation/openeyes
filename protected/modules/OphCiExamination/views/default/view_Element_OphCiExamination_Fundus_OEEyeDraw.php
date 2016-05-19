@@ -16,33 +16,28 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-$dirname = dirname(__FILE__);
-if (file_exists($dirname . '/vendor/autoload.php'))
-    require_once($dirname . '/vendor/autoload.php');
-
-if (file_exists($dirname . '/vendor/yiisoft/yii/framework/yii.php')) {
-    $yii = $dirname . '/vendor/yiisoft/yii/framework/yii.php';
-} else {
-    $yii = $dirname . '/protected/yii/framework/yii.php';
-}
-$config = $dirname . '/protected/config/main.php';
-$common_config = $dirname . '/protected/config/core/common.php';
-$local_common_config = $dirname . '/protected/config/local/common.php';
-
-foreach (array($common_config, $local_common_config) as $configfile) {
-    foreach (@file($configfile) as $line) {
-        if (preg_match('/^[\s\t]+\'environment\'[\s\t]*=>[\s\t]*\'([a-z]+)\'/', $line, $m)) {
-            $environment = $m [1];
-        }
-    }
-}
-
-if (isset ($environment) && $environment === 'dev') {
-    define('YII_DEBUG', true);
-}
-
-// specify how many levels of call stack should be shown in each log message
-defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL', 3);
-
-require_once($yii);
-Yii::createWebApplication($config)->run();
+?>
+<div class="row posterior-pole">
+	<div class="column fixed">
+		<?php $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+            'idSuffix' => $side.'_'.$element->elementType->id.'_'.$element->id,
+            'side' => ($side == 'right') ? 'R' : 'L',
+            'mode' => 'view',
+            'width' => 200,
+            'height' => 200,
+            'model' => $element,
+            'attribute' => $side.'_eyedraw',
+        ))?>
+	</div>
+	<div class="column fluid">
+		<?php if ($element->{$side . '_description'}) {
+    ?>
+			<div class="data-row">
+				<div class="data-value">
+					<?= Yii::app()->format->Ntext($element->{$side.'_description'}) ?>
+				</div>
+			</div>
+		<?php 
+}?>
+	</div>
+</div>

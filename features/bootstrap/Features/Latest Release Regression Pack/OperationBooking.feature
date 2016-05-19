@@ -63,8 +63,8 @@ Feature: Create New Operation Booking Event
     Then I confirm the operation slot
 
     Examples:
-    |uname|pwd  |siteName/Number|firmName/Number        |hospNumber|speciality|event    |diagEye|opEye|procedure|opSite |admTime|sessionComments                  |opComments                           |RRTComments              |
-    |admin|admin|Croydon        |A K Hamilton (Glaucoma)|1009465   |Glaucoma  |OpBooking|Left   |Left |41       |Croydon|11:20  |Session Comments Session Comments|Operation Comments Operation Comments|RTT Comments RTT Comments|
+    |uname|pwd  |siteName/Number|firmName/Number        |hospNumber|speciality|event            |diagEye|opEye|procedure|opSite |admTime|sessionComments                  |opComments                           |RRTComments              |
+    |admin|admin|Croydon        |A K Hamilton (Glaucoma)|1009465   |Glaucoma  |Operation booking|Left   |Left |41       |Croydon|11:20  |Session Comments Session Comments|Operation Comments Operation Comments|RTT Comments RTT Comments|
 
   @OB_Route_2
   Scenario Outline: Route 2: Login and create a Operation Booking Anderson Cataract
@@ -126,8 +126,8 @@ Feature: Create New Operation Booking Event
     Then I confirm the operation slot
 
   Examples:
-  |uname|pwd  |siteName/Number|firmName/Number        |hospNumber|speciality|event    |diagEye|opEye|procedure|opSite  |comments |sessionComments                  |opComments                           |
-  |admin|admin|Croydon        |Paul Godinho (Cataract)|1009465   |Cataract  |OpBooking|Right  |Right|79       |Croydon |Test Test|Session Comments Session Comments|Operation Comments Operation Comments|
+  |uname|pwd  |siteName/Number|firmName/Number        |hospNumber|speciality|event            |diagEye|opEye|procedure|opSite  |comments |sessionComments                  |opComments                           |
+  |admin|admin|Croydon        |Paul Godinho (Cataract)|1009465   |Cataract  |Operation booking|Right  |Right|79       |Croydon |Test Test|Session Comments Session Comments|Operation Comments Operation Comments|
 
   @OB_Route_3
   Scenario Outline: Route 3: Login and create a Operation Booking Anderson Medical Retinal
@@ -186,5 +186,5 @@ Feature: Create New Operation Booking Event
     Then I confirm the operation slot
 
   Examples:
-  |uname|pwd  |siteName/Number|firmName/Number                |hospNumber|speciality     |event    |diagEye|opEye|procedure|opSite  |comments |sessionComments                  |opComments                           |
-  |admin|admin|Croydon        |Angela Glasby (Medical Retinal)|1009465   |Medical Retinal|OpBooking|Both   |Both |327      |Croydon |Test Test|Session Comments Session Comments|Operation Comments Operation Comments|
+  |uname|pwd  |siteName/Number|firmName/Number                |hospNumber|speciality     |event            |diagEye|opEye|procedure|opSite  |comments |sessionComments                  |opComments                           |
+  |admin|admin|Croydon        |Angela Glasby (Medical Retinal)|1009465   |Medical Retinal|Operation booking|Both   |Both |327      |Croydon |Test Test|Session Comments Session Comments|Operation Comments Operation Comments|

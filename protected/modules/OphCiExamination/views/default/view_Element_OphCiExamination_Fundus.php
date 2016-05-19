@@ -16,33 +16,28 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-$dirname = dirname(__FILE__);
-if (file_exists($dirname . '/vendor/autoload.php'))
-    require_once($dirname . '/vendor/autoload.php');
-
-if (file_exists($dirname . '/vendor/yiisoft/yii/framework/yii.php')) {
-    $yii = $dirname . '/vendor/yiisoft/yii/framework/yii.php';
+?>
+<div class="element-data element-eyes row">
+	<div class="element-eye right-eye column">
+		<div class="data-row">
+			<?php if ($element->hasRight()) {
+    $this->renderPartial($element->view_view . '_OEEyeDraw', array('side' => 'right', 'element' => $element));
 } else {
-    $yii = $dirname . '/protected/yii/framework/yii.php';
-}
-$config = $dirname . '/protected/config/main.php';
-$common_config = $dirname . '/protected/config/core/common.php';
-$local_common_config = $dirname . '/protected/config/local/common.php';
-
-foreach (array($common_config, $local_common_config) as $configfile) {
-    foreach (@file($configfile) as $line) {
-        if (preg_match('/^[\s\t]+\'environment\'[\s\t]*=>[\s\t]*\'([a-z]+)\'/', $line, $m)) {
-            $environment = $m [1];
-        }
-    }
-}
-
-if (isset ($environment) && $environment === 'dev') {
-    define('YII_DEBUG', true);
-}
-
-// specify how many levels of call stack should be shown in each log message
-defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL', 3);
-
-require_once($yii);
-Yii::createWebApplication($config)->run();
+    ?>
+				<div class="data-value">Not recorded</div>
+			<?php 
+}?>
+		</div>
+	</div>
+	<div class="element-eye left-eye column">
+		<div class="data-row">
+			<?php if ($element->hasLeft()) {
+    $this->renderPartial($element->view_view . '_OEEyeDraw', array('side' => 'left', 'element' => $element));
+} else {
+    ?>
+				<div class="data-value">Not recorded</div>
+			<?php 
+}?>
+		</div>
+	</div>
+</div>
