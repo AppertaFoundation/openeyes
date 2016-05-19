@@ -301,3 +301,50 @@ select:focus {
     z-index: 5;
   }
 }
+
+.nhs-number {
+  background-color: #107ebd;
+  background-image: url("../img/_elements/icons/nhs_tiny.png?1456827980");
+  background-position: left center;
+  background-repeat: no-repeat;
+  border-radius: 3px;
+  color: white;
+  display: inline-block;
+  padding: 2px 3px 1px 33px;
+}
+
+.patient-details{
+  clear: both;
+  display: block;
+  padding: 10px;
+}
+
+.vfthumbnail {
+  dispay: block;
+  max-width:350px;
+  max-height:350px;
+  width: auto;
+  height: auto;
+}
+
+.icon-element {
+  background-image: url("../img/_elements/icons/_sprites/oescape_icons.png");
+  width: 26px;
+  height: 26px;
+}
+
+.icon-female {
+  background-position: 0px 0px;
+}
+
+.icon-male {
+  background-position: 0px -50px;
+}
+
+.icon-eye {
+  background-position: 0px -200px;
+}
+
+.icon-eye-impaired {
+  background-position: 0px -250px;
+}
