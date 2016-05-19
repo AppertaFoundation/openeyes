@@ -116,4 +116,16 @@ class WorklistPatient extends BaseActiveRecordVersioned
         parent::afterValidate();
     }
 
+    public function getScheduledTime()
+    {
+        if ($this->when) {
+            if ($this->when instanceof DateTime) {
+                return $this->when->format("H:i");
+            }
+            else {
+                return DateTime::createFromFormat('Y-m-d H:i:s', $this->when)->format("H:i");
+            }
+        }
+    }
+
 }
