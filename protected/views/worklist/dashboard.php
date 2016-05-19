@@ -27,7 +27,7 @@
             <?php
         } else {?>
 
-            <table class="grid audit-logs" id="worklist-table-<?=$worklist->id?>">
+            <table class="grid audit-logs worklist" id="worklist-table-<?=$worklist->id?>">
                 <thead>
                 <tr>
                     <?php if ($worklist->scheduled) {?>
@@ -41,9 +41,9 @@
                 </thead>
                 <tbody id="worklist-<?=$worklist->id?>-patients">
                 <?php foreach ($worklist_patients as $i => $wp) {?>
-                    <tr>
+                    <tr data-url="/patient/view/<?=$wp->patient_id?>" class="clickable">
                         <?php if ($worklist->scheduled) {?>
-                            <td><?=$wp->when?></td>
+                            <td><?=$wp->scheduledtime?></td>
                         <?php } ?>
                         <td><?=$wp->patient->hos_num?></td>
                         <td style="white-space: nowrap;"><?=$wp->patient->HSCICName?></td>

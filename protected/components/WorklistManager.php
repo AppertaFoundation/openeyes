@@ -33,6 +33,20 @@ class WorklistManager extends CComponent
     protected $errors = [];
 
     /**
+     * @var CApplication
+     */
+    protected $yii;
+
+    public function __construct(CApplication $yii = null)
+    {
+        if (is_null($yii)) {
+            $yii = Yii::app();
+        }
+
+        $this->yii = $yii;
+    }
+
+    /**
      * Abstraction for getting model instance of class
      *
      * @param $class
@@ -65,8 +79,8 @@ class WorklistManager extends CComponent
      */
     protected function startTransaction()
     {
-        return Yii::app()->db->getCurrentTransaction() === null
-            ? Yii::app()->db->beginTransaction()
+        return $this->yii->db->getCurrentTransaction() === null
+            ? $this->yii->db->beginTransaction()
             : null;
     }
 
@@ -79,7 +93,7 @@ class WorklistManager extends CComponent
      */
     protected function renderPartial($view, $parameters = array())
     {
-        return Yii::app()->controller->renderPartial($view, $parameters,true);
+        return $this->yii->controller->renderPartial($view, $parameters,true);
     }
 
     /**
@@ -89,7 +103,7 @@ class WorklistManager extends CComponent
      */
     protected function getCurrentUser()
     {
-        return Yii::app()->user;
+        return $this->yii->user;
     }
 
     /**
@@ -97,7 +111,7 @@ class WorklistManager extends CComponent
      */
     protected function getCurrentSite()
     {
-        if (!$site_id = Yii::app()->session['selected_site_id'])
+        if (!$site_id = $this->yii->session['selected_site_id'])
             return null;
 
         return $this->getModelForClass("Site")->findByPk($site_id);
@@ -108,7 +122,7 @@ class WorklistManager extends CComponent
      */
     protected function getCurrentFirm()
     {
-        if (!$firm_id = Yii::app()->session->get('selected_firm_id'))
+        if (!$firm_id = $this->yii->session->get('selected_firm_id'))
             return null;
 
         return $this->getModelForClass('Firm')->findByPk($firm_id);
@@ -122,8 +136,8 @@ class WorklistManager extends CComponent
      */
     protected function getAppParam($name)
     {
-        return isset(Yii::app()->params[$name]) ?
-            Yii::app()->params[$name] : null;
+        return isset($this->yii->params[$name]) ?
+            $this->yii->params[$name] : null;
     }
 
     /**
@@ -521,6 +535,7 @@ class WorklistManager extends CComponent
      */
     protected function renderWorklistForDashboard($worklist)
     {
+        $this->yii->assetManager->registerScriptFile('js/worklist-dashboard.js', null, null, AssetManager::OUTPUT_SCREEN);
         return $this->renderPartial('//worklist/dashboard', array(
                 'worklist' => $worklist,
                 'worklist_patients' => $this->getPatientsForWorklist($worklist)
@@ -566,7 +581,7 @@ class WorklistManager extends CComponent
 
         $content = "";
         //TODO: remove hardcoded date, and think about configuration for how many days in advance to render
-        $when = DateTime::createFromFormat('Y-m-d', "2016-05-23");
+        $when = DateTime::createFromFormat('Y-m-d', "2016-05-24");
         foreach ($this->getCurrentAutomaticWorklistsForUserContext($user, $site, $firm, $when) as $worklist)
             $content .= $this->renderWorklistForDashboard($worklist);
 
@@ -613,7 +628,14 @@ class WorklistManager extends CComponent
         return $wp_model->with(array('patient','patient.contact'))->findAll($criteria);
     }
 
-    public function setDateLimitOnRrule($rrule, $limit) {
+    /**
+     * Manipulates the given RRULE string so that it finishes on the given date
+     *
+     * @param string $rrule
+     * @param DateTime $limit
+     * @return string
+     */
+    public function setDateLimitOnRrule($rrule, DateTime $limit) {
         if (strpos($rrule, 'UNTIL=')) {
             preg_replace('/UNTIL=[^;]*/', 'UNTIL='.$limit->format('Y-m-d'), $rrule);
         }
