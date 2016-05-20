@@ -30,7 +30,7 @@
                 </section>
             </div>
         </div>
-
+        <?php $this->renderPartial('//base/_messages')?>
         <div class="row">
             <div class="large-7 column large-centered">
                 <?php $this->renderPartial('//patientmergerequest/_patient_search',array('patient_type' => 'patient'))?>
@@ -54,16 +54,14 @@
                     <h2 class="primaryPatient">Primary</h2>
                     <?php $this->renderPartial('//patientmergerequest/_patient_details', array('model' => $model, 'type' => 'primary'))?>
                 </div>
-
             </div>
             <hr>
             <div class="row">
                 <div class="large-5 column">Comment:
                     <?php echo CHTML::activeTextArea($model, "comment"); ?>
                 </div>
-
             </div>
-
+            
             <div class="row">
                 <div class="large-3 column text-right large-offset-9">
                     <input type="submit" value="Save">

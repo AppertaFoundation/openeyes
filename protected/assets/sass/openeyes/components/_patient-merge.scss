@@ -45,6 +45,15 @@
             text-transform: uppercase;
         }
     }
+    
+    section{
+        &.patient-info{
+            .data-value-row{
+                line-height: 1.3;
+                font-size: 0.8125rem;
+            }
+        }
+    }
 
     .ui-dialog{
         button.disabled{
@@ -77,41 +86,56 @@
     #patientMergeList{
         
         tr{
-            &:hover{
-                background-color:lightblue;
+            
+            th{
+                &.checkbox{
+                    width:11px;
+                    max-width: 11px;
+                }
+                &.secondary{
+                    max-width: 115px;
+                    width: 115px;
+                    span{
+                        &.span{
+                            font-size: 10px;
+                        }
+                    }
+                }
+                &.into{
+                    width:80px;
+                    max-width: 80px;
+                }
+                &.primary{
+                    max-width:70px;
+                }
+                
+                &.status{
+                    text-align: center;
+                }
+                &.created{
+                   text-align: center;
+                }
+               
             }
             
             td{
                 
                 &.secondary{
                     border-right-width: 0px;
-                    width:100px;
                 }
                 
                 &.into{
                     border-right-width: 0px;
-                    width:61px;
-                }
-                
-                &.primary{
-                    width:100px;
+                    width:90px;
                 }
                 
                 &.status{
-                    width:145px;
+                    width:220px;
+                    padding-left:55px;
                 }
                 
-                &.actions{
-                    max-width: 100px;
-                    a{
-                        &.button{
-                            margin-right: 5px;
-                        }
-                    }
-                    
-                    .mergedOn{
-                        font-size: 11px;
-                    }
+                &.created{
+                   text-align: center;
                 }
             }
         }
@@ -166,3 +190,8 @@
     }
 }
 
+.ui-autocomplete {
+    &.z-index-1000{
+        z-index: 1000 !important;
+    }
+}

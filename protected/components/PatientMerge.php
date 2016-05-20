@@ -22,8 +22,19 @@
 
 class PatientMerge
 {
+    /**
+     * @var Patient AR
+     */
     private $primaryPatient;
+    
+    /**
+     * @var Patient AR
+     */
     private $secondaryPatient;
+    
+    /**
+     * @var array
+     */
     private $log = array();
     
     /**
@@ -86,6 +97,7 @@ class PatientMerge
      * 
      * @param patient AR record $primary
      * @param patient AR record $secondary
+     * @return array
      */
     public function comparePatientDetails(Patient $primary, Patient $secondary)
     {
@@ -114,7 +126,7 @@ class PatientMerge
     }
     
     /**
-     * Do the actual merging
+     * Do the actual merging by calling separated functions to move episodes, events etc...
      * 
      * @return boolean $isMerged success or fail
      */

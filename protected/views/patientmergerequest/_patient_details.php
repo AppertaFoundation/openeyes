@@ -32,7 +32,7 @@
                 <div class="large-8 column">
                     <div class="data-value">
                         <div class="hospital-number">
-                            <span class="hos_num"><?php echo $model->isNewRecord ? '' : $model->{"{$type}_hos_num"}; ?></span>
+                            <span class="data-value hos_num"><?php echo $model->isNewRecord ? '' : $model->{"{$type}_hos_num"}; ?></span>
                             <?php echo CHtml::activeHiddenField($model, "{$type}_hos_num", array('class' => 'hos_num-input')); ?>
                         </div>
                     </div>
@@ -43,20 +43,18 @@
                         <div class="data-label">NHS Number:</div>
                 </div>
                 <div class="large-8 column">
-                    <div class="data-value">
+                    <div class="">
                         <!-- NHS number -->
                         <div class="nhs-number">
                                 <span class="hide-text print-only">
                                     NHS number:
                                 </span>
-                                <span class="nhsnum"><?php echo $model->isNewRecord ? '000 000 0000' : $model->{"{$type}_nhsnum"}; ?></span>
+                                <span class="data-value nhsnum"><?php echo $model->isNewRecord ? '000 000 0000' : $model->{"{$type}_nhsnum"}; ?></span>
                                 <?php echo CHtml::activeHiddenField($model, "{$type}_nhsnum", array('class' => 'nhsnum-input')); ?>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            
             
             <div class="row data-row">
                     <div class="large-4 column">
