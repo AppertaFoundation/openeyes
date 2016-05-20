@@ -631,14 +631,31 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
      */
     public function test_updateWorklistDefinitionMapping_save($new, $display)
     {
+        $key = 'test-key';
+
         $definition = $this->getMockBuilder('WorklistDefinition')
             ->disableOriginalConstructor()
             ->setMethods(array('validateMappingKey', 'getNextDisplayOrder'))
             ->getMock();
 
-        $definition->expects($this->once())
-            ->method('validateMappingKey')
-            ->will($this->returnValue(true));
+        $mapping = ComponentStubGenerator::generate("WorklistDefinitionMapping", array(
+            'worklist_definition' => $definition,
+            'isNewRecord' => $new,
+            'id' => $new ? null : 4
+        ));
+
+        if ($new) {
+            $definition->expects($this->once())
+                ->method('validateMappingKey')
+                ->with($key)
+                ->will($this->returnValue(true));
+        }
+        else {
+            $definition->expects($this->once())
+                ->method('validateMappingKey')
+                ->with($key, $mapping->id)
+                ->will($this->returnValue(true));
+        }
 
         if ($new && $display) {
             $definition->expects($this->once())
@@ -650,11 +667,6 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
                 ->method('getNextDisplayOrder');
         }
 
-        $mapping = ComponentStubGenerator::generate("WorklistDefinitionMapping", array(
-            'worklist_definition' => $definition,
-            'isNewRecord' => $new
-        ));
-
         $manager = $this->getMockBuilder("WorklistManager")
             ->disableOriginalConstructor()
             ->setMethods(array('startTransaction'))
@@ -663,6 +675,6 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
             ->method('startTransaction')
             ->will($this->returnValue($this->getTransactionMock(array('commit'))));
 
-        $manager->updateWorklistDefinitionMapping($mapping, 'test', 'one,two', $display);
+        $manager->updateWorklistDefinitionMapping($mapping, $key, 'one,two', $display);
     }
 }

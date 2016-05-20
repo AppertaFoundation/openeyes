@@ -771,7 +771,7 @@ class WorklistManager extends CComponent
 
         $definition = $mapping->worklist_definition;
 
-        if (!$definition->validateMappingKey($key)) {
+        if (!$definition->validateMappingKey($key, $mapping->id)) {
             $this->addError("Mapping key {$key} already exists for definition");
             return false;
         }

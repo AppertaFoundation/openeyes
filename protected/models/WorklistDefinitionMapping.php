@@ -94,6 +94,8 @@ class WorklistDefinitionMapping extends BaseActiveRecord
     public function attributeLabels()
     {
         return array(
+            'willdisplay' => 'Will Be Displayed',
+            'valuelist' => 'Matched Values'
         );
     }
 
@@ -155,13 +157,15 @@ class WorklistDefinitionMapping extends BaseActiveRecord
      * @param array $values
      * @throws CDbException
      * @throws Exception
+     * @return bool
      */
     public function updateValues($values = array())
     {
         $kept = array();
         foreach ($this->values as $mv) {
             if (!in_array($mv->mapping_value, $values)) {
-                $mv->delete();
+                if (!$mv->delete())
+                    throw new Exception("Could not delete value {$mv->mapping_value}");
             }
             else {
                 $kept[] = $mv->mapping_value;
@@ -179,6 +183,14 @@ class WorklistDefinitionMapping extends BaseActiveRecord
         }
 
         $this->setValueList($values);
+        return true;
     }
 
+    /**
+     * @return bool
+     */
+    public function getWillDisplay()
+    {
+        return (!is_null($this->display_order));
+    }
 }

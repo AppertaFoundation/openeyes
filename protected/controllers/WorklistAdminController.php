@@ -61,7 +61,6 @@ class WorklistAdminController extends BaseAdminController
             throw new CHttpException(404, "Worklist definition not found");
 
         if (isset($_POST['WorklistDefinition'])) {
-            // TODO: abstract to manager
             $definition->attributes = $_POST['WorklistDefinition'];
             if (!$this->manager->saveWorklistDefinition($definition)) {
                 $errors = $definition->getErrors();
@@ -70,7 +69,6 @@ class WorklistAdminController extends BaseAdminController
                 $this->flashMessage('success', 'Worklist Definition saved');
                 return $this->redirect(array('/worklistAdmin/definitions'));
             }
-
         }
 
         $this->render('//admin/worklists/definition', array(
@@ -94,6 +92,10 @@ class WorklistAdminController extends BaseAdminController
         return $definition;
     }
 
+    /**
+     * @param $id
+     * @throws CHttpException
+     */
     public function actionDefinitionGenerate($id)
     {
         $definition = $this->getWorklistDefinition($id);
@@ -144,7 +146,8 @@ class WorklistAdminController extends BaseAdminController
             $mapping->attributes = $_POST['WorklistDefinitionMapping'];
             if ($this->manager->updateWorklistDefinitionMapping($mapping,
                 $_POST['WorklistDefinitionMapping']['key'],
-                $_POST['WorklistDefinitionMapping']['valuelist'])) {
+                $_POST['WorklistDefinitionMapping']['valuelist'],
+                $_POST['WorklistDefinitionMapping']['willdisplay'])) {
 
                 $this->flashMessage('success', 'Worklist Definition Mapping saved.');
                 $this->redirect(array('/worklistAdmin/definitionMappings/' . $id));
@@ -177,7 +180,8 @@ class WorklistAdminController extends BaseAdminController
             $mapping->attributes = $_POST['WorklistDefinitionMapping'];
             if ($this->manager->updateWorklistDefinitionMapping($mapping,
                 $_POST['WorklistDefinitionMapping']['key'],
-                $_POST['WorklistDefinitionMapping']['valuelist'])) {
+                $_POST['WorklistDefinitionMapping']['valuelist'],
+                $_POST['WorklistDefinitionMapping']['willdisplay'])) {
 
                 $this->flashMessage('success', 'Worklist Definition Mapping saved.');
                 $this->redirect(array('/worklistAdmin/definitionMappings/' . $mapping->worklist_definition_id));
