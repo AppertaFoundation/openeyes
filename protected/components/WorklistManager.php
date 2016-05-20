@@ -713,7 +713,7 @@ class WorklistManager extends CComponent
      * @param WorklistDefinition $worklist
      * @param DateTime $date_limit
      */
-    public function generateAutomaticWorklists(WorklistDefinition $definition, DateTime $date_limit = null)
+    public function generateAutomaticWorklists(WorklistDefinition $definition, $date_limit = null)
     {
         if (is_null($date_limit))
             $date_limit = $this->getGenerationTimeLimitDate();
