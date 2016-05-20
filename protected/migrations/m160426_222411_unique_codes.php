@@ -13,6 +13,6 @@ class m160426_222411_unique_codes extends OEMigration
 
 	public function down()
 	{
-            $this->dropTable('unique_codes');
+            $this->dropOETable('unique_codes',true);
 	}
 }

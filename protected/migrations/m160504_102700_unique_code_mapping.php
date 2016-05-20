@@ -15,7 +15,8 @@ class m160504_102700_unique_code_mapping extends OEMigration
 
 	public function down()
 	{
-		$this->dropTable('unique_codes_mapping');
+		$this->dropOETable('unique_codes_mapping',true);
+                
 	}
 
 }

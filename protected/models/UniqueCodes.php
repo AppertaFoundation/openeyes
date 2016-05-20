@@ -126,4 +126,47 @@ class UniqueCodes extends BaseActiveRecord
 
 		return Event::model()->findByPk($eventId['id']);
 	}
+        
+        public function examinationEventCheckFromUniqueCode($code, $examinationEventTypeId) {
+                $episodeId = $this->getEpisodeIdFromCode($code);
+                $eventType = EventType::model()->find('name = "Operation Note"');
+                $count_opnote_cataract_events_count = $this->getCountByEventTypeWithEpisode($eventType['id'],$episodeId['episode_id']);
+                $eventType = EventType::model()->find('name = "Examination"');
+                $count_examination_events_count = $this->getCountByEventTypeWithEpisode($eventType['id'],$episodeId['episode_id']);
+                return ($count_opnote_cataract_events_count < $count_examination_events_count) ? 1 : 0;
+        }
+        
+        public function getEpisodeIdFromCode($code) {
+                $episodeId = $this->dbConnection->createCommand()
+                        ->select('episode_id')
+                        ->from('event')
+                        ->join("unique_codes_mapping ucm", "ucm.event_id = event.id")
+                        ->join("unique_codes uc", "ucm.unique_code_id = uc.id and uc.code ='$code'")
+                        ->queryRow();
+                return $episodeId;
+        }
+            
+        public function getCountByEventTypeWithEpisode($event_type_id,$episode_id) {
+                $count = $this->dbConnection->createCommand()
+                        ->select('count(*) as count')
+                        ->from('event')
+                        ->where('episode_id = ? ', array($episode_id))
+                        ->andWhere("event_type_id = $event_type_id")
+                        ->andWhere("deleted != 1")
+                        ->queryRow();
+                return $count['count'];
+        }
+        
+        public function getEventFromEpisode($episode_id,$event_type_id) {
+            $event_id = $this->dbConnection->createCommand()
+                                ->select('id')
+                                ->from('event')
+                                ->where('episode_id = ? ', array($episode_id))
+                                ->andWhere("event_type_id = " . $event_type_id)
+                                ->andWhere("deleted != 1")
+                                ->order('id desc')
+                                ->limit(1)
+                                ->queryRow();
+            return($event_id);
+        }
 }

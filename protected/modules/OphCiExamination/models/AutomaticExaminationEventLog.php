@@ -38,8 +38,8 @@ class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
         public function rules()
 	{
 		return array(
-			array('id,event_id,unique_code,examination_date', 'safe'),
-			array('event_id,unique_code', 'required'),
+			array('id,event_id,unique_code,examination_data,examination_date', 'safe'),
+			array('event_id,unique_code,examination_data', 'required'),
 		);
 	}
         
