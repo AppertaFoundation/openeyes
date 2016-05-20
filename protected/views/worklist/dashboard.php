@@ -37,6 +37,9 @@
                     <th class="large-2">Patient</th>
                     <th>Gender</th>
                     <th>DOB</th>
+                    <?php foreach ($worklist->displayed_mapping_attributes as $attr) {?>
+                        <th><?=$attr->name?></th>
+                    <?php } ?>
                 </tr>
                 </thead>
                 <tbody id="worklist-<?=$worklist->id?>-patients">
@@ -49,6 +52,9 @@
                         <td style="white-space: nowrap;"><?=$wp->patient->HSCICName?></td>
                         <td><?=$wp->patient->genderString?></td>
                         <td><?=Helper::convertDate2NHS($wp->patient->dob)?></td>
+                        <?php foreach ($worklist->displayed_mapping_attributes as $attr) {?>
+                            <td><?=$wp->getWorklistAttributeValue($attr)?></td>
+                        <?php } ?>
                     </tr>
                 <?php } ?>
                 </tbody>

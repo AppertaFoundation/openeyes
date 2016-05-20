@@ -92,6 +92,8 @@ class Worklist extends BaseActiveRecordVersionedSoftDelete
         // class name for the relations automatically generated below.
         return array(
             'mapping_attributes' => array(self::HAS_MANY, 'WorklistAttribute', 'worklist_id'),
+            'displayed_mapping_attributes' => array(self::HAS_MANY, 'WorklistAttribute', 'worklist_id',
+                'on' => 'display_order is NOT NULL', 'order' => 'display_order ASC'),
             'worklist_patients' => array(self::HAS_MANY, 'WorklistPatient', 'worklist_id'),
             'worklist_definition' => array(self::BELONGS_TO, 'WorklistDefinition', 'worklist_definition_id')
         );

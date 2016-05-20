@@ -128,4 +128,12 @@ class WorklistPatient extends BaseActiveRecordVersioned
         }
     }
 
+
+    public function getWorklistAttributeValue(WorklistAttribute $attr)
+    {
+        //TODO: implement me
+        return "NOT IMPLEMENTED";
+    }
+
+
 }

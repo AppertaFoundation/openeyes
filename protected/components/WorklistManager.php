@@ -581,7 +581,7 @@ class WorklistManager extends CComponent
 
         $content = "";
         //TODO: remove hardcoded date, and think about configuration for how many days in advance to render
-        $when = DateTime::createFromFormat('Y-m-d', "2016-05-24");
+        $when = DateTime::createFromFormat('Y-m-d', "2016-05-23");
         foreach ($this->getCurrentAutomaticWorklistsForUserContext($user, $site, $firm, $when) as $worklist)
             $content .= $this->renderWorklistForDashboard($worklist);
 
