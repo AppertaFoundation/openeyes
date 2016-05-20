@@ -32,12 +32,11 @@
             'field' => 5
         )
     ))?>
-
+    <?php echo $form->checkbox($mapping, 'willdisplay'); ?>
     <?php echo $form->textField($mapping,'key', array('autocomplete' => Yii::app()->params['html_autocomplete']), null, array('field' => 2))?>
-
     <?php echo $form->textField($mapping,'valuelist', array('autocomplete' => Yii::app()->params['html_autocomplete']), null, array('field' => 2))?>
 
-    <?php echo $form->formActions(array('cancel-uri' => '/worklist/manual'))?>
+    <?php echo $form->formActions(array('cancel-uri' => '/worklistAdmin/definitionMappings/' . $mapping->worklist_definition_id))?>
     <?php $this->endWidget()?>
 
 </div>
