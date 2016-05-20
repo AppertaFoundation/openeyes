@@ -6,127 +6,66 @@
 
 <h1 class="badge">Patient Merge Request List</h1>
 
-
 <div id="patientMergeWrapper" class="container content">
     
     <?php $this->renderPartial('//base/_messages')?>
 
     <div class="row">
-        <div class="large-3 column large-centered text-right large-offset-9">
-            <section class="box dashboard">
-            <?php 
-                echo CHtml::link('create',array('patientMergeRequest/create'), array('class' => 'button small secondary'));
-            ?>
-            </section>
-        </div>
-    </div>
-    <div class="row">
         <div class="large-8 column large-centered">
             
             <section class="box requestList js-toggle-container">
                 <div class="grid-view" id="inbox-table">
-                    <?php
 
-    $this->widget('zii.widgets.grid.CGridView', array(
-        'itemsCssClass' => 'grid',
-        'dataProvider' => $dataProvider,
-        'summaryText' => '<h3><small> {start}-{end} of {count} </small></h3>',
-        'htmlOptions' => array('id' => 'patientMergeList'),
-        'columns' => array(
-            array(
-                'name' => 'Secondary',
-                'header' => $dataProvider->getSort()->link('secondary_hos_num','Secondary',array('class'=>'sort-link')),
-                // not ideal using the error class, but a simple solution for now.
-                'value' => function($data) {
-                    return $data->secondary_hos_num;
-                },
-                //'type' => 'raw',
-                'htmlOptions' => array(
-                    'class' => 'secondary'
-                )
-            ),
-            
-            array(
-                'name' => '',
-                // not ideal using the error class, but a simple solution for now.
-                'value' => function($data) {
-                    return 'INTO';
-                },
-                //'type' => 'raw',
-                'htmlOptions' => array(
-                    'class' => 'into'
-                )
-            ),
-            
-            array(
-                'name' => 'Primary',
-                'header' => $dataProvider->getSort()->link('primary_hos_num','Primary',array('class'=>'sort-link')),
-                'value' => function($data) {
-                    return $data->primary_hos_num;
-                },
-                //'type' => 'raw',
-                'htmlOptions' => array(
-                    'class' => 'primary'
-                )
-            ),
-                        
-            array(
-                'name' => 'Status',
-                'header' => $dataProvider->getSort()->link('status','Status',array('class'=>'sort-link')),
-                'value' => function($data) {
-                    $html = '<div class="circle ' . (strtolower(str_replace(" ", "-", $data->getStatusText())) ) . '"></div> ';
-                    $html .= $data->getStatusText();
-                    
-                    return $html;
-                },
-                'type' => 'raw',
-                'htmlOptions' => array(
-                    'class' => 'status'
-                )
-            ),
-                        
-            array(
-                'name' => '',
-                
-                'value' => function($data) {
-                    $html = "";
-                
-                    if($data->status == $data::STATUS_NOT_PROCESSED){
-                        
-                        if( Yii::app()->user->checkAccess('Patient Merge') ){
-                            $html = CHtml::link('merge',array('patientMergeRequest/merge', 'id' => $data->id), array('class' => 'warning button small right'));
-                        } else {
-                            $html = CHtml::link('merge',array(''), array('class' => 'disabled warning button small right'));
-                        }
-                        
-                    }
-                    
-                    if($data->status == $data::STATUS_CONFLICT){
-                        //$html = CHtml::link('edit conflict',array('patientMergeRequest/editConflict', 'id' => $data->id), array('class' => 'warning button small right'));
-                        //$html = '<span class="mergedOn">NOT MERGED - Manual merge needed.</span>';
-                        $html = CHtml::link('merge',array('patientMergeRequest/merge', 'id' => $data->id), array('class' => 'warning button small right'));
-                    }
-                    
-                    if($data->status == $data::STATUS_MERGED){
-                        $html = CHtml::link('view',array('patientMergeRequest/view', 'id' => $data->id), array('class' => 'button small right'));
-                    }
-                    
-                    return $html;
-                    
-                },
-                'type' => 'raw',
-                'htmlOptions' => array(
-                    'class' => 'actions text-right'
-                )
-            ),
-                        
-            
-            
-        )
-    ));
+                    <form id="patientMergeList">
+                        <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
+                        <table class="grid">
+                            <thead>
+                                    <tr>
+                                        <th class="checkbox"><input type="checkbox" name="selectall" id="selectall" /></th>
+                                        <th class="secondary">
+                                            <?php echo $dataProvider->getSort()->link('secondary_hos_num','Secondary<br><span class="hos_num">hospital num</span>',array('class'=>'sort-link')) ?>
+                                        </th>
+                                        <th></th>
+                                        <th class="primary">
+                                            <?php echo $dataProvider->getSort()->link('primary_hos_num','Primary<br><span class="hos_num">hospital num</span>',array('class'=>'sort-link')) ?>
+                                        </th>
+                                        <th class="status"><?php echo $dataProvider->getSort()->link('status','Status',array('class'=>'sort-link')); ?></th>
+                                        <th class="created"><?php echo $dataProvider->getSort()->link('created_date','Created',array('class'=>'sort-link')); ?></th>
 
-?>
-                   
+                                    </tr>
+                            </thead>
+                             <tfoot class="pagination-container">
+                                <tr>
+                                    <td colspan="5">
+
+                                        <?php echo CHtml::link('Add', array('patientMergeRequest/create'), array('class' => 'button small')); ?>
+                                        <?php echo CHtml::link('Delete', array('patientMergeRequest/delete'), array('id' => 'rq_delete', 'class' => 'button small')); ?>
+
+                                        <?php echo $this->renderPartial('//admin/_pagination',array(
+                                                'pagination' => $pagination
+                                        )); ?>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                <?php foreach ($dataProvider->getData() as $i => $request): ?>
+                                    <tr class="clickable" data-id="<?php echo $request->id?>" data-uri="/patientMergeRequest/merge/<?php echo $request->id?>">
+                                        <td class="checkbox"><input type="checkbox" name="patientMergeRequest[]" value="<?php echo $request->id?>" /></td>
+                                        <td class="secondary"><?php echo $request->secondary_hos_num?></td>
+                                        <td class="into">INTO</td>
+                                        <td class="primary"><?php echo $request->primary_hos_num?></td>
+                                        <td class="status">
+                                            <div class="circle <?php echo (strtolower(str_replace(" ", "-", $request->getStatusText())) ); ?>" ></div> 
+                                            <?php echo $request->getStatusText(); ?> 
+                                        </td>
+                                        <td class="created"><?php echo $request->created_date; ?> </td>
+                                    </tr>
+                                <?php endforeach;?>
+                            </tbody>
+
+                        </table>
+
+                    </form>                    
             </section>
         </div>
     </div>

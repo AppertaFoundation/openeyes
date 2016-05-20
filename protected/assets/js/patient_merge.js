@@ -26,7 +26,7 @@ var patientMerge = {
         var tmpPatiens = {};
         tmpPatiens = patientMerge.patients.primary;
         patientMerge.patients.primary = patientMerge.patients.secondary;
-        patientMerge.patients.secondary = tmpPatiens;
+        patientMerge.patients.secondary = tmpPatiens;     
     }
 };
                         
@@ -45,13 +45,35 @@ $(document).ready(function(){
         },
         select: function (event, ui) {
 
+            // lets make sure the two user ids cannot be the same
+            if( patientMerge.patients.secondary.id != patientMerge.patients.primary.id){}
+            
             if(Object.keys(patientMerge.patients.secondary).length === 0){
-                patientMerge.patients.secondary = ui.item;
-                patientMerge.updateDOM('secondary');      
+                
+                // check if the secondary and primary patient ids are the same
+                if ( patientMerge.patients.primary.id != ui.item.id ){
+                    patientMerge.patients.secondary = ui.item;
+                    patientMerge.updateDOM('secondary');
+                } else {
+                    // secondary and primary patient ids are the same - ALERT
+                    new OpenEyes.UI.Dialog.Alert({
+                    content: "Primary and Secondary patient cannot be the same record."
+                  }).open();
+                }
+                
+                
                                 
             } else if (Object.keys(patientMerge.patients.primary).length === 0){
-                patientMerge.patients.primary = ui.item;
-                patientMerge.updateDOM('primary');
+                
+                if ( patientMerge.patients.secondary.id != ui.item.id ){
+                    patientMerge.patients.primary = ui.item;
+                    patientMerge.updateDOM('primary');
+                } else {
+                   new OpenEyes.UI.Dialog.Alert({
+                    content: "Primary and Secondary patient cannot be the same record."
+                  }).open();
+                }
+                
             } else {
                 
                 $('<h2 class="text-center">Do you want to set this patient as Primary or Secondary ?</h2>').data('ui', ui).dialog({
@@ -62,9 +84,17 @@ $(document).ready(function(){
                             text: 'Secondary',
                             click: function(){
                                 var ui = $(this).data('ui');
-                                patientMerge.patients.secondary = ui.item;
-                                patientMerge.updateDOM('secondary');
-                                $( this ).dialog( "close" );
+                                if ( patientMerge.patients.primary.id != ui.item.id ){
+                                    patientMerge.patients.secondary = ui.item;
+                                    patientMerge.updateDOM('secondary');
+                                    $( this ).dialog( "close" );
+                                }else{
+                                    $( this ).dialog( "close" );
+                                    $('<h2 title="Alert" class="text-center"></h2>').dialog();
+                                    new OpenEyes.UI.Dialog.Alert({
+                                        content: "Primary and Secondary patient cannot be the same record."
+                                      }).open();
+                                }
                             }
                         },
                         {
@@ -73,9 +103,16 @@ $(document).ready(function(){
                             text: 'Primary',
                             click: function(){
                                 var ui = $(this).data('ui');
-                                patientMerge.patients.primary = ui.item;
-                                patientMerge.updateDOM('primary');
-                                $( this ).dialog( "close" );
+                                if ( patientMerge.patients.secondary.id != ui.item.id ){
+                                    patientMerge.patients.primary = ui.item;
+                                    patientMerge.updateDOM('primary');
+                                    $( this ).dialog( "close" );
+                                }else{
+                                    $( this ).dialog( "close" );
+                                    new OpenEyes.UI.Dialog.Alert({
+                                        content: "Primary and Secondary patient cannot be the same record."
+                                      }).open();
+                                }
                             }
                         }
                     ],
@@ -106,6 +143,7 @@ $(document).ready(function(){
     });
     if(typeof dialog !== 'undefined' && dialog.length){
         dialog.data( "autocomplete" )._renderItem = function( ul, item ) {
+            ul.addClass("z-index-1000");
             return $( "<li></li>" )
                 .data( "item.autocomplete", item )
                 .append( "<a><strong>" + item.first_name + " " + item.last_name + "</strong>" + " (" + item.age + ")" + "<span class='icon icon-alert icon-alert-" + item.gender.toLowerCase() +"_trans'>Male</span>" + "<div class='nhs-number'>" + item.nhsnum +"</div><br>Hospital No.: " + item.hos_num + "<br>Date of birth: " + item.dob + "</a>" )
@@ -121,5 +159,72 @@ $(document).ready(function(){
     $('#patient1-search-form').on('click', 'button', function(){
         $("#patient_merge_search").autocomplete('search', $('#patient_merge_search').val());
     });
+    
+    // form validation before sending
+    $('#patientMergeWrapper').on('submit', '#grid_header_form', function(e){
+               
+        var primary_id = $('#PatientMergeRequest_primary_id').val(),
+            secondary_id = $('#PatientMergeRequest_secondary_id').val();
+            isValid = false;
+            
+        if( !primary_id || !secondary_id ){
+            new OpenEyes.UI.Dialog.Alert({
+                content: "Both Primary and Secondary patients have to be selected."
+              }).open();
+        } else if( primary_id == secondary_id ){
+            $('<h2 title="Alert" class="text-center"></h2>').dialog();
+            new OpenEyes.UI.Dialog.Alert({
+                content: "Primary and Secondary patient cannot be the same record."
+              }).open();
+        } else {
+            isValid = true;
+        }
+        
+        if(!isValid){
+            e.preventDefault();
+        }
+    });
+    
+    $('#selectall').click(function () {
+        $('input[type="checkbox"]').attr('checked', this.checked);
+    });
+    
+    $('#patientMergeWrapper').on('click', 'tr', function(e){
+        var target = $(e.target);
+
+        // If the user clicked on an input element, or if this cell contains an input
+        // element then do nothing.
+        if (target.is(':input') || (target.is('td') && target.find('input').length)) {
+            return;
+        }
+
+        var uri = $(this).data('uri');
+
+        if (uri) {
+            var url = uri.split('/');
+            url.unshift(baseUrl);
+            window.location.href = url.join('/');
+        }
+   });
+   
+   $('#patientMergeWrapper').on('click', '#rq_delete', function(e){
+        e.preventDefault();
+        
+        if( $('#patientMergeList').find('td input[type=checkbox]:checked').length > 0 ){
+           
+            var serializedForm = $(this).closest('form').serialize();
+                    
+            $.post( "/patientMergeRequest/delete", serializedForm, function( data ) {
+                window.location.reload();
+            });
+        } else {
+            new OpenEyes.UI.Dialog.Alert({
+                    content: "Please select one or more items to delete."
+                }).open();
+        }
+        
+   });
+   
+   
     
 });

@@ -30,7 +30,7 @@ class PatientMergeRequestController extends BaseController
     {
         return array(
             array('allow',
-                'actions' => array('index', 'create', 'view', 'merge', 'editConflict', 'search'),
+                'actions' => array('index', 'create', 'view', 'merge', 'editConflict', 'search', 'delete'),
                 'roles' => array('Patient Merge'),
             ),
             
@@ -59,26 +59,50 @@ class PatientMergeRequestController extends BaseController
      */
     public function actionIndex()
     {
-        $dataProvider = new CActiveDataProvider('PatientMergeRequest');
+        $dataProvider = new CActiveDataProvider('PatientMergeRequest', array(
+            'criteria'=>array(
+                'condition'=>'deleted=0'
+            )
+        ));
+        
+        $pagination = new CPagination($dataProvider->itemCount);
+        $pagination->pageSize = 25;
+        
         
         $this->render('//patientmergerequest/index', array(
             'dataProvider'=>$dataProvider,
+            'pagination' => $pagination
         ));
     }
     
     public function actionCreate()
     {
+        
         $model = new PatientMergeRequest;
+        
+        $patientMergeRequest = Yii::app()->request->getParam('PatientMergeRequest', null);
             
-        if(isset($_POST['PatientMergeRequest'])) {
-            $model->attributes = $_POST['PatientMergeRequest'];
-            if($model->save()){
-                $this->redirect(array('index'));
+        if($patientMergeRequest) {
+            
+            // the Primary and Secondary user cannot be the same user , same database record I mean
+            if( ( !empty($patientMergeRequest['secondary_id']) && !empty($patientMergeRequest['primary_id']) )&& $patientMergeRequest['secondary_id'] == $patientMergeRequest['primary_id']){
+                Yii::app()->user->setFlash("warning.merge_error", "The Primary and Secondary patient cannot be the same. Record cannot be merged into itself.");
+            } else {
+                
+                if ( empty($patientMergeRequest['secondary_id']) || empty($patientMergeRequest['primary_id'])){
+                    Yii::app()->user->setFlash("warning.merge_error", "Both Primary and Secondary patients have to be selected.");
+                } else {
+                    $model->attributes = $patientMergeRequest;
+                    if($model->save()){
+                        $this->redirect(array('index'));
+                    }
+                }
             }
         }
        
         $this->render('//patientmergerequest/create',array(
             'model' => $model,
+            
         ));
     }
     
@@ -151,6 +175,21 @@ class PatientMergeRequestController extends BaseController
             'model' => $mergeRequest,
             'personalDetailsConflictConfirm' => $personalDetailsConflictConfirm['isConflict']
         ));
+    }
+    
+    public function actionDelete()
+    {        
+        if( isset($_POST['patientMergeRequest']) ){
+
+            foreach (PatientMergeRequest::model()->findAllByPk($_POST['patientMergeRequest']) as $request) {
+              
+                $request->deleted = 1;
+               
+                if ( $request->save() ) {
+                    Audit::add('Patient Merge', 'Patient Merge Request Deleted: ');
+                }
+            }
+        }
     }
     
     
