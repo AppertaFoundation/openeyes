@@ -805,6 +805,38 @@ class WorklistManager extends CComponent
         return true;
     }
 
+    public function setWorklistDefinitionMappingDisplayOrder(WorklistDefinition $definition, $ids = array())
+    {
+        foreach ($ids as $i => $id) {
+            $display_lookup[$id] = $i+1;
+        }
+        $transaction = $this->startTransaction();
+
+        try {
+            foreach ($definition->displayed_mappings as $mapping) {
+                $mapping->display_order = $display_lookup[$mapping->id];
+                $mapping->save();
+            }
+
+            if ($transaction)
+                $transaction->commit();
+
+            return true;
+        }
+        catch (Exception $e) {
+            $this->addError($e->getMessage());
+            if ($transaction)
+                $transaction->rollback();
+            return false;
+        }
+    }
+
+    /**
+     * @param Worklist $wl
+     * @param $attributes
+     * @return bool
+     * @throws Exception
+     */
     protected function checkWorklistMappingMatch(Worklist $wl, $attributes)
     {
         if (!$wl->worklist_definition)

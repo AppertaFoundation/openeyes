@@ -34,6 +34,8 @@ use \RRule\RRule;
  *
  * @property Worklist[] $worklists
  * @property WorklistDefinitionMapping[] $mappings
+ * @property WorklistDefinitionMappingp[] $displayed_mappings
+ * @property WorklistDefinitionMappingp[] $hidden_mappings
  */
 class WorklistDefinition extends BaseActiveRecordVersionedSoftDelete
 {
@@ -92,7 +94,9 @@ class WorklistDefinition extends BaseActiveRecordVersionedSoftDelete
         // class name for the relations automatically generated below.
         return array(
             'worklists' => array(self::HAS_MANY, 'Worklist', 'worklist_definition_id'),
-            'mappings' => array(self::HAS_MANY, 'WorklistDefinitionMapping', 'worklist_definition_id')
+            'mappings' => array(self::HAS_MANY, 'WorklistDefinitionMapping', 'worklist_definition_id'),
+            'displayed_mappings' => array(self::HAS_MANY, 'WorklistDefinitionMapping', 'worklist_definition_id', 'on' => 'display_order is NOT NULL', 'order' => 'display_order ASC'),
+            'hidden_mappings' => array(self::HAS_MANY, 'WorklistDefinitionMapping', 'worklist_definition_id', 'on' => 'display_order is NULL')
         );
     }
 

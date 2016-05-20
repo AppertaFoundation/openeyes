@@ -20,7 +20,11 @@
 <div class="admin box">
     <h2>Mapping Items for <?= $definition->name ?></h2>
     <?php echo EventAction::link('Add Mapping', '/worklistAdmin/addDefinitionMapping/' . $definition->id, array(), array('class' => 'button primary small'))->toHtml()?>
-    <?php if ($definition->mappings) {?>
+    <?php if ($definition->mappings) { ?>
+    <form id="mapping-list" method="POST">
+        <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
+        <?php if ($definition->displayed_mappings) {?>
+        <h3>Displayed Mapping Items</h3>
         <table class="generic-admin grid">
             <thead>
             <tr>
@@ -30,16 +34,60 @@
             </tr>
             </thead>
             <tbody class="sortable">
-            <?php foreach ($definition->mappings as $i => $mapping) {?>
-                <tr class="clickable">
-                    <td class="reorder">&uarr;&darr;<input type="hidden" name="<?php echo get_class($mapping) ?>[display_order][]" value="<?php echo $i ?>"></td>
-                    <td><?=$mapping->key?></td>
-                    <td><a href="/worklistAdmin/updateDefinitionMapping/<?=$mapping->id?>">Edit</a> |
-                        <a href="/worklistAdmin/deleteDefinitionMapping/<?=$mapping->id?>" disabled="disabled">Delete</a></td>
+            <?php foreach ($definition->displayed_mappings as $i => $mapping) { ?>
+                <tr>
+                    <td class="reorder">&uarr;&darr;<input type="hidden" name="item_ids[]"
+                                                           value="<?php echo $mapping->id ?>"></td>
+                    <td><?= $mapping->key ?></td>
+                    <td><a href="/worklistAdmin/updateDefinitionMapping/<?= $mapping->id ?>">Edit</a> |
+                        <a href="/worklistAdmin/deleteDefinitionMapping/<?= $mapping->id ?>"
+                           disabled="disabled">Delete</a></td>
                 </tr>
             <?php } ?>
             </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="4">
+                    <?php echo EventAction::button(
+                        'Sort',
+                        'sort',
+                        array(),
+                        array(
+                            'class' => 'small',
+                            'style' => 'display:none;',
+                            'data-uri' => '/worklistAdmin/definitionMappingSort/' . $definition->id,
+                            'data-object' => 'WorklistDefinitionMapping'
+                        )
+                    )->toHtml() ?>
+                </td>
+            </tr>
+            </tfoot>
         </table>
+        <?php
+        }
+        if ($definition->hidden_mappings) {?>
+            <h2>Hidden Mapping Items</h2>
+            <table class="generic-admin grid">
+                <thead>
+                <tr>
+                    <th>Order</th>
+                    <th>Name</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($definition->hidden_mappings as $i => $mapping) {?>
+                    <tr>
+                        <td class="reorder">-</td>
+                        <td><?=$mapping->key?></td>
+                        <td><a href="/worklistAdmin/updateDefinitionMapping/<?=$mapping->id?>">Edit</a> |
+                            <a href="/worklistAdmin/deleteDefinitionMapping/<?=$mapping->id?>" disabled="disabled">Delete</a></td>
+                    </tr>
+                <?php } ?>
+                </tbody>
+            </table>
+        <?php }?>
+        </form>
     <?php } else {?>
         <div class="alert-box info">No mapping items have been defined for this Worklist Definition. You may add one by clicking the button above ...</div>
     <?php } ?>
@@ -47,6 +95,14 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        $('.sortable').sortable();
+        $('.sortable').sortable({
+            change: function (e, ui) {
+                $('#et_sort').show();
+            }
+        });
+
+        $('#et_sort').on('click', function() {
+            $('#mapping-list').attr('action', $(this).data('uri')).submit();
+        })
     });
 </script>

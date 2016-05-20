@@ -213,5 +213,25 @@ class WorklistAdminController extends BaseAdminController
         $this->redirect(array('/worklistAdmin/definitionMappings/' . $mapping->worklist_definition_id));
     }
 
+    /**
+     * Update the Worklist Definition Mapping Attribute order
+     */
+    public function actionDefinitionMappingSort($id)
+    {
+        $definition = $this->getWorklistDefinition($id);
+        $mapping_ids = @$_POST['item_ids'] ? : array();
+
+        if (count($mapping_ids)) {
+            if (!$this->manager->setWorklistDefinitionMappingDisplayOrder($definition, $mapping_ids)) {
+                OELog::log(print_r($this->manager->getErrors(), true));
+                $this->flashMessage('error', "Could not reorder mappings");
+            } else {
+                $this->flashMessage('success', 'Mappings re-ordered');
+            }
+        }
+
+        $this->redirect('/worklistAdmin/definitionMappings/' . $id);
+    }
+
 
 }
