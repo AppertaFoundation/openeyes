@@ -64,6 +64,14 @@ class PortalExamsCommand extends CConsoleCommand
 
 				if($examinationEvent->save()){
 					$examinationEvent->refresh();
+                                        $examination_event_log = new AutomaticExaminationEventLog();
+                                        $examination_event_log->event_id = $examinationEvent->id;
+                                        $examination_event_log->unique_code = $uniqueCode;
+                                        $examination_event_log->examination_date = date('Y-m-d H:i:s');
+                                        if(!$examination_event_log->save()){
+						throw new CDbException('$examination_event_log failed: '.print_r($examination_event_log->getErrors(), true));
+					}
+                                        
 
 					$refraction = new \OEModule\OphCiExamination\models\Element_OphCiExamination_Refraction();
 					$refraction->event_id = $examinationEvent->id;
@@ -150,18 +158,19 @@ class PortalExamsCommand extends CConsoleCommand
 						if(!$iopValue->save()){
 							throw new CDbException('iop value failed: '.print_r($iop->getErrors(), true));
 						}
-
-						if(count($eye['complications'])){
-							foreach($eye['complications'] as $complicationArray){
-								$eyeComplication = new \OEModule\OphCiExamination\models\OphCiExamination_Et_PostOpComplications();
-								$eyeComplication->element_id = $complications->id;
-								$complicationToAdd = \OEModule\OphCiExamination\models\OphCiExamination_PostOpComplications::model()->find('name = "'.$complicationArray['complication'].'"');
-								$eyeComplication->complication_id = $complicationToAdd->id;
-								$eyeComplication->operation_note_id = $opNoteEvent->id;
-								$eyeComplication->eye_id = $eyeIds[$eyeLabel];
-								$eyeComplication->save();
-							}
-						} else {
+                                                if(array_key_exists('complications', $eye)) {
+                                                        if(count($eye['complications'])){
+                                                                foreach($eye['complications'] as $complicationArray){
+                                                                        $eyeComplication = new \OEModule\OphCiExamination\models\OphCiExamination_Et_PostOpComplications();
+                                                                        $eyeComplication->element_id = $complications->id;
+                                                                        $complicationToAdd = \OEModule\OphCiExamination\models\OphCiExamination_PostOpComplications::model()->find('name = "'.$complicationArray['complication'].'"');
+                                                                        $eyeComplication->complication_id = $complicationToAdd->id;
+                                                                        $eyeComplication->operation_note_id = $opNoteEvent->id;
+                                                                        $eyeComplication->eye_id = $eyeIds[$eyeLabel];
+                                                                        $eyeComplication->save();
+                                                                }
+                                                        }
+                                                }else {
 							$eyeComplication = new \OEModule\OphCiExamination\models\OphCiExamination_Et_PostOpComplications();
 							$eyeComplication->element_id = $complications->id;
 							$complicationToAdd = \OEModule\OphCiExamination\models\OphCiExamination_PostOpComplications::model()->find('name = "none"');
@@ -224,7 +233,6 @@ class PortalExamsCommand extends CConsoleCommand
 		$this->client->setUri($this->config['uri'].$this->config['endpoints']['examinations']);
 		$response = $this->client->request('POST');
 		$jsonResponse = json_decode($response->getBody(), true);
-
 		return $jsonResponse;
 	}
 }
