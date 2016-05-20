@@ -22,6 +22,7 @@
  * @property integer $id
  * @property string $key
  * @property integer $worklist_definition_id
+ * @property integer $display_order
  *
  * @property WorklistDefinition $worklist_definition
  * @property WorklistDefinitionMappingValue[] $values
@@ -34,6 +35,21 @@ class WorklistDefinitionMapping extends BaseActiveRecord
      * @var string
      */
     private $_valuelist;
+
+    /**
+     * Abstraction for getting instance of class
+     *
+     * @param $class
+     * @return mixed
+     */
+    protected function getInstanceForClass($class, $args = array())
+    {
+        if (empty($args))
+            return new $class();
+
+        $cls = new ReflectionClass($class);
+        return $cls->newInstanceArgs($args);
+    }
 
     /**
      * @return string the associated database table name
@@ -108,7 +124,7 @@ class WorklistDefinitionMapping extends BaseActiveRecord
      */
     public function getValueList()
     {
-        if (!$this->_valuelist) {
+        if (!isset($this->_valuelist)) {
             $res = array();
             foreach ($this->values as $v) {
                 $res[] = $v->mapping_value;
@@ -129,6 +145,40 @@ class WorklistDefinitionMapping extends BaseActiveRecord
      */
     public function setValueList($valuelist)
     {
+        if (is_array($valuelist))
+            $valuelist = implode(',', $valuelist);
+
         $this->_valuelist = $valuelist;
     }
+
+    /**
+     * @param array $values
+     * @throws CDbException
+     * @throws Exception
+     */
+    public function updateValues($values = array())
+    {
+        $kept = array();
+        foreach ($this->values as $mv) {
+            if (!in_array($mv->mapping_value, $values)) {
+                $mv->delete();
+            }
+            else {
+                $kept[] = $mv->mapping_value;
+            }
+        }
+
+        foreach ($values as $val) {
+            if (!in_array($val, $kept)) {
+                $mv = $this->getInstanceForClass('WorklistDefinitionMappingValue');
+                $mv->worklist_definition_mapping_id = $this->id;
+                $mv->mapping_value = $val;
+                if (!$mv->save())
+                    throw new Exception("Could not save mapping value" . print_r($mv->getErrors(), true));
+            }
+        }
+
+        $this->setValueList($values);
+    }
+
 }

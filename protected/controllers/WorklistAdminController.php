@@ -145,6 +145,7 @@ class WorklistAdminController extends BaseAdminController
             if ($this->manager->updateWorklistDefinitionMapping($mapping,
                 $_POST['WorklistDefinitionMapping']['key'],
                 $_POST['WorklistDefinitionMapping']['valuelist'])) {
+
                 $this->flashMessage('success', 'Worklist Definition Mapping saved.');
                 $this->redirect(array('/worklistAdmin/definitionMappings/' . $id));
             }
@@ -173,14 +174,15 @@ class WorklistAdminController extends BaseAdminController
             throw new CHttpException(404, "Worklist Definition Mapping not found.");
 
         if (isset($_POST['WorklistDefinitionMapping'])) {
+            $mapping->attributes = $_POST['WorklistDefinitionMapping'];
             if ($this->manager->updateWorklistDefinitionMapping($mapping,
                 $_POST['WorklistDefinitionMapping']['key'],
                 $_POST['WorklistDefinitionMapping']['valuelist'])) {
+
                 $this->flashMessage('success', 'Worklist Definition Mapping saved.');
                 $this->redirect(array('/worklistAdmin/definitionMappings/' . $mapping->worklist_definition_id));
             }
             else {
-                $mapping->valuelist = $_POST['WorklistDefinitionMapping']['valuelist'];
                 $errors = $mapping->getErrors();
                 $errors[] = $this->manager->getErrors();
             }

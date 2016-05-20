@@ -750,51 +750,45 @@ class WorklistManager extends CComponent
         }
     }
 
+
+
     /**
+     * This
      *
      * @TODO: support null display_order
      * @param WorklistDefinitionMapping $mapping
      * @param $key
-     * @param $values
+     * @param string $values
      * @return bool
      */
-    public function updateWorklistDefinitionMapping(WorklistDefinitionMapping $mapping, $key, $values)
+    public function updateWorklistDefinitionMapping(WorklistDefinitionMapping $mapping, $key, $values, $display = true)
     {
-        $display_order = 1;
-        foreach ($mapping->worklist_definition->mappings as $m) {
-            if ($m->display_order >= $display_order)
-                $display_order = $m->display_order +1;
-
-            if (($m->id != $mapping->id) && $m->key == $key) {
-                $this->addError("Mapping key {$key} already exists for definition");
-                return false;
-            }
-        }
-
-        $mapping->key = $key;
-        $values = explode(",", $values);
-        if (!count($values)) {
+        if (!$values) {
             $this->addError("At least one mapping value must be provided");
             return false;
         }
+        $values = explode(",", $values);
+
+        $definition = $mapping->worklist_definition;
+
+        if (!$definition->validateMappingKey($key)) {
+            $this->addError("Mapping key {$key} already exists for definition");
+            return false;
+        }
+
+        $mapping->key = $key;
+
+        if ($mapping->isNewRecord)
+            $mapping->display_order = $display ? $definition->getNextDisplayOrder() : null;
 
         $transaction = $this->startTransaction();
 
         try {
-            $mapping->display_order = $display_order;
             if (!$mapping->save())
                 throw new Exception("Could not save mapping");
 
-            foreach ($mapping->values as $mv) {
-                $mv->delete();
-            }
-
-            foreach ($values as $v) {
-                $mv = new WorklistDefinitionMappingValue();
-                $mv->worklist_definition_mapping_id = $mapping->id;
-                $mv->mapping_value = $v;
-                $mv->save();
-            }
+            if (!$mapping->updateValues($values))
+                throw new Exception("Could not save mapping values");
 
             $this->audit(self::$AUDIT_TARGET_AUTO, 'mapping-update');
 

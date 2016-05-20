@@ -167,4 +167,39 @@ class WorklistDefinition extends BaseActiveRecordVersionedSoftDelete
         if (!$valid)
             $this->addError($attribute, $this->getAttributeLabel($attribute) . ' is not valid');
     }
+
+    /**
+     * Check whether the given key would be unique on the Definition
+     * (optional id indicates the current mapping the key is from so it is not checked against itself)
+     *
+     * @param $key
+     * @param integer $id
+     * @return bool
+     */
+    public function validateMappingKey($key, $id = null)
+    {
+        foreach ($this->mappings as $m) {
+            if ($m->id == $id)
+                continue;
+            if ($m->key == $key)
+                return false;
+        }
+        return true;
+    }
+
+    /**
+     * Gets the next display order for a new mapping
+     *
+     * @return integer
+     */
+    public function getNextDisplayOrder()
+    {
+        $display_order = 1;
+        foreach ($this->mappings as $m) {
+            if ($m->display_order >= $display_order)
+                $display_order = $m->display_order+1;
+        }
+        return $display_order;
+    }
+
 }

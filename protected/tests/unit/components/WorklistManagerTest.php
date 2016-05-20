@@ -565,4 +565,34 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
     {
         $this->markTestIncomplete("New method. not had chance to write test yet.");
     }
+
+    public function test_updateWorklistDefinitionMapping_empty()
+    {
+        $mapping = new WorklistDefinitionMapping();
+        $manager = new WorklistManager();
+
+        $this->assertFalse($manager->updateWorklistDefinitionMapping($mapping, 'test key', ''));
+        $this->assertTrue($manager->hasErrors());
+    }
+
+
+    public function test_updateWorklistDefinitionMapping_invalid_key()
+    {
+        $definition = $this->getMockBuilder('WorklistDefinition')
+            ->disableOriginalConstructor()
+            ->setMethods(array('validateMappingKey'))
+            ->getMock();
+
+        $definition->expects($this->once())
+            ->method('validateMappingKey')
+            ->will($this->returnValue(false));
+
+        $mapping = new WorklistDefinitionMapping();
+        $mapping->worklist_definition = $definition;
+
+        $manager = new WorklistManager();
+
+        $this->assertFalse($manager->updateWorklistDefinitionMapping($mapping, 'test key', 'foo'));
+        $this->assertTrue($manager->hasErrors());
+    }
 }
