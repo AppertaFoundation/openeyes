@@ -347,7 +347,16 @@ select:focus {
   max-height:350px;
   width: auto;
   height: auto;
-  margin-left: 67px;
+  vertical-align: middle;
+}
+
+.vfthumbnail-hidden{
+  max-width:350px;
+  max-height:350px;
+  width: auto;
+  height: auto;
+  vertical-align: middle;
+  display: none;
 }
 
 .side-title{

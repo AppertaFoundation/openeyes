@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+var VFImages;
+
 $(document).ready(function() {
     // Create the IOP chart
     var IOPchart = new Highcharts.StockChart({
@@ -50,39 +52,17 @@ $(document).ready(function() {
         title : {
             text : 'IOP values'
         },
-    });
-
-
-    $.ajax({
-        url: '/OphCiExamination/OEScapeData/DataSet/'+patientId,
-        type: "GET",
-        dataType: "json",
-        data : {side : 1},
-        success: function(data) {
-            IOPchart.addSeries({
-                name: "IOP left",
-                data: data,
-                color: "#ff9933"
-            });
+        yAxis: {
+            min: 0,
+            max: 70
         },
-        cache: false
-    });
-
-    $.ajax({
-        url: '/OphCiExamination/OEScapeData/DataSet/'+patientId,
-        type: "GET",
-        dataType: "json",
-        data : {side : 2},
-        success: function(data) {
-            IOPchart.addSeries({
-                name: "IOP right",
-                data: data,
-                color: "#33ccff"
-            });
+        credits: {
+            enabled: false
         },
-        cache: false
     });
 
+    addSeries(IOPchart, 2, "IOP", "DataSet", "#33ccff");
+    addSeries(IOPchart, 1, "IOP", "DataSet", "#ff9933");
 
     $.ajax({
         url: '/OphCiExamination/OEScapeData/GetOperations/'+patientId,
@@ -95,6 +75,7 @@ $(document).ready(function() {
     });
 
     loadAllImages(Highcharts.dateFormat('%Y-%m-%d', new Date().getTime()));
+    loadAllVFImages('vfgreyscale');
 
     // create the Visual Acuity chart
     var VAchart = new Highcharts.StockChart({
@@ -117,51 +98,56 @@ $(document).ready(function() {
             borderWidth: 1,
             layout: 'vertical',
             shadow: true,
+            margin: 10,
             y: 24
         },
 
         title : {
             text : 'Visual Acuity (LogMar single-letter) values'
         },
+        yAxis: {
+            reversed: true,
+            min: -1,
+            max: 1
+        },
+        credits: {
+            enabled: false
+        },
     });
 
-    $.ajax({
-        url: '/OphCiExamination/OEScapeData/DataSetVA/'+patientId,
-        type: "GET",
-        dataType: "json",
-        data : {side : 1},
-        success: function(data) {
-            VAchart.addSeries({
-                name: "VA left",
-                data: data,
-                color: "#90D49C"
-            });
-        },
-        cache: false
-    });
+    addSeries(VAchart, 2, "VA", "DataSetVA", "#33ccff");
+    addSeries(VAchart, 1, "VA", "DataSetVA", "#90D49C");
 
-    $.ajax({
-        url: '/OphCiExamination/OEScapeData/DataSetVA/'+patientId,
-        type: "GET",
-        dataType: "json",
-        data : {side : 0},
-        success: function(data) {
-            VAchart.addSeries({
-                name: "VA right",
-                data: data,
-                color: "#90A6D4"
-            });
-        },
-        cache: false
+    $('#vfgreyscale_left, #vfgreyscale_right').mousemove(function(e){
+        changeVFImages(e.pageX - this.offsetLeft, $(this).width());
     });
 
 });
 
+function addSeries(chart, side, title, dataurl, seriescol){
+    $.ajax({
+        url: '/OphCiExamination/OEScapeData/'+dataurl+'/'+patientId,
+        type: "GET",
+        dataType: "json",
+        data : {side : side},
+        success: function(data) {
+            chart.addSeries({
+                name: title+" "+getSideName(side),
+                data: data,
+                color: seriescol
+            });
+        },
+        cache: false
+    });
+}
+
 function loadAllImages(eventDate){
     loadImage(eventDate, 1, 'vfgreyscale');
     loadImage(eventDate, 2, 'vfgreyscale');
-    loadImage(eventDate, 1, 'vfcolorplot');
-    loadImage(eventDate, 2, 'vfcolorplot');
+    //loadImage(eventDate, 1, 'vfcolorplot');
+    //loadImage(eventDate, 2, 'vfcolorplot');
+    setPlotColours(getSideName(1),'');
+    setPlotColours(getSideName(2),'');
 
 }
 
@@ -213,4 +199,60 @@ function AddOperation(item, index){
             align: 'left'
         }
     });
+}
+
+function setPlotColours(side, data){
+    $('[id^=vfcp_'+side+']').each(function () {
+        $(this).attr('fill', getRandomColor());
+    });
+}
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+function loadAllVFImages(mediaType){
+    $.ajax({
+        url: '/OphCiExamination/OEScapeData/LoadAllImages/'+patientId,
+        type: "GET",
+        dataType: "json",
+        data : {
+            eventType: 'OphInVisualfields',
+            mediaType: mediaType},
+        success: function(data) {
+            VFImages = data;
+            $.each( VFImages, function(index, data){
+                $('#vfgreyscale_left_cache').append('<img id="vfg_left_'+index+'" class="vfthumbnail" src="/OphCiExamination/OEScapeData/GetImage/'+data[1][0]+'">');
+                $('#vfgreyscale_right_cache').append('<img id="vfg_right_'+index+'" class="vfthumbnail" src="/OphCiExamination/OEScapeData/GetImage/'+data[2][0]+'">');
+            });
+            console.log("All VF images data loaded ");
+        },
+        cache: false
+    });
+}
+
+function changeVFImages(xCoord, imageWidth){
+    var allImagesNr = Object.keys(VFImages).length;
+    var currentIndex = Math.round(xCoord/(imageWidth/allImagesNr));
+
+    i = 0;
+    lastIndex = 0;
+
+    $.each( VFImages, function(index, data){
+        if( i == currentIndex && currentIndex != lastIndex){
+            //console.log($('#vfgreyscale_left').next('img'));
+            $('#vfgreyscale_left').html( $('#vfg_left_'+index).clone() );
+            $('#vfgreyscale_right').html( $('#vfg_right_'+index).clone() );
+            setPlotColours(getSideName(1),'');
+            setPlotColours(getSideName(2),'');
+            lastIndex = currentIndex;
+        }
+        i++;
+    });
+    console.log(xCoord+' imgNr: '+allImagesNr+' width: '+imageWidth+' index: '+currentIndex+' last indx:'+lastIndex);
 }

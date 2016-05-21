@@ -28,11 +28,11 @@ class OEScapeDataController extends \BaseController
     {
         return array(
             array('allow',
-                'actions' => array('dataset', 'datasetva', 'loadimage', 'getoperations', 'getimage'),
+                'actions' => array('dataset', 'datasetva', 'loadimage', 'loadallimages', 'getoperations', 'getimage'),
                 'expression' => 'Yii::app()->user->isSurgeon()'
             ),
             array('allow',
-                'actions' => array('dataset', 'datasetva', 'loadimage', 'getoperations', 'getimage'),
+                'actions' => array('dataset', 'datasetva', 'loadimage', 'loadallimages', 'getoperations', 'getimage'),
                 'roles' => array('admin'),
             ),
         );
@@ -64,7 +64,7 @@ class OEScapeDataController extends \BaseController
             ->join('episode ep', 'ev.episode_id=ep.id')
             ->join('ophciexamination_visual_acuity_unit_value ovauv', 'ovauv.unit_id=10 and ovr.value=ovauv.base_value')
             ->where('patient_id = :patient', array('patient' => $patient))
-            ->andWhere('ovr.side = :side', array('side'=> $side))
+            ->andWhere('ovr.side = :side', array('side'=> $side-1))
             ->andWhere('ev.deleted <> 1')
             ->order('event_date');
 
@@ -135,7 +135,7 @@ class OEScapeDataController extends \BaseController
         foreach($data as $row){
             $key = strtotime($row["event_date"]) * 1000;
             if($currentBest = $this->isVAinArray($key, $output)){
-                if($this->isVAbetter($currentBest, $row["value"])){
+                if( $row["value"] < $currentBest){
                     $output[$currentBest] = array($key, (float)$row["value"]);
                 }
             }else {
@@ -174,6 +174,22 @@ class OEScapeDataController extends \BaseController
             echo $this->renderPartial('//oescape/vfgreyscale_side',array('fileid'=>$row['fileid']));
         }
         //echo $fileId;
+    }
+
+    public function actionLoadAllImages($id, $eventType, $mediaType){
+        $command = Yii::app()->db->createCommand()->select('md.id as fileid, eye_id, event_date')
+            ->from('media_data md')
+            ->where('patient_id = :patient', array('patient' => $id))
+            ->andWhere('event_type_id = (SELECT id FROM event_type WHERE class_name= :eventType)', array('eventType'=>$eventType))
+            ->andWhere('media_type_id = (SELECT id FROM media_type WHERE type_name =:mediaType)', array('mediaType'=>$mediaType))
+            ->order('event_date');
+
+        $allData = $command->queryAll();
+
+        foreach($allData as $row){
+            $output[strtotime($row["event_date"])][$row["eye_id"]] = array($row["fileid"]);
+        }
+        echo json_encode($output);
     }
 
     public function actionGetImage($id){
