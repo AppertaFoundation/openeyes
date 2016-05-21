@@ -17,6 +17,7 @@
  */
 
 var VFImages;
+var lastIndex = 0;
 
 $(document).ready(function() {
     // Create the IOP chart
@@ -144,15 +145,10 @@ function addSeries(chart, side, title, dataurl, seriescol){
 function loadAllImages(eventDate){
     loadImage(eventDate, 1, 'vfgreyscale');
     loadImage(eventDate, 2, 'vfgreyscale');
-    //loadImage(eventDate, 1, 'vfcolorplot');
-    //loadImage(eventDate, 2, 'vfcolorplot');
-    setPlotColours(getSideName(1),'');
-    setPlotColours(getSideName(2),'');
-
 }
 
 function loadImage(eventDate, side, mediaType){
-    console.log('Loading image for patient: '+patientId+' date: '+eventDate);
+    //console.log('Loading image for patient: '+patientId+' date: '+eventDate);
     $.ajax({
         url: '/OphCiExamination/OEScapeData/LoadImage/'+patientId,
         type: "GET",
@@ -180,7 +176,7 @@ function getSideName(side){
 
 
 function AddOperation(item, index){
-    console.log(item);
+    //console.log(item);
 
     var color;
 
@@ -201,10 +197,47 @@ function AddOperation(item, index){
     });
 }
 
-function setPlotColours(side, data){
-    $('[id^=vfcp_'+side+']').each(function () {
-        $(this).attr('fill', getRandomColor());
+function getPlotData(plotNr, side, dateIndex){
+    var i = 0;
+    var returnArray = [];
+    $.each( VFImages, function(index, data){
+        if(index <= dateIndex){
+            plotArray = $.parseJSON(data[side][1]);
+            returnArray[i] = [Math.round(parseInt(index)/1000000), plotArray[plotNr]];
+            i++;
+        }
     });
+
+    return returnArray
+}
+
+function getPlotColour( m, P ){
+    P=1;
+
+    //m = Math.abs(Math.round(m/255*100));
+
+    m = Math.round(m*100);
+
+    //console.log(m);
+
+    if(m > 255){
+        m=255;
+    }
+    return 'rgb('+(0+m)+','+(255-m)+',0)';
+}
+
+function setPlotColours(side, dateIndex){
+
+    //console.log(getPlotData(0, 1, dateIndex));
+    var myRegression;
+    for(i=0;i<54;i++) {
+        //console.log(getPlotData(i, side, dateIndex));
+        //myRegression = regression('linear', getPlotData(i, side, dateIndex));
+        myRegression = linearRegression(getPlotData(i, side, dateIndex));
+        //console.log(myRegression);
+        $('#vfcp_'+getSideName(side)+'_'+i).attr('fill',getPlotColour(myRegression.m));
+        //console.log(myRegression);
+    }
 }
 
 function getRandomColor() {
@@ -230,7 +263,9 @@ function loadAllVFImages(mediaType){
                 $('#vfgreyscale_left_cache').append('<img id="vfg_left_'+index+'" class="vfthumbnail" src="/OphCiExamination/OEScapeData/GetImage/'+data[1][0]+'">');
                 $('#vfgreyscale_right_cache').append('<img id="vfg_right_'+index+'" class="vfthumbnail" src="/OphCiExamination/OEScapeData/GetImage/'+data[2][0]+'">');
             });
-            console.log("All VF images data loaded ");
+            setPlotColours(1,new Date().getTime());
+            setPlotColours(2,new Date().getTime());
+            //console.log("All VF images data loaded ");
         },
         cache: false
     });
@@ -241,18 +276,72 @@ function changeVFImages(xCoord, imageWidth){
     var currentIndex = Math.round(xCoord/(imageWidth/allImagesNr));
 
     i = 0;
-    lastIndex = 0;
 
     $.each( VFImages, function(index, data){
         if( i == currentIndex && currentIndex != lastIndex){
             //console.log($('#vfgreyscale_left').next('img'));
             $('#vfgreyscale_left').html( $('#vfg_left_'+index).clone() );
             $('#vfgreyscale_right').html( $('#vfg_right_'+index).clone() );
-            setPlotColours(getSideName(1),'');
-            setPlotColours(getSideName(2),'');
+            setPlotColours(1,index);
+            setPlotColours(2,index);
             lastIndex = currentIndex;
         }
         i++;
     });
-    console.log(xCoord+' imgNr: '+allImagesNr+' width: '+imageWidth+' index: '+currentIndex+' last indx:'+lastIndex);
+    //console.log(xCoord+' imgNr: '+allImagesNr+' width: '+imageWidth+' index: '+currentIndex+' last indx:'+lastIndex);
+}
+
+function linearRegression(data/*: Array<Array<number>> */)/*: { m: number, b: number } */ {
+
+    var m, b;
+
+    // Store data length in a local variable to reduce
+    // repeated object property lookups
+    var dataLength = data.length;
+
+    //if there's only one point, arbitrarily choose a slope of 0
+    //and a y-intercept of whatever the y of the initial point is
+    if (dataLength === 1) {
+        m = 0;
+        b = data[0][1];
+    } else {
+        // Initialize our sums and scope the `m` and `b`
+        // variables that define the line.
+        var sumX = 0, sumY = 0,
+            sumXX = 0, sumXY = 0;
+
+        // Use local variables to grab point values
+        // with minimal object property lookups
+        var point, x, y;
+
+        // Gather the sum of all x values, the sum of all
+        // y values, and the sum of x^2 and (x*y) for each
+        // value.
+        //
+        // In math notation, these would be SS_x, SS_y, SS_xx, and SS_xy
+        for (var i = 0; i < dataLength; i++) {
+            point = data[i];
+            x = point[0];
+            y = point[1];
+
+            sumX += x;
+            sumY += y;
+
+            sumXX += x * x;
+            sumXY += x * y;
+        }
+
+        // `m` is the slope of the regression line
+        m = ((dataLength * sumXY) - (sumX * sumY)) /
+            ((dataLength * sumXX) - (sumX * sumX));
+
+        // `b` is the y-intercept of the line.
+        b = (sumY / dataLength) - ((m * sumX) / dataLength);
+    }
+
+    // Return both values as an object.
+    return {
+        m: m,
+        b: b
+    };
 }

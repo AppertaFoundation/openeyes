@@ -34,6 +34,7 @@
         <?php
         if(Yii::app()->controller->action->id == 'oescape'){ ?>
             <script src="<?= Yii::app()->assetManager->createUrl('components/highcharts/highstock.js')?>"></script>
+            <script src="<?= Yii::app()->assetManager->createUrl('js/dashboard/regression.min.js')?>"></script>
             <?php
         }else{?>
             <script src="<?= Yii::app()->assetManager->createUrl('components/highcharts/highcharts.js')?>"></script>

@@ -177,7 +177,7 @@ class OEScapeDataController extends \BaseController
     }
 
     public function actionLoadAllImages($id, $eventType, $mediaType){
-        $command = Yii::app()->db->createCommand()->select('md.id as fileid, eye_id, event_date')
+        $command = Yii::app()->db->createCommand()->select('md.id as fileid, eye_id, event_date, plot_values')
             ->from('media_data md')
             ->where('patient_id = :patient', array('patient' => $id))
             ->andWhere('event_type_id = (SELECT id FROM event_type WHERE class_name= :eventType)', array('eventType'=>$eventType))
@@ -187,7 +187,7 @@ class OEScapeDataController extends \BaseController
         $allData = $command->queryAll();
 
         foreach($allData as $row){
-            $output[strtotime($row["event_date"])][$row["eye_id"]] = array($row["fileid"]);
+            $output[strtotime($row["event_date"])][$row["eye_id"]] = array($row["fileid"], $row["plot_values"]);
         }
         echo json_encode($output);
     }

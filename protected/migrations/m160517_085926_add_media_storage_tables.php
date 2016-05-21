@@ -39,6 +39,8 @@ class m160517_085926_add_media_storage_tables extends OEMigration
 		$this->addForeignKey('media_type_id_fk','media_data','media_type_id','media_type','id');
 		$this->addForeignKey('patient_id_fk','media_data','patient_id','patient','id');
 		$this->addForeignKey('event_type_id_fk','media_data','event_type_id','event_type','id');
+
+		$this->insert('media_type', array('type_name'=>'vfgreyscale','type_html_tag'=>'img','type_mime'=>'image/jpeg'));
 	}
 
 	public function down()

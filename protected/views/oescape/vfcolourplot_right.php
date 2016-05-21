@@ -8,7 +8,7 @@
         <?php
             $pointIds = array();
             $row = 1;
-            $id=1;
+            $id=0;
             for($cy=38; $cy<460; $cy+=60){
                 if($row==1 || $row== 8){
                     $cx_start = 240;
@@ -29,9 +29,9 @@
                             <circle id="vfcp_right_<?php echo $id ?>" cx="<?php echo $cx;?>" cy="<?php echo $cy;?>" r="29" fill="white" />
                         <?php
                     }
+                    $id++;
                 }
                 $row++;
-                $id++;
             }
         ?>
        Sorry, your browser does not support inline SVG.
