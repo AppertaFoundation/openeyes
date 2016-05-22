@@ -294,12 +294,14 @@ function getSideName(side){
 function AddOperation(item, index){
     //console.log(item);
 
-    var color;
+    var color, yshift;
 
     if(item[2] == 1){
         color = '#ff9933';
+        yshift = 10;
     }else{
         color = '#33ccff';
+        yshift = 25;
     }
     this.xAxis[0].addPlotLine({
         value: item[0],
@@ -309,7 +311,8 @@ function AddOperation(item, index){
         label: {
             text: item[1],
             align: 'left',
-            rotation: 0
+            rotation: 0,
+            y: yshift
         }
     });
 }
