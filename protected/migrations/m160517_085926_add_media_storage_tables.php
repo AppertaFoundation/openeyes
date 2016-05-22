@@ -18,7 +18,9 @@ class m160517_085926_add_media_storage_tables extends OEMigration
 				'patient_id'=>'int(10) unsigned',
 				'event_type_id'=>'int(10) unsigned',
 				'parent_id'=>'int(11)',
-				'eye_id'=>'int(10) unsigned'
+				'eye_id'=>'int(10) unsigned',
+				'mean_deviation'=>'float',
+				'plot_values'=>'text'
 			),
 			true
 		);

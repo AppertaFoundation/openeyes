@@ -345,17 +345,11 @@ select:focus {
 .vfthumbnail {
   max-width:350px;
   max-height:350px;
-  width: auto;
-  height: auto;
-  vertical-align: middle;
 }
 
 .vfthumbnail-hidden{
   max-width:350px;
   max-height:350px;
-  width: auto;
-  height: auto;
-  vertical-align: middle;
   display: none;
 }
 
@@ -366,15 +360,18 @@ select:focus {
 }
 
 .vfimage{
-  vertical-align: middle;
+  width: 50%;
+  margin: 0 auto;
+}
+
+.vfcolorplot{
+  width: 50%;
+  margin: 0 auto;
+  padding-left: 93px;
 }
 
 .oescape-images{
   background: white;
-}
-
-#vachart{
-  margin-top: -320px;
 }
 
 .icon-element {

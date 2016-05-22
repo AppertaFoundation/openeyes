@@ -20,14 +20,19 @@
 ?>
 <main class="mdl-layout__content mdl-color--grey-100">
     <div id="dash-grid" class="mdl-grid">
-        <div id="iopchart" class="mdl-cell mdl-cell--6-col">
+        <div class="mdl-cell--6-col">
+            <div id="iopchart">
 
+            </div>
+            <div id="vachart">
+
+            </div>
+            <div id="mdchart">
+
+            </div>
         </div>
         <div id="vf-image" class="oescape-images mdl-cell--6-col">
             <?php $this->renderPartial('//oescape/vfimages'); ?>
-        </div>
-        <div id="vachart" class="mdl-cell mdl-cell--6-col">
-
         </div>
     </div>
 </main>

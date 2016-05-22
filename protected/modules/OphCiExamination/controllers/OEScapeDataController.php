@@ -28,11 +28,11 @@ class OEScapeDataController extends \BaseController
     {
         return array(
             array('allow',
-                'actions' => array('dataset', 'datasetva', 'loadimage', 'loadallimages', 'getoperations', 'getimage'),
+                'actions' => array('dataset', 'datasetva', 'datasetmd', 'loadimage', 'loadallimages', 'getoperations', 'getimage', 'getmedications'),
                 'expression' => 'Yii::app()->user->isSurgeon()'
             ),
             array('allow',
-                'actions' => array('dataset', 'datasetva', 'loadimage', 'loadallimages', 'getoperations', 'getimage'),
+                'actions' => array('dataset', 'datasetva', 'datasetmd', 'loadimage', 'loadallimages', 'getoperations', 'getimage','getmedications'),
                 'roles' => array('admin'),
             ),
         );
@@ -82,6 +82,17 @@ class OEScapeDataController extends \BaseController
             ->join('eye', 'eopp.eye_id=eye.id')
             ->where('patient_id = :patient', array('patient' => $patient))
             ->andWhere('e.deleted <> 1')
+            ->order('event_date');
+
+        return $command->queryAll();
+    }
+
+    protected function queryDataMD($patient, $side){
+        $command = Yii::app()->db->createCommand()->select('event_date, mean_deviation')
+            ->from('media_data md')
+            ->where('patient_id = :patient', array('patient' => $patient))
+            ->andWhere('mean_deviation is not null')
+            ->andWhere('eye_id= :side', array('side'=>$side))
             ->order('event_date');
 
         return $command->queryAll();
@@ -147,6 +158,18 @@ class OEScapeDataController extends \BaseController
 
     }
 
+    public function actionDataSetMD($id, $side){
+        $data = $this->queryDataMD($id, $side);
+
+        $output = array();
+        foreach($data as $row){
+            $output[] = array(strtotime($row["event_date"])*1000, (float) $row["mean_deviation"]);
+        }
+
+        echo json_encode($output);
+
+    }
+
     public function actionGetOperations($id){
         $data = $this->queryOperationData($id);
 
@@ -158,6 +181,18 @@ class OEScapeDataController extends \BaseController
         echo json_encode($output);
     }
 
+    public function actionGetMedications($id){
+        $patient = \Patient::model()->findByPk($id);
+
+        $medications = array_merge($patient->get_medications(), $patient->get_previous_medications());
+        $output = array();
+
+        foreach($medications as $medication){
+            $output[] = array((int)strtotime($medication->start_date)*1000, (int)strtotime($medication->end_date)*1000, (int)$medication->route_id, $medication->getDrugLabel());
+        }
+
+        echo json_encode($output);
+    }
 
     public function actionLoadImage($id, $eventDate, $side, $eventType, $mediaType)
     {
