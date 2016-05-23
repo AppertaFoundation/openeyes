@@ -160,7 +160,7 @@ class PatientMerge
             $secondaryPatient->deleted = 1;
 
             if($secondaryPatient->save()){
-                $msg = "Patient id: " . $this->secondaryPatient->id . " flagged as deleted.";
+                $msg = "Patient hos_num: " . $this->secondaryPatient->hos_num . " flagged as deleted.";
                 $this->addLog($msg);
                 Audit::add('Patient Merge', $msg);
                 $isMerged = $isMerged && true;

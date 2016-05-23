@@ -44,9 +44,6 @@ $(document).ready(function(){
             $('.loader').show();
         },
         select: function (event, ui) {
-
-            // lets make sure the two user ids cannot be the same
-            if( patientMerge.patients.secondary.id != patientMerge.patients.primary.id){}
             
             if(Object.keys(patientMerge.patients.secondary).length === 0){
                 
@@ -186,10 +183,10 @@ $(document).ready(function(){
     });
     
     $('#selectall').click(function () {
-        $('input[type="checkbox"]').attr('checked', this.checked);
+        $(this).closest('table').find('input[type="checkbox"]').attr('checked', this.checked);
     });
     
-    $('#patientMergeWrapper').on('click', 'tr', function(e){
+    $('#patientMergeWrapper table').on('click', 'tr', function(e){
         var target = $(e.target);
 
         // If the user clicked on an input element, or if this cell contains an input
@@ -220,10 +217,45 @@ $(document).ready(function(){
         } else {
             new OpenEyes.UI.Dialog.Alert({
                     content: "Please select one or more items to delete."
-                }).open();
+            }).open();
         }
         
    });
+   
+   
+   $('#patientMergeWrapper').on('click', '#mergeRequestUpdate', function(e){
+        e.preventDefault();
+        
+        var serializedForm = $(this).closest('form').serialize(),
+            id = $('#PatientMergeRequest_id').val();
+                    
+        $.post( "/patientMergeRequest/update/" + id, serializedForm, function( data ) {
+           window.location.href = '/patientMergeRequest/index';
+        });
+        
+   });
+   
+   
+   $('.filter').on('click', 'button.filter',function(event){
+	
+        event.preventDefault();
+        $.ajax({
+                url: "",
+                type: "POST",
+                data: $(this).closest('form').serialize(),
+                beforeSend: function() {
+                    $('.filter .loader').show();
+                },
+                success:function(data){
+                        var nodes = $(data);
+                        
+                        $('#patientMergeRequestList').html( nodes.find('#patientMergeRequestList').html() );
+
+                        $('.filter .loader').hide();
+                }
+        });
+
+    });
    
    
     
