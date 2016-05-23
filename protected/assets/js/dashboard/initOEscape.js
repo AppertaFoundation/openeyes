@@ -221,14 +221,14 @@ $(document).ready(function() {
         }
     });
 
-    addSeries(IOPchart, 1, "IOP", "DataSet", "#ff9933");
-    addSeries(IOPchart, 2, "IOP", "DataSet", "#33ccff");
+    addSeries(IOPchart, 1, "IOP", "DataSet", "#c653c6");
+    addSeries(IOPchart, 2, "IOP", "DataSet", "#4d9900");
 
-    addSeries(VAchart, 1, "VA", "DataSetVA", "#90D49C");
-    addSeries(VAchart, 2, "VA", "DataSetVA", "#33ccff");
+    addSeries(VAchart, 1, "VA", "DataSetVA", "#c653c6");
+    addSeries(VAchart, 2, "VA", "DataSetVA", "#4d9900");
 
-    addSeries(MDchart, 1, 'MD', 'DataSetMD', "#264d00");
-    addSeries(MDchart, 2, 'MD', 'DataSetMD', "#993399");
+    addSeries(MDchart, 1, 'MD', 'DataSetMD', "#c653c6");
+    addSeries(MDchart, 2, 'MD', 'DataSetMD', "#4d9900");
 
     loadAllImages(Highcharts.dateFormat('%Y-%m-%d', new Date().getTime()));
     loadAllVFImages('vfgreyscale');
@@ -309,10 +309,10 @@ function AddOperation(item, index){
     var color, yshift;
 
     if(item[2] == 1){
-        color = '#ff9933';
+        color = '#c653c6';
         yshift = 10;
     }else{
-        color = '#33ccff';
+        color = '#4d9900';
         yshift = 25;
     }
     this.xAxis[0].addPlotLine({
@@ -337,9 +337,9 @@ function AddMedication(item, index){
         toValue = item[1];
     }
     if(item[2] == 1){
-        color = '#ffd9b3';
+        color = '#e6b3e6';
     }else{
-        color = '#b3ecff';
+        color = '#ccff99';
     }
     this.addSeries({
         type: 'arearange',
