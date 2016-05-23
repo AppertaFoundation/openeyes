@@ -677,4 +677,42 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
 
         $manager->updateWorklistDefinitionMapping($mapping, $key, 'one,two', $display);
     }
+
+    public function test_getAvailableManualWorklistsForUser()
+    {
+        $user = ComponentStubGenerator::generate("User", array('id' => 2));
+
+        $manager = $this->getMockBuilder('WorklistManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getModelForClass','getCurrentManualWorklistsForUser'))
+            ->getMock();
+
+        $wm = $this->getMockBuilder('Worklist')
+            ->disableOriginalConstructor()
+            ->setMethods(array('search'))
+            ->getMock();
+
+        $manager->expects($this->once())
+            ->method('getModelForClass')
+            ->with('Worklist')
+            ->will($this->returnValue($wm));
+
+        $adp = $this->getActiveDataProviderMock('Worklist', 3);
+        $wls = $adp->getData();
+        $wls[0]->id = 6;
+
+
+        $manager->expects($this->once())
+            ->method('getCurrentManualWorklistsForUser')
+            ->with($user)
+            ->will($this->returnValue(array($wls[0])));
+
+        $wm->expects($this->once())
+            ->method('search')
+            ->will($this->returnValue($adp));
+
+        $this->assertEquals(array($wls[1], $wls[2]), $manager->getAvailableManualWorklistsForUser($user));
+        $this->assertEquals(false, $wm->automatic);
+        $this->assertEquals(2, $wm->created_user_id);
+    }
 }

@@ -366,14 +366,23 @@ class WorklistManager extends CComponent
      */
     public function getAvailableManualWorklistsForUser($user)
     {
-        $criteria = new CDbCriteria();
-        $criteria->addNotInCondition('id', array_map(
-            function($v) {return $v->id;},
-            $this->getCurrentManualWorklistsForUser($user)));
-        $criteria->addColumnCondition(array('created_user_id' => $user->id));
+        $worklists = array();
+        $model = $this->getModelForClass("Worklist");
+        $model->automatic = false;
+        $model->created_user_id = $user->id;
+
+        $search = $model->with('worklist_patients')->search();
+        $criteria = $search->criteria;
         $criteria->order = 'created_date desc';
 
-        return $this->getModelForClass('Worklist')->findAll($criteria);
+        $current = $this->getCurrentManualWorklistsForUser($user);
+
+        foreach ($search->getData() as $wl) {
+            if (!in_array($wl, $current))
+                $worklists[] = $wl;
+        }
+
+        return $worklists;
     }
 
     /**
