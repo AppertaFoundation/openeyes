@@ -47,7 +47,7 @@ if($modules){
 		if(!in_array($filename, array('.', '..'), true)){
 			$module = opendir($modulesDir.$filename);
 			while (false !== ($moduleSub = readdir($module))) {
-				if($moduleSub === 'commands' && is_dir($moduleSub)){
+				if($moduleSub === 'commands' && is_dir($modulesDir.$filename.'/'.$moduleSub)){
 					$commands  = scandir($modulesDir.$filename.'/'.$moduleSub);
 					foreach ($commands as $command) {
 						if(strpos($command,'Command.php')){
