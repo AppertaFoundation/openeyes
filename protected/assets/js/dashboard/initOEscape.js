@@ -417,19 +417,19 @@ function getPlotData(plotNr, side, dateIndex){
     var i = 0;
     var returnArray = [];
     $.each( VFImages, function(index, data){
-        if(index <= dateIndex){
+        if(parseInt(index) <= parseInt(dateIndex)){
             plotArray = $.parseJSON(data[side][1]);
-            returnArray[i] = [parseInt(index)/1000000, plotArray[plotNr]];
+            //returnArray[i] = [parseInt(index)/1000000, plotArray[plotNr]];
             //returnArray[i] = [Math.round(parseInt(index)/10000000), plotArray[plotNr]];
-            //returnArray[i] = [i, plotArray[plotNr]];
+            returnArray[i] = [i+1, plotArray[plotNr]];
             i++;
         }
     });
-
-    if(side==2 && plotNr==9){
+/*
+    if(side==2 && plotNr==14){
         console.log(returnArray);
     }
-
+*/
     return returnArray
 }
 
