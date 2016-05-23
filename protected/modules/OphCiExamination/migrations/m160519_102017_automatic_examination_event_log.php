@@ -6,7 +6,7 @@ class m160519_102017_automatic_examination_event_log extends OEMigration
 	{
             $this->createOETable('automatic_examination_event_log', array(
                 'id' => 'pk',
-                'event_id' => 'int(10) unsigned NOT NULL',
+                'event_id' => 'int(10) unsigned',
                 'unique_code' => 'varchar(6) NOT NULL',
                 'examination_data' => 'blob',
                 'examination_date' => "datetime DEFAULT '1900-01-01 00:00:00'",

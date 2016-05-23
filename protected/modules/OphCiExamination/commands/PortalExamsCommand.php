@@ -47,8 +47,15 @@ class PortalExamsCommand extends CConsoleCommand
 			$uidArray = explode('-', $examination['patient']['unique_identifier']);
 			$uniqueCode = $uidArray[1];
 			$opNoteEvent = UniqueCodes::model()->eventFromUniqueCode($uniqueCode);
+                        $examinationEventLog = new AutomaticExaminationEventLog();
 			if(!$opNoteEvent){
 				echo 'No Event found for identifier: '.$examination['patient']['unique_identifier']. PHP_EOL;
+                                $examinationEventLog->unique_code = $uniqueCode;
+                                $examinationEventLog->examination_date = date('Y-m-d H:i:s');
+                                $examinationEventLog->examination_data = json_encode($examination);
+                                if(!$examinationEventLog->save()){
+                                        throw new CDbException('$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true));
+                                }
 				continue;
 			}
 
@@ -67,7 +74,6 @@ class PortalExamsCommand extends CConsoleCommand
 
                                         if($examinationEvent->save()){
                                                 $examinationEvent->refresh();
-                                                $examinationEventLog = new AutomaticExaminationEventLog();
                                                 $examinationEventLog->event_id = $examinationEvent->id;
                                                 $examinationEventLog->unique_code = $uniqueCode;
                                                 $examinationEventLog->examination_date = date('Y-m-d H:i:s');
@@ -212,7 +218,6 @@ class PortalExamsCommand extends CConsoleCommand
                             $eventType = EventType::model()->find('name = "Operation Note"');
                             $episodeId = UniqueCodes::model()->getEpisodeIdFromCode($uniqueCode);
                             $examinationEvent = UniqueCodes::model()->getEventFromEpisode($episodeId['episode_id'], $eventType['id']);
-                            $examinationEventLog = new AutomaticExaminationEventLog();
                             $examinationEventLog->event_id = $examinationEvent['id'];
                             $examinationEventLog->unique_code = $uniqueCode;
                             $examinationEventLog->examination_date = date('Y-m-d H:i:s');
