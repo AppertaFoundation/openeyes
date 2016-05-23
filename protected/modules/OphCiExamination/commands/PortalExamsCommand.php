@@ -63,7 +63,7 @@ class PortalExamsCommand extends CConsoleCommand
 
                 try {
                     //Create main examination event
-                                        $examinationEvent = new Event();
+                    $examinationEvent = new Event();
                     $examinationEvent->episode_id = $opNoteEvent->episode_id;
                     $examinationEvent->created_user_id = $examinationEvent->last_modified_user_id = $portalUserId;
                     $examinationEvent->event_date = $examination['examination_date'];
@@ -77,11 +77,6 @@ class PortalExamsCommand extends CConsoleCommand
                         $examinationEventLog->unique_code = $uniqueCode;
                         $examinationEventLog->examination_date = date('Y-m-d H:i:s');
                         $examinationEventLog->examination_data = json_encode($examination);
-                        $examinationEventLog->active = 1;
-                        if (!$examinationEventLog->save()) {
-                            throw new CDbException('$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true));
-                        }
-
                         $refraction = new \OEModule\OphCiExamination\models\Element_OphCiExamination_Refraction();
                         $refraction->event_id = $examinationEvent->id;
                         $refraction->created_user_id = $refraction->last_modified_user_id = $portalUserId;
@@ -202,8 +197,17 @@ class PortalExamsCommand extends CConsoleCommand
                     }
                 } catch (Exception $e) {
                     $transaction->rollback();
+                    $examinationEventLog->importSuccess = 2;
+                    if (!$examinationEventLog->save()) {
+                        throw new CDbException('$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true));
+                    }
                     echo 'Failed for examination '.$examination['patient']['unique_identifier'].' with exception: '.$e->getMessage().'on line '.$e->getLine().' in file '.$e->getFile().PHP_EOL.$e->getTraceAsString();
                     continue;
+                }
+                
+                $examinationEventLog->importSuccess = 1;
+                if (!$examinationEventLog->save()) {
+                    throw new CDbException('$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true));
                 }
                 $transaction->commit();
                 echo 'Examination imported: '.$examinationEvent->id.PHP_EOL;
