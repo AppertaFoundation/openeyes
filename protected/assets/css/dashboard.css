@@ -353,6 +353,10 @@ select:focus {
   display: none;
 }
 
+.octimage-hidden{
+  display: none;
+}
+
 .side-title{
   text-align: center;
   font-weight: bold;

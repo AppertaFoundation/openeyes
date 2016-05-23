@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-var VFImages;
+var VFImages, OCTImages;
 var lastIndex = 0;
 var currentMedY = 90;
 
@@ -83,9 +83,6 @@ $(document).ready(function() {
         }
     });
 
-    addSeries(IOPchart, 1, "IOP", "DataSet", "#ff9933");
-    addSeries(IOPchart, 2, "IOP", "DataSet", "#33ccff");
-
     $.ajax({
         url: '/OphCiExamination/OEScapeData/GetOperations/'+patientId,
         type: "GET",
@@ -106,11 +103,6 @@ $(document).ready(function() {
         },
         cache: false
     });
-
-
-
-    loadAllImages(Highcharts.dateFormat('%Y-%m-%d', new Date().getTime()));
-    loadAllVFImages('vfgreyscale');
 
     // create the Visual Acuity chart
     var VAchart = new Highcharts.StockChart({
@@ -171,9 +163,6 @@ $(document).ready(function() {
         }
     });
 
-    addSeries(VAchart, 1, "VA", "DataSetVA", "#90D49C");
-    addSeries(VAchart, 2, "VA", "DataSetVA", "#33ccff");
-
     // create the Mean Deviation chart
     var MDchart = new Highcharts.StockChart({
         chart:{
@@ -232,11 +221,25 @@ $(document).ready(function() {
         }
     });
 
+    addSeries(IOPchart, 1, "IOP", "DataSet", "#ff9933");
+    addSeries(IOPchart, 2, "IOP", "DataSet", "#33ccff");
+
+    addSeries(VAchart, 1, "VA", "DataSetVA", "#90D49C");
+    addSeries(VAchart, 2, "VA", "DataSetVA", "#33ccff");
+
     addSeries(MDchart, 1, 'MD', 'DataSetMD', "#264d00");
     addSeries(MDchart, 2, 'MD', 'DataSetMD', "#993399");
 
+    loadAllImages(Highcharts.dateFormat('%Y-%m-%d', new Date().getTime()));
+    loadAllVFImages('vfgreyscale');
+    loadAllOCTImages('oct');
+
     $('#vfgreyscale_left, #vfgreyscale_right').mousemove(function(e){
         changeVFImages(e.pageX - this.offsetLeft, $(this).width());
+    });
+
+    $('#oct_images').mousemove(function(e){
+        changeOCTImages(e.pageX - this.offsetLeft, $(this).width());
     });
 
 });
@@ -443,6 +446,28 @@ function loadAllVFImages(mediaType){
     });
 }
 
+function loadAllOCTImages(mediaType){
+    $.ajax({
+        url: '/OphCiExamination/OEScapeData/LoadAllImages/'+patientId,
+        type: "GET",
+        dataType: "json",
+        data : {
+            eventType: 'OphInVisualfields',
+            mediaType: mediaType},
+        success: function(data) {
+            OCTImages = data;
+            var lastIndex, lastImageId;
+            $.each( OCTImages, function(index, data){
+                $('#oct_images_cache').append('<img id="oct_'+index+'" class="octimage" src="/OphCiExamination/OEScapeData/GetImage/'+data[3][0]+'">');
+                lastIndex = index;
+                lastImageId = data[3][0];
+            });
+            $('#oct_images').append('<img id="oct_'+lastIndex+'" class="octimage" src="/OphCiExamination/OEScapeData/GetImage/'+lastImageId+'">');
+        },
+        cache: false
+    });
+}
+
 function changeVFImages(xCoord, imageWidth){
     var allImagesNr = Object.keys(VFImages).length;
     var currentIndex = Math.round(xCoord/(imageWidth/allImagesNr));
@@ -456,6 +481,23 @@ function changeVFImages(xCoord, imageWidth){
             $('#vfgreyscale_right').html( $('#vfg_right_'+index).clone() );
             setPlotColours(1,index);
             setPlotColours(2,index);
+            lastIndex = currentIndex;
+        }
+        i++;
+    });
+    //console.log(xCoord+' imgNr: '+allImagesNr+' width: '+imageWidth+' index: '+currentIndex+' last indx:'+lastIndex);
+}
+
+function changeOCTImages(xCoord, imageWidth){
+    var allImagesNr = Object.keys(OCTImages).length;
+    var currentIndex = Math.round(xCoord/(imageWidth/allImagesNr));
+
+    i = 0;
+
+    $.each( OCTImages, function(index, data){
+        if( i == currentIndex && currentIndex != lastIndex){
+            //console.log($('#vfgreyscale_left').next('img'));
+            $('#oct_images').html( $('#oct_'+index).clone() );
             lastIndex = currentIndex;
         }
         i++;
