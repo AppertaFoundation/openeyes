@@ -18,7 +18,7 @@
 
 var VFImages;
 var lastIndex = 0;
-var currentMedY = 70;
+var currentMedY = 90;
 
 $(document).ready(function() {
     // Create the IOP chart
@@ -36,7 +36,7 @@ $(document).ready(function() {
         rangeSelector : {
             enabled: 1,
             inputEnabled: false,
-            selected: 4
+            selected: 5
         },
 
         legend: {
@@ -52,7 +52,7 @@ $(document).ready(function() {
         },
 
         title : {
-            text : 'IOP values'
+            text : 'IOP'
         },
         xAxis:{
             labels:
@@ -62,12 +62,13 @@ $(document).ready(function() {
         },
         yAxis: {
             min: 0,
-            max: 70,
+            max: 100,
+            opposite:false,
             labels:
             {
                 align: 'left',
                 x: 0,
-                y:-2
+                y: -2
             }
         },
         credits: {
@@ -82,8 +83,8 @@ $(document).ready(function() {
         }
     });
 
-    addSeries(IOPchart, 2, "IOP", "DataSet", "#33ccff");
     addSeries(IOPchart, 1, "IOP", "DataSet", "#ff9933");
+    addSeries(IOPchart, 2, "IOP", "DataSet", "#33ccff");
 
     $.ajax({
         url: '/OphCiExamination/OEScapeData/GetOperations/'+patientId,
@@ -121,7 +122,7 @@ $(document).ready(function() {
         rangeSelector : {
             enabled: 1,
             inputEnabled: false,
-            selected: 4
+            selected: 5
         },
 
         legend: {
@@ -138,7 +139,7 @@ $(document).ready(function() {
         },
 
         title : {
-            text : 'Visual Acuity (LogMar single-letter) values'
+            text : 'VA'
         },
         xAxis:{
             labels:
@@ -150,9 +151,12 @@ $(document).ready(function() {
             reversed: true,
             min: -1,
             max: 1,
+            opposite:false,
             labels:
             {
-                enabled: true
+                align: 'left',
+                x: 0,
+                y: -2
             }
         },
         credits: {
@@ -167,8 +171,8 @@ $(document).ready(function() {
         }
     });
 
-    addSeries(VAchart, 2, "VA", "DataSetVA", "#33ccff");
     addSeries(VAchart, 1, "VA", "DataSetVA", "#90D49C");
+    addSeries(VAchart, 2, "VA", "DataSetVA", "#33ccff");
 
     // create the Mean Deviation chart
     var MDchart = new Highcharts.StockChart({
@@ -180,7 +184,7 @@ $(document).ready(function() {
         rangeSelector : {
             enabled: 1,
             inputEnabled: false,
-            selected: 4
+            selected: 5
         },
 
         legend: {
@@ -197,7 +201,7 @@ $(document).ready(function() {
         },
 
         title : {
-            text : 'Mean deviation values'
+            text : 'MD'
         },
         xAxis:{
             labels:
@@ -208,10 +212,12 @@ $(document).ready(function() {
         yAxis: {
             min: -15,
             max: 15,
+            opposite:false,
             labels:
             {
-                enabled: true,
-                align: 'left'
+                align: 'left',
+                x: 0,
+                y: -2
             }
         },
         credits: {
@@ -226,8 +232,8 @@ $(document).ready(function() {
         }
     });
 
-    addSeries(MDchart, 2, 'MD', 'DataSetMD', "#993399");
     addSeries(MDchart, 1, 'MD', 'DataSetMD', "#264d00");
+    addSeries(MDchart, 2, 'MD', 'DataSetMD', "#993399");
 
     $('#vfgreyscale_left, #vfgreyscale_right').mousemove(function(e){
         changeVFImages(e.pageX - this.offsetLeft, $(this).width());
@@ -251,7 +257,8 @@ function addSeries(chart, side, title, dataurl, seriescol){
                 name: title+" "+getSideName(side),
                 data: data,
                 color: seriescol,
-                legendIndex: legindex
+                legendIndex: legindex,
+                zIndex: side
             });
         },
         cache: false
@@ -261,6 +268,8 @@ function addSeries(chart, side, title, dataurl, seriescol){
 function loadAllImages(eventDate){
     loadImage(eventDate, 1, 'vfgreyscale');
     loadImage(eventDate, 2, 'vfgreyscale');
+    loadImage(eventDate, 1, 'kowa');
+    loadImage(eventDate, 2, 'kowa');
 }
 
 function loadImage(eventDate, side, mediaType){

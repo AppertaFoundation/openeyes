@@ -9,6 +9,12 @@
         <div id="vfcolorplot_right" class="vfcolorplot">
             <?php $this->renderPartial('//oescape/vfcolourplot_right');?>
         </div>
+        <div id="kowa_right" class="kowaimage">
+
+        </div>
+        <div id="oct_right" class="octimage">
+
+        </div>
     </div>
     <div class="mdl-cell mdl-cell--6-col">
         <span class="side-title">Left</span>
@@ -19,6 +25,12 @@
         </span>
         <div id="vfcolorplot_left" class="vfcolorplot">
             <?php $this->renderPartial('//oescape/vfcolourplot_left');?>
+        </div>
+        <div id="kowa_left" class="kowaimage">
+
+        </div>
+        <div id="oct_left" class="octimage">
+
         </div>
     </div>
 </div>

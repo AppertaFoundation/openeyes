@@ -364,6 +364,11 @@ select:focus {
   margin: 0 auto;
 }
 
+.kowaimage{
+  width: 56%;
+  margin: 0 auto;
+}
+
 .vfcolorplot{
   width: 50%;
   margin: 0 auto;
