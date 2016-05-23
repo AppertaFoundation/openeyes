@@ -25,6 +25,7 @@
  *
  * @property Patient $patient
  * @property Worklist $worklist
+ * @property WorklistPatientAttribute[] $worklist_attributes
  */
 class WorklistPatient extends BaseActiveRecordVersioned
 {
@@ -61,7 +62,8 @@ class WorklistPatient extends BaseActiveRecordVersioned
         // class name for the relations automatically generated below.
         return array(
             'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
-            'worklist' => array(self::BELONGS_TO, 'Worklist', 'worklist_id')
+            'worklist' => array(self::BELONGS_TO, 'Worklist', 'worklist_id'),
+            'worklist_attributes' => array(self::HAS_MANY, 'WorklistPatientAttribute', 'worklist_patient_id')
         );
     }
 
@@ -131,8 +133,10 @@ class WorklistPatient extends BaseActiveRecordVersioned
 
     public function getWorklistAttributeValue(WorklistAttribute $attr)
     {
-        //TODO: implement me
-        return "NOT IMPLEMENTED";
+        foreach ($this->worklist_attributes as $wa) {
+            if ($wa->worklist_attribute_id == $attr->id)
+                return $wa->attribute_value;
+        }
     }
 
 
