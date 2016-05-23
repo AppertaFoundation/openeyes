@@ -545,7 +545,7 @@ class WorklistManager extends CComponent
 
     /**
      * @param User|null $user
-     * @return array
+     * @return array|null
      */
     public function renderManualDashboard($user = null)
     {
@@ -557,20 +557,21 @@ class WorklistManager extends CComponent
             $content .= $this->renderWorklistForDashboard($worklist);
         }
 
-        return array(
-            'title' => "Manual Worklists" ,
-            'content' => $content,
-            'options' => array(
-                'container-id' => \Yii::app()->user->id.'-manual-worklists-container',
-                'js-toggle-open' => true,
-            )
-        );
+        if (strlen($content))
+            return array(
+                'title' => "Manual Worklists",
+                'content' => $content,
+                'options' => array(
+                    'container-id' => \Yii::app()->user->id . '-manual-worklists-container',
+                    'js-toggle-open' => true,
+                )
+            );
     }
 
     /**
      * Render the automatic dashboard for the given user.
      * @param CWebUser $user
-     * @return array
+     * @return array|null
      */
     public function renderAutomaticDashboard($user = null)
     {
@@ -585,14 +586,15 @@ class WorklistManager extends CComponent
         foreach ($this->getCurrentAutomaticWorklistsForUserContext($user, $site, $firm, $when) as $worklist)
             $content .= $this->renderWorklistForDashboard($worklist);
 
-        return array(
-            'title' => "Automatic Worklists",
-            'content' => $content,
-            'options' => array(
-                'container-id' => \Yii::app()->user->id.'-automatic-worklists-container',
-                'js-toggle-open' => true,
-            )
-        );
+        if (strlen($content))
+            return array(
+                'title' => "Automatic Worklists",
+                'content' => $content,
+                'options' => array(
+                    'container-id' => \Yii::app()->user->id.'-automatic-worklists-container',
+                    'js-toggle-open' => true,
+                )
+            );
 
     }
 
