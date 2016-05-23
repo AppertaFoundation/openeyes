@@ -41,7 +41,7 @@
     <?php echo $form->textField($definition,'start_time', array('autocomplete' => Yii::app()->params['html_autocomplete']), null, array('field' => 1))?>
     <?php echo $form->textField($definition,'end_time', array('autocomplete' => Yii::app()->params['html_autocomplete']), null, array('field' => 1))?>
 
-    <?php echo $form->formActions(array('cancel-uri' => '/worklist/manual'))?>
+    <?php echo $form->formActions(array('cancel-uri' => '/worklistAdmin/definitions'))?>
     <?php $this->endWidget()?>
 
 </div>
