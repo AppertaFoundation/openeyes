@@ -153,6 +153,17 @@
             }
         }
     }
+    
+    .filter{
+        &.panel{
+            label{
+                height:26px;
+                line-height: 15px;
+                vertical-align: middle;
+                display: table-cell;
+            }
+        }
+    }
 }
 
  .ui-menu{

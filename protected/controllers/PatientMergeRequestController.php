@@ -30,12 +30,12 @@ class PatientMergeRequestController extends BaseController
     {
         return array(
             array('allow',
-                'actions' => array('index', 'create', 'view', 'merge', 'editConflict', 'search', 'delete'),
+                'actions' => array('index', 'create', 'view', 'merge', 'editConflict', 'search', 'delete', 'update'),
                 'roles' => array('Patient Merge'),
             ),
             
             array('allow',
-                'actions' => array('index', 'create', 'view', 'search'),
+                'actions' => array('index', 'create', 'view', 'search', 'update'),
                 'roles' => array('Patient Merge Request'),
             ),
             
@@ -59,9 +59,18 @@ class PatientMergeRequestController extends BaseController
      */
     public function actionIndex()
     {
+        $filters = Yii::app()->request->getParam('PatientMergeRequestFilter');
+        
+        // Do not show already merged ones
+        $showMerged = ' AND status !=' . PatientMergeRequest::STATUS_MERGED;
+
+        if( $filters['show_merged'] && $filters['show_merged'] == 1 ){
+            $showMerged = '';
+        }
+        
         $dataProvider = new CActiveDataProvider('PatientMergeRequest', array(
             'criteria'=>array(
-                'condition'=>'deleted=0'
+                'condition' => 'deleted=0' . $showMerged
             )
         ));
         
@@ -71,7 +80,8 @@ class PatientMergeRequestController extends BaseController
         
         $this->render('//patientmergerequest/index', array(
             'dataProvider'=>$dataProvider,
-            'pagination' => $pagination
+            'pagination' => $pagination,
+            'filters' => $filters
         ));
     }
     
@@ -128,6 +138,27 @@ class PatientMergeRequestController extends BaseController
         ));
     }
     
+    /**
+     * Updates a particular model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id the ID of the model to be updated
+    */
+   public function actionUpdate($id)
+   {
+           $model = $this->loadModel($id);
+
+           if(isset($_POST['PatientMergeRequest']))
+           {
+                $model->attributes=$_POST['PatientMergeRequest'];
+                if( $model->status == PatientMergeRequest::STATUS_MERGED ){
+                    $this->redirect(array('view','id' => $model->id));
+                } else if($model->save()){
+                   // will return to the index page
+                }
+           }
+           
+           $this->redirect(array('index'));
+   }
     
     /**
      * Merging patients
@@ -169,11 +200,42 @@ class PatientMergeRequestController extends BaseController
                     $this->redirect(array('index'));
                 }
             }
-        } 
+        }
+        
+        $primary = Patient::model()->findByPk($mergeRequest->primary_id);
+        $secondary = Patient::model()->findByPk($mergeRequest->secondary_id);
         
         $this->render('//patientmergerequest/merge', array(
             'model' => $mergeRequest,
-            'personalDetailsConflictConfirm' => $personalDetailsConflictConfirm['isConflict']
+            'personalDetailsConflictConfirm' => $personalDetailsConflictConfirm['isConflict'],
+            'primaryPatientJSON' => CJavaScript::jsonEncode(array(
+                            'id' => $primary->id,
+                            'first_name' => $primary->first_name,
+                            'last_name' => $primary->last_name,
+                            'age' => ($primary->isDeceased() ? 'Deceased' : $primary->getAge()),
+                            'gender' => $primary->getGenderString(),
+                            'genderletter' => $primary->gender,
+                            'dob' => ($primary->dob) ? $primary->NHSDate('dob') : 'Unknown',
+                            'hos_num' => $primary->hos_num, 
+                            'nhsnum' => $primary->nhsnum,
+                            'all-episodes' => htmlentities (str_replace(array("\n", "\r", "\t"), '', $this->getEpisodesHTML($primary) ) ),
+                        )
+                    ),
+            
+            'secondaryPatientJSON' => CJavaScript::jsonEncode(array(
+                            'id' => $secondary->id,
+                            'first_name' => $secondary->first_name,
+                            'last_name' => $secondary->last_name,
+                            'age' => ($secondary->isDeceased() ? 'Deceased' : $secondary->getAge()),
+                            'gender' => $secondary->getGenderString(),
+                            'genderletter' => $secondary->gender,
+                            'dob' => ($secondary->dob) ? $secondary->NHSDate('dob') : 'Unknown',
+                            'hos_num' => $secondary->hos_num,
+                            'nhsnum' => $secondary->nhsnum,
+                            'all-episodes' => htmlentities (str_replace(array("\n", "\r", "\t"), '', $this->getEpisodesHTML($secondary) ) ),
+                        )
+                    ),
+            
         ));
     }
     

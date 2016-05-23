@@ -42,16 +42,16 @@
 		<tbody>
 		<?php foreach ($ordered_episodes as $specialty_episodes) {?>
 			<tr class="speciality">
-				<td colspan="6"><?php echo $specialty_episodes['specialty'] ?></td>
+				<td colspan="6"><?php echo $specialty_episodes["specialty"] ?></td>
 			</tr>
-			<?php foreach ($specialty_episodes['episodes'] as $i => $episode) {?>
+			<?php foreach ($specialty_episodes["episodes"] as $i => $episode) {?>
 				<tr id="<?php echo $episode->id?>" class="clickable all-episode <?php if ($episode->end_date !== null) {?> closed<?php }?>">
-					<td><?php echo $episode->NHSDate('start_date'); ?></td>
-					<td><?php echo $episode->NHSDate('end_date'); ?></td>
-					<td><?php echo $episode->firm ? CHtml::encode($episode->firm->name) : 'N/A'; ?></td>
+					<td><?php echo $episode->NHSDate("start_date"); ?></td>
+					<td><?php echo $episode->NHSDate("end_date"); ?></td>
+					<td><?php echo $episode->firm ? CHtml::encode($episode->firm->name) : "N/A"; ?></td>
 					<td><?php echo CHtml::encode($episode->getSubspecialtyText())?></td>
-					<td><?php echo ($episode->diagnosis) ? $episode->eye->name : 'No diagnosis' ?></td>
-					<td><?php echo ($episode->diagnosis) ? $episode->diagnosis->term : 'No diagnosis' ?></td>
+					<td><?php echo ($episode->diagnosis) ? $episode->eye->name : "No diagnosis" ?></td>
+					<td><?php echo ($episode->diagnosis) ? $episode->diagnosis->term : "No diagnosis" ?></td>
 				</tr>
 			<?php }?>
 		<?php }?>
