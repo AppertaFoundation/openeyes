@@ -77,6 +77,7 @@ class PortalExamsCommand extends CConsoleCommand
                         $examinationEventLog->unique_code = $uniqueCode;
                         $examinationEventLog->examination_date = date('Y-m-d H:i:s');
                         $examinationEventLog->examination_data = json_encode($examination);
+                        $examinationEventLog->active = 1;
                         if (!$examinationEventLog->save()) {
                             throw new CDbException('$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true));
                         }
