@@ -861,7 +861,7 @@ class WorklistManager extends CComponent
 
             $match = false;
             foreach ($mapping->values as $val) {
-                if ($val->mapping_value == $attributes[$mapping->key])
+                if (strtolower($val->mapping_value) == strtolower(trim($attributes[$mapping->key])))
                     $match = true;
             }
             if (!$match) {

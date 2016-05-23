@@ -715,4 +715,53 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(false, $wm->automatic);
         $this->assertEquals(2, $wm->created_user_id);
     }
+
+    public function checkWorklistMappingMatchProvider()
+    {
+        return array(
+            array(array('test1' => array('a', 'b')), array(), false),
+            array(array('test1' => array('a', 'b')), array('test1' => 'a'), true),
+            array(array('test1' => array('a', 'b')), array('test1' => 'A'), true),
+            array(array('test1' => array('A', 'b')), array('test1' => 'a'), true),
+            array(array('test1' => array('A', 'b'), 'test2' => array('foo')), array('test1' => 'a'), false),
+            array(array('test1' => array('A', 'b'), 'test2' => array('foo')), array('test1' => 'a', 'test2' => 'f oo'), false),
+            array(array('test1' => array('A', 'b'), 'test2' => array('foo')), array('test1' => 'B', 'test2' => 'foo  '), true)
+        );
+    }
+
+    /**
+     * @dataProvider checkWorklistMappingMatchProvider
+     *
+     * @param $wl_attrs
+     * @param $map_attrs
+     * @param $expected
+     * @throws Exception
+     */
+    public function test_checkWorklistMappingMatch($wl_attrs, $map_attrs, $expected)
+    {
+        $manager =  new WorklistManager();
+        $r = new ReflectionClass($manager);
+        $m = $r->getMethod('checkWorklistMappingMatch');
+        $m->setAccessible(true);
+
+        $mappings = array();
+        foreach ($wl_attrs as $key => $values) {
+            $mapping_values = array();
+            foreach ($values as $val) {
+                $mapping_values[] = ComponentStubGenerator::generate('WorklistDefinitionMappingValue', array('mapping_value' => $val));
+            }
+            $mappings[] = ComponentStubGenerator::generate('WorklistDefinitionMapping', array(
+                'key' => $key,
+                'values' => $mapping_values
+            ));
+        }
+
+        $definition = ComponentStubGenerator::generate("WorklistDefinition", array(
+            'mappings' => $mappings
+        ));
+
+        $worklist = ComponentStubGenerator::generate("Worklist", array('worklist_definition' => $definition));
+
+        $this->assertEquals($expected, $m->invokeArgs($manager,array($worklist, $map_attrs)));
+    }
 }
