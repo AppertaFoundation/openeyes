@@ -21,7 +21,7 @@
                 <?php echo CHtml::link('Delete', array('patientMergeRequest/delete'), array('id' => 'rq_delete', 'class' => 'button small')); ?>
 
                 <?php echo $this->renderPartial('//admin/_pagination',array(
-                        'pagination' => $pagination
+                        'pagination' => $dataProvider->getPagination()
                 )); ?>
             </td>
         </tr>

@@ -39,7 +39,7 @@
                         </div>
                     </div>
                     <div class="grid-view" id="inbox-table">
-                        <?php $this->renderPartial('//patientmergerequest/_list',array('dataProvider' => $dataProvider, 'pagination' => $pagination))?>
+                        <?php $this->renderPartial('//patientmergerequest/_list',array('dataProvider' => $dataProvider))?>
                     </div>
                 </section>
             </div>
