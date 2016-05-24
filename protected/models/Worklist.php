@@ -159,4 +159,14 @@ class Worklist extends BaseActiveRecordVersionedSoftDelete
         ));
     }
 
+    public function getDisplayDate()
+    {
+        $start = $this->NHSDate('start');
+        $end = $this->NHSDate('end');
+        if ($start != $end)
+            return "{$start} - {$end}";
+
+        return $start;
+    }
+
 }

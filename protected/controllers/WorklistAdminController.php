@@ -92,6 +92,15 @@ class WorklistAdminController extends BaseAdminController
         return $definition;
     }
 
+    public function actionDefinitionWorklists($id)
+    {
+        $definition = $this->getWorklistDefinition($id);
+
+        $this->render('//admin/worklists/definition_worklists', array(
+            'definition' => $definition,
+        ));
+    }
+
     /**
      * @param $id
      * @throws CHttpException

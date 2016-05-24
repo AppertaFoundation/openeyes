@@ -35,6 +35,7 @@
                     <td class="reorder">&uarr;&darr;<input type="hidden" name="<?php echo get_class($definition) ?>[display_order][]" value="<?php echo $i ?>"></td>
                     <td><?=$definition->name?></td>
                     <td><a href="/worklistAdmin/definition/<?=$definition->id?>">Edit</a> |
+                        <a href="/worklistAdmin/definitionWorklists/<?=$definition->id?>">Instances</a> |
                         <a href="/worklistAdmin/definitionMappings/<?=$definition->id?>">Mapping Items(<?=count($definition->mappings)?>)</a> |
                         <a href="/worklistAdmin/definitionGenerate/<?=$definition->id?>">Generate(<?=count($definition->worklists)?>)</a></td>
                 </tr>

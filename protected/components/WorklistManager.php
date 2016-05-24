@@ -228,6 +228,10 @@ class WorklistManager extends CComponent
         return $definition;
     }
 
+    /**
+     * @param $definition
+     * @return bool
+     */
     public function saveWorklistDefinition($definition)
     {
         $action = $definition->isNewRecord ? "create" : "update";
