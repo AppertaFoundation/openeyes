@@ -98,6 +98,7 @@ class DashboardHelper {
 
             $item_render = null;
 
+
             if ( isset($item['module']) )
             {
                 $this->moduleRender($renders, $item);

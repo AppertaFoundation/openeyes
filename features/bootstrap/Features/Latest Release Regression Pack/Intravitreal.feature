@@ -29,8 +29,8 @@ Feature: Create New Intravitreal Event
     Then I Confirm that Intravitreal Mandatory fields validation error messages are displayed
 
     Examples:
-    |uname|pwd  |siteName/Number|firmName/Number         |hospNumber|speciality|event       |
-    |admin|admin|Croydon        |Cataract firm (Cataract)|1009465   |cataract  |Intravitreal|
+    |uname|pwd  |siteName/Number|firmName/Number         |hospNumber|speciality|event                 |
+    |admin|admin|Croydon        |Cataract firm (Cataract)|1009465   |Cataract  |Intravitreal injection|
 
 
   @Intravitreal_Route_1
@@ -108,8 +108,8 @@ Feature: Create New Intravitreal Event
     Then I Save the Intravitreal injection and confirm it has been created successfully
 
   Examples:
-  |uname|pwd  |siteName/Number|firmName/Number         |hospNumber|speciality|event       |
-  |admin|admin|Croydon        |Cataract firm (Cataract)|1009465   |cataract  |Intravitreal|
+  |uname|pwd  |siteName/Number|firmName/Number         |hospNumber|speciality|event                 |
+  |admin|admin|Croydon        |Cataract firm (Cataract)|1009465   |Cataract  |Intravitreal injection|
 
   @Intravitreal_Route_2
   Scenario Outline: Route 2: Login and create a New Intravitreal Event
@@ -184,8 +184,8 @@ Feature: Create New Intravitreal Event
     Then I Save the Intravitreal injection and confirm it has been created successfully
 
     Examples:
-      |uname|pwd  |siteName/Number|firmName/Number        |hospNumber|speciality|event       |
-      |admin|admin|Croydon        |A K Hamilton (Glaucoma)|1009465   |glaucoma  |Intravitreal|
+      |uname|pwd  |siteName/Number|firmName/Number        |hospNumber|speciality|event                 |
+      |admin|admin|Croydon        |A K Hamilton (Glaucoma)|1009465   |Glaucoma  |Intravitreal injection|
 
   
   @Intravitreal_Route_3
@@ -260,8 +260,8 @@ Feature: Create New Intravitreal Event
     Then I Save the Intravitreal injection and confirm it has been created successfully
 
     Examples:
-      |uname|pwd  |siteName/Number|firmName/Number         |hospNumber|speciality|event       |
-      |admin|admin|Croydon        |Cataract firm (Cataract)|1009465   |cataract  |Intravitreal|
+      |uname|pwd  |siteName/Number|firmName/Number         |hospNumber|speciality|event                 |
+      |admin|admin|Croydon        |Cataract firm (Cataract)|1009465   |Cataract  |Intravitreal injection|
 
 
   @Intravitreal_Route_4
@@ -334,8 +334,8 @@ Feature: Create New Intravitreal Event
     Then I Save the Intravitreal injection
 
     Examples:
-      |uname|pwd  |siteName/Number|firmName/Number                |hospNumber|speciality    |event       |
-      |admin|admin|Croydon        |Angela Glasby (Medical Retinal)|1009465   |medicalRetinal|Intravitreal|
+      |uname|pwd  |siteName/Number|firmName/Number                |hospNumber|speciality     |event                 |
+      |admin|admin|Croydon        |Angela Glasby (Medical Retinal)|1009465   |Medical Retinal|Intravitreal injection|
 
   @Intravitreal_Route_5
   Scenario Outline: Route 5: Login and create a New Intravitreal Event
@@ -417,8 +417,8 @@ Feature: Create New Intravitreal Event
     Then I Save the Intravitreal injection and confirm it has been created successfully
 
     Examples:
-      |uname|pwd  |siteName/Number|firmName/Number         |hospNumber|speciality|event       |
-      |admin|admin|Croydon        |Cataract firm (Cataract)|1009465   |cataract  |Intravitreal|
+      |uname|pwd  |siteName/Number|firmName/Number         |hospNumber|speciality|event                 |
+      |admin|admin|Croydon        |Cataract firm (Cataract)|1009465   |Cataract  |Intravitreal injection|
 
 
 

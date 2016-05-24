@@ -211,18 +211,23 @@
                 chart = OpenEyes.Dash.reports['OEModule_OphCiExamination_components_RefractiveOutcomeReport'];
 
             for(var i = 0; i < data.length; i++){
-                total += data[i];
-                if(chart.axes[0].categories[i] < -1.0 || chart.axes[0].categories[i] > 1.0){
-                    plusOrMinusOne += data[i];
+                total += parseInt(data[i][1], 10);                              
+                
+                // 18 and 22 are the indexes of the -1 and +1 columns
+                if(data[i][0] < 18 || data[i][0] > 22){
+                    plusOrMinusOne += parseFloat(data[i][1], 10);
                 }
-                if(chart.axes[0].categories[i] < -0.5 || chart.axes[0].categories[i] > 0.5){
-                    plusOrMinusHalf += data[i];
+                
+                // 19 and 21 are the indexes of the -0.5 and +0.5 columns
+                if(data[i][0] < 19 || data[i][0] > 21){
+                    plusOrMinusHalf += parseFloat(data[i][1], 10);
                 }
             }
-
-            plusOrMinusOnePercent = (plusOrMinusOne / total) * 100;
-            plusOrMinusHalfPercent = (plusOrMinusHalf / total) * 100;
-            chart.setTitle(null, {text: 'Total eyes: ' + total + ', ±0.5D: ' + plusOrMinusOnePercent + '%, ±1D: ' + plusOrMinusHalfPercent + '%'});
+            
+            plusOrMinusHalfPercent = plusOrMinusOne > 0 ? ( (plusOrMinusOne / total) * 100 ) : 0;
+            plusOrMinusOnePercent = plusOrMinusHalf > 0 ? ( (plusOrMinusHalf / total) * 100 ) : 0;
+            
+            chart.setTitle(null, {text: 'Total eyes: ' + total + ', ±0.5D: ' + Number(plusOrMinusOnePercent).toFixed(1) + '%, ±1D: ' + Number(plusOrMinusHalfPercent).toFixed(1) + '%'});
         },
         'CataractComplicationsReport': function(data){
             $.ajax({
