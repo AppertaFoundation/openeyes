@@ -11,8 +11,7 @@ class m160503_142416_initial_worklist_models extends OEMigration
                 'description' => 'text',
                 'start' => 'datetime',
                 'end' => 'datetime',
-                'scheduled' => 'boolean default false NOT NULL',
-                'deleted' => 'boolean default false NOT NULL'
+                'scheduled' => 'boolean default false NOT NULL'
             ),
             true
         );
@@ -51,8 +50,8 @@ class m160503_142416_initial_worklist_models extends OEMigration
                 'when' => 'datetime',
             ), true);
 
-        $this->addForeignKey('worklist_patient_wl_fk', 'worklist_patient', 'worklist_id', 'worklist', 'id');
-        $this->addForeignKey('worklist_patient_p_fk', 'worklist_patient', 'patient_id', 'patient', 'id');
+        $this->addForeignKey('worklist_patient_wl_fk', 'worklist_patient', 'worklist_id', 'worklist', 'id', 'CASCADE');
+        $this->addForeignKey('worklist_patient_p_fk', 'worklist_patient', 'patient_id', 'patient', 'id', 'CASCADE');
 
         $this->createOETable('worklist_patient_attribute',
             array(
@@ -64,9 +63,9 @@ class m160503_142416_initial_worklist_models extends OEMigration
             true);
 
         $this->addForeignKey('worklist_patient_attribute_attr_fk', 'worklist_patient_attribute',
-            'worklist_attribute_id', 'worklist_attribute', 'id');
+            'worklist_attribute_id', 'worklist_attribute', 'id', 'CASCADE');
         $this->addForeignKey('worklist_patient_attribute_pat_fk', 'worklist_patient_attribute', 'worklist_patient_id',
-            'worklist_patient', 'id');
+            'worklist_patient', 'id', 'CASCADE');
 
         $this->createOETable('worklist_display_order',
             array(
@@ -76,8 +75,8 @@ class m160503_142416_initial_worklist_models extends OEMigration
                 'display_order' => 'int(3) NOT NULL'
             ));
 
-        $this->addForeignKey('worklist_disporder_wl_fk', 'worklist_display_order', 'worklist_id', 'worklist', 'id');
-        $this->addForeignKey('worklist_disporder_u_fk', 'worklist_display_order', 'user_id', 'user', 'id');
+        $this->addForeignKey('worklist_disporder_wl_fk', 'worklist_display_order', 'worklist_id', 'worklist', 'id', 'CASCADE');
+        $this->addForeignKey('worklist_disporder_u_fk', 'worklist_display_order', 'user_id', 'user', 'id', 'CASCADE');
 
     }
 

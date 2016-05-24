@@ -16,7 +16,6 @@ class m160510_075145_add_automatic_worklists extends OEMigration
 				'active_from' => 'datetime NOT NULL',
 				'active_until' => 'datetime',
 				'scheduled' => 'boolean default false NOT NULL',
-				'deleted' => 'boolean default false NOT NULL',
 				'display_order' => 'int(8) NOT NULL'
 			),
 			true
@@ -31,7 +30,7 @@ class m160510_075145_add_automatic_worklists extends OEMigration
 			));
 
 		$this->addForeignKey('worklist_definition_mapping_wl_fk', 'worklist_definition_mapping',
-			'worklist_definition_id', 'worklist_definition', 'id');
+			'worklist_definition_id', 'worklist_definition', 'id', 'CASCADE');
 
 		$this->createOETable('worklist_definition_mapping_value',
 			array(
@@ -59,7 +58,7 @@ class m160510_075145_add_automatic_worklists extends OEMigration
 
 		$this->addColumn('worklist', 'worklist_definition_id', 'int(11)');
 
-		$this->addForeignKey('worklist_wldfn_fk', 'worklist', 'worklist_definition_id', 'worklist_definition', 'id');
+		$this->addForeignKey('worklist_wldfn_fk', 'worklist', 'worklist_definition_id', 'worklist_definition', 'id', 'CASCADE');
 
 		$this->addColumn('worklist_version', 'worklist_definition_id', 'int(11)');
 	}
