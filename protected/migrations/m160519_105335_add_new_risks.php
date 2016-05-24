@@ -12,6 +12,7 @@ class m160519_105335_add_new_risks extends CDbMigration
 			array('name' => 'Anticoagulants'),
 			array('name' => 'Unfit for surgery - DO NOT BOOK'),
 		);
+
 		foreach ($newRisks as $riskRow) {
 			$this->insert('risk', $riskRow);
 		}
@@ -19,8 +20,12 @@ class m160519_105335_add_new_risks extends CDbMigration
 
 	public function down()
 	{
-		echo "m160519_105335_add_new_risks does not support migration down.\n";
-		return false;
+		$this->delete('risk','name = "Pregnant"');
+		$this->delete('risk','name = "Alpha blockers"');
+		$this->delete('risk','name = "Anticoagulants"');
+		$this->delete('risk','name = "Unfit for surgery - DO NOT BOOK"');
+
+		$this->dropIndex('risk_name_unique', 'risk');
 	}
 
 	/*
