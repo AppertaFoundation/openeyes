@@ -298,7 +298,7 @@ $(document).ready(function() {
         showRegressionChart(2, parseInt(plotId[2]), currentIndexDate);
     });
 
-    $('.colourplot_left, .colourplot_right').mouseout(function(e){
+    $('#vfcolorplot_right, #vfcolorplot_left').mouseout(function(e){
         $('.regression_chart').hide();
     });
 
@@ -313,7 +313,7 @@ function addRegressionChart(){
     $(function () {
         $('#regression_chart').highcharts({
             xAxis: {
-                min: 0
+                min: 1
             },
             yAxis: {
                 min: 0

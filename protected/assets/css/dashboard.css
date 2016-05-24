@@ -359,6 +359,19 @@ select:focus {
 
 .regression_chart{
   width: 50%;
+  display: block;
+}
+
+.left-side{
+  display: block;
+  float: right;
+  width: 50%;
+}
+
+.right-side{
+  display: block;
+  float: left;
+  width: 50%;
 }
 
 .side-title{

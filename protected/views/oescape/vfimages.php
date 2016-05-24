@@ -5,35 +5,31 @@
         <a href="#tab3-panel" class="mdl-tabs__tab">Photo</a>
     </div>
     <div class="mdl-tabs__panel is-active" id="tab1-panel">
-        <div class="mdl-grid">
-            <div class="mdl-cell mdl-cell--6-col">
-                <span class="side-title">Right</span>
-                <div id="vfgreyscale_right" class="vfimage">
-
-                </div>
-                <span id="vfgreyscale_right_cache" class="vfthumbnail-hidden">
-                </span>
-                <div id="vfcolorplot_right" class="vfcolorplot">
-                    <?php $this->renderPartial('//oescape/vfcolourplot_right');?>
-                </div>
+        <div class="right-side">
+            <span class="side-title">Right</span>
+            <div id="vfgreyscale_right" class="vfimage">
 
             </div>
-            <div class="mdl-cell mdl-cell--6-col">
-                <span class="side-title">Left</span>
-                <div id="vfgreyscale_left" class="vfimage">
-
-                </div>
-                <span id="vfgreyscale_left_cache" class="vfthumbnail-hidden">
-                </span>
-                <div id="vfcolorplot_left" class="vfcolorplot">
-                    <?php $this->renderPartial('//oescape/vfcolourplot_left');?>
-                </div>
+            <span id="vfgreyscale_right_cache" class="vfthumbnail-hidden">
+            </span>
+            <div id="vfcolorplot_right" class="vfcolorplot">
+                <?php $this->renderPartial('//oescape/vfcolourplot_right');?>
             </div>
-            <div class="mdl-cell mdl-cell--12-col">
-                <div id="regression_chart" class="regression_chart">
 
-                </div>
+        </div>
+        <div class="left-side">
+            <span class="side-title">Left</span>
+            <div id="vfgreyscale_left" class="vfimage">
+
             </div>
+            <span id="vfgreyscale_left_cache" class="vfthumbnail-hidden">
+            </span>
+            <div id="vfcolorplot_left" class="vfcolorplot">
+                <?php $this->renderPartial('//oescape/vfcolourplot_left');?>
+            </div>
+        </div>
+        <div id="regression_chart" class="regression_chart">
+
         </div>
     </div>
     <div class="mdl-tabs__panel" id="tab2-panel">
