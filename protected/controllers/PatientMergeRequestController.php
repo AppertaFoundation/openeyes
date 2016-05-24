@@ -79,28 +79,27 @@ class PatientMergeRequestController extends BaseController
         Yii::app()->request->cookies[$cookie_key] = new CHttpCookie($cookie_key, $cookie_value);
         $filters['show_merged'] = $cookie_value;
         
-        // Do not show already merged ones
-        $merged_criteria = ' AND status !=' . PatientMergeRequest::STATUS_MERGED;
-        
-        if($cookie_value){
-            // delete this criteria and show the merge items
-            $merged_criteria = '';
+        $criteria = new CDbCriteria;
+        $criteria->compare('deleted', 0);
+         
+        if(!$cookie_value){
+            $criteria->addCondition('status != :status');
+            $criteria->params[ ':status' ] = PatientMergeRequest::STATUS_MERGED;
         }
         
+        $itemsCount = PatientMergeRequest::model()->count($criteria);
+        $pagination = new CPagination($itemsCount);
+        $pagination->pageSize = 15;
+        $pagination->applyLimit($criteria);
+        
         $dataProvider = new CActiveDataProvider('PatientMergeRequest', array(
-            'criteria'=>array(
-                'condition' => 'deleted=0' . $merged_criteria
-            )
+            'criteria' => $criteria,
+            'pagination' => $pagination
         ));
         
-        $pagination = new CPagination($dataProvider->itemCount);
-        $pagination->pageSize = 25;
-        
-        
         $this->render('//patientmergerequest/index', array(
-            'dataProvider'=>$dataProvider,
-            'pagination' => $pagination,
-            'filters' => $filters
+            'dataProvider' => $dataProvider,
+            'filters' => $filters,
         ));
     }
     
