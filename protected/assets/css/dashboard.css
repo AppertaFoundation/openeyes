@@ -396,6 +396,10 @@ select:focus {
   padding-left: 93px;
 }
 
+.colorplot-hover{
+  border: 1px solid black;
+}
+
 .oescape-images{
   background: white;
 }

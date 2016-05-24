@@ -299,12 +299,23 @@ $(document).ready(function() {
     });
 
     $('#vfcolorplot_right, #vfcolorplot_left').mouseout(function(e){
-        $('.regression_chart').hide();
+        //$('.regression_chart').hide();
+    });
+
+    $('.colourplot_right, .colourplot_left').mouseenter(function(e){
+        //$(this).addClass('colorplot-hover');
+        $(this).attr('stroke','black');
+        $(this).attr('stroke-width','2');
+    });
+
+    $('.colourplot_right, .colourplot_left').mouseout(function(e){
+        $(this).removeAttr('stroke');
+        $(this).removeAttr('stroke-width');
     });
 
     addRegressionChart();
-
     $('.regression_chart').hide();
+    //$('.regression_chart').show();
 });
 
 
@@ -316,7 +327,8 @@ function addRegressionChart(){
                 min: 1
             },
             yAxis: {
-                min: 0
+                min: 0,
+                max: 30
             },
             title: {
                 text: 'Scatter plot with regression line'
@@ -350,18 +362,24 @@ function addRegressionChart(){
 }
 
 function updateRegressionChart( data){
-    Highcharts.charts[3].series[0].setData(data.line);
-    Highcharts.charts[3].series[1].setData(data.plots);
+    Highcharts.charts[3].series[0].setData(data.line, false);
+    Highcharts.charts[3].series[1].setData(data.plots, false);
+    $('.highcharts-regressionLabel').remove();
+    regressionLabel = Highcharts.charts[3].renderer.label('y='+parseFloat(data.regression.m).toFixed(4)+'*x+'+parseFloat(data.regression.b).toFixed(4)+' <b>p-value:</b> '+parseFloat(data.regression.pb).toFixed(5), 40,30, 'rect', 1, 1, 1, 1, 'regressionLabel').add();
+
+    Highcharts.charts[3].redraw();
 }
 
 function showRegressionChart(side, plotNr, indexDate){
-    var data = {plots: Array(), line: Array()};
+    var data = {plots: Array(), line: Array(), regression: Object()};
 
     data.plots = getPlotData(plotNr, side, indexDate);
 
     myRegression = linearRegression(data.plots);
 
     data.line = [[1, myRegression.m*1+myRegression.b],[data.plots.length, myRegression.m*data.plots.length+myRegression.b]];
+
+    data.regression = myRegression;
 
     updateRegressionChart(data);
 
