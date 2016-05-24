@@ -422,7 +422,7 @@ var iol_position;
  * 
  * @param _drawing
  */
-function showHideIOLFields(_drawing) {
+function showHideIOLFields(_drawing, resetPosition) {
     var iolPresent = false;
 
     for (var i in _drawing.doodleArray) {
@@ -435,7 +435,7 @@ function showHideIOLFields(_drawing) {
         $('#div_Element_OphTrOperationnote_Cataract_iol_type_id').show();
         $('#div_Element_OphTrOperationnote_Cataract_iol_power').show();
         $('#div_Element_OphTrOperationnote_Cataract_iol_position_id').show();
-        if ($('#Element_OphTrOperationnote_Cataract_iol_position_id').children('option:selected').text() == 'None') {
+        if (resetPosition && $('#Element_OphTrOperationnote_Cataract_iol_position_id').children('option:selected').text() == 'None') {
             $('#Element_OphTrOperationnote_Cataract_iol_position_id').children('option').map(function () {
                 if ($(this).text() == '- Please select -') {
                     $(this).attr('selected', 'selected');
@@ -447,11 +447,13 @@ function showHideIOLFields(_drawing) {
         $('#div_Element_OphTrOperationnote_Cataract_iol_type_id').hide();
         $('#div_Element_OphTrOperationnote_Cataract_iol_power').hide();
         $('#div_Element_OphTrOperationnote_Cataract_iol_position_id').hide();
-        $('#Element_OphTrOperationnote_Cataract_iol_position_id').children('option').map(function () {
-            if ($(this).text() == 'None') {
-                $(this).attr('selected', 'selected');
-            }
-        });
+        if (resetPosition) {
+            $('#Element_OphTrOperationnote_Cataract_iol_position_id').children('option').map(function () {
+                if ($(this).text() == 'None') {
+                    $(this).attr('selected', 'selected');
+                }
+            });
+        }
     }
 
 }
@@ -545,13 +547,14 @@ function sidePortController(_drawing) {
                 }
                 break;
             case 'doodleDeleted':
-                showHideIOLFields(_drawing);
+                showHideIOLFields(_drawing, true);
                 break;
             case 'doodleAdded':
-                showHideIOLFields(_drawing);
+                if (_drawing.isReady)
+                    showHideIOLFields(_drawing, true);
                 break;
             case 'doodlesLoaded':
-                showHideIOLFields(_drawing);
+                showHideIOLFields(_drawing, false);
                 break;
         }
     }
