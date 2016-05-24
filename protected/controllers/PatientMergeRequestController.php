@@ -81,10 +81,12 @@ class PatientMergeRequestController extends BaseController
         
         $criteria = new CDbCriteria;
         $criteria->compare('deleted', 0);
+        $criteria->addCondition('status != :status');
          
         if(!$cookie_value){
-            $criteria->addCondition('status != :status');
-            $criteria->params[ ':status' ] = PatientMergeRequest::STATUS_MERGED;
+            $criteria->params[':status'] = PatientMergeRequest::STATUS_MERGED;
+        } else {
+            $criteria->params[':status'] = PatientMergeRequest::STATUS_NOT_PROCESSED;
         }
         
         $itemsCount = PatientMergeRequest::model()->count($criteria);
