@@ -33,7 +33,14 @@ class PortalExamsCommand extends CConsoleCommand
         $examinations = $this->examinationSearch();
 
         $eventType = EventType::model()->find('name = "Examination"');
-        $portalUserId = 1;//todo get portal user
+        if(Yii::app()->params['portal_user']=="")
+        {
+               $portalUserId = 1;//todo get portal user
+        }
+        else {
+                $portalUserId = Yii::app()->params['portal_user'];//todo get portal user   
+        }
+     
         $refractionType = \OEModule\OphCiExamination\models\OphCiExamination_Refraction_Type::model()->find('name = "Ophthalmologist"');
 
         $eyes = Eye::model()->findAll();
@@ -52,7 +59,7 @@ class PortalExamsCommand extends CConsoleCommand
                 $examinationEventLog->unique_code = $uniqueCode;
                 $examinationEventLog->examination_date = date('Y-m-d H:i:s');
                 $examinationEventLog->examination_data = json_encode($examination);
-                if (!$examinationEventLog->save()) {
+                if(!$examinationEventLog->save()) {
                     throw new CDbException('$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true));
                 }
                 continue;
