@@ -44,4 +44,55 @@ class WorklistPatientTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($wp->hasErrors());
         $this->assertArrayHasKey('when', $wp->getErrors());
     }
+
+    public function getWorklistAttributeValueProvider()
+    {
+        return array(
+            array(
+                array(
+                    array('worklist_attribute_id' => 3, 'attribute_value' => 'foo'),
+                    array('worklist_attribute_id' => 5, 'attribute_value' => 'bar'),
+                    array('worklist_attribute_id' => 8, 'attribute_value' => 'foo')
+                ),
+                array('id' => 5),
+                'bar'
+            ),
+            array(
+                array(
+                    array('worklist_attribute_id' => 3, 'attribute_value' => 'foo'),
+                    array('worklist_attribute_id' => 8, 'attribute_value' => 'foo')
+                ),
+                array('id' => 5),
+                null
+            ),
+            array(
+                array(
+                ),
+                array('id' => 5),
+                null
+            )
+        );
+    }
+
+    /**
+     * @dataProvider getWorklistAttributeValueProvider
+     * @param $wp_attrs
+     * @param $attr
+     * @param $expected
+     */
+    public function test_getWorklistAttributeValue($wp_attrs, $attr, $expected)
+    {
+
+        $worklist_attribute = ComponentStubGenerator::generate('WorklistAttribute', $attr);
+        $worklist_patient_attrs = array();
+        foreach ($wp_attrs as $attr) {
+            $worklist_patient_attrs[] = ComponentStubGenerator::generate('WorklistPatientAttribute', $attr);
+        }
+        $worklist_patient = new WorklistPatient();
+        $worklist_patient->worklist_attributes = $worklist_patient_attrs;
+
+        $this->assertEquals($expected, $worklist_patient->getWorklistAttributeValue($worklist_attribute));
+
+    }
+
 }
