@@ -16,7 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
+class ImportStatus extends BaseActiveRecordVersioned
 {
         /**
 	 * Returns the static model of the specified AR class.
@@ -32,14 +32,14 @@ class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
 	 */
 	public function tableName()
 	{
-		return 'automatic_examination_event_log';
+		return 'import_status';
 	}
         
         public function rules()
 	{
 		return array(
-			array('id,event_id,unique_code,examination_data,examination_date,import_status', 'safe'),
-			array('event_id,unique_code,examination_data', 'required'),
+			array('id,status_value', 'safe'),
+			array('id,status_value', 'required'),
 		);
 	}
         
@@ -47,14 +47,6 @@ class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
 	{
 		return array(
 			'LookupTable' => 'LookupTable',
-		);
-	}
-        
-        public function relations()
-	{
-		return array(
-			'event_id' => array(self::BELONGS_TO, 'Event', 'id'),
-                        'import_status' => array(self::BELONGS_TO, 'ImportStatus', 'id'),
 		);
 	}
         
@@ -75,4 +67,5 @@ class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
 			'criteria' => $criteria,
 		));
 	}
+
 }

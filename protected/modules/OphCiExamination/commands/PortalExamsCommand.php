@@ -48,7 +48,6 @@ class PortalExamsCommand extends CConsoleCommand
         foreach ($eyes as $eye) {
             $eyeIds[strtolower($eye->name)] = $eye->id;
         }
-
         foreach ($examinations as $examination) {
             $uidArray = explode('-', $examination['patient']['unique_identifier']);
             $uniqueCode = $uidArray[1];
@@ -57,8 +56,11 @@ class PortalExamsCommand extends CConsoleCommand
             if (!$opNoteEvent) {
                 echo 'No Event found for identifier: '.$examination['patient']['unique_identifier'].PHP_EOL;
                 $examinationEventLog->unique_code = $uniqueCode;
-                $examinationEventLog->examination_date = date('Y-m-d H:i:s');
+                $examinationEventLog->event_id = 0;
+                $examinationEventLog->examination_date = $examination['examination_date'];
                 $examinationEventLog->examination_data = json_encode($examination);
+                $importStatus = ImportStatus::model()->find('status_value = "Duplicate/Unfound Event"');
+                $examinationEventLog->import_success = $importStatus->id;
                 if(!$examinationEventLog->save()) {
                     throw new CDbException('$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true));
                 }
@@ -82,7 +84,7 @@ class PortalExamsCommand extends CConsoleCommand
                         $examinationEvent->refresh();
                         $examinationEventLog->event_id = $examinationEvent->id;
                         $examinationEventLog->unique_code = $uniqueCode;
-                        $examinationEventLog->examination_date = date('Y-m-d H:i:s');
+                        $examinationEventLog->examination_date = $examination['examination_date'];
                         $examinationEventLog->examination_data = json_encode($examination);
                         $refraction = new \OEModule\OphCiExamination\models\Element_OphCiExamination_Refraction();
                         $refraction->event_id = $examinationEvent->id;
@@ -204,15 +206,16 @@ class PortalExamsCommand extends CConsoleCommand
                     }
                 } catch (Exception $e) {
                     $transaction->rollback();
-                    $examinationEventLog->import_success = 2;
+                    $importStatus = ImportStatus::model()->find('status_value = "Import Failure"');
+                    $examinationEventLog->import_success = $importStatus->id;
                     if (!$examinationEventLog->save()) {
                         throw new CDbException('$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true));
                     }
                     echo 'Failed for examination '.$examination['patient']['unique_identifier'].' with exception: '.$e->getMessage().'on line '.$e->getLine().' in file '.$e->getFile().PHP_EOL.$e->getTraceAsString();
                     continue;
                 }
-                
-                $examinationEventLog->import_success = 1;
+                $importStatus = ImportStatus::model()->find('status_value = "Success Event"');
+                $examinationEventLog->import_success = $importStatus->id;
                 if (!$examinationEventLog->save()) {
                     throw new CDbException('$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true));
                 }
@@ -224,8 +227,10 @@ class PortalExamsCommand extends CConsoleCommand
                 $examinationEvent = UniqueCodes::model()->getEventFromEpisode($episodeId['episode_id'], $eventType['id']);
                 $examinationEventLog->event_id = $examinationEvent['id'];
                 $examinationEventLog->unique_code = $uniqueCode;
-                $examinationEventLog->examination_date = date('Y-m-d H:i:s');
+                $examinationEventLog->examination_date = $examination['examination_date'];
                 $examinationEventLog->examination_data = json_encode($examination);
+                $importStatus = ImportStatus::model()->find('status_value = "Duplicate/Unfound Event"');
+                $examinationEventLog->import_success = $importStatus->id;
                 if (!$examinationEventLog->save()) {
                     throw new CDbException('$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true));
                 }
@@ -248,7 +253,7 @@ class PortalExamsCommand extends CConsoleCommand
 
     protected function login()
     {
-        $this->client->setUri($this->config['uri'].$this->config['endpoints']['auth']);
+	$this->client->setUri($this->config['uri'].$this->config['endpoints']['auth']);
         $this->client->setParameterPost($this->config['credentials']);
         $response = $this->client->request('POST');
         $jsonResponse = json_decode($response->getBody(), true);
@@ -257,7 +262,7 @@ class PortalExamsCommand extends CConsoleCommand
 
     protected function examinationSearch()
     {
-        $this->client->setUri($this->config['uri'].$this->config['endpoints']['examinations']);
+	$this->client->setUri($this->config['uri'].$this->config['endpoints']['examinations']);
         $response = $this->client->request('POST');
         $jsonResponse = json_decode($response->getBody(), true);
 
