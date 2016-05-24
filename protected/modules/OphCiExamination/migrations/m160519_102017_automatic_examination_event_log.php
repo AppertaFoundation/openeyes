@@ -9,7 +9,7 @@ class m160519_102017_automatic_examination_event_log extends OEMigration {
             'unique_code' => 'varchar(6) NOT NULL',
             'examination_data' => 'blob',
             'examination_date' => "datetime DEFAULT '1900-01-01 00:00:00'",
-            'importSuccess' => 'int(1) unsigned NOT NULL default 0',
+            'import_success' => 'int(1) unsigned NOT NULL default 0',
                 ), true);
         $this->createTable('import_status', array(
             'id' => 'pk',

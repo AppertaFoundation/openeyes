@@ -204,7 +204,7 @@ class PortalExamsCommand extends CConsoleCommand
                     }
                 } catch (Exception $e) {
                     $transaction->rollback();
-                    $examinationEventLog->importSuccess = 2;
+                    $examinationEventLog->import_success = 2;
                     if (!$examinationEventLog->save()) {
                         throw new CDbException('$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true));
                     }
@@ -212,7 +212,7 @@ class PortalExamsCommand extends CConsoleCommand
                     continue;
                 }
                 
-                $examinationEventLog->importSuccess = 1;
+                $examinationEventLog->import_success = 1;
                 if (!$examinationEventLog->save()) {
                     throw new CDbException('$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true));
                 }
