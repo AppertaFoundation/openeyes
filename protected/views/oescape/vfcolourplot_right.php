@@ -25,7 +25,7 @@
                 for($cx=$cx_start; $cx<=$cx_max; $cx+=60){
                     if(($row != 4 && $row != 5) || !($cx>300 && $cx<480)){
                         ?>
-                            <circle id="vfcp_right_<?php echo $id ?>" cx="<?php echo $cx;?>" cy="<?php echo $cy;?>" r="29" fill="white" />
+                            <circle id="vfcp_right_<?php echo $id ?>" cx="<?php echo $cx;?>" cy="<?php echo $cy;?>" r="29" fill="white" class="colourplot_right"/>
                         <?php
                     }
                     $id++;

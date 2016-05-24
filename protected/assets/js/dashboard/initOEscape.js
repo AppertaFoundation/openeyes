@@ -19,6 +19,7 @@
 var VFImages, OCTImages;
 var lastIndex = 0;
 var currentMedY = 90;
+var currentIndexDate = new Date().getTime();
 
 $(document).ready(function() {
     // Create the IOP chart
@@ -287,8 +288,85 @@ $(document).ready(function() {
         changeOCTImages(e.pageX - this.offsetLeft, $(this).width());
     });
 
+    $('.colourplot_left').mouseover(function(e){
+        var plotId = $(this).attr('id').split('_');
+        showRegressionChart(1, parseInt(plotId[2]), currentIndexDate);
+    });
+
+    $('.colourplot_right').mouseover(function(e){
+        var plotId = $(this).attr('id').split('_');
+        showRegressionChart(2, parseInt(plotId[2]), currentIndexDate);
+    });
+
+    $('.colourplot_left, .colourplot_right').mouseout(function(e){
+        $('.regression_chart').hide();
+    });
+
+    addRegressionChart();
+
+    $('.regression_chart').hide();
 });
 
+
+function addRegressionChart(){
+
+    $(function () {
+        $('#regression_chart').highcharts({
+            xAxis: {
+                min: 0
+            },
+            yAxis: {
+                min: 0
+            },
+            title: {
+                text: 'Scatter plot with regression line'
+            },
+            credits: {
+                enabled: false
+            },
+            series: [{
+                type: 'line',
+                name: 'Regression Line',
+                data: [],
+                marker: {
+                    enabled: false
+                },
+                states: {
+                    hover: {
+                        lineWidth: 0
+                    }
+                },
+                enableMouseTracking: false
+            }, {
+                type: 'scatter',
+                name: 'Observations',
+                data: [],
+                marker: {
+                    radius: 4
+                }
+            }]
+        });
+    });
+}
+
+function updateRegressionChart( data){
+    Highcharts.charts[3].series[0].setData(data.line);
+    Highcharts.charts[3].series[1].setData(data.plots);
+}
+
+function showRegressionChart(side, plotNr, indexDate){
+    var data = {plots: Array(), line: Array()};
+
+    data.plots = getPlotData(plotNr, side, indexDate);
+
+    myRegression = linearRegression(data.plots);
+
+    data.line = [[1, myRegression.m*1+myRegression.b],[data.plots.length, myRegression.m*data.plots.length+myRegression.b]];
+
+    updateRegressionChart(data);
+
+    $('#regression_chart').show();
+}
 
 function addSeries(chart, side, title, dataurl, seriescol){
     $.ajax({
@@ -481,8 +559,6 @@ function setPlotColours(side, dateIndex){
         //myRegression = regression('linear', getPlotData(i, side, dateIndex));
         plotData = getPlotData(i, side, dateIndex);
         myRegression = linearRegression(plotData);
-        myStat = new jStat(plotData);
-        testValue = plotData[plotData.length-1][1];
         $('#vfcp_'+getSideName(side)+'_'+i).attr('fill',getPlotColour(myRegression.m, myRegression.pb));
         //console.log(myRegression);
     }
@@ -555,6 +631,7 @@ function changeVFImages(xCoord, imageWidth){
             setPlotColours(1,index);
             setPlotColours(2,index);
             lastIndex = currentIndex;
+            currentIndexDate = index;
         }
         i++;
     });

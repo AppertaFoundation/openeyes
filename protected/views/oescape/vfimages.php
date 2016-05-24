@@ -16,6 +16,7 @@
                 <div id="vfcolorplot_right" class="vfcolorplot">
                     <?php $this->renderPartial('//oescape/vfcolourplot_right');?>
                 </div>
+
             </div>
             <div class="mdl-cell mdl-cell--6-col">
                 <span class="side-title">Left</span>
@@ -26,6 +27,11 @@
                 </span>
                 <div id="vfcolorplot_left" class="vfcolorplot">
                     <?php $this->renderPartial('//oescape/vfcolourplot_left');?>
+                </div>
+            </div>
+            <div class="mdl-cell mdl-cell--12-col">
+                <div id="regression_chart" class="regression_chart">
+
                 </div>
             </div>
         </div>

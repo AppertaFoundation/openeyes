@@ -357,6 +357,10 @@ select:focus {
   display: none;
 }
 
+.regression_chart{
+  width: 50%;
+}
+
 .side-title{
   text-align: center;
   font-weight: bold;
