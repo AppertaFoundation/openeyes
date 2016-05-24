@@ -182,7 +182,7 @@ $(document).ready(function(){
         }
     });
     
-    $('#selectall').click(function () {
+    $('#patientMergeWrapper').on('click', '#selectall', function(){
         $(this).closest('table').find('input[type="checkbox"]').attr('checked', this.checked);
     });
     
@@ -207,7 +207,7 @@ $(document).ready(function(){
    $('#patientMergeWrapper').on('click', '#rq_delete', function(e){
         e.preventDefault();
         
-        if( $('#patientMergeList').find('td input[type=checkbox]:checked').length > 0 ){
+        if( $('#patientMergeRequestList').find('td input[type=checkbox]:checked').length > 0 ){
            
             var serializedForm = $(this).closest('form').serialize();
                     
@@ -225,20 +225,26 @@ $(document).ready(function(){
    
    $('#patientMergeWrapper').on('click', '#mergeRequestUpdate', function(e){
         e.preventDefault();
+        var id = $('#PatientMergeRequest_id').val(),
+        $form = $(this).closest('form');
         
-        var serializedForm = $(this).closest('form').serialize(),
+        $form.attr('action', '/patientMergeRequest/update/' + id);
+        $form.submit();
+        return true;
+        
+        var serializedForm = $(this).closest('form').serialize(), 
             id = $('#PatientMergeRequest_id').val();
-                    
+
         $.post( "/patientMergeRequest/update/" + id, serializedForm, function( data ) {
            window.location.href = '/patientMergeRequest/index';
         });
-        
    });
    
    
    $('.filter').on('click', 'button.filter',function(event){
 	
         event.preventDefault();
+
         $.ajax({
                 url: "",
                 type: "POST",
@@ -256,7 +262,5 @@ $(document).ready(function(){
         });
 
     });
-   
-   
     
 });

@@ -20,7 +20,6 @@
     <?php $this->renderPartial('//base/_messages')?>
 
     <form id="patientMergeList">
-        <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
         <div class="row">
             <div class="large-8 column large-centered">
                 <section class="box generic requestList js-toggle-container">
@@ -29,6 +28,7 @@
                         <div class="row">
                             <div class="large-10 column">
                                 <label>
+                                    <input type="hidden" id="PatientMergeRequest_show_merged_hidden" name="PatientMergeRequestFilter[show_merged]" value="0">
                                     <input type="checkbox" id="PatientMergeRequest_show_merged" name="PatientMergeRequestFilter[show_merged]" value="1" <?php echo ($filters['show_merged'] && $filters['show_merged'] == 1 ? 'checked' : '') ?> > Show merged
                                 </label>
                             </div>

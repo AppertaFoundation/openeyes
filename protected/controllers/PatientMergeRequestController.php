@@ -30,12 +30,12 @@ class PatientMergeRequestController extends BaseController
     {
         return array(
             array('allow',
-                'actions' => array('index', 'create', 'view', 'merge', 'editConflict', 'search', 'delete', 'update'),
+                'actions' => array('index', 'create', 'view', 'search', 'merge', 'update', 'delete'),
                 'roles' => array('Patient Merge'),
             ),
             
             array('allow',
-                'actions' => array('index', 'create', 'view', 'search', 'update'),
+                'actions' => array('index', 'create', 'view', 'search', 'update', 'delete'),
                 'roles' => array('Patient Merge Request'),
             ),
             
@@ -58,19 +58,38 @@ class PatientMergeRequestController extends BaseController
      * Lists all models.
      */
     public function actionIndex()
-    {
+    {        
         $filters = Yii::app()->request->getParam('PatientMergeRequestFilter');
+        $cookie_key = 'show_merged_' . Yii::app()->user->id;
+                
+        if( (isset($filters['show_merged']) && $filters['show_merged'] == 1) ){
+            // turn ON the show_merge filter
+            $cookie_value = 1;
+        } else if (isset($filters['show_merged']) && $filters['show_merged'] == 0) {
+            // turn OFF the show_merge filter
+            $cookie_value = 0;
+        } else if ( Yii::app()->request->cookies->contains($cookie_key) ){
+            // get back the cookie value if it is set
+            $cookie_value = Yii::app()->request->cookies[$cookie_key]->value;
+        } else {
+            // neither 'show_merged' in the get/post nor in the cookies
+            $cookie_value = 0;
+        }
+        
+        Yii::app()->request->cookies[$cookie_key] = new CHttpCookie($cookie_key, $cookie_value);
+        $filters['show_merged'] = $cookie_value;
         
         // Do not show already merged ones
-        $showMerged = ' AND status !=' . PatientMergeRequest::STATUS_MERGED;
-
-        if( $filters['show_merged'] && $filters['show_merged'] == 1 ){
-            $showMerged = '';
+        $merged_criteria = ' AND status !=' . PatientMergeRequest::STATUS_MERGED;
+        
+        if($cookie_value){
+            // delete this criteria and show the merge items
+            $merged_criteria = '';
         }
         
         $dataProvider = new CActiveDataProvider('PatientMergeRequest', array(
             'criteria'=>array(
-                'condition' => 'deleted=0' . $showMerged
+                'condition' => 'deleted=0' . $merged_criteria
             )
         ));
         
@@ -145,19 +164,57 @@ class PatientMergeRequestController extends BaseController
     */
    public function actionUpdate($id)
    {
-           $model = $this->loadModel($id);
+        $model = $this->loadModel($id);
 
-           if(isset($_POST['PatientMergeRequest']))
-           {
-                $model->attributes=$_POST['PatientMergeRequest'];
-                if( $model->status == PatientMergeRequest::STATUS_MERGED ){
-                    $this->redirect(array('view','id' => $model->id));
-                } else if($model->save()){
-                   // will return to the index page
-                }
-           }
-           
-           $this->redirect(array('index'));
+        if(isset($_POST['PatientMergeRequest']))
+        {
+             $model->attributes=$_POST['PatientMergeRequest'];
+             if( $model->status == PatientMergeRequest::STATUS_MERGED ){
+                 $this->redirect(array('view','id' => $model->id));
+             } else if($model->save()) {
+                $this->redirect(array('index'));
+             }
+        }
+
+        $mergeHandler = new PatientMerge;
+        
+        // if the personal details are conflictng (DOB and Gender at the moment) we need extra confirmation
+        $personalDetailsConflictConfirm = $mergeHandler->comparePatientDetails($model->primaryPatient, $model->secondaryPatient);
+
+        $primary = Patient::model()->findByPk($model->primary_id);
+        $secondary = Patient::model()->findByPk($model->secondary_id);
+
+        $this->render('//patientmergerequest/merge', array(
+            'model' => $model,
+            'personalDetailsConflictConfirm' => $personalDetailsConflictConfirm['isConflict'],
+            'primaryPatientJSON' => CJavaScript::jsonEncode(array(
+                            'id' => $primary->id,
+                            'first_name' => $primary->first_name,
+                            'last_name' => $primary->last_name,
+                            'age' => ($primary->isDeceased() ? 'Deceased' : $primary->getAge()),
+                            'gender' => $primary->getGenderString(),
+                            'genderletter' => $primary->gender,
+                            'dob' => ($primary->dob) ? $primary->NHSDate('dob') : 'Unknown',
+                            'hos_num' => $primary->hos_num, 
+                            'nhsnum' => $primary->nhsnum,
+                            'all-episodes' => htmlentities (str_replace(array("\n", "\r", "\t"), '', $this->getEpisodesHTML($primary) ) ),
+                        )
+                    ),
+
+            'secondaryPatientJSON' => CJavaScript::jsonEncode(array(
+                            'id' => $secondary->id,
+                            'first_name' => $secondary->first_name,
+                            'last_name' => $secondary->last_name,
+                            'age' => ($secondary->isDeceased() ? 'Deceased' : $secondary->getAge()),
+                            'gender' => $secondary->getGenderString(),
+                            'genderletter' => $secondary->gender,
+                            'dob' => ($secondary->dob) ? $secondary->NHSDate('dob') : 'Unknown',
+                            'hos_num' => $secondary->hos_num,
+                            'nhsnum' => $secondary->nhsnum,
+                            'all-episodes' => htmlentities (str_replace(array("\n", "\r", "\t"), '', $this->getEpisodesHTML($secondary) ) ),
+                        )
+                    ),
+            ));
    }
     
     /**
@@ -173,7 +230,7 @@ class PatientMergeRequestController extends BaseController
         // if the personal details are conflictng (DOB and Gender at the moment) we need extra confirmation
         $personalDetailsConflictConfirm = $mergeHandler->comparePatientDetails($mergeRequest->primaryPatient, $mergeRequest->secondaryPatient);
         
-        if(isset($_POST['PatientMergeRequest']) && isset($_POST['PatientMergeRequest']['confirm'])){
+        if(isset($_POST['PatientMergeRequest']) && isset($_POST['PatientMergeRequest']['confirm']) && Yii::app()->user->checkAccess('Patient Merge')){
                 
             // if personal details are not conflictin than its fine, 
             // but if there is a conflict we need the extra confirmation
