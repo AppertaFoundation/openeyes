@@ -20,6 +20,7 @@ var VFImages, OCTImages;
 var lastIndex = 0;
 var currentMedY = 90;
 var currentIndexDate = new Date().getTime();
+var fixedPointLeft = {point: undefined, color: undefined}, fixedPointRight={point: undefined, color: undefined};
 
 $(document).ready(function() {
     // Create the IOP chart
@@ -289,29 +290,91 @@ $(document).ready(function() {
     });
 
     $('.colourplot_left').mouseover(function(e){
-        var plotId = $(this).attr('id').split('_');
-        showRegressionChart(1, parseInt(plotId[2]), currentIndexDate);
+        if(fixedPointLeft.point == undefined) {
+            var plotId = $(this).attr('id').split('_');
+            showRegressionChart(1, parseInt(plotId[2]), currentIndexDate);
+        }
     });
 
-    $('.colourplot_right').mouseover(function(e){
+    $('.colourplot_left').click(function(e){
         var plotId = $(this).attr('id').split('_');
-        showRegressionChart(2, parseInt(plotId[2]), currentIndexDate);
+        //console.log(fixedPointLeft+' '+parseInt(plotId[2]));
+        if(fixedPointLeft.point != undefined && fixedPointLeft.point == parseInt(plotId[2])){
+            $(this).attr('fill', fixedPointLeft.colour);
+            $(this).removeAttr('stroke');
+            $(this).removeAttr('stroke-width');
+            fixedPointLeft.point = undefined;
+            fixedPointLeft.colour = undefined;
+        }else if(fixedPointLeft.point == undefined){
+            fixedPointLeft.point = parseInt(plotId[2]);
+            fixedPointLeft.colour = $(this).attr('fill');
+            $(this).attr('fill','white');
+            $(this).attr('stroke','black');
+            $(this).attr('stroke-width','4');
+        }
+    });
+
+    $('.colourplot_left').mouseenter(function(e){
+        //$(this).addClass('colorplot-hover');
+        if(fixedPointLeft.point == undefined){
+            $(this).attr('stroke','black');
+            $(this).attr('stroke-width','2');
+        }
+    });
+
+    $('.colourplot_left').mouseout(function(e){
+        if(fixedPointLeft.point == undefined) {
+            $(this).removeAttr('stroke');
+            $(this).removeAttr('stroke-width');
+        }
+    });
+
+
+
+    $('.colourplot_right').mouseover(function(e){
+        if(fixedPointRight.point == undefined) {
+            var plotId = $(this).attr('id').split('_');
+            showRegressionChart(2, parseInt(plotId[2]), currentIndexDate);
+        }
+    });
+
+    $('.colourplot_right').click(function(e){
+        var plotId = $(this).attr('id').split('_');
+        if(fixedPointRight.point != undefined && fixedPointRight.point == parseInt(plotId[2])){
+            $(this).attr('fill', fixedPointRight.colour);
+            $(this).removeAttr('stroke');
+            $(this).removeAttr('stroke-width');
+            fixedPointRight.point = undefined;
+            fixedPointRight.colour = undefined;
+        }else if(fixedPointRight.point == undefined){
+            fixedPointRight.point = parseInt(plotId[2]);
+            fixedPointRight.colour = $(this).attr('fill');
+            $(this).attr('fill','white');
+            $(this).attr('stroke','black');
+            $(this).attr('stroke-width','4');
+        }
+    });
+
+    $('.colourplot_right').mouseenter(function(e){
+        //$(this).addClass('colorplot-hover');
+        if(fixedPointRight.point == undefined){
+            $(this).attr('stroke','black');
+            $(this).attr('stroke-width','2');
+        }
+    });
+
+    $('.colourplot_right').mouseout(function(e){
+        if(fixedPointRight.point == undefined) {
+            $(this).removeAttr('stroke');
+            $(this).removeAttr('stroke-width');
+        }
     });
 
     $('#vfcolorplot_right, #vfcolorplot_left').mouseout(function(e){
         //$('.regression_chart').hide();
     });
 
-    $('.colourplot_right, .colourplot_left').mouseenter(function(e){
-        //$(this).addClass('colorplot-hover');
-        $(this).attr('stroke','black');
-        $(this).attr('stroke-width','2');
-    });
 
-    $('.colourplot_right, .colourplot_left').mouseout(function(e){
-        $(this).removeAttr('stroke');
-        $(this).removeAttr('stroke-width');
-    });
 
     addRegressionChart();
     $('.regression_chart').hide();
