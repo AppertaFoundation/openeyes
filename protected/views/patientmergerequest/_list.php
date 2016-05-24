@@ -30,7 +30,9 @@
         <?php foreach ($dataProvider->getData() as $i => $request): ?>
         
             <?php if( $request->status == PatientMergeRequest::STATUS_NOT_PROCESSED ): ?>
-            <tr class="clickable" data-id="<?php echo $request->id?>" data-uri="patientMergeRequest/merge/<?php echo $request->id?>">
+        
+                <?php $action = Yii::app()->user->checkAccess('Patient Merge') ? 'merge' : 'update'; ?>
+                <tr class="clickable" data-id="<?php echo $request->id?>" data-uri="patientMergeRequest/<?php echo $action . '/' . $request->id?>">
             <?php else: ?>
                 <tr class="clickable" data-id="<?php echo $request->id?>" data-uri="patientMergeRequest/view/<?php echo $request->id?>">
             <?php endif; ?>
