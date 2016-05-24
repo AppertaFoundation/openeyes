@@ -9,8 +9,7 @@ class m160520_095447_reorder_none_complication extends CDbMigration
 
 	public function down()
 	{
-		echo "m160520_095447_reorder_none_complication does not support migration down.\n";
-		return false;
+		echo "m160520_095447_reorder_none_complication migration still in place, previous display_order unknown.\n";
 	}
 
 	/*
