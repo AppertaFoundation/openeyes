@@ -23,7 +23,7 @@ class WorklistAdminController extends BaseAdminController
     /**
      * @var WorklistManager
      */
-    private $manager;
+    public $manager;
 
     protected function beforeAction($action)
     {
@@ -42,11 +42,9 @@ class WorklistAdminController extends BaseAdminController
         Yii::app()->user->setFlash("{$type}.{$id}", $message);
     }
 
-    public function renderWorklist($worklist)
-    {
-        return $this->manager->renderWorklistForDashboard($worklist);
-    }
-
+    /**
+     * List the current definitions
+     */
     public function actionDefinitions()
     {
         $definitions = $this->manager->getWorklistDefinitions();
@@ -57,13 +55,21 @@ class WorklistAdminController extends BaseAdminController
         ));
     }
 
-
+    /**
+     * Create or Edit a WorklistDefinition
+     *
+     * @param null $id
+     * @throws CHttpException
+     */
     public function actionDefinition($id = null)
     {
         $definition = $this->manager->getWorklistDefinition($id);
 
         if (!$definition)
             throw new CHttpException(404, "Worklist definition not found");
+
+        if (!$this->manager->canEditWorklistDefinition($definition))
+            throw new CHttpException(409, "Cannot change mappings for un-editable Definition");
 
         if (isset($_POST['WorklistDefinition'])) {
             $definition->attributes = $_POST['WorklistDefinition'];
@@ -83,6 +89,8 @@ class WorklistAdminController extends BaseAdminController
     }
 
     /**
+     * Convenience Wrapper
+     *
      * @param $id
      * @return null|WorklistDefinition
      * @throws CHttpException
@@ -132,7 +140,27 @@ class WorklistAdminController extends BaseAdminController
         ));
     }
 
+    public function actionDefinitionDeleteInstances($id)
+    {
+        $definition = $this->getWorklistDefinition($id);
+
+        if (isset($_POST['confirm_delete']) && $_POST['confirm_delete'] == $id) {
+
+            if ($this->manager->deleteWorklistDefinitionInstances($definition)) {
+                $this->flashMessage('success', "Instances removed for Worklist Definition {$definition->name}");
+            }
+            else {
+                $this->flashMessage('error', "Unable to delete instances for Worklist Definition {$definition->name}");
+            }
+            $this->redirect('/worklistAdmin/definitions');
+        }
+        $this->render('//admin/worklists/definition_instances_delete', array(
+            'definition' => $definition
+        ));
+    }
     /**
+     * Generate instances for the given WorklistDefinition
+     *
      * @param $id
      * @throws CHttpException
      */
@@ -178,6 +206,9 @@ class WorklistAdminController extends BaseAdminController
     {
         $definition = $this->getWorklistDefinition($id);
 
+        if (!$this->manager->canEditWorklistDefinition($definition))
+            throw new CHttpException(409, "Cannot add mapping to un-editable Definition");
+
         $mapping = new WorklistDefinitionMapping();
         $mapping->worklist_definition_id = $definition->id;
         $mapping->worklist_definition = $definition;
@@ -216,6 +247,9 @@ class WorklistAdminController extends BaseAdminController
         if (!$mapping = WorklistDefinitionMapping::model()->findByPk($id))
             throw new CHttpException(404, "Worklist Definition Mapping not found.");
 
+        if (!$this->manager->canEditWorklistDefinition($mapping->worklist_definition))
+            throw new CHttpException(409, "Cannot change mappings for un-editable Definition");
+
         if (isset($_POST['WorklistDefinitionMapping'])) {
             $mapping->attributes = $_POST['WorklistDefinitionMapping'];
             if ($this->manager->updateWorklistDefinitionMapping($mapping,
@@ -242,6 +276,9 @@ class WorklistAdminController extends BaseAdminController
     {
         if (!$mapping = WorklistDefinitionMapping::model()->findByPk($id))
             throw new CHttpException(404, "Worklist Definition Mapping not found.");
+
+        if (!$this->manager->canEditWorklistDefinition($mapping->worklist_definition))
+            throw new CHttpException(409, "Cannot delete mapping for un-editable Definition");
 
         if ($mapping->delete()) {
             $this->flashMessage('success', "Mapping removed.");

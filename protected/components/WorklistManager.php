@@ -234,6 +234,11 @@ class WorklistManager extends CComponent
      */
     public function saveWorklistDefinition($definition)
     {
+        if (!$this->canEditWorklistDefinition($definition)) {
+            $this->addError("cannot save Definition that is un-editable");
+            return false;
+        }
+
         $action = $definition->isNewRecord ? "create" : "update";
 
         $transaction = $this->startTransaction();
@@ -780,9 +785,7 @@ class WorklistManager extends CComponent
 
 
     /**
-     * This
      *
-     * @TODO: support null display_order
      * @param WorklistDefinitionMapping $mapping
      * @param $key
      * @param string $values
@@ -797,6 +800,11 @@ class WorklistManager extends CComponent
         $values = explode(",", $values);
 
         $definition = $mapping->worklist_definition;
+
+        if (!$this->canEditWorklistDefinition($definition)) {
+            $this->addError("Cannot update mapping for un-editable Worklist Definition");
+            return false;
+        }
 
         if (!$definition->validateMappingKey($key, $mapping->id)) {
             $this->addError("Mapping key {$key} already exists for definition");
@@ -832,6 +840,11 @@ class WorklistManager extends CComponent
         return true;
     }
 
+    /**
+     * @param WorklistDefinition $definition
+     * @param array $ids
+     * @return bool
+     */
     public function setWorklistDefinitionMappingDisplayOrder(WorklistDefinition $definition, $ids = array())
     {
         foreach ($ids as $i => $id) {
@@ -975,6 +988,45 @@ class WorklistManager extends CComponent
             return null;
         }
 
+    }
+
+    /**
+     * @param WorklistDefinition $definition
+     * @return int
+     */
+    public function canEditWorklistDefinition(WorklistDefinition $definition)
+    {
+        // at the moment we don't allow changes to the definition if worklists exist for it
+        return $definition->isNewRecord || count($definition->worklists) == 0;
+    }
+
+    /**
+     * @TODO: consider the future!!
+     * @param WorklistDefinition $definition
+     * @return bool
+     */
+    public function deleteWorklistDefinitionInstances(WorklistDefinition $definition)
+    {
+        $transaction = $this->startTransaction();
+
+        try {
+            foreach($definition->worklists as $worklist) {
+                if (!$worklist->delete()) {
+                    throw new Exception("Could not delete worklist {$worklist->name}");
+                };
+            }
+
+            if ($transaction)
+                $transaction->commit();
+
+            return true;
+        }
+        catch (Exception $e) {
+            $this->addError($e->getMessage());
+            if ($transaction)
+                $transaction->rollback();
+            return false;
+        }
     }
 
     /**

@@ -20,7 +20,9 @@
 <div class="admin box">
     <h2>Mapping Items for <?= $definition->name ?></h2>
     <?php echo EventAction::link('Definitions List', '/worklistAdmin/definitions/', array('level' => 'secondary'), array('class' => 'button small'))->toHtml()?>
-    <?php echo EventAction::link('Add Mapping', '/worklistAdmin/addDefinitionMapping/' . $definition->id, array('level' => 'primary'), array('class' => 'button small'))->toHtml()?>
+    <?php if ($this->manager->canEditWorklistDefinition($definition)) {
+        echo EventAction::link('Add Mapping', '/worklistAdmin/addDefinitionMapping/' . $definition->id, array('level' => 'primary'), array('class' => 'button small'))->toHtml();
+    }?>
     <?php if ($definition->mappings) { ?>
     <form id="mapping-list" method="POST">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
@@ -40,9 +42,15 @@
                     <td class="reorder">&uarr;&darr;<input type="hidden" name="item_ids[]"
                                                            value="<?php echo $mapping->id ?>"></td>
                     <td><?= $mapping->key ?></td>
-                    <td><a href="/worklistAdmin/updateDefinitionMapping/<?= $mapping->id ?>">Edit</a> |
-                        <a href="/worklistAdmin/deleteDefinitionMapping/<?= $mapping->id ?>"
-                           disabled="disabled">Delete</a></td>
+                    <td><?php if ($this->manager->canEditWorklistDefinition($definition)) {?>
+                        <a href="/worklistAdmin/updateDefinitionMapping/<?= $mapping->id ?>">Edit</a> |
+                        <a href="/worklistAdmin/deleteDefinitionMapping/<?= $mapping->id ?>">Delete</a>
+                        <?php } else {?>
+                            <span title="Cannot change mappings for un-editable definition">
+                            Edit | Delete
+                            </span>
+                        <?php } ?>
+                    </td>
                 </tr>
             <?php } ?>
             </tbody>

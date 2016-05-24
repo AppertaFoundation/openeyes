@@ -28,7 +28,7 @@
  * @property WorklistPatient[] $worklist_patients
  * @property WorklistDefinition $worklist_definition
  */
-class Worklist extends BaseActiveRecordVersionedSoftDelete
+class Worklist extends BaseActiveRecordVersioned
 {
     /**
      * A search attribute to allow searching for worklists that are valid for a particular date

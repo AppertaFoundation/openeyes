@@ -37,7 +37,7 @@ use \RRule\RRule;
  * @property WorklistDefinitionMappingp[] $displayed_mappings
  * @property WorklistDefinitionMappingp[] $hidden_mappings
  */
-class WorklistDefinition extends BaseActiveRecordVersionedSoftDelete
+class WorklistDefinition extends BaseActiveRecordVersioned
 {
     /**
      * @return string the associated database table name
