@@ -60,10 +60,13 @@ class m160510_075145_add_automatic_worklists extends OEMigration
 		$this->addColumn('worklist', 'worklist_definition_id', 'int(11)');
 
 		$this->addForeignKey('worklist_wldfn_fk', 'worklist', 'worklist_definition_id', 'worklist_definition', 'id');
+
+		$this->addColumn('worklist_version', 'worklist_definition_id', 'int(11)');
 	}
 
 	public function down()
 	{
+		$this->dropColumn('worklist_version', 'worklist_definition_id');
 		$this->dropForeignKey('worklist_wldfn_fk', 'worklist');
 		$this->dropColumn('worklist', 'worklist_definition_id');
 		$this->dropOETable('worklist_definition_display_context');
