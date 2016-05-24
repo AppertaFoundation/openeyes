@@ -105,7 +105,7 @@ class PatientAppointment extends BaseResource
         try {
             $finder = $this->getInstanceForClass("OEModule\\PASAPI\\models\\PasApiAssignment");
             $assignment = $finder->findByResource(static::$resource_type, $this->id, static::$model_class);
-            $model = $assignment->getInternal();
+            $model = $assignment->getInternal(true);
             // track whether we are creating or updating
             $this->isNewResource = $model->isNewRecord;
 

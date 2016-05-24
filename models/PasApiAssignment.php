@@ -49,15 +49,25 @@ class PasApiAssignment extends \BaseActiveRecord
      * Returns the internal model that this assignment is associated with
      * (or a new instance if it has not been attached yet)
      *
+     * if force_create is true, it will create a new instance if the internal id cannot find the internal model.
+     * This allows for fault tolerance on internal models that might be deleted by other means.
+     *
+     * @param bool $force_create
      * @return \CActiveRecord
      */
-    public function getInternal()
+    public function getInternal($force_create = false)
     {
         if ($this->internal_id) {
-            return self::model($this->internal_type)->findByPk($this->internal_id);
+            $internal = self::model($this->internal_type)->findByPk($this->internal_id);
+            if (!$internal && $force_create) {
+                $this->internal_id = null;
+                return new $this->internal_type;
+            }
+
         } else {
             return new $this->internal_type;
         }
+
     }
 
     /**
