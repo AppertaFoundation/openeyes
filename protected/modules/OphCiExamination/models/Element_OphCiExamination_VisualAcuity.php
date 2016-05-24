@@ -51,10 +51,10 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
     protected $auto_update_relations = true;
     protected $relation_defaults = array(
         'left_readings' => array(
-        'side' => OphCiExamination_VisualAcuity_Reading::LEFT
+            'side' => OphCiExamination_VisualAcuity_Reading::LEFT
         ),
         'right_readings' => array(
-        'side' => OphCiExamination_VisualAcuity_Reading::RIGHT
+            'side' => OphCiExamination_VisualAcuity_Reading::RIGHT
         ),
     );
 
@@ -83,11 +83,11 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array(' right_readings, left_readings, eye_id, unit_id, left_unable_to_assess,
+            array(' right_readings, left_readings, eye_id, unit_id, left_unable_to_assess,
 					right_unable_to_assess, left_eye_missing, right_eye_missing', 'safe'),
-                // The following rule is used by search().
-                // Please remove those attributes that should not be searched.
-                array('id, event_id, , eye_id', 'safe', 'on' => 'search'),
+            // The following rule is used by search().
+            // Please remove those attributes that should not be searched.
+            array('id, event_id, , eye_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -294,6 +294,23 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
     }
 
     /**
+     * Get the best reading for the given side
+     *
+     * @param string $side
+     * @return OphCiExamination_VisualAcuity_Reading|null
+     */
+    public function getAllReadings($side)
+    {
+        $r = array();
+        foreach ($this->{$side.'_readings'} as $reading) {
+
+            $r[] = $reading;
+
+        }
+        return $r;
+    }
+
+    /**
      * Get the best reading for the specified side in current units
      * @param string $side
      * @return string
@@ -344,7 +361,7 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
         return new \CActiveDataProvider(get_class($this), array(
-                'criteria' => $criteria,
+            'criteria' => $criteria,
         ));
     }
 
