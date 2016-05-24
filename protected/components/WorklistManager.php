@@ -260,6 +260,18 @@ class WorklistManager extends CComponent
     }
 
     /**
+     * @param $id
+     * @return Worklist
+     */
+    public function getWorklist($id)
+    {
+        if (is_null($id))
+            return $this->getInstanceForClass('Worklist');
+
+        return $this->getModelForClass('Worklist')->findByPk($id);
+    }
+
+    /**
      * @param $worklist
      * @param $user
      * @param null $display_order
@@ -546,7 +558,7 @@ class WorklistManager extends CComponent
      * @param $worklist
      * @return mixed
      */
-    protected function renderWorklistForDashboard($worklist)
+    public function renderWorklistForDashboard($worklist)
     {
         $this->yii->assetManager->registerScriptFile('js/worklist-dashboard.js', null, null, AssetManager::OUTPUT_SCREEN);
         return $this->renderPartial('//worklist/dashboard', array(
