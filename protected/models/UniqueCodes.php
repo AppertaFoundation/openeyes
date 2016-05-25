@@ -128,14 +128,14 @@ class UniqueCodes extends BaseActiveRecord
 	}
         
         public function examinationEventCheckFromUniqueCode($code, $examinationEventTypeId) {
-                $duplicate_record_check = $this->dbConnection->createCommand()
-                                ->select('count(*) as count')
+                $examination_event = $this->dbConnection->createCommand()
+                                ->select('count(*) as count,automatic_examination_event_log.event_id as id')
                                 ->from('automatic_examination_event_log')
                                 ->join('event', 'event.id = automatic_examination_event_log.event_id and event.deleted !=1')
                                 ->where('unique_code = ? ', array($code))
                                 ->andWhere("import_success = 1")
                                 ->queryRow();
-                return(($duplicate_record_check['count'] < 1) ? 1 : 0);
+                return($examination_event);
         }
         
         public function getEpisodeIdFromCode($code) {

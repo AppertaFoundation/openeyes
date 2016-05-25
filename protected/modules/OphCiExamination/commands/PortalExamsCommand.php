@@ -66,7 +66,8 @@ class PortalExamsCommand extends CConsoleCommand
                 }
                 continue;
             }
-            if (UniqueCodes::model()->examinationEventCheckFromUniqueCode($uniqueCode, $eventType['id'])) {
+            $duplicate_record_check = UniqueCodes::model()->examinationEventCheckFromUniqueCode($uniqueCode, $eventType['id']);
+            if (($duplicate_record_check['count'] < 1)) {
                 $transaction = $opNoteEvent->getDbConnection()->beginInternalTransaction();
 
                 try {
@@ -225,9 +226,8 @@ class PortalExamsCommand extends CConsoleCommand
                 $transaction->commit();
                 echo 'Examination imported: '.$examinationEvent->id.PHP_EOL;
             } else {
-                $eventType = EventType::model()->find('name = "Operation Note"');
-                $episodeId = UniqueCodes::model()->getEpisodeIdFromCode($uniqueCode);
-                $examinationEvent = UniqueCodes::model()->getEventFromEpisode($episodeId['episode_id'], $eventType['id']);
+                $eventType = EventType::model()->find('name = "Examination"');
+                $examinationEvent = UniqueCodes::model()->examinationEventCheckFromUniqueCode($uniqueCode, $eventType['id']);
                 $examinationEventLog->event_id = $examinationEvent['id'];
                 $examinationEventLog->unique_code = $uniqueCode;
                 $examinationEventLog->examination_date = $examination['examination_date'];
