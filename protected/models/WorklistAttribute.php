@@ -43,7 +43,7 @@ class WorklistAttribute extends BaseActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('worklist_id, name, display_order', 'required'),
+            array('worklist_id, name', 'required'),
             array('display_order', 'numerical', 'integerOnly' => true),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
