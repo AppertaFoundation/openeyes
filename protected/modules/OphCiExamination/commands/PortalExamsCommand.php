@@ -33,14 +33,12 @@ class PortalExamsCommand extends CConsoleCommand
         $examinations = $this->examinationSearch();
 
         $eventType = EventType::model()->find('name = "Examination"');
-        if(Yii::app()->params['portal_user']=="")
-        {
-               $portalUserId = 1;//todo get portal user
+        if (Yii::app()->params['portal_user'] == '') {
+            $portalUserId = 1;//todo get portal user
+        } else {
+            $portalUserId = Yii::app()->params['portal_user'];//todo get portal user
         }
-        else {
-                $portalUserId = Yii::app()->params['portal_user'];//todo get portal user   
-        }
-     
+
         $refractionType = \OEModule\OphCiExamination\models\OphCiExamination_Refraction_Type::model()->find('name = "Ophthalmologist"');
 
         $eyes = Eye::model()->findAll();
@@ -61,13 +59,13 @@ class PortalExamsCommand extends CConsoleCommand
                 $examinationEventLog->examination_data = json_encode($examination);
                 $importStatus = ImportStatus::model()->find('status_value = "Duplicate/Unfound Event"');
                 $examinationEventLog->import_success = $importStatus->id;
-                if(!$examinationEventLog->save()) {
-                    throw new CDbException('$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true));
+                if (!$examinationEventLog->save()) {
+                    echo '$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true);
                 }
                 continue;
             }
-            $duplicate_record_check = UniqueCodes::model()->examinationEventCheckFromUniqueCode($uniqueCode, $eventType['id']);
-            if (($duplicate_record_check['count'] < 1)) {
+            $duplicateRecord = UniqueCodes::model()->examinationEventCheckFromUniqueCode($uniqueCode);
+            if (($duplicateRecord['count'] < 1)) {
                 $transaction = $opNoteEvent->getDbConnection()->beginInternalTransaction();
 
                 try {
@@ -75,7 +73,7 @@ class PortalExamsCommand extends CConsoleCommand
                     $examinationEvent = new Event();
                     $examinationEvent->episode_id = $opNoteEvent->episode_id;
                     $examinationEvent->created_user_id = $examinationEvent->last_modified_user_id = $portalUserId;
-                    $examinationEvent->event_date = date('Y-m-d H:i:s',strtotime($examination['examination_date']));
+                    $examinationEvent->event_date = \DateTime::createFromFormat('Y-m-d\TH:i:sP', $examination['examination_date'])->format('Y-m-d');
                     $examinationEvent->event_type_id = $eventType['id'];
                     $examinationEvent->is_automated = 1;
                     $examinationEvent->automated_source = json_encode($examination['op_tom']);
@@ -107,7 +105,7 @@ class PortalExamsCommand extends CConsoleCommand
                         $complications->refresh();
                         if (count($examination['patient']['eyes'][0]['reading'][0]['visual_acuity'])) {
                             //create VisualFunction, required for visual acuity to show.
-                                                        $visualFunction = new \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualFunction();
+                            $visualFunction = new \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualFunction();
                             $visualFunction->event_id = $examinationEvent->id;
                             $visualFunction->eye_id = $eyeIds['both'];
                             $visualFunction->left_rapd = 0;
@@ -119,8 +117,8 @@ class PortalExamsCommand extends CConsoleCommand
 
                             $measure = $examination['patient']['eyes'][0]['reading'][0]['visual_acuity'][0]['measure'];
                             $unit = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->find('name = :measure', array('measure' => $measure));
-                                                        //Create visual acuity
-                                                        $visualAcuity = new \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity();
+                            //Create visual acuity
+                            $visualAcuity = new \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity();
                             $visualAcuity->event_id = $examinationEvent->id;
                             $visualAcuity->created_user_id = $visualAcuity->last_modified_user_id = $portalUserId;
                             $visualAcuity->eye_id = $eyeIds['both'];
@@ -226,16 +224,18 @@ class PortalExamsCommand extends CConsoleCommand
                 $transaction->commit();
                 echo 'Examination imported: '.$examinationEvent->id.PHP_EOL;
             } else {
-                $eventType = EventType::model()->find('name = "Examination"');
-                $examinationEvent = UniqueCodes::model()->examinationEventCheckFromUniqueCode($uniqueCode, $eventType['id']);
-                $examinationEventLog->event_id = $examinationEvent['id'];
-                $examinationEventLog->unique_code = $uniqueCode;
-                $examinationEventLog->examination_date = $examination['examination_date'];
-                $examinationEventLog->examination_data = json_encode($examination);
-                $importStatus = ImportStatus::model()->find('status_value = "Duplicate/Unfound Event"');
-                $examinationEventLog->import_success = $importStatus->id;
-                if (!$examinationEventLog->save()) {
-                    throw new CDbException('$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true));
+                if ($duplicateRecord['examination_data'] !== json_encode($examination)) {
+                    $eventType = EventType::model()->find('name = "Examination"');
+                    $examinationEventLog->event_id = $duplicateRecord['event_id'];
+                    $examinationEventLog->unique_code = $uniqueCode;
+                    $examinationEventLog->examination_date = $examination['examination_date'];
+                    $examinationEventLog->examination_data = json_encode($examination);
+                    $importStatus = ImportStatus::model()->find('status_value = "Duplicate/Unfound Event"');
+                    $examinationEventLog->import_success = $importStatus->id;
+                    echo 'Duplicate record found for '.$examination['patient']['unique_identifier'].PHP_EOL;
+                    if (!$examinationEventLog->save()) {
+                        echo '$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true).PHP_EOL;
+                    }
                 }
             }
         }
@@ -256,19 +256,25 @@ class PortalExamsCommand extends CConsoleCommand
 
     protected function login()
     {
-	$this->client->setUri($this->config['uri'].$this->config['endpoints']['auth']);
+        $this->client->setUri($this->config['uri'].$this->config['endpoints']['auth']);
         $this->client->setParameterPost($this->config['credentials']);
         $response = $this->client->request('POST');
         $jsonResponse = json_decode($response->getBody(), true);
+        $this->client->resetParameters();
         $this->client->setHeaders('Authorization', 'Bearer '.$jsonResponse['access_token']);
     }
 
     protected function examinationSearch()
     {
-	$this->client->setUri($this->config['uri'].$this->config['endpoints']['examinations']);
+        $this->client->setUri($this->config['uri'].$this->config['endpoints']['examinations']);
+        $eventLog = new AutomaticExaminationEventLog();
+        $last = $eventLog->latestSuccessfulEvent();
+        if ($last) {
+            $lastExam = json_decode($last->examination_data);
+            $this->client->setParameterPost(array('start_date' => $lastExam->updated_at));
+        }
         $response = $this->client->request('POST');
-        $jsonResponse = json_decode($response->getBody(), true);
 
-        return $jsonResponse;
+        return json_decode($response->getBody(), true);
     }
 }
