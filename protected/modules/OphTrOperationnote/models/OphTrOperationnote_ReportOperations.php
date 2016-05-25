@@ -240,7 +240,7 @@ class OphTrOperationnote_ReportOperations extends BaseReport
 			->order("p.id, e.created_date asc");
 		$params = array(':from_date' => $from_date, ':to_date' => $to_date);
 
-		if ($surgeon) {
+		if ($surgeon_id) {
 			$command->andWhere(
 				"(su.surgeon_id = :user_id or su.assistant_id = :user_id or su.supervising_surgeon_id = :user_id)"
 			);
@@ -367,7 +367,7 @@ class OphTrOperationnote_ReportOperations extends BaseReport
 				}
 			}
 
-			if (isset($bookingEventID)) {
+			if ($bookingEventID) {
 				$operationElement = $api->getOperationForEvent($bookingEventID);
 				$latestBookingID = $operationElement['latest_booking_id'];
 				$operationBooking = OphTrOperationbooking_Operation_Booking::model()->find('id=:id',array('id'=>$latestBookingID));
