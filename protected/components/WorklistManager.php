@@ -24,7 +24,6 @@
 class WorklistManager extends CComponent
 {
     public static $AUDIT_TARGET_MANUAL = "Manual Worklist";
-
     public static $AUDIT_TARGET_AUTO = "Automatic Worklists";
 
     /**
@@ -177,6 +176,11 @@ class WorklistManager extends CComponent
     protected static $DEFAULT_GENERATION_LIMIT = '1 month';
 
     /**
+     * @var int
+     */
+    protected static $DEFAULT_WORKLIST_PAGE_SIZE = 10;
+
+    /**
      * Wrapper for managing default start time for scheduled worklists
      *
      * @return string
@@ -194,6 +198,11 @@ class WorklistManager extends CComponent
     public function getDefaultEndTime()
     {
         return $this->getAppParam('default_worklist_end_time') ?: self::$DEFAULT_WORKLIST_END_TIME;
+    }
+
+    public function getWorklistPageSize()
+    {
+        return $this->getAppParam('default_worklist_pagination_size') ?: self::$DEFAULT_WORKLIST_PAGE_SIZE;
     }
 
     public function getWorklistDefinitions()
@@ -372,7 +381,7 @@ class WorklistManager extends CComponent
         $worklists = array();
         $model = $this->getModelForClass('Worklist');
         $model->automatic = true;
-        //TODO: need to workl out how to pick by day, rather than time
+        //TODO: need to work out how to pick by day, rather than time
         $model->on = $when;
         foreach ($model->with('worklist_patients')->search()->getData() as $wl) {
             $worklists[] = $wl;
@@ -566,6 +575,7 @@ class WorklistManager extends CComponent
     public function renderWorklistForDashboard($worklist)
     {
         $this->yii->assetManager->registerScriptFile('js/worklist-dashboard.js', null, null, AssetManager::OUTPUT_SCREEN);
+
         return $this->renderPartial('//worklist/dashboard', array(
                 'worklist' => $worklist,
                 'worklist_patients' => $this->getPatientsForWorklist($worklist)
@@ -612,7 +622,7 @@ class WorklistManager extends CComponent
 
         $content = "";
         //TODO: remove hardcoded date, and think about configuration for how many days in advance to render
-        $when = DateTime::createFromFormat('Y-m-d', "2016-05-23");
+        $when = DateTime::createFromFormat('Y-m-d', "2016-05-26");
         foreach ($this->getCurrentAutomaticWorklistsForUserContext($user, $site, $firm, $when) as $worklist)
             $content .= $this->renderWorklistForDashboard($worklist);
 
@@ -631,24 +641,14 @@ class WorklistManager extends CComponent
 
     /**
      *
-     * @FIXME: investigate alternate abstractions ... might be some issues here
      * @TODO: test me
      * @param $worklist
-     * @param null $limit
-     * @param null $offset
-     * @return mixed
+     * @return CActiveDataProvider
      */
-    public function getPatientsForWorklist($worklist, $limit = null, $offset = null)
+    public function getPatientsForWorklist($worklist)
     {
-        $wp_model = $this->getModelForClass('WorklistPatient');
-
         $criteria = new CDbCriteria();
         $criteria->addColumnCondition(array("t.worklist_id" => $worklist->id));
-
-        if ($limit)
-            $criteria->limit = $limit;
-        if ($offset)
-            $criteria->offset = $offset;
 
         if ($worklist->scheduled) {
             $criteria->order = "t.when";
@@ -657,7 +657,13 @@ class WorklistManager extends CComponent
             $criteria->order = "LOWER(contact.last_name), LOWER(contact.first_name)";
         }
 
-        return $wp_model->with(array('patient','patient.contact'))->findAll($criteria);
+        $criteria->with = array('patient','patient.contact');
+        return new CActiveDataProvider("WorklistPatient", array(
+            'criteria' => $criteria,
+            'pagination' => array(
+                'pageSize' => $this->getWorklistPageSize()
+            )
+        ));
     }
 
     /**

@@ -20,45 +20,68 @@
 
     <div class="large-12 column">
         <?php
-        if (!count($worklist_patients)) {?>
+        if (!$worklist_patients->totalItemCount > 0) {?>
             <div class="alert-box">
                 No patients in this worklist.
             </div>
             <?php
-        } else {?>
+        } else {
+            $cols = array(
+                array(
+                    'id' => 'hos_num',
+                    'class' => 'CDataColumn',
+                    'header' => 'Hospital No.',
+                    'value' => '$data->patient->hos_num',
+                ),
+                array(
+                    'id' => 'patient_name',
+                    'class' => 'CLinkColumn',
+                    'header' => 'Name',
+                    'urlExpression' => 'Yii::app()->createURL("/patient/view/", array("id" => $data->patient_id))',
+                    'labelExpression' => '$data->patient->getHSCICName()'
+                ),
+                array(
+                    'id' => 'gender',
+                    'class' => 'CDataColumn',
+                    'header' => 'Gender',
+                    'value' => '$data->patient->genderString'
+                ),
+                array(
+                    'id' => 'dob',
+                    'class' => 'CDataColumn',
+                    'header' => 'DOB',
+                    'value' => 'Helper::convertMySQL2NHS($data->patient->dob)',
+                    'htmlOptions' => array('class' => 'date')
+                ),
+            );
+            if ($worklist->scheduled) {
+                array_unshift($cols, array(
+                    'id' => 'time',
+                    'class' => 'CDataColumn',
+                    'header' => 'Time',
+                    'value' => '$data->scheduledtime'
+                ));
+            }
 
-            <table class="grid audit-logs worklist" id="worklist-table-<?=$worklist->id?>">
-                <thead>
-                <tr>
-                    <?php if ($worklist->scheduled) {?>
-                    <th>Time</th>
-                    <?php } ?>
-                    <th>Hospital No.</th>
-                    <th class="large-2">Patient</th>
-                    <th>Gender</th>
-                    <th>DOB</th>
-                    <?php foreach ($worklist->displayed_mapping_attributes as $attr) {?>
-                        <th><?=$attr->name?></th>
-                    <?php } ?>
-                </tr>
-                </thead>
-                <tbody id="worklist-<?=$worklist->id?>-patients">
-                <?php foreach ($worklist_patients as $i => $wp) {?>
-                    <tr data-url="/patient/view/<?=$wp->patient_id?>" class="clickable">
-                        <?php if ($worklist->scheduled) {?>
-                            <td><?=$wp->scheduledtime?></td>
-                        <?php } ?>
-                        <td><?=$wp->patient->hos_num?></td>
-                        <td style="white-space: nowrap;"><?=$wp->patient->HSCICName?></td>
-                        <td><?=$wp->patient->genderString?></td>
-                        <td><?=Helper::convertDate2NHS($wp->patient->dob)?></td>
-                        <?php foreach ($worklist->displayed_mapping_attributes as $attr) {?>
-                            <td><?=$wp->getWorklistAttributeValue($attr)?></td>
-                        <?php } ?>
-                    </tr>
-                <?php } ?>
-                </tbody>
-            </table>
-        <?php }?>
+            foreach ($worklist->displayed_mapping_attributes as $attr) {
+                $cols[] = array(
+                    'id' => "{$worklist->id}-attr-{$attr->id}",
+                    'class' => "CDataColumn",
+                    'header' => $attr->name,
+                    'value' => function ($data) use ($attr) {
+                        return $data->getWorklistAttributeValue($attr);
+                    },
+                    'type' => 'raw'
+                );
+            }
+
+            $this->widget('zii.widgets.grid.CGridView', array(
+                'itemsCssClass' => 'grid',
+                'dataProvider'=> $worklist_patients,
+                'htmlOptions' => array('id' => "worklist-table-{$worklist->id}"),
+                'summaryText' => '<h3><small> {start}-{end} of {count} </small></h3>',
+                'columns' => $cols
+            ));
+        } ?>
     </div>
 </div>
