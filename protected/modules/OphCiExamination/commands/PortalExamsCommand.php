@@ -66,7 +66,6 @@ class PortalExamsCommand extends CConsoleCommand
                 }
                 continue;
             }
-
             if (UniqueCodes::model()->examinationEventCheckFromUniqueCode($uniqueCode, $eventType['id'])) {
                 $transaction = $opNoteEvent->getDbConnection()->beginInternalTransaction();
 
@@ -75,17 +74,13 @@ class PortalExamsCommand extends CConsoleCommand
                     $examinationEvent = new Event();
                     $examinationEvent->episode_id = $opNoteEvent->episode_id;
                     $examinationEvent->created_user_id = $examinationEvent->last_modified_user_id = $portalUserId;
-                    $examinationEvent->event_date = $examination['examination_date'];
+                    $examinationEvent->event_date = date('Y-m-d H:i:s',strtotime($examination['examination_date']));
                     $examinationEvent->event_type_id = $eventType['id'];
                     $examinationEvent->is_automated = 1;
                     $examinationEvent->automated_source = json_encode($examination['op_tom']);
 
                     if ($examinationEvent->save()) {
                         $examinationEvent->refresh();
-                        $examinationEventLog->event_id = $examinationEvent->id;
-                        $examinationEventLog->unique_code = $uniqueCode;
-                        $examinationEventLog->examination_date = $examination['examination_date'];
-                        $examinationEventLog->examination_data = json_encode($examination);
                         $refraction = new \OEModule\OphCiExamination\models\Element_OphCiExamination_Refraction();
                         $refraction->event_id = $examinationEvent->id;
                         $refraction->created_user_id = $refraction->last_modified_user_id = $portalUserId;
@@ -207,6 +202,10 @@ class PortalExamsCommand extends CConsoleCommand
                 } catch (Exception $e) {
                     $transaction->rollback();
                     $importStatus = ImportStatus::model()->find('status_value = "Import Failure"');
+                    $examinationEventLog->event_id = ($examinationEvent->id) ? $examinationEvent->id : 0;
+                    $examinationEventLog->unique_code = $uniqueCode;
+                    $examinationEventLog->examination_date = $examination['examination_date'];
+                    $examinationEventLog->examination_data = json_encode($examination);
                     $examinationEventLog->import_success = $importStatus->id;
                     if (!$examinationEventLog->save()) {
                         throw new CDbException('$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true));
@@ -215,6 +214,10 @@ class PortalExamsCommand extends CConsoleCommand
                     continue;
                 }
                 $importStatus = ImportStatus::model()->find('status_value = "Success Event"');
+                $examinationEventLog->event_id = ($examinationEvent->id) ? $examinationEvent->id : 0;
+                $examinationEventLog->unique_code = $uniqueCode;
+                $examinationEventLog->examination_date = $examination['examination_date'];
+                $examinationEventLog->examination_data = json_encode($examination);
                 $examinationEventLog->import_success = $importStatus->id;
                 if (!$examinationEventLog->save()) {
                     throw new CDbException('$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true));

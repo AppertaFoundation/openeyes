@@ -128,12 +128,14 @@ class UniqueCodes extends BaseActiveRecord
 	}
         
         public function examinationEventCheckFromUniqueCode($code, $examinationEventTypeId) {
-                $episodeId = $this->getEpisodeIdFromCode($code);
-                $eventType = EventType::model()->find('name = "Operation Note"');
-                $count_opnote_cataract_events_count = $this->getCountByEventTypeWithEpisode($eventType['id'],$episodeId['episode_id']);
-                $eventType = EventType::model()->find('name = "Examination"');
-                $count_examination_events_count = $this->getCountByEventTypeWithEpisode($eventType['id'],$episodeId['episode_id']);
-                return ($count_opnote_cataract_events_count < $count_examination_events_count) ? 1 : 0;
+                $duplicate_record_check = $this->dbConnection->createCommand()
+                                ->select('count(*) as count')
+                                ->from('automatic_examination_event_log')
+                                ->join('event', 'event.id = automatic_examination_event_log.event_id and event.deleted !=1')
+                                ->where('unique_code = ? ', array($code))
+                                ->andWhere("import_success = 1")
+                                ->queryRow();
+                return(($duplicate_record_check['count'] < 1) ? 1 : 0);
         }
         
         public function getEpisodeIdFromCode($code) {
@@ -146,17 +148,6 @@ class UniqueCodes extends BaseActiveRecord
                 return $episodeId;
         }
             
-        public function getCountByEventTypeWithEpisode($event_type_id,$episode_id) {
-                $count = $this->dbConnection->createCommand()
-                        ->select('count(*) as count')
-                        ->from('event')
-                        ->where('episode_id = ? ', array($episode_id))
-                        ->andWhere("event_type_id = $event_type_id")
-                        ->andWhere("deleted != 1")
-                        ->queryRow();
-                return $count['count'];
-        }
-        
         public function getEventFromEpisode($episode_id,$event_type_id) {
             $event_id = $this->dbConnection->createCommand()
                                 ->select('id')
