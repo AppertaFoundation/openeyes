@@ -20,7 +20,7 @@ var VFImages, OCTImages;
 var lastIndex = 0;
 var currentMedY = 90;
 var currentIndexDate = new Date().getTime();
-var fixedPointLeft = {point: undefined, color: undefined}, fixedPointRight={point: undefined, color: undefined};
+var fixedPoint = {point: undefined, side: undefined, color: undefined};
 
 $(document).ready(function() {
     // Create the IOP chart
@@ -32,7 +32,9 @@ $(document).ready(function() {
                     //alert(Highcharts.dateFormat('%A, %b %e, %Y', e.xAxis[0].value));
                     loadAllImages(Highcharts.dateFormat('%Y-%m-%d', e.xAxis[0].value));
                 }
-            }
+            },
+            marginLeft: 50,
+            spacingLeft: 30
         },
 
         plotOptions: {
@@ -84,7 +86,7 @@ $(document).ready(function() {
             labels:
             {
                 align: 'left',
-                x: 0,
+                x: -20,
                 y: -2
             }
         },
@@ -125,7 +127,8 @@ $(document).ready(function() {
     var VAchart = new Highcharts.StockChart({
         chart:{
             renderTo: 'vachart',
-            margin: 20
+            marginLeft: 50,
+            spacingLeft: 30
         },
 
         rangeSelector : {
@@ -179,7 +182,7 @@ $(document).ready(function() {
             labels:
             {
                 align: 'left',
-                x: 0,
+                x: -20,
                 y: -2
             }
         },
@@ -199,7 +202,8 @@ $(document).ready(function() {
     var MDchart = new Highcharts.StockChart({
         chart:{
             renderTo: 'mdchart',
-            margin: 20
+            marginLeft: 50,
+            spacingLeft: 30
         },
 
         rangeSelector : {
@@ -252,7 +256,7 @@ $(document).ready(function() {
             labels:
             {
                 align: 'left',
-                x: 0,
+                x: -20,
                 y: -2
             }
         },
@@ -289,82 +293,43 @@ $(document).ready(function() {
         changeOCTImages(e.pageX - this.offsetLeft, $(this).width());
     });
 
-    $('.colourplot_left').mouseover(function(e){
-        if(fixedPointLeft.point == undefined) {
+    $('.colourplot_left, .colourplot_right').mouseover(function(e){
+        if(fixedPoint.point == undefined) {
             var plotId = $(this).attr('id').split('_');
-            showRegressionChart(1, parseInt(plotId[2]), currentIndexDate);
+            showRegressionChart(getSideId(plotId[1]), parseInt(plotId[2]), currentIndexDate);
         }
     });
 
-    $('.colourplot_left').click(function(e){
+    $('.colourplot_left, .colourplot_right').click(function(e){
         var plotId = $(this).attr('id').split('_');
         //console.log(fixedPointLeft+' '+parseInt(plotId[2]));
-        if(fixedPointLeft.point != undefined && fixedPointLeft.point == parseInt(plotId[2])){
-            $(this).attr('fill', fixedPointLeft.colour);
+        if(fixedPoint.point != undefined && fixedPoint.point == parseInt(plotId[2])){
+            $(this).attr('fill', fixedPoint.colour);
             $(this).removeAttr('stroke');
             $(this).removeAttr('stroke-width');
-            fixedPointLeft.point = undefined;
-            fixedPointLeft.colour = undefined;
-        }else if(fixedPointLeft.point == undefined){
-            fixedPointLeft.point = parseInt(plotId[2]);
-            fixedPointLeft.colour = $(this).attr('fill');
+            fixedPoint.point = undefined;
+            fixedPoint.side = undefined;
+            fixedPoint.colour = undefined;
+        }else if(fixedPoint.point == undefined){
+            fixedPoint.point = parseInt(plotId[2]);
+            fixedPoint.side = getSideId(plotId[1]);
+            fixedPoint.colour = $(this).attr('fill');
             $(this).attr('fill','white');
             $(this).attr('stroke','black');
             $(this).attr('stroke-width','4');
         }
     });
 
-    $('.colourplot_left').mouseenter(function(e){
+    $('.colourplot_left, .colourplot_right').mouseenter(function(e){
         //$(this).addClass('colorplot-hover');
-        if(fixedPointLeft.point == undefined){
+        if(fixedPoint.point == undefined){
             $(this).attr('stroke','black');
             $(this).attr('stroke-width','2');
         }
     });
 
-    $('.colourplot_left').mouseout(function(e){
-        if(fixedPointLeft.point == undefined) {
-            $(this).removeAttr('stroke');
-            $(this).removeAttr('stroke-width');
-        }
-    });
-
-
-
-    $('.colourplot_right').mouseover(function(e){
-        if(fixedPointRight.point == undefined) {
-            var plotId = $(this).attr('id').split('_');
-            showRegressionChart(2, parseInt(plotId[2]), currentIndexDate);
-        }
-    });
-
-    $('.colourplot_right').click(function(e){
-        var plotId = $(this).attr('id').split('_');
-        if(fixedPointRight.point != undefined && fixedPointRight.point == parseInt(plotId[2])){
-            $(this).attr('fill', fixedPointRight.colour);
-            $(this).removeAttr('stroke');
-            $(this).removeAttr('stroke-width');
-            fixedPointRight.point = undefined;
-            fixedPointRight.colour = undefined;
-        }else if(fixedPointRight.point == undefined){
-            fixedPointRight.point = parseInt(plotId[2]);
-            fixedPointRight.colour = $(this).attr('fill');
-            $(this).attr('fill','white');
-            $(this).attr('stroke','black');
-            $(this).attr('stroke-width','4');
-        }
-    });
-
-    $('.colourplot_right').mouseenter(function(e){
-        //$(this).addClass('colorplot-hover');
-        if(fixedPointRight.point == undefined){
-            $(this).attr('stroke','black');
-            $(this).attr('stroke-width','2');
-        }
-    });
-
-    $('.colourplot_right').mouseout(function(e){
-        if(fixedPointRight.point == undefined) {
+    $('.colourplot_left, .colourplot_right').mouseout(function(e){
+        if(fixedPoint.point == undefined) {
             $(this).removeAttr('stroke');
             $(this).removeAttr('stroke-width');
         }
@@ -386,15 +351,32 @@ function addRegressionChart(){
 
     $(function () {
         $('#regression_chart').highcharts({
+            chart: {
+                plotBorderWidth: 1
+            },
             xAxis: {
-                min: 1
+                min: 1,
+                gridLineColor: '#333333',
+                lineColor: '#333333',
+                title: {
+                    text: 'Time (months)'
+                }
             },
             yAxis: {
                 min: 0,
-                max: 30
+                max: 35,
+                gridLineColor: '#DDDDDD',
+                lineColor: '#DDDDDD',
+                title: {
+                    text: 'Sensitivity (dB)'
+                }
             },
             title: {
-                text: 'Scatter plot with regression line'
+                text: 'Y= n*x+b',
+                align: 'left'
+            },
+            legend:{
+                enabled: false
             },
             credits: {
                 enabled: false
@@ -403,6 +385,7 @@ function addRegressionChart(){
                 type: 'line',
                 name: 'Regression Line',
                 data: [],
+                color: 'black',
                 marker: {
                     enabled: false
                 },
@@ -416,8 +399,10 @@ function addRegressionChart(){
                 type: 'scatter',
                 name: 'Observations',
                 data: [],
+                color: '#6699ff',
                 marker: {
-                    radius: 4
+                    radius: 4,
+                    symbol: 'circle'
                 }
             }]
         });
@@ -425,11 +410,11 @@ function addRegressionChart(){
 }
 
 function updateRegressionChart( data){
-    Highcharts.charts[3].series[0].setData(data.line, false);
-    Highcharts.charts[3].series[1].setData(data.plots, false);
+    Highcharts.charts[3].series[0].setData(data.line, false, false);
+    Highcharts.charts[3].series[1].setData(data.plots, false, false);
     $('.highcharts-regressionLabel').remove();
-    regressionLabel = Highcharts.charts[3].renderer.label('y='+parseFloat(data.regression.m).toFixed(4)+'*x+'+parseFloat(data.regression.b).toFixed(4)+' <b>p-value:</b> '+parseFloat(data.regression.pb).toFixed(5), 40,30, 'rect', 1, 1, 1, 1, 'regressionLabel').add();
-
+    //regressionLabel = Highcharts.charts[3].renderer.label('Y='+parseFloat(data.regression.m).toFixed(2)+'*x+'+parseFloat(data.regression.b).toFixed(2)+' <b>P=</b> '+parseFloat(data.regression.pb).toFixed(5)+' N='+data.plots.length, 40,30, 'rect', 1, 1, 1, 1, 'regressionLabel').add();
+    Highcharts.charts[3].setTitle({text:'Y='+parseFloat(data.regression.m).toFixed(2)+'*x+'+parseFloat(data.regression.b).toFixed(2)+' <b>P=</b> '+parseFloat(data.regression.pb).toFixed(5)+' N='+data.plots.length, align:'left', x:60, style:{"fontSize": "13px"}}, false);
     Highcharts.charts[3].redraw();
 }
 
@@ -503,6 +488,14 @@ function getSideName(side){
         return 'left';
     }else{
         return 'right';
+    }
+}
+
+function getSideId(sidename){
+    if(sidename=='left'){
+        return 1;
+    }else{
+        return 2;
     }
 }
 
