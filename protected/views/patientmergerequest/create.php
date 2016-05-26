@@ -37,7 +37,7 @@
             </div>
         </div>
         <form id="grid_header_form" action="<?php echo Yii::app()->createUrl('/patientMergeRequest/create')?>" method="post">
-            <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
+            <input type="hidden" class="no-clear" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
             <div class="row">
                 <div class="large-5 column">
                     <h2 class="secondaryPatient">Secondary</h2>
@@ -64,10 +64,17 @@
             
             <div class="row">
                 <div class="large-3 column text-right large-offset-9">
-                    <input type="submit" value="Save">
+                    <input class="no-clear" type="submit" value="Save">
                 </div>
             </div>
         </form>
         <br>
 
     </div>
+
+<script>
+    /* Thanks to Chrom's "back btn not reloading the page" feature */
+    $('#grid_header_form').find('input:not(.no-clear)').each(function(){
+        $(this).val("");
+    });
+</script>
