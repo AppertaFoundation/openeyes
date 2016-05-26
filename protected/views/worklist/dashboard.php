@@ -78,7 +78,7 @@
             $this->widget('zii.widgets.grid.CGridView', array(
                 'itemsCssClass' => 'grid',
                 'dataProvider'=> $worklist_patients,
-                'htmlOptions' => array('id' => "worklist-table-{$worklist->id}"),
+                'htmlOptions' => array('id' => "worklist-table-{$worklist->id}", 'style' => 'padding: 0px;'),
                 'summaryText' => '<h3><small> {start}-{end} of {count} </small></h3>',
                 'columns' => $cols
             ));
