@@ -19,7 +19,7 @@
 
 <div class="admin box">
     <h2>Automatic Worklist Definitions</h2>
-    <?php echo EventAction::link('Add Definition', '/worklistAdmin/definition/', array(), array('class' => 'button primary small'))->toHtml()?>
+    <?php echo EventAction::link('Add Definition', '/worklistAdmin/definitionEdit/', array(), array('class' => 'button primary small'))->toHtml()?>
     <?php if ($definitions) {?>
         <table class="generic-admin grid">
             <thead>
