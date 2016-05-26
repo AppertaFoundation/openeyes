@@ -27,6 +27,9 @@ var patientMerge = {
         tmpPatiens = patientMerge.patients.primary;
         patientMerge.patients.primary = patientMerge.patients.secondary;
         patientMerge.patients.secondary = tmpPatiens;     
+    },
+    
+    validatePatientsData: function(){
     }
 };
                         
@@ -183,7 +186,7 @@ $(document).ready(function(){
     });
     
     $('#patientMergeWrapper').on('click', '#selectall', function(){
-        $(this).closest('table').find('input[type="checkbox"]').attr('checked', this.checked);
+        $(this).closest('table').find('input[type="checkbox"]:not(:disabled)').attr('checked', this.checked);
     });
     
     $('#patientMergeWrapper table').on('click', 'tr', function(e){
@@ -223,22 +226,7 @@ $(document).ready(function(){
    });
    
    
-   $('#patientMergeWrapper').on('click', '#mergeRequestUpdate', function(e){
-        e.preventDefault();
-        var id = $('#PatientMergeRequest_id').val(),
-        $form = $(this).closest('form');
-        
-        $form.attr('action', '/patientMergeRequest/update/' + id);
-        $form.submit();
-        return true;
-        
-        var serializedForm = $(this).closest('form').serialize(), 
-            id = $('#PatientMergeRequest_id').val();
 
-        $.post( "/patientMergeRequest/update/" + id, serializedForm, function( data ) {
-           window.location.href = '/patientMergeRequest/index';
-        });
-   });
    
    
    $('.filter').on('click', 'button.filter',function(event){

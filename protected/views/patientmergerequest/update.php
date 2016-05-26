@@ -31,8 +31,12 @@
             </div>
         </div>
         <?php $this->renderPartial('//base/_messages')?>
-
-        <form id="grid_header_form" action="<?php echo Yii::app()->createUrl('/patientMergeRequest/merge',array('id' => $model->id))?>" method="post">
+        <div class="row">
+            <div class="large-7 column large-centered">
+                <?php $this->renderPartial('//patientmergerequest/_patient_search',array('patient_type' => 'patient'))?>
+            </div>
+        </div>
+        <form id="grid_header_form" action="<?php echo Yii::app()->createUrl('/patientMergeRequest/update',array('id' => $model->id))?>" method="post">
             <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
             <?php echo CHTML::activeHiddenField($model, 'id') ?>
             <div class="row">
@@ -44,6 +48,7 @@
                 <div class="large-2 column text-center">
                     <h2>INTO</h2>
                     <img class="into-arrow" src="<?= Yii::app()->assetManager->createUrl('img/_elements/graphic/right-black-arrow_128_30.png')?>" alt="OpenEyes logo" />
+                    <button type="button" id="swapPatients"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAYCAYAAACbU/80AAABdklEQVRIS8XWv0vUcRzH8cehIog0Obio/QMuTk45KQYOidBQk+DkIopbazQEkkODERzh0tIQQQjh0uYgTq2RQzQKgSKhQ7yPO/h6nPe9z5fv3fczv96f15PP+9enpv9nGo/xrpNVrf/+HuIXtrHf7jdIgPB+gVdZiEEDhHcABEjjVAEQvm+wUxQg6NcTamcYMx30B9gs8gJRSFsJAN2k9SoBbvC8CMAqFhJe4EGHlP3DU3wpApDg3ZC25kAr7hpP8C2vCOdwjotUxzZ9FuASK/ie14bzOMIsfpcE8BfLOMkbRI/wFeOYKgngFEs4yxvFi/iMsaawDIAJTOJH3jKK3HzCaEZYBkDXDLa6YA0fMdKm/oCrhBo4br5gzyEB8AyHGOo56n7hHnZT7gmA99hICeqiLQQQEG9jMXS4+CduE+DqeJ2gv7OOg76xIqsowpbny+xnoaQ50FMXZEWx7wMkzsDasJ0yUhEpqQwggKIoYyr+SSmqVO1/0Hw+DMYnP1MAAAAASUVORK5CYII="><br>Swap</button>
                 </div>  
 
                 <div class="large-5 column">
@@ -73,30 +78,27 @@
                     </div>
                 </div>
             <?php endif; ?>
-            <?php if ( Yii::app()->user->checkAccess('Patient Merge') ): ?>
+            
             <div class="row">
-                <div class="large-5 column text-right large-offset-7">
-                    <div class="row">
-                        <div class="large-9 column text-right">
-                            <label>
-                                <?php echo CHTML::checkBox('PatientMergeRequest[confirm]', false); ?> I declare under penalty of perjury I reviewed the details and I would like to proceed to merge.
-                            </label>
-                        </div>
-                        <div class="large-3 column text-right">
-                            <input class="warning" type="submit" value="Merge">
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="large-3 column text-right large-offset-9">
-                     
-                            <?php echo CHtml::link('cancel',array('patientMergeRequest/index'), array('class' => 'button primary')); ?> 
-                        </div>
-                    </div>
+                <div class="large-3 column text-right large-offset-9">
+                    <?php echo CHtml::link('cancel',array('patientMergeRequest/index'), array('class' => 'button primary')); ?> 
+                    <input type="submit" value="Save" class="secondary button" id="mergeRequestUpdate"> 
                     
                 </div>
             </div>
-            <?php endif; ?>
         </form>
         <br>
+
     </div>
+<script>
+    
+    patientMerge.patients.primary = JSON.parse('<?php echo $primaryPatientJSON; ?>');
+    patientMerge.patients.primary['all-episodes'] = $('<textarea />').html(patientMerge.patients.primary['all-episodes']).text();
+    
+    patientMerge.patients.secondary = JSON.parse('<?php echo $secondaryPatientJSON; ?>');
+    patientMerge.patients.secondary['all-episodes'] = $('<textarea />').html(patientMerge.patients.secondary['all-episodes']).text();
+    
+    patientMerge.updateDOM('primary');
+    patientMerge.updateDOM('secondary');
+    
+</script>
