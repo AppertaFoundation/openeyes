@@ -16,8 +16,6 @@
 
 
 <div id="patientMergeWrapper" class="container content">
-    
-    <?php $this->renderPartial('//base/_messages')?>
 
     <form id="patientMergeList">
         <div class="row">
@@ -39,7 +37,7 @@
                         </div>
                     </div>
                     <div class="grid-view" id="inbox-table">
-                        <?php $this->renderPartial('//patientmergerequest/_list',array('dataProvider' => $dataProvider))?>
+                        <?php $this->renderPartial('//patientmergerequest/_list',array('dataProvider' => $dataProvider, 'filters' => $filters))?>
                     </div>
                 </section>
             </div>

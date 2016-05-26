@@ -30,12 +30,12 @@ class PatientMergeRequestController extends BaseController
     {
         return array(
             array('allow',
-                'actions' => array('index', 'create', 'view', 'search', 'merge', 'update', 'delete'),
+                'actions' => array('index', 'create', 'view', 'log', 'search', 'merge', 'update', 'delete'),
                 'roles' => array('Patient Merge'),
             ),
             
             array('allow',
-                'actions' => array('index', 'create', 'view', 'search', 'update', 'delete'),
+                'actions' => array('index', 'create', 'view', 'log', 'search', 'update', 'delete'),
                 'roles' => array('Patient Merge Request'),
             ),
             
@@ -140,7 +140,7 @@ class PatientMergeRequestController extends BaseController
      * Displays a particular model.
      * @param integer $id the ID of the model to be displayed
      */
-    public function actionView($id)
+    public function actionLog($id)
     {
         $model = $this->loadModel($id);
         
@@ -152,11 +152,26 @@ class PatientMergeRequestController extends BaseController
             );
         }
         
-        $this->render('//patientmergerequest/view', array(
+        $this->render('//patientmergerequest/log', array(
             'model' => $model,
             'dataProvider' => new CArrayDataProvider( $log ),
         ));
     }
+    
+    
+    /**
+     * Displays a particular model.
+     * @param integer $id the ID of the model to be displayed
+     */
+    public function actionView($id)
+    {
+        $model = $this->loadModel($id);
+        
+        $this->render('//patientmergerequest/view', array(
+            'model' => $model,
+        ));
+    }
+    
     
     /**
      * Updates a particular model.
@@ -165,28 +180,30 @@ class PatientMergeRequestController extends BaseController
     */
    public function actionUpdate($id)
    {
-        $model = $this->loadModel($id);
-
-        if(isset($_POST['PatientMergeRequest']))
-        {
-             $model->attributes=$_POST['PatientMergeRequest'];
-             if( $model->status == PatientMergeRequest::STATUS_MERGED ){
-                 $this->redirect(array('view','id' => $model->id));
-             } else if($model->save()) {
-                $this->redirect(array('index'));
-             }
-        }
-
+        $mergeRequest = $this->loadModel($id);
         $mergeHandler = new PatientMerge;
         
         // if the personal details are conflictng (DOB and Gender at the moment) we need extra confirmation
-        $personalDetailsConflictConfirm = $mergeHandler->comparePatientDetails($model->primaryPatient, $model->secondaryPatient);
+        $personalDetailsConflictConfirm = $mergeHandler->comparePatientDetails($mergeRequest->primaryPatient, $mergeRequest->secondaryPatient);
 
-        $primary = Patient::model()->findByPk($model->primary_id);
-        $secondary = Patient::model()->findByPk($model->secondary_id);
+        if(isset($_POST['PatientMergeRequest']))
+        {
+            if( !$personalDetailsConflictConfirm['isConflict'] || ($personalDetailsConflictConfirm['isConflict'] && isset($_POST['PatientMergeRequest']['personalDetailsConflictConfirm'])) ){
+                
+                $mergeRequest->attributes=$_POST['PatientMergeRequest'];
+                if( $mergeRequest->status == PatientMergeRequest::STATUS_MERGED ){
+                    $this->redirect(array('view','id' => $mergeRequest->id));
+                } else if($mergeRequest->save()) {
+                   $this->redirect(array('index'));
+                }
+            }
+        }
 
-        $this->render('//patientmergerequest/merge', array(
-            'model' => $model,
+        $primary = Patient::model()->findByPk($mergeRequest->primary_id);
+        $secondary = Patient::model()->findByPk($mergeRequest->secondary_id);
+
+        $this->render('//patientmergerequest/update', array(
+            'model' => $mergeRequest,
             'personalDetailsConflictConfirm' => $personalDetailsConflictConfirm['isConflict'],
             'primaryPatientJSON' => CJavaScript::jsonEncode(array(
                             'id' => $primary->id,
@@ -247,7 +264,7 @@ class PatientMergeRequestController extends BaseController
                     $mergeRequest->merge_json = json_encode( array( 'log' => $mergeHandler->getLog() ) );
                     $mergeRequest->save();
                     Audit::add('Patient Merge', $msg);
-                    $this->redirect(array('view', 'id' => $mergeRequest->id));
+                    $this->redirect(array('log', 'id' => $mergeRequest->id));
                 } else {
                     $msg = "Merge Request " . $mergeRequest->secondaryPatient->hos_num . " INTO " . $mergeRequest->primaryPatient->hos_num . " FAILED.";
                     $mergeHandler->addLog($msg);
@@ -266,50 +283,33 @@ class PatientMergeRequestController extends BaseController
         $this->render('//patientmergerequest/merge', array(
             'model' => $mergeRequest,
             'personalDetailsConflictConfirm' => $personalDetailsConflictConfirm['isConflict'],
-            'primaryPatientJSON' => CJavaScript::jsonEncode(array(
-                            'id' => $primary->id,
-                            'first_name' => $primary->first_name,
-                            'last_name' => $primary->last_name,
-                            'age' => ($primary->isDeceased() ? 'Deceased' : $primary->getAge()),
-                            'gender' => $primary->getGenderString(),
-                            'genderletter' => $primary->gender,
-                            'dob' => ($primary->dob) ? $primary->NHSDate('dob') : 'Unknown',
-                            'hos_num' => $primary->hos_num, 
-                            'nhsnum' => $primary->nhsnum,
-                            'all-episodes' => htmlentities (str_replace(array("\n", "\r", "\t"), '', $this->getEpisodesHTML($primary) ) ),
-                        )
-                    ),
-            
-            'secondaryPatientJSON' => CJavaScript::jsonEncode(array(
-                            'id' => $secondary->id,
-                            'first_name' => $secondary->first_name,
-                            'last_name' => $secondary->last_name,
-                            'age' => ($secondary->isDeceased() ? 'Deceased' : $secondary->getAge()),
-                            'gender' => $secondary->getGenderString(),
-                            'genderletter' => $secondary->gender,
-                            'dob' => ($secondary->dob) ? $secondary->NHSDate('dob') : 'Unknown',
-                            'hos_num' => $secondary->hos_num,
-                            'nhsnum' => $secondary->nhsnum,
-                            'all-episodes' => htmlentities (str_replace(array("\n", "\r", "\t"), '', $this->getEpisodesHTML($secondary) ) ),
-                        )
-                    ),
             
         ));
     }
     
     public function actionDelete()
     {        
-        if( isset($_POST['patientMergeRequest']) ){
+        if( isset($_POST['patientMergeRequestIds']) ){
+           
+            $criteria = new CDbCriteria();
+            $criteria->condition = "t.status = " . PatientMergeRequest::STATUS_NOT_PROCESSED;
+            
+            $requests = PatientMergeRequest::model()->findAllByPk($_POST['patientMergeRequestIds'], $criteria);
 
-            foreach (PatientMergeRequest::model()->findAllByPk($_POST['patientMergeRequest']) as $request) {
-              
+            foreach ($requests as $request) {
+
                 $request->deleted = 1;
                
                 if ( $request->save() ) {
-                    Audit::add('Patient Merge', 'Patient Merge Request Deleted: ');
+                    Audit::add('Patient Merge', 'Patient Merge Request flagged as deleted. id: ' . $request->id);
+                } else {
+                    throw new Exception("Unable to save Patient Merge Request: ".print_r($request->getErrors(),true));
                 }
             }
         }
+        
+        echo CJavaScript::jsonEncode( array('success' => 1) );
+        Yii::app()->end();
     }
     
     

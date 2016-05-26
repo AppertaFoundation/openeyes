@@ -18,7 +18,7 @@
         <tr>
             <td colspan="5">
                 <?php echo CHtml::link('Add', array('patientMergeRequest/create'), array('class' => 'button small')); ?>
-                <?php echo CHtml::link('Delete', array('patientMergeRequest/delete'), array('id' => 'rq_delete', 'class' => 'button small')); ?>
+                <?php echo CHtml::link('Delete', array('patientMergeRequest/delete'), array('id' => 'rq_delete', 'class' => 'button small', 'disabled' => ($filters['show_merged'] ? 'disabled':'') )); ?>
 
                 <?php echo $this->renderPartial('//admin/_pagination',array(
                         'pagination' => $dataProvider->getPagination()
@@ -30,18 +30,18 @@
         <?php foreach ($dataProvider->getData() as $i => $request): ?>
         
             <?php if( $request->status == PatientMergeRequest::STATUS_NOT_PROCESSED ): ?>
-        
-                <?php $action = Yii::app()->user->checkAccess('Patient Merge') ? 'merge' : 'update'; ?>
-                <tr class="clickable" data-id="<?php echo $request->id?>" data-uri="patientMergeRequest/<?php echo $action . '/' . $request->id?>">
+                <tr class="clickable" data-id="<?php echo $request->id?>" data-uri="patientMergeRequest/<?php echo 'view/' . $request->id?>">
             <?php else: ?>
-                <tr class="clickable" data-id="<?php echo $request->id?>" data-uri="patientMergeRequest/view/<?php echo $request->id?>">
+                <tr class="clickable" data-id="<?php echo $request->id?>" data-uri="patientMergeRequest/log/<?php echo $request->id?>">
             <?php endif; ?>
-                <td class="checkbox"><input type="checkbox" name="patientMergeRequest[]" value="<?php echo $request->id?>" /></td>
+                <td class="checkbox">
+                    <input type="checkbox" name="patientMergeRequestIds[]" value="<?php echo $request->id?>" <?php echo $request->status == PatientMergeRequest::STATUS_NOT_PROCESSED ? '':'disabled'?>>
+                </td>
                 <td class="secondary"><?php echo $request->secondary_hos_num?></td>
                 <td class="into">INTO</td>
                 <td class="primary"><?php echo $request->primary_hos_num?></td>
                 <td class="status">
-                    <div class="circle <?php echo (strtolower(str_replace(" ", "-", $request->getStatusText())) ); ?>" ></div> 
+                    <div class="circle <?php echo (strtolower(str_replace(" ", "-", $request->getStatusText())) ); ?>" ></div>
                     <?php echo $request->getStatusText(); ?> 
                 </td>
                 <td class="created"><?php echo $request->created_date; ?> </td>
