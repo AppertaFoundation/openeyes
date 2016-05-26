@@ -196,6 +196,7 @@ class PatientAppointment extends BaseResource
             }
         }
         else {
+            $model->patient_id = $patient->id;
             if (!$this->worklist_manager->updateWorklistPatientFromMapping($model, $when, $attributes)) {
                 foreach ($this->worklist_manager->getErrors() as $err) {
                     $this->addError($err);

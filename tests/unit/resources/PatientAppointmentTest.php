@@ -96,20 +96,31 @@ class PatientAppointmentTest extends PHPUnit_Framework_TestCase
         $p->setAccessible(true);
         $p->setValue($pa, $manager);
 
+        $patient = ComponentStubGenerator::generate('Patient', array('id' => 12));
+        $when = new DateTime('2012-08-04');
+        $attributes = array('foo' => 'bar');
+
         $pa->expects($this->once())
-            ->method('resolvePatient');
-        $pa->expects($this->once())
+            ->method('resolvePatient')
+            ->will($this->returnValue($patient));
+
+            $pa->expects($this->once())
             ->method('resolveWhen')
-            ->will($this->returnValue(new DateTime()));
+            ->will($this->returnValue($when));
         $pa->expects($this->once())
             ->method('resolveAttributes')
-            ->will($this->returnValue(array()));
+            ->will($this->returnValue($attributes));
+
+        $model = ComponentStubGenerator::generate("WorklistPatient", array('isNewRecord' => false, 'patient_id' => 4));
 
         $manager->expects($this->once())
-            ->method('updateWorklistPatientFromMapping');
+            ->method('updateWorklistPatientFromMapping')
+            ->with($model, $when, $attributes)
+            ->will($this->returnValue(true));
 
-        $model = ComponentStubGenerator::generate("WorklistPatient", array('isNewRecord' => false));
         $pa->saveModel($model);
+        // verify that the patient has been updated
+        $this->assertEquals($patient->id, $model->patient_id);
     }
 
 }
