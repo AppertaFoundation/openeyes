@@ -764,4 +764,92 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $m->invokeArgs($manager,array($worklist, $map_attrs)));
     }
+
+    public function getDashboardRenderDatesProvider()
+    {
+        return array(
+            array('2012-02-24', 4, array('Sat', 'Sun'),
+                array('2012-02-24','2012-02-27','2012-02-28','2012-02-29', '2012-03-01')),
+            array('2012-02-25', 2, array('Sat', 'Sun'),
+                array('2012-02-27','2012-02-28')),
+            array('2012-02-25', 2, array('Sun'),
+                array('2012-02-25','2012-02-27', '2012-02-28')),
+            array('2018-10-27', 0, array('Sat'), array())
+        );
+    }
+
+    /**
+     * @dataProvider getDashboardRenderDatesProvider
+     * @param $days_interval
+     * @param $skip_days
+     * @param $expected
+     */
+    public function test_getDashboardRenderDates($test_date, $days_interval, $skip_days, $expected)
+    {
+        $interval = "+{$days_interval} days";
+
+        $manager = $this->getMockBuilder('WorklistManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getAppParam'))
+            ->getMock();
+
+        $manager->expects($this->at(0))
+            ->method('getAppParam')
+            ->with('worklist_dashboard_future_days')
+            ->will($this->returnValue($interval));
+
+        $manager->expects($this->at(1))
+            ->method('getAppParam')
+            ->with('worklist_dashboard_skip_days')
+            ->will($this->returnValue($skip_days));
+
+        $dates = $manager->getDashboardRenderDates(DateTime::createFromFormat('Y-m-d', $test_date));
+
+        $this->assertEquals(count($expected), count($dates));
+        for ($i = 0; $i < count($dates); $i++)
+            $this->assertEquals($expected[$i], $dates[$i]->format('Y-m-d'));
+    }
+
+    public function test_renderAutomaticDashboard()
+    {
+        $manager = $this->getMockBuilder("WorklistManager")
+            ->disableOriginalConstructor()
+            ->setMethods(array('getCurrentUser','getCurrentSite','getCurrentFirm', 'getDashboardRenderDates',
+                'getCurrentAutomaticWorklistsForUserContext', 'renderWorklistForDashboard'))
+            ->getMock();
+
+        $user = ComponentStubGenerator::generate('User');
+        $site = ComponentStubGenerator::generate('Site');
+        $firm = ComponentStubGenerator::generate('Firm');
+
+        $manager->expects($this->once())
+            ->method('getCurrentUser')
+            ->will($this->returnValue($user));
+        $manager->expects($this->once())
+            ->method('getCurrentSite')
+            ->will($this->returnValue($site));
+        $manager->expects($this->once())
+            ->method('getCurrentFirm')
+            ->will($this->returnValue($firm));
+
+        $dates = array(new DateTime('2012-07-03'), new DateTime('2012-07-04'));
+        $manager->expects($this->once())
+            ->method('getDashboardRenderDates')
+            ->will($this->returnValue($dates));
+
+        $manager->expects($this->exactly(count($dates)))
+            ->method('getCurrentAutomaticWorklistsForUserContext')
+            ->with($user, $site, $firm)
+            ->will( $this->returnValue(array('fake')) );
+
+        $manager->expects($this->exactly(count($dates)))
+            ->method('renderWorklistForDashboard')
+            ->will($this->returnValue("fake render"));
+
+        $res = $manager->renderAutomaticDashboard();
+
+        $this->assertTrue(is_array($res));
+        $this->assertArrayHasKey('content', $res);
+        $this->assertEquals('fake renderfake render', $res['content']);
+    }
 }

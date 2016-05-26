@@ -25,8 +25,45 @@ class WorklistManager extends CComponent
 {
     public static $AUDIT_TARGET_MANUAL = "Manual Worklist";
     public static $AUDIT_TARGET_AUTO = "Automatic Worklists";
+    /**
+     * @var string
+     */
+    protected static $DEFAULT_WORKLIST_START_TIME = '09:00';
+    /**
+     * @var string
+     */
+    protected static $DEFAULT_WORKLIST_END_TIME = '17:00';
 
     /**
+     * @var string
+     */
+    protected static $DEFAULT_GENERATION_LIMIT = '1 month';
+
+    /**
+     * @var int
+     */
+    protected static $DEFAULT_WORKLIST_PAGE_SIZE = 10;
+
+    /**
+     * The interval between now and the future used for determining which Automatic Worklists
+     * should be rendered on the dashboard
+     *
+     * @var string
+     */
+    protected static $DEFAULT_DASHBOARD_FUTURE_DAYS = 1;
+
+    /**
+     * Array of 3 letter days of the week that should be skipped for picking dates to render
+     * worklist dashboards for.
+
+     * @TODO: leverage for day or week selection for definition setup
+     * @var array
+     */
+    protected static $DEFAULT_DASHBOARD_SKIP_DAYS = ['Sun'];
+
+    /**
+     * Internal store of error messages
+     *
      * @var array
      */
     protected $errors = [];
@@ -162,25 +199,6 @@ class WorklistManager extends CComponent
     }
 
     /**
-     * @var string
-     */
-    protected static $DEFAULT_WORKLIST_START_TIME = '09:00';
-    /**
-     * @var string
-     */
-    protected static $DEFAULT_WORKLIST_END_TIME = '17:00';
-
-    /**
-     * @var string
-     */
-    protected static $DEFAULT_GENERATION_LIMIT = '1 month';
-
-    /**
-     * @var int
-     */
-    protected static $DEFAULT_WORKLIST_PAGE_SIZE = 10;
-
-    /**
      * Wrapper for managing default start time for scheduled worklists
      *
      * @return string
@@ -218,6 +236,30 @@ class WorklistManager extends CComponent
         return (new DateTime())->add($interval);
     }
 
+    public function getDashboardRenderDates(DateTime $date)
+    {
+        // in case the passed in date is being used for anything else
+        $r_date = clone $date;
+        $r_date->setTime(0,0,0);
+
+        $future_days = $this->getAppParam('worklist_dashboard_future_days') ?: self::$DEFAULT_DASHBOARD_FUTURE_DAYS;
+        $skip_days = $this->getAppParam('worklist_dashboard_skip_days') ?: self::$DEFAULT_DASHBOARD_SKIP_DAYS;
+        if (count($skip_days) >= 7) 
+            throw new Exception("Too many days set to be skipped");
+        
+        $future_dates = array();
+        while (count($future_dates) < $future_days) {
+            $r_date = clone $r_date;
+            $r_date->modify('+1 day');
+            if (!in_array($r_date->format('D'), $skip_days))
+                $future_dates[] = $r_date;
+        }
+
+        if (!in_array($date->format('D'), $skip_days))
+            array_unshift($future_dates, clone $date);
+
+        return $future_dates;
+    }
     /**
      * @param null $id
      * @return WorklistDefinition|null
@@ -376,12 +418,18 @@ class WorklistManager extends CComponent
         return $worklists;
     }
 
+    /**
+     * @param $user
+     * @param Site $site
+     * @param Firm $firm
+     * @param DateTime $when
+     * @return array
+     */
     public function getCurrentAutomaticWorklistsForUserContext($user, Site $site, Firm $firm, DateTime $when)
     {
         $worklists = array();
         $model = $this->getModelForClass('Worklist');
         $model->automatic = true;
-        //TODO: need to work out how to pick by day, rather than time
         $model->on = $when;
         foreach ($model->with('worklist_patients')->search()->getData() as $wl) {
             $worklists[] = $wl;
@@ -621,10 +669,10 @@ class WorklistManager extends CComponent
         $firm = $this->getCurrentFirm();
 
         $content = "";
-        //TODO: remove hardcoded date, and think about configuration for how many days in advance to render
-        $when = DateTime::createFromFormat('Y-m-d', "2016-05-26");
-        foreach ($this->getCurrentAutomaticWorklistsForUserContext($user, $site, $firm, $when) as $worklist)
-            $content .= $this->renderWorklistForDashboard($worklist);
+        $days = $this->getDashboardRenderDates(new DateTime());
+        foreach ($days as $when)
+            foreach ($this->getCurrentAutomaticWorklistsForUserContext($user, $site, $firm, $when) as $worklist)
+                $content .= $this->renderWorklistForDashboard($worklist);
 
         if (strlen($content))
             return array(
