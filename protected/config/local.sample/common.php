@@ -147,6 +147,8 @@ $config = array(
 		//'worklist_dashboard_skip_days' => array()
 		//how far in advance worklists should be generated for matching
 		//'default_generation_limit' => interval string (e.g. 3 months)
+		// override edit checks on definitions so they can always be edited (use at own peril)
+		//'worklist_always_allow_definition_edit' => bool
 	),
 );
 

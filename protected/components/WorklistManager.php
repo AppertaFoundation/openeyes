@@ -1055,6 +1055,9 @@ class WorklistManager extends CComponent
     public function canEditWorklistDefinition(WorklistDefinition $definition)
     {
         // at the moment we don't allow changes to the definition if worklists exist for it
+        if ($this->getAppParam('worklist_always_allow_definition_edit'))
+            return true;
+
         return $definition->isNewRecord || count($definition->worklists) == 0;
     }
 
