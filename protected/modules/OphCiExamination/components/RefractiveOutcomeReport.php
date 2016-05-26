@@ -47,8 +47,6 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         'subtitle' => array('text' => 'Total eyes: {{eyes}}, ±0.5D: {{0.5}}%, ±1D: {{1}}%'),
         'xAxis' => array(
             'title' => array('text' => 'PPOR - POR (Dioptres)'),
-            'min'=>-10,
-            'max'=>10
         ),
         'yAxis' => array(
             'title' => array('text' => 'Number of eyes'),
@@ -88,12 +86,13 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         $this->getExaminationEvent();
 
         $this->command->select('post_examination.episode_id, note_event.episode_id, note_event.event_date as op_date, note_event.id, op_procedure.eye_id,
-        post_examination.event_date as post_exam_date, post_examination.event_date as post_exam_date, post_examination.id as post_id,
+        post_examination.event_date as post_exam_date, post_examination.event_date as post_exam_date, post_examination.id as post_id, patient.id as patient_id,
         left_sphere, right_sphere, left_cylinder, right_cylinder, predicted_refraction')
             ->from('et_ophtroperationnote_surgeon')
             ->join('event note_event', 'note_event.id = et_ophtroperationnote_surgeon.event_id')
             ->join('et_ophtroperationnote_procedurelist op_procedure', 'op_procedure.event_id = note_event.id #And the operation notes procedures')
             ->join('episode', 'note_event.episode_id = episode.id')
+            ->join('patient','episode.patient_id = patient.id')
             ->join('event post_examination', 'post_examination.episode_id = note_event.episode_id
                AND post_examination.event_type_id = :examination
                AND post_examination.event_date >= note_event.event_date
@@ -141,24 +140,43 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         $data = $this->queryData($this->surgeon, $this->from, $this->to, $this->months, $this->procedures);
         $count = array();
 
+        $this->padCategories();
+        
+        // fill up the array with 0, have to send 0 to highcharts if there is no data
+        foreach($this->graphConfig['xAxis']['categories'] as $xCat){
+            $count[] = 0;
+        }
+        $bestvalues = array();
+
         foreach ($data as $row) {
             $side = 'right';
             if ($row['eye_id'] === '1') {
                 $side = 'left';
             }
             $diff = (float)$row['predicted_refraction'] - ((float)$row[$side . '_sphere'] - ((float)$row[$side . '_cylinder'] / 2));
-            $diff = number_format($diff, 1);
+                          
+            $diff = round($diff * 2) / 2;
 
-            if($diff >= -10 && $diff <= 10) {
-                if (!array_key_exists("$diff", $count)) {
-                    $count["$diff"] = 0;
+            $diff = array_search($diff, $this->graphConfig['xAxis']['categories']);
+
+            if($diff >= 0 && $diff <= (count($this->graphConfig['xAxis']['categories'])-1)) {
+                if (!array_key_exists($row['patient_id'], $bestvalues)){
+                    $bestvalues[$row["patient_id"]] = $diff;
+                }else if( $diff < $bestvalues[$row["patient_id"]]){
+                    $bestvalues[$row["patient_id"]] = $diff;
                 }
-                $count["$diff"]++;
             }
         }
 
+        foreach($bestvalues as $key => $diff){
+            if (!array_key_exists("$diff", $count)) {
+                $count["$diff"] = 0;
+            }
+            $count["$diff"]++;
+        }
+        
         ksort($count, SORT_NUMERIC);
-        //$this->padCategories();
+        
         $dataSet = array();
         foreach ($count as $category => $total) {
             $rowTotal = array((float)$category, $total);
@@ -173,22 +191,13 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
      */
     protected function padCategories()
     {
-        $top = array_pop($this->graphConfig['xAxis']['categories']);
-        $bottom = array_shift($this->graphConfig['xAxis']['categories']);
-        $bigger = $bottom;
-        if(abs($top) > abs($bottom)){
-            $bigger = $top;
-        }
-
-        $this->graphConfig['xAxis']['categories'] = array();
-        $upperLimit = abs($bigger);
-        $lowerLimit = 0 - $upperLimit;
-        for($i = $lowerLimit; $i <= $upperLimit; $i += 0.5 ){
-            $this->graphConfig['xAxis']['categories'][] = "$i";
+        for($i = -10; $i <= 10; $i += 0.5 ){
+            $this->graphConfig['xAxis']['categories'][] = $i;
         }
         
         $this->graphConfig['xAxis']['min'] = 0;
         $this->graphConfig['xAxis']['max'] = count($this->graphConfig['xAxis']['categories'])-1;
+
     }
 
     /**
@@ -225,15 +234,18 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
 
         foreach($data as $dataRow){
             $totalEyes += (int)$dataRow[1];
-            if($dataRow[0] < -1 || $dataRow[0] > 1){
-                $plusOrMinusOne += (int)$dataRow[1];
-            }
-
-            if($dataRow[0] < -0.5 || $dataRow[0] > 0.5){
+            
+            // 19 and 21 are the indexes of the -0.5 and +0.5 columns
+            if( $dataRow[0] < 19 || $dataRow[0] > 21 ){
                 $plusOrMinusHalf += (int)$dataRow[1];
             }
+            
+            // 18 and 22 are the indexes of the -1 and +1 columns
+            if( $dataRow[0] < 18 || $dataRow[0] > 22 ){
+                $plusOrMinusOne += (int)$dataRow[1];
+            }
+ 
         }
-
         if($plusOrMinusOne > 0){
             $plusOrMinusOnePercent = number_format((($plusOrMinusOne / $totalEyes) * 100), 1, '.', '' );
         }
