@@ -132,7 +132,7 @@ $(document).ready(function() {
         },
 
         rangeSelector : {
-            enabled: 1,
+            enabled: false,
             inputEnabled: false,
             selected: 5
         },
@@ -207,7 +207,7 @@ $(document).ready(function() {
         },
 
         rangeSelector : {
-            enabled: 1,
+            enabled: false,
             inputEnabled: false,
             selected: 5
         },
@@ -414,7 +414,7 @@ function updateRegressionChart( data){
     Highcharts.charts[3].series[1].setData(data.plots, false, false);
     $('.highcharts-regressionLabel').remove();
     //regressionLabel = Highcharts.charts[3].renderer.label('Y='+parseFloat(data.regression.m).toFixed(2)+'*x+'+parseFloat(data.regression.b).toFixed(2)+' <b>P=</b> '+parseFloat(data.regression.pb).toFixed(5)+' N='+data.plots.length, 40,30, 'rect', 1, 1, 1, 1, 'regressionLabel').add();
-    Highcharts.charts[3].setTitle({text:'Y='+parseFloat(data.regression.m).toFixed(2)+'*x+'+parseFloat(data.regression.b).toFixed(2)+' <b>P=</b> '+parseFloat(data.regression.pb).toFixed(5)+' N='+data.plots.length, align:'left', x:60, style:{"fontSize": "13px"}}, false);
+    Highcharts.charts[3].setTitle({text:'Y='+parseFloat(data.regression.m).toFixed(2)+'*x+'+parseFloat(data.regression.b).toFixed(2)+' <b>P=</b> '+parseFloat(data.regression.pb).toFixed(3)+' N='+data.plots.length, align:'left', x:60, style:{"fontSize": "13px"}}, false);
     Highcharts.charts[3].redraw();
 }
 
