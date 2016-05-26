@@ -135,6 +135,16 @@ $config = array(
 		// 'dashboard_sortable' => true
 		'event_print_method' => 'pdf',
 		'wkhtmltopdf_nice_level' => 19,
+		// default start time used for automatic worklist definitions
+		//'default_worklist_start_time' => 'H:i',
+		// default end time used for automatic worklist definitions
+		//'default_worklist_end_time' => 'H:i',
+		// number of patients to show on each worklist dashboard render
+		//'default_worklist_pagination_size' => int,
+		// number of days in the future to retrieve worklists for the automatic dashboard render
+		//'worklist_dashboard_future_days' => int,
+		// days of the week to be ignored when determining which worklists to render - Mon, Tue etc
+		//'worklist_dashboard_skip_days' => array()
 	),
 );
 
