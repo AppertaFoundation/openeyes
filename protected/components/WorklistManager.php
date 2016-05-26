@@ -867,8 +867,12 @@ class WorklistManager extends CComponent
 
         $mapping->key = $key;
 
-        if ($mapping->isNewRecord)
-            $mapping->display_order = $display ? $definition->getNextDisplayOrder() : null;
+        if (!$display) {
+            $mapping->display_order = null;
+        }
+        else if (!$mapping->display_order) {
+            $mapping->display_order = $definition->getNextDisplayOrder();
+        }
 
         $transaction = $this->startTransaction();
 
