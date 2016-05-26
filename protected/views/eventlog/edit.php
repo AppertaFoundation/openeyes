@@ -92,17 +92,18 @@
                      <?php echo $data['op_tom']['address'];?></td>
     </tr>
     
-    
+    <?php if($data['examination_date']==3){?>
     <tr><td>Active</td><td><?php echo CHtml::radioButton('status', false, array(
     'value'=>'1',
     'name'=>'btnname'
 ));?> Yes
        
         
-        </td></tr> 
+    </td></tr> <?php }?>
     </table>
       
-	<?php echo $form->formActions(); ;?>
+        	<?php echo $form->formActions(array('cancel-uri' => '/eventLog/list'));?>
+
 	<?php $this->endWidget()?>
 </div>
 
