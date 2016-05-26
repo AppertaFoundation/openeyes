@@ -57,21 +57,6 @@ class PatientAppointment extends BaseResource
     }
 
     /**
-     * Abstraction for getting instance of class
-     *
-     * @param $class
-     * @return mixed
-     */
-    protected function getInstanceForClass($class, $args = array())
-    {
-        if (empty($args))
-            return new $class();
-
-        $cls = new ReflectionClass($class);
-        return $cls->newInstanceArgs($args);
-    }
-
-    /**
      * Wrapper for starting a transaction
      *
      * @return CDbTransaction|null
@@ -103,8 +88,7 @@ class PatientAppointment extends BaseResource
         $transaction = $this->startTransaction();
 
         try {
-            $finder = $this->getInstanceForClass("OEModule\\PASAPI\\models\\PasApiAssignment");
-            $assignment = $finder->findByResource(static::$resource_type, $this->id, static::$model_class);
+            $assignment = $this->getAssignment();
             $model = $assignment->getInternal(true);
             // track whether we are creating or updating
             $this->isNewResource = $model->isNewRecord;
@@ -121,6 +105,49 @@ class PatientAppointment extends BaseResource
 
                 return $model->id;
             }
+        }
+        catch (\Exception $e) {
+            if ($transaction)
+                $transaction->rollback();
+
+            throw $e;
+        }
+    }
+
+    public function delete()
+    {
+        if (!$this->assignment) {
+            $this->addError("Resource ID required");
+            return false;
+        }
+
+        $transaction = $this->startTransaction();
+        try {
+            $model = $this->assignment->getInternal();
+            if (!$model) {
+                // reference exists, but internal model could not be found
+                // TODO: decide if the assignment model should be cleared out given that the internal reference
+                // doesn't exist.
+                throw new \Exception("Could not find internal model to delete.");
+            }
+
+            if ($model->isNewRecord)
+                throw new \Exception("No appointment reference found for this id");
+
+            if (!$model->delete()) {
+                $this->addModelErrors($model->getErrors());
+                throw new \Exception("Could not delete internal model.");
+            }
+
+            if (!$this->assignment->delete()) {
+                $this->addModelErrors($this->assignment->getErrors());
+                throw new \Exception("Could not delete external reference.");
+            }
+
+            if ($transaction)
+                $transaction->commit();
+
+            return true;
         }
         catch (\Exception $e) {
             if ($transaction)

@@ -27,6 +27,7 @@ return array(
             'rules' => array(
                 // add a rule so that letters can be used in the external id for the resource
                 array('PASAPI/V1/update', 'pattern' => 'PASAPI/<controller:\w+>/(<resource_type:\w+>?/<id:\w+>)?', 'verb' => 'PUT'),
+                array('PASAPI/V1/delete', 'pattern' => 'PASAPI/<controller:\w+>/(<resource_type:\w+>?/<id:\w+>)?', 'verb' => 'DELETE'),
             )
         ),
     ),

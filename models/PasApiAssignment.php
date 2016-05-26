@@ -70,10 +70,9 @@ class PasApiAssignment extends \BaseActiveRecord
             $internal = self::model($this->internal_type)->findByPk($this->internal_id);
             if (!$internal && $force_create) {
                 $this->internal_id = null;
-                return new $this->internal_type;
+                $internal = new $this->internal_type;
             }
             return $internal;
-
         } else {
             return new $this->internal_type;
         }

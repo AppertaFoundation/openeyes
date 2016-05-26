@@ -18,6 +18,7 @@
 
 namespace OEModule\PASAPI\resources;
 
+use OEModule\PASAPI\models\PasApiAssignment;
 use OEModule\PASAPI\models\XpathRemap;
 
 abstract class BaseResource
@@ -30,6 +31,12 @@ abstract class BaseResource
 
     public $warnings = array();
     public $errors = array();
+    /**
+     * Resource ID
+     *
+     * @var string
+     */
+    public $id;
 
     /**
      * Property that will prevent a model being created if its set to true
@@ -48,6 +55,21 @@ abstract class BaseResource
 
         if (!$this->schema)
             throw new \Exception("Schema not found for resource " . static::$resource_type);
+    }
+
+    /**
+     * Abstraction for getting instance of class
+     *
+     * @param $class
+     * @return mixed
+     */
+    protected function getInstanceForClass($class, $args = array())
+    {
+        if (empty($args))
+            return new $class();
+
+        $cls = new ReflectionClass($class);
+        return $cls->newInstanceArgs($args);
     }
 
     /**
@@ -128,6 +150,27 @@ abstract class BaseResource
         $obj->parseXml($element);
 
         return $obj;
+    }
+
+    /**
+     * Instantiate the resource from the external ID
+     *
+     * @param $version
+     * @param $id
+     * @return BaseResource
+     */
+    static public function fromResourceId($version, $id)
+    {
+        $finder = new \OEModule\PASAPI\models\PasApiAssignment();
+
+        $assignment = $finder->findByResource(static::$resource_type, $id, static::$model_class);
+        if ($model = $assignment->getInternal()) {
+            if (!$model->isNewRecord) {
+                $obj = new static($version);
+                $obj->setAssignment($assignment);
+                return $obj;
+            }
+        }
     }
 
     /**
@@ -231,6 +274,27 @@ abstract class BaseResource
                     $this->{$local_name} = $child->textContent;
             }
         }
+    }
+
+    /**
+     * @var PasApiAssignment
+     */
+    protected $assignment;
+
+    public function setAssignment(PasApiAssignment $assignment)
+    {
+        $this->assignment = $assignment;
+        $this->id = $this->assignment->resource_id;
+    }
+
+    public function getAssignment()
+    {
+        if (!$this->assignment && $this->id)
+        {
+            $finder = $finder = new \OEModule\PASAPI\models\PasApiAssignment();
+            $this->assignment = $finder->findByResource(static::$resource_type, $this->id, static::$model_class);
+        }
+        return $this->assignment;
     }
 
     public function getAssignedProperty($name)

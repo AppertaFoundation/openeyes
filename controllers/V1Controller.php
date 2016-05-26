@@ -59,6 +59,9 @@ class V1Controller extends \CController
                 case 'PUT':
                     return parent::createAction('Update');
                     break;
+                case 'DELETE':
+                    return parent::createAction('Delete');
+                    break;
                 default:
                     $this->sendResponse(405);
                     break;
@@ -112,7 +115,8 @@ class V1Controller extends \CController
     public function expectedParametersForAction($action)
     {
         return array(
-            'update' => 'id'
+            'update' => 'id',
+            'delete' => 'id'
         )[strtolower($action->id)];
     }
 
@@ -125,6 +129,10 @@ class V1Controller extends \CController
         $this->sendErrorResponse(400, array("Missing request parameter(s). Required parameter(s) are: " . $this->expectedParametersForAction($action)));
     }
 
+    public function getResourceModel($resource_type)
+    {
+        return "\\OEModule\\PASAPI\\resources\\{$resource_type}";
+    }
     /**
      * @param $resource_type
      * @param $id
@@ -137,9 +145,9 @@ class V1Controller extends \CController
         if (!$id)
             $this->sendResponse(404, "External Resource ID required");
 
-        $body = \Yii::app()->request->rawBody;
+        $resource_model = $this->getResourceModel($resource_type);
 
-        $resource_model = "\\OEModule\\PASAPI\\resources\\{$resource_type}";
+        $body = \Yii::app()->request->rawBody;
 
         try {
             $resource = $resource_model::fromXml(static::$version, $body);
@@ -190,9 +198,41 @@ class V1Controller extends \CController
 
             $this->sendErrorResponse(500, $errors);
         }
+    }
 
+    public function actionDelete($resource_type, $id)
+    {
+        if (!in_array($resource_type, static::$resources))
+            $this->sendErrorResponse(404, "Unrecognised Resource type {$resource_type}");
 
+        if (!$id)
+            $this->sendResponse(404, "External Resource ID required");
 
+        $resource_model = $this->getResourceModel($resource_type);
+
+        if (!method_exists($resource_model, 'delete'))
+            $this->sendResponse(405);
+
+        try {
+            if (!$resource = $resource_model::fromResourceId(static::$version, $id))
+                $this->sendResponse(404, "Could not find resource for external Id");
+
+            if ($resource->delete()) {
+                $this->sendResponse(204);
+            }
+
+        }
+        catch (\Exception $e) {
+            if (YII_DEBUG) {
+                $errors[] = $e->getMessage();
+            }
+            else {
+                $errors = array("Could not delete resource");
+            }
+
+            $this->sendErrorResponse(500, $errors);
+
+        }
     }
 
     protected function sendErrorResponse($status, $messages = array())
