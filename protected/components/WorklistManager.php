@@ -847,11 +847,7 @@ class WorklistManager extends CComponent
      */
     public function updateWorklistDefinitionMapping(WorklistDefinitionMapping $mapping, $key, $values, $display = true)
     {
-        if (!$values) {
-            $this->addError("At least one mapping value must be provided");
-            return false;
-        }
-        $values = explode(",", $values);
+        $values = strlen($values) ? explode(",", $values) : array();
 
         $definition = $mapping->worklist_definition;
 
@@ -891,7 +887,7 @@ class WorklistManager extends CComponent
         catch (Exception $e) {
             $this->addError($e->getMessage());
             if ($transaction)
-                $transaction->commit();
+                $transaction->rollback();
             return false;
         }
 
@@ -942,9 +938,12 @@ class WorklistManager extends CComponent
 
         foreach ($wl->worklist_definition->mappings as $mapping) {
             if (!array_key_exists($mapping->key, $attributes)) {
-                $this->addError("Missing key {$mapping->key}");
+                $this->addError("Missing key {$mapping->key} for {$wl->name}");
                 return false;
             }
+
+            if (!$mapping->values)
+                continue;
 
             $match = false;
             foreach ($mapping->values as $val) {
