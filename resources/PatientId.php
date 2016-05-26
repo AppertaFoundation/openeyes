@@ -122,9 +122,9 @@ class PatientId extends BaseResource
         $this->methodNotImplemented('resolveModelNHSNumber');
     }
 
-    protected function resolvePasIdHospitalNumber()
+    protected function resolveModelHospitalNumber()
     {
-        $this->methodNotImplemented('resolvePasIdHospitalNumber');
+        $this->methodNotImplemented('resolveModelHospitalNumber');
     }
 
 }
