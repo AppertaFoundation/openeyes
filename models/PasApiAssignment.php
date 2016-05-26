@@ -16,6 +16,15 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+/**
+ * Class PasApiAssignment
+ * @package OEModule\PASAPI\models
+ *
+ * @property $resource_type
+ * @property $resource_id
+ * @property $internal_id
+ * @property $internal_type
+ */
 class PasApiAssignment extends \BaseActiveRecord
 {
     /**
@@ -41,7 +50,7 @@ class PasApiAssignment extends \BaseActiveRecord
     public function rules()
     {
         return array(
-            array('id, resource_id, resource_type internal_id, internal_type, created_date, last_modified_date, created_user_id, last_modified_user_id', 'safe', 'on'=>'search'),
+            array('id, resource_id, resource_type, internal_id, internal_type, created_date, last_modified_date, created_user_id, last_modified_user_id', 'safe', 'on'=>'search'),
         );
     }
 
@@ -63,6 +72,7 @@ class PasApiAssignment extends \BaseActiveRecord
                 $this->internal_id = null;
                 return new $this->internal_type;
             }
+            return $internal;
 
         } else {
             return new $this->internal_type;
