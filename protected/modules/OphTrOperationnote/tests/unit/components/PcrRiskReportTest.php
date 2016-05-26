@@ -44,12 +44,12 @@ class PcrRiskReportTest extends PHPUnit_Framework_TestCase
 
         $pcr->expects($this->any())
             ->method('average')
-            ->will($this->returnValue(1.95));
+            ->will($this->returnValue(0.0192));
 
         $pcrCases = 2;
         $totalCases = 8;
         $sumPcrRisk = 4.80 + 3.67 + 4.76 + 4.78 + 1.46 + 2.77 + 7.86;
-        $adjustedRate = (($pcrCases / $totalCases) / ($sumPcrRisk / $totalCases)) * 1.95;
+        $adjustedRate = (($pcrCases / $totalCases) / ($sumPcrRisk / $totalCases)) * 0.0192;
 
         $output = $pcr->dataSet();
         $this->assertCount(1, $output); //We should only have one surgeons data.
