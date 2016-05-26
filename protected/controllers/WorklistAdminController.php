@@ -55,18 +55,27 @@ class WorklistAdminController extends BaseAdminController
         ));
     }
 
+    public function actionDefinition($id = null)
+    {
+        $definition = $this->getWorklistDefinition($id);
+
+        $this->render('//admin/worklists/definition', array(
+            'definition' => $definition
+        ));
+    }
+
     /**
      * Create or Edit a WorklistDefinition
      *
      * @param null $id
      * @throws CHttpException
      */
-    public function actionDefinition($id = null)
+    public function actionDefinitionEdit($id = null)
     {
         $definition = $this->manager->getWorklistDefinition($id);
 
         if (!$definition)
-            throw new CHttpException(404, "Worklist definition not found");
+            throw new CHttpException(404, "Worklist definition could not be "  . ($id ? "found" : "created"));
 
         if (!$this->manager->canEditWorklistDefinition($definition))
             throw new CHttpException(409, "Cannot change mappings for un-editable Definition");
@@ -82,7 +91,7 @@ class WorklistAdminController extends BaseAdminController
             }
         }
 
-        $this->render('//admin/worklists/definition', array(
+        $this->render('//admin/worklists/definition_edit', array(
             'definition' => $definition,
             'errors' => @$errors
         ));

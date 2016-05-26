@@ -20,29 +20,5 @@
 <div class="admin box">
     <h2>Generated Instances for <?= $definition->name ?></h2>
     <?php echo EventAction::link('Definitions List', '/worklistAdmin/definitions/', array('level' => 'secondary'), array('class' => 'button small'))->toHtml()?>
-    <?php if ($definition->worklists) { ?>
-        <table class="generic-admin grid">
-            <thead>
-            <tr>
-                <th>Date</th>
-                <th>Name</th>
-                <th>Number of Patients</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php foreach ($definition->worklists as $i => $worklist) { ?>
-                <tr>
-                    <td><?= $worklist->displayDate ?></td>
-                    <td><?= $worklist->name ?></td>
-                    <td><?= count($worklist->worklist_patients) ?></td>
-                    <td><a href="/worklistAdmin/worklistPatients/<?= $worklist->id ?>">View</a> |
-                        <a href="#">Delete</a></td>
-                </tr>
-            <?php } ?>
-            </tbody>
-        </table>
-    <?php } else {?>
-        <div class="alert-box info">No instances have been generated for this Worklist Definition.</div>
-    <?php } ?>
+    <?php $this->renderPartial('//admin/worklists/definition_worklists_table', array('definition' => $definition)) ?>
 </div>

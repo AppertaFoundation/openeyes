@@ -16,29 +16,28 @@
  */
  ?>
 
-<div class="admin box">
-    <h2>Worklist Definition</h2>
-    Name: <?= $definition->name ?><br />
-    Frequency: <i><?= $definition->rruleHumanReadable ?></i>
-    <hr style="margin: 5px;" />
-    <h3>Current Maps</h3>
-    <?php if (!count($definition->mappings)) {?>
-        <i>None set</i>
-    <?php } else {?>
-        <table>
+<?php if ($definition->worklists) { ?>
+    <table class="generic-admin grid">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Name</th>
+            <th>Number of Patients</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($definition->worklists as $i => $worklist) { ?>
             <tr>
-                <th>Key</th>
-                <th>Values</th>
+                <td><?= $worklist->displayDate ?></td>
+                <td><?= $worklist->name ?></td>
+                <td><?= count($worklist->worklist_patients) ?></td>
+                <td><a href="/worklistAdmin/worklistPatients/<?= $worklist->id ?>">View</a> |
+                    <a href="#">Delete</a></td>
             </tr>
-        <?php foreach ($definition->mappings as $mapping) {?>
-            <tr>
-                <td><?=$mapping->key?></td>
-                <td><?=$mapping->valueList?></td>
-            </tr>
-        <?php }?>
-        </table>
-    <?php } ?>
-    <hr style="margin: 5px;" />
-    <h3>Generated Instances</h3>
-    <?php $this->renderPartial('//admin/worklists/definition_worklists_table', array('definition' => $definition)) ?>
-</div>
+        <?php } ?>
+        </tbody>
+    </table>
+<?php } else {?>
+    <div class="alert-box info">No instances have been generated for this Worklist Definition.</div>
+<?php } ?>

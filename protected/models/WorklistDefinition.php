@@ -206,4 +206,17 @@ class WorklistDefinition extends BaseActiveRecordVersioned
         return $display_order;
     }
 
+    /**
+     * Simple wrapper function to convert the RRule into its human readable form
+     *
+     * @return string
+     */
+    public function getRruleHumanReadable()
+    {
+        if ($this->rrule)
+            return (new RRule($this->rrule))->humanReadable(array(
+                'date_formatter' => function ($d) { return $d->format(Helper::NHS_DATE_FORMAT); }
+            ));
+    }
+
 }

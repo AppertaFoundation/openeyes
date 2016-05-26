@@ -31,11 +31,11 @@
             </thead>
             <tbody class="sortable">
             <?php foreach ($definitions as $i => $definition) {?>
-                <tr class="clickable">
+                <tr>
                     <td class="reorder">&uarr;&darr;<input type="hidden" name="<?php echo get_class($definition) ?>[display_order][]" value="<?php echo $i ?>"></td>
                     <td><?=$definition->name?></td>
-                    <td><?php if ($this->manager->canEditWorklistDefinition($definition)) {?><a href="/worklistAdmin/definition/<?=$definition->id?>">Edit</a> |
-                        <?php } else {?><span title="Cannot edit Definition which has generated instances">Edit</span> | <?php } ?>
+                    <td><?php if ($this->manager->canEditWorklistDefinition($definition)) {?><a href="/worklistAdmin/definitionEdit/<?=$definition->id?>">Edit</a> |<?php }?>
+                        <a href="/worklistAdmin/definition/<?=$definition->id?>">View</a> |
                         <a href="/worklistAdmin/definitionWorklists/<?=$definition->id?>">Instances (<?=count($definition->worklists)?>)</a> |
                         <a href="/worklistAdmin/definitionMappings/<?=$definition->id?>">Mapping Items(<?=count($definition->mappings)?>)</a> |
                         <?php if (count($definition->worklists)) {?>
@@ -44,7 +44,6 @@
                             <a href="/worklistAdmin/definitionGenerate/<?=$definition->id?>">Generate</a>
                         <?php }?>
                     </td>
-
                 </tr>
             <?php } ?>
             </tbody>
