@@ -225,10 +225,7 @@ $(document).ready(function(){
         
    });
    
-   
-
-   
-   
+    
    $('.filter').on('click', 'button.filter',function(event){
 	
         event.preventDefault();
@@ -248,7 +245,31 @@ $(document).ready(function(){
                         $('.filter .loader').hide();
                 }
         });
+    });
+    
+    $('#patientMergeWrapper').on('keypress', '#secondary_hos_num_filter, #primary_hos_num_filter',function(e){
+        var val = $(this).val(),
+            id = $(this).attr('id');
+            
+        if (e.which === 13) {
+            
+           
+            $.ajax({
+                    url: "",
+                    type: "POST",
+                    data: $(this).closest('form').serialize(),
+                    beforeSend: function() {
+                        $('#patientMergeRequestList .loader').show();
+                    },
+                    success:function(data){
+                            var nodes = $(data);
 
+                            $('#patientMergeRequestList tbody').html( nodes.find('#patientMergeRequestList tbody').html() );
+                            $('#patientMergeRequestList .loader').hide();
+                    }
+            });
+            
+        }
     });
     
 });

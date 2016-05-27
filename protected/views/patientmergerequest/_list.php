@@ -13,6 +13,15 @@
             <th class="status"><?php echo $dataProvider->getSort()->link('status','Status',array('class'=>'sort-link')); ?></th>
             <th class="created"><?php echo $dataProvider->getSort()->link('created_date','Created',array('class'=>'sort-link')); ?></th>
         </tr>
+        <tr class="table-filter">
+            <td> <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>"
+                     alt="loading..." style="display: none;"/></td>
+            <td class="filter-col"><input id="secondary_hos_num_filter" name="PatientMergeRequestFilter[secondary_hos_num_filter]" type="text" value="<?php echo isset($filters['secondary_hos_num_filter']) ? $filters['secondary_hos_num_filter'] : '';?>"></input></td>
+            <td></td>
+            <td class="filter-col"><input id="primary_hos_num_filter" name="PatientMergeRequestFilter[primary_hos_num_filter]" type="text"></input></td>
+            <td></td>
+            <td></td>
+        </tr>
     </thead>
     <tfoot class="pagination-container">
         <tr>
@@ -27,25 +36,31 @@
         </tr>
     </tfoot>
     <tbody>
-        <?php foreach ($dataProvider->getData() as $i => $request): ?>
         
-            <?php if( $request->status == PatientMergeRequest::STATUS_NOT_PROCESSED ): ?>
-                <tr class="clickable" data-id="<?php echo $request->id?>" data-uri="patientMergeRequest/<?php echo 'view/' . $request->id?>">
-            <?php else: ?>
-                <tr class="clickable" data-id="<?php echo $request->id?>" data-uri="patientMergeRequest/log/<?php echo $request->id?>">
-            <?php endif; ?>
-                <td class="checkbox">
-                    <input type="checkbox" name="patientMergeRequestIds[]" value="<?php echo $request->id?>" <?php echo $request->status == PatientMergeRequest::STATUS_NOT_PROCESSED ? '':'disabled'?>>
-                </td>
-                <td class="secondary"><?php echo $request->secondary_hos_num?></td>
-                <td class="into">INTO</td>
-                <td class="primary"><?php echo $request->primary_hos_num?></td>
-                <td class="status">
-                    <div class="circle <?php echo (strtolower(str_replace(" ", "-", $request->getStatusText())) ); ?>" ></div>
-                    <?php echo $request->getStatusText(); ?> 
-                </td>
-                <td class="created"><?php echo $request->created_date; ?> </td>
-            </tr>
-        <?php endforeach;?>
+        <?php if ( count($dataProvider->getData()) ): ?>
+            <?php foreach ($dataProvider->getData() as $i => $request): ?>
+
+                <?php if( $request->status == PatientMergeRequest::STATUS_NOT_PROCESSED ): ?>
+                    <tr class="clickable" data-id="<?php echo $request->id?>" data-uri="patientMergeRequest/<?php echo 'view/' . $request->id?>">
+                <?php else: ?>
+                    <tr class="clickable" data-id="<?php echo $request->id?>" data-uri="patientMergeRequest/log/<?php echo $request->id?>">
+                <?php endif; ?>
+                    <td class="checkbox">
+                        <input type="checkbox" name="patientMergeRequestIds[]" value="<?php echo $request->id?>" <?php echo $request->status == PatientMergeRequest::STATUS_NOT_PROCESSED ? '':'disabled'?>>
+                    </td>
+                    <td class="secondary"><?php echo $request->secondary_hos_num?></td>
+                    <td class="into">INTO</td>
+                    <td class="primary"><?php echo $request->primary_hos_num?></td>
+                    <td class="status">
+                        <div class="circle <?php echo (strtolower(str_replace(" ", "-", $request->getStatusText())) ); ?>" ></div>
+                        <?php echo $request->getStatusText(); ?> 
+                    </td>
+                    <td class="created"><?php echo $request->created_date; ?> </td>
+                </tr>
+            <?php endforeach;?>
+        <?php else: ?>
+                <tr><td colspan="6" >No results found.</td></tr>
+        <?php endif; ?>
+        
     </tbody>
 </table>    
