@@ -83,64 +83,6 @@
         }
     }
     
-    #patientMergeList{
-        
-        tr{
-            
-            th{
-                &.checkbox{
-                    width:11px;
-                    max-width: 11px;
-                }
-                &.secondary{
-                    max-width: 115px;
-                    width: 115px;
-                    span{
-                        &.span{
-                            font-size: 10px;
-                        }
-                    }
-                }
-                &.into{
-                    width:80px;
-                    max-width: 80px;
-                }
-                &.primary{
-                    max-width:70px;
-                }
-                
-                &.status{
-                    text-align: center;
-                }
-                &.created{
-                   text-align: center;
-                }
-               
-            }
-            
-            td{
-                
-                &.secondary{
-                    border-right-width: 0px;
-                }
-                
-                &.into{
-                    border-right-width: 0px;
-                    width:90px;
-                }
-                
-                &.status{
-                    width:220px;
-                    padding-left:55px;
-                }
-                
-                &.created{
-                   text-align: center;
-                }
-            }
-        }
-    }
-    
     form{
         &.panel{
             &.search{
@@ -161,6 +103,33 @@
                 line-height: 15px;
                 vertical-align: middle;
                 display: table-cell;
+            }
+        }
+    }
+    
+    #patientMergeRequestList{
+        
+        &.grid{
+            
+            th{
+            }
+            tr{
+                &.table-filter{
+                    td{
+                        &.filter-col{
+                            width:142px;
+                        }
+                    }
+                }
+            }
+            
+            .status{
+                text-align: center;
+                width:172px;
+            }
+
+            .created{
+               text-align: center;
             }
         }
     }

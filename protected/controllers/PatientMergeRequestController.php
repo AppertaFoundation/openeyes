@@ -60,6 +60,9 @@ class PatientMergeRequestController extends BaseController
     public function actionIndex()
     {        
         $filters = Yii::app()->request->getParam('PatientMergeRequestFilter');
+        $filters['secondary_hos_num_filter'] = isset($filters['secondary_hos_num_filter']) ? $filters['secondary_hos_num_filter'] : null;
+        $filters['primary_hos_num_filter'] = isset($filters['primary_hos_num_filter']) ? $filters['primary_hos_num_filter'] : null;
+        
         $cookie_key = 'show_merged_' . Yii::app()->user->id;
                 
         if( (isset($filters['show_merged']) && $filters['show_merged'] == 1) ){
@@ -82,6 +85,8 @@ class PatientMergeRequestController extends BaseController
         $criteria = new CDbCriteria;
         $criteria->compare('deleted', 0);
         $criteria->addCondition('status != :status');
+        $criteria->addSearchCondition('secondary_hos_num', $filters['secondary_hos_num_filter']);
+        $criteria->addSearchCondition('primary_hos_num', $filters['primary_hos_num_filter']);
          
         if(!$cookie_value){
             $criteria->params[':status'] = PatientMergeRequest::STATUS_MERGED;
@@ -96,7 +101,10 @@ class PatientMergeRequestController extends BaseController
         
         $dataProvider = new CActiveDataProvider('PatientMergeRequest', array(
             'criteria' => $criteria,
-            'pagination' => $pagination
+            'pagination' => $pagination,
+            'sort'=>array(
+                'defaultOrder' => 'created_date DESC',
+            )
         ));
         
         $this->render('//patientmergerequest/index', array(
