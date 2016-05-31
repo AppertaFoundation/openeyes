@@ -37,6 +37,7 @@ return array(
             'Clinic Outcome Statuses' => '/OphCiExamination/admin/manageClinicOutcomesStatus',
             'Cataract surgery reasons' => '/OphCiExamination/admin/primaryReasonForSurgery',
             'Common Post-Op Complications' => '/OphCiExamination/admin/postOpComplications',
+            'Cataract Management Operations' => '/OphCiExamination/admin/cataractManagementOperations',
         ),
         'ophciexamination_drgrading_type_required' => false,
         'ophciexamination_visualacuity_correspondence_unit' => 'Snellen Metre',

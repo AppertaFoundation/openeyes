@@ -639,6 +639,11 @@ class AdminController extends \ModuleAdminController
     {
         $this->genericAdmin('Edit Glaucoma Statuses', 'OEModule\OphCiExamination\models\OphCiExamination_GlaucomaStatus');
     }
+    
+    public function actionCataractManagementOperations()
+    {
+        $this->genericAdmin('Edit Cataract Management Operations', 'OEModule\OphCiExamination\models\OphCiExamination_CataractManagementOperations');
+    }
 
     public function actionManageDropRelProbs()
     {

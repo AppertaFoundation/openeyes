@@ -6,7 +6,8 @@ class m140703_153630_currentman_lookuptable_active extends OEMigration
         'ophciexamination_managementglaucomastatus',
         'ophciexamination_managementrelproblem',
         'ophciexamination_managementdrops',
-        'ophciexamination_managementsurgery'
+        'ophciexamination_managementsurgery',
+        'ophciexamination_cataractsurgicalmanagement',
     );
     public function up()
     {
