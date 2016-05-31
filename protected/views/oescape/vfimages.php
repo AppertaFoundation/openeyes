@@ -28,7 +28,7 @@
                 <?php $this->renderPartial('//oescape/vfcolourplot_left');?>
             </div>
         </div>
-        <div id="regression_chart" class="regression_chart mdl-cell-bottom-right">
+        <div id="regression_chart" class="mdl-cell-bottom-right">
 
         </div>
     </div>

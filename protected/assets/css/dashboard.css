@@ -341,7 +341,7 @@ select:focus {
 .mdl-layout__content #dash-grid .mdl-cell-top-right {
   background-color: white;
   padding: 0;
-  min-height: 470px;
+  min-height: 520px;
   height: 70%;
   overflow: hidden;
 }
@@ -349,8 +349,10 @@ select:focus {
 .mdl-layout__content #dash-grid .mdl-cell-bottom-right {
   background-color: white;
   padding: 0;
-  min-height: 200px;
+  min-height: 320px;
+  min-width: 800px;
   height: 30%;
+  width: 100%;
   overflow: hidden;
 }
 

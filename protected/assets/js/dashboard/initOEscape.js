@@ -36,7 +36,10 @@ $(document).ready(function() {
             marginLeft: 50,
             spacingLeft: 30
         },
-
+        tooltip: {
+            shared:true,
+            xDateFormat: '<b>%d/%m/%Y</b>',
+        },
         plotOptions: {
             series: {
                 states: {
@@ -131,6 +134,11 @@ $(document).ready(function() {
             spacingLeft: 30
         },
 
+        tooltip: {
+            shared:true,
+            xDateFormat: '<b>%d/%m/%Y</b>',
+        },
+
         rangeSelector : {
             enabled: false,
             inputEnabled: false,
@@ -193,6 +201,7 @@ $(document).ready(function() {
         },{
             min: -15,
             max: 15,
+            opposite:false,
             labels:
             {
                 align: 'right',
@@ -219,14 +228,14 @@ $(document).ready(function() {
         }
     });
 
-    addSeries(IOPchart, 1, "IOP", "DataSet", "#c653c6", 'solid', 0);
-    addSeries(IOPchart, 2, "IOP", "DataSet", "#4d9900", 'solid', 0);
+    addSeries(IOPchart, 1, "IOP", "DataSet", "#4d9900", 'solid', 0);
+    addSeries(IOPchart, 2, "IOP", "DataSet", "#c653c6", 'solid', 0);
 
-    addSeries(VAchart, 1, "VA", "DataSetVA", "#c653c6", 'solid', 0);
-    addSeries(VAchart, 2, "VA", "DataSetVA", "#4d9900", 'solid', 0);
+    addSeries(VAchart, 1, "VA", "DataSetVA", "#4d9900", 'solid', 0);
+    addSeries(VAchart, 2, "VA", "DataSetVA", "#c653c6", 'solid', 0);
 
-    addSeries(VAchart, 1, 'MD', 'DataSetMD', "#c653c6", 'shortdot', 1);
-    addSeries(VAchart, 2, 'MD', 'DataSetMD', "#4d9900", 'shortdot', 1);
+    addSeries(VAchart, 1, 'MD', 'DataSetMD', "#4d9900", 'shortdot', 1);
+    addSeries(VAchart, 2, 'MD', 'DataSetMD', "#c653c6", 'shortdot', 1);
 
     loadAllImages(Highcharts.dateFormat('%Y-%m-%d', new Date().getTime()));
     loadAllVFImages('vfgreyscale');
@@ -289,8 +298,7 @@ $(document).ready(function() {
 
 
     addRegressionChart();
-    $('.regression_chart').hide();
-    //$('.regression_chart').show();
+    //$('#regression_chart').hide();
 });
 
 
@@ -319,7 +327,7 @@ function addRegressionChart(){
                 }
             },
             title: {
-                text: 'Y= n*x+b',
+                text: '',
                 align: 'left'
             },
             legend:{
@@ -456,9 +464,9 @@ function AddOperation(item, index){
     var color, yshift=150;
 
     if(item[2] == 1){
-        color = '#c653c6';
-    }else{
         color = '#4d9900';
+    }else{
+        color = '#c653c6';
     }
     this.xAxis[0].addPlotLine({
         value: item[0],
@@ -482,9 +490,9 @@ function AddMedication(item, index){
         toValue = item[1];
     }
     if(item[2] == 1){
-        color = '#e6b3e6';
-    }else{
         color = '#ccff99';
+    }else{
+        color = '#e6b3e6';
     }
     this.addSeries({
         type: 'arearange',
