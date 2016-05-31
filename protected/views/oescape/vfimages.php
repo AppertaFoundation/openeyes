@@ -5,7 +5,7 @@
         <a href="#tab3-panel" class="mdl-tabs__tab">Photo</a>
     </div>
     <div class="mdl-tabs__panel is-active" id="tab1-panel">
-        <div class="right-side">
+        <div class="right-side mdl-cell-top-right">
             <span class="side-title">Right</span>
             <div id="vfgreyscale_right" class="vfimage">
 
@@ -17,7 +17,7 @@
             </div>
 
         </div>
-        <div class="left-side">
+        <div class="left-side mdl-cell-top-right">
             <span class="side-title">Left</span>
             <div id="vfgreyscale_left" class="vfimage">
 
@@ -28,7 +28,7 @@
                 <?php $this->renderPartial('//oescape/vfcolourplot_left');?>
             </div>
         </div>
-        <div id="regression_chart" class="regression_chart">
+        <div id="regression_chart" class="regression_chart mdl-cell-bottom-right">
 
         </div>
     </div>

@@ -27,9 +27,6 @@
             <div id="vachart" class="mdl-cell-bottom">
 
             </div>
-            <div id="mdchart" class="mdl-cell-bottom">
-
-            </div>
         </div>
         <div id="vf-image" class="oescape-images mdl-cell--6-col">
             <?php $this->renderPartial('//oescape/vfimages'); ?>

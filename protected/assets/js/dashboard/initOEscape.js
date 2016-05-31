@@ -166,7 +166,7 @@ $(document).ready(function() {
         },
 
         title : {
-            text : 'VA'
+            text : 'VA/MD'
         },
         xAxis:{
             labels:
@@ -174,7 +174,7 @@ $(document).ready(function() {
                 enabled: false
             }
         },
-        yAxis: {
+        yAxis: [{
             reversed: true,
             min: -1,
             max: 1,
@@ -184,82 +184,28 @@ $(document).ready(function() {
                 align: 'left',
                 x: -20,
                 y: -2
-            }
-        },
-        credits: {
-            enabled: false
-        },
-        navigator: {
-            margin: 2,
-            height: 20,
-            series:{
-                lineWidth: 0,
-            }
-        }
-    });
-
-    // create the Mean Deviation chart
-    var MDchart = new Highcharts.StockChart({
-        chart:{
-            renderTo: 'mdchart',
-            marginLeft: 50,
-            spacingLeft: 30
-        },
-
-        rangeSelector : {
-            enabled: false,
-            inputEnabled: false,
-            selected: 5
-        },
-
-        plotOptions: {
-            series: {
-                states: {
-                    hover: {
-                        enabled: true,
-                        lineWidthPlus: 0,
-                    }
-                },
-                marker:{
-                    enabled: true,
-                    radius: 4
-                }
-            }
-        },
-
-        legend: {
-            enabled: 1,
-            floating: true,
-            align: 'right',
-            verticalAlign: 'top',
-            borderColor: '#dddddd',
-            borderWidth: 1,
-            layout: 'vertical',
-            shadow: true,
-            margin: 10,
-            y: 24
-        },
-
-        title : {
-            text : 'MD'
-        },
-        xAxis:{
-            labels:
-            {
-                enabled: false
-            }
-        },
-        yAxis: {
+            },
+            title:{
+                text: 'Visual Acuity',
+                x: -30
+            },
+        },{
             min: -15,
             max: 15,
             opposite:false,
             labels:
             {
-                align: 'left',
-                x: -20,
+                align: 'right',
+                x: 2,
                 y: -2
-            }
-        },
+            },
+            title:{
+                text: 'Mean Deviation'
+            },
+            opposite: true
+        }
+
+        ],
         credits: {
             enabled: false
         },
@@ -272,14 +218,14 @@ $(document).ready(function() {
         }
     });
 
-    addSeries(IOPchart, 1, "IOP", "DataSet", "#c653c6");
-    addSeries(IOPchart, 2, "IOP", "DataSet", "#4d9900");
+    addSeries(IOPchart, 1, "IOP", "DataSet", "#c653c6", 'solid', 0);
+    addSeries(IOPchart, 2, "IOP", "DataSet", "#4d9900", 'solid', 0);
 
-    addSeries(VAchart, 1, "VA", "DataSetVA", "#c653c6");
-    addSeries(VAchart, 2, "VA", "DataSetVA", "#4d9900");
+    addSeries(VAchart, 1, "VA", "DataSetVA", "#c653c6", 'solid', 0);
+    addSeries(VAchart, 2, "VA", "DataSetVA", "#4d9900", 'solid', 0);
 
-    addSeries(MDchart, 1, 'MD', 'DataSetMD', "#c653c6");
-    addSeries(MDchart, 2, 'MD', 'DataSetMD', "#4d9900");
+    addSeries(VAchart, 1, 'MD', 'DataSetMD', "#c653c6", 'shortdot', 1);
+    addSeries(VAchart, 2, 'MD', 'DataSetMD', "#4d9900", 'shortdot', 1);
 
     loadAllImages(Highcharts.dateFormat('%Y-%m-%d', new Date().getTime()));
     loadAllVFImages('vfgreyscale');
@@ -410,12 +356,13 @@ function addRegressionChart(){
 }
 
 function updateRegressionChart( data){
-    Highcharts.charts[3].series[0].setData(data.line, false, false);
-    Highcharts.charts[3].series[1].setData(data.plots, false, false);
+    var index=$("#regression_chart").data('highchartsChart');
+    Highcharts.charts[index].series[0].setData(data.line, false, false);
+    Highcharts.charts[index].series[1].setData(data.plots, false, false);
     $('.highcharts-regressionLabel').remove();
     //regressionLabel = Highcharts.charts[3].renderer.label('Y='+parseFloat(data.regression.m).toFixed(2)+'*x+'+parseFloat(data.regression.b).toFixed(2)+' <b>P=</b> '+parseFloat(data.regression.pb).toFixed(5)+' N='+data.plots.length, 40,30, 'rect', 1, 1, 1, 1, 'regressionLabel').add();
-    Highcharts.charts[3].setTitle({text:'Y='+parseFloat(data.regression.m).toFixed(2)+'*x+'+parseFloat(data.regression.b).toFixed(2)+' <b>P=</b> '+parseFloat(data.regression.pb).toFixed(3)+' N='+data.plots.length, align:'left', x:60, style:{"fontSize": "13px"}}, false);
-    Highcharts.charts[3].redraw();
+    Highcharts.charts[index].setTitle({text:'Y='+parseFloat(data.regression.m).toFixed(2)+'*x+'+parseFloat(data.regression.b).toFixed(2)+' <b>P=</b> '+parseFloat(data.regression.pb).toFixed(3)+' N='+data.plots.length, align:'left', x:60, style:{"fontSize": "13px"}}, false);
+    Highcharts.charts[index].redraw();
 }
 
 function showRegressionChart(side, plotNr, indexDate){
@@ -434,7 +381,7 @@ function showRegressionChart(side, plotNr, indexDate){
     $('#regression_chart').show();
 }
 
-function addSeries(chart, side, title, dataurl, seriescol){
+function addSeries(chart, side, title, dataurl, seriescol, dashstyle, yaxis){
     $.ajax({
         url: '/OphCiExamination/OEScapeData/'+dataurl+'/'+patientId,
         type: "GET",
@@ -451,6 +398,8 @@ function addSeries(chart, side, title, dataurl, seriescol){
                 color: seriescol,
                 legendIndex: legindex,
                 zIndex: side,
+                dashStyle: dashstyle,
+                yAxis: yaxis
             });
         },
         cache: false

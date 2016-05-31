@@ -325,23 +325,39 @@ select:focus {
 .mdl-layout__content #dash-grid .mdl-cell-top {
   background-color: white;
   padding: 0;
-  min-height: 440px;
-  height: 60%;
+  min-height: 600px;
+  height: 70%;
   overflow: hidden;
 }
 
 .mdl-layout__content #dash-grid .mdl-cell-bottom {
   background-color: white;
   padding: 0;
+  min-height: 270px;
+  height: 30%;
+  overflow: hidden;
+}
+
+.mdl-layout__content #dash-grid .mdl-cell-top-right {
+  background-color: white;
+  padding: 0;
+  min-height: 470px;
+  height: 70%;
+  overflow: hidden;
+}
+
+.mdl-layout__content #dash-grid .mdl-cell-bottom-right {
+  background-color: white;
+  padding: 0;
   min-height: 200px;
-  height: 20%;
+  height: 30%;
   overflow: hidden;
 }
 
 .mdl-layout__content #dash-grid .mdl-cell-side {
   background-color: white;
   padding: 0;
-  min-height: 850px;
+  min-height: 870px;
   height: 100%;
 }
 
@@ -368,13 +384,11 @@ select:focus {
 }
 
 .vfthumbnail {
-  max-width:350px;
-  max-height:350px;
+  width: 100%;
 }
 
 .vfthumbnail-hidden{
-  max-width:350px;
-  max-height:350px;
+  width: 100%;
   display: none;
 }
 
@@ -383,7 +397,7 @@ select:focus {
 }
 
 .regression_chart{
-  width: 50%;
+  width: 100%;
   display: block;
 }
 
@@ -406,19 +420,18 @@ select:focus {
 }
 
 .vfimage{
-  width: 56%;
+  width: 59%;
   margin: 0 auto;
 }
 
 .kowaimage{
-  width: 56%;
+  width: 100%;
   margin: 0 auto;
 }
 
 .vfcolorplot{
-  width: 50%;
+  width: 46%;
   margin: 0 auto;
-  padding-left: 93px;
 }
 
 .colorplot-hover{
