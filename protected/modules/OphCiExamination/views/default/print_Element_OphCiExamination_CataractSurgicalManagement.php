@@ -20,16 +20,20 @@
 <div class="element-data row">
 	<ul>
 		<li><?php echo $element->eye ? $element->eye->name : 'Eye no specified'?></li>
+                <?php foreach($active_check  as $check) { 
+                                    if(strtolower($check['name']) == 'at city road') { ?>
 		<?php if ($element->city_road) {
     ?>
 			<li>At City Road</li>
 		<?php 
 }?>
+                        <?php } else if(strtolower($check['name']) == 'at satellite') { ?>
 		<?php if ($element->satellite) {
     ?>
 			<li>At satellite</li>
 		<?php 
-}?>
+                }}}?>
+
 		<?php if ($element->fast_track) {
     ?>
 			<li>Suitable for fast-track</li>

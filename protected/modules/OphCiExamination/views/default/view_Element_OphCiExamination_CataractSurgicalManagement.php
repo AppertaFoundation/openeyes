@@ -29,22 +29,26 @@
 						<?php echo $element->eye ? $element->eye->name : 'Not specified'?>
 					</td>
 				</tr>
-				<tr>
-					<td scope="row">
-						<?php echo $element->getAttributeLabel('city_road')?>:
-					</td>
-					<td>
-						<?php echo $element->city_road ? 'Yes' : 'No'?>
-					</td>
-				</tr>
-				<tr>
-					<td scope="row">
-						<?php echo $element->getAttributeLabel('satellite')?>:
-					</td>
-					<td>
-						<?php echo $element->satellite ? 'Yes' : 'No'?>
-					</td>
-				</tr>
+                                 <?php foreach($active_check  as $check) { 
+                                    if(strtolower($check['name']) == 'at city road') { ?>
+                                        <tr>
+                                                <td scope="row">
+                                                        <?php echo $element->getAttributeLabel('city_road')?>:
+                                                </td>
+                                                <td>
+                                                        <?php echo $element->city_road ? 'Yes' : 'No'?>
+                                                </td>
+                                        </tr>
+                                    <?php } else if(strtolower($check['name']) == 'at satellite') { ?>
+                                            <tr>
+                                                    <td scope="row">
+                                                            <?php echo $element->getAttributeLabel('satellite')?>:
+                                                    </td>
+                                                    <td>
+                                                            <?php echo $element->satellite ? 'Yes' : 'No'?>
+                                                    </td>
+                                            </tr>
+                                 <?php } }?>
 				<tr>
 					<td scope="row">
 						<?php echo $element->getAttributeLabel('fast_track')?>:

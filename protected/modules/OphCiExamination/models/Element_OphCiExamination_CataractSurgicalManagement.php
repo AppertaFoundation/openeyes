@@ -110,6 +110,14 @@ class Element_OphCiExamination_CataractSurgicalManagement extends \BaseEventType
         );
     }
 
+    public function getActiveCataractManagementOperation() {
+        return $this->dbConnection->createCommand()
+                                ->select('name')
+                                ->from('ophciexamination_cataractsurgicalmanagement')
+                                ->where('active = 1 ')
+                                ->queryAll();
+    }
+
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
@@ -172,7 +180,6 @@ class Element_OphCiExamination_CataractSurgicalManagement extends \BaseEventType
                 if (!$patient = \Patient::model()->findByPk(@$_GET['patient_id'])) {
                     throw new Exception("Patient not found: ".@$_GET['patient_id']);
                 }
-
                 if ($api->getOpnoteWithCataractElementInCurrentEpisode($patient)) {
                     $this->eye_id = OphCiExamination_CataractSurgicalManagement_Eye::model()->find('name=?', array('Second eye'))->id;
                 } else {

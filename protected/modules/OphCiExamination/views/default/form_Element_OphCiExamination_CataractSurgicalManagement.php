@@ -26,8 +26,16 @@
 		</span>
 	</div>
 	<div class="field-row">
-		<?php echo $form->checkbox($element, 'city_road', array('nowrapper'=>true))?>
-		<?php echo $form->checkbox($element, 'satellite', array('nowrapper'=>true))?>
+                <?php 
+                    foreach($active_check  as $check) { 
+                        if(strtolower($check['name']) == 'at city road') {
+                            echo $form->checkbox($element, 'city_road', array('nowrapper'=>true));
+                        }
+                        else if(strtolower($check['name']) == 'at satellite') {
+                            echo $form->checkbox($element, 'satellite', array('nowrapper'=>true));
+                        }
+                    } 
+                ?>
 		<?php echo $form->checkbox($element, 'fast_track', array('nowrapper'=>true))?>
 	</div>
 
