@@ -103,7 +103,7 @@ class PatientMergeRequestController extends BaseController
             'criteria' => $criteria,
             'pagination' => $pagination,
             'sort'=>array(
-                'defaultOrder' => 'created_date DESC',
+                'defaultOrder' => ( $filters['show_merged'] ? 'last_modified_date' : 'created_date' ) . ' DESC',
             )
         ));
         
@@ -117,27 +117,35 @@ class PatientMergeRequestController extends BaseController
     {
         
         $model = new PatientMergeRequest;
-        
+        $mergeHandler = new PatientMerge;
         $patientMergeRequest = Yii::app()->request->getParam('PatientMergeRequest', null);
+        
+        if($patientMergeRequest && isset($patientMergeRequest['primary_id']) && isset($patientMergeRequest['secondary_id']) ) {
             
-        if($patientMergeRequest) {
+            $primaryPatient = Patient::model()->findByPk($patientMergeRequest['primary_id']);
+            $secondaryPatient = Patient::model()->findByPk($patientMergeRequest['secondary_id']);
+        
+            $personalDetailsConflictConfirm = $mergeHandler->comparePatientDetails($primaryPatient, $secondaryPatient);
             
-            // the Primary and Secondary user cannot be the same user , same database record I mean
-            if( ( !empty($patientMergeRequest['secondary_id']) && !empty($patientMergeRequest['primary_id']) )&& $patientMergeRequest['secondary_id'] == $patientMergeRequest['primary_id']){
-                Yii::app()->user->setFlash("warning.merge_error", "The Primary and Secondary patient cannot be the same. Record cannot be merged into itself.");
-            } else {
-                
-                if ( empty($patientMergeRequest['secondary_id']) || empty($patientMergeRequest['primary_id'])){
-                    Yii::app()->user->setFlash("warning.merge_error", "Both Primary and Secondary patients have to be selected.");
+            if( !$personalDetailsConflictConfirm['isConflict'] || ($personalDetailsConflictConfirm['isConflict'] && isset($patientMergeRequest['personalDetailsConflictConfirm'])) ){
+
+                // the Primary and Secondary user cannot be the same user , same database record I mean
+                if( ( !empty($patientMergeRequest['secondary_id']) && !empty($patientMergeRequest['primary_id']) )&& $patientMergeRequest['secondary_id'] == $patientMergeRequest['primary_id']){
+                    Yii::app()->user->setFlash("warning.merge_error", "The Primary and Secondary patient cannot be the same. Record cannot be merged into itself.");
                 } else {
-                    $model->attributes = $patientMergeRequest;
-                    if($model->save()){
-                        $this->redirect(array('index'));
+
+                    if ( empty($patientMergeRequest['secondary_id']) || empty($patientMergeRequest['primary_id'])){
+                        Yii::app()->user->setFlash("warning.merge_error", "Both Primary and Secondary patients have to be selected.");
+                    } else {
+                        $model->attributes = $patientMergeRequest;
+                        if($model->save()){
+                            $this->redirect(array('index'));
+                        }
                     }
                 }
             }
         }
-       
+        
         $this->render('//patientmergerequest/create',array(
             'model' => $model,
             

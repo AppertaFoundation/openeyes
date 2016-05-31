@@ -14,25 +14,57 @@ var patientMerge = {
         $section = $('section.' + type);
         Object.keys(this.patients[type]).forEach(function (key) {
             $section.find('.' + key).html(patientMerge.patients[type][key]);
-            $section.find('.' + key + '-input').val(patientMerge.patients[type][key]);            
+            $section.find('.' + key + '-input').val(patientMerge.patients[type][key]);
         });
         $section.next('section').remove();
-        $section.after(patientMerge.patients[type]['all-episodes']);
+        $section.after(this.patients[type]['all-episodes']);
         $section.next('section').removeClass('episodes');
         
     },
     
     swapPatients: function(){
         var tmpPatiens = {};
-        tmpPatiens = patientMerge.patients.primary;
-        patientMerge.patients.primary = patientMerge.patients.secondary;
-        patientMerge.patients.secondary = tmpPatiens;     
+        tmpPatiens = this.patients.primary;
+        this.patients.primary = this.patients.secondary;
+        this.patients.secondary = tmpPatiens;     
     },
-    
-    validatePatientsData: function(){
+        
+    validatePatientsData: function(callback_true, callback_false){
+        
+        var isValid = false;
+        
+        if( this.patients.primary.dob && this.patients.secondary.dob && (this.patients.primary.dob === this.patients.secondary.dob) ){
+            isValid = true;
+        } else {
+            isValid = false;
+        }
+        
+        if( this.patients.primary.gender && this.patients.secondary.gender && (this.patients.primary.gender === this.patients.secondary.gender) ){
+            isValid = isValid && true;
+        } else {
+            isValid = false;
+        }
+        
+        if( isValid && typeof callback_true === "function" ){
+            callback_true();
+        } else if(!isValid && typeof callback_false === "function" ){
+            callback_false();
+        }
+      
+        return isValid;
     }
 };
-                        
+
+function displayConflictMessage(){
+        
+    var $row = $('#patientDataConflictConfirmation');
+        $input = $row.find('input');
+        
+    $row.show();
+    $input.attr('name', $input.data('name') );
+    
+}
+
 $(document).ready(function(){
     dialog = $("#patient_merge_search").autocomplete({
         minLength: 0,
@@ -54,6 +86,10 @@ $(document).ready(function(){
                 if ( patientMerge.patients.primary.id != ui.item.id ){
                     patientMerge.patients.secondary = ui.item;
                     patientMerge.updateDOM('secondary');
+                    if ( patientMerge.patients.primary.id){
+                        patientMerge.validatePatientsData(null, displayConflictMessage);
+                    }
+                    
                 } else {
                     // secondary and primary patient ids are the same - ALERT
                     new OpenEyes.UI.Dialog.Alert({
@@ -68,6 +104,11 @@ $(document).ready(function(){
                 if ( patientMerge.patients.secondary.id != ui.item.id ){
                     patientMerge.patients.primary = ui.item;
                     patientMerge.updateDOM('primary');
+                    
+                    if ( patientMerge.patients.secondary.id){
+                        patientMerge.validatePatientsData(null, displayConflictMessage);
+                    }
+                    
                 } else {
                    new OpenEyes.UI.Dialog.Alert({
                     content: "Primary and Secondary patient cannot be the same record."
@@ -87,6 +128,7 @@ $(document).ready(function(){
                                 if ( patientMerge.patients.primary.id != ui.item.id ){
                                     patientMerge.patients.secondary = ui.item;
                                     patientMerge.updateDOM('secondary');
+                                    patientMerge.validatePatientsData(null, displayConflictMessage);
                                     $( this ).dialog( "close" );
                                 }else{
                                     $( this ).dialog( "close" );
@@ -106,6 +148,7 @@ $(document).ready(function(){
                                 if ( patientMerge.patients.secondary.id != ui.item.id ){
                                     patientMerge.patients.primary = ui.item;
                                     patientMerge.updateDOM('primary');
+                                    patientMerge.validatePatientsData(null, displayConflictMessage);
                                     $( this ).dialog( "close" );
                                 }else{
                                     $( this ).dialog( "close" );
@@ -124,6 +167,7 @@ $(document).ready(function(){
                 });
                 
             }
+            
             $('#patient_merge_search').val("");
             return false;
         },
@@ -183,6 +227,18 @@ $(document).ready(function(){
         if(!isValid){
             e.preventDefault();
         }
+        
+        if( $('#patientDataConflictConfirmation').is(':visible') && !$('#PatientMergeRequest_personalDetailsConflictConfirm').is(':checked') ){
+            e.preventDefault();
+            $('#PatientMergeRequest_personalDetailsConflictConfirm').closest('label').css({"border":'3px solid red',"padding":"5px"});
+        }
+        
+        if( $('#PatientMergeRequest_confirm').length > 0 && !$('#PatientMergeRequest_confirm').is(':checked') ){
+            e.preventDefault();
+            $('#PatientMergeRequest_confirm').closest('label').css({"border":'3px solid red',"padding":"5px"});
+            
+        }
+        
     });
     
     $('#patientMergeWrapper').on('click', '#selectall', function(){
