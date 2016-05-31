@@ -12,15 +12,19 @@
             </th>
             <th class="status"><?php echo $dataProvider->getSort()->link('status','Status',array('class'=>'sort-link')); ?></th>
             <th class="created"><?php echo $dataProvider->getSort()->link('created_date','Created',array('class'=>'sort-link')); ?></th>
+            <?php if($filters['show_merged']) :?>
+            <th class="created"><?php echo $dataProvider->getSort()->link('last_modified_date','Merged',array('class'=>'sort-link')); ?></th>
+            <?php endif; ?> 
         </tr>
         <tr class="table-filter">
             <td> <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>"
-                     alt="loading..." style="display: none;"/></td>
-            <td class="filter-col"><input id="secondary_hos_num_filter" name="PatientMergeRequestFilter[secondary_hos_num_filter]" type="text" value="<?php echo isset($filters['secondary_hos_num_filter']) ? $filters['secondary_hos_num_filter'] : '';?>"></input></td>
+                    alt="loading..." style="display: none;"/></td>
+            <td class="filter-col"><input id="secondary_hos_num_filter" name="PatientMergeRequestFilter[secondary_hos_num_filter]" type="text" value="<?php echo isset($filters['secondary_hos_num_filter']) ? $filters['secondary_hos_num_filter'] : '';?>"></td>
             <td></td>
-            <td class="filter-col"><input id="primary_hos_num_filter" name="PatientMergeRequestFilter[primary_hos_num_filter]" type="text"></input></td>
+            <td class="filter-col"><input id="primary_hos_num_filter" name="PatientMergeRequestFilter[primary_hos_num_filter]" type="text" value="<?php echo isset($filters['primary_hos_num_filter']) ? $filters['primary_hos_num_filter'] : '';?>"></td>
             <td></td>
             <td></td>
+            <?php if($filters['show_merged']) :?><td></td><?php endif; ?>
         </tr>
     </thead>
     <tfoot class="pagination-container">
@@ -56,6 +60,10 @@
                         <?php echo $request->getStatusText(); ?> 
                     </td>
                     <td class="created"><?php echo $request->created_date; ?> </td>
+                    <?php if($filters['show_merged']) :?>
+                    <td class="merged"><?php echo $request->last_modified_date; ?> </td>
+                    <?php endif; ?> 
+                    
                 </tr>
             <?php endforeach;?>
         <?php else: ?>

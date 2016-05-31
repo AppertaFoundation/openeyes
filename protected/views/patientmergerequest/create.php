@@ -61,14 +61,24 @@
                     <?php echo CHTML::activeTextArea($model, "comment"); ?>
                 </div>
             </div>
-            
+            <br>
+            <div id="patientDataConflictConfirmation" class="row" style="display:none">
+                <div class="large-10 large-offset-1 column alert-box with-icon warning">
+                    <h2> Personal details are conflicting. </h2>
+                    Please confirm you selected the right patients. <br>
+                    Note, the primary patient's personal details will <strong>NOT</strong> be overwritten.<br><br>
+                    <label>
+                    <input type="checkbox" id="PatientMergeRequest_personalDetailsConflictConfirm" value="1" data-name="PatientMergeRequest[personalDetailsConflictConfirm]"> I hereby confirm that I selected the right patients.</label>
+                </div>
+            </div>
             <div class="row">
                 <div class="large-3 column text-right large-offset-9">
                     <input class="no-clear" type="submit" value="Save">
                 </div>
             </div>
+            
         </form>
-        <br>
+        
 
     </div>
 
