@@ -124,6 +124,15 @@ class OEScapeDataController extends \BaseController
         return false;
     }
 
+    protected function sortMedications($medArray){
+        $outArray = array();
+        foreach($medArray as $med){
+            $outArray[$med->start_date] = $med;
+        }
+        ksort($outArray);
+        return $outArray;
+    }
+
     /**
      * @return array
      */
@@ -185,7 +194,7 @@ class OEScapeDataController extends \BaseController
         $patient = \Patient::model()->findByPk($id);
 
         $medications = array_merge($patient->get_previous_medications(), $patient->get_medications());
-        //asort($medications);
+        $medications = $this->sortMedications($medications);
         $output = array();
 
         foreach($medications as $medication){
