@@ -102,7 +102,7 @@
     </td></tr> <?php }?>
     </table>
       
-        	<?php echo $form->formActions(array('cancel-uri' => '/eventLog/list'));?>
+        	<?php echo $form->formActions(array('cancel-uri' => '/oeadmin/eventLog/list'));?>
 
 	<?php $this->endWidget()?>
 </div>

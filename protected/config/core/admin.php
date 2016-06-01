@@ -47,8 +47,8 @@ return array(
 				'Anaesthetic Agent Mapping' => '/oeadmin/AnaestheticAgentMapping/list',
 				'Anaesthetic Agent Defaults' => '/oeadmin/AnaestheticAgentDefaults/list',
 				'Risks' => '/oeadmin/risk/list',
-                                'Unique Codes' => '/oeadmin/uniqueCodes/list',
-                                'Examination Event Logs' => '/eventLog/list',
+				'Unique Codes' => '/oeadmin/uniqueCodes/list',
+				'Examination Event Logs' => '/oeadmin/eventLog/list',
 			),
 			'Procedure Management' => array(
 				'Procedures' => '/oeadmin/procedure/list',

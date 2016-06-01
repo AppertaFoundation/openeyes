@@ -404,7 +404,7 @@ class EventLogController extends BaseAdminController
                 }
             }
 
-            $this->redirect('/eventLog/list/');
+            $this->redirect('/oeadmin/eventLog/list/');
         }
 
         $eventQuery = EventLog::model()->findByPk($id);
