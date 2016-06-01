@@ -19,7 +19,9 @@
 <div class="admin box">
     <h2>Worklist Definition</h2>
     Name: <?= $definition->name ?><br />
-    Frequency: <i><?= $definition->rruleHumanReadable ?></i>
+    Frequency: <i><?= $definition->rruleHumanReadable ?></i><br />
+    Time Slot: <?=$definition->start_time?> - <?=$definition->end_time?>
+
     <hr style="margin: 5px;" />
     <h3>Current Maps</h3>
     <?php if (!count($definition->mappings)) {?>
