@@ -40,7 +40,7 @@ class BaseAdminController extends BaseController
 	/**
 	 * @description Initialise and handle admin pagination
 	 * @author bizmate
-	 * @param class $model
+	 * @param BaseActiveRecord $model
 	 * @param string $criteria
 	 * @return CPagination
 	 */
