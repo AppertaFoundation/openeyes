@@ -852,4 +852,86 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('content', $res);
         $this->assertEquals('fake renderfake render', $res['content']);
     }
+
+    public function setWorklistDefinitionDisplayOrder_simpleProvider()
+    {
+        return array(
+            array(array(1,3,5,2,4), array(1,2,3,4,5), true),
+            array(array(1,3,5,2,4), array(1,2,3,5), false),
+        );
+    }
+
+    /**
+     * @dataProvider setWorklistDefinitionDisplayOrder_simpleProvider
+     * @param $ordered_ids
+     * @param $definition_ids
+     * @param $expected
+     */
+    public function test_setWorklistDefinitionDisplayOrder_simple($ordered_ids, $definition_ids, $expected)
+    {
+        $manager = $this->getMockBuilder('WorklistManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getModelForClass', 'getInstanceForClass', 'startTransaction', 'audit'))
+            ->getMock();
+
+        if ($expected) {
+            $manager->expects($this->once())
+                ->method('startTransaction')
+                ->will($this->returnValue($this->getTransactionMock(array('commit'))));
+            $manager->expects($this->once())
+                ->method('audit');
+        }
+        else {
+            $manager->expects($this->once())
+                ->method('startTransaction')
+                ->will($this->returnValue($this->getTransactionMock(array('rollback'))));
+            $manager->expects($this->never())
+                ->method('audit');
+        }
+
+        $definitions = array();
+        foreach ($definition_ids as $id) {
+            $definition = $this->getMockBuilder('WorklistDefinition')
+                ->disableOriginalConstructor()
+                ->setMethods(array('save'))
+                ->getMock();
+            $definition->id = $id;
+
+            // verify save is called
+            if ($expected)
+                $definition->expects($this->once())
+                    ->method('save')
+                    ->will($this->returnValue(true));
+
+            $definitions[] = $definition;
+        }
+
+        $criteria = $this->getMockBuilder('CDbCriteria')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $manager->expects($this->once())
+            ->method('getInstanceForClass')
+            ->with('CDbCriteria')
+            ->will($this->returnValue($criteria));
+
+        $definition_model = $this->getMockBuilder('WorklistDefinition')
+            ->disableOriginalConstructor()
+            ->setMethods(array('findAll'))
+            ->getMock();
+
+        $manager->expects($this->once())
+            ->method('getModelForClass')
+            ->with('WorklistDefinition')
+            ->will($this->returnValue($definition_model));
+
+        $definition_model->expects($this->once())
+            ->method('findAll')
+            ->with($criteria)
+            ->will($this->returnValue($definitions));
+
+        $this->assertEquals($expected, $manager->setWorklistDefinitionDisplayOrder($ordered_ids));
+        $this->assertEquals(!$expected, $manager->hasErrors());
+    }
+
 }

@@ -21,6 +21,8 @@
     <h2>Automatic Worklist Definitions</h2>
     <?php echo EventAction::link('Add Definition', '/worklistAdmin/definitionEdit/', array(), array('class' => 'button primary small'))->toHtml()?>
     <?php if ($definitions) {?>
+    <form id="definition-list" method="POST">
+        <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
         <table class="generic-admin grid">
             <thead>
             <tr>
@@ -32,7 +34,7 @@
             <tbody class="sortable">
             <?php foreach ($definitions as $i => $definition) {?>
                 <tr>
-                    <td class="reorder">&uarr;&darr;<input type="hidden" name="<?php echo get_class($definition) ?>[display_order][]" value="<?php echo $i ?>"></td>
+                    <td class="reorder">&uarr;&darr;<input type="hidden" name="item_ids[]" value="<?php echo $definition->id ?>"></td>
                     <td><?=$definition->name?></td>
                     <td><?php if ($this->manager->canEditWorklistDefinition($definition)) {?><a href="/worklistAdmin/definitionEdit/<?=$definition->id?>">Edit</a> |<?php }?>
                         <a href="/worklistAdmin/definition/<?=$definition->id?>">View</a> |
@@ -47,7 +49,25 @@
                 </tr>
             <?php } ?>
             </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="4">
+                    <?php echo EventAction::button(
+                        'Sort',
+                        'sort',
+                        array(),
+                        array(
+                            'class' => 'small',
+                            'style' => 'display:none;',
+                            'data-uri' => '/worklistAdmin/definitionSort/',
+                            'data-object' => 'WorklistDefinition'
+                        )
+                    )->toHtml() ?>
+                </td>
+            </tr>
+            </tfoot>
         </table>
+    </form>
     <?php } else {?>
         <div class="alert-box info">No automatic worklists have been defined. You may add one by clicking the button above ...</div>
     <?php } ?>
@@ -55,6 +75,14 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        $('.sortable').sortable();
+        $('.sortable').sortable({
+            change: function (e, ui) {
+                $('#et_sort').show();
+            }
+        });
     });
+
+    $('#et_sort').on('click', function() {
+        $('#definition-list').attr('action', $(this).data('uri')).submit();
+    })
 </script>

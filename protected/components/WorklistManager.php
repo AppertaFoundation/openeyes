@@ -316,6 +316,61 @@ class WorklistManager extends CComponent
     }
 
     /**
+     * Set the display order for the worklist definitions
+     * The start and end values will support a re-ordering request from a paginated list.
+     *
+     * @param array $ids
+     * @param null $start
+     * @param null $end
+     * @return bool
+     */
+    public function setWorklistDefinitionDisplayOrder($ids = array(), $start = null, $end = null)
+    {
+        foreach ($ids as $i => $id) {
+            $display_lookup[$id] = $i+1;
+        }
+        $transaction = $this->startTransaction();
+
+        try {
+            $model = $this->getModelForClass('WorklistDefinition');
+            $criteria = $this->getInstanceForClass('CDbCriteria');
+            if ($start) {
+                $criteria->addCondition('display_order > :start');
+                $criteria->params = array_merge($criteria->params, array(
+                    ":start" => $start
+                ));
+            }
+            if ($end) {
+                $criteria->addCondition('display_order < :end');
+                $criteria->params = array_merge($criteria->params, array(
+                    ":end" => $end
+                ));
+            }
+
+            foreach ($model->findAll($criteria) as $definition) {
+                if (!array_key_exists($definition->id, $display_lookup))
+                    throw new Exception("Missing definition id for re-ordering request.");
+                $definition->display_order = $display_lookup[$definition->id];
+                if (!$definition->save())
+                    throw new Exception("Unable to update display order for definition {$definition->id}");
+            }
+
+            $this->audit(self::$AUDIT_TARGET_AUTO, 're-order',array('order' => $ids),'Definitions display order set');
+
+            if ($transaction)
+                $transaction->commit();
+
+            return true;
+        }
+        catch (Exception $e) {
+            $this->addError($e->getMessage());
+            if ($transaction)
+                $transaction->rollback();
+            return false;
+        }
+    }
+
+    /**
      * @param $id
      * @return Worklist
      */
