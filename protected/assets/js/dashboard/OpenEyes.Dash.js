@@ -202,12 +202,11 @@
             var chart = OpenEyes.Dash.reports['PcrRiskReport'];
             chart.setTitle(null, {text: 'Total Operations: ' +  data[0][0]} );
             if($('#pcr-risk-mode').val() == 1){
-                //chart.series[3].hide();
-                chart.series[2].hide();
                 chart.series[1].hide();
+                chart.series[2].hide();
             }else if($('#pcr-risk-mode').val() == 0){
-                chart.series[2].show();
                 chart.series[1].show();
+                chart.series[2].show();
             }
         },
         'OEModule_OphCiExamination_components_RefractiveOutcomeReport': function(data){
