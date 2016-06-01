@@ -24,7 +24,7 @@ class PcrRiskReport extends Report implements ReportInterface
                 'width' => 1,
                 'label' => array('text' => 'Average')
             )),
-            'max' => 30
+            'max' => 50
         ),
         'tooltip' => array(
             'headerFormat' => '<b>PCR Risk</b><br>',
@@ -88,10 +88,10 @@ class PcrRiskReport extends Report implements ReportInterface
         $adjustedPcrRate = 0;
 
         foreach($data as $case){
-            if(isset($case['complication']) && ($case['complication']== 'PC rupture' || $case['complication'] === 'PC rupture with vitreous loss' || $case['complication'] === 'PC rupture no vitreous loss')){
+            if(isset($case['complication']) && ($case['complication'] === 'PC rupture' || $case['complication'] === 'PC rupture with vitreous loss' || $case['complication'] === 'PC rupture no vitreous loss')){
                 $pcrCases++;
             }
-            if(isset($case['risk']) && $case['risk'] != "" ){
+            if(isset($case['risk']) && $case['risk'] !== '' && $case['risk'] != 0){
                 $pcrRiskTotal += $case['risk'];
             }else{
                 $pcrRiskTotal += 1.92;
@@ -99,9 +99,13 @@ class PcrRiskReport extends Report implements ReportInterface
         }
 
         if($total !== 0 && (int)$pcrRiskTotal !== 0){
-            $adjustedPcrRate = (($pcrCases / $total) / ($pcrRiskTotal / $total)) * $this->average();
+            $expectedPcrRate = $pcrRiskTotal / $total;
+            $observedPcrRate = $pcrCases / $total;
+            $observedExpectedRate = $observedPcrRate / $expectedPcrRate;
+            $adjustedPcrRate = ($observedExpectedRate *  $this->average()) * 100 ; // we need to return %
+            //$adjustedPcrRate = (($pcrCases / $total) / ($pcrRiskTotal / $total)) * $this->average();
         }
-        
+
         // set the graph subtitle here, so we don't have to run this query more than once
         $this->graphConfig['subtitle']['text'] = "Total Operations: $total";
         if($total > 1000) {
@@ -597,6 +601,6 @@ class PcrRiskReport extends Report implements ReportInterface
      */
     protected function average()
     {
-        return 1.95;
+        return 1.92;
     }
 }
