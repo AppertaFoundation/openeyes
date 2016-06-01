@@ -205,6 +205,8 @@
                 newTitle = 'PCR Rate (risk adjusted)';
             }else if($('#pcr-risk-mode').val() == 1){
                 newTitle = 'PCR Rate (risk unadjusted)';
+            }else if($('#pcr-risk-mode').val() == 2){
+                newTitle = 'PCR Rate (risk adjusted and unadjusted)';
             }
             chart.setTitle({text: newTitle}, {text: 'Total Operations: ' +  data[0][0]} );
         },

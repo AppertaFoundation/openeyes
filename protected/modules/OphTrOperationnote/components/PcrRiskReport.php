@@ -120,17 +120,15 @@ class PcrRiskReport extends Report implements ReportInterface
         }
 
         if($total !== 0 && (int)$pcrRiskTotal !== 0){
-            if($this->mode == 1){
                 // unadjusted PCR rate
-                $pcrRate = ($pcrCases/$total)*100;
-            }else {
+                $unadjustedPcrRate = ($pcrCases/$total)*100;
+
                 // adjusted PCR rate
                 $expectedPcrRate = $pcrRiskTotal / $total;
                 $observedPcrRate = $pcrCases / $total;
                 $observedExpectedRate = $observedPcrRate / $expectedPcrRate;
-                $pcrRate = ($observedExpectedRate * $this->average()) * 100; // we need to return %
+                $adjustedPcrRate = ($observedExpectedRate * $this->average()) * 100; // we need to return %
                 //$adjustedPcrRate = (($pcrCases / $total) / ($pcrRiskTotal / $total)) * $this->average();
-            }
         }
 
         // set the graph subtitle here, so we don't have to run this query more than once
@@ -139,7 +137,13 @@ class PcrRiskReport extends Report implements ReportInterface
             $this->totalOperations = $total;
         }
 
-        return array(array($total, $pcrRate));
+        if($this->mode == 0) {
+            return array(array($total, $adjustedPcrRate));
+        }elseif($this->mode == 1) {
+            return array(array($total, $unadjustedPcrRate));
+        }elseif($this->mode == 2){
+            return array(array($total, $unadjustedPcrRate), array($total, $adjustedPcrRate));
+        }
 
     }
 
@@ -648,7 +652,7 @@ class PcrRiskReport extends Report implements ReportInterface
      */
     public function renderSearch()
     {
-        $displayModes = array(array('id'=>'0', 'name'=>'Adjusted risk'),array('id'=>'1', 'name'=>'Unadjusted risk'));
+        $displayModes = array(array('id'=>'0', 'name'=>'Adjusted risk'),array('id'=>'1', 'name'=>'Unadjusted risk'), array('id'=>'2', 'name'=>'Both'));
         return $this->app->controller->renderPartial($this->searchTemplate, array('report' => $this, 'modes' => $displayModes));
     }
 }
