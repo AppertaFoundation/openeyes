@@ -25,6 +25,10 @@ class WorklistAdminController extends BaseAdminController
      */
     public $manager;
 
+    /**
+     * @param $action
+     * @return bool
+     */
     protected function beforeAction($action)
     {
         $this->manager = new WorklistManager();
@@ -55,6 +59,12 @@ class WorklistAdminController extends BaseAdminController
         ));
     }
 
+    /**
+     * View a definition
+     *
+     * @param null $id
+     * @throws CHttpException
+     */
     public function actionDefinition($id = null)
     {
         $definition = $this->getWorklistDefinition($id);
@@ -97,6 +107,11 @@ class WorklistAdminController extends BaseAdminController
         ));
     }
 
+    /**
+     * @param $id
+     * @throws CDbException
+     * @throws CHttpException
+     */
     public function actionDefinitionDelete($id)
     {
         $definition = $this->getWorklistDefinition($id);
@@ -185,6 +200,12 @@ class WorklistAdminController extends BaseAdminController
         ));
     }
 
+    /**
+     * Delete the generated worklists for a worklist definition
+     * 
+     * @param $id
+     * @throws CHttpException
+     */
     public function actionDefinitionWorklistsDelete($id)
     {
         $definition = $this->getWorklistDefinition($id);
@@ -317,6 +338,12 @@ class WorklistAdminController extends BaseAdminController
         ));
     }
 
+    /**
+     * Delete a definition mapping
+     *
+     * @param $id
+     * @throws CHttpException
+     */
     public function actionDefinitionMappingDelete($id)
     {
         if (!$mapping = WorklistDefinitionMapping::model()->findByPk($id))
@@ -337,6 +364,8 @@ class WorklistAdminController extends BaseAdminController
 
     /**
      * Update the Worklist Definition Mapping Attribute order
+     *
+     * @param $id
      */
     public function actionDefinitionMappingSort($id)
     {
