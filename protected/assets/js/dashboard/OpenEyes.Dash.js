@@ -200,7 +200,13 @@
     Dash.postUpdate = {
         'PcrRiskReport': function(data){
             var chart = OpenEyes.Dash.reports['PcrRiskReport'];
-            chart.setTitle(null, {text: 'Total Operations: ' +  data[0][0]} );
+            var newTitle = '';
+            if($('#pcr-risk-mode').val() == 0){
+                newTitle = 'PCR Rate (risk adjusted)';
+            }else if($('#pcr-risk-mode').val() == 1){
+                newTitle = 'PCR Rate (risk unadjusted)';
+            }
+            chart.setTitle({text: newTitle}, {text: 'Total Operations: ' +  data[0][0]} );
         },
         'OEModule_OphCiExamination_components_RefractiveOutcomeReport': function(data){
             var total = 0,
