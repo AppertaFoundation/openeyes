@@ -18,7 +18,7 @@
 
 var VFImages, OCTImages;
 var lastIndex = 0;
-var currentMedY = 90;
+var currentMedY = 100;
 var currentIndexDate = new Date().getTime();
 var fixedPoint = {point: undefined, side: undefined, color: undefined};
 
