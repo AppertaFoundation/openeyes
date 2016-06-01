@@ -350,9 +350,9 @@ select:focus {
   background-color: white;
   padding: 0;
   min-height: 320px;
-  min-width: 800px;
   height: 30%;
-  width: 100%;
+  width: 80%;
+  margin: 0 auto;
   overflow: hidden;
 }
 

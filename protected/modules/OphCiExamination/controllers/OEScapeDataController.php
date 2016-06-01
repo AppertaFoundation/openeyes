@@ -188,7 +188,7 @@ class OEScapeDataController extends \BaseController
         $output = array();
 
         foreach($medications as $medication){
-            $output[] = array((int)strtotime($medication->start_date)*1000, (int)strtotime($medication->end_date)*1000, (int)$medication->route_id, explode(' ',$medication->getDrugLabel())[0]);
+            $output[] = array((int)strtotime($medication->start_date)*1000, (int)strtotime($medication->end_date)*1000, (int)$medication->option_id, explode(' ',$medication->getDrugLabel())[0]);
         }
 
         echo json_encode($output);
