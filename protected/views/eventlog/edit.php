@@ -19,91 +19,61 @@
 
 ?>
 <div class="box admin">
-	<h2>Examination Event Log(s)</h2>
-   <?php
-	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-		'id'=>'adminform',
-                'focus'=>'#contactname',
-	))?>     
-<table width="100%" cellspacing="0" cellpadding="0">
-    <tr>
-        <td>Event Id</td>   
-        <td><?php echo $eventId;?>
-        
-        <?php echo CHtml::hiddenField('logId' , $logId, array('id' => 'hiddenInput')); 
-        echo CHtml::hiddenField('eventId' , $eventId, array('id' => 'hiddenInput')); ?>
-        
-        </td>   
-    </tr>
-    
-    <tr>
-        <td>Unique Code </td>   
-        <td><?php echo $unique_code;?></td>   
-    </tr>
-     <tr>
-        <td>Examination Date</td>   
-        <td><?php echo date("d M Y",strtotime($data['examination_date'])) ;?></td>   
-    </tr>
-    
-    <tr>
-        <td>Patient Identifier</td>   
-        <td><?php echo $data['patient']['unique_identifier'];?></td>   
-    </tr>
-     <tr>
-        <td>Date of birth</td>   
-        <td><?php echo date("d M Y",strtotime($data['patient']['dob'])) ;?></td>   
-    </tr>
-  
-    
-    
-    <tr >
-        <td>Eye Readings</td>
-        
-        
-        <td>
-    <?php foreach($data['patient']['eyes'] as $eyes)
-    {
-     
-        
-        ?><?php echo $eyes['label'];?> 
-            <br/> Refraction ( Sphere-<?php echo $eyes['reading'][0]['refraction']['sphere'];?>, Cylinder-<?php echo $eyes['reading'][0]['refraction']['cylinder'];?>, Axis-<?php echo $eyes['reading'][0]['refraction']['axis'];?> )
-            <br/>IOP ( <?php echo $eyes['reading'][0]['iop']['mm_hg'];?> mmhg, <?php echo $eyes['reading'][0]['iop']['instrument'];?>)
-        <br/>
-        <br/>
-        <?php
-    
-    }
-    ?>
-        
-        </td>   
-           
-    </tr>
-    
-    <tr>
-        <td>
-            
-            OpTom Details
-        </td>    
-        <td>
-                 Name :     
-                 <?php echo $data['op_tom']['name'];?>
+    <h2>Examination Event Log(s)</h2>
+    <?php
+    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+        'id' => 'adminform',
+        'focus' => '#contactname',
+    )) ?>
+    <table width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+            <td>Event Id</td>
+            <td>
+                <?php echo $eventId; ?>
+                <?php echo CHtml::hiddenField('logId', $logId, array('id' => 'hiddenInput'));
+                echo CHtml::hiddenField('eventId', $eventId, array('id' => 'hiddenInput')); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>Unique Code</td>
+            <td><?php echo $unique_code; ?></td>
+        </tr>
+        <tr>
+            <td>Examination Date</td>
+            <td><?php echo date("d M Y", strtotime($data['examination_date'])); ?></td>
+        </tr>
+        <tr>
+            <td>Patient Identifier</td>
+            <td><?php echo $data['patient']['unique_identifier']; ?></td>
+        </tr>
+        <tr>
+            <td>Date of birth</td>
+            <td><?php echo date("d M Y", strtotime($data['patient']['dob'])); ?></td>
+        </tr>
+        <tr>
+            <td>Eye Readings</td>
+            <td>
+                <?php foreach ($data['patient']['eyes'] as $eyes) {
+                    echo $eyes['label']; ?>
+                    <br/> Refraction ( Sphere-<?php echo $eyes['reading'][0]['refraction']['sphere']; ?>, Cylinder-<?php echo $eyes['reading'][0]['refraction']['cylinder']; ?>, Axis-<?php echo $eyes['reading'][0]['refraction']['axis']; ?> )
+                    <br/>IOP ( <?php echo $eyes['reading'][0]['iop']['mm_hg']; ?> mmhg, <?php echo $eyes['reading'][0]['iop']['instrument']; ?>)
+                    <br/>
+                    <br/>
+                <?php } ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                OpTom Details
+            </td>
+            <td>
+                Name : <?php echo $data['op_tom']['name']; ?>
                 <br/>
-                 Address : 
-                     <?php echo $data['op_tom']['address'];?></td>
-    </tr>
-    
-    <?php if($data['examination_date']==3){?>
-    <tr><td>Active</td><td><?php echo CHtml::radioButton('status', false, array(
-    'value'=>'1',
-    'name'=>'btnname'
-));?> Yes
-       
-        
-    </td></tr> <?php }?>
+                Address : <?php echo $data['op_tom']['address']; ?></td>
+        </tr>
     </table>
-      
-        	<?php echo $form->formActions(array('cancel-uri' => '/oeadmin/eventLog/list'));?>
+    <?php echo $form->formActions(array('cancel-uri' => '/oeadmin/eventLog/list')); ?>
 
-	<?php $this->endWidget()?>
+    <?php $this->endWidget() ?>
 </div>
 
