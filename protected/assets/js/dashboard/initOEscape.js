@@ -126,6 +126,67 @@ $(document).ready(function() {
         cache: false
     });
 
+
+    loadAllImages(Highcharts.dateFormat('%Y-%m-%d', new Date().getTime()));
+    loadAllVFImages('vfgreyscale');
+    loadAllOCTImages('oct');
+
+    $('#vfgreyscale_left, #vfgreyscale_right').mousemove(function(e){
+        changeVFImages(e.pageX - this.offsetLeft, $(this).width());
+    });
+
+    $('#oct_images').mousemove(function(e){
+        changeOCTImages(e.pageX - this.offsetLeft, $(this).width());
+    });
+
+    $('.colourplot_left, .colourplot_right').mouseover(function(e){
+        if(fixedPoint.point == undefined) {
+            var plotId = $(this).attr('id').split('_');
+            showRegressionChart(getSideId(plotId[1]), parseInt(plotId[2]), currentIndexDate);
+        }
+    });
+
+    $('.colourplot_left, .colourplot_right').click(function(e){
+        var plotId = $(this).attr('id').split('_');
+        //console.log(fixedPointLeft+' '+parseInt(plotId[2]));
+        if(fixedPoint.point != undefined && fixedPoint.point == parseInt(plotId[2])){
+            $(this).attr('fill', fixedPoint.colour);
+            $(this).removeAttr('stroke');
+            $(this).removeAttr('stroke-width');
+            fixedPoint.point = undefined;
+            fixedPoint.side = undefined;
+            fixedPoint.colour = undefined;
+        }else if(fixedPoint.point == undefined){
+            fixedPoint.point = parseInt(plotId[2]);
+            fixedPoint.side = getSideId(plotId[1]);
+            fixedPoint.colour = $(this).attr('fill');
+            $(this).attr('fill','white');
+            $(this).attr('stroke','black');
+            $(this).attr('stroke-width','4');
+        }
+    });
+
+    $('.colourplot_left, .colourplot_right').mouseenter(function(e){
+        //$(this).addClass('colorplot-hover');
+        if(fixedPoint.point == undefined){
+            $(this).attr('stroke','black');
+            $(this).attr('stroke-width','2');
+        }
+    });
+
+    $('.colourplot_left, .colourplot_right').mouseout(function(e){
+        if(fixedPoint.point == undefined) {
+            $(this).removeAttr('stroke');
+            $(this).removeAttr('stroke-width');
+        }
+    });
+
+    $('#vfcolorplot_right, #vfcolorplot_left').mouseout(function(e){
+        //$('.regression_chart').hide();
+    });
+
+    addRegressionChart();
+
     // create the Visual Acuity chart
     var VAchart = new Highcharts.StockChart({
         chart:{
@@ -236,68 +297,6 @@ $(document).ready(function() {
 
     addSeries(VAchart, 1, 'MD', 'DataSetMD', "#4d9900", 'shortdot', 1);
     addSeries(VAchart, 2, 'MD', 'DataSetMD', "#c653c6", 'shortdot', 1);
-
-    loadAllImages(Highcharts.dateFormat('%Y-%m-%d', new Date().getTime()));
-    loadAllVFImages('vfgreyscale');
-    loadAllOCTImages('oct');
-
-    $('#vfgreyscale_left, #vfgreyscale_right').mousemove(function(e){
-        changeVFImages(e.pageX - this.offsetLeft, $(this).width());
-    });
-
-    $('#oct_images').mousemove(function(e){
-        changeOCTImages(e.pageX - this.offsetLeft, $(this).width());
-    });
-
-    $('.colourplot_left, .colourplot_right').mouseover(function(e){
-        if(fixedPoint.point == undefined) {
-            var plotId = $(this).attr('id').split('_');
-            showRegressionChart(getSideId(plotId[1]), parseInt(plotId[2]), currentIndexDate);
-        }
-    });
-
-    $('.colourplot_left, .colourplot_right').click(function(e){
-        var plotId = $(this).attr('id').split('_');
-        //console.log(fixedPointLeft+' '+parseInt(plotId[2]));
-        if(fixedPoint.point != undefined && fixedPoint.point == parseInt(plotId[2])){
-            $(this).attr('fill', fixedPoint.colour);
-            $(this).removeAttr('stroke');
-            $(this).removeAttr('stroke-width');
-            fixedPoint.point = undefined;
-            fixedPoint.side = undefined;
-            fixedPoint.colour = undefined;
-        }else if(fixedPoint.point == undefined){
-            fixedPoint.point = parseInt(plotId[2]);
-            fixedPoint.side = getSideId(plotId[1]);
-            fixedPoint.colour = $(this).attr('fill');
-            $(this).attr('fill','white');
-            $(this).attr('stroke','black');
-            $(this).attr('stroke-width','4');
-        }
-    });
-
-    $('.colourplot_left, .colourplot_right').mouseenter(function(e){
-        //$(this).addClass('colorplot-hover');
-        if(fixedPoint.point == undefined){
-            $(this).attr('stroke','black');
-            $(this).attr('stroke-width','2');
-        }
-    });
-
-    $('.colourplot_left, .colourplot_right').mouseout(function(e){
-        if(fixedPoint.point == undefined) {
-            $(this).removeAttr('stroke');
-            $(this).removeAttr('stroke-width');
-        }
-    });
-
-    $('#vfcolorplot_right, #vfcolorplot_left').mouseout(function(e){
-        //$('.regression_chart').hide();
-    });
-
-
-
-    addRegressionChart();
     //$('#regression_chart').hide();
 });
 
@@ -492,7 +491,7 @@ function AddMedication(item, index){
     if(item[2] == 1){
         color = '#ccff99';
     }else{
-        color = '#e6b3e6';
+        color = '#ff3333';
     }
     this.addSeries({
         type: 'arearange',

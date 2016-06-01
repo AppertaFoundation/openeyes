@@ -325,7 +325,7 @@ select:focus {
 .mdl-layout__content #dash-grid .mdl-cell-top {
   background-color: white;
   padding: 0;
-  min-height: 600px;
+  min-height: 400px;
   height: 70%;
   overflow: hidden;
 }
@@ -333,7 +333,7 @@ select:focus {
 .mdl-layout__content #dash-grid .mdl-cell-bottom {
   background-color: white;
   padding: 0;
-  min-height: 270px;
+  min-height: 200px;
   height: 30%;
   overflow: hidden;
 }
@@ -341,7 +341,7 @@ select:focus {
 .mdl-layout__content #dash-grid .mdl-cell-top-right {
   background-color: white;
   padding: 0;
-  min-height: 520px;
+  min-height: 427px;
   height: 70%;
   overflow: hidden;
 }
@@ -349,17 +349,47 @@ select:focus {
 .mdl-layout__content #dash-grid .mdl-cell-bottom-right {
   background-color: white;
   padding: 0;
-  min-height: 320px;
+  min-height: 250px;
   height: 30%;
-  width: 80%;
+  width: 85%;
   margin: 0 auto;
   overflow: hidden;
+}
+
+.mdl-tabs__tab-bar {
+  align-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: row;
+  height: 23px;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}
+
+.mdl-tabs__tab {
+  border: medium none;
+  color: rgba(0, 0, 0, 0.54);
+  display: block;
+  float: left;
+  font-size: 14px;
+  font-weight: 500;
+  height: 23px;
+  line-height: 23px;
+  margin: 0;
+  overflow: hidden;
+  padding: 0 24px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
 }
 
 .mdl-layout__content #dash-grid .mdl-cell-side {
   background-color: white;
   padding: 0;
-  min-height: 870px;
+  min-height: 800px;
   height: 100%;
 }
 
@@ -422,7 +452,7 @@ select:focus {
 }
 
 .vfimage{
-  width: 59%;
+  width: 70%;
   margin: 0 auto;
 }
 
@@ -432,7 +462,7 @@ select:focus {
 }
 
 .vfcolorplot{
-  width: 46%;
+  width: 55%;
   margin: 0 auto;
 }
 
@@ -442,6 +472,7 @@ select:focus {
 
 .oescape-images{
   background: white;
+  height: calc(100% - 23px);
 }
 
 .icon-element {
