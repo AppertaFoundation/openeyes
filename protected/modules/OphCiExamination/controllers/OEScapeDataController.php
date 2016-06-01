@@ -127,7 +127,7 @@ class OEScapeDataController extends \BaseController
     protected function sortMedications($medArray){
         $outArray = array();
         foreach($medArray as $med){
-            $outArray[$med->start_date] = $med;
+            $outArray[(int)strtotime($med->start_date)] = $med;
         }
         ksort($outArray);
         return $outArray;
