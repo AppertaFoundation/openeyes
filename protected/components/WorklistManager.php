@@ -28,7 +28,7 @@ class WorklistManager extends CComponent
     /**
      * @var string
      */
-    protected static $DEFAULT_WORKLIST_START_TIME = '09:00';
+    protected static $DEFAULT_WORKLIST_START_TIME = '08:00';
     /**
      * @var string
      */
