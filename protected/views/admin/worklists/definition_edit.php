@@ -39,7 +39,7 @@
         'name' => CHtml::modelName($definition) . '[rrule]'
     ));?>
     <?php echo $form->textField($definition,'start_time', array('autocomplete' => Yii::app()->params['html_autocomplete']), null, array('field' => 1))?>
-    <?php echo $form->textField($definition,'end_time', array('autocomplete' => Yii::app()->params['html_autocomplete']), null, array('field' => 1))?>
+    <?php echo $form->textField($definition,'end_time', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'append-text' => '<i>Appointments will match on any time <b>before</b> the end time specified here.</i>'), null, array('field' => 1, 'append-text' => 6))?>
 
     <?php echo $form->formActions(array('cancel-uri' => '/worklistAdmin/definitions'))?>
     <?php $this->endWidget()?>

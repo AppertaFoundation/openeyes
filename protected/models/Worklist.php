@@ -128,7 +128,7 @@ class Worklist extends BaseActiveRecordVersioned
 
         if ($this->at) {
             $check_date = $this->at->format('Y-m-d H:i:s');
-            $criteria->addCondition(':cd >= start AND :cd <= end');
+            $criteria->addCondition(':cd >= start AND :cd < end');
             $criteria->params = array_merge($criteria->params, array(
                 ':cd' => $check_date
             ));

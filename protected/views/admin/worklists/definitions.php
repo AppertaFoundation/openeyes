@@ -19,7 +19,7 @@
 
 <div class="admin box">
     <h2>Automatic Worklist Definitions</h2>
-    <?php echo EventAction::link('Add Definition', '/worklistAdmin/definitionEdit/', array(), array('class' => 'button primary small'))->toHtml()?>
+    <?php echo EventAction::link('Add Definition', '/worklistAdmin/definitionUpdate/', array(), array('class' => 'button primary small'))->toHtml()?>
     <?php if ($definitions) {?>
     <form id="definition-list" method="POST">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
