@@ -105,6 +105,9 @@ $(document).ready(function() {
         }
     });
 
+    addSeries(IOPchart, 1, "IOP", "DataSet", "#4d9900", 'solid', 0);
+    addSeries(IOPchart, 2, "IOP", "DataSet", "#c653c6", 'solid', 0);
+
     $.ajax({
         url: '/OphCiExamination/OEScapeData/GetOperations/'+patientId,
         type: "GET",
@@ -288,9 +291,6 @@ $(document).ready(function() {
             }
         }
     });
-
-    addSeries(IOPchart, 1, "IOP", "DataSet", "#4d9900", 'solid', 0);
-    addSeries(IOPchart, 2, "IOP", "DataSet", "#c653c6", 'solid', 0);
 
     addSeries(VAchart, 1, "VA", "DataSetVA", "#4d9900", 'solid', 0);
     addSeries(VAchart, 2, "VA", "DataSetVA", "#c653c6", 'solid', 0);
