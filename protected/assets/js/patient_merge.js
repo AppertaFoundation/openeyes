@@ -266,6 +266,7 @@ $(document).ready(function(){
                 $checkbox = $('<div>',{'class':'alert-box with-icon warning'}).text('Please tick the checkboxes.');
                 
                 $row.append( $column.append($checkbox) );
+                $('#patientDataConflictConfirmation').before($row);
         }
         
         
