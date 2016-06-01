@@ -199,7 +199,7 @@ class WorklistAdminController extends BaseAdminController
             }
             $this->redirect('/worklistAdmin/definitions');
         }
-        $this->render('//admin/worklists/definition_instances_delete', array(
+        $this->render('//admin/worklists/definition_worklists_delete', array(
             'definition' => $definition
         ));
     }
