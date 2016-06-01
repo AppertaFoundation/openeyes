@@ -285,7 +285,7 @@ class WorklistManager extends CComponent
      */
     public function saveWorklistDefinition($definition)
     {
-        if (!$this->canEditWorklistDefinition($definition)) {
+        if (!$this->canUpdateWorklistDefinition($definition)) {
             $this->addError("cannot save Definition that is un-editable");
             return false;
         }
@@ -906,7 +906,7 @@ class WorklistManager extends CComponent
 
         $definition = $mapping->worklist_definition;
 
-        if (!$this->canEditWorklistDefinition($definition)) {
+        if (!$this->canUpdateWorklistDefinition($definition)) {
             $this->addError("Cannot update mapping for un-editable Worklist Definition");
             return false;
         }
@@ -1106,7 +1106,7 @@ class WorklistManager extends CComponent
      * @param WorklistDefinition $definition
      * @return int
      */
-    public function canEditWorklistDefinition(WorklistDefinition $definition)
+    public function canUpdateWorklistDefinition(WorklistDefinition $definition)
     {
         // at the moment we don't allow changes to the definition if worklists exist for it
         if ($this->getAppParam('worklist_always_allow_definition_edit'))

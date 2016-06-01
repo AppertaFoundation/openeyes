@@ -70,14 +70,14 @@ class WorklistAdminController extends BaseAdminController
      * @param null $id
      * @throws CHttpException
      */
-    public function actionDefinitionEdit($id = null)
+    public function actionDefinitionUpdate($id = null)
     {
         $definition = $this->manager->getWorklistDefinition($id);
 
         if (!$definition)
             throw new CHttpException(404, "Worklist definition could not be "  . ($id ? "found" : "created"));
 
-        if (!$this->manager->canEditWorklistDefinition($definition))
+        if (!$this->manager->canUpdateWorklistDefinition($definition))
             throw new CHttpException(409, "Cannot change mappings for un-editable Definition");
 
         if (isset($_POST['WorklistDefinition'])) {
@@ -168,7 +168,7 @@ class WorklistAdminController extends BaseAdminController
         ));
     }
 
-    public function actionDefinitionDeleteInstances($id)
+    public function actionDefinitionWorklistsDelete($id)
     {
         $definition = $this->getWorklistDefinition($id);
 
@@ -234,7 +234,7 @@ class WorklistAdminController extends BaseAdminController
     {
         $definition = $this->getWorklistDefinition($id);
 
-        if (!$this->manager->canEditWorklistDefinition($definition))
+        if (!$this->manager->canUpdateWorklistDefinition($definition))
             throw new CHttpException(409, "Cannot add mapping to un-editable Definition");
 
         $mapping = new WorklistDefinitionMapping();
@@ -270,12 +270,12 @@ class WorklistAdminController extends BaseAdminController
      * @param $id
      * @throws CHttpException
      */
-    public function actionUpdateDefinitionMapping($id)
+    public function actionDefinitionMappingUpdate($id)
     {
         if (!$mapping = WorklistDefinitionMapping::model()->findByPk($id))
             throw new CHttpException(404, "Worklist Definition Mapping not found.");
 
-        if (!$this->manager->canEditWorklistDefinition($mapping->worklist_definition))
+        if (!$this->manager->canUpdateWorklistDefinition($mapping->worklist_definition))
             throw new CHttpException(409, "Cannot change mappings for un-editable Definition");
 
         if (isset($_POST['WorklistDefinitionMapping'])) {
@@ -300,12 +300,12 @@ class WorklistAdminController extends BaseAdminController
         ));
     }
 
-    public function actionDeleteDefinitionMapping($id)
+    public function actionDefinitionMappingDelete($id)
     {
         if (!$mapping = WorklistDefinitionMapping::model()->findByPk($id))
             throw new CHttpException(404, "Worklist Definition Mapping not found.");
 
-        if (!$this->manager->canEditWorklistDefinition($mapping->worklist_definition))
+        if (!$this->manager->canUpdateWorklistDefinition($mapping->worklist_definition))
             throw new CHttpException(409, "Cannot delete mapping for un-editable Definition");
 
         if ($mapping->delete()) {

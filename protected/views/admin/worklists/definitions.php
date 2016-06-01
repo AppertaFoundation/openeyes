@@ -36,14 +36,15 @@
                 <tr>
                     <td class="reorder">&uarr;&darr;<input type="hidden" name="item_ids[]" value="<?php echo $definition->id ?>"></td>
                     <td><?=$definition->name?></td>
-                    <td><?php if ($this->manager->canEditWorklistDefinition($definition)) {?><a href="/worklistAdmin/definitionEdit/<?=$definition->id?>">Edit</a> |<?php }?>
+                    <td><?php if ($this->manager->canEditWorklistDefinition($definition)) {?><a href="/worklistAdmin/definitionUpdate/<?=$definition->id?>">Edit</a> |<?php }?>
                         <a href="/worklistAdmin/definition/<?=$definition->id?>">View</a> |
                         <a href="/worklistAdmin/definitionWorklists/<?=$definition->id?>">Instances (<?=count($definition->worklists)?>)</a> |
                         <a href="/worklistAdmin/definitionMappings/<?=$definition->id?>">Mapping Items(<?=count($definition->mappings)?>)</a> |
                         <?php if (count($definition->worklists)) {?>
-                            <a href="/worklistAdmin/definitionDeleteInstances/<?=$definition->id?>">Delete Instances</a>
+                            <a href="/worklistAdmin/definitionWorklistsDelete/<?=$definition->id?>">Delete Instances</a>
                         <?php } else { ?>
-                            <a href="/worklistAdmin/definitionGenerate/<?=$definition->id?>">Generate</a>
+                            <a href="/worklistAdmin/definitionGenerate/<?=$definition->id?>">Generate</a> |
+                            <a href="/worklistAdmin/definitionDelete/<?=$definition->id?>">Delete</a>
                         <?php }?>
                     </td>
                 </tr>

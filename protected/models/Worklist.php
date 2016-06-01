@@ -151,7 +151,6 @@ class Worklist extends BaseActiveRecordVersioned
             else {
                 $criteria->addCondition('worklist_definition_id IS NULL');
             }
-
         }
 
         return new CActiveDataProvider(get_class($this), array(

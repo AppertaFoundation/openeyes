@@ -43,8 +43,8 @@
                                                            value="<?php echo $mapping->id ?>"></td>
                     <td><?= $mapping->key ?></td>
                     <td><?php if ($this->manager->canEditWorklistDefinition($definition)) {?>
-                        <a href="/worklistAdmin/updateDefinitionMapping/<?= $mapping->id ?>">Edit</a> |
-                        <a href="/worklistAdmin/deleteDefinitionMapping/<?= $mapping->id ?>">Delete</a>
+                        <a href="/worklistAdmin/definitionMappingUpdate/<?= $mapping->id ?>">Edit</a> |
+                        <a href="/worklistAdmin/definitionMappingDelete/<?= $mapping->id ?>">Delete</a>
                         <?php } else {?>
                             <span title="Cannot change mappings for un-editable definition">
                             Edit | Delete

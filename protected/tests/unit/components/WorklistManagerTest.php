@@ -934,4 +934,44 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(!$expected, $manager->hasErrors());
     }
 
+    public function canUpdateWorklistDefinitionProvider()
+    {
+        return array(
+            array(true, false, 2, true),
+            array(false, false, 2, false),
+            array(false, true, 3, true),
+            array(false, false, 0, true),
+            array(false, false, 3, false)
+        );
+    }
+
+    /**
+     * @dataProvider canUpdateWorklistDefinitionProvider
+     * @param $always
+     * @param $new_record
+     * @param $worklists_count
+     * @param $expected
+     */
+    public function test_canUpdateWorklistDefinition($always, $new_record, $worklists_count, $expected)
+    {
+        $manager = $this->getMockBuilder('WorklistManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getAppParam'))
+            ->getMock();
+
+        $manager->expects($this->once())
+            ->method('getAppParam')
+            ->with('worklist_always_allow_definition_edit')
+            ->will($this->returnValue($always));
+
+        $worklists = $this->getMockArray('Worklist', $worklists_count);
+
+        $definition = ComponentStubGenerator::generate('WorklistDefinition', array(
+            'isNewRecord' => $new_record,
+            'worklists' => $worklists));
+
+        $this->assertEquals($expected, $manager->canUpdateWorklistDefinition($definition));
+
+    }
+
 }
