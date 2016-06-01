@@ -69,6 +69,13 @@ class WorklistManager extends CComponent
     protected $errors = [];
 
     /**
+     * Flag to turn off auditing
+     *
+     * @var bool
+     */
+    protected $do_audit = true;
+
+    /**
      * @var CApplication
      */
     protected $yii;
@@ -176,6 +183,16 @@ class WorklistManager extends CComponent
             $this->yii->params[$name] : null;
     }
 
+    public function disableAudit()
+    {
+        $this->do_audit = false;
+    }
+
+    public function enableAudit()
+    {
+        $this->do_audit = true;
+    }
+
     /**
      * Audit Wrapper
      *
@@ -188,6 +205,9 @@ class WorklistManager extends CComponent
      */
     protected function audit($target, $action, $data=null, $log_message=null, $properties=array())
     {
+        if (!$this->do_audit)
+            return;
+
         if (!isset($properties['user_id']))
             $properties['user_id'] = $this->getCurrentUser()->id;
 
@@ -885,12 +905,54 @@ class WorklistManager extends CComponent
         {
             $this->addError($e->getMessage());
             if ($transaction)
-                $transaction->commit();
+                $transaction->rollback();
 
             return false;
         }
     }
 
+    public function generateAllAutomaticWorklists($date_limit = null)
+    {
+        if (is_null($date_limit))
+            $date_limit = $this->getGenerationTimeLimitDate();
+
+        $count = 0;
+
+        $transaction = $this->startTransaction();
+
+        try {
+            $this->disableAudit();
+            $definitions = $this->getModelForClass('WorklistDefinition')->findAll();
+            $definition_count = 0;
+            foreach ($definitions as $definition) {
+                $result = $this->generateAutomaticWorklists($definition, $date_limit);
+                if ($result === false)
+                    throw new Exception("Couldn't generate worklists for {$definition->name}");
+                $count += $result;
+                $definition_count++;
+            }
+            $this->enableAudit();
+
+            $this->audit(self::$AUDIT_TARGET_AUTO, 'generate', array(
+                    'definition_count' => $definition_count,
+                    'generated' => $count,
+                    'date_limit' => $date_limit->format(Helper::NHS_DATE_FORMAT)
+                ),
+                "All Definitions Generated.",
+                array('user_id' => 1)); // hard coded as expected to be called from the command line
+
+            if ($transaction)
+                $transaction->commit();
+
+            return $count;
+        }
+        catch (Exception $e) {
+            $this->addError($e->getMessage());
+            if ($transaction)
+                $transaction->rollback();
+            return false;
+        }
+    }
 
 
     /**
