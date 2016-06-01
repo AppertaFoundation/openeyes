@@ -86,6 +86,7 @@ $(document).ready(function() {
             min: 0,
             max: 100,
             opposite:false,
+            isDirty: true,
             labels:
             {
                 align: 'left',
@@ -125,6 +126,7 @@ $(document).ready(function() {
         dataType: "json",
         success: function(data) {
             data.forEach(AddMedication, IOPchart);
+            redrawCharts();
         },
         cache: false
     });
@@ -300,6 +302,11 @@ $(document).ready(function() {
     //$('#regression_chart').hide();
 });
 
+function redrawCharts(){
+    for(var i=0; i<Highcharts.charts.length; i++){
+        Highcharts.charts[i].reflow();
+    }
+}
 
 function addRegressionChart(){
 

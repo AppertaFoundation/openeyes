@@ -333,7 +333,7 @@ select:focus {
 .mdl-layout__content #dash-grid .mdl-cell-bottom {
   background-color: white;
   padding: 0;
-  min-height: 270px;
+  min-height: 300px;
   height: 30%;
   overflow: hidden;
 }
@@ -349,7 +349,7 @@ select:focus {
 .mdl-layout__content #dash-grid .mdl-cell-bottom-right {
   background-color: white;
   padding: 0;
-  min-height: 250px;
+  min-height: 300px;
   height: 30%;
   width: 85%;
   margin: 0 auto;

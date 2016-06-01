@@ -194,7 +194,7 @@ class OEScapeDataController extends \BaseController
         $patient = \Patient::model()->findByPk($id);
 
         $medications = array_merge($patient->get_previous_medications(), $patient->get_medications());
-        $medications = $this->sortMedications($medications);
+        //$medications = $this->sortMedications($medications);
         $output = array();
 
         foreach($medications as $medication){
