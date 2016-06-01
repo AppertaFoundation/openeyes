@@ -30,7 +30,6 @@
                 </section>
             </div>
         </div>
-        <?php $this->renderPartial('//base/_messages')?>
 
         <form id="grid_header_form" action="<?php echo Yii::app()->createUrl('/patientMergeRequest/merge',array('id' => $model->id))?>" method="post">
             <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
@@ -73,6 +72,7 @@
                     </div>
                 </div>
             <?php endif; ?>
+            <?php $this->renderPartial('//base/_messages')?>
             <?php if ( Yii::app()->user->checkAccess('Patient Merge') ): ?>
             <div class="row">
                 <div class="large-5 column text-right large-offset-7">

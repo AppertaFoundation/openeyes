@@ -30,7 +30,6 @@
                 </section>
             </div>
         </div>
-        <?php $this->renderPartial('//base/_messages')?>
         <div class="row">
             <div class="large-7 column large-centered">
                 <?php $this->renderPartial('//patientmergerequest/_patient_search',array('patient_type' => 'patient'))?>
@@ -63,6 +62,7 @@
                 </div>
             </div>
             <br>
+            <?php $this->renderPartial('//base/_messages')?>
             <?php if($personalDetailsConflictConfirm && Yii::app()->user->checkAccess('Patient Merge')):?>
                 <div id="patientDataConflictConfirmation" class="row">
                     <div class="large-10 large-offset-1 column alert-box with-icon warning">
