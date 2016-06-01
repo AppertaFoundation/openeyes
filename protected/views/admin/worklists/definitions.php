@@ -36,7 +36,7 @@
                 <tr>
                     <td class="reorder">&uarr;&darr;<input type="hidden" name="item_ids[]" value="<?php echo $definition->id ?>"></td>
                     <td><?=$definition->name?></td>
-                    <td><?php if ($this->manager->canEditWorklistDefinition($definition)) {?><a href="/worklistAdmin/definitionUpdate/<?=$definition->id?>">Edit</a> |<?php }?>
+                    <td><?php if ($this->manager->canUpdateWorklistDefinition($definition)) {?><a href="/worklistAdmin/definitionUpdate/<?=$definition->id?>">Edit</a> |<?php }?>
                         <a href="/worklistAdmin/definition/<?=$definition->id?>">View</a> |
                         <a href="/worklistAdmin/definitionWorklists/<?=$definition->id?>">Instances (<?=count($definition->worklists)?>)</a> |
                         <a href="/worklistAdmin/definitionMappings/<?=$definition->id?>">Mapping Items(<?=count($definition->mappings)?>)</a> |

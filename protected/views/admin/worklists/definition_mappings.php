@@ -20,7 +20,7 @@
 <div class="admin box">
     <h2>Mapping Items for <?= $definition->name ?></h2>
     <?php echo EventAction::link('Definitions List', '/worklistAdmin/definitions/', array('level' => 'secondary'), array('class' => 'button small'))->toHtml()?>
-    <?php if ($this->manager->canEditWorklistDefinition($definition)) {
+    <?php if ($this->manager->canUpdateWorklistDefinition($definition)) {
         echo EventAction::link('Add Mapping', '/worklistAdmin/addDefinitionMapping/' . $definition->id, array('level' => 'primary'), array('class' => 'button small'))->toHtml();
     }?>
     <?php if ($definition->mappings) { ?>
@@ -42,7 +42,7 @@
                     <td class="reorder">&uarr;&darr;<input type="hidden" name="item_ids[]"
                                                            value="<?php echo $mapping->id ?>"></td>
                     <td><?= $mapping->key ?></td>
-                    <td><?php if ($this->manager->canEditWorklistDefinition($definition)) {?>
+                    <td><?php if ($this->manager->canUpdateWorklistDefinition($definition)) {?>
                         <a href="/worklistAdmin/definitionMappingUpdate/<?= $mapping->id ?>">Edit</a> |
                         <a href="/worklistAdmin/definitionMappingDelete/<?= $mapping->id ?>">Delete</a>
                         <?php } else {?>
