@@ -97,6 +97,23 @@ class WorklistAdminController extends BaseAdminController
         ));
     }
 
+    public function actionDefinitionDelete($id)
+    {
+        $definition = $this->getWorklistDefinition($id);
+
+        if (!$this->manager->canUpdateWorklistDefinition($definition))
+            throw new CHttpException(409, "Cannot delete a definition that is not valid for editing.");
+
+        if ($definition->delete()) {
+            $this->flashMessage('success', 'Worklist Definition deleted.');
+        }
+        else {
+            $this->flashMessage('error', 'Could not delete worklist definition');
+        }
+
+        return $this->redirect('/worklistAdmin/definitions');
+    }
+
     /**
      * Convenience Wrapper
      *

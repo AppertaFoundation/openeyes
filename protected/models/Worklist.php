@@ -143,6 +143,8 @@ class Worklist extends BaseActiveRecordVersioned
             ));
         }
 
+        $criteria->order = "start asc";
+
         if (!is_null($this->automatic))
         {
             if ($this->automatic) {
