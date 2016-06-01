@@ -202,7 +202,7 @@ class WorklistAdminController extends BaseAdminController
 
     /**
      * Delete the generated worklists for a worklist definition
-     * 
+     *
      * @param $id
      * @throws CHttpException
      */

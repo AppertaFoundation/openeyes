@@ -32,8 +32,7 @@
                 <td><?= $worklist->displayDate ?></td>
                 <td><?= $worklist->name ?></td>
                 <td><?= count($worklist->worklist_patients) ?></td>
-                <td><a href="/worklistAdmin/worklistPatients/<?= $worklist->id ?>">View</a> |
-                    <a href="#">Delete</a></td>
+                <td><a href="/worklistAdmin/worklistPatients/<?= $worklist->id ?>">View</a></td>
             </tr>
         <?php } ?>
         </tbody>
