@@ -143,6 +143,8 @@ class PatientMergeRequestController extends BaseController
                         }
                     }
                 }
+            } else if( $personalDetailsConflictConfirm['isConflict'] && !isset($patientMergeRequest['personalDetailsConflictConfirm']) ){
+                Yii::app()->user->setFlash('warning.user_error', "Please tick the checkboxes.");
             }
         }
         
@@ -212,6 +214,8 @@ class PatientMergeRequestController extends BaseController
                 } else if($mergeRequest->save()) {
                    $this->redirect(array('index'));
                 }
+            } else if( $personalDetailsConflictConfirm['isConflict'] && !isset($_POST['PatientMergeRequest']['personalDetailsConflictConfirm']) ){
+                Yii::app()->user->setFlash('warning.user_error', "Please tick the checkboxes.");
             }
         }
 

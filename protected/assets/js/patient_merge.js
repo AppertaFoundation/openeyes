@@ -57,11 +57,33 @@ var patientMerge = {
 
 function displayConflictMessage(){
         
-    var $row = $('#patientDataConflictConfirmation');
-        $input = $row.find('input');
+    var $patientDataConflictConfirmation = $('#patientDataConflictConfirmation'),
+        $input = $patientDataConflictConfirmation.find('input'),
         
-    $row.show();
+        $row = $('<div>', {'class':'row'}),
+        $column = $('<div>',{'class':'large-12 column'}),
+        $dob = $('<div>',{'class':'alert-box with-icon warning','id':'flash-merge_error_dob'}).text('Patients have different personal details : dob'),
+        $gender = $('<div>',{'class':'alert-box with-icon warning','id':'flash-merge_error_dob'}).text('Patients have different personal details : gender');
+        
+
+    // Display DOB warning msg
+    if( patientMerge.patients.primary.dob !== patientMerge.patients.secondary.dob && $('#flash-merge_error_dob').length < 1){
+        $column.append($dob);
+    }
+
+    // Display Gender warning msg
+    if( patientMerge.patients.primary.gender !== patientMerge.patients.secondary.gender && $('#flash-merge_error_gender').length < 1 ){
+        $column.append($gender);
+    }
+    
+    $row.append( $column );
+    $('#patientDataConflictConfirmation').before($row);
+    
+    // Show the warning with the checkbox
+    $patientDataConflictConfirmation.show();
     $input.attr('name', $input.data('name') );
+    
+    
     
 }
 
@@ -232,12 +254,20 @@ $(document).ready(function(){
             e.preventDefault();
             $('#PatientMergeRequest_personalDetailsConflictConfirm').closest('label').css({"border":'3px solid red',"padding":"5px"});
         }
-        
+            
         if( $('#PatientMergeRequest_confirm').length > 0 && !$('#PatientMergeRequest_confirm').is(':checked') ){
             e.preventDefault();
             $('#PatientMergeRequest_confirm').closest('label').css({"border":'3px solid red',"padding":"5px"});
-            
         }
+        
+        if( $('#patientDataConflictConfirmation').length > 0 && $('#patientDataConflictConfirmation').find('input').is(':not(:checked)') ){
+            var $row = $('<div>', {'class':'row'}),
+                $column = $('<div>',{'class':'large-12 column'}),
+                $checkbox = $('<div>',{'class':'alert-box with-icon warning'}).text('Please tick the checkboxes.');
+                
+                $row.append( $column.append($checkbox) );
+        }
+        
         
     });
     
