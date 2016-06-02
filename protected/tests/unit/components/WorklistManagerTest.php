@@ -974,4 +974,113 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
 
     }
 
+    public function test_getCurrentAutomaticWorklistsForUserContext()
+    {
+        $manager = $this->getMockBuilder('WorklistManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getModelForClass', 'shouldDisplayWorklistForContext'))
+            ->getMock();
+
+        $adp = $this->getActiveDataProviderMock('Worklist', 2);
+        $wls = $adp->getData();
+
+        $wm = $this->getMockBuilder('Worklist')
+            ->disableOriginalConstructor()
+            ->setMethods(array('search'))
+            ->getMock();
+
+        $wm->expects($this->once())
+            ->method('search')
+            ->will($this->returnValue($adp));
+
+        $manager->expects($this->at(0))
+            ->method('getModelForClass')
+            ->with('Worklist')
+            ->will($this->returnValue($wm));
+
+        // verify the filter of display context
+        $user = ComponentStubGenerator::generate("User");
+        $site = ComponentStubGenerator::generate("Site");
+        $firm = ComponentStubGenerator::generate("Firm");
+
+        $manager->expects($this->at(1))
+            ->method('shouldDisplayWorklistForContext')
+            ->with($wls[0], $site, $firm)
+            ->will($this->returnValue(true));
+        $manager->expects($this->at(2))
+            ->method('shouldDisplayWorklistForContext')
+            ->with($wls[1])
+            ->will($this->returnValue(false));
+
+        $this->assertEquals(array($wls[0]), $manager->getCurrentAutomaticWorklistsForUserContext($user, $site, $firm, new DateTime()));
+    }
+
+    public function shouldDisplayWorklistForContextProvider()
+    {
+        return array(
+            array(
+                array(
+                    array('checkSite' => false, 'checkFirm' => false),
+                ),
+                false),
+            array(
+                array(
+                    array('checkSite' => false, 'checkFirm' => false),
+                    array('checkSite' => false, 'checkFirm' => false),
+                ),
+                false),
+            array(
+                array(
+                    array('checkSite' => true, 'checkFirm' => false),
+                    array('checkSite' => false, 'checkFirm' => true),
+                ),
+                false),
+            array(
+                array(
+                    array('checkSite' => false, 'checkFirm' => false),
+                    array('checkSite' => true, 'checkFirm' => true),
+                ),
+                true),
+            array(
+                array(),
+                true), // special case where no contexts for definition, and therefore no restriction
+        );
+    }
+
+    /**
+     * @dataProvider shouldDisplayWorklistForContextProvider
+     *
+     * @param $context_list
+     * @param $expected
+     */
+    public function test_shouldDisplayWorklistForContext($context_list, $expected)
+    {
+        $manager = new WorklistManager();
+
+        $contexts = array();
+        $site = ComponentStubGenerator::generate("Site");
+        $firm = ComponentStubGenerator::generate("Firm");
+
+        foreach ($context_list as $ctx) {
+            $c = $this->getMockBuilder('WorklistDefinitionDisplayContext')
+                ->disableOriginalConstructor()
+                ->setMethods(array('checkSite', 'checkFirm'))
+                ->getMock();
+            $c->expects($this->any())
+                ->method('checkSite')
+                ->with($site)
+                ->will($this->returnValue($ctx['checkSite']));
+            $c->expects($this->any())
+                ->method('checkFirm')
+                ->with($firm)
+                ->will($this->returnValue($ctx['checkFirm']));
+            $contexts[] = $c;
+        }
+
+        $definition = ComponentStubGenerator::generate('WorklistDefinition', array('display_contexts' => $contexts));
+
+        $worklist = ComponentStubGenerator::generate('Worklist', array('worklist_definition' => $definition));
+
+        $this->assertEquals($expected, $manager->shouldDisplayWorklistForContext($worklist, $site, $firm));
+    }
 }

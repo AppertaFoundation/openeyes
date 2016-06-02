@@ -36,6 +36,7 @@ use \RRule\RRule;
  * @property WorklistDefinitionMapping[] $mappings
  * @property WorklistDefinitionMappingp[] $displayed_mappings
  * @property WorklistDefinitionMappingp[] $hidden_mappings
+ * @property WorklistDefinitionDisplayContext[] $display_contexts
  */
 class WorklistDefinition extends BaseActiveRecordVersioned
 {
@@ -96,7 +97,8 @@ class WorklistDefinition extends BaseActiveRecordVersioned
             'worklists' => array(self::HAS_MANY, 'Worklist', 'worklist_definition_id'),
             'mappings' => array(self::HAS_MANY, 'WorklistDefinitionMapping', 'worklist_definition_id'),
             'displayed_mappings' => array(self::HAS_MANY, 'WorklistDefinitionMapping', 'worklist_definition_id', 'on' => 'display_order is NOT NULL', 'order' => 'display_order ASC'),
-            'hidden_mappings' => array(self::HAS_MANY, 'WorklistDefinitionMapping', 'worklist_definition_id', 'on' => 'display_order is NULL')
+            'hidden_mappings' => array(self::HAS_MANY, 'WorklistDefinitionMapping', 'worklist_definition_id', 'on' => 'display_order is NULL'),
+            'display_contexts' => array(self::HAS_MANY, 'WorklistDefinitionDisplayContext', 'worklist_definition_id')
         );
     }
 

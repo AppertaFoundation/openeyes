@@ -296,7 +296,7 @@ class WorklistManager extends CComponent
 
         return $future_dates;
     }
-    
+
     /**
      * @param null $id
      * @return WorklistDefinition|null
@@ -510,6 +510,24 @@ class WorklistManager extends CComponent
         return $worklists;
     }
 
+    public function shouldDisplayWorklistForContext(Worklist $worklist, Site $site, Firm $firm)
+    {
+        if ($definition = $worklist->worklist_definition) {
+            $display_contexts = $definition->display_contexts;
+            if (!count($display_contexts))
+                return true;
+            foreach ($display_contexts as $dc) {
+                if ($dc->checkSite($site) && $dc->checkFirm($firm))
+                    return true;
+            }
+            // got this far, we haven't found a valid display context
+            return false;
+        }
+
+        // not implemented context checking for non-automatic worklists yet
+        return true;
+    }
+
     /**
      * @param $user
      * @param Site $site
@@ -524,7 +542,8 @@ class WorklistManager extends CComponent
         $model->automatic = true;
         $model->on = $when;
         foreach ($model->with('worklist_patients')->search()->getData() as $wl) {
-            $worklists[] = $wl;
+            if ($this->shouldDisplayWorklistForContext($wl, $site, $firm))
+                $worklists[] = $wl;
         }
 
         return $worklists;
