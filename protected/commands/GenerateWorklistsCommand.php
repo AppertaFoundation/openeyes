@@ -49,11 +49,17 @@ class GenerateWorklistsCommand extends CConsoleCommand
         parent::__construct($name, $runner);
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return 'Generate Automatic Worklists Command';
     }
 
+    /**
+     * @return string
+     */
     public function getHelp()
     {
         $log_levels = implode("|", array_keys($this->log_levels));
@@ -62,6 +68,7 @@ class GenerateWorklistsCommand extends CConsoleCommand
 Generates the individual Worklists from the current Worklist Definitions.
 
 --verbosity={$log_levels}
+--horizon=Interval String
 EOH;
     }
 
@@ -70,7 +77,10 @@ EOH;
 
     public $verbosity;
 
-    public function setLogLevel($verbosity)
+    /**
+     * @param $verbosity
+     */
+    protected function setLogLevel($verbosity)
     {
         $level = $this->log_levels[self::$DEFAULT_LOG_LEVEL];
 
@@ -83,18 +93,31 @@ EOH;
         $this->log_level = $level;
     }
 
+    /**
+     * @param $horizon
+     * @return DateTime
+     */
     public function getDateLimit($horizon)
     {
         if ($horizon) {
             $interval = DateInterval::createFromDateString($horizon);
-            if (!$interval)
+            $now = new DateTime();
+            $limit = clone $now;
+            $limit->add($interval);
+
+            if ($limit <= $now)
                 $this->usageError("Invalid horizon string {$horizon}");
-            return (new DateTime())->add($interval);
+
+            return $limit;
         }
 
         return $this->manager->getGenerationTimeLimitDate();
     }
 
+    /**
+     * @param null $verbosity
+     * @param null $horizon
+     */
     public function actionGenerate($verbosity=null, $horizon=null)
     {
         $this->setLogLevel($verbosity);
@@ -109,6 +132,7 @@ EOH;
                 foreach ($this->manager->getErrors() as $err) {
                     $this->error($err);
                 }
+                $this->finish(2);
             } else {
                 $this->info("generation complete");
                 $this->debug("{$result} new worklists generated.");
@@ -149,7 +173,16 @@ EOH;
     public function fatal($msg, $exit_code = 1)
     {
         $this->output("FATAL", $msg);
-        exit($exit_code);
+        $this->finish($exit_code);
     }
 
+    /**
+     * Simple wrapper to abstract termination
+     *
+     * @param int $exit_code
+     */
+    protected function finish($exit_code = 1)
+    {
+        exit($exit_code);
+    }
 }
