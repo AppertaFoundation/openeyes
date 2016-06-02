@@ -29,9 +29,8 @@
         <tr>
             <td>Event Id</td>
             <td>
-                <?php echo $eventId; ?>
-                <?php echo CHtml::hiddenField('logId', $logId, array('id' => 'hiddenInput'));
-                echo CHtml::hiddenField('eventId', $eventId, array('id' => 'hiddenInput')); ?>
+                <?php echo $event->id; ?>
+                <?php echo CHtml::hiddenField('eventId', $event->id, array('id' => 'hiddenInput')); ?>
             </td>
         </tr>
         <tr>

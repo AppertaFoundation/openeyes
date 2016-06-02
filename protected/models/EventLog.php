@@ -74,7 +74,8 @@ class EventLog extends BaseActiveRecord
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-			'status' => array(self::BELONGS_TO, 'ImportStatus', 'import_success')
+            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+			'status' => array(self::BELONGS_TO, 'ImportStatus', 'import_success'),
         );
     }
 

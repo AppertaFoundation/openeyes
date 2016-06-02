@@ -92,7 +92,7 @@ class EventLogController extends BaseAdminController
                         $examinationEvent = $creator->saveExamination($opNoteEvent, $portalUserId, $examination, $eventType, $eyeIds, $refractionType);
                     } catch (Exception $e) {
                         $transaction->rollback();
-                        
+                        throw new CHttpException(500, 'Saving Examination event failed');
                     }
                     $transaction->commit();
 
@@ -112,16 +112,15 @@ class EventLogController extends BaseAdminController
         }
 
         $eventQuery = EventLog::model()->findByPk($id);
-        $eventId = $eventQuery->event_id;
+        $event = $eventQuery->event;
         $eventUniqueCode = $eventQuery->unique_code;
         $data = $eventQuery->examination_data;
-        $decode = json_decode($data, true);
-        //  print_r($data);
+
         $this->render('//eventlog/edit', array(
-            'logId' => $id,
-            'eventId' => $eventId,
+            'log_id' => $id,
+            'event' => $event,
             'unique_code' => $eventUniqueCode,
-            'data' => $decode,
+            'data' => json_decode($data, true),
         ));
     }
 }
