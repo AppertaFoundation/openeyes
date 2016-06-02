@@ -18,7 +18,17 @@
  */
 
 ?>
+
+<?php if(Yii::app()->user->hasFlash('success')): ?>
+ 
+<div class="flash-success">
+    <?php echo Yii::app()->user->getFlash('success'); ?>
+</div>
+ 
+<?php endif; ?>
 <div class="box admin">
+    
+    
 	<h2>Logo</h2>
 	<?php
         
@@ -35,8 +45,10 @@
         
         echo $form->error($model, 'header_logo');
         echo $form->error($model, 'secondary_logo');
-         @$headerLogo = $logoList[0]['header_logo'];
+        @$headerLogo = $logoList[0]['header_logo'];
         @$secondaryLogo = $logoList[0]['secondary_logo'];
+        $path = Yii::app()->basePath.'/images/logo/';
+        $yourImageUrl = Yii::app()->assetManager->publish($path);
         ?>
         
    	
@@ -44,20 +56,20 @@
 						<tbody>
 				<tr>
 					<td><?php echo $form->labelEx($model, 'Header Logo'); ?></td>
-					<td><?php if(!empty($headerLogo)){?><img src="<?php echo Yii::app() -> basePath . '/images/logo/' .$headerLogo;?>" />
+                                        <td><?php if(!empty($headerLogo)){?><img src="<?php echo $yourImageUrl."/".$headerLogo;?>" width="100" height="100" />
                                             
-                                            <?php echo CHtml::link('Delete',"#", array("submit"=>array('admin/deleteLogo/', 'header_logo'=>$headerLogo), 'confirm' => 'Are you sure to delete header logo?', 'csrf'=>true)); ?>
-                                            <?php }?><br/><?php echo $form->fileField($model, 'header_logo');?></td>
+                                            <?php echo CHtml::link('Remove',"#", array("submit"=>array('admin/deleteLogo/', 'header_logo'=>$headerLogo), 'confirm' => 'Are you sure to delete header logo?', 'csrf'=>true)); ?>
+                                            <?php echo "<br/><br/><br/>";}?><?php echo $form->fileField($model, 'header_logo');?></td>
                                         
                                         
                                         
 				</tr>
                                 <tr>
 					<td><?php echo $form->labelEx($model, 'Secondary Logo'); ?></td>
-					<td><?php if(!empty($headerLogo)){?><img src="<?php echo Yii::app() -> basePath . '/images/logo/' .$secondaryLogo;?>">
-                                            <?php echo CHtml::link('Delete',"#", array("submit"=>array('admin/deleteLogo/', 'secondary_logo'=>$secondaryLogo), 'confirm' => 'Are you sure to delete secondary logo?', 'csrf'=>true)); ?>
-                                            <?php }?> 
-                                            <br/><?php echo $form->fileField($model, 'secondary_logo');?>
+                                        <td><?php if(!empty($secondaryLogo)){?><img src="<?php echo $yourImageUrl."/".$secondaryLogo;?>" width="100" height="100">
+                                            <?php echo CHtml::link('Remove',"#", array("submit"=>array('admin/deleteLogo/', 'secondary_logo'=>$secondaryLogo), 'confirm' => 'Are you sure to delete secondary logo?', 'csrf'=>true)); ?>
+                                            <?php echo "<br/><br/><br/>";}?> 
+                                            <?php echo $form->fileField($model, 'secondary_logo');?>
                                             
                                         
                                         

@@ -59,7 +59,10 @@ class Logo extends BaseActiveRecordVersioned
 	{
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
-		 return array(                );
+		 return array(
+                    array('header_logo', 'file', 'types'=>'jpg, gif, png', 'allowEmpty'=>true),
+                    array('secondary_logo', 'file', 'types'=>'jpg, gif, png', 'allowEmpty'=>true),
+                     );
 	}
 
 	/**

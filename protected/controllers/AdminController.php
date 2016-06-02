@@ -1650,51 +1650,51 @@ class AdminController extends BaseAdminController {
                 $existingHeaderLogo = $logoModel[0]['header_logo'];
                 $existingSecondaryLogo = $logoModel[0]['secondary_logo'];
 
-                if ($checkHeaderLogo != "" && $checkSecondaryLogo != "") {
+                if (!empty($checkHeaderLogo) && !empty($checkSecondaryLogo)) {
                     $headerUpload = CUploadedFile::getInstance($logo, 'header_logo');
                     $secondaryUpload = CUploadedFile::getInstance($logo, 'secondary_logo');
                     $headerLogo = "{$rnd}-{$timeStamp}-{$headerUpload}";  // random number + Timestamp + file name
                     $secondaryLogo = "{$rnd}-{$timeStamp}-{$secondaryUpload}";  // random number + Timestamp + file name
 
                     $update = Logo::model()->updateAll(array('header_logo' => $headerLogo, 'secondary_logo' => $secondaryLogo), '');
-                    unlink(Yii::app()->basePath . '/images/logo/' . $existingHeaderLogo);
-                    unlink(Yii::app()->basePath . '/images/logo/' . $existingSecondaryLogo);
+                    @unlink(Yii::app()->basePath . '/images/logo/' . $existingHeaderLogo);
+                    @unlink(Yii::app()->basePath . '/images/logo/' . $existingSecondaryLogo);
                     if (!empty($headerUpload)) {
                         $headerUpload->saveAs(Yii::app()->basePath . '/images/logo/' . $headerLogo);
                     }
                     if (!empty($secondaryUpload)) {
                         $secondaryUpload->saveAs(Yii::app()->basePath . '/images/logo/' . $secondaryLogo);
                     }
-                } elseif ($checkHeaderLogo != "") {
+                } elseif (!empty($checkHeaderLogo)) {
                     $headerUpload = CUploadedFile::getInstance($logo, 'header_logo');
                     $headerLogo = "{$rnd}-{$timeStamp}-{$headerUpload}";  // random number + Timestamp + file name
                     $update = Logo::model()->updateAll(array('header_logo' => $headerLogo), '');
-                    unlink(Yii::app()->basePath . '/images/logo/' . $existingHeaderLogo);
+                    @unlink(Yii::app()->basePath . '/images/logo/' . $existingHeaderLogo);
                     if (!empty($headerUpload)) {
                         $headerUpload->saveAs(Yii::app()->basePath . '/images/logo/' . $headerLogo);
                     }
                     
-                } elseif ($checkSecondaryLogo != "") {
+                } elseif (!empty($checkSecondaryLogo)) {
                     $secondaryUpload = CUploadedFile::getInstance($logo, 'secondary_logo');
                     $secondaryLogo = "{$rnd}-{$timeStamp}-{$secondaryUpload}";  // random number + Timestamp + file name
                     $update = Logo::model()->updateAll(array('secondary_logo' => $secondaryLogo), '');
-                    unlink(Yii::app()->basePath . '/images/logo/' . $existingSecondaryLogo);
+                    @unlink(Yii::app()->basePath . '/images/logo/' . $existingSecondaryLogo);
                     if (!empty($secondaryUpload)) {
                         $secondaryUpload->saveAs(Yii::app()->basePath . '/images/logo/' . $secondaryLogo);
                     }
                 }
                 $this->redirect(array('/admin/logo'));
-                Yii::app()->user->setFlash('info', "Logo Saved Successfully");
+                Yii::app()->user->setFlash('success', "Logo Saved Successfully");
             } else {
 
                 //$logo->attributes=$_FILES['Logo'];
                 $headerUpload = CUploadedFile::getInstance($logo, 'header_logo');
                 $secondaryUpload = CUploadedFile::getInstance($logo, 'secondary_logo');
-                if ($headerUpload != null) {
+                if (!empty($headerUpload)) {
                     $headerLogo = "{$rnd}-{$timeStamp}-{$headerUpload}";  // random number + Timestamp + file name
                     $logo->header_logo = $headerLogo;
                 }
-                if ($secondaryUpload != null) {
+                if (!empty($secondaryUpload)) {
                     $secondaryLogo = "{$rnd}-{$timeStamp}-{$secondaryUpload}";  // random number + Timestamp + file name
                     $logo->secondary_logo = $secondaryLogo;
                 }
@@ -1710,7 +1710,7 @@ class AdminController extends BaseAdminController {
 
 
                     $this->redirect(array('/admin/logo'));
-                    Yii::app()->user->setFlash('info', "Logo Saved Successfully");
+                    Yii::app()->user->setFlash('success', "Logo Saved Successfully");
                 }
             }
         }
@@ -1725,14 +1725,14 @@ class AdminController extends BaseAdminController {
                 
         if (!empty($deleteHeaderLogo)) {
             $update = Logo::model()->updateAll(array('header_logo' => ''), '');
-            unlink(Yii::app()->basePath . '/images/logo/' . $deleteHeaderLogo);
+            @unlink(Yii::app()->basePath . '/images/logo/' . $deleteHeaderLogo);
             $this->redirect(array('/admin/logo'));
-                    Yii::app()->Logo->setFlash('info', "Logo Deleted Successfully");
+                    Yii::app()->user->setFlash('success', "Logo Deleted Successfully");
         } elseif (!empty ($deleteSecondaryLogo)) {
             $update = Logo::model()->updateAll(array('secondary_logo' => ''), '');
-            unlink(Yii::app()->basePath . '/images/logo/' . $deleteSecondaryLogo);
+            @unlink(Yii::app()->basePath . '/images/logo/' . $deleteSecondaryLogo);
             $this->redirect(array('/admin/logo'));
-            Yii::app()->Logo->setFlash('info', "Logo Deleted Successfully");
+            Yii::app()->user->setFlash('success', "Logo Deleted Successfully");
         }
          
     }
