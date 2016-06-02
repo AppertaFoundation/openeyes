@@ -143,7 +143,7 @@ If the intention is for the patient to only be updated, and not created if it do
 
 The ```[internal patient id]``` should correspond to the returned value from the Patient PUT request above.
 
-The AppointmentMapping entries should correspond to mappings defined for automatic worklists in the admin interface for OpenEyes. For a mapping to be performed successfully, a unique worklist entry must be distinguishable through the combination of AppointmentDate, AppointmentTime and AppointmentMappingItems.
+The ```AppointmentMapping``` entries should correspond to mappings defined for automatic worklists in the admin interface for OpenEyes. For a mapping to be performed successfully, a unique worklist entry must be distinguishable through the combination of ```AppointmentDate```, ```AppointmentTime``` and ```AppointmentMappingItems```.
 
 Further PUT requests with the same ```external-id``` will update the worklist entry. If the ```AppointmentMappingItems``` are updated and correspond to a different worklist, then the appointment will be moved accordingly.
 
