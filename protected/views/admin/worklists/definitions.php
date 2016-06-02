@@ -40,6 +40,7 @@
                         <a href="/worklistAdmin/definition/<?=$definition->id?>">View</a> |
                         <a href="/worklistAdmin/definitionWorklists/<?=$definition->id?>">Instances (<?=count($definition->worklists)?>)</a> |
                         <a href="/worklistAdmin/definitionMappings/<?=$definition->id?>">Mapping Items(<?=count($definition->mappings)?>)</a> |
+                        <a href="/worklistAdmin/definitionDisplayContexts/<?=$definition->id?>">Display Context (<?=count($definition->display_contexts)>0 ? "limited" : "any";?>)</a> |
                         <?php if (count($definition->worklists)) {?>
                             <a href="/worklistAdmin/definitionWorklistsDelete/<?=$definition->id?>">Delete Instances</a>
                         <?php } else { ?>

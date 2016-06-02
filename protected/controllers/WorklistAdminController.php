@@ -384,5 +384,39 @@ class WorklistAdminController extends BaseAdminController
         $this->redirect('/worklistAdmin/definitionMappings/' . $id);
     }
 
+    public function actionDefinitionDisplayContexts($id)
+    {
+        $definition = $this->getWorklistDefinition($id);
 
+        $this->render('//admin/worklists/definition_display_contexts', array(
+            'definition' => $definition
+        ));
+    }
+
+    public function actionDefinitionDisplayContextAdd($id)
+    {
+        $definition = $this->getWorklistDefinition($id);
+
+        $display_context = new WorklistDefinitionDisplayContext();
+        $display_context->worklist_definition_id = $definition->id;
+        $display_context->worklist_definition = $definition;
+
+        if (isset($_POST['WorklistDefinitionDisplayContext'])) {
+            $display_context->attributes = $_POST['WorklistDefinitionDisplayContext'];
+            if ($display_context->save()) {
+
+                $this->flashMessage('success', 'Worklist Definition Display Context saved.');
+                $this->redirect(array('/worklistAdmin/definitionDisplayContexts/' . $id));
+            }
+            else {
+                $errors = $display_context->getErrors();
+            }
+        }
+
+        $this->render('//admin/worklists/definition_display_context_edit', array(
+            'display_context' => $display_context,
+            'errors' => @$errors
+        ));
+
+    }
 }

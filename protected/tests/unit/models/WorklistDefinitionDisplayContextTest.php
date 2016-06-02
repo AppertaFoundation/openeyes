@@ -71,8 +71,19 @@ class WorklistDefinitionDisplayContextTest extends PHPUnit_Framework_TestCase
             $context->$k = $v;
         }
 
-        $site = ComponentStubGenerator::generate('Firm', $firm_attrs);
+        $firm = $this->getMockBuilder('Firm')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getSubspecialty'))
+            ->getMock();
+        $firm->id = $firm_attrs['id'];
 
-        $this->assertEquals($expected, $context->checkFirm($site));
+        $subspecialty = ComponentStubGenerator::generate('Subspecialty', array('id' => $firm_attrs['subspecialty_id']));
+
+        $firm->expects($this->any())
+            ->method('getSubspecialty')
+            ->will($this->returnValue($subspecialty));
+
+
+        $this->assertEquals($expected, $context->checkFirm($firm));
     }
 }

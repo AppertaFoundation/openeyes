@@ -24,7 +24,7 @@
  * @property integer $subspecialty_id
  * @property integer $firm_id
  *
- * @property Worklist $worklist
+ * @property WorklistDefinition $worklist_definition
  * @property Site $site
  * @property Subspecialty $subspecialty
  * @property Firm $firm
@@ -49,6 +49,7 @@ class WorklistDefinitionDisplayContext extends BaseActiveRecord
         // will receive user inputs.
         return array(
             array('worklist_definition_id', 'required'),
+            array('site_id, subspecialty_id, firm_id', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, worklist_definition_id, site_id, subspecialty_id, firm_id', 'safe', 'on'=>'search'),
@@ -70,12 +71,32 @@ class WorklistDefinitionDisplayContext extends BaseActiveRecord
         );
     }
 
+    public function afterValidate()
+    {
+        $one_of = array('site_id', 'subspecialty_id', 'firm_id');
+        $found = false;
+        foreach ($one_of as $attr) {
+            if ($this->$attr)
+                $found = true;
+        }
+        if (!$found) {
+            $this->addError(null, "At least one of " . implode(', ', array_map(function($attr) {
+                    return $this->getAttributeLabel($attr);
+                }, $one_of)) . " must be set.");
+        }
+
+        parent::afterValidate();
+    }
+
     /**
      * @return array customized attribute labels (name=>label)
      */
     public function attributeLabels()
     {
         return array(
+            'site_id' => 'Site',
+            'subspecialty_id' => 'Subspecialty',
+            'firm_id' => 'Firm'
         );
     }
 
@@ -123,10 +144,31 @@ class WorklistDefinitionDisplayContext extends BaseActiveRecord
         if ($this->firm_id)
             return ($firm->id == $this->firm_id);
 
-        if ($this->subspecialty_id)
-            return ($this->subspecialty_id == $firm->subspecialty_id);
+        if ($this->subspecialty_id) {
+            $firm_subspecialty = $firm->getSubspecialty();
+            return ($firm_subspecialty && $firm_subspecialty->id == $this->subspecialty_id);
+        }
 
         // no restriction on firm or subspecialty
         return true;
     }
+
+    public function getSiteDisplay()
+    {
+        return $this->site ? $this->site->getShortname() : "Any";
+    }
+
+    public function getSubspecialtyDisplay()
+    {
+        if ($this->firm)
+            return $this->firm->subspecialty->name;
+
+        return $this->subspecialty ? $this->subspecialty->name : "Any";
+    }
+
+    public function getFirmDisplay()
+    {
+        return $this->firm ? $this->firm->name : "Any";
+    }
+
 }
