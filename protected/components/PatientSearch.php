@@ -25,10 +25,10 @@ class PatientSearch
     const NHS_NUMBER_REGEX_2 = '/^([0-9]{3}[- ]?[0-9]{3}[- ]?[0-9]{4})$/i';
     
     // Hospital number (assume a < 10 digit number is a hosnum)
-    const HOSPITAL_NUMBER_REGEX = '/^(H|Hosnum)\s*[:;]\s*([0-9a-zA-Z\-]+)$/i';
+    const HOSPITAL_NUMBER_REGEX = '/^(H|Hosnum)\s*[:;]\s*([0-9\-]+)$/i';
        
     // Patient name
-    const PATIENT_NAME_REGEX = '/^(?:P(?:atient)?[:;\s]*)?(.*[ ,].*)$/';
+    const PATIENT_NAME_REGEX = '/^(?:P(?:atient)?[:;\s]*)?([\a-zA-Z-]+[ ,]?[\a-zA-Z-]*)$/';
     
     private $searchTerms = array();
     
@@ -50,15 +50,13 @@ class PatientSearch
         // NHS number
         if( $nhs = $this->getNHSnumber($term) ){
             $search_terms['nhs_num'] = $nhs;
-        }
-        
+            
         // Hospital number (assume a < 10 digit number is a hosnum)
-        if( $hos_num = $this->getHospitalNumber($term) ){
+        } else if( $hos_num = $this->getHospitalNumber($term) ){
             $search_terms['hos_num'] = $hos_num;
-        }
-        
+            
         // Patient name
-        if( $name = $this->getPatientName($term) ){
+        } else if( $name = $this->getPatientName($term) ){
             
             $search_terms['first_name'] = trim($name['first_name']);
             $search_terms['last_name'] = trim($name['last_name']);
@@ -92,7 +90,7 @@ class PatientSearch
             'first_name' => CHtml::decode($search_terms['first_name']),
             'last_name' => CHtml::decode($search_terms['last_name']),
         );
-
+        
         $dataProvider = $model->search($criteria);
         
         return $dataProvider;
@@ -126,7 +124,7 @@ class PatientSearch
     public function getHospitalNumber($term)
     {
         $result = null;
-        if(preg_match(self::HOSPITAL_NUMBER_REGEX, $term,$matches) || preg_match(Yii::app()->params['hos_num_regex'], $term, $matches)) {
+        if(preg_match(self::HOSPITAL_NUMBER_REGEX, $term,$matches) || preg_match(Yii::app()->params['hos_num_regex'], $term, $matches)) {        
             $hosnum = (isset($matches[2])) ? $matches[2] : $matches[1];
             $result = sprintf('%07s', $hosnum);
         }
@@ -145,9 +143,12 @@ class PatientSearch
                 $name = $m[1];
 
                 if (strpos($name, ',') !== false) {
-                        list ($surname, $firstname) = explode(',', $name, 2);
+                    list ($surname, $firstname) = explode(',', $name, 2);
+                } else if(strpos($name, ' ')) {
+                    list ($firstname, $surname) = explode(' ', $name, 2);
                 } else {
-                        list ($firstname, $surname) = explode(' ', $name, 2);
+                    $surname = $name;
+                    $firstname = '';
                 }
                 
                 $result['first_name'] = trim($firstname);
