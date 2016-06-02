@@ -1683,8 +1683,9 @@ class AdminController extends BaseAdminController {
                         $secondaryUpload->saveAs(Yii::app()->basePath . '/images/logo/' . $secondaryLogo);
                     }
                 }
-                $this->redirect(array('/admin/logo'));
-                Yii::app()->user->setFlash('success', "Logo Saved Successfully");
+                        Yii::app()->user->setFlash('success', "Logo Saved Successfully");
+                         $this->redirect(array('/admin/logo'));
+       
             } else {
 
                 //$logo->attributes=$_FILES['Logo'];
@@ -1709,8 +1710,9 @@ class AdminController extends BaseAdminController {
 
 
 
-                    $this->redirect(array('/admin/logo'));
                     Yii::app()->user->setFlash('success', "Logo Saved Successfully");
+                                 $this->redirect(array('/admin/logo'));
+       
                 }
             }
         }
@@ -1726,13 +1728,15 @@ class AdminController extends BaseAdminController {
         if (!empty($deleteHeaderLogo)) {
             $update = Logo::model()->updateAll(array('header_logo' => ''), '');
             @unlink(Yii::app()->basePath . '/images/logo/' . $deleteHeaderLogo);
-            $this->redirect(array('/admin/logo'));
                     Yii::app()->user->setFlash('success', "Logo Deleted Successfully");
+                         $this->redirect(array('/admin/logo'));
+       
         } elseif (!empty ($deleteSecondaryLogo)) {
             $update = Logo::model()->updateAll(array('secondary_logo' => ''), '');
             @unlink(Yii::app()->basePath . '/images/logo/' . $deleteSecondaryLogo);
-            $this->redirect(array('/admin/logo'));
             Yii::app()->user->setFlash('success', "Logo Deleted Successfully");
+                 $this->redirect(array('/admin/logo'));
+       
         }
          
     }

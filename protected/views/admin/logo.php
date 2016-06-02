@@ -18,7 +18,18 @@
  */
 
 ?>
-
+<style>
+    .flash-success{
+        
+        border:1px solid #1DDD50;
+        background: #C3FFD3;
+        text-align: center;
+        padding: 7px 15px ;
+        color: #000000;
+        margin-bottom: 20px;
+    }
+    
+</style>
 <?php if(Yii::app()->user->hasFlash('success')): ?>
  
 <div class="flash-success">
@@ -86,3 +97,7 @@
 	<?php echo $form->formActions(array('cancel-uri' => '/admin/logo'));?>
 	<?php $this->endWidget()?>
 </div>
+<script type="text/javascript">
+    
+    $(".flash-success").delay(3000).fadeOut("slow");
+    </script>
