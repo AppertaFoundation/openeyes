@@ -17,6 +17,17 @@
  */
 class GenerateWorklistsCommand extends CConsoleCommand
 {
+    protected $log_levels =  array(
+        'FATAL' => 1,
+        'ERROR' => 2,
+        'WARN' => 3,
+        'INFO' => 4,
+        'DEBUG' => 5
+    );
+
+    protected static $DEFAULT_LOG_LEVEL = 'WARN';
+    protected $log_level;
+
     /**
      * @var WorklistManager
      */
@@ -45,26 +56,100 @@ class GenerateWorklistsCommand extends CConsoleCommand
 
     public function getHelp()
     {
+        $log_levels = implode("|", array_keys($this->log_levels));
+
         return <<<EOH
 Generates the individual Worklists from the current Worklist Definitions.
+
+--verbosity={$log_levels}
 EOH;
     }
 
     public $horizon;
     public $defaultAction = "generate";
 
-    public function actionGenerate($args)
-    {
-        echo "starting ... \n";
+    public $verbosity;
 
-        $result = $this->manager->generateAllAutomaticWorklists();
-        if ($result === false) {
-            foreach ($this->manager->getErrors() as $err) {
-                echo "ERROR: {$err}\n";
+    public function setLogLevel($verbosity)
+    {
+        $level = $this->log_levels[self::$DEFAULT_LOG_LEVEL];
+
+        if ($verbosity) {
+            $key = strtoupper($verbosity);
+            if (array_key_exists($key, $this->log_levels))
+                $level = $this->log_levels[$key];
+        }
+
+        $this->log_level = $level;
+    }
+
+    public function getDateLimit($horizon)
+    {
+        if ($horizon) {
+            $interval = DateInterval::createFromDateString($horizon);
+            if (!$interval)
+                $this->usageError("Invalid horizon string {$horizon}");
+            return (new DateTime())->add($interval);
+        }
+
+        return $this->manager->getGenerationTimeLimitDate();
+    }
+
+    public function actionGenerate($verbosity=null, $horizon=null)
+    {
+        $this->setLogLevel($verbosity);
+        $date_limit = $this->getDateLimit($horizon);
+
+        $this->info("Starting automatic worklist generation.");
+        $this->debug("Date limit is " . $date_limit->format(Helper::NHS_DATE_FORMAT));
+
+        try {
+            $result = $this->manager->generateAllAutomaticWorklists($date_limit);
+            if ($result === false) {
+                foreach ($this->manager->getErrors() as $err) {
+                    $this->error($err);
+                }
+            } else {
+                $this->info("generation complete");
+                $this->debug("{$result} new worklists generated.");
             }
         }
-        else {
-            echo "GENERATED: {$result}\n";
+        catch (Exception $e)
+        {
+            $this->fatal($e->getMessage());
         }
     }
+
+    public function output($level, $msg)
+    {
+        if ($this->log_level >= $this->log_levels[$level])
+            echo "{$level}: {$msg}\n";
+    }
+
+    public function debug($msg)
+    {
+        $this->output("DEBUG", $msg);
+    }
+
+    public function info($msg)
+    {
+        $this->output("INFO", $msg);
+    }
+
+    public function warn($msg)
+    {
+        $this->output("WARN", $msg);
+    }
+
+    public function error($msg)
+    {
+        $this->output("ERROR", $msg);
+    }
+
+    public function fatal($msg, $exit_code = 1)
+    {
+        $this->output("FATAL", $msg);
+        exit($exit_code);
+    }
+
 }
