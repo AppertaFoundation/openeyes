@@ -161,28 +161,6 @@ class PatientController extends BaseController
 
 	public function actionSearch()
 	{
-		// Check that we have a valid set of search criteria
-		/*$search_terms = array(
-				'hos_num' => null,
-				'nhs_num' => null,
-				'first_name' => null,
-				'last_name' => null,
-		);
-		foreach ($search_terms as $search_term => $search_value) {
-			if (isset($_GET[$search_term]) && $search_value = trim($_GET[$search_term])) {
-
-				// Pad hos_num
-				if ($search_term == 'hos_num'
-					&& Yii::app()->params['pad_hos_num']) {
-					$search_value = sprintf(Yii::app()->params['pad_hos_num'],$search_value);
-				}
-
-				$search_terms[$search_term] = $search_value;
-			}
-		}
-
-                $search_terms = CHtml::encodeArray($search_terms);*/
-
 		switch (@$_GET['sort_by']) {
 			case 0:
 				$sort_by = 'hos_num*1';
@@ -210,25 +188,6 @@ class PatientController extends BaseController
 		}
 
                 $page_size = 20;
-		/*$sort_dir = (@$_GET['sort_dir'] == 0 ? 'asc' : 'desc');
-		$page_num = (integer) @$_GET['page_num'];
-		
-
-		$model = new Patient();
-		$model->hos_num = $search_terms['hos_num'];
-		$model->nhs_num = $search_terms['nhs_num'];
-		$dataProvider = $model->search(array(
-			'currentPage' => $page_num,
-			'pageSize' => $page_size,
-			'sortBy' => $sort_by,
-			'sortDir'=> $sort_dir,
-			'first_name' => CHtml::decode($search_terms['first_name']),
-			'last_name' => CHtml::decode($search_terms['last_name']),
-		));
-		$nr = $model->search_nr(array(
-			'first_name' => CHtml::decode($search_terms['first_name']),
-			'last_name' => CHtml::decode($search_terms['last_name']),
-		));*/
                 
                 $term = \Yii::app()->request->getParam("term", "");
                 
@@ -240,7 +199,6 @@ class PatientController extends BaseController
                 $search_terms = $patientSearch->getSearchTerms();
                 
 		if ($itemCount == 0) {
-		//if ($nr == 0) {
 			Audit::add('search','search-results',implode(',',$search_terms) ." : No results");
 
 			$message = 'Sorry, no results ';
