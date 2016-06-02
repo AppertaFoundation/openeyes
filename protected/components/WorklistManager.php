@@ -238,16 +238,25 @@ class WorklistManager extends CComponent
         return $this->getAppParam('default_worklist_end_time') ?: self::$DEFAULT_WORKLIST_END_TIME;
     }
 
+    /**
+     * @return int
+     */
     public function getWorklistPageSize()
     {
         return $this->getAppParam('default_worklist_pagination_size') ?: self::$DEFAULT_WORKLIST_PAGE_SIZE;
     }
 
+    /**
+     * @return WorklistDefinition[]
+     */
     public function getWorklistDefinitions()
     {
         return $this->getModelForClass('WorklistDefinition')->findAll();
     }
 
+    /**
+     * @return DateTime
+     */
     public function getGenerationTimeLimitDate()
     {
         $limit = $this->getAppParam('default_generation_limit') ?: self::$DEFAULT_GENERATION_LIMIT;
@@ -256,6 +265,13 @@ class WorklistManager extends CComponent
         return (new DateTime())->add($interval);
     }
 
+    /**
+     * Works out the dates we should retrieve Worklists for rendering
+     *
+     * @param DateTime $date
+     * @return array
+     * @throws Exception
+     */
     public function getDashboardRenderDates(DateTime $date)
     {
         // in case the passed in date is being used for anything else
@@ -280,6 +296,7 @@ class WorklistManager extends CComponent
 
         return $future_dates;
     }
+    
     /**
      * @param null $id
      * @return WorklistDefinition|null
@@ -825,18 +842,20 @@ class WorklistManager extends CComponent
      *
      * @param $definition
      * @param DateTime $date
-     * @return bool
+     * @return bool - indicate whether the instance was created (true) or if it already existed (false)
+     * @throws Exception
      */
     protected function createAutomaticWorklist(WorklistDefinition $definition, DateTime $date) {
         $model = $this->getModelForClass('Worklist');
+        // use the time attribute of the definition with the given date to get the 'range' date for finding/creating
+        // an instance.
         $range_date = clone $date;
         $range_date->setTime(substr($definition->start_time,0,2), substr($definition->start_time,3,2));
 
         $start_time = $range_date->format("Y-m-d H:i:s");
 
         if (!$instance = $model->findByAttributes(array('worklist_definition_id' => $definition->id, 'start' => $start_time))) {
-
-            //TODO: consider a transaction loop here
+            // instance needs to be created
             $instance = $this->getInstanceForClass('Worklist');
             $range_date->setTime(substr($definition->end_time,0,2), substr($definition->end_time, 3,2));
 
@@ -869,10 +888,14 @@ class WorklistManager extends CComponent
 
         return false;
     }
-    
+
     /**
+     * Generate worklist instances for the given definition up until the given date limit
+     * If false is returned, getErrors should be used to determine the issue.
+     *
      * @param WorklistDefinition $worklist
      * @param DateTime $date_limit
+     * @return bool - true if the process had no failures, false otherwise.
      */
     public function generateAutomaticWorklists(WorklistDefinition $definition, $date_limit = null)
     {
@@ -911,7 +934,14 @@ class WorklistManager extends CComponent
         }
     }
 
-    public function generateAllAutomaticWorklists($date_limit = null)
+    /**
+     * Iterate through all the worklist definitions and generate the instances up until the given date limit.
+     * Returns false for errors, otherwise a total count of worklist instances that have been created.
+     *
+     * @param DateTime $date_limit
+     * @return bool|int
+     */
+    public function generateAllAutomaticWorklists(DateTime $date_limit = null)
     {
         if (is_null($date_limit))
             $date_limit = $this->getGenerationTimeLimitDate();
@@ -956,6 +986,7 @@ class WorklistManager extends CComponent
 
 
     /**
+     * Update the mapping specification for an automatic worklist definition
      *
      * @param WorklistDefinitionMapping $mapping
      * @param $key
