@@ -393,6 +393,10 @@ class WorklistAdminController extends BaseAdminController
         ));
     }
 
+    /**
+     * @param $id
+     * @throws CHttpException
+     */
     public function actionDefinitionDisplayContextAdd($id)
     {
         $definition = $this->getWorklistDefinition($id);
@@ -417,6 +421,24 @@ class WorklistAdminController extends BaseAdminController
             'display_context' => $display_context,
             'errors' => @$errors
         ));
+    }
 
+    /**
+     * @param $id
+     * @throws CHttpException
+     */
+    public function actionDefinitionDisplayContextDelete($id)
+    {
+        if (!$display_context = WorklistDefinitionDisplayContext::model()->findByPk($id))
+            throw new CHttpException(404, "Worklist Definition Display Context not found.");
+
+        if ($display_context->delete()) {
+            $this->flashMessage('success', "Display Context removed.");
+        }
+        else {
+            $this->flashMessage('error', "Cannot delete Display Context.");
+        }
+
+        $this->redirect(array('/worklistAdmin/definitionDisplayContexts/' . $display_context->worklist_definition_id));
     }
 }

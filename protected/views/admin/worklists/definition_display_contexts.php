@@ -38,7 +38,7 @@
                         <td><?=$display_context->siteDisplay ?></td>
                         <td><?=$display_context->subspecialtyDisplay ?></td>
                         <td><?=$display_context->firmDisplay ?></td>
-                        <td>Delete</td>
+                        <td><a href="/worklistAdmin/definitionDisplayContextDelete/<?= $display_context->id ?>">Delete</a></td>
                     </tr>
                 <?php } ?>
             </tbody>
