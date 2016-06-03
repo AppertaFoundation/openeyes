@@ -48,8 +48,8 @@ class PcrRiskReport extends Report implements ReportInterface
             'max' => 50
         ),
         'tooltip' => array(
-            'headerFormat' => '<b>PCR Risk</b><br>',
-            'pointFormat' => '<i>Operations</i>: {point.x} <br /> <i>PCR Avg</i>: {point.y:.2f}'
+            'headerFormat' => '<b>PCR Risk </b>',
+            'pointFormat' => '<b>{point.name}</b><br /><i>Operations</i>: {point.x} <br /> <i>PCR Avg</i>: {point.y:.2f}'
         ),
         'legend' => array(
             'align' => 'right',
@@ -142,7 +142,7 @@ class PcrRiskReport extends Report implements ReportInterface
         }elseif($this->mode == 1) {
             return array(array($total, $unadjustedPcrRate));
         }elseif($this->mode == 2){
-            return array(array($total, $unadjustedPcrRate), array($total, $adjustedPcrRate));
+            return array(array('name'=>'unadjusted', 'x'=>$total, 'y'=>$unadjustedPcrRate), array('name'=>'adjusted', 'x'=>$total, 'y'=>$adjustedPcrRate));
         }
 
     }
