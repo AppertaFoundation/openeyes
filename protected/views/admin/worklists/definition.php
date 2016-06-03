@@ -41,6 +41,9 @@
         </table>
     <?php } ?>
     <hr style="margin: 5px;" />
+    <h3>Display Contexts</h3>
+    <?php $this->renderPartial('//admin/worklists/definition_display_contexts_table', array('definition' => $definition)); ?>
+    <hr style="margin: 5px;" />
     <h3>Generated Instances</h3>
     <?php $this->renderPartial('//admin/worklists/definition_worklists_table', array('definition' => $definition)) ?>
 </div>
