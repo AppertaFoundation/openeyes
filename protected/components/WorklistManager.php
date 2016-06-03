@@ -277,7 +277,9 @@ class WorklistManager extends CComponent
      */
     public function shouldRenderEmptyWorklist()
     {
-        return $this->getAppParam('worklist_show_empty') ?: self::$DEFAULT_SHOW_EMPTY;
+        return !is_null($this->getAppParam('worklist_show_empty')) ?
+            $this->getAppParam('worklist_show_empty')
+            : self::$DEFAULT_SHOW_EMPTY;
     }
 
     /**
@@ -293,7 +295,9 @@ class WorklistManager extends CComponent
         $r_date = clone $date;
         $r_date->setTime(0,0,0);
 
-        $future_days = $this->getAppParam('worklist_dashboard_future_days') ?: self::$DEFAULT_DASHBOARD_FUTURE_DAYS;
+        $future_days = !is_null($this->getAppParam('worklist_dashboard_future_days')) ?
+            $this->getAppParam('worklist_dashboard_future_days')
+            : self::$DEFAULT_DASHBOARD_FUTURE_DAYS;
         $skip_days = $this->getAppParam('worklist_dashboard_skip_days') ?: self::$DEFAULT_DASHBOARD_SKIP_DAYS;
         if (count($skip_days) >= 7) 
             throw new Exception("Too many days set to be skipped");
