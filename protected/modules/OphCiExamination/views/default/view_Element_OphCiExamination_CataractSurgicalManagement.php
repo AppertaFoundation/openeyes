@@ -29,8 +29,7 @@
 						<?php echo $element->eye ? $element->eye->name : 'Not specified'?>
 					</td>
 				</tr>
-                                 <?php foreach($active_check  as $check) { 
-                                    if(strtolower($check['name']) == 'at city road') { ?>
+                                 <?php if(!empty($active_check)) { ?>
                                         <tr>
                                                 <td scope="row">
                                                         <?php echo $element->getAttributeLabel('city_road')?>:
@@ -39,7 +38,6 @@
                                                         <?php echo $element->city_road ? 'Yes' : 'No'?>
                                                 </td>
                                         </tr>
-                                    <?php } else if(strtolower($check['name']) == 'at satellite') { ?>
                                             <tr>
                                                     <td scope="row">
                                                             <?php echo $element->getAttributeLabel('satellite')?>:
@@ -48,7 +46,7 @@
                                                             <?php echo $element->satellite ? 'Yes' : 'No'?>
                                                     </td>
                                             </tr>
-                                 <?php } }?>
+                                 <?php } ?>
 				<tr>
 					<td scope="row">
 						<?php echo $element->getAttributeLabel('fast_track')?>:
