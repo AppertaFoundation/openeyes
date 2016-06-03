@@ -215,10 +215,16 @@ class WorklistDefinition extends BaseActiveRecordVersioned
      */
     public function getRruleHumanReadable()
     {
-        if ($this->rrule)
-            return (new RRule($this->rrule))->humanReadable(array(
+        if ($this->rrule) {
+            $rrule_str = $this->rrule;
+            if (!$this->isNewRecord && !strpos($rrule_str, 'DTSTART='))
+                $rrule_str .= ";DTSTART=" . (new DateTime($this->created_date))->format('Y-m-d');
+
+            return (new RRule($rrule_str))->humanReadable(array(
                 'date_formatter' => function ($d) { return $d->format(Helper::NHS_DATE_FORMAT); }
             ));
+        }
+
     }
 
 }
