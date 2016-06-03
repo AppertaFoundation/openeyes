@@ -138,9 +138,9 @@ class PcrRiskReport extends Report implements ReportInterface
         }
 
         if($this->mode == 0) {
-            return array(array($total, $adjustedPcrRate));
+            return array(array('name'=>'adjusted', 'x'=>$total, 'y'=>$adjustedPcrRate));
         }elseif($this->mode == 1) {
-            return array(array($total, $unadjustedPcrRate));
+            return array(array('name'=>'unadjusted', 'x'=>$total, 'y'=>$unadjustedPcrRate));
         }elseif($this->mode == 2){
             return array(array('name'=>'unadjusted', 'x'=>$total, 'y'=>$unadjustedPcrRate), array('name'=>'adjusted', 'x'=>$total, 'y'=>$adjustedPcrRate));
         }
