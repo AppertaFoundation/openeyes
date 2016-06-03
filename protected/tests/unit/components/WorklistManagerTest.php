@@ -311,10 +311,10 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
     public function defaultsDataProvider()
     {
         return array(
-            array('getDefaultStartTime', 'default_worklist_start_time', null, 'DEFAULT_WORKLIST_START_TIME'),
-            array('getDefaultStartTime', 'default_worklist_start_time', 'misc', null),
-            array('getDefaultEndTime', 'default_worklist_end_time', null, 'DEFAULT_WORKLIST_END_TIME'),
-            array('getDefaultEndTime', 'default_worklist_end_time', 'misc', null)
+            array('getDefaultStartTime', 'worklist_default_start_time', null, 'DEFAULT_WORKLIST_START_TIME'),
+            array('getDefaultStartTime', 'worklist_default_start_time', 'misc', null),
+            array('getDefaultEndTime', 'worklist_default_end_time', null, 'DEFAULT_WORKLIST_END_TIME'),
+            array('getDefaultEndTime', 'worklist_default_end_time', 'misc', null)
         );
     }
 
@@ -583,16 +583,6 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $this->markTestIncomplete("New method. not had chance to write test yet.");
     }
 
-    public function test_updateWorklistDefinitionMapping_empty()
-    {
-        $mapping = new WorklistDefinitionMapping();
-        $manager = new WorklistManager();
-
-        $this->assertFalse($manager->updateWorklistDefinitionMapping($mapping, 'test key', ''));
-        $this->assertTrue($manager->hasErrors());
-    }
-
-
     public function test_updateWorklistDefinitionMapping_invalid_key()
     {
         $definition = $this->getMockBuilder('WorklistDefinition')
@@ -638,11 +628,22 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
             ->setMethods(array('validateMappingKey', 'getNextDisplayOrder'))
             ->getMock();
 
-        $mapping = ComponentStubGenerator::generate("WorklistDefinitionMapping", array(
-            'worklist_definition' => $definition,
-            'isNewRecord' => $new,
-            'id' => $new ? null : 4
-        ));
+        $mapping = $this->getMockBuilder('WorklistDefinitionMapping')
+            ->disableOriginalConstructor()
+            ->setMethods(array('save', 'updateValues'))
+            ->getMock();
+
+        $mapping->worklist_definition = $definition;
+        $mapping->isNewRecord = $new;
+        $mapping->id = $new ? null : 4;
+
+        $mapping->expects($this->once())
+            ->method('save')
+            ->will($this->returnValue(true));
+
+        $mapping->expects($this->once())
+            ->method('updateValues')
+            ->will($this->returnValue(true));
 
         if ($new) {
             $definition->expects($this->once())
@@ -657,7 +658,7 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
                 ->will($this->returnValue(true));
         }
 
-        if ($new && $display) {
+        if ($display) {
             $definition->expects($this->once())
                 ->method('getNextDisplayOrder')
                 ->will($this->returnValue(3));
@@ -669,7 +670,7 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
 
         $manager = $this->getMockBuilder("WorklistManager")
             ->disableOriginalConstructor()
-            ->setMethods(array('startTransaction'))
+            ->setMethods(array('startTransaction', 'audit'))
             ->getMock();
         $manager->expects($this->once())
             ->method('startTransaction')

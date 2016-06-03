@@ -136,17 +136,17 @@ $config = array(
 		'event_print_method' => 'pdf',
 		'wkhtmltopdf_nice_level' => 19,
 		// default start time used for automatic worklist definitions
-		//'default_worklist_start_time' => 'H:i',
+		//'worklist_default_start_time' => 'H:i',
 		// default end time used for automatic worklist definitions
-		//'default_worklist_end_time' => 'H:i',
+		//'worklist_default_end_time' => 'H:i',
 		// number of patients to show on each worklist dashboard render
-		//'default_worklist_pagination_size' => int,
+		//'worklist_default_pagination_size' => int,
 		// number of days in the future to retrieve worklists for the automatic dashboard render
 		//'worklist_dashboard_future_days' => int,
 		// days of the week to be ignored when determining which worklists to render - Mon, Tue etc
 		//'worklist_dashboard_skip_days' => array()
 		//how far in advance worklists should be generated for matching
-		//'default_generation_limit' => interval string (e.g. 3 months)
+		//'worklist_default_generation_limit' => interval string (e.g. 3 months)
 		// override edit checks on definitions so they can always be edited (use at own peril)
 		//'worklist_always_allow_definition_edit' => bool
 		// whether we should render empty worklists in the dashboard or not

@@ -232,7 +232,7 @@ class WorklistManager extends CComponent
      */
     public function getDefaultStartTime()
     {
-        return $this->getAppParam('default_worklist_start_time') ?: self::$DEFAULT_WORKLIST_START_TIME;
+        return $this->getAppParam('worklist_default_start_time') ?: self::$DEFAULT_WORKLIST_START_TIME;
     }
 
     /**
@@ -242,7 +242,7 @@ class WorklistManager extends CComponent
      */
     public function getDefaultEndTime()
     {
-        return $this->getAppParam('default_worklist_end_time') ?: self::$DEFAULT_WORKLIST_END_TIME;
+        return $this->getAppParam('worklist_default_end_time') ?: self::$DEFAULT_WORKLIST_END_TIME;
     }
 
     /**
@@ -250,7 +250,7 @@ class WorklistManager extends CComponent
      */
     public function getWorklistPageSize()
     {
-        return $this->getAppParam('default_worklist_pagination_size') ?: self::$DEFAULT_WORKLIST_PAGE_SIZE;
+        return $this->getAppParam('worklist_default_pagination_size') ?: self::$DEFAULT_WORKLIST_PAGE_SIZE;
     }
 
     /**
@@ -266,7 +266,7 @@ class WorklistManager extends CComponent
      */
     public function getGenerationTimeLimitDate()
     {
-        $limit = $this->getAppParam('default_generation_limit') ?: self::$DEFAULT_GENERATION_LIMIT;
+        $limit = $this->getAppParam('worklist_default_generation_limit') ?: self::$DEFAULT_GENERATION_LIMIT;
         $interval = DateInterval::createFromDateString($limit);
 
         return (new DateTime())->add($interval);
@@ -295,9 +295,10 @@ class WorklistManager extends CComponent
         $r_date = clone $date;
         $r_date->setTime(0,0,0);
 
-        $future_days = !is_null($this->getAppParam('worklist_dashboard_future_days')) ?
-            $this->getAppParam('worklist_dashboard_future_days')
-            : self::$DEFAULT_DASHBOARD_FUTURE_DAYS;
+        $future_days = $this->getAppParam('worklist_dashboard_future_days');
+        if (is_null($future_days))
+            $future_days = self::$DEFAULT_DASHBOARD_FUTURE_DAYS;
+
         $skip_days = $this->getAppParam('worklist_dashboard_skip_days') ?: self::$DEFAULT_DASHBOARD_SKIP_DAYS;
         if (count($skip_days) >= 7) 
             throw new Exception("Too many days set to be skipped");
@@ -1075,6 +1076,7 @@ class WorklistManager extends CComponent
         }
         catch (Exception $e) {
             $this->addError($e->getMessage());
+            echo $e->getMessage();
             if ($transaction)
                 $transaction->rollback();
             return false;
