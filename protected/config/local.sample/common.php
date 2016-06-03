@@ -149,6 +149,8 @@ $config = array(
 		//'default_generation_limit' => interval string (e.g. 3 months)
 		// override edit checks on definitions so they can always be edited (use at own peril)
 		//'worklist_always_allow_definition_edit' => bool
+		// whether we should render empty worklists in the dashboard or not
+		//'worklist_show_empty' => bool
 	),
 );
 

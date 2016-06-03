@@ -62,6 +62,13 @@ class WorklistManager extends CComponent
     protected static $DEFAULT_DASHBOARD_SKIP_DAYS = ['Sun'];
 
     /**
+     * Whether worklists with no patient assignments should be displayed or not
+     *
+     * @var bool
+     */
+    protected static $DEFAULT_SHOW_EMPTY = true;
+
+    /**
      * Internal store of error messages
      *
      * @var array
@@ -263,6 +270,14 @@ class WorklistManager extends CComponent
         $interval = DateInterval::createFromDateString($limit);
 
         return (new DateTime())->add($interval);
+    }
+
+    /**
+     * @return bool
+     */
+    public function shouldRenderEmptyWorklist()
+    {
+        return $this->getAppParam('worklist_show_empty') ?: self::$DEFAULT_SHOW_EMPTY;
     }
 
     /**
@@ -733,13 +748,16 @@ class WorklistManager extends CComponent
      */
     public function renderWorklistForDashboard($worklist)
     {
-        $this->yii->assetManager->registerScriptFile('js/worklist-dashboard.js', null, null, AssetManager::OUTPUT_SCREEN);
+        $worklist_patients = $this->getPatientsForWorklist($worklist);
+        if ($this->shouldRenderEmptyWorklist() || $worklist_patients->getTotalItemCount() > 0) {
+            $this->yii->assetManager->registerScriptFile('js/worklist-dashboard.js', null, null, AssetManager::OUTPUT_SCREEN);
 
-        return $this->renderPartial('//worklist/dashboard', array(
-                'worklist' => $worklist,
-                'worklist_patients' => $this->getPatientsForWorklist($worklist)
-            )
-        );
+            return $this->renderPartial('//worklist/dashboard', array(
+                    'worklist' => $worklist,
+                    'worklist_patients' => $this->getPatientsForWorklist($worklist)
+                )
+            );
+        }
     }
 
     /**
