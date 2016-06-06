@@ -518,7 +518,7 @@ class Event extends BaseActiveRecordVersioned
 	{
 		if($this->is_automated){
 			if(property_exists($this->automated_source, 'goc_number')){
-				return 'Automatically added by '.$this->automated_source->name. '('.$this->automated_source->goc_number.')';
+				return 'Automatically added by '.$this->automated_source->name. ' ('.$this->automated_source->goc_number.')';
 			}
 		}
 	}
