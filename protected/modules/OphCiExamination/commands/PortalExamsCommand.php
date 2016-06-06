@@ -59,7 +59,7 @@ class PortalExamsCommand extends CConsoleCommand
                 $examinationEventLog->event_id = 0;
                 $examinationEventLog->examination_date = $examination['examination_date'];
                 $examinationEventLog->examination_data = json_encode($examination);
-                $importStatus = ImportStatus::model()->find('status_value = "Duplicate/Unfound Event"');
+                $importStatus = ImportStatus::model()->find('status_value = "Unfound Event"');
                 $examinationEventLog->import_success = $importStatus->id;
                 if (!$examinationEventLog->save()) {
                     echo '$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true);
@@ -105,7 +105,7 @@ class PortalExamsCommand extends CConsoleCommand
                     $examinationEventLog->unique_code = $uniqueCode;
                     $examinationEventLog->examination_date = $examination['examination_date'];
                     $examinationEventLog->examination_data = json_encode($examination);
-                    $importStatus = ImportStatus::model()->find('status_value = "Duplicate/Unfound Event"');
+                    $importStatus = ImportStatus::model()->find('status_value = "Duplicate Event"');
                     $examinationEventLog->import_success = $importStatus->id;
                     echo 'Duplicate record found for '.$examination['patient']['unique_identifier'].PHP_EOL;
                     if (!$examinationEventLog->save()) {

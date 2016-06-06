@@ -126,7 +126,16 @@ class Event extends BaseActiveRecordVersioned
 		}
 	}
 
-	public function moduleAllowsEditing()
+    protected function beforeSave()
+    {
+        if($this->is_automated && !is_string($this->automated_source)){
+            $this->automated_source = json_encode($this->automated_source);
+        }
+
+        return parent::beforeSave();
+    }
+
+    public function moduleAllowsEditing()
 	{
 		if ($api = Yii::app()->moduleAPI->get($this->eventType->class_name)) {
 			if (method_exists($api,'canUpdate')) {

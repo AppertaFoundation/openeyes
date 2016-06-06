@@ -54,8 +54,8 @@ class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
     public function relations()
     {
         return array(
-            'event_id' => array(self::BELONGS_TO, 'Event', 'id'),
-            'import_status' => array(self::BELONGS_TO, 'ImportStatus', 'id'),
+            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'import_status' => array(self::BELONGS_TO, 'ImportStatus', 'import_success'),
         );
     }
 
@@ -82,7 +82,7 @@ class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
     {
         $criteria = new CDbCriteria();
         $criteria->join = 'JOIN import_status ON import_status.id = t.import_success';
-        $criteria->condition = 'import_status.status_value <> "Import Failure"';
+        $criteria->condition = 'import_status.status_value <> "Import Failure" AND import_status.status_value <> "Dismissed Event"';
         $criteria->order = 'created_date DESC, id DESC';
         $criteria->limit = 1;
 

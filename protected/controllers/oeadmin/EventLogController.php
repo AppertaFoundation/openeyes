@@ -41,13 +41,13 @@ class EventLogController extends BaseAdminController
     public function actionList()
     {
 
-        $admin = new Admin(EventLog::model(), $this);
+        $admin = new Admin(AutomaticExaminationEventLog::model(), $this);
         $admin->setModelDisplayName('Examination Event Log(s)');
         $admin->setListFields(array(
             'event_id',
             'unique_code',
             'examination_date',
-            'status.status_value'
+            'import_status.status_value'
         ));
 
         $admin->searchAll();
@@ -59,78 +59,140 @@ class EventLogController extends BaseAdminController
         $admin->listModel(false);
     }
 
+    /**
+     * @param bool $id
+     * @throws CHttpException
+     * @throws Exception
+     */
     public function actionEdit($id = false)
     {
-        if (!EventLog::model()->findByPk($id)) {
-            throw new Exception("Event not found: $id");
+        $eventQuery = AutomaticExaminationEventLog::model()->findByPk($id);
+        if (!$eventQuery) {
+            throw new CHttpException(404, "Event not found: $id");
         }
 
         if (!empty($_POST)) {
-            @$status = $_POST['status'];
-
-            if ($status == 1) {
-                $logId = $id;
-                $eventQuery = EventLog::model()->findByPk($logId);
-                $eventId = $eventQuery->event_id;
-                $data = $eventQuery->examination_data;
-                $examination = json_decode($data, true);
-
-                $eventType = EventType::model()->find('name = "Examination"');
-                $user = new User();
-                $portalUser = $user->portalUser();
-                if(!$portalUser){
-                    throw new Exception('No User found for import');
-                }
-                $portalUserId = $portalUser->id;
-                $refractionType = \OEModule\OphCiExamination\models\OphCiExamination_Refraction_Type::model()->find('name = "Ophthalmologist"');
-
-                $eyes = Eye::model()->findAll();
-                $eyeIds = array();
-                foreach ($eyes as $eye) {
-                    $eyeIds[strtolower($eye->name)] = $eye->id;
-                }
-
-                $uidArray = explode('-', $examination['patient']['unique_identifier']);
-                $uniqueCode = $uidArray[1];
-                $opNoteEvent = UniqueCodes::model()->eventFromUniqueCode($uniqueCode);
-
-                if (UniqueCodes::model()->examinationEventCheckFromUniqueCode($uniqueCode, $eventType['id'])) {
-                    $transaction = $opNoteEvent->getDbConnection()->beginInternalTransaction();
-
-                    try {
-                        $creator = new ExaminationCreator();
-                        $examinationEvent = $creator->saveExamination($opNoteEvent, $portalUserId, $examination, $eventType, $eyeIds, $refractionType);
-                    } catch (Exception $e) {
-                        $transaction->rollback();
-                        throw new CHttpException(500, 'Saving Examination event failed');
-                    }
-                    $transaction->commit();
-
-                    $changeOtherEvents = new CDbCriteria();
-                    $changeOtherEvents->addCondition("unique_code='$uniqueCode'"); // $wall_ids = array ( 1, 2, 3, 4 );
-                    EventLog::model()->updateAll(array('import_success' => '3'), $changeOtherEvents);
-
-                    $eventQuery->saveAttributes(array('import_success' => 1, 'event_id' => $examinationEvent->id));
-
-                    $eventIdUpdate = new CDbCriteria();
-                    $eventIdUpdate->addCondition("id=$eventId"); // $wall_ids = array ( 1, 2, 3, 4 );
-                    Event::model()->updateAll(array('deleted' => '3', 'last_modified_user_id' => $portalUserId), $eventIdUpdate);
-                }
+            if($eventQuery->import_status->status_value === 'Duplicate Event'){
+                $this->replaceEvent($eventQuery);
             }
-
             $this->redirect('/oeadmin/eventLog/list/');
         }
 
-        $eventQuery = EventLog::model()->findByPk($id);
         $event = $eventQuery->event;
         $eventUniqueCode = $eventQuery->unique_code;
-        $data = $eventQuery->examination_data;
+        $buttons = array();
+
+        switch ($eventQuery->import_status->status_value) {
+            case 'Success Event':
+            case 'Dismissed Event':
+            case 'Import Success':
+                $buttons = array(
+                    'cancel' => false,
+                    'submit' => 'Ok',
+                );
+                break;
+            case 'Duplicate Event':
+                $buttons = array(
+                    'cancel' => 'Dismiss New',
+                    'cancel-uri' => '/oeadmin/eventLog/dismiss/'.$id,
+                    'submit' => 'Accept New',
+                );
+                break;
+        }
 
         $this->render('//eventlog/edit', array(
             'log_id' => $id,
             'event' => $event,
             'unique_code' => $eventUniqueCode,
-            'data' => json_decode($data, true),
+            'status' => $eventQuery->import_status->status_value,
+            'data' => json_decode($eventQuery->examination_data, true),
+            'previous' => $this->previousEventLogData($eventQuery),
+            'buttons' => $buttons,
         ));
+    }
+
+    /**
+     * @param $id
+     */
+    public function actionDismiss($id)
+    {
+        $eventQuery = AutomaticExaminationEventLog::model()->findByPk($id);
+        if (!$eventQuery) {
+            throw new CHttpException(404, "Event not found: $id");
+        }
+
+        $eventQuery->import_success = ImportStatus::model()->find('status_value = "Dismissed Event"')->id;
+        $eventQuery->save();
+
+        $this->redirect('/oeadmin/eventLog/list/');
+    }
+
+    /**
+     * @param $id
+     * @return array
+     * @throws CHttpException
+     * @throws Exception
+     */
+    protected function replaceEvent($eventQuery)
+    {
+        $data = $eventQuery->examination_data;
+        $examination = json_decode($data, true);
+
+        $eventType = EventType::model()->find('name = "Examination"');
+        $user = new User();
+        $portalUser = $user->portalUser();
+        if (!$portalUser) {
+            throw new Exception('No User found for import');
+        }
+        $portalUserId = $portalUser->id;
+        $refractionType = \OEModule\OphCiExamination\models\OphCiExamination_Refraction_Type::model()->find('name = "Ophthalmologist"');
+
+        $eyes = Eye::model()->findAll();
+        $eyeIds = array();
+        foreach ($eyes as $eye) {
+            $eyeIds[strtolower($eye->name)] = $eye->id;
+        }
+
+        $uidArray = explode('-', $examination['patient']['unique_identifier']);
+        $uniqueCode = $uidArray[1];
+        $opNoteEvent = UniqueCodes::model()->eventFromUniqueCode($uniqueCode);
+
+        if (UniqueCodes::model()->examinationEventCheckFromUniqueCode($uniqueCode, $eventType['id'])) {
+            $transaction = $opNoteEvent->getDbConnection()->beginInternalTransaction();
+
+            try {
+                $creator = new ExaminationCreator();
+                $examinationEvent = $creator->saveExamination($opNoteEvent, $portalUserId, $examination, $eventType, $eyeIds, $refractionType);
+                //delete old event
+                $eventQuery->event->deleted = 1;
+                $eventQuery->event->save();
+                //update log for new event
+                $eventQuery->import_success = ImportStatus::model()->find('status_value = "Success Event"')->id;
+                $eventQuery->event_id = $examinationEvent->id;
+                $eventQuery->save();
+
+            } catch (Exception $e) {
+                $transaction->rollback();
+                throw new CHttpException(500, 'Saving Examination event failed');
+            }
+
+            $transaction->commit();
+
+        }
+    }
+
+    protected function previousEventLogData($eventLog)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->compare('event_id', $eventLog->event_id);
+        $criteria->addCondition('id <> '.$eventLog->id);
+        $criteria->order = 'created_date DESC, id ASC';
+        $previous = AutomaticExaminationEventLog::model()->find($criteria);
+
+        if(!$previous){
+            return '';
+        }
+
+        return json_decode($previous->examination_data, true);
     }
 }
