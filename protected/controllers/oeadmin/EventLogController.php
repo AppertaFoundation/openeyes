@@ -49,7 +49,12 @@ class EventLogController extends BaseAdminController
             'examination_date',
             'status.status_value'
         ));
+
         $admin->searchAll();
+        $admin->getSearch()->addSearchItem('import_success', array(
+            'type' => 'dropdown',
+            'options' => CHtml::listData(ImportStatus::model()->findAll(),'id', 'status_value'),
+        ));
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
         $admin->listModel(false);
     }
