@@ -161,28 +161,6 @@ class PatientController extends BaseController
 
 	public function actionSearch()
 	{
-		// Check that we have a valid set of search criteria
-		$search_terms = array(
-				'hos_num' => null,
-				'nhs_num' => null,
-				'first_name' => null,
-				'last_name' => null,
-		);
-		foreach ($search_terms as $search_term => $search_value) {
-			if (isset($_GET[$search_term]) && $search_value = trim($_GET[$search_term])) {
-
-				// Pad hos_num
-				if ($search_term == 'hos_num'
-					&& Yii::app()->params['pad_hos_num']) {
-					$search_value = sprintf(Yii::app()->params['pad_hos_num'],$search_value);
-				}
-
-				$search_terms[$search_term] = $search_value;
-			}
-		}
-
-		 $search_terms = CHtml::encodeArray($search_terms);
-
 		switch (@$_GET['sort_by']) {
 			case 0:
 				$sort_by = 'hos_num*1';
@@ -209,27 +187,18 @@ class PatientController extends BaseController
 				$sort_by = 'hos_num*1';
 		}
 
-		$sort_dir = (@$_GET['sort_dir'] == 0 ? 'asc' : 'desc');
-		$page_num = (integer) @$_GET['page_num'];
-		$page_size = 20;
+                $page_size = 20;
+                
+                $term = \Yii::app()->request->getParam("term", "");
+                
+                $patientSearch = new PatientSearch();
+                $dataProvider = $patientSearch->search($term);
 
-		$model = new Patient();
-		$model->hos_num = $search_terms['hos_num'];
-		$model->nhs_num = $search_terms['nhs_num'];
-		$dataProvider = $model->search(array(
-			'currentPage' => $page_num,
-			'pageSize' => $page_size,
-			'sortBy' => $sort_by,
-			'sortDir'=> $sort_dir,
-			'first_name' => CHtml::decode($search_terms['first_name']),
-			'last_name' => CHtml::decode($search_terms['last_name']),
-		));
-		$nr = $model->search_nr(array(
-			'first_name' => CHtml::decode($search_terms['first_name']),
-			'last_name' => CHtml::decode($search_terms['last_name']),
-		));
-
-		if ($nr == 0) {
+                $itemCount = $dataProvider->itemCount;
+                
+                $search_terms = $patientSearch->getSearchTerms();
+                
+		if ($itemCount == 0) {
 			Audit::add('search','search-results',implode(',',$search_terms) ." : No results");
 
 			$message = 'Sorry, no results ';
@@ -246,22 +215,22 @@ class PatientController extends BaseController
 
 			$this->redirect(Yii::app()->homeUrl);
 
-		} elseif ($nr == 1) {
+		} elseif ($itemCount == 1) {
 			foreach ($dataProvider->getData() as $item) {
 				$this->redirect(array('patient/view/' . $item->id));
 			}
 		} else {
 			$this->renderPatientPanel = false;
-			$pages = ceil($nr/$page_size);
+			$pages = ceil($itemCount/$page_size);
 			$this->render('results', array(
 				'data_provider' => $dataProvider,
 				'pages' => $pages,
-				'page_num' => $page_num,
+				'page_num' => \Yii::app()->request->getParam('page_num', 0),
 				'items_per_page' => $page_size,
-				'total_items' => $nr,
-				'search_terms' => $search_terms,
-				'sort_by' => (integer) @$_GET['sort_by'],
-				'sort_dir' => (integer) @$_GET['sort_dir']
+				'total_items' => $itemCount,
+				'search_terms' => $patientSearch->getSearchTerms(),
+				'sort_by' => (integer) \Yii::app()->request->getParam('sort_by', null),
+				'sort_dir' => (integer) \Yii::app()->request->getParam('sort_dir', null),
 			));
 		}
 

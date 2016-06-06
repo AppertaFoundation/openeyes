@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -16,42 +17,17 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-
 return array(
-	'firm1' => array(
-		'id' => 1,
-		'service_subspecialty_assignment_id' => '1',
-		'pas_code' => 'AEAB',
-		'name' => 'Aylward Firm',
-		'consultant_id' => 1,
-	),
-	'firm2' => array(
-		'id' => 2,
-		'service_subspecialty_assignment_id' => '2',
-		'pas_code' => 'ADCR',
-		'name' => 'Collin Firm'
-	),
-	'firm3' => array(
-		'3' => 3,
-		'service_subspecialty_assignment_id' => '2',
-		'pas_code' => 'CAAB',
-		'name' => 'Allan Firm'
-	),
-	'firm4' => array(
-		'id' => 4,
-		'service_subspecialty_assignment_id' => null,
-		'name' => 'Support Services Firm'
-	),
-	'firm5' => array(
-		'id' => 5,
-		'service_subspecialty_assignment_id' => 3,
-		'name' => 'Blah'
-	),
-	'firm6' => array(
-		'id' => 6,
-		'service_subspecialty_assignment_id' => 4,
-		'name' => 'Blah'
-	),
-        
+    'assignment1' => array(
+        'patient_id' => 7,
+        'allergy_id' => 1,
+        'other' => 'other 1',
+        'comments' => 'comment 1',
+    ),
+    'assignment2' => array(
+        'patient_id' => 8,
+        'allergy_id' => 2,
+        'other' => 'other 2',
+        'comments' => 'comment 2',
+    ),
 );

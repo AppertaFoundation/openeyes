@@ -47,7 +47,7 @@ class DefaultController extends BaseEventTypeController
 		// we are looking for the unlinked imported events in the database
 		$criteria->addCondition("patient_id = :patient_id");
 		$criteria->addCondition("is_linked = 0");
-		$criteria->addCondition("deleted = 0");
+		$criteria->addCondition("event.deleted = 0");
 		$criteria->params = array(':patient_id' => $this->patient->id);
 		$unlinkedEvents = OphInBiometry_Imported_Events::model()->with(array('patient','event'))->findAll($criteria);
 
