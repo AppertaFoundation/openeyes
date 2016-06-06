@@ -71,7 +71,12 @@ class EventLogController extends BaseAdminController
                 $examination = json_decode($data, true);
 
                 $eventType = EventType::model()->find('name = "Examination"');
-                $portalUserId = 1; //todo get portal user
+                $user = new User();
+                $portalUser = $user->portalUser();
+                if(!$portalUser){
+                    throw new Exception('No User found for import');
+                }
+                $portalUserId = $portalUser->id;
                 $refractionType = \OEModule\OphCiExamination\models\OphCiExamination_Refraction_Type::model()->find('name = "Ophthalmologist"');
 
                 $eyes = Eye::model()->findAll();

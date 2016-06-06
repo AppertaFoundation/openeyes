@@ -4,24 +4,25 @@ class m160525_092545_user extends CDbMigration
 {
 	public function up()
 	{
-            
-            $insert_portal_user = $this->execute("insert into user values ('0','portal_user', 'Portal', 'User', 'portal_user@openeyes.com', '1', '0', 'Mr', 'DR', 'OpTom Portal', NULL, 'a6be81a2523654545cae5707fa47bd3c', '98bAzbwQJ3', '1', '2016-05-16 14:17:56', '1', '2016-05-16 14:17:56', NULL, '0', '576750', NULL, '0', '0', '0', '0', NULL, 'admin')");
+		$username = (array_key_exists('portal_user', Yii::app()->params)) ? Yii::app()->params['portal_user'] : 'portal_user';
+		$this->insert('user', array(
+			'username' => $username,
+			'first_name' => 'Portal',
+			'last_name' => 'User',
+			'email' => 'portal_user@openeyes.com',
+			'active' => 1,
+			'title' => 'Mr',
+			'qualifications' => 'DR',
+			'role' => 'OpTom Portal',
+			'has_selected_firms' => 0,
+
+		));
 	}
 
 	public function down()
 	{
-		echo "m160525_092545_user does not support migration down.\n";
-		return false;
+		$username = (array_key_exists('portal_user', Yii::app()->params)) ? Yii::app()->params['portal_user'] : 'portal_user';
+		$this->delete('user', 'username = ?', array($username));
 	}
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
-
-	public function safeDown()
-	{
-	}
-	*/
 }

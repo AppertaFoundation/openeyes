@@ -28,17 +28,18 @@ class PortalExamsCommand extends CConsoleCommand
     public function run($args)
     {
         $creator = new ExaminationCreator();
+        $user = new User();
         $this->setConfig();
         $this->client = $this->initClient();
         $this->login();
         $examinations = $this->examinationSearch();
 
         $eventType = EventType::model()->find('name = "Examination"');
-        if (Yii::app()->params['portal_user'] == '') {
-            $portalUserId = 1;//todo get portal user
-        } else {
-            $portalUserId = Yii::app()->params['portal_user'];//todo get portal user
+        $portalUser = $user->portalUser();
+        if(!$portalUser){
+            throw new Exception('No User found for import');
         }
+        $portalUserId = $portalUser->id;
 
         $refractionType = \OEModule\OphCiExamination\models\OphCiExamination_Refraction_Type::model()->find('name = "Ophthalmologist"');
 
@@ -75,7 +76,7 @@ class PortalExamsCommand extends CConsoleCommand
                 } catch (Exception $e) {
                     $transaction->rollback();
                     $importStatus = ImportStatus::model()->find('status_value = "Import Failure"');
-                    $examinationEventLog->event_id = ($examinationEvent->id) ? $examinationEvent->id : 0;
+                    $examinationEventLog->event_id = 0;
                     $examinationEventLog->unique_code = $uniqueCode;
                     $examinationEventLog->examination_date = $examination['examination_date'];
                     $examinationEventLog->examination_data = json_encode($examination);

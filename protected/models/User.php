@@ -553,4 +553,18 @@ class User extends BaseActiveRecordVersioned
 		}
 		return Firm::model()->findAll($crit);
 	}
+
+	/**
+	 * Get the portal user if it exists
+	 *
+	 * @return CActiveRecord
+	 */
+	public function portalUser()
+	{
+		$username = (array_key_exists('portal_user', Yii::app()->params)) ? Yii::app()->params['portal_user'] : 'portal_user';
+		$crit = new CDbCriteria;
+		$crit->compare('username', $username);
+
+		return $this->find($crit);
+	}
 }
