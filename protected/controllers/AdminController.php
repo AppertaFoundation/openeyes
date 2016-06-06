@@ -1638,35 +1638,30 @@ class AdminController extends BaseAdminController {
         $logo = new Logo;
 
         if (isset($_FILES['Logo'])) {
+            
+            
+            
+            
+            
+            
+            $savePath = Yii::app()->basePath . '/images/logo/';
 
-            $headerLogoName = $_FILES['Logo']['name']['header_logo'];
-            $secondaryLogoName = $_FILES['Logo']['name']['secondary_logo'];
-            $headerUpload = CUploadedFile::getInstance($logo, 'header_logo');
-            $secondaryUpload = CUploadedFile::getInstance($logo, 'secondary_logo');
-            $headerLogoExplode = explode(".", $headerLogoName);
-            $headerLogo = "header." . end($headerLogoExplode);
-            $secondaryLogoExplode = explode(".", $secondaryLogoName);
-            $secondaryLogo = "secondary." . end($secondaryLogoExplode);
-            $path = Yii::app()->basePath . '/images/logo/';
-            $imageList = scandir($path, 1);
-            $headerPosition = strpos($imageList[1], "header");
-            $secondaryPosition = strpos($imageList[0], "secondary");
-            if ($headerPosition !== false) {
-                $existingHeaderLogo = $imageList[1];
-            }
-            if ($secondaryPosition !== false) {
-                $existingSecondaryLogo = $imageList[0];
-            }
-            if (!empty($headerLogoName)) {
-                @unlink(Yii::app()->basePath . '/images/logo/' . $existingHeaderLogo);
-                $headerUpload->saveAs(Yii::app()->basePath . '/images/logo/' . $headerLogo);
-            }
-            if (!empty($secondaryLogoName)) {
-                @unlink(Yii::app()->basePath . '/images/logo/' . $existingSecondaryLogo);
-                $secondaryUpload->saveAs(Yii::app()->basePath . '/images/logo/' . $secondaryLogo);
-                
-            }
+foreach ($_FILES['Logo']['name'] as $logoKey => $logoName){
 
+    $logo = CUploadedFile::getInstance(new Logo(), $logoKey);
+
+    $fileInfo = pathinfo($logoName);
+
+    foreach (glob($savePath.$logoKey) as $existingLogo){
+
+        unlink($savePath.$existingLogo);
+
+    }
+
+    $logo->saveAs($savePath. $logoKey.'.'.$fileInfo['extension']);
+
+}
+            
             Yii::app()->user->setFlash('success', "Logo Saved Successfully");
             $this->redirect(array('/admin/logo'));
         }
