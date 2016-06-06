@@ -1333,15 +1333,15 @@ class BaseEventTypeController extends BaseModuleController
 
 		$use_container_view = ($element->useContainerView && $container_view);
                 if(array_pop(explode('\\', (get_class($element)))) === 'Element_OphCiExamination_CataractSurgicalManagement') {
-                    $active_check = Yii::app()->params['city_road_satellite_view'];
-                $view_data = array_merge(array(
-                    'element' => $element,
-                    'active_check' => $active_check,
-                    'data' => $data,
-                    'form' => $form,
-                    'child' => $element->getElementType()->isChild(),
-                    'container_view' => $container_view
-                ), $view_data);
+                    $active_check = SettingInstallation::model()->find('t.key="city_road_satellite_view"');
+                    $view_data = array_merge(array(
+                        'element' => $element,
+                        'active_check' => $active_check->value,
+                        'data' => $data,
+                        'form' => $form,
+                        'child' => $element->getElementType()->isChild(),
+                        'container_view' => $container_view
+                    ), $view_data);
                 }
                 else {
                     $view_data = array_merge(array(
