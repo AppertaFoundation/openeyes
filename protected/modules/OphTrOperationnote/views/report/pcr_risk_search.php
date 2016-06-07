@@ -1,4 +1,5 @@
-<?php /**
+<?php
+/**
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
@@ -16,43 +17,25 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class BaseReport extends CModel
-{
-	public $view;
+?>
 
-	public function getView()
-	{
-		if ($this->view) {
-			return $this->view;
-		}
-
-		$model = CHtml::modelName($this);
-
-		if (strstr($model,'_')) {
-			$segments = explode('_',$model);
-
-            $explode = explode('_',$model);
-			$model = array_pop($explode);
-		}
-
-		return '_' . strtolower(preg_replace('/^Report/','',$model));
-	}
-
-	public function attributeNames()
-	{
-	}
-
-	protected function array2Csv(array $data)
-	{
-		if (count($data) == 0) {
-			return null;
-		}
-		ob_start();
-		$df = fopen("php://output", 'w');
-		foreach ($data as $row) {
-			fputcsv($df, $row);
-		}
-		fclose($df);
-		return ob_get_clean();
-	}
-}
+<div class="report-search">
+    <form class="report-search-form mdl-color-text--grey-600" action="/report/reportData">
+        <input type="hidden" name="report" value="<?= $report->getApp()->getRequest()->getQuery('report'); ?>" />
+        <fieldset>
+            <div class="mdl-selectfield">
+                <label for="pcr-risk-mode">Rendering mode</label>
+                <select name="mode" id="pcr-risk-mode" class="browser-default">
+                    <?php foreach($modes as $mode):?>
+                        <option value="<?=$mode['id']?>"><?=$mode['name']?></option>
+                    <?php endforeach;?>
+                </select>
+            </div>
+            <div>
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="submit" name="action">Submit
+                    <i class="material-icons right">send</i>
+                </button>
+            </div>
+        </fieldset>
+    </form>
+</div>
