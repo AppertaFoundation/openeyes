@@ -75,6 +75,9 @@ class EventLogController extends BaseAdminController
             if($eventQuery->import_status->status_value === 'Duplicate Event'){
                 $this->replaceEvent($eventQuery);
             }
+            if($eventQuery->import_status->status_value === 'Unfound Event'){
+                $this->assignEvent($eventQuery);
+            }
             $this->redirect('/oeadmin/eventLog/list/');
         }
 
@@ -135,50 +138,44 @@ class EventLogController extends BaseAdminController
      */
     protected function replaceEvent($eventQuery)
     {
+        $creator = new ExaminationCreator();
         $data = $eventQuery->examination_data;
         $examination = json_decode($data, true);
-
         $eventType = EventType::model()->find('name = "Examination"');
-        $user = new User();
-        $portalUser = $user->portalUser();
-        if (!$portalUser) {
-            throw new Exception('No User found for import');
-        }
-        $portalUserId = $portalUser->id;
+        $portalUserId = $creator->getPortalUser();
         $refractionType = \OEModule\OphCiExamination\models\OphCiExamination_Refraction_Type::model()->find('name = "Ophthalmologist"');
-
-        $eyes = Eye::model()->findAll();
-        $eyeIds = array();
-        foreach ($eyes as $eye) {
-            $eyeIds[strtolower($eye->name)] = $eye->id;
-        }
+        $eyeIds = $creator->getEyes();
 
         $uidArray = explode('-', $examination['patient']['unique_identifier']);
         $uniqueCode = $uidArray[1];
         $opNoteEvent = UniqueCodes::model()->eventFromUniqueCode($uniqueCode);
 
         if (UniqueCodes::model()->examinationEventCheckFromUniqueCode($uniqueCode, $eventType['id'])) {
-            $transaction = $opNoteEvent->getDbConnection()->beginInternalTransaction();
-
-            try {
-                $creator = new ExaminationCreator();
-                $examinationEvent = $creator->saveExamination($opNoteEvent, $portalUserId, $examination, $eventType, $eyeIds, $refractionType);
-                //delete old event
-                $eventQuery->event->deleted = 1;
-                $eventQuery->event->save();
-                //update log for new event
-                $eventQuery->import_success = ImportStatus::model()->find('status_value = "Success Event"')->id;
-                $eventQuery->event_id = $examinationEvent->id;
-                $eventQuery->save();
-
-            } catch (Exception $e) {
-                $transaction->rollback();
-                throw new CHttpException(500, 'Saving Examination event failed');
-            }
-
-            $transaction->commit();
-
+            $this->createExamination($eventQuery, $opNoteEvent->episode_id, $creator, $portalUserId, $examination, $eventType, $eyeIds, $refractionType, $opNoteEvent->id);
         }
+    }
+
+    
+
+    protected function assignEvent($eventQuery)
+    {
+        $creator = new ExaminationCreator();
+        $data = $eventQuery->examination_data;
+        $examination = json_decode($data, true);
+        $eventType = EventType::model()->find('name = "Examination"');
+        $portalUserId = $creator->getPortalUser();
+        $refractionType = \OEModule\OphCiExamination\models\OphCiExamination_Refraction_Type::model()->find('name = "Ophthalmologist"');
+        $eyeIds = $creator->getEyes();
+        $patientId = Yii::app()->request->getPost('patient_id');
+        $patient = Patient::model()->findByPk($patientId);
+        $episodeId = $patient->getCataractEpisodeId();
+
+        if(!$episodeId){
+            throw new CHttpException(400, 'Patient has no cataract episode');
+        }
+
+        $this->createExamination($eventQuery, $episodeId, $creator, $portalUserId, $examination, $eventType, $eyeIds, $refractionType);
+
     }
 
     protected function previousEventLogData($eventLog)
@@ -195,4 +192,42 @@ class EventLogController extends BaseAdminController
 
         return json_decode($previous->examination_data, true);
     }
+
+    /**
+     * @param $eventQuery
+     * @param $opNoteEvent
+     * @param $creator
+     * @param $portalUserId
+     * @param $examination
+     * @param $eventType
+     * @param $eyeIds
+     * @param $refractionType
+     * @throws CHttpException
+     */
+    protected function createExamination($eventQuery, $episodeId, $creator, $portalUserId, $examination, $eventType, $eyeIds, $refractionType, $opNoteId = null)
+    {
+        $transaction = $eventQuery->getDbConnection()->beginInternalTransaction();
+
+        try {
+
+            $examinationEvent = $creator->saveExamination($episodeId, $portalUserId, $examination, $eventType, $eyeIds, $refractionType, $opNoteId);
+            if($eventQuery->event){
+                //delete old event
+                $eventQuery->event->deleted = 1;
+                $eventQuery->event->save();
+            }
+            //update log for new event
+            $eventQuery->import_success = ImportStatus::model()->find('status_value = "Success Event"')->id;
+            $eventQuery->event_id = $examinationEvent->id;
+            $eventQuery->save();
+
+        } catch (Exception $e) {
+            $transaction->rollback();
+            throw new CHttpException(500, 'Saving Examination event failed');
+        }
+
+        $transaction->commit();
+    }
+
+
 }

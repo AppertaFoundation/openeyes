@@ -22,21 +22,22 @@ class ExaminationCreator
     /**
      * Create an examination event
      *
-     * @param $opNoteEvent
+     * @param $episodeId
      * @param $portalUserId
      * @param $examination
      * @param $eventType
      * @param $eyeIds
      * @param $refractionType
+     * @param $opNoteEventId
      * @return Event
      * @throws CDbException
      * @throws Exception
      */
-    public function saveExamination($opNoteEvent, $portalUserId, $examination, $eventType, $eyeIds, $refractionType)
+    public function saveExamination($episodeId, $portalUserId, $examination, $eventType, $eyeIds, $refractionType, $opNoteEventId = null)
     {
         //Create main examination event
         $examinationEvent = new Event();
-        $examinationEvent->episode_id = $opNoteEvent->episode_id;
+        $examinationEvent->episode_id = $episodeId;
         $examinationEvent->created_user_id = $examinationEvent->last_modified_user_id = $portalUserId;
 
         $examinationEvent->event_date = \DateTime::createFromFormat('Y-m-d\TH:i:sP', $examination['examination_date'])->format('Y-m-d');
@@ -137,7 +138,7 @@ class ExaminationCreator
                             $eyeComplication->element_id = $complications->id;
                             $complicationToAdd = \OEModule\OphCiExamination\models\OphCiExamination_PostOpComplications::model()->find('name = "' . $complicationArray['complication'] . '"');
                             $eyeComplication->complication_id = $complicationToAdd->id;
-                            $eyeComplication->operation_note_id = $opNoteEvent->id;
+                            $eyeComplication->operation_note_id = $opNoteEventId;
                             $eyeComplication->eye_id = $eyeIds[$eyeLabel];
                             $eyeComplication->created_user_id = $eyeComplication->last_modified_user_id = $portalUserId;
                             $eyeComplication->save(true, null, true);
@@ -147,7 +148,7 @@ class ExaminationCreator
                         $eyeComplication->element_id = $complications->id;
                         $complicationToAdd = \OEModule\OphCiExamination\models\OphCiExamination_PostOpComplications::model()->find('name = "none"');
                         $eyeComplication->complication_id = $complicationToAdd->id;
-                        $eyeComplication->operation_note_id = $opNoteEvent->id;
+                        $eyeComplication->operation_note_id = $opNoteEventId;
                         $eyeComplication->eye_id = $eyeIds[$eyeLabel];
                         $eyeComplication->created_user_id = $eyeComplication->last_modified_user_id = $portalUserId;
                         $eyeComplication->save(true, null, true);
@@ -164,5 +165,34 @@ class ExaminationCreator
         } else {
             throw new CDbException('Examination failed: ' . print_r($examinationEvent->getErrors(), true));
         }
+    }
+
+    /**
+     * @return mixed|null
+     * @throws Exception
+     */
+    public function getPortalUser()
+    {
+        $user = new User();
+        $portalUser = $user->portalUser();
+        if (!$portalUser) {
+            throw new Exception('No User found for import');
+        }
+
+        return $portalUser->id;
+    }
+
+    /**
+     * @return array
+     */
+    public function getEyes()
+    {
+        $eyes = Eye::model()->findAll();
+        $eyeIds = array();
+        foreach ($eyes as $eye) {
+            $eyeIds[strtolower($eye->name)] = $eye->id;
+        }
+
+        return $eyeIds;
     }
 }

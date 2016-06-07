@@ -103,8 +103,22 @@
         <tr>
             <td><label for="patient-search">Assign To</label></td>
             <td>
-                <input type="text" name="search" id="patient-search"><img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>"
-                alt="loading..." style="margin-right: 10px; display: none;"/>
+                <div class="large-9 column">
+                    <input type="text" name="search" id="patient-search" class="form panel search large ui-autocomplete-input" placeholder="Enter search..." autocomplete="off">
+                    <div style="display:none" class="no-result-patients warning alert-box">
+                        <div class="small-12 column text-center">
+                            No results found.
+                        </div>
+                    </div>
+                    <div id="patient-result" style="display: none">
+
+                    </div>
+                    <input type="hidden" name="patient_id" id="patient-result-id">
+                </div>
+                <div class="large-3 column text-right">
+                    <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>"
+                         alt="loading..." style="margin-right: 10px; display: none;"/>
+                </div>
             </td>
         </tr>
         <?php endif;?>

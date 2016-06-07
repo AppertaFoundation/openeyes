@@ -122,12 +122,13 @@
   };
 
   var singleSelect = function(event, uid){
-    console.log(event);
-    console.log(uid);
+    $('#patient-search').hide();
+    $('#patient-result').html('<span>'+ uid.item.first_name + ' ' + uid.item.last_name +'</span>').show();
+    $('#patient-result-id').val(uid.item.id);
   };
+
   var singleClose = function (event, uid) {
-    console.log(event);
-    console.log(uid);
+
   };
 
   var selectFunction;

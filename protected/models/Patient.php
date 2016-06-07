@@ -1767,4 +1767,25 @@ class Patient extends BaseActiveRecordVersioned
 
         return $medicationList;
     }
+
+    /**
+     * Get the episode ID of the patient's cataract if it exists
+     * @return mixed
+     */
+    public function getCataractEpisodeId()
+    {
+        
+        $criteria = new CDbCriteria();
+        $criteria->select = 'episode.id';
+        $criteria->with = array('episodes', 'episodes.firm', 'episodes.firm.serviceSubspecialtyAssignment', 'episodes.firm.serviceSubspecialtyAssignment.subspecialty');
+        $criteria->addCondition('t.id = :patient_id');
+        $criteria->addCondition('subspecialty.ref_spec = "CA"');
+        $criteria->params = array('patient_id' => $this->id);
+        $patient = $this->find($criteria);
+        if(!$patient){
+            return false;
+        }
+
+        return $patient->episodes[0]->id;
+    }
 }
