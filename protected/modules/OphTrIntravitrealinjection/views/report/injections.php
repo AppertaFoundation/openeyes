@@ -57,6 +57,24 @@
 
 			<div class="row field-row">
 				<div class="large-2 column">
+					<?php echo CHtml::label('Drugs', 'drug_id') ?>
+				</div>
+				<div class="large-4 column end">
+					<?php echo CHtml::dropDownList('drug_id','',CHtml::listData(OphTrIntravitrealinjection_Treatment_Drug::model()->findAll(array('order' => 'name asc')),'id','name'),array('empty' => '- Please select -'))?>
+				</div>
+			</div>
+
+			<div class="row field-row">
+				<div class="large-2 column">
+					<?php echo CHtml::label('Pre Injection Antiseptic', 'pre_antisept_drug_id') ?>
+				</div>
+				<div class="large-4 column end">
+					<?php echo CHtml::dropDownList('pre_antisept_drug_id','',CHtml::listData(OphTrIntravitrealinjection_AntiSepticDrug::model()->findAll(array('order' => 'name asc')),'id','name'),array('empty' => '- Please select -'))?>
+				</div>
+			</div>
+
+			<div class="row field-row">
+				<div class="large-2 column">
 					&nbsp;
 				</div>
 				<div class="large-4 column end">
