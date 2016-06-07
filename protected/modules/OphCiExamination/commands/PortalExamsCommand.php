@@ -146,6 +146,9 @@ class PortalExamsCommand extends CConsoleCommand
         $this->client->setUri($this->config['uri'].$this->config['endpoints']['auth']);
         $this->client->setParameterPost($this->config['credentials']);
         $response = $this->client->request('POST');
+        if($response->getStatus() > 299){
+            throw new Exception('Unable to login, user credentials in config incorrect');
+        }
         $jsonResponse = json_decode($response->getBody(), true);
         $this->client->resetParameters();
         $this->client->setHeaders('Authorization', 'Bearer '.$jsonResponse['access_token']);

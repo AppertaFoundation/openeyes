@@ -99,9 +99,25 @@
             </td>
             <?php endforeach; ?>
         </tr>
+        <?php if($status === 'Unfound Event'):?>
+        <tr>
+            <td><label for="patient-search">Assign To</label></td>
+            <td>
+                <input type="text" name="search" id="patient-search"><img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>"
+                alt="loading..." style="margin-right: 10px; display: none;"/>
+            </td>
+        </tr>
+        <?php endif;?>
     </table>
     <?php echo $form->formActions($buttons); ?>
 
     <?php $this->endWidget() ?>
 </div>
 
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        OpenEyes.UI.Search.setSingleSelect();
+        OpenEyes.UI.Search.init($('#patient-search'));
+    });
+</script>
