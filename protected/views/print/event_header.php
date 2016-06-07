@@ -16,6 +16,18 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+ $path = Yii::app()->basePath . '/images/logo/';
+    $yourImageUrl = Yii::app()->assetManager->publish($path);
+    $imageList = scandir($path, 1);
+
+    $headerPosition = strpos($imageList[1], "header");
+    $secondaryPosition = strpos($imageList[0], "secondary");
+    if ($headerPosition !== false) {
+        @$headerLogo = $imageList[1];
+    }
+    if ($secondaryPosition !== false) {
+        @$secondaryLogo = $imageList[0];
+    }
 ?>
 <?php
 $event = $this->event;
@@ -23,7 +35,7 @@ $event_type = $event->eventType->name;
 ?>
 <header class="header">
 	<div class="title">
-		<img src="<?php echo Yii::app()->assetManager->createUrl('img/_print/letterhead_seal.jpg')?>" alt="letterhead_seal" width="100" height="83"/>
+		<img src="<?php echo $yourImageUrl . "/" . $headerLogo;?>" alt="letterhead_seal" width="100" height="83"/>
 		<h1><?php echo $event_type;?></h1>
 	</div>
 	<div class="row">

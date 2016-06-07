@@ -1634,38 +1634,21 @@ class AdminController extends BaseAdminController {
     }
 
     public function actionLogo() {
-
         $logo = new Logo;
-
         if (isset($_FILES['Logo'])) {
-            
-            
-            
-            
-            
-            
-            $savePath = Yii::app()->basePath . '/images/logo/';
-
-foreach ($_FILES['Logo']['name'] as $logoKey => $logoName){
-
-    $logo = CUploadedFile::getInstance(new Logo(), $logoKey);
-
-    $fileInfo = pathinfo($logoName);
-
-    foreach (glob($savePath.$logoKey) as $existingLogo){
-
-        unlink($savePath.$existingLogo);
-
-    }
-
-    $logo->saveAs($savePath. $logoKey.'.'.$fileInfo['extension']);
-
-}
-            
-            Yii::app()->user->setFlash('success', "Logo Saved Successfully");
-            $this->redirect(array('/admin/logo'));
+        $savePath = Yii::app()->basePath . '/images/logo/';
+        foreach ($_FILES['Logo']['name'] as $logoKey => $logoName) {
+        $logo = CUploadedFile::getInstance(new Logo(), $logoKey);
+        $fileInfo = pathinfo($logoName);
+        foreach (glob($savePath . $logoKey) as $existingLogo) {
+            unlink($savePath . $existingLogo);
+        }
+            $logo->saveAs($savePath . $logoKey . '.' . $fileInfo['extension']);
         }
 
+        Yii::app()->user->setFlash('success', "Logo Saved Successfully");
+        $this->redirect(array('/admin/logo'));
+        }
         $this->render('/admin/logo', array('model' => $logo));
     }
 

@@ -16,13 +16,26 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
+    $path = Yii::app()->basePath . '/images/logo/';
+    $yourImageUrl = Yii::app()->assetManager->publish($path);
+    $imageList = scandir($path, 1);
+
+    $headerPosition = strpos($imageList[1], "header");
+    $secondaryPosition = strpos($imageList[0], "secondary");
+    if ($headerPosition !== false) {
+        @$headerLogo = $imageList[1];
+    }
+    if ($secondaryPosition !== false) {
+        @$secondaryLogo = $imageList[0];
+    }
 ?>
 <div class="banner clearfix">
 	<div class="letter-seal">
-		<img src="<?php echo Yii::app()->assetManager->createUrl('img/_print/letterhead_seal.jpg')?>" alt="letterhead_seal" width="80" />
+		<img src="<?php echo $yourImageUrl . "/" . $headerLogo;?>" alt="letterhead_seal" width="80" />
 	</div>
 	<div class="correspondence-letter-logo">
-		<img src="<?php echo Yii::app()->assetManager->createUrl('img/_print/letterhead_Moorfields_NHS.jpg')?>" alt="letterhead_Moorfields_NHS" width="350" />
+		<img src="<?php echo $yourImageUrl . "/" . $secondaryLogo;?>" alt="letterhead_Moorfields_NHS"  width="80"  />
 	</div>
 </div>
 <?php if ($element->site) {?>
