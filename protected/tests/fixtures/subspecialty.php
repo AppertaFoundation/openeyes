@@ -31,4 +31,11 @@ return array(
 			'ref_spec' => 'SS2',
 			'specialty_id' => 109,
 	),
+	'subspecialty3' => array(
+			'id' => 3,
+			'name' => 'Subspecialty 3',
+			'ref_spec' => 'SS3',
+			'specialty_id' => 109,
+	),
+	
 );

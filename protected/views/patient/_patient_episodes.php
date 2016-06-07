@@ -17,50 +17,13 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-//FIXME
-?>
-<section class="box patient-info episodes">
-	<header class="box-header">
-		<h3 class="box-title">All Episodes</h3>
-		<div class="box-info">
-			<strong>open <?php echo $episodes_open?> &nbsp;|&nbsp;closed <?php echo $episodes_closed?></strong>
-		</div>
-	</header>
-	<?php if (empty($episodes)) {?>
-		<div class="summary">No episodes</div>
-	<?php } else {?>
-	<table class="patient-episodes grid">
-		<thead>
-			<tr>
-				<th>Start Date</th>
-				<th>End Date</th>
-				<th>Firm</th>
-				<th>Subspecialty</th>
-				<th>Eye</th>
-				<th>Diagnosis</th>
-			</tr>
-		</thead>
-		<tbody>
-		<?php foreach ($ordered_episodes as $specialty_episodes) {?>
-			<tr class="speciality">
-				<td colspan="6"><?php echo $specialty_episodes['specialty'] ?></td>
-			</tr>
-			<?php foreach ($specialty_episodes['episodes'] as $i => $episode) {?>
-				<tr id="<?php echo $episode->id?>" class="clickable all-episode <?php if ($episode->end_date !== null) {?> closed<?php }?>">
-					<td><?php echo $episode->NHSDate('start_date'); ?></td>
-					<td><?php echo $episode->NHSDate('end_date'); ?></td>
-					<td><?php echo $episode->firm ? CHtml::encode($episode->firm->name) : 'N/A'; ?></td>
-					<td><?php echo CHtml::encode($episode->getSubspecialtyText())?></td>
-					<td><?php echo ($episode->diagnosis) ? $episode->eye->name : 'No diagnosis' ?></td>
-					<td><?php echo ($episode->diagnosis) ? $episode->diagnosis->term : 'No diagnosis' ?></td>
-				</tr>
-			<?php }?>
-		<?php }?>
-		</tbody>
-	</table>
-	<?php }?>
-</section>
-<?php
+$this->renderPartial('_patient_all_episodes', array(
+                        'episodes' => $episodes,
+                        'ordered_episodes' => $ordered_episodes,
+                        'episodes_open' => $episodes_open,
+                        'episodes_closed' => $episodes_closed,
+                ));
+
 if ($episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
 	$latest = $episode->getLatestEvent();
 	$subspecialty = $episode->getSubspecialty();

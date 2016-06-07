@@ -330,7 +330,7 @@ class DefaultController extends BaseEventTypeController
 
 		$procedureSpecificElements = $this->getProcedureSpecificElements($proc->id);
 
-		foreach ($procedureSpecificElements as $element) {
+		foreach ($procedureSpecificElements as $i => $element) {
 			$class_name = $element->element_type->class_name;
 
 			$element = new $class_name;
@@ -351,7 +351,9 @@ class DefaultController extends BaseEventTypeController
 			}
 
 			$element->setDefaultOptions();
-			$this->renderElement($element, 'create', $form, array(), array('ondemand' => true), false, true);
+
+			$postProcess = ($i == count($procedureSpecificElements)-1);
+			$this->renderElement($element, 'create', $form, array(), array('ondemand' => true), false, $postProcess);
 		}
 
 		if (count($procedureSpecificElements) == 0) {

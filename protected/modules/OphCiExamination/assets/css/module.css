@@ -1,4 +1,3 @@
-@charset "UTF-8";
 /** Examination module styles */
 /**
  * OpenEyes
@@ -23,11 +22,11 @@
 }
 /* line 19, ../sass/components/_event.scss */
 .event .event-content {
-  background-image: url('../img/watermark.png?1427455776');
+  background-image: url('../../../../../../grunt/images/watermark.png');
 }
 /* line 22, ../sass/components/_event.scss */
 .event .event-title {
-  background-image: url('../img/medium.png?1427455776');
+  background-image: url('../../../../../../grunt/images/medium.png');
 }
 
 /* line 27, ../sass/components/_event.scss */
@@ -121,12 +120,12 @@
 /* line 18, ../sass/components/elements/_current-management.scss */
 .OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan .past_iop {
   height: 28px;
-  background: url('../img/past_icon.png?1427455776') no-repeat right top;
+  background: url('../../../../../../grunt/images/past_icon.png') no-repeat right top;
 }
 
 /* line 17, ../sass/components/_gonio-cross.scss */
 .gonio-cross {
-  background: url('../img/cross.gif?1427455776') no-repeat center center;
+  background: url('../../../../../../grunt/images/cross.gif') no-repeat center center;
   height: 110px;
   margin: 0 0 10px 0;
   position: relative;
@@ -136,7 +135,7 @@
   /* line 17, ../sass/components/_gonio-cross.scss */
   .gonio-cross {
     -webkit-print-color-adjust: exact;
-    background: url('../img/cross.gif?1427455776') no-repeat center center !important;
+    background: url('../../../../../../grunt/images/cross.gif') no-repeat center center !important;
   }
 }
 /* line 27, ../sass/components/_gonio-cross.scss */
@@ -344,13 +343,8 @@ table.bleb-assessment th, table.bleb-assessment td {
   color: #fff;
 }
 
-OEModule_OphCiExamination_models_Element_OphCiExamination_PostOpComplications td.postop-complication-remove-btn{
-    text-align:right;
+/* line 41, ../sass/components/_admin.scss */
+#postop-complications #draggablelist #draggablelist-items .available-items {
+  max-height: 500;
+  overflow: auto;
 }
-
-/* line 63, ../sass/openeyes/components/admin/_boxes.scss */
-#postop-complications #draggablelist #draggablelist-items .available-items{
-    max-height:500px;
-    overflow: auto;
-}
-

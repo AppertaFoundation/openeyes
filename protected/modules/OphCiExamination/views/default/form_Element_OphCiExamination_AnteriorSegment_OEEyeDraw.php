@@ -21,8 +21,11 @@
 $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'doodleToolBarArray' => array(
         array('NuclearCataract', 'CorticalCataract', 'PostSubcapCataract', 'PCIOL', 'ACIOL', 'Bleb', 'PI',
-        'Fuchs', 'RK', 'LasikFlap', 'CornealScar', 'SectorIridectomy', 'PosteriorSynechia', 'Rubeosis', 'TransilluminationDefect', 'KrukenbergSpindle'),
-        array('TrabySuture', 'Supramid', 'TubeLigation', 'CornealSuture', 'TrabyFlap', 'SidePort', 'Patch', 'ConjunctivalSuture', 'ACMaintainer', 'Tube', 'TubeExtender'),
+            'Fuchs', 'RK', 'LasikFlap', 'CornealScar', 'SectorIridectomy', 'PosteriorSynechia', 'Rubeosis',
+            'TransilluminationDefect', 'KrukenbergSpindle', 'KeraticPrecipitates', 'PosteriorCapsule', 'Hypopyon',
+            'CornealOedema', 'Episcleritis', 'Hyphaema'),
+        array('TrabySuture', 'Supramid', 'TubeLigation', 'CornealSuture', 'TrabyFlap', 'SidePort', 'Patch',
+            'ConjunctivalSuture', 'ACMaintainer', 'Tube', 'TubeExtender')
     ),
     'onReadyCommandArray' => array(
         array('addDoodle', array('AntSeg')),

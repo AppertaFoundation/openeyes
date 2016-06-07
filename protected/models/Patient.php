@@ -40,6 +40,7 @@
  * @property int $created_user_id
  * @property int $last_modified_user_id
  * @property datetime $no_allergies_date
+ * @property tinyint $deleted
  *
  * The followings are the available model relations:
  * @property Episode[] $episodes
@@ -111,7 +112,8 @@ class Patient extends BaseActiveRecordVersioned
             array('hos_num, nhs_num', 'length', 'max' => 40),
             array('gender', 'length', 'max' => 1),
             array('dob, date_of_death, ethnic_group_id', 'safe'),
-            array('dob, hos_num, nhs_num, date_of_death', 'safe', 'on' => 'search'),
+            array('deleted', 'safe'),
+            array('dob, hos_num, nhs_num, date_of_death, deleted', 'safe', 'on' => 'search'),
         );
     }
 
@@ -175,6 +177,7 @@ class Patient extends BaseActiveRecordVersioned
             'ethnic_group_id' => 'Ethnic Group',
             'hos_num' => 'Hospital Number',
             'nhs_num' => 'NHS Number',
+            'deleted' => 'Is Deleted'
         );
     }
 
@@ -188,6 +191,7 @@ class Patient extends BaseActiveRecordVersioned
         $criteria->compare('gender', $this->gender, false);
         $criteria->compare('hos_num', $this->hos_num, false);
         $criteria->compare('nhs_num', $this->nhs_num, false);
+        $criteria->compare('deleted', 0);
 
         return $this->count($criteria);
     }
@@ -222,8 +226,9 @@ class Patient extends BaseActiveRecordVersioned
         } else {
             $criteria->compare('hos_num', $this->hos_num, false);
         }
-
-        $criteria->order = $params['sortBy'].' '.$params['sortDir'];
+        $criteria->compare('deleted', 0);
+        
+        $criteria->order = $params['sortBy'] . ' ' . $params['sortDir'];
 
         Yii::app()->event->dispatch('patient_search_criteria', array('patient' => $this, 'criteria' => $criteria, 'params' => $params));
 

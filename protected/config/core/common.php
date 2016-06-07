@@ -314,6 +314,12 @@ return array(
 						'position' => 5,
 						'restricted' => array('NOD Export'),
 					),
+					'patientmergerequest' => array(
+						'title' => 'Patient Merge',
+						'uri' => 'patientMergeRequest/index',
+						'position' => 6,
+						'restricted' => array('Patient Merge', 'Patient Merge Request'),
+					),
 				)
 			),
 			'logout' => array(
