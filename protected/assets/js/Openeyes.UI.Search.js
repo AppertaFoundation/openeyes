@@ -138,7 +138,7 @@
     dialog = $searchInput.autocomplete({
       minLength: 0,
       source: function (request, response) {
-        $.getJSON('/patientMergeRequest/search', {
+        $.getJSON('/patient/ajaxSearch', {
           term: request.term,
           ajax: 'ajax',
         }, response);

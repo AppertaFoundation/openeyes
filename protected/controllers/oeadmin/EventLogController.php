@@ -155,8 +155,12 @@ class EventLogController extends BaseAdminController
         }
     }
 
-    
 
+    /**
+     * @param $eventQuery
+     * @throws CHttpException
+     * @throws Exception
+     */
     protected function assignEvent($eventQuery)
     {
         $creator = new ExaminationCreator();
@@ -178,6 +182,10 @@ class EventLogController extends BaseAdminController
 
     }
 
+    /**
+     * @param $eventLog
+     * @return mixed|string
+     */
     protected function previousEventLogData($eventLog)
     {
         $criteria = new CDbCriteria();

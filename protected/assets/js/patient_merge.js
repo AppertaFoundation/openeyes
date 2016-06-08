@@ -17,16 +17,22 @@ var patientMerge = {
             $section.find('.' + key + '-input').val(patientMerge.patients[type][key]);
         });
         $section.next('section').remove();
-        $section.after(this.patients[type]['all-episodes']);
+        $.ajax({
+          url: "/patientMergeRequest/episodes/"+this.patients[type]['id'],
+          type: "GET",
+          success:function(data){
+            $section.after(data);
+          }
+        });
+
         $section.next('section').removeClass('episodes');
         
     },
     
     swapPatients: function(){
-        var tmpPatiens = {};
-        tmpPatiens = this.patients.primary;
+        tmpPatients = this.patients.primary;
         this.patients.primary = this.patients.secondary;
-        this.patients.secondary = tmpPatiens;     
+        this.patients.secondary = tmpPatients;
     },
         
     validatePatientsData: function(callback_true, callback_false){
