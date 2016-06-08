@@ -16,18 +16,8 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
- $path = Yii::app()->basePath . '/images/logo/';
-    $yourImageUrl = Yii::app()->assetManager->publish($path);
-    $imageList = scandir($path, 1);
-
-    $headerPosition = strpos($imageList[1], "header");
-    $secondaryPosition = strpos($imageList[0], "secondary");
-    if ($headerPosition !== false) {
-        @$headerLogo = $imageList[1];
-    }
-    if ($secondaryPosition !== false) {
-        @$secondaryLogo = $imageList[0];
-    }
+ $logoHelper = new LogoHelper();
+	
 ?>
 <div class="print-form-div">
 	<?php if (@$copy) {?>
@@ -36,12 +26,7 @@
 		</div>
 	<?php }?>
 	<div class="banner clearfix">
-		<div class="letter-seal">
-			<img src="<?php echo $yourImageUrl . "/" . $headerLogo;?>" alt="letterhead_seal" width="80" />
-		</div>
-		<div class="ophdrprescription-letter-logo">
-			<img src="<?php echo $yourImageUrl . "/" . $secondaryLogo;?>" alt="letterhead_Moorfields_NHS" width="350" />
-		</div>
+		<?= $logoHelper->render() ?>
 	</div>
 	<?php $this->renderPartial('_address',array('site' => $this->site))?>
 	<?php $this->renderOpenElements($this->action->id, null, array('copy' => @$copy)); ?>

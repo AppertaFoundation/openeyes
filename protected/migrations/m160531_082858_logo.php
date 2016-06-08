@@ -17,8 +17,7 @@ class m160531_082858_logo extends OEMigration
 
 	public function down()
 	{
-		echo "m160531_082415_logo does not support migration down.\n";
-		return false;
+		$this->dropTable('logo');
 	}
 
 	/*

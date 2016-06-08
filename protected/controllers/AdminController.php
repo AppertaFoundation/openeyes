@@ -1637,13 +1637,16 @@ class AdminController extends BaseAdminController {
         $logo = new Logo;
         if (isset($_FILES['Logo'])) {
         $savePath = Yii::app()->basePath . '/images/logo/';
-        foreach ($_FILES['Logo']['name'] as $logoKey => $logoName) {
-        $logo = CUploadedFile::getInstance(new Logo(), $logoKey);
+        
+        $filter = array_filter($_FILES['Logo']['name']);
+        foreach ($filter as $logoKey => $logoName) {
+        $uploadLogo = CUploadedFile::getInstance($logo, $logoKey);
         $fileInfo = pathinfo($logoName);
-        foreach (glob($savePath . $logoKey) as $existingLogo) {
+        foreach(glob($savePath . $logoKey) as $existingLogo) {
             unlink($savePath . $existingLogo);
         }
-            $logo->saveAs($savePath . $logoKey . '.' . $fileInfo['extension']);
+        
+            $uploadLogo->saveAs($savePath . $logoKey . '.' . $fileInfo['extension']);
         }
 
         Yii::app()->user->setFlash('success', "Logo Saved Successfully");

@@ -61,10 +61,10 @@
     $headerPosition = strpos($imageList[1], "header");
     $secondaryPosition = strpos($imageList[0], "secondary");
     if ($headerPosition !== false) {
-        @$headerLogo = $imageList[1];
+        $headerLogo = $imageList[1];
     }
     if ($secondaryPosition !== false) {
-        @$secondaryLogo = $imageList[0];
+        $secondaryLogo = $imageList[0];
     }
     ?>
 

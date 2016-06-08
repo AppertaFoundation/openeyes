@@ -23,10 +23,7 @@
     $headerPosition = strpos($imageList[1], "header");
     $secondaryPosition = strpos($imageList[0], "secondary");
     if ($headerPosition !== false) {
-        @$headerLogo = $imageList[1];
-    }
-    if ($secondaryPosition !== false) {
-        @$secondaryLogo = $imageList[0];
+        $headerLogo = $imageList[1];
     }
 ?>
 <?php
@@ -35,7 +32,7 @@ $event_type = $event->eventType->name;
 ?>
 <header class="header">
 	<div class="title">
-		<img src="<?php echo $yourImageUrl . "/" . $headerLogo;?>" alt="letterhead_seal" width="100" height="83"/>
+        <?php if(!empty($headerLogo)){?>	<img src="<?php echo $yourImageUrl . "/" . $headerLogo;?>" alt="letterhead_seal" width="100" height="83"/><?php} ?>
 		<h1><?php echo $event_type;?></h1>
 	</div>
 	<div class="row">
