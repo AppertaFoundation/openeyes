@@ -8,6 +8,27 @@
  */
 class PcrRiskReport extends Report implements ReportInterface
 {
+    /**
+     * @var string
+     */
+    protected $searchTemplate = 'application.modules.OphTrOperationnote.views.report.pcr_risk_search';
+
+    /**
+     * @var int
+     */
+    protected $mode;
+
+
+    /**
+     * @param $app
+     */
+    public function __construct($app)
+    {
+        $this->mode = $app->getRequest()->getQuery('mode', 0);
+
+        parent::__construct($app);
+    }
+
     protected $graphConfig = array(
         'chart' => array('renderTo' => '', 'type' => 'spline'),
         'title' => array('text' => 'PCR Rate (risk adjusted)'),
@@ -24,11 +45,11 @@ class PcrRiskReport extends Report implements ReportInterface
                 'width' => 1,
                 'label' => array('text' => 'Average'),
             )),
-            'max' => 30,
+            'max' => 50
         ),
         'tooltip' => array(
-            'headerFormat' => '<b>PCR Risk</b><br>',
-            'pointFormat' => '<i>Operations</i>: {point.x} <br /> <i>PCR Avg</i>: {point.y:.2f}',
+            'headerFormat' => '<b>PCR Risk </b>',
+            'pointFormat' => '<b>{point.name}</b><br /><i>Operations</i>: {point.x} <br /> <i>PCR Avg</i>: {point.y:.2f}'
         ),
         'legend' => array(
             'align' => 'right',
@@ -87,19 +108,27 @@ class PcrRiskReport extends Report implements ReportInterface
         $pcrRiskTotal = 0;
         $adjustedPcrRate = 0;
 
-        foreach ($data as $case) {
-            if (isset($case['complication']) && ($case['complication'] == 'PC rupture' || $case['complication'] === 'PC rupture with vitreous loss' || $case['complication'] === 'PC rupture no vitreous loss')) {
-                ++$pcrCases;
+        foreach($data as $case){
+            if(isset($case['complication']) && ($case['complication'] === 'PC rupture' || $case['complication'] === 'PC rupture with vitreous loss' || $case['complication'] === 'PC rupture no vitreous loss')){
+                $pcrCases++;
             }
-            if (isset($case['risk']) && $case['risk'] !== '') {
+            if(isset($case['risk']) && $case['risk'] !== '' && $case['risk'] != 0){
                 $pcrRiskTotal += $case['risk'];
             } else {
                 $pcrRiskTotal += 1.92;
             }
         }
 
-        if ($total !== 0 && (int) $pcrRiskTotal !== 0) {
-            $adjustedPcrRate = (($pcrCases / $total) / ($pcrRiskTotal / $total)) * $this->average();
+        if($total !== 0 && (int)$pcrRiskTotal !== 0){
+                // unadjusted PCR rate
+                $unadjustedPcrRate = ($pcrCases/$total)*100;
+
+                // adjusted PCR rate
+                $expectedPcrRate = $pcrRiskTotal / $total;
+                $observedPcrRate = $pcrCases / $total;
+                $observedExpectedRate = $observedPcrRate / $expectedPcrRate;
+                $adjustedPcrRate = ($observedExpectedRate * $this->average()) * 100; // we need to return %
+                //$adjustedPcrRate = (($pcrCases / $total) / ($pcrRiskTotal / $total)) * $this->average();
         }
 
         // set the graph subtitle here, so we don't have to run this query more than once
@@ -108,7 +137,14 @@ class PcrRiskReport extends Report implements ReportInterface
             $this->totalOperations = $total;
         }
 
-        return array(array($total, $adjustedPcrRate));
+        if($this->mode == 0) {
+            return array(array('name'=>'adjusted', 'x'=>$total, 'y'=>$adjustedPcrRate));
+        }elseif($this->mode == 1) {
+            return array(array('name'=>'unadjusted', 'x'=>$total, 'y'=>$unadjustedPcrRate));
+        }elseif($this->mode == 2){
+            return array(array('name'=>'unadjusted', 'x'=>$total, 'y'=>$unadjustedPcrRate), array('name'=>'adjusted', 'x'=>$total, 'y'=>$adjustedPcrRate));
+        }
+
     }
 
     /**
@@ -116,23 +152,33 @@ class PcrRiskReport extends Report implements ReportInterface
      */
     public function seriesJson()
     {
-        $this->series = array(
-            array(
-                'name' => 'Current Surgeon',
-                'type' => 'scatter',
-                'data' => $this->dataSet(),
-            ),
-            array(
-                'name' => 'Upper 99.8%',
-                'data' => $this->upper98(),
-                'color' => 'red',
-            ),
-            array(
-                'name' => 'Upper 95%',
-                'data' => $this->upper95(),
-                'color' => 'green',
-            ),
-        );
+        if($this->mode == 1 ){
+            $this->series = array(
+                array(
+                    'name' => 'Current Surgeon',
+                    'type' => 'scatter',
+                    'data' => $this->dataSet()
+                )
+            );
+        }else{
+            $this->series = array(
+                array(
+                    'name' => 'Current Surgeon',
+                    'type' => 'scatter',
+                    'data' => $this->dataSet()
+                ),
+                array(
+                    'name' => 'Upper 99.8%',
+                    'data' => $this->upper98(),
+                    'color' => 'red',
+                ),
+                array(
+                    'name' => 'Upper 95%',
+                    'data' => $this->upper95(),
+                    'color' => 'green',
+                )
+            );
+        }
 
         return json_encode($this->series);
     }
@@ -168,7 +214,9 @@ class PcrRiskReport extends Report implements ReportInterface
      */
     public function graphConfig()
     {
-        $this->graphConfig['yAxis']['plotLines'][0]['value'] = $this->average();
+        if($this->mode == 0) {
+            $this->graphConfig['yAxis']['plotLines'][0]['value'] = $this->average();
+        }
         $this->graphConfig['chart']['renderTo'] = $this->graphId();
 
         return json_encode(array_merge_recursive($this->globalGraphConfig, $this->graphConfig));
@@ -597,6 +645,15 @@ class PcrRiskReport extends Report implements ReportInterface
      */
     protected function average()
     {
-        return 1.95;
+        return 1.92;
+    }
+
+    /**
+     * @return mixed|string
+     */
+    public function renderSearch()
+    {
+        $displayModes = array(array('id'=>'0', 'name'=>'Adjusted risk'),array('id'=>'1', 'name'=>'Unadjusted risk'), array('id'=>'2', 'name'=>'Both'));
+        return $this->app->controller->renderPartial($this->searchTemplate, array('report' => $this, 'modes' => $displayModes));
     }
 }

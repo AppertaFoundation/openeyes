@@ -149,7 +149,7 @@ $config = array(
 				'client_secret' => '4c7f6f8fa93d59c45502c0ae8c4a95b',
 			)
 		),
-            'salt' => 'SALTFORUNIQUEODES',
+        'city_road_satellite_view' => 1,
 	),
 );
 
