@@ -55,6 +55,10 @@ class PortalExamsCommand extends CConsoleCommand
             $examinationEventLog = new AutomaticExaminationEventLog();
             if (!$opNoteEvent) {
                 echo 'No Event found for identifier: '.$examination['patient']['unique_identifier'].PHP_EOL;
+                $existingUnfound = $examinationEventLog->findByAttributes(array('unique_code' => $uniqueCode));
+                if($existingUnfound){
+                    $examinationEventLog = $existingUnfound;
+                }
                 $examinationEventLog->unique_code = $uniqueCode;
                 $examinationEventLog->event_id = 0;
                 $examinationEventLog->examination_date = $examination['examination_date'];
