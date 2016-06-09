@@ -19,26 +19,22 @@
 
 namespace OEModule\OphCiExamination\models;
 
-use Yii;
-
 /**
- * This is the model class for table "et_ophciexamination_history".
+ * This is the model class for table "et_ophciexamination_glaucomarisk".
  *
  * The followings are the available columns in table:
- * @property string $id
+ * @property integer $id
  * @property integer $event_id
- * @property string $description
+ * @property OphCiExamination_GlaucomaRisk_Risk $risk
  *
  * The followings are the available model relations:
  */
 
-class Element_OphCiExamination_History extends \BaseEventTypeElement
+class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
 {
-    public $service;
-
     /**
      * Returns the static model of the specified AR class.
-     * @return the static model class
+     * @return Element_OphCiExamination_GlaucomaRisk the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -61,11 +57,9 @@ class Element_OphCiExamination_History extends \BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array('description', 'safe'),
-                array('description', 'required'),
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
-                array('id, event_id, description,anticoagulant ', 'safe', 'on' => 'search'),
+                array('id, event_id,anticoagulant', 'safe', 'on' => 'search'),
         );
     }
 
@@ -92,22 +86,8 @@ class Element_OphCiExamination_History extends \BaseEventTypeElement
         return array(
                 'id' => 'ID',
                 'event_id' => 'Event',
-                'description' => 'Description',
+                'anticoagulant' => 'Anticoagulant',
         );
-    }
-
-    /**
-     * Set default values for forms on create
-     */
-    public function setDefaultOptions()
-    {
-        if ($api = Yii::app()->moduleAPI->get('OphCoCataractReferral')) {
-            if ($episode = Yii::app()->getController()->patient->getEpisodeForCurrentSubspecialty()) {
-                if ($history = $api->getHistoryForLatestCataractReferralInEpisode($episode->id)) {
-                    $this->description = $history;
-                }
-            }
-        }
     }
 
     /**
@@ -123,21 +103,10 @@ class Element_OphCiExamination_History extends \BaseEventTypeElement
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
-
-        $criteria->compare('description', $this->description);
+        $criteria->compare('anticoagulant', $this->anticoagulant, true);
 
         return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
         ));
-    }
-
-    public function getLetter_string()
-    {
-        return "History: $this->description\n";
-    }
-
-    public function canCopy()
-    {
-        return true;
     }
 }
