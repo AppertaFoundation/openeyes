@@ -46,7 +46,7 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
      */
     public function tableName()
     {
-        return 'et_ophciexamination_history';
+        return 'et_ophciexamination_examinationrisk';
     }
 
     /**
@@ -59,7 +59,7 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
         return array(
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
-                array('id, event_id,anticoagulant', 'safe', 'on' => 'search'),
+                array('id, event_id,anticoagulant,alphablocker', 'safe', 'on' => 'search'),
         );
     }
 
@@ -87,6 +87,7 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
                 'id' => 'ID',
                 'event_id' => 'Event',
                 'anticoagulant' => 'Anticoagulant',
+                'alphablocker' => 'Alphablocker',
         );
     }
 
@@ -104,7 +105,7 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
         $criteria->compare('anticoagulant', $this->anticoagulant, true);
-
+        $criteria->compare('alphablocker', $this->anticoagulant, true);
         return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
         ));

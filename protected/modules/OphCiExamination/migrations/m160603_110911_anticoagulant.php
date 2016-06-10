@@ -54,18 +54,20 @@ class m160603_110911_anticoagulant extends OEMigration
                 'OEModule\OphCiExamination\models\Element_OphCiExamination_HistoryRisk' => array('name' => 'Risk', 'parent_element_type_id' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_History', 'display_order' => 30, 'default' => 0),
                 );
             $this->insertOEElementType($element_types, $event_type_id);
-            $this->createOETable('et_ophciexamination_anticoagulant', array(
-                'id' => 'pk',
-                'event_id' => 'int(10) unsigned'
+            $this->createOETable('et_ophciexamination_examinationrisk', array(
+            'id' => 'pk',
+            'event_id' => 'int(10) unsigned NOT NULL',
+            'anticoagulant' => 'tinyint(1) unsigned not null',
+            'alphablocker' => 'tinyint(1) unsigned not null',
+            'KEY `et_ophciexamination_examinationrisk_ev_fk` (`event_id`)',
+            'KEY `et_ophciexamination_examinationrisk_anticoagulant_fk` (`anticoagulant`)',
+            'KEY `et_ophciexamination_examinationrisk_alphablocker_fk` (`alphablocker`)',
+            'CONSTRAINT `et_ophciexamination_examinationrisk_ev_fk` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
             ), true);
-            $this->addColumn('et_ophciexamination_history', 'anticoagulant', 'int(1) default 0');
-            $this->addColumn('et_ophciexamination_history_version', 'anticoagulant', 'int(1) default 0');
-	}
+        }
         
         public function down()
 	{
-            $this->dropOETable('et_ophciexamination_anticoagulant', true);
-            $this->dropColumn('et_ophciexamination_history', 'anticoagulant');
-            $this->dropColumn('et_ophciexamination_history_version', 'anticoagulant');
+            $this->dropOETable('et_ophciexamination_examinationrisk', true);
 	}
 }
