@@ -134,13 +134,8 @@ class UserIdentity extends CUserIdentity
 				);
 
 			} elseif (Yii::app()->params['ldap_method'] == 'native-search') {
-				// verify we can reach the server, as ldap_connect doesn't timeout correctly
-				if ($fp = @fsockopen(Yii::app()->params['ldap_server'], Yii::app()->params['ldap_port'], $errno, $errstr, 5)) {
-					if (!$link = ldap_connect(Yii::app()->params['ldap_server'], Yii::app()->params['ldap_port'])) {
-						throw new Exception("Unable to connect to LDAP server: " . Yii::app()->params['ldap_server'] . ":" . Yii::app()->params['ldap_port']);
-					}
-				} else {
-					throw new Exception("Unable to reach LDAP server: " . Yii::app()->params['ldap_server'] . ":" . Yii::app()->params['ldap_port'] . " : " . $errstr);
+				if (!$link = ldap_connect(Yii::app()->params['ldap_server'], Yii::app()->params['ldap_port'])) {
+					throw new Exception("Unable to connect to LDAP server: " . Yii::app()->params['ldap_server'] . " " . Yii::app()->params['ldap_port']);
 				}
 
 				ldap_set_option($link, LDAP_OPT_REFERRALS, 0);
