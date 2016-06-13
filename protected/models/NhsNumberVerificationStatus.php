@@ -95,4 +95,14 @@ class NhsNumberVerificationStatus extends BaseActiveRecord
             'criteria'=>$criteria,
         ));
     }
+
+    /**
+     * Is this status one that should be annotated with a description?
+     *
+     * @return bool
+     */
+    public function isAnnotatedStatus()
+    {
+        return $this->code !== 'O1';
+    }
 }

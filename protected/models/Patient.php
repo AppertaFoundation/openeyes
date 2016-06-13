@@ -157,7 +157,7 @@ class Patient extends BaseActiveRecordVersioned
             'lastReferral' => array(self::HAS_ONE, 'Referral', 'patient_id', 'order' => 'received_date desc'),
             'socialhistory' => array(self::HAS_ONE, 'SocialHistory', 'patient_id'),
             'adherence' => array(self::HAS_ONE, 'MedicationAdherence', 'patient_id'),
-            'nhsNumberStatus' => array(self::HAS_ONE, 'NhsNumberVerificationStatus', 'nhs_num_status_id')
+            'nhsNumberStatus' => array(self::BELONGS_TO, 'NhsNumberVerificationStatus', 'nhs_num_status_id')
         );
     }
 

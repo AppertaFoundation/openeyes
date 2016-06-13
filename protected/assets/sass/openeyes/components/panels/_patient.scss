@@ -52,119 +52,127 @@
 //
 // Styleguide 13.3
 .panel {
-	&.patient {
-		@include panel($padding: 9px 10px);
-		@include border-radius($global-radius);
-		@include background(image-url("_elements/icons/patient/patient-id_small.png"), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%));
-		@media print {
-			padding: {
-				top: 2px;
-				bottom: 2px;
-			}
-		}
-		background: {
-			position: 98% 2px, top;
-			repeat: no-repeat, no-repeat;
-		};
-		border: {
-			color: #ffb212;
-			style: solid;
-			width: 2px;
-		};
-		position: relative;
-		@include border-radius(0 0 $global-radius $global-radius);
-		border-width: 0 2px 2px 2px;
-		margin: 0;
-		@media screen {
-			.stuck & {
-				border-bottom: 0;
-				margin: 0;
-				padding-bottom: 2px;
-				padding-top: 2px;
-				@include border-radius(0);
-			}
-		}
-		.patient-details {
-			padding-bottom: 4px;
-			a {
-				color: black;
-			}
-			@media screen {
-				.stuck & {
-					font-size: 91%;
-				}
-			}
-		}
-		.patient-surname {
-			font: {
-				size: rem-calc(14px);
-				weight: bold;
-			};
-			text-transform: uppercase;
-		}
-		.patient-name, .patient-age {
-			font-size: rem-calc(13px);
-		}
-		.hospital-number, .nhs-number {
-			font-size: rem-calc(12px);
-		}
-		.patient-summary-anchor  {
-			bottom: 12px;
-			font-size: rem-calc(11px);
-			padding-right: 8px;
-			position: absolute;
-			right: 0;
-			@media screen {
-				.stuck & {
-					display: none;
-				}
-			}
-		}
-		.hospital-number {
-			margin-bottom: 3px;
-			@media screen {
-				.stuck & {
-					float: left;
-				}
-			}
-		}
-		.patient-summary-anchor {
-			@media print {
-				display: none;
-			}
-		}
-		.column, .columns {
-			@media print {
-				width: 100%;
-			}
-		}
-		&.warning {
-			@include background(image-url("_elements/icons/patient/patient-id_small-warning.png"), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%));
-			.warning {
-				.messages {
-					display: none;
-				}
-			}
-          background: {
-            position: 98% 2px, top;
-            repeat: no-repeat, no-repeat;
-          };
-		}
-	}
+  &.patient {
+    @include panel($padding: 9px 10px);
+    @include border-radius($global-radius);
+    @include background(image-url("_elements/icons/patient/patient-id_small.png"), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%));
+    @media print {
+      padding: {
+        top: 2px;
+        bottom: 2px;
+      }
+    }
+    background: {
+      position: 98% 2px, top;
+      repeat: no-repeat, no-repeat;
+    }
+  ;
+    border: {
+      color: #ffb212;
+      style: solid;
+      width: 2px;
+    }
+  ;
+    position: relative;
+    @include border-radius(0 0 $global-radius $global-radius);
+    border-width: 0 2px 2px 2px;
+    margin: 0;
+    @media screen {
+      .stuck & {
+        border-bottom: 0;
+        margin: 0;
+        padding-bottom: 2px;
+        padding-top: 2px;
+        @include border-radius(0);
+      }
+    }
+    .patient-details {
+      padding-bottom: 4px;
+      a {
+        color: black;
+      }
+      @media screen {
+        .stuck & {
+          font-size: 91%;
+        }
+      }
+    }
+    .patient-surname {
+      font: {
+        size: rem-calc(14px);
+        weight: bold;
+      }
+    ;
+      text-transform: uppercase;
+    }
+    .patient-name, .patient-age {
+      font-size: rem-calc(13px);
+    }
+    .hospital-number, .nhs-number {
+      font-size: rem-calc(12px);
+    }
+    .patient-summary-anchor {
+      bottom: 12px;
+      font-size: rem-calc(11px);
+      padding-right: 8px;
+      position: absolute;
+      right: 0;
+      @media screen {
+        .stuck & {
+          display: none;
+        }
+      }
+    }
+    .hospital-number {
+      margin-bottom: 3px;
+      @media screen {
+        .stuck & {
+          float: left;
+        }
+      }
+    }
+    .patient-summary-anchor {
+      @media print {
+        display: none;
+      }
+    }
+    .column, .columns {
+      @media print {
+        width: 100%;
+      }
+    }
+    &.warning {
+      @include background(image-url("_elements/icons/patient/patient-id_small-warning.png"), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%));
+      .warning {
+        .messages {
+          display: none;
+        }
+      }
+      background: {
+        position: 98% 2px, top;
+        repeat: no-repeat, no-repeat;
+      }
+    ;
+    }
+  }
 }
 
 .nhs-number {
-        @include border-radius(3px);
-        background: {
-                color: #107ebd;
-                image: image-url("_elements/icons/nhs_tiny.png");
-                position: center left;
-                repeat: no-repeat;
-        };
-        color: white;
-        display: inline-block;
-        padding: 2px 3px 1px 33px;
-        @media print {
-                padding-left: 0;
-        }
+  @include border-radius(3px);
+  background: {
+    color: #107ebd;
+    image: image-url("_elements/icons/nhs_tiny.png");
+    position: center left;
+    repeat: no-repeat;
+  }
+;
+  color: white;
+  display: inline-block;
+  padding: 2px 3px 1px 33px;
+  @media print {
+    padding-left: 0;
+  }
+  .messages {
+    display: none;
+  }
 }

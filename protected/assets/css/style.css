@@ -5430,6 +5430,10 @@ tfoot.pagination-container .pagination-view-all {
   display: inline-block;
   padding: 2px 3px 1px 33px;
 }
+.nhs-number .messages{
+  display: none;
+}
+
 @media print {
   /* line 156, ../sass/openeyes/components/panels/_patient.scss */
   .nhs-number {
