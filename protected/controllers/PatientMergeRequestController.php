@@ -30,12 +30,12 @@ class PatientMergeRequestController extends BaseController
     {
         return array(
             array('allow',
-                'actions' => array('index', 'create', 'view', 'log', 'search', 'merge', 'update', 'delete'),
+                'actions' => array('index', 'create', 'view', 'log', 'episodes', 'merge', 'update', 'delete'),
                 'roles' => array('Patient Merge'),
             ),
             
             array('allow',
-                'actions' => array('index', 'create', 'view', 'log', 'search', 'update', 'delete'),
+                'actions' => array('index', 'create', 'view', 'log', 'episodes', 'update', 'delete'),
                 'roles' => array('Patient Merge Request'),
             ),
             
@@ -113,6 +113,9 @@ class PatientMergeRequestController extends BaseController
         ));
     }
     
+    /**
+     * Creates a patient merge request
+     */
     public function actionCreate()
     {
         
@@ -307,6 +310,11 @@ class PatientMergeRequestController extends BaseController
         ));
     }
     
+    /**
+     * Deletes a record from the PtientMergeRequest list/table
+     * actually it flaggs as deleted
+     * @throws Exception
+     */
     public function actionDelete()
     {        
         if( isset($_POST['patientMergeRequestIds']) ){
@@ -349,37 +357,21 @@ class PatientMergeRequestController extends BaseController
         return $model;
     }
    
-    public function actionSearch()
+    /**
+     * Echos a patient's episodes for ajax call
+     * @param int $id
+     */
+    public function actionEpisodes($id)
     {
-        $term = trim(\Yii::app()->request->getParam("term", ""));
-        $result = array();
-        
-        $patientSearch = new PatientSearch();
-        
-        if($patientSearch->isValidSearchTerm($term)){
-            $dataProvider = $patientSearch->search($term);
-            foreach($dataProvider->getData() as $patient){
-                
-                $result[] =  array(
-                    'id' => $patient->id,
-                    'first_name' => $patient->first_name,
-                    'last_name' => $patient->last_name,
-                    'age' => ($patient->isDeceased() ? 'Deceased' : $patient->getAge()),
-                    'gender' => $patient->getGenderString(),
-                    'genderletter' => $patient->gender,
-                    'dob' => ($patient->dob) ? $patient->NHSDate('dob') : 'Unknown',
-                    'hos_num' => $patient->hos_num, 
-                    'nhsnum' => $patient->nhsnum,
-                    'all-episodes' => $this->getEpisodesHTML($patient)
-                );
-            }
-        }
-        
-       echo CJavaScript::jsonEncode($result);
-       Yii::app()->end();
-       
-   }
+        $patient = Patient::model()->findByPk($id);
+        echo $this->getEpisodesHTML($patient);
+    }
    
+    /**
+     * Generates patient's episodes HTML
+     * @param AR $patient
+     * @return string html episodes
+     */
     public function getEpisodesHTML($patient)
     {
        
@@ -395,21 +387,18 @@ class PatientMergeRequestController extends BaseController
                 $episodes_closed++;
             }
         }
-        
-        
-                
+          
        $html = $this->renderPartial('//patient/_patient_all_episodes',array(
-                                                    'episodes' => $episodes,
-                                                    'ordered_episodes' => $patient->getOrderedEpisodes(),
-                                                    'legacyepisodes' => $patient->legacyepisodes,
-                                                    'episodes_open' => $episodes_open,
-                                                    'episodes_closed' => $episodes_closed,
-                                                    'firm' => $this->firm,
-                                            ), true);
+            'episodes' => $episodes,
+            'ordered_episodes' => $patient->getOrderedEpisodes(),
+            'legacyepisodes' => $patient->legacyepisodes,
+            'episodes_open' => $episodes_open,
+            'episodes_closed' => $episodes_closed,
+            'firm' => $this->firm,
+        ), true);
        
        // you don't know how much I hate this str_replace here, but now it seems a painless method to remove a class
        return str_replace("box patient-info episodes", "box patient-info", $html);
    }
-   
-   
+     
 }
