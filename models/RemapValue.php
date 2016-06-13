@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -8,24 +8,23 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-
 namespace OEModule\PASAPI\models;
-
 
 class RemapValue extends \BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return PasApiAssignment the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }
@@ -45,7 +44,7 @@ class RemapValue extends \BaseActiveRecordVersioned
     {
         return array(
             array('id, xpath_id, input, output', 'safe'),
-            array('id, xpath_id, input, output, created_date, last_modified_date, created_user_id, last_modified_user_id', 'safe', 'on'=>'search'),
+            array('id, xpath_id, input, output, created_date, last_modified_date, created_user_id, last_modified_user_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -74,11 +73,12 @@ class RemapValue extends \BaseActiveRecordVersioned
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
     {
-        $criteria = new \CDbCriteria;
+        $criteria = new \CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('xpath_id', $this->xpath_id, true);
@@ -89,5 +89,4 @@ class RemapValue extends \BaseActiveRecordVersioned
             'criteria' => $criteria,
         ));
     }
-
 }

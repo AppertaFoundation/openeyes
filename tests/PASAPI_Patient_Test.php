@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -9,20 +9,19 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class PASAPI_Patient_Test extends PASAPI_BaseTest
 {
     public function testMissingID()
     {
         $this->setExpectedHttpError(400);
         $this->put('', null);
-        $this->assertXPathFound("/Failure");
+        $this->assertXPathFound('/Failure');
     }
 
     public function testEmptyPatient()
@@ -52,7 +51,7 @@ class PASAPI_Patient_Test extends PASAPI_BaseTest
 EOF;
         $this->setExpectedHttpError(400);
         $this->put('TESTVALIDATION', $xml);
-        $this->assertXPathFound("/Failure");
+        $this->assertXPathFound('/Failure');
     }
 
     public function testPatientModelValidation()
@@ -67,7 +66,7 @@ EOF;
 EOF;
         $this->setExpectedHttpError(400);
         $this->put('TESTMODELVALIDATION', $xml);
-        $this->assertXPathFound("/Failure");
+        $this->assertXPathFound('/Failure');
     }
 
     /**
@@ -104,12 +103,11 @@ EOF;
 EOF;
         $this->put('TEST02', $xml);
 
-        $id = $this->xPathQuery("/Success//Id")->item(0)->nodeValue;
+        $id = $this->xPathQuery('/Success//Id')->item(0)->nodeValue;
 
         $patient = Patient::model()->findByPk($id);
         $this->assertNotNull($patient);
         $this->assertEquals('API', $patient->last_name);
-
     }
 
     public function testUpdateOnlyDoesntCreatePatient()
@@ -141,21 +139,21 @@ EOF;
     <GpCode>G0102926</GpCode>
 </Patient>
 EOF;
-        $this->put("TESTUpdateOnly", $xml);
+        $this->put('TESTUpdateOnly', $xml);
 
-        $this->assertXPathFound("/Success");
+        $this->assertXPathFound('/Success');
 
-        $message = $this->xPathQuery("/Success//Message")->item(0)->nodeValue;
+        $message = $this->xPathQuery('/Success//Message')->item(0)->nodeValue;
 
-        $this->assertEquals("Patient not created", $message);
+        $this->assertEquals('Patient not created', $message);
 
         $this->assertNull(Patient::model()->findByAttributes(
             array('hos_num' => '010101010010101')));
 
-        $xml = preg_replace('/updateOnly="1"/', "", $xml);
+        $xml = preg_replace('/updateOnly="1"/', '', $xml);
 
-        $this->put("TestCreate", $xml);
-        $id = $this->xPathQuery("/Success//Id")->item(0)->nodeValue;
+        $this->put('TestCreate', $xml);
+        $id = $this->xPathQuery('/Success//Id')->item(0)->nodeValue;
 
         $patient = Patient::model()->findByPk($id);
         $this->assertNotNull($patient);
@@ -191,8 +189,8 @@ EOF;
     <GpCode>G0102926</GpCode>
 </Patient>
 EOF;
-        $this->put("TEST03", $xml);
-        $id = $this->xPathQuery("/Success//Id")->item(0)->nodeValue;
+        $this->put('TEST03', $xml);
+        $id = $this->xPathQuery('/Success//Id')->item(0)->nodeValue;
 
         $patient = Patient::model()->findByPk($id);
         $this->assertNotNull($patient);
@@ -200,13 +198,12 @@ EOF;
 
         $new_hos_num = '65432';
         $xml = preg_replace('/<Patient/', '<Patient updateOnly="1"', $xml);
-        $xml = preg_replace('/HospitalNumber>1234535/', 'HospitalNumber>' . $new_hos_num, $xml);
+        $xml = preg_replace('/HospitalNumber>1234535/', 'HospitalNumber>'.$new_hos_num, $xml);
 
-        $this->put("TEST03", $xml);
+        $this->put('TEST03', $xml);
 
         $patient = Patient::model()->findByPk($id);
         $this->assertNotNull($patient);
         $this->assertEquals($new_hos_num, $patient->hos_num);
-
     }
 }

@@ -1,6 +1,8 @@
-<?php namespace OEModule\PASAPI\resources;
+<?php
 
-/**
+namespace OEModule\PASAPI\resources;
+
+/*
  * OpenEyes
  *
  * (C) OpenEyes Foundation, 2016
@@ -20,21 +22,22 @@ use OEModule\PASAPI\models\PasApiAssignment;
 
 class Patient extends BaseResource
 {
-
-    static protected $resource_type = 'Patient';
+    protected static $resource_type = 'Patient';
 
     public $isNewResource;
 
     /**
      * As a primary resource (i.e. mapped to external resource) we need to ensure we have an id for tracking
-     * the resource in the system
+     * the resource in the system.
      *
      * @return bool
      */
-    public function validate() {
+    public function validate()
+    {
         if (!$this->id) {
-            $this->addError("Resource ID required");
+            $this->addError('Resource ID required');
         }
+
         return parent::validate();
     }
 
@@ -44,8 +47,9 @@ class Patient extends BaseResource
      */
     public function save()
     {
-        if (!$this->validate())
-            return null;
+        if (!$this->validate()) {
+            return;
+        }
 
         $transaction = \Yii::app()->db->getCurrentTransaction() === null
             ? \Yii::app()->db->beginTransaction()
@@ -59,7 +63,7 @@ class Patient extends BaseResource
             $this->isNewResource = $model->isNewRecord;
 
             if ($this->isNewResource && $this->update_only) {
-                return null;
+                return;
             }
 
             if ($this->saveModel($model)) {
@@ -69,19 +73,20 @@ class Patient extends BaseResource
 
                 $this->audit($this->isNewResource ? 'create' : 'update', null, null, array('patient_id' => $model->id));
 
-                if ($transaction)
+                if ($transaction) {
                     $transaction->commit();
+                }
 
                 return $model->id;
-            }
-            else {
-                if ($transaction)
+            } else {
+                if ($transaction) {
                     $transaction->rollback();
+                }
             }
-        }
-        catch (\Exception $e) {
-            if ($transaction)
+        } catch (\Exception $e) {
+            if ($transaction) {
                 $transaction->rollback();
+            }
 
             throw $e;
         }
@@ -89,9 +94,10 @@ class Patient extends BaseResource
 
     /**
      * Assign the Patient resource attributes to the given Patient model
-     * and save it
+     * and save it.
      *
      * @param \Patient $patient
+     *
      * @throws \Exception
      */
     public function saveModel(\Patient $patient)
@@ -108,6 +114,7 @@ class Patient extends BaseResource
 
         if (!$patient->validate()) {
             $this->addModelErrors($patient->getErrors());
+
             return;
         }
         $patient->save();
@@ -122,6 +129,7 @@ class Patient extends BaseResource
 
         if (!$contact->validate()) {
             $this->addModelErrors($contact->getErrors());
+
             return;
         }
 
@@ -129,8 +137,9 @@ class Patient extends BaseResource
 
         $this->mapAddresses($contact);
 
-        if (!$this->errors)
+        if (!$this->errors) {
             return true;
+        }
     }
 
     private function mapGender(\Patient $patient)
@@ -138,12 +147,10 @@ class Patient extends BaseResource
         if ($gender = strtoupper($this->getAssignedProperty('Gender'))) {
             if (in_array($gender, array('M', 'F'))) {
                 $patient->gender = $gender;
+            } else {
+                $this->warnings[] = 'Unrecognised gender '.$this->Gender;
             }
-            else {
-                $this->warnings[] = "Unrecognised gender " . $this->Gender;
-            }
-        }
-        else {
+        } else {
             $patient->gender = null;
         }
     }
@@ -152,8 +159,9 @@ class Patient extends BaseResource
     {
         $eg = null;
         if ($code = $this->getAssignedProperty('EthnicGroup')) {
-            if (!$eg = \EthnicGroup::model()->findByAttributes(array('code' => $code)))
-                $this->addWarning("Unrecognised ethnic group code " . $code);
+            if (!$eg = \EthnicGroup::model()->findByAttributes(array('code' => $code))) {
+                $this->addWarning('Unrecognised ethnic group code '.$code);
+            }
         }
         $patient->ethnic_group_id = $eg ? $eg->id : null;
     }
@@ -163,8 +171,9 @@ class Patient extends BaseResource
         $gp = null;
         if ($code = $this->getAssignedProperty('GpCode')) {
             $gp = \Gp::model()->findByAttributes(array('nat_id' => $code));
-            if (!$gp)
-                $this->addWarning("Could not find GP for code " . $code);
+            if (!$gp) {
+                $this->addWarning('Could not find GP for code '.$code);
+            }
         }
         $patient->gp_id = $gp ? $gp->id : null;
     }
@@ -174,8 +183,9 @@ class Patient extends BaseResource
         $practice = null;
         if ($code = $this->getAssignedProperty('PracticeCode')) {
             $practice = \Practice::model()->findByAttributes(array('code' => $code));
-            if (!$practice)
-                $this->addWarning("Could not find Practice for code " . $code);
+            if (!$practice) {
+                $this->addWarning('Could not find Practice for code '.$code);
+            }
         }
         $patient->practice_id = $practice ? $practice->id : null;
     }
@@ -189,17 +199,18 @@ class Patient extends BaseResource
      * @TODO: verify we're happy with the matching logic for address updates.
      *
      * @param \Contact $contact
+     *
      * @throws \Exception
      */
     private function mapAddresses(\Contact $contact)
     {
         $matched_address_ids = array();
-        if (property_exists($this,"AddressList")) {
+        if (property_exists($this, 'AddressList')) {
             foreach ($this->AddressList as $idx => $address_resource) {
-                $matched_clause = ($matched_address_ids) ? ' AND id NOT IN ('.implode(',',$matched_address_ids).')' : '';
+                $matched_clause = ($matched_address_ids) ? ' AND id NOT IN ('.implode(',', $matched_address_ids).')' : '';
                 $address_model = \Address::model()->find(array(
-                    'condition' => "contact_id = :contact_id AND REPLACE(postcode,' ','') = :postcode" . $matched_clause,
-                    'params' => array(':contact_id' => $contact->id, ':postcode' => str_replace(' ','',$address_resource->Postcode)),
+                    'condition' => "contact_id = :contact_id AND REPLACE(postcode,' ','') = :postcode".$matched_clause,
+                    'params' => array(':contact_id' => $contact->id, ':postcode' => str_replace(' ', '', $address_resource->Postcode)),
                 ));
 
                 if (!$address_model) {
@@ -209,26 +220,27 @@ class Patient extends BaseResource
 
                 if ($address_resource->saveModel($address_model)) {
                     $matched_address_ids[] = $address_model->id;
-                    foreach ($address_resource->warnings as $warn)
+                    foreach ($address_resource->warnings as $warn) {
                         $this->addWarning("Address {$idx}: {$warn}");
-                }
-                else {
+                    }
+                } else {
                     $this->addWarning("Address {$idx} not added");
-                    foreach($address_resource->errors as $err)
+                    foreach ($address_resource->errors as $err) {
                         $this->addWarning("Address {$idx}: {$err}");
+                    }
                 }
-
             }
         }
 
         // delete any address that are no longer relevant
-        $matched_string = implode(',',$matched_address_ids);
-        $condition_str = "contact_id = :contact_id";
-        if ($matched_string) $condition_str .= " AND id NOT IN($matched_string)";
+        $matched_string = implode(',', $matched_address_ids);
+        $condition_str = 'contact_id = :contact_id';
+        if ($matched_string) {
+            $condition_str .= " AND id NOT IN($matched_string)";
+        }
         \Address::model()->deleteAll(array(
-            'condition' =>  $condition_str,
+            'condition' => $condition_str,
             'params' => array(':contact_id' => $contact->id),
         ));
-
     }
 }

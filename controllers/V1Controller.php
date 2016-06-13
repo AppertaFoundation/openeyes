@@ -1,6 +1,8 @@
-<?php namespace OEModule\PASAPI\controllers;
+<?php
 
-/**
+namespace OEModule\PASAPI\controllers;
+
+/*
  * OpenEyes
  *
  * (C) OpenEyes Foundation, 2016
@@ -16,14 +18,13 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-use \UserIdentity;
+use UserIdentity;
 
 class V1Controller extends \CController
 {
-
-    static protected $resources = array('Patient');
-    static protected $version = "V1";
-    static protected $supported_formats = array('xml');
+    protected static $resources = array('Patient');
+    protected static $version = 'V1';
+    protected static $supported_formats = array('xml');
 
     /**
      * @var string output format defaults to xml
@@ -37,25 +38,25 @@ class V1Controller extends \CController
      */
     protected function getContentType()
     {
-        return "application/xml";
+        return 'application/xml';
     }
 
     /**
      * This overrides the default behaviour for supported resources by pushing the resource
-     * into the GET parameter and updating the actionID
+     * into the GET parameter and updating the actionID.
      *
      * This is necessary because there's no way of pushing the appropriate pattern to the top of the
      * URLManager config, so this captures calls where the id doesn't contain non-numerics.
      *
      * @param string $actionID
+     *
      * @return \CAction|\CInlineAction
      */
     public function createAction($actionID)
     {
         if (in_array($actionID, static::$resources)) {
             $_GET['resource_type'] = $actionID;
-            switch (\Yii::app()->getRequest()->getRequestType())
-            {
+            switch (\Yii::app()->getRequest()->getRequestType()) {
                 case 'PUT':
                     return parent::createAction('Update');
                     break;
@@ -69,8 +70,8 @@ class V1Controller extends \CController
     }
 
     /**
-     *
      * @param \CAction $action
+     *
      * @return bool
      */
     public function beforeAction($action)
@@ -79,14 +80,13 @@ class V1Controller extends \CController
             if ($type['baseType'] == 'xml' || $type['subType'] == 'xml' || $type['subType'] == '*') {
                 $this->output_format = 'xml';
                 break;
-            }
-            else {
+            } else {
                 $this->output_format = $type['baseType'];
             }
         }
 
         if (!in_array($this->output_format, static::$supported_formats)) {
-            $this->sendResponse(406, 'PASAPI only supports ' . implode(",",  static::$supported_formats));
+            $this->sendResponse(406, 'PASAPI only supports '.implode(',',  static::$supported_formats));
         }
 
         if (!isset($_SERVER['PHP_AUTH_USER'])) {
@@ -107,22 +107,23 @@ class V1Controller extends \CController
     }
 
     /**
-     * Simple wrapper to encapsulate the arguments required for any of the API actions
+     * Simple wrapper to encapsulate the arguments required for any of the API actions.
      */
     public function expectedParametersForAction($action)
     {
         return array(
-            'update' => 'id'
+            'update' => 'id',
         )[strtolower($action->id)];
     }
 
     /**
      * @param \CAction $action
+     *
      * @throws CHttpException
      */
     public function invalidActionParams($action)
     {
-        $this->sendErrorResponse(400, array("Missing request parameter(s). Required parameter(s) are: " . $this->expectedParametersForAction($action)));
+        $this->sendErrorResponse(400, array('Missing request parameter(s). Required parameter(s) are: '.$this->expectedParametersForAction($action)));
     }
 
     /**
@@ -131,11 +132,13 @@ class V1Controller extends \CController
      */
     public function actionUpdate($resource_type, $id)
     {
-        if (!in_array($resource_type, static::$resources))
+        if (!in_array($resource_type, static::$resources)) {
             $this->sendErrorResponse(404, "Unrecognised Resource type {$resource_type}");
+        }
 
-        if (!$id)
-            $this->sendResponse(404, "External Resource ID required");
+        if (!$id) {
+            $this->sendResponse(404, 'External Resource ID required');
+        }
 
         $body = \Yii::app()->request->rawBody;
 
@@ -144,32 +147,31 @@ class V1Controller extends \CController
         try {
             $resource = $resource_model::fromXml(static::$version, $body);
 
-            if ($resource->errors)
+            if ($resource->errors) {
                 $this->sendErrorResponse(400, $resource->errors);
+            }
 
             $resource->id = $id;
 
             if (!$internal_id = $resource->save()) {
                 if (!$resource->update_only || $resource->errors) {
                     $this->sendErrorResponse(400, $resource->errors);
-                }
-                else {
+                } else {
                     // assuming that this was an update only resource request
-                    $this->sendSuccessResponse(200, array('Message' => $resource_type . ' not created'));
+                    $this->sendSuccessResponse(200, array('Message' => $resource_type.' not created'));
                 }
             }
 
             $response = array(
-                'Id' => $internal_id
+                'Id' => $internal_id,
             );
 
             if ($resource->isNewResource) {
                 $status_code = 201;
-                $response['Message'] = $resource_type . " created.";
-            }
-            else {
+                $response['Message'] = $resource_type.' created.';
+            } else {
                 $status_code = 200;
-                $response['Message'] = $resource_type . " updated.";
+                $response['Message'] = $resource_type.' updated.';
             }
 
             if ($resource->warnings) {
@@ -177,49 +179,49 @@ class V1Controller extends \CController
             }
 
             $this->sendSuccessResponse($status_code, $response);
-        }
-        catch (\Exception $e)
-        {
-            $errors = array(YII_DEBUG ? $e->getMessage() : "Could not save resource");
+        } catch (\Exception $e) {
+            $errors = array(YII_DEBUG ? $e->getMessage() : 'Could not save resource');
             $this->sendErrorResponse(500, $errors);
         }
-
-
-
     }
 
     protected function sendErrorResponse($status, $messages = array())
     {
-        $body = "<Failure><Errors><Error>"  . implode("</Error><Error>", $messages) . "</Error></Errors></Failure>";
+        $body = '<Failure><Errors><Error>'.implode('</Error><Error>', $messages).'</Error></Errors></Failure>';
 
         $this->sendResponse($status, $body);
     }
 
     protected function sendSuccessResponse($status, $response)
     {
-        $body = "<Success>";
-        if (isset($response['Id']))
+        $body = '<Success>';
+        if (isset($response['Id'])) {
             $body .= "<Id>{$response['Id']}</Id>";
+        }
 
         $body .= "<Message>{$response['Message']}</Message>";
 
-        if (isset($response['Warnings']))
-            $body .= "<Warnings><Warning>" . implode('</Warning><Warning>', $response['Warnings']) . "</Warning></Warnings>";
+        if (isset($response['Warnings'])) {
+            $body .= '<Warnings><Warning>'.implode('</Warning><Warning>', $response['Warnings']).'</Warning></Warnings>';
+        }
 
-        $body .= "</Success>";
+        $body .= '</Success>';
 
         $this->sendResponse($status, $body);
     }
 
     protected function sendResponse($status = 200, $body = '')
     {
-        header('HTTP/1.1 ' . $status);
-        header('Content-type: ' . $this->getContentType());
-        if ($status == 401) header('WWW-Authenticate: Basic realm="OpenEyes"');
+        header('HTTP/1.1 '.$status);
+        header('Content-type: '.$this->getContentType());
+        if ($status == 401) {
+            header('WWW-Authenticate: Basic realm="OpenEyes"');
+        }
         // TODO: configure allowed methods per resource
-        if ($status == 405) header('Allow: PUT');
+        if ($status == 405) {
+            header('Allow: PUT');
+        }
         echo $body;
         \Yii::app()->end();
     }
-
 }

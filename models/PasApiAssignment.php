@@ -1,7 +1,9 @@
-<?php namespace OEModule\PASAPI\models;
+<?php
+
+namespace OEModule\PASAPI\models;
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -9,20 +11,20 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class PasApiAssignment extends \BaseActiveRecord
 {
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return PasApiAssignment the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }
@@ -41,13 +43,13 @@ class PasApiAssignment extends \BaseActiveRecord
     public function rules()
     {
         return array(
-            array('id, resource_id, resource_type internal_id, internal_type, created_date, last_modified_date, created_user_id, last_modified_user_id', 'safe', 'on'=>'search'),
+            array('id, resource_id, resource_type internal_id, internal_type, created_date, last_modified_date, created_user_id, last_modified_user_id', 'safe', 'on' => 'search'),
         );
     }
 
     /**
      * Returns the internal model that this assignment is associated with
-     * (or a new instance if it has not been attached yet)
+     * (or a new instance if it has not been attached yet).
      *
      * @return \CActiveRecord
      */
@@ -56,15 +58,16 @@ class PasApiAssignment extends \BaseActiveRecord
         if ($this->internal_id) {
             return self::model($this->internal_type)->findByPk($this->internal_id);
         } else {
-            return new $this->internal_type;
+            return new $this->internal_type();
         }
     }
 
     /**
-     * Find or create association using resource details and lock
+     * Find or create association using resource details and lock.
      *
      * @param string $resource_type
      * @param string $resource_id
+     *
      * @return PasApiAssignment
      */
     public function findByResource($resource_type, $resource_id)
@@ -73,18 +76,18 @@ class PasApiAssignment extends \BaseActiveRecord
 
         $record = $this->findByAttributes(array('resource_type' => $resource_type, 'resource_id' => $resource_id));
         if (!$record) {
-            $record = new static;
+            $record = new static();
             $record->resource_type = $resource_type;
             $record->resource_id = $resource_id;
             // assuming all models are in the root namespace at this point
-            $record->internal_type = '\\' . $resource_type;
+            $record->internal_type = '\\'.$resource_type;
         }
 
         return $record;
     }
 
     /**
-     * Unlock the assignment
+     * Unlock the assignment.
      */
     public function unlock()
     {
@@ -93,7 +96,7 @@ class PasApiAssignment extends \BaseActiveRecord
 
     /**
      * Lock the assignment so no other instances can clash with efforts to create or update the
-     * record
+     * record.
      *
      * @param $resource_type
      * @param $resource_id
