@@ -111,6 +111,7 @@ class Patient extends BaseResource
         $this->mapEthnicGroup($patient);
         $this->mapGp($patient);
         $this->mapPractice($patient);
+        $this->mapNhsNumberStatus($patient);
 
         if (!$patient->validate()) {
             $this->addModelErrors($patient->getErrors());
@@ -242,5 +243,19 @@ class Patient extends BaseResource
             'condition' => $condition_str,
             'params' => array(':contact_id' => $contact->id),
         ));
+    }
+
+    /**
+     * @param \Patient $patient
+     */
+    private function mapNhsNumberStatus(\Patient $patient)
+    {
+        $status = null;
+        if ($code = $this->getAssignedProperty('NHSNumberStatus')) {
+            if (!$status = \NhsNumberVerificationStatus::model()->findByAttributes(array('code' => $code))) {
+                $this->addWarning('Unrecognised NHS number status code '.$code);
+            }
+        }
+        $patient->nhs_num_status_id = $status ? $status->id : null;
     }
 }

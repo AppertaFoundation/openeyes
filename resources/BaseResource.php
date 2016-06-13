@@ -248,7 +248,7 @@ abstract class BaseResource
     public function validate()
     {
         foreach ($this->schema as $tag => $defn) {
-            if (@$defn['required']) {
+            if (array_key_exists('required', $defn) && $defn['required']) {
                 if (!property_exists($this, $tag)) {
                     $this->addError("{$tag} is required");
                 }

@@ -77,6 +77,7 @@ EOF;
         $xml = <<<EOF
 <Patient>
     <NHSNumber>0123456789</NHSNumber>
+    <NHSNumberStatus>02</NHSNumberStatus>
     <HospitalNumber>92312423</HospitalNumber>
     <Title>MRS</Title>
     <FirstName>Test</FirstName>
