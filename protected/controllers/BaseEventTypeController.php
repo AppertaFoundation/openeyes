@@ -1332,8 +1332,10 @@ class BaseEventTypeController extends BaseModuleController
 			: $element->getDefaultContainerView();
 
 		$use_container_view = ($element->useContainerView && $container_view);
-                if (!empty($element)) {
-                    if(array_pop(explode('\\', (get_class($element)))) === 'Element_OphCiExamination_CataractSurgicalManagement') {
+                
+                $class_array = !empty($element) ? !empty(get_class($element)) ? explode('\\', (get_class($element))): '' : '';
+                if (!empty($class_array)) {                    
+                    if(array_pop($class_array) === 'Element_OphCiExamination_CataractSurgicalManagement') {
                         $active_check = SettingInstallation::model()->find('t.key="city_road_satellite_view"');
                         $view_data = array_merge(array(
                             'element' => $element,
@@ -1354,7 +1356,15 @@ class BaseEventTypeController extends BaseModuleController
                         ), $view_data);
                     }
                 }
-
+                else {
+                    $view_data = array_merge(array(
+                        'element' => $element,
+                        'data' => $data,
+                        'form' => $form,
+                        'child' => $element->getElementType()->isChild(),
+                        'container_view' => $container_view
+                    ), $view_data);
+                }
 
 		// Render the view.
 		($use_container_view) && $this->beginContent($container_view, $view_data);
