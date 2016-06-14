@@ -213,6 +213,9 @@ abstract class BaseResource
                         throw new \Exception("invalid date format for {$local_name}");
                     }
                     break;
+                case 'boolean':
+                    $this->{$local_name} = (bool)$child->textContent;
+                    break;
                 default:
                     $this->{$local_name} = $child->textContent;
             }
