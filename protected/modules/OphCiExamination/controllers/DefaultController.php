@@ -867,13 +867,13 @@ class DefaultController extends \BaseEventTypeController
         $criteria->compare('risk_id',$risk['id']);
         $criteria->compare('patient_id',$this->patient->id);
         $patient_risk = \PatientRiskAssignment::model()->find($criteria);
-        if ($risk_value === 1) {
+        if ($risk_value === "1") {
             $patient_risk = (!$patient_risk) ? new \PatientRiskAssignment() : $patient_risk;
             $patient_risk->risk_id = $risk['id'];
             $patient_risk->patient_id = $this->patient->id;
             $patient_risk->save();
         }
-        elseif ($patient_risk && ($risk_value != 1)) {
+        elseif ($patient_risk && ($risk_value === "2")) {
             \PatientRiskAssignment::model()->deleteByPk($patient_risk->id);
         }
     }
