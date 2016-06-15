@@ -94,7 +94,7 @@
 
         if (this.$searchInput !== 'undefined' && this.$searchInput.length) {
             this.$searchInput.data("autocomplete")._renderItem = function (ul, item) {
-                ul.addClass("z-index-1000");
+                ul.addClass("z-index-1000 patient-ajax-list");
                 return $("<li></li>")
                     .data("item.autocomplete", item)
                     .append("<a><strong>" + item.first_name + " " + item.last_name + "</strong>" + " (" + item.age + ")" + "<span class='icon icon-alert icon-alert-" + item.gender.toLowerCase() + "_trans'>Male</span>" + "<div class='nhs-number'>" + item.nhsnum + "</div><br>Hospital No.: " + item.hos_num + "<br>Date of birth: " + item.dob + "</a>")

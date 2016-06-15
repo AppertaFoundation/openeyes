@@ -361,10 +361,17 @@ class PatientMergeRequestController extends BaseController
      * Echos a patient's episodes for ajax call
      * @param int $id
      */
-    public function actionEpisodes($id)
+    public function actionEpisodes($patientId)
     {
-        $patient = Patient::model()->findByPk($id);
-        echo $this->getEpisodesHTML($patient);
+
+        $html = '';
+        $patient = Patient::model()->findByPk($patientId);
+        if($patient){
+            $html = $this->getEpisodesHTML($patient);
+        }
+        
+        echo CJavaScript::jsonEncode($html);
+        Yii::app()->end();
     }
    
     /**
@@ -372,7 +379,7 @@ class PatientMergeRequestController extends BaseController
      * @param AR $patient
      * @return string html episodes
      */
-    public function getEpisodesHTML($patient)
+    public function getEpisodesHTML(Patient $patient)
     {
        
        $episodes = $patient->episodes;

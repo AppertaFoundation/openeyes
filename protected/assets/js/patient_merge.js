@@ -52,8 +52,21 @@ var patientMerge = {
         }
       
         return isValid;
-    }
+    },
+    getEpisodesAndUpdateDOM: function(patientId, type){
+        
+        $('section.' + type).find('.patient-loader').show();
+        $.getJSON('/patientMergeRequest/episodes', {
+                    patientId: patientId,
+                    ajax: 'ajax',
+                }, function(html){
+                    patientMerge.patients[type]['all-episodes'] = html;
+                    patientMerge.updateDOM(type);
+                    $('section.' + type).find('.patient-loader').hide();
+                });
+    }    
 };
+
 
 function displayConflictMessage(){
         
@@ -95,7 +108,10 @@ $(document).ready(function(){
             // check if the secondary and primary patient ids are the same
             if (patientMerge.patients.primary.id != ui.item.id) {
                 patientMerge.patients.secondary = ui.item;
-                patientMerge.updateDOM('secondary');
+                
+                // get the episodes for the secondary patient
+                patientMerge.getEpisodesAndUpdateDOM(ui.item.id, 'secondary');
+                
                 if (patientMerge.patients.primary.id) {
                     patientMerge.validatePatientsData(null, displayConflictMessage);
                 }
@@ -110,7 +126,9 @@ $(document).ready(function(){
 
             if (patientMerge.patients.secondary.id != ui.item.id) {
                 patientMerge.patients.primary = ui.item;
-                patientMerge.updateDOM('primary');
+                
+                // get the episodes for the secondary patient
+                patientMerge.getEpisodesAndUpdateDOM(ui.item.id, 'primary');
 
             if (patientMerge.patients.secondary.id) {
                 patientMerge.validatePatientsData(null, displayConflictMessage);
@@ -134,12 +152,12 @@ $(document).ready(function(){
                             var ui = $(this).data('ui');
                             if (patientMerge.patients.primary.id != ui.item.id) {
                                 patientMerge.patients.secondary = ui.item;
-                                patientMerge.updateDOM('secondary');
+                                // get the episodes for the secondary patient
+                                patientMerge.getEpisodesAndUpdateDOM(ui.item.id, 'secondary');
                                 patientMerge.validatePatientsData(null, displayConflictMessage);
                                 $(this).dialog("close");
                             } else {
                                 $(this).dialog("close");
-                                $('<h2 title="Alert" class="text-center"></h2>').dialog();
                                 new OpenEyes.UI.Dialog.Alert({
                                     content: "Primary and Secondary patient cannot be the same record."
                                 }).open();
@@ -154,7 +172,8 @@ $(document).ready(function(){
                                 var ui = $(this).data('ui');
                                 if (patientMerge.patients.secondary.id != ui.item.id) {
                                     patientMerge.patients.primary = ui.item;
-                                    patientMerge.updateDOM('primary');
+                                    // get the episodes for the secondary patient
+                                    patientMerge.getEpisodesAndUpdateDOM(ui.item.id, 'primary');
                                     patientMerge.validatePatientsData(null, displayConflictMessage);
                                     $(this).dialog("close");
                                 } else {

@@ -19,7 +19,10 @@
 ?>
 
 <section class="<?php echo $type; ?> box patient-info js-toggle-container">
-	<h3 class="box-title">Personal Details:</h3>
+	<h3 class="box-title">
+            Personal Details:
+            <img class="patient-loader filter" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..." style="margin-right: 10px; display: none;"/>
+        </h3>
 	
         <?php echo CHtml::activeHiddenField($model, "{$type}_id", array('class' => 'id-input')); ?>
         
