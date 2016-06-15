@@ -1636,7 +1636,7 @@ class AdminController extends BaseAdminController {
     public function actionLogo() {
         $logo = new Logo;
         if (isset($_FILES['Logo'])) {
-        $savePath = Yii::app()->basePath . '/images/logo/';
+        $savePath = Yii::app()->basePath . '/assets/img/';
         
         $filter = array_filter($_FILES['Logo']['name']);
         foreach ($filter as $logoKey => $logoName) {
@@ -1661,11 +1661,11 @@ class AdminController extends BaseAdminController {
 
 
         if (!empty($deleteHeaderLogo)) {
-            @unlink(Yii::app()->basePath . '/images/logo/' . $deleteHeaderLogo);
+            @unlink(Yii::app()->basePath . '/assets/img/' . $deleteHeaderLogo);
             Yii::app()->user->setFlash('success', "Logo Deleted Successfully");
             $this->redirect(array('/admin/logo'));
         } elseif (!empty($deleteSecondaryLogo)) {
-            @unlink(Yii::app()->basePath . '/images/logo/' . $deleteSecondaryLogo);
+            @unlink(Yii::app()->basePath . '/assets/img/' . $deleteSecondaryLogo);
             Yii::app()->user->setFlash('success', "Logo Deleted Successfully");
             $this->redirect(array('/admin/logo'));
         }
