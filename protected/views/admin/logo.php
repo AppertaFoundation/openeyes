@@ -54,18 +54,20 @@
     echo $form->error($model, 'header_logo');
     echo $form->error($model, 'secondary_logo');
 
-    $path = Yii::app()->basePath . '/images/logo/';
+    $path = Yii::app()->basePath . '/assets/img/';
     $yourImageUrl = Yii::app()->assetManager->publish($path);
-    $imageList = scandir($path, 1);
-
-    $headerPosition = strpos($imageList[1], "header");
-    $secondaryPosition = strpos($imageList[0], "secondary");
-    if ($headerPosition !== false) {
-        $headerLogo = $imageList[1];
-    }
-    if ($secondaryPosition !== false) {
-        $secondaryLogo = $imageList[0];
-    }
+    $imageLists = scandir($path, 1);
+    
+    
+    foreach ($imageLists as $imageList) {
+ if(strpos($imageList,"header") !== false) {
+        $headerLogo = $imageList;
+ }
+ if(strpos($imageList,"secondary") !== false)  {
+        $secondaryLogo = $imageList;
+        
+  }
+}
     ?>
 
 

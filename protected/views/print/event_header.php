@@ -16,15 +16,21 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
- $path = Yii::app()->basePath . '/images/logo/';
+ $path = Yii::app()->basePath . '/assets/img/';
     $yourImageUrl = Yii::app()->assetManager->publish($path);
-    $imageList = scandir($path, 1);
-
-    $headerPosition = strpos($imageList[1], "header");
-    $secondaryPosition = strpos($imageList[0], "secondary");
-    if ($headerPosition !== false) {
-        $headerLogo = $imageList[1];
-    }
+       $imageLists = scandir($path, 1);
+    
+    
+    foreach ($imageLists as $imageList) {
+ if(strpos($imageList,"header") !== false) {
+        $headerLogo = $imageList;
+ }
+ if(strpos($imageList,"secondary") !== false)  {
+        $secondaryLogo = $imageList;
+        
+  }
+}
+ 
 ?>
 <?php
 $event = $this->event;

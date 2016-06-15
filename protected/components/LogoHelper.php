@@ -30,21 +30,22 @@ class LogoHelper {
         
         $logo = array();
         
-    $path = Yii::app()->basePath . '/images/logo/';
+    $path = Yii::app()->basePath . '/assets/img/';
     $yourImageUrl = Yii::app()->assetManager->publish($path);
-    $imageList = scandir($path, 1);
-
-    $headerPosition = strpos($imageList[1], "header");
-    $secondaryPosition = strpos($imageList[0], "secondary");
-    //$logo = array();
-    if ($headerPosition !== false) 
-    {
-        $logo['headerLogo'] = $yourImageUrl."/".$imageList[1];
-    }
-    if($secondaryPosition !== false) 
-    {
-        $logo['secondaryLogo'] = $yourImageUrl."/".$imageList[0];
-    }
+      $imageLists = scandir($path, 1);
+    
+    
+    foreach ($imageLists as $imageList) {
+ if(strpos($imageList,"header") !== false) {
+        $logo['headerLogo'] = $yourImageUrl."/".$imageList;
+ }
+ if(strpos($imageList,"secondary") !== false)  {
+        $logo['secondaryLogo'] = $yourImageUrl."/".$imageList;
+        
+  }
+}
+ 
+   
    return $logo;
     
 }   
