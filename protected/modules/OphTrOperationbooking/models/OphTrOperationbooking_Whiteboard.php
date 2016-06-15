@@ -67,6 +67,19 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 		foreach($allergies as $a) $allergyString .= $a['name'].', ';
 		if($allergyString) $allergyString = substr($allergyString,0,-2);
 		if(!$allergyString) $allergyString = 'None';
+/*
+		et_ophtroperationbooking_operation.id: id=123534, event_id = 3685094
+		ophtroperationbooking_operation_procedures_procedures: element_id = 123534, proc_id = 308
+		proc: id = 308, term = Phakoemulsification and IOL
+
+*/
+		$operation = Yii::app()->db->createCommand()
+			->select('proc.term as term')
+			->from('et_ophtroperationbooking_operation op')
+			->leftJoin('ophtroperationbooking_operation_procedures_procedures opp', 'opp.element_id = op.id')
+			->leftJoin('proc', 'opp.proc_id = proc.id')
+			->where("op.event_id = {$id}")
+			->queryAll();
 
 		$eyes = array(1=>'Left', 2=>'Right', 3=>'Both');	// TODO: pull from DB/Join?
 		$d['eye_id'] = $ob->eye_id;
@@ -78,7 +91,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 		$d['patientName'] = $contact['title'] . ' ' . $contact['first_name'] . ' ' . $contact['last_name'];
 		$d['dob'] = date('j M Y',strtotime($patient['dob']));
 		$d['hos_num'] = $patient['hos_num'];
-		$d['procedure'] = 'Phaco + IOL';	// TODO
+		$d['procedure'] = $operation[0]['term'];
 		$d['allergies'] = $allergyString;
 		$d['iol_model'] = 'unknown';	// TODO
 		$d['iol_power'] = 'none';		// TODO
