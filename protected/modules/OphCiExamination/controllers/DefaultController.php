@@ -861,7 +861,7 @@ class DefaultController extends \BaseEventTypeController
      * @param type $risk_value
      */
     protected function updateRisk($risk_name, $risk_value) {
-        $risk_check = ($risk_name === 'anticoagulant') ? 'Anticoagulant' : 'Alpha-Blockers';
+        $risk_check = ($risk_name === 'anticoagulant') ? 'Anticoagulants' : 'Alpha blockers';
         $risk = \Risk::model()->find('name=?', array($risk_check));
         $criteria = new \CDbCriteria;
         $criteria->compare('risk_id',$risk['id']);
