@@ -25,3 +25,11 @@
 					</div>
 				</div>
 <?php }?>
+<?php if ($element->alphablocker === "1") {
+    ?>
+				<div class="data-row">
+					<div class="data-value">
+						Alpha-blocker
+					</div>
+				</div>
+<?php }?>

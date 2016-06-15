@@ -38,4 +38,23 @@
                     ?>
             </div>
     </div>
+    <div class="field-row row">
+            <div class="large-12 column end">
+                    <?php echo $form->radioButtons($element, 'alphablocker', array(
+                            0 => 'Not Checked',
+                            1 => 'Yes',
+                            2 => 'No'
+                        ),
+                        ($element->alphablocker !== null) ? $element->alphablocker : 0,
+                        false,
+                        false,
+                        false,
+                        true,
+                        array(
+                            'text-align'=>'right',
+                            'nowrapper'=>false
+                        ));
+                    ?>
+            </div>
+    </div>
 </div>
