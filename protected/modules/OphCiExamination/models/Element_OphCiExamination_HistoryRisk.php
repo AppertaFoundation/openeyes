@@ -87,8 +87,8 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
         return array(
                 'id' => 'ID',
                 'event_id' => 'Event',
-                'anticoagulant' => 'Anticoagulant',
-                'alphablocker' => 'Alphablocker',
+                'anticoagulant' => 'Patient is on anticoagulants? ',
+                'alphablocker' => 'Patient is taking alpha-blockers? ',
         );
     }
 

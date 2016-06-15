@@ -855,6 +855,11 @@ class DefaultController extends \BaseEventTypeController
         }
     }
     
+    /**
+     * Updating Patient Risk details.
+     * @param type $risk_name
+     * @param type $risk_value
+     */
     protected function updateRisk($risk_name, $risk_value) {
         $risk_check = ($risk_name == 'anticoagulant') ? 'Anticoagulant' : 'Alpha-Blockers';
         $risk = \Risk::model()->find('name=?', array($risk_check));
