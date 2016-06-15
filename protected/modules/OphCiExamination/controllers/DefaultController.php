@@ -846,9 +846,9 @@ class DefaultController extends \BaseEventTypeController
     {
         $event_type = \EventType::model()->find('name=?', array('Examination'));
         $event = $this->episode->getMostRecentEventByType($event_type->id);
-        if (($event->id == $this->event->id) && (array_key_exists('anticoagulant', $element->attributes) || array_key_exists('alphablocker', $element->attributes))) {
+        if (($event->id === $this->event->id) && (array_key_exists('anticoagulant', $element->attributes) || array_key_exists('alphablocker', $element->attributes))) {
             foreach ($element->attributes as $risk_name => $risk_value) {
-                if($risk_name == 'anticoagulant' || $risk_name == 'alphablocker') {
+                if($risk_name === 'anticoagulant' || $risk_name === 'alphablocker') {
                     $this->updateRisk($risk_name,$risk_value);
                 }
             }
@@ -861,13 +861,13 @@ class DefaultController extends \BaseEventTypeController
      * @param type $risk_value
      */
     protected function updateRisk($risk_name, $risk_value) {
-        $risk_check = ($risk_name == 'anticoagulant') ? 'Anticoagulant' : 'Alpha-Blockers';
+        $risk_check = ($risk_name === 'anticoagulant') ? 'Anticoagulant' : 'Alpha-Blockers';
         $risk = \Risk::model()->find('name=?', array($risk_check));
         $criteria = new \CDbCriteria;
         $criteria->compare('risk_id',$risk['id']);
         $criteria->compare('patient_id',$this->patient->id);
         $patient_risk = \PatientRiskAssignment::model()->find($criteria);
-        if ($risk_value == 1) {
+        if ($risk_value === 1) {
             $patient_risk = (!$patient_risk) ? new \PatientRiskAssignment() : $patient_risk;
             $patient_risk->risk_id = $risk['id'];
             $patient_risk->patient_id = $this->patient->id;
