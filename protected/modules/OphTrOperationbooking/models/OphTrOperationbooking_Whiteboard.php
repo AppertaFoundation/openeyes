@@ -46,17 +46,17 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
     public function fetch($id)
     {
         // TODO: Group these pulls in to one join query? Or leave separate for clearer reading
-        $ob = Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($id));
-        $ev = Event::model()->find('id=?', array($id));
-        $ep = Episode::model()->find('id=?', array($ev->episode_id));
-        $patient = Patient::model()->find('id=?', array($ep->patient_id));
+        $booking = Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($id));
+        $event = Event::model()->find('id=?', array($id));
+        $episode = Episode::model()->find('id=?', array($event->episode_id));
+        $patient = Patient::model()->find('id=?', array($episode->patient_id));
         $contact = Contact::model()->find('id=?', array($patient->contact_id));
 
         $allergies = Yii::app()->db->createCommand()
             ->select('a.name as name')
             ->from('patient_allergy_assignment pas')
             ->leftJoin('allergy a', 'pas.allergy_id = a.id')
-            ->where("pas.patient_id = {$ep->patient_id}")
+            ->where("pas.patient_id = {$episode->patient_id}")
             ->order('a.name')
             ->queryAll();
 
@@ -72,12 +72,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         if (!$allergyString) {
             $allergyString = 'None';
         }
-        /*
-                et_ophtroperationbooking_operation.id: id=123534, event_id = 3685094
-                ophtroperationbooking_operation_procedures_procedures: element_id = 123534, proc_id = 308
-                proc: id = 308, term = Phakoemulsification and IOL
 
-        */
         $operation = Yii::app()->db->createCommand()
             ->select('proc.term as term')
             ->from('et_ophtroperationbooking_operation op')
@@ -87,23 +82,25 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             ->queryAll();
 
         $eyes = array(1 => 'Left', 2 => 'Right', 3 => 'Both');    // TODO: pull from DB/Join?
-        $d['eye_id'] = $ob->eye_id;
-        $d['eyeSide'] = $eyes[$d['eye_id']];
 
-        $d['predictedAdditionalEquipment'] = $ob->special_equipment_details;
-        $d['comments'] = $ob->comments."\n".$ob->comments_rtt;
+        $data['eye_id'] = $booking->eye_id;
+        $data['eyeSide'] = $eyes[$data['eye_id']];
 
-        $d['patientName'] = $contact['title'].' '.$contact['first_name'].' '.$contact['last_name'];
-        $d['dob'] = date('j M Y', strtotime($patient['dob']));
-        $d['hos_num'] = $patient['hos_num'];
-        $d['procedure'] = $operation[0]['term'];
-        $d['allergies'] = $allergyString;
-        $d['iol_model'] = 'unknown';    // TODO
-        $d['iol_power'] = 'none';        // TODO
-        $d['predictedRefractiveOutcome'] = '-0.0 D';    // TODO
-        $d['alphaBlockers'] = 'N/A';    // TODO
-        $d['anticoagulants'] = 'Anti-N/A';    // TODO
-        $d['inr'] = 'None';    // TODO
-        return $d;
+        $data['predictedAdditionalEquipment'] = $booking->special_equipment_details;
+        $data['comments'] = $booking->comments."\n".$booking->comments_rtt;
+
+        $data['patientName'] = $contact['title'].' '.$contact['first_name'].' '.$contact['last_name'];
+        $data['dob'] = date('j M Y', strtotime($patient['dob']));
+        $data['hos_num'] = $patient['hos_num'];
+        $data['procedure'] = $operation[0]['term'];
+        $data['allergies'] = $allergyString;
+        $data['iol_model'] = 'unknown';    // TODO
+        $data['iol_power'] = 'none';        // TODO
+        $data['predictedRefractiveOutcome'] = '-0.0 D';    // TODO
+        $data['alphaBlockers'] = 'N/A';    // TODO
+        $data['anticoagulants'] = 'Anti-N/A';    // TODO
+        $data['inr'] = 'None';    // TODO
+
+        return $data;
     }
 }
