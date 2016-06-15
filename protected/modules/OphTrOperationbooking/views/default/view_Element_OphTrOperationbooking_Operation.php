@@ -305,6 +305,12 @@
 <?php }?>
 
 <?php
+$this->event_actions[] = EventAction::link(
+	"Display Whiteboard",
+	Yii::app()->createUrl('/'.$element->event->eventType->class_name.'/whiteboard/view/'.$element->event_id),
+	null,
+	array('class' => 'small button', 'target' => '_blank')
+);
 if ($element->isEditable()) {
 	if (empty($element->booking)) {
 		if ($element->letterType && $this->checkPrintAccess()) {
@@ -312,10 +318,10 @@ if ($element->isEditable()) {
 			if (!$element->has_gp || !$element->has_address) {
 				$print_letter_options['disabled'] = true;
 			}
-			$this->event_actions[] = EventAction::button("Display Whiteboard", 'display-whiteboard', null, array('id'=>'btn_display-whiteboard', 'class' => 'small button'));
+
 			$this->event_actions[] = EventAction::button("Print ".$element->letterType." letter", 'print-letter', $print_letter_options, array('id' => 'btn_print-letter', 'class'=>'button small'));
 
-			if ($element->letterType == 'Invitation') {
+			if ($element->letterType === 'Invitation') {
 				$this->event_actions[] = EventAction::button("Print Admission form", 'print_admission_form', null, array('class' => 'small button'));
 			}
 		}
