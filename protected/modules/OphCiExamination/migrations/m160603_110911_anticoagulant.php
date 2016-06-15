@@ -64,6 +64,8 @@ class m160603_110911_anticoagulant extends OEMigration
             'KEY `et_ophciexamination_examinationrisk_alphablocker_fk` (`alphablocker`)',
             'CONSTRAINT `et_ophciexamination_examinationrisk_ev_fk` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
             ), true);
+            $this->insert('risk',array('name'=>'Anticoagulant',));
+            $this->insert('risk',array('name'=>'Alpha-Blockers',));
         }
         
         public function down()

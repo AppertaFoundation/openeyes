@@ -30,7 +30,7 @@
                         false,
                         false,
                         false,
-                        true,
+                        false,
                         array(
                             'text-align'=>'right',
                             'nowrapper'=>false
@@ -49,7 +49,7 @@
                         false,
                         false,
                         false,
-                        true,
+                        false,
                         array(
                             'text-align'=>'right',
                             'nowrapper'=>false
