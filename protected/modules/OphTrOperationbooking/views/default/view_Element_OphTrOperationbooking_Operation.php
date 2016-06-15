@@ -312,6 +312,7 @@ if ($element->isEditable()) {
 			if (!$element->has_gp || !$element->has_address) {
 				$print_letter_options['disabled'] = true;
 			}
+			$this->event_actions[] = EventAction::button("Display Whiteboard", 'display-whiteboard', null, array('id'=>'btn_display-whiteboard', 'class' => 'small button'));
 			$this->event_actions[] = EventAction::button("Print ".$element->letterType." letter", 'print-letter', $print_letter_options, array('id' => 'btn_print-letter', 'class'=>'button small'));
 
 			if ($element->letterType == 'Invitation') {

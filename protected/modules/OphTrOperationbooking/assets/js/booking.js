@@ -135,6 +135,13 @@ $(document).ready(function() {
 		printIFrameUrl(baseUrl+'/OphTrOperationbooking/waitingList/printLetters',{'event_id': m[1]});
 	});
 
+	handleButton($('#btn_display-whiteboard'),function() {
+		var m = window.location.href.match(/\/view\/([0-9]+)$/);
+		var url = baseUrl+'/OphTrOperationbooking/whiteboard/view/'+m[1];
+		window.open(url,"","left=0,top=0,width="+screen.width+",height="+screen.height+",location=0,titlebar=0,menubar=0");
+		// TODO: enableButtons() again or dont use handleButton
+	});
+
 	handleButton($('#btn_print-admissionletter'),function() {
 		var m = window.location.href.match(/\/view\/([0-9]+)$/);
 		printIFrameUrl(baseUrl+'/OphTrOperationbooking/default/admissionLetter/'+m[1]);
