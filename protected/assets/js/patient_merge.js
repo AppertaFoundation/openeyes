@@ -261,12 +261,14 @@ $(document).ready(function(){
         }
         
         if( $('#patientDataConflictConfirmation').length > 0 && $('#patientDataConflictConfirmation').find('input').is(':not(:checked)') ){
-            var $row = $('<div>', {'class':'row'}),
+            var $row = $('<div>', {'class':'row check-warning'}),
                 $column = $('<div>',{'class':'large-12 column'}),
                 $checkbox = $('<div>',{'class':'alert-box with-icon warning'}).text('Please tick the checkboxes.');
                 
-                $row.append( $column.append($checkbox) );
-                $('#patientDataConflictConfirmation').before($row);
+                if( $('#patientMergeWrapper').find('.row.check-warning').length < 1 ){
+                    $row.append( $column.append($checkbox) );
+                    $('#patientDataConflictConfirmation').before($row);
+                }
         }
         
         

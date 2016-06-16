@@ -20,6 +20,7 @@
     <form id="patientMergeList">
         <div class="row">
             <div class="large-8 column large-centered">
+                <?php $this->renderPartial('//base/_messages')?>
                 <section class="box generic requestList js-toggle-container">
                     <h2>Merge Requests</h2>
                     <div class="filter panel">
