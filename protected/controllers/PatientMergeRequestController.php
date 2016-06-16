@@ -124,10 +124,19 @@ class PatientMergeRequestController extends BaseController
             
             $primaryPatient = Patient::model()->findByPk($patientMergeRequest['primary_id']);
             $secondaryPatient = Patient::model()->findByPk($patientMergeRequest['secondary_id']);
-        
+            
+            //check if the patients' ids are already submited
+            // we do not allow the same patient id in the list multiple times
+            $criteria = new CDbCriteria();
+            // neither primary_id nor secondary_id can be in the request lits
+            $criteria->condition = '(primary_id=:primary_id OR primary_id=:secondary_id OR secondary_id=:secondary_id OR secondary_id=:primary_id) AND ( deleted = 0)';
+            $criteria->params = array(':primary_id' => $patientMergeRequest['primary_id'], ':secondary_id' => $patientMergeRequest['secondary_id']);
+            
+            $numbersNotUnique = PatientMergeRequest::model()->find($criteria);
+            
             $personalDetailsConflictConfirm = $mergeHandler->comparePatientDetails($primaryPatient, $secondaryPatient);
             
-            if( !$personalDetailsConflictConfirm['isConflict'] || ($personalDetailsConflictConfirm['isConflict'] && isset($patientMergeRequest['personalDetailsConflictConfirm'])) ){
+            if(empty($numbersNotUnique) && ( !$personalDetailsConflictConfirm['isConflict'] || ($personalDetailsConflictConfirm['isConflict'] && isset($patientMergeRequest['personalDetailsConflictConfirm']))) ){
 
                 // the Primary and Secondary user cannot be the same user , same database record I mean
                 if( ( !empty($patientMergeRequest['secondary_id']) && !empty($patientMergeRequest['primary_id']) )&& $patientMergeRequest['secondary_id'] == $patientMergeRequest['primary_id']){
@@ -145,6 +154,13 @@ class PatientMergeRequestController extends BaseController
                 }
             } else if( $personalDetailsConflictConfirm['isConflict'] && !isset($patientMergeRequest['personalDetailsConflictConfirm']) ){
                 Yii::app()->user->setFlash('warning.user_error', "Please tick the checkboxes.");
+            } else if ($numbersNotUnique){
+                // by getting the flash message we remove them from the session
+                Yii::app()->user->getFlash("warning.merge_error_dob");
+                Yii::app()->user->getFlash("warning.merge_error_gender");
+                
+                Yii::app()->user->setFlash('warning.merge_error_duplicate', "One of the Hospital Numbers are already in the Patient Merge Request list, please merge them first.");
+                $this->redirect(array('index'));
             }
         }
         
