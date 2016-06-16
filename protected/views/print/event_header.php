@@ -16,29 +16,30 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
- $path = Yii::app()->basePath . '/runtime/';
-    $yourImageUrl = Yii::app()->assetManager->publish($path);
-       $imageLists = scandir($path, 1);
-    
-    
-    foreach ($imageLists as $imageList) {
- if(strpos($imageList,"header") !== false) {
-        $headerLogo = $imageList;
- }
- if(strpos($imageList,"secondary") !== false)  {
-        $secondaryLogo = $imageList;
-        
-  }
-}
- 
 ?>
 <?php
 $event = $this->event;
 $event_type = $event->eventType->name;
+$path = Yii::app()->basePath . '/runtime/';
+$yourImageUrl = Yii::app()->assetManager->publish($path);
+$imageLists = scandir($path, 1);
+foreach ($imageLists as $imageList) {
+if(strpos($imageList,"header") !== false) {
+    $headerLogo = $imageList;
+}
+if(strpos($imageList,"secondary") !== false)  {
+    $secondaryLogo = $imageList;
+        
+}
+}
+
 ?>
 <header class="header">
 	<div class="title">
-        <?php if(!empty($headerLogo)){?>	<img src="<?php echo $yourImageUrl . "/" . $headerLogo;?>" alt="letterhead_seal" width="100" height="83"/><?php} ?>
+        <?php if(!empty($headerLogo)){?>	
+            <img src="<?php echo $yourImageUrl . "/" . $headerLogo;?>" alt="letterhead_seal" width="100" height="83"/>
+                <?php } ?>
+
 		<h1><?php echo $event_type;?></h1>
 	</div>
 	<div class="row">
