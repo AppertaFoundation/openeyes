@@ -16,7 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
- $path = Yii::app()->basePath . '/assets/img/';
+ $path = Yii::app()->basePath . '/runtime/';
     $yourImageUrl = Yii::app()->assetManager->publish($path);
        $imageLists = scandir($path, 1);
     

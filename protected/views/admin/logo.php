@@ -54,7 +54,7 @@
     echo $form->error($model, 'header_logo');
     echo $form->error($model, 'secondary_logo');
 
-    $path = Yii::app()->basePath . '/assets/img/';
+    $path = Yii::app()->basePath . '/runtime/';
     $yourImageUrl = Yii::app()->assetManager->publish($path);
     $imageLists = scandir($path, 1);
     
