@@ -21,7 +21,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return the static model class
+     * @return OphTrOperationbooking_Whiteboard the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -48,9 +48,9 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         // TODO: Group these pulls in to one join query? Or leave separate for clearer reading
         $booking = Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($id));
         $event = Event::model()->find('id=?', array($id));
-        $episode = Episode::model()->find('id=?', array($event->episode_id));
-        $patient = Patient::model()->find('id=?', array($episode->patient_id));
-        $contact = Contact::model()->find('id=?', array($patient->contact_id));
+        $episode = Episode::model()->findByPk($event->episode_id);
+        $patient = Patient::model()->findByPk($episode->patient_id);
+        $contact = Contact::model()->findByPk($patient->contact_id);
 
         $allergies = Yii::app()->db->createCommand()
             ->select('a.name as name')
@@ -60,17 +60,9 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             ->order('a.name')
             ->queryAll();
 
-        $allergyString = '';
-        foreach ($allergies as $a) {
-            $allergyString .= $a['name'].', ';
-        }
-
-        if ($allergyString) {
-            $allergyString = substr($allergyString, 0, -2);
-        }
-
-        if (!$allergyString) {
-            $allergyString = 'None';
+        $allergyString = 'None';
+        if($allergies){
+            $allergyString = implode(',', array_column($allergies, 'name'));
         }
 
         $operation = Yii::app()->db->createCommand()
