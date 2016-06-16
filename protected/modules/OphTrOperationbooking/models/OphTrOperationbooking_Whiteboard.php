@@ -45,12 +45,27 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 
     public function fetch($id)
     {
-        // TODO: Group these pulls in to one join query? Or leave separate for clearer reading
         $booking = Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($id));
-        $event = Event::model()->find('id=?', array($id));
+
+        $eyes = CHtml::listData(Eye::model()->findAll(), 'id', 'name');
+        if($eyes[$booking->eye_id] === 'Both'){
+            throw new CHttpException(400, 'Can\'t display whiteboard for dual eye bookings');
+        }
+        $eyeLabel = strtolower($eyes[$booking->eye_id]);
+
+        $event = Event::model()->findByPk($id);
         $episode = Episode::model()->findByPk($event->episode_id);
         $patient = Patient::model()->findByPk($episode->patient_id);
         $contact = Contact::model()->findByPk($patient->contact_id);
+
+        $biometryCriteria = new CDbCriteria();
+        $biometryCriteria->addCondition('patient_id = :patient_id');
+        $biometryCriteria->params = array('patient_id' => $patient->id);
+        $biometryCriteria->order = 'last_modified_date DESC';
+        $biometryCriteria->limit = 1;
+        $biometry = Element_OphTrOperationnote_Biometry::model()->find($biometryCriteria);
+
+        $examination = $event->getPreviousInEpisode(EventType::model()->findByAttributes(array('name' => 'Examination'))->id);
 
         $allergies = Yii::app()->db->createCommand()
             ->select('a.name as name')
@@ -73,25 +88,22 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             ->where("op.event_id = {$id}")
             ->queryAll();
 
-        $eyes = array(1 => 'Left', 2 => 'Right', 3 => 'Both');    // TODO: pull from DB/Join?
 
         $data['eye_id'] = $booking->eye_id;
-        $data['eyeSide'] = $eyes[$data['eye_id']];
-
-        $data['predictedAdditionalEquipment'] = $booking->special_equipment_details;
+        $data['eye_side'] = $eyes[$data['eye_id']];
+        $data['predicted_additional_equipment'] = $booking->special_equipment_details;
         $data['comments'] = $booking->comments."\n".$booking->comments_rtt;
-
-        $data['patientName'] = $contact['title'].' '.$contact['first_name'].' '.$contact['last_name'];
+        $data['patient_name'] = $contact['title'].' '.$contact['first_name'].' '.$contact['last_name'];
         $data['dob'] = date('j M Y', strtotime($patient['dob']));
         $data['hos_num'] = $patient['hos_num'];
-        $data['procedure'] = $operation[0]['term'];
+        $data['procedure'] = implode(',', array_column($operation, 'term'));
         $data['allergies'] = $allergyString;
-        $data['iol_model'] = 'unknown';    // TODO
-        $data['iol_power'] = 'none';        // TODO
-        $data['predictedRefractiveOutcome'] = '-0.0 D';    // TODO
-        $data['alphaBlockers'] = 'N/A';    // TODO
-        $data['anticoagulants'] = 'Anti-N/A';    // TODO
-        $data['inr'] = 'None';    // TODO
+        $data['iol_model'] = ($biometry) ? $biometry->attributes['lens_description_'.$eyeLabel] : 'unknown';
+        $data['iol_power'] = ($biometry) ? $biometry->attributes['iol_power_'.$eyeLabel] : 'none';
+        $data['predicted_refractive_outcome'] = '-0.0 D';
+        $data['alpha_blockers'] = $patient->hasRisk('Alpha blockers');
+        $data['anticoagulants'] = $patient->hasRisk('Anticoagulants');
+        $data['inr'] = 'None';
 
         return $data;
     }

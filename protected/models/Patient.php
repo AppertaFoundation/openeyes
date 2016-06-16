@@ -955,6 +955,23 @@ class Patient extends BaseActiveRecordVersioned
         $this->audit('patient', 'set-noriskdate');
     }
 
+    /**
+     * Check if the patient has a given risk
+     * 
+     * @param $riskCompare
+     * @return bool
+     */
+    public function hasRisk($riskCompare)
+    {
+        foreach($this->risks as $risk) {
+            if($risk->name === $riskCompare) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     /**
      * marks the patient as having no family history
