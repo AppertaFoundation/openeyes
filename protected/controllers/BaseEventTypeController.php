@@ -1334,36 +1334,22 @@ class BaseEventTypeController extends BaseModuleController
 		$use_container_view = ($element->useContainerView && $container_view);
                 
                 $class_array = !empty($element) ? !empty(get_class($element)) ? explode('\\', (get_class($element))): '' : '';
+                $view_data = array_merge(array(
+                            'element' => $element,
+                            'data' => $data,
+                            'form' => $form,
+                            'child' => $element->getElementType()->isChild(),
+                            'container_view' => $container_view
+                        ), $view_data);
                 if (!empty($class_array)) {                    
                     if(array_pop($class_array) === 'Element_OphCiExamination_CataractSurgicalManagement') {
-                        $active_check = SettingInstallation::model()->find('t.key="city_road_satellite_view"');
-                        $view_data = array_merge(array(
-                            'element' => $element,
-                            'active_check' => $active_check->value,
-                            'data' => $data,
-                            'form' => $form,
-                            'child' => $element->getElementType()->isChild(),
-                            'container_view' => $container_view
-                        ), $view_data);
+                        $active_check = SettingInstallation::model()->find('key="city_road_satellite_view"');
+                        if (!empty($active_check)) {
+                            $view_data = array_merge(array(
+                                'active_check' => $active_check->value,
+                            ), $view_data);
+                        }
                     }
-                    else {
-                        $view_data = array_merge(array(
-                            'element' => $element,
-                            'data' => $data,
-                            'form' => $form,
-                            'child' => $element->getElementType()->isChild(),
-                            'container_view' => $container_view
-                        ), $view_data);
-                    }
-                }
-                else {
-                    $view_data = array_merge(array(
-                        'element' => $element,
-                        'data' => $data,
-                        'form' => $form,
-                        'child' => $element->getElementType()->isChild(),
-                        'container_view' => $container_view
-                    ), $view_data);
                 }
 
 		// Render the view.
