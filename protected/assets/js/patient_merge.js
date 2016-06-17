@@ -12,6 +12,14 @@ var patientMerge = {
     
     updateDOM: function(type){
         $section = $('section.' + type);
+        $section.find('input[type=hidden]').val('');
+        $section.find('.data-value').each(function(i, dom){
+            var $dom = $(dom),
+                defaultVal = $dom.data('default');
+            $dom.text( defaultVal ? defaultVal : '' );
+            $dom.val( defaultVal ? defaultVal : '' );
+        });
+        
         Object.keys(this.patients[type]).forEach(function (key) {
             $section.find('.' + key).html(patientMerge.patients[type][key]);
             $section.find('.' + key + '-input').val(patientMerge.patients[type][key]);
@@ -26,7 +34,7 @@ var patientMerge = {
         var tmpPatiens = {};
         tmpPatiens = this.patients.primary;
         this.patients.primary = this.patients.secondary;
-        this.patients.secondary = tmpPatiens;     
+        this.patients.secondary = tmpPatiens;
     },
         
     validatePatientsData: function(callback_true, callback_false){
@@ -248,7 +256,6 @@ $(document).ready(function(){
                 content: "Both Primary and Secondary patients have to be selected."
               }).open();
         } else if( primary_id == secondary_id ){
-            $('<h2 title="Alert" class="text-center"></h2>').dialog();
             new OpenEyes.UI.Dialog.Alert({
                 content: "Primary and Secondary patient cannot be the same record."
               }).open();
