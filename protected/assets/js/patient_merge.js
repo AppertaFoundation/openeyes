@@ -209,7 +209,7 @@ $(document).ready(function(){
     });
     if(typeof dialog !== 'undefined' && dialog.length){
         dialog.data( "autocomplete" )._renderItem = function( ul, item ) {
-            ul.addClass("z-index-1000");
+            ul.addClass("z-index-1000 patient-ajax-list");
             return $( "<li></li>" )
                 .data( "item.autocomplete", item )
                 .append( "<a><strong>" + item.first_name + " " + item.last_name + "</strong>" + " (" + item.age + ")" + "<span class='icon icon-alert icon-alert-" + item.gender.toLowerCase() +"_trans'>Male</span>" + "<div class='nhs-number'>" + item.nhsnum +"</div><br>Hospital No.: " + item.hos_num + "<br>Date of birth: " + item.dob + "</a>" )
@@ -261,12 +261,14 @@ $(document).ready(function(){
         }
         
         if( $('#patientDataConflictConfirmation').length > 0 && $('#patientDataConflictConfirmation').find('input').is(':not(:checked)') ){
-            var $row = $('<div>', {'class':'row'}),
+            var $row = $('<div>', {'class':'row check-warning'}),
                 $column = $('<div>',{'class':'large-12 column'}),
                 $checkbox = $('<div>',{'class':'alert-box with-icon warning'}).text('Please tick the checkboxes.');
                 
-                $row.append( $column.append($checkbox) );
-                $('#patientDataConflictConfirmation').before($row);
+                if( $('#patientMergeWrapper').find('.row.check-warning').length < 1 ){
+                    $row.append( $column.append($checkbox) );
+                    $('#patientDataConflictConfirmation').before($row);
+                }
         }
         
         
