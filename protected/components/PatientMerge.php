@@ -111,7 +111,6 @@ class PatientMerge
         
         foreach($columns as $column){
             if( $primary->$column !== $secondary->$column ){
-                Yii::app()->user->setFlash("warning.merge_error_$column", "Patients have different personal details : $column");
                 $conflict[] = array(
                     'column' => $column,
                     'primary' => $primary->$column,
@@ -135,10 +134,6 @@ class PatientMerge
     {
         
         $isMerged = false;
-        
-        /** This is handled in the controller, we ask extra confirmation if there are conflicts in personal details **/
-        // Compare personal details, now we only check DOB and Gender
-        //$isPatientConflict = $this->comparePatientDetails($this->primaryPatient, $this->secondaryPatient);
         
         // Update Episode
         $isMerged = $this->updateEpisodes($this->primaryPatient, $this->secondaryPatient);
