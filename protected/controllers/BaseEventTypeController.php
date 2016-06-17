@@ -1344,8 +1344,9 @@ class BaseEventTypeController extends BaseModuleController
                 if (!empty($class_array)) {                    
                     if(array_pop($class_array) === 'Element_OphCiExamination_CataractSurgicalManagement') {
                         $active_check = SettingInstallation::model()->find('t.key="city_road_satellite_view"');
+                        $active_check_value = "";
                         if (!empty($active_check)) {
-                           $active_check_value = !empty($active_check->value) ? $active_check->value : '' ; 
+                           $active_check_value = $active_check->value; 
                         }
                         $view_data = array_merge(array(
                                 'active_check' => $active_check_value,
