@@ -325,7 +325,7 @@ class AdminController extends BaseAdminController {
             $criteria->compare("LOWER(username)", strtolower($_GET['search']), true, 'OR');
             $criteria->compare("LOWER(first_name)", strtolower($_GET['search']), true, 'OR');
             $criteria->compare("LOWER(last_name)", strtolower($_GET['search']), true, 'OR');
-            $criteria->addCondition("id = '" . $_GET['search'] . "'", 'OR');
+            $criteria->compare("LOWER(id)", $_GET['search'], false, 'OR');
         }
 
         $pagination = $this->initPagination(User::model(), $criteria);
