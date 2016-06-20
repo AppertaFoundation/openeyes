@@ -31,11 +31,6 @@ class WhiteboardController extends BaseModuleController
 
     public function actionView($id)
     {
-        // TODO: determine if we are past the operation booking end date/time
-        // and if so, do NOT re-generate the whiteboard data.
-        // OphTrOperationbooking_Whiteboard::model()->update($id);
-
-        // Retrieve the whiteboard data and display
         $data = OphTrOperationbooking_Whiteboard::model()->fetch($id);
         $this->renderPartial('view', array('data' => $data));
     }
