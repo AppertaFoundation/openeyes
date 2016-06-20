@@ -154,6 +154,8 @@ $config = array(
 		//'worklist_show_empty' => bool
 		// allow duplicate entries on an automatic worklist for a patient
 		//'worklist_allow_duplicate_patients' => bool
+		// any appointments sent in before this date will not trigger errors when sent in
+		//'worklist_ignore_date => 'Y-m-d',
 	),
 );
 

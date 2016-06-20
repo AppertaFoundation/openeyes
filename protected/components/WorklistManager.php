@@ -300,6 +300,18 @@ class WorklistManager extends CComponent
     }
 
     /**
+     * The time before which we are relaxed about appointments not finding matches
+     *
+     * @return DateTime
+     */
+    public function getWorklistIgnoreDate()
+    {
+        if ($dt = $this->getAppParam('worklist_ignore_date'))
+            return DateTime::createFromFormat('Y-m-d', $dt);
+        return null;
+    }
+
+    /**
      * Works out the dates we should retrieve Worklists for rendering
      *
      * @param DateTime $date
