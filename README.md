@@ -104,7 +104,7 @@ Internal errors (5xx status code) should still provide an error body response of
         <Errors>
             <Error>[error message]</Error>
         </Errors>
-    </Success>
+    </Failure>
  
 #### Update only
  

@@ -45,6 +45,13 @@ abstract class BaseResource
      */
     public $update_only = false;
 
+    /**
+     * Flag that will force all errors on the resource to be mapped to warnings
+     *
+     * @var bool
+     */
+    public $warn_errors = false;
+
     public function __construct($version)
     {
         if (!$version) {

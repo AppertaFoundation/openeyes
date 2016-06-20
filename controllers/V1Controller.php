@@ -158,12 +158,18 @@ class V1Controller extends \CController
             $resource->id = $id;
 
             if (!$internal_id = $resource->save()) {
-                if (!$resource->update_only || $resource->errors) {
+                if ($resource->errors && !$resource->warn_errors) {
                     $this->sendErrorResponse(400, $resource->errors);
                 }
                 else {
-                    // assuming that this was an update only resource request
-                    $this->sendSuccessResponse(200, array('Message' => $resource_type . ' not created'));
+                    // no internal id indicates we didn't get a resource
+                    $response = array('Message' => $resource_type . ' not created');
+                    // map errors to warnings if this is the case
+                    if ($resource->errors)
+                        $response['Warnings'] = $resource->errors;
+
+                    // success in that we are happy for there to have been no action taken
+                    $this->sendSuccessResponse(200, $response);
                 }
             }
 

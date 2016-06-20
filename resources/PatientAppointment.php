@@ -187,11 +187,20 @@ class PatientAppointment extends BaseResource
         $when = $this->resolveWhen();
         $attributes = $this->resolveAttributes();
 
+        // allow the suppression of errors for appointments received prior to the ignore date
+        if ($warning_limit = $this->worklist_manager->getWorklistIgnoreDate()) {
+            if ($when < $warning_limit)
+                $this->warn_errors = true;
+        }
+
         if ($model->isNewRecord) {
             if (!$model = $this->worklist_manager->mapPatientToWorklistDefinition($patient, $when, $attributes)) {
                 foreach ($this->worklist_manager->getErrors() as $err) {
                     $this->addError($err);
                 }
+                if ($this->warn_errors)
+                    return false;
+
                 throw new \Exception("Could not add patient to worklist");
             }
         }
@@ -201,6 +210,9 @@ class PatientAppointment extends BaseResource
                 foreach ($this->worklist_manager->getErrors() as $err) {
                     $this->addError($err);
                 }
+                if ($this->warn_errors)
+                    return false;
+
                 throw new \Exception("Could not update patient worklist entry");
             };
         }
