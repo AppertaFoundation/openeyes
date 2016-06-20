@@ -135,7 +135,6 @@ $config = array(
 		// 'dashboard_sortable' => true
 		'event_print_method' => 'pdf',
 		'wkhtmltopdf_nice_level' => 19,
-                'city_road_satellite_view' => 1,
 	),
 );
 
