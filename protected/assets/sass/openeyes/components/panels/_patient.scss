@@ -128,21 +128,6 @@
 				}
 			}
 		}
-		.nhs-number {
-			@include border-radius(3px);
-			background: {
-				color: #107ebd;
-				image: image-url("_elements/icons/nhs_tiny.png");
-				position: center left;
-				repeat: no-repeat;
-			};
-			color: white;
-			display: inline-block;
-			padding: 2px 3px 1px 33px;
-			@media print {
-				padding-left: 0;
-			}
-		}
 		.patient-summary-anchor {
 			@media print {
 				display: none;
@@ -166,4 +151,20 @@
           };
 		}
 	}
+}
+
+.nhs-number {
+        @include border-radius(3px);
+        background: {
+                color: #107ebd;
+                image: image-url("_elements/icons/nhs_tiny.png");
+                position: center left;
+                repeat: no-repeat;
+        };
+        color: white;
+        display: inline-block;
+        padding: 2px 3px 1px 33px;
+        @media print {
+                padding-left: 0;
+        }
 }

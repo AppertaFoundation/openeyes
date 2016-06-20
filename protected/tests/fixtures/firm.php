@@ -48,4 +48,10 @@ return array(
 		'service_subspecialty_assignment_id' => 3,
 		'name' => 'Blah'
 	),
+	'firm6' => array(
+		'id' => 6,
+		'service_subspecialty_assignment_id' => 4,
+		'name' => 'Blah'
+	),
+        
 );

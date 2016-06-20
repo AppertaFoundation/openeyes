@@ -69,14 +69,14 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
     public function rules()
     {
         return array(
-                array('left_sphere, left_cylinder, left_axis, left_axis_eyedraw, left_type_id, left_type_other, right_sphere, right_cylinder, right_axis, right_axis_eyedraw, right_type_id, right_type_other, eye_id, left_notes, right_notes', 'safe'),
-                array('left_axis', 'requiredIfSide', 'side' => 'left'),
-                array('left_axis', 'numerical', 'integerOnly'=>true),
-                array('left_type_other', 'requiredIfRefractionTypeOther', 'side' => 'left'),
-                array('right_axis', 'requiredIfSide', 'side' => 'right'),
-                array('right_axis', 'numerical', 'integerOnly'=>true),
-                array('right_type_other', 'requiredIfRefractionTypeOther', 'side' => 'right'),
-                array('id, event_id, left_sphere, left_cylinder, left_axis, left_axis_eyedraw, left_type_id, right_sphere, right_cylinder, right_axis, right_axis_eyedraw, right_type_id, eye_id', 'safe', 'on' => 'search'),
+            array('left_sphere, left_cylinder, left_axis, left_axis_eyedraw, left_type_id, left_type_other, right_sphere, right_cylinder, right_axis, right_axis_eyedraw, right_type_id, right_type_other, eye_id, left_notes, right_notes', 'safe'),
+            array('left_axis', 'requiredIfSide', 'side' => 'left'),
+            array('left_axis', 'numerical', 'integerOnly'=>true),
+            array('left_type_other', 'requiredIfRefractionTypeOther', 'side' => 'left'),
+            array('right_axis', 'requiredIfSide', 'side' => 'right'),
+            array('right_axis', 'numerical', 'integerOnly'=>true),
+            array('right_type_other', 'requiredIfRefractionTypeOther', 'side' => 'right'),
+            array('id, event_id, left_sphere, left_cylinder, left_axis, left_axis_eyedraw, left_type_id, right_sphere, right_cylinder, right_axis, right_axis_eyedraw, right_type_id, eye_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -130,13 +130,13 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-                'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
-                'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-                'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
-                'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-                'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-                'left_type' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Refraction_Type', 'left_type_id'),
-                'right_type' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Refraction_Type', 'right_type_id'),
+            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
+            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
+            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'left_type' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Refraction_Type', 'left_type_id'),
+            'right_type' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Refraction_Type', 'right_type_id'),
         );
     }
 
@@ -146,18 +146,18 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
     public function attributeLabels()
     {
         return array(
-                'id' => 'ID',
-                'event_id' => 'Event',
-                'left_sphere' => 'Sphere',
-                'left_cylinder' => 'Cylinder',
-                'left_axis' => 'Axis',
-                'left_type_id' => 'Type',
-                'left_type_other' => 'Other Type',
-                'right_sphere' => 'Sphere',
-                'right_cylinder' => 'Cylinder',
-                'right_axis' => 'Axis',
-                'right_type_id' => 'Type',
-                'right_type_other' => 'Other Type',
+            'id' => 'ID',
+            'event_id' => 'Event',
+            'left_sphere' => 'Sphere',
+            'left_cylinder' => 'Cylinder',
+            'left_axis' => 'Axis',
+            'left_type_id' => 'Type',
+            'left_type_other' => 'Other Type',
+            'right_sphere' => 'Sphere',
+            'right_cylinder' => 'Cylinder',
+            'right_axis' => 'Axis',
+            'right_type_id' => 'Type',
+            'right_type_other' => 'Other Type',
         );
     }
 
@@ -165,6 +165,13 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
     {
         return $this->{$side.'_sphere'} . '/' . $this->{$side.'_cylinder'} . ' @ ' . $this->{$side.'_axis'} . '° ' . $this->getType($side);
     }
+
+    public function getSplit($side)
+    {
+        return array('sphere' => $this->{$side.'_sphere'}, 'cylinder' => $this->{$side.'_cylinder'}, 'axis' => $this->{$side.'_axis'}. '° ', 'type' => $this->getType($side));
+    }
+
+
 
     public function getType($side)
     {
@@ -201,7 +208,7 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
         $criteria->compare('right_type_other', $this->right_type_other);
 
         return new \CActiveDataProvider(get_class($this), array(
-                'criteria' => $criteria,
+            'criteria' => $criteria,
         ));
     }
 

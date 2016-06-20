@@ -331,6 +331,12 @@ return array(
 						'position' => 5,
 						'restricted' => array('NOD Export'),
 					),
+					'patientmergerequest' => array(
+						'title' => 'Patient Merge',
+						'uri' => 'patientMergeRequest/index',
+						'position' => 6,
+						'restricted' => array('Patient Merge', 'Patient Merge Request'),
+					),
 				)
 			),
 // temporarily disabled
@@ -377,7 +383,7 @@ return array(
 		'wkhtmltopdf_right_margin' => '20mm',
 		'wkhtmltopdf_nice_level' => false,
 		'OphCoTherapyapplication_sender_email' => array('openeyes.servicedesk@moorfields.nhs.uk' => 'OpenEyes Therapy Application'),
-
+		'curl_proxy' => null,
 		'hscic' => array(
 			'data' => array(
 				// to store processed zip files

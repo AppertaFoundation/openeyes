@@ -172,7 +172,6 @@ class Element_OphCiExamination_CataractSurgicalManagement extends \BaseEventType
                 if (!$patient = \Patient::model()->findByPk(@$_GET['patient_id'])) {
                     throw new Exception("Patient not found: ".@$_GET['patient_id']);
                 }
-
                 if ($api->getOpnoteWithCataractElementInCurrentEpisode($patient)) {
                     $this->eye_id = OphCiExamination_CataractSurgicalManagement_Eye::model()->find('name=?', array('Second eye'))->id;
                 } else {

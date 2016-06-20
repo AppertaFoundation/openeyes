@@ -76,6 +76,7 @@ EOH;
         foreach ($this->gitowners as $user) {
             $url = "https://api.github.com/repos/{$user}/{$module}";
             $check = curl_init($url);
+            curl_setopt($check, CURLOPT_PROXY, Yii::app()->params['curl_proxy']);
             curl_setopt($check, CURLOPT_USERAGENT, 'OpenEyes-Cloner');
             curl_setopt($check, CURLOPT_RETURNTRANSFER, 1);
             if ($this->username) {
