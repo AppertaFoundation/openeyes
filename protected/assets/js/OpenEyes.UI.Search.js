@@ -26,7 +26,8 @@
 
     To override the default functionality
     
-    Set the ajax url to be called (default: /patient/ajaxSearch ):
+    Set the ajax URL to be called (default: /patient/ajaxSearch ):
+
     OpenEyes.UI.Search.setSourceURL('/patientMergeRequest/search');
 
     To override the jquery autocomplete defaults:
@@ -42,13 +43,13 @@
     };
 
     select:
-    OpenEyes.UI.Search.getElement().autocomplete('option', 'select', function(event, ui){   alert(ui.item.id);   });
+    OpenEyes.UI.Search.getElement().autocomplete('option', 'select', function(event, ui){
+        alert(ui.item.id);   
+    });
 
     close:
     OpenEyes.UI.Search.getElement().autocomplete('option', 'close', function(event, ui){
-        if (($('.ui-menu li').length > 1 ) && (Object.keys(patientMerge.patients.primary).length === 0 || Object.keys(patientMerge.patients.secondary).length === 0)) {
-            $("ul.ui-autocomplete").show();
-        }
+        console.log(event, ui);
     });
 
     

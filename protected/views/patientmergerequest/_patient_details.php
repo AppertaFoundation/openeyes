@@ -19,10 +19,7 @@
 ?>
 
 <section class="<?php echo $type; ?> box patient-info js-toggle-container">
-	<h3 class="box-title">
-            Personal Details:
-            <img class="patient-loader filter" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..." style="margin-right: 10px; display: none;"/>
-        </h3>
+	<h3 class="box-title">Personal Details:</h3>
 	
         <?php echo CHtml::activeHiddenField($model, "{$type}_id", array('class' => 'id-input')); ?>
         
@@ -33,7 +30,7 @@
                         <div class="data-label">Hospital No.</div>
                 </div>
                 <div class="large-8 column">
-                    <div class="data-value">
+                    <div style="line-height:1.3">
                         <div class="hospital-number">
                             <span class="data-value hos_num"><?php echo $model->isNewRecord ? '' : $model->{"{$type}_hos_num"}; ?></span>
                             <?php echo CHtml::activeHiddenField($model, "{$type}_hos_num", array('class' => 'hos_num-input')); ?>
@@ -43,7 +40,7 @@
             </div>
             <div class="row data-row">
                 <div class="large-4 column">
-                        <div class="data-label">NHS Number:</div>
+                    <div class="data-label">NHS Number:</div>
                 </div>
                 <div class="large-8 column">
                     <div class="">
@@ -52,7 +49,7 @@
                                 <span class="hide-text print-only">
                                     NHS number:
                                 </span>
-                                <span class="data-value nhsnum"><?php echo $model->isNewRecord ? '000 000 0000' : $model->{"{$type}_nhsnum"}; ?></span>
+                                <span data-default="000 000 0000" class="data-value nhsnum"><?php echo $model->isNewRecord ? '000 000 0000' : $model->{"{$type}_nhsnum"}; ?></span>
                                 <?php echo CHtml::activeHiddenField($model, "{$type}_nhsnum", array('class' => 'nhsnum-input')); ?>
                         </div>
                     </div>
