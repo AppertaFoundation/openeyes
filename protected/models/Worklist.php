@@ -112,13 +112,12 @@ class Worklist extends BaseActiveRecordVersioned
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
+     * @param $pagination boolean  - whether to paginate the results of the search or not
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
-    public function search()
+    public function search($pagination=true)
     {
-        // Warning: Please modify the following code to remove attributes that
-        // should not be searched.
-
         $criteria=new CDbCriteria;
 
         $criteria->compare('id',$this->id,true);
@@ -155,11 +154,16 @@ class Worklist extends BaseActiveRecordVersioned
             }
         }
 
-        return new CActiveDataProvider(get_class($this), array(
-            'criteria'=>$criteria,
-        ));
+        $args = array('criteria' => $criteria);
+        if (!$pagination)
+            $args['pagination'] = false;
+
+        return new CActiveDataProvider(get_class($this), $args);
     }
 
+    /**
+     * @return string
+     */
     public function getDisplayDate()
     {
         $start = $this->NHSDate('start');
