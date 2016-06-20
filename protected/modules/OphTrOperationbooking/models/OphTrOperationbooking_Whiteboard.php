@@ -66,6 +66,12 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $biometry = Element_OphTrOperationnote_Biometry::model()->find($biometryCriteria);
 
         $examination = $event->getPreviousInEpisode(EventType::model()->findByAttributes(array('name' => 'Examination'))->id);
+        $management = new \OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement();
+        $anterior = new \OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment();
+        if($examination){
+            $management = $management->findByAttributes(array('event_id' => $examination->id));
+            $anterior = $anterior->findByAttributes(array('event_id' => $examination->id));
+        }
 
         $allergies = Yii::app()->db->createCommand()
             ->select('a.name as name')
@@ -92,15 +98,15 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $data['eye_id'] = $booking->eye_id;
         $data['eye_side'] = $eyes[$data['eye_id']];
         $data['predicted_additional_equipment'] = $booking->special_equipment_details;
-        $data['comments'] = $booking->comments."\n".$booking->comments_rtt;
+        $data['comments'] = ($anterior) ? $anterior->attributes[$eyeLabel.'_description'] : '';
         $data['patient_name'] = $contact['title'].' '.$contact['first_name'].' '.$contact['last_name'];
         $data['dob'] = date('j M Y', strtotime($patient['dob']));
         $data['hos_num'] = $patient['hos_num'];
         $data['procedure'] = implode(',', array_column($operation, 'term'));
         $data['allergies'] = $allergyString;
-        $data['iol_model'] = ($biometry) ? $biometry->attributes['lens_description_'.$eyeLabel] : 'unknown';
+        $data['iol_model'] = ($biometry) ? $biometry->attributes['lens_description_'.$eyeLabel] : 'Unknown';
         $data['iol_power'] = ($biometry) ? $biometry->attributes['iol_power_'.$eyeLabel] : 'none';
-        $data['predicted_refractive_outcome'] = '-0.0 D';
+        $data['predicted_refractive_outcome'] = ($management) ? $management->target_postop_refraction : '';
         $data['alpha_blockers'] = $patient->hasRisk('Alpha blockers');
         $data['anticoagulants'] = $patient->hasRisk('Anticoagulants');
         $data['inr'] = 'None';
