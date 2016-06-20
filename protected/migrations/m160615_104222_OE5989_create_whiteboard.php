@@ -26,7 +26,7 @@ class m160615_104222_OE5989_create_whiteboard extends OEMigration
 			), true
 		);
 
-		$this->addForeignKey('whiteboard_booking_event', 'ophtroperationbooking_whiteboard', 'event_id', 'et_ophtroperationbooking_operation', 'id');
+		$this->addForeignKey('whiteboard_booking_event', 'ophtroperationbooking_whiteboard', 'event_id', 'event', 'id');
 		$this->addForeignKey('whiteboard_booking_eye', 'ophtroperationbooking_whiteboard', 'eye_id', 'eye', 'id');
 	}
 

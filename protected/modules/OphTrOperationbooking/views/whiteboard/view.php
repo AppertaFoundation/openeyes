@@ -34,7 +34,7 @@
     <tr valign='top'>
         <td>Patient details<p>
                 <b><?php echo $data['patient_name'] ?>
-                    <br/><?php echo $data->date_of_birth ?>
+                    <br/><?php echo date_create_from_format('Y-m-d', $data->date_of_birth)->format('j M Y'); ?>
                     <br/><?php echo $data->hos_num ?></b>
         </td>
         <td>Operation Side<p>

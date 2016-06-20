@@ -90,13 +90,13 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             ->where("op.event_id = {$id}")
             ->queryAll();
 
-
+        $this->event_id = $id;
         $this->eye_id = $booking->eye_id;
         $this->eye_side = $eyes[$this->eye_id];
         $this->predicted_additional_equipment = $booking->special_equipment_details;
         $this->comments = ($anterior) ? $anterior->attributes[$eyeLabel.'_description'] : '';
         $this->patient_name = $contact['title'].' '.$contact['first_name'].' '.$contact['last_name'];
-        $this->date_of_birth = date('j M Y', strtotime($patient['dob']));
+        $this->date_of_birth = $patient['dob'];
         $this->hos_num = $patient['hos_num'];
         $this->procedure = implode(',', array_column($operation, 'term'));
         $this->allergies = $allergyString;
@@ -106,5 +106,6 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->alpha_blockers = $patient->hasRisk('Alpha blockers');
         $this->anticoagulants = $patient->hasRisk('Anticoagulants');
         $this->inr = 'None';
+        $this->save();
     }
 }

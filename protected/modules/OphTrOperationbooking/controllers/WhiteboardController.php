@@ -24,7 +24,7 @@ class WhiteboardController extends BaseModuleController
         return array(
             array('allow',
                 'actions' => array('view'),
-                'roles' => array('OprnViewClinical'),    // TODO: correct?
+                'roles' => array('OprnViewClinical'),
             ),
         );
     }
