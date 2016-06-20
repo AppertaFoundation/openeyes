@@ -19,6 +19,8 @@
 
 class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 {
+    public $eye_side;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -36,9 +38,8 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
     {
         return 'ophtroperationbooking_whiteboard';
     }
-    
 
-    protected function loadData($id)
+    public function loadData($id)
     {
         $booking = Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($id));
 
@@ -95,7 +96,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->predicted_additional_equipment = $booking->special_equipment_details;
         $this->comments = ($anterior) ? $anterior->attributes[$eyeLabel.'_description'] : '';
         $this->patient_name = $contact['title'].' '.$contact['first_name'].' '.$contact['last_name'];
-        $this->dob = date('j M Y', strtotime($patient['dob']));
+        $this->date_of_birth = date('j M Y', strtotime($patient['dob']));
         $this->hos_num = $patient['hos_num'];
         $this->procedure = implode(',', array_column($operation, 'term'));
         $this->allergies = $allergyString;
@@ -105,76 +106,5 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->alpha_blockers = $patient->hasRisk('Alpha blockers');
         $this->anticoagulants = $patient->hasRisk('Anticoagulants');
         $this->inr = 'None';
-    }
-
-    public function fetch($id)
-    {
-        $booking = Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($id));
-
-        $eyes = CHtml::listData(Eye::model()->findAll(), 'id', 'name');
-        if($eyes[$booking->eye_id] === 'Both'){
-            throw new CHttpException(400, 'Can\'t display whiteboard for dual eye bookings');
-        }
-        $eyeLabel = strtolower($eyes[$booking->eye_id]);
-
-        $event = Event::model()->findByPk($id);
-        $episode = Episode::model()->findByPk($event->episode_id);
-        $patient = Patient::model()->findByPk($episode->patient_id);
-        $contact = Contact::model()->findByPk($patient->contact_id);
-
-        $biometryCriteria = new CDbCriteria();
-        $biometryCriteria->addCondition('patient_id = :patient_id');
-        $biometryCriteria->params = array('patient_id' => $patient->id);
-        $biometryCriteria->order = 'last_modified_date DESC';
-        $biometryCriteria->limit = 1;
-        $biometry = Element_OphTrOperationnote_Biometry::model()->find($biometryCriteria);
-
-        $examination = $event->getPreviousInEpisode(EventType::model()->findByAttributes(array('name' => 'Examination'))->id);
-        $management = new \OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement();
-        $anterior = new \OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment();
-        if($examination){
-            $management = $management->findByAttributes(array('event_id' => $examination->id));
-            $anterior = $anterior->findByAttributes(array('event_id' => $examination->id));
-        }
-
-        $allergies = Yii::app()->db->createCommand()
-            ->select('a.name as name')
-            ->from('patient_allergy_assignment pas')
-            ->leftJoin('allergy a', 'pas.allergy_id = a.id')
-            ->where("pas.patient_id = {$episode->patient_id}")
-            ->order('a.name')
-            ->queryAll();
-
-        $allergyString = 'None';
-        if($allergies){
-            $allergyString = implode(',', array_column($allergies, 'name'));
-        }
-
-        $operation = Yii::app()->db->createCommand()
-            ->select('proc.term as term')
-            ->from('et_ophtroperationbooking_operation op')
-            ->leftJoin('ophtroperationbooking_operation_procedures_procedures opp', 'opp.element_id = op.id')
-            ->leftJoin('proc', 'opp.proc_id = proc.id')
-            ->where("op.event_id = {$id}")
-            ->queryAll();
-
-
-        $data['eye_id'] = $booking->eye_id;
-        $data['eye_side'] = $eyes[$data['eye_id']];
-        $data['predicted_additional_equipment'] = $booking->special_equipment_details;
-        $data['comments'] = ($anterior) ? $anterior->attributes[$eyeLabel.'_description'] : '';
-        $data['patient_name'] = $contact['title'].' '.$contact['first_name'].' '.$contact['last_name'];
-        $data['dob'] = date('j M Y', strtotime($patient['dob']));
-        $data['hos_num'] = $patient['hos_num'];
-        $data['procedure'] = implode(',', array_column($operation, 'term'));
-        $data['allergies'] = $allergyString;
-        $data['iol_model'] = ($biometry) ? $biometry->attributes['lens_description_'.$eyeLabel] : 'Unknown';
-        $data['iol_power'] = ($biometry) ? $biometry->attributes['iol_power_'.$eyeLabel] : 'none';
-        $data['predicted_refractive_outcome'] = ($management) ? $management->target_postop_refraction : '';
-        $data['alpha_blockers'] = $patient->hasRisk('Alpha blockers');
-        $data['anticoagulants'] = $patient->hasRisk('Anticoagulants');
-        $data['inr'] = 'None';
-
-        return $data;
     }
 }

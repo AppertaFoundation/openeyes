@@ -31,7 +31,11 @@ class WhiteboardController extends BaseModuleController
 
     public function actionView($id)
     {
-        $data = OphTrOperationbooking_Whiteboard::model()->fetch($id);
-        $this->renderPartial('view', array('data' => $data));
+        $whiteboard = OphTrOperationbooking_Whiteboard::model()->findByAttributes(array('event_id' => $id));
+        if(!$whiteboard){
+            $whiteboard = new OphTrOperationbooking_Whiteboard();
+            $whiteboard->loadData($id);
+        }
+        $this->renderPartial('view', array('data' => $whiteboard));
     }
 }

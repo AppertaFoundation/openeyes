@@ -18,6 +18,7 @@ class m160615_104222_OE5989_create_whiteboard extends OEMigration
 				'iol_model' => 'varchar(255)',
 				'iol_power' => 'varchar(15)',
 				'predicted_additional_equipment' => 'varchar(255)',
+				'predicted_refractive_outcome' => 'decimal(5,2)',
 				'comments' => 'text',
 				'alpha_blockers' => 'tinyint',
 				'anticoagulants' => 'tinyint',

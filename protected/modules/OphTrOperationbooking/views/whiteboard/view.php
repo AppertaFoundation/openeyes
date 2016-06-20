@@ -34,47 +34,47 @@
     <tr valign='top'>
         <td>Patient details<p>
                 <b><?php echo $data['patient_name'] ?>
-                    <br/><?php echo $data['dob'] ?>
-                    <br/><?php echo $data['hos_num'] ?></b>
+                    <br/><?php echo $data->date_of_birth ?>
+                    <br/><?php echo $data->hos_num ?></b>
         </td>
         <td>Operation Side<p>
-                <b><?php echo $data['eye_side'] ?></b>
+                <b><?php echo $data->eye_side ?></b>
         </td>
         <td>Operation Type<p>
-                <b><?php echo $data['procedure'] ?></b>
+                <b><?php echo $data->procedure ?></b>
         </td>
     </tr>
     <tr valign='top'>
         <td class='highlight'>IOL Model<p>
-                <b><?php echo $data['iol_model'] ?></b>
+                <b><?php echo $data->iol_model ?></b>
         </td>
         <td class='highlight'>IOL Power<p>
-                <b><?php echo $data['iol_power'] ?></b>
+                <b><?php echo $data->iol_power ?></b>
         </td>
         <td>Predicted refractive outcome<p>
-                <b><?php echo $data['predicted_refractive_outcome'] ?></b>
+                <b><?php echo $data->predicted_refractive_outcome ?></b>
         </td>
     </tr>
     <tr valign='top'>
         <td class='highlight'>Allergies<p>
-                <b><?php echo nl2br($data['allergies']) ?></b>
+                <b><?php echo nl2br($data->allergies) ?></b>
         </td>
         <td>Alpha-blockers<p>
-                <b><?php echo $data['alpha_blockers'] ?></b>
+                <b><?php echo $data->alpha_blockers ?></b>
         </td>
         <td>Predicted additional equipment<p>
-                <b><?php echo nl2br($data['predicted_additional_equipment']) ?></b>
+                <b><?php echo nl2br($data->predicted_additional_equipment) ?></b>
         </td>
     </tr>
     <tr>
         <td>Anticoagulants<p>
-                <b><?php echo $data['anticoagulants'] ?></b>
+                <b><?php echo $data->anticoagulants ?></b>
             <p>INR
             <p>
-                <b><?php echo $data['inr'] ?></b>
+                <b><?php echo $data->inr ?></b>
         </td>
         <td colspan='2'>Comments<p>
-                <b><?php echo nl2br($data['comments']) ?></b>
+                <b><?php echo nl2br($data->comments) ?></b>
         </td>
     </tr>
 </table>
