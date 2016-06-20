@@ -152,6 +152,8 @@ $config = array(
 		//'worklist_always_allow_definition_edit' => bool
 		// whether we should render empty worklists in the dashboard or not
 		//'worklist_show_empty' => bool
+		// allow duplicate entries on an automatic worklist for a patient
+		//'worklist_allow_duplicate_patients' => bool
 	),
 );
 

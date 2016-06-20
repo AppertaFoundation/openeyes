@@ -69,6 +69,13 @@ class WorklistManager extends CComponent
     protected static $DEFAULT_SHOW_EMPTY = true;
 
     /**
+     * Whether patients can be added to the same automatic worklist more than once
+     *
+     * @var bool
+     */
+    protected static $DEFAULT_DUPLICATE_PATIENTS = false;
+
+    /**
      * Internal store of error messages
      *
      * @var array
@@ -280,6 +287,16 @@ class WorklistManager extends CComponent
         return !is_null($this->getAppParam('worklist_show_empty')) ?
             $this->getAppParam('worklist_show_empty')
             : self::$DEFAULT_SHOW_EMPTY;
+    }
+
+    /**
+     * @return bool
+     */
+    public function allowDuplicatePatients()
+    {
+        return !is_null($this->getAppParam('worklist_allow_duplicate_patients')) ?
+            $this->getAppParam('worklist_allow_duplicate_patients')
+            : self::$DEFAULT_DUPLICATE_PATIENTS;
     }
 
     /**
@@ -706,7 +723,7 @@ class WorklistManager extends CComponent
     {
         $this->reset();
 
-        if ($this->getWorklistPatient($worklist, $patient)) {
+        if (!$this->allowDuplicatePatients() && $this->getWorklistPatient($worklist, $patient)) {
             $this->addError("Patient is already on the given worklist.");
             return null;
         }

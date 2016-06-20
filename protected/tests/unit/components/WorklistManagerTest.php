@@ -36,13 +36,17 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
     {
         $manager = $this->getMockBuilder('WorklistManager')
             ->disableOriginalConstructor()
-            ->setMethods(array('getWorklistPatient'))
+            ->setMethods(array('allowDuplicatePatients','getWorklistPatient'))
             ->getMock();
 
         $worklist = new Worklist();
         $patient = new Patient();
 
-        $manager->expects($this->any())
+        $manager->expects($this->once())
+            ->method('allowDuplicatePatients')
+            ->will($this->returnValue(false));
+
+        $manager->expects($this->once())
             ->method('getWorklistPatient')
             ->with($worklist, $patient)
             ->will($this->returnValue(new WorklistPatient()));
@@ -82,12 +86,40 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($manager->hasErrors());
     }
 
-    public function test_adding_patient_to_worklist_succeeds()
+    public function adding_patient_to_worklist_succeeds_provider()
+    {
+        return array(
+            array(true),
+            array(false)
+        );
+    }
+    /**
+     * @dataProvider adding_patient_to_worklist_succeeds_provider
+     * @param $duplicate
+     */
+    public function test_adding_patient_to_worklist_succeeds($duplicate)
     {
         $manager = $this->getMockBuilder('WorklistManager')
             ->disableOriginalConstructor()
-            ->setMethods(array('getInstanceForClass', 'startTransaction', 'audit'))
+            ->setMethods(array('allowDuplicatePatients','getWorklistPatient', 'getInstanceForClass', 'startTransaction', 'audit'))
             ->getMock();
+
+        $patient = new Patient();
+        $worklist = new Worklist();
+
+        $manager->expects($this->once())
+            ->method('allowDuplicatePatients')
+            ->will($this->returnValue($duplicate));
+
+        if ($duplicate) {
+            $manager->expects($this->never())
+                ->method('getWorklistPatient');
+        } else {
+            $manager->expects($this->once())
+                ->method('getWorklistPatient')
+                ->with($worklist, $patient)
+                ->will($this->returnValue(null));
+        }
 
         $wp = $this->getMockBuilder('WorklistPatient')
             ->disableOriginalConstructor()
@@ -108,9 +140,6 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
 
         $manager->expects($this->once())
             ->method('audit');
-
-        $patient = new Patient();
-        $worklist = new Worklist();
 
         $this->assertEquals($wp, $manager->addPatientToWorklist($patient, $worklist));
         $this->assertFalse($manager->hasErrors());
