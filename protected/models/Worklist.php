@@ -147,7 +147,10 @@ class Worklist extends BaseActiveRecordVersioned
         if (!is_null($this->automatic))
         {
             if ($this->automatic) {
-                $criteria->addCondition('worklist_definition_id IS NOT NULL');
+                $criteria->addCondition('t.worklist_definition_id IS NOT NULL');
+                // add the worklist definition to the query to access it's relative display order
+                $this->with('worklist_definition');
+                $criteria->order .= ", worklist_definition.display_order asc";
             }
             else {
                 $criteria->addCondition('worklist_definition_id IS NULL');

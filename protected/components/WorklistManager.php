@@ -599,7 +599,7 @@ class WorklistManager extends CComponent
         $model = $this->getModelForClass('Worklist');
         $model->automatic = true;
         $model->on = $when;
-        foreach ($model->with('worklist_patients')->search(false)->getData() as $wl) {
+        foreach ($model->with(array('worklist_definition','worklist_definition.display_contexts', 'worklist_patients'))->search(false)->getData() as $wl) {
             if ($this->shouldDisplayWorklistForContext($wl, $site, $firm))
                 $worklists[] = $wl;
         }
