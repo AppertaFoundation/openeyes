@@ -19,8 +19,8 @@
 <body>
 <div class="mdl-grid">
     <div class="mdl-cell mdl-cell--4-col">
-        <div class="demo-card-square mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand">
+        <div class="mdl-card mdl-shadow--2dp">
+            <div class="mdl-card__title mdl-card--expand patient">
                 <h2 class="mdl-card__title-text">Patient Details</h2>
             </div>
             <div class="mdl-card__supporting-text">
@@ -31,8 +31,8 @@
         </div>
     </div>
     <div class="mdl-cell mdl-cell--4-col">
-        <div class="demo-card-square mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand">
+        <div class="mdl-card mdl-shadow--2dp">
+            <div class="mdl-card__title mdl-card--expand patient">
                 <h2 class="mdl-card__title-text">Operation Side</h2>
             </div>
             <div class="mdl-card__supporting-text">
@@ -41,8 +41,8 @@
         </div>
     </div>
     <div class="mdl-cell mdl-cell--4-col">
-        <div class="demo-card-square mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand">
+        <div class="mdl-card mdl-shadow--2dp">
+            <div class="mdl-card__title mdl-card--expand patient">
                 <h2 class="mdl-card__title-text">Operation Type</h2>
             </div>
             <div class="mdl-card__supporting-text">
@@ -51,8 +51,8 @@
         </div>
     </div>
     <div class="mdl-cell mdl-cell--4-col">
-        <div class="demo-card-square mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand">
+        <div class="mdl-card mdl-shadow--2dp">
+            <div class="mdl-card__title mdl-card--expand biometry">
                 <h2 class="mdl-card__title-text">IOL Model</h2>
             </div>
             <div class="mdl-card__supporting-text">
@@ -61,8 +61,8 @@
         </div>
     </div>
     <div class="mdl-cell mdl-cell--4-col">
-        <div class="demo-card-square mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand">
+        <div class="mdl-card mdl-shadow--2dp">
+            <div class="mdl-card__title mdl-card--expand biometry">
                 <h2 class="mdl-card__title-text">IOL Power</h2>
             </div>
             <div class="mdl-card__supporting-text">
@@ -71,8 +71,8 @@
         </div>
     </div>
     <div class="mdl-cell mdl-cell--4-col">
-        <div class="demo-card-square mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand">
+        <div class="mdl-card mdl-shadow--2dp">
+            <div class="mdl-card__title mdl-card--expand biometry">
                 <h2 class="mdl-card__title-text">Predicted refractive outcome</h2>
             </div>
             <div class="mdl-card__supporting-text">
@@ -81,8 +81,8 @@
         </div>
     </div>
     <div class="mdl-cell mdl-cell--4-col">
-        <div class="demo-card-square mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand">
+        <div class="mdl-card mdl-shadow--2dp">
+            <div class="mdl-card__title mdl-card--expand risk">
                 <h2 class="mdl-card__title-text">Allergies</h2>
             </div>
             <div class="mdl-card__supporting-text">
@@ -91,18 +91,22 @@
         </div>
     </div>
     <div class="mdl-cell mdl-cell--4-col">
-        <div class="demo-card-square mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand">
+        <div class="mdl-card mdl-shadow--2dp">
+            <div class="mdl-card__title mdl-card--expand risk">
                 <h2 class="mdl-card__title-text">Alpha-blockers</h2>
             </div>
             <div class="mdl-card__supporting-text">
-                <?=$data->alpha_blockers?>
+                <?php if($data->alpha_blockers):?>
+                    Yes
+                <?php else: ?>
+                    No
+                <?php endif;?>
             </div>
         </div>
     </div>
     <div class="mdl-cell mdl-cell--4-col">
-        <div class="demo-card-square mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand">
+        <div class="mdl-card mdl-shadow--2dp">
+            <div class="mdl-card__title mdl-card--expand comment">
                 <h2 class="mdl-card__title-text">Predicted additional equipment</h2>
             </div>
             <div class="mdl-card__supporting-text">
@@ -111,18 +115,22 @@
         </div>
     </div>
     <div class="mdl-cell mdl-cell--4-col">
-        <div class="demo-card-square mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand">
+        <div class="mdl-card mdl-shadow--2dp">
+            <div class="mdl-card__title mdl-card--expand risk">
                 <h2 class="mdl-card__title-text">Anticoagulants</h2>
             </div>
             <div class="mdl-card__supporting-text">
-                <?=$data->anticoagulants?>
+                <?php if($data->anticoagulants):?>
+                Yes
+                <?php else: ?>
+                No
+                <?php endif;?>
             </div>
         </div>
     </div>
     <div class="mdl-cell mdl-cell--8-col">
-        <div class="demo-card-square mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand">
+        <div class="mdl-card mdl-shadow--2dp">
+            <div class="mdl-card__title mdl-card--expand comment">
                 <h2 class="mdl-card__title-text">Comments</h2>
             </div>
             <div class="mdl-card__supporting-text">

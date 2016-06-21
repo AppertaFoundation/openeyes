@@ -18,5 +18,24 @@
 .mdl-grid {
   .mdl-card {
     width: 100%;
+    .mdl-card__title {
+      color: #fff;
+      &.patient {
+        background-color: rgb(63,81,181);
+      }
+      &.biometry{
+        background-color: rgb(165,61,204);
+      }
+      &.risk {
+        background-color: rgb(194,63,58);
+      }
+      &.comment{
+        background-color: rgb(51,194,61);
+      }
+    }
+    .mdl-card__supporting-text {
+      min-height: 100px;
+      font-size: 18px;
+    }
   }
 }

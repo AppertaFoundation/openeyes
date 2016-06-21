@@ -2,3 +2,28 @@
 .mdl-grid .mdl-card {
   width: 100%;
 }
+/* line 21, ../sass/whiteboard.scss */
+.mdl-grid .mdl-card .mdl-card__title {
+  color: #fff;
+}
+/* line 23, ../sass/whiteboard.scss */
+.mdl-grid .mdl-card .mdl-card__title.patient {
+  background-color: #3f51b5;
+}
+/* line 26, ../sass/whiteboard.scss */
+.mdl-grid .mdl-card .mdl-card__title.biometry {
+  background-color: #a53dcc;
+}
+/* line 29, ../sass/whiteboard.scss */
+.mdl-grid .mdl-card .mdl-card__title.risk {
+  background-color: #c23f3a;
+}
+/* line 32, ../sass/whiteboard.scss */
+.mdl-grid .mdl-card .mdl-card__title.comment {
+  background-color: #33c23d;
+}
+/* line 36, ../sass/whiteboard.scss */
+.mdl-grid .mdl-card .mdl-card__supporting-text {
+  min-height: 100px;
+  font-size: 18px;
+}
