@@ -197,11 +197,17 @@ class WorklistManager extends CComponent
             $this->yii->params[$name] : null;
     }
 
+    /**
+     * Simple function for use during bulk procesess
+     */
     public function disableAudit()
     {
         $this->do_audit = false;
     }
 
+    /**
+     * Re-enable after disabling auditing
+     */
     public function enableAudit()
     {
         $this->do_audit = true;
@@ -366,10 +372,10 @@ class WorklistManager extends CComponent
     }
 
     /**
-     * @param $definition
+     * @param WorklistDefinition $definition
      * @return bool
      */
-    public function saveWorklistDefinition($definition)
+    public function saveWorklistDefinition(WorklistDefinition $definition)
     {
         if (!$this->canUpdateWorklistDefinition($definition)) {
             $this->addError("cannot save Definition that is un-editable");
@@ -381,8 +387,11 @@ class WorklistManager extends CComponent
         $transaction = $this->startTransaction();
 
         try {
-            if (!$definition->save())
+            if (!$definition->save()) {
+                $this->addModelErrors($definition->getErrors());
                 throw new Exception("Couldn't save definition");
+            }
+
 
             $this->audit(self::$AUDIT_TARGET_AUTO, $action, array(
                 'worklist_definition_id' => $definition->id
@@ -516,7 +525,7 @@ class WorklistManager extends CComponent
 
             // save call must force the parent class to accept the set owner id
             if (!$worklist->save(true, null, true)) {
-                // TODO: handle different error structure (i.e. the model errors)
+                $this->addModelErrors($worklist->getErrors());
                 throw new Exception("Could not create Worklist.");
             }
 
@@ -1315,6 +1324,18 @@ class WorklistManager extends CComponent
     protected function reset()
     {
         $this->errors = array();
+    }
+
+    /**
+     * @param $errors
+     */
+    protected function addModelErrors($errors)
+    {
+        foreach ($errors as $fld => $errs) {
+            foreach ($errs as $message) {
+                $this->addError("{$fld}: {$message}");
+            }
+        }
     }
 
     /**
