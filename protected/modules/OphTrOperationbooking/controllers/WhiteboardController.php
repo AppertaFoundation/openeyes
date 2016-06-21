@@ -17,25 +17,48 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-class WhiteboardController extends BaseModuleController
+class WhiteboardController extends BaseDashboardController
 {
     public function accessRules()
     {
         return array(
             array('allow',
-                'actions' => array('view'),
+                'actions' => array('view', 'reload'),
                 'roles' => array('OprnViewClinical'),
             ),
         );
     }
 
+    public function beforeAction($action)
+    {
+        $before = parent::beforeAction($action);
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1);
+        Yii::app()->clientScript->registerCssFile($assetPath.'/css/whiteboard.css');
+
+        return $before;
+    }
+
     public function actionView($id)
     {
+
         $whiteboard = OphTrOperationbooking_Whiteboard::model()->findByAttributes(array('event_id' => $id));
         if(!$whiteboard){
             $whiteboard = new OphTrOperationbooking_Whiteboard();
             $whiteboard->loadData($id);
         }
+
+        $this->renderPartial('view', array('data' => $whiteboard), false, true);
+    }
+
+    public function actionReload($id)
+    {
+        $whiteboard = OphTrOperationbooking_Whiteboard::model()->findByAttributes(array('event_id' => $id));
+        if(!$whiteboard){
+            throw new CHttpException(400, 'No whiteboard found for reload with id '.$id);
+        }
+
+        $whiteboard->loadData($id);
+
         $this->renderPartial('view', array('data' => $whiteboard));
     }
 }

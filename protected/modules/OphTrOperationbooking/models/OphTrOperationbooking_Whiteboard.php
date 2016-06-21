@@ -19,7 +19,6 @@
 
 class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 {
-    public $eye_side;
 
     /**
      * Returns the static model of the specified AR class.
@@ -29,6 +28,13 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
     public static function model($className = __CLASS__)
     {
         return parent::model($className);
+    }
+
+    public function relations()
+    {
+        return array(
+            'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
+        );
     }
 
     /**
@@ -43,11 +49,11 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
     {
         $booking = Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($id));
 
-        $eyes = CHtml::listData(Eye::model()->findAll(), 'id', 'name');
-        if($eyes[$booking->eye_id] === 'Both'){
+        $eye = Eye::model()->findByPk($booking->eye_id);
+        if($eye->name === 'Both'){
             throw new CHttpException(400, 'Can\'t display whiteboard for dual eye bookings');
         }
-        $eyeLabel = strtolower($eyes[$booking->eye_id]);
+        $eyeLabel = strtolower($eye->name);
 
         $event = Event::model()->findByPk($id);
         $episode = Episode::model()->findByPk($event->episode_id);
@@ -91,8 +97,8 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             ->queryAll();
 
         $this->event_id = $id;
-        $this->eye_id = $booking->eye_id;
-        $this->eye_side = $eyes[$this->eye_id];
+        $this->eye_id = $eye->id;
+        $this->eye = $eye;
         $this->predicted_additional_equipment = $booking->special_equipment_details;
         $this->comments = ($anterior) ? $anterior->attributes[$eyeLabel.'_description'] : '';
         $this->patient_name = $contact['title'].' '.$contact['first_name'].' '.$contact['last_name'];
