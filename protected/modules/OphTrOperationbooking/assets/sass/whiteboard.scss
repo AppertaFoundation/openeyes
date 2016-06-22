@@ -17,6 +17,7 @@
 
 .mdl-grid {
   .mdl-card {
+    min-height: 150px;
     width: 100%;
     .mdl-card__title {
       color: #fff;
@@ -34,8 +35,19 @@
       }
     }
     .mdl-card__supporting-text {
-      min-height: 100px;
+      min-height: 60px;
       font-size: 18px;
+      dl {
+        margin: 5px 0;
+        dt {
+          display: inline-block;
+          min-width: 150px;
+        }
+        dd {
+          display: inline-block;
+          margin: 0;
+        }
+      }
     }
   }
 }

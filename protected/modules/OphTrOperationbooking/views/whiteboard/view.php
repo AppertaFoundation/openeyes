@@ -24,9 +24,18 @@
                 <h2 class="mdl-card__title-text">Patient Details</h2>
             </div>
             <div class="mdl-card__supporting-text">
-                <?=$data->patient_name?> <br>
-                <?= date_create_from_format('Y-m-d', $data->date_of_birth)->format('j M Y'); ?> <br>
-                <?=$data->hos_num?>
+                <dl>
+                    <dt>Name</dt>
+                    <dd><?=$data->patient_name?></dd>
+                </dl>
+                <dl>
+                    <dt>Date of Birth</dt>
+                    <dd><?=date_create_from_format('Y-m-d', $data->date_of_birth)->format('j M Y')?></dd>
+                </dl>
+                <dl>
+                    <dt>Hospital Number</dt>
+                    <dd><?=$data->hos_num?></dd>
+                </dl>
             </div>
         </div>
     </div>
@@ -76,7 +85,7 @@
                 <h2 class="mdl-card__title-text">Predicted refractive outcome</h2>
             </div>
             <div class="mdl-card__supporting-text">
-                <?=$data->procedure?>
+                <?=$data->predicted_refractive_outcome?>
             </div>
         </div>
     </div>
@@ -110,7 +119,11 @@
                 <h2 class="mdl-card__title-text">Predicted additional equipment</h2>
             </div>
             <div class="mdl-card__supporting-text">
-                <?=nl2br($data->predicted_additional_equipment)?>
+                <?php if($data->predicted_additional_equipment): ?>
+                    <?=nl2br($data->predicted_additional_equipment)?>
+                <?php else:?>
+                    None
+                <?php endif;?>
             </div>
         </div>
     </div>
