@@ -213,11 +213,7 @@ $(document).ready(function(){
             }
         },
         close: function (event, ui) {
-            if ( ($('.ui-menu li').length > 1 ) && (Object.keys(patientMerge.patients.primary).length === 0 || Object.keys(patientMerge.patients.secondary).length === 0) ){
-                $("ul.ui-autocomplete").show();
-            } else {
-                $('#patient1-search-form').find('button').prop('disabled', false);
-            }
+            $('#patient1-search-form').find('button').prop('disabled', false);
         }
     });
     if(typeof dialog !== 'undefined' && dialog.length){
