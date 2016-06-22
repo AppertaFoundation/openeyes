@@ -90,7 +90,7 @@
     <table class="grid">
         <tbody>
             <tr>
-                <td><?php echo $form->labelEx($model, 'Header Logo'); ?> (500*100 dimension pixels)</td>
+                <td><?php echo $form->labelEx($model, 'Header Logo'); ?> (dimensions 500x100 pixels)</td>
                 <td><?php if (!empty($headerLogo)) { ?><img src="<?php echo $yourImageUrl . "/" . $headerLogo; ?>"  />
 
     <?php echo CHtml::link('Remove', "#", array("submit" => array('admin/deleteLogo/', 'header_logo' => $headerLogo), 'confirm' => 'Are you sure to delete header logo?', 'csrf' => true)); ?>
@@ -101,7 +101,7 @@
 
             </tr>
             <tr>
-                <td><?php echo $form->labelEx($model, 'Secondary Logo'); ?> (120*100 dimension pixels)</td>
+                <td><?php echo $form->labelEx($model, 'Secondary Logo'); ?> (dimensions 120x100 pixels)</td>
                 <td><?php if (!empty($secondaryLogo)) { ?><img src="<?php echo $yourImageUrl . "/" . $secondaryLogo; ?>" >
     <?php echo CHtml::link('Remove', "#", array("submit" => array('admin/deleteLogo/', 'secondary_logo' => $secondaryLogo), 'confirm' => 'Are you sure to delete secondary logo?', 'csrf' => true)); ?>
     <?php echo "<br/><br/><br/>";
