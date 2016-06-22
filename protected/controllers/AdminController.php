@@ -1636,21 +1636,42 @@ class AdminController extends BaseAdminController {
     public function actionLogo() {
         $logo = new Logo;
         if (isset($_FILES['Logo'])) {
-        $savePath = Yii::app()->basePath . '/runtime/';
-        
-        $filter = array_filter($_FILES['Logo']['name']);
-        foreach ($filter as $logoKey => $logoName) {
-        $uploadLogo = CUploadedFile::getInstance($logo, $logoKey);
-        $fileInfo = pathinfo($logoName);
-        foreach(glob($savePath . $logoKey) as $existingLogo) {
-            unlink($savePath . $existingLogo);
-        }
-        
-            $uploadLogo->saveAs($savePath . $logoKey . '.' . $fileInfo['extension']);
-        }
+            $savePath = Yii::app()->basePath . '/runtime/';
+            $fileFormats = array('jpg', 'jpeg', 'png', 'gif');
+            $filter = array_filter($_FILES['Logo']['name']);
 
-        Yii::app()->user->setFlash('success', "Logo Saved Successfully");
-        $this->redirect(array('/admin/logo'));
+            foreach ($filter as $logoKey => $logoName) {
+                $uploadLogo = CUploadedFile::getInstance($logo, $logoKey);
+                $fileInfo = pathinfo($logoName);
+                foreach (glob($savePath . $logoKey) as $existingLogo) {
+                    unlink($savePath . $existingLogo);
+                }
+                if (in_array($fileInfo['extension'], $fileFormats)) {
+                if ($logoKey == "header_logo") {
+                        $logoTemp = $_FILES['Logo']['tmp_name']['header_logo'];
+                        list($width, $height) = getimagesize($logoTemp);
+                        $condition = $height . "==100 && " . $width . "==500";
+                }
+                if ($logoKey == "secondary_logo") {
+                        $logoTemp = $_FILES['Logo']['tmp_name']['secondary_logo'];
+                        list($width, $height) = getimagesize($logoTemp);
+                        $condition = $height . "==100 && " . $width . "==120";
+                    }
+
+                    if ($condition) {
+
+                        $uploadLogo->saveAs($savePath . $logoKey . '.' . $fileInfo['extension']);
+                        Yii::app()->user->setFlash('success', "Logo Saved Successfully");
+                    } else {
+                        Yii::app()->user->setFlash('error', ' logo size must be defined dimension');
+                    }
+                } else {
+                    Yii::app()->user->setFlash('error', 'Upload valid image formats (jpg,jpeg,png,gif)');
+                }
+            }
+
+
+            $this->redirect(array('/admin/logo'));
         }
         $this->render('/admin/logo', array('model' => $logo));
     }
