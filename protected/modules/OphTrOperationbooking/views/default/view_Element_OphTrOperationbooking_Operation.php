@@ -305,13 +305,13 @@
 <?php }?>
 
 <?php
-$this->event_actions[] = EventAction::link(
-	"Display Whiteboard",
-	Yii::app()->createUrl('/'.$element->event->eventType->class_name.'/whiteboard/view/'.$element->event_id),
-	null,
-	array('class' => 'small button', 'target' => '_blank')
-);
 if ($element->isEditable()) {
+	$this->event_actions[] = EventAction::link(
+		"Display Whiteboard",
+		Yii::app()->createUrl('/'.$element->event->eventType->class_name.'/whiteboard/view/'.$element->event_id),
+		null,
+		array('class' => 'small button', 'target' => '_blank')
+	);
 	if (empty($element->booking)) {
 		if ($element->letterType && $this->checkPrintAccess()) {
 			$print_letter_options = null;

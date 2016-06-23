@@ -19,6 +19,11 @@
  */
 class WhiteboardController extends BaseDashboardController
 {
+    /**
+     * Define access rules for the controller
+     *
+     * @return array
+     */
     public function accessRules()
     {
         return array(
@@ -29,19 +34,42 @@ class WhiteboardController extends BaseDashboardController
         );
     }
 
+    /**
+     * Set up the CSS.
+     *
+     * We need to set up the CSS here, after the parent is called, because the parent class removes the previously
+     * registered scripts.
+     *
+     * @param CAction $action
+     * @return bool
+     */
     public function beforeAction($action)
     {
         $before = parent::beforeAction($action);
+        //core scripts
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets'), false, -1);
+        Yii::app()->clientScript->registerScriptFile($assetPath.'/components/mustache/mustache.js');
+        Yii::app()->clientScript->registerScriptFile($assetPath.'/js/dashboard/OpenEyes.Dialog.js');
+        Yii::app()->clientScript->registerScriptFile($assetPath.'/js/dashboard/whiteboard.js');
+
         $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1);
         Yii::app()->clientScript->registerCssFile($assetPath.'/css/whiteboard.css');
 
         return $before;
     }
 
+    /**
+     * View the whiteboard
+     *
+     * View the whiteboard data, if there is no data for this event we will collate and persist it in the model.
+     *
+     * @param $id
+     * @throws CException
+     * @throws CHttpException
+     */
     public function actionView($id)
     {
-
-        $whiteboard = OphTrOperationbooking_Whiteboard::model()->findByAttributes(array('event_id' => $id));
+        $whiteboard = OphTrOperationbooking_Whiteboard::model()->with('booking')->findByAttributes(array('event_id' => $id));
         if(!$whiteboard){
             $whiteboard = new OphTrOperationbooking_Whiteboard();
             $whiteboard->loadData($id);
@@ -50,15 +78,28 @@ class WhiteboardController extends BaseDashboardController
         $this->renderPartial('view', array('data' => $whiteboard), false, true);
     }
 
+    /**
+     * Reload the data for the whiteboard
+     *
+     * If the data is wrong we can reload it and update the database.
+     * 
+     * @param $id
+     * @throws CException
+     * @throws CHttpException
+     */
     public function actionReload($id)
     {
-        $whiteboard = OphTrOperationbooking_Whiteboard::model()->findByAttributes(array('event_id' => $id));
+        $whiteboard = OphTrOperationbooking_Whiteboard::model()->with('booking')->findByAttributes(array('event_id' => $id));
         if(!$whiteboard){
             throw new CHttpException(400, 'No whiteboard found for reload with id '.$id);
         }
 
+        if(!$whiteboard->booking->isEditable()){
+            throw new CHttpException(400, 'Whiteboard is not editable '.$id);
+        }
+
         $whiteboard->loadData($id);
 
-        $this->renderPartial('view', array('data' => $whiteboard));
+        $this->renderPartial('view', array('data' => $whiteboard), false, true);
     }
 }

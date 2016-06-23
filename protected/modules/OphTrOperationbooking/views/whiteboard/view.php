@@ -17,6 +17,27 @@
 </head>
 
 <body>
+<div>
+    <header class="mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-600">
+        <div class="mdl-layout__header-row">
+            <span class="mdl-layout-title">
+                Cataract WHO summary
+            </span>
+        </div>
+        <div class="mdl-layout-spacer"></div>
+        <div>
+            <?php if($data->booking->isEditable()):?>
+                <a class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
+                   id="refresh-button"
+                   href="/OphTrOperationbooking/whiteboard/reload/<?=$data->event_id?>"
+                   title="Valid as at <?=date_create_from_format('Y-m-d H:i:s', $data->last_modified_date)->format('j M Y H:i:s')?>">
+                    Refresh
+                    <i class="material-icons right">refresh</i>
+                </a>
+            <?php endif;?>
+        </div>
+    <header>
+</div>
 <div class="mdl-grid">
     <div class="mdl-cell mdl-cell--4-col">
         <div class="mdl-card mdl-shadow--2dp">
@@ -152,5 +173,6 @@
         </div>
     </div>
 </div>
+<div id="dialog-container"></div>
 </body>
 </html>

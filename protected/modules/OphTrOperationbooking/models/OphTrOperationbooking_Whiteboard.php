@@ -34,6 +34,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
     {
         return array(
             'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
+            'booking' => array(self::BELONGS_TO, 'Element_OphTrOperationbooking_Operation','', 'on'=>'t.event_id = booking.event_id', 'joinType'=>'INNER JOIN', 'alias'=>'booking'),
         );
     }
 
@@ -45,6 +46,13 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         return 'ophtroperationbooking_whiteboard';
     }
 
+    /**
+     * Collate the data and persist it to the table
+     *
+     * @param $id
+     * @throws CHttpException
+     * @throws Exception
+     */
     public function loadData($id)
     {
         $booking = Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($id));
@@ -97,6 +105,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             ->queryAll();
 
         $this->event_id = $id;
+        $this->booking = $booking;
         $this->eye_id = $eye->id;
         $this->eye = $eye;
         $this->predicted_additional_equipment = $booking->special_equipment_details;
