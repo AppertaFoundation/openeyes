@@ -31,8 +31,8 @@
 		)
 	))?>
 	<?php echo $form->errorSummary($session); ?>
-	<?php if (!$session->id) {?>
-		<?php echo $form->textField($session,'sequence_id',array(),array(),array('field'=>2))?>
+	<?php if ($session->sequence_id) {?>
+		<?php echo $form->textField($session,'sequence_id',array('readonly' => true),array(),array('field'=>2))?>
 	<?php }?>
 	<?php echo $form->dropDownList($session,'firm_id',Firm::model()->getListWithSpecialties(),array('empty'=>'- Emergency -'))?>
 	<?php echo $form->dropDownList($session,'theatre_id','OphTrOperationbooking_Operation_Theatre',array('empty'=>'- None -'))?>
