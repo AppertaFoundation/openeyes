@@ -701,7 +701,6 @@ class WorklistManager extends CComponent
             $valid_attributes = array();
             foreach ($worklist->mapping_attributes as $attr)
                 $valid_attributes[$attr->name] = $attr->id;
-            OELog::log(print_r($valid_attributes, true));
             foreach ($attributes as $attr => $val) {
                 if (!array_key_exists($attr, $valid_attributes))
                     throw new Exception("Unrecognised attribute {$attr} for {$worklist->name}");
