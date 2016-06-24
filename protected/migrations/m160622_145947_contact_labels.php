@@ -12,7 +12,11 @@ class m160622_145947_contact_labels extends OEMigration {
 
 
                 if (preg_match('/{SPECIALTY}/', $label)) {
-                    
+                    	if (!$specialty = Specialty::model()->find('code=?',array(Yii::app()->params['institution_specialty']))) {
+				echo 'Institution specialty not configured '.PHP_EOL;
+                                continue;
+			}
+	
                     $listItem = preg_replace('/{SPECIALTY}/', $specialty->adjective, $label);
                 } else {
                     $listItem = $label;
@@ -22,6 +26,11 @@ class m160622_145947_contact_labels extends OEMigration {
                         ->update('contact_label', array('display' => '1'), 'name=:name', array(':name' => $listItem));
             }
         }
+        
+        
+     
+
+        
     }
 
     public function down() {
