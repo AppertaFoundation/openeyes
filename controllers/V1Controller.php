@@ -25,6 +25,9 @@ class V1Controller extends \CController
     static protected $version = "V1";
     static protected $supported_formats = array('xml');
 
+    static public $UPDATE_ONLY_HEADER = 'HTTP_X_OE_UPDATE_ONLY';
+    static public $PARTIAL_RECORD_HEADER = 'HTTP_X_OE_PARTIAL_RECORD';
+
     /**
      * @var string output format defaults to xml
      */
@@ -106,6 +109,8 @@ class V1Controller extends \CController
             $this->sendResponse(403);
         }
 
+        \OELog::log(print_r($_GET, true));
+
         return parent::beforeAction($action);
     }
 
@@ -133,6 +138,34 @@ class V1Controller extends \CController
     {
         return "\\OEModule\\PASAPI\\resources\\{$resource_type}";
     }
+
+    /**
+     * Whether the request is an "updateOnly" request
+     *
+     * @return bool
+     */
+    public function getUpdateOnly()
+    {
+        if (!array_key_exists(static::$UPDATE_ONLY_HEADER, $_SERVER))
+            return false;
+
+        return (bool)$_SERVER[static::$UPDATE_ONLY_HEADER];
+    }
+
+    /**
+     * Whether the request is a partial record which only sets the fields that are provided
+     * on the given record
+     *
+     * @return bool
+     */
+    public function getPartialRecord()
+    {
+        if (!array_key_exists(static::$PARTIAL_RECORD_HEADER, $_SERVER))
+            return false;
+
+        return (bool)$_SERVER[static::$PARTIAL_RECORD_HEADER];
+    }
+
     /**
      * @param $resource_type
      * @param $id
@@ -150,7 +183,10 @@ class V1Controller extends \CController
         $body = \Yii::app()->request->rawBody;
 
         try {
-            $resource = $resource_model::fromXml(static::$version, $body);
+            $resource = $resource_model::fromXml(static::$version, $body, array(
+                'update_only' => $this->getUpdateOnly(),
+                'partial_record' => $this->getPartialRecord()
+            ));
 
             if ($resource->errors)
                 $this->sendErrorResponse(400, $resource->errors);
@@ -188,6 +224,7 @@ class V1Controller extends \CController
         }
         catch (\Exception $e)
         {
+            \OELog::log($e->getMessage());
             if (YII_DEBUG) {
                 $errors = $resource->errors;
                 $errors[] = $e->getMessage();

@@ -44,28 +44,14 @@ class PatientAppointment extends BaseResource
     /**
      * PatientAppointment constructor.
      * @param $version
-     * @param \WorklistManager|null $worklist_manager
+     * @param array $options
      */
-    public function __construct($version, \WorklistManager $worklist_manager = null)
+    public function __construct($version, $options = array())
     {
-        parent::__construct($version);
+        if (!isset($options['worklist_manager']))
+            $options['worklist_manager'] = new \WorklistManager();
 
-        if (is_null($worklist_manager))
-            $worklist_manager = new \WorklistManager();
-
-        $this->worklist_manager = $worklist_manager;
-    }
-
-    /**
-     * Wrapper for starting a transaction
-     *
-     * @return CDbTransaction|null
-     */
-    protected function startTransaction()
-    {
-        return \Yii::app()->db->getCurrentTransaction() === null
-            ? \Yii::app()->db->beginTransaction()
-            : null;
+        parent::__construct($version, $options);
     }
 
     /**

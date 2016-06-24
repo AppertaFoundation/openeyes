@@ -45,7 +45,15 @@ abstract class BaseResource
      */
     public $update_only = false;
 
-    public function __construct($version)
+    public $partial_record = false;
+
+    /**
+     * BaseResource constructor.
+     * @param $version
+     * @param array $options
+     * @throws \Exception
+     */
+    public function __construct($version, $options = array())
     {
         if (!$version) {
             throw new \Exception("Schema version required to create resource");
@@ -55,6 +63,10 @@ abstract class BaseResource
 
         if (!$this->schema)
             throw new \Exception("Schema not found for resource " . static::$resource_type);
+
+        foreach ($options as $key => $value)
+            $this->$key = $value;
+
     }
 
     /**
@@ -106,10 +118,12 @@ abstract class BaseResource
      *
      * @param $version
      * @param $xml
+     * @param array $options
+     *
      * @return null|BaseResource
      * @throws \Exception
      */
-    static public function fromXml($version, $xml)
+    static public function fromXml($version, $xml, $options = array())
     {
         $doc = new \DOMDocument();
         if (!$xml) return static::errorInit($version, array("Missing Resource Body"));
@@ -126,7 +140,7 @@ abstract class BaseResource
 
         static::remapValues($doc, XpathRemap::model()->findAllByXpath("/" . static::$resource_type));
 
-        $obj = static::fromXmlDom($version, $doc->documentElement);
+        $obj = static::fromXmlDom($version, $doc->documentElement, $options);
         $obj->addAuditData('input', \CHtml::encode($xml));
         return $obj;
     }
@@ -136,16 +150,18 @@ abstract class BaseResource
      *
      * @param $version
      * @param $element \DOMElement
+     * @param array $options
+     *
      * @return static
      * @throws \Exception
      */
-    static public function fromXmlDom($version, \DOMElement $element)
+    static public function fromXmlDom($version, \DOMElement $element, $options = array())
     {
         if ($element->tagName != static::$resource_type) {
             return static::errorInit($version, array("Mismatched root tag {$element->tagName} for resource type " . static::$resource_type));
         }
 
-        $obj = new static($version);
+        $obj = new static($version, $options);
 
         $obj->parseXml($element);
 
@@ -277,21 +293,39 @@ abstract class BaseResource
     }
 
     /**
+     * Wrapper for starting a transaction
+     *
+     * @return CDbTransaction|null
+     */
+    protected function startTransaction()
+    {
+        return \Yii::app()->db->getCurrentTransaction() === null
+            ? \Yii::app()->db->beginTransaction()
+            : null;
+    }
+
+    /**
      * @var PasApiAssignment
      */
     protected $assignment;
 
+    /**
+     * @param PasApiAssignment $assignment
+     */
     public function setAssignment(PasApiAssignment $assignment)
     {
         $this->assignment = $assignment;
         $this->id = $this->assignment->resource_id;
     }
 
+    /**
+     * @return PasApiAssignment
+     */
     public function getAssignment()
     {
         if (!$this->assignment && $this->id)
         {
-            $finder = $finder = new \OEModule\PASAPI\models\PasApiAssignment();
+            $finder = new \OEModule\PASAPI\models\PasApiAssignment();
             $this->assignment = $finder->findByResource(static::$resource_type, $this->id, static::$model_class);
         }
         return $this->assignment;
@@ -303,6 +337,24 @@ abstract class BaseResource
     }
 
     /**
+     * @param $model
+     * @param $model_key
+     * @param $resource_key
+     */
+    public function assignProperty($model, $model_key, $resource_key)
+    {
+        if ($this->partial_record && !property_exists($this, $resource_key))
+            return;
+
+        $model->$model_key = $this->getAssignedProperty($resource_key);
+    }
+
+    public function shouldValidateRequired()
+    {
+        return !$this->partial_record;
+    }
+
+    /**
      * Base validator of resource from schema definition
      *
      * @return bool
@@ -310,10 +362,14 @@ abstract class BaseResource
     public function validate()
     {
         foreach($this->schema as $tag => $defn) {
-            if (@$defn['required']) {
+            if ($this->shouldValidateRequired() && @$defn['required']) {
                 if (!property_exists($this, $tag)) {
                     $this->addError("{$tag} is required");
                 }
+            }
+            if (property_exists($this, $tag) && @$defn['choices']) {
+                if ($this->$tag && !in_array($this->$tag, $defn['choices']))
+                    $this->addError("Invalid value '{$this->$tag}' for {$tag}'");
             }
             if (isset($defn['resource']) && property_exists($this, $tag)) {
                 $resources_to_validate = is_array($this->$tag) ? $this->$tag : array($this->$tag);

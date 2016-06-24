@@ -211,6 +211,149 @@ EOF;
         $patient = Patient::model()->findByPk($id);
         $this->assertNotNull($patient);
         $this->assertEquals($new_hos_num, $patient->hos_num);
+    }
+
+    public function testUpdateOnlyHeaderDoesNotCreatePatient()
+    {
+        $xml = <<<EOF
+<Patient>
+    <NHSNumber>0123456789</NHSNumber>
+    <HospitalNumber>010101010010101</HospitalNumber>
+    <Title>MRS</Title>
+    <FirstName>Test</FirstName>
+    <Surname>API</Surname>
+    <DateOfBirth>1978-03-01</DateOfBirth>
+    <Gender>F</Gender>
+    <AddressList>
+        <Address>
+            <Line1>82 Scarisbrick Lane</Line1>
+            <Line2/>
+            <City>Bethersden</City>
+            <County>West Yorkshire</County>
+            <Postcode>QA88 2GC</Postcode>
+            <Country>GB</Country>
+            <Type>HOME</Type>
+        </Address>
+    </AddressList>
+    <TelephoneNumber>03040 6024378</TelephoneNumber>
+    <EthnicGroup>A</EthnicGroup>
+    <DateOfDeath/>
+    <PracticeCode>F001</PracticeCode>
+    <GpCode>G0102926</GpCode>
+</Patient>
+EOF;
+        $this->put("TESTUpdateOnly", $xml, array(
+            'X-OE-Update-Only' => 1
+        ));
+
+        $this->assertXPathFound("/Success");
+
+        $message = $this->xPathQuery("/Success//Message")->item(0)->nodeValue;
+
+        $this->assertEquals("Patient not created", $message);
+
+        $this->assertNull(Patient::model()->findByAttributes(
+            array('hos_num' => '010101010010101')));
 
     }
+
+    public function partialUpdate_Provider()
+    {
+        $xml = <<<EOF
+<Patient>
+    <NHSNumber>456789123</NHSNumber>
+    <HospitalNumber>4534563</HospitalNumber>
+    <Title>MRS</Title>
+    <FirstName>Partial</FirstName>
+    <Surname>Update</Surname>
+    <DateOfBirth>1982-03-01</DateOfBirth>
+    <Gender>F</Gender>
+    <AddressList>
+        <Address>
+            <Line1>82 Scarisbrick Lane</Line1>
+            <Line2/>
+            <City>Bethersden</City>
+            <County>West Yorkshire</County>
+            <Postcode>QA88 2GC</Postcode>
+            <Country>GB</Country>
+            <Type>HOME</Type>
+        </Address>
+    </AddressList>
+    <TelephoneNumber>03040 6024378</TelephoneNumber>
+    <EthnicGroup>A</EthnicGroup>
+    <DateOfDeath/>
+    <PracticeCode>F001</PracticeCode>
+    <GpCode>G0102926</GpCode>
+</Patient>
+EOF;
+        $original_expectation = array(
+            'title' => 'MRS',
+            'first_name' => 'Partial',
+            'gender' => 'F',
+            'nhs_num' => '456789123',
+            'hos_num' => '4534563'
+        );
+
+        return array(
+            array(
+                $xml,
+                "<Patient><Title>Mr</Title></Patient>",
+                array_merge(
+                    $original_expectation,
+                    array(
+                        'title' => 'Mr',
+                    )
+                )
+            ),
+            array(
+                $xml,
+                "<Patient><Title>Dr</Title><Gender>M</Gender></Patient>",
+                array_merge(
+                    $original_expectation,
+                    array(
+                        'title' => 'Dr',
+                        'gender' => 'M'
+                    )
+                )
+            ),
+            array(
+                $xml,
+                "<Patient><Gender/></Patient>",
+                array_merge(
+                    $original_expectation,
+                    array(
+                        'gender' => null
+                    )
+                )
+            )
+        );
+    }
+
+    /**
+     * @dataProvider partialUpdate_Provider
+     *
+     * @param $initial_put
+     * @param $partial_put
+     * @param $expected_values
+     */
+    public function testPartialUpdate($initial, $partial, $expected_values)
+    {
+        $this->put('PartialUpdate', $initial);
+
+        $id = $this->xPathQuery("/Success//Id")->item(0)->nodeValue;
+
+        $patient = Patient::model()->findByPk($id);
+        $this->assertNotNull($patient);
+
+        $this->put('PartialUpdate', $partial, array(
+            'X-OE-Partial-Record' => 1
+        ));
+
+        $patient = Patient::model()->findByPk($id);
+
+        foreach ($expected_values as $k => $v) {
+            $this->assertEquals($v, $patient->$k);
+        }
+    }
+
 }
