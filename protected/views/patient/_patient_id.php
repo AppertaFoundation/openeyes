@@ -76,8 +76,10 @@
 		<div class="large-4 column text-right patient-summary-anchor">
 			<?php echo CHtml::link('Patient Summary',array('/patient/view/'.$this->patient->id)); ?>
 		</div>
-		<div class="large-4 column clinical-summary-anchor">
-			<?php echo CHtml::link('Clinical Summary',array('/dashboard/oescape/'.$this->patient->id), array('target'=>'_blank')); ?>
-		</div>
+		<?php if(Yii::app()->params['allow_clinical_summary']){?>
+			<div class="large-4 column clinical-summary-anchor">
+				<?php echo CHtml::link('Clinical Summary',array('/dashboard/oescape/'.$this->patient->id), array('target'=>'_blank')); ?>
+			</div>
+		<?php }?>
 	</div>
 </div>
