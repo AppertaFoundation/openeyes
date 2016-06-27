@@ -302,6 +302,77 @@ select:focus {
   }
 }
 
+.mdl-layout__content #dash-grid .mdl-cell-top {
+  background-color: white;
+  padding: 0;
+  min-height: 430px;
+  height: 70%;
+  overflow: hidden;
+}
+
+.mdl-layout__content #dash-grid .mdl-cell-bottom {
+  background-color: white;
+  padding: 0;
+  min-height: 300px;
+  height: 30%;
+  overflow: hidden;
+}
+
+.mdl-layout__content #dash-grid .mdl-cell-top-right {
+  background-color: white;
+  padding: 0;
+  min-height: 427px;
+  height: 70%;
+  overflow: hidden;
+}
+
+.mdl-layout__content #dash-grid .mdl-cell-bottom-right {
+  background-color: white;
+  padding: 0;
+  min-height: 300px;
+  height: 30%;
+  width: 85%;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.mdl-tabs__tab-bar {
+  align-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: row;
+  height: 23px;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}
+
+.mdl-tabs__tab {
+  border: medium none;
+  color: rgba(0, 0, 0, 0.54);
+  display: block;
+  float: left;
+  font-size: 14px;
+  font-weight: 500;
+  height: 23px;
+  line-height: 23px;
+  margin: 0;
+  overflow: hidden;
+  padding: 0 24px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.mdl-layout__content #dash-grid .mdl-cell-side {
+  background-color: white;
+  padding: 0;
+  min-height: 700px;
+  height: 100%;
+}
+
 .nhs-number {
   background-color: #107ebd;
   background-image: url("../img/_elements/icons/nhs_tiny.png?1456827980");
@@ -319,33 +390,72 @@ select:focus {
   padding: 10px;
 }
 
+.openeyes-logo{
+  display: block;
+  float: left;
+}
+
 .vfthumbnail {
-  dispay: block;
-  max-width:350px;
-  max-height:350px;
-  width: auto;
-  height: auto;
-  vertical-align: middle;
+  width: 100%;
 }
 
-.icon-element {
-  background-image: url("../img/_elements/icons/_sprites/oescape_icons.png");
-  width: 26px;
-  height: 26px;
+.vfthumbnail-hidden{
+  width: 100%;
+  display: none;
 }
 
-.icon-female {
-  background-position: 0px 0px;
+.octimage-hidden{
+  display: none;
 }
 
-.icon-male {
-  background-position: 0px -50px;
+.regression_chart{
+  width: 100%;
+  display: block;
 }
 
-.icon-eye {
-  background-position: 0px -200px;
+.left-side{
+  display: block;
+  float: right;
+  width: 50%;
 }
 
-.icon-eye-impaired {
-  background-position: 0px -250px;
+.right-side{
+  display: block;
+  float: left;
+  width: 50%;
 }
+
+.side-title{
+  text-align: center;
+  font-weight: bold;
+  display: block;
+}
+
+.vfimage{
+  width: 70%;
+  margin: 0 auto;
+}
+
+.kowaimage{
+  width: 100%;
+  margin: 0 auto;
+}
+
+.vfcolorplot{
+  width: 55%;
+  margin: 0 auto;
+}
+
+.colorplot-hover{
+  border: 1px solid black;
+}
+
+.oescape-images{
+  background: white;
+  height: calc(100% - 23px);
+}
+
+.header-icon{
+  font-size: 32px;
+}
+
