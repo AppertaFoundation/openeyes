@@ -8,20 +8,20 @@
         ?>
     </span>
     <span>(<?php echo $this->patient->getAge(); ?>)</span>
-    <span class="icon-element
+    <span class="header-icon mdi
         <?php
             if($this->patient->gender == "F"){
-                echo "icon-female";
+                echo "mdi-human-female";
             }else if($this->patient->gender == "M"){
-                echo "icon-male";
+                echo "mdi-human-male";
             }?>">
     </span>
-    <span class="icon-element
+    <span class="header-icon mdi
         <?php
             if($this->patient->getOphInfo()->cvi_status_id == 1 || $this->patient->getOphInfo()->cvi_status_id == 2 ){
-                echo "icon-eye";
+                echo "mdi-eye";
             }else{
-                echo "icon-eye-impaired";
+                echo "mdi-eye-off";
             } ?>">
     </span>
     <section class="patient-details">
