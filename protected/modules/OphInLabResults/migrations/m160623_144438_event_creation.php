@@ -4,22 +4,60 @@ class m160623_144438_event_creation extends OEMigration
 {
     public function up()
     {
-        $this->insertOEEventType('Lab Results', 'OphInLabResults', 'In');
+        $labResultsEvent = $this->insertOEEventType('Lab Results', 'OphInLabResults', 'In');
+        $labResultsElement = $this->insertOEElementType(array('Element_OphInLabResults_Details' => array(
+            'name' => 'Details',
+            'required' => 1,
+        )), $labResultsEvent);
+
+        $this->createOETable(
+            'ophinlabresults_type',
+            array(
+                'id' => 'pk',
+                'type' => 'varchar(255) not null',
+                'result_element_id' => 'int(10) unsigned',
+            ),
+            true
+        );
+
+        $this->addForeignKey('labresults_type_result_element', 'ophinlabresults_type', 'result_element_id', 'element_type', 'id');
+
+        $this->createOETable(
+            'et_ophinlabresults_details',
+            array(
+                'id' => 'pk',
+                'event_id' => 'int(10) unsigned',
+                'result_type_id' => 'int(11)',
+            ),
+            true
+        );
+
+        $this->addForeignKey('et_labresults_event_id', 'et_ophinlabresults_details', 'event_id', 'event', 'id');
+        $this->addForeignKey('et_labresults_type_result_element', 'et_ophinlabresults_details', 'result_type_id', 'ophinlabresults_type', 'id');
+
+        $this->createOETable(
+            'et_ophinlabresults_result_timed_numeric',
+            array(
+                'id' => 'pk',
+                'time' => 'time',
+                'result' => 'float'
+            ),
+            true
+        );
+
+        $this->insert('ophinlabresults_type', array(
+            'type' => 'INR',
+            'result_element_id' => $labResultsElement[0],
+        ));
     }
 
     public function down()
     {
+        $this->dropOETable('ophinlabresults_type', true);
+        $this->dropOETable('et_ophinlabresults_details', true);
+        $this->dropOETable('et_ophinlabresults_result_timed_numeric', true);
+        $labResultsEvent = $this->insertOEEventType('Lab Results', 'OphInLabResults', 'In');
+        $this->delete('element_type', 'event_type_id = ? ', array($labResultsEvent));
         $this->delete('event_type', 'name = "Lab Results"');
     }
-
-    /*
-    // Use safeUp/safeDown to do migration with transaction
-    public function safeUp()
-    {
-    }
-
-    public function safeDown()
-    {
-    }
-    */
 }
