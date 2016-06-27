@@ -34,7 +34,7 @@ class DashboardController extends BaseDashboardController
             ),
             array('allow',
                 'actions' => array('oescape'),
-                'roles' => array()
+                'roles' => array('none')
             ),
         );
     }
