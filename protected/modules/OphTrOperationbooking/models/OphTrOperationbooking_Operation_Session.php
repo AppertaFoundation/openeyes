@@ -409,6 +409,34 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
 				}
 			}
 		}
+		$criteria = new CDbCriteria;
+
+		$criteria->addCondition('theatre_id = :theatre_id');
+		$criteria->params[':theatre_id'] = $this->theatre_id;
+
+		$criteria->addInCondition('date',array($this->date));
+
+		$conflicts = array();
+		foreach ($this->findAll($criteria) as $session) {
+			$start = strtotime("$session->date $this->start_time");
+			$end = strtotime("$session->date $this->end_time");
+
+			$s_start = strtotime("$session->date $session->start_time");
+			$s_end = strtotime("$session->date $session->end_time");
+			if ($start < $s_end && $start >= $s_start) {
+				if (!isset($conflicts[$session->id]['start_time'])) {
+					$this->addError('start_time',"This start time conflicts with session $session->id");
+					$conflicts[$session->id]['start_time'] = 1;
+				}
+			}
+
+			if ($end > $s_start && $end <= $s_end) {
+				if (!isset($conflicts[$session->id]['end_time'])) {
+					$this->addError('end_time',"This end time conflicts with session $session->id");
+					$conflicts[$session->id]['end_time'] = 1;
+				}
+			}
+		}
 
 		return parent::beforeValidate();
 	}

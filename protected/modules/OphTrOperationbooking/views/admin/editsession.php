@@ -48,9 +48,9 @@
 	<?php } else {?>
 		<?php echo $form->datePicker($session,'date',array(),array(),array('field'=>2))?>
 	<?php }?>
-	<?php echo $form->textField($session,'start_time',array(),array(),array('field'=>2))?>
-	<?php echo $form->textField($session,'end_time',array(),array(),array('field'=>2))?>
-	<?php echo $form->textField($session,'default_admission_time',array(),array(),array('field'=>2))?>
+	<?php echo $form->textField($session,'start_time',array('class' => 'time-picker'),array(),array('field'=>2))?>
+	<?php echo $form->textField($session,'end_time',array('class' => 'time-picker'),array(),array('field'=>2))?>
+	<?php echo $form->textField($session,'default_admission_time',array('class' => 'time-picker'),array(),array('field'=>2))?>
 	<?php echo $form->textField($session, 'max_procedures', array(), array(), array('field'=>2)); ?>
 	<?php if ($current = $session->getBookedProcedureCount()) { ?>
 		<fieldset id="procedure_count_wrapper" class="row field-row<?php if ($session->max_procedures && $current > $session->max_procedures) { echo " warn"; }?>">
@@ -189,4 +189,5 @@
 		e.preventDefault();
 		$('#confirm_delete_session').dialog('close');
 	});
+	$('.time-picker').timepicker({ 'timeFormat': 'H:i:s', 'step' : 5 });
 </script>
