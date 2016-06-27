@@ -259,6 +259,7 @@ EOF;
 
     public function partialUpdate_Provider()
     {
+        // base xml patient to create for the test
         $xml = <<<EOF
 <Patient>
     <NHSNumber>456789123</NHSNumber>
@@ -286,12 +287,16 @@ EOF;
     <GpCode>G0102926</GpCode>
 </Patient>
 EOF;
+        // structure for expectation of values which can be merged with a new array to
+        // ensure a partial update request has worked as expected.
         $original_expectation = array(
             'title' => 'MRS',
             'first_name' => 'Partial',
+            'last_name' => 'Update',
             'gender' => 'F',
             'nhs_num' => '456789123',
-            'hos_num' => '4534563'
+            'hos_num' => '4534563',
+            'dob' => '1982-03-01'
         );
 
         return array(
@@ -325,8 +330,31 @@ EOF;
                         'gender' => null
                     )
                 )
+            ),
+            array(
+                $xml,
+                "<Patient><Gender/><DateOfBirth>1990-08-03</DateOfBirth></Patient>",
+                array_merge(
+                    $original_expectation,
+                    array(
+                        'gender' => null,
+                        'dob' => '1990-08-03'
+                    )
+                )
             )
         );
+    }
+
+    protected function assertExpectedValuesMatch($expected, $obj)
+    {
+        foreach ($expected as $k => $v) {
+            if (is_array($v)) {
+                $this->assertExpectedValuesMatch($v, $obj->$k);
+            }
+            else {
+                $this->assertEquals($v, $obj->$k);
+            }
+        }
     }
 
     /**
@@ -351,9 +379,7 @@ EOF;
 
         $patient = Patient::model()->findByPk($id);
 
-        foreach ($expected_values as $k => $v) {
-            $this->assertEquals($v, $patient->$k);
-        }
+        $this->assertExpectedValuesMatch($expected_values, $patient);
     }
 
 }
