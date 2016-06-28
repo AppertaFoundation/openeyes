@@ -17,6 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<section>
-    <?php echo $form->dropDownList($element, 'result_type_id', CHtml::listData(OphInLabResults_Type::model()->findAll(), 'id', 'type'), array('empty'=>'- Please select -'));?>
+<section class="element-fields">
+    <div class="large-6 column">
+        <?php echo $form->dropDownList($element, 'result_type_id', CHtml::listData(OphInLabResults_Type::model()->findAll(), 'id', 'type'), array('empty'=>'- Please select -'));?>
+    </div>
 </section>

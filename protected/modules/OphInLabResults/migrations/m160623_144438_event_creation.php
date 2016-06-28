@@ -5,9 +5,15 @@ class m160623_144438_event_creation extends OEMigration
     public function up()
     {
         $labResultsEvent = $this->insertOEEventType('Lab Results', 'OphInLabResults', 'In');
+
         $labResultsElement = $this->insertOEElementType(array('Element_OphInLabResults_Details' => array(
             'name' => 'Details',
             'required' => 1,
+        )), $labResultsEvent);
+
+        $resultElement = $this->insertOEElementType(array('Element_OphInLabResults_ResultTimedNumeric' => array(
+            'name' => 'Numeric Input',
+            'default' => '0',
         )), $labResultsEvent);
 
         $this->createOETable(
@@ -39,25 +45,31 @@ class m160623_144438_event_creation extends OEMigration
             'et_ophinlabresults_result_timed_numeric',
             array(
                 'id' => 'pk',
+                'event_id' => 'int(10) unsigned',
                 'time' => 'time',
-                'result' => 'float'
+                'result' => 'float',
+                'comment' => 'varchar(255)'
             ),
             true
         );
 
         $this->insert('ophinlabresults_type', array(
             'type' => 'INR',
-            'result_element_id' => $labResultsElement[0],
+            'result_element_id' => $resultElement[0],
         ));
     }
 
     public function down()
     {
-        $this->dropOETable('ophinlabresults_type', true);
         $this->dropOETable('et_ophinlabresults_details', true);
-        $this->dropOETable('et_ophinlabresults_result_timed_numeric', true);
+        $this->delete('ophinlabresults_type', 'id > 0');
         $labResultsEvent = $this->insertOEEventType('Lab Results', 'OphInLabResults', 'In');
-        $this->delete('element_type', 'event_type_id = ? ', array($labResultsEvent));
+        if($labResultsEvent){
+            $this->delete('element_type', 'event_type_id = ? ', array($labResultsEvent));
+        }
         $this->delete('event_type', 'name = "Lab Results"');
+        $this->dropOETable('ophinlabresults_type', true);
+        $this->dropOETable('et_ophinlabresults_result_timed_numeric', true);
+
     }
 }

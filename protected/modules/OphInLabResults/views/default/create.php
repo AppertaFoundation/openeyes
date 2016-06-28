@@ -12,7 +12,6 @@ $this->event_actions[] = EventAction::button('Save', 'save', array('level'=>'sav
 $this->displayErrors($errors)?>
 
 <?php $this->renderOpenElements($this->action->id, $form); ?>
-<?php $this->renderOptionalElements($this->action->id, $form); ?>
 
 <?php $this->displayErrors($errors, true)?>
 <?php $this->endWidget(); ?>
