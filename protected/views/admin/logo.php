@@ -28,11 +28,27 @@
         margin-bottom: 20px;
     }
 
+    .error{
+
+        border:1px solid #ff6666;
+        background: #ffe6e6;
+        text-align: center;
+        padding: 7px 15px ;
+        color: #000000;
+        margin-bottom: 20px;
+    }
 </style>
 <?php if (Yii::app()->user->hasFlash('success')): ?>
 
     <div class="flash-success">
         <?php echo Yii::app()->user->getFlash('success'); ?>
+    </div>
+
+<?php endif; ?>
+<?php if (Yii::app()->user->hasFlash('error')): ?>
+
+    <div class="error">
+        <?php echo Yii::app()->user->getFlash('error'); ?>
     </div>
 
 <?php endif; ?>
@@ -54,26 +70,28 @@
     echo $form->error($model, 'header_logo');
     echo $form->error($model, 'secondary_logo');
 
-    $path = Yii::app()->basePath . '/images/logo/';
+    $path = Yii::app()->basePath . '/runtime/';
     $yourImageUrl = Yii::app()->assetManager->publish($path);
-    $imageList = scandir($path, 1);
-
-    $headerPosition = strpos($imageList[1], "header");
-    $secondaryPosition = strpos($imageList[0], "secondary");
-    if ($headerPosition !== false) {
-        $headerLogo = $imageList[1];
-    }
-    if ($secondaryPosition !== false) {
-        $secondaryLogo = $imageList[0];
-    }
+    $imageLists = scandir($path, 1);
+    
+    
+    foreach ($imageLists as $imageList) {
+ if(strpos($imageList,"header") !== false) {
+        $headerLogo = $imageList;
+ }
+ if(strpos($imageList,"secondary") !== false)  {
+        $secondaryLogo = $imageList;
+        
+  }
+}
     ?>
 
 
     <table class="grid">
         <tbody>
             <tr>
-                <td><?php echo $form->labelEx($model, 'Header Logo'); ?></td>
-                <td><?php if (!empty($headerLogo)) { ?><img src="<?php echo $yourImageUrl . "/" . $headerLogo; ?>" width="100" height="100" />
+                <td><?php echo $form->labelEx($model, 'Header Logo'); ?> (dimensions 500x100 pixels)</td>
+                <td><?php if (!empty($headerLogo)) { ?><img src="<?php echo $yourImageUrl . "/" . $headerLogo; ?>"  />
 
     <?php echo CHtml::link('Remove', "#", array("submit" => array('admin/deleteLogo/', 'header_logo' => $headerLogo), 'confirm' => 'Are you sure to delete header logo?', 'csrf' => true)); ?>
     <?php echo "<br/><br/><br/>";
@@ -83,8 +101,8 @@
 
             </tr>
             <tr>
-                <td><?php echo $form->labelEx($model, 'Secondary Logo'); ?></td>
-                <td><?php if (!empty($secondaryLogo)) { ?><img src="<?php echo $yourImageUrl . "/" . $secondaryLogo; ?>" width="100" height="100">
+                <td><?php echo $form->labelEx($model, 'Secondary Logo'); ?> (dimensions 120x100 pixels)</td>
+                <td><?php if (!empty($secondaryLogo)) { ?><img src="<?php echo $yourImageUrl . "/" . $secondaryLogo; ?>" >
     <?php echo CHtml::link('Remove', "#", array("submit" => array('admin/deleteLogo/', 'secondary_logo' => $secondaryLogo), 'confirm' => 'Are you sure to delete secondary logo?', 'csrf' => true)); ?>
     <?php echo "<br/><br/><br/>";
 } ?> 
@@ -108,4 +126,5 @@
 <script type="text/javascript">
 
     $(".flash-success").delay(3000).fadeOut("slow");
+    $(".error").delay(5000).fadeOut("slow");
 </script>
