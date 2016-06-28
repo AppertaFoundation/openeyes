@@ -23,7 +23,10 @@ class Element_OphInLabResults_ResultTimedNumeric extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('time, result', 'safe')
+            array('time, result', 'required'),
+            array('result', 'numerical'),
+            array('time', 'type', 'type' => 'time', 'timeFormat'=>'hh:mm'),
+            array('event_id, time, result', 'safe'),
         );
     }
 

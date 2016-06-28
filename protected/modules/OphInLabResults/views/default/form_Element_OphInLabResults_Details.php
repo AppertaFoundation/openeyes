@@ -17,8 +17,20 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<section class="element-fields">
-    <div class="large-6 column">
-        <?php echo $form->dropDownList($element, 'result_type_id', CHtml::listData(OphInLabResults_Type::model()->findAll(), 'id', 'type'), array('empty'=>'- Please select -'));?>
+<section class="element-fields lab-results-type">
+    <div class="fields-row">
+        <div class="row field-row">
+            <div class="large-2 column">
+                <label for="Element_OphInLabResults_Details_result_type_id">Type:</label>
+            </div>
+            <div class="large-4 column end">
+                <select name="Element_OphInLabResults_Details[result_type_id]" id="Element_OphInLabResults_Details_result_type_id">
+                    <option>- Please select -</option>
+                    <?php foreach (OphInLabResults_Type::model()->findAll() as $type):?>
+                        <option data-element-id="<?=$type->result_element_id?>" value="<?=$type->id?>"><?=$type->type?></option>
+                    <?php endforeach;?>
+                </select>
+            </div>
+        </div>
     </div>
 </section>

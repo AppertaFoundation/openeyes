@@ -12,7 +12,7 @@ class m160623_144438_event_creation extends OEMigration
         )), $labResultsEvent);
 
         $resultElement = $this->insertOEElementType(array('Element_OphInLabResults_ResultTimedNumeric' => array(
-            'name' => 'Numeric Input',
+            'name' => 'Result',
             'default' => '0',
         )), $labResultsEvent);
 

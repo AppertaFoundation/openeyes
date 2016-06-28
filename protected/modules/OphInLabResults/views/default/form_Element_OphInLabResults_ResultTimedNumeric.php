@@ -17,14 +17,15 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<section class="element-fields">
-    <div class="large-4 column">
-        <?php echo $form->textField($element, 'time');?>
+
+<section id="result-output" class="element-fields">
+    <div class="fields-row">
+        <?php echo $form->textField($element, 'time', array(), array(), array('field' => 2));?>
     </div>
-    <div class="large-4 column">
-        <?php echo $form->textField($element, 'result');?>
+    <div class="fields-row">
+        <?php echo $form->textField($element, 'result', array(), array(), array('field' => 2));?>
     </div>
-    <div class="large-4 column">
-        <?php echo $form->textField($element, 'comment');?>
+    <div class="fields-row">
+        <?php echo $form->textField($element, 'comment', array(), array(), array('field' => 6));?>
     </div>
 </section>
