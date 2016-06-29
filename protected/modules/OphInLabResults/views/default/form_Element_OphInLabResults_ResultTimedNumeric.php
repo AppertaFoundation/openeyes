@@ -20,10 +20,10 @@
 
 <section id="result-output" class="element-fields">
     <div class="fields-row">
-        <?php echo $form->textField($element, 'time', array(), array(), array('field' => 2));?>
+        <?php echo $form->textField($element, 'time', array('type' => 'time'), array(), array('field' => 2));?>
     </div>
     <div class="fields-row">
-        <?php echo $form->textField($element, 'result', array(), array(), array('field' => 2));?>
+        <?php echo $form->textField($element, 'result', array('type' => 'number'), array(), array('field' => 2));?>
     </div>
     <div class="fields-row">
         <?php echo $form->textField($element, 'comment', array(), array(), array('field' => 6));?>
