@@ -17,10 +17,22 @@
 
 class DefaultController extends BaseEventTypeController
 {
+
     protected function initActionCreate()
     {
         parent::initActionCreate();
-        Yii::app()->assetManager->registerScriptFile('js/OpenEyes.Lab.Form.js',  'application.modules.OphInLabResults.assets');
+        $this->registerEditScripts();
+    }
+
+    protected function initActionUpdate()
+    {
+        parent::initActionUpdate();
+        $this->registerEditScripts();
+    }
+
+    protected function registerEditScripts()
+    {
+        Yii::app()->assetManager->registerScriptFile('js/OpenEyes.Lab.Form.js', 'application.modules.OphInLabResults.assets');
     }
 
 }

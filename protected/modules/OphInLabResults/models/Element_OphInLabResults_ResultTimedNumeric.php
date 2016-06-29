@@ -3,9 +3,13 @@
 /**
  * Class Element_OphInLabResults_ResultTimedNumeric
  */
-class Element_OphInLabResults_ResultTimedNumeric extends BaseEventTypeElement
+class Element_OphInLabResults_ResultTimedNumeric extends BaseLabResultElement
 {
-    public $useContainerView = false;
+
+    protected $htmlOptions = array(
+        'time' => array('type' => 'time'),
+        'result' => array('type' => 'number'),
+    );
 
     /**
      * @return string
@@ -53,4 +57,15 @@ class Element_OphInLabResults_ResultTimedNumeric extends BaseEventTypeElement
             'id' => 'ID',
         );
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function afterFind()
+    {
+        parent::afterFind();
+        //We aren't really interested in the microseconds and it breaks the validation on edit
+        $this->time = date_create_from_format('H:i:s', $this->time)->format('H:i');
+    }
+
 }

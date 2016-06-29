@@ -25,6 +25,7 @@ OpenEyes.Lab = OpenEyes.Lab || {};
     var option = e.target.options[e.target.selectedIndex];
 
     if(!option.dataset.elementId){
+      $('#result-output').parent().find('.js-remove-element').click();
       return false;
     }
 

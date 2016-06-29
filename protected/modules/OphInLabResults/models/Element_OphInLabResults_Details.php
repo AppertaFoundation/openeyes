@@ -20,7 +20,6 @@
 
 class Element_OphInLabResults_Details extends BaseEventTypeElement
 {
-    public $useContainerView = false;
 
     public function tableName()
     {

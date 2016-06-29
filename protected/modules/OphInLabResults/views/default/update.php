@@ -1,3 +1,4 @@
 <?php
-include __DIR__.'/create.php';
-?>
+$this->renderPartial('create', array(
+    'errors' => $errors
+));

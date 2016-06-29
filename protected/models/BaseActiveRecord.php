@@ -479,6 +479,7 @@ class BaseActiveRecord extends CActiveRecord
 
 	/**
 	 * Stores the data in an array afterFind so when saving we can check if the value is dirty or not.
+	 * @inheritdoc
 	 */
 	protected function afterFind()
 	{

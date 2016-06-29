@@ -6,14 +6,20 @@ class m160623_144438_event_creation extends OEMigration
     {
         $labResultsEvent = $this->insertOEEventType('Lab Results', 'OphInLabResults', 'In');
 
-        $labResultsElement = $this->insertOEElementType(array('Element_OphInLabResults_Details' => array(
+        $this->insertOEElementType(array('Element_OphInLabResults_Details' => array(
             'name' => 'Details',
             'required' => 1,
         )), $labResultsEvent);
 
-        $resultElement = $this->insertOEElementType(array('Element_OphInLabResults_ResultTimedNumeric' => array(
+        $this->insertOEElementType(array('Element_OphInLabResults_ResultTimedNumeric' => array(
             'name' => 'Result',
             'default' => '0',
+        )), $labResultsEvent);
+
+        $resultElement = $this->insertOEElementType(array('Element_OphInLabResults_Inr' => array(
+            'name' => 'Result',
+            'default' => '0',
+            'parent_element_type_id' => 'Element_OphInLabResults_ResultTimedNumeric'
         )), $labResultsEvent);
 
         $this->createOETable(
@@ -62,7 +68,8 @@ class m160623_144438_event_creation extends OEMigration
     public function down()
     {
         $this->dropOETable('et_ophinlabresults_details', true);
-        $this->delete('ophinlabresults_type', 'id > 0');
+        $this->delete('ophinlabresults_type');
+        $this->delete('et_ophinlabresults_result_timed_numeric');
         $labResultsEvent = $this->insertOEEventType('Lab Results', 'OphInLabResults', 'In');
         if($labResultsEvent){
             $this->delete('element_type', 'event_type_id = ? ', array($labResultsEvent));

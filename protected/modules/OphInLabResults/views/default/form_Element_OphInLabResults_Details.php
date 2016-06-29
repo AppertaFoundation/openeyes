@@ -27,7 +27,13 @@
                 <select name="Element_OphInLabResults_Details[result_type_id]" id="Element_OphInLabResults_Details_result_type_id">
                     <option>- Please select -</option>
                     <?php foreach (OphInLabResults_Type::model()->findAll() as $type):?>
-                        <option data-element-id="<?=$type->result_element_id?>" value="<?=$type->id?>"><?=$type->type?></option>
+                        <option
+                            data-element-id="<?=$type->result_element_id?>"
+                            value="<?=$type->id?>"
+                            <?=($type->id === $element->result_type_id) ? 'selected' : '' ?>
+                        >
+                            <?=$type->type?>
+                        </option>
                     <?php endforeach;?>
                 </select>
             </div>
