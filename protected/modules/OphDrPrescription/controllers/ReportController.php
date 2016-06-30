@@ -20,17 +20,17 @@
 
 class ReportController extends BaseReportController
 {
-	public $renderPatientPanel = false;
+    public $renderPatientPanel = false;
 
-	public function accessRules()
-	{
-		return array(
-			array('allow',
-				'actions' => array('prescribedDrogs','runReport','downloadReport'),
-				'roles' => array('OprnGenerateReport','admin'),
-			)
-		);
-	}
+    public function accessRules()
+    {
+            return array(
+                    array('allow',
+                            'actions' => array('prescribedDrogs','runReport','downloadReport'),
+                            'roles' => array('OprnGenerateReport','admin'),
+                    )
+            );
+    }
         
     public function init()
     {
@@ -41,6 +41,12 @@ class ReportController extends BaseReportController
 
 	public function actionPrescribedDrogs()
 	{
-            $this->render('prescribedDrogs');
+            $default_drogs = Yii::app()->db->createCommand('SELECT id, name FROM drug WHERE name LIKE "%Methotrexate%" OR NAME LIKE "%Mycophenolate%" OR NAME LIKE "%Tacrolimus%"
+                                                        OR NAME LIKE "%Azathioprine%"
+                                                        OR NAME LIKE "%Cyclosporine%"
+                                                        OR NAME LIKE "%Cyclophosphamide%"
+                                                        ORDER BY NAME')->queryAll();
+            
+            $this->render('prescribedDrogs', array('default_drogs' => $default_drogs));
 	}
 }

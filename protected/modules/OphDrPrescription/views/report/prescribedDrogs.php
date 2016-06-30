@@ -71,6 +71,15 @@
             </div>
             <div class="large-7 column end">
                 <table id="report-drug-list">
+                    <?php foreach($default_drogs as $drug):?>
+                        <tr id="<?php echo $drug['id']; ?>">
+                            <td>
+                                <span class="drug-name"><?php echo $drug['name']; ?></span>
+                                <a class="remove right">remove</a>
+                                <input type="hidden" name="drugs[]" value="<?php echo $drug['id']; ?>">
+                            </td>
+                        </tr>
+                    <?php endforeach;?>
                 </table>
             </div>
         </div>

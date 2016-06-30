@@ -21,7 +21,7 @@ function addItem(item){
         $tr = $("<tr>",{"id": item.id});
         $td = $("<td>");
         $span_name = $("<span>",{"class": "drug-name"});
-        $span_remove = $("<span>",{"class": "remove right"}).text("remove");
+        $span_remove = $("<a>",{"class": "remove right"}).text("remove");
         $hidden = $("<input>",{"type":"hidden", "name":"drugs[]","value": item.id});
         
         $td.append($span_name.text(item.label));
@@ -29,11 +29,12 @@ function addItem(item){
         $td.append($hidden);
         
         $table.append( $tr.append($td) );
-        
 }
 
 $(document).ready(function(){
     
-    
+    $('#report-drug-list').on('click', '.remove',function(){
+        $(this).closest('tr').remove();
+    });
     
 });

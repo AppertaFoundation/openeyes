@@ -17,8 +17,6 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
     public $start_date;
     public $end_date;
     
-    private $items;
-    
     public function attributeLabels()
     {
         return array(
