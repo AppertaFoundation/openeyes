@@ -22,6 +22,7 @@ class Curl
 	public function __construct()
 	{
 		$this->curl = curl_init();
+		curl_setopt($this->curl, CURLOPT_PROXY, Yii::app()->params['curl_proxy']);
 		curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($this->curl, CURLOPT_CONNECTTIMEOUT, 10);
 		curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, true);
