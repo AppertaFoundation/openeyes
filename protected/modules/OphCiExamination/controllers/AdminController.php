@@ -639,7 +639,7 @@ class AdminController extends \ModuleAdminController
     {
         $this->genericAdmin('Edit Glaucoma Statuses', 'OEModule\OphCiExamination\models\OphCiExamination_GlaucomaStatus');
     }
-
+    
     public function actionManageDropRelProbs()
     {
         $this->genericAdmin('Edit Drop Related Problems', 'OEModule\OphCiExamination\models\OphCiExamination_DropRelProb');

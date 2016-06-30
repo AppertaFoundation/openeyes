@@ -37,7 +37,7 @@ Feature: Open Eyes Login RBAC user levels
 
   Examples:
   |uname|pwd  |siteName/Number|firmName/Number|hospNumber|speciality|event   |rightIPRTime|rightIPR|rightComm|leftIPRTime|leftIPR|leftComm|
-  |admin|admin|1              |1              |1009465   |cataract  |cataract|14:10       |5       |TEST     |14:42      |7      |TEST    |
+  |admin|admin|1              |1              |1009465   |Cataract  |cataract|14:10       |5       |TEST     |14:42      |7      |TEST    |
 
 
   Scenario Outline: Route 0: Level 0 RBAC access: User with no login rights
@@ -153,7 +153,7 @@ Feature: Open Eyes Login RBAC user levels
 
     Examples:
       |uname |pwd     |siteName/Number|firmName/Number|hospNumber|speciality|event       |commonDrug|standardSet|dose|route|freq|duration|eyesOption|eyesOption-2|eyesOption-3|presComm|
-      |level3|password|1              |1              |1009465   |glaucoma  |Prescription|75        |10         |2   |1    |4   |1       |1         |1           |1           |TEST    |
+      |level3|password|1              |1              |1009465   |Glaucoma  |Prescription|75        |10         |2   |1    |4   |1       |1         |1           |1           |TEST    |
 
 
 
@@ -176,7 +176,7 @@ Feature: Open Eyes Login RBAC user levels
 
   Examples:
   |uname |pwd     |siteName/Number|firmName/Number|hospNumber|speciality|
-  |level4|password|1              |3              |1009465   |glaucoma  |
+  |level4|password|1              |3              |1009465   |Glaucoma  |
 
 
 

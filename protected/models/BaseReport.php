@@ -31,7 +31,8 @@ class BaseReport extends CModel
 		if (strstr($model,'_')) {
 			$segments = explode('_',$model);
 
-			$model = array_pop(explode('_',$model));
+            $explode = explode('_',$model);
+			$model = array_pop($explode);
 		}
 
 		return '_' . strtolower(preg_replace('/^Report/','',$model));

@@ -14,40 +14,56 @@ use \SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 use Behat\Behat\Exception\BehaviorException;
 class EditExistingEventContext extends PageObjectContext
 {
-    public function __construct(array $parameters)
-    {
-    }
+//    public function __construct(array $parameters)
+//    {
+//    }
+//
+//    /**
+//     * @Then /^I click to expand the "([^"]*)" sidebar$/
+//     */
+//    public function iClickToExpandTheSidebar($firm) {
+//        /**
+//         *
+//         * @var EditExistingEvent $editExistingEvent
+//         */
+//        $editExistingEvent = $this->getPage ( 'Biometry' );
+//        if($firm==="cataract")
+//        {
+//            $editExistingEvent->expandCataract ();
+//        }
+//        elseif($firm==="glaucoma")
+//        {
+//            $editExistingEvent->expandGlaucoma ();
+//        }
+//        elseif($firm==="medicalretinal")
+//        {
+//            $editExistingEvent->expandMedicalRetinal ();
+//        }
+//        elseif($firm==="supportfirm")
+//        {
+//            $editExistingEvent->expandSupportFirm ();
+//        }
+//        else{
+//            throw new BehaviorException ( "WARNING!!! Invalid Event selected, not in the list!" );
+//        }
+//    }
 
-    /**
-     * @Then /^I click to expand the "([^"]*)" sidebar$/
-     */
+        /**
+         * @Then /^I click to expand the "([^"]*)" sidebar$/
+         */
     public function iClickToExpandTheSidebar($firm) {
         /**
          *
          * @var EditExistingEvent $editExistingEvent
          */
         $editExistingEvent = $this->getPage ( 'Biometry' );
-        if($firm==="cataract")
-        {
-            $editExistingEvent->expandCataract ();
-        }
-        elseif($firm==="glaucoma")
-        {
-            $editExistingEvent->expandGlaucoma ();
-        }
-        elseif($firm==="medicalretinal")
-        {
-            $editExistingEvent->expandMedicalRetinal ();
-        }
-        elseif($firm==="supportfirm")
-        {
-            $editExistingEvent->expandSupportFirm ();
+        if($firm==="Cataract"|| $firm==="Glaucoma" || $firm==="Medical Retinal"|| $firm==="Support Firm"){
+            $editExistingEvent->expandFirm ($firm);
         }
         else{
             throw new BehaviorException ( "WARNING!!! Invalid Event selected, not in the list!" );
         }
     }
-
     /**
      * @Then /^I click on existing "([^"]*)"$/
      */

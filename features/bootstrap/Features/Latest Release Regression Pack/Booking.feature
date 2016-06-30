@@ -41,7 +41,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
 
       Examples:
       |uname|pwd  |siteName/Number|firmName/Number|speciality|event    |diag     |diagEye|opEye|procedure|ASType |opSite|decDate|
-      |admin|admin|1              |1              |cataract  |OpBooking|267626000|Left   |Left |41       |Topical|1     |14     |
+      |admin|admin|1              |1              |Cataract  |OpBooking|267626000|Left   |Left |41       |Topical|1     |14     |
 
     Scenario Outline: Route 2: Successfully scheduling an adult operation that does need a consultant but no anaesthetist
 
@@ -81,7 +81,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
 
       Examples:
         |uname|pwd  |siteName/Number|firmName/Number|speciality|event    |diag     |diagEye|opEye|procedure|ASType |opSite|decDate|
-        |admin|admin|1              |1              |cataract  |OpBooking|267626000|Left   |Left |41       |Topical|1     |14     |
+        |admin|admin|1              |1              |Cataract  |OpBooking|267626000|Left   |Left |41       |Topical|1     |14     |
 
     Scenario Outline: Route 3: Successfully scheduling an adult operation that does not need a consultant but anaesthetist with no GA
 
@@ -122,7 +122,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
       Examples:
 
         |uname|pwd  |siteName/Number|firmName/Number|speciality|event    |diagEye|diag     |opEye|procedure|ASType |opSite|decDate|
-        |admin|admin|1              |1              |cataract  |OpBooking|Left   |267626000|Left |41       |Topical|1     |14     |
+        |admin|admin|1              |1              |Cataract  |OpBooking|Left   |267626000|Left |41       |Topical|1     |14     |
 
     Scenario Outline: Route 4: Successfully scheduling an adult operation that does not need a consultant but anaesthetist with GA
 
@@ -163,7 +163,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
       Examples:
 
         |uname|pwd  |siteName/Number|firmName/Number|speciality|event    |diagEye|diag     |opEye|procedure|ASType |opSite|decDate|
-        |admin|admin|1              |1              |cataract  |OpBooking|Left   |267626000|Left |41       |Topical|1     |14     |
+        |admin|admin|1              |1              |Cataract  |OpBooking|Left   |267626000|Left |41       |Topical|1     |14     |
 
     Scenario Outline: Route 5: Successfully scheduling an adult operation that does need a consultant and anaesthetist with no GA
 
@@ -206,7 +206,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
       Examples:
 
         |uname|pwd  |siteName/Number|firmName/Number|speciality|event    |diagEye|diag     |opEye|procedure|ASType |opSite|decDate|
-        |admin|admin|1              |1              |cataract  |OpBooking|Left   |267626000|Left |41       |Topical|1     |14     |
+        |admin|admin|1              |1              |Cataract  |OpBooking|Left   |267626000|Left |41       |Topical|1     |14     |
 
     Scenario Outline: Route 6: Successfully scheduling an adult operation that does need a consultant and anaesthetist with GA
 
@@ -247,7 +247,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
       Examples:
 
         |uname|pwd  |siteName/Number|firmName/Number|speciality|event    |diagEye|diag     |opEye|procedure|ASType |opSite|decDate|
-        |admin|admin|1              |1              |cataract  |OpBooking|Left   |267626000|Left |41       |Topical|1     |14     |
+        |admin|admin|1              |1              |Cataract  |OpBooking|Left   |267626000|Left |41       |Topical|1     |14     |
 
   Scenario Outline: Route 7: Successfully scheduling a child operation that does not need a consultant or an anaesthetist
 
@@ -288,7 +288,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
     Examples:
 
       |uname|pwd  |siteName/Number|firmName/Number|speciality|event    |diagEye|diag     |opEye|procedure|ASType |opSite|decDate|
-      |admin|admin|1              |1              |cataract  |OpBooking|Left   |267626000|Left |41       |Topical|1     |14     |
+      |admin|admin|1              |1              |Cataract  |OpBooking|Left   |267626000|Left |41       |Topical|1     |14     |
 
 #
   Scenario Outline: Route 8: Successfully scheduling a child operation that does need a consultant but no anaesthetist
@@ -330,7 +330,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
     Examples:
 
       |uname|pwd  |siteName/Number|firmName/Number|speciality|event    |diagEye|diag     |opEye|procedure|ASType |opSite|decDate|
-      |admin|admin|1              |1              |cataract  |OpBooking|Left   |267626000|Left |41       |Topical|1     |14     |
+      |admin|admin|1              |1              |Cataract  |OpBooking|Left   |267626000|Left |41       |Topical|1     |14     |
 
 
   Scenario Outline: Route 9: Successfully scheduling a child operation that does not need a consultant but anaesthetist with no GA
@@ -372,7 +372,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
     Examples:
 
       |uname|pwd  |siteName/Number|firmName/Number|speciality|event    |diagEye|diag     |opEye|procedure|ASType |opSite|decDate|
-      |admin|admin|1              |1              |cataract  |OpBooking|Left   |267626000|Left |41       |Topical|1     |14     |
+      |admin|admin|1              |1              |Cataract  |OpBooking|Left   |267626000|Left |41       |Topical|1     |14     |
 
 
   Scenario Outline: Route 10: Successfully scheduling a child operation that does not need a consultant but anaesthetist with GA
@@ -414,7 +414,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
     Examples:
 
       |uname|pwd  |siteName/Number|firmName/Number|speciality|event    |diagEye|diag     |opEye|procedure|ASType |opSite|decDate|
-      |admin|admin|1              |1              |cataract  |OpBooking|Left   |267626000|Left |41       |Topical|1     |14     |
+      |admin|admin|1              |1              |Cataract  |OpBooking|Left   |267626000|Left |41       |Topical|1     |14     |
 
 #
   Scenario Outline: Route 11: Successfully scheduling a child operation that does need a consultant and anaesthetist with no GA
@@ -456,7 +456,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
     Examples:
 
       |uname|pwd  |siteName/Number|firmName/Number|speciality|event    |diagEye|diag     |opEye|procedure|ASType |opSite|decDate|
-      |admin|admin|1              |1              |cataract  |OpBooking|Left   |267626000|Left |41       |Topical|1     |14     |
+      |admin|admin|1              |1              |Cataract  |OpBooking|Left   |267626000|Left |41       |Topical|1     |14     |
 
 
   Scenario Outline: Route 12: Successfully scheduling a child operation that does need a consultant and anaesthetist with GA
@@ -498,7 +498,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
   Examples:
 
     |uname|pwd  |siteName/Number|firmName/Number|speciality|event    |diagEye|diag     |opEye|procedure|ASType |opSite|decDate|
-    |admin|admin|1              |1              |cataract  |OpBooking|Left   |267626000|Left |41       |Topical|1     |14     |
+    |admin|admin|1              |1              |Cataract  |OpBooking|Left   |267626000|Left |41       |Topical|1     |14     |
 
 
 #  Examples: Waiting patients

@@ -1332,14 +1332,14 @@ class BaseEventTypeController extends BaseModuleController
 			: $element->getDefaultContainerView();
 
 		$use_container_view = ($element->useContainerView && $container_view);
-
-		$view_data = array_merge(array(
-			'element' => $element,
-			'data' => $data,
-			'form' => $form,
-			'child' => $element->getElementType()->isChild(),
-			'container_view' => $container_view
-		), $view_data);
+                
+                $view_data = array_merge(array(
+                            'element' => $element,
+                            'data' => $data,
+                            'form' => $form,
+                            'child' => $element->getElementType()->isChild(),
+                            'container_view' => $container_view
+                        ), $view_data);
 
 		// Render the view.
 		($use_container_view) && $this->beginContent($container_view, $view_data);

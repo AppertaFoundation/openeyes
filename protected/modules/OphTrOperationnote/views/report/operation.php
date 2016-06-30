@@ -108,6 +108,7 @@
 					<?php echo CHtml::label('Theatre', 'theatre') ?>
 				</div>
 			</div>
+
 			<h3>Examination</h3>
 			<div class="row field-row">
 				<div class="large-2 column">
@@ -150,6 +151,15 @@
 					&nbsp;
 				</div>
 				<div class="large-4 column end">
+					<?php echo CHtml::checkBox('cataract_surgical_management'); ?>
+					<?php echo CHtml::label('Cataract Surgical Management', 'cataract_surgical_management') ?>
+				</div>
+			</div>
+			<div class="row field-row">
+				<div class="large-2 column">
+					&nbsp;
+				</div>
+				<div class="large-4 column end">
 					<?php echo CHtml::checkBox('va_values'); ?>
 					<?php echo CHtml::label('VA Values', 'va_values') ?>
 				</div>
@@ -164,6 +174,24 @@
 					<?php echo CHtml::label('Cataract Report', 'cataract_report') ?>
 				</div>
 			</div>
+			<div class="row field-row">
+				<div class="large-2 column">
+					&nbsp;
+				</div>
+				<div class="large-4 column end">
+					<?php echo CHtml::checkBox('incision_site'); ?>
+					<?php echo CHtml::label('Cataract Operation Details', 'incision_site') ?>
+				</div>
+			</div>
+		<div class="row field-row">
+			<div class="large-2 column">
+				&nbsp;
+			</div>
+			<div class="large-4 column end">
+				<?php echo CHtml::checkBox('cataract_complication_notes'); ?>
+				<?php echo CHtml::label('Cataract Complication Notes', 'cataract_complication_notes') ?>
+			</div>
+		</div>
 			<div class="row field-row">
 				<div class="large-2 column">
 					&nbsp;
