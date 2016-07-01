@@ -489,7 +489,9 @@ class BaseEventTypeController extends BaseModuleController
 
 		if ($previous_id && $element->canCopy()) {
 			$previous_element = $element_class::model()->findByPk($previous_id);
-			$element->loadFromExisting($previous_element);
+			if( $previous_element ){
+				$element->loadFromExisting($previous_element);
+			}
 		}
 		if ($additional) {
 			foreach (array_keys($additional) as $add) {
