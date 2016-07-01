@@ -26,7 +26,7 @@ class ReportController extends BaseReportController
     {
             return array(
                     array('allow',
-                            'actions' => array('prescribedDrogs','runReport','downloadReport'),
+                            'actions' => array('prescriptedDrugs','runReport','downloadReport'),
                             'roles' => array('OprnGenerateReport','admin'),
                     )
             );
@@ -39,7 +39,7 @@ class ReportController extends BaseReportController
     }
         
 
-	public function actionPrescribedDrogs()
+	public function actionPrescriptedDrugs()
 	{
             $default_drogs = Yii::app()->db->createCommand('SELECT id, name FROM drug WHERE name LIKE "%Methotrexate%" OR NAME LIKE "%Mycophenolate%" OR NAME LIKE "%Tacrolimus%"
                                                         OR NAME LIKE "%Azathioprine%"
