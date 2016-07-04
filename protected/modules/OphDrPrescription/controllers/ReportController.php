@@ -41,12 +41,15 @@ class ReportController extends BaseReportController
 
 	public function actionPrescriptedDrugs()
 	{
-            $default_drogs = Yii::app()->db->createCommand('SELECT id, name FROM drug WHERE name LIKE "%Methotrexate%" OR NAME LIKE "%Mycophenolate%" OR NAME LIKE "%Tacrolimus%"
+            $default_drugs = Yii::app()->db->createCommand('SELECT id, name FROM drug WHERE name
+                                                                LIKE "%Methotrexate%"
+                                                        OR NAME LIKE "%Mycophenolate%"
+                                                        OR NAME LIKE "%Tacrolimus%"
                                                         OR NAME LIKE "%Azathioprine%"
                                                         OR NAME LIKE "%Cyclosporine%"
                                                         OR NAME LIKE "%Cyclophosphamide%"
                                                         ORDER BY NAME')->queryAll();
             
-            $this->render('prescribedDrogs', array('default_drogs' => $default_drogs));
+            $this->render('prescribedDrugs', array('default_drugs' => $default_drugs));
 	}
 }

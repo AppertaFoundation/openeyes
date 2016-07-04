@@ -22,7 +22,7 @@ function addItem(item){
         $td = $("<td>");
         $span_name = $("<span>",{"class": "drug-name"});
         $span_remove = $("<a>",{"class": "remove right"}).text("remove");
-        $hidden = $("<input>",{"type":"hidden", "name":"drugs[]","value": item.id});
+        $hidden = $("<input>",{"type":"hidden", "name":"OphDrPrescription_ReportPrescribedDrugs[attributes][drugs][]","value": item.id});
         
         $td.append($span_name.text(item.label));
         $td.append($span_remove);
@@ -32,9 +32,7 @@ function addItem(item){
 }
 
 $(document).ready(function(){
-    
     $('#report-drug-list').on('click', '.remove',function(){
         $(this).closest('tr').remove();
     });
-    
 });

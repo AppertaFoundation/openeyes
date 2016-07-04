@@ -71,12 +71,12 @@
             </div>
             <div class="large-7 column end">
                 <table id="report-drug-list">
-                    <?php foreach($default_drogs as $drug):?>
+                    <?php foreach($default_drugs as $drug):?>
                         <tr id="<?php echo $drug['id']; ?>">
                             <td>
                                 <span class="drug-name"><?php echo $drug['name']; ?></span>
                                 <a class="remove right">remove</a>
-                                <input type="hidden" name="drugs[]" value="<?php echo $drug['id']; ?>">
+                                <input type="hidden" name="OphDrPrescription_ReportPrescribedDrugs[attributes][drugs][]" value="<?php echo $drug['id']; ?>">
                             </td>
                         </tr>
                     <?php endforeach;?>
@@ -92,7 +92,7 @@
             </div>
             <div class="large-2 column end">
                 <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-                        'name' => 'start_date',
+                        'name' => 'OphDrPrescription_ReportPrescribedDrugs[attributes][start_date]',
                         'options' => array(
                                 'showAnim' => 'fold',
                                 'dateFormat' => Helper::NHS_DATE_FORMAT_JS
@@ -110,7 +110,7 @@
             </div>
             <div class="large-2 column end">
                 <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-                    'name' => 'end_date',
+                    'name' => 'OphDrPrescription_ReportPrescribedDrugs[attributes][end_date]',
                     'options' => array(
                             'showAnim' => 'fold',
                             'dateFormat' => Helper::NHS_DATE_FORMAT_JS
