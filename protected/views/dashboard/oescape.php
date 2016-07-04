@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -17,7 +18,18 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<main class="mdl-layout__content mdl-color--grey-100">
+<main class="mdl-layout__content mdl-color--white-100">
     <div id="dash-grid" class="mdl-grid">
+        <div class="mdl-cell-side mdl-cell--6-col">
+            <div id="iopchart" class="mdl-cell-top">
+
+            </div>
+            <div id="vachart" class="mdl-cell-bottom">
+
+            </div>
+        </div>
+        <div id="vf-image" class="oescape-images mdl-cell--6-col">
+            <?php $this->renderPartial('//oescape/vfimages'); ?>
+        </div>
     </div>
 </main>
