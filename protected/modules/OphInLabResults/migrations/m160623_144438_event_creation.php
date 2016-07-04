@@ -11,15 +11,15 @@ class m160623_144438_event_creation extends OEMigration
             'required' => 1,
         )), $labResultsEvent);
 
+        $resultElement = $this->insertOEElementType(array('Element_OphInLabResults_Inr' => array(
+            'name' => 'Result',
+            'default' => '0'
+        )), $labResultsEvent);
+
         $this->insertOEElementType(array('Element_OphInLabResults_ResultTimedNumeric' => array(
             'name' => 'Result',
             'default' => '0',
-        )), $labResultsEvent);
-
-        $resultElement = $this->insertOEElementType(array('Element_OphInLabResults_Inr' => array(
-            'name' => 'Result',
-            'default' => '0',
-            'parent_element_type_id' => 'Element_OphInLabResults_ResultTimedNumeric'
+            'parent_element_type_id' => 'Element_OphInLabResults_Inr'
         )), $labResultsEvent);
 
         $this->createOETable(
