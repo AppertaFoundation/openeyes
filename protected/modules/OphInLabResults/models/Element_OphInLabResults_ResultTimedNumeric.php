@@ -30,7 +30,7 @@ class Element_OphInLabResults_ResultTimedNumeric extends BaseLabResultElement
             array('time, result', 'required'),
             array('result', 'numerical'),
             array('time', 'type', 'type' => 'time', 'timeFormat'=>'hh:mm'),
-            array('event_id, time, result', 'safe'),
+            array('event_id, time, result, comment', 'safe'),
         );
     }
 
