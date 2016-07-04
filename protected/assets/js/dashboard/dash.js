@@ -116,19 +116,3 @@ Highcharts.setOptions({
         noData: "No data found for this report"
     }
 });
-
-$(document).ready(function() {
-    OpenEyes.Dash.init('#dash-grid');
-    OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=PcrRisk');
-    OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=CataractComplications');
-    OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\VisualOutcome');
-    OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\RefractiveOutcome');
-
-    $('#export').on('click', function(){
-        Highcharts.exportCharts(OpenEyes.Dash.reports,{
-            type: 'application/pdf',
-            filename: 'cataract-audit'
-        });
-    });
-});
-
