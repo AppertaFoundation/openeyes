@@ -13,6 +13,7 @@ tags
 /index.php
 /nbproject/
 /protected/data/*
+/protected/media_data/*
 /protected/models/ElementExample.php
 /protected/models/elements/ElementExample.php
 /protected/modules/sample

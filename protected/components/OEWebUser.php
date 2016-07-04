@@ -34,7 +34,10 @@ class OEWebUser extends CWebUser
     public function isSurgeon()
     {
         $user = User::model()->findByPk($this->getId());
-
-        return (bool)$user->is_surgeon;
+        if($user){
+            return (bool)$user->is_surgeon;
+        }else{
+            return false;
+        }
     }
 }
