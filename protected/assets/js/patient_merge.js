@@ -12,6 +12,14 @@ var patientMerge = {
     
     updateDOM: function(type){
         $section = $('section.' + type);
+        $section.find('input[type=hidden]').val('');
+        $section.find('.data-value').each(function(i, dom){
+            var $dom = $(dom),
+                defaultVal = $dom.data('default');
+            $dom.text( defaultVal ? defaultVal : '' );
+            $dom.val( defaultVal ? defaultVal : '' );
+        });
+        
         Object.keys(this.patients[type]).forEach(function (key) {
             $section.find('.' + key).html(patientMerge.patients[type][key]);
             $section.find('.' + key + '-input').val(patientMerge.patients[type][key]);
@@ -26,7 +34,7 @@ var patientMerge = {
         var tmpPatiens = {};
         tmpPatiens = this.patients.primary;
         this.patients.primary = this.patients.secondary;
-        this.patients.secondary = tmpPatiens;     
+        this.patients.secondary = tmpPatiens;
     },
         
     validatePatientsData: function(callback_true, callback_false){
@@ -63,15 +71,17 @@ function displayConflictMessage(){
         $row = $('<div>', {'class':'row'}),
         $column = $('<div>',{'class':'large-12 column'}),
         $dob = $('<div>',{'class':'alert-box with-icon warning','id':'flash-merge_error_dob'}).text('Patients have different personal details : dob'),
-        $gender = $('<div>',{'class':'alert-box with-icon warning','id':'flash-merge_error_dob'}).text('Patients have different personal details : gender');
+        $gender = $('<div>',{'class':'alert-box with-icon warning','id':'flash-merge_error_gender'}).text('Patients have different personal details : gender');
         
 
     // Display DOB warning msg
+    $('#flash-merge_error_dob').remove();
     if( patientMerge.patients.primary.dob !== patientMerge.patients.secondary.dob && $('#flash-merge_error_dob').length < 1){
         $column.append($dob);
     }
 
     // Display Gender warning msg
+    $('#flash-merge_error_gender').remove();
     if( patientMerge.patients.primary.gender !== patientMerge.patients.secondary.gender && $('#flash-merge_error_gender').length < 1 ){
         $column.append($gender);
     }
@@ -82,9 +92,6 @@ function displayConflictMessage(){
     // Show the warning with the checkbox
     $patientDataConflictConfirmation.show();
     $input.attr('name', $input.data('name') );
-    
-    
-    
 }
 
 $(document).ready(function(){
@@ -99,8 +106,14 @@ $(document).ready(function(){
         },
         search: function(){
             $('.loader').show();
+            $('#patient1-search-form').find('button').prop('disabled', true);
         },
         select: function (event, ui) {
+            
+            // if there is a warning about the patient is alredy in the request lsit than it cannot be selected
+            if( ui.item.warning !== '' ){
+                return false;
+            }
             
             if(Object.keys(patientMerge.patients.secondary).length === 0){
                 
@@ -185,9 +198,7 @@ $(document).ready(function(){
                       var buttons = $('.ui-dialog-buttonset').children('button');
                       buttons.removeClass("ui-widget ui-state-default ui-state-active ui-state-focus");
                     },
-                    
                 });
-                
             }
             
             $('#patient_merge_search').val("");
@@ -202,17 +213,20 @@ $(document).ready(function(){
             }
         },
         close: function (event, ui) {
-            if ( ($('.ui-menu li').length > 1 ) && (Object.keys(patientMerge.patients.primary).length === 0 || Object.keys(patientMerge.patients.secondary).length === 0) ){
-                $("ul.ui-autocomplete").show();
-            }
+            $('#patient1-search-form').find('button').prop('disabled', false);
         }
     });
     if(typeof dialog !== 'undefined' && dialog.length){
+       
         dialog.data( "autocomplete" )._renderItem = function( ul, item ) {
+            var warningHTML = '';
             ul.addClass("z-index-1000 patient-ajax-list");
+            if(item.warning){
+                warningHTML = '<div class="warning text-center" style="padding:3px;color:#fff;background-color:red;font-weight:900">' + item.warning + '</div>';
+            }
             return $( "<li></li>" )
                 .data( "item.autocomplete", item )
-                .append( "<a><strong>" + item.first_name + " " + item.last_name + "</strong>" + " (" + item.age + ")" + "<span class='icon icon-alert icon-alert-" + item.gender.toLowerCase() +"_trans'>Male</span>" + "<div class='nhs-number'>" + item.nhsnum +"</div><br>Hospital No.: " + item.hos_num + "<br>Date of birth: " + item.dob + "</a>" )
+                .append( "<a><strong>" + item.first_name + " " + item.last_name + "</strong>" + " (" + item.age + ")" + "<span class='icon icon-alert icon-alert-" + item.gender.toLowerCase() +"_trans'>Male</span>" + "<div class='nhs-number'>" + item.nhsnum +"</div><br>Hospital No.: " + item.hos_num + "<br>Date of birth: " + item.dob + warningHTML + "</a>" )
                 .appendTo( ul );
         };
     }
@@ -238,7 +252,6 @@ $(document).ready(function(){
                 content: "Both Primary and Secondary patients have to be selected."
               }).open();
         } else if( primary_id == secondary_id ){
-            $('<h2 title="Alert" class="text-center"></h2>').dialog();
             new OpenEyes.UI.Dialog.Alert({
                 content: "Primary and Secondary patient cannot be the same record."
               }).open();
@@ -260,7 +273,7 @@ $(document).ready(function(){
             $('#PatientMergeRequest_confirm').closest('label').css({"border":'3px solid red',"padding":"5px"});
         }
         
-        if( $('#patientDataConflictConfirmation').length > 0 && $('#patientDataConflictConfirmation').find('input').is(':not(:checked)') ){
+        if( $('#patientDataConflictConfirmation').length > 0 && $('#patientDataConflictConfirmation').is(':visible') && $('#patientDataConflictConfirmation').find('input').is(':not(:checked)') ){
             var $row = $('<div>', {'class':'row check-warning'}),
                 $column = $('<div>',{'class':'large-12 column'}),
                 $checkbox = $('<div>',{'class':'alert-box with-icon warning'}).text('Please tick the checkboxes.');

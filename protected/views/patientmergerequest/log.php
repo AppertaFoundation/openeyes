@@ -12,7 +12,7 @@
         <div class="large-4 column large-centered text-right large-offset-8">
             <section class="box dashboard">
             <?php 
-                echo CHtml::link('back to Patient Merge list',array('patientMergeRequest/index'), array('class' => 'button small')) . " ";
+                echo CHtml::link('Back to Patient Merge list',array('patientMergeRequest/index'), array('class' => 'button small')) . " ";
                 echo CHtml::link('add',array('patientMergeRequest/create'), array('class' => 'button small'));
             ?>
             </section>

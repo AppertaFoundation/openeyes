@@ -119,6 +119,7 @@ class PatientMergeRequestController extends BaseController
         $model = new PatientMergeRequest;
         $mergeHandler = new PatientMerge;
         $patientMergeRequest = Yii::app()->request->getParam('PatientMergeRequest', null);
+        $personalDetailsConflictConfirm = null;
         
         if($patientMergeRequest && isset($patientMergeRequest['primary_id']) && isset($patientMergeRequest['secondary_id']) ) {
             
@@ -164,9 +165,14 @@ class PatientMergeRequestController extends BaseController
             }
         }
         
+        if($personalDetailsConflictConfirm && $personalDetailsConflictConfirm['isConflict'] == true){
+            foreach($personalDetailsConflictConfirm['details'] as $conflict){
+                Yii::app()->user->setFlash("warning.merge_error_" . $conflict['column'], "Patients have different personal details : " . $conflict['column']);
+            }
+        }
+        
         $this->render('//patientmergerequest/create',array(
             'model' => $model,
-            
         ));
     }
     
@@ -219,6 +225,11 @@ class PatientMergeRequestController extends BaseController
         
         // if the personal details are conflictng (DOB and Gender at the moment) we need extra confirmation
         $personalDetailsConflictConfirm = $mergeHandler->comparePatientDetails($mergeRequest->primaryPatient, $mergeRequest->secondaryPatient);
+        if($personalDetailsConflictConfirm && $personalDetailsConflictConfirm['isConflict'] == true){
+            foreach($personalDetailsConflictConfirm['details'] as $conflict){
+                Yii::app()->user->setFlash("warning.merge_error_" . $conflict['column'], "Patients have different personal details : " . $conflict['column']);
+            }
+        }
 
         if(isset($_POST['PatientMergeRequest']))
         {
@@ -283,6 +294,11 @@ class PatientMergeRequestController extends BaseController
         
         // if the personal details are conflictng (DOB and Gender at the moment) we need extra confirmation
         $personalDetailsConflictConfirm = $mergeHandler->comparePatientDetails($mergeRequest->primaryPatient, $mergeRequest->secondaryPatient);
+        if($personalDetailsConflictConfirm && $personalDetailsConflictConfirm['isConflict'] == true){
+            foreach($personalDetailsConflictConfirm['details'] as $conflict){
+                Yii::app()->user->setFlash("warning.merge_error_" . $conflict['column'], "Patients have different personal details : " . $conflict['column']);
+            }
+        }
         
         if(isset($_POST['PatientMergeRequest']) && isset($_POST['PatientMergeRequest']['confirm']) && Yii::app()->user->checkAccess('Patient Merge')){
                 
@@ -364,6 +380,23 @@ class PatientMergeRequestController extends BaseController
             throw new CHttpException(404,'The requested page does not exist.');
         return $model;
     }
+    
+    /**
+     * Check if the paient id is already in the request list
+     * 
+     * @param int $patientId
+     * @return null|string 'primary' or 'secondary', this means, e.g.:  patient id was submited for merge as secondary patient
+     */
+    public function isPatientInRequestList($patientId)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->condition = '(primary_id=:patient_id OR secondary_id=:patient_id) AND (deleted = 0 AND status = ' . PatientMergeRequest::STATUS_NOT_PROCESSED . ')';
+        $criteria->params = array(':patient_id' => $patientId);
+        
+        $mergeRequest = PatientMergeRequest::model()->find($criteria);
+        
+        return $mergeRequest ? ( $mergeRequest->primary_id == $patientId ? 'primary' : 'secondary' ) : null;
+    }
    
     public function actionSearch()
     {
@@ -376,6 +409,13 @@ class PatientMergeRequestController extends BaseController
             $dataProvider = $patientSearch->search($term);
             foreach($dataProvider->getData() as $patient){
                 
+                // check if the patient is already in the Request List
+                $warning = '';
+                $isInList = $this->isPatientInRequestList($patient->id);
+                if($isInList){
+                    $warning = "This patient is already requested for merge as $isInList patient.";
+                }
+                
                 $result[] =  array(
                     'id' => $patient->id,
                     'first_name' => $patient->first_name,
@@ -386,7 +426,8 @@ class PatientMergeRequestController extends BaseController
                     'dob' => ($patient->dob) ? $patient->NHSDate('dob') : 'Unknown',
                     'hos_num' => $patient->hos_num, 
                     'nhsnum' => $patient->nhsnum,
-                    'all-episodes' => $this->getEpisodesHTML($patient)
+                    'all-episodes' => $this->getEpisodesHTML($patient),
+                    'warning' => $warning
                 );
             }
         }
