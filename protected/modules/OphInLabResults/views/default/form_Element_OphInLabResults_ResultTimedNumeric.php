@@ -16,19 +16,16 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+?>
 
-class TextField extends BaseFieldWidget
-{
-	public $links = array();
-
-	public function init()
-	{
-		parent::init();
-
-		if (array_key_exists('password', $this->htmlOptions)) {
-			$this->htmlOptions['type'] = 'password';
-		} elseif(!array_key_exists('type', $this->htmlOptions)) {
-			$this->htmlOptions['type'] = 'text';
-		}
-	}
-}
+<section id="result-output" class="element-fields">
+    <div class="fields-row">
+        <?php echo $form->textField($element, 'time', $element->getHtmlOptionsForInput('time'), array(), array('field' => 2));?>
+    </div>
+    <div class="fields-row">
+        <?php echo $form->textField($element, 'result', $element->getHtmlOptionsForInput('result'), array(), array('field' => 2));?>
+    </div>
+    <div class="fields-row">
+        <?php echo $form->textField($element, 'comment', $element->getHtmlOptionsForInput('comment'), array(), array('field' => 6));?>
+    </div>
+</section>

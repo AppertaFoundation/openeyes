@@ -17,18 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class TextField extends BaseFieldWidget
-{
-	public $links = array();
-
-	public function init()
-	{
-		parent::init();
-
-		if (array_key_exists('password', $this->htmlOptions)) {
-			$this->htmlOptions['type'] = 'password';
-		} elseif(!array_key_exists('type', $this->htmlOptions)) {
-			$this->htmlOptions['type'] = 'text';
-		}
-	}
-}
+return array(
+    'params' => array(
+        'admin_menu' => array(
+            'Result Types' => '/OphInLabResults/oeadmin/resultType/list',
+        ),
+    )
+);

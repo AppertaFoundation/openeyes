@@ -1,4 +1,3 @@
-<?php
 /**
  * OpenEyes
  *
@@ -16,19 +15,15 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-class TextField extends BaseFieldWidget
-{
-	public $links = array();
-
-	public function init()
-	{
-		parent::init();
-
-		if (array_key_exists('password', $this->htmlOptions)) {
-			$this->htmlOptions['type'] = 'password';
-		} elseif(!array_key_exists('type', $this->htmlOptions)) {
-			$this->htmlOptions['type'] = 'text';
-		}
-	}
+/* line 2, ../sass/components/event.scss */
+.event {
+  border-color: #aaaaaa;
+}
+/* line 132, ../../../../assets/sass/openeyes/_mixins.scss */
+.event .event-content {
+  background-image: url('../img/watermark.png?1467293212');
+}
+/* line 135, ../../../../assets/sass/openeyes/_mixins.scss */
+.event .event-title {
+  background-image: url('../img/medium.png?1467280552');
 }

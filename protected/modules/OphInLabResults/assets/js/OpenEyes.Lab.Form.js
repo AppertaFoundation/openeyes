@@ -1,4 +1,3 @@
-<?php
 /**
  * OpenEyes
  *
@@ -16,19 +15,36 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+OpenEyes.Lab = OpenEyes.Lab || {};
 
-class TextField extends BaseFieldWidget
-{
-	public $links = array();
+(function(exports) {
+  var Form = {};
+  var ajaxElementUri = '/OphInLabResults/Default/elementForm';
 
-	public function init()
-	{
-		parent::init();
+  function loadResultElement(e) {
+    var option = e.target.options[e.target.selectedIndex];
 
-		if (array_key_exists('password', $this->htmlOptions)) {
-			$this->htmlOptions['type'] = 'password';
-		} elseif(!array_key_exists('type', $this->htmlOptions)) {
-			$this->htmlOptions['type'] = 'text';
-		}
-	}
-}
+    if(!option.dataset.elementId){
+      $('#result-output').parent().find('.js-remove-element').click();
+      return false;
+    }
+
+    $.ajax({
+      url: ajaxElementUri,
+      data: {
+        patient_id: OE_patient_id,
+        id: option.dataset.elementId
+      },
+      dataType: 'html',
+      success: function (data, textStatus, jqXHR) {
+        $('.lab-results-type').after(data);
+      }
+    });
+  }
+
+  Form.init = function ($resultType) {
+    $resultType.on('change', loadResultElement);
+  };
+
+  exports.Form = Form;
+}(this.OpenEyes.Lab));

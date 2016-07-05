@@ -56,10 +56,11 @@ class ContactLabel extends BaseActiveRecordVersioned
 	{
 		return array(
 			array('name', 'required'),
-			array('name', 'length', 'max'=>40),
+                        array('name', 'length', 'max'=>40),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name', 'safe', 'on'=>'search'),
+			array('id, name,type', 'safe', 'on'=>'search'),
+                        array('display', 'safe'),
 		);
 	}
 
@@ -82,6 +83,7 @@ class ContactLabel extends BaseActiveRecordVersioned
 		return array(
 			'id' => 'ID',
 			'name' => 'Name',
+                        'display' => 'Display on contact labels',
 			'letter_template_only' => 'Letter Template Only',
 		);
 	}
@@ -120,23 +122,5 @@ class ContactLabel extends BaseActiveRecordVersioned
 		return 'Staff';
 	}
 
-	public static function getList()
-	{
-		$list = array();
-
-		if (!empty(Yii::app()->params['contact_labels'])) {
-			foreach (Yii::app()->params['contact_labels'] as $label) {
-				if (preg_match('/{SPECIALTY}/',$label)) {
-					if (!$specialty = Specialty::model()->find('code=?',array(Yii::app()->params['institution_specialty']))) {
-						throw new Exception("Institution specialty not configured");
-					}
-					$list['nonspecialty'] = preg_replace('/{SPECIALTY}/',$specialty->adjective,$label);
-				} else {
-					$list[$label] = $label;
-				}
-			}
-		}
-
-		return $list;
-	}
+	
 }
