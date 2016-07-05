@@ -21,6 +21,8 @@ class DashboardController extends BaseDashboardController
 {
     public $patient;
 
+    protected $headerTemplate = 'header';
+
     public function accessRules()
     {
         return array(
@@ -50,6 +52,8 @@ class DashboardController extends BaseDashboardController
         $assetManager->registerScriptFile('js/dashboard/OpenEyes.Dash.js', null, null, AssetManager::OUTPUT_ALL, false);
         $assetManager->registerScriptFile('js/dashboard/dash.js', null, null, AssetManager::OUTPUT_ALL, false);
         $assetManager->registerScriptFile('js/dashboard/initCataract.js', null, null, AssetManager::OUTPUT_ALL, false);
+
+        $this->headerTemplate = '//dashboard/header_cataract';
 
         $this->render('//dashboard/dash');
     }
@@ -180,6 +184,9 @@ class DashboardController extends BaseDashboardController
     }
 
     public function actionOEscape($id){
+
+        $this->headerTemplate = '//dashboard/header_oescape';
+
         $assetManager = Yii::app()->getAssetManager();
         $assetManager->registerScriptFile('js/dashboard/dash.js', null, null, AssetManager::OUTPUT_ALL, false);
         Yii::app()->clientScript->registerScript("patientId", 'var patientId = '.$id.';', CClientScript::POS_HEAD);

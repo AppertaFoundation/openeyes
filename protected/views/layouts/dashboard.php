@@ -71,7 +71,7 @@
     <body>
         <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
             <header class="mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-600">
-                <?php $this->renderPartial('//dashboard/header');?>
+                <?php $this->renderPartial($this->getHeaderTemplate());?>
             </header>
             <?php echo $content; ?>
         </div>

@@ -19,6 +19,11 @@
  */
 class WhiteboardController extends BaseDashboardController
 {
+    
+    protected $headerTemplate = 'header';
+
+    protected $whiteboard;
+
     /**
      * Define access rules for the controller
      *
@@ -74,8 +79,9 @@ class WhiteboardController extends BaseDashboardController
             $whiteboard = new OphTrOperationbooking_Whiteboard();
             $whiteboard->loadData($id);
         }
+        $this->setWhiteboard($whiteboard);
 
-        $this->renderPartial('view', array('data' => $whiteboard), false, true);
+        $this->render('view', array('data' => $whiteboard), false, true);
     }
 
     /**
@@ -99,7 +105,24 @@ class WhiteboardController extends BaseDashboardController
         }
 
         $whiteboard->loadData($id);
+        $this->setWhiteboard($whiteboard);
 
-        $this->renderPartial('view', array('data' => $whiteboard), false, true);
+        $this->render('view', array('data' => $whiteboard), false, true);
+    }
+
+    /**
+     * @param OphTrOperationbooking_Whiteboard $whiteboard
+     */
+    public function setWhiteboard(OphTrOperationbooking_Whiteboard $whiteboard)
+    {
+        $this->whiteboard = $whiteboard;
+    }
+
+    /**
+     * @return null|OphTrOperationbooking_Whiteboard
+     */
+    public function getWhiteboard()
+    {
+        return $this->whiteboard;
     }
 }
