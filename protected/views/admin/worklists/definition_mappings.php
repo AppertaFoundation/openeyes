@@ -89,8 +89,8 @@
                     <tr>
                         <td class="reorder">-</td>
                         <td><?=$mapping->key?></td>
-                        <td><a href="/worklistAdmin/updateDefinitionMapping/<?=$mapping->id?>">Edit</a> |
-                            <a href="/worklistAdmin/deleteDefinitionMapping/<?=$mapping->id?>" disabled="disabled">Delete</a></td>
+                        <td><a href="/worklistAdmin/definitionMappingUpdate/<?=$mapping->id?>">Edit</a> |
+                            <a href="/worklistAdmin/definitionMappingDelete/<?=$mapping->id?>" disabled="disabled">Delete</a></td>
                     </tr>
                 <?php } ?>
                 </tbody>
