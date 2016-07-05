@@ -1,4 +1,3 @@
-<?php
 /**
  * OpenEyes
  *
@@ -16,8 +15,19 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-?>
-<main class="mdl-layout__content mdl-color--grey-100">
-    <div id="dash-grid" class="mdl-grid">
-    </div>
-</main>
+
+$(document).ready(function() {
+    OpenEyes.Dash.init('#dash-grid');
+    OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=PcrRisk');
+    OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=CataractComplications');
+    OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\VisualOutcome');
+    OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\RefractiveOutcome');
+
+    $('#export').on('click', function(){
+        Highcharts.exportCharts(OpenEyes.Dash.reports,{
+            type: 'application/pdf',
+            filename: 'cataract-audit'
+        });
+    });
+});
+

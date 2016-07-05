@@ -489,7 +489,9 @@ class BaseEventTypeController extends BaseModuleController
 
 		if ($previous_id && $element->canCopy()) {
 			$previous_element = $element_class::model()->findByPk($previous_id);
-			$element->loadFromExisting($previous_element);
+			if( $previous_element ){
+				$element->loadFromExisting($previous_element);
+			}
 		}
 		if ($additional) {
 			foreach (array_keys($additional) as $add) {
@@ -1332,27 +1334,14 @@ class BaseEventTypeController extends BaseModuleController
 			: $element->getDefaultContainerView();
 
 		$use_container_view = ($element->useContainerView && $container_view);
-                if(array_pop(explode('\\', (get_class($element)))) === 'Element_OphCiExamination_CataractSurgicalManagement') {
-                    $active_check = SettingInstallation::model()->find('t.key="city_road_satellite_view"');
-                    $view_data = array_merge(array(
-                        'element' => $element,
-                        'active_check' => $active_check->value,
-                        'data' => $data,
-                        'form' => $form,
-                        'child' => $element->getElementType()->isChild(),
-                        'container_view' => $container_view
-                    ), $view_data);
-                }
-                else {
-                    $view_data = array_merge(array(
-			'element' => $element,
-			'data' => $data,
-			'form' => $form,
-			'child' => $element->getElementType()->isChild(),
-			'container_view' => $container_view
-                    ), $view_data);
-                }
-
+                
+                $view_data = array_merge(array(
+                            'element' => $element,
+                            'data' => $data,
+                            'form' => $form,
+                            'child' => $element->getElementType()->isChild(),
+                            'container_view' => $container_view
+                        ), $view_data);
 
 		// Render the view.
 		($use_container_view) && $this->beginContent($container_view, $view_data);

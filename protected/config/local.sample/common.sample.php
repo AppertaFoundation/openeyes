@@ -133,6 +133,7 @@ $config = array(
 		'OphCoTherapyapplication_sender_email' => array('email@example.com' => 'Test'),
 		'event_print_method' => 'pdf',
 		'wkhtmltopdf_nice_level' => 19,
+		'allow_clinical_summary' => false,
 		// flag to turn on drag and drop sorting for dashboards
 		// 'dashboard_sortable' => true
 	),
