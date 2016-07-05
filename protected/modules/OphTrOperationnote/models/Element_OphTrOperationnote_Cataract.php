@@ -99,7 +99,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand {
             
         }
         if (!preg_match('/^[0-9]{1,2}.([0-9]{2})$/', $value)) {
-                $message = $this->addError('iol_power', 'IOL power must be a x.xx or xx.xx format');
+                $message = $this->addError('iol_power', 'IOL power must be a number with an optional 2 decimal places.');
         }        
         
     }
