@@ -94,11 +94,11 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand {
         if (!is_numeric($value)) {
             $message = $this->addError('iol_power', 'IOL Power must be a number.');
         }
-        if ($value < -10 || $value > 40) {
+        elseif ($value < -10 || $value > 40) {
             $message = $this->addError('iol_power', 'IOL Power must be between -10 to 40');
             
         }
-        if (!preg_match('/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', $value)) {
+        elseif (!preg_match('/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', $value)) {
                 $message = $this->addError('iol_power', 'IOL power must be a number with an optional 2 decimal places.');
         }        
         
