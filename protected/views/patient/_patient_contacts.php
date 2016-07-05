@@ -267,7 +267,7 @@
 
                     <div class="row field-row">
                         <div class="large-5 column">
-                            <button class="small btn_add_site" type="submit">Add site/institution</button>
+                            <button class="small btn_add_site" type="submit">Add new contact</button>
                         </div>
                         <div class="large-7 column text-right">
                             <img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" class="add_contact_loader" style="display: none;" />
@@ -331,7 +331,7 @@
 
                     <div class="row field-row">
                         <div class="large-5 column">
-                            <button class="small btn_add_site" type="submit">Add site/institution</button>
+                            <button class="small btn_add_site" type="submit">Add new contact</button>
                         </div>
                         <div class="large-7 column text-right">
                             <img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" class="edit_contact_loader" style="display: none;" />
@@ -345,9 +345,9 @@
             </div>
 
             <!-- Add site or institution dialog -->
-            <div id="add_site_dialog" title="Add site or institution" style="display: none;">
+            <div id="add_site_dialog" title="Add new contact" style="display: none;">
                 <p>
-                    This form allows you to send a request to the OpenEyes support team to add a site or institution to the system for you.
+                    This form allows you to send a request to the OpenEyes support team to add a new contact to the system for you.
                 </p>
                 <?php
                 $form = $this->beginWidget('FormLayout', array(
@@ -373,7 +373,7 @@
                         <label for="newsite_subject">Subject:</label>
                     </div>
                     <div class="<?php echo $form->columns('field'); ?>">
-    <?php echo CHtml::textField('newsite_subject', 'Please add the following site/institution', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+    <?php echo CHtml::textField('newsite_subject', 'Please add the following new contact', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
                     </div>
                 </div>
                 <div class="row field-row">
@@ -381,7 +381,7 @@
                         <label for="newsite_message">Message:</label>
                     </div>
                     <div class="<?php echo $form->columns('field'); ?>">
-    <?php echo CHtml::textArea('newsite_message', "Please could you add the following site/institution to OpenEyes:\n\n", array('rows' => 7, 'cols' => 55)) ?>
+    <?php echo CHtml::textArea('newsite_message', "Please could you add the following new contact to OpenEyes:\n\n", array('rows' => 7, 'cols' => 55)) ?>
                     </div>
                 </div>
     <?php $this->endWidget() ?>
@@ -585,8 +585,8 @@
             e.preventDefault();
 
             $('#newsite_from').val('<?php echo User::model()->findByPk(Yii::app()->user->id)->email ?>');
-            $('#newsite_subject').val('Please add the following site/institution');
-            $('#newsite_message').val("Please could you add the following site/institution to OpenEyes:\n\n");
+            $('#newsite_subject').val('Please add the following new contact');
+            $('#newsite_message').val("Please could you add the following new contact to OpenEyes:\n\n");
 
             $('#add_site_dialog').dialog({
                 resizable: false,
