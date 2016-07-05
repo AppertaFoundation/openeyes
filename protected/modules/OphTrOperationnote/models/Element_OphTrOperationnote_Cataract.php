@@ -98,7 +98,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand {
             $message = $this->addError('iol_power', 'IOL Power must be between -10 to 40');
             
         }
-        if (!preg_match('/^[0-9]{1,2}.([0-9]{2})$/', $value)) {
+        if (!preg_match('/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', $value)) {
                 $message = $this->addError('iol_power', 'IOL power must be a number with an optional 2 decimal places.');
         }        
         
