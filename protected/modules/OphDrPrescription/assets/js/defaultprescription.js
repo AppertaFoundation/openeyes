@@ -70,7 +70,8 @@ $('#prescription_items').delegate('a.removeItem', 'click', function () {
     var row = $(this).closest('tr');
     var drug_id = row.find('input[name$="[drug_id]"]').first().val();
     var key = row.attr('data-key');
-     if(key == 0)
+    var rowCount = $('#prescription_items tr').length;
+    if(rowCount == 2)
     {
         var warning_message = 'Items cannot be blank';
         
