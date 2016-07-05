@@ -88,7 +88,7 @@
             </div>
             <div class="mdl-card__supporting-text">
                 <?php if($data->alpha_blockers):?>
-                    Yes
+                    Yes - <?=$data->alpha_blocker_name?>
                 <?php else: ?>
                     No
                 <?php endif;?>
@@ -116,7 +116,7 @@
             </div>
             <div class="mdl-card__supporting-text">
                 <?php if($data->anticoagulants):?>
-                Yes
+                Yes - <?=$data->anticoagulant_name?>
                 <?php else: ?>
                 No
                 <?php endif;?>

@@ -79,7 +79,7 @@
         <div class="large-4 column end">
             <?php $form->textField(
                 $element,
-                'alphablocker_name',
+                'alpha_blocker_name',
                 array(),
                 array(),
                 array(

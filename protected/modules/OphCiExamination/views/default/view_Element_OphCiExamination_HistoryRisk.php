@@ -29,7 +29,7 @@
         ?>
         <div class="data-row">
             <div class="data-value">
-                Alpha-blocker <?=($element->alphablocker_name) ? ' - '.$element->alphablocker_name: ''?>
+                Alpha-blocker <?=($element->alpha_blocker_name) ? ' - '.$element->alpha_blocker_name: ''?>
             </div>
         </div>
     <?php endif; ?>

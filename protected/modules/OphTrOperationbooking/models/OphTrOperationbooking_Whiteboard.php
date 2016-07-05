@@ -78,9 +78,11 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $examination = $event->getPreviousInEpisode(EventType::model()->findByAttributes(array('name' => 'Examination'))->id);
         $management = new \OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement();
         $anterior = new \OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment();
+        $risks = new \OEModule\OphCiExamination\models\Element_OphCiExamination_HistoryRisk();
         if($examination){
             $management = $management->findByAttributes(array('event_id' => $examination->id));
             $anterior = $anterior->findByAttributes(array('event_id' => $examination->id));
+            $risks = $risks->findByAttributes(array('event_id' => $examination->id));
         }
 
         $allergies = Yii::app()->db->createCommand()
@@ -120,6 +122,8 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->predicted_refractive_outcome = ($management) ? $management->target_postop_refraction : '';
         $this->alpha_blockers = $patient->hasRisk('Alpha blockers');
         $this->anticoagulants = $patient->hasRisk('Anticoagulants');
+        $this->alpha_blocker_name = ($risks) ? $risks->alpha_blocker_name : '';
+        $this->anticoagulant_name = ($risks) ? $risks->anticoagulant_name : '';
         $this->inr = 'None';
         $this->save();
     }
