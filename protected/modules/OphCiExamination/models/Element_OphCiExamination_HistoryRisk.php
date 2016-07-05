@@ -57,10 +57,10 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array('id, event_id,anticoagulant,alphablocker', 'safe'),
-                // The following rule is used by search().
-                // Please remove those attributes that should not be searched.
-                array('id, event_id,anticoagulant,alphablocker', 'safe', 'on' => 'search'),
+            array('id, event_id, anticoagulant, alphablocker, anticoagulant_name, alphablocker_name', 'safe'),
+            // The following rule is used by search().
+            // Please remove those attributes that should not be searched.
+            array('id, event_id, anticoagulant, alphablocker', 'safe', 'on' => 'search'),
         );
     }
 
@@ -72,10 +72,10 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-                'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
-                'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-                'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-                'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
+            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
         );
     }
 
@@ -85,10 +85,12 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
     public function attributeLabels()
     {
         return array(
-                'id' => 'ID',
-                'event_id' => 'Event',
-                'anticoagulant' => 'Patient is on anticoagulants? ',
-                'alphablocker' => 'Patient is taking alpha-blockers? ',
+            'id' => 'ID',
+            'event_id' => 'Event',
+            'anticoagulant' => 'Patient is on anticoagulants? ',
+            'alphablocker' => 'Patient is taking alpha-blockers? ',
+            'anticoagulant_name' => 'Anticoagulant Name',
+            'alphablocker_name' => 'Alpha-blocker Name',
         );
     }
 
@@ -108,7 +110,7 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
         $criteria->compare('anticoagulant', $this->anticoagulant, true);
         $criteria->compare('alphablocker', $this->anticoagulant, true);
         return new \CActiveDataProvider(get_class($this), array(
-                'criteria' => $criteria,
+            'criteria' => $criteria,
         ));
     }
 }
