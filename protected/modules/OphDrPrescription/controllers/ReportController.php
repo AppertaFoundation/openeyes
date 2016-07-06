@@ -21,35 +21,60 @@
 class ReportController extends BaseReportController
 {
     public $renderPatientPanel = false;
+    
+    public $subspecialtyId = null;
+    public $siteId = null;
 
     public function accessRules()
     {
-            return array(
-                    array('allow',
-                            'actions' => array('prescriptedDrugs','runReport','downloadReport'),
-                            'roles' => array('OprnGenerateReport','admin'),
-                    )
-            );
+        return array(
+            array('allow',
+                'actions' => array('getDrugsBySubspecialty', 'prescriptedDrugs','runReport','downloadReport'),
+                'roles' => array('OprnGenerateReport','admin'),
+            )
+        );
     }
         
     public function init()
     {
         $modulePath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.modules.OphDrPrescription.assets'));
         Yii::app()->clientScript->registerScriptFile($modulePath . "/js/report.js", CClientScript::POS_HEAD);
+
+        if(!$this->subspecialtyId){
+            $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+            if (isset($firm->serviceSubspecialtyAssignment->subspecialty_id)) {
+                $this->subspecialtyId = $firm->serviceSubspecialtyAssignment->subspecialty_id;
+            }
+        }
+        
+        if(!$this->siteId){
+            $this->siteId = Yii::app()->session['selected_site_id'];
+        }
     }
         
 
-	public function actionPrescriptedDrugs()
-	{
-            $default_drugs = Yii::app()->db->createCommand('SELECT id, name FROM drug WHERE name
-                                                                LIKE "%Methotrexate%"
-                                                        OR NAME LIKE "%Mycophenolate%"
-                                                        OR NAME LIKE "%Tacrolimus%"
-                                                        OR NAME LIKE "%Azathioprine%"
-                                                        OR NAME LIKE "%Cyclosporine%"
-                                                        OR NAME LIKE "%Cyclophosphamide%"
-                                                        ORDER BY NAME')->queryAll();
-            
-            $this->render('prescribedDrugs', array('default_drugs' => $default_drugs));
-	}
+    public function actionPrescriptedDrugs()
+    {
+        $drugs = Element_OphDrPrescription_Details::model()->commonDrugs();
+        $users = User::model()->findAll(array('order' => 'first_name asc,last_name asc'));
+        
+        $this->render('prescribedDrugs', array( 'drugs' => $drugs, 'users' => $users ));
+    }
+    
+    public function actionGetDrugs()
+    {
+        $commonDrugs = array();
+        $drugs = Element_OphDrPrescription_Details::model()->commonDrugs();
+        
+        if($drugs){
+            foreach($drugs as $drug){
+                $commonDrugs[] = array(
+                    'id' => $drug->id,
+                    'label' => $drug->name
+                );
+            }
+        }
+        echo CJSON::encode($commonDrugs);
+        Yii::app()->end();
+    }
 }

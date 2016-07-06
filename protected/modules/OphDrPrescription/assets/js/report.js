@@ -20,19 +20,57 @@ function addItem(item){
     var $table = $('#report-drug-list'),
         $tr = $("<tr>",{"id": item.id});
         $td = $("<td>");
+        $td_action = $("<td>",{"class":"right"});
         $span_name = $("<span>",{"class": "drug-name"});
-        $span_remove = $("<a>",{"class": "remove right"}).text("remove");
-        $hidden = $("<input>",{"type":"hidden", "name":"OphDrPrescription_ReportPrescribedDrugs[attributes][drugs][]","value": item.id});
+        $a_remove = $("<a>",{"class": "remove right"}).text("remove");
+        $hidden = $("<input>",{"type":"hidden", "name":"OphDrPrescription_ReportPrescribedDrugs[drugs][]","value": item.id});
         
         $td.append($span_name.text(item.label));
-        $td.append($span_remove);
+        $td_action.append($a_remove);
         $td.append($hidden);
         
-        $table.append( $tr.append($td) );
+        $table.find('tbody').append( $tr.append($td).append($td_action) );
+}
+
+function getDrugs(subspecialty_id){
+    $.ajax({
+        'type': 'GET',
+        'url': baseUrl+'/OphDrPrescription/report/getDrugsBySubspecialty',
+        'data': 'subspecialtyId='+subspecialty_id+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
+        'beforeSend': function(){
+            $('.select-loader').show();
+        },    
+        'success': function(response) {
+            var data = JSON.parse(response);
+            
+            $.each(data, function(i, item) {
+                addItem(item);
+            });
+            $('.select-loader').hide();
+        }
+    });
 }
 
 $(document).ready(function(){
     $('#report-drug-list').on('click', '.remove',function(){
         $(this).closest('tr').remove();
     });
+    
+    $('#drug_id').on('change', function(){
+        var item,
+            value = $(this).val(),
+            text = $(this).find('option:selected').text();
+        
+        if(text !== '-- Select --' && value !== '' && $('#report-drug-list').find('tr#'+value).length == 0){
+            $('.no-drugs').remove();
+            item = {
+                id: $(this).val(),
+                label: text
+            }; 
+            addItem(item);
+        }
+       
+        
+    });
+    
 });
