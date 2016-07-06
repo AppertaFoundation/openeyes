@@ -22,5 +22,21 @@ class Element_OphInLabResults_Inr extends Element_OphInLabResults_ResultTimedNum
 
         return $parentRules;
     }
-    
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        $string = '';
+        if($this->result){
+            $string = $this->result . ' (at '.$this->time.', '. date_create_from_format('Y-m-d H:i:s', $this->event->event_date )->format('d/m/Y').')';
+        }
+
+        if($this->comment){
+            $string .= ' - '.$this->comment;
+        }
+
+        return $string;
+    }
 }

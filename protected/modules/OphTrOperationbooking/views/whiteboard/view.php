@@ -116,9 +116,10 @@
             </div>
             <div class="mdl-card__supporting-text">
                 <?php if($data->anticoagulants):?>
-                Yes - <?=$data->anticoagulant_name?>
+                    Yes - <?=$data->anticoagulant_name?> <br>
+                    INR: <?=$data->inr?>
                 <?php else: ?>
-                No
+                    No
                 <?php endif;?>
             </div>
         </div>

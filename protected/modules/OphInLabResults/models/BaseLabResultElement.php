@@ -46,4 +46,22 @@ class BaseLabResultElement extends BaseEventTypeElement
 
         return $parentRules;
     }
+
+    public function findPatientResultByType($patientId, $type)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->join = ' LEFT JOIN event on t.event_id = event.id ';
+        $criteria->join .= 'LEFT JOIN episode on event.episode_id = episode.id ';
+        $criteria->join .= ' LEFT JOIN et_ophinlabresults_details on et_ophinlabresults_details.event_id = event.id ';
+        $criteria->addCondition('et_ophinlabresults_details.result_type_id = :type');
+        $criteria->addCondition('episode.patient_id = :patientId');
+        $criteria->order = 'event.event_date DESC, event.created_date DESC';
+        $criteria->limit = 1;
+        $criteria->params = array(
+            'type' => $type,
+            'patientId' => $patientId
+        );
+
+        return $this->find($criteria);
+    }
 }

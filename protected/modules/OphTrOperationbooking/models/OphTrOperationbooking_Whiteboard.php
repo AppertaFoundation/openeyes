@@ -85,6 +85,8 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             $risks = $risks->findByAttributes(array('event_id' => $examination->id));
         }
 
+        $labResult = Element_OphInLabResults_Inr::model()->findPatientResultByType($patient->id, '1');
+
         $allergies = Yii::app()->db->createCommand()
             ->select('a.name as name')
             ->from('patient_allergy_assignment pas')
@@ -124,7 +126,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->anticoagulants = $patient->hasRisk('Anticoagulants');
         $this->alpha_blocker_name = ($risks) ? $risks->alpha_blocker_name : '';
         $this->anticoagulant_name = ($risks) ? $risks->anticoagulant_name : '';
-        $this->inr = 'None';
+        $this->inr = ($labResult) ? $labResult : 'None' ;
         $this->save();
     }
 }
