@@ -33,7 +33,7 @@ class WhiteboardController extends BaseDashboardController
     {
         return array(
             array('allow',
-                'actions' => array('view', 'reload'),
+                'actions' => array('view', 'reload', 'confirm'),
                 'roles' => array('OprnViewClinical'),
             ),
         );
@@ -105,9 +105,31 @@ class WhiteboardController extends BaseDashboardController
         }
 
         $whiteboard->loadData($id);
-        $this->setWhiteboard($whiteboard);
 
-        $this->render('view', array('data' => $whiteboard), false, true);
+        $this->redirect('/OphTrOperationbooking/whiteboard/view/'.$id);
+    }
+
+    /**
+     * Confirms the checks
+     *
+     * @param $id
+     * @throws CHttpException
+     */
+    public function actionConfirm($id)
+    {
+        $whiteboard = OphTrOperationbooking_Whiteboard::model()->with('booking')->findByAttributes(array('event_id' => $id));
+        if(!$whiteboard){
+            throw new CHttpException(400, 'No whiteboard found for reload with id '.$id);
+        }
+
+        if(!$whiteboard->booking->isEditable()){
+            throw new CHttpException(400, 'Whiteboard is not editable '.$id);
+        }
+
+        $whiteboard->is_confirmed = 1;
+        $whiteboard->save();
+
+        $this->redirect('/OphTrOperationbooking/whiteboard/view/'.$id);
     }
 
     /**
