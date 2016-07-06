@@ -65,7 +65,10 @@ this.OpenEyes = this.OpenEyes || {};
     }
 
     container.appendChild(dialog);
-    trigger.addEventListener('click', handleTrigger);
+
+    if(trigger instanceof HTMLElement){
+      trigger.addEventListener('click', handleTrigger);
+    }
 
     close = dialog.getElementsByClassName('close');
     for(var i = 0; i < close.length; i++){
