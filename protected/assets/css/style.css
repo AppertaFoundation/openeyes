@@ -2418,6 +2418,7 @@ th,
 td {
   margin: 0;
   padding: 0;
+  word-wrap: break-word;
 }
 
 /* Default Link Styles */
@@ -6051,7 +6052,7 @@ tfoot.pagination-container .pagination-view-all {
     -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     position: fixed;
-    top: 74px;
+    top: 54px;
     z-index: 199;
   }
 }
