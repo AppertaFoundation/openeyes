@@ -39,7 +39,8 @@
  * @property integer $created_user_id
  * @property integer $last_modified_user_id
  * @property datetime $no_allergies_date
- * @property tinyint $deleted
+ * @property integer $deleted
+ * @property integer $nhs_num_status_id
  * @property integer $is_deceased
  *
  * The followings are the available model relations:
@@ -158,6 +159,7 @@ class Patient extends BaseActiveRecordVersioned
             'lastReferral' => array(self::HAS_ONE, 'Referral', 'patient_id', 'order' => 'received_date desc'),
             'socialhistory' => array(self::HAS_ONE, 'SocialHistory', 'patient_id'),
             'adherence' => array(self::HAS_ONE, 'MedicationAdherence', 'patient_id'),
+            'nhsNumberStatus' => array(self::BELONGS_TO, 'NhsNumberVerificationStatus', 'nhs_num_status_id')
         );
     }
 
