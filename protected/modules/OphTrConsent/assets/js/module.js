@@ -34,11 +34,6 @@ $(document).ready(function() {
 		e.preventDefault();
 	});
 
-    var booking_event_id = new RegExp('[\?&]booking_event_id=([^&#]*)').exec(window.location.href);
-	if(OE_event_id < 1 && booking_event_id === null ){
-		$('input:radio[name="Element_OphTrConsent_Procedure[eye_id]"]').each(function () { $(this).prop('checked', false); });
-	}
-
 	handleButton($('#et_deleteevent'));
 
 	handleButton($('#et_canceldelete'));
