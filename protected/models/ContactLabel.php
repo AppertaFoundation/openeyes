@@ -59,7 +59,7 @@ class ContactLabel extends BaseActiveRecordVersioned
                         array('name', 'length', 'max'=>40),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name,type', 'safe', 'on'=>'search'),
+			array('id, name', 'safe', 'on'=>'search'),
                         array('display', 'safe'),
 		);
 	}

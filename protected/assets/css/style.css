@@ -2418,6 +2418,7 @@ th,
 td {
   margin: 0;
   padding: 0;
+
 }
 
 /* Default Link Styles */
@@ -2776,6 +2777,12 @@ html, body {
 /* line 31, ../sass/openeyes/components/_global.scss */
 .print {
   background: #ffffff;
+}
+
+/* line 35, ../sass/openeyes/components/_global.scss */
+.wordbreak{
+  word-wrap: break-word;
+  word-break:break-all;
 }
 
 /* line 17, ../sass/openeyes/components/_containers.scss */
@@ -5437,6 +5444,10 @@ tfoot.pagination-container .pagination-view-all {
   display: inline-block;
   padding: 2px 3px 1px 33px;
 }
+.nhs-number .messages{
+  display: none;
+}
+
 @media print {
   /* line 156, ../sass/openeyes/components/panels/_patient.scss */
   .nhs-number {
@@ -6051,7 +6062,7 @@ tfoot.pagination-container .pagination-view-all {
     -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     position: fixed;
-    top: 74px;
+    top: 54px;
     z-index: 199;
   }
 }

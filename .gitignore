@@ -32,8 +32,8 @@ tags
 /protected/vendors
 *zip
 vendor
-/.sass-cache
-/node_modules
+.sass-cache
+node_modules
 /docs/templates/styleguide/public/css
 /docs/templates/styleguide/public/img
 /docs/public/styleguide/

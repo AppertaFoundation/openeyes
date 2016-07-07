@@ -18,7 +18,8 @@
     "font-awesome": "~4.3.0",
     "chosen": "~1.4.2",
     "material-design-lite": "~1.1",
-    "highcharts": "~4.2"
+    "highcharts": "~4.2",
+    "jt.timepicker": "jquery-timepicker-jt#^1.11.1"
   },
   "devDependencies": {
     "google-code-prettify": "~1.0.0",

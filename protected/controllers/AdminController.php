@@ -321,17 +321,19 @@ class AdminController extends BaseAdminController {
         Audit::add('admin-User', 'list');
 
         $criteria = new CDbCriteria;
-        if (!empty($_POST['search'])) {
-            $criteria->compare("LOWER(username)", strtolower($_POST['search']), true, 'OR');
-            $criteria->compare("LOWER(first_name)", strtolower($_POST['search']), true, 'OR');
-            $criteria->compare("LOWER(last_name)", strtolower($_POST['search']), true, 'OR');
+        if (!empty($_GET['search'])) {
+            $criteria->compare("LOWER(username)", strtolower($_GET['search']), true, 'OR');
+            $criteria->compare("LOWER(first_name)", strtolower($_GET['search']), true, 'OR');
+            $criteria->compare("LOWER(last_name)", strtolower($_GET['search']), true, 'OR');
+            $criteria->compare("LOWER(id)", $_GET['search'], false, 'OR');
         }
 
         $pagination = $this->initPagination(User::model(), $criteria);
-
+        $search = !empty($_GET['search']) ? $_GET['search'] : '';
         $this->render('/admin/users', array(
             'users' => User::model()->findAll($criteria),
             'pagination' => $pagination,
+            'search' => $search,
         ));
     }
 

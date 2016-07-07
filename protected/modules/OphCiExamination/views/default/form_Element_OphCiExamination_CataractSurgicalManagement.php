@@ -18,23 +18,29 @@
  */
 ?>
 <div class="sub-element-fields">
-	<div class="field-row">
-		<?php echo $form->radioButtons($element, 'eye_id', CHtml::listData(\OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::model()->findAll(), 'id', 'name'), null, false, false, false, false, array('nowrapper'=>true))?>
-		<span class="pcr-exam-link">
-			<span id="ophCiExaminationPCRRiskRightEyeLabel"><a href="javascript:showhidePCR('ophCiExaminationPCRRiskRightEye')">Right Eye - PCR Risk <span class="pcr-span1"></span>%</a></span>&nbsp;|&nbsp;
-			<span id="ophCiExaminationPCRRiskLeftEyeLabel"><a href="javascript:showhidePCR('ophCiExaminationPCRRiskLeftEye')">Left Eye - PCR Risk <span class="pcr-span1"></span>%</a></span>
-		</span>
-	</div>
-	<div class="field-row">
-                <?php   if($active_check === 'on') { 
-                            echo $form->checkbox($element, 'city_road', array('nowrapper'=>true));
-                            echo $form->checkbox($element, 'satellite', array('nowrapper'=>true));
-                }
-                ?>
-		<?php echo $form->checkbox($element, 'fast_track', array('nowrapper'=>true))?>
-	</div>
+    <div class="field-row">
+        <?php echo $form->radioButtons($element, 'eye_id', CHtml::listData(\OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::model()->findAll(), 'id', 'name'), null, false, false, false, false, array('nowrapper'=>true))?>
+            <span class="pcr-exam-link">
+                <span id="ophCiExaminationPCRRiskRightEyeLabel">
+                    <a href="javascript:showhidePCR('ophCiExaminationPCRRiskRightEye')">Right Eye - PCR Risk <span class="pcr-span1"></span>%</a>
+                </span>&nbsp;|&nbsp;
+                <span id="ophCiExaminationPCRRiskLeftEyeLabel">
+                    <a href="javascript:showhidePCR('ophCiExaminationPCRRiskLeftEye')">Left Eye - PCR Risk <span class="pcr-span1"></span>%</a>
+                </span>
+            </span>
+    </div>
+    
+    <div class="field-row">
+        <?php
+            if($active_check === 'on') {
+                echo $form->checkbox($element, 'city_road', array('nowrapper'=>true));
+                echo $form->checkbox($element, 'satellite', array('nowrapper'=>true));
+            }
+        ?>
+        <?php echo $form->checkbox($element, 'fast_track', array('nowrapper'=>true))?>
+    </div>
 
-	<?php echo $form->textfield($element, 'target_postop_refraction', array(), array(), array('label' => 3, 'field' => 1));
+    <?php echo $form->textfield($element, 'target_postop_refraction', array(), array(), array('label' => 3, 'field' => 1));
         $this->widget('zii.widgets.jui.CJuiSliderInput', array(
             'name'=>'refraction',
             'value'=>$element->target_postop_refraction,
@@ -53,80 +59,80 @@
             ),
         ));
     ?>
-	<?php echo $form->radioBoolean($element, 'correction_discussed', array(), array('label' => 3, 'field' => 9))?>
-	<div class="row field-row">
-		<div class="large-3 column">
-			<label for="<?php echo get_class($element).'_suitable_for_surgeon_id';?>">
-				<?php echo $element->getAttributeLabel('suitable_for_surgeon_id')?>:
-			</label>
-		</div>
-		<div class="large-9 column">
-			<?php echo $form->dropDownList($element, 'suitable_for_surgeon_id', '\OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_SuitableForSurgeon', array('class'=>'inline', 'empty'=>'- Please select -', 'nowrapper'=>true))?>
-			<label class="inline">
-				<?php echo $form->checkbox($element, 'supervised', array('nowrapper' => true, 'no-label'=>true))?>
-				<?php echo $element->getAttributeLabel('supervised')?>
-			</label>
-		</div>
-	</div>
-	<?php echo $form->radioBoolean($element, 'previous_refractive_surgery', array(), array('label' => 3, 'field' => 9))?>
-	<?php echo $form->radioBoolean($element, 'vitrectomised_eye', array(), array('label' => 3, 'field' => 9))?>
-	<div class="row field-row">
-		<div class="large-3 column">
-			<label for="<?php echo get_class($element).'reasonForSurgery';?>">
-				<?php echo $element->getAttributeLabel('reasonForSurgery')?>:
-			</label>
-		</div>
-		<div class="large-6 column">
-			<?php
-            echo $form->multiSelectList(
-                $element,
-                'OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement[reasonForSurgery]',
-                'reasonForSurgery',
-                'id',
-                \CHtml::listData(\OEModule\OphCiExamination\models\OphCiExamination_Primary_Reason_For_Surgery::model()->findAllByAttributes(array(), 'active=1'), 'id', 'name'),
-                array(),
-                array(
-                    'empty' => '',
-                    'label' => 'Primary Reason For Cataract Surgery',
-                    'nowrapper' => true
-                ),
-                false,
-                true,
-                null,
-                false,
-                false,
-                array('label' => 3, 'field' => 9)
-            );
-            ?>
-		</div>
-		<div class="large-3 column">
-		</div>
-	</div>
+    <?php echo $form->radioBoolean($element, 'correction_discussed', array(), array('label' => 3, 'field' => 9))?>
+    <div class="row field-row">
+        <div class="large-3 column">
+            <label for="<?php echo get_class($element).'_suitable_for_surgeon_id';?>">
+                <?php echo $element->getAttributeLabel('suitable_for_surgeon_id')?>:
+            </label>
+        </div>
+        <div class="large-9 column">
+            <?php echo $form->dropDownList($element, 'suitable_for_surgeon_id', '\OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_SuitableForSurgeon', array('class'=>'inline', 'empty'=>'- Please select -', 'nowrapper'=>true))?>
+            <label class="inline">
+                <?php echo $form->checkbox($element, 'supervised', array('nowrapper' => true, 'no-label'=>true))?>
+                <?php echo $element->getAttributeLabel('supervised')?>
+            </label>
+        </div>
+    </div>
+    <?php echo $form->radioBoolean($element, 'previous_refractive_surgery', array(), array('label' => 3, 'field' => 9))?>
+    <?php echo $form->radioBoolean($element, 'vitrectomised_eye', array(), array('label' => 3, 'field' => 9))?>
+    <div class="row field-row">
+        <div class="large-3 column">
+            <label for="<?php echo get_class($element).'reasonForSurgery';?>">
+                <?php echo $element->getAttributeLabel('reasonForSurgery')?>:
+            </label>
+        </div>
+        <div class="large-6 column">
+            <?php
+                echo $form->multiSelectList(
+                    $element,
+                    'OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement[reasonForSurgery]',
+                    'reasonForSurgery',
+                    'id',
+                    \CHtml::listData(\OEModule\OphCiExamination\models\OphCiExamination_Primary_Reason_For_Surgery::model()->findAllByAttributes(array(), 'active=1'), 'id', 'name'),
+                    array(),
+                    array(
+                        'empty' => '',
+                        'label' => 'Primary Reason For Cataract Surgery',
+                        'nowrapper' => true
+                    ),
+                    false,
+                    true,
+                    null,
+                    false,
+                    false,
+                    array('label' => 3, 'field' => 9)
+                );
+                ?>
+        </div>
+        <div class="large-3 column"></div>
+    </div>
 </div>
-	<div id="ophCiExaminationPCRRiskLeftEye" class="pcr-opnote-eye">
-		<?php
+
+<div id="ophCiExaminationPCRRiskLeftEye" class="pcr-opnote-eye">
+    <?php
         $this->renderPartial('application.views.default._pcr_risk_form', array('side' => 'left', 'element' => $element));
-        ?>
-	</div>
-	<div id="ophCiExaminationPCRRiskRightEye" class="pcr-opnote-eye">
-		<?php
-        $this->renderPartial('application.views.default._pcr_risk_form', array('side' => 'right', 'element' => $element));
-        ?>
-	</div>
+    ?>
 </div>
+<div id="ophCiExaminationPCRRiskRightEye" class="pcr-opnote-eye">
+    <?php
+        $this->renderPartial('application.views.default._pcr_risk_form', array('side' => 'right', 'element' => $element));
+    ?>
+</div>
+
 <script type="text/javascript">
-	$('#OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_target_postop_refraction').change(function() {
+$('#OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_target_postop_refraction').change(function() {
 
-		if( $(this).val() < $('#refraction_slider').slider( "option", "min") ){
-			$(this).val($('#refraction_slider').slider( "option", "min"));
-		}
-		if($(this).val() > $('#refraction_slider').slider( "option", "max")){
-			$(this).val($('#refraction_slider').slider( "option", "max"));
-		}
-		$('#refraction_slider').slider("value", $(this).val());
+    if( $(this).val() < $('#refraction_slider').slider( "option", "min") ){
+        $(this).val($('#refraction_slider').slider( "option", "min"));
+    }
+    if($(this).val() > $('#refraction_slider').slider( "option", "max")){
+        $(this).val($('#refraction_slider').slider( "option", "max"));
+    }
+    $('#refraction_slider').slider("value", $(this).val());
 
-	});
+});
 
-	$('#refraction_slider').after('<div style="width:410px;margin-top:-14px;margin-bottom:20px;margin-left:240px;font-size:10px;"><span>-10</span><span style="margin-left:194px;">0</span><span style="margin-left:194px;">10</span></div>');
+$('#refraction_slider').after('<div style="width:410px;margin-top:-14px;margin-bottom:20px;margin-left:240px;font-size:10px;"><span>-10</span><span style="margin-left:194px;">0</span><span style="margin-left:194px;">10</span></div>');
 
 </script>

@@ -32,7 +32,7 @@
 		)
 	))?>
 		<?php echo $form->textField($drug,'name')?>
-		<?php echo $form->formActions(array('cancel-uri' => '/admin/viewPostOpDrugs'))?>
+		<?php echo $form->formActions(array('cancel-uri' => '/OphTrOperationnote/admin/viewPostOpDrugs'))?>
 	<?php $this->endWidget()?>
 </div>
 <script type="text/javascript">

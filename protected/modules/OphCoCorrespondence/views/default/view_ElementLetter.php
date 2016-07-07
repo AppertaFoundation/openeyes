@@ -18,7 +18,7 @@
  */
 ?>
 
-<div id="correspondence_out" class="correspondence-letter<?php if ($element->draft) {?> draft<?php }?>">
+<div id="correspondence_out" class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?>">
 	<header>
 		<?php $this->renderPartial("letter_start", array(
 			'toAddress' => $element->address,
