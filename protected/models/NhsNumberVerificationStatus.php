@@ -103,6 +103,6 @@ class NhsNumberVerificationStatus extends BaseActiveRecord
      */
     public function isAnnotatedStatus()
     {
-        return $this->code !== 'O1';
+        return $this->code !== '01';
     }
 }
