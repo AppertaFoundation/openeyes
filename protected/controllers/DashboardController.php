@@ -19,6 +19,8 @@
 
 class DashboardController extends BaseDashboardController
 {
+    public $patient;
+
     public function accessRules()
     {
         return array(
@@ -29,6 +31,10 @@ class DashboardController extends BaseDashboardController
             array('allow',
                 'actions' => array('index', 'cataract'),
                 'roles' => array('admin'),
+            ),
+            array('allow',
+                'actions' => array('oescape'),
+                'roles' => array('none')
             ),
         );
     }
@@ -43,6 +49,7 @@ class DashboardController extends BaseDashboardController
         $assetManager = Yii::app()->getAssetManager();
         $assetManager->registerScriptFile('js/dashboard/OpenEyes.Dash.js', null, null, AssetManager::OUTPUT_ALL, false);
         $assetManager->registerScriptFile('js/dashboard/dash.js', null, null, AssetManager::OUTPUT_ALL, false);
+        $assetManager->registerScriptFile('js/dashboard/initCataract.js', null, null, AssetManager::OUTPUT_ALL, false);
 
         $this->render('//dashboard/dash');
     }
@@ -170,5 +177,19 @@ class DashboardController extends BaseDashboardController
             throw new CHttpException(400, "Invalid Type");
         }
 
+    }
+
+    public function actionOEscape($id){
+        $assetManager = Yii::app()->getAssetManager();
+        $assetManager->registerScriptFile('js/dashboard/dash.js', null, null, AssetManager::OUTPUT_ALL, false);
+        Yii::app()->clientScript->registerScript("patientId", 'var patientId = '.$id.';', CClientScript::POS_HEAD);
+        $assetManager->registerScriptFile('js/dashboard/initOEscape.js', null, null, AssetManager::OUTPUT_ALL, false);
+
+        if($id > 0){
+            $this->patient = Patient::model()->findByPk($id);
+            $this->render('//dashboard/oescape');
+        }else{
+            throw new CHttpException(400, "Patient ID not presented");
+        }
     }
 }

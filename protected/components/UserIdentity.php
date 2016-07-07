@@ -182,7 +182,7 @@ class UserIdentity extends CUserIdentity
 
 				// Now attempt to bind to the user's DN with their entered password.
 
-				if (!@ldap_bind($link, $info['distinguishedName'][0], $this->password)) {
+				if (!@ldap_bind($link, $info['distinguishedname'][0], $this->password)) {
 					$audit = new Audit;
 					$audit->action = "login-failed";
 					$audit->target_type = "login";

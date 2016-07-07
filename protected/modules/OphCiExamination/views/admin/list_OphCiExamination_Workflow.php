@@ -55,7 +55,7 @@
 				<tr>
 					<td colspan="5">
 						<?php echo EventAction::button('Add', 'add', null, array('class' => 'small', 'data-uri' => '/OphCiExamination/admin/addWorkflow'))->toHtml()?>
-						<?php echo EventAction::button('Delete', 'delete', null, array('class' => 'small', 'data-uri' => '/OphCiExamination/admin/deleteWorkflows', 'data-object' => 'workflows'))->toHtml()?>
+						<?php echo EventAction::button('Delete', 'delete', null, array('class' => 'small', 'data-uri' => '/OphCiExamination/admin/deleteWorkflows', 'data-object' => 'email_recipients'))->toHtml()?>
 					</td>
 				</tr>
 			</tfoot>
