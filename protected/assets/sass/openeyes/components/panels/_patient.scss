@@ -109,11 +109,23 @@
 			font-size: rem-calc(12px);
 		}
 		.patient-summary-anchor  {
+			 bottom: 12px;
+			 font-size: rem-calc(11px);
+			 padding-right: 8px;
+			 position: absolute;
+			 right: 0;
+			 @media screen {
+				 .stuck & {
+					 display: none;
+				 }
+			 }
+		 }
+		.clinical-summary-anchor  {
 			bottom: 12px;
 			font-size: rem-calc(11px);
 			padding-right: 8px;
 			position: absolute;
-			right: 0;
+			right: 63px;
 			@media screen {
 				.stuck & {
 					display: none;

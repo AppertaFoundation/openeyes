@@ -44,7 +44,7 @@ class UserIdentity extends CUserIdentity
 	 */
 	public function authenticate($force=false)
 	{
-		if (!in_array(Yii::app()->params['ldap_method'],array('native','zend'))) {
+		if (!in_array(Yii::app()->params['ldap_method'],array('native','zend','native-search'))) {
 			throw new Exception('Unsupported LDAP authentication method: '.Yii::app()->params['ldap_method'].', please use native or zend.');
 		}
 
@@ -132,6 +132,68 @@ class UserIdentity extends CUserIdentity
 					"cn=" . $this->username . "," . Yii::app()->params['ldap_dn'],
 					array('givenname', 'sn', 'mail')
 				);
+
+			} elseif (Yii::app()->params['ldap_method'] == 'native-search') {
+				if (!$link = ldap_connect(Yii::app()->params['ldap_server'], Yii::app()->params['ldap_port'])) {
+					throw new Exception("Unable to connect to LDAP server: " . Yii::app()->params['ldap_server'] . " " . Yii::app()->params['ldap_port']);
+				}
+
+				ldap_set_option($link, LDAP_OPT_REFERRALS, 0);
+				ldap_set_option($link, LDAP_OPT_PROTOCOL_VERSION, 3);
+				ldap_set_option($link, LDAP_OPT_NETWORK_TIMEOUT, Yii::app()->params['ldap_native_timeout']);
+
+				// Bind as the LDAP admin user. Set parameters ldap_admin_dn and ldap_password in local config for this.
+
+				if (!@ldap_bind($link, Yii::app()->params['ldap_admin_dn'], Yii::app()->params['ldap_password'])) {
+					$audit = new Audit;
+					$audit->action = "login-failed";
+					$audit->target_type = "login";
+					$audit->user_id = $user->id;
+					$audit->data = "Login failed for user {$this->username}: LDAP admin bind failed: " . ldap_error($link);
+					$audit->save();
+					OELog::log("Login failed for user {$this->username}: LDAP admin bind failed: " . ldap_error($link));
+
+					$this->errorCode = self::ERROR_USERNAME_INVALID;
+					return false;
+				}
+
+				// Perform an LDAP search for the username in order to retrieve their DN. Set the base DN in parameter ldap_dn in local config for this.
+
+				$ldapSearchFilter = '(sAMAccountName=' . $this->username . ')';
+
+				$ldapSearchResult = ldap_search($link, Yii::app()->params['ldap_dn'], $ldapSearchFilter);
+
+				$ldapSearchEntries = ldap_get_entries($link, $ldapSearchResult);
+
+				if ($ldapSearchEntries["count"] != 1) {
+					$audit = new Audit;
+					$audit->action = "login-failed";
+					$audit->target_type = "login";
+					$audit->user_id = $user->id;
+					$audit->data = "Login failed for user {$this->username}: LDAP search did not return exactly 1 result: " . $ldapSearchEntries["count"];
+					$audit->save();
+					OELog::log("Login failed for user {$this->username}: LDAP search did not return exactly 1 result: " . $ldapSearchEntries["count"]);
+
+					$this->errorCode = self::ERROR_USERNAME_INVALID;
+					return false;
+				}
+
+				$info = $ldapSearchEntries[0];
+
+				// Now attempt to bind to the user's DN with their entered password.
+
+				if (!@ldap_bind($link, $info['distinguishedname'][0], $this->password)) {
+					$audit = new Audit;
+					$audit->action = "login-failed";
+					$audit->target_type = "login";
+					$audit->user_id = $user->id;
+					$audit->data = "Login failed for user {$this->username}: LDAP authentication failed: " . ldap_error($link);
+					$audit->save();
+					OELog::log("Login failed for user {$this->username}: LDAP authentication failed: " . ldap_error($link));
+
+					$this->errorCode = self::ERROR_USERNAME_INVALID;
+					return false;
+				}
 
 			} else {
                 // verify we can reach the server, as ldap_connect doesn't timeout correctly

@@ -38,7 +38,6 @@
  * @property Contact $replyTo
  * @property ImportSource $import
  */
-
 class Site extends BaseActiveRecordVersioned {
 
     /**

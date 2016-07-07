@@ -489,7 +489,9 @@ class BaseEventTypeController extends BaseModuleController
 
 		if ($previous_id && $element->canCopy()) {
 			$previous_element = $element_class::model()->findByPk($previous_id);
-			$element->loadFromExisting($previous_element);
+			if( $previous_element ){
+				$element->loadFromExisting($previous_element);
+			}
 		}
 		if ($additional) {
 			foreach (array_keys($additional) as $add) {
@@ -1484,6 +1486,7 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	public function actionPrint($id)
 	{
+		$this->printLog($id, false);
 		$this->printInit($id);
 		$this->printHTML($id, $this->open_elements);
 	}
@@ -1539,6 +1542,8 @@ class BaseEventTypeController extends BaseModuleController
 		}
 
 		$event->unlock();
+
+		$this->printLog($id, true);
 
 		if (@$_GET['html']) {
 			return Yii::app()->end();

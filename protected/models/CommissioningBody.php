@@ -145,7 +145,7 @@ class CommissioningBody extends BaseActiveRecordVersioned
 			return false;
 		}
 
-		if (CommissioningBodyPracticeAssignment::model()->find('commissioning_body_id',array($this->id))) {
+		if (CommissioningBodyPracticeAssignment::model()->find('commissioning_body_id=?',array($this->id))) {
 			return false;
 		}
 

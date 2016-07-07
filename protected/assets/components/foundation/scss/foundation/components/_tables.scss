@@ -85,6 +85,7 @@ $table-margin-bottom: rem-calc(20) !default;
         font-size: $table-head-font-size;
         font-weight: $table-head-font-weight;
         color: $table-head-font-color;
+        min-width:10%;
       }
     }
   }
@@ -99,6 +100,7 @@ $table-margin-bottom: rem-calc(20) !default;
         font-size: $table-foot-font-size;
         font-weight: $table-foot-font-weight;
         color: $table-foot-font-color;
+        min-width:10%;
       }
     }
   }
