@@ -3152,6 +3152,7 @@ table.patient-episodes .speciality td {
 /* line 257, ../sass/openeyes/components/_tables.scss */
 table.patient-data th, table.patient-data td {
   background: #fff;
+  min-width: 10%;
 }
 /* line 260, ../sass/openeyes/components/_tables.scss */
 table.patient-data .driving_statuses {
