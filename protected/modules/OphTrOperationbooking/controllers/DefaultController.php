@@ -446,7 +446,7 @@ class DefaultController extends OphTrOperationbookingEventController
 	{
 		$this->layout = '//layouts/print';
 
-		if ($this->patient->date_of_death) {
+		if ($this->patient->isDeceased()) {
 			// no admission for dead patients
 			return false;
 		}
