@@ -56,8 +56,7 @@ $oe-table-cell-font-size-reset: 1em * 1em / $oe-table-cell-font-size;
 $oe-table-footer-cell-font-size-reset: 1em * 1em / $oe-table-footer-cell-font-size;
 
 table {
-	width: 100%;
-        table-layout: fixed;
+	min-width: 100%;
 	@include table;
 	@media print {
 		page-break-inside: auto;
