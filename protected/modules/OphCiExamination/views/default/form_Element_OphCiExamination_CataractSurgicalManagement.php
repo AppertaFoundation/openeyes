@@ -26,10 +26,10 @@
 		</span>
 	</div>
 	<div class="field-row">
-                <?php   if($active_check === 'on') { 
-                            echo $form->checkbox($element, 'city_road', array('nowrapper'=>true));
-                            echo $form->checkbox($element, 'satellite', array('nowrapper'=>true));
-                }
+                <?php   if (isset($active_check) && ($active_check === 'on')) {
+                                echo $form->checkbox($element, 'city_road', array('nowrapper'=>true));
+                                echo $form->checkbox($element, 'satellite', array('nowrapper'=>true));
+                            }
                 ?>
 		<?php echo $form->checkbox($element, 'fast_track', array('nowrapper'=>true))?>
 	</div>
