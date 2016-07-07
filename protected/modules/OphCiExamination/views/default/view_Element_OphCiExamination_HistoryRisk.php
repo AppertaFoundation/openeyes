@@ -18,20 +18,19 @@
  */
 ?>
 <div class="sub-element-data">
-<?php if ($element->anticoagulant === "1") {
-    ?>
-				<div class="data-row">
-					<div class="data-value">
-						Anticoagulants
-					</div>
-				</div>
-<?php }?>
-<?php if ($element->alphablocker === "1") {
-    ?>
-				<div class="data-row">
-					<div class="data-value">
-						Alpha-blocker
-					</div>
-				</div>
-<?php }?>
+    <?php if ($element->anticoagulant === "1"):?>
+        <div class="data-row">
+            <div class="data-value">
+                Anticoagulants <?=($element->anticoagulant_name) ? ' - '.$element->anticoagulant_name: ''?>
+            </div>
+        </div>
+    <?php endif; ?>
+    <?php if ($element->alphablocker === "1"): ?>
+        ?>
+        <div class="data-row">
+            <div class="data-value">
+                Alpha-blocker <?=($element->alpha_blocker_name) ? ' - '.$element->alpha_blocker_name: ''?>
+            </div>
+        </div>
+    <?php endif; ?>
 </div>

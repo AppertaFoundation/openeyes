@@ -20,4 +20,15 @@
 class TextField extends BaseFieldWidget
 {
 	public $links = array();
+
+	public function init()
+	{
+		parent::init();
+
+		if (array_key_exists('password', $this->htmlOptions)) {
+			$this->htmlOptions['type'] = 'password';
+		} elseif(!array_key_exists('type', $this->htmlOptions)) {
+			$this->htmlOptions['type'] = 'text';
+		}
+	}
 }

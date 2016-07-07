@@ -352,6 +352,23 @@ class Event extends BaseActiveRecordVersioned
 		return Event::model()->find($criteria);
 	}
 
+	public function getPreviousInEpisode($eventTypeId = 0)
+	{
+		$criteria = new CDbCriteria;
+		$criteria->addCondition('episode_id = :e_id');
+		$criteria->addCondition('event_date <= :event_date');
+		$criteria->limit = 1;
+		$criteria->order = ' event_date DESC, created_date DESC';
+		$criteria->params = array(':e_id'=>$this->episode_id, 'event_date' => $this->event_date);
+
+		if($eventTypeId){
+			$criteria->addCondition('event_type_id = :et_id');
+			$criteria->params['et_id'] = $eventTypeId;
+		}
+
+		return Event::model()->find($criteria);
+	}
+
 	/**
 	 * if this event is the most recent of its type in its episode, returns true. false otherwise
 	 *

@@ -20,41 +20,72 @@
 ?>
 <div class="sub-element-fields">
     <div class="field-row row">
-            <div class="large-12 column end">
-                    <?php echo $form->radioButtons($element, 'anticoagulant', array(
-                            0 => 'Not Checked',
-                            1 => 'Yes',
-                            2 => 'No'
-                        ),
-                        ($element->anticoagulant !== null) ? $element->anticoagulant : 0,
-                        false,
-                        false,
-                        false,
-                        false,
-                        array(
-                            'text-align'=>'right',
-                            'nowrapper'=>false
-                        ));
-                    ?>
-            </div>
+        <div class="large-6 column">
+            <?php $form->radioButtons($element, 'anticoagulant', array(
+                0 => 'Not Checked',
+                1 => 'Yes',
+                2 => 'No'
+            ),
+                ($element->anticoagulant !== null) ? $element->anticoagulant : 0,
+                false,
+                false,
+                false,
+                false,
+                array(
+                    'text-align' => 'right',
+                    'nowrapper' => false
+                ),
+                array(
+                    'label' => 4,
+                    'field' => 8,
+                ));
+            ?>
+        </div>
+        <div class="large-4 column end">
+            <?php $form->textField(
+                $element,
+                'anticoagulant_name',
+                array(),
+                array(),
+                array(
+                    'label' => 4,
+                    'field' => 8,
+                )
+            );?>
+        </div>
     </div>
     <div class="field-row row">
-            <div class="large-12 column end">
-                    <?php echo $form->radioButtons($element, 'alphablocker', array(
-                            0 => 'Not Checked',
-                            1 => 'Yes',
-                            2 => 'No'
-                        ),
-                        ($element->alphablocker !== null) ? $element->alphablocker : 0,
-                        false,
-                        false,
-                        false,
-                        false,
-                        array(
-                            'text-align'=>'right',
-                            'nowrapper'=>false
-                        ));
-                    ?>
-            </div>
+        <div class="large-6 column">
+            <?php $form->radioButtons($element, 'alphablocker', array(
+                0 => 'Not Checked',
+                1 => 'Yes',
+                2 => 'No'
+            ),
+                ($element->alphablocker !== null) ? $element->alphablocker : 0,
+                false,
+                false,
+                false,
+                false,
+                array(
+                    'text-align' => 'right',
+                    'nowrapper' => false
+                ),
+                array(
+                    'label' => 4,
+                    'field' => 8,
+                ));
+            ?>
+        </div>
+        <div class="large-4 column end">
+            <?php $form->textField(
+                $element,
+                'alpha_blocker_name',
+                array(),
+                array(),
+                array(
+                    'label' => 4,
+                    'field' => 8,
+                ));?>
+        </div>
     </div>
 </div>

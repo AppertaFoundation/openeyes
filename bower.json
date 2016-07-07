@@ -1,5 +1,5 @@
 {
-  "name": "OpenEyes",
+  "name": "openeyes",
   "version": "0.1.7",
   "private": "true",
   "ignore": [
@@ -17,7 +17,7 @@
     "eventemitter2": "~0.4.13",
     "font-awesome": "~4.3.0",
     "chosen": "~1.4.2",
-    "material-design-lite": "~1.0",
+    "material-design-lite": "~1.1",
     "highcharts": "~4.2",
     "jt.timepicker": "jquery-timepicker-jt#^1.11.1"
   },
