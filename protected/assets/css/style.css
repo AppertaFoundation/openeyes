@@ -2987,6 +2987,7 @@ table tfoot tr td {
   font-size: 0.6875rem;
   font-weight: bold;
   color: #444444;
+  min-width:10%;
 }
 /* line 107, ../../../../../../var/www/openeyes/protected/assets/components/foundation/scss/foundation/components/_tables.scss */
 table tr th,
