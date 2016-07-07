@@ -2951,11 +2951,11 @@ dl li {
 
 /* line 58, ../sass/openeyes/components/_tables.scss */
 table {
-  min-width: 100%;
+  width: 100%;
   background: #edf4f9;
   margin-bottom: 10px;
   border: solid 1px #DDDDDD;
-  table-layout: auto;
+  table-layout: fixed;
 }
 /* line 69, ../../../../../../var/www/openeyes/protected/assets/components/foundation/scss/foundation/components/_tables.scss */
 table caption {
@@ -2987,7 +2987,6 @@ table tfoot tr td {
   font-size: 0.6875rem;
   font-weight: bold;
   color: #444444;
-  min-width:10%;
 }
 /* line 107, ../../../../../../var/www/openeyes/protected/assets/components/foundation/scss/foundation/components/_tables.scss */
 table tr th,
@@ -3152,7 +3151,6 @@ table.patient-episodes .speciality td {
 /* line 257, ../sass/openeyes/components/_tables.scss */
 table.patient-data th, table.patient-data td {
   background: #fff;
-  min-width: 10%;
 }
 /* line 260, ../sass/openeyes/components/_tables.scss */
 table.patient-data .driving_statuses {

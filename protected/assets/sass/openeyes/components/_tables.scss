@@ -56,7 +56,8 @@ $oe-table-cell-font-size-reset: 1em * 1em / $oe-table-cell-font-size;
 $oe-table-footer-cell-font-size-reset: 1em * 1em / $oe-table-footer-cell-font-size;
 
 table {
-	min-width: 100%;
+	width: 100%;
+        table-layout: fixed;
 	@include table;
 	@media print {
 		page-break-inside: auto;
@@ -256,7 +257,6 @@ table {
 	&.patient-data {
 		th, td {
 			background: #fff;
-                        min-width: 10%;
 		}
 		.driving_statuses {
 			vertical-align: top;
