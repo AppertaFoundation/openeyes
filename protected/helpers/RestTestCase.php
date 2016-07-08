@@ -14,6 +14,7 @@
  */
 
 use Guzzle\Http\Client;
+use Guzzle\Http\Exception\ClientErrorResponseException;
 
 class RestTestCase extends PHPUnit_Framework_TestCase
 {
@@ -24,6 +25,14 @@ class RestTestCase extends PHPUnit_Framework_TestCase
 
 	protected $response;
 	protected $doc = null;
+
+	/**
+	 * Flag as to whether error responses should be captured or the exception thrown
+	 *
+	 * @var bool
+	 */
+	protected $capture_error_responses = false;
+	protected $expected_response_code = 200;
 
 	public function setUp()
 	{
@@ -44,7 +53,9 @@ class RestTestCase extends PHPUnit_Framework_TestCase
 
 	protected function setExpectedHttpError($code)
 	{
-		$this->setExpectedException('Guzzle\Http\Exception\BadResponseException', "[status code] {$code}");
+		if (!$this->capture_error_responses)
+			$this->setExpectedException('Guzzle\Http\Exception\BadResponseException', "[status code] {$code}");
+		$this->expected_error_code = $code;
 	}
 
 	protected function get($url, $headers = null)
@@ -71,7 +82,15 @@ class RestTestCase extends PHPUnit_Framework_TestCase
 	{
 		if ($body instanceof DOMDocument) $body = $body->saveXML();
 
-		$this->response = $this->client->createRequest($method, $url, $headers, $body)->send();
+		try {
+			$this->response = $this->client->createRequest($method, $url, $headers, $body)->send();
+		}
+		catch (ClientErrorResponseException $e) {
+			if (!$this->capture_error_responses)
+				throw $e;
+			$this->response = $e->getResponse();
+		}
+
 		if (strpos($this->response->getContentType(), 'xml') !== false) {
 			$this->doc = new DOMDocument;
 			$this->doc->loadXML($this->response->getBody(true));
