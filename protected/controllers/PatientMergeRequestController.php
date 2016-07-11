@@ -290,6 +290,11 @@ class PatientMergeRequestController extends BaseController
     {
         $mergeRequest = $this->loadModel($id);
         
+        //if the model already merged we just redirect to the index page
+        if( $mergeRequest->status == PatientMergeRequest::STATUS_MERGED ){
+            $this->redirect(array('index'));
+        }
+
         $mergeHandler = new PatientMerge;
         
         // if the personal details are conflictng (DOB and Gender at the moment) we need extra confirmation
@@ -453,20 +458,16 @@ class PatientMergeRequestController extends BaseController
             }
         }
         
-        
-                
-       $html = $this->renderPartial('//patient/_patient_all_episodes',array(
-                                                    'episodes' => $episodes,
-                                                    'ordered_episodes' => $patient->getOrderedEpisodes(),
-                                                    'legacyepisodes' => $patient->legacyepisodes,
-                                                    'episodes_open' => $episodes_open,
-                                                    'episodes_closed' => $episodes_closed,
-                                                    'firm' => $this->firm,
-                                            ), true);
+        $html = $this->renderPartial('//patient/_patient_all_episodes',array(
+            'episodes' => $episodes,
+            'ordered_episodes' => $patient->getOrderedEpisodes(),
+            'legacyepisodes' => $patient->legacyepisodes,
+            'episodes_open' => $episodes_open,
+            'episodes_closed' => $episodes_closed,
+            'firm' => $this->firm,
+        ), true);
        
        // you don't know how much I hate this str_replace here, but now it seems a painless method to remove a class
        return str_replace("box patient-info episodes", "box patient-info", $html);
    }
-   
-   
 }
