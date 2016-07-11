@@ -1719,16 +1719,27 @@ class BaseEventTypeController extends BaseModuleController
                 if ($event->eventType->class_name === $unique['event']) {
                     foreach ($event->getElements() as $element) {
                         if (in_array(Helper::getNSShortname($element), $unique['element'])) {
-                                $event_unique_code = UniqueCodeMapping::model()->findAllByAttributes(array('event_id' => $event->id));
-                                if(!$event_unique_code) {
-                                        $event_unique_code = UniqueCodeMapping::model();
-                                        $event_unique_code->unique_code_id = $this->getActiveUnusedUniqueCode();
-                                        $event_unique_code->event_id = $event->id;
-                                        $event_unique_code->isNewRecord = true;
-                                        $event_unique_code->save();                                }
+                            $event_unique_code = UniqueCodeMapping::model()->findAllByAttributes(array('event_id' => $event->id));
+                            if(!$event_unique_code) {
+                                $event_unique_code = UniqueCodeMapping::model();
+                                $this->saveEventWithUniqueCode($event_unique_code);
+                            }
                         }
                     }
                 }
+            }
+        }
+
+        /**
+         * Inorder to map uniqueCode with Events in case of collisions
+         * @param type $event_unique_code
+         */
+        private function saveEventWithUniqueCode($event_unique_code) {
+            $event_unique_code->unique_code_id = $this->getActiveUnusedUniqueCode();
+            $event_unique_code->event_id = $event->id;
+            $event_unique_code->isNewRecord = true;
+            if(!$event_unique_code->save()) {
+                $this->saveEventWithUniqueCode($event_unique_code);
             }
         }
 
