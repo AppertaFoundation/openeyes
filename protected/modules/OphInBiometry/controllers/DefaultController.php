@@ -28,6 +28,8 @@ class DefaultController extends BaseEventTypeController
                     $importedEvent->is_linked = 1;
                     $unlinkedEvent->save();
                     $importedEvent->save();
+                    
+                    $transaction->commit();
                 }
                 catch (Exception $e)
                 {
