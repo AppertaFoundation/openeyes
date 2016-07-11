@@ -99,7 +99,30 @@ function displayConflictMessage(){
 $(document).ready(function(){
     
     OpenEyes.UI.Search.init($('#patient_merge_search'));
-    OpenEyes.UI.Search.setSourceURL('/patientMergeRequest/search');
+    
+    OpenEyes.UI.Search.getElement().autocomplete('option', 'source', function(request, response){
+        $.ajax({
+            type: 'GET',
+            url: baseUrl + '/patientMergeRequest/search',
+            data: {
+                    term: request.term,
+                    ajax: 'ajax'
+            },
+            timeout: 4000,
+            success: function (data) {
+                response(JSON.parse(data));
+            },
+            beforeSend: function(){
+                $('.timeout').slideUp();
+            },
+            error: function(jqXHR, textStatus, errorThrown ){
+                $('.loader').hide();
+                if(textStatus === 'timeout'){
+                    $('.timeout').slideDown();
+                }
+            }
+        });
+    });
     
     OpenEyes.UI.Search.getElement().autocomplete('option', 'search', function(event, ui){
         $('.loader').show();
