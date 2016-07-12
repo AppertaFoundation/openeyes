@@ -25,9 +25,11 @@ class DefaultController extends BaseEventTypeController
                 try 
                 {
                     $unlinkedEvent->episode_id = $this->episode->id;
-                    $importedEvent->is_linked = 1;
-                    $unlinkedEvent->save();
-                    $importedEvent->save();
+                    
+                    if($unlinkedEvent->save()){
+                        $importedEvent->is_linked = 1;
+                        $importedEvent->save();
+                    }
                     
                     $transaction->commit();
                 }
