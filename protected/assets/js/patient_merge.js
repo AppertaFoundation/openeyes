@@ -113,7 +113,7 @@ $(document).ready(function(){
                 response(JSON.parse(data));
             },
             beforeSend: function(){
-                $('.timeout').slideUp();
+                $('.no-result-patients').slideUp();
             },
             error: function(jqXHR, textStatus, errorThrown ){
                 $('.loader').hide();
@@ -149,7 +149,7 @@ $(document).ready(function(){
             } else {
                 // secondary and primary patient ids are the same - ALERT
                 new OpenEyes.UI.Dialog.Alert({
-                content: "Primary and Secondary patient cannot be the same record."
+                    content: "Primary and Secondary patient cannot be the same record."
               }).open();
             }
                                   
@@ -164,8 +164,8 @@ $(document).ready(function(){
                 }
 
             } else {
-               new OpenEyes.UI.Dialog.Alert({
-                content: "Primary and Secondary patient cannot be the same record."
+                new OpenEyes.UI.Dialog.Alert({
+                    content: "Primary and Secondary patient cannot be the same record."
               }).open();
             }
 
@@ -186,10 +186,9 @@ $(document).ready(function(){
                                 $( this ).dialog( "close" );
                             }else{
                                 $( this ).dialog( "close" );
-                                $('<h2 title="Alert" class="text-center"></h2>').dialog();
                                 new OpenEyes.UI.Dialog.Alert({
                                     content: "Primary and Secondary patient cannot be the same record."
-                                  }).open();
+                                }).open();
                             }
                         }
                     },
@@ -296,8 +295,6 @@ $(document).ready(function(){
                     $('#patientDataConflictConfirmation').before($row);
                 }
         }
-        
-        
     });
     
     $('#patientMergeWrapper').on('click', '#selectall', function(){
@@ -365,9 +362,7 @@ $(document).ready(function(){
         var val = $(this).val(),
             id = $(this).attr('id');
             
-        if (e.which === 13) {
-            
-           
+        if (e.which === 13) { //is enter
             $.ajax({
                     url: "",
                     type: "POST",
@@ -382,7 +377,6 @@ $(document).ready(function(){
                             $('#patientMergeRequestList .loader').hide();
                     }
             });
-            
         }
     });
     

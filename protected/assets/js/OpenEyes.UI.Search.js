@@ -71,6 +71,7 @@
 
         this.$searchInput.autocomplete({
             minLength: 0,
+            delay: 700,
             source: function (request, response) {
                 $.getJSON(autocompleteSource, {
                     term: request.term,
