@@ -32,6 +32,24 @@ The usual configuration for the module must be added to the modules array:
 
 The API is designed to be RESTful, making extensive use of Http Status codes to describe the result of requests.
 
+### Custom Headers
+
+The API supports two custom headers that will affect the way that PUT requests are handled:
+
+#### Update Only
+
+The update only header will prevent a record being processed unless it already exists (as defined by matching on the given external identifier). The header value is:
+
+```X-OE-Update-Only: 1```
+
+#### Partial Update
+
+In some situations it can be convenient to only provide the data that should be changed for a given record. If this is the case, the Partial Update header should be used:
+
+```X-OE-Partial-Record: 1```
+
+If this is provided, then any items that are not provided in the request will be assumed to be remaining the same as they currently are on the record. It should be noted that in some circumstances this will cause an error (e.g. if a change in a value will cause a patient appointment to move from its current list, an error will be thrown).
+
 ### Patient
  
 #### Create/Update
@@ -106,8 +124,10 @@ Internal errors (5xx status code) should still provide an error body response of
         </Errors>
     </Success>
  
-#### Update only
- 
+#### Update only [deprecated]
+
+This attribute approach is deprecated, please see the headers section above.
+
 If the intention is for the patient to only be updated, and not created if it doesn't exist, the updateOnly attribute should be used:
 
     <Patient updateOnly="1">
