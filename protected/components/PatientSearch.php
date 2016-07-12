@@ -117,7 +117,6 @@ class PatientSearch
         }
         
         $patientCriteria = array(
-            'currentPage' => $currentPage,
             'pageSize' => $pageSize,
             'sortBy' => $sortBy,
             'sortDir'=> $sortDir,
