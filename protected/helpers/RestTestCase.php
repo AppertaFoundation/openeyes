@@ -15,6 +15,7 @@
 
 use Guzzle\Http\Client;
 use Guzzle\Http\Exception\ClientErrorResponseException;
+use Guzzle\Http\Exception\ServerErrorResponseException;
 
 class RestTestCase extends PHPUnit_Framework_TestCase
 {
@@ -86,6 +87,11 @@ class RestTestCase extends PHPUnit_Framework_TestCase
 			$this->response = $this->client->createRequest($method, $url, $headers, $body)->send();
 		}
 		catch (ClientErrorResponseException $e) {
+			if (!$this->capture_error_responses)
+				throw $e;
+			$this->response = $e->getResponse();
+		}
+		catch (ServerErrorResponseException $e) {
 			if (!$this->capture_error_responses)
 				throw $e;
 			$this->response = $e->getResponse();
