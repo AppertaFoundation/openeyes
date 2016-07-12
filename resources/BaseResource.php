@@ -46,6 +46,13 @@ abstract class BaseResource
     public $update_only = false;
 
     /**
+     * Flag that will force all errors on the resource to be mapped to warnings
+     *
+     * @var bool
+     */
+    public $warn_errors = false;
+
+    /**
      * Property that will allow subset of data to be updated on the resource
      *
      * @var bool
@@ -71,7 +78,6 @@ abstract class BaseResource
 
         foreach ($options as $key => $value)
             $this->$key = $value;
-
     }
 
     /**
