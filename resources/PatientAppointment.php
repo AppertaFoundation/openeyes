@@ -64,20 +64,34 @@ class PatientAppointment extends BaseResource
         if (!$this->id) {
             $this->addError("Resource ID required");
         }
+
+        try {
+            $this->resolvePatient();
+        }
+        catch (\Exception $e) {
+            $this->addError($e->getMessage());
+        }
+
         return parent::validate();
     }
 
     public function save() {
+        $assignment = $this->getAssignment();
+        $model = $assignment->getInternal(true);
+        // track whether we are creating or updating
+        $this->isNewResource = $model->isNewRecord;
+
+        if ($this->isNewResource && $this->partial_record) {
+            $this->addError("Cannot perform partial update on a new record");
+            return null;
+        }
+
         if (!$this->validate())
             return null;
 
         $transaction = $this->startTransaction();
 
         try {
-            $assignment = $this->getAssignment();
-            $model = $assignment->getInternal(true);
-            // track whether we are creating or updating
-            $this->isNewResource = $model->isNewRecord;
 
             if ($model = $this->saveModel($model)) {
                 $assignment->internal_id = $model->id;
@@ -149,17 +163,54 @@ class PatientAppointment extends BaseResource
      */
     protected function resolvePatient()
     {
-        return $this->PatientId->getModel();
+        if (!isset($this->_patient)) {
+            $this->_patient = property_exists($this, "PatientId") ? $this->PatientId->getModel() : null;
+        }
+        return $this->_patient;
     }
 
-    protected function resolveWhen()
+    protected function resolveWhen($default_when)
     {
-        return $this->Appointment->getWhen();
+        if ($this->Appointment)
+            $this->Appointment->setDefaultWhen($default_when);
+
+        return $this->Appointment ? $this->Appointment->getWhen() : null;
     }
 
     protected function resolveAttributes()
     {
-        return $this->Appointment->getMappingsArray();
+        return $this->Appointment ? $this->Appointment->getMappingsArray() : null;
+    }
+
+    /**
+     * @param \WorklistPatient $wp
+     * @return \Patient
+     */
+    protected function mapPatient(\WorklistPatient $wp)
+    {
+        $patient = $this->resolvePatient();
+        if (!$patient && $this->partial_record)
+            $patient = $wp->patient;
+
+        return $patient;
+    }
+
+    protected function mapWhen(\WorklistPatient $wp)
+    {
+        $default_when = $wp->when ? \DateTime::createFromFormat('Y-m-d H:i:s', $wp->when) : null;
+        return $this->resolveWhen($default_when);
+    }
+
+    protected function mapAttributes(\WorklistPatient $wp)
+    {
+        $attributes = $this->resolveAttributes();
+        if ($this->partial_record) {
+            foreach ($wp->worklist_attributes as $attr) {
+                if (!array_key_exists($attr->worklistattribute->name, $attributes))
+                    $attributes[$attr->worklistattribute->name] = $attr->attribute_value;
+            }
+        }
+        return $attributes;
     }
 
     /**
@@ -169,9 +220,9 @@ class PatientAppointment extends BaseResource
     public function saveModel(\WorklistPatient $model)
     {
         // extract the values to be passed to the manager instance for mapping
-        $patient = $this->resolvePatient();
-        $when = $this->resolveWhen();
-        $attributes = $this->resolveAttributes();
+        $patient = $this->mapPatient($model);
+        $when = $this->mapWhen($model);
+        $attributes = $this->mapAttributes($model);
 
         if ($model->isNewRecord) {
             if (!$model = $this->worklist_manager->mapPatientToWorklistDefinition($patient, $when, $attributes)) {
@@ -183,7 +234,7 @@ class PatientAppointment extends BaseResource
         }
         else {
             $model->patient_id = $patient->id;
-            if (!$this->worklist_manager->updateWorklistPatientFromMapping($model, $when, $attributes)) {
+            if (!$this->worklist_manager->updateWorklistPatientFromMapping($model, $when, $attributes, !$this->partial_record)) {
                 foreach ($this->worklist_manager->getErrors() as $err) {
                     $this->addError($err);
                 }

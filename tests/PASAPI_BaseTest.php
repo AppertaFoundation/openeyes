@@ -38,6 +38,8 @@ abstract class PASAPI_BaseTest extends RestTestCase
      */
     protected $user_password = 'password';
 
+    protected $additional_clean_up_models = array();
+
     protected function cleanUpTestUser()
     {
         if (!$this->user) {
@@ -47,7 +49,13 @@ abstract class PASAPI_BaseTest extends RestTestCase
         }
 
         // clear out all the data we've touched, and the user
-        foreach (array('Audit', 'OEModule\\PASAPI\\models\\PasApiAssignment', 'Patient', 'Address', 'Contact') as $cls) {
+        foreach (array_merge(
+                     array('Audit',
+                         'OEModule\\PASAPI\\models\\PasApiAssignment',
+                         'Patient',
+                         'Address',
+                         'Contact'),
+                 $this->additional_clean_up_models) as $cls) {
             $cls::model()->deleteAllByAttributes(array('created_user_id' => $this->user->id));
         }
 
@@ -78,6 +86,8 @@ abstract class PASAPI_BaseTest extends RestTestCase
 
     public function setUp()
     {
+        parent::setUp();
+
         // do this so if there was an error that prevented clean up in the last test run we can still test again.
         $this->cleanUpTestUser();
         $this->createTestUser();

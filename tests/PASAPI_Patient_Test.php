@@ -382,4 +382,21 @@ EOF;
         $this->assertExpectedValuesMatch($expected_values, $patient);
     }
 
+    public function testPartialUpdateErrorsForNewRecord()
+    {
+        $xml = <<<EOF
+<Patient>
+    <NHSNumber>0123456789</NHSNumber>
+    <HospitalNumber>010101010010101</HospitalNumber>
+</Patient>
+EOF;
+
+        $this->setExpectedHttpError(400);
+
+        $this->put('PartialUpdateError', $xml, array(
+            'X-OE-Partial-Record' => 1
+        ));
+
+        $this->assertXPathFound("/Failure");
+    }
 }

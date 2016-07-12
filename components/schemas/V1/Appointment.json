@@ -4,7 +4,8 @@
     "required": true
   },
   "AppointmentTime": {
-    "type": "time"
+    "type": "time",
+    "required": true
   },
   "AppointmentMappingItems": {
     "type": "list",

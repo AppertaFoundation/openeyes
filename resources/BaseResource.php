@@ -45,6 +45,11 @@ abstract class BaseResource
      */
     public $update_only = false;
 
+    /**
+     * Property that will allow subset of data to be updated on the resource
+     *
+     * @var bool
+     */
     public $partial_record = false;
 
     /**
@@ -163,7 +168,7 @@ abstract class BaseResource
 
         $obj = new static($version, $options);
 
-        $obj->parseXml($element);
+        $obj->parseXml($element, $options);
 
         return $obj;
     }
@@ -234,7 +239,7 @@ abstract class BaseResource
      * @param \DOMElement $root
      * @throws \Exception
      */
-    public function parseXml(\DOMElement $root)
+    public function parseXml(\DOMElement $root, $options = array())
     {
         $schema = $this->schema;
 
@@ -257,7 +262,7 @@ abstract class BaseResource
                     foreach ($child->childNodes as $list_item) {
                         if (!$list_item instanceof \DOMElement) continue;
                         $cls = __NAMESPACE__ . "\\" . $schema[$local_name]['resource'];
-                        $this->{$local_name}[] = $cls::fromXmlDom($this->version, $list_item);
+                        $this->{$local_name}[] = $cls::fromXmlDom($this->version, $list_item, $options);
                     }
                     break;
                 case 'date':
@@ -284,7 +289,7 @@ abstract class BaseResource
                     break;
                 case 'resource':
                     $cls = __NAMESPACE__ . "\\" . $schema[$local_name]['resource'];
-                    $this->{$local_name} = $cls::fromXmlDom($this->version, $child);
+                    $this->{$local_name} = $cls::fromXmlDom($this->version, $child, $options);
                     break;
                 default:
                     $this->{$local_name} = $child->textContent;

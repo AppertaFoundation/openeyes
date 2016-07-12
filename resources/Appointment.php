@@ -41,12 +41,28 @@ class Appointment extends BaseResource
         return parent::validate();
     }
 
+    protected $_default_date;
+    protected $_default_time;
+
+    public function setDefaultWhen(\DateTime $when = null)
+    {
+        $this->_default_date = $when ? $when->format('Y-m-d') : "";
+        $this->_default_time = $when ? $when->format('H:i') : "";
+    }
+
     /**
      * @return \DateTime
+     * @throws \Exception
      */
     public function getWhen()
     {
+        if (!property_exists($this, "AppointmentDate"))
+            $this->AppointmentDate = $this->_default_date;
+        if (!property_exists($this, "AppointmentTime"))
+            $this->AppointmentTime = $this->_default_time;
+
         $concatenated = substr($this->AppointmentDate,0,10) . " " . $this->AppointmentTime;
+
         $result = \DateTime::createFromFormat('Y-m-d H:i', $concatenated);
 
         if (!$result)
@@ -65,8 +81,10 @@ class Appointment extends BaseResource
     public function getMappingsArray()
     {
         $res = array();
-        foreach ($this->AppointmentMappingItems as $item) {
-            $res[$item->Key] = $item->Value;
+        if (property_exists($this, "AppointmentMappingItems")) {
+            foreach ($this->AppointmentMappingItems as $item) {
+                $res[$item->Key] = $item->Value;
+            }
         }
 
         return $res;

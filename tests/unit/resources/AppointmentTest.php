@@ -21,11 +21,23 @@ class AppointmentTest extends PHPUnit_Framework_TestCase
     {
         return array(
             array(
-                '2016-05-04 12:13:12', '15:10', '2016-05-04 15:10:00',
+                null, '2016-05-04 12:13:12', '15:10', '2016-05-04 15:10:00',
             ),
             array(
-                'asdad', 'asdsaf', null
-            )
+                null, 'asdad', 'asdsaf', null
+            ),
+            array(
+                '2016-04-12 13:10', null, null, '2016-04-12 13:10:00'
+            ),
+            array(
+                '2016-04-12 13:10', '2016-05-10', null, '2016-05-10 13:10:00'
+            ),
+            array(
+                '2016-04-12 13:10', null, '10:30', '2016-04-12 10:30:00'
+            ),
+            array(
+                '2016-04-12 13:10', '2016-10-12', '10:30', '2016-10-12 10:30:00'
+            ),
         );
     }
 
@@ -36,21 +48,26 @@ class AppointmentTest extends PHPUnit_Framework_TestCase
      * @param $appointment_time
      * @param $expected
      */
-    public function test_getWhen($appointment_date, $appointment_time, $expected)
+    public function test_getWhen($default_when, $appointment_date, $appointment_time, $expected)
     {
         $app = $this->getMockBuilder("OEModule\\PASAPI\\resources\\Appointment")
             ->disableOriginalConstructor()
             ->setMethods(null)
             ->getMock();
 
-        $app->AppointmentDate = $appointment_date;
-        $app->AppointmentTime = $appointment_time;
+        if (!is_null($default_when)) {
+            $app->setDefaultWhen(DateTime::createFromFormat('Y-m-d H:i', $default_when));
+        }
+        if (!is_null($appointment_date))
+            $app->AppointmentDate = $appointment_date;
+        if (!is_null($appointment_time))
+            $app->AppointmentTime = $appointment_time;
 
         if (is_null($expected)) {
             $this->setExpectedException("Exception");
         }
         $when = $app->getWhen();
-        var_dump($when);
+
         if ($expected)
             $this->assertEquals($expected, $when->format('Y-m-d H:i:s'));
     }

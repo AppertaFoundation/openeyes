@@ -32,35 +32,30 @@ class PatientAppointmentTest extends PHPUnit_Framework_TestCase
     public function test_save_success()
     {
         $pa = $this->getMockResource('PatientAppointment',
-            array('validate','getInstanceForClass','startTransaction', 'saveModel', 'audit'));
+            array('getAssignment', 'validate','startTransaction', 'saveModel', 'audit'));
 
         $papi_ass = $this->getMockBuilder('OEModule\\PASAPI\\models\\PasApiAssignment')
             ->disableOriginalConstructor()
-            ->setMethods(array('findByResource', 'getInternal', 'save', 'unlock'))
+            ->setMethods(array('getInternal', 'save', 'unlock'))
             ->getMock();
 
         $pa->expects($this->at(0))
+            ->method('getAssignment')
+            ->will($this->returnValue($papi_ass));
+
+        $pa->expects($this->at(1))
             ->method('validate')
             ->will($this->returnValue(true));
 
-        $pa->expects($this->at(1))
+        $pa->expects($this->at(2))
             ->method('startTransaction')
             ->will($this->returnvalue(null));
-
-        $pa->expects($this->once())
-            ->method('getInstanceForClass')
-            ->with("OEModule\\PASAPI\\models\\PasApiAssignment")
-            ->will($this->returnValue($papi_ass));
 
         $worklist_patient = ComponentStubGenerator::generate('WorklistPatient', array('id' => 5));
 
         $pa->expects($this->once())
             ->method('saveModel')
             ->will($this->returnValue($worklist_patient));
-
-        $papi_ass->expects($this->once())
-            ->method('findByResource')
-            ->will($this->returnValue($papi_ass));
 
         $papi_ass->expects($this->once())
             ->method('getInternal')
@@ -72,10 +67,6 @@ class PatientAppointmentTest extends PHPUnit_Framework_TestCase
 
         $papi_ass->expects($this->once())
             ->method('unlock')
-            ->will($this->returnValue(true));
-
-        $worklist_patient->expects($this->once())
-            ->method('save')
             ->will($this->returnValue(true));
 
         $this->assertEquals(5, $pa->save());
