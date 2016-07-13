@@ -1,6 +1,8 @@
-<?php namespace OEModule\PASAPI\resources;
+<?php
 
-/**
+namespace OEModule\PASAPI\resources;
+
+/*
  * OpenEyes
  *
  * (C) OpenEyes Foundation, 2016
@@ -21,8 +23,8 @@ use OEModule\PASAPI\models\PasApiAssignment;
 class Patient extends BaseResource
 {
 
-    static protected $resource_type = 'Patient';
-    static protected $model_class = 'Patient';
+    protected static $resource_type = 'Patient';
+    protected static $model_class = 'Patient';
 
     public $isNewResource;
 
@@ -33,14 +35,16 @@ class Patient extends BaseResource
 
     /**
      * As a primary resource (i.e. mapped to external resource) we need to ensure we have an id for tracking
-     * the resource in the system
+     * the resource in the system.
      *
      * @return bool
      */
-    public function validate() {
+    public function validate()
+    {
         if (!$this->id) {
-            $this->addError("Resource ID required");
+            $this->addError('Resource ID required');
         }
+
         return parent::validate();
     }
 
@@ -56,17 +60,17 @@ class Patient extends BaseResource
 
         if ($this->isNewResource && $this->partial_record) {
             $this->addError("Cannot perform partial update on a new record");
-            return null;
+            return;
         }
 
         if (!$this->validate())
-            return null;
+            return;
 
         $transaction = $this->startTransaction();
 
         try {
             if ($this->isNewResource && $this->update_only) {
-                return null;
+                return;
             }
 
             if ($this->saveModel($model)) {
@@ -76,19 +80,20 @@ class Patient extends BaseResource
 
                 $this->audit($this->isNewResource ? 'create' : 'update', null, null, array('patient_id' => $model->id));
 
-                if ($transaction)
+                if ($transaction) {
                     $transaction->commit();
+                }
 
                 return $model->id;
-            }
-            else {
-                if ($transaction)
+            } else {
+                if ($transaction) {
                     $transaction->rollback();
+                }
             }
-        }
-        catch (\Exception $e) {
-            if ($transaction)
+        } catch (\Exception $e) {
+            if ($transaction) {
                 $transaction->rollback();
+            }
 
             throw $e;
         }
@@ -96,10 +101,11 @@ class Patient extends BaseResource
 
     /**
      * Assign the Patient resource attributes to the given Patient model
-     * and save it
+     * and save it.
      *
      * @param \Patient $patient
      * @throws \Exception
+     * @return bool|null
      */
     public function saveModel(\Patient $patient)
     {
@@ -112,9 +118,11 @@ class Patient extends BaseResource
         $this->mapEthnicGroup($patient);
         $this->mapGp($patient);
         $this->mapPractice($patient);
+        $this->mapNhsNumberStatus($patient);
 
         if (!$patient->validate()) {
             $this->addModelErrors($patient->getErrors());
+
             return;
         }
         $patient->save();
@@ -129,6 +137,7 @@ class Patient extends BaseResource
 
         if (!$contact->validate()) {
             $this->addModelErrors($contact->getErrors());
+
             return;
         }
 
@@ -136,8 +145,9 @@ class Patient extends BaseResource
 
         $this->mapAddresses($contact);
 
-        if (!$this->errors)
+        if (!$this->errors) {
             return true;
+        }
     }
 
     private function mapGender(\Patient $patient)
@@ -149,7 +159,6 @@ class Patient extends BaseResource
             if (!$this->partial_record)
                 $patient->gender = null;
         }
-
     }
 
     private function mapEthnicGroup(\Patient $patient)
@@ -205,18 +214,18 @@ class Patient extends BaseResource
      * on the Address resource ... if we wind up dooing more API importing.
      *
      * @param \Contact $contact
+     *
      * @throws \Exception
      */
     private function mapAddresses(\Contact $contact)
     {
         if (property_exists($this,"AddressList")) {
             $matched_address_ids = array();
-
             foreach ($this->AddressList as $idx => $address_resource) {
-                $matched_clause = ($matched_address_ids) ? ' AND id NOT IN ('.implode(',',$matched_address_ids).')' : '';
+                $matched_clause = ($matched_address_ids) ? ' AND id NOT IN ('.implode(',', $matched_address_ids).')' : '';
                 $address_model = \Address::model()->find(array(
-                    'condition' => "contact_id = :contact_id AND REPLACE(postcode,' ','') = :postcode" . $matched_clause,
-                    'params' => array(':contact_id' => $contact->id, ':postcode' => str_replace(' ','',$address_resource->Postcode)),
+                    'condition' => "contact_id = :contact_id AND REPLACE(postcode,' ','') = :postcode".$matched_clause,
+                    'params' => array(':contact_id' => $contact->id, ':postcode' => str_replace(' ', '', $address_resource->Postcode)),
                 ));
 
                 if (!$address_model) {
@@ -226,13 +235,14 @@ class Patient extends BaseResource
 
                 if ($address_resource->saveModel($address_model)) {
                     $matched_address_ids[] = $address_model->id;
-                    foreach ($address_resource->warnings as $warn)
+                    foreach ($address_resource->warnings as $warn) {
                         $this->addWarning("Address {$idx}: {$warn}");
-                }
-                else {
+                    }
+                } else {
                     $this->addWarning("Address {$idx} not added");
-                    foreach($address_resource->errors as $err)
+                    foreach ($address_resource->errors as $err) {
                         $this->addWarning("Address {$idx}: {$err}");
+                    }
                 }
             }
             // clear out any addresses not matched
@@ -249,10 +259,36 @@ class Patient extends BaseResource
         // delete any address that are no longer relevant
         $matched_string = implode(',',$except_ids);
         $condition_str = "contact_id = :contact_id";
-        if ($matched_string) $condition_str .= " AND id NOT IN($matched_string)";
+        if ($matched_string)
+            $condition_str .= " AND id NOT IN($matched_string)";
+
         \Address::model()->deleteAll(array(
-            'condition' =>  $condition_str,
+            'condition' => $condition_str,
             'params' => array(':contact_id' => $contact->id),
         ));
+    }
+
+    /**
+     * @param \Patient $patient
+     */
+    private function mapNhsNumberStatus(\Patient $patient)
+    {
+        $status = null;
+        if (property_exists($this, 'NHSNumberStatus')) {
+            if ($code = $this->getAssignedProperty('NHSNumberStatus')) {
+                if ($status = \NhsNumberVerificationStatus::model()->findByAttributes(array('code' => $code))) {
+                    $patient->nhs_num_status_id = $status->id;
+                } else {
+                    $this->addWarning('Unrecognised NHS number status code ' . $code);
+                }
+            }
+            else {
+                $patient->nhs_num_status_id = null;
+            }
+        }
+        else {
+            if (!$this->partial_record)
+                $patient->nhs_num_status_id = null;
+        }
     }
 }
