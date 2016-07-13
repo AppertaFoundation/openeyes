@@ -17,7 +17,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<main class="mdl-layout__content mdl-color--grey-100">
-    <div id="dash-grid" class="mdl-grid">
-    </div>
-</main>
+
+<div id="dash-grid" class="mdl-grid">
+</div>

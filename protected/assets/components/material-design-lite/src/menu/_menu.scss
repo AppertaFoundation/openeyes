@@ -151,11 +151,7 @@
     border: 0;
   }
 
-  &--full-bleed-divider {
-    border-bottom: 1px solid $default-item-divider-color;
-  }
-
-  &[disabled], &[data-mdl-disabled] {
+  &[disabled] {
     color: $disabled-item-text-color;
     background-color: transparent;
     cursor: auto;

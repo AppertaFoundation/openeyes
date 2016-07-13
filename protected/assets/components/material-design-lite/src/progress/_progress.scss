@@ -21,7 +21,6 @@
   position: relative;
   height: $bar-height;
   width: 500px;
-  max-width: 100%;
 }
 
 .mdl-progress > .bar {
@@ -52,7 +51,6 @@
 
 // Webkit only
 @supports (-webkit-appearance:none) {
-  .mdl-progress:not(.mdl-progress--indeterminate):not(.mdl-progress--indeterminate) > .auxbar,
   .mdl-progress:not(.mdl-progress__indeterminate):not(.mdl-progress__indeterminate) > .auxbar {
     background-image: linear-gradient(to right, $progress-secondary-color, $progress-secondary-color),
       linear-gradient(to right, $progress-main-color, $progress-main-color);
@@ -60,13 +58,11 @@
   }
 }
 
-.mdl-progress:not(.mdl-progress--indeterminate) > .auxbar,
 .mdl-progress:not(.mdl-progress__indeterminate) > .auxbar {
   background-image: linear-gradient(to right, $progress-fallback-buffer-color, $progress-fallback-buffer-color),
     linear-gradient(to right, $progress-main-color, $progress-main-color);
 }
 
-.mdl-progress.mdl-progress--indeterminate > .bar1,
 .mdl-progress.mdl-progress__indeterminate > .bar1 {
   background-color: $progress-main-color;
   animation-name: indeterminate1;
@@ -75,7 +71,6 @@
   animation-timing-function: linear;
 }
 
-.mdl-progress.mdl-progress--indeterminate > .bar3,
 .mdl-progress.mdl-progress__indeterminate > .bar3 {
   background-image: none;
   background-color: $progress-main-color;

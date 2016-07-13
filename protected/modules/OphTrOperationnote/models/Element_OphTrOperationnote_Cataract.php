@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes
  *
@@ -48,64 +47,55 @@
  * @property OperativeDevice[] $operative_devices
  * @property OphTrOperationnote_IOLType $iol_type
  */
-class Element_OphTrOperationnote_Cataract extends Element_OnDemand {
-
+class Element_OphTrOperationnote_Cataract extends Element_OnDemand
+{
     public $service;
+
     public $predicted_refraction = null;
 
     /**
      * Returns the static model of the specified AR class.
      * @return Element_OphTrOperationnote_Cataract the static model class
      */
-    public static function model($className = __CLASS__) {
+    public static function model($className = __CLASS__)
+    {
         return parent::model($className);
     }
 
     /**
      * @return string the associated database table name
      */
-    public function tableName() {
+    public function tableName()
+    {
         return 'et_ophtroperationnote_cataract';
     }
 
-    /**
-     * @return array validation rules for model attributes.
-     */
-    public function rules() {
-        // NOTE: you should only define rules for those attributes that
-        // will receive user inputs.
-        return array(
-            array('event_id, incision_site_id, length, meridian, incision_type_id, iol_position_id, iol_type_id, iol_power, eyedraw, report, complication_notes, eyedraw2, report2, predicted_refraction, pcr_risk', 'safe'),
-            array('incision_site_id, length, meridian, incision_type_id, predicted_refraction, iol_position_id, eyedraw, report, eyedraw2', 'required'),
-            array('length', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^[0-9](\.[0-9])?$/', 'message' => 'Length must be 0 - 9.9 in increments of 0.1'),
-            array('meridian', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^[0-9]{1,3}(\.[0-9])?$/', 'min' => 000, 'max' => 360, 'message' => 'Meridian must be 000.5 - 360.0 degrees'),
-            array('predicted_refraction', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', 'min' => -30, 'max' => 30, 'message' => 'Predicted refraction must be between -30.00 and 30.00'),
-            array('iol_power', 'validateIolpower'),
-            array('complications', 'validateComplications'),
-                // The following rule is used by search().
-                // Please remove those attributes that should not be searched.
-                //array('id, event_id, incision_site_id, length, meridian, incision_type_id, eyedraw, report, wound_burn, iris_trauma, zonular_dialysis, pc_rupture, decentered_iol, iol_exchange, dropped_nucleus, op_cancelled, corneal_odema, iris_prolapse, zonular_rupture, vitreous_loss, iol_into_vitreous, other_iol_problem, choroidal_haem', 'on' => 'search'),
-        );
-    }
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+		return array(
+			array('event_id, incision_site_id, length, meridian, incision_type_id, iol_position_id, iol_type_id, iol_power, eyedraw, report, complication_notes, eyedraw2, report2, predicted_refraction, pcr_risk', 'safe'),
+			array('incision_site_id, length, meridian, incision_type_id, predicted_refraction, iol_position_id, eyedraw, report, eyedraw2', 'required'),
+			array('length', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^[0-9](\.[0-9])?$/', 'message' => 'Length must be 0 - 9.9 in increments of 0.1'),
+			array('meridian', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^[0-9]{1,3}(\.[0-9])?$/', 'min' => 000, 'max' => 360, 'message' => 'Meridian must be 000.5 - 360.0 degrees'),
+			array('predicted_refraction', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', 'min' => -30, 'max' => 30, 'message' => 'Predicted refraction must be between -30.00 and 30.00'),
+			array('iol_power', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', 'min' => -10, 'max' => 40, 'message' => 'IOL power must be between -10 and 40'),
+			array('complications', 'validateComplications'),
+			// The following rule is used by search().
+			// Please remove those attributes that should not be searched.
+			//array('id, event_id, incision_site_id, length, meridian, incision_type_id, eyedraw, report, wound_burn, iris_trauma, zonular_dialysis, pc_rupture, decentered_iol, iol_exchange, dropped_nucleus, op_cancelled, corneal_odema, iris_prolapse, zonular_rupture, vitreous_loss, iol_into_vitreous, other_iol_problem, choroidal_haem', 'on' => 'search'),
+		);
+	}
 
-     public function validateIolPower() {
-
-        $value = $this->iol_power;
-        if (!preg_match('/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', $value)) {
-                $message = $this->addError('iol_power', 'IOL power must be a number with an optional two decimal places between -10.00 and 40.00');
-        }
-        elseif ($value < -10 || $value > 40) {
-            $message = $this->addError('iol_power', 'IOL Power must be between -10 to 40');
-            
-        }
-                
-        
-    }
-   
     /**
      * @return array relational rules.
      */
-    public function relations() {
+    public function relations()
+    {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
@@ -128,7 +118,8 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand {
     /**
      * @return array customized attribute labels (name=>label)
      */
-    public function attributeLabels() {
+    public function attributeLabels()
+    {
         return array(
             'id' => 'ID',
             'incision_site_id' => 'Incision site',
@@ -150,7 +141,8 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand {
      * Retrieves a list of models based on the current search/filter conditions.
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
-    public function search() {
+    public function search()
+    {
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
@@ -167,7 +159,8 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand {
     /**
      * Set default values for forms on create
      */
-    public function setDefaultOptions() {
+    public function setDefaultOptions()
+    {
         if (Yii::app()->controller->selectedEyeForEyedraw->id == 1) {
             $this->meridian = 0;
         }
@@ -177,7 +170,8 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand {
      * Need to delete associated records
      * @see CActiveRecord::beforeDelete()
      */
-    protected function beforeDelete() {
+    protected function beforeDelete()
+    {
         OphTrOperationnote_CataractComplication::model()->deleteAllByAttributes(array('cataract_id' => $this->id));
         OphTrOperationnote_CataractOperativeDevice::model()->deleteAllByAttributes(array('cataract_id' => $this->id));
         return parent::beforeDelete();
@@ -189,7 +183,8 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand {
      * @param $complication_ids
      * @throws Exception
      */
-    public function updateComplications($complication_ids) {
+    public function updateComplications($complication_ids)
+    {
         $curr_by_id = array();
 
         foreach ($this->complication_assignments as $ca) {
@@ -223,7 +218,8 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand {
      * @param $operative_device_ids
      * @throws Exception
      */
-    public function updateOperativeDevices($operative_device_ids) {
+    public function updateOperativeDevices($operative_device_ids)
+    {
         $curr_by_id = array();
 
         foreach ($this->operative_device_assignments as $oda) {
@@ -256,7 +252,8 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand {
      *
      * @return Eye
      */
-    public function getEye() {
+    public function getEye()
+    {
         return Element_OphTrOperationnote_ProcedureList::model()->find('event_id=?', array($this->event_id))->eye;
     }
 
@@ -265,24 +262,24 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand {
      *
      * @return bool
      */
-    public function beforeValidate() {
+    public function beforeValidate()
+    {
         $iol_position = OphTrOperationnote_IOLPosition::model()->findByPk($this->iol_position_id);
 
         if (!$iol_position || $iol_position->name != 'None') {
             if (!$this->iol_type_id) {
                 $this->addError('iol_type_id', 'IOL type cannot be blank');
             }
+
             if (!isset($this->iol_power)) {
                 $this->addError('iol_power', 'IOL power cannot be blank');
+            } elseif (!is_numeric($this->iol_power)) {
+                $this->addError('iol_power', 'IOL power must be a number with an optional two decimal places between -999.99 and 999.99');
+            } elseif (strlen(substr(strrchr($this->iol_power, "."), 1)) > 2) {
+                $this->addError('iol_power', 'IOL power must be a number with an optional two decimal places between -999.99 and 999.99');
+            } elseif ((-999.99 > $this->iol_power) || ($this->iol_power > 999.99)) {
+                $this->addError('iol_power', 'IOL power must be a number with an optional two decimal places between -999.99 and 999.99');
             }
-            /* elseif (!is_numeric($this->iol_power) || strlen(substr(strrchr($this->iol_power, "."), 1)) > 2 || ((-999.99 > $this->iol_power) || ($this->iol_power > 999.99))) {
-              $this->addError('iol_power', 'IOL power must be a number with an optional two decimal places between -999.99 and 999.99');
-              }
-              elseif (strlen(substr(strrchr($this->iol_power, "."), 1)) > 2) {
-              $this->addError('iol_power', 'IOL power must be a number with an optional two decimal places between -999.99 and 999.99');
-              } elseif ((-999.99 > $this->iol_power) || ($this->iol_power > 999.99)) {
-              $this->addError('iol_power', 'IOL power must be a number with an optional two decimal places between -999.99 and 999.99');
-              } */
         }
 
         return parent::beforeValidate();
@@ -293,7 +290,8 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand {
      *
      * @return bool
      */
-    public function getIol_hidden() {
+    public function getIol_hidden()
+    {
         if ($eyedraw = @json_decode($this->eyedraw)) {
             if (is_array($eyedraw)) {
                 foreach ($eyedraw as $object) {
@@ -311,7 +309,8 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand {
     /**
      * Get ids of cataract complications associated with the element
      */
-    public function getCataractComplicationValues() {
+    public function getCataractComplicationValues()
+    {
         $complication_values = array();
 
         foreach ($this->complication_assignments as $complication_assignment) {
@@ -321,10 +320,11 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand {
         return $complication_values;
     }
 
-    protected function afterConstruct() {
+    protected function afterConstruct()
+    {
         if ($this->isNewRecord && isset(Yii::app()->session['selected_firm_id'])) {
             $defaultLengthRecord = OphTrOperationnote_CataractIncisionLengthDefault::model()->findByAttributes(
-                    array('firm_id' => (int) Yii::app()->session['selected_firm_id'])
+                array('firm_id' => (int)Yii::app()->session['selected_firm_id'])
             );
 
             if ($defaultLengthRecord) {
@@ -340,7 +340,8 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand {
     /**
      * Validate complications
      */
-    public function validateComplications() {
+    public function validateComplications()
+    {
         $noneId = 18;
 
         $complications = Yii::app()->request->getPost('OphTrOperationnote_CataractComplications');
@@ -354,5 +355,4 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand {
             }
         }
     }
-
 }

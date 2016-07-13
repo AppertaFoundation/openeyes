@@ -16,18 +16,16 @@
             <th class="created"><?php echo $dataProvider->getSort()->link('last_modified_date','Merged',array('class'=>'sort-link')); ?></th>
             <?php endif; ?> 
         </tr>
-        <?php if ( $dataProvider->itemCount ): ?>
-            <tr class="table-filter">
-                <td> <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>"
-                        alt="loading..." style="display: none;"/></td>
-                <td class="filter-col"><input id="secondary_hos_num_filter" name="PatientMergeRequestFilter[secondary_hos_num_filter]" type="text" value="<?php echo isset($filters['secondary_hos_num_filter']) ? $filters['secondary_hos_num_filter'] : '';?>"></td>
-                <td></td>
-                <td class="filter-col"><input id="primary_hos_num_filter" name="PatientMergeRequestFilter[primary_hos_num_filter]" type="text" value="<?php echo isset($filters['primary_hos_num_filter']) ? $filters['primary_hos_num_filter'] : '';?>"></td>
-                <td></td>
-                <td></td>
-                <?php if($filters['show_merged']) :?><td></td><?php endif; ?>
-            </tr>
-        <?php endif; ?>
+        <tr class="table-filter">
+            <td> <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>"
+                    alt="loading..." style="display: none;"/></td>
+            <td class="filter-col"><input id="secondary_hos_num_filter" name="PatientMergeRequestFilter[secondary_hos_num_filter]" type="text" value="<?php echo isset($filters['secondary_hos_num_filter']) ? $filters['secondary_hos_num_filter'] : '';?>"></td>
+            <td></td>
+            <td class="filter-col"><input id="primary_hos_num_filter" name="PatientMergeRequestFilter[primary_hos_num_filter]" type="text" value="<?php echo isset($filters['primary_hos_num_filter']) ? $filters['primary_hos_num_filter'] : '';?>"></td>
+            <td></td>
+            <td></td>
+            <?php if($filters['show_merged']) :?><td></td><?php endif; ?>
+        </tr>
     </thead>
     <tfoot class="pagination-container">
         <tr>
@@ -43,7 +41,7 @@
     </tfoot>
     <tbody>
         
-        <?php if ( $dataProvider->itemCount ): ?>
+        <?php if ( count($dataProvider->getData()) ): ?>
             <?php foreach ($dataProvider->getData() as $i => $request): ?>
 
                 <?php if( $request->status == PatientMergeRequest::STATUS_NOT_PROCESSED ): ?>

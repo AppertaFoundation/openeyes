@@ -112,8 +112,7 @@
       container.insertBefore(outline, this.element_);
 
       // Find the "for" element and bind events to it.
-      var forElId = this.element_.getAttribute('for') ||
-                      this.element_.getAttribute('data-mdl-for');
+      var forElId = this.element_.getAttribute('for');
       var forEl = null;
       if (forElId) {
         forEl = document.getElementById(forElId);
@@ -339,24 +338,20 @@
   };
 
   /**
-   * Cleanup function to remove animation listeners.
-   *
-   * @param {Event} evt
-   * @private
-   */
-
-  MaterialMenu.prototype.removeAnimationEndListener_ = function(evt) {
-    evt.target.classList.remove(MaterialMenu.prototype.CssClasses_.IS_ANIMATING);
-  };
-
-  /**
    * Adds an event listener to clean up after the animation ends.
    *
    * @private
    */
   MaterialMenu.prototype.addAnimationEndListener_ = function() {
-    this.element_.addEventListener('transitionend', this.removeAnimationEndListener_);
-    this.element_.addEventListener('webkitTransitionEnd', this.removeAnimationEndListener_);
+    var cleanup = function() {
+      this.element_.removeEventListener('transitionend', cleanup);
+      this.element_.removeEventListener('webkitTransitionEnd', cleanup);
+      this.element_.classList.remove(this.CssClasses_.IS_ANIMATING);
+    }.bind(this);
+
+    // Remove animation class once the transition is done.
+    this.element_.addEventListener('transitionend', cleanup);
+    this.element_.addEventListener('webkitTransitionEnd', cleanup);
   };
 
   /**
@@ -437,7 +432,7 @@
 
       // Remove all transition delays; menu items fade out concurrently.
       for (var i = 0; i < items.length; i++) {
-        items[i].style.removeProperty('transition-delay');
+        items[i].style.transitionDelay = null;
       }
 
       // Measure the inner element.
@@ -470,6 +465,31 @@
     }
   };
   MaterialMenu.prototype['toggle'] = MaterialMenu.prototype.toggle;
+
+  /**
+   * Downgrade the component.
+   *
+   * @private
+   */
+  MaterialMenu.prototype.mdlDowngrade_ = function() {
+    var items = this.element_.querySelectorAll('.' + this.CssClasses_.ITEM);
+
+    for (var i = 0; i < items.length; i++) {
+      items[i].removeEventListener('click', this.boundItemClick_);
+      items[i].removeEventListener('keydown', this.boundItemKeydown_);
+    }
+  };
+
+  /**
+   * Public alias for the downgrade method.
+   *
+   * @public
+   */
+  MaterialMenu.prototype.mdlDowngrade =
+      MaterialMenu.prototype.mdlDowngrade_;
+
+  MaterialMenu.prototype['mdlDowngrade'] =
+      MaterialMenu.prototype.mdlDowngrade;
 
   // The component registers itself. It can assume componentHandler is available
   // in the global scope.

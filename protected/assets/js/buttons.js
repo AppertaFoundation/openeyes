@@ -73,7 +73,7 @@ function enableButtons(selector) {
     $selector
 	.not('.cancel')
 	.removeClass('inactive')
-	.attr('disabled', false)
+	.removeAttr('disabled')
 	.off('click.disable');
 
 	$('.loader').hide();

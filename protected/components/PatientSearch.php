@@ -71,8 +71,9 @@ class PatientSearch
      * Searching for patients
      * 
      * @param string $term search term
+     * @param $criteria additional setting like sortBy, sortDir
      */
-    public function search($term)
+    public function search($term, $criteria  = null)
     {
         $search_terms = $this->parseTerm($term);
 
@@ -81,51 +82,16 @@ class PatientSearch
         $model->hos_num = $search_terms['hos_num'];
         $model->nhs_num = $search_terms['nhs_num'];
         
-        // Get the valuse from URL
-        $currentPage = Yii::app()->request->getParam('currentPage');
-        $pageSize = Yii::app()->request->getParam('pageSize', 20);
-        
-        // if no GET param we try to fetch the value from the $criteria, default value 0 is none of them set
-        $sortDir = Yii::app()->request->getParam('sort_dir', 0);
-        $sortDir = ($sortDir == 0 || $sortDir == 'asc') ? 'asc' : 'desc';
-        
-        $sortBy = Yii::app()->request->getParam('sort_by');
-        switch ($sortBy) {
-                case 0:
-                        $sortBy = 'hos_num*1';
-                        break;
-                case 1:
-                        $sortBy = 'title';
-                        break;
-                case 2:
-                        $sortBy = 'first_name';
-                        break;
-                case 3:
-                        $sortBy = 'last_name';
-                        break;
-                case 4:
-                        $sortBy = 'dob';
-                        break;
-                case 5:
-                        $sortBy = 'gender';
-                        break;
-                case 6:
-                        $sortBy = 'nhs_num*1';
-                        break;
-                default:
-                        $sortBy = 'hos_num*1';
-        }
-        
-        $patientCriteria = array(
-            'currentPage' => $currentPage,
-            'pageSize' => $pageSize,
-            'sortBy' => $sortBy,
-            'sortDir'=> $sortDir,
+        $criteria = array(
+            'currentPage' => $criteria['currentPage'] ? $criteria['currentPage'] : null,
+            'pageSize' => $criteria['pageSize'] ? $criteria['pageSize'] : 20,
+            'sortBy' => $criteria['sortBy'] ? $criteria['sortBy'] : 'hos_num*1',
+            'sortDir'=> $criteria['sortDir'] && $criteria['sortDir'] == 0 ? 'asc' : 'desc',
             'first_name' => CHtml::decode($search_terms['first_name']),
             'last_name' => CHtml::decode($search_terms['last_name']),
         );
         
-        $dataProvider = $model->search($patientCriteria);
+        $dataProvider = $model->search($criteria);
         
         return $dataProvider;
         

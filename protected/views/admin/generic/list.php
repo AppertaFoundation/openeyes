@@ -80,9 +80,7 @@ if(!isset($uniqueid)){
 			</thead>
 			<tbody <?php if(in_array('display_order', $admin->getListFields())): echo 'class="sortable"'; endif; ?>>
 			<?php
-			foreach ($admin->getSearch()->retrieveResults() as $i => $row) { 
-                            $returnUri = $admin->generateReturnUrl(Yii::app()->request->requestUri);
-                            ?>
+			foreach ($admin->getSearch()->retrieveResults() as $i => $row) { ?>
 				<tr class="clickable" data-id="<?php echo $row->id ?>"
 					data-uri="<?php echo $uniqueid ?>/edit/<?php echo $row->id ?>?returnUri=<?=$returnUri?>">
 					<td>

@@ -49,8 +49,7 @@
 		'attribute' => 'eyedraw',
 		'offsetX' => 10,
 		'offsetY' => 10,
-		'template' => 'OEEyeDrawWidget_InlineToolbar',
-		'autoReport' => 'Element_OphTrOperationnote_Cataract_report',
+		'template' => 'OEEyeDrawWidget_InlineToolbar'
 	));
 ?>
 

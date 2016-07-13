@@ -26,8 +26,6 @@
 				<tr>
 					<th>ID</th>
 					<th>Name</th>
-                                        <th>Contact Labels</th>
-                                        
 				</tr>
 			</thead>
 			<tbody>
@@ -36,8 +34,7 @@
 					<tr class="clickable" data-id="<?php echo $contactlabel->id?>" data-uri="admin/editContactLabel/<?php echo $contactlabel->id?>">
 						<td><?php echo $contactlabel->id?></td>
 						<td><?php echo $contactlabel->name?>&nbsp;</td>
-                                                <td><?php echo ($contactlabel->display) ? ('<i class="fa fa-check"></i>') : ( '<i class="fa fa-times"></i>');?></td>
-                                        </tr>
+					</tr>
 				<?php }?>
 			</tbody>
 			<tfoot class="pagination-container">

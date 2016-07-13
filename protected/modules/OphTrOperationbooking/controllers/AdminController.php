@@ -1357,7 +1357,7 @@ class AdminController extends ModuleAdminController
 				}
 			}
 
-			if (!$sequence->delete()) {
+			if (!$sequence->save()) {
 				throw new Exception("Unable to delete sequence: ".print_r($sequence->getErrors(),true));
 			}
 

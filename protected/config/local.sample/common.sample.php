@@ -136,7 +136,6 @@ $config = array(
 		'event_print_method' => 'pdf',
 		'wkhtmltopdf_nice_level' => 19,
          'salt' => 'SALTFORUNIQUECODES',
-		'allow_clinical_summary' => false,
 		// flag to turn on drag and drop sorting for dashboards
 		// 'dashboard_sortable' => true
 	),
