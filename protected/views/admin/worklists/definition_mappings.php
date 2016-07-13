@@ -89,8 +89,14 @@
                     <tr>
                         <td class="reorder">-</td>
                         <td><?=$mapping->key?></td>
-                        <td><a href="/worklistAdmin/definitionMappingUpdate/<?=$mapping->id?>">Edit</a> |
+                        <td><?php if ($this->manager->canUpdateWorklistDefinition($definition)) {?>
+                            <a href="/worklistAdmin/definitionMappingUpdate/<?=$mapping->id?>">Edit</a> |
                             <a href="/worklistAdmin/definitionMappingDelete/<?=$mapping->id?>" disabled="disabled">Delete</a></td>
+                        <?php } else {?>
+                            <span title="Cannot change mappings for un-editable definition">
+                            Edit | Delete
+                            </span>
+                        <?php } ?>
                     </tr>
                 <?php } ?>
                 </tbody>
