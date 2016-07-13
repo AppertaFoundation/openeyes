@@ -307,6 +307,8 @@ abstract class BaseResource
                 case 'resource':
                     $cls = __NAMESPACE__ . "\\" . $schema[$local_name]['resource'];
                     $this->{$local_name} = $cls::fromXmlDom($this->version, $child, $options);
+                case 'boolean':
+                    $this->{$local_name} = (bool)$child->textContent;
                     break;
                 default:
                     $this->{$local_name} = $child->textContent;

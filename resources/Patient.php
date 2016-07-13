@@ -113,6 +113,7 @@ class Patient extends BaseResource
         $this->assignProperty($patient, 'hos_num', 'HospitalNumber');
         $this->assignProperty($patient, 'dob', 'DateOfBirth');
         $this->assignProperty($patient, 'date_of_death', 'DateOfDeath');
+        $this->assignProperty($patient, 'is_deceased', 'IsDeceased');
 
         $this->mapGender($patient);
         $this->mapEthnicGroup($patient);

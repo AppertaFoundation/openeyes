@@ -40,6 +40,9 @@
   "DateOfDeath": {
     "type": "date"
   },
+  "IsDeceased": {
+    "type": "boolean"
+  },
   "PracticeCode": {
     "type": "string"
   },
