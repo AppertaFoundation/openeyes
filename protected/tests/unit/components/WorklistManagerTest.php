@@ -238,7 +238,33 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($manager->hasErrors());
     }
 
-    public function test_setAttributesForWorklistPatient()
+    /**
+     * Helper function to generate appropriate Worklist Mock
+     *
+     * @param $attributes
+     * @return PHPUnit_Framework_MockObject_MockObject
+     */
+    protected function buildWorklistFor_setAttributesForWorklistPatient($attributes)
+    {
+        $mapping_attributes = array();
+        $id = 1;
+        foreach ($attributes as $k => $v) {
+            $mapping_attributes[$k] = $id++;
+        }
+
+        $w = $this->getMockBuilder('Worklist')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getMappingAttributeIdsByName'))
+            ->getMock();
+
+        $w->expects($this->any())
+            ->method('getMappingAttributeIdsByName')
+            ->will($this->returnValue($mapping_attributes));
+
+        return $w;
+    }
+
+    public function test_setAttributesForWorklistPatient_new()
     {
         $attributes = array(
             'key1' => 'val1',
@@ -265,23 +291,76 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
             ->method('save')
             ->will($this->returnValue(true));
 
-        $manager->expects($this->any())
+        $manager->expects($this->exactly(2))
             ->method('getInstanceForClass')
             ->with('WorklistPatientAttribute')
             ->will($this->returnValue($wpa));
 
-        $mapping_attributes = array();
-        foreach ($attributes as $k => $v) {
-            $wla = new WorklistAttribute();
-            $wla->name = $k;
-            $mapping_attributes[] = $wla;
-        }
-        $w = ComponentStubGenerator::generate('Worklist', array(
-            'mapping_attributes' => $mapping_attributes
-        ));
 
-        $wp = new WorklistPatient();
+        $wp = $this->getMockBuilder('WorklistPatient')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getCurrentAttributesById'))
+            ->getMock();
+
+        $w = $this->buildWorklistFor_setAttributesForWorklistPatient($attributes);
+
         $wp->worklist = $w;
+
+        $wp->expects($this->once())
+            ->method('getCurrentAttributesById')
+            ->will($this->returnValue(array()));
+
+        $this->assertTrue($manager->setAttributesForWorklistPatient($wp,array(
+            'key1' => 'val1',
+            'key2' => 'val2'
+        )));
+
+        $this->assertFalse($manager->hasErrors());
+    }
+
+    public function test_setAttributesForWorklistPatient_change_values()
+    {
+        $attributes = array(
+            'key1' => 'val1',
+            'key2' => 'val2'
+        );
+
+        $manager = $this->getMockBuilder('WorklistManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getInstanceForClass', 'startTransaction'))
+            ->getMock();
+
+        $manager->expects($this->at(0))
+            ->method('startTransaction')
+            ->will($this->returnValue($this->getTransactionMock(array('commit'))));
+
+        $manager->expects($this->never())
+            ->method('getInstanceForClass');
+
+        $wp = $this->getMockBuilder('WorklistPatient')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getCurrentAttributesById'))
+            ->getMock();
+
+        $w = $this->buildWorklistFor_setAttributesForWorklistPatient($attributes);
+        $wp->worklist = $w;
+
+        // build out curent attributes on the worklist patient instance
+        $current_by_id = array();
+        foreach ($w->getMappingAttributeIdsByName() as $id) {
+            $wpa = $this->getMockBuilder('WorklistPatientAttribute')
+                ->disableOriginalConstructor()
+                ->setMethods(array('save'))
+                ->getMock();
+            $wpa->expects($this->once())
+                ->method('save')
+                ->will($this->returnValue(true));
+            $current_by_id[$id] = $wpa;
+        }
+
+        $wp->expects($this->once())
+            ->method('getCurrentAttributesById')
+            ->will($this->returnValue($current_by_id));
 
         $this->assertTrue($manager->setAttributesForWorklistPatient($wp,array(
             'key1' => 'val1',
@@ -607,10 +686,89 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($wm->automatic);
     }
 
-    public function test_updateWorklistPatientFromMapping()
+    public function test_updateWorklistPatientFromMapping_worklist_not_found()
     {
-        $this->markTestIncomplete("New method. not had chance to write test yet.");
+        $manager = $this->getMockBuilder('WorklistManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getWorklistForMapping'))
+            ->getMock();
+
+        $manager->expects($this->once())
+            ->method('getWorklistForMapping')
+            ->will($this->returnValue(null));
+
+        $wp = ComponentStubGenerator::generate('WorklistPatient');
+        $when = new DateTime();
+        $mapping = array();
+        $this->assertNull($manager->updateWorklistPatientFromMapping($wp, $when, $mapping));
     }
+
+    public function test_updateWorklistPatientFromMapping_worklist_changed_error()
+    {
+        $manager = $this->getMockBuilder('WorklistManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getWorklistForMapping', 'addError'))
+            ->getMock();
+
+        $changed_worklist = ComponentStubGenerator::generate('Worklist', array('id' => 2));
+
+        $manager->expects($this->once())
+            ->method('getWorklistForMapping')
+            ->will($this->returnValue($changed_worklist));
+
+        $manager->expects($this->once())
+            ->method('addError');
+
+        $original_worklist = ComponentStubGenerator::generate('Worklist', array('id' => 4));
+        $wp = ComponentStubGenerator::generate('WorklistPatient', array('worklist' => $original_worklist));
+        $when = new DateTime();
+        $mapping = array();
+
+        $this->assertNull($manager->updateWorklistPatientFromMapping($wp, $when, $mapping));
+    }
+
+    public function test_updateWorklistPatientFromMapping_worklist_changed_success()
+    {
+        $manager = $this->getMockBuilder('WorklistManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getWorklistForMapping', 'addError', 'startTransaction', 'setAttributesForWorklistPatient'))
+            ->getMock();
+
+        $changed_worklist = ComponentStubGenerator::generate('Worklist', array('id' => 2));
+
+        $manager->expects($this->once())
+            ->method('getWorklistForMapping')
+            ->will($this->returnValue($changed_worklist));
+
+        $manager->expects($this->never())
+            ->method('addError');
+
+        $manager->expects($this->once())
+            ->method('startTransaction')
+            ->will($this->returnValue($this->getTransactionMock(array('commit'))));
+
+        $original_worklist = ComponentStubGenerator::generate('Worklist', array('id' => 4));
+        $original_when = DateTime::createFromFormat('Y-m-d H:i', '2016-05-03 10:40');
+
+        $wp = ComponentStubGenerator::generate('WorklistPatient', array('worklist' => $original_worklist, 'when' => $original_when));
+        $wp->expects($this->once())
+            ->method('save')
+            ->will($this->returnValue(true));
+
+        $new_when = DateTime::createFromFormat('Y-m-d H:i', '2016-05-03 11:40');
+        $mapping = array('key1' => 'val1');
+
+        $manager->expects($this->once())
+            ->method('setAttributesForWorklistPatient')
+            ->with($wp, $mapping)
+            ->will($this->returnValue(true));
+
+        $this->assertEquals($wp, $manager->updateWorklistPatientFromMapping($wp, $new_when, $mapping, true));
+        $this->assertEquals($new_when->format('Y-m-d H:i:s'), $wp->when);
+        $this->assertEquals($changed_worklist->id, $wp->worklist_id);
+        $this->assertFalse($manager->hasErrors());
+    }
+
 
     public function test_updateWorklistDefinitionMapping_invalid_key()
     {

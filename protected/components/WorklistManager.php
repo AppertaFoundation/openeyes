@@ -698,14 +698,8 @@ class WorklistManager extends CComponent
         $transaction = $this->startTransaction();
         $worklist = $worklist_patient->worklist;
         try {
-            $current_attributes = array();
-            $valid_attributes = array();
-
-            foreach ($worklist_patient->worklist_attributes as $current)
-                $current_attributes[$current->worklistattribute->id] = $current;
-
-            foreach ($worklist->mapping_attributes as $attr)
-                $valid_attributes[$attr->name] = $attr->id;
+            $current_attributes = $worklist_patient->getCurrentAttributesById();
+            $valid_attributes = $worklist->getMappingAttributeIdsByName();
 
             foreach ($attributes as $attr => $val) {
                 if (!array_key_exists($attr, $valid_attributes))
@@ -734,6 +728,7 @@ class WorklistManager extends CComponent
         catch (Exception $e)
         {
             $this->addError($e->getMessage());
+            throw $e;
             if ($transaction)
                 $transaction->rollback();
             return false;
@@ -1252,21 +1247,27 @@ class WorklistManager extends CComponent
      * @param bool $allow_worklist_change - only allow values to change that don't affect which worklist is mapped
      * @return WorklistPatient|null
      */
-    public function updateWorklistPatientFromMapping(WorklistPatient $worklist_patient, DateTime $when, $attributes = array(), $allow_worklist_change = false)
+    public function updateWorklistPatientFromMapping(WorklistPatient $worklist_patient,
+                                                     DateTime $when,
+                                                     $attributes = array(),
+                                                     $allow_worklist_change = false)
     {
         $worklist = $this->getWorklistForMapping($when, $attributes);
         if (!$worklist)
             return null;
 
-        if (!$allow_worklist_change && $worklist->id != $worklist_patient->worklist_id)
-            throw new Exception("Worklist mapping change not allowed for partial update.");
+        if (!$allow_worklist_change && $worklist->id != $worklist_patient->worklist_id) {
+            $this->addError("Worklist mapping change not allowed for partial update.");
+            return null;
+        }
 
         $transaction  = $this->startTransaction();
 
         try {
             $worklist_patient->worklist_id = $worklist->id;
             $worklist_patient->when = $when->format('Y-m-d H:i:s');
-            $this->setAttributesForWorklistPatient($worklist_patient, $attributes);
+            if (!$this->setAttributesForWorklistPatient($worklist_patient, $attributes))
+                throw new Exception("Could not set worklist attributes");
 
             if (!$worklist_patient->save()) {
                 foreach ($worklist_patient->getErrors() as $key => $error) {
@@ -1283,6 +1284,7 @@ class WorklistManager extends CComponent
             return $worklist_patient;
         }
         catch (Exception $e) {
+            echo $e->getMessage();
             $this->addError($e->getMessage());
             if ($transaction)
                 $transaction->rollback();

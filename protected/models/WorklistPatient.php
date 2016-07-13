@@ -139,5 +139,19 @@ class WorklistPatient extends BaseActiveRecordVersioned
         }
     }
 
+    /**
+     * Get the current worklist patient attributes indexed by the worklist mapping Ids
+     *
+     * @return array
+     */
+    public function getCurrentAttributesById()
+    {
+        $res = array();
+        foreach ($this->worklist_attributes as $wa)
+            $res[$wa->worklistattribute->id] = $wa;
+
+        return $res;
+    }
+
 
 }

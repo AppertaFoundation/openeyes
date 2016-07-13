@@ -177,4 +177,18 @@ class Worklist extends BaseActiveRecordVersioned
         return $start;
     }
 
+    /**
+     * Get array of mapping attributes for this Worklist, indexed by the name value of the attribute
+     *
+     * @return array
+     */
+    public function getMappingAttributeIdsByName()
+    {
+        $res = array();
+        foreach ($this->mapping_attributes as $attr)
+            $res[$attr->name] = $attr->id;
+
+        return $res;
+    }
+
 }
