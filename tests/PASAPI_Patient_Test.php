@@ -263,6 +263,7 @@ EOF;
         $xml = <<<EOF
 <Patient>
     <NHSNumber>456789123</NHSNumber>
+    <NHSNumberStatus>01</NHSNumberStatus>
     <HospitalNumber>4534563</HospitalNumber>
     <Title>MRS</Title>
     <FirstName>Partial</FirstName>
@@ -296,7 +297,8 @@ EOF;
             'gender' => 'F',
             'nhs_num' => '456789123',
             'hos_num' => '4534563',
-            'dob' => '1982-03-01'
+            'dob' => '1982-03-01',
+            'nhsNumberStatus' => array('code' => '01')
         );
 
         return array(
@@ -333,12 +335,13 @@ EOF;
             ),
             array(
                 $xml,
-                "<Patient><Gender/><DateOfBirth>1990-08-03</DateOfBirth></Patient>",
+                "<Patient><NHSNumberStatus>02</NHSNumberStatus><Gender/><DateOfBirth>1990-08-03</DateOfBirth></Patient>",
                 array_merge(
                     $original_expectation,
                     array(
                         'gender' => null,
-                        'dob' => '1990-08-03'
+                        'dob' => '1990-08-03',
+                        'nhsNumberStatus' => array('code' => '02')
                     )
                 )
             )
