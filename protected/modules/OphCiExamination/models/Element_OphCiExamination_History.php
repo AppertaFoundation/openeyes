@@ -65,7 +65,7 @@ class Element_OphCiExamination_History extends \BaseEventTypeElement
                 array('description', 'required'),
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
-                array('id, event_id, description, ', 'safe', 'on' => 'search'),
+                array('id, event_id, description,anticoagulant ', 'safe', 'on' => 'search'),
         );
     }
 

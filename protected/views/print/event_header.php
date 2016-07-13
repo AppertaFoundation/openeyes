@@ -20,10 +20,26 @@
 <?php
 $event = $this->event;
 $event_type = $event->eventType->name;
+$path = Yii::app()->basePath . '/runtime/';
+$yourImageUrl = Yii::app()->assetManager->publish($path);
+$imageLists = scandir($path, 1);
+foreach ($imageLists as $imageList) {
+if(strpos($imageList,"header") !== false) {
+    $headerLogo = $imageList;
+}
+if(strpos($imageList,"secondary") !== false)  {
+    $secondaryLogo = $imageList;
+        
+}
+}
+
 ?>
 <header class="header">
 	<div class="title">
-		<img src="<?php echo Yii::app()->assetManager->createUrl('img/_print/letterhead_seal.jpg')?>" alt="letterhead_seal" width="100" height="83"/>
+        <?php if(!empty($headerLogo)){?>	
+            <img src="<?php echo $yourImageUrl . "/" . $headerLogo;?>" alt="letterhead_seal" width="100" height="83"/>
+                <?php } ?>
+
 		<h1><?php echo $event_type;?></h1>
 	</div>
 	<div class="row">

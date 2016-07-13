@@ -337,10 +337,20 @@ class User extends BaseActiveRecordVersioned
 	{
 		return implode(' ', array($this->first_name, $this->last_name));
 	}
+        
+	public function getFullNameAndUserName()
+	{
+		return implode(' ', array($this->first_name, $this->last_name)) . (" ({$this->username})");
+	}
 
 	public function getReversedFullName()
 	{
 		return implode(' ', array($this->last_name, $this->first_name));
+	}
+        
+	public function getReversedFullNameAndUserName()
+	{
+		return implode(' ', array($this->last_name, $this->first_name)) . (" ({$this->username})");
 	}
 
 	public function getFullNameAndTitle()

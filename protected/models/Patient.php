@@ -40,7 +40,9 @@
  * @property int $created_user_id
  * @property int $last_modified_user_id
  * @property datetime $no_allergies_date
- * @property tinyint $deleted
+ * @property integer $deleted
+ * @property integer $nhs_num_status_id
+ * @property integer $is_deceased
  *
  * The followings are the available model relations:
  * @property Episode[] $episodes
@@ -111,7 +113,8 @@ class Patient extends BaseActiveRecordVersioned
             array('hos_num', 'required'),
             array('hos_num, nhs_num', 'length', 'max' => 40),
             array('gender', 'length', 'max' => 1),
-            array('dob, date_of_death, ethnic_group_id', 'safe'),
+            array('is_deceased', 'validateDeceased'),
+            array('dob, date_of_death, ethnic_group_id, is_deceased', 'safe'),
             array('deleted', 'safe'),
             array('dob, hos_num, nhs_num, date_of_death, deleted', 'safe', 'on' => 'search'),
         );
@@ -160,6 +163,7 @@ class Patient extends BaseActiveRecordVersioned
             'lastReferral' => array(self::HAS_ONE, 'Referral', 'patient_id', 'order' => 'received_date desc'),
             'socialhistory' => array(self::HAS_ONE, 'SocialHistory', 'patient_id'),
             'adherence' => array(self::HAS_ONE, 'MedicationAdherence', 'patient_id'),
+            'nhsNumberStatus' => array(self::BELONGS_TO, 'NhsNumberVerificationStatus', 'nhs_num_status_id')
         );
     }
 
@@ -249,6 +253,32 @@ class Patient extends BaseActiveRecordVersioned
         }
 
         return parent::beforeSave();
+    }
+
+    public function beforeValidate()
+    {
+
+        if(!parent::beforeValidate()){
+            return false;
+        }
+
+        //If someone is marked as dead by date, set the boolean flag.
+        if($this->isAttributeDirty('date_of_death') && $this->date_of_death){
+            $this->is_deceased = 1;
+        }
+
+        return true;
+    }
+
+    public function validateDeceased($attribute, $params)
+    {
+        if(!$this->is_deceased && $this->date_of_death){
+            $this->addError($attribute, 'A patient can only have a date of death if they are deceased');
+
+            return false;
+        }
+
+        return true;
     }
 
     /*
@@ -430,7 +460,7 @@ class Patient extends BaseActiveRecordVersioned
     public function isDeceased()
     {
         // Assume that if the patient has a date of death then they are actually dead, even if the date is in the future
-        return !empty($this->date_of_death);
+        return $this->is_deceased;
     }
 
     /**
@@ -984,6 +1014,24 @@ class Patient extends BaseActiveRecordVersioned
 
         $this->audit('patient', 'set-noriskdate');
     }
+
+    /**
+     * Check if the patient has a given risk
+     * 
+     * @param $riskCompare
+     * @return bool
+     */
+    public function hasRisk($riskCompare)
+    {
+        foreach($this->risks as $risk) {
+            if($risk->name === $riskCompare) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     /**
      * marks the patient as having no family history.

@@ -22,10 +22,10 @@
     <div id="patientMergeWrapper" class="container content">
         
         <div class="row">
-            <div class="large-3 column large-centered text-right large-offset-9">
+            <div class="large-4 column large-centered text-right large-offset-8">
                 <section class="box dashboard">
                 <?php 
-                    echo CHtml::link('list',array('patientMergeRequest/index'), array('class' => 'button small')) . " ";
+                    echo CHtml::link('Back to Patient Merge list',array('patientMergeRequest/index'), array('class' => 'button small')) . " ";
                     echo CHtml::link('edit',array('patientMergeRequest/update', 'id' => $model->id), array('class' => 'button small secondary'));
                     if ( Yii::app()->user->checkAccess('Patient Merge') ){
                         echo " " . CHtml::link('merge',array('patientMergeRequest/merge', 'id' => $model->id), array('class' => 'button small warning '));

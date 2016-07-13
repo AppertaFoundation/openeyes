@@ -162,32 +162,6 @@ class PatientController extends BaseController
 
 	public function actionSearch()
 	{
-		switch (@$_GET['sort_by']) {
-			case 0:
-				$sort_by = 'hos_num*1';
-				break;
-			case 1:
-				$sort_by = 'title';
-				break;
-			case 2:
-				$sort_by = 'first_name';
-				break;
-			case 3:
-				$sort_by = 'last_name';
-				break;
-			case 4:
-				$sort_by = 'dob';
-				break;
-			case 5:
-				$sort_by = 'gender';
-				break;
-			case 6:
-				$sort_by = 'nhs_num*1';
-				break;
-			default:
-				$sort_by = 'hos_num*1';
-		}
-
                 $page_size = 20;
                 
                 $term = \Yii::app()->request->getParam("term", "");
@@ -204,7 +178,20 @@ class PatientController extends BaseController
 
 			$message = 'Sorry, no results ';
 			if ($search_terms['hos_num']) {
+
 				$message .= 'for Hospital Number <strong>"'.$search_terms['hos_num'].'"</strong>';
+
+				// check if the record was merged into another record
+				$criteria = new CDbCriteria;
+				$criteria->compare('secondary_hos_num', $search_terms['hos_num']);
+				$criteria->compare('status', PatientMergeRequest::STATUS_MERGED);
+
+				$patientMergeRequest = PatientMergeRequest::model()->find($criteria);
+
+				if($patientMergeRequest){
+					$message = "Hospital Number <strong>" . $search_terms['hos_num'] . "</strong> was merged into <strong>" . $patientMergeRequest->primary_hos_num . "</strong>";
+				}
+
 			} elseif ($search_terms['nhs_num']) {
 				$message .= 'for NHS Number <strong>"'.$search_terms['nhs_num'].'"</strong>';
 			} elseif ($search_terms['first_name'] && $search_terms['last_name']) {
@@ -229,6 +216,7 @@ class PatientController extends BaseController
 				'page_num' => \Yii::app()->request->getParam('page_num', 0),
 				'items_per_page' => $page_size,
 				'total_items' => $itemCount,
+				'term' => $term,
 				'search_terms' => $patientSearch->getSearchTerms(),
 				'sort_by' => (integer) \Yii::app()->request->getParam('sort_by', null),
 				'sort_dir' => (integer) \Yii::app()->request->getParam('sort_dir', null),

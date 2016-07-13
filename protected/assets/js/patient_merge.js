@@ -12,6 +12,14 @@ var patientMerge = {
     
     updateDOM: function(type){
         $section = $('section.' + type);
+        $section.find('input[type=hidden]').val('');
+        $section.find('.data-value').each(function(i, dom){
+            var $dom = $(dom),
+                defaultVal = $dom.data('default');
+            $dom.text( defaultVal ? defaultVal : '' );
+            $dom.val( defaultVal ? defaultVal : '' );
+        });
+        
         Object.keys(this.patients[type]).forEach(function (key) {
             $section.find('.' + key).html(patientMerge.patients[type][key]);
             $section.find('.' + key + '-input').val(patientMerge.patients[type][key]);
@@ -69,15 +77,17 @@ function displayConflictMessage(){
         $row = $('<div>', {'class':'row'}),
         $column = $('<div>',{'class':'large-12 column'}),
         $dob = $('<div>',{'class':'alert-box with-icon warning','id':'flash-merge_error_dob'}).text('Patients have different personal details : dob'),
-        $gender = $('<div>',{'class':'alert-box with-icon warning','id':'flash-merge_error_dob'}).text('Patients have different personal details : gender');
+        $gender = $('<div>',{'class':'alert-box with-icon warning','id':'flash-merge_error_gender'}).text('Patients have different personal details : gender');
         
 
     // Display DOB warning msg
+    $('#flash-merge_error_dob').remove();
     if( patientMerge.patients.primary.dob !== patientMerge.patients.secondary.dob && $('#flash-merge_error_dob').length < 1){
         $column.append($dob);
     }
 
     // Display Gender warning msg
+    $('#flash-merge_error_gender').remove();
     if( patientMerge.patients.primary.gender !== patientMerge.patients.secondary.gender && $('#flash-merge_error_gender').length < 1 ){
         $column.append($gender);
     }
@@ -88,9 +98,6 @@ function displayConflictMessage(){
     // Show the warning with the checkbox
     $patientDataConflictConfirmation.show();
     $input.attr('name', $input.data('name') );
-    
-    
-    
 }
 
 $(document).ready(function(){
@@ -119,7 +126,6 @@ $(document).ready(function(){
                 content: "Both Primary and Secondary patients have to be selected."
               }).open();
         } else if( primary_id == secondary_id ){
-            $('<h2 title="Alert" class="text-center"></h2>').dialog();
             new OpenEyes.UI.Dialog.Alert({
                 content: "Primary and Secondary patient cannot be the same record."
               }).open();
@@ -141,13 +147,15 @@ $(document).ready(function(){
             $('#PatientMergeRequest_confirm').closest('label').css({"border":'3px solid red',"padding":"5px"});
         }
         
-        if( $('#patientDataConflictConfirmation').length > 0 && $('#patientDataConflictConfirmation').find('input').is(':not(:checked)') ){
-            var $row = $('<div>', {'class':'row'}),
+        if( $('#patientDataConflictConfirmation').length > 0 && $('#patientDataConflictConfirmation').is(':visible') && $('#patientDataConflictConfirmation').find('input').is(':not(:checked)') ){
+            var $row = $('<div>', {'class':'row check-warning'}),
                 $column = $('<div>',{'class':'large-12 column'}),
                 $checkbox = $('<div>',{'class':'alert-box with-icon warning'}).text('Please tick the checkboxes.');
                 
-                $row.append( $column.append($checkbox) );
-                $('#patientDataConflictConfirmation').before($row);
+                if( $('#patientMergeWrapper').find('.row.check-warning').length < 1 ){
+                    $row.append( $column.append($checkbox) );
+                    $('#patientDataConflictConfirmation').before($row);
+                }
         }
         
         

@@ -24,6 +24,7 @@
         <link href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en" rel="stylesheet">
         <link href="<?= Yii::app()->assetManager->createUrl('fonts/material-design/material-icons.css')?>" rel="stylesheet">
         <link rel="stylesheet" href="<?= Yii::app()->assetManager->createUrl('components/material-design-lite/material.min.css')?>">
+        <link rel="stylesheet" href="<?= Yii::app()->assetManager->createUrl('components/mdi/css/materialdesignicons.min.css')?>" media="all" type="text/css" />
         <link rel="stylesheet" href="<?= Yii::app()->assetManager->createUrl('css/dashboard.css')?>">
         <link rel="stylesheet" href="<?= Yii::app()->assetManager->createUrl('components/jquery-ui/themes/base/minified/jquery.ui.datepicker.min.css')?>">
 
@@ -31,11 +32,22 @@
         <script src="<?= Yii::app()->assetManager->createUrl('components/jquery-ui/ui/jquery.ui.core.js')?>"></script>
         <script src="<?= Yii::app()->assetManager->createUrl('components/jquery-ui/ui/jquery.ui.datepicker.js')?>"></script>
         <script src="<?= Yii::app()->assetManager->createUrl('components/material-design-lite/material.min.js')?>"></script>
-        <script src="<?= Yii::app()->assetManager->createUrl('components/highcharts/highcharts.js')?>"></script>
+        <?php
+        if(Yii::app()->controller->action->id == 'oescape'){ ?>
+            <script src="<?= Yii::app()->assetManager->createUrl('components/highcharts/highstock.js')?>"></script>
+
+            <?php
+        }else{?>
+            <script src="<?= Yii::app()->assetManager->createUrl('components/highcharts/highcharts.js')?>"></script>
+        <?php
+        }
+        ?>
+
         <script src="<?= Yii::app()->assetManager->createUrl('components/highcharts/modules/exporting.js')?>"></script>
         <script src="<?= Yii::app()->assetManager->createUrl('components/highcharts/modules/offline-exporting.js')?>"></script>
         <script src="<?= Yii::app()->assetManager->createUrl('components/highcharts/highcharts-more.js')?>"></script>
         <script src="<?= Yii::app()->assetManager->createUrl('components/highcharts/modules/no-data-to-display.js')?>"></script>
+
 
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -59,51 +71,9 @@
     <body>
         <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
             <header class="mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-600">
-                <div class="mdl-layout__header-row">
-                    <span class="mdl-layout-title">
-                        <img src="<?= Yii::app()->assetManager->createUrl('img/_elements/graphic/OpenEyes_logo_transparent.png')?>" alt="OpenEyes logo" />
-                        Cataract Personal Audit: <?= $this->user->getFullNameAndTitle() ?>
-                    </span>
-                    <div class="mdl-layout-spacer"></div>
-                    <form id="search-form">
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input class="mdl-textfield__input" type="text" id="from-date" name="from">
-                            <label class="mdl-textfield__label" for="from-date">From...</label>
-                        </div>
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input class="mdl-textfield__input" type="text" id="to-date" name="to">
-                            <label class="mdl-textfield__label" for="to-date">To...</label>
-                        </div>
-                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="submit" name="action">Submit
-                            <i class="material-icons right">send</i>
-                        </button>
-                        <span>
-                            <i class="material-icons" id="export">print</i>
-                        </span>
-                    </form>
-
-                </div>
+                <?php $this->renderPartial($this->getHeaderTemplate());?>
             </header>
-            <!--<div class="drawer mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
-                <header class="drawer-header ">
-                    <img src="<?= Yii::app()->assetManager->createUrl('img/_structure/openeyes.png')?>" />
-                    <span>OpenEyes Analytics</span>
-                </header>
-                <nav class="mdl-navigation mdl-color--blue-grey-800">
-                    <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">home</i>Home</a>
-                    <a class="mdl-navigation__link mdl-js-button" href="" id="reports"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">sort</i>Reports</a>
-                    <ul class="mdl-menu mdl-js-menu" for="reports">
-                        <li>
-                            <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">sort</i>Cataract</a>
-                        </li>
-                    </ul>
-                    <div class="mdl-layout-spacer"></div>
-                    <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">help_outline</i><span class="visuallyhidden">Help</span></a>
-                </nav>
-            </div>-->
-            <main class="mdl-layout__content mdl-color--grey-100">
-                <?php echo $content; ?>
-            </main>
+            <?php echo $content; ?>
         </div>
     </body>
 </html>
