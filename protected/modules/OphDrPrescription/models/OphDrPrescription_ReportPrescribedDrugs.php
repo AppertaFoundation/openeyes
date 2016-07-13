@@ -38,8 +38,16 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
     {
         return array(
             array('start_date, end_date, drugs, user_id', 'safe'),
-            array('drugs', 'required'),
+            array('drugs', 'requiredIfNoUser'),
         );
+    }
+    
+    public function requiredIfNoUser($attributes, $params)
+    {
+        
+        if(!$this->user_id && !$this->drugs){
+            $this->addError('drugs','Either user or drugs must be selected.');
+        }
     }
     
     public function run()
@@ -55,8 +63,13 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
             ->join('contact', 'patient.contact_id = contact.id')
             ->join('address', 'contact.id = address.contact_id')
             ->join('user', 'd.created_user_id = user.id')
-            ->where(array('in', 'drug.id', $this->drugs))
-            ->andWhere('event.created_date >= :start_date', array(':start_date' => date('Y-m-d',strtotime($this->start_date))." 00:00:00"))
+            ->where('1=1');
+            
+            if($this->drugs){
+                $command->andWhere(array('in', 'drug.id', $this->drugs));
+            }
+
+            $command->andWhere('event.created_date >= :start_date', array(':start_date' => date('Y-m-d',strtotime($this->start_date))." 00:00:00"))
             ->andWhere('event.created_date <= :end_date', array(':end_date' => date('Y-m-d',strtotime($this->end_date))." 23:59:59"))
             ->andWhere('episode.deleted = 0');
         
