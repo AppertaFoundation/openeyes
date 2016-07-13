@@ -131,7 +131,11 @@
 <script type="text/javascript">
 
     $(document).ready(function() {
-        OpenEyes.UI.Search.setSingleSelect();
         OpenEyes.UI.Search.init($('#patient-search'));
+        OpenEyes.UI.Search.getElement().autocomplete('option', 'select', function(event, uid){
+            $('#patient-search').hide();
+            $('#patient-result').html('<span>'+ uid.item.first_name + ' ' + uid.item.last_name +'</span>').show();
+            $('#patient-result-id').val(uid.item.id);
+        });
     });
 </script>
