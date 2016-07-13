@@ -77,6 +77,7 @@ abstract class PASAPI_BaseTest extends RestTestCase
             'username' => 'autotestapi',
             'email' => 'auto@test.com',
         );
+        $this->user->id = 99999;
 
         $this->user->noVersion()->save();
         $this->user->saveRoles(array('User', 'API access'));
