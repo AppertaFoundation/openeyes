@@ -241,38 +241,6 @@ class PatientController extends BaseController
            Yii::app()->end();
        }
 
-    /**
-     * Ajax search
-     */
-    public function actionAjaxSearch()
-    {
-        $term = trim(\Yii::app()->request->getParam("term", ""));
-        $result = array();
-
-        $patientSearch = new PatientSearch();
-
-        if($patientSearch->isValidSearchTerm($term)){
-            $dataProvider = $patientSearch->search($term);
-            foreach($dataProvider->getData() as $patient){
-
-                $result[] =  array(
-                    'id' => $patient->id,
-                    'first_name' => $patient->first_name,
-                    'last_name' => $patient->last_name,
-                    'age' => ($patient->isDeceased() ? 'Deceased' : $patient->getAge()),
-                    'gender' => $patient->getGenderString(),
-                    'genderletter' => $patient->gender,
-                    'dob' => ($patient->dob) ? $patient->NHSDate('dob') : 'Unknown',
-                    'hos_num' => $patient->hos_num,
-                    'nhsnum' => $patient->nhsnum,
-                );
-            }
-        }
-
-        echo CJavaScript::jsonEncode($result);
-        Yii::app()->end();
-    }
-
 
 	public function actionEpisodes()
 	{
