@@ -110,7 +110,7 @@ class Medication extends BaseActiveRecordVersioned
      */
     protected function removePatientAdherence()
     {
-        $medications = $this->patient->medications;
+        $medications = $this->patient->patientMedications(new CDbCriteria());
         if (!count($medications)) {
             // delete the adherence as no longer applies
             if ($ad = $this->patient->adherence) {
