@@ -90,7 +90,7 @@
 								<li class="label">Viewing patients:</li>
 								<?php for ($i=0; $i < $pages; $i++) { ?>
 									<?php
-										$current_page = ($i == $page_num);
+										$current_page = ( ($i+1) == $page_num);
 										$from = ($i * $items_per_page) + 1;
 										$to = ($i + 1) * $items_per_page;
 										if ($to > $total_items) {
@@ -98,7 +98,7 @@
 										}
 									?>
 									<li class="<?php if ($current_page) { ?>current<?php } ?>">
-										<a href="<?php echo Yii::app()->createUrl('patient/search', $search_terms + array('page_num' => $i, 'sort_by' => $sort_by, 'sort_dir' => $sort_dir)); ?>"><?php echo $from; ?> - <?php echo $to; ?></a>
+										<a href="<?php echo Yii::app()->createUrl('patient/search', array('term' => $term,'Patient_page' => $i+1, 'sort_by' => $sort_by, 'sort_dir' => $sort_dir)); ?>"><?php echo $from; ?> - <?php echo $to; ?></a>
 									</li>
 								<?php } ?>
 							</ul>

@@ -82,16 +82,50 @@ class PatientSearch
         $model->hos_num = $search_terms['hos_num'];
         $model->nhs_num = $search_terms['nhs_num'];
         
-        $criteria = array(
-            'currentPage' => $criteria['currentPage'] ? $criteria['currentPage'] : null,
-            'pageSize' => $criteria['pageSize'] ? $criteria['pageSize'] : 20,
-            'sortBy' => $criteria['sortBy'] ? $criteria['sortBy'] : 'hos_num*1',
-            'sortDir'=> $criteria['sortDir'] && $criteria['sortDir'] == 0 ? 'asc' : 'desc',
+        // Get the valuse from URL
+        $currentPage = Yii::app()->request->getParam('currentPage');
+        $pageSize = Yii::app()->request->getParam('pageSize', 20);
+        
+        // if no GET param we try to fetch the value from the $criteria, default value 0 is none of them set
+        $sortDir = Yii::app()->request->getParam('sort_dir', 0);
+        $sortDir = ($sortDir == 0 || $sortDir == 'asc') ? 'asc' : 'desc';
+        
+        $sortBy = Yii::app()->request->getParam('sort_by');
+        switch ($sortBy) {
+                case 0:
+                        $sortBy = 'hos_num*1';
+                        break;
+                case 1:
+                        $sortBy = 'title';
+                        break;
+                case 2:
+                        $sortBy = 'first_name';
+                        break;
+                case 3:
+                        $sortBy = 'last_name';
+                        break;
+                case 4:
+                        $sortBy = 'dob';
+                        break;
+                case 5:
+                        $sortBy = 'gender';
+                        break;
+                case 6:
+                        $sortBy = 'nhs_num*1';
+                        break;
+                default:
+                        $sortBy = 'hos_num*1';
+        }
+        
+        $patientCriteria = array(
+            'pageSize' => $pageSize,
+            'sortBy' => $sortBy,
+            'sortDir'=> $sortDir,
             'first_name' => CHtml::decode($search_terms['first_name']),
             'last_name' => CHtml::decode($search_terms['last_name']),
         );
         
-        $dataProvider = $model->search($criteria);
+        $dataProvider = $model->search($patientCriteria);
         
         return $dataProvider;
         
