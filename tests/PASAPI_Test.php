@@ -17,6 +17,8 @@
  */
 use Guzzle\Http\Client;
 
+require_once(__DIR__ . '/PASAPI_BaseTest.php');
+
 class PASAPI_Test extends PASAPI_BaseTest
 {
     protected function initialiseClient($options = array())

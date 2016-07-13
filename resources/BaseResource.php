@@ -307,6 +307,7 @@ abstract class BaseResource
                 case 'resource':
                     $cls = __NAMESPACE__ . "\\" . $schema[$local_name]['resource'];
                     $this->{$local_name} = $cls::fromXmlDom($this->version, $child, $options);
+                    break;
                 case 'boolean':
                     $this->{$local_name} = (bool)$child->textContent;
                     break;
@@ -398,6 +399,10 @@ abstract class BaseResource
             if (isset($defn['resource']) && property_exists($this, $tag)) {
                 $resources_to_validate = is_array($this->$tag) ? $this->$tag : array($this->$tag);
                 foreach ($resources_to_validate as $idx => $resource) {
+                    if (!method_exists($resource, "validate")) {
+                        $this->addError("Internal processing error for {$tag}");
+                        continue;
+                    }
                     if (!$resource->validate()) {
                         $tag_pos = count($resources_to_validate) > 1 ? ":" . ($idx+1) : null;
                         foreach ($resource->errors as $err) {
