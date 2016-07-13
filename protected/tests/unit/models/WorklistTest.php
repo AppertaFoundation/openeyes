@@ -54,4 +54,34 @@ class WorklistTest extends PHPUnit_Framework_TestCase
             $this->assertTrue(empty($wl_errors));
         }
     }
+
+    public function getMappingAttributeIdsByNameProvider()
+    {
+        return array(
+            array(array()),
+            array(array(
+                array('id' => 5, 'name' => 'foo'),
+                array('id' => 7, 'name' => 'bar')
+            ))
+        );
+    }
+    /**
+     * @dataProvider getMappingAttributeIdsByNameProvider
+     * @param $worklist_attrs
+     */
+    public function test_getMappingAttributeIdsByName($worklist_attrs)
+    {
+        $worklist_attrs = array();
+        $expected = array();
+
+        foreach ($worklist_attrs as $attr) {
+            $wa = ComponentStubGenerator::generate('WorklistAttribute', $attr);
+            $expected[$attr['name']] = $wa;
+            $worklist_attrs[] = $wa;
+        }
+        $worklist = new Worklist();
+        $worklist->mapping_attributes = $worklist_attrs;
+
+        $this->assertEquals($expected, $worklist->getMappingAttributeIdsByName());
+    }
 }

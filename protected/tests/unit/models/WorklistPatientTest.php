@@ -95,4 +95,37 @@ class WorklistPatientTest extends PHPUnit_Framework_TestCase
 
     }
 
+    public function getCurrentAttributesByIdProvider()
+    {
+        return array(
+            array(array()),
+            array(
+                array(
+                    array('worklist_attribute_id' => 5, 'attribute_value' => 'foo'),
+                    array('worklist_attribute_id' => 8, 'attribute_value' => 'foo')
+                )
+            )
+        );
+    }
+
+    /**
+     * @dataProvider getCurrentAttributesByIdProvider
+     *
+     * @param $wp_attrs
+     */
+    public function test_getCurrentAttributesById($wp_attrs)
+    {
+        $worklist_patient_attrs = array();
+        $expected = array();
+
+        foreach ($wp_attrs as $attr) {
+            $wpa = ComponentStubGenerator::generate('WorklistPatientAttribute', $attr);
+            $expected[$attr['worklist_attribute_id']] = $wpa;
+            $worklist_patient_attrs[] = $wpa;
+        }
+        $worklist_patient = new WorklistPatient();
+        $worklist_patient->worklist_attributes = $worklist_patient_attrs;
+
+        $this->assertEquals($expected, $worklist_patient->getCurrentAttributesById());
+    }
 }

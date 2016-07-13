@@ -148,7 +148,7 @@ class WorklistPatient extends BaseActiveRecordVersioned
     {
         $res = array();
         foreach ($this->worklist_attributes as $wa)
-            $res[$wa->worklistattribute->id] = $wa;
+            $res[$wa->worklist_attribute_id] = $wa;
 
         return $res;
     }
