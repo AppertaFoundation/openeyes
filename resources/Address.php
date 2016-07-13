@@ -47,7 +47,8 @@ class Address extends BaseResource
     private static function getAddressType($addr_type)
     {
         switch ($addr_type) {
-            case 'HOME': return \AddressType::model()->find('name=?', array('Home'))->id;
+            case 'HOME':
+                return \AddressType::model()->find('name=?', array('Home'))->id;
         }
 
         return;

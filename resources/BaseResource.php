@@ -26,7 +26,7 @@ abstract class BaseResource
     protected static $resource_type;
     protected $version;
     protected $schema;
-    private $_audit_data;
+    private $audit_data;
 
     public $warnings = array();
     public $errors = array();
@@ -196,7 +196,7 @@ abstract class BaseResource
      */
     static public function fromResourceId($version, $id)
     {
-        $finder = new \OEModule\PASAPI\models\PasApiAssignment();
+        $finder = new PasApiAssignment();
 
         $assignment = $finder->findByResource(static::$resource_type, $id, static::$model_class);
         if ($model = $assignment->getInternal()) {
@@ -350,7 +350,7 @@ abstract class BaseResource
     {
         if (!$this->assignment && $this->id)
         {
-            $finder = new \OEModule\PASAPI\models\PasApiAssignment();
+            $finder = new PasApiAssignment();
             $this->assignment = $finder->findByResource(static::$resource_type, $this->id, static::$model_class);
         }
         return $this->assignment;
@@ -468,11 +468,11 @@ abstract class BaseResource
      */
     public function addAuditData($key, $value)
     {
-        if (isset($this->_audit_data[$key])) {
-            $this->_audit_data[$key] = array($this->_audit_data[$key]);
-            $this->_audit_data[$key][] = $value;
+        if (isset($this->audit_data[$key])) {
+            $this->audit_data[$key] = array($this->audit_data[$key]);
+            $this->audit_data[$key][] = $value;
         } else {
-            $this->_audit_data[$key] = $value;
+            $this->audit_data[$key] = $value;
         }
     }
 
@@ -483,11 +483,11 @@ abstract class BaseResource
      */
     public function getAuditData()
     {
-        if (!isset($this->_audit_data['resource_id'])) {
-            $this->_audit_data['resource_id'] = $this->id;
+        if (!isset($this->audit_data['resource_id'])) {
+            $this->audit_data['resource_id'] = $this->id;
         }
 
-        return json_encode($this->_audit_data);
+        return json_encode($this->audit_data);
     }
 
     /**

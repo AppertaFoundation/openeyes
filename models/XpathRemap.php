@@ -43,9 +43,10 @@ class XpathRemap extends \BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-        array('id, xpath, name', 'safe'),
-        array('id, xpath, name, created_date, last_modified_date, created_user_id, last_modified_user_id', 'safe', 'on' => 'search'),
-    );
+            array('id, xpath, name', 'safe'),
+            array('id, xpath, name, created_date, last_modified_date, created_user_id, last_modified_user_id',
+                'safe', 'on' => 'search'),
+        );
     }
 
     /**

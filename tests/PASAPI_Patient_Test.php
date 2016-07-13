@@ -153,8 +153,11 @@ EOF;
 
         $this->assertEquals('Patient not created', $message);
 
-        $this->assertNull(Patient::model()->findByAttributes(
-            array('hos_num' => '010101010010101')));
+        $this->assertNull(
+            Patient::model()->findByAttributes(
+                array('hos_num' => '010101010010101')
+            )
+        );
 
         $xml = preg_replace('/updateOnly="1"/', '', $xml);
 
@@ -252,8 +255,11 @@ EOF;
 
         $this->assertEquals("Patient not created", $message);
 
-        $this->assertNull(Patient::model()->findByAttributes(
-            array('hos_num' => '010101010010101')));
+        $this->assertNull(
+            Patient::model()->findByAttributes(
+            array('hos_num' => '010101010010101')
+            )
+        );
 
     }
 

@@ -33,21 +33,22 @@ class Appointment extends BaseResource
         $mapping_keys = array();
         if (isset($this->AppointmentMappingItems)) {
             foreach ($this->AppointmentMappingItems as $item) {
-                if (in_array($item->Key, $mapping_keys))
+                if (in_array($item->Key, $mapping_keys)) {
                     $this->addError("Duplicate key {$item->Key} is not allowed.");
+                }
             }
         }
 
         return parent::validate();
     }
 
-    protected $_default_date;
-    protected $_default_time;
+    protected $default_date;
+    protected $default_time;
 
     public function setDefaultWhen(\DateTime $when = null)
     {
-        $this->_default_date = $when ? $when->format('Y-m-d') : "";
-        $this->_default_time = $when ? $when->format('H:i') : "";
+        $this->default_date = $when ? $when->format('Y-m-d') : "";
+        $this->default_time = $when ? $when->format('H:i') : "";
     }
 
     /**
@@ -57,9 +58,9 @@ class Appointment extends BaseResource
     public function getWhen()
     {
         if (!property_exists($this, "AppointmentDate"))
-            $this->AppointmentDate = $this->_default_date;
+            $this->AppointmentDate = $this->default_date;
         if (!property_exists($this, "AppointmentTime"))
-            $this->AppointmentTime = $this->_default_time;
+            $this->AppointmentTime = $this->default_time;
 
         $concatenated = substr($this->AppointmentDate,0,10) . " " . $this->AppointmentTime;
 

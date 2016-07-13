@@ -18,6 +18,7 @@
 namespace OEModule\PASAPI\controllers;
 
 use OEModule\PASAPI\models\XpathRemap;
+use OEModule\PASAPI\models\RemapValue;
 
 class AdminController extends \BaseAdminController
 {
@@ -27,14 +28,14 @@ class AdminController extends \BaseAdminController
 
         $this->render('list_XpathRemap', array(
             'model_class' => 'XpathRemap',
-            'model_list' => \OEModule\PASAPI\models\XpathRemap::model()->findAll(array('order' => 'name asc')),
+            'model_list' => XpathRemap::model()->findAll(array('order' => 'name asc')),
             'title' => 'Remaps',
         ));
     }
 
     public function actionCreateXpathRemap()
     {
-        $model = new \OEModule\PASAPI\models\XpathRemap();
+        $model = new XpathRemap();
 
         if (isset($_POST[\CHtml::modelName($model)])) {
             $model->attributes = $_POST[\CHtml::modelName($model)];
@@ -56,7 +57,7 @@ class AdminController extends \BaseAdminController
 
     public function actionUpdateXpathRemap($id)
     {
-        if (!$model = \OEModule\PASAPI\models\XpathRemap::model()->findByPk($id)) {
+        if (!$model = XpathRemap::model()->findByPk($id)) {
             throw new \CHttpException('404', 'Could not Xpath Remap');
         }
 
@@ -80,7 +81,7 @@ class AdminController extends \BaseAdminController
 
     public function actionDeleteXpathRemap($id)
     {
-        if (!$model = \OEModule\PASAPI\models\XpathRemap::model()->findByPk($id)) {
+        if (!$model = XpathRemap::model()->findByPk($id)) {
             throw new \CHttpException('404', 'Could not Xpath Remap');
         }
 
@@ -114,7 +115,7 @@ class AdminController extends \BaseAdminController
             throw new \CHttpException('404', 'Could not Xpath Remap');
         }
 
-        $model = new \OEModule\PASAPI\models\RemapValue();
+        $model = new RemapValue();
         $model->xpath_id = $remap->id;
 
         if (isset($_POST[\CHtml::modelName($model)])) {
@@ -137,7 +138,7 @@ class AdminController extends \BaseAdminController
 
     public function actionUpdateRemapValue($id)
     {
-        if (!$model = \OEModule\PASAPI\models\RemapValue::model()->findByPk($id)) {
+        if (!$model = RemapValue::model()->findByPk($id)) {
             throw new \CHttpException('404', 'Could not Remap Value');
         }
 
@@ -161,7 +162,7 @@ class AdminController extends \BaseAdminController
 
     public function actionDeleteRemapValue($id)
     {
-        if (!$model = \OEModule\PASAPI\models\RemapValue::model()->findByPk($id)) {
+        if (!$model = RemapValue::model()->findByPk($id)) {
             throw new \CHttpException('404', 'Could not Xpath Remap');
         }
 
