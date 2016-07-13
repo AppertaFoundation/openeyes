@@ -20,6 +20,7 @@
 <?php
 	$clinical = $this->checkAccess('OprnViewClinical');
 	$warnings = $this->patient->getWarnings($clinical);
+	Yii::app()->assetManager->registerCssFile('components/font-awesome/css/font-awesome.css', null, 10);
 ?>
 
 <div class="panel patient<?php if ($warnings): echo " warning"; endif; ?>" id="patientID">
@@ -37,11 +38,14 @@
 		<div class="large-8 column">
 
 			<!-- NHS number -->
-			<div class="nhs-number">
+			<div class="nhs-number warning">
 				<span class="hide-text print-only">
 					NHS number:
 				</span>
 				<?php echo $this->patient->nhsnum?>
+				<?php if($this->patient->nhsNumberStatus && $this->patient->nhsNumberStatus->isAnnotatedStatus()):?>
+					<i class="fa fa-asterisk" aria-hidden="true"></i><span class="messages"><?= $this->patient->nhsNumberStatus->description;?></span>
+				<?php endif;?>
 			</div>
 
 			<!-- Gender -->
@@ -76,5 +80,10 @@
 		<div class="large-4 column text-right patient-summary-anchor">
 			<?php echo CHtml::link('Patient Summary',array('/patient/view/'.$this->patient->id)); ?>
 		</div>
+		<?php if(Yii::app()->params['allow_clinical_summary']){?>
+			<div class="large-4 column clinical-summary-anchor">
+				<?php echo CHtml::link('Clinical Summary',array('/dashboard/oescape/'.$this->patient->id), array('target'=>'_blank')); ?>
+			</div>
+		<?php }?>
 	</div>
 </div>

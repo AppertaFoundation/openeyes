@@ -31,7 +31,7 @@
  * @property string $data
  * @property string $default_value
  */
-class Logo extends BaseActiveRecordVersioned {
+class Logo extends CFormModel {
 
     public $header_logo;
     public $secondary_logo;

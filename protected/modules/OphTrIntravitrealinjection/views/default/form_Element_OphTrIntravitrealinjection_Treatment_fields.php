@@ -215,7 +215,7 @@ if (!$element->getIsNewRecord()) {
 	'field' => 3
 ))?>
 
-<?php echo $form->dropDownList($element, $side . '_injection_given_by_id', CHtml::listData(OphTrIntravitrealinjection_InjectionUser::model()->getUsers(),'id','ReversedFullName'),array('empty'=>'- Please select -'),false,array('field'=>6))?>
+<?php echo $form->dropDownList($element, $side . '_injection_given_by_id', CHtml::listData(OphTrIntravitrealinjection_InjectionUser::model()->getUsers(),'id','ReversedFullNameAndUserName'),array('empty'=>'- Please select -'),false,array('field'=>6))?>
 
 <div id="div_<?php echo get_class($element)?>_<?php echo $side ?>_injection_time"
 	class="row field-row">
