@@ -207,7 +207,6 @@ class Patient extends BaseActiveRecordVersioned
     {
         $params += array(
             'pageSize' => 20,
-            'currentPage' => 0,
             'sortBy' => 'hos_num*1',
             'sortDir' => 'asc',
         );

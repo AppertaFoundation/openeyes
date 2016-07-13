@@ -98,7 +98,7 @@
 										}
 									?>
 									<li class="<?php if ($current_page) { ?>current<?php } ?>">
-										<a href="<?php echo Yii::app()->createUrl('patient/search', array('Patient_page' => $i+1, 'sort_by' => $sort_by, 'sort_dir' => $sort_dir)); ?>"><?php echo $from; ?> - <?php echo $to; ?></a>
+										<a href="<?php echo Yii::app()->createUrl('patient/search', array('term' => $term,'Patient_page' => $i+1, 'sort_by' => $sort_by, 'sort_dir' => $sort_dir)); ?>"><?php echo $from; ?> - <?php echo $to; ?></a>
 									</li>
 								<?php } ?>
 							</ul>
