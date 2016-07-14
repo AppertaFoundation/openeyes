@@ -151,7 +151,7 @@ class AuditController extends BaseController
 	public function getData($page=1, $id=false)
 	{
 		$data = array();
-                
+
 		if ($_data = Audit::model()->with('event')->find($this->criteria(true))) {
 			$data['total_items'] = $_data->count;
 		} else {
