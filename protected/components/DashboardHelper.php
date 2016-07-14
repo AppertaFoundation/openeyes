@@ -95,48 +95,74 @@ class DashboardHelper {
                     continue;
                 }
             }
-            
+
+            $item_render = null;
+
+
             if ( isset($item['module']) )
             {
-                $module_name = $item['module'];
-
-                $module = Yii::app()->moduleAPI->get($module_name);
-
-                if (!$module) {
-                    throw new Exception("$module_name not found");
-                }
-                if( isset($item['actions']) && is_array($item['actions']) ) {
-                    $renders = array_merge($renders, $this->renderActions($module, $item['actions']));
-                }
-                else if( method_exists($module, 'renderDashboard') ) {
-                    $renders[] = $module->renderDashboard();
-                }
-                
-            } else if ( isset($item['title']) && isset($item['content']) ) {
+                $this->moduleRender($renders, $item);
+            }
+            else if ( isset($item['class']) && isset($item['method']) ) {
+                $this->objRender($renders, $item);
+            }
+            else if ( isset($item['title']) && isset($item['content']) ) {
+                // just a straight dump of the item structure into the render list
                 $renders[] = $item;
             }
             else {
-                throw new Exception("Invalid dashboard configuration, module or static content definition required");
+                throw new Exception("Invalid dashboard configuration: module, static or object definition required");
             }
         }
+
         return $renders;
     }
-    
-    protected function renderActions($module, $actions)
+
+    /**
+     * @param $renders
+     * @param $item
+     * @throws Exception
+     */
+    protected function moduleRender(&$renders, $item)
     {
-        $renders = array();
-        
-        foreach($actions as $method_name)
-        {
-            if( method_exists($module, $method_name) )
-            {
-                $renders[] = $module->$method_name();
-            } else
-            {
-                throw new Exception("$method_name method not found");
+        $module_name = $item['module'];
+
+        $module = Yii::app()->moduleAPI->get($module_name);
+
+        if (!$module) {
+            throw new Exception("$module_name not found");
+        }
+        if( isset($item['actions']) && is_array($item['actions']) ) {
+            foreach ($item['actions'] as $method_name) {
+                if (!method_exists($module, $method_name))
+                    throw new Exception("$method_name method not found for {$module_name}");
+                $render = $module->$method_name();
+                if ($render)
+                    $renders[] = $render;
             }
         }
-        
-        return $renders;
+        else if( method_exists($module, 'renderDashboard') ) {
+            $render = $module->renderDashboard();
+            if ($render)
+                $renders[] = $render;
+        }
+        else {
+            throw new Exception('renderDashboard method not found for {$module_name}');
+        }
+    }
+
+    /**
+     * @param $renders
+     * @param $item
+     */
+    protected function objRender(&$renders, $item)
+    {
+        $class_name = $item['class'];
+        $method = $item['method'];
+        $obj = new $class_name;
+        $render = $obj->$method();
+        if ($render)
+            $renders[] = $render;
+
     }
 }

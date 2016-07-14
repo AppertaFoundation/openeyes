@@ -49,6 +49,9 @@ return array(
 				'Anaesthetic Agent Defaults' => '/oeadmin/AnaestheticAgentDefaults/list',
 				'Risks' => '/oeadmin/risk/list'
 			),
+			'Worklists' => array(
+				'Automatic Worklists Definitions' => '/worklistAdmin/definitions',
+			),
 			'Procedure Management' => array(
 				'Procedures' => '/oeadmin/procedure/list',
 				'Benefits' => '/oeadmin/benefit/list',

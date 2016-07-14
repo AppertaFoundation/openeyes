@@ -3,7 +3,8 @@
   "description": "Electronic Patient Record system for use in Ophthalmology clinics",
   "minimum-stability": "dev",
   "require": {
-    "yiisoft/yii": "1.1.14"
+    "yiisoft/yii": "1.1.14",
+    "rlanvin/php-rrule": "1.*"
   },
   "require-dev": {
     "behat/behat": "~2",

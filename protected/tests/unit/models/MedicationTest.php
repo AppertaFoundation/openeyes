@@ -100,7 +100,15 @@ class MedicationTest extends PHPUnit_Framework_TestCase
 
 	public function testRemoveAdherenceOnDelete()
 	{
-		$patient = new Patient();
+		$patient = $this->getMockBuilder('Patient')
+			->disableOriginalConstructor()
+			->setMethods(array('patientMedications'))
+			->getMock();
+
+		$patient->expects($this->any())
+			->method('patientMedications')
+			->will($this->returnValue(array()));
+
 		$adherence = $this->getMockBuilder('MedicationAdherence')
 				->disableOriginalConstructor()
 				->setMethods(array('delete'))
@@ -111,8 +119,6 @@ class MedicationTest extends PHPUnit_Framework_TestCase
 			->will($this->returnValue(true));
 
 		$patient->adherence = $adherence;
-
-		$patient->medications = array();
 
 		$medication = $this->getMockBuilder('Medication')
 				->disableOriginalConstructor()
@@ -131,7 +137,15 @@ class MedicationTest extends PHPUnit_Framework_TestCase
 
 	public function testRemoveAdherenceOnSave()
 	{
-		$patient = new Patient();
+		$patient = $this->getMockBuilder('Patient')
+			->disableOriginalConstructor()
+			->setMethods(array('patientMedications'))
+			->getMock();
+
+		$patient->expects($this->any())
+			->method('patientMedications')
+			->will($this->returnValue(array()));
+
 		$adherence = $this->getMockBuilder('MedicationAdherence')
 				->disableOriginalConstructor()
 				->setMethods(array('delete'))
@@ -142,8 +156,6 @@ class MedicationTest extends PHPUnit_Framework_TestCase
 				->will($this->returnValue(true));
 
 		$patient->adherence = $adherence;
-
-		$patient->medications = array();
 
 		$medication = $this->getMockBuilder('Medication')
 				->disableOriginalConstructor()
@@ -164,7 +176,15 @@ class MedicationTest extends PHPUnit_Framework_TestCase
 
 	public function testDoNotRemoveAdherenceOnSave()
 	{
-		$patient = new Patient();
+		$patient = $this->getMockBuilder('Patient')
+			->disableOriginalConstructor()
+			->setMethods(array('patientMedications'))
+			->getMock();
+
+		$patient->expects($this->any())
+			->method('patientMedications')
+			->will($this->returnValue(array(new Medication())));
+
 		$adherence = $this->getMockBuilder('MedicationAdherence')
 				->disableOriginalConstructor()
 				->setMethods(array('delete'))
@@ -175,8 +195,6 @@ class MedicationTest extends PHPUnit_Framework_TestCase
 				->will($this->returnValue(true));
 
 		$patient->adherence = $adherence;
-
-		$patient->medications = array(new Medication());
 
 		$medication = $this->getMockBuilder('Medication')
 				->disableOriginalConstructor()

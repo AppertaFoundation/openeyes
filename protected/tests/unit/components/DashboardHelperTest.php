@@ -28,7 +28,7 @@ class DashboardHelperTest extends PHPUnit_Framework_TestCase
     {
         $user =  $this->getMock('OEWebUser', array('checkAccess'));
         $test = new DashboardHelper(array('restricted' => 1), $user);
-        $this->setExpectedException('Exception', "Invalid dashboard configuration, module or static content definition required");
+        $this->setExpectedException('Exception', "Invalid dashboard configuration: module, static or object definition required");
 
         $test->render();
     }
@@ -103,5 +103,15 @@ class DashboardHelperTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('first render', $test->render());
         $test->sortable = true;
         $this->assertEquals('first rendersecond render', $test->render());
+    }
+
+    public function testRender_Class()
+    {
+        $test = new DashboardHelper(array(
+            array(
+                'class' => 'TestDashboardClass',
+                'method' => ''
+            )
+        ));
     }
 }

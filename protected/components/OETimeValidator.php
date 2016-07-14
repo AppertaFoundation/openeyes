@@ -18,13 +18,39 @@
  */
 
 
-class OETimeValidator
+class OETimeValidator extends CValidator
 {
+	public $allowEmpty = false;
 
+	/**
+	 * @param $value
+	 * @return bool
+	 */
 	public function validateValue($value) {
 		if (!preg_match("/^(([01]?[0-9])|(2[0-3])):[0-5][0-9]$/", $value)) {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * @param CModel $object
+	 * @param string $attribute
+	 */
+	protected function validateAttribute($object, $attribute)
+	{
+		$message = null;
+
+		if (!$object->$attribute) {
+			if (!$this->allowEmpty)
+				$message = $this->message ?: Yii::t('yii', '{attribute} cannot be empty.');
+		}
+		else {
+			if (!$this->validateValue($object->$attribute))
+				$message = $this->message ?: Yii::t('yii', '{attribute} is not a valid time.');
+		}
+
+		if ($message)
+			$this->addError($object, $attribute, $message);
 	}
 }
