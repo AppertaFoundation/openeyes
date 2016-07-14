@@ -18,8 +18,9 @@ class m160714_084347_constrain_worklist_attributes extends OEMigration
 			}
 			$to_delete[] = $wp_attr['id'];
 		}
-
-		$this->dbConnection->createCommand()->delete('worklist_patient_attribute','id in (' . implode(',', $to_delete) . ')');
+		if (count($to_delete)) {
+			$this->dbConnection->createCommand()->delete('worklist_patient_attribute', 'id in (' . implode(',', $to_delete) . ')');
+		}
 
 		$this->createIndex('worklist_patient_attribute_p_unique', 'worklist_patient_attribute', 'worklist_attribute_id, worklist_patient_id', true);
 	}
