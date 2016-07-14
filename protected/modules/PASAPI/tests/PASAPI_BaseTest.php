@@ -51,6 +51,8 @@ abstract class PASAPI_BaseTest extends RestTestCase
         // clear out all the data we've touched, and the user
         foreach (array_merge(
                      array('Audit',
+                         'AuditAction',
+                         'AuditType',
                          'OEModule\\PASAPI\\models\\PasApiAssignment',
                          'Patient',
                          'Address',
