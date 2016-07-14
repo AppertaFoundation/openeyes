@@ -6,6 +6,20 @@ This module is designed to provide a simplified API for managing patient and pat
 
 At the time of development, a core API does exist in the OpenEyes core, but it is based on an out of date FHIR specification, and early testing indicated some issues that would need updating to resolve this. Furthermore, by developing a specific API for PAS integration, we are able to manage the external references cleanly, and reduce the number of calls required to add or update a patient.
 
+## Developers
+
+### Running tests
+
+The tests will currently only run within the context of the wider OpenEyes implementation, and relies on the Rest Test Case in core (which in turn relies on guzzle - this may not be present if you haven't got the right composer setup in place). 
+
+__NB__ You need to be using the shell wrapper to phpunit to ensure everything is bootstrapped appropriately.
+
+### File history
+
+Because this module was merged in from a separate repository, the individual file history is only available through the use of the `--follow` option:
+
+`git log --follow PASAPIModule.php`
+
 ## Design
 
 ### Patient Information
@@ -206,9 +220,3 @@ For example, if the code AX is coming through from the message sender for ethnic
 
 1. Create an XpathRemap object with Xpath /Patient/EthnicGroup and name "Ethnic Group Remapping".
 1. Click on the value count (which will be zero initially), and add an entry with input AX, and output A.
-
-## Running tests
-
-The tests will currently only run within the context of the wider OpenEyes implementation, and relies on the Rest Test Case in core (which in turn relies on guzzle - this may not be present if you haven't got the right composer setup in place). 
-
-__NB__ You need to be using the shell wrapper to phpunit to ensure everything is bootstrapped appropriately.
