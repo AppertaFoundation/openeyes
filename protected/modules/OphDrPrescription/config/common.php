@@ -21,7 +21,7 @@
 return array(
         'params' => array(
             'reports' => array(
-                'Prescripted drugs' => '/OphDrPrescription/report/prescriptedDrugs',
+                'Prescribed drugs' => '/OphDrPrescription/report/prescribedDrugs',
 		),
         ),
 	'import' => array(

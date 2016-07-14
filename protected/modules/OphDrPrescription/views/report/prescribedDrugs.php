@@ -79,6 +79,7 @@
                                             'select' => "js:function(event, ui) {
                                                                 var tr = $('#report-drug-list').find('tr#' + ui.item.id);
                                                                 if( tr.length == 0 ){
+                                                                    $('.no-drugs').hide();
                                                                     addItem(ui.item);
                                                                 }
                                                                 $(this).val('');
