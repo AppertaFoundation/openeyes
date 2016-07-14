@@ -34,10 +34,6 @@ $(document).ready(function() {
 		e.preventDefault();
 	});
 
-	if(OE_event_id < 1){
-		$('input:radio[name="Element_OphTrConsent_Procedure[eye_id]"]').each(function () { $(this).prop('checked', false); });
-	}
-
 	handleButton($('#et_deleteevent'));
 
 	handleButton($('#et_canceldelete'));

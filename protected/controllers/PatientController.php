@@ -41,7 +41,7 @@ class PatientController extends BaseController
 	{
 		return array(
 			array('allow',
-				'actions' => array('search', 'view'),
+				'actions' => array('search', 'ajaxSearch', 'view'),
 				'users' => array('@')
 			),
 			array('allow',
@@ -161,14 +161,14 @@ class PatientController extends BaseController
 
 	public function actionSearch()
 	{
-                $page_size = 20;
                 
                 $term = \Yii::app()->request->getParam("term", "");
                 
                 $patientSearch = new PatientSearch();
                 $dataProvider = $patientSearch->search($term);
 
-                $itemCount = $dataProvider->itemCount;
+                $itemCount = $dataProvider->totalItemCount;
+                $page_size = $dataProvider->getPagination()->getPageSize();
                 
                 $search_terms = $patientSearch->getSearchTerms();
                 
@@ -212,7 +212,7 @@ class PatientController extends BaseController
 			$this->render('results', array(
 				'data_provider' => $dataProvider,
 				'pages' => $pages,
-				'page_num' => \Yii::app()->request->getParam('page_num', 0),
+				'page_num' => \Yii::app()->request->getParam('Patient_page', 1),
 				'items_per_page' => $page_size,
 				'total_items' => $itemCount,
 				'term' => $term,
@@ -223,6 +223,36 @@ class PatientController extends BaseController
 		}
 
 	}
+        
+       /**
+        * Ajax search
+        */
+       public function actionAjaxSearch()
+       {
+           $term = trim(\Yii::app()->request->getParam("term", ""));
+           $result = array();
+           $patientSearch = new PatientSearch();
+           if($patientSearch->isValidSearchTerm($term)){
+               $dataProvider = $patientSearch->search($term);
+               foreach($dataProvider->getData() as $patient){
+                   $result[] =  array(
+                       'id' => $patient->id,
+                       'first_name' => $patient->first_name,
+                       'last_name' => $patient->last_name,
+                       'age' => ($patient->isDeceased() ? 'Deceased' : $patient->getAge()),
+                       'gender' => $patient->getGenderString(),
+                       'genderletter' => $patient->gender,
+                       'dob' => ($patient->dob) ? $patient->NHSDate('dob') : 'Unknown',
+                       'hos_num' => $patient->hos_num,
+                       'nhsnum' => $patient->nhsnum,
+                       // in script.js we override the behaviour for showing search results and its require the label key to be present
+                       'label' => $patient->first_name . ' ' . $patient->last_name . ' (' . $patient->hos_num . ')'
+                   );
+               }
+           }
+           echo CJavaScript::jsonEncode($result);
+           Yii::app()->end();
+       }
 
 	public function actionEpisodes()
 	{

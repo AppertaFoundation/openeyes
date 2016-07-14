@@ -100,7 +100,7 @@
 						<?php }?>
 					</td>
 					<td class="patient">
-						<?php echo CHtml::link("<strong>" . trim(strtoupper($contact->last_name)) . '</strong>, ' . $contact->first_name, Yii::app()->createUrl('/OphTrOperationbooking/default/view/'.$eo->event_id))?>
+						<?php echo CHtml::link("<strong>" . trim(strtoupper($contact->last_name)) . '</strong>, ' . $contact->first_name . " ({$patient->age})", Yii::app()->createUrl('/OphTrOperationbooking/default/view/'.$eo->event_id))?>
 					</td>
 					<td><?php echo $patient->hos_num ?></td>
 					<td><?php echo $eo->site->short_name?></td>

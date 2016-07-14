@@ -129,8 +129,15 @@ class PatientMergeRequestController extends BaseController
             //check if the patients' ids are already submited
             // we do not allow the same patient id in the list multiple times
             $criteria = new CDbCriteria();
-            // neither primary_id nor secondary_id can be in the request lits
-            $criteria->condition = '(primary_id=:primary_id OR primary_id=:secondary_id OR secondary_id=:secondary_id OR secondary_id=:primary_id) AND ( deleted = 0)';
+            
+            //$criteria->condition = '((primary_id=:primary_id OR primary_id=:secondary_id OR secondary_id=:secondary_id OR secondary_id=:primary_id) AND ( deleted = 0))';
+            
+            // as secondary records will be deleted the numbers cannot be in the secondry columns
+            $criteria->condition = '(secondary_id=:secondary_id OR secondary_id=:primary_id) ';
+            
+            //we allow primary patients only if it has no active/unmerged requests
+            $criteria->condition .= 'AND ( (primary_id=@primary AND STATUS != 20) OR (primary_id=@secondary AND STATUS != 20) )';
+            
             $criteria->params = array(':primary_id' => $patientMergeRequest['primary_id'], ':secondary_id' => $patientMergeRequest['secondary_id']);
             
             $numbersNotUnique = PatientMergeRequest::model()->find($criteria);
@@ -156,10 +163,6 @@ class PatientMergeRequestController extends BaseController
             } else if( $personalDetailsConflictConfirm['isConflict'] && !isset($patientMergeRequest['personalDetailsConflictConfirm']) ){
                 Yii::app()->user->setFlash('warning.user_error', "Please tick the checkboxes.");
             } else if ($numbersNotUnique){
-                // by getting the flash message we remove them from the session
-                Yii::app()->user->getFlash("warning.merge_error_dob");
-                Yii::app()->user->getFlash("warning.merge_error_gender");
-                
                 Yii::app()->user->setFlash('warning.merge_error_duplicate', "One of the Hospital Numbers are already in the Patient Merge Request list, please merge them first.");
                 $this->redirect(array('index'));
             }
@@ -290,6 +293,11 @@ class PatientMergeRequestController extends BaseController
     {
         $mergeRequest = $this->loadModel($id);
         
+        //if the model already merged we just redirect to the index page
+        if( $mergeRequest->status == PatientMergeRequest::STATUS_MERGED ){
+            $this->redirect(array('index'));
+        }
+
         $mergeHandler = new PatientMerge;
         
         // if the personal details are conflictng (DOB and Gender at the moment) we need extra confirmation
@@ -390,7 +398,9 @@ class PatientMergeRequestController extends BaseController
     public function isPatientInRequestList($patientId)
     {
         $criteria = new CDbCriteria();
-        $criteria->condition = '(primary_id=:patient_id OR secondary_id=:patient_id) AND (deleted = 0 AND status = ' . PatientMergeRequest::STATUS_NOT_PROCESSED . ')';
+        
+        $criteria->condition = 'secondary_id=:patient_id OR ( primary_id=:patient_id AND status = ' . PatientMergeRequest::STATUS_NOT_PROCESSED . ') AND deleted = 0';
+        
         $criteria->params = array(':patient_id' => $patientId);
         
         $mergeRequest = PatientMergeRequest::model()->find($criteria);
@@ -453,20 +463,16 @@ class PatientMergeRequestController extends BaseController
             }
         }
         
-        
-                
-       $html = $this->renderPartial('//patient/_patient_all_episodes',array(
-                                                    'episodes' => $episodes,
-                                                    'ordered_episodes' => $patient->getOrderedEpisodes(),
-                                                    'legacyepisodes' => $patient->legacyepisodes,
-                                                    'episodes_open' => $episodes_open,
-                                                    'episodes_closed' => $episodes_closed,
-                                                    'firm' => $this->firm,
-                                            ), true);
+        $html = $this->renderPartial('//patient/_patient_all_episodes',array(
+            'episodes' => $episodes,
+            'ordered_episodes' => $patient->getOrderedEpisodes(),
+            'legacyepisodes' => $patient->legacyepisodes,
+            'episodes_open' => $episodes_open,
+            'episodes_closed' => $episodes_closed,
+            'firm' => $this->firm,
+        ), true);
        
        // you don't know how much I hate this str_replace here, but now it seems a painless method to remove a class
        return str_replace("box patient-info episodes", "box patient-info", $html);
    }
-   
-   
 }
