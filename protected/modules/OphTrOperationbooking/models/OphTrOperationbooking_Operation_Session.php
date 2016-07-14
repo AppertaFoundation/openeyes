@@ -414,11 +414,12 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
 		$criteria->addCondition('theatre_id = :theatre_id');
 		$criteria->params[':theatre_id'] = $this->theatre_id;
 
-		$criteria->addCondition('id <> :session_id');
-		$criteria->params[':session_id'] = $this->id;
-
-		$criteria->addInCondition('date',array($this->date));
-
+        if ($this->id) {
+            $criteria->addCondition('id <> :session_id');
+            $criteria->params[':session_id'] = $this->id;
+        }
+		$criteria->addCondition('date = :date');
+        $criteria->params[':date'] = $this->date;
 		$conflicts = array();
 		foreach ($this->findAll($criteria) as $session) {
 			$start = strtotime("$session->date $this->start_time");
