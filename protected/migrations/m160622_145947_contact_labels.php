@@ -25,6 +25,7 @@ class m160622_145947_contact_labels extends OEMigration {
     }
 
     public function down() {
+        /* delete the contact lable field */
         $this->dropColumn('contact_label', 'display');
         $this->dropColumn('contact_label_version', 'display');
     }
