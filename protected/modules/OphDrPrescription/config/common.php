@@ -19,11 +19,6 @@
 
 
 return array(
-        'params' => array(
-            'reports' => array(
-                'Prescripted drugs' => '/OphDrPrescription/report/prescriptedDrugs',
-		),
-        ),
 	'import' => array(
 		'OphDrPrescriptionModule'
 	)

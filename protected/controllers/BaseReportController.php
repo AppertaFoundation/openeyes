@@ -89,11 +89,7 @@ class BaseReportController extends BaseController
 			}
 
             $report = new $report_class;
-            if( isset($_POST[$report_class]) ){
-                $report->attributes = $_POST[$report_class];
-            } else {
-                $report->attributes = $_POST;
-            }
+			$report->attributes = $_POST;
 
 			if (!$report->validate()) {
 				echo json_encode($report->errors);
@@ -119,11 +115,7 @@ class BaseReportController extends BaseController
 		}
 
 		$report = new $report_class;
-                if( isset($_POST[$report_class]) ){
-                    $report->attributes = $_POST[$report_class];
-                } else {
-                    $report->attributes = $_POST;
-                }
+		$report->attributes = $_POST;
 
 		if (@$_POST['validate_only']) {
 			if (!$report->validate()) {
