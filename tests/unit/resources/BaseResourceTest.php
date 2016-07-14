@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -8,16 +8,14 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-
 namespace OEModule\PASAPI\tests\unit\resources;
-
 
 use OEModule\PASAPI\models\RemapValue;
 use OEModule\PASAPI\models\XpathRemap;
@@ -25,7 +23,6 @@ use OEModule\PASAPI\resources\BaseResource;
 
 class BaseResourceTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @return array
      */
@@ -42,8 +39,8 @@ class BaseResourceTest extends \PHPUnit_Framework_TestCase
                 array(array('xpath' => '/patient/test',
                     'maps' => array(
                         'R' => null,
-                        'S' => ''
-                        ))),
+                        'S' => '',
+                        ), )),
                 '<patient><test>WE</test><test /></patient>',
             ),
             array(
@@ -51,10 +48,10 @@ class BaseResourceTest extends \PHPUnit_Framework_TestCase
                 array(array('xpath' => '/patient/test',
                     'maps' => array(
                         'R' => null,
-                        'S' => ''
-                    ))),
+                        'S' => '',
+                    ), )),
                 '<patient><wrap><test>WE</test><test>R</test><test>S</test></wrap></patient>',
-            )
+            ),
         );
     }
 
@@ -69,6 +66,7 @@ class BaseResourceTest extends \PHPUnit_Framework_TestCase
         $remap = new XpathRemap();
         $remap->xpath = $struct['xpath'];
         $remap->values = $maps;
+
         return $remap;
     }
 
@@ -91,5 +89,36 @@ class BaseResourceTest extends \PHPUnit_Framework_TestCase
         BaseResource::remapValues($doc, $remaps);
 
         $this->assertXmlStringEqualsXmlString($expected, $doc->saveXML());
+    }
+
+    public function test_validate_checks_child_resources()
+    {
+        $test = $this->getMockBuilder("\\OEModule\\PASAPI\\resources\\BaseResource")
+            ->disableOriginalConstructor()
+            ->setMethods(array())
+            ->getMockForAbstractClass();
+
+        $rc = new \ReflectionClass($test);
+        $p = $rc->getProperty('schema');
+        $p->setAccessible(true);
+        $p->setValue($test, array(
+            'sampleResource' => array(
+                'resource' => 'sampleResource'
+            )
+        ));
+
+        $test->sampleResource = $this->getMockBuilder("\\OEModule\\PASAPI\\resources\\BaseResource")
+            ->disableOriginalConstructor()
+            ->setMethods(array('validate'))
+            ->getMockForAbstractClass();
+
+        $test->sampleResource->expects($this->once())
+            ->method('validate')
+            ->will($this->returnValue(false));
+
+        $test->sampleResource->errors = ['test error'];
+
+        $this->assertFalse($test->validate());
+        $this->assertEquals(array("sampleResource error: test error"), $test->errors);
     }
 }

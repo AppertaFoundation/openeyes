@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -8,43 +8,41 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-
 namespace OEModule\PASAPI\controllers;
 
-
 use OEModule\PASAPI\models\XpathRemap;
+use OEModule\PASAPI\models\RemapValue;
 
 class AdminController extends \BaseAdminController
 {
-
     public function actionViewXpathRemaps()
     {
-        \Audit::add('admin', 'list', null, false, array('module'=>'PASAPI', 'model'=>'OEModule\PASAPI\models\XpathRemap'));
+        \Audit::add('admin', 'list', null, false, array('module' => 'PASAPI', 'model' => 'OEModule\PASAPI\models\XpathRemap'));
 
         $this->render('list_XpathRemap', array(
             'model_class' => 'XpathRemap',
-            'model_list' => \OEModule\PASAPI\models\XpathRemap::model()->findAll(array('order'=>'name asc')),
+            'model_list' => XpathRemap::model()->findAll(array('order' => 'name asc')),
             'title' => 'Remaps',
         ));
     }
 
     public function actionCreateXpathRemap()
     {
-        $model = new \OEModule\PASAPI\models\XpathRemap();
+        $model = new XpathRemap();
 
         if (isset($_POST[\CHtml::modelName($model)])) {
             $model->attributes = $_POST[\CHtml::modelName($model)];
 
             if ($model->save()) {
-                \Audit::add('admin', 'create', serialize($model->attributes), false, array('module'=>'PASAPI', 'model'=>'\OEModule\PASAPI\models\XpathRemap'));
-                \Yii::app()->user->setFlash('success', 'Xpath Remap ' . $model->name . ' added');
+                \Audit::add('admin', 'create', serialize($model->attributes), false, array('module' => 'PASAPI', 'model' => '\OEModule\PASAPI\models\XpathRemap'));
+                \Yii::app()->user->setFlash('success', 'Xpath Remap '.$model->name.' added');
 
                 $this->redirect(array('viewXpathRemaps'));
             }
@@ -59,15 +57,16 @@ class AdminController extends \BaseAdminController
 
     public function actionUpdateXpathRemap($id)
     {
-        if (!$model = \OEModule\PASAPI\models\XpathRemap::model()->findByPk($id))
+        if (!$model = XpathRemap::model()->findByPk($id)) {
             throw new \CHttpException('404', 'Could not Xpath Remap');
+        }
 
         if (isset($_POST[\CHtml::modelName($model)])) {
             $model->attributes = $_POST[\CHtml::modelName($model)];
 
             if ($model->save()) {
-                \Audit::add('admin', 'update', serialize($model->attributes), false, array('module'=>'PASAPI', 'model'=>'\OEModule\PASAPI\models\XpathRemap'));
-                \Yii::app()->user->setFlash('success', 'Xpath Remap "' . $model->name . '" updated');
+                \Audit::add('admin', 'update', serialize($model->attributes), false, array('module' => 'PASAPI', 'model' => '\OEModule\PASAPI\models\XpathRemap'));
+                \Yii::app()->user->setFlash('success', 'Xpath Remap "'.$model->name.'" updated');
 
                 $this->redirect(array('viewXpathRemaps'));
             }
@@ -82,46 +81,49 @@ class AdminController extends \BaseAdminController
 
     public function actionDeleteXpathRemap($id)
     {
-        if (!$model = \OEModule\PASAPI\models\XpathRemap::model()->findByPk($id))
+        if (!$model = XpathRemap::model()->findByPk($id)) {
             throw new \CHttpException('404', 'Could not Xpath Remap');
+        }
 
         $model->delete();
 
-        \Audit::add('admin', 'update', serialize($model->attributes), false, array('module'=>'PASAPI', 'model'=>'\OEModule\PASAPI\models\XpathRemap'));
-        \Yii::app()->user->setFlash('success', 'Xpath Remap "' . $model->name . '" deleted');
+        \Audit::add('admin', 'update', serialize($model->attributes), false, array('module' => 'PASAPI', 'model' => '\OEModule\PASAPI\models\XpathRemap'));
+        \Yii::app()->user->setFlash('success', 'Xpath Remap "'.$model->name.'" deleted');
 
         $this->redirect(array('viewXpathRemaps'));
     }
 
     public function actionViewRemapValues($id)
     {
-        if (!$remap = XpathRemap::model()->findByPk($id))
+        if (!$remap = XpathRemap::model()->findByPk($id)) {
             throw new \CHttpException('404', 'Could not Xpath Remap');
+        }
 
-        \Audit::add('admin', 'list', null, false, array('module'=>'PASAPI', 'model'=>'OEModule\PASAPI\models\RemapValue'));
+        \Audit::add('admin', 'list', null, false, array('module' => 'PASAPI', 'model' => 'OEModule\PASAPI\models\RemapValue'));
 
         $this->render('list_RemapValue', array(
             'remap' => $remap,
             'model_class' => 'RemapValue',
             'model_list' => $remap->values,
-            'title' => 'Remap Values for ' . $remap->name,
+            'title' => 'Remap Values for '.$remap->name,
         ));
     }
 
     public function actionCreateRemapValue($id)
     {
-        if (!$remap = XpathRemap::model()->findByPk($id))
+        if (!$remap = XpathRemap::model()->findByPk($id)) {
             throw new \CHttpException('404', 'Could not Xpath Remap');
+        }
 
-        $model = new \OEModule\PASAPI\models\RemapValue();
+        $model = new RemapValue();
         $model->xpath_id = $remap->id;
 
         if (isset($_POST[\CHtml::modelName($model)])) {
             $model->attributes = $_POST[\CHtml::modelName($model)];
 
             if ($model->save()) {
-                \Audit::add('admin', 'create', serialize($model->attributes), false, array('module'=>'PASAPI', 'model'=>'\OEModule\PASAPI\models\RemapValue'));
-                \Yii::app()->user->setFlash('success', 'Remap Value added to ' . $remap->name);
+                \Audit::add('admin', 'create', serialize($model->attributes), false, array('module' => 'PASAPI', 'model' => '\OEModule\PASAPI\models\RemapValue'));
+                \Yii::app()->user->setFlash('success', 'Remap Value added to '.$remap->name);
 
                 $this->redirect(array('viewRemapValues', 'id' => $id));
             }
@@ -130,21 +132,22 @@ class AdminController extends \BaseAdminController
         $this->render('update', array(
             'model' => $model,
             'title' => 'Add Xpath Remap',
-            'cancel_uri' => \Yii::app()->createUrl($this->module->getName() . '/admin/viewRemapValues', array('id'=> $remap->id)),
+            'cancel_uri' => \Yii::app()->createUrl($this->module->getName().'/admin/viewRemapValues', array('id' => $remap->id)),
         ));
     }
 
     public function actionUpdateRemapValue($id)
     {
-        if (!$model = \OEModule\PASAPI\models\RemapValue::model()->findByPk($id))
+        if (!$model = RemapValue::model()->findByPk($id)) {
             throw new \CHttpException('404', 'Could not Remap Value');
+        }
 
         if (isset($_POST[\CHtml::modelName($model)])) {
             $model->attributes = $_POST[\CHtml::modelName($model)];
 
             if ($model->save()) {
-                \Audit::add('admin', 'update', serialize($model->attributes), false, array('module'=>'PASAPI', 'model'=>'\OEModule\PASAPI\models\RemapValue'));
-                \Yii::app()->user->setFlash('success', 'Remap Vlaue for "' . $model->xpath->name . '" updated');
+                \Audit::add('admin', 'update', serialize($model->attributes), false, array('module' => 'PASAPI', 'model' => '\OEModule\PASAPI\models\RemapValue'));
+                \Yii::app()->user->setFlash('success', 'Remap Vlaue for "'.$model->xpath->name.'" updated');
 
                 $this->redirect(array('viewRemapValues', 'id' => $id));
             }
@@ -153,19 +156,20 @@ class AdminController extends \BaseAdminController
         $this->render('update', array(
             'model' => $model,
             'title' => 'Update Xpath Remap',
-            'cancel_uri' => \Yii::app()->createUrl($this->module->getName() . '/admin/viewRemapValues', array('id'=> $model->xpath->id)),
+            'cancel_uri' => \Yii::app()->createUrl($this->module->getName().'/admin/viewRemapValues', array('id' => $model->xpath->id)),
         ));
     }
 
     public function actionDeleteRemapValue($id)
     {
-        if (!$model = \OEModule\PASAPI\models\RemapValue::model()->findByPk($id))
+        if (!$model = RemapValue::model()->findByPk($id)) {
             throw new \CHttpException('404', 'Could not Xpath Remap');
+        }
 
         $model->delete();
 
-        \Audit::add('admin', 'update', serialize($model->attributes), false, array('module'=>'PASAPI', 'model'=>'\OEModule\PASAPI\models\RemapValue'));
-        \Yii::app()->user->setFlash('success', 'Remap Value "' . $model->input . '" for "' . $model->xpath->name . '" deleted');
+        \Audit::add('admin', 'update', serialize($model->attributes), false, array('module' => 'PASAPI', 'model' => '\OEModule\PASAPI\models\RemapValue'));
+        \Yii::app()->user->setFlash('success', 'Remap Value "'.$model->input.'" for "'.$model->xpath->name.'" deleted');
 
         $this->redirect(array('viewRemapValues', 'id' => $model->xpath_id));
     }

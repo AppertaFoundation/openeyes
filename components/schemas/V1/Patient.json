@@ -2,6 +2,9 @@
   "NHSNumber": {
     "type": "string"
   },
+  "NHSNumberStatus": {
+    "type": "string"
+  },
   "HospitalNumber": {
     "type": "string"
   },
@@ -36,6 +39,9 @@
   },
   "DateOfDeath": {
     "type": "date"
+  },
+  "IsDeceased": {
+    "type": "boolean"
   },
   "PracticeCode": {
     "type": "string"

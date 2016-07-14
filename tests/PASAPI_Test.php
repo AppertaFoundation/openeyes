@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -9,18 +9,18 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 use Guzzle\Http\Client;
+
+require_once(__DIR__ . '/PASAPI_BaseTest.php');
 
 class PASAPI_Test extends PASAPI_BaseTest
 {
-
     protected function initialiseClient($options = array())
     {
         if (!isset($options[Client::REQUEST_OPTIONS])) {
@@ -46,15 +46,16 @@ class PASAPI_Test extends PASAPI_BaseTest
     }
 
     /**
-     * Check that without being logged in we don't have access
+     * Check that without being logged in we don't have access.
      */
-    public function testAuthRequired() {
+    public function testAuthRequired()
+    {
         $this->initialiseClient(array(
             Client::REQUEST_OPTIONS => array(
                 'headers' => array(
                     'Accept' => 'application/xml',
                 ),
-            )
+            ),
         ));
 
         $this->setExpectedHttpError(401);
@@ -62,9 +63,10 @@ class PASAPI_Test extends PASAPI_BaseTest
     }
 
     /**
-     * Check that just logging in with any user doesn't give us access
+     * Check that just logging in with any user doesn't give us access.
      */
-    public function testAuthNeedsAccess() {
+    public function testAuthNeedsAccess()
+    {
 
         //strip the API role from the test user
         $this->user->saveRoles(array('User'));
@@ -74,16 +76,17 @@ class PASAPI_Test extends PASAPI_BaseTest
     }
 
     /**
-     * Get accepts error for wrong format type
+     * Get accepts error for wrong format type.
      */
-    public function testErrorForJsonAccept() {
+    public function testErrorForJsonAccept()
+    {
         $this->initialiseClient(array(
             Client::REQUEST_OPTIONS => array(
                 'auth' => array('level1', 'password'),
                 'headers' => array(
                     'Accept' => 'application/json',
                 ),
-            )
+            ),
         ));
         $this->setExpectedHttpError(406);
         $this->put('Patient/XYZ', '<Patient />');
