@@ -29,7 +29,7 @@ class ReportController extends BaseReportController
     {
         return array(
             array('allow',
-                'actions' => array('getDrugsBySubspecialty', 'prescriptedDrugs','runReport','downloadReport'),
+                'actions' => array('getDrugsBySubspecialty', 'prescribedDrugs','runReport','downloadReport'),
                 'roles' => array('OprnGenerateReport','admin'),
             )
         );
@@ -53,7 +53,7 @@ class ReportController extends BaseReportController
     }
         
 
-    public function actionPrescriptedDrugs()
+    public function actionPrescribedDrugs()
     {
         $drugs = Element_OphDrPrescription_Details::model()->commonDrugs();
         $users = User::model()->findAll(array('order' => 'first_name asc,last_name asc'));

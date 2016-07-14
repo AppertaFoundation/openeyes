@@ -54,6 +54,11 @@ function getDrugs(subspecialty_id){
 $(document).ready(function(){
     $('#report-drug-list').on('click', '.remove',function(){
         $(this).closest('tr').remove();
+        
+        if( $('#report-drug-list tbody').find('tr:visible').length < 1){
+            $('.no-drugs').show();
+        }
+        
     });
     
     $('#drug_id').on('change', function(){
@@ -62,7 +67,7 @@ $(document).ready(function(){
             text = $(this).find('option:selected').text();
         
         if(text !== '-- Select --' && value !== '' && $('#report-drug-list').find('tr#'+value).length == 0){
-            $('.no-drugs').remove();
+            $('.no-drugs').hide();
             item = {
                 id: $(this).val(),
                 label: text
