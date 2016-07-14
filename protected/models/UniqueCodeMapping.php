@@ -81,4 +81,20 @@ class UniqueCodeMapping extends BaseActiveRecord
 		));
 	}
 
+    /**
+    * @return array default scope (applies only to SELECT statements)
+    */
+    public function defaultScope () {
+        return array(
+            'alias' => $this->tableName() . 'table',
+        );
+    }
+
+    public function lock() {
+        Yii::app()->db->createCommand("LOCK TABLES `".UniqueCodes::model()->tableName()."` READ, `".UniqueCodes::model()->tableName()."` AS `".UniqueCodes::model()->getTableAlias()."` READ, `".$this->tableName()."` WRITE,`".$this->tableName()."` as `".$this->getTableAlias()."` READ ")->execute();
+    }
+
+    public function unlock() {
+        Yii::app()->db->createCommand("UNLOCK TABLES")->execute();
+    }
 }
