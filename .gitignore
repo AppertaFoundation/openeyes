@@ -73,5 +73,3 @@ bin/phploc
 bin/phpmd
 bin/validate-json
 bin/yiic
-
-
