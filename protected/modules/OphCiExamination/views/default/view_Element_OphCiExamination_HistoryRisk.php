@@ -26,7 +26,6 @@
         </div>
     <?php endif; ?>
     <?php if ($element->alphablocker === "1"): ?>
-        ?>
         <div class="data-row">
             <div class="data-value">
                 Alpha-blocker <?=($element->alpha_blocker_name) ? ' - '.$element->alpha_blocker_name: ''?>
