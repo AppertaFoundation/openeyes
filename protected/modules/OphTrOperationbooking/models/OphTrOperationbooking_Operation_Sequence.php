@@ -271,6 +271,14 @@ class OphTrOperationbooking_Operation_Sequence extends BaseActiveRecordVersioned
 							$conflicts[$sequence->id]['end_time'] = 1;
 						}
 					}
+                    if($start < $s_start && $end > $s_end) {
+                        if (!isset($conflicts[$sequence->id]['end_time']) || !isset($conflicts[$sequence->id]['start_time'])) {
+                            $this->addError('start_time',"This start time conflicts with session $sequence->id");
+                            $conflicts[$sequence->id]['start_time'] = 1;
+                            $this->addError('end_time',"This end time conflicts with session $sequence->id");
+                            $conflicts[$sequence->id]['end_time'] = 1;
+                        }
+                    }
 				}
 			}
 		}
