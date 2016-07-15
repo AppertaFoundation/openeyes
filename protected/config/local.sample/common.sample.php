@@ -110,7 +110,9 @@ $config = array(
 		'PatientTicketing' => array( 'class' => '\OEModule\PatientTicketing\PatientTicketingModule', ),
 		'OphInVisualfields',
 		'OphInBiometry',
-		'OphCoMessaging' => array( 'class' => '\OEModule\OphCoMessaging\OphCoMessagingModule', )
+		'OphCoMessaging' => array( 'class' => '\OEModule\OphCoMessaging\OphCoMessagingModule', ),
+		'PASAPI' => array( 'class' => '\OEModule\PASAPI\PASAPIModule', ),
+		'OphInLabResults',
 	),
 
 	'params'=>array(
