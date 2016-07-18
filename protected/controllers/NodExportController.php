@@ -1322,7 +1322,16 @@ EOL;
                         ) AND unit_id = (SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter')),
                         ''
                     ) AS Pinhole, 
-                    '' AS BestCorrected
+                    IFNULL(
+                        (SELECT VALUE
+                        FROM ophciexamination_visual_acuity_unit_value
+                        WHERE base_value = (
+                                SELECT MAX(r.value) FROM ophciexamination_visualacuity_reading r
+                                JOIN ophciexamination_visualacuity_method m ON r.`method_id` = m.id AND m.`name` = 'Glasses' OR m.`name` = 'Contact lens'
+                                WHERE r.element_id = v.id AND side = 1
+                        ) AND unit_id = (SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter')),
+                        ''
+                    ) AS BestCorrected
                     FROM `event` e
                     INNER JOIN et_ophciexamination_visualacuity v ON v.event_id = e.id
                     WHERE v.eye_id = 1 OR v.eye_id=3 " . $this->getDateWhere('v').")
@@ -1369,7 +1378,17 @@ EOL;
                         ) AND unit_id = (SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter')),
                         ''
                     ) AS Pinhole,
-                    '' AS BestCorrected
+                    IFNULL(
+                        (SELECT VALUE
+                        FROM ophciexamination_visual_acuity_unit_value
+                        WHERE base_value = (
+                                SELECT MAX(r.value) FROM ophciexamination_visualacuity_reading r
+                                JOIN ophciexamination_visualacuity_method m ON r.`method_id` = m.id AND m.`name` = 'Glasses' OR m.`name` = 'Contact lens'
+                                WHERE r.element_id = v.id
+                                AND side = 0
+                        ) AND unit_id = (SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter')),
+                        ''
+                    ) AS BestCorrected
                     FROM `event` e
                     INNER JOIN et_ophciexamination_visualacuity v ON v.event_id = e.id
                     WHERE v.eye_id = 2 OR v.eye_id=3 " . $this->getDateWhere('v').")";
