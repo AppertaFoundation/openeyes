@@ -305,6 +305,60 @@ class NodExportController extends BaseController
 			(21, 'zonule rupture - vitreous loss'),
 			(25, 'Not recorded'),
 			(999, 'other');
+                
+                        DROP TEMPORARY TABLE IF EXISTS tmp_complication;
+
+                        CREATE TEMPORARY TABLE tmp_complication (
+                                `oe_id` INT(10) UNSIGNED NOT NULL,
+                                `oe_desc` VARCHAR(100),
+                                `nod_id` INT(10) UNSIGNED NOT NULL,
+                                `nod_desc` VARCHAR(100)
+                        );
+                
+#complication mapping is not finished yet
+
+                        INSERT INTO tmp_complication (`oe_id`, `oe_desc`, `nod_id`, `nod_desc` )
+                        VALUES
+                        (1, 'Eyelid haemorrage/bruising', 2, 'Eyelid haemorrhage / bruising'),
+                        (2, 'Conjunctivital chemosis', 1, 'Conjunctival chemosis'),
+                        (3, 'Retro bulbar / peribulbar haemorrage', 8, 'Retrobulbar / peribulbar haemorrhage'),
+                        (4, 'Globe/optic nerve penetration', 4, 'Globe / optic nerve perforation'),
+                        
+                        (6, 'Patient pain - Mild', 5, 'Patient discomfort / pain mild;'),
+                        (7, 'Patient pain - Moderate', 6, 'Patient discomfort / pain moderate;'),
+                        (8, 'Patient pain - Severe', 7, 'Patient discomfort / pain severe;'),
+                        (9, 'Systemic problems', 10, 'Systemic problems (bradycardia / hypotension / apnoea etc.)'),
+                        (10, 'Operation abandoned due to complication', 11, 'Operation cancelled due to complication'),
+                        (11, 'None', 0, 'None');
+                        
+                        -- (5, 'Inadequate akinesia', 0, ''),
+                        
+                        -- (0, '', 9, 'Sub-conjunctival haemorrhage'),
+                        -- (0, '', 3, 'Excessive eye movement'),
+                        -- (0, '', 12, 'Other'),
+                        -- (0, '', 99, 'Not recorded');
+
+#anaesthetic delivery mapping is not finished yet
+                    
+                        
+                        DROP TEMPORARY TABLE IF EXISTS tmp_anaesthetic_delivery;
+
+                        CREATE TEMPORARY TABLE tmp_anaesthetic_delivery (
+                                `oe_id` INT(10) UNSIGNED NOT NULL,
+                                `oe_desc` VARCHAR(100),
+                                `nod_id` INT(10) UNSIGNED NOT NULL,
+                                `nod_desc` VARCHAR(100)
+                        );
+
+                        INSERT INTO tmp_anaesthetic_delivery (`oe_id`, `oe_desc`, `nod_id`, `nod_desc` )
+                        VALUES
+                        (1, 'Retrobulbar', 2, 'Retrobulbar'),
+                        (2, 'Peribulbar', 1, 'Peribulbar'),	
+                        (3, 'Subtenons', 3, 'Sub-Tenon');
+                        -- (4, 'Subconjunctival', 0, ''),
+                        -- (5, 'Topical', 0, ''),
+                        -- (6, 'Topical and intracameral', 0, ''),	
+                        -- (6, 'Other', 0, '');
                         
                         
                         CREATE TABLE tmp_biometry_formula (
@@ -348,9 +402,7 @@ class NodExportController extends BaseController
                         ('Paediatrics', 'Strabismus & Paediatric', 11, 18),
                         ('Vitreoretinal', 'Vitreoretinal', 16, 19);
                 
-                        
-                        
-                        
+
                     DROP TABLE IF EXISTS tmp_episode_drug_route;
                 
                     CREATE TABLE tmp_episode_drug_route (
@@ -400,7 +452,9 @@ EOL;
         $cleanQuery = <<<EOL
                 
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication_type;
+                DROP TEMPORARY TABLE IF EXISTS tmp_complication;
                 DROP TEMPORARY TABLE IF EXISTS tmp_anesthesia_type;
+                DROP TEMPORARY TABLE IF EXISTS tmp_anaesthetic_delivery;
                 DROP TEMPORARY TABLE IF EXISTS tmp_iol_positions;
                 DROP TEMPORARY TABLE IF EXISTS tmp_pathology_type;
                 DROP TABLE IF EXISTS tmp_biometry_formula;
@@ -1145,12 +1199,20 @@ EOL;
     {
         $query = "SELECT event_id AS OperationId,
                         (SELECT `nod_code` FROM tmp_anesthesia_type WHERE at.`name` = `name`) AS AnaesthesiaTypeId,
-                        '' as AnaesthesiaNeedle,
-                        '' as Sedation,
+                        IFNULL(
+                            (SELECT nod_id FROM tmp_anaesthetic_delivery WHERE a.anaesthetic_delivery_id = oe_id),
+                            0
+                        ) AS AnaesthesiaNeedle,
+                        '9' as Sedation,
                         '' as SurgeonId,
-                        '' as ComplicationId
-                        FROM et_ophtroperationnote_anaesthetic a 
+                        (
+                            SELECT tmp_complication.nod_id FROM tmp_complication WHERE oe_id = acs.id
+                        ) as ComplicationId
+
+                        FROM et_ophtroperationnote_anaesthetic a
                         JOIN `anaesthetic_type` `at` ON a.`anaesthetic_type_id` = at.`id`
+                        JOIN ophtroperationnote_anaesthetic_anaesthetic_complication ac ON a.`id` = ac.`et_ophtroperationnote_anaesthetic_id`
+                        JOIN ophtroperationnote_anaesthetic_anaesthetic_complications acs ON ac.`anaesthetic_complication_id` = acs.id
                         WHERE 1=1 ".$this->getDateWhere('a');
 
         $dataQuery = array(
