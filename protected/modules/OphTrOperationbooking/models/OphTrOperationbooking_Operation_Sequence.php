@@ -273,9 +273,9 @@ class OphTrOperationbooking_Operation_Sequence extends BaseActiveRecordVersioned
 					}
                     if($start < $s_start && $end > $s_end) {
                         if (!isset($conflicts[$sequence->id]['end_time']) || !isset($conflicts[$sequence->id]['start_time'])) {
-                            $this->addError('start_time',"This start time conflicts with session $sequence->id");
+                            $this->addError('start_time',"This start time conflicts with sequence $sequence->id");
                             $conflicts[$sequence->id]['start_time'] = 1;
-                            $this->addError('end_time',"This end time conflicts with session $sequence->id");
+                            $this->addError('end_time',"This end time conflicts with sequence $sequence->id");
                             $conflicts[$sequence->id]['end_time'] = 1;
                         }
                     }
@@ -314,6 +314,15 @@ class OphTrOperationbooking_Operation_Sequence extends BaseActiveRecordVersioned
 					$conflicts[$session->id]['end_time'] = 1;
 				}
 			}
+
+            if($start < $s_start && $end > $s_end) {
+                if (!isset($conflicts[$session->id]['end_time']) || !isset($conflicts[$session->id]['start_time'])) {
+                    $this->addError('start_time',"This start time conflicts with session $session->id");
+					$conflicts[$session->id]['start_time'] = 1;
+					$this->addError('end_time',"This end time conflicts with session $session->id");
+					$conflicts[$session->id]['end_time'] = 1;
+				}
+            }
 		}
 
 		return parent::beforeValidate();
