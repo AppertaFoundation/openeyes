@@ -87,7 +87,10 @@ class WaitingListController extends BaseModuleController
 			$subspecialty_id = !empty($_POST['subspecialty-id']) ? $_POST['subspecialty-id'] : null;
 			$firm_id = !empty($_POST['firm-id']) ? $_POST['firm-id'] : null;
 			$status = !empty($_POST['status']) ? $_POST['status'] : null;
-			$hos_num = !empty($_POST['hos_num']) && ctype_digit($_POST['hos_num']) ? $_POST['hos_num'] : false;
+            $hos_num = '';
+            if(preg_match(PatientSearch::HOSPITAL_NUMBER_REGEX, $_POST['hos_num'],$matches) || preg_match(Yii::app()->params['hos_num_regex'], $_POST['hos_num'], $matches)) {
+                $hos_num = (isset($matches[2])) ? $matches[2] : $matches[1];
+            }
 			$site_id = !empty($_POST['site_id']) ? $_POST['site_id'] : false;
 
 			YiiSession::set('waitinglist_searchoptions',array(
