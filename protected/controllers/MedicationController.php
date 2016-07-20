@@ -37,13 +37,24 @@ class MedicationController extends BaseController
                 false, true
             );
         } else {
-            if (!$medicationId && $prescriptionItemId) {
-                $prescriptionItem = $this->fetchModel('OphDrPrescription_Item', $prescriptionItemId);
-                $medication = new Medication();
-                $medication->createFromPrescriptionItem($prescriptionItem);
-            } else {
+            if ($medicationId) {
                 $medication = $this->fetchModel('Medication', $medicationId, true);
             }
+            else if ($prescriptionItemId) {
+                if ($api = Yii::app()->moduleAPI->get('OphDrPrescription')) {
+                    $medication = $api->getMedicationForPrescriptionItem($patientId, $prescriptionItemId);
+                    if (!$medication) {
+                        throw new CHttpException(404, "Could not get medication for prescription item.");
+                    }
+                }
+                else {
+                    throw new CHttpException(400, "Missing prescription item or module");
+                }
+            }
+            else {
+                $medication = new Medication();
+            }
+
             $this->renderPartial(
                 'form',
                 array(

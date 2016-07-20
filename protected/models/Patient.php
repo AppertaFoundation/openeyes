@@ -537,17 +537,13 @@ class Patient extends BaseActiveRecordVersioned
 
     /**
      * @param array $exclude
-     * @return array|CActiveRecord[]|mixed|null
+     * @return array|CActiveRecord[]|null
      */
     public function prescriptionItems(array $exclude)
     {
-        $prescriptionCriteria = new CDbCriteria(array('order' => 'event_date DESC'));
-        $prescriptionCriteria->addCondition('episode.patient_id = :id');
-        $prescriptionCriteria->addCondition('t.id not in (:exclude)');
-        $prescriptionCriteria->params = array('id' => $this->id, 'exclude' => join(',', $exclude));
-        $prescriptionItems = OphDrPrescription_Item::model()->with('prescription', 'drug', 'duration', 'prescription.event', 'prescription.event.episode')->findAll($prescriptionCriteria);
-
-        return $prescriptionItems;
+        if ($api = Yii::app()->moduleAPI->get('OphDrPrescription')) {
+            return $api->getPrescriptionItemsForPatient($this, $exclude);
+        }
     }
 
     /**
@@ -1626,6 +1622,9 @@ class Patient extends BaseActiveRecordVersioned
     }
 
     /**
+     * I think this override is here to enforce the override of the medications relation
+     * and merge in the prescription items as appropriate
+     *
      * @param string $prop
      * @return mixed|null
      */
@@ -1640,6 +1639,9 @@ class Patient extends BaseActiveRecordVersioned
     }
 
     /**
+     * I think this override is here to enforce the override of the medications relation
+     * and merge in the prescription items as appropriate
+     *
      * @param string $prop
      * @return bool
      */
@@ -1664,6 +1666,7 @@ class Patient extends BaseActiveRecordVersioned
         $medicationCriteria->addCondition('end_date is null or end_date > NOW()');
         $medications = $this->patientMedications($medicationCriteria);
         $medicationsFromPrescriptions = $this->prescriptionMedicationIds();
+
         $prescriptionItems = $this->prescriptionItems($medicationsFromPrescriptions);
 
         foreach ($prescriptionItems as $item) {

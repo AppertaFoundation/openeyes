@@ -201,6 +201,8 @@ class BaseController extends Controller
 	 * @param string $class_name
 	 * @param scalar $pk
 	 * @param bool $create
+	 * @return CActiveRecord|null - will actually be the class of the requested model if it exists.
+	 * @throws CHttpException
 	 */
 	public function fetchModel($class_name, $pk = null, $create = false)
 	{
