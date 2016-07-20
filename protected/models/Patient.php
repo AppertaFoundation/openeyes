@@ -1666,14 +1666,15 @@ class Patient extends BaseActiveRecordVersioned
         $medicationCriteria->addCondition('end_date is null or end_date > NOW()');
         $medications = $this->patientMedications($medicationCriteria);
         $medicationsFromPrescriptions = $this->prescriptionMedicationIds();
-
         $prescriptionItems = $this->prescriptionItems($medicationsFromPrescriptions);
 
-        foreach ($prescriptionItems as $item) {
-            $medication = new Medication();
-            $medication->createFromPrescriptionItem($item);
-            if($medication->isCurrentMedication()){
-                $medications[] = $medication;
+        if ($prescriptionItems) {
+            foreach ($prescriptionItems as $item) {
+                $medication = new Medication();
+                $medication->createFromPrescriptionItem($item);
+                if($medication->isCurrentMedication()){
+                    $medications[] = $medication;
+                }
             }
         }
 
@@ -1695,11 +1696,13 @@ class Patient extends BaseActiveRecordVersioned
         $medicationsFromPrescriptions = $this->prescriptionMedicationIds();
         $prescriptionItems = $this->prescriptionItems($medicationsFromPrescriptions);
 
-        foreach ($prescriptionItems as $item) {
-            $medication = new Medication();
-            $medication->createFromPrescriptionItem($item);
-            if($medication->isPreviousMedication()){
-                $medications[] = $medication;
+        if ($prescriptionItems) {
+            foreach ($prescriptionItems as $item) {
+                $medication = new Medication();
+                $medication->createFromPrescriptionItem($item);
+                if($medication->isPreviousMedication()){
+                    $medications[] = $medication;
+                }
             }
         }
 
