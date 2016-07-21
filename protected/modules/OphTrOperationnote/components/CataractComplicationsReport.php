@@ -4,7 +4,7 @@
  * Created by PhpStorm.
  * User: peter
  * Date: 19/02/16
- * Time: 16:39
+ * Time: 16:39.
  */
 class CataractComplicationsReport extends Report implements ReportInterface
 {
@@ -19,14 +19,14 @@ class CataractComplicationsReport extends Report implements ReportInterface
         'xAxis' => array(
             'categories' => array(),
             'title' => array('text' => 'Complication'),
-            'labels' => array('style' => array('fontSize' => '0.5em'))
+            'labels' => array('style' => array('fontSize' => '0.5em')),
         ),
         'yAxis' => array(
-            'title' => array('text' => 'Percent of cases')
+            'title' => array('text' => 'Percent of cases'),
         ),
         'tooltip' => array(
             'headerFormat' => '<b>Cataract Complications</b><br>',
-            'pointFormat' => '<i>Complication</i>: {point.category} <br /> <i>Percentage </i>: {point.y:.2f}% <br /> Total Operations: {point.total}'
+            'pointFormat' => '<i>Complication</i>: {point.category} <br /> <i>Percentage </i>: {point.y:.2f}% <br /> Total Operations: {point.total}',
         ),
     );
 
@@ -34,6 +34,7 @@ class CataractComplicationsReport extends Report implements ReportInterface
      * @param $surgeon
      * @param $dateFrom
      * @param $dateTo
+     *
      * @return array|CDbDataReader
      */
     protected function queryData($surgeon, $dateFrom, $dateTo)
@@ -77,8 +78,8 @@ class CataractComplicationsReport extends Report implements ReportInterface
             foreach ($data as $complicationData) {
                 if ($category === $complicationData['name']) {
                     $seriesCount[] = array(
-                        'y' => (($complicationData['complication_count'] / $total ) * 100),
-                        'total' => $complicationData['complication_count']
+                        'y' => (($complicationData['complication_count'] / $total) * 100),
+                        'total' => $complicationData['complication_count'],
                     );
 
                     continue 2;
@@ -99,7 +100,7 @@ class CataractComplicationsReport extends Report implements ReportInterface
             array(
                 'name' => 'Complications',
                 'data' => $this->dataSet(),
-            )
+            ),
         );
 
         return json_encode($this->series);
@@ -113,7 +114,7 @@ class CataractComplicationsReport extends Report implements ReportInterface
         $this->setComplicationCategories();
         $this->graphConfig['chart']['renderTo'] = $this->graphId();
         $this->graphConfig['subtitle']['text'] .= $this->getTotalComplications();
-        $this->graphConfig['subtitle']['text'] .= " Total Operations: " . $this->getTotalOperations();
+        $this->graphConfig['subtitle']['text'] .= ' Total Operations: '.$this->getTotalOperations();
 
         return json_encode(array_merge_recursive($this->globalGraphConfig, $this->graphConfig));
     }
@@ -142,7 +143,6 @@ class CataractComplicationsReport extends Report implements ReportInterface
                 $this->graphConfig['xAxis']['categories'][] = $complication['name'];
             }
         }
-
     }
 
     /**
@@ -152,13 +152,13 @@ class CataractComplicationsReport extends Report implements ReportInterface
     {
         $data = $this->queryData($this->surgeon, $this->from, $this->to);
         $total = 0;
-        foreach($data as $complication){
+        foreach ($data as $complication) {
             $total += $complication['complication_count'];
         }
 
         return $total;
     }
-    
+
     public function getTotalOperations()
     {
         $this->command->reset();
@@ -178,8 +178,7 @@ class CataractComplicationsReport extends Report implements ReportInterface
         }
 
         $totalData = $this->command->queryAll();
-        return $totalData[0]["total"];
+
+        return $totalData[0]['total'];
     }
-    
-    
 }

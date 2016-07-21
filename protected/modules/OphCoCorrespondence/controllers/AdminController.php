@@ -121,22 +121,40 @@ class AdminController extends \ModuleAdminController
 	public function actionAddMacro()
 	{
 		$macro = new LetterMacro;
-
+                
+                
 		$errors = array();
 
 		if (!empty($_POST)) {
-			$macro->attributes = $_POST['LetterMacro'];
+		
+	
+                    $macro->attributes = $_POST['LetterMacro'];
+                        
+                        
 
 			if (!$macro->validate()) {
 				$errors = $macro->errors;
 			} else {
 				if (!$macro->save()) {
+                                    
 					throw new Exception("Unable to save macro: ".print_r($macro->errors,true));
 				}
-
-				Audit::add('admin','create',$macro->id,null,array('module'=>'OphCoCorrespondence','model'=>'LetterMacro'));
-
-				$this->redirect('/OphCoCorrespondence/admin/letterMacros');
+                                $macroId = $macro->id;
+                                $alphabet = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
+                                $shortCodeArray = str_split($macroId);
+                                $shortCodeCount = count($shortCodeArray);
+                                $shortCode = "";
+                                for($i=0;$i<=2;$i++)
+                                {
+                                    $shortNumber = $shortCodeArray[$i];
+                                    $shortCode .= $alphabet[$shortNumber];
+                                }
+                                $macro->short_code = $shortCode;
+                                Audit::add('admin','create',$macro->id,null,array('module'=>'OphCoCorrespondence','model'=>'LetterMacro'));
+                                $avatar=LetterMacro::model()->findByPk(array('id'=>$macroId));
+                                $avatar->short_code = $shortCode;
+                                $avatar->save(); 
+                                $this->redirect('/OphCoCorrespondence/admin/letterMacros');
 			}
 		} else {
 			Audit::add('admin','view',$macro->id,null,array('module'=>'OphCoCorrespondence','model'=>'LetterMacro'));

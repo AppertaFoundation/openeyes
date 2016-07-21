@@ -27,11 +27,7 @@
 			</div>
 			<div class="large-4 column">
 				<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('theatre_id'))?></h4>
-				
-				<?php $hasModule = Yii::app()->hasModule('OphTrOperationbooking'); ?>
-				<div class="data-value <?php echo $hasModule ? '' : 'none'?>">
-					<?php echo ($hasModule && $element->theatre ? $element->theatre->name : 'None')?>
-				</div>
+				<div class="data-value<?php if (!$element->theatre) {?> none<?php }?>"><?php echo ($element->theatre ? $element->theatre->name : 'None')?></div>
 			</div>
 		</div>
 	</div>

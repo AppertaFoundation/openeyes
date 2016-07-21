@@ -186,29 +186,6 @@ class BaseEventTypeCActiveForm extends FormLayout
 			'layoutColumns' => $layoutColumns
 		));
 	}
-        
-        /**
-	 * @param CModel $element
-	 * @param string $field
-	 * @param array $htmlOptions
-	 * @param array $layoutColumns
-	 */
-	public function fileField($element, $field, $htmlOptions=array(), $layoutColumns=array())
-	{
-            
-            
-		$this->widget('application.widgets.FileField', array(
-			'element' => $element,
-			'name' => CHtml::modelName($element)."[$field]",
-			'field' => $field,
-			'htmlOptions' => $htmlOptions,
-			'layoutColumns' => $layoutColumns
-		));
-                
-                
-                
-                
-	}
 
 	/**
 	 * @param CModel $element

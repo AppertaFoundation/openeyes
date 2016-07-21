@@ -108,6 +108,7 @@ class PatientController extends BaseController
 	 */
 	public function actionView($id)
 	{
+            
 		Yii::app()->assetManager->registerScriptFile('js/patientSummary.js');
 
 		$this->patient = $this->loadModel($id);
@@ -177,20 +178,7 @@ class PatientController extends BaseController
 
 			$message = 'Sorry, no results ';
 			if ($search_terms['hos_num']) {
-
 				$message .= 'for Hospital Number <strong>"'.$search_terms['hos_num'].'"</strong>';
-
-				// check if the record was merged into another record
-				$criteria = new CDbCriteria;
-				$criteria->compare('secondary_hos_num', $search_terms['hos_num']);
-				$criteria->compare('status', PatientMergeRequest::STATUS_MERGED);
-
-				$patientMergeRequest = PatientMergeRequest::model()->find($criteria);
-
-				if($patientMergeRequest){
-					$message = "Hospital Number <strong>" . $search_terms['hos_num'] . "</strong> was merged into <strong>" . $patientMergeRequest->primary_hos_num . "</strong>";
-				}
-
 			} elseif ($search_terms['nhs_num']) {
 				$message .= 'for NHS Number <strong>"'.$search_terms['nhs_num'].'"</strong>';
 			} elseif ($search_terms['first_name'] && $search_terms['last_name']) {
@@ -215,7 +203,6 @@ class PatientController extends BaseController
 				'page_num' => \Yii::app()->request->getParam('Patient_page', 1),
 				'items_per_page' => $page_size,
 				'total_items' => $itemCount,
-				'term' => $term,
 				'search_terms' => $patientSearch->getSearchTerms(),
 				'sort_by' => (integer) \Yii::app()->request->getParam('sort_by', null),
 				'sort_dir' => (integer) \Yii::app()->request->getParam('sort_dir', null),
@@ -253,6 +240,7 @@ class PatientController extends BaseController
            echo CJavaScript::jsonEncode($result);
            Yii::app()->end();
        }
+
 
 	public function actionEpisodes()
 	{

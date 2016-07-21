@@ -55,8 +55,7 @@ $qs_svc = Yii::app()->service->getService($this::$QUEUESET_SERVICE);
 			'queueset' => $queueset,
 			'tickets' => $tickets,
 			'patient_filter' => $patient_filter,
-			'pages' => $pages,
-			'cat_id' => $cat_id
+			'pages' => $pages
 		));
 
 	}

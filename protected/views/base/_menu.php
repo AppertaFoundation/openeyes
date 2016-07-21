@@ -14,7 +14,7 @@
             >
             <?php
             $link = $item['uri'];
-            if ($item['uri'] !== '#' && strpos($item['uri'], 'http:') === false) {
+            if ($item['uri'] !== '#') {
                 $link = Yii::app()->getBaseUrl() . '/' . ltrim($item['uri'], '/');
             }
             $options = array();
@@ -32,8 +32,7 @@
                             if (array_key_exists('options', $subItem)) {
                                 $subOptions = $subItem['options'];
                             }
-                            $subLink = ($subItem['uri'] !== '#' && strpos($subItem['uri'], 'http:') === false) ? Yii::app()->getBaseUrl() . '/' . ltrim($subItem['uri'], '/') : $subItem['uri'];
-                            echo CHtml::link($subItem['title'], $subLink, $subOptions) ?>
+                            echo CHtml::link($subItem['title'], Yii::app()->getBaseUrl() . '/' . ltrim($subItem['uri'], '/'), $subOptions) ?>
                         </li>
                     <?php endforeach; ?>
                 </ul>

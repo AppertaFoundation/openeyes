@@ -64,7 +64,7 @@
 						<th id="patient-grid_c<?php echo $i; ?>">
 							<?php
 								$new_sort_dir = ($i == $sort_by) ? 1 - $sort_dir: 0;
-								echo CHtml::link($field,Yii::app()->createUrl('patient/search', array('term' => $term, 'sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num)));
+								echo CHtml::link($field,Yii::app()->createUrl('patient/search', $search_terms + array('sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num)));
 							?>
 						</th>
 						<?php }?>
@@ -98,7 +98,7 @@
 										}
 									?>
 									<li class="<?php if ($current_page) { ?>current<?php } ?>">
-										<a href="<?php echo Yii::app()->createUrl('patient/search', array('term' => $term,'Patient_page' => $i+1, 'sort_by' => $sort_by, 'sort_dir' => $sort_dir)); ?>"><?php echo $from; ?> - <?php echo $to; ?></a>
+										<a href="<?php echo Yii::app()->createUrl('patient/search', array('Patient_page' => $i+1, 'sort_by' => $sort_by, 'sort_dir' => $sort_dir)); ?>"><?php echo $from; ?> - <?php echo $to; ?></a>
 									</li>
 								<?php } ?>
 							</ul>

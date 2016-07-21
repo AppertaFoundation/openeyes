@@ -946,11 +946,13 @@ class DefaultController extends BaseEventTypeController
 
 	protected function afterUpdateElements($event)
 	{
+		parent::afterUpdateElements($event);
 		$this->persistPcrRisk();
 	}
 
 	protected function afterCreateElements($event)
 	{
+		parent::afterCreateElements($event);
 		$this->persistPcrRisk();
 	}
 

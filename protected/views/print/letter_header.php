@@ -16,15 +16,18 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
- $logoHelper = new LogoHelper();
-	
 ?>
 <?php
-    $event = $this->event;
-    $event_type = $event->eventType->name;
+$event = $this->event;
+$event_type = $event->eventType->name;
 ?>
 <header class="header">
-	<?= $logoHelper->render() ?>
+	<div class="letter-logo">
+		<img src="<?php echo Yii::app()->assetManager->createUrl('img/_print/letterhead_Moorfields_NHS.jpg')?>" alt="letterhead_logo" />
+	</div>
+	<div class="seal">
+		<img src="<?php echo Yii::app()->assetManager->createUrl('img/_print/letterhead_seal.jpg')?>" alt="letterhead_seal" width="100" height="83" />
+	</div>
 	<div class="row">
 		<div class="large-4 column patient">
 			<strong><?php echo $this->patient->contact->fullName?></strong>

@@ -156,26 +156,22 @@ class DefaultController extends \BaseModuleController
 		unset(Yii::app()->session['patientticket_ticket_in_review']);
 		AutoSaveTicket::clear();
 
-		$cat_id = Yii::app()->request->getParam('cat_id', null);
-		$queueset_id = Yii::app()->request->getParam('queueset_id', null);
-		$select_queue_set = Yii::app()->request->getParam('select_queue_set', null);
-
-		if (!$cat_id) {
+		if (!@$_GET['cat_id']) {
 			throw new \CHttpException(404, 'Category ID required');
 		}
 
-		if($qs_id = $queueset_id && $select_queue_set)
+		if($qs_id = @$_POST['queueset_id'] && @$_POST['select_queue_set'])
 		{
-			$this->redirect(array("/PatientTicketing/default/?queueset_id=$qs_id&cat_id=" . $cat_id));
+			$this->redirect(array("/PatientTicketing/default/?queueset_id=$qs_id&cat_id=".$_GET['cat_id']));
 		}
 
-		if($queueset_id) {
-			$qs_id = $queueset_id;
+		if(@$_GET['queueset_id']) {
+			$qs_id = $_GET['queueset_id'];
 		}
 
 		$qsc_svc = Yii::app()->service->getService(self::$QUEUESETCATEGORY_SERVICE);
 
-		if (!$category = $qsc_svc->readActive((int)$cat_id)) {
+		if (!$category = $qsc_svc->readActive((int)$_GET['cat_id'])) {
 			throw new \CHttpException(404, 'Invalid category id');
 		}
 
@@ -240,13 +236,12 @@ class DefaultController extends \BaseModuleController
 
 		// render
 		$this->render('index', array(
-			'category' => $category,
-			'queueset' => $queueset,
-			'tickets' => $tickets,
-			'patient_filter' => $patient_filter,
-			'pages' => $pages,
-			'cat_id' => $cat_id
-		));
+				'category' => $category,
+				'queueset' => $queueset,
+				'tickets' => $tickets,
+				'patient_filter' => $patient_filter,
+				'pages' => $pages
+			));
 	}
 
 	/**

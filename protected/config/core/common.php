@@ -383,7 +383,7 @@ return array(
 		'wkhtmltopdf_right_margin' => '20mm',
 		'wkhtmltopdf_nice_level' => false,
 		'OphCoTherapyapplication_sender_email' => array('openeyes.servicedesk@moorfields.nhs.uk' => 'OpenEyes Therapy Application'),
-		'curl_proxy' => null,
+
 		'hscic' => array(
 			'data' => array(
 				// to store processed zip files

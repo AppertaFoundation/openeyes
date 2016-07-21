@@ -140,9 +140,7 @@ class Helper
 	 */
 	public static function getAge($dob, $date_of_death = null, $check_date = null)
 	{
-		if (!$dob) {
-			return 'Unknown';
-		}
+		if (!$dob) return 'Unknown';
 
 		$dob_datetime = new DateTime($dob);
 		$check_datetime = new DateTime($check_date);
@@ -168,10 +166,7 @@ class Helper
 	 */
 	public static function getDateForAge($dob, $age, $date_of_death = null)
 	{
-		if (!$dob) {
-			return null;
-		}
-		
+		if (!$dob) return null;
 		$dob_datetime = new DateTime($dob);
 		$age_date = $dob_datetime->add(new DateInterval('P' . $age . 'Y'));
 
@@ -181,7 +176,6 @@ class Helper
 				return null;
 			}
 		}
-		
 		return $age_date->format('Y-m-d');
 	}
 

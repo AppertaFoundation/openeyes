@@ -17,19 +17,34 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-?>
-<main class="mdl-layout__content mdl-color--white-100">
-    <div id="dash-grid" class="mdl-grid">
-        <div class="mdl-cell-side mdl-cell--6-col">
-            <div id="iopchart" class="mdl-cell-top">
 
-            </div>
-            <div id="vachart" class="mdl-cell-bottom">
 
-            </div>
-        </div>
-        <div id="vf-image" class="oescape-images mdl-cell--6-col">
-            <?php $this->renderPartial('//oescape/vfimages'); ?>
-        </div>
-    </div>
-</main>
+class CheckDigitGenerator
+{
+    private $string_for_conversion;
+    private $salt;
+
+    /*
+     * @param string $string_for_conversion
+     * @param string $salt
+     */
+    public function __construct($string_for_conversion, $salt) {
+        $this->string_for_conversion = $string_for_conversion;
+        $this->salt = $salt;
+    }
+
+    /**
+    * @param string $checkdigit
+    */
+    public function generateCheckDigit() {
+        $sum = 0;
+        $string = $this->string_for_conversion . $this->salt;
+        $string = strrev($string); 
+        for ($i = 0; $i < strlen($string); $i++) {
+         $char = str_replace(range('A','Z'),range('1','26'),$string[$i]);
+         $sum += array_sum(str_split(($char * pow(2,(($i+1) % 2)))));
+        }
+        return (($sum * 9) % 10);
+    }
+
+}

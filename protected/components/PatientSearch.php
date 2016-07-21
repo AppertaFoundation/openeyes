@@ -71,8 +71,9 @@ class PatientSearch
      * Searching for patients
      * 
      * @param string $term search term
+     * @param $criteria additional setting like sortBy, sortDir
      */
-    public function search($term)
+    public function search($term, $criteria  = null)
     {
         $search_terms = $this->parseTerm($term);
 

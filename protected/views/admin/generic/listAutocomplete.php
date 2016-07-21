@@ -18,11 +18,11 @@
  */
 
 ?>
-<div class="admin box">
+    <div class="admin box">
 
-	<h2><?php echo $admin->getModelDisplayName(); ?></h2>
+        <h2><?php echo $admin->getModelDisplayName(); ?></h2>
 
-	<form id="generic-admin-list">
+        <form id="generic-admin-list">
 		<?php
 
 		if (is_array($admin->getFilterFields())) {
@@ -76,106 +76,106 @@
 			}
 		}
 		?>
-		<div class="row field-row">
-			<table class="grid">
-				<thead>
-				<tr>
-					<?php foreach ($admin->getListFields() as $listItem): ?>
-						<th><?php echo $admin->getModel()->getAttributeLabel($listItem); ?></th>
-					<?php endforeach; ?>
-					<th>Action</th>
-				</tr>
-				</thead>
-				<tbody>
-				<?php
-				foreach ($admin->getSearch()->retrieveResults() as $i => $row) { ?>
-					<tr>
-						<?php foreach ($admin->getListFields() as $listItem): ?>
-							<td>
-								<?php
-								if($listItem == "default")
-								{
-									if ($admin->attributeValue($row, $listItem)):
-										?><i class="fa fa-check"></i><?php
-									else:
-										?><i class="fa fa-times"></i><?php
-									endif;
-								}
-								else
-								{
-									if (gettype($admin->attributeValue($row, $listItem)) === 'boolean'):
-										if ($admin->attributeValue($row, $listItem)):
-											?><i class="fa fa-check"></i><?php
-										else:
-											?><i class="fa fa-times"></i><?php
-										endif;
-									else:
-										echo $admin->attributeValue($row, $listItem);
-									endif;
-								}
-								?>
-							</td>
-						<?php endforeach; ?>
-						<td>
-							<a OnCLick="deleteItem('<?php echo $row->id; ?>','<?php echo $admin->getCustomDeleteURL(); ?>')">Delete</a>
-							<?php if($listItem == "default")
-							  { ?>
-								&nbsp;&nbsp;|&nbsp;&nbsp;<a OnCLick="setDefaultItem('<?php echo $row->id; ?>','<?php echo $admin->getCustomSetDefaultURL(); ?>')">Set Default</a>
-								&nbsp;&nbsp;|&nbsp;&nbsp;<a OnCLick="removeDefaultItem('<?php echo $row->id; ?>','<?php echo $admin->getCustomRemoveDefaultURL(); ?>')">Remove Default</a>
-						<?php } ?>
-						</td>
-					</tr>
-				<?php } ?>
-				</tbody>
-				<tfoot class="pagination-container">
-				<tr>
-					<td colspan="<?php echo count($admin->getListFields()) + 1; ?>">
-						<?php
-						$acFieldData = $admin->getAutocompleteField();
-						if ($acFieldData) {
-							if (isset($acFieldData["allowBlankSearch"]) && $acFieldData["allowBlankSearch"] == 1) {
-								$minLength = "0";
-								$triggerSearch = "$('#autocomplete_" . $acFieldData["fieldName"] . "').autocomplete('search','')";
-							} else {
-								$minLength = 1;
-								$triggerSearch = "";
-							}
-							$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-								'name' => $acFieldData["fieldName"],
-								'id' => 'autocomplete_' . $acFieldData["fieldName"],
-								'source' => "js:function(request, response) {
+            <div class="row field-row">
+                <table class="grid">
+                    <thead>
+                    <tr>
+                        <?php foreach ($admin->getListFields() as $listItem): ?>
+                            <th><?php echo $admin->getModel()->getAttributeLabel($listItem); ?></th>
+                        <?php endforeach; ?>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                    foreach ($admin->getSearch()->retrieveResults() as $i => $row) { ?>
+                        <tr>
+                            <?php foreach ($admin->getListFields() as $listItem): ?>
+                                <td>
+                                    <?php
+                                    if ($listItem == "default") {
+                                        if ($admin->attributeValue($row, $listItem)):
+                                            ?><i class="fa fa-check"></i><?php
+                                        else:
+                                            ?><i class="fa fa-times"></i><?php
+                                        endif;
+                                    } else {
+                                        if (gettype($admin->attributeValue($row, $listItem)) === 'boolean'):
+                                            if ($admin->attributeValue($row, $listItem)):
+                                                ?><i class="fa fa-check"></i><?php
+                                            else:
+                                                ?><i class="fa fa-times"></i><?php
+                                            endif;
+                                        else:
+                                            echo $admin->attributeValue($row, $listItem);
+                                        endif;
+                                    }
+                                    ?>
+                                </td>
+                            <?php endforeach; ?>
+                            <td>
+                                <a OnCLick="deleteItem('<?php echo $row->id; ?>','<?php echo $admin->getCustomDeleteURL(); ?>')">Delete</a>
+                                <?php if ($listItem == "default") { ?>
+                                    &nbsp;&nbsp;|&nbsp;&nbsp;<a
+                                        OnCLick="setDefaultItem('<?php echo $row->id; ?>','<?php echo $admin->getCustomSetDefaultURL(); ?>')">Set
+                                        Default</a>
+                                    &nbsp;&nbsp;|&nbsp;&nbsp;<a
+                                        OnCLick="removeDefaultItem('<?php echo $row->id; ?>','<?php echo $admin->getCustomRemoveDefaultURL(); ?>')">Remove
+                                        Default</a>
+                                <?php } ?>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                    </tbody>
+                    <tfoot class="pagination-container">
+                    <tr>
+                        <td colspan="<?php echo count($admin->getListFields()) + 1; ?>">
+                            <?php
+                            $acFieldData = $admin->getAutocompleteField();
+                            if ($acFieldData) {
+                                if (isset($acFieldData["allowBlankSearch"]) && $acFieldData["allowBlankSearch"] == 1) {
+                                    $minLength = "0";
+                                    $triggerSearch = "$('#autocomplete_" . $acFieldData["fieldName"] . "').autocomplete('search','')";
+                                } else {
+                                    $minLength = 1;
+                                    $triggerSearch = "";
+                                }
+                                $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+                                    'name' => $acFieldData["fieldName"],
+                                    'id' => 'autocomplete_' . $acFieldData["fieldName"],
+                                    'source' => "js:function(request, response) {
 										$.getJSON('" . $acFieldData["jsonURL"] . "', {
 											term : request.term
 										}, response);
 									}",
-								'options' => array(
-									'select' => "js:function(event, ui) {
+                                    'options' => array(
+                                        'select' => "js:function(event, ui) {
 											addItem(ui.item.id, '" . $admin->getCustomSaveURL() . "');
 											$(this).val('');
 											return false;
 										}",
-									'minLength' => $minLength
-								),
-								'htmlOptions' => array(
-									'placeholder' => $acFieldData['placeholder'],
-									'onFocus' => $triggerSearch
-								)
-							));
+                                        'minLength' => $minLength
+                                    ),
+                                    'htmlOptions' => array(
+                                        'placeholder' => $acFieldData['placeholder'],
+                                        'onFocus' => $triggerSearch
+                                    )
+                                ));
 
 
-						}
-						?>
-						<b>Select from list to add new</b>
-						<?php echo $this->renderPartial('//admin/_pagination', array(
-							'pagination' => $admin->getPagination()
-						)) ?>
-					</td>
-				</tr>
-				</tfoot>
-			</table>
-		</div>
-	</form>
-</div>
+                            }
+                            ?>
+                            <b>Select from list to add new</b>
+                            <?php echo $this->renderPartial('//admin/_pagination', array(
+                                'pagination' => $admin->getPagination()
+                            )) ?>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </form>
+    </div>
 <?php
 Yii::app()->assetManager->registerScriptFile("js/oeadmin/listAutocomplete.js", CClientScript::POS_HEAD);
 ?>

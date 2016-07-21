@@ -284,8 +284,8 @@ class OphTrOperationbooking_Operation_Sequence extends BaseActiveRecordVersioned
 		}
 
 		$criteria = new CDbCriteria;
-                
-		$criteria->addCondition('sequence_id <> :sequence_id or sequence_id is null');
+
+		$criteria->addCondition('sequence_id <> :sequence_id');
 		$criteria->params[':sequence_id'] = $this->id;
 
 		$criteria->addCondition('theatre_id = :theatre_id');

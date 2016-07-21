@@ -63,16 +63,16 @@
 		</div>
 
 		<div class="row data-row">
-			<?php if($this->patient->isDeceased()):?>
+			<?php if ($this->patient->date_of_death) { ?>
 				<div class="large-4 column">
-					<div class="data-label">Deceased:</div>
+					<div class="data-label">Date of Death:</div>
 				</div>
 				<div class="large-8 column">
 					<div class="data-value">
-						Yes
+						<?php echo $this->patient->NHSDate('date_of_death') . ' (Age '.$this->patient->getAge().')' ?>
 					</div>
 				</div>
-			<?php else: ?>
+			<?php } else {?>
 				<div class="large-4 column">
 					<div class="data-label">Age:</div>
 				</div>
@@ -81,28 +81,8 @@
 						<?php echo $this->patient->getAge()?>
 					</div>
 				</div>
-			<?php endif; ?>
+			<?php }?>
 		</div>
-		<?php if($this->patient->isDeceased()):?>
-		<div class="row data-row">
-			<div class="large-4 column">
-				<div class="data-label">Date of Death:</div>
-			</div>
-			<?php if ($this->patient->date_of_death): ?>
-				<div class="large-8 column">
-					<div class="data-value">
-						<?php echo $this->patient->NHSDate('date_of_death') . ' (Age '.$this->patient->getAge().')' ?>
-					</div>
-				</div>
-			<?php else: ?>
-				<div class="large-8 column">
-					<div class="data-value">
-						Date of Patient's death unknown.
-					</div>
-				</div>
-			<?php endif ;?>
-		</div>
-		<?php endif; ?>
 		<div class="row data-row">
 			<div class="large-4 column">
 				<div class="data-label">Gender:</div>

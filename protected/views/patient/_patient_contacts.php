@@ -18,44 +18,42 @@
  */
 ?>
 <section class="box patient-info patient-contacts js-toggle-container">
-    <h3 class="box-title">Associated contacts:</h3>
-    <a href="#" class="toggle-trigger toggle-hide js-toggle">
-        <span class="icon-showhide">
-            Show/hide this section
-        </span>
-    </a>
-    <div class="js-toggle-body">
-        <table class="plain patient-data patient-contacts">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Location</th>
-                    <th>Type</th>
-                    <?php if ($this->checkAccess('OprnEditContact')) { ?><th></th><?php } ?>
-                </tr>
-            </thead>
-            <tbody id="patient_contacts">
-                <?php
-                foreach ($this->patient->contactAssignments as $pca) {
-                    $this->renderPartial('_patient_contact_row', array('pca' => $pca));
-                }
-                ?>
-            </tbody>
-        </table>
-<?php if ($this->checkAccess('OprnEditContact')) { ?>
-            <div class="row data-row">
+	<h3 class="box-title">Associated contacts:</h3>
+	<a href="#" class="toggle-trigger toggle-hide js-toggle">
+		<span class="icon-showhide">
+			Show/hide this section
+		</span>
+	</a>
+	<div class="js-toggle-body">
+		<table class="plain patient-data patient-contacts">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Location</th>
+					<th>Type</th>
+					<?php if ($this->checkAccess('OprnEditContact')) {?><th></th><?php }?>
+				</tr>
+			</thead>
+			<tbody id="patient_contacts">
+				<?php foreach ($this->patient->contactAssignments as $pca) {
+					$this->renderPartial('_patient_contact_row',array('pca'=>$pca));
+				}?>
+			</tbody>
+		</table>
+		<?php if ($this->checkAccess('OprnEditContact')) {?>
+			<div class="row data-row">
 
-                <div class="large-2 column">
-                    <label for="contactname" class="align">Add contact:</label>
-                </div>
+				<div class="large-2 column">
+					<label for="contactname" class="align">Add contact:</label>
+				</div>
 
-                <div class="large-4 column">
-                    <?php
-                    $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                        'name' => "contactname",
-                        'id' => "contactname",
-                        'value' => '',
-                        'source' => "js:function(request, response) {
+				<div class="large-4 column">
+					<?php
+					$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+						'name'=>"contactname",
+						'id'=>"contactname",
+						'value'=>'',
+						'source'=>"js:function(request, response) {
 
 							$('#btn-add-contact').hide();
 
@@ -98,22 +96,22 @@
 								}
 							});
 						}",
-                        'options' => array(
-                            'minLength' => '3',
-                            'select' => "js:function(event, ui) {
+						'options'=>array(
+							'minLength'=>'3',
+							'select'=>"js:function(event, ui) {
 								var value = ui.item.value;
 
 								$('#contactname').val('');
 
 								if (contactCache[value]['contact_location_id']) {
-									var querystr = 'patient_id=" . $this->patient->id . "&contact_location_id='+contactCache[value]['contact_location_id'];
+									var querystr = 'patient_id=".$this->patient->id."&contact_location_id='+contactCache[value]['contact_location_id'];
 								} else {
-									var querystr = 'patient_id=" . $this->patient->id . "&contact_id='+contactCache[value]['contact_id'];
+									var querystr = 'patient_id=".$this->patient->id."&contact_id='+contactCache[value]['contact_id'];
 								}
 
 								$.ajax({
 									'type': 'GET',
-									'url': '" . Yii::app()->createUrl('patient/associatecontact') . "?'+querystr,
+									'url': '".Yii::app()->createUrl('patient/associatecontact')."?'+querystr,
 									'success': function(html) {
 										if (html.length >0) {
 											$('#patient_contacts').append(html);
@@ -130,13 +128,13 @@
 
 								return false;
 							}",
-                        ),
-                        'htmlOptions' => array(
-                            'placeholder' => 'search for contacts'
-                        ),
-                    ));
-                    ?>
-                </div>
+						),
+						'htmlOptions'=>array(
+							'placeholder' => 'search for contacts'
+						),
+					));
+					?>
+				</div>
 
                 <div class="large-4 column">
 
@@ -149,121 +147,120 @@
         </select>
                 </div>
 
-                <div class="large-2 column">
-                    <img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" class="loader hide" alt="loading..." />
-                    <button id="btn-add-contact" class="secondary small hide" type="button">Add</button>
-                </div>
-            </div>
+				<div class="large-2 column">
+					<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="loader hide" alt="loading..." />
+					<button id="btn-add-contact" class="secondary small hide" type="button">Add</button>
+				</div>
+			</div>
 
-            <div id="add_contact" style="display: none;">
-                <?php
-                $form = $this->beginWidget('FormLayout', array(
-                    'id' => 'add-contact',
-                    'enableAjaxValidation' => false,
-                    'action' => array('patient/addContact'),
-                    'layoutColumns' => array(
-                        'label' => 3,
-                        'field' => 7
-                    ),
-                        ))
-                ?>
-                <fieldset>
-                    <legend>Add contact</legend>
+			<div id="add_contact" style="display: none;">
+				<?php
+				$form = $this->beginWidget('FormLayout', array(
+						'id'=>'add-contact',
+						'enableAjaxValidation'=>false,
+						'action'=>array('patient/addContact'),
+						'layoutColumns'=>array(
+							'label' => 3,
+							'field' => 7
+						),
+				))?>
+					<fieldset>
+						<legend>Add contact</legend>
 
-                    <input type="hidden" name="patient_id" value="<?php echo $this->patient->id ?>" />
-                    <input type="hidden" name="contact_label_id" id="contact_label_id" value="" />
+						<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
+						<input type="hidden" name="contact_label_id" id="contact_label_id" value="" />
 
-                    <div class="row field-row">
-                        <div class="<?php echo $form->columns('label'); ?>">
-                            <div class="data-label">Type:</div>
-                        </div>
-                        <div class="<?php echo $form->columns('field'); ?>">
-                            <div class="data-value contactType"></div>
-                        </div>
-                    </div>
+						<div class="row field-row">
+							<div class="<?php echo $form->columns('label');?>">
+								<div class="data-label">Type:</div>
+							</div>
+							<div class="<?php echo $form->columns('field');?>">
+								<div class="data-value contactType"></div>
+							</div>
+						</div>
 
-                    <div class="row field-row">
-                        <div class="<?php echo $form->columns('label'); ?>">
-                            <label for="institution_id">Institution:</label>
-                        </div>
-                        <div class="<?php echo $form->columns('field'); ?>">
-    <?php echo CHtml::dropDownList('institution_id', '', CHtml::listData(Institution::model()->active()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => '- Select -')) ?>
-                        </div>
-                    </div>
+						<div class="row field-row">
+							<div class="<?php echo $form->columns('label');?>">
+								<label for="institution_id">Institution:</label>
+							</div>
+							<div class="<?php echo $form->columns('field');?>">
+								<?php echo CHtml::dropDownList('institution_id','',CHtml::listData(Institution::model()->active()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Select -'))?>
+							</div>
+						</div>
 
-                    <div class="row field-row siteID">
-                        <div class="<?php echo $form->columns('label'); ?>">
-                            <label for="site_id">Site:</label>
-                        </div>
-                        <div class="<?php echo $form->columns('field'); ?>">
-    <?php echo CHtml::dropDownList('site_id', '', array()) ?>
-                        </div>
-                    </div>
+						<div class="row field-row siteID">
+							<div class="<?php echo $form->columns('label');?>">
+								<label for="site_id">Site:</label>
+							</div>
+							<div class="<?php echo $form->columns('field');?>">
+								<?php echo CHtml::dropDownList('site_id','',array())?>
+							</div>
+						</div>
 
-                    <div class="row field-row contactLabel">
-                        <div class="<?php echo $form->columns('label'); ?>">
-                            <label for="label_id">Label:</label>
-                        </div>
-                        <div class="<?php echo $form->columns('field'); ?>">
-    <?php echo CHtml::dropDownList('label_id', '', CHtml::listData(ContactLabel::model()->active()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => '- Select -')) ?>
-                        </div>
-                    </div>
+						<div class="row field-row contactLabel">
+							<div class="<?php echo $form->columns('label');?>">
+								<label for="label_id">Label:</label>
+							</div>
+							<div class="<?php echo $form->columns('field');?>">
+								<?php echo CHtml::dropDownList('label_id','',CHtml::listData(ContactLabel::model()->active()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Select -'))?>
+							</div>
+						</div>
 
-                    <div class="row field-row">
-                        <div class="<?php echo $form->columns('label'); ?>">
-                            <label for="title">Title:</label>
-                        </div>
-                        <div class="<?php echo $form->columns('field'); ?>">
-    <?php echo CHtml::textField('title', '', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-                        </div>
-                    </div>
+						<div class="row field-row">
+							<div class="<?php echo $form->columns('label');?>">
+								<label for="title">Title:</label>
+							</div>
+							<div class="<?php echo $form->columns('field');?>">
+								<?php echo CHtml::textField('title','',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+							</div>
+						</div>
 
-                    <div class="row field-row">
-                        <div class="<?php echo $form->columns('label'); ?>">
-                            <label for="first_name">First name:</label>
-                        </div>
-                        <div class="<?php echo $form->columns('field'); ?>">
-    <?php echo CHtml::textField('first_name', '', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-                        </div>
-                    </div>
+						<div class="row field-row">
+							<div class="<?php echo $form->columns('label');?>">
+								<label for="first_name">First name:</label>
+							</div>
+							<div class="<?php echo $form->columns('field');?>">
+								<?php echo CHtml::textField('first_name','',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+							</div>
+						</div>
 
-                    <div class="row field-row">
-                        <div class="<?php echo $form->columns('label'); ?>">
-                            <label for="last_name">Last name:</label>
-                        </div>
-                        <div class="<?php echo $form->columns('field'); ?>">
-    <?php echo CHtml::textField('last_name', '', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-                        </div>
-                    </div>
+						<div class="row field-row">
+							<div class="<?php echo $form->columns('label');?>">
+								<label for="last_name">Last name:</label>
+							</div>
+							<div class="<?php echo $form->columns('field');?>">
+								<?php echo CHtml::textField('last_name','',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+							</div>
+						</div>
 
-                    <div class="row field-row">
-                        <div class="<?php echo $form->columns('label'); ?>">
-                            <label for="nick_name">Nick name:</label>
-                        </div>
-                        <div class="<?php echo $form->columns('field'); ?>">
-    <?php echo CHtml::textField('nick_name', '', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-                        </div>
-                    </div>
+						<div class="row field-row">
+							<div class="<?php echo $form->columns('label');?>">
+								<label for="nick_name">Nick name:</label>
+							</div>
+							<div class="<?php echo $form->columns('field');?>">
+								<?php echo CHtml::textField('nick_name','',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+							</div>
+						</div>
 
-                    <div class="row field-row">
-                        <div class="<?php echo $form->columns('label'); ?>">
-                            <label for="primary_phone">Primary phone:</label>
-                        </div>
-                        <div class="<?php echo $form->columns('field'); ?>">
-    <?php echo CHtml::textField('primary_phone', '', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-                        </div>
-                    </div>
+						<div class="row field-row">
+							<div class="<?php echo $form->columns('label');?>">
+								<label for="primary_phone">Primary phone:</label>
+							</div>
+							<div class="<?php echo $form->columns('field');?>">
+								<?php echo CHtml::textField('primary_phone','',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+							</div>
+						</div>
 
-                    <div class="row field-row">
-                        <div class="<?php echo $form->columns('label'); ?>">
-                            <label for="qualifications">Qualifications:</label>
-                        </div>
-                        <div class="<?php echo $form->columns('field'); ?>">
-    <?php echo CHtml::textField('qualifications', '', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-                        </div>
-                    </div>
+						<div class="row field-row">
+							<div class="<?php echo $form->columns('label');?>">
+								<label for="qualifications">Qualifications:</label>
+							</div>
+							<div class="<?php echo $form->columns('field');?>">
+								<?php echo CHtml::textField('qualifications','',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+							</div>
+						</div>
 
-                    <div class="add_contact_form_errors alert-box alert with-icon hide"></div>
+						<div class="add_contact_form_errors alert-box alert with-icon hide"></div>
 
                     <div class="row field-row">
                         <div class="large-5 column">
@@ -277,57 +274,56 @@
                     </div>
                 </fieldset>
 
-                <?php $this->endWidget() ?>
-            </div>
+				<?php $this->endWidget()?>
+			</div>
 
-            <div id="edit_contact" style="display: none;">
-                <?php
-                $form = $this->beginWidget('FormLayout', array(
-                    'id' => 'edit-contact',
-                    'enableAjaxValidation' => false,
-                    'action' => array('patient/editContact'),
-                    'layoutColumns' => array(
-                        'label' => 3,
-                        'field' => 9
-                    ),
-                        ))
-                ?>
+			<div id="edit_contact" style="display: none;">
+				<?php
+				$form = $this->beginWidget('FormLayout', array(
+					'id'=>'edit-contact',
+					'enableAjaxValidation'=>false,
+					'action'=>array('patient/editContact'),
+					'layoutColumns'=>array(
+						'label' => 3,
+						'field' => 9
+					),
+				))?>
 
-                <fieldset>
-                    <legend>Edit contact</legend>
+					<fieldset>
+						<legend>Edit contact</legend>
 
-                    <input type="hidden" name="patient_id" value="<?php echo $this->patient->id ?>" />
-                    <input type="hidden" name="contact_id" id="contact_id" value="" />
-                    <input type="hidden" name="pca_id" id="pca_id" value="" />
+						<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
+						<input type="hidden" name="contact_id" id="contact_id" value="" />
+						<input type="hidden" name="pca_id" id="pca_id" value="" />
 
-                    <div class="row field-row">
-                        <div class="<?php echo $form->columns('label'); ?>">
-                            <div class="data-label">Contact:</div>
-                        </div>
-                        <div class="<?php echo $form->columns('field'); ?>">
-                            <div class="data-value editContactName"></div>
-                        </div>
-                    </div>
+						<div class="row field-row">
+							<div class="<?php echo $form->columns('label');?>">
+								<div class="data-label">Contact:</div>
+							</div>
+							<div class="<?php echo $form->columns('field');?>">
+								<div class="data-value editContactName"></div>
+							</div>
+						</div>
 
-                    <div class="row field-row">
-                        <div class="<?php echo $form->columns('label'); ?>">
-                            <div class="label">Institution:</div>
-                        </div>
-                        <div class="<?php echo $form->columns('field'); ?>">
-    <?php echo CHtml::dropDownList('institution_id', '', CHtml::listData(Institution::model()->active()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => '- Select -')) ?>
-                        </div>
-                    </div>
+						<div class="row field-row">
+							<div class="<?php echo $form->columns('label');?>">
+								<div class="label">Institution:</div>
+							</div>
+							<div class="<?php echo $form->columns('field');?>">
+								<?php echo CHtml::dropDownList('institution_id','',CHtml::listData(Institution::model()->active()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Select -'))?>
+							</div>
+						</div>
 
-                    <div class="row field-row siteID">
-                        <div class="<?php echo $form->columns('label'); ?>">
-                            <div class="label">Site:</div>
-                        </div>
-                        <div class="<?php echo $form->columns('field'); ?>">
-    <?php echo CHtml::dropDownList('site_id', '', array()) ?>
-                        </div>
-                    </div>
+						<div class="row field-row siteID">
+							<div class="<?php echo $form->columns('label');?>">
+								<div class="label">Site:</div>
+							</div>
+							<div class="<?php echo $form->columns('field');?>">
+								<?php echo CHtml::dropDownList('site_id','',array())?>
+							</div>
+						</div>
 
-                    <div class="edit_contact_form_errors alert-box alert with-icon hide"></div>
+						<div class="edit_contact_form_errors alert-box alert with-icon hide"></div>
 
                     <div class="row field-row">
                         <div class="large-5 column">
@@ -341,8 +337,8 @@
                     </div>
                 </fieldset>
 
-    <?php $this->endWidget() ?>
-            </div>
+				<?php $this->endWidget()?>
+			</div>
 
             <!-- Add site or institution dialog -->
             <div id="add_site_dialog" title="Add site/institution" style="display: none;">
@@ -398,250 +394,250 @@
     </div>
 </section>
 <script type="text/javascript">
-    $(document).ready(function () {
-        $('#btn-add-contact').click(function () {
-            if ($('#add_contact').is(':hidden')) {
-                $('#add_contact').slideToggle('fast');
-                $('#contact_label_id').val($('#contactfilter').val());
-                if ($('#contactfilter').val() == 'nonspecialty') {
-                    $('div.contactLabel').show();
-                } else {
-                    $('div.contactLabel').hide();
-                }
+$(document).ready(function() {
+	$('#btn-add-contact').click(function() {
+		if ($('#add_contact').is(':hidden')) {
+			$('#add_contact').slideToggle('fast');
+			$('#contact_label_id').val($('#contactfilter').val());
+			if ($('#contactfilter').val() == 'nonspecialty') {
+				$('div.contactLabel').show();
+			} else {
+				$('div.contactLabel').hide();
+			}
 
-                $('#add_contact .contactType').text($('#contactfilter option:selected').text());
-                $('#add_contact #site_id').html('<option value="">- Select -</option>');
-                $('#add_contact .siteID').hide();
-                $('#add_contact #institution_id').val('');
-                $('#add_contact #title').val('');
-                $('#add_contact #first_name').val('');
-                $('#add_contact #last_name').val('');
-                $('#add_contact #nick_name').val('');
-                $('#add_contact #primary_phone').val('');
-                $('#add_contact #qualifications').val('');
-                $('#btn-add-contact').hide();
-            }
-        });
+			$('#add_contact .contactType').text($('#contactfilter option:selected').text());
+			$('#add_contact #site_id').html('<option value="">- Select -</option>');
+			$('#add_contact .siteID').hide();
+			$('#add_contact #institution_id').val('');
+			$('#add_contact #title').val('');
+			$('#add_contact #first_name').val('');
+			$('#add_contact #last_name').val('');
+			$('#add_contact #nick_name').val('');
+			$('#add_contact #primary_phone').val('');
+			$('#add_contact #qualifications').val('');
+			$('#btn-add-contact').hide();
+		}
+	});
 
-        $('#contactfilter').change(function () {
-            if (!$('#add_contact').is(':hidden')) {
-                $('#add_contact').slideToggle('fast');
-            }
-            $('#btn-add-contact').hide();
+	$('#contactfilter').change(function() {
+		if (!$('#add_contact').is(':hidden')) {
+			$('#add_contact').slideToggle('fast');
+		}
+		$('#btn-add-contact').hide();
 
-            if ($('#contactname').val().length >= 3) {
-                $('#contactname').focus();
-                $('#contactname').autocomplete('search', $('#contactname').val());
-            }
-        });
+		if ($('#contactname').val().length >= 3) {
+			$('#contactname').focus();
+			$('#contactname').autocomplete('search',$('#contactname').val());
+		}
+	});
 
-        $('#add_contact #institution_id').change(function () {
-            var institution_id = $(this).val();
+	$('#add_contact #institution_id').change(function() {
+		var institution_id = $(this).val();
 
-            if (institution_id != '') {
-                $.ajax({
-                    'type': 'GET',
-                    'dataType': 'json',
-                    'url': baseUrl + '/patient/institutionSites?institution_id=' + institution_id,
-                    'success': function (data) {
-                        var options = '<option value="">- Select -</option>';
-                        for (var i in data) {
-                            options += '<option value="' + i + '">' + data[i] + '</option>';
-                        }
-                        $('#add_contact #site_id').html(options);
-                        sort_selectbox($('#add_contact #site_id'));
-                        if (i > 0) {
-                            $('#add_contact .siteID').show();
-                        } else {
-                            $('#add_contact .siteID').hide();
-                        }
-                    }
-                });
-            } else {
-                $('#add_contact .siteID').hide();
-            }
-        });
+		if (institution_id != '') {
+			$.ajax({
+				'type': 'GET',
+				'dataType': 'json',
+				'url': baseUrl+'/patient/institutionSites?institution_id='+institution_id,
+				'success': function(data) {
+					var options = '<option value="">- Select -</option>';
+					for (var i in data) {
+						options += '<option value="'+i+'">'+data[i]+'</option>';
+					}
+					$('#add_contact #site_id').html(options);
+					sort_selectbox($('#add_contact #site_id'));
+					if (i >0) {
+						$('#add_contact .siteID').show();
+					} else {
+						$('#add_contact .siteID').hide();
+					}
+				}
+			});
+		} else {
+			$('#add_contact .siteID').hide();
+		}
+	});
 
-        $('button.btn_cancel_contact').click(function (e) {
-            e.preventDefault();
-            $('#add_contact').slideToggle('fast');
-            $('#btn-add-contact').hide();
-        });
+	$('button.btn_cancel_contact').click(function(e) {
+		e.preventDefault();
+		$('#add_contact').slideToggle('fast');
+		$('#btn-add-contact').hide();
+	});
 
-        handleButton($('button.btn_save_contact'), function (e) {
-            e.preventDefault();
+	handleButton($('button.btn_save_contact'),function(e) {
+		e.preventDefault();
 
-            $.ajax({
-                'type': 'POST',
-                'dataType': 'json',
-                'data': $('#add-contact').serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
-                'url': baseUrl + '/patient/validateSaveContact',
-                'success': function (data) {
-                    $('.add_contact_form_errors').hide().html('');
-                    if (data.length == 0) {
-                        $('img.add_contact_loader').show();
-                        $('#add-contact').submit();
-                        return true;
-                    } else {
-                        for (var i in data) {
-                            $('.add_contact_form_errors').show().append('<div>' + data[i] + '</div>');
-                        }
-                        enableButtons();
-                    }
-                }
-            });
-        });
+		$.ajax({
+			'type': 'POST',
+			'dataType': 'json',
+			'data': $('#add-contact').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
+			'url': baseUrl+'/patient/validateSaveContact',
+			'success': function(data) {
+				$('.add_contact_form_errors').hide().html('');
+				if (data.length == 0) {
+					$('img.add_contact_loader').show();
+					$('#add-contact').submit();
+					return true;
+				} else {
+					for (var i in data) {
+						$('.add_contact_form_errors').show().append('<div>'+data[i]+'</div>');
+					}
+					enableButtons();
+				}
+			}
+		});
+	});
 
-        $('a.editContact').die('click').live('click', function (e) {
-            e.preventDefault();
+	$('a.editContact').die('click').live('click',function(e) {
+		e.preventDefault();
 
-            var location_id = $(this).parent().parent().attr('data-attr-location-id');
-            var pca_id = $(this).parent().parent().attr('data-attr-pca-id');
+		var location_id = $(this).parent().parent().attr('data-attr-location-id');
+		var pca_id = $(this).parent().parent().attr('data-attr-pca-id');
 
-            $.ajax({
-                'type': 'GET',
-                'dataType': 'json',
-                'url': baseUrl + '/patient/getContactLocation?location_id=' + location_id,
-                'success': function (data) {
-                    editContactSiteID = data['site_id'];
-                    $('#edit_contact #institution_id').val(data['institution_id']);
-                    $('#edit_contact #institution_id').change();
-                    $('#edit_contact .editContactName').text(data['name']);
-                    $('#edit_contact #contact_id').val(data['contact_id']);
-                    $('#edit_contact #pca_id').val(pca_id);
-                }
-            });
+		$.ajax({
+			'type': 'GET',
+			'dataType': 'json',
+			'url': baseUrl+'/patient/getContactLocation?location_id='+location_id,
+			'success': function(data) {
+				editContactSiteID = data['site_id'];
+				$('#edit_contact #institution_id').val(data['institution_id']);
+				$('#edit_contact #institution_id').change();
+				$('#edit_contact .editContactName').text(data['name']);
+				$('#edit_contact #contact_id').val(data['contact_id']);
+				$('#edit_contact #pca_id').val(pca_id);
+			}
+		});
 
-            if ($('#edit_contact').is(':hidden')) {
-                $('#edit_contact').slideToggle('fast');
-            }
-        });
+		if ($('#edit_contact').is(':hidden')) {
+			$('#edit_contact').slideToggle('fast');
+		}
+	});
 
-        $('#edit_contact #institution_id').change(function () {
-            var institution_id = $(this).val();
+	$('#edit_contact #institution_id').change(function() {
+		var institution_id = $(this).val();
 
-            if (institution_id != '') {
-                $.ajax({
-                    'type': 'GET',
-                    'dataType': 'json',
-                    'url': baseUrl + '/patient/institutionSites?institution_id=' + institution_id,
-                    'success': function (data) {
-                        var options = '<option value="">- Select -</option>';
-                        for (var i in data) {
-                            options += '<option value="' + i + '">' + data[i] + '</option>';
-                        }
-                        $('#edit_contact #site_id').html(options);
-                        sort_selectbox($('#edit_contact #site_id'));
-                        if (i > 0) {
-                            $('#edit_contact .siteID').show();
-                        } else {
-                            $('#edit_contact .siteID').hide();
-                        }
+		if (institution_id != '') {
+			$.ajax({
+				'type': 'GET',
+				'dataType': 'json',
+				'url': baseUrl+'/patient/institutionSites?institution_id='+institution_id,
+				'success': function(data) {
+					var options = '<option value="">- Select -</option>';
+					for (var i in data) {
+						options += '<option value="'+i+'">'+data[i]+'</option>';
+					}
+					$('#edit_contact #site_id').html(options);
+					sort_selectbox($('#edit_contact #site_id'));
+					if (i >0) {
+						$('#edit_contact .siteID').show();
+					} else {
+						$('#edit_contact .siteID').hide();
+					}
 
-                        if (editContactSiteID) {
-                            $('#edit_contact #site_id').val(editContactSiteID);
-                            editContactSiteID = null;
-                        }
-                    }
-                });
-            } else {
-                $('#edit_contact .siteID').hide();
-            }
-        });
+					if (editContactSiteID) {
+						$('#edit_contact #site_id').val(editContactSiteID);
+						editContactSiteID = null;
+					}
+				}
+			});
+		} else {
+			$('#edit_contact .siteID').hide();
+		}
+	});
 
-        $('button.btn_save_editcontact').click(function (e) {
-            e.preventDefault();
+	$('button.btn_save_editcontact').click(function(e) {
+		e.preventDefault();
 
-            $.ajax({
-                'type': 'POST',
-                'dataType': 'json',
-                'data': $('#edit-contact').serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
-                'url': baseUrl + '/patient/validateEditContact',
-                'success': function (data) {
-                    $('div.edit_contact_form_errors').hide().html('');
-                    if (data.length == 0) {
-                        $('img.edit_contact_loader').show();
-                        $('#edit-contact').submit();
-                        return true;
-                    } else {
-                        for (var i in data) {
-                            $('div.edit_contact_form_errors').show().append('<div>' + data[i] + '</div>');
-                        }
-                        enableButtons();
-                    }
-                }
-            });
-        });
+		$.ajax({
+			'type': 'POST',
+			'dataType': 'json',
+			'data': $('#edit-contact').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
+			'url': baseUrl+'/patient/validateEditContact',
+			'success': function(data) {
+				$('div.edit_contact_form_errors').hide().html('');
+				if (data.length == 0) {
+					$('img.edit_contact_loader').show();
+					$('#edit-contact').submit();
+					return true;
+				} else {
+					for (var i in data) {
+						$('div.edit_contact_form_errors').show().append('<div>'+data[i]+'</div>');
+					}
+					enableButtons();
+				}
+			}
+		});
+	});
 
-        $('button.btn_cancel_editcontact').click(function (e) {
-            e.preventDefault();
+	$('button.btn_cancel_editcontact').click(function(e) {
+		e.preventDefault();
 
-            if (!$('#edit_contact').is(':hidden')) {
-                $('#edit_contact').slideToggle('fast');
-            }
-        });
+		if (!$('#edit_contact').is(':hidden')) {
+			$('#edit_contact').slideToggle('fast');
+		}
+	});
 
-        $('button.btn_add_site').click(function (e) {
-            e.preventDefault();
+	$('button.btn_add_site').click(function(e) {
+		e.preventDefault();
 
             $('#newsite_from').val('<?php echo User::model()->findByPk(Yii::app()->user->id)->email ?>');
             $('#newsite_subject').val('Please add the following site/institution');
             $('#newsite_message').val("Please could you add the following site/institution to OpenEyes:\n\n");
 
-            $('#add_site_dialog').dialog({
-                resizable: false,
-                modal: true,
-                width: 560
-            });
+		$('#add_site_dialog').dialog({
+			resizable: false,
+			modal: true,
+			width: 560
+		});
 
-            $('#newsite_message').focus();
-            var length = $('#newsite_message').val().length;
-            $('#newsite_message').selectRange(length, length);
-        });
+		$('#newsite_message').focus();
+		var length = $('#newsite_message').val().length;
+		$('#newsite_message').selectRange(length,length);
+	});
 
-        $('button.btn_add_site_cancel').click(function (e) {
-            e.preventDefault();
-            $('#add_site_dialog').dialog('close');
-        });
+	$('button.btn_add_site_cancel').click(function(e) {
+		e.preventDefault();
+		$('#add_site_dialog').dialog('close');
+	});
 
-        $('button.btn_add_site_ok').click(function (e) {
-            e.preventDefault();
+	$('button.btn_add_site_ok').click(function(e) {
+		e.preventDefault();
 
-            $.ajax({
-                'type': 'POST',
-                'data': $('#add_site_form').serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
-                'url': baseUrl + '/patient/sendSiteMessage',
-                'success': function (html) {
-                    if (html == "1") {
-                        $('#add_site_dialog').dialog('close');
-                        new OpenEyes.UI.Dialog.Alert({
-                            content: "Your request has been sent, we aim to process requests within 1 working day."
-                        }).open();
-                    } else {
-                        new OpenEyes.UI.Dialog.Alert({
-                            content: "There was an unexpected error sending your message, please try again or contact support for assistance."
-                        }).open();
-                    }
-                }
-            });
-        });
-    });
+		$.ajax({
+			'type': 'POST',
+			'data': $('#add_site_form').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
+			'url': baseUrl+'/patient/sendSiteMessage',
+			'success': function(html) {
+				if (html == "1") {
+					$('#add_site_dialog').dialog('close');
+					new OpenEyes.UI.Dialog.Alert({
+						content: "Your request has been sent, we aim to process requests within 1 working day."
+					}).open();
+				} else {
+					new OpenEyes.UI.Dialog.Alert({
+						content: "There was an unexpected error sending your message, please try again or contact support for assistance."
+					}).open();
+				}
+			}
+		});
+	});
+});
 
-    $.fn.selectRange = function (start, end) {
-        return this.each(function () {
-            if (this.setSelectionRange) {
-                this.focus();
-                this.setSelectionRange(start, end);
-            } else if (this.createTextRange) {
-                var range = this.createTextRange();
-                range.collapse(true);
-                range.moveEnd('character', end);
-                range.moveStart('character', start);
-                range.select();
-            }
-        });
-    };
+$.fn.selectRange = function(start, end) {
+	return this.each(function() {
+		if (this.setSelectionRange) {
+			this.focus();
+			this.setSelectionRange(start, end);
+		} else if (this.createTextRange) {
+			var range = this.createTextRange();
+			range.collapse(true);
+			range.moveEnd('character', end);
+			range.moveStart('character', start);
+			range.select();
+		}
+	});
+};
 
-    var editContactSiteID = null;
+var editContactSiteID = null;
 
 </script>

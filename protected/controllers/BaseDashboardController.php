@@ -22,8 +22,6 @@ class BaseDashboardController extends BaseController
     public $layout = '//layouts/dashboard';
     public $user;
 
-    protected $headerTemplate;
-
     public function accessRules()
     {
         return array(array('allow', 'roles' => array('admin')));
@@ -39,11 +37,6 @@ class BaseDashboardController extends BaseController
         $this->user = User::model()->findByPk(Yii::app()->user->id);
 
         return $before;
-    }
-
-    public function getHeaderTemplate()
-    {
-        return $this->headerTemplate;
     }
 
 }

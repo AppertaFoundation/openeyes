@@ -9,11 +9,10 @@
 <div id="patientMergeWrapper" class="container content">
     
     <div class="row">
-        <div class="large-4 column large-centered text-right large-offset-8">
+        <div class="large-2 column large-centered text-right large-offset-10">
             <section class="box dashboard">
             <?php 
-                echo CHtml::link('Back to Patient Merge list',array('patientMergeRequest/index'), array('class' => 'button small')) . " ";
-                echo CHtml::link('add',array('patientMergeRequest/create'), array('class' => 'button small'));
+                echo CHtml::link('list',array('patientMergeRequest/index'), array('class' => 'button small'));
             ?>
             </section>
         </div>

@@ -201,9 +201,7 @@ class BaseEventTypeElement extends BaseElement
 	public function loadFromExisting($element)
 	{
 		foreach ($this->copiedFields() as $attribute) {
-			if( isset($element->$attribute) ){
-				$this->$attribute = $element->$attribute;
-			}
+			$this->$attribute = $element->$attribute;
 		}
 	}
 
