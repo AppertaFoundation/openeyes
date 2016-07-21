@@ -29,3 +29,4 @@
 <?php $assetManager->registerScriptFile('js/script.js')?>
 <?php $assetManager->registerScriptFile('components/foundation/js/foundation.min.js');?>
 <?php $assetManager->registerScriptFile('components/foundation/js/foundation/foundation.dropdown.js');?>
+<?php $assetManager->registerScriptFile('components/jt.timepicker/jquery.timepicker.js');?>

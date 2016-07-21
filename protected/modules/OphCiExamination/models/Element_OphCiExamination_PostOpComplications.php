@@ -132,7 +132,8 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
 
         public function init()
         {
-            
+            $this->firm = \Firm::model()->findByPk(\Yii::app()->session['selected_firm_id']);
+            $this->subspecialty_id = $this->firm->serviceSubspecialtyAssignment ? $this->firm->serviceSubspecialtyAssignment->subspecialty_id : null;
         }
 
         public function beforeDelete()

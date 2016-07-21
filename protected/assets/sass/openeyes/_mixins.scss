@@ -126,3 +126,13 @@ $oe-selector-form-select-fields: "select";
 		}
 	}
 }
+
+@mixin event-background($colour, $icon, $watermark){
+	border-color: $colour;
+	.event-content {
+		background-image: $watermark;
+	}
+	.event-title {
+		background-image: $icon;
+	}
+}

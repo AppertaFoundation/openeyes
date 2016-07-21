@@ -47,7 +47,7 @@ class HousekeepingCommand extends CConsoleCommand
 
 		$criteria = new CDbCriteria;
 		$criteria->addInCondition('`t`.status_id',array(1,2,3,4));
-		$criteria->addCondition('date_of_death is not null and date_of_death < :dateNow and session_date > :dateNow');
+		$criteria->addCondition('is_deceased = 1 and session_date > :dateNow');
 		$criteria->params[':dateNow'] = date('Y-m-d');
 
 		foreach (Element_OphTrOperationbooking_Operation::model()

@@ -35,9 +35,11 @@
 				</tr>
 			</thead>
 			<tbody id="patient_contacts">
-				<?php foreach ($this->patient->contactAssignments as $pca) {
+                <?php
+                foreach ($this->patient->contactAssignments as $pca) {
 					$this->renderPartial('_patient_contact_row',array('pca'=>$pca));
-				}?>
+                }
+                ?>
 			</tbody>
 		</table>
 		<?php if ($this->checkAccess('OprnEditContact')) {?>

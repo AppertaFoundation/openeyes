@@ -82,7 +82,6 @@ class ContactLabel extends BaseActiveRecordVersioned
 		return array(
 			'id' => 'ID',
 			'name' => 'Name',
-			'display' => 'Display on contact labels',
 			'letter_template_only' => 'Letter Template Only',
 		);
 	}

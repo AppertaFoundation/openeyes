@@ -2418,6 +2418,7 @@ th,
 td {
   margin: 0;
   padding: 0;
+
 }
 
 /* Default Link Styles */
@@ -2776,6 +2777,12 @@ html, body {
 /* line 31, ../sass/openeyes/components/_global.scss */
 .print {
   background: #ffffff;
+}
+
+/* line 35, ../sass/openeyes/components/_global.scss */
+.wordbreak{
+  word-wrap: break-word;
+  word-break:break-all;
 }
 
 /* line 17, ../sass/openeyes/components/_containers.scss */
@@ -5374,6 +5381,13 @@ tfoot.pagination-container .pagination-view-all {
   position: absolute;
   right: 0;
 }
+.panel.patient .clinical-summary-anchor {
+  bottom: 12px;
+  font-size: 0.6875rem;
+  padding-right: 8px;
+  position: absolute;
+  right: 63px;
+}
 @media screen {
   /* line 118, ../sass/openeyes/components/panels/_patient.scss */
   .stuck .panel.patient .patient-summary-anchor {
@@ -5430,6 +5444,10 @@ tfoot.pagination-container .pagination-view-all {
   display: inline-block;
   padding: 2px 3px 1px 33px;
 }
+.nhs-number .messages{
+  display: none;
+}
+
 @media print {
   /* line 156, ../sass/openeyes/components/panels/_patient.scss */
   .nhs-number {
@@ -6044,7 +6062,7 @@ tfoot.pagination-container .pagination-view-all {
     -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     position: fixed;
-    top: 74px;
+    top: 54px;
     z-index: 199;
   }
 }
@@ -7468,4 +7486,14 @@ tfoot.pagination-container .pagination-view-all {
 /* line 232, ../sass/openeyes/components/_patient-merge.scss */
 .ui-autocomplete.z-index-1000 {
   z-index: 1000 !important;
+}
+/* line 166, ../sass/openeyes/components/_patient-merge.scss */
+.ui-autocomplete.ui-menu.patient-ajax-list .ui-menu-item a, .ui-autocomplete.ui-menu.patient-ajax-list .ui-menu-item a.ui-state-focus {
+  border: 1px solid #4a4a4a;
+  margin: 0 0 5px;
+  padding: 10px 5px;
+}
+/* line 171, ../sass/openeyes/components/_patient-merge.scss */
+.ui-autocomplete.ui-menu.patient-ajax-list .ui-menu-item a .nhs-number, .ui-autocomplete.ui-menu.patient-ajax-list .ui-menu-item a.ui-state-focus .nhs-number {
+  float: right;
 }

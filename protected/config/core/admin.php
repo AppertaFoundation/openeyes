@@ -22,6 +22,7 @@ return array(
 		'admin_structure' => array(
 			'System' => array(
 				'Settings' => '/admin/settings',
+				'Logo'=>'/admin/logo',
 				'DICOM Log Viewer' => '/DicomLogViewer/list',
 			),
 			'Core' => array(
@@ -46,9 +47,7 @@ return array(
 				'Anaesthetic Agent' => '/admin/viewAnaestheticAgent',
 				'Anaesthetic Agent Mapping' => '/oeadmin/AnaestheticAgentMapping/list',
 				'Anaesthetic Agent Defaults' => '/oeadmin/AnaestheticAgentDefaults/list',
-				'Risks' => '/oeadmin/risk/list',
-				'Unique Codes' => '/oeadmin/uniqueCodes/list',
-				'Examination Event Logs' => '/oeadmin/eventLog/list',
+				'Risks' => '/oeadmin/risk/list'
 			),
 			'Worklists' => array(
 				'Automatic Worklists Definitions' => '/worklistAdmin/definitions',

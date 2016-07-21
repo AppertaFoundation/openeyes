@@ -16,6 +16,7 @@
             <th class="created"><?php echo $dataProvider->getSort()->link('last_modified_date','Merged',array('class'=>'sort-link')); ?></th>
             <?php endif; ?> 
         </tr>
+        <?php if ( $dataProvider->itemCount ): ?>
         <tr class="table-filter">
             <td> <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>"
                     alt="loading..." style="display: none;"/></td>
@@ -26,6 +27,7 @@
             <td></td>
             <?php if($filters['show_merged']) :?><td></td><?php endif; ?>
         </tr>
+        <?php endif; ?>
     </thead>
     <tfoot class="pagination-container">
         <tr>
@@ -41,7 +43,7 @@
     </tfoot>
     <tbody>
         
-        <?php if ( count($dataProvider->getData()) ): ?>
+        <?php if ( $dataProvider->itemCount ): ?>
             <?php foreach ($dataProvider->getData() as $i => $request): ?>
 
                 <?php if( $request->status == PatientMergeRequest::STATUS_NOT_PROCESSED ): ?>

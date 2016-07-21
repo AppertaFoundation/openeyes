@@ -251,6 +251,32 @@ class Patient extends BaseActiveRecordVersioned
         return parent::beforeSave();
     }
 
+    public function beforeValidate()
+    {
+
+        if(!parent::beforeValidate()){
+            return false;
+        }
+
+        //If someone is marked as dead by date, set the boolean flag.
+        if($this->isAttributeDirty('date_of_death') && $this->date_of_death){
+            $this->is_deceased = 1;
+        }
+
+        return true;
+    }
+
+    public function validateDeceased($attribute, $params)
+    {
+        if(!$this->is_deceased && $this->date_of_death){
+            $this->addError($attribute, 'A patient can only have a date of death if they are deceased');
+
+            return false;
+        }
+
+        return true;
+    }
+
     /*
      * will group episodes by specialty, ordered by the configuration key of specialty sort,
      * and alphanumeric for any specialties not configured.
@@ -981,7 +1007,25 @@ class Patient extends BaseActiveRecordVersioned
     }
 
     /**
-     * marks the patient as having no family history.
+     * Check if the patient has a given risk
+     * 
+     * @param $riskCompare
+     * @return bool
+     */
+    public function hasRisk($riskCompare)
+    {
+        foreach($this->risks as $risk) {
+            if($risk->name === $riskCompare) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    /**
+     * marks the patient as having no family history
      *
      * @throws Exception
      */

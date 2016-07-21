@@ -413,7 +413,7 @@ class Admin
 	 *
 	 * @throws CHttpException
 	 */
-	public function listModel($buttons=true)
+	public function listModel()
 	{
 		if (!$this->model) {
 			throw new CHttpException(500, 'Nothing to list');
@@ -428,7 +428,7 @@ class Admin
 		$this->assetManager->registerScriptFile('js/oeadmin/list.js');
 		$this->audit('list');
 		$this->pagination = $this->getSearch()->initPagination();
-		$this->render($this->listTemplate, array('admin' => $this, 'displayOrder' => $this->displayOrder,'buttons'=>$buttons));
+		$this->render($this->listTemplate, array('admin' => $this, 'displayOrder' => $this->displayOrder));
 	}
 
 	/**

@@ -135,21 +135,6 @@
     }
 }
 
- .ui-menu{
-    .ui-menu-item{
-
-        a, a.ui-state-focus{
-            border: 1px solid #4a4a4a;
-            margin: 0 0 5px;
-            padding: 10px 5px;
-
-            .nhs-number{
-                float:right;
-            }
-        }
-    }    
-}
-
 .circle {
     
     border-radius: 50%;
@@ -173,5 +158,20 @@
 .ui-autocomplete {
     &.z-index-1000{
         z-index: 1000 !important;
+    }
+
+    &.ui-menu.patient-ajax-list{
+        .ui-menu-item{
+
+            a, a.ui-state-focus{
+                border: 1px solid #4a4a4a;
+                margin: 0 0 5px;
+                padding: 10px 5px;
+
+                .nhs-number{
+                    float:right;
+                }
+            }
+        }
     }
 }

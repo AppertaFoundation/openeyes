@@ -301,3 +301,161 @@ select:focus {
     z-index: 5;
   }
 }
+
+.mdl-layout__content #dash-grid .mdl-cell-top {
+  background-color: white;
+  padding: 0;
+  min-height: 430px;
+  height: 70%;
+  overflow: hidden;
+}
+
+.mdl-layout__content #dash-grid .mdl-cell-bottom {
+  background-color: white;
+  padding: 0;
+  min-height: 300px;
+  height: 30%;
+  overflow: hidden;
+}
+
+.mdl-layout__content #dash-grid .mdl-cell-top-right {
+  background-color: white;
+  padding: 0;
+  min-height: 427px;
+  height: 70%;
+  overflow: hidden;
+}
+
+.mdl-layout__content #dash-grid .mdl-cell-bottom-right {
+  background-color: white;
+  padding: 0;
+  min-height: 300px;
+  height: 30%;
+  width: 85%;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.mdl-tabs__tab-bar {
+  align-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: row;
+  height: 23px;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}
+
+.mdl-tabs__tab {
+  border: medium none;
+  color: rgba(0, 0, 0, 0.54);
+  display: block;
+  float: left;
+  font-size: 14px;
+  font-weight: 500;
+  height: 23px;
+  line-height: 23px;
+  margin: 0;
+  overflow: hidden;
+  padding: 0 24px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.mdl-layout__content #dash-grid .mdl-cell-side {
+  background-color: white;
+  padding: 0;
+  min-height: 700px;
+  height: 100%;
+}
+
+.nhs-number {
+  background-color: #107ebd;
+  background-image: url("../img/_elements/icons/nhs_tiny.png?1456827980");
+  background-position: left center;
+  background-repeat: no-repeat;
+  border-radius: 3px;
+  color: white;
+  display: inline-block;
+  padding: 2px 3px 1px 33px;
+}
+
+.patient-details{
+  clear: both;
+  display: block;
+  padding: 10px;
+}
+
+.openeyes-logo{
+  display: block;
+  float: left;
+}
+
+.vfthumbnail {
+  width: 100%;
+}
+
+.vfthumbnail-hidden{
+  width: 100%;
+  display: none;
+}
+
+.octimage-hidden{
+  display: none;
+}
+
+.regression_chart{
+  width: 100%;
+  display: block;
+}
+
+.left-side{
+  display: block;
+  float: right;
+  width: 50%;
+}
+
+.right-side{
+  display: block;
+  float: left;
+  width: 50%;
+}
+
+.side-title{
+  text-align: center;
+  font-weight: bold;
+  display: block;
+}
+
+.vfimage{
+  width: 70%;
+  margin: 0 auto;
+}
+
+.kowaimage{
+  width: 100%;
+  margin: 0 auto;
+}
+
+.vfcolorplot{
+  width: 55%;
+  margin: 0 auto;
+}
+
+.colorplot-hover{
+  border: 1px solid black;
+}
+
+.oescape-images{
+  background: white;
+  height: calc(100% - 23px);
+}
+
+.header-icon{
+  font-size: 32px;
+}
+

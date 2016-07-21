@@ -111,7 +111,7 @@ class ContactBehavior extends CActiveRecordBehavior
 
 	public function isDeceased()
 	{
-		if (isset($this->owner->date_of_death) && $this->owner->date_of_death) {
+		if (isset($this->owner->is_deceased) && $this->owner->is_deceased) {
 			return true;
 		}
 	}

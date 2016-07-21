@@ -1,3 +1,4 @@
+.gitignore
 .DS_Store
 .*swp
 .idea
@@ -12,9 +13,12 @@ tags
 /index.php
 /nbproject/
 /protected/data/*
+/protected/media_data/*
 /protected/models/ElementExample.php
 /protected/models/elements/ElementExample.php
-/protected/modules/*
+/protected/modules/sample
+/protected/modules/eyedraw
+/protected/modules/PASAPI
 /protected/runtime/
 /protected/tests/report/
 /protected/tests/test_results/
@@ -23,11 +27,13 @@ tags
 /protected/config/db_muu.php
 /protected/config/local
 /protected/views/patient/custom/info/php
+/protected/commands/
 /protected/yii
+/protected/vendors
 *zip
 vendor
-/.sass-cache
-/node_modules
+.sass-cache
+node_modules
 /docs/templates/styleguide/public/css
 /docs/templates/styleguide/public/img
 /docs/public/styleguide/

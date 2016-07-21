@@ -21,12 +21,18 @@
 	<div class="field-row">
 		<?php echo $form->radioButtons($element, 'eye_id', CHtml::listData(\OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::model()->findAll(), 'id', 'name'), null, false, false, false, false, array('nowrapper'=>true))?>
 		<span class="pcr-exam-link">
-			<span id="ophCiExaminationPCRRiskRightEyeLabel"><a href="javascript:showhidePCR('ophCiExaminationPCRRiskRightEye')">Right Eye - PCR Risk <span class="pcr-span1"></span>%</a></span>&nbsp;|&nbsp;
-			<span id="ophCiExaminationPCRRiskLeftEyeLabel"><a href="javascript:showhidePCR('ophCiExaminationPCRRiskLeftEye')">Left Eye - PCR Risk <span class="pcr-span1"></span>%</a></span>
+                <span id="ophCiExaminationPCRRiskRightEyeLabel">
+                    <a href="javascript:showhidePCR('ophCiExaminationPCRRiskRightEye')">Right Eye - PCR Risk <span class="pcr-span1"></span>%</a>
+                </span>&nbsp;|&nbsp;
+                <span id="ophCiExaminationPCRRiskLeftEyeLabel">
+                    <a href="javascript:showhidePCR('ophCiExaminationPCRRiskLeftEye')">Left Eye - PCR Risk <span class="pcr-span1"></span>%</a>
+                </span>
 		</span>
 	</div>
+    
 	<div class="field-row">
-                <?php   if($active_check == 'on') { 
+        <?php
+                if($active_check === 'on') {
                             echo $form->checkbox($element, 'city_road', array('nowrapper'=>true));
                             echo $form->checkbox($element, 'satellite', array('nowrapper'=>true));
                 }
@@ -99,10 +105,10 @@
             );
             ?>
 		</div>
-		<div class="large-3 column">
+        <div class="large-3 column"></div>
 		</div>
 	</div>
-</div>
+
 	<div id="ophCiExaminationPCRRiskLeftEye" class="pcr-opnote-eye">
 		<?php
         $this->renderPartial('application.views.default._pcr_risk_form', array('side' => 'left', 'element' => $element));
@@ -113,7 +119,7 @@
         $this->renderPartial('application.views.default._pcr_risk_form', array('side' => 'right', 'element' => $element));
         ?>
 	</div>
-</div>
+
 <script type="text/javascript">
 	$('#OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_target_postop_refraction').change(function() {
 
