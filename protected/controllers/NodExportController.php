@@ -1180,6 +1180,7 @@ EOL;
                     FROM ophtroperationnote_procedurelist_procedure_assignment pa
                     JOIN et_ophtroperationnote_procedurelist pl ON pa.procedurelist_id = pl.id 
 					JOIN proc ON pa.`proc_id` = proc.`id`
+					JOIN event ON pl.`event_id` = event.id AND event.episode_id IN (SELECT id FROM tmp_episode_ids)
 					WHERE pa.id in (SELECT id FROM tmp_treatment_ids) AND (pl.eye_id=1 OR pl.eye_id=3))
 					UNION
 					(SELECT pa.id AS TreatmentId,
@@ -1189,7 +1190,8 @@ EOL;
                     FROM ophtroperationnote_procedurelist_procedure_assignment pa
                     JOIN et_ophtroperationnote_procedurelist pl ON pa.procedurelist_id = pl.id
 					JOIN proc ON pa.`proc_id` = proc.`id`
-					WHERE pa.id in (SELECT id FROM tmp_treatment_ids) AND (pl.eye_id=2 OR pl.eye_id=3))";
+                    JOIN event ON pl.`event_id` = event.id AND event.episode_id IN (SELECT id FROM tmp_episode_ids)
+                    WHERE pa.id in (SELECT id FROM tmp_treatment_ids) AND (pl.eye_id=2 OR pl.eye_id=3))";
 
         $dataQuery = array(
             'query' => $query,
@@ -1220,7 +1222,9 @@ EOL;
                         JOIN `anaesthetic_type` `at` ON a.`anaesthetic_type_id` = at.`id`
                         JOIN ophtroperationnote_anaesthetic_anaesthetic_complication ac ON a.`id` = ac.`et_ophtroperationnote_anaesthetic_id`
                         JOIN ophtroperationnote_anaesthetic_anaesthetic_complications acs ON ac.`anaesthetic_complication_id` = acs.id
-                        WHERE 1=1 ".$this->getDateWhere('a');
+                        JOIN event ON a.event_id = event.id AND event.episode_id IN (SELECT id FROM tmp_episode_ids)
+                        WHERE 1=1 
+                        ".$this->getDateWhere('a');
 
         $dataQuery = array(
             'query' => $query,
@@ -1228,8 +1232,6 @@ EOL;
         );
 
         return $this->saveCSVfile($dataQuery, 'EpisodeOperationAnaesthesia', null, 'OperationId');
-
-        //return $this->getIdArray($data, 'OperationId');
     }
 
     private function getEpisodeOperationIndication()
