@@ -128,7 +128,7 @@ class WaitingListController extends BaseModuleController
 			$whereParams[":subspecialty_id"] = $subspecialty_id;
 		}
 
-		if ($hos_num && ctype_digit($hos_num)) {
+		if ($hos_num) {
 			if (Yii::app()->params['pad_hos_num']) {
 				$hos_num = sprintf(Yii::app()->params['pad_hos_num'],$hos_num);
 			}
