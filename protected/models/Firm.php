@@ -183,21 +183,27 @@ class Firm extends BaseActiveRecordVersioned
 	}
 
 	/**
+	 * @param $include_non_subspecialty boolean defaults to false
 	 * @return array
 	 */
-	public function getListWithSpecialties()
+	public function getListWithSpecialties($include_non_subspecialty = false)
 	{
+		$join_method = $include_non_subspecialty ? 'leftJoin' : 'join';
 		$firms = Yii::app()->db->createCommand()
 			->select('f.id, f.name, s.name AS subspecialty')
 			->from('firm f')
-			->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
-			->join('subspecialty s','ssa.subspecialty_id = s.id')
+			->$join_method('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
+			->$join_method('subspecialty s','ssa.subspecialty_id = s.id')
 			->where('f.active = 1')
 			->order('f.name, s.name')
 			->queryAll();
 		$data = array();
 		foreach ($firms as $firm) {
-			$data[$firm['id']] = $firm['name'] . ' (' . $firm['subspecialty'] . ')';
+			$display = $firm['name'];
+			if ($firm['subspecialty']) {
+				$display .= ' (' . $firm['subspecialty'] . ')';
+			}
+			$data[$firm['id']] =  $display;
 		}
 		natcasesort($data);
 		return $data;
