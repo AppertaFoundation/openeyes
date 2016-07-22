@@ -150,12 +150,17 @@ class Site extends BaseActiveRecordVersioned
 	{
 		$institution = Institution::model()->getCurrent();
 
+		$display_query = SettingMetadata::model()->findByAttributes(array('key' => "display_institution_name"));
+		$display_institution = $display_query->getSettingName();
+
 		$result = array();
 		foreach ($institution->sites as $site) {
 			$site_name = '';
 
 			if ($institution->short_name && $site->name != 'Unknown') {
-				$site_name = $institution->short_name.' at ';
+				if ($display_institution) {
+					$site_name = $institution->short_name.' at ';
+				}
 			}
 			$site_name .= $site->name;
 
@@ -184,8 +189,16 @@ class Site extends BaseActiveRecordVersioned
 	public function getCorrespondenceName()
 	{
 		if ($this->institution->short_name) {
+			$display_query = SettingMetadata::model()->findByAttributes(array('key' => "display_institution_name"));
+			$display_institution = $display_query->getSettingName();
+
 			if (!strstr($this->name,$this->institution->short_name)) {
-				return $this->institution->short_name.' at '.$this->name;
+				if ($display_institution  == "Off") {
+					return $this->name;
+				}
+				else {
+					return $this->institution->short_name.' at '.$this->name;
+				}
 			}
 		}
 
