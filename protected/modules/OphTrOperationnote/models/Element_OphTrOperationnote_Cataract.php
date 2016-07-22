@@ -83,7 +83,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
 			array('length', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^[0-9](\.[0-9])?$/', 'message' => 'Length must be 0 - 9.9 in increments of 0.1'),
 			array('meridian', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^[0-9]{1,3}(\.[0-9])?$/', 'min' => 000, 'max' => 360, 'message' => 'Meridian must be 000.5 - 360.0 degrees'),
 			array('predicted_refraction', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', 'min' => -30, 'max' => 30, 'message' => 'Predicted refraction must be between -30.00 and 30.00'),
-			array('iol_power', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', 'min' => -10, 'max' => 40, 'message' => 'IOL power must be between -10 and 40'),
+            array('iol_power', 'validateIolpower'),
 			array('complications', 'validateComplications'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
