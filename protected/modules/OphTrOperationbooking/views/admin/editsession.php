@@ -189,4 +189,5 @@
 		e.preventDefault();
 		$('#confirm_delete_session').dialog('close');
 	});
+	$('.time-picker').timepicker({ 'timeFormat': 'H:i:s', 'step' : 5 });
 </script>
