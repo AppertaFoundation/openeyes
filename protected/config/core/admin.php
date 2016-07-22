@@ -47,7 +47,9 @@ return array(
 				'Anaesthetic Agent' => '/admin/viewAnaestheticAgent',
 				'Anaesthetic Agent Mapping' => '/oeadmin/AnaestheticAgentMapping/list',
 				'Anaesthetic Agent Defaults' => '/oeadmin/AnaestheticAgentDefaults/list',
-				'Risks' => '/oeadmin/risk/list'
+				'Risks' => '/oeadmin/risk/list',
+				'Unique Codes' => '/oeadmin/uniqueCodes/list',
+				'Examination Event Logs' => '/oeadmin/eventLog/list',
 			),
 			'Worklists' => array(
 				'Automatic Worklists Definitions' => '/worklistAdmin/definitions',
