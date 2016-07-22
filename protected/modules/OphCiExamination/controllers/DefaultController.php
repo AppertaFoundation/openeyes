@@ -852,6 +852,49 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * Save Risks - because it's part of the History Risk element it need to be saved from that element
+     *
+     * @param $element
+     * @param $data
+     * @param $index
+     */
+    protected function saveComplexAttributes_Element_OphCiExamination_HistoryRisk($element, $data, $index)
+    {
+        $event_type = \EventType::model()->find('name=?', array('Examination'));
+        $event = $this->episode->getMostRecentEventByType($event_type->id);
+        if (($event->id === $this->event->id) && (array_key_exists('anticoagulant', $element->attributes) || array_key_exists('alphablocker', $element->attributes))) {
+            foreach ($element->attributes as $risk_name => $risk_value) {
+                if($risk_name === 'anticoagulant' || $risk_name === 'alphablocker') {
+                    $this->updateRisk($risk_name,$risk_value);
+                }
+            }
+        }
+    }
+
+    /**
+     * Updating Patient Risk details.
+     * @param type $risk_name
+     * @param type $risk_value
+     */
+    protected function updateRisk($risk_name, $risk_value) {
+        $risk_check = ($risk_name === 'anticoagulant') ? 'Anticoagulants' : 'Alpha blockers';
+        $risk = \Risk::model()->find('name=?', array($risk_check));
+        $criteria = new \CDbCriteria;
+        $criteria->compare('risk_id',$risk['id']);
+        $criteria->compare('patient_id',$this->patient->id);
+        $patient_risk = \PatientRiskAssignment::model()->find($criteria);
+        if ($risk_value === "1") {
+            $patient_risk = (!$patient_risk) ? new \PatientRiskAssignment() : $patient_risk;
+            $patient_risk->risk_id = $risk['id'];
+            $patient_risk->patient_id = $this->patient->id;
+            $patient_risk->save();
+        }
+        elseif ($patient_risk && ($risk_value === "2")) {
+            \PatientRiskAssignment::model()->deleteByPk($patient_risk->id);
+        }
+    }
+
+    /**
      * Save the dilation treatments
      *
      * @param models\Element_OphCiExamination_Dilation $element
