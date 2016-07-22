@@ -207,4 +207,5 @@
 		e.preventDefault();
 		$('#confirm_delete_sequence').dialog('close');
 	});
+	$('.time-picker').timepicker({ 'timeFormat': 'H:i:s', 'step' : 5 });
 </script>
