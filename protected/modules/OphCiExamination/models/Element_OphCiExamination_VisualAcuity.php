@@ -95,11 +95,6 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
     {
         return array('unable_to_assess', 'eye_missing', 'readings');
     }
-    
-    public function canCopy()
-    {
-        return true;
-    }
 
     /**
      * @return array relational rules.
