@@ -28,36 +28,36 @@ class ExaminationCreator
      * Create an examination event
      *
      * @param $episodeId
-     * @param $portalUserId
+     * @param $userId
      * @param $examination
      * @param $eventType
      * @param $eyeIds
      * @param $refractionType
      * @param $opNoteEventId
-     * @return Event
-     * @throws CDbException
-     * @throws Exception
+     * @return \Event
+     * @throws \CDbException
+     * @throws \Exception
      */
-    public function saveExamination($episodeId, $portalUserId, $examination, $eventType, $eyeIds, $refractionType, $opNoteEventId = null)
+    public function save($episodeId, $userId, $examination, $eventType, $eyeIds, $refractionType, $opNoteEventId = null)
     {
         //Create main examination event
         $examinationEvent = new \Event();
         $examinationEvent->episode_id = $episodeId;
-        $examinationEvent->created_user_id = $examinationEvent->last_modified_user_id = $portalUserId;
-
+        $examinationEvent->created_user_id = $examinationEvent->last_modified_user_id = $userId;
         $examinationEvent->event_date = \DateTime::createFromFormat('Y-m-d\TH:i:sP', $examination['examination_date'])->format('Y-m-d');
         $examinationEvent->event_type_id = $eventType['id'];
         $examinationEvent->is_automated = 1;
         $examinationEvent->automated_source = json_encode($examination['op_tom']);
+
         if ($examinationEvent->save(true, null, true)) {
             $examinationEvent->refresh();
             $refraction = new \OEModule\OphCiExamination\models\Element_OphCiExamination_Refraction();
             $refraction->event_id = $examinationEvent->id;
-            $refraction->created_user_id = $refraction->last_modified_user_id = $portalUserId;
+            $refraction->created_user_id = $refraction->last_modified_user_id = $userId;
 
             $iop = new \OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure();
             $iop->event_id = $examinationEvent->id;
-            $iop->created_user_id = $iop->last_modified_user_id = $portalUserId;
+            $iop->created_user_id = $iop->last_modified_user_id = $userId;
             $iop->eye_id = $eyeIds['both'];
             $iop->left_comments = 'Portal Add';
             $iop->right_comments = 'Portal Add';
@@ -68,7 +68,7 @@ class ExaminationCreator
 
             $complications = new \OEModule\OphCiExamination\models\Element_OphCiExamination_PostOpComplications();
             $complications->event_id = $examinationEvent->id;
-            $complications->created_user_id = $complications->last_modified_user_id = $portalUserId;
+            $complications->created_user_id = $complications->last_modified_user_id = $userId;
             $complications->eye_id = $eyeIds['both'];
             if (!$complications->save(true, null, true)) {
                 throw new \CDbException('Complications failed: ' . print_r($complications->getErrors(), true));
@@ -78,7 +78,7 @@ class ExaminationCreator
             if($examination['patient']['comments']){
                 $comments = new Element_OphCiExamination_OptomComments();
                 $comments->event_id = $examinationEvent->id;
-                $comments->created_user_id = $comments->last_modified_user_id = $portalUserId;
+                $comments->created_user_id = $comments->last_modified_user_id = $userId;
                 $comments->comment = $examination['patient']['comments'];
                 if (!$comments->save(true, null, true)) {
                     throw new \CDbException('Complications failed: ' . print_r($comments->getErrors(), true));
@@ -92,7 +92,7 @@ class ExaminationCreator
                 $visualFunction->eye_id = $eyeIds['both'];
                 $visualFunction->left_rapd = 0;
                 $visualFunction->right_rapd = 0;
-                $visualFunction->created_user_id = $visualFunction->last_modified_user_id = $portalUserId;
+                $visualFunction->created_user_id = $visualFunction->last_modified_user_id = $userId;
                 if (!$visualFunction->save(true, null, true)) {
                     throw new \CDbException('Visual Function failed: ' . print_r($visualFunction->getErrors(), true));
                 }
@@ -102,7 +102,7 @@ class ExaminationCreator
                 //Create visual acuity
                 $visualAcuity = new \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity();
                 $visualAcuity->event_id = $examinationEvent->id;
-                $visualAcuity->created_user_id = $visualAcuity->last_modified_user_id = $portalUserId;
+                $visualAcuity->created_user_id = $visualAcuity->last_modified_user_id = $userId;
                 $visualAcuity->eye_id = $eyeIds['both'];
                 $visualAcuity->unit_id = $unit->id;
                 if (!$visualAcuity->save(false, null, true)) {
@@ -130,7 +130,7 @@ class ExaminationCreator
                     $vaReading->value = $baseValue;
                     $vaReading->method_id = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method::model()->find('name = :name', array('name' => $vaData['method']))->id;
                     $vaReading->side = ($eyeLabel === 'left') ? \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading::LEFT : \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading::RIGHT;
-                    $vaReading->created_user_id = $vaReading->last_modified_user_id = $portalUserId;
+                    $vaReading->created_user_id = $vaReading->last_modified_user_id = $userId;
                     if (!$vaReading->save(true, null, true)) {
                         throw new \CDbException('Visual Acuity Reading failed: ' . print_r($vaReading->getErrors(), true));
                     }
@@ -156,7 +156,7 @@ class ExaminationCreator
                             $eyeComplication->complication_id = $complicationToAdd->id;
                             $eyeComplication->operation_note_id = $opNoteEventId;
                             $eyeComplication->eye_id = $eyeIds[$eyeLabel];
-                            $eyeComplication->created_user_id = $eyeComplication->last_modified_user_id = $portalUserId;
+                            $eyeComplication->created_user_id = $eyeComplication->last_modified_user_id = $userId;
                             $eyeComplication->save(true, null, true);
                         }
                     } else {
@@ -166,7 +166,7 @@ class ExaminationCreator
                         $eyeComplication->complication_id = $complicationToAdd->id;
                         $eyeComplication->operation_note_id = $opNoteEventId;
                         $eyeComplication->eye_id = $eyeIds[$eyeLabel];
-                        $eyeComplication->created_user_id = $eyeComplication->last_modified_user_id = $portalUserId;
+                        $eyeComplication->created_user_id = $eyeComplication->last_modified_user_id = $userId;
                         $eyeComplication->save(true, null, true);
                     }
                 }
