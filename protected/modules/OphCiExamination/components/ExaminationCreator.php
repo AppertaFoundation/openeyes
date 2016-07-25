@@ -20,6 +20,8 @@
 namespace OEModule\OphCiExamination\components;
 
 
+use OEModule\OphCiExamination\models\Element_OphCiExamination_OptomComments;
+
 class ExaminationCreator
 {
     /**
@@ -39,7 +41,7 @@ class ExaminationCreator
     public function saveExamination($episodeId, $portalUserId, $examination, $eventType, $eyeIds, $refractionType, $opNoteEventId = null)
     {
         //Create main examination event
-        $examinationEvent = new Event();
+        $examinationEvent = new \Event();
         $examinationEvent->episode_id = $episodeId;
         $examinationEvent->created_user_id = $examinationEvent->last_modified_user_id = $portalUserId;
 
@@ -60,7 +62,7 @@ class ExaminationCreator
             $iop->left_comments = 'Portal Add';
             $iop->right_comments = 'Portal Add';
             if (!$iop->save(true, null, true)) {
-                throw new CDbException('iop failed: ' . print_r($iop->getErrors(), true));
+                throw new \CDbException('iop failed: ' . print_r($iop->getErrors(), true));
             }
             $iop->refresh();
 
@@ -69,9 +71,20 @@ class ExaminationCreator
             $complications->created_user_id = $complications->last_modified_user_id = $portalUserId;
             $complications->eye_id = $eyeIds['both'];
             if (!$complications->save(true, null, true)) {
-                throw new CDbException('Complications failed: ' . print_r($complications->getErrors(), true));
+                throw new \CDbException('Complications failed: ' . print_r($complications->getErrors(), true));
             }
             $complications->refresh();
+
+            if($examination['patient']['comments']){
+                $comments = new Element_OphCiExamination_OptomComments();
+                $comments->event_id = $examinationEvent->id;
+                $comments->created_user_id = $comments->last_modified_user_id = $portalUserId;
+                $comments->comment = $examination['patient']['comments'];
+                if (!$comments->save(true, null, true)) {
+                    throw new \CDbException('Complications failed: ' . print_r($comments->getErrors(), true));
+                }
+            }
+
             if (count($examination['patient']['eyes'][0]['reading'][0]['visual_acuity'])) {
                 //create VisualFunction, required for visual acuity to show.
                 $visualFunction = new \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualFunction();
@@ -81,7 +94,7 @@ class ExaminationCreator
                 $visualFunction->right_rapd = 0;
                 $visualFunction->created_user_id = $visualFunction->last_modified_user_id = $portalUserId;
                 if (!$visualFunction->save(true, null, true)) {
-                    throw new CDbException('Visual Function failed: ' . print_r($visualFunction->getErrors(), true));
+                    throw new \CDbException('Visual Function failed: ' . print_r($visualFunction->getErrors(), true));
                 }
 
                 $measure = $examination['patient']['eyes'][0]['reading'][0]['visual_acuity'][0]['measure'];
@@ -93,7 +106,7 @@ class ExaminationCreator
                 $visualAcuity->eye_id = $eyeIds['both'];
                 $visualAcuity->unit_id = $unit->id;
                 if (!$visualAcuity->save(false, null, true)) {
-                    throw new CDbException('Visual Acuity failed: ' . print_r($visualAcuity->getErrors(), true));
+                    throw new \CDbException('Visual Acuity failed: ' . print_r($visualAcuity->getErrors(), true));
                 }
                 $visualAcuity->refresh();
             }
@@ -119,7 +132,7 @@ class ExaminationCreator
                     $vaReading->side = ($eyeLabel === 'left') ? \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading::LEFT : \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading::RIGHT;
                     $vaReading->created_user_id = $vaReading->last_modified_user_id = $portalUserId;
                     if (!$vaReading->save(true, null, true)) {
-                        throw new CDbException('Visual Acuity Reading failed: ' . print_r($vaReading->getErrors(), true));
+                        throw new \CDbException('Visual Acuity Reading failed: ' . print_r($vaReading->getErrors(), true));
                     }
                 }
 
@@ -132,7 +145,7 @@ class ExaminationCreator
                 $iopValue->reading_id = $iopReadingValue['id'];
                 $iopValue->instrument_id = $instrument['id'];
                 if (!$iopValue->save(true, null, true)) {
-                    throw new CDbException('iop value failed: ' . print_r($iop->getErrors(), true));
+                    throw new \CDbException('iop value failed: ' . print_r($iop->getErrors(), true));
                 }
                 if (array_key_exists('complications', $eye)) {
                     if (count($eye['complications'])) {
@@ -161,25 +174,25 @@ class ExaminationCreator
 
             $refraction->eye_id = $eyeIds['both'];
             if (!$refraction->save(true, null, true)) {
-                throw new CDbException('Refraction failed: ' . print_r($iop->getErrors(), true));
+                throw new \CDbException('Refraction failed: ' . print_r($iop->getErrors(), true));
             }
             
             return $examinationEvent;
         } else {
-            throw new CDbException('Examination failed: ' . print_r($examinationEvent->getErrors(), true));
+            throw new \CDbException('Examination failed: ' . print_r($examinationEvent->getErrors(), true));
         }
     }
 
     /**
      * @return mixed|null
-     * @throws Exception
+     * @throws \Exception
      */
     public function getPortalUser()
     {
-        $user = new User();
+        $user = new \User();
         $portalUser = $user->portalUser();
         if (!$portalUser) {
-            throw new Exception('No User found for import');
+            throw new \Exception('No User found for import');
         }
 
         return $portalUser->id;
@@ -190,7 +203,7 @@ class ExaminationCreator
      */
     public function getEyes()
     {
-        $eyes = Eye::model()->findAll();
+        $eyes = \Eye::model()->findAll();
         $eyeIds = array();
         foreach ($eyes as $eye) {
             $eyeIds[strtolower($eye->name)] = $eye->id;
