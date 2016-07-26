@@ -19,7 +19,7 @@
 namespace OEModule\OphCoCvi\models;
 
 /**
- * This is the model class for table "ophcocvi_clinicinfo_disorders".
+ * This is the model class for table "ophcocvi_clinicinfo_disorder".
  *
  * The followings are the available columns in table:
  * @property string $id
@@ -34,7 +34,7 @@ namespace OEModule\OphCoCvi\models;
  * @property User $usermodified
  */
 
-class OphCoCvi_ClinicalInfo_Disorders extends \BaseActiveRecordVersioned
+class OphCoCvi_ClinicalInfo_Disorder extends \BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -50,7 +50,7 @@ class OphCoCvi_ClinicalInfo_Disorders extends \BaseActiveRecordVersioned
 	 */
 	public function tableName()
 	{
-		return 'ophcocvi_clinicinfo_disorders';
+		return 'ophcocvi_clinicinfo_disorder';
 	}
 
 	/**

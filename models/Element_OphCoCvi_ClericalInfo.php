@@ -70,7 +70,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 	{
 		return array(
 			array('event_id, employment_status_id, preferred_info_fmt_id, info_email, contact_urgency_id, preferred_language_id, social_service_comments, ', 'safe'),
-			array('employment_status_id, preferred_info_fmt_id, contact_urgency_id, preferred_language_id, social_service_comments, ', 'required'),
+			//array('employment_status_id, preferred_info_fmt_id, contact_urgency_id, preferred_language_id, social_service_comments, ', 'required'),
 			array('id, event_id, employment_status_id, preferred_info_fmt_id, info_email, contact_urgency_id, preferred_language_id, social_service_comments, ', 'safe', 'on' => 'search'),
 		);
 	}
@@ -86,9 +86,9 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-			'employment_status' => array(self::BELONGS_TO, 'OphCoCvi_ClericalInfo_EmploymentStatus', 'employment_status_id'),
-			'preferred_info_fmt' => array(self::BELONGS_TO, 'OphCoCvi_ClericalInfo_PreferredInfoFmt', 'preferred_info_fmt_id'),
-			'contact_urgency' => array(self::BELONGS_TO, 'OphCoCvi_ClericalInfo_ContactUrgency', 'contact_urgency_id'),
+			'employment_status' => array(self::BELONGS_TO, 'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_EmploymentStatus', 'employment_status_id'),
+			'preferred_info_fmt' => array(self::BELONGS_TO, 'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PreferredInfoFmt', 'preferred_info_fmt_id'),
+			'contact_urgency' => array(self::BELONGS_TO, 'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_ContactUrgency', 'contact_urgency_id'),
 			'preferred_language' => array(self::BELONGS_TO, 'Language', 'preferred_language_id'),
 		);
 	}

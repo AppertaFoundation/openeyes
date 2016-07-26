@@ -75,7 +75,6 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
 	{
 		return array(
 			array('event_id, examination_date, is_considered_blind, sight_varies_by_light_levels, unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va, low_vision_status_id, field_of_vision_id, diagnoses_not_covered, consultant_id, ', 'safe'),
-			array('examination_date, is_considered_blind, sight_varies_by_light_levels, unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va, low_vision_status_id, field_of_vision_id, diagnoses_not_covered, consultant_id, ', 'required'),
 			array('id, event_id, examination_date, is_considered_blind, sight_varies_by_light_levels, unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va, low_vision_status_id, field_of_vision_id, diagnoses_not_covered, consultant_id, ', 'safe', 'on' => 'search'),
 		);
 	}
@@ -91,9 +90,10 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
 			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-			'low_vision_status' => array(self::BELONGS_TO, 'OphCoCvi_ClinicalInfo_LowVisionStatus', 'low_vision_status_id'),
-			'field_of_vision' => array(self::BELONGS_TO, 'OphCoCvi_ClinicalInfo_FieldOfVision', 'field_of_vision_id'),
-			'disorderss' => array(self::HAS_MANY, 'Element_OphCoCvi_ClinicalInfo_Disorders_Assignment', 'element_id'),
+			'low_vision_status' => array(self::BELONGS_TO, 'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_LowVisionStatus', 'low_vision_status_id'),
+			'field_of_vision' => array(self::BELONGS_TO, 'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_FieldOfVision', 'field_of_vision_id'),
+			// probably more interested in relationship direct to disorders through this relation
+			'disorders' => array(self::HAS_MANY, 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment', 'element_id'),
 			'consultant' => array(self::BELONGS_TO, 'User', 'consultant_id'),
 		);
 	}
@@ -152,9 +152,9 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
 	}
 
 
-	public function getophcocvi_clinicinfo_disorders_defaults() {
+	public function getophcocvi_clinicinfo_disorder_defaults() {
 		$ids = array();
-		foreach (OphCoCvi_ClinicalInfo_Disorders::model()->findAll('`default` = ?',array(1)) as $item) {
+		foreach (OphCoCvi_ClinicalInfo_Disorder::model()->findAll('`default` = ?',array(1)) as $item) {
 			$ids[] = $item->id;
 		}
 		return $ids;
@@ -166,13 +166,13 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
 
 			$existing_ids = array();
 
-			foreach (Element_OphCoCvi_ClinicalInfo_Disorders_Assignment::model()->findAll('element_id = :elementId', array(':elementId' => $this->id)) as $item) {
+			foreach (Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()->findAll('element_id = :elementId', array(':elementId' => $this->id)) as $item) {
 				$existing_ids[] = $item->ophcocvi_clinicinfo_disorders_id;
 			}
 
 			foreach ($_POST['MultiSelect_disorders'] as $id) {
 				if (!in_array($id,$existing_ids)) {
-					$item = new Element_OphCoCvi_ClinicalInfo_Disorders_Assignment;
+					$item = new Element_OphCoCvi_ClinicalInfo_Disorder_Assignment;
 					$item->element_id = $this->id;
 					$item->ophcocvi_clinicinfo_disorders_id = $id;
 
@@ -184,7 +184,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
 
 			foreach ($existing_ids as $id) {
 				if (!in_array($id,$_POST['MultiSelect_disorders'])) {
-					$item = Element_OphCoCvi_ClinicalInfo_Disorders_Assignment::model()->find('element_id = :elementId and ophcocvi_clinicinfo_disorders_id = :lookupfieldId',array(':elementId' => $this->id, ':lookupfieldId' => $id));
+					$item = Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()->find('element_id = :elementId and ophcocvi_clinicinfo_disorders_id = :lookupfieldId',array(':elementId' => $this->id, ':lookupfieldId' => $id));
 					if (!$item->delete()) {
 						throw new Exception('Unable to delete MultiSelect item: '.print_r($item->getErrors(),true));
 					}

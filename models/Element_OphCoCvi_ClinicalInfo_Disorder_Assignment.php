@@ -34,7 +34,7 @@ namespace OEModule\OphCoCvi\models;
  * @property User $usermodified
  */
 
-class Element_OphCoCvi_ClinicalInfo_Disorders_Assignment extends \BaseActiveRecordVersioned
+class Element_OphCoCvi_ClinicalInfo_Disorder_Assignment extends \BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -50,7 +50,7 @@ class Element_OphCoCvi_ClinicalInfo_Disorders_Assignment extends \BaseActiveReco
 	 */
 	public function tableName()
 	{
-		return 'et_ophcocvi_clinicinfo_disorders_assignment';
+		return 'et_ophcocvi_clinicinfo_disorder_assignment';
 	}
 
 	/**
@@ -59,9 +59,9 @@ class Element_OphCoCvi_ClinicalInfo_Disorders_Assignment extends \BaseActiveReco
 	public function rules()
 	{
 		return array(
-			array('element_id, ophcocvi_clinicinfo_disorders_id', 'safe'),
-			array('element_id, ophcocvi_clinicinfo_disorders_id', 'required'),
-			array('id, element_id, ophcocvi_clinicinfo_disorders_id', 'safe', 'on' => 'search'),
+			array('element_id, ophcocvi_clinicinfo_disorder_id', 'safe'),
+			array('element_id, ophcocvi_clinicinfo_disorder_id', 'required'),
+			array('id, element_id, ophcocvi_clinicinfo_disorder_id', 'safe', 'on' => 'search'),
 		);
 	}
 

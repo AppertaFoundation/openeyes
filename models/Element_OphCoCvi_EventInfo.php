@@ -62,7 +62,7 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
 	{
 		return array(
 			array('event_id, is_draft, generated_document_id, ', 'safe'),
-			array('is_draft, generated_document_id, ', 'required'),
+			array('is_draft', 'required'),
 			array('id, event_id, is_draft, generated_document_id, ', 'safe', 'on' => 'search'),
 		);
 	}

@@ -64,7 +64,6 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
 	{
 		return array(
 			array('event_id, is_patient, signature_date, representative_name, signature_file_id, ', 'safe'),
-			array('is_patient, signature_date, representative_name, signature_file_id, ', 'required'),
 			array('id, event_id, is_patient, signature_date, representative_name, signature_file_id, ', 'safe', 'on' => 'search'),
 		);
 	}

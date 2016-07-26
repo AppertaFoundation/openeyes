@@ -17,34 +17,30 @@
 
 ?>
 
-<section class="element">
-	<header class="element-header">
-		<h3 class="element-title"><?php echo $element->elementType->name?></h3>
-	</header>
-	<div class="element-data">
-				<div class="row data-row">
-			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('employment_status_id'))?></div></div>
-			<div class="large-10 column end"><div class="data-value"><?php echo $element->employment_status ? $element->employment_status->name : 'None'?></div></div>
-		</div>
-		<div class="row data-row">
-			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('preferred_info_fmt_id'))?></div></div>
-			<div class="large-10 column end"><div class="data-value"><?php echo $element->preferred_info_fmt ? $element->preferred_info_fmt->name : 'None'?></div></div>
-		</div>
-		<div class="row data-row">
-			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('info_email'))?></div></div>
-			<div class="large-10 column end"><div class="data-value"><?php echo CHtml::encode($element->info_email)?></div></div>
-		</div>
-		<div class="row data-row">
-			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('contact_urgency_id'))?></div></div>
-			<div class="large-10 column end"><div class="data-value"><?php echo $element->contact_urgency ? $element->contact_urgency->name : 'None'?></div></div>
-		</div>
-		<div class="row data-row">
-			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('preferred_language_id'))?></div></div>
-			<div class="large-10 column end"><div class="data-value"><?php echo $element->preferred_language ? $element->preferred_language->name : 'None'?></div></div>
-		</div>
-		<div class="row data-row">
-			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('social_service_comments'))?></div></div>
-			<div class="large-10 column end"><div class="data-value"><?php echo CHtml::encode($element->social_service_comments)?></div></div>
-		</div>
+<div class="element-data">
+	<div class="row data-row">
+		<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('employment_status_id'))?></div></div>
+		<div class="large-10 column end"><div class="data-value"><?php echo $element->employment_status ? $element->employment_status->name : 'None'?></div></div>
 	</div>
-</section>
+	<div class="row data-row">
+		<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('preferred_info_fmt_id'))?></div></div>
+		<div class="large-10 column end"><div class="data-value"><?php echo $element->preferred_info_fmt ? $element->preferred_info_fmt->name : 'None'?></div></div>
+	</div>
+	<div class="row data-row">
+		<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('info_email'))?></div></div>
+		<div class="large-10 column end"><div class="data-value"><?php echo CHtml::encode($element->info_email)?></div></div>
+	</div>
+	<div class="row data-row">
+		<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('contact_urgency_id'))?></div></div>
+		<div class="large-10 column end"><div class="data-value"><?php echo $element->contact_urgency ? $element->contact_urgency->name : 'None'?></div></div>
+	</div>
+	<div class="row data-row">
+		<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('preferred_language_id'))?></div></div>
+		<div class="large-10 column end"><div class="data-value"><?php echo $element->preferred_language ? $element->preferred_language->name : 'None'?></div></div>
+	</div>
+	<div class="row data-row">
+		<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('social_service_comments'))?></div></div>
+		<div class="large-10 column end"><div class="data-value"><?php echo CHtml::encode($element->social_service_comments)?></div></div>
+	</div>
+</div>
+

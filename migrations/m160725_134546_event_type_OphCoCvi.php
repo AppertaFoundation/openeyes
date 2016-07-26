@@ -44,395 +44,391 @@ class m160725_134546_event_type_OphCoCvi extends CDbMigration
 
 
 		$this->createTable('et_ophcocvi_eventinfo', array(
-				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-				'event_id' => 'int(10) unsigned NOT NULL',
-				'is_draft' => 'tinyint(1) unsigned NOT NULL DEFAULT 0',
-				'generated_document_id' => 'int(10) unsigned NOT NULL',
-				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'deleted' => 'tinyint(1) unsigned not null',
-				'PRIMARY KEY (`id`)',
-				'KEY `et_ophcocvi_eventinfo_lmui_fk` (`last_modified_user_id`)',
-				'KEY `et_ophcocvi_eventinfo_cui_fk` (`created_user_id`)',
-				'KEY `et_ophcocvi_eventinfo_ev_fk` (`event_id`)',
-				'KEY `et_ophcocvi_eventinfo_generated_document_id_fk` (`generated_document_id`)',
-				'CONSTRAINT `et_ophcocvi_eventinfo_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `et_ophcocvi_eventinfo_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `et_ophcocvi_eventinfo_ev_fk` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
-				'CONSTRAINT `et_ophcocvi_eventinfo_generated_document_id_fk` FOREIGN KEY (`generated_document_id`) REFERENCES `protected_file` (`id`)',
-			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
+			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'event_id' => 'int(10) unsigned NOT NULL',
+			'is_draft' => 'tinyint(1) unsigned NOT NULL DEFAULT 0',
+			'generated_document_id' => 'int(10) unsigned',
+			'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'deleted' => 'tinyint(1) unsigned not null',
+			'PRIMARY KEY (`id`)',
+			'KEY `et_ophcocvi_eventinfo_lmui_fk` (`last_modified_user_id`)',
+			'KEY `et_ophcocvi_eventinfo_cui_fk` (`created_user_id`)',
+			'KEY `et_ophcocvi_eventinfo_ev_fk` (`event_id`)',
+			'KEY `et_ophcocvi_eventinfo_generated_document_id_fk` (`generated_document_id`)',
+			'CONSTRAINT `et_ophcocvi_eventinfo_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `et_ophcocvi_eventinfo_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `et_ophcocvi_eventinfo_ev_fk` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
+			'CONSTRAINT `et_ophcocvi_eventinfo_generated_document_id_fk` FOREIGN KEY (`generated_document_id`) REFERENCES `protected_file` (`id`)',
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
 		$this->createTable('et_ophcocvi_eventinfo_version', array(
-				'id' => 'int(10) unsigned NOT NULL',
-				'event_id' => 'int(10) unsigned NOT NULL',
-				'is_draft' => 'tinyint(1) unsigned NOT NULL DEFAULT 0', // Is draft
-				'generated_document_id' => 'int(10) unsigned NOT NULL', // Generated file
-				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'deleted' => 'tinyint(1) unsigned not null',
-				'version_date' => "datetime NOT NULL DEFAULT '1900-01-01 00:00:00'",
-				'version_id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-				'PRIMARY KEY (`version_id`)',
-				'KEY `acv_et_ophcocvi_eventinfo_lmui_fk` (`last_modified_user_id`)',
-				'KEY `acv_et_ophcocvi_eventinfo_cui_fk` (`created_user_id`)',
-				'KEY `acv_et_ophcocvi_eventinfo_ev_fk` (`event_id`)',
-				'KEY `et_ophcocvi_eventinfo_aid_fk` (`id`)',
-				'KEY `acv_et_ophcocvi_eventinfo_generated_document_id_fk` (`generated_document_id`)',
-				'CONSTRAINT `acv_et_ophcocvi_eventinfo_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `acv_et_ophcocvi_eventinfo_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `acv_et_ophcocvi_eventinfo_ev_fk` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
-				'CONSTRAINT `et_ophcocvi_eventinfo_aid_fk` FOREIGN KEY (`id`) REFERENCES `et_ophcocvi_eventinfo` (`id`)',
-				'CONSTRAINT `acv_et_ophcocvi_eventinfo_generated_document_id_fk` FOREIGN KEY (`generated_document_id`) REFERENCES `protected_file` (`id`)',
-			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
+			'id' => 'int(10) unsigned NOT NULL',
+			'event_id' => 'int(10) unsigned NOT NULL',
+			'is_draft' => 'tinyint(1) unsigned NOT NULL DEFAULT 0', // Is draft
+			'generated_document_id' => 'int(10) unsigned', // Generated file
+			'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'deleted' => 'tinyint(1) unsigned not null',
+			'version_date' => "datetime NOT NULL DEFAULT '1900-01-01 00:00:00'",
+			'version_id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'PRIMARY KEY (`version_id`)',
+			'KEY `acv_et_ophcocvi_eventinfo_lmui_fk` (`last_modified_user_id`)',
+			'KEY `acv_et_ophcocvi_eventinfo_cui_fk` (`created_user_id`)',
+			'KEY `acv_et_ophcocvi_eventinfo_ev_fk` (`event_id`)',
+			'KEY `et_ophcocvi_eventinfo_aid_fk` (`id`)',
+			'KEY `acv_et_ophcocvi_eventinfo_generated_document_id_fk` (`generated_document_id`)',
+			'CONSTRAINT `acv_et_ophcocvi_eventinfo_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `acv_et_ophcocvi_eventinfo_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `acv_et_ophcocvi_eventinfo_ev_fk` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
+			'CONSTRAINT `et_ophcocvi_eventinfo_aid_fk` FOREIGN KEY (`id`) REFERENCES `et_ophcocvi_eventinfo` (`id`)',
+			'CONSTRAINT `acv_et_ophcocvi_eventinfo_generated_document_id_fk` FOREIGN KEY (`generated_document_id`) REFERENCES `protected_file` (`id`)',
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
 		$this->createTable('ophcocvi_clinicinfo_low_vision_status', array(
-				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-				'name' => 'varchar(128) NOT NULL',
-				'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'deleted' => 'tinyint(1) unsigned not null',
-				'PRIMARY KEY (`id`)',
-				'KEY `ophcocvi_clinicinfo_low_vision_status_lmui_fk` (`last_modified_user_id`)',
-				'KEY `ophcocvi_clinicinfo_low_vision_status_cui_fk` (`created_user_id`)',
-				'CONSTRAINT `ophcocvi_clinicinfo_low_vision_status_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `ophcocvi_clinicinfo_low_vision_status_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
-			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
+			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'name' => 'varchar(128) NOT NULL',
+			'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'deleted' => 'tinyint(1) unsigned not null',
+			'PRIMARY KEY (`id`)',
+			'KEY `ophcocvi_clinicinfo_low_vision_status_lmui_fk` (`last_modified_user_id`)',
+			'KEY `ophcocvi_clinicinfo_low_vision_status_cui_fk` (`created_user_id`)',
+			'CONSTRAINT `ophcocvi_clinicinfo_low_vision_status_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `ophcocvi_clinicinfo_low_vision_status_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
 		$this->createTable('ophcocvi_clinicinfo_low_vision_status_version', array(
-				'id' => 'int(10) unsigned NOT NULL',
-				'name' => 'varchar(128) NOT NULL',
-				'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'deleted' => 'tinyint(1) unsigned not null',
-				'version_date' => "datetime NOT NULL DEFAULT '1900-01-01 00:00:00'",
-				'version_id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-				'PRIMARY KEY (`version_id`)',
-				'KEY `acv_ophcocvi_clinicinfo_low_vision_status_lmui_fk` (`last_modified_user_id`)',
-				'KEY `acv_ophcocvi_clinicinfo_low_vision_status_cui_fk` (`created_user_id`)',
-				'KEY `ophcocvi_clinicinfo_low_vision_status_aid_fk` (`id`)',
-				'CONSTRAINT `acv_ophcocvi_clinicinfo_low_vision_status_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `acv_ophcocvi_clinicinfo_low_vision_status_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `ophcocvi_clinicinfo_low_vision_status_aid_fk` FOREIGN KEY (`id`) REFERENCES `ophcocvi_clinicinfo_low_vision_status` (`id`)',
-			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
+			'id' => 'int(10) unsigned NOT NULL',
+			'name' => 'varchar(128) NOT NULL',
+			'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'deleted' => 'tinyint(1) unsigned not null',
+			'version_date' => "datetime NOT NULL DEFAULT '1900-01-01 00:00:00'",
+			'version_id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'PRIMARY KEY (`version_id`)',
+			'KEY `acv_ophcocvi_clinicinfo_low_vision_status_lmui_fk` (`last_modified_user_id`)',
+			'KEY `acv_ophcocvi_clinicinfo_low_vision_status_cui_fk` (`created_user_id`)',
+			'KEY `ophcocvi_clinicinfo_low_vision_status_aid_fk` (`id`)',
+			'CONSTRAINT `acv_ophcocvi_clinicinfo_low_vision_status_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `acv_ophcocvi_clinicinfo_low_vision_status_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `ophcocvi_clinicinfo_low_vision_status_aid_fk` FOREIGN KEY (`id`) REFERENCES `ophcocvi_clinicinfo_low_vision_status` (`id`)',
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
 		$this->insert('ophcocvi_clinicinfo_low_vision_status',array('name'=>'Has been assessed','display_order'=>1));
 		$this->insert('ophcocvi_clinicinfo_low_vision_status',array('name'=>'To be referred / assessed','display_order'=>2));
 		$this->insert('ophcocvi_clinicinfo_low_vision_status',array('name'=>'Not relevant or the patient does not want an assessment','display_order'=>3));
 
 		$this->createTable('ophcocvi_clinicinfo_field_of_vision', array(
-				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-				'name' => 'varchar(128) NOT NULL',
-				'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'deleted' => 'tinyint(1) unsigned not null',
-				'PRIMARY KEY (`id`)',
-				'KEY `ophcocvi_clinicinfo_field_of_vision_lmui_fk` (`last_modified_user_id`)',
-				'KEY `ophcocvi_clinicinfo_field_of_vision_cui_fk` (`created_user_id`)',
-				'CONSTRAINT `ophcocvi_clinicinfo_field_of_vision_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `ophcocvi_clinicinfo_field_of_vision_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
-			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
+			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'name' => 'varchar(128) NOT NULL',
+			'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'deleted' => 'tinyint(1) unsigned not null',
+			'PRIMARY KEY (`id`)',
+			'KEY `ophcocvi_clinicinfo_field_of_vision_lmui_fk` (`last_modified_user_id`)',
+			'KEY `ophcocvi_clinicinfo_field_of_vision_cui_fk` (`created_user_id`)',
+			'CONSTRAINT `ophcocvi_clinicinfo_field_of_vision_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `ophcocvi_clinicinfo_field_of_vision_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
 		$this->createTable('ophcocvi_clinicinfo_field_of_vision_version', array(
-				'id' => 'int(10) unsigned NOT NULL',
-				'name' => 'varchar(128) NOT NULL',
-				'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'deleted' => 'tinyint(1) unsigned not null',
-				'version_date' => "datetime NOT NULL DEFAULT '1900-01-01 00:00:00'",
-				'version_id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-				'PRIMARY KEY (`version_id`)',
-				'KEY `acv_ophcocvi_clinicinfo_field_of_vision_lmui_fk` (`last_modified_user_id`)',
-				'KEY `acv_ophcocvi_clinicinfo_field_of_vision_cui_fk` (`created_user_id`)',
-				'KEY `ophcocvi_clinicinfo_field_of_vision_aid_fk` (`id`)',
-				'CONSTRAINT `acv_ophcocvi_clinicinfo_field_of_vision_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `acv_ophcocvi_clinicinfo_field_of_vision_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `ophcocvi_clinicinfo_field_of_vision_aid_fk` FOREIGN KEY (`id`) REFERENCES `ophcocvi_clinicinfo_field_of_vision` (`id`)',
-			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
+			'id' => 'int(10) unsigned NOT NULL',
+			'name' => 'varchar(128) NOT NULL',
+			'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'deleted' => 'tinyint(1) unsigned not null',
+			'version_date' => "datetime NOT NULL DEFAULT '1900-01-01 00:00:00'",
+			'version_id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'PRIMARY KEY (`version_id`)',
+			'KEY `acv_ophcocvi_clinicinfo_field_of_vision_lmui_fk` (`last_modified_user_id`)',
+			'KEY `acv_ophcocvi_clinicinfo_field_of_vision_cui_fk` (`created_user_id`)',
+			'KEY `ophcocvi_clinicinfo_field_of_vision_aid_fk` (`id`)',
+			'CONSTRAINT `acv_ophcocvi_clinicinfo_field_of_vision_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `acv_ophcocvi_clinicinfo_field_of_vision_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `ophcocvi_clinicinfo_field_of_vision_aid_fk` FOREIGN KEY (`id`) REFERENCES `ophcocvi_clinicinfo_field_of_vision` (`id`)',
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
 		$this->insert('ophcocvi_clinicinfo_field_of_vision',array('name'=>'Total loss of visual field','display_order'=>1));
 		$this->insert('ophcocvi_clinicinfo_field_of_vision',array('name'=>'Extensive loss of visual field (including hemianopia)','display_order'=>2));
 		$this->insert('ophcocvi_clinicinfo_field_of_vision',array('name'=>'Primary loss of peripheral field','display_order'=>3));
 		$this->insert('ophcocvi_clinicinfo_field_of_vision',array('name'=>'Primary loss of central field','display_order'=>4));
 
-		$this->createTable('ophcocvi_clinicinfo_disorders', array(
-				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-				'name' => 'varchar(128) NOT NULL',
-				'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'default' => 'tinyint(1) unsigned NOT NULL DEFAULT 0',
-				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'deleted' => 'tinyint(1) unsigned not null',
-				'PRIMARY KEY (`id`)',
-				'KEY `ophcocvi_clinicinfo_disorders_lmui_fk` (`last_modified_user_id`)',
-				'KEY `ophcocvi_clinicinfo_disorders_cui_fk` (`created_user_id`)',
-				'CONSTRAINT `ophcocvi_clinicinfo_disorders_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `ophcocvi_clinicinfo_disorders_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
-			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
+		$this->createTable('ophcocvi_clinicinfo_disorder', array(
+			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'name' => 'varchar(128) NOT NULL',
+			'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'default' => 'tinyint(1) unsigned NOT NULL DEFAULT 0',
+			'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'deleted' => 'tinyint(1) unsigned not null',
+			'PRIMARY KEY (`id`)',
+			'KEY `ophcocvi_clinicinfo_disorder_lmui_fk` (`last_modified_user_id`)',
+			'KEY `ophcocvi_clinicinfo_disorder_cui_fk` (`created_user_id`)',
+			'CONSTRAINT `ophcocvi_clinicinfo_disorder_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `ophcocvi_clinicinfo_disorder_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
-		$this->createTable('ophcocvi_clinicinfo_disorders_version', array(
-				'id' => 'int(10) unsigned NOT NULL',
-				'name' => 'varchar(128) NOT NULL',
-				'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'default' => 'tinyint(1) unsigned NOT NULL DEFAULT 0',
-				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'deleted' => 'tinyint(1) unsigned not null',
-				'version_date' => "datetime NOT NULL DEFAULT '1900-01-01 00:00:00'",
-				'version_id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-				'PRIMARY KEY (`version_id`)',
-				'KEY `acv_ophcocvi_clinicinfo_disorders_lmui_fk` (`last_modified_user_id`)',
-				'KEY `acv_ophcocvi_clinicinfo_disorders_cui_fk` (`created_user_id`)',
-				'KEY `ophcocvi_clinicinfo_disorders_aid_fk` (`id`)',
-				'CONSTRAINT `acv_ophcocvi_clinicinfo_disorders_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `acv_ophcocvi_clinicinfo_disorders_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `ophcocvi_clinicinfo_disorders_aid_fk` FOREIGN KEY (`id`) REFERENCES `ophcocvi_clinicinfo_disorders` (`id`)',
-			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
+		$this->createTable('ophcocvi_clinicinfo_disorder_version', array(
+			'id' => 'int(10) unsigned NOT NULL',
+			'name' => 'varchar(128) NOT NULL',
+			'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'default' => 'tinyint(1) unsigned NOT NULL DEFAULT 0',
+			'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'deleted' => 'tinyint(1) unsigned not null',
+			'version_date' => "datetime NOT NULL DEFAULT '1900-01-01 00:00:00'",
+			'version_id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'PRIMARY KEY (`version_id`)',
+			'KEY `acv_ophcocvi_clinicinfo_disorder_lmui_fk` (`last_modified_user_id`)',
+			'KEY `acv_ophcocvi_clinicinfo_disorder_cui_fk` (`created_user_id`)',
+			'KEY `ophcocvi_clinicinfo_disorder_aid_fk` (`id`)',
+			'CONSTRAINT `acv_ophcocvi_clinicinfo_disorder_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `acv_ophcocvi_clinicinfo_disorder_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `ophcocvi_clinicinfo_disorder_aid_fk` FOREIGN KEY (`id`) REFERENCES `ophcocvi_clinicinfo_disorder` (`id`)',
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
-		$this->insert('ophcocvi_clinicinfo_disorders',array('name'=>'age-related macular degeneration – subretinal neovascularisation','display_order'=>1));
+		$this->insert('ophcocvi_clinicinfo_disorder',array('name'=>'age-related macular degeneration – subretinal neovascularisation','display_order'=>1));
 
 
 
 		$this->createTable('et_ophcocvi_clinicinfo', array(
-				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-				'event_id' => 'int(10) unsigned NOT NULL',
-				'examination_date' => 'date DEFAULT NULL',
+			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'event_id' => 'int(10) unsigned NOT NULL',
+			'examination_date' => 'date',
 
-				'is_considered_blind' => 'tinyint(1) unsigned NOT NULL DEFAULT 0',
+			'is_considered_blind' => 'tinyint(1) unsigned NOT NULL DEFAULT 0',
 
-				'sight_varies_by_light_levels' => 'tinyint(1) unsigned NOT NULL DEFAULT 0',
+			'sight_varies_by_light_levels' => 'tinyint(1) unsigned NOT NULL DEFAULT 0',
 
-				'unaided_right_va' => 'varchar(255) DEFAULT \'\'',
+			'unaided_right_va' => 'varchar(255) DEFAULT \'\'',
 
-				'unaided_left_va' => 'varchar(255) DEFAULT \'\'',
+			'unaided_left_va' => 'varchar(255) DEFAULT \'\'',
 
-				'best_corrected_right_va' => 'varchar(255) DEFAULT \'\'',
+			'best_corrected_right_va' => 'varchar(255) DEFAULT \'\'',
 
-				'best_corrected_left_va' => 'varchar(255) DEFAULT \'\'',
+			'best_corrected_left_va' => 'varchar(255) DEFAULT \'\'',
 
-				'best_corrected_binocular_va' => 'varchar(255) DEFAULT \'\'',
+			'best_corrected_binocular_va' => 'varchar(255) DEFAULT \'\'',
 
-				'low_vision_status_id' => 'int(10) unsigned NOT NULL',
+			'low_vision_status_id' => 'int(10) unsigned',
 
-				'field_of_vision_id' => 'int(10) unsigned NOT NULL',
+			'field_of_vision_id' => 'int(10) unsigned',
 
-				'diagnoses_not_covered' => 'text DEFAULT \'\'',
+			'diagnoses_not_covered' => 'text DEFAULT \'\'',
 
-				'consultant_id' => 'int(10) unsigned NOT NULL',
+			'consultant_id' => 'int(10) unsigned',
 
-				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'deleted' => 'tinyint(1) unsigned not null',
-				'PRIMARY KEY (`id`)',
-				'KEY `et_ophcocvi_clinicinfo_lmui_fk` (`last_modified_user_id`)',
-				'KEY `et_ophcocvi_clinicinfo_cui_fk` (`created_user_id`)',
-				'KEY `et_ophcocvi_clinicinfo_ev_fk` (`event_id`)',
-				'KEY `ophcocvi_clinicinfo_low_vision_status_fk` (`low_vision_status_id`)',
-				'KEY `ophcocvi_clinicinfo_field_of_vision_fk` (`field_of_vision_id`)',
-				'KEY `et_ophcocvi_clinicinfo_consultant_id_fk` (`consultant_id`)',
-				'CONSTRAINT `et_ophcocvi_clinicinfo_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `et_ophcocvi_clinicinfo_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `et_ophcocvi_clinicinfo_ev_fk` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
-				'CONSTRAINT `ophcocvi_clinicinfo_low_vision_status_fk` FOREIGN KEY (`low_vision_status_id`) REFERENCES `ophcocvi_clinicinfo_low_vision_status` (`id`)',
-				'CONSTRAINT `ophcocvi_clinicinfo_field_of_vision_fk` FOREIGN KEY (`field_of_vision_id`) REFERENCES `ophcocvi_clinicinfo_field_of_vision` (`id`)',
-				'CONSTRAINT `et_ophcocvi_clinicinfo_consultant_id_fk` FOREIGN KEY (`consultant_id`) REFERENCES `user` (`id`)',
-			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
+			'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'deleted' => 'tinyint(1) unsigned not null',
+			'PRIMARY KEY (`id`)',
+			'KEY `et_ophcocvi_clinicinfo_lmui_fk` (`last_modified_user_id`)',
+			'KEY `et_ophcocvi_clinicinfo_cui_fk` (`created_user_id`)',
+			'KEY `et_ophcocvi_clinicinfo_ev_fk` (`event_id`)',
+			'KEY `ophcocvi_clinicinfo_low_vision_status_fk` (`low_vision_status_id`)',
+			'KEY `ophcocvi_clinicinfo_field_of_vision_fk` (`field_of_vision_id`)',
+			'KEY `et_ophcocvi_clinicinfo_consultant_id_fk` (`consultant_id`)',
+			'CONSTRAINT `et_ophcocvi_clinicinfo_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `et_ophcocvi_clinicinfo_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `et_ophcocvi_clinicinfo_ev_fk` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
+			'CONSTRAINT `ophcocvi_clinicinfo_low_vision_status_fk` FOREIGN KEY (`low_vision_status_id`) REFERENCES `ophcocvi_clinicinfo_low_vision_status` (`id`)',
+			'CONSTRAINT `ophcocvi_clinicinfo_field_of_vision_fk` FOREIGN KEY (`field_of_vision_id`) REFERENCES `ophcocvi_clinicinfo_field_of_vision` (`id`)',
+			'CONSTRAINT `et_ophcocvi_clinicinfo_consultant_id_fk` FOREIGN KEY (`consultant_id`) REFERENCES `user` (`id`)',
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
 		$this->createTable('et_ophcocvi_clinicinfo_version', array(
-				'id' => 'int(10) unsigned NOT NULL',
-				'event_id' => 'int(10) unsigned NOT NULL',
-				'examination_date' => 'date DEFAULT NULL', // Examination date
-				'is_considered_blind' => 'tinyint(1) unsigned NOT NULL DEFAULT 0', // Is considered blind
-				'sight_varies_by_light_levels' => 'tinyint(1) unsigned NOT NULL DEFAULT 0', // Sight varies by light levels
-				'unaided_right_va' => 'varchar(255) DEFAULT \'\'', // Unaided right VA
-				'unaided_left_va' => 'varchar(255) DEFAULT \'\'', // Unaided left VA
-				'best_corrected_right_va' => 'varchar(255) DEFAULT \'\'', // Best corrected right VA
-				'best_corrected_left_va' => 'varchar(255) DEFAULT \'\'', // Best corrected left VA
-				'best_corrected_binocular_va' => 'varchar(255) DEFAULT \'\'', // Best corrected binocular VA
-				'low_vision_status_id' => 'int(10) unsigned NOT NULL', // Low vision status
-				'field_of_vision_id' => 'int(10) unsigned NOT NULL', // Field of vision
-				'diagnoses_not_covered' => 'text DEFAULT \'\'', // Diagnoses not covered
-				'consultant_id' => 'int(10) unsigned NOT NULL', // Consultant
-				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'deleted' => 'tinyint(1) unsigned not null',
-				'version_date' => "datetime NOT NULL DEFAULT '1900-01-01 00:00:00'",
-				'version_id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-				'PRIMARY KEY (`version_id`)',
-				'KEY `acv_et_ophcocvi_clinicinfo_lmui_fk` (`last_modified_user_id`)',
-				'KEY `acv_et_ophcocvi_clinicinfo_cui_fk` (`created_user_id`)',
-				'KEY `acv_et_ophcocvi_clinicinfo_ev_fk` (`event_id`)',
-				'KEY `et_ophcocvi_clinicinfo_aid_fk` (`id`)',
-				'KEY `acv_ophcocvi_clinicinfo_low_vision_status_fk` (`low_vision_status_id`)',
-				'KEY `acv_ophcocvi_clinicinfo_field_of_vision_fk` (`field_of_vision_id`)',
-				'KEY `acv_et_ophcocvi_clinicinfo_consultant_id_fk` (`consultant_id`)',
-				'CONSTRAINT `acv_et_ophcocvi_clinicinfo_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `acv_et_ophcocvi_clinicinfo_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `acv_et_ophcocvi_clinicinfo_ev_fk` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
-				'CONSTRAINT `et_ophcocvi_clinicinfo_aid_fk` FOREIGN KEY (`id`) REFERENCES `et_ophcocvi_clinicinfo` (`id`)',
-				'CONSTRAINT `acv_ophcocvi_clinicinfo_low_vision_status_fk` FOREIGN KEY (`low_vision_status_id`) REFERENCES `ophcocvi_clinicinfo_low_vision_status` (`id`)',
-				'CONSTRAINT `acv_ophcocvi_clinicinfo_field_of_vision_fk` FOREIGN KEY (`field_of_vision_id`) REFERENCES `ophcocvi_clinicinfo_field_of_vision` (`id`)',
-				'CONSTRAINT `acv_et_ophcocvi_clinicinfo_consultant_id_fk` FOREIGN KEY (`consultant_id`) REFERENCES `user` (`id`)',
-			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
+			'id' => 'int(10) unsigned NOT NULL',
+			'event_id' => 'int(10) unsigned NOT NULL',
+			'examination_date' => 'date', // Examination date
+			'is_considered_blind' => 'tinyint(1) unsigned NOT NULL DEFAULT 0', // Is considered blind
+			'sight_varies_by_light_levels' => 'tinyint(1) unsigned NOT NULL DEFAULT 0', // Sight varies by light levels
+			'unaided_right_va' => 'varchar(255) DEFAULT \'\'', // Unaided right VA
+			'unaided_left_va' => 'varchar(255) DEFAULT \'\'', // Unaided left VA
+			'best_corrected_right_va' => 'varchar(255) DEFAULT \'\'', // Best corrected right VA
+			'best_corrected_left_va' => 'varchar(255) DEFAULT \'\'', // Best corrected left VA
+			'best_corrected_binocular_va' => 'varchar(255) DEFAULT \'\'', // Best corrected binocular VA
+			'low_vision_status_id' => 'int(10) unsigned', // Low vision status
+			'field_of_vision_id' => 'int(10) unsigned', // Field of vision
+			'diagnoses_not_covered' => 'text DEFAULT \'\'', // Diagnoses not covered
+			'consultant_id' => 'int(10) unsigned', // Consultant
+			'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'deleted' => 'tinyint(1) unsigned not null',
+			'version_date' => "datetime NOT NULL DEFAULT '1900-01-01 00:00:00'",
+			'version_id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'PRIMARY KEY (`version_id`)',
+			'KEY `acv_et_ophcocvi_clinicinfo_lmui_fk` (`last_modified_user_id`)',
+			'KEY `acv_et_ophcocvi_clinicinfo_cui_fk` (`created_user_id`)',
+			'KEY `acv_et_ophcocvi_clinicinfo_ev_fk` (`event_id`)',
+			'KEY `et_ophcocvi_clinicinfo_aid_fk` (`id`)',
+			'KEY `acv_ophcocvi_clinicinfo_low_vision_status_fk` (`low_vision_status_id`)',
+			'KEY `acv_ophcocvi_clinicinfo_field_of_vision_fk` (`field_of_vision_id`)',
+			'KEY `acv_et_ophcocvi_clinicinfo_consultant_id_fk` (`consultant_id`)',
+			'CONSTRAINT `acv_et_ophcocvi_clinicinfo_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `acv_et_ophcocvi_clinicinfo_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `acv_et_ophcocvi_clinicinfo_ev_fk` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
+			'CONSTRAINT `et_ophcocvi_clinicinfo_aid_fk` FOREIGN KEY (`id`) REFERENCES `et_ophcocvi_clinicinfo` (`id`)',
+			'CONSTRAINT `acv_ophcocvi_clinicinfo_low_vision_status_fk` FOREIGN KEY (`low_vision_status_id`) REFERENCES `ophcocvi_clinicinfo_low_vision_status` (`id`)',
+			'CONSTRAINT `acv_ophcocvi_clinicinfo_field_of_vision_fk` FOREIGN KEY (`field_of_vision_id`) REFERENCES `ophcocvi_clinicinfo_field_of_vision` (`id`)',
+			'CONSTRAINT `acv_et_ophcocvi_clinicinfo_consultant_id_fk` FOREIGN KEY (`consultant_id`) REFERENCES `user` (`id`)',
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
-		$this->createTable('et_ophcocvi_clinicinfo_disorders_assignment', array(
-				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-				'element_id' => 'int(10) unsigned NOT NULL',
-				'ophcocvi_clinicinfo_disorders_id' => 'int(10) unsigned NOT NULL',
-				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'deleted' => 'tinyint(1) unsigned not null',
-				'PRIMARY KEY (`id`)',
-				'KEY `et_ophcocvi_clinicinfo_disorders_assignment_lmui_fk` (`last_modified_user_id`)',
-				'KEY `et_ophcocvi_clinicinfo_disorders_assignment_cui_fk` (`created_user_id`)',
-				'KEY `et_ophcocvi_clinicinfo_disorders_assignment_ele_fk` (`element_id`)',
-				'KEY `et_ophcocvi_clinicinfo_disorders_assignment_lku_fk` (`ophcocvi_clinicinfo_disorders_id`)',
-				'CONSTRAINT `et_ophcocvi_clinicinfo_disorders_assignment_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `et_ophcocvi_clinicinfo_disorders_assignment_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `et_ophcocvi_clinicinfo_disorders_assignment_ele_fk` FOREIGN KEY (`element_id`) REFERENCES `et_ophcocvi_clinicinfo` (`id`)',
-				'CONSTRAINT `et_ophcocvi_clinicinfo_disorders_assignment_lku_fk` FOREIGN KEY (`ophcocvi_clinicinfo_disorders_id`) REFERENCES `ophcocvi_clinicinfo_disorders` (`id`)',
-			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
+		$this->createTable('et_ophcocvi_clinicinfo_disorder_assignment', array(
+			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'element_id' => 'int(10) unsigned NOT NULL',
+			'ophcocvi_clinicinfo_disorder_id' => 'int(10) unsigned NOT NULL',
+			'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'deleted' => 'tinyint(1) unsigned not null',
+			'PRIMARY KEY (`id`)',
+			'KEY `et_ophcocvi_clinicinfo_disorder_assignment_lmui_fk` (`last_modified_user_id`)',
+			'KEY `et_ophcocvi_clinicinfo_disorder_assignment_cui_fk` (`created_user_id`)',
+			'KEY `et_ophcocvi_clinicinfo_disorder_assignment_ele_fk` (`element_id`)',
+			'KEY `et_ophcocvi_clinicinfo_disorder_assignment_lku_fk` (`ophcocvi_clinicinfo_disorder_id`)',
+			'CONSTRAINT `et_ophcocvi_clinicinfo_disorder_assignment_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `et_ophcocvi_clinicinfo_disorder_assignment_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `et_ophcocvi_clinicinfo_disorder_assignment_ele_fk` FOREIGN KEY (`element_id`) REFERENCES `et_ophcocvi_clinicinfo` (`id`)',
+			'CONSTRAINT `et_ophcocvi_clinicinfo_disorder_assignment_lku_fk` FOREIGN KEY (`ophcocvi_clinicinfo_disorder_id`) REFERENCES `ophcocvi_clinicinfo_disorder` (`id`)',
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
-		$this->createTable('et_ophcocvi_clinicinfo_disorders_assignment_version', array(
-				'id' => 'int(10) unsigned NOT NULL',
-				'element_id' => 'int(10) unsigned NOT NULL',
-				'ophcocvi_clinicinfo_disorders_id' => 'int(10) unsigned NOT NULL',
-				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'deleted' => 'tinyint(1) unsigned not null',
-				'version_date' => "datetime NOT NULL DEFAULT '1900-01-01 00:00:00'",
-				'version_id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-				'PRIMARY KEY (`version_id`)',
-				'KEY `acv_et_ophcocvi_clinicinfo_disorders_assignment_lmui_fk` (`last_modified_user_id`)',
-				'KEY `acv_et_ophcocvi_clinicinfo_disorders_assignment_cui_fk` (`created_user_id`)',
-				'KEY `acv_et_ophcocvi_clinicinfo_disorders_assignment_ele_fk` (`element_id`)',
-				'KEY `acv_et_ophcocvi_clinicinfo_disorders_assignment_lku_fk` (`ophcocvi_clinicinfo_disorders_id`)',
-				'KEY `et_ophcocvi_clinicinfo_disorders_assignment_aid_fk` (`id`)',
-				'CONSTRAINT `acv_et_ophcocvi_clinicinfo_disorders_assignment_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `acv_et_ophcocvi_clinicinfo_disorders_assignment_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `acv_et_ophcocvi_clinicinfo_disorders_assignment_ele_fk` FOREIGN KEY (`element_id`) REFERENCES `et_ophcocvi_clinicinfo` (`id`)',
-				'CONSTRAINT `acv_et_ophcocvi_clinicinfo_disorders_assignment_lku_fk` FOREIGN KEY (`ophcocvi_clinicinfo_disorders_id`) REFERENCES `ophcocvi_clinicinfo_disorders` (`id`)',
-				'CONSTRAINT `et_ophcocvi_clinicinfo_disorders_assignment_aid_fk` FOREIGN KEY (`id`) REFERENCES `et_ophcocvi_clinicinfo_disorders_assignment` (`id`)',
-			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
+		$this->createTable('et_ophcocvi_clinicinfo_disorder_assignment_version', array(
+			'id' => 'int(10) unsigned NOT NULL',
+			'element_id' => 'int(10) unsigned NOT NULL',
+			'ophcocvi_clinicinfo_disorder_id' => 'int(10) unsigned NOT NULL',
+			'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'deleted' => 'tinyint(1) unsigned not null',
+			'version_date' => "datetime NOT NULL DEFAULT '1900-01-01 00:00:00'",
+			'version_id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'PRIMARY KEY (`version_id`)',
+			'KEY `acv_et_ophcocvi_clinicinfo_disorder_assignment_lmui_fk` (`last_modified_user_id`)',
+			'KEY `acv_et_ophcocvi_clinicinfo_disorder_assignment_cui_fk` (`created_user_id`)',
+			'KEY `acv_et_ophcocvi_clinicinfo_disorder_assignment_ele_fk` (`element_id`)',
+			'KEY `acv_et_ophcocvi_clinicinfo_disorder_assignment_lku_fk` (`ophcocvi_clinicinfo_disorder_id`)',
+			'KEY `et_ophcocvi_clinicinfo_disorder_assignment_aid_fk` (`id`)',
+			'CONSTRAINT `acv_et_ophcocvi_clinicinfo_disorder_assignment_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `acv_et_ophcocvi_clinicinfo_disorder_assignment_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `acv_et_ophcocvi_clinicinfo_disorder_assignment_ele_fk` FOREIGN KEY (`element_id`) REFERENCES `et_ophcocvi_clinicinfo` (`id`)',
+			'CONSTRAINT `acv_et_ophcocvi_clinicinfo_disorder_assignment_lku_fk` FOREIGN KEY (`ophcocvi_clinicinfo_disorder_id`) REFERENCES `ophcocvi_clinicinfo_disorder` (`id`)',
+			'CONSTRAINT `et_ophcocvi_clinicinfo_disorder_assignment_aid_fk` FOREIGN KEY (`id`) REFERENCES `et_ophcocvi_clinicinfo_disorder_assignment` (`id`)',
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
 
 
 		$this->createTable('et_ophcocvi_consentsig', array(
-				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-				'event_id' => 'int(10) unsigned NOT NULL',
-				'is_patient' => 'tinyint(1) unsigned NOT NULL DEFAULT 0',
-
-				'signature_date' => 'date DEFAULT NULL',
-
-				'representative_name' => 'varchar(255) DEFAULT \'\'',
-
-				'signature_file_id' => 'int(10) unsigned NOT NULL',
-
-				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'deleted' => 'tinyint(1) unsigned not null',
-				'PRIMARY KEY (`id`)',
-				'KEY `et_ophcocvi_consentsig_lmui_fk` (`last_modified_user_id`)',
-				'KEY `et_ophcocvi_consentsig_cui_fk` (`created_user_id`)',
-				'KEY `et_ophcocvi_consentsig_ev_fk` (`event_id`)',
-				'KEY `et_ophcocvi_consentsig_signature_file_id_fk` (`signature_file_id`)',
-				'CONSTRAINT `et_ophcocvi_consentsig_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `et_ophcocvi_consentsig_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `et_ophcocvi_consentsig_ev_fk` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
-				'CONSTRAINT `et_ophcocvi_consentsig_signature_file_id_fk` FOREIGN KEY (`signature_file_id`) REFERENCES `protected_file` (`id`)',
-			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
+			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'event_id' => 'int(10) unsigned NOT NULL',
+			'is_patient' => 'tinyint(1) unsigned NOT NULL DEFAULT 0',
+			'signature_date' => 'date',
+			'representative_name' => 'varchar(255) DEFAULT \'\'',
+			'signature_file_id' => 'int(10) unsigned',
+			'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'deleted' => 'tinyint(1) unsigned not null',
+			'PRIMARY KEY (`id`)',
+			'KEY `et_ophcocvi_consentsig_lmui_fk` (`last_modified_user_id`)',
+			'KEY `et_ophcocvi_consentsig_cui_fk` (`created_user_id`)',
+			'KEY `et_ophcocvi_consentsig_ev_fk` (`event_id`)',
+			'KEY `et_ophcocvi_consentsig_signature_file_id_fk` (`signature_file_id`)',
+			'CONSTRAINT `et_ophcocvi_consentsig_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `et_ophcocvi_consentsig_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `et_ophcocvi_consentsig_ev_fk` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
+			'CONSTRAINT `et_ophcocvi_consentsig_signature_file_id_fk` FOREIGN KEY (`signature_file_id`) REFERENCES `protected_file` (`id`)',
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
 		$this->createTable('et_ophcocvi_consentsig_version', array(
-				'id' => 'int(10) unsigned NOT NULL',
-				'event_id' => 'int(10) unsigned NOT NULL',
-				'is_patient' => 'tinyint(1) unsigned NOT NULL DEFAULT 0', // Is patient
-				'signature_date' => 'date DEFAULT NULL', // Signature date
-				'representative_name' => 'varchar(255) DEFAULT \'\'', // Representative name
-				'signature_file_id' => 'int(10) unsigned NOT NULL', // Signature File
-				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'deleted' => 'tinyint(1) unsigned not null',
-				'version_date' => "datetime NOT NULL DEFAULT '1900-01-01 00:00:00'",
-				'version_id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-				'PRIMARY KEY (`version_id`)',
-				'KEY `acv_et_ophcocvi_consentsig_lmui_fk` (`last_modified_user_id`)',
-				'KEY `acv_et_ophcocvi_consentsig_cui_fk` (`created_user_id`)',
-				'KEY `acv_et_ophcocvi_consentsig_ev_fk` (`event_id`)',
-				'KEY `et_ophcocvi_consentsig_aid_fk` (`id`)',
-				'KEY `acv_et_ophcocvi_consentsig_signature_file_id_fk` (`signature_file_id`)',
-				'CONSTRAINT `acv_et_ophcocvi_consentsig_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `acv_et_ophcocvi_consentsig_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `acv_et_ophcocvi_consentsig_ev_fk` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
-				'CONSTRAINT `et_ophcocvi_consentsig_aid_fk` FOREIGN KEY (`id`) REFERENCES `et_ophcocvi_consentsig` (`id`)',
-				'CONSTRAINT `acv_et_ophcocvi_consentsig_signature_file_id_fk` FOREIGN KEY (`signature_file_id`) REFERENCES `protected_file` (`id`)',
-			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
+			'id' => 'int(10) unsigned NOT NULL',
+			'event_id' => 'int(10) unsigned NOT NULL',
+			'is_patient' => 'tinyint(1) unsigned NOT NULL DEFAULT 0', // Is patient
+			'signature_date' => 'date', // Signature date
+			'representative_name' => 'varchar(255) DEFAULT \'\'', // Representative name
+			'signature_file_id' => 'int(10) unsigned', // Signature File
+			'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'deleted' => 'tinyint(1) unsigned not null',
+			'version_date' => "datetime NOT NULL DEFAULT '1900-01-01 00:00:00'",
+			'version_id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'PRIMARY KEY (`version_id`)',
+			'KEY `acv_et_ophcocvi_consentsig_lmui_fk` (`last_modified_user_id`)',
+			'KEY `acv_et_ophcocvi_consentsig_cui_fk` (`created_user_id`)',
+			'KEY `acv_et_ophcocvi_consentsig_ev_fk` (`event_id`)',
+			'KEY `et_ophcocvi_consentsig_aid_fk` (`id`)',
+			'KEY `acv_et_ophcocvi_consentsig_signature_file_id_fk` (`signature_file_id`)',
+			'CONSTRAINT `acv_et_ophcocvi_consentsig_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `acv_et_ophcocvi_consentsig_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `acv_et_ophcocvi_consentsig_ev_fk` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
+			'CONSTRAINT `et_ophcocvi_consentsig_aid_fk` FOREIGN KEY (`id`) REFERENCES `et_ophcocvi_consentsig` (`id`)',
+			'CONSTRAINT `acv_et_ophcocvi_consentsig_signature_file_id_fk` FOREIGN KEY (`signature_file_id`) REFERENCES `protected_file` (`id`)',
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
 		$this->createTable('ophcocvi_clericinfo_employment_status', array(
-				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-				'name' => 'varchar(128) NOT NULL',
-				'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'deleted' => 'tinyint(1) unsigned not null',
-				'PRIMARY KEY (`id`)',
-				'KEY `ophcocvi_clericinfo_employment_status_lmui_fk` (`last_modified_user_id`)',
-				'KEY `ophcocvi_clericinfo_employment_status_cui_fk` (`created_user_id`)',
-				'CONSTRAINT `ophcocvi_clericinfo_employment_status_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `ophcocvi_clericinfo_employment_status_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
-			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
+			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'name' => 'varchar(128) NOT NULL',
+			'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'deleted' => 'tinyint(1) unsigned not null',
+			'PRIMARY KEY (`id`)',
+			'KEY `ophcocvi_clericinfo_employment_status_lmui_fk` (`last_modified_user_id`)',
+			'KEY `ophcocvi_clericinfo_employment_status_cui_fk` (`created_user_id`)',
+			'CONSTRAINT `ophcocvi_clericinfo_employment_status_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `ophcocvi_clericinfo_employment_status_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
 		$this->createTable('ophcocvi_clericinfo_employment_status_version', array(
-				'id' => 'int(10) unsigned NOT NULL',
-				'name' => 'varchar(128) NOT NULL',
-				'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'deleted' => 'tinyint(1) unsigned not null',
-				'version_date' => "datetime NOT NULL DEFAULT '1900-01-01 00:00:00'",
-				'version_id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-				'PRIMARY KEY (`version_id`)',
-				'KEY `acv_ophcocvi_clericinfo_employment_status_lmui_fk` (`last_modified_user_id`)',
-				'KEY `acv_ophcocvi_clericinfo_employment_status_cui_fk` (`created_user_id`)',
-				'KEY `ophcocvi_clericinfo_employment_status_aid_fk` (`id`)',
-				'CONSTRAINT `acv_ophcocvi_clericinfo_employment_status_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `acv_ophcocvi_clericinfo_employment_status_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `ophcocvi_clericinfo_employment_status_aid_fk` FOREIGN KEY (`id`) REFERENCES `ophcocvi_clericinfo_employment_status` (`id`)',
-			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
+			'id' => 'int(10) unsigned NOT NULL',
+			'name' => 'varchar(128) NOT NULL',
+			'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'deleted' => 'tinyint(1) unsigned not null',
+			'version_date' => "datetime NOT NULL DEFAULT '1900-01-01 00:00:00'",
+			'version_id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'PRIMARY KEY (`version_id`)',
+			'KEY `acv_ophcocvi_clericinfo_employment_status_lmui_fk` (`last_modified_user_id`)',
+			'KEY `acv_ophcocvi_clericinfo_employment_status_cui_fk` (`created_user_id`)',
+			'KEY `ophcocvi_clericinfo_employment_status_aid_fk` (`id`)',
+			'CONSTRAINT `acv_ophcocvi_clericinfo_employment_status_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `acv_ophcocvi_clericinfo_employment_status_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `ophcocvi_clericinfo_employment_status_aid_fk` FOREIGN KEY (`id`) REFERENCES `ophcocvi_clericinfo_employment_status` (`id`)',
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
 		$this->insert('ophcocvi_clericinfo_employment_status',array('name'=>'Retired','display_order'=>1));
 		$this->insert('ophcocvi_clericinfo_employment_status',array('name'=>'Employed','display_order'=>2));
@@ -441,40 +437,40 @@ class m160725_134546_event_type_OphCoCvi extends CDbMigration
 		$this->insert('ophcocvi_clericinfo_employment_status',array('name'=>'Student','display_order'=>5));
 
 		$this->createTable('ophcocvi_clericinfo_preferred_info_fmt', array(
-				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-				'name' => 'varchar(128) NOT NULL',
-				'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'deleted' => 'tinyint(1) unsigned not null',
-				'PRIMARY KEY (`id`)',
-				'KEY `ophcocvi_clericinfo_preferred_info_fmt_lmui_fk` (`last_modified_user_id`)',
-				'KEY `ophcocvi_clericinfo_preferred_info_fmt_cui_fk` (`created_user_id`)',
-				'CONSTRAINT `ophcocvi_clericinfo_preferred_info_fmt_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `ophcocvi_clericinfo_preferred_info_fmt_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
-			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
+			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'name' => 'varchar(128) NOT NULL',
+			'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'deleted' => 'tinyint(1) unsigned not null',
+			'PRIMARY KEY (`id`)',
+			'KEY `ophcocvi_clericinfo_preferred_info_fmt_lmui_fk` (`last_modified_user_id`)',
+			'KEY `ophcocvi_clericinfo_preferred_info_fmt_cui_fk` (`created_user_id`)',
+			'CONSTRAINT `ophcocvi_clericinfo_preferred_info_fmt_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `ophcocvi_clericinfo_preferred_info_fmt_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
 		$this->createTable('ophcocvi_clericinfo_preferred_info_fmt_version', array(
-				'id' => 'int(10) unsigned NOT NULL',
-				'name' => 'varchar(128) NOT NULL',
-				'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'deleted' => 'tinyint(1) unsigned not null',
-				'version_date' => "datetime NOT NULL DEFAULT '1900-01-01 00:00:00'",
-				'version_id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-				'PRIMARY KEY (`version_id`)',
-				'KEY `acv_ophcocvi_clericinfo_preferred_info_fmt_lmui_fk` (`last_modified_user_id`)',
-				'KEY `acv_ophcocvi_clericinfo_preferred_info_fmt_cui_fk` (`created_user_id`)',
-				'KEY `ophcocvi_clericinfo_preferred_info_fmt_aid_fk` (`id`)',
-				'CONSTRAINT `acv_ophcocvi_clericinfo_preferred_info_fmt_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `acv_ophcocvi_clericinfo_preferred_info_fmt_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `ophcocvi_clericinfo_preferred_info_fmt_aid_fk` FOREIGN KEY (`id`) REFERENCES `ophcocvi_clericinfo_preferred_info_fmt` (`id`)',
-			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
+			'id' => 'int(10) unsigned NOT NULL',
+			'name' => 'varchar(128) NOT NULL',
+			'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'deleted' => 'tinyint(1) unsigned not null',
+			'version_date' => "datetime NOT NULL DEFAULT '1900-01-01 00:00:00'",
+			'version_id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'PRIMARY KEY (`version_id`)',
+			'KEY `acv_ophcocvi_clericinfo_preferred_info_fmt_lmui_fk` (`last_modified_user_id`)',
+			'KEY `acv_ophcocvi_clericinfo_preferred_info_fmt_cui_fk` (`created_user_id`)',
+			'KEY `ophcocvi_clericinfo_preferred_info_fmt_aid_fk` (`id`)',
+			'CONSTRAINT `acv_ophcocvi_clericinfo_preferred_info_fmt_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `acv_ophcocvi_clericinfo_preferred_info_fmt_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `ophcocvi_clericinfo_preferred_info_fmt_aid_fk` FOREIGN KEY (`id`) REFERENCES `ophcocvi_clericinfo_preferred_info_fmt` (`id`)',
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
 		$this->insert('ophcocvi_clericinfo_preferred_info_fmt',array('name'=>'In large print','display_order'=>1));
 		$this->insert('ophcocvi_clericinfo_preferred_info_fmt',array('name'=>'On CD','display_order'=>2));
@@ -482,40 +478,40 @@ class m160725_134546_event_type_OphCoCvi extends CDbMigration
 		$this->insert('ophcocvi_clericinfo_preferred_info_fmt',array('name'=>'By email','display_order'=>4));
 
 		$this->createTable('ophcocvi_clericinfo_contact_urgency', array(
-				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-				'name' => 'varchar(128) NOT NULL',
-				'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'deleted' => 'tinyint(1) unsigned not null',
-				'PRIMARY KEY (`id`)',
-				'KEY `ophcocvi_clericinfo_contact_urgency_lmui_fk` (`last_modified_user_id`)',
-				'KEY `ophcocvi_clericinfo_contact_urgency_cui_fk` (`created_user_id`)',
-				'CONSTRAINT `ophcocvi_clericinfo_contact_urgency_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `ophcocvi_clericinfo_contact_urgency_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
-			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
+			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'name' => 'varchar(128) NOT NULL',
+			'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'deleted' => 'tinyint(1) unsigned not null',
+			'PRIMARY KEY (`id`)',
+			'KEY `ophcocvi_clericinfo_contact_urgency_lmui_fk` (`last_modified_user_id`)',
+			'KEY `ophcocvi_clericinfo_contact_urgency_cui_fk` (`created_user_id`)',
+			'CONSTRAINT `ophcocvi_clericinfo_contact_urgency_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `ophcocvi_clericinfo_contact_urgency_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
 		$this->createTable('ophcocvi_clericinfo_contact_urgency_version', array(
-				'id' => 'int(10) unsigned NOT NULL',
-				'name' => 'varchar(128) NOT NULL',
-				'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'deleted' => 'tinyint(1) unsigned not null',
-				'version_date' => "datetime NOT NULL DEFAULT '1900-01-01 00:00:00'",
-				'version_id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-				'PRIMARY KEY (`version_id`)',
-				'KEY `acv_ophcocvi_clericinfo_contact_urgency_lmui_fk` (`last_modified_user_id`)',
-				'KEY `acv_ophcocvi_clericinfo_contact_urgency_cui_fk` (`created_user_id`)',
-				'KEY `ophcocvi_clericinfo_contact_urgency_aid_fk` (`id`)',
-				'CONSTRAINT `acv_ophcocvi_clericinfo_contact_urgency_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `acv_ophcocvi_clericinfo_contact_urgency_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `ophcocvi_clericinfo_contact_urgency_aid_fk` FOREIGN KEY (`id`) REFERENCES `ophcocvi_clericinfo_contact_urgency` (`id`)',
-			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
+			'id' => 'int(10) unsigned NOT NULL',
+			'name' => 'varchar(128) NOT NULL',
+			'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'deleted' => 'tinyint(1) unsigned not null',
+			'version_date' => "datetime NOT NULL DEFAULT '1900-01-01 00:00:00'",
+			'version_id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'PRIMARY KEY (`version_id`)',
+			'KEY `acv_ophcocvi_clericinfo_contact_urgency_lmui_fk` (`last_modified_user_id`)',
+			'KEY `acv_ophcocvi_clericinfo_contact_urgency_cui_fk` (`created_user_id`)',
+			'KEY `ophcocvi_clericinfo_contact_urgency_aid_fk` (`id`)',
+			'CONSTRAINT `acv_ophcocvi_clericinfo_contact_urgency_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `acv_ophcocvi_clericinfo_contact_urgency_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `ophcocvi_clericinfo_contact_urgency_aid_fk` FOREIGN KEY (`id`) REFERENCES `ophcocvi_clericinfo_contact_urgency` (`id`)',
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
 		$this->insert('ophcocvi_clericinfo_contact_urgency',array('name'=>'Immediately (i.e. potential risk factors present)','display_order'=>1));
 		$this->insert('ophcocvi_clericinfo_contact_urgency',array('name'=>'Within the next 2 weeks (in line with Association of Directors of Social Services\' national standards)','display_order'=>2));
@@ -524,76 +520,76 @@ class m160725_134546_event_type_OphCoCvi extends CDbMigration
 
 
 		$this->createTable('et_ophcocvi_clericinfo', array(
-				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-				'event_id' => 'int(10) unsigned NOT NULL',
-				'employment_status_id' => 'int(10) unsigned NOT NULL',
+			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'event_id' => 'int(10) unsigned NOT NULL',
+			'employment_status_id' => 'int(10) unsigned',
 
-				'preferred_info_fmt_id' => 'int(10) unsigned NOT NULL',
+			'preferred_info_fmt_id' => 'int(10) unsigned',
 
-				'info_email' => 'varchar(255) DEFAULT \'\'',
+			'info_email' => 'varchar(255) DEFAULT \'\'',
 
-				'contact_urgency_id' => 'int(10) unsigned NOT NULL',
+			'contact_urgency_id' => 'int(10) unsigned',
 
-				'preferred_language_id' => 'int(10) unsigned NOT NULL',
+			'preferred_language_id' => 'int(10) unsigned',
 
-				'social_service_comments' => 'text DEFAULT \'\'',
+			'social_service_comments' => 'text DEFAULT \'\'',
 
-				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'deleted' => 'tinyint(1) unsigned not null',
-				'PRIMARY KEY (`id`)',
-				'KEY `et_ophcocvi_clericinfo_lmui_fk` (`last_modified_user_id`)',
-				'KEY `et_ophcocvi_clericinfo_cui_fk` (`created_user_id`)',
-				'KEY `et_ophcocvi_clericinfo_ev_fk` (`event_id`)',
-				'KEY `ophcocvi_clericinfo_employment_status_fk` (`employment_status_id`)',
-				'KEY `ophcocvi_clericinfo_preferred_info_fmt_fk` (`preferred_info_fmt_id`)',
-				'KEY `ophcocvi_clericinfo_contact_urgency_fk` (`contact_urgency_id`)',
-				'KEY `et_ophcocvi_clericinfo_preferred_language_id_fk` (`preferred_language_id`)',
-				'CONSTRAINT `et_ophcocvi_clericinfo_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `et_ophcocvi_clericinfo_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `et_ophcocvi_clericinfo_ev_fk` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
-				'CONSTRAINT `ophcocvi_clericinfo_employment_status_fk` FOREIGN KEY (`employment_status_id`) REFERENCES `ophcocvi_clericinfo_employment_status` (`id`)',
-				'CONSTRAINT `ophcocvi_clericinfo_preferred_info_fmt_fk` FOREIGN KEY (`preferred_info_fmt_id`) REFERENCES `ophcocvi_clericinfo_preferred_info_fmt` (`id`)',
-				'CONSTRAINT `ophcocvi_clericinfo_contact_urgency_fk` FOREIGN KEY (`contact_urgency_id`) REFERENCES `ophcocvi_clericinfo_contact_urgency` (`id`)',
-				'CONSTRAINT `et_ophcocvi_clericinfo_preferred_language_id_fk` FOREIGN KEY (`preferred_language_id`) REFERENCES `language` (`id`)',
-			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
+			'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'deleted' => 'tinyint(1) unsigned not null',
+			'PRIMARY KEY (`id`)',
+			'KEY `et_ophcocvi_clericinfo_lmui_fk` (`last_modified_user_id`)',
+			'KEY `et_ophcocvi_clericinfo_cui_fk` (`created_user_id`)',
+			'KEY `et_ophcocvi_clericinfo_ev_fk` (`event_id`)',
+			'KEY `ophcocvi_clericinfo_employment_status_fk` (`employment_status_id`)',
+			'KEY `ophcocvi_clericinfo_preferred_info_fmt_fk` (`preferred_info_fmt_id`)',
+			'KEY `ophcocvi_clericinfo_contact_urgency_fk` (`contact_urgency_id`)',
+			'KEY `et_ophcocvi_clericinfo_preferred_language_id_fk` (`preferred_language_id`)',
+			'CONSTRAINT `et_ophcocvi_clericinfo_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `et_ophcocvi_clericinfo_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `et_ophcocvi_clericinfo_ev_fk` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
+			'CONSTRAINT `ophcocvi_clericinfo_employment_status_fk` FOREIGN KEY (`employment_status_id`) REFERENCES `ophcocvi_clericinfo_employment_status` (`id`)',
+			'CONSTRAINT `ophcocvi_clericinfo_preferred_info_fmt_fk` FOREIGN KEY (`preferred_info_fmt_id`) REFERENCES `ophcocvi_clericinfo_preferred_info_fmt` (`id`)',
+			'CONSTRAINT `ophcocvi_clericinfo_contact_urgency_fk` FOREIGN KEY (`contact_urgency_id`) REFERENCES `ophcocvi_clericinfo_contact_urgency` (`id`)',
+			'CONSTRAINT `et_ophcocvi_clericinfo_preferred_language_id_fk` FOREIGN KEY (`preferred_language_id`) REFERENCES `language` (`id`)',
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
 		$this->createTable('et_ophcocvi_clericinfo_version', array(
-				'id' => 'int(10) unsigned NOT NULL',
-				'event_id' => 'int(10) unsigned NOT NULL',
-				'employment_status_id' => 'int(10) unsigned NOT NULL', // Employment status
-				'preferred_info_fmt_id' => 'int(10) unsigned NOT NULL', // Preferred information format
-				'info_email' => 'varchar(255) DEFAULT \'\'', // Info email
-				'contact_urgency_id' => 'int(10) unsigned NOT NULL', // Contact urgency
-				'preferred_language_id' => 'int(10) unsigned NOT NULL', // Preferred language
-				'social_service_comments' => 'text DEFAULT \'\'', // Social service comments
-				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'deleted' => 'tinyint(1) unsigned not null',
-				'version_date' => "datetime NOT NULL DEFAULT '1900-01-01 00:00:00'",
-				'version_id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-				'PRIMARY KEY (`version_id`)',
-				'KEY `acv_et_ophcocvi_clericinfo_lmui_fk` (`last_modified_user_id`)',
-				'KEY `acv_et_ophcocvi_clericinfo_cui_fk` (`created_user_id`)',
-				'KEY `acv_et_ophcocvi_clericinfo_ev_fk` (`event_id`)',
-				'KEY `et_ophcocvi_clericinfo_aid_fk` (`id`)',
-				'KEY `acv_ophcocvi_clericinfo_employment_status_fk` (`employment_status_id`)',
-				'KEY `acv_ophcocvi_clericinfo_preferred_info_fmt_fk` (`preferred_info_fmt_id`)',
-				'KEY `acv_ophcocvi_clericinfo_contact_urgency_fk` (`contact_urgency_id`)',
-				'KEY `acv_et_ophcocvi_clericinfo_preferred_language_id_fk` (`preferred_language_id`)',
-				'CONSTRAINT `acv_et_ophcocvi_clericinfo_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `acv_et_ophcocvi_clericinfo_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `acv_et_ophcocvi_clericinfo_ev_fk` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
-				'CONSTRAINT `et_ophcocvi_clericinfo_aid_fk` FOREIGN KEY (`id`) REFERENCES `et_ophcocvi_clericinfo` (`id`)',
-				'CONSTRAINT `acv_ophcocvi_clericinfo_employment_status_fk` FOREIGN KEY (`employment_status_id`) REFERENCES `ophcocvi_clericinfo_employment_status` (`id`)',
-				'CONSTRAINT `acv_ophcocvi_clericinfo_preferred_info_fmt_fk` FOREIGN KEY (`preferred_info_fmt_id`) REFERENCES `ophcocvi_clericinfo_preferred_info_fmt` (`id`)',
-				'CONSTRAINT `acv_ophcocvi_clericinfo_contact_urgency_fk` FOREIGN KEY (`contact_urgency_id`) REFERENCES `ophcocvi_clericinfo_contact_urgency` (`id`)',
-				'CONSTRAINT `acv_et_ophcocvi_clericinfo_preferred_language_id_fk` FOREIGN KEY (`preferred_language_id`) REFERENCES `language` (`id`)',
-			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
+			'id' => 'int(10) unsigned NOT NULL',
+			'event_id' => 'int(10) unsigned NOT NULL',
+			'employment_status_id' => 'int(10) unsigned', // Employment status
+			'preferred_info_fmt_id' => 'int(10) unsigned', // Preferred information format
+			'info_email' => 'varchar(255) DEFAULT \'\'', // Info email
+			'contact_urgency_id' => 'int(10) unsigned', // Contact urgency
+			'preferred_language_id' => 'int(10) unsigned', // Preferred language
+			'social_service_comments' => 'text DEFAULT \'\'', // Social service comments
+			'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+			'deleted' => 'tinyint(1) unsigned not null',
+			'version_date' => "datetime NOT NULL DEFAULT '1900-01-01 00:00:00'",
+			'version_id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'PRIMARY KEY (`version_id`)',
+			'KEY `acv_et_ophcocvi_clericinfo_lmui_fk` (`last_modified_user_id`)',
+			'KEY `acv_et_ophcocvi_clericinfo_cui_fk` (`created_user_id`)',
+			'KEY `acv_et_ophcocvi_clericinfo_ev_fk` (`event_id`)',
+			'KEY `et_ophcocvi_clericinfo_aid_fk` (`id`)',
+			'KEY `acv_ophcocvi_clericinfo_employment_status_fk` (`employment_status_id`)',
+			'KEY `acv_ophcocvi_clericinfo_preferred_info_fmt_fk` (`preferred_info_fmt_id`)',
+			'KEY `acv_ophcocvi_clericinfo_contact_urgency_fk` (`contact_urgency_id`)',
+			'KEY `acv_et_ophcocvi_clericinfo_preferred_language_id_fk` (`preferred_language_id`)',
+			'CONSTRAINT `acv_et_ophcocvi_clericinfo_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `acv_et_ophcocvi_clericinfo_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `acv_et_ophcocvi_clericinfo_ev_fk` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
+			'CONSTRAINT `et_ophcocvi_clericinfo_aid_fk` FOREIGN KEY (`id`) REFERENCES `et_ophcocvi_clericinfo` (`id`)',
+			'CONSTRAINT `acv_ophcocvi_clericinfo_employment_status_fk` FOREIGN KEY (`employment_status_id`) REFERENCES `ophcocvi_clericinfo_employment_status` (`id`)',
+			'CONSTRAINT `acv_ophcocvi_clericinfo_preferred_info_fmt_fk` FOREIGN KEY (`preferred_info_fmt_id`) REFERENCES `ophcocvi_clericinfo_preferred_info_fmt` (`id`)',
+			'CONSTRAINT `acv_ophcocvi_clericinfo_contact_urgency_fk` FOREIGN KEY (`contact_urgency_id`) REFERENCES `ophcocvi_clericinfo_contact_urgency` (`id`)',
+			'CONSTRAINT `acv_et_ophcocvi_clericinfo_preferred_language_id_fk` FOREIGN KEY (`preferred_language_id`) REFERENCES `language` (`id`)',
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
 	}
 
@@ -604,8 +600,8 @@ class m160725_134546_event_type_OphCoCvi extends CDbMigration
 
 
 
-		$this->dropTable('et_ophcocvi_clinicinfo_disorders_assignment_version');
-		$this->dropTable('et_ophcocvi_clinicinfo_disorders_assignment');
+		$this->dropTable('et_ophcocvi_clinicinfo_disorder_assignment_version');
+		$this->dropTable('et_ophcocvi_clinicinfo_disorder_assignment');
 		$this->dropTable('et_ophcocvi_clinicinfo_version');
 		$this->dropTable('et_ophcocvi_clinicinfo');
 
@@ -614,8 +610,8 @@ class m160725_134546_event_type_OphCoCvi extends CDbMigration
 		$this->dropTable('ophcocvi_clinicinfo_low_vision_status');
 		$this->dropTable('ophcocvi_clinicinfo_field_of_vision_version');
 		$this->dropTable('ophcocvi_clinicinfo_field_of_vision');
-		$this->dropTable('ophcocvi_clinicinfo_disorders_version');
-		$this->dropTable('ophcocvi_clinicinfo_disorders');
+		$this->dropTable('ophcocvi_clinicinfo_disorder_version');
+		$this->dropTable('ophcocvi_clinicinfo_disorder');
 
 		$this->dropTable('et_ophcocvi_consentsig_version');
 		$this->dropTable('et_ophcocvi_consentsig');
