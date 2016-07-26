@@ -75,14 +75,13 @@ class ExaminationCreator
             }
             $complications->refresh();
 
-            if($examination['patient']['comments']){
-                $comments = new Element_OphCiExamination_OptomComments();
-                $comments->event_id = $examinationEvent->id;
-                $comments->created_user_id = $comments->last_modified_user_id = $userId;
-                $comments->comment = $examination['patient']['comments'];
-                if (!$comments->save(true, null, true)) {
-                    throw new \CDbException('Complications failed: ' . print_r($comments->getErrors(), true));
-                }
+            $comments = new Element_OphCiExamination_OptomComments();
+            $comments->event_id = $examinationEvent->id;
+            $comments->created_user_id = $comments->last_modified_user_id = $userId;
+            $comments->ready_for_second_eye = $examination['patient']['ready_for_second_eye'];
+            $comments->comment = $examination['patient']['comments'];
+            if (!$comments->save(true, null, true)) {
+                throw new \CDbException('Complications failed: ' . print_r($comments->getErrors(), true));
             }
 
             if (count($examination['patient']['eyes'][0]['reading'][0]['visual_acuity'])) {

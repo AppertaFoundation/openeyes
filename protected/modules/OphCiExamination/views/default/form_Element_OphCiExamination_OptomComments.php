@@ -20,6 +20,20 @@
 <div class="element-fields">
     <div class="field-row">
         <div class="large-2 column">
+            <label>Ready for second eye?</label>
+        </div>
+        <div class="large-10 column end">
+            <?php if($element->ready_for_second_eye === '1'):?>
+                Yes
+            <?php elseif ($element->ready_for_second_eye === '0'):?>
+                No
+            <?php else: ?>
+                Not Applicable
+            <?php endif;?>
+        </div>
+    </div>
+    <div class="field-row">
+        <div class="large-2 column">
             <label>Comment</label>
         </div>
         <div class="large-10 column end">

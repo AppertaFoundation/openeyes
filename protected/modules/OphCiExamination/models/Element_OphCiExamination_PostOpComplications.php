@@ -126,22 +126,16 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
 		return array(
 			'id' => 'ID',
 			'event_id' => 'Event',
-                        'right_values' => 'Post Op Complications'
+            'right_values' => 'Post Op Complications'
 		);
 	}
 
-        public function init()
-        {
-            $this->firm = \Firm::model()->findByPk(\Yii::app()->session['selected_firm_id']);
-            $this->subspecialty_id = $this->firm->serviceSubspecialtyAssignment ? $this->firm->serviceSubspecialtyAssignment->subspecialty_id : null;
-        }
+    public function beforeDelete()
+    {
+        OphCiExamination_Et_PostOpComplications::model()->deleteAll('element_id = :element_id', array(':element_id' => $this->id));
 
-        public function beforeDelete()
-        {
-            OphCiExamination_Et_PostOpComplications::model()->deleteAll('element_id = :element_id', array(':element_id' => $this->id));
-
-            return parent::beforeDelete();
-        }
+        return parent::beforeDelete();
+    }
 
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
