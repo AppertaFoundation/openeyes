@@ -37,7 +37,7 @@
 			</div>
 			<div class="large-5 column end phraseList">
 				<div>
-					<?php echo CHtml::textField('phrases[]','')?>
+					<?php echo CHtml::textField('OphCoCorrespondence_ReportLetters[phrases][]','')?>
 				</div>
 			</div>
 		</div>
@@ -58,7 +58,7 @@
 				</label>
 			</div>
 			<div class="large-9 column end">
-				<input type="radio" name="condition_type" id="condition_or" value="or" checked="checked" />
+				<input type="radio" name="OphCoCorrespondence_ReportLetters[condition_type]" id="condition_or" value="or" checked="checked" />
 				<label for="condition_or">
 					Must contain <strong>any</strong> of the phrases
 				</label>
@@ -70,7 +70,7 @@
 				<label></label>
 			</div>
 			<div class="large-9 column end">
-				<input type="radio" name="condition_type" id="condition_and" value="and" />
+				<input type="radio" name="OphCoCorrespondence_ReportLetters[condition_type]" id="condition_and" value="and" />
 				<label for="condition_and">
 					Must contain <strong>all</strong> of the phrases
 				</label>
@@ -82,8 +82,8 @@
 				<label></label>
 			</div>
 			<div class="large-9 column end">
-				<input type="hidden" name="match_correspondence" value="0" />
-				<input type="checkbox" id="match_correspondence" name="match_correspondence" value="1" checked="checked" />
+				<input type="hidden" name="OphCoCorrespondence_ReportLetters[match_correspondence]" value="0" />
+				<input type="checkbox" id="match_correspondence" name="OphCoCorrespondence_ReportLetters[match_correspondence]" value="1" checked="checked" />
 				<label for="match_correspondence">
 					Match correspondence
 				</label>
@@ -95,8 +95,8 @@
 				<label></label>
 			</div>
 			<div class="large-9 column end">
-				<input type="hidden" name="match_legacy_letters" value="0" />
-				<input type="checkbox" id="match_legacy_letters" name="match_legacy_letters" value="1" checked="checked" />
+				<input type="hidden" name="OphCoCorrespondence_ReportLetters[match_legacy_letters]" value="0" />
+				<input type="checkbox" id="match_legacy_letters" name="OphCoCorrespondence_ReportLetters[match_legacy_letters]" value="1" checked="checked" />
 				<label for="match_legacy_letters">
 					Match legacy letters
 				</label>
@@ -146,7 +146,7 @@
 				</label>
 			</div>
 			<div class="large-3 column end">
-				<?php echo CHtml::dropDownList('author_id','',CHtml::listData(User::model()->findAll(array('order' => 'first_name asc,last_name asc')),'id','fullName'),array('empty' => '--- Please select ---'))?>
+				<?php echo CHtml::dropDownList('OphCoCorrespondence_ReportLetters[author_id]','',CHtml::listData(User::model()->findAll(array('order' => 'first_name asc,last_name asc')),'id','fullName'),array('empty' => '--- Please select ---'))?>
 			</div>
 		</div>
 		<div class="row field-row">
@@ -156,7 +156,7 @@
 				</label>
 			</div>
 			<div class="large-3 column end">
-				<?php echo CHtml::dropDownList('site_id','',CHtml::listData(Site::model()->findAll(array('order' => 'name asc')),'id','name'),array('empty' => '--- Please select ---'))?>
+				<?php echo CHtml::dropDownList('OphCoCorrespondence_ReportLetters[site_id]','',CHtml::listData(Site::model()->findAll(array('order' => 'name asc')),'id','name'),array('empty' => '--- Please select ---'))?>
 			</div>
 		</div>
 
@@ -179,5 +179,5 @@
 	</div>
 </div>
 <script type="text/javascript">
-	$('input[name="phrases[]"]').focus();
+	$('input[name="OphCoCorrespondence_ReportLetters[phrases][]"]').focus();
 </script>

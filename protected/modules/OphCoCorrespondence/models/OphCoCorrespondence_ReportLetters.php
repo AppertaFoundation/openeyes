@@ -59,7 +59,7 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
 	public function rules()
 	{
 		return array(
-			array('match_correspondence, match_legacy_letters, phrases, condition_type, start_date, end_date, author_id', 'safe'),
+			array('match_correspondence, match_legacy_letters, phrases, condition_type, start_date, end_date, site_id, author_id', 'safe'),
 			array('condition_type', 'required'),
 		);
 	}
@@ -94,7 +94,7 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
 		$type_clauses = array();
 		$where_operator = ' ' . ($this->condition_type == 'and' ? 'and' : 'or') . ' ';
 
-		$select = array('c.first_name','c.last_name','p.dob','p.hos_num','e.created_date','ep.patient_id');
+		$select = array('c.first_name','c.last_name','p.dob','p.gender','p.hos_num','cons.first_name as cons_first_name','cons.last_name as cons_last_name','e.created_date','ep.patient_id');
 
 		$data = $this->getDbCommand();
 
@@ -117,8 +117,17 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
 		}
 
 		$this->letters = array();
+        $data->where($where,$where_params);
 
-		$data->where($where,$where_params);
+        
+        if ($this->match_correspondence) {
+            $data->join('site', 'l.site_id = site.id');
+            $select[] = 'site.name';
+
+            if($this->site_id){
+                $data->andWhere('site.id = :site_id',array(':site_id' => $this->site_id) );
+            }
+        }
 		$data->select(implode(',',$select));
 
 		$this->executeQuery($data);
@@ -146,6 +155,8 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
 			->join("episode ep","e.episode_id = ep.id")
 			->join("patient p","ep.patient_id = p.id")
 			->join("contact c","p.contact_id = c.id")
+            ->join("user", "e.created_user_id = user.id")
+            ->join("contact cons", "user.contact_id = cons.id AND user.id = cons.id")
 			->order("e.created_date asc");
 	}
 
@@ -163,7 +174,7 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
 
 		$data->leftJoin("{$letter_table[0]} {$letter_table[1]}","{$letter_table[1]}.event_id = e.id");
 
-		$clause = "({$letter_table[1]}.id is not null and e.event_type_id = :et_{$letter_table[1]}_id ";
+        $clause = "({$letter_table[1]}.id is not null and e.event_type_id = :et_{$letter_table[1]}_id ";
 		$where_params[":et_{$letter_table[1]}_id"] = $et->id;
 
         if($this->phrases){
@@ -266,10 +277,10 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
 	{
 		$output = $this->description()."\n\n";
 
-		$output .= Patient::model()->getAttributeLabel('hos_num').",".Patient::model()->getAttributeLabel('dob').",".Patient::model()->getAttributeLabel('first_name').",".Patient::model()->getAttributeLabel('last_name').",Date,Type,Link\n";
+		$output .= Patient::model()->getAttributeLabel('hos_num').",".Patient::model()->getAttributeLabel('dob').",".Patient::model()->getAttributeLabel('first_name').",".Patient::model()->getAttributeLabel('last_name').','.Patient::model()->getAttributeLabel('gender').",Site,Consultant's name,Date,Type,Link\n";
 
 		foreach ($this->letters as $letter) {
-			$output .= "\"{$letter['hos_num']}\",\"".($letter['dob'] ? date('j M Y',strtotime($letter['dob'])) : 'Unknown')."\",\"{$letter['first_name']}\",\"{$letter['last_name']}\",\"".date('j M Y',strtotime($letter['created_date']))."\",\"".$letter['type']."\",\"".$letter['link']."\"\n";
+			$output .= "\"{$letter['hos_num']}\",\"".($letter['dob'] ? date('j M Y',strtotime($letter['dob'])) : 'Unknown')."\",\"{$letter['first_name']}\",\"{$letter['last_name']}\",\"{$letter['gender']}\",\"{$letter['cons_first_name']} {$letter['cons_last_name']}\",\"" .( isset($letter['name']) ? $letter['name'] : 'N/A' )  . "\",\"".date('j M Y',strtotime($letter['created_date']))."\",\"".$letter['type']."\",\"".$letter['link']."\"\n";
 		}
 
 		return $output;
