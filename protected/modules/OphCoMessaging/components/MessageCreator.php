@@ -51,7 +51,7 @@ class MessageCreator
             $messageElement = new Element_OphCoMessaging_Message();
             $messageElement->event_id = $messageEvent->id;
             $messageElement->created_user_id = $messageElement->last_modified_user_id = $sender->id;
-            $messageElement->for_the_attention_of = $recipient->id;
+            $messageElement->for_the_attention_of_user_id = $recipient->id;
             $messageElement->message_type_id = $type->id;
             $messageElement->message_text = $message;
 
@@ -69,7 +69,7 @@ class MessageCreator
      */
     protected function getEventType()
     {
-        $eventType = \EventType::model()->findByAttributes('class_name = ?', array('OphCoMessaging'));
+        $eventType = \EventType::model()->findByAttributes(array('class_name' => 'OphCoMessaging'));
 
         if(!$eventType){
             throw new \CDbException('Event Type for messaging not found');

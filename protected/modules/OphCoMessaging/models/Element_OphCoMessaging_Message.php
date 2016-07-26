@@ -23,7 +23,7 @@ namespace OEModule\OphCoMessaging\models;
  * The followings are the available columns in table:
  * @property string $id
  * @property integer $event_id
- * @property integer $for_the_attention_of
+ * @property integer $for_the_attention_of_user_id
  * @property integer $message_type_id
  * @property integer $urgent
  * @property string $message_text
@@ -69,9 +69,9 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
 	public function rules()
 	{
 		return array(
-			array('event_id, for_the_attention_of, message_type_id, urgent, message_text, marked_as_read', 'safe'),
+			array('event_id, for_the_attention_of_user_id, message_type_id, urgent, message_text, marked_as_read', 'safe'),
 			array('for_the_attention_of_user_id, message_type_id, message_text, ', 'required'),
-			array('id, event_id, for_the_attention_of_user-id, message_type_id, urgent, message_text, marked_as_read', 'safe', 'on' => 'search'),
+			array('id, event_id, for_the_attention_of_user_id, message_type_id, urgent, message_text, marked_as_read', 'safe', 'on' => 'search'),
 		);
 	}
 

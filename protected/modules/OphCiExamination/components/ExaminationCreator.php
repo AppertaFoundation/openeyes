@@ -21,6 +21,8 @@ namespace OEModule\OphCiExamination\components;
 
 
 use OEModule\OphCiExamination\models\Element_OphCiExamination_OptomComments;
+use OEModule\OphCoMessaging\components\MessageCreator;
+use OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType;
 
 class ExaminationCreator
 {
@@ -82,6 +84,18 @@ class ExaminationCreator
             $comments->comment = $examination['patient']['comments'];
             if (!$comments->save(true, null, true)) {
                 throw new \CDbException('Complications failed: ' . print_r($comments->getErrors(), true));
+            }
+
+            if( isset(\Yii::app()->modules['OphCoMessaging']) && ($examination['patient']['comments'] ||  $examination['patient']['ready_for_second_eye'] === false)){
+                $episode = \Episode::model()->findByPk($episodeId);
+                $recipient = \User::model()->findByPk($episode->firm->consultant_id);
+                if($recipient){
+                    $messageCreator = new MessageCreator();
+                    $sender = \User::model()->findByPk($userId);
+                    $message = $examination['patient']['comments']; //@todo add the ready question
+                    $type =  OphCoMessaging_Message_MessageType::model()->findByAttributes(array('name' => 'General'));
+                    $messageCreator->save($episodeId, $sender, $recipient, $message, $type, array('event' => $examinationEvent->id));
+                }
             }
 
             if (count($examination['patient']['eyes'][0]['reading'][0]['visual_acuity'])) {
