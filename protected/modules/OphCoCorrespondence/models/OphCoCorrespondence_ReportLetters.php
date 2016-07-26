@@ -156,7 +156,7 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
 			->join("patient p","ep.patient_id = p.id")
 			->join("contact c","p.contact_id = c.id")
             ->join("user", "e.created_user_id = user.id")
-            ->join("contact cons", "user.contact_id = cons.id AND user.id = cons.id")
+            ->join("contact cons", "user.contact_id = cons.id AND user.contact_id = cons.id")
 			->order("e.created_date asc");
 	}
 
