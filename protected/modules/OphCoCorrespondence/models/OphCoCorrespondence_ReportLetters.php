@@ -156,7 +156,7 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
 			->join("patient p","ep.patient_id = p.id")
 			->join("contact c","p.contact_id = c.id")
             ->join("user", "e.created_user_id = user.id")
-            ->join("contact cons", "user.contact_id = cons.id AND user.id = cons.id")
+            ->join("contact cons", "user.contact_id = cons.id AND user.contact_id = cons.id")
 			->order("e.created_date asc");
 	}
 
@@ -195,8 +195,12 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
 			}
 
 			if ($type == 'Correspondence') {
-				$clause .= " and {$letter_table[1]}.created_user_id = :authorID";
+				$clause .= " AND {$letter_table[1]}.created_user_id = :authorID";
 				$where_params[':authorID'] = $this->author_id;
+                    
+                $clause .= " OR lower({$letter_table[1]}.footer) LIKE :authorName";
+                $where_params[':authorName'] = "%" . strtolower($author->fullName) . "%";
+
 			} else {
 				$clause .= " and lower({$letter_table[1]}.$text_field) like :authorName";
 				$where_params[':authorName'] = '%'.strtolower($author->fullName).'%';
@@ -277,7 +281,7 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
 	{
 		$output = $this->description()."\n\n";
 
-		$output .= Patient::model()->getAttributeLabel('hos_num').",".Patient::model()->getAttributeLabel('dob').",".Patient::model()->getAttributeLabel('first_name').",".Patient::model()->getAttributeLabel('last_name').','.Patient::model()->getAttributeLabel('gender').",Site,Consultant's name,Date,Type,Link\n";
+		$output .= Patient::model()->getAttributeLabel('hos_num').",".Patient::model()->getAttributeLabel('dob').",".Patient::model()->getAttributeLabel('first_name').",".Patient::model()->getAttributeLabel('last_name').','.Patient::model()->getAttributeLabel('gender').",Consultant's name,Site,Date,Type,Link\n";
 
 		foreach ($this->letters as $letter) {
 			$output .= "\"{$letter['hos_num']}\",\"".($letter['dob'] ? date('j M Y',strtotime($letter['dob'])) : 'Unknown')."\",\"{$letter['first_name']}\",\"{$letter['last_name']}\",\"{$letter['gender']}\",\"{$letter['cons_first_name']} {$letter['cons_last_name']}\",\"" .( isset($letter['name']) ? $letter['name'] : 'N/A' )  . "\",\"".date('j M Y',strtotime($letter['created_date']))."\",\"".$letter['type']."\",\"".$letter['link']."\"\n";
