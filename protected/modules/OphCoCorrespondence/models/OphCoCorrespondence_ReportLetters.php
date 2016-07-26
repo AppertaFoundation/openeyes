@@ -26,6 +26,7 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
 	public $end_date;
 	public $author_id;
 	public $letters;
+    public $site_id;
 
 	public function attributeNames()
 	{
@@ -37,6 +38,7 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
 			'start_date',
 			'end_date',
 			'author_id',
+			'site_id',
 		);
 	}
 
@@ -50,6 +52,7 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
 			'start_date' => 'Date from',
 			'start_end' => 'Date end',
 			'author_id' => 'Author',
+            'site_id' => 'Site'
 		);
 	}
 
@@ -57,7 +60,7 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
 	{
 		return array(
 			array('match_correspondence, match_legacy_letters, phrases, condition_type, start_date, end_date, author_id', 'safe'),
-			array('phrases, condition_type', 'required'),
+			array('condition_type', 'required'),
 		);
 	}
 
@@ -71,7 +74,7 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
 			}
 
 			if (!$has_phrases) {
-				$this->addError('phrases','Phrases cannot be blank.');
+                $this->phrases = array();
 			}
 		}
 
@@ -160,19 +163,21 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
 
 		$data->leftJoin("{$letter_table[0]} {$letter_table[1]}","{$letter_table[1]}.event_id = e.id");
 
-		$clause = "({$letter_table[1]}.id is not null and e.event_type_id = :et_{$letter_table[1]}_id and ( ";
+		$clause = "({$letter_table[1]}.id is not null and e.event_type_id = :et_{$letter_table[1]}_id ";
 		$where_params[":et_{$letter_table[1]}_id"] = $et->id;
 
-		foreach ($this->phrases as $i => $phrase) {
-			$where_params[":body{$letter_table[1]}".$i] = '%'.strtolower($phrase).'%';
-			if ($i >0) {
-				$clause .= $where_operator;
-			}
-			$clause .= " lower({$letter_table[1]}.$text_field) like :body{$letter_table[1]}$i";
+        if($this->phrases){
+            $clause .= ' and (';
+            foreach ($this->phrases as $i => $phrase) {
+                $where_params[":body{$letter_table[1]}".$i] = '%'.strtolower($phrase).'%';
+                if ($i >0) {
+                    $clause .= $where_operator;
+                }
+                $clause .= " lower({$letter_table[1]}.$text_field) like :body{$letter_table[1]}$i";
+            }
+
+            $clause .= " )";
 		}
-
-		$clause .= " )";
-
 		if ($this->author_id) {
 			if (!$author = User::model()->findByPk($this->author_id)) {
 				throw new Exception("User not found: $this->author_id");
@@ -223,13 +228,15 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
 			}
 		}
 
-		$description .= ' containing '.($this->condition_type == 'and' ? 'all' : 'any')." of these phrases:\n";
+        if($this->phrases){
+            $description .= ' containing '.($this->condition_type == 'and' ? 'all' : 'any')." of these phrases:\n";
 
-		foreach ($this->phrases as $phrase) {
-			if ($phrase) {
-				$description .= $phrase."\n";
-			}
-		}
+            foreach ($this->phrases as $phrase) {
+                    if ($phrase) {
+                        $description .= $phrase."\n";
+                    }
+            }
+        }
 
 		if ($this->start_date || $this->end_date || $this->author_id) {
 			$description .= "written";

@@ -149,6 +149,16 @@
 				<?php echo CHtml::dropDownList('author_id','',CHtml::listData(User::model()->findAll(array('order' => 'first_name asc,last_name asc')),'id','fullName'),array('empty' => '--- Please select ---'))?>
 			</div>
 		</div>
+		<div class="row field-row">
+			<div class="large-2 column">
+				<label for="site_id">
+					Site
+				</label>
+			</div>
+			<div class="large-3 column end">
+				<?php echo CHtml::dropDownList('site_id','',CHtml::listData(Site::model()->findAll(array('order' => 'name asc')),'id','name'),array('empty' => '--- Please select ---'))?>
+			</div>
+		</div>
 
 		<?php $this->endWidget()?>
 	</div>
