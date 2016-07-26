@@ -19,6 +19,10 @@
 
 class ModuleAPI extends CApplicationComponent
 {
+	/**
+	 * @param $moduleName
+	 * @return BaseAPI|bool
+	 */
 	public function get($moduleName)
 	{
 		if ($module = Yii::app()->getModule($moduleName)) {
@@ -64,5 +68,18 @@ class ModuleAPI extends CApplicationComponent
 			}
 		}
 		return @$this->_module_class_map[$class_name];
+	}
+
+	/**
+	 * Convenience wrapper to retrieve the API relevant to the given event id
+	 *
+	 * @param $event_id
+	 * @return BaseAPI|bool
+	 */
+	public function getForEventId($event_id) {
+		if ($event = Event::model()->with('eventType')->findByPk($event_id)) {
+			return $this->get($event->eventType->class_name);
+		}
+		return false;
 	}
 }
