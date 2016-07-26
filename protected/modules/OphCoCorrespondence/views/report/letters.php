@@ -105,13 +105,13 @@
 
 		<div class="row field-row">
 			<div class="large-2 column">
-				<label for="start_date">
+				<label for="OphCoCorrespondence_ReportLetters_start_date">
 					Date from:
 				</label>
 			</div>
 			<div class="large-2 column end">
 				<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-					'name' => 'start_date',
+					'name' => 'OphCoCorrespondence_ReportLetters[start_date]',
 					'options' => array(
 						'showAnim' => 'fold',
 						'dateFormat' => Helper::NHS_DATE_FORMAT_JS
@@ -123,13 +123,13 @@
 
 		<div class="row field-row">
 			<div class="large-2 column">
-				<label for="end_date">
+				<label for="OphCoCorrespondence_ReportLetters_end_date">
 					Date to:
 				</label>
 			</div>
 			<div class="large-2 column end">
 				<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-					'name' => 'end_date',
+					'name' => 'OphCoCorrespondence_ReportLetters[end_date]',
 					'options' => array(
 						'showAnim' => 'fold',
 						'dateFormat' => Helper::NHS_DATE_FORMAT_JS
@@ -156,7 +156,7 @@
 				</label>
 			</div>
 			<div class="large-3 column end">
-				<?php echo CHtml::dropDownList('OphCoCorrespondence_ReportLetters[site_id]','',CHtml::listData(Site::model()->findAll(array('order' => 'name asc')),'id','name'),array('empty' => '--- Please select ---'))?>
+				<?php echo CHtml::dropDownList('OphCoCorrespondence_ReportLetters[site_id]', '', Site::model()->getLongListForCurrentInstitution(), array('empty' => '--- Please select ---'))?>
 			</div>
 		</div>
 
