@@ -194,5 +194,10 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
 
 		return parent::afterSave();
 	}
+
+	public function getStatus()
+	{
+		return "TBD";
+	}
 }
 ?>
