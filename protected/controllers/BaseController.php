@@ -230,4 +230,38 @@ class BaseController extends Controller
 		}
 		Yii::app()->end();
 	}
+
+	/**
+	 * Simple abstraction to pull a param from yii config separated by dots.
+	 * @param $config
+	 * @param $key
+	 * @return null
+	 */
+	private function getParamAttribute($config, $key)
+	{
+		$break = strpos($key, ".");
+		$piece = $break === false ? $key : substr($key, 0, $break);
+		if (isset($config[$piece])) {
+			if ($piece == $key) {
+				return $config[$piece];
+			}
+			return $this->getParamAttribute($config[$piece], substr($key, $break+1));
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * @param $key
+	 * @return bool
+	 */
+	protected function renderOverride($key, $params = array())
+	{
+		if ($render_config = $this->getParamAttribute(Yii::app()->params, $key)) {
+			$api = Yii::app()->moduleAPI->get($render_config['module']);
+			return call_user_func_array(array($api, $render_config['method']), $params);
+		}
+		return false;
+	}
 }
