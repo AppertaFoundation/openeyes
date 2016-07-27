@@ -1,4 +1,5 @@
-<?php
+<?php namespace OEModule\OphCoCvi\components;
+
 /**
  * OpenEyes
  *
@@ -15,19 +16,39 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-return array(
-    'params' => array(
-        'patient_summary_render' => array(
-            'cvi_status' => array(
-                    'module' => 'OphCoCvi',
-                    'method' => 'patientSummaryRender'
-            )
-        ),
-        'additional_rulesets' => array(
-            array(
-                'namespace' => 'OphCoCvi',
-                'class' => 'OEModule\OphCoCvi\components\OphCoCvi_AuthRules'
-            ),
-        ),
-    )
-);
+class OphCoCvi_AuthRules
+{
+    protected $yii;
+
+    public function __construct(\CApplication $yii = null)
+    {
+        if (is_null($yii)) {
+            $yii = \Yii::app();
+        }
+
+        $this->yii = $yii;
+    }
+
+    public function canCreateOphCoCvi($user_id)
+    {
+        if ($this->yii->authManager->checkAccess('admin', $user_id)) {
+            return true;
+        }
+
+        if ($this->yii->params['ophcocvi_allow_all_consultants']) {
+            $user = \User::model()->findByPk($user_id);
+            if ($user->is_consultant) {
+                return true;
+            }
+        }
+
+        if ($this->yii->authManager->checkAccess('OprnEditClinical', $user_id) ||
+            $this->yii->authManager->checkAccess('OprnEditClerical', $user_id)
+        ) {
+            return true;
+        }
+
+        return false;
+
+    }
+}
