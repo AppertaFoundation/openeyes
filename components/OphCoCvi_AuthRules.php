@@ -29,12 +29,19 @@ class OphCoCvi_AuthRules
         $this->yii = $yii;
     }
 
-    public function canCreateOphCoCvi($user_id)
+    /**
+     * Root permission checking function for edit ability
+     *
+     * @param $user_id
+     * @param bool $clerical
+     * @return bool
+     */
+    private function canEdit($user_id, $clerical = false)
     {
         if ($this->yii->authManager->checkAccess('admin', $user_id)) {
             return true;
         }
-
+        \OELog::log("something weird");
         if ($this->yii->params['ophcocvi_allow_all_consultants']) {
             $user = \User::model()->findByPk($user_id);
             if ($user->is_consultant) {
@@ -42,13 +49,40 @@ class OphCoCvi_AuthRules
             }
         }
 
-        if ($this->yii->authManager->checkAccess('OprnEditClinical', $user_id) ||
-            $this->yii->authManager->checkAccess('OprnEditClerical', $user_id)
+        if ($this->yii->authManager->checkAccess('OprnEditClinicalCviExplicit', $user_id) ||
+            ($clerical && $this->yii->authManager->checkAccess('OprnEditClericalCvi', $user_id))
         ) {
             return true;
         }
 
+        \OELog::log('say whhaaaat?');
         return false;
+    }
 
+    /**
+     * @param $user_id
+     * @return bool
+     */
+    public function canCreateOphCoCvi($user_id)
+    {
+        return $this->canEdit($user_id, true);
+    }
+
+    /**
+     * @param $user_id
+     * @return bool
+     */
+    public function canEditOphCoCvi($user_id)
+    {
+        return $this->canCreateOphCoCvi($user_id);
+    }
+
+    /**
+     * @param $user_id
+     * @return bool
+     */
+    public function canEditClinicalOphCoCvi($user_id)
+    {
+        return $this->canEdit($user_id, false);
     }
 }

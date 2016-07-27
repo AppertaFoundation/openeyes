@@ -29,5 +29,6 @@ return array(
                 'class' => 'OEModule\OphCoCvi\components\OphCoCvi_AuthRules'
             ),
         ),
+        'ophcocvi_allow_all_consultants' => true,
     )
 );
