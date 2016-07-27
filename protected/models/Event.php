@@ -548,4 +548,19 @@ class Event extends BaseActiveRecordVersioned
 			}
 		}
 	}
+
+	/**
+	 * @param EventType $event_type
+	 * @param Patient $patient
+	 *
+	 * @return Event[]
+	 */
+	public function getEventsOfTypeForPatient(EventType $event_type, Patient $patient)
+	{
+		$criteria = new CDbCriteria;
+		$criteria->compare('patient_id',$patient->id);
+		$criteria->compare('event_type_id',$event_type->id);
+		$criteria->order = 'event_date asc';
+		return Event::model()->with('episode')->findAll($criteria);
+	}
 }
