@@ -27,7 +27,7 @@ class PortalExamsCommand extends CConsoleCommand
 
     public function run($args)
     {
-        $creator = new ExaminationCreator();
+        $creator = new OEModule\OphCiExamination\components\ExaminationCreator();
         $user = new User();
         $this->setConfig();
         $this->client = $this->initClient();
@@ -75,7 +75,7 @@ class PortalExamsCommand extends CConsoleCommand
                 $transaction = $opNoteEvent->getDbConnection()->beginInternalTransaction();
 
                 try {
-                    $examinationEvent = $creator->saveExamination($opNoteEvent->episode_id, $portalUserId, $examination, $eventType, $eyeIds, $refractionType, $opNoteEvent->id);
+                    $examinationEvent = $creator->save($opNoteEvent->episode_id, $portalUserId, $examination, $eventType, $eyeIds, $refractionType, $opNoteEvent->id);
                 } catch (Exception $e) {
                     $transaction->rollback();
                     $importStatus = ImportStatus::model()->find('status_value = "Import Failure"');

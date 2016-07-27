@@ -23,7 +23,7 @@ namespace OEModule\OphCoMessaging\models;
  * The followings are the available columns in table:
  * @property string $id
  * @property integer $event_id
- * @property integer $for_the_attention_of
+ * @property integer $for_the_attention_of_user_id
  * @property integer $message_type_id
  * @property integer $urgent
  * @property string $message_text
@@ -31,11 +31,11 @@ namespace OEModule\OphCoMessaging\models;
  *
  * The followings are the available model relations:
  *
- * @property ElementType $element_type
- * @property EventType $eventType
- * @property Event $event
- * @property User $user
- * @property User $usermodified
+ * @property \ElementType $element_type
+ * @property \EventType $eventType
+ * @property \Event $event
+ * @property \User $user
+ * @property \User $usermodified
  * @property OphCoMessaging_Message_MessageType $message_type
  */
 
@@ -43,7 +43,7 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return the static model class
+	 * @return Element_OphCoMessaging_Message static model class
 	 */
 	public static function model($className = __CLASS__)
 	{
@@ -69,9 +69,9 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
 	public function rules()
 	{
 		return array(
-			array('event_id, for_the_attention_of, message_type_id, urgent, message_text, marked_as_read', 'safe'),
+			array('event_id, for_the_attention_of_user_id, message_type_id, urgent, message_text, marked_as_read', 'safe'),
 			array('for_the_attention_of_user_id, message_type_id, message_text, ', 'required'),
-			array('id, event_id, for_the_attention_of_user-id, message_type_id, urgent, message_text, marked_as_read', 'safe', 'on' => 'search'),
+			array('id, event_id, for_the_attention_of_user_id, message_type_id, urgent, message_text, marked_as_read', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -111,7 +111,7 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
 
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
-	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+	 * @return \CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
 	public function search()
 	{
