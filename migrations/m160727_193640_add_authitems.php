@@ -18,8 +18,12 @@ class m160727_193640_add_authitems extends CDbMigration
 	);
 
 	private $parents = array(
+		// These must be set under a role that any logged in user must have, as just receiving true from the bizrule
+		// is insufficient if the user does not have a specific authitem assigned to them that is a parent of it.
 		'OprnCreateCvi' => 'User',
-		'OprnCreateCvi' => 'User',
+		'OprnEditCvi' => 'User',
+		'OprnEditClinicalCvi' => 'User',
+		// general hierarchy
 		'OprnEditClericalCvi' => 'TaskClericalCvi',
 		'OprnPatientSignatureCvi' => 'TaskClericalCvi',
 		'OprnCompleteCvi' => 'TaskClericalCvi',
