@@ -15,32 +15,13 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-
-namespace OEModule\OphCoCvi\models;
-
-class EventCviRecord extends \CviRecord
-{
-	protected $event;
-
-	public function __construct(\Event $event)
-	{
-		parent::__construct();
-		$this->event = $event;
-	}
-
-	public function getStatusDate()
-	{
-		return $this->event->event_date;
-	}
-
-	public function getStatusText()
-	{
-		\OELog::log('progress of sorts' . $this->event->id);
-
-		$info = Element_OphCoCvi_EventInfo::model()->findByAttributes(array('event_id' => $this->event->id));
-
-		$clinical = Element_OphCoCvi_ClinicalInfo::model()->findByAttributes(array('event_id' => $this->event->id));
-
-		return $clinical->getStatus() . ' (' . ($info->is_draft ? 'Draft' : 'Issued') . ')';
-	}
-}
+return array(
+    'params' => array(
+        'patient_summary_render' => array(
+            'cvi_status' => array(
+                    'module' => 'OphCoCvi',
+                    'method' => 'patientSummaryRender'
+            )
+        )
+    )
+);

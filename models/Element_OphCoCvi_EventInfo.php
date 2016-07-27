@@ -115,21 +115,5 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
 		));
 	}
 
-
-
-	protected function afterSave()
-	{
-		$criteria = new \CDbCriteria();
-		$criteria->addColumnCondition(array('type.class_name' => 'CviRecord', 'originReference.event_id' => $this->event_id));
-		$cvi_measurement = \PatientMeasurement::model()->with(array('type', 'originReference'))->find($criteria);
-		if (!$cvi_measurement) {
-			$cvi = new BaseCviRecord();
-			$cvi->setPatient_id($this->event->episode->patient_id);
-			$cvi->save();
-
-			$cvi->attach($this->event, true);
-		}
-		return parent::afterSave();
-	}
 }
 ?>
