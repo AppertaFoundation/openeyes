@@ -112,30 +112,22 @@ class ExaminationCreator
                 }
             }
 
-            if (count($examination['patient']['eyes'][0]['reading'][0]['visual_acuity'])) {
-                //create VisualFunction, required for visual acuity to show.
-                $visualFunction = new \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualFunction();
-                $visualFunction->event_id = $examinationEvent->id;
-                $visualFunction->eye_id = $eyeIds['both'];
-                $visualFunction->left_rapd = 0;
-                $visualFunction->right_rapd = 0;
-                $visualFunction->created_user_id = $visualFunction->last_modified_user_id = $userId;
-                if (!$visualFunction->save(true, null, true)) {
-                    throw new \CDbException('Visual Function failed: ' . print_r($visualFunction->getErrors(), true));
+            if (count($examination['patient']['eyes'][0]['reading'][0]['visual_acuity']) || count($examination['patient']['eyes'][0]['reading'][0]['near_visual_acuity'])) {
+                $this->createVisualFunction($userId, $eyeIds, $examinationEvent);
+
+                if (count($examination['patient']['eyes'][0]['reading'][0]['visual_acuity'])){
+                    $measure = $examination['patient']['eyes'][0]['reading'][0]['visual_acuity'][0]['measure'];
+                    $unit = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->find('name = :measure', array('measure' => $measure));
+                    $visualAcuity = $this->createVisualAcuity($userId, $eyeIds, $examinationEvent, $unit);
                 }
 
-                $measure = $examination['patient']['eyes'][0]['reading'][0]['visual_acuity'][0]['measure'];
-                $unit = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->find('name = :measure', array('measure' => $measure));
-                //Create visual acuity
-                $visualAcuity = new \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity();
-                $visualAcuity->event_id = $examinationEvent->id;
-                $visualAcuity->created_user_id = $visualAcuity->last_modified_user_id = $userId;
-                $visualAcuity->eye_id = $eyeIds['both'];
-                $visualAcuity->unit_id = $unit->id;
-                if (!$visualAcuity->save(false, null, true)) {
-                    throw new \CDbException('Visual Acuity failed: ' . print_r($visualAcuity->getErrors(), true));
+                if (count($examination['patient']['eyes'][0]['reading'][0]['near_visual_acuity'])){
+                    $nearMeasure = $examination['patient']['eyes'][0]['reading'][0]['near_visual_acuity'][0]['measure'];
+                    $nearUnit = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->find('name = :measure', array('measure' => $nearMeasure));
+                    $nearVisualAcuity = $this->createVisualAcuity($userId, $eyeIds, $examinationEvent, $nearUnit, true);
                 }
-                $visualAcuity->refresh();
+
+
             }
 
             foreach ($examination['patient']['eyes'] as $eye) {
@@ -151,16 +143,11 @@ class ExaminationCreator
                 $refraction->$axisSide = $refractionReading['axis'];
 
                 foreach ($eye['reading'][0]['visual_acuity'] as $vaData) {
-                    $vaReading = new \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading();
-                    $vaReading->element_id = $visualAcuity->id;
-                    $baseValue = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue::model()->getBaseValue($unit->id, $vaData['reading']);
-                    $vaReading->value = $baseValue;
-                    $vaReading->method_id = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method::model()->find('name = :name', array('name' => $vaData['method']))->id;
-                    $vaReading->side = ($eyeLabel === 'left') ? \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading::LEFT : \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading::RIGHT;
-                    $vaReading->created_user_id = $vaReading->last_modified_user_id = $userId;
-                    if (!$vaReading->save(true, null, true)) {
-                        throw new \CDbException('Visual Acuity Reading failed: ' . print_r($vaReading->getErrors(), true));
-                    }
+                    $this->addVisualAcuityReading($userId, $visualAcuity, $unit, $vaData, $eyeLabel);
+                }
+
+                foreach ($eye['reading'][0]['near_visual_acuity'] as $vaData) {
+                    $this->addVisualAcuityReading($userId, $nearVisualAcuity, $nearUnit, $vaData, $eyeLabel, true);
                 }
 
                 $iopReading = $eye['reading'][0]['iop'];
@@ -237,5 +224,85 @@ class ExaminationCreator
         }
 
         return $eyeIds;
+    }
+
+    /**
+     * @param $userId
+     * @param $examination
+     * @param $eyeIds
+     * @param $examinationEvent
+     * @return array
+     * @throws \CDbException
+     * @throws \Exception
+     */
+    protected function createVisualFunction($userId, $eyeIds, $examinationEvent)
+    {
+        //create VisualFunction, required for visual acuity to show.
+        $visualFunction = new \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualFunction();
+        $visualFunction->event_id = $examinationEvent->id;
+        $visualFunction->eye_id = $eyeIds['both'];
+        $visualFunction->left_rapd = 0;
+        $visualFunction->right_rapd = 0;
+        $visualFunction->created_user_id = $visualFunction->last_modified_user_id = $userId;
+        if (!$visualFunction->save(true, null, true)) {
+            throw new \CDbException('Visual Function failed: ' . print_r($visualFunction->getErrors(), true));
+        }
+
+    }
+
+    /**
+     * @param $userId
+     * @param $eyeIds
+     * @param $examinationEvent
+     * @param $unit
+     * @param $near
+     * @return \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity
+     * @throws \CDbException
+     * @throws \Exception
+     */
+    protected function createVisualAcuity($userId, $eyeIds, $examinationEvent, $unit, $near = false)
+    {
+        //Create visual acuity
+        $visualAcuity = new \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity();
+        if($near){
+            $visualAcuity = new \OEModule\OphCiExamination\models\Element_OphCiExamination_NearVisualAcuity();
+        }
+        $visualAcuity->event_id = $examinationEvent->id;
+        $visualAcuity->created_user_id = $visualAcuity->last_modified_user_id = $userId;
+        $visualAcuity->eye_id = $eyeIds['both'];
+        $visualAcuity->unit_id = $unit->id;
+        if (!$visualAcuity->save(false, null, true)) {
+            throw new \CDbException('Visual Acuity failed: ' . print_r($visualAcuity->getErrors(), true));
+        }
+        $visualAcuity->refresh();
+
+        return $visualAcuity;
+    }
+
+    /**
+     * @param $userId
+     * @param $visualAcuity
+     * @param $unit
+     * @param $vaData
+     * @param $eyeLabel
+     * @param $near
+     * @throws \CDbException
+     * @throws \Exception
+     */
+    protected function addVisualAcuityReading($userId, $visualAcuity, $unit, $vaData, $eyeLabel, $near = false)
+    {
+        $vaReading = new \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading();
+        if($near){
+            $vaReading = new \OEModule\OphCiExamination\models\OphCiExamination_NearVisualAcuity_Reading();
+        }
+        $vaReading->element_id = $visualAcuity->id;
+        $baseValue = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue::model()->getBaseValue($unit->id, $vaData['reading']);
+        $vaReading->value = $baseValue;
+        $vaReading->method_id = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method::model()->find('name = :name', array('name' => $vaData['method']))->id;
+        $vaReading->side = ($eyeLabel === 'left') ? \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading::LEFT : \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading::RIGHT;
+        $vaReading->created_user_id = $vaReading->last_modified_user_id = $userId;
+        if (!$vaReading->save(true, null, true)) {
+            throw new \CDbException('Visual Acuity Reading failed: ' . print_r($vaReading->getErrors(), true));
+        }
     }
 }
