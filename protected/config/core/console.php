@@ -44,7 +44,7 @@ $modulesDir = __DIR__.'/../../modules/';
 $modules = opendir($modulesDir);
 if($modules){
 	while (false !== ($filename = readdir($modules))) {
-		if(!in_array($filename, array('.', '..'), true)){
+		if(!in_array($filename, array('.', '..'), true) && is_dir($modulesDir.$filename)){
 			$module = opendir($modulesDir.$filename);
 			while (false !== ($moduleSub = readdir($module))) {
 				if($moduleSub === 'commands' && is_dir($modulesDir.$filename.'/'.$moduleSub)){
