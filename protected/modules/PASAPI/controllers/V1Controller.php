@@ -109,8 +109,6 @@ class V1Controller extends \CController
             $this->sendResponse(403);
         }
 
-        \OELog::log(print_r($_GET, true));
-
         return parent::beforeAction($action);
     }
 
@@ -233,10 +231,10 @@ class V1Controller extends \CController
         }
         catch (\Exception $e)
         {
-            \OELog::log($e->getMessage());
             if (YII_DEBUG) {
                 $errors = $resource->errors;
                 $errors[] = $e->getMessage();
+                \OELog::log(print_r($errors));
             }
             else {
                 $errors = array("Could not save resource");
