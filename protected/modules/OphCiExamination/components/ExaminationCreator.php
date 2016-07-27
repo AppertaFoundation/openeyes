@@ -90,11 +90,25 @@ class ExaminationCreator
                 $episode = \Episode::model()->findByPk($episodeId);
                 $recipient = \User::model()->findByPk($episode->firm->consultant_id);
                 if($recipient){
-                    $messageCreator = new MessageCreator();
                     $sender = \User::model()->findByPk($userId);
-                    $message = $examination['patient']['comments']; //@todo add the ready question
                     $type =  OphCoMessaging_Message_MessageType::model()->findByAttributes(array('name' => 'General'));
-                    $messageCreator->save($episodeId, $sender, $recipient, $message, $type, array('event' => $examinationEvent->id));
+                    if($examination['patient']['ready_for_second_eye'] === false){
+                        $ready = 'No';
+                    } elseif ( $examination['patient']['ready_for_second_eye'] === true){
+                        $ready = 'Yes';
+                    } else {
+                        $ready = 'Not Applicable';
+                    }
+
+                    $messageCreator = new MessageCreator($episode, $sender, $recipient, $type);
+                    $messageCreator->setMessageTemplate('application.modules.OphCoMessaging.views.templates.optom');
+                    $messageCreator->setMessageData(array(
+                        'optom' => $examination['op_tom']['name'] . ' (' . $examination['op_tom']['goc_number'] . ')',
+                        'ready' => $ready,
+                        'comments' => $examination['patient']['comments'],
+                    ));
+
+                    $messageCreator->save('', array('event' => $examinationEvent->id));
                 }
             }
 

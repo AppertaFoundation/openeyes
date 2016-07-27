@@ -138,7 +138,7 @@ class EventLogController extends BaseAdminController
      */
     protected function replaceEvent($eventQuery)
     {
-        $creator = new ExaminationCreator();
+        $creator = new \OEModule\OphCiExamination\components\ExaminationCreator();
         $data = $eventQuery->examination_data;
         $examination = json_decode($data, true);
         $eventType = EventType::model()->find('name = "Examination"');
@@ -163,7 +163,7 @@ class EventLogController extends BaseAdminController
      */
     protected function assignEvent($eventQuery)
     {
-        $creator = new ExaminationCreator();
+        $creator = new \OEModule\OphCiExamination\components\ExaminationCreator();
         $data = $eventQuery->examination_data;
         $examination = json_decode($data, true);
         $eventType = EventType::model()->find('name = "Examination"');
