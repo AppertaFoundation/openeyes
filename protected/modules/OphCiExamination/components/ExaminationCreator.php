@@ -155,7 +155,7 @@ class ExaminationCreator
                 $iopValue->element_id = $iop->id;
                 $iopValue->eye_id = $eyeIds[$eyeLabel];
                 $iopReadingValue = \OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Reading::model()->find('value = ?', array($iopReading['mm_hg']));
-                $instrument = \OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->find('name = ?', array($iopReading['instrument']));
+                $instrument = \OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->find('LOWER(name) = ?', array(strtolower($iopReading['instrument'])));
                 $iopValue->reading_id = $iopReadingValue['id'];
                 $iopValue->instrument_id = $instrument['id'];
                 if (!$iopValue->save(true, null, true)) {
