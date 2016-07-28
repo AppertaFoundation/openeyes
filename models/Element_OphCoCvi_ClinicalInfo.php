@@ -51,6 +51,9 @@ namespace OEModule\OphCoCvi\models;
 
 class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
 {
+	public static $BLIND_STATUS = "Severely Sight Impaired";
+	public static $NOT_BLIND_STATUS = "Sight Impaired";
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return the static model class
@@ -195,9 +198,12 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
 		return parent::afterSave();
 	}
 
-	public function getStatus()
+	/**
+	 * @return string
+	 */
+	public function getDisplayStatus()
 	{
-		return "TBD";
+		return $this->is_considered_blind ? static::$BLIND_STATUS : static::$NOT_BLIND_STATUS;
 	}
 }
 ?>
