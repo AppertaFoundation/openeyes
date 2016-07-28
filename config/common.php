@@ -22,6 +22,13 @@ return array(
                     'module' => 'OphCoCvi',
                     'method' => 'patientSummaryRender'
             )
-        )
+        ),
+        'additional_rulesets' => array(
+            array(
+                'namespace' => 'OphCoCvi',
+                'class' => 'OEModule\OphCoCvi\components\OphCoCvi_AuthRules'
+            ),
+        ),
+        'ophcocvi_allow_all_consultants' => true,
     )
 );

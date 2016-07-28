@@ -43,16 +43,18 @@
     <?php } ?>
     </tbody>
 </table>
-<div class="box-actions">
-    <button id="btn-new-ecvi" class="secondary small">
-        Issue new eCVI
-    </button>
-</div>
+<?php if ($this->checkAccess('OprnCreateCvi', Yii::app()->user->id)) { ?>
+    <div class="box-actions">
+        <button id="btn-new-ecvi" class="secondary small">
+            Issue new eCVI
+        </button>
+    </div>
+    <script type="text/javascript">
+        $('#btn-new-ecvi').click(function() {
+            window.location = '<?=$new_event_uri ?>';
+        });
+    </script>
+<?php } ?>
 <?php if ($oph_info_editable) {
     $this->renderPartial('//patient/cvi_status_form', array('info' => $oph_info));
 }?>
-<script type="text/javascript">
-    $('#btn-new-ecvi').click(function() {
-        window.location = '<?=$new_event_uri ?>';
-    });
-</script>
