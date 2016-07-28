@@ -36,17 +36,6 @@ class OphCoCvi_API extends \BaseAPI
 	}
 
 	/**
-	 * Abstraction for getting model instance of class
-	 *
-	 * @param $class
-	 * @return mixed
-	 */
-	protected function getModelForClass($class)
-	{
-		$class::model();
-	}
-
-	/**
 	 * Get all events regardless of episode.
 	 *
 	 * @param Patient $patient
