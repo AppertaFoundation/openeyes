@@ -41,7 +41,7 @@ class OphCoCvi_AuthRules
         if ($this->yii->authManager->checkAccess('admin', $user_id)) {
             return true;
         }
-        \OELog::log("something weird");
+
         if ($this->yii->params['ophcocvi_allow_all_consultants']) {
             $user = \User::model()->findByPk($user_id);
             if ($user->is_consultant) {
@@ -55,7 +55,6 @@ class OphCoCvi_AuthRules
             return true;
         }
 
-        \OELog::log('say whhaaaat?');
         return false;
     }
 
