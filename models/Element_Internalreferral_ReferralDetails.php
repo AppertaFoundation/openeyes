@@ -39,7 +39,7 @@ namespace OEModule\Internalreferral\models;
  * @property Subspecialty $to_subspecialty
  */
 
-class Element_Internalreferral_ReferralDetails extends BaseEventTypeElement
+class Element_Internalreferral_ReferralDetails extends \BaseEventTypeElement
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -95,7 +95,7 @@ class Element_Internalreferral_ReferralDetails extends BaseEventTypeElement
 		return array(
 			'id' => 'ID',
 			'event_id' => 'Event',
-			'referrer_id' => 'referrer',
+			'referrer_id' => 'Referring Consultant',
 			'from_subspecialty_id' => 'From',
 			'to_subspecialty_id' => 'To',
 		);

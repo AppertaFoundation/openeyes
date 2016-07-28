@@ -17,7 +17,46 @@
 ?>
 
 <div class="element-fields row">
-	<?php echo $form->dropDownList($element, 'referrer_id', CHtml::listData(User::model()->findAll(array('order'=> 'last_name asc')),'id','last_name'),array('empty'=>'- Please select -'))?>
+	<div class="row field-row">
+		<div class="large-2 column"><label for="find-user"><?= $element->getAttributeLabel('referrer_id') ?></label></div>
+
+		<div class="large-4 column autocomplete-row">
+			<span id="referrer-field">
+                    <span id="referrer-user-display"><?php echo $element->referrer ? $element->referrer->getFullnameAndTitle() : ""; ?></span>
+	<?php
+	$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+		'name' => "find_user",
+		'id' => "find-user",
+		'value'=>'',
+		'source'=>"js:function(request, response) {
+                                    $.ajax({
+                                        'url': '" . Yii::app()->createUrl('/user/autocomplete') . "',
+                                        'type':'GET',
+                                        'data':{'term': request.term, 'consultant_only': 1},
+                                        'success':function(data) {
+                                            data = $.parseJSON(data);
+                                            response(data);
+                                        }
+                                    });
+                                }",
+		'options' => array(
+			'minLength'=>'3',
+			'select' => "js:function(event, ui) {
+                                        $('#referrer-user-display').html(ui.item.label);
+                                        $('#OEModule_Internalreferral_models_Element_Internalreferral_ReferralDetails_referrer_id').val(ui.item.id);
+                                        $('#find-user').val('');
+                                        return false;
+                                    }",
+		),
+		'htmlOptions' => array(
+			'placeholder' => 'search by name or username'
+		),
+	));
+	?>
+				</span>
+		</div>
+		<?php echo $form->hiddenField($element, 'referrer_id'); ?>
+	</div>
 	<?php echo $form->dropDownList($element, 'from_subspecialty_id', CHtml::listData(Subspecialty::model()->findAll(array('order'=> 'name asc')),'id','name'),array('empty'=>'- Please select -'))?>
 	<?php echo $form->dropDownList($element, 'to_subspecialty_id', CHtml::listData(Subspecialty::model()->findAll(array('order'=> 'name asc')),'id','name'),array('empty'=>'- Please select -'))?>
 </div>

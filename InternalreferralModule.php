@@ -26,7 +26,7 @@ namespace OEModule\Internalreferral;
  * @property string $moduleShortSuffix
   */
 
-class InternalreferralModule extends BaseEventTypeModule
+class InternalreferralModule extends \BaseEventTypeModule
 {
 	public $controllerNamespace = '\OEModule\Internalreferral\controllers';
 

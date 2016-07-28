@@ -17,12 +17,21 @@
 
 namespace OEModule\Internalreferral\controllers;
 
-class DefaultController extends BaseEventTypeController
+class DefaultController extends \BaseEventTypeController
 {
 	public function actionCreate()
 	{
 		parent::actionCreate();
 	}
+
+	public function setElementDefaultOptions_Element_Internalreferral_ReferralDetails($element, $action)
+	{
+		if ($action == "create") {
+			$element->referrer_id = \Yii::app()->user->id;
+			$element->from_subspecialty_id = $this->firm->getSubspecialtyID();
+		}
+	}
+
 
 	public function actionUpdate($id)
 	{

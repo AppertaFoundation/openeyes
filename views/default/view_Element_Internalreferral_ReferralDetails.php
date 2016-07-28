@@ -17,17 +17,19 @@
 
 ?>
 
-<div class="element-data row">
+<div class="element">
+	<div class="element-data">
 		<div class="row data-row">
-		<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('referrer_id'))?></div></div>
-		<div class="large-10 column end"><div class="data-value"><?php echo $element->referrer ? $element->referrer->last_name : 'None'?></div></div>
-	</div>
-	<div class="row data-row">
-		<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('from_subspecialty_id'))?></div></div>
-		<div class="large-10 column end"><div class="data-value"><?php echo $element->from_subspecialty ? $element->from_subspecialty->name : 'None'?></div></div>
-	</div>
-	<div class="row data-row">
-		<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('to_subspecialty_id'))?></div></div>
-		<div class="large-10 column end"><div class="data-value"><?php echo $element->to_subspecialty ? $element->to_subspecialty->name : 'None'?></div></div>
+			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('referrer_id'))?></div></div>
+			<div class="large-10 column end"><div class="data-value"><?php echo $element->referrer ? $element->referrer->getFullnameAndTitle() : 'None'?></div></div>
+		</div>
+		<div class="row data-row">
+			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('from_subspecialty_id'))?></div></div>
+			<div class="large-10 column end"><div class="data-value"><?php echo $element->from_subspecialty ? $element->from_subspecialty->name : 'None'?></div></div>
+		</div>
+		<div class="row data-row">
+			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('to_subspecialty_id'))?></div></div>
+			<div class="large-10 column end"><div class="data-value"><?php echo $element->to_subspecialty ? $element->to_subspecialty->name : 'None'?></div></div>
+		</div>
 	</div>
 </div>
