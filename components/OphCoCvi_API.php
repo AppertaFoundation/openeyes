@@ -24,6 +24,8 @@ use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo;
 
 class OphCoCvi_API extends \BaseAPI
 {
+	protected $yii;
+
 	public function __construct(CApplication $yii = null)
 	{
 		if (is_null($yii)) {
@@ -34,18 +36,26 @@ class OphCoCvi_API extends \BaseAPI
 	}
 
 	/**
+	 * Abstraction for getting model instance of class
+	 *
+	 * @param $class
+	 * @return mixed
+	 */
+	protected function getModelForClass($class)
+	{
+		$class::model();
+	}
+
+	/**
 	 * Get all events regardless of episode.
 	 *
-	 * @TODO move to core?
 	 * @param Patient $patient
 	 * @return \Event[]
 	 * @throws \Exception
 	 */
 	public function getEvents(Patient $patient)
 	{
-		$event_type = $this->getEventType();
-
-		return \Event::model()->getEventsOfTypeForPatient($event_type, $patient);
+		return $this->getManager()->getEventsForPatient($patient);
 	}
 
 	/**
@@ -61,6 +71,23 @@ class OphCoCvi_API extends \BaseAPI
 	}
 
 	/**
+	 * @var OphCoCvi_Manager
+	 */
+	protected $cvi_manager;
+
+	/**
+	 * @return OphCoCvi_Manager
+	 */
+	public function getManager()
+	{
+		if (!isset($this->cvi_manager)) {
+			$this->cvi_manager = new OphCoCvi_Manager($this->yii, $this->getEventType());
+		}
+
+		return $this->cvi_manager;
+	}
+
+	/**
 	 * Render a patient summary widget to display CVI status based on the eCVI event and the core static model.
 	 *
 	 * @param Patient $patient
@@ -72,17 +99,15 @@ class OphCoCvi_API extends \BaseAPI
 		$oph_info_editable = false;
 
 		foreach ($this->getEvents($patient) as $event) {
-			$info = Element_OphCoCvi_EventInfo::model()->findByAttributes(array('event_id' => $event->id));
-			$clinical = Element_OphCoCvi_ClinicalInfo::model()->findByAttributes(array('event_id' => $event->id));
-
 			$rows[] = array(
-				'date' => $clinical->examination_date,
-				'status' => $clinical->getStatus() . ' (' . ($info->is_draft ? 'Draft' : 'Issued') . ')',
-				'event_url' => $this->yii->createUrl($event->eventType->class_name.'/default/view/'.$event->id)
+				'date' => $this->getManager()->getDisplayStatusDateForEvent($event),
+				'status' => $this->getManager()->getDisplayStatusForEvent($event),
+				'event_url' => $this->getManager()->getEventViewUri($event)
 			);
 		}
 
 		$info = $patient->getOphInfo();
+
 		if (!count($rows) || !$info->isNewRecord) {
 			$oph_info_editable = true;
 			$rows[] = array(
