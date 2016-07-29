@@ -12,6 +12,7 @@ use ZipArchive;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 use DOMDocument;
+use DomXpath;
 
 /**
  * Description of PrintTestController
@@ -34,9 +35,8 @@ class PrintTestController extends \BaseController
         $pdfObj = '';
         
         if(isset($_POST['test_print'])){
-           
+            
             $directory = realpath(__DIR__ . '/..').'/files';
-           
             if($this->unzipFile($directory.'/example_certificate_3.odt', $directory.'/xml') === TRUE){
                 $source = file_get_contents($directory.'/xml/content.xml');
                 
@@ -60,31 +60,14 @@ class PrintTestController extends \BaseController
                     }
                     $source = str_replace('##'.$field.'##', $value, $source); 
                 }
-                
-                $xmlDoc = new DOMDocument();
-                $xmlDoc->load($directory.'/xml/content.xml');
-               
-                $tables = $xmlDoc->getElementsByTagName( "table" );
-                
-                $data = array();
-                $tableCount = 1;
-                $rowCount = 1;
-                foreach($tables as $table){
-                    foreach($table->childNodes as $row) {
-                        foreach($row->childNodes as $cell){
-                           $data[$tableCount][$rowCount][] = array($cell->nodeName => $cell->nodeValue);
-                          
-                        }
-                        $rowCount++;
-                    }
-                $tableCount++;   
-                $rowCount = 1;
-                }
-              
+
                 //Remove all tokens which are empty
                 $source = preg_replace('/##(.*?)##/i', "", $source);
                 
                 file_put_contents($directory.'/xml/content.xml', $source);
+                
+                $dataTable = $this->findTableInPdf("Retina" , $this->genTableDatas() );
+                $dataTable->save($directory.'/xml/content.xml');
                 
                 if($this->zipFolder($directory.'/xml', '/var/www/openeyes/protected/runtime/document.odt') === TRUE){
                     exec('/usr/bin/libreoffice --headless --convert-to pdf --outdir /var/www/openeyes/protected/runtime/  /var/www/openeyes/protected/runtime/document.odt');
@@ -165,5 +148,104 @@ class PrintTestController extends \BaseController
     public function pdfLink(){
         $result = '<a href="getPDF" target="_blank" > See PDF </a>';
         return $result;
+    }
+    
+    public function genTableDatas(){
+        $data = array(
+            'diseaseName'   => 'Retina',
+            'diseaseDesc'   => array(
+                'age-related macular degeneration –subretinal neovascularisation',
+                'age-related macular degeneration – atrophic /geographic macular atrophy',
+                'diabetic retinopathy',
+                'hereditary retinal dystrophy',
+                'retinal vascular occlusions',
+                'other retinal : please specify'
+            ),
+            'diseaseVal'    => array(
+                'H35.3',
+                'H35.3',
+                'E10.3 – E14.3 H36.0',
+                'H35.5',
+                '',
+                ''
+            ),
+            'rightEye'      => array(
+                '1',
+                '2',
+                '3',
+                '4',
+                '5',
+                '',
+            ),
+            'leftEye'       => array(
+                '1',
+                '2',
+                '3',
+                '4',
+                '5',
+                '',
+            ),
+        );
+       
+        return $data;
+    }
+    public function findTableInPdf( $disease , $data, $headerRow = 0 ){
+        $directory = realpath(__DIR__ . '/..').'/files';
+        $tableName = $disease.'-Table';
+      
+        $xmlDoc = new DOMDocument();
+        $xmlDoc->load($directory.'/xml/content.xml');
+        $xmlDoc->formatOutput = true;
+        $xpath = new DomXpath($xmlDoc);
+        
+        foreach ($xpath->query('//table:table[@table:style-name="'.$tableName.'"]') as $table) {
+            foreach($table->childNodes as $r => $row) {
+ 
+                if($row->textContent == ''){
+                    continue;
+                }
+                if($headerRow >= $r){
+                    continue;
+                }
+                
+                foreach($row->childNodes as $c => $cell){
+                    
+                    if($cell->tagName == 'table:covered-table-cell'){
+                        continue;
+                    } 
+                   
+                    switch($c){
+                        case 0:
+                            $cell->nodeValue = "";
+                            $text = $xmlDoc->createElement('text:p', $data['diseaseName']);
+                            $cell->appendChild($text);
+                        break;
+                        case 1:
+                            $cell->nodeValue = "";
+                            $text = $xmlDoc->createElement('text:p', $data['diseaseDesc'][$r-1]);
+                            $cell->appendChild($text);
+                        break;
+                        case 2:
+                            $cell->nodeValue = "";
+                            $text = $xmlDoc->createElement('text:p', $data['diseaseVal'][$r-1]);
+                            $cell->appendChild($text);
+                        break;
+                        case 3:
+                            $cell->nodeValue = "";
+                            $text = $xmlDoc->createElement('text:p', $data['rightEye'][$r-1]);
+                            $cell->appendChild($text);
+                        break;
+                        case 4:
+                            $cell->nodeValue = "";
+                            $text = $xmlDoc->createElement('text:p', $data['leftEye'][$r-1]);
+                            $cell->appendChild($text);
+                        break;
+                    }
+                }
+            } 
+        }
+        
+        $content = $xmlDoc->saveXML();
+        return $xmlDoc;
     }
 }
