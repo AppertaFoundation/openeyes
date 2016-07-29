@@ -23,6 +23,9 @@ return array(
                     'method' => 'patientSummaryRender'
             )
         ),
+        'admin_menu'=>array(
+            'Local Authorities' => '/OphCoCvi/localAuthoritiesAdmin/list',
+        ),
         'additional_rulesets' => array(
             array(
                 'namespace' => 'OphCoCvi',
