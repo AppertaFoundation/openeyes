@@ -11,6 +11,7 @@ namespace OEModule\OphCoCvi\controllers;
 use ZipArchive;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
+use DOMDocument;
 
 /**
  * Description of PrintTestController
@@ -23,22 +24,23 @@ class PrintTestController extends \BaseController
     public function accessRules(){
         return array(
             array('allow',
-                'actions'       => array('test'),
+                'actions'       => array('test', 'getPDF'),
                 'roles'         => array('admin')
             ),
         );
     }
     
     public function actionTest(){
-	$this->render("test");
+        $pdfObj = '';
         
         if(isset($_POST['test_print'])){
            
             $directory = realpath(__DIR__ . '/..').'/files';
            
-            if($this->unzipFile($directory.'/example_certificate.odt', $directory.'/xml') === TRUE){
+            if($this->unzipFile($directory.'/example_certificate_3.odt', $directory.'/xml') === TRUE){
                 $source = file_get_contents($directory.'/xml/content.xml');
                 
+                //Fill the pdf with post datas
                 foreach($_POST as $key => $val){
                     $data = explode('_', $key, 2);
                    
@@ -51,15 +53,7 @@ class PrintTestController extends \BaseController
                             $value = 'X';
                         break;
                         case 'textarea':
-                            $htmlValue = nl2br($val);
-                            
-                            $arr = explode('<br />', $htmlValue);
-                            
-                            $value = '';
-                            foreach($arr as $row){
-                                $value .= '<text:line-break/>'.$row.'<text:s/>';
-                            }
-                            
+                            $value = str_replace("\n","<text:line-break/>",trim($val));
                         break;
                         default:
                             $value = $val;
@@ -67,18 +61,42 @@ class PrintTestController extends \BaseController
                     $source = str_replace('##'.$field.'##', $value, $source); 
                 }
                 
+                $xmlDoc = new DOMDocument();
+                $xmlDoc->load($directory.'/xml/content.xml');
+               
+                $tables = $xmlDoc->getElementsByTagName( "table" );
+                
+                $data = array();
+                $tableCount = 1;
+                $rowCount = 1;
+                foreach($tables as $table){
+                    foreach($table->childNodes as $row) {
+                        foreach($row->childNodes as $cell){
+                           $data[$tableCount][$rowCount][] = array($cell->nodeName => $cell->nodeValue);
+                          
+                        }
+                        $rowCount++;
+                    }
+                $tableCount++;   
+                $rowCount = 1;
+                }
+              
+                //Remove all tokens which are empty
                 $source = preg_replace('/##(.*?)##/i', "", $source);
                 
                 file_put_contents($directory.'/xml/content.xml', $source);
                 
                 if($this->zipFolder($directory.'/xml', '/var/www/openeyes/protected/runtime/document.odt') === TRUE){
                     exec('/usr/bin/libreoffice --headless --convert-to pdf --outdir /var/www/openeyes/protected/runtime/  /var/www/openeyes/protected/runtime/document.odt');
+                    $pdfObj = $this->pdfLink();   
                 }
-
+                
             } else {
-                var_dump("I am your father");
+                $pdfObj = 'Pdf generate error. Please try again.';
             }
         }
+        
+        $this->render("test", array('pdfObj' => $pdfObj ));
     }
     
     public function unzipFile( $zipInputFile, $outputFolder   ){
@@ -131,5 +149,21 @@ class PrintTestController extends \BaseController
         }
         $zip->close();
         return TRUE;
+    }
+    
+    public function actionGetPDF(){
+      
+        $file='/var/www/openeyes/protected/runtime/document.pdf';
+        header('Content-type: application/pdf');
+        header('Content-Disposition: inline; filename="document.pdf"');
+        header('Content-Transfer-Encoding: binary');
+        header('Content-Length: ' . filesize($file));
+        @readfile($file);
+    }
+    
+
+    public function pdfLink(){
+        $result = '<a href="getPDF" target="_blank" > See PDF </a>';
+        return $result;
     }
 }

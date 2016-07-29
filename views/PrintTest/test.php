@@ -80,9 +80,8 @@
 <div class="form-group">
     <input type="hidden" name="test_print" />
     <button type="submit" class="btn btn-default">Submit</button>
+     <?php echo $pdfObj ?>
 </div>
-
-    
-
 <?php $this->endWidget() ?>
+    
 </div>
