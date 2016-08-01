@@ -17,6 +17,10 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+// this extract's execution time is more than the default 500sec
+// for 5yrs time period it can last more than 30min
+ini_set('max_execution_time', 3600);
+
 class NodExportController extends BaseController
 {
     /**
@@ -1327,7 +1331,7 @@ EOL;
         $query = "SELECT e.id AS OperationId, e.episode_id AS EpisodeId, 
                 '' as Description, 
                 '' as IsHypertensive,
-                e.event_date AS ListedDate,
+                DATE(e.event_date) AS ListedDate,
 			s.surgeon_id AS SurgeonId, 
 			user.`doctor_grade_id` AS SurgeonGradeId,
                         s.assistant_id as AssistantId,
