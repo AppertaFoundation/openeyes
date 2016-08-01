@@ -117,7 +117,25 @@ class Event extends BaseActiveRecordVersioned
 		parent::afterConstruct();
 	}
 
-	public function moduleAllowsEditing()
+	protected function afterFind()
+	{
+		parent::afterFind();
+
+		if($this->is_automated){
+			$this->automated_source = json_decode($this->automated_source);
+		}
+	}
+
+    protected function beforeSave()
+    {
+        if($this->is_automated && !is_string($this->automated_source)){
+            $this->automated_source = json_encode($this->automated_source);
+        }
+
+        return parent::beforeSave();
+    }
+
+    public function moduleAllowsEditing()
 	{
 		if ($api = Yii::app()->moduleAPI->get($this->eventType->class_name)) {
 			if (method_exists($api,'canUpdate')) {
@@ -491,7 +509,7 @@ class Event extends BaseActiveRecordVersioned
 		$pdf = $this->getPDF($pdf_print_suffix);
 
 		return file_exists($pdf) && filesize($pdf) >0;
-	} 
+	}
 
 	protected function getLockKey()
 	{
@@ -520,5 +538,14 @@ class Event extends BaseActiveRecordVersioned
 	public function getDocref()
 	{
 		return "E:$this->id/".strtoupper(base_convert(time().sprintf('%04d', Yii::app()->user->getId()), 10, 32)).'/{{PAGE}}';
+	}
+
+	public function automatedText()
+	{
+		if($this->is_automated){
+			if(property_exists($this->automated_source, 'goc_number')){
+				return 'Community optometric examination by '.$this->automated_source->name. ' ('.$this->automated_source->goc_number.')';
+			}
+		}
 	}
 }

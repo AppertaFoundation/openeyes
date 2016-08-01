@@ -116,3 +116,4 @@ Highcharts.setOptions({
         noData: "No data found for this report"
     }
 });
+

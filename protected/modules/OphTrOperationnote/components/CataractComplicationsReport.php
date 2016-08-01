@@ -4,7 +4,7 @@
  * Created by PhpStorm.
  * User: peter
  * Date: 19/02/16
- * Time: 16:39
+ * Time: 16:39.
  */
 class CataractComplicationsReport extends Report implements ReportInterface
 {
@@ -34,6 +34,7 @@ class CataractComplicationsReport extends Report implements ReportInterface
      * @param $surgeon
      * @param $dateFrom
      * @param $dateTo
+     *
      * @return array|CDbDataReader
      */
     protected function queryData($surgeon, $dateFrom, $dateTo)
@@ -77,7 +78,7 @@ class CataractComplicationsReport extends Report implements ReportInterface
             foreach ($data as $complicationData) {
                 if ($category === $complicationData['name']) {
                     $seriesCount[] = array(
-                        'y' => (($complicationData['complication_count'] / $total ) * 100),
+                        'y' => (($complicationData['complication_count'] / $total) * 100),
                         'total' => $complicationData['complication_count']
                     );
 
@@ -152,13 +153,13 @@ class CataractComplicationsReport extends Report implements ReportInterface
     {
         $data = $this->queryData($this->surgeon, $this->from, $this->to);
         $total = 0;
-        foreach($data as $complication){
+        foreach ($data as $complication) {
             $total += $complication['complication_count'];
         }
 
         return $total;
     }
-    
+
     public function getTotalOperations()
     {
         $this->command->reset();
@@ -180,6 +181,6 @@ class CataractComplicationsReport extends Report implements ReportInterface
         $totalData = $this->command->queryAll();
         return $totalData[0]["total"];
     }
-    
+
     
 }

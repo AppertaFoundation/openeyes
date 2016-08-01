@@ -20,8 +20,8 @@
 	
 ?>
 <?php
-    $event = $this->event;
-    $event_type = $event->eventType->name;
+$event = $this->event;
+$event_type = $event->eventType->name;
 ?>
 <header class="header">
 	<?= $logoHelper->render() ?>

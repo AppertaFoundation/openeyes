@@ -24,12 +24,20 @@
 .event .event-content {
   background-image: url('../img/watermark.png?1460033156');
 }
-/* line 22, ../sass/components/_event.scss */
+/* line 21, ../sass/components/_event.scss */
+.event .event-content.auto {
+  background-image: url('../img/watermark-auto.png?1468923435');
+}
+/* line 25, ../sass/components/_event.scss */
 .event .event-title {
   background-image: url('../img/medium.png?1460033156');
 }
-
 /* line 27, ../sass/components/_event.scss */
+.event .event-title.auto {
+  background-image: url('../img/medium-auto.png?1468920462');
+}
+
+/* line 33, ../sass/components/_event.scss */
 .refractionNotes {
   margin-top: 1em;
 }

@@ -41,4 +41,41 @@ class OphDrPrescription_API extends BaseAPI
 
 		return $details->isEditable();
 	}
+
+	/**
+	 * Get or Create a Medication instance for the given patient id and item id.
+	 *
+	 * @TODO: consider error checking for Medication already existing?
+	 * @param $patient_id
+	 * @param $item_id
+	 * @return Medication
+	 * @throws Exception
+	 */
+	public function getMedicationForPrescriptionItem($patient_id, $item_id)
+	{
+		if ($item = OphDrPrescription_Item::model()->with('prescription.event.episode')->findByPk($item_id)) {
+			if ($item->prescription->event->episode->patient_id != $patient_id) {
+				throw new Exception("prescription item id and patient id must match");
+			}
+			$medication = new Medication();
+			$medication->createFromPrescriptionItem($item);
+			return $medication;
+		};
+	}
+
+	/**
+	 * @param Patient $patient
+	 * @param array $exclude
+	 * @return array|CActiveRecord[]|mixed|null
+	 */
+	public function getPrescriptionItemsForPatient(Patient $patient, $exclude = array())
+	{
+		$prescriptionCriteria = new CDbCriteria(array('order' => 'event_date DESC'));
+		$prescriptionCriteria->addCondition('episode.patient_id = :id');
+		$prescriptionCriteria->addNotInCondition('t.id',$exclude);
+		$prescriptionCriteria->params = array_merge($prescriptionCriteria->params, array(':id' => $patient->id));
+		$prescriptionItems = OphDrPrescription_Item::model()->with('prescription', 'drug', 'duration', 'prescription.event', 'prescription.event.episode')->findAll($prescriptionCriteria);
+
+		return $prescriptionItems;
+	}
 }

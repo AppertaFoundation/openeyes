@@ -46,7 +46,7 @@
                                                             <?php echo $element->satellite ? 'Yes' : 'No'?>
                                                     </td>
                                             </tr>
-                                            <?php } ?>
+                                 <?php } ?>
 				<tr>
 					<td scope="row">
 						<?php echo $element->getAttributeLabel('fast_track')?>:

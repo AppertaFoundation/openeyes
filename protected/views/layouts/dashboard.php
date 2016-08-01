@@ -38,7 +38,7 @@
 
             <?php
         }else{?>
-            <script src="<?= Yii::app()->assetManager->createUrl('components/highcharts/highcharts.js')?>"></script>
+        <script src="<?= Yii::app()->assetManager->createUrl('components/highcharts/highcharts.js')?>"></script>
         <?php
         }
         ?>
@@ -73,7 +73,7 @@
             <header class="mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-600">
                 <?php $this->renderPartial($this->getHeaderTemplate());?>
             </header>
-            <?php echo $content; ?>
+                <?php echo $content; ?>
         </div>
     </body>
 </html>

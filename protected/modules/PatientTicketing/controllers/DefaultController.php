@@ -240,13 +240,13 @@ class DefaultController extends \BaseModuleController
 
 		// render
 		$this->render('index', array(
-			'category' => $category,
-			'queueset' => $queueset,
-			'tickets' => $tickets,
-			'patient_filter' => $patient_filter,
-			'pages' => $pages,
-			'cat_id' => $cat_id
-		));
+				'category' => $category,
+				'queueset' => $queueset,
+				'tickets' => $tickets,
+				'patient_filter' => $patient_filter,
+			    'pages' => $pages,
+			    'cat_id' => $cat_id
+			));
 	}
 
 	/**

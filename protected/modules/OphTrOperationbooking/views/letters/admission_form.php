@@ -22,10 +22,10 @@
 $logoHelper = new LogoHelper();
 	
 ?>
-<div class="banner clearfix">
+	<div class="banner clearfix">
 		<?= $logoHelper->render() ?>
 	
-</div>
+	</div>
 	<h1>Admission Form</h1>
 
 	<table>

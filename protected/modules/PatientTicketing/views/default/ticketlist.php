@@ -115,7 +115,7 @@ $can_process = $queueset && $qs_svc->isQueueSetPermissionedForUser($queueset, Yi
 								<?php }?>
 								<td>
 									<button id="search_button" class="secondary small" type="submit">
-										<?php echo ($patient_filter ? 'Apply' : 'Search'); ?>
+										<?php if ($patient_filter) {?>Apply<? } else {?>Search<?php }?>
 									</button>
 								</td>
 							</tr>

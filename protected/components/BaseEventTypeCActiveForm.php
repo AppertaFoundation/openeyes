@@ -186,8 +186,8 @@ class BaseEventTypeCActiveForm extends FormLayout
 			'layoutColumns' => $layoutColumns
 		));
 	}
-        
-        /**
+
+	/**
 	 * @param CModel $element
 	 * @param string $field
 	 * @param array $htmlOptions
