@@ -34,13 +34,13 @@
 
 <div class="form-group">
     <label for="name">Name:</label>
-    <input type="text" class="form-control" name="text_name" id="name">
+    <input type="text" class="form-control" name="name" id="name">
 </div>
 <div class="form-group">
     <label for="day">Date:</label>
-    <input type="text" class="form-control" style="width:50px; display:inline-block;" id="day" name="text_day" placeholder="day">
-    <input type="text" class="form-control" style="width:50px; display:inline-block;" id="month" name="text_month" placeholder="month">
-    <input type="text" class="form-control" style="width:50px; display:inline-block;" id="year" name="text_year" placeholder="year">
+    <input type="text" class="form-control" style="width:50px; display:inline-block;" id="day" name="day" placeholder="day">
+    <input type="text" class="form-control" style="width:50px; display:inline-block;" id="month" name="month" placeholder="month">
+    <input type="text" class="form-control" style="width:50px; display:inline-block;" id="year" name="year" placeholder="year">
 </div>
 <div class="form-group">
     <p>
@@ -64,18 +64,18 @@
 <div class="form-group">
     <p>
         <label for="day_of_e">Date of examination:</label>
-        <input type="text" class="form-control" style="width:50px; display:inline-block;" id="day_of_e" name="text_day_of_e" placeholder="day">
-        <input type="text" class="form-control" style="width:50px; display:inline-block;" id="month_of_e" name="text_month_of_e" placeholder="month">
-        <input type="text" class="form-control" style="width:50px; display:inline-block;" id="year_of_e" name="text_year_of_e" placeholder="year">
+        <input type="text" class="form-control" style="width:50px; display:inline-block;" id="day_of_e" name="day_of_e" placeholder="day">
+        <input type="text" class="form-control" style="width:50px; display:inline-block;" id="month_of_e" name="month_of_e" placeholder="month">
+        <input type="text" class="form-control" style="width:50px; display:inline-block;" id="year_of_e" name="year_of_e" placeholder="year">
     </p>
 </div>
 <div class="form-group">
     <label for="consultants_name">Consultant's Name:</label>
-    <input type="text" class="form-control" name="text_consultants_name" id="consultants_name">
+    <input type="text" class="form-control" name="consultants_name" id="consultants_name">
 </div>
 <div class="form-group">
     <label for="hospital_address">Hospital address:</label>
-    <textarea class="form-control" rows="4" name="textarea_hospital_address" id="hospital_address"></textarea>
+    <textarea class="form-control" rows="4" name="hospital_address" id="hospital_address"></textarea>
 </div>
 <div class="form-group">
     <input type="hidden" name="test_print" />

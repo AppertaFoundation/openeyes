@@ -3999,7 +3999,7 @@
             <text:p text:style-name="P26">
               <text:span text:style-name="T27">
                 <draw:frame draw:style-name="a0" draw:name="Kép 1" text:anchor-type="as-char" svg:x="0in" svg:y="0in" svg:width="3.33886in" svg:height="0.6982in" style:rel-width="scale" style:rel-height="scale">
-                  <draw:image xlink:href="media/image1.png" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>
+                  <draw:image xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad" xlink:href="/var/www/openeyes/protected/modules/OphCoCvi/files/image/signature3.png"/>
                   <svg:title/>
                   <svg:desc/>
                 </draw:frame>
@@ -4010,7 +4010,7 @@
       </table:table>
       <text:p text:style-name="P28">
         <text:span text:style-name="T29">Date<text:s/></text:span>
-        <text:span text:style-name="T30">//</text:span>
+        <text:span text:style-name="T30">/##month##/##year##</text:span>
       </text:p>
       <table:table table:style-name="Table31">
         <table:table-columns>
@@ -4028,7 +4028,7 @@
                 </draw:custom-shape>
               </text:span>
             </text:p>
-            <text:p text:style-name="P38"/>
+            <text:p text:style-name="P38">##optradio_1##</text:p>
           </table:table-cell>
           <table:table-cell table:style-name="TableCell39">
             <text:p text:style-name="P40">I am the patient</text:p>
@@ -4044,7 +4044,7 @@
                   <draw:enhanced-geometry draw:type="non-primitive" svg:viewBox="0 0 21600 21600" draw:enhanced-path="M 0 0 L 21600 0 21600 21600 0 21600 Z N"/>
                 </draw:custom-shape>
               </text:span>
-              <text:span text:style-name="T45"/>
+              <text:span text:style-name="T45">##optradio_2##</text:span>
             </text:p>
           </table:table-cell>
           <table:table-cell table:style-name="TableCell46">
@@ -4067,7 +4067,7 @@
           </table:table-cell>
           <table:table-cell table:style-name="TableCell58">
             <text:p text:style-name="P59">
-              <text:span text:style-name="T60"/>
+              <text:span text:style-name="T60">##optcons_1##</text:span>
             </text:p>
           </table:table-cell>
           <table:table-cell table:style-name="TableCell61">
@@ -4080,7 +4080,7 @@
           </table:covered-table-cell>
           <table:table-cell table:style-name="TableCell65">
             <text:p text:style-name="P66">
-              <text:span text:style-name="T67"/>
+              <text:span text:style-name="T67">##optcons_1##</text:span>
             </text:p>
           </table:table-cell>
           <table:table-cell table:style-name="TableCell68">
@@ -4091,13 +4091,11 @@
       <text:p text:style-name="P70">
         <text:span text:style-name="T71">Date of<text:s/></text:span>
         <text:span text:style-name="T72">examination <text:s/></text:span>
-        <text:span text:style-name="T73">
-          <text:s/>
-        </text:span>
+        <text:span text:style-name="T73"><text:s/></text:span>
         <text:span text:style-name="T74">(dd) <text:s/></text:span>
         <text:span text:style-name="T75">(</text:span>
         <text:span text:style-name="T76">mm)<text:s/></text:span>
-        <text:span text:style-name="T77"/>
+        <text:span text:style-name="T77"></text:span>
         <text:span text:style-name="T78">(yyyy)</text:span>
       </text:p>
       <text:p text:style-name="P79">NB: The date of examination is taken as the date from which any concessions are calculated</text:p>
@@ -4114,7 +4112,7 @@
             <text:p text:style-name="P87">
               <text:span text:style-name="T88">
                 <draw:frame draw:style-name="a3" draw:name="Kép 5" text:anchor-type="as-char" svg:x="0in" svg:y="0in" svg:width="2.61495in" svg:height="0.69801in" style:rel-width="scale" style:rel-height="scale">
-                  <draw:image xlink:href="media/image2.png" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>
+                  <draw:image xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad" xlink:href="/var/www/openeyes/protected/modules/OphCoCvi/files/image/signature3.png"/>
                   <svg:title/>
                   <svg:desc/>
                 </draw:frame>
@@ -4134,7 +4132,7 @@
             <text:p text:style-name="P95">Consultant’s Name: <text:s text:c="2"/></text:p>
           </table:table-cell>
           <table:table-cell table:style-name="TableCell96">
-            <text:p text:style-name="P97"/>
+            <text:p text:style-name="P97"></text:p>
             <text:p text:style-name="P98"/>
           </table:table-cell>
         </table:table-row>
@@ -4143,7 +4141,7 @@
             <text:p text:style-name="P101">Hospital address:</text:p>
           </table:table-cell>
           <table:table-cell table:style-name="TableCell102">
-            <text:p text:style-name="P103"/>
+            <text:p text:style-name="P103"></text:p>
             <text:p text:style-name="P104"/>
           </table:table-cell>
         </table:table-row>
@@ -4644,53 +4642,47 @@
           <table:table-cell table:style-name="TableCell396" table:number-rows-spanned="6"><text:p>Retina</text:p></table:table-cell>
           <table:table-cell table:style-name="TableCell399"><text:p>age-related macular degeneration –subretinal neovascularisation</text:p></table:table-cell>
           <table:table-cell table:style-name="TableCell401"><text:p>H35.3</text:p></table:table-cell>
-          <table:table-cell table:style-name="TableCell403"><text:p>1</text:p></table:table-cell>
-          <table:table-cell table:style-name="TableCell405"><text:p>1</text:p></table:table-cell>
+          <table:table-cell table:style-name="TableCell403">
+            <text:p text:style-name="P404"/>
+          </table:table-cell>
+          <table:table-cell table:style-name="TableCell405">
+            <text:p text:style-name="P406"/>
+          </table:table-cell>
         </table:table-row>
         <table:table-row table:style-name="TableRow407">
-          <table:covered-table-cell>
-            <text:p text:style-name="P408"/>
-          </table:covered-table-cell>
+          <table:covered-table-cell><text:p/></table:covered-table-cell>
           <table:table-cell table:style-name="TableCell409"><text:p>age-related macular degeneration – atrophic /geographic macular atrophy</text:p></table:table-cell>
           <table:table-cell table:style-name="TableCell412"><text:p>H35.3</text:p></table:table-cell>
-          <table:table-cell table:style-name="TableCell414"><text:p>2</text:p></table:table-cell>
-          <table:table-cell table:style-name="TableCell416"><text:p>2</text:p></table:table-cell>
+          <table:table-cell table:style-name="TableCell414"><text:p/></table:table-cell>
+          <table:table-cell table:style-name="TableCell416"><text:p/></table:table-cell>
         </table:table-row>
         <table:table-row table:style-name="TableRow418">
-          <table:covered-table-cell>
-            <text:p text:style-name="P419"/>
-          </table:covered-table-cell>
+          <table:covered-table-cell><text:p/></table:covered-table-cell>
           <table:table-cell table:style-name="TableCell420"><text:p>diabetic retinopathy</text:p></table:table-cell>
           <table:table-cell table:style-name="TableCell422"><text:p>E10.3 – E14.3 H36.0</text:p></table:table-cell>
-          <table:table-cell table:style-name="TableCell425"><text:p>3</text:p></table:table-cell>
-          <table:table-cell table:style-name="TableCell427"><text:p>3</text:p></table:table-cell>
+          <table:table-cell table:style-name="TableCell425"><text:p/></table:table-cell>
+          <table:table-cell table:style-name="TableCell427"><text:p/></table:table-cell>
         </table:table-row>
         <table:table-row table:style-name="TableRow429">
-          <table:covered-table-cell>
-            <text:p text:style-name="P430"/>
-          </table:covered-table-cell>
+          <table:covered-table-cell><text:p/></table:covered-table-cell>
           <table:table-cell table:style-name="TableCell431"><text:p>hereditary retinal dystrophy</text:p></table:table-cell>
           <table:table-cell table:style-name="TableCell433"><text:p>H35.5</text:p></table:table-cell>
-          <table:table-cell table:style-name="TableCell435"><text:p>4</text:p></table:table-cell>
-          <table:table-cell table:style-name="TableCell437"><text:p>4</text:p></table:table-cell>
+          <table:table-cell table:style-name="TableCell435"><text:p/></table:table-cell>
+          <table:table-cell table:style-name="TableCell437"><text:p/></table:table-cell>
         </table:table-row>
         <table:table-row table:style-name="TableRow439">
-          <table:covered-table-cell>
-            <text:p text:style-name="P440"/>
-          </table:covered-table-cell>
+          <table:covered-table-cell><text:p/></table:covered-table-cell>
           <table:table-cell table:style-name="TableCell441"><text:p>retinal vascular occlusions</text:p></table:table-cell>
           <table:table-cell table:style-name="TableCell443"><text:p/></table:table-cell>
-          <table:table-cell table:style-name="TableCell445"><text:p>5</text:p></table:table-cell>
-          <table:table-cell table:style-name="TableCell447"><text:p>5</text:p></table:table-cell>
+          <table:table-cell table:style-name="TableCell445"><text:p/></table:table-cell>
+          <table:table-cell table:style-name="TableCell447"><text:p/></table:table-cell>
         </table:table-row>
         <table:table-row table:style-name="TableRow449">
-          <table:covered-table-cell>
-            <text:p text:style-name="P450"/>
-          </table:covered-table-cell>
+          <table:covered-table-cell><text:p/></table:covered-table-cell>
           <table:table-cell table:style-name="TableCell451" table:number-columns-spanned="4"><text:p>other retinal : please specify</text:p></table:table-cell>
-          <table:covered-table-cell/>
-          <table:covered-table-cell/>
-          <table:covered-table-cell/>
+          <table:covered-table-cell><text:p/></table:covered-table-cell>
+          <table:covered-table-cell><text:p/></table:covered-table-cell>
+          <table:covered-table-cell><text:p/></table:covered-table-cell>
         </table:table-row>
       </table:table>
       <text:p text:style-name="P453"/>
