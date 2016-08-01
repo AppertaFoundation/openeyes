@@ -17,6 +17,10 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+// this extract's execution time is more than the default 500sec
+// for 5yrs time period it can last more than 30min
+ini_set('max_execution_time', 3600);
+
 class NodExportController extends BaseController
 {
     /**
@@ -33,6 +37,15 @@ class NodExportController extends BaseController
     private $endDate = '';
 
     private $allEpisodeIds;
+    
+    // Refactoring : 
+    /**
+     * This number will be appended after the tmp tables so the
+     * two or more extract running at the same time can use different tmp tables
+     * @var int 
+     */
+    private $extrcat_table_identifier;
+    
 
     public function accessRules()
     {
@@ -88,6 +101,13 @@ class NodExportController extends BaseController
         if($endDate){
             $this->endDate = $endDateTime->format('Y-m-d');
         }
+        
+        // Refactoring : generate number from hour-minute-sec
+        // this number will be appended to the name of tmp tables
+        // tmp tables will be normal DB tables instead of real TEMPORARY tables because in some queries
+        // we need to refer the tmp table (like sub-select) two or more times - and in MySQL a tmp table can be referred only once in a query
+        // (this prevents error if someone starts 2 extract)
+        $this->extrcat_table_identifier = date('His');
 
         parent::init();
     }
@@ -191,6 +211,17 @@ class NodExportController extends BaseController
         $this->clearAllTempTables();
         
         $createTempQuery = <<<EOL
+
+            DROP TABLE IF EXISTS tmp_rco_nod_main_event_episodes_{$this->extrcat_table_identifier};
+            CREATE TABLE tmp_rco_nod_main_event_episodes_{$this->extrcat_table_identifier} (
+                oe_event_id int(10) NOT NULL,
+                patient_id int(10) NOT NULL,
+                nod_episode_id int(10) NOT NULL,
+                nod_date date NOT NULL,
+                oe_event_type tinyint(2) NOT NULL,
+                PRIMARY KEY (oe_event_id)
+             );
+
 			DROP TABLE IF EXISTS tmp_episode_ids;
 			
 			CREATE TABLE tmp_episode_ids(
@@ -446,11 +477,75 @@ EOL;
         Yii::app()->db->createCommand($createTempQuery)->execute();
 
     }
+    
+    // Refactoring :
+    /**
+     * This function will call the functions one by one to populate each tmp tables belongs to a csv file
+     */
+    private function populateAllTempTables()
+    {
+        $this->populateTmpRcoNodMainEventEpisodes();
+    }
+    
+    // Refactoring :
+    /**
+     * Load main control table with ALL events
+     */
+    private function populateTmpRcoNodMainEventEpisodes()
+    {
+        $query = <<<EOL
+                #Load main control table with ALL operation events
+                INSERT INTO tmp_rco_nod_main_event_episodes_{$this->extrcat_table_identifier} (
+                    oe_event_id,
+                    patient_id,
+                    nod_episode_id,
+                    nod_date,
+                    oe_event_type
+                )
+                SELECT
+                    event.id AS oe_event_id,
+                    episode.patient_id AS patient_id,
+                    event.id AS nod_episode_id,
+                    DATE(event.event_date) AS nod_date,
+                    event_type_id AS oe_event_type
+                FROM event
+                JOIN episode ON event.episode_id = episode.id
+                JOIN event_type ON event.event_type_id = event_type.id AND event_type.name = 'Operation Note';
+                
+                
+                #Load main control table with ALL examination events (using previously identified patients in control table)
+                INSERT INTO  tmp_rco_nod_main_event_episodes_{$this->extrcat_table_identifier} (
+                                oe_event_id,
+                                patient_id,
+                                nod_episode_id,
+                                nod_date,
+                                oe_event_type 
+                )
+                SELECT
+                        event.id AS oe_event_id,
+                        episode.patient_id AS patient_id,
+                        event.id AS nod_episode_id,
+                        DATE(event.event_date) AS nod_date,
+                        event.event_type_id AS oe_event_type
+                FROM event
+                JOIN episode ON event.episode_id = episode.id
+                WHERE  episode.patient_id IN (SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extrcat_table_identifier} c)
+                AND event.event_type_id IN
+                    (
+                        SELECT event_type.id
+                        FROM event_type
+                        WHERE event_type.`name` IN ('Examination', 'Biometry', 'Prescription')
+                    );
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+    }
 
     private function clearAllTempTables()
     {
         $cleanQuery = <<<EOL
                 
+                DROP TABLE IF EXISTS tmp_rco_nod_main_event_episodes_{$this->extrcat_table_identifier};
+
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication_type;
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication;
                 DROP TEMPORARY TABLE IF EXISTS tmp_anesthesia_type;
@@ -1327,7 +1422,7 @@ EOL;
         $query = "SELECT e.id AS OperationId, e.episode_id AS EpisodeId, 
                 '' as Description, 
                 '' as IsHypertensive,
-                e.event_date AS ListedDate,
+                DATE(e.event_date) AS ListedDate,
 			s.surgeon_id AS SurgeonId, 
 			user.`doctor_grade_id` AS SurgeonGradeId,
                         s.assistant_id as AssistantId,
@@ -1608,6 +1703,8 @@ EOL;
     {
 
         $this->createAllTempTables();
+        $this->populateAllTempTables();
+
         $this->getAllEpisodeId();
         $this->getEpisodeDiagnosis();
         $this->getEpisode();
