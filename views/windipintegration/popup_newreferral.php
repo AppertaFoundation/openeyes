@@ -39,28 +39,12 @@
 
 <script type="text/javascript">
 
-	function openNewWindow(urlToOpen, name, successCallback, errorCallback) {
-		if (successCallback === undefined) {
-			successCallback = function(popup) { popup.focus();}
-		}
-		if (errorCallback === undefined) {
-			errorCallback = function() {alert("Pop-up Blocker is enabled! Please add this site to your exception list.");}
-		}
-		var popup_window=window.open(urlToOpen,name,"toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes");
-		try {
-			popup_window.focus();
-			successCallback(popup_window);
-		}
-		catch (e) {
-			errorCallback();
-		}
-	}
-
 	$(document).on('ready', function() {
-		openNewWindow('<?= $external_link?>', 'Internalreferralintegration',
+		OpenEyes.UI.Window.createNewWindow('<?= $external_link?>', 'Internalreferralintegration',
 			function(popup) {
-				$('#external-referral-button').addClass('hidden');
 				popup.focus();
+				$('#external-referral-button').addClass('hidden');
+				$('#external-referral-status').removeClass('hidden');
 			},
 			function() {
 				$('#external-referral-popup-blocked').removeClass('hidden');

@@ -45,8 +45,8 @@ class DefaultController extends \BaseEventTypeController
 	 */
 	public function checkEditAccess()
 	{
-		if (isset($this->app->params['internalreferral_allowedit']))
-			return $this->app->params['internalreferral_allowedit'];
+		if (isset($this->getApp()->params['internalreferral_allowedit']))
+			return $this->getApp()->params['internalreferral_allowedit'];
 
 		return self::$ALLOW_EDIT;
 	}
