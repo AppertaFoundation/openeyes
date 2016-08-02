@@ -52,11 +52,16 @@ class PrintTest{
 
                     $valArr = explode("\n",$value);
                     if(array_key_exists(1, $valArr)){
-                        foreach ($valArr as $val){
+                        foreach ($valArr as $c => $val){
                             $val = str_replace("\r","",$val);
                             $node->nodeValue='';
                             
-                            $text = $this->xmlDoc->createElement('text:line-break', $val);
+                            if($c > 0){
+                                $break = $this->xmlDoc->createElement('text:line-break');
+                                $node->parentNode->appendChild($break);
+                            }
+
+                            $text = $this->xmlDoc->createElement('text:span', $val);
                             $node->parentNode->appendChild($text);
                         }   
                     } else {
