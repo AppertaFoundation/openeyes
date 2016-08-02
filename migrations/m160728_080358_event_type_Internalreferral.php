@@ -19,6 +19,7 @@ class m160728_080358_event_type_Internalreferral extends CDbMigration
 				'referrer_id' => 'int(10) unsigned NOT NULL',
 				'from_subspecialty_id' => 'int(10) unsigned NOT NULL',
 				'to_subspecialty_id' => 'int(10) unsigned NOT NULL',
+				'integration_data' => 'text',
 				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
 				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
 				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
@@ -45,6 +46,7 @@ class m160728_080358_event_type_Internalreferral extends CDbMigration
 				'referrer_id' => 'int(10) unsigned NOT NULL', // referrer
 				'from_subspecialty_id' => 'int(10) unsigned NOT NULL', // From
 				'to_subspecialty_id' => 'int(10) unsigned NOT NULL', // To
+				'integration_data' => 'text',
 				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
 				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
 				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
