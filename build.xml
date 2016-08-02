@@ -80,7 +80,7 @@
 
     <target name="composer" description="Install composer packages">
         <exec executable="composer" failonerror="true">
-            <arg value="update" />
+            <arg value="install" />
             <arg value="--prefer-${prefer}" />
         </exec>
     </target>

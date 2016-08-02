@@ -3634,12 +3634,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dom-crawler.git",
-                "reference": "9e5c3c24da9166ee019d64b8c3b2d79fba4a70b9"
+                "reference": "cec494ceed624e22a8e2acbfc95121f1798fb15f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/9e5c3c24da9166ee019d64b8c3b2d79fba4a70b9",
-                "reference": "9e5c3c24da9166ee019d64b8c3b2d79fba4a70b9",
+                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/cec494ceed624e22a8e2acbfc95121f1798fb15f",
+                "reference": "cec494ceed624e22a8e2acbfc95121f1798fb15f",
                 "shasum": ""
             },
             "require": {
@@ -3682,7 +3682,7 @@
             ],
             "description": "Symfony DomCrawler Component",
             "homepage": "https://symfony.com",
-            "time": "2016-07-30 07:26:43"
+            "time": "2016-08-02 10:15:39"
         },
         {
             "name": "symfony/event-dispatcher",
