@@ -45,11 +45,16 @@ class DefaultController extends \BaseEventTypeController
 	 */
 	public function checkEditAccess()
 	{
-		if (isset($this->yii->params['internalreferral_allowedit']))
-			return $this->yii->params['internalreferral_allowedit'];
+		if (isset($this->app->params['internalreferral_allowedit']))
+			return $this->app->params['internalreferral_allowedit'];
 
 		return self::$ALLOW_EDIT;
 	}
 
-
+	public function renderIntegration()
+	{
+		if ($component = $this->getApp()->internalReferralIntegration) {
+			echo $component->renderEventView($this->event);
+		}
+	}
 }

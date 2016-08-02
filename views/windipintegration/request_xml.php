@@ -20,7 +20,7 @@
 		<?php foreach ($additional_indexes as $i=>$index) {?>
 		<index_<?=$i+1?>>
 			<id><?=$index['id']?></id>
-			<value>$index['value']?></value>
+			<value><?=	$index['value']?></value>
 		</index_<?=$i+1?>>
 		<?php } ?>
 </additionalindexes>

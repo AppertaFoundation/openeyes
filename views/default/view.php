@@ -33,6 +33,7 @@ if ($this->checkPrintAccess()) {
 <?php }?>
 
 <?php $this->displayErrors(@$errors)?>
+<?php $this->renderIntegration(); ?>
 <?php $this->renderOpenElements($this->action->id)?>
 
 <?php $this->endContent() ;?>

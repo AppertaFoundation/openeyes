@@ -137,7 +137,7 @@ class WinDipIntegration extends \CApplicationComponent
 	 */
 	private function generateAuthenticationHash($data)
 	{
-		if (!is_method($this, 'hashing_function')) {
+		if (!is_callable($this->hashing_function)) {
 			throw new \Exception("A hashing function must be provided to generate the authentication hash for the WinDip integration.");
 		}
 
@@ -159,5 +159,10 @@ class WinDipIntegration extends \CApplicationComponent
 		$data['authentication_hash'] = $this->generateAuthenticationHash($data);
 
 		return $this->renderPartial($this->request_template, $data, true);
+	}
+
+	public function renderEventView(\Event $event)
+	{
+		return '<pre>' . $this->generateXmlRequest($event) . '</pre>';
 	}
 }
