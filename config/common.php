@@ -17,6 +17,17 @@
 
 return array(
     'params' => array(
+        'admin_menu' => array(
+            'Clinical Disorder Section' => '/OphCoCvi/admin/clinicalDisorderSection',
+            'Clinical Disorder' => '/OphCoCvi/admin/clinicalDisorders',
+            'Patient Factor' => '/OphCoCvi/admin/patientFactor',
+            'Employment Status' => '/OphCoCvi/admin/employeementStatus',
+            'Contact Urgency' => '/OphCoCvi/admin/contactUrgency',
+            'Field of Vision' => '/OphCoCvi/admin/fieldOfVision',
+            'Low Vision Status' => '/OphCoCvi/admin/lowVisionStatus',
+            'Preferred Info Format' => '/OphCoCvi/admin/preferredInfoFormat',
+            
+        ),
         'patient_summary_render' => array(
             'cvi_status' => array(
                     'module' => 'OphCoCvi',
@@ -30,5 +41,6 @@ return array(
             ),
         ),
         'ophcocvi_allow_all_consultants' => true,
+        
     )
 );
