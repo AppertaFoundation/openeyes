@@ -30,4 +30,10 @@ class InternalreferralModule extends \BaseEventTypeModule
 {
 	public $controllerNamespace = '\OEModule\Internalreferral\controllers';
 
+	public function init()
+	{
+		$integration = \Yii::app()->internalReferralIntegration;
+	}
+
+
 }

@@ -15,15 +15,17 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-$config = array(
-	'params' => array(
-		'internalreferral_allowedit' => true,
+// Defines the component to be used for integration with a 3rd party referral management
+// system. For WinDip, the hashing function is not available publicly and must be implemented
+// for the specific location. The component class indicates the functionality required,
+// and will be straight forward to implement for users with a genuine need and appropriate
+// documentation from WinDip themselves.
+return array(
+	'internalReferralIntegration' => array(
+		'class' => '\OEModule\Internalreferral\components\WinDipIntegration',
+		'launch_uri' => 'http://172.20.10.3:9001',
+		'application_id' => 'OpenEyes',
+		// private function to be implemented for specific installations
+		'hashing_function' => null
 	)
 );
-
-$integration_config_file = dirname(__FILE__) . '/integration.php';
-if (file_exists($integration_config_file)) {
-	$config['components'] = include $integration_config_file;
-}
-
-return $config;
