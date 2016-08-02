@@ -31,6 +31,31 @@ class BaseController extends Controller
 	public $jsVars = array();
 	public $assetManager;
 
+	/**
+	 * @var CApplication
+	 */
+	protected $app;
+
+	/**
+	 * @param CApplication $app
+	 */
+	public function setApp(CApplication $app)
+	{
+		$this->app = $app;
+	}
+
+	/**
+	 * @return CApplication
+	 */
+	public function getApp()
+	{
+		if (!$this->app)
+			$this->app = Yii::app();
+
+		return $this->app;
+	}
+
+
 	public function filters()
 	{
 		return array('accessControl');
