@@ -22,7 +22,7 @@ class DefaultController extends \BaseEventTypeController
 	static protected $ALLOW_EDIT = false;
 
 	/**
-	 * Set up the default values on create
+	 * Set up the default values on create.
 	 *
 	 * @param $element
 	 * @param $action
@@ -51,10 +51,35 @@ class DefaultController extends \BaseEventTypeController
 		return self::$ALLOW_EDIT;
 	}
 
+	/**
+	 * Partial render to insert values into event view.
+	 */
 	public function renderIntegration()
 	{
 		if ($component = $this->getApp()->internalReferralIntegration) {
 			echo $component->renderEventView($this->event);
 		}
+	}
+
+	/**
+	 * Handle external application call for a referral update.
+	 *
+	 * @throws \CHttpException
+	 */
+	public function actionExternalReferralResponse()
+	{
+		if ($component = $this->getApp()->internalReferralIntegration) {
+			if ($this->getApp()->request->isPostRequest)
+			{
+				list($status_code, $response) = $component->processExternalResponse($_POST);
+			}
+			else {
+				list($status_code, $response) = $component->processExternalResponse($_GET);
+			}
+			header('HTTP/1.1 '.$status_code);
+			echo $response;
+			$this->getApp()->end();
+		}
+		throw new \CHttpException(404, 'External Integration Not Configured.');
 	}
 }

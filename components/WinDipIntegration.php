@@ -29,7 +29,7 @@ namespace OEModule\Internalreferral\components;
  *
  * @package OEModule\Internalreferral\components
  */
-class WinDipIntegration extends \CApplicationComponent
+class WinDipIntegration extends \CApplicationComponent implements ExternalIntegration
 {
 	protected $yii;
 	protected $required_params =  array(
@@ -146,6 +146,7 @@ class WinDipIntegration extends \CApplicationComponent
 	}
 
 	/**
+	 *
 	 * @param \Event $event
 	 * @return mixed
 	 * @throws \Exception
@@ -163,20 +164,50 @@ class WinDipIntegration extends \CApplicationComponent
 		return $this->cleanRequest($request);
 	}
 
+	/**
+	 * Generate the external application URL for a new WinDip referral event.
+	 *
+	 * @param \Event $event
+	 * @return string
+	 */
 	public function generateUrlForNewEvent(\Event $event)
 	{
 		return $this->launch_uri . '?XML=' . $this->generateXmlRequest($event);
 	}
 
-	public function renderEventView(\Event $event)
-	{
-		return $this->renderPartial($this->new_event_template, array('external_link' => $this->generateUrlForNewEvent($event), 'event' => $event));
-	}
-
+	/**
+	 * parsing function that ensure consistent clean up of request XML
+	 *
+	 * @param $request
+	 * @return string
+	 */
 	public function cleanRequest($request)
 	{
 		$request = preg_replace('/>\s+</', '><', $request);
 		$request = preg_replace('/[\n\r]/', '', $request);
 		return \CHtml::encode($request);
+	}
+
+	/**
+	 * Generates the HTML/JS to be inserted into the view page of the referral event.
+	 *
+	 * @param \Event $event
+	 * @return string
+	 */
+	public function renderEventView(\Event $event)
+	{
+		return $this->renderPartial($this->new_event_template, array(
+				'external_link' => $this->generateUrlForNewEvent($event),
+				'event' => $event)
+		);
+	}
+
+	/**
+	 * @param array $data
+	 * @return array
+	 */
+	public function processExternalResponse($data = array())
+	{
+		return array(200, 'OK');
 	}
 }
