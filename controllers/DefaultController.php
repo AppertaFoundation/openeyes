@@ -19,6 +19,8 @@ namespace OEModule\Internalreferral\controllers;
 
 class DefaultController extends \BaseEventTypeController
 {
+	static protected $ALLOW_EDIT = false;
+
 	/**
 	 * Set up the default values on create
 	 *
@@ -28,11 +30,26 @@ class DefaultController extends \BaseEventTypeController
 	public function setElementDefaultOptions_Element_Internalreferral_ReferralDetails($element, $action)
 	{
 		if ($action == "create") {
-			$user = \Yii::app()->user;
+			$user = \User::model()->findByPk(\Yii::app()->user->id);
 			if ($user->is_consultant)
 				$element->referrer_id = \Yii::app()->user->id;
 			$element->from_subspecialty_id = $this->firm->getSubspecialtyID();
 		}
 	}
+
+	/**
+	 * Typically don't want to allow edits when internal referral is integrated
+	 * with a 3rd party system.
+	 *
+	 * @return bool
+	 */
+	public function checkEditAccess()
+	{
+		if (isset($this->yii->params['internalreferral_allowedit']))
+			return $this->yii->params['internalreferral_allowedit'];
+
+		return self::$ALLOW_EDIT;
+	}
+
 
 }
