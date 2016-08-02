@@ -18,8 +18,18 @@
 
 namespace OEModule\Internalreferral\components;
 
-
-class WinDipIntegration extends \CComponent
+/**
+ * Class WinDipIntegration
+ *
+ * Integration component for WinDip referral - provides link data to WinDip based on module
+ * configuration.
+ *
+ * In current implementation, is only example of 3rd party; aspects should be abstracted as and when
+ * further integrations are created.
+ *
+ * @package OEModule\Internalreferral\components
+ */
+class WinDipIntegration extends \CApplicationComponent
 {
 	protected $yii;
 	protected $required_params =  array(
@@ -27,24 +37,33 @@ class WinDipIntegration extends \CComponent
 		'application_id',
 		'hashing_function'
 	);
-	protected $launch_uri;
-	protected $application_id;
+
+	public $launch_uri;
+	public $application_id;
 	public $hashing_function;
 
-	public function __construct(\CApplication $yii = null, $params = array())
+	/**
+	 * Template path for the WinDip request
+	 *
+	 * @var string
+	 */
+	protected $request_template = 'Internalreferral.views.windipintegration.request_xml';
+
+	/**
+	 * WinDipIntegration constructor.
+	 *
+	 * @param \CApplication|null $yii
+	 * @param array $params
+	 * @throws \Exception
+	 */
+	public function init()
 	{
-		if (is_null($yii)) {
-			$yii = \Yii::app();
-		}
+		if (is_null($this->yii))
+			$this->yii = \Yii::app();
 
-		$this->yii = $yii;
-
-		\OELog::log("inside:" . print_r($params, true));
 		foreach ($this->required_params as $p) {
-			if (!isset($params[$p]))
+			if (!isset($this->$p) || is_null($this->$p))
 				throw new \Exception("Missing required parameter {$p}");
-
-			$this->$p = $params[$p];
 		}
 	}
 
@@ -60,6 +79,14 @@ class WinDipIntegration extends \CComponent
 		return $this->yii->controller->renderPartial($view, $parameters, true);
 	}
 
+	/**
+	 * Build a request for the given event
+	 *
+	 * @param \Event $event
+	 * @param \DateTime $when
+	 * @param $message_id
+	 * @return array
+	 */
 	protected function constructRequestData(\Event $event, \DateTime $when, $message_id)
 	{
 		//TODO: better way of handling mysql date to datetime
@@ -88,23 +115,49 @@ class WinDipIntegration extends \CComponent
 		);
 	}
 
-	protected function generateMessageId()
+	/**
+	 * Generate a unique ID for the event message to be sent to WinDip
+	 *
+	 * @TODO: determine if ID should be stored with the event and maintained for subsequent links
+	 *
+	 * @param \Event $event
+	 * @return string
+	 */
+	protected function getMessageId(\Event $event)
 	{
 		return \Helper::generateUuid();
 	}
 
+	/**
+	 * Generate the authentication hash for the WinDip request.
+	 *
+	 * @param $data
+	 * @return mixed
+	 * @throws \Exception
+	 */
+	private function generateAuthenticationHash($data)
+	{
+		if (!is_method($this, 'hashing_function')) {
+			throw new \Exception("A hashing function must be provided to generate the authentication hash for the WinDip integration.");
+		}
+
+		return call_user_func($this->hashing_function, $data, $this->request_template);
+	}
+
+	/**
+	 * @param \Event $event
+	 * @return mixed
+	 * @throws \Exception
+	 */
 	public function generateXmlRequest(\Event $event)
 	{
 		$when = new \DateTime();
-		$message_id = $this->generateMessageId();
+		$message_id = $this->getMessageId($event);
 
 		$data = $this->constructRequestData($event, $when, $message_id);
 
+		$data['authentication_hash'] = $this->generateAuthenticationHash($data);
 
-		$closure = $this->hashing_function;
-		$authentication_hash = call_user_func($closure, $data, 'Internalreferral.views.windipintegration.request_xml');
-		$data['authentication_hash'] = $authentication_hash;
-
-		return $this->renderPartial('Internalreferral.views.windipintegration.request_xml', $data, true);
+		return $this->renderPartial($this->request_template, $data, true);
 	}
 }
