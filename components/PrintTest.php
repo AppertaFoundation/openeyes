@@ -15,73 +15,82 @@ class PrintTest{
     public $xmlDoc;
     public $xpath;
     
-    
-    public function loadData(){
-  
+    public function __construct(){
         $this->directory = realpath(__DIR__ . '/..').'/files';
-        
+    }
+    
+    public function getXml(){
+
         if($this->unzipFile( $this->directory.'/'.$this->inputFile,  $this->directory.'/xml') === TRUE){
             
             $this->xmlDoc = new DOMDocument();
             $this->xmlDoc->load( $this->directory.'/xml/content.xml');
             $this->xmlDoc->formatOutput = true;
+            $this->xmlDoc->preserveWhiteSpace = false;
             $this->xpath = new DomXpath($this->xmlDoc);
-        
-            $this->strReplace( $_POST );
-            $this->imgReplace();
-            $dataTable = $this->findTableInPdf("Retina" , $this->genTableDatas() );
-
-            $this->xmlDoc->save( $this->directory.'/xml/content.xml');
-
-            if($this->zipFolder($this->directory.'/xml', '/var/www/openeyes/protected/runtime/document.odt') === TRUE){
-                exec('/usr/bin/libreoffice --headless --convert-to pdf --outdir /var/www/openeyes/protected/runtime/  /var/www/openeyes/protected/runtime/document.odt');
-                return $this->pdfLink();   
-            }
-            
+           
+            return $this;
         } else {
-            return 'Pdf generate error. Please try again.';
+            return FALSE;
         }
     }
-
-    public function pdfLink(){
-        $result = '<a href="getPDF" target="_blank" > See PDF </a>';
-        return $result;
+    
+    public function saveXML( $xml ){
+        $xml->save( $this->directory.'/xml/content.xml');
+        if($this->zipFolder($this->directory.'/xml', '/var/www/openeyes/protected/runtime/document.odt') === TRUE){
+            exec('/usr/bin/libreoffice --headless --convert-to pdf --outdir /var/www/openeyes/protected/runtime/  /var/www/openeyes/protected/runtime/document.odt');    
+        }
     }
     
     public function strReplace( $data ){
-        
         $nodes = $this->xpath->query('//text()');
+       
         foreach ($nodes as $node) {
+            
             foreach ($data as $key => $value){
-                $node->nodeValue = str_replace('##'.$key.'##', $value, $node->nodeValue, $count);
-                if($count > 0){
-                    break;
+                if(($node->nodeValue == '##'.$key.'##') || (strpos($node->nodeValue, '##'.$key.'##') !== false)){
+
+                    $valArr = explode("\n",$value);
+                    if(array_key_exists(1, $valArr)){
+                        foreach ($valArr as $val){
+                            $val = str_replace("\r","",$val);
+                            $node->nodeValue='';
+                            
+                            $text = $this->xmlDoc->createElement('text:line-break', $val);
+                            $node->parentNode->appendChild($text);
+                        }   
+                    } else {
+                        $node->nodeValue = str_replace('##'.$key.'##', $valArr[0], $node->nodeValue, $count);
+                        
+                    }
+                
                 }
+                /* 
+                $val = str_replace("\n","<text:line-break/>",trim($value));
+                $node->nodeValue = str_replace('##'.$key.'##', $val, $node->nodeValue, $count);
+
+                */
             }
         }
-
+        
         $this->xmlDoc->saveXML();
     }
     
-    public function imgReplace(){
+    public function imgReplace( $oldImage , $newImageUrl ){
+        
+        $newImage = substr($newImageUrl, strrpos($newImageUrl, '/') + 1);
+        copy( $this->directory.'/'.$newImage , $newImageUrl);
         $nodes = $this->xmlDoc->getElementsByTagName("image");
         foreach ($nodes as $node) {
-            $node->removeAttribute('xlink:href');
-            $node->setAttribute("xlink:href", $this->directory."/image/signature3.png");
+            if($node->getAttribute('xlink:href') == 'media/'.$oldImage){
+                $node->removeAttribute('xlink:href');
+                $node->setAttribute("xlink:href", $newImageUrl);
+                break;
+            }
         }
+     
         $this->xmlDoc->saveXML();
-    }
     
-    public function genTableDatas(){
-        $data = array(
-            array('Retina', 'age-related macular degeneration –subretinal neovascularisation','H35.3'),
-            array('','age-related macular degeneration – atrophic /geographic macular atrophy','H35.3','', ''),
-            array('','diabetic retinopathy','E10.3 – E14.3 H36.0','', ''),
-            array('','hereditary retinal dystrophy','H35.5','', ''),
-            array('','retinal vascular occlusions','','', ''),
-            array('','other retinal : please specify','','', ''),
-        );
-        return $data;
     }
     
     public function findTableInPdf( $disease , $data, $headerRow = 0 ){
@@ -89,7 +98,6 @@ class PrintTest{
         $tableName = $disease.'-Table';
         
         foreach ($this->xpath->query('//table:table[@table:style-name="'.$tableName.'"]') as $table) {
-            
             foreach($table->childNodes as $r => $row) {
                 if ($headerRow > 0){
                     if($headerRow >= $r){
@@ -100,16 +108,14 @@ class PrintTest{
                     $rowCount = $r-1;
                 }
                 
-                //if ($row->hasChildNodes()) {
-                    foreach($row->childNodes as $c => $cell){
+                foreach($row->childNodes as $c => $cell){
 
-                        if ((array_key_exists($rowCount, $data)) && (array_key_exists($c, $data[$rowCount]))) {
-                            $cell->nodeValue = "";
-                            $text = $this->xmlDoc->createElement('text:p', $data[$rowCount][$c]);
-                            $cell->appendChild($text);
-                        }
+                    if ((array_key_exists($rowCount, $data)) && (array_key_exists($c, $data[$rowCount]))) {
+                        $cell->nodeValue = "";
+                        $text = $this->xmlDoc->createElement('text:p', $data[$rowCount][$c]);
+                        $cell->appendChild($text);
                     }
-               // }
+                }
             } 
         }
         
@@ -167,4 +173,6 @@ class PrintTest{
         $zip->close();
         return TRUE;
     }
+    
+    
 }

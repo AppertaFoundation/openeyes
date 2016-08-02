@@ -32,56 +32,59 @@
 ));
 ?>
 
-<div class="form-group">
-    <label for="name">Name:</label>
-    <input type="text" class="form-control" name="name" id="name">
-</div>
-<div class="form-group">
-    <label for="day">Date:</label>
-    <input type="text" class="form-control" style="width:50px; display:inline-block;" id="day" name="day" placeholder="day">
-    <input type="text" class="form-control" style="width:50px; display:inline-block;" id="month" name="month" placeholder="month">
-    <input type="text" class="form-control" style="width:50px; display:inline-block;" id="year" name="year" placeholder="year">
-</div>
-<div class="form-group">
-    <p>
+    <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" class="form-control" name="name" id="name">
+    </div>
+    <div class="form-group">
+        <label for="day">Date:</label>
+        <input type="text" class="form-control" style="width:50px; display:inline-block;" id="day" name="day" placeholder="day">
+        <input type="text" class="form-control" style="width:50px; display:inline-block;" id="month" name="month" placeholder="month">
+        <input type="text" class="form-control" style="width:50px; display:inline-block;" id="year" name="year" placeholder="year">
+    </div>
+    <div class="form-group">
+        <p>
+            <div class="radio">
+                <label><input type="radio" name="radio_optradio" value="1">I am the patient</label>
+            </div>
+            <div class="radio">
+                <label><input type="radio" name="radio_optradio" value="2">the patient’s representative and my name is (PLEASE PRINT):</label>
+            </div>
+        </p>
+    </div>
+    <div class="form-group">
+        <span>I consider:</span>
         <div class="radio">
-            <label><input type="radio" name="radio_optradio" value="1">I am the patient</label>
+            <label><input type="radio" value="1" name="radio_optcons">That this person is sight impaired (partially sighted)</label>
         </div>
         <div class="radio">
-            <label><input type="radio" name="radio_optradio" value="2">the patient’s representative and my name is (PLEASE PRINT):</label>
+            <label><input type="radio" value="2" name="radio_optcons">That this person is severely sight impaired (blind)</label>
         </div>
-    </p>
-</div>
-<div class="form-group">
-    <span>I consider:</span>
-    <div class="radio">
-        <label><input type="radio" value="1" name="radio_optcons">That this person is sight impaired (partially sighted)</label>
     </div>
-    <div class="radio">
-        <label><input type="radio" value="2" name="radio_optcons">That this person is severely sight impaired (blind)</label>
+    <div class="form-group">
+        <p>
+            <label for="day_of_e">Date of examination:</label>
+            <input type="text" class="form-control" style="width:50px; display:inline-block;" id="day_of_e" name="day_of_e" placeholder="day">
+            <input type="text" class="form-control" style="width:50px; display:inline-block;" id="month_of_e" name="month_of_e" placeholder="month">
+            <input type="text" class="form-control" style="width:50px; display:inline-block;" id="year_of_e" name="year_of_e" placeholder="year">
+        </p>
     </div>
-</div>
-<div class="form-group">
-    <p>
-        <label for="day_of_e">Date of examination:</label>
-        <input type="text" class="form-control" style="width:50px; display:inline-block;" id="day_of_e" name="day_of_e" placeholder="day">
-        <input type="text" class="form-control" style="width:50px; display:inline-block;" id="month_of_e" name="month_of_e" placeholder="month">
-        <input type="text" class="form-control" style="width:50px; display:inline-block;" id="year_of_e" name="year_of_e" placeholder="year">
-    </p>
-</div>
-<div class="form-group">
-    <label for="consultants_name">Consultant's Name:</label>
-    <input type="text" class="form-control" name="consultants_name" id="consultants_name">
-</div>
-<div class="form-group">
-    <label for="hospital_address">Hospital address:</label>
-    <textarea class="form-control" rows="4" name="hospital_address" id="hospital_address"></textarea>
-</div>
-<div class="form-group">
-    <input type="hidden" name="test_print" />
-    <button type="submit" class="btn btn-default">Submit</button>
-     <?php echo $pdfObj ?>
-</div>
+    <div class="form-group">
+        <label for="consultants_name">Consultant's Name:</label>
+        <input type="text" class="form-control" name="consultants_name" id="consultants_name">
+    </div>
+    <div class="form-group">
+        <label for="hospital_address">Hospital address:</label>
+        <textarea class="form-control" rows="4" name="hospital_address" id="hospital_address"></textarea>
+    </div>
+    <div class="form-group">
+       <?php echo $imageSrc ?>
+    </div>
+    <div class="form-group">
+        <input type="hidden" name="test_print" />
+        <button type="submit" class="btn btn-default">Submit</button>
+         <?php echo $pdfLink ?>
+    </div>
 <?php $this->endWidget() ?>
     
 </div>
