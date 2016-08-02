@@ -320,8 +320,7 @@ select:focus {
   z-index: 5;
 }
 
-/*------------THIS NEED TO BE COPIED TO SASS!--------------------------------*/
-
+/* line 305, ../sass/dashboard.scss */
 .mdl-layout__content #dash-grid .mdl-cell-top {
   background-color: white;
   padding: 0;
@@ -330,6 +329,7 @@ select:focus {
   overflow: hidden;
 }
 
+/* line 313, ../sass/dashboard.scss */
 .mdl-layout__content #dash-grid .mdl-cell-bottom {
   background-color: white;
   padding: 0;
@@ -338,6 +338,7 @@ select:focus {
   overflow: hidden;
 }
 
+/* line 321, ../sass/dashboard.scss */
 .mdl-layout__content #dash-grid .mdl-cell-top-right {
   background-color: white;
   padding: 0;
@@ -346,6 +347,7 @@ select:focus {
   overflow: hidden;
 }
 
+/* line 329, ../sass/dashboard.scss */
 .mdl-layout__content #dash-grid .mdl-cell-bottom-right {
   background-color: white;
   padding: 0;
@@ -356,6 +358,7 @@ select:focus {
   overflow: hidden;
 }
 
+/* line 339, ../sass/dashboard.scss */
 .mdl-tabs__tab-bar {
   align-content: space-between;
   align-items: flex-start;
@@ -368,6 +371,7 @@ select:focus {
   padding: 0;
 }
 
+/* line 351, ../sass/dashboard.scss */
 .mdl-tabs__tab {
   border: medium none;
   color: rgba(0, 0, 0, 0.54);
@@ -386,6 +390,7 @@ select:focus {
   text-transform: uppercase;
 }
 
+/* line 369, ../sass/dashboard.scss */
 .mdl-layout__content #dash-grid .mdl-cell-side {
   background-color: white;
   padding: 0;
@@ -393,6 +398,7 @@ select:focus {
   height: 100%;
 }
 
+/* line 376, ../sass/dashboard.scss */
 .nhs-number {
   background-color: #107ebd;
   background-image: url("../img/_elements/icons/nhs_tiny.png?1456827980");
@@ -404,77 +410,92 @@ select:focus {
   padding: 2px 3px 1px 33px;
 }
 
-.patient-details{
+/* line 387, ../sass/dashboard.scss */
+.patient-details {
   clear: both;
   display: block;
   padding: 10px;
 }
 
-.openeyes-logo{
+/* line 393, ../sass/dashboard.scss */
+.openeyes-logo {
   display: block;
   float: left;
 }
 
+/* line 398, ../sass/dashboard.scss */
 .vfthumbnail {
   width: 100%;
 }
 
-.vfthumbnail-hidden{
+/* line 402, ../sass/dashboard.scss */
+.vfthumbnail-hidden {
   width: 100%;
   display: none;
 }
 
-.octimage-hidden{
+/* line 407, ../sass/dashboard.scss */
+.octimage-hidden {
   display: none;
 }
 
-.regression_chart{
+/* line 411, ../sass/dashboard.scss */
+.regression_chart {
   width: 100%;
   display: block;
 }
 
-.left-side{
+/* line 416, ../sass/dashboard.scss */
+.left-side {
   display: block;
   float: right;
   width: 50%;
 }
 
-.right-side{
+/* line 422, ../sass/dashboard.scss */
+.right-side {
   display: block;
   float: left;
   width: 50%;
 }
 
-.side-title{
+/* line 428, ../sass/dashboard.scss */
+.side-title {
   text-align: center;
   font-weight: bold;
   display: block;
 }
 
-.vfimage{
+/* line 434, ../sass/dashboard.scss */
+.vfimage {
   width: 70%;
   margin: 0 auto;
 }
 
-.kowaimage{
+/* line 439, ../sass/dashboard.scss */
+.kowaimage {
   width: 100%;
   margin: 0 auto;
 }
 
-.vfcolorplot{
+/* line 444, ../sass/dashboard.scss */
+.vfcolorplot {
   width: 55%;
   margin: 0 auto;
 }
 
-.colorplot-hover{
+/* line 449, ../sass/dashboard.scss */
+.colorplot-hover {
   border: 1px solid black;
 }
 
-.oescape-images{
+/* line 453, ../sass/dashboard.scss */
+.oescape-images {
   background: white;
   height: calc(100% - 23px);
 }
 
-.header-icon{
+/* line 458, ../sass/dashboard.scss */
+.header-icon {
   font-size: 32px;
 }
