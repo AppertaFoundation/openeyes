@@ -3,7 +3,7 @@ var path = require('path');
 
 module.exports = function(grunt) {
 	grunt.registerMultiTask('test', 'Runs the JavaScript unit tests', function() {
-		var mode = this.options().mode;
+		var mode = grunt.option('mode');
 		switch(mode) {
 			case 'browser':
 

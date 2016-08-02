@@ -88,7 +88,7 @@ class ProcessHscicDataCommand extends CConsoleCommand
         ),
     );
     
-    function __construct()
+    public function __construct()
     {
         $this->path = Yii::app()->params['hscic']['data']['path'];
         $this->tempPath = Yii::app()->params['hscic']['data']['temp_path'];
@@ -126,7 +126,7 @@ class ProcessHscicDataCommand extends CConsoleCommand
      * Help
      */
     public function getHelp()
-    {        
+    {
         echo <<<EOH
 
         

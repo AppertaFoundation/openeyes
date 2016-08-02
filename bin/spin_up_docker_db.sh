@@ -16,4 +16,4 @@ if [ "$mysqlport" ]; then
 fi
 
 #sleep so the database is ready when the script exits.
-sleep 30
+sleep 60

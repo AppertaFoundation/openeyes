@@ -20,7 +20,7 @@
             description=""/>
 
     <target name="run-tests"
-            depends="prepare,composer,npm,bower,grunt,docker,migrate,migrate-modules,lint,phpunit"
+            depends="prepare,composer,npm,bower,grunt,docker,migrate,migrate-modules,lint,mocha,phpunit"
             description="" />
 
     <target name="tools-parallel" description="Run tools in parallel">
@@ -227,10 +227,19 @@
     <target name="phpunit"
             depends="prepare,migrate,migrate-modules"
             description="Run unit tests with PHPUnit">
-        <exec executable="${toolsdir}phpunit" failonerror="true">
+        <exec executable="${toolsdir}phpunit" failonerror="false">
             <arg value="--stop-on-failure"/>
             <arg value="--configuration"/>
             <arg path="${basedir}/protected/tests/phpunit_ci.xml"/>
+        </exec>
+    </target>
+
+    <target name="mocha"
+        depends="prepare,npm,bower"
+        description="Run JS tests">
+        <exec executable="grunt" failonerror="false">
+            <arg value="test" />
+            <arg value="--mode=headless"/>
         </exec>
     </target>
 
