@@ -48,6 +48,7 @@ class WinDipIntegration extends \CApplicationComponent
 	 * @var string
 	 */
 	protected $request_template = 'Internalreferral.views.windipintegration.request_xml';
+	protected $new_event_template = 'Internalreferral.views.windipintegration.popup_newreferral';
 
 	/**
 	 * WinDipIntegration constructor.
@@ -74,7 +75,7 @@ class WinDipIntegration extends \CApplicationComponent
 	 * @param array $parameters
 	 * @return mixed
 	 */
-	protected function renderPartial($view, $parameters = array())
+	public function renderPartial($view, $parameters = array())
 	{
 		return $this->yii->controller->renderPartial($view, $parameters, true);
 	}
@@ -141,7 +142,7 @@ class WinDipIntegration extends \CApplicationComponent
 			throw new \Exception("A hashing function must be provided to generate the authentication hash for the WinDip integration.");
 		}
 
-		return call_user_func($this->hashing_function, $data, $this->request_template);
+		return call_user_func($this->hashing_function, $this, $data, $this->request_template);
 	}
 
 	/**
@@ -158,11 +159,24 @@ class WinDipIntegration extends \CApplicationComponent
 
 		$data['authentication_hash'] = $this->generateAuthenticationHash($data);
 
-		return $this->renderPartial($this->request_template, $data, true);
+		$request = $this->renderPartial($this->request_template, $data, true);
+		return $this->cleanRequest($request);
+	}
+
+	public function generateUrlForNewEvent(\Event $event)
+	{
+		return $this->launch_uri . '?XML=' . $this->generateXmlRequest($event);
 	}
 
 	public function renderEventView(\Event $event)
 	{
-		return '<pre>' . $this->generateXmlRequest($event) . '</pre>';
+		return $this->renderPartial($this->new_event_template, array('external_link' => $this->generateUrlForNewEvent($event), 'event' => $event));
+	}
+
+	public function cleanRequest($request)
+	{
+		$request = preg_replace('/>\s+</', '><', $request);
+		$request = preg_replace('/[\n\r]/', '', $request);
+		return \CHtml::encode($request);
 	}
 }
