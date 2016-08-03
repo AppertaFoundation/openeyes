@@ -10,61 +10,23 @@ namespace OEModule\OphCoCvi\controllers;
 
 class LocalAuthoritiesAdminController extends \BaseAdminController
 {
-
     /**
-     * @var int
-     */
-    public $itemsPerPage = 100;
-
-    /**
-     * Lists lens types
+     * Lists local authorities from Commissioning Body Service
      *
      * @throws CHttpException
      */
     public function actionList()
     {
-        $admin = new \Admin(\CommissioningBodyService::model(), $this);
-        $admin->setListFields(array(
-            'id',
-            'name',
-            'code'
-        ));
-        $admin->setModelDisplayName('Local Authorities');
-        $admin->searchAll();
-        $admin->getSearch()->addActiveFilter();
-        $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
-        $admin->listModel();
-    }
+        \Audit::add('admin-CommissioningBodyService', 'list');
 
-    /**
-     * Edits or adds a lens type
-     *
-     * @param bool|int $id
-     * @throws CHttpException
-     */
-    public function actionEdit($id = false)
-    {
-        $admin = new \Admin(\CommissioningBodyService::model(), $this);
-        if($id){
-            $admin->setModelId($id);
-        }
-        $admin->setModelDisplayName('Local Authorities');
-        $admin->setEditFields(array(
-            'name' => 'text',
-            'code' => 'text',
-            'address' => 'text'
-        ));
-        $admin->editModel();
-    }
+        $commissioningBody = \CommissioningBody::model()->findByAttributes(array('code' => 'eCVILA'));
+        $serviceType = \CommissioningBodyServiceType::model()->findByAttributes(array('shortname' => 'SSD'));
 
-    /**
-     * Deletes rows for the model
-     */
-    public function actionDelete()
-    {
-        $admin = new \Admin(\CommissioningBodyService::model(), $this);
-        $admin->deleteModel();
-    }
+        $data["commissioningBodyId"] = $commissioningBody->id;
+        $data["serviceTypeId"] = $serviceType->id;
+        $data["returnUrl"] = '/OphCoCvi/localAuthoritiesAdmin/list';
 
+        $this->render('//admin/commissioning_body_services', array("data" => $data));
+    }
 }
 
