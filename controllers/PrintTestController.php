@@ -19,7 +19,8 @@ class PrintTestController extends \BaseController
     public $printTestXml;
     public $xml;
     
-    public function accessRules(){
+    public function accessRules()
+    {
         return array(
             array('allow',
                 'actions'       => array('test', 'getPDF'),
@@ -28,7 +29,8 @@ class PrintTestController extends \BaseController
         );
     }
     
-    public function actionTest(){
+    public function actionTest()
+    {
         $pdfLink = '';
         $this->printTestXml = new PrintTest();
         
@@ -37,23 +39,25 @@ class PrintTestController extends \BaseController
             $this->xml = $this->printTestXml->getXml();
          
             $this->printTestXml->strReplace( $_POST );
-            $this->printTestXml->imgReplace( 'image1.png' , $this->printTestXml->directory.'/xml/media/signature3.png');
-            
-            $this->printTestXml->findTableInPdf("Retina" , $this->genTableDatas() );
+            $this->printTestXml->imgReplace( 'image1.png' , $this->printTestXml->directory.'/signature3.png');
+            $this->printTestXml->fillTable("Radio1" , $this->yesNoQuestions() );
+            $this->printTestXml->fillTable("Retina" , $this->genTableDatas() );
             
             $this->printTestXml->saveXML( $this->printTestXml->xmlDoc );
+            $this->printTestXml->convertToPdf();
             $pdfLink = $this->pdfLink();
         }
        
         $this->render("test", array( 'pdfLink' => $pdfLink, 'imageSrc' => $this->getImage()) );
     }
-    public function getImage(){
-      
+    public function getImage()
+    {
         $Data = file_get_contents($this->printTestXml->directory.'/signature3.png');
         return '<div style="width:30%;height:30%;position:relative;"/><img src="data:image/jpeg;base64,'.base64_encode($Data).'"/></div>';
     }
    
-    public function actionGetPDF(){
+    public function actionGetPDF()
+    {
         $file = '/var/www/openeyes/protected/runtime/document.pdf';
         header('Content-type: application/pdf');
         header('Content-Disposition: inline; filename="document.pdf"');
@@ -62,7 +66,16 @@ class PrintTestController extends \BaseController
         @readfile($file);
     }
     
-    public function genTableDatas(){
+    public function yesNoQuestions()
+    {
+        $data = array(
+            array('X', 'I am the patient'),
+            array('X','the patient’s representative and my name is (PLEASE PRINT):'),
+        );
+        return $data;
+    }
+    public function genTableDatas()
+    {
         $data = array(
             array('Retina', 'age-related macular degeneration –subretinal neovascularisation','H35.3'),
             array('','age-related macular degeneration – atrophic /geographic macular atrophy','H35.3','', ''),
@@ -74,7 +87,9 @@ class PrintTestController extends \BaseController
         return $data;
     }
     
-     public function pdfLink(){
+    
+    public function pdfLink()
+    {
         return '<a href="getPDF" target="_blank" > See PDF </a>';
     }
 }

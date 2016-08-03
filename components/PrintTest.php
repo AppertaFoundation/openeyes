@@ -8,18 +8,24 @@ use RecursiveDirectoryIterator;
 use DOMDocument;
 use DomXpath;
 
-class PrintTest{
+class PrintTest
+{
     
-    public $directory = '';
+    public $directory;
     public $inputFile = 'example_certificate_3.odt';
     public $xmlDoc;
     public $xpath;
     
-    public function __construct(){
+    //Using an exist style declaration in xml
+    public $textStyleName = 'P400';
+    
+    public function __construct()
+    {
         $this->directory = realpath(__DIR__ . '/..').'/files';
     }
     
-    public function getXml(){
+    public function getXml()
+    {
 
         if($this->unzipFile( $this->directory.'/'.$this->inputFile,  $this->directory.'/xml') === TRUE){
             
@@ -35,14 +41,20 @@ class PrintTest{
         }
     }
     
-    public function saveXML( $xml ){
+    public function saveXML( $xml )
+    {
         $xml->save( $this->directory.'/xml/content.xml');
+    }
+    
+    public function convertToPdf()
+    {
         if($this->zipFolder($this->directory.'/xml', '/var/www/openeyes/protected/runtime/document.odt') === TRUE){
             exec('/usr/bin/libreoffice --headless --convert-to pdf --outdir /var/www/openeyes/protected/runtime/  /var/www/openeyes/protected/runtime/document.odt');    
         }
     }
     
-    public function strReplace( $data ){
+    public function strReplace( $data )
+    {
         $nodes = $this->xpath->query('//text()');
        
         foreach ($nodes as $node) {
@@ -63,44 +75,31 @@ class PrintTest{
 
                             $text = $this->xmlDoc->createElement('text:span', $val);
                             $node->parentNode->appendChild($text);
+                            $text->setAttribute("text:style-name", $this->textStyleName);
                         }   
                     } else {
                         $node->nodeValue = str_replace('##'.$key.'##', $valArr[0], $node->nodeValue, $count);
-                        
                     }
-                
-                }
-                /* 
-                $val = str_replace("\n","<text:line-break/>",trim($value));
-                $node->nodeValue = str_replace('##'.$key.'##', $val, $node->nodeValue, $count);
-
-                */
+                }    
             }
         }
         
         $this->xmlDoc->saveXML();
     }
     
-    public function imgReplace( $oldImage , $newImageUrl ){
-        
+    public function imgReplace( $oldImage , $newImageUrl )
+    {
+        $mediaFolder = $this->directory.'/xml/media/';
         $newImage = substr($newImageUrl, strrpos($newImageUrl, '/') + 1);
-        copy( $this->directory.'/'.$newImage , $newImageUrl);
-        $nodes = $this->xmlDoc->getElementsByTagName("image");
-        foreach ($nodes as $node) {
-            if($node->getAttribute('xlink:href') == 'media/'.$oldImage){
-                $node->removeAttribute('xlink:href');
-                $node->setAttribute("xlink:href", $newImageUrl);
-                break;
-            }
-        }
-     
-        $this->xmlDoc->saveXML();
-    
+        
+        // If the destination (2nd parameter ) file already exists, it will be overwritten.
+        copy( $newImageUrl , $mediaFolder.'/'.$oldImage);
     }
     
-    public function findTableInPdf( $disease , $data, $headerRow = 0 ){
+    public function fillTable( $prefix , $data, $headerRow = 0 )
+    {
         
-        $tableName = $disease.'-Table';
+        $tableName = $prefix.'-Table';
         
         foreach ($this->xpath->query('//table:table[@table:style-name="'.$tableName.'"]') as $table) {
             foreach($table->childNodes as $r => $row) {
@@ -114,20 +113,58 @@ class PrintTest{
                 }
                 
                 foreach($row->childNodes as $c => $cell){
-
-                    if ((array_key_exists($rowCount, $data)) && (array_key_exists($c, $data[$rowCount]))) {
-                        $cell->nodeValue = "";
+                   
+                    if ((array_key_exists($rowCount, $data)) && (array_key_exists($c, $data[$rowCount]))) { 
+                        //$cell->nodeValue = "";
                         $text = $this->xmlDoc->createElement('text:p', $data[$rowCount][$c]);
                         $cell->appendChild($text);
+                        $text->setAttribute("text:style-name", $this->textStyleName);
                     }
                 }
             } 
+           
         }
-        
+       
         $this->xmlDoc->saveXML();
     }
     
-    public function unzipFile( $zipInputFile, $outputFolder   ){
+    public function customSquare( $appendTo ){
+        $svgTitle = $this->xmlDoc->createElement('svg:title');
+        $svgDesc = $this->xmlDoc->createElement('svg:desc');
+        $square = $this->xmlDoc->createElement('draw:custom-shape', 'sas');
+        
+        $svgDesc->appendChild( $square );
+        $svgTitle->appendChild( $square );
+        $newSquare = $appendTo->appendChild( $square );
+        
+        $newSquare->setAttribute("draw:style-name", "a9");
+        $newSquare->setAttribute("svg:x", "0.2in");
+        $newSquare->setAttribute("svg:y", "0.4in");
+        $newSquare->setAttribute("svg:width", "0.40000in");
+        $newSquare->setAttribute("svg:height", "0.40000in");
+    }
+    
+    public function createSquareStyle(){
+        $nodes = $this->xpath->query('//office:automatic-styles');
+        
+        foreach($nodes as $node){
+            foreach($node->childNodes as $child){
+                $style = $this->xmlDoc->createElement('style:style');
+                $graph = $this->xmlDoc->createElement('style:graphic-properties');
+
+                $newGraph = $graph->appendChild( $style );
+                $newGraph->setAttribute("draw:fill", "solid");
+                $newGraph->setAttribute("draw:fill-color", "#000000");
+
+                $newSquare = $style->appendChild( $child );
+                $newSquare->setAttribute("style:family", "graphic");
+                $newSquare->setAttribute("style:name", "a1000");
+            }
+        }
+    }
+    
+    public function unzipFile( $zipInputFile, $outputFolder   )
+    {
         $zip = new ZipArchive();
      
         $res = $zip->open($zipInputFile);
@@ -140,7 +177,8 @@ class PrintTest{
         }
     }
     
-    public function zipFolder($inputFolder, $zipOutputFile) {
+    public function zipFolder($inputFolder, $zipOutputFile) 
+    {
         if (!extension_loaded('zip') || !file_exists($inputFolder)) {
             return FALSE;
         }
@@ -178,6 +216,4 @@ class PrintTest{
         $zip->close();
         return TRUE;
     }
-    
-    
 }
