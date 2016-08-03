@@ -49,7 +49,7 @@ class AdminController extends \ModuleAdminController
 	{
 		$this->genericAdmin(
 			'Clinical Disorders',
-			'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorders',
+			'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder',
 			array(
 				'extra_fields' => array(
 					array(

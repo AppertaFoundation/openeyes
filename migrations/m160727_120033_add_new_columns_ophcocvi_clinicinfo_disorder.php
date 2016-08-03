@@ -4,13 +4,13 @@ class m160727_120033_add_new_columns_ophcocvi_clinicinfo_disorder extends CDbMig
 {
 	public function up()
 	{
-            $this->addColumn('ophcocvi_clinicinfo_disorder', 'active', 'tinyint(1) unsigned not null default 1 AFTER `section_id` ');
-            $this->addColumn('ophcocvi_clinicinfo_disorder', 'section_id', 'int(12)  NOT NULL AFTER `code` ');
             $this->addColumn('ophcocvi_clinicinfo_disorder', 'code', 'varchar(20) NOT NULL AFTER `name` ' );
-            $this->addColumn('ophcocvi_clinicinfo_disorder_version', 'active', 'tinyint(1) unsigned not null default 1 AFTER `section_id`');
+            $this->addColumn('ophcocvi_clinicinfo_disorder', 'section_id', 'int(12)  NOT NULL AFTER `code` ');
+            $this->addColumn('ophcocvi_clinicinfo_disorder', 'active', 'tinyint(1) unsigned not null default 1 AFTER `section_id` ');
             $this->addColumn('ophcocvi_clinicinfo_disorder_version', 'code', 'varchar(20) NOT NULL AFTER `name` ');
             $this->addColumn('ophcocvi_clinicinfo_disorder_version', 'section_id', 'int(12) NOT NULL AFTER `code` ');
-           
+            $this->addColumn('ophcocvi_clinicinfo_disorder_version', 'active', 'tinyint(1) unsigned not null default 1 AFTER `section_id`');
+            
 	}
 
 	public function down()
