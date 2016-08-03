@@ -21,11 +21,59 @@
 			<?php echo $form->datePicker($element, 'examination_date', array('maxDate' => 'today'), array('style'=>'width: 110px;'))?>
 	<?php echo $form->radioBoolean($element, 'is_considered_blind')?>
 	<?php echo $form->radioBoolean($element, 'sight_varies_by_light_levels')?>
-	<?php echo $form->textField($element, 'unaided_right_va', array('size' => '10'))?>
-	<?php echo $form->textField($element, 'unaided_left_va', array('size' => '10'))?>
-	<?php echo $form->textField($element, 'best_corrected_right_va', array('size' => '10'))?>
-	<?php echo $form->textField($element, 'best_corrected_left_va', array('size' => '10'))?>
-	<?php echo $form->textField($element, 'best_corrected_binocular_va', array('size' => '10'))?>
+	<div class="element-eyes sub-element-fields" >
+		<div class="element-eye right-eye column left side" data-side="right">
+		<div class="active-form">
+			<div class="row field-row">
+			<div class="large-4 column">
+			<label for="<?php echo 'unaided_right_va';?>">
+				<?php echo $element->getAttributeLabel('unaided_right_va'); ?>:
+			</label>
+		</div>
+				<div class="large-6 column end">
+			<?php echo $form->textField($element, 'unaided_right_va', array('size' =>  5, 'nowrapper' => true));?>
+					</div>
+			</div>
+			<div class="row field-row">
+			<div class="large-4 column">
+			<label for="<?php echo 'best_corrected_right_va';?>">
+				<?php echo $element->getAttributeLabel('best_corrected_right_va'); ?>:
+			</label>
+		</div>
+				<div class="large-6 column end">
+			<?php echo $form->textField($element, 'best_corrected_right_va', array('size' => 5, 'nowrapper' => true));?>
+					</div>
+			</div>
+			</div>
+		</div>
+		
+	<div class="element-eye left-eye column right side" data-side="left">
+		<div class="active-form">
+<div class="row field-row">
+			<div class="large-4 column">
+			<label for="<?php echo 'unaided_left_va';?>">
+				<?php echo $element->getAttributeLabel('unaided_left_va'); ?>:
+			</label>
+		</div>
+				<div class="large-6 column end">
+			<?php echo $form->textField($element, 'unaided_left_va', array('size' =>  5, 'nowrapper' => true));?>
+					</div>
+			</div>
+			<div class="row field-row">
+			<div class="large-4 column">
+			<label for="<?php echo 'best_corrected_left_va';?>">
+				<?php echo $element->getAttributeLabel('best_corrected_left_va'); ?>:
+			</label>
+		</div>
+				<div class="large-6 column end">
+			<?php echo $form->textField($element, 'best_corrected_left_va', array('size' => 5, 'nowrapper' => true));?>
+					</div>
+			</div>
+		</div>
+	</div>
+	</div>
+	<div>
+	<?php echo $form->textField($element, 'best_corrected_binocular_va', array('size' => '10'))?></div>
 	<?php echo $form->dropDownList($element, 'low_vision_status_id', CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_LowVisionStatus::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'))?>
 	<?php echo $form->dropDownList($element, 'field_of_vision_id', CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_FieldOfVision::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'))?>
 	<?php echo $form->multiSelectList($element, 'MultiSelect_disorders', 'disorders', 'ophcocvi_clinicinfo_disorders_id', CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder::model()->findAll(array('order'=>'display_order asc')),'id','name'), $element->ophcocvi_clinicinfo_disorder_defaults, array('empty' => '- Please select -', 'label' => 'Disorders'))?>
