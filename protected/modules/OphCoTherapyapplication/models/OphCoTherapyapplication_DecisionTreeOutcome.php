@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -23,36 +23,36 @@
  * An outcome is an endpoint for a decision tree. The label is what is displayed to the user, the type is a coded value for use
  * in the system to make decisions about functional behaviour.
  *
- * @property integer $id The outcome id
+ * @property int $id The outcome id
  * @property string $label The displayed label for this outcome
  * @property string $outcome_type The coded type of this outcome
- *
  **/
-
 class OphCoTherapyapplication_DecisionTreeOutcome extends BaseActiveRecordVersioned
 {
-	/**
-	 * Returns the static model of the specified AR class.
-	 * @return the static model class
-	 */
-	public static function model($className = __CLASS__)
-	{
-		return parent::model($className);
-	}
+    /**
+     * Returns the static model of the specified AR class.
+     *
+     * @return the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
 
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'ophcotherapya_decisiontreeoutcome';
-	}
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'ophcotherapya_decisiontreeoutcome';
+    }
 
-	public function isCompliant()
-	{
-		if ($this->outcome_type == 'COMP') {
-			return true;
-		}
-		return false;
-	}
+    public function isCompliant()
+    {
+        if ($this->outcome_type == 'COMP') {
+            return true;
+        }
+
+        return false;
+    }
 }

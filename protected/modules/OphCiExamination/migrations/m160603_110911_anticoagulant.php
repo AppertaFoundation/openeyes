@@ -2,7 +2,6 @@
 
 class m160603_110911_anticoagulant extends OEMigration
 {
-
     public function up()
     {
         $event_type = \EventType::model()->find('name=?', array('Examination'));

@@ -6,8 +6,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (C) 2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
@@ -16,49 +16,46 @@ use \OEModule\PatientTicketing\components\AutoSaveTicket;
 
 class AutoSaveTicketTest extends PHPUnit_Framework_TestCase
 {
+    public function testAutoSaveTicketKey()
+    {
+        $patient_id = 123;
+        $queue_id = 1;
 
-	public function testAutoSaveTicketKey()
-	{
-		$patient_id = 123;
-		$queue_id = 1;
+        $key = AutoSaveTicket::getAutoSaveKey($patient_id, $queue_id);
 
-		$key = AutoSaveTicket::getAutoSaveKey($patient_id, $queue_id);
-		
-		$this->assertEquals($key ,'pt_123_1');
-	}
+        $this->assertEquals($key, 'pt_123_1');
+    }
 
-	public function testAutoSaveTicket()
-	{
+    public function testAutoSaveTicket()
+    {
+        $patient_id = 123;
+        $queue_id = 1;
+        $data = array('key' => 'value');
 
-		$patient_id = 123;
-		$queue_id = 1;
-		$data = array ('key' => 'value');
+        AutoSaveTicket::saveFormData($patient_id, $queue_id, $data);
 
-		AutoSaveTicket::saveFormData($patient_id, $queue_id,$data);
+        $this->assertEquals($data, AutoSaveTicket::getFormData($patient_id, $queue_id));
+    }
 
-		$this->assertEquals($data ,AutoSaveTicket::getFormData($patient_id , $queue_id));
-	}
+    public function testAutoSaveClear()
+    {
+        $first_patient_id = 1;
+        $second_patient_id = 2;
 
-	public function testAutoSaveClear()
-	{
+        $first_queue_id = 1;
+        $second_queue_id = 1;
 
-		$first_patient_id = 1;
-		$second_patient_id = 2;
+        $data = array('key' => 'value');
 
-		$first_queue_id = 1;
-		$second_queue_id = 1;
+        AutoSaveTicket::saveFormData($first_patient_id, $first_queue_id, $data);
+        AutoSaveTicket::saveFormData($second_patient_id, $second_queue_id, $data);
 
-		$data = array ('key' => 'value');
+        $this->assertNotNull(AutoSaveTicket::getFormData($first_patient_id, $first_queue_id));
+        $this->assertNotNull(AutoSaveTicket::getFormData($first_patient_id, $second_queue_id));
 
-		AutoSaveTicket::saveFormData($first_patient_id, $first_queue_id, $data);
-		AutoSaveTicket::saveFormData($second_patient_id, $second_queue_id, $data);
+        AutoSaveTicket::clear();
 
-		$this->assertNotNull(AutoSaveTicket::getFormData($first_patient_id, $first_queue_id));
-		$this->assertNotNull(AutoSaveTicket::getFormData($first_patient_id, $second_queue_id));
-
-		AutoSaveTicket::clear();
-
-		$this->assertNull(AutoSaveTicket::getFormData($first_patient_id, $first_queue_id));
-		$this->assertNull(AutoSaveTicket::getFormData($first_patient_id, $second_queue_id));
-	}
+        $this->assertNull(AutoSaveTicket::getFormData($first_patient_id, $first_queue_id));
+        $this->assertNull(AutoSaveTicket::getFormData($first_patient_id, $second_queue_id));
+    }
 }

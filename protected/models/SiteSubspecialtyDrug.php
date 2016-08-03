@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -21,54 +21,55 @@
  * This is the model class for table "site_subspecialty_drug".
  *
  * The followings are the available columns in table 'site_subspecialty_drug':
- * @property integer $id
- * @property integer $site_id
- * @property integer $subspecialty_id
- * @property integer $drug_id
+ *
+ * @property int $id
+ * @property int $site_id
+ * @property int $subspecialty_id
+ * @property int $drug_id
  */
 class SiteSubspecialtyDrug extends BaseActiveRecordVersioned
 {
-	/**
-	 * Returns the static model of the specified AR class.
-	 * @return SiteSubspecialtyDrug the static model class
-	 */
-	public static function model($className=__CLASS__)
-	{
-		return parent::model($className);
-	}
+    /**
+     * Returns the static model of the specified AR class.
+     *
+     * @return SiteSubspecialtyDrug the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
 
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'site_subspecialty_drug';
-	}
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'site_subspecialty_drug';
+    }
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
-		return array(
-		);
-	}
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return array(
+        );
+    }
 
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		return array(
-			/*
-			 * Could be useful to add relations into the connected objects as well (but not necessary at the moment)
-			 */
-			'sites' => array(self::BELONGS_TO, 'Site', 'site_id'),
-			'subspecialties' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
-			'drugs' => array(self::BELONGS_TO, 'Drug', 'drug_id')
-		);
-	}
-
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        return array(
+            /*
+             * Could be useful to add relations into the connected objects as well (but not necessary at the moment)
+             */
+            'sites' => array(self::BELONGS_TO, 'Site', 'site_id'),
+            'subspecialties' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
+            'drugs' => array(self::BELONGS_TO, 'Drug', 'drug_id'),
+        );
+    }
 }

@@ -7,7 +7,7 @@ class m140811_104235_comorbidities_admin_subspecialty_assign extends OEMigration
         $this->createOETable('ophciexamination_comorbidities_item_options', array(
                     'id' => 'pk',
                     'comorbidities_item_id' => 'int(10) unsigned NOT NULL',
-                    'subspecialty_id' => 'int(10) unsigned NOT NULL'
+                    'subspecialty_id' => 'int(10) unsigned NOT NULL',
                 ), true);
 
         $this->addForeignKey('ophciexamination_comorbidities_item_options_ciid_fk',

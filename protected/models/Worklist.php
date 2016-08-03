@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -9,21 +9,21 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
 /**
- * Class Worklist
+ * Class Worklist.
  *
  * The followings are the available columns in table:
- * @property integer $id
- * @property string $name
- * @property boolean $scheduled
  *
+ * @property int $id
+ * @property string $name
+ * @property bool $scheduled
  * @property WorklistAttribute[] $mapping_attributes
  * @property WorklistPatient[] $worklist_patients
  * @property WorklistDefinition $worklist_definition
@@ -31,7 +31,7 @@
 class Worklist extends BaseActiveRecordVersioned
 {
     /**
-     * A search attribute to allow searching for worklists that are valid for a particular date
+     * A search attribute to allow searching for worklists that are valid for a particular date.
      *
      * @var DateTime
      */
@@ -39,14 +39,14 @@ class Worklist extends BaseActiveRecordVersioned
 
     /**
      * A search attribute to allow searching for worklists where the given date & time would be valid
-     * for the Worklist
+     * for the Worklist.
      *
      * @var DateTime
      */
     public $at;
 
     /**
-     * A search attribute to specify if we only want to search for worklists that are automatic or manual
+     * A search attribute to specify if we only want to search for worklists that are automatic or manual.
      *
      * @var bool
      */
@@ -70,16 +70,16 @@ class Worklist extends BaseActiveRecordVersioned
         return array(
             array('name, start, end, description, scheduled, worklist_definition_id', 'safe'),
             array('name', 'required'),
-            array('name', 'length', 'max'=>100),
+            array('name', 'length', 'max' => 100),
             array('description', 'length', 'max' => 1000),
             array('start', 'OEDateValidator'),
             array('end', 'OEDateValidator'),
             array('start', 'OEDateCompareValidator', 'compareAttribute' => 'end', 'allowEmpty' => true,
-                'operator' => '<=', 'message' => '{attribute} must be on or before {compareAttribute}'),
+                'operator' => '<=', 'message' => '{attribute} must be on or before {compareAttribute}', ),
             array('scheduled', 'boolean', 'allowEmpty' => false),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, name, start, end, description, scheduled, worklist_definition_id', 'safe', 'on'=>'search'),
+            array('id, name, start, end, description, scheduled, worklist_definition_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -93,9 +93,9 @@ class Worklist extends BaseActiveRecordVersioned
         return array(
             'mapping_attributes' => array(self::HAS_MANY, 'WorklistAttribute', 'worklist_id'),
             'displayed_mapping_attributes' => array(self::HAS_MANY, 'WorklistAttribute', 'worklist_id',
-                'on' => 'display_order is NOT NULL', 'order' => 'display_order ASC'),
+                'on' => 'display_order is NOT NULL', 'order' => 'display_order ASC', ),
             'worklist_patients' => array(self::HAS_MANY, 'WorklistPatient', 'worklist_id'),
-            'worklist_definition' => array(self::BELONGS_TO, 'WorklistDefinition', 'worklist_definition_id')
+            'worklist_definition' => array(self::BELONGS_TO, 'WorklistDefinition', 'worklist_definition_id'),
         );
     }
 
@@ -114,52 +114,51 @@ class Worklist extends BaseActiveRecordVersioned
      * Retrieves a list of models based on the current search/filter conditions.
      *
      * @param $pagination boolean  - whether to paginate the results of the search or not
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
-    public function search($pagination=true)
+    public function search($pagination = true)
     {
-        $criteria=new CDbCriteria;
+        $criteria = new CDbCriteria();
 
-        $criteria->compare('id',$this->id,true);
-        $criteria->compare('name',$this->name,true);
-        $criteria->compare('description',$this->description,true);
+        $criteria->compare('id', $this->id, true);
+        $criteria->compare('name', $this->name, true);
+        $criteria->compare('description', $this->description, true);
         $criteria->compare('scheduled', $this->scheduled, false);
 
         if ($this->at) {
             $check_date = $this->at->format('Y-m-d H:i:s');
             $criteria->addCondition(':cd >= start AND :cd < end');
             $criteria->params = array_merge($criteria->params, array(
-                ':cd' => $check_date
+                ':cd' => $check_date,
             ));
-        }
-        elseif ($this->on) {
-            $sdate = $this->on->format('Y-m-d') . " 00:00:00";
-            $edate = $this->on->format('Y-m-d') . " 23:59:59";
+        } elseif ($this->on) {
+            $sdate = $this->on->format('Y-m-d').' 00:00:00';
+            $edate = $this->on->format('Y-m-d').' 23:59:59';
             $criteria->addCondition(':sd <= start AND :ed >= end');
             $criteria->params = array_merge($criteria->params, array(
                 ':sd' => $sdate,
-                ':ed' => $edate
+                ':ed' => $edate,
             ));
         }
 
-        $criteria->order = "start asc";
+        $criteria->order = 'start asc';
 
-        if (!is_null($this->automatic))
-        {
+        if (!is_null($this->automatic)) {
             if ($this->automatic) {
                 $criteria->addCondition('t.worklist_definition_id IS NOT NULL');
                 // add the worklist definition to the query to access it's relative display order
                 $this->with('worklist_definition');
-                $criteria->order .= ", worklist_definition.display_order asc";
-            }
-            else {
+                $criteria->order .= ', worklist_definition.display_order asc';
+            } else {
                 $criteria->addCondition('worklist_definition_id IS NULL');
             }
         }
 
         $args = array('criteria' => $criteria);
-        if (!$pagination)
+        if (!$pagination) {
             $args['pagination'] = false;
+        }
 
         return new CActiveDataProvider(get_class($this), $args);
     }
@@ -171,24 +170,25 @@ class Worklist extends BaseActiveRecordVersioned
     {
         $start = $this->NHSDate('start');
         $end = $this->NHSDate('end');
-        if ($start != $end)
+        if ($start != $end) {
             return "{$start} - {$end}";
+        }
 
         return $start;
     }
 
     /**
-     * Get array of mapping attributes for this Worklist, indexed by the name value of the attribute
+     * Get array of mapping attributes for this Worklist, indexed by the name value of the attribute.
      *
      * @return array
      */
     public function getMappingAttributeIdsByName()
     {
         $res = array();
-        foreach ($this->mapping_attributes as $attr)
+        foreach ($this->mapping_attributes as $attr) {
             $res[$attr->name] = $attr->id;
+        }
 
         return $res;
     }
-
 }

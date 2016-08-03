@@ -1,6 +1,6 @@
 
 <?php
-	$display_queue = $ticket->getDisplayQueueAssignment();
+    $display_queue = $ticket->getDisplayQueueAssignment();
 ?>
 <div class="panel">
 	<div class="row data-row">
@@ -36,14 +36,14 @@
 	<?php }?>
 
 	<?php if ($ticket->hasHistory()) {
-		$notes_width = 6;
-	?>
+    $notes_width = 6;
+    ?>
 		<hr style="margin: 0px 0px 4px 0px;"/>
-		<?php foreach ($ticket->queue_assignments as $old_ass)	{
-			if ($old_ass->id == $display_queue->id) {
-				continue;
-			}
-		?>
+		<?php foreach ($ticket->queue_assignments as $old_ass) {
+    if ($old_ass->id == $display_queue->id) {
+        continue;
+    }
+    ?>
 			<div class="row data-row<?php if ($old_ass->id == $ticket->getDisplayQueueAssignment()->id) {?> current_queue<?php }?>" style="font-style: italic;">
 				<div class="large-2 column">
 					<div class="data-label"><?= $old_ass->queue->name ?>:</div>
@@ -52,8 +52,8 @@
 					<div clas="data-value"><?= Helper::convertDate2NHS($old_ass->assignment_date)?></div>
 				</div>
 				<?php if ($old_ass->report) {
-					$notes_width = 3;
-				?>
+    $notes_width = 3;
+    ?>
 					<div class="large-3 column left">
 							<div class="data-value"><?= $old_ass->report ?></div>
 					</div>
@@ -65,5 +65,5 @@
 				<?php }?>
 			</div>
 		<?php }
-	}?>
+}?>
 </div>

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -9,45 +9,47 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
 /**
- * Class WorklistDefinitionMapping
+ * Class WorklistDefinitionMapping.
  *
- * @property integer $id
+ * @property int $id
  * @property string $key
- * @property integer $worklist_definition_id
- * @property integer $display_order
- *
+ * @property int $worklist_definition_id
+ * @property int $display_order
  * @property WorklistDefinition $worklist_definition
  * @property WorklistDefinitionMappingValue[] $values
  */
 class WorklistDefinitionMapping extends BaseActiveRecord
 {
     /**
-     * Convenience variable for storing the string representation of the mapping values
+     * Convenience variable for storing the string representation of the mapping values.
      *
      * @var string
      */
     private $_valuelist;
 
     /**
-     * Abstraction for getting instance of class
+     * Abstraction for getting instance of class.
      *
      * @param $class
+     *
      * @return mixed
      */
     protected function getInstanceForClass($class, $args = array())
     {
-        if (empty($args))
+        if (empty($args)) {
             return new $class();
+        }
 
         $cls = new ReflectionClass($class);
+
         return $cls->newInstanceArgs($args);
     }
 
@@ -71,7 +73,7 @@ class WorklistDefinitionMapping extends BaseActiveRecord
             array('display_order', 'numerical', 'integerOnly' => true, 'allowEmpty' => true),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, worklist_definition_id, key', 'safe', 'on'=>'search'),
+            array('id, worklist_definition_id, key', 'safe', 'on' => 'search'),
         );
     }
 
@@ -84,7 +86,7 @@ class WorklistDefinitionMapping extends BaseActiveRecord
         // class name for the relations automatically generated below.
         return array(
             'worklist_definition' => array(self::BELONGS_TO, 'WorklistDefinition', 'worklist_definition_id'),
-            'values' => array(self::HAS_MANY, 'WorklistDefinitionMappingValue', 'worklist_definition_mapping_id')
+            'values' => array(self::HAS_MANY, 'WorklistDefinitionMappingValue', 'worklist_definition_mapping_id'),
         );
     }
 
@@ -95,12 +97,13 @@ class WorklistDefinitionMapping extends BaseActiveRecord
     {
         return array(
             'willdisplay' => 'Will Be Displayed',
-            'valuelist' => 'Matched Values'
+            'valuelist' => 'Matched Values',
         );
     }
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
@@ -108,19 +111,19 @@ class WorklistDefinitionMapping extends BaseActiveRecord
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria=new CDbCriteria;
+        $criteria = new CDbCriteria();
 
-        $criteria->compare('id',$this->id,true);
-        $criteria->compare('worklist_definition_id',$this->worklist_definition_id,true);
-        $criteria->compare('key',$this->key,true);
+        $criteria->compare('id', $this->id, true);
+        $criteria->compare('worklist_definition_id', $this->worklist_definition_id, true);
+        $criteria->compare('key', $this->key, true);
 
         return new CActiveDataProvider(get_class($this), array(
-            'criteria'=>$criteria,
+            'criteria' => $criteria,
         ));
     }
 
     /**
-     * Convenience getter for managing a string representation of the set of mapped values
+     * Convenience getter for managing a string representation of the set of mapped values.
      *
      * @return string
      */
@@ -132,13 +135,14 @@ class WorklistDefinitionMapping extends BaseActiveRecord
                 $res[] = $v->mapping_value;
             }
 
-            $this->_valuelist = implode(",", $res);
+            $this->_valuelist = implode(',', $res);
         }
+
         return $this->_valuelist;
     }
 
     /**
-     * Convenience setter for managing a string representation of the set of mapped values
+     * Convenience setter for managing a string representation of the set of mapped values.
      *
      * Note that this does not affect the actual related models for this item, so care should be taken around
      * keeping them in sync where necessary
@@ -147,16 +151,19 @@ class WorklistDefinitionMapping extends BaseActiveRecord
      */
     public function setValueList($valuelist)
     {
-        if (is_array($valuelist))
+        if (is_array($valuelist)) {
             $valuelist = implode(',', $valuelist);
+        }
 
         $this->_valuelist = $valuelist;
     }
 
     /**
      * @param array $values
+     *
      * @throws CDbException
      * @throws Exception
+     *
      * @return bool
      */
     public function updateValues($values = array())
@@ -164,10 +171,10 @@ class WorklistDefinitionMapping extends BaseActiveRecord
         $kept = array();
         foreach ($this->values as $mv) {
             if (!in_array($mv->mapping_value, $values)) {
-                if (!$mv->delete())
+                if (!$mv->delete()) {
                     throw new Exception("Could not delete value {$mv->mapping_value}");
-            }
-            else {
+                }
+            } else {
                 $kept[] = $mv->mapping_value;
             }
         }
@@ -177,12 +184,14 @@ class WorklistDefinitionMapping extends BaseActiveRecord
                 $mv = $this->getInstanceForClass('WorklistDefinitionMappingValue');
                 $mv->worklist_definition_mapping_id = $this->id;
                 $mv->mapping_value = $val;
-                if (!$mv->save())
-                    throw new Exception("Could not save mapping value" . print_r($mv->getErrors(), true));
+                if (!$mv->save()) {
+                    throw new Exception('Could not save mapping value'.print_r($mv->getErrors(), true));
+                }
             }
         }
 
         $this->setValueList($values);
+
         return true;
     }
 
@@ -191,6 +200,6 @@ class WorklistDefinitionMapping extends BaseActiveRecord
      */
     public function getWillDisplay()
     {
-        return (!is_null($this->display_order));
+        return !is_null($this->display_order);
     }
 }

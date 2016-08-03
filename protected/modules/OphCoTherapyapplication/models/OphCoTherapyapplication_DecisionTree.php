@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -22,69 +22,69 @@
  *
  * Each decision tree can be used to answer a series of questions to arrive at OphCoTherapyapplication_DecisionTreeOutcome
  *
- * @property integer $id The tree id
+ * @property int $id The tree id
  * @property string $name The name of the tree, this is only used for administrative purposes to identify the tree.
- *
  **/
-
 class OphCoTherapyapplication_DecisionTree extends BaseActiveRecordVersioned
 {
-	/**
-	 * Returns the static model of the specified AR class.
-	 * @return the static model class
-	 */
-	public static function model($className = __CLASS__)
-	{
-		return parent::model($className);
-	}
+    /**
+     * Returns the static model of the specified AR class.
+     *
+     * @return the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
 
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'ophcotherapya_decisiontree';
-	}
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'ophcotherapya_decisiontree';
+    }
 
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		return array(
-				'nodes' => array(self::HAS_MANY, 'OphCoTherapyapplication_DecisionTreeNode', 'decisiontree_id'),
-		);
-	}
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        return array(
+                'nodes' => array(self::HAS_MANY, 'OphCoTherapyapplication_DecisionTreeNode', 'decisiontree_id'),
+        );
+    }
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		return array(
-				array('name', 'safe'),
-				array('name', 'required'),
-				// The following rule is used by search().
-				// Please remove those attributes that should not be searched.
-				array('id, name', 'safe', 'on' => 'search'),
-		);
-	}
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        return array(
+                array('name', 'safe'),
+                array('name', 'required'),
+                // The following rule is used by search().
+                // Please remove those attributes that should not be searched.
+                array('id, name', 'safe', 'on' => 'search'),
+        );
+    }
 
-	public function getRootNode()
-	{
-		$criteria = new CDbCriteria();
-		$criteria->addColumnCondition(array('decisiontree_id' => $this->id, 'parent_id' => null));
-		$node = OphCoTherapyapplication_DecisionTreeNode::model()->find($criteria);
-		return $node;
-	}
+    public function getRootNode()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->addColumnCondition(array('decisiontree_id' => $this->id, 'parent_id' => null));
+        $node = OphCoTherapyapplication_DecisionTreeNode::model()->find($criteria);
 
-	public function getDefinition()
-	{
-		$definition = array();
-		if ($root = $this->getRootNode()) {
-			$definition['root_id'] = $root->id;
-		}
-		return $definition;
-	}
+        return $node;
+    }
 
+    public function getDefinition()
+    {
+        $definition = array();
+        if ($root = $this->getRootNode()) {
+            $definition['root_id'] = $root->id;
+        }
+
+        return $definition;
+    }
 }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -10,8 +10,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -19,141 +19,137 @@
  */
 class AdminListAutocomplete extends Admin
 {
-	/**
-	 * @var string
-	 */
-	protected $customDeleteURL;
-	/**
-	 * @var string
-	 */
-	protected  $customSetDefaultURL;
+    /**
+     * @var string
+     */
+    protected $customDeleteURL;
+    /**
+     * @var string
+     */
+    protected $customSetDefaultURL;
 
-	/**
-	 *
-	 */
-	protected  $customRemoveDefaultURL;
-	/**
-	 * @var string
-	 */
-	protected $customSaveURL;
+    /**
+     *
+     */
+    protected $customRemoveDefaultURL;
+    /**
+     * @var string
+     */
+    protected $customSaveURL;
 
-	/**
-	 * @var array
-	 */
-	protected $autocompleteField = array();
+    /**
+     * @var array
+     */
+    protected $autocompleteField = array();
 
-	/**
-	 * @var array
-	 */
-	protected $filterFields = array();
+    /**
+     * @var array
+     */
+    protected $filterFields = array();
 
-	/**
-	 * @param $filters
-	 */
-	public function setFilterFields($filters)
-	{
-		$this->filterFields = $filters;
-	}
+    /**
+     * @param $filters
+     */
+    public function setFilterFields($filters)
+    {
+        $this->filterFields = $filters;
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getFilterFields()
-	{
-		return $this->filterFields;
-	}
+    /**
+     * @return array
+     */
+    public function getFilterFields()
+    {
+        return $this->filterFields;
+    }
 
-	/**
-	 * @param $acdata
-	 */
-	public function setAutocompleteField($acdata)
-	{
-		$this->autocompleteField = $acdata;
-	}
+    /**
+     * @param $acdata
+     */
+    public function setAutocompleteField($acdata)
+    {
+        $this->autocompleteField = $acdata;
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getAutocompleteField()
-	{
-		return $this->autocompleteField;
-	}
+    /**
+     * @return array
+     */
+    public function getAutocompleteField()
+    {
+        return $this->autocompleteField;
+    }
 
-	/**
-	 * @param $deleteURL
-	 */
-	public function setCustomDeleteURL($deleteURL)
-	{
-		$this->customDeleteURL = $deleteURL;
-	}
+    /**
+     * @param $deleteURL
+     */
+    public function setCustomDeleteURL($deleteURL)
+    {
+        $this->customDeleteURL = $deleteURL;
+    }
 
-	/**
-	 * @param $setDefaultURL
-	 */
-	public function setCustomSetDefaultURL($setDefaultURL)
-	{
-		$this->customSetDefaultURL = $setDefaultURL;
-	}
+    /**
+     * @param $setDefaultURL
+     */
+    public function setCustomSetDefaultURL($setDefaultURL)
+    {
+        $this->customSetDefaultURL = $setDefaultURL;
+    }
 
-	/**
-	 * @param $removeDefaultURL
-	 */
-	public function setCustomRemoveDefaultURL($removeDefaultURL)
-	{
-		$this->customRemoveDefaultURL = $removeDefaultURL;
-	}
+    /**
+     * @param $removeDefaultURL
+     */
+    public function setCustomRemoveDefaultURL($removeDefaultURL)
+    {
+        $this->customRemoveDefaultURL = $removeDefaultURL;
+    }
 
+    /**
+     * @return string
+     */
+    public function getCustomDeleteURL()
+    {
+        return $this->customDeleteURL;
+    }
 
+    /**
+     * @return string
+     */
+    public function getCustomSetDefaultURL()
+    {
+        return $this->customSetDefaultURL;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getCustomDeleteURL()
-	{
-		return $this->customDeleteURL;
-	}
+    /**
+     * @return string
+     */
+    public function getCustomRemoveDefaultURL()
+    {
+        return $this->customRemoveDefaultURL;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getCustomSetDefaultURL()
-	{
-		return $this->customSetDefaultURL;
-	}
+    /**
+     * @param $saveURL
+     */
+    public function setCustomSaveURL($saveURL)
+    {
+        $this->customSaveURL = $saveURL;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getCustomRemoveDefaultURL()
-	{
-		return $this->customRemoveDefaultURL;
-	}
+    /**
+     * @return string
+     */
+    public function getCustomSaveURL()
+    {
+        return $this->customSaveURL;
+    }
 
-
-	/**
-	 * @param $saveURL
-	 */
-	public function setCustomSaveURL($saveURL)
-	{
-		$this->customSaveURL = $saveURL;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getCustomSaveURL()
-	{
-		return $this->customSaveURL;
-	}
-
-	/**
-	 * @param BaseActiveRecord $model
-	 * @param BaseAdminController $admin
-	 */
-	public function __construct($model, $admin)
-	{
-		parent::__construct($model, $admin);
-		$this->setListTemplate('//admin/generic/listAutocomplete');
-	}
-
+    /**
+     * @param BaseActiveRecord    $model
+     * @param BaseAdminController $admin
+     */
+    public function __construct($model, $admin)
+    {
+        parent::__construct($model, $admin);
+        $this->setListTemplate('//admin/generic/listAutocomplete');
+    }
 }

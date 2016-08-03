@@ -1,6 +1,6 @@
 <?php
- /**
- * OpenEyes
+/**
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,14 +9,13 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 
 namespace OEModule\OphCiExamination\models;
 
@@ -42,13 +41,14 @@ class Element_OphCiExamination_NearVisualAcuity extends Element_OphCiExamination
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'unit' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit', 'unit_id', 'on' => 'unit.is_near = 1'),
             'readings' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_NearVisualAcuity_Reading', 'element_id'),
-            'right_readings' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_NearVisualAcuity_Reading', 'element_id', 'on' => 'right_readings.side = ' . OphCiExamination_VisualAcuity_Reading::RIGHT),
-            'left_readings' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_NearVisualAcuity_Reading', 'element_id', 'on' => 'left_readings.side = ' . OphCiExamination_VisualAcuity_Reading::LEFT),
+            'right_readings' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_NearVisualAcuity_Reading', 'element_id', 'on' => 'right_readings.side = '.OphCiExamination_VisualAcuity_Reading::RIGHT),
+            'left_readings' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_NearVisualAcuity_Reading', 'element_id', 'on' => 'left_readings.side = '.OphCiExamination_VisualAcuity_Reading::LEFT),
         );
     }
 
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return the static model class
      */
     public static function model($className = __CLASS__)
@@ -63,37 +63,38 @@ class Element_OphCiExamination_NearVisualAcuity extends Element_OphCiExamination
      * @TODO: The units for correspondence should become a configuration variable
      *
      * @throws Exception
+     *
      * @return string
      */
     public function getLetter_string()
     {
         if (!$unit = OphCiExamination_VisualAcuityUnit::model()->find('name = ?', array(Yii::app()->params['ophciexamination_visualacuity_correspondence_unit']))) {
-            throw new Exception("Configured visual acuity correspondence unit was not found: ".Yii::app()->params['ophciexamination_visualacuity_correspondence_unit']);
+            throw new Exception('Configured visual acuity correspondence unit was not found: '.Yii::app()->params['ophciexamination_visualacuity_correspondence_unit']);
         }
 
         $text = "Near Visual acuity:\n";
 
         if ($this->hasRight()) {
-            $text .= "Right Eye: ";
+            $text .= 'Right Eye: ';
             if ($this->getCombined('right')) {
                 $text .= $this->getCombined('right', $unit->id);
             } else {
                 $text .= $this->getTextForSide('right');
             }
         } else {
-            $text .= "Right Eye: not recorded";
+            $text .= 'Right Eye: not recorded';
         }
         $text .= "\n";
 
         if ($this->hasLeft()) {
-            $text .= "Left Eye: ";
+            $text .= 'Left Eye: ';
             if ($this->getCombined('left')) {
                 $text .= $this->getCombined('left', $unit->id);
             } else {
                 $text .= $this->getTextForSide('left');
             }
         } else {
-            $text .= "Left Eye: not recorded";
+            $text .= 'Left Eye: not recorded';
         }
 
         return $text."\n";
@@ -105,9 +106,9 @@ class Element_OphCiExamination_NearVisualAcuity extends Element_OphCiExamination
         if ($rows = $this->getSetting('default_rows')) {
             $left_readings = array();
             $right_readings = array();
-            for ($i = 0; $i < $rows; $i++) {
-                $left_readings[]  = new OphCiExamination_NearVisualAcuity_Reading();
-                $right_readings[]  = new OphCiExamination_NearVisualAcuity_Reading();
+            for ($i = 0; $i < $rows; ++$i) {
+                $left_readings[] = new OphCiExamination_NearVisualAcuity_Reading();
+                $right_readings[] = new OphCiExamination_NearVisualAcuity_Reading();
             }
             $this->left_readings = $left_readings;
             $this->right_readings = $right_readings;

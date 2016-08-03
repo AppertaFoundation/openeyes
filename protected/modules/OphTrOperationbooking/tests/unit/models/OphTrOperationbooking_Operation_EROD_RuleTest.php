@@ -6,46 +6,43 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (C) 2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class OphTrOperationbooking_Operation_EROD_RuleTest extends CDbTestCase
 {
-	public $fixtures = array(
-		'specialties' => 'Specialty',
-		'subspecialties' => 'Subspecialty',
-		'service_subspecialty_assignment' => 'ServiceSubspecialtyAssignment',
-		'firms' => 'Firm'
-	);
+    public $fixtures = array(
+        'specialties' => 'Specialty',
+        'subspecialties' => 'Subspecialty',
+        'service_subspecialty_assignment' => 'ServiceSubspecialtyAssignment',
+        'firms' => 'Firm',
+    );
 
-	public static function setUpBeforeClass()
-	{
-		date_default_timezone_set('UTC');
-	}
+    public static function setUpBeforeClass()
+    {
+        date_default_timezone_set('UTC');
+    }
 
-	public function testNoItemsRaisesError()
-	{
-		$test = new OphTrOperationbooking_Operation_EROD_Rule();
-		$test->subspecialty_id = $this->subspecialties('subspecialty1')->id;
-		$this->assertFalse($test->validate());
-		$errs = $test->getErrors();
-		$this->assertArrayHasKey('items', $errs);
-	}
+    public function testNoItemsRaisesError()
+    {
+        $test = new OphTrOperationbooking_Operation_EROD_Rule();
+        $test->subspecialty_id = $this->subspecialties('subspecialty1')->id;
+        $this->assertFalse($test->validate());
+        $errs = $test->getErrors();
+        $this->assertArrayHasKey('items', $errs);
+    }
 
-	public function testCanValidateWithItem()
-	{
-		$test = new OphTrOperationbooking_Operation_EROD_Rule();
-		$test->subspecialty_id = $this->subspecialties('subspecialty1')->id;
-		$item = new OphTrOperationbooking_Operation_EROD_Rule_Item();
-		$item->item_type = 'firm';
-		$item->item_id = $this->firms('firm1')->id;
-		$test->items = array($item);
-		$this->assertTrue($test->validate());
-
-	}
-
+    public function testCanValidateWithItem()
+    {
+        $test = new OphTrOperationbooking_Operation_EROD_Rule();
+        $test->subspecialty_id = $this->subspecialties('subspecialty1')->id;
+        $item = new OphTrOperationbooking_Operation_EROD_Rule_Item();
+        $item->item_type = 'firm';
+        $item->item_id = $this->firms('firm1')->id;
+        $test->items = array($item);
+        $this->assertTrue($test->validate());
+    }
 }

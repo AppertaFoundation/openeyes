@@ -123,7 +123,7 @@ class m150512_092929_near_visual_acuity extends OEMigration
                 'display_order' => 20,
                 'default' => 1,
                 'parent_element_type_id' => $visualFunction['id'],
-                'required' => 0
+                'required' => 0,
             );
             $this->insert('element_type', $nearVisualElement);
             $visualRow = $this->getDbConnection()->createCommand('select id from element_type where `name` = "Near Visual Acuity"')->queryRow();
@@ -137,9 +137,9 @@ class m150512_092929_near_visual_acuity extends OEMigration
             $this->insert('ophciexamination_visual_acuity_unit', array(
                 'name' => $unit,
                 'is_near' => 1,
-                'active' => 1
+                'active' => 1,
             ));
-            $unitRow = $this->getDbConnection()->createCommand('select id from ophciexamination_visual_acuity_unit where `name` = "' . $unit . '"')->queryRow();
+            $unitRow = $this->getDbConnection()->createCommand('select id from ophciexamination_visual_acuity_unit where `name` = "'.$unit.'"')->queryRow();
             if ($unitRow) {
                 if (!$defaultSet) {
                     $this->insert('setting_metadata', array(
@@ -147,7 +147,7 @@ class m150512_092929_near_visual_acuity extends OEMigration
                         'field_type_id' => 2,
                         'key' => 'unit_id',
                         'name' => 'Units',
-                        'default_value' => $unitRow['id']
+                        'default_value' => $unitRow['id'],
                     ));
                     $defaultSet = true;
                 }
@@ -156,7 +156,7 @@ class m150512_092929_near_visual_acuity extends OEMigration
                         'unit_id' => $unitRow['id'],
                         'value' => $value,
                         'base_value' => $this->baseValues[$key],
-                        'selectable' => '1'
+                        'selectable' => '1',
                     ));
                 }
             }
@@ -170,7 +170,7 @@ class m150512_092929_near_visual_acuity extends OEMigration
         $this->delete('element_type', 'name = "Near Visual Acuity"');
         $this->dropColumn('ophciexamination_visual_acuity_unit', 'is_near');
 
-        $newUnitIds = $this->getDbConnection()->createCommand('select GROUP_CONCAT(id) as new_ids from ophciexamination_visual_acuity_unit where `name` in ("' . implode('","', array_keys($this->nearUnits)) . '")')->queryRow();
+        $newUnitIds = $this->getDbConnection()->createCommand('select GROUP_CONCAT(id) as new_ids from ophciexamination_visual_acuity_unit where `name` in ("'.implode('","', array_keys($this->nearUnits)).'")')->queryRow();
         if ($newUnitIds && $newUnitIds['new_ids']) {
             $this->delete('ophciexamination_visual_acuity_unit_value', 'unit_id in ('.$newUnitIds['new_ids'].')');
             $this->delete('ophciexamination_visual_acuity_unit', 'id in ('.$newUnitIds['new_ids'].')');

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,44 +9,43 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class CheckBoxArray extends BaseFieldWidget
 {
-	public $fields;
-	public $columns = array();
-	public $checked = array();
-	public $labeltext;
-	public $options;
+    public $fields;
+    public $columns = array();
+    public $checked = array();
+    public $labeltext;
+    public $options;
 
-	public function init()
-	{
-		foreach ($this->fields as $field) {
-			if (empty($_POST)) {
-				if (isset($this->element->{$field})) {
-					$this->checked[$field] = (boolean) $this->element->{$field};
-				}
-			} else {
-				$this->checked[$field] = (boolean) @$_POST[get_class($this->element)][$field];
-			}
-		}
+    public function init()
+    {
+        foreach ($this->fields as $field) {
+            if (empty($_POST)) {
+                if (isset($this->element->{$field})) {
+                    $this->checked[$field] = (boolean) $this->element->{$field};
+                }
+            } else {
+                $this->checked[$field] = (boolean) @$_POST[get_class($this->element)][$field];
+            }
+        }
 
-		if (isset($this->options['column_length'])) {
-			$column = 0;
+        if (isset($this->options['column_length'])) {
+            $column = 0;
 
-			foreach ($this->fields as $field) {
-				$this->columns[$column][] = $field;
+            foreach ($this->fields as $field) {
+                $this->columns[$column][] = $field;
 
-				if (count($this->columns[$column]) >= $this->options['column_length']) {
-					$column++;
-				}
-			}
-		}
-	}
+                if (count($this->columns[$column]) >= $this->options['column_length']) {
+                    ++$column;
+                }
+            }
+        }
+    }
 }

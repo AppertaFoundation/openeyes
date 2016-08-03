@@ -4,7 +4,6 @@ class m160705_094422_exam_risk_text extends OEMigration
 {
     public function up()
     {
-
         $this->addColumn('et_ophciexamination_examinationrisk', 'anticoagulant_name', 'varchar(255)');
         $this->addColumn('et_ophciexamination_examinationrisk_version', 'anticoagulant_name', 'varchar(255)');
         $this->addColumn('et_ophciexamination_examinationrisk', 'alpha_blocker_name', 'varchar(255)');

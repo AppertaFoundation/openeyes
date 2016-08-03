@@ -36,7 +36,7 @@ class m150731_125728_move_lens_type extends CDbMigration
             'class_name="Element_OphInBiometry_LensType"');
 
         //Update view
-        $this->execute("CREATE OR REPLACE VIEW et_ophtroperationnote_biometry AS SELECT
+        $this->execute('CREATE OR REPLACE VIEW et_ophtroperationnote_biometry AS SELECT
 							eol.id, eol.eye_id, eol.last_modified_date, target_refraction_left, target_refraction_right,
 							(SELECT name FROM ophinbiometry_lenstype_lens oll WHERE oll.id=eos.lens_id_left) as lens_left,
 							(SELECT description FROM ophinbiometry_lenstype_lens oll WHERE oll.id=eos.lens_id_left) as lens_description_left,
@@ -51,7 +51,7 @@ class m150731_125728_move_lens_type extends CDbMigration
 							JOIN et_ophinbiometry_selection eos ON eos.event_id=eol.event_id
 							JOIN event ev ON ev.id=eol.event_id
 							JOIN episode ep ON ep.id=ev.episode_id
-							ORDER BY eol.last_modified_date;");
+							ORDER BY eol.last_modified_date;');
     }
 
     public function down()
@@ -86,7 +86,7 @@ class m150731_125728_move_lens_type extends CDbMigration
         $this->update('element_type', array('class_name' => 'Element_OphInBiometry_LensType', 'name' => 'Lens Type'),
             'class_name="Element_OphInBiometry_Measurement"');
 
-        $this->execute("CREATE OR REPLACE VIEW et_ophtroperationnote_biometry AS SELECT
+        $this->execute('CREATE OR REPLACE VIEW et_ophtroperationnote_biometry AS SELECT
 							eol.id, eol.eye_id, eol.last_modified_date, target_refraction_left, target_refraction_right,
 							(SELECT name FROM ophinbiometry_lenstype_lens oll WHERE oll.id=lens_id_left) as lens_left,
 							(SELECT description FROM ophinbiometry_lenstype_lens oll WHERE oll.id=lens_id_left) as lens_description_left,
@@ -101,7 +101,7 @@ class m150731_125728_move_lens_type extends CDbMigration
 							JOIN et_ophinbiometry_selection eos ON eos.event_id=eol.event_id
 							JOIN event ev ON ev.id=eol.event_id
 							JOIN episode ep ON ep.id=ev.episode_id
-							ORDER BY eol.last_modified_date;");
+							ORDER BY eol.last_modified_date;');
     }
 
     /*

@@ -16,14 +16,13 @@ class m140620_122600_visualacuity_change extends OEMigration
     public function up()
     {
         $this->update('element_type', array('name' => 'Visual Acuity'), 'id= :id',
-            array(':id'=>  $this->visualAcuityId() ));
+            array(':id' => $this->visualAcuityId()));
         $event_type_id = $this->insertOEEventType('Examination', 'OphCiExamination', 'Ci');
-        $this->insertOEElementType(array('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualFunction' =>
-            array(
+        $this->insertOEElementType(array('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualFunction' => array(
                 'name' => 'Visual Function',
                 //'parent_element_type_id' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity',
                 'display_order' => 10,
-                'required' => false
+                'required' => false,
             )), $event_type_id);
 
         $this->createOETable('et_ophciexamination_visualfunction', array(
@@ -40,7 +39,7 @@ class m140620_122600_visualacuity_change extends OEMigration
             'KEY `et_ophciexam_visualfunction_lrapd_id_fk` (`left_rapd`)',
             'KEY `et_ophciexam_visualfunction_rrapd_id_fk` (`right_rapd`)',
             'CONSTRAINT `et_ophciexam_visualfunction_ev_fk` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
-            'CONSTRAINT `et_ophciexam_visualfunction_eye_id_fk` FOREIGN KEY (`eye_id`) REFERENCES `eye` (`id`)'
+            'CONSTRAINT `et_ophciexam_visualfunction_eye_id_fk` FOREIGN KEY (`eye_id`) REFERENCES `eye` (`id`)',
         ), true);
         $this->dropColumn('et_ophciexamination_visualacuity', 'left_rapd');
         $this->dropColumn('et_ophciexamination_visualacuity', 'right_rapd');
@@ -55,9 +54,9 @@ class m140620_122600_visualacuity_change extends OEMigration
             $this->getIdOfElementTypeByClassName('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualFunction');
 
         $this->update('element_type', array('parent_element_type_id' => $visualFunctionId), 'id= :id',
-            array(':id'=>  $this->visualAcuityId() ));
+            array(':id' => $this->visualAcuityId()));
         $this->update('element_type', array('parent_element_type_id' => $visualFunctionId), 'id= :id',
-            array(':id'=>  $this->colourVisionId() ));
+            array(':id' => $this->colourVisionId()));
     }
 
     public function down()
@@ -66,12 +65,12 @@ class m140620_122600_visualacuity_change extends OEMigration
             $this->getIdOfElementTypeByClassName('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualFunction');
 
         $this->update('element_type', array('name' => 'Visual Function'), 'id= :id',
-            array(':id'=> $this->visualAcuityId() ));
+            array(':id' => $this->visualAcuityId()));
 
         $this->update('element_type', array('parent_element_type_id' => null), 'id= :id',
-            array(':id'=>  $this->visualAcuityId() ));
-        $this->update('element_type', array('parent_element_type_id' => $this->visualAcuityId() ), 'id= :id',
-            array(':id'=>  $this->colourVisionId()));
+            array(':id' => $this->visualAcuityId()));
+        $this->update('element_type', array('parent_element_type_id' => $this->visualAcuityId()), 'id= :id',
+            array(':id' => $this->colourVisionId()));
 
         $this->dropTable('et_ophciexamination_visualfunction');
         $this->dropTable('et_ophciexamination_visualfunction_version');

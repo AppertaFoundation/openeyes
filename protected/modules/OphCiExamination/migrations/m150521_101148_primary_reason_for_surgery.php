@@ -9,7 +9,7 @@ class m150521_101148_primary_reason_for_surgery extends OEMigration
         'Clear lens extraction for glaucoma',
         'Cataract/clear lens extraction for anisometropia',
         'Cataract/clear lens extraction for refractive reasons',
-        'Cataract/clear lens extraction for other reasons'
+        'Cataract/clear lens extraction for other reasons',
     );
 
     public function up()
@@ -17,7 +17,7 @@ class m150521_101148_primary_reason_for_surgery extends OEMigration
         $this->createOETable('ophciexamination_primary_reason_for_surgery', array(
             'id' => 'pk',
             'name' => 'varchar(255) not null',
-            'active' => 'tinyint(1) not null default 0'
+            'active' => 'tinyint(1) not null default 0',
         ), true);
 
         foreach ($this->reasons as $reason) {

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -23,22 +23,22 @@ namespace OEModule\OphCiExamination\models;
  * This is the model class for table "et_ophciexamination_oct".
  *
  * The followings are the available columns in table:
- * @property integer $id
- * @property integer $event_id
- * @property integer $eye_id
+ *
+ * @property int $id
+ * @property int $event_id
+ * @property int $eye_id
  * @property string $left_crt
  * @property string $right_crt
  * @property string $left_sft
  * @property string $right_sft
- * @property boolean $left_thickness_increase
- * @property boolean $right_thickness_increase
- * @property boolean $left_dry
- * @property boolean $right_dry
- * @property integer $left_fluidstatus_id
- * @property integer $right_fluidstatus_id
+ * @property bool $left_thickness_increase
+ * @property bool $right_thickness_increase
+ * @property bool $left_dry
+ * @property bool $right_dry
+ * @property int $left_fluidstatus_id
+ * @property int $right_fluidstatus_id
  * @property string $left_comments
  * @property string $right_comments
- *
  * @property OphCiExamination_OCT_Method $left_method
  * @property OphCiExamination_OCT_Method $right_method
  * @property OphCiExamination_OCT_FluidType[] $left_fluidtypes
@@ -46,7 +46,6 @@ namespace OEModule\OphCiExamination\models;
  * @property OphCiExamination_OCT_FluidStatus $left_fluidstatus
  * @property OphCiExamination_OCT_FluidStatus $right_fluidstatus
  */
-
 class Element_OphCiExamination_OCT extends \SplitEventTypeElement
 {
     protected $auto_update_relations = true;
@@ -61,6 +60,7 @@ class Element_OphCiExamination_OCT extends \SplitEventTypeElement
 
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return Element_OphCiExamination_AnteriorSegment_CCT
      */
     public static function model($className = __CLASS__)
@@ -91,22 +91,22 @@ class Element_OphCiExamination_OCT extends \SplitEventTypeElement
                 array('right_method_id, right_sft, right_dry', 'requiredIfSide', 'side' => 'right'),
                 array('left_crt', 'numerical', 'allowEmpty' => true, 'integerOnly' => true, 'max' => 600, 'min' => 250,
                         'tooBig' => 'Left {attribute} must be between 250 and 600',
-                        'tooSmall' => 'Left {attribute} must be between 250 and 600'),
+                        'tooSmall' => 'Left {attribute} must be between 250 and 600', ),
                 array('right_crt', 'numerical', 'allowEmpty' => true, 'integerOnly' => true, 'max' => 600, 'min' => 250,
                         'tooBig' => 'Right {attribute} must be between 250 and 600',
-                        'tooSmall' => 'Right {attribute} must be between 250 and 600'),
+                        'tooSmall' => 'Right {attribute} must be between 250 and 600', ),
                 array('left_crt, left_thickness_increase, left_comments, right_crt, right_thickness_increase,
 					right_comments', 'default', 'setOnEmpty' => true, 'value' => null),
                 array('left_sft', 'numerical', 'integerOnly' => true, 'max' => 1500, 'min' => 50,
                         'tooBig' => 'Left {attribute} must be between 50 and 1500',
-                        'tooSmall' => 'Left {attribute} must be between 50 and 1500'),
+                        'tooSmall' => 'Left {attribute} must be between 50 and 1500', ),
                 array('right_sft', 'numerical', 'integerOnly' => true, 'max' => 1500, 'min' => 50,
                         'tooBig' => 'Right {attribute} must be between 50 and 1500',
-                        'tooSmall' => 'Right {attribute} must be between 50 and 1500'),
+                        'tooSmall' => 'Right {attribute} must be between 50 and 1500', ),
                 array('left_fluidstatus_id',
-                    'notAllowedIfTrue', 'side' => 'left', 'dependency' => 'left_dry'),
+                    'notAllowedIfTrue', 'side' => 'left', 'dependency' => 'left_dry', ),
                 array('right_fluidstatus_id',
-                    'notAllowedIfTrue', 'side' => 'right', 'dependency' => 'right_dry'),
+                    'notAllowedIfTrue', 'side' => 'right', 'dependency' => 'right_dry', ),
                 array('left_fluidstatus_id, left_fluidtypes', 'requiredIfFalse', 'side' => 'left', 'dependency' => 'left_dry'),
                 array('right_fluidstatus_id, right_fluidtypes', 'requiredIfFalse', 'side' => 'right', 'dependency' => 'right_dry'),
                 // The following rule is used by search().
@@ -140,9 +140,9 @@ class Element_OphCiExamination_OCT extends \SplitEventTypeElement
                 'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
                 'left_method' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_OCT_Method', 'left_method_id'),
                 'right_method' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_OCT_Method', 'right_method_id'),
-                'fluidtype_assignments' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_OCT_FluidTypeAssignment' , 'element_id' ),
-                'left_fluidtypes' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_OCT_FluidType', 'fluidtype_id', 'through' => 'fluidtype_assignments', 'on' => 'fluidtype_assignments.eye_id = ' . \Eye::LEFT),
-                'right_fluidtypes' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_OCT_FluidType', 'fluidtype_id', 'through' => 'fluidtype_assignments' , 'on' => 'fluidtype_assignments.eye_id = ' . \Eye::RIGHT),
+                'fluidtype_assignments' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_OCT_FluidTypeAssignment', 'element_id'),
+                'left_fluidtypes' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_OCT_FluidType', 'fluidtype_id', 'through' => 'fluidtype_assignments', 'on' => 'fluidtype_assignments.eye_id = '.\Eye::LEFT),
+                'right_fluidtypes' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_OCT_FluidType', 'fluidtype_id', 'through' => 'fluidtype_assignments', 'on' => 'fluidtype_assignments.eye_id = '.\Eye::RIGHT),
                 'left_fluidstatus' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_OCT_FluidStatus', 'left_fluidstatus_id'),
                 'right_fluidstatus' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_OCT_FluidStatus', 'right_fluidstatus_id'),
         );
@@ -177,6 +177,7 @@ class Element_OphCiExamination_OCT extends \SplitEventTypeElement
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
@@ -184,7 +185,7 @@ class Element_OphCiExamination_OCT extends \SplitEventTypeElement
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria = new \CDbCriteria;
+        $criteria = new \CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
@@ -211,26 +212,27 @@ class Element_OphCiExamination_OCT extends \SplitEventTypeElement
     }
 
     /**
-     * returns the appropriate string for displaying the fluid finding value(s) for the given side
+     * returns the appropriate string for displaying the fluid finding value(s) for the given side.
      *
-     * @param string $side left or right
-     * @param boolean $notrecorded - flag to indicate whether we want a string for it not being recorded
+     * @param string $side        left or right
+     * @param bool   $notrecorded - flag to indicate whether we want a string for it not being recorded
+     *
      * @return string
-     *
      */
     protected function getFluidString($side, $notrecorded = true)
     {
         // we check that dry is not null here, because if it is then it indicates the OCT
         // was recorded prior to the introduction of the fluid fields
-        if ($this->{'has' . ucfirst($side)}() && $this->{$side . '_dry'} !== null) {
-            if ($this->{$side . '_dry'}) {
+        if ($this->{'has'.ucfirst($side)}() && $this->{$side.'_dry'} !== null) {
+            if ($this->{$side.'_dry'}) {
                 return 'Dry';
             } else {
                 $fts = array();
-                foreach ($this->{$side . '_fluidtypes'} as $ft) {
+                foreach ($this->{$side.'_fluidtypes'} as $ft) {
                     $fts[] = $ft->name;
                 }
-                return $this->{$side .'_fluidstatus'}->name . ' ' . implode(", ", $fts);
+
+                return $this->{$side.'_fluidstatus'}->name.' '.implode(', ', $fts);
             }
         } else {
             return 'Not recorded';
@@ -238,7 +240,7 @@ class Element_OphCiExamination_OCT extends \SplitEventTypeElement
     }
 
     /**
-     * get the fluid findings string for the left
+     * get the fluid findings string for the left.
      *
      * @return string
      */
@@ -248,7 +250,7 @@ class Element_OphCiExamination_OCT extends \SplitEventTypeElement
     }
 
     /**
-     * get the fluid findings string for the right
+     * get the fluid findings string for the right.
      *
      * @return string
      */
@@ -259,7 +261,7 @@ class Element_OphCiExamination_OCT extends \SplitEventTypeElement
 
     /**
      * validate that attribute is set if dependency is false
-     * requires side param
+     * requires side param.
      *
      * @param $attribute
      * @param $params
@@ -268,17 +270,17 @@ class Element_OphCiExamination_OCT extends \SplitEventTypeElement
     {
         $dependency = $params['dependency'];
         $side = $params['side'];
-        $checker = "has" . ucfirst($side);
+        $checker = 'has'.ucfirst($side);
         if ($this->$checker() && $this->$dependency !== null && $this->$dependency != '' && !$this->$dependency &&
             !$this->$attribute) {
-            $this->addError($attribute, ucfirst($side) . ' ' . $this->getAttributeLabel($attribute) . ' is required when ' .
-                ucfirst($side) . ' ' . $this->getAttributeLabel($dependency) .  ' is no');
+            $this->addError($attribute, ucfirst($side).' '.$this->getAttributeLabel($attribute).' is required when '.
+                ucfirst($side).' '.$this->getAttributeLabel($dependency).' is no');
         }
     }
 
     /**
      * validate that attribute is not set if dependency is true - should never arise through the forms
-     * requires side param
+     * requires side param.
      *
      * @param $attribute
      * @param $params
@@ -287,44 +289,46 @@ class Element_OphCiExamination_OCT extends \SplitEventTypeElement
     {
         $dependency = $params['dependency'];
         $side = $params['side'];
-        $checker = "has" . ucfirst($side);
+        $checker = 'has'.ucfirst($side);
         if ($this->$checker() && $this->$dependency && $this->$attribute) {
-            $this->addError($attribute, ucfirst($side) . ' ' . $this->getAttributeLabel($attribute) . ' cannot be set when ' . $side . ' ' . $this->getAttributeLabel($dependency) . ' is set');
+            $this->addError($attribute, ucfirst($side).' '.$this->getAttributeLabel($attribute).' cannot be set when '.$side.' '.$this->getAttributeLabel($dependency).' is set');
         }
     }
 
     /**
-     * get the letter string for the given side
+     * get the letter string for the given side.
      *
      * @param $side
+     *
      * @return string
      */
     protected function getLetterStringForSide($side)
     {
-        $res = ucfirst($side) . " Eye:\n";
-        $res .= $this->getAttributeLabel($side . '_method_id') . ": " . $this->{$side . '_method'}->name . "\n";
-        if ($this->{$side . '_crt'}) {
-            $res .= $this->getAttributeLabel($side . '_crt') . ": " . $this->{$side . '_crt'} . " microns\n";
+        $res = ucfirst($side)." Eye:\n";
+        $res .= $this->getAttributeLabel($side.'_method_id').': '.$this->{$side.'_method'}->name."\n";
+        if ($this->{$side.'_crt'}) {
+            $res .= $this->getAttributeLabel($side.'_crt').': '.$this->{$side.'_crt'}." microns\n";
         }
-        $res .= $this->getAttributeLabel($side . '_sft') . ": " . $this->{$side . '_sft'} . " microns\n";
-        if ($this->{$side . '_thickness_increase'} !== null) {
-            $res .= "Thickness increase over 100 microns: " . ($this->{$side . '_thickness_increase'} ? 'Yes' : 'No');
+        $res .= $this->getAttributeLabel($side.'_sft').': '.$this->{$side.'_sft'}." microns\n";
+        if ($this->{$side.'_thickness_increase'} !== null) {
+            $res .= 'Thickness increase over 100 microns: '.($this->{$side.'_thickness_increase'} ? 'Yes' : 'No');
             $res .= "\n";
         }
 
         if ($fluid = $this->getFluidString($side, false)) {
-            $res .= 'Finding: ' . $fluid . "\n";
+            $res .= 'Finding: '.$fluid."\n";
         }
 
-        if ($this->{$side . '_comments'}) {
-            $res .= $this->{$side . '_comments'} . "\n";
+        if ($this->{$side.'_comments'}) {
+            $res .= $this->{$side.'_comments'}."\n";
         }
+
         return $res;
     }
 
     /**
      * get the letter string for the element
-     * used by correspondence if installed
+     * used by correspondence if installed.
      *
      * @return string
      */
@@ -337,6 +341,7 @@ class Element_OphCiExamination_OCT extends \SplitEventTypeElement
         if ($this->hasLeft()) {
             $res .= $this->getLetterStringForSide('left');
         }
+
         return $res;
     }
 

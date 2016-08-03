@@ -6,50 +6,45 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (C) 2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class AutoSaveTest extends PHPUnit_Framework_TestCase
 {
+    public function testAutoSave()
+    {
+        $key = 'test_key';
+        $value = 'test_value';
 
-	public function testAutoSave()
-	{
-		$key = 'test_key';
-		$value = 'test_value';
+        AutoSave::add($key, $value);
 
-		AutoSave::add($key,$value);
+        $this->assertEquals(Autosave::get($key), $value);
+    }
 
-		$this->assertEquals(Autosave::get($key) ,$value);
-	}
+    public function testAutoSaveRemove()
+    {
+        $key = 'test_key';
+        $value = 'test_value';
 
-	public function testAutoSaveRemove()
-	{
-		$key = 'test_key';
-		$value = 'test_value';
+        AutoSave::add($key, $value);
+        AutoSave::remove($key);
 
-		AutoSave::add($key,$value);
-		AutoSave::remove($key);
+        $this->assertNull(Autosave::get($key));
+    }
 
-		$this->assertNull(Autosave::get($key));
-	}
+    public function testAutoSaveRemoveByPrefix()
+    {
+        AutoSave::add('red', 'value');
+        AutoSave::add('really', 'value');
+        AutoSave::add('reaper', 'value');
 
-	public function testAutoSaveRemoveByPrefix()
-	{
-		AutoSave::add('red','value');
-		AutoSave::add('really','value');
-		AutoSave::add('reaper','value');
+        AutoSave::removeAllByPrefix('rea');
 
-		AutoSave::removeAllByPrefix('rea');
-
-		$this->assertEquals(Autosave::get('red'), 'value');
-		$this->assertNull(Autosave::get('really'));
-		$this->assertNull(Autosave::get('reaper'));
-
-	}
-
-
+        $this->assertEquals(Autosave::get('red'), 'value');
+        $this->assertNull(Autosave::get('really'));
+        $this->assertNull(Autosave::get('reaper'));
+    }
 }

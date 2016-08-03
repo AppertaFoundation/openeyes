@@ -2,7 +2,7 @@
 /**
  * The following variables are used in this template:
  * - $this: the CrudCode object
- * - $ignore: Array of fields to ignore when generating code
+ * - $ignore: Array of fields to ignore when generating code.
  */
 ?>
 <?php echo "<?php\n"; ?>
@@ -39,17 +39,23 @@
 
 // Form objects for table columns
 foreach ($this->tableSchema->columns as $column) {
-	if($column->autoIncrement)
-		continue;
-	if(in_array($column->name, $ignore))
-		continue;
-?>
+    if ($column->autoIncrement) {
+        continue;
+    }
+    if (in_array($column->name, $ignore)) {
+        continue;
+    }
+    ?>
 
 <div class="row">
-	<?php echo "<?php echo ".$this->generateActiveLabel($this->modelClass,$column)."; ?>\n"; ?>
-	<?php echo "<?php ".$this->generateActiveField($this->modelClass,$column)."; ?>\n"; ?>
-	<?php echo "<?php echo \$form->error(\$model,'{$column->name}'); ?>\n"; ?>
+	<?php echo '<?php echo '.$this->generateActiveLabel($this->modelClass, $column)."; ?>\n";
+    ?>
+	<?php echo '<?php '.$this->generateActiveField($this->modelClass, $column)."; ?>\n";
+    ?>
+	<?php echo "<?php echo \$form->error(\$model,'{$column->name}'); ?>\n";
+    ?>
 </div>
 <?php
+
 }
 ?>

@@ -1,11 +1,10 @@
 <?php
 
 /**
- * Class Element_OphInLabResults_ResultTimedNumeric
+ * Class Element_OphInLabResults_ResultTimedNumeric.
  */
 class Element_OphInLabResults_ResultTimedNumeric extends BaseLabResultElement
 {
-
     protected $htmlOptions = array(
         'time' => array('type' => 'time'),
         'result' => array('type' => 'number'),
@@ -29,7 +28,7 @@ class Element_OphInLabResults_ResultTimedNumeric extends BaseLabResultElement
         return array(
             array('time, result', 'required'),
             array('result', 'numerical'),
-            array('time', 'type', 'type' => 'time', 'timeFormat'=>'hh:mm'),
+            array('time', 'type', 'type' => 'time', 'timeFormat' => 'hh:mm'),
             array('event_id, time, result, comment', 'safe'),
         );
     }
@@ -59,7 +58,7 @@ class Element_OphInLabResults_ResultTimedNumeric extends BaseLabResultElement
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function afterFind()
     {
@@ -67,5 +66,4 @@ class Element_OphInLabResults_ResultTimedNumeric extends BaseLabResultElement
         //We aren't really interested in the microseconds and it breaks the validation on edit
         $this->time = date_create_from_format('H:i:s', $this->time)->format('H:i');
     }
-
 }

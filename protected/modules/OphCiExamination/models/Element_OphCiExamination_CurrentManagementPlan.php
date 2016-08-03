@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,16 +9,17 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
 namespace OEModule\OphCiExamination\models;
 
-/**
+/*
  * This is the model class for table "et_ophciexamination_currentmanagementplan".
  *
  * The followings are the available columns in table:
@@ -60,6 +61,7 @@ class Element_OphCiExamination_CurrentManagementPlan  extends  \SplitEventTypeEl
 {
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return the static model class
      */
     public static function model($className = __CLASS__)
@@ -84,18 +86,19 @@ class Element_OphCiExamination_CurrentManagementPlan  extends  \SplitEventTypeEl
             array('event_id, left_glaucoma_status_id, left_drop-related_prob_id, left_drops_id, left_surgery_id,
 			right_glaucoma_status_id, right_drop-related_prob_id, right_drops_id, right_surgery_id, eye_id', 'safe'),
             array('left_glaucoma_status_id, left_drop-related_prob_id, left_drops_id',
-                'requiredIfSide', 'side' => 'left'),
+                'requiredIfSide', 'side' => 'left', ),
             array('right_glaucoma_status_id, right_drop-related_prob_id, right_drops_id',
-                'requiredIfSide', 'side' => 'right'),
+                'requiredIfSide', 'side' => 'right', ),
             array('eye_id ', 'required'),
             array('id, event_id, left_glaucoma_status_id, left_drop-related_prob_id, left_drops_id, left_surgery_id,
 			right_glaucoma_status_id, right_drop-related_prob_id, right_drops_id, right_surgery_id, eye_id ',
-                'safe', 'on' => 'search'),
+                'safe', 'on' => 'search', ),
         );
     }
 
     /**
      * @return array
+     *
      * @see parent::sidedFields()
      */
     public function sidedFields()
@@ -109,7 +112,7 @@ class Element_OphCiExamination_CurrentManagementPlan  extends  \SplitEventTypeEl
     public function relations()
     {
         return array(
-            'element_type' => array(self::HAS_ONE, 'ElementType', 'id','on' => "element_type.class_name='".get_class($this)."'"),
+            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='".get_class($this)."'"),
             'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
@@ -147,18 +150,19 @@ class Element_OphCiExamination_CurrentManagementPlan  extends  \SplitEventTypeEl
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
     {
-        $criteria = new CDbCriteria;
+        $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
         $criteria->compare('right_glaucoma_status_id', $this->right_glaucoma_status_id);
         $criteria->compare('left_glaucoma_status_id', $this->left_glaucoma_status_id);
-        $criteria->compare('right_drop-related_prob_id', $this->drop-right_related_prob_id);
-        $criteria->compare('left_drop-related_prob_id', $this->left_drop-related_prob_id);
+        $criteria->compare('right_drop-related_prob_id', $this->drop - right_related_prob_id);
+        $criteria->compare('left_drop-related_prob_id', $this->left_drop - related_prob_id);
         $criteria->compare('right_drops_id', $this->right_drops_id);
         $criteria->compare('left_drops_id', $this->left_drops_id);
         $criteria->compare('right_surgery_id', $this->right_surgery_id);
@@ -184,6 +188,7 @@ class Element_OphCiExamination_CurrentManagementPlan  extends  \SplitEventTypeEl
         if ($result['leftIOP'] || $result['rightIOP']) {
             return $result;
         }
-        return null;
+
+        return;
     }
 }

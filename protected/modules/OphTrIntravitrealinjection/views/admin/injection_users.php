@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2012
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
@@ -25,10 +25,10 @@
 	</div>
 	<div class="row data-row">
 		<div class="large-3 column">
-			<?php echo CHtml::dropDownList('user_id','',CHtml::listData($user_list,'id','fullNameAndUserName'), array('empty' => '- Select user -'))?>
+			<?php echo CHtml::dropDownList('user_id', '', CHtml::listData($user_list, 'id', 'fullNameAndUserName'), array('empty' => '- Select user -'))?>
 		</div>
 		<div class="large-4 column end">
-			<?php echo CHtml::htmlButton("Add user",array('class' => 'button small addUser'))?>
+			<?php echo CHtml::htmlButton('Add user', array('class' => 'button small addUser'))?>
 		</div>
 	</div>
 	<form id="admin_injection_users">
@@ -43,13 +43,13 @@
 				</tr>
 			</thead>
 			<tbody>
-				<?php $this->renderPartial('_injection_users',array('injection_users' => $injection_users))?>
+				<?php $this->renderPartial('_injection_users', array('injection_users' => $injection_users))?>
 			</tbody>
 		</table>
 	</form>
 	<div class="row data-row">
 		<div class="large-4 column end">
-			<?php echo CHtml::htmlButton("Delete user(s)",array('class' => 'button small deleteUser'))?>
+			<?php echo CHtml::htmlButton('Delete user(s)', array('class' => 'button small deleteUser'))?>
 		</div>
 	</div>
 </div>

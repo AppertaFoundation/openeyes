@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,76 +9,78 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigration
 {
-	private  $element_types ;
+    private $element_types;
 
-	public function setData(){
-		$this->element_types = array(
-			'Element_OphCoTherapyapplication_Therapydiagnosis' => array('name' => 'Diagnosis','display_order'=>10),
-			'Element_OphCoTherapyapplication_PatientSuitability' => array('name' => 'Patient Suitability','display_order'=>15),
-			'Element_OphCoTherapyapplication_RelativeContraindications' => array('name' => 'Relative ContraIndications','display_order'=>20),
-			'Element_OphCoTherapyapplication_MrServiceInformation' => array('name' => 'MR Service Information','display_order'=>30),
-			'Element_OphCoTherapyapplication_ExceptionalCircumstances' => array('name' => 'Exceptional Circumstances','display_order'=>40),
-			'Element_OphCoTherapyapplication_Email' => array('name' => 'Application Email','display_order'=>50, 'default'=>0),
-		);
-	}
+    public function setData()
+    {
+        $this->element_types = array(
+            'Element_OphCoTherapyapplication_Therapydiagnosis' => array('name' => 'Diagnosis', 'display_order' => 10),
+            'Element_OphCoTherapyapplication_PatientSuitability' => array('name' => 'Patient Suitability', 'display_order' => 15),
+            'Element_OphCoTherapyapplication_RelativeContraindications' => array('name' => 'Relative ContraIndications', 'display_order' => 20),
+            'Element_OphCoTherapyapplication_MrServiceInformation' => array('name' => 'MR Service Information', 'display_order' => 30),
+            'Element_OphCoTherapyapplication_ExceptionalCircumstances' => array('name' => 'Exceptional Circumstances', 'display_order' => 40),
+            'Element_OphCoTherapyapplication_Email' => array('name' => 'Application Email', 'display_order' => 50, 'default' => 0),
+        );
+    }
 
-	public function up()
-	{
-		if (!$this->consolidate(
-			array(
-				"m130703_152448_event_type_OphCoTherapyapplication",
-				"m130724_103306_previousintervention_tweaks",
-				"m130725_075105_status_flag_for_therapy_application_email_element",
-				"m130813_141710_release_tweaks",
-			)
-		)
-		) {
-			return $this->createTables();
-		}
-	}
+    public function up()
+    {
+        if (!$this->consolidate(
+            array(
+                'm130703_152448_event_type_OphCoTherapyapplication',
+                'm130724_103306_previousintervention_tweaks',
+                'm130725_075105_status_flag_for_therapy_application_email_element',
+                'm130813_141710_release_tweaks',
+            )
+        )
+        ) {
+            return $this->createTables();
+        }
+    }
 
-	public function createTables()
-	{
-		if (!Yii::app()->hasModule('OphTrIntravitrealinjection')) {
-			echo "
+    public function createTables()
+    {
+        if (!Yii::app()->hasModule('OphTrIntravitrealinjection')) {
+            echo '
 			-----------------------------------
 			Skipping OphTrIntravitrealinjection - missing module dependency
 			-----------------------------------
-			";
-			return false;
-			//throw new Exception("OphTrIntravitrealinjection is required for this module to work");
-		}
+			';
 
-		if (!in_array('ophtrintravitinjection_treatment_drug',$this->dbConnection->getSchema()->tableNames)) {
-			echo "
+            return false;
+            //throw new Exception("OphTrIntravitrealinjection is required for this module to work");
+        }
+
+        if (!in_array('ophtrintravitinjection_treatment_drug', $this->dbConnection->getSchema()->tableNames)) {
+            echo '
 			-----------------------------------
 			Skipping OphTrIntravitrealinjection - missing module table ophtrintravitinjection_treatment_drug dependency
 			-----------------------------------
-			";
-			return false;
-			//throw new Exception("OphTrIntravitrealinjection is required for this module to work");
-		}
+			';
 
-		$this->setData();
-		//disable foreign keys check
-		$this->execute("SET foreign_key_checks = 0");
+            return false;
+            //throw new Exception("OphTrIntravitrealinjection is required for this module to work");
+        }
 
-		Yii::app()->cache->flush();
+        $this->setData();
+        //disable foreign keys check
+        $this->execute('SET foreign_key_checks = 0');
 
-		$event_type_id = $this->insertOEEventType( 'Therapy Application', 'OphCoTherapyapplication', 'Co');
-		$this->insertOEElementType($this->element_types , $event_type_id);
+        Yii::app()->cache->flush();
 
-		$this->execute("CREATE TABLE `et_ophcotherapya_email` (
+        $event_type_id = $this->insertOEEventType('Therapy Application', 'OphCoTherapyapplication', 'Co');
+        $this->insertOEElementType($this->element_types, $event_type_id);
+
+        $this->execute("CREATE TABLE `et_ophcotherapya_email` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `event_id` int(10) unsigned NOT NULL,
 			  `eye_id` int(10) unsigned NOT NULL DEFAULT '3',
@@ -99,7 +101,7 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `et_ophcotherapya_exceptional` (
+        $this->execute("CREATE TABLE `et_ophcotherapya_exceptional` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `event_id` int(10) unsigned NOT NULL,
 			  `eye_id` int(10) unsigned NOT NULL DEFAULT '3',
@@ -158,7 +160,7 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `et_ophcotherapya_exceptional_intervention` (
+        $this->execute("CREATE TABLE `et_ophcotherapya_exceptional_intervention` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `name` varchar(128) NOT NULL,
 			  `description_label` varchar(128) NOT NULL,
@@ -176,7 +178,7 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `et_ophcotherapya_mrservicein` (
+        $this->execute("CREATE TABLE `et_ophcotherapya_mrservicein` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `event_id` int(10) unsigned NOT NULL,
 			  `consultant_id` int(10) unsigned NOT NULL,
@@ -196,7 +198,7 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `et_ophcotherapya_patientsuit` (
+        $this->execute("CREATE TABLE `et_ophcotherapya_patientsuit` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `event_id` int(10) unsigned NOT NULL,
 			  `eye_id` int(10) unsigned NOT NULL DEFAULT '3',
@@ -226,7 +228,7 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `et_ophcotherapya_relativecon` (
+        $this->execute("CREATE TABLE `et_ophcotherapya_relativecon` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `event_id` int(10) unsigned NOT NULL,
 			  `cerebrovascular_accident` tinyint(1) unsigned NOT NULL DEFAULT '0',
@@ -246,7 +248,7 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `et_ophcotherapya_therapydiag` (
+        $this->execute("CREATE TABLE `et_ophcotherapya_therapydiag` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `event_id` int(10) unsigned NOT NULL,
 			  `eye_id` int(10) unsigned NOT NULL DEFAULT '3',
@@ -278,7 +280,7 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophcotherapya_decisiontree` (
+        $this->execute("CREATE TABLE `ophcotherapya_decisiontree` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `name` varchar(128) NOT NULL,
 			  `last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -293,7 +295,7 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophcotherapya_decisiontreenode` (
+        $this->execute("CREATE TABLE `ophcotherapya_decisiontreenode` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `decisiontree_id` int(10) unsigned NOT NULL,
 			  `parent_id` int(10) unsigned DEFAULT NULL,
@@ -322,7 +324,7 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophcotherapya_decisiontreenode_responsetype` (
+        $this->execute("CREATE TABLE `ophcotherapya_decisiontreenode_responsetype` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `label` varchar(32) NOT NULL,
 			  `datatype` varchar(16) NOT NULL,
@@ -338,7 +340,7 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophcotherapya_decisiontreenodechoice` (
+        $this->execute("CREATE TABLE `ophcotherapya_decisiontreenodechoice` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `node_id` int(10) unsigned NOT NULL,
 			  `label` varchar(32) NOT NULL,
@@ -357,7 +359,7 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophcotherapya_decisiontreenoderule` (
+        $this->execute("CREATE TABLE `ophcotherapya_decisiontreenoderule` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `node_id` int(10) unsigned NOT NULL,
 			  `parent_check` varchar(4) DEFAULT NULL,
@@ -376,7 +378,7 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophcotherapya_decisiontreeoutcome` (
+        $this->execute("CREATE TABLE `ophcotherapya_decisiontreeoutcome` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `name` varchar(32) NOT NULL,
 			  `outcome_type` varchar(16) NOT NULL,
@@ -392,7 +394,7 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophcotherapya_email_attachment` (
+        $this->execute("CREATE TABLE `ophcotherapya_email_attachment` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `element_id` int(10) unsigned NOT NULL,
 			  `eye_id` int(10) unsigned NOT NULL,
@@ -415,7 +417,7 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophcotherapya_exceptional_deviationreason` (
+        $this->execute("CREATE TABLE `ophcotherapya_exceptional_deviationreason` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `name` varchar(128) NOT NULL,
 			  `display_order` int(10) unsigned NOT NULL DEFAULT '1',
@@ -432,7 +434,7 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophcotherapya_exceptional_deviationreason_ass` (
+        $this->execute("CREATE TABLE `ophcotherapya_exceptional_deviationreason_ass` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `element_id` int(10) unsigned NOT NULL,
 			  `side_id` tinyint(1) NOT NULL,
@@ -453,7 +455,7 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophcotherapya_exceptional_filecoll_assignment` (
+        $this->execute("CREATE TABLE `ophcotherapya_exceptional_filecoll_assignment` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `exceptional_id` int(10) unsigned NOT NULL,
 			  `exceptional_side_id` tinyint(1) NOT NULL,
@@ -474,7 +476,7 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophcotherapya_exceptional_pastintervention` (
+        $this->execute("CREATE TABLE `ophcotherapya_exceptional_pastintervention` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `exceptional_id` int(10) unsigned NOT NULL,
 			  `exceptional_side_id` tinyint(1) NOT NULL,
@@ -509,7 +511,7 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophcotherapya_exceptional_pastintervention_stopreason` (
+        $this->execute("CREATE TABLE `ophcotherapya_exceptional_pastintervention_stopreason` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `name` varchar(128) NOT NULL,
 			  `display_order` int(10) unsigned NOT NULL DEFAULT '1',
@@ -526,7 +528,7 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophcotherapya_exceptional_standardintervention` (
+        $this->execute("CREATE TABLE `ophcotherapya_exceptional_standardintervention` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `name` varchar(128) NOT NULL,
 			  `enabled` tinyint(1) NOT NULL DEFAULT '1',
@@ -543,7 +545,7 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophcotherapya_exceptional_startperiod` (
+        $this->execute("CREATE TABLE `ophcotherapya_exceptional_startperiod` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `name` varchar(128) NOT NULL,
 			  `urgent` tinyint(1) DEFAULT '0',
@@ -562,7 +564,7 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophcotherapya_filecoll` (
+        $this->execute("CREATE TABLE `ophcotherapya_filecoll` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `name` varchar(256) NOT NULL,
 			  `zipfile_id` int(10) unsigned DEFAULT NULL,
@@ -581,7 +583,7 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophcotherapya_filecoll_assignment` (
+        $this->execute("CREATE TABLE `ophcotherapya_filecoll_assignment` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `collection_id` int(10) unsigned NOT NULL,
 			  `file_id` int(10) unsigned NOT NULL,
@@ -601,7 +603,7 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophcotherapya_patientsuit_decisiontreenoderesponse` (
+        $this->execute("CREATE TABLE `ophcotherapya_patientsuit_decisiontreenoderesponse` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `patientsuit_id` int(10) unsigned NOT NULL,
 			  `eye_id` int(10) unsigned NOT NULL,
@@ -623,7 +625,7 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophcotherapya_relevanttreatment` (
+        $this->execute("CREATE TABLE `ophcotherapya_relevanttreatment` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `name` varchar(128) NOT NULL,
 			  `other` tinyint(1) NOT NULL DEFAULT '0',
@@ -640,7 +642,7 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophcotherapya_therapydisorder` (
+        $this->execute("CREATE TABLE `ophcotherapya_therapydisorder` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `disorder_id` int(10) unsigned NOT NULL,
 			  `parent_id` int(10) unsigned DEFAULT NULL,
@@ -661,7 +663,7 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophcotherapya_treatment` (
+        $this->execute("CREATE TABLE `ophcotherapya_treatment` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `drug_id` int(10) unsigned NOT NULL,
 			  `decisiontree_id` int(10) unsigned DEFAULT NULL,
@@ -696,7 +698,7 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophcotherapya_treatment_cost_type` (
+        $this->execute("CREATE TABLE `ophcotherapya_treatment_cost_type` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `name` varchar(128) NOT NULL,
 			  `last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -711,16 +713,15 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$migrations_path = dirname(__FILE__);
-		$this->initialiseData($migrations_path);
+        $migrations_path = dirname(__FILE__);
+        $this->initialiseData($migrations_path);
 
-		//enable foreign keys check
-		$this->execute("SET foreign_key_checks = 1");
+        //enable foreign keys check
+        $this->execute('SET foreign_key_checks = 1');
+    }
 
-	}
-
-	public function down()
-	{
-		echo "Down method not supported on consolidation";
-	}
+    public function down()
+    {
+        echo 'Down method not supported on consolidation';
+    }
 }

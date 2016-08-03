@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,89 +9,88 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class m130913_000002_consolidation_for_ophcocorrespondence extends OEMigration
 {
+    public function up()
+    {
+        if (!$this->consolidate(
+            array(
+                'm120510_102418_ophcocorrespondence_consolidated',
+                'm120515_085148_add_locked_field_to_letter_element',
+                'm120515_122109_store_site_id_with_letter',
+                'm120515_134047_store_previously_edited_letters',
+                'm120613_090046_letter_macro_should_have_a_site_id_column',
+                'm120613_090658_letter_string_site_id_field',
+                'm120625_121556_add_missing_site_id_foreign_key',
+                'm120625_122414_add_missing_site_id_foreign_key',
+                'm120821_092310_firm_site_secretary_table',
+                'm120828_140031_enable_macro_cc_to_gp',
+                'm120920_071943_add_direct_line_number_to_correspondence_element',
+                'm121025_104309_findings_letter_string_group',
+                'm121105_095011_add_findings_options_for_history_and_adnexal_comorbidity',
+                'm121108_132537_letter_enc_list',
+                'm121128_103043_firm_secretary_fax_numbers',
+                'm121128_110606_add_fax_field_to_letter_element',
+                'm121129_145842_clinic_date',
+                'm130423_135641_print_all_flag',
+                'm130531_134251_mark_as_support_service_event_type',
+                'm130603_103105_dr_function_setup',
+            ))
+        ) {
+            $this->createTables();
+        }
+    }
 
-	public function up()
-	{
-		if (!$this->consolidate(
-			array(
-				"m120510_102418_ophcocorrespondence_consolidated",
-				"m120515_085148_add_locked_field_to_letter_element",
-				"m120515_122109_store_site_id_with_letter",
-				"m120515_134047_store_previously_edited_letters",
-				"m120613_090046_letter_macro_should_have_a_site_id_column",
-				"m120613_090658_letter_string_site_id_field",
-				"m120625_121556_add_missing_site_id_foreign_key",
-				"m120625_122414_add_missing_site_id_foreign_key",
-				"m120821_092310_firm_site_secretary_table",
-				"m120828_140031_enable_macro_cc_to_gp",
-				"m120920_071943_add_direct_line_number_to_correspondence_element",
-				"m121025_104309_findings_letter_string_group",
-				"m121105_095011_add_findings_options_for_history_and_adnexal_comorbidity",
-				"m121108_132537_letter_enc_list",
-				"m121128_103043_firm_secretary_fax_numbers",
-				"m121128_110606_add_fax_field_to_letter_element",
-				"m121129_145842_clinic_date",
-				"m130423_135641_print_all_flag",
-				"m130531_134251_mark_as_support_service_event_type",
-				"m130603_103105_dr_function_setup"
-			))
-		) {
-			$this->createTables();
-		}
-	}
+    public function down()
+    {
+        echo "You cannot migrate down past a consolidation migration\n";
 
-	public function down()
-	{
-		echo "You cannot migrate down past a consolidation migration\n";
-		return false;
-	}
+        return false;
+    }
 
-	public function safeUp()
-	{
-		$this->up();
-	}
+    public function safeUp()
+    {
+        $this->up();
+    }
 
-	public function safeDown()
-	{
-		$this->down();
-	}
+    public function safeDown()
+    {
+        $this->down();
+    }
 
-	protected function createTables()
-	{
-		//disable foreign keys check
-		$this->execute("SET foreign_key_checks = 0");
+    protected function createTables()
+    {
+        //disable foreign keys check
+        $this->execute('SET foreign_key_checks = 0');
 
-		Yii::app()->cache->flush();
+        Yii::app()->cache->flush();
 
-		$event_group_id = $this->dbConnection->createCommand()->select('id')->from('event_group')->where('code = ?', array('Co'))->queryScalar();
-		$this->insert(
-			'event_type',
-			array(
-				'name' => 'Correspondence',
-				'event_group_id' => $event_group_id,
-				'class_name' => 'OphCoCorrespondence',
-				'support_services' => 1,
-			)
-		);
-		$event_type_id = $this->dbConnection->getLastInsertID();
+        $event_group_id = $this->dbConnection->createCommand()->select('id')->from('event_group')->where('code = ?', array('Co'))->queryScalar();
+        $this->insert(
+            'event_type',
+            array(
+                'name' => 'Correspondence',
+                'event_group_id' => $event_group_id,
+                'class_name' => 'OphCoCorrespondence',
+                'support_services' => 1,
+            )
+        );
+        $event_type_id = $this->dbConnection->getLastInsertID();
 
-		$element_types = array(
-			'ElementLetter' => array('name' => 'Letter', 'display_order' => 1),
-		);
+        $element_types = array(
+            'ElementLetter' => array('name' => 'Letter', 'display_order' => 1),
+        );
 
-		$this->insertOEElementType($element_types, $event_type_id);
+        $this->insertOEElementType($element_types, $event_type_id);
 
-		$this->execute("CREATE TABLE `et_ophcocorrespondence_firm_letter_macro` (
+        $this->execute("CREATE TABLE `et_ophcocorrespondence_firm_letter_macro` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `firm_id` int(10) unsigned NOT NULL,
 			  `name` varchar(64) DEFAULT NULL,
@@ -117,7 +116,7 @@ class m130913_000002_consolidation_for_ophcocorrespondence extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `et_ophcocorrespondence_firm_letter_string` (
+        $this->execute("CREATE TABLE `et_ophcocorrespondence_firm_letter_string` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `letter_string_group_id` int(10) unsigned NOT NULL,
 			  `firm_id` int(10) unsigned NOT NULL,
@@ -142,7 +141,7 @@ class m130913_000002_consolidation_for_ophcocorrespondence extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `et_ophcocorrespondence_firm_site_secretary` (
+        $this->execute("CREATE TABLE `et_ophcocorrespondence_firm_site_secretary` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `firm_id` int(10) unsigned NOT NULL,
 			  `site_id` int(10) unsigned DEFAULT NULL,
@@ -164,7 +163,7 @@ class m130913_000002_consolidation_for_ophcocorrespondence extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `et_ophcocorrespondence_letter` (
+        $this->execute("CREATE TABLE `et_ophcocorrespondence_letter` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `event_id` int(10) unsigned NOT NULL,
 			  `use_nickname` tinyint(1) unsigned NOT NULL DEFAULT '0',
@@ -197,7 +196,7 @@ class m130913_000002_consolidation_for_ophcocorrespondence extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `et_ophcocorrespondence_letter_macro` (
+        $this->execute("CREATE TABLE `et_ophcocorrespondence_letter_macro` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `name` varchar(64) DEFAULT NULL,
 			  `recipient_patient` tinyint(1) unsigned NOT NULL DEFAULT '0',
@@ -223,7 +222,7 @@ class m130913_000002_consolidation_for_ophcocorrespondence extends OEMigration
 			) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `et_ophcocorrespondence_letter_old` (
+        $this->execute("CREATE TABLE `et_ophcocorrespondence_letter_old` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `letter_id` int(10) unsigned NOT NULL,
 			  `use_nickname` tinyint(1) unsigned NOT NULL DEFAULT '0',
@@ -254,7 +253,7 @@ class m130913_000002_consolidation_for_ophcocorrespondence extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `et_ophcocorrespondence_letter_string` (
+        $this->execute("CREATE TABLE `et_ophcocorrespondence_letter_string` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `letter_string_group_id` int(10) unsigned NOT NULL,
 			  `name` varchar(64) DEFAULT NULL,
@@ -279,7 +278,7 @@ class m130913_000002_consolidation_for_ophcocorrespondence extends OEMigration
 			) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `et_ophcocorrespondence_letter_string_group` (
+        $this->execute("CREATE TABLE `et_ophcocorrespondence_letter_string_group` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `name` varchar(64) DEFAULT NULL,
 			  `display_order` tinyint(3) unsigned NOT NULL DEFAULT '1',
@@ -295,7 +294,7 @@ class m130913_000002_consolidation_for_ophcocorrespondence extends OEMigration
 			) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `et_ophcocorrespondence_subspecialty_letter_macro` (
+        $this->execute("CREATE TABLE `et_ophcocorrespondence_subspecialty_letter_macro` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `subspecialty_id` int(10) unsigned NOT NULL,
 			  `name` varchar(64) DEFAULT NULL,
@@ -321,7 +320,7 @@ class m130913_000002_consolidation_for_ophcocorrespondence extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `et_ophcocorrespondence_subspecialty_letter_string` (
+        $this->execute("CREATE TABLE `et_ophcocorrespondence_subspecialty_letter_string` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `letter_string_group_id` int(10) unsigned NOT NULL,
 			  `subspecialty_id` int(10) unsigned NOT NULL,
@@ -346,7 +345,7 @@ class m130913_000002_consolidation_for_ophcocorrespondence extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophcocorrespondence_letter_enclosure` (
+        $this->execute("CREATE TABLE `ophcocorrespondence_letter_enclosure` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `element_letter_id` int(10) unsigned NOT NULL,
 			  `content` varchar(128) DEFAULT NULL,
@@ -365,12 +364,10 @@ class m130913_000002_consolidation_for_ophcocorrespondence extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$migrations_path = dirname(__FILE__);
-		$this->initialiseData($migrations_path);
+        $migrations_path = dirname(__FILE__);
+        $this->initialiseData($migrations_path);
 
-		//enable foreign keys check
-		$this->execute("SET foreign_key_checks = 1");
-
-	}
-
+        //enable foreign keys check
+        $this->execute('SET foreign_key_checks = 1');
+    }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -18,60 +18,60 @@
  */
 
 return array(
-	'di1' => array(
-		'event_id' => 5,
-		'eye_id' => 1,
-		'disorder_id' => 1,
-		'created_date' => date('Y-m-d 00:00:00'),
-		'last_modified_date' => date('Y-m-d 00:00:00'),
-	),
-	'di2' => array(
-		'event_id' => 6,
-		'eye_id' => 1,
-		'disorder_id' => 1,
-		'created_date' => date('Y-m-d 00:00:00'),
-		'last_modified_date' => date('Y-m-d 00:00:00'),
-	),
-	'di3' => array(
-		'event_id' => 7,
-		'eye_id' => 1,
-		'disorder_id' => 1,
-		'created_date' => date('Y-m-d 00:00:00'),
-		'last_modified_date' => date('Y-m-d 00:00:00'),
-	),
-	'di4' => array(
-		'event_id' => 8,
-		'eye_id' => 1,
-		'disorder_id' => 1,
-		'created_date' => date('Y-m-d 00:00:00'),
-		'last_modified_date' => date('Y-m-d 00:00:00'),
-	),
-	'di5' => array(
-		'event_id' => 9,
-		'eye_id' => 1,
-		'disorder_id' => 1,
-		'created_date' => date('Y-m-d 00:00:00'),
-		'last_modified_date' => date('Y-m-d 00:00:00'),
-	),
-	'di6' => array(
-		'event_id' => 10,
-		'eye_id' => 1,
-		'disorder_id' => 1,
-		'created_date' => date('Y-m-d 00:00:00'),
-		'last_modified_date' => date('Y-m-d 00:00:00'),
-	),
-	'di7' => array(
-		'event_id' => 11,
-		'eye_id' => 1,
-		'disorder_id' => 1,
-		'created_date' => date('Y-m-d 00:00:00'),
-		'last_modified_date' => date('Y-m-d 00:00:00'),
-	),
-	'di8' => array(
-		'event_id' => 12,
-		'eye_id' => 1,
-		'disorder_id' => 1,
-		'created_date' => date('Y-m-d 00:00:00'),
-		'last_modified_date' => date('Y-m-d 00:00:00'),
-	),
+    'di1' => array(
+        'event_id' => 5,
+        'eye_id' => 1,
+        'disorder_id' => 1,
+        'created_date' => date('Y-m-d 00:00:00'),
+        'last_modified_date' => date('Y-m-d 00:00:00'),
+    ),
+    'di2' => array(
+        'event_id' => 6,
+        'eye_id' => 1,
+        'disorder_id' => 1,
+        'created_date' => date('Y-m-d 00:00:00'),
+        'last_modified_date' => date('Y-m-d 00:00:00'),
+    ),
+    'di3' => array(
+        'event_id' => 7,
+        'eye_id' => 1,
+        'disorder_id' => 1,
+        'created_date' => date('Y-m-d 00:00:00'),
+        'last_modified_date' => date('Y-m-d 00:00:00'),
+    ),
+    'di4' => array(
+        'event_id' => 8,
+        'eye_id' => 1,
+        'disorder_id' => 1,
+        'created_date' => date('Y-m-d 00:00:00'),
+        'last_modified_date' => date('Y-m-d 00:00:00'),
+    ),
+    'di5' => array(
+        'event_id' => 9,
+        'eye_id' => 1,
+        'disorder_id' => 1,
+        'created_date' => date('Y-m-d 00:00:00'),
+        'last_modified_date' => date('Y-m-d 00:00:00'),
+    ),
+    'di6' => array(
+        'event_id' => 10,
+        'eye_id' => 1,
+        'disorder_id' => 1,
+        'created_date' => date('Y-m-d 00:00:00'),
+        'last_modified_date' => date('Y-m-d 00:00:00'),
+    ),
+    'di7' => array(
+        'event_id' => 11,
+        'eye_id' => 1,
+        'disorder_id' => 1,
+        'created_date' => date('Y-m-d 00:00:00'),
+        'last_modified_date' => date('Y-m-d 00:00:00'),
+    ),
+    'di8' => array(
+        'event_id' => 12,
+        'eye_id' => 1,
+        'disorder_id' => 1,
+        'created_date' => date('Y-m-d 00:00:00'),
+        'last_modified_date' => date('Y-m-d 00:00:00'),
+    ),
 );

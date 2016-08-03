@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -9,22 +9,22 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
 /**
- * This component class is intended to encaspulate the logic of interacting with the Worklists
+ * This component class is intended to encaspulate the logic of interacting with the Worklists.
  *
  * Class WorklistManager
  */
 class WorklistManager extends CComponent
 {
-    public static $AUDIT_TARGET_MANUAL = "Manual Worklist";
-    public static $AUDIT_TARGET_AUTO = "Automatic Worklists";
+    public static $AUDIT_TARGET_MANUAL = 'Manual Worklist';
+    public static $AUDIT_TARGET_AUTO = 'Automatic Worklists';
     /**
      * @var string
      */
@@ -46,7 +46,7 @@ class WorklistManager extends CComponent
 
     /**
      * The interval between now and the future used for determining which Automatic Worklists
-     * should be rendered on the dashboard
+     * should be rendered on the dashboard.
      *
      * @var string
      */
@@ -55,35 +55,36 @@ class WorklistManager extends CComponent
     /**
      * Array of 3 letter days of the week that should be skipped for picking dates to render
      * worklist dashboards for.
-
+     
      * @TODO: leverage for day or week selection for definition setup
+     *
      * @var array
      */
     protected static $DEFAULT_DASHBOARD_SKIP_DAYS = ['Sun'];
 
     /**
-     * Whether worklists with no patient assignments should be displayed or not
+     * Whether worklists with no patient assignments should be displayed or not.
      *
      * @var bool
      */
     protected static $DEFAULT_SHOW_EMPTY = true;
 
     /**
-     * Whether patients can be added to the same automatic worklist more than once
+     * Whether patients can be added to the same automatic worklist more than once.
      *
      * @var bool
      */
     protected static $DEFAULT_DUPLICATE_PATIENTS = false;
 
     /**
-     * Internal store of error messages
+     * Internal store of error messages.
      *
      * @var array
      */
     protected $errors = [];
 
     /**
-     * Flag to turn off auditing
+     * Flag to turn off auditing.
      *
      * @var bool
      */
@@ -104,9 +105,10 @@ class WorklistManager extends CComponent
     }
 
     /**
-     * Abstraction for getting model instance of class
+     * Abstraction for getting model instance of class.
      *
      * @param $class
+     *
      * @return mixed
      */
     protected function getModelForClass($class)
@@ -115,22 +117,25 @@ class WorklistManager extends CComponent
     }
 
     /**
-     * Abstraction for getting instance of class
+     * Abstraction for getting instance of class.
      *
      * @param $class
+     *
      * @return mixed
      */
     protected function getInstanceForClass($class, $args = array())
     {
-        if (empty($args))
+        if (empty($args)) {
             return new $class();
+        }
 
         $cls = new ReflectionClass($class);
+
         return $cls->newInstanceArgs($args);
     }
 
     /**
-     * Wrapper for starting a transaction
+     * Wrapper for starting a transaction.
      *
      * @return CDbTransaction|null
      */
@@ -146,15 +151,16 @@ class WorklistManager extends CComponent
      *
      * @param $view
      * @param array $parameters
+     *
      * @return mixed
      */
     protected function renderPartial($view, $parameters = array())
     {
-        return $this->yii->controller->renderPartial($view, $parameters,true);
+        return $this->yii->controller->renderPartial($view, $parameters, true);
     }
 
     /**
-     * Wrapper for retrieving current active User
+     * Wrapper for retrieving current active User.
      *
      * @return mixed
      */
@@ -168,10 +174,11 @@ class WorklistManager extends CComponent
      */
     protected function getCurrentSite()
     {
-        if (!$site_id = $this->yii->session['selected_site_id'])
-            return null;
+        if (!$site_id = $this->yii->session['selected_site_id']) {
+            return;
+        }
 
-        return $this->getModelForClass("Site")->findByPk($site_id);
+        return $this->getModelForClass('Site')->findByPk($site_id);
     }
 
     /**
@@ -179,16 +186,18 @@ class WorklistManager extends CComponent
      */
     protected function getCurrentFirm()
     {
-        if (!$firm_id = $this->yii->session->get('selected_firm_id'))
-            return null;
+        if (!$firm_id = $this->yii->session->get('selected_firm_id')) {
+            return;
+        }
 
         return $this->getModelForClass('Firm')->findByPk($firm_id);
     }
 
     /**
-     * Wrapper for retrieve app parameters
+     * Wrapper for retrieve app parameters.
      *
      * @param $name
+     *
      * @return array|string|null
      */
     protected function getAppParam($name)
@@ -198,7 +207,7 @@ class WorklistManager extends CComponent
     }
 
     /**
-     * Simple function for use during bulk procesess
+     * Simple function for use during bulk procesess.
      */
     public function disableAudit()
     {
@@ -206,7 +215,7 @@ class WorklistManager extends CComponent
     }
 
     /**
-     * Re-enable after disabling auditing
+     * Re-enable after disabling auditing.
      */
     public function enableAudit()
     {
@@ -214,22 +223,25 @@ class WorklistManager extends CComponent
     }
 
     /**
-     * Audit Wrapper
+     * Audit Wrapper.
      *
      * @param $target
      * @param $action
-     * @param null $data
-     * @param null $log_message
+     * @param null  $data
+     * @param null  $log_message
      * @param array $properties
+     *
      * @throws Exception
      */
-    protected function audit($target, $action, $data=null, $log_message=null, $properties=array())
+    protected function audit($target, $action, $data = null, $log_message = null, $properties = array())
     {
-        if (!$this->do_audit)
+        if (!$this->do_audit) {
             return;
+        }
 
-        if (!isset($properties['user_id']))
+        if (!isset($properties['user_id'])) {
             $properties['user_id'] = $this->getCurrentUser()->id;
+        }
 
         if (is_array($data)) {
             $data = json_encode($data);
@@ -239,7 +251,7 @@ class WorklistManager extends CComponent
     }
 
     /**
-     * Wrapper for managing default start time for scheduled worklists
+     * Wrapper for managing default start time for scheduled worklists.
      *
      * @return string
      */
@@ -249,7 +261,7 @@ class WorklistManager extends CComponent
     }
 
     /**
-     * Wrapper for managing default end time for scheduled worklists
+     * Wrapper for managing default end time for scheduled worklists.
      *
      * @return string
      */
@@ -306,54 +318,63 @@ class WorklistManager extends CComponent
     }
 
     /**
-     * The time before which we are relaxed about appointments not finding matches
+     * The time before which we are relaxed about appointments not finding matches.
      *
      * @return DateTime
      */
     public function getWorklistIgnoreDate()
     {
-        if ($dt = $this->getAppParam('worklist_ignore_date'))
+        if ($dt = $this->getAppParam('worklist_ignore_date')) {
             return DateTime::createFromFormat('Y-m-d', $dt);
-        return null;
+        }
+
+        return;
     }
 
     /**
-     * Works out the dates we should retrieve Worklists for rendering
+     * Works out the dates we should retrieve Worklists for rendering.
      *
      * @param DateTime $date
+     *
      * @return array
+     *
      * @throws Exception
      */
     public function getDashboardRenderDates(DateTime $date)
     {
         // in case the passed in date is being used for anything else
         $r_date = clone $date;
-        $r_date->setTime(0,0,0);
+        $r_date->setTime(0, 0, 0);
 
         $future_days = $this->getAppParam('worklist_dashboard_future_days');
-        if (is_null($future_days))
+        if (is_null($future_days)) {
             $future_days = self::$DEFAULT_DASHBOARD_FUTURE_DAYS;
+        }
 
         $skip_days = $this->getAppParam('worklist_dashboard_skip_days') ?: self::$DEFAULT_DASHBOARD_SKIP_DAYS;
-        if (count($skip_days) >= 7) 
-            throw new Exception("Too many days set to be skipped");
-        
+        if (count($skip_days) >= 7) {
+            throw new Exception('Too many days set to be skipped');
+        }
+
         $future_dates = array();
         while (count($future_dates) < $future_days) {
             $r_date = clone $r_date;
             $r_date->modify('+1 day');
-            if (!in_array($r_date->format('D'), $skip_days))
+            if (!in_array($r_date->format('D'), $skip_days)) {
                 $future_dates[] = $r_date;
+            }
         }
 
-        if (!in_array($date->format('D'), $skip_days))
+        if (!in_array($date->format('D'), $skip_days)) {
             array_unshift($future_dates, clone $date);
+        }
 
         return $future_dates;
     }
 
     /**
      * @param null $id
+     *
      * @return WorklistDefinition|null
      */
     public function getWorklistDefinition($id = null)
@@ -362,7 +383,7 @@ class WorklistManager extends CComponent
             $definition = $this->getInstanceForClass('WorklistDefinition');
             $definition->attributes = array(
                 'start_time' => $this->getDefaultStartTime(),
-                'end_time' => $this->getDefaultEndTime()
+                'end_time' => $this->getDefaultEndTime(),
             );
         } else {
             $definition = $this->getModelForClass('WorklistDefinition')->findByPk($id);
@@ -373,16 +394,18 @@ class WorklistManager extends CComponent
 
     /**
      * @param WorklistDefinition $definition
+     *
      * @return bool
      */
     public function saveWorklistDefinition(WorklistDefinition $definition)
     {
         if (!$this->canUpdateWorklistDefinition($definition)) {
-            $this->addError("cannot save Definition that is un-editable");
+            $this->addError('cannot save Definition that is un-editable');
+
             return false;
         }
 
-        $action = $definition->isNewRecord ? "create" : "update";
+        $action = $definition->isNewRecord ? 'create' : 'update';
 
         $transaction = $this->startTransaction();
 
@@ -392,18 +415,19 @@ class WorklistManager extends CComponent
                 throw new Exception("Couldn't save definition");
             }
 
-
             $this->audit(self::$AUDIT_TARGET_AUTO, $action, array(
-                'worklist_definition_id' => $definition->id
+                'worklist_definition_id' => $definition->id,
             ));
 
-            if ($transaction)
+            if ($transaction) {
                 $transaction->commit();
-        }
-        catch (Exception $e) {
+            }
+        } catch (Exception $e) {
             $this->addError($e->getMessage());
-            if ($transaction)
+            if ($transaction) {
                 $transaction->rollback();
+            }
+
             return false;
         }
 
@@ -415,14 +439,15 @@ class WorklistManager extends CComponent
      * The start and end values will support a re-ordering request from a paginated list.
      *
      * @param array $ids
-     * @param null $start
-     * @param null $end
+     * @param null  $start
+     * @param null  $end
+     *
      * @return bool
      */
     public function setWorklistDefinitionDisplayOrder($ids = array(), $start = null, $end = null)
     {
         foreach ($ids as $i => $id) {
-            $display_lookup[$id] = $i+1;
+            $display_lookup[$id] = $i + 1;
         }
         $transaction = $this->startTransaction();
 
@@ -432,47 +457,53 @@ class WorklistManager extends CComponent
             if ($start) {
                 $criteria->addCondition('display_order > :start');
                 $criteria->params = array_merge($criteria->params, array(
-                    ":start" => $start
+                    ':start' => $start,
                 ));
             }
             if ($end) {
                 $criteria->addCondition('display_order < :end');
                 $criteria->params = array_merge($criteria->params, array(
-                    ":end" => $end
+                    ':end' => $end,
                 ));
             }
 
             foreach ($model->findAll($criteria) as $definition) {
-                if (!array_key_exists($definition->id, $display_lookup))
-                    throw new Exception("Missing definition id for re-ordering request.");
+                if (!array_key_exists($definition->id, $display_lookup)) {
+                    throw new Exception('Missing definition id for re-ordering request.');
+                }
                 $definition->display_order = $display_lookup[$definition->id];
-                if (!$definition->save())
+                if (!$definition->save()) {
                     throw new Exception("Unable to update display order for definition {$definition->id}");
+                }
             }
 
-            $this->audit(self::$AUDIT_TARGET_AUTO, 're-order',array('order' => $ids),'Definitions display order set');
+            $this->audit(self::$AUDIT_TARGET_AUTO, 're-order', array('order' => $ids), 'Definitions display order set');
 
-            if ($transaction)
+            if ($transaction) {
                 $transaction->commit();
+            }
 
             return true;
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $this->addError($e->getMessage());
-            if ($transaction)
+            if ($transaction) {
                 $transaction->rollback();
+            }
+
             return false;
         }
     }
 
     /**
      * @param $id
+     *
      * @return Worklist
      */
     public function getWorklist($id)
     {
-        if (is_null($id))
+        if (is_null($id)) {
             return $this->getInstanceForClass('Worklist');
+        }
 
         return $this->getModelForClass('Worklist')->findByPk($id);
     }
@@ -481,6 +512,7 @@ class WorklistManager extends CComponent
      * @param $worklist
      * @param $user
      * @param null $display_order
+     *
      * @return mixed
      */
     public function addWorklistToUserDisplay($worklist, $user, $display_order = null)
@@ -492,7 +524,7 @@ class WorklistManager extends CComponent
             $row = $this->getModelForClass('WorklistDisplayOrder')->find($criteria);
 
             $max_display_order = $row['maxDisplay'];
-            $display_order = $max_display_order ? $max_display_order+1 : 1;
+            $display_order = $max_display_order ? $max_display_order + 1 : 1;
         }
 
         $wdo = $this->getInstanceForClass('WorklistDisplayOrder');
@@ -503,12 +535,13 @@ class WorklistManager extends CComponent
         return $wdo->save();
     }
 
-
     /**
      * @param Worklist $worklist
-     * @param null $user
-     * @param bool $display
+     * @param null     $user
+     * @param bool     $display
+     *
      * @return bool
+     *
      * @throws CDbException
      */
     public function createWorklistForUser(Worklist $worklist, $user = null, $display = true)
@@ -526,25 +559,28 @@ class WorklistManager extends CComponent
             // save call must force the parent class to accept the set owner id
             if (!$worklist->save(true, null, true)) {
                 $this->addModelErrors($worklist->getErrors());
-                throw new Exception("Could not create Worklist.");
+                throw new Exception('Could not create Worklist.');
             }
 
-            if ($display)
-                if (!$this->addWorklistToUserDisplay($worklist, $user))
-                    throw new Exception("Could not set new worklist display order.");
+            if ($display) {
+                if (!$this->addWorklistToUserDisplay($worklist, $user)) {
+                    throw new Exception('Could not set new worklist display order.');
+                }
+            }
 
             $this->audit(self::$AUDIT_TARGET_MANUAL, 'create',
                 array('worklist_id' => $worklist->id, 'owner_id' => $user->id),
-                "Worklist created.");
+                'Worklist created.');
 
-            if ($transaction)
+            if ($transaction) {
                 $transaction->commit();
-
-        }
-        catch (Exception $e) {
+            }
+        } catch (Exception $e) {
             $this->addError($e->getMessage());
-            if ($transaction)
+            if ($transaction) {
                 $transaction->rollback();
+            }
+
             return false;
         }
 
@@ -553,6 +589,7 @@ class WorklistManager extends CComponent
 
     /**
      * @param $user
+     *
      * @return array
      */
     public function getCurrentManualWorklistsForUser($user)
@@ -561,7 +598,7 @@ class WorklistManager extends CComponent
         foreach ($this->getModelForClass('WorklistDisplayOrder')->with('worklist')->findAll(array(
             'condition' => 'user_id=:uid',
             'order' => 'display_order asc',
-            'params' => array(':uid' => $user->id))) as $wdo) {
+            'params' => array(':uid' => $user->id), )) as $wdo) {
             $worklists[] = $wdo->worklist;
         }
 
@@ -572,11 +609,13 @@ class WorklistManager extends CComponent
     {
         if ($definition = $worklist->worklist_definition) {
             $display_contexts = $definition->display_contexts;
-            if (!count($display_contexts))
+            if (!count($display_contexts)) {
                 return true;
+            }
             foreach ($display_contexts as $dc) {
-                if ($dc->checkSite($site) && $dc->checkFirm($firm))
+                if ($dc->checkSite($site) && $dc->checkFirm($firm)) {
                     return true;
+                }
             }
             // got this far, we haven't found a valid display context
             return false;
@@ -588,9 +627,10 @@ class WorklistManager extends CComponent
 
     /**
      * @param $user
-     * @param Site $site
-     * @param Firm $firm
+     * @param Site     $site
+     * @param Firm     $firm
      * @param DateTime $when
+     *
      * @return array
      */
     public function getCurrentAutomaticWorklistsForUserContext($user, Site $site, Firm $firm, DateTime $when)
@@ -599,9 +639,10 @@ class WorklistManager extends CComponent
         $model = $this->getModelForClass('Worklist');
         $model->automatic = true;
         $model->on = $when;
-        foreach ($model->with(array('worklist_definition','worklist_definition.display_contexts', 'worklist_patients'))->search(false)->getData() as $wl) {
-            if ($this->shouldDisplayWorklistForContext($wl, $site, $firm))
+        foreach ($model->with(array('worklist_definition', 'worklist_definition.display_contexts', 'worklist_patients'))->search(false)->getData() as $wl) {
+            if ($this->shouldDisplayWorklistForContext($wl, $site, $firm)) {
                 $worklists[] = $wl;
+            }
         }
 
         return $worklists;
@@ -609,12 +650,13 @@ class WorklistManager extends CComponent
 
     /**
      * @param $user
+     *
      * @return mixed
      */
     public function getAvailableManualWorklistsForUser($user)
     {
         $worklists = array();
-        $model = $this->getModelForClass("Worklist");
+        $model = $this->getModelForClass('Worklist');
         $model->automatic = false;
         $model->created_user_id = $user->id;
 
@@ -625,18 +667,20 @@ class WorklistManager extends CComponent
         $current = $this->getCurrentManualWorklistsForUser($user);
 
         foreach ($search->getData() as $wl) {
-            if (!in_array($wl, $current))
+            if (!in_array($wl, $current)) {
                 $worklists[] = $wl;
+            }
         }
 
         return $worklists;
     }
 
     /**
-     *
      * @param $user
      * @param array $worklist_ids
+     *
      * @return bool
+     *
      * @throws CDbException
      */
     public function setWorklistDisplayOrderForUser($user, $worklist_ids = array())
@@ -655,21 +699,24 @@ class WorklistManager extends CComponent
                         'user_id' => $user->id,
                         'display_order' => $display_order,
                     );
-                    if (!$order->save())
-                        throw new Exception("Could not save order entry");
+                    if (!$order->save()) {
+                        throw new Exception('Could not save order entry');
+                    }
                 }
             }
 
             $this->audit(self::$AUDIT_TARGET_MANUAL, 'ordered', array('user_id' => $user->id),
                 'Worklists reordered for user.');
 
-            if ($transaction)
+            if ($transaction) {
                 $transaction->commit();
-        }
-        catch (Exception $e) {
+            }
+        } catch (Exception $e) {
             $this->addError($e->getMessage());
-            if ($transaction)
+            if ($transaction) {
                 $transaction->rollback();
+            }
+
             return false;
         }
 
@@ -678,7 +725,8 @@ class WorklistManager extends CComponent
 
     /**
      * @param Worklist $worklist
-     * @param Patient $patient
+     * @param Patient  $patient
+     *
      * @return array|CActiveRecord|mixed|null
      */
     public function getWorklistPatient(Worklist $worklist, Patient $patient)
@@ -688,8 +736,10 @@ class WorklistManager extends CComponent
 
     /**
      * @param WorklistPatient $worklist_patient
-     * @param array $attributes
+     * @param array           $attributes
+     *
      * @return bool
+     *
      * @throws CDbException
      * @throws Exception
      */
@@ -702,8 +752,9 @@ class WorklistManager extends CComponent
             $valid_attributes = $worklist->getMappingAttributeIdsByName();
 
             foreach ($attributes as $attr => $val) {
-                if (!array_key_exists($attr, $valid_attributes))
+                if (!array_key_exists($attr, $valid_attributes)) {
                     throw new Exception("Unrecognised attribute {$attr} for {$worklist->name}");
+                }
 
                 $wlattr = isset($current_attributes[$valid_attributes[$attr]]) ?
                     $current_attributes[$valid_attributes[$attr]] :
@@ -712,25 +763,27 @@ class WorklistManager extends CComponent
                 $wlattr->attributes = array(
                     'worklist_patient_id' => $worklist_patient->id,
                     'worklist_attribute_id' => $valid_attributes[$attr],
-                    'attribute_value' => $val
+                    'attribute_value' => $val,
                 );
 
-                if (!$wlattr->save())
+                if (!$wlattr->save()) {
                     throw new Exception("Unable to save attribute {$attr} for patient worklist.");
+                }
             }
 
             // TODO: decide if we should check for current attributes that are no longer valid
             // and delete them here.
 
-            if ($transaction)
+            if ($transaction) {
                 $transaction->commit();
-        }
-        catch (Exception $e)
-        {
+            }
+        } catch (Exception $e) {
             $this->addError($e->getMessage());
             throw $e;
-            if ($transaction)
+            if ($transaction) {
                 $transaction->rollback();
+            }
+
             return false;
         }
 
@@ -738,21 +791,23 @@ class WorklistManager extends CComponent
     }
 
     /**
-     * If the given Patient is successfully added to the given Worklist, returns true. false otherwise
+     * If the given Patient is successfully added to the given Worklist, returns true. false otherwise.
      *
-     * @param Patient $patient
+     * @param Patient  $patient
      * @param Worklist $worklist
      * @param DateTime $when
-     * @param array $attributes
+     * @param array    $attributes
+     *
      * @return WorklistPatient|null
      */
-    public function addPatientToWorklist(Patient $patient, Worklist $worklist, DateTime $when=null, $attributes = array())
+    public function addPatientToWorklist(Patient $patient, Worklist $worklist, DateTime $when = null, $attributes = array())
     {
         $this->reset();
 
         if (!$this->allowDuplicatePatients() && $this->getWorklistPatient($worklist, $patient)) {
-            $this->addError("Patient is already on the given worklist.");
-            return null;
+            $this->addError('Patient is already on the given worklist.');
+
+            return;
         }
 
         $transaction = $this->startTransaction();
@@ -761,38 +816,44 @@ class WorklistManager extends CComponent
             $wp = $this->getInstanceForClass('WorklistPatient');
             $wp->patient_id = $patient->id;
             $wp->worklist_id = $worklist->id;
-            if ($when)
-                $wp->when = $when->format("Y-m-d H:i:s");
+            if ($when) {
+                $wp->when = $when->format('Y-m-d H:i:s');
+            }
 
-            if (!$wp->save())
-                throw new Exception("Unable to save patient to worklist.");
+            if (!$wp->save()) {
+                throw new Exception('Unable to save patient to worklist.');
+            }
 
-            if (count($attributes))
-                if (!$this->setAttributesForWorklistPatient($wp, $attributes))
-                    throw new Exception("Could not set attributes for patient on worklist");
+            if (count($attributes)) {
+                if (!$this->setAttributesForWorklistPatient($wp, $attributes)) {
+                    throw new Exception('Could not set attributes for patient on worklist');
+                }
+            }
 
             $target = $worklist->worklist_definition_id ? self::$AUDIT_TARGET_AUTO : self::$AUDIT_TARGET_MANUAL;
 
             $this->audit($target, 'add-patient',
-                array('worklist_id' => $worklist->id), "Patient added to worklist",
+                array('worklist_id' => $worklist->id), 'Patient added to worklist',
                 array('patient_id' => $patient->id));
 
-            if ($transaction)
+            if ($transaction) {
                 $transaction->commit();
+            }
 
             return $wp;
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $this->addError($e->getMessage());
-            if ($transaction)
+            if ($transaction) {
                 $transaction->rollback();
-            return null;
-        }
+            }
 
+            return;
+        }
     }
 
     /**
      * @param $worklist
+     *
      * @return mixed
      */
     public function renderWorklistForDashboard($worklist)
@@ -803,7 +864,7 @@ class WorklistManager extends CComponent
 
             return $this->renderPartial('//worklist/dashboard', array(
                     'worklist' => $worklist,
-                    'worklist_patients' => $this->getPatientsForWorklist($worklist)
+                    'worklist_patients' => $this->getPatientsForWorklist($worklist),
                 )
             );
         }
@@ -811,144 +872,158 @@ class WorklistManager extends CComponent
 
     /**
      * @param User|null $user
+     *
      * @return array|null
      */
     public function renderManualDashboard($user = null)
     {
-        if (!$user)
+        if (!$user) {
             $user = $this->getCurrentUser();
+        }
 
-        $content = "";
+        $content = '';
         foreach ($this->getCurrentManualWorklistsForUser($user) as $worklist) {
             $content .= $this->renderWorklistForDashboard($worklist);
         }
 
-        if (strlen($content))
+        if (strlen($content)) {
             return array(
-                'title' => "Manual Worklists",
+                'title' => 'Manual Worklists',
                 'content' => $content,
                 'options' => array(
-                    'container-id' => \Yii::app()->user->id . '-manual-worklists-container',
+                    'container-id' => \Yii::app()->user->id.'-manual-worklists-container',
                     'js-toggle-open' => true,
-                )
+                ),
             );
+        }
     }
 
     /**
      * Render the automatic dashboard for the given user.
+     *
      * @param CWebUser $user
+     *
      * @return array|null
      */
     public function renderAutomaticDashboard($user = null)
     {
-        if (!$user)
+        if (!$user) {
             $user = $this->getCurrentUser();
+        }
         $site = $this->getCurrentSite();
         $firm = $this->getCurrentFirm();
 
-        $content = "";
+        $content = '';
         $days = $this->getDashboardRenderDates(new DateTime());
-        foreach ($days as $when)
-            foreach ($this->getCurrentAutomaticWorklistsForUserContext($user, $site, $firm, $when) as $worklist)
+        foreach ($days as $when) {
+            foreach ($this->getCurrentAutomaticWorklistsForUserContext($user, $site, $firm, $when) as $worklist) {
                 $content .= $this->renderWorklistForDashboard($worklist);
+            }
+        }
 
-        if (strlen($content))
+        if (strlen($content)) {
             return array(
-                'title' => "Automatic Worklists",
+                'title' => 'Automatic Worklists',
                 'content' => $content,
                 'options' => array(
                     'container-id' => \Yii::app()->user->id.'-automatic-worklists-container',
                     'js-toggle-open' => true,
-                )
+                ),
             );
-
+        }
     }
 
-
     /**
-     *
      * @TODO: test me
+     *
      * @param $worklist
+     *
      * @return CActiveDataProvider
      */
     public function getPatientsForWorklist($worklist)
     {
         $criteria = new CDbCriteria();
-        $criteria->addColumnCondition(array("t.worklist_id" => $worklist->id));
+        $criteria->addColumnCondition(array('t.worklist_id' => $worklist->id));
 
         if ($worklist->scheduled) {
-            $criteria->order = "t.when";
-        }
-        else {
-            $criteria->order = "LOWER(contact.last_name), LOWER(contact.first_name)";
+            $criteria->order = 't.when';
+        } else {
+            $criteria->order = 'LOWER(contact.last_name), LOWER(contact.first_name)';
         }
 
-        $criteria->with = array('patient','patient.contact');
-        return new CActiveDataProvider("WorklistPatient", array(
+        $criteria->with = array('patient', 'patient.contact');
+
+        return new CActiveDataProvider('WorklistPatient', array(
             'criteria' => $criteria,
             'pagination' => array(
-                'pageSize' => $this->getWorklistPageSize()
-            )
+                'pageSize' => $this->getWorklistPageSize(),
+            ),
         ));
     }
 
     /**
-     * Manipulates the given RRULE string so that it finishes on the given date
+     * Manipulates the given RRULE string so that it finishes on the given date.
      *
-     * @param string $rrule
+     * @param string   $rrule
      * @param DateTime $limit
+     *
      * @return string
      */
-    public function setDateLimitOnRrule($rrule, DateTime $limit) {
+    public function setDateLimitOnRrule($rrule, DateTime $limit)
+    {
         if (strpos($rrule, 'UNTIL=')) {
             preg_replace('/UNTIL=[^;]*/', 'UNTIL='.$limit->format('Y-m-d'), $rrule);
-        }
-        else {
+        } else {
             $rrule .= ';UNTIL='.$limit->format('Y-m-d');
         }
+
         return $rrule;
     }
 
     /**
-     * Generates a Worklist instance name from the given definition and date
+     * Generates a Worklist instance name from the given definition and date.
      *
      * @TODO: implement support for a name definition that can be used to define what worklist instance names should look like
      *
      * @param $definition
      * @param DateTime $date
+     *
      * @return string
      */
     public function generateWorklistName($definition, DateTime $date)
     {
-        return $definition->name . ' - ' . $date->format(Helper::NHS_DATE_FORMAT);
+        return $definition->name.' - '.$date->format(Helper::NHS_DATE_FORMAT);
     }
 
     /**
-     * Create a worklist instance from the given definition for the given date
+     * Create a worklist instance from the given definition for the given date.
      *
      * @param $definition
      * @param DateTime $date
+     *
      * @return bool - indicate whether the instance was created (true) or if it already existed (false)
+     *
      * @throws Exception
      */
-    protected function createAutomaticWorklist(WorklistDefinition $definition, DateTime $date) {
+    protected function createAutomaticWorklist(WorklistDefinition $definition, DateTime $date)
+    {
         $model = $this->getModelForClass('Worklist');
         // use the time attribute of the definition with the given date to get the 'range' date for finding/creating
         // an instance.
         $range_date = clone $date;
-        $range_date->setTime(substr($definition->start_time,0,2), substr($definition->start_time,3,2));
+        $range_date->setTime(substr($definition->start_time, 0, 2), substr($definition->start_time, 3, 2));
 
-        $start_time = $range_date->format("Y-m-d H:i:s");
+        $start_time = $range_date->format('Y-m-d H:i:s');
 
         if (!$instance = $model->findByAttributes(array('worklist_definition_id' => $definition->id, 'start' => $start_time))) {
             // instance needs to be created
             $instance = $this->getInstanceForClass('Worklist');
-            $range_date->setTime(substr($definition->end_time,0,2), substr($definition->end_time, 3,2));
+            $range_date->setTime(substr($definition->end_time, 0, 2), substr($definition->end_time, 3, 2));
 
             $instance->attributes = array(
                 'worklist_definition_id' => $definition->id,
                 'start' => $start_time,
-                'end' => $range_date->format("Y-m-d H:i:s"),
+                'end' => $range_date->format('Y-m-d H:i:s'),
                 'scheduled' => true,
                 'description' => $definition->description,
                 'name' => $this->generateWorklistName($definition, $date),
@@ -969,6 +1044,7 @@ class WorklistManager extends CComponent
                     throw new Exception("Couldn't create worklist attribute");
                 };
             }
+
             return true;
         };
 
@@ -980,16 +1056,18 @@ class WorklistManager extends CComponent
      * If false is returned, getErrors should be used to determine the issue.
      *
      * @param WorklistDefinition $worklist
-     * @param DateTime $date_limit
+     * @param DateTime           $date_limit
+     *
      * @return bool - true if the process had no failures, false otherwise.
      */
     public function generateAutomaticWorklists(WorklistDefinition $definition, $date_limit = null)
     {
-        if (is_null($date_limit))
+        if (is_null($date_limit)) {
             $date_limit = $this->getGenerationTimeLimitDate();
+        }
 
         $rrule_str = $this->setDateLimitOnRrule($definition->rrule, $date_limit);
-        $rrule = $this->getInstanceForClass('\RRule\RRule',array($rrule_str));
+        $rrule = $this->getInstanceForClass('\RRule\RRule', array($rrule_str));
 
         $new_count = 0;
 
@@ -997,24 +1075,25 @@ class WorklistManager extends CComponent
 
         try {
             foreach ($rrule as $occurence) {
-                if ($this->createAutomaticWorklist($definition, $occurence))
+                if ($this->createAutomaticWorklist($definition, $occurence)) {
                     $new_count++;
+                }
             }
-            
+
             $this->audit(self::$AUDIT_TARGET_AUTO, 'generate',
                 array('worklist_definition_id' => $definition->id, 'generated' => $new_count),
-                "Worklists generated");
+                'Worklists generated');
 
-            if ($transaction)
+            if ($transaction) {
                 $transaction->commit();
+            }
 
             return $new_count;
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
             $this->addError($e->getMessage());
-            if ($transaction)
+            if ($transaction) {
                 $transaction->rollback();
+            }
 
             return false;
         }
@@ -1025,12 +1104,14 @@ class WorklistManager extends CComponent
      * Returns false for errors, otherwise a total count of worklist instances that have been created.
      *
      * @param DateTime $date_limit
+     *
      * @return bool|int
      */
     public function generateAllAutomaticWorklists(DateTime $date_limit = null)
     {
-        if (is_null($date_limit))
+        if (is_null($date_limit)) {
             $date_limit = $this->getGenerationTimeLimitDate();
+        }
 
         $count = 0;
 
@@ -1042,56 +1123,61 @@ class WorklistManager extends CComponent
             $definition_count = 0;
             foreach ($definitions as $definition) {
                 $result = $this->generateAutomaticWorklists($definition, $date_limit);
-                if ($result === false)
+                if ($result === false) {
                     throw new Exception("Couldn't generate worklists for {$definition->name}");
+                }
                 $count += $result;
-                $definition_count++;
+                ++$definition_count;
             }
             $this->enableAudit();
 
             $this->audit(self::$AUDIT_TARGET_AUTO, 'generate', array(
                     'definition_count' => $definition_count,
                     'generated' => $count,
-                    'date_limit' => $date_limit->format(Helper::NHS_DATE_FORMAT)
+                    'date_limit' => $date_limit->format(Helper::NHS_DATE_FORMAT),
                 ),
-                "All Definitions Generated.",
+                'All Definitions Generated.',
                 array('user_id' => 1)); // hard coded as expected to be called from the command line
 
-            if ($transaction)
+            if ($transaction) {
                 $transaction->commit();
+            }
 
             return $count;
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $this->addError($e->getMessage());
-            if ($transaction)
+            if ($transaction) {
                 $transaction->rollback();
+            }
+
             return false;
         }
     }
 
-
     /**
-     * Update the mapping specification for an automatic worklist definition
+     * Update the mapping specification for an automatic worklist definition.
      *
      * @param WorklistDefinitionMapping $mapping
      * @param $key
      * @param string $values
+     *
      * @return bool
      */
     public function updateWorklistDefinitionMapping(WorklistDefinitionMapping $mapping, $key, $values, $display = true)
     {
-        $values = strlen($values) ? explode(",", $values) : array();
+        $values = strlen($values) ? explode(',', $values) : array();
 
         $definition = $mapping->worklist_definition;
 
         if (!$this->canUpdateWorklistDefinition($definition)) {
-            $this->addError("Cannot update mapping for un-editable Worklist Definition");
+            $this->addError('Cannot update mapping for un-editable Worklist Definition');
+
             return false;
         }
 
         if (!$definition->validateMappingKey($key, $mapping->id)) {
             $this->addError("Mapping key {$key} already exists for definition");
+
             return false;
         }
 
@@ -1099,30 +1185,33 @@ class WorklistManager extends CComponent
 
         if (!$display) {
             $mapping->display_order = null;
-        }
-        else if (!$mapping->display_order) {
+        } elseif (!$mapping->display_order) {
             $mapping->display_order = $definition->getNextDisplayOrder();
         }
 
         $transaction = $this->startTransaction();
 
         try {
-            if (!$mapping->save())
-                throw new Exception("Could not save mapping");
+            if (!$mapping->save()) {
+                throw new Exception('Could not save mapping');
+            }
 
-            if (!$mapping->updateValues($values))
-                throw new Exception("Could not save mapping values");
+            if (!$mapping->updateValues($values)) {
+                throw new Exception('Could not save mapping values');
+            }
 
             $this->audit(self::$AUDIT_TARGET_AUTO, 'mapping-update');
 
-            if ($transaction)
+            if ($transaction) {
                 $transaction->commit();
-        }
-        catch (Exception $e) {
+            }
+        } catch (Exception $e) {
             $this->addError($e->getMessage());
             echo $e->getMessage();
-            if ($transaction)
+            if ($transaction) {
                 $transaction->rollback();
+            }
+
             return false;
         }
 
@@ -1131,13 +1220,14 @@ class WorklistManager extends CComponent
 
     /**
      * @param WorklistDefinition $definition
-     * @param array $ids
+     * @param array              $ids
+     *
      * @return bool
      */
     public function setWorklistDefinitionMappingDisplayOrder(WorklistDefinition $definition, $ids = array())
     {
         foreach ($ids as $i => $id) {
-            $display_lookup[$id] = $i+1;
+            $display_lookup[$id] = $i + 1;
         }
         $transaction = $this->startTransaction();
 
@@ -1147,15 +1237,17 @@ class WorklistManager extends CComponent
                 $mapping->save();
             }
 
-            if ($transaction)
+            if ($transaction) {
                 $transaction->commit();
+            }
 
             return true;
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $this->addError($e->getMessage());
-            if ($transaction)
+            if ($transaction) {
                 $transaction->rollback();
+            }
+
             return false;
         }
     }
@@ -1163,30 +1255,37 @@ class WorklistManager extends CComponent
     /**
      * @param Worklist $wl
      * @param $attributes
+     *
      * @return bool
+     *
      * @throws Exception
      */
     protected function checkWorklistMappingMatch(Worklist $wl, $attributes)
     {
-        if (!$wl->worklist_definition)
+        if (!$wl->worklist_definition) {
             throw new Exception("Cannot match Worklist that doesn't have a WorklistDefinition.");
+        }
 
         foreach ($wl->worklist_definition->mappings as $mapping) {
             if (!array_key_exists($mapping->key, $attributes)) {
                 $this->addError("Missing key {$mapping->key} for {$wl->name}");
+
                 return false;
             }
 
-            if (!$mapping->values)
+            if (!$mapping->values) {
                 continue;
+            }
 
             $match = false;
             foreach ($mapping->values as $val) {
-                if (strtolower($val->mapping_value) == strtolower(trim($attributes[$mapping->key])))
+                if (strtolower($val->mapping_value) == strtolower(trim($attributes[$mapping->key]))) {
                     $match = true;
+                }
             }
             if (!$match) {
-                $this->addError($attributes[$mapping->key] . " not valid for key '{$mapping->key}'");
+                $this->addError($attributes[$mapping->key]." not valid for key '{$mapping->key}'");
+
                 return false;
             }
         }
@@ -1194,10 +1293,10 @@ class WorklistManager extends CComponent
         return true;
     }
 
-
     /**
      * @param DateTime $when
-     * @param array $attributes
+     * @param array    $attributes
+     *
      * @return Worklist|null
      */
     protected function getWorklistForMapping(DateTime $when, $attributes = array())
@@ -1207,44 +1306,46 @@ class WorklistManager extends CComponent
         $model->automatic = true;
 
         $candidates = array();
-        foreach ($model->search()->getData() as $wl)
-        {
-            if ($this->checkWorklistMappingMatch($wl, $attributes))
+        foreach ($model->search()->getData() as $wl) {
+            if ($this->checkWorklistMappingMatch($wl, $attributes)) {
                 $candidates[] = $wl;
+            }
         }
 
         if (count($candidates) == 1) {
             return $candidates[0];
+        } elseif (count($candidates) > 1) {
+            $this->addError('More than worklist matched criteria');
+        } else {
+            $this->addError('No worklist found for criteria');
         }
-        elseif (count($candidates) > 1) {
-            $this->addError("More than worklist matched criteria");
-        }
-        else {
-            $this->addError("No worklist found for criteria");
-        }
-        return null;
+
+        return;
     }
 
     /**
-     * @param Patient $patient
+     * @param Patient  $patient
      * @param DateTime $when
-     * @param array $attributes
+     * @param array    $attributes
+     *
      * @return WorklistPatient|null
      */
     public function mapPatientToWorklistDefinition(Patient $patient, DateTime $when, $attributes = array())
     {
         $worklist = $this->getWorklistForMapping($when, $attributes);
-        if (!$worklist)
-            return null;
+        if (!$worklist) {
+            return;
+        }
 
         return $this->addPatientToWorklist($patient, $worklist, $when, $attributes);
     }
 
     /**
      * @param WorklistPatient $worklist_patient
-     * @param DateTime $when
-     * @param array $attributes
-     * @param bool $allow_worklist_change - only allow values to change that don't affect which worklist is mapped
+     * @param DateTime        $when
+     * @param array           $attributes
+     * @param bool            $allow_worklist_change - only allow values to change that don't affect which worklist is mapped
+     *
      * @return WorklistPatient|null
      */
     public function updateWorklistPatientFromMapping(WorklistPatient $worklist_patient,
@@ -1253,62 +1354,70 @@ class WorklistManager extends CComponent
                                                      $allow_worklist_change = false)
     {
         $worklist = $this->getWorklistForMapping($when, $attributes);
-        if (!$worklist)
-            return null;
-
-        if (!$allow_worklist_change && $worklist->id != $worklist_patient->worklist_id) {
-            $this->addError("Worklist mapping change not allowed for partial update.");
-            return null;
+        if (!$worklist) {
+            return;
         }
 
-        $transaction  = $this->startTransaction();
+        if (!$allow_worklist_change && $worklist->id != $worklist_patient->worklist_id) {
+            $this->addError('Worklist mapping change not allowed for partial update.');
+
+            return;
+        }
+
+        $transaction = $this->startTransaction();
 
         try {
             $worklist_patient->worklist_id = $worklist->id;
             $worklist_patient->when = $when->format('Y-m-d H:i:s');
-            if (!$this->setAttributesForWorklistPatient($worklist_patient, $attributes))
-                throw new Exception("Could not set worklist attributes");
+            if (!$this->setAttributesForWorklistPatient($worklist_patient, $attributes)) {
+                throw new Exception('Could not set worklist attributes');
+            }
 
             if (!$worklist_patient->save()) {
                 foreach ($worklist_patient->getErrors() as $key => $error) {
                     foreach ($error as $message) {
                         $this->addError("{$key}: {$message}");
                     }
-                    throw new Exception("Could not update WorklistPatient");
+                    throw new Exception('Could not update WorklistPatient');
                 }
             }
 
-            if ($transaction)
+            if ($transaction) {
                 $transaction->commit();
+            }
 
             return $worklist_patient;
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             echo $e->getMessage();
             $this->addError($e->getMessage());
-            if ($transaction)
+            if ($transaction) {
                 $transaction->rollback();
-            return null;
-        }
+            }
 
+            return;
+        }
     }
 
     /**
      * @param WorklistDefinition $definition
+     *
      * @return int
      */
     public function canUpdateWorklistDefinition(WorklistDefinition $definition)
     {
         // at the moment we don't allow changes to the definition if worklists exist for it
-        if ($this->getAppParam('worklist_always_allow_definition_edit'))
+        if ($this->getAppParam('worklist_always_allow_definition_edit')) {
             return true;
+        }
 
         return $definition->isNewRecord || count($definition->worklists) == 0;
     }
 
     /**
      * @TODO: consider the future!!
+     *
      * @param WorklistDefinition $definition
+     *
      * @return bool
      */
     public function deleteWorklistDefinitionInstances(WorklistDefinition $definition)
@@ -1316,27 +1425,29 @@ class WorklistManager extends CComponent
         $transaction = $this->startTransaction();
 
         try {
-            foreach($definition->worklists as $worklist) {
+            foreach ($definition->worklists as $worklist) {
                 if (!$worklist->delete()) {
                     throw new Exception("Could not delete worklist {$worklist->name}");
                 };
             }
 
-            if ($transaction)
+            if ($transaction) {
                 $transaction->commit();
+            }
 
             return true;
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $this->addError($e->getMessage());
-            if ($transaction)
+            if ($transaction) {
                 $transaction->rollback();
+            }
+
             return false;
         }
     }
 
     /**
-     * Internal method to reset state for error tracking
+     * Internal method to reset state for error tracking.
      */
     protected function reset()
     {
@@ -1360,8 +1471,9 @@ class WorklistManager extends CComponent
      */
     protected function addError($message)
     {
-        if (!in_array($message, $this->errors))
+        if (!in_array($message, $this->errors)) {
             $this->errors[] = $message;
+        }
     }
 
     /**

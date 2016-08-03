@@ -2,7 +2,7 @@
 /**
  * This is the template for generating a controller class file for CRUD feature.
  * The following variables are used in this template:
- * - $this: the CrudCode object
+ * - $this: the CrudCode object.
  */
 ?>
 <?php echo "<?php\n"; ?>

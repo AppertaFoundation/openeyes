@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2014
  * This file is part of OpenEyes.
@@ -8,13 +8,12 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 use OEModule\OphCiExamination\models;
 
 class Element_OphCiExamination_VisualAcuityTest extends PHPUnit_Framework_TestCase
@@ -25,17 +24,17 @@ class Element_OphCiExamination_VisualAcuityTest extends PHPUnit_Framework_TestCa
             array(
                 array(null, true, false),
                 null,
-                "Visual acuity:\nRight Eye: Unable to assess\nLeft Eye: not recorded\n"
+                "Visual acuity:\nRight Eye: Unable to assess\nLeft Eye: not recorded\n",
             ),
             array(
                     array('12/3', false, false),
                     array(null, false, false),
-                    "Visual acuity:\nRight Eye: 12/3\nLeft Eye: not recorded\n"
+                    "Visual acuity:\nRight Eye: 12/3\nLeft Eye: not recorded\n",
             ),
                 array(
                         array(null, true, true),
                         array('3/6, 1/12', false, false, ''),
-                        "Visual acuity:\nRight Eye: Unable to assess, Eye missing\nLeft Eye: 3/6, 1/12\n"
+                        "Visual acuity:\nRight Eye: Unable to assess, Eye missing\nLeft Eye: 3/6, 1/12\n",
                 ),
         );
     }
@@ -67,13 +66,13 @@ class Element_OphCiExamination_VisualAcuityTest extends PHPUnit_Framework_TestCa
                     ->method('getCombined')
                     ->with('right')
                     ->will($this->returnValue($combined));
-            $combined_at++;
+            ++$combined_at;
             if ($combined) {
                 $test->expects($this->at($combined_at))
                         ->method('getCombined')
                         ->with('right')
                         ->will($this->returnValue($combined));
-                $combined_at++;
+                ++$combined_at;
             }
         } else {
             $test->eye_id = Eye::LEFT;
@@ -88,7 +87,7 @@ class Element_OphCiExamination_VisualAcuityTest extends PHPUnit_Framework_TestCa
                     ->method('getCombined')
                     ->with('left')
                     ->will($this->returnValue($combined));
-            $combined_at++;
+            ++$combined_at;
             if ($combined) {
                 $test->expects($this->at($combined_at))
                         ->method('getCombined')
@@ -128,10 +127,10 @@ class Element_OphCiExamination_VisualAcuityTest extends PHPUnit_Framework_TestCa
             $test->eye_id = Eye::RIGHT;
         }
         if ($readings) {
-            $test->{$side . '_readings'} = array($readingMock);
+            $test->{$side.'_readings'} = array($readingMock);
         }
-        $test->{$side . '_unable_to_assess'} = $unable;
-        $test->{$side . '_eye_missing'} = $eye_missing;
+        $test->{$side.'_unable_to_assess'} = $unable;
+        $test->{$side.'_eye_missing'} = $eye_missing;
 
         $this->assertEquals($res, $test->getTextForSide($side));
     }
@@ -145,31 +144,30 @@ class Element_OphCiExamination_VisualAcuityTest extends PHPUnit_Framework_TestCa
         return array(
             array(
                 array('eye_id' => Eye::LEFT, 'left_readings' => array($readingMock), 'left_unable_to_assess' => true),
-                false
+                false,
             ),
             array(
                     array('eye_id' => Eye::RIGHT, 'left_readings' => array($readingMock)),
-                    false
+                    false,
             ),
             array(
                     array('eye_id' => Eye::RIGHT),
-                    false
+                    false,
             ),
             array(
                     array('eye_id' => Eye::LEFT, 'left_unable_to_assess' => true),
-                    true
+                    true,
             ),
             array(
                 array('eye_id' => Eye::LEFT, 'right_readings' => array($readingMock)),
-                false
+                false,
             ),
             array(
                     array('eye_id' => Eye::LEFT, 'left_readings' => array($readingMock), 'left_eye_missing' => true),
-                    false
+                    false,
             ),
         );
     }
-
 
     /**
      * @dataProvider validate_Provider

@@ -1,19 +1,19 @@
 <?php
+
 class m141016_134200_add_further_findings_element extends OEMigration
 {
     public function up()
     {
-        $event_type_id = $this->dbConnection->createCommand()->select("id")->from("event_type")->where("class_name = :class_name", array(":class_name" => "OphCiExamination"))->queryScalar();
+        $event_type_id = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name = :class_name', array(':class_name' => 'OphCiExamination'))->queryScalar();
 
         $element_types = array(
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_FurtherFindings' =>
-                array('name' => 'Further Findings', 'parent_element_type_id' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses'),
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_FurtherFindings' => array('name' => 'Further Findings', 'parent_element_type_id' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses'),
         );
         $this->insertOEElementType($element_types, $event_type_id);
 
         $this->createOETable('ophciexamination_further_findings',
             array('id' => 'pk', 'name' => 'varchar(255)', 'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
-                'active' => 'tinyint(1) unsigned not null DEFAULT 1'
+                'active' => 'tinyint(1) unsigned not null DEFAULT 1',
             ), true);
 
         $this->createIndex(
@@ -55,10 +55,10 @@ class m141016_134200_add_further_findings_element extends OEMigration
         );
         foreach ($tables as $table) {
             $this->dropTable($table);
-            $this->dropTable($table .'_version');
+            $this->dropTable($table.'_version');
         }
 
         $this->delete('element_type', 'class_name = :class',
-            array(':class'=>'OEModule\OphCiExamination\models\Element_OphCiExamination_FurtherFindings'));
+            array(':class' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_FurtherFindings'));
     }
 }

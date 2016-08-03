@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -8,24 +8,23 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class m151115_100538_add_message_read_status extends CDbMigration
 {
-	public function up()
-	{
-    $this->addColumn('et_ophcomessaging_message', 'marked_as_read', "tinyint(1) unsigned NOT NULL DEFAULT '0'");
-    $this->addColumn('et_ophcomessaging_message_version', 'marked_as_read', "tinyint(1) unsigned NOT NULL DEFAULT '0'");
-	}
+    public function up()
+    {
+        $this->addColumn('et_ophcomessaging_message', 'marked_as_read', "tinyint(1) unsigned NOT NULL DEFAULT '0'");
+        $this->addColumn('et_ophcomessaging_message_version', 'marked_as_read', "tinyint(1) unsigned NOT NULL DEFAULT '0'");
+    }
 
-	public function down()
-	{
-    $this->dropColumn('et_ophcomessaging_message', 'marked_as_read');
-    $this->dropColumn('et_ophcomessaging_message_version', 'marked_as_read');
-	}
+    public function down()
+    {
+        $this->dropColumn('et_ophcomessaging_message', 'marked_as_read');
+        $this->dropColumn('et_ophcomessaging_message_version', 'marked_as_read');
+    }
 }

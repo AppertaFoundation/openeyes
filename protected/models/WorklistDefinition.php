@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -9,20 +9,20 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 use \RRule\RRule;
 
 /**
- * Class WorklistDefinition
+ * Class WorklistDefinition.
  *
  * The followings are the available columns in table:
- * @property integer $id
+ *
+ * @property int $id
  * @property string $name
  * @property string $rrule
  * @property string $description
@@ -31,7 +31,6 @@ use \RRule\RRule;
  * @property string $end_time
  * @property DateTime $active_from
  * @property DateTime $active_until
- *
  * @property Worklist[] $worklists
  * @property WorklistDefinitionMapping[] $mappings
  * @property WorklistDefinitionMappingp[] $displayed_mappings
@@ -49,13 +48,13 @@ class WorklistDefinition extends BaseActiveRecordVersioned
     }
 
     /**
-     * Default to ordering by the display order property
+     * Default to ordering by the display order property.
      *
      * @return array
      */
     public function defaultScope()
     {
-        return array('order' => $this->getTableAlias(true, false) . '.display_order');
+        return array('order' => $this->getTableAlias(true, false).'.display_order');
     }
 
     /**
@@ -69,20 +68,20 @@ class WorklistDefinition extends BaseActiveRecordVersioned
             array('name, rrule, worklist_name, start_time, end_time, description', 'safe'),
             array('rrule', 'validateRrule'),
             array('name, rrule', 'required'),
-            array('name', 'length', 'max'=>100),
+            array('name', 'length', 'max' => 100),
             array('description', 'length', 'max' => 1000),
             array('start_time, end_time', 'OETimeValidator'),
             array('active_from, active_until', 'OEDateValidator'),
             array('active_from', 'OEDateCompareValidator', 'compareAttribute' => 'active_until', 'allowEmpty' => true,
                 'allowCompareEmpty' => true, 'operator' => '<=',
-                'message' => '{attribute} must be on or before {compareAttribute}'),
-            array('active_from', 'default', 'setOnEmpty' => true, 'value' => date("Y-m-d H:i:s", time())),
+                'message' => '{attribute} must be on or before {compareAttribute}', ),
+            array('active_from', 'default', 'setOnEmpty' => true, 'value' => date('Y-m-d H:i:s', time())),
             array('active_until', 'default', 'setOnEmpty' => true, 'value' => null),
             array('scheduled', 'boolean', 'allowEmpty' => false),
             array('display_order', 'numerical', 'integerOnly' => true),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, name, rrule, worklist_name, start_time, end_time, description, scheduled', 'safe', 'on'=>'search'),
+            array('id, name, rrule, worklist_name, start_time, end_time, description, scheduled', 'safe', 'on' => 'search'),
         );
     }
 
@@ -98,7 +97,7 @@ class WorklistDefinition extends BaseActiveRecordVersioned
             'mappings' => array(self::HAS_MANY, 'WorklistDefinitionMapping', 'worklist_definition_id'),
             'displayed_mappings' => array(self::HAS_MANY, 'WorklistDefinitionMapping', 'worklist_definition_id', 'on' => 'display_order is NOT NULL', 'order' => 'display_order ASC'),
             'hidden_mappings' => array(self::HAS_MANY, 'WorklistDefinitionMapping', 'worklist_definition_id', 'on' => 'display_order is NULL'),
-            'display_contexts' => array(self::HAS_MANY, 'WorklistDefinitionDisplayContext', 'worklist_definition_id')
+            'display_contexts' => array(self::HAS_MANY, 'WorklistDefinitionDisplayContext', 'worklist_definition_id'),
         );
     }
 
@@ -108,12 +107,13 @@ class WorklistDefinition extends BaseActiveRecordVersioned
     public function attributeLabels()
     {
         return array(
-            'rrule' => 'Frequency'
+            'rrule' => 'Frequency',
         );
     }
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
@@ -121,18 +121,18 @@ class WorklistDefinition extends BaseActiveRecordVersioned
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria=new CDbCriteria;
+        $criteria = new CDbCriteria();
 
-        $criteria->compare('id',$this->id,true);
-        $criteria->compare('name',$this->name,true);
-        $criteria->compare('worklist_name',$this->worklist_name,true);
-        $criteria->compare('description',$this->description,true);
+        $criteria->compare('id', $this->id, true);
+        $criteria->compare('name', $this->name, true);
+        $criteria->compare('worklist_name', $this->worklist_name, true);
+        $criteria->compare('description', $this->description, true);
         $criteria->compare('scheduled', $this->scheduled, true);
 
         // TODO: proper support for date/time search
 
         return new CActiveDataProvider(get_class($this), array(
-            'criteria'=>$criteria,
+            'criteria' => $criteria,
         ));
     }
 
@@ -140,20 +140,21 @@ class WorklistDefinition extends BaseActiveRecordVersioned
     {
         // strip out the seconds from the time field
         foreach (array('start_time', 'end_time') as $time_attr) {
-            $this->$time_attr = substr($this->$time_attr,0, 5);
+            $this->$time_attr = substr($this->$time_attr, 0, 5);
         }
         parent::afterFind();
     }
 
     /**
-     * Simple wrapper around RRule construction to validate the string definition
+     * Simple wrapper around RRule construction to validate the string definition.
      *
      * @param $attribute
      */
     public function validateRrule($attribute)
     {
-        if (empty($this->$attribute))
+        if (empty($this->$attribute)) {
             return;
+        }
 
         $valid = true;
         try {
@@ -161,55 +162,59 @@ class WorklistDefinition extends BaseActiveRecordVersioned
                 // rrule instantiation falls over if no equals is found during parsing
                 // so this is a bit of a dirty hack to deal with that.
                 $valid = false;
-            }
-            else {
+            } else {
                 $rrule = new RRule($this->$attribute);
             }
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
             $valid = false;
         }
-        if (!$valid)
-            $this->addError($attribute, $this->getAttributeLabel($attribute) . ' is not valid');
+        if (!$valid) {
+            $this->addError($attribute, $this->getAttributeLabel($attribute).' is not valid');
+        }
     }
 
     /**
      * Check whether the given key would be unique on the Definition
-     * (optional id indicates the current mapping the key is from so it is not checked against itself)
+     * (optional id indicates the current mapping the key is from so it is not checked against itself).
      *
      * @param $key
-     * @param integer $id
+     * @param int $id
+     *
      * @return bool
      */
     public function validateMappingKey($key, $id = null)
     {
         foreach ($this->mappings as $m) {
-            if ($m->id == $id)
+            if ($m->id == $id) {
                 continue;
-            if ($m->key == $key)
+            }
+            if ($m->key == $key) {
                 return false;
+            }
         }
+
         return true;
     }
 
     /**
-     * Gets the next display order for a new mapping
+     * Gets the next display order for a new mapping.
      *
-     * @return integer
+     * @return int
      */
     public function getNextDisplayOrder()
     {
         $display_order = 1;
         foreach ($this->mappings as $m) {
-            if ($m->display_order >= $display_order)
-                $display_order = $m->display_order+1;
+            if ($m->display_order >= $display_order) {
+                $display_order = $m->display_order + 1;
+            }
         }
+
         return $display_order;
     }
 
     /**
-     * Simple wrapper function to convert the RRule into its human readable form
+     * Simple wrapper function to convert the RRule into its human readable form.
      *
      * @return string
      */
@@ -217,14 +222,13 @@ class WorklistDefinition extends BaseActiveRecordVersioned
     {
         if ($this->rrule) {
             $rrule_str = $this->rrule;
-            if (!$this->isNewRecord && !strpos($rrule_str, 'DTSTART='))
-                $rrule_str .= ";DTSTART=" . (new DateTime($this->created_date))->format('Y-m-d');
+            if (!$this->isNewRecord && !strpos($rrule_str, 'DTSTART=')) {
+                $rrule_str .= ';DTSTART='.(new DateTime($this->created_date))->format('Y-m-d');
+            }
 
             return (new RRule($rrule_str))->humanReadable(array(
-                'date_formatter' => function ($d) { return $d->format(Helper::NHS_DATE_FORMAT); }
+                'date_formatter' => function ($d) { return $d->format(Helper::NHS_DATE_FORMAT); },
             ));
         }
-
     }
-
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,48 +9,49 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class OELog
 {
-	public static function log($msg, $username=false)
-	{
-		if (Yii::app()->params['log_events']) {
-			if (!$username) {
-				if (Yii::app()->session['user']) {
-					$username = Yii::app()->session['user']->username;
-				}
-			}
+    public static function log($msg, $username = false)
+    {
+        if (Yii::app()->params['log_events']) {
+            if (!$username) {
+                if (Yii::app()->session['user']) {
+                    $username = Yii::app()->session['user']->username;
+                }
+            }
 
-			$msg = "[useractivity] ".$msg." [".@$_SERVER['REMOTE_ADDR']."]";
+            $msg = '[useractivity] '.$msg.' ['.@$_SERVER['REMOTE_ADDR'].']';
 
-			if ($username) {
-				$msg .= " [$username]";
-			}
+            if ($username) {
+                $msg .= " [$username]";
+            }
 
-			Yii::log($msg);
-		}
-	}
+            Yii::log($msg);
+        }
+    }
 
-	/**
-	 * Logs an exception as if it was thrown
-	 * @param $exception
-	 */
-	public static function logException($exception)
-	{
-		$category = 'exception.' . get_class($exception);
-		if ($exception instanceof CHttpException)
-			$category .= '.' . $exception->statusCode;
-		$message = $exception->__toString();
-		if (isset($_SERVER['REQUEST_URI']))
-			$message .= ' REQUEST_URI=' . $_SERVER['REQUEST_URI'];
-		Yii::log($message, CLogger::LEVEL_ERROR, $category);
-	}
-
+    /**
+     * Logs an exception as if it was thrown.
+     *
+     * @param $exception
+     */
+    public static function logException($exception)
+    {
+        $category = 'exception.'.get_class($exception);
+        if ($exception instanceof CHttpException) {
+            $category .= '.'.$exception->statusCode;
+        }
+        $message = $exception->__toString();
+        if (isset($_SERVER['REQUEST_URI'])) {
+            $message .= ' REQUEST_URI='.$_SERVER['REQUEST_URI'];
+        }
+        Yii::log($message, CLogger::LEVEL_ERROR, $category);
+    }
 }

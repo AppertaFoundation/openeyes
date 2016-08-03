@@ -1,10 +1,12 @@
 <?php
+
 class m141119_164500_move_findings_to_core extends OEMigration
 {
     public function up()
     {
         if ($this->dbConnection->schema->getTable('finding', true) === null) {
             echo "Run core migration to create finding table first\n";
+
             return false;
         }
 
@@ -36,7 +38,7 @@ class m141119_164500_move_findings_to_core extends OEMigration
     {
         $this->createOETable('ophciexamination_further_findings',
             array('id' => 'pk', 'name' => 'varchar(255)', 'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
-                'active' => 'tinyint(1) unsigned not null DEFAULT 1'
+                'active' => 'tinyint(1) unsigned not null DEFAULT 1',
             ), true);
         $this->createIndex(
             'ophciexamination_further_findings_unique_name', 'ophciexamination_further_findings',

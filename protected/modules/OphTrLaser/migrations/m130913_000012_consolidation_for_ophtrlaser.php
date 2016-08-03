@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,56 +9,54 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class m130913_000012_consolidation_for_ophtrlaser extends OEMigration
 {
-	private  $element_types ;
+    private $element_types;
 
-	public function setData(){
-		$this->element_types = array(
-			'Element_OphTrLaser_Site' => array('name' => 'Site', 'display_order'=>1, 'required' => 1),
-			'Element_OphTrLaser_Treatment' => array('name' => 'Treatment', 'display_order'=>2, 'required' => 1),
-			'Element_OphTrLaser_AnteriorSegment' =>
-				array('name' => 'Anterior Segment', 'display_order'=>3, 'parent_element_type_id'=>'Element_OphTrLaser_Treatment', 'required' => 0, 'default' => 0),
-			'Element_OphTrLaser_PosteriorPole' =>
-				array('name' => 'Posterior Pole', 'display_order'=>4, 'parent_element_type_id'=>'Element_OphTrLaser_Treatment', 'required' => 0, 'default' => 0),
-			'Element_OphTrLaser_Fundus' => array('name' => 'Fundus', 'display_order'=>5, 'parent_element_type_id'=>'Element_OphTrLaser_Treatment', 'required' => 0, 'default' => 0),
-			'Element_OphTrLaser_Comments' => array('name' => 'Comments', 'display_order'=>6, 'required' => 0, 'default' => 0),
-		);
-	}
+    public function setData()
+    {
+        $this->element_types = array(
+            'Element_OphTrLaser_Site' => array('name' => 'Site', 'display_order' => 1, 'required' => 1),
+            'Element_OphTrLaser_Treatment' => array('name' => 'Treatment', 'display_order' => 2, 'required' => 1),
+            'Element_OphTrLaser_AnteriorSegment' => array('name' => 'Anterior Segment', 'display_order' => 3, 'parent_element_type_id' => 'Element_OphTrLaser_Treatment', 'required' => 0, 'default' => 0),
+            'Element_OphTrLaser_PosteriorPole' => array('name' => 'Posterior Pole', 'display_order' => 4, 'parent_element_type_id' => 'Element_OphTrLaser_Treatment', 'required' => 0, 'default' => 0),
+            'Element_OphTrLaser_Fundus' => array('name' => 'Fundus', 'display_order' => 5, 'parent_element_type_id' => 'Element_OphTrLaser_Treatment', 'required' => 0, 'default' => 0),
+            'Element_OphTrLaser_Comments' => array('name' => 'Comments', 'display_order' => 6, 'required' => 0, 'default' => 0),
+        );
+    }
 
-	public function up()
-	{
-		if (!$this->consolidate(
-			array(
-				"m130408_140240_event_type_OphTrLaser",
-				"m130712_113449_site_laser_table_isnt_element",
-			)
-		)
-		) {
-			$this->createTables();
-		}
-	}
+    public function up()
+    {
+        if (!$this->consolidate(
+            array(
+                'm130408_140240_event_type_OphTrLaser',
+                'm130712_113449_site_laser_table_isnt_element',
+            )
+        )
+        ) {
+            $this->createTables();
+        }
+    }
 
-	public function createTables()
-	{
-		$this->setData();
-		//disable foreign keys check
-		$this->execute("SET foreign_key_checks = 0");
+    public function createTables()
+    {
+        $this->setData();
+        //disable foreign keys check
+        $this->execute('SET foreign_key_checks = 0');
 
-		Yii::app()->cache->flush();
+        Yii::app()->cache->flush();
 
-		$event_type_id = $this->insertOEEventType( 'Laser', 'OphTrLaser', 'Tr');
-		$this->insertOEElementType($this->element_types , $event_type_id);
+        $event_type_id = $this->insertOEEventType('Laser', 'OphTrLaser', 'Tr');
+        $this->insertOEElementType($this->element_types, $event_type_id);
 
-		$this->execute("CREATE TABLE `et_ophtrlaser_anteriorseg` (
+        $this->execute("CREATE TABLE `et_ophtrlaser_anteriorseg` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `event_id` int(10) unsigned NOT NULL,
 			  `left_eyedraw` varchar(4096) NOT NULL,
@@ -80,7 +78,7 @@ class m130913_000012_consolidation_for_ophtrlaser extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `et_ophtrlaser_comments` (
+        $this->execute("CREATE TABLE `et_ophtrlaser_comments` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `event_id` int(10) unsigned NOT NULL,
 			  `comments` text,
@@ -98,7 +96,7 @@ class m130913_000012_consolidation_for_ophtrlaser extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `et_ophtrlaser_fundus` (
+        $this->execute("CREATE TABLE `et_ophtrlaser_fundus` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `event_id` int(10) unsigned NOT NULL,
 			  `eye_id` int(10) unsigned NOT NULL DEFAULT '3',
@@ -120,7 +118,7 @@ class m130913_000012_consolidation_for_ophtrlaser extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `et_ophtrlaser_posteriorpo` (
+        $this->execute("CREATE TABLE `et_ophtrlaser_posteriorpo` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `event_id` int(10) unsigned NOT NULL,
 			  `eye_id` int(10) unsigned NOT NULL DEFAULT '3',
@@ -142,7 +140,7 @@ class m130913_000012_consolidation_for_ophtrlaser extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `et_ophtrlaser_site` (
+        $this->execute("CREATE TABLE `et_ophtrlaser_site` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `event_id` int(10) unsigned NOT NULL,
 			  `site_id` int(10) unsigned NOT NULL,
@@ -168,7 +166,7 @@ class m130913_000012_consolidation_for_ophtrlaser extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `et_ophtrlaser_treatment` (
+        $this->execute("CREATE TABLE `et_ophtrlaser_treatment` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `event_id` int(10) unsigned NOT NULL,
 			  `eye_id` int(10) unsigned NOT NULL DEFAULT '3',
@@ -188,7 +186,7 @@ class m130913_000012_consolidation_for_ophtrlaser extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtrlaser_laserprocedure` (
+        $this->execute("CREATE TABLE `ophtrlaser_laserprocedure` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `procedure_id` int(10) unsigned NOT NULL,
 			  `last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -205,7 +203,7 @@ class m130913_000012_consolidation_for_ophtrlaser extends OEMigration
 			) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtrlaser_laserprocedure_assignment` (
+        $this->execute("CREATE TABLE `ophtrlaser_laserprocedure_assignment` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `procedure_id` int(10) unsigned NOT NULL,
 			  `treatment_id` int(10) unsigned NOT NULL,
@@ -229,7 +227,7 @@ class m130913_000012_consolidation_for_ophtrlaser extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtrlaser_site_laser` (
+        $this->execute("CREATE TABLE `ophtrlaser_site_laser` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `name` varchar(128) NOT NULL,
 			  `type` varchar(128) DEFAULT NULL,
@@ -250,16 +248,15 @@ class m130913_000012_consolidation_for_ophtrlaser extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$migrations_path = dirname(__FILE__);
-		$this->initialiseData($migrations_path);
+        $migrations_path = dirname(__FILE__);
+        $this->initialiseData($migrations_path);
 
-		//enable foreign keys check
-		$this->execute("SET foreign_key_checks = 1");
+        //enable foreign keys check
+        $this->execute('SET foreign_key_checks = 1');
+    }
 
-	}
-
-	public function down()
-	{
-		echo "Down method not supported on consolidation";
-	}
+    public function down()
+    {
+        echo 'Down method not supported on consolidation';
+    }
 }

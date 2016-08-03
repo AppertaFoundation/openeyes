@@ -6,7 +6,7 @@ class m150720_132838_allergy_element_table extends OEMigration
     {
         $this->createOETable('et_ophciexamination_allergy', array(
             'id' => 'pk',
-            'event_id' => 'int(10) unsigned'
+            'event_id' => 'int(10) unsigned',
         ), true);
         $this->dropColumn('patient_allergy_assignment', 'event_id');
         $this->dropColumn('patient_allergy_assignment_version', 'event_id');
