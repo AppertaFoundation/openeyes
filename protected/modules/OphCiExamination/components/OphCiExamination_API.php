@@ -1386,4 +1386,43 @@ class OphCiExamination_API extends \BaseAPI
         }
         return 'none';
     }
+
+	public function getMostRecentVAElementForPatient(\Patient $patient, $element)
+    {
+		$event_type = $this->getEventType();
+		$criteria = new \CDbCriteria;
+        $criteria->select = '*';
+        $criteria->join = 'join episode on t.episode_id = episode.id and patient_id = :patient_id and event_type_id = :event_type_id';
+		$criteria->order = 't.created_date desc';
+		$criteria->condition = 't.deleted != 1';
+        $criteria->params = array(':patient_id' => $patient->id, ':event_type_id' => $event_type->id);
+		foreach (\Event::model()->findAll($criteria) as $event) {
+			$result_element = $element::model()
+				->with('event')
+				->find('event_id=?',array($event->id));
+			if($result_element !== null)
+				return (array('element' => $result_element, 'event_date' => date($event->created_date)));
+		}
+
+		return false;
+    }
+
+    public static $UNAIDED_VA_TYPE = 'unaided';
+    public static $AIDED_VA_TYPE = 'aided';
+
+    public function getMostRecentVAForPatient(\Patient $patient, $side, $type)
+    {
+        if (!in_array($type, array(static::$AIDED_VA_TYPE, static::$UNAIDED_VA_TYPE)))
+            throw new \Exception("Invalid type for VA {$type}");
+        $latest_element = $this->getMostRecentVAElementForPatient($patient,'OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity');
+		$element = $latest_element['element'];
+		$checkFunc = 'has' . ucfirst($side);
+        if (!$element->$checkFunc()) {
+            return null;
+        }
+		$flag =  ($type === static::$UNAIDED_VA_TYPE) ? 1 : 2;
+		$methods = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method::model()->findAll('type=?',array($flag));
+		$best_reading = $element->getBestReadingByMethods($side,$methods);
+		return $best_reading;
+    }
 }
