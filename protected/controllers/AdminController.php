@@ -1452,7 +1452,8 @@ class AdminController extends BaseAdminController
 	public function actionCommissioning_Body_Services()
 	{
 		Audit::add('admin-CommissioningBodyService','list');
-		$this->render('commissioning_body_services');
+		$commissioningBodyId = Yii::app()->request->getQuery('commissioning_body_id');
+		$this->render('commissioning_body_services', array("commissioningBody"=>$commissioningBodyId));
 	}
 
 	public function actionEditCommissioningBodyService()
@@ -1469,9 +1470,19 @@ class AdminController extends BaseAdminController
 			}
 		} else {
 			$cbs = new CommissioningBodyService;
+            if ($commBodyId = Yii::app()->request->getQuery('commissioning_body_id')){
+                $cbs->setAttribute('commissioning_body_id', $commBodyId);
+            }
+            if ($serviceTypeId = Yii::app()->request->getQuery('service_type_id')){
+                $cbs->setAttribute('commissioning_body_service_type_id', $serviceTypeId );
+            }
 		}
 
 		$errors = array();
+
+        if(! $returnUrl = Yii::app()->request->getQuery('return_url')){
+            $returnUrl = '/admin/commissioning_body_services';
+        }
 
 		if (!empty($_POST)) {
 			$cbs->attributes = $_POST['CommissioningBodyService'];
@@ -1516,14 +1527,18 @@ class AdminController extends BaseAdminController
 
 				Audit::add('admin-CommissioningBodyService',$method,$cbs->id);
 
-				$this->redirect('/admin/commissioning_body_services');
+				$this->redirect($returnUrl);
 			}
 		}
+
+		$data = array();
+        $data["returnUrl"] = $returnUrl;
 
 		$this->render('/admin/editCommissioningBodyService',array(
 			'cbs' => $cbs,
 			'address' => $address,
 			'errors' => $errors,
+			'data' => $data
 		));
 	}
 

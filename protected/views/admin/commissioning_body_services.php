@@ -18,7 +18,15 @@
  */
 ?>
 <div class="box admin">
-	<h2>Commissioning body services</h2>
+	<h2><?php
+		if(Yii::App()->controller->getId() == 'localAuthoritiesAdmin'){
+			echo 'Local Authorities';
+		}
+		else
+		{
+			echo 'Commissioning body services';
+		}
+		?> </h2>
 	<form id="admin_commissioning_body_services">
 		<table class="grid">
 			<thead>
@@ -31,8 +39,17 @@
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach (CommissioningBodyService::model()->findAll(array('order'=>'name asc')) as $i => $cbs) {?>
-					<tr class="clickable" data-id="<?php echo $cbs->id?>" data-uri="admin/editCommissioningBodyService?commissioning_body_service_id=<?php echo $cbs->id?>">
+				<?php
+					if(isset($data) && $data["commissioningBodyId"] > 0){
+						$condition = 'commissioning_body_id = '.$data["commissioningBodyId"];
+						$urlQuery = 'commissioning_body_id='.$data["commissioningBodyId"].'&service_type_id='.$data["serviceTypeId"].'&return_url='.$data["returnUrl"];
+					}else{
+						$condition = 'true';
+						$urlQuery = '';
+					}
+
+					foreach (CommissioningBodyService::model()->findAll(array('condition'=>$condition,'order'=>'name asc')) as $i => $cbs) {?>
+					<tr class="clickable" data-id="<?php echo $cbs->id?>" data-uri="admin/editCommissioningBodyService?commissioning_body_service_id=<?php echo $cbs->id; if(isset($data["returnUrl"])){echo "&return_url=".$data["returnUrl"];}?>">
 						<td><input type="checkbox" name="commissioning_body_service[]" value="<?php echo $cbs->id?>" class="wards" /></td>
 						<td><?php echo $cbs->code?></td>
 						<td><?php echo $cbs->name?></td>
@@ -44,7 +61,7 @@
 			<tfoot>
 				<tr>
 					<td colspan="5">
-						<?php echo EventAction::button('Add', 'add_commissioning_body_service', array(), array('class' => 'small'))->toHtml()?>
+						<?php echo EventAction::button('Add', 'add_commissioning_body_service', array(), array('class' => 'small','data-uri'=>$urlQuery))->toHtml()?>
 						<?php echo EventAction::button('Delete', 'delete_commissioning_body_service', array(), array('class' => 'small'))->toHtml()?>
 					</td>
 				</tr>
@@ -77,7 +94,7 @@
 
 	$('#et_add_commissioning_body_service').click(function(e) {
 		e.preventDefault();
-		window.location.href = baseUrl+'/admin/addCommissioningBodyService';
+		window.location.href = baseUrl+'/admin/addCommissioningBodyService?'+$(this).data('uri');
 	});
 
 	$('#checkall').click(function(e) {
