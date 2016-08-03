@@ -172,7 +172,7 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
 	 */
 	public function generateUrlForNewEvent(\Event $event)
 	{
-		return $this->launch_uri . '?XML=' . $this->generateXmlRequest($event);
+		return $this->launch_uri . '?XML=' . urlencode($this->generateXmlRequest($event));
 	}
 
 	/**

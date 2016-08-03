@@ -17,7 +17,7 @@
 
 ?>
 
-<?xml version="1.0" encoding="utf-8" ?>
+<?php echo '<?xml version="1.0" encoding="utf-8" ?>'; ?>
 <linkparameters>
 	<security><authentication><?=$authentication_hash?></authentication>
 		<timestamp><?=$timestamp?></timestamp>
