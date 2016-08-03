@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -53,30 +53,30 @@ $vascularitiesFieldImages = \OEModule\OphCiExamination\models\OphCiExamination_B
 	<script type="text/javascript">
 		var idToImagesArr = {
 			'OEModule_OphCiExamination_models_Element_OphCiExamination_BlebAssessment_left_central_area_id':
-				{id:'centralArea',selects:<?php echo json_encode($centralAreas) ;?>},
+				{id:'centralArea',selects:<?php echo json_encode($centralAreas);?>},
 			'OEModule_OphCiExamination_models_Element_OphCiExamination_BlebAssessment_right_central_area_id':
-				{id:'centralArea',selects:<?php echo json_encode($centralAreas) ;?>},
+				{id:'centralArea',selects:<?php echo json_encode($centralAreas);?>},
 			'OEModule_OphCiExamination_models_Element_OphCiExamination_BlebAssessment_left_max_area_id':
-				{id:'maxArea',selects:<?php echo json_encode($maxAreas) ;?>},
+				{id:'maxArea',selects:<?php echo json_encode($maxAreas);?>},
 			'OEModule_OphCiExamination_models_Element_OphCiExamination_BlebAssessment_right_max_area_id':
-				{id:'maxArea',selects:<?php echo json_encode($maxAreas) ;?>},
+				{id:'maxArea',selects:<?php echo json_encode($maxAreas);?>},
 			'OEModule_OphCiExamination_models_Element_OphCiExamination_BlebAssessment_left_height_id':
-				{id:'height',selects:<?php echo json_encode($heights) ;?>},
+				{id:'height',selects:<?php echo json_encode($heights);?>},
 			'OEModule_OphCiExamination_models_Element_OphCiExamination_BlebAssessment_right_height_id':
-				{id:'height',selects:<?php echo json_encode($heights) ;?>},
+				{id:'height',selects:<?php echo json_encode($heights);?>},
 			'OEModule_OphCiExamination_models_Element_OphCiExamination_BlebAssessment_left_vasc_id':
-				{id:'vascularity',selects:<?php echo json_encode($vascularities) ;?>},
+				{id:'vascularity',selects:<?php echo json_encode($vascularities);?>},
 			'OEModule_OphCiExamination_models_Element_OphCiExamination_BlebAssessment_right_vasc_id':
-				{id:'vascularity',selects:<?php echo json_encode($vascularities) ;?>}
+				{id:'vascularity',selects:<?php echo json_encode($vascularities);?>}
 		};
 		var FieldImages = <?php
             $fieldImages = array(
-                'height'=>$heightFieldImages,
-                'maxArea'=>$maxAreaFieldImages,
-                'centralArea'=>$centralAreaFieldImages,
-                'vascularity'=>$vascularitiesFieldImages
+                'height' => $heightFieldImages,
+                'maxArea' => $maxAreaFieldImages,
+                'centralArea' => $centralAreaFieldImages,
+                'vascularity' => $vascularitiesFieldImages,
             );
-            echo json_encode($fieldImages) ;
+            echo json_encode($fieldImages);
              ?>;
 		var oeFieldImages = new OpenEyes.UI.FieldImages({idToImages:idToImagesArr,images:FieldImages});
 		$(document).ready(function() {
@@ -103,25 +103,25 @@ $vascularitiesFieldImages = \OEModule\OphCiExamination\models\OphCiExamination_B
 						<!-- Area (Central) -->
 						<td>
 							<?php
-                            echo $form->dropDownList($element, 'right_central_area_id', $centralAreas, array('empty' => '-', 'nowrapper' => true, 'class' => "ui-field-images-dropdown"), false, array('label' => 0, 'field' => 6)
+                            echo $form->dropDownList($element, 'right_central_area_id', $centralAreas, array('empty' => '-', 'nowrapper' => true, 'class' => 'ui-field-images-dropdown'), false, array('label' => 0, 'field' => 6)
                             ); ?>
 						</td>
 						<!-- Area (Maximal) -->
 						<td>
 							<?php
-                            echo $form->dropDownList($element, 'right_max_area_id', $maxAreas, array('empty' => '-', 'nowrapper' => true, 'class' => "ui-field-images-dropdown"), false, array('label' => 0, 'field' => 6)
+                            echo $form->dropDownList($element, 'right_max_area_id', $maxAreas, array('empty' => '-', 'nowrapper' => true, 'class' => 'ui-field-images-dropdown'), false, array('label' => 0, 'field' => 6)
                             ); ?>
 						</td>
 						<!-- Height -->
 						<td>
 							<?php
-                            echo $form->dropDownList($element, 'right_height_id', $heights, array('empty' => '-', 'nowrapper' => true, 'class' => "ui-field-images-dropdown"), false, array('label' => 0, 'field' => 6)
+                            echo $form->dropDownList($element, 'right_height_id', $heights, array('empty' => '-', 'nowrapper' => true, 'class' => 'ui-field-images-dropdown'), false, array('label' => 0, 'field' => 6)
                             ); ?>
 						</td>
 						<!-- Vascularity -->
 						<td>
 							<?php
-                            echo $form->dropDownList($element, 'right_vasc_id', $vascularities, array('empty' => '-', 'nowrapper' => true, 'class' => "ui-field-images-dropdown"), false, array('label' => 0, 'field' => 6)
+                            echo $form->dropDownList($element, 'right_vasc_id', $vascularities, array('empty' => '-', 'nowrapper' => true, 'class' => 'ui-field-images-dropdown'), false, array('label' => 0, 'field' => 6)
                             ); ?>
 						</td>
 					</tr>
@@ -155,28 +155,28 @@ $vascularitiesFieldImages = \OEModule\OphCiExamination\models\OphCiExamination_B
 						<!-- Area (Central) -->
 						<td>
 							<?php
-                            echo $form->dropDownList($element, 'left_central_area_id', $centralAreas, array('empty' => '-', 'nowrapper' => true, 'class' => "ui-field-images-dropdown"), false, array('label' => 0, 'field' => 6)
+                            echo $form->dropDownList($element, 'left_central_area_id', $centralAreas, array('empty' => '-', 'nowrapper' => true, 'class' => 'ui-field-images-dropdown'), false, array('label' => 0, 'field' => 6)
                             ); ?>
 						</td>
 
 						<!-- Area (Maximal) -->
 						<td>
 							<?php
-                            echo $form->dropDownList($element, 'left_max_area_id', $maxAreas, array('empty' => '-', 'nowrapper' => true, 'class' => "ui-field-images-dropdown"), false, array('label' => 0, 'field' => 4)
+                            echo $form->dropDownList($element, 'left_max_area_id', $maxAreas, array('empty' => '-', 'nowrapper' => true, 'class' => 'ui-field-images-dropdown'), false, array('label' => 0, 'field' => 4)
                             ); ?>
 						</td>
 
 						<!-- Height -->
 						<td>
 							<?php
-                            echo $form->dropDownList($element, 'left_height_id', $heights, array('empty' => '-', 'nowrapper' => true, 'class' => "ui-field-images-dropdown"), false, array('label' => 0, 'field' => 4)
+                            echo $form->dropDownList($element, 'left_height_id', $heights, array('empty' => '-', 'nowrapper' => true, 'class' => 'ui-field-images-dropdown'), false, array('label' => 0, 'field' => 4)
                             ); ?>
 						</td>
 
 						<!-- Vascularity -->
 						<td>
 							<?php
-                            echo $form->dropDownList($element, 'left_vasc_id', $vascularities, array('empty' => '-', 'nowrapper' => true, 'class' => "ui-field-images-dropdown"), false, array('label' => 0, 'field' => 6)
+                            echo $form->dropDownList($element, 'left_vasc_id', $vascularities, array('empty' => '-', 'nowrapper' => true, 'class' => 'ui-field-images-dropdown'), false, array('label' => 0, 'field' => 6)
                             ); ?>
 						</td>
 					</tr>

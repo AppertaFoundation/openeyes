@@ -76,21 +76,20 @@
 		</div>
 	</div>
 	<?php
-		if(isset($element->{'r1_axis_'.$side}) && $element->{'r1_axis_'.$side}!=0)
-		{
-			$this->widget('application.modules.eyedraw.OEEyeDrawWidget',
-			array(
-					'onReadyCommandArray' => array(
-							array('addDoodle', array('SteepAxis', array('axis'=>$element->{'r1_axis_'.$side}))),
-							array('deselectDoodles', array()),
-					),
+        if(isset($element->{'r1_axis_'.$side}) && $element->{'r1_axis_'.$side} != 0)
+        {
+            $this->widget('application.modules.eyedraw.OEEyeDrawWidget',
+            array(
+                    'onReadyCommandArray' => array(
+                            array('addDoodle', array('SteepAxis', array('axis' => $element->{'r1_axis_'.$side}))),
+                            array('deselectDoodles', array()),
+                    ),
 
-
-			'idSuffix' => $side.'_'.$element->elementType->id.'_'.$element->id,
-			'side' => ($side == 'right') ? 'R' : 'L',
-			'mode' => 'view',
-			'width' => 200,
-			'height' => 200,
-	));
-		}?>
+            'idSuffix' => $side.'_'.$element->elementType->id.'_'.$element->id,
+            'side' => ($side == 'right') ? 'R' : 'L',
+            'mode' => 'view',
+            'width' => 200,
+            'height' => 200,
+    ));
+        }?>
 </div>

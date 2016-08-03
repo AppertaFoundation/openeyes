@@ -33,7 +33,7 @@
 	<?php if ($queue->all_outcome_queues) {?>
 		<ul>
 			<?php foreach ($queue->all_outcome_queues as $oc) { ?>
-				<?php $this->renderPartial("queue_as_list", array('queue' => $oc)); ?>
+				<?php $this->renderPartial('queue_as_list', array('queue' => $oc)); ?>
 			<?php }?>
 		</ul>
 	<?php } ?>

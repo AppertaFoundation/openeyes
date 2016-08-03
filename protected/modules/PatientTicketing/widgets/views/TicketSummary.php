@@ -5,7 +5,7 @@
 <div class="panel">
 	<div class="row data-row">
 		<div class="large-4 column left">
-			<div class="data-label"><?= $ticket->getDisplayQueue()->name  . " (" . Helper::convertDate2NHS($ticket->getDisplayQueueAssignment()->assignment_date) . ")" ?></div>
+			<div class="data-label"><?= $ticket->getDisplayQueue()->name.' ('.Helper::convertDate2NHS($ticket->getDisplayQueueAssignment()->assignment_date).')' ?></div>
 		</div>
 		<div class="large-6 column left">
 			<div class="data-value"><?= nl2br($display_queue->notes)?></div>

@@ -1076,7 +1076,7 @@ class WorklistManager extends CComponent
         try {
             foreach ($rrule as $occurence) {
                 if ($this->createAutomaticWorklist($definition, $occurence)) {
-                    $new_count++;
+                    ++$new_count;
                 }
             }
 

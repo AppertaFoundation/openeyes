@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -19,45 +19,45 @@
 ?>
 
 <?php
-$name_stub = $element_name . '[' . $side;
+$name_stub = $element_name.'['.$side;
 if ($pastintervention->is_relevant) {
-	$inttype_name = '_relevantinterventions';
-	$treatmentattribute = 'relevanttreatment_id';
+    $inttype_name = '_relevantinterventions';
+    $treatmentattribute = 'relevanttreatment_id';
 } else {
-	$inttype_name = '_previnterventions';
-	$treatmentattribute = 'treatment_id';
+    $inttype_name = '_previnterventions';
+    $treatmentattribute = 'treatment_id';
 }
-$name_stub .= $inttype_name . ']';
+$name_stub .= $inttype_name.']';
 
 $show_stop_other = false;
 $show_treatment_other = false;
-if (@$_POST[$element_name] && @$_POST[$element_name][$side . $inttype_name] &&
-		@$_POST[$element_name][$side . $inttype_name][$key]) {
+if (@$_POST[$element_name] && @$_POST[$element_name][$side.$inttype_name] &&
+        @$_POST[$element_name][$side.$inttype_name][$key]) {
 
-	if ($stop_id = $_POST[$element_name][$side . $inttype_name][$key]['stopreason_id']) {
-		$stopreason = OphCoTherapyapplication_ExceptionalCircumstances_PastIntervention_StopReason::model()->findByPk((int)$stop_id);
-		if ($stopreason->other) {
-			$show_stop_other = true;
-		}
-	}
-	if ($pastintervention->is_relevant &&
-		$treatment_id = $_POST[$element_name][$side . $inttype_name][$key]['relevanttreatment_id']) {
+    if ($stop_id = $_POST[$element_name][$side.$inttype_name][$key]['stopreason_id']) {
+        $stopreason = OphCoTherapyapplication_ExceptionalCircumstances_PastIntervention_StopReason::model()->findByPk((int) $stop_id);
+        if ($stopreason->other) {
+            $show_stop_other = true;
+        }
+    }
+    if ($pastintervention->is_relevant &&
+        $treatment_id = $_POST[$element_name][$side.$inttype_name][$key]['relevanttreatment_id']) {
 
-		$treatment = OphCoTherapyapplication_RelevantTreatment::model()->findByPk((int) $treatment_id);
-		if ($treatment->other) {
-			$show_treatment_other = true;
-		}
-	}
+        $treatment = OphCoTherapyapplication_RelevantTreatment::model()->findByPk((int) $treatment_id);
+        if ($treatment->other) {
+            $show_treatment_other = true;
+        }
+    }
 } else {
-	if ($pastintervention->stopreason && $pastintervention->stopreason->other) {
-		$show_stop_other = true;
-	}
-	if ($pastintervention->is_relevant &&
-		$pastintervention->relevanttreatment &&
-		$pastintervention->relevanttreatment->other) {
+    if ($pastintervention->stopreason && $pastintervention->stopreason->other) {
+        $show_stop_other = true;
+    }
+    if ($pastintervention->is_relevant &&
+        $pastintervention->relevanttreatment &&
+        $pastintervention->relevanttreatment->other) {
 
-		$show_treatment_other = true;
-	}
+        $show_treatment_other = true;
+    }
 }
 
 // [OE-3421]
@@ -86,9 +86,9 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
 	<?php } ?>
 
 	<?php
-		$d_name = $name_stub . "[$key][start_date]";
-		$d_id = preg_replace('/\[/', '_', substr($name_stub, 0, -1)) . "_". $key ."_start_date";
-	?>
+        $d_name = $name_stub."[$key][start_date]";
+        $d_id = preg_replace('/\[/', '_', substr($name_stub, 0, -1)).'_'.$key.'_start_date';
+    ?>
 	<div class="row field-row">
 		<div class="large-6 column">
 			<label for="<?php echo $d_id?>">
@@ -97,29 +97,29 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
 		</div>
 		<div class="large-5 column end">
 			<?php
-				// using direct widget call to allow custom name for the field
-				// see comment [OE-3421] above.
-				$options = array(
-					'element' => $pastintervention,
-					'name' => $d_name,
-					'field' => 'start_date',
-					'htmlOptions' => array(
-						'id' => $d_id,
-						'nowrapper' => true,
-					)
-				);
-				if ($dateFieldWidget === 'DatePicker') {
-					$options['options'] = array('maxDate' => 'today');
-				}
-				$form->widget("application.widgets.{$dateFieldWidget}",$options);
-			?>
+                // using direct widget call to allow custom name for the field
+                // see comment [OE-3421] above.
+                $options = array(
+                    'element' => $pastintervention,
+                    'name' => $d_name,
+                    'field' => 'start_date',
+                    'htmlOptions' => array(
+                        'id' => $d_id,
+                        'nowrapper' => true,
+                    ),
+                );
+                if ($dateFieldWidget === 'DatePicker') {
+                    $options['options'] = array('maxDate' => 'today');
+                }
+                $form->widget("application.widgets.{$dateFieldWidget}", $options);
+            ?>
 		</div>
 	</div>
 
 	<?php
-		$d_name = $name_stub . "[$key][end_date]";
-		$d_id = preg_replace('/\[/', '_', substr($name_stub, 0, -1)) . "_". $key ."_end_date";
-	?>
+        $d_name = $name_stub."[$key][end_date]";
+        $d_id = preg_replace('/\[/', '_', substr($name_stub, 0, -1)).'_'.$key.'_end_date';
+    ?>
 	<div class="row field-row">
 		<div class="large-6 column">
 			<label for="<?php echo $d_id;?>">
@@ -128,144 +128,144 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
 		</div>
 		<div class="large-5 column end">
 			<?php
-				// using direct widget call to allow custom name for the field
-				// see comment [OE-3421] above.
-				$options = array(
-					'element' => $pastintervention,
-					'name' => $d_name,
-					'field' => 'end_date',
-					'htmlOptions' => array(
-						'id' => $d_id,
-						'nowrapper' => true
-					)
-				);
-				if ($dateFieldWidget === 'DatePicker') {
-					$options['options'] = array('maxDate' => 'today');
-				}
-				$form->widget("application.widgets.{$dateFieldWidget}",$options);
-			?>
+                // using direct widget call to allow custom name for the field
+                // see comment [OE-3421] above.
+                $options = array(
+                    'element' => $pastintervention,
+                    'name' => $d_name,
+                    'field' => 'end_date',
+                    'htmlOptions' => array(
+                        'id' => $d_id,
+                        'nowrapper' => true,
+                    ),
+                );
+                if ($dateFieldWidget === 'DatePicker') {
+                    $options['options'] = array('maxDate' => 'today');
+                }
+                $form->widget("application.widgets.{$dateFieldWidget}", $options);
+            ?>
 		</div>
 	</div>
 
 	<div class="row field-row">
 		<div class="large-6 column">
-			<label for="<?php echo str_replace(array('[', ']'), '_', $name_stub . "{$key}_{$treatmentattribute}");?>">
+			<label for="<?php echo str_replace(array('[', ']'), '_', $name_stub."{$key}_{$treatmentattribute}");?>">
 				<?php echo $pastintervention->getAttributeLabel($treatmentattribute);?>:
 			</label>
 		</div>
 		<div class="large-6 column">
 			<?php
-				$all_treatments = $pastintervention->getTreatmentOptions($pastintervention->{$treatmentattribute});
-				$html_options = array(
-					'class' => 'past-treatments',
-					'empty' => '- Please select -',
-					'name' => $name_stub . "[$key][$treatmentattribute]",
-					'options' => array(),
-				);
+                $all_treatments = $pastintervention->getTreatmentOptions($pastintervention->{$treatmentattribute});
+                $html_options = array(
+                    'class' => 'past-treatments',
+                    'empty' => '- Please select -',
+                    'name' => $name_stub."[$key][$treatmentattribute]",
+                    'options' => array(),
+                );
 
-				if ($pastintervention->is_relevant) {
-					foreach ($all_treatments as $treatment) {
-						$html_options['options'][$treatment->id] = array(
-							'data-other' => $treatment->other,
-						);
-					}
-				}
+                if ($pastintervention->is_relevant) {
+                    foreach ($all_treatments as $treatment) {
+                        $html_options['options'][$treatment->id] = array(
+                            'data-other' => $treatment->other,
+                        );
+                    }
+                }
 
-				echo CHtml::activeDropDownList($pastintervention, $treatmentattribute, CHtml::listData($all_treatments,'id','name'),
-					$html_options);
-			?>
+                echo CHtml::activeDropDownList($pastintervention, $treatmentattribute, CHtml::listData($all_treatments, 'id', 'name'),
+                    $html_options);
+            ?>
 		</div>
 	</div>
 
-	<div class="row field-row <?php if (!$show_treatment_other) { echo "hidden "; } ?>treatment-other">
+	<div class="row field-row <?php if (!$show_treatment_other) { echo 'hidden '; } ?>treatment-other">
 		<div class="large-6 column">
-			<label for="<?php echo str_replace(array('[', ']'), '_', $name_stub . "{$key}_relevanttreatment_other");?>">
+			<label for="<?php echo str_replace(array('[', ']'), '_', $name_stub."{$key}_relevanttreatment_other");?>">
 				<?php echo $pastintervention->getAttributeLabel('relevanttreatment_other'); ?>:
 			</label>
 		</div>
 		<div class="large-6 column">
-			<?php echo CHtml::activeTextField($pastintervention, 'relevanttreatment_other',array('autocomplete' => Yii::app()->params['html_autocomplete'], 'name' => $name_stub . "[$key][relevanttreatment_other]")); ?>
+			<?php echo CHtml::activeTextField($pastintervention, 'relevanttreatment_other', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'name' => $name_stub."[$key][relevanttreatment_other]")); ?>
 		</div>
 	</div>
 
 	<div class="row field-row">
 		<div class="large-6 column">
-			<label for="<?php echo str_replace(array('[', ']'), '_', $name_stub . "{$key}_start_va");?>">
+			<label for="<?php echo str_replace(array('[', ']'), '_', $name_stub."{$key}_start_va");?>">
 				<?php echo $pastintervention->getAttributeLabel('start_va');?>:
 			</label>
 		</div>
 		<div class="large-6 column">
 			<?php
-			echo CHtml::activeDropDownList($pastintervention, 'start_va', $pastintervention->getVaOptions(),
-				array('empty'=>'- Please select -', 'name' => $name_stub . "[$key][start_va]", 'nowrapper' => true));
-			?>
+            echo CHtml::activeDropDownList($pastintervention, 'start_va', $pastintervention->getVaOptions(),
+                array('empty' => '- Please select -', 'name' => $name_stub."[$key][start_va]", 'nowrapper' => true));
+            ?>
 		</div>
 	</div>
 
 	<div class="row field-row">
 		<div class="large-6 column">
-			<label for="<?php echo str_replace(array('[', ']'), '_', $name_stub . "{$key}_end_va");?>">
+			<label for="<?php echo str_replace(array('[', ']'), '_', $name_stub."{$key}_end_va");?>">
 				<?php echo $pastintervention->getAttributeLabel('end_va');?>:
 			</label>
 		</div>
 		<div class="large-6 column">
 			<?php
-			echo CHtml::activeDropDownList($pastintervention, 'end_va', $pastintervention->getVaOptions(),
-				array('empty'=>'- Please select -', 'name' => $name_stub . "[$key][end_va]", 'nowrapper' => true));
-			?>
+            echo CHtml::activeDropDownList($pastintervention, 'end_va', $pastintervention->getVaOptions(),
+                array('empty' => '- Please select -', 'name' => $name_stub."[$key][end_va]", 'nowrapper' => true));
+            ?>
 		</div>
 	</div>
 
 	<div class="row field-row">
 		<div class="large-6 column">
-			<label for="<?php echo str_replace(array('[', ']'), '_', $name_stub . "{$key}_stopreason_id");?>">
+			<label for="<?php echo str_replace(array('[', ']'), '_', $name_stub."{$key}_stopreason_id");?>">
 				<?php echo $pastintervention->getAttributeLabel('stopreason_id')?>:
 			</label>
 		</div>
 		<div class="large-6 column">
 			<?php
 
-			$reasons = OphCoTherapyapplication_ExceptionalCircumstances_PastIntervention_StopReason::model()->findAll();
-			$html_options = array(
-					'class' => 'stop-reasons',
-					'empty' => '- Please select -',
-					'name' => $name_stub . "[$key][stopreason_id]",
-					'options' => array(),
-			);
-			// get the previous injection counts for each of the drug options for this eye
-			foreach ($reasons as $reason) {
-				$html_options['options'][$reason->id] = array(
-						'data-other' => $reason->other,
-				);
-			}
+            $reasons = OphCoTherapyapplication_ExceptionalCircumstances_PastIntervention_StopReason::model()->findAll();
+            $html_options = array(
+                    'class' => 'stop-reasons',
+                    'empty' => '- Please select -',
+                    'name' => $name_stub."[$key][stopreason_id]",
+                    'options' => array(),
+            );
+            // get the previous injection counts for each of the drug options for this eye
+            foreach ($reasons as $reason) {
+                $html_options['options'][$reason->id] = array(
+                        'data-other' => $reason->other,
+                );
+            }
 
-			echo CHtml::activeDropDownList($pastintervention, 'stopreason_id', CHtml::listData($reasons,'id','name'), $html_options);
-			 ?>
+            echo CHtml::activeDropDownList($pastintervention, 'stopreason_id', CHtml::listData($reasons, 'id', 'name'), $html_options);
+             ?>
 		</div>
 	</div>
 
-	<div class="row field-row <?php if (!$show_stop_other) { echo "hidden "; } ?>stop-reason-other">
+	<div class="row field-row <?php if (!$show_stop_other) { echo 'hidden '; } ?>stop-reason-other">
 		<div class="large-6 column">
-			<label for="<?php echo str_replace(array('[', ']'), '_', $name_stub . "{$key}_stopreason_other");?>">
+			<label for="<?php echo str_replace(array('[', ']'), '_', $name_stub."{$key}_stopreason_other");?>">
 				<?php echo $pastintervention->getAttributeLabel('stopreason_other'); ?>:
 			</label>
 		</div>
 		<div class="large-6 column">
-		<?php echo CHtml::activeTextArea($pastintervention, 'stopreason_other',array('name' => $name_stub . "[$key][stopreason_other]", 'rows' => 2, 'cols' => 25, 'nowrapper' => true))?>
+		<?php echo CHtml::activeTextArea($pastintervention, 'stopreason_other', array('name' => $name_stub."[$key][stopreason_other]", 'rows' => 2, 'cols' => 25, 'nowrapper' => true))?>
 		</div>
 	</div>
 
 	<div class="row field-row">
 		<div class="large-12 column">
-			<label for="<?php echo str_replace(array('[', ']'), '_', $name_stub . "{$key}_comments");?>">
+			<label for="<?php echo str_replace(array('[', ']'), '_', $name_stub."{$key}_comments");?>">
 				<?php echo $pastintervention->getAttributeLabel('comments')?>
 			</label>
-			<?php echo CHtml::activeTextArea($pastintervention, 'comments',array(
-				'placeholder' => 'Please provide pre and post treatment CMT',
-				'name' => $name_stub . "[$key][comments]",
-				'rows' => 3,
-				'nowrapper' => true
-			))?>
+			<?php echo CHtml::activeTextArea($pastintervention, 'comments', array(
+                'placeholder' => 'Please provide pre and post treatment CMT',
+                'name' => $name_stub."[$key][comments]",
+                'rows' => 3,
+                'nowrapper' => true,
+            ))?>
 		</div>
 	</div>
 </div>

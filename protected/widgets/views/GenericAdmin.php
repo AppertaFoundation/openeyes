@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2013
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -20,38 +20,38 @@
 
 <?php if (!$get_row) {
 
-	if ($filter_fields) { ?>
+    if ($filter_fields) { ?>
 		<form method="get">
 			<?php foreach ($filter_fields as $filter_field) { ?>
 				<div class="row field-row">
 					<div class="large-2 column"><label for="<?= $filter_field['field'] ?>"><?= CHtml::encode($model::model()->getAttributeLabel($filter_field['field'])); ?></label></div>
 					<div class="large-5 column end"><?=
-						CHtml::dropDownList(
-							$filter_field['field'], $filter_field['value'],
-							SelectionHelper::listData($filter_field['model']),
-							array('empty' => '-- Select --', 'class' => 'generic-admin-filter')
-						);
-					?></div>
+                        CHtml::dropDownList(
+                            $filter_field['field'], $filter_field['value'],
+                            SelectionHelper::listData($filter_field['model']),
+                            array('empty' => '-- Select --', 'class' => 'generic-admin-filter')
+                        );
+                    ?></div>
 				</div>
 			<?php } ?>
 		</form>
 	<?php }
-	if ($filters_ready) { ?>
+    if ($filters_ready) { ?>
 		<?= CHtml::beginForm() ?>
 
-		<table class="generic-admin <?= ($display_order)? 'sortable' : ''?>">
+		<table class="generic-admin <?= ($display_order) ? 'sortable' : ''?>">
 			<thead>
 				<tr>
 					<?php if($display_order) { ?>
 						<th>Order</th>
 					<?php
-					}
-					if(!$label_extra_field):?>
+                    }
+                    if(!$label_extra_field) : ?>
 						<th><?= $model::model()->getAttributeLabel($label_field) ?></th>
 					<?php endif;?>
 					<?php foreach ($extra_fields as $field) {?>
 						<th>
-							<?php echo CHtml::hiddenField('_extra_fields[]',$field['field'])?>
+							<?php echo CHtml::hiddenField('_extra_fields[]', $field['field'])?>
 							<?php echo $model::model()->getAttributeLabel($field['field'])?>
 						</th>
 					<?php }?>
@@ -60,7 +60,7 @@
 					<?php } else{?>
 						<th>Actions</th>
 					<?php }
-					if ($model::model()->hasAttribute('default')) {?>
+                    if ($model::model()->hasAttribute('default')) {?>
 						<th>Default</th>
 					<?php }?>
 				</tr>
@@ -71,14 +71,14 @@
 ?>
 
 <?php foreach ($items as $i => $row) {
-	$this->render('_generic_admin_row', array('i' => $i, 'row' => $row, 'label_field' => $label_field, 'extra_fields' => $extra_fields, 'model' => $model, 'display_order' => $display_order, 'label_extra_field' => $label_extra_field));
+    $this->render('_generic_admin_row', array('i' => $i, 'row' => $row, 'label_field' => $label_field, 'extra_fields' => $extra_fields, 'model' => $model, 'display_order' => $display_order, 'label_extra_field' => $label_extra_field));
 }
 
 if (!$get_row && $filters_ready) {
-				if (!$this->new_row_url) {
-					$this->render('_generic_admin_row', array('row_class' => 'newRow', 'row_style' => 'display: none;', 'disabled' => true,
-							'i' => '{{key}}', 'row' => new $model, 'label_field' => $label_field, 'extra_fields' => $extra_fields, 'model' => $model, 'display_order' => $display_order ));
-				} ?>
+                if (!$this->new_row_url) {
+                    $this->render('_generic_admin_row', array('row_class' => 'newRow', 'row_style' => 'display: none;', 'disabled' => true,
+                            'i' => '{{key}}', 'row' => new $model(), 'label_field' => $label_field, 'extra_fields' => $extra_fields, 'model' => $model, 'display_order' => $display_order, ));
+                } ?>
 			</tbody>
 			<?php if ($model::model()->hasAttribute('default')) {?>
 				<tfoot>
@@ -87,7 +87,7 @@ if (!$get_row && $filters_ready) {
 							No default
 						</td>
 						<td>
-							<?php echo CHtml::radioButton('default',!$has_default,array('value' => 'NONE'))?>
+							<?php echo CHtml::radioButton('default', !$has_default, array('value' => 'NONE'))?>
 						</td>
 					</tr>
 				</tfoot>

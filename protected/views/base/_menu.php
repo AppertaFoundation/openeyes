@@ -4,7 +4,7 @@
         $selected = ($uri == $item['uri']) ? 'selected' : '';
         $hasSub = isset($item['sub']) && is_array($item['sub']);
         $subClass = $hasSub ? 'sub-menu-item' : '';
-        $menuKey = 'menu-item-' . str_replace(' ', '-', strtolower($item['title']));
+        $menuKey = 'menu-item-'.str_replace(' ', '-', strtolower($item['title']));
         ?>
         <li
             class="<?= $selected ?>"
@@ -15,7 +15,7 @@
             <?php
             $link = $item['uri'];
             if ($item['uri'] !== '#' && strpos($item['uri'], 'http:') === false) {
-                $link = Yii::app()->getBaseUrl() . '/' . ltrim($item['uri'], '/');
+                $link = Yii::app()->getBaseUrl().'/'.ltrim($item['uri'], '/');
             }
             $options = array();
             if (array_key_exists('options', $item)) {
@@ -32,7 +32,7 @@
                             if (array_key_exists('options', $subItem)) {
                                 $subOptions = $subItem['options'];
                             }
-                            $subLink = ($subItem['uri'] !== '#' && strpos($subItem['uri'], 'http:') === false) ? Yii::app()->getBaseUrl() . '/' . ltrim($subItem['uri'], '/') : $subItem['uri'];
+                            $subLink = ($subItem['uri'] !== '#' && strpos($subItem['uri'], 'http:') === false) ? Yii::app()->getBaseUrl().'/'.ltrim($subItem['uri'], '/') : $subItem['uri'];
                             echo CHtml::link($subItem['title'], $subLink, $subOptions) ?>
                         </li>
                     <?php endforeach; ?>

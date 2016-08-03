@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -18,9 +18,9 @@
  */
 ?>
 <?php
-	$this->beginContent('//patient/event_container');
-	$assetAliasPath = 'application.modules.OphTrOperationbooking.assets';
-	$this->moduleNameCssClass.=' edit';
+    $this->beginContent('//patient/event_container');
+    $assetAliasPath = 'application.modules.OphTrOperationbooking.assets';
+    $this->moduleNameCssClass .= ' edit';
 ?>
 
 	<div class="row">
@@ -28,13 +28,13 @@
 
 			<section class="element">
 				<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-						'id'=>'operation-note-select',
-						'enableAjaxValidation'=>false,
-					));
+                        'id' => 'operation-note-select',
+                        'enableAjaxValidation' => false,
+                    ));
 
-					// Event actions
-					$this->event_actions[] = EventAction::button('Create Operation Note', 'save', array('level' => 'secondary'), array('form'=>'operation-note-select','class'=>'button small'));
-				?>
+                    // Event actions
+                    $this->event_actions[] = EventAction::button('Create Operation Note', 'save', array('level' => 'secondary'), array('form' => 'operation-note-select', 'class' => 'button small'));
+                ?>
 					<?php  $this->displayErrors($errors)?>
 
 					<header class="element-header">
@@ -45,7 +45,7 @@
 
 						<div class="field-row">
 							<div class="field-info">
-								<?php if (count($bookings) >0) {?>
+								<?php if (count($bookings) > 0) {?>
 									Please indicate whether this operation note relates to a booking or an unbooked emergency:
 								<?php } else {?>
 									There are no open bookings in the current episode so only an emergency operation note can be created.
@@ -73,9 +73,9 @@
 											</span>
 											<span class="large-4 column">
 												<?php foreach ($booking->operation->procedures as $i => $procedure) {
-												if ($i >0) { echo "<br/>"; }
-													 echo $booking->operation->eye->name.' '.$procedure->term;
-											}?>
+                                                if ($i > 0) { echo '<br/>'; }
+                                                     echo $booking->operation->eye->name.' '.$procedure->term;
+                                            }?>
 											</span>
 										</span>
 									</label>
@@ -83,7 +83,7 @@
 								<label class="highlight booking">
 									<span class="row">
 										<span class="large-1 column">
-											<input type="radio" value="emergency" name="SelectBooking" <?php if (count($bookings)==0) {?>checked="checked" <?php }?>/>
+											<input type="radio" value="emergency" name="SelectBooking" <?php if (count($bookings) == 0) {?>checked="checked" <?php }?>/>
 										</span>
 										<span class="large-11 column">
 											Emergency
@@ -100,4 +100,4 @@
 		</div>
 	</div>
 
-<?php $this->endContent() ;?>
+<?php $this->endContent();?>

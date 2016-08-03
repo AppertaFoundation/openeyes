@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -23,7 +23,7 @@
 		<?php unset($htmlOptions['hidden'])?>
 
 		<div class="large-<?php echo $layoutColumns['label'];?> column">
-			<label for="<?php echo CHtml::modelName($element)."_".$field."_0";?>">
+			<label for="<?php echo CHtml::modelName($element).'_'.$field.'_0';?>">
 				<?php echo CHtml::encode($element->getAttributeLabel($field))?>:
 			</label>
 		</div>
@@ -31,16 +31,16 @@
 <?php }?>
 
 	<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-		'name'=>$name,
-		'id'=>CHtml::modelName($element)."_".$field."_0",
-		// additional javascript options for the date picker plugin
-		'options'=>array_merge($options,array(
-			'showAnim'=>'fold',
-			'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
-		)),
-		'value' => (preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/',$value) ? Helper::convertMySQL2NHS($value) : $value),
-		'htmlOptions'=>$htmlOptions
-	)); ?>
+        'name' => $name,
+        'id' => CHtml::modelName($element).'_'.$field.'_0',
+        // additional javascript options for the date picker plugin
+        'options' => array_merge($options, array(
+            'showAnim' => 'fold',
+            'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
+        )),
+        'value' => (preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $value) ? Helper::convertMySQL2NHS($value) : $value),
+        'htmlOptions' => $htmlOptions,
+    )); ?>
 
 <?php if (!@$htmlOptions['nowrapper']) {?>
 		</div>

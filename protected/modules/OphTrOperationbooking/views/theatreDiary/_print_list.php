@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,14 +9,13 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 ?>
 <div id="diaryTemplate">
 	<div id="d_title">TCIs in date range <?php echo CHtml::encode($_POST['date-start'])?> to <?php echo CHtml::encode($_POST['date-end'])?></div>
@@ -33,7 +32,7 @@
 			<th>Subspecialty</th>
 		</tr>
 		<?php foreach ($bookings as $booking) {
-			if ($booking->operation->event) { ?>
+            if ($booking->operation->event) { ?>
 				<tr>
 					<td><?php echo $booking->operation->event->episode->patient->hos_num?></td>
 					<td><strong><?php echo strtoupper($booking->operation->event->episode->patient->last_name) ?></strong>, <?php echo $booking->operation->event->episode->patient->first_name?></td>
@@ -46,6 +45,6 @@
 					<td><?php echo $booking->session->firm->serviceSubspecialtyAssignment->subspecialty->name?></td>
 				</tr>
 			<?php }
-		} ?>
+        } ?>
 	</table>
 </div>

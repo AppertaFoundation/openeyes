@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,21 +9,20 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 $this->beginContent('//patient/event_container'); ?>
 
 	<?php $this->title = 'Cancel operation' ?>
 
 	<?php
-	echo CHtml::form(Yii::app()->createUrl('/'.$operation->event->eventType->class_name.'/default/cancel'), 'post', array('id' => 'cancelForm', 'class' => 'edit cancel'));
-	echo CHtml::hiddenField('operation_id', $operation->id); ?>
+    echo CHtml::form(Yii::app()->createUrl('/'.$operation->event->eventType->class_name.'/default/cancel'), 'post', array('id' => 'cancelForm', 'class' => 'edit cancel'));
+    echo CHtml::hiddenField('operation_id', $operation->id); ?>
 
 	<div class="alert-box alert with-icon hide">
 		<p>Please fix the following input errors:</p>
@@ -38,7 +37,7 @@ $this->beginContent('//patient/event_container'); ?>
 			</div>
 			<div class="large-10 column end">
 				<div class="field-value">
-					<?php echo $patient->getDisplayName() . ' (' . $patient->hos_num . ')'; ?>
+					<?php echo $patient->getDisplayName().' ('.$patient->hos_num.')'; ?>
 				</div>
 			</div>
 		</div>
@@ -48,13 +47,13 @@ $this->beginContent('//patient/event_container'); ?>
 			</div>
 			<div class="large-5 column end">
 				<?php if (!empty($operation->booking) && (strtotime($operation->booking->session->date) <= strtotime('now'))) {
-					$listIndex = 3;
-				} else {
-					$listIndex = 2;
-				} ?>
+                    $listIndex = 3;
+                } else {
+                    $listIndex = 2;
+                } ?>
 				<?php echo CHtml::dropDownList('cancellation_reason', '', OphTrOperationbooking_Operation_Cancellation_Reason::getReasonsByListNumber($listIndex),
-					array('empty'=>'Select a reason')
-				); ?>
+                    array('empty' => 'Select a reason')
+                ); ?>
 			</div>
 		</div>
 		<div class="row field-row">

@@ -49,8 +49,8 @@ if ($outcome = $api->getFollowUp($this->ticket->id)) {
                 ),
                 'value' => (preg_match('/^[0
 				-9]{4}-[0-9]{2}-[0-9]{2}$/', $value) ? Helper::convertMySQL2NHS($value) : $value),
-				'htmlOptions'=>null
-			)); ?>
+                'htmlOptions' => null,
+            )); ?>
 		</td>
 		<td>
 			<?php echo CHtml::textField($this->form_name.'[appointment_time]', @$this->form_data[$this->form_name]['appointment_time'])?>

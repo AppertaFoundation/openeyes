@@ -3,7 +3,7 @@
 class m140604_143200_more_substitution_strings extends OEMigration
 {
     private $shortcodes = array(
-        array('default_code' => 'cct', 'code' => 'cct', 'method' => 'getPrincipalCCT', 'description' => 'Examination CCT values for principal eye', ),
+        array('default_code' => 'cct', 'code' => 'cct', 'method' => 'getPrincipalCCT', 'description' => 'Examination CCT values for principal eye'),
         array('default_code' => 'vhp', 'code' => 'vhp', 'method' => 'getPrincipalVanHerick',
             'description' => 'Examination Van Herick grading value for principal eye', ),
         array('default_code' => 'opd', 'code' => 'opd', 'method' => 'getPrincipalOpticDiscDescription',

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -29,16 +29,16 @@
 
 	<div class="element-fields">
 		<?php echo $form->hiddenInput($element, 'booking_event_id')?>
-		<?php echo $form->radioButtons($element, 'eye_id', $element->eyeOptions, ($element->eye() ? $element->eye()->id : null), null, null, null ,null,null,array('label'=>2,'field'=>10))?>
+		<?php echo $form->radioButtons($element, 'eye_id', $element->eyeOptions, ($element->eye() ? $element->eye()->id : null), null, null, null, null, null, array('label' => 2, 'field' => 10))?>
 		<?php
-		$form->widget('application.widgets.ProcedureSelection',array(
-			'element' => $element,
-			'selected_procedures' => $element->procedures,
-			'newRecord' => true,
-			'last' => true,
-			'hidden' => ($this->action->id == 'create' && $element->eye == null && !@$_POST['Element_OphTrOperationnote_ProcedureList']['eye_id']),
-		));
-		?>
+        $form->widget('application.widgets.ProcedureSelection', array(
+            'element' => $element,
+            'selected_procedures' => $element->procedures,
+            'newRecord' => true,
+            'last' => true,
+            'hidden' => ($this->action->id == 'create' && $element->eye == null && !@$_POST['Element_OphTrOperationnote_ProcedureList']['eye_id']),
+        ));
+        ?>
 	</div>
 	<div class="sub-elements active">
 		<?php $this->renderChildOpenElements($element, $this->action->id, $form, $data)?>

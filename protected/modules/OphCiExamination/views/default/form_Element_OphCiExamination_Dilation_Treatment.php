@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -19,7 +19,7 @@
 ?>
 <tr class="dilationTreatment" data-key="<?php echo $key ?>" data-order="<?php echo $data_order ?>">
 	<td>
-		<?php echo CHtml::textField($name_stub . '['.$key.'][treatment_time]', isset($treatment) ? substr($treatment->treatment_time, 0, 5) : date('H:i'), array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'input-time'))?>
+		<?php echo CHtml::textField($name_stub.'['.$key.'][treatment_time]', isset($treatment) ? substr($treatment->treatment_time, 0, 5) : date('H:i'), array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'input-time'))?>
 	</td>
 	<td>
 		<?php if (isset($treatment) && $treatment->id) {
@@ -32,7 +32,7 @@
 	</td>
 	<td>
 		<select name="<?= $name_stub ?>[<?php echo $key ?>][drops]">
-			<?php for ($i=1;$i<=10;$i++) {
+			<?php for ($i = 1;$i <= 10;++$i) {
     ?>
 				<option value="<?php echo $i?>"<?php if ($i == @$treatment->drops) {
     ?> selected="selected"<?php 

@@ -19,8 +19,7 @@ namespace OEModule\PASAPI\models;
  */
 
 /**
- * Class PasApiAssignment
- * @package OEModule\PASAPI\models
+ * Class PasApiAssignment.
  *
  * @property $resource_type
  * @property $resource_id
@@ -53,7 +52,7 @@ class PasApiAssignment extends \BaseActiveRecord
     public function rules()
     {
         return array(
-            array('id, resource_id, resource_type, internal_id, internal_type, created_date, last_modified_date, created_user_id, last_modified_user_id', 'safe', 'on'=>'search'),
+            array('id, resource_id, resource_type, internal_id, internal_type, created_date, last_modified_date, created_user_id, last_modified_user_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -65,6 +64,7 @@ class PasApiAssignment extends \BaseActiveRecord
      * This allows for fault tolerance on internal models that might be deleted by other means.
      *
      * @param bool $force_create
+     *
      * @return \CActiveRecord
      */
     public function getInternal($force_create = false)
@@ -73,11 +73,12 @@ class PasApiAssignment extends \BaseActiveRecord
             $internal = self::model($this->internal_type)->findByPk($this->internal_id);
             if (!$internal && $force_create) {
                 $this->internal_id = null;
-                $internal = new $this->internal_type;
+                $internal = new $this->internal_type();
             }
+
             return $internal;
         } else {
-            return new $this->internal_type;
+            return new $this->internal_type();
         }
 
     }
@@ -94,7 +95,7 @@ class PasApiAssignment extends \BaseActiveRecord
     {
         $this->lock($resource_type, $resource_id);
         if (is_null($internal_type)) {
-            $internal_type = 'OEModule\\PASAPI\\resources\\' . $resource_type;
+            $internal_type = 'OEModule\\PASAPI\\resources\\'.$resource_type;
         }
 
         $record = $this->findByAttributes(array('resource_type' => $resource_type, 'resource_id' => $resource_id));

@@ -3,9 +3,9 @@
 class m140619_104327_vc_new_shortcodes extends OEMigration
 {
     private $shortcodes = array(
-            array('default_code' => 'ccl', 'code' => 'ccl', 'method' => 'getCCTLeft', 'description' => 'Examination CCT value for left eye', ),
-            array('default_code' => 'ccr', 'code' => 'ccr', 'method' => 'getCCTRight', 'description' => 'Examination CCT value for right eye', ),
-            array('default_code' => 'glr', 'code' => 'glr', 'method' => 'getGlaucomaRisk', 'description' => 'Get the most recent Glaucoma Risk value for the patient', ),
+            array('default_code' => 'ccl', 'code' => 'ccl', 'method' => 'getCCTLeft', 'description' => 'Examination CCT value for left eye'),
+            array('default_code' => 'ccr', 'code' => 'ccr', 'method' => 'getCCTRight', 'description' => 'Examination CCT value for right eye'),
+            array('default_code' => 'glr', 'code' => 'glr', 'method' => 'getGlaucomaRisk', 'description' => 'Get the most recent Glaucoma Risk value for the patient'),
     );
 
     public function up()

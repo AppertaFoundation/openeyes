@@ -36,7 +36,7 @@
 			</thead>
 			<tbody>
 				<?php
-				foreach ($operators['items'] as $i => $operator) {?>
+                foreach ($operators['items'] as $i => $operator) {?>
 					<tr class="clickable" data-id="<?php echo $operator->id?>" data-uri="OphTrLaser/admin/editLaserOperator/<?php echo $operator->id?>">
 						<td><input type="checkbox" name="operators[]" value="<?php echo $operator->id?>" /></td>
 						<td><?php echo $operator->operator->fullName?></td>

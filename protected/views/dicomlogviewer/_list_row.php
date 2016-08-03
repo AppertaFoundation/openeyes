@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -62,7 +62,7 @@
         <div style="display:none; width:500px;" class="dialogbox" id="dialog_<?php echo $i + 1 ?>" title="More Info"
              data-id="<?php echo $i + 1 ?>">
             <p><b><?php echo basename($log['filename']) ?></b></p>
-            <button onclick="reprocessFile('<?php echo $log["filename"]?>', this)" style="float:right;margin-bottom: 20px;">Reprocess file</button>
+            <button onclick="reprocessFile('<?php echo $log['filename']?>', this)" style="float:right;margin-bottom: 20px;">Reprocess file</button>
             <p><b>History</b> <br>
             <table class="grid audit-logs">
                 <thead>

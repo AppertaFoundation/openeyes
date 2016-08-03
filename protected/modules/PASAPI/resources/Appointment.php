@@ -1,7 +1,9 @@
-<?php namespace OEModule\PASAPI\resources;
+<?php
+
+namespace OEModule\PASAPI\resources;
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -9,16 +11,15 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
 /**
- * Class Appointment
- * @package OEModule\PASAPI\resources
+ * Class Appointment.
  *
  * @property string $AppointmentDate
  * @property string $AppointmentTime
@@ -26,7 +27,7 @@
  */
 class Appointment extends BaseResource
 {
-    static protected $resource_type = 'Appointment';
+    protected static $resource_type = 'Appointment';
 
     public function validate()
     {
@@ -47,33 +48,34 @@ class Appointment extends BaseResource
 
     public function setDefaultWhen(\DateTime $when = null)
     {
-        $this->default_date = $when ? $when->format('Y-m-d') : "";
-        $this->default_time = $when ? $when->format('H:i') : "";
+        $this->default_date = $when ? $when->format('Y-m-d') : '';
+        $this->default_time = $when ? $when->format('H:i') : '';
     }
 
     /**
      * @return \DateTime
+     *
      * @throws \Exception
      */
     public function getWhen()
     {
-        if (!property_exists($this, "AppointmentDate"))
+        if (!property_exists($this, 'AppointmentDate'))
             $this->AppointmentDate = $this->default_date;
-        if (!property_exists($this, "AppointmentTime"))
+        if (!property_exists($this, 'AppointmentTime'))
             $this->AppointmentTime = $this->default_time;
 
-        $concatenated = substr($this->AppointmentDate,0,10) . " " . $this->AppointmentTime;
+        $concatenated = substr($this->AppointmentDate, 0, 10).' '.$this->AppointmentTime;
 
         $result = \DateTime::createFromFormat('Y-m-d H:i', $concatenated);
 
         if (!$result)
-            throw new \Exception("Could not parse date and time values ({$concatenated}):" . print_r(\DateTime::getLastErrors(), true));
+            throw new \Exception("Could not parse date and time values ({$concatenated}):".print_r(\DateTime::getLastErrors(), true));
 
         return $result;
     }
 
     /**
-     * Parse all the mapping items and return them as a key value array
+     * Parse all the mapping items and return them as a key value array.
      *
      * Note, expects resource to have been validated
      *
@@ -82,7 +84,7 @@ class Appointment extends BaseResource
     public function getMappingsArray()
     {
         $res = array();
-        if (property_exists($this, "AppointmentMappingItems")) {
+        if (property_exists($this, 'AppointmentMappingItems')) {
             foreach ($this->AppointmentMappingItems as $item) {
                 $res[$item->Key] = $item->Value;
             }
@@ -90,6 +92,5 @@ class Appointment extends BaseResource
 
         return $res;
     }
-
 
 }

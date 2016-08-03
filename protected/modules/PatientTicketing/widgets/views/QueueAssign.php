@@ -29,8 +29,8 @@ if ($queue) {?>
                         'form_name' => $fld['form_name'],
                         'form_data' => $form_data,
                     ));
-			}
-			else { ?>
+            }
+            else { ?>
 			<fieldset class="field-row row">
 				<div class="large-<?= $this->label_width ?> column">
 					<label for="<?= $fld['form_name']?>"><?= $fld['label'] ?>:</label>
@@ -71,11 +71,11 @@ if ($queue) {?>
 				<?php	foreach ($queue->event_types as $et) {?>
 					<li><a href="<?= Yii::app()->baseURL?>/<?=$et->class_name?>/default/create?patient_id=<?= $this->patient_id ?>" class="button small event-type-link auto-save" data-queue="<?= $this->current_queue_id?>"><?= $et->name ?></a></li>
 				<?php }
-				if ($print_letter_event) {?>
+                if ($print_letter_event) {?>
 					<li><a href="<?= Yii::app()->baseURL?>/<?=$print_letter_event->eventType->class_name?>/default/doPrintAndView/<?=$print_letter_event->id?>?all=1" class="button small event-type-link auto-save" data-queue="<?= $this->current_queue_id?>">Print Letter</a></li>
 				<?php } ?>
 			</ul>
-		<?php }	?>
+		<?php }    ?>
 	</div>
 	</div>
 <?php } ?>

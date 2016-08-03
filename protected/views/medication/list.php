@@ -6,17 +6,16 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 $medications = $current ? $patient->medications : $patient->previous_medications;
 ?>
 <?php if ($medications): ?>
-    <h4><?= $current ? "Current" : "Previous" ?></h4>
+    <h4><?= $current ? 'Current' : 'Previous' ?></h4>
     <?php foreach ($medications as $medication): ?>
         <table class="plain patient-data">
             <tr>
@@ -25,13 +24,13 @@ $medications = $current ? $patient->medications : $patient->previous_medications
             </tr>
             <tr>
                 <th>Administration</th>
-                <td><?= $medication->dose ?> <?= $medication->route->name ?> <?= $medication->option ? "({$medication->option->name})" : "" ?> <?= $medication->frequency->name ?></td>
+                <td><?= $medication->dose ?> <?= $medication->route->name ?> <?= $medication->option ? "({$medication->option->name})" : '' ?> <?= $medication->frequency->name ?></td>
             </tr>
             <tr>
                 <th>Date</th>
                 <td>
                     <?php
-                    echo Helper::formatFuzzyDate($medication->start_date) . " - ";
+                    echo Helper::formatFuzzyDate($medication->start_date).' - ';
                     if (!$current) {
                         echo Helper::formatFuzzyDate($medication->end_date);
                         if ($medication->stop_reason) echo " (reason for stopping: {$medication->stop_reason->name})";

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -20,7 +20,7 @@
 <?php
 extract($this->getEpisodes());
 $current_episode = isset($current_episode) ? $current_episode : @$this->current_episode;
-$noEpisodes = (count($episodes) <1 && count($supportserviceepisodes) <1 && count($legacyepisodes) <1);
+$noEpisodes = (count($episodes) < 1 && count($supportserviceepisodes) < 1 && count($legacyepisodes) < 1);
 ?>
 
 <h1 class="badge">Episodes and events</h1>
@@ -42,25 +42,25 @@ $noEpisodes = (count($episodes) <1 && count($supportserviceepisodes) <1 && count
 	</div>
 <?php } else {
 
-	$this->beginContent('//patient/episodes_container', array(
-		'cssClass' => isset($cssClass) ? $cssClass : ''
-	));
+    $this->beginContent('//patient/episodes_container', array(
+        'cssClass' => isset($cssClass) ? $cssClass : '',
+    ));
 
-	if ($current_episode) {
-		if ($this->editing) {
-			$this->renderPartial('/clinical/updateEpisode',
-				array('episode' => $current_episode, 'error' => $error)
-			);
-		} else {
-			$this->renderPartial('/clinical/episodeSummary',
-				array('episode' => $current_episode)
-			);
-		}
-	} else if (count($legacyepisodes)) {?>
+    if ($current_episode) {
+        if ($this->editing) {
+            $this->renderPartial('/clinical/updateEpisode',
+                array('episode' => $current_episode, 'error' => $error)
+            );
+        } else {
+            $this->renderPartial('/clinical/episodeSummary',
+                array('episode' => $current_episode)
+            );
+        }
+    } elseif (count($legacyepisodes)) {?>
 		<h2>No episodes</h2>
 		<div class="alert-box alert with-icon">
 			There are currently no episodes for this patient, please click the Add episode button to open a new episode.
 		</div>
 	<?php }
-	$this->endContent();
+    $this->endContent();
 }?>

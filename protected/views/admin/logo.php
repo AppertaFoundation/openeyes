@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2012
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
@@ -65,23 +65,20 @@
             )
     );
 
-
-
     echo $form->error($model, 'header_logo');
     echo $form->error($model, 'secondary_logo');
 
-    $path = Yii::app()->basePath . '/runtime/';
+    $path = Yii::app()->basePath.'/runtime/';
     $yourImageUrl = Yii::app()->assetManager->publish($path);
     $imageLists = scandir($path, 1);
-    
-    
+
     foreach ($imageLists as $imageList) {
- if(strpos($imageList,"header") !== false) {
+ if(strpos($imageList, 'header') !== false) {
         $headerLogo = $imageList;
  }
- if(strpos($imageList,"secondary") !== false)  {
+ if(strpos($imageList, 'secondary') !== false)  {
         $secondaryLogo = $imageList;
-        
+
   }
 }
     ?>
@@ -91,10 +88,10 @@
         <tbody>
             <tr>
                 <td><?php echo $form->labelEx($model, 'Header Logo'); ?> (dimensions 500x100 pixels)</td>
-                <td><?php if (!empty($headerLogo)) { ?><img src="<?php echo $yourImageUrl . "/" . $headerLogo; ?>"  />
+                <td><?php if (!empty($headerLogo)) { ?><img src="<?php echo $yourImageUrl.'/'.$headerLogo; ?>"  />
 
-    <?php echo CHtml::link('Remove', "#", array("submit" => array('admin/deleteLogo/', 'header_logo' => $headerLogo), 'confirm' => 'Are you sure to delete header logo?', 'csrf' => true)); ?>
-    <?php echo "<br/><br/><br/>";
+    <?php echo CHtml::link('Remove', '#', array('submit' => array('admin/deleteLogo/', 'header_logo' => $headerLogo), 'confirm' => 'Are you sure to delete header logo?', 'csrf' => true)); ?>
+    <?php echo '<br/><br/><br/>';
 } ?><?php echo $form->fileField($model, 'header_logo'); ?></td>
 
 
@@ -102,9 +99,9 @@
             </tr>
             <tr>
                 <td><?php echo $form->labelEx($model, 'Secondary Logo'); ?> (dimensions 120x100 pixels)</td>
-                <td><?php if (!empty($secondaryLogo)) { ?><img src="<?php echo $yourImageUrl . "/" . $secondaryLogo; ?>" >
-    <?php echo CHtml::link('Remove', "#", array("submit" => array('admin/deleteLogo/', 'secondary_logo' => $secondaryLogo), 'confirm' => 'Are you sure to delete secondary logo?', 'csrf' => true)); ?>
-    <?php echo "<br/><br/><br/>";
+                <td><?php if (!empty($secondaryLogo)) { ?><img src="<?php echo $yourImageUrl.'/'.$secondaryLogo; ?>" >
+    <?php echo CHtml::link('Remove', '#', array('submit' => array('admin/deleteLogo/', 'secondary_logo' => $secondaryLogo), 'confirm' => 'Are you sure to delete secondary logo?', 'csrf' => true)); ?>
+    <?php echo '<br/><br/><br/>';
 } ?> 
 <?php echo $form->fileField($model, 'secondary_logo'); ?>
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -8,14 +8,13 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-require_once(__DIR__ . '/PASAPI_BaseTest.php');
+require_once __DIR__.'/PASAPI_BaseTest.php';
 use OEModule\PASAPI\resources\PatientAppointment;
 
 class PASAPI_PatientAppointment_Test extends PASAPI_BaseTest
@@ -30,7 +29,7 @@ class PASAPI_PatientAppointment_Test extends PASAPI_BaseTest
         'worklist_definition_mapping' => 'WorklistDefinitionMapping',
         'worklist_definition_mapping_value' => 'WorklistDefinitionMappingValue',
         'worklist' => 'Worklist',
-        'worklist_attribute' => 'WorklistAttribute'
+        'worklist_attribute' => 'WorklistAttribute',
     );
 
     public function setUp()
@@ -56,6 +55,7 @@ class PASAPI_PatientAppointment_Test extends PASAPI_BaseTest
     public function getTestPatientId()
     {
         $p = Patient::model()->findAll(array('limit' => 1))[0];
+
         return $p->id;
     }
 
@@ -63,7 +63,7 @@ class PASAPI_PatientAppointment_Test extends PASAPI_BaseTest
     {
         $this->setExpectedHttpError(400);
         $this->put('', null);
-        $this->assertXPathFound("/Failure");
+        $this->assertXPathFound('/Failure');
     }
 
     public function testEmptyPatientAppointment()
@@ -149,13 +149,14 @@ EOF;
 
     /**
      * This test is possibly in the wrong place - it's not a unit test, but it's not full integration either. It's just
-     * handy to be able to throw some XML at the resource and test it handles it
+     * handy to be able to throw some XML at the resource and test it handles it.
+     *
      * @dataProvider validationProvider
      */
     public function testValidation($xml, $valid)
     {
 
-        $test = \OEModule\PASAPI\resources\PatientAppointment::fromXml("V1", $xml);
+        $test = \OEModule\PASAPI\resources\PatientAppointment::fromXml('V1', $xml);
         $test->id = 'test';
 
         $res = $test->validate();
@@ -168,9 +169,9 @@ EOF;
 
     public function assertFailureMessage($message)
     {
-        $this->assertXPathFound("/Failure");
-        $this->assertXPathFound("/Failure/Errors");
-        $this->assertXPathRegExp("/" . $message . "/", "string(/Failure/Errors)");
+        $this->assertXPathFound('/Failure');
+        $this->assertXPathFound('/Failure/Errors');
+        $this->assertXPathRegExp('/'.$message.'/', 'string(/Failure/Errors)');
 
     }
     public function testPartialUpdateErrorsForNewRecord()
@@ -186,10 +187,10 @@ EOF;
         $this->setExpectedHttpError(400);
 
         $this->put('PartialUpdateError', $xml, array(
-            'X-OE-Partial-Record' => 1
+            'X-OE-Partial-Record' => 1,
         ));
 
-        $this->assertFailureMessage("Cannot perform partial update on a new record");
+        $this->assertFailureMessage('Cannot perform partial update on a new record');
     }
 
     public function partialUpdate_Provider()
@@ -224,45 +225,45 @@ EOF;
             'when' => '2016-05-23 11:30:00',
             'worklist_attributes' => array(
                 'Clinic Code' => 'A1',
-                'Doctor' => 'Dr G. Aylward'
-            )
+                'Doctor' => 'Dr G. Aylward',
+            ),
         );
 
         return array(
             array(
                 $xml,
-                "<PatientAppointment><Appointment><AppointmentTime>10:30</AppointmentTime></Appointment></PatientAppointment>",
+                '<PatientAppointment><Appointment><AppointmentTime>10:30</AppointmentTime></Appointment></PatientAppointment>',
                 array_merge(
                     $original_expectation,
                     array(
-                        'when' => '2016-05-23 10:30:00'
+                        'when' => '2016-05-23 10:30:00',
                     )
-                )
+                ),
             ),
             array(
                 $xml,
-                "<PatientAppointment><Appointment><AppointmentMappingItems><AppointmentMapping><Key>Doctor</Key><Value>Dr J. Morgan</Value></AppointmentMapping></AppointmentMappingItems></Appointment></PatientAppointment>",
+                '<PatientAppointment><Appointment><AppointmentMappingItems><AppointmentMapping><Key>Doctor</Key><Value>Dr J. Morgan</Value></AppointmentMapping></AppointmentMappingItems></Appointment></PatientAppointment>',
                 array_merge(
                     $original_expectation,
                     array(
                         'worklist_attributes' => array(
                             'Clinic Code' => 'A1',
-                            'Doctor' => 'Dr J. Morgan'
-                        )
+                            'Doctor' => 'Dr J. Morgan',
+                        ),
                     )
-                )
+                ),
             ),
             array(
                 $xml,
-                "<PatientAppointment><Appointment><AppointmentMappingItems><AppointmentMapping><Key>Clinic Code</Key><Value>Error code</Value></AppointmentMapping></AppointmentMappingItems></Appointment></PatientAppointment>",
+                '<PatientAppointment><Appointment><AppointmentMappingItems><AppointmentMapping><Key>Clinic Code</Key><Value>Error code</Value></AppointmentMapping></AppointmentMappingItems></Appointment></PatientAppointment>',
                 $original_expectation,
-                array(400, 'No worklist found')
+                array(400, 'No worklist found'),
             ),
             array(
                 $xml,
-                "<PatientAppointment><Appointment><AppointmentMappingItems><AppointmentMapping><Key>Clinic Code</Key><Value>B2</Value></AppointmentMapping></AppointmentMappingItems></Appointment></PatientAppointment>",
+                '<PatientAppointment><Appointment><AppointmentMappingItems><AppointmentMapping><Key>Clinic Code</Key><Value>B2</Value></AppointmentMapping></AppointmentMappingItems></Appointment></PatientAppointment>',
                 $original_expectation,
-                array(400, 'Worklist mapping change not allowed for partial update.')
+                array(400, 'Worklist mapping change not allowed for partial update.'),
             ),
         );
     }
@@ -303,7 +304,7 @@ EOF;
     {
         $this->put('PartialUpdate', $initial);
 
-        $id = $this->xPathQuery("/Success//Id")->item(0)->nodeValue;
+        $id = $this->xPathQuery('/Success//Id')->item(0)->nodeValue;
 
         $appt = WorklistPatient::model()->findByPk($id);
         $this->assertNotNull($appt);
@@ -312,7 +313,7 @@ EOF;
             $this->setExpectedHttpError($error[0]);
         }
         $this->put('PartialUpdate', $partial, array(
-            'X-OE-Partial-Record' => 1
+            'X-OE-Partial-Record' => 1,
         ));
 
         //var_dump($this->response->getBody(true));

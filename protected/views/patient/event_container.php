@@ -10,6 +10,6 @@
 
 	<?php $this->renderPartial('//patient/episodes_sidebar');?>
 	<?php $this->renderPartial('//patient/event_content', array(
-		'content' => $content
-	)); ?>
+        'content' => $content,
+    )); ?>
 </div>

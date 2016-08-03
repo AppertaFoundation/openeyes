@@ -1,7 +1,9 @@
-<?php namespace OEModule\PASAPI\resources;
+<?php
+
+namespace OEModule\PASAPI\resources;
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -9,29 +11,28 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
 /**
- * Class PatientAppointment
- * @package OEModule\PASAPI\resources
+ * Class PatientAppointment.
  *
  * @property PatientId $PatientId
  * @property Appointment $Appointment
  */
 class PatientAppointment extends BaseResource
 {
-    static protected $resource_type = 'PatientAppointment';
+    protected static $resource_type = 'PatientAppointment';
     /**
-     * Class of model that is stored internally for this resource
+     * Class of model that is stored internally for this resource.
      *
      * @var string
      */
-    static protected $model_class = 'WorklistPatient';
+    protected static $model_class = 'WorklistPatient';
 
     public $isNewResource;
     public $id;
@@ -43,6 +44,7 @@ class PatientAppointment extends BaseResource
 
     /**
      * PatientAppointment constructor.
+     *
      * @param $version
      * @param array $options
      */
@@ -56,13 +58,13 @@ class PatientAppointment extends BaseResource
 
     /**
      * As a primary resource (i.e. mapped to external resource) we need to ensure we have an id for tracking
-     * the resource in the system
+     * the resource in the system.
      *
      * @return bool
      */
     public function validate() {
         if (!$this->id) {
-            $this->addError("Resource ID required");
+            $this->addError('Resource ID required');
         }
 
         try {
@@ -82,12 +84,13 @@ class PatientAppointment extends BaseResource
         $this->isNewResource = $model->isNewRecord;
 
         if ($this->isNewResource && $this->partial_record) {
-            $this->addError("Cannot perform partial update on a new record");
-            return null;
+            $this->addError('Cannot perform partial update on a new record');
+
+            return;
         }
 
         if (!$this->validate())
-            return null;
+            return;
 
         $transaction = $this->startTransaction();
 
@@ -117,7 +120,8 @@ class PatientAppointment extends BaseResource
     public function delete()
     {
         if (!$this->assignment) {
-            $this->addError("Resource ID required");
+            $this->addError('Resource ID required');
+
             return false;
         }
 
@@ -128,20 +132,20 @@ class PatientAppointment extends BaseResource
                 // reference exists, but internal model could not be found
                 // TODO: decide if the assignment model should be cleared out given that the internal reference
                 // doesn't exist.
-                throw new \Exception("Could not find internal model to delete.");
+                throw new \Exception('Could not find internal model to delete.');
             }
 
             if ($model->isNewRecord)
-                throw new \Exception("No appointment reference found for this id");
+                throw new \Exception('No appointment reference found for this id');
 
             if (!$model->delete()) {
                 $this->addModelErrors($model->getErrors());
-                throw new \Exception("Could not delete internal model.");
+                throw new \Exception('Could not delete internal model.');
             }
 
             if (!$this->assignment->delete()) {
                 $this->addModelErrors($this->assignment->getErrors());
-                throw new \Exception("Could not delete external reference.");
+                throw new \Exception('Could not delete external reference.');
             }
 
             if ($transaction)
@@ -159,13 +163,15 @@ class PatientAppointment extends BaseResource
 
     /**
      * @return \Patient
+     *
      * @throws \Exception
      */
     protected function resolvePatient()
     {
         if (!isset($this->_patient)) {
-            $this->_patient = property_exists($this, "PatientId") ? $this->PatientId->getModel() : null;
+            $this->_patient = property_exists($this, 'PatientId') ? $this->PatientId->getModel() : null;
         }
+
         return $this->_patient;
     }
 
@@ -184,6 +190,7 @@ class PatientAppointment extends BaseResource
 
     /**
      * @param \WorklistPatient $wp
+     *
      * @return \Patient
      */
     protected function mapPatient(\WorklistPatient $wp)
@@ -198,6 +205,7 @@ class PatientAppointment extends BaseResource
     protected function mapWhen(\WorklistPatient $wp)
     {
         $default_when = $wp->when ? \DateTime::createFromFormat('Y-m-d H:i:s', $wp->when) : null;
+
         return $this->resolveWhen($default_when);
     }
 
@@ -210,11 +218,13 @@ class PatientAppointment extends BaseResource
                     $attributes[$attr->worklistattribute->name] = $attr->attribute_value;
             }
         }
+
         return $attributes;
     }
 
     /**
      * @param \WorklistPatient $model
+     *
      * @return bool|\WorklistPatient
      */
     public function saveModel(\WorklistPatient $model)
@@ -238,7 +248,7 @@ class PatientAppointment extends BaseResource
                 if ($this->warn_errors)
                     return false;
 
-                throw new \Exception("Could not add patient to worklist");
+                throw new \Exception('Could not add patient to worklist');
             }
         }
         else {
@@ -250,7 +260,7 @@ class PatientAppointment extends BaseResource
                 if ($this->warn_errors)
                     return false;
 
-                throw new \Exception("Could not update patient worklist entry");
+                throw new \Exception('Could not update patient worklist entry');
             };
         }
 

@@ -45,7 +45,7 @@
 
 						<div class="field-row">
 							<div class="field-info">
-								<?php if (count($bookings) >0) {?>
+								<?php if (count($bookings) > 0) {?>
 									Please indicate whether this Consent Form is for an existing booking or for unbooked procedures:
 								<?php } else {?>
 									There are no open bookings in the current episode so you can only create a consent form for unbooked procedures.
@@ -77,11 +77,11 @@
                                                     echo '<br/>';
                                                 }
                                                 echo $operation->eye->name.' '.$procedure->term;
-												}?>
+                                                }?>
 											</span>
 										</span>
 									</label>
-									<?php if (Element_OphTrConsent_Procedure::model()->find('booking_event_id=?',array($operation->event_id))) {?>
+									<?php if (Element_OphTrConsent_Procedure::model()->find('booking_event_id=?', array($operation->event_id))) {?>
 										<div class="alert-box alert with-icon">
 											Warning: this booking already has a consent form
 										</div>
@@ -90,7 +90,7 @@
 								<label class="highlight booking">
 									<span class="row">
 										<span class="large-1 column">
-											<input type="radio" value="unbooked" name="SelectBooking" <?php if (count($bookings)==0) {?>checked="checked" <?php }?>/>
+											<input type="radio" value="unbooked" name="SelectBooking" <?php if (count($bookings) == 0) {?>checked="checked" <?php }?>/>
 										</span>
 										<span class="large-11 column">
 											Unbooked procedures

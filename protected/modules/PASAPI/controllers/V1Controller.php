@@ -22,12 +22,12 @@ use UserIdentity;
 
 class V1Controller extends \CController
 {
-    static protected $resources = array('Patient', 'PatientAppointment');
-    static protected $version = 'V1';
-    static protected $supported_formats = array('xml');
+    protected static $resources = array('Patient', 'PatientAppointment');
+    protected static $version = 'V1';
+    protected static $supported_formats = array('xml');
 
-    static public $UPDATE_ONLY_HEADER = 'HTTP_X_OE_UPDATE_ONLY';
-    static public $PARTIAL_RECORD_HEADER = 'HTTP_X_OE_PARTIAL_RECORD';
+    public static $UPDATE_ONLY_HEADER = 'HTTP_X_OE_UPDATE_ONLY';
+    public static $PARTIAL_RECORD_HEADER = 'HTTP_X_OE_PARTIAL_RECORD';
 
     /**
      * @var string output format defaults to xml
@@ -139,7 +139,7 @@ class V1Controller extends \CController
     }
 
     /**
-     * Whether the request is an "updateOnly" request
+     * Whether the request is an "updateOnly" request.
      *
      * @return bool
      */
@@ -148,12 +148,12 @@ class V1Controller extends \CController
         if (!array_key_exists(static::$UPDATE_ONLY_HEADER, $_SERVER))
             return false;
 
-        return (bool)$_SERVER[static::$UPDATE_ONLY_HEADER];
+        return (bool) $_SERVER[static::$UPDATE_ONLY_HEADER];
     }
 
     /**
      * Whether the request is a partial record which only sets the fields that are provided
-     * on the given record
+     * on the given record.
      *
      * @return bool
      */
@@ -162,7 +162,7 @@ class V1Controller extends \CController
         if (!array_key_exists(static::$PARTIAL_RECORD_HEADER, $_SERVER))
             return false;
 
-        return (bool)$_SERVER[static::$PARTIAL_RECORD_HEADER];
+        return (bool) $_SERVER[static::$PARTIAL_RECORD_HEADER];
     }
 
     /**
@@ -186,7 +186,7 @@ class V1Controller extends \CController
         try {
             $resource = $resource_model::fromXml(static::$version, $body, array(
                 'update_only' => $this->getUpdateOnly(),
-                'partial_record' => $this->getPartialRecord()
+                'partial_record' => $this->getPartialRecord(),
             ));
 
             if ($resource->errors) {
@@ -201,7 +201,7 @@ class V1Controller extends \CController
                 }
                 else {
                     // no internal id indicates we didn't get a resource
-                    $response = array('Message' => $resource_type . ' not created');
+                    $response = array('Message' => $resource_type.' not created');
                     // map errors to warnings if this is the case
                     if ($resource->errors)
                         $response['Warnings'] = $resource->errors;
@@ -237,7 +237,7 @@ class V1Controller extends \CController
                 \OELog::log(print_r($errors));
             }
             else {
-                $errors = array("Could not save resource");
+                $errors = array('Could not save resource');
             }
 
             $this->sendErrorResponse(500, $errors);
@@ -250,7 +250,7 @@ class V1Controller extends \CController
             $this->sendErrorResponse(404, "Unrecognised Resource type {$resource_type}");
 
         if (!$id)
-            $this->sendResponse(404, "External Resource ID required");
+            $this->sendResponse(404, 'External Resource ID required');
 
         $resource_model = $this->getResourceModel($resource_type);
 
@@ -259,7 +259,7 @@ class V1Controller extends \CController
 
         try {
             if (!$resource = $resource_model::fromResourceId(static::$version, $id))
-                $this->sendResponse(404, "Could not find resource for external Id");
+                $this->sendResponse(404, 'Could not find resource for external Id');
 
             if ($resource->delete()) {
                 $this->sendResponse(204);
@@ -271,7 +271,7 @@ class V1Controller extends \CController
                 $errors[] = $e->getMessage();
             }
             else {
-                $errors = array("Could not delete resource");
+                $errors = array('Could not delete resource');
             }
 
             $this->sendErrorResponse(500, $errors);

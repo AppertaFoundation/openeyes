@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -20,7 +20,7 @@
 <div class="OphCoTherapyapplication_DecisionTreeNode">
 <?php if ($model->parent) {
 ?>
-	<div><a href="<?php echo Yii::app()->createUrl('OphCoTherapyapplication/admin/viewdecisiontree/') . '/'. $model->decisiontree_id . '?node_id=' . $model->parent_id ?>" class="view_parent">&lt;&lt; Parent</a></div>
+	<div><a href="<?php echo Yii::app()->createUrl('OphCoTherapyapplication/admin/viewdecisiontree/').'/'.$model->decisiontree_id.'?node_id='.$model->parent_id ?>" class="view_parent">&lt;&lt; Parent</a></div>
 <?php
 }
 if ($model->rules) {
@@ -29,16 +29,16 @@ if ($model->rules) {
 	<div class="rules curvybox blue column end">
 		<h4>Rules</h4>
 		<?php foreach ($model->rules as $rule) {
-			$this->renderPartial('view_OphCoTherapyapplication_DecisionTreeNodeRule', array(
-					'model' => $rule,
-			));
-		}?>
+            $this->renderPartial('view_OphCoTherapyapplication_DecisionTreeNodeRule', array(
+                    'model' => $rule,
+            ));
+        }?>
 	</div>
 <?php
 }
 ?>
 		<?php
-			if ($model->canAddRule()) {?>
+            if ($model->canAddRule()) {?>
 		<div>
 			<a href="#" class="add_rule" data-node_id="<?php echo $model->id ?>">Add rule</a>
 		</div>
@@ -68,25 +68,25 @@ if ($model->children) {
 <div class="children curvybox blue">
 	<h4>Children</h4>
 	<?php foreach ($model->children as $child) {
-	?>
+    ?>
 		<div class="child curvybox">
 			<?php
-			if ($child->rules) {
-				foreach ($child->rules as $rule) { echo ' [' . $rule->displayParentCheck() . ' ' . $rule->displayParentCheckValue() . ']'; }
-			} else {
-				echo '[DEFAULT]';
-			}
-			?>:
-			<a href="<?php echo Yii::app()->createUrl('OphCoTherapyapplication/admin/viewdecisiontree/') . '/' . $model->decisiontree_id . '?node_id=' . $child->id ?>"><?php echo $child->question ? $child->question : $child->outcome->name ?></a>
+            if ($child->rules) {
+                foreach ($child->rules as $rule) { echo ' ['.$rule->displayParentCheck().' '.$rule->displayParentCheckValue().']'; }
+            } else {
+                echo '[DEFAULT]';
+            }
+            ?>:
+			<a href="<?php echo Yii::app()->createUrl('OphCoTherapyapplication/admin/viewdecisiontree/').'/'.$model->decisiontree_id.'?node_id='.$child->id ?>"><?php echo $child->question ? $child->question : $child->outcome->name ?></a>
 		</div>
 	<?php
-	}?>
+    }?>
 </div>
 <?php
 }
 ?>
 <div>
-<?php if ($model->canAddChild() ) {?>
+<?php if ($model->canAddChild()) {?>
 <a href="#" class="add_node" data-dt_id="<?php echo $model->decisiontree_id ?>" data-parent_id="<?php echo $model->id?>">Add child</a>
 <?php } ?>
 </div>

@@ -9,7 +9,7 @@
     <div>
         <?php
         $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-            'enableAjaxValidation'=>false,
+            'enableAjaxValidation' => false,
         ))?>
             <button class="mdl-button mdl-js-button mdl-button--raised"
                     id="exit-button">

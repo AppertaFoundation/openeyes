@@ -19,7 +19,7 @@
  */
 class DrugTypeTest extends CDbTestCase
 {
-    /**
+       /**
         * @var DrugType
         */
        protected $model;

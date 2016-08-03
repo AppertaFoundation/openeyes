@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -8,13 +8,12 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 $this->beginContent('//patient/event_container');
 ?>
 
@@ -22,15 +21,15 @@ $this->beginContent('//patient/event_container');
 // Event actions
 if ($this->canMarkRead()) {
     $this->event_actions[] = EventAction::link('Mark Read',
-        Yii::app()->createUrl($this->getModule()->name . '/Default/markRead/'.$this->event->id), null, array('class' => 'warning button small'));
+        Yii::app()->createUrl($this->getModule()->name.'/Default/markRead/'.$this->event->id), null, array('class' => 'warning button small'));
 }
 elseif ($this->canMarkUnread()) {
     $this->event_actions[] = EventAction::link('Mark Unread',
-        Yii::app()->createUrl($this->getModule()->name . '/Default/markUnread/'.$this->event->id), null, array('class' => 'secondary button small'));
+        Yii::app()->createUrl($this->getModule()->name.'/Default/markUnread/'.$this->event->id), null, array('class' => 'secondary button small'));
 }
 
 if ($this->checkPrintAccess()) {
-    $this->event_actions[] = EventAction::button('Print', 'print',null,array('class'=>'button small'));
+    $this->event_actions[] = EventAction::button('Print', 'print', null, array('class' => 'button small'));
 }
 ?>
 
@@ -43,4 +42,4 @@ if ($this->checkPrintAccess()) {
 <?php $this->displayErrors(@$errors)?>
 <?php $this->renderOpenElements($this->action->id)?>
 
-<?php $this->endContent() ;?>
+<?php $this->endContent();?>

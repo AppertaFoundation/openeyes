@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -30,8 +30,8 @@
 				<p><em><?php echo $headertext?></em></p>
 			<?php }?>
 			<?php
-			if (!empty($subsections) || !empty($procedures)) {
-				if (!empty($subsections)) {?>
+            if (!empty($subsections) || !empty($procedures)) {
+                if (!empty($subsections)) {?>
 					<div class="field-row">
 						<?php echo CHtml::dropDownList('subsection_id_'.$identifier, '', $subsections, array('empty' => 'Select a subsection'));?>
 					</div>
@@ -43,21 +43,21 @@
 						<?php echo CHtml::dropDownList('select_procedure_id_'.$identifier, '', $procedures, array('empty' => 'Select a commonly used procedure'));?>
 					</div>
 				<?php }
-			}
-			?>
+            }
+            ?>
 			<div class="field-row">
 				<?php
-				$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-						'name'=>'procedure_id_'.$identifier,
-						'id'=>'autocomplete_procedure_id_'.$identifier,
-						'source'=>"js:function(request, response) {
+                $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+                        'name' => 'procedure_id_'.$identifier,
+                        'id' => 'autocomplete_procedure_id_'.$identifier,
+                        'source' => "js:function(request, response) {
 
 						var existingProcedures = $('#procedureList_$identifier .procedure .value')
 							.map(function() { return $(this).text(); })
 							.get();
 
 						$.ajax({
-							'url': '" . Yii::app()->createUrl('procedure/autocomplete') . "',
+							'url': '".Yii::app()->createUrl('procedure/autocomplete')."',
 							'type':'GET',
 							'data':{'term': request.term, 'restrict': '$restrict'},
 							'success':function(data) {
@@ -76,11 +76,11 @@
 							}
 						});
 					}",
-						'options'=>array(
-							'minLength'=>'2',
-							'select'=>"js:function(event, ui) {
+                        'options' => array(
+                            'minLength' => '2',
+                            'select' => "js:function(event, ui) {
 							if (typeof(window.callbackVerifyAddProcedure) == 'function') {
-								window.callbackVerifyAddProcedure(ui.item.value,".($durations?'1':'0').",function(result) {
+								window.callbackVerifyAddProcedure(ui.item.value,".($durations ? '1' : '0').",function(result) {
 									if (result != true) {
 										$('#autocomplete_procedure_id_$identifier').val('');
 										return;
@@ -91,16 +91,16 @@
 								ProcedureSelectionSelectByName(ui.item.value,true,'$identifier');
 							}
 						}",
-						),
-						'htmlOptions'=>array('placeholder'=>'or enter procedure here')
-					)); ?>
+                        ),
+                        'htmlOptions' => array('placeholder' => 'or enter procedure here'),
+                    )); ?>
 			</div>
 		</fieldset>
 	</div>
 
 	<?php
-	$totalDuration = 0;
-	?>
+    $totalDuration = 0;
+    ?>
 	<div class="large-6 column">
 		<div id="procedureList_<?php echo $identifier?>" class="panel procedures" style="<?php if (empty($selected_procedures)) {?> display: none;<?php }?>">
 			<table class="plain">
@@ -115,10 +115,10 @@
 				</thead>
 				<tbody class="body">
 				<?php
-				if (!empty($selected_procedures)) {
-					foreach ($selected_procedures as $procedure) {
-						$totalDuration += $procedure['default_duration'];
-				?>
+                if (!empty($selected_procedures)) {
+                    foreach ($selected_procedures as $procedure) {
+                        $totalDuration += $procedure['default_duration'];
+                ?>
 						<tr class="item">
 							<td class="procedure">
 								<span class="field"><?= CHtml::hiddenField('Procedures_'.$identifier.'[]', $procedure['id']); ?></span>
@@ -134,10 +134,10 @@
 							</td>
 						</tr>
 					<?php	}
-					if (isset($_POST[$class]['total_duration_'.$identifier])) {
-						$total_duration = $_POST[$class]['total_duration_'.$identifier];
-					}
-				}?>
+                    if (isset($_POST[$class]['total_duration_'.$identifier])) {
+                        $total_duration = $_POST[$class]['total_duration_'.$identifier];
+                    }
+                }?>
 				</tbody>
 			</table>
 			<?php if ($durations) {?>
@@ -304,7 +304,7 @@ $('select[id^="select_procedure_id"]').unbind('change').change(function() {
 	if (procedure != 'Select a commonly used procedure') {
 
 		if (typeof(window.callbackVerifyAddProcedure) == 'function') {
-			window.callbackVerifyAddProcedure(procedure,"<?php echo $durations?'1':'0';?>",function(result) {
+			window.callbackVerifyAddProcedure(procedure,"<?php echo $durations ? '1' : '0';?>",function(result) {
 				if (result != true) {
 					select.val('');
 					return;
@@ -343,11 +343,11 @@ $('select[id^="select_procedure_id"]').unbind('change').change(function() {
 function ProcedureSelectionSelectByName(name, callback, identifier)
 {
 	$.ajax({
-		'url': baseUrl + '/procedure/details?durations=<?php echo $durations?'1':'0'?>&identifier='+identifier,
+		'url': baseUrl + '/procedure/details?durations=<?php echo $durations ? '1' : '0'?>&identifier='+identifier,
 		'type': 'GET',
 		'data': {'name': name},
 		'success': function(data) {
-			var enableDurations = <?php echo $durations?'true':'false'?>;
+			var enableDurations = <?php echo $durations ? 'true' : 'false'?>;
 
 			// append selection onto procedure list
 			$('#procedureList_'+identifier).find('.body').append(data);

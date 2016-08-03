@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -38,15 +38,15 @@
 			<?php foreach ($report->diagnoses as $ts => $diagnosis) {?>
 				<tr>
 					<td><?php echo $diagnosis['hos_num']?></td>
-					<td><?php echo $diagnosis['dob'] ? date('j M Y',strtotime($diagnosis['dob'])) : 'Unknown'?></td>
+					<td><?php echo $diagnosis['dob'] ? date('j M Y', strtotime($diagnosis['dob'])) : 'Unknown'?></td>
 					<td><?php echo $diagnosis['first_name']?></td>
 					<td><?php echo $diagnosis['last_name']?></td>
-					<td><?php echo date('j M Y',$ts)?></td>
+					<td><?php echo date('j M Y', $ts)?></td>
 					<td>
 						<?php
-						$_diagnosis = array_shift($diagnosis['diagnoses']);
-						echo $_diagnosis['eye'].' '.$_diagnosis['disorder'].' ('.$_diagnosis['type'].')';
-						?>
+                        $_diagnosis = array_shift($diagnosis['diagnoses']);
+                        echo $_diagnosis['eye'].' '.$_diagnosis['disorder'].' ('.$_diagnosis['type'].')';
+                        ?>
 					</td>
 				</tr>
 				<?php foreach ($diagnosis['diagnoses'] as $_diagnosis) {?>
@@ -55,7 +55,7 @@
 						<td></td>
 						<td></td>
 						<td></td>
-						<td><?php echo date('j M Y',strtotime($_diagnosis['date']))?></td>
+						<td><?php echo date('j M Y', strtotime($_diagnosis['date']))?></td>
 						<td>
 							<?php echo $_diagnosis['eye'].' '.$_diagnosis['disorder'].' ('.$_diagnosis['type'].')'?>
 						</td>

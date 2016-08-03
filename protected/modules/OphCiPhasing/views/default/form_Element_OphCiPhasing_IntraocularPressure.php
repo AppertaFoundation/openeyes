@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,14 +9,13 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 $key = 0;
 ?>
 <section class="element <?php echo $element->elementType->class_name ?>"
@@ -47,25 +46,25 @@ $key = 0;
 							</thead>
 							<tbody class="readings-right">
 								<?php
-									if ($element->right_readings) {
-										foreach ($element->right_readings as $index => $reading) {
-											$this->renderPartial('form_Element_OphCiPhasing_IntraocularPressure_Reading', array(
-												'key' => $key,
-												'reading' => $reading,
-												'side' => $reading->side,
-												'no_remove' => ($index == 0)
-											));
-											$key++;
-										}
-									} else {
-										$this->renderPartial('form_Element_OphCiPhasing_IntraocularPressure_Reading', array(
-											'key' => $key,
-											'side' => 0,
-											'no_remove' => true
-										));
-										$key++;
-									}
-								?>
+                                    if ($element->right_readings) {
+                                        foreach ($element->right_readings as $index => $reading) {
+                                            $this->renderPartial('form_Element_OphCiPhasing_IntraocularPressure_Reading', array(
+                                                'key' => $key,
+                                                'reading' => $reading,
+                                                'side' => $reading->side,
+                                                'no_remove' => ($index == 0),
+                                            ));
+                                            ++$key;
+                                        }
+                                    } else {
+                                        $this->renderPartial('form_Element_OphCiPhasing_IntraocularPressure_Reading', array(
+                                            'key' => $key,
+                                            'side' => 0,
+                                            'no_remove' => true,
+                                        ));
+                                        ++$key;
+                                    }
+                                ?>
 							</tbody>
 							<tfoot>
 								<tr>
@@ -106,25 +105,25 @@ $key = 0;
 							<tbody class="readings-left">
 								<?php
 
-									if ($element->left_readings) {
-										foreach ($element->left_readings as $index => $reading) {
-											$this->renderPartial('form_Element_OphCiPhasing_IntraocularPressure_Reading', array(
-												'key' => $key,
-												'reading' => $reading,
-												'side' => $reading->side,
-												'no_remove' => ($index == 0)
-											));
-											$key++;
-										}
-									} else {
-										$this->renderPartial('form_Element_OphCiPhasing_IntraocularPressure_Reading', array(
-											'key' => $key,
-											'side' => 1,
-											'no_remove' => true
-										));
-										$key++;
-									}
-								?>
+                                    if ($element->left_readings) {
+                                        foreach ($element->left_readings as $index => $reading) {
+                                            $this->renderPartial('form_Element_OphCiPhasing_IntraocularPressure_Reading', array(
+                                                'key' => $key,
+                                                'reading' => $reading,
+                                                'side' => $reading->side,
+                                                'no_remove' => ($index == 0),
+                                            ));
+                                            ++$key;
+                                        }
+                                    } else {
+                                        $this->renderPartial('form_Element_OphCiPhasing_IntraocularPressure_Reading', array(
+                                            'key' => $key,
+                                            'side' => 1,
+                                            'no_remove' => true,
+                                        ));
+                                        ++$key;
+                                    }
+                                ?>
 							</tbody>
 							<tfoot>
 								<tr>
@@ -148,9 +147,9 @@ $key = 0;
 </section>
 <script id="intraocularpressure_reading_template" type="text/html">
 	<?php
-	$this->renderPartial('form_Element_OphCiPhasing_IntraocularPressure_Reading', array(
-			'key' => '{{key}}',
-			'side' => '{{side}}',
-	));
-	?>
+    $this->renderPartial('form_Element_OphCiPhasing_IntraocularPressure_Reading', array(
+            'key' => '{{key}}',
+            'side' => '{{side}}',
+    ));
+    ?>
 </script>

@@ -36,7 +36,7 @@
 		</thead>
 		<tbody>
 			<?php
-			foreach ($model_list as $i => $model) {?>
+            foreach ($model_list as $i => $model) {?>
 				<tr data-attr-id="<?php echo $model->id?>">
 					<?php
                     $this->renderPartial('list_'.get_class($model), array(

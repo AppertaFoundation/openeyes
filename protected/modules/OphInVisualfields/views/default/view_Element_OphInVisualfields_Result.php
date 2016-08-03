@@ -29,7 +29,7 @@
 				<?php }?>
 			</div></div>
 	</div>
-	<?php if ($element->hasMultiSelectValue('assessment','Other')) { ?>
+	<?php if ($element->hasMultiSelectValue('assessment', 'Other')) { ?>
 		<div class="row data-row">
 			<div class="large-2 column data-label"><?= CHtml::encode($element->getAttributeLabel('other')) ?></div>
 			<div class="large-10 column data-value"><?= $element->textWithLineBreaks('other') ?></div>

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -92,25 +92,25 @@
 			</div>
 			<div class="large-6 column">
 				<?php
-				$this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-						'idSuffix'=>'Trabeculectomy',
-						'side'=>$element->eye->getShortName(),
-						'mode'=>'view',
-						'width'=>250,
-						'height'=>250,
-						'scale'=>0.72,
-						'model'=>$element,
-						'attribute'=>'eyedraw',
-						'idSuffix'=>'Trabeculectomy',
-					));
-				?>
+                $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+                        'idSuffix' => 'Trabeculectomy',
+                        'side' => $element->eye->getShortName(),
+                        'mode' => 'view',
+                        'width' => 250,
+                        'height' => 250,
+                        'scale' => 0.72,
+                        'model' => $element,
+                        'attribute' => 'eyedraw',
+                        'idSuffix' => 'Trabeculectomy',
+                    ));
+                ?>
 			</div>
 		</div>
 		<div class="row data-row">
 			<div class="large-4 column">
 				<h3 class="data-title">Trabeculectomy report</h3>
 				<div class="data-value highlight">
-					<?php foreach (explode(chr(10),CHtml::encode($element->report)) as $line) {?>
+					<?php foreach (explode(chr(10), CHtml::encode($element->report)) as $line) {?>
 						<?php echo $line?><br/>
 					<?php }?>
 				</div>
@@ -123,7 +123,7 @@
 					<?php } else {?>
 						<?php foreach ($element->difficulties as $difficulty) {?>
 							<?php if ($difficulty->name == 'Other') {?>
-								<?php echo str_replace("\n",'<br/>',$element->difficulty_other)?>
+								<?php echo str_replace("\n", '<br/>', $element->difficulty_other)?>
 							<?php }else{?>
 								<?php echo $difficulty->name?><br/>
 							<?php }?>
@@ -139,7 +139,7 @@
 					<?php } else {?>
 						<?php foreach ($element->complications as $complication) {?>
 							<?php if ($complication->name == 'Other') {?>
-								<?php echo str_replace("\n",'<br/>',$element->complication_other)?>
+								<?php echo str_replace("\n", '<br/>', $element->complication_other)?>
 							<?php }else{?>
 								<?php echo $complication->name?><br/>
 							<?php }?>

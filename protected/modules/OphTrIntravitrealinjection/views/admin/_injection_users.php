@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 if (!empty($injection_users)) {
-	foreach ($injection_users as $i => $user) {?>
+    foreach ($injection_users as $i => $user) {?>
 		<tr>
 			<td><input type="checkbox" name="injection_users[]" value="<?php echo $user->id?>" /></td>
 			<td><?php echo $user->user->fullName?></td>

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -37,7 +37,7 @@
 			<tbody id="patient_contacts">
                 <?php
                 foreach ($this->patient->contactAssignments as $pca) {
-					$this->renderPartial('_patient_contact_row',array('pca'=>$pca));
+                    $this->renderPartial('_patient_contact_row', array('pca' => $pca));
                 }
                 ?>
 			</tbody>
@@ -51,11 +51,11 @@
 
 				<div class="large-4 column">
 					<?php
-					$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-						'name'=>"contactname",
-						'id'=>"contactname",
-						'value'=>'',
-						'source'=>"js:function(request, response) {
+                    $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+                        'name' => 'contactname',
+                        'id' => 'contactname',
+                        'value' => '',
+                        'source' => "js:function(request, response) {
 
 							$('#btn-add-contact').hide();
 
@@ -64,7 +64,7 @@
 							$('img.loader').show();
 
 							$.ajax({
-								'url': '" . Yii::app()->createUrl('patient/possiblecontacts') . "',
+								'url': '".Yii::app()->createUrl('patient/possiblecontacts')."',
 								'type':'GET',
 								'data':{'term': request.term, 'filter': filter},
 								'success':function(data) {
@@ -98,9 +98,9 @@
 								}
 							});
 						}",
-						'options'=>array(
-							'minLength'=>'3',
-							'select'=>"js:function(event, ui) {
+                        'options' => array(
+                            'minLength' => '3',
+                            'select' => "js:function(event, ui) {
 								var value = ui.item.value;
 
 								$('#contactname').val('');
@@ -130,12 +130,12 @@
 
 								return false;
 							}",
-						),
-						'htmlOptions'=>array(
-							'placeholder' => 'search for contacts'
-						),
-					));
-					?>
+                        ),
+                        'htmlOptions' => array(
+                            'placeholder' => 'search for contacts',
+                        ),
+                    ));
+                    ?>
 				</div>
 
                 <div class="large-4 column">
@@ -157,15 +157,15 @@
 
 			<div id="add_contact" style="display: none;">
 				<?php
-				$form = $this->beginWidget('FormLayout', array(
-						'id'=>'add-contact',
-						'enableAjaxValidation'=>false,
-						'action'=>array('patient/addContact'),
-						'layoutColumns'=>array(
-							'label' => 3,
-							'field' => 7
-						),
-				))?>
+                $form = $this->beginWidget('FormLayout', array(
+                        'id' => 'add-contact',
+                        'enableAjaxValidation' => false,
+                        'action' => array('patient/addContact'),
+                        'layoutColumns' => array(
+                            'label' => 3,
+                            'field' => 7,
+                        ),
+                ))?>
 					<fieldset>
 						<legend>Add contact</legend>
 
@@ -186,7 +186,7 @@
 								<label for="institution_id">Institution:</label>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::dropDownList('institution_id','',CHtml::listData(Institution::model()->active()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Select -'))?>
+								<?php echo CHtml::dropDownList('institution_id', '', CHtml::listData(Institution::model()->active()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => '- Select -'))?>
 							</div>
 						</div>
 
@@ -195,7 +195,7 @@
 								<label for="site_id">Site:</label>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::dropDownList('site_id','',array())?>
+								<?php echo CHtml::dropDownList('site_id', '', array())?>
 							</div>
 						</div>
 
@@ -204,7 +204,7 @@
 								<label for="label_id">Label:</label>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::dropDownList('label_id','',CHtml::listData(ContactLabel::model()->active()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Select -'))?>
+								<?php echo CHtml::dropDownList('label_id', '', CHtml::listData(ContactLabel::model()->active()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => '- Select -'))?>
 							</div>
 						</div>
 
@@ -213,7 +213,7 @@
 								<label for="title">Title:</label>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::textField('title','',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+								<?php echo CHtml::textField('title', '', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
 							</div>
 						</div>
 
@@ -222,7 +222,7 @@
 								<label for="first_name">First name:</label>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::textField('first_name','',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+								<?php echo CHtml::textField('first_name', '', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
 							</div>
 						</div>
 
@@ -231,7 +231,7 @@
 								<label for="last_name">Last name:</label>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::textField('last_name','',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+								<?php echo CHtml::textField('last_name', '', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
 							</div>
 						</div>
 
@@ -240,7 +240,7 @@
 								<label for="nick_name">Nick name:</label>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::textField('nick_name','',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+								<?php echo CHtml::textField('nick_name', '', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
 							</div>
 						</div>
 
@@ -249,7 +249,7 @@
 								<label for="primary_phone">Primary phone:</label>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::textField('primary_phone','',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+								<?php echo CHtml::textField('primary_phone', '', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
 							</div>
 						</div>
 
@@ -258,7 +258,7 @@
 								<label for="qualifications">Qualifications:</label>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::textField('qualifications','',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+								<?php echo CHtml::textField('qualifications', '', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
 							</div>
 						</div>
 
@@ -281,15 +281,15 @@
 
 			<div id="edit_contact" style="display: none;">
 				<?php
-				$form = $this->beginWidget('FormLayout', array(
-					'id'=>'edit-contact',
-					'enableAjaxValidation'=>false,
-					'action'=>array('patient/editContact'),
-					'layoutColumns'=>array(
-						'label' => 3,
-						'field' => 9
-					),
-				))?>
+                $form = $this->beginWidget('FormLayout', array(
+                    'id' => 'edit-contact',
+                    'enableAjaxValidation' => false,
+                    'action' => array('patient/editContact'),
+                    'layoutColumns' => array(
+                        'label' => 3,
+                        'field' => 9,
+                    ),
+                ))?>
 
 					<fieldset>
 						<legend>Edit contact</legend>
@@ -312,7 +312,7 @@
 								<div class="label">Institution:</div>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::dropDownList('institution_id','',CHtml::listData(Institution::model()->active()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Select -'))?>
+								<?php echo CHtml::dropDownList('institution_id', '', CHtml::listData(Institution::model()->active()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => '- Select -'))?>
 							</div>
 						</div>
 
@@ -321,7 +321,7 @@
 								<div class="label">Site:</div>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::dropDownList('site_id','',array())?>
+								<?php echo CHtml::dropDownList('site_id', '', array())?>
 							</div>
 						</div>
 
@@ -354,7 +354,7 @@
                     'action' => array('patient/sendSiteMessage'),
                     'layoutColumns' => array(
                         'label' => 3,
-                        'field' => 9
+                        'field' => 9,
                     ),
                         ))
                 ?>

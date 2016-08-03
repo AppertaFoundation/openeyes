@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -35,12 +35,12 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
 			<div class="large-3 column end">
 				<?php
                 $outcomes = \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status::model()->activeOrPk($element->status_id)->bySubspecialty($this->firm->getSubspecialty())->findAll();
-                $html_options = array('empty'=>'- Please select -', 'nowrapper' => true, 'options' => array());
+                $html_options = array('empty' => '- Please select -', 'nowrapper' => true, 'options' => array());
                 $authRoles = Yii::app()->authManager->getRoles(Yii::app()->user->id);
 
                 foreach ($outcomes as $opt) {
                     $options = array('data-followup' => $opt->followup, 'data-ticket' => $opt->patientticket);
-                    if ($opt->patientticket && (!count($queues) || !isset($authRoles["Patient Tickets"]))) {
+                    if ($opt->patientticket && (!count($queues) || !isset($authRoles['Patient Tickets']))) {
                         $options['disabled'] = true;
                     }
                     $html_options['options'][(string) $opt->id] = $options;
@@ -92,7 +92,7 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
 
                             } else {
                                 echo CHtml::dropDownList('patientticket_queue', @$_POST['patientticket_queue'], $queues,
-                                    array('empty'=>'- Please select -', 'nowrapper' => true, 'options' => array()));
+                                    array('empty' => '- Please select -', 'nowrapper' => true, 'options' => array()));
                             }
         ?>
 					</div>
@@ -122,11 +122,11 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
 			</legend>
 			<div class="large-9 column end">
 				<?php
-                $html_options = array('empty'=>'- Please select -', 'options' => array());
-                echo CHtml::activeDropDownList($element, 'followup_quantity', $element->getFollowUpQuantityOptions(), array_merge($html_options, array('class'=>'inline')))?>
+                $html_options = array('empty' => '- Please select -', 'options' => array());
+                echo CHtml::activeDropDownList($element, 'followup_quantity', $element->getFollowUpQuantityOptions(), array_merge($html_options, array('class' => 'inline')))?>
 				<?php
-                $html_options = array('empty'=>'- Please select -', 'options' => array());
-                echo CHtml::activeDropDownList($element, 'followup_period_id', CHtml::listData(\Period::model()->findAll(array('order'=>'display_order')), 'id', 'name'), array_merge($html_options, array('class'=>'inline')))?>
+                $html_options = array('empty' => '- Please select -', 'options' => array());
+                echo CHtml::activeDropDownList($element, 'followup_period_id', CHtml::listData(\Period::model()->findAll(array('order' => 'display_order')), 'id', 'name'), array_merge($html_options, array('class' => 'inline')))?>
 				<label class="inline">
 					<?php echo CHtml::activeCheckBox($element, 'community_patient')?>
 					<?php echo $element->getAttributeLabel('community_patient')?>
@@ -146,11 +146,11 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
 				<div class="row">
 					<div class="large-3 column">
 						<?php
-                        $html_options = array('empty'=>'- Please select -', 'nowrapper' => true, 'options' => array());
+                        $html_options = array('empty' => '- Please select -', 'nowrapper' => true, 'options' => array());
                         echo $form->dropDownList($element, 'role_id', '\OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Role', $html_options) ?>
 					</div>
 					<div class="large-3 column end">
-						<?php echo CHtml::activeTextField($element, 'role_comments', array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+						<?php echo CHtml::activeTextField($element, 'role_comments', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
 					</div>
 				</div>
 			</div>

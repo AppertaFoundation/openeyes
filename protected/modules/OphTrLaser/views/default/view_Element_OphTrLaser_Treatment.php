@@ -21,7 +21,7 @@
 		<div class="element-eye right-eye column">
 			<div class="data-row">
 				<?php if ($element->hasRight()) {
-					if (!$element->right_procedures) {?>
+                    if (!$element->right_procedures) {?>
 						None
 					<?php } else {?>
 						<ul class="data-value">
@@ -38,7 +38,7 @@
 		<div class="element-eye left-eye column">
 			<div class="data-row">
 				<?php if ($element->hasLeft()) {
-					if (!$element->left_procedures) {?>
+                    if (!$element->left_procedures) {?>
 						None
 					<?php } else {?>
 						<ul class="data-value">

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2012
@@ -9,14 +9,13 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 ?>
 <div class="box admin">
     <h2>Examination Event Log(s)</h2>
@@ -54,7 +53,7 @@
         </tr>
         <tr>
             <td>Date of birth</td>
-            <td><?php echo date("d M Y", strtotime($data['patient']['dob'])); ?></td>
+            <td><?php echo date('d M Y', strtotime($data['patient']['dob'])); ?></td>
         </tr>
         <?php
         if($status === 'Duplicate Event'):
@@ -62,8 +61,8 @@
             ?>
         <tr>
             <th>&nbsp;</th>
-            <th>Existing - <?=date("d M Y", strtotime($data['examination_date']));?></th>
-            <th>New - <?=date("d M Y", strtotime($previous['examination_date']));?></th>
+            <th>Existing - <?=date('d M Y', strtotime($data['examination_date']));?></th>
+            <th>New - <?=date('d M Y', strtotime($previous['examination_date']));?></th>
         </tr>
         <?php
         else:

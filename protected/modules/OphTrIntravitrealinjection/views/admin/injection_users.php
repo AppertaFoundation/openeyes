@@ -36,7 +36,7 @@
 		<table class="grid">
 			<thead>
 				<tr>
-					<?php if (count($injection_users) >0) {?>
+					<?php if (count($injection_users) > 0) {?>
 						<th><input type="checkbox" name="selectall" id="selectall" /></th>
 					<?php }?>
 					<th>User</th>

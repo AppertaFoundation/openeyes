@@ -27,7 +27,7 @@ if ($this->checkPrintAccess()) {
 		<div class="alert-box alert with-icon">
 			This event is pending deletion and has been locked.
 		</div>
-	<?php } elseif (Element_OphTrConsent_Type::model()->find('event_id=?',array($this->event->id))->draft) {?>
+	<?php } elseif (Element_OphTrConsent_Type::model()->find('event_id=?', array($this->event->id))->draft) {?>
 		<div class="alert-box alert with-icon">
 			This consent form is a draft and can still be edited
 		</div>

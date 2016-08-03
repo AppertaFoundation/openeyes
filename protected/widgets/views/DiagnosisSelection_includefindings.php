@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -22,14 +22,14 @@
 <?php if (!$nowrapper) {?>
 <div class="row field-row diagnosis-selection">
 	<div class="large-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
-		<label for="<?php echo $class_field ;?>">Diagnosis:</label>
+		<label for="<?php echo $class_field;?>">Diagnosis:</label>
 	</div>
 	<div class="large-<?php echo $layoutColumns['field'];?> column end">
 		<?php }?>
 		<?php
-		$list_options = array('empty' => 'Select a commonly used diagnosis');
-		echo CHtml::dropDownList("{$class}[$field]", '', array(), $list_options);
-		if (!$nowrapper) {?>
+        $list_options = array('empty' => 'Select a commonly used diagnosis');
+        echo CHtml::dropDownList("{$class}[$field]", '', array(), $list_options);
+        if (!$nowrapper) {?>
 	</div>
 </div>
 <?php }?>
@@ -58,13 +58,13 @@
 <?php }?>
 		<div class="autocomplete-row" id="div_<?php echo "{$class}_{$field}_autocomplete_row"?>">
 			<?php
-			$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-					'name' => "{$class}[$field]",
-					'id' => "{$class_field}_0",
-					'value'=>'',
-					'source'=>"js:function(request, response) {
+            $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+                    'name' => "{$class}[$field]",
+                    'id' => "{$class_field}_0",
+                    'value' => '',
+                    'source' => "js:function(request, response) {
 						$.ajax({
-							'url': '" . Yii::app()->createUrl('/disorder/autocomplete') . "',
+							'url': '".Yii::app()->createUrl('/disorder/autocomplete')."',
 							'type':'GET',
 							'data':{'term': request.term, 'code': '$code'},
 							'success':function(data) {
@@ -88,12 +88,12 @@
 							}
 						});
 					}",
-					'options' => array(
-						'minLength'=>'3',
-						'select' => "js:function(event, ui) {
+                    'options' => array(
+                        'minLength' => '3',
+                        'select' => 'js:function(event, ui) {
 							currFirst = getSelectedObj(firstSelection);
 							DiagnosisSelection_addCondition(currFirst);
-							".($callback ? $callback."('disorder', ui.item.id, ui.item.value, ui.item.is_diabetes, ui.item.is_glaucoma);" : '')."
+							'.($callback ? $callback."('disorder', ui.item.id, ui.item.value, ui.item.is_diabetes, ui.item.is_glaucoma);" : '')."
 							$('#{$class_field}_0').val('');
 							$('#{$class_field}').children('option').map(function() {
 								if ($(this).val() == ui.item.id) {
@@ -102,12 +102,12 @@
 							});
 							return false;
 						}",
-					),
-					'htmlOptions' => array(
-						'placeholder' => $placeholder,
-					),
-				));
-			?>
+                    ),
+                    'htmlOptions' => array(
+                        'placeholder' => $placeholder,
+                    ),
+                ));
+            ?>
 		</div>
 		<?php if (!$nowrapper) {?>
 	</div>
@@ -296,7 +296,7 @@
 	{
 		var filterConditions = [];
 		<?php if (@$filterCallback) {?>
-			filterConditions = <?= @$filterCallback . "();" ?>
+			filterConditions = <?= @$filterCallback.'();' ?>
 		<?php }?>
 		var firstVal = firstSelection.val();
 		$('#div_<?= "{$class_field}_secondary_to"?>').slideUp(function() {
@@ -316,10 +316,10 @@
 	{
 		if (condition.id) {
 			<?php if (@$callback) {
-				echo $callback . "(condition.type, condition.id, condition.label);";
-			} else {
-				echo "console.log('NO CALLBACK SPECIFIED');";
-			}?>
+                echo $callback.'(condition.type, condition.id, condition.label);';
+            } else {
+                echo "console.log('NO CALLBACK SPECIFIED');";
+            }?>
 		}
 	}
 
@@ -353,7 +353,7 @@
 	$('#<?php echo $class?>_<?php echo $field?>').on('change', function() {
 		var filterConditions = [];
 		<?php if (@$filterCallback) {?>
-		filterConditions = <?= @$filterCallback . "();" ?>
+		filterConditions = <?= @$filterCallback.'();' ?>
 		<?php }?>
 		curr = getSelectedObj(firstSelection);
 		if (hasSecondList(curr, filterConditions)) {

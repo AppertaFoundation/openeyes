@@ -29,7 +29,7 @@ if ($closing_flsh = Yii::app()->user->getFlash('patient-ticketing-closing')) {
 
 if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) {
     $qs_svc = Yii::app()->service->getService('PatientTicketing_QueueSet');
-	if ($this->assetFolder) {?>
+    if ($this->assetFolder) {?>
 		<script type="text/javascript" src="<?php echo $this->assetFolder?>/<?php echo $this->shortName ?>.js"></script>
 	<?php }?>
 
@@ -43,8 +43,8 @@ if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) {
                 }
             }
     foreach ($tickets as $ticket) {
-				if(@$patient_ticket_in_review['ticket_id'] == $ticket->id)
-				{
+                if(@$patient_ticket_in_review['ticket_id'] == $ticket->id)
+                {
             $cat = $t_svc->getCategoryForTicket($ticket);
             $expand = false;
             if (in_array($ticket->id, $current_ticket_ids)) {
@@ -53,7 +53,7 @@ if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) {
             ?>
 					<div class="alert-box issue js-toggle-container" data-ticket-id="<?= $ticket->id ?>">
 						<header><strong class="box-title"><?= $cat->name ?>: Patient is in <?= $ticket->current_queue->queueset->name ?>, <?= $ticket->current_queue->name ?></strong></header>
-						<a href="#" class="toggle-trigger toggle-<?= $expand ? "hide" : "show" ?> js-toggle">
+						<a href="#" class="toggle-trigger toggle-<?= $expand ? 'hide' : 'show' ?> js-toggle">
 								<span class="icon-showhide">
 									Show/hide this section
 								</span>

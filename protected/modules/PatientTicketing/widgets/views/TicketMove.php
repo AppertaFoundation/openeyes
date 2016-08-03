@@ -39,7 +39,7 @@
 	<div>
 		<h2><?= $t_svc->getTicketActionLabel($this->ticket) ?></h2>
 		<?php
-			if (count($this->outcome_options) > 1) { ?>
+            if (count($this->outcome_options) > 1) { ?>
 				<fieldset class="field-row row">
 					<div class="large-2 column">
 						<label for="to_queue_id">To:</label>
@@ -56,8 +56,8 @@
 					</div>
 				</fieldset>
 		<?php
-			}
-			else {
+            }
+            else {
                 ?>
 				<input type="hidden" name="to_queue_id" value="<?=$this->outcome_queue_id?>" />
 		<?php

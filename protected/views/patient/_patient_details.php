@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -91,7 +91,7 @@
 			<?php if ($this->patient->date_of_death): ?>
 				<div class="large-8 column">
 					<div class="data-value">
-						<?php echo $this->patient->NHSDate('date_of_death') . ' (Age '.$this->patient->getAge().')' ?>
+						<?php echo $this->patient->NHSDate('date_of_death').' (Age '.$this->patient->getAge().')' ?>
 					</div>
 				</div>
 			<?php else: ?>
@@ -100,7 +100,7 @@
 						Date of Patient's death unknown.
 					</div>
 				</div>
-			<?php endif ;?>
+			<?php endif;?>
 		</div>
 		<?php endif; ?>
 		<div class="row data-row">

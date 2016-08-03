@@ -31,7 +31,7 @@ abstract class BaseResource
     public $warnings = array();
     public $errors = array();
     /**
-     * Resource ID
+     * Resource ID.
      *
      * @var string
      */
@@ -45,14 +45,14 @@ abstract class BaseResource
     public $update_only = false;
 
     /**
-     * Flag that will force all errors on the resource to be mapped to warnings
+     * Flag that will force all errors on the resource to be mapped to warnings.
      *
      * @var bool
      */
     public $warn_errors = false;
 
     /**
-     * Property that will allow subset of data to be updated on the resource
+     * Property that will allow subset of data to be updated on the resource.
      *
      * @var bool
      */
@@ -60,8 +60,10 @@ abstract class BaseResource
 
     /**
      * BaseResource constructor.
+     *
      * @param $version
      * @param array $options
+     *
      * @throws \Exception
      */
     public function __construct($version, $options = array())
@@ -73,16 +75,17 @@ abstract class BaseResource
         $this->schema = static::getSchema($version);
 
         if (!$this->schema)
-            throw new \Exception("Schema not found for resource " . static::$resource_type);
+            throw new \Exception('Schema not found for resource '.static::$resource_type);
 
         foreach ($options as $key => $value)
             $this->$key = $value;
     }
 
     /**
-     * Abstraction for getting instance of class
+     * Abstraction for getting instance of class.
      *
      * @param $class
+     *
      * @return mixed
      */
     protected function getInstanceForClass($class, $args = array())
@@ -91,6 +94,7 @@ abstract class BaseResource
             return new $class();
 
         $cls = new ReflectionClass($class);
+
         return $cls->newInstanceArgs($args);
     }
 
@@ -137,11 +141,11 @@ abstract class BaseResource
      *
      * @throws \Exception
      */
-    static public function fromXml($version, $xml, $options = array())
+    public static function fromXml($version, $xml, $options = array())
     {
         $doc = new \DOMDocument();
         if (!$xml)
-            return static::errorInit($version, array("Missing Resource Body"));
+            return static::errorInit($version, array('Missing Resource Body'));
 
         libxml_use_internal_errors(true);
         if (!$doc->loadXML($xml)) {
@@ -174,7 +178,7 @@ abstract class BaseResource
      *
      * @throws \Exception
      */
-    static public function fromXmlDom($version, \DOMElement $element, $options = array())
+    public static function fromXmlDom($version, \DOMElement $element, $options = array())
     {
         if ($element->tagName != static::$resource_type) {
             return static::errorInit($version, array("Mismatched root tag {$element->tagName} for resource type ".static::$resource_type));
@@ -192,9 +196,10 @@ abstract class BaseResource
      *
      * @param $version
      * @param $id
+     *
      * @return BaseResource
      */
-    static public function fromResourceId($version, $id)
+    public static function fromResourceId($version, $id)
     {
         $finder = new PasApiAssignment();
 
@@ -203,6 +208,7 @@ abstract class BaseResource
             if (!$model->isNewRecord) {
                 $obj = new static($version);
                 $obj->setAssignment($assignment);
+
                 return $obj;
             }
         }
@@ -280,7 +286,7 @@ abstract class BaseResource
                     foreach ($child->childNodes as $list_item) {
                         if (!$list_item instanceof \DOMElement)
                             continue;
-                        $cls = __NAMESPACE__ . '\\' . $schema[$local_name]['resource'];
+                        $cls = __NAMESPACE__.'\\'.$schema[$local_name]['resource'];
                         $this->{$local_name}[] = $cls::fromXmlDom($this->version, $list_item, $options);
                     }
                     break;
@@ -305,11 +311,11 @@ abstract class BaseResource
                     }
                     break;
                 case 'resource':
-                    $cls = __NAMESPACE__ . "\\" . $schema[$local_name]['resource'];
+                    $cls = __NAMESPACE__.'\\'.$schema[$local_name]['resource'];
                     $this->{$local_name} = $cls::fromXmlDom($this->version, $child, $options);
                     break;
                 case 'boolean':
-                    $this->{$local_name} = (bool)$child->textContent;
+                    $this->{$local_name} = (bool) $child->textContent;
                     break;
                 default:
                     $this->{$local_name} = $child->textContent;
@@ -318,7 +324,7 @@ abstract class BaseResource
     }
 
     /**
-     * Wrapper for starting a transaction
+     * Wrapper for starting a transaction.
      *
      * @return \CDbTransaction|null
      */
@@ -353,6 +359,7 @@ abstract class BaseResource
             $finder = new PasApiAssignment();
             $this->assignment = $finder->findByResource(static::$resource_type, $this->id, static::$model_class);
         }
+
         return $this->assignment;
     }
 
@@ -399,12 +406,12 @@ abstract class BaseResource
             if (isset($defn['resource']) && property_exists($this, $tag)) {
                 $resources_to_validate = is_array($this->$tag) ? $this->$tag : array($this->$tag);
                 foreach ($resources_to_validate as $idx => $resource) {
-                    if (!method_exists($resource, "validate")) {
+                    if (!method_exists($resource, 'validate')) {
                         $this->addError("Internal processing error for {$tag}");
                         continue;
                     }
                     if (!$resource->validate()) {
-                        $tag_pos = count($resources_to_validate) > 1 ? ":" . ($idx+1) : null;
+                        $tag_pos = count($resources_to_validate) > 1 ? ':'.($idx + 1) : null;
                         foreach ($resource->errors as $err) {
                             $this->addError("{$tag}{$tag_pos} error: {$err}");
                         }

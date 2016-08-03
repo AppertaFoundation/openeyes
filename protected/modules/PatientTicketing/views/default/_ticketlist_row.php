@@ -55,7 +55,7 @@
                 }
                 */
                 ?>
-				<a href="<?= Yii::app()->createURL("/PatientTicketing/default/startTicketProcess/", array('ticket_id' => $ticket->id)); ?>" class="button tiny"><?= $t_svc->getTicketActionLabel($ticket) ?></a>
+				<a href="<?= Yii::app()->createURL('/PatientTicketing/default/startTicketProcess/', array('ticket_id' => $ticket->id)); ?>" class="button tiny"><?= $t_svc->getTicketActionLabel($ticket) ?></a>
 		<?php }
         }?>
 		<?php if ($ticket->hasHistory()) {?>

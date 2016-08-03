@@ -23,7 +23,7 @@
 	<?php if ($element->hasRight()) {
     $this->renderPartial($element->view_view.'_fields',
             array('side' => 'right', 'element' => $element));
-	} else { ?>
+    } else { ?>
 		<div class="data-value">Not recorded</div>
 	<?php } ?>
 	</div>
@@ -31,7 +31,7 @@
 	<?php if ($element->hasLeft()) {
     $this->renderPartial($element->view_view.'_fields',
             array('side' => 'left', 'element' => $element));
-	} else { ?>
+    } else { ?>
 		<div class="data-value">Not recorded</div>
 	<?php } ?>
 	</div>
