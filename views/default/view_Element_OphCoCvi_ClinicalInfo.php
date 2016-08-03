@@ -30,21 +30,31 @@
 		<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('sight_varies_by_light_levels'))?>:</div></div>
 		<div class="large-10 column end"><div class="data-value"><?php echo $element->sight_varies_by_light_levels ? 'Yes' : 'No'?></div></div>
 	</div>
-	<div class="row data-row">
-		<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('unaided_right_va'))?></div></div>
-		<div class="large-10 column end"><div class="data-value"><?php echo CHtml::encode($element->unaided_right_va)?></div></div>
+	<div class="element-data element-eyes row">
+	<div class="element-eye right-eye column">
+		<div class="data-row">
+					<div class="data-label">
+		<?php echo CHtml::encode($element->getAttributeLabel('unaided_right_va'))?></div>
+					<div class="data-value">
+		<?php echo CHtml::encode($element->unaided_right_va)?></div></div>
+		<div class="data-row">
+					<div class="data-label">
+		<?php echo CHtml::encode($element->getAttributeLabel('best_corrected_right_va'))?></div>
+							<div class="data-value">
+		<?php echo CHtml::encode($element->best_corrected_right_va)?></div></div>
 	</div>
-	<div class="row data-row">
-		<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('unaided_left_va'))?></div></div>
-		<div class="large-10 column end"><div class="data-value"><?php echo CHtml::encode($element->unaided_left_va)?></div></div>
+	<div class="element-eye left-eye column">
+		<div class="data-row">
+					<div class="data-label">
+		<?php echo CHtml::encode($element->getAttributeLabel('unaided_left_va'))?></div>
+					<div class="data-value">
+		<?php echo CHtml::encode($element->unaided_right_va)?></div></div>
+		<div class="data-row">
+					<div class="data-label">
+		<?php echo CHtml::encode($element->getAttributeLabel('best_corrected_left_va'))?></div>
+		<div class="data-value">
+		<?php echo CHtml::encode($element->best_corrected_right_va)?></div></div>
 	</div>
-	<div class="row data-row">
-		<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('best_corrected_right_va'))?></div></div>
-		<div class="large-10 column end"><div class="data-value"><?php echo CHtml::encode($element->best_corrected_right_va)?></div></div>
-	</div>
-	<div class="row data-row">
-		<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('best_corrected_left_va'))?></div></div>
-		<div class="large-10 column end"><div class="data-value"><?php echo CHtml::encode($element->best_corrected_left_va)?></div></div>
 	</div>
 	<div class="row data-row">
 		<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('best_corrected_binocular_va'))?></div></div>
