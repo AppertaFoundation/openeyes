@@ -115,5 +115,15 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
 		));
 	}
 
+    public function patientCviCount($patient_id) {
+        $criteria = new \CDbCriteria;
+        $criteria->select = 't.id,t.event_id';
+        $criteria->join = 'join event on event.id = t.event_id ';
+        $criteria->join .= 'join episode on event.episode_id = episode.id';
+        $criteria->condition = 'episode.patient_id = :patient_id';
+        $criteria->params = array(':patient_id' => $patient_id);
+        $cvis = Element_OphCoCvi_EventInfo::model()->findAll($criteria);
+        return $cvis;
+    }
 }
 ?>
