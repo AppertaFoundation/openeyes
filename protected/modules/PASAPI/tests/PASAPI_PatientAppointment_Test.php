@@ -155,7 +155,6 @@ EOF;
      */
     public function testValidation($xml, $valid)
     {
-
         $test = \OEModule\PASAPI\resources\PatientAppointment::fromXml('V1', $xml);
         $test->id = 'test';
 
@@ -172,7 +171,6 @@ EOF;
         $this->assertXPathFound('/Failure');
         $this->assertXPathFound('/Failure/Errors');
         $this->assertXPathRegExp('/'.$message.'/', 'string(/Failure/Errors)');
-
     }
     public function testPartialUpdateErrorsForNewRecord()
     {
@@ -280,16 +278,13 @@ EOF;
                     $this->assertArrayHasKey($an, $obj_attrs);
                     $this->assertEquals($av, $obj_attrs[$an]);
                 }
-            }
-            else {
+            } else {
                 if (is_array($v)) {
                     $this->assertExpectedValuesMatch($v, $obj->$k);
-                }
-                else {
+                } else {
                     $this->assertEquals($v, $obj->$k);
                 }
             }
-
         }
     }
 
@@ -325,5 +320,4 @@ EOF;
             $this->assertFailureMessage($error[1]);
         }
     }
-
 }

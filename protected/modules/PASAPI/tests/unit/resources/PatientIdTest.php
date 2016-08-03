@@ -52,8 +52,7 @@ class PatientIdTest extends PHPUnit_Framework_TestCase
                 ->will($this->returnValue($test_result));
 
             $this->assertEquals($test_result, $resource->getModel());
-        }
-        else {
+        } else {
             $this->setExpectedException('Exception');
 
             $resource->getModel();
@@ -92,8 +91,7 @@ class PatientIdTest extends PHPUnit_Framework_TestCase
                 ->method('findByPk')
                 ->will($this->returnValue($result));
             $this->assertEquals($result, $m->invoke($resource));
-        }
-        else {
+        } else {
             $resource->expects($this->once())
                 ->method('patientNotFound');
 
@@ -102,7 +100,6 @@ class PatientIdTest extends PHPUnit_Framework_TestCase
                 ->will($this->returnValue(null));
             $m->invoke($resource);
         }
-
     }
 
     public function test_resolveModelId_success()
@@ -114,5 +111,4 @@ class PatientIdTest extends PHPUnit_Framework_TestCase
     {
         $this->resolveModelId(false);
     }
-
 }

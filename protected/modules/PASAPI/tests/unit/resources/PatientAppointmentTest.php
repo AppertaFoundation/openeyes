@@ -93,7 +93,7 @@ class PatientAppointmentTest extends PHPUnit_Framework_TestCase
             ->method('resolvePatient')
             ->will($this->returnValue($patient));
 
-            $pa->expects($this->once())
+        $pa->expects($this->once())
             ->method('resolveWhen')
             ->will($this->returnValue($when));
         $pa->expects($this->once())
@@ -111,5 +111,4 @@ class PatientAppointmentTest extends PHPUnit_Framework_TestCase
         // verify that the patient has been updated
         $this->assertEquals($patient->id, $model->patient_id);
     }
-
 }

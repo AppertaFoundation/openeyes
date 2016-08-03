@@ -74,11 +74,13 @@ abstract class BaseResource
         $this->version = $version;
         $this->schema = static::getSchema($version);
 
-        if (!$this->schema)
+        if (!$this->schema) {
             throw new \Exception('Schema not found for resource '.static::$resource_type);
+        }
 
-        foreach ($options as $key => $value)
+        foreach ($options as $key => $value) {
             $this->$key = $value;
+        }
     }
 
     /**
@@ -90,8 +92,9 @@ abstract class BaseResource
      */
     protected function getInstanceForClass($class, $args = array())
     {
-        if (empty($args))
+        if (empty($args)) {
             return new $class();
+        }
 
         $cls = new ReflectionClass($class);
 
@@ -144,8 +147,9 @@ abstract class BaseResource
     public static function fromXml($version, $xml, $options = array())
     {
         $doc = new \DOMDocument();
-        if (!$xml)
+        if (!$xml) {
             return static::errorInit($version, array('Missing Resource Body'));
+        }
 
         libxml_use_internal_errors(true);
         if (!$doc->loadXML($xml)) {
@@ -222,8 +226,9 @@ abstract class BaseResource
      */
     public static function remapValues($doc, $remaps = array())
     {
-        if (!count($remaps))
+        if (!count($remaps)) {
             return;
+        }
 
         // no point in instantiating DOMXPath if nothing to remap
         $xdoc = new \DOMXPath($doc);
@@ -284,16 +289,18 @@ abstract class BaseResource
                 case 'list':
                     $this->{$local_name} = array();
                     foreach ($child->childNodes as $list_item) {
-                        if (!$list_item instanceof \DOMElement)
+                        if (!$list_item instanceof \DOMElement) {
                             continue;
+                        }
                         $cls = __NAMESPACE__.'\\'.$schema[$local_name]['resource'];
                         $this->{$local_name}[] = $cls::fromXmlDom($this->version, $list_item, $options);
                     }
                     break;
                 case 'date':
                     // TODO: Move parsing into specific object types to after validation. Validate first to check eligible?
-                    if (!strlen($child->textContent))
+                    if (!strlen($child->textContent)) {
                         break;
+                    }
                     if ($date = \DateTime::createFromFormat('Y-m-d', $child->textContent)) {
                         $this->{$local_name} = $date->format('Y-m-d H:i:s');
                     } else {
@@ -301,12 +308,12 @@ abstract class BaseResource
                     }
                     break;
                 case 'time':
-                    if (!strlen($child->textContent))
+                    if (!strlen($child->textContent)) {
                         break;
+                    }
                     if (preg_match('/^\d\d:\d\d$/', $child->textContent)) {
                         $this->{$local_name} = $child->textContent;
-                    }
-                    else {
+                    } else {
                         throw new \Exception("invalid time format for {$local_name}");
                     }
                     break;
@@ -354,8 +361,7 @@ abstract class BaseResource
      */
     public function getAssignment()
     {
-        if (!$this->assignment && $this->id)
-        {
+        if (!$this->assignment && $this->id) {
             $finder = new PasApiAssignment();
             $this->assignment = $finder->findByResource(static::$resource_type, $this->id, static::$model_class);
         }
@@ -375,8 +381,9 @@ abstract class BaseResource
      */
     public function assignProperty($model, $model_key, $resource_key)
     {
-        if ($this->partial_record && !property_exists($this, $resource_key))
+        if ($this->partial_record && !property_exists($this, $resource_key)) {
             return;
+        }
 
         $model->$model_key = $this->getAssignedProperty($resource_key);
     }
@@ -393,15 +400,16 @@ abstract class BaseResource
      */
     public function validate()
     {
-        foreach($this->schema as $tag => $defn) {
+        foreach ($this->schema as $tag => $defn) {
             if ($this->shouldValidateRequired() && array_key_exists('required', $defn) && $defn['required']) {
                 if (!property_exists($this, $tag)) {
                     $this->addError("{$tag} is required");
                 }
             }
             if (property_exists($this, $tag) && @$defn['choices']) {
-                if ($this->$tag && !in_array($this->$tag, $defn['choices']))
+                if ($this->$tag && !in_array($this->$tag, $defn['choices'])) {
                     $this->addError("Invalid value '{$this->$tag}' for {$tag}'");
+                }
             }
             if (isset($defn['resource']) && property_exists($this, $tag)) {
                 $resources_to_validate = is_array($this->$tag) ? $this->$tag : array($this->$tag);

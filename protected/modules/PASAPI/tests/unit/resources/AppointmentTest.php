@@ -58,18 +58,21 @@ class AppointmentTest extends PHPUnit_Framework_TestCase
         if (!is_null($default_when)) {
             $app->setDefaultWhen(DateTime::createFromFormat('Y-m-d H:i', $default_when));
         }
-        if (!is_null($appointment_date))
+        if (!is_null($appointment_date)) {
             $app->AppointmentDate = $appointment_date;
-        if (!is_null($appointment_time))
+        }
+        if (!is_null($appointment_time)) {
             $app->AppointmentTime = $appointment_time;
+        }
 
         if (is_null($expected)) {
             $this->setExpectedException('Exception');
         }
         $when = $app->getWhen();
 
-        if ($expected)
+        if ($expected) {
             $this->assertEquals($expected, $when->format('Y-m-d H:i:s'));
+        }
     }
 
     public function getMappingsArrayProvider()
@@ -120,5 +123,4 @@ class AppointmentTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $a->getMappingsArray());
     }
-
 }

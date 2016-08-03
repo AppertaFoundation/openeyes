@@ -50,8 +50,9 @@ class PatientAppointment extends BaseResource
      */
     public function __construct($version, $options = array())
     {
-        if (!isset($options['worklist_manager']))
+        if (!isset($options['worklist_manager'])) {
             $options['worklist_manager'] = new \WorklistManager();
+        }
 
         parent::__construct($version, $options);
     }
@@ -62,22 +63,23 @@ class PatientAppointment extends BaseResource
      *
      * @return bool
      */
-    public function validate() {
+    public function validate()
+    {
         if (!$this->id) {
             $this->addError('Resource ID required');
         }
 
         try {
             $this->resolvePatient();
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->addError($e->getMessage());
         }
 
         return parent::validate();
     }
 
-    public function save() {
+    public function save()
+    {
         $assignment = $this->getAssignment();
         $model = $assignment->getInternal(true);
         // track whether we are creating or updating
@@ -89,13 +91,13 @@ class PatientAppointment extends BaseResource
             return;
         }
 
-        if (!$this->validate())
+        if (!$this->validate()) {
             return;
+        }
 
         $transaction = $this->startTransaction();
 
         try {
-
             if ($model = $this->saveModel($model)) {
                 $assignment->internal_id = $model->id;
                 $assignment->save();
@@ -103,15 +105,16 @@ class PatientAppointment extends BaseResource
 
                 $this->audit($this->isNewResource ? 'create' : 'update', null, null, null);
 
-                if ($transaction)
+                if ($transaction) {
                     $transaction->commit();
+                }
 
                 return $model->id;
             }
-        }
-        catch (\Exception $e) {
-            if ($transaction)
+        } catch (\Exception $e) {
+            if ($transaction) {
                 $transaction->rollback();
+            }
 
             throw $e;
         }
@@ -135,8 +138,9 @@ class PatientAppointment extends BaseResource
                 throw new \Exception('Could not find internal model to delete.');
             }
 
-            if ($model->isNewRecord)
+            if ($model->isNewRecord) {
                 throw new \Exception('No appointment reference found for this id');
+            }
 
             if (!$model->delete()) {
                 $this->addModelErrors($model->getErrors());
@@ -148,14 +152,15 @@ class PatientAppointment extends BaseResource
                 throw new \Exception('Could not delete external reference.');
             }
 
-            if ($transaction)
+            if ($transaction) {
                 $transaction->commit();
+            }
 
             return true;
-        }
-        catch (\Exception $e) {
-            if ($transaction)
+        } catch (\Exception $e) {
+            if ($transaction) {
                 $transaction->rollback();
+            }
 
             throw $e;
         }
@@ -177,8 +182,9 @@ class PatientAppointment extends BaseResource
 
     protected function resolveWhen($default_when)
     {
-        if ($this->Appointment)
+        if ($this->Appointment) {
             $this->Appointment->setDefaultWhen($default_when);
+        }
 
         return $this->Appointment ? $this->Appointment->getWhen() : null;
     }
@@ -196,8 +202,9 @@ class PatientAppointment extends BaseResource
     protected function mapPatient(\WorklistPatient $wp)
     {
         $patient = $this->resolvePatient();
-        if (!$patient && $this->partial_record)
+        if (!$patient && $this->partial_record) {
             $patient = $wp->patient;
+        }
 
         return $patient;
     }
@@ -214,8 +221,9 @@ class PatientAppointment extends BaseResource
         $attributes = $this->resolveAttributes();
         if ($this->partial_record) {
             foreach ($wp->worklist_attributes as $attr) {
-                if (!array_key_exists($attr->worklistattribute->name, $attributes))
+                if (!array_key_exists($attr->worklistattribute->name, $attributes)) {
                     $attributes[$attr->worklistattribute->name] = $attr->attribute_value;
+                }
             }
         }
 
@@ -236,8 +244,9 @@ class PatientAppointment extends BaseResource
 
         // allow the suppression of errors for appointments received prior to the ignore date
         if ($warning_limit = $this->worklist_manager->getWorklistIgnoreDate()) {
-            if ($when < $warning_limit)
+            if ($when < $warning_limit) {
                 $this->warn_errors = true;
+            }
         }
 
         if ($model->isNewRecord) {
@@ -245,20 +254,21 @@ class PatientAppointment extends BaseResource
                 foreach ($this->worklist_manager->getErrors() as $err) {
                     $this->addError($err);
                 }
-                if ($this->warn_errors)
+                if ($this->warn_errors) {
                     return false;
+                }
 
                 throw new \Exception('Could not add patient to worklist');
             }
-        }
-        else {
+        } else {
             $model->patient_id = $patient->id;
             if (!$this->worklist_manager->updateWorklistPatientFromMapping($model, $when, $attributes, !$this->partial_record)) {
                 foreach ($this->worklist_manager->getErrors() as $err) {
                     $this->addError($err);
                 }
-                if ($this->warn_errors)
+                if ($this->warn_errors) {
                     return false;
+                }
 
                 throw new \Exception('Could not update patient worklist entry');
             };
@@ -266,5 +276,4 @@ class PatientAppointment extends BaseResource
 
         return $model;
     }
-
 }

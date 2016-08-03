@@ -145,8 +145,9 @@ class V1Controller extends \CController
      */
     public function getUpdateOnly()
     {
-        if (!array_key_exists(static::$UPDATE_ONLY_HEADER, $_SERVER))
+        if (!array_key_exists(static::$UPDATE_ONLY_HEADER, $_SERVER)) {
             return false;
+        }
 
         return (bool) $_SERVER[static::$UPDATE_ONLY_HEADER];
     }
@@ -159,8 +160,9 @@ class V1Controller extends \CController
      */
     public function getPartialRecord()
     {
-        if (!array_key_exists(static::$PARTIAL_RECORD_HEADER, $_SERVER))
+        if (!array_key_exists(static::$PARTIAL_RECORD_HEADER, $_SERVER)) {
             return false;
+        }
 
         return (bool) $_SERVER[static::$PARTIAL_RECORD_HEADER];
     }
@@ -198,13 +200,13 @@ class V1Controller extends \CController
             if (!$internal_id = $resource->save()) {
                 if ($resource->errors && !$resource->warn_errors) {
                     $this->sendErrorResponse(400, $resource->errors);
-                }
-                else {
+                } else {
                     // no internal id indicates we didn't get a resource
                     $response = array('Message' => $resource_type.' not created');
                     // map errors to warnings if this is the case
-                    if ($resource->errors)
+                    if ($resource->errors) {
                         $response['Warnings'] = $resource->errors;
+                    }
 
                     // success in that we are happy for there to have been no action taken
                     $this->sendSuccessResponse(200, $response);
@@ -228,15 +230,12 @@ class V1Controller extends \CController
             }
 
             $this->sendSuccessResponse($status_code, $response);
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             if (YII_DEBUG) {
                 $errors = $resource->errors;
                 $errors[] = $e->getMessage();
                 \OELog::log(print_r($errors));
-            }
-            else {
+            } else {
                 $errors = array('Could not save resource');
             }
 
@@ -246,36 +245,36 @@ class V1Controller extends \CController
 
     public function actionDelete($resource_type, $id)
     {
-        if (!in_array($resource_type, static::$resources))
+        if (!in_array($resource_type, static::$resources)) {
             $this->sendErrorResponse(404, "Unrecognised Resource type {$resource_type}");
+        }
 
-        if (!$id)
+        if (!$id) {
             $this->sendResponse(404, 'External Resource ID required');
+        }
 
         $resource_model = $this->getResourceModel($resource_type);
 
-        if (!method_exists($resource_model, 'delete'))
+        if (!method_exists($resource_model, 'delete')) {
             $this->sendResponse(405);
+        }
 
         try {
-            if (!$resource = $resource_model::fromResourceId(static::$version, $id))
+            if (!$resource = $resource_model::fromResourceId(static::$version, $id)) {
                 $this->sendResponse(404, 'Could not find resource for external Id');
+            }
 
             if ($resource->delete()) {
                 $this->sendResponse(204);
             }
-
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             if (YII_DEBUG) {
                 $errors[] = $e->getMessage();
-            }
-            else {
+            } else {
                 $errors = array('Could not delete resource');
             }
 
             $this->sendErrorResponse(500, $errors);
-
         }
     }
 

@@ -259,7 +259,6 @@ EOF;
             array('hos_num' => '010101010010101')
             )
         );
-
     }
 
     public function partialUpdate_Provider()
@@ -358,8 +357,7 @@ EOF;
         foreach ($expected as $k => $v) {
             if (is_array($v)) {
                 $this->assertExpectedValuesMatch($v, $obj->$k);
-            }
-            else {
+            } else {
                 $this->assertEquals($v, $obj->$k);
             }
         }

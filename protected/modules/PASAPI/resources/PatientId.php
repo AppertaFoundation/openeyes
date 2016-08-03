@@ -52,11 +52,13 @@ class PatientId extends BaseResource
     {
         $has_id = false;
         foreach ($this->id_tags as $attr) {
-            if (isset($this->$attr))
+            if (isset($this->$attr)) {
                 $has_id = true;
+            }
         }
-        if (!$has_id)
+        if (!$has_id) {
             $this->addError('At least one Id tag of the form '.implode(',', $this->id_tags).' is required.');
+        }
 
         return parent::validate();
     }
@@ -71,8 +73,9 @@ class PatientId extends BaseResource
     public function getModel()
     {
         foreach ($this->id_tags as $attr) {
-            if (property_exists($this, $attr))
+            if (property_exists($this, $attr)) {
                 return $this->{'resolveModel'.$attr}();
+            }
         }
         // should never reach here assuming the resource has been validated
         throw new \Exception('No appropriate id tag provided.');
@@ -112,8 +115,9 @@ class PatientId extends BaseResource
         $model = $this->getModelForClass('Patient');
         $instance = $model->findByPk($this->Id);
 
-        if ($instance)
+        if ($instance) {
             return $instance;
+        }
 
         $this->patientNotFound();
     }
@@ -132,5 +136,4 @@ class PatientId extends BaseResource
     {
         $this->methodNotImplemented('resolveModelHospitalNumber');
     }
-
 }

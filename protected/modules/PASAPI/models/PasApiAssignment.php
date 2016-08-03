@@ -80,7 +80,6 @@ class PasApiAssignment extends \BaseActiveRecord
         } else {
             return new $this->internal_type();
         }
-
     }
 
     /**

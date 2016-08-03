@@ -59,17 +59,20 @@ class Appointment extends BaseResource
      */
     public function getWhen()
     {
-        if (!property_exists($this, 'AppointmentDate'))
+        if (!property_exists($this, 'AppointmentDate')) {
             $this->AppointmentDate = $this->default_date;
-        if (!property_exists($this, 'AppointmentTime'))
+        }
+        if (!property_exists($this, 'AppointmentTime')) {
             $this->AppointmentTime = $this->default_time;
+        }
 
         $concatenated = substr($this->AppointmentDate, 0, 10).' '.$this->AppointmentTime;
 
         $result = \DateTime::createFromFormat('Y-m-d H:i', $concatenated);
 
-        if (!$result)
+        if (!$result) {
             throw new \Exception("Could not parse date and time values ({$concatenated}):".print_r(\DateTime::getLastErrors(), true));
+        }
 
         return $result;
     }
@@ -92,5 +95,4 @@ class Appointment extends BaseResource
 
         return $res;
     }
-
 }

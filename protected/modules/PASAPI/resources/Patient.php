@@ -61,8 +61,9 @@ class Patient extends BaseResource
             return;
         }
 
-        if (!$this->validate())
+        if (!$this->validate()) {
             return;
+        }
 
         $transaction = $this->startTransaction();
 
@@ -155,10 +156,10 @@ class Patient extends BaseResource
     {
         if (property_exists($this, 'Gender')) {
             $patient->gender = strtoupper($this->getAssignedProperty('Gender'));
-        }
-        else {
-            if (!$this->partial_record)
+        } else {
+            if (!$this->partial_record) {
                 $patient->gender = null;
+            }
         }
     }
 
@@ -170,10 +171,10 @@ class Patient extends BaseResource
             } else {
                 $this->addWarning('Unrecognised ethnic group code '.$code);
             }
-        }
-        else {
-            if (!$this->partial_record)
+        } else {
+            if (!$this->partial_record) {
                 $patient->ethnic_group_id = null;
+            }
         }
     }
 
@@ -185,10 +186,10 @@ class Patient extends BaseResource
             } else {
                 $this->addWarning('Could not find GP for code '.$code);
             }
-        }
-        else {
-            if (!$this->partial_record)
+        } else {
+            if (!$this->partial_record) {
                 $patient->gp_id = null;
+            }
         }
     }
 
@@ -200,8 +201,7 @@ class Patient extends BaseResource
             } else {
                 $this->addWarning('Could not find Practice for code '.$code);
             }
-        }
-        else {
+        } else {
             if (!$this->partial_record) {
                 $patient->practice_id = null;
             }
@@ -248,10 +248,10 @@ class Patient extends BaseResource
             }
             // clear out any addresses not matched
             $this->deleteAddresses($contact, $matched_address_ids);
-        }
-        else {
-            if (!$this->partial_record)
+        } else {
+            if (!$this->partial_record) {
                 $this->deleteAddresses($contact);
+            }
         }
     }
 
@@ -260,8 +260,9 @@ class Patient extends BaseResource
         // delete any address that are no longer relevant
         $matched_string = implode(',', $except_ids);
         $condition_str = 'contact_id = :contact_id';
-        if ($matched_string)
+        if ($matched_string) {
             $condition_str .= " AND id NOT IN($matched_string)";
+        }
 
         \Address::model()->deleteAll(array(
             'condition' => $condition_str,
@@ -282,14 +283,13 @@ class Patient extends BaseResource
                 } else {
                     $this->addWarning('Unrecognised NHS number status code '.$code);
                 }
-            }
-            else {
+            } else {
                 $patient->nhs_num_status_id = null;
             }
-        }
-        else {
-            if (!$this->partial_record)
+        } else {
+            if (!$this->partial_record) {
                 $patient->nhs_num_status_id = null;
+            }
         }
     }
 }
