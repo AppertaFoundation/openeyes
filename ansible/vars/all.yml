@@ -1,0 +1,69 @@
+---
+server:
+    install: '1'
+    timezone: Europe/London
+    locale: en_US.UTF-8
+    vagrant_user_password: 'vagrant'
+    packages: [build-essential, curl, git, vim]
+
+vagrant_local:
+    install: '1'
+    vm: {hostname: openeyes.vm }
+
+# https://github.com/geerlingguy/ansible-role-apache
+apache_remove_default_vhost: true
+apache_create_vhosts: true
+apache_vhosts_filename: "010-openeyes.conf"
+apache_vhosts:
+  - {servername: "openeyes.vm", documentroot: "/var/www/openeyes"}
+apache_mods_enabled:
+  - rewrite.load
+  # - version.load # TODO not present in standard build (is it required)
+
+# https://github.com/geerlingguy/ansible-role-mysql
+mysql_root_password: "sqlsuks"
+mysql_port: "3306"
+mysql_bind_address: '0.0.0.0'
+mysql_datadir: /var/lib/mysql
+mysql_packages:
+  - mariadb-client
+  - mariadb-server
+  - python-mysqldb
+mysql_databases:
+  - name: openeyes
+mysql_users:
+  - name: openeyes
+    host: "%"
+    password: oe_test
+    priv: "openeyes.*:ALL"
+
+# https://github.com/geerlingguy/ansible-role-nodejs
+nodejs_version: "6.x"
+nodejs_npm_global_packages:
+  - name: bower
+  - name: grunt
+
+# https://github.com/geerlingguy/ansible-role-php
+php_webserver_daemon: "apache2"
+php_packages:
+  - libapache2-mod-php5
+  - php5-cli
+  - php5-dev
+  - php5-intl
+  - php5-mcrypt
+  - php5-curl
+  - php5-imagick
+  - php5-gd
+  - imagemagick
+  - php5-mysql
+  - php5-xsl
+
+# https://github.com/geerlingguy/ansible-role-composer
+composer_keep_updated: true
+# composer_github_oauth_token: ''
+
+# https://github.com/geerlingguy/ansible-role-php-xdebug
+# No options configured at this time
+
+# https://github.com/pludoni/ansible-wkhtmltox
+# No options configured at this time
