@@ -31,19 +31,31 @@ class PrintTestController extends \BaseController
     
     public function actionTest()
     {
+        
         $pdfLink = '';
         $this->printTestXml = new PrintTest();
         
         if(isset($_POST['test_print'])){
             
             $this->xml = $this->printTestXml->getXml();
-         
+            
             $this->printTestXml->strReplace( $_POST );
             $this->printTestXml->imgReplace( 'image1.png' , $this->printTestXml->directory.'/signature3.png');
-            $this->printTestXml->fillTable("Radio1" , $this->yesNoQuestions() );
-            $this->printTestXml->fillTable("Retina" , $this->genTableDatas() );
             
+            $this->printTestXml->genTable( 
+                $this->printTestXml->xpath->query('//office:text')->item(0) , 
+                "TestTable" , 
+                2 , 
+                2
+            );
+            
+            $this->printTestXml->fillTable("TestTable" , $this->whoIs() );
+            $this->printTestXml->fillTable("Radio1" , $this->whoIs() );
+            $this->printTestXml->fillTable("Table716" , $this->yesNoQuestions() , 1 );
+            $this->printTestXml->fillTable("Retina" , $this->genTableDatas() , 1 );
+
             $this->printTestXml->saveXML( $this->printTestXml->xmlDoc );
+           
             $this->printTestXml->convertToPdf();
             $pdfLink = $this->pdfLink();
         }
@@ -69,11 +81,22 @@ class PrintTestController extends \BaseController
     public function yesNoQuestions()
     {
         $data = array(
+            array('Does the patient live alone', 'Y'),
+            array('Does the patient also have a hearing impairment','Y'),
+            array('Does the patient have poor physical mobility?','Y'),
+           
+        );
+        return $data;
+    }
+    
+    public function whoIs(){
+        $data = array(
             array('X', 'I am the patient'),
             array('X','the patient’s representative and my name is (PLEASE PRINT):'),
         );
         return $data;
     }
+    
     public function genTableDatas()
     {
         $data = array(

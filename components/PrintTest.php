@@ -99,9 +99,8 @@ class PrintTest
     public function fillTable( $prefix , $data, $headerRow = 0 )
     {
         
-        $tableName = $prefix.'-Table';
-        
-        foreach ($this->xpath->query('//table:table[@table:style-name="'.$tableName.'"]') as $table) {
+        foreach ($this->xpath->query('//office:text/table:table[@table:style-name="'.$prefix.'"]') as $table) {
+          
             foreach($table->childNodes as $r => $row) {
                 if ($headerRow > 0){
                     if($headerRow >= $r){
@@ -124,8 +123,32 @@ class PrintTest
             } 
            
         }
-       
         $this->xmlDoc->saveXML();
+    }
+    
+    public function genTable( $appendTo , $prefix , $rows , $cols ){
+       
+        $table = $this->xmlDoc->createElementNS('urn:oasis:names:tc:opendocument:xmlns:table:1.0','table:table');
+        $newTable = $appendTo->appendChild( $table );
+        $newTable->setAttribute("table:style-name", $prefix );
+        
+        $columns = $this->xmlDoc->createElement('table:table-columns');
+        $table->appendChild( $columns );
+        
+        for($i = 1; $i <= $cols; $i++ ){
+            $column = $this->xmlDoc->createElement('table:table-column');
+            $columns->appendChild( $column );
+        }
+        
+        for($j = 1; $j <= $rows; $j++ ){
+           $row = $this->xmlDoc->createElement('table:table-row');
+           $table->appendChild( $row );
+           
+           for($i = 1; $i <= $cols; $i++){
+               $cell = $this->xmlDoc->createElement('table:table-cell');
+               $row->appendChild($cell);
+           }
+        }
     }
     
     public function customSquare( $appendTo ){
