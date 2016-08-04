@@ -17,21 +17,40 @@
 
 namespace OEModule\OphCoCvi\controllers;
 
+use OEModule\OphCoCvi\components\OphCoCvi_Manager;
+
 class DefaultController extends \BaseEventTypeController
 {
+    protected $cvi_manager;
+
     const ACTION_TYPE_LIST = 'List';
 
     protected static $action_types = array(
         'list' => self::ACTION_TYPE_LIST
     );
 
-    public function actionList()
-    {
-        echo "list";
-    }
-
     public function checkListAccess()
     {
         return $this->checkAccess('OprnEditCvi', $this->getApp()->user->id);
     }
+
+    public function getManager()
+    {
+        if (!isset($this->cvi_manager)) {
+            $this->cvi_manager = new OphCoCvi_Manager($this->getApp());
+        }
+
+        return $this->cvi_manager;
+    }
+
+    public function actionList()
+    {
+        $this->layout = '//layouts/main';
+        $this->renderPatientPanel = false;
+
+        $dp = new \CActiveDataProvider('\OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo');
+
+        $this->render('list', array('dp' => $dp));
+    }
+
 }

@@ -18,6 +18,9 @@
 
 namespace OEModule\OphCoCvi\components;
 
+use OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo;
+use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo;
+
 class OphCoCvi_Manager extends \CComponent
 {
 	protected $yii;
@@ -116,8 +119,33 @@ class OphCoCvi_Manager extends \CComponent
 		return $clinical->examination_date;
 	}
 
+	public function getDisplayIssueDateForEvent(\Event $event)
+	{
+		$info = $this->getElementForEvent($event, 'Element_OphCoCvi_EventInfo');
+		if ($info->is_draft) {
+			return null;
+		}
+		else {
+			// TODO: we probably need to actually be storing an issue date when the CVI is completed.
+			return $info->last_modified_date;
+		}
+	}
+	/**
+	 * @param \Event $event
+	 * @return string
+	 */
 	public function getEventViewUri(\Event $event)
 	{
 		return $this->yii->createUrl($event->eventType->class_name.'/default/view/'.$event->id);
+	}
+
+	public function getEventConsultant(\Event $event)
+	{
+		/**
+		 * @var Element_OphCoCvi_ClinicalInfo
+		 */
+		$clinical = $this->getElementForEvent($event, 'Element_OphCoCvi_ClinicalInfo');
+
+		return $clinical->consultant;
 	}
 }
