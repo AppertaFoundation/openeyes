@@ -98,7 +98,7 @@
 	</div>
 </section>
 
-<?php if(!$model->isNewRecord): ?>
+<?php if (!$model->isNewRecord): ?>
 
 <?php echo $this->getEpisodesHTML($model->{"{$type}Patient"});?>
 

@@ -5,7 +5,7 @@
  */
 class PatientContactAssignmentTest extends PHPUnit_Framework_TestCase
 {
-      /**
+    /**
        * @var PatientContactAssignment
        */
       protected $object;

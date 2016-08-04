@@ -21,13 +21,13 @@
 <?php
 $layoutColumns = $form->layoutColumns;
 $form->layoutColumns = array('label' => 3, 'field' => 9);
-if($element->patientId > 0) {
+if ($element->patientId > 0) {
     $latestData = $element->findBySql('
 						SELECT eob.* FROM et_ophtroperationnote_biometry eob
 										WHERE eob.patient_id='.$element->patientId.'
 										ORDER BY eob.last_modified_date
 										DESC LIMIT 1; ');
-}else{
+} else {
     $latestData = null;
 }
 ?>
@@ -44,7 +44,7 @@ if($element->patientId > 0) {
                     'element' => $latestData,
                     'form' => $form,
                 ));
-            }
+}
             ?>
 		</div>
 	</div>

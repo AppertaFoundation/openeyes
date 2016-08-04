@@ -31,26 +31,26 @@
 				<div class="large-4 column">
 					<?php
                     $searchParams = $this->request->getParam('search');
-                    if (isset($searchParams['filterid'][$params['dropDownName']]['value']) && $searchParams['filterid'][$params['dropDownName']]['value'] != '') {
-                        $selectedValue[$params['dropDownName']] = $searchParams['filterid'][$params['dropDownName']]['value'];
-                    } else {
-                        $selectedValue[$params['dropDownName']] = $params['defaultValue'];
-                    }
-                    if (!isset($params['emptyLabel'])) {
-                        $params['emptyLabel'] = '-- Please select --';
-                    }
-                    if (isset($params['dependsOnFilterName'])) {
-                        $filterQuery = array(
+                if (isset($searchParams['filterid'][$params['dropDownName']]['value']) && $searchParams['filterid'][$params['dropDownName']]['value'] != '') {
+                    $selectedValue[$params['dropDownName']] = $searchParams['filterid'][$params['dropDownName']]['value'];
+                } else {
+                    $selectedValue[$params['dropDownName']] = $params['defaultValue'];
+                }
+                if (!isset($params['emptyLabel'])) {
+                    $params['emptyLabel'] = '-- Please select --';
+                }
+                if (isset($params['dependsOnFilterName'])) {
+                    $filterQuery = array(
                             'condition' => $params['dependsOnDbFieldName'].'=:paramID',
                             'order' => $params['listDisplayField'],
                             'params' => array(':paramID' => $selectedValue[$params['dependsOnFilterName']]),
                         );
-                        if (isset($params['dependsOnJoinedTable'])) {
-                            $filterQuery = array_merge($filterQuery, array('with' => $params['dependsOnJoinedTable']));
-                        }
-                    } else {
-                        $filterQuery = array('order' => $params['listDisplayField']);
+                    if (isset($params['dependsOnJoinedTable'])) {
+                        $filterQuery = array_merge($filterQuery, array('with' => $params['dependsOnJoinedTable']));
                     }
+                } else {
+                    $filterQuery = array('order' => $params['listDisplayField']);
+                }
 
                     // for some functions we need to exclude fields from search
                     if (isset($params['excludeSearch']) && $params['excludeSearch']) {
@@ -60,7 +60,7 @@
                         $fieldName = 'search[filterid]['.$params['dropDownName'].'][value]';
                         $htmlClass = 'filterfieldselect';
                     }
-                    echo CHtml::dropDownList($fieldName,
+                echo CHtml::dropDownList($fieldName,
                         $selectedValue[$params['dropDownName']],
                         CHtml::listData($params['listModel']->findAll($filterQuery),
                             $params['listIdField'],
@@ -69,9 +69,10 @@
                             'class' => $htmlClass,
                             'empty' => $params['emptyLabel'],
                         ));
-                    ?>
+                ?>
 				</div>
 			<?php
+
             }
         }
         ?>
@@ -109,7 +110,7 @@
                                             echo $admin->attributeValue($row, $listItem);
                                         endif;
                                     }
-                                    ?>
+                        ?>
                                 </td>
                             <?php endforeach; ?>
                             <td>
@@ -160,7 +161,6 @@
                                         'onFocus' => $triggerSearch,
                                     ),
                                 ));
-
                             }
                             ?>
                             <b>Select from list to add new</b>

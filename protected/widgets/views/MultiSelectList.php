@@ -22,9 +22,9 @@ if (isset($htmlOptions['options'])) {
     $opts = $htmlOptions['options'];
 } else {
     $opts = array();
-    if($auto_data_order) {
+    if ($auto_data_order) {
         $data_order = 0;
-        foreach($options as $id => $option){
+        foreach ($options as $id => $option) {
             ++$data_order;
             $opts[(string) $id] = array('data-order' => $data_order);
         }
@@ -84,16 +84,16 @@ $widgetOptionsJson = json_encode(array(
 					>
 					<option value=""><?php echo $htmlOptions['empty']?></option>
 					<?php foreach ($filtered_options as $value => $option) {
-                        $attributes = array('value' => $value);
-                        if (isset($opts[$value])) {
-                            $attributes = array_merge($attributes, $opts[$value]);
-                        }
-                        echo '<option';
-                        foreach ($attributes as $att => $att_val) {
-                            echo ' '.$att.'="'.$att_val.'"';
-                        }
-                        echo '>'.strip_tags($option).'</option>';
-                    }?>
+    $attributes = array('value' => $value);
+    if (isset($opts[$value])) {
+        $attributes = array_merge($attributes, $opts[$value]);
+    }
+    echo '<option';
+    foreach ($attributes as $att => $att_val) {
+        echo ' '.$att.'="'.$att_val.'"';
+    }
+    echo '>'.strip_tags($option).'</option>';
+}?>
 				</select>
 				<?php if ($showRemoveAllLink) {?>
 					<a href="#" class="remove-all<?php echo !$found ? ' hide' : '';?>">Remove all</a>
@@ -112,9 +112,9 @@ $widgetOptionsJson = json_encode(array(
 							<a href="#" data-text="<?php echo $options[$id] ?>" class="MultiSelectRemove remove-one<?php if (isset($htmlOptions['class'])) {?> <?php echo $htmlOptions['class']?><?php }?>"<?php if (isset($htmlOptions['data-linked-fields'])) {?> data-linked-fields="<?php echo $htmlOptions['data-linked-fields']?>"<?php }?><?php if (isset($htmlOptions['data-linked-values'])) {?> data-linked-values="<?php echo $htmlOptions['data-linked-values']?>"<?php }?>>Remove</a>
 							<input type="hidden" name="<?php echo $field?>[]" value="<?php echo $id?>"
 							<?php if (isset($opts[$id])) {
-                                foreach ($opts[$id] as $key => $val) {
-                                    echo ' '.$key.'="'.$val.'"';
-                                }
+    foreach ($opts[$id] as $key => $val) {
+        echo ' '.$key.'="'.$val.'"';
+    }
                             }?>
 							/>
 						</li>

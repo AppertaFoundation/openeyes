@@ -47,10 +47,10 @@ $this->beginContent('//patient/event_container'); ?>
 			</div>
 			<div class="large-5 column end">
 				<?php if (!empty($operation->booking) && (strtotime($operation->booking->session->date) <= strtotime('now'))) {
-                    $listIndex = 3;
-                } else {
-                    $listIndex = 2;
-                } ?>
+    $listIndex = 3;
+} else {
+    $listIndex = 2;
+} ?>
 				<?php echo CHtml::dropDownList('cancellation_reason', '', OphTrOperationbooking_Operation_Cancellation_Reason::getReasonsByListNumber($listIndex),
                     array('empty' => 'Select a reason')
                 ); ?>

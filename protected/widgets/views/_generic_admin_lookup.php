@@ -18,6 +18,8 @@
  */
 $model = $params['model'];
 $htmlOptions = @$disabled ? array('disabled' => 'disabled') : array();
-if ($params['allow_null']) $htmlOptions['empty'] = '-';
+if ($params['allow_null']) {
+    $htmlOptions['empty'] = '-';
+}
 $value = $row ? $row->{$params['field']} : null;
 echo CHtml::dropDownList($params['field']."[{$i}]", $value, SelectionHelper::listData($model, $value), $htmlOptions);

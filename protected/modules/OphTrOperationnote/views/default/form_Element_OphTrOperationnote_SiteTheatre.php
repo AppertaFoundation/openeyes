@@ -31,7 +31,7 @@
 		</div>
 		<div class="large-6 column">
 	<?php
-        if(array_key_exists('OphTrOperationbooking', Yii::app()->modules) && in_array('ophtroperationbooking_operation_theatre', Yii::app()->db->getSchema()->getTableNames())) {
+        if (array_key_exists('OphTrOperationbooking', Yii::app()->modules) && in_array('ophtroperationbooking_operation_theatre', Yii::app()->db->getSchema()->getTableNames())) {
             $siteId = ($element->site_id) ? $element->site_id : Yii::app()->session['selected_site_id'];
             echo $form->dropDownList(
                 $element,

@@ -25,7 +25,14 @@
 <script type="text/javascript">
 	var widgetSliderTable_<?php echo CHtml::modelName($element)?>_<?php echo $field?> = new WidgetSliderTable({
 		'range_id': '<?php echo CHtml::modelName($element)?>_<?php echo $field?>',
-		'data': {<?php foreach ($data as $i => $val) { if ($i > 1) echo ','; echo "'$i': '$val'"; }?>}
+		'data': {
+			<?php foreach ($data as $i => $val) { 
+                if ($i > 1) {
+                    echo ',';
+                }
+                echo "'$i': '$val'"; 
+            }?>
+		}
 	});
 </script>
 <div id="div_<?php echo CHtml::modelName($element)?>_<?php echo $field?>" class="eventDetail"<?php if (@$hidden) {?> style="display: none;"<?php }?>>

@@ -39,7 +39,7 @@ if (isset($htmlOptions['div_class'])) {
 }
 
 $found = false;
-foreach($selected_ids as $id) {
+foreach ($selected_ids as $id) {
     if (isset($options[$id])) {
         $found = true;
         break;
@@ -121,7 +121,7 @@ $widgetOptionsJson = json_encode(array(
 							</div>
 						</div>
 					<?php }
-                }?>
+}?>
 			</div>
 		</div>
 <?php if (!@$htmlOptions['nowrapper']) {?>

@@ -43,7 +43,11 @@
 			<?php foreach ($this->patient->previousOperations as $operation) {?>
 				<tr>
 					<td><?php echo $operation->dateText?></td>
-					<td><?php if ($operation->side) { echo $operation->side->adjective.' ';}?><?php echo CHtml::encode($operation->operation)?></td>
+					<td><?php if ($operation->side) { 
+							echo $operation->side->adjective.' ';
+						}?>
+						<?php echo CHtml::encode($operation->operation)?>
+					</td>
 					<?php if ($this->checkAccess('OprnEditPreviousOperation')): ?>
 						<td>
 							<a href="#" class="editOperation" rel="<?php echo $operation->id?>">Edit</a>&nbsp;&nbsp;

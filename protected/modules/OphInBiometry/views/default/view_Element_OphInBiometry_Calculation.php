@@ -22,7 +22,7 @@
 	<div class="element-data element-eyes row">
 		<div class="element-eye right-eye column">
 			<?php if ($element->hasRight()) {
-                $this->renderPartial('view_Element_OphInBiometry_Calculation_fields',
+    $this->renderPartial('view_Element_OphInBiometry_Calculation_fields',
                         array('side' => 'right', 'element' => $element));
             } else { ?>
 				<div class="data-value">Not recorded</div>
@@ -30,7 +30,7 @@
 		</div>
 		<div class="element-eye left-eye column">
 			<?php if ($element->hasLeft()) {
-                $this->renderPartial('view_Element_OphInBiometry_Calculation_fields',
+    $this->renderPartial('view_Element_OphInBiometry_Calculation_fields',
                         array('side' => 'left', 'element' => $element));
             } else { ?>
 				<div class="data-value">Not recorded</div>

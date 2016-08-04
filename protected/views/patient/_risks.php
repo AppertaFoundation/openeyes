@@ -33,16 +33,16 @@ Yii::app()->assetManager->registerScriptFile('js/risks.js');
 	<div class="js-toggle-body">
 
 		<p class="risk-status-unknown" <?php if (!(empty($this->patient->riskAssignments)) || $this->patient->no_risks_date) {
-            echo 'style="display: none;"';
-        } ?>>Patient risk status is unknown</p>
+    echo 'style="display: none;"';
+} ?>>Patient risk status is unknown</p>
 
 		<p class="risk-status-none" <?php if (!$this->patient->no_risks_date) {
-            echo 'style="display: none;"';
-        } ?>>Patient has no known risks</p>
+    echo 'style="display: none;"';
+} ?>>Patient has no known risks</p>
 
 		<table class="plain patient-data" id="currentRisks" <?php if (empty($this->patient->riskAssignments)) {
-            echo 'style="display: none;"';
-        } ?>>
+    echo 'style="display: none;"';
+} ?>>
 			<thead>
 			<tr>
 				<th>Risks</th>
@@ -91,9 +91,10 @@ Yii::app()->assetManager->registerScriptFile('js/risks.js');
                 )) ?>
 
 				<div
-					class="risks_confirm_no field-row row" <?php if ($this->patient->hasRiskStatus() && !$this->patient->no_risks_date) {
-                    echo 'style="display: none;"';
-                } ?>>
+					class="risks_confirm_no field-row row" 
+					<?php if ($this->patient->hasRiskStatus() && !$this->patient->no_risks_date) {
+                        echo 'style="display: none;"';
+                    } ?>>
 					<div class="risks">
 						<div class="<?php echo $form->columns('label'); ?>">
 							<label for="no_risks">Confirm patient has no risks:</label>
@@ -107,9 +108,10 @@ Yii::app()->assetManager->registerScriptFile('js/risks.js');
 				<input type="hidden" name="edit_risk_id" id="edit_risk_id" value=""/>
 				<input type="hidden" name="patient_id" value="<?php echo $this->patient->id ?>"/>
 
-				<div class="row field-row risk_field" <?php if ($this->patient->no_risks_date) {
-                    echo 'style="display: none;"';
-                } ?>>
+				<div class="row field-row risk_field" 
+					<?php if ($this->patient->no_risks_date) {
+                        echo 'style="display: none;"';
+                    } ?>>
 					<div class="<?php echo $form->columns('label'); ?>">
 						<label for="risk_id">Add risk:</label>
 					</div>
@@ -128,7 +130,7 @@ Yii::app()->assetManager->registerScriptFile('js/risks.js');
 					</div>
 				</div>
 				<div class="field-row row risk_field" <?php if ($this->patient->no_risks_date) {
-                    echo 'style="display: none;"';
+    echo 'style="display: none;"';
                 } ?>>
 					<div class="<?php echo $form->columns('label'); ?>">
 						<label for="comments">Comments:</label>

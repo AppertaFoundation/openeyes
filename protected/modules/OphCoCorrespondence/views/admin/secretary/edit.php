@@ -53,7 +53,7 @@ Yii::app()->clientScript->registerScriptFile($modulePath.'/js/siteSecretary.js')
 			</tr>
 		</thead>
 		<tbody>
-		<?php foreach($siteSecretaries as $id => $siteSecretary): ?>
+		<?php foreach ($siteSecretaries as $id => $siteSecretary): ?>
 			<tr class="secretaryFormRow">
 				<td>
 					<?php echo CHtml::activeHiddenField($siteSecretary, "[$id]firm_id"); ?>

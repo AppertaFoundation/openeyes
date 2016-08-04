@@ -24,8 +24,7 @@ $expand_style = '';
 if (!$row->isNewRecord) {
     $htmlOptions['style'] = 'display: none;';
     $collapse_style = 'display: none;';
-}
-else {
+} else {
     $expand_style = 'display: none;';
 }
 $search_field = $params['model']::model()->getAutocompleteField();

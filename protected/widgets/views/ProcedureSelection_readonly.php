@@ -33,9 +33,9 @@
 						<div class="large-<?php echo (!$durations) ? '12' : '10'; ?> column">
 							<?php
                                 $totalDuration += $procedure['default_duration'];
-                                echo CHtml::hiddenField('Procedures_'.$identifier.'[]', $procedure['id']);
-                                echo '<span>'.$procedure['term'].'</span>';
-                            ?>
+                    echo CHtml::hiddenField('Procedures_'.$identifier.'[]', $procedure['id']);
+                    echo '<span>'.$procedure['term'].'</span>';
+                    ?>
 						</div>
 						<?php if ($durations) {?>
 							<div class="large-2 column">

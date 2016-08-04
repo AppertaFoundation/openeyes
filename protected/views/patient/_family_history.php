@@ -113,14 +113,14 @@ Yii::app()->assetManager->registerScriptFile('js/family_history.js');
 							<div class="<?php echo $form->columns('field');?>">
 								<?php
                                 $relatives = FamilyHistoryRelative::model()->findAll(array('order' => 'display_order'));
-                                $relatives_opts = array(
+    $relatives_opts = array(
                                         'options' => array(),
                                         'empty' => '- select -',
                                 );
-                                foreach ($relatives as $rel) {
-                                    $relatives_opts['options'][$rel->id] = array('data-other' => $rel->is_other ? '1' : '0');
-                                }
-                                echo CHtml::dropDownList('relative_id', '', CHtml::listData($relatives, 'id', 'name'), $relatives_opts)
+    foreach ($relatives as $rel) {
+        $relatives_opts['options'][$rel->id] = array('data-other' => $rel->is_other ? '1' : '0');
+    }
+    echo CHtml::dropDownList('relative_id', '', CHtml::listData($relatives, 'id', 'name'), $relatives_opts)
                                 ?>
 							</div>
 						</div>
@@ -150,15 +150,15 @@ Yii::app()->assetManager->registerScriptFile('js/family_history.js');
 							<div class="<?php echo $form->columns('field');?>">
 								<?php
                                 $conditions = FamilyHistoryCondition::model()->findAll(array('order' => 'display_order'));
-                                $conditions_opts = array(
+    $conditions_opts = array(
                                         'options' => array(),
                                         'empty' => '- select -',
                                 );
-                                foreach ($conditions as $con) {
-                                    $conditions_opts['options'][$con->id] = array('data-other' => $con->is_other ? '1' : '0');
-                                }
-                                echo CHtml::dropDownList('condition_id', '', CHtml::listData($conditions, 'id', 'name'), $conditions_opts);
-                                ?>
+    foreach ($conditions as $con) {
+        $conditions_opts['options'][$con->id] = array('data-other' => $con->is_other ? '1' : '0');
+    }
+    echo CHtml::dropDownList('condition_id', '', CHtml::listData($conditions, 'id', 'name'), $conditions_opts);
+    ?>
 							</div>
 						</div>
 

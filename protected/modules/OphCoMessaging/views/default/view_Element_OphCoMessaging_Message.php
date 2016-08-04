@@ -29,7 +29,9 @@ if (!@$comment) {
         <div class="row data-row">
 			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('for_the_attention_of_user_id'))?></div></div>
 			<div class="large-10 column end"><div class="data-value <?= $element->urgent ? ' urgent' : ''?>"><?php echo $element->for_the_attention_of_user->getFullnameAndTitle();
-                    if ($element->urgent) { echo ' <span class="priority fa fa-exclamation"></span>'; }
+                    if ($element->urgent) {
+                        echo ' <span class="priority fa fa-exclamation"></span>';
+                    }
             ?></div></div>
 
 		</div>

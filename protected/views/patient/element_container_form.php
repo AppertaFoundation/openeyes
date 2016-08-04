@@ -52,7 +52,7 @@ if ($this->isHiddenInUI($element)) {
                 $this->renderClip('element-title-additional');
                 // don't want the header clip to repeat in child elements
                 unset($this->clips['element-title-additional']);
-                ?>
+    ?>
 			</div>
 		<?php }?>
 

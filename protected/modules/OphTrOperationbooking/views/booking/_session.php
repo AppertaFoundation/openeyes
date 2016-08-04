@@ -18,7 +18,7 @@
  */
 if (!empty($operation->booking)) {
     $session = $operation->booking->session;
-?>
+    ?>
   <div class="data">
 
       <span style="display:inline-block; width:160px;">Firm:</span><strong><?php echo CHtml::encode($session->FirmName); ?></strong><br>
@@ -30,5 +30,6 @@ if (!empty($operation->booking)) {
       <span style="display:inline-block; width:160px;">Duration of operation:</span><strong><?php echo $operation->total_duration.' minutes'; ?></strong>
   </div>
 <?php
+
 }
 ?>

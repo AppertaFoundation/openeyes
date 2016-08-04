@@ -25,6 +25,7 @@
                 No patients in this worklist.
             </div>
             <?php
+
         } else {
             $cols = array(
                 array(

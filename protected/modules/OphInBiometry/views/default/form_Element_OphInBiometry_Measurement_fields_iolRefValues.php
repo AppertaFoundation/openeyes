@@ -45,10 +45,10 @@
                         </tr>
                         <?php
                             $iolData = json_decode($iolRefValues->{"iol_ref_values_$side"}, true);
-                            for($i = 0; $i < count($iolData['IOL']); ++$i){
-                                if($i == 3){
+                            for ($i = 0; $i < count($iolData['IOL']); ++$i) {
+                                if ($i == 3) {
                                     echo '<tr><td><b>'.$iolData['IOL'][$i].'</b></td><td><b>'.$iolData['REF'][$i].'</b></td></tr>';
-                                }else {
+                                } else {
                                     echo '<tr><td>'.$iolData['IOL'][$i].'</td><td>'.$iolData['REF'][$i].'</td></tr>';
                                 }
                             }

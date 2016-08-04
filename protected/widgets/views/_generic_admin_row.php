@@ -31,7 +31,7 @@ if (@$disabled) {
         ?>
 	</td>
 	<?php } ?>
-	<?php if(!$label_extra_field):?>
+	<?php if (!$label_extra_field):?>
 	<td>
 		<?php
             if ($label_field_type) {
@@ -62,7 +62,7 @@ if (@$disabled) {
 	<?php }?>
 	<td>
 		<?php if (isset($row->active)) {
-            echo CHtml::checkBox('active['.$i.']', $row->active);
+    echo CHtml::checkBox('active['.$i.']', $row->active);
         } else {?>
 			<a href="#" class="deleteRow">delete</a>
 		<?php }?>

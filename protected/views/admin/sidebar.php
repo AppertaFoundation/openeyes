@@ -11,7 +11,7 @@
 		<div class="box_admin_elements">
 			<ul class="navigation admin">
 				<?php foreach ($adminBoxElements as $title => $uri) {
-                    // need to check if function depends on a module
+    // need to check if function depends on a module
                     if (is_array($uri)) {
                         foreach ($uri as $moduleName => $adminUri) {
                             if (array_key_exists($moduleName, Yii::app()->modules)) {
@@ -24,7 +24,7 @@
                     if ($uri) { ?>
 						<li<?php
                         $requestUriArray = explode('?', Yii::app()->getController()->request->requestUri);
-                        $requestUri = $requestUriArray[0];
+        $requestUri = $requestUriArray[0];
                         if ($requestUri == $uri) { ?> class="selected"<?php } ?>>
 							<?php if ($requestUri == $uri) { ?>
 								<script type="text/javascript">

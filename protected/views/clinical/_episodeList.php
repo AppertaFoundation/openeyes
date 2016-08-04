@@ -32,7 +32,7 @@ if (empty($episodes)) {
                 $text = '<span class="type">'.ucfirst($event->eventType->name).
                     '</span><span class="date"> '.$event->NHSDate('created_date').
                     '</span>';
-                echo CHtml::link($text, array('clinical/view', 'id' => $event->id));
+                    echo CHtml::link($text, array('clinical/view', 'id' => $event->id));
                 } ?>
 			</ul>
 			<div class="footer"></div>

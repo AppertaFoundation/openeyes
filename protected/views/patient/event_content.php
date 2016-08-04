@@ -28,7 +28,7 @@
 		<?php echo $content; ?>
 
 		<?php if ($this->action->id == 'view') {
-            $this->renderEventMetadata();
-        } ?>
+    $this->renderEventMetadata();
+} ?>
 	</div>
 </div>

@@ -29,10 +29,10 @@
 		<?php
             $options = array('value' => $id, 'id' => CHtml::modelName($element).'_'.$field.'_'.$id);
 
-            if (@$htmlOptions['options'] && array_key_exists($id, @$htmlOptions['options'])) {
-                foreach ($htmlOptions['options'][$id] as $k => $v) {
-                    $options[$k] = $v;
-                }
+    if (@$htmlOptions['options'] && array_key_exists($id, @$htmlOptions['options'])) {
+        foreach ($htmlOptions['options'][$id] as $k => $v) {
+            $options[$k] = $v;
+        }
             }?>
 			<label class="inline highlight">
 				<?php echo CHtml::radioButton($name, (!is_null($value) && $value == $id) && (!is_string($value) || $value != ''), $options); ?>
@@ -63,14 +63,14 @@
 					<?php
                         $options = array('value' => $id, 'id' => CHtml::modelName($element).'_'.$field.'_'.$id);
 
-                        if (@$htmlOptions['options'] && array_key_exists($id, @$htmlOptions['options'])) {
-                            foreach ($htmlOptions['options'][$id] as $k => $v) {
-                                $options[$k] = $v;
-                            }
-                        }
+    if (@$htmlOptions['options'] && array_key_exists($id, @$htmlOptions['options'])) {
+        foreach ($htmlOptions['options'][$id] as $k => $v) {
+            $options[$k] = $v;
+        }
+    }
 
-                        echo CHtml::radioButton($name, (!is_null($value) && $value == $id) && (!is_string($value) || $value != ''), $options);
-                    ?>
+    echo CHtml::radioButton($name, (!is_null($value) && $value == $id) && (!is_string($value) || $value != ''), $options);
+    ?>
 					<?php echo CHtml::encode($data_value)?>
 				</label>
 			<?php }?>

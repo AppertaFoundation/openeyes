@@ -18,7 +18,7 @@
  */
 ?>
 <?php
-if($element->event->id > 0) {
+if ($element->event->id > 0) {
     $iolRefValues = Element_OphInBiometry_IolRefValues::Model()->findAllByAttributes(
         array(
             'event_id' => $element->event->id,
@@ -33,7 +33,7 @@ if($element->event->id > 0) {
 				<h4><b>RIGHT</b></h4>
 			</div>
 			<?php if ($element->hasRight()) {
-                $this->renderPartial('view_Element_OphInBiometry_Measurement_fields', array('side' => 'right', 'element' => $element, 'measurementInput' => $iolRefValues));
+    $this->renderPartial('view_Element_OphInBiometry_Measurement_fields', array('side' => 'right', 'element' => $element, 'measurementInput' => $iolRefValues));
             } else { ?>
 				<div class="data-value">Not recorded</div>
 			<?php } ?>
@@ -43,7 +43,7 @@ if($element->event->id > 0) {
 				<h4><b>LEFT</b></h4>
 			</div>
 			<?php if ($element->hasLeft()) {
-                $this->renderPartial('view_Element_OphInBiometry_Measurement_fields', array('side' => 'left', 'element' => $element, 'measurementInput' => $iolRefValues));
+    $this->renderPartial('view_Element_OphInBiometry_Measurement_fields', array('side' => 'left', 'element' => $element, 'measurementInput' => $iolRefValues));
             } else { ?>
 				<div class="data-value">Not recorded</div>
 			<?php } ?>

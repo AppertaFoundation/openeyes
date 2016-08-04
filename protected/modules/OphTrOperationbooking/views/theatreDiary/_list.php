@@ -30,8 +30,8 @@ if (empty($diary)) {?>
 			</div>
 		</div>
 		<?php foreach ($theatre->sessions as $session) {
-            $this->renderPartial('_session', array('session' => $session, 'theatre' => $theatre, 'assetPath' => $assetPath, 'ward_id' => $ward_id));
-        }
+    $this->renderPartial('_session', array('session' => $session, 'theatre' => $theatre, 'assetPath' => $assetPath, 'ward_id' => $ward_id));
+}
     }
 }
 ?>

@@ -24,7 +24,7 @@
                 <?php if ($element->hasRight()):?>
                 
                     <table id="right-complication-list" class="recorded-postop-complications" data-sideletter="R">
-                    <?php foreach($element->getFullComplicationList(\Eye::RIGHT) as $value): ?>
+                    <?php foreach ($element->getFullComplicationList(\Eye::RIGHT) as $value): ?>
                             <tr>
                                 <td class=postop-complication-name><?php echo $value['name']; ?></td>
                             </tr>
@@ -44,7 +44,7 @@
                     
                    <table id="left-complication-list" class="recorded-postop-complications" data-sideletter="L">
                    <?php 
-                        foreach($element->getFullComplicationList(\Eye::LEFT) as $value): ?>
+                        foreach ($element->getFullComplicationList(\Eye::LEFT) as $value): ?>
                            <tr> 
                                 <td class=postop-complication-name><?php echo $value['name']; ?></td>
                             </tr>

@@ -26,7 +26,10 @@ foreach ($diary as $i => $theatre) {?>
     $sessions_count = count($theatre->sessions) - 1;
     foreach ($theatre->sessions as $j => $session) {?>
 		<div id="diaryTemplate"
-			 <?php if ($j < $sessions_count) { ?>style="page-break-after:always" <?php } ?>>
+			 <?php if ($j < $sessions_count) { ?>
+				 style="page-break-after:always" 
+			 <?php } ?>
+		>
 			<div id="d_title">OPERATION LIST FORM</div>
 			<table class="d_overview">
 				<tbody>

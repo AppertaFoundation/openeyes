@@ -33,7 +33,9 @@ $medications = $current ? $patient->medications : $patient->previous_medications
                     echo Helper::formatFuzzyDate($medication->start_date).' - ';
                     if (!$current) {
                         echo Helper::formatFuzzyDate($medication->end_date);
-                        if ($medication->stop_reason) echo " (reason for stopping: {$medication->stop_reason->name})";
+                        if ($medication->stop_reason) {
+                            echo " (reason for stopping: {$medication->stop_reason->name})";
+                        }
                     }
                     ?>
                 </td>
@@ -50,7 +52,7 @@ $medications = $current ? $patient->medications : $patient->previous_medications
                                data-drug-name="<?= $medication->getDrugLabel() ?>">
                                 Stop</a> |
                         <?php } ?>
-                        <?php if(!$medication->prescription_item_id):?>
+                        <?php if (!$medication->prescription_item_id):?>
                         <a href="#" class="medication_delete" data-id="<?= $medication->id ?>">Delete</a>
                         <?php endif;?>
                     </td>

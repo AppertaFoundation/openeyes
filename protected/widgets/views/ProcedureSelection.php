@@ -118,7 +118,7 @@
                 if (!empty($selected_procedures)) {
                     foreach ($selected_procedures as $procedure) {
                         $totalDuration += $procedure['default_duration'];
-                ?>
+                        ?>
 						<tr class="item">
 							<td class="procedure">
 								<span class="field"><?= CHtml::hiddenField('Procedures_'.$identifier.'[]', $procedure['id']); ?></span>

@@ -25,14 +25,14 @@
 		<div class="large-<?php echo $layoutColumns['label'];?> column">
 			<?php
             $labelText = empty($htmlOptions['label']) ? CHtml::encode($element->getAttributeLabel($field)) : $htmlOptions['label'];
-            $labelText .= ':';
-            echo Chtml::label($labelText, Chtml::getIdByName($name));
-            ?>
+    $labelText .= ':';
+    echo Chtml::label($labelText, Chtml::getIdByName($name));
+    ?>
 		</div>
         <div
             class="large-<?php echo $layoutColumns['field']; ?> column<?php if (empty($htmlOptions['append-text']) || empty($layoutColumns['append-text'])) { ?> end<?php } ?>">
             <?php
-            switch ($htmlOptions['type']){
+            switch ($htmlOptions['type']) {
                 case 'password':
                     echo CHtml::passwordField($name, $value, $htmlOptions);
                     break;
@@ -47,16 +47,16 @@
                     echo CHtml::textField($name, $value, $htmlOptions);
             }
 
-            if (!empty($links)) {
-                foreach ($links as $link) {
-                    echo '<span class="field-info">'.CHtml::link($link['title'], $link['href'], array('id' => $link['id'])).'</span>';
-                }
-            }?>
+        if (!empty($links)) {
+            foreach ($links as $link) {
+                echo '<span class="field-info">'.CHtml::link($link['title'], $link['href'], array('id' => $link['id'])).'</span>';
+            }
+        }?>
 		</div>
-	<?php if(!empty($htmlOptions['append-text']) && !empty($layoutColumns['append-text'])){?>
-		<div class="large-<?php echo $layoutColumns['append-text'];?> column collapse end">
-			<span class="field-info"><?php echo $htmlOptions['append-text'];?></span>
-		</div>
-	<?php }?>
+        <?php if(!empty($htmlOptions['append-text']) && !empty($layoutColumns['append-text'])){?>
+            <div class="large-<?php echo $layoutColumns['append-text'];?> column collapse end">
+                <span class="field-info"><?php echo $htmlOptions['append-text'];?></span>
+            </div>
+        <?php }?>
 	</div>
 <?php }?>

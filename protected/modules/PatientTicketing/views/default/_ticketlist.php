@@ -48,7 +48,7 @@
 					</thead>
 					<tbody id="ticket-list">
 					<?php foreach ($tickets as $i => $t) {
-    $this->renderPartial('_ticketlist_row', array('i' => $i, 'ticket' => $t, 'can_process' => $can_process));
+                        $this->renderPartial('_ticketlist_row', array('i' => $i, 'ticket' => $t, 'can_process' => $can_process));
                     }?>
 					</tbody>
 				</table>

@@ -9,25 +9,27 @@
         $row = 1;
         $id = 0;
 
-        for($cy = 38; $cy < 460; $cy += 60){
-            if($row == 1 || $row == 8){
+        for ($cy = 38; $cy < 460; $cy += 60) {
+            if ($row == 1 || $row == 8) {
                 $cx_start = 170;
                 $cx_max = 350;
-            }elseif($row == 2 || $row == 7){
+            } elseif ($row == 2 || $row == 7) {
                 $cx_start = 110;
                 $cx_max = 410;
-            }elseif($row == 3 || $row == 6){
+            } elseif ($row == 3 || $row == 6) {
                 $cx_start = 50;
                 $cx_max = 500;
-            }elseif($row == 4 || $row == 5){
+            } elseif ($row == 4 || $row == 5) {
                 $cx_start = 50;
                 $cx_max = 560;
             }
-            for($cx = $cx_start; $cx <= $cx_max; $cx += 60){
-                if(($row != 4 && $row != 5) || !($cx > 120 && $cx < 240)){
+            for ($cx = $cx_start; $cx <= $cx_max; $cx += 60) {
+                if (($row != 4 && $row != 5) || !($cx > 120 && $cx < 240)) {
                     ?>
-                    <circle id="vfcp_left_<?php echo $id ?>" cx="<?php echo $cx;?>" cy="<?php echo $cy;?>" r="29" fill="white" class="colourplot_left"/>
+                    <circle id="vfcp_left_<?php echo $id ?>" cx="<?php echo $cx;?>" cy="<?php echo $cy;?>" 
+                            r="29" fill="white" class="colourplot_left"/>
                     <?php
+
                 }
                 ++$id;
             }

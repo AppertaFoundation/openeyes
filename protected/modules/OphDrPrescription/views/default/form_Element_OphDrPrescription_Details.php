@@ -99,6 +99,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
 				</div>
 			</div>
 		<?php
+
         }
         ?>
 		<div class="row field-row">
@@ -115,6 +116,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
 							Add Repeat Prescription
 						</button>
 					<?php
+
                     }
                 }
                 ?>
@@ -122,8 +124,8 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
 				<button type="button" class="small"
 						id="clear_prescription" name="clear_prescription">
 					Clear <?php if (is_a(Yii::app()->getController(), 'DefaultController')) {
-                        echo 'Prescription';
-                    } ?>
+    echo 'Prescription';
+} ?>
 				</button>
 			</div>
 		</div>
@@ -148,8 +150,8 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
 	</thead>
 	<tbody>
 	<?php foreach ($element->items as $key => $item) {
-        $this->renderPartial('form_Element_OphDrPrescription_Details_Item', array('key' => $key, 'item' => $item, 'patient' => $this->patient));
-    } ?>
+    $this->renderPartial('form_Element_OphDrPrescription_Details_Item', array('key' => $key, 'item' => $item, 'patient' => $this->patient));
+} ?>
 	</tbody>
 </table>
 
@@ -163,6 +165,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
 		</div>
 	</section>
 <?php
+
 }
 ?>
 

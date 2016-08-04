@@ -26,23 +26,24 @@ if ($this->checkPrintAccess()) {
 $this->beginContent('//patient/event_container');
 $this->moduleNameCssClass .= ' highlight-fields';
 
-if($this->is_auto) {
-?>
+if ($this->is_auto) {
+    ?>
 <div id="surgeon" class="row data-row">
 	<div class="large-2 column" style="margin-left: 10px;">
 		<div class="data-label">Surgeon:</div>
 	</div>
 	<div class="large-9 column end">
 		<div class="data-value"><b><?php
-                if(isset(Element_OphInBiometry_IolRefValues::model()->findByAttributes(array('event_id' => $this->event->id))->surgeon_id)){
+                if (isset(Element_OphInBiometry_IolRefValues::model()->findByAttributes(array('event_id' => $this->event->id))->surgeon_id)) {
                     echo OphInBiometry_Surgeon::model()->findByAttributes(
                         array('id' => Element_OphInBiometry_IolRefValues::model()->findByAttributes(array('event_id' => $this->event->id))->surgeon_id)
                     )->name;
                 }
-                ?></b></div>
+    ?></b></div>
 	</div>
 </div>
 <?php
+
 }
 $this->renderOpenElements($this->action->id); ?>
 

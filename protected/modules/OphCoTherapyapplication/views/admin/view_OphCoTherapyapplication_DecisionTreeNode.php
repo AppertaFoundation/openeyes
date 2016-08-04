@@ -19,12 +19,13 @@
 ?>
 <div class="OphCoTherapyapplication_DecisionTreeNode">
 <?php if ($model->parent) {
-?>
+    ?>
 	<div><a href="<?php echo Yii::app()->createUrl('OphCoTherapyapplication/admin/viewdecisiontree/').'/'.$model->decisiontree_id.'?node_id='.$model->parent_id ?>" class="view_parent">&lt;&lt; Parent</a></div>
 <?php
+
 }
 if ($model->rules) {
-?>
+    ?>
 
 	<div class="rules curvybox blue column end">
 		<h4>Rules</h4>
@@ -35,6 +36,7 @@ if ($model->rules) {
         }?>
 	</div>
 <?php
+
 }
 ?>
 		<?php
@@ -72,7 +74,9 @@ if ($model->children) {
 		<div class="child curvybox">
 			<?php
             if ($child->rules) {
-                foreach ($child->rules as $rule) { echo ' ['.$rule->displayParentCheck().' '.$rule->displayParentCheckValue().']'; }
+                foreach ($child->rules as $rule) {
+                    echo ' ['.$rule->displayParentCheck().' '.$rule->displayParentCheckValue().']';
+                }
             } else {
                 echo '[DEFAULT]';
             }

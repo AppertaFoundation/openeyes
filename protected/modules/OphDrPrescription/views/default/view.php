@@ -42,8 +42,10 @@
 	<?php $this->renderOptionalElements($this->action->id); ?>
 
 	<script type="text/javascript">
-		<?php if (isset(Yii::app()->session['print_prescription'])) {
-            unset(Yii::app()->session['print_prescription']); ?>
+		<?php 
+		if (isset(Yii::app()->session['print_prescription'])) {
+            unset(Yii::app()->session['print_prescription']);
+        ?>
 		$(document).ready(function() {
 			do_print_prescription();
 		});

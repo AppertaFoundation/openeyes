@@ -26,7 +26,13 @@
 <div class="panel patient<?php if ($warnings): echo ' warning'; endif; ?>" id="patientID">
 	<div class="patient-details">
 		<?php echo CHtml::link($this->patient->getDisplayName(), array('/patient/view/'.$this->patient->id)) ?>
-		<span class="patient-age">(<?php if ($this->patient->isDeceased()) { ?>Deceased<?php } else { echo $this->patient->getAge(); } ?>)</span>
+		<span class="patient-age">
+			(<?php if ($this->patient->isDeceased()) { ?>
+				Deceased
+			<?php } else {
+				echo $this->patient->getAge(); } 
+			?>)
+		</span>
 	</div>
 	<div class="hospital-number">
 		<span>
@@ -43,7 +49,7 @@
 					NHS number:
 				</span>
 				<?php echo $this->patient->nhsnum?>
-				<?php if($this->patient->nhsNumberStatus && $this->patient->nhsNumberStatus->isAnnotatedStatus()):?>
+				<?php if ($this->patient->nhsNumberStatus && $this->patient->nhsNumberStatus->isAnnotatedStatus()):?>
 					<i class="fa fa-asterisk" aria-hidden="true"></i><span class="messages"><?= $this->patient->nhsNumberStatus->description;?></span>
 				<?php endif;?>
 			</div>

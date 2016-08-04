@@ -85,6 +85,7 @@
                         <td><?php echo $log['processor_id'] ?></td>
                     </tr>
                     <?php
+
                 } ?>
                 </tbody>
             </table>

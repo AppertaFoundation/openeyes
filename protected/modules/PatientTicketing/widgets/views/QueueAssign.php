@@ -29,8 +29,7 @@ if ($queue) {?>
                         'form_name' => $fld['form_name'],
                         'form_data' => $form_data,
                     ));
-            }
-            else { ?>
+            } else { ?>
 			<fieldset class="field-row row">
 				<div class="large-<?= $this->label_width ?> column">
 					<label for="<?= $fld['form_name']?>"><?= $fld['label'] ?>:</label>

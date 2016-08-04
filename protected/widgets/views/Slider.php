@@ -23,7 +23,7 @@
         foreach ($remap_values as $remap_value => $remap) {?>
 			remap_<?php echo CHtml::modelName($element)?>_<?php echo $field?>['<?php echo $remap_value?>'] = '<?php echo $remap?>';
 		<?php }
-    }?>
+}?>
 	var widgetSlider_<?php echo CHtml::modelName($element)?>_<?php echo $field?> = new WidgetSlider({
 		'prefix_positive': '<?php echo $prefix_positive?>',
 		'range_id': '<?php echo CHtml::modelName($element)?>_<?php echo $field?>',

@@ -17,7 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<tr class="<?php echo ($i % 2 == 0) ? 'even' : 'edd'; echo ' '.strtolower($log->colour);?>" id="audit<?php echo $log->id?>"<?php if (@$hidden) {?> style="display: none;"<?php }?>>
+<tr class="<?php 
+    echo (($i % 2 == 0) ? 'even' : 'edd'); 
+    echo ' '.strtolower($log->colour);?>" 
+	id="audit<?php echo $log->id?>" <?php if (@$hidden) {?> style="display: none;"<?php }?>>
 	<td>
 		<a href="#" id="auditItem<?php echo $log->id?>" class="auditItem">
 			<?php echo $log->NHSDate('created_date').' '.substr($log->created_date, 11, 8)?>

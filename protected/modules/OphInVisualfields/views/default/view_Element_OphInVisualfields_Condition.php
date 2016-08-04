@@ -21,16 +21,19 @@
 <div class="element-data">
 	<div class="row data-row">
 		<div class="large-2 column data-label"><?= CHtml::encode($element->getAttributeLabel('ability_id')) ?></div>
-		<div class="large-10 column end"><div class="data-value"><?php if (!$element->abilitys) {?>
+		<div class="large-10 column end">
+			<div class="data-value">
+				<?php if (!$element->abilitys) {?>
 					None
-				<?php } else {?>
+				<?php} else { ?>
 					<?php foreach ($element->abilitys as $item) {
                         echo $item->ophinvisualfields_condition_ability->name?><br/>
-					<?php }?>
-				<?php }?>
-			</div></div>
+					<?php} ?>
+				<?php}?>
+			</div>
+		</div>
 	</div>
-	<?php if ($element->hasMultiSelectValue('abilitys', 'Other')) { ?>
+	<?php if ($element->hasMultiSelectValue('abilitys', 'Other')) {?>
 	<div class="row data-row">
 		<div class="large-2 column data-label"><?= CHtml::encode($element->getAttributeLabel('other')) ?></div>
 		<div class="large-10 column data-value"><?= $element->textWithLineBreaks('other') ?></div>

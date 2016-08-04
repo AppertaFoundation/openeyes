@@ -22,7 +22,11 @@ $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 
 This email was generated from an OpenEyes Therapy Application event
 
-<?php if ($site = $service_info->site) { echo 'Intended Site: '.$site->name; }?>
+<?php 
+if ($site = $service_info->site) {
+    echo 'Intended Site: '.$site->name;
+}
+?>
 
 AMD EC-Form this patient sent to Contracts for PCT approval.
 AMD EC-Form document sent by: <?php echo $diagnosis->user->getReportDisplay()."\n" ?>

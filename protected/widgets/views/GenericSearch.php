@@ -19,8 +19,8 @@
 ?>
 
 <?php
-if($search->getSearchItems() && is_array($search->getSearchItems())):
-    if(isset($subList) && $subList):
+if ($search->getSearchItems() && is_array($search->getSearchItems())):
+    if (isset($subList) && $subList):
         ?><div id="generic-search-form"><?php
     else:
         $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
@@ -31,17 +31,17 @@ if($search->getSearchItems() && is_array($search->getSearchItems())):
         ));
     endif;?>
 		<div>
-		<?php foreach($search->getSearchItems() as $key => $value):
+		<?php foreach ($search->getSearchItems() as $key => $value):
             $name = 'search['.$key.']';
-            if(is_array($value)):
+            if (is_array($value)):
                 $type = isset($value['type']) ? $value['type'] : 'compare';
                 $default = isset($value['default']) ? $value['default'] : '';
-                switch ($type){
+                switch ($type) {
                     case 'compare':
                         $comparePlaceholder = $search->getModel()->getAttributeLabel($key);
-                        foreach($value as $searchKey => $searchValue):
-                            if($searchKey === 'compare_to'):
-                                foreach($searchValue as $compareTo):
+                        foreach ($value as $searchKey => $searchValue):
+                            if ($searchKey === 'compare_to'):
+                                foreach ($searchValue as $compareTo):
                                     $comparePlaceholder .= ', '.$search->getModel()->getAttributeLabel($compareTo);
                                     echo CHtml::hiddenField('search['.$key.'][compare_to]['.$compareTo.']', $compareTo);
                                 endforeach;
@@ -79,8 +79,7 @@ if($search->getSearchItems() && is_array($search->getSearchItems())):
 							</div>
 							<?php
                         break;
-                }
-            else: ?>
+                } else: ?>
 				<div>
 				<?php
                 echo CHtml::textField($name, $search->getSearchTermForAttribute($key), array(
@@ -99,7 +98,7 @@ if($search->getSearchItems() && is_array($search->getSearchItems())):
 		</div>
 
 	<?php
-    if(isset($subList) && $subList):
+    if (isset($subList) && $subList):
         ?></div><?php
     else:
         $this->endWidget();

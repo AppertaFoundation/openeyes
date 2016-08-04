@@ -34,7 +34,7 @@ $form = $this->beginWidget('FormLayout', array(
 ));
 
 $adherence = $patient->adherence;
-if($adherence === null) {
+if ($adherence === null) {
     $adherence = new MedicationAdherence();
     $adherence->patient = $patient;
 }

@@ -20,7 +20,7 @@
 
 
 <div id="<?=$report->graphId();?>_container" class="report-container">
-    <?php if(method_exists($report, 'renderSearch')):?>
+    <?php if (method_exists($report, 'renderSearch')):?>
         <i class="mdl-color-text--blue-grey-400 material-icons search-icon" role="presentation">search</i>
         <?= $report->renderSearch(); ?>
     <?php else: ?>

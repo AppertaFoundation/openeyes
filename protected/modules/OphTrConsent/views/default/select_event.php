@@ -73,10 +73,10 @@
 											</span>
 											<span class="large-4 column">
 												<?php foreach ($operation->procedures as $i => $procedure) {
-                                                if ($i > 0) {
-                                                    echo '<br/>';
-                                                }
-                                                echo $operation->eye->name.' '.$procedure->term;
+    if ($i > 0) {
+        echo '<br/>';
+    }
+    echo $operation->eye->name.' '.$procedure->term;
                                                 }?>
 											</span>
 										</span>

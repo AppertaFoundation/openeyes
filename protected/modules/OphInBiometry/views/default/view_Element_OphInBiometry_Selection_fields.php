@@ -8,13 +8,14 @@
                     class="field-info">
                     <?php
                     echo 'No selection has been made - use edit mode to select a lens.';
-                    ?>
+        ?>
                 </div>
             </div>
         </div>
         <?php
+
     } else {
-        if($this->selectionValues){
+        if ($this->selectionValues) {
             $data = OphInBiometry_Calculation_Formula::Model()->findAllByAttributes(
                 array(
                     'id' => $this->selectionValues[0]->{"formula_id_$side"},
@@ -38,7 +39,12 @@
                 </div>
             </div>
             <div class="large-6 column">
-                <div class="field-info"><?php  if(isset($data)){foreach ($data as $k => $v) { echo $v->{'name'}; break; }}?>&nbsp;</div>
+                <div class="field-info">
+                    <?php  if(isset($data)){
+                        foreach ($data as $k => $v) { 
+                            echo $v->{'name'}; break; 
+                        }
+                    }?>&nbsp;</div>
             </div>
         </div>
         <div class="row field-row">
@@ -48,7 +54,7 @@
             <div class="large-6 column">
                 <div class="field-info" id="acon_<?php echo $side ?>">
                     <?php
-                        if($this->is_auto) {
+                        if ($this->is_auto) {
                             $iolrefValues = Element_OphInBiometry_IolRefValues::model()->findAllByAttributes(array('event_id' => $element->event->id));
                             foreach ($iolrefValues as $iolrefData) {
                                 if (isset($data)) {
@@ -57,11 +63,11 @@
                                     }
                                 }
                             }
-                        }else{
+                        } else {
                             echo ($element->{'lens_'.$side}) ? $this->formatAconst($element->{'lens_'.$side}->acon) : 'None';
                         }
 
-                    ?></div>
+        ?></div>
             </div>
         </div>
         <div class="row data-row">
@@ -84,6 +90,7 @@
             </div>
         </div>
         <?php
+
     }
     ?>
 </div>

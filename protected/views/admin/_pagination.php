@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 // display pagination
-if(isset($pagination)){
+if (isset($pagination)) {
     $this->widget('LinkPager', array(
         'pages' => $pagination,
         'maxButtonCount' => 13,
@@ -29,7 +29,8 @@ if(isset($pagination)){
             'class' => 'pagination',
         ),
     ));
-    if(($pagination->getItemCount()) && $pagination->getItemCount() < $pagination->getPageSize()){
+    if (($pagination->getItemCount()) && $pagination->getItemCount() < $pagination->getPageSize()) {
         ?><span>Showing 1 to <?= $pagination->getItemCount() ?> of <?= $pagination->getItemCount() ?> </span><?php
+
     }
 }

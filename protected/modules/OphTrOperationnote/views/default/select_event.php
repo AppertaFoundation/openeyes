@@ -74,7 +74,7 @@
 											<span class="large-4 column">
 												<?php foreach ($booking->operation->procedures as $i => $procedure) {
                                                 if ($i > 0) { echo '<br/>'; }
-                                                     echo $booking->operation->eye->name.' '.$procedure->term;
+    echo $booking->operation->eye->name.' '.$procedure->term;
                                             }?>
 											</span>
 										</span>

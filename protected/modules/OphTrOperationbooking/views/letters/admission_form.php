@@ -127,7 +127,7 @@ $logoHelper = new LogoHelper();
 			<td>
 				<?php
                 echo (empty($operation->consultant_required)) ? 'No' : 'Yes';
-                if($operation->consultant_required && $operation->consultant) {
+                if ($operation->consultant_required && $operation->consultant) {
                     echo ', '.$operation->consultant->ReversedFullName;
                 }
                 ?>

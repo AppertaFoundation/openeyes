@@ -80,7 +80,7 @@ $current_episode = @$this->current_episode;
                                         } else {
                                             $assetpath = '/assets/';
                                         }
-                                        ?>
+                                    ?>
 										<img src="<?php echo $assetpath.'img/small.png' ?>" alt="op" width="19" height="19" />
 									</a>
 								</li>
@@ -123,11 +123,11 @@ $current_episode = @$this->current_episode;
 							<ol class="events">
 								<?php	foreach ($episode->events as $event) {
                                     $highlight = false;
-
+                                
                                     if (isset($this->event) && $this->event->id == $event->id) {
                                         $highlight = true;
                                     }
-
+                                
                                     $event_path = Yii::app()->createUrl($event->eventType->class_name.'/default/view').'/';
                                     ?>
 									<li id="eventLi<?php echo $event->id ?>"<?php if ($highlight) { ?> class="selected"<?php }?>>
@@ -151,7 +151,7 @@ $current_episode = @$this->current_episode;
                                                 }
 
                                                 $imgName = 'small.png';
-                                                if($event->is_automated){
+                                                if ($event->is_automated) {
                                                     $imgName = 'small-auto.png';
                                                 }
                                                 ?>

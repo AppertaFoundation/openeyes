@@ -33,7 +33,6 @@ $show_stop_other = false;
 $show_treatment_other = false;
 if (@$_POST[$element_name] && @$_POST[$element_name][$side.$inttype_name] &&
         @$_POST[$element_name][$side.$inttype_name][$key]) {
-
     if ($stop_id = $_POST[$element_name][$side.$inttype_name][$key]['stopreason_id']) {
         $stopreason = OphCoTherapyapplication_ExceptionalCircumstances_PastIntervention_StopReason::model()->findByPk((int) $stop_id);
         if ($stopreason->other) {
@@ -42,7 +41,6 @@ if (@$_POST[$element_name] && @$_POST[$element_name][$side.$inttype_name] &&
     }
     if ($pastintervention->is_relevant &&
         $treatment_id = $_POST[$element_name][$side.$inttype_name][$key]['relevanttreatment_id']) {
-
         $treatment = OphCoTherapyapplication_RelevantTreatment::model()->findByPk((int) $treatment_id);
         if ($treatment->other) {
             $show_treatment_other = true;
@@ -55,7 +53,6 @@ if (@$_POST[$element_name] && @$_POST[$element_name][$side.$inttype_name] &&
     if ($pastintervention->is_relevant &&
         $pastintervention->relevanttreatment &&
         $pastintervention->relevanttreatment->other) {
-
         $show_treatment_other = true;
     }
 }
@@ -177,7 +174,10 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
 		</div>
 	</div>
 
-	<div class="row field-row <?php if (!$show_treatment_other) { echo 'hidden '; } ?>treatment-other">
+	<div class="row field-row 
+	<?php if (!$show_treatment_other) {
+        echo 'hidden ';
+    } ?>treatment-other">
 		<div class="large-6 column">
 			<label for="<?php echo str_replace(array('[', ']'), '_', $name_stub."{$key}_relevanttreatment_other");?>">
 				<?php echo $pastintervention->getAttributeLabel('relevanttreatment_other'); ?>:
@@ -244,7 +244,10 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
 		</div>
 	</div>
 
-	<div class="row field-row <?php if (!$show_stop_other) { echo 'hidden '; } ?>stop-reason-other">
+	<div class="row field-row 
+	<?php if (!$show_stop_other) {
+        echo 'hidden ';
+    } ?>stop-reason-other">
 		<div class="large-6 column">
 			<label for="<?php echo str_replace(array('[', ']'), '_', $name_stub."{$key}_stopreason_other");?>">
 				<?php echo $pastintervention->getAttributeLabel('stopreason_other'); ?>:

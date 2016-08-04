@@ -46,7 +46,8 @@
             } else {?>
                 <div class="alert-box info">You currently have no access to any manual worklists. You may add one by clicking the button above ...</div>
             <?php
-            }
+
+}
             ?>
         </div>
     </div>

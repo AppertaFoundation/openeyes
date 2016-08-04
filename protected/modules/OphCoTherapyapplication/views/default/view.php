@@ -47,11 +47,10 @@ if (!$warnings && !$this->event->isLocked()) {
 
         if ($this->checkEditAccess()) {
             $url = '#';
-            if($service->hasEmailRecipients()){
+            if ($service->hasEmailRecipients()) {
                 $submitButtonStyles = array('class' => 'button small');
                 $url = $this->createUrl('processApplication', array('event_id' => $this->event->id));
-            }
-            else{
+            } else {
                 $submitButtonStyles = array('class' => 'button small noEmailRecipient disabled');
                 $warnings[] = 'No application recipient configured for '.$status.' application at '.$service->getSiteName().', please contact support to resolve this.';
             }

@@ -33,7 +33,7 @@
         </tr>
     </thead>
     <tbody>
-        <?php if(empty($report->items)):?>
+        <?php if (empty($report->items)):?>
             <tr>
                 <td colspan="6">No drugs were found with the selected search criteria.</td>
             </tr>

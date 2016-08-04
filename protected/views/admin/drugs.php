@@ -64,9 +64,18 @@
 					<td><?php echo $drug->type->name?></td>
 					<td><?php echo $drug->default_dose?></td>
 					<td><?php echo $drug->dose_unit?></td>
-					<td><?php if(isset($drug->default_route)) echo $drug->default_route->name?></td>
-					<td><?php if(isset($drug->default_frequency)) echo $drug->default_frequency->name?></td>
-					<td><?php if(isset($drug->default_duration)) echo $drug->default_duration->name?></td>
+					<td><?php if(isset($drug->default_route)){
+							echo $drug->default_route->name;
+                        }?>
+					</td>
+					<td><?php if(isset($drug->default_frequency)) {
+							echo $drug->default_frequency->name;
+                        }?>
+					</td>
+					<td><?php if(isset($drug->default_duration)) {
+							echo $drug->default_duration->name;
+                        }?>
+					</td>
 				</tr>
 			<?php }?>
 			</tbody>

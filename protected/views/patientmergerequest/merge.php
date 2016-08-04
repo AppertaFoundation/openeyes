@@ -57,7 +57,7 @@
                 </div>
             </div>
             <br>
-            <?php if($personalDetailsConflictConfirm && Yii::app()->user->checkAccess('Patient Merge')):?>
+            <?php if ($personalDetailsConflictConfirm && Yii::app()->user->checkAccess('Patient Merge')):?>
                 <div id="patientDataConflictConfirmation" class="row">
                     <div class="large-10 large-offset-1 column alert-box with-icon warning">
                         <h2> Personal details are conflicting. </h2>

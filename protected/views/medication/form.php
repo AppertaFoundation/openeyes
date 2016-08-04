@@ -69,7 +69,9 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
         <?php $form->widget('application.widgets.DropDownList', array('element' => $medication, 'field' => 'route_id', 'data' => 'DrugRoute', 'htmlOptions' => array('name' => 'route_id', 'empty' => '- Select -'))); ?>
 
         <div id="medication_route_option">
-            <?php if ($medication->route) $this->renderPartial('route_option', array('medication' => $medication, 'route' => $medication->route)); ?>
+            <?php if ($medication->route) {
+                $this->renderPartial('route_option', array('medication' => $medication, 'route' => $medication->route));
+            } ?>
         </div>
 
         <?php $form->widget('application.widgets.DropDownList', array('element' => $medication, 'field' => 'frequency_id', 'data' => 'DrugFrequency', 'htmlOptions' => array('name' => 'frequency_id', 'empty' => '- Select -'))); ?>

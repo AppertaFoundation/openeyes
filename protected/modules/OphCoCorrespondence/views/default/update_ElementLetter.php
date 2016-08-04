@@ -136,7 +136,8 @@ $layoutColumns = $form->layoutColumns;
                 $with['subspecialtyLetterStrings']['params'] = array(':subspecialty_id' => $firm->getSubspecialtyID());
             }
             foreach (LetterStringGroup::model()->with($with)->findAll(array('order' => 't.display_order')) as $string_group) {
-                $strings = $string_group->getStrings($patient, $event_types);?>
+                $strings = $string_group->getStrings($patient, $event_types);
+                ?>
 				<div class="field-row">
 					<?php echo $form->dropDownListNoPost(strtolower($string_group->name), $strings, '', array(
                         'empty' => '- '.$string_group->name.' -',

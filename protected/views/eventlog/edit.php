@@ -29,7 +29,7 @@
         <tr>
             <td>Event Id</td>
             <td>
-                <?php if($event):?>
+                <?php if ($event):?>
                 <?php echo $event->id; ?>
                 <?php echo CHtml::hiddenField('eventId', $event->id, array('id' => 'hiddenInput')); ?>
                 <?php else: ?>
@@ -56,7 +56,7 @@
             <td><?php echo date('d M Y', strtotime($data['patient']['dob'])); ?></td>
         </tr>
         <?php
-        if($status === 'Duplicate Event'):
+        if ($status === 'Duplicate Event'):
             $exams = array($previous, $data);
             ?>
         <tr>
@@ -72,7 +72,7 @@
         <tr>
             <td>Eye Readings</td>
             <?php
-            foreach($exams as $exam):
+            foreach ($exams as $exam):
             ?>
             <td>
                 <?php foreach ($exam['patient']['eyes'] as $eyes) {
@@ -89,7 +89,7 @@
             <td>
                 OpTom Details
             </td>
-            <?php foreach($exams as $exam):
+            <?php foreach ($exams as $exam):
             ?>
             <td>
                 Name : <?php echo $exam['op_tom']['name']; ?>
@@ -98,7 +98,7 @@
             </td>
             <?php endforeach; ?>
         </tr>
-        <?php if($status === 'Unfound Event'):?>
+        <?php if ($status === 'Unfound Event'):?>
         <tr>
             <td><label for="patient-search">Assign To</label></td>
             <td>

@@ -45,6 +45,6 @@
 					<td><?php echo $booking->session->firm->serviceSubspecialtyAssignment->subspecialty->name?></td>
 				</tr>
 			<?php }
-        } ?>
+} ?>
 	</table>
 </div>

@@ -27,7 +27,7 @@
                 <?php 
                     echo CHtml::link('Back to Patient Merge list', array('patientMergeRequest/index'), array('class' => 'button small')).' ';
                     echo CHtml::link('edit', array('patientMergeRequest/update', 'id' => $model->id), array('class' => 'button small secondary'));
-                    if (Yii::app()->user->checkAccess('Patient Merge')){
+                    if (Yii::app()->user->checkAccess('Patient Merge')) {
                         echo ' '.CHtml::link('merge', array('patientMergeRequest/merge', 'id' => $model->id), array('class' => 'button small warning '));
                     }
                 ?>

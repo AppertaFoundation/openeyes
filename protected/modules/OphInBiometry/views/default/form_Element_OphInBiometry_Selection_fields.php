@@ -39,12 +39,12 @@
                     </div>
                     <div class="large-8 column">
                         <b><?php
-                        if(isset(Element_OphInBiometry_IolRefValues::model()->findByAttributes(array('event_id' => $this->event->id))->surgeon_id)){
+                        if (isset(Element_OphInBiometry_IolRefValues::model()->findByAttributes(array('event_id' => $this->event->id))->surgeon_id)) {
                             echo OphInBiometry_Surgeon::model()->findByAttributes(
                                 array('id' => Element_OphInBiometry_IolRefValues::model()->findByAttributes(array('event_id' => $this->event->id))->surgeon_id)
                             )->name;
                         }
-                        ?></b>
+        ?></b>
                     </div>
                 </div>
             </div>
@@ -55,25 +55,24 @@
                 <?php
                 $criteria = new CDbCriteria();
 
-                if (!empty(${'lens_'.$side})) {
-                    $numberOfLens = count(OphInBiometry_LensType_Lens::model()->findAll($criteria->condition = ' id in ('.implode(',', array_unique(${'lens_'.$side})).')'));
-                    if($numberOfLens == 1){
-                        $please_select = null;
-                    }else{
-                        $please_select = array('empty' => '- Please select -');
-                    }
+        if (!empty(${'lens_'.$side})) {
+            $numberOfLens = count(OphInBiometry_LensType_Lens::model()->findAll($criteria->condition = ' id in ('.implode(',', array_unique(${'lens_'.$side})).')'));
+            if ($numberOfLens == 1) {
+                $please_select = null;
+            } else {
+                $please_select = array('empty' => '- Please select -');
+            }
 
-                    echo $form->dropDownList($element, 'lens_id_'.$side, CHtml::listData(
+            echo $form->dropDownList($element, 'lens_id_'.$side, CHtml::listData(
                         OphInBiometry_LensType_Lens::model()->findAll($criteria->condition = 'id in ('.implode(',', array_unique(${'lens_'.$side})).')', array('order' => 'display_order')), 'id', 'name'
                     ), $please_select, null, array('label' => 4, 'field' => 6));
-                }
-                ?>
+        }
+        ?>
             </div>
         </div>
 
         <?php
         echo $form->hiddenField($element, 'iol_power_'.$side, array('value' => $element->{"iol_power_$side"}));
-
     } else {
         ?>
         <div class="row">
@@ -81,16 +80,17 @@
                 <?php
                 //We should move this code to the controller some point of time.
                 $post = Yii::app()->request->getPost('Element_OphInBiometry_Selection');
-                if ($element->isNewRecord && empty($post)) {
-                    $element->lens_id_left = null;
-                    $element->lens_id_right = null;
-                }
-                echo $form->dropDownList($element, 'lens_id_'.$side, CHtml::listData(OphInBiometry_LensType_Lens::model()->activeOrPk($element->{'lens_id_'.$side})->findAll(array('order' => 'display_order asc')), 'id', 'name'), array('empty' => '- Please select -'), null, array('label' => 4, 'field' => 6))
+        if ($element->isNewRecord && empty($post)) {
+            $element->lens_id_left = null;
+            $element->lens_id_right = null;
+        }
+        echo $form->dropDownList($element, 'lens_id_'.$side, CHtml::listData(OphInBiometry_LensType_Lens::model()->activeOrPk($element->{'lens_id_'.$side})->findAll(array('order' => 'display_order asc')), 'id', 'name'), array('empty' => '- Please select -'), null, array('label' => 4, 'field' => 6))
                 ?>
             </div>
         </div>
 
         <?php
+
     }
     if (!$this->is_auto) {
         ?>
@@ -108,6 +108,7 @@
             </div>
         </div>
         <?php
+
     }
     if ($this->is_auto) {
         echo $form->hiddenField($element, 'predicted_refraction_'.$side, array('value' => $element->{"predicted_refraction_$side"}));
@@ -116,16 +117,16 @@
             <div class="large-12 column">
                 <?php
                 if (!empty(${"formulas_$side"})) {
-                    if(count(OphInBiometry_Calculation_Formula::model()->findAll($criteria->condition = 'id in ('.implode(',', array_unique(${"formulas_$side"})).')')) == 1){
+                    if (count(OphInBiometry_Calculation_Formula::model()->findAll($criteria->condition = 'id in ('.implode(',', array_unique(${"formulas_$side"})).')')) == 1) {
                         $please_select = null;
-                    }else{
+                    } else {
                         $please_select = array('empty' => '- Please select -');
                     }
                     echo $form->dropDownList($element, 'formula_id_'.$side, CHtml::listData(
                         OphInBiometry_Calculation_Formula::model()->findAll($criteria->condition = 'id in ('.implode(',', array_unique(${"formulas_$side"})).')', array('order' => 'display_order')), 'id', 'name'
                     ), $please_select, null, array('label' => 4, 'field' => 6));
                 }
-                ?>
+        ?>
             </div>
         </div>
         <div class="row">
@@ -163,7 +164,7 @@
                                 }
                             }
                         }
-                        ?>
+        ?>
                     </div>
                 </div>
             </div>
@@ -200,7 +201,7 @@
                         }
                     }
                 }
-                ?>
+        ?>
             </div>
         </div>
 
@@ -223,13 +224,13 @@
                                         $radid = $side.'_'.$k.'_'.$key.'__'.$j;
                                         if (($this->selectionValues[0]->{'predicted_refraction_left'} == $iolData['REF'][$j]) && ($this->selectionValues[0]->{'iol_power_left'} == $iolData['IOL'][$j])) {
                                             $found = 1;
-                                            if($iolData['REF'][$j] == $closest) {
+                                            if ($iolData['REF'][$j] == $closest) {
                                                 echo "<tr  class='highlighted closest' id='iolreftr-$radid'><td><input type='radio' checked  id='iolrefrad-$radid' name='iolrefval_left'></td><td>".number_format((float) $iolData['IOL'][$j], 2, '.', '').'</td><td>'.$iolData['REF'][$j].'</td></tr>';
                                             } else {
                                                 echo "<tr  class='highlighted' id='iolreftr-$radid'><td><input type='radio' checked  id='iolrefrad-$radid' name='iolrefval_left'></td><td>".number_format((float) $iolData['IOL'][$j], 2, '.', '').'</td><td>'.$iolData['REF'][$j].'</td></tr>';
                                             }
                                         } else {
-                                            if($iolData['REF'][$j] == $closest) {
+                                            if ($iolData['REF'][$j] == $closest) {
                                                 echo "<tr class='closest' id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_left'></td><td>".number_format((float) $iolData['IOL'][$j], 2, '.', '').'</td><td>'.$iolData['REF'][$j].'</td></tr>';
                                             } else {
                                                 echo "<tr id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_left'></td><td>".number_format((float) $iolData['IOL'][$j], 2, '.', '').'</td><td>'.$iolData['REF'][$j].'</td></tr>';
@@ -258,13 +259,13 @@
                                         $radid = $side.'_'.$k.'_'.$key.'__'.$j;
                                         if (($this->selectionValues[0]->{'predicted_refraction_right'} == $iolData['REF'][$j]) && ($this->selectionValues[0]->{'iol_power_right'} == $iolData['IOL'][$j])) {
                                             $found = 1;
-                                            if($iolData['REF'][$j] == $closest) {
+                                            if ($iolData['REF'][$j] == $closest) {
                                                 echo "<tr class='highlighted closest' id='iolreftr-$radid'><td><input type='radio' checked id='iolrefrad-$radid' name='iolrefval_right'></td><td>".number_format((float) $iolData['IOL'][$j], 2, '.', '').'</td><td>'.$iolData['REF'][$j].'</td></tr>';
-                                            }else{
+                                            } else {
                                                 echo "<tr class='highlighted' id='iolreftr-$radid'><td><input type='radio' checked id='iolrefrad-$radid' name='iolrefval_right'></td><td>".number_format((float) $iolData['IOL'][$j], 2, '.', '').'</td><td>'.$iolData['REF'][$j].'</td></tr>';
                                             }
                                         } else {
-                                            if($iolData['REF'][$j] == $closest) {
+                                            if ($iolData['REF'][$j] == $closest) {
                                                 echo "<tr class='closest' id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_right'></td><td>".number_format((float) $iolData['IOL'][$j], 2, '.', '').'</td><td>'.$iolData['REF'][$j].'</td></tr>';
                                             } else {
                                                 echo "<tr id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_right'></td><td>".number_format((float) $iolData['IOL'][$j], 2, '.', '').'</td><td>'.$iolData['REF'][$j].'</td></tr>';
@@ -278,10 +279,11 @@
                         }
                     }
                 }
-                ?>
+        ?>
             </div>
         </div>
         <?php
+
     }
     ?>
     <div id="div_Element_OphInBiometry_Selection_<?php echo $side ?>">

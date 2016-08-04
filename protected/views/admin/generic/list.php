@@ -19,26 +19,26 @@
 ?>
 
 <?php
-if(!isset($displayOrder)){
+if (!isset($displayOrder)) {
     $displayOrder = 0;
 }
-if(!isset($uniqueid)){
+if (!isset($uniqueid)) {
     $uniqueid = $this->uniqueid;
 }
 ?>
 <div class="admin box">
-	<?php if(!$admin->isSubList()):?>
+	<?php if (!$admin->isSubList()):?>
 	<h2><?php echo $admin->getModelDisplayName(); ?></h2>
 	<?php endif;?>
 	<?php $this->widget('GenericSearch', array('search' => $admin->getSearch(), 'subList' => $admin->isSubList())); ?>
 
 	<?php
     $returnUri = '';
-    if($admin->isSubList()):?>
+    if ($admin->isSubList()):?>
 	<div id="generic-admin-sublist">
 		<?php
-        if($admin->getSubListParent() && is_array($admin->getSubListParent())):
-            foreach($admin->getSubListParent() as $key => $value):
+        if ($admin->getSubListParent() && is_array($admin->getSubListParent())):
+            foreach ($admin->getSubListParent() as $key => $value):
         ?>
 			<input type="hidden" name="default[<?=$key?>]" value="<?=$value?>" />
 		<?php
@@ -59,7 +59,7 @@ if(!isset($uniqueid)){
 				<th><input type="checkbox" name="selectall" id="selectall"/></th>
 				<?php
                 foreach ($admin->getListFields() as $listItem):
-                if($listItem !== 'attribute_elements_id.id') :?>
+                if ($listItem !== 'attribute_elements_id.id') :?>
 					<th>
 						<?php if ($admin->isSortableColumn($listItem)): ?>
 						<a href="/<?php echo $uniqueid ?>/list?<?php echo $admin->sortQuery($listItem, $displayOrder,
@@ -78,7 +78,7 @@ if(!isset($uniqueid)){
                 endforeach; ?>
 			</tr>
 			</thead>
-			<tbody <?php if(in_array('display_order', $admin->getListFields())): echo 'class="sortable"'; endif; ?>>
+			<tbody <?php if (in_array('display_order', $admin->getListFields())): echo 'class="sortable"'; endif; ?>>
 			<?php
             foreach ($admin->getSearch()->retrieveResults() as $i => $row) { ?>
 				<tr class="clickable" data-id="<?php echo $row->id ?>"
@@ -87,7 +87,7 @@ if(!isset($uniqueid)){
 						<input type="checkbox" name="<?php echo $admin->getModelName(); ?>[id][]" value="<?php echo $row->id ?>"/>
 					</td>
 					<?php foreach ($admin->getListFields() as $listItem):
-                    if($listItem !== 'attribute_elements_id.id'):
+                    if ($listItem !== 'attribute_elements_id.id'):
                         ?>
 						<td>
 							<?php
@@ -103,18 +103,18 @@ if(!isset($uniqueid)){
 							<?php
                             else:
                                 echo $admin->attributeValue($row, $listItem);
-                            endif
+                endif
                             ?>
 						</td>
 					<?php endif;
 
-                    if($listItem === 'attribute_elements_id.id'):
+                if ($listItem === 'attribute_elements_id.id'):
                         $mappingId = $admin->attributeValue($row, $listItem);
-                    endif;
+                endif;
 
-                    if($listItem === 'attribute_elements.name'):?>
+                if ($listItem === 'attribute_elements.name'):?>
 					<td>
-						<?php if(($mappingId > 0)):?>
+						<?php if (($mappingId > 0)):?>
 							<a onMouseOver="this.style.color='#AFEEEE'" onMouseOut="this.style.color='#00F'" href="../../OphCiExamination/admin/manageElementAttributes?attribute_element_id=<?php echo $mappingId?>">Manage Options</a>
 						<?php endif; ?>
 					</td>
@@ -168,7 +168,7 @@ if(!isset($uniqueid)){
 			</tr>
 			</tfoot>
 		</table>
-	<?php if($admin->isSubList()):?>
+	<?php if ($admin->isSubList()):?>
 	</div>
 	<?php else: ?>
 	</form>

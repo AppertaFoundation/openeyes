@@ -19,7 +19,7 @@
 if (!isset($side)) {
     $side = 'left';
 }
-if($side === 'left') {
+if ($side === 'left') {
     $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js'),
         false, -1);
     ?>
@@ -27,6 +27,7 @@ if($side === 'left') {
 		$.getScript('<?=$jsPath?>/PCRCalculation.js');
 	</script>
 	<?php
+
 }
 $criteria = new CDbCriteria();
 ?>
@@ -49,7 +50,7 @@ $criteria = new CDbCriteria();
         $patientId = $this->patient->id;
     }
 
-    if(isset($patientId)):
+    if (isset($patientId)):
         $pcrRisk = new PcrRisk();
         $pcr = $pcrRisk->getPCRData($patientId, $side, $element);
         echo CHtml::hiddenField('age', $pcr['age_group']);
@@ -112,7 +113,7 @@ $criteria = new CDbCriteria();
 
 			<div class="large-2 column">
 				<?php
-                if(trim($pcr['anteriorsegment']['pupil_size']) == ''){
+                if (trim($pcr['anteriorsegment']['pupil_size']) == '') {
                     $pcr['anteriorsegment']['pupil_size'] = 'Medium';
                 }
                 echo CHtml::dropDownList('PcrRisk['.$side.'][pupil_size]', $pcr['anteriorsegment']['pupil_size'],

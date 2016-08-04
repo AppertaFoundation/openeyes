@@ -28,14 +28,20 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
 	<?php
         $i = 0;
         foreach ($theatres as $i => $theatre) {
-    ?>
+            ?>
 
-	<h5><?php echo $theatre->name ?><?php if ($theatre->site) { echo ' ('.$theatre->site->name.')'; }?></h5>
+	<h5><?php echo $theatre->name ?>
+		<?php if ($theatre->site) { 
+			echo ' ('.$theatre->site->name.')'; 
+		}?>
+	</h5>
 	<div id="theatre-times_tab_<?php echo $i ?>" class="sessionTimes">
 
 		<?php foreach ($theatre->sessions as $j => $session) {
             if ($session->id != @$selectedSession->id) {?>
-				<a href="<?php echo Yii::app()->createUrl('/'.$operation->event->eventType->class_name.'/booking/'.($operation->booking ? 're' : '').'schedule/'.$operation->event_id).'?'.
+				<a href="<?php echo 
+					Yii::app()->createUrl('/'.$operation->event->eventType->class_name.'/booking/'.($operation->booking ? 're' : '')
+						.'schedule/'.$operation->event_id).'?'.
                         implode('&', array(
                             'firm_id='.($firm->id ? $firm->id : 'EMG'),
                             'date='.date('Ym', strtotime($date)),
@@ -54,9 +60,19 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
 					</div>
 					<?php if ($session->consultant || $session->anaesthetist || $session->paediatric) {?>
 					<div class="metadata">
-						<?php if ($session->consultant) {?><div class="consultant" title="Consultant Present">Consultant</div><?php }?>
-						<?php if ($session->anaesthetist) {?><div class="anaesthetist" title="Anaesthetist Present">Anaesthetist<?php if ($session->general_anaesthetic) {?> (GA)<?php }?></div><?php }?>
-						<?php if ($session->paediatric) {?><div class="paediatric" title="Paediatric Session">Paediatric</div><?php }?>
+						<?php if ($session->consultant) {?>
+							<div class="consultant" title="Consultant Present">Consultant</div>
+						<?php }?>
+						<?php if ($session->anaesthetist) {?>
+							<div class="anaesthetist" title="Anaesthetist Present">Anaesthetist
+							<?php if ($session->general_anaesthetic) {?> 
+								(GA)
+							<?php }?>
+							</div>
+						<?php }?>
+						<?php if ($session->paediatric) {?>
+							<div class="paediatric" title="Paediatric Session">Paediatric</div>
+						<?php }?>
 					</div>
 					<?php }?>
 				</div>

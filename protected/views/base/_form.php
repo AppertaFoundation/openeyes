@@ -35,6 +35,7 @@ if (!Yii::app()->user->isGuest) {
 					});
 				</script>
 				<?php
+
             }
         }
     }

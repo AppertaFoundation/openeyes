@@ -9,8 +9,8 @@
 			<div class="field-info" id="axial_length_<?php echo $side?>"><?php echo CHtml::encode($element->{'axial_length_'.$side}) ?>&nbsp;mm</div>
 		</div>
 		<?php
-        if(!$element->{"al_modified_$side"}) {
-        ?>
+        if (!$element->{"al_modified_$side"}) {
+            ?>
 		<div class="large-1 column">
 			<div class="field-info"><b>SNR</b>:</div>
 		</div>
@@ -18,7 +18,8 @@
 			<div class="field-info" id="snr_<?php echo $side?>"><?php echo CHtml::encode($element->{'snr_'.$side}) ?></div>
 		</div>
 		<?php
-        }else{
+
+        } else {
             echo '<div class="large-6 column"><span class="field-info">* AL entered manually</span></div>';
         }
         ?>
@@ -31,14 +32,14 @@
 		<div class="large-5 column">
 			<div class="field-info" id="k1_<?php echo $side?>"><?php echo CHtml::encode($element->{'k1_'.$side}) ?>&nbsp;D
 				<?php
-                if(!$element->{"k_modified_$side"}) {
+                if (!$element->{"k_modified_$side"}) {
                     ?>
 					<span class="field-info">@</span>
 				<?php } else {?>
 					<span class="field-info"><b>*</b></span>
 				<?php } ?>
 				<?php
-                if(!$element->{"k_modified_$side"}) {
+                if (!$element->{"k_modified_$side"}) {
                     ?>
 					<div class="field-info" id="axis_k1_<?php echo $side?>"><?php echo CHtml::encode($element->{'axis_k1_'.$side}) ?>&deg;</div>
 				<?php }else{
@@ -70,19 +71,24 @@
 			<div class="field-info"><b>&Delta;K:</b></div>
 		</div>
 		<div class="large-5 column">
-			<div class="field-info" id="delta_k_<?php echo $side?>"><?php if (($element->{'delta_k_'.$side}) > 0) echo '+'; echo CHtml::encode($element->{'delta_k_'.$side}) ?>&nbsp;D
+			<div class="field-info" id="delta_k_<?php echo $side?>">
+				<?php if (($element->{'delta_k_'.$side}) > 0) {
+					echo '+';
+				    echo CHtml::encode($element->{'delta_k_'.$side}); 
+				} ?>&nbsp;D
 				<?php
-                if(!$element->{"k_modified_$side"}) {
+                if (!$element->{"k_modified_$side"}) {
                     ?>
 					<span class="field-info">@</span>
-				<?php } else {?>
+				<?php 
+                } else {?>
 					<span class="field-info"><b>*</b></span>
 				<?php } ?>
 				<?php
-                if(!$element->{"k_modified_$side"}) {
+                if (!$element->{"k_modified_$side"}) {
                     ?>
 					<div class="field-info" id="delta_k_axis_<?php echo $side?>"><?php echo CHtml::encode($element->{'delta_k_axis_'.$side}) ?>&deg;</div>
-				<?php }else{
+				<?php } else {
                     echo '&nbsp;';
                 }?>
 
@@ -115,7 +121,7 @@
 		<div class="large-5 column">
 			<div class="field-info" id="k2_<?php echo $side?>"><?php echo CHtml::encode($element->{'k2_'.$side}) ?>&nbsp;D
 				<?php
-                if(!$element->{"k_modified_$side"}) {
+                if (!$element->{"k_modified_$side"}) {
                     ?>
 					<span class="field-info">@</span>
 				<?php } else {?>
@@ -123,7 +129,7 @@
 				<?php } ?>
 
 				<?php
-                if(!$element->{"k_modified_$side"}) {
+                if (!$element->{"k_modified_$side"}) {
                     ?>
 					<div class="field-info" id="k2_axis_<?php echo $side?>"><?php echo CHtml::encode($element->{'k2_axis_'.$side}) ?>&deg;</div>
 				<?php }else{

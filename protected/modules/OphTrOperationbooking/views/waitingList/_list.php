@@ -60,27 +60,27 @@
 		<?php } else {?>
 			<?php
             $i = 0;
-            foreach ($operations as $eo) {
-                $patient = $eo->event->episode->patient;
-                $contact = $patient->contact;
-                if (isset($_POST['status']) and $_POST['status'] != '') {
-                    if ($eo->getNextLetter() != $_POST['status']) {
-                        continue;
-                    }
+    foreach ($operations as $eo) {
+        $patient = $eo->event->episode->patient;
+        $contact = $patient->contact;
+        if (isset($_POST['status']) and $_POST['status'] != '') {
+            if ($eo->getNextLetter() != $_POST['status']) {
+                continue;
+            }
                 }?>
 
 				<?php if ($eo->getWaitingListStatus() == Element_OphTrOperationbooking_Operation::STATUS_PURPLE) {
-                    $letterStatusClass = 'send-invitation-letter';
-                } elseif ($eo->getWaitingListStatus() == Element_OphTrOperationbooking_Operation::STATUS_GREEN1) {
-                    $letterStatusClass = 'send-another-reminder';
-                } elseif ($eo->getWaitingListStatus() == Element_OphTrOperationbooking_Operation::STATUS_GREEN2) {
-                    $letterStatusClass = 'send-another-reminder';
-                } elseif ($eo->getWaitingListStatus() == Element_OphTrOperationbooking_Operation::STATUS_ORANGE) {
-                    $letterStatusClass = 'send-gp-removal-letter';
-                } elseif ($eo->getWaitingListStatus() == Element_OphTrOperationbooking_Operation::STATUS_RED) {
-                    $letterStatusClass = 'patient-due-removed';
-                } else {
-                    $letterStatusClass = '';
+    $letterStatusClass = 'send-invitation-letter';
+} elseif ($eo->getWaitingListStatus() == Element_OphTrOperationbooking_Operation::STATUS_GREEN1) {
+    $letterStatusClass = 'send-another-reminder';
+} elseif ($eo->getWaitingListStatus() == Element_OphTrOperationbooking_Operation::STATUS_GREEN2) {
+    $letterStatusClass = 'send-another-reminder';
+} elseif ($eo->getWaitingListStatus() == Element_OphTrOperationbooking_Operation::STATUS_ORANGE) {
+    $letterStatusClass = 'send-gp-removal-letter';
+} elseif ($eo->getWaitingListStatus() == Element_OphTrOperationbooking_Operation::STATUS_RED) {
+    $letterStatusClass = 'patient-due-removed';
+} else {
+    $letterStatusClass = '';
                 }?>
 
 				<tr>
@@ -141,7 +141,7 @@
 				</tr>
 				<?php
                 ++$i;
-            }
+    }
 
             if ($i == 0) {?>
 				<tr>

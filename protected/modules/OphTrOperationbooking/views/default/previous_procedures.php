@@ -23,7 +23,7 @@
 	<?php
     foreach ($matched_procedures as $id => $ops) {
         foreach ($ops as $op) {
-        ?>
+            ?>
 			<li><?= $op->eye->adjective.' '.$procs_by_id[$id]->term.' - '.Helper::convertDate2NHS($op->event->event_date) ?></li>
 		<?php	}
     }

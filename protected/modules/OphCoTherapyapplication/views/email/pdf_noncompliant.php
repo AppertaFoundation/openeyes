@@ -35,13 +35,20 @@ $logoHelper = new LogoHelper();
 	<table nobr="true" class="urgency" cellpadding="5">
 	<?php
         foreach (OphCoTherapyapplication_ExceptionalCircumstances_StartPeriod::model()->active()->findAll() as $period) {
-    ?>
+            ?>
 		<tr>
 			<td class="label">&nbsp;<?php echo $period->application_description ?></td>
-			<td class="selector"><?php if ($exceptional->{$side.'_start_period_id'} == $period->id) { echo 'X'; } else {echo '&nbsp;';}?></td>
+			<td class="selector">
+				<?php if ($exceptional->{$side.'_start_period_id'} == $period->id) { 
+					echo 'X'; 
+				} else {
+					echo '&nbsp;';
+				}?>
+			</td>
 		</tr>
 
 	<?php
+
         }
     ?>
 
@@ -410,14 +417,20 @@ $logoHelper = new LogoHelper();
 									<td><?php
                                         echo 'Start VA: '.$previntervention->start_va.'<br />';
                                         echo 'End VA: '.$previntervention->end_va.'<br />';
-                                        if ($previntervention->comments) { echo Yii::app()->format->Ntext($previntervention->comments); }?></td>
+                                        if ($previntervention->comments) {
+                                            echo Yii::app()->format->Ntext($previntervention->comments);
+                                        }
+                                        ?>
+									</td>
 								</tr>
 							<?php
+
                             }
-                            ?>
+                        ?>
 							</tbody>
 						</table>
 					<?php
+
                     } else {
                         echo 'None';
                     }
@@ -453,14 +466,20 @@ $logoHelper = new LogoHelper();
 									<td><?php
                                         echo 'Start VA: '.$relevantintervention->start_va.'<br />';
                                         echo 'End VA: '.$relevantintervention->end_va.'<br />';
-                                        if ($relevantintervention->comments) { echo Yii::app()->format->Ntext($relevantintervention->comments); }?></td>
+                                        if ($relevantintervention->comments) {
+                                            echo Yii::app()->format->Ntext($relevantintervention->comments);
+                                        }
+                                        ?>
+									</td>
 								</tr>
 							<?php
+
                             }
-                            ?>
+                        ?>
 							</tbody>
 						</table>
 					<?php
+
                     } else {
                         echo 'None';
                     }
@@ -476,7 +495,7 @@ $logoHelper = new LogoHelper();
 							<th>What is the patient's clinical severity? (Where possible use standard scoring systems e.g. WHO, DAS scores, walk test, cardiac index etc)</th>
 							<td>Visual Acuity in the affected eye is:
 								<?php if ($exam_api) {
-                                    if ($side == 'left') {
+                                    if ($side === 'left') {
                                         $va = $exam_api->getLetterVisualAcuityLeft($patient);
                                     } else {
                                         $va = $exam_api->getLetterVisualAcuityRight($patient);

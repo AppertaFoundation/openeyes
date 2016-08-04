@@ -60,12 +60,9 @@
 <div id="comments">
 	<span class="field-info">
 	<?php
-    if($this->is_auto)
-    {
+    if ($this->is_auto) {
         echo '<b>Comments:</b><div class="readonly-div">'.$element->{'comments'}.'</div>';
-    }
-    else
-    {
+    } else {
         echo $form->textField($element, 'comments', array('style' => 'width:1027px;'), null, array('label' => 4, 'field' => 200));
     }
     ?>

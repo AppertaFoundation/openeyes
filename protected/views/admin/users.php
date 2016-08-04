@@ -68,12 +68,12 @@
 						<td><?php echo $user->is_doctor ? 'Yes' : 'No'?></td>
 						<td><?php
                             $roles = CHtml::listData($user->roles, 'name', 'name');
-                            if ($roles) {
-                                echo CHtml::encode(implode(', ', $roles));
-                            } else {
-                                echo '-';
-                            }
-                        ?></td>
+                    if ($roles) {
+                        echo CHtml::encode(implode(', ', $roles));
+                    } else {
+                        echo '-';
+                    }
+                    ?></td>
 						<td><?php echo $user->active ? 'Yes' : 'No'?></td>
 					</tr>
 				<?php }?>

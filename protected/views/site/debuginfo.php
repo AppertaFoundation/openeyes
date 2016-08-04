@@ -42,24 +42,21 @@ if (is_object($user)) {
 $commit = preg_replace('/[\s\t].*$/s', '', @file_get_contents(Yii::app()->basePath.'/../.git/FETCH_HEAD'));
 
 $thisEnv = 'LIVE';
-if(file_exists('/etc/openeyes/env.conf'))
-{
+if (file_exists('/etc/openeyes/env.conf')) {
     $envvars = parse_ini_file('/etc/openeyes/env.conf');
-    if($envvars['env'] == 'DEV') $thisEnv = 'DEV';
+    if ($envvars['env'] == 'DEV') {
+        $thisEnv = 'DEV';
+    }
 }
 
-if($thisEnv == 'DEV')
-{
+if ($thisEnv == 'DEV') {
     $branch = "<br/><div style='height:150px; overflow-y:scroll;border:1px solid #000; margin-bottom:10px'>";
     $result = exec('oe-which', $lines);
-    foreach($lines as $line)
-    {
+    foreach ($lines as $line) {
         $branch .= trim(strtr($line, array('[32m' => '', '[39m' => '', '--' => ':'))).'<br/>';
     }
     $branch .= '</div>';
-}
-else
-{
+} else {
     $ex = explode('/', file_get_contents('.git/HEAD'));
     $branch = array_pop($ex);
 }

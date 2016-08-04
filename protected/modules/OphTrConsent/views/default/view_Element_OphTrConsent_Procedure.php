@@ -36,7 +36,7 @@
 				<?php } else {?>
 					<h4>
 						<?php foreach ($element->procedures as $item) {
-    echo $item->term?><br/>
+                            echo $item->term?><br/>
 						<?php }?>
 					</h4>
 				<?php }?></div>

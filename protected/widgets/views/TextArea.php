@@ -30,8 +30,12 @@
         'name' => CHtml::modelName($element).'['.$field.']',
         'placeholder' => @$htmlOptions['placeholder'],
     );
-    if ($rows) $attr['rows'] = $rows;
-    if ($cols) $attr['cols'] = $cols;
+    if ($rows) {
+        $attr['rows'] = $rows;
+    }
+    if ($cols) {
+        $attr['cols'] = $cols;
+    }
     ?>
  	<textarea
 			<?php echo CHtml::renderAttributes(array_merge($htmlOptions, $attr));?>><?php echo CHtml::encode($value)?></textarea>

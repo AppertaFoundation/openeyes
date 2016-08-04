@@ -186,9 +186,11 @@ $layoutColumns = $form->layoutColumns;
 			<?php echo $form->textArea($element, 'cc', array('rows' => 8, 'label' => false, 'nowrapper' => true), false, array('class' => 'address'))?>
 		</div>
 		<div id="cc_targets">
-			<?php foreach ($element->cc_targets as $cc_target) {?>
+			<?php foreach ($element->cc_targets as $cc_target) {
+    ?>
 				<input type="hidden" name="CC_Targets[]" value="<?php echo $cc_target?>" />
-			<?php }?>
+			<?php 
+}?>
 		</div>
 	</div>
 
@@ -199,8 +201,10 @@ $layoutColumns = $form->layoutColumns;
 		<div class="large-<?php echo $layoutColumns['field'];?> column end">
 			<input type="hidden" name="update_enclosures" value="1" />
 			<div id="enclosureItems" class="field-row<?php echo !is_array(@$_POST['EnclosureItems']) ? ' hide' : '';?>">
-				<?php if (is_array(@$_POST['EnclosureItems'])) {?>
-					<?php foreach ($_POST['EnclosureItems'] as $key => $value) {?>
+				<?php if (is_array(@$_POST['EnclosureItems'])) {
+    ?>
+					<?php foreach ($_POST['EnclosureItems'] as $key => $value) {
+    ?>
 						<div class="field-row row collapse enclosureItem">
 							<div class="large-8 column">
 								<?php echo CHtml::textField("EnclosureItems[$key]", $value, array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 60))?>
@@ -209,8 +213,11 @@ $layoutColumns = $form->layoutColumns;
 								<div class="postfix align"><a href="#" class="field-info removeEnclosure">Remove</a></div>
 							</div>
 						</div>
-					<?php }?>
-				<?php }?>
+					<?php 
+}
+    ?>
+				<?php 
+}?>
 			</div>
 			<div class="field-row">
 				<button class="addEnclosure secondary small" type="button">

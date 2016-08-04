@@ -177,7 +177,12 @@ if (!$reschedule) {
 	</div>
 
 	<div class="field-row" style="margin-top: 1em">
-		<span id="dateSelected">Date/Time currently selected: <span class="highlighted"><?php echo Helper::convertDate2NHS($session['date']); ?>, <?php echo substr($session['start_time'], 0, 5).' - '.substr($session['end_time'], 0, 5); ?></span></span>
+		<span id="dateSelected">
+			Date/Time currently selected: 
+			<span class="highlighted">
+				<?php echo Helper::convertDate2NHS($session['date']); ?>, <?php echo substr($session['start_time'], 0, 5).' - '.substr($session['end_time'], 0, 5); ?>
+			</span>
+		</span>
 	</div>
 
 	<div class="field-row">

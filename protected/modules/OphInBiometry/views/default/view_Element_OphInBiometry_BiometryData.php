@@ -30,7 +30,7 @@
 		</div>
 		<div class="element-eye left-eye column">
 			<?php if ($element->hasLeft()) {
-                $this->renderPartial('view_Element_OphInBiometry_BiometryData_fields',
+    $this->renderPartial('view_Element_OphInBiometry_BiometryData_fields',
                         array('side' => 'left', 'element' => $element));
             } else { ?>
 				<div class="data-value">Not recorded</div>

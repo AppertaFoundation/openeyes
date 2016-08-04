@@ -18,11 +18,19 @@
  */
 ?>
 <tr data-key="<?php echo $key ?>" class="prescription-item prescriptionItem<?php if (isset($patient)) {
-    if ($patient->hasDrugAllergy($item->drug_id)) { ?> allergyWarning<?php }
-} ?><?php if ($item->getErrors()) { ?> errors<?php } ?> <?php echo ($key % 2) ? 'odd' : 'even'; ?>">
+    if ($patient->hasDrugAllergy($item->drug_id)) {?> 
+    allergyWarning
+    <?php
+	}
+} ?><?php if ($item->getErrors()) {
+    ?> errors<?php 
+} ?> 
+    <?php echo ($key % 2) ? 'odd' : 'even'; ?>">
 	<td class="prescription-label">
 		<?php echo $item->drug->tallmanlabel; ?>
-		<?php if ($item->id) { ?><input type="hidden" name="prescription_item[<?php echo $key ?>][id]" value="<?php echo $item->id?>" /><?php } ?>
+		<?php if ($item->id) {?>
+			<input type="hidden" name="prescription_item[<?php echo $key ?>][id]" value="<?php echo $item->id?>" /><?php 
+        } ?>
 		<input type="hidden" name="prescription_item[<?php echo $key ?>][drug_id]" value="<?php echo $item->drug_id?>" />
 	</td>
 	<td class="prescriptionItemDose">
@@ -33,10 +41,10 @@
 	</td>
 	<td>
 		<?php if ($item->route && $options = $item->route->options) {
-            echo CHtml::dropDownList('prescription_item['.$key.'][route_option_id]', $item->route_option_id, CHtml::listData($options, 'id', 'name'), array('empty' => '-- Select --'));
-        } else {
-            echo '-';
-        }?>
+    echo CHtml::dropDownList('prescription_item['.$key.'][route_option_id]', $item->route_option_id, CHtml::listData($options, 'id', 'name'), array('empty' => '-- Select --'));
+} else {
+    echo '-';
+}?>
 	</td>
 	<td class="prescriptionItemFrequencyId">
 		<?php echo CHtml::dropDownList('prescription_item['.$key.'][frequency_id]', $item->frequency_id, CHtml::listData(DrugFrequency::model()->activeOrPk($item->frequency_id)->findAll(array('order' => 'display_order asc')), 'id', 'name'), array('empty' => '-- Select --')); ?>
@@ -52,18 +60,20 @@
 			<?php
             echo CHtml::checkBox('prescription_item['.$key.'][continue_by_gp]',
                 ($item->continue_by_gp == 1) ? true : false);
-            ?>
+    ?>
 		</td>
 	<?php } ?>
 </tr>
 <?php
     $count = 0;
     foreach ($item->tapers as $taper) {
-?>
+        ?>
 <tr data-key="<?php echo $key ?>" data-taper="<?php echo $count ?>" class="prescription-tapier <?php echo ($key % 2) ? 'odd' : 'even'; ?>">
 	<td class="prescription-label">
 		<span>then</span>
-		<?php if ($taper->id) { ?><input type="hidden" name="prescription_item[<?php echo $key ?>][taper][<?php echo $count ?>][id]" value="<?php echo $taper->id?>" /><?php } ?>
+		<?php if ($taper->id) { ?>
+			<input type="hidden" name="prescription_item[<?php echo $key ?>][taper][<?php echo $count ?>][id]" value="<?php echo $taper->id?>" />
+		<?php } ?>
 	</td>
 	<td>
 		<?php echo CHtml::textField('prescription_item['.$key.'][taper]['.$count.'][dose]', $taper->dose, array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>

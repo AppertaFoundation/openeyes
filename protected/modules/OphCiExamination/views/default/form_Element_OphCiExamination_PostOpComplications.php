@@ -41,7 +41,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
 
 ?>
 
-<?php if($operationNoteList): ?>
+<?php if ($operationNoteList): ?>
 
 <div class="row field-row" id="div_Element_OphTrOperationnote_ProcedureList_id">
 
@@ -113,7 +113,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
 
                     <table id="right-complication-list" class="recorded-postop-complications" data-sideletter="R">
                     <?php
-                        foreach($right_values as $key => $value): ?>
+                        foreach ($right_values as $key => $value): ?>
                             <tr>
                                 <td class=postop-complication-name><?php echo $value['name']; ?></td>
                                 <td class='right'>
@@ -181,7 +181,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
 
                     <table id="left-complication-list" class="recorded-postop-complications" data-sideletter="L">
                     <?php
-                        foreach($left_values as $key => $value): ?>
+                        foreach ($left_values as $key => $value): ?>
                             <tr>
                                 <td class=postop-complication-name><?php echo $value['name']; ?></td>
                                 <td class='right'>

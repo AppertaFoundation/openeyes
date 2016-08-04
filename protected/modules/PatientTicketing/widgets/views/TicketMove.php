@@ -56,11 +56,11 @@
 					</div>
 				</fieldset>
 		<?php
-            }
-            else {
+            } else {
                 ?>
 				<input type="hidden" name="to_queue_id" value="<?=$this->outcome_queue_id?>" />
 		<?php
+
             }
         ?>
 	</div>

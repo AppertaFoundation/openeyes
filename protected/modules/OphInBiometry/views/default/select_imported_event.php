@@ -68,8 +68,8 @@
 												<b>Date and time: </b><br>
 												<span id="date_and_time"><?php
                                                                                 $eventDateTime = explode(' ', $imported_event->event->event_date);
-                                                                                echo date('j M Y', strtotime($eventDateTime[0])).' '.$eventDateTime[1];
-                                                ?></span>
+    echo date('j M Y', strtotime($eventDateTime[0])).' '.$eventDateTime[1];
+    ?></span>
 											</span>
 											<span class="large-1 column">
 												<b>Machine:</b>
@@ -77,7 +77,7 @@
 											<span class="large-3 column">
 												<?php
                                                     echo $imported_event->device_name.' ('.$imported_event->device_id.')';
-                                                ?>
+    ?>
 											</span>
 											<span class="large-1 column">
 												<b>Instrument:</b>
@@ -85,7 +85,7 @@
 											<span class="large-3 column">
 												<?php
                                                 echo $imported_event->device_manufacturer.' '.$imported_event->device_model;
-                                                ?>
+    ?>
 											</span>
 
 										</span>
@@ -99,8 +99,8 @@
 				<?php $this->endWidget(); ?>
 			</section>
 			<?php
-            if(!$this->isManualEntryDisabled()){
-            ?>
+            if (!$this->isManualEntryDisabled()) {
+                ?>
 			<a href="/OphInBiometry/Default/create?patient_id=<?php echo$this->patient->id ?>&force_manual=1" style="float:right;margin:10px;">I don't want to select a report let me enter the data manually</a>
 		<?php } ?>
 		</div>

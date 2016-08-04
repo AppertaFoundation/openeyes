@@ -38,8 +38,7 @@ if (@$latest) {
     }
     $msg .= ': <strong>'.$latest->eventType->name."</strong> <span class='small'>(".$latest->NHSDate('event_date').')</span>';
     echo '<div class="box patient-info episode-links">'.CHtml::link($msg, Yii::app()->createUrl('/'.$latest->eventType->class_name.'/default/view/'.$latest->id)).'</div>';
-}
-elseif ($this->checkAccess('OprnCreateEpisode')) {
+} elseif ($this->checkAccess('OprnCreateEpisode')) {
     $msg = 'Create episode / add event';
     echo '<div class="box patient-info episode-links">'.CHtml::link($msg, Yii::app()->createUrl('patient/episodes/'.$this->patient->id)).'</div>';
 }
@@ -53,7 +52,8 @@ try {
     foreach ($codes as $code) {
         try {
             echo $this->renderPartial('_'.$code.'_diagnoses');
-        } catch (Exception $e) {}
+        } catch (Exception $e) {
+        }
     }
     $this->renderPartial('_systemic_diagnoses');
     $this->renderPartial('_previous_operations');
@@ -62,7 +62,8 @@ try {
     foreach ($codes as $code) {
         try {
             echo $this->renderPartial('_'.$code.'_info');
-        } catch (Exception $e) {}
+        } catch (Exception $e) {
+        }
     }
     $this->renderPartial('_allergies');
     $this->renderPartial('_risks');

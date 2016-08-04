@@ -54,7 +54,7 @@
                             'placeholder' => 'search by name or username',
                         ),
                     ));
-                    ?>
+    ?>
                     </span>
                 </div>
                 <?php } else { ?>

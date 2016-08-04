@@ -76,8 +76,7 @@
 		</div>
 	</div>
 	<?php
-        if(isset($element->{'r1_axis_'.$side}) && $element->{'r1_axis_'.$side} != 0)
-        {
+        if (isset($element->{'r1_axis_'.$side}) && $element->{'r1_axis_'.$side} != 0) {
             $this->widget('application.modules.eyedraw.OEEyeDrawWidget',
             array(
                     'onReadyCommandArray' => array(

@@ -123,8 +123,10 @@
             ),
         ));
 
-        if(!$social_history)    $social_history = new SocialHistory();
-        ?>
+        if(!$social_history) {
+			$social_history = new SocialHistory();
+		}
+    ?>
 		<fieldset class="field-row">
 			<legend><strong>Social History</strong></legend>
 			<input type="hidden" name="edit_operation_id" id="edit_operation_id" value="" />
@@ -167,7 +169,7 @@
                             'sorted' => false,
                             'layoutColumns' => array('field' => 4),
                         ));
-                    ?>
+    ?>
 				</div>
 			</div>
 			<div class="field-row row">

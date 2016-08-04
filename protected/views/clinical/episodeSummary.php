@@ -17,7 +17,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 if (!empty($episode)) {
-
     if ($episode->diagnosis) {
         $eye = $episode->eye ? $episode->eye->name : 'None';
         $diagnosis = $episode->diagnosis ? $episode->diagnosis->term : 'none';
@@ -46,14 +45,18 @@ if (!empty($episode)) {
 					<?= $episode->patient->age ?>,
 					CVI status: <?= $episode->patient->ophInfo->cvi_status->name ?>,
 					Driving status:
-					<?php if (!empty($episode->patient->socialhistory->driving_statuses)) {
+					<?php 
+					if (!empty($episode->patient->socialhistory->driving_statuses)) {
                         foreach ($episode->patient->socialhistory->driving_statuses as $i => $driving_status) {
-                            if ($i) echo '/';
+                            if ($i) {
+                                echo '/';
+                            }
                             echo $driving_status->name;
                         }
                     } else {
                         echo 'Unknown';
-                    }?>
+                    }
+    ?>
 				</div>
 			</section>
 
@@ -75,37 +78,37 @@ if (!empty($episode)) {
 
 	<?php
         $summaryItems = array();
-        if ($episode->subspecialty) {
-            $summaryItems = EpisodeSummaryItem::model()->enabled($episode->subspecialty->id)->findAll();
-        }
-        if (!$summaryItems) {
-            $summaryItems = EpisodeSummaryItem::model()->enabled()->findAll();
-        }
+    if ($episode->subspecialty) {
+        $summaryItems = EpisodeSummaryItem::model()->enabled($episode->subspecialty->id)->findAll();
+    }
+    if (!$summaryItems) {
+        $summaryItems = EpisodeSummaryItem::model()->enabled()->findAll();
+    }
     ?>
 
 	<?php if (count($summaryItems)) {?>
 		<div class="element element-data event-types">
 			<?php foreach ($summaryItems as $summaryItem) {
-                Yii::import("{$summaryItem->event_type->class_name}.widgets.{$summaryItem->getClassName()}");
-                $widget = $this->createWidget($summaryItem->getClassName(), array(
+    Yii::import("{$summaryItem->event_type->class_name}.widgets.{$summaryItem->getClassName()}");
+    $widget = $this->createWidget($summaryItem->getClassName(), array(
                     'episode' => $episode,
                     'event_type' => $summaryItem->event_type,
                 ));
-                $className = '';
-                if ($widget->collapsible) {
-                    $className .= 'collapsible';
-                    if ($widget->openOnPageLoad) {
-                        $className .= ' open';
-                    }
-                }
-                ?>
+    $className = '';
+    if ($widget->collapsible) {
+        $className .= 'collapsible';
+        if ($widget->openOnPageLoad) {
+            $className .= ' open';
+        }
+    }
+    ?>
 				<div class="<?php echo $className;?>">
 					<h3 id="<?= $summaryItem->getClassName();?>" class="data-title">
 						<?= $summaryItem->name; ?>
-						<?php if ($widget->collapsible){
+						<?php if ($widget->collapsible) {
                             $text = $widget->openOnPageLoad ? 'hide' : 'show';
                             $toggleClassName = $widget->openOnPageLoad ? 'toggle-hide' : 'toggle-show';
-                        ?>
+                            ?>
 							<a href="#" class="toggle-trigger toggle-<?php echo $toggleClassName;?>">
 								<span class="text"><?php echo $text;?></span>
 								<span class="icon-showhide">

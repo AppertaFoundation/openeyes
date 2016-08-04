@@ -33,7 +33,11 @@
             $criteria->order = 'display_order asc';
             foreach (OphTrOperationbooking_Operation_Session_UnavailableReason::model()->findAll() as $i => $sessionunavailablereason) {?>
 				<tr class="clickable" data-attr-id="<?php echo $sessionunavailablereason->id?>" data-uri="OphTrOperationbooking/admin/editsessionunavailablereason/<?php echo $sessionunavailablereason->id?>">
-					<td><input type="checkbox" name="sessionunavailablereason[]" value="<?php echo $sessionunavailablereason->id?>" class="sessionunavailablereasons-enabled" <?php if ($sessionunavailablereason->enabled) { echo 'checked'; } ?> /></td>
+					<td>
+						<input type="checkbox" name="sessionunavailablereason[]" value="<?php echo $sessionunavailablereason->id?>" 
+							   class="sessionunavailablereasons-enabled" 
+							    <?php if ($sessionunavailablereason->enabled) { echo 'checked'; } ?> />
+					</td>
 					<td><?php echo $sessionunavailablereason->name?></td>
 				</tr>
 			<?php }?>

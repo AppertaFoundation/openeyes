@@ -19,7 +19,6 @@
 
                     <?php
                     foreach ($data as $key => $val) {
-
                         echo '<tr data-id='.$val['id'].' filename='.basename($val['dicom_file_id']).' status='.$val['status'].' >
                                     <td id="id">'.$val['id'].'</td>
                                      <td id="event_date_time">'.$val['event_date_time'].'</td>

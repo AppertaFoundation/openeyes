@@ -27,10 +27,10 @@
 	<p>
 		<strong>Procedure(s):</strong>
 		<?php foreach ($elements['Element_OphTrConsent_Procedure']->procedures as $i => $procedure) {
-        if ($i > 0) {
-            echo ', ';
-        }
-        echo \CHtml::encode($procedure->term);
+    if ($i > 0) {
+        echo ', ';
+    }
+    echo \CHtml::encode($procedure->term);
 }?>
 	</p>
 	<p>

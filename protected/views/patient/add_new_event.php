@@ -23,17 +23,16 @@
 </div>
 <ul class="events">
 	<?php foreach ($eventTypes as $eventType) {
-        if ($subspecialty || $eventType->support_services) {
-            if (file_exists(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img'))) {
-                $assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img').'/').'/';
-            } else {
-                $assetpath = '/assets/';
-            }
+    if ($subspecialty || $eventType->support_services) {
+        if (file_exists(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img'))) {
+            $assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img').'/').'/';
+        } else {
+            $assetpath = '/assets/';
+        }
             // temporary hack to ensure that we are checking the right operation name for the event.
             $oprn = 'OprnCreate'.($eventType->class_name == 'OphDrPrescription' ? 'Prescription' : 'Event');
-            if ($this->checkAccess($oprn, $this->firm, Episode::getCurrentEpisodeByFirm($this->patient->id, $this->firm), $eventType)) {
-
-                ?>
+        if ($this->checkAccess($oprn, $this->firm, Episode::getCurrentEpisodeByFirm($this->patient->id, $this->firm), $eventType)) {
+            ?>
 				<li>
 					<?php echo CHtml::link('<img src="'.$assetpath.'small.png" alt="operation" /> - <strong>'.$eventType->name.'</strong>', Yii::app()->createUrl($eventType->class_name.'/Default/create').'?patient_id='.$patient->id)?>
 				</li>

@@ -35,7 +35,7 @@
 					No letters were found with the selected search criteria.
 				</td>
 			</tr>
-		<?php }else{?>
+		<?php } else {?>
 			<?php foreach ($report->letters as $letter) {?>
 				<tr>
 					<td><?php echo $letter['hos_num']?></td>

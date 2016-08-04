@@ -12,7 +12,7 @@
             </th>
             <th class="status"><?php echo $dataProvider->getSort()->link('status', 'Status', array('class' => 'sort-link')); ?></th>
             <th class="created"><?php echo $dataProvider->getSort()->link('created_date', 'Created', array('class' => 'sort-link')); ?></th>
-            <?php if($filters['show_merged']) :?>
+            <?php if ($filters['show_merged']) :?>
             <th class="created"><?php echo $dataProvider->getSort()->link('last_modified_date', 'Merged', array('class' => 'sort-link')); ?></th>
             <?php endif; ?> 
         </tr>
@@ -25,7 +25,7 @@
             <td class="filter-col"><input id="primary_hos_num_filter" name="PatientMergeRequestFilter[primary_hos_num_filter]" type="text" value="<?php echo isset($filters['primary_hos_num_filter']) ? $filters['primary_hos_num_filter'] : '';?>"></td>
             <td></td>
             <td></td>
-            <?php if($filters['show_merged']) :?><td></td><?php endif; ?>
+            <?php if ($filters['show_merged']) :?><td></td><?php endif; ?>
         </tr>
         <?php endif; ?>
     </thead>
@@ -46,7 +46,7 @@
         <?php if ($dataProvider->itemCount): ?>
             <?php foreach ($dataProvider->getData() as $i => $request): ?>
 
-                <?php if($request->status == PatientMergeRequest::STATUS_NOT_PROCESSED): ?>
+                <?php if ($request->status == PatientMergeRequest::STATUS_NOT_PROCESSED): ?>
                     <tr class="clickable" data-id="<?php echo $request->id?>" data-uri="patientMergeRequest/<?php echo 'view/'.$request->id?>">
                 <?php else: ?>
                     <tr class="clickable" data-id="<?php echo $request->id?>" data-uri="patientMergeRequest/log/<?php echo $request->id?>">
@@ -62,7 +62,7 @@
                         <?php echo $request->getStatusText(); ?> 
                     </td>
                     <td class="created"><?php echo $request->created_date; ?> </td>
-                    <?php if($filters['show_merged']) :?>
+                    <?php if ($filters['show_merged']) :?>
                     <td class="merged"><?php echo $request->last_modified_date; ?> </td>
                     <?php endif; ?> 
                     

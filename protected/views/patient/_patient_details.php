@@ -63,7 +63,7 @@
 		</div>
 
 		<div class="row data-row">
-			<?php if($this->patient->isDeceased()):?>
+			<?php if ($this->patient->isDeceased()):?>
 				<div class="large-4 column">
 					<div class="data-label">Deceased:</div>
 				</div>
@@ -83,7 +83,7 @@
 				</div>
 			<?php endif; ?>
 		</div>
-		<?php if($this->patient->isDeceased()):?>
+		<?php if ($this->patient->isDeceased()):?>
 		<div class="row data-row">
 			<div class="large-4 column">
 				<div class="data-label">Date of Death:</div>

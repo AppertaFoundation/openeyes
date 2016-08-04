@@ -316,10 +316,10 @@
 	{
 		if (condition.id) {
 			<?php if (@$callback) {
-                echo $callback.'(condition.type, condition.id, condition.label);';
-            } else {
-                echo "console.log('NO CALLBACK SPECIFIED');";
-            }?>
+    echo $callback.'(condition.type, condition.id, condition.label);';
+} else {
+    echo "console.log('NO CALLBACK SPECIFIED');";
+}?>
 		}
 	}
 

@@ -68,9 +68,14 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 			<td class="prescriptionLabel"><?php echo $item->drug->label; ?></td>
 			<td><?php echo $item->dose ?></td>
 			<td><?php echo $item->route->name ?> <?php if ($item->route_option) {
-                echo ' ('.$item->route_option->name.')';
+    echo ' ('.$item->route_option->name.')';
             }?></td>
-			<td><?php if ($data['copy'] == 'patient') { echo $item->frequency->long_name; } else { echo $item->frequency->name; }?></td>
+			<td><?php if ($data['copy'] == 'patient') { 
+					echo $item->frequency->long_name; } 
+				else { 
+					echo $item->frequency->name; 
+				}?>
+			</td>
 			<td><?php echo $item->duration->name ?></td>
 			<td></td>
 			<td></td>
@@ -81,12 +86,18 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 			<td class="prescriptionLabel">then</td>
 			<td><?php echo $taper->dose ?></td>
 			<td>-</td>
-			<td><?php if ($data['copy'] == 'patient') { echo $taper->frequency->long_name; } else { echo $taper->frequency->name; }?></td>
+			<td><?php if ($data['copy'] == 'patient') { 
+					echo $taper->frequency->long_name; 
+				} else { 
+					echo $taper->frequency->name; 
+				}?>
+			</td>
 			<td><?php echo $taper->duration->name ?></td>
 			<td>-</td>
 			<td>-</td>
 		</tr>
-		<?php	}
+		<?php	
+}
 }?>
 	</tbody>
 </table>

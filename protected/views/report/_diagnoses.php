@@ -45,8 +45,8 @@
 					<td>
 						<?php
                         $_diagnosis = array_shift($diagnosis['diagnoses']);
-                        echo $_diagnosis['eye'].' '.$_diagnosis['disorder'].' ('.$_diagnosis['type'].')';
-                        ?>
+    echo $_diagnosis['eye'].' '.$_diagnosis['disorder'].' ('.$_diagnosis['type'].')';
+    ?>
 					</td>
 				</tr>
 				<?php foreach ($diagnosis['diagnoses'] as $_diagnosis) {?>

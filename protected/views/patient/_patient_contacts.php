@@ -135,7 +135,7 @@
                             'placeholder' => 'search for contacts',
                         ),
                     ));
-                    ?>
+    ?>
 				</div>
 
                 <div class="large-4 column">
@@ -143,9 +143,9 @@
                     
 
         <select id="contactfilter" name="contactfilter">
-                    <?php foreach (ContactLabel::getList() as $key => $name) {?>
-                        <option value="<?php echo $key ?>"><?php echo $name ?></option>
-    <?php } ?>
+            <?php foreach (ContactLabel::getList() as $key => $name) {?>
+                <option value="<?php echo $key ?>"><?php echo $name ?></option>
+            <?php } ?>
         </select>
                 </div>
 

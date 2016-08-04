@@ -115,7 +115,7 @@
 										<img src="<?php echo $assetPath?>/img/diaryIcons/draggable_row.png" alt="draggable_row" width="25" height="28" />
 									</td>
 									<td class="hospital"><?php echo CHtml::link($booking->operation->event->episode->patient->hos_num, Yii::app()->createUrl('/OphTrOperationbooking/default/view/'.$booking->operation->event_id));
-                                        ?></td>
+    ?></td>
 									<td class="confirm"><input type="hidden" name="confirm_<?php echo $booking->element_id?>" value="0" /><input id="confirm_<?php echo $booking->element_id?>" type="checkbox" value="1" name="confirm_<?php echo $booking->element_id?>" disabled="disabled" <?php if ($booking->confirmed) {?>checked="checked" <?php }?>/></td>
 									<td class="patient leftAlign"><?php echo strtoupper($booking->operation->event->episode->patient->last_name)?>, <?php echo $booking->operation->event->episode->patient->first_name?> (<?php echo $booking->operation->event->episode->patient->age?>)</td>
 									<td class="operation leftAlign"><?php echo $booking->operation->procedures ? '['.$booking->operation->eye->adjective.'] '.$booking->operation->getProceduresCommaSeparated() : 'No procedures'?></td>
@@ -128,7 +128,8 @@
 										<?php } else {?>
 											<img src="<?php echo $assetPath?>/img/diaryIcons/female.png" alt="female" title="female" width="17" height="17" />
 										<?php }?>
-										<?php if ($warnings = $booking->operation->event->episode->patient->getWarnings()) {
+										<?php 
+										if ($warnings = $booking->operation->event->episode->patient->getWarnings()) {
                                             $msgs = array();
                                             foreach ($warnings as $warn) {
                                                 $msgs[] = $warn['short_msg'];
@@ -139,8 +140,7 @@
 										<img src="<?php echo $assetPath?>/img/diaryIcons/confirmed.png" alt="confirmed" width="17" height="17" class="confirmed" title="confirmed"<?php if (!$booking->confirmed) {?> style="display: none;"<?php }?>>
 										<?php if ($booking->operation->comments && preg_match('/\w/', $booking->operation->comments)) {?>
 											<img src="<?php echo $assetPath?>/img/diaryIcons/comment.png" alt="<?php echo CHtml::encode($booking->operation->comments, ENT_COMPAT, 'UTF-8') ?>" title="<?php echo CHtml::encode($booking->operation->comments, ENT_COMPAT, 'UTF-8') ?>" width="17" height="17" />
-										<?php }?>
-										<?php
+										<?php 
                                         if ($booking->operation->comments_rtt && preg_match('/\w/', $booking->operation->comments_rtt)) {?>
 											<img src="<?php echo $assetPath?>/img/diaryIcons/comment_rtt.png" alt="<?php echo CHtml::encode($booking->operation->comments_rtt, ENT_COMPAT, 'UTF-8') ?>" title="<?php echo CHtml::encode($booking->operation->comments_rtt, ENT_COMPAT, 'UTF-8') ?>" width="17" height="17" />
 										<?php }?>

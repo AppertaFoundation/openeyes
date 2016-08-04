@@ -21,8 +21,8 @@
 	<h3 class="data-title">Procedure<?php if (count($element->procedures) != 1) echo 's'?></h3>
 	<ul class="data-value highlight important">
 		<?php foreach ($element->procedures as $procedure) {
-            echo "<li>{$element->eye->adjective} {$procedure->term}</li>";
-        }?>
+    echo "<li>{$element->eye->adjective} {$procedure->term}</li>";
+}?>
 	</ul>
 </section>
 
@@ -31,10 +31,9 @@
 		<div class="large-6 column">
 			<h3 class="data-title">Consultant required?</h3>
 			<?php
-            if($element->consultant) {
+            if ($element->consultant) {
                 $consultant_name = $element->consultant->ReversedFullName;
-            }
-            else {
+            } else {
                 $consultant_name = 'Consultant';
             }
             ?>
@@ -151,10 +150,16 @@
 	<div class="row">
 		<?php
         if (Yii::app()->params['ophtroperationbooking_referral_link']) {
-        ?>
+            ?>
 			<div class="large-6 column">
 				<h3 class="data-title">Referral</h3>
-				<div class="data-value"><?php if ($element->referral) { echo $element->referral->getDescription(); } else { echo 'No Referral Set'; }?></div>
+				<div class="data-value">
+					<?php if ($element->referral) { 
+						echo $element->referral->getDescription(); 
+					} else { 
+						echo 'No Referral Set'; 
+					}?>
+				</div>
 				<?php if ($rtt = $element->getRTT()) {?>
 					<div class="rtt-info">Clock Start - <?= Helper::convertDate2NHS($rtt->clock_start) ?> Breach: <?= Helper::convertDate2NHS($rtt->breach) ?></div>
 				<?php }?>

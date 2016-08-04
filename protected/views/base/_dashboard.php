@@ -4,7 +4,7 @@
 <?php
     $container_id = isset($item['options']['container-id']) ? $item['options']['container-id'] : "js-toggle-container-$box_number";
     $is_open = isset($item['options']['js-toggle-open']) && $item['options']['js-toggle-open'];
-?>
+    ?>
 
 <section id="<?php echo $container_id; ?>" class="box dashboard js-toggle-container">
     <h3 class="box-title"><?= $item['title'] ?></h3>

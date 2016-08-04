@@ -22,42 +22,42 @@
 // have to work around the bad processing of the elements at this point, and check for a POSTed disorder that is not
 // in the standard list.
 if (!empty($_POST)) {
-        $posted_l2_id = @$_POST[get_class($element)][$side.'_diagnosis2_id'];
+    $posted_l2_id = @$_POST[get_class($element)][$side.'_diagnosis2_id'];
 
-        if ($posted_l1_id = @$_POST[get_class($element)][$side.'_diagnosis1_id']) {
-                $l1_seen = false;
-                foreach ($l1_disorders as $l1) {
-                        if ($l1->id == $posted_l1_id) {
-                                $l1_seen = true;
+    if ($posted_l1_id = @$_POST[get_class($element)][$side.'_diagnosis1_id']) {
+        $l1_seen = false;
+        foreach ($l1_disorders as $l1) {
+            if ($l1->id == $posted_l1_id) {
+                $l1_seen = true;
                                 // append l2 if necessary
                                 if ($posted_l2_id) {
-                                        $l2_seen = false;
-                                        foreach ($l1_opts[$l1->id]['data-level2'] as $l2_disorder_struct) {
-                                                if ($l2_disorder_struct['id'] == $posted_l2_id) {
-                                                        $l2_seen = true;
-                                                        break;
-                                                }
+                                    $l2_seen = false;
+                                    foreach ($l1_opts[$l1->id]['data-level2'] as $l2_disorder_struct) {
+                                        if ($l2_disorder_struct['id'] == $posted_l2_id) {
+                                            $l2_seen = true;
+                                            break;
                                         }
-                                        if (!$l2_seen) {
-                                                if ($l2_disorder = Disorder::model()->findByPk($posted_l2_id)) {
-                                                        $l2_disorders[$l1->id][] = $l2_disorder;
-                                                        $l1_opts[$l1->id]['data-level2'][] = array('id' => $posted_l2_id, 'term' => $l2_disorder->term);
-                                                }
+                                    }
+                                    if (!$l2_seen) {
+                                        if ($l2_disorder = Disorder::model()->findByPk($posted_l2_id)) {
+                                            $l2_disorders[$l1->id][] = $l2_disorder;
+                                            $l1_opts[$l1->id]['data-level2'][] = array('id' => $posted_l2_id, 'term' => $l2_disorder->term);
                                         }
+                                    }
                                 }
-                                break;
-                        }
-                }
-                if (!$l1_seen) {
-                        $l1_disorders[] = Disorder::model()->findByPk($posted_l1_id);
-                }
+                break;
+            }
         }
+        if (!$l1_seen) {
+            $l1_disorders[] = Disorder::model()->findByPk($posted_l1_id);
+        }
+    }
 }
 // now manipulation is at an end, we can json encode the level 2 disorder data
 foreach ($l1_opts as $id => $data) {
-        if (array_key_exists('data-level2', $data)) {
-                $l1_opts[$id]['data-level2'] = CJSON::encode($data['data-level2']);
-        }
+    if (array_key_exists('data-level2', $data)) {
+        $l1_opts[$id]['data-level2'] = CJSON::encode($data['data-level2']);
+    }
 }
 
 $layoutColumns = array('label' => 4, 'field' => 8);

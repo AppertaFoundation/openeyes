@@ -52,7 +52,7 @@
                         $this->widget('CTreeView', array(
                             'data' => OphTrOperationbooking_Letter_Contact_Rule::model()->findAllAsTree($rule, true, 'textPlain'),
                         ));
-                    ?>
+    ?>
 				</div>
 			</div>
 		</div>

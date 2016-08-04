@@ -40,14 +40,14 @@ $assetManager = Yii::app()->getAssetManager();
     ));
     $autoComplete = array('autocomplete' => Yii::app()->params['html_autocomplete']);
     echo $form->hiddenInput($admin->getModel(), 'id');
-    if(Yii::app()->request->getParam('returnUri')){
+    if (Yii::app()->request->getParam('returnUri')) {
         echo CHTML::hiddenField('returnUriEdit', Yii::app()->request->getParam('returnUri'));
     }
     ?>
 
-	<?php foreach($admin->getEditFields() as $field => $type) {
-        if (is_array($type)) {
-            switch($type['widget']){
+	<?php foreach ($admin->getEditFields() as $field => $type) {
+    if (is_array($type)) {
+        switch ($type['widget']) {
                 case 'MultiSelectList':
                     ?>
 					<div class="field-row furtherfindings-multi-select">
@@ -86,10 +86,10 @@ $assetManager = Yii::app()->getAssetManager();
                     $this->renderPartial($type['viewName'], $type['viewArguments']);
                     break;
                 case 'RelationList':
-                    if(isset($admin->getModel()->id)){
+                    if (isset($admin->getModel()->id)) {
                         $assetManager->registerScriptFile('js/oeadmin/list.js');
                         $subAdmin = $admin->generateAdminForRelationList($type['relation'], $type['listFields']);
-                        if(isset($type['search'])){
+                        if (isset($type['search'])) {
                             $subAdmin->getSearch()->setSearchItems($type['search']);
                         }
                         $this->renderPartial('//admin/generic/list', array(
@@ -99,8 +99,8 @@ $assetManager = Yii::app()->getAssetManager();
                         break;
                     }
             }
-        } else {
-            switch ($type) {
+    } else {
+        switch ($type) {
                 case 'checkbox':
                     echo $form->checkBox($admin->getModel(), $field, $autoComplete);
                     break;
@@ -115,8 +115,8 @@ $assetManager = Yii::app()->getAssetManager();
                     echo $form->textField($admin->getModel(), $field, $autoComplete);
                     break;
             }
-        }
     }
+}
     ?>
 
 	<?php
