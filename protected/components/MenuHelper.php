@@ -8,10 +8,12 @@
 class MenuHelper
 {
     protected $menuOptions;
-
     protected $user;
-
     protected $uri;
+    /**
+     * @var CApplication
+     */
+    protected $app;
 
     public function __construct(array $menuOptions, OEWebUser $user, $uri = '')
     {
@@ -20,9 +22,32 @@ class MenuHelper
         $this->uri = $uri;
     }
 
+    /**
+     * @param CApplication $app
+     */
+    public function setApp(CApplication $app)
+    {
+        $this->app = $app;
+    }
+
+    /**
+     * @return CApplication
+     */
+    public function getApp()
+    {
+        if (!$this->app) {
+            $this->app = Yii::app();
+        }
+
+        return $this->app;
+    }
+
+    /**
+     * @return string
+     */
     public function render()
     {
-        return Yii::app()->controller->renderPartial(
+        return $this->getApp()->controller->renderPartial(
             '//base/_menu',
             array(
                 'menu' => $this->formatMenuOptions($this->menuOptions),
@@ -32,6 +57,33 @@ class MenuHelper
         );
     }
 
+    /**
+     * Map auth item param specifications to actual values to pass for access checking
+     *
+     * @param array $params
+     * @return array
+     */
+    protected function getAuthItemParams($params = array())
+    {
+        $result = array();
+        foreach($params as $p) {
+            switch ($p)
+            {
+                case 'user_id':
+                    $result[] = $this->user->id;
+                    break;
+                default:
+                    $result[] = $p;
+                    break;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @param array $menuOptions
+     * @return array
+     */
     protected function formatMenuOptions(array $menuOptions)
     {
         $menu = array();
@@ -40,7 +92,16 @@ class MenuHelper
             if (isset($menu_item['restricted'])) {
                 $allowed = false;
                 foreach ($menu_item['restricted'] as $authitem) {
-                    if ($this->user->checkAccess($authitem)) {
+                    if (is_array($authitem)) {
+                        $item = array_shift($authitem);
+                        $params = $this->getAuthItemParams($authitem);
+                        $allowed = $this->user->checkAccess($item, $params);
+                        if ($allowed) {
+                            break;
+                        }
+
+                    }
+                    elseif ($this->user->checkAccess($authitem)) {
                         $allowed = true;
                         break;
                     }
