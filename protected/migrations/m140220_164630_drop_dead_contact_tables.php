@@ -2,18 +2,18 @@
 
 class m140220_164630_drop_dead_contact_tables extends CDbMigration
 {
-	public function up()
-	{
-		$this->dropTable('institution_consultant_assignment');
-		$this->dropTable('site_consultant_assignment');
-		$this->dropTable('consultant');
-		$this->dropTable('manual_contact');
-		$this->dropTable('contact_type');
-	}
+    public function up()
+    {
+        $this->dropTable('institution_consultant_assignment');
+        $this->dropTable('site_consultant_assignment');
+        $this->dropTable('consultant');
+        $this->dropTable('manual_contact');
+        $this->dropTable('contact_type');
+    }
 
-	public function down()
-	{
-		$this->execute("CREATE TABLE `contact_type` (
+    public function down()
+    {
+        $this->execute("CREATE TABLE `contact_type` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
   `letter_template_only` tinyint(4) NOT NULL DEFAULT '0',
@@ -29,7 +29,7 @@ class m140220_164630_drop_dead_contact_tables extends CDbMigration
   CONSTRAINT `contact_type_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
 
-		$this->execute("CREATE TABLE `manual_contact` (
+        $this->execute("CREATE TABLE `manual_contact` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `contact_type_id` int(10) unsigned NOT NULL,
   `contact_id` int(10) unsigned NOT NULL,
@@ -48,7 +48,7 @@ class m140220_164630_drop_dead_contact_tables extends CDbMigration
   CONSTRAINT `manual_contact_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
 
-		$this->execute("CREATE TABLE `consultant` (
+        $this->execute("CREATE TABLE `consultant` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
   `last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
@@ -64,7 +64,7 @@ class m140220_164630_drop_dead_contact_tables extends CDbMigration
   CONSTRAINT `consultant_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=126 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
 
-		$this->execute("CREATE TABLE `site_consultant_assignment` (
+        $this->execute("CREATE TABLE `site_consultant_assignment` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `site_id` int(10) unsigned NOT NULL,
   `consultant_id` int(10) unsigned NOT NULL,
@@ -83,7 +83,7 @@ class m140220_164630_drop_dead_contact_tables extends CDbMigration
   CONSTRAINT `site_consultant_assignment_site_id_fk` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
 
-		$this->execute("CREATE TABLE `institution_consultant_assignment` (
+        $this->execute("CREATE TABLE `institution_consultant_assignment` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `institution_id` int(10) unsigned NOT NULL,
   `consultant_id` int(10) unsigned NOT NULL,
@@ -101,5 +101,5 @@ class m140220_164630_drop_dead_contact_tables extends CDbMigration
   CONSTRAINT `institution_consultant_assignment_institution_id_fk` FOREIGN KEY (`institution_id`) REFERENCES `institution` (`id`),
   CONSTRAINT `institution_consultant_assignment_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
-	}
+    }
 }

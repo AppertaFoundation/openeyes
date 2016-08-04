@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -21,12 +21,12 @@
 	<div class="report-fields">
 		<h2>Diagnoses report</h2>
 		<?php
-		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-			'id'=>'report-form',
-			'enableAjaxValidation'=>false,
-			'layoutColumns' => array('label'=>2,'field'=>10),
-			'action' => Yii::app()->createUrl('/report/downloadReport'),
-		))?>
+        $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+            'id' => 'report-form',
+            'enableAjaxValidation' => false,
+            'layoutColumns' => array('label' => 2, 'field' => 10),
+            'action' => Yii::app()->createUrl('/report/downloadReport'),
+        ))?>
 
 		<input type="hidden" name="report-name" value="Diagnoses" />
 
@@ -38,13 +38,13 @@
 			</div>
 			<div class="large-2 column end">
 				<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-					'name' => 'start_date',
-					'options' => array(
-						'showAnim' => 'fold',
-						'dateFormat' => Helper::NHS_DATE_FORMAT_JS
-					),
-					'value' => date('j M Y',strtotime('-1 year')),
-				))?>
+                    'name' => 'start_date',
+                    'options' => array(
+                        'showAnim' => 'fold',
+                        'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
+                    ),
+                    'value' => date('j M Y', strtotime('-1 year')),
+                ))?>
 			</div>
 		</div>
 
@@ -56,13 +56,13 @@
 			</div>
 			<div class="large-2 column end">
 				<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-					'name' => 'end_date',
-					'options' => array(
-						'showAnim' => 'fold',
-						'dateFormat' => Helper::NHS_DATE_FORMAT_JS
-					),
-					'value' => date('j M Y'),
-				))?>
+                    'name' => 'end_date',
+                    'options' => array(
+                        'showAnim' => 'fold',
+                        'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
+                    ),
+                    'value' => date('j M Y'),
+                ))?>
 			</div>
 		</div>
 
@@ -90,11 +90,11 @@
 		</div>
 
 		<?php $this->widget('application.widgets.DiagnosisSelection', array(
-				'field' => 'disorder_id',
-				'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
-				'layout' => 'minimal',
-				'callback' => 'Reports_AddDiagnosis',
-		))?>
+                'field' => 'disorder_id',
+                'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
+                'layout' => 'minimal',
+                'callback' => 'Reports_AddDiagnosis',
+        ))?>
 
 		<div class="row field-row">
 			<div class="large-2 column">

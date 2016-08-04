@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -18,7 +18,6 @@
  */
 
 namespace OEModule\OphCiExamination\components;
-
 
 use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading;
 use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit;
@@ -45,7 +44,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
      * @var string
      */
     protected $searchTemplate = 'application.modules.OphCiExamination.views.reports.visual_acuity_search';
-    
+
     /**
      * @var int
      */
@@ -56,13 +55,13 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
      */
     protected $graphConfig = array(
         'chart' => array(
-            'renderTo' => '', 
+            'renderTo' => '',
             'type' => 'bubble',
         ),
         'tooltip' => array(
                 'useHTML' => true,
                 'headerFormat' => '<b>{series.name}</b><br>',
-                'pointFormat' => 'Number of eyes: {point.z}'
+                'pointFormat' => 'Number of eyes: {point.z}',
         ),
         'legend' => array('enabled' => false),
         'title' => array('text' => 'Visual Acuity (Distance)'),
@@ -79,20 +78,20 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
             'min' => 0,
             'max' => 5,
             'gridLineWidth' => 0,
-            'minorGridLineWidth' => 0
+            'minorGridLineWidth' => 0,
         ),
         'plotOptions' => array(
             'scatter' => array(
                 'tooltip' => array(
                     'headerFormat' => '<b>Visual Acuity</b><br>',
-                    'pointFormat' => '<i>Before Surgery: {point.x}</i><br /> <i>After surgery:<i/> {point.y}'
+                    'pointFormat' => '<i>Before Surgery: {point.x}</i><br /> <i>After surgery:<i/> {point.y}',
                 ),
             ),
             'bubble' => array(
-                'minSize' => "3%",
-                'maxSize' => "17%",
-            )
-        )
+                'minSize' => '3%',
+                'maxSize' => '17%',
+            ),
+        ),
     );
 
     /**
@@ -111,9 +110,10 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
      * @param $surgeon
      * @param $dateFrom
      * @param $dateTo
-     * @param int $months
+     * @param int        $months
      * @param int|string $method
-     * @param string $type
+     * @param string     $type
+     *
      * @return array|\CDbDataReader
      */
     protected function queryData($surgeon, $dateFrom, $dateTo, $months = 4, $method = 'best', $type = 'distance')
@@ -144,7 +144,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
                 array(
                     'examination' => $this->examinationEvent['id'],
                     'monthsBefore' => ($months - 1),
-                    'monthsAfter' => ($months + 1)
+                    'monthsAfter' => ($months + 1),
                 )
             )->join('et_ophciexamination_visualacuity pre_acuity',
                 'pre_examination.id = pre_acuity.event_id
@@ -154,12 +154,12 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
                 'post_examination.id = post_acuity.event_id
                 AND (post_acuity.eye_id = op_procedure.eye_id
                 OR post_acuity.eye_id = 3)'
-            )->join($table . ' pre_reading',
+            )->join($table.' pre_reading',
                 'pre_acuity.id = pre_reading.element_id
                 AND IF(op_procedure.eye_id = 1, pre_reading.side = 1, IF(op_procedure.eye_id = 2,
                                                                            pre_reading.side = 0,
                                                                            pre_reading.side IS NOT NULL))'
-            )->join($table . ' post_reading', 'post_acuity.id = post_reading.element_id
+            )->join($table.' post_reading', 'post_acuity.id = post_reading.element_id
                AND post_reading.side = pre_reading.side
                AND post_reading.method_id = pre_reading.method_id')
             ->where('surgeon_id = :surgeon', array('surgeon' => $surgeon))
@@ -175,7 +175,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         }
 
         if ($method) {
-            if(is_numeric($method)){
+            if (is_numeric($method)) {
                 $this->command->andWhere('pre_reading.method_id = :method', array('method' => $method));
             } else {
                 $this->command
@@ -201,7 +201,8 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         $eyeDiffs = array();
         $bestValues = array();
         foreach ($data as $row) {
-            if (!isset($dataCheck[$row['id']])) {//Do we have data for this operation?
+            if (!isset($dataCheck[$row['id']])) {
+                //Do we have data for this operation?
                 $dataCheck[$row['id']] = array();
             }
             if (!isset($dataCheck[$row['id']][$row['eye_id']])) { //and specifically for this eye in the op
@@ -209,19 +210,19 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
             }
             if (!isset($dataCheck[$row['id']][$row['eye_id']][$row['method_id']]) || $this->method === 'best') { //and then for this method
                 $dataCheck[$row['id']][$row['eye_id']][$row['method_id']] = true;
-                if($this->method === 'best'){
+                if ($this->method === 'best') {
                     $diffForEye = $row['pre_value'] - $row['post_value'];
-                    if(!isset($eyeDiffs[$row['id'].'_'.$row['eye_id']])){
+                    if (!isset($eyeDiffs[$row['id'].'_'.$row['eye_id']])) {
                         $eyeDiffs[$row['id'].'_'.$row['eye_id']] = $diffForEye;
                         $bestValues[$row['id'].'_'.$row['eye_id']] = array(
                             $this->convertVisualAcuity($row['pre_value']),
-                            $this->convertVisualAcuity($row['post_value'])
+                            $this->convertVisualAcuity($row['post_value']),
                         );
-                    } elseif( $diffForEye > $eyeDiffs[$row['id'].'_'.$row['eye_id']]){
+                    } elseif ($diffForEye > $eyeDiffs[$row['id'].'_'.$row['eye_id']]) {
                         $eyeDiffs[$row['id'].'_'.$row['eye_id']] = $diffForEye;
                         $bestValues[$row['id'].'_'.$row['eye_id']] = array(
                             $this->convertVisualAcuity($row['pre_value']),
-                            $this->convertVisualAcuity($row['post_value'])
+                            $this->convertVisualAcuity($row['post_value']),
                         );
                     }
                 } else {
@@ -230,103 +231,99 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
                     //across is the one closest to the op pre and post.
                     $dataSet[] = array(
                         $this->convertVisualAcuity($row['pre_value']),
-                        $this->convertVisualAcuity($row['post_value'])
+                        $this->convertVisualAcuity($row['post_value']),
                     );
                 }
-
             }
         }
 
         $counts = array();
         $dataSet = array_merge($dataSet, array_values($bestValues));
-        foreach($dataSet as $data){
-            if(!array_key_exists($data[0].'_'.$data[1], $counts)){
+        foreach ($dataSet as $data) {
+            if (!array_key_exists($data[0].'_'.$data[1], $counts)) {
                 $counts[$data[0].'_'.$data[1]] = 0;
             }
-            $counts[$data[0].'_'.$data[1]]++;
+            ++$counts[$data[0].'_'.$data[1]];
         }
-         
+
         $matrix = array();
-        
-        foreach($counts as $key => $count){
+
+        foreach ($counts as $key => $count) {
             $xAxsis = null;
             $yAxsis = null;
-            
+
             $points = explode('_', $key);
-            
-            $xPoint = (float)$points[0];
-            $yPoint = (float)$points[1];
-            
-            
-            if( $xPoint <= 0 ){
+
+            $xPoint = (float) $points[0];
+            $yPoint = (float) $points[1];
+
+            if ($xPoint <= 0) {
                 $xAxsis = 5;
             }
-            
-            if( $xPoint >= 0 && $xPoint <= 0.30 ){
+
+            if ($xPoint >= 0 && $xPoint <= 0.30) {
                 $xAxsis = 4;
             }
-            
-            if( $xPoint > 0.30 && $xPoint <= 0.60 ){
+
+            if ($xPoint > 0.30 && $xPoint <= 0.60) {
                 $xAxsis = 3;
             }
-                                    
-            if( $xPoint > 0.60 && $xPoint <= 0.90 ){
+
+            if ($xPoint > 0.60 && $xPoint <= 0.90) {
                 $xAxsis = 2;
             }
-            
-            if( $xPoint > 0.90 && $xPoint <= 1.2 ){
+
+            if ($xPoint > 0.90 && $xPoint <= 1.2) {
                 $xAxsis = 1;
             }
-            
-            if( $xPoint > 1.2 ){
+
+            if ($xPoint > 1.2) {
                 $xAxsis = 0;
             }
-            
+
             // yAxsis
-            
-            if( $yPoint <= 0 ){
+
+            if ($yPoint <= 0) {
                 $yAxsis = 5;
             }
-            
-            if( $yPoint >= 0 && $yPoint <= 0.30 ){
+
+            if ($yPoint >= 0 && $yPoint <= 0.30) {
                 $yAxsis = 4;
             }
-            
-            if( $yPoint > 0.30 && $yPoint <= 0.60 ){
+
+            if ($yPoint > 0.30 && $yPoint <= 0.60) {
                 $yAxsis = 3;
             }
-            
-            if( $yPoint > 0.60 && $yPoint <= 0.90 ){
+
+            if ($yPoint > 0.60 && $yPoint <= 0.90) {
                 $yAxsis = 2;
             }
-            
-            if( $yPoint > 0.90 && $yPoint <= 1.2 ){
+
+            if ($yPoint > 0.90 && $yPoint <= 1.2) {
                 $yAxsis = 1;
             }
-            
-            if( $yPoint > 1.2 ){
+
+            if ($yPoint > 1.2) {
                 $yAxsis = 0;
             }
-            
-            
-            if( isset($matrix[$xAxsis][$yAxsis]) ){
+
+            if (isset($matrix[$xAxsis][$yAxsis])) {
                 $matrix[$xAxsis][$yAxsis] += $count;
             } else {
                 $matrix[$xAxsis][$yAxsis] = $count;
             }
-
         }
-        
+
         $returnData = array();
-        
-        foreach($matrix as $xCoord => $bubbleX){
-            foreach($bubbleX as $yCoord => $value){
+
+        foreach ($matrix as $xCoord => $bubbleX) {
+            foreach ($bubbleX as $yCoord => $value) {
                 $returnData[] = array(
                     $xCoord,
                     $yCoord,
-                    $value
+                    $value,
                 );
-                
+
                 $this->totalEyes += $value;
             }
         }
@@ -350,21 +347,20 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
                         'fontSize' => '13px',
                         'fontFamily' => 'Verdana, sans-serif',
                     ),
-                )
+                ),
             ),
             array(
                 'type' => 'line',
                 'data' => array(
-                    array(-1,-1),
-                    array(6,6),
+                    array(-1, -1),
+                    array(6, 6),
                 ),
-                'dashStyle' =>  'longdash',
-                'marker' =>  array( 'enabled' =>  false ),
-                'enableMouseTracking' =>  false,
+                'dashStyle' => 'longdash',
+                'marker' => array('enabled' => false),
+                'enableMouseTracking' => false,
             ),
         );
 
-        
         return json_encode($this->series);
     }
 
@@ -374,13 +370,14 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
     public function graphConfig()
     {
         $this->graphConfig['chart']['renderTo'] = $this->graphId();
-        $this->graphConfig['subtitle']['text'] = "Total Eyes: " . $this->totalEyes;
+        $this->graphConfig['subtitle']['text'] = 'Total Eyes: '.$this->totalEyes;
 
         return json_encode(array_merge_recursive($this->globalGraphConfig, $this->graphConfig));
     }
 
     /**
      * @param $baseValue
+     *
      * @return float
      */
     protected function convertVisualAcuity($baseValue)
@@ -388,7 +385,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         $logMar = OphCiExamination_VisualAcuityUnit::model()->find('name = "logMAR"');
         $reading = new OphCiExamination_VisualAcuity_Reading();
 
-        return (float)$reading->convertTo($baseValue, $logMar['id']);
+        return (float) $reading->convertTo($baseValue, $logMar['id']);
     }
 
     /**
@@ -397,6 +394,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
     public function renderSearch()
     {
         $visualAcuityMethods = OphCiExamination_VisualAcuity_Method::model()->findAll();
+
         return $this->app->controller->renderPartial($this->searchTemplate, array('report' => $this, 'methods' => $visualAcuityMethods));
     }
 }

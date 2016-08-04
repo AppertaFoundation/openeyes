@@ -18,7 +18,6 @@ class PcrRiskReport extends Report implements ReportInterface
      */
     protected $mode;
 
-
     /**
      * @param $app
      */
@@ -45,11 +44,11 @@ class PcrRiskReport extends Report implements ReportInterface
                 'width' => 1,
                 'label' => array('text' => 'Average'),
             )),
-            'max' => 50
+            'max' => 50,
         ),
         'tooltip' => array(
             'headerFormat' => '<b>PCR Risk </b>',
-            'pointFormat' => '<b>{point.name}</b><br /><i>Operations</i>: {point.x} <br /> <i>PCR Avg</i>: {point.y:.2f}'
+            'pointFormat' => '<b>{point.name}</b><br /><i>Operations</i>: {point.x} <br /> <i>PCR Avg</i>: {point.y:.2f}',
         ),
         'legend' => array(
             'align' => 'right',
@@ -108,26 +107,26 @@ class PcrRiskReport extends Report implements ReportInterface
         $pcrRiskTotal = 0;
         $adjustedPcrRate = 0;
 
-        foreach($data as $case){
-            if(isset($case['complication']) && ($case['complication'] === 'PC rupture' || $case['complication'] === 'PC rupture with vitreous loss' || $case['complication'] === 'PC rupture no vitreous loss')){
-                $pcrCases++;
+        foreach ($data as $case) {
+            if (isset($case['complication']) && ($case['complication'] === 'PC rupture' || $case['complication'] === 'PC rupture with vitreous loss' || $case['complication'] === 'PC rupture no vitreous loss')) {
+                ++$pcrCases;
             }
-            if(isset($case['risk']) && $case['risk'] !== '' && $case['risk'] != 0){
+            if (isset($case['risk']) && $case['risk'] !== '' && $case['risk'] != 0) {
                 $pcrRiskTotal += $case['risk'];
             } else {
                 $pcrRiskTotal += 1.92;
             }
         }
 
-        if($total !== 0 && (int)$pcrRiskTotal !== 0){
-                // unadjusted PCR rate
-                $unadjustedPcrRate = ($pcrCases/$total)*100;
+        if ($total !== 0 && (int) $pcrRiskTotal !== 0) {
+            // unadjusted PCR rate
+                $unadjustedPcrRate = ($pcrCases / $total) * 100;
 
                 // adjusted PCR rate
                 $expectedPcrRate = $pcrRiskTotal / $total;
-                $observedPcrRate = $pcrCases / $total;
-                $observedExpectedRate = $observedPcrRate / $expectedPcrRate;
-                $adjustedPcrRate = ($observedExpectedRate * $this->average()) * 100; // we need to return %
+            $observedPcrRate = $pcrCases / $total;
+            $observedExpectedRate = $observedPcrRate / $expectedPcrRate;
+            $adjustedPcrRate = ($observedExpectedRate * $this->average()) * 100; // we need to return %
                 //$adjustedPcrRate = (($pcrCases / $total) / ($pcrRiskTotal / $total)) * $this->average();
         }
 
@@ -137,14 +136,13 @@ class PcrRiskReport extends Report implements ReportInterface
             $this->totalOperations = $total;
         }
 
-        if($this->mode == 0) {
-            return array(array('name'=>'adjusted', 'x'=>$total, 'y'=>$adjustedPcrRate));
-        }elseif($this->mode == 1) {
-            return array(array('name'=>'unadjusted', 'x'=>$total, 'y'=>$unadjustedPcrRate));
-        }elseif($this->mode == 2){
-            return array(array('name'=>'unadjusted', 'x'=>$total, 'y'=>$unadjustedPcrRate), array('name'=>'adjusted', 'x'=>$total, 'y'=>$adjustedPcrRate));
+        if ($this->mode == 0) {
+            return array(array('name' => 'adjusted', 'x' => $total, 'y' => $adjustedPcrRate));
+        } elseif ($this->mode == 1) {
+            return array(array('name' => 'unadjusted', 'x' => $total, 'y' => $unadjustedPcrRate));
+        } elseif ($this->mode == 2) {
+            return array(array('name' => 'unadjusted', 'x' => $total, 'y' => $unadjustedPcrRate), array('name' => 'adjusted', 'x' => $total, 'y' => $adjustedPcrRate));
         }
-
     }
 
     /**
@@ -152,20 +150,20 @@ class PcrRiskReport extends Report implements ReportInterface
      */
     public function seriesJson()
     {
-        if($this->mode == 1 ){
+        if ($this->mode == 1) {
             $this->series = array(
                 array(
                     'name' => 'Current Surgeon',
                     'type' => 'scatter',
-                    'data' => $this->dataSet()
-                )
+                    'data' => $this->dataSet(),
+                ),
             );
-        }else{
+        } else {
             $this->series = array(
                 array(
                     'name' => 'Current Surgeon',
                     'type' => 'scatter',
-                    'data' => $this->dataSet()
+                    'data' => $this->dataSet(),
                 ),
                 array(
                     'name' => 'Upper 99.8%',
@@ -176,7 +174,7 @@ class PcrRiskReport extends Report implements ReportInterface
                     'name' => 'Upper 95%',
                     'data' => $this->upper95(),
                     'color' => 'green',
-                )
+                ),
             );
         }
 
@@ -214,7 +212,7 @@ class PcrRiskReport extends Report implements ReportInterface
      */
     public function graphConfig()
     {
-        if($this->mode == 0) {
+        if ($this->mode == 0) {
             $this->graphConfig['yAxis']['plotLines'][0]['value'] = $this->average();
         }
         $this->graphConfig['chart']['renderTo'] = $this->graphId();
@@ -653,7 +651,8 @@ class PcrRiskReport extends Report implements ReportInterface
      */
     public function renderSearch()
     {
-        $displayModes = array(array('id'=>'0', 'name'=>'Adjusted risk'),array('id'=>'1', 'name'=>'Unadjusted risk'), array('id'=>'2', 'name'=>'Both'));
+        $displayModes = array(array('id' => '0', 'name' => 'Adjusted risk'), array('id' => '1', 'name' => 'Unadjusted risk'), array('id' => '2', 'name' => 'Both'));
+
         return $this->app->controller->renderPartial($this->searchTemplate, array('report' => $this, 'modes' => $displayModes));
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,14 +9,13 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 $iop = $element->getLatestIOP($this->patient);
 
 $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
@@ -34,7 +33,7 @@ $targetIOP = $exam_api->getTargetIOP($this->patient);
 					<div id="div_OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_right_iop_id" class="row field-row">
 						<div class="large-5 column"><label>IOP:</label></div>
 						<div class="large-7 column end" id="OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_right_iop"><?php
-                            echo ($iop == null) ? 'N/A': $iop['rightIOP'].' mmHg';
+                            echo ($iop == null) ? 'N/A' : $iop['rightIOP'].' mmHg';
     if (isset($targetIOP['right']) && !is_null($targetIOP['right']) && $iop['rightIOP'] > $targetIOP['right']) {
         ?> <span class="iop_notification error">*** IOP above target ***</span> <?php
 

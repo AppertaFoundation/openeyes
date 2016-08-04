@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2015
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2015, OpenEyes Foundation
@@ -21,9 +21,9 @@
 <?php
 $element = Element_OphDrPrescription_Details::model();
 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-	'id' => 'prescription-create',
-	'action' => '/OphDrPrescription/PrescriptionCommon/SaveDrugSetAdmin',
-	'enableAjaxValidation' => false,
+    'id' => 'prescription-create',
+    'action' => '/OphDrPrescription/PrescriptionCommon/SaveDrugSetAdmin',
+    'enableAjaxValidation' => false,
 ));
 
 ?>
@@ -49,12 +49,12 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 					<th>Action</th>
 				</tr>
 			<?php
-			$currentDrugSets = $element->drugSetsAll();
-			foreach ($currentDrugSets as $drugSet) {
-				echo '<tr></tr>';
-			}
-			echo CHtml::dropDownList('drug_set_id', null, CHtml::listData($element->drugSetsAll(), 'id', 'name'),
-				array('empty' => '-- Select this to add new --')); ?>
+            $currentDrugSets = $element->drugSetsAll();
+            foreach ($currentDrugSets as $drugSet) {
+                echo '<tr></tr>';
+            }
+            echo CHtml::dropDownList('drug_set_id', null, CHtml::listData($element->drugSetsAll(), 'id', 'name'),
+                array('empty' => '-- Select this to add new --')); ?>
 			</table>
 		</div>
 		<div class="large-6 column end"></div>
@@ -71,20 +71,20 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		<div class="large-2 column"><label for="site_id">Subspeciality:</label></div>
 		<div class="large-4 column end">
 			<?php
-			// $selectedsubspecialty
-			echo CHtml::dropDownList('subspecialty_id', "",
-				CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name'), array("empty" => "-- Select --"));
-			?>
+            // $selectedsubspecialty
+            echo CHtml::dropDownList('subspecialty_id', '',
+                CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name'), array('empty' => '-- Select --'));
+            ?>
 		</div>
 	</div>
 	<section class="element" id="drugsetdata">
 		<?php
 
-		$this->renderPartial("/default/form_Element_OphDrPrescription_Details",
-			array("form" => $form, "element" => $element));
+        $this->renderPartial('/default/form_Element_OphDrPrescription_Details',
+            array('form' => $form, 'element' => $element));
 
-		//$this->displayErrors($errors, true);
-		?>
+        //$this->displayErrors($errors, true);
+        ?>
 		<div class="box-header">
 			<div class="box-actions">
 				<button class="small" type="submit" id="save_set_data" name="save_set_data">

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -22,10 +22,9 @@ namespace OEModule\OphCiExamination\models;
 /**
  * This is the model class for table "ophciexamination_bleb_assessment_height".
  *
- * @property integer $id
- * @property integer $height
- * @property boolean $active
-
+ * @property int $id
+ * @property int $height
+ * @property bool $active
  */
 class OphCiExamination_BlebAssessment_Height extends \BaseActiveRecordVersioned
 {
@@ -33,9 +32,10 @@ class OphCiExamination_BlebAssessment_Height extends \BaseActiveRecordVersioned
 
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return OphCiExamination_BlebAssessment_CentralArea the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }
@@ -55,7 +55,7 @@ class OphCiExamination_BlebAssessment_Height extends \BaseActiveRecordVersioned
     {
         return array(
                 array('height', 'required'),
-                array('id, height', 'safe', 'on'=>'search'),
+                array('id, height', 'safe', 'on' => 'search'),
         );
     }
 
@@ -69,8 +69,6 @@ class OphCiExamination_BlebAssessment_Height extends \BaseActiveRecordVersioned
         );
     }
 
-
-
     public function getAttributeOptions()
     {
         return $this->attribute_options;
@@ -78,15 +76,17 @@ class OphCiExamination_BlebAssessment_Height extends \BaseActiveRecordVersioned
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
     {
-        $criteria=new \CDbCriteria;
+        $criteria = new \CDbCriteria();
         $criteria->compare('id', $this->id, true);
         $criteria->compare('height', $this->name, true);
+
         return new \CActiveDataProvider(get_class($this), array(
-                'criteria'=>$criteria,
+                'criteria' => $criteria,
         ));
     }
 
@@ -94,7 +94,7 @@ class OphCiExamination_BlebAssessment_Height extends \BaseActiveRecordVersioned
     {
         return array(
             'LookupTable' => 'LookupTable',
-            'FieldImages' => 'FieldImages'
+            'FieldImages' => 'FieldImages',
         );
     }
 

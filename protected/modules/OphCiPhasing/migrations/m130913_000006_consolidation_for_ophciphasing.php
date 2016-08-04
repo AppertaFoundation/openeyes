@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,49 +9,49 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class m130913_000006_consolidation_for_ophciphasing extends OEMigration
 {
-	private  $element_types ;
+    private $element_types;
 
-	public function setData(){
-		$this->element_types = array(
-			'Element_OphCiPhasing_IntraocularPressure' => array('name' => 'Intraocular Pressure Phasing'),
-		);
-	}
+    public function setData()
+    {
+        $this->element_types = array(
+            'Element_OphCiPhasing_IntraocularPressure' => array('name' => 'Intraocular Pressure Phasing'),
+        );
+    }
 
-	public function up()
-	{
-		if (!$this->consolidate(
-			array(
-				"m130218_153000_initial_migration",
-				"m130321_143218_dilated_default_to_no",
-			)
-		)
-		) {
-			$this->createTables();
-		}
-	}
+    public function up()
+    {
+        if (!$this->consolidate(
+            array(
+                'm130218_153000_initial_migration',
+                'm130321_143218_dilated_default_to_no',
+            )
+        )
+        ) {
+            $this->createTables();
+        }
+    }
 
-	public function createTables()
-	{
-		$this->setData();
-		//disable foreign keys check
-		$this->execute("SET foreign_key_checks = 0");
+    public function createTables()
+    {
+        $this->setData();
+        //disable foreign keys check
+        $this->execute('SET foreign_key_checks = 0');
 
-		Yii::app()->cache->flush();
+        Yii::app()->cache->flush();
 
-		$event_type_id = $this->insertOEEventType( 'Phasing', 'OphCiPhasing', 'Ci');
-		$this->insertOEElementType($this->element_types , $event_type_id);
+        $event_type_id = $this->insertOEEventType('Phasing', 'OphCiPhasing', 'Ci');
+        $this->insertOEElementType($this->element_types, $event_type_id);
 
-		$this->execute("CREATE TABLE `et_ophciphasing_intraocularpressure` (
+        $this->execute("CREATE TABLE `et_ophciphasing_intraocularpressure` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `event_id` int(10) unsigned NOT NULL,
 			  `last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -81,7 +81,7 @@ class m130913_000006_consolidation_for_ophciphasing extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophciphasing_instrument` (
+        $this->execute("CREATE TABLE `ophciphasing_instrument` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `name` varchar(255) NOT NULL,
 			  `display_order` int(10) unsigned DEFAULT '1',
@@ -97,7 +97,7 @@ class m130913_000006_consolidation_for_ophciphasing extends OEMigration
 			) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophciphasing_reading` (
+        $this->execute("CREATE TABLE `ophciphasing_reading` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `value` int(10) unsigned DEFAULT NULL,
 			  `side` tinyint(1) unsigned NOT NULL,
@@ -117,16 +117,15 @@ class m130913_000006_consolidation_for_ophciphasing extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$migrations_path = dirname(__FILE__);
-		$this->initialiseData($migrations_path);
+        $migrations_path = dirname(__FILE__);
+        $this->initialiseData($migrations_path);
 
-		//enable foreign keys check
-		$this->execute("SET foreign_key_checks = 1");
+        //enable foreign keys check
+        $this->execute('SET foreign_key_checks = 1');
+    }
 
-	}
-
-	public function down()
-	{
-		echo "Down method not supported on consolidation";
-	}
+    public function down()
+    {
+        echo 'Down method not supported on consolidation';
+    }
 }

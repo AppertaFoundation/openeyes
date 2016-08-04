@@ -1,4 +1,4 @@
-<?php  
+<?php
 
 
 /**
@@ -8,12 +8,12 @@
  */
 class GenericTestCase extends CTestCase
 {
-	/**
-	 * Sets up before each test method runs.
-	 * This mainly sets the base URL for the test application.
-	 */
-	protected function setUp()
-	{
-		parent::setUp(); 
-	}
+    /**
+     * Sets up before each test method runs.
+     * This mainly sets the base URL for the test application.
+     */
+    protected function setUp()
+    {
+        parent::setUp();
+    }
 }

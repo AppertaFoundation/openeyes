@@ -4,9 +4,10 @@ class MediaData extends BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return ProtectedFile the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }
@@ -40,15 +41,17 @@ class MediaData extends BaseActiveRecordVersioned
     }
 
     /**
-     * Path to protected file storage
+     * Path to protected file storage.
+     *
      * @return string
      */
     public static function getBasePath()
     {
-        return Yii::app()->basePath . '/media_data';
+        return Yii::app()->basePath.'/media_data';
     }
 
-    public function getPath(){
-        return $this->getBasePath()."/".$this->id;
+    public function getPath()
+    {
+        return $this->getBasePath().'/'.$this->id;
     }
 }

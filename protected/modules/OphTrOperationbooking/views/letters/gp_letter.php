@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -20,20 +20,20 @@
 
 <div class="booking-letter">
 	<header>
-		<?php $this->renderPartial("../default/letter_start", array(
-			'toAddress' => $toAddress,
-			'patient' => $patient,
-			'date' => date('Y-m-d'),
-			'site' => $site,
-		))?>
+		<?php $this->renderPartial('../default/letter_start', array(
+            'toAddress' => $toAddress,
+            'patient' => $patient,
+            'date' => date('Y-m-d'),
+            'site' => $site,
+        ))?>
 	</header>
 
 	<?php echo $this->renderPartial('../letters/letter_introduction', array(
-			'to' => $to,
-			'accessible' => false,
-			'patient' => $patient,
-			'patient_ref' => true,
-	))?>
+            'to' => $to,
+            'accessible' => false,
+            'patient' => $patient,
+            'patient_ref' => true,
+    ))?>
 
 	<p>
 		This patient was recently referred to this hospital and a decision was made that surgery was appropriate under the care of <?php echo CHtml::encode($consultantName) ?>.

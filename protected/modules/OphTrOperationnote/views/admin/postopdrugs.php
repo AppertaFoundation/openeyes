@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2012
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
@@ -34,11 +34,11 @@
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach (OphTrOperationnote_PostopDrug::model()->findAll(array('order'=>'display_order asc')) as $i => $drug) {?>
+				<?php foreach (OphTrOperationnote_PostopDrug::model()->findAll(array('order' => 'display_order asc')) as $i => $drug) {?>
 					<tr class="clickable" data-id="<?php echo $drug->id?>" data-uri="OphTrOperationnote/admin/editPostOpDrug/<?php echo $drug->id?>">
 						<td><input type="checkbox" name="drugs[]" value="<?php echo $drug->id?>" /></td>
-						<td><?php echo ($drug->active) ? ($drug->name) : ( "<s>".$drug->name."</s>");?></td>
-						<td><?php echo ($drug->active) ? ('<i class="fa fa-check"></i>') : ( '<i class="fa fa-times"></i>');?></td>
+						<td><?php echo ($drug->active) ? ($drug->name) : ('<s>'.$drug->name.'</s>');?></td>
+						<td><?php echo ($drug->active) ? ('<i class="fa fa-check"></i>') : ('<i class="fa fa-times"></i>');?></td>
 
 					</tr>
 				<?php }?>

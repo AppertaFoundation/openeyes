@@ -17,8 +17,8 @@
  * along with OpenEyes in a file titled COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
@@ -29,15 +29,14 @@
  * medication, so don't forget to add some if you're looking for the
  * link!
  */
-
 $form = $this->beginWidget('FormLayout', array(
-	'layoutColumns' => array('label' => 3, 'field' => 9)
+    'layoutColumns' => array('label' => 3, 'field' => 9),
 ));
 
 $adherence = $patient->adherence;
-if($adherence === null) {
-	$adherence = new MedicationAdherence;
-	$adherence->patient = $patient;
+if ($adherence === null) {
+    $adherence = new MedicationAdherence();
+    $adherence->patient = $patient;
 }
 
 ?>
@@ -47,12 +46,12 @@ if($adherence === null) {
 	<div class="row field-row">
 		<div class="<?= $form->columns('label') ?>"><label for="adherence">Adherence:</label></div>
 		<div class="<?= $form->columns('field') ?>"><?=
-			CHtml::activeDropDownList(
-				$adherence, 'level',
-				CHtml::listData(MedicationAdherenceLevel::model()->
-					findAll(array('order' => 'display_order')), 'id', 'name')
-			)
-			?></div>
+            CHtml::activeDropDownList(
+                $adherence, 'level',
+                CHtml::listData(MedicationAdherenceLevel::model()->
+                    findAll(array('order' => 'display_order')), 'id', 'name')
+            )
+            ?></div>
 	</div>
 	<div class="row field-row">
 		<div class="<?= $form->columns('label') ?>"><label for="adherence">Comments:</label></div>

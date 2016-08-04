@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -21,9 +21,9 @@
 <div class="box admin">
 
 	<header class="box-header">
-		<h2 class="box-title"><?php echo $title ? $title : "Examination Admin" ?></h2>
+		<h2 class="box-title"><?php echo $title ? $title : 'Examination Admin' ?></h2>
 		<div class="box-actions">
-			<a class="button small" href="<?php echo Yii::app()->createUrl('OphCiExamination/admin/create' . $model_class); ?>?disorder_id=<?php echo $disorder_id ?>">Add New</a>
+			<a class="button small" href="<?php echo Yii::app()->createUrl('OphCiExamination/admin/create'.$model_class); ?>?disorder_id=<?php echo $disorder_id ?>">Add New</a>
 		</div>
 	</header>
 
@@ -33,7 +33,7 @@
 		</div>
 		<div class="large-6 column end">
 			<?php
-            echo CHtml::dropDownList('disorder_id', $disorder_id, CHtml::listData(OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex::model()->getAllDisorders(), 'id', 'term'), array('empty'=>'- Please select -', 'id' => 'question_disorder'));
+            echo CHtml::dropDownList('disorder_id', $disorder_id, CHtml::listData(OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex::model()->getAllDisorders(), 'id', 'term'), array('empty' => '- Please select -', 'id' => 'question_disorder'));
             ?>
 		</div>
 	</div>
@@ -61,10 +61,10 @@
                 foreach ($model_list as $i => $model) {
                     ?>
 					<tr data-attr-id="<?php echo $model->id?>" data-attr-name="Question">
-						<td><a href="<?php echo Yii::app()->createUrl($this->module->getName() . '/admin/update' . Helper::getNSShortname($model), array('id'=> $model->id)) ?>"><?php echo $model->question ?></a></td>
+						<td><a href="<?php echo Yii::app()->createUrl($this->module->getName().'/admin/update'.Helper::getNSShortname($model), array('id' => $model->id)) ?>"><?php echo $model->question ?></a></td>
 						<td>
 							<input type="checkbox" class="model_enabled" <?php if ($model->active) {
-    echo "checked";
+    echo 'checked';
 }
                     ?> />
 						</td>

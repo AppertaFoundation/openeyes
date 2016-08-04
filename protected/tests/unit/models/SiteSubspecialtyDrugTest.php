@@ -15,7 +15,7 @@ class SiteSubspecialtyDrugTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new SiteSubspecialtyDrug;
+        $this->object = new SiteSubspecialtyDrug();
     }
 
     /**
@@ -28,6 +28,7 @@ class SiteSubspecialtyDrugTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SiteSubspecialtyDrug::model
+     *
      * @todo   Implement testModel().
      */
     public function testModel()
@@ -40,6 +41,7 @@ class SiteSubspecialtyDrugTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SiteSubspecialtyDrug::tableName
+     *
      * @todo   Implement testTableName().
      */
     public function testTableName()
@@ -52,6 +54,7 @@ class SiteSubspecialtyDrugTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SiteSubspecialtyDrug::rules
+     *
      * @todo   Implement testRules().
      */
     public function testRules()
@@ -64,6 +67,7 @@ class SiteSubspecialtyDrugTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SiteSubspecialtyDrug::relations
+     *
      * @todo   Implement testRelations().
      */
     public function testRelations()

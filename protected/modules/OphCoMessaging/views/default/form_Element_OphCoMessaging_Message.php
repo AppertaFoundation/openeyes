@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -8,8 +8,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
@@ -24,15 +24,15 @@
             <?php if ($element->isNewRecord) { ?>
                 <div class="large-4 column autocomplete-row">
                     <span id="fao-field">
-                    <span id="fao_user_display"><?php echo $element->for_the_attention_of_user ? $element->for_the_attention_of_user->getFullnameAndTitle() : ""; ?></span>
+                    <span id="fao_user_display"><?php echo $element->for_the_attention_of_user ? $element->for_the_attention_of_user->getFullnameAndTitle() : ''; ?></span>
                     <?php
                     $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                        'name' => "find_user",
-                        'id' => "find-user",
-                        'value'=>'',
-                        'source'=>"js:function(request, response) {
+                        'name' => 'find_user',
+                        'id' => 'find-user',
+                        'value' => '',
+                        'source' => "js:function(request, response) {
                                     $.ajax({
-                                        'url': '" . Yii::app()->createUrl('/OphCoMessaging/default/userfind') . "',
+                                        'url': '".Yii::app()->createUrl('/OphCoMessaging/default/userfind')."',
                                         'type':'GET',
                                         'data':{'search': request.term},
                                         'success':function(data) {
@@ -42,7 +42,7 @@
                                     });
                                 }",
                         'options' => array(
-                            'minLength'=>'3',
+                            'minLength' => '3',
                             'select' => "js:function(event, ui) {
                                         $('#fao_user_display').html(ui.item.label);
                                         $('#OEModule_OphCoMessaging_models_Element_OphCoMessaging_Message_for_the_attention_of_user_id').val(ui.item.id);
@@ -51,10 +51,10 @@
                                     }",
                         ),
                         'htmlOptions' => array(
-                            'placeholder' => 'search by name or username'
+                            'placeholder' => 'search by name or username',
                         ),
                     ));
-                    ?>
+    ?>
                     </span>
                 </div>
                 <?php } else { ?>
@@ -62,8 +62,8 @@
             <?php } ?>
             <?php echo $form->hiddenField($element, 'for_the_attention_of_user_id'); ?>
     </div>
-	<?php echo $form->dropDownList($element, 'message_type_id', CHtml::listData(OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'), false, array('label' => 2, 'field' => 4))?>
+	<?php echo $form->dropDownList($element, 'message_type_id', CHtml::listData(OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'), array('empty' => '- Please select -'), false, array('label' => 2, 'field' => 4))?>
 	<?php echo $form->checkbox($element, 'urgent', array(), array('label' => 2, 'field' => 1))?>
-    <?php echo $form->textArea($element, 'message_text', array('rows' => 6, 'cols' => 80), false, null ,array('label' => 2, 'field' => 6))?>
+    <?php echo $form->textArea($element, 'message_text', array('rows' => 6, 'cols' => 80), false, null, array('label' => 2, 'field' => 6))?>
 	</div>
 </div>

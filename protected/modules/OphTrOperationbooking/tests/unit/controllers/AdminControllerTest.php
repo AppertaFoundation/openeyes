@@ -6,54 +6,55 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (C) 2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
 /**
- * Class AdminControllerTest
+ * Class AdminControllerTest.
+ *
  * @group controllers
  */
 class AdminControllerTest extends CTestCase
 {
-	static public function setupBeforeClass()
-	{
-		//Yii::import('application.modules.OphTrOperationbooking.components.*');
-	}
+    public static function setupBeforeClass()
+    {
+        //Yii::import('application.modules.OphTrOperationbooking.components.*');
+    }
 
-	private $controller;
-	private $audit;
+    private $controller;
+    private $audit;
 
-	public function setUp()
-	{
-		/*
-		$this->controller = $this->getMockBuilder('AdminController')
-			->disableOriginalConstructor()
-			->setMethods(array('render'))
-			->getMock();
+    public function setUp()
+    {
+        /*
+        $this->controller = $this->getMockBuilder('AdminController')
+            ->disableOriginalConstructor()
+            ->setMethods(array('render'))
+            ->getMock();
 
-		$this->audit = $this->getMock('Audit');
-		*/
-		//Yii::app()->setComponent('audit',$this->audit);
-	}
+        $this->audit = $this->getMock('Audit');
+        */
+        //Yii::app()->setComponent('audit',$this->audit);
+    }
 
-	public function tearDown()
-	{
-	}
+    public function tearDown()
+    {
+    }
 
-	public function testActionViewERODRules()
-	{
-		//$this->audit->expects($this->once())->method('log')->with('admin','list','null',false,array('module'=>'OphTrOperationbooking','model'=>'OphTrOperationbooking_Operation_EROD_Rule'));
+    public function testActionViewERODRules()
+    {
+        //$this->audit->expects($this->once())->method('log')->with('admin','list','null',false,array('module'=>'OphTrOperationbooking','model'=>'OphTrOperationbooking_Operation_EROD_Rule'));
 
-		//$this->controller->expects($this->once())->method('render')->with('erodrules');
+        //$this->controller->expects($this->once())->method('render')->with('erodrules');
 
-		//$this->controller->actionViewERODRules();
-	}
+        //$this->controller->actionViewERODRules();
+    }
 
-	public function testActionEditERODRule()
-	{
-	}
+    public function testActionEditERODRule()
+    {
+    }
 }

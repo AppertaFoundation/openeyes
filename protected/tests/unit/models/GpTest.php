@@ -15,7 +15,7 @@ class GpTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new Gp;
+        $this->object = new Gp();
     }
 
     /**
@@ -28,6 +28,7 @@ class GpTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Gp::model
+     *
      * @todo   Implement testModel().
      */
     public function testModel()
@@ -40,6 +41,7 @@ class GpTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Gp::noPas
+     *
      * @todo   Implement testNoPas().
      */
     public function testNoPas()
@@ -52,6 +54,7 @@ class GpTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Gp::behaviors
+     *
      * @todo   Implement testBehaviors().
      */
     public function testBehaviors()
@@ -64,6 +67,7 @@ class GpTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Gp::tableName
+     *
      * @todo   Implement testTableName().
      */
     public function testTableName()
@@ -76,6 +80,7 @@ class GpTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Gp::rules
+     *
      * @todo   Implement testRules().
      */
     public function testRules()
@@ -88,6 +93,7 @@ class GpTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Gp::relations
+     *
      * @todo   Implement testRelations().
      */
     public function testRelations()
@@ -100,6 +106,7 @@ class GpTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Gp::attributeLabels
+     *
      * @todo   Implement testAttributeLabels().
      */
     public function testAttributeLabels()
@@ -112,6 +119,7 @@ class GpTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Gp::search
+     *
      * @todo   Implement testSearch().
      */
     public function testSearch()
@@ -124,6 +132,7 @@ class GpTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Gp::getLetterAddress
+     *
      * @todo   Implement testGetLetterAddress().
      */
     public function testGetLetterAddress()
@@ -136,6 +145,7 @@ class GpTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Gp::getPrefix
+     *
      * @todo   Implement testGetPrefix().
      */
     public function testGetPrefix()

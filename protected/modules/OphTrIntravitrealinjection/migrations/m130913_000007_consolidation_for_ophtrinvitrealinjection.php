@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,55 +9,55 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class m130913_000007_consolidation_for_ophtrinvitrealinjection extends OEMigration
 {
-	private  $element_types ;
+    private $element_types;
 
-	public function setData(){
-		$this->element_types = array(
-			'Element_OphTrIntravitrealinjection_Site' => array('name' => 'Site', 'display_order' => 1),
-			'Element_OphTrIntravitrealinjection_Anaesthetic' => array('name' => 'Anaesthetic', 'display_order' => 1),
-			'Element_OphTrIntravitrealinjection_Treatment' => array('name' => 'Treatment', 'display_order' => 1),
-			'Element_OphTrIntravitrealinjection_AnteriorSegment' => array('name' => 'Anterior Segment', 'display_order' => 2),
-			'Element_OphTrIntravitrealinjection_PostInjectionExamination' => array('name' => 'Post Injection Examination', 'display_order' => 3),
-			'Element_OphTrIntravitrealinjection_Complications' => array('name' => 'Complications', 'display_order' => 4),
-		);
-	}
+    public function setData()
+    {
+        $this->element_types = array(
+            'Element_OphTrIntravitrealinjection_Site' => array('name' => 'Site', 'display_order' => 1),
+            'Element_OphTrIntravitrealinjection_Anaesthetic' => array('name' => 'Anaesthetic', 'display_order' => 1),
+            'Element_OphTrIntravitrealinjection_Treatment' => array('name' => 'Treatment', 'display_order' => 1),
+            'Element_OphTrIntravitrealinjection_AnteriorSegment' => array('name' => 'Anterior Segment', 'display_order' => 2),
+            'Element_OphTrIntravitrealinjection_PostInjectionExamination' => array('name' => 'Post Injection Examination', 'display_order' => 3),
+            'Element_OphTrIntravitrealinjection_Complications' => array('name' => 'Complications', 'display_order' => 4),
+        );
+    }
 
-	public function up()
-	{
-		if (!$this->consolidate(
-			array(
-				"m130625_144651_event_type_OphTrIntravitrealinjection",
-				"m130725_145929_drops_changes",
-				"m130808_130727_missing_fields"
-			)
-		)
-		) {
-			$this->createTables();
-		}
-	}
+    public function up()
+    {
+        if (!$this->consolidate(
+            array(
+                'm130625_144651_event_type_OphTrIntravitrealinjection',
+                'm130725_145929_drops_changes',
+                'm130808_130727_missing_fields',
+            )
+        )
+        ) {
+            $this->createTables();
+        }
+    }
 
-	public function createTables()
-	{
-		$this->setData();
-		//disable foreign keys check
-		$this->execute("SET foreign_key_checks = 0");
+    public function createTables()
+    {
+        $this->setData();
+        //disable foreign keys check
+        $this->execute('SET foreign_key_checks = 0');
 
-		Yii::app()->cache->flush();
+        Yii::app()->cache->flush();
 
-		$event_type_id = $this->insertOEEventType( 'Intravitreal injection', 'OphTrIntravitrealinjection', 'Tr');
-		$this->insertOEElementType($this->element_types , $event_type_id);
+        $event_type_id = $this->insertOEEventType('Intravitreal injection', 'OphTrIntravitrealinjection', 'Tr');
+        $this->insertOEElementType($this->element_types, $event_type_id);
 
-		$this->execute("CREATE TABLE `et_ophtrintravitinjection_anaesthetic` (
+        $this->execute("CREATE TABLE `et_ophtrintravitinjection_anaesthetic` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `event_id` int(10) unsigned NOT NULL,
 			  `eye_id` int(10) unsigned NOT NULL DEFAULT '3',
@@ -95,7 +95,7 @@ class m130913_000007_consolidation_for_ophtrinvitrealinjection extends OEMigrati
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `et_ophtrintravitinjection_anteriorseg` (
+        $this->execute("CREATE TABLE `et_ophtrintravitinjection_anteriorseg` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `event_id` int(10) unsigned NOT NULL,
 			  `eye_id` int(10) unsigned NOT NULL DEFAULT '3',
@@ -121,7 +121,7 @@ class m130913_000007_consolidation_for_ophtrinvitrealinjection extends OEMigrati
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `et_ophtrintravitinjection_complications` (
+        $this->execute("CREATE TABLE `et_ophtrintravitinjection_complications` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `event_id` int(10) unsigned NOT NULL,
 			  `eye_id` int(10) unsigned NOT NULL DEFAULT '3',
@@ -143,7 +143,7 @@ class m130913_000007_consolidation_for_ophtrinvitrealinjection extends OEMigrati
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `et_ophtrintravitinjection_postinject` (
+        $this->execute("CREATE TABLE `et_ophtrintravitinjection_postinject` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `event_id` int(10) unsigned NOT NULL,
 			  `eye_id` int(10) unsigned DEFAULT '3',
@@ -173,7 +173,7 @@ class m130913_000007_consolidation_for_ophtrinvitrealinjection extends OEMigrati
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `et_ophtrintravitinjection_site` (
+        $this->execute("CREATE TABLE `et_ophtrintravitinjection_site` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `event_id` int(10) unsigned NOT NULL,
 			  `site_id` int(10) unsigned NOT NULL,
@@ -193,7 +193,7 @@ class m130913_000007_consolidation_for_ophtrinvitrealinjection extends OEMigrati
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `et_ophtrintravitinjection_treatment` (
+        $this->execute("CREATE TABLE `et_ophtrintravitinjection_treatment` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `event_id` int(10) unsigned NOT NULL,
 			  `eye_id` int(10) unsigned NOT NULL DEFAULT '3',
@@ -249,7 +249,7 @@ class m130913_000007_consolidation_for_ophtrinvitrealinjection extends OEMigrati
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtrintravitinjection_anaestheticagent` (
+        $this->execute("CREATE TABLE `ophtrintravitinjection_anaestheticagent` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `anaesthetic_agent_id` int(10) unsigned NOT NULL,
 			  `display_order` int(10) unsigned NOT NULL,
@@ -267,7 +267,7 @@ class m130913_000007_consolidation_for_ophtrinvitrealinjection extends OEMigrati
 			) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtrintravitinjection_anaestheticdelivery` (
+        $this->execute("CREATE TABLE `ophtrintravitinjection_anaestheticdelivery` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `anaesthetic_delivery_id` int(10) unsigned NOT NULL,
 			  `display_order` int(10) unsigned NOT NULL,
@@ -285,7 +285,7 @@ class m130913_000007_consolidation_for_ophtrinvitrealinjection extends OEMigrati
 			) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtrintravitinjection_anaesthetictype` (
+        $this->execute("CREATE TABLE `ophtrintravitinjection_anaesthetictype` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `anaesthetic_type_id` int(10) unsigned NOT NULL,
 			  `display_order` int(10) unsigned NOT NULL,
@@ -303,7 +303,7 @@ class m130913_000007_consolidation_for_ophtrinvitrealinjection extends OEMigrati
 			) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtrintravitinjection_antiseptic_drug` (
+        $this->execute("CREATE TABLE `ophtrintravitinjection_antiseptic_drug` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `name` varchar(128) NOT NULL,
 			  `display_order` int(10) unsigned NOT NULL DEFAULT '1',
@@ -319,7 +319,7 @@ class m130913_000007_consolidation_for_ophtrinvitrealinjection extends OEMigrati
 			) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtrintravitinjection_complicat` (
+        $this->execute("CREATE TABLE `ophtrintravitinjection_complicat` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `name` varchar(128) NOT NULL,
 			  `display_order` int(10) unsigned NOT NULL DEFAULT '1',
@@ -337,7 +337,7 @@ class m130913_000007_consolidation_for_ophtrinvitrealinjection extends OEMigrati
 			) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtrintravitinjection_complicat_assignment` (
+        $this->execute("CREATE TABLE `ophtrintravitinjection_complicat_assignment` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `element_id` int(10) unsigned NOT NULL,
 			  `eye_id` int(10) unsigned NOT NULL DEFAULT '3',
@@ -360,7 +360,7 @@ class m130913_000007_consolidation_for_ophtrinvitrealinjection extends OEMigrati
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtrintravitinjection_injectionuser` (
+        $this->execute("CREATE TABLE `ophtrintravitinjection_injectionuser` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `user_id` int(10) unsigned NOT NULL,
 			  `created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -377,7 +377,7 @@ class m130913_000007_consolidation_for_ophtrinvitrealinjection extends OEMigrati
 			) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtrintravitinjection_ioplowering` (
+        $this->execute("CREATE TABLE `ophtrintravitinjection_ioplowering` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `name` varchar(128) NOT NULL,
 			  `display_order` int(10) unsigned NOT NULL DEFAULT '1',
@@ -393,7 +393,7 @@ class m130913_000007_consolidation_for_ophtrinvitrealinjection extends OEMigrati
 			) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtrintravitinjection_ioplowering_assign` (
+        $this->execute("CREATE TABLE `ophtrintravitinjection_ioplowering_assign` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `element_id` int(10) unsigned NOT NULL,
 			  `eye_id` int(10) unsigned NOT NULL DEFAULT '3',
@@ -417,7 +417,7 @@ class m130913_000007_consolidation_for_ophtrinvitrealinjection extends OEMigrati
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtrintravitinjection_lens_status` (
+        $this->execute("CREATE TABLE `ophtrintravitinjection_lens_status` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `name` varchar(128) NOT NULL,
 			  `display_order` int(10) unsigned NOT NULL DEFAULT '1',
@@ -434,7 +434,7 @@ class m130913_000007_consolidation_for_ophtrinvitrealinjection extends OEMigrati
 			) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtrintravitinjection_postinjection_drops` (
+        $this->execute("CREATE TABLE `ophtrintravitinjection_postinjection_drops` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `name` varchar(128) NOT NULL,
 			  `display_order` int(10) unsigned NOT NULL DEFAULT '1',
@@ -450,7 +450,7 @@ class m130913_000007_consolidation_for_ophtrinvitrealinjection extends OEMigrati
 			) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtrintravitinjection_skin_drug` (
+        $this->execute("CREATE TABLE `ophtrintravitinjection_skin_drug` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `name` varchar(128) NOT NULL,
 			  `display_order` int(10) unsigned NOT NULL DEFAULT '1',
@@ -466,7 +466,7 @@ class m130913_000007_consolidation_for_ophtrinvitrealinjection extends OEMigrati
 			) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtrintravitinjection_treatment_drug` (
+        $this->execute("CREATE TABLE `ophtrintravitinjection_treatment_drug` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `name` varchar(128) NOT NULL,
 			  `display_order` int(10) unsigned NOT NULL DEFAULT '1',
@@ -483,16 +483,15 @@ class m130913_000007_consolidation_for_ophtrinvitrealinjection extends OEMigrati
 			) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$migrations_path = dirname(__FILE__);
-		$this->initialiseData($migrations_path);
+        $migrations_path = dirname(__FILE__);
+        $this->initialiseData($migrations_path);
 
-		//enable foreign keys check
-		$this->execute("SET foreign_key_checks = 1");
+        //enable foreign keys check
+        $this->execute('SET foreign_key_checks = 1');
+    }
 
-	}
-
-	public function down()
-	{
-		echo "Down method not supported on consolidation";
-	}
+    public function down()
+    {
+        echo 'Down method not supported on consolidation';
+    }
 }

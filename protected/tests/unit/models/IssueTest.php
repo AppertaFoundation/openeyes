@@ -15,7 +15,7 @@ class IssueTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new Issue;
+        $this->object = new Issue();
     }
 
     /**
@@ -28,6 +28,7 @@ class IssueTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Issue::model
+     *
      * @todo   Implement testModel().
      */
     public function testModel()
@@ -40,6 +41,7 @@ class IssueTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Issue::tableName
+     *
      * @todo   Implement testTableName().
      */
     public function testTableName()
@@ -52,6 +54,7 @@ class IssueTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Issue::rules
+     *
      * @todo   Implement testRules().
      */
     public function testRules()
@@ -64,6 +67,7 @@ class IssueTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Issue::relations
+     *
      * @todo   Implement testRelations().
      */
     public function testRelations()

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -8,8 +8,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
@@ -19,26 +19,26 @@
 <?php Yii::app()->clientScript->registerPackage('tagsinput'); ?>
 
 <div class="admin box">
-    <h2><?= $mapping->isNewRecord ? "Create" : "Edit"?> Worklist Definition Mapping</h2>
+    <h2><?= $mapping->isNewRecord ? 'Create' : 'Edit'?> Worklist Definition Mapping</h2>
 
-    <?php echo $this->renderPartial('//admin/_form_errors',array('errors'=>$errors))?>
+    <?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors))?>
     <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id'=>'mapping-form',
-        'enableAjaxValidation'=>false,
+        'id' => 'mapping-form',
+        'enableAjaxValidation' => false,
         'focus' => '#Worklist_name',
         'layoutColumns' => array(
             'label' => 2,
-            'field' => 5
-        )
+            'field' => 5,
+        ),
     ))?>
     <?php echo $form->checkbox($mapping, 'willdisplay'); ?>
-    <?php echo $form->textField($mapping,'key', array('autocomplete' => Yii::app()->params['html_autocomplete']), null, array('field' => 2))?>
+    <?php echo $form->textField($mapping, 'key', array('autocomplete' => Yii::app()->params['html_autocomplete']), null, array('field' => 2))?>
     <div class="row field-row"><div class="large-8 column large-push-2"><i>If no values are provided for a mapping, any value will be accepted. This is useful for adding information to each worklist entry without restricting matches.</i></div></div>
-    <?php echo $form->textField($mapping,'valuelist', array('autocomplete' => Yii::app()->params['html_autocomplete']),
+    <?php echo $form->textField($mapping, 'valuelist', array('autocomplete' => Yii::app()->params['html_autocomplete']),
         null, array('field' => 2))?>
 
-    <?php echo $form->formActions(array('cancel-uri' => '/worklistAdmin/definitionMappings/' . $mapping->worklist_definition_id))?>
+    <?php echo $form->formActions(array('cancel-uri' => '/worklistAdmin/definitionMappings/'.$mapping->worklist_definition_id))?>
     <?php $this->endWidget()?>
 
 </div>

@@ -24,11 +24,11 @@
 	</header>
 	<div class="element-data">
 		<?php
-		if (isset($element)) {
-			foreach ($element['fields'] as $field) {
-				echo $this->getHTMLFieldView($field)."\n";
-			}
-		}
-		?>
+        if (isset($element)) {
+            foreach ($element['fields'] as $field) {
+                echo $this->getHTMLFieldView($field)."\n";
+            }
+        }
+        ?>
 	</div>
 </section>

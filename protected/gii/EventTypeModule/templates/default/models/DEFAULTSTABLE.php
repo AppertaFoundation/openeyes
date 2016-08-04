@@ -18,7 +18,9 @@
  */
 
 /**
- * This is the model class for table "<?php if (isset($defaults_table)) echo $defaults_table['name']?>".
+ * This is the model class for table "<?php if (isset($defaults_table)) {
+    echo $defaults_table['name'];
+}?>".
  *
  * The followings are the available columns in table:
  * @property string $id
@@ -34,7 +36,9 @@
  *
  */
 
-class <?php if (isset($defaults_table)) echo $defaults_table['class']; ?> extends BaseActiveRecordVersioned
+class <?php if (isset($defaults_table)) {
+    echo $defaults_table['class'];
+} ?> extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -50,7 +54,9 @@ class <?php if (isset($defaults_table)) echo $defaults_table['class']; ?> extend
 	 */
 	public function tableName()
 	{
-		return '<?php if (isset($defaults_table)) echo $defaults_table['name']; ?>';
+		return '<?php if (isset($defaults_table)) {
+    echo $defaults_table['name'];
+} ?>';
 	}
 
 	/**

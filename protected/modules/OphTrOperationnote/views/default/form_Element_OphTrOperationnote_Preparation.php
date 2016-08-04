@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -20,10 +20,10 @@
 
 <?php if ($element->getSetting('fife')) {?>
 	<div class="element-fields">
-		<?php echo $form->slider($element, 'spo2', array('min'=>0,'max'=>100,'step'=>1,'append'=>'%'))?>
-		<?php echo $form->slider($element, 'oxygen', array('min'=>0,'max'=>100,'step'=>1,'append'=>'%'))?>
-		<?php echo $form->slider($element, 'pulse', array('min'=>1, 'max'=>300,'step'=>1))?>
+		<?php echo $form->slider($element, 'spo2', array('min' => 0, 'max' => 100, 'step' => 1, 'append' => '%'))?>
+		<?php echo $form->slider($element, 'oxygen', array('min' => 0, 'max' => 100, 'step' => 1, 'append' => '%'))?>
+		<?php echo $form->slider($element, 'pulse', array('min' => 1, 'max' => 300, 'step' => 1))?>
 		<?php echo $form->dropDownList($element, 'skin_preparation_id', 'OphTrOperationnote_PreparationSkinPreparation', array('empty' => '- Please select -'))?>
-		<?php echo $form->dropDownList($element, 'intraocular_solution_id', 'OphTrOperationnote_PreparationIntraocularSolution',array('empty' => '- Please select -'))?>
+		<?php echo $form->dropDownList($element, 'intraocular_solution_id', 'OphTrOperationnote_PreparationIntraocularSolution', array('empty' => '- Please select -'))?>
 	</div>
 <?php }?>

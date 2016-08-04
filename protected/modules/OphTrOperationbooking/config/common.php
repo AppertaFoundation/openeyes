@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
 *
 * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
 * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
 * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 *
-* @package OpenEyes
 * @link http://www.openeyes.org.uk
+*
 * @author OpenEyes <info@openeyes.org.uk>
 * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
 * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -18,63 +18,63 @@
 */
 
 return array(
-	'import' => array(
-		'application.modules.OphTrOperationbooking.components.OphTrOperationbookingObserver',
-	),
-	'components' => array(
-		'event' => array(
-			'observers' => array(
-				'firm_changed' => array(
-					'ophtroperationbooking_resetsearch' => array(
-						'class' => 'OphTrOperationbookingObserver',
-						'method' => 'resetSearch',
-					),
-				),
-			),
-		),
-	),
-	'params' => array(
-		'menu_bar_items' => array(
-			'theatre_diaries' => array(
-				'title' => 'Theatre Diaries',
-				'uri' => 'OphTrOperationbooking/theatreDiary/index',
-				'position' => 10,
-			),
-			'partial_bookings' => array(
-				'title' => 'Partial bookings waiting list',
-				'uri' => 'OphTrOperationbooking/waitingList/index',
-				'position' => 20,
-			),
-		),
-		'future_scheduling_limit' => '3 months',
-		'admin_menu' => array(
-			'Sequences' => '/OphTrOperationbooking/admin/viewSequences',
-			'Sessions' => '/OphTrOperationbooking/admin/viewSessions',
-			'Wards' => '/OphTrOperationbooking/admin/viewWards',
-			'Theatres' => '/OphTrOperationbooking/admin/viewTheatres',
-			'Operation priorities' => '/OphTrOperationbooking/admin/operationPriorities',
-			'Scheduling options' => '/OphTrOperationbooking/admin/scheduleOptions',
-			'EROD rules' => '/OphTrOperationbooking/admin/viewERODRules',
-			'Letter contact rules' => '/OphTrOperationbooking/admin/viewLetterContactRules',
-			'Letter warning rules' => '/OphTrOperationbooking/admin/viewLetterWarningRules',
-			'Operation name rules' => '/OphTrOperationbooking/admin/viewOperationNameRules',
-			'Waiting list contact rules' => '/OphTrOperationbooking/admin/viewWaitingListContactRules',
-			'Patient unavailable reasons' => '/OphTrOperationbooking/admin/viewPatientUnavailableReasons',
-			'Session unavailable reasons' => '/OphTrOperationbooking/admin/viewSessionUnavailableReasons'
-		),
-		// Default anaesthetic settings
-		//'ophtroperationbooking_default_anaesthetic_child' => 'GA',
-		//'ophtroperationbooking_default_anaesthetic' => 'GA',
-		// How many weeks from DTA should EROD be calculated
-		//'erod_lead_time_weeks' => 3,
-		// How many days ahead of the day an operation is being scheduled should EROD be calculated
-		//'erod_lead_current_date_days' => 2,
-		// number of weeks from decision date that is the RTT limit
-		//'ophtroperationboooking_rtt_limit' => 6,
-		// whether referrals can be assigned to operation bookings or not (turn off if you don't have referrals imported
-		// or set on the patient record.
-		//'ophtroperationbooking_referral_link' => true,
-		// boolean to require a referral on an operation booking for scheduling or not
-		//'ophtroperationbooking_schedulerequiresreferral' => true
-	)
+    'import' => array(
+        'application.modules.OphTrOperationbooking.components.OphTrOperationbookingObserver',
+    ),
+    'components' => array(
+        'event' => array(
+            'observers' => array(
+                'firm_changed' => array(
+                    'ophtroperationbooking_resetsearch' => array(
+                        'class' => 'OphTrOperationbookingObserver',
+                        'method' => 'resetSearch',
+                    ),
+                ),
+            ),
+        ),
+    ),
+    'params' => array(
+        'menu_bar_items' => array(
+            'theatre_diaries' => array(
+                'title' => 'Theatre Diaries',
+                'uri' => 'OphTrOperationbooking/theatreDiary/index',
+                'position' => 10,
+            ),
+            'partial_bookings' => array(
+                'title' => 'Partial bookings waiting list',
+                'uri' => 'OphTrOperationbooking/waitingList/index',
+                'position' => 20,
+            ),
+        ),
+        'future_scheduling_limit' => '3 months',
+        'admin_menu' => array(
+            'Sequences' => '/OphTrOperationbooking/admin/viewSequences',
+            'Sessions' => '/OphTrOperationbooking/admin/viewSessions',
+            'Wards' => '/OphTrOperationbooking/admin/viewWards',
+            'Theatres' => '/OphTrOperationbooking/admin/viewTheatres',
+            'Operation priorities' => '/OphTrOperationbooking/admin/operationPriorities',
+            'Scheduling options' => '/OphTrOperationbooking/admin/scheduleOptions',
+            'EROD rules' => '/OphTrOperationbooking/admin/viewERODRules',
+            'Letter contact rules' => '/OphTrOperationbooking/admin/viewLetterContactRules',
+            'Letter warning rules' => '/OphTrOperationbooking/admin/viewLetterWarningRules',
+            'Operation name rules' => '/OphTrOperationbooking/admin/viewOperationNameRules',
+            'Waiting list contact rules' => '/OphTrOperationbooking/admin/viewWaitingListContactRules',
+            'Patient unavailable reasons' => '/OphTrOperationbooking/admin/viewPatientUnavailableReasons',
+            'Session unavailable reasons' => '/OphTrOperationbooking/admin/viewSessionUnavailableReasons',
+        ),
+        // Default anaesthetic settings
+        //'ophtroperationbooking_default_anaesthetic_child' => 'GA',
+        //'ophtroperationbooking_default_anaesthetic' => 'GA',
+        // How many weeks from DTA should EROD be calculated
+        //'erod_lead_time_weeks' => 3,
+        // How many days ahead of the day an operation is being scheduled should EROD be calculated
+        //'erod_lead_current_date_days' => 2,
+        // number of weeks from decision date that is the RTT limit
+        //'ophtroperationboooking_rtt_limit' => 6,
+        // whether referrals can be assigned to operation bookings or not (turn off if you don't have referrals imported
+        // or set on the patient record.
+        //'ophtroperationbooking_referral_link' => true,
+        // boolean to require a referral on an operation booking for scheduling or not
+        //'ophtroperationbooking_schedulerequiresreferral' => true
+    ),
 );

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -22,18 +22,18 @@ namespace OEModule\OphCiExamination\models;
 /**
  * This is the model class for table "ophciexamination_comorbidities_item".
  *
- * @property integer $id
+ * @property int $id
  * @property string $name
- * @property integer $display_order
-
+ * @property int $display_order
  */
 class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return OphCiExamination_Comorbidities_Item the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }
@@ -50,7 +50,7 @@ class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
 
     public function defaultScope()
     {
-        return array('order' => $this->getTableAlias(true, false) . '.display_order');
+        return array('order' => $this->getTableAlias(true, false).'.display_order');
     }
 
     /**
@@ -60,10 +60,10 @@ class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
     {
         return array(
                 array('name, display_order', 'required'),
-                array('id, name, display_order', 'safe', 'on'=>'search'),
+                array('id, name, display_order', 'safe', 'on' => 'search'),
         );
     }
-    
+
     /**
      * @return array relational rules.
      */
@@ -73,51 +73,50 @@ class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
             'complication' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_Et_PostOpComplications', 'complication_id'),
         );
     }
-    
+
     public function attributeLabels()
-	{
-            return array(
+    {
+        return array(
                 'id' => 'Common Complications',
                 'name' => 'Common Complications',
             );
-	}
+    }
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
     {
-        $criteria=new \CDbCriteria;
+        $criteria = new \CDbCriteria();
         $criteria->compare('id', $this->id, true);
         $criteria->compare('name', $this->name, true);
         $criteria->compare('display_order', $this->display_order, true);
+
         return new \CActiveDataProvider(get_class($this), array(
-                'criteria'=>$criteria,
+                'criteria' => $criteria,
         ));
     }
-    
+
     public function getPostOpComplicationsList($element_id, $operation_note_id, $subspecialty_id, $eye_id, $term = null)
-    {  
-        $criteria = new \CDbCriteria;
+    {
+        $criteria = new \CDbCriteria();
         $criteria->addCondition('active = 1');
 
         $criteria->addCondition('t.id NOT IN (SELECT DISTINCT complication_id '
-                                                . 'FROM ophciexamination_postop_et_complications '
-                                                . 'WHERE element_id = :element_id AND operation_note_id = :operation_note_id AND eye_id = :eye_id) ');
-        
-        
+                                                .'FROM ophciexamination_postop_et_complications '
+                                                .'WHERE element_id = :element_id AND operation_note_id = :operation_note_id AND eye_id = :eye_id) ');
+
         $criteria->params['element_id'] = $element_id;
         $criteria->params['operation_note_id'] = $operation_note_id;
         $criteria->params['eye_id'] = $eye_id;
-        
-        if($term && strlen($term) >0){
-            
-            $term = addcslashes($term, '%_');            
+
+        if ($term && strlen($term) > 0) {
+            $term = addcslashes($term, '%_');
             $criteria->addSearchCondition('t.name', $term);
-            
         } else {
-            $criteria->join = "JOIN ophciexamination_postop_complications_subspecialty ON t.id = ophciexamination_postop_complications_subspecialty.complication_id";
+            $criteria->join = 'JOIN ophciexamination_postop_complications_subspecialty ON t.id = ophciexamination_postop_complications_subspecialty.complication_id';
             $criteria->addCondition('subspecialty_id = :subspecialty_id');
             $criteria->params['subspecialty_id'] = $subspecialty_id;
             $criteria->order = 'ophciexamination_postop_complications_subspecialty.display_order ASC';
@@ -125,16 +124,16 @@ class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
 
         return $this->findAll($criteria);
     }
-    
+
     /**
-     * Named scope to fetch enabled items for the given subspecialty
+     * Named scope to fetch enabled items for the given subspecialty.
      *
      * @param int|null $subspecialty_id Null for default episode summary
+     *
      * @return EpisodeSummaryItem
      */
     public function enabled($subspecialty_id = null)
     {
-      
         $criteria = array(
             'join' => 'LEFT JOIN ophciexamination_postop_complications_subspecialty AS cs ON t.id = cs.complication_id',
             'order' => 'cs.display_order',
@@ -147,52 +146,49 @@ class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
 
         return $this;
     }
-    
+
     /**
-     * Named scope to fetch available (non-enabled) items for the given subspecialty
+     * Named scope to fetch available (non-enabled) items for the given subspecialty.
      *
      * @param int|null $subspecialty_id Null for default episode summary
+     *
      * @return EpisodeSummaryItem
      */
     public function available($subspecialty_id = null)
     {
         $criteria = array();
         if ($subspecialty_id) {
-            
-              $criteria = array(
+            $criteria = array(
                 'join' => 'LEFT JOIN ophciexamination_postop_complications_subspecialty AS cs ON t.id = cs.complication_id AND cs.subspecialty_id = :subspecialty_id',
             );
-            
+
             $criteria['condition'] = 'cs.subspecialty_id IS NULL';
             $criteria['params'] = array('subspecialty_id' => $subspecialty_id);
         }
         $criteria['order'] = 't.display_order ASC, t.id ASC';
-        
 
         $this->getDbCriteria()->mergeWith($criteria);
 
         return $this;
     }
-    
-        /**
-     * Assign the given items to the given episode summary
+
+    /**
+     * Assign the given items to the given episode summary.
      *
-     * @param array $item_ids
+     * @param array    $item_ids
      * @param int|null $subspecialty_id
      */
     public function assign($item_ids, $subspecialty_id = null)
     {
-    
         $this->dbConnection->createCommand()->delete(
             'ophciexamination_postop_complications_subspecialty',
             $subspecialty_id ? 'subspecialty_id = :subspecialty_id' : 'subspecialty_id is null',
             array('subspecialty_id' => $subspecialty_id)
         );
-     
-        
+
         if ($item_ids) {
             $item_ids = explode(',', $item_ids);
-            
+
             $rows = array();
             foreach ($item_ids as $display_order => $complication_id) {
                 $rows[] = array(
@@ -204,7 +200,5 @@ class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
 
             $this->dbConnection->getCommandBuilder()->createMultipleInsertCommand('ophciexamination_postop_complications_subspecialty', $rows)->execute();
         }
-        
     }
-    
 }

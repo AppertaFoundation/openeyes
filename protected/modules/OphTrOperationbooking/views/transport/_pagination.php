@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -22,30 +22,30 @@
 $uri_append = $this->getUriAppend();
 ?>
 <ul class="pagination">
-	<li class="previous<?php echo ($this->page<=1 ? ' unavailable' : '');?>">
+	<li class="previous<?php echo $this->page <= 1 ? ' unavailable' : '';?>">
 		<?php echo CHtml::link(
-			'&lt; Previous',
-			Yii::app()->createUrl('/OphTrOperationbooking/transport/index?page='.($this->page-1).$uri_append),
-			array('rel'=>'back')
-		)?>
+            '&lt; Previous',
+            Yii::app()->createUrl('/OphTrOperationbooking/transport/index?page='.($this->page - 1).$uri_append),
+            array('rel' => 'back')
+        )?>
 	</li>
 
-	<?php for ($i=1;$i<=$this->pages;$i++) {?>
-		<li class="page<?php echo ($i == $this->page ? ' current' : '');?>">
+	<?php for ($i = 1;$i <= $this->pages;++$i) {?>
+		<li class="page<?php echo $i == $this->page ? ' current' : '';?>">
 			<?php echo CHtml::link(
-				$i,
-				Yii::app()->createUrl('/OphTrOperationbooking/transport/index?page='.$i.$uri_append),
-				array('rel'=>$i)
-			)?>
+                $i,
+                Yii::app()->createUrl('/OphTrOperationbooking/transport/index?page='.$i.$uri_append),
+                array('rel' => $i)
+            )?>
 		</li>
 	<?php }?>
 
 
-	<li class="next<?php echo (!$this->pages || $this->page == $this->pages ? ' unavailable' : '');?>">
+	<li class="next<?php echo !$this->pages || $this->page == $this->pages ? ' unavailable' : '';?>">
 		<?php echo CHtml::link(
-			'Next &gt;',
-			Yii::app()->createUrl('/OphTrOperationbooking/transport/index?page='.($this->page+1).$uri_append),
-			array('rel'=>'back')
-		)?>
+            'Next &gt;',
+            Yii::app()->createUrl('/OphTrOperationbooking/transport/index?page='.($this->page + 1).$uri_append),
+            array('rel' => 'back')
+        )?>
 	</li>
 </div>

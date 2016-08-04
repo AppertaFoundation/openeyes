@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2012
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
@@ -19,13 +19,13 @@
 ?>
 <?php
 $statuses = \OEModule\OphCiExamination\models\OphCiExamination_Management_Status::model()->activeOrPk(array($element->left_laser_status_id, $element->right_laser_status_id))->findAll();
-$status_options = array('empty'=>'- Please select -', 'options' => array());
+$status_options = array('empty' => '- Please select -', 'options' => array());
 foreach ($statuses as $opt) {
     $status_options['options'][(string) $opt->id] = array('data-deferred' => $opt->deferred, 'data-book' => $opt->book, 'data-event' => $opt->event);
 }
 
 $deferrals = \OEModule\OphCiExamination\models\OphCiExamination_Management_DeferralReason::model()->activeOrPk(array($element->left_laser_deferralreason_id, $element->right_laser_deferralreason_id))->findAll();
-$deferral_options = array('empty'=>'- Please select -', 'options' => array());
+$deferral_options = array('empty' => '- Please select -', 'options' => array());
 foreach ($deferrals as $opt) {
     $deferral_options['options'][(string) $opt->id] = array('data-other' => $opt->other);
 }
@@ -34,7 +34,7 @@ $lasertypes = \OEModule\OphCiExamination\models\OphCiExamination_LaserManagement
 $lasertype_options = array();
 
 foreach ($lasertypes as $lt) {
-    $lasertype_options[(string)$lt->id] = array('data-other' => $lt->other);
+    $lasertype_options[(string) $lt->id] = array('data-other' => $lt->other);
 }
 ?>
 
@@ -45,11 +45,11 @@ foreach ($lasertypes as $lt) {
 }?>" data-side="right">
 		<div class="active-form">
 			<a href="#" class="icon-remove-side remove-side">Remove side</a>
-			<?php $this->renderPartial($element->form_view . '_fields',
+			<?php $this->renderPartial($element->form_view.'_fields',
                 array('side' => 'right', 'element' => $element, 'form' => $form,
                     'statuses' => $statuses, 'status_options' => $status_options,
                     'deferrals' => $deferrals, 'deferral_options' => $deferral_options,
-                    'lasertypes' => $lasertypes, 'lasertype_options' => $lasertype_options)); ?>
+                    'lasertypes' => $lasertypes, 'lasertype_options' => $lasertype_options, )); ?>
 		</div>
 		<div class="inactive-form">
 			<div class="add-side">
@@ -64,11 +64,11 @@ foreach ($lasertypes as $lt) {
 }?>" data-side="left">
 		<div class="active-form">
 			<a href="#" class="icon-remove-side remove-side">Remove side</a>
-			<?php $this->renderPartial($element->form_view . '_fields',
+			<?php $this->renderPartial($element->form_view.'_fields',
                 array('side' => 'left', 'element' => $element, 'form' => $form,
                     'statuses' => $statuses, 'status_options' => $status_options,
                     'deferrals' => $deferrals, 'deferral_options' => $deferral_options,
-                    'lasertypes' => $lasertypes, 'lasertype_options' => $lasertype_options)); ?>
+                    'lasertypes' => $lasertypes, 'lasertype_options' => $lasertype_options, )); ?>
 		</div>
 		<div class="inactive-form">
 			<div class="add-side">

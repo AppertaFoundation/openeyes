@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2014
  * This file is part of OpenEyes.
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
@@ -20,7 +20,7 @@ return array(
     'cct1' => array(
         'id' => 1,
         'event_id' => 1,
-        'eye_id'=>2,
+        'eye_id' => 2,
         'left_method_id' => 1,
         'right_method_id' => 2,
         'right_value' => 20,
@@ -29,7 +29,7 @@ return array(
     'cct2' => array(
         'id' => 2,
         'event_id' => 2,
-        'eye_id'=>1,
+        'eye_id' => 1,
         'left_method_id' => 1,
         'right_method_id' => null,
         'right_value' => null,
@@ -38,7 +38,7 @@ return array(
     'cct3' => array(
         'id' => 3,
         'event_id' => 15,
-        'eye_id'=>2,
+        'eye_id' => 2,
         'left_method_id' => 1,
         'right_method_id' => null,
         'right_value' => 20,

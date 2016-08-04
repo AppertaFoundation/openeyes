@@ -7,11 +7,11 @@
 <h1 class="badge">Patient Merge Request List</h1>
 
 <?php $form = $this->beginWidget('CActiveForm', array(
-    'id'=>'merge-form',
+    'id' => 'merge-form',
     'enableAjaxValidation' => false,
     'enableClientValidation' => true,
     //'focus' => array($model,'firstName'),
-    
+
 )); ?>
 
 
@@ -28,7 +28,7 @@
                             <div class="large-10 column">
                                 <label>
                                     <input type="hidden" id="PatientMergeRequest_show_merged_hidden" name="PatientMergeRequestFilter[show_merged]" value="0">
-                                    <input type="checkbox" id="PatientMergeRequest_show_merged" name="PatientMergeRequestFilter[show_merged]" value="1" <?php echo ($filters['show_merged'] && $filters['show_merged'] == 1 ? 'checked' : '') ?> > Show merged
+                                    <input type="checkbox" id="PatientMergeRequest_show_merged" name="PatientMergeRequestFilter[show_merged]" value="1" <?php echo $filters['show_merged'] && $filters['show_merged'] == 1 ? 'checked' : '' ?> > Show merged
                                 </label>
                             </div>
                             <div class="large-2 column text-right">
@@ -38,7 +38,7 @@
                         </div>
                     </div>
                     <div class="grid-view" id="inbox-table">
-                        <?php $this->renderPartial('//patientmergerequest/_list',array('dataProvider' => $dataProvider, 'filters' => $filters))?>
+                        <?php $this->renderPartial('//patientmergerequest/_list', array('dataProvider' => $dataProvider, 'filters' => $filters))?>
                     </div>
                 </section>
             </div>

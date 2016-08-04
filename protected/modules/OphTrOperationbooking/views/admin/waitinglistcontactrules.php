@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -21,7 +21,7 @@
 	<header class="box-header">
 		<h2 class="box-title">Waiting list contact rules</h2>
 		<div class="box-actions">
-			<?php echo EventAction::button('Add', 'add_letter_contact_rule',null, array('class' => 'button small'))->toHtml()?>
+			<?php echo EventAction::button('Add', 'add_letter_contact_rule', null, array('class' => 'button small'))->toHtml()?>
 		</div>
 	</header>
 
@@ -31,16 +31,16 @@
 				Test:
 			</legend>
 			<div class="large-2 column">
-				<?php echo CHtml::dropDownList('lcr_site_id','',Site::model()->getListForCurrentInstitution('name'),array('empty'=>'- Site -'))?>
+				<?php echo CHtml::dropDownList('lcr_site_id', '', Site::model()->getListForCurrentInstitution('name'), array('empty' => '- Site -'))?>
 			</div>
 			<div class="large-2 column">
-				<?php echo CHtml::dropDownList('lcr_service_id','',CHtml::listData(Service::model()->findAll(array('order'=>'name asc')),'id','name'),array('empty'=>'- Service -'))?>
+				<?php echo CHtml::dropDownList('lcr_service_id', '', CHtml::listData(Service::model()->findAll(array('order' => 'name asc')), 'id', 'name'), array('empty' => '- Service -'))?>
 			</div>
 			<div class="large-2 column">
-				<?php echo CHtml::dropDownList('lcr_firm_id','',array(),array('empty'=>'- Firm -'))?>
+				<?php echo CHtml::dropDownList('lcr_firm_id', '', array(), array('empty' => '- Firm -'))?>
 			</div>
 			<div class="large-2 column end">
-				<?php echo CHtml::dropDownList('lcr_is_child','',array('' => '- Child/adult -','1' => 'Child','0' => 'Adult'))?>
+				<?php echo CHtml::dropDownList('lcr_is_child', '', array('' => '- Child/adult -', '1' => 'Child', '0' => 'Adult'))?>
 			</div>
 		</fieldset>
 	</form>
@@ -49,9 +49,9 @@
 
 	<form id="rules" class="panel">
 		<?php
-		$this->widget('CTreeView',array(
-			'data' => $data,
-		))?>
+        $this->widget('CTreeView', array(
+            'data' => $data,
+        ))?>
 	</form>
 </div>
 

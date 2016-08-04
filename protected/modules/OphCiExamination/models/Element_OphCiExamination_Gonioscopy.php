@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -23,9 +23,10 @@ namespace OEModule\OphCiExamination\models;
  * This is the model class for table "et_ophciexamination_gonioscopy".
  *
  * The followings are the available columns in table 'et_ophciexamination_gonioscopy':
- * @property integer $id
- * @property integer $eye_id
- * @property integer $event_id
+ *
+ * @property int $id
+ * @property int $eye_id
+ * @property int $event_id
  * @property string $left_description
  * @property string $right_description
  * @property OphCiExamination_Gonioscopy_Description $left_gonio_sup
@@ -48,6 +49,7 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
 {
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return the static model class
      */
     public static function model($className = __CLASS__)
@@ -79,7 +81,7 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
                 array('eye_id, event_id, left_description, right_description, left_eyedraw, right_eyedraw',
-                        'safe', 'on' => 'search'),
+                        'safe', 'on' => 'search', ),
         );
     }
 
@@ -140,12 +142,13 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
                 'left_description' => 'Description',
                 'right_description' => 'Description',
                 'left_eyedraw' => 'EyeDraw',
-                'right_eyedraw' => 'EyeDraw'
+                'right_eyedraw' => 'EyeDraw',
         );
     }
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
@@ -153,7 +156,7 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria = new \CDbCriteria;
+        $criteria = new \CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
@@ -178,13 +181,12 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
     }
 
     /**
-     *
      * @return array
      */
     public function getGonioscopyOptions()
     {
         return \CHtml::listData(OphCiExamination_Gonioscopy_Description::model()
-                ->findAll(array('order'=>'display_order')), 'id', 'name');
+                ->findAll(array('order' => 'display_order')), 'id', 'name');
     }
 
     public function sidedDefaults()
@@ -193,6 +195,7 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
         foreach (array('sup', 'tem', 'nas', 'inf') as $position) {
             $defaults['gonio_'.$position.'_id'] = 2;
         }
+
         return $defaults;
     }
 }

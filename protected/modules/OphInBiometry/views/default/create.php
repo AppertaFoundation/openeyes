@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2013
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -20,23 +20,23 @@ $assetManager = Yii::app()->getAssetManager();
 $assetManager->registerScriptFile('js/libs/uri-1.10.2.js');
 $this->beginContent('//patient/event_container');
 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-	'id' => 'create-form',
-	'enableAjaxValidation' => false,
-	'layoutColumns' => array(
-		'label' => 2,
-		'field' => 10
-	)
+    'id' => 'create-form',
+    'enableAjaxValidation' => false,
+    'layoutColumns' => array(
+        'label' => 2,
+        'field' => 10,
+    ),
 ));
 $isManualEntryDisabled = 0;
 if ($this->isManualEntryDisabled()) {
-	$isManualEntryDisabled = 1;
+    $isManualEntryDisabled = 1;
 }
-echo('<input type="hidden" id="show_disable_manual_warning" value=' . $isManualEntryDisabled . '>');
+echo '<input type="hidden" id="show_disable_manual_warning" value='.$isManualEntryDisabled.'>';
 $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => 'create-form'));
 $this->displayErrors($errors);
 $this->renderPartial('//patient/event_elements', array(
-	'form' => $form,
-	'disableOptionalElementActions' => true
+    'form' => $form,
+    'disableOptionalElementActions' => true,
 ));
 
 $this->displayErrors($errors, true);

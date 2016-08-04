@@ -15,7 +15,7 @@ class SiteAndFirmFormTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new SiteAndFirmForm;
+        $this->object = new SiteAndFirmForm();
     }
 
     /**
@@ -28,6 +28,7 @@ class SiteAndFirmFormTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SiteAndFirmForm::rules
+     *
      * @todo   Implement testRules().
      */
     public function testRules()
@@ -40,6 +41,7 @@ class SiteAndFirmFormTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SiteAndFirmForm::attributeLabels
+     *
      * @todo   Implement testAttributeLabels().
      */
     public function testAttributeLabels()

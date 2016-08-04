@@ -1,6 +1,6 @@
 <?php
 
-class MPModelGenerator extends CCodeGenerator
+class MpModelGenerator extends CCodeGenerator
 {
-	public $codeModel='ext.mpgii.mpModel.ModelCode';
+    public $codeModel = 'ext.mpgii.mpModel.ModelCode';
 }

@@ -6,60 +6,65 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class CleanupAddressesCommand extends CConsoleCommand
 {
-	const DUMP_FILE = 'orphaned_addresses.csv';
-	const BATCH_SIZE = 128;
+    const DUMP_FILE = 'orphaned_addresses.csv';
+    const BATCH_SIZE = 128;
 
-	public function getHelp()
-	{
-		return "Remove orphaned entries from the address table.\nThe data removed is dumped to a file named " . self::DUMP_FILE . ".\n";
-	}
+    public function getHelp()
+    {
+        return "Remove orphaned entries from the address table.\nThe data removed is dumped to a file named ".self::DUMP_FILE.".\n";
+    }
 
-	public function run($args)
-	{
-		$f = fopen(self::DUMP_FILE, 'a+');
-		if (!$f) die("Failed to open " . self::DUMP_FILE . " for writing\n");
+    public function run($args)
+    {
+        $f = fopen(self::DUMP_FILE, 'a+');
+        if (!$f) {
+            die('Failed to open '.self::DUMP_FILE." for writing\n");
+        }
 
-		$db = Yii::app()->db;
+        $db = Yii::app()->db;
 
-		$cmd = $db->createCommand()->select("a.*")
-			->from("address a")->leftJoin("contact c", "a.parent_class = 'Contact' and a.parent_id = c.id")
-			->where("c.id is null")->limit(self::BATCH_SIZE);
+        $cmd = $db->createCommand()->select('a.*')
+            ->from('address a')->leftJoin('contact c', "a.parent_class = 'Contact' and a.parent_id = c.id")
+            ->where('c.id is null')->limit(self::BATCH_SIZE);
 
-		while (1) {
-			$tx = $db->beginTransaction();
+        while (1) {
+            $tx = $db->beginTransaction();
 
-			if (!($rows = $cmd->queryAll())) {
-				$tx->commit();
-				break;
-			}
+            if (!($rows = $cmd->queryAll())) {
+                $tx->commit();
+                break;
+            }
 
-			print "Deleting " . count($rows) . " rows...\n";
+            echo 'Deleting '.count($rows)." rows...\n";
 
-			$ids = array();
-			foreach ($rows as $row) {
-				if (!fputcsv($f, $row)) die("Failed to write CSV row\n");
+            $ids = array();
+            foreach ($rows as $row) {
+                if (!fputcsv($f, $row)) {
+                    die("Failed to write CSV row\n");
+                }
 
-				$ids[] = $row['id'];
-			}
-			if (!fflush($f)) die("Flush failed");
+                $ids[] = $row['id'];
+            }
+            if (!fflush($f)) {
+                die('Flush failed');
+            }
 
-			$db->createCommand()->delete("address", array("in", "id", $ids));
+            $db->createCommand()->delete('address', array('in', 'id', $ids));
 
-			$tx->commit();
-			sleep(1);
-		}
+            $tx->commit();
+            sleep(1);
+        }
 
-		fclose($f);
+        fclose($f);
 
-		print "Done\n";
-	}
+        echo "Done\n";
+    }
 }

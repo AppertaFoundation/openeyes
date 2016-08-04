@@ -1,6 +1,6 @@
 <?php
 /**
- * ____________________________________________________________________________
+ * ____________________________________________________________________________.
  *
  * This file is part of OpenEyes.
  *
@@ -21,10 +21,11 @@
  * @author Bill Aylward <bill.aylward@openeyes.org.uk>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3.0
  * @license http://www.openeyes.org.uk/licenses/oepl-1.0.html OEPLv1.0
+ *
  * @version 0.9
  * Creation date: 27 December 2011
+ *
  * @copyright Copyright (c) 2012 OpenEyes Foundation, Moorfields Eye hospital
- * @package Clinical
  */
 
 /**
@@ -38,7 +39,7 @@
  * - $rules: list of validation rules
  * - $ignore: Array of fields to ignore when generating code
  * - $authorName: Name of the file's author
- * - $authorEmail: Email address of the file's author
+ * - $authorEmail: Email address of the file's author.
  */
 ?>
 <?php echo "<?php\n"; ?>
@@ -65,14 +66,14 @@
  * @license http://www.gnu.org/licenses/gpl.html GPLv3.0
  * @license http://www.openeyes.org.uk/licenses/oepl-1.0.html OEPLv1.0
  * @version 0.9
- * Creation date: <?php echo date("j F Y")."\n";?>
+ * Creation date: <?php echo date('j F Y')."\n";?>
  * @copyright Copyright (c) 2012 OpenEyes Foundation, Moorfields Eye hospital
  * @package Clinical
  *
  * This is the model class for table "<?php echo $tableName; ?>".
  *
  * The followings are the available columns in table '<?php echo $tableName; ?>':
-<?php foreach($columns as $column): ?>
+<?php foreach ($columns as $column): ?>
  * @property <?php echo $column->type.' $'.$column->name."\n"; ?>
 <?php endforeach; ?>
  *
@@ -103,19 +104,20 @@ class <?php echo $modelClass; ?> extends <?php echo $this->baseClass."\n"; ?>
 	{
 		// Only define rules for those attributes with user inputs.
 		return array(
-<?php foreach($rules as $rule): ?>
+<?php foreach ($rules as $rule): ?>
 			<?php echo $rule.",\n"; ?>
 <?php endforeach; ?>
 
 			// Remove attributes that should not be searched.
 			array('<?php
-				$oe_array_keys = array();
-				foreach (array_keys($columns) as $column) {
-					if(in_array($column, $ignore))
-						continue;
-					$oe_array_keys[] = $column;
-				}
-				echo implode(', ', $oe_array_keys); ?>', 'safe', 'on'=>'search'),
+                $oe_array_keys = array();
+                foreach (array_keys($columns) as $column) {
+                    if (in_array($column, $ignore)) {
+                        continue;
+                    }
+                    $oe_array_keys[] = $column;
+                }
+                echo implode(', ', $oe_array_keys); ?>', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -125,7 +127,7 @@ class <?php echo $modelClass; ?> extends <?php echo $this->baseClass."\n"; ?>
 	public function attributeLabels()
 	{
 		return array(
-<?php foreach($labels as $name=>$label): ?>
+<?php foreach ($labels as $name => $label): ?>
 			<?php echo "'$name' => '$label',\n"; ?>
 <?php endforeach; ?>
 		);
@@ -140,14 +142,15 @@ class <?php echo $modelClass; ?> extends <?php echo $this->baseClass."\n"; ?>
 		$criteria=new CDbCriteria;
 
 <?php
-foreach ($columns as $name=>$column) {
-	if(in_array($name, $ignore))
-		continue;
-	if ($column->type==='string') {
-		echo "\t\t\$criteria->compare('$name',\$this->$name,true);\n";
-	} else {
-		echo "\t\t\$criteria->compare('$name',\$this->$name);\n";
-	}
+foreach ($columns as $name => $column) {
+    if (in_array($name, $ignore)) {
+        continue;
+    }
+    if ($column->type === 'string') {
+        echo "\t\t\$criteria->compare('$name',\$this->$name,true);\n";
+    } else {
+        echo "\t\t\$criteria->compare('$name',\$this->$name);\n";
+    }
 }
 ?>
 

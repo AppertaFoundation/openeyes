@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -19,29 +19,25 @@
 
 namespace OEModule\OphCiExamination\models;
 
-use Yii;
-
 /**
  * This is the model class for table "et_ophciexamination_further_findings".
  *
  * The followings are the available columns in table:
- * @property string $id
- * @property integer $event_id
-
  *
- * The followings are the available model relations:
+ * @property string $id
+ * @property int $event_id
  * @property Finding[] $further_findings
  * @property User $user
  * @property User $usermodified
  * @property Event $event
  */
-
 class Element_OphCiExamination_FurtherFindings extends \BaseEventTypeElement
 {
     protected $auto_update_relations = true;
 
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return Element_OphCiExamination_FurtherFindings the static model class
      */
     public static function model($className = __CLASS__)
@@ -72,7 +68,7 @@ class Element_OphCiExamination_FurtherFindings extends \BaseEventTypeElement
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'further_findings_assignment' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_FurtherFindings_Assignment', 'element_id'),
-            'further_findings' => array(self::MANY_MANY, 'Finding', 'ophciexamination_further_findings_assignment(element_id, finding_id)', 'order' => 'display_order, name')
+            'further_findings' => array(self::MANY_MANY, 'Finding', 'ophciexamination_further_findings_assignment(element_id, finding_id)', 'order' => 'display_order, name'),
         );
     }
 
@@ -103,17 +99,18 @@ class Element_OphCiExamination_FurtherFindings extends \BaseEventTypeElement
         return $further_findings;
     }
 
-    public function getFurtherFindingsAssignedString($ignore_ids=array())
+    public function getFurtherFindingsAssignedString($ignore_ids = array())
     {
         $further_findings = array();
 
         if (!empty($this->further_findings_assignment)) {
             foreach ($this->further_findings_assignment as $assignment) {
                 if (!in_array($assignment->finding_id, $ignore_ids)) {
-                    $further_findings[] = $assignment->finding->requires_description ? $assignment->finding->name.": ".$assignment->description : $assignment->finding->name;
+                    $further_findings[] = $assignment->finding->requires_description ? $assignment->finding->name.': '.$assignment->description : $assignment->finding->name;
                 }
             }
         }
+
         return implode(', ', $further_findings);
     }
 

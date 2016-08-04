@@ -6,30 +6,29 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (C) 2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class OphCoTherapyapplication_Email_Recipient_Type extends BaseActiveRecordVersioned
 {
-	public static function model($className = __CLASS__)
-	{
-		return parent::model($className);
-	}
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
 
-	public function tableName()
-	{
-		return 'ophcotherapya_email_recipient_type';
-	}
+    public function tableName()
+    {
+        return 'ophcotherapya_email_recipient_type';
+    }
 
-	public function rules()
-	{
-		return array(
-			array('name, display_order', 'safe'),
-			array('name', 'required'),
-		);
-	}
+    public function rules()
+    {
+        return array(
+            array('name, display_order', 'safe'),
+            array('name', 'required'),
+        );
+    }
 }
