@@ -65,10 +65,20 @@ $cols = array(
     )
 );
 
-$this->widget('zii.widgets.grid.CGridView', array(
-    'itemsCssClass' => 'grid',
-    'dataProvider' => $dp,
-    'htmlOptions' => array('id' => 'inbox-table'),
-    'summaryText' => '<h3>CVI Events <small> {start}-{end} of {count} </small></h3>',
-    'columns' => $cols,
-));
+?>
+<h1 class="badge">CVI List</h1>
+<div class="box content">
+    <div class="row">
+        <div class="large-12 column">
+            <div class="box generic">
+                <?php $this->widget('zii.widgets.grid.CGridView', array(
+                    'itemsCssClass' => 'grid',
+                    'dataProvider' => $dp,
+                    'htmlOptions' => array('id' => 'inbox-table'),
+                    'summaryText' => '<small> {start}-{end} of {count} </small>',
+                    'columns' => $cols,
+                )); ?>
+            </div>
+        </div>
+    </div>
+</div>
