@@ -50,7 +50,7 @@
                 <td><?php echo $taper->frequency->name ?></td>
                 <td><?php echo $taper->duration->name ?></td>
             </tr>
-		<?php}
+		<?php }
         } ?>
 	</tbody>
 </table>
