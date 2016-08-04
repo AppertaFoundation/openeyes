@@ -21,6 +21,9 @@ class AuthManager extends CDbAuthManager
     private $rulesets = array();
     private $user_assignments = array();
 
+    /**
+     * AuthManager constructor.
+     */
     public function __construct()
     {
         $this->registerRuleset('core', new AuthRules());
@@ -33,11 +36,13 @@ class AuthManager extends CDbAuthManager
     }
 
     /**
-     * @param string $bizRule
-     * @param array  $params
-     * @param mixed  $data
+     * Override of parent to utlise the namespaced rulesets that have been defined
      *
+     * @param string $bizRule
+     * @param array $params
+     * @param mixed $data
      * @return bool
+     * @throws Exception
      */
     public function executeBizRule($bizRule, $params, $data)
     {
@@ -71,14 +76,22 @@ class AuthManager extends CDbAuthManager
     }
 
     /**
+     * Mechanism to store ruleset objects against a "namespace" for use when executing business rules
+     *
      * @param string $namespace Name of module
-     * @param object $object    Object on which the rule methods are defined
+     * @param object $ruleset Object on which the rule methods are defined
      */
     public function registerRuleset($namespace, $ruleset)
     {
         $this->rulesets[$namespace] = $ruleset;
     }
 
+    /**
+     * Caching wrapper on the auth assignments for a user
+     *
+     * @param mixed $user_id
+     * @return mixed
+     */
     public function getAuthAssignments($user_id)
     {
         if (!isset($this->user_assignments[$user_id])) {
