@@ -29,11 +29,19 @@ class DefaultController extends \BaseEventTypeController
         'list' => self::ACTION_TYPE_LIST
     );
 
+    /**
+     * Currently uses the OprnEditCvi operation to check for access
+     * 
+     * @return mixed
+     */
     public function checkListAccess()
     {
         return $this->checkAccess('OprnEditCvi', $this->getApp()->user->id);
     }
 
+    /**
+     * @return OphCoCvi_Manager
+     */
     public function getManager()
     {
         if (!isset($this->cvi_manager)) {
@@ -43,6 +51,9 @@ class DefaultController extends \BaseEventTypeController
         return $this->cvi_manager;
     }
 
+    /**
+     * Generate a list of all the CVI events for clerical use.
+     */
     public function actionList()
     {
         $this->layout = '//layouts/main';
