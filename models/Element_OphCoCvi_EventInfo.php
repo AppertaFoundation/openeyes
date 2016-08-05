@@ -17,8 +17,6 @@
 
 namespace OEModule\OphCoCvi\models;
 
-use \CviRecord as BaseCviRecord;
-
 /**
  * This is the model class for table "et_ophcocvi_eventinfo".
  *
@@ -27,15 +25,19 @@ use \CviRecord as BaseCviRecord;
  * @property integer $event_id
  * @property integer $is_draft
  * @property integer $generated_document_id
+ * @property string last_modified_date
  *
  * The followings are the available model relations:
  *
- * @property ElementType $element_type
- * @property EventType $eventType
- * @property Event $event
- * @property User $user
- * @property User $usermodified
- * @property ProtectedFile $generated_document
+ * @property \ElementType $element_type
+ * @property \EventType $eventType
+ * @property \Event $event
+ * @property \User $user
+ * @property \User $usermodified
+ * @property \ProtectedFile $generated_document
+ * @property Element_OphCoCvi_ClinicalInfo $clinical_element
+ * @property Element_OphCoCvi_ClericalInfo $clerical_element
+ * @property Element_OphCoCvi_ConsentSignature $consent_element
  */
 
 class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
@@ -81,6 +83,13 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 			'generated_document' => array(self::BELONGS_TO, 'ProtectedFile', 'generated_document_id'),
+			// define duplicate event relations for elements to be eager loaded in the same call
+			'clinical_event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+			'clinical_element' => array(self::HAS_ONE, 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo', array('id' => 'event_id'), 'through' => 'clinical_event'),
+			'clerical_event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+			'clerical_element' => array(self::HAS_ONE, 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo', array('id' => 'event_id'), 'through' => 'clerical_event'),
+			'consent_event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+			'consent_element' => array(self::HAS_ONE, 'OEModule\OphCoCvi\models\Element_OphCoCvi_ConsentSignature', array('id' => 'event_id'), 'through' => 'consent_event'),
 		);
 	}
 
@@ -115,5 +124,16 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
 		));
 	}
 
+	/**
+	 * @TODO: Should probably be storing a fixed date for issue rather than relying on modified date
+	 *
+	 * @return null|string
+	 */
+	public function getIssueDateForDisplay()
+	{
+		if (!$this->is_draft) {
+			return $this->last_modified_date;
+		}
+		return null;
+	}
 }
-?>

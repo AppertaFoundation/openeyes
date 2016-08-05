@@ -20,6 +20,7 @@ namespace OEModule\OphCoCvi\components;
 
 use OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo;
+use OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo;
 
 class OphCoCvi_Manager extends \CComponent
 {
@@ -98,6 +99,18 @@ class OphCoCvi_Manager extends \CComponent
 	}
 
 	/**
+	 * Generate the text display of the status of the CVI
+	 *
+	 * @param Element_OphCoCvi_ClinicalInfo $clinical
+	 * @param Element_OphCoCvi_ClericalInfo $clerical
+	 * @return string
+	 */
+	protected function getDisplayStatus(Element_OphCoCvi_ClinicalInfo $clinical, Element_OphCoCvi_EventInfo $info)
+	{
+		return $clinical->getDisplayStatus() . ' (' . ($info->is_draft ? 'Draft' : 'Issued') . ')';
+	}
+
+	/**
 	 * @param \Event $event
 	 * @return string
 	 */
@@ -106,7 +119,16 @@ class OphCoCvi_Manager extends \CComponent
 		$clinical = $this->getElementForEvent($event, 'Element_OphCoCvi_ClinicalInfo');
 		$info = $this->getElementForEvent($event, 'Element_OphCoCvi_EventInfo');
 
-		return $clinical->getDisplayStatus() . ' (' . ($info->is_draft ? 'Draft' : 'Issued') . ')';
+		return $this->getDisplayStatus($clinical, $info);
+	}
+
+	/**
+	 * @param Element_OphCoCvi_EventInfo $element
+	 * @return string
+	 */
+	public function getDisplayStatusFromEventInfo(Element_OphCoCvi_EventInfo $element)
+	{
+		return $this->getDisplayStatus($element->clinical_element, $element);
 	}
 
 	/**
@@ -119,16 +141,14 @@ class OphCoCvi_Manager extends \CComponent
 		return $clinical->examination_date;
 	}
 
+	/**
+	 * @param \Event $event
+	 * @return mixed|null
+	 */
 	public function getDisplayIssueDateForEvent(\Event $event)
 	{
 		$info = $this->getElementForEvent($event, 'Element_OphCoCvi_EventInfo');
-		if ($info->is_draft) {
-			return null;
-		}
-		else {
-			// TODO: we probably need to actually be storing an issue date when the CVI is completed.
-			return $info->last_modified_date;
-		}
+		return $info->getIssueDateForDisplay();
 	}
 	/**
 	 * @param \Event $event
@@ -139,13 +159,34 @@ class OphCoCvi_Manager extends \CComponent
 		return $this->yii->createUrl($event->eventType->class_name.'/default/view/'.$event->id);
 	}
 
-	public function getEventConsultant(\Event $event)
+	/**
+	 * @param Element_OphCoCvi_EventInfo $event_info
+	 * @return \User|null
+	 */
+	public function getClinicalConsultant(Element_OphCoCvi_EventInfo $event_info)
 	{
 		/**
 		 * @var Element_OphCoCvi_ClinicalInfo
 		 */
-		$clinical = $this->getElementForEvent($event, 'Element_OphCoCvi_ClinicalInfo');
+		if ($clinical = $event_info->clinical_element) {
+			return $clinical->consultant;
+		}
+		return null;
+	}
 
-		return $clinical->consultant;
+	/**
+	 * Abstraction of the list provider
+	 *
+	 * @return \CActiveDataProvider
+	 */
+	public function getListDataProvider()
+	{
+		$model = Element_OphCoCvi_EventInfo::model()->with(
+			'clinical_element',
+			'clinical_element.consultant',
+			'clerical_element',
+			'event.episode.patient.contact');
+		
+		return new \CActiveDataProvider($model);
 	}
 }

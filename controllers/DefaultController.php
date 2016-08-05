@@ -48,7 +48,7 @@ class DefaultController extends \BaseEventTypeController
         $this->layout = '//layouts/main';
         $this->renderPatientPanel = false;
 
-        $dp = new \CActiveDataProvider('\OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo');
+        $dp = $this->getManager()->getListDataProvider();
 
         $this->render('list', array('dp' => $dp));
     }

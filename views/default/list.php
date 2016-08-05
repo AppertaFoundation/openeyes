@@ -37,7 +37,7 @@ $cols = array(
         'id' => 'consultant',
         'header' => $dp->getSort()->link('consultant', 'From', array('class' => 'sort-link')),
         'value' => function($data) use ($manager) {
-            if ($consultant = $manager->getEventConsultant($data->event)) {
+            if ($consultant = $manager->getClinicalConsultant($data)) {
                 return $consultant->getFullNameAndTitle();
             }
             else {
@@ -49,14 +49,14 @@ $cols = array(
         'id' => 'status',
         'header' => 'Status',
         'value' => function($data) use ($manager) {
-            return $manager->getDisplayStatusForEvent($data->event);
+            return $manager->getDisplayStatusFromEventInfo($data);
         }
     ),
     array(
         'id' => 'issue-date',
         'header' => 'Issue Date',
-        'value' => function ($data) use ($manager) {
-            $date = $manager->getDisplayIssueDateForEvent($data->event);
+        'value' => function ($data) {
+            $date = $data->getIssueDateForDisplay();
             if ($date) {
                 return Helper::convertMySQL2NHS($date);
             }
