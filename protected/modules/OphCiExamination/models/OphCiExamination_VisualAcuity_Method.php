@@ -29,7 +29,7 @@ namespace OEModule\OphCiExamination\models;
 class OphCiExamination_VisualAcuity_Method extends \BaseActiveRecordVersioned
 {
     public static $UNAIDED_FLAG_TYPE = 1;
-    public static $AIDED_FLAG_TYPE = 1;
+    public static $AIDED_FLAG_TYPE = 2;
 
     /**
      * Returns the static model of the specified AR class.
