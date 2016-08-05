@@ -34,6 +34,3 @@
   shell: locale-gen {{server.locale}}
   become: yes
   become_method: sudo
-
-- name: Ensure vagrant user has a known password
-  user: name=vagrant password={{ server.vagrant_user_password }}
