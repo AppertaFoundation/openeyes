@@ -154,15 +154,6 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
 		));
 	}
 
-
-	public function getophcocvi_clinicinfo_disorder_defaults() {
-		$ids = array();
-		foreach (OphCoCvi_ClinicalInfo_Disorder::model()->findAll('`default` = ?',array(1)) as $item) {
-			$ids[] = $item->id;
-		}
-		return $ids;
-	}
-
 	protected function afterSave()
 	{
 		if (!empty($_POST['MultiSelect_disorders'])) {
