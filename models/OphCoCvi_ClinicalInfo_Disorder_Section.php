@@ -15,14 +15,19 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+
 namespace OEModule\OphCoCvi\models;
 
 /**
- * This is the model class for table "ophcocvi_clericinfo_employment_status".
+ * This is the model class for table "ophcocvi_clinicinfo_disorder_section".
  *
  * The followings are the available columns in table:
  * @property string $id
  * @property string $name
+ * @property boolean $comments_allowed
+ * @property string $comments_label
+ * @property integer $display_order
+ * @propety boolean $active
  *
  * The followings are the available model relations:
  *
@@ -33,7 +38,7 @@ namespace OEModule\OphCoCvi\models;
  * @property User $usermodified
  */
 
-class OphCoCvi_ClericalInfo_EmploymentStatus extends \BaseActiveRecordVersioned
+class OphCoCvi_ClinicalInfo_Disorder_Section extends \BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -49,7 +54,7 @@ class OphCoCvi_ClericalInfo_EmploymentStatus extends \BaseActiveRecordVersioned
 	 */
 	public function tableName()
 	{
-		return 'ophcocvi_clericinfo_employment_status';
+		return 'ophcocvi_clinicinfo_disorder_section';
 	}
 
 	/**
@@ -86,7 +91,8 @@ class OphCoCvi_ClericalInfo_EmploymentStatus extends \BaseActiveRecordVersioned
 		return array(
 			'id' => 'ID',
 			'name' => 'Name',
-		);
+            'active' => 'Active'
+        );
 	}
 
 	/**
