@@ -46,90 +46,115 @@ namespace OEModule\OphCoCvi\models;
 
 class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 {
-	/**
-	 * Returns the static model of the specified AR class.
-	 * @return the static model class
-	 */
-	public static function model($className = __CLASS__)
-	{
-		return parent::model($className);
-	}
+    /**
+     * Returns the static model of the specified AR class.
+     * @return the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
 
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'et_ophcocvi_clericinfo';
-	}
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'et_ophcocvi_clericinfo';
+    }
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		return array(
-			array('event_id, employment_status_id, preferred_info_fmt_id, info_email, contact_urgency_id, preferred_language_id, social_service_comments, ', 'safe'),
-			//array('employment_status_id, preferred_info_fmt_id, contact_urgency_id, preferred_language_id, social_service_comments, ', 'required'),
-			array('id, event_id, employment_status_id, preferred_info_fmt_id, info_email, contact_urgency_id, preferred_language_id, social_service_comments, ', 'safe', 'on' => 'search'),
-		);
-	}
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        return array(
+            array(
+                'event_id, employment_status_id, preferred_info_fmt_id, info_email, contact_urgency_id, preferred_language_id, social_service_comments, ',
+                'safe'
+            ),
+            //array('employment_status_id, preferred_info_fmt_id, contact_urgency_id, preferred_language_id, social_service_comments, ', 'required'),
+            array(
+                'id, event_id, employment_status_id, preferred_info_fmt_id, info_email, contact_urgency_id, preferred_language_id, social_service_comments, ',
+                'safe',
+                'on' => 'search'
+            ),
+        );
+    }
 
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		return array(
-			'element_type' => array(self::HAS_ONE, 'ElementType', 'id','on' => "element_type.class_name='".get_class($this)."'"),
-			'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
-			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-			'employment_status' => array(self::BELONGS_TO, 'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_EmploymentStatus', 'employment_status_id'),
-			'preferred_info_fmt' => array(self::BELONGS_TO, 'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PreferredInfoFmt', 'preferred_info_fmt_id'),
-			'contact_urgency' => array(self::BELONGS_TO, 'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_ContactUrgency', 'contact_urgency_id'),
-			'preferred_language' => array(self::BELONGS_TO, 'Language', 'preferred_language_id'),
-		);
-	}
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        return array(
+            'element_type' => array(
+                self::HAS_ONE,
+                'ElementType',
+                'id',
+                'on' => "element_type.class_name='" . get_class($this) . "'"
+            ),
+            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
+            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'employment_status' => array(
+                self::BELONGS_TO,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_EmploymentStatus',
+                'employment_status_id'
+            ),
+            'preferred_info_fmt' => array(
+                self::BELONGS_TO,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PreferredInfoFmt',
+                'preferred_info_fmt_id'
+            ),
+            'contact_urgency' => array(
+                self::BELONGS_TO,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_ContactUrgency',
+                'contact_urgency_id'
+            ),
+            'preferred_language' => array(self::BELONGS_TO, 'Language', 'preferred_language_id'),
+        );
+    }
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
-	public function attributeLabels()
-	{
-		return array(
-			'id' => 'ID',
-			'event_id' => 'Event',
-			'employment_status_id' => 'Employment status',
-			'preferred_info_fmt_id' => 'Preferred information format',
-			'info_email' => 'Info email',
-			'contact_urgency_id' => 'Contact urgency',
-			'preferred_language_id' => 'Preferred language',
-			'social_service_comments' => 'Social service comments',
-		);
-	}
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+            'id' => 'ID',
+            'event_id' => 'Event',
+            'employment_status_id' => 'Employment status',
+            'preferred_info_fmt_id' => 'Preferred information format',
+            'info_email' => 'Info email',
+            'contact_urgency_id' => 'Contact urgency',
+            'preferred_language_id' => 'Preferred language',
+            'social_service_comments' => 'Social service comments',
+        );
+    }
 
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		$criteria = new CDbCriteria;
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     */
+    public function search()
+    {
+        $criteria = new CDbCriteria;
 
-		$criteria->compare('id', $this->id, true);
-		$criteria->compare('event_id', $this->event_id, true);
-		$criteria->compare('employment_status_id', $this->employment_status_id);
-		$criteria->compare('preferred_info_fmt_id', $this->preferred_info_fmt_id);
-		$criteria->compare('info_email', $this->info_email);
-		$criteria->compare('contact_urgency_id', $this->contact_urgency_id);
-		$criteria->compare('preferred_language_id', $this->preferred_language_id);
-		$criteria->compare('social_service_comments', $this->social_service_comments);
+        $criteria->compare('id', $this->id, true);
+        $criteria->compare('event_id', $this->event_id, true);
+        $criteria->compare('employment_status_id', $this->employment_status_id);
+        $criteria->compare('preferred_info_fmt_id', $this->preferred_info_fmt_id);
+        $criteria->compare('info_email', $this->info_email);
+        $criteria->compare('contact_urgency_id', $this->contact_urgency_id);
+        $criteria->compare('preferred_language_id', $this->preferred_language_id);
+        $criteria->compare('social_service_comments', $this->social_service_comments);
 
-		return new CActiveDataProvider(get_class($this), array(
-			'criteria' => $criteria,
-		));
-	}
+        return new CActiveDataProvider(get_class($this), array(
+            'criteria' => $criteria,
+        ));
+    }
 }
+
 ?>

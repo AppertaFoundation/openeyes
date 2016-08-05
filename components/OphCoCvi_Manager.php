@@ -24,188 +24,198 @@ use OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo;
 
 class OphCoCvi_Manager extends \CComponent
 {
-	protected $yii;
-	/**
-	 * @var \EventType
-	 */
-	protected $event_type;
+    protected $yii;
+    /**
+     * @var \EventType
+     */
+    protected $event_type;
 
-	public function __construct(\CApplication $yii = null, \EventType $event_type = null)
-	{
-		if (is_null($yii)) {
-			$yii = \Yii::app();
-		}
+    public function __construct(\CApplication $yii = null, \EventType $event_type = null)
+    {
+        if (is_null($yii)) {
+            $yii = \Yii::app();
+        }
 
-		if (is_null($event_type)) {
-			$event_type = $this->determineEventType();
-		}
-		$this->event_type = $event_type;
+        if (is_null($event_type)) {
+            $event_type = $this->determineEventType();
+        }
+        $this->event_type = $event_type;
 
-		$this->yii = $yii;
-	}
+        $this->yii = $yii;
+    }
 
-	/**
-	 * Returns the non-namespaced module class of the module API Instance
-	 *
-	 * @return mixed
-	 */
-	protected function getModuleClass()
-	{
-		$namespace_pieces = explode("\\", __NAMESPACE__);
-		return $namespace_pieces[1];
-	}
+    /**
+     * Returns the non-namespaced module class of the module API Instance
+     *
+     * @return mixed
+     */
+    protected function getModuleClass()
+    {
+        $namespace_pieces = explode("\\", __NAMESPACE__);
+        return $namespace_pieces[1];
+    }
 
-	/**
-	 * @return \EventType
-	 * @throws \Exception
-	 */
-	protected function determineEventType()
-	{
-		$module_class = $this->getModuleClass();
+    /**
+     * @return \EventType
+     * @throws \Exception
+     */
+    protected function determineEventType()
+    {
+        $module_class = $this->getModuleClass();
 
-		if (!$event_type = \EventType::model()->find('class_name=?',array($module_class))) {
-			throw new \Exception("Module is not migrated: $module_class");
-		}
-		return $event_type;
-	}
+        if (!$event_type = \EventType::model()->find('class_name=?', array($module_class))) {
+            throw new \Exception("Module is not migrated: $module_class");
+        }
+        return $event_type;
+    }
 
-	/**
-	 * @param \Patient $patient
-	 * @return \Event[]
-	 */
-	public function getEventsForPatient(\Patient $patient)
-	{
-		return \Event::model()->getEventsOfTypeForPatient($this->event_type, $patient);
-	}
+    /**
+     * @param \Patient $patient
+     * @return \Event[]
+     */
+    public function getEventsForPatient(\Patient $patient)
+    {
+        return \Event::model()->getEventsOfTypeForPatient($this->event_type, $patient);
+    }
 
-	protected $elements_for_events = array();
+    protected $elements_for_events = array();
 
-	/**
-	 * @param $event
-	 * @param $element_class
-	 * @return \CActiveRecord|null
-	 */
-	protected function getElementForEvent($event, $element_class, $namespace = '\\OEModule\OphCoCvi\\models\\')
-	{
-		$cls = $namespace . $element_class;
+    /**
+     * @param $event
+     * @param $element_class
+     * @return \CActiveRecord|null
+     */
+    protected function getElementForEvent($event, $element_class, $namespace = '\\OEModule\OphCoCvi\\models\\')
+    {
+        $cls = $namespace . $element_class;
 
-		if (!isset($this->elements_for_events[$event->id]))
-			$elements_for_events[$event->id] = array();
+        if (!isset($this->elements_for_events[$event->id])) {
+            $elements_for_events[$event->id] = array();
+        }
 
-		if (!isset($this->elements_for_events[$event->id][$cls]))
-			$this->elements_for_events[$event->id][$cls] = $cls::model()->findByAttributes(array('event_id' => $event->id));
+        if (!isset($this->elements_for_events[$event->id][$cls])) {
+            $this->elements_for_events[$event->id][$cls] = $cls::model()->findByAttributes(array('event_id' => $event->id));
+        }
 
-		return $this->elements_for_events[$event->id][$cls];
-	}
+        return $this->elements_for_events[$event->id][$cls];
+    }
 
-	/**
-	 * Generate the text display of the status of the CVI
-	 *
-	 * @param Element_OphCoCvi_ClinicalInfo $clinical
-	 * @param Element_OphCoCvi_ClericalInfo $clerical
-	 * @return string
-	 */
-	protected function getDisplayStatus(Element_OphCoCvi_ClinicalInfo $clinical, Element_OphCoCvi_EventInfo $info)
-	{
-		return $clinical->getDisplayStatus() . ' (' . $info->getIssueStatusForDisplay() . ')';
-	}
+    /**
+     * Generate the text display of the status of the CVI
+     *
+     * @param Element_OphCoCvi_ClinicalInfo $clinical
+     * @param Element_OphCoCvi_ClericalInfo $clerical
+     * @return string
+     */
+    protected function getDisplayStatus(Element_OphCoCvi_ClinicalInfo $clinical, Element_OphCoCvi_EventInfo $info)
+    {
+        return $clinical->getDisplayStatus() . ' (' . $info->getIssueStatusForDisplay() . ')';
+    }
 
-	/**
-	 * @param \Event $event
-	 * @return string
-	 */
-	public function getDisplayStatusForEvent(\Event $event)
-	{
-		$clinical = $this->getElementForEvent($event, 'Element_OphCoCvi_ClinicalInfo');
-		$info = $this->getElementForEvent($event, 'Element_OphCoCvi_EventInfo');
+    /**
+     * @param \Event $event
+     * @return string
+     */
+    public function getDisplayStatusForEvent(\Event $event)
+    {
+        $clinical = $this->getElementForEvent($event, 'Element_OphCoCvi_ClinicalInfo');
+        $info = $this->getElementForEvent($event, 'Element_OphCoCvi_EventInfo');
 
-		return $this->getDisplayStatus($clinical, $info);
-	}
+        return $this->getDisplayStatus($clinical, $info);
+    }
 
-	/**
-	 * @param Element_OphCoCvi_EventInfo $element
-	 * @return string
-	 */
-	public function getDisplayStatusFromEventInfo(Element_OphCoCvi_EventInfo $element)
-	{
-		return $this->getDisplayStatus($element->clinical_element, $element);
-	}
+    /**
+     * @param Element_OphCoCvi_EventInfo $element
+     * @return string
+     */
+    public function getDisplayStatusFromEventInfo(Element_OphCoCvi_EventInfo $element)
+    {
+        return $this->getDisplayStatus($element->clinical_element, $element);
+    }
 
-	/**
-	 * @param \Event $event
-	 * @return string|null
-	 */
-	public function getDisplayStatusDateForEvent(\Event $event)
-	{
-		$clinical = $this->getElementForEvent($event, 'Element_OphCoCvi_ClinicalInfo');
-		return $clinical->examination_date;
-	}
+    /**
+     * @param \Event $event
+     * @return string|null
+     */
+    public function getDisplayStatusDateForEvent(\Event $event)
+    {
+        $clinical = $this->getElementForEvent($event, 'Element_OphCoCvi_ClinicalInfo');
+        return $clinical->examination_date;
+    }
 
-	/**
-	 * @param \Event $event
-	 * @return mixed|null
-	 */
-	public function getDisplayIssueDateForEvent(\Event $event)
-	{
-		$info = $this->getElementForEvent($event, 'Element_OphCoCvi_EventInfo');
-		return $info->getIssueDateForDisplay();
-	}
-	/**
-	 * @param \Event $event
-	 * @return string
-	 */
-	public function getEventViewUri(\Event $event)
-	{
-		return $this->yii->createUrl($event->eventType->class_name.'/default/view/'.$event->id);
-	}
+    /**
+     * @param \Event $event
+     * @return mixed|null
+     */
+    public function getDisplayIssueDateForEvent(\Event $event)
+    {
+        $info = $this->getElementForEvent($event, 'Element_OphCoCvi_EventInfo');
+        return $info->getIssueDateForDisplay();
+    }
 
-	/**
-	 * @param Element_OphCoCvi_EventInfo $event_info
-	 * @return \User|null
-	 */
-	public function getClinicalConsultant(Element_OphCoCvi_EventInfo $event_info)
-	{
-		/**
-		 * @var Element_OphCoCvi_ClinicalInfo
-		 */
-		if ($clinical = $event_info->clinical_element) {
-			return $clinical->consultant;
-		}
-		return null;
-	}
+    /**
+     * @param \Event $event
+     * @return string
+     */
+    public function getEventViewUri(\Event $event)
+    {
+        return $this->yii->createUrl($event->eventType->class_name . '/default/view/' . $event->id);
+    }
 
-	/**
-	 * Abstraction of the list provider
-	 *
-	 * @return \CActiveDataProvider
-	 */
-	public function getListDataProvider()
-	{
-		$model = Element_OphCoCvi_EventInfo::model()->with(
-			'clinical_element',
-			'clinical_element.consultant',
-			'clerical_element',
-			'event.episode.patient.contact');
+    /**
+     * @param Element_OphCoCvi_EventInfo $event_info
+     * @return \User|null
+     */
+    public function getClinicalConsultant(Element_OphCoCvi_EventInfo $event_info)
+    {
+        /**
+         * @var Element_OphCoCvi_ClinicalInfo
+         */
+        if ($clinical = $event_info->clinical_element) {
+            return $clinical->consultant;
+        }
+        return null;
+    }
 
-		$sort = new \CSort();
+    /**
+     * Abstraction of the list provider
+     *
+     * @return \CActiveDataProvider
+     */
+    public function getListDataProvider()
+    {
+        $model = Element_OphCoCvi_EventInfo::model()->with(
+            'clinical_element',
+            'clinical_element.consultant',
+            'clerical_element',
+            'event.episode.patient.contact');
 
-		$sort->attributes = array(
-			'event_date' => array('asc' => 'event.event_date asc, event.id asc',
-				'desc' => 'event.event_date desc, event.id desc', ),
-			'patient_name' => array('asc' => 'lower(contact.last_name) asc, lower(contact.first_name) asc',
-				'desc' => 'lower(contact.last_name) desc, lower(contact.first_name) desc', ),
-			'consultant' => array(
-				'asc' => 'lower(consultant.last_name) asc, lower(consultant.first_name) asc, event.id asc',
-				'desc' => 'lower(consultant.last_name) desc, lower(consultant.first_name) desc, event.id desc', ),
-			'issue_status' => array('asc' => 'is_draft desc, event.id asc', 'desc' => 'is_draft asc, event.id desc'),
-			// no specific issue date field
-			// TODO: retrieve the date attribute from the info element class
-			'issue_date' => array(
-				'asc' => 'is_draft asc, t.last_modified_date asc',
-				'desc' => 'is_draft asc, t.last_modified_date desc'),
-		);
+        $sort = new \CSort();
 
-		return new \CActiveDataProvider($model, array(
-			'sort' => $sort));
-	}
+        $sort->attributes = array(
+            'event_date' => array(
+                'asc' => 'event.event_date asc, event.id asc',
+                'desc' => 'event.event_date desc, event.id desc',
+            ),
+            'patient_name' => array(
+                'asc' => 'lower(contact.last_name) asc, lower(contact.first_name) asc',
+                'desc' => 'lower(contact.last_name) desc, lower(contact.first_name) desc',
+            ),
+            'consultant' => array(
+                'asc' => 'lower(consultant.last_name) asc, lower(consultant.first_name) asc, event.id asc',
+                'desc' => 'lower(consultant.last_name) desc, lower(consultant.first_name) desc, event.id desc',
+            ),
+            'issue_status' => array('asc' => 'is_draft desc, event.id asc', 'desc' => 'is_draft asc, event.id desc'),
+            // no specific issue date field
+            // TODO: retrieve the date attribute from the info element class
+            'issue_date' => array(
+                'asc' => 'is_draft asc, t.last_modified_date asc',
+                'desc' => 'is_draft asc, t.last_modified_date desc'
+            ),
+        );
+
+        return new \CActiveDataProvider($model, array(
+            'sort' => $sort
+        ));
+    }
 }

@@ -18,17 +18,25 @@
 ?>
 
 <div class="element-fields row">
-			<?php echo $form->datePicker($element, 'examination_date', array('maxDate' => 'today'), array('style'=>'width: 110px;'))?>
-	<?php echo $form->radioBoolean($element, 'is_considered_blind')?>
-	<?php echo $form->radioBoolean($element, 'sight_varies_by_light_levels')?>
-	<?php echo $form->textField($element, 'unaided_right_va', array('size' => '10'))?>
-	<?php echo $form->textField($element, 'unaided_left_va', array('size' => '10'))?>
-	<?php echo $form->textField($element, 'best_corrected_right_va', array('size' => '10'))?>
-	<?php echo $form->textField($element, 'best_corrected_left_va', array('size' => '10'))?>
-	<?php echo $form->textField($element, 'best_corrected_binocular_va', array('size' => '10'))?>
-	<?php echo $form->dropDownList($element, 'low_vision_status_id', CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_LowVisionStatus::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'))?>
-	<?php echo $form->dropDownList($element, 'field_of_vision_id', CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_FieldOfVision::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'))?>
-	<?php echo $form->multiSelectList($element, 'MultiSelect_disorders', 'disorders', 'ophcocvi_clinicinfo_disorder_id', CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder::model()->findAll(array('order'=>'display_order asc')),'id','name'), null, array('empty' => '- Please select -', 'label' => 'Disorders'))?>
-	<?php echo $form->textArea($element, 'diagnoses_not_covered', array('rows' => 6, 'cols' => 80))?>
-	<?php echo $form->dropDownList($element, 'consultant_id', CHtml::listData(User::model()->findAll(array('order'=> 'last_name asc')),'id','last_name'),array('empty'=>'- Please select -'))?>
+    <?php echo $form->datePicker($element, 'examination_date', array('maxDate' => 'today'), array('style' => 'width: 110px;')) ?>
+    <?php echo $form->radioBoolean($element, 'is_considered_blind') ?>
+    <?php echo $form->radioBoolean($element, 'sight_varies_by_light_levels') ?>
+    <?php echo $form->textField($element, 'unaided_right_va', array('size' => '10')) ?>
+    <?php echo $form->textField($element, 'unaided_left_va', array('size' => '10')) ?>
+    <?php echo $form->textField($element, 'best_corrected_right_va', array('size' => '10')) ?>
+    <?php echo $form->textField($element, 'best_corrected_left_va', array('size' => '10')) ?>
+    <?php echo $form->textField($element, 'best_corrected_binocular_va', array('size' => '10')) ?>
+    <?php echo $form->dropDownList($element, 'low_vision_status_id',
+        CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_LowVisionStatus::model()->findAll(array('order' => 'display_order asc')),
+            'id', 'name'), array('empty' => '- Please select -')) ?>
+    <?php echo $form->dropDownList($element, 'field_of_vision_id',
+        CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_FieldOfVision::model()->findAll(array('order' => 'display_order asc')),
+            'id', 'name'), array('empty' => '- Please select -')) ?>
+    <?php echo $form->multiSelectList($element, 'MultiSelect_disorders', 'disorders', 'ophcocvi_clinicinfo_disorder_id',
+        CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder::model()->findAll(array('order' => 'display_order asc')),
+            'id', 'name'), null, array('empty' => '- Please select -', 'label' => 'Disorders')) ?>
+    <?php echo $form->textArea($element, 'diagnoses_not_covered', array('rows' => 6, 'cols' => 80)) ?>
+    <?php echo $form->dropDownList($element, 'consultant_id',
+        CHtml::listData(User::model()->findAll(array('order' => 'last_name asc')), 'id', 'last_name'),
+        array('empty' => '- Please select -')) ?>
 </div>
