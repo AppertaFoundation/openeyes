@@ -46,15 +46,13 @@ $cols = array(
         }
     ),
     array(
-        'id' => 'status',
-        'header' => 'Status',
-        'value' => function($data) use ($manager) {
-            return $manager->getDisplayStatusFromEventInfo($data);
-        }
+        'id' => 'issue_status',
+        'header' => $dp->getSort()->link('issue_status', 'Status', array('class' => 'sort-link')),
+        'value' => '$data->getIssueStatusForDisplay()'
     ),
     array(
-        'id' => 'issue-date',
-        'header' => 'Issue Date',
+        'id' => 'issue_date',
+        'header' => $dp->getSort()->link('issue_date', 'Issue Date', array('class' => 'sort-link')),
         'value' => function ($data) {
             $date = $data->getIssueDateForDisplay();
             if ($date) {
@@ -62,6 +60,31 @@ $cols = array(
             }
             return '-';
         }
+    ),
+    array(
+        'id' => 'actions',
+        'header' => 'Actions',
+        'class' => 'CButtonColumn',
+        'htmlOptions' => array('class' => 'left'),
+        'template' => '<span style="white-space: nowrap;">{view} {edit}</span>',
+        'viewButtonImageUrl' => false,
+        'buttons' => array(
+            'view' => array(
+                'options' => array('title' => 'View CVI', 'class' => ''),
+                'url' => 'Yii::app()->createURL("/OphCoCvi/Default/view/", array(
+                        "id" => $data->event_id))',
+                'label' => '<button class="secondary small">view</button>'
+            ),
+            'edit' => array(
+                'options' => array('title' => 'Add a comment'),
+                'url' => 'Yii::app()->createURL("/OphCoMessaging/Default/update/", array(
+                                        "id" => $data->event_id))',
+                'label' => '<button class="secondary small">Edit</button>',
+                'visible' => function ($row, $data) {
+                    return $data->is_draft;
+                },
+            ),
+        ),
     )
 );
 

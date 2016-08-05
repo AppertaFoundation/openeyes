@@ -136,4 +136,12 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
 		}
 		return null;
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getIssueStatusForDisplay()
+	{
+		return $this->is_draft ? 'Draft' : 'Issued';
+	}
 }

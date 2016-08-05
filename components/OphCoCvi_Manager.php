@@ -107,7 +107,7 @@ class OphCoCvi_Manager extends \CComponent
 	 */
 	protected function getDisplayStatus(Element_OphCoCvi_ClinicalInfo $clinical, Element_OphCoCvi_EventInfo $info)
 	{
-		return $clinical->getDisplayStatus() . ' (' . ($info->is_draft ? 'Draft' : 'Issued') . ')';
+		return $clinical->getDisplayStatus() . ' (' . $info->getIssueStatusForDisplay() . ')';
 	}
 
 	/**
@@ -186,7 +186,26 @@ class OphCoCvi_Manager extends \CComponent
 			'clinical_element.consultant',
 			'clerical_element',
 			'event.episode.patient.contact');
-		
-		return new \CActiveDataProvider($model);
+
+		$sort = new \CSort();
+
+		$sort->attributes = array(
+			'event_date' => array('asc' => 'event.event_date asc, event.id asc',
+				'desc' => 'event.event_date desc, event.id desc', ),
+			'patient_name' => array('asc' => 'lower(contact.last_name) asc, lower(contact.first_name) asc',
+				'desc' => 'lower(contact.last_name) desc, lower(contact.first_name) desc', ),
+			'consultant' => array(
+				'asc' => 'lower(consultant.last_name) asc, lower(consultant.first_name) asc, event.id asc',
+				'desc' => 'lower(consultant.last_name) desc, lower(consultant.first_name) desc, event.id desc', ),
+			'issue_status' => array('asc' => 'is_draft desc, event.id asc', 'desc' => 'is_draft asc, event.id desc'),
+			// no specific issue date field
+			// TODO: retrieve the date attribute from the info element class
+			'issue_date' => array(
+				'asc' => 'is_draft asc, t.last_modified_date asc',
+				'desc' => 'is_draft asc, t.last_modified_date desc'),
+		);
+
+		return new \CActiveDataProvider($model, array(
+			'sort' => $sort));
 	}
 }
