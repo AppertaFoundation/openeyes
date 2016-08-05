@@ -26,7 +26,7 @@ class OphCoCvi_API extends \BaseAPI
 {
 	protected $yii;
 
-	public function __construct(CApplication $yii = null)
+	public function __construct(\CApplication $yii = null)
 	{
 		if (is_null($yii)) {
 			$yii = \Yii::app();
