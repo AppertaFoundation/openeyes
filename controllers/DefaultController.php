@@ -32,7 +32,6 @@ class DefaultController extends \BaseEventTypeController
         'list' => self::ACTION_TYPE_LIST
     );
 
-
     /**
      * Create Form with check for the cvi existing events count
      */
@@ -61,6 +60,8 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * Currently uses the OprnEditCvi operation to check for access
+     * 
      * @return boolean
      */
     public function checkListAccess()
@@ -95,7 +96,10 @@ class DefaultController extends \BaseEventTypeController
     {
 
     }
-    
+
+    /**
+     * @return OphCoCvi_Manager
+     */
     public function getManager()
     {
         if (!isset($this->cvi_manager)) {
@@ -105,6 +109,9 @@ class DefaultController extends \BaseEventTypeController
         return $this->cvi_manager;
     }
 
+    /**
+     * Generate a list of all the CVI events for clerical use.
+     */
     public function actionList()
     {
         $this->layout = '//layouts/main';
