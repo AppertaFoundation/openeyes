@@ -21,7 +21,7 @@ return array(
             'Clinical Disorder Section' => '/OphCoCvi/admin/clinicalDisorderSection',
             'Clinical Disorder' => '/OphCoCvi/admin/clinicalDisorders',
             'Patient Factor' => '/OphCoCvi/admin/patientFactor',
-            'Employment Status' => '/OphCoCvi/admin/employeementStatus',
+            'Employment Status' => '/OphCoCvi/admin/employementStatus',
             'Contact Urgency' => '/OphCoCvi/admin/contactUrgency',
             'Field of Vision' => '/OphCoCvi/admin/fieldOfVision',
             'Low Vision Status' => '/OphCoCvi/admin/lowVisionStatus',
