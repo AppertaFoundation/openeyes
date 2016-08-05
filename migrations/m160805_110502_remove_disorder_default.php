@@ -15,23 +15,17 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-namespace OEModule\OphCoCvi\controllers;
-
-class DefaultController extends \BaseEventTypeController
+class m160805_110502_remove_disorder_default extends CDbMigration
 {
-    const ACTION_TYPE_LIST = 'List';
-
-    protected static $action_types = array(
-        'list' => self::ACTION_TYPE_LIST
-    );
-
-    public function actionList()
+    public function up()
     {
-        echo "list";
+        $this->dropColumn('ophcocvi_clinicinfo_disorder', 'default');
+        $this->dropColumn('ophcocvi_clinicinfo_disorder_version', 'default');
     }
 
-    public function checkListAccess()
+    public function down()
     {
-        return $this->checkAccess('OprnEditCvi', $this->getApp()->user->id);
+        $this->addColumn('ophcocvi_clinicinfo_disorder_version', 'default', 'tinyint(1) unsigned NOT NULL DEFAULT 0');
+        $this->addColumn('ophcocvi_clinicinfo_disorder', 'default', 'tinyint(1) unsigned NOT NULL DEFAULT 0');
     }
 }
