@@ -1,21 +1,19 @@
 ---
 server:
-    install: '1'
     timezone: Europe/London
     locale: en_US.UTF-8
-    vagrant_user_password: 'vagrant'
-    packages: [build-essential, curl, git, vim]
+    vagrant_user_password: "vagrant"
+    packages: [ build-essential, curl, git, vim ]
 
 vagrant_local:
-    install: '1'
-    vm: {hostname: openeyes.vm }
+    vm: { hostname: openeyes.vm }
 
 # https://github.com/geerlingguy/ansible-role-apache
 apache_remove_default_vhost: true
 apache_create_vhosts: true
 apache_vhosts_filename: "010-openeyes.conf"
 apache_vhosts:
-  - {servername: "openeyes.vm", documentroot: "/var/www/openeyes"}
+  - { servername: "openeyes.vm", documentroot: "/var/www/openeyes" }
 apache_mods_enabled:
   - rewrite.load
   # - version.load # TODO not present in standard build (is it required)
@@ -25,17 +23,20 @@ mysql_root_password: "sqlsuks"
 mysql_port: "3306"
 mysql_bind_address: '0.0.0.0'
 mysql_datadir: /var/lib/mysql
+mysql_lower_case_table_names: 1
 mysql_packages:
   - mariadb-client
   - mariadb-server
   - python-mysqldb
 mysql_databases:
   - name: openeyes
+  - name: openeyestest
 mysql_users:
   - name: openeyes
     host: "%"
     password: oe_test
     priv: "openeyes.*:ALL"
+    priv: "openeyestest.*:ALL"
 
 # https://github.com/geerlingguy/ansible-role-nodejs
 nodejs_version: "6.x"
@@ -45,6 +46,10 @@ nodejs_npm_global_packages:
 
 # https://github.com/geerlingguy/ansible-role-php
 php_webserver_daemon: "apache2"
+php_use_managed_ini: true
+php_date_timezone: "Europe/London"
+php_error_reporting: "E_ALL"
+php_display_errors: "On"
 php_packages:
   - libapache2-mod-php5
   - php5-cli
@@ -63,7 +68,11 @@ composer_keep_updated: true
 # composer_github_oauth_token: ''
 
 # https://github.com/geerlingguy/ansible-role-php-xdebug
-# No options configured at this time
+php_xdebug_remote_enable: true
+php_xdebug_remote_connect_back: true
+php_xdebug_remote_port: "9000"
+php_xdebug_idekey: across-health.xdebug
+# php_xdebug_remote_log: /tmp/xdebug.log # Useful for connection debug
 
 # https://github.com/pludoni/ansible-wkhtmltox
 # No options configured at this time
