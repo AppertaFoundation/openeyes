@@ -1,6 +1,6 @@
 <?php
 
 return array(
-	'audittrail1' => array(
-	),
+    'audittrail1' => array(
+    ),
 );

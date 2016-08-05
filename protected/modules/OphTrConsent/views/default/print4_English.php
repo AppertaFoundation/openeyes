@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -80,9 +80,11 @@
 		<tr>
 			<th>Procedure(s)</th>
 			<td><?php foreach ($elements['Element_OphTrConsent_Procedure']->procedures as $i => $procedure) {
-					if ($i >0) echo ', ';
-					echo \CHtml::encode($procedure->term);
-				}?></td>
+    if ($i > 0) {
+        echo ', ';
+    }
+    echo \CHtml::encode($procedure->term);
+}?></td>
 		</tr>
 		<tr>
 			<th>&nbsp;<br />Consent date</th>
@@ -96,7 +98,7 @@
 		<h3>All sections to be completed by health professional proposing the procedure</h3>
 		<div class="spacer"></div>
 		<h3>A. Details of procedure or course of treatment proposed</h3>
-		<?php echo $this->renderPartial('_proposed_procedures',array('css_class'=>$css_class,'procedures'=>$elements['Element_OphTrConsent_Procedure']->procedures,'eye'=>$elements['Element_OphTrConsent_Procedure']->eye->adjective))?>
+		<?php echo $this->renderPartial('_proposed_procedures', array('css_class' => $css_class, 'procedures' => $elements['Element_OphTrConsent_Procedure']->procedures, 'eye' => $elements['Element_OphTrConsent_Procedure']->eye->adjective))?>
 		<p>
 			(NB see guidance to health professionals overleaf for details of situations where court approval must first be sought)
 		</p>
@@ -158,7 +160,7 @@
 		</span>
 		<br/>
 			.................................................................................................................................<br/><br/>
-		<?php echo $this->renderPartial('signature_table2',array('vi'=>($css_class == 'impaired'),'address'=>true))?>
+		<?php echo $this->renderPartial('signature_table2', array('vi' => ($css_class == 'impaired'), 'address' => true))?>
 		<p>
 			If a person close to the patient was not available in person, has this matter been discussed in any other way (eg over the telephone?)	Yes&nbsp;&nbsp;&nbsp;No<br/><br/>
 			<?php if ($css_class == 'impaired') {?>
@@ -174,12 +176,12 @@
 			The above procedure is, in my clinical judgement, in the best interests of the patient, who lacks capacity to consent for himself or herself.  Where possible and appropriate I have discussed the patient’s condition with those close to him or her, and taken their knowledge of the patient’s past and present wishes, feelings, views and beliefs and values into account in determining his or her best interests.
 		</p>
 		<div class="spacer"></div>
-		<?php echo $this->renderPartial('signature_table1',array('vi'=>($css_class == 'impaired'),'consultant'=>$elements['Element_OphTrConsent_Other']->consultant))?>
+		<?php echo $this->renderPartial('signature_table1', array('vi' => ($css_class == 'impaired'), 'consultant' => $elements['Element_OphTrConsent_Other']->consultant))?>
 		<div class="spacer"></div>
 		<p>
 			Where second opinion sought, s/he should sign below to confirm agreement:
 		</p>
-		<?php echo $this->renderPartial('signature_table1',array('vi'=>($css_class == 'impaired'),'consultant'=>$elements['Element_OphTrConsent_Other']->consultant))?>
+		<?php echo $this->renderPartial('signature_table1', array('vi' => ($css_class == 'impaired'), 'consultant' => $elements['Element_OphTrConsent_Other']->consultant))?>
 	</div>
 	<div class="pageBreak">
 		<p>

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -22,27 +22,27 @@
 	<h2>Add <?php echo $title?></h2>
 
 	<?php
-	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-		'id'=>'adminform',
-		'enableAjaxValidation'=>false,
-		'htmlOptions' => array(
-				'enctype' => 'multipart/form-data'
-		),
-		'layoutColumns' => array(
-			'label' => 2,
-			'field' => 5
-		)
-	))?>
+    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+        'id' => 'adminform',
+        'enableAjaxValidation' => false,
+        'htmlOptions' => array(
+                'enctype' => 'multipart/form-data',
+        ),
+        'layoutColumns' => array(
+            'label' => 2,
+            'field' => 5,
+        ),
+    ))?>
 
 	<?php echo $form->errorSummary($model)?>
 
 	<?php
-	$this->renderPartial('form_'.get_class($model), array(
-			'model' => $model,
-			'form' => $form,
-	))?>
+    $this->renderPartial('form_'.get_class($model), array(
+            'model' => $model,
+            'form' => $form,
+    ))?>
 
-	<?php echo $form->formActions(array('cancel-uri'=>@$cancel_uri))?>
+	<?php echo $form->formActions(array('cancel-uri' => @$cancel_uri))?>
 
 	<?php $this->endWidget()?>
 </div>

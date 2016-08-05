@@ -87,7 +87,7 @@
                 <h2 class="mdl-card__title-text">Alpha-blockers</h2>
             </div>
             <div class="mdl-card__supporting-text">
-                <?php if($data->alpha_blockers):?>
+                <?php if ($data->alpha_blockers):?>
                     Yes - <?=$data->alpha_blocker_name?>
                 <?php else: ?>
                     No
@@ -101,7 +101,7 @@
                 <h2 class="mdl-card__title-text">Predicted additional equipment</h2>
             </div>
             <div class="mdl-card__supporting-text">
-                <?php if($data->predicted_additional_equipment): ?>
+                <?php if ($data->predicted_additional_equipment): ?>
                     <?=nl2br($data->predicted_additional_equipment)?>
                 <?php else:?>
                     None
@@ -115,7 +115,7 @@
                 <h2 class="mdl-card__title-text">Anticoagulants</h2>
             </div>
             <div class="mdl-card__supporting-text">
-                <?php if($data->anticoagulants):?>
+                <?php if ($data->anticoagulants):?>
                     Yes - <?=$data->anticoagulant_name?> <br>
                     INR: <?=$data->inr?>
                 <?php else: ?>

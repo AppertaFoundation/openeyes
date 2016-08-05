@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2012
@@ -10,8 +10,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
@@ -27,13 +27,13 @@ class ReportController extends BaseReportController
                 'actions' => array('index', 'diagnoses', 'runReport', 'downloadReport', 'ajaxReport', 'reportData'),
                 'roles' => array('OprnGenerateReport'),
             ),
-            
+
             array(
                 'allow',
                 'actions' => array('ajaxReport', 'reportData'),
-                'expression' => 'Yii::app()->user->isSurgeon()'
+                'expression' => 'Yii::app()->user->isSurgeon()',
             ),
-            
+
         );
     }
 
@@ -56,7 +56,7 @@ class ReportController extends BaseReportController
         $reportObj = $this->loadReport();
 
         $this->renderPartial($reportObj->getTemplate(), array(
-            'report' => $reportObj
+            'report' => $reportObj,
         ));
     }
 
@@ -72,14 +72,15 @@ class ReportController extends BaseReportController
 
     /**
      * @return ReportInterface
+     *
      * @throws CHttpException
      */
     private function loadReport()
     {
-        $report = Yii::app()->request->getParam('report') . 'Report';
+        $report = Yii::app()->request->getParam('report').'Report';
         //Load the modules for when a report is defined there.
-        foreach(Yii::app()->modules as $module => $moduleData){
-            if(strpos($module, 'Oph') === 0){
+        foreach (Yii::app()->modules as $module => $moduleData) {
+            if (strpos($module, 'Oph') === 0) {
                 Yii::app()->getModule($module);
             }
         }
@@ -91,6 +92,5 @@ class ReportController extends BaseReportController
         }
 
         return $reportObj;
-
     }
 }

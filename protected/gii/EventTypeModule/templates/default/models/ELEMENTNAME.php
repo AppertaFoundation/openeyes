@@ -18,36 +18,38 @@
  */
 
 /**
- * This is the model class for table "<?php if (isset($element)) echo $element['table_name']; ?>".
+ * This is the model class for table "<?php if (isset($element)) {
+    echo $element['table_name'];
+} ?>".
  *
  * The followings are the available columns in table:
  * @property string $id
  * @property integer $event_id
 <?php
 if (isset($element)) {
-	foreach ($element['fields'] as $field) {
-		switch ($field['type']) {
-			case 'Textbox':
-			case 'Textarea':
-			case 'Date picker':
-				echo ' * @property string $' . $field['name'] . "\n";
-				break;
-			case 'Integer':
-			case 'Dropdown list':
-			case 'Checkbox':
-			case 'Radio buttons':
-			case 'Boolean':
-			case 'Slider':
-				echo ' * @property integer $' . $field['name'] . "\n";
-				break;
-			case 'Textarea with dropdown':
-				echo ' * @property string $' . $field['name'] . "\n";
-				if (@$field['extra_report']) {
-					echo ' * @property string $' . $field['name'] . "2\n";
-				}
-				break;
-		}
-	}
+    foreach ($element['fields'] as $field) {
+        switch ($field['type']) {
+            case 'Textbox':
+            case 'Textarea':
+            case 'Date picker':
+                echo ' * @property string $'.$field['name']."\n";
+                break;
+            case 'Integer':
+            case 'Dropdown list':
+            case 'Checkbox':
+            case 'Radio buttons':
+            case 'Boolean':
+            case 'Slider':
+                echo ' * @property integer $'.$field['name']."\n";
+                break;
+            case 'Textarea with dropdown':
+                echo ' * @property string $'.$field['name']."\n";
+                if (@$field['extra_report']) {
+                    echo ' * @property string $'.$field['name']."2\n";
+                }
+                break;
+        }
+    }
 }
 ?>
  *
@@ -58,12 +60,16 @@ if (isset($element)) {
  * @property Event $event
  * @property User $user
  * @property User $usermodified
-<?php if (isset($element)) { foreach ($element['relations'] as $relation) {
-		echo " * @property {$relation['class']} \${$relation['name']}\n";
-} }?>
+<?php if (isset($element)) {
+    foreach ($element['relations'] as $relation) {
+        echo " * @property {$relation['class']} \${$relation['name']}\n";
+    }
+}?>
  */
 
-class <?php if (isset($element)) echo $element['class_name']; ?> extends BaseEventTypeElement
+class <?php if (isset($element)) {
+    echo $element['class_name'];
+} ?> extends BaseEventTypeElement
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -79,7 +85,9 @@ class <?php if (isset($element)) echo $element['class_name']; ?> extends BaseEve
 	 */
 	public function tableName()
 	{
-		return '<?php if (isset($element)) echo $element['table_name']; ?>';
+		return '<?php if (isset($element)) {
+    echo $element['table_name'];
+} ?>';
 	}
 
 	/**
@@ -88,39 +96,61 @@ class <?php if (isset($element)) echo $element['class_name']; ?> extends BaseEve
 	public function rules()
 	{
 		return array(
-			array('event_id, <?php if (isset($element)) { foreach ($element['fields'] as $field) { if ($field['type'] != 'Multi select') echo $field['name'] . ", "; if ($field['type'] == 'EyeDraw' && @$field['extra_report']) { echo $field['name'].'2, '; } } } ?>', 'safe'),
-			array('<?php if (isset($element)) { foreach ($element['fields'] as $field) { if ($field['required'] && $field['type'] != 'Multi select') { echo $field['name'] . ", "; } } } ?>', 'required'),
-			array('id, event_id, <?php if (isset($element)) { foreach ($element['fields'] as $field) { if ($field['type'] != 'Multi select') echo $field['name'] . ", "; } } ?>', 'safe', 'on' => 'search'),
-<?php if (isset($element))
-	foreach ($element['fields'] as $field) {
-		if ($field['type'] == 'Integer' && (strlen(@$field['integer_min_value']) || strlen(@$field['integer_max_value'])) ) {
-			echo "\t\t\tarray('" . $field['name'] . "', 'numerical', 'integerOnly' => true,";
-			if (strlen(@$field['integer_min_value']) ) {
-				echo " 'min' => " . $field['integer_min_value'] . ",";
-			}
-			if (strlen(@$field['integer_max_value']) ) {
-				echo " 'max' => " . $field['integer_max_value'] .",";
-			}
-			echo " 'message' => '" . $field['label'] . " ";
-			if (strlen(@$field['integer_min_value']) && strlen(@$field['integer_max_value']) ) {
-				echo "must be between " . $field['integer_min_value'] . " - " . $field['integer_max_value'];
-			} else if (strlen(@$field['integer_min_value']) ) {
-				echo "must be higher or equal to " . $field['integer_min_value'];
-			} else {
-				echo "must be lower or equal to " . $field['integer_max_value'];
-			}
-			echo "'),\n";
-		} else if ($field['type'] == 'Decimal') {
-			echo "\t\t\tarray(";
-			echo "'" . $field['name'] . "', 'numerical', 'numberPattern' => '/^\s*[\+\-]?\d+\.?\d*\s*$/',";
-			if (strlen(@$field['decimal_min_value'])) {
-				echo " 'min' => " . $field['decimal_min_value'] . ",";
-			}
-			if (strlen(@$field['decimal_max_value'])) {
-				echo " 'max' => " . $field['decimal_max_value'];
-			}
-			echo "),\n";
-	}
+			array('event_id, <?php if (isset($element)) {
+    foreach ($element['fields'] as $field) {
+        if ($field['type'] != 'Multi select') {
+            echo $field['name'].', ';
+        }
+        if ($field['type'] == 'EyeDraw' && @$field['extra_report']) {
+            echo $field['name'].'2, ';
+        }
+    }
+} ?>', 'safe'),
+			array('<?php if (isset($element)) {
+    foreach ($element['fields'] as $field) {
+        if ($field['required'] && $field['type'] != 'Multi select') {
+            echo $field['name'].', ';
+        }
+    }
+} ?>', 'required'),
+			array('id, event_id, <?php if (isset($element)) {
+    foreach ($element['fields'] as $field) {
+        if ($field['type'] != 'Multi select') {
+            echo $field['name'].', ';
+        }
+    }
+} ?>', 'safe', 'on' => 'search'),
+<?php if (isset($element)) {
+    foreach ($element['fields'] as $field) {
+        if ($field['type'] == 'Integer' && (strlen(@$field['integer_min_value']) || strlen(@$field['integer_max_value']))) {
+            echo "\t\t\tarray('".$field['name']."', 'numerical', 'integerOnly' => true,";
+            if (strlen(@$field['integer_min_value'])) {
+                echo " 'min' => ".$field['integer_min_value'].',';
+            }
+            if (strlen(@$field['integer_max_value'])) {
+                echo " 'max' => ".$field['integer_max_value'].',';
+            }
+            echo " 'message' => '".$field['label'].' ';
+            if (strlen(@$field['integer_min_value']) && strlen(@$field['integer_max_value'])) {
+                echo 'must be between '.$field['integer_min_value'].' - '.$field['integer_max_value'];
+            } elseif (strlen(@$field['integer_min_value'])) {
+                echo 'must be higher or equal to '.$field['integer_min_value'];
+            } else {
+                echo 'must be lower or equal to '.$field['integer_max_value'];
+            }
+            echo "'),\n";
+        } elseif ($field['type'] == 'Decimal') {
+            echo "\t\t\tarray(";
+            echo "'".$field['name']."', 'numerical', 'numberPattern' => '/^\s*[\+\-]?\d+\.?\d*\s*$/',";
+            if (strlen(@$field['decimal_min_value'])) {
+                echo " 'min' => ".$field['decimal_min_value'].',';
+            }
+            if (strlen(@$field['decimal_max_value'])) {
+                echo " 'max' => ".$field['decimal_max_value'];
+            }
+            echo "),\n";
+        }
+    }
 }?>
 		);
 	}
@@ -136,9 +166,13 @@ class <?php if (isset($element)) echo $element['class_name']; ?> extends BaseEve
 			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-<?php if (isset($element)) foreach ($element['relations'] as $relation) {?>
+<?php if (isset($element)) {
+    foreach ($element['relations'] as $relation) {
+        ?>
 			'<?php echo $relation['name']?>' => array(self::<?php echo $relation['type']?>, '<?php echo $relation['class']?>', '<?php echo $relation['field']?>'),
-<?php }?>
+<?php 
+    }
+}?>
 		);
 	}
 
@@ -152,9 +186,9 @@ class <?php if (isset($element)) echo $element['class_name']; ?> extends BaseEve
 			'event_id' => 'Event',
 <?php
 if (isset($element)) {
-	foreach ($element['fields'] as $field) {
-		echo "\t\t\t'" . $field['name'] . '\' => \'' . $field['label'] . "',\n";
-	}
+    foreach ($element['fields'] as $field) {
+        echo "\t\t\t'".$field['name'].'\' => \''.$field['label']."',\n";
+    }
 }
 ?>
 		);
@@ -172,9 +206,9 @@ if (isset($element)) {
 		$criteria->compare('event_id', $this->event_id, true);
 <?php
 if (isset($element)) {
-	foreach ($element['fields'] as $field) {
-		echo "\t\t\$criteria->compare('". $field['name'] . '\', $this->' . $field['name'] . ');' . "\n";
-	}
+    foreach ($element['fields'] as $field) {
+        echo "\t\t\$criteria->compare('".$field['name'].'\', $this->'.$field['name'].');'."\n";
+    }
 }
 ?>
 
@@ -183,7 +217,8 @@ if (isset($element)) {
 		));
 	}
 
-<?php if (@$element['add_selected_eye']) {?>
+<?php if (@$element['add_selected_eye']) {
+    ?>
 	public function getSelectedEye()
 	{
 		if (Yii::app()->getController()->getAction()->id == 'create') {
@@ -210,11 +245,13 @@ if (isset($element)) {
 	{
 		return new Eye;
 	}
-<?php }?>
+<?php 
+}?>
 
 <?php if (isset($element) && !empty($element['defaults_methods'])) {
-		foreach ($element['defaults_methods'] as $default_method) {
-			if (@$default_method['is_defaults_table']) {?>
+    foreach ($element['defaults_methods'] as $default_method) {
+        if (@$default_method['is_defaults_table']) {
+            ?>
 	public function get<?php echo $default_method['method']?>() {
 		$ids = array();
 		foreach (<?php echo $default_method['class']?>::model()->findAll() as $item) {
@@ -222,7 +259,9 @@ if (isset($element)) {
 		}
 		return $ids;
 	}
-<?php } else {?>
+<?php 
+        } else {
+            ?>
 	public function get<?php echo $default_method['method']?>() {
 		$ids = array();
 		foreach (<?php echo $default_method['class']?>::model()->findAll('`default` = ?',array(1)) as $item) {
@@ -230,15 +269,21 @@ if (isset($element)) {
 		}
 		return $ids;
 	}
-<?php }?>
-<?php }?>
-<?php }?>
+<?php 
+        }
+        ?>
+<?php 
+    }
+    ?>
+<?php 
+}?>
 
 	protected function afterSave()
 	{
 <?php if (isset($element) && !empty($element['after_save'])) {
-			foreach ($element['after_save'] as $after_save) {
-				if ($after_save['type'] == 'MultiSelect') {?>
+    foreach ($element['after_save'] as $after_save) {
+        if ($after_save['type'] == 'MultiSelect') {
+            ?>
 		if (!empty($_POST['<?php echo $after_save['post_var']?>'])) {
 
 			$existing_ids = array();
@@ -268,9 +313,10 @@ if (isset($element)) {
 				}
 			}
 		}
-<?php }
-			}
-		}?>
+<?php 
+        }
+    }
+}?>
 
 		return parent::afterSave();
 	}

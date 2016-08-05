@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -10,8 +10,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -19,7 +19,6 @@
  */
 class BaseActiveRecordTest extends CDbTestCase
 {
-
     /**
      * @var AddressType
      */
@@ -28,7 +27,7 @@ class BaseActiveRecordTest extends CDbTestCase
          'alllergies' => 'Allergy',
          ); */
     public $testattributes = array(
-        'name' => 'allergy test'
+        'name' => 'allergy test',
     );
 
     /**
@@ -40,7 +39,7 @@ class BaseActiveRecordTest extends CDbTestCase
         parent::setUp();
 
         //using allergy model to test the active record
-        $this->model = new Allergy;
+        $this->model = new Allergy();
     }
 
     public function getShortModelNameDataProvider()
@@ -57,13 +56,14 @@ class BaseActiveRecordTest extends CDbTestCase
      */
     public function testGetShortModelName($class_name, $short_name)
     {
-        $class_file = __DIR__ . DIRECTORY_SEPARATOR . 'BaseActiveRecordTest' . DIRECTORY_SEPARATOR . preg_replace('/^.*\\\\/', '', $class_name) . '.php';
-        require_once($class_file);
+        $class_file = __DIR__.DIRECTORY_SEPARATOR.'BaseActiveRecordTest'.DIRECTORY_SEPARATOR.preg_replace('/^.*\\\\/', '', $class_name).'.php';
+        require_once $class_file;
         $this->assertEquals($short_name, $class_name::getShortModelName());
     }
 
     /**
      * @covers BaseActiveRecord::save
+     *
      * @todo   Implement testSave().
      */
     public function testSave()
@@ -71,7 +71,7 @@ class BaseActiveRecordTest extends CDbTestCase
 
         //using allergy model to test the active record
 
-        $testmodel = new Allergy;
+        $testmodel = new Allergy();
         $testmodel->setAttributes($this->testattributes);
 
         $testmodel->save();
@@ -84,11 +84,11 @@ class BaseActiveRecordTest extends CDbTestCase
 
     /**
      * @covers BaseActiveRecord::NHSDate
+     *
      * @todo   Implement testNHSDate().
      */
     public function testNHSDate()
     {
-
         $this->model->last_modified_date = '1902-01-01 00:00:00';
         $result = $this->model->NHSDate('last_modified_date', $empty_string = '-');
 
@@ -99,11 +99,11 @@ class BaseActiveRecordTest extends CDbTestCase
 
     /**
      * @covers BaseActiveRecord::NHSDateAsHTML
+     *
      * @todo   Implement testNHSDateAsHTML().
      */
     public function testNHSDateAsHTML()
     {
-
         $this->model->last_modified_date = '1902-01-01 00:00:00';
         $result = $this->model->NHSDateAsHTML('last_modified_date', $empty_string = '-');
 
@@ -114,6 +114,7 @@ class BaseActiveRecordTest extends CDbTestCase
 
     /**
      * @covers BaseActiveRecord::audit
+     *
      * @todo   Implement testAudit().
      */
     public function testAudit()
@@ -179,7 +180,7 @@ class BaseActiveRecordTest extends CDbTestCase
             )),
             'relations' => array(
                 'many_many' => $mm_cls,
-            )
+            ),
         ));
 
         $test = new ManyManyOwnerTestClass();
@@ -315,7 +316,6 @@ class BaseActiveRecordTest extends CDbTestCase
             ->method('getRelated')
             ->with($this->equalTo('has_many'), $this->equalTo(true))
             ->will($this->returnValue($orig_vals));
-
 
         $r = new ReflectionClass($test);
         $p = $r->getProperty('auto_update_relations');
@@ -576,7 +576,7 @@ class BaseActiveRecordTest extends CDbTestCase
                 //'has_many' => $hm_cls,
                 //'has_many_thru' => $hmt_cls,
                 'many_many' => $mm_cls,
-            )
+            ),
         ));
 
         $test->expects($this->any())
@@ -631,9 +631,9 @@ class BaseActiveRecordTest extends CDbTestCase
         Allergy::model()->deleteAllByAttributes($this->testattributes);
         Allergy::model()->deleteAllByAttributes(array('name' => $dirty_allergy_name));
 
-        /** New Model **/
+        /* New Model **/
 
-        $allergy = new Allergy;
+        $allergy = new Allergy();
         $allergy->setAttributes($this->testattributes);
 
         // test to save a new model
@@ -647,8 +647,7 @@ class BaseActiveRecordTest extends CDbTestCase
         $this->assertNotNull($allergy);
         $this->assertEquals($this->testattributes['name'], $allergy->name);
 
-
-        /** Clean Model **/
+        /* Clean Model **/
 
         $allergyAttributes = $allergy->getAttributes();
 
@@ -672,11 +671,11 @@ class BaseActiveRecordTest extends CDbTestCase
         $this->assertEquals($allergyAttributes['active'], $allergy->active);
         $this->assertEquals($allergyAttributes['display_order'], $allergy->display_order);
 
-        /** Dirty Model **/
+        /* Dirty Model **/
 
         //let's modify the model
         $allergy->name = $dirty_allergy_name;
-        $allergy->last_modified_date = date("Y-m-d H:i:s");
+        $allergy->last_modified_date = date('Y-m-d H:i:s');
 
         if (!$allergy->saveOnlyIfDirty()->save()) {
             $this->fail('Updating modified model fails on saveOnlyIfDirty()');
@@ -691,7 +690,6 @@ class BaseActiveRecordTest extends CDbTestCase
 
         Allergy::model()->deleteAllByAttributes(array('name' => $dirty_allergy_name));
         Allergy::model()->deleteAllByAttributes($this->testattributes);
-
     }
 }
 
@@ -701,7 +699,6 @@ class RelationOwnerSaveClass extends BaseActiveRecord
     public $has_many_thru;
     public $many_many;
     public $the_pk;
-
 }
 
 class ManyManyOwnerTestClass extends BaseActiveRecord
@@ -733,7 +730,7 @@ class RelationTestClass extends BaseActiveRecord
     public function rules()
     {
         return array(
-            array('default_prop, test_value, element_id', 'safe')
+            array('default_prop, test_value, element_id', 'safe'),
         );
     }
 
@@ -742,10 +739,9 @@ class RelationTestClass extends BaseActiveRecord
         return ComponentStubGenerator::generate('CActiveRecordMetaData', array(
             'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
                 'primaryKey' => 'test_pk',
-                'columns' => array('test_pk', 'default_prop')))
+                'columns' => array('test_pk', 'default_prop'), )),
         ));
     }
-
 
     public function find($condition = '', $params = array())
     {
@@ -757,6 +753,7 @@ class RelationTestClass extends BaseActiveRecord
         $cls = __CLASS__;
         $res = new $cls();
         $res->setPrimaryKey($pk);
+
         return $res;
     }
 }
@@ -773,7 +770,7 @@ class RelationTestAssClass extends BaseActiveRecord
     public function rules()
     {
         return array(
-            array('default_prop, test_value, element_id', 'safe')
+            array('default_prop, test_value, element_id', 'safe'),
         );
     }
 
@@ -782,10 +779,9 @@ class RelationTestAssClass extends BaseActiveRecord
         return ComponentStubGenerator::generate('CActiveRecordMetaData', array(
             'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
                 'primaryKey' => 'id',
-                'columns' => array('id', 'element_id', 'rel_id')))
+                'columns' => array('id', 'element_id', 'rel_id'), )),
         ));
     }
-
 
     public function find($condition = '', $params = array())
     {
@@ -797,6 +793,7 @@ class RelationTestAssClass extends BaseActiveRecord
         $cls = __CLASS__;
         $res = new $cls();
         $res->setPrimaryKey($pk);
+
         return $res;
     }
 
@@ -804,6 +801,4 @@ class RelationTestAssClass extends BaseActiveRecord
     {
         return true;
     }
-
 }
-

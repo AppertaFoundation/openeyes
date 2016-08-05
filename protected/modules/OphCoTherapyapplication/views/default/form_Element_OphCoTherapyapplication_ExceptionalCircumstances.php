@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -30,8 +30,8 @@
 	<div class="element-eye right-eye left side column <?php if (!$element->hasRight()) {?> inactive<?php }?>"
 		data-side="right">
 		<div class="active-form">
-			<?php $this->renderPartial($element->form_view . '_fields',
-				array('side' => 'right', 'element' => $element, 'form' => $form, 'data' => $data)); ?>
+			<?php $this->renderPartial($element->form_view.'_fields',
+                array('side' => 'right', 'element' => $element, 'form' => $form, 'data' => $data)); ?>
 		</div>
 		<div class="inactive-form">
 			<div class="eye-message">Only required if Patient Suitability is Non-Compliant</div>
@@ -41,8 +41,8 @@
 	<div class="element-eye left-eye right side column <?php if (!$element->hasLeft()) {?> inactive<?php }?>"
 		data-side="left">
 		<div class="active-form">
-			<?php $this->renderPartial($element->form_view . '_fields',
-				array('side' => 'left', 'element' => $element, 'form' => $form, 'data' => $data)); ?>
+			<?php $this->renderPartial($element->form_view.'_fields',
+                array('side' => 'left', 'element' => $element, 'form' => $form, 'data' => $data)); ?>
 		</div>
 		<div class="inactive-form">
 			<div class="eye-message">Only required if Patient Suitability is Non-Compliant</div>
@@ -53,31 +53,31 @@
 
 <script id="previntervention_template" type="text/html">
 	<?php
-	$pastintervention = new OphCoTherapyapplication_ExceptionalCircumstances_PastIntervention();
-	$pastintervention->setDefaultOptions();
+    $pastintervention = new OphCoTherapyapplication_ExceptionalCircumstances_PastIntervention();
+    $pastintervention->setDefaultOptions();
 
-	$this->renderPartial('form_OphCoTherapyapplication_ExceptionalCircumstances_PastIntervention', array(
-			'key' => '{{key}}',
-			'side' => '{{side}}',
-			'element_name' => get_class($element),
-			'form' => $form,
-			'pastintervention' => $pastintervention,
-			'dateFieldWidget' => 'TextField'
-	));
-	?>
+    $this->renderPartial('form_OphCoTherapyapplication_ExceptionalCircumstances_PastIntervention', array(
+            'key' => '{{key}}',
+            'side' => '{{side}}',
+            'element_name' => get_class($element),
+            'form' => $form,
+            'pastintervention' => $pastintervention,
+            'dateFieldWidget' => 'TextField',
+    ));
+    ?>
 </script>
 <script id="relevantintervention_template" type="text/html">
 	<?php
-	$pastintervention = new OphCoTherapyapplication_ExceptionalCircumstances_PastIntervention();
-	$pastintervention->setDefaultOptions();
-	$pastintervention->is_relevant = true;
-	$this->renderPartial('form_OphCoTherapyapplication_ExceptionalCircumstances_PastIntervention', array(
-			'key' => '{{key}}',
-			'side' => '{{side}}',
-			'element_name' => get_class($element),
-			'form' => $form,
-			'pastintervention' => $pastintervention,
-			'dateFieldWidget' => 'TextField'
-		));
-	?>
+    $pastintervention = new OphCoTherapyapplication_ExceptionalCircumstances_PastIntervention();
+    $pastintervention->setDefaultOptions();
+    $pastintervention->is_relevant = true;
+    $this->renderPartial('form_OphCoTherapyapplication_ExceptionalCircumstances_PastIntervention', array(
+            'key' => '{{key}}',
+            'side' => '{{side}}',
+            'element_name' => get_class($element),
+            'form' => $form,
+            'pastintervention' => $pastintervention,
+            'dateFieldWidget' => 'TextField',
+        ));
+    ?>
 </script>

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,79 +9,80 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class m130913_000004_consolidation_for_ophtroperationbooking extends OEMigration
 {
-	private  $element_types ;
+    private $element_types;
 
-	public function setData(){
-		$this->element_types = array(
-			'Element_OphTrOperationbooking_Diagnosis' => array('name' => 'Diagnosis', 'display_order' => 10),
-			'Element_OphTrOperationbooking_Operation' => array('name' => 'Operation', 'display_order' => 20),
-			'Element_OphTrOperationbooking_ScheduleOperation' => array('name' => 'Schedule operation', 'display_order' => 30)
-		);
-	}
+    public function setData()
+    {
+        $this->element_types = array(
+            'Element_OphTrOperationbooking_Diagnosis' => array('name' => 'Diagnosis', 'display_order' => 10),
+            'Element_OphTrOperationbooking_Operation' => array('name' => 'Operation', 'display_order' => 20),
+            'Element_OphTrOperationbooking_ScheduleOperation' => array('name' => 'Schedule operation', 'display_order' => 30),
+        );
+    }
 
-	public function up()
-	{
-		if (!$this->consolidate(
-			array(
-				"m121114_105958_event_type_OphTrOperationbooking",
-				"m121128_122049_ophtroperationbooking_operation_name_rule",
-				"m121128_150949_admission_letter_warning_rules",
-				"m121129_091456_waiting_list_contacts",
-				"m130225_112407_add_completed_status",
-				"m130307_163805_fix_letter_warning_rules",
-				"m130423_163100_fix_theatre_sort",
-				"m130513_124510_rename_colliding_fields",
-				"m130515_100455_point_operation_at_latest_booking",
-				"m130524_143046_add_firm_id_to_letter_warning_rules_table",
-				"m130531_140931_letter_contact_rules_is_child",
-				"m130604_102839_patient_shortcodes",
-				"m130611_100204_theatre_ward_assignments",
-				"m130621_105848_soft_deletion_of_sequences_and_sessions",
-				"m130621_153035_soft_deletion_of_theatres",
-			)
-		)
-		) {
-			$this->createTables();
-		}
-	}
+    public function up()
+    {
+        if (!$this->consolidate(
+            array(
+                'm121114_105958_event_type_OphTrOperationbooking',
+                'm121128_122049_ophtroperationbooking_operation_name_rule',
+                'm121128_150949_admission_letter_warning_rules',
+                'm121129_091456_waiting_list_contacts',
+                'm130225_112407_add_completed_status',
+                'm130307_163805_fix_letter_warning_rules',
+                'm130423_163100_fix_theatre_sort',
+                'm130513_124510_rename_colliding_fields',
+                'm130515_100455_point_operation_at_latest_booking',
+                'm130524_143046_add_firm_id_to_letter_warning_rules_table',
+                'm130531_140931_letter_contact_rules_is_child',
+                'm130604_102839_patient_shortcodes',
+                'm130611_100204_theatre_ward_assignments',
+                'm130621_105848_soft_deletion_of_sequences_and_sessions',
+                'm130621_153035_soft_deletion_of_theatres',
+            )
+        )
+        ) {
+            $this->createTables();
+        }
+    }
 
-	public function down()
-	{
-		echo "You cannot migrate down past a consolidation migration\n";
-		return false;
-	}
+    public function down()
+    {
+        echo "You cannot migrate down past a consolidation migration\n";
 
-	public function safeUp()
-	{
-		$this->up();
-	}
+        return false;
+    }
 
-	public function safeDown()
-	{
-		$this->down();
-	}
+    public function safeUp()
+    {
+        $this->up();
+    }
 
-	protected function createTables()
-	{
-		$this->setData();
-		//disable foreign keys check
-		Yii::app()->cache->flush();
-		$this->execute("SET foreign_key_checks = 0");
+    public function safeDown()
+    {
+        $this->down();
+    }
 
-		$event_type_id = $this->insertOEEventType( 'Operation booking', 'OphTrOperationbooking', 'Tr');
-		$this->insertOEElementType($this->element_types , $event_type_id);
+    protected function createTables()
+    {
+        $this->setData();
+        //disable foreign keys check
+        Yii::app()->cache->flush();
+        $this->execute('SET foreign_key_checks = 0');
 
-		$this->execute("CREATE TABLE `et_ophtroperationbooking_diagnosis` (
+        $event_type_id = $this->insertOEEventType('Operation booking', 'OphTrOperationbooking', 'Tr');
+        $this->insertOEElementType($this->element_types, $event_type_id);
+
+        $this->execute("CREATE TABLE `et_ophtroperationbooking_diagnosis` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `event_id` int(10) unsigned NOT NULL,
 			  `eye_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -102,7 +103,7 @@ class m130913_000004_consolidation_for_ophtroperationbooking extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `et_ophtroperationbooking_operation` (
+        $this->execute("CREATE TABLE `et_ophtroperationbooking_operation` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `event_id` int(10) unsigned NOT NULL,
 			  `eye_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -151,7 +152,7 @@ class m130913_000004_consolidation_for_ophtroperationbooking extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `et_ophtroperationbooking_scheduleope` (
+        $this->execute("CREATE TABLE `et_ophtroperationbooking_scheduleope` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `event_id` int(10) unsigned NOT NULL,
 			  `schedule_options_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -171,7 +172,7 @@ class m130913_000004_consolidation_for_ophtroperationbooking extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtroperationbooking_admission_letter_warning_rule` (
+        $this->execute("CREATE TABLE `ophtroperationbooking_admission_letter_warning_rule` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `rule_type_id` int(10) unsigned NOT NULL,
 			  `parent_rule_id` int(10) unsigned DEFAULT NULL,
@@ -209,7 +210,7 @@ class m130913_000004_consolidation_for_ophtroperationbooking extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtroperationbooking_admission_letter_warning_rule_type` (
+        $this->execute("CREATE TABLE `ophtroperationbooking_admission_letter_warning_rule_type` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `name` varchar(64) NOT NULL,
 			  `last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -224,7 +225,7 @@ class m130913_000004_consolidation_for_ophtroperationbooking extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtroperationbooking_letter_contact_rule` (
+        $this->execute("CREATE TABLE `ophtroperationbooking_letter_contact_rule` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `parent_rule_id` int(10) unsigned DEFAULT NULL,
 			  `rule_order` tinyint(1) unsigned NOT NULL DEFAULT '0',
@@ -258,7 +259,7 @@ class m130913_000004_consolidation_for_ophtroperationbooking extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtroperationbooking_operation_booking` (
+        $this->execute("CREATE TABLE `ophtroperationbooking_operation_booking` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `element_id` int(10) unsigned NOT NULL,
 			  `session_id` int(10) unsigned DEFAULT NULL,
@@ -300,7 +301,7 @@ class m130913_000004_consolidation_for_ophtroperationbooking extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtroperationbooking_operation_cancellation_reason` (
+        $this->execute("CREATE TABLE `ophtroperationbooking_operation_cancellation_reason` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `text` varchar(255) NOT NULL DEFAULT '',
 			  `parent_id` int(10) unsigned DEFAULT NULL,
@@ -317,7 +318,7 @@ class m130913_000004_consolidation_for_ophtroperationbooking extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtroperationbooking_operation_date_letter_sent` (
+        $this->execute("CREATE TABLE `ophtroperationbooking_operation_date_letter_sent` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `element_id` int(10) unsigned NOT NULL,
 			  `date_invitation_letter_sent` datetime DEFAULT NULL,
@@ -339,7 +340,7 @@ class m130913_000004_consolidation_for_ophtroperationbooking extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtroperationbooking_operation_erod` (
+        $this->execute("CREATE TABLE `ophtroperationbooking_operation_erod` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `element_id` int(10) unsigned NOT NULL DEFAULT '1',
 			  `session_id` int(10) unsigned NOT NULL,
@@ -372,7 +373,7 @@ class m130913_000004_consolidation_for_ophtroperationbooking extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtroperationbooking_operation_erod_rule` (
+        $this->execute("CREATE TABLE `ophtroperationbooking_operation_erod_rule` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `subspecialty_id` int(10) unsigned NOT NULL,
 			  `last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -389,7 +390,7 @@ class m130913_000004_consolidation_for_ophtroperationbooking extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtroperationbooking_operation_erod_rule_item` (
+        $this->execute("CREATE TABLE `ophtroperationbooking_operation_erod_rule_item` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `erod_rule_id` int(10) unsigned NOT NULL,
 			  `item_type` varchar(64) NOT NULL,
@@ -408,7 +409,7 @@ class m130913_000004_consolidation_for_ophtroperationbooking extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtroperationbooking_operation_name_rule` (
+        $this->execute("CREATE TABLE `ophtroperationbooking_operation_name_rule` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `theatre_id` int(10) unsigned DEFAULT NULL,
 			  `name` varchar(64) NOT NULL,
@@ -426,7 +427,7 @@ class m130913_000004_consolidation_for_ophtroperationbooking extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtroperationbooking_operation_priority` (
+        $this->execute("CREATE TABLE `ophtroperationbooking_operation_priority` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `name` varchar(128) NOT NULL,
 			  `display_order` int(10) unsigned NOT NULL DEFAULT '1',
@@ -442,7 +443,7 @@ class m130913_000004_consolidation_for_ophtroperationbooking extends OEMigration
 			) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtroperationbooking_operation_procedures_procedures` (
+        $this->execute("CREATE TABLE `ophtroperationbooking_operation_procedures_procedures` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `element_id` int(10) unsigned NOT NULL,
 			  `proc_id` int(10) unsigned NOT NULL,
@@ -463,7 +464,7 @@ class m130913_000004_consolidation_for_ophtroperationbooking extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtroperationbooking_operation_sequence` (
+        $this->execute("CREATE TABLE `ophtroperationbooking_operation_sequence` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `firm_id` int(10) unsigned DEFAULT NULL,
 			  `theatre_id` int(10) unsigned NOT NULL,
@@ -498,7 +499,7 @@ class m130913_000004_consolidation_for_ophtroperationbooking extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtroperationbooking_operation_sequence_interval` (
+        $this->execute("CREATE TABLE `ophtroperationbooking_operation_sequence_interval` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `name` varchar(32) NOT NULL,
 			  `display_order` int(10) unsigned NOT NULL DEFAULT '0',
@@ -514,7 +515,7 @@ class m130913_000004_consolidation_for_ophtroperationbooking extends OEMigration
 			) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtroperationbooking_operation_session` (
+        $this->execute("CREATE TABLE `ophtroperationbooking_operation_session` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `sequence_id` int(10) unsigned NOT NULL,
 			  `firm_id` int(10) unsigned DEFAULT NULL,
@@ -547,7 +548,7 @@ class m130913_000004_consolidation_for_ophtroperationbooking extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtroperationbooking_operation_status` (
+        $this->execute("CREATE TABLE `ophtroperationbooking_operation_status` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `name` varchar(64) DEFAULT NULL,
 			  `last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -562,7 +563,7 @@ class m130913_000004_consolidation_for_ophtroperationbooking extends OEMigration
 			) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtroperationbooking_operation_theatre` (
+        $this->execute("CREATE TABLE `ophtroperationbooking_operation_theatre` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `name` varchar(255) DEFAULT NULL,
 			  `site_id` int(10) unsigned NOT NULL,
@@ -586,7 +587,7 @@ class m130913_000004_consolidation_for_ophtroperationbooking extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtroperationbooking_operation_ward` (
+        $this->execute("CREATE TABLE `ophtroperationbooking_operation_ward` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `site_id` int(10) unsigned NOT NULL,
 			  `name` varchar(255) NOT NULL,
@@ -608,7 +609,7 @@ class m130913_000004_consolidation_for_ophtroperationbooking extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtroperationbooking_scheduleope_schedule_options` (
+        $this->execute("CREATE TABLE `ophtroperationbooking_scheduleope_schedule_options` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `name` varchar(128) NOT NULL,
 			  `display_order` int(10) unsigned NOT NULL DEFAULT '1',
@@ -624,7 +625,7 @@ class m130913_000004_consolidation_for_ophtroperationbooking extends OEMigration
 			) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$this->execute("CREATE TABLE `ophtroperationbooking_waiting_list_contact_rule` (
+        $this->execute("CREATE TABLE `ophtroperationbooking_waiting_list_contact_rule` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `parent_rule_id` int(10) unsigned DEFAULT NULL,
 			  `rule_order` int(10) unsigned NOT NULL DEFAULT '0',
@@ -654,12 +655,10 @@ class m130913_000004_consolidation_for_ophtroperationbooking extends OEMigration
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		$migrations_path = dirname(__FILE__);
-		$this->initialiseData($migrations_path);
+        $migrations_path = dirname(__FILE__);
+        $this->initialiseData($migrations_path);
 
-		//enable foreign keys check
-		$this->execute("SET foreign_key_checks = 1");
-
-	}
-
+        //enable foreign keys check
+        $this->execute('SET foreign_key_checks = 1');
+    }
 }

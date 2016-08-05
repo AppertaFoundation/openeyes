@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -37,11 +37,11 @@ class OphCiExamination_EyeDrawBase extends BaseEventTypeElement
     private $doodleInfo = array();
 
     /**
-     * Set the titles of the eyedraw component. This is done by callers
+     * Set the titles of the eyedraw component. This is done by callers.
      *
      *
      * @param type $titles an array of strings containing the DoodleInfo
-     * titles to check to see if the eyedraw string has been set or not.
+     *                     titles to check to see if the eyedraw string has been set or not.
      */
     public function setDoodleInfo($titles)
     {
@@ -49,10 +49,10 @@ class OphCiExamination_EyeDrawBase extends BaseEventTypeElement
     }
 
     /**
-     * Gets the doodle info that has been set on this class
+     * Gets the doodle info that has been set on this class.
      *
      * @return array the doodle info; if no doodle info has been set,
-     * the empty array is returned.
+     *               the empty array is returned.
      */
     public function getDoodleInfo()
     {
@@ -64,7 +64,8 @@ class OphCiExamination_EyeDrawBase extends BaseEventTypeElement
      * the EyeDraw doodles?
      *
      * @param string $side a string with it's first character an 'l' (for left) or 'r' (for right).
-     * @return boolean true of the image string contains
+     *
+     * @return bool true of the image string contains
      */
     public function isImageStringSet($side)
     {
@@ -76,6 +77,7 @@ class OphCiExamination_EyeDrawBase extends BaseEventTypeElement
             $image_string = $this->checkItems($this->doodleInfo,
                     $this->image_string_right);
         }
+
         return $image_string;
     }
 
@@ -83,9 +85,10 @@ class OphCiExamination_EyeDrawBase extends BaseEventTypeElement
      * Checks to see if the specified image string contains any of the strings
      * given in the items array.
      *
-     * @param string[] $contents an array of string to look for in the image string.
-     * @param string $image_string the non-null image string in the form of a JSON EyeDraw string.
-     * @return boolean true if any of the items exist; false otherwise.
+     * @param string[] $contents     an array of string to look for in the image string.
+     * @param string   $image_string the non-null image string in the form of a JSON EyeDraw string.
+     *
+     * @return bool true if any of the items exist; false otherwise.
      */
     private function checkItems($contents, $image_string)
     {
@@ -95,7 +98,7 @@ class OphCiExamination_EyeDrawBase extends BaseEventTypeElement
         $json = json_decode($image_string);
         if ($json) {
             foreach ($json as $element) {
-                if ($element->{'subclass'} == "AngleGrade") {
+                if ($element->{'subclass'} == 'AngleGrade') {
                     if ($element->{'apexY'} != -176) {
                         $hasValues = true;
                     }
@@ -107,6 +110,7 @@ class OphCiExamination_EyeDrawBase extends BaseEventTypeElement
                 $hasValues = true;
             }
         }
+
         return $hasValues;
     }
 }

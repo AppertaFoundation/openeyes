@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2014
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2014, OpenEyes Foundation
@@ -18,28 +18,28 @@
  */
 
 return array(
-	'queueset1' => array(
-		'id' => 1,
-		'name' => 'QueueSet 1',
-		'active' => true,
-		'initial_queue_id' => 1,
-		'category_id' => 1,
-		'filter_priority' => 1,
-		'filter_subspecialty' => 1,
-		'filter_firm' => 1,
-		'filter_my_tickets' => 1,
-		'filter_closed_tickets' => 1,
-	),
-	'queueset2' => array(
-		'id' => 2,
-		'name' => 'QueueSet 2',
-		'active' => 1,
-		'initial_queue_id' => 12,
-		'category_id' => 2,
-		'filter_priority' => 0,
-		'filter_subspecialty' => 0,
-		'filter_firm' => 0,
-		'filter_my_tickets' => 0,
-		'filter_closed_tickets' => 0,
-	)
+    'queueset1' => array(
+        'id' => 1,
+        'name' => 'QueueSet 1',
+        'active' => true,
+        'initial_queue_id' => 1,
+        'category_id' => 1,
+        'filter_priority' => 1,
+        'filter_subspecialty' => 1,
+        'filter_firm' => 1,
+        'filter_my_tickets' => 1,
+        'filter_closed_tickets' => 1,
+    ),
+    'queueset2' => array(
+        'id' => 2,
+        'name' => 'QueueSet 2',
+        'active' => 1,
+        'initial_queue_id' => 12,
+        'category_id' => 2,
+        'filter_priority' => 0,
+        'filter_subspecialty' => 0,
+        'filter_firm' => 0,
+        'filter_my_tickets' => 0,
+        'filter_closed_tickets' => 0,
+    ),
 );

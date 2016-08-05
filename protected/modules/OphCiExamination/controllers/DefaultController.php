@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -20,8 +20,8 @@
 namespace OEModule\OphCiExamination\controllers;
 
 use Yii;
-use \OEModule\OphCiExamination\models;
-use \OEModule\OphCiExamination\components;
+use OEModule\OphCiExamination\models;
+use OEModule\OphCiExamination\components;
 
 /*
  * This is the controller class for the OphCiExamination event. It provides the required methods for the ajax loading of elements, and rendering the required and optional elements (including the children relationship)
@@ -51,21 +51,24 @@ class DefaultController extends \BaseEventTypeController
     protected $deletedAllergies = array();
 
     /**
-     * Need split event files
+     * Need split event files.
+     *
      * @TODO: determine if this should be defined by controller property
      *
      * @param CAction $action
+     *
      * @return bool
      */
     protected function beforeAction($action)
     {
         Yii::app()->assetManager->registerScriptFile('js/spliteventtype.js', null, null, \AssetManager::OUTPUT_SCREEN);
         $this->jsVars['OE_MODEL_PREFIX'] = 'OEModule_OphCiExamination_models_';
+
         return parent::beforeAction($action);
     }
 
     /**
-     * Applies workflow and filtering to the element retrieval
+     * Applies workflow and filtering to the element retrieval.
      *
      * @return BaseEventTypeElement[]
      */
@@ -84,10 +87,12 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Filters elements based on coded dependencies
+     * Filters elements based on coded dependencies.
      *
      * @TODO: need to ensure that we don't filter out elements that do exist when configuration changes
+     *
      * @param BaseEventTypeElement[] $elements
+     *
      * @return BaseEventTypeElement[]
      */
     protected function filterElements($elements)
@@ -115,7 +120,7 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Sets up jsvars for editing
+     * Sets up jsvars for editing.
      */
     protected function initEdit()
     {
@@ -139,7 +144,7 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Call editInit to set up jsVars
+     * Call editInit to set up jsVars.
      */
     public function initActionCreate()
     {
@@ -148,7 +153,7 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Call editInit to setup jsVars
+     * Call editInit to setup jsVars.
      */
     public function initActionUpdate()
     {
@@ -163,7 +168,7 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * Pulls in the diagnosis from the episode and ophthalmic diagnoses from the patient, and sets an appropriate list
-     * of unique diagnoses
+     * of unique diagnoses.
      *
      * @param $element
      * @param $action
@@ -213,7 +218,7 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * Set the allergies against the Element_OphCiExamination_Allergy element
-     * It's a child element of History
+     * It's a child element of History.
      *
      * @param Element_OphCiExamination_History $element
      * @param $data
@@ -227,10 +232,8 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Set the allergies against the Element_OphCiExamination_Allergy element
-     *
+     * Set the allergies against the Element_OphCiExamination_Allergy element.
      */
-
     protected function setElementDefaultOptions_Element_OphCiExamination_Allergy($element, $action)
     {
         if ($action == 'create' || $action == 'update') {
@@ -239,7 +242,7 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Action to move the workflow forward a step on the given event
+     * Action to move the workflow forward a step on the given event.
      *
      * @param $id
      */
@@ -253,39 +256,40 @@ class DefaultController extends \BaseEventTypeController
     /**
      * Override action value when action is step to be update.
      *
-     * @param BaseEventTypeElement $element
-     * @param string $action
+     * @param BaseEventTypeElement                $element
+     * @param string                              $action
      * @param BaseCActiveBaseEventTypeCActiveForm $form
-     * @param array $data
-     * @param array $view_data
-     * @param bool $return
-     * @param bool $processOutput
+     * @param array                               $data
+     * @param array                               $view_data
+     * @param bool                                $return
+     * @param bool                                $processOutput
      */
-    protected function renderElement($element, $action, $form, $data, $view_data=array(), $return=false, $processOutput=false)
+    protected function renderElement($element, $action, $form, $data, $view_data = array(), $return = false, $processOutput = false)
     {
         if ($action == 'step') {
             $action = 'update';
         }
-        $class_array = !empty($element) ? !empty(get_class($element)) ? explode('\\', (get_class($element))): '' : '';
-		$active_check_value = "";
-        if (!empty($class_array)) {                    
-            if(array_pop($class_array) === 'Element_OphCiExamination_CataractSurgicalManagement') {
+        $class_array = !empty($element) ? !empty(get_class($element)) ? explode('\\', (get_class($element))) : '' : '';
+        $active_check_value = '';
+        if (!empty($class_array)) {
+            if (array_pop($class_array) === 'Element_OphCiExamination_CataractSurgicalManagement') {
                 $active_check = \SettingInstallation::model()->find('t.key="city_road_satellite_view"');
                 if (!empty($active_check)) {
-                   $active_check_value = $active_check->value;
+                    $active_check_value = $active_check->value;
                 }
             }
         }
-		$view_data = array_merge(array(
+        $view_data = array_merge(array(
             'active_check' => $active_check_value,
         ), $view_data);
-        
+
         parent::renderElement($element, $action, $form, $data, $view_data, $return, $processOutput);
     }
     /**
-     * Advance the workflow step for the event if requested
+     * Advance the workflow step for the event if requested.
      *
      * @param Event $event
+     *
      * @throws CException
      */
     protected function afterUpdateElements($event)
@@ -319,13 +323,15 @@ class DefaultController extends \BaseEventTypeController
     public function getOptionalElements()
     {
         $elements = parent::getOptionalElements();
+
         return $this->filterElements($elements);
     }
 
     /**
-     * extends standard method to filter elements
+     * extends standard method to filter elements.
      *
      * (non-PHPdoc)
+     *
      * @see NestedElementsEventTypeController::getChildOptionalElements()
      */
     public function getChildOptionalElements($parent_type)
@@ -334,9 +340,10 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Get the first workflow step using rules
+     * Get the first workflow step using rules.
      *
      * @TODO: examine what this is being used for as opposed to getting elements by workflow ...
+     *
      * @return OphCiExamination_ElementSet
      */
     protected function getFirstStep()
@@ -348,8 +355,10 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Get the next workflow step
+     * Get the next workflow step.
+     *
      * @param Event $event
+     *
      * @return OphCiExamination_ElementSet
      */
     protected function getNextStep($event = null)
@@ -362,15 +371,18 @@ class DefaultController extends \BaseEventTypeController
         } else {
             $step = $this->getFirstStep();
         }
+
         return $step->getNextStep();
     }
 
     /**
-     * Merge workflow next step elements into existing elements
+     * Merge workflow next step elements into existing elements.
      *
-     * @param array $elements
+     * @param array       $elements
      * @param ElementType $parent
+     *
      * @throws \CException
+     *
      * @return array
      */
     protected function mergeNextStep($elements, $parent = null)
@@ -412,19 +424,21 @@ class DefaultController extends \BaseEventTypeController
             if ($a->getElementType()->display_order == $b->getElementType()->display_order) {
                 return 0;
             }
+
             return ($a->getElementType()->display_order > $b->getElementType()->display_order) ? 1 : -1;
         });
+
         return $merged_elements;
     }
 
-
     /**
      * Get the array of elements for the current site, subspecialty, episode status and workflow position
-     * If $parent_id is provided, restrict to children of that element_type id
+     * If $parent_id is provided, restrict to children of that element_type id.
      *
      * @param OphCiExamination_ElementSet $set
-     * @param Episode $episode
-     * @param integer $parent_id
+     * @param Episode                     $episode
+     * @param int                         $parent_id
+     *
      * @return BaseEventTypeElement[]
      */
     protected function getElementsByWorkflow($set = null, $episode = null, $parent_id = null)
@@ -454,7 +468,7 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Ajax function for quick disorder lookup
+     * Ajax function for quick disorder lookup.
      *
      * Used when eyedraw elements have doodles that are associated with disorders
      *
@@ -475,7 +489,7 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Ajax action to load the questions for a side and disorder_id
+     * Ajax action to load the questions for a side and disorder_id.
      */
     public function actionLoadInjectionQuestions()
     {
@@ -513,24 +527,26 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Get all the attributes for an element
+     * Get all the attributes for an element.
      *
      * @param BaseEventTypeElement $element
-     * @param integer $subspecialty_id
+     * @param int                  $subspecialty_id
+     *
      * @return OphCiExamination_Attribute[]
      */
     public function getAttributes($element, $subspecialty_id = null)
     {
         $attributes = models\OphCiExamination_Attribute::model()->findAllByElementAndSubspecialty($element->ElementType->id, $subspecialty_id);
+
         return $attributes;
     }
 
     /**
      * associate the answers and risks from the data with the Element_OphCiExamination_InjectionManagementComplex element for
-     * validation
+     * validation.
      *
      * @param Element_OphCiExamination_InjectionManagementComplex $element
-     * @param array $data
+     * @param array                                               $data
      * @param $index
      */
     protected function setComplexAttributes_Element_OphCiExamination_InjectionManagementComplex($element, $data, $index)
@@ -539,10 +555,10 @@ class DefaultController extends \BaseEventTypeController
         foreach (array('left' => \Eye::LEFT, 'right' => \Eye::RIGHT) as $side => $eye_id) {
             $answers = array();
             $risks = array();
-            $checker = 'has' . ucfirst($side);
+            $checker = 'has'.ucfirst($side);
             if ($element->$checker()) {
-                if (isset($data[$model_name][$side . '_Answer'])) {
-                    foreach ($data[$model_name][$side . '_Answer'] as $id => $p_ans) {
+                if (isset($data[$model_name][$side.'_Answer'])) {
+                    foreach ($data[$model_name][$side.'_Answer'] as $id => $p_ans) {
                         $answer = new models\OphCiExamination_InjectionManagementComplex_Answer();
                         $answer->question_id = $id;
                         $answer->answer = $p_ans;
@@ -550,25 +566,25 @@ class DefaultController extends \BaseEventTypeController
                         $answers[] = $answer;
                     }
                 }
-                if (isset($data[$model_name][$side . '_risks'])) {
-                    foreach ($data[$model_name][$side . '_risks'] as $risk_id) {
+                if (isset($data[$model_name][$side.'_risks'])) {
+                    foreach ($data[$model_name][$side.'_risks'] as $risk_id) {
                         if ($risk = models\OphCiExamination_InjectionManagementComplex_Risk::model()->findByPk($risk_id)) {
                             $risks[] = $risk;
                         }
                     }
                 }
             }
-            $element->{$side . '_answers'} = $answers;
-            $element->{$side . '_risks'} = $risks;
+            $element->{$side.'_answers'} = $answers;
+            $element->{$side.'_risks'} = $risks;
         }
     }
 
     /**
      * If the Patient does not currently have a diabetic diagnosis, specify that it's required
-     * so the validation rules can check for it being set in the given element (currently only DR Grading)
+     * so the validation rules can check for it being set in the given element (currently only DR Grading).
      *
      * @param BaseEventTypeElement $element
-     * @param array $data
+     * @param array                $data
      */
     private function _set_DiabeticDiagnosis($element, $data)
     {
@@ -582,8 +598,7 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Wrapper to set validation rules on DR Grading element
-     *
+     * Wrapper to set validation rules on DR Grading element.
      */
     protected function setComplexAttributes_Element_OphCiExamination_DRGrading($element, $data, $index)
     {
@@ -591,7 +606,7 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Set the diagnoses against the Element_OphCiExamination_Diagnoses element
+     * Set the diagnoses against the Element_OphCiExamination_Diagnoses element.
      *
      * @param Element_OphCiExamination_Diagnoses $element
      * @param $data
@@ -625,7 +640,7 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * Set the allergies against the Element_OphCiExamination_Allergy element
-     * It's a child element of History
+     * It's a child element of History.
      *
      * @param Element_OphCiExamination_History $element
      * @param $data
@@ -643,7 +658,7 @@ class DefaultController extends \BaseEventTypeController
         if (!empty($data['deleted_allergies'])) {
             $this->deletedAllergies = $data['deleted_allergies'];
             foreach ($this->deletedAllergies as $deletedAssignmentId) {
-                foreach ($allergies as $key=>$allergyRow) {
+                foreach ($allergies as $key => $allergyRow) {
                     if ($allergyRow->id == $deletedAssignmentId) {
                         unset($allergies[$key]);
                     }
@@ -655,9 +670,9 @@ class DefaultController extends \BaseEventTypeController
         if (!empty($data['selected_allergies'])) {
             foreach ($data['selected_allergies'] as $i => $allergy_id) {
                 if ($data['other_names'][$i] == 'undefined') {
-                    $data['other_names'][$i] = "";
+                    $data['other_names'][$i] = '';
                 }
-                $newAllergy = new \PatientAllergyAssignment;
+                $newAllergy = new \PatientAllergyAssignment();
                 $newAllergy->allergy_id = $allergy_id;
                 $newAllergy->other = $data['other_names'][$i];
                 $newAllergy->comments = $data['allergy_comments'][$i];
@@ -668,9 +683,8 @@ class DefaultController extends \BaseEventTypeController
         $this->allergies = $allergies;
     }
 
-
     /**
-     * set the dilation treatments against the element from the provided data
+     * set the dilation treatments against the element from the provided data.
      *
      * @param models\Element_OphCiExamination_Dilation $element
      * @param $data
@@ -681,10 +695,10 @@ class DefaultController extends \BaseEventTypeController
         $model_name = \CHtml::modelName($element);
         foreach (array('left' => \Eye::LEFT, 'right' => \Eye::RIGHT) as $side => $eye_id) {
             $dilations = array();
-            $checker = 'has' . ucfirst($side);
+            $checker = 'has'.ucfirst($side);
             if ($element->$checker()) {
-                if (isset($data[$model_name][$side . '_treatments'])) {
-                    foreach ($data[$model_name][$side . '_treatments'] as $idx => $p_treat) {
+                if (isset($data[$model_name][$side.'_treatments'])) {
+                    foreach ($data[$model_name][$side.'_treatments'] as $idx => $p_treat) {
                         if (@$p_treat['id']) {
                             $dilation = models\OphCiExamination_Dilation_Treatment::model()->findByPk($p_treat['id']);
                         } else {
@@ -695,12 +709,12 @@ class DefaultController extends \BaseEventTypeController
                     }
                 }
             }
-            $element->{$side . '_treatments'} = $dilations;
+            $element->{$side.'_treatments'} = $dilations;
         }
     }
 
     /**
-     * Set the colour vision readings against the Element_OphCiExamination_ColourVision element
+     * Set the colour vision readings against the Element_OphCiExamination_ColourVision element.
      *
      * @param Element_OphCiExamination_ColourVision $element
      * @param $data
@@ -711,12 +725,12 @@ class DefaultController extends \BaseEventTypeController
         $model_name = \CHtml::modelName($element);
 
         foreach (array('left' => \Eye::LEFT,
-                                 'right' => \Eye::RIGHT) as $side => $eye_id) {
+                                 'right' => \Eye::RIGHT, ) as $side => $eye_id) {
             $readings = array();
-            $checker = 'has' . ucfirst($side);
+            $checker = 'has'.ucfirst($side);
             if ($element->$checker()) {
-                if (isset($data[$model_name][$side . '_readings'])) {
-                    foreach ($data[$model_name][$side . '_readings'] as $p_read) {
+                if (isset($data[$model_name][$side.'_readings'])) {
+                    foreach ($data[$model_name][$side.'_readings'] as $p_read) {
                         if (@$p_read['id']) {
                             if (!$reading = models\OphCiExamination_ColourVision_Reading::model()->findByPk($p_read['id'])) {
                                 $reading = new models\OphCiExamination_ColourVision_Reading();
@@ -730,12 +744,12 @@ class DefaultController extends \BaseEventTypeController
                     }
                 }
             }
-            $element->{$side . '_readings'} = $readings;
+            $element->{$side.'_readings'} = $readings;
         }
     }
 
     /**
-     * Save Colour Vision readings
+     * Save Colour Vision readings.
      *
      * @param Element_OphCiExamination_ColourVision $element
      * @param $data
@@ -753,7 +767,7 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Save question answers and risks
+     * Save question answers and risks.
      *
      * @param $element
      * @param $data
@@ -781,7 +795,7 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Save diagnoses
+     * Save diagnoses.
      *
      * @param $element
      * @param $data
@@ -805,7 +819,7 @@ class DefaultController extends \BaseEventTypeController
                 $diagnoses[] = array(
                     'eye_id' => $eyes[$i],
                     'disorder_id' => $disorder_id,
-                    'principal' => (@$data['principal_diagnosis'] == $disorder_id)
+                    'principal' => (@$data['principal_diagnosis'] == $disorder_id),
                 );
             }
         }
@@ -814,7 +828,7 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Save allergies - because it's part of the History element it need to be saved from that element
+     * Save allergies - because it's part of the History element it need to be saved from that element.
      *
      * @param $element
      * @param $data
@@ -827,7 +841,7 @@ class DefaultController extends \BaseEventTypeController
         // we remove all current allergy data
         if (!empty($data['deleted_allergies'])) {
             foreach ($data['deleted_allergies'] as $i => $assignment_id) {
-                if ($assignment_id >0) {
+                if ($assignment_id > 0) {
                     $allergyToDel = \PatientAllergyAssignment::model()->findByPk($assignment_id);
                     if ($allergyToDel) {
                         $allergyToDel->delete();
@@ -843,7 +857,7 @@ class DefaultController extends \BaseEventTypeController
                 foreach ($data['selected_allergies'] as $i => $allergy_id) {
                     $allergyObject = \Allergy::model()->findByPk($allergy_id);
                     if ($data['other_names'][$i] == 'undefined') {
-                        $data['other_names'][$i] = "";
+                        $data['other_names'][$i] = '';
                     }
                     $patient->addAllergy($allergyObject, $data['other_names'][$i], $data['allergy_comments'][$i], false, $this->event->id);
                 }
@@ -852,7 +866,7 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Save Risks - because it's part of the History Risk element it need to be saved from that element
+     * Save Risks - because it's part of the History Risk element it need to be saved from that element.
      *
      * @param $element
      * @param $data
@@ -864,8 +878,8 @@ class DefaultController extends \BaseEventTypeController
         $event = $this->episode->getMostRecentEventByType($event_type->id);
         if (($event->id === $this->event->id) && (array_key_exists('anticoagulant', $element->attributes) || array_key_exists('alphablocker', $element->attributes))) {
             foreach ($element->attributes as $risk_name => $risk_value) {
-                if($risk_name === 'anticoagulant' || $risk_name === 'alphablocker') {
-                    $this->updateRisk($risk_name,$risk_value);
+                if ($risk_name === 'anticoagulant' || $risk_name === 'alphablocker') {
+                    $this->updateRisk($risk_name, $risk_value);
                 }
             }
         }
@@ -873,29 +887,30 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * Updating Patient Risk details.
+     *
      * @param type $risk_name
      * @param type $risk_value
      */
-    protected function updateRisk($risk_name, $risk_value) {
+    protected function updateRisk($risk_name, $risk_value)
+    {
         $risk_check = ($risk_name === 'anticoagulant') ? 'Anticoagulants' : 'Alpha blockers';
         $risk = \Risk::model()->find('name=?', array($risk_check));
-        $criteria = new \CDbCriteria;
-        $criteria->compare('risk_id',$risk['id']);
-        $criteria->compare('patient_id',$this->patient->id);
+        $criteria = new \CDbCriteria();
+        $criteria->compare('risk_id', $risk['id']);
+        $criteria->compare('patient_id', $this->patient->id);
         $patient_risk = \PatientRiskAssignment::model()->find($criteria);
-        if ($risk_value === "1") {
+        if ($risk_value === '1') {
             $patient_risk = (!$patient_risk) ? new \PatientRiskAssignment() : $patient_risk;
             $patient_risk->risk_id = $risk['id'];
             $patient_risk->patient_id = $this->patient->id;
             $patient_risk->save();
-        }
-        elseif ($patient_risk && ($risk_value === "2")) {
+        } elseif ($patient_risk && ($risk_value === '2')) {
             \PatientRiskAssignment::model()->deleteByPk($patient_risk->id);
         }
     }
 
     /**
-     * Save the dilation treatments
+     * Save the dilation treatments.
      *
      * @param models\Element_OphCiExamination_Dilation $element
      * @param $data
@@ -920,7 +935,7 @@ class DefaultController extends \BaseEventTypeController
             $values = array();
             if (isset($data[$model_name]["{$side}_values"])) {
                 foreach ($data[$model_name]["{$side}_values"] as $attrs) {
-                    $value = new models\OphCiExamination_IntraocularPressure_Value;
+                    $value = new models\OphCiExamination_IntraocularPressure_Value();
                     $value->attributes = $attrs;
 
                     if ($value->instrument->scale) {
@@ -937,7 +952,7 @@ class DefaultController extends \BaseEventTypeController
 
     protected function saveComplexAttributes_Element_OphCiExamination_IntraocularPressure(models\Element_OphCiExamination_IntraocularPressure $element, $data)
     {
-        models\OphCiExamination_IntraocularPressure_Value::model()->deleteAll("element_id = ?", array($element->id));
+        models\OphCiExamination_IntraocularPressure_Value::model()->deleteAll('element_id = ?', array($element->id));
 
         foreach (array('left', 'right') as $side) {
             foreach ($element->{"{$side}_values"} as $value) {
@@ -951,7 +966,7 @@ class DefaultController extends \BaseEventTypeController
     {
         if ($instrument = models\OphCiExamination_Instrument::model()->findByPk(@$_GET['instrument_id'])) {
             if ($scale = $instrument->scale) {
-                $value = new models\OphCiExamination_IntraocularPressure_Value;
+                $value = new models\OphCiExamination_IntraocularPressure_Value();
                 $this->renderPartial('_qualitative_scale', array('value' => $value, 'scale' => $scale, 'side' => @$_GET['side'], 'index' => @$_GET['index']));
             }
         }
@@ -990,11 +1005,11 @@ class DefaultController extends \BaseEventTypeController
     public function actionGetPreviousIOPAverage()
     {
         if (!$patient = \Patient::model()->findByPk(@$_GET['patient_id'])) {
-            throw new \Exception("Patient not found: ".@$_GET['patient_id']);
+            throw new \Exception('Patient not found: '.@$_GET['patient_id']);
         }
 
         if (!in_array(@$_GET['side'], array('left', 'right'))) {
-            throw new \Exception("Invalid side: ".@$_GET['side']);
+            throw new \Exception('Invalid side: '.@$_GET['side']);
         }
 
         $side = ucfirst(@$_GET['side']);
@@ -1009,7 +1024,7 @@ class DefaultController extends \BaseEventTypeController
     {
         $this->setCurrentSet();
 
-        if(Yii::app()->request->getPost('patientticketing__notes',null) != null) {
+        if (Yii::app()->request->getPost('patientticketing__notes', null) != null) {
             $_POST['patientticketing__notes'] = htmlspecialchars(Yii::app()->request->getPost('patientticketing__notes',
                 null));
         }
@@ -1019,7 +1034,7 @@ class DefaultController extends \BaseEventTypeController
 
     public function getPupilliaryAbnormalitiesList($selected_id)
     {
-        $criteria = new \CDbCriteria;
+        $criteria = new \CDbCriteria();
 
         $criteria->order = 'display_order asc';
 
@@ -1054,10 +1069,12 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * custom validation for virtual clinic referral
+     * custom validation for virtual clinic referral.
      *
      * @TODO: this should hand off validation to a faked PatientTicket request via the API.
+     *
      * @param array $data
+     *
      * @return array
      */
     protected function setAndValidateElementsFromData($data)
@@ -1072,11 +1089,11 @@ class DefaultController extends \BaseEventTypeController
                 if (!$data['patientticket_queue']) {
                     $err['patientticket_queue'] = 'You must select a valid Virtual Clinic for referral';
                 } elseif (!$queue = $api->getQueueForUserAndFirm(Yii::app()->user, $this->firm, $data['patientticket_queue'])) {
-                    $err['patientticket_queue'] = "Virtual Clinic not found";
+                    $err['patientticket_queue'] = 'Virtual Clinic not found';
                 }
                 if ($queue) {
                     if (!$api->canAddPatientToQueue($this->patient, $queue)) {
-                        $err['patientticket_queue'] = "Cannot add Patient to Queue";
+                        $err['patientticket_queue'] = 'Cannot add Patient to Queue';
                     } else {
                         list($ignore, $fld_errs) = $api->extractQueueData($queue, $data, true);
                         $err = array_merge($err, $fld_errs);
@@ -1093,6 +1110,7 @@ class DefaultController extends \BaseEventTypeController
                 }
             }
         }
+
         return $errors;
     }
 
@@ -1105,7 +1123,7 @@ class DefaultController extends \BaseEventTypeController
                 if (!$finding = \Finding::model()->findByPk($item['id'])) {
                     throw new Exception("Finding not found: {$item['id']}");
                 }
-                $assignment = new models\OphCiExamination_FurtherFindings_Assignment;
+                $assignment = new models\OphCiExamination_FurtherFindings_Assignment();
                 $assignment->finding_id = $finding->id;
                 $assignment->description = @$item['description'];
 
@@ -1125,14 +1143,14 @@ class DefaultController extends \BaseEventTypeController
                 $assignment->element_id = $element->id;
 
                 if (!$assignment->save()) {
-                    throw new \Exception("Unable to save further finding assignment: ".print_r($assignment->errors, true));
+                    throw new \Exception('Unable to save further finding assignment: '.print_r($assignment->errors, true));
                 }
 
                 $ids[] = $assignment->id;
             }
         }
 
-        $criteria = new \CDbCriteria;
+        $criteria = new \CDbCriteria();
         $criteria->addCondition('element_id = :eid');
         $criteria->params[':eid'] = $element->id;
 
@@ -1144,15 +1162,16 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Render the optional child elements for the given parent element type
+     * Render the optional child elements for the given parent element type.
      *
-     * @param BaseEventTypeElement $parent_element
-     * @param string $action
+     * @param BaseEventTypeElement                $parent_element
+     * @param string                              $action
      * @param BaseCActiveBaseEventTypeCActiveForm $form
-     * @param array $data
+     * @param array                               $data
+     *
      * @throws Exception
      */
-    public function renderChildOptionalElements($parent_element, $action, $form=null, $data=null)
+    public function renderChildOptionalElements($parent_element, $action, $form = null, $data = null)
     {
         $this->setCurrentSet();
         $elements = $this->getChildOptionalElements($parent_element->getElementType());
@@ -1164,9 +1183,11 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * Is this element required in the UI? (Prevents the user from being able
-     * to remove the element.)
-     * @param  BaseEventTypeElement  $element
-     * @return boolean
+     * to remove the element.).
+     *
+     * @param BaseEventTypeElement $element
+     *
+     * @return bool
      */
     public function isRequiredInUI(\BaseEventTypeElement $element)
     {
@@ -1177,6 +1198,7 @@ class DefaultController extends \BaseEventTypeController
                 }
             }
         }
+
         return parent::isRequiredInUI($element);
     }
 
@@ -1196,15 +1218,14 @@ class DefaultController extends \BaseEventTypeController
 
     public function actionGetPostOpComplicationList()
     {
-
         $element_id = \Yii::app()->request->getParam('element_id', null);
         $operation_note_id = \Yii::app()->request->getParam('operation_note_id', null);
         $eye_id = \Yii::app()->request->getParam('eye_id', null);
 
-        if($element_id){
+        if ($element_id) {
             $element = models\Element_OphCiExamination_PostOpComplications::model()->findByPk($element_id);
         } else {
-            $element = new models\Element_OphCiExamination_PostOpComplications;
+            $element = new models\Element_OphCiExamination_PostOpComplications();
         }
 
         $right_complications = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_id);
@@ -1212,12 +1233,12 @@ class DefaultController extends \BaseEventTypeController
 
         $right_data = array();
         $left_data = array();
-        foreach($right_complications as $right_complication){
-            $right_data[] = array( 'id' => $right_complication['id'], 'name' => $right_complication['name']);
+        foreach ($right_complications as $right_complication) {
+            $right_data[] = array('id' => $right_complication['id'], 'name' => $right_complication['name']);
         }
 
-        foreach($left_complications as $left_complication){
-            $left_data[] = array( 'id' => $left_complication['id'], 'name' => $left_complication['name']);
+        foreach ($left_complications as $left_complication) {
+            $left_data[] = array('id' => $left_complication['id'], 'name' => $left_complication['name']);
         }
 
         $firm = \Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
@@ -1226,18 +1247,18 @@ class DefaultController extends \BaseEventTypeController
         $right_select_values = models\OphCiExamination_PostOpComplications::model()->getPostOpComplicationsList($element_id, $operation_note_id, $subspecialty_id, \Eye::RIGHT);
 
         $right_select = array();
-        foreach($right_select_values as $right_select_value){
+        foreach ($right_select_values as $right_select_value) {
             $right_select[] = array('id' => $right_select_value->id, 'name' => $right_select_value->name, 'display_order' => $right_select_value->display_order);
         }
 
         $left_select_values = models\OphCiExamination_PostOpComplications::model()->getPostOpComplicationsList($element_id, $operation_note_id, $subspecialty_id, \Eye::LEFT);
-        foreach($left_select_values as $left_select_value){
+        foreach ($left_select_values as $left_select_value) {
             $left_select[] = array('id' => $left_select_value->id, 'name' => $left_select_value->name, 'display_order' => $left_select_value->display_order);
         }
 
         echo \CJSON::encode(array(
-            "right_values" => $right_data,
-            "left_values" => $left_data,
+            'right_values' => $right_data,
+            'left_values' => $left_data,
             'right_select' => $right_select,
             'left_select' => $left_select,
             )
@@ -1249,7 +1270,6 @@ class DefaultController extends \BaseEventTypeController
         $isAjax = \Yii::app()->request->getParam('ajax', false);
 
         if (\Yii::app()->request->isAjaxRequest || $isAjax) {
-
             $term = \Yii::app()->request->getParam('term', false);
 
             $element_id = \Yii::app()->request->getParam('element_id', null);
@@ -1259,20 +1279,17 @@ class DefaultController extends \BaseEventTypeController
             $firm = \Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
             $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
 
-            if (isset($_GET['term']) && strlen($term = $_GET['term']) >0) {
-
+            if (isset($_GET['term']) && strlen($term = $_GET['term']) > 0) {
                 $select_values = models\OphCiExamination_PostOpComplications::model()->getPostOpComplicationsList(
                             $element_id, $operation_note_id, $subspecialty_id, $eye_id, $term);
 
                 $select = array();
-                foreach($select_values as $select_value){
+                foreach ($select_values as $select_value) {
                     $select[] = array('value' => $select_value->id, 'label' => $select_value->name);
                 }
-
             }
 
             echo \CJSON::encode($select);
-
         }
     }
 }

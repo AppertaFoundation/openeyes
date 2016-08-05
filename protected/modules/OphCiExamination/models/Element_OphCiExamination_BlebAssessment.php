@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2012
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
@@ -27,20 +27,19 @@ namespace OEModule\OphCiExamination\models;
  * constraint is not enforced to allow the SecondaryDiagnosis to be deleted as normal through the Patient view.
  *
  * The followings are the available columns in table:
- * @property string $id
- * @property integer $event_id
- * @property integer $eye_id
- * @property integer $left_central_area_id
- * @property integer $left_max_area_id
- * @property integer $left_height_id
- * @property integer $left_vasc_id
- * @property integer $right_central_area_id
- * @property integer $right_max_area_id
- * @property integer $right_height_id
- * @property integer $right_vasc_id
  *
+ * @property string $id
+ * @property int $event_id
+ * @property int $eye_id
+ * @property int $left_central_area_id
+ * @property int $left_max_area_id
+ * @property int $left_height_id
+ * @property int $left_vasc_id
+ * @property int $right_central_area_id
+ * @property int $right_max_area_id
+ * @property int $right_height_id
+ * @property int $right_vasc_id
  */
-
 class Element_OphCiExamination_BlebAssessment extends \SplitEventTypeElement
 {
     public $service;
@@ -48,7 +47,9 @@ class Element_OphCiExamination_BlebAssessment extends \SplitEventTypeElement
 
     /**
      * Returns the static model of the specified AR class.
+     *
      * @param string $className
+     *
      * @return the static model class
      */
     public static function model($className = __CLASS__)
@@ -84,12 +85,13 @@ class Element_OphCiExamination_BlebAssessment extends \SplitEventTypeElement
 
     /**
      * @return array
-     * (non-phpdoc)
+     *               (non-phpdoc)
+     *
      * @see parent::sidedFields()
      */
     public function sidedFields()
     {
-        return array( 'central_area_id', 'max_area_id', 'height_id', 'vasc_id');
+        return array('central_area_id', 'max_area_id', 'height_id', 'vasc_id');
     }
 
     /**
@@ -100,7 +102,7 @@ class Element_OphCiExamination_BlebAssessment extends \SplitEventTypeElement
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-                'element_type' => array(self::HAS_ONE, 'ElementType', 'id','on' => "element_type.class_name='".get_class($this)."'"),
+                'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='".get_class($this)."'"),
                 'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
                 'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
                 'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
@@ -146,7 +148,7 @@ class Element_OphCiExamination_BlebAssessment extends \SplitEventTypeElement
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria = new \CDbCriteria;
+        $criteria = new \CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);

@@ -1,8 +1,9 @@
 <?php
 
-class m160519_102017_automatic_examination_event_log extends OEMigration {
-
-    public function up() {
+class m160519_102017_automatic_examination_event_log extends OEMigration
+{
+    public function up()
+    {
         $this->createOETable('automatic_examination_event_log', array(
             'id' => 'pk',
             'event_id' => 'int(10) unsigned',
@@ -28,9 +29,9 @@ class m160519_102017_automatic_examination_event_log extends OEMigration {
         $this->addForeignKey('import_status_automatic_examination_event_log_id_fk', 'automatic_examination_event_log', 'import_success', 'import_status', 'id');
     }
 
-    public function down() {
+    public function down()
+    {
         $this->dropOETable('automatic_examination_event_log', true);
         $this->dropTable('import_status');
     }
-
 }

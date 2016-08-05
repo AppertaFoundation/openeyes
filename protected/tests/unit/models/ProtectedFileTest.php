@@ -15,7 +15,7 @@ class ProtectedFileTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new ProtectedFile;
+        $this->object = new ProtectedFile();
     }
 
     /**
@@ -28,6 +28,7 @@ class ProtectedFileTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers ProtectedFile::createFromFile
+     *
      * @todo   Implement testCreateFromFile().
      */
     public function testCreateFromFile()
@@ -40,6 +41,7 @@ class ProtectedFileTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers ProtectedFile::model
+     *
      * @todo   Implement testModel().
      */
     public function testModel()
@@ -52,6 +54,7 @@ class ProtectedFileTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers ProtectedFile::tableName
+     *
      * @todo   Implement testTableName().
      */
     public function testTableName()
@@ -64,6 +67,7 @@ class ProtectedFileTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers ProtectedFile::rules
+     *
      * @todo   Implement testRules().
      */
     public function testRules()
@@ -76,6 +80,7 @@ class ProtectedFileTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers ProtectedFile::relations
+     *
      * @todo   Implement testRelations().
      */
     public function testRelations()
@@ -88,6 +93,7 @@ class ProtectedFileTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers ProtectedFile::getBasePath
+     *
      * @todo   Implement testGetBasePath().
      */
     public function testGetBasePath()
@@ -100,6 +106,7 @@ class ProtectedFileTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers ProtectedFile::getPath
+     *
      * @todo   Implement testGetPath().
      */
     public function testGetPath()
@@ -112,6 +119,7 @@ class ProtectedFileTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers ProtectedFile::setSource
+     *
      * @todo   Implement testSetSource().
      */
     public function testSetSource()
@@ -124,6 +132,7 @@ class ProtectedFileTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers ProtectedFile::hasThumbnail
+     *
      * @todo   Implement testHasThumbnail().
      */
     public function testHasThumbnail()
@@ -136,6 +145,7 @@ class ProtectedFileTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers ProtectedFile::getThumbnail
+     *
      * @todo   Implement testGetThumbnail().
      */
     public function testGetThumbnail()

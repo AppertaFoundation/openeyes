@@ -12,8 +12,8 @@
         <div class="large-4 column large-centered text-right large-offset-8">
             <section class="box dashboard">
             <?php 
-                echo CHtml::link('Back to Patient Merge list',array('patientMergeRequest/index'), array('class' => 'button small')) . " ";
-                echo CHtml::link('add',array('patientMergeRequest/create'), array('class' => 'button small'));
+                echo CHtml::link('Back to Patient Merge list', array('patientMergeRequest/index'), array('class' => 'button small')).' ';
+                echo CHtml::link('add', array('patientMergeRequest/create'), array('class' => 'button small'));
             ?>
             </section>
         </div>
@@ -27,11 +27,11 @@
                     'dataProvider' => $dataProvider,
                     'summaryText' => '<h3><small> {start}-{end} of {count} </small></h3>',
                     'htmlOptions' => array('id' => 'patientMergeList'),
-                    'columns' => array('log')
+                    'columns' => array('log'),
                 ));
         ?>
       
-        <?php echo CHTML::activeTextArea($model, "comment", array('disabled'=>'disabled')); ?>
+        <?php echo CHTML::activeTextArea($model, 'comment', array('disabled' => 'disabled')); ?>
         
         <br>
     </div>

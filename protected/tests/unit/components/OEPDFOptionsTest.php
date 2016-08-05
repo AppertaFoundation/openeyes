@@ -6,20 +6,19 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (C) 2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class OEPDFOptionsTest extends CTestCase
 {
-	public function testInject_Catalog_OneLine_WithoutNames()
-	{
-		$tmp_dir = sys_get_temp_dir();
+    public function testInject_Catalog_OneLine_WithoutNames()
+    {
+        $tmp_dir = sys_get_temp_dir();
 
-		$im_a_pdf = "%PDF-1.4
+        $im_a_pdf = "%PDF-1.4
 1 0 obj
 <<
 /Title My Test PDF
@@ -57,18 +56,18 @@ startxref
 %%EOF
 ";
 
-		$tmp_file = $tmp_dir."/testInject_Catalog_OneLine_WithoutNames_".time().".pdf";
+        $tmp_file = $tmp_dir.'/testInject_Catalog_OneLine_WithoutNames_'.time().'.pdf';
 
-		file_put_contents($tmp_file, $im_a_pdf);
+        file_put_contents($tmp_file, $im_a_pdf);
 
-		$pdf = new OEPDFOptions($tmp_file);
-		$pdf->injectJS('print(true);');
-		$pdf->write();
+        $pdf = new OEPDFOptions($tmp_file);
+        $pdf->injectJS('print(true);');
+        $pdf->write();
 
-		$output = file_get_contents($tmp_file);
-		@unlink($tmp_file);
+        $output = file_get_contents($tmp_file);
+        @unlink($tmp_file);
 
-		$this->assertEquals("%PDF-1.4
+        $this->assertEquals("%PDF-1.4
 1 0 obj
 <<
 /Title My Test PDF
@@ -109,13 +108,13 @@ startxref
 422
 %%EOF
 ", $output);
-	}
+    }
 
-	public function testInject_Catalog_OneLine_WithNames()
-	{
-		$tmp_dir = sys_get_temp_dir();
+    public function testInject_Catalog_OneLine_WithNames()
+    {
+        $tmp_dir = sys_get_temp_dir();
 
-		$im_a_pdf = "%PDF-1.4
+        $im_a_pdf = "%PDF-1.4
 1 0 obj
 <<
 /Title My Test PDF
@@ -153,18 +152,18 @@ startxref
 %%EOF
 ";
 
-		$tmp_file = $tmp_dir."/testInject_Catalog_OneLine_WithNames_".time().".pdf";
+        $tmp_file = $tmp_dir.'/testInject_Catalog_OneLine_WithNames_'.time().'.pdf';
 
-		file_put_contents($tmp_file, $im_a_pdf);
+        file_put_contents($tmp_file, $im_a_pdf);
 
-		$pdf = new OEPDFOptions($tmp_file);
-		$pdf->injectJS('print(true);');
-		$pdf->write();
+        $pdf = new OEPDFOptions($tmp_file);
+        $pdf->injectJS('print(true);');
+        $pdf->write();
 
-		$output = file_get_contents($tmp_file);
-		@unlink($tmp_file);
+        $output = file_get_contents($tmp_file);
+        @unlink($tmp_file);
 
-		$this->assertEquals("%PDF-1.4
+        $this->assertEquals("%PDF-1.4
 1 0 obj
 <<
 /Title My Test PDF
@@ -205,13 +204,13 @@ startxref
 437
 %%EOF
 ", $output);
-	}
+    }
 
-	public function testInject_Catalog_MultiLine_WithoutNames()
-	{
-		$tmp_dir = sys_get_temp_dir();
+    public function testInject_Catalog_MultiLine_WithoutNames()
+    {
+        $tmp_dir = sys_get_temp_dir();
 
-		$im_a_pdf = "%PDF-1.4
+        $im_a_pdf = "%PDF-1.4
 1 0 obj
 <<
 /Title My Test PDF
@@ -256,18 +255,18 @@ startxref
 %%EOF
 ";
 
-		$tmp_file = $tmp_dir."/testInject_Catalog_MultiLine_WithoutNames_".time().".pdf";
+        $tmp_file = $tmp_dir.'/testInject_Catalog_MultiLine_WithoutNames_'.time().'.pdf';
 
-		file_put_contents($tmp_file, $im_a_pdf);
+        file_put_contents($tmp_file, $im_a_pdf);
 
-		$pdf = new OEPDFOptions($tmp_file);
-		$pdf->injectJS('print(true);');
-		$pdf->write();
+        $pdf = new OEPDFOptions($tmp_file);
+        $pdf->injectJS('print(true);');
+        $pdf->write();
 
-		$output = file_get_contents($tmp_file);
-		@unlink($tmp_file);
+        $output = file_get_contents($tmp_file);
+        @unlink($tmp_file);
 
-		$this->assertEquals("%PDF-1.4
+        $this->assertEquals("%PDF-1.4
 1 0 obj
 <<
 /Title My Test PDF
@@ -316,13 +315,13 @@ startxref
 422
 %%EOF
 ", $output);
-	}
+    }
 
-	public function testInject_Catalog_MultiLine_WithNames()
-	{
-		$tmp_dir = sys_get_temp_dir();
+    public function testInject_Catalog_MultiLine_WithNames()
+    {
+        $tmp_dir = sys_get_temp_dir();
 
-		$im_a_pdf = "%PDF-1.4
+        $im_a_pdf = "%PDF-1.4
 1 0 obj
 <<
 /Title My Test PDF
@@ -368,18 +367,18 @@ startxref
 %%EOF
 ";
 
-		$tmp_file = $tmp_dir."/testInject_Catalog_MultiLine_WithNames_".time().".pdf";
+        $tmp_file = $tmp_dir.'/testInject_Catalog_MultiLine_WithNames_'.time().'.pdf';
 
-		file_put_contents($tmp_file, $im_a_pdf);
+        file_put_contents($tmp_file, $im_a_pdf);
 
-		$pdf = new OEPDFOptions($tmp_file);
-		$pdf->injectJS('print(true);');
-		$pdf->write();
+        $pdf = new OEPDFOptions($tmp_file);
+        $pdf->injectJS('print(true);');
+        $pdf->write();
 
-		$output = file_get_contents($tmp_file);
-		@unlink($tmp_file);
+        $output = file_get_contents($tmp_file);
+        @unlink($tmp_file);
 
-		$this->assertEquals("%PDF-1.4
+        $this->assertEquals("%PDF-1.4
 1 0 obj
 <<
 /Title My Test PDF
@@ -428,13 +427,13 @@ startxref
 437
 %%EOF
 ", $output);
-	}
+    }
 
-	public function testDisablePrintScalingtest_Catalog_OneLine()
-	{
-		$tmp_dir = sys_get_temp_dir();
+    public function testDisablePrintScalingtest_Catalog_OneLine()
+    {
+        $tmp_dir = sys_get_temp_dir();
 
-		$im_a_pdf = "%PDF-1.4
+        $im_a_pdf = "%PDF-1.4
 1 0 obj
 <<
 /Title My Test PDF
@@ -472,18 +471,18 @@ startxref
 %%EOF
 ";
 
-		$tmp_file = $tmp_dir."/testInject_Catalog_OneLine_WithoutNames_".time().".pdf";
+        $tmp_file = $tmp_dir.'/testInject_Catalog_OneLine_WithoutNames_'.time().'.pdf';
 
-		file_put_contents($tmp_file, $im_a_pdf);
+        file_put_contents($tmp_file, $im_a_pdf);
 
-		$pdf = new OEPDFOptions($tmp_file);
-		$pdf->disablePrintScaling();
-		$pdf->write();
+        $pdf = new OEPDFOptions($tmp_file);
+        $pdf->disablePrintScaling();
+        $pdf->write();
 
-		$output = file_get_contents($tmp_file);
-		@unlink($tmp_file);
+        $output = file_get_contents($tmp_file);
+        @unlink($tmp_file);
 
-		$this->assertEquals("%PDF-1.4
+        $this->assertEquals("%PDF-1.4
 1 0 obj
 <<
 /Title My Test PDF
@@ -516,13 +515,13 @@ startxref
 329
 %%EOF
 ", $output);
-	}
+    }
 
-	public function testDisablePrintScaling_Catalog_MultiLine_WithoutNames()
-	{
-		$tmp_dir = sys_get_temp_dir();
+    public function testDisablePrintScaling_Catalog_MultiLine_WithoutNames()
+    {
+        $tmp_dir = sys_get_temp_dir();
 
-		$im_a_pdf = "%PDF-1.4
+        $im_a_pdf = "%PDF-1.4
 1 0 obj
 <<
 /Title My Test PDF
@@ -567,18 +566,18 @@ startxref
 %%EOF
 ";
 
-		$tmp_file = $tmp_dir."/testInject_Catalog_MultiLine_WithoutNames_".time().".pdf";
+        $tmp_file = $tmp_dir.'/testInject_Catalog_MultiLine_WithoutNames_'.time().'.pdf';
 
-		file_put_contents($tmp_file, $im_a_pdf);
+        file_put_contents($tmp_file, $im_a_pdf);
 
-		$pdf = new OEPDFOptions($tmp_file);
-		$pdf->disablePrintScaling();
-		$pdf->write();
+        $pdf = new OEPDFOptions($tmp_file);
+        $pdf->disablePrintScaling();
+        $pdf->write();
 
-		$output = file_get_contents($tmp_file);
-		@unlink($tmp_file);
+        $output = file_get_contents($tmp_file);
+        @unlink($tmp_file);
 
-		$this->assertEquals("%PDF-1.4
+        $this->assertEquals("%PDF-1.4
 1 0 obj
 <<
 /Title My Test PDF
@@ -619,5 +618,5 @@ startxref
 329
 %%EOF
 ", $output);
-	}
+    }
 }

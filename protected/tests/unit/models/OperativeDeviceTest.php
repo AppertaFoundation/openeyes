@@ -15,7 +15,7 @@ class OperativeDeviceTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new OperativeDevice;
+        $this->object = new OperativeDevice();
     }
 
     /**
@@ -28,6 +28,7 @@ class OperativeDeviceTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers OperativeDevice::model
+     *
      * @todo   Implement testModel().
      */
     public function testModel()
@@ -40,6 +41,7 @@ class OperativeDeviceTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers OperativeDevice::tableName
+     *
      * @todo   Implement testTableName().
      */
     public function testTableName()
@@ -52,6 +54,7 @@ class OperativeDeviceTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers OperativeDevice::rules
+     *
      * @todo   Implement testRules().
      */
     public function testRules()
@@ -64,6 +67,7 @@ class OperativeDeviceTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers OperativeDevice::relations
+     *
      * @todo   Implement testRelations().
      */
     public function testRelations()
@@ -76,6 +80,7 @@ class OperativeDeviceTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers OperativeDevice::attributeLabels
+     *
      * @todo   Implement testAttributeLabels().
      */
     public function testAttributeLabels()
@@ -88,6 +93,7 @@ class OperativeDeviceTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers OperativeDevice::search
+     *
      * @todo   Implement testSearch().
      */
     public function testSearch()

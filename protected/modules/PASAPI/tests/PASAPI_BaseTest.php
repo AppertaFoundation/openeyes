@@ -56,7 +56,7 @@ abstract class PASAPI_BaseTest extends RestTestCase
                          'OEModule\\PASAPI\\models\\PasApiAssignment',
                          'Patient',
                          'Address',
-                         'Contact'),
+                         'Contact', ),
                  $this->additional_clean_up_models) as $cls) {
             $cls::model()->deleteAllByAttributes(array('created_user_id' => $this->user->id));
         }

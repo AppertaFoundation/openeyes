@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -8,13 +8,12 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 ?>
 
 <div class="admin box">
@@ -40,7 +39,7 @@
                         <a href="/worklistAdmin/definition/<?=$definition->id?>">View</a> |
                         <a href="/worklistAdmin/definitionWorklists/<?=$definition->id?>">Instances (<?=count($definition->worklists)?>)</a> |
                         <a href="/worklistAdmin/definitionMappings/<?=$definition->id?>">Mapping Items(<?=count($definition->mappings)?>)</a> |
-                        <a href="/worklistAdmin/definitionDisplayContexts/<?=$definition->id?>">Display Context (<?=count($definition->display_contexts)>0 ? "limited" : "any";?>)</a> |
+                        <a href="/worklistAdmin/definitionDisplayContexts/<?=$definition->id?>">Display Context (<?=count($definition->display_contexts) > 0 ? 'limited' : 'any';?>)</a> |
                         <?php if (count($definition->worklists)) {?>
                             <a href="/worklistAdmin/definitionWorklistsDelete/<?=$definition->id?>">Delete Instances</a>
                         <?php } else { ?>
@@ -62,7 +61,7 @@
                             'class' => 'small',
                             'style' => 'display:none;',
                             'data-uri' => '/worklistAdmin/definitionSort/',
-                            'data-object' => 'WorklistDefinition'
+                            'data-object' => 'WorklistDefinition',
                         )
                     )->toHtml() ?>
                 </td>

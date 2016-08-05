@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -10,8 +10,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -19,18 +19,18 @@
  */
 return array(
                          'commonpreviousop1' => array(
-                                                  'id'=> 1,
+                                                  'id' => 1,
                                                   'name' => 'commonpreviousop 1',
-                                                  'last_modified_date' => '1900-01-01 00:00:00'
+                                                  'last_modified_date' => '1900-01-01 00:00:00',
                          ),
                          'commonpreviousop2' => array(
-                                                  'id'=> 2,
-                                                  'name' => 'commonpreviousop 2' ,
-                                                  'last_modified_date' => '1900-01-01 00:00:00'
+                                                  'id' => 2,
+                                                  'name' => 'commonpreviousop 2',
+                                                  'last_modified_date' => '1900-01-01 00:00:00',
                          ),
                          'commonpreviousop3' => array(
-                                                  'id'=> 3,
+                                                  'id' => 3,
                                                   'name' => 'commonpreviousop 3',
-                                                  'last_modified_date' => '1900-01-01 00:00:00'
+                                                  'last_modified_date' => '1900-01-01 00:00:00',
                          ),
 );

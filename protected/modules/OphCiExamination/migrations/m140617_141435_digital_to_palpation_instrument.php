@@ -13,7 +13,7 @@ class m140617_141435_digital_to_palpation_instrument extends OEMigration
     public function down()
     {
         $this->update('ophciexamination_instrument',
-            array('name'=> 'Digital' ),
+            array('name' => 'Digital'),
             'name = "Palpation"'
         );
     }

@@ -8,8 +8,8 @@
 		<!-- Patient panel -->
 		<div class="large-4 medium-5 column">
 				<?php if ($this->renderPatientPanel === true) {
-					$this->renderPartial('//patient/_patient_id');
-				}?>
+    $this->renderPartial('//patient/_patient_id');
+}?>
 		</div>
 
 		<!-- User panel (with site navigation) -->

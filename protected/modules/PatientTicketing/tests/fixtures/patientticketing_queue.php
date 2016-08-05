@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2014
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2014, OpenEyes Foundation
@@ -18,82 +18,82 @@
  */
 
 return array(
-		'queue1' => array(
-				'id' => 1,
-				'name' => 'Queue 1',
-				'active' => true,
-				'is_initial' => true
-		),
-		'queue2' => array(
-				'id' => 2,
-				'name' => 'Queue 2',
-				'active' => true,
-				'is_initial' => false
-		),
-		'queue3' => array(
-				'id' => 3,
-				'name' => 'Queue 3',
-				'active' => true,
-				'is_initial' => false
-		),
-		'queue4' => array(
-				'id' => 4,
-				'name' => 'Queue 4',
-				'active' => true,
-				'is_initial' => false
-		),
-		'queue5' => array(
-				'id' => 5,
-				'name' => 'Queue 5',
-				'active' => true,
-				'is_initial' => true
-		),
-		'queue6' => array(
-				'id' => 6,
-				'name' => 'Queue 6',
-				'active' => true,
-				'is_initial' => false
-		),
-		'queue7' => array(
-				'id' => 7,
-				'name' => 'Queue 7',
-				'active' => true,
-				'is_initial' => false
-		),
-		'queue8' => array(
-				'id' => 8,
-				'name' => 'Queue 8',
-				'active' => true,
-				'is_initial' => false
-		),
-		'queue9' => array(
-				'id' => 9,
-				'name' => 'Queue 9',
-				'active' => true,
-				'is_initial' => false
-		),
-		'queue10' => array(
-				'id' => 10,
-				'name' => 'Queue 10',
-				'active' => true,
-				'is_initial' => true
-		),
-		'queue11' => array(
-				'id' => 11,
-				'name' => 'Queue 11',
-				'active' => true,
-				'is_initial' => false
-		),
-		'queue12' => array(
-			'id' => 12,
-			'name' => 'Queue 12',
-			'active' => true,
-			'is_initial' => true,
-		),
-		'queue13' => array(
-				'id' => 13,
-				'name' => 'Queue 13',
-				'active' => true,
-				'is_initial' => false,
-		)
+        'queue1' => array(
+                'id' => 1,
+                'name' => 'Queue 1',
+                'active' => true,
+                'is_initial' => true,
+        ),
+        'queue2' => array(
+                'id' => 2,
+                'name' => 'Queue 2',
+                'active' => true,
+                'is_initial' => false,
+        ),
+        'queue3' => array(
+                'id' => 3,
+                'name' => 'Queue 3',
+                'active' => true,
+                'is_initial' => false,
+        ),
+        'queue4' => array(
+                'id' => 4,
+                'name' => 'Queue 4',
+                'active' => true,
+                'is_initial' => false,
+        ),
+        'queue5' => array(
+                'id' => 5,
+                'name' => 'Queue 5',
+                'active' => true,
+                'is_initial' => true,
+        ),
+        'queue6' => array(
+                'id' => 6,
+                'name' => 'Queue 6',
+                'active' => true,
+                'is_initial' => false,
+        ),
+        'queue7' => array(
+                'id' => 7,
+                'name' => 'Queue 7',
+                'active' => true,
+                'is_initial' => false,
+        ),
+        'queue8' => array(
+                'id' => 8,
+                'name' => 'Queue 8',
+                'active' => true,
+                'is_initial' => false,
+        ),
+        'queue9' => array(
+                'id' => 9,
+                'name' => 'Queue 9',
+                'active' => true,
+                'is_initial' => false,
+        ),
+        'queue10' => array(
+                'id' => 10,
+                'name' => 'Queue 10',
+                'active' => true,
+                'is_initial' => true,
+        ),
+        'queue11' => array(
+                'id' => 11,
+                'name' => 'Queue 11',
+                'active' => true,
+                'is_initial' => false,
+        ),
+        'queue12' => array(
+            'id' => 12,
+            'name' => 'Queue 12',
+            'active' => true,
+            'is_initial' => true,
+        ),
+        'queue13' => array(
+                'id' => 13,
+                'name' => 'Queue 13',
+                'active' => true,
+                'is_initial' => false,
+        ),
 );

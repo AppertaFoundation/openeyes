@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -22,34 +22,34 @@
 <?php if (!$nowrapper) {?>
 	<div class="row field-row diagnosis-selection">
 		<div class="large-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
-			<label for="<?php echo $class_field ;?>">Diagnosis:</label>
+			<label for="<?php echo $class_field;?>">Diagnosis:</label>
 		</div>
 		<div class="large-<?php echo $layoutColumns['field'];?> column end">
 <?php }?>
 			<?php
-			$list_options = array('empty' => 'Select a commonly used diagnosis');
+            $list_options = array('empty' => 'Select a commonly used diagnosis');
 
-			if ($secondary_to) {
-				$list_options['options'] = array();
-				foreach ($secondary_to as $id => $lst) {
-					if (count($lst)) {
-						$list_options['options'][$id] = array();
-					}
-					$data = array();
-					$second_order = 1;
-					foreach ($lst as $sid => $term) {
-						$data[] = array('id' => $sid, 'term' => $term, 'order' => $second_order++);
-					}
-					$list_options['options'][$id]['data-secondary-to'] = CJSON::encode($data);
-				}
-			}
+            if ($secondary_to) {
+                $list_options['options'] = array();
+                foreach ($secondary_to as $id => $lst) {
+                    if (count($lst)) {
+                        $list_options['options'][$id] = array();
+                    }
+                    $data = array();
+                    $second_order = 1;
+                    foreach ($lst as $sid => $term) {
+                        $data[] = array('id' => $sid, 'term' => $term, 'order' => $second_order++);
+                    }
+                    $list_options['options'][$id]['data-secondary-to'] = CJSON::encode($data);
+                }
+            }
 
-			$order = 1;
-			foreach ($options as $i => $opt) {
-				$list_options['options'][$i]['data-order'] = $order++;
-			}
-			?>
-			<?php echo !empty($options) ? CHtml::dropDownList("{$class}[$field]", '', $options, $list_options) : ""?>
+            $order = 1;
+            foreach ($options as $i => $opt) {
+                $list_options['options'][$i]['data-order'] = $order++;
+            }
+            ?>
+			<?php echo !empty($options) ? CHtml::dropDownList("{$class}[$field]", '', $options, $list_options) : ''?>
 <?php if (!$nowrapper) {?>
 		</div>
 	</div>
@@ -83,13 +83,13 @@
 	<?php }?>
 			<div class="autocomplete-row" id="div_<?php echo "{$class}_{$field}_autocomplete_row"?>">
 				<?php
-				$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-						'name' => "{$class}[$field]",
-						'id' => "{$class_field}_0",
-						'value'=>'',
-						'source'=>"js:function(request, response) {
+                $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+                        'name' => "{$class}[$field]",
+                        'id' => "{$class_field}_0",
+                        'value' => '',
+                        'source' => "js:function(request, response) {
 							$.ajax({
-								'url': '" . Yii::app()->createUrl('/disorder/autocomplete') . "',
+								'url': '".Yii::app()->createUrl('/disorder/autocomplete')."',
 								'type':'GET',
 								'data':{'term': request.term, 'code': '$code'},
 								'success':function(data) {
@@ -113,17 +113,17 @@
 								}
 							});
 						}",
-						'options' => array(
-								'minLength'=>'3',
-								'select' => "js:function(event, ui) {
+                        'options' => array(
+                                'minLength' => '3',
+                                'select' => "js:function(event, ui) {
 
 									if ($('#DiagnosisSelection_disorder_id_secondary_to').is(':visible')) {
 										var primary_selected = $('#{$class_field}').children('option:selected');
 										if (primary_selected.val() != 'NONE') {
-											".($callback ? $callback."(primary_selected.val(), primary_selected.text());" : "")."
+											".($callback ? $callback.'(primary_selected.val(), primary_selected.text());' : '').'
 										}
 									}
-									".($callback ? $callback."(ui.item.id, ui.item.value);" : '')."
+									'.($callback ? $callback.'(ui.item.id, ui.item.value);' : '')."
 									$('#{$class_field}_0').val('');
 									$('#{$class_field}').children('option').map(function() {
 										if ($(this).val() == ui.item.id) {
@@ -132,12 +132,12 @@
 									});
 									return false;
 								}",
-						),
-						'htmlOptions' => array(
-								'placeholder' => $placeholder,
-						),
-				));
-				?>
+                        ),
+                        'htmlOptions' => array(
+                                'placeholder' => $placeholder,
+                        ),
+                ));
+                ?>
 			</div>
 	<?php if (!$nowrapper) {?>
 			</div>

@@ -1,5 +1,5 @@
 <?php
-	$this->pageTitle=Yii::app()->name . ' - Login';
+    $this->pageTitle = Yii::app()->name.' - Login';
 ?>
 
 <div class="container content">
@@ -8,30 +8,30 @@
 		<div class="large-11 large-centered column">
 
 			<?php $form = $this->beginWidget('CActiveForm', array(
-				'id'=>'loginform',
-				'enableAjaxValidation'=>false,
-				'htmlOptions'=>array(
-					'class'=>'form panel login'
-				)
-			))?>
+                'id' => 'loginform',
+                'enableAjaxValidation' => false,
+                'htmlOptions' => array(
+                    'class' => 'form panel login',
+                ),
+            ))?>
 
-				<?php echo $form->error($model,'password',array('class'=>'alert-box alert')); ?>
+				<?php echo $form->error($model, 'password', array('class' => 'alert-box alert')); ?>
 
 				<div class="row field-row">
 					<div class="large-4 column">
-						<?php echo CHtml::activeLabel($model,'username', array('label'=>'Username:','class'=>'align')); ?>
+						<?php echo CHtml::activeLabel($model, 'username', array('label' => 'Username:', 'class' => 'align')); ?>
 					</div>
 					<div class="large-8 column">
-						<?php echo $form->textField($model,'username',array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder'=>'Enter username...','class'=>'large')); ?>
+						<?php echo $form->textField($model, 'username', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder' => 'Enter username...', 'class' => 'large')); ?>
 					</div>
 				</div>
 
 				<div class="row field-row">
 					<div class="large-4 column">
-						<?php echo CHtml::activeLabel($model,'password', array('label'=>'Password:','class'=>'align')); ?>
+						<?php echo CHtml::activeLabel($model, 'password', array('label' => 'Password:', 'class' => 'align')); ?>
 					</div>
 					<div class="large-8 column">
-						<?php echo $form->passwordField($model,'password',array('autocomplete'=>'off','placeholder'=>'Enter password...','class'=>'large')); ?>
+						<?php echo $form->passwordField($model, 'password', array('autocomplete' => 'off', 'placeholder' => 'Enter password...', 'class' => 'large')); ?>
 					</div>
 				</div>
 

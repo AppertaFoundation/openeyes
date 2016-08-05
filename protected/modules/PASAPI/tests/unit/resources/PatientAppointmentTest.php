@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -9,21 +9,19 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 use \OEModule\PASAPI\resources\PatientAppointment;
 
 class PatientAppointmentTest extends PHPUnit_Framework_TestCase
 {
-
     public function getMockResource($resource, $methods = array())
     {
-        return $this->getMockBuilder("\\OEModule\\PASAPI\\resources\\" . $resource)
+        return $this->getMockBuilder('\\OEModule\\PASAPI\\resources\\'.$resource)
             ->disableOriginalConstructor()
             ->setMethods($methods)
             ->getMock();
@@ -32,7 +30,7 @@ class PatientAppointmentTest extends PHPUnit_Framework_TestCase
     public function test_save_success()
     {
         $pa = $this->getMockResource('PatientAppointment',
-            array('getAssignment', 'validate','startTransaction', 'saveModel', 'audit'));
+            array('getAssignment', 'validate', 'startTransaction', 'saveModel', 'audit'));
 
         $papi_ass = $this->getMockBuilder('OEModule\\PASAPI\\models\\PasApiAssignment')
             ->disableOriginalConstructor()
@@ -77,7 +75,7 @@ class PatientAppointmentTest extends PHPUnit_Framework_TestCase
         $pa = $this->getMockResource('PatientAppointment',
             array('resolvePatient', 'resolveWhen', 'resolveAttributes'));
 
-        $manager = $this->getMockBuilder("WorklistManager")
+        $manager = $this->getMockBuilder('WorklistManager')
             ->disableOriginalConstructor()
             ->setMethods(array('updateWorklistPatientFromMapping'))
             ->getMock();
@@ -95,14 +93,14 @@ class PatientAppointmentTest extends PHPUnit_Framework_TestCase
             ->method('resolvePatient')
             ->will($this->returnValue($patient));
 
-            $pa->expects($this->once())
+        $pa->expects($this->once())
             ->method('resolveWhen')
             ->will($this->returnValue($when));
         $pa->expects($this->once())
             ->method('resolveAttributes')
             ->will($this->returnValue($attributes));
 
-        $model = ComponentStubGenerator::generate("WorklistPatient", array('isNewRecord' => false, 'patient_id' => 4));
+        $model = ComponentStubGenerator::generate('WorklistPatient', array('isNewRecord' => false, 'patient_id' => 4));
 
         $manager->expects($this->once())
             ->method('updateWorklistPatientFromMapping')
@@ -113,5 +111,4 @@ class PatientAppointmentTest extends PHPUnit_Framework_TestCase
         // verify that the patient has been updated
         $this->assertEquals($patient->id, $model->patient_id);
     }
-
 }

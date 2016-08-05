@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
@@ -27,6 +27,7 @@ class WorklistAdminController extends BaseAdminController
 
     /**
      * @param $action
+     *
      * @return bool
      */
     protected function beforeAction($action)
@@ -41,13 +42,13 @@ class WorklistAdminController extends BaseAdminController
      * @param $message - the message to display
      * @param string $id - the flash element id suffix. defaults to message
      */
-    protected function flashMessage($type = 'success', $message, $id = "message")
+    protected function flashMessage($type = 'success', $message, $id = 'message')
     {
         Yii::app()->user->setFlash("{$type}.{$id}", $message);
     }
 
     /**
-     * List the current definitions
+     * List the current definitions.
      */
     public function actionDefinitions()
     {
@@ -55,14 +56,15 @@ class WorklistAdminController extends BaseAdminController
 
         $this->render('//admin/worklists/definitions', array(
             'definitions' => $definitions,
-            'errors' => @$errors
+            'errors' => @$errors,
         ));
     }
 
     /**
-     * View a definition
+     * View a definition.
      *
      * @param null $id
+     *
      * @throws CHttpException
      */
     public function actionDefinition($id = null)
@@ -70,45 +72,49 @@ class WorklistAdminController extends BaseAdminController
         $definition = $this->getWorklistDefinition($id);
 
         $this->render('//admin/worklists/definition', array(
-            'definition' => $definition
+            'definition' => $definition,
         ));
     }
 
     /**
-     * Create or Edit a WorklistDefinition
+     * Create or Edit a WorklistDefinition.
      *
      * @param null $id
+     *
      * @throws CHttpException
      */
     public function actionDefinitionUpdate($id = null)
     {
         $definition = $this->manager->getWorklistDefinition($id);
 
-        if (!$definition)
-            throw new CHttpException(404, "Worklist definition could not be "  . ($id ? "found" : "created"));
+        if (!$definition) {
+            throw new CHttpException(404, 'Worklist definition could not be '.($id ? 'found' : 'created'));
+        }
 
-        if (!$this->manager->canUpdateWorklistDefinition($definition))
-            throw new CHttpException(409, "Cannot change mappings for un-editable Definition");
+        if (!$this->manager->canUpdateWorklistDefinition($definition)) {
+            throw new CHttpException(409, 'Cannot change mappings for un-editable Definition');
+        }
 
         if (isset($_POST['WorklistDefinition'])) {
             $definition->attributes = $_POST['WorklistDefinition'];
             if (!$this->manager->saveWorklistDefinition($definition)) {
                 $errors = $definition->getErrors();
-            }
-            else {
+            } else {
                 $this->flashMessage('success', 'Worklist Definition saved');
+
                 return $this->redirect(array('/worklistAdmin/definitions'));
             }
         }
 
         $this->render('//admin/worklists/definition_edit', array(
             'definition' => $definition,
-            'errors' => @$errors
+            'errors' => @$errors,
         ));
     }
 
     /**
      * @param $id
+     *
      * @throws CDbException
      * @throws CHttpException
      */
@@ -116,13 +122,13 @@ class WorklistAdminController extends BaseAdminController
     {
         $definition = $this->getWorklistDefinition($id);
 
-        if (!$this->manager->canUpdateWorklistDefinition($definition))
-            throw new CHttpException(409, "Cannot delete a definition that is not valid for editing.");
+        if (!$this->manager->canUpdateWorklistDefinition($definition)) {
+            throw new CHttpException(409, 'Cannot delete a definition that is not valid for editing.');
+        }
 
         if ($definition->delete()) {
             $this->flashMessage('success', 'Worklist Definition deleted.');
-        }
-        else {
+        } else {
             $this->flashMessage('error', 'Could not delete worklist definition');
         }
 
@@ -130,26 +136,30 @@ class WorklistAdminController extends BaseAdminController
     }
 
     /**
-     * Convenience Wrapper
+     * Convenience Wrapper.
      *
      * @param $id
+     *
      * @return null|WorklistDefinition
+     *
      * @throws CHttpException
      */
     protected function getWorklistDefinition($id)
     {
         $definition = $this->manager->getWorklistDefinition($id);
 
-        if (!$definition)
-            throw new CHttpException(404, "Worklist definition not found");
+        if (!$definition) {
+            throw new CHttpException(404, 'Worklist definition not found');
+        }
 
         return $definition;
     }
 
     /**
-     * List of worklists for a definition
+     * List of worklists for a definition.
      *
      * @param $id
+     *
      * @throws CHttpException
      */
     public function actionDefinitionWorklists($id)
@@ -162,16 +172,16 @@ class WorklistAdminController extends BaseAdminController
     }
 
     /**
-     * Update the Worklist Definition Mapping Attribute order
+     * Update the Worklist Definition Mapping Attribute order.
      */
     public function actionDefinitionSort()
     {
-        $definition_ids = @$_POST['item_ids'] ? : array();
+        $definition_ids = @$_POST['item_ids'] ?: array();
 
         if (count($definition_ids)) {
             if (!$this->manager->setWorklistDefinitionDisplayOrder($definition_ids)) {
                 OELog::log(print_r($this->manager->getErrors(), true));
-                $this->flashMessage('error', "Could not reorder definitions");
+                $this->flashMessage('error', 'Could not reorder definitions');
             } else {
                 $this->flashMessage('success', 'Definitions re-ordered');
             }
@@ -181,29 +191,33 @@ class WorklistAdminController extends BaseAdminController
     }
 
     /**
-     * List of patients on a worklist (only supporting worklists generated by a definition
+     * List of patients on a worklist (only supporting worklists generated by a definition.
      *
      * @param $id
+     *
      * @throws CHttpException
      */
     public function actionWorklistPatients($id)
     {
         $worklist = $this->manager->getWorklist($id);
-        if (!$worklist)
-            throw new CHttpException(404, "Worklist not found");
+        if (!$worklist) {
+            throw new CHttpException(404, 'Worklist not found');
+        }
 
-        if (!$worklist->worklist_definition)
-            throw new CHttpException(400, "Worklist does not have a definition so not viewable in this admin.");
+        if (!$worklist->worklist_definition) {
+            throw new CHttpException(400, 'Worklist does not have a definition so not viewable in this admin.');
+        }
 
         $this->render('//admin/worklists/worklist_patients', array(
-            'worklist' => $worklist
+            'worklist' => $worklist,
         ));
     }
 
     /**
-     * Delete the generated worklists for a worklist definition
+     * Delete the generated worklists for a worklist definition.
      *
      * @param $id
+     *
      * @throws CHttpException
      */
     public function actionDefinitionWorklistsDelete($id)
@@ -211,23 +225,22 @@ class WorklistAdminController extends BaseAdminController
         $definition = $this->getWorklistDefinition($id);
 
         if (isset($_POST['confirm_delete']) && $_POST['confirm_delete'] == $id) {
-
             if ($this->manager->deleteWorklistDefinitionInstances($definition)) {
                 $this->flashMessage('success', "Instances removed for Worklist Definition {$definition->name}");
-            }
-            else {
+            } else {
                 $this->flashMessage('error', "Unable to delete instances for Worklist Definition {$definition->name}");
             }
             $this->redirect('/worklistAdmin/definitions');
         }
         $this->render('//admin/worklists/definition_worklists_delete', array(
-            'definition' => $definition
+            'definition' => $definition,
         ));
     }
     /**
-     * Generate instances for the given WorklistDefinition
+     * Generate instances for the given WorklistDefinition.
      *
      * @param $id
+     *
      * @throws CHttpException
      */
     public function actionDefinitionGenerate($id)
@@ -239,18 +252,18 @@ class WorklistAdminController extends BaseAdminController
         if ($new_count === false) {
             OELog::log(print_r($this->manager->getErrors(), true));
             $this->flashMessage('error', "There was a problem generating worklists for {$definition->name}.");
-        }
-        else {
-            $this->flashMessage("success", "Worklist Generation Completed for {$definition->name}. {$new_count} new instances created.");
+        } else {
+            $this->flashMessage('success', "Worklist Generation Completed for {$definition->name}. {$new_count} new instances created.");
         }
 
         $this->redirect(array('/worklistAdmin/definitions'));
     }
 
     /**
-     * List the WorklistDefinitionMappings for the given id
+     * List the WorklistDefinitionMappings for the given id.
      *
      * @param $id
+     *
      * @throws CHttpException
      */
     public function actionDefinitionMappings($id)
@@ -263,17 +276,19 @@ class WorklistAdminController extends BaseAdminController
     }
 
     /**
-     * Create a new WorkflowDefinitionMapping for the given WorkflowDefinition
+     * Create a new WorkflowDefinitionMapping for the given WorkflowDefinition.
      *
      * @param $id
+     *
      * @throws CHttpException
      */
     public function actionAddDefinitionMapping($id)
     {
         $definition = $this->getWorklistDefinition($id);
 
-        if (!$this->manager->canUpdateWorklistDefinition($definition))
-            throw new CHttpException(409, "Cannot add mapping to un-editable Definition");
+        if (!$this->manager->canUpdateWorklistDefinition($definition)) {
+            throw new CHttpException(409, 'Cannot add mapping to un-editable Definition');
+        }
 
         $mapping = new WorklistDefinitionMapping();
         $mapping->worklist_definition_id = $definition->id;
@@ -285,11 +300,9 @@ class WorklistAdminController extends BaseAdminController
                 $_POST['WorklistDefinitionMapping']['key'],
                 $_POST['WorklistDefinitionMapping']['valuelist'],
                 $_POST['WorklistDefinitionMapping']['willdisplay'])) {
-
                 $this->flashMessage('success', 'Worklist Definition Mapping saved.');
-                $this->redirect(array('/worklistAdmin/definitionMappings/' . $id));
-            }
-            else {
+                $this->redirect(array('/worklistAdmin/definitionMappings/'.$id));
+            } else {
                 $errors = $mapping->getErrors();
                 $errors[] = $this->manager->getErrors();
             }
@@ -297,24 +310,26 @@ class WorklistAdminController extends BaseAdminController
 
         $this->render('//admin/worklists/definition_mapping', array(
             'mapping' => $mapping,
-            'errors' => @$errors
+            'errors' => @$errors,
         ));
-
     }
 
     /**
-     * Update a WorkflowDefinitionMapping
+     * Update a WorkflowDefinitionMapping.
      *
      * @param $id
+     *
      * @throws CHttpException
      */
     public function actionDefinitionMappingUpdate($id)
     {
-        if (!$mapping = WorklistDefinitionMapping::model()->findByPk($id))
-            throw new CHttpException(404, "Worklist Definition Mapping not found.");
+        if (!$mapping = WorklistDefinitionMapping::model()->findByPk($id)) {
+            throw new CHttpException(404, 'Worklist Definition Mapping not found.');
+        }
 
-        if (!$this->manager->canUpdateWorklistDefinition($mapping->worklist_definition))
-            throw new CHttpException(409, "Cannot change mappings for un-editable Definition");
+        if (!$this->manager->canUpdateWorklistDefinition($mapping->worklist_definition)) {
+            throw new CHttpException(409, 'Cannot change mappings for un-editable Definition');
+        }
 
         if (isset($_POST['WorklistDefinitionMapping'])) {
             $mapping->attributes = $_POST['WorklistDefinitionMapping'];
@@ -322,11 +337,9 @@ class WorklistAdminController extends BaseAdminController
                 $_POST['WorklistDefinitionMapping']['key'],
                 $_POST['WorklistDefinitionMapping']['valuelist'],
                 $_POST['WorklistDefinitionMapping']['willdisplay'])) {
-
                 $this->flashMessage('success', 'Worklist Definition Mapping saved.');
-                $this->redirect(array('/worklistAdmin/definitionMappings/' . $mapping->worklist_definition_id));
-            }
-            else {
+                $this->redirect(array('/worklistAdmin/definitionMappings/'.$mapping->worklist_definition_id));
+            } else {
                 $errors = $mapping->getErrors();
                 $errors[] = $this->manager->getErrors();
             }
@@ -334,54 +347,56 @@ class WorklistAdminController extends BaseAdminController
 
         $this->render('//admin/worklists/definition_mapping', array(
             'mapping' => $mapping,
-            'errors' => @$errors
+            'errors' => @$errors,
         ));
     }
 
     /**
-     * Delete a definition mapping
+     * Delete a definition mapping.
      *
      * @param $id
+     *
      * @throws CHttpException
      */
     public function actionDefinitionMappingDelete($id)
     {
-        if (!$mapping = WorklistDefinitionMapping::model()->findByPk($id))
-            throw new CHttpException(404, "Worklist Definition Mapping not found.");
+        if (!$mapping = WorklistDefinitionMapping::model()->findByPk($id)) {
+            throw new CHttpException(404, 'Worklist Definition Mapping not found.');
+        }
 
-        if (!$this->manager->canUpdateWorklistDefinition($mapping->worklist_definition))
-            throw new CHttpException(409, "Cannot delete mapping for un-editable Definition");
+        if (!$this->manager->canUpdateWorklistDefinition($mapping->worklist_definition)) {
+            throw new CHttpException(409, 'Cannot delete mapping for un-editable Definition');
+        }
 
         if ($mapping->delete()) {
-            $this->flashMessage('success', "Mapping removed.");
-        }
-        else {
-            $this->flashMessage('error', "Cannot delete mapping.");
+            $this->flashMessage('success', 'Mapping removed.');
+        } else {
+            $this->flashMessage('error', 'Cannot delete mapping.');
         }
 
-        $this->redirect(array('/worklistAdmin/definitionMappings/' . $mapping->worklist_definition_id));
+        $this->redirect(array('/worklistAdmin/definitionMappings/'.$mapping->worklist_definition_id));
     }
 
     /**
-     * Update the Worklist Definition Mapping Attribute order
+     * Update the Worklist Definition Mapping Attribute order.
      *
      * @param $id
      */
     public function actionDefinitionMappingSort($id)
     {
         $definition = $this->getWorklistDefinition($id);
-        $mapping_ids = @$_POST['item_ids'] ? : array();
+        $mapping_ids = @$_POST['item_ids'] ?: array();
 
         if (count($mapping_ids)) {
             if (!$this->manager->setWorklistDefinitionMappingDisplayOrder($definition, $mapping_ids)) {
                 OELog::log(print_r($this->manager->getErrors(), true));
-                $this->flashMessage('error', "Could not reorder mappings");
+                $this->flashMessage('error', 'Could not reorder mappings');
             } else {
                 $this->flashMessage('success', 'Mappings re-ordered');
             }
         }
 
-        $this->redirect('/worklistAdmin/definitionMappings/' . $id);
+        $this->redirect('/worklistAdmin/definitionMappings/'.$id);
     }
 
     public function actionDefinitionDisplayContexts($id)
@@ -389,12 +404,13 @@ class WorklistAdminController extends BaseAdminController
         $definition = $this->getWorklistDefinition($id);
 
         $this->render('//admin/worklists/definition_display_contexts', array(
-            'definition' => $definition
+            'definition' => $definition,
         ));
     }
 
     /**
      * @param $id
+     *
      * @throws CHttpException
      */
     public function actionDefinitionDisplayContextAdd($id)
@@ -408,37 +424,36 @@ class WorklistAdminController extends BaseAdminController
         if (isset($_POST['WorklistDefinitionDisplayContext'])) {
             $display_context->attributes = $_POST['WorklistDefinitionDisplayContext'];
             if ($display_context->save()) {
-
                 $this->flashMessage('success', 'Worklist Definition Display Context saved.');
-                $this->redirect(array('/worklistAdmin/definitionDisplayContexts/' . $id));
-            }
-            else {
+                $this->redirect(array('/worklistAdmin/definitionDisplayContexts/'.$id));
+            } else {
                 $errors = $display_context->getErrors();
             }
         }
 
         $this->render('//admin/worklists/definition_display_context_edit', array(
             'display_context' => $display_context,
-            'errors' => @$errors
+            'errors' => @$errors,
         ));
     }
 
     /**
      * @param $id
+     *
      * @throws CHttpException
      */
     public function actionDefinitionDisplayContextDelete($id)
     {
-        if (!$display_context = WorklistDefinitionDisplayContext::model()->findByPk($id))
-            throw new CHttpException(404, "Worklist Definition Display Context not found.");
+        if (!$display_context = WorklistDefinitionDisplayContext::model()->findByPk($id)) {
+            throw new CHttpException(404, 'Worklist Definition Display Context not found.');
+        }
 
         if ($display_context->delete()) {
-            $this->flashMessage('success', "Display Context removed.");
-        }
-        else {
-            $this->flashMessage('error', "Cannot delete Display Context.");
+            $this->flashMessage('success', 'Display Context removed.');
+        } else {
+            $this->flashMessage('error', 'Cannot delete Display Context.');
         }
 
-        $this->redirect(array('/worklistAdmin/definitionDisplayContexts/' . $display_context->worklist_definition_id));
+        $this->redirect(array('/worklistAdmin/definitionDisplayContexts/'.$display_context->worklist_definition_id));
     }
 }

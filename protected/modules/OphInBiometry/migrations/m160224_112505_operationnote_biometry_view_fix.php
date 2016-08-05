@@ -2,9 +2,9 @@
 
 class m160224_112505_operationnote_biometry_view_fix extends CDbMigration
 {
-	public function up()
-	{
-		$this->execute("CREATE OR REPLACE VIEW et_ophtroperationnote_biometry AS SELECT
+    public function up()
+    {
+        $this->execute('CREATE OR REPLACE VIEW et_ophtroperationnote_biometry AS SELECT
 							eol.id, eol.eye_id, eol.last_modified_date, target_refraction_left, target_refraction_right,
 							(SELECT name FROM ophinbiometry_lenstype_lens oll WHERE oll.id=lens_id_left) as lens_left,
 							(SELECT description FROM ophinbiometry_lenstype_lens oll WHERE oll.id=lens_id_left) as lens_description_left,
@@ -25,12 +25,12 @@ class m160224_112505_operationnote_biometry_view_fix extends CDbMigration
 							LEFT JOIN et_ophinbiometry_selection eos ON eos.event_id=eol.event_id
 							JOIN event ev ON ev.id=eol.event_id
 							JOIN episode ep ON ep.id=ev.episode_id
-							ORDER BY eol.last_modified_date;");
-	}
+							ORDER BY eol.last_modified_date;');
+    }
 
-	public function down()
-	{
-		$this->execute("CREATE OR REPLACE VIEW et_ophtroperationnote_biometry AS SELECT
+    public function down()
+    {
+        $this->execute('CREATE OR REPLACE VIEW et_ophtroperationnote_biometry AS SELECT
 							eol.id, eol.eye_id, eol.last_modified_date, target_refraction_left, target_refraction_right,
 							(SELECT name FROM ophinbiometry_lenstype_lens oll WHERE oll.id=lens_id_left) as lens_left,
 							(SELECT description FROM ophinbiometry_lenstype_lens oll WHERE oll.id=lens_id_left) as lens_description_left,
@@ -51,17 +51,17 @@ class m160224_112505_operationnote_biometry_view_fix extends CDbMigration
 							JOIN et_ophinbiometry_selection eos ON eos.event_id=eol.event_id
 							JOIN event ev ON ev.id=eol.event_id
 							JOIN episode ep ON ep.id=ev.episode_id
-							ORDER BY eol.last_modified_date;");
-	}
+							ORDER BY eol.last_modified_date;');
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

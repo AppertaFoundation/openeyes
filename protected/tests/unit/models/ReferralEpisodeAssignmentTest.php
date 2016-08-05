@@ -15,7 +15,7 @@ class ReferralEpisodeAssignmentTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new ReferralEpisodeAssignment;
+        $this->object = new ReferralEpisodeAssignment();
     }
 
     /**
@@ -28,6 +28,7 @@ class ReferralEpisodeAssignmentTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers ReferralEpisodeAssignment::model
+     *
      * @todo   Implement testModel().
      */
     public function testModel()
@@ -40,6 +41,7 @@ class ReferralEpisodeAssignmentTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers ReferralEpisodeAssignment::tableName
+     *
      * @todo   Implement testTableName().
      */
     public function testTableName()
@@ -52,6 +54,7 @@ class ReferralEpisodeAssignmentTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers ReferralEpisodeAssignment::rules
+     *
      * @todo   Implement testRules().
      */
     public function testRules()
@@ -64,6 +67,7 @@ class ReferralEpisodeAssignmentTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers ReferralEpisodeAssignment::relations
+     *
      * @todo   Implement testRelations().
      */
     public function testRelations()

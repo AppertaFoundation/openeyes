@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2012
@@ -9,14 +9,13 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 ?>
 <div class="box admin">
 	<div class="row">
@@ -25,13 +24,13 @@
 		</div>
 		<div class="large-4 column">
 			<?php
-			$form = $this->beginWidget('BaseEventTypeCActiveForm',array(
-				'id' => 'searchform',
-				'enableAjaxValidation' => false,
-				'focus' => '#search',
-				'action' => Yii::app()->createUrl('/admin/users'),
+            $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+                'id' => 'searchform',
+                'enableAjaxValidation' => false,
+                'focus' => '#search',
+                'action' => Yii::app()->createUrl('/admin/users'),
                                 'method' => 'get',
-			))?>
+            ))?>
 				<div class="row">
 					<div class="large-12 column">
                                             <input type="text" autocomplete="<?php echo Yii::app()->params['html_autocomplete']?>" name="search" id="search" placeholder="Enter search query..." value="<?php echo !empty($search) ? strip_tags($search) : '';?>" />
@@ -58,7 +57,7 @@
 			</thead>
 			<tbody>
 				<?php
-				foreach ($users as $i => $user) {?>
+                foreach ($users as $i => $user) {?>
 					<tr class="clickable" data-id="<?php echo $user->id?>" data-uri="admin/editUser/<?php echo $user->id?>">
 						<td><input type="checkbox" name="users[]" value="<?php echo $user->id?>" /></td>
 						<td><?php echo $user->id?></td>
@@ -68,13 +67,13 @@
 						<td><?php echo $user->last_name?></td>
 						<td><?php echo $user->is_doctor ? 'Yes' : 'No'?></td>
 						<td><?php
-							$roles = CHtml::listData($user->roles, 'name', 'name');
-							if ($roles) {
-								echo CHtml::encode(implode(', ', $roles));
-							} else {
-								echo "-";
-							}
-						?></td>
+                            $roles = CHtml::listData($user->roles, 'name', 'name');
+                    if ($roles) {
+                        echo CHtml::encode(implode(', ', $roles));
+                    } else {
+                        echo '-';
+                    }
+                    ?></td>
 						<td><?php echo $user->active ? 'Yes' : 'No'?></td>
 					</tr>
 				<?php }?>
@@ -84,9 +83,9 @@
 					<td colspan="9">
 						<?php echo EventAction::button('Add', 'add', null, array('class' => 'small'))->toHtml()?>
 						<?php echo EventAction::button('Delete', 'delete', null, array('class' => 'small'))->toHtml()?>
-						<?php echo $this->renderPartial('_pagination',array(
-							'pagination' => $pagination
-						))?>
+						<?php echo $this->renderPartial('_pagination', array(
+                            'pagination' => $pagination,
+                        ))?>
 					</td>
 				</tr>
 			</tfoot>

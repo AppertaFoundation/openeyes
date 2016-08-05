@@ -1,5 +1,6 @@
-<?php /**
- * OpenEyes
+<?php
+/**
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -8,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -20,135 +21,139 @@
  * This is the model class for table "ophtroperationbooking_operation_erod_rule".
  *
  * The followings are the available columns in table:
- * @property integer $id
- * @property integer $subspecialty_id
  *
+ * @property int $id
+ * @property int $subspecialty_id
  */
-
 class OphTrOperationbooking_Operation_EROD_Rule extends BaseActiveRecordVersioned
 {
-	/**
-	 * Returns the static model of the specified AR class.
-	 * @return the static model class
-	 */
-	public static function model($className = __CLASS__)
-	{
-		return parent::model($className);
-	}
+    /**
+     * Returns the static model of the specified AR class.
+     *
+     * @return the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
 
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'ophtroperationbooking_operation_erod_rule';
-	}
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'ophtroperationbooking_operation_erod_rule';
+    }
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
-		return array(
-			array('subspecialty_id', 'safe'),
-			array('subspecialty_id', 'required'),
-			array('items', 'required'),
-			array('subspecialty_id', 'safe', 'on' => 'search'),
-		);
-	}
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return array(
+            array('subspecialty_id', 'safe'),
+            array('subspecialty_id', 'required'),
+            array('items', 'required'),
+            array('subspecialty_id', 'safe', 'on' => 'search'),
+        );
+    }
 
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
-		return array(
-			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-			'items' => array(self::HAS_MANY, 'OphTrOperationbooking_Operation_EROD_Rule_Item', 'erod_rule_id'),
-			'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
-		);
-	}
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return array(
+            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'items' => array(self::HAS_MANY, 'OphTrOperationbooking_Operation_EROD_Rule_Item', 'erod_rule_id'),
+            'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
+        );
+    }
 
-	public function getFirms()
-	{
-		$firms = array();
-		foreach ($this->items as $item) {
-			$item['item_type'] == 'firm' && $firms[] = $item;
-		}
+    public function getFirms()
+    {
+        $firms = array();
+        foreach ($this->items as $item) {
+            $item['item_type'] == 'firm' && $firms[] = $item;
+        }
 
-		return $firms;
-	}
+        return $firms;
+    }
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
-	public function attributeLabels()
-	{
-		return array(
-			'subspecialty_id' => 'Subspecialty',
-		);
-	}
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+            'subspecialty_id' => 'Subspecialty',
+        );
+    }
 
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		// Warning: Please modify the following code to remove attributes that
-		// should not be searched.
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     *
+     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     */
+    public function search()
+    {
+        // Warning: Please modify the following code to remove attributes that
+        // should not be searched.
 
-		$criteria = new CDbCriteria;
+        $criteria = new CDbCriteria();
 
-		$criteria->compare('id', $this->id, true);
-		$criteria->compare('name', $this->name, true);
+        $criteria->compare('id', $this->id, true);
+        $criteria->compare('name', $this->name, true);
 
-		return new CActiveDataProvider(get_class($this), array(
-			'criteria' => $criteria,
-		));
-	}
+        return new CActiveDataProvider(get_class($this), array(
+            'criteria' => $criteria,
+        ));
+    }
 
-	public function getFirmString()
-	{
-		$string = '';
+    public function getFirmString()
+    {
+        $string = '';
 
-		foreach ($this->items as $i => $item) {
-			if ($item['item_type'] == 'firm') {
-				if ($string) $string .= ', ';
-				$firm = Firm::model()->findByPk($item['item_id']);
-				$string .= $firm->name.' ('.$firm->serviceSubspecialtyAssignment->subspecialty->name.')';
-			}
-		}
+        foreach ($this->items as $i => $item) {
+            if ($item['item_type'] == 'firm') {
+                if ($string) {
+                    $string .= ', ';
+                }
+                $firm = Firm::model()->findByPk($item['item_id']);
+                $string .= $firm->name.' ('.$firm->serviceSubspecialtyAssignment->subspecialty->name.')';
+            }
+        }
 
-		return $string;
-	}
+        return $string;
+    }
 
-	/**
-	 * Return all the subspecialties that can be selected for this rule (including the current one if it is set already)
-	 *
-	 * @return Subspecialty[]
-	 */
-	public function getSubspecialtyOptions() {
-		$kls = get_class($this);
+    /**
+     * Return all the subspecialties that can be selected for this rule (including the current one if it is set already).
+     *
+     * @return Subspecialty[]
+     */
+    public function getSubspecialtyOptions()
+    {
+        $kls = get_class($this);
 
-		if ($this->id) {
-			$all_rules = $kls::model()->findAll('id != ?', $this->id);
-		}
-		else {
-			$all_rules = $kls::model()->findAll();
-		}
+        if ($this->id) {
+            $all_rules = $kls::model()->findAll('id != ?', $this->id);
+        } else {
+            $all_rules = $kls::model()->findAll();
+        }
 
-		$current_subspecialties = array();
-		foreach ($all_rules as $r) {
-			$current_subspecialties[] = $r->subspecialty_id;
-		}
-		$criteria = new CDbCriteria();
-		$criteria->addNotInCondition('id', $current_subspecialties);
-		return Subspecialty::model()->findAll($criteria);
-	}
+        $current_subspecialties = array();
+        foreach ($all_rules as $r) {
+            $current_subspecialties[] = $r->subspecialty_id;
+        }
+        $criteria = new CDbCriteria();
+        $criteria->addNotInCondition('id', $current_subspecialties);
+
+        return Subspecialty::model()->findAll($criteria);
+    }
 }

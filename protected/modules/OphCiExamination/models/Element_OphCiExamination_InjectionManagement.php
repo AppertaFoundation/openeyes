@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2012
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
@@ -23,21 +23,22 @@ namespace OEModule\OphCiExamination\models;
  * This is the model class for table "et_ophciexamination_injectionmanagement".
  *
  * The followings are the available columns in table:
+ *
  * @property string $id
- * @property integer $event_id
+ * @property int $event_id
  * @property string $injection_status_id
  * @property string $injection_deferralreason_id
  * @property string $injection_deferralreason_other
  *
  * The followings are the available model relations:
  */
-
 class Element_OphCiExamination_InjectionManagement extends \BaseEventTypeElement
 {
     public $service;
 
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return the static model class
      */
     public static function model($className = __CLASS__)
@@ -79,7 +80,7 @@ class Element_OphCiExamination_InjectionManagement extends \BaseEventTypeElement
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-                'element_type' => array(self::HAS_ONE, 'ElementType', 'id','on' => "element_type.class_name='".get_class($this)."'"),
+                'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='".get_class($this)."'"),
                 'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
                 'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
                 'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
@@ -96,7 +97,7 @@ class Element_OphCiExamination_InjectionManagement extends \BaseEventTypeElement
         return array(
                 'id' => 'ID',
                 'event_id' => 'Event',
-                'injection_status_id' => "Injection",
+                'injection_status_id' => 'Injection',
                 'injection_deferralreason_id' => 'Injection deferral reason',
                 'injection_deferralreason_other' => 'Injection deferral reason',
         );
@@ -104,11 +105,12 @@ class Element_OphCiExamination_InjectionManagement extends \BaseEventTypeElement
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
     {
-        $criteria = new \CDbCriteria;
+        $criteria = new \CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
@@ -139,7 +141,7 @@ class Element_OphCiExamination_InjectionManagement extends \BaseEventTypeElement
     public function injectionDeferralReasonDependencyValidation($attribute)
     {
         if ($this->injection_deferralreason && $this->injection_deferralreason->other) {
-            $v = \CValidator::createValidator('required', $this, array('injection_deferralreason_other'), array('message' => '{attribute} required when deferral reason is ' . $this->injection_deferralreason));
+            $v = \CValidator::createValidator('required', $this, array('injection_deferralreason_other'), array('message' => '{attribute} required when deferral reason is '.$this->injection_deferralreason));
             $v->validate($this);
         }
     }
@@ -159,7 +161,7 @@ class Element_OphCiExamination_InjectionManagement extends \BaseEventTypeElement
             }
         } else {
             // shouldn't get to this point really
-            return "N/A";
+            return 'N/A';
         }
     }
 
