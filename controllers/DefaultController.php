@@ -19,23 +19,19 @@ namespace OEModule\OphCoCvi\controllers;
 
 class DefaultController extends \BaseEventTypeController
 {
-	public function actionCreate()
-	{
-		parent::actionCreate();
-	}
+    const ACTION_TYPE_LIST = 'List';
 
-	public function actionUpdate($id)
-	{
-		parent::actionUpdate($id);
-	}
+    protected static $action_types = array(
+        'list' => self::ACTION_TYPE_LIST
+    );
 
-	public function actionView($id)
-	{
-		parent::actionView($id);
-	}
+    public function actionList()
+    {
+        echo "list";
+    }
 
-	public function actionPrint($id)
-	{
-		parent::actionPrint($id);
-	}
+    public function checkListAccess()
+    {
+        return $this->checkAccess('OprnEditCvi', $this->getApp()->user->id);
+    }
 }

@@ -26,7 +26,18 @@ return array(
             'Field of Vision' => '/OphCoCvi/admin/fieldOfVision',
             'Low Vision Status' => '/OphCoCvi/admin/lowVisionStatus',
             'Preferred Info Format' => '/OphCoCvi/admin/preferredInfoFormat',
-
+        'menu_bar_items' => array(
+            'admin' => array(
+                'restricted' => array('cvi'),
+                'sub' => array(
+                    'cvi' => array(
+                        'title' => 'CVI',
+                        'uri' => '/OphCoCvi/Default/list',
+                        'position' => 7,
+                        'restricted' => array(array('OprnCreateCvi', 'user_id'))
+                    ),
+                )
+            ),
         ),
         'patient_summary_render' => array(
             'cvi_status' => array(
@@ -40,7 +51,6 @@ return array(
                 'class' => 'OEModule\OphCoCvi\components\OphCoCvi_AuthRules'
             ),
         ),
-        'ophcocvi_allow_all_consultants' => true,
-
+        'ophcocvi_allow_all_consultants' => false,
     )
 );
