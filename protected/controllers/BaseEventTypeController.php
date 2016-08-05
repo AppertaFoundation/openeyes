@@ -1058,6 +1058,54 @@ class BaseEventTypeController extends BaseModuleController
     }
 
     /**
+     * Processes provided form data to create 1 or more elements of the provided type.
+     *
+     * @param ElementType $element_type
+     * @param $data
+     * @return array
+     * @throws Exception
+     */
+    protected function getElementsForElementType(ElementType $element_type, $data)
+    {
+        $elements = array();
+        $el_cls_name = $element_type->class_name;
+        $f_key = CHtml::modelName($el_cls_name);
+
+        if (isset($data[$f_key])) {
+            $keys = array_keys($data[$f_key]);
+
+            if (is_array($data[$f_key][$keys[0]]) && !count(array_filter(array_keys($data[$f_key]), 'is_string'))) {
+                // there is more than one element of this type
+                $pk_field = $el_cls_name::model()->tableSchema->primaryKey;
+                foreach ($data[$f_key] as $i => $attrs) {
+                    if (!$this->event->isNewRecord && !isset($attrs[$pk_field])) {
+                        throw new Exception('missing primary key field for multiple elements for editing an event');
+                    }
+                    if ($pk = @$attrs[$pk_field]) {
+                        $element = $el_cls_name::model()->findByPk($pk);
+                    } else {
+                        $element = $element_type->getInstance();
+                    }
+                    $element->attributes = Helper::convertNHS2MySQL($attrs);
+                    $this->setElementComplexAttributesFromData($element, $data, $i);
+                    $element->event = $this->event;
+                    $elements[] = $element;
+                }
+            } else {
+                if ($this->event->isNewRecord
+                    || !$element = $el_cls_name::model()->find('event_id=?', array($this->event->id))) {
+                    $element = $element_type->getInstance();
+                }
+                $element->attributes = Helper::convertNHS2MySQL($data[$f_key]);
+                $this->setElementComplexAttributesFromData($element, $data);
+                $element->event = $this->event;
+                $elements[] = $element;
+            }
+        }
+        return $elements;
+    }
+    
+    /**
      * Set the attributes of the given $elements from the given structured array.
      * Returns any validation errors that arise.
      *
@@ -1074,38 +1122,9 @@ class BaseEventTypeController extends BaseModuleController
 
         // only process data for elements that are part of the element type set for the controller event type
         foreach ($this->event_type->getAllElementTypes() as $element_type) {
-            $el_cls_name = $element_type->class_name;
-            $f_key = CHtml::modelName($el_cls_name);
-            if (isset($data[$f_key])) {
-                $keys = array_keys($data[$f_key]);
-
-                if (is_array($data[$f_key][$keys[0]]) && !count(array_filter(array_keys($data[$f_key]), 'is_string'))) {
-                    // there is more than one element of this type
-                    $pk_field = $el_cls_name::model()->tableSchema->primaryKey;
-                    foreach ($data[$f_key] as $i => $attrs) {
-                        if (!$this->event->isNewRecord && !isset($attrs[$pk_field])) {
-                            throw new Exception('missing primary key field for multiple elements for editing an event');
-                        }
-                        if ($pk = @$attrs[$pk_field]) {
-                            $element = $el_cls_name::model()->findByPk($pk);
-                        } else {
-                            $element = $element_type->getInstance();
-                        }
-                        $element->attributes = Helper::convertNHS2MySQL($attrs);
-                        $this->setElementComplexAttributesFromData($element, $data, $i);
-                        $element->event = $this->event;
-                        $elements[] = $element;
-                    }
-                } else {
-                    if ($this->event->isNewRecord
-                        || !$element = $el_cls_name::model()->find('event_id=?', array($this->event->id))) {
-                        $element = $element_type->getInstance();
-                    }
-                    $element->attributes = Helper::convertNHS2MySQL($data[$f_key]);
-                    $this->setElementComplexAttributesFromData($element, $data);
-                    $element->event = $this->event;
-                    $elements[] = $element;
-                }
+            $from_data = $this->getElementsForElementType($element_type, $data);
+            if (count($from_data) > 0) {
+                $elements = array_merge($elements, $from_data);
             } elseif ($element_type->required) {
                 $errors[$this->event_type->name][] = $element_type->name.' is required';
                 $elements[] = $element_type->getInstance();
