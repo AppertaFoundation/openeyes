@@ -1,2 +1,21 @@
 ---
 # application tasks to be customized and to run after the main provision
+
+# Install project dependencies
+- name: Install composer dependencies
+  composer:
+    command: "install"
+    arguments: "--no-interaction"
+    prefer_source: "yes"
+    working_dir: "/var/www/openeyes"
+    no_dev: "no"
+  become: true
+  become_user: vagrant
+
+
+# Populate MySQL database TODO; Use info in all.yml / vars.yml
+# - mysql_db:
+#     state=import
+#     name=openeyes
+#     login_user=openeyes
+#     login_password=oe_test
