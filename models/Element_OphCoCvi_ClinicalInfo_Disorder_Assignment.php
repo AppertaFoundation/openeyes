@@ -24,7 +24,7 @@ namespace OEModule\OphCoCvi\models;
  * The followings are the available columns in table:
  * @property string $id
  * @property integer $element_id
- * @property integer $ophcocvi_clinicinfo_disorders_id
+ * @property integer $ophcocvi_clinicinfo_disorder_id
  *
  * The followings are the available model relations:
  *
@@ -72,7 +72,7 @@ class Element_OphCoCvi_ClinicalInfo_Disorder_Assignment extends \BaseActiveRecor
 	{
 		return array(
 			'element' => array(self::BELONGS_TO, 'Element_OphCoCvi_ClinicalInfo', 'element_id'),
-			'ophcocvi_clinicinfo_disorders' => array(self::BELONGS_TO, 'OphCoCvi_ClinicalInfo_Disorders', 'ophcocvi_clinicinfo_disorders_id'),
+			'ophcocvi_clinicinfo_disorder' => array(self::BELONGS_TO, 'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder', 'ophcocvi_clinicinfo_disorder_id'),
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 		);

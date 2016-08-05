@@ -64,7 +64,7 @@
 						None
 					<?php } else {?>
 							<?php foreach ($element->disorders as $item) {
-								echo $item->ophcocvi_clinicinfo_disorders->name?><br/>
+								echo $item->ophcocvi_clinicinfo_disorder->name?><br/>
 							<?php }?>
 					<?php }?>
 		</div></div>

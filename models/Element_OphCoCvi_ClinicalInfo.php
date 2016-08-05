@@ -161,14 +161,14 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
 			$existing_ids = array();
 
 			foreach (Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()->findAll('element_id = :elementId', array(':elementId' => $this->id)) as $item) {
-				$existing_ids[] = $item->ophcocvi_clinicinfo_disorders_id;
+				$existing_ids[] = $item->ophcocvi_clinicinfo_disorder_id;
 			}
 
 			foreach ($_POST['MultiSelect_disorders'] as $id) {
 				if (!in_array($id,$existing_ids)) {
 					$item = new Element_OphCoCvi_ClinicalInfo_Disorder_Assignment;
 					$item->element_id = $this->id;
-					$item->ophcocvi_clinicinfo_disorders_id = $id;
+					$item->ophcocvi_clinicinfo_disorder_id = $id;
 
 					if (!$item->save()) {
 						throw new Exception('Unable to save MultiSelect item: '.print_r($item->getErrors(),true));
@@ -178,7 +178,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
 
 			foreach ($existing_ids as $id) {
 				if (!in_array($id,$_POST['MultiSelect_disorders'])) {
-					$item = Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()->find('element_id = :elementId and ophcocvi_clinicinfo_disorders_id = :lookupfieldId',array(':elementId' => $this->id, ':lookupfieldId' => $id));
+					$item = Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()->find('element_id = :elementId and ophcocvi_clinicinfo_disorder_id = :lookupfieldId',array(':elementId' => $this->id, ':lookupfieldId' => $id));
 					if (!$item->delete()) {
 						throw new Exception('Unable to delete MultiSelect item: '.print_r($item->getErrors(),true));
 					}
