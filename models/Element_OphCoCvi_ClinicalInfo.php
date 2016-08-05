@@ -51,159 +51,175 @@ namespace OEModule\OphCoCvi\models;
 
 class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
 {
-	public static $BLIND_STATUS = "Severely Sight Impaired";
-	public static $NOT_BLIND_STATUS = "Sight Impaired";
+    public static $BLIND_STATUS = "Severely Sight Impaired";
+    public static $NOT_BLIND_STATUS = "Sight Impaired";
 
-	/**
-	 * Returns the static model of the specified AR class.
-	 * @return the static model class
-	 */
-	public static function model($className = __CLASS__)
-	{
-		return parent::model($className);
-	}
+    /**
+     * Returns the static model of the specified AR class.
+     * @return the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
 
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'et_ophcocvi_clinicinfo';
-	}
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'et_ophcocvi_clinicinfo';
+    }
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		return array(
-			array('event_id, examination_date, is_considered_blind, sight_varies_by_light_levels, unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va, low_vision_status_id, field_of_vision_id, diagnoses_not_covered, consultant_id, ', 'safe'),
-			array('id, event_id, examination_date, is_considered_blind, sight_varies_by_light_levels, unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va, low_vision_status_id, field_of_vision_id, diagnoses_not_covered, consultant_id, ', 'safe', 'on' => 'search'),
-		);
-	}
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        return array(
+            array(
+                'event_id, examination_date, is_considered_blind, sight_varies_by_light_levels, unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va, low_vision_status_id, field_of_vision_id, diagnoses_not_covered, consultant_id, ',
+                'safe'
+            ),
+            array(
+                'id, event_id, examination_date, is_considered_blind, sight_varies_by_light_levels, unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va, low_vision_status_id, field_of_vision_id, diagnoses_not_covered, consultant_id, ',
+                'safe',
+                'on' => 'search'
+            ),
+        );
+    }
 
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		return array(
-			'element_type' => array(self::HAS_ONE, 'ElementType', 'id','on' => "element_type.class_name='".get_class($this)."'"),
-			'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
-			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-			'low_vision_status' => array(self::BELONGS_TO, 'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_LowVisionStatus', 'low_vision_status_id'),
-			'field_of_vision' => array(self::BELONGS_TO, 'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_FieldOfVision', 'field_of_vision_id'),
-			// probably more interested in relationship direct to disorders through this relation
-			'disorders' => array(self::HAS_MANY, 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment', 'element_id'),
-			'consultant' => array(self::BELONGS_TO, 'User', 'consultant_id'),
-		);
-	}
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        return array(
+            'element_type' => array(
+                self::HAS_ONE,
+                'ElementType',
+                'id',
+                'on' => "element_type.class_name='" . get_class($this) . "'"
+            ),
+            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
+            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'low_vision_status' => array(
+                self::BELONGS_TO,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_LowVisionStatus',
+                'low_vision_status_id'
+            ),
+            'field_of_vision' => array(
+                self::BELONGS_TO,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_FieldOfVision',
+                'field_of_vision_id'
+            ),
+            // probably more interested in relationship direct to disorders through this relation
+            'disorders' => array(
+                self::HAS_MANY,
+                'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment',
+                'element_id'
+            ),
+            'consultant' => array(self::BELONGS_TO, 'User', 'consultant_id'),
+        );
+    }
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
-	public function attributeLabels()
-	{
-		return array(
-			'id' => 'ID',
-			'event_id' => 'Event',
-			'examination_date' => 'Examination date',
-			'is_considered_blind' => 'Is considered blind',
-			'sight_varies_by_light_levels' => 'Sight varies by light levels',
-			'unaided_right_va' => 'Unaided right VA',
-			'unaided_left_va' => 'Unaided left VA',
-			'best_corrected_right_va' => 'Best corrected right VA',
-			'best_corrected_left_va' => 'Best corrected left VA',
-			'best_corrected_binocular_va' => 'Best corrected binocular VA',
-			'low_vision_status_id' => 'Low vision status',
-			'field_of_vision_id' => 'Field of vision',
-			'disorders' => 'Disorders',
-			'diagnoses_not_covered' => 'Diagnoses not covered',
-			'consultant_id' => 'Consultant',
-		);
-	}
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+            'id' => 'ID',
+            'event_id' => 'Event',
+            'examination_date' => 'Examination date',
+            'is_considered_blind' => 'Is considered blind',
+            'sight_varies_by_light_levels' => 'Sight varies by light levels',
+            'unaided_right_va' => 'Unaided right VA',
+            'unaided_left_va' => 'Unaided left VA',
+            'best_corrected_right_va' => 'Best corrected right VA',
+            'best_corrected_left_va' => 'Best corrected left VA',
+            'best_corrected_binocular_va' => 'Best corrected binocular VA',
+            'low_vision_status_id' => 'Low vision status',
+            'field_of_vision_id' => 'Field of vision',
+            'disorders' => 'Disorders',
+            'diagnoses_not_covered' => 'Diagnoses not covered',
+            'consultant_id' => 'Consultant',
+        );
+    }
 
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		$criteria = new CDbCriteria;
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     */
+    public function search()
+    {
+        $criteria = new CDbCriteria;
 
-		$criteria->compare('id', $this->id, true);
-		$criteria->compare('event_id', $this->event_id, true);
-		$criteria->compare('examination_date', $this->examination_date);
-		$criteria->compare('is_considered_blind', $this->is_considered_blind);
-		$criteria->compare('sight_varies_by_light_levels', $this->sight_varies_by_light_levels);
-		$criteria->compare('unaided_right_va', $this->unaided_right_va);
-		$criteria->compare('unaided_left_va', $this->unaided_left_va);
-		$criteria->compare('best_corrected_right_va', $this->best_corrected_right_va);
-		$criteria->compare('best_corrected_left_va', $this->best_corrected_left_va);
-		$criteria->compare('best_corrected_binocular_va', $this->best_corrected_binocular_va);
-		$criteria->compare('low_vision_status_id', $this->low_vision_status_id);
-		$criteria->compare('field_of_vision_id', $this->field_of_vision_id);
-		$criteria->compare('disorders', $this->disorders);
-		$criteria->compare('diagnoses_not_covered', $this->diagnoses_not_covered);
-		$criteria->compare('consultant_id', $this->consultant_id);
+        $criteria->compare('id', $this->id, true);
+        $criteria->compare('event_id', $this->event_id, true);
+        $criteria->compare('examination_date', $this->examination_date);
+        $criteria->compare('is_considered_blind', $this->is_considered_blind);
+        $criteria->compare('sight_varies_by_light_levels', $this->sight_varies_by_light_levels);
+        $criteria->compare('unaided_right_va', $this->unaided_right_va);
+        $criteria->compare('unaided_left_va', $this->unaided_left_va);
+        $criteria->compare('best_corrected_right_va', $this->best_corrected_right_va);
+        $criteria->compare('best_corrected_left_va', $this->best_corrected_left_va);
+        $criteria->compare('best_corrected_binocular_va', $this->best_corrected_binocular_va);
+        $criteria->compare('low_vision_status_id', $this->low_vision_status_id);
+        $criteria->compare('field_of_vision_id', $this->field_of_vision_id);
+        $criteria->compare('disorders', $this->disorders);
+        $criteria->compare('diagnoses_not_covered', $this->diagnoses_not_covered);
+        $criteria->compare('consultant_id', $this->consultant_id);
 
-		return new CActiveDataProvider(get_class($this), array(
-			'criteria' => $criteria,
-		));
-	}
+        return new CActiveDataProvider(get_class($this), array(
+            'criteria' => $criteria,
+        ));
+    }
 
+    protected function afterSave()
+    {
+        if (!empty($_POST['MultiSelect_disorders'])) {
 
-	public function getophcocvi_clinicinfo_disorder_defaults() {
-		$ids = array();
-		foreach (OphCoCvi_ClinicalInfo_Disorder::model()->findAll('`default` = ?',array(1)) as $item) {
-			$ids[] = $item->id;
-		}
-		return $ids;
-	}
+            $existing_ids = array();
 
-	protected function afterSave()
-	{
-		if (!empty($_POST['MultiSelect_disorders'])) {
+            foreach (Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()->findAll('element_id = :elementId',
+                array(':elementId' => $this->id)) as $item) {
+                $existing_ids[] = $item->ophcocvi_clinicinfo_disorder_id;
+            }
 
-			$existing_ids = array();
+            foreach ($_POST['MultiSelect_disorders'] as $id) {
+                if (!in_array($id, $existing_ids)) {
+                    $item = new Element_OphCoCvi_ClinicalInfo_Disorder_Assignment;
+                    $item->element_id = $this->id;
+                    $item->ophcocvi_clinicinfo_disorder_id = $id;
 
-			foreach (Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()->findAll('element_id = :elementId', array(':elementId' => $this->id)) as $item) {
-				$existing_ids[] = $item->ophcocvi_clinicinfo_disorders_id;
-			}
+                    if (!$item->save()) {
+                        throw new Exception('Unable to save MultiSelect item: ' . print_r($item->getErrors(), true));
+                    }
+                }
+            }
 
-			foreach ($_POST['MultiSelect_disorders'] as $id) {
-				if (!in_array($id,$existing_ids)) {
-					$item = new Element_OphCoCvi_ClinicalInfo_Disorder_Assignment;
-					$item->element_id = $this->id;
-					$item->ophcocvi_clinicinfo_disorders_id = $id;
+            foreach ($existing_ids as $id) {
+                if (!in_array($id, $_POST['MultiSelect_disorders'])) {
+                    $item = Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()->find('element_id = :elementId and ophcocvi_clinicinfo_disorder_id = :lookupfieldId',
+                        array(':elementId' => $this->id, ':lookupfieldId' => $id));
+                    if (!$item->delete()) {
+                        throw new Exception('Unable to delete MultiSelect item: ' . print_r($item->getErrors(), true));
+                    }
+                }
+            }
+        }
 
-					if (!$item->save()) {
-						throw new Exception('Unable to save MultiSelect item: '.print_r($item->getErrors(),true));
-					}
-				}
-			}
+        return parent::afterSave();
+    }
 
-			foreach ($existing_ids as $id) {
-				if (!in_array($id,$_POST['MultiSelect_disorders'])) {
-					$item = Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()->find('element_id = :elementId and ophcocvi_clinicinfo_disorders_id = :lookupfieldId',array(':elementId' => $this->id, ':lookupfieldId' => $id));
-					if (!$item->delete()) {
-						throw new Exception('Unable to delete MultiSelect item: '.print_r($item->getErrors(),true));
-					}
-				}
-			}
-		}
-
-		return parent::afterSave();
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getDisplayStatus()
-	{
-		return $this->is_considered_blind ? static::$BLIND_STATUS : static::$NOT_BLIND_STATUS;
-	}
+    /**
+     * @return string
+     */
+    public function getDisplayStatus()
+    {
+        return $this->is_considered_blind ? static::$BLIND_STATUS : static::$NOT_BLIND_STATUS;
+    }
 }
-?>

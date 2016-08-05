@@ -24,98 +24,100 @@ use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo;
 
 class OphCoCvi_API extends \BaseAPI
 {
-	protected $yii;
+    protected $yii;
 
-	public function __construct(CApplication $yii = null)
-	{
-		if (is_null($yii)) {
-			$yii = \Yii::app();
-		}
+    public function __construct(\CApplication $yii = null)
+    {
+        if (is_null($yii)) {
+            $yii = \Yii::app();
+        }
 
-		$this->yii = $yii;
-	}
+        $this->yii = $yii;
+    }
 
-	/**
-	 * Get all events regardless of episode.
-	 *
-	 * @param Patient $patient
-	 * @return \Event[]
-	 * @throws \Exception
-	 */
-	public function getEvents(Patient $patient)
-	{
-		return $this->getManager()->getEventsForPatient($patient);
-	}
+    /**
+     * Get all events regardless of episode.
+     *
+     * @param Patient $patient
+     * @return \Event[]
+     * @throws \Exception
+     */
+    public function getEvents(Patient $patient)
+    {
+        return $this->getManager()->getEventsForPatient($patient);
+    }
 
-	/**
-	 * Convenience wrapper to allow template rendering.
-	 *
-	 * @param $view
-	 * @param array $parameters
-	 * @return mixed
-	 */
-	protected function renderPartial($view, $parameters = array())
-	{
-		return $this->yii->controller->renderPartial($view, $parameters, true);
-	}
+    /**
+     * Convenience wrapper to allow template rendering.
+     *
+     * @param $view
+     * @param array $parameters
+     * @return mixed
+     */
+    protected function renderPartial($view, $parameters = array())
+    {
+        return $this->yii->controller->renderPartial($view, $parameters, true);
+    }
 
-	/**
-	 * @var OphCoCvi_Manager
-	 */
-	protected $cvi_manager;
+    /**
+     * @var OphCoCvi_Manager
+     */
+    protected $cvi_manager;
 
-	/**
-	 * @return OphCoCvi_Manager
-	 */
-	public function getManager()
-	{
-		if (!isset($this->cvi_manager)) {
-			$this->cvi_manager = new OphCoCvi_Manager($this->yii, $this->getEventType());
-		}
+    /**
+     * @return OphCoCvi_Manager
+     */
+    public function getManager()
+    {
+        if (!isset($this->cvi_manager)) {
+            $this->cvi_manager = new OphCoCvi_Manager($this->yii, $this->getEventType());
+        }
 
-		return $this->cvi_manager;
-	}
+        return $this->cvi_manager;
+    }
 
-	/**
-	 * Render a patient summary widget to display CVI status based on the eCVI event and the core static model.
-	 *
-	 * @param Patient $patient
-	 * @return string
-	 */
-	public function patientSummaryRender(Patient $patient)
-	{
-		$rows = array();
-		$oph_info_editable = false;
+    /**
+     * Render a patient summary widget to display CVI status based on the eCVI event and the core static model.
+     *
+     * @param Patient $patient
+     * @return string
+     */
+    public function patientSummaryRender(Patient $patient)
+    {
+        $rows = array();
+        $oph_info_editable = false;
 
-		foreach ($this->getEvents($patient) as $event) {
-			$rows[] = array(
-				'date' => $this->getManager()->getDisplayStatusDateForEvent($event),
-				'status' => $this->getManager()->getDisplayStatusForEvent($event),
-				'event_url' => $this->getManager()->getEventViewUri($event)
-			);
-		}
+        foreach ($this->getEvents($patient) as $event) {
+            $rows[] = array(
+                'date' => $this->getManager()->getDisplayStatusDateForEvent($event),
+                'status' => $this->getManager()->getDisplayStatusForEvent($event),
+                'event_url' => $this->getManager()->getEventViewUri($event)
+            );
+        }
 
-		$info = $patient->getOphInfo();
+        $info = $patient->getOphInfo();
 
-		if (!count($rows) || !$info->isNewRecord) {
-			$oph_info_editable = true;
-			$rows[] = array(
-				'date' => $info->cvi_status_date,
-				'status' => $info->cvi_status->name
-			);
-		}
+        if (!count($rows) || !$info->isNewRecord) {
+            $oph_info_editable = true;
+            $rows[] = array(
+                'date' => $info->cvi_status_date,
+                'status' => $info->cvi_status->name
+            );
+        }
 
-		// slot the info record into the right place
-		uasort($rows, function ($a, $b) { return $a['date'] < $b['date'] ? -1 : 1; });
+        // slot the info record into the right place
+        uasort($rows, function ($a, $b) {
+            return $a['date'] < $b['date'] ? -1 : 1;
+        });
 
-		$params = array(
-			'rows' => $rows,
-			'oph_info_editable' => $oph_info_editable,
-			'oph_info' => $info,
-			'new_event_uri' => $this->yii->createUrl($this->getEventType()->class_name.'/default/create').'?patient_id='.$patient->id
+        $params = array(
+            'rows' => $rows,
+            'oph_info_editable' => $oph_info_editable,
+            'oph_info' => $info,
+            'new_event_uri' => $this->yii->createUrl($this->getEventType()->class_name . '/default/create') . '?patient_id=' . $patient->id
 
-		);
+        );
 
-		return $this->renderPartial('OphCoCvi.views.patient.cvi_status', $params);
-	}
+        return $this->renderPartial('OphCoCvi.views.patient.cvi_status', $params);
+    }
 }

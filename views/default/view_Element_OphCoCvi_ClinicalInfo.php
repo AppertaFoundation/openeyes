@@ -18,73 +18,118 @@
 ?>
 
 <div class="element-data">
-	<div class="row data-row">
-		<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('examination_date'))?></div></div>
-		<div class="large-10 column end"><div class="data-value"><?php echo CHtml::encode($element->NHSDate('examination_date'))?></div></div>
-	</div>
-	<div class="row data-row">
-		<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('is_considered_blind'))?>:</div></div>
-		<div class="large-10 column end"><div class="data-value"><?php echo $element->is_considered_blind ? 'Yes' : 'No'?></div></div>
-	</div>
-	<div class="row data-row">
-		<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('sight_varies_by_light_levels'))?>:</div></div>
-		<div class="large-10 column end"><div class="data-value"><?php echo $element->sight_varies_by_light_levels ? 'Yes' : 'No'?></div></div>
-	</div>
-	<div class="element-data element-eyes row">
-	<div class="element-eye right-eye column">
-		<div class="data-row">
-					<div class="data-label">
-		<?php echo CHtml::encode($element->getAttributeLabel('unaided_right_va'))?></div>
-					<div class="data-value">
-		<?php echo CHtml::encode($element->unaided_right_va)?></div></div>
-		<div class="data-row">
-					<div class="data-label">
-		<?php echo CHtml::encode($element->getAttributeLabel('best_corrected_right_va'))?></div>
-							<div class="data-value">
-		<?php echo CHtml::encode($element->best_corrected_right_va)?></div></div>
-	</div>
-	<div class="element-eye left-eye column">
-		<div class="data-row">
-					<div class="data-label">
-		<?php echo CHtml::encode($element->getAttributeLabel('unaided_left_va'))?></div>
-					<div class="data-value">
-		<?php echo CHtml::encode($element->unaided_right_va)?></div></div>
-		<div class="data-row">
-					<div class="data-label">
-		<?php echo CHtml::encode($element->getAttributeLabel('best_corrected_left_va'))?></div>
-		<div class="data-value">
-		<?php echo CHtml::encode($element->best_corrected_right_va)?></div></div>
-	</div>
-	</div>
-	<div class="row data-row">
-		<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('best_corrected_binocular_va'))?></div></div>
-		<div class="large-10 column end"><div class="data-value"><?php echo CHtml::encode($element->best_corrected_binocular_va)?></div></div>
-	</div>
-	<div class="row data-row">
-		<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('low_vision_status_id'))?></div></div>
-		<div class="large-10 column end"><div class="data-value"><?php echo $element->low_vision_status ? $element->low_vision_status->name : 'None'?></div></div>
-	</div>
-	<div class="row data-row">
-		<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('field_of_vision_id'))?></div></div>
-		<div class="large-10 column end"><div class="data-value"><?php echo $element->field_of_vision ? $element->field_of_vision->name : 'None'?></div></div>
-	</div>
-	<div class="row data-row">
-		<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('disorders'))?>:</div></div>
-		<div class="large-10 column end"><div class="data-value"><?php if (!$element->disorders) {?>
-						None
-					<?php } else {?>
-							<?php foreach ($element->disorders as $item) {
-								echo $item->ophcocvi_clinicinfo_disorders->name?><br/>
-							<?php }?>
-					<?php }?>
-		</div></div>
-	</div>
-	<div class="row data-row">
-		<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('diagnoses_not_covered'))?></div></div>
-		<div class="large-10 column end"><div class="data-value"><?php echo CHtml::encode($element->diagnoses_not_covered)?></div></div>
-	</div>
-	<div class="row data-row">
-		<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('consultant_id'))?></div></div>
-		<div class="large-10 column end"><div class="data-value"><?php echo $element->consultant ? $element->consultant->last_name : 'None'?></div></div>
-	</div>
+    <div class="row data-row">
+        <div class="large-2 column">
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('examination_date')) ?></div>
+        </div>
+        <div class="large-10 column end">
+            <div class="data-value"><?php echo CHtml::encode($element->NHSDate('examination_date')) ?></div>
+        </div>
+    </div>
+    <div class="row data-row">
+        <div class="large-2 column">
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('is_considered_blind')) ?>:
+            </div>
+        </div>
+        <div class="large-10 column end">
+            <div class="data-value"><?php echo $element->is_considered_blind ? 'Yes' : 'No' ?></div>
+        </div>
+    </div>
+    <div class="row data-row">
+        <div class="large-2 column">
+            <div
+                class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('sight_varies_by_light_levels')) ?>
+                :
+            </div>
+        </div>
+        <div class="large-10 column end">
+            <div class="data-value"><?php echo $element->sight_varies_by_light_levels ? 'Yes' : 'No' ?></div>
+        </div>
+    </div>
+    <div class="element-data element-eyes row">
+        <div class="element-eye right-eye column">
+            <div class="data-row">
+                        <div class="data-label">
+            <?php echo CHtml::encode($element->getAttributeLabel('unaided_right_va'))?></div>
+                        <div class="data-value">
+            <?php echo CHtml::encode($element->unaided_right_va)?></div></div>
+            <div class="data-row">
+                        <div class="data-label">
+            <?php echo CHtml::encode($element->getAttributeLabel('best_corrected_right_va'))?></div>
+                                <div class="data-value">
+            <?php echo CHtml::encode($element->best_corrected_right_va)?></div></div>
+        </div>
+        <div class="element-eye left-eye column">
+            <div class="data-row">
+                        <div class="data-label">
+            <?php echo CHtml::encode($element->getAttributeLabel('unaided_left_va'))?></div>
+                        <div class="data-value">
+            <?php echo CHtml::encode($element->unaided_right_va)?></div></div>
+            <div class="data-row">
+                        <div class="data-label">
+            <?php echo CHtml::encode($element->getAttributeLabel('best_corrected_left_va'))?></div>
+            <div class="data-value">
+            <?php echo CHtml::encode($element->best_corrected_right_va)?></div></div>
+        </div>
+    </div>
+    <div class="row data-row">
+        <div class="large-2 column">
+            <div
+                class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('best_corrected_binocular_va')) ?></div>
+        </div>
+        <div class="large-10 column end">
+            <div class="data-value"><?php echo CHtml::encode($element->best_corrected_binocular_va) ?></div>
+        </div>
+    </div>
+    <div class="row data-row">
+        <div class="large-2 column">
+            <div
+                class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('low_vision_status_id')) ?></div>
+        </div>
+        <div class="large-10 column end">
+            <div
+                class="data-value"><?php echo $element->low_vision_status ? $element->low_vision_status->name : 'None' ?></div>
+        </div>
+    </div>
+    <div class="row data-row">
+        <div class="large-2 column">
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('field_of_vision_id')) ?></div>
+        </div>
+        <div class="large-10 column end">
+            <div
+                class="data-value"><?php echo $element->field_of_vision ? $element->field_of_vision->name : 'None' ?></div>
+        </div>
+    </div>
+    <div class="row data-row">
+        <div class="large-2 column">
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('disorders')) ?>:</div>
+        </div>
+        <div class="large-10 column end">
+            <div class="data-value"><?php if (!$element->disorders) { ?>
+                        None
+                <?php } else { ?>
+                            <?php foreach ($element->disorders as $item) {
+                        echo $item->ophcocvi_clinicinfo_disorder->name ?><br/>
+                    <?php } ?>
+                <?php } ?>
+            </div>
+        </div>
+    </div>
+    <div class="row data-row">
+        <div class="large-2 column">
+            <div
+                class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('diagnoses_not_covered')) ?></div>
+        </div>
+        <div class="large-10 column end">
+            <div class="data-value"><?php echo CHtml::encode($element->diagnoses_not_covered) ?></div>
+        </div>
+    </div>
+    <div class="row data-row">
+        <div class="large-2 column">
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('consultant_id')) ?></div>
+        </div>
+        <div class="large-10 column end">
+            <div class="data-value"><?php echo $element->consultant ? $element->consultant->last_name : 'None' ?></div>
+        </div>
+    </div>
 </div>
