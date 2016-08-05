@@ -16,10 +16,16 @@
  */
 
 ?>
-
+<?php
+if ($this->checkAccess('OprnEditClinicalCviExplicit', Yii::app()->user->id)) { ?>
 <div class="element-fields row">
 			<?php echo $form->datePicker($element, 'examination_date', array('maxDate' => 'today'), array('style'=>'width: 110px;'))?>
-	<?php echo $form->radioBoolean($element, 'is_considered_blind')?>
+				<?php echo $form->radioButtons($element, 'is_considered_blind', array(
+                            0 => 'Sight Impaired',
+                            1 => 'Severely Sight Impaired',
+                        ),
+                        ($element->is_considered_blind === 0) ? $element->is_considered_blind : 0
+                        );?>
 	<?php echo $form->radioBoolean($element, 'sight_varies_by_light_levels')?>
 	<div class="element-eyes sub-element-fields" >
 		<div class="element-eye right-eye column left side" data-side="right">
@@ -80,3 +86,8 @@
 	<?php echo $form->textArea($element, 'diagnoses_not_covered', array('rows' => 6, 'cols' => 80))?>
 	<?php echo $form->dropDownList($element, 'consultant_id', CHtml::listData(User::model()->findAll(array('order'=> 'last_name asc')),'id','last_name'),array('empty'=>'- Please select -'))?>
 </div>
+<?php } else { ?>
+
+	<?php $this->renderPartial('view_Element_OphCoCvi_ClinicalInfo', array('element'=>$element)); ?>
+
+<?php } ?>

@@ -25,46 +25,55 @@ class DefaultController extends \BaseEventTypeController
     
     public $cvi_limit = 2;
 
+    /**
+     * Create Form with check for the cvi existing events count
+     */
     public function actionCreate()
-	{
-        
-        $errors = array();
-		if (isset($_GET['createnewcvi'])) {
+    {
+
+        if (isset($_GET['createnewcvi'])) {
             $cancel_url = ($this->episode) ? '/patient/episode/'.$this->episode->id
                 : '/patient/episodes/'.$this->patient->id;
             ($_GET['createnewcvi'] == 1) ? parent::actionCreate()
                 : $this->redirect(array($cancel_url));
-		}
-		else {
-			$cvis_created = models\Element_OphCoCvi_EventInfo::model()->patientCviCount($this->patient->id);
-			if(count($cvis_created) >= $this->cvi_limit) {
-				$cvis_url = array();
-				foreach($cvis_created as $cvi_event) {
-					$cvis_url[] = '/OphCoCvi/default/view/'.$cvi_event['event_id'];
-				}
-			   $this->render('select_event',array(
-					'cvi_url' => $cvis_url,
-				), false, true);
-			}
-			else {
-				parent::actionCreate();
-			}
-		}
+        }
+        else {
+            $cvi_events = \Yii::app()->moduleAPI->get('OphCoCvi');
+            $cvi_created = $cvi_events->getEvents(\Patient::model()->findByPk($this->patient->id));
+            if(count($cvi_created) >= $this->cvi_limit) {
+                $cvi_url = array();
+                foreach($cvi_created as $cvi_event) {
+                    $cvi_url[] = $cvi_events->getEventUri($cvi_event);
+                }
+               $this->render('select_event',array(
+                    'cvi_url' => $cvi_url,
+                ), false, true);
+            }
+            else {
+                parent::actionCreate();
+            }
+        }
 	}
 
-	protected function setElementDefaultOptions_Element_OphCoCvi_ClinicalInfo(models\Element_OphCoCvi_ClinicalInfo $element, $action)
-	{
-		if($action == 'create')
-		{
-			$exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
-			$examination_date = $exam_api->getMostRecentVAElementForPatient($this->patient,'OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity');
-			$element->examination_date = $examination_date['event_date'];
-			$element->best_corrected_right_va =  $exam_api->getMostRecentVAForPatient($this->patient, 'right', 'aided');
-			$element->best_corrected_left_va =  $exam_api->getMostRecentVAForPatient($this->patient, 'left', 'aided');
-			$element->unaided_right_va =  $exam_api->getMostRecentVAForPatient($this->patient, 'right', 'unaided');
-			$element->unaided_left_va =  $exam_api->getMostRecentVAForPatient($this->patient, 'left', 'unaided');
-		}
-	}
+    /**
+     * @param models\Element_OphCoCvi_ClinicalInfo $element
+     * @param $action
+     */
+    protected function setElementDefaultOptions_Element_OphCoCvi_ClinicalInfo(models\Element_OphCoCvi_ClinicalInfo $element, $action)
+    {
+        if($action == 'create')
+        {
+            if(isset(\Yii::app()->modules['OphCiExamination'])) {
+                $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
+                $examination_date = $exam_api->getMostRecentVAElementForPatient($this->patient);
+                $element->examination_date = $examination_date['event_date'];
+                $element->best_corrected_right_va =  $exam_api->getMostRecentVAForPatient($this->patient, 'right', 'aided');
+                $element->best_corrected_left_va =  $exam_api->getMostRecentVAForPatient($this->patient, 'left', 'aided');
+                $element->unaided_right_va =  $exam_api->getMostRecentVAForPatient($this->patient, 'right', 'unaided');
+                $element->unaided_left_va =  $exam_api->getMostRecentVAForPatient($this->patient, 'left', 'unaided');
+            }
+        }
+    }
 
 	protected function setElementDefaultOptions_Element_OphCoCvi_DemographicInfo()
 	{

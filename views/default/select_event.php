@@ -47,7 +47,7 @@
 						</div>
                         <div class="field-row">
 							<div class="field-info">
-                                <a href='<?= "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]&createnewcvi=1" ?>' >
+                                <a href='<?= \Yii::app()->request->requestUri."&createnewcvi=1" ?>' >
                                     <button type="submit">
                                         Proceed to Create new CVI
                                     </button>
