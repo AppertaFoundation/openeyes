@@ -97,7 +97,6 @@ class OphCoCvi_ClericalInfo_PreferredInfoFmt extends \BaseActiveRecordVersioned
 	public function search()
 	{
 		$criteria = new CDbCriteria;
-
 		$criteria->compare('id', $this->id, true);
 		$criteria->compare('name', $this->name, true);
 

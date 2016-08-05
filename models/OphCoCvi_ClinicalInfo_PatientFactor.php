@@ -87,8 +87,8 @@ class OphCoCvi_ClinicalInfo_PatientFactor extends \BaseActiveRecordVersioned
 		return array(
 			'id' => 'ID',
 			'name' => 'Name',
-                        'code' => 'Code',
-                        'active' => 'Active'
+            'code' => 'Code',
+            'active' => 'Active'
                     
 		);
 	}
@@ -100,7 +100,6 @@ class OphCoCvi_ClinicalInfo_PatientFactor extends \BaseActiveRecordVersioned
 	public function search()
 	{
 		$criteria = new CDbCriteria;
-
 		$criteria->compare('id', $this->id, true);
 		$criteria->compare('name', $this->name, true);
 

@@ -26,12 +26,12 @@ return array(
             'Field of Vision' => '/OphCoCvi/admin/fieldOfVision',
             'Low Vision Status' => '/OphCoCvi/admin/lowVisionStatus',
             'Preferred Info Format' => '/OphCoCvi/admin/preferredInfoFormat',
-            
+
         ),
         'patient_summary_render' => array(
             'cvi_status' => array(
-                    'module' => 'OphCoCvi',
-                    'method' => 'patientSummaryRender'
+                'module' => 'OphCoCvi',
+                'method' => 'patientSummaryRender'
             )
         ),
         'additional_rulesets' => array(
@@ -41,6 +41,6 @@ return array(
             ),
         ),
         'ophcocvi_allow_all_consultants' => true,
-        
+
     )
 );

@@ -87,9 +87,8 @@ class OphCoCvi_ClinicalInfo_Disorder_Section extends \BaseActiveRecordVersioned
 		return array(
 			'id' => 'ID',
 			'name' => 'Name',
-                        'active' => 'Active'
-                    
-		);
+            'active' => 'Active'
+        );
 	}
 
 	/**
@@ -99,7 +98,6 @@ class OphCoCvi_ClinicalInfo_Disorder_Section extends \BaseActiveRecordVersioned
 	public function search()
 	{
 		$criteria = new CDbCriteria;
-
 		$criteria->compare('id', $this->id, true);
 		$criteria->compare('name', $this->name, true);
 
