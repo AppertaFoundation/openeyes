@@ -2,7 +2,8 @@
 server:
     timezone: Europe/London
     locale: en_US.UTF-8
-    vagrant_user_password: "vagrant"
+    # http://docs.ansible.com/ansible/faq.html#how-do-i-generate-crypted-passwords-for-the-user-module
+    vagrant_user_password: "$6$rounds=656000$1cJRxCpz95r.3Pyw$JdAijy3EMYyRE/.fl6kkw8oyZ6S5wsTQ1XeeUYw4t.CCCWR2R/RSeTmF3i7qCncAu2SwtmnA8kx7jfnyuJqSz/"
     packages: [ build-essential, curl, git, vim ]
 
 vagrant_local:
@@ -36,6 +37,9 @@ mysql_users:
     host: "%"
     password: oe_test
     priv: "openeyes.*:ALL"
+  - name: openeyes
+    host: "%"
+    password: oe_test
     priv: "openeyestest.*:ALL"
 
 # https://github.com/geerlingguy/ansible-role-nodejs
