@@ -19,3 +19,34 @@
 #     name=openeyes
 #     login_user=openeyes
 #     login_password=oe_test
+
+# Copy congfig file into place (or use template ?)
+# mkdir /var/www/openeyes/protected/runtime
+# chmod +w /var/www/openeyes/protected/runtime
+
+- name: Create runtime directory for Yii
+  become: yes
+  become_method: sudo
+  file:
+    path: /var/www/openeyes/protected/runtime
+    mode: "0755"
+    owner: "vagrant"
+    group: "vagrant"
+    state: directory
+
+# - name: Check local.sample/common.php exists
+#   stat:
+#     path: /var/www/openeyes/protected/config/local.sample/common.php
+#   register: common
+#   ignore_errors: true
+
+- name: Copy common.php into place
+  command: creates=/var/www/openeyes/protected/config/local/common.php cp /var/www/openeyes/protected/config/local.sample/common.php /var/www/openeyes/protected/config/local/common.php
+  # copy:
+  #   src: /var/www/openeyes/protected/config/local.sample/common.php
+  #   dest: /var/www/openeyes/protected/config/local/common.php
+  #   force: false
+  # when: common.stat.exists
+
+- name: Copy console.php into place
+  command: creates=/var/www/openeyes/protected/config/local/console.php cp /var/www/openeyes/protected/config/local.sample/console.vagrant.php /var/www/openeyes/protected/config/local/console.php
