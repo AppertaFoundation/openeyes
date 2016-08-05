@@ -48,7 +48,7 @@ class DefaultController extends \BaseEventTypeController
             if (count($cvi_created) >= $this->cvi_limit) {
                 $cvi_url = array();
                 foreach ($cvi_created as $cvi_event) {
-                    $cvi_url[] = $cvi_events->getEventUri($cvi_event);
+                    $cvi_url[] = $this->getManager()->getEventViewUri($cvi_event);
                 }
                 $this->render('select_event', array(
                     'cvi_url' => $cvi_url,
@@ -70,6 +70,23 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * @return boolean
+     */
+    public function checkClericalEditAccess()
+    {
+        return $this->checkAccess('OprnEditClericalCvi', $this->getApp()->user->id);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function checkClinicalEditAccess()
+    {
+        return $this->checkAccess('OprnEditClinicalCvi', $this->getApp()->user->id);
+    }
+
+
+    /**
      * @param models\Element_OphCoCvi_ClinicalInfo $element
      * @param $action
      */
@@ -77,9 +94,9 @@ class DefaultController extends \BaseEventTypeController
         models\Element_OphCoCvi_ClinicalInfo $element,
         $action
     ) {
-        if ($action == 'create') {
-            if (isset(\Yii::app()->modules['OphCiExamination'])) {
-                $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
+        // only populate values into the new element if a clinical user
+        if ($action == 'create' && $this->checkClinicalEditAccess()) {
+            if ($exam_api = $this->getApp()->moduleAPI->get('OphCiExamination')) {
                 $examination_date = $exam_api->getMostRecentVAElementForPatient($this->patient);
                 $element->examination_date = $examination_date['event_date'];
                 $element->best_corrected_right_va = $exam_api->getMostRecentVAForPatient($this->patient, 'right',
@@ -120,6 +137,39 @@ class DefaultController extends \BaseEventTypeController
         $dp = $this->getManager()->getListDataProvider();
 
         $this->render('list', array('dp' => $dp));
+    }
+
+    /**
+     * Override to support the fact that users might not have permission to edit specific event elements.
+     *
+     * @param \ElementType $element_type
+     * @param $data
+     * @return array
+     * @throws \Exception
+     */
+    protected function getElementsForElementType(\ElementType $element_type, $data)
+    {
+        $cls = $element_type->class_name;
+        if (!$this->checkClinicalEditAccess() && $cls == 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo') {
+            if ($this->event->isNewRecord) {
+                return array(new $cls);
+            }
+            else {
+                return array($this->getManager()->getClinicalElementForEvent($this->event));
+            }
+        }
+
+        if (!$this->checkClericalEditAccess() && $cls == 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo') {
+            if ($this->event->isNewRecord) {
+                return array(new $cls);
+            }
+            else {
+                return array($this->getManager()->getClericalElementForEvent($this->event));
+            }
+        }
+
+        return parent::getElementsForElementType($element_type, $data);
+
     }
 
 }

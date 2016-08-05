@@ -18,7 +18,7 @@
 ?>
 
 <?php
-if ($this->checkAccess('OprnEditClericalCvi', Yii::app()->user->id)) { ?>
+if ($this->checkClericalEditAccess()) { ?>
     <div class="element-fields row">
         <?php echo $form->dropDownList($element, 'employment_status_id',
             CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_EmploymentStatus::model()->findAll(array('order' => 'display_order asc')),
