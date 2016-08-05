@@ -19,11 +19,15 @@
 namespace OEModule\OphCoCvi\models;
 
 /**
- * This is the model class for table "ophcocvi_clinicinfo_disorders".
+ * This is the model class for table "ophcocvi_clinicinfo_disorder_section".
  *
  * The followings are the available columns in table:
  * @property string $id
  * @property string $name
+ * @property boolean $comments_allowed
+ * @property string $comments_label
+ * @property integer $display_order
+ * @propety boolean $active
  *
  * The followings are the available model relations:
  *
