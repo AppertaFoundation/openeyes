@@ -1387,17 +1387,23 @@ class OphCiExamination_API extends \BaseAPI
         return 'none';
     }
 
-	public function getMostRecentVAElementForPatient(\Patient $patient, $element)
+    /**
+     * To get the most recent VA element for the Patient
+     *
+     * @param \Patient $patient
+     * @return array|bool
+     */
+	public function getMostRecentVAElementForPatient(\Patient $patient)
     {
 		$event_type = $this->getEventType();
 		$criteria = new \CDbCriteria;
         $criteria->select = '*';
         $criteria->join = 'join episode on t.episode_id = episode.id and patient_id = :patient_id and event_type_id = :event_type_id';
-		$criteria->order = 't.created_date desc';
+		$criteria->order = 't.event_date desc';
 		$criteria->condition = 't.deleted != 1';
         $criteria->params = array(':patient_id' => $patient->id, ':event_type_id' => $event_type->id);
 		foreach (\Event::model()->findAll($criteria) as $event) {
-			$result_element = $element::model()
+			$result_element = models\Element_OphCiExamination_VisualAcuity::model()
 				->with('event')
 				->find('event_id=?',array($event->id));
 			if($result_element !== null)
@@ -1410,18 +1416,26 @@ class OphCiExamination_API extends \BaseAPI
     public static $UNAIDED_VA_TYPE = 'unaided';
     public static $AIDED_VA_TYPE = 'aided';
 
+    /**
+     * To get the visual acuity from the element based on the all episodes for the patient
+     * @param \Patient $patient
+     * @param $side
+     * @param $type
+     * @return null
+     * @throws \Exception
+     */
     public function getMostRecentVAForPatient(\Patient $patient, $side, $type)
     {
         if (!in_array($type, array(static::$AIDED_VA_TYPE, static::$UNAIDED_VA_TYPE)))
             throw new \Exception("Invalid type for VA {$type}");
-        $latest_element = $this->getMostRecentVAElementForPatient($patient,'OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity');
+        $latest_element = $this->getMostRecentVAElementForPatient($patient);
 		$element = $latest_element['element'];
 		$checkFunc = 'has' . ucfirst($side);
         if (!$element->$checkFunc()) {
             return null;
         }
-		$flag =  ($type === static::$UNAIDED_VA_TYPE) ? 1 : 2;
-		$methods = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method::model()->findAll('type=?',array($flag));
+		$flag =  models\OphCiExamination_VisualAcuity_Method::model()->getFlagValue($type);
+		$methods = models\OphCiExamination_VisualAcuity_Method::model()->findAll('type=?',array($flag));
 		$best_reading = $element->getBestReadingByMethods($side,$methods);
 		return $best_reading;
     }
