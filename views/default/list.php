@@ -36,11 +36,10 @@ $cols = array(
     array(
         'id' => 'consultant',
         'header' => $dp->getSort()->link('consultant', 'From', array('class' => 'sort-link')),
-        'value' => function($data) use ($manager) {
+        'value' => function ($data) use ($manager) {
             if ($consultant = $manager->getClinicalConsultant($data)) {
                 return $consultant->getFullNameAndTitle();
-            }
-            else {
+            } else {
                 return '-';
             }
         }
