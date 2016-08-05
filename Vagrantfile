@@ -58,18 +58,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "ansible_local" do |ansible|
     ansible.playbook = "ansible/playbook.yml"
+    # ansible.verbose = "vvv" # Debug
   end
 
-
- #  config.puppet_install.puppet_version = :latest
- #  # config.vm.provision "puppet"
-	# config.vm.provision :puppet do |puppet|
- #    puppet.environment = "development"
- #    puppet.environment_path = "manifests/environments"
-	# # 	puppet.manifests_path = "puppet"
-	# # 	# puppet.manifest_file  = "default.pp"
-	# # 	# puppet.module_path    = "puppet/modules"
-	# # 	# puppet.facter         = { 'mode' => "dev" }
-	# 	puppet.options        = "--verbose --debug"
-	# end
 end
