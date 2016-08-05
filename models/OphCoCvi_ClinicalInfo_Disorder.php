@@ -101,6 +101,7 @@ class OphCoCvi_ClinicalInfo_Disorder extends \BaseActiveRecordVersioned
         return array(
             'id' => 'ID',
             'name' => 'Name',
+            'section_id' => 'Section'
         );
     }
 
