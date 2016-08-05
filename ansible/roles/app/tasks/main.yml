@@ -2,7 +2,7 @@
 # application tasks to be customized and to run after the main provision
 
 # Install project dependencies
-- name: Install composer dependencies
+- name: Install composer dependencies (This can take up to 30 minutes to run)
   composer:
     command: "install"
     arguments: "--no-interaction"
