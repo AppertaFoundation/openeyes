@@ -41,3 +41,15 @@
 
 - name: Copy console.php into place
   command: creates=/var/www/openeyes/protected/config/local/console.php cp /var/www/openeyes/protected/config/local.sample/console.vagrant.php /var/www/openeyes/protected/config/local/console.php
+
+# - name: Migrate using YIIC of openeyes DB
+#   command: php /var/www/openeyes/protected/yiic.php migrate --interactive=0
+
+# - name: Migrate Modules using YIIC of openeyes DB
+#   command: php /var/www/openeyes/protected/yiic.php migratemodules --interactive=0
+
+# - name: Migrate using YIIC of testdb
+#   command: php /var/www/openeyes/protected/yiic.php migrate  --connectionID=testdb --interactive=0
+
+# - name: Migrate Modules using YIIC of testdb
+#   command: php /var/www/openeyes/protected/yiic.php migratemodules  --connectionID=testdb --interactive=0
