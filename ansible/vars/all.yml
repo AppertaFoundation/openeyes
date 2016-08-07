@@ -39,8 +39,14 @@ mysql_databases:
   - name: openeyes
   - name: openeyestest
 mysql_users:
-  - name: "{{ openeyes.mysql_user }}", host: "%", password: "{{ openeyes.mysql_password }}", priv: "openeyes.*:ALL"
-  # - name: "{{ openeyes.mysql_user }}", host: "%", password: "{{ openeyes.mysql_password }}", priv: "openeyestest.*:ALL"
+  - name: "{{ openeyes.mysql_user }}"
+    host: "%"
+    password: "{{ openeyes.mysql_password }}"
+    priv: "openeyes.*:ALL"
+  # - name: "{{ openeyes.mysql_user }}"
+  #   host: "%"
+  #   password: "{{ openeyes.mysql_password }}"
+  #   priv: "openeyestest.*:ALL"
 
 # https://github.com/geerlingguy/ansible-role-nodejs
 nodejs_version: "6.x"
