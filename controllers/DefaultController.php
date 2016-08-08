@@ -93,16 +93,17 @@ class DefaultController extends \BaseEventTypeController
     protected function setElementDefaultOptions_Element_OphCoCvi_ClinicalInfo(
         models\Element_OphCoCvi_ClinicalInfo $element,
         $action
-    ) {
+    )
+    {
         // only populate values into the new element if a clinical user
         if ($action == 'create' && $this->checkClinicalEditAccess()) {
             if ($exam_api = $this->getApp()->moduleAPI->get('OphCiExamination')) {
                 $latest_examination_event = $exam_api->getMostRecentVAElementForPatient($this->patient);
                 $element->examination_date = $latest_examination_event['event_date'];
                 $element->best_corrected_right_va = $exam_api->getMostRecentVAForPatient($this->patient, 'right',
-                    'aided',$latest_examination_event['element']);
+                    'aided', $latest_examination_event['element']);
                 $element->best_corrected_left_va = $exam_api->getMostRecentVAForPatient($this->patient, 'left',
-                    'aided',$latest_examination_event['element']);
+                    'aided', $latest_examination_event['element']);
                 $element->unaided_right_va = $exam_api->getMostRecentVAForPatient($this->patient, 'right', 'unaided',
                     $latest_examination_event['element']);
                 $element->unaided_left_va = $exam_api->getMostRecentVAForPatient($this->patient, 'left', 'unaided',
@@ -171,6 +172,77 @@ class DefaultController extends \BaseEventTypeController
         }
 
         return parent::getElementsForElementType($element_type, $data);
+
+    }
+
+    /**
+     * Element based name and value pair
+     *@param $id
+     */
+    function getStructuredDataForPrintPDF($id) {
+        $this->printInit($id);
+        $data = array();
+        foreach($this->open_elements as $element) {
+            if(!empty($this->formStructuredData($element))) {
+                $data = array_merge($data,$this->formStructuredData($element));
+            }
+        }
+    }
+
+    /**
+     * Generic method to form all the element's data value pair
+     * @param $element
+     *
+     */
+    public function formStructuredData($element) {
+        $class_name = \Helper::getNSShortname($element);
+        $element_method = 'formDataValuePairFor_' . $class_name;
+        if(method_exists($this, $element_method)) {
+            return $this->$element_method($element);
+        }
+    }
+
+    /**
+     * Pre populate the data and value pair for the Element_OphCoCvi_ClinicalInfo
+     * @param $element
+     * @return mixed
+     */
+    public function formDataValuePairFor_Element_OphCoCvi_ClinicalInfo($element) {
+        $values['examination_date'] = ($element->examination_date) ? $element->examination_date : '';
+        $values['is_considered_blind'] = ($element->is_considered_blind) ? 'Yes' : 'No';
+        return $values;
+    }
+
+    /**
+     * Pre populate the data and value pair for the Element_OphCoCvi_ClericalInfo
+     * @param $element
+     * @return mixed
+     */
+    public function formDataValuePairFor_Element_OphCoCvi_ClericalInfo($element) {
+        $values['preferred_info_fmt'] = $element->preferred_info_fmt ? $element->preferred_info_fmt->name : 'None';
+        $values['employment_status'] = $element->employment_status ? $element->employment_status->name : 'None';
+        return $values;
+    }
+
+    /**
+     * @param $id
+     */
+    public function actionPDFPrint($id)
+    {
+        if (!$event = \Event::model()->findByPk($id)) {
+            throw new Exception("Event not found: $id");
+        }
+
+        $event->lock();
+        $this->getStructuredDataForPrintPDF($id);
+        $event->unlock();
+        /*$pdf = $event->getPDF($this->pdf_print_suffix);
+
+        header('Content-Type: application/pdf');
+        header('Content-Length: '.filesize($pdf));
+
+        readfile($pdf);
+        @unlink($pdf);*/
 
     }
 
