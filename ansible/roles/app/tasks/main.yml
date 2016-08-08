@@ -11,6 +11,8 @@
 
 # Install project dependencies
 - name: Install composer dependencies (This can take up to 30 minutes to run the first time.)
+  environment:
+    COMPOSER_DISCARD_CHANGES: 1
   composer:
     command: "install"
     arguments: "--no-interaction"
