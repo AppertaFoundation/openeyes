@@ -54,6 +54,7 @@ nodejs_install_npm_user: "vagrant"
 nodejs_npm_global_packages:
   - name: bower
   - name: grunt
+  - name: grunt-cli
   - name: compass
 
 # https://github.com/geerlingguy/ansible-role-php
