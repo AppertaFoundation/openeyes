@@ -77,7 +77,7 @@ php_packages:
 composer_keep_updated: true
 # composer_github_oauth_token: ''
 
-# https://github.com/geerlingguy/ansible-role-php-xdebug
+# https://github.com/MaximeThoonsen/ansible-role-php-xdebug
 php_xdebug_remote_enable: true
 php_xdebug_remote_connect_back: true
 php_xdebug_remote_port: "9000"
