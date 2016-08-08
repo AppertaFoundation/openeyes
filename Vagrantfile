@@ -36,7 +36,7 @@ Vagrant.configure("2") do |config|
   config.vm.provider "vmware_fusion"
   config.vm.provider "virtualbox"
 
-	config.vm.provider "virtualbox" do |v|
+	config.vm.provider "virtualbox" do |v, override|
 		v.customize [
       "modifyvm", :id,
       "--name", "OpenEyes Server",
@@ -45,6 +45,11 @@ Vagrant.configure("2") do |config|
       "--cpus", 2,
     ]
 		v.gui = true
+		override.vm.synced_folder "./", "/var/www/openeyes", id: "vagrant-root",
+			owner: "vagrant",
+			group: "www-data",
+			mount_options: ["dmode=775,fmode=664"]
+
 	end
 
   # VMWare Fusion
