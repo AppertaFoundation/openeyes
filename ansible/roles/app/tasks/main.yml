@@ -28,7 +28,7 @@
   become_method: sudo
   file:
     path: "{{ item }}"
-    mode: "0755"
+    mode: "0777"
     owner: "vagrant"
     group: "vagrant"
     state: directory
