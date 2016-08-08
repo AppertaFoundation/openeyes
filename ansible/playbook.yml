@@ -12,7 +12,7 @@
     - geerlingguy.mysql
     - geerlingguy.nodejs
     - geerlingguy.php
-    - geerlingguy.php-xdebug
     - geerlingguy.composer
+    - MaximeThoonsen.php5-xdebug
     - pludoni.wkthmltox
     - app
