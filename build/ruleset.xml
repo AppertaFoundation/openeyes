@@ -10,7 +10,9 @@
 	<!-- Include all sniffs in the PEAR standard. Note that the path to the 
 		standard does not have to be specified as the PEAR standard exists inside 
 		the PHP_CodeSniffer install directory. -->
-	<rule ref="PSR1" />
+	<rule ref="PSR1">
+		<exclude name="PSR1.Classes.ClassDeclaration.MissingNamespace"/>
+	</rule>
 
 	<!-- Include some specific sniffs from the Generic standard. Note again 
 		that the name of the sniff is the code that PHP_CodeSniffer gives it. -->
@@ -36,14 +38,5 @@
 		</properties>
 	</rule>
 
-	<!-- Boolean values should be specified by using the strings "true" and 
-		"false" rather than the integers 0 and 1. -->
-	<rule ref="Generic.Formatting.MultipleStatementAlignment">
-		<properties>
-			<property name="maxPadding" value="8" />
-			<property name="ignoreMultiLine" value="true" />
-			<property name="error" value="true" />
-		</properties>
-	</rule>
 
 </ruleset>
