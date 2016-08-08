@@ -50,9 +50,11 @@ mysql_users:
 
 # https://github.com/geerlingguy/ansible-role-nodejs
 nodejs_version: "6.x"
+nodejs_install_npm_user: "vagrant"
 nodejs_npm_global_packages:
   - name: bower
   - name: grunt
+  - name: compass
 
 # https://github.com/geerlingguy/ansible-role-php
 php_webserver_daemon: "apache2"
