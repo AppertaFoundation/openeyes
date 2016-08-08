@@ -1207,10 +1207,10 @@ class WorklistManager extends CComponent
         $model->automatic = true;
 
         $candidates = array();
-        foreach ($model->search()->getData() as $wl)
-        {
-            if ($this->checkWorklistMappingMatch($wl, $attributes))
+        foreach ($model->search(false)->getData() as $wl) {
+            if ($this->checkWorklistMappingMatch($wl, $attributes)) {
                 $candidates[] = $wl;
+            }
         }
 
         if (count($candidates) == 1) {
