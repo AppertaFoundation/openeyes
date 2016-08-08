@@ -3,7 +3,7 @@
 
 Vagrant.require_version ">= 1.5"
 
-PLUGINS = %w(vagrant-auto_network vagrant-hostsupdater)
+PLUGINS = %w(vagrant-auto_network vagrant-hostsupdater vagrant-cachier)
 
 PLUGINS.reject! { |plugin| Vagrant.has_plugin? plugin }
 
@@ -27,7 +27,10 @@ Vagrant.configure("2") do |config|
 
   config.vm.network "private_network", :auto_network => true
 
-	config.vm.synced_folder "./", "/var/www/openeyes", id: "vagrant-root"
+	config.vm.synced_folder "./", "/var/www/openeyes", id: "vagrant-root",
+    owner: "vagrant",
+    group: "www-data",
+    mount_options: ["dmode=775,fmode=664"]
 
   config.vm.hostname = "openeyes.vm"
   config.hostsupdater.remove_on_suspend = true
@@ -45,11 +48,11 @@ Vagrant.configure("2") do |config|
       "--cpus", 2,
     ]
 		v.gui = true
-		override.vm.synced_folder "./", "/var/www/openeyes", id: "vagrant-root",
-			owner: "vagrant",
-			group: "www-data",
-			mount_options: ["dmode=775,fmode=664"]
 
+		# override.vm.synced_folder "./", "/var/www/openeyes", id: "vagrant-root",
+		# 	owner: "vagrant",
+		# 	group: "www-data",
+		# 	mount_options: ["dmode=775,fmode=664"]
 	end
 
   # VMWare Fusion
@@ -65,5 +68,9 @@ Vagrant.configure("2") do |config|
     ansible.playbook = "ansible/playbook.yml"
     # ansible.verbose = "vvv" # Debug
   end
+
+  config.cache.synced_folder_opts = {
+    mount_options: ["rw", "vers=3", "tcp", "nolock"]
+  }
 
 end
