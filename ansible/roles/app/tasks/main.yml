@@ -1,8 +1,16 @@
 ---
 # application tasks to be customized and to run after the main provision
 
+# Remove XDebug from PHP CLI
+- name: Disable XDebug in PHP CLI
+  file:
+    path: /etc/php5/cli/conf.d/20-xdebug.ini
+    state: absent
+  become: yes
+  become_method: sudo
+
 # Install project dependencies
-- name: Install composer dependencies (This can take up to 30 minutes to run)
+- name: Install composer dependencies (This can take up to 30 minutes to run the first time.)
   composer:
     command: "install"
     arguments: "--no-interaction"
@@ -28,9 +36,9 @@
   become_method: sudo
   file:
     path: "{{ item }}"
-    mode: "0777"
+    mode: "0775"
     owner: "vagrant"
-    group: "vagrant"
+    group: "www-data"
     state: directory
   with_items:
     - /var/www/openeyes/protected/runtime
