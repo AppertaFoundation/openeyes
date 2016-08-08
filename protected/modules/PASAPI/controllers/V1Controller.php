@@ -234,7 +234,7 @@ class V1Controller extends \CController
             if (YII_DEBUG) {
                 $errors = $resource->errors;
                 $errors[] = $e->getMessage();
-                \OELog::log(print_r($errors));
+                \OELog::log(print_r($errors, true));
             }
             else {
                 $errors = array("Could not save resource");
