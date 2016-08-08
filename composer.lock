@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4fda89cec8d1920c3cdc28363c2bf9da",
-    "content-hash": "c09173eb7ad0add922639ad0e0664b3c",
+    "hash": "c302f61e524791618b97fbebde85c792",
+    "content-hash": "b2f716718310e77d5d33dfc54b8490de",
     "packages": [
         {
             "name": "rlanvin/php-rrule",
-            "version": "v1.3.0",
+            "version": "v1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rlanvin/php-rrule.git",
-                "reference": "cef4c341484862336ad34ff141241aa4b9bbcd0a"
+                "reference": "33fe88ff9ec27205e7802b560764207eb48564c7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rlanvin/php-rrule/zipball/cef4c341484862336ad34ff141241aa4b9bbcd0a",
-                "reference": "cef4c341484862336ad34ff141241aa4b9bbcd0a",
+                "url": "https://api.github.com/repos/rlanvin/php-rrule/zipball/33fe88ff9ec27205e7802b560764207eb48564c7",
+                "reference": "33fe88ff9ec27205e7802b560764207eb48564c7",
                 "shasum": ""
             },
             "require": {
@@ -46,7 +46,7 @@
                 "recurring",
                 "rrule"
             ],
-            "time": "2016-07-08 09:04:09"
+            "time": "2016-04-09 15:37:43"
         },
         {
             "name": "yiisoft/yii",

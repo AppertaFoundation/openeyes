@@ -4,7 +4,7 @@
   "minimum-stability": "dev",
   "require": {
     "yiisoft/yii": "1.1.14",
-    "rlanvin/php-rrule": "1.*"
+    "rlanvin/php-rrule": "1.2.0"
   },
   "require-dev": {
     "behat/behat": "~2",
