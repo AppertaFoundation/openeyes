@@ -10,25 +10,25 @@ use DomXpath;
 
 class PrintTest
 {
-    
     public $directory;
-    public $inputFile = 'example_certificate_3.odt';
+    public $inputFile;
     public $xmlDoc;
     public $xpath;
     
     //Using an exist style declaration in xml
-    public $textStyleName = 'P400';
+    public $textStyleName = 'T23';
     
     public function __construct()
     {
         $this->directory = realpath(__DIR__ . '/..').'/files';
+ 
     }
     
-    public function getXml()
+    public function getXml( $input )
     {
-
+        $this->inputFile = $input;
         if($this->unzipFile( $this->directory.'/'.$this->inputFile,  $this->directory.'/xml') === TRUE){
-            
+           
             $this->xmlDoc = new DOMDocument();
             $this->xmlDoc->load( $this->directory.'/xml/content.xml');
             $this->xmlDoc->formatOutput = true;
@@ -60,7 +60,8 @@ class PrintTest
         foreach ($nodes as $node) {
             
             foreach ($data as $key => $value){
-                if(($node->nodeValue == '##'.$key.'##') || (strpos($node->nodeValue, '##'.$key.'##') !== false)){
+                //if(($node->nodeValue == '${'.$key.'}') || (strpos($node->nodeValue, '##'.$key.'##') !== false)){
+                if(strpos($node->nodeValue, '${'.$key.'}') !== false){
 
                     $valArr = explode("\n",$value);
                     if(array_key_exists(1, $valArr)){
@@ -78,7 +79,7 @@ class PrintTest
                             $text->setAttribute("text:style-name", $this->textStyleName);
                         }   
                     } else {
-                        $node->nodeValue = str_replace('##'.$key.'##', $valArr[0], $node->nodeValue, $count);
+                        $node->nodeValue = str_replace('${'.$key.'}', $valArr[0], $node->nodeValue, $count);
                     }
                 }    
             }
@@ -114,7 +115,7 @@ class PrintTest
                 foreach($row->childNodes as $c => $cell){
                    
                     if ((array_key_exists($rowCount, $data)) && (array_key_exists($c, $data[$rowCount]))) { 
-                        //$cell->nodeValue = "";
+                        $cell->nodeValue = "";
                         $text = $this->xmlDoc->createElement('text:p', $data[$rowCount][$c]);
                         $cell->appendChild($text);
                         $text->setAttribute("text:style-name", $this->textStyleName);

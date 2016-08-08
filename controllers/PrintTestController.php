@@ -13,7 +13,7 @@ use \OEModule\OphCoCvi\components\PrintTest;
 class PrintTestController extends \BaseController
 {
     public $directory = '';
-    public $inputFile = 'example_certificate_3.odt';
+    public $inputFile = 'example_certificate_4.odt';
     public $xmlDoc;
     public $xpath;
     public $printTestXml;
@@ -37,11 +37,12 @@ class PrintTestController extends \BaseController
         
         if(isset($_POST['test_print'])){
             
-            $this->xml = $this->printTestXml->getXml();
+            $this->xml = $this->printTestXml->getXml( $this->inputFile );
             
             $this->printTestXml->strReplace( $_POST );
             $this->printTestXml->imgReplace( 'image1.png' , $this->printTestXml->directory.'/signature3.png');
             
+            /*
             $this->printTestXml->genTable( 
                 $this->printTestXml->xpath->query('//office:text')->item(0) , 
                 "TestTable" , 
@@ -50,9 +51,13 @@ class PrintTestController extends \BaseController
             );
             
             $this->printTestXml->fillTable("TestTable" , $this->whoIs() );
-            $this->printTestXml->fillTable("Radio1" , $this->whoIs() );
-            $this->printTestXml->fillTable("Table716" , $this->yesNoQuestions() , 1 );
-            $this->printTestXml->fillTable("Retina" , $this->genTableDatas() , 1 );
+            */
+
+            $this->printTestXml->fillTable("Table30" , $this->whoIs() );
+            $this->printTestXml->fillTable("Table47" , $this->iConsider() );
+            $this->printTestXml->fillTable("Table112" , $this->copiesInConfidenceTo() );
+            $this->printTestXml->fillTable("Table718" , $this->yesNoQuestions() , 1 );
+            $this->printTestXml->fillTable("Table377" , $this->genTableDatas() , 1 );
 
             $this->printTestXml->saveXML( $this->printTestXml->xmlDoc );
            
@@ -64,8 +69,8 @@ class PrintTestController extends \BaseController
     }
     public function getImage()
     {
-        $Data = file_get_contents($this->printTestXml->directory.'/signature3.png');
-        return '<div style="width:30%;height:30%;position:relative;"/><img src="data:image/jpeg;base64,'.base64_encode($Data).'"/></div>';
+        $data = file_get_contents($this->printTestXml->directory.'/signature3.png');
+        return '<div style="width:30%;height:30%;position:relative;"/><img src="data:image/jpeg;base64,'.base64_encode($data).'"/></div>';
     }
    
     public function actionGetPDF()
@@ -78,6 +83,34 @@ class PrintTestController extends \BaseController
         @readfile($file);
     }
     
+    
+    
+    public function whoIs()
+    {
+        $data = array(
+            array('X', 'I am the patient'),
+            array('','the patient’s representative and my name is (PLEASE PRINT):'),
+        );
+        return $data;
+    }
+    
+    public function copiesInConfidenceTo(){
+        $data = array(
+            array('X', 'Local council / Care trust'),
+            array('','Patient'),
+            array('','Patinet’s GP'),
+            array('','Hospital notes'),
+            array('','Epidemiological analysis'),
+        );
+        return $data;
+    }
+    public function iConsider(){
+        $data = array(
+            array('I consider (tick one)', 'X', 'That this person is sight impaired (partially sighted)'),
+            array('','', 'That this person is severly sight impaired (blind' ),
+        );
+        return $data;
+    }
     public function yesNoQuestions()
     {
         $data = array(
@@ -88,15 +121,6 @@ class PrintTestController extends \BaseController
         );
         return $data;
     }
-    
-    public function whoIs(){
-        $data = array(
-            array('X', 'I am the patient'),
-            array('X','the patient’s representative and my name is (PLEASE PRINT):'),
-        );
-        return $data;
-    }
-    
     public function genTableDatas()
     {
         $data = array(
