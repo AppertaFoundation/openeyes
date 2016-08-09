@@ -60,7 +60,7 @@ class Element_OphCoCvi_ClericalInfo_PatientFactor_Answer extends \BaseEventTypeE
 	 */
 	public function tableName()
 	{
-		return 'et_ophcocvi_clericalinfo_patient_factor_answer';
+		return 'et_ophcocvi_clericinfo_patient_factor_answer';
 	}
 
 	/**
