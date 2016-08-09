@@ -3,6 +3,20 @@
 
 Vagrant.require_version ">= 1.5"
 
+# Check to determine whether we're on a windows or linux/os-x host,
+# later on we use this to launch ansible in the supported way
+# source: https://stackoverflow.com/questions/2108727/which-in-ruby-checking-if-program-exists-in-path-from-ruby
+def which(cmd)
+    exts = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
+    ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
+        exts.each { |ext|
+            exe = File.join(path, "#{cmd}#{ext}")
+            return exe if File.executable? exe
+        }
+    end
+    return nil
+end
+
 PLUGINS = %w(vagrant-auto_network vagrant-hostsupdater vagrant-cachier)
 
 PLUGINS.reject! { |plugin| Vagrant.has_plugin? plugin }
@@ -48,11 +62,6 @@ Vagrant.configure("2") do |config|
       "--cpus", 2,
     ]
 		v.gui = true
-
-		# override.vm.synced_folder "./", "/var/www/openeyes", id: "vagrant-root",
-		# 	owner: "vagrant",
-		# 	group: "www-data",
-		# 	mount_options: ["dmode=775,fmode=664"]
 	end
 
   # VMWare Fusion
@@ -64,9 +73,13 @@ Vagrant.configure("2") do |config|
     # v.gui = true
   end
 
-  config.vm.provision "ansible_local" do |ansible|
-    ansible.playbook = "ansible/playbook.yml"
-    # ansible.verbose = "vvv" # Debug
+  if which('ansible-playbook')
+    config.vm.provision "ansible_local" do |ansible|
+      ansible.playbook = "ansible/playbook.yml"
+      # ansible.verbose = "vvv" # Debug
+    end
+  else
+      config.vm.provision :shell, path: "ansible/windows.sh", args: ["default"]
   end
 
   config.cache.synced_folder_opts = {
