@@ -143,4 +143,15 @@
 		</div>
 	</div>
 </div>
-
+<script type="text/javascript">
+    function validateHosNum() {
+        var pattern = <?php echo Yii::app()->params['hos_num_regex'] ? Yii::app()->params['hos_num_regex'] : '/^[0-9]+$/'; ?>;
+        if ($('#hos_num').val().length <1 || $('#hos_num').val().match(pattern)) {
+            $('#hos_num_error').hide();
+            return true;
+        } else {
+            $('#hos_num_error').show();
+            return false;
+        }
+    }
+</script>
