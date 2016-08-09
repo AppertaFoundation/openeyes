@@ -19,7 +19,7 @@ class LocalAuthoritiesAdminController extends \AdminController
             array(
                 array('allow',
                     'actions'=>array('list', 'editCommissioningBodyService', 'addCommissioningBodyService', 'verifyDeleteCommissioningBodyServices', 'deleteCommissioningBodyServices'),
-                    'roles'=>array('Clerical CVI'),
+                    'roles'=>array('OprnEditClericalCvi'),
                 ),
             ),
             parent::accessRules()
