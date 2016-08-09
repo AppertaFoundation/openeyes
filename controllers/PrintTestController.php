@@ -7,7 +7,7 @@
  */
 
 namespace OEModule\OphCoCvi\controllers;
-use \OEModule\OphCoCvi\components\PrintTest;
+use \OEModule\OphCoCvi\components\CertFromOdtTemplate;
 
 
 class PrintTestController extends \BaseController
@@ -31,16 +31,12 @@ class PrintTestController extends \BaseController
     
     public function actionTest()
     {
-        
         $pdfLink = '';
-        $this->printTestXml = new PrintTest();
-        
         if(isset($_POST['test_print'])){
-            
-            $this->xml = $this->printTestXml->getXml( $this->inputFile );
-            
+            $this->printTestXml = new CertFromOdtTemplate( $this->inputFile );
+        
             $this->printTestXml->strReplace( $_POST );
-            $this->printTestXml->imgReplace( 'image1.png' , $this->printTestXml->directory.'/signature3.png');
+            $this->printTestXml->imgReplace( 'image1.png' , $this->printTestXml->templateDir.'/signature3.png');
             
             /*
             $this->printTestXml->genTable( 
@@ -52,14 +48,14 @@ class PrintTestController extends \BaseController
             
             $this->printTestXml->fillTable("TestTable" , $this->whoIs() );
             */
-
+            $this->generateTestTable();
             $this->printTestXml->fillTable("Table30" , $this->whoIs() );
-            $this->printTestXml->fillTable("Table47" , $this->iConsider() );
-            $this->printTestXml->fillTable("Table112" , $this->copiesInConfidenceTo() );
-            $this->printTestXml->fillTable("Table718" , $this->yesNoQuestions() , 1 );
-            $this->printTestXml->fillTable("Table377" , $this->genTableDatas() , 1 );
-
-            $this->printTestXml->saveXML( $this->printTestXml->xmlDoc );
+            $this->printTestXml->fillTable("Table45" , $this->iConsider() );
+            $this->printTestXml->fillTable("Table102" , $this->copiesInConfidenceTo() );
+            $this->printTestXml->fillTable("Table348" , $this->genTableDatas() , 1 );
+            $this->printTestXml->fillTable("Table690" , $this->yesNoQuestions() , 1 );
+            
+            $this->printTestXml->saveContentXML( $this->printTestXml->contentXml );
            
             $this->printTestXml->convertToPdf();
             $pdfLink = $this->pdfLink();
@@ -69,8 +65,10 @@ class PrintTestController extends \BaseController
     }
     public function getImage()
     {
-        $data = file_get_contents($this->printTestXml->directory.'/signature3.png');
-        return '<div style="width:30%;height:30%;position:relative;"/><img src="data:image/jpeg;base64,'.base64_encode($data).'"/></div>';
+        if($this->printTestXml != NULL){
+            $data = file_get_contents($this->printTestXml->templateDir.'/signature3.png');
+            return '<div style="width:30%;max-height:30%;position:relative;"/><img src="data:image/jpeg;base64,'.base64_encode($data).'"/></div>';
+        }
     }
    
     public function actionGetPDF()
@@ -82,8 +80,6 @@ class PrintTestController extends \BaseController
         header('Content-Length: ' . filesize($file));
         @readfile($file);
     }
-    
-    
     
     public function whoIs()
     {
@@ -134,7 +130,39 @@ class PrintTestController extends \BaseController
         return $data;
     }
     
-    
+    public function generateTestTable(){
+        $data = array(
+            'tables' => array(
+                array(
+                    'template_variable_name' => 'my_table',
+                    'style' => 'border: 1px solid black;',
+                    'table-type' => 'full_table',
+                    'rows'  => array( 
+                        array( 'row-type' => 'normal',  'cells' => array( 
+                            array( 'cell-type' => 'normal', 'colspan' => 2, 'rowspan' => 0, 'data' => 'A1:B1', 'style' => 'background-color:red;font-weight:bold;'),
+                            array( 'cell-type' => 'covered' , 'colspan' => 0, 'rowspan' => 0),
+                            array( 'cell-type' => 'normal', 'colspan' => 0, 'rowspan' => 0, 'data' => 'C1' ),
+                        )), 
+                        array( 'row-type' => 'normal',  'cells' => array( 
+                            array( 'cell-type' => 'normal', 'colspan' => 0, 'rowspan' => 2, 'data' => 'A2:A3' ),
+                            array( 'cell-type' => 'normal', 'colspan' => 0, 'rowspan' => 0, 'data' => 'B2' ), 
+                            array( 'cell-type' => 'normal', 'colspan' => 0, 'rowspan' => 0, 'data' => 'C2' ),
+                        )), 
+                        array( 'row-type' => 'lastrow',  'cells' => array( 
+                            array( 'cell-type' => 'covered' ),
+                            array( 'cell-type' => 'normal', 'colspan' => 0, 'rowspan' => 0, 'data' => 'B3' ), 
+                            array( 'cell-type' => 'normal', 'colspan' => 0, 'rowspan' => 0, 'data' => 'C3' ), 
+                        )), 
+                    ),
+                ),
+            ),
+            'images' => array(),
+            'static_content' => array(
+                array( 'template_variable_name' => 'my_name', 'data' => 'Kecskes Peter' ),
+            ),
+        );
+        $this->printTestXml->exchangeStringValues($data);
+    }
     public function pdfLink()
     {
         return '<a href="getPDF" target="_blank" > See PDF </a>';
