@@ -25,7 +25,7 @@ class PortalExamsCommand extends CConsoleCommand
 
     protected $config = array();
 
-    public function run($args)
+    public function run()
     {
         $creator = new OEModule\OphCiExamination\components\ExaminationCreator();
         $user = new User();
