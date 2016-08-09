@@ -26,6 +26,8 @@ return array(
             'Field of Vision' => '/OphCoCvi/admin/fieldOfVision',
             'Low Vision Status' => '/OphCoCvi/admin/lowVisionStatus',
             'Preferred Info Format' => '/OphCoCvi/admin/preferredInfoFormat',
+            'Local Authorities' => '/OphCoCvi/localAuthoritiesAdmin/list',
+        ),
         'menu_bar_items' => array(
             'admin' => array(
                 'restricted' => array('cvi'),
@@ -44,9 +46,6 @@ return array(
                 'module' => 'OphCoCvi',
                 'method' => 'patientSummaryRender'
             )
-        ),
-        'admin_menu'=>array(
-            'Local Authorities' => '/OphCoCvi/localAuthoritiesAdmin/list',
         ),
         'additional_rulesets' => array(
             array(

@@ -2,14 +2,30 @@
 /**
  * Created by PhpStorm.
  * User: veta
- * Date: 06/05/15
- * Time: 11:30
+ * Date: 09/08/2016
+ * Time: 14:38
  */
+
 namespace OEModule\OphCoCvi\controllers;
 
 
-class LocalAuthoritiesAdminController extends \BaseAdminController
+class LocalAuthoritiesAdminController extends \AdminController
 {
+    public $layout = 'clerical_admin';
+
+    public function accessRules()
+    {
+        return array_merge(
+            array(
+                array('allow',
+                    'actions'=>array('list', 'editCommissioningBodyService', 'addCommissioningBodyService', 'verifyDeleteCommissioningBodyServices', 'deleteCommissioningBodyServices'),
+                    'roles'=>array('Clerical CVI'),
+                ),
+            ),
+            parent::accessRules()
+        );
+    }
+
     /**
      * Lists local authorities from Commissioning Body Service
      *
@@ -29,4 +45,3 @@ class LocalAuthoritiesAdminController extends \BaseAdminController
         $this->render('//admin/commissioning_body_services', array("data" => $data));
     }
 }
-
