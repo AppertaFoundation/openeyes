@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -19,13 +19,13 @@
 ?>
 <?php
 if (!isset($id) && isset($this->event_type)) {
-	$id = $this->event_type->class_name.'_print';
+    $id = $this->event_type->class_name.'_print';
 }
 ?>
 <div class="container main" id="<?php echo @$id;?>" style="margin-bottom: 10em;">
 	<?php $this->renderPartial('//print/letter_header')?>
 	<?php $this->renderPartial('//print/letter_content', array(
-		'hide_modified' => @$hide_modified,
-		'hide_created' => @$hide_created
-	));?>
+        'hide_modified' => @$hide_modified,
+        'hide_created' => @$hide_created,
+    ));?>
 </div>

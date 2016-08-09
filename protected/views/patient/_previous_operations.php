@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -43,7 +43,11 @@
 			<?php foreach ($this->patient->previousOperations as $operation) {?>
 				<tr>
 					<td><?php echo $operation->dateText?></td>
-					<td><?php if ($operation->side) { echo $operation->side->adjective.' ';}?><?php echo CHtml::encode($operation->operation)?></td>
+					<td><?php if ($operation->side) { 
+							echo $operation->side->adjective.' ';
+						}?>
+						<?php echo CHtml::encode($operation->operation)?>
+					</td>
 					<?php if ($this->checkAccess('OprnEditPreviousOperation')): ?>
 						<td>
 							<a href="#" class="editOperation" rel="<?php echo $operation->id?>">Edit</a>&nbsp;&nbsp;
@@ -65,16 +69,16 @@
 			<div id="add_previous_operation" style="display: none;">
 
 				<?php
-				$form = $this->beginWidget('FormLayout', array(
-						'id'=>'add-previous_operation',
-						'enableAjaxValidation'=>false,
-						'htmlOptions' => array('class'=>'form add-data'),
-						'action'=>array('patient/addPreviousOperation'),
-						'layoutColumns'=>array(
-							'label' => 3,
-							'field' => 9
-						),
-					))?>
+                $form = $this->beginWidget('FormLayout', array(
+                        'id' => 'add-previous_operation',
+                        'enableAjaxValidation' => false,
+                        'htmlOptions' => array('class' => 'form add-data'),
+                        'action' => array('patient/addPreviousOperation'),
+                        'layoutColumns' => array(
+                            'label' => 3,
+                            'field' => 9,
+                        ),
+                    ))?>
 
 				<fieldset class="field-row">
 
@@ -88,7 +92,7 @@
 							<label for="common_previous_operation">Common operations:</label>
 						</div>
 						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::dropDownList('common_previous_operation','',CHtml::listData(CommonPreviousOperation::model()->findAll(array('order'=>'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
+							<?php echo CHtml::dropDownList('common_previous_operation', '', CHtml::listData(CommonPreviousOperation::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'), array('empty' => '- Select -'))?>
 						</div>
 					</div>
 
@@ -97,7 +101,7 @@
 							<label for="previous_operation">Operation:</label>
 						</div>
 						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::textField('previous_operation','',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+							<?php echo CHtml::textField('previous_operation', '', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
 						</div>
 					</div>
 
@@ -109,13 +113,13 @@
 							<label class="inline">
 								<input type="radio" name="previous_operation_side" class="previous_operation_side" value="" checked="checked" /> None
 							</label>
-							<?php foreach (Eye::model()->findAll(array('order'=>'display_order')) as $eye) {?>
+							<?php foreach (Eye::model()->findAll(array('order' => 'display_order')) as $eye) {?>
 								<label class="inline"><input type="radio" name="previous_operation_side" class="previous_operation_side" value="<?php echo $eye->id?>" /> <?php echo $eye->name?>	</label>
 							<?php }?>
 						</div>
 					</fieldset>
 
-					<?php $this->renderPartial('_fuzzy_date',array('class'=>'previousOperation'))?>
+					<?php $this->renderPartial('_fuzzy_date', array('class' => 'previousOperation'))?>
 
 					<div class="previous_operations_form_errors alert-box alert hide"></div>
 

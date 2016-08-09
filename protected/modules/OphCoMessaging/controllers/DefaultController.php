@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -8,8 +8,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
@@ -21,14 +21,14 @@ use OEModule\OphCoMessaging\models\OphCoMessaging_Message_Comment;
 
 class DefaultController extends \BaseEventTypeController
 {
-    const ACTION_TYPE_MYMESSAGE = "ManageMyMessage";
-    const ACTION_TYPE_MARKMESSAGE = "MarkMyMessage";
+    const ACTION_TYPE_MYMESSAGE = 'ManageMyMessage';
+    const ACTION_TYPE_MARKMESSAGE = 'MarkMyMessage';
 
-    static protected $action_types = array(
+    protected static $action_types = array(
         'userfind' => self::ACTION_TYPE_CREATE,
         'markread' => self::ACTION_TYPE_MARKMESSAGE,
         'markunread' => self::ACTION_TYPE_MARKMESSAGE,
-        'addcomment' => self::ACTION_TYPE_MYMESSAGE
+        'addcomment' => self::ACTION_TYPE_MYMESSAGE,
     );
 
     /**
@@ -42,7 +42,7 @@ class DefaultController extends \BaseEventTypeController
     public $show_comment_form = false;
 
     /**
-     * Make sure user has clinical access and the user is the recipient of the message
+     * Make sure user has clinical access and the user is the recipient of the message.
      *
      * @return bool
      */
@@ -52,7 +52,7 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Make sure user has clinical access and the user is the recipient of the message
+     * Make sure user has clinical access and the user is the recipient of the message.
      *
      * @return bool
      */
@@ -62,37 +62,38 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Convenience wrapper to retrieve event view URL (this should probably be somewhere in core)
+     * Convenience wrapper to retrieve event view URL (this should probably be somewhere in core).
      *
      * @return mixed
      */
     public function getEventViewUrl()
     {
-        return \Yii::app()->createUrl('/' . $this->getModule()->name . '/Default/view/' . $this->event->id);
+        return \Yii::app()->createUrl('/'.$this->getModule()->name.'/Default/view/'.$this->event->id);
     }
 
     /**
-     * Duplicated from the admin controller to give a user list
+     * Duplicated from the admin controller to give a user list.
+     *
      * @TODO: There's a method on the UserController that could be used, so would be worth consolidating)
      */
     public function actionUserFind()
     {
         $res = array();
         if (\Yii::app()->request->isAjaxRequest && !empty($_REQUEST['search'])) {
-            $criteria = new \CDbCriteria;
-            $criteria->compare("LOWER(username)", strtolower($_REQUEST['search']), true, 'OR');
-            $criteria->compare("LOWER(first_name)", strtolower($_REQUEST['search']), true, 'OR');
-            $criteria->compare("LOWER(last_name)", strtolower($_REQUEST['search']), true, 'OR');
-            $words = explode(" ", $_REQUEST['search']);
+            $criteria = new \CDbCriteria();
+            $criteria->compare('LOWER(username)', strtolower($_REQUEST['search']), true, 'OR');
+            $criteria->compare('LOWER(first_name)', strtolower($_REQUEST['search']), true, 'OR');
+            $criteria->compare('LOWER(last_name)', strtolower($_REQUEST['search']), true, 'OR');
+            $words = explode(' ', $_REQUEST['search']);
             if (count($words) > 1) {
                 // possibly slightly verbose approach to checking first and last name combinations
                 // for searches
                 $first_criteria = new \CDbCriteria();
-                $first_criteria->compare("LOWER(first_name)", strtolower($words[0]), true);
-                $first_criteria->compare("LOWER(last_name)", strtolower(implode(" ", array_slice($words, 1, count($words) - 1))), true);
+                $first_criteria->compare('LOWER(first_name)', strtolower($words[0]), true);
+                $first_criteria->compare('LOWER(last_name)', strtolower(implode(' ', array_slice($words, 1, count($words) - 1))), true);
                 $last_criteria = new \CDbCriteria();
-                $last_criteria->compare("LOWER(first_name)", strtolower($words[count($words) - 1]), true);
-                $last_criteria->compare("LOWER(last_name)", strtolower(implode(" ", array_slice($words, 0, count($words) - 2))), true);
+                $last_criteria->compare('LOWER(first_name)', strtolower($words[count($words) - 1]), true);
+                $last_criteria->compare('LOWER(last_name)', strtolower(implode(' ', array_slice($words, 0, count($words) - 2))), true);
                 $first_criteria->mergeWith($last_criteria, 'OR');
                 $criteria->mergeWith($first_criteria, 'OR');
             }
@@ -118,7 +119,7 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Set up event etc on the controller
+     * Set up event etc on the controller.
      *
      * @throws \CHttpException
      */
@@ -128,27 +129,27 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Mark the event message as read
+     * Mark the event message as read.
      *
      * @param $id
+     *
      * @throws \Exception
      */
     public function actionMarkRead($id)
     {
         $el = $this->getMessageElement();
 
-        if($el->comments && $this->isSender(\Yii::app()->user)){
+        if ($el->comments && $this->isSender(\Yii::app()->user)) {
             $this->markCommentRead($el);
         } else {
             $this->markMessageRead($el);
         }
 
-
         $this->redirectAfterAction();
     }
 
     /**
-     * Setup event etc on the controller
+     * Setup event etc on the controller.
      *
      * @throws \CHttpException
      */
@@ -158,9 +159,10 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Mark the message event as unread
+     * Mark the message event as unread.
      *
      * @param $id
+     *
      * @throws \Exception
      */
     public function actionMarkUnread($id)
@@ -174,7 +176,7 @@ class DefaultController extends \BaseEventTypeController
 
             $this->event->audit('event', 'marked unread');
 
-            \Yii::app()->user->setFlash('success', "<a href=\"" . $this->getEventViewUrl() . "\">{$this->event_type->name}</a> marked as unread.");
+            \Yii::app()->user->setFlash('success', '<a href="'.$this->getEventViewUrl()."\">{$this->event_type->name}</a> marked as unread.");
 
             $transaction->commit();
         } catch (\Exception $e) {
@@ -185,7 +187,7 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Set up event etc on the controller
+     * Set up event etc on the controller.
      *
      * @throws \CHttpException
      */
@@ -197,6 +199,7 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * @param $id
+     *
      * @throws \CHttpException
      * @throws \Exception
      */
@@ -205,7 +208,7 @@ class DefaultController extends \BaseEventTypeController
         $element = $this->getMessageElement();
 
         if (count($element->comments)) {
-            throw new \CHttpException(409, "Only one comment allowed per message.");
+            throw new \CHttpException(409, 'Only one comment allowed per message.');
         }
 
         $comment = new OphCoMessaging_Message_Comment();
@@ -223,10 +226,9 @@ class DefaultController extends \BaseEventTypeController
             }
             $this->render('view', array(
                 'errors' => $errors,
-                'comment' => $comment
+                'comment' => $comment,
             ));
-        }
-        else {
+        } else {
             $transaction = \Yii::app()->db->beginTransaction();
 
             try {
@@ -234,9 +236,8 @@ class DefaultController extends \BaseEventTypeController
                 $element->save();
                 $comment->save();
                 $transaction->commit();
-                \Yii::app()->user->setFlash('success', "Comment added to record");
-            }
-            catch (\Exception $e) {
+                \Yii::app()->user->setFlash('success', 'Comment added to record');
+            } catch (\Exception $e) {
                 $transaction->rollback();
                 throw $e;
             }
@@ -246,7 +247,7 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Convenience function for performing redirect once a message has been manipulated
+     * Convenience function for performing redirect once a message has been manipulated.
      */
     protected function redirectAfterAction()
     {
@@ -260,10 +261,12 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * Determine if the given user (or current if none given) is the intended recipient of the message
-     * that is being viewed
+     * that is being viewed.
      *
      * @TODO: Use Service Layer?
+     *
      * @param \OEWebUser $user
+     *
      * @return bool
      */
     protected function isIntendedRecipient(\OEWebUser $user = null)
@@ -283,10 +286,12 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * Determine if the given user (or current if none given) is the sender of the message
-     * that is being viewed
+     * that is being viewed.
      *
      * @TODO: Use Service Layer?
+     *
      * @param \OEWebUser $user
+     *
      * @return bool
      */
     protected function isSender(\OEWebUser $user = null)
@@ -320,7 +325,7 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Convenience wrapper function
+     * Convenience wrapper function.
      *
      * @return \OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message
      */
@@ -329,17 +334,17 @@ class DefaultController extends \BaseEventTypeController
         if (!$this->message_el) {
             $this->message_el = $this->event->getElementByClass('\OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message');
         }
+
         return $this->message_el;
     }
 
     /**
-     *
      * @return bool
      */
     public function canMarkRead()
     {
         $el = $this->getMessageElement();
-        if($el->comments && $this->isSender(\Yii::app()->user)){
+        if ($el->comments && $this->isSender(\Yii::app()->user)) {
             return $this->canMarkCommentRead($el);
         } else {
             return $this->canMarkMessageRead($el);
@@ -348,6 +353,7 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * @param $el
+     *
      * @return bool
      */
     protected function canMarkMessageRead($el)
@@ -363,9 +369,9 @@ class DefaultController extends \BaseEventTypeController
 
     protected function canMarkCommentRead($el)
     {
-        if($this->isSender(\Yii::app()->user)){
-            foreach($el->comments as $comment){
-                if(!$comment->marked_as_read){
+        if ($this->isSender(\Yii::app()->user)) {
+            foreach ($el->comments as $comment) {
+                if (!$comment->marked_as_read) {
                     return true;
                 }
             }
@@ -391,6 +397,7 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * @param $el
+     *
      * @throws \Exception
      */
     protected function markMessageRead($el)
@@ -403,7 +410,7 @@ class DefaultController extends \BaseEventTypeController
 
             $this->event->audit('event', 'marked read');
 
-            \Yii::app()->user->setFlash('success', "<a href=\"" . $this->getEventViewUrl() . "\">{$this->event_type->name}</a> marked as read.");
+            \Yii::app()->user->setFlash('success', '<a href="'.$this->getEventViewUrl()."\">{$this->event_type->name}</a> marked as read.");
 
             $transaction->commit();
         } catch (\Exception $e) {
@@ -416,8 +423,7 @@ class DefaultController extends \BaseEventTypeController
     {
         $transaction = \Yii::app()->db->beginTransaction();
         try {
-
-            foreach($el->comments as $comment){
+            foreach ($el->comments as $comment) {
                 $comment->marked_as_read = true;
                 $comment->save();
             }
@@ -431,7 +437,7 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Extend the parent method to set event issue data based on user selection
+     * Extend the parent method to set event issue data based on user selection.
      */
     protected function updateEventInfo()
     {
@@ -440,7 +446,7 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Set the urgent issue (or otherwise) at the event level
+     * Set the urgent issue (or otherwise) at the event level.
      */
     protected function updateEventIssues()
     {
@@ -451,8 +457,7 @@ class DefaultController extends \BaseEventTypeController
             if (!$this->event->hasIssue()) {
                 $this->event->addIssue('Urgent');
             }
-        }
-        else {
+        } else {
             if ($this->event->hasIssue()) {
                 $this->event->deleteIssue('Urgent');
             }
@@ -460,7 +465,7 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Set the event info text without the open_elements attribute being set
+     * Set the event info text without the open_elements attribute being set.
      */
     protected function updateEvent()
     {

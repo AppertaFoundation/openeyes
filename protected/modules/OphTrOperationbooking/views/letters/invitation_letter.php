@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -19,30 +19,30 @@
 ?>
 <div class="booking-letter">
 	<header>
-		<?php $this->renderPartial("../default/letter_start", array(
-			'toAddress' => $toAddress,
-			'patient' => $patient,
-			'date' => date('Y-m-d'),
-			'site' => $site,
-		))?>
+		<?php $this->renderPartial('../default/letter_start', array(
+            'toAddress' => $toAddress,
+            'patient' => $patient,
+            'date' => date('Y-m-d'),
+            'site' => $site,
+        ))?>
 	</header>
 
 	<?php $this->renderPartial('../letters/letter_introduction', array(
-			'to' => $to,
-			'accessible' => true,
-			'patient' => $patient,
-	))?>
+            'to' => $to,
+            'accessible' => true,
+            'patient' => $patient,
+    ))?>
 
 	<p class="accessible">
 		I have been asked to arrange your <?php	if ($patient->isChild()) {?>child's <?php }?> admission for surgery under the care of
 		<?php echo CHtml::encode($consultantName) ?>. This is currently anticipated to be
 		<?php
-		if ($overnightStay) {
-			echo 'an overnight stay';
-		} else {
-			echo 'a day case';
-		}
-		?>
+        if ($overnightStay) {
+            echo 'an overnight stay';
+        } else {
+            echo 'a day case';
+        }
+        ?>
 		procedure.
 	</p>
 

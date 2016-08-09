@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -10,8 +10,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -19,92 +19,89 @@
  */
 class DisorderTest extends CDbTestCase
 {
+    public $fixtures = array(
+        'disorders' => 'Disorder',
+    );
 
-	public $fixtures = array(
-		'disorders' => 'Disorder'
-	);
+    /**
+     * @var Disorder
+     */
+    protected $model;
 
-	/**
-	 * @var Disorder
-	 */
-	protected $model;
+    public function dataProvider_Search()
+    {
+        return array(
+            array(array('term' => 'Myopia'), 1, array('disorder1')),
+            array(array('term' => 'foobar'), 0, array()),
+        );
+    }
 
-	public function dataProvider_Search()
-	{
-		return array(
-			array(array('term' => 'Myopia'), 1, array('disorder1')),
-			array(array('term' => 'foobar'), 0, array()),
-		);
-	}
+    /**
+     * Sets up the fixture, for example, opens a network connection.
+     * This method is called before a test is executed.
+     */
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->model = new Disorder();
+    }
 
-	/**
-	 * Sets up the fixture, for example, opens a network connection.
-	 * This method is called before a test is executed.
-	 */
-	protected function setUp()
-	{
-		parent::setUp();
-		$this->model = new Disorder;
-	}
+    /**
+     * @covers Disorder::model
+     */
+    public function testModel()
+    {
+        $this->assertEquals('Disorder', get_class(Disorder::model()), 'Class name should match model.');
+    }
 
-	/**
-	 * @covers Disorder::model
-	 */
-	public function testModel()
-	{
-		$this->assertEquals('Disorder', get_class(Disorder::model()), 'Class name should match model.');
-	}
+    /**
+     * @covers Disorder::tableName
+     */
+    public function testTableName()
+    {
+        $this->assertEquals('disorder', $this->model->tableName());
+    }
 
-	/**
-	 * @covers Disorder::tableName
-	 */
-	public function testTableName()
-	{
+    /**
+     * @covers Disorder::rules
+     */
+    public function testRules()
+    {
+        $this->assertTrue($this->disorders('disorder1')->validate());
+        $this->assertEmpty($this->disorders('disorder1')->errors);
+    }
 
-		$this->assertEquals('disorder', $this->model->tableName());
-	}
+    /**
+     * @covers Disorder::getDisorderOptions
+     *
+     * @todo   Implement testGetDisorderOptions().
+     */
+    public function testGetDisorderOptions()
+    {
+        $expected = array('Myopia');
 
-	/**
-	 * @covers Disorder::rules
-	 */
-	public function testRules()
-	{
-		$this->assertTrue($this->disorders('disorder1')->validate());
-		$this->assertEmpty($this->disorders('disorder1')->errors);
-	}
+        $result = $this->disorders('disorder1')->GetDisorderOptions('Myopia');
 
-	/**
-	 * @covers Disorder::getDisorderOptions
-	 * @todo   Implement testGetDisorderOptions().
-	 */
-	public function testGetDisorderOptions()
-	{
-		$expected = array('Myopia');
+        $this->assertEquals($expected, $result);
+    }
 
-		$result = $this->disorders('disorder1')->GetDisorderOptions('Myopia');
+    /**
+     * @dataProvider dataProvider_Search
+     */
+    public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
+    {
+        $this->model->setAttributes($searchTerms);
+        $results = $this->model->search();
+        $data = $results->getData();
 
-		$this->assertEquals($expected, $result);
-	}
+        $expectedResults = array();
+        if (!empty($expectedKeys)) {
+            foreach ($expectedKeys as $key) {
+                $expectedResults[] = $this->disorders($key);
+            }
+        }
 
-	/**
-	 * @dataProvider dataProvider_Search
-	 */
-	public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
-	{
-
-		$this->model->setAttributes($searchTerms);
-		$results = $this->model->search();
-		$data = $results->getData();
-
-		$expectedResults = array();
-		if (!empty($expectedKeys)) {
-			foreach ($expectedKeys as $key) {
-				$expectedResults[] = $this->disorders($key);
-			}
-		}
-
-		$this->assertEquals($numResults, $results->getItemCount());
-		$this->assertEquals($expectedResults, $data);
-	}
-
+        $this->assertEquals($numResults, $results->getItemCount());
+        $this->assertEquals($expectedResults, $data);
+    }
 }

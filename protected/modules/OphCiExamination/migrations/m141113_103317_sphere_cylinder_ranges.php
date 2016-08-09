@@ -10,7 +10,7 @@ class m141113_103317_sphere_cylinder_ranges extends OEMigration
         $this->createIndex('ophciexamination_refraction_sphere_integer_sign_id_fk', 'ophciexamination_refraction_integer', 'sign_id');
         $this->addForeignKey('ophciexamination_refraction_sphere_integer_sign_id_fk', 'ophciexamination_refraction_integer', 'sign_id', 'ophciexamination_refraction_sign', 'id');
 
-        foreach ($this->dbConnection->createCommand()->select("*")->from("ophciexamination_refraction_integer")->where("sign_id=1")->order("id asc")->queryAll() as $i) {
+        foreach ($this->dbConnection->createCommand()->select('*')->from('ophciexamination_refraction_integer')->where('sign_id=1')->order('id asc')->queryAll() as $i) {
             $this->insert('ophciexamination_refraction_integer', array(
                 'value' => $i['value'],
                 'display_order' => $i['display_order'],
@@ -53,7 +53,7 @@ class m141113_103317_sphere_cylinder_ranges extends OEMigration
 
         $this->versionExistingTable('ophciexamination_refraction_cylinder_integer');
 
-        foreach ($this->dbConnection->createCommand()->select("*")->from("ophciexamination_refraction_sphere_integer")->order('id asc')->queryAll() as $row) {
+        foreach ($this->dbConnection->createCommand()->select('*')->from('ophciexamination_refraction_sphere_integer')->order('id asc')->queryAll() as $row) {
             $this->insert('ophciexamination_refraction_cylinder_integer', $row);
         }
     }

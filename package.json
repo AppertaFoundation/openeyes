@@ -15,20 +15,19 @@
     "test": "grunt test"
   },
   "devDependencies": {
-    "chai": "~1.8.1",
-    "grunt": "~0.4.1",
-    "grunt-contrib-clean": "~0.5.0",
-    "grunt-contrib-compass": "~0.5.0",
-    "grunt-contrib-connect": "~0.5.0",
-    "grunt-contrib-copy": "~0.4.1",
-    "grunt-contrib-jshint": "~0.6.2",
-    "grunt-contrib-watch": "~0.5.2",
-    "grunt-hub": "~0.5.0",
-    "grunt-jsdoc": "~0.4.0",
-    "grunt-mocha": "~0.4.7",
-    "grunt-modernizr": "~0.3.0",
-    "grunt-styleguide": "~0.2.6",
-    "jshint-stylish": "^1.0.0",
-    "load-grunt-tasks": "~0.1.0"
+    "chai": "^3.5.0",
+    "grunt": "^1.0.1",
+    "grunt-contrib-clean": "^1.0.0",
+    "grunt-contrib-compass": "^1.1.1",
+    "grunt-contrib-connect": "^1.0.2",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-hub": "^0.7.0",
+    "grunt-jsdoc": "^2.1.0",
+    "grunt-mocha": "^1.0.2",
+    "grunt-modernizr": "^1.0.2",
+    "jshint-stylish": "^2.2.0",
+    "load-grunt-tasks": "^3.5.0"
   }
 }

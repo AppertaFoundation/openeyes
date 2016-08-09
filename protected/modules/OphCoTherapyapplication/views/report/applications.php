@@ -16,16 +16,16 @@
 			</div>
 			<div class="large-4 column end">
 				<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-								'name'=>'date_from',
-								'id'=>'date_from',
-								'options'=>array(
-										'showAnim'=>'fold',
-										'dateFormat'=>Helper::NHS_DATE_FORMAT_JS,
-										'maxDate'=> 0,
-										'defaultDate' => "-1y"
-								),
-								'value'=> $date_from
-						))?>
+                                'name' => 'date_from',
+                                'id' => 'date_from',
+                                'options' => array(
+                                        'showAnim' => 'fold',
+                                        'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
+                                        'maxDate' => 0,
+                                        'defaultDate' => '-1y',
+                                ),
+                                'value' => $date_from,
+                        ))?>
 			</div>
 		</div>
 		<div class="row field-row">
@@ -34,16 +34,16 @@
 			</div>
 			<div class="large-4 column end">
 				<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-								'name'=>'date_to',
-								'id'=>'date_to',
-								'options'=>array(
-										'showAnim'=>'fold',
-										'dateFormat'=>Helper::NHS_DATE_FORMAT_JS,
-										'maxDate'=> 0,
-										'defaultDate' => 0
-								),
-								'value'=> $date_to
-						))?>
+                                'name' => 'date_to',
+                                'id' => 'date_to',
+                                'options' => array(
+                                        'showAnim' => 'fold',
+                                        'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
+                                        'maxDate' => 0,
+                                        'defaultDate' => 0,
+                                ),
+                                'value' => $date_to,
+                        ))?>
 			</div>
 		</div>
 

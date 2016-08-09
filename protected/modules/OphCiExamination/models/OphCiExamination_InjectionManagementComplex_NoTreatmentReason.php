@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -20,17 +20,16 @@
 namespace OEModule\OphCiExamination\models;
 
 /**
- * This is the model class for table "ophciexamination_injectmanagecomplex_notreatmentreason". It is used to define a lookup of reasons for not providing an injection treatment
+ * This is the model class for table "ophciexamination_injectmanagecomplex_notreatmentreason". It is used to define a lookup of reasons for not providing an injection treatment.
  *
  * The followings are the available columns in table:
+ *
  * @property string $id
  * @property string $name
  * @property string $letter_str
- * @property boolean $active
- * @property boolean $other - flag to indicate whether this reason would need an other description
- *
+ * @property bool $active
+ * @property bool $other - flag to indicate whether this reason would need an other description
  */
-
 class OphCiExamination_InjectionManagementComplex_NoTreatmentReason extends \BaseActiveRecordVersioned
 {
     const DEFAULT_LETTER_STRING = 'The patient did not receive an intra-vitreal injection today.';
@@ -55,7 +54,7 @@ class OphCiExamination_InjectionManagementComplex_NoTreatmentReason extends \Bas
 
     public function defaultScope()
     {
-        return array('order' => $this->getTableAlias(true, false) . '.display_order');
+        return array('order' => $this->getTableAlias(true, false).'.display_order');
     }
 
     /**
@@ -82,10 +81,8 @@ class OphCiExamination_InjectionManagementComplex_NoTreatmentReason extends \Bas
         );
     }
 
-
-
     /**
-     * Get the string to be used in correspondence for this no treatment reason
+     * Get the string to be used in correspondence for this no treatment reason.
      *
      * @return string
      */
@@ -95,8 +92,9 @@ class OphCiExamination_InjectionManagementComplex_NoTreatmentReason extends \Bas
         if ($this->letter_str) {
             $res = $this->letter_str;
         } elseif (!$this->other) {
-            $res .= " " . $this->name . ".";
+            $res .= ' '.$this->name.'.';
         }
+
         return $res;
     }
 

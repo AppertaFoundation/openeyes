@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -32,9 +32,9 @@
 			</thead>
 			<tbody>
 			<?php
-			$criteria = new CDbCriteria;
-			$criteria->order = "display_order asc";
-			foreach (OphTrOperationbooking_Operation_Theatre::model()->active()->findAll() as $i => $theatre) {?>
+            $criteria = new CDbCriteria();
+            $criteria->order = 'display_order asc';
+            foreach (OphTrOperationbooking_Operation_Theatre::model()->active()->findAll() as $i => $theatre) {?>
 				<tr class="clickable sortable" data-attr-id="<?php echo $theatre->id?>" data-uri="OphTrOperationbooking/admin/editTheatre/<?php echo $theatre->id?>">
 					<td><input type="checkbox" name="theatre[]" value="<?php echo $theatre->id?>" class="theatres" /></td>
 					<td><?php echo $theatre->site->name?></td>
@@ -47,8 +47,8 @@
 			<tfoot>
 				<tr>
 					<td colspan="5">
-						<?php echo EventAction::button('Add', 'add_theatre', null,array('class'=>'button small'))->toHtml()?>
-						<?php echo EventAction::button('Delete', 'delete_theatre', null,array('class'=>'button small'))->toHtml()?>
+						<?php echo EventAction::button('Add', 'add_theatre', null, array('class' => 'button small'))->toHtml()?>
+						<?php echo EventAction::button('Delete', 'delete_theatre', null, array('class' => 'button small'))->toHtml()?>
 					</td>
 				</tr>
 			</tfoot>

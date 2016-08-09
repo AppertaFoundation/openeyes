@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -18,65 +18,61 @@
  */
 
 /**
- * Class UniqueCodesController
+ * Class UniqueCodesController.
  */
 class UniqueCodesController extends BaseAdminController
 {
-	/**
-	 * @var string
-	 */
-	public $layout = 'admin';
+    /**
+     * @var string
+     */
+    public $layout = 'admin';
 
-	/**
-	 * @var int
-	 */
-	public $itemsPerPage = 100;
+    /**
+     * @var int
+     */
+    public $itemsPerPage = 100;
 
-	/**
-	 * Lists procedures
-	 *
-	 * @throws CHttpException
-	 */
-    
-        
-	public function actionList()
-	{
-		$admin = new Admin(UniqueCodes::model(), $this);
-                
-                
-                $admin->setModelDisplayName('Unique Codes');
-                
-		$admin->setListFields(array(
-			'id',
-			'code',
-			'active'
-		));
-                
-                
-		$admin->searchAll();
-		$admin->getSearch()->addActiveFilter();
-		$admin->getSearch()->setItemsPerPage($this->itemsPerPage);
-		$admin->listModel(false);
-	}
+    /**
+     * Lists procedures.
+     *
+     * @throws CHttpException
+     */
+    public function actionList()
+    {
+        $admin = new Admin(UniqueCodes::model(), $this);
 
-	/**
-	 * Edits or adds a Procedure
-	 *
-	 * @param bool|int $id
-	 * @throws CHttpException
-	 */
-	public function actionEdit($id = false)
-	{
-		$admin = new Admin(UniqueCodes::model(), $this);
-		if ($id) {
-			$admin->setModelId($id);
-		}
-                $admin->setModelDisplayName('Unique Codes');
-		$admin->setEditFields(array(
-			'code' => 'label',
-			'active' => 'checkbox'
-		));
-		$admin->editModel();
-	}
+        $admin->setModelDisplayName('Unique Codes');
 
+        $admin->setListFields(array(
+            'id',
+            'code',
+            'active',
+        ));
+
+        $admin->searchAll();
+        $admin->getSearch()->addActiveFilter();
+        $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
+        $admin->listModel(false);
+    }
+
+    /**
+     * Edits or adds a Procedure.
+     *
+     * @param bool|int $id
+     *
+     * @throws CHttpException
+     */
+    public function actionEdit($id = false)
+    {
+        $admin = new Admin(UniqueCodes::model(), $this);
+        if ($id) {
+            $admin->setModelId($id);
+        }
+        $admin->setModelDisplayName('Unique Codes');
+        $admin->setEditFields(array(
+            'code' => 'label',
+            'active' => 'checkbox',
+        ));
+        $admin->editModel();
+    }
 }

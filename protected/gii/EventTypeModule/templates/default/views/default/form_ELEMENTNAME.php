@@ -28,11 +28,11 @@
 	</header>
 	<div class="element-fields">
 		<?php
-			if (isset($element)) {
-				foreach ($element['fields'] as $field) {
-					echo "\t".$this->getHTMLField($field,'create')."\n";
-				}
-			}
-		?>
+            if (isset($element)) {
+                foreach ($element['fields'] as $field) {
+                    echo "\t".$this->getHTMLField($field, 'create')."\n";
+                }
+            }
+        ?>
 	</div>
 </section>

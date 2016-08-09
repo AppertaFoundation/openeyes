@@ -15,7 +15,7 @@ class NSCGradeTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new NSCGrade;
+        $this->object = new NSCGrade();
     }
 
     /**
@@ -28,6 +28,7 @@ class NSCGradeTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers NSCGrade::model
+     *
      * @todo   Implement testModel().
      */
     public function testModel()
@@ -40,6 +41,7 @@ class NSCGradeTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers NSCGrade::tableName
+     *
      * @todo   Implement testTableName().
      */
     public function testTableName()
@@ -52,6 +54,7 @@ class NSCGradeTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers NSCGrade::rules
+     *
      * @todo   Implement testRules().
      */
     public function testRules()
@@ -64,6 +67,7 @@ class NSCGradeTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers NSCGrade::relations
+     *
      * @todo   Implement testRelations().
      */
     public function testRelations()
@@ -76,6 +80,7 @@ class NSCGradeTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers NSCGrade::attributeLabels
+     *
      * @todo   Implement testAttributeLabels().
      */
     public function testAttributeLabels()
@@ -88,6 +93,7 @@ class NSCGradeTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers NSCGrade::search
+     *
      * @todo   Implement testSearch().
      */
     public function testSearch()

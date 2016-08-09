@@ -1,1 +1,1 @@
-- <span id="automated-event"><?= $this->event->automatedText();?></span>
+<span id="automated-event"><?= $this->event->automatedText();?></span>

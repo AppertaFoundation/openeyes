@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -40,6 +40,11 @@
 			</thead>
 			<tbody>
 				<?php
+					if(isset($data["returnUrl"]) && $data["returnUrl"] == '/OphCoCvi/localAuthoritiesAdmin/list') {
+						$baseDataUri = "OphCoCvi/localAuthoritiesAdmin/";
+					}else{
+						$baseDataUri = "admin/";
+					}
 					if(isset($data) && $data["commissioningBodyId"] > 0){
 						$condition = 'commissioning_body_id = '.$data["commissioningBodyId"];
 						$urlQuery = 'commissioning_body_id='.$data["commissioningBodyId"].'&service_type_id='.$data["serviceTypeId"].'&return_url='.$data["returnUrl"];
@@ -49,7 +54,7 @@
 					}
 
 					foreach (CommissioningBodyService::model()->findAll(array('condition'=>$condition,'order'=>'name asc')) as $i => $cbs) {?>
-					<tr class="clickable" data-id="<?php echo $cbs->id?>" data-uri="admin/editCommissioningBodyService?commissioning_body_service_id=<?php echo $cbs->id; if(isset($data["returnUrl"])){echo "&return_url=".$data["returnUrl"];}?>">
+					<tr class="clickable" data-id="<?php echo $cbs->id?>" data-uri="<?php echo $baseDataUri?>editCommissioningBodyService?commissioning_body_service_id=<?php echo $cbs->id; if(isset($data["returnUrl"])){echo "&return_url=".$data["returnUrl"];}?>">
 						<td><input type="checkbox" name="commissioning_body_service[]" value="<?php echo $cbs->id?>" class="wards" /></td>
 						<td><?php echo $cbs->code?></td>
 						<td><?php echo $cbs->name?></td>
@@ -89,12 +94,12 @@
 <script type="text/javascript">
 	$('li.even .column_code, li.even .column_name, li.even .column_type, li.even .column_address, li.odd .column_code, li.odd .column_name, li.odd .column_type, li.odd .column_address').click(function(e) {
 		e.preventDefault();
-		window.location.href = baseUrl+'/admin/editCommissioningBodyService?commissioning_body_service_id='+$(this).parent().attr('data-attr-id');
+		window.location.href = baseUrl+'/<?php echo $baseDataUri?>editCommissioningBodyService?commissioning_body_service_id='+$(this).parent().attr('data-attr-id');
 	});
 
 	$('#et_add_commissioning_body_service').click(function(e) {
 		e.preventDefault();
-		window.location.href = baseUrl+'/admin/addCommissioningBodyService?'+$(this).data('uri');
+		window.location.href = baseUrl+'/<?php echo $baseDataUri?>addCommissioningBodyService?'+$(this).data('uri');
 	});
 
 	$('#checkall').click(function(e) {
@@ -112,7 +117,7 @@
 
 		$.ajax({
 			'type': 'POST',
-			'url': baseUrl+'/admin/verifyDeleteCommissioningBodyServices',
+			'url': baseUrl+'/<?php echo $baseDataUri?>verifyDeleteCommissioningBodyServices',
 			'data': $('#admin_commissioning_bodies').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 			'success': function(resp) {
 				var mention = ($('input[type="checkbox"][name="commissioning_body_service[]"]:checked').length == 1) ? 'commissioning body' : 'commissioning bodies';
@@ -147,7 +152,7 @@
 
 		$.ajax({
 			'type': 'POST',
-			'url': baseUrl+'/admin/deleteCommissioningBodyServices',
+			'url': baseUrl+'/<?php echo $baseDataUri?>deleteCommissioningBodyServices',
 			'data': $('#admin_commissioning_body_services').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 			'success': function(resp) {
 				if (resp == "1") {

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -18,64 +18,65 @@
  */
 
 /**
- * Class BenefitController
+ * Class BenefitController.
  */
 class BenefitController extends BaseAdminController
 {
-	/**
-	 * @var string
-	 */
-	public $layout = 'admin';
+    /**
+     * @var string
+     */
+    public $layout = 'admin';
 
-	/**
-	 * @var int
-	 */
-	public $itemsPerPage = 100;
+    /**
+     * @var int
+     */
+    public $itemsPerPage = 100;
 
-	/**
-	 * Lists procedures
-	 *
-	 * @throws CHttpException
-	 */
-	public function actionList()
-	{
-		$admin = new Admin(Benefit::model(), $this);
-		$admin->setListFields(array(
-							'id',
-							'name',
-							'active'
-		));
-		$admin->searchAll();
-		$admin->getSearch()->addActiveFilter();
-		$admin->getSearch()->setItemsPerPage($this->itemsPerPage);
-		$admin->listModel();
-	}
+    /**
+     * Lists procedures.
+     *
+     * @throws CHttpException
+     */
+    public function actionList()
+    {
+        $admin = new Admin(Benefit::model(), $this);
+        $admin->setListFields(array(
+                            'id',
+                            'name',
+                            'active',
+        ));
+        $admin->searchAll();
+        $admin->getSearch()->addActiveFilter();
+        $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
+        $admin->listModel();
+    }
 
-	/**
-	 * Edits or adds a Procedure
-	 *
-	 * @param bool|int $id
-	 * @throws CHttpException
-	 */
-	public function actionEdit($id = false)
-	{
-		$admin = new Admin(Benefit::model(), $this);
-		if($id){
-			$admin->setModelId($id);
-		}
-		$admin->setEditFields(array(
-			'name' => 'text',
-			'active' => 'checkbox'
-		));
-		$admin->editModel();
-	}
+    /**
+     * Edits or adds a Procedure.
+     *
+     * @param bool|int $id
+     *
+     * @throws CHttpException
+     */
+    public function actionEdit($id = false)
+    {
+        $admin = new Admin(Benefit::model(), $this);
+        if ($id) {
+            $admin->setModelId($id);
+        }
+        $admin->setEditFields(array(
+            'name' => 'text',
+            'active' => 'checkbox',
+        ));
+        $admin->editModel();
+    }
 
-	/**
-	 * Deletes rows for the model
-	 */
-	public function actionDelete()
-	{
-		$admin = new Admin(Benefit::model(), $this);
-		$admin->deleteModel();
-	}
+    /**
+     * Deletes rows for the model.
+     */
+    public function actionDelete()
+    {
+        $admin = new Admin(Benefit::model(), $this);
+        $admin->deleteModel();
+    }
 }

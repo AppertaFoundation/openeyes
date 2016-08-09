@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -38,7 +38,9 @@
 			<tr>
 				<th>Date</th>
 				<th>Diagnosis</th>
-				<?php if ($this->checkAccess('OprnEditOtherOphDiagnosis')) { ?><th>Actions</th><?php } ?>
+				<?php if ($this->checkAccess('OprnEditOtherOphDiagnosis')) { ?>
+					<th>Actions</th>
+				<?php } ?>
 			</tr>
 			</thead>
 			<tbody>
@@ -64,32 +66,32 @@
 			<div id="add_new_ophthalmic_diagnosis" style="display: none;">
 
 				<?php
-				$form = $this->beginWidget('FormLayout', array(
-					'id'=>'add-ophthalmic-diagnosis',
-					'enableAjaxValidation'=>false,
-					'action'=>array('patient/adddiagnosis'),
-					'layoutColumns'=>array(
-						'label' => 3,
-						'field' => 9
-					),
-					'htmlOptions'=>array(
-						'class' => 'form add-data'
-					)
-				))?>
+                $form = $this->beginWidget('FormLayout', array(
+                    'id' => 'add-ophthalmic-diagnosis',
+                    'enableAjaxValidation' => false,
+                    'action' => array('patient/adddiagnosis'),
+                    'layoutColumns' => array(
+                        'label' => 3,
+                        'field' => 9,
+                    ),
+                    'htmlOptions' => array(
+                        'class' => 'form add-data',
+                    ),
+                ))?>
 
 					<fieldset class="field-row">
 
 						<legend><strong>Add ophthalmic diagnosis</strong></legend>
 
-						<?php $form->widget('application.widgets.DiagnosisSelection',array(
-							'field' => 'ophthalmic_disorder_id',
-							'label' => 'Diagnosis',
-							'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
-							'code' => 130,
-							'default' => false,
-							'layout' => 'patientSummary',
-							'loader' => 'add_ophthalmic_diagnosis_loader',
-						))?>
+						<?php $form->widget('application.widgets.DiagnosisSelection', array(
+                            'field' => 'ophthalmic_disorder_id',
+                            'label' => 'Diagnosis',
+                            'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
+                            'code' => 130,
+                            'default' => false,
+                            'layout' => 'patientSummary',
+                            'loader' => 'add_ophthalmic_diagnosis_loader',
+                        ))?>
 
 						<div class="row field-row hide" id="add_ophthalmic_diagnosis_loader">
 							<p class="large-offset-<?php echo $form->layoutColumns['label'];?> large-<?php echo $form->layoutColumns['field'];?> column end">
@@ -105,15 +107,15 @@
 								Eye:
 							</legend>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php foreach (Eye::model()->findAll(array('order'=>'display_order')) as $i => $eye) {?>
+								<?php foreach (Eye::model()->findAll(array('order' => 'display_order')) as $i => $eye) {?>
 									<label class="inline">
-										<input type="radio" name="diagnosis_eye" class="diagnosis_eye" value="<?php echo $eye->id?>"<?php if ($i==0) {?> checked="checked"<?php }?> /> <?php echo $eye->name?>
+										<input type="radio" name="diagnosis_eye" class="diagnosis_eye" value="<?php echo $eye->id?>"<?php if ($i == 0) {?> checked="checked"<?php }?> /> <?php echo $eye->name?>
 									</label>
 								<?php }?>
 							</div>
 						</fieldset>
 
-						<?php $this->renderPartial('_fuzzy_date', array('form'=>$form, 'label' => 'Date diagnosed'))?>
+						<?php $this->renderPartial('_fuzzy_date', array('form' => $form, 'label' => 'Date diagnosed'))?>
 
 						<div class="ophthalmic_diagnoses_form_errors alert-box alert hide"></div>
 

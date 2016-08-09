@@ -15,7 +15,7 @@ class SettingUserTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new SettingUser;
+        $this->object = new SettingUser();
     }
 
     /**
@@ -28,6 +28,7 @@ class SettingUserTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SettingUser::model
+     *
      * @todo   Implement testModel().
      */
     public function testModel()
@@ -40,6 +41,7 @@ class SettingUserTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SettingUser::tableName
+     *
      * @todo   Implement testTableName().
      */
     public function testTableName()
@@ -52,6 +54,7 @@ class SettingUserTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SettingUser::rules
+     *
      * @todo   Implement testRules().
      */
     public function testRules()
@@ -64,6 +67,7 @@ class SettingUserTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SettingUser::relations
+     *
      * @todo   Implement testRelations().
      */
     public function testRelations()
@@ -76,6 +80,7 @@ class SettingUserTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SettingUser::attributeLabels
+     *
      * @todo   Implement testAttributeLabels().
      */
     public function testAttributeLabels()
@@ -88,6 +93,7 @@ class SettingUserTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SettingUser::search
+     *
      * @todo   Implement testSearch().
      */
     public function testSearch()

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,14 +9,13 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 ?>
 
 <div class="report-search">
@@ -26,7 +25,7 @@
             <div class="mdl-selectfield">
                 <label for="visual-acuity-months">Months Post Op</label>
                 <select name="months" id="visual-acuity-months" class="browser-default">
-                    <?php foreach(range(1,300) as $month): ?>
+                    <?php foreach (range(1, 300) as $month): ?>
                         <option value="<?=$month?>" <?=($month == 4) ? 'selected' : '' ?>><?=$month?></option>
                     <?php endforeach ?>
                 </select>
@@ -36,7 +35,7 @@
                 <select name="method" id="visual-acuity-methods" class="browser-default">
                     <option value="">All</option>
                     <option value="best" selected>Best Corrected</option>
-                    <?php foreach($methods as $method):?>
+                    <?php foreach ($methods as $method):?>
                     <option value="<?=$method['id']?>"><?=$method['name']?></option>
                     <?php endforeach;?>
                 </select>

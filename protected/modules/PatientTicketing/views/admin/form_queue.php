@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2014
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2014, OpenEyes Foundation
@@ -67,26 +67,26 @@
 			</div>
 		</fieldset>
 		<?php
-		$this->widget('application.widgets.MultiSelectList', array(
-			'element' => $queue,
-			'field' => 'event_types',
-			'relation' => 'event_type_assignments',
-			'relation_id_field' => 'event_type_id',
-			'options' => EventType::model()->getActiveList(),
-			'default_options' => array(),
-			'htmlOptions' => array(	
-				'label' => 'Event types',
-				'empty' => '- Select -',
-			),
-			'hidden' => false,
-			'inline' => false,
-			'noSelectionsMessage' => 'None',
-			'showRemoveAllLink' => false,
-			'layoutColumns' => array(
-				'label' => 3,
-				'field' => 8,
-			),
-			'sortable' => true,
-		))?>
+        $this->widget('application.widgets.MultiSelectList', array(
+            'element' => $queue,
+            'field' => 'event_types',
+            'relation' => 'event_type_assignments',
+            'relation_id_field' => 'event_type_id',
+            'options' => EventType::model()->getActiveList(),
+            'default_options' => array(),
+            'htmlOptions' => array(
+                'label' => 'Event types',
+                'empty' => '- Select -',
+            ),
+            'hidden' => false,
+            'inline' => false,
+            'noSelectionsMessage' => 'None',
+            'showRemoveAllLink' => false,
+            'layoutColumns' => array(
+                'label' => 3,
+                'field' => 8,
+            ),
+            'sortable' => true,
+        ))?>
 	</div>
 </form>

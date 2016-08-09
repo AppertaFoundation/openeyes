@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -22,11 +22,10 @@ namespace OEModule\OphCiExamination\models;
 /**
  * This is the model class for table "ophciexamination_attribute".
  *
- * @property integer $id
+ * @property int $id
  * @property string $name
  * @property string $label
  * @property OphCiExamination_AttributeElement[] $attribute_elements
-
  */
 class OphCiExamination_Attribute extends \BaseActiveRecordVersioned
 {
@@ -34,9 +33,10 @@ class OphCiExamination_Attribute extends \BaseActiveRecordVersioned
 
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return OphCiExamination_Attribute the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }
@@ -56,7 +56,7 @@ class OphCiExamination_Attribute extends \BaseActiveRecordVersioned
     {
         return array(
                 array('name', 'required'),
-                array('id, name, label', 'safe', 'on'=>'search'),
+                array('id, name, label', 'safe', 'on' => 'search'),
         );
     }
 
@@ -67,16 +67,18 @@ class OphCiExamination_Attribute extends \BaseActiveRecordVersioned
     {
         return array(
                 'attribute_elements_id' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_AttributeElement', 'attribute_id'),
-                'attribute_elements' => array(self::MANY_MANY, 'ElementType', 'ophciexamination_attribute_element(attribute_id,element_type_id)')
+                'attribute_elements' => array(self::MANY_MANY, 'ElementType', 'ophciexamination_attribute_element(attribute_id,element_type_id)'),
         );
     }
 
     /**
      * Fetches all the attributes for an element_type filtered by subspecialty
-     * Options are stashed in attribute_options property for easy iteration
-     * @param integer $element_type_id
-     * @param integer $subspecialty_id
-     * @param boolean $include_descendents
+     * Options are stashed in attribute_options property for easy iteration.
+     *
+     * @param int  $element_type_id
+     * @param int  $subspecialty_id
+     * @param bool $include_descendents
+     *
      * @return OphCiExamination_Attribute[]
      */
     public function findAllByElementAndSubspecialty($element_type_id, $subspecialty_id = null, $include_descendents = true)
@@ -120,6 +122,7 @@ class OphCiExamination_Attribute extends \BaseActiveRecordVersioned
             $attribute->attribute_options = array_values($attribute_options);
             $attributes[] = $attribute;
         }
+
         return $attributes;
     }
 
@@ -130,15 +133,17 @@ class OphCiExamination_Attribute extends \BaseActiveRecordVersioned
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
     {
-        $criteria= new \CDbCriteria;
+        $criteria = new \CDbCriteria();
         $criteria->compare('id', $this->id, true);
         $criteria->compare('name', $this->name, true);
+
         return new \CActiveDataProvider(get_class($this), array(
-                'criteria'=>$criteria,
+                'criteria' => $criteria,
         ));
     }
 
@@ -148,7 +153,7 @@ class OphCiExamination_Attribute extends \BaseActiveRecordVersioned
             'name' => 'Attribute Name',
             'label' => 'Attribute Label',
             'element_type.name' => 'Element Mapping',
-            'attribute_elements.name' => 'Element Mapping'
+            'attribute_elements.name' => 'Element Mapping',
         );
     }
 }

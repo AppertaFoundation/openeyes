@@ -15,7 +15,7 @@ class PreviousOperationTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new PreviousOperation;
+        $this->object = new PreviousOperation();
     }
 
     /**
@@ -28,6 +28,7 @@ class PreviousOperationTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers PreviousOperation::model
+     *
      * @todo   Implement testModel().
      */
     public function testModel()
@@ -40,6 +41,7 @@ class PreviousOperationTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers PreviousOperation::tableName
+     *
      * @todo   Implement testTableName().
      */
     public function testTableName()
@@ -52,6 +54,7 @@ class PreviousOperationTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers PreviousOperation::rules
+     *
      * @todo   Implement testRules().
      */
     public function testRules()
@@ -64,6 +67,7 @@ class PreviousOperationTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers PreviousOperation::relations
+     *
      * @todo   Implement testRelations().
      */
     public function testRelations()
@@ -76,6 +80,7 @@ class PreviousOperationTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers PreviousOperation::attributeLabels
+     *
      * @todo   Implement testAttributeLabels().
      */
     public function testAttributeLabels()
@@ -88,6 +93,7 @@ class PreviousOperationTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers PreviousOperation::search
+     *
      * @todo   Implement testSearch().
      */
     public function testSearch()
@@ -100,6 +106,7 @@ class PreviousOperationTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers PreviousOperation::getDateText
+     *
      * @todo   Implement testGetDateText().
      */
     public function testGetDateText()

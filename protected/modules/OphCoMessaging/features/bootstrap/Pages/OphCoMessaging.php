@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -8,13 +8,12 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 use Behat\Behat\Exception\BehaviorException;
 
 class OphCoMessaging extends OpenEyesPage
@@ -27,55 +26,55 @@ class OphCoMessaging extends OpenEyesPage
             'xpath' => "//div[contains(@class, 'alert-box') and contains(@class, 'error')]",
         ),
         'sidebar' => array(
-            'xpath' => "//div[contains(@class, 'panel') and contains(@class, 'specialty')]"
+            'xpath' => "//div[contains(@class, 'panel') and contains(@class, 'specialty')]",
         ),
         'newEventButton' => array(
-            'xpath' => "//button[contains(@class, 'addEvent') and contains(@class, 'enabled')]"
+            'xpath' => "//button[contains(@class, 'addEvent') and contains(@class, 'enabled')]",
         ),
         'newEventDialog' => array(
-            'xpath' => "//*[@id='add-new-event-dialog']"
+            'xpath' => "//*[@id='add-new-event-dialog']",
         ),
         'fao_search' => array(
-            'xpath' => "//input[@id='find-user']"
+            'xpath' => "//input[@id='find-user']",
         ),
         'selected_user_display' => array(
-            'xpath' => "//*[@id='fao_user_display']"
+            'xpath' => "//*[@id='fao_user_display']",
         ),
         'message_type' => array(
-            'xpath' => "//*[@id='OEModule_OphCoMessaging_models_Element_OphCoMessaging_Message_message_type_id']"
+            'xpath' => "//*[@id='OEModule_OphCoMessaging_models_Element_OphCoMessaging_Message_message_type_id']",
         ),
         'message_text' => array(
-            'xpath' => "//*[@id='OEModule_OphCoMessaging_models_Element_OphCoMessaging_Message_message_text']"
+            'xpath' => "//*[@id='OEModule_OphCoMessaging_models_Element_OphCoMessaging_Message_message_text']",
         ),
-        'save' => array (
-            'xpath' => "//*[@id='et_save']"
+        'save' => array(
+            'xpath' => "//*[@id='et_save']",
         ),
-        'edit' => array (
-            'xpath' => "//ul[contains(@class, 'event-actions')]//a[text()='Edit']"
+        'edit' => array(
+            'xpath' => "//ul[contains(@class, 'event-actions')]//a[text()='Edit']",
         ),
         'fao_display' => array(
-            'xpath' => "//section[contains(@class,'Element_OphCoMessaging_Message')]//div[@class='row data-row'][1]//div[contains(@class,'data-value')]"
+            'xpath' => "//section[contains(@class,'Element_OphCoMessaging_Message')]//div[@class='row data-row'][1]//div[contains(@class,'data-value')]",
         ),
         'message_type_display' => array(
-            'xpath' => "//section[contains(@class,'Element_OphCoMessaging_Message')]//div[@class='row data-row'][2]//div[contains(@class,'data-value')]"
+            'xpath' => "//section[contains(@class,'Element_OphCoMessaging_Message')]//div[@class='row data-row'][2]//div[contains(@class,'data-value')]",
         ),
         'message_text_display' => array(
-            'xpath' => "//section[contains(@class,'Element_OphCoMessaging_Message')]//div[@class='row data-row'][3]//div[contains(@class,'data-value')]"
+            'xpath' => "//section[contains(@class,'Element_OphCoMessaging_Message')]//div[@class='row data-row'][3]//div[contains(@class,'data-value')]",
         ),
         'logout' => array(
-            'xpath' => "//ul[contains(@class,'navigation')]//a[text()='Logout']"
+            'xpath' => "//ul[contains(@class,'navigation')]//a[text()='Logout']",
         ),
         'dashboard' => array(
-            'xpath' => "//div[@id='inbox-table']"
+            'xpath' => "//div[@id='inbox-table']",
         ),
         'latestEvent' => array(
-            'xpath' => "//*[@class='box patient-info episode-links']/a"
-        )
+            'xpath' => "//*[@class='box patient-info episode-links']/a",
+        ),
     );
 
     /**
      * This might be hideously brittle, but it will get the job done for now.
-     * Is here to support bookmarking
+     * Is here to support bookmarking.
      *
      * @return mixed
      */
@@ -84,7 +83,7 @@ class OphCoMessaging extends OpenEyesPage
         return $this->getDriver()->getMinkParameter('base_url');
     }
 
-    protected function assertEquals($expected, $check, $message = "Values do not match")
+    protected function assertEquals($expected, $check, $message = 'Values do not match')
     {
         if ($expected != $check) {
             throw new BehaviorException("{$check} is not equal to {$expected}. {$message}");
@@ -101,15 +100,17 @@ class OphCoMessaging extends OpenEyesPage
     /**
      * @TODO: update PatientContext in core with this method
      */
-    public function selectLatestEvent() {
-        $this->getElement ( 'latestEvent' )->click ();
-        $this->waitForTitle ( 'Episodes and events' );
+    public function selectLatestEvent()
+    {
+        $this->getElement('latestEvent')->click();
+        $this->waitForTitle('Episodes and events');
     }
 
     /**
-     * more pragramatic approach to expanding sidebar, which should be in core
+     * more pragramatic approach to expanding sidebar, which should be in core.
      *
      * @TODO: put in core
+     *
      * @param $subspecialty
      */
     public function expandSubspecialty($subspecialty)
@@ -126,23 +127,24 @@ class OphCoMessaging extends OpenEyesPage
 
         $element = $this->getElement($element_name);
         if (!$element->isVisible()) {
-            $section_expander_xpath = $this->elements[$element_name]['xpath'] . '/ancestor::section//span[contains(@class, \'icon-showhide\')]';
+            $section_expander_xpath = $this->elements[$element_name]['xpath'].'/ancestor::section//span[contains(@class, \'icon-showhide\')]';
             $this->getElement('sidebar')->find('xpath', $section_expander_xpath)->click();
         }
 
         $element->click();
-
     }
 
     /**
-     * Create a new event of the given name
+     * Create a new event of the given name.
      *
      * @TODO: put in core
+     *
      * @param $subspecialty
      * @param string $event_name
+     *
      * @throws BehaviorException
      */
-    public function addNewEvent($subspecialty, $event_name = "Message")
+    public function addNewEvent($subspecialty, $event_name = 'Message')
     {
         $this->expandSubspecialty($subspecialty);
         $this->getDriver()->wait(5000, 'window.$ && $.active ==0');
@@ -150,14 +152,13 @@ class OphCoMessaging extends OpenEyesPage
         $this->getDriver()->wait(5000, 'window.$ && $.active ==0');
         if ($new_event_link = $this->getElement('newEventDialog')->find('xpath', "//*[contains(text(), '{$event_name}')]")) {
             $new_event_link->click();
-        }
-        else {
+        } else {
             throw new BehaviorException("new event link for {$event_name} not found.");
         }
     }
 
     /**
-     * Search for a user in the FAO field
+     * Search for a user in the FAO field.
      *
      * @param $search_term
      */
@@ -167,19 +168,18 @@ class OphCoMessaging extends OpenEyesPage
         $field->focus();
         $field->setValue($search_term);
         $field->keyDown(40);
-
     }
 
     /**
      * Crude selection of the autocomplete results (searching by text value is awkward because of span
-     * highlighting for the match)
+     * highlighting for the match).
      *
      * @TODO: improve autocomplete results so can select by attribute of the term?
+     *
      * @param $index
      */
     public function selectAutoCompleteOptionByIndex($index)
     {
-
         $this->getDriver()->wait(5000, 'window.$ && $.active ==0');
         $auto_results = $this->findAll('xpath', "//ul[contains(@class,'ui-autocomplete')]//li");
         $auto_results[$index]->click();
@@ -187,6 +187,7 @@ class OphCoMessaging extends OpenEyesPage
 
     /**
      * @param $username
+     *
      * @throws BehaviorException
      */
     public function selectedUserIs($username)
@@ -196,6 +197,7 @@ class OphCoMessaging extends OpenEyesPage
 
     /**
      * @param $type
+     *
      * @throws \Behat\Mink\Exception\ElementNotFoundException
      */
     public function selectMessageType($type)
@@ -210,37 +212,42 @@ class OphCoMessaging extends OpenEyesPage
 
     /**
      * @TODO: move to core
+     *
      * @return bool
      */
     protected function hasEventSaved()
     {
-        return ( bool ) $this->find ( 'xpath', $this->savedSuccessXpath );
+        return (bool) $this->find('xpath', $this->savedSuccessXpath);
     }
 
     /**
-     * This should be the same behaviour for every OE page
+     * This should be the same behaviour for every OE page.
+     *
      * @TODO: move to core
      */
-    public function saveEvent() {
-        $this->getElement ( 'save' )->click ();
+    public function saveEvent()
+    {
+        $this->getElement('save')->click();
     }
 
     /**
      * @TODO: move into core as basic behaviour for all events
+     *
      * @throws BehaviorException
      */
     public function saveAndConfirm()
     {
         // this resizing should be abstracted/configurable. Think it applies when running headless primarily
-        $this->getDriver()->resizeWindow(1280,800);
+        $this->getDriver()->resizeWindow(1280, 800);
         $this->saveEvent();
         if (!$this->hasEventSaved()) {
-            throw new BehaviorException("Event not saved");
+            throw new BehaviorException('Event not saved');
         }
     }
 
     /**
      * @param $fao
+     *
      * @throws BehaviorException
      */
     public function checkDisplayFaoIs($fao)
@@ -250,6 +257,7 @@ class OphCoMessaging extends OpenEyesPage
 
     /**
      * @param $type
+     *
      * @throws BehaviorException
      */
     public function checkDisplayTypeIs($type)
@@ -259,6 +267,7 @@ class OphCoMessaging extends OpenEyesPage
 
     /**
      * @param $message
+     *
      * @throws BehaviorException
      */
     public function checkDisplayMessageIs($message)
@@ -274,7 +283,7 @@ class OphCoMessaging extends OpenEyesPage
     public function checkNoUserSearchAvailable()
     {
         if ($this->getElement('fao_search')->isValid()) {
-            throw new BehaviorException("FAO search still visible");
+            throw new BehaviorException('FAO search still visible');
         }
     }
 
@@ -294,9 +303,10 @@ class OphCoMessaging extends OpenEyesPage
 
     /**
      * @param bool $remove_base
+     *
      * @return mixed|string
      */
-    public function getCurrentUrl($remove_base=true)
+    public function getCurrentUrl($remove_base = true)
     {
         return $remove_base ?
             str_replace($this->getParameter('base_url'), '', $this->getDriver()->getCurrentUrl())
@@ -305,18 +315,19 @@ class OphCoMessaging extends OpenEyesPage
 
     /**
      * @param $url
+     *
      * @return \Behat\Mink\Element\NodeElement|mixed|null
      */
     public function getLinkElementForUrl($url)
     {
         // use substring here because ends-with is only available in xpath 2.0
         // and we want to check the end of the URL to match on both full links as well as links without the domain
-        return $this->find('xpath',"//a[substring(@href, string-length(@href) - string-length('{$url}') + 1) = '{$url}']");
-
+        return $this->find('xpath', "//a[substring(@href, string-length(@href) - string-length('{$url}') + 1) = '{$url}']");
     }
 
     /**
      * @param $name
+     *
      * @throws BehaviorException
      */
     public function checkForLinkToUrl($url)
@@ -333,7 +344,7 @@ class OphCoMessaging extends OpenEyesPage
     {
         $db = $this->getElement('dashboard');
         if (!$db->findAll('xpath', '//tbody//tr')) {
-            throw new BehaviorException("No messages in dashboard");
+            throw new BehaviorException('No messages in dashboard');
         }
     }
 }

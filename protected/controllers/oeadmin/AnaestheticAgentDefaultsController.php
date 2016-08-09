@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2012
@@ -10,8 +10,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
@@ -19,155 +19,151 @@
  */
 class AnaestheticAgentDefaultsController extends BaseAdminController
 {
+    public function actionList()
+    {
+        $admin = new AdminListAutocomplete(SiteSubspecialtyAnaestheticAgentDefault::model(), $this);
 
-	public function actionList()
-	{
-		$admin = new AdminListAutocomplete(SiteSubspecialtyAnaestheticAgentDefault::model(), $this);
+        $admin->setListFields(array(
+            'id',
+            'agents.name',
+        ));
 
-		$admin->setListFields(array(
-			'id',
-			'agents.name'
-		));
+        $admin->setCustomDeleteURL('/oeadmin/AnaestheticAgentDefaults/delete');
+        $admin->setCustomSaveURL('/oeadmin/AnaestheticAgentDefaults/add');
+        $admin->setModelDisplayName('Operation Note Anaesthetic Agent Defaults');
+        $admin->setFilterFields(
+            array(
+                array(
+                    'label' => 'Site',
+                    'dropDownName' => 'site_id',
+                    'defaultValue' => Yii::app()->session['selected_site_id'],
+                    'listModel' => Site::model(),
+                    'listIdField' => 'id',
+                    'listDisplayField' => 'short_name',
+                ),
+                array(
+                    'label' => 'Subspecialty',
+                    'dropDownName' => 'subspecialty_id',
+                    'defaultValue' => Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id,
+                    'listModel' => Subspecialty::model(),
+                    'listIdField' => 'id',
+                    'listDisplayField' => 'name',
+                ),
+            )
+        );
 
-		$admin->setCustomDeleteURL('/oeadmin/AnaestheticAgentDefaults/delete');
-		$admin->setCustomSaveURL('/oeadmin/AnaestheticAgentDefaults/add');
-		$admin->setModelDisplayName('Operation Note Anaesthetic Agent Defaults');
-		$admin->setFilterFields(
-			array(
-				array(
-					'label' => 'Site',
-					'dropDownName' => 'site_id',
-					'defaultValue' => Yii::app()->session['selected_site_id'],
-					'listModel' => Site::model(),
-					'listIdField' => 'id',
-					'listDisplayField' => 'short_name'
-				),
-				array(
-					'label' => 'Subspecialty',
-					'dropDownName' => 'subspecialty_id',
-					'defaultValue' => Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id,
-					'listModel' => Subspecialty::model(),
-					'listIdField' => 'id',
-					'listDisplayField' => 'name'
-				)
-			)
-		);
+        // we set default search options
+        if ($this->request->getParam('search') == '') {
+            $admin->getSearch()->initSearch(array(
+                    'filterid' => array(
+                            'subspecialty_id' => Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id,
+                            'site_id' => Yii::app()->session['selected_site_id'],
+                        ),
+                )
+            );
+        }
 
-		// we set default search options
-		if ($this->request->getParam('search') == '') {
-			$admin->getSearch()->initSearch(array(
-					'filterid' =>
-						array(
-							'subspecialty_id' => Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id,
-							'site_id' => Yii::app()->session['selected_site_id']
-						)
-				)
-			);
-		}
+        $admin->setAutocompleteField(
+            array(
+                'fieldName' => 'anaesthetic_agent_id',
+                'allowBlankSearch' => 1,
+                'jsonURL' => '/oeadmin/AnaestheticAgentDefaults/search',
+                'placeholder' => 'search for adding anaesthetic agent',
+            )
+        );
+        //$admin->searchAll();
+        $admin->listModel();
+    }
 
-		$admin->setAutocompleteField(
-			array(
-				'fieldName' => 'anaesthetic_agent_id',
-				'allowBlankSearch' => 1,
-				'jsonURL' => '/oeadmin/AnaestheticAgentDefaults/search',
-				'placeholder' => 'search for adding anaesthetic agent'
-			)
-		);
-		//$admin->searchAll();
-		$admin->listModel();
-	}
+    public function actionDelete($itemId)
+    {
+        /*
+        * We make sure to not allow deleting directly with the URL, user must come from the commondrugs list page
+        */
+        if (!Yii::app()->request->isAjaxRequest) {
+            $this->render('errorpage', array('errorMessage' => 'notajaxcall'));
+        } else {
+            if ($leafletSubspecialy = SiteSubspecialtyAnaestheticAgentDefault::model()->findByPk($itemId)) {
+                $leafletSubspecialy->delete();
+                echo 'success';
+            } else {
+                $this->render('errorpage', array('errormessage' => 'recordmissing'));
+            }
+        }
+    }
 
-	public function actionDelete($itemId)
-	{
-		/*
- 		* We make sure to not allow deleting directly with the URL, user must come from the commondrugs list page
- 		*/
-		if (!Yii::app()->request->isAjaxRequest) {
-			$this->render("errorpage", array("errorMessage" => "notajaxcall"));
-		} else {
-			if ($leafletSubspecialy = SiteSubspecialtyAnaestheticAgentDefault::model()->findByPk($itemId)) {
-				$leafletSubspecialy->delete();
-				echo "success";
-			} else {
-				$this->render("errorpage", array("errormessage" => "recordmissing"));
-			}
-		}
+    public function actionAdd()
+    {
+        $subspecialtyId = $this->request->getParam('subspecialty_id');
+        $siteId = $this->request->getParam('site_id');
+        $anaestheticAgentId = $this->request->getParam('anaesthetic_agent_id');
+        if (!Yii::app()->request->isAjaxRequest) {
+            $this->render('errorpage', array('errormessage' => 'notajaxcall'));
+        } else {
+            if (!is_numeric($subspecialtyId) || !is_numeric($siteId) || !is_numeric($anaestheticAgentId)) {
+                echo 'error';
+            } else {
+                $newSSAAD = new SiteSubspecialtyAnaestheticAgentDefault();
+                $newSSAAD->subspecialty_id = $subspecialtyId;
+                $newSSAAD->site_id = $siteId;
+                $newSSAAD->anaesthetic_agent_id = $anaestheticAgentId;
+                if ($newSSAAD->save()) {
+                    // If an agent is selected that is not in the site_subspecialy_anaesthetic_agent table,
+                    // then the selected agent should automatically be added to that table as well
+                    $criteria = new CDbCriteria();
+                    $criteria->condition = 'anaesthetic_agent_id=:anaesthetic_agent_id AND site_id=:site_id AND subspecialty_id=:subspecialty_id';
+                    $criteria->params = array(
+                        ':anaesthetic_agent_id' => $anaestheticAgentId,
+                        ':site_id' => $siteId,
+                        ':subspecialty_id' => $subspecialtyId,
+                    );
+                    $currentSSAA = SiteSubspecialtyAnaestheticAgent::model()->findall($criteria);
+                    if (!$currentSSAA) {
+                        $newSSAA = new SiteSubspecialtyAnaestheticAgent();
+                        $newSSAA->subspecialty_id = $subspecialtyId;
+                        $newSSAA->site_id = $siteId;
+                        $newSSAA->anaesthetic_agent_id = $anaestheticAgentId;
+                        if ($newSSAA->save()) {
+                            echo 'success added to SSAA';
+                        } else {
+                            echo 'error';
+                        }
+                    } else {
+                        echo 'success';
+                    }
+                } else {
+                    echo 'error';
+                }
+            }
+        }
+    }
 
-	}
+    public function actionSearch()
+    {
+        if (Yii::app()->request->isAjaxRequest) {
+            $criteria = new CDbCriteria();
+            if (isset($_GET['term'])) {
+                $term = $_GET['term'];
+                $criteria->addCondition(array('LOWER(name) LIKE :term'),
+                    'OR');
+                $params[':term'] = '%'.strtolower(strtr($term, array('%' => '\%'))).'%';
+            }
 
-	public function actionAdd()
-	{
-		$subspecialtyId = $this->request->getParam("subspecialty_id");
-		$siteId = $this->request->getParam("site_id");
-		$anaestheticAgentId = $this->request->getParam("anaesthetic_agent_id");
-		if (!Yii::app()->request->isAjaxRequest) {
-			$this->render("errorpage", array("errormessage" => "notajaxcall"));
-		} else {
-			if (!is_numeric($subspecialtyId) || !is_numeric($siteId) || !is_numeric($anaestheticAgentId)) {
-				echo "error";
-			} else {
-				$newSSAAD = new SiteSubspecialtyAnaestheticAgentDefault();
-				$newSSAAD->subspecialty_id = $subspecialtyId;
-				$newSSAAD->site_id = $siteId;
-				$newSSAAD->anaesthetic_agent_id = $anaestheticAgentId;
-				if ($newSSAAD->save()) {
-					// If an agent is selected that is not in the site_subspecialy_anaesthetic_agent table,
-					// then the selected agent should automatically be added to that table as well
-					$criteria = new CDbCriteria();
-					$criteria->condition = 'anaesthetic_agent_id=:anaesthetic_agent_id AND site_id=:site_id AND subspecialty_id=:subspecialty_id';
-					$criteria->params = array(
-						':anaesthetic_agent_id' => $anaestheticAgentId,
-						':site_id' => $siteId,
-						':subspecialty_id' => $subspecialtyId
-					);
-					$currentSSAA = SiteSubspecialtyAnaestheticAgent::model()->findall($criteria);
-					if (!$currentSSAA) {
-						$newSSAA = new SiteSubspecialtyAnaestheticAgent();
-						$newSSAA->subspecialty_id = $subspecialtyId;
-						$newSSAA->site_id = $siteId;
-						$newSSAA->anaesthetic_agent_id = $anaestheticAgentId;
-						if ($newSSAA->save()) {
-							echo "success added to SSAA";
-						} else {
-							echo "error";
-						}
-					} else {
-						echo "success";
-					}
-				} else {
-					echo "error";
-				}
+            $criteria->order = 'name';
+            $criteria->select = 'id, name';
+            $criteria->params = $params;
 
-			}
-		}
-	}
+            $results = AnaestheticAgent::model()->active()->findAll($criteria);
 
-	public function actionSearch()
-	{
-		if (Yii::app()->request->isAjaxRequest) {
-			$criteria = new CDbCriteria();
-			if (isset($_GET['term'])) {
-				$term = $_GET['term'];
-				$criteria->addCondition(array('LOWER(name) LIKE :term'),
-					'OR');
-				$params[':term'] = '%' . strtolower(strtr($term, array('%' => '\%'))) . '%';
-			}
-
-			$criteria->order = 'name';
-			$criteria->select = 'id, name';
-			$criteria->params = $params;
-
-			$results = AnaestheticAgent::model()->active()->findAll($criteria);
-
-			$return = array();
-			foreach ($results as $resultRow) {
-				$return[] = array(
-					'label' => $resultRow->name,
-					'value' => $resultRow->name,
-					'id' => $resultRow->id,
-				);
-			}
-			echo CJSON::encode($return);
-		}
-	}
+            $return = array();
+            foreach ($results as $resultRow) {
+                $return[] = array(
+                    'label' => $resultRow->name,
+                    'value' => $resultRow->name,
+                    'id' => $resultRow->id,
+                );
+            }
+            echo CJSON::encode($return);
+        }
+    }
 }

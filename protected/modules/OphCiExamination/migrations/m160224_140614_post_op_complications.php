@@ -2,7 +2,6 @@
 
 class m160224_140614_post_op_complications extends OEMigration
 {
-
     public function safeUp()
     {
         $this->createOETable(
@@ -12,7 +11,7 @@ class m160224_140614_post_op_complications extends OEMigration
                 'code' => 'SMALLINT(4) UNSIGNED',
                 'name' => 'VARCHAR(64) NOT NULL',
                 'display_order' => 'TINYINT(3) UNSIGNED NOT NULL',
-                'active' => 'TINYINT(1) NOT NULL DEFAULT 1'
+                'active' => 'TINYINT(1) NOT NULL DEFAULT 1',
             ),
             true
         );
@@ -178,12 +177,11 @@ class m160224_140614_post_op_complications extends OEMigration
                 'eye_id' => 'INT(10) UNSIGNED NOT NULL DEFAULT 3',
                 'operation_note_id' => 'INT(10) UNSIGNED NOT NULL',
             ),
-            true 
+            true
         );
         $this->addForeignKey('ophciexamination_postop_et_complications_eye_id_fk', 'ophciexamination_postop_et_complications', 'eye_id', 'eye', 'id');
         $this->addForeignKey('ophciexamination_postop_et_complications_et_fk',  'ophciexamination_postop_et_complications', 'element_id', 'et_ophciexamination_postop_complications', 'id');
         $this->addForeignKey('ophciexamination_postop_et_complications_co_fk',  'ophciexamination_postop_et_complications', 'complication_id', 'ophciexamination_postop_complications', 'id');
-
 
         $this->createOETable(
             'ophciexamination_postop_complications_subspecialty',
@@ -200,16 +198,15 @@ class m160224_140614_post_op_complications extends OEMigration
         $this->addForeignKey('ophciexamination_postop_complications_complicat_c_fk', 'ophciexamination_postop_complications_subspecialty', 'complication_id', 'ophciexamination_postop_complications', 'id');
         $this->addForeignKey('ophciexamination_postop_complications_subspecialty_c_fk', 'ophciexamination_postop_complications_subspecialty', 'subspecialty_id', 'subspecialty', 'id');
 
-         $commonComplicationElement = array(
+        $commonComplicationElement = array(
             'name' => 'Post-Op Complications',
             'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_PostOpComplications',
             'event_type_id' => 27,
             'display_order' => 120,
             'default' => 1,
-            'required' => 0
+            'required' => 0,
         );
         $this->insert('element_type', $commonComplicationElement);
-
     }
 
     public function safeDown()
@@ -219,9 +216,7 @@ class m160224_140614_post_op_complications extends OEMigration
         $this->dropOETable('ophciexamination_postop_complications', true);
         $this->dropOETable('et_ophciexamination_postop_complications', true);
 
-
         $where = "name = 'Post-Op Complications'";
         $this->delete('element_type', $where);
     }
-
 }

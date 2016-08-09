@@ -1,5 +1,6 @@
-<?php /**
- * OpenEyes
+<?php
+/**
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -8,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -20,22 +21,21 @@
  * This is the model class for table "ophinbiometry_imported_events".
  *
  * The followings are the available columns in table:
+ *
  * @property string $id
  * @property string
  *
  * The followings are the available model relations:
- *
  * @property Event $event
  * @property User $user
  * @property User $usermodified
  * @property Patient $patient
  */
-
 class OphInBiometry_Imported_Events extends BaseActiveRecord
 {
-
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return the static model class
      */
     public static function model($className = __CLASS__)
@@ -96,4 +96,3 @@ class OphInBiometry_Imported_Events extends BaseActiveRecord
         );
     }
 }
-?>

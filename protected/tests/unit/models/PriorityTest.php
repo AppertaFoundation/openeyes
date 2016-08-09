@@ -15,7 +15,7 @@ class PriorityTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new Priority;
+        $this->object = new Priority();
     }
 
     /**
@@ -28,6 +28,7 @@ class PriorityTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Priority::model
+     *
      * @todo   Implement testModel().
      */
     public function testModel()
@@ -40,6 +41,7 @@ class PriorityTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Priority::tableName
+     *
      * @todo   Implement testTableName().
      */
     public function testTableName()
@@ -52,6 +54,7 @@ class PriorityTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Priority::rules
+     *
      * @todo   Implement testRules().
      */
     public function testRules()
@@ -64,6 +67,7 @@ class PriorityTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Priority::relations
+     *
      * @todo   Implement testRelations().
      */
     public function testRelations()

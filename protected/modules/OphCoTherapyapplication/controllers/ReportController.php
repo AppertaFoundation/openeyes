@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2012
@@ -10,8 +10,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
@@ -27,42 +27,43 @@ class ReportController extends BaseReportController
             array('allow',
                 'actions' => array('applications', 'pendingApplications'),
                 'roles' => array('OprnGenerateReport', 'admin'),
-            )
+            ),
         );
     }
 
     protected function array2Csv(array $data)
     {
         if (count($data) == 0) {
-            return null;
+            return;
         }
         ob_start();
-        $df = fopen("php://output", 'w');
+        $df = fopen('php://output', 'w');
         fputcsv($df, array_keys(reset($data)));
         foreach ($data as $row) {
             fputcsv($df, $row);
         }
         fclose($df);
+
         return ob_get_clean();
     }
 
     protected function sendCsvHeaders($filename)
     {
-        header("Content-type: text/csv");
+        header('Content-type: text/csv');
         header("Content-Disposition: attachment; filename=$filename");
-        header("Pragma: no-cache");
-        header("Expires: 0");
+        header('Pragma: no-cache');
+        header('Expires: 0');
     }
 
     public function actionApplications()
     {
-        $date_from = date(Helper::NHS_DATE_FORMAT, strtotime("-1 year"));
+        $date_from = date(Helper::NHS_DATE_FORMAT, strtotime('-1 year'));
         $date_to = date(Helper::NHS_DATE_FORMAT);
         if (isset($_GET['yt0'])) {
             $firm = null;
 
-            if (@$_GET['firm_id'] && (int)$_GET['firm_id']) {
-                $firm_id = (int)$_GET['firm_id'];
+            if (@$_GET['firm_id'] && (int) $_GET['firm_id']) {
+                $firm_id = (int) $_GET['firm_id'];
                 if (!$firm = Firm::model()->findByPk($firm_id)) {
                     throw new CException("Unknown firm $firm_id");
                 }
@@ -76,7 +77,7 @@ class ReportController extends BaseReportController
 
             $results = $this->getApplications($date_from, $date_to, $firm);
 
-            $filename = 'therapyapplication_report_' . date('YmdHis') . '.csv';
+            $filename = 'therapyapplication_report_'.date('YmdHis').'.csv';
             $this->sendCsvHeaders($filename);
 
             echo $this->array2Csv($results);
@@ -101,25 +102,25 @@ class ReportController extends BaseReportController
 						firm.name as firm_name, concat(uc.first_name, ' ', uc.last_name) as created_user,
 						ps.left_treatment_id, ps.right_treatment_id, ps.left_nice_compliance, ps.right_nice_compliance"
             )
-            ->from("et_ophcotherapya_therapydiag diag")
-            ->join("event e", "e.id = diag.event_id")
-            ->join("user u", "u.id = e.created_user_id")
-            ->join("contact uc", "uc.id = u.contact_id")
-            ->join("episode ep", "e.episode_id = ep.id")
-            ->join("patient p", "ep.patient_id = p.id")
-            ->join("contact c", "p.contact_id = c.id")
-            ->join("eye", "eye.id = diag.eye_id")
-            ->join("et_ophcotherapya_mrservicein mrinfo", "mrinfo.event_id = diag.event_id")
-            ->leftJoin("site", "mrinfo.site_id = site.id")// in earlier instances of therapy application, site was not set
-            ->join("firm", "mrinfo.consultant_id = firm.id")
-            ->join("et_ophcotherapya_patientsuit ps", "diag.event_id = ps.event_id")
-            ->where("e.deleted = 0 and ep.deleted = 0 and e.created_date >= :from_date and e.created_date < (:to_date + interval 1 day)")
-            ->order("e.created_date asc");
+            ->from('et_ophcotherapya_therapydiag diag')
+            ->join('event e', 'e.id = diag.event_id')
+            ->join('user u', 'u.id = e.created_user_id')
+            ->join('contact uc', 'uc.id = u.contact_id')
+            ->join('episode ep', 'e.episode_id = ep.id')
+            ->join('patient p', 'ep.patient_id = p.id')
+            ->join('contact c', 'p.contact_id = c.id')
+            ->join('eye', 'eye.id = diag.eye_id')
+            ->join('et_ophcotherapya_mrservicein mrinfo', 'mrinfo.event_id = diag.event_id')
+            ->leftJoin('site', 'mrinfo.site_id = site.id')// in earlier instances of therapy application, site was not set
+            ->join('firm', 'mrinfo.consultant_id = firm.id')
+            ->join('et_ophcotherapya_patientsuit ps', 'diag.event_id = ps.event_id')
+            ->where('e.deleted = 0 and ep.deleted = 0 and e.created_date >= :from_date and e.created_date < (:to_date + interval 1 day)')
+            ->order('e.created_date asc');
         $params = array(':from_date' => $date_from, ':to_date' => $date_to);
 
         if ($firm) {
             $command->andWhere(
-                "(mrinfo.consultant_id = :consultant_id)"
+                '(mrinfo.consultant_id = :consultant_id)'
             );
             $params[':consultant_id'] = $firm->id;
         }
@@ -128,16 +129,16 @@ class ReportController extends BaseReportController
         $cache = array();
         foreach ($command->queryAll(true, $params) as $row) {
             $record = array(
-                "application_date" => date('j M Y', strtotime($row['created_date'])),
-                "patient_hosnum" => $row['hos_num'],
-                "patient_firstname" => $row['first_name'],
-                "patient_surname" => $row['last_name'],
-                "patient_gender" => $row['gender'],
-                "patient_dob" => date('j M Y', strtotime($row['dob'])),
-                "eye" => $row['eye'],
-                "site_name" => ($row['site_name']) ? $row['site_name'] : 'N/A',
-                "consultant" => $row['firm_name'],
-                "created_user" => $row['created_user'],
+                'application_date' => date('j M Y', strtotime($row['created_date'])),
+                'patient_hosnum' => $row['hos_num'],
+                'patient_firstname' => $row['first_name'],
+                'patient_surname' => $row['last_name'],
+                'patient_gender' => $row['gender'],
+                'patient_dob' => date('j M Y', strtotime($row['dob'])),
+                'eye' => $row['eye'],
+                'site_name' => ($row['site_name']) ? $row['site_name'] : 'N/A',
+                'consultant' => $row['firm_name'],
+                'created_user' => $row['created_user'],
                 'left_diagnosis' => $this->getDiagnosisString($row['left_diagnosis1_id']),
                 'left_secondary_to' => $this->getDiagnosisString($row['left_diagnosis2_id']),
                 'right_diagnosis' => $this->getDiagnosisString($row['right_diagnosis1_id']),
@@ -158,16 +159,17 @@ class ReportController extends BaseReportController
     }
 
     /**
-     * Get the compliance string for the given side on the data $row
+     * Get the compliance string for the given side on the data $row.
      *
      * @param $side
      * @param $row
+     *
      * @return string
      */
     protected function sideCompliance($side, $row)
     {
-        if ($row[$side . '_treatment_id']) {
-            return $row[$side . '_nice_compliance'] ? "Y" : "N";
+        if ($row[$side.'_treatment_id']) {
+            return $row[$side.'_nice_compliance'] ? 'Y' : 'N';
         } else {
             return 'N/A';
         }
@@ -177,6 +179,7 @@ class ReportController extends BaseReportController
 
     /**
      * @param $diagnosis_id
+     *
      * @return string
      */
     protected function getDiagnosisString($diagnosis_id)
@@ -189,7 +192,7 @@ class ReportController extends BaseReportController
             if ($disorder) {
                 $this->_diagnosis_cache[$diagnosis_id] = $disorder->term;
             } else {
-                $this->_diagnosis_cache[$diagnosis_id] = "REMOVED DISORDER";
+                $this->_diagnosis_cache[$diagnosis_id] = 'REMOVED DISORDER';
             }
         }
 
@@ -203,30 +206,32 @@ class ReportController extends BaseReportController
         if (!@$this->_treatment_cache[$treatment_id]) {
             $this->_treatment_cache[$treatment_id] = OphCoTherapyapplication_Treatment::model()->findByPk($treatment_id);
         }
+
         return $this->_treatment_cache[$treatment_id];
     }
 
     /**
      * @param $treatment_id
+     *
      * @return string
      */
     protected function getTreatmentString($treatment_id)
     {
         if (!$treatment_id) {
-            return "N/A";
+            return 'N/A';
         }
         if ($treatment = $this->getTreatment($treatment_id)) {
             return $treatment->getName();
         }
 
-        return "REMOVED TREATMENT";
+        return 'REMOVED TREATMENT';
     }
 
     /**
-     * Appends information about the submission of the application to the $record
+     * Appends information about the submission of the application to the $record.
      *
      * @param array $record
-     * @param integer $event_id
+     * @param int   $event_id
      */
     protected function appendSubmissionValues(&$record, $event_id)
     {
@@ -262,9 +267,9 @@ class ReportController extends BaseReportController
             foreach (array('left', 'right') as $side) {
                 #initialise columns
                 foreach ($last_columns as $col) {
-                    $record[$side . '_' . $col] = 'N/A';
+                    $record[$side.'_'.$col] = 'N/A';
                 }
-                if ($treatment_id = ${$side . '_treatment_id'}) {
+                if ($treatment_id = ${$side.'_treatment_id'}) {
                     $treatment = $this->getTreatment($treatment_id);
                     if (!$treatment || !$treatment->drug_id) {
                         continue;
@@ -272,14 +277,14 @@ class ReportController extends BaseReportController
 
                     $command = Yii::app()->db->createCommand()
                         ->select(
-                            "treat." . $side . "_number as last_injection_number, treat.created_date as last_injection_date, site.name as last_injection_site"
+                            'treat.'.$side.'_number as last_injection_number, treat.created_date as last_injection_date, site.name as last_injection_site'
                         )
-                        ->from("et_ophtrintravitinjection_treatment treat")
-                        ->join("et_ophtrintravitinjection_site insite", "insite.event_id = treat.event_id")
-                        ->join("site", "insite.site_id = site.id")
-                        ->join("event e", "e.id = treat.event_id")
-                        ->join("episode ep", "e.episode_id = ep.id")
-                        ->where("e.deleted = 0 and ep.deleted = 0 and ep.patient_id = :patient_id and treat." . $side . "_drug_id = :drug_id",
+                        ->from('et_ophtrintravitinjection_treatment treat')
+                        ->join('et_ophtrintravitinjection_site insite', 'insite.event_id = treat.event_id')
+                        ->join('site', 'insite.site_id = site.id')
+                        ->join('event e', 'e.id = treat.event_id')
+                        ->join('episode ep', 'e.episode_id = ep.id')
+                        ->where('e.deleted = 0 and ep.deleted = 0 and ep.patient_id = :patient_id and treat.'.$side.'_drug_id = :drug_id',
                             array(':patient_id' => $patient_id, ':drug_id' => $treatment->drug_id)
                         )
                         ->order('treat.created_date desc')
@@ -288,18 +293,17 @@ class ReportController extends BaseReportController
                     $res = $command->queryRow();
                     if ($res) {
                         foreach ($last_columns as $col) {
-                            $record[$side . '_' . $col] = Helper::convertMySQL2NHS($res[$col], $res[$col]);
+                            $record[$side.'_'.$col] = Helper::convertMySQL2NHS($res[$col], $res[$col]);
                         }
                     }
-
                 }
             }
         }
         if (@$_GET['last_injection']) {
             foreach (array('left', 'right') as $side) {
-                $record[$side . '_first_injection_date'] = 'N/A';
+                $record[$side.'_first_injection_date'] = 'N/A';
 
-                if ($treatment_id = ${$side . '_treatment_id'}) {
+                if ($treatment_id = ${$side.'_treatment_id'}) {
                     $treatment = $this->getTreatment($treatment_id);
                     if (!$treatment || !$treatment->drug_id) {
                         continue;
@@ -307,12 +311,12 @@ class ReportController extends BaseReportController
 
                     $command = Yii::app()->db->createCommand()
                         ->select(
-                            "treat.created_date as first_injection_date"
+                            'treat.created_date as first_injection_date'
                         )
-                        ->from("et_ophtrintravitinjection_treatment treat")
-                        ->join("event e", "e.id = treat.event_id")
-                        ->join("episode ep", "e.episode_id = ep.id")
-                        ->where("e.deleted = 0 and ep.deleted = 0 and ep.patient_id = :patient_id and treat." . $side . "_drug_id = :drug_id",
+                        ->from('et_ophtrintravitinjection_treatment treat')
+                        ->join('event e', 'e.id = treat.event_id')
+                        ->join('episode ep', 'e.episode_id = ep.id')
+                        ->where('e.deleted = 0 and ep.deleted = 0 and ep.patient_id = :patient_id and treat.'.$side.'_drug_id = :drug_id',
                             array(':patient_id' => $patient_id, ':drug_id' => $treatment->drug_id)
                         )
                         ->order('treat.created_date asc')
@@ -320,12 +324,10 @@ class ReportController extends BaseReportController
 
                     $res = $command->queryRow();
                     if ($res) {
-                        $record[$side . '_first_injection_date'] = Helper::convertMySQL2NHS($res['first_injection_date']);
+                        $record[$side.'_first_injection_date'] = Helper::convertMySQL2NHS($res['first_injection_date']);
                     }
-
                 }
             }
-
         }
     }
 
@@ -333,13 +335,11 @@ class ReportController extends BaseReportController
     {
         $sent = false;
 
-        if(Yii::app()->getRequest()->getQuery('report') === 'generate'){
+        if (Yii::app()->getRequest()->getQuery('report') === 'generate') {
             $pendingApplications = new PendingApplications();
             $sent = $pendingApplications->emailCsvFile(Yii::app()->params['applications_alert_recipients']);
-
         }
 
         $this->render('pending_applications', array('sent' => $sent));
     }
-
 }

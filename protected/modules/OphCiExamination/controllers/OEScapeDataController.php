@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -20,7 +20,6 @@
 namespace OEModule\OphCiExamination\controllers;
 
 use Yii;
-use \models;
 
 class OEScapeDataController extends \BaseController
 {
@@ -29,18 +28,17 @@ class OEScapeDataController extends \BaseController
         return array(
             array('allow',
                 'actions' => array('dataset', 'datasetva', 'datasetmd', 'loadimage', 'loadallimages', 'getoperations', 'getimage', 'getmedications'),
-                'expression' => 'Yii::app()->user->isSurgeon()'
+                'expression' => 'Yii::app()->user->isSurgeon()',
             ),
             array('allow',
-                'actions' => array('dataset', 'datasetva', 'datasetmd', 'loadimage', 'loadallimages', 'getoperations', 'getimage','getmedications'),
+                'actions' => array('dataset', 'datasetva', 'datasetmd', 'loadimage', 'loadallimages', 'getoperations', 'getimage', 'getmedications'),
                 'roles' => array('admin'),
             ),
         );
     }
 
-    protected function queryData($patient, $side )
+    protected function queryData($patient, $side)
     {
-
         $command = Yii::app()->db->createCommand()->select('event_date, oiv.eye_id, reading_time, value')
             ->from('episode ep')
             ->join('event ev', 'ev.episode_id = ep.id')
@@ -48,31 +46,31 @@ class OEScapeDataController extends \BaseController
             ->join('ophciexamination_intraocularpressure_value oiv', 'oiv.element_id = eoi.id')
             ->join('ophciexamination_intraocularpressure_reading oir', ' oiv.reading_id = oir.id')
             ->where('patient_id = :patient', array('patient' => $patient))
-            ->andWhere('oiv.eye_id = :side', array('side'=> $side))
+            ->andWhere('oiv.eye_id = :side', array('side' => $side))
             ->andWhere('ev.deleted <> 1')
             ->order('event_date');
 
         return $command->queryAll();
     }
 
-    protected function queryDataVA($patient, $side )
+    protected function queryDataVA($patient, $side)
     {
-       $command = Yii::app()->db->createCommand()->select('event_date, ovauv.value as value')
+        $command = Yii::app()->db->createCommand()->select('event_date, ovauv.value as value')
             ->from('ophciexamination_visualacuity_reading ovr')
             ->join('et_ophciexamination_visualacuity eov', 'eov.id=ovr.element_id')
             ->join('event ev', 'ev.id=eov.event_id')
             ->join('episode ep', 'ev.episode_id=ep.id')
             ->join('ophciexamination_visual_acuity_unit_value ovauv', 'ovauv.unit_id=10 and ovr.value=ovauv.base_value')
             ->where('patient_id = :patient', array('patient' => $patient))
-            ->andWhere('ovr.side = :side', array('side'=> $side-1))
+            ->andWhere('ovr.side = :side', array('side' => $side - 1))
             ->andWhere('ev.deleted <> 1')
             ->order('event_date');
 
         return $command->queryAll();
     }
 
-    protected function queryOperationData($patient){
-
+    protected function queryOperationData($patient)
+    {
         $command = Yii::app()->db->createCommand()->select('event_date, eye.name as eye, term, eopp.eye_id as eye_id')
             ->from('ophtroperationnote_procedurelist_procedure_assignment oppa')
             ->join('et_ophtroperationnote_procedurelist eopp', 'oppa.procedurelist_id = eopp.id')
@@ -87,49 +85,57 @@ class OEScapeDataController extends \BaseController
         return $command->queryAll();
     }
 
-    protected function queryDataMD($patient, $side){
+    protected function queryDataMD($patient, $side)
+    {
         $command = Yii::app()->db->createCommand()->select('event_date, mean_deviation')
             ->from('media_data md')
             ->where('patient_id = :patient', array('patient' => $patient))
             ->andWhere('mean_deviation is not null')
-            ->andWhere('eye_id= :side', array('side'=>$side))
+            ->andWhere('eye_id= :side', array('side' => $side))
             ->order('event_date');
 
         return $command->queryAll();
     }
 
     /**
-     * VA is better if the value is closer to 0
-     * @return boolean
+     * VA is better if the value is closer to 0.
+     *
+     * @return bool
      */
-    protected function isVAbetter($current, $new){
-        if($current < 0){
-            if($new > $current){
+    protected function isVAbetter($current, $new)
+    {
+        if ($current < 0) {
+            if ($new > $current) {
                 return true;
             }
-        }else if($current > 0){
-            if($new < $current){
+        } elseif ($current > 0) {
+            if ($new < $current) {
                 return true;
             }
         }
+
         return false;
     }
 
-    protected function isVAinArray($key, $vaArray){
-        foreach($vaArray as $index => $row){
-            if($row[0] == $key){
+    protected function isVAinArray($key, $vaArray)
+    {
+        foreach ($vaArray as $index => $row) {
+            if ($row[0] == $key) {
                 return $index;
             }
         }
+
         return false;
     }
 
-    protected function sortMedications($medArray){
+    protected function sortMedications($medArray)
+    {
         $outArray = array();
-        foreach($medArray as $med){
-            $outArray[(int)strtotime($med->start_date)] = $med;
+        foreach ($medArray as $med) {
+            $outArray[(int) strtotime($med->start_date)] = $med;
         }
         ksort($outArray);
+
         return $outArray;
     }
 
@@ -141,64 +147,66 @@ class OEScapeDataController extends \BaseController
         $data = $this->queryData($id, $side);
 
         $output = array();
-        foreach($data as $row){
-            $output[] = array(strtotime($row["event_date"])*1000, (int) $row["value"]);
+        foreach ($data as $row) {
+            $output[] = array(strtotime($row['event_date']) * 1000, (int) $row['value']);
         }
 
         echo json_encode($output);
     }
 
-    public function actionDataSetVA($id, $side){
+    public function actionDataSetVA($id, $side)
+    {
         $data = $this->queryDataVA($id, $side);
 
         $output = array();
-        foreach($data as $row){
-            $key = strtotime($row["event_date"]) * 1000;
-            if($currentBest = $this->isVAinArray($key, $output)){
-                if( $row["value"] < $currentBest){
-                    $output[$currentBest] = array($key, (float)$row["value"]);
+        foreach ($data as $row) {
+            $key = strtotime($row['event_date']) * 1000;
+            if ($currentBest = $this->isVAinArray($key, $output)) {
+                if ($row['value'] < $currentBest) {
+                    $output[$currentBest] = array($key, (float) $row['value']);
                 }
-            }else {
-                $output[] = array($key, (float)$row["value"]);
+            } else {
+                $output[] = array($key, (float) $row['value']);
             }
         }
 
         echo json_encode($output);
-
     }
 
-    public function actionDataSetMD($id, $side){
+    public function actionDataSetMD($id, $side)
+    {
         $data = $this->queryDataMD($id, $side);
 
         $output = array();
-        foreach($data as $row){
-            $output[] = array(strtotime($row["event_date"])*1000, (float) $row["mean_deviation"]);
+        foreach ($data as $row) {
+            $output[] = array(strtotime($row['event_date']) * 1000, (float) $row['mean_deviation']);
         }
 
         echo json_encode($output);
-
     }
 
-    public function actionGetOperations($id){
+    public function actionGetOperations($id)
+    {
         $data = $this->queryOperationData($id);
 
         $output = array();
-        foreach($data as $row){
-            $output[] = array(strtotime($row["event_date"])*1000, $row["term"], (int) $row["eye_id"]);
+        foreach ($data as $row) {
+            $output[] = array(strtotime($row['event_date']) * 1000, $row['term'], (int) $row['eye_id']);
         }
 
         echo json_encode($output);
     }
 
-    public function actionGetMedications($id){
+    public function actionGetMedications($id)
+    {
         $patient = \Patient::model()->findByPk($id);
 
         $medications = array_merge($patient->get_previous_medications(), $patient->get_medications());
         //$medications = $this->sortMedications($medications);
         $output = array();
 
-        foreach($medications as $medication){
-            $output[] = array((int)strtotime($medication->start_date)*1000, (int)strtotime($medication->end_date)*1000, (int)$medication->option_id, explode(' ',$medication->getDrugLabel())[0]);
+        foreach ($medications as $medication) {
+            $output[] = array((int) strtotime($medication->start_date) * 1000, (int) strtotime($medication->end_date) * 1000, (int) $medication->option_id, explode(' ', $medication->getDrugLabel())[0]);
         }
 
         echo json_encode($output);
@@ -210,50 +218,51 @@ class OEScapeDataController extends \BaseController
         $command = Yii::app()->db->createCommand()->select('max(id) as fileid')
             ->from('media_data')
             ->where('patient_id = :patient', array('patient' => $id))
-            ->andWhere('event_date <= :eventDate', array('eventDate'=> $eventDate))
-            ->andWhere('eye_id = :side', array('side'=>$side))
-            ->andWhere('event_type_id = (SELECT id FROM event_type WHERE class_name= :eventType)', array('eventType'=>$eventType))
-            ->andWhere('media_type_id = (SELECT id FROM media_type WHERE type_name =:mediaType)', array('mediaType'=>$mediaType));
+            ->andWhere('event_date <= :eventDate', array('eventDate' => $eventDate))
+            ->andWhere('eye_id = :side', array('side' => $side))
+            ->andWhere('event_type_id = (SELECT id FROM event_type WHERE class_name= :eventType)', array('eventType' => $eventType))
+            ->andWhere('media_type_id = (SELECT id FROM media_type WHERE type_name =:mediaType)', array('mediaType' => $mediaType));
 
-        if($row = $command->queryRow()) {
-            echo $this->renderPartial('//oescape/vfgreyscale_side',array('fileid'=>$row['fileid']));
+        if ($row = $command->queryRow()) {
+            echo $this->renderPartial('//oescape/vfgreyscale_side', array('fileid' => $row['fileid']));
         }
         //echo $fileId;
     }
 
-    public function actionLoadAllImages($id, $eventType, $mediaType){
+    public function actionLoadAllImages($id, $eventType, $mediaType)
+    {
         $command = Yii::app()->db->createCommand()->select('md.id as fileid, eye_id, event_date, plot_values')
             ->from('media_data md')
             ->where('patient_id = :patient', array('patient' => $id))
-            ->andWhere('event_type_id = (SELECT id FROM event_type WHERE class_name= :eventType)', array('eventType'=>$eventType))
-            ->andWhere('media_type_id = (SELECT id FROM media_type WHERE type_name =:mediaType)', array('mediaType'=>$mediaType))
+            ->andWhere('event_type_id = (SELECT id FROM event_type WHERE class_name= :eventType)', array('eventType' => $eventType))
+            ->andWhere('media_type_id = (SELECT id FROM media_type WHERE type_name =:mediaType)', array('mediaType' => $mediaType))
             ->order('event_date');
 
         $allData = $command->queryAll();
 
-        foreach($allData as $row){
-            $output[strtotime($row["event_date"])][$row["eye_id"]] = array($row["fileid"], $row["plot_values"]);
+        foreach ($allData as $row) {
+            $output[strtotime($row['event_date'])][$row['eye_id']] = array($row['fileid'], $row['plot_values']);
         }
         echo json_encode($output);
     }
 
-    public function actionGetImage($id){
+    public function actionGetImage($id)
+    {
         if (!$file = \MediaData::model()->findByPk($id)) {
-            throw new CHttpException(404, "File not found");
+            throw new CHttpException(404, 'File not found');
         }
         $filepath = $file->getPath();
         if (!file_exists($file->getPath())) {
-            throw new CException("File not found on filesystem: ".$file->getPath());
+            throw new CException('File not found on filesystem: '.$file->getPath());
         }
         //var_dump($file);
         //die;
-        header('Content-Type: ' . \MediaType::model()->findByPk($file->media_type_id)->type_mime);
+        header('Content-Type: '.\MediaType::model()->findByPk($file->media_type_id)->type_mime);
         header('Expires: 0');
         header('Cache-Control: must-revalidate');
-        header('Content-Length: ' . $file->original_file_size);
+        header('Content-Length: '.$file->original_file_size);
         ob_clean();
         flush();
         readfile($filepath);
     }
-
 }

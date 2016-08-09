@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2012
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
@@ -28,7 +28,7 @@
 		<div class="large-9 column">
 			<?php
             $options = \OEModule\OphCiExamination\models\OphCiExamination_Management_Status::model()->activeOrPk($element->injection_status_id)->findAll();
-            $html_options = array('empty'=>'- Please select -', 'options' => array());
+            $html_options = array('empty' => '- Please select -', 'options' => array());
             foreach ($options as $opt) {
                 $html_options['options'][(string) $opt->id] = array('data-deferred' => $opt->deferred, 'data-book' => $opt->book, 'data-event' => $opt->event);
             }
@@ -49,7 +49,7 @@
 		<div class="large-4 column ">
 			<?php
             $options = \OEModule\OphCiExamination\models\OphCiExamination_Management_DeferralReason::model()->activeOrPk($element->injection_deferralreason_id)->findAll();
-            $html_options = array('empty'=>'- Please select -', 'options' => array());
+            $html_options = array('empty' => '- Please select -', 'options' => array());
             foreach ($options as $opt) {
                 $html_options['options'][(string) $opt->id] = array('data-other' => $opt->other);
             }

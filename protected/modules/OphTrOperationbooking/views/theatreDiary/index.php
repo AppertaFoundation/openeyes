@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,14 +9,13 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 ?>
 <h1 class="badge">Theatre Diaries</h1>
 
@@ -44,12 +43,12 @@
 	</div>
 	<div class="search-filters theatre-diaries">
 		<?php $this->beginWidget('CActiveForm', array(
-			'id'=>'theatre-filter',
-			'htmlOptions'=>array(
-				'class' => 'row'
-			),
-			'enableAjaxValidation'=>false
-		))?>
+            'id' => 'theatre-filter',
+            'htmlOptions' => array(
+                'class' => 'row',
+            ),
+            'enableAjaxValidation' => false,
+        ))?>
 			<div class="large-12 column">
 				<div class="panel">
 					<div class="row">
@@ -69,23 +68,23 @@
 								<tbody>
 								<tr>
 									<td>
-										<?php echo CHtml::dropDownList('site-id', @$_POST['site-id'], Site::model()->getListForCurrentInstitution(), array('empty'=>'All sites', 'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
+										<?php echo CHtml::dropDownList('site-id', @$_POST['site-id'], Site::model()->getListForCurrentInstitution(), array('empty' => 'All sites', 'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : '')))?>
 									</td>
 									<td>
-										<?php echo CHtml::dropDownList('theatre-id', @$_POST['theatre-id'], $theatres, array('empty'=>'All theatres', 'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
+										<?php echo CHtml::dropDownList('theatre-id', @$_POST['theatre-id'], $theatres, array('empty' => 'All theatres', 'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : '')))?>
 									</td>
 									<td>
-										<?php echo CHtml::dropDownList('subspecialty-id', @$_POST['subspecialty-id'], Subspecialty::model()->getList(), array('empty'=>'All specialties', 'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
+										<?php echo CHtml::dropDownList('subspecialty-id', @$_POST['subspecialty-id'], Subspecialty::model()->getList(), array('empty' => 'All specialties', 'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : '')))?>
 									</td>
 									<td>
 										<?php if (!@$_POST['subspecialty-id']) {?>
-											<?php echo CHtml::dropDownList('firm-id', '', array(), array('empty'=>'All firms', 'disabled' => 'disabled'))?>
+											<?php echo CHtml::dropDownList('firm-id', '', array(), array('empty' => 'All firms', 'disabled' => 'disabled'))?>
 										<?php } else {?>
-											<?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'], Firm::model()->getList(@$_POST['subspecialty-id']), array('empty'=>'All firms', 'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
+											<?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'], Firm::model()->getList(@$_POST['subspecialty-id']), array('empty' => 'All firms', 'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : '')))?>
 										<?php }?>
 									</td>
 									<td>
-										<?php echo CHtml::dropDownList('ward-id', @$_POST['ward-id'], $wards, array('empty'=>'All wards', 'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
+										<?php echo CHtml::dropDownList('ward-id', @$_POST['ward-id'], $wards, array('empty' => 'All wards', 'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : '')))?>
 									</td>
 									<td>
 										<?php echo CHtml::checkBox('emergency_list', (@$_POST['emergency_list'] == 1))?>
@@ -118,26 +117,26 @@
 										or select date range:
 									</label>
 									<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-											'name'=>'date-start',
-											'id'=>'date-start',
-											'options'=>array(
-												'showAnim'=>'fold',
-												'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
-											),
-											'value' => @$_POST['date-start'],
-											'htmlOptions'=>array('class'=>'small fixed-width')
-										))?>
+                                            'name' => 'date-start',
+                                            'id' => 'date-start',
+                                            'options' => array(
+                                                'showAnim' => 'fold',
+                                                'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
+                                            ),
+                                            'value' => @$_POST['date-start'],
+                                            'htmlOptions' => array('class' => 'small fixed-width'),
+                                        ))?>
 									<span class="to">to</span>
 									<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-											'name'=>'date-end',
-											'id'=>'date-end',
-											'options'=>array(
-												'showAnim'=>'fold',
-												'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
-											),
-											'value' => @$_POST['date-end'],
-											'htmlOptions'=>array('class'=>'small fixed-width')
-										))?>
+                                            'name' => 'date-end',
+                                            'id' => 'date-end',
+                                            'options' => array(
+                                                'showAnim' => 'fold',
+                                                'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
+                                            ),
+                                            'value' => @$_POST['date-end'],
+                                            'htmlOptions' => array('class' => 'small fixed-width'),
+                                        ))?>
 									<ul class="button-group small">
 										<li><a href="#" id="last_week" class="small button">Last week</a></li>
 										<li><a href="#" id="next_week" class="small button">Next week</a></li>

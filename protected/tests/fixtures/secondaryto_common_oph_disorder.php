@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -18,44 +18,44 @@
  */
 
 return array(
-	array(
-		'id' => 1,
-		'parent_id' => 4,
-		'disorder_id' => 2,
-		'letter_macro_text' => 'testing blahblah7',
-	),
-	array(
-		'id' => 2,
-		'parent_id' => 4,
-		'disorder_id' => 3,
-	),
-	array(
-		'id' => 3,
-		'parent_id' => 5,
-		'disorder_id' => 5,
-		'letter_macro_text' => 'combined finding maculoppithy',
-	),
-	array(
-		'id' => 4,
-		'parent_id' => 4,
-		'finding_id' => 2,
-		'letter_macro_text' => 'test test 1234',
-	),
-	array(
-		'id' => 5,
-		'parent_id' => 6,
-		'finding_id' => 1,
-		'letter_macro_text' => 'test test 1234',
-	),
-	array(
-		'id' => 6,
-		'parent_id' => 6,
-		'finding_id' => 2,
-	),
-	array(
-		'id' => 7,
-		'parent_id' => 6,
-		'disorder_id' => 3,
-		'letter_macro_text' => 'test test 4567',
-	),
+    array(
+        'id' => 1,
+        'parent_id' => 4,
+        'disorder_id' => 2,
+        'letter_macro_text' => 'testing blahblah7',
+    ),
+    array(
+        'id' => 2,
+        'parent_id' => 4,
+        'disorder_id' => 3,
+    ),
+    array(
+        'id' => 3,
+        'parent_id' => 5,
+        'disorder_id' => 5,
+        'letter_macro_text' => 'combined finding maculoppithy',
+    ),
+    array(
+        'id' => 4,
+        'parent_id' => 4,
+        'finding_id' => 2,
+        'letter_macro_text' => 'test test 1234',
+    ),
+    array(
+        'id' => 5,
+        'parent_id' => 6,
+        'finding_id' => 1,
+        'letter_macro_text' => 'test test 1234',
+    ),
+    array(
+        'id' => 6,
+        'parent_id' => 6,
+        'finding_id' => 2,
+    ),
+    array(
+        'id' => 7,
+        'parent_id' => 6,
+        'disorder_id' => 3,
+        'letter_macro_text' => 'test test 4567',
+    ),
 );

@@ -2,17 +2,17 @@
 
 class m160217_103151_nod_export extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->addColumn('et_ophtroperationnote_cataract', 'pupil_size', 'VARCHAR(10)');
         $this->addColumn('et_ophtroperationnote_cataract_version', 'pupil_size', 'VARCHAR(10)');
 
         $cataracts = $this->getDbConnection()->createCommand()->select('id, eyedraw')->from('et_ophtroperationnote_cataract')->queryAll();
 
-        foreach($cataracts as $cataract){
+        foreach ($cataracts as $cataract) {
             $eyedraw = json_decode($cataract['eyedraw']);
             $pupilSize = null;
-            if(is_array($eyedraw)) {
+            if (is_array($eyedraw)) {
                 foreach ($eyedraw as $eyedrawEl) {
                     if (property_exists($eyedrawEl, 'pupilSize')) {
                         $pupilSize = $eyedrawEl->pupilSize;
@@ -20,12 +20,12 @@ class m160217_103151_nod_export extends CDbMigration
                     }
                 }
             }
-            if($pupilSize){
+            if ($pupilSize) {
                 $this->update('et_ophtroperationnote_cataract', array('pupil_size' => $pupilSize), 'id='.$cataract['id']);
             }
         }
 
-		$storedProcedure = <<<EOL
+        $storedProcedure = <<<EOL
 -- Configuration settings for this script --
 SET SESSION group_concat_max_len = 100000;
 SET max_sp_recursion_depth = 255;
@@ -1071,18 +1071,18 @@ CALL get_episode_post_op_complication(dir);
 END;
 
 EOL;
-                
-                
-            $this->execute($storedProcedure);
-            return true;
-	}
 
-	public function down()
-	{
-            $this->dropColumn('et_ophtroperationnote_cataract', 'pupil_size');
-            $this->dropColumn('et_ophtroperationnote_cataract_version', 'pupil_size');
+        $this->execute($storedProcedure);
 
-                $storedProcedure = <<<EOL
+        return true;
+    }
+
+    public function down()
+    {
+        $this->dropColumn('et_ophtroperationnote_cataract', 'pupil_size');
+        $this->dropColumn('et_ophtroperationnote_cataract_version', 'pupil_size');
+
+        $storedProcedure = <<<EOL
 
 DROP PROCEDURE IF EXISTS get_surgeons;
 DROP PROCEDURE IF EXISTS get_patients;
@@ -1102,7 +1102,8 @@ DROP PROCEDURE IF EXISTS get_episode_operation_pathology;
 DROP PROCEDURE IF EXISTS run_nod_export_generator;
 DROP PROCEDURE IF EXSIST get_episode_post_op_complication;
 EOL;
-		$this->execute($storedProcedure);
-                return true;
-	}
+        $this->execute($storedProcedure);
+
+        return true;
+    }
 }

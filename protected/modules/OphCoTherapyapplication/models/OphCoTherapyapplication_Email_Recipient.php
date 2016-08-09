@@ -6,67 +6,67 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (C) 2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class OphCoTherapyapplication_Email_Recipient extends BaseActiveRecordVersioned
 {
-	public static function model($className = __CLASS__)
-	{
-		return parent::model($className);
-	}
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
 
-	public function tableName()
-	{
-		return 'ophcotherapya_email_recipient';
-	}
+    public function tableName()
+    {
+        return 'ophcotherapya_email_recipient';
+    }
 
-	public function rules()
-	{
-		return array(
-			array('site_id, recipient_name, recipient_email, type_id', 'safe'),
-			array('recipient_name, recipient_email', 'required'),
-			array('recipient_email', 'email'),
-		);
-	}
+    public function rules()
+    {
+        return array(
+            array('site_id, recipient_name, recipient_email, type_id', 'safe'),
+            array('recipient_name, recipient_email', 'required'),
+            array('recipient_email', 'email'),
+        );
+    }
 
-	public function relations()
-	{
-		return array(
-			'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
-			'type' => array(self::BELONGS_TO, 'OphCoTherapyapplication_Email_Recipient_Type', 'type_id'),
-		);
-	}
+    public function relations()
+    {
+        return array(
+            'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
+            'type' => array(self::BELONGS_TO, 'OphCoTherapyapplication_Email_Recipient_Type', 'type_id'),
+        );
+    }
 
-	public function attributeLabels()
-	{
-		return array(
-			'id' => 'ID',
-			'site_id' => 'Site',
-			'type_id' => 'Letter types',
-			'recipient_name' => 'Recipient name',
-			'recipient_email' => 'Recipient email',
-		);
-	}
+    public function attributeLabels()
+    {
+        return array(
+            'id' => 'ID',
+            'site_id' => 'Site',
+            'type_id' => 'Letter types',
+            'recipient_name' => 'Recipient name',
+            'recipient_email' => 'Recipient email',
+        );
+    }
 
-	public function isAllowed()
-	{
-		if (Yii::app()->params['restrict_email_domains']) {
-			return in_array(strtolower(preg_replace('/^.*?@/','',$this->recipient_email)),Yii::app()->params['restrict_email_domains']);
-		}
-		return true;
-	}
+    public function isAllowed()
+    {
+        if (Yii::app()->params['restrict_email_domains']) {
+            return in_array(strtolower(preg_replace('/^.*?@/', '', $this->recipient_email)), Yii::app()->params['restrict_email_domains']);
+        }
 
-	protected function beforeValidate()
-	{
-		if (!$this->isAllowed()) {
-			$this->addError('recipient_email','Recipient email is not in the list of allowed domains');
-		}
+        return true;
+    }
 
-		return parent::beforeValidate();
-	}
+    protected function beforeValidate()
+    {
+        if (!$this->isAllowed()) {
+            $this->addError('recipient_email', 'Recipient email is not in the list of allowed domains');
+        }
+
+        return parent::beforeValidate();
+    }
 }

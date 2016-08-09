@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -18,7 +18,7 @@
  */
 ?>
 
-<?php echo $form->textField($model, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'maxlength'=>40))?>
+<?php echo $form->textField($model, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'maxlength' => 40))?>
 <?php	echo $form->textArea($model, 'summary', array(), false, array(), array('field' => 10))?>
 
 <?php	if ($model->files) {?>
@@ -46,20 +46,20 @@
 <?php
 /**
  * utility function that should probably sit somewhere else, but is only for this template at the moment
- * calculates the byte size of the passed in value
+ * calculates the byte size of the passed in value.
  *
  * @param $size_str
+ *
  * @return int
  */
-function return_bytes ($size_str)
+function return_bytes($size_str)
 {
-	switch (substr ($size_str, -1))
-	{
-		case 'M': case 'm': return (int)$size_str * 1048576;
-		case 'K': case 'k': return (int)$size_str * 1024;
-		case 'G': case 'g': return (int)$size_str * 1073741824;
-		default: return $size_str;
-	}
+    switch (substr($size_str, -1)) {
+        case 'M': case 'm': return (int) $size_str * 1048576;
+        case 'K': case 'k': return (int) $size_str * 1024;
+        case 'G': case 'g': return (int) $size_str * 1073741824;
+        default: return $size_str;
+    }
 }
 ?>
 
