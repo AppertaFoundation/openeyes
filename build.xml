@@ -8,7 +8,7 @@
     <!-- <property name="toolsdir" value="${basedir}/vendor/bin/"/> -->
 
     <target name="build"
-            depends="prepare,composer,npm,bower,grunt,migrate,migrate-modules,lint,mocha,phploc-ci,pdepend,phpmd-ci,phpcs-ci,phpcpd-ci,phpunit"
+            depends="prepare,composer,npm,bower,grunt,docker,migrate,migrate-modules,lint,mocha,phploc-ci,pdepend,phpmd-ci,phpcs-ci,phpcpd-ci,phpunit"
             description=""/>
 
     <target name="build-parallel"
@@ -40,7 +40,6 @@
             description="Cleanup build artifacts">
         <delete dir="${basedir}/build/api"/>
         <delete dir="${basedir}/build/coverage"/>
-        <delete dir="${basedir}/build/logs"/>
         <delete dir="${basedir}/build/pdepend"/>
         <delete dir="${basedir}/build/phpdox"/>
         <delete dir="${basedir}/protected/runtime"/>
@@ -180,7 +179,7 @@
             <arg path="${basedir}/build/phpmd.xml" />
             <arg value="--reportfile" />
             <arg path="${basedir}/build/logs/pmd.xml" />
-            <arg value="--exclude ${basedir}/protected/tests/*,${basedir}/protected/migrations/*,${basedir}/protected/yii/*,${basedir}/protected/runtime/*,${basedir}/vendor/*" />
+            <arg value="--exclude ${basedir}/protected/tests/*,${basedir}/protected/migrations/*,${basedir}/protected/yii/*,${basedir}/protected/runtime/*,${basedir}/vendor/*,${basedir}/protected/vendor/*" />
         </exec>
     </target>
 

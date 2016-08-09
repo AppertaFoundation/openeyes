@@ -7,31 +7,19 @@
 ?>
 <?php echo "<?php\n"; ?>
 /**
- * ____________________________________________________________________________
+ * OpenEyes.
  *
+ * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU
- * General Public License as published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * @link http://www.openeyes.org.uk
  *
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
- * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file
- * titled COPYING. If not, see <http://www.gnu.org/licenses/>.
- *
- * _____________________________________________________________________________
- * http://www.openeyes.org.uk   info@openeyes.org.uk
- *
- * @author Bill Aylward <bill.aylward@openeyes.org.uk>
- * @license http://www.gnu.org/licenses/gpl.html GPLv3.0
- * @license http://www.openeyes.org.uk/licenses/oepl-1.0.html OEPLv1.0
- * @version 0.9
- * Creation date: 27 December 2011
- * @copyright Copyright (c) 2012 OpenEyes Foundation, Moorfields Eye hospital
- * @package Clinical
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 <?php echo "?>\n"; ?>
 <p><?php echo $this->elementName; ?></p>

@@ -1,7 +1,6 @@
 {
   "name": "openeyes/openeyes",
   "description": "Electronic Patient Record system for use in Ophthalmology clinics",
-  "minimum-stability": "dev",
   "require": {
     "yiisoft/yii": "1.1.14",
     "rlanvin/php-rrule": "1.2.0"
@@ -20,7 +19,7 @@
     "phpunit/php-invoker": "1.1.*",
     "phpunit/phpunit-story": "*",
     "phploc/phploc": "*",
-    "pdepend/pdepend": "2.0.4",
+    "pdepend/pdepend": "2.2.4",
     "phpmd/phpmd": "@stable",
     "squizlabs/php_codesniffer": "2.*",
     "sebastian/phpcpd": "*",
