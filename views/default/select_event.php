@@ -40,9 +40,18 @@
                         <div class="field-row">
 							<div class="field-info">
                                 Current cvi are as follows:
-                                <?php $i = 0;foreach($cvi_url as $cvi_event) {echo ($i!=0) ? ', ' : '';?>
-                                <a href='<?=$cvi_event?>' ><?=$cvi_event?></a>
-                                <?php $i++; } ?>
+                                <?php
+									if(!empty($cvi_url))
+									{
+										echo '<ul>';
+										foreach($cvi_url as $cvi_event) {
+											?>
+											<li><a href='<?= $cvi_event ?>'><?= $cvi_event ?></a></li>
+											<?php
+										}
+										echo '</ul>';
+									}
+								?>
 							</div>
 						</div>
                         <div class="field-row">
