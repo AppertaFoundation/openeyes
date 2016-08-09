@@ -22,6 +22,14 @@
   become: true
   become_user: vagrant
 
+# Git Clone OE depenandcies
+- name: Git clone OE dependencies
+  git:
+    repo: https://github.com/openeyes/{{ item }}.git
+    dest: /var/www/openeyes/protected/modules/{{ item }}
+  with_items:
+    - eyedraw
+    - sample
 
 # Populate MySQL database TODO; Use info in all.yml / vars.yml
 - name: Populate DB from dump file (when set)
@@ -33,6 +41,9 @@
     login_password: "{{ openeyes.mysql_root_password }}"
   when: openeyes.mysql_dump
 
+# Add in banner
+# - name: Add banner info into MySQL
+
 - name: Create directories for Yii
   become: yes
   become_method: sudo
@@ -43,8 +54,11 @@
     group: "www-data"
     state: directory
   with_items:
-    - /var/www/openeyes/protected/runtime
     - /var/www/openeyes/assets
+    - /var/www/openeyes/cache
+    - /var/www/openeyes/protected/cache
+    - /var/www/openeyes/protected/cache/events
+    - /var/www/openeyes/protected/runtime
 
 - name: Copy common.php into place
   command: creates=/var/www/openeyes/protected/config/local/common.php cp /var/www/openeyes/protected/config/local.sample/common.php /var/www/openeyes/protected/config/local/common.php
