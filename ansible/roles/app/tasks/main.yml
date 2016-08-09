@@ -41,9 +41,15 @@
     login_password: "{{ openeyes.mysql_root_password }}"
   when: openeyes.mysql_dump
 
-# Add in banner
+# Add in banner (TODO: Only works if the sameple dataset loaded)
 # - name: Add banner info into MySQL
+#   command: mysql
+#       --user={{ openeyes.mysql_user }}
+#       --password={{ openeyes.mysql_password }} openeyes
+#       --host=localhost
+#       --execute="UPDATE openeyes.setting_installation s SET s.value='New openeyes installation' WHERE s.key='watermark'"
 
+# Create required directories and assign users / groups / permissions
 - name: Create directories for Yii
   become: yes
   become_method: sudo
