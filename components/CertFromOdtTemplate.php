@@ -31,10 +31,10 @@ class CertFromOdtTemplate
     //Using an exist style declaration in xml
     public $textStyleName = 'T23';
     
-    public function __construct( $filename )
+    public function __construct( $filename , $templateDir )
     {
         $this->uniqueId = time();
-        $this->templateDir = realpath(__DIR__ . '/..').'/files';
+        $this->templateDir = $templateDir;
         $this->odtFilename = $this->templateDir.'/'.$filename;
         $this->zippedDir = $this->templateDir.'/zipped/'.$this->uniqueId.'/';
         $this->unzippedDir = $this->templateDir.'/unzipped/'.$this->uniqueId.'/';
@@ -65,14 +65,18 @@ class CertFromOdtTemplate
         $path = $this->zipOdtFile();
         if($path !== FALSE){
             $shell = '/usr/bin/libreoffice --headless --convert-to pdf --outdir /var/www/openeyes/protected/runtime/  '.$path;
-            exec($shell, $output, $return);    
+            exec($shell, $output, $return); 
+           
+            if($return == 0){
+                $odtPath = substr($path, 0, strrpos( $path, '/'));
+                $this->deleteDir( $odtPath );
+            }
         }
      
     }
     
     public function strReplace( $data )
     {
-        
         $nodes = $this->xpath->query('//text()');
        
         foreach ($nodes as $node) {
@@ -112,106 +116,6 @@ class CertFromOdtTemplate
         
         // If the destination (2nd parameter ) file already exists, it will be overwritten.
         copy( $newImageUrl , $mediaFolder.$oldImage);
-    }
-    
-    private function unZip( $createZipNameDir=true, $overwrite=true )
-    {
-        $zip = new ZipArchive;
-        $destDir = $this->unzippedDir;
-        $srcFile = $this->odtFilename;
-        
-      
-        if( $zip = zip_open( $srcFile ) ) {
-            if( $zip ) {
-                $splitter = ($createZipNameDir === true) ? "." : "/";
-                if($destDir === false) $destDir = substr($srcFile, 0, strrpos($srcFile, $splitter))."/";
-
-                $this -> createDirs($destDir);
-                 
-                while($zipEntry = zip_read($zip)){
-                    
-                    $posLastSlash = strrpos(zip_entry_name($zipEntry), "/");
-
-                    if ($posLastSlash !== false) {
-                        $this -> createDirs($destDir.substr(zip_entry_name($zipEntry), 0, $posLastSlash+1));
-                    }
-
-                    if (zip_entry_open($zip,$zipEntry,"r")) {
-                        $fileName = $destDir.zip_entry_name($zipEntry);
-                        if ($overwrite === true || ($overwrite === false && !is_file($fileName))) {
-                            $fstream = zip_entry_read($zipEntry, zip_entry_filesize($zipEntry));
-                            if(!is_dir($fileName)){
-                                file_put_contents($fileName, $fstream );
-                                //chmod($fileName, $this -> right );
-                            }
-                        }
-                        zip_entry_close($zipEntry);
-                    }       
-                }
-                zip_close($zip);
-                $this->openedSablonFilename = $destDir.$this->contentFilename;
-            }
-        } else {
-            $this->dropException( 'Failed unzip ODT. File: '.$this->templateDir.$this->odtFilename );
-        }
-    }
-    
-    function zipOdtFile()
-    {
-        
-       // $this->saveContentXML();
-        $inputFolder  = $this -> unzippedDir;
-        $destPath = $this -> zippedDir;
-        mkdir($destPath, 0777, true);
-        $zip   = new ZipArchive();
-       
-        $zip  -> open( $this->newOdtFilename, ZipArchive::CREATE | ZipArchive::OVERWRITE);
-      
-        $inputFolder = str_replace('\\', DIRECTORY_SEPARATOR, realpath($inputFolder));
-       
-        if (is_dir($inputFolder) === TRUE) {
-            $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($inputFolder), RecursiveIteratorIterator::SELF_FIRST);
-
-            foreach ($files as $file) {
-                $file = str_replace('\\', DIRECTORY_SEPARATOR, $file);
-                if (in_array(substr($file, strrpos($file, '/')+1), array('.', '..'))) {
-                    continue;
-                }
-
-                $file = realpath($file);
-
-                if (is_dir($file) === TRUE) {
-                    $dirName = str_replace($inputFolder.DIRECTORY_SEPARATOR, '', $file.DIRECTORY_SEPARATOR);
-                    $zip->addEmptyDir($dirName);
-                }
-                else if (is_file($file) === TRUE) {
-                    $fileName = str_replace($inputFolder.DIRECTORY_SEPARATOR, '', $file);
-                    $zip->addFromString($fileName, file_get_contents($file));
-                }
-            }
-        } else if (is_file($inputFolder) === TRUE) {
-            $zip->addFromString(basename($inputFolder), file_get_contents($inputFolder));
-        }
-        
-        $zip->close();
-        return $destPath.$this->generatedOdt;
-    }
-    
-    private function createDirs($path)
-    {
-        if (!is_dir($path)){
-            $directoryPath = "";
-            $directories = explode("/",$path);
-            array_pop($directories);
-
-            foreach($directories as $directory) {
-                $directoryPath .= $directory."/";
-                if (!is_dir($directoryPath)) {
-                    mkdir($directoryPath, 0777, true);
-                    //chmod($directoryPath, $this -> right );
-                }
-            }
-        }
     }
 
     private function getTableVariableNode( $nodeValue, $text )
@@ -352,144 +256,6 @@ class CertFromOdtTemplate
        
         return $tables;
     }
-
-    function download(){
-        header('Content-Type: application/vnd.oasis.opendocument.text');
-        header('Content-Disposition: attachment; filename="'.$this->generatedOdt.'"');    
-        readfile( $this->newOdtFilename );
-    }
-    
-    
-    
-    
-    
-    /*
-    public function getXml( $input )
-    {
-        $this->inputFile = $input;
-        if($this->unzipFile( $this->directory.'/'.$this->inputFile,  $this->directory.'/xml') === TRUE){
-           
-            $this->xmlDoc = new DOMDocument();
-            $this->xmlDoc->load( $this->directory.'/xml/content.xml');
-            $this->xmlDoc->formatOutput = true;
-            $this->xmlDoc->preserveWhiteSpace = false;
-            $this->xpath = new DomXpath($this->xmlDoc);
-           
-            return $this;
-        } else {
-            return FALSE;
-        }
-    }
-    
-    public function saveXML( $xml )
-    {
-        $xml->save( $this->directory.'/xml/content.xml');
-    }
-    
-    public function convertToPdf()
-    {
-        if($this->zipFolder($this->directory.'/xml', '/var/www/openeyes/protected/runtime/document.odt') === TRUE){
-            exec('/usr/bin/libreoffice --headless --convert-to pdf --outdir /var/www/openeyes/protected/runtime/  /var/www/openeyes/protected/runtime/document.odt');    
-        }
-    }
-    
-    public function strReplace( $data )
-    {
-        $nodes = $this->xpath->query('//text()');
-       
-        foreach ($nodes as $node) {
-            
-            foreach ($data as $key => $value){
-                if(strpos($node->nodeValue, '${'.$key.'}') !== false){
-
-                    $valArr = explode("\n",$value);
-                    if(array_key_exists(1, $valArr)){
-                        foreach ($valArr as $c => $val){
-                            $val = str_replace("\r","",$val);
-                            $node->nodeValue='';
-                            
-                            if($c > 0){
-                                $break = $this->xmlDoc->createElement('text:line-break');
-                                $node->parentNode->appendChild($break);
-                            }
-
-                            $text = $this->xmlDoc->createElement('text:span', $val);
-                            $node->parentNode->appendChild($text);
-                            $text->setAttribute("text:style-name", $this->textStyleName);
-                        }   
-                    } else {
-                        $node->nodeValue = str_replace('${'.$key.'}', $valArr[0], $node->nodeValue, $count);
-                    }
-                }    
-            }
-        }
-        
-        $this->xmlDoc->saveXML();
-    }
-    
-    public function imgReplace( $oldImage , $newImageUrl )
-    {
-        $mediaFolder = $this->directory.'/xml/media/';
-        $newImage = substr($newImageUrl, strrpos($newImageUrl, '/') + 1);
-        
-        // If the destination (2nd parameter ) file already exists, it will be overwritten.
-        copy( $newImageUrl , $mediaFolder.'/'.$oldImage);
-    }
-    
-    public function fillTable( $prefix , $data, $headerRow = 0 )
-    {
-        
-        foreach ($this->xpath->query('//office:text/table:table[@table:style-name="'.$prefix.'"]') as $table) {
-          
-            foreach($table->childNodes as $r => $row) {
-                if ($headerRow > 0){
-                    if($headerRow >= $r){
-                       continue;
-                    } 
-                    $rowCount = $r-$headerRow-1;
-                } else{
-                    $rowCount = $r-1;
-                }
-                
-                foreach($row->childNodes as $c => $cell){
-                   
-                    if ((array_key_exists($rowCount, $data)) && (array_key_exists($c, $data[$rowCount]))) { 
-                        $cell->nodeValue = "";
-                        $text = $this->xmlDoc->createElement('text:p', $data[$rowCount][$c]);
-                        $cell->appendChild($text);
-                        $text->setAttribute("text:style-name", $this->textStyleName);
-                    }
-                }
-            } 
-           
-        }
-        $this->xmlDoc->saveXML();
-    }
-    
-    public function genTable( $appendTo , $prefix , $rows , $cols ){
-       
-        $table = $this->xmlDoc->createElementNS('urn:oasis:names:tc:opendocument:xmlns:table:1.0','table:table');
-        $newTable = $appendTo->appendChild( $table );
-        $newTable->setAttribute("table:style-name", $prefix );
-        
-        $columns = $this->xmlDoc->createElement('table:table-columns');
-        $table->appendChild( $columns );
-        
-        for($i = 1; $i <= $cols; $i++ ){
-            $column = $this->xmlDoc->createElement('table:table-column');
-            $columns->appendChild( $column );
-        }
-        
-        for($j = 1; $j <= $rows; $j++ ){
-           $row = $this->xmlDoc->createElement('table:table-row');
-           $table->appendChild( $row );
-           
-           for($i = 1; $i <= $cols; $i++){
-               $cell = $this->xmlDoc->createElement('table:table-cell');
-               $row->appendChild($cell);
-           }
-        }
-    }
     
     public function customSquare( $appendTo ){
         $svgTitle = $this->xmlDoc->createElement('svg:title');
@@ -526,31 +292,58 @@ class CertFromOdtTemplate
         }
     }
     
-    public function unzipFile( $zipInputFile, $outputFolder   )
+    private function unZip( $createZipNameDir=true, $overwrite=true )
     {
-        $zip = new ZipArchive();
-     
-        $res = $zip->open($zipInputFile);
-        if ($res === TRUE) {
-            $zip->extractTo($outputFolder);
-            $zip->close();
-            return TRUE;
+        $zip = new ZipArchive;
+        $destDir = $this->unzippedDir;
+        $srcFile = $this->odtFilename;
+        
+      
+        if( $zip = zip_open( $srcFile ) ) {
+            if( $zip ) {
+                $splitter = ($createZipNameDir === true) ? "." : "/";
+                if($destDir === false) $destDir = substr($srcFile, 0, strrpos($srcFile, $splitter))."/";
+
+                $this -> createDirs($destDir);
+                 
+                while($zipEntry = zip_read($zip)){
+                    
+                    $posLastSlash = strrpos(zip_entry_name($zipEntry), "/");
+
+                    if ($posLastSlash !== false) {
+                        $this -> createDirs($destDir.substr(zip_entry_name($zipEntry), 0, $posLastSlash+1));
+                    }
+
+                    if (zip_entry_open($zip,$zipEntry,"r")) {
+                        $fileName = $destDir.zip_entry_name($zipEntry);
+                        if ($overwrite === true || ($overwrite === false && !is_file($fileName))) {
+                            $fstream = zip_entry_read($zipEntry, zip_entry_filesize($zipEntry));
+                            if(!is_dir($fileName)){
+                                file_put_contents($fileName, $fstream );
+                                //chmod($fileName, $this -> right );
+                            }
+                        }
+                        zip_entry_close($zipEntry);
+                    }       
+                }
+                zip_close($zip);
+                $this->openedSablonFilename = $destDir.$this->contentFilename;
+            }
         } else {
-            return FALSE;
+            $this->dropException( 'Failed unzip ODT. File: '.$this->templateDir.$this->odtFilename );
         }
     }
     
-    public function zipFolder($inputFolder, $zipOutputFile) 
+    private function zipOdtFile()
     {
-        if (!extension_loaded('zip') || !file_exists($inputFolder)) {
-            return FALSE;
-        }
-
-        $zip = new ZipArchive();
-        if (!$zip->open($zipOutputFile, ZIPARCHIVE::CREATE)) {
-            return FALSE;
-        }
+        $inputFolder  = $this -> unzippedDir;
+        $destPath = $this -> zippedDir;
+        mkdir($destPath, 0777, true);
+        $zip   = new ZipArchive();
+       
         
+        $zip  -> open( $this->newOdtFilename, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+      
         $inputFolder = str_replace('\\', DIRECTORY_SEPARATOR, realpath($inputFolder));
        
         if (is_dir($inputFolder) === TRUE) {
@@ -576,9 +369,39 @@ class CertFromOdtTemplate
         } else if (is_file($inputFolder) === TRUE) {
             $zip->addFromString(basename($inputFolder), file_get_contents($inputFolder));
         }
+        
         $zip->close();
-        return TRUE;
+        $this->deleteDir( $inputFolder );
+        return $destPath.$this->generatedOdt;
     }
-     * 
-     */
+    
+    private function createDirs($path)
+    {
+        if (!is_dir($path)){
+            $directoryPath = "";
+            $directories = explode("/",$path);
+            array_pop($directories);
+
+            foreach($directories as $directory) {
+                $directoryPath .= $directory."/";
+                if (!is_dir($directoryPath)) {
+                    mkdir($directoryPath, 0777, true);
+                    //chmod($directoryPath, $this -> right );
+                }
+            }
+        }
+    }
+    
+    private function deleteDir( $path )
+    {
+        if(is_dir($path)){
+            $files = array_diff(scandir($path), array('.', '..'));
+            foreach ($files as $file){
+                $this->deleteDir(realpath($path) . '/' . $file);
+            }
+            return rmdir($path);
+        } else if (is_file($path) === true){
+            return unlink($path);
+        }
+    }
 }

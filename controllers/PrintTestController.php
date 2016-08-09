@@ -12,7 +12,6 @@ use \OEModule\OphCoCvi\components\CertFromOdtTemplate;
 
 class PrintTestController extends \BaseController
 {
-    public $directory = '';
     public $inputFile = 'example_certificate_4.odt';
     public $xmlDoc;
     public $xpath;
@@ -33,22 +32,12 @@ class PrintTestController extends \BaseController
     {
         $pdfLink = '';
         if(isset($_POST['test_print'])){
-            $this->printTestXml = new CertFromOdtTemplate( $this->inputFile );
+            $this->printTestXml = new CertFromOdtTemplate( $this->inputFile , realpath(__DIR__ . '/..').'/files');
         
             $this->printTestXml->strReplace( $_POST );
             $this->printTestXml->imgReplace( 'image1.png' , $this->printTestXml->templateDir.'/signature3.png');
             
-            /*
-            $this->printTestXml->genTable( 
-                $this->printTestXml->xpath->query('//office:text')->item(0) , 
-                "TestTable" , 
-                2 , 
-                2
-            );
-            
-            $this->printTestXml->fillTable("TestTable" , $this->whoIs() );
-            */
-            $this->generateTestTable();
+            $this->generateTestTable( 'myTable' );
             $this->printTestXml->fillTable("Table30" , $this->whoIs() );
             $this->printTestXml->fillTable("Table45" , $this->iConsider() );
             $this->printTestXml->fillTable("Table102" , $this->copiesInConfidenceTo() );
@@ -130,11 +119,11 @@ class PrintTestController extends \BaseController
         return $data;
     }
     
-    public function generateTestTable(){
+    public function generateTestTable( $variable ){
         $data = array(
             'tables' => array(
                 array(
-                    'template_variable_name' => 'my_table',
+                    'template_variable_name' => $variable,
                     'style' => 'border: 1px solid black;',
                     'table-type' => 'full_table',
                     'rows'  => array( 
