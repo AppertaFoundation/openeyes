@@ -3,20 +3,6 @@
 
 Vagrant.require_version ">= 1.5"
 
-# Check to determine whether we're on a windows or linux/os-x host,
-# later on we use this to launch ansible in the supported way
-# source: https://stackoverflow.com/questions/2108727/which-in-ruby-checking-if-program-exists-in-path-from-ruby
-def which(cmd)
-    exts = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
-    ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
-        exts.each { |ext|
-            exe = File.join(path, "#{cmd}#{ext}")
-            return exe if File.executable? exe
-        }
-    end
-    return nil
-end
-
 PLUGINS = %w(vagrant-auto_network vagrant-hostsupdater vagrant-cachier)
 
 PLUGINS.reject! { |plugin| Vagrant.has_plugin? plugin }
@@ -31,6 +17,14 @@ unless PLUGINS.empty?
   end
   puts "Please run again"
   exit 1
+end
+
+# Check to determine whether we're on a windows or linux/os-x host,
+# http://stackoverflow.com/questions/26811089/vagrant-how-to-have-host-platform-specific-provisioning-steps
+module OS
+  def OS.windows?
+      (/cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM) != nil
+  end
 end
 
 AutoNetwork.default_pool = "172.16.0.0/24"
@@ -73,13 +67,18 @@ Vagrant.configure("2") do |config|
     # v.gui = true
   end
 
-  if which('ansible-playbook')
+  # AWS
+  config.vm.provider "AWS" do |v, override|
+    override.vm.box = "dummy"
+  end
+
+  if OS.windows?
+    config.vm.provision :shell, path: "ansible/windows.sh", args: ["default"]
+  else
     config.vm.provision "ansible_local" do |ansible|
       ansible.playbook = "ansible/playbook.yml"
       # ansible.verbose = "vvv" # Debug
     end
-  else
-      config.vm.provision :shell, path: "ansible/windows.sh", args: ["default"]
   end
 
   config.cache.synced_folder_opts = {
