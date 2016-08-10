@@ -12,8 +12,9 @@ class ODTTemplateManager
 {
     var $templateDir;
     var $sourceDir = './files/';
-    var $unzippedDir = '';
-    var $zippedDir = '';
+    var $unzippedDir;
+    var $zippedDir;
+    var $mediaDir;
     var $contentFilename = 'content.xml';
     var $generatedOdt = 'document.odt';
     
@@ -38,6 +39,7 @@ class ODTTemplateManager
         $this->odtFilename = $this->templateDir.'/'.$filename;
         $this->zippedDir = $this->templateDir.'/zipped/'.$this->uniqueId.'/';
         $this->unzippedDir = $this->templateDir.'/unzipped/'.$this->uniqueId.'/';
+        $this->mediaDir = $this->unzippedDir.'media/';
         $this->newOdtFilename = $this->zippedDir.$this->generatedOdt;
         
         $this->unZip();
@@ -59,7 +61,7 @@ class ODTTemplateManager
         $xml->save( $this->unzippedDir.$this->contentFilename );
     }
     
-    public function convertToPdf()
+    public function generatePDF()
     {
         $path = $this->zipOdtFile();
         if($path !== FALSE){
@@ -74,7 +76,7 @@ class ODTTemplateManager
      
     }
     
-    public function strReplace( $data )
+    public function exchangeStringValues( $data )
     {
         $nodes = $this->xpath->query('//text()');
        
@@ -107,14 +109,22 @@ class ODTTemplateManager
         $this->contentXml->saveXML();
     }
     
-    public function imgReplace( $oldImage , $newImageUrl )
+    public function imgReplace( $imagePattern , $newImageUrl )
     {
-       
-        $mediaFolder = $this->unzippedDir.'media/';
         $newImage = substr($newImageUrl, strrpos($newImageUrl, '/') + 1);
-        
         // If the destination (2nd parameter ) file already exists, it will be overwritten.
-        copy( $newImageUrl , $mediaFolder.$oldImage);
+        copy( $newImageUrl , $this->mediaDir.$imagePattern);
+    }
+    
+    public function changeImage( $imagePattern, $image ){
+       
+        if ($image !== false) {
+            imagepng($image, $this->mediaDir.$imagePattern);
+            imagedestroy($image);
+        } else {
+            echo 'An error occurred.';
+        }
+       
     }
 
     private function getTableVariableNode( $nodeValue, $text )

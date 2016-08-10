@@ -34,8 +34,11 @@ class PrintTestController extends \BaseController
         if(isset($_POST['test_print'])){
             $this->printTestXml = new ODTTemplateManager( $this->inputFile , realpath(__DIR__ . '/..').'/files');
         
-            $this->printTestXml->strReplace( $_POST );
-            $this->printTestXml->imgReplace( 'image1.png' , $this->printTestXml->templateDir.'/signature3.png');
+            $this->printTestXml->exchangeStringValues( $_POST );
+            
+           // $this->printTestXml->imgReplace( 'image1.png' , $this->printTestXml->templateDir.'/signature3.png');
+           
+            $this->printTestXml->changeImage( 'image2.png' , $this->testGdImage() );
             
             $tablesData = $this->generateTestTablesData( 'myTable' );
             $this->printTestXml->exchangeGeneratedTablesWithTextNodes($tablesData);
@@ -48,7 +51,7 @@ class PrintTestController extends \BaseController
             
             $this->printTestXml->saveContentXML( $this->printTestXml->contentXml );
            
-            $this->printTestXml->convertToPdf();
+            $this->printTestXml->generatePDF();
             $pdfLink = $this->pdfLink();
         }
        
@@ -153,6 +156,14 @@ class PrintTestController extends \BaseController
             ),
         );
         return $data;
+    }
+    
+    public function testGdImage(){
+        $image = @imagecreate(110, 20) or die("Cannot Initialize new GD image stream");
+        $bgColor = imagecolorallocate($image, 0, 0, 0);
+        $textColor = imagecolorallocate($image, 255, 255, 255);
+        imagestring($image, 2, 10, 5,  "Test String", $textColor);
+        return $image;
     }
     public function pdfLink()
     {
