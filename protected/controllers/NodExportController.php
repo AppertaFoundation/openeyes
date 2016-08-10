@@ -488,10 +488,10 @@ EOL;
     {
         $cleanQuery = <<<EOL
                 
-                 DROP TABLE IF EXISTS tmp_rco_nod_main_event_episodes_{$this->extract_identifier};
-                 DROP TABLE IF EXISTS tmp_rco_nod_patients_{$this->extract_identifier};
-                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodePreOpAssessment_{$this->extract_identifier};
-                 DROP TABLE IF EXISTS tmp_rco_nod_PatientCVIStatus_{$this->extract_identifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_main_event_episodes_{$this->extract_identifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_patients_{$this->extract_identifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodePreOpAssessment_{$this->extract_identifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_PatientCVIStatus_{$this->extract_identifier};
 
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication_type;
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication;
@@ -539,6 +539,8 @@ EOL;
 
     }
 
+    
+    
     /********** Patient **********/
     
     /**
