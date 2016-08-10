@@ -231,7 +231,25 @@ class NodExportController extends BaseController
                 DateOfDeath DATE DEFAULT NULL,
                 IMDScore FLOAT DEFAULT NULL,
                 IsPrivate TINYINT(1) DEFAULT NULL,
-                PRIMARY KEY (`PatientId`)
+                PRIMARY KEY (PatientId)
+            );
+            
+            DROP TABLE IF EXISTS tmp_rco_nod_EpisodePreOpAssessment_{$this->extrcat_table_identifier};
+            CREATE TABLE tmp_rco_nod_EpisodePreOpAssessment_{$this->extrcat_table_identifier} (
+                oe_event_id int(10) NOT NULL,
+                Eye char(1) NOT NULL COMMENT 'L / R',
+                IsAbleToLieFlat char(1) DEFAULT NULL COMMENT '0 = no, 1 = yes',
+                IsInabilityToCooperate char(1) DEFAULT NULL COMMENT '0 = no, 1 = yes',
+                UNIQUE KEY oe_event_id (oe_event_id,Eye)
+            );
+            
+            CREATE TABLE tmp_rco_nod_PatientCVIStatus_{$this->extrcat_table_identifier} (
+                PatientId int(10) NOT NULL,
+                date date NOT NULL,
+                IsDateApprox tinyint(1) DEFAULT NULL,
+                IsCVIBlind tinyint(1) DEFAULT NULL,
+                IsCVIPartial tinyint(1) DEFAULT NULL,
+                UNIQUE KEY PatientId (PatientId,date)
             );
 
 			DROP TABLE IF EXISTS tmp_episode_ids;
@@ -498,6 +516,8 @@ EOL;
     {
         $this->populateTmpRcoNodMainEventEpisodes();
         $this->populateTmpRcoNodPatients();
+        $this->populateTmpRcoNodEpisodePreOpAssessment();
+        $this->populateTmpRcoNodPatientCVIStatus();
     }
     
     // Refactoring :
@@ -586,6 +606,95 @@ EOL;
 EOL;
         Yii::app()->db->createCommand($query)->execute();
     }
+    
+    private function populateTmpRcoNodEpisodePreOpAssessment()
+    {
+        $query = <<<EOL
+                
+                INSERT INTO tmp_rco_nod_EpisodePreOpAssessment_{$this->extrcat_table_identifier} (
+                    oe_event_id,
+                    Eye,
+                    IsAbleToLieFlat,
+                    IsInabilityToCooperate
+                  )
+                SELECT 
+                    c.oe_event_id,
+                    'L' AS Eye,
+                    (SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 1 THEN 1 ELSE 0 END) AS IsAbleToLieFlat,
+                    (SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 4 THEN 1 ELSE 0 END) AS IsInabilityToCooperate
+
+                    /* Restriction: Start with control events */
+                    FROM tmp_rco_nod_main_event_episodes_{$this->extrcat_table_identifier} c 
+
+                    /* Join: Associated procedures, Implicit Restriction: Operations with procedures */
+                    JOIN et_ophtroperationnote_procedurelist pl ON pl.event_id = c.oe_event_id
+
+                    /* Outer Join: patient risks, Implicit Cartesian: all risk_ids  */
+                    LEFT OUTER JOIN patient_risk_assignment pr ON pr.patient_id = c.patient_id # specify LEFT OUTER JOIN syntax in full
+
+                    /* Restrict: LEFT/BOTH eyes */
+                    WHERE pl.eye_id IN (1, 3)
+
+                    /* Group by required as may have multiple procedures on eye */
+                    GROUP BY oe_event_id, Eye, IsAbleToLieFlat, IsInabilityToCooperate;
+                
+                
+                INSERT INTO tmp_rco_nod_EpisodePreOpAssessment_{$this->extrcat_table_identifier} (
+                    oe_event_id,
+                    Eye,
+                    IsAbleToLieFlat,
+                    IsInabilityToCooperate
+                  )
+                SELECT 
+                    c.oe_event_id,
+                    'R' AS Eye,
+                    (SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 1 THEN 1 ELSE 0 END) AS IsAbleToLieFlat,
+                    (SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 4 THEN 1 ELSE 0 END) AS IsInabilityToCooperate
+
+                    /* Restriction: Start with control events */
+                    FROM tmp_rco_nod_main_event_episodes_{$this->extrcat_table_identifier} c 
+
+                    /* Join: Associated procedures, Implicit Restriction: Operations with procedures */
+                    JOIN et_ophtroperationnote_procedurelist pl ON pl.event_id = c.oe_event_id
+
+                    /* Outer Join: patient risks, Implicit Cartesian: all risk_ids  */
+                    LEFT OUTER JOIN patient_risk_assignment pr ON pr.patient_id = c.patient_id # specify LEFT OUTER JOIN syntax in full
+
+                    /* Restrict: LEFT/BOTH eyes */
+                    WHERE pl.eye_id IN (2, 3)
+
+                    /* Group by required as may have multiple procedures on eye */
+                    GROUP BY oe_event_id, Eye, IsAbleToLieFlat, IsInabilityToCooperate;
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+    }
+    
+    // Refactoring :
+    /**
+     * Populate Patient CVI Status
+     */
+    private function populateTmpRcoNodPatientCVIStatus()
+    {
+        $query = <<<EOL
+                INSERT INTO tmp_rco_nod_PatientCVIStatus_{$this->extrcat_table_identifier} (
+                        PatientId,
+                        date,
+                        IsDateApprox,
+                        IsCVIBlind,
+                        IsCVIPartial )
+                SELECT
+                poi.patient_id AS PatientId,
+                poi.cvi_status_date AS `Date`,
+                (SELECT CASE WHEN DAYNAME(DATE) IS NULL THEN 1 ELSE 0 END) AS IsDateApprox,
+                (SELECT CASE WHEN poi.cvi_status_id=4 THEN 1 ELSE 0 END) AS IsCVIBlind,
+                (SELECT CASE WHEN poi.cvi_status_id=3 THEN 1 ELSE 0 END) AS IsCVIPartial
+                FROM patient_oph_info poi
+
+                /* Restriction: patients in control events */
+                WHERE poi.patient_id IN ( SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extrcat_table_identifier}  c );
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+    }
 
     private function clearAllTempTables()
     {
@@ -593,6 +702,8 @@ EOL;
                 
                 DROP TABLE IF EXISTS tmp_rco_nod_main_event_episodes_{$this->extrcat_table_identifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_patients_{$this->extrcat_table_identifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodePreOpAssessment_{$this->extrcat_table_identifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_PatientCVIStatus_{$this->extrcat_table_identifier};
 
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication_type;
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication;
