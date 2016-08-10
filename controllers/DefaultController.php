@@ -19,6 +19,7 @@ namespace OEModule\OphCoCvi\controllers;
 
 use OEModule\OphCoCvi\models;
 use OEModule\OphCoCvi\components\OphCoCvi_Manager;
+use \OEModule\OphCoCvi\components\ODTTemplateManager;
 
 class DefaultController extends \BaseEventTypeController
 {
@@ -191,6 +192,11 @@ class DefaultController extends \BaseEventTypeController
                 $data = array_merge($data,$this->formStructuredData($element));
             }
         }
+        // TODO: we need to match the keys here!
+        // we also need a method to generate the data structure with the ODTDataHandler!
+        $data["signatureName"] = "this is a value";
+        $data["signature_date"] = "11/08/2016";
+        return $data;
     }
 
     /**
@@ -238,8 +244,18 @@ class DefaultController extends \BaseEventTypeController
         }
 
         $event->lock();
+
+        // TODO: need to find a place for the template files! (eg. views/odtTemplates) ?
+        $inputFile = 'example_certificate_4.odt';
+        $printHelper = new ODTTemplateManager( $inputFile , realpath(__DIR__ . '/..').'/files', 'CVICert_'.date('YmdHi').'_'.getmypid().'.odt');
+
         $this->getStructuredDataForPrintPDF($id);
+        $printHelper->exchangeStringValues( $this->getStructuredDataForPrintPDF($id) );
+        $printHelper->saveContentXML();
+        $printHelper->generatePDF();
+        $printHelper->getPDF();
         $event->unlock();
+
         /*$pdf = $event->getPDF($this->pdf_print_suffix);
 
         header('Content-Type: application/pdf');

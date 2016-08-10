@@ -10,17 +10,18 @@ use DomXpath;
 
 class ODTTemplateManager
 {
-    var $templateDir;
-    var $sourceDir = './files/';
-    var $unzippedDir;
-    var $zippedDir;
-    var $mediaDir;
-    var $contentFilename = 'content.xml';
-    var $generatedOdt = 'document.odt';
-    
-    var $inputFile;
-    var $contentXml;
-    var $xpath;
+    private $templateDir;
+    private $sourceDir = './files/';
+    private $unzippedDir;
+    private $zippedDir;
+    private $mediaDir;
+    private $contentFilename = 'content.xml';
+    private $generatedOdt = 'document.odt';
+
+    private $outFile;
+    private $inputFile;
+    private $contentXml;
+    private $xpath;
     
     private $uniqueId = null;
     private $odtFilename = '';
@@ -32,10 +33,15 @@ class ODTTemplateManager
     //Using an exist style declaration in xml
     public $textStyleName = 'T23';
     
-    public function __construct( $filename , $templateDir )
+    public function __construct( $filename , $templateDir, $outputName )
     {
         $this->uniqueId = time();
         $this->templateDir = $templateDir;
+        if(substr($outputName, -3) == 'odt'){
+            $this->generatedOdt = $outputName;
+        }
+        // this will be the PDF, the name is the same as the generated ODT by default!
+        $this->outFile = str_replace($this->generatedOdt,'odt','pdf');
         $this->odtFilename = $this->templateDir.'/'.$filename;
         $this->zippedDir = $this->templateDir.'/zipped/'.$this->uniqueId.'/';
         $this->unzippedDir = $this->templateDir.'/unzipped/'.$this->uniqueId.'/';
@@ -56,9 +62,9 @@ class ODTTemplateManager
         $this->xpath = new DomXpath($this->contentXml);
     }
     
-    public function saveContentXML( $xml )
+    public function saveContentXML( )
     {
-        $xml->save( $this->unzippedDir.$this->contentFilename );
+        $this->contentXml->save( $this->unzippedDir.$this->contentFilename );
     }
     
     public function generatePDF()
@@ -426,5 +432,15 @@ class ODTTemplateManager
         } else if (is_file($path) === true){
             return unlink($path);
         }
+    }
+
+    public function getPDF()
+    {
+
+        header('Content-type: application/pdf');
+        header('Content-Disposition: inline; filename="document.pdf"');
+        header('Content-Transfer-Encoding: binary');
+        header('Content-Length: ' . filesize($this->outFile));
+        @readfile($this->outFile);
     }
 }
