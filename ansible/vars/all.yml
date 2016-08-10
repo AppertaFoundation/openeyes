@@ -43,7 +43,7 @@ mysql_users:
   - name: "{{ openeyes.mysql_user }}"
     host: "%"
     password: "{{ openeyes.mysql_password }}"
-    priv: "openeyes.*:ALL"
+    priv: "*.*:ALL"
   # - name: "{{ openeyes.mysql_user }}"
   #   host: "%"
   #   password: "{{ openeyes.mysql_password }}"
