@@ -8,7 +8,7 @@ use RecursiveDirectoryIterator;
 use DOMDocument;
 use DomXpath;
 
-class CertFromOdtTemplate
+class ODTTemplateManager
 {
     var $templateDir;
     var $sourceDir = './files/';
@@ -52,12 +52,11 @@ class CertFromOdtTemplate
         $this->contentXml-> formatOutput = true;
         $this->contentXml-> preserveWhiteSpace = false;  
         $this->xpath = new DomXpath($this->contentXml);
-   
     }
     
     public function saveContentXML( $xml )
     {
-        $xml->save( $this->unzippedDir.$this->contentFilename);
+        $xml->save( $this->unzippedDir.$this->contentFilename );
     }
     
     public function convertToPdf()
