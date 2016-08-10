@@ -19,20 +19,38 @@
 
 
 <div class="element-data">
-	<div class="row data-row">
-		<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('is_patient'))?>:</div></div>
-		<div class="large-10 column end"><div class="data-value"><?php echo $element->is_patient ? 'Yes' : 'No'?></div></div>
-	</div>
-	<div class="row data-row">
-		<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('signature_date'))?></div></div>
-		<div class="large-10 column end"><div class="data-value"><?php echo CHtml::encode($element->NHSDate('signature_date'))?></div></div>
-	</div>
-	<div class="row data-row">
-		<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('representative_name'))?></div></div>
-		<div class="large-10 column end"><div class="data-value"><?php echo CHtml::encode($element->representative_name)?></div></div>
-	</div>
-	<div class="row data-row">
-		<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('signature_file_id'))?></div></div>
-		<div class="large-10 column end"><div class="data-value"><?php echo $element->signature_file ? $element->signature_file->name : 'None'?></div></div>
-	</div>
+    <div class="row data-row">
+        <div class="large-2 column">
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('is_patient')) ?>:</div>
+        </div>
+        <div class="large-10 column end">
+            <div class="data-value"><?php echo $element->is_patient ? 'Yes' : 'No' ?></div>
+        </div>
+    </div>
+    <div class="row data-row">
+        <div class="large-2 column">
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('signature_date')) ?></div>
+        </div>
+        <div class="large-10 column end">
+            <div class="data-value"><?php echo CHtml::encode($element->NHSDate('signature_date')) ?></div>
+        </div>
+    </div>
+    <div class="row data-row">
+        <div class="large-2 column">
+            <div
+                class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('representative_name')) ?></div>
+        </div>
+        <div class="large-10 column end">
+            <div class="data-value"><?php echo CHtml::encode($element->representative_name) ?></div>
+        </div>
+    </div>
+    <div class="row data-row">
+        <div class="large-2 column">
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('signature_file_id')) ?></div>
+        </div>
+        <div class="large-10 column end">
+            <div
+                class="data-value"><?php echo $element->signature_file ? $element->signature_file->name : 'None' ?></div>
+        </div>
+    </div>
 </div>

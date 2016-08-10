@@ -19,17 +19,15 @@
 namespace OEModule\OphCoCvi\models;
 
 /**
- * This is the model class for table "et_ophcocvi_clericinfo".
+ * This is the model class for table "ophcocvi_clinicinfo_disorder_section".
  *
  * The followings are the available columns in table:
  * @property string $id
- * @property integer $event_id
- * @property integer $employment_status_id
- * @property integer $preferred_info_fmt_id
- * @property string $info_email
- * @property integer $contact_urgency_id
- * @property integer $preferred_language_id
- * @property string $social_service_comments
+ * @property string $name
+ * @property boolean $comments_allowed
+ * @property string $comments_label
+ * @property integer $display_order
+ * @propety boolean $active
  *
  * The followings are the available model relations:
  *
@@ -38,13 +36,9 @@ namespace OEModule\OphCoCvi\models;
  * @property Event $event
  * @property User $user
  * @property User $usermodified
- * @property OphCoCvi_ClericalInfo_EmploymentStatus $employment_status
- * @property OphCoCvi_ClericalInfo_PreferredInfoFmt $preferred_info_fmt
- * @property OphCoCvi_ClericalInfo_ContactUrgency $contact_urgency
- * @property Language $preferred_language
  */
 
-class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
+class OphCoCvi_ClinicalInfo_Disorder_Section extends \BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
@@ -60,7 +54,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
      */
     public function tableName()
     {
-        return 'et_ophcocvi_clericinfo';
+        return 'ophcocvi_clinicinfo_disorder_section';
     }
 
     /**
@@ -69,16 +63,9 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
     public function rules()
     {
         return array(
-            array(
-                'event_id, employment_status_id, preferred_info_fmt_id, info_email, contact_urgency_id, preferred_language_id, social_service_comments, ',
-                'safe'
-            ),
-            //array('employment_status_id, preferred_info_fmt_id, contact_urgency_id, preferred_language_id, social_service_comments, ', 'required'),
-            array(
-                'id, event_id, employment_status_id, preferred_info_fmt_id, info_email, contact_urgency_id, preferred_language_id, social_service_comments, ',
-                'safe',
-                'on' => 'search'
-            ),
+            array('name', 'safe'),
+            array('name', 'required'),
+            array('id, name', 'safe', 'on' => 'search'),
         );
     }
 
@@ -98,22 +85,6 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'employment_status' => array(
-                self::BELONGS_TO,
-                'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_EmploymentStatus',
-                'employment_status_id'
-            ),
-            'preferred_info_fmt' => array(
-                self::BELONGS_TO,
-                'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PreferredInfoFmt',
-                'preferred_info_fmt_id'
-            ),
-            'contact_urgency' => array(
-                self::BELONGS_TO,
-                'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_ContactUrgency',
-                'contact_urgency_id'
-            ),
-            'preferred_language' => array(self::BELONGS_TO, 'Language', 'preferred_language_id'),
         );
     }
 
@@ -124,13 +95,8 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
     {
         return array(
             'id' => 'ID',
-            'event_id' => 'Event',
-            'employment_status_id' => 'Employment status',
-            'preferred_info_fmt_id' => 'Preferred information format',
-            'info_email' => 'Info email',
-            'contact_urgency_id' => 'Contact urgency',
-            'preferred_language_id' => 'Preferred language',
-            'social_service_comments' => 'Social service comments',
+            'name' => 'Name',
+            'active' => 'Active'
         );
     }
 
@@ -141,20 +107,11 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
     public function search()
     {
         $criteria = new CDbCriteria;
-
         $criteria->compare('id', $this->id, true);
-        $criteria->compare('event_id', $this->event_id, true);
-        $criteria->compare('employment_status_id', $this->employment_status_id);
-        $criteria->compare('preferred_info_fmt_id', $this->preferred_info_fmt_id);
-        $criteria->compare('info_email', $this->info_email);
-        $criteria->compare('contact_urgency_id', $this->contact_urgency_id);
-        $criteria->compare('preferred_language_id', $this->preferred_language_id);
-        $criteria->compare('social_service_comments', $this->social_service_comments);
+        $criteria->compare('name', $this->name, true);
 
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
     }
 }
-
-?>

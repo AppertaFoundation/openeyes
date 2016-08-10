@@ -17,12 +17,41 @@
 
 ?>
 
-<div class="element-fields row">
-	<?php echo $form->dropDownList($element, 'employment_status_id', CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_EmploymentStatus::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'))?>
-	<?php echo $form->dropDownList($element, 'preferred_info_fmt_id', CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PreferredInfoFmt::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'))?>
-	<?php echo $form->textField($element, 'info_email', array('size' => '20'))?>
-	<?php echo $form->dropDownList($element, 'contact_urgency_id', CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_ContactUrgency::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'))?>
-	<?php echo $form->dropDownList($element, 'preferred_language_id', CHtml::listData(Language::model()->findAll(array('order'=> 'name asc')),'id','name'),array('empty'=>'- Please select -'))?>
-	<?php echo $form->textArea($element, 'social_service_comments', array('rows' => 6, 'cols' => 80))?>
-</div>
+<?php
+if ($this->checkClericalEditAccess()) { ?>
+	<?php
+	$model = OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_PatientFactor::model();
+	$element1 = OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo_PatientFactor_Answer::model();
+	foreach ($model->findAll('`active` = ?',array(1)) as $factor) {?>
+		<div class="element-fields row">
+			<?php echo CHtml::hiddenField('patient_factor_id' , $factor->id, array('id' => 'hiddenInput')); ?>
+			<?php echo $form->radioMultiOption($element1,'is_factor',$factor->name);?>
+		</div>
+		<?php if($factor->require_comments == 1){?>
+		<div class="element-fields row">
+			<?php echo $form->textArea($element1, 'comments', array('rows' => 4, 'cols' => 80))?>
+		</div>
+		<?php }
+	}?>
+
+    <div class="element-fields row">
+        <?php echo $form->dropDownList($element, 'employment_status_id',
+            CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_EmploymentStatus::model()->findAll(array('order' => 'display_order asc')),
+                'id', 'name'), array('empty' => '- Please select -')) ?>
+        <?php echo $form->dropDownList($element, 'preferred_info_fmt_id',
+            CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PreferredInfoFmt::model()->findAll(array('order' => 'display_order asc')),
+                'id', 'name'), array('empty' => '- Please select -')) ?>
+        <?php echo $form->textField($element, 'info_email', array('size' => '20')) ?>
+        <?php echo $form->dropDownList($element, 'contact_urgency_id',
+            CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_ContactUrgency::model()->findAll(array('order' => 'display_order asc')),
+                'id', 'name'), array('empty' => '- Please select -')) ?>
+        <?php echo $form->dropDownList($element, 'preferred_language_id',
+            CHtml::listData(Language::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
+            array('empty' => '- Please select -')) ?>
+        <?php echo $form->textArea($element, 'social_service_comments', array('rows' => 6, 'cols' => 80)) ?>
+    </div>
+    <?php
+} else {
+    $this->renderPartial('view_Element_OphCoCvi_ClericalInfo', array('element' => $element));
+} ?>
 

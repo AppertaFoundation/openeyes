@@ -18,6 +18,8 @@
 ?>
 
 <div class="element-fields row">
-	<?php echo $form->radioBoolean($element, 'is_draft')?>
-	<?php echo $form->dropDownList($element, 'generated_document_id', CHtml::listData(\ProtectedFile::model()->findAll(array('order'=> 'name asc')),'id','name'),array('empty'=>'- Please select -'))?>
+    <?php echo $form->radioBoolean($element, 'is_draft') ?>
+    <?php echo $form->dropDownList($element, 'generated_document_id',
+        CHtml::listData(\ProtectedFile::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
+        array('empty' => '- Please select -')) ?>
 </div>

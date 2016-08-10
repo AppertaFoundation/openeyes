@@ -15,30 +15,17 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-?>
+class m160805_110502_remove_disorder_default extends CDbMigration
+{
+    public function up()
+    {
+        $this->dropColumn('ophcocvi_clinicinfo_disorder', 'default');
+        $this->dropColumn('ophcocvi_clinicinfo_disorder_version', 'default');
+    }
 
-<?php
-$this->beginContent('//patient/event_container'); ?>
-
-<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-    'id' => 'create-form',
-    'enableAjaxValidation' => false,
-    'layoutColumns' => array(
-        'label' => 2,
-        'field' => 10
-    )
-));
-
-// Event actions
-$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => 'create-form'));
-
-?>
-
-<?php $this->displayErrors($errors) ?>
-<?php $this->renderPartial('//patient/event_elements', array('form' => $form)); ?>
-
-<?php $this->displayErrors($errors, true) ?>
-
-<?php $this->endWidget() ?>
-
-<?php $this->endContent() ?>
+    public function down()
+    {
+        $this->addColumn('ophcocvi_clinicinfo_disorder_version', 'default', 'tinyint(1) unsigned NOT NULL DEFAULT 0');
+        $this->addColumn('ophcocvi_clinicinfo_disorder', 'default', 'tinyint(1) unsigned NOT NULL DEFAULT 0');
+    }
+}
