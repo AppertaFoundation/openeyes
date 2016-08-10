@@ -31,15 +31,18 @@
     - eyedraw
     - sample
 
-# Populate MySQL database TODO; Use info in all.yml / vars.yml
-- name: Populate DB from dump file (when set)
+# Populate MySQL databases
+- name: Populate databases from dump file (when set)
   mysql_db:
     state: import
-    name: openeyes
+    name: "{{ item }}"
     target: "{{ openeyes.mysql_dump }}"
     login_user: "root"
     login_password: "{{ openeyes.mysql_root_password }}"
   when: openeyes.mysql_dump
+  with_items:
+    - openeyes
+    - openeyestest
 
 # Add in banner (TODO: Only works if the sameple dataset loaded)
 # - name: Add banner info into MySQL
