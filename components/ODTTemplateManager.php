@@ -143,14 +143,14 @@ class ODTTemplateManager
         
     }
 
-    public function exchangeStringValues($data)
+    public function exchangeGeneratedTablesWithTextNodes($data)
     {
         //generate tables, if needed..
         if(is_array($data['tables']) && !empty($data['tables'])){
             $tables = $this->generateXmlTables( $data['tables'] );
         }
         
-        
+        // replace tables with text-node
         foreach( $tables as $templateVariableName => $tableXml ){
             $this->replaceTableNode( $templateVariableName, $tableXml );
         }
@@ -198,6 +198,17 @@ class ODTTemplateManager
         return $element;
     }
     
+    private function getTableColsCount( $firstRow )
+    {
+        $colCount=0;
+        foreach($firstRow as $oneCell){
+            if($oneCell['cell-type'] != 'covered'){
+                $colCount += ($oneCell['colspan'] > 0 ) ? $oneCell['colspan'] : 1;
+            }
+        }
+        return $colCount;
+    }
+    
     private function generateXmlTables( $tablesData )
     {
         $colsLabel = range('A', 'Z');
@@ -206,9 +217,10 @@ class ODTTemplateManager
             $tableXml = new DOMDocument('1.0', 'utf-8');
             $tableName = 'mytable'.$tableKey;
             $tableStyleName = 'mytable'.$tableKey;
+            $colsCount = $this -> getTableColsCount( $oneTable['rows'][0]['cells'] ); // parameter is the first row.
 
             $table  = $this -> createNode( $tableXml, 'table:table', array( 'table:name'=>$tableName, 'table:style-name' => $tableStyleName ) );
-            $tableHeader = $this -> createNode( $tableXml, 'table:table-column', array( 'table:style-name'=>"T1.A", 'table:number-columns-repeated' => "3") );
+            $tableHeader = $this -> createNode( $tableXml, 'table:table-column', array( 'table:style-name'=>"T1.A", 'table:number-columns-repeated' => $colsCount) );
             $table -> appendChild( $tableHeader );
             
             $rowDeep = 0;
@@ -256,7 +268,8 @@ class ODTTemplateManager
         return $tables;
     }
     
-    public function customSquare( $appendTo ){
+    public function customSquare( $appendTo )
+    {
         $svgTitle = $this->xmlDoc->createElement('svg:title');
         $svgDesc = $this->xmlDoc->createElement('svg:desc');
         $square = $this->xmlDoc->createElement('draw:custom-shape', 'sas');
@@ -272,7 +285,8 @@ class ODTTemplateManager
         $newSquare->setAttribute("svg:height", "0.40000in");
     }
     
-    public function createSquareStyle(){
+    public function createSquareStyle()
+    {
         $nodes = $this->xpath->query('//office:automatic-styles');
         
         foreach($nodes as $node){

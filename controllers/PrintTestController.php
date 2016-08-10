@@ -37,7 +37,9 @@ class PrintTestController extends \BaseController
             $this->printTestXml->strReplace( $_POST );
             $this->printTestXml->imgReplace( 'image1.png' , $this->printTestXml->templateDir.'/signature3.png');
             
-            $this->generateTestTable( 'myTable' );
+            $tablesData = $this->generateTestTablesData( 'myTable' );
+            $this->printTestXml->exchangeGeneratedTablesWithTextNodes($tablesData);
+            
             $this->printTestXml->fillTable("Table30" , $this->whoIs() );
             $this->printTestXml->fillTable("Table45" , $this->iConsider() );
             $this->printTestXml->fillTable("Table102" , $this->copiesInConfidenceTo() );
@@ -119,7 +121,7 @@ class PrintTestController extends \BaseController
         return $data;
     }
     
-    public function generateTestTable( $variable ){
+    public function generateTestTablesData( $variable ){
         $data = array(
             'tables' => array(
                 array(
@@ -150,7 +152,7 @@ class PrintTestController extends \BaseController
                 array( 'template_variable_name' => 'my_name', 'data' => 'Kecskes Peter' ),
             ),
         );
-        $this->printTestXml->exchangeStringValues($data);
+        return $data;
     }
     public function pdfLink()
     {
