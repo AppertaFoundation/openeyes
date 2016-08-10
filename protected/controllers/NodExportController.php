@@ -220,7 +220,19 @@ class NodExportController extends BaseController
                 nod_date date NOT NULL,
                 oe_event_type tinyint(2) NOT NULL,
                 PRIMARY KEY (oe_event_id)
-             );
+            );
+
+            DROP TABLE IF EXISTS tmp_rco_nod_patients_{$this->extrcat_table_identifier};
+            CREATE TABLE tmp_rco_nod_patients_{$this->extrcat_table_identifier} (
+                PatientId INT(10) NOT NULL,
+                GenderId TINYINT(1) NOT NULL,
+                EthnicityId VARCHAR(2) NOT NULL,
+                DateOfBirth DATE NOT NULL,
+                DateOfDeath DATE DEFAULT NULL,
+                IMDScore FLOAT DEFAULT NULL,
+                IsPrivate TINYINT(1) DEFAULT NULL,
+                PRIMARY KEY (`PatientId`)
+            );
 
 			DROP TABLE IF EXISTS tmp_episode_ids;
 			
@@ -485,6 +497,7 @@ EOL;
     private function populateAllTempTables()
     {
         $this->populateTmpRcoNodMainEventEpisodes();
+        $this->populateTmpRcoNodPatients();
     }
     
     // Refactoring :
@@ -540,11 +553,46 @@ EOL;
         Yii::app()->db->createCommand($query)->execute();
     }
 
+    // Refactoring :
+    /**
+     *  Load nod_patients data (using previously identified patients in control table)
+     */
+    private function populateTmpRcoNodPatients()
+    {
+        $query = <<<EOL
+                INSERT INTO tmp_rco_nod_patients_{$this->extrcat_table_identifier} (
+                    PatientId,
+                    GenderId,
+                    EthnicityId,
+                    DateOfBirth,
+                    DateOfDeath,
+                    IMDScore,
+                    IsPrivate
+                  ) 
+                  SELECT
+                          p.id AS PatientId,
+                          (SELECT CASE WHEN gender='F' THEN 2 WHEN gender='M' THEN 1 ELSE 9 END) AS GenderId,
+                          IFNULL((SELECT ethnic_group.code FROM ethnic_group WHERE ethnic_group.id = p.ethnic_group_id), 'Z') AS EthnicityId,
+                          IFNULL( DATE_ADD(dob, INTERVAL ROUND((RAND() * (3-1))+1) MONTH) , '') AS DateOfBirth,
+                          IFNULL(DATE(date_of_death), NULL) AS DateOfDeath,
+                          NULL AS IMDScore,
+                          NULL AS IsPrivate
+                  FROM patient p
+                  WHERE p.id IN
+                    (
+                        SELECT DISTINCT(c.patient_id)
+                        FROM tmp_rco_nod_main_event_episodes_{$this->extrcat_table_identifier} c
+                    )
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+    }
+
     private function clearAllTempTables()
     {
         $cleanQuery = <<<EOL
                 
                 DROP TABLE IF EXISTS tmp_rco_nod_main_event_episodes_{$this->extrcat_table_identifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_patients_{$this->extrcat_table_identifier};
 
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication_type;
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication;
