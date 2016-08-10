@@ -26,6 +26,7 @@ apache_mods_enabled:
   # - version.load # TODO not present in standard build (is it required)
 
 # https://github.com/geerlingguy/ansible-role-mysql
+# TODO make the user permissions more granular
 mysql_root_password: "{{ openeyes.mysql_root_password }}"
 mysql_port: "3306"
 mysql_bind_address: '0.0.0.0'
@@ -79,6 +80,7 @@ php_packages:
 
 # https://github.com/geerlingguy/ansible-role-composer
 composer_keep_updated: true
+composer_process_timeout: 600
 # composer_github_oauth_token: ''
 
 # https://github.com/MaximeThoonsen/ansible-role-php-xdebug
