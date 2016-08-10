@@ -32,7 +32,7 @@ class PrintTestController extends \BaseController
     {
         $pdfLink = '';
         if(isset($_POST['test_print'])){
-            $this->printTestXml = new CertFromOdtTemplate( $this->inputFile , realpath(__DIR__ . '/..').'/files');
+            $this->printTestXml = new ODTTemplateManager( $this->inputFile , realpath(__DIR__ . '/..').'/files');
         
             $this->printTestXml->strReplace( $_POST );
             $this->printTestXml->imgReplace( 'image1.png' , $this->printTestXml->templateDir.'/signature3.png');
