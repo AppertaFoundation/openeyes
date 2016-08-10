@@ -44,7 +44,7 @@ class NodExportController extends BaseController
      * two or more extract running at the same time can use different tmp tables
      * @var int 
      */
-    private $extrcat_table_identifier;
+    private $extract_identifier;
     
 
     public function accessRules()
@@ -107,7 +107,7 @@ class NodExportController extends BaseController
         // tmp tables will be normal DB tables instead of real TEMPORARY tables because in some queries
         // we need to refer the tmp table (like sub-select) two or more times - and in MySQL a tmp table can be referred only once in a query
         // (this prevents error if someone starts 2 extract)
-        $this->extrcat_table_identifier = date('His');
+        $this->extract_identifier = date('His');
 
         parent::init();
     }
@@ -210,32 +210,14 @@ class NodExportController extends BaseController
         // DROP all tables if exsist before createing them
         $this->clearAllTempTables();
         
+        $this->createTmpRcoNodMainEventEpisodes();
+        $this->createTmpRcoNodPatients();
+        $this->createTmpRcoNodPatientCVIStatus();
+        $this->createTmpRcoNodEpisodePreOpAssessment();
+        
         $createTempQuery = <<<EOL
 
-            DROP TABLE IF EXISTS tmp_rco_nod_main_event_episodes_{$this->extrcat_table_identifier};
-            CREATE TABLE tmp_rco_nod_main_event_episodes_{$this->extrcat_table_identifier} (
-                oe_event_id int(10) NOT NULL,
-                patient_id int(10) NOT NULL,
-                nod_episode_id int(10) NOT NULL,
-                nod_date date NOT NULL,
-                oe_event_type tinyint(2) NOT NULL,
-                PRIMARY KEY (oe_event_id)
-            );
-
-            DROP TABLE IF EXISTS tmp_rco_nod_patients_{$this->extrcat_table_identifier};
-            CREATE TABLE tmp_rco_nod_patients_{$this->extrcat_table_identifier} (
-                PatientId INT(10) NOT NULL,
-                GenderId TINYINT(1) NOT NULL,
-                EthnicityId VARCHAR(2) NOT NULL,
-                DateOfBirth DATE NOT NULL,
-                DateOfDeath DATE DEFAULT NULL,
-                IMDScore FLOAT DEFAULT NULL,
-                IsPrivate TINYINT(1) DEFAULT NULL,
-                PRIMARY KEY (`PatientId`)
-            );
-
-			DROP TABLE IF EXISTS tmp_episode_ids;
-			
+			DROP TABLE IF EXISTS tmp_episode_ids;			
 			CREATE TABLE tmp_episode_ids(
 				id  int(10) UNSIGNED NOT NULL UNIQUE,
 				KEY `tmp_episode_ids_id` (`id`)
@@ -498,101 +480,18 @@ EOL;
     {
         $this->populateTmpRcoNodMainEventEpisodes();
         $this->populateTmpRcoNodPatients();
+        $this->populateTmpRcoNodEpisodePreOpAssessment();
+        $this->populateTmpRcoNodPatientCVIStatus();
     }
     
-    // Refactoring :
-    /**
-     * Load main control table with ALL events
-     */
-    private function populateTmpRcoNodMainEventEpisodes()
-    {
-        $query = <<<EOL
-                #Load main control table with ALL operation events
-                INSERT INTO tmp_rco_nod_main_event_episodes_{$this->extrcat_table_identifier} (
-                    oe_event_id,
-                    patient_id,
-                    nod_episode_id,
-                    nod_date,
-                    oe_event_type
-                )
-                SELECT
-                    event.id AS oe_event_id,
-                    episode.patient_id AS patient_id,
-                    event.id AS nod_episode_id,
-                    DATE(event.event_date) AS nod_date,
-                    event_type_id AS oe_event_type
-                FROM event
-                JOIN episode ON event.episode_id = episode.id
-                JOIN event_type ON event.event_type_id = event_type.id AND event_type.name = 'Operation Note';
-                
-                
-                #Load main control table with ALL examination events (using previously identified patients in control table)
-                INSERT INTO  tmp_rco_nod_main_event_episodes_{$this->extrcat_table_identifier} (
-                                oe_event_id,
-                                patient_id,
-                                nod_episode_id,
-                                nod_date,
-                                oe_event_type 
-                )
-                SELECT
-                        event.id AS oe_event_id,
-                        episode.patient_id AS patient_id,
-                        event.id AS nod_episode_id,
-                        DATE(event.event_date) AS nod_date,
-                        event.event_type_id AS oe_event_type
-                FROM event
-                JOIN episode ON event.episode_id = episode.id
-                WHERE  episode.patient_id IN (SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extrcat_table_identifier} c)
-                AND event.event_type_id IN
-                    (
-                        SELECT event_type.id
-                        FROM event_type
-                        WHERE event_type.`name` IN ('Examination', 'Biometry', 'Prescription')
-                    );
-EOL;
-        Yii::app()->db->createCommand($query)->execute();
-    }
-
-    // Refactoring :
-    /**
-     *  Load nod_patients data (using previously identified patients in control table)
-     */
-    private function populateTmpRcoNodPatients()
-    {
-        $query = <<<EOL
-                INSERT INTO tmp_rco_nod_patients_{$this->extrcat_table_identifier} (
-                    PatientId,
-                    GenderId,
-                    EthnicityId,
-                    DateOfBirth,
-                    DateOfDeath,
-                    IMDScore,
-                    IsPrivate
-                  ) 
-                  SELECT
-                          p.id AS PatientId,
-                          (SELECT CASE WHEN gender='F' THEN 2 WHEN gender='M' THEN 1 ELSE 9 END) AS GenderId,
-                          IFNULL((SELECT ethnic_group.code FROM ethnic_group WHERE ethnic_group.id = p.ethnic_group_id), 'Z') AS EthnicityId,
-                          IFNULL( DATE_ADD(dob, INTERVAL ROUND((RAND() * (3-1))+1) MONTH) , '') AS DateOfBirth,
-                          IFNULL(DATE(date_of_death), NULL) AS DateOfDeath,
-                          NULL AS IMDScore,
-                          NULL AS IsPrivate
-                  FROM patient p
-                  WHERE p.id IN
-                    (
-                        SELECT DISTINCT(c.patient_id)
-                        FROM tmp_rco_nod_main_event_episodes_{$this->extrcat_table_identifier} c
-                    )
-EOL;
-        Yii::app()->db->createCommand($query)->execute();
-    }
-
     private function clearAllTempTables()
     {
         $cleanQuery = <<<EOL
                 
-                DROP TABLE IF EXISTS tmp_rco_nod_main_event_episodes_{$this->extrcat_table_identifier};
-                DROP TABLE IF EXISTS tmp_rco_nod_patients_{$this->extrcat_table_identifier};
+                 DROP TABLE IF EXISTS tmp_rco_nod_main_event_episodes_{$this->extract_identifier};
+                 DROP TABLE IF EXISTS tmp_rco_nod_patients_{$this->extract_identifier};
+                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodePreOpAssessment_{$this->extract_identifier};
+                 DROP TABLE IF EXISTS tmp_rco_nod_PatientCVIStatus_{$this->extract_identifier};
 
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication_type;
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication;
@@ -640,30 +539,73 @@ EOL;
 
     }
 
+    /********** Patient **********/
+    
+    /**
+     * Create tmp_rco_nod_patients_{$this->extract_identifier} table
+     */
+    private function createTmpRcoNodPatients()
+    {
+        $query = <<<EOL
+            DROP TABLE IF EXISTS tmp_rco_nod_patients_{$this->extract_identifier};
+            CREATE TABLE tmp_rco_nod_patients_{$this->extract_identifier} (
+                PatientId INT(10) NOT NULL,
+                GenderId TINYINT(1) NOT NULL,
+                EthnicityId VARCHAR(2) NOT NULL,
+                DateOfBirth DATE NOT NULL,
+                DateOfDeath DATE DEFAULT NULL,
+                IMDScore FLOAT DEFAULT NULL,
+                IsPrivate TINYINT(1) DEFAULT NULL,
+                PRIMARY KEY (PatientId)
+            );
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+    }
+    
+    /**
+     *  Load nod_patients data (using previously identified patients in control table)
+     */
+    private function populateTmpRcoNodPatients()
+    {
+        $query = <<<EOL
+                INSERT INTO tmp_rco_nod_patients_{$this->extract_identifier} (
+                    PatientId,
+                    GenderId,
+                    EthnicityId,
+                    DateOfBirth,
+                    DateOfDeath,
+                    IMDScore,
+                    IsPrivate
+                  ) 
+                  SELECT
+                          p.id AS PatientId,
+                          (SELECT CASE WHEN gender='F' THEN 2 WHEN gender='M' THEN 1 ELSE 9 END) AS GenderId,
+                          IFNULL((SELECT ethnic_group.code FROM ethnic_group WHERE ethnic_group.id = p.ethnic_group_id), 'Z') AS EthnicityId,
+                          IFNULL( DATE_ADD(dob, INTERVAL ROUND((RAND() * (3-1))+1) MONTH) , '') AS DateOfBirth,
+                          IFNULL(DATE(date_of_death), NULL) AS DateOfDeath,
+                          NULL AS IMDScore,
+                          NULL AS IsPrivate
+                  FROM patient p
+                  WHERE p.id IN
+                    (
+                        SELECT DISTINCT(c.patient_id)
+                        FROM tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c
+                    )
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+    }
+    
     /**
      * The extraction of patient data is psuedoanonymised. All tables prefixed with “Patient” link back to the
      * “Patient” table via the ‘PatientId’ variable. Each patient on the RCOphth NOD will have one row in the “Patient” table.
      */
     private function getPatients()
     {
-
-        $query = "SELECT id as PatientId, "
-            . "(SELECT CASE WHEN gender='F' THEN 2 WHEN gender='M' THEN 1 ELSE 9 END) as GenderId, "
-            . "IFNULL((SELECT `code` FROM ethnic_group WHERE ethnic_group.id = patient.ethnic_group_id), 'Z') AS EthnicityId, "
-            . "IFNULL( DATE_ADD(dob, INTERVAL ROUND((RAND() * (3-1))+1) MONTH) , '') AS DateOfBirth, "
-            . "IFNULL(date_of_death, '') as DateOfDeath, "
-            . "'' as IMDScore, '' as IsPrivate "
-            . "FROM patient "
-            . "WHERE patient.id IN (SELECT patient_id FROM episode WHERE episode.id IN
-                                    (SELECT id FROM ((SELECT id FROM tmp_episode_ids)
-                                            UNION ALL
-                                    (SELECT episode_id AS id FROM event WHERE event.id in (SELECT id FROM tmp_operation_ids)) 
-                                            UNION ALL
-                                    (SELECT episode_id AS id FROM event e 
-                                            JOIN et_ophtroperationnote_procedurelist eop ON eop.event_id = e.id 
-                                            JOIN ophtroperationnote_procedurelist_procedure_assignment oppa ON oppa.procedurelist_id = eop.id 
-                                            WHERE oppa.id IN (SELECT id FROM tmp_treatment_ids))) a )) ";
-
+        $query = <<<EOL
+                SELECT * 
+                FROM tmp_rco_nod_patients_{$this->extract_identifier}
+EOL;
+        
         $dataQuery = array(
             'query' => $query,
             'header' => array('PatientId', 'GenderId', 'EthnicityId', 'DateOfBirth', 'DateOfDeath', 'IMDScore', 'IsPrivate'),
@@ -671,29 +613,61 @@ EOL;
 
         $this->saveCSVfile($dataQuery, 'Patient');
     }
+    
+    /********** end of Patient **********/
+    
+    
+    
+    /********** PatientCVIStatus **********/
+    
+    private function createTmpRcoNodPatientCVIStatus()
+    {
+        $query = <<<EOL
+            CREATE TABLE tmp_rco_nod_PatientCVIStatus_{$this->extract_identifier} (
+                PatientId int(10) NOT NULL,
+                date date NOT NULL,
+                IsDateApprox tinyint(1) DEFAULT NULL,
+                IsCVIBlind tinyint(1) DEFAULT NULL,
+                IsCVIPartial tinyint(1) DEFAULT NULL,
+                UNIQUE KEY PatientId (PatientId,date)
+            );
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+    }
+    
+    /**
+     * Populate Patient CVI Status
+     */
+    private function populateTmpRcoNodPatientCVIStatus()
+    {
+        $query = <<<EOL
+                INSERT INTO tmp_rco_nod_PatientCVIStatus_{$this->extract_identifier} (
+                        PatientId,
+                        date,
+                        IsDateApprox,
+                        IsCVIBlind,
+                        IsCVIPartial )
+                SELECT
+                poi.patient_id AS PatientId,
+                poi.cvi_status_date AS `Date`,
+                (SELECT CASE WHEN DAYNAME(DATE) IS NULL THEN 1 ELSE 0 END) AS IsDateApprox,
+                (SELECT CASE WHEN poi.cvi_status_id=4 THEN 1 ELSE 0 END) AS IsCVIBlind,
+                (SELECT CASE WHEN poi.cvi_status_id=3 THEN 1 ELSE 0 END) AS IsCVIPartial
+                FROM patient_oph_info poi
 
+                /* Restriction: patients in control events */
+                WHERE poi.patient_id IN ( SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extract_identifier}  c );
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+    }       
+    
     private function getPatientCviStatus()
     {
-
-        $query = "SELECT
-                                episode.`patient_id` AS PatientId,
-                                cvi_status_date AS `Date`,
-                                (SELECT CASE WHEN DAYNAME(DATE) IS NULL THEN 1 END) AS IsDateApprox, 
-                                (SELECT CASE WHEN cvi_status_id=4 THEN 1 END) AS IsCVIBlind, 
-                                (SELECT CASE WHEN cvi_status_id=3 THEN 1 END) AS IsCVIPartial
-                        FROM episode
-                        JOIN patient ON episode.`patient_id` = patient.id
-                        JOIN patient_oph_info ON patient.id = patient_oph_info.`patient_id`
-                        WHERE episode.`patient_id` IN (SELECT patient_id FROM episode WHERE episode.id IN 
-								(SELECT id FROM ((SELECT id FROM tmp_episode_ids) 
-									UNION ALL
-								(SELECT episode_id AS id FROM event WHERE event.id in (SELECT id FROM tmp_operation_ids)) 
-									UNION ALL
-								(SELECT episode_id AS id FROM event e 
-									JOIN et_ophtroperationnote_procedurelist eop ON eop.event_id = e.id 
-									JOIN ophtroperationnote_procedurelist_procedure_assignment oppa ON oppa.procedurelist_id = eop.id 
-									WHERE oppa.id IN (SELECT id FROM tmp_treatment_ids))) a ))";
-
+        $query = <<<EOL
+                SELECT *
+                FROM tmp_rco_nod_PatientCVIStatus_{$this->extract_identifier}
+EOL;
+                
         $dataQuery = array(
             'query' => $query,
             'header' => array('PatientId', 'Date', 'IsDateApprox', 'IsCVIBlind', 'IsCVIPartial'),
@@ -701,21 +675,87 @@ EOL;
 
         $this->saveCSVfile($dataQuery, 'PatientCVIStatus');
     }
-
+    
+    /********** end of PatientCVIStatus **********/
+    
+    
+    
+    /********** Episode **********/
+    
+    private function createTmpRcoNodMainEventEpisodes()
+    {
+        $query = <<<EOL
+            DROP TABLE IF EXISTS tmp_rco_nod_main_event_episodes_{$this->extract_identifier};
+            CREATE TABLE tmp_rco_nod_main_event_episodes_{$this->extract_identifier} (
+                oe_event_id int(10) NOT NULL,
+                patient_id int(10) NOT NULL,
+                nod_episode_id int(10) NOT NULL,
+                nod_date date NOT NULL,
+                oe_event_type tinyint(2) NOT NULL,
+                PRIMARY KEY (oe_event_id)
+            );
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+    }
+    
+    /**
+     * Load main control table with ALL events
+     */
+    private function populateTmpRcoNodMainEventEpisodes()
+    {
+        $query = <<<EOL
+                #Load main control table with ALL operation events
+                INSERT INTO tmp_rco_nod_main_event_episodes_{$this->extract_identifier} (
+                    oe_event_id,
+                    patient_id,
+                    nod_episode_id,
+                    nod_date,
+                    oe_event_type
+                )
+                SELECT
+                    event.id AS oe_event_id,
+                    episode.patient_id AS patient_id,
+                    event.id AS nod_episode_id,
+                    DATE(event.event_date) AS nod_date,
+                    event_type_id AS oe_event_type
+                FROM event
+                JOIN episode ON event.episode_id = episode.id
+                JOIN event_type ON event.event_type_id = event_type.id AND event_type.name = 'Operation Note';
+                
+                
+                #Load main control table with ALL examination events (using previously identified patients in control table)
+                INSERT INTO  tmp_rco_nod_main_event_episodes_{$this->extract_identifier} (
+                                oe_event_id,
+                                patient_id,
+                                nod_episode_id,
+                                nod_date,
+                                oe_event_type 
+                )
+                SELECT
+                        event.id AS oe_event_id,
+                        episode.patient_id AS patient_id,
+                        event.id AS nod_episode_id,
+                        DATE(event.event_date) AS nod_date,
+                        event.event_type_id AS oe_event_type
+                FROM event
+                JOIN episode ON event.episode_id = episode.id
+                WHERE  episode.patient_id IN (SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c)
+                AND event.event_type_id IN
+                    (
+                        SELECT event_type.id
+                        FROM event_type
+                        WHERE event_type.`name` IN ('Examination', 'Biometry', 'Prescription')
+                    );
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+    }
+    
     private function getEpisode()
     {
-
-        $query = "SELECT patient_id as PatientId, id as EpisodeId, DATE(start_date) as Date FROM episode WHERE episode.id IN
-								(SELECT id FROM ((SELECT id FROM tmp_episode_ids) 
-									UNION ALL
-								(SELECT episode_id AS id FROM event WHERE event.id in (SELECT id FROM tmp_operation_ids)) 
-									UNION ALL
-								(SELECT episode_id AS id FROM event e 
-									JOIN et_ophtroperationnote_procedurelist eop ON eop.event_id = e.id 
-									JOIN ophtroperationnote_procedurelist_procedure_assignment oppa ON oppa.procedurelist_id = eop.id 
-									WHERE oppa.id IN (SELECT id FROM tmp_treatment_ids))) a ) "
-        ;
-
+        $query = <<<EOL
+                SELECT c.patient_id as PatientId, c.nod_episode_id as EpisodeId, c.nod_date as Date
+                FROM tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c
+EOL;
         $dataQuery = array(
             'query' => $query,
             'header' => array('PatientId', 'EpisodeId', 'Date'),
@@ -723,6 +763,111 @@ EOL;
 
         $this->saveCSVfile($dataQuery, 'Episode');
     }
+    
+    /********** end of Episode **********/
+    
+    
+    
+    /********** EpisodePreOpAssessment **********/
+    
+    private function createTmpRcoNodEpisodePreOpAssessment()
+    {
+        $query = <<<EOL
+            DROP TABLE IF EXISTS tmp_rco_nod_EpisodePreOpAssessment_{$this->extract_identifier};
+            CREATE TABLE tmp_rco_nod_EpisodePreOpAssessment_{$this->extract_identifier} (
+                oe_event_id int(10) NOT NULL,
+                Eye char(1) NOT NULL COMMENT 'L / R',
+                IsAbleToLieFlat char(1) DEFAULT NULL COMMENT '0 = no, 1 = yes',
+                IsInabilityToCooperate char(1) DEFAULT NULL COMMENT '0 = no, 1 = yes',
+                UNIQUE KEY oe_event_id (oe_event_id,Eye)
+            );
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+    }
+    
+    private function populateTmpRcoNodEpisodePreOpAssessment()
+    {
+        $query = <<<EOL
+                
+                INSERT INTO tmp_rco_nod_EpisodePreOpAssessment_{$this->extract_identifier} (
+                    oe_event_id,
+                    Eye,
+                    IsAbleToLieFlat,
+                    IsInabilityToCooperate
+                  )
+                SELECT 
+                    c.oe_event_id,
+                    'L' AS Eye,
+                    (SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 1 THEN 1 ELSE 0 END) AS IsAbleToLieFlat,
+                    (SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 4 THEN 1 ELSE 0 END) AS IsInabilityToCooperate
+
+                    /* Restriction: Start with control events */
+                    FROM tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c 
+
+                    /* Join: Associated procedures, Implicit Restriction: Operations with procedures */
+                    JOIN et_ophtroperationnote_procedurelist pl ON pl.event_id = c.oe_event_id
+
+                    /* Outer Join: patient risks, Implicit Cartesian: all risk_ids  */
+                    LEFT OUTER JOIN patient_risk_assignment pr ON pr.patient_id = c.patient_id # specify LEFT OUTER JOIN syntax in full
+
+                    /* Restrict: LEFT/BOTH eyes */
+                    WHERE pl.eye_id IN (1, 3)
+
+                    /* Group by required as may have multiple procedures on eye */
+                    GROUP BY oe_event_id, Eye, IsAbleToLieFlat, IsInabilityToCooperate;
+                
+                
+                INSERT INTO tmp_rco_nod_EpisodePreOpAssessment_{$this->extract_identifier} (
+                    oe_event_id,
+                    Eye,
+                    IsAbleToLieFlat,
+                    IsInabilityToCooperate
+                  )
+                SELECT 
+                    c.oe_event_id,
+                    'R' AS Eye,
+                    (SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 1 THEN 1 ELSE 0 END) AS IsAbleToLieFlat,
+                    (SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 4 THEN 1 ELSE 0 END) AS IsInabilityToCooperate
+
+                    /* Restriction: Start with control events */
+                    FROM tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c 
+
+                    /* Join: Associated procedures, Implicit Restriction: Operations with procedures */
+                    JOIN et_ophtroperationnote_procedurelist pl ON pl.event_id = c.oe_event_id
+
+                    /* Outer Join: patient risks, Implicit Cartesian: all risk_ids  */
+                    LEFT OUTER JOIN patient_risk_assignment pr ON pr.patient_id = c.patient_id # specify LEFT OUTER JOIN syntax in full
+
+                    /* Restrict: LEFT/BOTH eyes */
+                    WHERE pl.eye_id IN (2, 3)
+
+                    /* Group by required as may have multiple procedures on eye */
+                    GROUP BY oe_event_id, Eye, IsAbleToLieFlat, IsInabilityToCooperate;
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+    }
+    
+    private function getEpisodePreOpAssessment()
+    {
+
+        $query = <<<EOL
+                SELECT c.nod_episode_id as EpisodeId, p.Eye, p.isAbleToLieFlat, p.IsInabilityToCooperate
+                FROM tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c
+                JOIN tmp_rco_nod_EpisodePreOpAssessment_{$this->extract_identifier} p ON c.oe_event_id = p.oe_event_id
+EOL;
+
+        $dataQuery = array(
+            'query' => $query,
+            'header' => array('EpisodeId', 'Eye', 'IsAbleToLieFlat', 'IsInabilityToCooperate'),
+        );
+
+        return $this->saveCSVfile($dataQuery, 'EpisodePreOpAssessment');
+    }
+    
+    /********** end of EpisodePreOpAssessment **********/
+    
+    
+    
 
     private function getEpisodeDiagnosis()
     {
@@ -1651,48 +1796,6 @@ EOL;
         );
 
         return $this->saveCSVfile($dataQuery, 'EpisodeRefraction', null, 'EpisodeId');
-
-        //return $this->getIdArray($data, 'EpisodeId');
-    }
-
-    private function getEpisodePreOpAssessment()
-    {
-
-        $query = "(
-                    SELECT e.id AS EpisodeId,
-                    'L' AS Eye,
-                    (SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 1 THEN 1 ELSE 0 END) AS IsAbleToLieFlat,
-                    (SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 4 THEN 1 ELSE 0 END) AS IsInabilityToCooperate
-                    FROM episode e
-                    LEFT JOIN `event` ev ON ev.episode_id = e.id
-                    JOIN et_ophtroperationnote_procedurelist pl ON pl.event_id = ev.id
-                    LEFT JOIN patient_risk_assignment pr ON pr.patient_id = e.patient_id
-                    WHERE 1=1 ".$this->getDateWhere('pl')."
-                    AND (pl.eye_id = 1 OR pl.eye_id = 3)
-                    GROUP BY e.id
-                )
-                UNION 
-                (
-                    SELECT e.id AS EpisodeId,
-                    'R' AS Eye,
-                    (SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 1 THEN 1 ELSE 0 END) AS IsAbleToLieFlat,
-                    (SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 4 THEN 1 ELSE 0 END) AS IsInabilityToCooperate
-                    FROM episode e
-                    LEFT JOIN `event` ev ON ev.episode_id = e.id
-                    JOIN et_ophtroperationnote_procedurelist pl ON pl.event_id = ev.id
-                    LEFT JOIN patient_risk_assignment pr ON pr.patient_id = e.patient_id
-                    WHERE 1=1 ".$this->getDateWhere('pl')."
-                    AND (pl.eye_id = 2 OR pl.eye_id = 3)
-                    GROUP BY e.id
-                )
-                ";
-
-        $dataQuery = array(
-            'query' => $query,
-            'header' => array('EpisodeId', 'Eye', 'IsAbleToLieFlat', 'IsInabilityToCooperate'),
-        );
-
-        return $this->saveCSVfile($dataQuery, 'EpisodePreOpAssessment', null, 'EpisodeId');
 
         //return $this->getIdArray($data, 'EpisodeId');
     }
