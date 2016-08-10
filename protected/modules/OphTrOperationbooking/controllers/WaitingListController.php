@@ -129,9 +129,6 @@ class WaitingListController extends BaseModuleController
 		}
 
 		if ($hos_num) {
-			if (Yii::app()->params['pad_hos_num']) {
-				$hos_num = sprintf(Yii::app()->params['pad_hos_num'],$hos_num);
-			}
 			$whereSql .= " AND patient.hos_num = :hos_num";
 			$whereParams[":hos_num"] = $hos_num;
 		}
@@ -142,6 +139,7 @@ class WaitingListController extends BaseModuleController
 		}
 
 		Yii::app()->event->dispatch('start_batch_mode');
+
 		$operations = Element_OphTrOperationbooking_Operation::model()
 			->with(array(
 					'event',
