@@ -7,7 +7,7 @@
  */
 
 namespace OEModule\OphCoCvi\controllers;
-use \OEModule\OphCoCvi\components\CertFromOdtTemplate;
+use \OEModule\OphCoCvi\components\ODTTemplateManager;
 
 
 class PrintTestController extends \BaseController
