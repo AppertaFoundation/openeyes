@@ -80,7 +80,6 @@ php_packages:
 
 # https://github.com/geerlingguy/ansible-role-composer
 composer_keep_updated: true
-composer_process_timeout: 600
 # composer_github_oauth_token: ''
 
 # https://github.com/MaximeThoonsen/ansible-role-php-xdebug
