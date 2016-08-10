@@ -1,4 +1,4 @@
-<?php
+    <?php
 /**
  * OpenEyes
  *
@@ -231,26 +231,26 @@ EOF;
         return array(
             array(
                 $xml,
-                "<PatientAppointment><Appointment><AppointmentTime>10:30</AppointmentTime></Appointment></PatientAppointment>",
+                '<PatientAppointment><Appointment><AppointmentTime>10:30</AppointmentTime></Appointment></PatientAppointment>',
                 array_merge(
                     $original_expectation,
                     array(
-                        'when' => '2016-05-23 10:30:00'
+                        'when' => '2016-05-23 10:30:00',
                     )
-                )
+                ),
             ),
             array(
                 $xml,
-                "<PatientAppointment><Appointment><AppointmentMappingItems><AppointmentMapping><Key>Doctor</Key><Value>Dr J. Morgan</Value></AppointmentMapping></AppointmentMappingItems></Appointment></PatientAppointment>",
+                '<PatientAppointment><Appointment><AppointmentMappingItems><AppointmentMapping><Key>Doctor</Key><Value>Dr J. Morgan</Value></AppointmentMapping></AppointmentMappingItems></Appointment></PatientAppointment>',
                 array_merge(
                     $original_expectation,
                     array(
                         'worklist_attributes' => array(
                             'Clinic Code' => 'A1',
-                            'Doctor' => 'Dr J. Morgan'
-                        )
+                            'Doctor' => 'Dr J. Morgan',
+                        ),
                     )
-                )
+                ),
             ),
             array(
                 $xml,
@@ -260,9 +260,9 @@ EOF;
             ),
             array(
                 $xml,
-                "<PatientAppointment><Appointment><AppointmentMappingItems><AppointmentMapping><Key>Clinic Code</Key><Value>B2</Value></AppointmentMapping></AppointmentMappingItems></Appointment></PatientAppointment>",
+                '<PatientAppointment><Appointment><AppointmentMappingItems><AppointmentMapping><Key>Clinic Code</Key><Value>B2</Value></AppointmentMapping></AppointmentMappingItems></Appointment></PatientAppointment>',
                 $original_expectation,
-                array(400, 'Worklist mapping change not allowed for partial update.')
+                array(400, 'Worklist mapping change not allowed for partial update.'),
             ),
         );
     }
@@ -311,6 +311,7 @@ EOF;
         if ($error) {
             $this->setExpectedHttpError($error[0]);
         }
+
         $this->put('PartialUpdate', $partial, array(
             'X-OE-Partial-Record' => 1
         ));
