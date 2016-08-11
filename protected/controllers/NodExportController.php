@@ -215,6 +215,7 @@ class NodExportController extends BaseController
         $this->createTmpRcoNodPatientCVIStatus();
         $this->createTmpRcoNodEpisodePreOpAssessment();
         $this->createTmpRcoNodEpisodeRefraction();
+        $this->createTmpRcoNodEpisodeDrug();
         
         $createTempQuery = <<<EOL
 
@@ -484,6 +485,7 @@ EOL;
         $this->populateTmpRcoNodEpisodePreOpAssessment();
         $this->populateTmpRcoNodPatientCVIStatus();
         $this->populateTmpRcoNodEpisodeRefraction();
+        $this->populateTmpRcoNodEpisodeDrug();
     }
     
     private function clearAllTempTables()
@@ -495,6 +497,7 @@ EOL;
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodePreOpAssessment_{$this->extract_identifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_PatientCVIStatus_{$this->extract_identifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeRefraction_{$this->extract_identifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeDrug_{$this->extract_identifier};
 
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication_type;
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication;
@@ -1078,82 +1081,145 @@ EOL;
         return $output;
     }
 
-    private function getEpisodeDrug()
+    
+    /********** EpisodeDrug **********/
+    
+    private function createTmpRcoNodEpisodeDrug()
     {
-
-        $dateWhere = $this->getDateWhere('m');
-        $dateWhereScript = $this->getDateWhere('opi');
-
+        
         $query = <<<EOL
-                    (SELECT e.id AS EpisodeId ,
-                    (SELECT CASE WHEN option_id = 1 THEN 'L' WHEN option_id = 2 THEN 'R' WHEN option_id = 3 THEN 'B'  ELSE 'N' END) AS Eye,
-                    (SELECT CASE WHEN m.drug_id IS NOT NULL THEN (SELECT `name`  FROM drug WHERE id = m.drug_id)
-                                    WHEN m.medication_drug_id IS NOT NULL THEN (SELECT `name` FROM medication_drug WHERE id = m.medication_drug_id)
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeDrug_{$this->extract_identifier};
+                CREATE TABLE tmp_rco_nod_EpisodeDrug_{$this->extract_identifier} (
+                        oe_event_id INT(10) NOT NULL,
+                        Eye CHAR(1) NOT NULL,
+                        DrugId VARCHAR(150) DEFAULT NULL, 
+                        DrugRouteId INT(10) UNSIGNED DEFAULT NULL,
+                        StartDate VARCHAR(10) DEFAULT NULL,
+                        StopDate  VARCHAR(10) DEFAULT NULL,
+                        IsAddedByPrescription  TINYINT(1) DEFAULT NULL,
+                        IsContinueIndefinitely  TINYINT(1) DEFAULT NULL,
+                        IsStartDateApprox	TINYINT(1) DEFAULT NULL
+                );
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+        
+    }
+    
+    private function populateTmpRcoNodEpisodeDrug()
+    {
+        $query = <<<EOL
+                INSERT INTO tmp_rco_nod_EpisodeDrug_{$this->extract_identifier} (
+                    oe_event_id,
+                    Eye,
+                    DrugId,
+                    DrugRouteId,
+                    StartDate,
+                    StopDate,
+                    IsAddedByPrescription,
+                    IsContinueIndefinitely,
+                    IsStartDateApprox
+                  ) 
+                  SELECT c.nod_episode_id AS EpisodeId,
+                        (SELECT CASE WHEN option_id = 1 THEN 'L' WHEN option_id = 2 THEN 'R' WHEN option_id = 3 THEN 'B'  ELSE 'N' END) AS Eye,
+                        (SELECT CASE WHEN m.drug_id IS NOT NULL THEN (SELECT name  FROM drug WHERE id = m.drug_id)
+                                    WHEN m.medication_drug_id IS NOT NULL THEN (SELECT name FROM medication_drug WHERE id = m.medication_drug_id)
                                     WHEN m.medication_drug_id IS NULL THEN '' END) AS DrugId,
-                    IFNULL(
-                    (
-                          SELECT nod_id FROM tmp_episode_drug_route
-                          WHERE 
-                         (opi.route_id = tmp_episode_drug_route.oe_route_id AND tmp_episode_drug_route.`oe_option_id` = opi.route_option_id) OR
-                         (opi.route_id = tmp_episode_drug_route.oe_route_id AND tmp_episode_drug_route.`oe_option_id` IS NULL) )
-                          , ""
+                      IFNULL(
+                      (
+                        SELECT nod_id FROM tmp_episode_drug_route
+                        WHERE 
+                       (opi.route_id = tmp_episode_drug_route.oe_route_id AND tmp_episode_drug_route.oe_option_id = opi.route_option_id) OR
+                       (opi.route_id = tmp_episode_drug_route.oe_route_id AND tmp_episode_drug_route.oe_option_id IS NULL) )
+                        , ""
                     ) AS DrugRouteId,
-                    (SELECT CASE WHEN m.start_date IS NULL THEN '' ELSE m.start_date END) AS StartDate,
-                    (SELECT CASE WHEN m.end_date IS NULL THEN '' ELSE m.end_date END) AS StopDate,
-                    (SELECT CASE WHEN opi.prescription_id IS NOT NULL THEN 1 ELSE 0 END ) AS IsAddedByPrescription,
-                    (SELECT CASE WHEN opi.continue_by_gp IS NULL THEN 0 ELSE opi.continue_by_gp END) AS IsContinueIndefinitely,
-                    (SELECT CASE WHEN DAYNAME(m.start_date) IS NULL THEN 1 ELSE 0 END) AS IsStartDateApprox
-                  FROM episode e
-                  INNER JOIN medication m ON e.patient_id = m.patient_id
-                  left join ophdrprescription_item opi on m.prescription_item_id = opi.id
-                  WHERE 1=1 $dateWhere
-                  ) UNION (
-                    select  episode.id AS EpisodeId ,
-                    (SELECT CASE WHEN route_option_id = 1 THEN 'L' WHEN route_option_id = 2 THEN 'R' WHEN route_option_id = 3 THEN 'B'  ELSE 'N' END) AS Eye,
-                    drug.`name` as DrugId,
+                        (SELECT CASE WHEN m.start_date IS NULL THEN '' ELSE m.start_date END) AS StartDate,
+                        (SELECT CASE WHEN m.end_date IS NULL THEN '' ELSE m.end_date END) AS StopDate,
+                        (SELECT CASE WHEN opi.prescription_id IS NOT NULL THEN 1 ELSE 0 END ) AS IsAddedByPrescription,
+                        (SELECT CASE WHEN opi.continue_by_gp IS NULL THEN 0 ELSE opi.continue_by_gp END) AS IsContinueIndefinitely,
+                        (SELECT CASE WHEN DAYNAME(m.start_date) IS NULL THEN 1 ELSE 0 END) AS IsStartDateApprox
+
+                    FROM  tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c 
+                    JOIN medication m ON c.patient_id = m.patient_id
+                    LEFT JOIN ophdrprescription_item opi ON m.prescription_item_id = opi.id;
                 
+                
+  
+                INSERT INTO tmp_rco_nod_EpisodeDrug_{$this->extract_identifier} (
+                    oe_event_id,
+                    Eye,
+                    DrugId,
+                    DrugRouteId,
+                    StartDate,
+                    StopDate,
+                    IsAddedByPrescription,
+                    IsContinueIndefinitely,
+                    IsStartDateApprox
+                )
+                SELECT
+                    c.oe_event_id AS EpisodeId,
+                    (SELECT CASE WHEN route_option_id = 1 THEN 'L' WHEN route_option_id = 2 THEN 'R' WHEN route_option_id = 3 THEN 'B'  ELSE 'N' END) AS Eye,
+                    drug.name AS DrugId,
+
                     IFNULL(
                     (
-                          SELECT nod_id FROM tmp_episode_drug_route
-                          WHERE 
-                          (opi.route_id = tmp_episode_drug_route.oe_route_id AND tmp_episode_drug_route.`oe_option_id` = opi.route_option_id) OR
-                          (opi.route_id = tmp_episode_drug_route.oe_route_id AND tmp_episode_drug_route.`oe_option_id` IS NULL) )
-                          , ""
-                      ) AS DrugRouteId,
-                    DATE(`event`.event_date) as StartDate,
+                      SELECT nod_id FROM tmp_episode_drug_route
+                      WHERE
+                      (opi.route_id = tmp_episode_drug_route.oe_route_id AND tmp_episode_drug_route.oe_option_id = opi.route_option_id) OR
+                      (opi.route_id = tmp_episode_drug_route.oe_route_id AND tmp_episode_drug_route.oe_option_id IS NULL) )
+                      , ""
+                    ) AS DrugRouteId,
+
+                    DATE(event.event_date) AS StartDate,
+
                     CASE WHEN LOCATE('day', drug_duration.name) > 0 THEN
-                            DATE_FORMAT(DATE_ADD(event.event_date, INTERVAL SUBSTR(drug_duration.name, 1, LOCATE('day', drug_duration.name)-1) DAY), '%Y-%m-%d')
-                         WHEN LOCATE('month', drug_duration.name) > 0 THEN
-                            DATE_FORMAT(DATE_ADD(event.event_date, INTERVAL SUBSTR(drug_duration.name, 1, LOCATE('month', drug_duration.name)-1) MONTH), '%Y-%m-%d')
-                         WHEN LOCATE('week', drug_duration.name) > 0 THEN
-                            DATE_FORMAT(DATE_ADD(event.event_date, INTERVAL SUBSTR(drug_duration.name, 1, LOCATE('week', drug_duration.name)-1) WEEK), '%Y-%m-%d')
-                         ELSE ''
-                        END
+                        DATE_FORMAT(DATE_ADD(event.event_date, INTERVAL SUBSTR(drug_duration.name, 1, LOCATE('day', drug_duration.name)-1) DAY), '%Y-%m-%d')
+                     WHEN LOCATE('month', drug_duration.name) > 0 THEN
+                        DATE_FORMAT(DATE_ADD(event.event_date, INTERVAL SUBSTR(drug_duration.name, 1, LOCATE('month', drug_duration.name)-1) MONTH), '%Y-%m-%d')
+                     WHEN LOCATE('week', drug_duration.name) > 0 THEN
+                        DATE_FORMAT(DATE_ADD(event.event_date, INTERVAL SUBSTR(drug_duration.name, 1, LOCATE('week', drug_duration.name)-1) WEEK), '%Y-%m-%d')
+                     ELSE ''
+                    END
                     AS StopDate,
+
                     1 AS IsAddedByPrescription,
                     continue_by_gp AS IsContinueIndefinitely,
                     0 AS IsStartDateApprox
-                    from ophdrprescription_item as opi
-                    join `et_ophdrprescription_details` on opi.prescription_id = `et_ophdrprescription_details`.id
-                    join `event` on et_ophdrprescription_details.event_id = `event`.id
-                    join episode on `event`.episode_id = episode.id
-                    join drug on opi.drug_id = drug.id
-                    join drug_duration on opi.duration_id = drug_duration.id
-                    left join medication on medication.prescription_item_id = opi.id
-                    where medication.id is null
-                     $dateWhereScript
-                  )
-EOL;
 
+                    FROM ophdrprescription_item AS opi
+                    JOIN et_ophdrprescription_details ON opi.prescription_id = et_ophdrprescription_details.id
+
+                    JOIN tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c ON et_ophdrprescription_details.event_id = c.oe_event_id
+                    JOIN event ON c.oe_event_id = event.id
+
+                    JOIN drug ON opi.drug_id = drug.id
+                    JOIN drug_duration ON opi.duration_id = drug_duration.id
+                    LEFT JOIN medication ON medication.prescription_item_id = opi.id
+                    WHERE medication.id is NULL;
+EOL;
+                      
+        Yii::app()->db->createCommand($query)->execute();
+    }
+            
+
+    
+    private function getEpisodeDrug()
+    {
+        $query = <<<EOL
+                SELECT c.nod_episode_id as EpisodeId, d.Eye, d.DrugId, d.DrugRouteId, d.StartDate, d.StopDate, d.IsAddedByPrescription, d.IsContinueIndefinitely, d.IsStartDateApprox
+                FROM tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c
+                JOIN tmp_rco_nod_EpisodeDrug_{$this->extract_identifier} d ON c.oe_event_id = d.oe_event_id
+EOL;
         $dataQuery = array(
             'query' => $query,
             'header' => array('EpisodeId', 'Eye', 'DrugId', 'DrugRouteId', 'StartDate', 'StopDate', 'IsAddedByPrescription', 'IsContinueIndefinitely', 'IsStartDateApprox'),
         );
 
-        $output = $this->saveCSVfile($dataQuery, 'EpisodeDrug', null, 'EpisodeId');
+        $output = $this->saveCSVfile($dataQuery, 'EpisodeDrug');
         
         return $output;
     }
+    /********** end of EpisodeDrug **********/
+
 
     private function getEpisodeBiometry()
     {
