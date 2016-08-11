@@ -123,7 +123,15 @@ class Element_OphCoCvi_ClinicalInfo_Disorder_Assignment extends \BaseActiveRecor
 
     }
 
-    public function getDisorderSectionComments() {
-
+    public function getDisorderMainCause($disorder_id,$element_id,$side) {
+        $eye_value = \Eye::model()->find("name = ?", array(ucfirst($side)));
+        $criteria=new \CDbCriteria;
+        $criteria->select='main_cause';
+        $criteria->condition="element_id=:element_id";
+        $criteria->addCondition("ophcocvi_clinicinfo_disorder_id=:disorder_id");
+        $criteria->addCondition("eye_id=:eye_id");
+        $criteria->params=array(':element_id'=>$element_id,':disorder_id'=>$disorder_id,':eye_id' => $eye_value->id);
+        $item = Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()->find($criteria);
+        return $item['main_cause'] ? $item['main_cause'] : 0;
     }
 }

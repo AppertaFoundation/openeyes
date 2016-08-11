@@ -185,7 +185,7 @@ class DefaultController extends \BaseEventTypeController
      * Element based name and value pair
      *@param $id
      */
-    function getStructuredDataForPrintPDF($id) {
+    public function getStructuredDataForPrintPDF($id) {
         $this->printInit($id);
         $data = array();
         foreach($this->open_elements as $element) {
@@ -214,8 +214,14 @@ class DefaultController extends \BaseEventTypeController
      * @return mixed
      */
     public function formDataValuePairFor_Element_OphCoCvi_ClinicalInfo($element) {
-        $values['examination_date'] = ($element->examination_date) ? $element->examination_date : '';
-        $values['is_considered_blind'] = ($element->is_considered_blind) ? 'Yes' : 'No';
+        $values['examination_date_dd'] = date('j', strtotime($element->examination_date));
+        $values['examination_date_mm'] = date('n', strtotime($element->examination_date));
+        $values['examination_date_yyyy'] = date('Y', strtotime($element->examination_date));
+        $consultant_name = \User::model()->findByPk($element->consultant_id);
+        var_dump(\Institution::model()->getCurrent());exit;
+        var_dump($consultant_name);exit;
+        $values['slightly_impaired'] = $element->is_considered_blind ? 'X' : '';
+        $values['severely_impaired'] = $element->is_considered_blind ? '' : 'X';
         return $values;
     }
 
@@ -227,6 +233,19 @@ class DefaultController extends \BaseEventTypeController
     public function formDataValuePairFor_Element_OphCoCvi_ClericalInfo($element) {
         $values['preferred_info_fmt'] = $element->preferred_info_fmt ? $element->preferred_info_fmt->name : 'None';
         $values['employment_status'] = $element->employment_status ? $element->employment_status->name : 'None';
+        return $values;
+    }
+
+    /**
+     * Pre populate the data and value pair for the Element_OphCoCvi_ClericalInfo
+     * @param $element
+     * @return mixed
+     */
+    public function formDataValuePairFor_Element_OphCoCvi_ConsentSignature($element) {
+        $values['is_patient'] = $element->is_patient ? 'X' : '';
+        $values['is_representative'] = $element->is_patient ? '' : 'X';
+        $values['patient_name'] = $this->patient->title . " " . $this->patient->first_name . " " . $this->patient->last_name;
+        $values['signature_date'] = $element->signature_date;
         return $values;
     }
 

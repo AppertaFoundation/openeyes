@@ -191,12 +191,22 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
                             $item->eye_id = $side_value;
                             $item->ophcocvi_clinicinfo_disorder_id = $id;
                             $item->affected = $_POST['affected_'.$side][$id];
+                            $item->main_cause = isset($_POST['main_cause_'.$side][$id]) ? $_POST['main_cause_'.$side][$id] : 0;
                             if (!$item->save()) {
                                 throw new Exception('Unable to save MultiSelect item: '.print_r($item->getErrors(),true));
                             }
                         }
                     }
-
+                    if(isset($_POST['comments_'.$side][$sectionId])) {
+                        $item = new Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments;
+                        $item->element_id = $this->id;
+                        $item->eye_id = $side_value;
+                        $item->ophcocvi_clinicinfo_disorder_section_id = $sectionId;
+                        $item->comments = $_POST['comments_'.$side][$sectionId];
+                        if (!$item->save()) {
+                            throw new Exception('Unable to save MultiSelect item: '.print_r($item->getErrors(),true));
+                        }
+                    }
                 }
             }
 
