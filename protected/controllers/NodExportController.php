@@ -214,6 +214,7 @@ class NodExportController extends BaseController
         $this->createTmpRcoNodPatients();
         $this->createTmpRcoNodPatientCVIStatus();
         $this->createTmpRcoNodEpisodePreOpAssessment();
+        $this->createTmpRcoNodEpisodeRefraction();
         
         $createTempQuery = <<<EOL
 
@@ -482,6 +483,7 @@ EOL;
         $this->populateTmpRcoNodPatients();
         $this->populateTmpRcoNodEpisodePreOpAssessment();
         $this->populateTmpRcoNodPatientCVIStatus();
+        $this->populateTmpRcoNodEpisodeRefraction();
     }
     
     private function clearAllTempTables()
@@ -492,6 +494,7 @@ EOL;
                 DROP TABLE IF EXISTS tmp_rco_nod_patients_{$this->extract_identifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodePreOpAssessment_{$this->extract_identifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_PatientCVIStatus_{$this->extract_identifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeRefraction_{$this->extract_identifier};
 
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication_type;
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication;
@@ -867,6 +870,107 @@ EOL;
     }
     
     /********** end of EpisodePreOpAssessment **********/
+    
+    
+    
+    /********** EpisodeRefraction **********/
+    private function createTmpRcoNodEpisodeRefraction()
+    {
+        $query = <<<EOL
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeRefraction_{$this->extract_identifier};
+                CREATE TABLE tmp_rco_nod_EpisodeRefraction_{$this->extract_identifier} (
+                    oe_event_id INT(10) NOT NULL,
+                    Eye CHAR(1) NOT NULL,
+                    RefractionTypeId CHAR(1) DEFAULT NULL,
+                    Sphere DECIMAL(5,2) DEFAULT NULL,
+                    Cylinder DECIMAL(5,2) DEFAULT NULL,
+                    Axis INT(3) DEFAULT NULL,
+                    ReadingAdd CHAR(1) DEFAULT NULL
+                );
+EOL;
+                
+        Yii::app()->db->createCommand($query)->execute();
+    }
+    /**
+     * Populate  tmp_rco_nod_EpisodeRefraction_* table
+     */
+    private function populateTmpRcoNodEpisodeRefraction()
+    {
+        $query = <<<EOL
+                INSERT INTO tmp_rco_nod_EpisodeRefraction_{$this->extract_identifier} (
+                    oe_event_id,
+                    Eye,
+                    RefractionTypeId,
+                    Sphere,
+                    Cylinder,
+                    Axis,
+                    ReadingAdd
+                  )
+                SELECT
+                      c.oe_event_id,
+                      'L' AS Eye,
+                      '' AS RefractionTypeId,
+                      r.left_sphere AS Sphere,
+                      r.left_cylinder AS Cylinder,
+                      r.left_axis AS Axis, 
+                      '' AS ReadingAdd
+                
+                /* Restriction: Start with control events */
+                FROM  tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c
+                JOIN et_ophciexamination_refraction r ON r.event_id = c.oe_event_id
+                
+                /* Restrict: LEFT/BOTH eyes */
+                WHERE r.eye_id IN (1,3);
+                
+                
+                INSERT INTO tmp_rco_nod_EpisodeRefraction_{$this->extract_identifier} (
+                    oe_event_id,
+                    Eye,
+                    RefractionTypeId,
+                    Sphere,
+                    Cylinder,
+                    Axis,
+                    ReadingAdd
+                  )
+                SELECT
+                      c.oe_event_id,
+                      'R' AS Eye,
+                      '' AS RefractionTypeId,
+                      r.left_sphere AS Sphere,
+                      r.left_cylinder AS Cylinder,
+                      r.left_axis AS Axis, 
+                      '' AS ReadingAdd
+                
+                /* Restriction: Start with control events */
+                FROM  tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c
+                JOIN et_ophciexamination_refraction r ON r.event_id = c.oe_event_id
+                
+                /* Restrict: RIGHT/BOTH eyes */
+                WHERE r.eye_id IN (2,3);
+EOL;
+                
+        Yii::app()->db->createCommand($query)->execute();
+        
+    }
+    
+    private function getEpisodeRefraction()
+    {
+        $query = <<<EOL
+                SELECT c.nod_episode_id as EpisodeId, r.Eye, r.RefractionTypeId, r.Sphere, r.Cylinder, r.Axis, r.ReadingAdd
+                FROM tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c
+                JOIN tmp_rco_nod_EpisodeRefraction_{$this->extract_identifier} r ON c.oe_event_id = r.oe_event_id
+EOL;
+        $dataQuery = array(
+            'query' => $query,
+            'header' => array('EpisodeId', 'Sphere', 'Cylinder', 'Axis', 'RefractionTypeId', 'ReadingAdd', 'Eye'),
+        );
+
+        return $this->saveCSVfile($dataQuery, 'EpisodeRefraction');
+    }
+    
+    
+    
+    /********** end of EpisodeRefraction **********/
     
     
     
@@ -1760,44 +1864,6 @@ EOL;
         );
 
         return $this->saveCSVfile($dataQuery, 'EpisodeVisualAcuity', null, 'EpisodeId');
-
-        //return $this->getIdArray($data, 'EpisodeId');
-    }
-
-    private function getEpisodeRefraction()
-    {
-
-        $query = "(SELECT 
-                    e.episode_id AS EpisodeId, 
-                    'L' AS Eye,
-                    '' AS RefractionTypeId,
-                    r.left_sphere AS Sphere,
-                    r.left_cylinder AS Cylinder,
-                    r.left_axis AS Axis, 
-                    '' AS ReadingAdd
-
-                    FROM `event` e
-                    JOIN et_ophciexamination_refraction r ON r.event_id = e.id
-                    WHERE r.eye_id = 1 OR r.eye_id = 3 " . $this->getDateWhere('r') . ")
-                    UNION
-                    (SELECT
-                     e.episode_id AS EpisodeId,
-                    'R' AS Eye,
-                    '' AS RefractionTypeId,
-                    r.right_sphere AS Sphere,
-                    r.right_cylinder AS Cylinder,
-                    r.right_axis AS Axis,
-                    '' AS ReadingAdd
-                    FROM `event` e
-                    JOIN et_ophciexamination_refraction r ON r.event_id = e.id
-                    WHERE r.eye_id = 2 OR r.eye_id = 3 " . $this->getDateWhere('r') . ")";
-
-        $dataQuery = array(
-            'query' => $query,
-            'header' => array('EpisodeId', 'Sphere', 'Cylinder', 'Axis', 'RefractionTypeId', 'ReadingAdd', 'Eye'),
-        );
-
-        return $this->saveCSVfile($dataQuery, 'EpisodeRefraction', null, 'EpisodeId');
 
         //return $this->getIdArray($data, 'EpisodeId');
     }
