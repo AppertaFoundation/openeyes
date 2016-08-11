@@ -18,7 +18,7 @@
 ?>
 <?php
 $model = OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_PatientFactor::model();
-$element1 = OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PatientFactor_Answer::model();?>
+$factor_answer = OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PatientFactor_Answer::model();?>
 <div class="element-fields row">
 	<?php
 	foreach ($model->findAll('`active` = ?',array(1)) as $factor) {
@@ -28,23 +28,23 @@ $element1 = OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PatientFactor_Answer:
 				<?php echo $factor->name?>
 			</legend>
 			<?php
-			$is_factor = $element1->getFactorAnswer($factor->id,$element->id);
-			$comments = $element1->getComments($factor->id,$element->id);
+			$is_factor = $factor_answer->getFactorAnswer($factor->id,$element->id);
+			$comments = $factor_answer->getComments($factor->id,$element->id);
 			$i = $factor->id;
 			?>
 			<?php echo CHtml::hiddenField("ophcocvi_clinicinfo_patient_factor_id[$i]" , $factor->id, array('id' => 'hiddenInput')); ?>
 
 			<div class="large-9 column">
 				<label class="inline highlight">
-					<?php echo CHtml::radioButton("is_factor[$i]", (isset($is_factor) && $is_factor == 1), array('id' => CHtml::modelName($element1) . '_' . $factor->id . '_1', 'value' => 1))?>
+					<?php echo CHtml::radioButton("is_factor[$i]", (isset($is_factor) && $is_factor == 1), array('id' => CHtml::modelName($factor_answer) . '_' . $factor->id . '_1', 'value' => 1))?>
 					Yes
 				</label>
 				<label class="inline highlight">
-					<?php echo CHtml::radioButton("is_factor[$i]", (isset($is_factor) && $is_factor == 0), array('id' => CHtml::modelName($element1) . '_' .  $factor->id . '_0', 'value' => 0))?>
+					<?php echo CHtml::radioButton("is_factor[$i]", (isset($is_factor) && $is_factor == 0), array('id' => CHtml::modelName($factor_answer) . '_' .  $factor->id . '_0', 'value' => 0))?>
 					No
 				</label>
 				<label class="inline highlight">
-					<?php echo CHtml::radioButton("is_factor[$i]", (isset($is_factor) && $is_factor == 2), array('id' => CHtml::modelName($element1) . '_' .  $factor->id . '_2', 'value' => 2))?>
+					<?php echo CHtml::radioButton("is_factor[$i]", (isset($is_factor) && $is_factor == 2), array('id' => CHtml::modelName($factor_answer) . '_' .  $factor->id . '_2', 'value' => 2))?>
 					Unknown
 				</label>
 
