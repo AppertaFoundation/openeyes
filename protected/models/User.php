@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -21,546 +21,565 @@
  * This is the model class for table "User".
  *
  * The followings are the available columns in table 'User':
- * @property integer $id
+ *
+ * @property int $id
  * @property string $username
  * @property string $first_name
  * @property string $last_name
  * @property string $email
- * @property integer $active
+ * @property int $active
  * @property string $password
  * @property string $salt
- * @property integer $global_firm_rights
+ * @property int $global_firm_rights
  */
 class User extends BaseActiveRecordVersioned
 {
-	/**
-	 * Used to check password and password confirmation match
-	 * @var string
-	 */
-	public $password_repeat;
+    /**
+     * Used to check password and password confirmation match.
+     *
+     * @var string
+     */
+    public $password_repeat;
 
-	/**
-	 * Returns the static model of the specified AR class.
-	 * @return User the static model class
-	 */
-	public static function model($className=__CLASS__)
-	{
-		return parent::model($className);
-	}
+    /**
+     * Returns the static model of the specified AR class.
+     *
+     * @return User the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
 
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'user';
-	}
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'user';
+    }
 
-	public function behaviors()
-	{
-		return array(
-			'ContactBehavior' => array(
-				'class' => 'application.behaviors.ContactBehavior',
-			),
-		);
-	}
+    public function behaviors()
+    {
+        return array(
+            'ContactBehavior' => array(
+                'class' => 'application.behaviors.ContactBehavior',
+            ),
+        );
+    }
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		$commonRules = array(
-			// Added for uniqueness of username
-			array('username', 'unique', 'className' => 'User', 'attributeName' => 'username'),
-			array('id, username, first_name, last_name, email, active, global_firm_rights', 'safe', 'on'=>'search'),
-			array('username, first_name, last_name, email, active, global_firm_rights, is_doctor, title, qualifications, role, salt, password, is_clinical, is_consultant, is_surgeon, has_selected_firms,doctor_grade_id, registration_code', 'safe'),
-		);
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        $commonRules = array(
+            // Added for uniqueness of username
+            array('username', 'unique', 'className' => 'User', 'attributeName' => 'username'),
+            array('id, username, first_name, last_name, email, active, global_firm_rights', 'safe', 'on' => 'search'),
+            array('username, first_name, last_name, email, active, global_firm_rights, is_doctor, title, qualifications, role, salt, password, is_clinical, is_consultant, is_surgeon, has_selected_firms,doctor_grade_id, registration_code', 'safe'),
+        );
 
-		if (Yii::app()->params['auth_source'] == 'BASIC') {
+        if (Yii::app()->params['auth_source'] == 'BASIC') {
+            $user = Yii::app()->request->getPost('User');
 
-			$user = Yii::app()->request->getPost('User');
+            if ($user['is_doctor']) {
+                return array_merge(
+                    $commonRules,
+                    array(
+                        array(
+                            'username',
+                            'match',
+                            'pattern' => '/^[\w|\.\-_\+@]+$/',
+                            'message' => 'Only letters, numbers and underscores are allowed for usernames.',
+                        ),
+                        array('username, email, first_name, last_name, active, global_firm_rights, doctor_grade_id', 'required'),
+                        array('username, password, first_name, last_name', 'length', 'max' => 40),
+                        array(
+                            'password',
+                            'length',
+                            'min' => 5,
+                            'message' => 'Passwords must be at least 6 characters long.',
+                        ),
+                        array('email', 'length', 'max' => 80),
+                        array('email', 'email'),
+                        array('salt', 'length', 'max' => 10),
+                        // Added for password comparison functionality
+                        array('password_repeat', 'safe'),
+                    )
+                );
+            } else {
+                return array_merge(
+                    $commonRules,
+                    array(
+                        array(
+                            'username',
+                            'match',
+                            'pattern' => '/^[\w|\.\-_\+@]+$/',
+                            'message' => 'Only letters, numbers and underscores are allowed for usernames.',
+                        ),
+                        array('username, email, first_name, last_name, active, global_firm_rights', 'required'),
+                        array('username, password, first_name, last_name', 'length', 'max' => 40),
+                        array(
+                            'password',
+                            'length',
+                            'min' => 5,
+                            'message' => 'Passwords must be at least 6 characters long.',
+                        ),
+                        array('email', 'length', 'max' => 80),
+                        array('email', 'email'),
+                        array('salt', 'length', 'max' => 10),
+                        // Added for password comparison functionality
+                        array('password_repeat', 'safe'),
+                    )
+                );
+            }
+        } elseif (Yii::app()->params['auth_source'] == 'LDAP') {
+            return array_merge(
+                $commonRules,
+                array(
+                    array('username, active, global_firm_rights', 'required'),
+                    array('username', 'length', 'max' => 40),
+                    array('password_repeat', 'safe'),
+                )
+            );
+        } else {
+            throw new SystemException('Unknown auth_source: '.Yii::app()->params['auth_source']);
+        }
+    }
 
-			if($user['is_doctor']){
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return array(
+            'firmUserAssignments' => array(self::HAS_MANY, 'FirmUserAssignment', 'user_id'),
+            'firms' => array(self::MANY_MANY, 'Firm', 'firm_user_assignment(firm_id, user_id)', 'condition' => 'firms.active = 1'),
+            'firmRights' => array(self::MANY_MANY, 'Firm', 'user_firm_rights(firm_id, user_id)'),
+            'serviceRights' => array(self::MANY_MANY, 'Service', 'user_service_rights(service_id, user_id)'),
+            'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
+            'firm_preferences' => array(self::HAS_MANY, 'UserFirmPreference', 'user_id'),
+            'preferred_firms' => array(self::HAS_MANY, 'Firm', 'firm_id', 'through' => 'firm_preferences', 'order' => 'firm_preferences.position DESC', 'limit' => 6),
+            'firmSelections' => array(self::MANY_MANY, 'Firm', 'user_firm(firm_id, user_id)', 'condition' => 'firmSelections.active = 1', 'order' => 'name asc'),
+            'siteSelections' => array(self::MANY_MANY, 'Site', 'user_site(site_id, user_id)', 'order' => 'name asc'),
+            'grade' => array(self::BELONGS_TO, 'DoctorGrade', 'doctor_grade_id'),
+        );
+    }
 
-				return array_merge(
-					$commonRules,
-					array(
-						array(
-							'username',
-							'match',
-							'pattern' => '/^[\w|\.\-_\+@]+$/',
-							'message' => 'Only letters, numbers and underscores are allowed for usernames.'
-						),
-						array('username, email, first_name, last_name, active, global_firm_rights, doctor_grade_id', 'required'),
-						array('username, password, first_name, last_name', 'length', 'max' => 40),
-						array(
-							'password',
-							'length',
-							'min' => 5,
-							'message' => 'Passwords must be at least 6 characters long.'
-						),
-						array('email', 'length', 'max' => 80),
-						array('email', 'email'),
-						array('salt', 'length', 'max' => 10),
-						// Added for password comparison functionality
-						array('password_repeat', 'safe'),
-					)
-				);
+    public function changeFirm($firm_id)
+    {
+        $this->last_firm_id = $firm_id;
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('user_id = :user_id');
+        $criteria->order = 'position DESC';
+        $criteria->params = array(':user_id' => $this->id);
+        $top_preference = UserFirmPreference::model()->find($criteria);
+        $preference = UserFirmPreference::model()->find('user_id = :user_id AND firm_id = :firm_id',
+                array(':user_id' => $this->id, ':firm_id' => $firm_id));
+        if (!$preference) {
+            $preference = new UserFirmPreference();
+            $preference->user_id = $this->id;
+            $preference->firm_id = $firm_id;
+        }
+        if (!$top_preference) {
+            $preference->position = 1;
+        } elseif ($top_preference->id != $preference->id) {
+            $preference->position = $top_preference->position + 1;
+        }
+        if (!$preference->save()) {
+            throw new CException('Error saving user firm preference');
+        }
+    }
 
-			}else {
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+            'id' => 'ID',
+            'username' => 'Username',
+            'first_name' => 'First name',
+            'last_name' => 'Last name',
+            'email' => 'Email',
+            'active' => 'Active',
+            'password' => 'Password',
+            'password_old' => 'Current password',
+            'password_new' => 'New password',
+            'password_confirm' => 'Confirm password',
+            'global_firm_rights' => 'Global firm rights',
+            'is_doctor' => 'Doctor',
+            'is_consultant' => 'Consultant',
+            'is_clinical' => 'Clinically trained',
+            'is_surgeon' => 'Surgeon',
+            'doctor_grade_id' => 'Grade',
+        );
+    }
 
-				return array_merge(
-					$commonRules,
-					array(
-						array(
-							'username',
-							'match',
-							'pattern' => '/^[\w|\.\-_\+@]+$/',
-							'message' => 'Only letters, numbers and underscores are allowed for usernames.'
-						),
-						array('username, email, first_name, last_name, active, global_firm_rights', 'required'),
-						array('username, password, first_name, last_name', 'length', 'max' => 40),
-						array(
-							'password',
-							'length',
-							'min' => 5,
-							'message' => 'Passwords must be at least 6 characters long.'
-						),
-						array('email', 'length', 'max' => 80),
-						array('email', 'email'),
-						array('salt', 'length', 'max' => 10),
-						// Added for password comparison functionality
-						array('password_repeat', 'safe'),
-					)
-				);
-			}
-		} elseif (Yii::app()->params['auth_source'] == 'LDAP') {
-			return array_merge(
-				$commonRules,
-				array(
-					array('username, active, global_firm_rights', 'required'),
-					array('username', 'length', 'max' => 40),
-					array('password_repeat', 'safe'),
-				)
-			);
-		} else {
-			 throw new SystemException('Unknown auth_source: ' . Yii::app()->params['auth_source']);
-		}
-	}
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     *
+     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     */
+    public function search()
+    {
+        $criteria = new CDbCriteria();
 
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
-		return array(
-			'firmUserAssignments' => array(self::HAS_MANY, 'FirmUserAssignment', 'user_id'),
-			'firms' => array(self::MANY_MANY, 'Firm', 'firm_user_assignment(firm_id, user_id)', 'condition' => 'firms.active = 1'),
-			'firmRights' => array(self::MANY_MANY, 'Firm', 'user_firm_rights(firm_id, user_id)'),
-			'serviceRights' => array(self::MANY_MANY, 'Service', 'user_service_rights(service_id, user_id)'),
-			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
-			'firm_preferences' => array(self::HAS_MANY, 'UserFirmPreference', 'user_id'),
-			'preferred_firms' => array(self::HAS_MANY, 'Firm', 'firm_id', 'through' => 'firm_preferences', 'order' => 'firm_preferences.position DESC', 'limit' => 6),
-			'firmSelections' => array(self::MANY_MANY, 'Firm', 'user_firm(firm_id, user_id)', 'condition' => 'firmSelections.active = 1', 'order' => 'name asc'),
-			'siteSelections' => array(self::MANY_MANY, 'Site', 'user_site(site_id, user_id)', 'order' => 'name asc'),
-			'grade' => array(self::BELONGS_TO, 'DoctorGrade', 'doctor_grade_id'),
-		);
-	}
+        $criteria->compare('id', $this->id);
+        $criteria->compare('username', $this->username, true);
+        $criteria->compare('first_name', $this->first_name, true);
+        $criteria->compare('last_name', $this->last_name, true);
+        $criteria->compare('email', $this->email, true);
+        $criteria->compare('active', $this->active);
+        $criteria->compare('global_firm_rights', $this->global_firm_rights);
 
-	public function changeFirm($firm_id)
-	{
-		$this->last_firm_id = $firm_id;
-		$criteria = new CDbCriteria();
-		$criteria->addCondition('user_id = :user_id');
-		$criteria->order = 'position DESC';
-		$criteria->params = array(':user_id' => $this->id);
-		$top_preference = UserFirmPreference::model()->find($criteria);
-		$preference = UserFirmPreference::model()->find('user_id = :user_id AND firm_id = :firm_id',
-				array(':user_id' => $this->id, ':firm_id' => $firm_id));
-		if (!$preference) {
-			$preference = new UserFirmPreference();
-			$preference->user_id = $this->id;
-			$preference->firm_id = $firm_id;
-		}
-		if (!$top_preference) {
-			$preference->position = 1;
-		} elseif ($top_preference->id != $preference->id) {
-			$preference->position = $top_preference->position + 1;
-		}
-		if (!$preference->save()) {
-			throw new CException('Error saving user firm preference');
-		}
-	}
+        return new CActiveDataProvider(get_class($this), array(
+            'criteria' => $criteria,
+        ));
+    }
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
-	public function attributeLabels()
-	{
-		return array(
-			'id' => 'ID',
-			'username' => 'Username',
-			'first_name' => 'First name',
-			'last_name' => 'Last name',
-			'email' => 'Email',
-			'active' => 'Active',
-			'password' => 'Password',
-			'password_old' => 'Current password',
-			'password_new' => 'New password',
-			'password_confirm' => 'Confirm password',
-			'global_firm_rights' => 'Global firm rights',
-			'is_doctor' => 'Doctor',
-			'is_consultant' => 'Consultant',
-			'is_clinical' => 'Clinically trained',
-			'is_surgeon' => 'Surgeon',
-			'doctor_grade_id' => 'Grade'
-		);
-	}
+    /**
+     * Saves or updates a db record and creates the salt for a new record of
+     *	authentication type 'basic'.
+     *
+     * @return bool
+     */
+    public function save($runValidation = true, $attributes = null, $allow_overriding = false, $save_archive = false)
+    {
+        if (Yii::app()->params['auth_source'] == 'BASIC') {
+            /*
+             * AUTH_BASIC requires creation of a salt. AUTH_LDAP doesn't.
+             */
+            if ($this->getIsNewRecord() && !$this->salt) {
+                $salt = '';
+                $possible = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		$criteria=new CDbCriteria;
+                for ($i = 0; $i < 10; ++$i) {
+                    $salt .= $possible[mt_rand(0, strlen($possible) - 1)];
+                }
 
-		$criteria->compare('id',$this->id);
-		$criteria->compare('username',$this->username,true);
-		$criteria->compare('first_name',$this->first_name,true);
-		$criteria->compare('last_name',$this->last_name,true);
-		$criteria->compare('email',$this->email,true);
-		$criteria->compare('active',$this->active);
-		$criteria->compare('global_firm_rights',$this->global_firm_rights);
+                $this->salt = $salt;
+            }
+        }
 
-		return new CActiveDataProvider(get_class($this), array(
-			'criteria'=>$criteria,
-		));
-	}
+        return parent::save($runValidation, $attributes, $allow_overriding, $save_archive);
+    }
 
-	/**
-	 * Saves or updates a db record and creates the salt for a new record of
-	 *	authentication type 'basic'.
-	 *
-	 * @return boolean
-	 */
-	public function save($runValidation = true, $attributes = null, $allow_overriding=false, $save_archive=false)
-	{
-		if (Yii::app()->params['auth_source'] == 'BASIC') {
-			/**
-			 * AUTH_BASIC requires creation of a salt. AUTH_LDAP doesn't.
-			 */
-			if ($this->getIsNewRecord() && !$this->salt) {
-				$salt = '';
-				$possible = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    /**
+     * Hashes the user password for insertion into the db.
+     */
+    protected function afterValidate()
+    {
+        parent::afterValidate();
 
-				for ($i=0; $i < 10; $i++) {
-					$salt .= $possible[mt_rand(0, strlen($possible)-1)];
-				}
+        if (!preg_match('/^[0-9a-f]{32}$/', $this->password)) {
+            $this->password = $this->hashPassword($this->password, $this->salt);
+        }
+    }
 
-				$this->salt = $salt;
-			}
-		}
+    /**
+     * Returns an md5 hash of the password and username provided.
+     *
+     * @param string $password
+     * @param string $salt
+     *
+     * @return string
+     */
+    public function hashPassword($password, $salt)
+    {
+        return md5($salt.$password);
+    }
 
-		return parent::save($runValidation, $attributes, $allow_overriding, $save_archive);
-	}
+    /**
+     * Returns whether the password provided is valid for this user.
+     *
+     * Hashes the password with the salt for this user. If valid, return true,
+     * else return false.
+     *
+     * @param string $password
+     *
+     * @return bool
+     */
+    public function validatePassword($password)
+    {
+        return $this->hashPassword($password, $this->salt) === $this->password;
+    }
 
-	/**
-	 * Hashes the user password for insertion into the db.
-	 */
-	protected function afterValidate()
-	{
-		parent::afterValidate();
+    /**
+     * Displays a string indicating whether the user account is active.
+     *
+     * @return string
+     */
+    public function getActiveText()
+    {
+        if ($this->active) {
+            return 'Yes';
+        } else {
+            return 'No';
+        }
+    }
 
-		if (!preg_match('/^[0-9a-f]{32}$/',$this->password)) {
-			$this->password = $this->hashPassword($this->password, $this->salt);
-		}
-	}
+    /**
+     * Displays a string indicating whether the user account has global firm rights.
+     *
+     * @return string
+     */
+    public function getGlobalFirmRightsText()
+    {
+        if ($this->global_firm_rights) {
+            return 'Yes';
+        } else {
+            return 'No';
+        }
+    }
 
-	/**
-	 * Returns an md5 hash of the password and username provided.
-	 *
-	 * @param string $password
-	 * @param string $salt
-	 * @return string
-	 */
-	public function hashPassword($password, $salt)
-	{
-		return md5($salt . $password);
-	}
+    public function getFullName()
+    {
+        return implode(' ', array($this->first_name, $this->last_name));
+    }
 
-	/**
-	 * Returns whether the password provided is valid for this user.
-	 *
-	 * Hashes the password with the salt for this user. If valid, return true,
-	 * else return false.
-	 *
-	 * @param string $password
-	 * @return boolean
-	 */
-	public function validatePassword($password)
-	{
-		return $this->hashPassword($password, $this->salt) === $this->password;
-	}
+    public function getFullNameAndUserName()
+    {
+        return implode(' ', array($this->first_name, $this->last_name)).(" ({$this->username})");
+    }
 
-	/**
-	 * Displays a string indicating whether the user account is active
-	 * @return String
-	 */
-	public function getActiveText()
-	{
-		if ($this->active) {
-			return 'Yes';
-		} else {
-			return 'No';
-		}
-	}
+    public function getReversedFullName()
+    {
+        return implode(' ', array($this->last_name, $this->first_name));
+    }
 
-	/**
-	 * Displays a string indicating whether the user account has global firm rights
-	 *
-	 * @return String
-	 */
-	public function getGlobalFirmRightsText()
-	{
-		if ($this->global_firm_rights) {
-			return 'Yes';
-		} else {
-			return 'No';
-		}
-	}
+    public function getReversedFullNameAndUserName()
+    {
+        return implode(' ', array($this->last_name, $this->first_name)).(" ({$this->username})");
+    }
 
-	public function getFullName()
-	{
-		return implode(' ', array($this->first_name, $this->last_name));
-	}
-        
-	public function getFullNameAndUserName()
-	{
-		return implode(' ', array($this->first_name, $this->last_name)) . (" ({$this->username})");
-	}
+    public function getFullNameAndTitle()
+    {
+        return implode(' ', array($this->title, $this->first_name, $this->last_name));
+    }
 
-	public function getReversedFullName()
-	{
-		return implode(' ', array($this->last_name, $this->first_name));
-	}
-        
-	public function getReversedFullNameAndUserName()
-	{
-		return implode(' ', array($this->last_name, $this->first_name)) . (" ({$this->username})");
-	}
+    public function getFullNameAndTitleAndQualifications()
+    {
+        return implode(' ', array($this->title, $this->first_name, $this->last_name)).($this->qualifications ? ' '.$this->qualifications : '');
+    }
 
-	public function getFullNameAndTitle()
-	{
-		return implode(' ', array($this->title, $this->first_name, $this->last_name));
-	}
+    public function getReversedFullNameAndTitle()
+    {
+        return implode(' ', array($this->title, $this->last_name, $this->first_name));
+    }
 
-	public function getFullNameAndTitleAndQualifications()
-	{
-		return implode(' ', array($this->title, $this->first_name, $this->last_name)).($this->qualifications?' '.$this->qualifications:'');
-	}
+    /**
+     * Returns whether this user has a contact entry and a consultant entry
+     *			i.e. they are a consultant for the centre.
+     *
+     * @return bool
+     */
+    public static function isConsultant()
+    {
+        $user = self::model()->findByPk(Yii::app()->id);
 
-	public function getReversedFullNameAndTitle()
-	{
-		return implode(' ', array($this->title, $this->last_name, $this->first_name));
-	}
+        // Set whether they are an internal consultant or not. This gives them the ability to edit macros.
+        if (isset($user->contact->consultant)) {
+            return true;
+        }
 
-	/**
-	 * Returns whether this user has a contact entry and a consultant entry
-	 *			i.e. they are a consultant for the centre.
-	 *
-	 * @return boolean
-	 */
-	public static function isConsultant()
-	{
-		$user = User::model()->findByPk(Yii::app()->id);
+        return false;
+    }
 
-		// Set whether they are an internal consultant or not. This gives them the ability to edit macros.
-		if (isset($user->contact->consultant)) {
-			return true;
-		}
+    /**
+     * Returns the users that are eligible to be considered surgeons.
+     *
+     * @return User[] List of surgeon users
+     */
+    public static function getSurgeons()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->compare('is_surgeon', 1);
+        $criteria->compare('active', 1);
+        $criteria->order = 'last_name,first_name asc';
 
-		return false;
-	}
+        return self::model()->findAll($criteria);
+    }
 
-	/**
-	 * Returns the users that are eligible to be considered surgeons.
-	 *
-	 * @return User[] List of surgeon users
-	 */
-	public static function getSurgeons()
-	{
-		$criteria = new CDbCriteria;
-		$criteria->compare('is_surgeon',1);
-		$criteria->compare('active',1);
-		$criteria->order = 'last_name,first_name asc';
+    public function audit($target, $action, $data = null, $log = false, $properties = array())
+    {
+        $properties['user_id'] = $this->id;
+        parent::audit($target, $action, $data, $log, $properties);
+    }
 
-		return User::model()->findAll($criteria);
-	}
+    public function getListSurgeons()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->compare('is_surgeon', 1);
+        $criteria->compare('active', 1);
+        $criteria->order = 'last_name,first_name asc';
 
-	public function audit($target, $action, $data=null, $log=false, $properties=array())
-	{
-		$properties['user_id'] = $this->id;
-		parent::audit($target, $action, $data, $log, $properties);
-	}
+        return CHtml::listData(self::model()->findAll($criteria), 'id', 'reversedFullName');
+    }
 
-	public function getListSurgeons()
-	{
-		$criteria = new CDbCriteria;
-		$criteria->compare('is_surgeon',1);
-		$criteria->compare('active',1);
-		$criteria->order = 'last_name,first_name asc';
+    public function getReportDisplay()
+    {
+        return $this->fullName;
+    }
 
-		return CHtml::listData(User::model()->findAll($criteria),'id','reversedFullName');
-	}
+    public function beforeValidate()
+    {
+        if (!preg_match('/^[0-9a-f]{32}$/', $this->password)) {
+            if ($this->password != $this->password_repeat) {
+                $this->addError('password', 'Password confirmation must match exactly');
+            }
+            $this->salt = $this->randomSalt();
+        }
 
-	public function getReportDisplay()
-	{
-		return $this->fullName;
-	}
+        if ($this->getIsNewRecord() && !$this->password) {
+            $this->addError('password', 'Password is required');
+        }
 
-	public function beforeValidate()
-	{
-		if (!preg_match('/^[0-9a-f]{32}$/',$this->password)) {
-			if ($this->password != $this->password_repeat) {
-				$this->addError('password','Password confirmation must match exactly');
-			}
-			$this->salt = $this->randomSalt();
-		}
+        return parent::beforeValidate();
+    }
 
-		if ($this->getIsNewRecord() && !$this->password) {
-			$this->addError('password','Password is required');
-		}
+    public function randomSalt()
+    {
+        $salt = '';
+        for ($i = 0;$i < 10;++$i) {
+            switch (rand(0, 2)) {
+                case 0:
+                    $salt .= chr(rand(48, 57));
+                    break;
+                case 1:
+                    $salt .= chr(rand(65, 90));
+                    break;
+                case 2:
+                    $salt .= chr(rand(97, 122));
+                    break;
+            }
+        }
 
-		return parent::beforeValidate();
-	}
+        return $salt;
+    }
 
-	public function randomSalt()
-	{
-		$salt = '';
-		for ($i=0;$i<10;$i++) {
-			switch (rand(0,2)) {
-				case 0:
-					$salt .= chr(rand(48,57));
-					break;
-				case 1:
-					$salt .= chr(rand(65,90));
-					break;
-				case 2:
-					$salt .= chr(rand(97,122));
-					break;
-			}
-		}
+    public function findAsContacts($term)
+    {
+        $contacts = array();
 
-		return $salt;
-	}
+        $criteria = new CDbCriteria();
+        $criteria->addSearchCondition('lower(`t`.last_name)', $term, false);
+        $criteria->compare('active', 1);
+        $criteria->order = 'contact.title, contact.first_name, contact.last_name';
 
-	public function findAsContacts($term)
-	{
-		$contacts = array();
+        foreach (self::model()->with(array('contact' => array('with' => 'locations')))->findAll($criteria) as $user) {
+            foreach ($user->contact->locations as $location) {
+                $contacts[] = array(
+                    'line' => $user->contact->contactLine($location),
+                    'contact_location_id' => $location->id,
+                );
+            }
+        }
 
-		$criteria = new CDbCriteria;
-		$criteria->addSearchCondition("lower(`t`.last_name)",$term,false);
-		$criteria->compare('active', 1);
-		$criteria->order = 'contact.title, contact.first_name, contact.last_name';
+        return $contacts;
+    }
 
-		foreach (User::model()->with(array('contact' => array('with' => 'locations')))->findAll($criteria) as $user) {
-			foreach ($user->contact->locations as $location) {
-				$contacts[] = array(
-					'line' => $user->contact->contactLine($location),
-					'contact_location_id' => $location->id,
-				);
-			}
-		}
+    public function getNotSelectedSiteList()
+    {
+        $site_ids = array();
+        foreach ($this->siteSelections as $site) {
+            $site_ids[] = $site->id;
+        }
 
-		return $contacts;
-	}
+        $criteria = new CDbCriteria();
+        $criteria->compare('institution_id', Institution::model()->getCurrent()->id);
+        $criteria->compare('active', 1);
+        $criteria->addNotInCondition('id', $site_ids);
+        $criteria->order = 'name asc';
 
-	public function getNotSelectedSiteList()
-	{
-		$site_ids = array();
-		foreach ($this->siteSelections as $site) {
-			$site_ids[] = $site->id;
-		}
+        return Site::model()->findAll($criteria);
+    }
 
-		$criteria = new CDbCriteria;
-		$criteria->compare('institution_id', Institution::model()->getCurrent()->id);
-		$criteria->compare('active', 1);
-		$criteria->addNotInCondition('id',$site_ids);
-		$criteria->order = 'name asc';
+    public function getNotSelectedFirmList()
+    {
+        $firms = Yii::app()->db->createCommand()
+            ->select('f.id, f.name, s.name AS subspecialty')
+            ->from('firm f')
+            ->leftJoin('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
+            ->leftJoin('subspecialty s', 'ssa.subspecialty_id = s.id')
+            ->leftJoin('user_firm uf', 'uf.firm_id = f.id and uf.user_id = '.Yii::app()->user->id)
+            ->where('uf.id is null and f.active = 1')
+            ->order('f.name, s.name')
+            ->queryAll();
+        $data = array();
+        foreach ($firms as $firm) {
+            if ($firm['subspecialty']) {
+                $data[$firm['id']] = $firm['name'].' ('.$firm['subspecialty'].')';
+            } else {
+                $data[$firm['id']] = $firm['name'];
+            }
+        }
+        natcasesort($data);
 
-		return Site::model()->findAll($criteria);
-	}
+        return $data;
+    }
 
-	public function getNotSelectedFirmList()
-	{
-		$firms = Yii::app()->db->createCommand()
-			->select('f.id, f.name, s.name AS subspecialty')
-			->from('firm f')
-			->leftJoin('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
-			->leftJoin('subspecialty s','ssa.subspecialty_id = s.id')
-			->leftJoin('user_firm uf','uf.firm_id = f.id and uf.user_id = '.Yii::app()->user->id)
-			->where("uf.id is null and f.active = 1")
-			->order('f.name, s.name')
-			->queryAll();
-		$data = array();
-		foreach ($firms as $firm) {
-			if ($firm['subspecialty']) {
-				$data[$firm['id']] = $firm['name'] . ' (' . $firm['subspecialty'] . ')';
-			} else {
-				$data[$firm['id']] = $firm['name'];
-			}
-		}
-		natcasesort($data);
-		return $data;
-	}
+    /**
+     * @return CAuthItem[]
+     */
+    public function getRoles()
+    {
+        return $this->id ? Yii::app()->authManager->getRoles($this->id) : array();
+    }
 
-	/**
-	 * @return CAuthItem[]
-	 */
-	public function getRoles()
-	{
-		return $this->id ? Yii::app()->authManager->getRoles($this->id) : array();
-	}
+    /**
+     * @param string[] $roles
+     */
+    public function saveRoles(array $roles)
+    {
+        $old_roles = array_map(function ($role) { return $role->name; }, $this->roles);
+        $added_roles = array_diff($roles, $old_roles);
+        $removed_roles = array_diff($old_roles, $roles);
 
-	/**
-	 * @param string[] $roles
-	 */
-	public function saveRoles(array $roles)
-	{
-		$old_roles = array_map(function ($role) { return $role->name; }, $this->roles);
-		$added_roles = array_diff($roles, $old_roles);
-		$removed_roles = array_diff($old_roles, $roles);
+        foreach ($added_roles as $role) {
+            Yii::app()->authManager->assign($role, $this->id);
+        }
 
-		foreach ($added_roles as $role) {
-			Yii::app()->authManager->assign($role, $this->id);
-		}
+        foreach ($removed_roles as $role) {
+            Yii::app()->authManager->revoke($role, $this->id);
+        }
+    }
 
-		foreach ($removed_roles as $role) {
-			Yii::app()->authManager->revoke($role, $this->id);
-		}
-	}
+    /**
+     * Return all firms that the user has access rights to.
+     *
+     * @return Firm[]
+     */
+    public function getAvailableFirms()
+    {
+        $crit = new CDbCriteria();
+        $crit->compare('active', 1);
+        if (!$this->global_firm_rights) {
+            $crit->join = 'left join firm_user_assignment fua on fua.firm_id = t.id and fua.user_id = :user_id '.
+                'left join user_firm_rights ufr on ufr.firm_id = t.id and ufr.user_id = :user_id '.
+                'left join service_subspecialty_assignment ssa on ssa.id = t.service_subspecialty_assignment_id '.
+                'left join user_service_rights usr on usr.service_id = ssa.service_id and usr.user_id = :user_id ';
+            $crit->addCondition('fua.id is not null or ufr.id is not null or usr.id is not null');
+            $crit->params['user_id'] = $this->id;
+        }
 
-	/**
-	 * Return all firms that the user has access rights to
-	 *
-	 * @return Firm[]
-	 */
-	public function getAvailableFirms()
-	{
-		$crit = new CDbCriteria;
-		$crit->compare('active', 1);
-		if (!$this->global_firm_rights) {
-			$crit->join = "left join firm_user_assignment fua on fua.firm_id = t.id and fua.user_id = :user_id " .
-				"left join user_firm_rights ufr on ufr.firm_id = t.id and ufr.user_id = :user_id " .
-				"left join service_subspecialty_assignment ssa on ssa.id = t.service_subspecialty_assignment_id " .
-				"left join user_service_rights usr on usr.service_id = ssa.service_id and usr.user_id = :user_id ";
-			$crit->addCondition("fua.id is not null or ufr.id is not null or usr.id is not null");
-			$crit->params['user_id'] = $this->id;
-		}
-		return Firm::model()->findAll($crit);
-	}
+        return Firm::model()->findAll($crit);
+    }
+
+    /**
+     * Get the portal user if it exists.
+     *
+     * @return CActiveRecord
+     */
+    public function portalUser()
+    {
+        $username = (array_key_exists('portal_user', Yii::app()->params)) ? Yii::app()->params['portal_user'] : 'portal_user';
+        $crit = new CDbCriteria();
+        $crit->compare('username', $username);
+
+        return $this->find($crit);
+    }
 }

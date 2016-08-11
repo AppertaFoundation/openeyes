@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: petergallagher
  * Date: 30/03/15
- * Time: 13:25
+ * Time: 13:25.
  */
 
 /**
@@ -31,345 +31,342 @@
  *
  * As you can see this works with across relationships, however for clarity in output you need to add the labels to
  * the attributeLabels array of the model ModelSearch was instantiated with.
- *
  */
 class ModelSearch
 {
-	/**
-	 * @var BaseActiveRecord
-	 */
-	protected $model;
+    /**
+     * @var BaseActiveRecord
+     */
+    protected $model;
 
-	/**
-	 * @var CDbCriteria
-	 */
-	protected $criteria;
+    /**
+     * @var CDbCriteria
+     */
+    protected $criteria;
 
-	/**
-	 * @var Request
-	 */
-	protected $request;
+    /**
+     * @var Request
+     */
+    protected $request;
 
-	/**
-	 * @var int
-	 */
-	protected $itemsPerPage = 30;
+    /**
+     * @var int
+     */
+    protected $itemsPerPage = 30;
 
-	/**
-	 * @var array
-	 */
-	protected $searchItems = array();
+    /**
+     * @var array
+     */
+    protected $searchItems = array();
 
-	/**
-	 * @var array
-	 */
-	protected $searchTerms = array();
+    /**
+     * @var array
+     */
+    protected $searchTerms = array();
 
-	/**
-	 * @return BaseActiveRecord
-	 */
-	public function getModel()
-	{
-		return $this->model;
-	}
+    /**
+     * @return BaseActiveRecord
+     */
+    public function getModel()
+    {
+        return $this->model;
+    }
 
-	/**
-	 * @param BaseActiveRecord $model
-	 */
-	public function setModel($model)
-	{
-		$this->model = $model;
-	}
+    /**
+     * @param BaseActiveRecord $model
+     */
+    public function setModel($model)
+    {
+        $this->model = $model;
+    }
 
-	/**
-	 * @return CDbCriteria
-	 */
-	public function getCriteria()
-	{
-		return $this->criteria;
-	}
+    /**
+     * @return CDbCriteria
+     */
+    public function getCriteria()
+    {
+        return $this->criteria;
+    }
 
-	/**
-	 * @param CDbCriteria $criteria
-	 */
-	public function setCriteria($criteria)
-	{
-		$this->criteria = $criteria;
-	}
+    /**
+     * @param CDbCriteria $criteria
+     */
+    public function setCriteria($criteria)
+    {
+        $this->criteria = $criteria;
+    }
 
-	/**
-	 * @return mixed
-	 */
-	public function getRequest()
-	{
-		return $this->request;
-	}
+    /**
+     * @return mixed
+     */
+    public function getRequest()
+    {
+        return $this->request;
+    }
 
-	/**
-	 * @param mixed $request
-	 */
-	public function setRequest($request)
-	{
-		$this->request = $request;
-	}
+    /**
+     * @param mixed $request
+     */
+    public function setRequest($request)
+    {
+        $this->request = $request;
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getItemsPerPage()
-	{
-		return $this->itemsPerPage;
-	}
+    /**
+     * @return int
+     */
+    public function getItemsPerPage()
+    {
+        return $this->itemsPerPage;
+    }
 
-	/**
-	 * @param int $itemsPerPage
-	 */
-	public function setItemsPerPage($itemsPerPage)
-	{
-		$this->itemsPerPage = $itemsPerPage;
-	}
+    /**
+     * @param int $itemsPerPage
+     */
+    public function setItemsPerPage($itemsPerPage)
+    {
+        $this->itemsPerPage = $itemsPerPage;
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getSearchItems()
-	{
-		return $this->searchItems;
-	}
+    /**
+     * @return array
+     */
+    public function getSearchItems()
+    {
+        return $this->searchItems;
+    }
 
-	/**
-	 * @param array $searchItems
-	 */
-	public function setSearchItems($searchItems)
-	{
-		$this->searchItems = $searchItems;
-		foreach($this->searchItems as $searchTerm => $searchItem){
-			if(is_array($searchItem) && array_key_exists('default', $searchItem) && !array_key_exists($searchTerm, $this->searchTerms)){
-				$criteria = $this->getCriteria();
-				$criteria->addCondition($searchTerm.' = '.$searchItem['default']);
-			}
-		}
-	}
+    /**
+     * @param array $searchItems
+     */
+    public function setSearchItems($searchItems)
+    {
+        $this->searchItems = $searchItems;
+        foreach ($this->searchItems as $searchTerm => $searchItem) {
+            if (is_array($searchItem) && array_key_exists('default', $searchItem) && !array_key_exists($searchTerm, $this->searchTerms)) {
+                $criteria = $this->getCriteria();
+                $criteria->addCondition($searchTerm.' = '.$searchItem['default']);
+            }
+        }
+    }
 
-	/**
-	 * @param BaseActiveRecord $model
-	 */
-	public function __construct(BaseActiveRecord $model)
-	{
-		$this->model = $model;
-		$this->criteria = new CDbCriteria();
-		$this->criteria->with = array();
-		$this->request = Yii::app()->getRequest();
-		$this->generateCriteria();
-	}
+    /**
+     * @param BaseActiveRecord $model
+     */
+    public function __construct(BaseActiveRecord $model)
+    {
+        $this->model = $model;
+        $this->criteria = new CDbCriteria();
+        $this->criteria->with = array();
+        $this->request = Yii::app()->getRequest();
+        $this->generateCriteria();
+    }
 
-	/**
-	 * Generates the required Criteria object for the search
-	 *
-	 * @param string|array $attr
-	 */
-	protected function generateCriteria($attr = 'search')
-	{
-		if (is_array($attr)) {
-			$search = $attr;
-			$sensitive = false;
-		} else {
-			$search = $this->request->getParam($attr);
-			$sensitive = $this->request->getParam('case_sensitive', false);
-		}
+    /**
+     * Generates the required Criteria object for the search.
+     *
+     * @param string|array $attr
+     */
+    protected function generateCriteria($attr = 'search')
+    {
+        if (is_array($attr)) {
+            $search = $attr;
+            $sensitive = false;
+        } else {
+            $search = $this->request->getParam($attr);
+            $sensitive = $this->request->getParam('case_sensitive', false);
+        }
 
-		if(is_array($search)){
-			foreach($search as $key => $value){
-				if($key === 'exact'){
-					continue;
-				}
-				$exactMatch = (isset($search['exact'][$key]) && $search['exact'][$key]);
-				if(!is_array($value)){
-					$this->addCompare($this->criteria, $key, $value, $sensitive, 'AND', $exactMatch);
-				} else {
-					if ($key === 'filterid') {
-						foreach ($value as $fieldName => $fieldValue) {
-							if ($fieldValue > 0) {
-								$this->addCompare($this->criteria, $fieldName, $fieldValue, $sensitive, 'AND', true);
-							}
-						}
-					}
-					if(!isset($value['value'])){
-						//no value provided to search against
-						continue;
-					}
-					$searchTerm = $value['value'];
-					$this->addCompare($this->criteria, $key, $searchTerm, $sensitive, 'AND', $exactMatch);
-					if(array_key_exists('compare_to', $value) && is_array($value['compare_to'])){
-						foreach($value['compare_to'] as $compareTo)
-						{
-							$this->addCompare($this->criteria, $compareTo, $searchTerm, $sensitive, 'OR', $exactMatch);
-						}
-					}
-				}
-			}
-		}
+        if (is_array($search)) {
+            foreach ($search as $key => $value) {
+                if ($key === 'exact') {
+                    continue;
+                }
+                $exactMatch = (isset($search['exact'][$key]) && $search['exact'][$key]);
+                if (!is_array($value)) {
+                    $this->addCompare($this->criteria, $key, $value, $sensitive, 'AND', $exactMatch);
+                } else {
+                    if ($key === 'filterid') {
+                        foreach ($value as $fieldName => $fieldValue) {
+                            if ($fieldValue > 0) {
+                                $this->addCompare($this->criteria, $fieldName, $fieldValue, $sensitive, 'AND', true);
+                            }
+                        }
+                    }
+                    if (!isset($value['value'])) {
+                        //no value provided to search against
+                        continue;
+                    }
+                    $searchTerm = $value['value'];
+                    $this->addCompare($this->criteria, $key, $searchTerm, $sensitive, 'AND', $exactMatch);
+                    if (array_key_exists('compare_to', $value) && is_array($value['compare_to'])) {
+                        foreach ($value['compare_to'] as $compareTo) {
+                            $this->addCompare($this->criteria, $compareTo, $searchTerm, $sensitive, 'OR', $exactMatch);
+                        }
+                    }
+                }
+            }
+        }
 
-		if($this->model->hasAttribute('display_order')){
-			$this->criteria->order = 'display_order asc';
-		} else {
-			$order = $this->request->getParam('d');
-			$sortColumn = $this->request->getParam('c');
-			if ($sortColumn) {
-				$this->relationalAttribute($this->criteria, $sortColumn, $attr);
-				if ($order) {
-					$sortColumn .= ' DESC';
-				}
-				$this->criteria->order = $sortColumn;
-			}
-		}
+        if ($this->model->hasAttribute('display_order')) {
+            $this->criteria->order = 'display_order asc';
+        } else {
+            $order = $this->request->getParam('d');
+            $sortColumn = $this->request->getParam('c');
+            if ($sortColumn) {
+                $this->relationalAttribute($this->criteria, $sortColumn, $attr);
+                if ($order) {
+                    $sortColumn .= ' DESC';
+                }
+                $this->criteria->order = $sortColumn;
+            }
+        }
+    }
 
-	}
+    /**
+     * Adds a comparison between a search term and an attribute.
+     *
+     * @param CDbCriteria $criteria
+     * @param $attribute
+     * @param $value
+     * @param bool   $sensitive
+     * @param string $operator
+     */
+    protected function addCompare(
+        CDbCriteria $criteria,
+        $attribute,
+        $value,
+        $sensitive = false,
+        $operator = 'AND',
+        $exactmatch = false
+    ) {
+        if (method_exists($this->model, 'get_'.$attribute)) {
+            //It's a magic method attribute, doesn't exist in the db has to be dealt with elsewhere
+            return;
+        }
 
-	/**
-	 * Adds a comparison between a search term and an attribute
-	 *
-	 * @param CDbCriteria $criteria
-	 * @param $attribute
-	 * @param $value
-	 * @param bool $sensitive
-	 * @param string $operator
-	 */
-	protected function addCompare(
-		CDbCriteria $criteria,
-		$attribute,
-		$value,
-		$sensitive = false,
-		$operator = 'AND',
-		$exactmatch = false
-	)
-	{
-		if(method_exists($this->model, 'get_'.$attribute)){
-			//It's a magic method attribute, doesn't exist in the db has to be dealt with elsewhere
-			return;
-		}
+        $search = $attribute;
+        $search = $this->relationalAttribute($criteria, $attribute, $search);
 
-		$search = $attribute;
-		$search = $this->relationalAttribute($criteria, $attribute, $search);
+        if ($value !== '') {
+            if (!$sensitive && !$exactmatch) {
+                $criteria->compare('LOWER('.$search.')', strtolower($value), true, $operator);
+            } elseif ($exactmatch) {
+                $criteria->compare($search, $value, false, $operator);
+            } else {
+                $criteria->compare($search, $value, true, $operator);
+            }
+            $this->searchTerms[$attribute] = $value;
+        }
+    }
 
-		if($value !== '' ){
-			if (!$sensitive && !$exactmatch) {
-				$criteria->compare('LOWER(' . $search . ')', strtolower($value), true, $operator);
-			} elseif ($exactmatch) {
-				$criteria->compare($search, $value, false, $operator);
-			} else {
-				$criteria->compare($search, $value, true, $operator);
-			}
-			$this->searchTerms[$attribute] = $value;
-		}
-	}
+    /**
+     * Inits pagination for the results and returns it.
+     *
+     * @return CPagination
+     */
+    public function initPagination()
+    {
+        $itemsCount = $this->model->count($this->criteria);
+        $pagination = new CPagination($itemsCount);
+        $pagination->pageSize = $this->itemsPerPage;
+        $pagination->applyLimit($this->criteria);
 
-	/**
-	 * Inits pagination for the results and returns it.
-	 *
-	 * @return CPagination
-	 */
-	public function initPagination()
-	{
-		$itemsCount = $this->model->count($this->criteria);
-		$pagination = new CPagination($itemsCount);
-		$pagination->pageSize = $this->itemsPerPage;
-		$pagination->applyLimit($this->criteria);
+        return $pagination;
+    }
 
-		return $pagination;
-	}
+    /**
+     * Performs the query that has been generated.
+     *
+     * @return CActiveRecord[]
+     */
+    public function retrieveResults()
+    {
+        return $this->model->findAll($this->criteria);
+    }
 
+    public function addActiveFilter()
+    {
+        $this->addSearchItem('active', array('type' => 'boolean'));
+    }
 
-	/**
-	 * Performs the query that has been generated.
-	 *
-	 * @return CActiveRecord[]
-	 */
-	public function retrieveResults()
-	{
-		return $this->model->findAll($this->criteria);
-	}
+    /**
+     * Add a search item.
+     *
+     * @param $key
+     * @param string|array $search
+     */
+    public function addSearchItem($key, $search = '')
+    {
+        $this->searchItems[$key] = $search;
+        if (is_array($search) && array_key_exists('default', $search) && !array_key_exists($key, $this->searchTerms)) {
+            $criteria = $this->getCriteria();
+            $criteria->addCondition($key.' = '.$search['default']);
+        }
+    }
 
-	public function addActiveFilter()
-	{
-		$this->addSearchItem('active', array('type' => 'boolean'));
-	}
+    /**
+     * @param $searchInput
+     */
+    public function initSearch($searchInput)
+    {
+        $this->generateCriteria($searchInput);
+    }
 
-	/**
-	 * Add a search item
-	 *
-	 * @param $key
-	 * @param string|array $search
-	 */
-	public function addSearchItem($key, $search = '')
-	{
-		$this->searchItems[$key] = $search;
-		if(is_array($search) && array_key_exists('default', $search) && !array_key_exists($key, $this->searchTerms)){
-			$criteria = $this->getCriteria();
-			$criteria->addCondition($key.' = '.$search['default']);
-		}
-	}
+    /**
+     * Retrieves the search term supplied by the user for a given attribute if there was one.
+     *
+     * @param $attribute
+     * @param string $default
+     *
+     * @return string
+     */
+    public function getSearchTermForAttribute($attribute, $default = '')
+    {
+        if (array_key_exists($attribute, $this->searchTerms)) {
+            return $this->searchTerms[$attribute];
+        }
 
-	/**
-	 * @param $searchInput
-	 */
-	public function initSearch($searchInput)
-	{
-		$this->generateCriteria($searchInput);
-	}
+        return $default;
+    }
 
-	/**
-	 * Retrieves the search term supplied by the user for a given attribute if there was one.
-	 *
-	 * @param $attribute
-	 * @param string $default
-	 * @return string
-	 */
-	public function getSearchTermForAttribute($attribute, $default = '')
-	{
-		if(array_key_exists($attribute, $this->searchTerms)){
-			return $this->searchTerms[$attribute];
-		}
+    /**
+     * Takes an attribute name and makes sure appropriate relationships are included.
+     *
+     * This will take an attribute name many layers of relationship deep, make sure that all appropriate tables are
+     * included with the result and return a string that is then acceptable to be used in a where clause.
+     *
+     * @param CDbCriteria $criteria
+     * @param string      $attribute
+     * @param string      $search
+     *
+     * @return string
+     */
+    protected function relationalAttribute(CDbCriteria $criteria, $attribute, $search)
+    {
+        $search = $this->model->getTableAlias().'.'.$search;
 
-		return $default;
-	}
+        if (strpos($attribute, '.')) {
+            $relationship = explode('.', $attribute);
+            $relationshipArray = array();
+            while (count($relationship) > 1) {
+                $relationshipString = array_shift($relationship);
+                $search = $relationshipString;
+                if (count($relationshipArray)) {
+                    $relationshipString = implode('.', $relationshipArray).'.'.$relationshipString;
+                }
+                $relationshipArray[] = $relationshipString;
+            }
 
-	/**
-	 * Takes an attribute name and makes sure appropriate relationships are included
-	 *
-	 * This will take an attribute name many layers of relationship deep, make sure that all appropriate tables are
-	 * included with the result and return a string that is then acceptable to be used in a where clause.
-	 *
-	 * @param CDbCriteria $criteria
-	 * @param string $attribute
-	 * @param string $search
-	 * @return string
-	 */
-	protected function relationalAttribute(CDbCriteria $criteria, $attribute, $search)
-	{
-		$search = $this->model->getTableAlias() . '.' . $search;
+            $search .= '.'.array_shift($relationship);
 
-		if (strpos($attribute, '.')) {
-			$relationship = explode('.', $attribute);
-			$relationshipArray = array();
-			while (count($relationship) > 1) {
-				$relationshipString = array_shift($relationship);
-				$search = $relationshipString;
-				if (count($relationshipArray)) {
-					$relationshipString = implode('.', $relationshipArray) . '.' . $relationshipString;
-				}
-				$relationshipArray[] = $relationshipString;
-			}
+            $criteria->together = true;
+            $criteria->with = array_merge(
+                $criteria->with,
+                $relationshipArray
+            );
+        }
 
-			$search .= '.' . array_shift($relationship);
-
-			$criteria->together = true;
-			$criteria->with = array_merge(
-				$criteria->with,
-				$relationshipArray
-			);
-		}
-
-		return $search;
-	}
+        return $search;
+    }
 }

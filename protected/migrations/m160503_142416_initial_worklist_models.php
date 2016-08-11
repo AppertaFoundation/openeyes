@@ -11,7 +11,7 @@ class m160503_142416_initial_worklist_models extends OEMigration
                 'description' => 'text',
                 'start' => 'datetime',
                 'end' => 'datetime',
-                'scheduled' => 'boolean default false NOT NULL'
+                'scheduled' => 'boolean default false NOT NULL',
             ),
             true
         );
@@ -22,7 +22,7 @@ class m160503_142416_initial_worklist_models extends OEMigration
                 'worklist_id' => 'int(11) NOT NULL',
                 'name' => 'varchar(255) NOT NULL',
                 'display_order' => 'int(3)',
-                'UNIQUE KEY `worklist_attribute_unique_order` (`display_order`,`worklist_id`)'
+                'UNIQUE KEY `worklist_attribute_unique_order` (`display_order`,`worklist_id`)',
             ));
         $this->addForeignKey('worklist_attribute_wl_fk', 'worklist_attribute', 'worklist_id', 'worklist', 'id', 'CASCADE');
 
@@ -58,7 +58,7 @@ class m160503_142416_initial_worklist_models extends OEMigration
                 'id' => 'pk',
                 'worklist_attribute_id' => 'int(11) NOT NULL',
                 'worklist_patient_id' => 'int(11) NOT NULL',
-                'attribute_value' => 'string'
+                'attribute_value' => 'string',
             ),
             true);
 
@@ -72,12 +72,11 @@ class m160503_142416_initial_worklist_models extends OEMigration
                 'id' => 'pk',
                 'worklist_id' => 'int(11) NOT NULL',
                 'user_id' => 'int(10) unsigned NOT NULL',
-                'display_order' => 'int(3) NOT NULL'
+                'display_order' => 'int(3) NOT NULL',
             ));
 
         $this->addForeignKey('worklist_disporder_wl_fk', 'worklist_display_order', 'worklist_id', 'worklist', 'id', 'CASCADE');
         $this->addForeignKey('worklist_disporder_u_fk', 'worklist_display_order', 'user_id', 'user', 'id', 'CASCADE');
-
     }
 
     public function down()
@@ -89,5 +88,4 @@ class m160503_142416_initial_worklist_models extends OEMigration
         $this->dropOETable('worklist_attribute');
         $this->dropOETable('worklist', true);
     }
-
 }

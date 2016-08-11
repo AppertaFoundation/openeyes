@@ -9,7 +9,7 @@ class m140609_171735_digital_instrument extends OEMigration
                 'name' => 'string NOT NULL',
         ), 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
-        $this->insert('ophciexamination_qualitative_scale', array('id'=>1, 'name'=>'Digital'));
+        $this->insert('ophciexamination_qualitative_scale', array('id' => 1, 'name' => 'Digital'));
 
         $this->createOETable('ophciexamination_qualitative_scale_value', array(
                 'id' => 'pk',
@@ -20,9 +20,9 @@ class m140609_171735_digital_instrument extends OEMigration
                 'CONSTRAINT `ophciexamination_qualitative_scale_value_sca_fk` FOREIGN KEY (`scale_id`) REFERENCES `ophciexamination_qualitative_scale` (`id`)',
         ), 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
-        $this->insert('ophciexamination_qualitative_scale_value', array('id'=>1, 'name'=>'Soft', 'display_order'=>1, 'scale_id'=>1));
-        $this->insert('ophciexamination_qualitative_scale_value', array('id'=>2, 'name'=>'Normal', 'display_order'=>2, 'scale_id'=>1));
-        $this->insert('ophciexamination_qualitative_scale_value', array('id'=>3, 'name'=>'Hard', 'display_order'=>3, 'scale_id'=>1));
+        $this->insert('ophciexamination_qualitative_scale_value', array('id' => 1, 'name' => 'Soft', 'display_order' => 1, 'scale_id' => 1));
+        $this->insert('ophciexamination_qualitative_scale_value', array('id' => 2, 'name' => 'Normal', 'display_order' => 2, 'scale_id' => 1));
+        $this->insert('ophciexamination_qualitative_scale_value', array('id' => 3, 'name' => 'Hard', 'display_order' => 3, 'scale_id' => 1));
 
         $this->addColumn('ophciexamination_instrument', 'scale_id', 'int(11) null');
         $this->createIndex('ophciexamination_instrument_scale_id_fk', 'ophciexamination_instrument', 'scale_id');
@@ -30,7 +30,7 @@ class m140609_171735_digital_instrument extends OEMigration
 
         $this->addColumn('ophciexamination_instrument_version', 'scale_id', 'int(11) null');
 
-        $this->insert('ophciexamination_instrument', array('id'=>8, 'name'=>'Digital', 'display_order'=>70, 'scale_id'=>1));
+        $this->insert('ophciexamination_instrument', array('id' => 8, 'name' => 'Digital', 'display_order' => 70, 'scale_id' => 1));
 
         $this->addColumn('ophciexamination_intraocularpressure_value', 'qualitative_reading_id', 'int(10) unsigned null');
         $this->alterColumn('ophciexamination_intraocularpressure_value', 'reading_id', 'int(10) unsigned null');

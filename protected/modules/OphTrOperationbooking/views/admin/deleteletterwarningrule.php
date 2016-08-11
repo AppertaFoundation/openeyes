@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2012
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
@@ -25,15 +25,15 @@
 <div class="curvybox white">
 	<div class="admin">
 		<h3 class="georgia">Delete letter warning rule</h3>
-		<?php echo $this->renderPartial('//admin/_form_errors',array('errors'=>$errors))?>
+		<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors))?>
 		<div>
 			<?php
-			$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-				'id'=>'lcr_deleteform',
-				'enableAjaxValidation'=>false,
-				'htmlOptions' => array('class'=>'sliding'),
-				'focus'=>'#contactname'
-			))?>
+            $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+                'id' => 'lcr_deleteform',
+                'enableAjaxValidation' => false,
+                'htmlOptions' => array('class' => 'sliding'),
+                'focus' => '#contactname',
+            ))?>
 			<input type="hidden" name="delete" value="1" />
 			<div>
 				<span class="lcr_field"><?php echo $rule->getAttributeLabel('rule_type_id')?>:</span>
@@ -85,9 +85,9 @@
 			<div>
 				<p style="font-size: 15px; margin: 0; padding: 0; margin-top: 10px; margin-bottom: 10px;"><strong><span style="color: #f00;">WARNING:</span> this rule has one or more descendants, if you proceed these will all be deleted.</strong></p>
 				<?php
-				$this->widget('CTreeView',array(
-					'data' => OphTrOperationbooking_Admission_Letter_Warning_Rule::model()->findAllAsTree($rule,true,'textPlain'),
-				))?>
+                $this->widget('CTreeView', array(
+                    'data' => OphTrOperationbooking_Admission_Letter_Warning_Rule::model()->findAllAsTree($rule, true, 'textPlain'),
+                ))?>
 			</div>
 		<?php }?>
 		<div>
@@ -95,7 +95,7 @@
 		</div>
 	</div>
 </div>
-<?php echo $this->renderPartial('//admin/_form_errors',array('errors'=>$errors))?>
+<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors))?>
 <div>
 	<?php echo EventAction::button('Delete', 'delete', array('colour' => 'green'))->toHtml()?>
 	<?php echo EventAction::button('Cancel', 'cancel', array('level' => 'cancel'))->toHtml()?>

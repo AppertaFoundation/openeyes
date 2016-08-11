@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -20,12 +20,12 @@
 <div class="booking-admission-form">
 <?php 
 $logoHelper = new LogoHelper();
-	
+
 ?>
-<div class="banner clearfix">
+	<div class="banner clearfix">
 		<?= $logoHelper->render() ?>
 	
-</div>
+	</div>
 	<h1>Admission Form</h1>
 
 	<table>
@@ -55,7 +55,7 @@ $logoHelper = new LogoHelper();
 				Address
 			</th>
 			<td rowspan="2">
-				<?php echo $patient->getLetterAddress(array('delimiter'=>'<br/>'))?>
+				<?php echo $patient->getLetterAddress(array('delimiter' => '<br/>'))?>
 			</td>
 		</tr>
 
@@ -126,11 +126,11 @@ $logoHelper = new LogoHelper();
 			<th>Consultant to be present:</th>
 			<td>
 				<?php
-				echo (empty($operation->consultant_required)) ? 'No' : 'Yes';
-				if($operation->consultant_required && $operation->consultant) {
-					echo ', '.$operation->consultant->ReversedFullName;
-				}
-				?>
+                echo (empty($operation->consultant_required)) ? 'No' : 'Yes';
+                if ($operation->consultant_required && $operation->consultant) {
+                    echo ', '.$operation->consultant->ReversedFullName;
+                }
+                ?>
 			</td>
 			<th>Total theatre time (mins):</th>
 			<td><?php echo CHtml::encode($operation->total_duration)?></td>
@@ -159,7 +159,7 @@ $logoHelper = new LogoHelper();
 			<td><?php echo $operation->eye->name?></td>
 			<?php if ($operation->booking) {?>
 				<th>Theatre session:</th>
-				<td><?php echo substr($operation->booking->session->start_time,0,5) . ' - ' . substr($operation->booking->session->end_time,0,5)?></td>
+				<td><?php echo substr($operation->booking->session->start_time, 0, 5).' - '.substr($operation->booking->session->end_time, 0, 5)?></td>
 			</tr>
 			<tr>
 				<th>Theatre:</th>
@@ -172,11 +172,11 @@ $logoHelper = new LogoHelper();
 		<tr>
 			<th>Diagnosis:</th>
 			<td>
-				<?php echo $operation->diagnosis->eye->adjective. ' ' . CHtml::encode($operation->diagnosis->disorder->term)?>
+				<?php echo $operation->diagnosis->eye->adjective.' '.CHtml::encode($operation->diagnosis->disorder->term)?>
 			</td>
 			<?php if ($operation->booking) {?>
 				<th>Admission time:</th>
-				<td><?php echo date('H:i',strtotime($operation->booking->admission_time))?></td>
+				<td><?php echo date('H:i', strtotime($operation->booking->admission_time))?></td>
 			<?php }?>
 		</tr>
 

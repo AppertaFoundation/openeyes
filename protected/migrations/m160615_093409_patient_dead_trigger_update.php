@@ -2,11 +2,11 @@
 
 class m160615_093409_patient_dead_trigger_update extends CDbMigration
 {
-	public function up()
-	{
-		$this->execute('DROP TRIGGER cancel_dead_patient_bookings');
+    public function up()
+    {
+        $this->execute('DROP TRIGGER cancel_dead_patient_bookings');
 
-		$trigger = <<<EOL
+        $trigger = <<<EOL
 CREATE TRIGGER cancel_dead_patient_bookings AFTER UPDATE ON patient
 FOR EACH ROW
   BEGIN
@@ -16,14 +16,14 @@ FOR EACH ROW
     END IF;
   END;
 EOL;
-		$this->execute($trigger);
-	}
+        $this->execute($trigger);
+    }
 
-	public function down()
-	{
-		$this->execute('DROP TRIGGER cancel_dead_patient_bookings');
+    public function down()
+    {
+        $this->execute('DROP TRIGGER cancel_dead_patient_bookings');
 
-		$trigger = <<<EOL
+        $trigger = <<<EOL
 CREATE TRIGGER cancel_dead_patient_bookings AFTER UPDATE ON patient
 FOR EACH ROW
   BEGIN
@@ -33,17 +33,17 @@ FOR EACH ROW
     END IF;
   END;
 EOL;
-		$this->execute($trigger);
-	}
+        $this->execute($trigger);
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

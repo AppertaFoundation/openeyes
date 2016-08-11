@@ -62,7 +62,7 @@ $(document).ready(function(){
 						content: "There is already an open episode for your firm's subspecialty.\n\nIf you wish to create a new episode in a different subspecialty please switch to a firm that has the subspecialty you want."
 					}).open();
 				} else {
-                                        $('#add-new-episode-dialog').remove();
+          $('#add-new-episode-dialog').remove();
 					$.ajax({
 						'type': 'POST',
 						'url': baseUrl+'/patient/addNewEpisode',

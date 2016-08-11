@@ -18,7 +18,6 @@ tags
 /protected/models/elements/ElementExample.php
 /protected/modules/sample
 /protected/modules/eyedraw
-/protected/modules/PASAPI
 /protected/runtime/
 /protected/tests/report/
 /protected/tests/test_results/
@@ -44,6 +43,23 @@ node_modules
 /docs/public
 /protected/assets/img/fieldImages/*
 /assets/
+
+# Include core modules
+!/protected/modules/OphCiExamination/
+!/protected/modules/OphCiPhasing/
+!/protected/modules/OphCoCorrespondence/
+!/protected/modules/OphCoTherapyapplication/
+!/protected/modules/OphDrPrescription/
+!/protected/modules/OphInBiometry/
+!/protected/modules/OphTrConsent/
+!/protected/modules/OphTrIntravitrealinjection/
+!/protected/modules/OphTrLaser/
+!/protected/modules/OphTrOperationbooking/
+!/protected/modules/OphTrOperationnote/
+!/protected/modules/PatientTicketing/
+!/protected/modules/OphOuAnaestheticsatisfactionaudit/
+!/protected/modules/OphInVisualfields/
+!/protected/modules/OphCoMessaging/
 
 # Tests
 /bin/.enabled-modules
@@ -73,3 +89,5 @@ bin/phploc
 bin/phpmd
 bin/validate-json
 bin/yiic
+
+build/logs

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -21,8 +21,9 @@
  * This is the model class for table "firm".
  *
  * The followings are the available columns in table 'firm':
- * @property integer $id
- * @property integer $service_subspecialty_assignment_id
+ *
+ * @property int $id
+ * @property int $service_subspecialty_assignment_id
  * @property string $pas_code
  * @property string $name
  *
@@ -40,6 +41,7 @@ class Firm extends BaseActiveRecordVersioned
 
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return Firm the static model class
      */
     public static function model($className = __CLASS__)
@@ -82,11 +84,7 @@ class Firm extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'serviceSubspecialtyAssignment' => array(
-                self::BELONGS_TO,
-                'ServiceSubspecialtyAssignment',
-                'service_subspecialty_assignment_id'
-            ),
+            'serviceSubspecialtyAssignment' => array(self::BELONGS_TO, 'ServiceSubspecialtyAssignment', 'service_subspecialty_assignment_id'),
             'firmUserAssignments' => array(self::HAS_MANY, 'FirmUserAssignment', 'firm_id'),
             //'letterPhrases' => array(self::HAS_MANY, 'LetterPhrase', 'firm_id'),
             'userFirmRights' => array(self::HAS_MANY, 'UserFirmRights', 'firm_id'),
@@ -106,7 +104,7 @@ class Firm extends BaseActiveRecordVersioned
             'pas_code' => 'Pas Code',
             'name' => 'Name',
             'serviceSubspecialtyAssignment.subspecialty.name' => 'Subspeciality Name',
-            'active' => 'Active'
+            'active' => 'Active',
         );
     }
 
@@ -122,6 +120,7 @@ class Firm extends BaseActiveRecordVersioned
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
@@ -129,7 +128,7 @@ class Firm extends BaseActiveRecordVersioned
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria = new CDbCriteria;
+        $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('service_subspecialty_assignment_id', $this->service_subspecialty_assignment_id, true);
@@ -147,7 +146,8 @@ class Firm extends BaseActiveRecordVersioned
     }
 
     /**
-     * retrieve a label for the sub specialty assignment for this firm
+     * retrieve a label for the sub specialty assignment for this firm.
+     *
      * @return string
      */
     public function getSubspecialtyText()
@@ -156,7 +156,8 @@ class Firm extends BaseActiveRecordVersioned
     }
 
     /**
-     * Fetch an array of firm IDs and names
+     * Fetch an array of firm IDs and names.
+     *
      * @return array
      */
     public function getList($subspecialty_id = null, $include_id = null)
@@ -164,7 +165,7 @@ class Firm extends BaseActiveRecordVersioned
         $cmd = Yii::app()->db->createCommand()
             ->select('f.id, f.name')
             ->from('firm f')
-            ->where('f.active = 1' . ($include_id ? " or f.id = :include_id" : ""));
+            ->where('f.active = 1'.($include_id ? ' or f.id = :include_id' : ''));
 
         if ($subspecialty_id) {
             $cmd->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
@@ -173,7 +174,7 @@ class Firm extends BaseActiveRecordVersioned
         }
 
         if ($include_id) {
-            $cmd->bindValue(":include_id", $include_id);
+            $cmd->bindValue(':include_id', $include_id);
         }
 
         $result = array();
@@ -231,8 +232,9 @@ class Firm extends BaseActiveRecordVersioned
     public function getConsultantName()
     {
         if ($consultant = $this->consultant) {
-            return $consultant->contact->title . ' ' . $consultant->contact->first_name . ' ' . $consultant->contact->last_name;
+            return $consultant->contact->title.' '.$consultant->contact->first_name.' '.$consultant->contact->last_name;
         }
+
         return 'NO CONSULTANT';
     }
 
@@ -250,7 +252,7 @@ class Firm extends BaseActiveRecordVersioned
     public function getNameAndSubspecialty()
     {
         if ($this->serviceSubspecialtyAssignment) {
-            return $this->name . ' (' . $this->serviceSubspecialtyAssignment->subspecialty->name . ')';
+            return $this->name.' ('.$this->serviceSubspecialtyAssignment->subspecialty->name.')';
         } else {
             return $this->name;
         }
@@ -262,14 +264,14 @@ class Firm extends BaseActiveRecordVersioned
     public function getNameAndSubspecialtyCode()
     {
         if ($this->serviceSubspecialtyAssignment) {
-            return $this->name . ' (' . $this->serviceSubspecialtyAssignment->subspecialty->ref_spec . ')';
+            return $this->name.' ('.$this->serviceSubspecialtyAssignment->subspecialty->ref_spec.')';
         } else {
             return $this->name;
         }
     }
 
     /**
-     * Get the Specialty of the Firm
+     * Get the Specialty of the Firm.
      *
      * @return Specialty|null
      */
@@ -284,7 +286,7 @@ class Firm extends BaseActiveRecordVersioned
             ->queryRow();
 
         if (empty($result)) {
-            return null;
+            return;
         } else {
             return Specialty::model()->findByPk($result['id']);
         }
@@ -296,8 +298,7 @@ class Firm extends BaseActiveRecordVersioned
     public function beforeSave()
     {
         if ($this->subspecialty_id) {
-            $this->service_subspecialty_assignment_id = ServiceSubspecialtyAssignment::model()->find('subspecialty_id=?',
-                array($this->subspecialty_id))->id;
+            $this->service_subspecialty_assignment_id = ServiceSubspecialtyAssignment::model()->find('subspecialty_id=?', array($this->subspecialty_id))->id;
         }
 
         return parent::beforeSave();
@@ -308,11 +309,11 @@ class Firm extends BaseActiveRecordVersioned
      */
     public function getTreeName()
     {
-        return $this->name . ' ' . $this->serviceSubspecialtyAssignment->subspecialty->ref_spec;
+        return $this->name.' '.$this->serviceSubspecialtyAssignment->subspecialty->ref_spec;
     }
 
     /**
-     * get the subspecialty for the firm - null if one not set (support service firm)
+     * get the subspecialty for the firm - null if one not set (support service firm).
      *
      * @return Subspecialty|null
      */
@@ -322,7 +323,7 @@ class Firm extends BaseActiveRecordVersioned
     }
 
     /**
-     * get the id for the subspecialty for the firm - null if one not set (support service firm)
+     * get the id for the subspecialty for the firm - null if one not set (support service firm).
      *
      * @return int|null
      */
@@ -332,9 +333,9 @@ class Firm extends BaseActiveRecordVersioned
     }
 
     /**
-     * Check whether this is a support services firm
+     * Check whether this is a support services firm.
      *
-     * @return boolean
+     * @return bool
      */
     public function isSupportServicesFirm()
     {

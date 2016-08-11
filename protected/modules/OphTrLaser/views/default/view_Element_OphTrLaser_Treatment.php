@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2012
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
@@ -21,7 +21,7 @@
 		<div class="element-eye right-eye column">
 			<div class="data-row">
 				<?php if ($element->hasRight()) {
-					if (!$element->right_procedures) {?>
+                    if (!$element->right_procedures) {?>
 						None
 					<?php } else {?>
 						<ul class="data-value">
@@ -38,7 +38,7 @@
 		<div class="element-eye left-eye column">
 			<div class="data-row">
 				<?php if ($element->hasLeft()) {
-					if (!$element->left_procedures) {?>
+                    if (!$element->left_procedures) {?>
 						None
 					<?php } else {?>
 						<ul class="data-value">

@@ -8,14 +8,14 @@ class Element_OphInLabResults_Inr extends Element_OphInLabResults_ResultTimedNum
     );
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
         $parentRules = parent::rules();
-        
+
         $rules = array(
-            array('result', 'numerical', 'min' => 0.1, 'max' => 50)
+            array('result', 'numerical', 'min' => 0.1, 'max' => 50),
         );
 
         $parentRules = $this->overrideRules($parentRules, $rules);
@@ -29,11 +29,11 @@ class Element_OphInLabResults_Inr extends Element_OphInLabResults_ResultTimedNum
     public function __toString()
     {
         $string = '';
-        if($this->result){
-            $string = $this->result . ' (at '.$this->time.', '. date_create_from_format('Y-m-d H:i:s', $this->event->event_date )->format('d/m/Y').')';
+        if ($this->result) {
+            $string = $this->result.' (at '.$this->time.', '.date_create_from_format('Y-m-d H:i:s', $this->event->event_date)->format('d/m/Y').')';
         }
 
-        if($this->comment){
+        if ($this->comment) {
             $string .= ' - '.$this->comment;
         }
 

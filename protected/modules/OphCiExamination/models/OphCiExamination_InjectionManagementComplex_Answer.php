@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -21,25 +21,24 @@ namespace OEModule\OphCiExamination\models;
 
 /**
  * This is the model class for table "ophciexamination_injectmanagecomplex_question". It is used to define questions that should be answered during
- * an examination for any given diagnosis
+ * an examination for any given diagnosis.
  *
  * The followings are the available columns in table:
+ *
  * @property string $id
- * @property integer $element_id
- * @property integer $question_id
- * @property integer $eye_id
- * @property boolean $answer
+ * @property int $element_id
+ * @property int $question_id
+ * @property int $eye_id
+ * @property bool $answer
  *
  * The followings are the available model relations:
  * @property Disorder $disorder
- *
  */
-
-
 class OphCiExamination_InjectionManagementComplex_Answer extends \BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return the static model class
      */
     public static function model($className = __CLASS__)

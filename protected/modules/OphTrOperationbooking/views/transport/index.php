@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -34,28 +34,28 @@
 									From:
 								</label>
 								<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-									'name' => 'transport_date_from',
-									'id' => 'transport_date_from',
-									'options' => array(
-										'showAnim'=>'fold',
-										'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
-									),
-									'value' => @$_GET['date_from'],
-									'htmlOptions' => array('class' => "inline fixed-width"),
-								))?>
+                                    'name' => 'transport_date_from',
+                                    'id' => 'transport_date_from',
+                                    'options' => array(
+                                        'showAnim' => 'fold',
+                                        'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
+                                    ),
+                                    'value' => @$_GET['date_from'],
+                                    'htmlOptions' => array('class' => 'inline fixed-width'),
+                                ))?>
 								<label for="transport_date_to" class="inline align">
 									To:
 								</label>
 								<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-									'name' => 'transport_date_to',
-									'id' => 'transport_date_to',
-									'options' => array(
-										'showAnim'=>'fold',
-										'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
-									),
-									'value' => @$_GET['date_to'],
-									'htmlOptions' => array('class' => 'inline fixed-width'),
-								))?>
+                                    'name' => 'transport_date_to',
+                                    'id' => 'transport_date_to',
+                                    'options' => array(
+                                        'showAnim' => 'fold',
+                                        'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
+                                    ),
+                                    'value' => @$_GET['date_to'],
+                                    'htmlOptions' => array('class' => 'inline fixed-width'),
+                                ))?>
 								<button type="submit" class="small btn_transport_filter">
 									Filter
 								</button>
@@ -99,10 +99,10 @@
 						<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken; ?>" />
 						<input type="hidden" name="date_from" value="<?php echo CHtml::encode(@$_GET['date_from'])?>" />
 						<input type="hidden" name="date_to" value="<?php echo CHtml::encode(@$_GET['date_to'])?>" />
-						<input type="hidden" name="include_bookings" value="<?php echo (@$_GET['include_bookings'] ? 1 : 0)?>" />
-						<input type="hidden" name="include_reschedules" value="<?php echo (@$_GET['include_reschedules'] ? 1 : 0)?>" />
-						<input type="hidden" name="include_cancellations" value="<?php echo (@$_GET['include_cancellations'] ? 1 : 0)?>" />
-						<input type="hidden" name="include_completed" value="<?php echo (@$_GET['include_completed'] ? 1 : 0)?>" />
+						<input type="hidden" name="include_bookings" value="<?php echo @$_GET['include_bookings'] ? 1 : 0?>" />
+						<input type="hidden" name="include_reschedules" value="<?php echo @$_GET['include_reschedules'] ? 1 : 0?>" />
+						<input type="hidden" name="include_cancellations" value="<?php echo @$_GET['include_cancellations'] ? 1 : 0?>" />
+						<input type="hidden" name="include_completed" value="<?php echo @$_GET['include_completed'] ? 1 : 0?>" />
 					</form>
 					<div id="transport_data">
 						<?php echo $this->renderPartial('/transport/_list_header')?>

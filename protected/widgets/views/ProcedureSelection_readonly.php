@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -23,19 +23,19 @@
 	</div>
 	<div class="large-4 column">
 		<?php
-		$totalDuration = 0;
-		?>
+        $totalDuration = 0;
+        ?>
 		<div id="procedureList_<?php echo $identifier?>" class="panel procedures readonly" style="<?php if (empty($selected_procedures)) {?> display: none;<?php }?>">
 			<?php
-			if (!empty($selected_procedures)) {
-				foreach ($selected_procedures as $procedure) {?>
+            if (!empty($selected_procedures)) {
+                foreach ($selected_procedures as $procedure) {?>
 					<div class="row procedureItem">
-						<div class="large-<?php echo (!$durations) ? "12" : "10"; ?> column">
+						<div class="large-<?php echo (!$durations) ? '12' : '10'; ?> column">
 							<?php
-								$totalDuration += $procedure['default_duration'];
-								echo CHtml::hiddenField('Procedures_'.$identifier.'[]', $procedure['id']);
-								echo "<span>".$procedure['term']."</span>";
-							?>
+                                $totalDuration += $procedure['default_duration'];
+                    echo CHtml::hiddenField('Procedures_'.$identifier.'[]', $procedure['id']);
+                    echo '<span>'.$procedure['term'].'</span>';
+                    ?>
 						</div>
 						<?php if ($durations) {?>
 							<div class="large-2 column">
@@ -44,7 +44,7 @@
 						<?php } ?>
 					</div>
 				<?php	}
-			}?>
+            }?>
 		</div>
 	</div>
 	<div class="large-6 column">

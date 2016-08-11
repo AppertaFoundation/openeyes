@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -10,8 +10,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -52,40 +52,40 @@ class NodExportController extends BaseController
     {
         $this->institutionCode = Yii::app()->params['institution_code'];
         $date = date('YmdHi');
-        $this->exportPath = realpath(dirname(__FILE__) . '/..') . '/runtime/nod-export/' . $this->institutionCode . '/' . $date;
-        $this->zipName = $this->institutionCode . '_' . $date . '_NOD_Export.zip';
+        $this->exportPath = realpath(dirname(__FILE__).'/..').'/runtime/nod-export/'.$this->institutionCode.'/'.$date;
+        $this->zipName = $this->institutionCode.'_'.$date.'_NOD_Export.zip';
 
         if (!file_exists($this->exportPath)) {
             mkdir($this->exportPath, 0777, true);
         }
-        
-        $startDate = Yii::app()->request->getParam("date_from", '');
-        $endDate =  Yii::app()->request->getParam("date_to", '');
-        
+
+        $startDate = Yii::app()->request->getParam('date_from', '');
+        $endDate = Yii::app()->request->getParam('date_to', '');
+
         $startDateTime = null;
         $endDateTime = null;
-        
-        if($startDate){
+
+        if ($startDate) {
             $startDateTime = new DateTime($startDate);
         }
-        
-        if($endDate){
+
+        if ($endDate) {
             $endDateTime = new DateTime($endDate);
         }
 
         // if start date is greater than end date we exchange the two dates
-        if(($startDateTime instanceof DateTime && $endDateTime instanceof DateTime) && $endDateTime < $startDateTime){
+        if (($startDateTime instanceof DateTime && $endDateTime instanceof DateTime) && $endDateTime < $startDateTime) {
             $tempDate = $endDateTime;
             $endDateTime = $startDateTime;
             $startDateTime = $tempDate;
             $tempDate = null;
         }
-        
-        if($startDate){
+
+        if ($startDate) {
             $this->startDate = $startDateTime->format('Y-m-d');
         }
-        
-        if($endDate){
+
+        if ($endDate) {
             $this->endDate = $endDateTime->format('Y-m-d');
         }
 
@@ -112,11 +112,12 @@ class NodExportController extends BaseController
     }
 
     /**
-     * Save CSV file and returns episodeIDs if $episodeIdField isset
+     * Save CSV file and returns episodeIDs if $episodeIdField isset.
      *
-     * @param string $dataQuery SQL query
+     * @param string $dataQuery      SQL query
      * @param string $filename
      * @param string $episodeIdField
+     *
      * @return null|array
      */
     private function saveCSVfile($dataQuery, $filename, $dataFormatter = null, $IdField = null)
@@ -130,33 +131,33 @@ class NodExportController extends BaseController
         }
 
         while (true) {
-            $runQuery = $dataQuery['query']. " LIMIT ".$chunk." OFFSET ".$offset.";";
+            $runQuery = $dataQuery['query'].' LIMIT '.$chunk.' OFFSET '.$offset.';';
             $dataCmd = Yii::app()->db->createCommand($runQuery);
 
             $data = $dataCmd->queryAll();
 
-            if($offset == 0 && (!count($data)>0)){
-                file_put_contents($this->exportPath . '/' . $filename . '.csv', $dataQuery['header'], FILE_APPEND);
+            if ($offset == 0 && (!count($data) > 0)) {
+                file_put_contents($this->exportPath.'/'.$filename.'.csv', $dataQuery['header'], FILE_APPEND);
             }
 
-            if(count($data) > 0)
-            {
+            if (count($data) > 0) {
                 $csv = $this->array2Csv($data, ($offset == 0 && isset($dataQuery['header'])) ? $dataQuery['header'] : null, $dataFormatter);
 
-                file_put_contents($this->exportPath . '/' . $filename . '.csv', $csv, FILE_APPEND);
+                file_put_contents($this->exportPath.'/'.$filename.'.csv', $csv, FILE_APPEND);
 
-                if($IdField) {
+                if ($IdField) {
                     foreach ($data as $d) {
                         $resultIds[] = $d[$IdField];
                     }
                 }
 
-                $offset+=$chunk;
+                $offset += $chunk;
                 unset($data);
-            }else {
+            } else {
                 break;
             }
         }
+
         return $resultIds;
     }
 
@@ -168,6 +169,7 @@ class NodExportController extends BaseController
                 $objectIds[] = $row[$IdField];
             }
         }
+
         return $objectIds;
     }
 
@@ -179,7 +181,6 @@ class NodExportController extends BaseController
 
     public function actionTest()
     {
-
         $this->createAllTempTables();
         $this->getAllEpisodeId();
         $this->clearAllTempTables();
@@ -189,7 +190,7 @@ class NodExportController extends BaseController
     {
         // DROP all tables if exsist before createing them
         $this->clearAllTempTables();
-        
+
         $createTempQuery = <<<EOL
 			DROP TEMPORARY TABLE IF EXISTS tmp_episode_ids;
 			
@@ -392,7 +393,6 @@ class NodExportController extends BaseController
                 
 EOL;
         Yii::app()->db->createCommand($createTempQuery)->execute();
-
     }
 
     private function clearAllTempTables()
@@ -425,8 +425,6 @@ EOL;
      */
     private function getSurgeons()
     {
-
-
         $query = <<<EOL
     SELECT id as Surgeonid, IFNULL(registration_code, '') as GMCnumber, IFNULL(title, '') as Title, IFNULL(first_name, '') as FirstName,
     user.`doctor_grade_id`  AS CurrentGradeId
@@ -440,7 +438,6 @@ EOL;
         );
 
         $this->saveCSVfile($dataQuery, 'Surgeon');
-
     }
 
     /**
@@ -449,15 +446,14 @@ EOL;
      */
     private function getPatients()
     {
-
-        $query = "SELECT id as PatientId, "
-            . "(SELECT CASE WHEN gender='F' THEN 2 WHEN gender='M' THEN 1 ELSE 9 END) as GenderId, "
-            . "IFNULL((SELECT `code` FROM ethnic_group WHERE ethnic_group.id = patient.ethnic_group_id), 'Z') AS EthnicityId, "
-            . "IFNULL( DATE_ADD(dob, INTERVAL ROUND((RAND() * (3-1))+1) MONTH) , '') AS DateOfBirth, "
-            . "IFNULL(date_of_death, '') as DateOfDeath, "
-            . "'' as IMDScore, '' as IsPrivate "
-            . "FROM patient "
-            . "WHERE patient.id IN (SELECT patient_id FROM episode WHERE episode.id IN
+        $query = 'SELECT id as PatientId, '
+            ."(SELECT CASE WHEN gender='F' THEN 2 WHEN gender='M' THEN 1 ELSE 9 END) as GenderId, "
+            ."IFNULL((SELECT `code` FROM ethnic_group WHERE ethnic_group.id = patient.ethnic_group_id), 'Z') AS EthnicityId, "
+            ."IFNULL( DATE_ADD(dob, INTERVAL ROUND((RAND() * (3-1))+1) MONTH) , '') AS DateOfBirth, "
+            ."IFNULL(date_of_death, '') as DateOfDeath, "
+            ."'' as IMDScore, '' as IsPrivate "
+            .'FROM patient '
+            .'WHERE patient.id IN (SELECT patient_id FROM episode WHERE episode.id IN
                                     (SELECT id FROM ((SELECT id FROM tmp_episode_ids)
                                             UNION ALL
                                     (SELECT episode_id AS id FROM event WHERE event.id in (SELECT id FROM tmp_operation_ids)) 
@@ -465,7 +461,7 @@ EOL;
                                     (SELECT episode_id AS id FROM event e 
                                             JOIN et_ophtroperationnote_procedurelist eop ON eop.event_id = e.id 
                                             JOIN ophtroperationnote_procedurelist_procedure_assignment oppa ON oppa.procedurelist_id = eop.id 
-                                            WHERE oppa.id IN (SELECT id FROM tmp_treatment_ids))) a )) ";
+                                            WHERE oppa.id IN (SELECT id FROM tmp_treatment_ids))) a )) ';
 
         $dataQuery = array(
             'query' => $query,
@@ -477,8 +473,7 @@ EOL;
 
     private function getPatientCviStatus()
     {
-
-        $query = "SELECT
+        $query = 'SELECT
                                 episode.`patient_id` AS PatientId,
                                 cvi_status_date AS `Date`,
                                 (SELECT CASE WHEN DAYNAME(DATE) IS NULL THEN 1 END) AS IsDateApprox, 
@@ -495,7 +490,7 @@ EOL;
 								(SELECT episode_id AS id FROM event e 
 									JOIN et_ophtroperationnote_procedurelist eop ON eop.event_id = e.id 
 									JOIN ophtroperationnote_procedurelist_procedure_assignment oppa ON oppa.procedurelist_id = eop.id 
-									WHERE oppa.id IN (SELECT id FROM tmp_treatment_ids))) a ))";
+									WHERE oppa.id IN (SELECT id FROM tmp_treatment_ids))) a ))';
 
         $dataQuery = array(
             'query' => $query,
@@ -507,8 +502,7 @@ EOL;
 
     private function getEpisode()
     {
-
-        $query = "SELECT patient_id as PatientId, id as EpisodeId, DATE(start_date) as Date FROM episode WHERE episode.id IN
+        $query = 'SELECT patient_id as PatientId, id as EpisodeId, DATE(start_date) as Date FROM episode WHERE episode.id IN
 								(SELECT id FROM ((SELECT id FROM tmp_episode_ids) 
 									UNION ALL
 								(SELECT episode_id AS id FROM event WHERE event.id in (SELECT id FROM tmp_operation_ids)) 
@@ -516,7 +510,7 @@ EOL;
 								(SELECT episode_id AS id FROM event e 
 									JOIN et_ophtroperationnote_procedurelist eop ON eop.event_id = e.id 
 									JOIN ophtroperationnote_procedurelist_procedure_assignment oppa ON oppa.procedurelist_id = eop.id 
-									WHERE oppa.id IN (SELECT id FROM tmp_treatment_ids))) a ) "
+									WHERE oppa.id IN (SELECT id FROM tmp_treatment_ids))) a ) '
         ;
 
         $dataQuery = array(
@@ -529,7 +523,6 @@ EOL;
 
     private function getEpisodeDiagnosis()
     {
-
         $query = "SELECT
                         id AS EpisodeId,
                         (SELECT CASE WHEN eye_id = 1 THEN 'L' WHEN eye_id = 2 THEN 'R' WHEN eye_id = 3 THEN 'B' ELSE 'N' END ) AS Eye,
@@ -581,7 +574,7 @@ EOL;
         $dateWhere = $this->getDateWhere('s');
 
         $disorder = Disorder::model()->findByPk(Disorder::SNOMED_DIABETES);
-        $disorder_ids = implode(",", $disorder->descendentIds());
+        $disorder_ids = implode(',', $disorder->descendentIds());
 
         $query = <<<EOL
                     SELECT 	
@@ -631,7 +624,6 @@ EOL;
 
     private function getEpisodeDrug()
     {
-
         $dateWhere = $this->getDateWhere('m');
         $dateWhereScript = $this->getDateWhere('opi');
 
@@ -708,7 +700,6 @@ EOL;
 
     private function getEpisodeBiometry()
     {
-
         $dateWhere = $this->getDateWhere('ev');
 
         $query = "(
@@ -774,8 +765,8 @@ EOL;
             WHERE et.id = 37
             AND ms.deleted = 0
             AND ev.deleted = 0
-            ".$dateWhere."
-         )";
+            ".$dateWhere.'
+         )';
 
         $dataQuery = array(
             'query' => $query,
@@ -791,14 +782,13 @@ EOL;
                 'AxisK1',
                 'AxisK2',
                 'ACDepth',
-                'SNR'
+                'SNR',
             ),
         );
 
         return $this->saveCSVfile($dataQuery, 'EpisodeBiometry', null, 'EpisodeId');
 
         //return $this->getIdArray($data, 'EpisodeId');
-
     }
 
     private function getEpisodeIOP()
@@ -839,7 +829,6 @@ EOL;
                         GROUP BY e.id
                     )
                         ";
-        
 
         $dataQuery = array(
             'query' => $query,
@@ -853,9 +842,8 @@ EOL;
 
     protected function array2Csv(array $data, $header = null, $dataFormatter = null)
     {
-
         ob_start();
-        $df = fopen("php://output", 'w');
+        $df = fopen('php://output', 'w');
 
         if (count($data) !== 0) {
             fputcsv($df, array_keys(reset($data)));
@@ -865,30 +853,31 @@ EOL;
                 }
                 fputcsv($df, $row);
             }
-        } else if ($header) {
+        } elseif ($header) {
             fputcsv($df, $header);
         }
 
         fclose($df);
+
         return ob_get_clean();
     }
 
     private function getDateWhere($tablename)
     {
-        if ($this->startDate != "") {
-            $dateWhereStart = $tablename . ".last_modified_date >= '" . $this->startDate . "'";
+        if ($this->startDate != '') {
+            $dateWhereStart = $tablename.".last_modified_date >= '".$this->startDate."'";
         }
-        if ($this->endDate != "") {
-            $dateWhereEnd = $tablename . ".last_modified_date <= '" . $this->endDate . "'";
+        if ($this->endDate != '') {
+            $dateWhereEnd = $tablename.".last_modified_date <= '".$this->endDate."'";
         }
 
-        $dateWhere = "";
+        $dateWhere = '';
         if (isset($dateWhereStart) && isset($dateWhereEnd)) {
-            $dateWhere = "AND " . $dateWhereStart . " AND " . $dateWhereEnd;
-        } else if (isset($dateWhereStart)) {
-            $dateWhere = "AND " . $dateWhereStart;
-        } else if (isset($dateWhereEnd)) {
-            $dateWhere = "AND " . $dateWhereEnd;
+            $dateWhere = 'AND '.$dateWhereStart.' AND '.$dateWhereEnd;
+        } elseif (isset($dateWhereStart)) {
+            $dateWhere = 'AND '.$dateWhereStart;
+        } elseif (isset($dateWhereEnd)) {
+            $dateWhere = 'AND '.$dateWhereEnd;
         }
 
         return $dateWhere;
@@ -896,7 +885,6 @@ EOL;
 
     private function getEpisodePostOpComplication()
     {
-
         $dateWhere = $this->getDateWhere('et_ophciexamination_postop_complications');
 
         $query = "(
@@ -910,7 +898,7 @@ EOL;
                     JOIN et_ophciexamination_postop_complications ON `event`.id = et_ophciexamination_postop_complications.`event_id`
                     JOIN ophciexamination_postop_et_complications ON et_ophciexamination_postop_complications.id = ophciexamination_postop_et_complications.`element_id`
                     JOIN ophciexamination_postop_complications ON ophciexamination_postop_et_complications.`complication_id` = ophciexamination_postop_complications.id 
-                    WHERE 1=1 " . $dateWhere . "
+                    WHERE 1=1 ".$dateWhere."
                     AND ( ophciexamination_postop_et_complications.`eye_id` = 1 OR ophciexamination_postop_et_complications.`eye_id` = 3)
                 )
                 UNION
@@ -925,10 +913,10 @@ EOL;
                     JOIN et_ophciexamination_postop_complications ON `event`.id = et_ophciexamination_postop_complications.`event_id`
                     JOIN ophciexamination_postop_et_complications ON et_ophciexamination_postop_complications.id = ophciexamination_postop_et_complications.`element_id`
                     JOIN ophciexamination_postop_complications ON ophciexamination_postop_et_complications.`complication_id` = ophciexamination_postop_complications.id 
-                    WHERE 1=1 " . $dateWhere . "
+                    WHERE 1=1 ".$dateWhere.'
                     AND ( ophciexamination_postop_et_complications.`eye_id` = 2 OR ophciexamination_postop_et_complications.`eye_id` = 3)
 
-                )"
+                )'
                 ;
 
         $dataQuery = array(
@@ -943,7 +931,6 @@ EOL;
 
     private function getEpisodeOperationCoPathology()
     {
-
         $query = "(SELECT
                         op_event.id AS OperationId,
                         (SELECT
@@ -974,7 +961,7 @@ EOL;
                         element_type ON ophtroperationnote_procedure_element.element_type_id = element_type.id
                     WHERE
                         element_type.`name` in ('Vitrectomy', 'Trabeculectomy')
-                        AND op_event.event_type_id = (SELECT id FROM event_type WHERE `name` = 'Operation Note') " . $this->getDateWhere('op_event') . ")
+                        AND op_event.event_type_id = (SELECT id FROM event_type WHERE `name` = 'Operation Note') ".$this->getDateWhere('op_event').")
                     UNION
                     (SELECT
                     op_event.id AS OperationId,
@@ -1001,7 +988,7 @@ EOL;
                             JOIN benefit ON procedure_benefit.benefit_id = benefit.id
                     WHERE
                         benefit.`name` = 'to prevent retinal detachment'
-                        AND op_event.event_type_id = (SELECT id FROM event_type WHERE `name` = 'Operation Note') " . $this->getDateWhere('op_event') . " )
+                        AND op_event.event_type_id = (SELECT id FROM event_type WHERE `name` = 'Operation Note') ".$this->getDateWhere('op_event')." )
                     UNION
                     (SELECT op_event.id AS OperationId,
 						(SELECT CASE
@@ -1018,7 +1005,7 @@ EOL;
                     ON episode.id = op_event.episode_id
                     AND op_event.event_type_id = (select id from event_type where `name` = 'Operation Note')
                     AND op_event.created_date >= exam_event.created_date
-                    WHERE 1=1 " . $this->getDateWhere('et_ophciexamination_anteriorsegment') . "
+                    WHERE 1=1 ".$this->getDateWhere('et_ophciexamination_anteriorsegment')."
 					HAVING Eye IS NOT NULL)
                     UNION
                     (SELECT
@@ -1035,7 +1022,7 @@ EOL;
                     JOIN secondary_diagnosis ON episode.`patient_id` = secondary_diagnosis.`patient_id`
                     JOIN `disorder` ON  secondary_diagnosis.`disorder_id` = `disorder`.id
                     JOIN tmp_pathology_type on LOWER(disorder.term) = LOWER(tmp_pathology_type.term)
-                    WHERE event_type_id = (SELECT id from event_type where `name` = 'Operation Note') " . $this->getDateWhere('event') . ")";
+                    WHERE event_type_id = (SELECT id from event_type where `name` = 'Operation Note') ".$this->getDateWhere('event').')';
 
         $dataQuery = array(
             'query' => $query,
@@ -1049,7 +1036,6 @@ EOL;
 
     private function getEpisodeTreatmentCataract()
     {
-
         $query = "
                     select pa.id AS TreatmentId,
 					IFNULL((select
@@ -1082,7 +1068,7 @@ EOL;
 					join ophtroperationnote_cataract_iol_position iol_pos on cataract.iol_position_id = iol_pos.id
 					join tmp_iol_positions on iol_pos.`name` = tmp_iol_positions.term
 					join ophtroperationnote_cataract_iol_type on cataract.iol_type_id = ophtroperationnote_cataract_iol_type.id
-					WHERE 1=1 " . $this->getDateWhere('pa');
+					WHERE 1=1 ".$this->getDateWhere('pa');
 
         $dataQuery = array(
             'query' => $query,
@@ -1107,7 +1093,6 @@ EOL;
 
         //TODO: need to select episodeIds here!
         //return $this->getIdArray($data, 'TreatmentId');
-
     }
 
     private function getEpisodeTreatment()
@@ -1138,7 +1123,6 @@ EOL;
         return $this->saveCSVfile($dataQuery, 'EpisodeTreatment', null, 'TreatmentId');
         //TODO: need to select episodeIds here!
         //return $this->getIdArray($data, 'TreatmentId');
-
     }
 
     private function getEpisodeOperationAnaesthesia()
@@ -1180,7 +1164,7 @@ EOL;
                             JOIN event_type evt ON evt.id = e.event_type_id
                             JOIN et_ophtroperationnote_procedurelist pl ON e.id = pl.event_id
                             LEFT JOIN `et_ophtroperationbooking_diagnosis` d ON pl.booking_event_id = d.`event_id`
-                            WHERE evt.name = 'Operation Note' " . $this->getDateWhere('e') ."
+                            WHERE evt.name = 'Operation Note' ".$this->getDateWhere('e')."
                             AND (pl.eye_id = 1 OR pl.eye_id = 3))
                     UNION
                             (
@@ -1199,11 +1183,10 @@ EOL;
                                 JOIN event_type evt ON evt.id = e.event_type_id
                                 JOIN et_ophtroperationnote_procedurelist pl ON e.id = pl.event_id
                                 LEFT JOIN `et_ophtroperationbooking_diagnosis` d ON pl.booking_event_id = d.`event_id`
-                                WHERE evt.name = 'Operation Note' " . $this->getDateWhere('e') ."
+                                WHERE evt.name = 'Operation Note' ".$this->getDateWhere('e').'
                                 AND (pl.eye_id = 2 OR pl.eye_id = 3)
                             )
-                            ";
-
+                            ';
 
         $dataQuery = array(
             'query' => $query,
@@ -1213,12 +1196,10 @@ EOL;
         return $this->saveCSVfile($dataQuery, 'EpisodeOperationIndication', null, 'OperationId');
 
         //return $this->getIdArray($data, 'OperationId');
-
     }
 
     private function getEpisodeOperationComplication()
     {
-
         $query = "SELECT
                         event.id AS OperationId, 
                         (SELECT CASE 
@@ -1238,7 +1219,7 @@ EOL;
                     INNER JOIN ophtroperationnote_cataract_complications ON ophtroperationnote_cataract_complication.`complication_id` = ophtroperationnote_cataract_complications.`id`
                     INNER JOIN `event` ON  et_ophtroperationnote_cataract.`event_id` = `event`.id
                     INNER JOIN et_ophtroperationnote_procedurelist ON event.id = et_ophtroperationnote_procedurelist.event_id 
-					WHERE 1=1 " . $this->getDateWhere('ophtroperationnote_cataract_complication');
+					WHERE 1=1 ".$this->getDateWhere('ophtroperationnote_cataract_complication');
 
         $dataQuery = array(
             'query' => $query,
@@ -1252,7 +1233,6 @@ EOL;
 
     private function getEpisodeOperation()
     {
-
         $query = "SELECT e.id AS OperationId, e.episode_id AS EpisodeId, 
                 '' as Description, 
                 '' as IsHypertensive,
@@ -1268,11 +1248,11 @@ EOL;
 					INNER JOIN `user` ON s.`surgeon_id` = `user`.`id`
 					WHERE e.id in (SELECT id FROM tmp_operation_ids)";
 
-
         $dataQuery = array(
             'query' => $query,
-            'header' => array('OperationId', 'EpisodeId', 'Description', 'IsHypertensive', 'ListedDate', 'SurgeonId', 'SurgeonGradeId', 'AssistantId', 'AssistantGradeId','ConsultantId'),
+            'header' => array('OperationId', 'EpisodeId', 'Description', 'IsHypertensive', 'ListedDate', 'SurgeonId', 'SurgeonGradeId', 'AssistantId', 'AssistantGradeId', 'ConsultantId'),
         );
+
         return $this->saveCSVfile($dataQuery, 'EpisodeOperation', null, 'OperationId');
 
         //return $this->getIdArray($data, 'OperationId');
@@ -1280,7 +1260,6 @@ EOL;
 
     private function getEpisodeVisualAcuity()
     {
-
         $query = "(SELECT
                     e.episode_id AS EpisodeId, 
                     'L' AS Eye,
@@ -1325,7 +1304,7 @@ EOL;
                     '' AS BestCorrected
                     FROM `event` e
                     INNER JOIN et_ophciexamination_visualacuity v ON v.event_id = e.id
-                    WHERE v.eye_id = 1 OR v.eye_id=3 " . $this->getDateWhere('v').")
+                    WHERE v.eye_id = 1 OR v.eye_id=3 ".$this->getDateWhere('v').")
                     UNION
                     (SELECT
                     e.episode_id AS EpisodeId,
@@ -1372,7 +1351,7 @@ EOL;
                     '' AS BestCorrected
                     FROM `event` e
                     INNER JOIN et_ophciexamination_visualacuity v ON v.event_id = e.id
-                    WHERE v.eye_id = 2 OR v.eye_id=3 " . $this->getDateWhere('v').")";
+                    WHERE v.eye_id = 2 OR v.eye_id=3 ".$this->getDateWhere('v').')';
 
         $dataQuery = array(
             'query' => $query,
@@ -1386,7 +1365,6 @@ EOL;
 
     private function getEpisodeRefraction()
     {
-
         $query = "(SELECT 
                     e.episode_id AS EpisodeId, 
                     'L' AS Eye,
@@ -1398,7 +1376,7 @@ EOL;
 
                     FROM `event` e
                     JOIN et_ophciexamination_refraction r ON r.event_id = e.id
-                    WHERE r.eye_id = 1 OR r.eye_id = 3 " . $this->getDateWhere('r') . ")
+                    WHERE r.eye_id = 1 OR r.eye_id = 3 ".$this->getDateWhere('r').")
                     UNION
                     (SELECT
                      e.episode_id AS EpisodeId,
@@ -1410,7 +1388,7 @@ EOL;
                     '' AS ReadingAdd
                     FROM `event` e
                     JOIN et_ophciexamination_refraction r ON r.event_id = e.id
-                    WHERE r.eye_id = 2 OR r.eye_id = 3 " . $this->getDateWhere('r') . ")";
+                    WHERE r.eye_id = 2 OR r.eye_id = 3 ".$this->getDateWhere('r').')';
 
         $dataQuery = array(
             'query' => $query,
@@ -1424,7 +1402,6 @@ EOL;
 
     private function getEpisodePreOpAssessment()
     {
-
         $query = "(
                     SELECT e.id AS EpisodeId,
                     'L' AS Eye,
@@ -1448,11 +1425,11 @@ EOL;
                     LEFT JOIN `event` ev ON ev.episode_id = e.id
                     JOIN et_ophtroperationnote_procedurelist pl ON pl.event_id = ev.id
                     LEFT JOIN patient_risk_assignment pr ON pr.patient_id = e.patient_id
-                    WHERE 1=1 ".$this->getDateWhere('pl')."
+                    WHERE 1=1 ".$this->getDateWhere('pl').'
                     AND (pl.eye_id = 2 OR pl.eye_id = 3)
                     GROUP BY e.id
                 )
-                ";
+                ';
 
         $dataQuery = array(
             'query' => $query,
@@ -1463,60 +1440,57 @@ EOL;
 
         //return $this->getIdArray($data, 'EpisodeId');
     }
-    
+
     /**
-     * Inserts Ids into the temp table
+     * Inserts Ids into the temp table.
      * 
      * @param string $tableName
-     * @param array $idArray
+     * @param array  $idArray
      */
     private function saveIds($tableName, $idArray)
     {
         foreach ($idArray as $id) {
-            Yii::app()->db->createCommand("INSERT IGNORE INTO " . $tableName . " (id) VALUES (" . $id . ")")->execute();
+            Yii::app()->db->createCommand('INSERT IGNORE INTO '.$tableName.' (id) VALUES ('.$id.')')->execute();
         }
     }
 
     /**
-     * Creates zip files from the CSV files
+     * Creates zip files from the CSV files.
      */
     private function createZipFile()
     {
-
         $zip = new ZipArchive();
 
-        if ($zip->open($this->exportPath . '/' . $this->zipName, ZIPARCHIVE::CREATE) !== true) {
+        if ($zip->open($this->exportPath.'/'.$this->zipName, ZIPARCHIVE::CREATE) !== true) {
             exit("cannot open <$name>\n");
         }
 
-        foreach (glob($this->exportPath . "/*.csv") as $filename) {
+        foreach (glob($this->exportPath.'/*.csv') as $filename) {
             $zip->addFile($filename, basename($filename));
         }
         $zip->close();
     }
-    
+
     /**
-     * Generates CSV and zip files then sends to the browser 
+     * Generates CSV and zip files then sends to the browser.
      */
     public function actionGenerate()
     {
-
         $this->generateExport();
 
         $this->createZipFile();
 
-        if (file_exists($this->exportPath . '/' . $this->zipName)) {
-            Yii::app()->getRequest()->sendFile($this->zipName, file_get_contents($this->exportPath . '/' . $this->zipName));
+        if (file_exists($this->exportPath.'/'.$this->zipName)) {
+            Yii::app()->getRequest()->sendFile($this->zipName, file_get_contents($this->exportPath.'/'.$this->zipName));
         } else {
         }
     }
 
     /**
-     * Generates the CSV files
+     * Generates the CSV files.
      */
     public function generateExport()
     {
-
         $this->createAllTempTables();
         $this->getAllEpisodeId();
         $this->getEpisodeDiagnosis();
@@ -1525,16 +1499,16 @@ EOL;
         $this->getPatientCviStatus();
         $this->getPatients();
         $this->clearAllTempTables();
-
     }
 
     /**
      * @param array $row
+     *
      * @return array
      */
     protected function prescriptionItemFormat(array $row)
     {
-        if (preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $row['StopDate']) === 0) {
+        if (preg_match('/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/', $row['StopDate']) === 0) {
             if (!in_array($row['StopDate'], array('Other', 'Until review'))) {
                 $startDate = new DateTime($row['StartDate']);
                 $endDate = $startDate->add(DateInterval::createFromDateString($row['StopDate']));

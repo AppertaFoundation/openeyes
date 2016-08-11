@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,48 +9,51 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-
 class OETimeValidator extends CValidator
 {
-	public $allowEmpty = false;
+    public $allowEmpty = false;
 
-	/**
-	 * @param $value
-	 * @return bool
-	 */
-	public function validateValue($value) {
-		if (!preg_match("/^(([01]?[0-9])|(2[0-3])):[0-5][0-9]$/", $value)) {
-			return false;
-		}
-		return true;
-	}
+    /**
+     * @param $value
+     *
+     * @return bool
+     */
+    public function validateValue($value)
+    {
+        if (!preg_match('/^(([01]?[0-9])|(2[0-3])):[0-5][0-9]$/', $value)) {
+            return false;
+        }
 
-	/**
-	 * @param CModel $object
-	 * @param string $attribute
-	 */
-	protected function validateAttribute($object, $attribute)
-	{
-		$message = null;
+        return true;
+    }
 
-		if (!$object->$attribute) {
-			if (!$this->allowEmpty)
-				$message = $this->message ?: Yii::t('yii', '{attribute} cannot be empty.');
-		}
-		else {
-			if (!$this->validateValue($object->$attribute))
-				$message = $this->message ?: Yii::t('yii', '{attribute} is not a valid time.');
-		}
+    /**
+     * @param CModel $object
+     * @param string $attribute
+     */
+    protected function validateAttribute($object, $attribute)
+    {
+        $message = null;
 
-		if ($message)
-			$this->addError($object, $attribute, $message);
-	}
+        if (!$object->$attribute) {
+            if (!$this->allowEmpty) {
+                $message = $this->message ?: Yii::t('yii', '{attribute} cannot be empty.');
+            }
+        } else {
+            if (!$this->validateValue($object->$attribute)) {
+                $message = $this->message ?: Yii::t('yii', '{attribute} is not a valid time.');
+            }
+        }
+
+        if ($message) {
+            $this->addError($object, $attribute, $message);
+        }
+    }
 }

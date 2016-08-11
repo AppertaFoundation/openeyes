@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2014
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2014, OpenEyes Foundation
@@ -23,12 +23,12 @@
 	<div class="large-12 column">
 		<div class="box generic">
 			<?php
-			if (!count($tickets)) {?>
+            if (!count($tickets)) {?>
 				<div class="alert-box">
 					No tickets match the search criteria.
 				</div>
 			<?php
-			} else {?>
+            } else {?>
 				<div class="pagination">
 				</div>
 				<table class="grid audit-logs" id="ticket-table">
@@ -48,15 +48,15 @@
 					</thead>
 					<tbody id="ticket-list">
 					<?php foreach ($tickets as $i => $t) {
-						$this->renderPartial('_ticketlist_row',array('i'=>$i,'ticket'=>$t, 'can_process' => $can_process));
-					}?>
+                        $this->renderPartial('_ticketlist_row', array('i' => $i, 'ticket' => $t, 'can_process' => $can_process));
+                    }?>
 					</tbody>
 				</table>
 				<div class="text-center pagination last">
 					<?php $this->widget('CLinkPager', array(
-									'pages' => $pages,
-									'header' => ''
-							)) ?>
+                                    'pages' => $pages,
+                                    'header' => '',
+                            )) ?>
 				</div>
 			<?php }?>
 		</div>

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2014
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2014, OpenEyes Foundation
@@ -36,13 +36,13 @@ $can_process = $queueset && $qs_svc->isQueueSetPermissionedForUser($queueset, Yi
 
 	<div class="search-filters theatre-diaries">
 		<?php $this->beginWidget('CActiveForm', array(
-						'id'=>'ticket-filter',
-						'action' => Yii::app()->createUrl('/PatientTicketing/default', array('cat_id' => $cat_id)),
-						'htmlOptions'=>array(
-								'class' => 'row'
-						),
-						'enableAjaxValidation'=>false,
-				))?>
+                        'id' => 'ticket-filter',
+                        'action' => Yii::app()->createUrl('/PatientTicketing/default', array('cat_id' => $cat_id)),
+                        'htmlOptions' => array(
+                                'class' => 'row',
+                        ),
+                        'enableAjaxValidation' => false,
+                ))?>
 		<input type="hidden" name="queueset_id" value="<?=$queueset->getId()?>" />
 		<div class="large-12 column">
 			<div class="panel">
@@ -71,40 +71,40 @@ $can_process = $queueset && $qs_svc->isQueueSetPermissionedForUser($queueset, Yi
 							<tr class="filter-row">
 								<td>
 									<?php
-									$this->widget('application.widgets.MultiSelectList', array(
-											'auto_data_order'=>true,
-											'field' => 'queue-ids',
-											'default_options' => @$_POST['queue-ids'],
-											'options' => CHtml::listData($qs_svc->getQueueSetQueues($queueset, false),'id','name'),
-											'htmlOptions' => array('empty' => '- Please Select -', 'nowrapper' => true),
-											'noSelectionsMessage' => 'All Patient Lists')
-											);
-									?>
+                                    $this->widget('application.widgets.MultiSelectList', array(
+                                            'auto_data_order' => true,
+                                            'field' => 'queue-ids',
+                                            'default_options' => @$_POST['queue-ids'],
+                                            'options' => CHtml::listData($qs_svc->getQueueSetQueues($queueset, false), 'id', 'name'),
+                                            'htmlOptions' => array('empty' => '- Please Select -', 'nowrapper' => true),
+                                            'noSelectionsMessage' => 'All Patient Lists', )
+                                            );
+                                    ?>
 
 								</td>
 								<?php if ($queueset->filter_priority) {?>
 								<td>
 									<?php $this->widget('application.widgets.MultiSelectList', array(
-													'auto_data_order'=>true,
-													'field' => 'priority-ids',
-													'default_options' => @$_POST['priority-ids'],
-													'options' => CHtml::listData(OEModule\PatientTicketing\models\Priority::model()->findAll(), 'id', 'name'),
-													'htmlOptions' => array('empty' => '- Please Select -', 'nowrapper' => true),
-													'noSelectionsMessage' => 'All Priorities')
-									) ?>
+                                                    'auto_data_order' => true,
+                                                    'field' => 'priority-ids',
+                                                    'default_options' => @$_POST['priority-ids'],
+                                                    'options' => CHtml::listData(OEModule\PatientTicketing\models\Priority::model()->findAll(), 'id', 'name'),
+                                                    'htmlOptions' => array('empty' => '- Please Select -', 'nowrapper' => true),
+                                                    'noSelectionsMessage' => 'All Priorities', )
+                                    ) ?>
 								</td>
 								<?php }?>
 								<?php if ($queueset->filter_subspecialty) {?>
 								<td>
-									<?php echo CHtml::dropDownList('subspecialty-id', @$_POST['subspecialty-id'], Subspecialty::model()->getList(), array('empty'=>'All specialties', 'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
+									<?php echo CHtml::dropDownList('subspecialty-id', @$_POST['subspecialty-id'], Subspecialty::model()->getList(), array('empty' => 'All specialties', 'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : '')))?>
 								</td>
 								<?php }?>
 								<?php if ($queueset->filter_firm) {?>
 								<td>
 									<?php if (!@$_POST['subspecialty-id']) {?>
-										<?php echo CHtml::dropDownList('firm-id', '', array(), array('empty'=>'All firms', 'disabled' => 'disabled'))?>
+										<?php echo CHtml::dropDownList('firm-id', '', array(), array('empty' => 'All firms', 'disabled' => 'disabled'))?>
 									<?php } else {?>
-										<?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'], Firm::model()->getList(@$_POST['subspecialty-id']), array('empty'=>'All firms', 'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
+										<?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'], Firm::model()->getList(@$_POST['subspecialty-id']), array('empty' => 'All firms', 'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : '')))?>
 									<?php }?>
 								</td>
 								<?php }?>
@@ -115,7 +115,11 @@ $can_process = $queueset && $qs_svc->isQueueSetPermissionedForUser($queueset, Yi
 								<?php }?>
 								<td>
 									<button id="search_button" class="secondary small" type="submit">
-										<?php echo ($patient_filter ? 'Apply' : 'Search'); ?>
+										<?php if ($patient_filter) {?>
+											Apply
+										<?php } else {?>
+											Search
+										<?php }?>
 									</button>
 								</td>
 							</tr>

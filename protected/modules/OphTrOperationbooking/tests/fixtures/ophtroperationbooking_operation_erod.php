@@ -6,19 +6,19 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
 return array(
-	'erod1' => array(
-		'element_id' => 1,
-		'session_id' => 1,
-		'session_date' => date('Y-m-d', strtotime('-2 weeks')),
-		'session_start_time' => '10:00:00',
-		'session_end_time' => '12:00:00',
-	)
+    'erod1' => array(
+        'element_id' => 1,
+        'session_id' => 1,
+        'session_date' => date('Y-m-d', strtotime('-2 weeks')),
+        'session_start_time' => '10:00:00',
+        'session_end_time' => '12:00:00',
+    ),
 );

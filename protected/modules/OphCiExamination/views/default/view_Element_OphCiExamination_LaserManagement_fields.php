@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -20,21 +20,21 @@
 <div class="row data-row">
 	<div class="large-4 column">
 		<div class="data-label">
-			<?php echo CHtml::encode($element->getAttributeLabel($side . '_laser_status_id'))?>
+			<?php echo CHtml::encode($element->getAttributeLabel($side.'_laser_status_id'))?>
 		</div>
 	</div>
 	<div class="large-8 column">
 		<div class="data-value">
-			<?php echo $element->{$side . '_laser_status'} ?>
+			<?php echo $element->{$side.'_laser_status'} ?>
 		</div>
 	</div>
 </div>
-<?php if ($element->{$side . '_laser_status'}->deferred) {
+<?php if ($element->{$side.'_laser_status'}->deferred) {
     ?>
 	<div class="row data-row">
 		<div class="large-4 column">
 			<div class="data-label">
-				<?php echo CHtml::encode($element->getAttributeLabel($side . '_laser_deferralreason_id'))?>
+				<?php echo CHtml::encode($element->getAttributeLabel($side.'_laser_deferralreason_id'))?>
 			</div>
 		</div>
 		<div class="large-8 column">
@@ -44,12 +44,12 @@
 		</div>
 	</div>
 <?php 
-} elseif ($element->{$side . '_laser_status'}->book || $element->{$side . '_laser_status'}->event) {
+} elseif ($element->{$side.'_laser_status'}->book || $element->{$side.'_laser_status'}->event) {
     ?>
 	<div class="row data-row">
 		<div class="large-4 column">
 			<div class="data-label">
-				<?php echo $element->getAttributeLabel($side . '_lasertype_id') ?>:
+				<?php echo $element->getAttributeLabel($side.'_lasertype_id') ?>:
 			</div>
 		</div>
 		<div class="large-8 column">
@@ -61,12 +61,12 @@
 	<div class="row data-row">
 		<div class="large-4 column">
 			<div class="data-label">
-				<?php echo $element->getAttributeLabel($side . '_comments') ?>:
+				<?php echo $element->getAttributeLabel($side.'_comments') ?>:
 			</div>
 		</div>
 		<div class="large-8 column">
 			<div class="data-value">
-				<?php echo $element->{$side . '_comments'} ? Yii::app()->format->Ntext($element->{$side . '_comments'}) : 'None';
+				<?php echo $element->{$side.'_comments'} ? Yii::app()->format->Ntext($element->{$side.'_comments'}) : 'None';
     ?>
 			</div>
 		</div>

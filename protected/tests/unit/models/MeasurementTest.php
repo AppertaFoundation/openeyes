@@ -6,62 +6,61 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class MeasurementTest extends CDbTestCase
 {
-	public $fixtures = array(
-		'measurement_type' => 'MeasurementType',
-		'patient' => 'Patient',
-		'patient_measurement' => 'PatientMeasurement',
-	);
+    public $fixtures = array(
+        'measurement_type' => 'MeasurementType',
+        'patient' => 'Patient',
+        'patient_measurement' => 'PatientMeasurement',
+    );
 
-	private $measurement;
+    private $measurement;
 
-	public function testGetMeasurementType()
-	{
-		$measurement = new MeasurementTest_HeightMeasurement;
+    public function testGetMeasurementType()
+    {
+        $measurement = new MeasurementTest_HeightMeasurement();
 
-		$this->assertEquals(
-			$this->measurement_type('height'),
-			$measurement->getMeasurementType()
-		);
-	}
+        $this->assertEquals(
+            $this->measurement_type('height'),
+            $measurement->getMeasurementType()
+        );
+    }
 
-	public function testGetPatientMeasurement_NewRecord()
-	{
-		$measurement = new MeasurementTest_HeightMeasurement(true);
+    public function testGetPatientMeasurement_NewRecord()
+    {
+        $measurement = new MeasurementTest_HeightMeasurement(true);
 
-		$patient_measurement = $measurement->getPatientMeasurement();
-		$this->assertTrue($patient_measurement->getIsNewRecord());
-		$this->assertEquals($this->measurement_type('height'), $patient_measurement->type);
-	}
+        $patient_measurement = $measurement->getPatientMeasurement();
+        $this->assertTrue($patient_measurement->getIsNewRecord());
+        $this->assertEquals($this->measurement_type('height'), $patient_measurement->type);
+    }
 
-	public function testGetPatientMeasurement_ExistingRecord()
-	{
-		$measurement = new MeasurementTest_HeightMeasurement(false);
-		$measurement->patient_measurement_id = $this->patient_measurement('height')->id;
+    public function testGetPatientMeasurement_ExistingRecord()
+    {
+        $measurement = new MeasurementTest_HeightMeasurement(false);
+        $measurement->patient_measurement_id = $this->patient_measurement('height')->id;
 
-		$this->assertEquals($this->patient_measurement('height'), $measurement->getPatientMeasurement());
-	}
+        $this->assertEquals($this->patient_measurement('height'), $measurement->getPatientMeasurement());
+    }
 }
 
 class MeasurementTest_HeightMeasurement extends Measurement
 {
-	public $patient_measurement_id;
+    public $patient_measurement_id;
 
-	public function __construct($new = true)
-	{
-		$this->setIsNewRecord($new);
-	}
+    public function __construct($new = true)
+    {
+        $this->setIsNewRecord($new);
+    }
 
-	public function getMetadata()
-	{
-		return PHPUnit_Framework_MockObject_Generator::getMock('CActiveRecordMetaData', array(), array(), '', false);
-	}
+    public function getMetadata()
+    {
+        return PHPUnit_Framework_MockObject_Generator::getMock('CActiveRecordMetaData', array(), array(), '', false);
+    }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -31,9 +31,9 @@
 			<?php if (isset($htmlOptions['empty'])) {?>
 				<option value="" data-order="0"><?php echo $htmlOptions['empty']?></option>
 			<?php }?>
-			<?php $order= 1; foreach ($data as $id => $option) {?>
-				<option value="<?php echo $id?>"<?php if(@$htmlOptions['display_order']){echo ' data-order="' . $htmlOptions['display_order'][$id] . '" ';}?><?php if ($id == $selected_value) {?> selected="selected"<?php }?>><?php echo CHtml::encode($option)?></option>
-			<?php $order++;}?>
+			<?php $order = 1; foreach ($data as $id => $option) {?>
+				<option value="<?php echo $id?>"<?php if(@$htmlOptions['display_order']){echo ' data-order="'.$htmlOptions['display_order'][$id].'" ';}?><?php if ($id == $selected_value) {?> selected="selected"<?php }?>><?php echo CHtml::encode($option)?></option>
+			<?php ++$order;}?>
 		</select>
 		<?php if (!@$htmlOptions['nowrapper']) {?>
 		</div>

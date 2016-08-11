@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -21,10 +21,11 @@
  * This is the model class for table "proc".
  *
  * The followings are the available columns in table 'proc':
- * @property integer $id
+ *
+ * @property int $id
  * @property string $term
  * @property string $short_format
- * @property integer $default_duration
+ * @property int $default_duration
  *
  * The followings are the available model relations:
  * @property Subspecialty $subspecialty
@@ -37,6 +38,7 @@ class Procedure extends BaseActiveRecordVersioned
 
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return Procedure the static model class
      */
     public static function model($className = __CLASS__)
@@ -96,7 +98,7 @@ class Procedure extends BaseActiveRecordVersioned
             'term' => 'Term',
             'short_format' => 'Short Format',
             'default_duration' => 'Default Duration',
-            'opcsCodes.name' => 'OPCS Code'
+            'opcsCodes.name' => 'OPCS Code',
         );
     }
 
@@ -109,6 +111,7 @@ class Procedure extends BaseActiveRecordVersioned
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
@@ -116,7 +119,7 @@ class Procedure extends BaseActiveRecordVersioned
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria = new CDbCriteria;
+        $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('term', $this->term, true);
@@ -129,9 +132,9 @@ class Procedure extends BaseActiveRecordVersioned
     }
 
     /**
-     * Get a list of procedures
+     * Get a list of procedures.
      *
-     * @param string $term term to search by
+     * @param string $term     term to search by
      * @param string $restrict Set to 'booked' or 'unbooked' to restrict results to procedures of that type
      *
      * @return array
@@ -150,7 +153,7 @@ class Procedure extends BaseActiveRecordVersioned
             $where .= ' and unbooked = 0';
         }
 
-        $where .= " and proc.active = 1";
+        $where .= ' and proc.active = 1';
 
         return Yii::app()->db->createCommand()
             ->select('term')
@@ -164,7 +167,7 @@ class Procedure extends BaseActiveRecordVersioned
     }
 
     /**
-     * Add relation to OphTrOperationnote_ProcedureListOperationElement if it exists
+     * Add relation to OphTrOperationnote_ProcedureListOperationElement if it exists.
      */
     protected function afterConstruct()
     {
@@ -174,7 +177,7 @@ class Procedure extends BaseActiveRecordVersioned
     }
 
     /**
-     * Add relation to OphTrOperationnote_ProcedureListOperationElement if it exists
+     * Add relation to OphTrOperationnote_ProcedureListOperationElement if it exists.
      */
     protected function afterFind()
     {
@@ -185,7 +188,6 @@ class Procedure extends BaseActiveRecordVersioned
 
     protected function addOpNoteElementRelation()
     {
-
         if (isset(Yii::app()->modules['OphTrOperationnote'])) {
             $this->metaData->addRelation(
                 'operationNotes',
@@ -201,6 +203,7 @@ class Procedure extends BaseActiveRecordVersioned
     /**
      * @param $subspecialtyId
      * @param bool $restrict
+     *
      * @return array
      */
     public function getListBySubspecialty($subspecialtyId, $restrict = false)
@@ -215,7 +218,7 @@ class Procedure extends BaseActiveRecordVersioned
             ->select('proc.id, proc.term')
             ->from('proc')
             ->join('proc_subspecialty_assignment psa', 'psa.proc_id = proc.id')
-            ->where('psa.subspecialty_id = :id and proc.active = 1' . $where, array(':id' => $subspecialtyId))
+            ->where('psa.subspecialty_id = :id and proc.active = 1'.$where, array(':id' => $subspecialtyId))
             ->order('display_order, proc.term ASC')
             ->queryAll();
 
@@ -235,9 +238,9 @@ class Procedure extends BaseActiveRecordVersioned
         }
     }
 
-
     /**
      * @param $opNoteElementId
+     *
      * @return array
      */
     public function getProceduresByOpNote($opNoteElementId)
@@ -262,11 +265,12 @@ class Procedure extends BaseActiveRecordVersioned
 
     /**
      * @param string $prop
+     *
      * @return mixed|null
      */
     public function __get($prop)
     {
-        $method = "get_" . $prop;
+        $method = 'get_'.$prop;
         if (method_exists($this, $method)) {
             return $this->$method();
         }
@@ -276,11 +280,12 @@ class Procedure extends BaseActiveRecordVersioned
 
     /**
      * @param string $prop
+     *
      * @return bool
      */
     public function __isset($prop)
     {
-        $method = "get_" . $prop;
+        $method = 'get_'.$prop;
         if (method_exists($this, $method)) {
             return true;
         }

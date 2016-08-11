@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2015
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2015, OpenEyes Foundation
@@ -21,32 +21,32 @@
 	<h2>Edit common drugs list</h2>
 
 	<?php
-	$modulePath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.modules.OphDrPrescription.assets'));
-	Yii::app()->clientScript->registerScriptFile($modulePath . "/js/commondrugsadmin.js", CClientScript::POS_HEAD);
-	echo CHtml::beginForm('CommonDrugs', 'get', array('id' => 'set_site_subspec_form'));
-	?>
+    $modulePath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.modules.OphDrPrescription.assets'));
+    Yii::app()->clientScript->registerScriptFile($modulePath.'/js/commondrugsadmin.js', CClientScript::POS_HEAD);
+    echo CHtml::beginForm('CommonDrugs', 'get', array('id' => 'set_site_subspec_form'));
+    ?>
 
 	<div class="row field-row">
 		<div class="large-1 column"><label for="site_id">Site:</label></div>
 		<div class="large-4 column">
 			<?php
-			echo CHtml::dropDownList('site_id', $selectedsite,
-				CHtml::listData(Site::model()->findAll(), 'id', 'short_name'));
-			?>
+            echo CHtml::dropDownList('site_id', $selectedsite,
+                CHtml::listData(Site::model()->findAll(), 'id', 'short_name'));
+            ?>
 		</div>
 		<div class="large-2 column"><label for="site_id">Subspeciality:</label></div>
 		<div class="large-4 column end">
 			<?php
-			echo CHtml::dropDownList('subspecialty_id', $selectedsubspecialty,
-				CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name'), array("empty" => "-- Select --"));
-			?>
+            echo CHtml::dropDownList('subspecialty_id', $selectedsubspecialty,
+                CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name'), array('empty' => '-- Select --'));
+            ?>
 		</div>
 
 	</div>
 
 	<?php
-	echo CHtml::endForm();
-	?>
+    echo CHtml::endForm();
+    ?>
 	<table class="generic-admin" id="common_drugs_list">
 		<thead>
 		<tr>
@@ -57,41 +57,41 @@
 		</thead>
 		<tbody>
 		<?php
-		foreach ($site_subspecialty_drugs as $siteSubspecialtyDrug) {
-			echo '<tr>
-							<td>' . $siteSubspecialtyDrug->drugs->name . '</td>
-							<td>' . $siteSubspecialtyDrug->drugs->dose_unit . '</td>
+        foreach ($site_subspecialty_drugs as $siteSubspecialtyDrug) {
+            echo '<tr>
+							<td>'.$siteSubspecialtyDrug->drugs->name.'</td>
+							<td>'.$siteSubspecialtyDrug->drugs->dose_unit.'</td>
 							<td>
-								<a OnCLick="DeleteCommonDrug(' . $siteSubspecialtyDrug->id . ')">Delete</a></td>
+								<a OnCLick="DeleteCommonDrug('.$siteSubspecialtyDrug->id.')">Delete</a></td>
 						</tr>';
-		}
-		?>
+        }
+        ?>
 		<tr>
 			<td colspan="2">
 				<?php
-				$defaultURL = "/" . Yii::app()->getModule('OphDrPrescription')->id . "/" . Yii::app()->getModule('OphDrPrescription')->defaultController;
+                $defaultURL = '/'.Yii::app()->getModule('OphDrPrescription')->id.'/'.Yii::app()->getModule('OphDrPrescription')->defaultController;
 
-				$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-					'name' => 'drug_id',
-					'id' => 'autocomplete_drug_id',
-					'source' => "js:function(request, response) {
-									$.getJSON('" . $defaultURL . "/DrugList', {
+                $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+                    'name' => 'drug_id',
+                    'id' => 'autocomplete_drug_id',
+                    'source' => "js:function(request, response) {
+									$.getJSON('".$defaultURL."/DrugList', {
 										term : request.term,
 										type_id: $('#drug_type_id').val(),
 										preservative_free: ($('#preservative_free').is(':checked') ? '1' : ''),
 									}, response);
 								}",
-					'options' => array(
-						'select' => "js:function(event, ui) {
+                    'options' => array(
+                        'select' => "js:function(event, ui) {
 										addItem(ui.item.id);
 										$(this).val('');
 										return false;
 									}",
-					),
-					'htmlOptions' => array(
-						'placeholder' => 'search for drugs',
-					)
-				)); ?>
+                    ),
+                    'htmlOptions' => array(
+                        'placeholder' => 'search for drugs',
+                    ),
+                )); ?>
 
 			</td>
 			<td>

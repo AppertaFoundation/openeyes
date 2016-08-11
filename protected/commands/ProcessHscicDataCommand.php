@@ -1,6 +1,6 @@
-﻿<?php
+<?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2012
@@ -9,14 +9,13 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
- */    
-
+ */
 class ProcessHscicDataCommand extends CConsoleCommand
 {
     public $path = null;
@@ -29,33 +28,36 @@ class ProcessHscicDataCommand extends CConsoleCommand
     public static $UNKNOWN_ERROR = 9;
 
     /**
-     * Force already imported files to process it again
-     * @var type 
+     * Force already imported files to process it again.
+     *
+     * @var type
      */
     public $force = false;
-    
+
     /**
-     * Audit can be disabled (eg for the first import we probably don't want to generate 78000 'GP imported' audit rows)
+     * Audit can be disabled (eg for the first import we probably don't want to generate 78000 'GP imported' audit rows).
+     *
      * @var type
      */
     public $audit = true;
 
     /**
      * Override the default URL, e.g. to process a specific monthly file.
+     *
      * @var type
      */
     public $url = '';
 
     /**
-     * @var integer
+     * @var int
      */
     public $timeout = 30;
 
     private $pcu;
     private $countryId;
     private $cbtId;
-    
-    static private $files = array(
+
+    private static $files = array(
         'full' => array(
             'gp' => array(
                     'url' => 'http://systems.hscic.gov.uk/data/ods/datadownloads/data-files/egpcur.zip',
@@ -84,49 +86,49 @@ class ProcessHscicDataCommand extends CConsoleCommand
             'gp' => array(
                 'url' => 'http://systems.hscic.gov.uk/data/ods/datadownloads/quartamend/current/egpaq.zip',
                 'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
-            )
+            ),
         ),
     );
-    
-    function __construct()
+
+    public function __construct()
     {
         $this->path = Yii::app()->params['hscic']['data']['path'];
         $this->tempPath = Yii::app()->params['hscic']['data']['temp_path'];
-       
+
         if (!file_exists($this->path)) {
             mkdir($this->path, 0777, true);
         }
-        
+
         if (!file_exists($this->tempPath)) {
             mkdir($this->tempPath, 0777, true);
         }
-        
 
         parent::__construct(null, null);
     }
 
     /**
      * Returns the command name/short description.
+     *
      * @return string
      */
     public function getName()
     {
         return 'HSCIC data download and import Command.';
     }
-    
+
     /**
-     * Displaying the help if no action or param passed
+     * Displaying the help if no action or param passed.
      */
     public function actionIndex()
     {
         $this->getHelp();
     }
-    
+
     /**
-     * Help
+     * Help.
      */
     public function getHelp()
-    {        
+    {
         echo <<<EOH
 
         
@@ -183,40 +185,35 @@ EXAMPLES
    Compares the full GP files with database and set models to inactive which are missing from the file
 
 EOH;
-        
     }
-    
-    
-    
+
     /**
      * imports a specific file based on the given type and interval
-     * eg.: ProcessHscicData import --type=Gp --interval=monthly
+     * eg.: ProcessHscicData import --type=Gp --interval=monthly.
      * 
-     * @param string $type gp|Practice|Ccg|CcgAssignment
+     * @param string $type     gp|Practice|Ccg|CcgAssignment
      * @param string $interval full|monthly|quarterly
-     * 
      */
     public function actionImport($type, $interval = 'full')
     {
-        if( !isset(self::$files[$interval]) ){
+        if (!isset(self::$files[$interval])) {
             $this->usageError("Interval not found: $interval");
-        } else if( !isset(self::$files[$interval][$type]) ){
+        } elseif (!isset(self::$files[$interval][$type])) {
             $this->usageError("Type not found: $type");
         } else {
             try {
                 $this->processFile($type, $interval, self::$files[$interval][$type]);
-            }
-            catch (Exception $e) {
+            } catch (Exception $e) {
                 return $this->handleException($e);
             }
-
-        }      
+        }
     }
 
     /**
-     * Simple routine for consistently handling generated Exceptions
+     * Simple routine for consistently handling generated Exceptions.
      *
      * @param $e
+     *
      * @return mixed
      */
     protected function handleException(Exception $e)
@@ -227,188 +224,190 @@ EOH;
     }
 
     /**
-     * Imports all the full files listed in self::$files['full'], Gp, Practice, CCG, CCG Assignment
+     * Imports all the full files listed in self::$files['full'], Gp, Practice, CCG, CCG Assignment.
      */
     public function actionImportall()
     {
         try {
-            foreach(self::$files['full'] as $type => $file){
+            foreach (self::$files['full'] as $type => $file) {
                 $this->processFile($type, 'full', $file);
             }
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return $this->handleException($e);
         }
     }
-    
+
     /**
      * Checks if the newly downloaded file is already processed or not
-     * by comparing to the previously downloaded one
+     * by comparing to the previously downloaded one.
      * 
-     * @param type $tempFile freshly downloaded in the /tmp directory
+     * @param type $tempFile      freshly downloaded in the /tmp directory
      * @param type $permanentFile already processed one {$permanentFile}/{$permanentFile}.zip
+     *
      * @return bool true if no already processed file found or the new file differ from the previous one in md5 hash
      */
     private function isNewResourceFile($tempFile, $permanentFile)
     {
         $isNewResource = false;
-        
-        if( !file_exists($tempFile)){
-            $this->usageError("File not found: " . $tempFile);
-        } else if ( !file_exists($permanentFile) ){
+
+        if (!file_exists($tempFile)) {
+            $this->usageError('File not found: '.$tempFile);
+        } elseif (!file_exists($permanentFile)) {
             // No previously processed file found
             $isNewResource = true;
         } else {
             // new and old files are found, lets compare them
             $permanentFileHash = md5_file($permanentFile);
             $tempFileHash = md5_file($tempFile);
-            
+
             $isNewResource = ($permanentFileHash === $tempFileHash ? false : true);
         }
- 
+
         return $this->force ? true : $isNewResource;
-    }    
-    
-    
+    }
+
     /**
-     * Opens the zip file and gets the CSV file pointer and returns it
+     * Opens the zip file and gets the CSV file pointer and returns it.
      * 
      * @param string $file path and filename
+     *
      * @return resource a file pointer (resource)
+     *
      * @throws Exception if fails open the zip or fails to extract the CSV file
      */
     private function getFilePointer($file)
     {
         $pathInfo = pathinfo($file);
-        
-        $zip = new ZipArchive(); 
+
+        $zip = new ZipArchive();
         if (($res = $zip->open($file)) !== true) {
-            throw new Exception("Failed to open zip file '{$file}': " . $res, static::$UNEXPECTED_FILE_PROBLEM);
+            throw new Exception("Failed to open zip file '{$file}': ".$res, static::$UNEXPECTED_FILE_PROBLEM);
         }
-        
+
         $fileName = str_replace('.zip', '.csv', $pathInfo['basename']);
-      
+
         if (!($stream = $zip->getStream($fileName))) {
             throw new Exception("Failed to extract '{$fileName}' from zip file at '{$file}'", static::$UNEXPECTED_FILE_PROBLEM);
         }
-        
+
         return $stream;
     }
-    
+
     /**
-     * Gets the line count of the CSV file in the zip
+     * Gets the line count of the CSV file in the zip.
      * 
      * @param string $file file pathe and name
+     *
      * @return int line count
+     *
      * @throws Exception if fails open the zip or fails to extract the CSV file
      */
     private function getLineCountFromZip($file)
     {
         $pathInfo = pathinfo($file);
-        
+
         $zip = new ZipArchive();
         if (($res = $zip->open($file)) !== true) {
-            $this->usageError("Failed to open zip file '{$file}': " . $res);
+            $this->usageError("Failed to open zip file '{$file}': ".$res);
         }
-        
+
         $fileName = str_replace('.zip', '.csv', $pathInfo['basename']);
-      
+
         if (!($stream = $zip->getStream($fileName))) {
             throw new Exception("Failed to extract '{$fileName}' from zip file at '{$file}'", static::$UNEXPECTED_FILE_PROBLEM);
         }
-        
+
         $lineCount = 0;
-        while (fgets($stream) !== false){
-            $lineCount++;
+        while (fgets($stream) !== false) {
+            ++$lineCount;
         }
         $zip->close();
-        
+
         return $lineCount;
     }
-    
+
     /**
-     * Checks if the destination folder exists (makes it if not) than copies the file
+     * Checks if the destination folder exists (makes it if not) than copies the file.
+     *
      * @param type $tempFile
      * @param type $permanentFile
      */
     private function tempToPermanent($tempFile, $permanentFile)
     {
         $pathParts = pathinfo($permanentFile);
-        
+
         if (!file_exists($pathParts['dirname'])) {
             mkdir($pathParts['dirname'], 0777, true);
         }
-        
+
         copy($tempFile, $permanentFile);
     }
-    
+
     /**
-     * Processing the given file
+     * Processing the given file.
      * 
-     * @param string $type like 'Gp'
+     * @param string $type     like 'Gp'
      * @param string $interval full|monthly|quarterly
-     * @param array $file (based on self::files['full']['Gp'])
+     * @param array  $file     (based on self::files['full']['Gp'])
      */
     private function processFile($type, $interval, $file)
     {
         echo "\n";
-        
-        $pathParts = pathinfo( $this->getFileFromUrl($file['url']) );
 
-        $permanentFile = $this->path . '/' . $pathParts['filename'] . '/' . $pathParts['basename'];
-        $tempFile =  $this->tempPath . '/' . $pathParts['basename'];
+        $pathParts = pathinfo($this->getFileFromUrl($file['url']));
+
+        $permanentFile = $this->path.'/'.$pathParts['filename'].'/'.$pathParts['basename'];
+        $tempFile = $this->tempPath.'/'.$pathParts['basename'];
 
         // check if the current file(url) is already processed or not
-        if( $this->isNewResourceFile($tempFile, $permanentFile) ){
-
-            echo "Processing " . $pathParts['basename'] . "\n";
+        if ($this->isNewResourceFile($tempFile, $permanentFile)) {
+            echo 'Processing '.$pathParts['basename']."\n";
 
             $this->tempToPermanent($tempFile, $permanentFile);
 
             $this->processCSV($type, $interval, $file['fields'], $permanentFile);
         } else {
-            echo $type . " - " . basename($permanentFile) . " is already processed\n";
+            echo $type.' - '.basename($permanentFile)." is already processed\n";
         }
     }
-    
+
     /**
-     * Gets the zip file, extracts the CSV file (from the zip) and processes it
+     * Gets the zip file, extracts the CSV file (from the zip) and processes it.
      * 
-     * @param string $type like 'Gp'
+     * @param string $type     like 'Gp'
      * @param string $interval full|monthly|quarterly
-     * @param array $fields 
-     * @param string $file the zip file
+     * @param array  $fields
+     * @param string $file     the zip file
      */
     private function processCSV($type, $interval, $fields, $file)
     {
         $lineCount = $this->getLineCountFromZip($file);
         $fileHandler = $this->getFilePointer($file);
-        
-        $this->pcu = new PostCodeUtility;
+
+        $this->pcu = new PostCodeUtility();
         $this->countryId = Country::model()->findByAttributes(array('code' => 'GB'))->id;
         $this->cbtId = CommissioningBodyType::model()->findByAttributes(array('shortname' => 'CCG'))->id;
-        
+
         echo "Type: $type\n";
         echo "Total rows : $lineCount\n";
-        
-        echo "Progress :          ";
-        
+
+        echo 'Progress :          ';
+
         $i = 1;
         while (($row = fgetcsv($fileHandler))) {
-            
-            $percent = round((($i/$lineCount)*100), 1);
-            
+            $percent = round((($i / $lineCount) * 100), 1);
+
             echo "\033[7D"; // 7 char back
-            echo str_pad( $percent , 5, ' ', STR_PAD_LEFT) . " %";
-       
-            $data = array_combine(array_pad($fields, count($row), ""), $row);
+            echo str_pad($percent, 5, ' ', STR_PAD_LEFT).' %';
+
+            $data = array_combine(array_pad($fields, count($row), ''), $row);
             $transaction = Yii::app()->db->beginTransaction();
             try {
                 if ($type == 'gp' && ($interval == 'monthly' || $interval == 'quarterly')) {
                     // Monthly and quarterly files contain both GPs and Practices.
                     if (preg_match('/^G\d{7}$/', $data['code'])) {
                         $this->importGp($data);
-                    } else if (preg_match('/^([A-Z]\d{5}|[A-Z]{3}\d{3})$/', $data['code'])) {
+                    } elseif (preg_match('/^([A-Z]\d{5}|[A-Z]{3}\d{3})$/', $data['code'])) {
                         $this->importPractice($data);
                     } else {
                         throw new Exception("Unknown code format: {$data['code']}", static::$UNRECOGNISED_CODE);
@@ -417,39 +416,38 @@ EOH;
                     $this->{"import{$type}"}($data);
                 }
                 $transaction->commit();
-            } catch(Exception $e) {
-                $message = "Error processing {$type} row:\n" . CVarDumper::dumpAsString($row) . "\n$e";
+            } catch (Exception $e) {
+                $message = "Error processing {$type} row:\n".CVarDumper::dumpAsString($row)."\n$e";
                 Yii::log($message, CLogger::LEVEL_ERROR);
-                print "\n$message\n";
+                echo "\n$message\n";
                 $transaction->rollback();
                 throw $e;
             }
-            $i++;
+            ++$i;
         }
         echo "\n";
-
     }
-    
+
     /**
-     * Imports the 'Gp' CSV file
+     * Imports the 'Gp' CSV file.
      * 
      * @param array $data
      */
     private function importGp(array $data)
     {
         if (!($gp = Gp::model()->findbyAttributes(array('nat_id' => $data['code'])))) {
-                $gp = new Gp;
-                $gp->nat_id = $data['code'];
-                $gp->obj_prof = $data['code'];
+            $gp = new Gp();
+            $gp->nat_id = $data['code'];
+            $gp->obj_prof = $data['code'];
         }
-        
+
         $isNewRecord = $gp->isNewRecord;
-        
+
         $gp->is_active = $data['status'] == 'A' || $data['status'] == 'P' ? '1' : '0';
 
-        if ($gp->saveOnlyIfDirty()->save()){
-            if($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' GP');
+        if ($gp->saveOnlyIfDirty()->save()) {
+            if ($this->audit !== 'false') {
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update').' GP');
             }
         } else {
             // save has not been carried out, either mode was not dirty or save() failed
@@ -458,7 +456,7 @@ EOH;
         $contact = $gp->contact;
         $contact->primary_phone = $data['phone'];
 
-        /**
+        /*
          * Regexp
          * the first part match a word (any number of char, no whithespace)
          * than (after the first word) can follow any number of whitepace 
@@ -475,60 +473,59 @@ EOH;
         } else {
             $contact->last_name = $data['name'];
         }
-        
+
         $isNewRecord = $contact->isNewRecord;
-        
-        if ($contact->saveOnlyIfDirty()->save()){
-            if($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' GP-Contact');
+
+        if ($contact->saveOnlyIfDirty()->save()) {
+            if ($this->audit !== 'false') {
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update').' GP-Contact');
             }
         } else {
             // save has not been carried out, either mode was not dirty or save() failed
         }
-        
 
         if (!($address = $contact->address)) {
-            $address = new Address;
+            $address = new Address();
             $address->contact_id = $contact->id;
         }
-        
+
         $this->importAddress($address, array($data['addr1'], $data['addr2'], $data['addr3'], $data['addr4'], $data['addr5']));
         $address->postcode = $data['postcode'];
         $address->country_id = $this->countryId;
-        
+
         $isNewRecord = $address->isNewRecord;
-        
-        if ($address->saveOnlyIfDirty()->save()){
-            if($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' GP-Address');
+
+        if ($address->saveOnlyIfDirty()->save()) {
+            if ($this->audit !== 'false') {
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update').' GP-Address');
             }
         } else {
             // save has not been carried out, either mode was not dirty or save() failed
         }
-        
+
         $gp = null;
     }
-    
+
     /**
-     * Imports the 'Practice' CSV file
+     * Imports the 'Practice' CSV file.
+     *
      * @param array $data
      */
     private function importPractice($data)
     {
         if (!($practice = Practice::model()->findByAttributes(array('code' => $data['code'])))) {
-           
-            $practice = new Practice;
+            $practice = new Practice();
             $practice->code = $data['code'];
         }
         $isNewRecord = $practice->isNewRecord;
-        
+
         $practice->is_active = $data['status'] == 'A' || $data['status'] == 'P' ? '1' : '0';
-        
+
         $practice->phone = $data['phone'];
-        
-        if ($practice->saveOnlyIfDirty()->save()){
-            if($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' Practice');
+
+        if ($practice->saveOnlyIfDirty()->save()) {
+            if ($this->audit !== 'false') {
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update').' Practice');
             }
         } else {
             // save has not been carried out, either mode was not dirty or save() failed
@@ -536,83 +533,83 @@ EOH;
 
         $contact = $practice->contact;
         $contact->primary_phone = $practice->phone;
-        
+
         $isNewRecord = $contact->isNewRecord;
 
-        if ($contact->saveOnlyIfDirty()->save()){
-            if($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' Practice-Contact');
+        if ($contact->saveOnlyIfDirty()->save()) {
+            if ($this->audit !== 'false') {
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update').' Practice-Contact');
             }
         } else {
             // save has not been carried out, either mode was not dirty or save() failed
         }
-        
 
         if (!($address = $contact->address)) {
-            $address = new Address;
+            $address = new Address();
             $address->contact_id = $contact->id;
         }
         $isNewRecord = $address->isNewRecord;
-        
+
         $this->importAddress($address, array($data['name'], $data['addr1'], $data['addr2'], $data['addr3'], $data['addr4'], $data['addr5']));
         $address->postcode = $data['postcode'];
         $address->country_id = $this->countryId;
-        
-        if ($address->saveOnlyIfDirty()->save()){
-            if($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' Practice-Address');
+
+        if ($address->saveOnlyIfDirty()->save()) {
+            if ($this->audit !== 'false') {
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update').' Practice-Address');
             }
         } else {
             // save has not been carried out, either mode was not dirty or save() failed
         }
     }
-    
+
     /**
-     * Imports the 'Ccg' CSV file 
+     * Imports the 'Ccg' CSV file.
+     *
      * @param array $data
      */
     private function importCcg(array $data)
     {
         if (!($ccg = CommissioningBody::model()->findByAttributes(array('code' => $data['code'], 'commissioning_body_type_id' => $this->cbtId)))) {
-            $ccg = new CommissioningBody;
+            $ccg = new CommissioningBody();
             $ccg->code = $data['code'];
             $ccg->commissioning_body_type_id = $this->cbtId;
         }
         $isNewRecord = $ccg->isNewRecord;
         $ccg->name = $data['name'];
-        
-        if ($ccg->saveOnlyIfDirty()->save()){
-            if($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' CCG');
+
+        if ($ccg->saveOnlyIfDirty()->save()) {
+            if ($this->audit !== 'false') {
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update').' CCG');
             }
         } else {
             // save has not been carried out, either mode was not dirty or save() failed
         }
 
-        $contact = $ccg->contact;        
+        $contact = $ccg->contact;
         if (!($address = $contact->address)) {
-                $address = new Address;
-                $address->contact_id = $contact->id;
+            $address = new Address();
+            $address->contact_id = $contact->id;
         }
         $isNewRecord = $address->isNewRecord;
         $this->importAddress($address, array($data['addr1'], $data['addr2'], $data['addr3'], $data['addr4'], $data['addr5']));
         $address->postcode = $data['postcode'];
         $address->country_id = $this->countryId;
-        
-        if ($address->saveOnlyIfDirty()->save()){
-            if($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' CCG-Address');
+
+        if ($address->saveOnlyIfDirty()->save()) {
+            if ($this->audit !== 'false') {
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update').' CCG-Address');
             }
         } else {
             // save has not been carried out, either mode was not dirty or save() failed
         }
     }
-    
+
     /**
-     * Imports the 'CcgAssignment' file
+     * Imports the 'CcgAssignment' file.
      * 
      * @param array $data
-     * @return NULL if Practice or CCG does not exsist
+     *
      * @throws Exception If Failed to save commissioning body assignment
      */
     private function importCcgAssignment(array $data)
@@ -620,16 +617,17 @@ EOH;
         $practice = Practice::model()->findByAttributes(array('code' => $data['practice_code']));
         $ccg = CommissioningBody::model()->findByAttributes(array('code' => $data['ccg_code'], 'commissioning_body_type_id' => $this->cbtId));
 
-        if (!$practice || !$ccg) return null;
+        if (!$practice || !$ccg) {
+            return;
+        }
 
         $found = false;
         foreach ($practice->commissioningbodyassigments as $assignment) {
             if ($assignment->commissioning_body_id == $ccg->id) {
                 $found = true;
             } else {
-                if ($assignment->commissioning_body->commissioning_body_type_id == $this->cbtId){  
-                   
-                    if( $assignment->delete() && $this->audit !== 'false') {
+                if ($assignment->commissioning_body->commissioning_body_type_id == $this->cbtId) {
+                    if ($assignment->delete() && $this->audit !== 'false') {
                         Audit::add('ProcessHscicDataCommand', 'Assignment Deleted');
                     }
                 }
@@ -637,41 +635,49 @@ EOH;
         }
 
         if (!$found) {
-            $assignment = new CommissioningBodyPracticeAssignment;
+            $assignment = new CommissioningBodyPracticeAssignment();
             $assignment->commissioning_body_id = $ccg->id;
             $assignment->practice_id = $practice->id;
-            
+
             if (!$assignment->save()) {
-                throw new Exception("Failed to save commissioning body assignment: " . print_r($assignment->errors, true));
+                throw new Exception('Failed to save commissioning body assignment: '.print_r($assignment->errors, true));
             }
-            if($this->audit !== 'false') {
+            if ($this->audit !== 'false') {
                 Audit::add('ProcessHscicDataCommand', 'Assignment Saved');
             }
-            
         }
     }
-    
+
     /**
-     * Imports the Address
+     * Imports the Address.
      * 
      * @param Address $address
-     * @param array $lines
+     * @param array   $lines
      */
     private function importAddress(Address $address, array $lines)
     {
         $lines = array_unique(array_filter(array_map(array($this, 'tidy'), $lines)));
-        if ($lines) $address->address1 = array_shift($lines);
-        if ($lines) $address->county = array_pop($lines);
-        if ($lines) $address->city = array_pop($lines);
-        if ($lines) $address->address2 = implode("\n", $lines);
-        
+        if ($lines) {
+            $address->address1 = array_shift($lines);
+        }
+        if ($lines) {
+            $address->county = array_pop($lines);
+        }
+        if ($lines) {
+            $address->city = array_pop($lines);
+        }
+        if ($lines) {
+            $address->address2 = implode("\n", $lines);
+        }
+
         $lines = null;
     }
-    
+
     /**
-     * Transform the address line to uppercase all the words
+     * Transform the address line to uppercase all the words.
      * 
      * @param string $string
+     *
      * @return string
      */
     private function tidy($string)
@@ -688,15 +694,15 @@ EOH;
 
         return $string;
     }
-    
+
     /**
-     * Checking if a database row no longer exists in the file, and if it's the case, we set the status inactive
+     * Checking if a database row no longer exists in the file, and if it's the case, we set the status inactive.
      * 
      * @param type $type
      */
     public function actionCheckRemovedFromFile($type = 'gp')
     {
-        if ( !isset(self::$files['full'][$type]['url']) || ($type != 'gp' && $type != 'practice') ){
+        if (!isset(self::$files['full'][$type]['url']) || ($type != 'gp' && $type != 'practice')) {
             $this->usageError("Invalid type: $type");
         }
 
@@ -705,7 +711,7 @@ EOH;
 
             $this->createTempTable($dbTable);
 
-            $file = $this->getFileFromUrl( self::$files['full'][$type]['url'] );
+            $file = $this->getFileFromUrl(self::$files['full'][$type]['url']);
             $this->fillTempTable($type, $file);
 
             $this->markInactiveMissingModels($dbTable);
@@ -713,46 +719,45 @@ EOH;
             // drop temp table
             $query = "DROP TABLE if exists temp_$dbTable;";
             Yii::app()->db->createCommand($query)->execute();
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return $this->handleException($e);
         }
     }
-    
+
     /**
-     * Creating temporary table for CheckRemovedFromFile() method
+     * Creating temporary table for CheckRemovedFromFile() method.
      * 
      * @param type $dbTable
      */
     private function createTempTable($dbTable)
     {
         $tableName = addslashes($dbTable);
-        
+
         // drop temp table if exsist
         $query = "DROP TABLE if exists temp_$tableName;";
-        
+
         // create temp table
         $query .= "CREATE TEMPORARY TABLE temp_$tableName LIKE $tableName;";
-        
+
         $column = $dbTable == 'gp' ? 'nat_id' : 'code';
-        
+
         $query .= "ALTER TABLE temp_$tableName ADD INDEX `$column` (`$column`)";
-        
-        echo "Creating temp table... ";
+
+        echo 'Creating temp table... ';
         \Yii::app()->db->createCommand($query)->execute();
         echo "OK\n";
-
     }
-    
+
     /**
-     * Returns the database table name based on the give type
+     * Returns the database table name based on the give type.
      * 
      * @param string $type gp|practice|ccg
+     *
      * @return string database table name
      */
     private function getTableNameByType($type)
     {
-        switch ($type){
+        switch ($type) {
            case 'gp':
            case 'practice':
                $dbTable = $type;
@@ -762,153 +767,150 @@ EOH;
            default:
                $this->usageError("Invalid type: $type");
        }
-       
-       return $dbTable;
+
+        return $dbTable;
     }
-    
+
     /**
-     * Fill temp table for CheckRemovedFromFile() method
+     * Fill temp table for CheckRemovedFromFile() method.
      * 
      * @param string $type GP
-     * @param type $file
+     * @param type   $file
      */
     private function fillTempTable($type, $file)
     {
         $dbTable = $this->getTableNameByType($type);
-        
-        $fileHandler = $this->getFilePointer($this->tempPath . '/' . $file);
-        
-        echo "Inserting rows into temp table... ";
-        
+
+        $fileHandler = $this->getFilePointer($this->tempPath.'/'.$file);
+
+        echo 'Inserting rows into temp table... ';
+
         $i = 0;
         $insertBulkData = array();
         while (($row = fgetcsv($fileHandler))) {
-                    
-            $data = array_combine(array_pad(self::$files['full'][$type]['fields'], count($row), ""), $row);
-            
-            if($dbTable == 'gp'){
-               $insertData = array(
+            $data = array_combine(array_pad(self::$files['full'][$type]['fields'], count($row), ''), $row);
+
+            if ($dbTable == 'gp') {
+                $insertData = array(
                     'obj_prof' => $data['code'],
-                    'nat_id'   => $data['code'],
+                    'nat_id' => $data['code'],
                 );
             } else {
                 $insertData = array(
                     'code' => $data['code'],
                 );
             }
-            
+
             $insertBulkData[] = $insertData;
         }
-        
+
         $builder = Yii::app()->db->schema->commandBuilder;
-        
+
         $command = $builder->createMultipleInsertCommand("temp_$dbTable", $insertBulkData);
         $command->execute();
-        
+
         echo "OK\n\n";
     }
-    
+
     /**
-     * Set status to inactive on models missing from the CSV file
+     * Set status to inactive on models missing from the CSV file.
+     *
      * @param type $type GP
      */
     private function markInactiveMissingModels($type)
     {
         $dbTable = $this->getTableNameByType($type);
         $column = $dbTable == 'gp' ? 'nat_id' : 'code';
-        
-        $criteria=new CDbCriteria();
-        $criteria->select = array("t.*");
+
+        $criteria = new CDbCriteria();
+        $criteria->select = array('t.*');
         $criteria->join = "LEFT JOIN temp_$dbTable ON t.$column = temp_$dbTable.$column";
         $criteria->addCondition("temp_$dbTable.$column IS NULL");
-        $criteria->addCondition("t.is_active = 1");
-        
+        $criteria->addCondition('t.is_active = 1');
+
         $modelName = ucfirst($dbTable);
         $not_in_file = $modelName::model()->findAll($criteria);
-       
-        echo "Set " . count($not_in_file) . " $type to inactive... ";
-        foreach($not_in_file as $removed_instance){
-            
+
+        echo 'Set '.count($not_in_file)." $type to inactive... ";
+        foreach ($not_in_file as $removed_instance) {
             $removed_instance->is_active = '0';
-            if($removed_instance->save() && $this->audit !== 'false'){
+            if ($removed_instance->save() && $this->audit !== 'false') {
                 Audit::add('ProcessHscicDataCommand', "$type ({$removed_instance->$column}) set to inactive");
             }
-            
         }
         echo "OK\n\n";
     }
-    
+
     /**
-     * Assamble the file path and name from the url
+     * Assamble the file path and name from the url.
+     *
      * @param string $url
+     *
      * @return string the path and file name
      */
     private function getFileFromUrl($url)
     {
         $urlParts = parse_url($url);
         $pathParts = pathinfo($urlParts['path']);
-          
+
         return $pathParts['basename'];
     }
-    
-    
+
     /***    Download HSCIC Data    ***/
-    
-    
+
     /**
-     * Allows to download a specified file based on the type and interval
+     * Allows to download a specified file based on the type and interval.
      * 
-     * @param string $type like 'Gp'
+     * @param string $type     like 'Gp'
      * @param string $interval like 'monthly'
      */
     public function actionDownload($type, $interval = 'full')
     {
-        if( !isset(self::$files[$interval]) ){
+        if (!isset(self::$files[$interval])) {
             $this->usageError("Interval not found: $interval");
-           
-        } else if( !isset(self::$files[$interval][$type]) ){
+        } elseif (!isset(self::$files[$interval][$type])) {
             $this->usageError("\n$type has no $interval file");
         } else {
             try {
                 $fileName = $this->getFileFromUrl($this->url == '' ? self::$files[$interval][$type]['url'] : $this->url);
-                $this->download($this->url == '' ? self::$files[$interval][$type]['url'] : $this->url, $this->tempPath . '/' . $fileName);
-            }
-            catch (Exception $e) {
+                $this->download($this->url == '' ? self::$files[$interval][$type]['url'] : $this->url, $this->tempPath.'/'.$fileName);
+            } catch (Exception $e) {
                 return $this->handleException($e);
             }
         }
     }
-    
+
     /**
      * Downloads all the full files listed in self::$files['full'] , Gp, Practice, CCG, CCG Assignment
-     * can be useful on the first run
+     * can be useful on the first run.
      */
-    public function actionDownloadall(){
+    public function actionDownloadall()
+    {
         try {
-            foreach(self::$files['full'] as $file){
+            foreach (self::$files['full'] as $file) {
                 $fileName = $this->getFileFromUrl($file['url']);
-                $this->download($file['url'], $this->tempPath . '/' . $fileName);
+                $this->download($file['url'], $this->tempPath.'/'.$fileName);
             }
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return $this->handleException($e);
         }
     }
 
     /**
-     * Downloads the file(url) and puts to the provided path/filename
+     * Downloads the file(url) and puts to the provided path/filename.
      *
      * @param type $url
      * @param type $file
+     *
      * @throws Exception
      */
     private function download($url, $file)
     {
-        echo "Downloading... " . basename($file);
+        echo 'Downloading... '.basename($file);
         $error_message = null;
 
         $file_handler = fopen($file, 'w');
-        
+
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_PROXY, Yii::app()->params['curl_proxy']);
         curl_setopt($curl, CURLOPT_FILE, $file_handler);
@@ -916,23 +918,24 @@ EOH;
         curl_exec($curl);
 
         if (curl_errno($curl)) {
-            $error_message = ' Curl error: ' . curl_errno($curl);
-        }
-        else {
+            $error_message = ' Curl error: '.curl_errno($curl);
+        } else {
             $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             if ($status != 200) {
-                $error_message = ' Bad Status Code: ' . $status;
+                $error_message = ' Bad Status Code: '.$status;
             }
         }
         curl_close($curl);
-        
-        fclose($file_handler);
-        if ($error_message)
-            throw new Exception($error_message, static::$DOWNLOAD_FAILED);
 
-        if (!is_readable($file) || !filesize($file))
-            throw new Exception("Downloaded file is empty/unreadable", static::$DOWNLOAD_EMPTY);
-        
+        fclose($file_handler);
+        if ($error_message) {
+            throw new Exception($error_message, static::$DOWNLOAD_FAILED);
+        }
+
+        if (!is_readable($file) || !filesize($file)) {
+            throw new Exception('Downloaded file is empty/unreadable', static::$DOWNLOAD_EMPTY);
+        }
+
         echo ' ... OK';
         echo "\n";
     }

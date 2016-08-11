@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -32,10 +32,10 @@
 			</thead>
 			<tbody class="sortable" data-sort-uri="/OphTrOperationbooking/admin/sortwards">
 				<?php
-				$criteria = new CDbCriteria;
-				$criteria->order = "display_order asc";
-				foreach (OphTrOperationbooking_Operation_Ward::model()->active()->findAll() as $i => $ward) {?>
-					<tr class="clickable <?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $ward->id?>" data-uri="OphTrOperationbooking/admin/editWard/<?php echo $ward->id?>">
+                $criteria = new CDbCriteria();
+                $criteria->order = 'display_order asc';
+                foreach (OphTrOperationbooking_Operation_Ward::model()->active()->findAll() as $i => $ward) {?>
+					<tr class="clickable <?php if ($i % 2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $ward->id?>" data-uri="OphTrOperationbooking/admin/editWard/<?php echo $ward->id?>">
 						<td><input type="checkbox" name="ward[]" value="<?php echo $ward->id?>" class="wards" /></td>
 						<td><?php echo $ward->site->name?></td>
 						<td><?php echo $ward->name?></td>
@@ -47,8 +47,8 @@
 			<tfoot>
 				<tr>
 					<td colspan="5">
-						<?php echo EventAction::link('Add', '#', null, array('class' => 'small button', 'id'=>'et_add_ward'))->toHtml()?>
-						<?php echo EventAction::link('Delete', '#', null, array('class' => 'small button','id'=>'et_delete_ward'))->toHtml()?>
+						<?php echo EventAction::link('Add', '#', null, array('class' => 'small button', 'id' => 'et_add_ward'))->toHtml()?>
+						<?php echo EventAction::link('Delete', '#', null, array('class' => 'small button', 'id' => 'et_delete_ward'))->toHtml()?>
 					</td>
 				</tr>
 			</tfoot>

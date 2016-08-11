@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2014
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2014, OpenEyes Foundation
@@ -18,54 +18,53 @@
  */
 
 namespace OEModule\PatientTicketing\widgets;
-use OEModule\PatientTicketing\models;
+
 use OEModule\PatientTicketing\components;
-use \Yii;
+use Yii;
 
-class PatientAlert extends \PatientAlertWidget {
+class PatientAlert extends \PatientAlertWidget
+{
+    public $assetFolder;
+    public $shortName;
 
-	public $assetFolder;
-	public $shortName;
+    public function init()
+    {
+        // if the widget has javascript, load it in
+        $cls_name = explode('\\', get_class($this));
+        $this->shortName = array_pop($cls_name);
+        if (file_exists(dirname(__FILE__).'/js/'.$this->shortName.'.js')) {
+            $this->assetFolder = Yii::app()->getAssetManager()->publish(dirname(__FILE__).'/js/');
+        }
+        parent::init();
+    }
 
-	public function init()
-	{
-		// if the widget has javascript, load it in
-		$cls_name = explode('\\', get_class($this));
-		$this->shortName = array_pop($cls_name);
-		if (file_exists(dirname(__FILE__) . "/js/".$this->shortName.".js")) {
-			$this->assetFolder = Yii::app()->getAssetManager()->publish(dirname(__FILE__) . "/js/");
-		}
-		parent::init();
-	}
+    public function run()
+    {
+        $t_svc = Yii::app()->service->getService('PatientTicketing_Ticket');
 
-	public function run()
-	{
-		$t_svc = Yii::app()->service->getService('PatientTicketing_Ticket');
+        $tickets = $t_svc->getTicketsForPatient($this->patient);
+        $match = false;
 
-		$tickets = $t_svc->getTicketsForPatient($this->patient);
-		$match = false;
+        if ($curr_ids = Yii::app()->session['patientticket_ticket_ids']) {
+            foreach ($tickets as $ticket) {
+                if ($ticket->id == $curr_ids[0]) {
+                    $match = true;
+                    break;
+                }
+            }
+            if (!$match) {
+                // either viewing a different patient, or the ticket has been closed
+                Yii::app()->session['patientticket_ticket_ids'] = null;
+            }
+        } else {
+            $curr_ids = array();
+        }
 
-		if ($curr_ids = Yii::app()->session['patientticket_ticket_ids']) {
-			foreach ($tickets as $ticket) {
-				if ($ticket->id == $curr_ids[0]) {
-					$match = true;
-					break;
-				}
-			}
-			if (!$match) {
-				// either viewing a different patient, or the ticket has been closed
-				Yii::app()->session['patientticket_ticket_ids'] = null;
-			}
-		}
-		else {
-			$curr_ids = array();
-		}
-
-		$this->render('PatientAlert', array(
-				'tickets' => $tickets,
-				't_svc' => $t_svc,
-				'summary_widget' => components\PatientTicketing_API::$TICKET_SUMMARY_WIDGET,
-				'current_ticket_ids' => $curr_ids,
-			));
-	}
+        $this->render('PatientAlert', array(
+                'tickets' => $tickets,
+                't_svc' => $t_svc,
+                'summary_widget' => components\PatientTicketing_API::$TICKET_SUMMARY_WIDGET,
+                'current_ticket_ids' => $curr_ids,
+            ));
+    }
 }

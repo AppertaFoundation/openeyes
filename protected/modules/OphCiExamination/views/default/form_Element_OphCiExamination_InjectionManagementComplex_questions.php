@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -20,7 +20,7 @@
 
 <div id="<?php echo CHtml::modelName($element)?>_<?php echo $side?>_Questions">
 	<?php
-    $name_stub = CHtml::modelName($element) . '[' . $side . '_Answer]';
+    $name_stub = CHtml::modelName($element).'['.$side.'_Answer]';
     foreach ($questions as $question) {
         ?>
 		<fieldset class="row field-row">
@@ -28,20 +28,20 @@
 				<?php echo $question->question?>
 			</legend>
 			<?php
-            $name = $name_stub . '[' . $question->id . ']';
+            $name = $name_stub.'['.$question->id.']';
         $value = $element->getQuestionAnswer($side, $question->id);
             // update with POST values if available
-            if (isset($_POST[CHtml::modelName($element)][$side . '_Answer'][$question->id])) {
-                $value = $_POST[CHtml::modelName($element)][$side . '_Answer'][$question->id];
+            if (isset($_POST[CHtml::modelName($element)][$side.'_Answer'][$question->id])) {
+                $value = $_POST[CHtml::modelName($element)][$side.'_Answer'][$question->id];
             }
         ?>
 			<div class="large-9 column">
 				<label class="inline highlight">
-					<?php echo CHtml::radioButton($name, $value, array('id' => CHtml::modelName($element) . '_' . $side . '_Answer_' . $question->id . '_1', 'value' => 1))?>
+					<?php echo CHtml::radioButton($name, $value, array('id' => CHtml::modelName($element).'_'.$side.'_Answer_'.$question->id.'_1', 'value' => 1))?>
 					Yes
 				</label>
 				<label class="inline highlight">
-					<?php echo CHtml::radioButton($name, (!is_null($value) && !$value), array('id' => CHtml::modelName($element) . '_' . $side . '_Answer_' . $question->id . '_0', 'value' => 0))?>
+					<?php echo CHtml::radioButton($name, (!is_null($value) && !$value), array('id' => CHtml::modelName($element).'_'.$side.'_Answer_'.$question->id.'_0', 'value' => 0))?>
 					No
 				</label>
 			</div>

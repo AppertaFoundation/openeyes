@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -28,7 +28,7 @@ $key = 0;
 $this->beginClip('element-title-additional');
 if ($element->isNewRecord) {
     ?>
-	<?php echo CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id, CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_near' => '0')), 'id', 'name'), array('class'=>'inline'));
+	<?php echo CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id, CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_near' => '0')), 'id', 'name'), array('class' => 'inline'));
     ?>
 <?php 
 } ?>
@@ -58,16 +58,16 @@ $this->endClip('element-title-additional');
     // Adjust currently element readings to match unit steps
                         $reading->loadClosest($element->unit->id);
     $this->renderPartial('form_Element_OphCiExamination_VisualAcuity_Reading', array(
-                            'name_stub' => CHtml::modelName($element) . '[right_readings]',
+                            'name_stub' => CHtml::modelName($element).'[right_readings]',
                             'key' => $key,
                             'reading' => $reading,
                             'side' => $reading->side,
                             'values' => $values,
                             'val_options' => $val_options,
                             'methods' => $methods,
-                            'asset_path' => $this->getAssetPathForElement($element)
+                            'asset_path' => $this->getAssetPathForElement($element),
                     ));
-    $key++;
+    ++$key;
 }?>
 				</tbody>
 			</table>
@@ -78,8 +78,8 @@ $this->endClip('element-title-additional');
 					<div class="field-info">Not recorded</div>
 				</div>
 				<div class="large-8 column end">
-					<?php echo $form->checkBox($element, 'right_unable_to_assess', array('text-align'=>'right', 'nowrapper'=>true))?>
-					<?php echo $form->checkBox($element, 'right_eye_missing', array('text-align'=>'right', 'nowrapper'=>true))?>
+					<?php echo $form->checkBox($element, 'right_unable_to_assess', array('text-align' => 'right', 'nowrapper' => true))?>
+					<?php echo $form->checkBox($element, 'right_eye_missing', array('text-align' => 'right', 'nowrapper' => true))?>
 				</div>
 			</div>
 			<div class="field-row">
@@ -109,16 +109,16 @@ $this->endClip('element-title-additional');
     // Adjust currently element readings to match unit steps
                         $reading->loadClosest($element->unit->id);
     $this->renderPartial('form_Element_OphCiExamination_VisualAcuity_Reading', array(
-                            'name_stub' => CHtml::modelName($element) . '[left_readings]',
+                            'name_stub' => CHtml::modelName($element).'[left_readings]',
                             'key' => $key,
                             'reading' => $reading,
                             'side' => $reading->side,
                             'values' => $values,
                             'val_options' => $val_options,
                             'methods' => $methods,
-                            'asset_path' => $this->getAssetPathForElement($element)
+                            'asset_path' => $this->getAssetPathForElement($element),
                     ));
-    $key++;
+    ++$key;
 }?>
 				</tbody>
 			</table>
@@ -129,8 +129,8 @@ $this->endClip('element-title-additional');
 					<div class="field-info">Not recorded</div>
 				</div>
 				<div class="large-8 column">
-					<?php echo $form->checkBox($element, 'left_unable_to_assess', array('text-align'=>'right', 'nowrapper'=>true))?>
-					<?php echo $form->checkBox($element, 'left_eye_missing', array('text-align'=>'right', 'nowrapper'=>true))?>
+					<?php echo $form->checkBox($element, 'left_unable_to_assess', array('text-align' => 'right', 'nowrapper' => true))?>
+					<?php echo $form->checkBox($element, 'left_eye_missing', array('text-align' => 'right', 'nowrapper' => true))?>
 				</div>
 			</div>
 			<div class="field-row">
@@ -153,14 +153,14 @@ $this->endClip('element-title-additional');
     $default_reading = OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading::model();
     $default_reading->init();
     $this->renderPartial('form_Element_OphCiExamination_VisualAcuity_Reading', array(
-            'name_stub' => CHtml::modelName($element) . '[{{side}}_readings]',
+            'name_stub' => CHtml::modelName($element).'[{{side}}_readings]',
             'key' => '{{key}}',
             'side' => '{{side}}',
             'values' => $values,
             'val_options' => $val_options,
             'methods' => $methods,
             'asset_path' => $this->getAssetPathForElement($element),
-            'reading' => $default_reading
+            'reading' => $default_reading,
     ));
     ?>
 </script>

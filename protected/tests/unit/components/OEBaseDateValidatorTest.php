@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -9,17 +9,14 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-
 class OEBaseDateValidatorTest extends PHPUnit_Framework_TestCase
 {
-
     public function dateProvider()
     {
         return array(
@@ -30,7 +27,7 @@ class OEBaseDateValidatorTest extends PHPUnit_Framework_TestCase
             array('2015-01-12 07:54', new DateTime('2015-01-12 07:54')),
             array('2015-01-12 07:54:12', new DateTime('2015-01-12 07:54:12')),
             array('2015-01-12 07:54:2', false),
-            array('garbage', false)
+            array('garbage', false),
         );
     }
 
@@ -54,7 +51,7 @@ class OEBaseDateValidatorTest extends PHPUnit_Framework_TestCase
             array('2015-01-12 07:54', new DateTime('2015-01-12 07:54')),
             array('2015-01-12 07:54:12', new DateTime('2015-01-12 07:54:12')),
             array('2015-01-12 07:54:2', false),
-            array('garbage', false)
+            array('garbage', false),
         );
     }
 
@@ -72,6 +69,7 @@ class OEBaseDateValidatorTest extends PHPUnit_Framework_TestCase
 
 class TestOEBaseDateValidator extends OEBaseDateValidator
 {
-    protected function validateAttribute($object, $attribute) {}
+    protected function validateAttribute($object, $attribute)
+    {
+    }
 }
-

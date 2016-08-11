@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -18,7 +18,8 @@
  */
 
 /**
- * The followings are the available columns in table 'ophdrprescription_item':
+ * The followings are the available columns in table 'ophdrprescription_item':.
+ *
  * @property string $id
  * @property string $dose
  * @property DrugDuration $duration
@@ -33,6 +34,7 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return OphDrPrescription_Item the static model class
      */
     public static function model($className = __CLASS__)
@@ -114,12 +116,13 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
             'frequency_id' => 'Frequency',
             'route_id' => 'Route',
             'route_option_id' => 'Options',
-            'continue_by_gp' => 'Continue by GP'
+            'continue_by_gp' => 'Continue by GP',
         );
     }
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
@@ -127,7 +130,7 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria = new CDbCriteria;
+        $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('dose', $this->dose, true);
@@ -145,16 +148,16 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
     public function getDescription()
     {
         $return = $this->drug->label;
-        $return .= ', ' . $this->dose;
-        $return .= ' ' . $this->frequency->name;
-        $return .= ' ' . $this->route->name;
+        $return .= ', '.$this->dose;
+        $return .= ' '.$this->frequency->name;
+        $return .= ' '.$this->route->name;
         if ($this->route_option) {
-            $return .= ' (' . $this->route_option->name . ')';
+            $return .= ' ('.$this->route_option->name.')';
         }
         if (preg_match('/^[0-9]+/', $this->duration->name)) {
-            $return .= ' for ' . $this->duration->name;
+            $return .= ' for '.$this->duration->name;
         } else {
-            $return .= ' ' . $this->duration->name;
+            $return .= ' '.$this->duration->name;
         }
 
         return $return;
@@ -166,7 +169,7 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
             $this->duration_id = $this->drug->default_duration_id;
             $this->frequency_id = $this->drug->default_frequency_id;
             $this->route_id = $this->drug->default_route_id;
-            $this->dose = trim($this->drug->default_dose . ' ' . $this->drug->dose_unit);
+            $this->dose = trim($this->drug->default_dose.' '.$this->drug->dose_unit);
         }
     }
 
@@ -175,7 +178,7 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
         foreach ($this->tapers as $i => $taper) {
             if (!$taper->validate()) {
                 foreach ($taper->getErrors() as $fld => $err) {
-                    $this->addError('tapers', 'Taper (' . ($i + 1) . '): ' . implode(', ', $err));
+                    $this->addError('tapers', 'Taper ('.($i + 1).'): '.implode(', ', $err));
                 }
             }
         }

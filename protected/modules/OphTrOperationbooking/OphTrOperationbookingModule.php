@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -18,61 +18,61 @@
  */
 
 /**
- * This is the module class for $this->moduleSuffix
+ * This is the module class for $this->moduleSuffix.
  *
  * The followings are the available columns in table:
+ *
  * @property string $moduleShortSuffix
-  */
-
+ */
 class OphTrOperationbookingModule extends BaseEventTypeModule
 {
-	// this property is really only relevant to gii auto-generation, specifically
-	// for updates to the module through gii
-	public $moduleShortSuffix;
-	public $default_parameter_settings = array(
-			'OphTrOperationbooking_duplicate_proc_warn' => true,
-			'OphTrOperationbooking_duplicate_proc_warn_all_eps' => true,
-	);
-	public function init()
-	{
-		// this method is called when the module is being created
-		// you may place code here to customize the module or the application
+    // this property is really only relevant to gii auto-generation, specifically
+    // for updates to the module through gii
+    public $moduleShortSuffix;
+    public $default_parameter_settings = array(
+            'OphTrOperationbooking_duplicate_proc_warn' => true,
+            'OphTrOperationbooking_duplicate_proc_warn_all_eps' => true,
+    );
+    public function init()
+    {
+        // this method is called when the module is being created
+        // you may place code here to customize the module or the application
 
-		// import the module-level models and components
-		$this->setImport(array(
-			'OphTrOperationbooking.models.*',
-			'OphTrOperationbooking.components.*',
-			'OphTrOperationbooking.components.Exceptions',
-			'OphTrOperationbooking.helpers.*',
-			'OphTrOperationbooking.controllers.*',
-		));
+        // import the module-level models and components
+        $this->setImport(array(
+            'OphTrOperationbooking.models.*',
+            'OphTrOperationbooking.components.*',
+            'OphTrOperationbooking.components.Exceptions',
+            'OphTrOperationbooking.helpers.*',
+            'OphTrOperationbooking.controllers.*',
+        ));
 
-		$this->moduleShortSuffix = "operation";
+        $this->moduleShortSuffix = 'operation';
 
-		foreach ($this->default_parameter_settings as $k => $v) {
-			if (!isset(Yii::app()->params[$k])) {
-				Yii::app()->params[$k] = $v;
-			}
-		}
-	}
+        foreach ($this->default_parameter_settings as $k => $v) {
+            if (!isset(Yii::app()->params[$k])) {
+                Yii::app()->params[$k] = $v;
+            }
+        }
+    }
 
-	public function beforeControllerAction($controller, $action)
-	{
-		if (parent::beforeControllerAction($controller, $action)) {
-			// this method is called before any module controller action is performed
-			// you may place customized code here
-			return true;
-		} else
-			return false;
-	}
+    public function beforeControllerAction($controller, $action)
+    {
+        if (parent::beforeControllerAction($controller, $action)) {
+            // this method is called before any module controller action is performed
+            // you may place customized code here
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 /**
- * Class RaceConditionException
+ * Class RaceConditionException.
  *
  * Used for operation booking scheduling - a specific class of exception
  * to raise when two users attempt to schedule the same operation booking
- *
  */
 class RaceConditionException extends Exception
 {

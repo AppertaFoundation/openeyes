@@ -20,9 +20,9 @@ class m131017_081757_oct_enhancements extends CDbMigration
                 'CONSTRAINT `ophciexamination_oct_fluidstatus_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
             ), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
-        $this->insert('ophciexamination_oct_fluidstatus', array('name'=>'New', 'display_order' => '1'));
-        $this->insert('ophciexamination_oct_fluidstatus', array('name'=>'Improving', 'display_order' => '2'));
-        $this->insert('ophciexamination_oct_fluidstatus', array('name'=>'Persistent', 'display_order' => '3'));
+        $this->insert('ophciexamination_oct_fluidstatus', array('name' => 'New', 'display_order' => '1'));
+        $this->insert('ophciexamination_oct_fluidstatus', array('name' => 'Improving', 'display_order' => '2'));
+        $this->insert('ophciexamination_oct_fluidstatus', array('name' => 'Persistent', 'display_order' => '3'));
 
         $this->createTable('ophciexamination_oct_fluidtype', array(
                 'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
@@ -40,9 +40,9 @@ class m131017_081757_oct_enhancements extends CDbMigration
                 'CONSTRAINT `ophciexamination_oct_fluidtype_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
             ), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
-        $this->insert('ophciexamination_oct_fluidtype', array('name'=>'IRF', 'display_order' => '1'));
-        $this->insert('ophciexamination_oct_fluidtype', array('name'=>'SRF', 'display_order' => '2'));
-        $this->insert('ophciexamination_oct_fluidtype', array('name'=>'PED', 'display_order' => '3'));
+        $this->insert('ophciexamination_oct_fluidtype', array('name' => 'IRF', 'display_order' => '1'));
+        $this->insert('ophciexamination_oct_fluidtype', array('name' => 'SRF', 'display_order' => '2'));
+        $this->insert('ophciexamination_oct_fluidtype', array('name' => 'PED', 'display_order' => '3'));
 
         $this->addColumn('et_ophciexamination_oct', 'left_thickness_increase', 'boolean');
         $this->addColumn('et_ophciexamination_oct', 'right_thickness_increase', 'boolean');

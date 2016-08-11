@@ -4,16 +4,14 @@ class m151209_151807_add_dicom_eye_status extends CDbMigration
 {
     public function up()
     {
-
         $this->alterColumn('et_ophinbiometry_measurement', 'eye_status_left', 'int(10) signed NOT NULL');
         $this->alterColumn('et_ophinbiometry_measurement', 'eye_status_right', 'int(10) signed NOT NULL');
         $this->alterColumn('et_ophinbiometry_measurement_version', 'eye_status_left', 'int(10) signed NOT NULL');
         $this->alterColumn('et_ophinbiometry_measurement_version', 'eye_status_right', 'int(10) signed NOT NULL');
 
-
         $this->createTable('dicom_eye_status', array(
             'id' => 'int(10) signed NOT NULL PRIMARY KEY',
-            'name' => 'varchar(255)'
+            'name' => 'varchar(255)',
         ));
 
         $this->insert('dicom_eye_status', array('id' => -1, 'name' => 'Unknown'));
@@ -36,7 +34,6 @@ class m151209_151807_add_dicom_eye_status extends CDbMigration
 
     public function down()
     {
-
         $this->dropForeignKey('dicom_eye_status_left_id_fk', 'et_ophinbiometry_measurement');
         $this->dropForeignKey('dicom_eye_status_right_id_fk', 'et_ophinbiometry_measurement');
 
@@ -47,5 +44,4 @@ class m151209_151807_add_dicom_eye_status extends CDbMigration
 
         $this->dropTable('dicom_eye_status');
     }
-
 }

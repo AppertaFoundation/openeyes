@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -40,8 +40,8 @@
 			</thead>
 			<tbody>
 				<?php
-				$info = $this->patient->getOPHInfo();
-				?>
+                $info = $this->patient->getOPHInfo();
+                ?>
 				<tr>
 					<td><?php echo Helper::formatFuzzyDate($info->cvi_status_date); ?></td>
 					<td><?php echo $info->cvi_status->name; ?></td>
@@ -62,27 +62,27 @@
 				<fieldset class="field-row">
 					<legend><strong>Edit CVI Status</strong></legend>
 					<?php
-				$form = $this->beginWidget('FormLayout', array(
-						'id'=>'edit-oph_info',
-						'htmlOptions' => array('class'=>'form add-data'),
-						'layoutColumns'=>array(
-							'label' => 3,
-							'field' => 9
-						),
-					))?>
+                $form = $this->beginWidget('FormLayout', array(
+                        'id' => 'edit-oph_info',
+                        'htmlOptions' => array('class' => 'form add-data'),
+                        'layoutColumns' => array(
+                            'label' => 3,
+                            'field' => 9,
+                        ),
+                    ))?>
 
 					<div class="field-row row">
 						<div class="<?php echo $form->columns('label');?>">
 							<label for="PatientOphInfo_cvi_status_id">Status:</label>
 						</div>
 						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::activeDropDownList($info, 'cvi_status_id', CHtml::listData(PatientOphInfoCviStatus::model()->active()->findAll(array('order'=>'display_order')),'id','name')) ?>
+							<?php echo CHtml::activeDropDownList($info, 'cvi_status_id', CHtml::listData(PatientOphInfoCviStatus::model()->active()->findAll(array('order' => 'display_order')), 'id', 'name')) ?>
 							<?php echo $form->error($info, 'cvi_status_date'); ?>
 						</div>
 					</div>
 
 					<?php
-					$this->renderPartial('_fuzzy_date', array('form'=>$form, 'date' => $info->cvi_status_date))?>
+                    $this->renderPartial('_fuzzy_date', array('form' => $form, 'date' => $info->cvi_status_date))?>
 
 					<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
 

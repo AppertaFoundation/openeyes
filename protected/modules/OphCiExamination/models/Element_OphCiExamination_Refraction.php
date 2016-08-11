@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -25,29 +25,30 @@ use Yii;
  * This is the model class for table "et_ophciexamination_refraction".
  *
  * The followings are the available columns in table:
+ *
  * @property string $id
- * @property integer $event_id
- * @property integer $eye_id
+ * @property int $event_id
+ * @property int $eye_id
  * @property decimal $left_sphere
  * @property decimal $left_cylinder
- * @property integer $left_axis
+ * @property int $left_axis
  * @property string $left_axis_eyedraw
  * @property string $left_type_id
  * @property string $left_type_other
  * @property decimal $right_sphere
  * @property decimal $right_cylinder
- * @property integer $right_axis
+ * @property int $right_axis
  * @property string $right_axis_eyedraw
  * @property string $right_type_id
  * @property string $right_type_other
  */
-
 class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
 {
     public $service;
 
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return the static model class
      */
     public static function model($className = __CLASS__)
@@ -71,10 +72,10 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
         return array(
             array('left_sphere, left_cylinder, left_axis, left_axis_eyedraw, left_type_id, left_type_other, right_sphere, right_cylinder, right_axis, right_axis_eyedraw, right_type_id, right_type_other, eye_id, left_notes, right_notes', 'safe'),
             array('left_axis', 'requiredIfSide', 'side' => 'left'),
-            array('left_axis', 'numerical', 'integerOnly'=>true),
+            array('left_axis', 'numerical', 'integerOnly' => true),
             array('left_type_other', 'requiredIfRefractionTypeOther', 'side' => 'left'),
             array('right_axis', 'requiredIfSide', 'side' => 'right'),
-            array('right_axis', 'numerical', 'integerOnly'=>true),
+            array('right_axis', 'numerical', 'integerOnly' => true),
             array('right_type_other', 'requiredIfRefractionTypeOther', 'side' => 'right'),
             array('id, event_id, left_sphere, left_cylinder, left_axis, left_axis_eyedraw, left_type_id, right_sphere, right_cylinder, right_axis, right_axis_eyedraw, right_type_id, eye_id', 'safe', 'on' => 'search'),
         );
@@ -82,7 +83,7 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
 
     public function requiredIfRefractionTypeOther($attribute, $params)
     {
-        if (($params['side'] == 'left' && $this->left_type_id=='') || ($params['side'] == 'right' && $this->right_type_id=='')) {
+        if (($params['side'] === 'left' && $this->left_type_id == '') || ($params['side'] === 'right' && $this->right_type_id == '')) {
             if (empty($this->{$params['side'].'_type_other'})) {
                 $this->addError($attribute, ucfirst($params['side']).' Other cannot be blank.');
             }
@@ -120,7 +121,6 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
             }
         }
     }
-
 
     /**
      * @return array relational rules.
@@ -163,15 +163,13 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
 
     public function getCombined($side)
     {
-        return $this->{$side.'_sphere'} . '/' . $this->{$side.'_cylinder'} . ' @ ' . $this->{$side.'_axis'} . '° ' . $this->getType($side);
+        return $this->{$side.'_sphere'}.'/'.$this->{$side.'_cylinder'}.' @ '.$this->{$side.'_axis'}.'° '.$this->getType($side);
     }
 
     public function getSplit($side)
     {
-        return array('sphere' => $this->{$side.'_sphere'}, 'cylinder' => $this->{$side.'_cylinder'}, 'axis' => $this->{$side.'_axis'}. '° ', 'type' => $this->getType($side));
+        return array('sphere' => $this->{$side.'_sphere'}, 'cylinder' => $this->{$side.'_cylinder'}, 'axis' => $this->{$side.'_axis'}.'° ', 'type' => $this->getType($side));
     }
-
-
 
     public function getType($side)
     {
@@ -184,6 +182,7 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
@@ -191,7 +190,7 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria = new \CDbCriteria;
+        $criteria = new \CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);

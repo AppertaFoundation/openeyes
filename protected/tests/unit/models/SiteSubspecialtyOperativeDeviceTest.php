@@ -15,7 +15,7 @@ class SiteSubspecialtyOperativeDeviceTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new SiteSubspecialtyOperativeDevice;
+        $this->object = new SiteSubspecialtyOperativeDevice();
     }
 
     /**
@@ -28,6 +28,7 @@ class SiteSubspecialtyOperativeDeviceTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SiteSubspecialtyOperativeDevice::model
+     *
      * @todo   Implement testModel().
      */
     public function testModel()
@@ -40,6 +41,7 @@ class SiteSubspecialtyOperativeDeviceTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SiteSubspecialtyOperativeDevice::tableName
+     *
      * @todo   Implement testTableName().
      */
     public function testTableName()
@@ -52,6 +54,7 @@ class SiteSubspecialtyOperativeDeviceTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SiteSubspecialtyOperativeDevice::rules
+     *
      * @todo   Implement testRules().
      */
     public function testRules()
@@ -64,6 +67,7 @@ class SiteSubspecialtyOperativeDeviceTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SiteSubspecialtyOperativeDevice::relations
+     *
      * @todo   Implement testRelations().
      */
     public function testRelations()

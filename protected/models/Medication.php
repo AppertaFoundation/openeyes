@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2012
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
@@ -21,16 +21,17 @@
  * This is the model class for table "medication".
  *
  * The followings are the available columns in table 'medication':
- * @property integer $id
- * @property integer $patient_id
- * @property integer $route_id
- * @property integer $drug_id
- * @property integer $medication_drug_id
- * @property integer $option_id
- * @property integer $frequency_id
+ *
+ * @property int $id
+ * @property int $patient_id
+ * @property int $route_id
+ * @property int $drug_id
+ * @property int $medication_drug_id
+ * @property int $option_id
+ * @property int $frequency_id
  * @property string $start_date
  * @property string $end_date
- * @property integer $prescription_item_id
+ * @property int $prescription_item_id
  */
 class Medication extends BaseActiveRecordVersioned
 {
@@ -68,7 +69,7 @@ class Medication extends BaseActiveRecordVersioned
             'option' => array(self::BELONGS_TO, 'DrugRouteOption', 'option_id'),
             'frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'frequency_id'),
             'stop_reason' => array(self::BELONGS_TO, 'MedicationStopReason', 'stop_reason_id'),
-            'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id')
+            'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
         );
     }
 
@@ -86,8 +87,9 @@ class Medication extends BaseActiveRecordVersioned
     public function afterValidate()
     {
         if ($this->drug_id && $this->medication_drug_id) {
-            $this->addError('drug_id', "Cannot have two different drug types in the same medication record");
+            $this->addError('drug_id', 'Cannot have two different drug types in the same medication record');
         }
+
         return parent::afterValidate();
     }
 
@@ -100,13 +102,15 @@ class Medication extends BaseActiveRecordVersioned
 
     public function beforeSave()
     {
-        if (!$this->end_date) $this->stop_reason_id = null;
+        if (!$this->end_date) {
+            $this->stop_reason_id = null;
+        }
+
         return parent::beforeSave();
     }
 
     /**
-     * Will remove the patient adherence element if it is no longer relevant
-     *
+     * Will remove the patient adherence element if it is no longer relevant.
      */
     protected function removePatientAdherence()
     {
@@ -117,7 +121,6 @@ class Medication extends BaseActiveRecordVersioned
                 $ad->delete();
             }
         }
-
     }
 
     public function afterSave()
@@ -125,17 +128,19 @@ class Medication extends BaseActiveRecordVersioned
         if ($this->end_date) {
             $this->removePatientAdherence();
         }
+
         return parent::afterSave();
     }
 
     public function afterDelete()
     {
         $this->removePatientAdherence();
+
         return parent::afterDelete();
     }
 
     /**
-     * Wrapper for the drug name for display
+     * Wrapper for the drug name for display.
      *
      * @return string
      */
@@ -146,7 +151,7 @@ class Medication extends BaseActiveRecordVersioned
         } elseif ($this->medication_drug) {
             return $this->medication_drug->name;
         } else {
-            return "";
+            return '';
         }
     }
 
@@ -176,7 +181,7 @@ class Medication extends BaseActiveRecordVersioned
     }
 
     /**
-     * Is the medication current
+     * Is the medication current.
      *
      * @return bool
      */
@@ -188,7 +193,7 @@ class Medication extends BaseActiveRecordVersioned
     }
 
     /**
-     * Is the preview current
+     * Is the preview current.
      *
      * @return bool
      */
@@ -201,15 +206,16 @@ class Medication extends BaseActiveRecordVersioned
 
     /**
      * @param $item
+     *
      * @return bool
      */
     public function matches($item)
     {
-        if( $this->drug_id === $item->drug_id ) {
+        if ($this->drug_id === $item->drug_id) {
             return true;
         }
 
-        if($this->medication_drug->name === $item->drug->name) {
+        if ($this->medication_drug->name === $item->drug->name) {
             return true;
         }
 

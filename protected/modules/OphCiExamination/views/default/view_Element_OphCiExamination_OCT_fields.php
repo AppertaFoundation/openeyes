@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -56,16 +56,16 @@
 <div class="row data-row">
 	<div class="large-4 column">
 		<div class="data-label">
-			<?php echo $element->getAttributeLabel($side . '_thickness_increase') ?>:
+			<?php echo $element->getAttributeLabel($side.'_thickness_increase') ?>:
 		</div>
 	</div>
 	<div class="large-8 column">
 		<div class="data-value">
 			<?php
-                if ($element->{$side . '_thickness_increase'} === null) {
-                    echo "Not recorded";
+                if ($element->{$side.'_thickness_increase'} === null) {
+                    echo 'Not recorded';
                 } else {
-                    echo $element->{$side . '_thickness_increase'} ? 'Yes' : 'No';
+                    echo $element->{$side.'_thickness_increase'} ? 'Yes' : 'No';
                 }
             ?>
 		</div>
@@ -76,14 +76,14 @@
 		<div class="data-label">Finding:</div>
 	</div>
 	<div class="large-8 column">
-		<div class="data-value"><?php echo $element->{'get' . ucfirst($side) . 'FluidString'}();?></div>
+		<div class="data-value"><?php echo $element->{'get'.ucfirst($side).'FluidString'}();?></div>
 	</div>
 </div>
-<?php if ($element->{$side . '_comments'}) {
+<?php if ($element->{$side.'_comments'}) {
     ?>
 	<div class="row data-row">
 		<div class="large-4 column">
-			<div class="data-label"><?php echo $element->getAttributeLabel($side . '_comments') ?>:</div>
+			<div class="data-label"><?php echo $element->getAttributeLabel($side.'_comments') ?>:</div>
 		</div>
 		<div class="large-8 column">
 			<div class="data-value"><?= Yii::app()->format->Ntext($element->{"{$side}_comments"}) ?></div>

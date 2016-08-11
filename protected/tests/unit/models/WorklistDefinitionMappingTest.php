@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
@@ -30,12 +30,13 @@ class WorklistDefinitionMappingTest extends PHPUnit_Framework_TestCase
         return array(
             array(array()),
             array(array('one')),
-            array(array('one', 'two'))
+            array(array('one', 'two')),
         );
     }
 
     /**
      * @dataProvider updateValues_Provider
+     *
      * @param $values
      */
     public function test_updateValues_new($values)
@@ -45,7 +46,7 @@ class WorklistDefinitionMappingTest extends PHPUnit_Framework_TestCase
             ->setMethods(array('getInstanceForClass', 'setValueList'))
             ->getMock();
 
-        for ($i = 0; $i < count($values); $i++) {
+        for ($i = 0; $i < count($values); ++$i) {
             $mock = $this->getMockMappingValue(array('save'));
             $mock->expects($this->once())
                 ->method('save')
@@ -65,6 +66,7 @@ class WorklistDefinitionMappingTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider updateValues_Provider
+     *
      * @param $values
      */
     public function test_updateValues_empty($values)
@@ -76,7 +78,7 @@ class WorklistDefinitionMappingTest extends PHPUnit_Framework_TestCase
 
         $mapping_values = array();
 
-        for ($i = 0; $i < count($values); $i++) {
+        for ($i = 0; $i < count($values); ++$i) {
             $mock = $this->getMockMappingValue(array('delete'));
             $mock->expects($this->once())
                 ->method('delete')
@@ -96,6 +98,5 @@ class WorklistDefinitionMappingTest extends PHPUnit_Framework_TestCase
             ->with(array());
 
         $test->updateValues();
-
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2012
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
@@ -23,17 +23,17 @@
 			<h2>Anaesthetic Agents</h2>
 		</div>
 	</div>
-	<?php echo $this->renderPartial('//admin/_form_errors',array('errors'=>$errors))?>
+	<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors))?>
 	<?php
-	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-		'id'=>'adminform',
-		'enableAjaxValidation'=>false,
-		'layoutColumns'=>array(
-			'label' => 2,
-			'field' => 5
-		)
-	))?>
-	<?php echo $form->textField($agent,'name')?>
-	<?php echo $form->formActions(array('cancel-uri'=>'/admin/viewAnaestheticAgent'))?>
+    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+        'id' => 'adminform',
+        'enableAjaxValidation' => false,
+        'layoutColumns' => array(
+            'label' => 2,
+            'field' => 5,
+        ),
+    ))?>
+	<?php echo $form->textField($agent, 'name')?>
+	<?php echo $form->formActions(array('cancel-uri' => '/admin/viewAnaestheticAgent'))?>
 	<?php $this->endWidget()?>
 </div>

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -11,8 +11,8 @@
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If
  * not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
@@ -25,7 +25,7 @@ return array(
         'start' => '2016-05-23 09:00:00',
         'end' => '2016-05-23 17:00:00',
         'scheduled' => true,
-        'worklist_definition_id' => 1
+        'worklist_definition_id' => 1,
     ),
     'worklist2' => array(
         'id' => 2,
@@ -33,6 +33,6 @@ return array(
         'start' => '2016-05-23 09:00:00',
         'end' => '2016-05-23 12:00:00',
         'scheduled' => true,
-        'worklist_definition_id' => 2
-    )
+        'worklist_definition_id' => 2,
+    ),
 );

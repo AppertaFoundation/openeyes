@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,14 +9,13 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 foreach ($legacyepisodes as $i => $episode) {?>
 
 	<section class="panel episode open legacy">
@@ -42,30 +41,30 @@ foreach ($legacyepisodes as $i => $episode) {?>
 		<div class="events-container <?php if ((!$this->event || $this->event->episode_id != $episode->id) && !@Yii::app()->session['episode_hide_status']['legacy']) { ?>hide<?php } else {?>show<?php }?>">
 			<ol class="events">
 				<?php
-				foreach ($episode->events as $event) {
-					$highlight = false;
+                foreach ($episode->events as $event) {
+                    $highlight = false;
 
-					if (isset($this->event) && $this->event->id == $event->id) {
-						$highlight = TRUE;
-					}
+                    if (isset($this->event) && $this->event->id == $event->id) {
+                        $highlight = true;
+                    }
 
-					$event_path = Yii::app()->createUrl($event->eventType->class_name . '/Default/view') . '/';
-					?>
+                    $event_path = Yii::app()->createUrl($event->eventType->class_name.'/Default/view').'/';
+                    ?>
 					<li id="eventLi<?php echo $event->id ?>"<?php if ($highlight) { ?> class="selected"<?php }?>>
 
 						<!-- Quicklook tooltip -->
 						<div class="quicklook" style="display: none; ">
 							<span class="event-name"><?php echo $event->eventType->name ?></span>
-							<span class="event-info"><?php echo str_replace("\n", "<br/>", $event->info) ?></span>
+							<span class="event-info"><?php echo str_replace("\n", '<br/>', $event->info) ?></span>
 							<?php if ($event->hasIssue()) { ?>
 								<span class="event-issue"><?php echo $event->getIssueText() ?></span>
 							<?php } ?>
 						</div>
 
-						<a href="<?php echo $event_path . $event->id ?>" data-id="<?php echo $event->id ?>">
+						<a href="<?php echo $event_path.$event->id ?>" data-id="<?php echo $event->id ?>">
 							<span class="event-type<?php if ($event->hasIssue()) { ?> alert<?php } ?>">
-								<?php $assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets')) . '/'; ?>
-								<img src="<?php echo Yii::app()->createUrl($assetpath . 'img/small.png') ?>" alt="op" width="19" height="19" />
+								<?php $assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$event->eventType->class_name.'.assets')).'/'; ?>
+								<img src="<?php echo Yii::app()->createUrl($assetpath.'img/small.png') ?>" alt="op" width="19" height="19" />
 							</span>
 							<span class="event-date"> <?php echo $event->NHSDateAsHTML('event_date'); ?></span>
 						</a>

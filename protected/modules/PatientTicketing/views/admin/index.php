@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2014
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2014, OpenEyes Foundation
@@ -19,9 +19,9 @@
 ?>
 
 <?php
-	$assetManager = Yii::app()->getAssetManager();
-	$widgetPath = $assetManager->publish('protected/widgets/js');
-	Yii::app()->clientScript->registerScriptFile($widgetPath.'/MultiSelectList.js');
+    $assetManager = Yii::app()->getAssetManager();
+    $widgetPath = $assetManager->publish('protected/widgets/js');
+    Yii::app()->clientScript->registerScriptFile($widgetPath.'/MultiSelectList.js');
 ?>
 <div class="box admin">
 	<header class="box-header">
@@ -39,10 +39,10 @@
 			<div class="row">
 			<ul class="queueset-list" id="queue-nav">
 			<?php
-			foreach ($queuesets as $qs) {
-				$this->renderPartial("queue_nav_item", array('queueset' => $qs));
-			}
-			?>
+            foreach ($queuesets as $qs) {
+                $this->renderPartial('queue_nav_item', array('queueset' => $qs));
+            }
+            ?>
 			</ul>
 			</div>
 			<div class="row right"><button id="add-queueset" class="secondary small">Add Queue Set</button></div>

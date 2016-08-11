@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,24 +9,24 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class PendingApplications
 {
     /**
-     * Gets all pending applications from the database
+     * Gets all pending applications from the database.
      *
      * @return mixed
      */
     protected function getPendingApplications()
     {
         $command = Yii::app()->db->createCommand();
+
         return $command->select('patient.hos_num as HosNum,
                             event.id as EventID,
                             firm.name as FirmName,
@@ -45,21 +45,21 @@ class PendingApplications
     }
 
     /**
-     * Generates and returns a CSV containing all pending therapy applications
+     * Generates and returns a CSV containing all pending therapy applications.
      *
      * @return string
      */
     protected function pendingApplicationsCSV()
     {
         $lines = $this->getPendingApplications();
-        if(!count($lines)){
+        if (!count($lines)) {
             return '';
         }
         $handle = fopen('php://memory', 'w');
         $header = false;
 
-        foreach($lines as $line){
-            if(!$header){
+        foreach ($lines as $line) {
+            if (!$header) {
                 fputcsv($handle, array_keys($line));
                 $header = true;
             }
@@ -69,18 +69,18 @@ class PendingApplications
         fseek($handle, 0);
 
         return stream_get_contents($handle);
-
     }
 
     /**
-     * Email the CSV to the given recipients
+     * Email the CSV to the given recipients.
      *
      * @param $recipients
+     *
      * @return array|string array of recipients or ; delimited list
      */
     public function emailCsvFile($recipients)
     {
-        if(!is_array($recipients)){
+        if (!is_array($recipients)) {
             $recipients = explode(';', $recipients);
         }
         $csv = $this->pendingApplicationsCSV();
@@ -96,16 +96,16 @@ class PendingApplications
     }
 
     /**
-     * Generate the CSV and send it to the browser
+     * Generate the CSV and send it to the browser.
      */
     public function downloadCsvFile()
     {
         $csv = $this->pendingApplicationsCSV();
 
-        header("Content-type: text/csv");
+        header('Content-type: text/csv');
         header("Content-Disposition: attachment; filename='PendingApplications.csv'");
-        header("Pragma: no-cache");
-        header("Expires: 0");
+        header('Pragma: no-cache');
+        header('Expires: 0');
         echo $csv;
     }
 }

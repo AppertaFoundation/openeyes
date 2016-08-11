@@ -4,7 +4,7 @@ class m130916_143343_additional_mr_patient_shortcodes extends CDbMigration
 {
     public function up()
     {
-        $event_type = $this->dbConnection->createCommand()->select("*")->from("event_type")->where("class_name = :class_name", array(":class_name" => "OphCiExamination"))->queryRow();
+        $event_type = $this->dbConnection->createCommand()->select('*')->from('event_type')->where('class_name = :class_name', array(':class_name' => 'OphCiExamination'))->queryRow();
 
         $this->registerShortcode($event_type, 'tcl', 'getLetterCentralSFTLeft', 'Central SFT for left eye from Examination');
         $this->registerShortcode($event_type, 'tcr', 'getLetterCentralSFTRight', 'Central SFT for right eye from Examination');
@@ -22,9 +22,9 @@ class m130916_143343_additional_mr_patient_shortcodes extends CDbMigration
 
         $default_code = $code;
 
-        if ($this->dbConnection->createCommand()->select("*")->from("patient_shortcode")->where("code = :code", array(":code" => strtolower($code)))->queryRow()) {
+        if ($this->dbConnection->createCommand()->select('*')->from('patient_shortcode')->where('code = :code', array(':code' => strtolower($code)))->queryRow()) {
             $n = '00';
-            while ($this->dbConnection->createCommand()->select("*")->from("patient_shortcode")->where("code = :code", array(":code" => 'z'.$n))->queryRow()) {
+            while ($this->dbConnection->createCommand()->select('*')->from('patient_shortcode')->where('code = :code', array(':code' => 'z'.$n))->queryRow()) {
                 $n = str_pad((int) $n + 1, 2, '0', STR_PAD_LEFT);
             }
             $code = "z$n";
@@ -43,11 +43,11 @@ class m130916_143343_additional_mr_patient_shortcodes extends CDbMigration
 
     public function down()
     {
-        $this->delete('patient_shortcode', 'code = :sc', array(':sc'=>'tmr'));
-        $this->delete('patient_shortcode', 'code = :sc', array(':sc'=>'tml'));
-        $this->delete('patient_shortcode', 'code = :sc', array(':sc'=>'tcr'));
-        $this->delete('patient_shortcode', 'code = :sc', array(':sc'=>'tcl'));
-        $this->delete('patient_shortcode', 'code = :sc', array(':sc'=>'iml'));
-        $this->delete('patient_shortcode', 'code = :sc', array(':sc'=>'imr'));
+        $this->delete('patient_shortcode', 'code = :sc', array(':sc' => 'tmr'));
+        $this->delete('patient_shortcode', 'code = :sc', array(':sc' => 'tml'));
+        $this->delete('patient_shortcode', 'code = :sc', array(':sc' => 'tcr'));
+        $this->delete('patient_shortcode', 'code = :sc', array(':sc' => 'tcl'));
+        $this->delete('patient_shortcode', 'code = :sc', array(':sc' => 'iml'));
+        $this->delete('patient_shortcode', 'code = :sc', array(':sc' => 'imr'));
     }
 }

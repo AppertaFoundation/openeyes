@@ -4,81 +4,81 @@
  */
 class ReferralTest extends PHPUnit_Framework_TestCase
 {
-	/**
-	 * @var Referral
-	 */
-	protected $object;
+    /**
+     * @var Referral
+     */
+    protected $object;
 
-	/**
-	 * Sets up the fixture, for example, opens a network connection.
-	 * This method is called before a test is executed.
-	 */
-	protected function setUp()
-	{
-			$this->object = new Referral;
-	}
+    /**
+     * Sets up the fixture, for example, opens a network connection.
+     * This method is called before a test is executed.
+     */
+    protected function setUp()
+    {
+        $this->object = new Referral();
+    }
 
-	/**
-	 * Tears down the fixture, for example, closes a network connection.
-	 * This method is called after a test is executed.
-	 */
-	protected function tearDown()
-	{
-	}
+    /**
+     * Tears down the fixture, for example, closes a network connection.
+     * This method is called after a test is executed.
+     */
+    protected function tearDown()
+    {
+    }
 
-	public function testgetActiveRTT_noneActive()
-	{
-		$referral = $this->getMockBuilder('Referral')
-				->disableOriginalConstructor()
-				->setMethods(null)
-				->getMock();
+    public function testgetActiveRTT_noneActive()
+    {
+        $referral = $this->getMockBuilder('Referral')
+                ->disableOriginalConstructor()
+                ->setMethods(null)
+                ->getMock();
 
-		$referral->rtts = array(
-			ComponentStubGenerator::generate('RTT', array(
-						'active' => false,
-					)
-			),
-		);
+        $referral->rtts = array(
+            ComponentStubGenerator::generate('RTT', array(
+                        'active' => false,
+                    )
+            ),
+        );
 
-		$this->assertEmpty($referral->getActiveRTT());
-	}
+        $this->assertEmpty($referral->getActiveRTT());
+    }
 
-	public function testgetActiveRTT_noRTT()
-	{
-		$referral = $this->getMockBuilder('Referral')
-				->disableOriginalConstructor()
-				->setMethods(null)
-				->getMock();
+    public function testgetActiveRTT_noRTT()
+    {
+        $referral = $this->getMockBuilder('Referral')
+                ->disableOriginalConstructor()
+                ->setMethods(null)
+                ->getMock();
 
-		$referral->rtts = array();
+        $referral->rtts = array();
 
-		$this->assertEmpty($referral->getActiveRTT());
-	}
+        $this->assertEmpty($referral->getActiveRTT());
+    }
 
-	public function testgetActiveRTT_many()
-	{
-		$referral = $this->getMockBuilder('Referral')
-				->disableOriginalConstructor()
-				->setMethods(null)
-				->getMock();
+    public function testgetActiveRTT_many()
+    {
+        $referral = $this->getMockBuilder('Referral')
+                ->disableOriginalConstructor()
+                ->setMethods(null)
+                ->getMock();
 
-		$referral->rtts = array(
-				ComponentStubGenerator::generate('RTT', array(
-								'active' => true,
-						)
-				),
-				ComponentStubGenerator::generate('RTT', array(
-								'active' => false,
-						)
-				),
-				ComponentStubGenerator::generate('RTT', array(
-								'active' => true,
-						)
-				),
-		);
+        $referral->rtts = array(
+                ComponentStubGenerator::generate('RTT', array(
+                                'active' => true,
+                        )
+                ),
+                ComponentStubGenerator::generate('RTT', array(
+                                'active' => false,
+                        )
+                ),
+                ComponentStubGenerator::generate('RTT', array(
+                                'active' => true,
+                        )
+                ),
+        );
 
-		$active = $referral->getActiveRTT();
-		$this->assertCount(2, $active);
-		$this->assertSame(array($referral->rtts[0], $referral->rtts[2]), $active);
-	}
+        $active = $referral->getActiveRTT();
+        $this->assertCount(2, $active);
+        $this->assertSame(array($referral->rtts[0], $referral->rtts[2]), $active);
+    }
 }

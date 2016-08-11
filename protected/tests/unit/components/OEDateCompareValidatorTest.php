@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -9,15 +9,14 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 class OEDateCompareValidatorTest extends BasePHPUnit
 {
-
     public function doValidateAttribute($expect_message = false)
     {
         $attr = new DateTime('2015-05-06');
@@ -33,7 +32,6 @@ class OEDateCompareValidatorTest extends BasePHPUnit
             ->with($attr)
             ->will($this->returnValue($attr));
 
-
         $validator->expects($this->at(1))
             ->method('parseDateValue')
             ->with($compare_attr)
@@ -43,7 +41,7 @@ class OEDateCompareValidatorTest extends BasePHPUnit
 
         $obj = ComponentStubGenerator::generate('CActiveRecord', array(
             'compareAttr' => $compare_attr,
-            'attr' => $attr
+            'attr' => $attr,
         ));
 
         if ($expect_message) {
@@ -55,8 +53,7 @@ class OEDateCompareValidatorTest extends BasePHPUnit
             $validator->expects($this->at(3))
                 ->method('addError')
                 ->with($obj, 'attr', 'test message');
-        }
-        else {
+        } else {
             $validator->expects($this->at(2))
                 ->method('doComparison')
                 ->with($attr, $compare_attr)
@@ -83,7 +80,7 @@ class OEDateCompareValidatorTest extends BasePHPUnit
     {
         $obj = ComponentStubGenerator::generate('CActiveRecord', array(
             'compareAttr' => 'misc',
-            'attr' => ''
+            'attr' => '',
         ));
 
         $validator = $this->getMockBuilder('OEDateCompareValidator')
@@ -91,7 +88,7 @@ class OEDateCompareValidatorTest extends BasePHPUnit
             ->setMethods(array('addError'))
             ->getMock();
 
-        $validator->message = "test message";
+        $validator->message = 'test message';
 
         $validator->expects($this->at(0))
             ->method('addError');
@@ -105,7 +102,7 @@ class OEDateCompareValidatorTest extends BasePHPUnit
     {
         $obj = ComponentStubGenerator::generate('CActiveRecord', array(
             'compareAttr' => 'misc',
-            'attr' => ''
+            'attr' => '',
         ));
 
         $validator = $this->getMockBuilder('OEDateCompareValidator')
@@ -114,7 +111,7 @@ class OEDateCompareValidatorTest extends BasePHPUnit
             ->getMock();
 
         $validator->allowEmpty = true;
-        $validator->message = "test message";
+        $validator->message = 'test message';
 
         $validator->expects($this->never())
             ->method('addError');
@@ -128,7 +125,7 @@ class OEDateCompareValidatorTest extends BasePHPUnit
     {
         $obj = ComponentStubGenerator::generate('CActiveRecord', array(
             'compareAttr' => '',
-            'attr' => 'misc'
+            'attr' => 'misc',
         ));
 
         $validator = $this->getMockBuilder('OEDateCompareValidator')
@@ -136,7 +133,7 @@ class OEDateCompareValidatorTest extends BasePHPUnit
             ->setMethods(array('addError'))
             ->getMock();
 
-        $validator->message = "test message";
+        $validator->message = 'test message';
 
         $validator->expects($this->at(0))
             ->method('addError');
@@ -150,7 +147,7 @@ class OEDateCompareValidatorTest extends BasePHPUnit
     {
         $obj = ComponentStubGenerator::generate('CActiveRecord', array(
             'compareAttr' => '',
-            'attr' => 'misc'
+            'attr' => 'misc',
         ));
 
         $validator = $this->getMockBuilder('OEDateCompareValidator')
@@ -159,7 +156,7 @@ class OEDateCompareValidatorTest extends BasePHPUnit
             ->getMock();
 
         $validator->allowCompareEmpty = true;
-        $validator->message = "test message";
+        $validator->message = 'test message';
 
         $validator->expects($this->never())
             ->method('addError');
@@ -173,7 +170,7 @@ class OEDateCompareValidatorTest extends BasePHPUnit
     {
         $obj = ComponentStubGenerator::generate('CActiveRecord', array(
             'compareAttr' => 'misc',
-            'attr' => 'misc'
+            'attr' => 'misc',
         ));
 
         $validator = $this->getMockBuilder('OEDateCompareValidator')
@@ -181,7 +178,7 @@ class OEDateCompareValidatorTest extends BasePHPUnit
             ->setMethods(array('addError'))
             ->getMock();
 
-        $validator->message = "test message";
+        $validator->message = 'test message';
 
         $validator->expects($this->at(0))
             ->method('addError');
@@ -214,8 +211,7 @@ class OEDateCompareValidatorTest extends BasePHPUnit
 
         if ($pass) {
             $this->assertNull($validator->doComparison($value, $compare));
-        }
-        else {
+        } else {
             $this->assertNotNull($validator->doComparison($value, $compare));
         }
     }
