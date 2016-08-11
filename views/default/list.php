@@ -90,6 +90,42 @@ $cols = array(
 ?>
 <h1 class="badge">CVI List</h1>
 <div class="box content">
+    <div class="search-filters">
+        <?php $this->beginWidget('CActiveForm', array(
+            'id' => 'cvi-filter',
+            'htmlOptions' => array(
+                'class' => 'row',
+            ),
+            'enableAjaxValidation' => false,
+        ))?>
+
+        <div class="large-12 column">
+            <div class="panel">
+                <div class="row">
+                    <div class="large-10 column">
+                        <table class="grid">
+                            <tr>
+                                <th>Date Range</th>
+                                <th>Consultant</th>
+                                <th style="text-align: center;">Show Issued</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                            <tr>
+                                <td>date pickers</td>
+                                <td>consultant list</td>
+                                <td style="text-align: center;"><?php echo CHtml::checkBox('show-issued', (@$_POST['show-issued'] == 1))?></td>
+                                <td style="text-align: right;">
+                                    <button id="search_button" class="secondary small" type="submit">Apply</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php $this->endWidget()?>
+    </div>
+
     <div class="row">
         <div class="large-12 column">
             <div class="box generic">
