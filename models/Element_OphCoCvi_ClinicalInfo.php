@@ -180,36 +180,26 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
 
     protected function afterSave()
     {
-        if (!empty($_POST['MultiSelect_disorders'])) {
-
-            $existing_ids = array();
-
-            foreach (Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()->findAll('element_id = :elementId',
-                array(':elementId' => $this->id)) as $item) {
-                $existing_ids[] = $item->ophcocvi_clinicinfo_disorder_id;
-            }
-
-            foreach ($_POST['MultiSelect_disorders'] as $id) {
-                if (!in_array($id, $existing_ids)) {
-                    $item = new Element_OphCoCvi_ClinicalInfo_Disorder_Assignment;
-                    $item->element_id = $this->id;
-                    $item->ophcocvi_clinicinfo_disorder_id = $id;
-
-                    if (!$item->save()) {
-                        throw new Exception('Unable to save MultiSelect item: ' . print_r($item->getErrors(), true));
+        $sides = array('2'=>'right','1'=>'left');
+        foreach($sides as $side_value=>$side) {
+            if (!empty($_POST['ophcocvi_clinicinfo_disorder_id_'.$side])) {
+                foreach ($_POST['ophcocvi_clinicinfo_disorder_section_id_'.$side] as $sectionId) {
+                    foreach ($_POST['ophcocvi_clinicinfo_disorder_id_'.$side] as $id) {
+                        if($_POST['affected_'.$side][$id] == 1) {
+                            $item = new Element_OphCoCvi_ClinicalInfo_Disorder_Assignment;
+                            $item->element_id = $this->id;
+                            $item->eye_id = $side_value;
+                            $item->ophcocvi_clinicinfo_disorder_id = $id;
+                            $item->affected = $_POST['affected_'.$side][$id];
+                            if (!$item->save()) {
+                                throw new Exception('Unable to save MultiSelect item: '.print_r($item->getErrors(),true));
+                            }
+                        }
                     }
+
                 }
             }
 
-            foreach ($existing_ids as $id) {
-                if (!in_array($id, $_POST['MultiSelect_disorders'])) {
-                    $item = Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()->find('element_id = :elementId and ophcocvi_clinicinfo_disorder_id = :lookupfieldId',
-                        array(':elementId' => $this->id, ':lookupfieldId' => $id));
-                    if (!$item->delete()) {
-                        throw new Exception('Unable to delete MultiSelect item: ' . print_r($item->getErrors(), true));
-                    }
-                }
-            }
         }
 
         return parent::afterSave();
