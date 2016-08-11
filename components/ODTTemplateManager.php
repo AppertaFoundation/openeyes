@@ -19,6 +19,7 @@ class ODTTemplateManager
     private $generatedOdt = 'document.odt';
 
     private $outFile;
+    private $outDir;
     private $inputFile;
     private $contentXml;
     private $xpath;
@@ -40,8 +41,9 @@ class ODTTemplateManager
         if(substr($outputName, -3) == 'odt'){
             $this->generatedOdt = $outputName;
         }
+        $this->outDir = realpath(dirname(__FILE__).'/..').'/runtime/cache';
         // this will be the PDF, the name is the same as the generated ODT by default!
-        $this->outFile = str_replace($this->generatedOdt,'odt','pdf');
+        $this->outFile = str_replace('odt','pdf', $this->generatedOdt);
         $this->odtFilename = $this->templateDir.'/'.$filename;
         $this->zippedDir = $this->templateDir.'/zipped/'.$this->uniqueId.'/';
         $this->unzippedDir = $this->templateDir.'/unzipped/'.$this->uniqueId.'/';
@@ -71,7 +73,7 @@ class ODTTemplateManager
     {
         $path = $this->zipOdtFile();
         if($path !== FALSE){
-            $shell = '/usr/bin/libreoffice --headless --convert-to pdf --outdir /var/www/openeyes/protected/runtime/  '.$path;
+            $shell = '/usr/bin/libreoffice --headless --convert-to pdf --outdir '.$this->outDir.'  '.$path;
             exec($shell, $output, $return); 
            
             if($return == 0){
@@ -436,11 +438,10 @@ class ODTTemplateManager
 
     public function getPDF()
     {
-
         header('Content-type: application/pdf');
-        header('Content-Disposition: inline; filename="document.pdf"');
-        header('Content-Transfer-Encoding: binary');
-        header('Content-Length: ' . filesize($this->outFile));
-        @readfile($this->outFile);
+        //header('Content-Disposition: download; filename="certificate.pdf"');
+        //header('Content-Transfer-Encoding: binary');
+        header('Content-Length: ' . filesize($this->outDir.'/'.$this->outFile));
+        @readfile($this->outDir.'/'.$this->outFile);
     }
 }

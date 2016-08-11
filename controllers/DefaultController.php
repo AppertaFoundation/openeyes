@@ -194,8 +194,8 @@ class DefaultController extends \BaseEventTypeController
         }
         // TODO: we need to match the keys here!
         // we also need a method to generate the data structure with the ODTDataHandler!
-        $data["signatureName"] = "this is a value";
-        $data["signature_date"] = "11/08/2016";
+        $data["signatureName"] = $this->patient->getFullName();
+        $data["signatureDate"] = "11/08/2016";
         return $data;
     }
 
@@ -218,7 +218,7 @@ class DefaultController extends \BaseEventTypeController
      * @return mixed
      */
     public function formDataValuePairFor_Element_OphCoCvi_ClinicalInfo($element) {
-        $values['examination_date'] = ($element->examination_date) ? $element->examination_date : '';
+        $values['examinationDate'] = ($element->examination_date) ? $element->examination_date : '';
         $values['is_considered_blind'] = ($element->is_considered_blind) ? 'Yes' : 'No';
         return $values;
     }
