@@ -59,9 +59,9 @@ class Element_OphCoCvi_ClinicalInfo_Disorder_Assignment extends \BaseActiveRecor
     public function rules()
     {
         return array(
-            array('element_id, ophcocvi_clinicinfo_disorder_id', 'safe'),
-            array('element_id, ophcocvi_clinicinfo_disorder_id', 'required'),
-            array('id, element_id, ophcocvi_clinicinfo_disorder_id', 'safe', 'on' => 'search'),
+            array('element_id, ophcocvi_clinicinfo_disorder_id,eye_id', 'safe'),
+            array('element_id, ophcocvi_clinicinfo_disorder_id,eye_id', 'required'),
+            array('id, element_id, ophcocvi_clinicinfo_disorder_id,eye_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -77,6 +77,7 @@ class Element_OphCoCvi_ClinicalInfo_Disorder_Assignment extends \BaseActiveRecor
                 'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder',
                 'ophcocvi_clinicinfo_disorder_id'
             ),
+            'eye' => array(self::BELONGS_TO,'Eye','eye_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
         );
@@ -107,5 +108,22 @@ class Element_OphCoCvi_ClinicalInfo_Disorder_Assignment extends \BaseActiveRecor
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
+    }
+
+    public function getDisorderAffectedStatus($disorder_id,$element_id,$side) {
+        $eye_value = \Eye::model()->find("name = ?", array(ucfirst($side)));
+        $criteria=new \CDbCriteria;
+        $criteria->select='affected';
+        $criteria->condition="element_id=:element_id";
+        $criteria->addCondition("ophcocvi_clinicinfo_disorder_id=:disorder_id");
+        $criteria->addCondition("eye_id=:eye_id");
+        $criteria->params=array(':element_id'=>$element_id,':disorder_id'=>$disorder_id,':eye_id' => $eye_value->id);
+        $item = Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()->find($criteria);
+        return $item['affected'] ? $item['affected'] : 0;
+
+    }
+
+    public function getDisorderSectionComments() {
+
     }
 }
