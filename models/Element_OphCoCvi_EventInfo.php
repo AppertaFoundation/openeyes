@@ -42,106 +42,126 @@ namespace OEModule\OphCoCvi\models;
 
 class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
 {
-	/**
-	 * Returns the static model of the specified AR class.
-	 * @return the static model class
-	 */
-	public static function model($className = __CLASS__)
-	{
-		return parent::model($className);
-	}
+    /**
+     * Returns the static model of the specified AR class.
+     * @return the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
 
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'et_ophcocvi_eventinfo';
-	}
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'et_ophcocvi_eventinfo';
+    }
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		return array(
-			array('event_id, is_draft, generated_document_id, ', 'safe'),
-			//array('is_draft', 'required'),
-			array('id, event_id, is_draft, generated_document_id, ', 'safe', 'on' => 'search'),
-		);
-	}
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        return array(
+            array('event_id, is_draft, generated_document_id, ', 'safe'),
+            //array('is_draft', 'required'),
+            array('id, event_id, is_draft, generated_document_id, ', 'safe', 'on' => 'search'),
+        );
+    }
 
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		return array(
-			'element_type' => array(self::HAS_ONE, 'ElementType', 'id','on' => "element_type.class_name='".get_class($this)."'"),
-			'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
-			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-			'generated_document' => array(self::BELONGS_TO, 'ProtectedFile', 'generated_document_id'),
-			// define duplicate event relations for elements to be eager loaded in the same call
-			'clinical_event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-			'clinical_element' => array(self::HAS_ONE, 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo', array('id' => 'event_id'), 'through' => 'clinical_event'),
-			'clerical_event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-			'clerical_element' => array(self::HAS_ONE, 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo', array('id' => 'event_id'), 'through' => 'clerical_event'),
-			'consent_event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-			'consent_element' => array(self::HAS_ONE, 'OEModule\OphCoCvi\models\Element_OphCoCvi_ConsentSignature', array('id' => 'event_id'), 'through' => 'consent_event'),
-		);
-	}
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        return array(
+            'element_type' => array(
+                self::HAS_ONE,
+                'ElementType',
+                'id',
+                'on' => "element_type.class_name='" . get_class($this) . "'"
+            ),
+            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
+            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'generated_document' => array(self::BELONGS_TO, 'ProtectedFile', 'generated_document_id'),
+            // define duplicate event relations for elements to be eager loaded in the same call
+            'clinical_event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'clinical_element' => array(
+                self::HAS_ONE,
+                'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo',
+                array('id' => 'event_id'),
+                'through' => 'clinical_event'
+            ),
+            'clerical_event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'clerical_element' => array(
+                self::HAS_ONE,
+                'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo',
+                array('id' => 'event_id'),
+                'through' => 'clerical_event'
+            ),
+            'consent_event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'consent_element' => array(
+                self::HAS_ONE,
+                'OEModule\OphCoCvi\models\Element_OphCoCvi_ConsentSignature',
+                array('id' => 'event_id'),
+                'through' => 'consent_event'
+            ),
+        );
+    }
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
-	public function attributeLabels()
-	{
-		return array(
-			'id' => 'ID',
-			'event_id' => 'Event',
-			'is_draft' => 'Is draft',
-			'generated_document_id' => 'Generated file',
-		);
-	}
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+            'id' => 'ID',
+            'event_id' => 'Event',
+            'is_draft' => 'Is draft',
+            'generated_document_id' => 'Generated file',
+        );
+    }
 
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		$criteria = new CDbCriteria;
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     */
+    public function search()
+    {
+        $criteria = new CDbCriteria;
 
-		$criteria->compare('id', $this->id, true);
-		$criteria->compare('event_id', $this->event_id, true);
-		$criteria->compare('is_draft', $this->is_draft);
-		$criteria->compare('generated_document_id', $this->generated_document_id);
+        $criteria->compare('id', $this->id, true);
+        $criteria->compare('event_id', $this->event_id, true);
+        $criteria->compare('is_draft', $this->is_draft);
+        $criteria->compare('generated_document_id', $this->generated_document_id);
 
-		return new CActiveDataProvider(get_class($this), array(
-			'criteria' => $criteria,
-		));
-	}
+        return new CActiveDataProvider(get_class($this), array(
+            'criteria' => $criteria,
+        ));
+    }
 
-	/**
-	 * @TODO: Should probably be storing a fixed date for issue rather than relying on modified date
-	 *
-	 * @return null|string
-	 */
-	public function getIssueDateForDisplay()
-	{
-		if (!$this->is_draft) {
-			return $this->last_modified_date;
-		}
-		return null;
-	}
+    /**
+     * @TODO: Should probably be storing a fixed date for issue rather than relying on modified date
+     *
+     * @return null|string
+     */
+    public function getIssueDateForDisplay()
+    {
+        if (!$this->is_draft) {
+            return $this->last_modified_date;
+        }
+        return null;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getIssueStatusForDisplay()
-	{
-		return $this->is_draft ? 'Draft' : 'Issued';
-	}
+    /**
+     * @return string
+     */
+    public function getIssueStatusForDisplay()
+    {
+        return $this->is_draft ? 'Draft' : 'Issued';
+    }
 }

@@ -18,8 +18,11 @@
 ?>
 
 <div class="element-fields row">
-	<?php echo $form->radioBoolean($element, 'is_patient')?>
-	<?php echo $form->datePicker($element, 'signature_date', array('maxDate' => 'today'), array('style'=>'width: 110px;'))?>
-	<?php echo $form->textField($element, 'representative_name', array('size' => '10'))?>
-	<?php echo $form->dropDownList($element, 'signature_file_id', CHtml::listData(\ProtectedFile::model()->findAll(array('order'=> 'name asc')),'id','name'),array('empty'=>'- Please select -'))?>
+    <?php echo $form->radioBoolean($element, 'is_patient') ?>
+    <?php echo $form->datePicker($element, 'signature_date', array('maxDate' => 'today'),
+        array('style' => 'width: 110px;')) ?>
+    <?php echo $form->textField($element, 'representative_name', array('size' => '10')) ?>
+    <?php echo $form->dropDownList($element, 'signature_file_id',
+        CHtml::listData(\ProtectedFile::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
+        array('empty' => '- Please select -')) ?>
 </div>
