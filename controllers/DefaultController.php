@@ -102,16 +102,18 @@ class DefaultController extends \BaseEventTypeController
         // only populate values into the new element if a clinical user
         if ($action == 'create' && $this->checkClinicalEditAccess()) {
             if ($exam_api = $this->getApp()->moduleAPI->get('OphCiExamination')) {
-                $latest_examination_event = $exam_api->getMostRecentVAElementForPatient($this->patient);
-                $element->examination_date = $latest_examination_event['event_date'];
-                $element->best_corrected_right_va = $exam_api->getMostRecentVAForPatient($this->patient, 'right',
-                    'aided', $latest_examination_event['element']);
-                $element->best_corrected_left_va = $exam_api->getMostRecentVAForPatient($this->patient, 'left',
-                    'aided', $latest_examination_event['element']);
-                $element->unaided_right_va = $exam_api->getMostRecentVAForPatient($this->patient, 'right', 'unaided',
-                    $latest_examination_event['element']);
-                $element->unaided_left_va = $exam_api->getMostRecentVAForPatient($this->patient, 'left', 'unaided',
-                    $latest_examination_event['element']);
+                if ($latest_examination_event = $exam_api->getMostRecentVAElementForPatient($this->patient)) {
+                    $element->examination_date = $latest_examination_event['event_date'];
+                    $element->best_corrected_right_va = $exam_api->getMostRecentVAForPatient($this->patient, 'right',
+                        'aided', $latest_examination_event['element']);
+                    $element->best_corrected_left_va = $exam_api->getMostRecentVAForPatient($this->patient, 'left',
+                        'aided', $latest_examination_event['element']);
+                    $element->unaided_right_va = $exam_api->getMostRecentVAForPatient($this->patient, 'right',
+                        'unaided',
+                        $latest_examination_event['element']);
+                    $element->unaided_left_va = $exam_api->getMostRecentVAForPatient($this->patient, 'left', 'unaided',
+                        $latest_examination_event['element']);
+                }
             }
         }
     }
