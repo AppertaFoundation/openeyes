@@ -32,7 +32,7 @@ class ODTTemplateManager
     private $unzippedSablonFilename = '';
     
     //Using an exist style declaration in xml
-    public $textStyleName = 'T23';
+    public $textStyleName = 'P7';
     
     public function __construct( $filename , $templateDir, $outputName )
     {
@@ -124,7 +124,17 @@ class ODTTemplateManager
         copy( $newImageUrl , $this->mediaDir.$imagePattern);
     }
     
-    public function changeImage( $imagePattern, $image ){
+    public function imgReplaceByName( $imageName , $newImageUrl )
+    {
+        $frame = $this->xpath->query('//draw:frame[@draw:name="'.$imageName.'"]')->item(0);
+        foreach($frame->childNodes as $image) {
+            $imageHref = $image->getAttribute('xlink:href'); 
+            copy( $newImageUrl , $this->unzippedDir.$imageHref);
+        }
+    }
+    
+    public function changeImage( $imagePattern, $image )
+    {
        
         if ($image !== false) {
             imagepng($image, $this->mediaDir.$imagePattern);
@@ -176,9 +186,8 @@ class ODTTemplateManager
     
     public function fillTable( $prefix , $data, $headerRow = 0 )
     {
-        
-        foreach ($this->xpath->query('//office:text/table:table[@table:style-name="'.$prefix.'"]') as $table) {
-          
+        //Or table:style-name
+        foreach ($this->xpath->query('//office:text/table:table[@table:name="'.$prefix.'"]') as $table) {
             foreach($table->childNodes as $r => $row) {
                 if ($headerRow > 0){
                     if($headerRow >= $r){
@@ -192,7 +201,8 @@ class ODTTemplateManager
                 foreach($row->childNodes as $c => $cell){
                    
                     if ((array_key_exists($rowCount, $data)) && (array_key_exists($c, $data[$rowCount]))) { 
-                        $cell->nodeValue = "";
+                        
+                        //$cell->nodeValue = "";
                         $text = $this->contentXml->createElement('text:p', $data[$rowCount][$c]);
                         $cell->appendChild($text);
                         $text->setAttribute("text:style-name", $this->textStyleName);
