@@ -35,6 +35,7 @@ foreach (OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder_Section::model(
     $comments = OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments::model()
         ->getDisorderSectionComments($disorder_section->id,$element->id,$side);
     if($disorder_section->comments_allowed == 1){
+        if ($comments != '') {
         if ($flag == 0) { ?>
         <fieldset class="row field-row">
             <legend class="large-12 column">
@@ -42,7 +43,8 @@ foreach (OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder_Section::model(
             </legend>
         </fieldset>
         <?php
-        } ?>
+        }
+        ?>
         <fieldset class="row field-row">
             <legend class="large-6 column">
                 <?php echo $disorder_section->comments_label; ?>
@@ -52,5 +54,6 @@ foreach (OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder_Section::model(
             </div>
         </fieldset>
     <?php }
+    }
 }
 ?>
