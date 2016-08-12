@@ -104,14 +104,22 @@
         <div class="large-2 column">
             <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('disorders')) ?>:</div>
         </div>
-        <div class="large-10 column end">
-            <div class="data-value"><?php if (!$element->disorders) { ?>
-                        None
-                <?php } else { ?>
-                            <?php foreach ($element->disorders as $item) {
-                        echo $item->ophcocvi_clinicinfo_disorder->name ?><br/>
-                    <?php } ?>
-                <?php } ?>
+    </div>
+    <div class="row data-row">
+        <div class="large-12 column end">
+            <div class="sub-element-data sub-element-eyes row">
+                <div class="element-eye right-eye column">
+                    <?php $this->renderPartial('view_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders', array(
+                        'side' => 'right',
+                        'element' => $element,
+                    ))?>
+                </div>
+                <div class="element-eye left-eye column">
+                    <?php $this->renderPartial('view_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders', array(
+                        'side' => 'left',
+                        'element' => $element,
+                    ))?>
+                </div>
             </div>
         </div>
     </div>
