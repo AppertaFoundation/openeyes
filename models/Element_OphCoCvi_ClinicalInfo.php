@@ -183,33 +183,70 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         $sides = array('2'=>'right','1'=>'left');
         foreach($sides as $side_value=>$side) {
             if (!empty($_POST['ophcocvi_clinicinfo_disorder_id_'.$side])) {
+                $existing_comment_ids = array();
+                foreach (Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments::model()
+                             ->findAll('element_id = :elementId and eye_id = :eye_id',
+                                 array(':elementId' => $this->id,'eye_id'=>$side_value)) as $item) {
+                    $existing_comment_ids[] = $item->ophcocvi_clinicinfo_disorder_section_id;
+                }
+                $existing_assignment_ids = array();
+                foreach (Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()
+                             ->findAll('element_id = :elementId and eye_id = :eye_id',
+                                 array(':elementId' => $this->id,'eye_id'=>$side_value)) as $item) {
+                    $existing_assignment_ids[] = $item->ophcocvi_clinicinfo_disorder_id;
+                }
                 foreach ($_POST['ophcocvi_clinicinfo_disorder_section_id_'.$side] as $sectionId) {
                     foreach ($_POST['ophcocvi_clinicinfo_disorder_id_'.$side] as $id) {
-                        if($_POST['affected_'.$side][$id] == 1) {
-                            $item = new Element_OphCoCvi_ClinicalInfo_Disorder_Assignment;
-                            $item->element_id = $this->id;
-                            $item->eye_id = $side_value;
-                            $item->ophcocvi_clinicinfo_disorder_id = $id;
-                            $item->affected = $_POST['affected_'.$side][$id];
-                            $item->main_cause = isset($_POST['main_cause_'.$side][$id]) ? $_POST['main_cause_'.$side][$id] : 0;
-                            if (!$item->save()) {
-                                throw new Exception('Unable to save MultiSelect item: '.print_r($item->getErrors(),true));
+                        if(isset($_POST['affected_'.$side][$sectionId][$id]) && $_POST['affected_'.$side][$sectionId][$id] == 1 && !in_array($id,$existing_assignment_ids)) {
+                            $disorders = new Element_OphCoCvi_ClinicalInfo_Disorder_Assignment;
+                            $disorders->element_id = $this->id;
+                            $disorders->eye_id = $side_value;
+                            $disorders->ophcocvi_clinicinfo_disorder_id = $id;
+                            $disorders->affected = $_POST['affected_'.$side][$sectionId][$id];
+                            $disorders->main_cause = isset($_POST['main_cause_'.$side][$sectionId][$id]) ? $_POST['main_cause_'.$side][$sectionId][$id] : 0;
+                            if (!$disorders->save()) {
+                                throw new Exception('Unable to save MultiSelect item: '.print_r($disorders->getErrors(),true));
+                            }
+                        }
+                        else if(isset($_POST['affected_'.$side][$sectionId][$id])) {
+                            $criteria = new \CDbCriteria;
+                            $criteria->compare('element_id', $this->id);
+                            $criteria->compare('eye_id', $side_value);
+                            $criteria->compare('ophcocvi_clinicinfo_disorder_id', $id);
+                            $disorders = Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()->find($criteria);
+                            if(isset($disorders)) {
+                                $disorders->affected = isset($_POST['affected_'.$side][$sectionId][$id])
+                                    ? $_POST['affected_'.$side][$sectionId][$id] : 0;
+                                $disorders->main_cause = (isset($_POST['main_cause_'.$side][$sectionId][$id]) &&
+                                    isset($_POST['affected_'.$side][$sectionId][$id]) &&
+                                    ($_POST['affected_'.$side][$sectionId][$id] == 1)) ?
+                                        $_POST['main_cause_'.$side][$sectionId][$id] : 0;
+                                $disorders->update();
                             }
                         }
                     }
-                    if(isset($_POST['comments_'.$side][$sectionId])) {
-                        $item = new Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments;
-                        $item->element_id = $this->id;
-                        $item->eye_id = $side_value;
-                        $item->ophcocvi_clinicinfo_disorder_section_id = $sectionId;
-                        $item->comments = $_POST['comments_'.$side][$sectionId];
-                        if (!$item->save()) {
-                            throw new Exception('Unable to save MultiSelect item: '.print_r($item->getErrors(),true));
+                    if(isset($_POST['comments_'.$side][$sectionId]) && $_POST['comments_'.$side][$sectionId] != '' && !in_array($sectionId,$existing_comment_ids)) {
+                        $disorder_comments = new Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments;
+                        $disorder_comments->element_id = $this->id;
+                        $disorder_comments->eye_id = $side_value;
+                        $disorder_comments->ophcocvi_clinicinfo_disorder_section_id = $sectionId;
+                        $disorder_comments->comments = $_POST['comments_'.$side][$sectionId];
+                        if (!$disorder_comments->save()) {
+                            throw new Exception('Unable to save MultiSelect item: '.print_r($disorder_comments->getErrors(),true));
                         }
+                    }
+                    else if(isset($_POST['comments_'.$side][$sectionId])){
+                        $criteria = new \CDbCriteria;
+                        $criteria->compare('element_id', $this->id);
+                        $criteria->compare('eye_id', $side_value);
+                        $criteria->compare('ophcocvi_clinicinfo_disorder_section_id', $sectionId);
+                        $disorder_comments = Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments::model()->find($criteria);
+                        $disorder_comments->comments = isset($_POST['comments_'.$side][$sectionId])
+                            ? $_POST['comments_'.$side][$sectionId] : '';
+                        $disorder_comments->save();
                     }
                 }
             }
-
         }
 
         return parent::afterSave();
