@@ -21,7 +21,7 @@
                     </legend>
                     <div class="large-6 column">
                         <label class="inline highlight">
-                            <?php $name = 'affected_'.$side.'['.$disorder->id.']';
+                            <?php $name = 'affected_'.$side.'['.$disorder_section->id.']'.'['.$disorder->id.']';
                             echo CHtml::radioButton($name, $value == 1 , array('id' => CHtml::modelName($element).$disorder->id.'_1', 'value' => 1))?>
                             Yes
                         </label>
@@ -34,7 +34,7 @@
                 <fieldset class="row field-row">
                     <legend class="large-6 column">
                         <?php echo 'Main Cause'; ?>
-                        <?php echo CHtml::hiddenField("ophcocvi_clinicinfo_disorder_id_main_cause_".$side."[".$disorder->id."]" , $disorder->id, array('id' => 'hiddenInput')); ?>
+                        <?php echo CHtml::hiddenField("ophcocvi_clinicinfo_disorder_id_main_cause_".$side.'['.$disorder_section->id.']'."[".$disorder->id."]" , $disorder->id, array('id' => 'hiddenInput')); ?>
                     </legend>
                     <div class="large-6 column">
                         <?php
@@ -44,7 +44,7 @@
                             $check_array['checked'] = 'checked';
                             $check_array['value'] = 1;
                         }
-                        echo CHtml::checkBox('main_cause_'.$side.'['.$disorder->id.']',$checkbox_value == 1 ? true : false ,$check_array);
+                        echo CHtml::checkBox('main_cause_'.$side.'['.$disorder_section->id.']'.'['.$disorder->id.']',$checkbox_value == 1 ? true : false ,$check_array);
                     ?>
                     </div>
                 </fieldset>
