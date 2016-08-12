@@ -176,4 +176,14 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
     {
         return $this->is_draft ? 'Draft' : 'Issued';
     }
+
+    /**
+     * Returns an associative array of the data values for printing
+     */
+    public function getStructuredDataForPrint()
+    {
+        $result = array();
+
+        return $result;
+    }
 }

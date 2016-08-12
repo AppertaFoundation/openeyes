@@ -168,5 +168,15 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 		return parent::afterSave();
 	}
 
+	/**
+	 * Returns an associative array of the data values for printing
+	 */
+	public function getStructuredDataForPrint()
+	{
+		$result = array();
+		$result['preferred_info_fmt'] = $this->preferred_info_fmt ? $this->preferred_info_fmt->name : 'None';
+		$result['employment_status'] = $this->employment_status ? $this->employment_status->name : 'None';
+		return $result;
+	}
 }
 ?>

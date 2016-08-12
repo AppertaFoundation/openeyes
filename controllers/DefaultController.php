@@ -20,6 +20,8 @@ namespace OEModule\OphCoCvi\controllers;
 use OEModule\OphCoCvi\models;
 use OEModule\OphCoCvi\components\OphCoCvi_Manager;
 use \OEModule\OphCoCvi\components\ODTTemplateManager;
+use \OEModule\OphCoCvi\components\SignatureQRCodeGenerator;
+
 
 class DefaultController extends \BaseEventTypeController
 {
@@ -186,54 +188,21 @@ class DefaultController extends \BaseEventTypeController
      * Element based name and value pair
      *@param $id
      */
-    function getStructuredDataForPrintPDF($id) {
+    public function getStructuredDataForPrintPDF($id) {
         $this->printInit($id);
         $data = array();
         foreach($this->open_elements as $element) {
-            if(!empty($this->formStructuredData($element))) {
-                $data = array_merge($data,$this->formStructuredData($element));
+            if(method_exists($element, "getStructuredDataForPrint")) {
+                $data = array_merge($data, $element->getStructuredDataForPrint());
             }
         }
         // TODO: we need to match the keys here!
         // we also need a method to generate the data structure with the ODTDataHandler!
         $data["signatureName"] = $this->patient->getFullName();
         $data["signatureDate"] = "11/08/2016";
+        print_r($data);die;
+
         return $data;
-    }
-
-    /**
-     * Generic method to form all the element's data value pair
-     * @param $element
-     *
-     */
-    public function formStructuredData($element) {
-        $class_name = \Helper::getNSShortname($element);
-        $element_method = 'formDataValuePairFor_' . $class_name;
-        if(method_exists($this, $element_method)) {
-            return $this->$element_method($element);
-        }
-    }
-
-    /**
-     * Pre populate the data and value pair for the Element_OphCoCvi_ClinicalInfo
-     * @param $element
-     * @return mixed
-     */
-    public function formDataValuePairFor_Element_OphCoCvi_ClinicalInfo($element) {
-        $values['examinationDate'] = ($element->examination_date) ? $element->examination_date : '';
-        $values['is_considered_blind'] = ($element->is_considered_blind) ? 'Yes' : 'No';
-        return $values;
-    }
-
-    /**
-     * Pre populate the data and value pair for the Element_OphCoCvi_ClericalInfo
-     * @param $element
-     * @return mixed
-     */
-    public function formDataValuePairFor_Element_OphCoCvi_ClericalInfo($element) {
-        $values['preferred_info_fmt'] = $element->preferred_info_fmt ? $element->preferred_info_fmt->name : 'None';
-        $values['employment_status'] = $element->employment_status ? $element->employment_status->name : 'None';
-        return $values;
     }
 
     /**
@@ -246,6 +215,13 @@ class DefaultController extends \BaseEventTypeController
         }
 
         $event->lock();
+
+        $QRContent = "@code:".\Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($event)."@key:".md5("here comes the key");
+
+        $QRHelper = new SignatureQRCodeGenerator();
+        $QRHelper->generateQRSignatureBox($QRContent);
+
+        die;
 
         // TODO: need to find a place for the template files! (eg. views/odtTemplates) ?
         $inputFile = 'example_certificate_4.odt';

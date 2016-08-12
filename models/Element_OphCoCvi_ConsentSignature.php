@@ -134,4 +134,17 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
 
         return parent::afterSave();
     }
+
+    /**
+     * Returns an associative array of the data values for printing
+     */
+    public function getStructuredDataForPrint()
+    {
+        $result = array();
+        $result['is_patient'] = $this->is_patient ? 'X' : '';
+        $result['is_representative'] = $this->is_patient ? '' : 'X';
+        $result['patient_name'] = $this->patient->title . " " . $this->patient->first_name . " " . $this->patient->last_name;
+        $result['signature_date'] = $this->signature_date;
+        return $result;
+    }
 }

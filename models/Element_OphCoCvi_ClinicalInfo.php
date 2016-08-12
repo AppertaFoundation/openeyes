@@ -191,12 +191,22 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
                             $item->eye_id = $side_value;
                             $item->ophcocvi_clinicinfo_disorder_id = $id;
                             $item->affected = $_POST['affected_'.$side][$id];
+                            $item->main_cause = isset($_POST['main_cause_'.$side][$id]) ? $_POST['main_cause_'.$side][$id] : 0;
                             if (!$item->save()) {
                                 throw new Exception('Unable to save MultiSelect item: '.print_r($item->getErrors(),true));
                             }
                         }
                     }
-
+                    if(isset($_POST['comments_'.$side][$sectionId])) {
+                        $item = new Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments;
+                        $item->element_id = $this->id;
+                        $item->eye_id = $side_value;
+                        $item->ophcocvi_clinicinfo_disorder_section_id = $sectionId;
+                        $item->comments = $_POST['comments_'.$side][$sectionId];
+                        if (!$item->save()) {
+                            throw new Exception('Unable to save MultiSelect item: '.print_r($item->getErrors(),true));
+                        }
+                    }
                 }
             }
 
@@ -211,5 +221,21 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
     public function getDisplayStatus()
     {
         return $this->is_considered_blind ? static::$BLIND_STATUS : static::$NOT_BLIND_STATUS;
+    }
+
+    /**
+     * Returns an associative array of the data values for printing
+     */
+    public function getStructuredDataForPrint()
+    {
+        $result = array();
+        $result['examinationDate'] = date('d/m/Y', strtotime($this->examination_date));
+        $result['is_considered_blind'] = ($this->is_considered_blind) ? 'Yes' : 'No';
+
+        $result['consultantName'] = $this->consultant->getFullName();
+        //var_dump(\Institution::model()->getCurrent());exit;
+        //var_dump($consultant_name);exit;
+
+        return $result;
     }
 }

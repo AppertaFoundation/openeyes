@@ -12,25 +12,41 @@ use \Endroid\QrCode\QrCode;
 
 class SignatureQRCodeGenerator
 {
-    public function testQRCode()
+    public function createQRCode($text)
     {
         $qrCode = new QrCode();
         $qrCode
-            ->setText('Life is too short to be generating QR codes')
-            ->setSize(300)
+            ->setText($text)
+            ->setSize(160)
             ->setPadding(10)
             ->setErrorCorrection('high')
             ->setForegroundColor(array('r' => 0, 'g' => 0, 'b' => 0, 'a' => 0))
             ->setBackgroundColor(array('r' => 255, 'g' => 255, 'b' => 255, 'a' => 0))
-            ->setLabel('Scan the code')
+            ->setDrawQuietZone(false)
+            ->setDrawBorder(false)
             ->setLabelFontSize(16)
             ->setImageType(QrCode::IMAGE_TYPE_PNG);
 
-// now we can directly output the qrcode
-        header('Content-Type: ' . $qrCode->getContentType());
-        $qrCode->render();
+        return $qrCode->getImage();
 
-// or create a response object
-        //$response = new Response($qrCode->get(), 200, array('Content-Type' => $qrCode->getContentType()));
+    }
+
+    public function generateQRSignatureBox( $text )
+    {
+        $canvas = imagecreatetruecolor(700,186);
+        $black = imagecolorallocate($canvas, 0,0,0);
+        $white = imagecolorallocate($canvas, 255,255,255);
+        imagefill($canvas,0,0,$black);
+
+        imagefilledrectangle($canvas, 3, 3, imagesx($canvas)-4, imagesy($canvas)-4, $white);
+
+        $qrCode = $this->createQRCode( $text );
+        imagecopy($canvas, $qrCode, (imagesx($canvas)-imagesx($qrCode))-3, 3, 0, 0, imagesx($qrCode), imagesy($qrCode));
+
+        // Output and free from memory
+        header('Content-Type: image/jpeg');
+
+        imagejpeg($canvas);
+        imagedestroy($canvas);
     }
 }

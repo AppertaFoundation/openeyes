@@ -138,3 +138,10 @@ if ($this->checkClinicalEditAccess()) { ?>
 <?php } else {
     $this->renderPartial('view_Element_OphCoCvi_ClinicalInfo', array('element' => $element));
 } ?>
+<script type="application/javascript">
+    $(document).ready(function() {
+        $("input[name^=main_cause_]").click(function() {
+            ($(this).prop('checked') === true) ? $(this).prop('value', 1) : $(this).prop('value', 0);
+        });
+    });
+</script>
