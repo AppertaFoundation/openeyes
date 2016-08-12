@@ -59,7 +59,14 @@ class DefaultController extends \BaseEventTypeController
         $this->layout = '//layouts/main';
         $this->renderPatientPanel = false;
 
-        $dp = $this->getManager()->getListDataProvider();
+        $filter = array(
+            'date_from' => $this->request->getPost('date_from', null),
+            'date_to' => $this->request->getPost('date_to', null),
+            'consultant_ids' => $this->request->getPost('consultant_ids', null),
+            'show_issued' => $this->request->getPost('show_issued', false)
+        );
+
+        $dp = $this->getManager()->getListDataProvider($filter);
 
         $this->render('list', array('dp' => $dp));
     }

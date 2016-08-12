@@ -178,11 +178,78 @@ class OphCoCvi_Manager extends \CComponent
     }
 
     /**
+     * @param \CDbCriteria $criteria
+     * @param array $filter
+     */
+    private function handleDateRangeFilter(\CDbCriteria $criteria, $filter = array())
+    {
+        $from = null;
+        if (isset($filter['date_from'])) {
+            $from = \Helper::convertNHS2MySQL($filter['date_from']);
+        }
+        $to = null;
+        if (isset($filter['date_to'])) {
+            $to = \Helper::convertNHS2MySQL($filter['date_to']);
+        }
+        if ($from && $to) {
+            if ($from > $to) {
+                $criteria->addBetweenCondition('event.event_date', $to, $from);
+            } else {
+                $criteria->addBetweenCondition('event.event_date', $from, $to);
+            }
+        } elseif ($from) {
+            $criteria->addCondition('event.event_date >= :from_date');
+            $criteria->params = array_merge($criteria->params, array(':from_date' => $from));
+        } elseif ($to) {
+            $criteria->addCondition('event.event_date <= :to_date');
+            $criteria->params = array_merge($criteria->params, array(':to_date' => $to));
+        }
+    }
+
+    /**
+     * @param \CDbCriteria $criteria
+     * @param array $filter
+     */
+    private function handleConsultantListFilter(\CDbCriteria $criteria, $filter = array())
+    {
+        if (isset($filter['consultant_ids']) && strlen(trim($filter['consultant_ids']))) {
+            $criteria->addInCondition('clinical_element.consultant_id', explode(",", $filter['consultant_ids']));
+        }
+    }
+
+    /**
+     * @param \CDbCriteria $criteria
+     * @param array $filter
+     */
+    private function handleIssuedFilter(\CDbCriteria $criteria, $filter = array())
+    {
+        if (!isset($filter['show_issued']) || (isset($filter['show_issued']) && !(bool) $filter['show_issued'])) {
+            $criteria->addCondition('t.is_draft', false);
+        }
+    }
+
+    /**
+     * @param array $filter
+     * @return \CDbCriteria
+     */
+    protected function buildFilterCriteria($filter = array())
+    {
+        $criteria = new \CDbCriteria();
+
+        $this->handleDateRangeFilter($criteria, $filter);
+        $this->handleConsultantListFilter($criteria, $filter);
+        $this->handleIssuedFilter($criteria, $filter);
+
+        return $criteria;
+    }
+
+    /**
      * Abstraction of the list provider
      *
+     * @param array $filter
      * @return \CActiveDataProvider
      */
-    public function getListDataProvider()
+    public function getListDataProvider($filter = array())
     {
         $model = Element_OphCoCvi_EventInfo::model()->with(
             'clinical_element',
@@ -214,8 +281,11 @@ class OphCoCvi_Manager extends \CComponent
             ),
         );
 
+        $criteria = $this->buildFilterCriteria($filter);
+
         return new \CActiveDataProvider($model, array(
-            'sort' => $sort
+            'sort' => $sort,
+            'criteria' => $criteria
         ));
     }
 }
