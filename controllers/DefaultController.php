@@ -227,7 +227,8 @@ class DefaultController extends \BaseEventTypeController
         $inputFile = 'example_certificate_4.odt';
         $printHelper = new ODTTemplateManager( $inputFile , realpath(__DIR__ . '/..').'/files', 'CVICert_'.\Yii::app()->user->id.'_'.rand().'.odt');
 
-        $this->getStructuredDataForPrintPDF($id);
+        //$this->getStructuredDataForPrintPDF($id);
+        
         $printHelper->exchangeStringValues( $this->getStructuredDataForPrintPDF($id) );
         $printHelper->saveContentXML();
         $printHelper->generatePDF();
