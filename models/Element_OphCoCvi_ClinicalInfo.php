@@ -319,7 +319,9 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
     public function getStructuredDataForPrint()
     {
         $result = array();
-        $result['examinationDate'] = date('d/m/Y', strtotime($this->examination_date));
+        $result['examinationDateDate'] = date('d', strtotime($this->examination_date));
+        $result['examinationDateMonth'] = date('m', strtotime($this->examination_date));
+        $result['examinationDateYear'] = date('Y', strtotime($this->examination_date));
         $result['isConsideredBlind'] = ($this->is_considered_blind) ? 'Yes' : 'No';
         $result['consultantName'] = $this->consultant->getFullName();
         $result['unaidedRightVA'] = $this->unaided_right_va;
