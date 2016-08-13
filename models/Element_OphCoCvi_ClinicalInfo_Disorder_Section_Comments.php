@@ -59,9 +59,9 @@ class Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments extends \BaseEvent
     public function rules()
     {
         return array(
-            array('element_id, ophcocvi_clinicinfo_disorder_section_id,eye_id', 'safe'),
-            array('element_id, ophcocvi_clinicinfo_disorder_section_id,eye_id', 'required'),
-            array('id, element_id, ophcocvi_clinicinfo_disorder_section_id,eye_id', 'safe', 'on' => 'search'),
+            array('element_id, ophcocvi_clinicinfo_disorder_section_id', 'safe'),
+            array('element_id, ophcocvi_clinicinfo_disorder_section_id', 'required'),
+            array('id, element_id, ophcocvi_clinicinfo_disorder_section_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -110,14 +110,12 @@ class Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments extends \BaseEvent
         ));
     }
 
-    public function getDisorderSectionComments($disorder_section_id,$element_id,$side) {
-        $eye_value = \Eye::model()->find("name = ?", array(ucfirst($side)));
+    public function getDisorderSectionComments($disorder_section_id,$element_id) {
         $criteria=new \CDbCriteria;
         $criteria->select='comments';
         $criteria->condition = "element_id=:element_id";
         $criteria->addCondition("ophcocvi_clinicinfo_disorder_section_id=:disorder_section_id");
-        $criteria->addCondition("eye_id=:eye_id");
-        $criteria->params = array(':element_id'=>$element_id,':disorder_section_id'=>$disorder_section_id,':eye_id' => $eye_value->id);
+        $criteria->params = array(':element_id'=>$element_id,':disorder_section_id'=>$disorder_section_id);
         $item = Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments::model()->find($criteria);
         return $item['comments'] ? $item['comments'] : '';
     }

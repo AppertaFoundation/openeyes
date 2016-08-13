@@ -91,45 +91,13 @@ if ($this->checkClinicalEditAccess()) { ?>
         <?php echo $form->dropDownList($element, 'field_of_vision_id',
             CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_FieldOfVision::model()->findAll(array('order' => 'display_order asc')),
                 'id', 'name'), array('empty' => '- Please select -')) ?>
+        <?php $this->renderPartial('form_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders', array(
+            'element' => $element,
+            'form' => $form,
+
+        ))?>
 
 
-        <div class="sub-element-fields element-eyes row">
-            <div class="element-eye right-eye column left side" data-side="right">
-                <div class="active-form">
-                    <a href="#" class="icon-remove-side remove-side">Remove side</a>
-                    <?php $this->renderPartial('form_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders', array(
-                        'side' => 'right',
-                        'element' => $element,
-                        'form' => $form,
-
-                    ))?>
-                </div>
-                <div class="inactive-form">
-                    <div class="add-side">
-                        <a href="#">
-                            Add right side <span class="icon-add-side"></span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="element-eye left-eye column right side data-side="left">
-            <div class="active-form">
-                <a href="#" class="icon-remove-side remove-side">Remove side</a>
-                <?php $this->renderPartial('form_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders', array(
-                    'side' => 'left',
-                    'element' => $element,
-                    'form' => $form,
-                ))?>
-            </div>
-            <div class="inactive-form">
-                <div class="add-side">
-                    <a href="#">
-                        Add left side <span class="icon-add-side"></span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
         <?php echo $form->textArea($element, 'diagnoses_not_covered', array('rows' => 6, 'cols' => 80)) ?>
         <?php echo $form->dropDownList($element, 'consultant_id',
             CHtml::listData(User::model()->findAll(array('order' => 'last_name asc')), 'id', 'last_name'),
