@@ -261,18 +261,51 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
     }
 
     /**
+     * To generate the low vision status array for the pdf
+     *
+     * @return array
+     */
+    public function generateFieldOfVision() {
+        $data = array();
+        $field_of_vision_statuses = (OphCoCvi_ClinicalInfo_FieldOfVision::model()->findAll(array('order' => 'display_order asc')));
+        foreach($field_of_vision_statuses as $field_of_vision_status) {
+            $key = $field_of_vision_status->name;
+            $data[][$key] = ($this->field_of_vision === $field_of_vision_status->id) ? 'X' : '';
+        }
+        return $data;
+    }
+
+    /**
+     * To generate the low vision status array for the pdf
+     *
+     * @return array
+     */
+    public function generateLowVisionStatus() {
+        $data = array();
+        $low_vision_statuses = (OphCoCvi_ClinicalInfo_LowVisionStatus::model()->findAll(array('order' => 'display_order asc')));
+        foreach($low_vision_statuses as $low_vision_status) {
+            $key = $low_vision_status->name;
+            $data[][$key] = ($this->low_vision_status_id === $low_vision_status->id) ? 'X' : '';
+        }
+        return $data;
+    }
+
+    /**
      * Returns an associative array of the data values for printing
      */
     public function getStructuredDataForPrint()
     {
         $result = array();
         $result['examinationDate'] = date('d/m/Y', strtotime($this->examination_date));
-        $result['is_considered_blind'] = ($this->is_considered_blind) ? 'Yes' : 'No';
-
+        $result['isConsideredBlind'] = ($this->is_considered_blind) ? 'Yes' : 'No';
         $result['consultantName'] = $this->consultant->getFullName();
-        //var_dump(\Institution::model()->getCurrent());exit;
-        //var_dump($consultant_name);exit;
-
+        $result['unaidedRightVA'] = $this->unaided_right_va;
+        $result['unaidedLeftVA'] = $this->unaided_left_va;
+        $result['bestCorrectedLeftVA'] = $this->best_corrected_left_va;
+        $result['bestCorrectedRightVA'] = $this->best_corrected_right_va;
+        $result['bestCorrectedBinocularVA'] = $this->best_corrected_binocular_va;
+        $result['fieldOfVision'] = $this->generateFieldOfVision();
+        $result['lowVisionStatus'] = $this->generateLowVisionStatus();
         return $result;
     }
 }
