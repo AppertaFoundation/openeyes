@@ -117,32 +117,66 @@ class ODTTemplateManager
         $this->contentXml->saveXML();
     }
     
-    public function imgReplace( $imagePattern , $newImageUrl )
+    public function exchangeStringValueByStyleName( $styleName, $value )
     {
-        $newImage = substr($newImageUrl, strrpos($newImageUrl, '/') + 1);
-        // If the destination (2nd parameter ) file already exists, it will be overwritten.
-        copy( $newImageUrl , $this->mediaDir.$imagePattern);
-    }
+
+        $xpath = new DOMXpath($this->contentXml);
+        
+        $element    = $xpath->query('//*[@text:style-name="'.$styleName.'"]')->item(0);
+        if( $element != null ){
+            $firstChild = $element -> childNodes->item(0);
+            $existingStyleName = $firstChild->getAttribute('text:style-name'); // get firstChild style
     
-    public function imgReplaceByName( $imageName , $newImageUrl )
-    {
-        $frame = $this->xpath->query('//draw:frame[@draw:name="'.$imageName.'"]')->item(0);
-        foreach($frame->childNodes as $image) {
-            $imageHref = $image->getAttribute('xlink:href'); 
-            copy( $newImageUrl , $this->unzippedDir.$imageHref);
+            while($element->hasChildNodes()) { // Delete all child (normalize)
+                $x = $element -> childNodes->item(0);
+                $element->removeChild($x);
+            }
+            
+            $newTextNode = $this->contentXml->createElement('text:span');
+            $newTextNode -> nodeValue = $value;
+            $newTextNode -> setAttribute('text:style-name',$existingStyleName);
+            $element->appendChild($newTextNode);
+        }
+    }     
+    
+    public function exchangeStringValuesByStyleName( $data ){
+        
+        foreach( $data as $key => $value ){
+            $this->exchangeStringValueByStyleName( $key, $value );   
         }
     }
+
+    protected function getImageHrefFromImageNode( $imageName ){
+        $frame = $this->xpath->query('//draw:frame[@draw:name="'.$imageName.'"]')->item(0);
+        if( $frame == null ){
+            return false;   
+        }
+        $imageNode = $frame->childNodes->item(0);
+        return $imageNode->getAttribute('xlink:href'); 
+    }
     
-    public function changeImage( $imagePattern, $image )
+    
+    public function imgReplace( $imageName , $newImageUrl )
     {
-       
+        $oldFile = $this->unzippedDir.$this->getImageHrefFromImageNode( $imageName );
+
+        // If the destination (2nd parameter ) file already exists, it will be overwritten.
+        copy( $newImageUrl , $oldFile);
+    }
+   
+    public function imgReplaceByName( $imageName , $newImageUrl )
+    {
+        copy( $newImageUrl , $this->unzippedDir.$this->getImageHrefFromImageNode( $imageName ));
+    }
+    
+    public function changeImage( $imageName, $image )
+    {
         if ($image !== false) {
-            imagepng($image, $this->mediaDir.$imagePattern);
+            imagepng($image, $this->unzippedDir.$this->getImageHrefFromImageNode( $imageName ) );
             imagedestroy($image);
         } else {
             echo 'An error occurred.';
         }
-       
     }
 
     private function getTableVariableNode( $nodeValue, $text )

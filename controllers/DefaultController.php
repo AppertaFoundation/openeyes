@@ -200,7 +200,7 @@ class DefaultController extends \BaseEventTypeController
         // we also need a method to generate the data structure with the ODTDataHandler!
         $data["signatureName"] = $this->patient->getFullName();
         $data["signatureDate"] = "11/08/2016";
-        print_r($data);die;
+        //print_r($data);die;
 
         return $data;
     }
@@ -215,21 +215,29 @@ class DefaultController extends \BaseEventTypeController
         }
 
         $event->lock();
-
+        /*
         $QRContent = "@code:".\Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($event)."@key:".md5("here comes the key");
 
         $QRHelper = new SignatureQRCodeGenerator();
         $QRHelper->generateQRSignatureBox($QRContent);
 
         die;
+        */
 
         // TODO: need to find a place for the template files! (eg. views/odtTemplates) ?
-        $inputFile = 'example_certificate_4.odt';
+        $inputFile = 'example_certificate_5.odt';
         $printHelper = new ODTTemplateManager( $inputFile , realpath(__DIR__ . '/..').'/files', 'CVICert_'.\Yii::app()->user->id.'_'.rand().'.odt');
 
-        //$this->getStructuredDataForPrintPDF($id);
+        //$printHelper->exchangeStringValues( $this->getStructuredDataForPrintPDF($id) );
         
-        $printHelper->exchangeStringValues( $this->getStructuredDataForPrintPDF($id) );
+                 
+        $printHelper->exchangeStringValuesByStyleName( $this->getStructuredDataForPrintPDF($id) );
+        
+        //$printHelper->imgReplaceByName( utf8_encode('Kép 5') , 'newImageUrl' );
+        //$printHelper->imgReplace(utf8_encode('Kép 5'),'UjKep1'); // WARNING! Hungarian OpenOffice generate accents names // Kép 5
+        //$printHelper->changeImage( utf8_encode('Kép 5'),$imageSource );
+        
+        
         $printHelper->saveContentXML();
         $printHelper->generatePDF();
         $printHelper->getPDF();
