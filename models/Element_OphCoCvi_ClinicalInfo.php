@@ -287,6 +287,32 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         return $data;
     }
 
+    public function getDisordersForSection($disorder_section) {
+        $data = array();
+        $data[] = array('','','','left','right');
+        $first = 1;
+        foreach (OphCoCvi_ClinicalInfo_Disorder::model()
+                     ->findAll('`active` = ? and section_id = ?',array(1, $disorder_section->id)) as $disorder) {
+            $disorder_section_name = '';
+            if($first === 1) {
+                $disorder_section_name = $disorder_section->name;
+                $first = 0;
+            }
+            $value_right = Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()
+                ->getDisorderAffectedStatus($disorder->id,$this->id,'right');
+            $value_left = Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()
+                ->getDisorderAffectedStatus($disorder->id,$this->id,'left');
+            $data[] = array($disorder_section_name,$disorder->name,$disorder->code, !empty($value_right) ? 'Yes' : 'No',
+                !empty($value_left) ? 'Yes' : 'No');
+        }
+        if($disorder_section->comments_allowed == 1) {
+            $comments = Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments::model()->
+                getDisorderSectionComments($disorder_section->id,$this->id);
+            $data[] = array('', $disorder_section->comments_label.' : '.$comments, '','','');
+        }
+        return $data;
+    }
+
     /**
      * Returns an associative array of the data values for printing
      */
@@ -303,6 +329,13 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         $result['bestCorrectedBinocularVA'] = $this->best_corrected_binocular_va;
         $result['fieldOfVision'] = $this->generateFieldOfVision();
         $result['lowVisionStatus'] = $this->generateLowVisionStatus();
+        $result['sightVariesByLightLevelYes'] = ($this->sight_varies_by_light_levels === 1) ? 'X' : '';
+        $result['sightVariesByLightLevelNo'] = ($this->sight_varies_by_light_levels === 0) ? '' : 'X';
+        foreach(OphCoCvi_ClinicalInfo_Disorder_Section::model()
+                    ->findAll('`active` = ?',array(1)) as $disorder_section) {
+            $result['disorder' . ucfirst($disorder_section->name) . 'Table'] = $this->getDisordersForSection($disorder_section);
+        }
+        $result['diagnosisNotCovered'] = $this->diagnoses_not_covered;
         return $result;
     }
 }
