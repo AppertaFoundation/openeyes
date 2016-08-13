@@ -31,7 +31,7 @@ class SignatureQRCodeGenerator
 
     }
 
-    public function generateQRSignatureBox( $text )
+    public function generateQRSignatureBox( $text, $returnObject = true )
     {
         $canvas = imagecreatetruecolor(700,186);
         $black = imagecolorallocate($canvas, 0,0,0);
@@ -43,10 +43,14 @@ class SignatureQRCodeGenerator
         $qrCode = $this->createQRCode( $text );
         imagecopy($canvas, $qrCode, (imagesx($canvas)-imagesx($qrCode))-3, 3, 0, 0, imagesx($qrCode), imagesy($qrCode));
 
-        // Output and free from memory
-        header('Content-Type: image/jpeg');
+        if($returnObject){
+            return $canvas;
+        }else {
+            // Output and free from memory
+            header('Content-Type: image/jpeg');
 
-        imagejpeg($canvas);
-        imagedestroy($canvas);
+            imagejpeg($canvas);
+            imagedestroy($canvas);
+        }
     }
 }

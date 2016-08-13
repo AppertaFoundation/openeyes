@@ -136,6 +136,14 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
     }
 
     /**
+     *  Checks if a patient signature file is already attached to the event
+     */
+    public function checkSignature()
+    {
+        return ($this->signature_file_id)?'true':false;
+    }
+
+    /**
      * Returns an associative array of the data values for printing
      */
     public function getStructuredDataForPrint()

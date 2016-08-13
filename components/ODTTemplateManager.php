@@ -83,7 +83,7 @@ class ODTTemplateManager
         }
      
     }
-    
+
     public function exchangeStringValues( $data )
     {
         $nodes = $this->xpath->query('//text()');
@@ -139,7 +139,7 @@ class ODTTemplateManager
         }
     }     
     
-    public function exchangeStringValuesByStyleName( $data ){
+    public function exchangeAllStringValuesByStyleName( $data ){
         
         foreach( $data as $key => $value ){
             $this->exchangeStringValueByStyleName( $key, $value );   
@@ -155,21 +155,12 @@ class ODTTemplateManager
         return $imageNode->getAttribute('xlink:href'); 
     }
     
-    
-    public function imgReplace( $imageName , $newImageUrl )
-    {
-        $oldFile = $this->unzippedDir.$this->getImageHrefFromImageNode( $imageName );
-
-        // If the destination (2nd parameter ) file already exists, it will be overwritten.
-        copy( $newImageUrl , $oldFile);
-    }
-   
     public function imgReplaceByName( $imageName , $newImageUrl )
     {
         copy( $newImageUrl , $this->unzippedDir.$this->getImageHrefFromImageNode( $imageName ));
     }
     
-    public function changeImage( $imageName, $image )
+    public function changeImageFromGDObject( $imageName, $image )
     {
         if ($image !== false) {
             imagepng($image, $this->unzippedDir.$this->getImageHrefFromImageNode( $imageName ) );
@@ -235,11 +226,12 @@ class ODTTemplateManager
                 foreach($row->childNodes as $c => $cell){
                    
                     if ((array_key_exists($rowCount, $data)) && (array_key_exists($c, $data[$rowCount]))) { 
-                        
                         //$cell->nodeValue = "";
-                        $text = $this->contentXml->createElement('text:p', $data[$rowCount][$c]);
-                        $cell->appendChild($text);
-                        $text->setAttribute("text:style-name", $this->textStyleName);
+                        if($data[$rowCount][$c] != "") {
+                            $text = $this->contentXml->createElement('text:p', $data[$rowCount][$c]);
+                            $cell->appendChild($text);
+                            $text->setAttribute("text:style-name", $this->textStyleName);
+                        }
                     }
                 }
             } 

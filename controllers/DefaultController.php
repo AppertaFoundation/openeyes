@@ -200,9 +200,13 @@ class DefaultController extends \BaseEventTypeController
         // we also need a method to generate the data structure with the ODTDataHandler!
         $data["signatureName"] = $this->patient->getFullName();
         $data["signatureDate"] = "11/08/2016";
-        //print_r($data);die;
 
         return $data;
+    }
+
+    protected function checkSignature( $eventId ){
+        $signatureElement = models\Element_OphCoCvi_ConsentSignature::model()->findByAttributes(array('event_id'=>$eventId));
+        return $signatureElement->checkSignature();
     }
 
     /**
@@ -215,14 +219,20 @@ class DefaultController extends \BaseEventTypeController
         }
 
         $event->lock();
-        /*
-        $QRContent = "@code:".\Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($event)."@key:".md5("here comes the key");
 
-        $QRHelper = new SignatureQRCodeGenerator();
-        $QRHelper->generateQRSignatureBox($QRContent);
+        //  we need to check if we already have a signature file linked
+        if(!$this->checkSignature( $id )){
+            $QRContent = "@code:".\Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($event)."@key:".md5("here comes the key");
 
-        die;
-        */
+            $QRHelper = new SignatureQRCodeGenerator();
+            $signature = $QRHelper->generateQRSignatureBox($QRContent);
+        }else{
+            // we get the stored signature
+            $signature =  $this->getOpenElementByClassName('Element_OphCoCvi_ConsentSignature')->signature_file;
+        }
+
+
+        //die;
 
         // TODO: need to find a place for the template files! (eg. views/odtTemplates) ?
         $inputFile = 'example_certificate_5.odt';
@@ -230,14 +240,10 @@ class DefaultController extends \BaseEventTypeController
 
         //$printHelper->exchangeStringValues( $this->getStructuredDataForPrintPDF($id) );
         
-                 
-        $printHelper->exchangeStringValuesByStyleName( $this->getStructuredDataForPrintPDF($id) );
-        
-        //$printHelper->imgReplaceByName( utf8_encode('Kép 5') , 'newImageUrl' );
-        //$printHelper->imgReplace(utf8_encode('Kép 5'),'UjKep1'); // WARNING! Hungarian OpenOffice generate accents names // Kép 5
-        //$printHelper->changeImage( utf8_encode('Kép 5'),$imageSource );
-        
-        
+        $printHelper->exchangeAllStringValuesByStyleName( $this->getStructuredDataForPrintPDF($id) );
+        //$printHelper->exchangeAllStringValuesByNodes( $this->getStructuredDataForPrintPDF($id) );
+        // TODO: we need to check which function to call
+        $printHelper->changeImageFromGDObject('signature1', $signature);
         $printHelper->saveContentXML();
         $printHelper->generatePDF();
         $printHelper->getPDF();
