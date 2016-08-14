@@ -113,8 +113,6 @@ class ODTTemplateManager
                 }    
             }
         }
-        
-        $this->contentXml->saveXML();
     }
     
     public function exchangeStringValueByStyleName( $styleName, $value )
@@ -237,7 +235,34 @@ class ODTTemplateManager
             } 
            
         }
-        $this->contentXml->saveXML();
+    }
+
+    public function fillTableByStyleName( $styleName , $data )
+    {
+        $table = $this->xpath->query('//*[@table:style-name="'.$styleName.'"]')->item(0);
+        
+        $rowCount = 0;
+        $colCount = 0;
+        if( $table != null ){
+            foreach($table->childNodes as $r => $tableNode) {
+                if( $tableNode->nodeName == "table:table-row" ){
+                    $cols = $tableNode->childNodes;
+                    foreach($cols as $oneCol){
+                        if($oneCol->nodeName != 'table:covered-table-cell'){
+                            $textNode = $oneCol->childNodes->item(0);
+                            if(isset($data[$rowCount][$colCount])){
+                                if( $data[$rowCount][$colCount] != '' ){
+                                    $textNode->nodeValue = $data[$rowCount][$colCount];    
+                                }
+                            }
+                        }
+                        $colCount++;
+                    }
+                    $rowCount++;
+                    $colCount=0;
+                }
+            } 
+        }
     }
 
     private function createNode( $xml, $tag, $attribs, $value = '' )

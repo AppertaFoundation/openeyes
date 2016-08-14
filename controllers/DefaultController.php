@@ -203,7 +203,7 @@ class DefaultController extends \BaseEventTypeController
             array('male','','female','X');
         $dob = ($this->patient->dob) ? $this->patient->NHSDate('dob') : '';
         $data['yearHeader'] = !empty($dob) ? str_split(date('Y', strtotime($dob))) : array('','','','');
-        print_r($data);die;
+        //print_r($data);die;
 
         return $data;
     }
@@ -232,11 +232,26 @@ class DefaultController extends \BaseEventTypeController
         }
 
 
-        //die;
-
         // TODO: need to find a place for the template files! (eg. views/odtTemplates) ?
         $inputFile = 'example_certificate_5.odt';
         $printHelper = new ODTTemplateManager( $inputFile , realpath(__DIR__ . '/..').'/files', 'CVICert_'.\Yii::app()->user->id.'_'.rand().'.odt');
+
+        $data = array( 
+            array('','','','X','','','1','9','7','5','','','6','7','2','6') 
+        );
+        $printHelper->fillTableByStyleName( $styleName='sexTable' , $data );
+
+
+        $data = array( 
+            array('','','','','','','','','','','Y'),
+            array('','','','','','','','','','','Y'),
+            array('','','','','','','','','','','N'),
+            array('','','','','','','','','','','Y'),
+            array('','','','','','','','','','','N'),
+        );        
+        $printHelper->fillTableByStyleName( $styleName='otherRelevantFactorsTable' , $data );
+        
+
 
         //$printHelper->exchangeStringValues( $this->getStructuredDataForPrintPDF($id) );
         
