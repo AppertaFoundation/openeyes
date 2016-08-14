@@ -236,7 +236,7 @@ class DefaultController extends \BaseEventTypeController
 
 
         // TODO: need to find a place for the template files! (eg. views/odtTemplates) ?
-        $inputFile = 'example_certificate_6.odt';
+        $inputFile = 'example_certificate_5.odt';
         $printHelper = new ODTTemplateManager( $inputFile , realpath(__DIR__ . '/..').'/files', 'CVICert_'.\Yii::app()->user->id.'_'.rand().'.odt');
 
         //print '<pre>'; print_r($this->getStructuredDataForPrintPDF($id)); die;
