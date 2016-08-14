@@ -198,7 +198,7 @@ class DefaultController extends \BaseEventTypeController
         // TODO: we need to match the keys here!
         // we also need a method to generate the data structure with the ODTDataHandler!
         $data["signatureName"] = $this->patient->getFullName();
-        $data["signatureDate"] = "11/08/2016";
+        $data["signatureDate"] = date("d/m/Y");
 
         $genderData = (strtolower($this->patient->getGenderString()) == 'male') ? array('','X','','') : array('','','','X');
         $dob = ($this->patient->dob) ? $this->patient->NHSDate('dob') : '';
