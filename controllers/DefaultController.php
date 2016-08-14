@@ -246,19 +246,14 @@ class DefaultController extends \BaseEventTypeController
         //print_r($DH->getDataSource());die;
 
         $tables = $DH -> gettables();
+        
         foreach($tables as $oneTable){
             $name = $oneTable['name'];
-            $data = $DH -> generateSimpletableHashData( $oneTable );
+            $data = $DH -> generateSimpleTableHashData( $oneTable );
             $printHelper->fillTableByName( $name , $data, 'name' );
         }
 
-        /*
-        $data = array( 
-            array('','','','X','','','1','9','7','5','','','6','7','2','6') 
-        );
-        
-        $printHelper->fillTableByName( 'gender' , $data, 'name' );
-
+        // TEST DATA!!
         $data = array( 
             array('','','','','','','','','','','Y'),
             array('','','','','','','','','','','Y'),
@@ -266,9 +261,9 @@ class DefaultController extends \BaseEventTypeController
             array('','','','','','','','','','','Y'),
             array('','','','','','','','','','','N'),
         );        
-        */
         $printHelper->fillTableByName( 'otherRelevantFactors' , $data, 'name' );
 
+        
         $texts = $DH -> getSimpleTexts();
         $printHelper->exchangeAllStringValuesByStyleName( $texts );
         

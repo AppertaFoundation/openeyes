@@ -142,7 +142,7 @@ namespace OEModule\OphCoCvi\components;
             return $this->dataSource;   
         }
         
-        function generateSimpletableHashData( $table ){
+        function generateSimpleTableHashData( $table ){
             $ret = array();
             foreach($table['rows'] as $rowID => $oneRow){
                 foreach($oneRow['cells'] as $colID => $oneCell){
