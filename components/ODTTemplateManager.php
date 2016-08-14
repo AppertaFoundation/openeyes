@@ -138,9 +138,8 @@ class ODTTemplateManager
     }     
     
     public function exchangeAllStringValuesByStyleName( $data ){
-        
-        foreach( $data as $key => $value ){
-            $this->exchangeStringValueByStyleName( $key, $value );   
+        foreach( $data as $oneText ){
+            $this->exchangeStringValueByStyleName( $oneText['name'], $oneText['data'] );   
         }
     }
 
@@ -237,9 +236,14 @@ class ODTTemplateManager
         }
     }
 
-    public function fillTableByStyleName( $styleName , $data )
+    public function fillTableByName( $name , $data,  $type='name' )
     {
-        $table = $this->xpath->query('//*[@table:style-name="'.$styleName.'"]')->item(0);
+        switch( $type ){
+            case 'style' : $type = 'style-name'; break;
+            case 'name'  : $type = 'name'; break;
+            default      : $type = 'name'; break;
+        }
+        $table = $this->xpath->query('//*[@table:'.$type.'="'.$name.'"]')->item(0);
         
         $rowCount = 0;
         $colCount = 0;

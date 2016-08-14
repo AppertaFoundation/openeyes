@@ -90,8 +90,39 @@ namespace OEModule\OphCoCvi\components;
             return false;
         }
         
-        function createText($name){
-            return new ODTSimpleText($name);
+        function createText($name,$data=null){
+            return new ODTSimpleText($name,$data);
+        }
+
+        function setTableAndSimpleTextDataFromArray( $array ){
+            foreach($array as $key => $value){
+                if( is_array($value) ){ // generate table data
+                    $table = $this -> createTable( $key );
+                    foreach($value as $oneRow){
+                        $row = $this -> createRow();
+                        foreach( $oneRow as $oneCellData ){
+                            $cell = $this -> createCell();
+                            $this -> setAttribute($cell, 'data',$oneCellData);
+                            $row -> addCell($cell);
+                        }
+                        $this -> addRow($table, $row);
+                    }
+                    $this -> import($table);
+                } else { // simple-text datas
+                    $text = $this -> createText($key,$value); // name, data
+                    $this -> import($text);
+                }
+            }
+        }
+        
+        function getSimpleTexts(){
+            $texts = isset( $this->dataSource['simple-text'] ) ? $this->dataSource['simple-text'] : array();
+            return $texts;
+        }
+
+        function getTables(){
+            $tables = isset( $this->dataSource['table'] ) ? $this->dataSource['table'] : array();
+            return $tables;
         }
         
         function import($obj){
@@ -105,6 +136,20 @@ namespace OEModule\OphCoCvi\components;
             }
             
             $this->dataSource[$type][]=$data;
+        }
+        
+        function getDataSource(){
+            return $this->dataSource;   
+        }
+        
+        function generateSimpleTableHashData( $table ){
+            $ret = array();
+            foreach($table['rows'] as $rowID => $oneRow){
+                foreach($oneRow['cells'] as $colID => $oneCell){
+                    $ret[$rowID][$colID] = $oneCell['data'];
+                }
+            }
+            return $ret;
         }
     }
 ?>
