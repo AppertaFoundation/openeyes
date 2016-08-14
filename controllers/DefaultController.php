@@ -199,7 +199,12 @@ class DefaultController extends \BaseEventTypeController
         // we also need a method to generate the data structure with the ODTDataHandler!
         $data["signatureName"] = $this->patient->getFullName();
         $data["signatureDate"] = "11/08/2016";
-        $data["representativeName"] = "Test Tester";
+        $data['gender'] = (strtolower($this->patient->getGenderString()) == 'male') ? array('male','X','female','') :
+            array('male','','female','X');
+        $dob = ($this->patient->dob) ? $this->patient->NHSDate('dob') : '';
+        $data['yearHeader'] = !empty($dob) ? str_split(date('Y', strtotime($dob))) : array('','','','');
+        print_r($data);die;
+
         return $data;
     }
 
