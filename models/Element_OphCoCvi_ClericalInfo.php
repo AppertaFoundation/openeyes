@@ -236,14 +236,16 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 	public function getStructuredDataForPrint()
 	{
 		$result = array();
+		/*
 		$result['liveAloneFactor'] = $this->live_alone_factor;
 		$result['hearingImpairmentFactor'] = $this->hearing_impairment_factor;
-		$result['employmentStatus'] = $this->generateEmployementStatus();
+	    $result['employmentStatus'] = $this->generateEmployementStatus();
 		$result['preferredInfoFormat'] = $this->generatePreferredInfoFormat();
 		$result['infoEmail'] = $this->info_email;
 		$result['contactUrgency'] = $this->generateContactUrgency();
 		$result['preferredLanguage'] = $this->generatePreferredLanguage();
 		$result['socialServiceComments'] = $this->social_service_comments;
+		
 		foreach (OphCoCvi_ClinicalInfo_PatientFactor::model()->findAll('`active` = ?') as $factor) {
 			$is_factor = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->getFactorAnswer($factor->id,$this->id);
 			$comments = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->getComments($factor->id,$this->id);
@@ -255,6 +257,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 			}
 
 		}
+		*/
 		return $result;
 	}
 }
