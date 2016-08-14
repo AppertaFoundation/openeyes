@@ -17,6 +17,7 @@
 
 namespace OEModule\OphCoCvi\controllers;
 
+use OEModule\OphCoCvi\components\optomPortalConnection;
 use OEModule\OphCoCvi\models;
 use OEModule\OphCoCvi\components\OphCoCvi_Manager;
 use \OEModule\OphCoCvi\components\ODTTemplateManager;
@@ -220,6 +221,9 @@ class DefaultController extends \BaseEventTypeController
 
         $event->lock();
         $this->printInit($id);
+
+        $portalConnection = new optomPortalConnection();
+        print_r($portalConnection->signatureSearch());die;
 
         //  we need to check if we already have a signature file linked
         if(!$this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature')->checkSignature()){

@@ -236,7 +236,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 	public function getStructuredDataForPrint()
 	{
 		$result = array();
-		$result['liveAloneFactor'] = $this->live_alone_factor;
+		/*$result['liveAloneFactor'] = $this->live_alone_factor;
 		$result['hearingImpairmentFactor'] = $this->hearing_impairment_factor;
 		$result['employmentStatus'] = $this->generateEmployementStatus();
 		$result['preferredInfoFormat'] = $this->generatePreferredInfoFormat();
@@ -254,7 +254,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 				$result['patientFactor'] = array($factor->name, $factor->code, $is_factor);
 			}
 
-		}
+		}*/
 		return $result;
 	}
 }
