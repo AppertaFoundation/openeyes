@@ -267,7 +267,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         $field_of_vision_statuses = (OphCoCvi_ClinicalInfo_FieldOfVision::model()->findAll(array('order' => 'display_order asc')));
         foreach($field_of_vision_statuses as $field_of_vision_status) {
             $key = $field_of_vision_status->name;
-            $data[][$key] = ($this->field_of_vision === $field_of_vision_status->id) ? 'X' : '';
+            $data[] = array($key,($this->field_of_vision === $field_of_vision_status->id) ? 'X' : '');
         }
         return $data;
     }
@@ -282,7 +282,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         $low_vision_statuses = (OphCoCvi_ClinicalInfo_LowVisionStatus::model()->findAll(array('order' => 'display_order asc')));
         foreach($low_vision_statuses as $low_vision_status) {
             $key = $low_vision_status->name;
-            $data[][$key] = ($this->low_vision_status_id === $low_vision_status->id) ? 'X' : '';
+            $data[] = array($key,($this->low_vision_status_id === $low_vision_status->id) ? 'X' : '');
         }
         return $data;
     }
@@ -329,8 +329,15 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         $result['bestCorrectedLeftVA'] = $this->best_corrected_left_va;
         $result['bestCorrectedRightVA'] = $this->best_corrected_right_va;
         $result['bestCorrectedBinocularVA'] = $this->best_corrected_binocular_va;
-        $result['fieldOfVision'] = $this->generateFieldOfVision();
-        $result['lowVisionStatus'] = $this->generateLowVisionStatus();
+
+        $fieldOfVisionData = $this->generateFieldOfVision();
+        $lowVisionData = array_merge(array(0=>array('','')),$this->generateLowVisionStatus());
+
+        $result["fieldOfVisionAndLowVisionStatus"][0] = array('','','','');
+        for($k=0;$k<sizeof($fieldOfVisionData);$k++){
+            $result["fieldOfVisionAndLowVisionStatus"][$k+1] = array_merge($fieldOfVisionData[$k],$lowVisionData[$k]);
+        }
+
         $result['sightVariesByLightLevelYes'] = ($this->sight_varies_by_light_levels === 1) ? 'X' : '';
         $result['sightVariesByLightLevelNo'] = ($this->sight_varies_by_light_levels === 0) ? '' : 'X';
         foreach(OphCoCvi_ClinicalInfo_Disorder_Section::model()
