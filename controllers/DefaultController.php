@@ -21,6 +21,7 @@ use OEModule\OphCoCvi\components\optomPortalConnection;
 use OEModule\OphCoCvi\models;
 use OEModule\OphCoCvi\components\OphCoCvi_Manager;
 use \OEModule\OphCoCvi\components\ODTTemplateManager;
+use \OEModule\OphCoCvi\components\ODTDataHandler;
 use \OEModule\OphCoCvi\components\SignatureQRCodeGenerator;
 
 
@@ -213,6 +214,7 @@ class DefaultController extends \BaseEventTypeController
     /**
      * @param $id
      */
+     
     public function actionPDFPrint($id)
     {
         if (!$event = \Event::model()->findByPk($id)) {
@@ -241,12 +243,21 @@ class DefaultController extends \BaseEventTypeController
         $inputFile = 'example_certificate_5.odt';
         $printHelper = new ODTTemplateManager( $inputFile , realpath(__DIR__ . '/..').'/files', 'CVICert_'.\Yii::app()->user->id.'_'.rand().'.odt');
 
-        $data = array( 
-            array('','','','X','','','1','9','7','5','','','6','7','2','6') 
-        );
-        $printHelper->fillTableByStyleName( $styleName='sexTable' , $data );
+        //print '<pre>'; print_r($this->getStructuredDataForPrintPDF($id)); die;
 
+        $DH = new ODTDataHandler();
+        $DH -> setTableAndSimpleTextDataFromArray( $this->getStructuredDataForPrintPDF($id) );
+        //print_r($DH->getDataSource());die;
 
+        $tables = $DH -> gettables();
+        
+        foreach($tables as $oneTable){
+            $name = $oneTable['name'];
+            $data = $DH -> generateSimpleTableHashData( $oneTable );
+            $printHelper->fillTableByName( $name , $data, 'name' );
+        }
+
+        // TEST DATA!!
         $data = array( 
             array('','','','','','','','','','','Y'),
             array('','','','','','','','','','','Y'),
@@ -254,13 +265,14 @@ class DefaultController extends \BaseEventTypeController
             array('','','','','','','','','','','Y'),
             array('','','','','','','','','','','N'),
         );        
-        $printHelper->fillTableByStyleName( $styleName='otherRelevantFactorsTable' , $data );
+        $printHelper->fillTableByName( 'otherRelevantFactors' , $data, 'name' );
+
         
-
-
+        $texts = $DH -> getSimpleTexts();
+        $printHelper->exchangeAllStringValuesByStyleName( $texts );
+        
         //$printHelper->exchangeStringValues( $this->getStructuredDataForPrintPDF($id) );
         
-        $printHelper->exchangeAllStringValuesByStyleName( $this->getStructuredDataForPrintPDF($id) );
         //$printHelper->exchangeAllStringValuesByNodes( $this->getStructuredDataForPrintPDF($id) );
         // TODO: we need to check which function to call
         $printHelper->changeImageFromGDObject('signature1', $signature);
