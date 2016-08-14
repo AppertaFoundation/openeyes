@@ -189,7 +189,6 @@ class DefaultController extends \BaseEventTypeController
      *@param $id
      */
     public function getStructuredDataForPrintPDF($id) {
-        $this->printInit($id);
         $data = array();
         foreach($this->open_elements as $element) {
             if(method_exists($element, "getStructuredDataForPrint")) {
@@ -200,13 +199,8 @@ class DefaultController extends \BaseEventTypeController
         // we also need a method to generate the data structure with the ODTDataHandler!
         $data["signatureName"] = $this->patient->getFullName();
         $data["signatureDate"] = "11/08/2016";
-
+        $data["representativeName"] = "Test Tester";
         return $data;
-    }
-
-    protected function checkSignature( $eventId ){
-        $signatureElement = models\Element_OphCoCvi_ConsentSignature::model()->findByAttributes(array('event_id'=>$eventId));
-        return $signatureElement->checkSignature();
     }
 
     /**
@@ -219,16 +213,17 @@ class DefaultController extends \BaseEventTypeController
         }
 
         $event->lock();
+        $this->printInit($id);
 
         //  we need to check if we already have a signature file linked
-        if(!$this->checkSignature( $id )){
+        if(!$this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature')->checkSignature()){
             $QRContent = "@code:".\Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($event)."@key:".md5("here comes the key");
 
             $QRHelper = new SignatureQRCodeGenerator();
             $signature = $QRHelper->generateQRSignatureBox($QRContent);
         }else{
             // we get the stored signature
-            $signature =  $this->getOpenElementByClassName('Element_OphCoCvi_ConsentSignature')->signature_file;
+            $signature =  $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature')->signature_file;
         }
 
 
