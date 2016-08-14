@@ -168,14 +168,93 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 		return parent::afterSave();
 	}
 
+
+	/**
+	 * To generate the employement status array for the pdf
+	 *
+	 * @return array
+	 */
+	public function generateEmployementStatus() {
+		$data = array();
+		$employement_status = (OphCoCvi_ClericalInfo_EmploymentStatus::model()->findAll(array('order' => 'display_order asc')));
+		foreach($employement_status as $employement) {
+			$key = $employement->name;
+			$data[][$key] = ($this->employeement_status_id === $employement->id) ? 'X' : '';
+		}
+		return $data;
+	}
+
+	/**
+	 * To generate the preferred info format array for the pdf
+	 *
+	 * @return array
+	 */
+	public function generatePreferredInfoFormat() {
+		$data = array();
+		$preferredInfoFormats = (OphCoCvi_ClericalInfo_PreferredInfoFmt::model()->findAll(array('order' => 'display_order asc')));
+		foreach($preferredInfoFormats as $preferredInfoFormat) {
+			$key = $preferredInfoFormat->name;
+			$data[][$key] = ($this->preferred_info_fmt_id === $preferredInfoFormats->id) ? 'X' : '';
+		}
+		return $data;
+	}
+
+	/**
+	 * To generate the preferred language array for the pdf
+	 *
+	 * @return array
+	 */
+	public function generatePreferredLanguage() {
+		$data = array();
+		$preferredLanguages = (Language::model()->findAll(array('order' => 'display_order asc')));
+		foreach($preferredLanguages as $preferredLanguage) {
+			$key = $preferredLanguage->name;
+			$data[][$key] = ($this->preferred_language_id === $preferredLanguage->id) ? 'X' : '';
+		}
+		return $data;
+	}
+
+	/**
+	 * To generate the contact urgency array for the pdf
+	 *
+	 * @return array
+	 */
+	public function generateContactUrgency() {
+		$data = array();
+		$contactUrgencies = (OphCoCvi_ClericalInfo_ContactUrgency::model()->findAll(array('order' => 'display_order asc')));
+		foreach($contactUrgencies as $contactUrgency) {
+			$key = $contactUrgency->name;
+			$data[][$key] = ($this->contact_urgency_id === $contactUrgency->id) ? 'X' : '';
+		}
+		return $data;
+	}
+
+
 	/**
 	 * Returns an associative array of the data values for printing
 	 */
 	public function getStructuredDataForPrint()
 	{
 		$result = array();
-		$result['preferred_info_fmt'] = $this->preferred_info_fmt ? $this->preferred_info_fmt->name : 'None';
-		$result['employment_status'] = $this->employment_status ? $this->employment_status->name : 'None';
+		$result['liveAloneFactor'] = $this->live_alone_factor;
+		$result['hearingImpairmentFactor'] = $this->hearing_impairment_factor;
+		$result['employmentStatus'] = $this->generateEmployementStatus();
+		$result['preferredInfoFormat'] = $this->generatePreferredInfoFormat();
+		$result['infoEmail'] = $this->info_email;
+		$result['contactUrgency'] = $this->generateContactUrgency();
+		$result['preferredLanguage'] = $this->generatePreferredLanguage();
+		$result['socialServiceComments'] = $this->social_service_comments;
+		foreach (OphCoCvi_ClinicalInfo_PatientFactor::model()->findAll('`active` = ?') as $factor) {
+			$is_factor = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->getFactorAnswer($factor->id,$this->id);
+			$comments = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->getComments($factor->id,$this->id);
+			if($factor->require_comments == 1) {
+				$result['patientFactor'] = array($factor->name, $factor->code, $is_factor, $comments);
+			}
+			else{
+				$result['patientFactor'] = array($factor->name, $factor->code, $is_factor);
+			}
+
+		}
 		return $result;
 	}
 }
