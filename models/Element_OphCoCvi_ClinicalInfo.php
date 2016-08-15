@@ -180,33 +180,67 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
 
     protected function afterSave()
     {
-        if (!empty($_POST['MultiSelect_disorders'])) {
-
-            $existing_ids = array();
-
-            foreach (Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()->findAll('element_id = :elementId',
-                array(':elementId' => $this->id)) as $item) {
-                $existing_ids[] = $item->ophcocvi_clinicinfo_disorder_id;
-            }
-
-            foreach ($_POST['MultiSelect_disorders'] as $id) {
-                if (!in_array($id, $existing_ids)) {
-                    $item = new Element_OphCoCvi_ClinicalInfo_Disorder_Assignment;
-                    $item->element_id = $this->id;
-                    $item->ophcocvi_clinicinfo_disorder_id = $id;
-
-                    if (!$item->save()) {
-                        throw new Exception('Unable to save MultiSelect item: ' . print_r($item->getErrors(), true));
-                    }
+        $sides = array('2'=>'right','1'=>'left');
+        foreach($sides as $side_value=>$side) {
+            if (!empty($_POST['ophcocvi_clinicinfo_disorder_id_'.$side])) {
+                $existing_comment_ids = array();
+                foreach (Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments::model()
+                             ->findAll('element_id = :elementId',
+                                 array(':elementId' => $this->id)) as $item) {
+                    $existing_comment_ids[] = $item->ophcocvi_clinicinfo_disorder_section_id;
                 }
-            }
-
-            foreach ($existing_ids as $id) {
-                if (!in_array($id, $_POST['MultiSelect_disorders'])) {
-                    $item = Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()->find('element_id = :elementId and ophcocvi_clinicinfo_disorder_id = :lookupfieldId',
-                        array(':elementId' => $this->id, ':lookupfieldId' => $id));
-                    if (!$item->delete()) {
-                        throw new Exception('Unable to delete MultiSelect item: ' . print_r($item->getErrors(), true));
+                $existing_assignment_ids = array();
+                foreach (Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()
+                             ->findAll('element_id = :elementId and eye_id = :eye_id',
+                                 array(':elementId' => $this->id,'eye_id'=>$side_value)) as $item) {
+                    $existing_assignment_ids[] = $item->ophcocvi_clinicinfo_disorder_id;
+                }
+                foreach ($_POST['ophcocvi_clinicinfo_disorder_section_id'] as $sectionId) {
+                    foreach ($_POST['ophcocvi_clinicinfo_disorder_id_'.$side] as $id) {
+                        if(isset($_POST['affected_'.$side][$sectionId][$id]) && $_POST['affected_'.$side][$sectionId][$id] == 1 && !in_array($id,$existing_assignment_ids)) {
+                            $disorders = new Element_OphCoCvi_ClinicalInfo_Disorder_Assignment;
+                            $disorders->element_id = $this->id;
+                            $disorders->eye_id = $side_value;
+                            $disorders->ophcocvi_clinicinfo_disorder_id = $id;
+                            $disorders->affected = $_POST['affected_'.$side][$sectionId][$id];
+                            $disorders->main_cause = isset($_POST['main_cause_'.$side][$sectionId][$id]) ? $_POST['main_cause_'.$side][$sectionId][$id] : 0;
+                            if (!$disorders->save()) {
+                                throw new Exception('Unable to save MultiSelect item: '.print_r($disorders->getErrors(),true));
+                            }
+                        }
+                        else if(isset($_POST['affected_'.$side][$sectionId][$id])) {
+                            $criteria = new \CDbCriteria;
+                            $criteria->compare('element_id', $this->id);
+                            $criteria->compare('eye_id', $side_value);
+                            $criteria->compare('ophcocvi_clinicinfo_disorder_id', $id);
+                            $disorders = Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()->find($criteria);
+                            if(isset($disorders)) {
+                                $disorders->affected = $_POST['affected_'.$side][$sectionId][$id];
+                                $disorders->main_cause = (isset($_POST['main_cause_'.$side][$sectionId][$id]) &&
+                                    isset($_POST['affected_'.$side][$sectionId][$id]) &&
+                                    ($_POST['affected_'.$side][$sectionId][$id] == 1)) ?
+                                        $_POST['main_cause_'.$side][$sectionId][$id] : 0;
+                                $disorders->update();
+                            }
+                        }
+                    }
+                    if(isset($_POST['comments_disorder'][$sectionId]) && $_POST['comments_disorder'][$sectionId] != ''
+                        && !in_array($sectionId,$existing_comment_ids)) {
+                        $disorder_comments = new Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments;
+                        $disorder_comments->element_id = $this->id;
+                        $disorder_comments->ophcocvi_clinicinfo_disorder_section_id = $sectionId;
+                        $disorder_comments->comments = $_POST['comments_disorder'][$sectionId];
+                        if (!$disorder_comments->save()) {
+                            throw new Exception('Unable to save MultiSelect item: '.print_r($disorder_comments->getErrors(),true));
+                        }
+                    }
+                    else if(isset($_POST['comments_disorder'][$sectionId])){
+                        $criteria = new \CDbCriteria;
+                        $criteria->compare('element_id', $this->id);
+                        $criteria->compare('ophcocvi_clinicinfo_disorder_section_id', $sectionId);
+                        $disorder_comments = Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments::model()->find($criteria);
+                        $disorder_comments->comments = $_POST['comments_disorder'][$sectionId];
+                        $disorder_comments->save();
                     }
                 }
             }
@@ -221,5 +255,96 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
     public function getDisplayStatus()
     {
         return $this->is_considered_blind ? static::$BLIND_STATUS : static::$NOT_BLIND_STATUS;
+    }
+
+    /**
+     * To generate the low vision status array for the pdf
+     *
+     * @return array
+     */
+    public function generateFieldOfVision() {
+        $data = array();
+        $field_of_vision_statuses = (OphCoCvi_ClinicalInfo_FieldOfVision::model()->findAll(array('order' => 'display_order asc')));
+        foreach($field_of_vision_statuses as $field_of_vision_status) {
+            $key = $field_of_vision_status->name;
+            $data[] = array($key,($this->field_of_vision === $field_of_vision_status->id) ? 'X' : '');
+        }
+        return $data;
+    }
+
+    /**
+     * To generate the low vision status array for the pdf
+     *
+     * @return array
+     */
+    public function generateLowVisionStatus() {
+        $data = array();
+        $low_vision_statuses = (OphCoCvi_ClinicalInfo_LowVisionStatus::model()->findAll(array('order' => 'display_order asc')));
+        foreach($low_vision_statuses as $low_vision_status) {
+            $key = $low_vision_status->name;
+            $data[] = array($key,($this->low_vision_status_id === $low_vision_status->id) ? 'X' : '');
+        }
+        return $data;
+    }
+
+    public function getDisordersForSection($disorder_section) {
+        $data = array();
+        $data[] = array('','','','left','right');
+        $first = 1;
+        foreach (OphCoCvi_ClinicalInfo_Disorder::model()
+                     ->findAll('`active` = ? and section_id = ?',array(1, $disorder_section->id)) as $disorder) {
+            $disorder_section_name = '';
+            if($first === 1) {
+                $disorder_section_name = $disorder_section->name;
+                $first = 0;
+            }
+            $value_right = Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()
+                ->getDisorderAffectedStatus($disorder->id,$this->id,'right');
+            $value_left = Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()
+                ->getDisorderAffectedStatus($disorder->id,$this->id,'left');
+            $data[] = array($disorder_section_name,$disorder->name,$disorder->code, !empty($value_right) ? 'Yes' : 'No',
+                !empty($value_left) ? 'Yes' : 'No');
+        }
+        if($disorder_section->comments_allowed == 1) {
+            $comments = Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments::model()->
+                getDisorderSectionComments($disorder_section->id,$this->id);
+            $data[] = array('', $disorder_section->comments_label.' : '.$comments, '','','');
+        }
+        return $data;
+    }
+
+    /**
+     * Returns an associative array of the data values for printing
+     */
+    public function getStructuredDataForPrint()
+    {
+        $result = array();
+        $result['examinationDateDate'] = date('d', strtotime($this->examination_date));
+        $result['examinationDateMonth'] = date('m', strtotime($this->examination_date));
+        $result['examinationDateYear'] = date('Y', strtotime($this->examination_date));
+        $result['isConsideredBlind'] = ($this->is_considered_blind) ? 'Yes' : 'No';
+        $result['consultantName'] = $this->consultant->getFullName();
+        $result['unaidedRightVA'] = $this->unaided_right_va;
+        $result['unaidedLeftVA'] = $this->unaided_left_va;
+        $result['bestCorrectedLeftVA'] = $this->best_corrected_left_va;
+        $result['bestCorrectedRightVA'] = $this->best_corrected_right_va;
+        $result['bestCorrectedBinocularVA'] = $this->best_corrected_binocular_va;
+
+        $fieldOfVisionData = $this->generateFieldOfVision();
+        $lowVisionData = array_merge(array(0=>array('','')),$this->generateLowVisionStatus());
+
+        $result["fieldOfVisionAndLowVisionStatus"][0] = array('','','','');
+        for($k=0;$k<sizeof($fieldOfVisionData);$k++){
+            $result["fieldOfVisionAndLowVisionStatus"][$k+1] = array_merge($fieldOfVisionData[$k],$lowVisionData[$k]);
+        }
+
+        $result['sightVariesByLightLevelYes'] = ($this->sight_varies_by_light_levels === 1) ? 'X' : '';
+        $result['sightVariesByLightLevelNo'] = ($this->sight_varies_by_light_levels === 0) ? '' : 'X';
+        foreach(OphCoCvi_ClinicalInfo_Disorder_Section::model()
+                    ->findAll('`active` = ?',array(1)) as $disorder_section) {
+            $result['disorder' . ucfirst($disorder_section->name) . 'Table'] = $this->getDisordersForSection($disorder_section);
+        }
+        $result['diagnosisNotCovered'] = $this->diagnoses_not_covered;
+        return $result;
     }
 }
