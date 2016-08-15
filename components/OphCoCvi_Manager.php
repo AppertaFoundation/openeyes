@@ -198,11 +198,11 @@ class OphCoCvi_Manager extends \CComponent
                 $criteria->addBetweenCondition('event.event_date', $from, $to);
             }
         } elseif ($from) {
-            $criteria->addCondition('event.event_date >= :from_date');
-            $criteria->params = array_merge($criteria->params, array(':from_date' => $from));
+            $criteria->addCondition('event.event_date >= ?');
+            $criteria->params[] = $from;
         } elseif ($to) {
-            $criteria->addCondition('event.event_date <= :to_date');
-            $criteria->params = array_merge($criteria->params, array(':to_date' => $to));
+            $criteria->addCondition('event.event_date <= ?');
+            $criteria->params[] = $to;
         }
     }
 
@@ -224,7 +224,8 @@ class OphCoCvi_Manager extends \CComponent
     private function handleIssuedFilter(\CDbCriteria $criteria, $filter = array())
     {
         if (!isset($filter['show_issued']) || (isset($filter['show_issued']) && !(bool) $filter['show_issued'])) {
-            $criteria->addCondition('t.is_draft', false);
+            $criteria->addCondition('t.is_draft = ?');
+            $criteria->params[] = true;
         }
     }
 
@@ -239,7 +240,6 @@ class OphCoCvi_Manager extends \CComponent
         $this->handleDateRangeFilter($criteria, $filter);
         $this->handleConsultantListFilter($criteria, $filter);
         $this->handleIssuedFilter($criteria, $filter);
-
         return $criteria;
     }
 
