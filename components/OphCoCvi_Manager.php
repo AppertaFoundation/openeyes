@@ -101,6 +101,25 @@ class OphCoCvi_Manager extends \CComponent
     }
 
     /**
+     * @param \Event $event
+     * @return \CActiveRecord|null
+     */
+    public function getClinicalElementForEvent(\Event $event)
+    {
+        return $this->getElementForEvent($event, 'Element_OphCoCvi_ClinicalInfo');
+    }
+
+    /**
+     * @param \Event $event
+     * @return \CActiveRecord|null
+     */
+    public function getClericalElementForEvent(\Event $event)
+    {
+        return $this->getElementForEvent($event, 'Element_OphCoCvi_ClericalInfo');
+    }
+
+
+    /**
      * Generate the text display of the status of the CVI
      *
      * @param Element_OphCoCvi_ClinicalInfo $clinical

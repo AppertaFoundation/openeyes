@@ -46,115 +46,219 @@ namespace OEModule\OphCoCvi\models;
 
 class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 {
-    /**
-     * Returns the static model of the specified AR class.
-     * @return the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
+	/**
+	 * Returns the static model of the specified AR class.
+	 * @return the static model class
+	 */
+	public static function model($className = __CLASS__)
+	{
+		return parent::model($className);
+	}
 
-    /**
-     * @return string the associated database table name
-     */
-    public function tableName()
-    {
-        return 'et_ophcocvi_clericinfo';
-    }
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'et_ophcocvi_clericinfo';
+	}
 
-    /**
-     * @return array validation rules for model attributes.
-     */
-    public function rules()
-    {
-        return array(
-            array(
-                'event_id, employment_status_id, preferred_info_fmt_id, info_email, contact_urgency_id, preferred_language_id, social_service_comments, ',
-                'safe'
-            ),
-            //array('employment_status_id, preferred_info_fmt_id, contact_urgency_id, preferred_language_id, social_service_comments, ', 'required'),
-            array(
-                'id, event_id, employment_status_id, preferred_info_fmt_id, info_email, contact_urgency_id, preferred_language_id, social_service_comments, ',
-                'safe',
-                'on' => 'search'
-            ),
-        );
-    }
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		return array(
+			array('event_id, employment_status_id, preferred_info_fmt_id, info_email, contact_urgency_id, preferred_language_id, social_service_comments, ', 'safe'),
+			//array('employment_status_id, preferred_info_fmt_id, contact_urgency_id, preferred_language_id, social_service_comments, ', 'required'),
+			array('id, event_id, employment_status_id, preferred_info_fmt_id, info_email, contact_urgency_id, preferred_language_id, social_service_comments, ', 'safe', 'on' => 'search'),
+		);
+	}
 
-    /**
-     * @return array relational rules.
-     */
-    public function relations()
-    {
-        return array(
-            'element_type' => array(
-                self::HAS_ONE,
-                'ElementType',
-                'id',
-                'on' => "element_type.class_name='" . get_class($this) . "'"
-            ),
-            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
-            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'employment_status' => array(
-                self::BELONGS_TO,
-                'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_EmploymentStatus',
-                'employment_status_id'
-            ),
-            'preferred_info_fmt' => array(
-                self::BELONGS_TO,
-                'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PreferredInfoFmt',
-                'preferred_info_fmt_id'
-            ),
-            'contact_urgency' => array(
-                self::BELONGS_TO,
-                'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_ContactUrgency',
-                'contact_urgency_id'
-            ),
-            'preferred_language' => array(self::BELONGS_TO, 'Language', 'preferred_language_id'),
-        );
-    }
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		return array(
+			'element_type' => array(self::HAS_ONE, 'ElementType', 'id','on' => "element_type.class_name='".get_class($this)."'"),
+			'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
+			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+			'employment_status' => array(self::BELONGS_TO, 'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_EmploymentStatus', 'employment_status_id'),
+			'preferred_info_fmt' => array(self::BELONGS_TO, 'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PreferredInfoFmt', 'preferred_info_fmt_id'),
+			'contact_urgency' => array(self::BELONGS_TO, 'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_ContactUrgency', 'contact_urgency_id'),
+			'preferred_language' => array(self::BELONGS_TO, 'Language', 'preferred_language_id'),
+		);
+	}
 
-    /**
-     * @return array customized attribute labels (name=>label)
-     */
-    public function attributeLabels()
-    {
-        return array(
-            'id' => 'ID',
-            'event_id' => 'Event',
-            'employment_status_id' => 'Employment status',
-            'preferred_info_fmt_id' => 'Preferred information format',
-            'info_email' => 'Info email',
-            'contact_urgency_id' => 'Contact urgency',
-            'preferred_language_id' => 'Preferred language',
-            'social_service_comments' => 'Social service comments',
-        );
-    }
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'id' => 'ID',
+			'event_id' => 'Event',
+			'employment_status_id' => 'Employment status',
+			'preferred_info_fmt_id' => 'Preferred information format',
+			'info_email' => 'Info email',
+			'contact_urgency_id' => 'Contact urgency',
+			'preferred_language_id' => 'Preferred language',
+			'social_service_comments' => 'Social service comments',
+		);
+	}
 
-    /**
-     * Retrieves a list of models based on the current search/filter conditions.
-     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-     */
-    public function search()
-    {
-        $criteria = new CDbCriteria;
+	/**
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+	 */
+	public function search()
+	{
+		$criteria = new CDbCriteria;
 
-        $criteria->compare('id', $this->id, true);
-        $criteria->compare('event_id', $this->event_id, true);
-        $criteria->compare('employment_status_id', $this->employment_status_id);
-        $criteria->compare('preferred_info_fmt_id', $this->preferred_info_fmt_id);
-        $criteria->compare('info_email', $this->info_email);
-        $criteria->compare('contact_urgency_id', $this->contact_urgency_id);
-        $criteria->compare('preferred_language_id', $this->preferred_language_id);
-        $criteria->compare('social_service_comments', $this->social_service_comments);
+		$criteria->compare('id', $this->id, true);
+		$criteria->compare('event_id', $this->event_id, true);
+		$criteria->compare('employment_status_id', $this->employment_status_id);
+		$criteria->compare('preferred_info_fmt_id', $this->preferred_info_fmt_id);
+		$criteria->compare('info_email', $this->info_email);
+		$criteria->compare('contact_urgency_id', $this->contact_urgency_id);
+		$criteria->compare('preferred_language_id', $this->preferred_language_id);
+		$criteria->compare('social_service_comments', $this->social_service_comments);
 
-        return new CActiveDataProvider(get_class($this), array(
-            'criteria' => $criteria,
-        ));
-    }
+		return new CActiveDataProvider(get_class($this), array(
+			'criteria' => $criteria,
+		));
+	}
+
+
+	protected function afterSave()
+	{
+		if (!empty($_POST['ophcocvi_clinicinfo_patient_factor_id'])) {
+
+			$existing_ids = array();
+
+			foreach (OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->findAll('element_id = :elementId', array(':elementId' => $this->id)) as $item) {
+				$existing_ids[] = $item->ophcocvi_clinicinfo_patient_factor_id;
+			}
+			foreach ($_POST['ophcocvi_clinicinfo_patient_factor_id'] as $id) {
+				if (!in_array($id,$existing_ids)) {
+					$item = new OphCoCvi_ClericalInfo_PatientFactor_Answer;
+					$item->element_id = $this->id;
+					$item->ophcocvi_clinicinfo_patient_factor_id = $id;
+					$item->is_factor = $_POST['is_factor'][$id];
+					$item->comments = $_POST['comments'][$id];
+					if (!$item->save()) {
+						throw new Exception('Unable to save MultiSelect item: '.print_r($item->getErrors(),true));
+					}
+				}
+			}
+
+			foreach ($existing_ids as $id) {
+				if (!in_array($id,$_POST['ophcocvi_clinicinfo_patient_factor_id'])) {
+					$item = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->find('element_id = :elementId and ophcocvi_clinicinfo_patient_factor_id = :lookupfieldId',array(':elementId' => $this->id, ':lookupfieldId' => $id));
+					if (!$item->delete()) {
+						throw new Exception('Unable to delete MultiSelect item: '.print_r($item->getErrors(),true));
+					}
+				}
+			}
+		}
+
+		return parent::afterSave();
+	}
+
+
+	/**
+	 * To generate the employement status array for the pdf
+	 *
+	 * @return array
+	 */
+	public function generateEmployementStatus() {
+		$data = array();
+		$employement_status = (OphCoCvi_ClericalInfo_EmploymentStatus::model()->findAll(array('order' => 'display_order asc')));
+		foreach($employement_status as $employement) {
+			$key = $employement->name;
+			$data[][$key] = ($this->employeement_status_id === $employement->id) ? 'X' : '';
+		}
+		return $data;
+	}
+
+	/**
+	 * To generate the preferred info format array for the pdf
+	 *
+	 * @return array
+	 */
+	public function generatePreferredInfoFormat() {
+		$data = array();
+		$preferredInfoFormats = (OphCoCvi_ClericalInfo_PreferredInfoFmt::model()->findAll(array('order' => 'display_order asc')));
+		foreach($preferredInfoFormats as $preferredInfoFormat) {
+			$key = $preferredInfoFormat->name;
+			$data[][$key] = ($this->preferred_info_fmt_id === $preferredInfoFormats->id) ? 'X' : '';
+		}
+		return $data;
+	}
+
+	/**
+	 * To generate the preferred language array for the pdf
+	 *
+	 * @return array
+	 */
+	public function generatePreferredLanguage() {
+		$data = array();
+		$preferredLanguages = (Language::model()->findAll(array('order' => 'display_order asc')));
+		foreach($preferredLanguages as $preferredLanguage) {
+			$key = $preferredLanguage->name;
+			$data[][$key] = ($this->preferred_language_id === $preferredLanguage->id) ? 'X' : '';
+		}
+		return $data;
+	}
+
+	/**
+	 * To generate the contact urgency array for the pdf
+	 *
+	 * @return array
+	 */
+	public function generateContactUrgency() {
+		$data = array();
+		$contactUrgencies = (OphCoCvi_ClericalInfo_ContactUrgency::model()->findAll(array('order' => 'display_order asc')));
+		foreach($contactUrgencies as $contactUrgency) {
+			$key = $contactUrgency->name;
+			$data[][$key] = ($this->contact_urgency_id === $contactUrgency->id) ? 'X' : '';
+		}
+		return $data;
+	}
+
+
+	/**
+	 * Returns an associative array of the data values for printing
+	 */
+	public function getStructuredDataForPrint()
+	{
+		$result = array();
+		/*
+		$result['liveAloneFactor'] = $this->live_alone_factor;
+		$result['hearingImpairmentFactor'] = $this->hearing_impairment_factor;
+	    $result['employmentStatus'] = $this->generateEmployementStatus();
+		$result['preferredInfoFormat'] = $this->generatePreferredInfoFormat();
+		$result['infoEmail'] = $this->info_email;
+		$result['contactUrgency'] = $this->generateContactUrgency();
+		$result['preferredLanguage'] = $this->generatePreferredLanguage();
+		$result['socialServiceComments'] = $this->social_service_comments;
+		
+		foreach (OphCoCvi_ClinicalInfo_PatientFactor::model()->findAll('`active` = ?') as $factor) {
+			$is_factor = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->getFactorAnswer($factor->id,$this->id);
+			$comments = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->getComments($factor->id,$this->id);
+			if($factor->require_comments == 1) {
+				$result['patientFactor'] = array($factor->name, $factor->code, $is_factor, $comments);
+			}
+			else{
+				$result['patientFactor'] = array($factor->name, $factor->code, $is_factor);
+			}
+
+		}
+		*/
+		return $result;
+	}
 }
-
 ?>

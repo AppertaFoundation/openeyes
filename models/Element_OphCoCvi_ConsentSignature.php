@@ -134,4 +134,56 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
 
         return parent::afterSave();
     }
+
+    /**
+     *  Checks if a patient signature file is already attached to the event
+     */
+    public function checkSignature()
+    {
+        return ($this->signature_file_id)?'true':false;
+    }
+
+    /**
+     * @param $text
+     * @param $key
+     * @return string
+     */
+    protected function decryptSignature($text, $key)
+    {
+        $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
+        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+        return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($text), MCRYPT_MODE_ECB, $iv));
+    }
+
+    /**
+     * @return string
+     */
+    public function getDecryptedSignature()
+    {
+        if($this->signature_file)
+        {
+            return base64_decode($this->decryptSignature(file_get_contents ($this->signature_file->getPath()), md5($this->getEncryptionKey().\Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($this->event))));
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getEncryptionKey()
+    {
+        return md5($this->patientId.$this->event_id.$this->event->episode->id);
+    }
+
+    /**
+     * Returns an associative array of the data values for printing
+     */
+    public function getStructuredDataForPrint()
+    {
+        $result = array();
+        $result['is_patient'] = $this->is_patient ? 'X' : '';
+        $result['is_representative'] = $this->is_patient ? '' : 'X';
+        //$result['patient_name'] = $this->patient->title . " " . $this->patient->first_name . " " . $this->patient->last_name;
+        $result['signature_date'] = $this->signature_date;
+        return $result;
+    }
 }

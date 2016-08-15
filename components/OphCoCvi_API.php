@@ -120,4 +120,19 @@ class OphCoCvi_API extends \BaseAPI
 
         return $this->renderPartial('OphCoCvi.views.patient.cvi_status', $params);
     }
+
+    /**
+     * @param $event
+     */
+    public function getUniqueCodeForCviEvent($event){
+        $eventUniqueCodeId = \UniqueCodeMapping::model()->findAllByAttributes(array('event_id' => $event->id));
+        $eventUniqueCode = \UniqueCodes::model()->findByPk($eventUniqueCodeId[0]->unique_code_id);
+
+        $salt = (isset(\Yii::app()->params['portal']['credentials']['client_id'])) ? \Yii::app()->params['portal']['credentials']['client_id'] : '';
+        $check_digit1 = new \CheckDigitGenerator(\Yii::app()->params['institution_code'].$eventUniqueCode->code, $salt);
+        $check_digit2 = new \CheckDigitGenerator($eventUniqueCode->code.$event->episode->patient->dob, $salt);
+        $finalEventUniqueCode = \Yii::app()->params['institution_code'].$check_digit1->generateCheckDigit().'-'.$eventUniqueCode->code.'-'.$check_digit2->generateCheckDigit();
+
+        return $finalEventUniqueCode;
+    }
 }
