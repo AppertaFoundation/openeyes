@@ -29,8 +29,8 @@ if ($this->checkClinicalEditAccess()) { ?>
                     </div>
                     <div class="column large-8">
                         <?php echo $form->radioButtons($element, 'is_considered_blind', array(
-                            0 => 'Sight Impaired',
-                            1 => 'Severely Sight Impaired',
+                            0 => $element::$NOT_BLIND_STATUS,
+                            1 => $element::$BLIND_STATUS,
                         ),
                             (($element->is_considered_blind === 0) ? $element->is_considered_blind : 0),
                             false, false, false, false,
