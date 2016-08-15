@@ -1580,16 +1580,15 @@ class OphCiExamination_API extends \BaseAPI
      * @param \Patient $patient
      * @param $side
      * @param $type
+     * @param $element
      * @return null
      * @throws \Exception
      */
-    public function getMostRecentVAForPatient(\Patient $patient, $side, $type)
+    public function getMostRecentVAForPatient(\Patient $patient, $side, $type,$element)
     {
         if (!in_array($type, array(static::$AIDED_VA_TYPE, static::$UNAIDED_VA_TYPE))) {
             throw new \Exception("Invalid type for VA {$type}");
         }
-        $latest_element = $this->getMostRecentVAElementForPatient($patient);
-        $element = $latest_element['element'];
         $checkFunc = 'has' . ucfirst($side);
         if (!$element->$checkFunc()) {
             return null;
