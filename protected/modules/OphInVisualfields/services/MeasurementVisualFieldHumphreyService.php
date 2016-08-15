@@ -7,8 +7,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
@@ -16,31 +16,35 @@
 
 namespace OEModule\OphInVisualfields\services;
 
-class MeasurementVisualFieldHumphreyService extends \services\ModelService {
+class MeasurementVisualFieldHumphreyService extends \services\ModelService
+{
+    protected static $operations = array(self::OP_CREATE);
 
-  static protected $operations = array(self::OP_CREATE);
+    protected static $primary_model = 'OphInVisualfields_Field_Measurement';
 
-  static protected $primary_model = 'OphInVisualfields_Field_Measurement';
+    public function resourceToModel($res, $measurement)
+    {
+        $measurement->eye_id = $res->eye_id;
 
-  public function resourceToModel($res, $measurement)
-  {
-	  $measurement->eye_id = $res->eye_id;
+        $pattern = \OphInVisualfields_Pattern::model()->find('name=:name', array(':name' => $res->pattern));
+        if (!$pattern) {
+            throw new \Exception("Unrecognised test pattern: '{$res->pattern}'");
+        }
+        $measurement->pattern_id = $pattern->id;
 
-	  $pattern = \OphInVisualfields_Pattern::model()->find("name=:name", array(":name" => $res->pattern));
-	  if (!$pattern) throw new \Exception("Unrecognised test pattern: '{$res->pattern}'");
-	  $measurement->pattern_id = $pattern->id;
+        $strategy = \OphInVisualfields_Strategy::model()->find('name=:name', array(':name' => $res->strategy));
+        if (!$strategy) {
+            throw new \Exception("Unrecognised test strategy: '{$res->strategy}'");
+        }
+        $measurement->strategy_id = $strategy->id;
 
-	  $strategy = \OphInVisualfields_Strategy::model()->find("name=:name", array(":name" => $res->strategy));
-	  if (!$strategy) throw new \Exception("Unrecognised test strategy: '{$res->strategy}'");
-	  $measurement->strategy_id = $strategy->id;
-
-	  $measurement->study_datetime = $res->study_datetime;
-	  $measurement->cropped_image_id = $res->scanned_field_crop_id;
-	  $measurement->image_id = $res->scanned_field_id;
-	  if (isset($res->xml_file_data)) {
-		  $measurement->source = base64_decode($res->xml_file_data);
-	  }
-	  $measurement->patient_id = $res->patient_id;
-	  $this->saveModel($measurement);
-  }
+        $measurement->study_datetime = $res->study_datetime;
+        $measurement->cropped_image_id = $res->scanned_field_crop_id;
+        $measurement->image_id = $res->scanned_field_id;
+        if (isset($res->xml_file_data)) {
+            $measurement->source = base64_decode($res->xml_file_data);
+        }
+        $measurement->patient_id = $res->patient_id;
+        $this->saveModel($measurement);
+    }
 }

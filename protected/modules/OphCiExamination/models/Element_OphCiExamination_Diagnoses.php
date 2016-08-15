@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -25,19 +25,21 @@ namespace OEModule\OphCiExamination\models;
  * is almost incidental. It is possible that this will become redundant in a future version of OE.
  *
  * The followings are the available columns in table:
+ *
  * @property string $id
- * @property integer $event_id
+ * @property int $event_id
  * @property Disorder $disorder
  * @property Eye $eye
  *
  * The followings are the available model relations:
  */
-
 class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 {
     /**
      * Returns the static model of the specified AR class.
+     *
      * @param string $className
+     *
      * @return the static model class
      */
     public static function model($className = __CLASS__)
@@ -101,6 +103,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
@@ -108,7 +111,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria = new \CDbCriteria;
+        $criteria = new \CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
@@ -127,9 +130,10 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
      * 		'disorder_id' => integer,
      * 		'eye_id' => \Eye::LEFT|\Eye::RIGHT|\Eye::BOTH,
      * 		'principal' => boolean
-     * }, ... ]
+     * }, ... ].
      *
      * @param $update_disorders
+     *
      * @throws Exception
      */
     public function updateDiagnoses($update_disorders)
@@ -156,7 +160,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                 $curr->eye_id = $u_disorder['eye_id'];
                 $curr->principal = $u_disorder['principal'];
                 if (!$curr->save()) {
-                    throw new \Exception("save failed" . print_r($curr->getErrors(), true));
+                    throw new \Exception('save failed'.print_r($curr->getErrors(), true));
                 };
             }
             if ($u_disorder['principal']) {
@@ -191,9 +195,9 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     }
 
     /**
-     * Returns the disorder ids for the element diagnoses
+     * Returns the disorder ids for the element diagnoses.
      *
-     * @return integer[]
+     * @return int[]
      */
     public function getSelectedDisorderIDs()
     {
@@ -207,9 +211,10 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     }
 
     /**
-     * Gets the common ophthalmic disorders for the given firm
+     * Gets the common ophthalmic disorders for the given firm.
      *
      * @param int $firm_id
+     *
      * @return array
      */
     public function getCommonOphthalmicDisorders($firm_id)
@@ -224,7 +229,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     }
 
     /**
-     * Delete the related diagnoses for this element
+     * Delete the related diagnoses for this element.
      *
      * @return bool
      */
@@ -239,7 +244,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 
     public function getLetter_string()
     {
-        $text = "";
+        $text = '';
 
         $findings = array();
         $finding_ids = array();
@@ -255,7 +260,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         $disorder_ids = array(
             'Left' => array(),
             'Right' => array(),
-            'Both' => array()
+            'Both' => array(),
         );
         $is_principal = array();
 
@@ -281,13 +286,13 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                         if ($secto_disorder->parent->disorder_id) {
                             if (in_array($secto_disorder->parent->disorder_id, $disorder_ids[$disorder->eye->name]) ||
                                     in_array($secto_disorder->parent->disorder_id, $disorder_ids['Both'])) {
-                                $secto_strings[] = (($is_principal[$disorder->disorder_id] || $is_principal[$secto_disorder->parent->disorder_id]) ? '' : 'Secondary diagnosis: ').$disorder->eye->name." ".$secto_disorder->letter_macro_text;
+                                $secto_strings[] = (($is_principal[$disorder->disorder_id] || $is_principal[$secto_disorder->parent->disorder_id]) ? '' : 'Secondary diagnosis: ').$disorder->eye->name.' '.$secto_disorder->letter_macro_text;
                                 $used_disorder_ids[] = $disorder->disorder_id;
                                 $used_disorder_ids[] = $secto_disorder->parent->disorder_id;
                             }
                         } elseif ($secto_disorder->parent->finding_id) {
                             if (in_array($secto_disorder->parent->finding_id, $finding_ids)) {
-                                $secto_strings[] = ($is_principal[$disorder->disorder_id] ? '' : 'Secondary diagnosis: ').$disorder->eye->name." ".$secto_disorder->letter_macro_text;
+                                $secto_strings[] = ($is_principal[$disorder->disorder_id] ? '' : 'Secondary diagnosis: ').$disorder->eye->name.' '.$secto_disorder->letter_macro_text;
                                 $used_disorder_ids[] = $disorder->disorder_id;
                                 $used_finding_ids[] = $secto_disorder->parent->finding_id;
                             }
@@ -301,7 +306,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                     if ($secto_disorder->letter_macro_text) {
                         if ($secto_disorder->parent->disorder_id) {
                             if ($eye = $this->getEyeForDisorder($secto_disorder->parent->disorder_id, $disorder_ids)) {
-                                $secto_strings[] = ($is_principal[$secto_disorder->parent->disorder_id] ? '' : 'Secondary diagnosis: ').$eye." ".$secto_disorder->letter_macro_text;
+                                $secto_strings[] = ($is_principal[$secto_disorder->parent->disorder_id] ? '' : 'Secondary diagnosis: ').$eye.' '.$secto_disorder->letter_macro_text;
                                 $used_disorder_ids[] = $secto_disorder->parent->disorder_id;
                                 $used_finding_ids[] = $finding->finding_id;
                             }
@@ -311,7 +316,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
             }
         }
 
-        $criteria = new \CDbCriteria;
+        $criteria = new \CDbCriteria();
         $criteria->addCondition('element_diagnoses_id=:ed');
         $criteria->params[':ed'] = $this->id;
         $criteria->addCondition('principal=1');
@@ -321,14 +326,14 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         }
 
         if ($principal = OphCiExamination_Diagnosis::model()->find($criteria)) {
-            $text .= "Principal diagnosis: ".$principal->eye->adjective." ".$principal->disorder->term."\n";
+            $text .= 'Principal diagnosis: '.$principal->eye->adjective.' '.$principal->disorder->term."\n";
         }
 
         if (!empty($secto_strings)) {
             $text .= implode("\n", $secto_strings)."\n";
         }
 
-        $criteria = new \CDbCriteria;
+        $criteria = new \CDbCriteria();
         $criteria->addCondition('element_diagnoses_id=:ed');
         $criteria->params[':ed'] = $this->id;
         $criteria->addCondition('principal=0');
@@ -339,7 +344,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 
         foreach (OphCiExamination_Diagnosis::model()->findAll($criteria) as $diagnosis) {
             if ($diagnosis->disorder) {
-                $text .= "Secondary diagnosis: ".$diagnosis->eye->adjective." ".$diagnosis->disorder->term."\n";
+                $text .= 'Secondary diagnosis: '.$diagnosis->eye->adjective.' '.$diagnosis->disorder->term."\n";
             }
         }
 
@@ -360,12 +365,11 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
             }
         }
 
-        return null;
+        return;
     }
 
     /**
      * Ensure a principal diagnosis is set for the episode.
-     *
      */
     public function afterValidate()
     {

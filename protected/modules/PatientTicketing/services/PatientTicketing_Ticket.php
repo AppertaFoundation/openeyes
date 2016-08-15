@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2014
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2014, OpenEyes Foundation
@@ -19,18 +19,16 @@
 
 namespace OEModule\PatientTicketing\services;
 
-
-class PatientTicketing_Ticket extends \services\Resource {
-
-	public $patient_id;
-	public $priority_id;
-	public $report;
-	public $assignee_user_id;
-	public $assignee_date;
-	public $created_user_id;
-	public $created_date;
-	public $last_modified_user_id;
-	public $last_modified_date;
-	public $event_id;
-
+class PatientTicketing_Ticket extends \services\Resource
+{
+    public $patient_id;
+    public $priority_id;
+    public $report;
+    public $assignee_user_id;
+    public $assignee_date;
+    public $created_user_id;
+    public $created_date;
+    public $last_modified_user_id;
+    public $last_modified_date;
+    public $event_id;
 }

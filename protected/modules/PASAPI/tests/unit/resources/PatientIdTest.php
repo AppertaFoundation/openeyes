@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
@@ -24,36 +24,36 @@ class PatientIdTest extends PHPUnit_Framework_TestCase
             array('PasId', false),
             array('NHSNumber', false),
             array('HospitalNumber', false),
-            array('Any', true)
+            array('Any', true),
         );
     }
 
     /**
      * @dataProvider getModelProvider
+     *
      * @param $id_tag
      * @param $expect_exception
      */
     public function test_getModel($id_tag, $expect_exception)
     {
-        $resolver_method = "resolveModel" . $id_tag;
-        
-        $resource = $this->getMockBuilder("\\OEModule\\PASAPI\\resources\\PatientId")
+        $resolver_method = 'resolveModel'.$id_tag;
+
+        $resource = $this->getMockBuilder('\\OEModule\\PASAPI\\resources\\PatientId')
             ->disableOriginalConstructor()
             ->setMethods(array($resolver_method))
             ->getMock();
-        
-        $resource->$id_tag = "Test Value";
-        
+
+        $resource->$id_tag = 'Test Value';
+
         if (!$expect_exception) {
             $test_result = new Patient();
             $resource->expects($this->once())
                 ->method($resolver_method)
                 ->will($this->returnValue($test_result));
-            
+
             $this->assertEquals($test_result, $resource->getModel());
-        }
-        else {
-            $this->setExpectedException("Exception");
+        } else {
+            $this->setExpectedException('Exception');
 
             $resource->getModel();
         }
@@ -61,16 +61,16 @@ class PatientIdTest extends PHPUnit_Framework_TestCase
 
     public function resolveModelId($pass)
     {
-        $rc = new ReflectionClass("\\OEModule\\PASAPI\\resources\\PatientId");
-        $m = $rc->getMethod("resolveModelId");
+        $rc = new ReflectionClass('\\OEModule\\PASAPI\\resources\\PatientId');
+        $m = $rc->getMethod('resolveModelId');
         $m->setAccessible(true);
 
-        $resource = $this->getMockBuilder("\\OEModule\\PASAPI\\resources\\PatientId")
+        $resource = $this->getMockBuilder('\\OEModule\\PASAPI\\resources\\PatientId')
             ->disableOriginalConstructor()
-            ->setMethods(array("getModelForClass", "patientNotFound"))
+            ->setMethods(array('getModelForClass', 'patientNotFound'))
             ->getMock();
 
-        $resource->Id = "testId";
+        $resource->Id = 'testId';
 
         $patient = $this->getMockBuilder('Patient')
             ->disableOriginalConstructor()
@@ -78,30 +78,28 @@ class PatientIdTest extends PHPUnit_Framework_TestCase
             ->getMock();
 
         $resource->expects($this->once())
-            ->method("getModelForClass")
-            ->with("Patient")
+            ->method('getModelForClass')
+            ->with('Patient')
             ->will($this->returnValue($patient));
 
         if ($pass) {
             $resource->expects($this->never())
-                ->method("patientNotFound");
+                ->method('patientNotFound');
 
-            $result = ComponentStubGenerator::generate("Patient", array('id' => 'testId'));
+            $result = ComponentStubGenerator::generate('Patient', array('id' => 'testId'));
             $patient->expects($this->once())
                 ->method('findByPk')
                 ->will($this->returnValue($result));
             $this->assertEquals($result, $m->invoke($resource));
-        }
-        else {
+        } else {
             $resource->expects($this->once())
-                ->method("patientNotFound");
+                ->method('patientNotFound');
 
             $patient->expects($this->once())
                 ->method('findByPk')
                 ->will($this->returnValue(null));
             $m->invoke($resource);
         }
-
     }
 
     public function test_resolveModelId_success()
@@ -113,5 +111,4 @@ class PatientIdTest extends PHPUnit_Framework_TestCase
     {
         $this->resolveModelId(false);
     }
-
 }

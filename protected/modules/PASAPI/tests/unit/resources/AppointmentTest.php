@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
@@ -24,19 +24,19 @@ class AppointmentTest extends PHPUnit_Framework_TestCase
                 null, '2016-05-04 12:13:12', '15:10', '2016-05-04 15:10:00',
             ),
             array(
-                null, 'asdad', 'asdsaf', null
+                null, 'asdad', 'asdsaf', null,
             ),
             array(
-                '2016-04-12 13:10', null, null, '2016-04-12 13:10:00'
+                '2016-04-12 13:10', null, null, '2016-04-12 13:10:00',
             ),
             array(
-                '2016-04-12 13:10', '2016-05-10', null, '2016-05-10 13:10:00'
+                '2016-04-12 13:10', '2016-05-10', null, '2016-05-10 13:10:00',
             ),
             array(
-                '2016-04-12 13:10', null, '10:30', '2016-04-12 10:30:00'
+                '2016-04-12 13:10', null, '10:30', '2016-04-12 10:30:00',
             ),
             array(
-                '2016-04-12 13:10', '2016-10-12', '10:30', '2016-10-12 10:30:00'
+                '2016-04-12 13:10', '2016-10-12', '10:30', '2016-10-12 10:30:00',
             ),
         );
     }
@@ -50,7 +50,7 @@ class AppointmentTest extends PHPUnit_Framework_TestCase
      */
     public function test_getWhen($default_when, $appointment_date, $appointment_time, $expected)
     {
-        $app = $this->getMockBuilder("OEModule\\PASAPI\\resources\\Appointment")
+        $app = $this->getMockBuilder('OEModule\\PASAPI\\resources\\Appointment')
             ->disableOriginalConstructor()
             ->setMethods(null)
             ->getMock();
@@ -58,36 +58,39 @@ class AppointmentTest extends PHPUnit_Framework_TestCase
         if (!is_null($default_when)) {
             $app->setDefaultWhen(DateTime::createFromFormat('Y-m-d H:i', $default_when));
         }
-        if (!is_null($appointment_date))
+        if (!is_null($appointment_date)) {
             $app->AppointmentDate = $appointment_date;
-        if (!is_null($appointment_time))
+        }
+        if (!is_null($appointment_time)) {
             $app->AppointmentTime = $appointment_time;
+        }
 
         if (is_null($expected)) {
-            $this->setExpectedException("Exception");
+            $this->setExpectedException('Exception');
         }
         $when = $app->getWhen();
 
-        if ($expected)
+        if ($expected) {
             $this->assertEquals($expected, $when->format('Y-m-d H:i:s'));
+        }
     }
 
     public function getMappingsArrayProvider()
     {
         return array(
             array(
-                array('key1', 'value1','key2', 'value2'),
+                array('key1', 'value1', 'key2', 'value2'),
                 array(
                     'key1' => 'value1',
                     'key2' => 'value2',
-                )
+                ),
             ),
             // duplicate key overrides, should be prevented by validation
             array(
-                array('key1', 'value1','key1', 'value2'),
+                array('key1', 'value1', 'key1', 'value2'),
                 array(
                     'key1' => 'value2',
-                )
+                ),
             ),
         );
     }
@@ -101,17 +104,17 @@ class AppointmentTest extends PHPUnit_Framework_TestCase
     public function test_getMappingsArray($items, $expected)
     {
         $mapping_items = array();
-        for ($i = 0; $i < count($items); $i+=2) {
-            $mi = $this->getMockBuilder("OEModule\\PASAPI\\resources\\AppointmentMapping")
+        for ($i = 0; $i < count($items); $i += 2) {
+            $mi = $this->getMockBuilder('OEModule\\PASAPI\\resources\\AppointmentMapping')
                 ->disableOriginalConstructor()
                 ->setMethods(null)
                 ->getMock();
             $mi->Key = $items[$i];
-            $mi->Value = $items[$i+1];
+            $mi->Value = $items[$i + 1];
             $mapping_items[] = $mi;
         }
 
-        $a = $this->getMockBuilder("OEModule\\PASAPI\\resources\\Appointment")
+        $a = $this->getMockBuilder('OEModule\\PASAPI\\resources\\Appointment')
             ->disableOriginalConstructor()
             ->setMethods(null)
             ->getMock();
@@ -120,6 +123,4 @@ class AppointmentTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $a->getMappingsArray());
     }
-
-
 }

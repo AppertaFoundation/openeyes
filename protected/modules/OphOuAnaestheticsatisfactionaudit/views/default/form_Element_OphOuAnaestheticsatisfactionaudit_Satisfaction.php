@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -20,14 +20,14 @@
 
 <div class="element-fields">
 	<?php echo $form->slider($element, 'pain', array(
-			'min' => 0,
-			'max' => 10,
-			'step' => 1,
-			'width' => 340,
-			'painScale' => $this->patient->isChild() ? $this->assetPath."/img/painscale_child.png" : $this->assetPath."/img/painscale_adult.png"
-		),
-		array('class' => 'slider painscale')
-	)?>
+            'min' => 0,
+            'max' => 10,
+            'step' => 1,
+            'width' => 340,
+            'painScale' => $this->patient->isChild() ? $this->assetPath.'/img/painscale_child.png' : $this->assetPath.'/img/painscale_adult.png',
+        ),
+        array('class' => 'slider painscale')
+    )?>
 
 	<?php echo $form->slider($element, 'nausea', array('min' => 0, 'max' => 3, 'step' => 1, 'width' => 200))?>
 

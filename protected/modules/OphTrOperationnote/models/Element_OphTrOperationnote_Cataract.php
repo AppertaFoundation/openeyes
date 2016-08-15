@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -21,19 +21,20 @@
  * This is the model class for table "et_ophtroperationnote_cataract".
  *
  * The followings are the available columns in table 'et_ophtroperationnote_cataract':
- * @property integer $id
- * @property integer $event_id
- * @property integer $incision_site_id
+ *
+ * @property int $id
+ * @property int $event_id
+ * @property int $incision_site_id
  * @property string $length
  * @property string $meridian
- * @property integer $incision_type_id
+ * @property int $incision_type_id
  * @property string $eyedraw
  * @property string $report
- * @property integer $iol_position_id
+ * @property int $iol_position_id
  * @property string $complication_notes
  * @property string $eyedraw2
  * @property string $iol_power
- * @property integer $iol_type_id
+ * @property int $iol_type_id
  * @property string $report2
  *
  * The followings are the available model relations:
@@ -55,6 +56,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
 
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return Element_OphTrOperationnote_Cataract the static model class
      */
     public static function model($className = __CLASS__)
@@ -70,41 +72,37 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
         return 'et_ophtroperationnote_cataract';
     }
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
-		return array(
-			array('event_id, incision_site_id, length, meridian, incision_type_id, iol_position_id, iol_type_id, iol_power, eyedraw, report, complication_notes, eyedraw2, report2, predicted_refraction, pcr_risk', 'safe'),
-			array('incision_site_id, length, meridian, incision_type_id, predicted_refraction, iol_position_id, eyedraw, report, eyedraw2', 'required'),
-			array('length', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^[0-9](\.[0-9])?$/', 'message' => 'Length must be 0 - 9.9 in increments of 0.1'),
-			array('meridian', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^[0-9]{1,3}(\.[0-9])?$/', 'min' => 000, 'max' => 360, 'message' => 'Meridian must be 000.5 - 360.0 degrees'),
-			array('predicted_refraction', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', 'min' => -30, 'max' => 30, 'message' => 'Predicted refraction must be between -30.00 and 30.00'),
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return array(
+            array('event_id, incision_site_id, length, meridian, incision_type_id, iol_position_id, iol_type_id, iol_power, eyedraw, report, complication_notes, eyedraw2, report2, predicted_refraction, pcr_risk', 'safe'),
+            array('incision_site_id, length, meridian, incision_type_id, predicted_refraction, iol_position_id, eyedraw, report, eyedraw2', 'required'),
+            array('length', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^[0-9](\.[0-9])?$/', 'message' => 'Length must be 0 - 9.9 in increments of 0.1'),
+            array('meridian', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^[0-9]{1,3}(\.[0-9])?$/', 'min' => 000, 'max' => 360, 'message' => 'Meridian must be 000.5 - 360.0 degrees'),
+            array('predicted_refraction', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', 'min' => -30, 'max' => 30, 'message' => 'Predicted refraction must be between -30.00 and 30.00'),
             array('iol_power', 'validateIolpower'),
-			array('complications', 'validateComplications'),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			//array('id, event_id, incision_site_id, length, meridian, incision_type_id, eyedraw, report, wound_burn, iris_trauma, zonular_dialysis, pc_rupture, decentered_iol, iol_exchange, dropped_nucleus, op_cancelled, corneal_odema, iris_prolapse, zonular_rupture, vitreous_loss, iol_into_vitreous, other_iol_problem, choroidal_haem', 'on' => 'search'),
-		);
-	}
+            array('complications', 'validateComplications'),
+            // The following rule is used by search().
+            // Please remove those attributes that should not be searched.
+            //array('id, event_id, incision_site_id, length, meridian, incision_type_id, eyedraw, report, wound_burn, iris_trauma, zonular_dialysis, pc_rupture, decentered_iol, iol_exchange, dropped_nucleus, op_cancelled, corneal_odema, iris_prolapse, zonular_rupture, vitreous_loss, iol_into_vitreous, other_iol_problem, choroidal_haem', 'on' => 'search'),
+        );
+    }
 
-     public function validateIolPower() {
-
+    public function validateIolPower()
+    {
         $value = $this->iol_power;
         if (!preg_match('/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', $value)) {
-                $message = $this->addError('iol_power', 'IOL power must be a number with an optional two decimal places between -10.00 and 40.00');
-        }
-        elseif ($value < -10 || $value > 40) {
+            $message = $this->addError('iol_power', 'IOL power must be a number with an optional two decimal places between -10.00 and 40.00');
+        } elseif ($value < -10 || $value > 40) {
             $message = $this->addError('iol_power', 'IOL Power must be between -10 to 40');
-            
         }
-                
-        
     }
-   
+
     /**
      * @return array relational rules.
      */
@@ -121,10 +119,10 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'complication_assignments' => array(self::HAS_MANY, 'OphTrOperationnote_CataractComplication', 'cataract_id'),
             'complications' => array(self::HAS_MANY, 'OphTrOperationnote_CataractComplications', 'complication_id',
-                'through' => 'complication_assignments'),
+                'through' => 'complication_assignments', ),
             'operative_device_assignments' => array(self::HAS_MANY, 'OphTrOperationnote_CataractOperativeDevice', 'cataract_id'),
             'operative_devices' => array(self::HAS_MANY, 'OperativeDevice', 'operative_device_id',
-                'through' => 'operative_device_assignments'),
+                'through' => 'operative_device_assignments', ),
             'iol_type' => array(self::BELONGS_TO, 'OphTrOperationnote_IOLType', 'iol_type_id'),
         );
     }
@@ -147,12 +145,13 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
             'complication_notes' => 'Complication notes',
             'report2' => 'Details',
             'predicted_refraction' => 'Predicted refraction',
-            'pcr_risk' => 'PCR Risk'
+            'pcr_risk' => 'PCR Risk',
         );
     }
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
@@ -160,7 +159,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria = new CDbCriteria;
+        $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
@@ -171,7 +170,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
     }
 
     /**
-     * Set default values for forms on create
+     * Set default values for forms on create.
      */
     public function setDefaultOptions()
     {
@@ -181,20 +180,23 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
     }
 
     /**
-     * Need to delete associated records
+     * Need to delete associated records.
+     *
      * @see CActiveRecord::beforeDelete()
      */
     protected function beforeDelete()
     {
         OphTrOperationnote_CataractComplication::model()->deleteAllByAttributes(array('cataract_id' => $this->id));
         OphTrOperationnote_CataractOperativeDevice::model()->deleteAllByAttributes(array('cataract_id' => $this->id));
+
         return parent::beforeDelete();
     }
 
     /**
-     * Update the complications on the element
+     * Update the complications on the element.
      *
      * @param $complication_ids
+     *
      * @throws Exception
      */
     public function updateComplications($complication_ids)
@@ -212,7 +214,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
                 $ca->complication_id = $c_id;
 
                 if (!$ca->save()) {
-                    throw new Exception('Unable to save complication assignment: ' . print_r($ca->getErrors(), true));
+                    throw new Exception('Unable to save complication assignment: '.print_r($ca->getErrors(), true));
                 }
             } else {
                 unset($curr_by_id[$c_id]);
@@ -221,15 +223,16 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
 
         foreach ($curr_by_id as $ca) {
             if (!$ca->delete()) {
-                throw new Exception('Unable to delete complication assignment: ' . print_r($ca->getErrors(), true));
+                throw new Exception('Unable to delete complication assignment: '.print_r($ca->getErrors(), true));
             }
         }
     }
 
     /**
-     * Update the operative devices on the element
+     * Update the operative devices on the element.
      *
      * @param $operative_device_ids
+     *
      * @throws Exception
      */
     public function updateOperativeDevices($operative_device_ids)
@@ -247,7 +250,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
                 $oda->operative_device_id = $od_id;
 
                 if (!$oda->save()) {
-                    throw new Exception('Unable to save complication assignment: ' . print_r($oda->getErrors(), true));
+                    throw new Exception('Unable to save complication assignment: '.print_r($oda->getErrors(), true));
                 }
             } else {
                 unset($curr_by_id[$od_id]);
@@ -256,13 +259,13 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
 
         foreach ($curr_by_id as $oda) {
             if (!$oda->delete()) {
-                throw new Exception('Unable to delete complication assignment: ' . print_r($oda->getErrors(), true));
+                throw new Exception('Unable to delete complication assignment: '.print_r($oda->getErrors(), true));
             }
         }
     }
 
     /**
-     * The eye of the procedure is stored in the parent procedure list element
+     * The eye of the procedure is stored in the parent procedure list element.
      *
      * @return Eye
      */
@@ -272,7 +275,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
     }
 
     /**
-     * Validate IOL data if IOL is part of the element
+     * Validate IOL data if IOL is part of the element.
      *
      * @return bool
      */
@@ -302,7 +305,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
     }
 
     /**
-     * Check the eye draw for any IOL elements. If there is one, IOL fields should not be hidden
+     * Check the eye draw for any IOL elements. If there is one, IOL fields should not be hidden.
      *
      * @return bool
      */
@@ -315,6 +318,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
                         return false;
                     }
                 }
+
                 return true;
             }
         }
@@ -323,7 +327,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
     }
 
     /**
-     * Get ids of cataract complications associated with the element
+     * Get ids of cataract complications associated with the element.
      */
     public function getCataractComplicationValues()
     {
@@ -340,7 +344,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
     {
         if ($this->isNewRecord && isset(Yii::app()->session['selected_firm_id'])) {
             $defaultLengthRecord = OphTrOperationnote_CataractIncisionLengthDefault::model()->findByAttributes(
-                array('firm_id' => (int)Yii::app()->session['selected_firm_id'])
+                array('firm_id' => (int) Yii::app()->session['selected_firm_id'])
             );
 
             if ($defaultLengthRecord) {
@@ -354,7 +358,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
     }
 
     /**
-     * Validate complications
+     * Validate complications.
      */
     public function validateComplications()
     {

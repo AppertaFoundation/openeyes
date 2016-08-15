@@ -15,7 +15,7 @@ class LoginFormTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new LoginForm;
+        $this->object = new LoginForm();
     }
 
     /**
@@ -28,6 +28,7 @@ class LoginFormTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers LoginForm::rules
+     *
      * @todo   Implement testRules().
      */
     public function testRules()
@@ -40,6 +41,7 @@ class LoginFormTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers LoginForm::attributeLabels
+     *
      * @todo   Implement testAttributeLabels().
      */
     public function testAttributeLabels()
@@ -52,6 +54,7 @@ class LoginFormTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers LoginForm::authenticate
+     *
      * @todo   Implement testAuthenticate().
      */
     public function testAuthenticate()
@@ -64,6 +67,7 @@ class LoginFormTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers LoginForm::login
+     *
      * @todo   Implement testLogin().
      */
     public function testLogin()

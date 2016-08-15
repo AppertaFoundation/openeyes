@@ -1,15 +1,15 @@
  <?php
- 
+
     $this->beginWidget('CActiveForm', array(
         'id' => 'patient1-search-form',
         'focus' => '#query',
-        'enableAjaxValidation'=>false,
+        'enableAjaxValidation' => false,
 
         'htmlOptions' => array(
             'class' => 'form panel search',
-            'onsubmit'=>"return false;",
+            'onsubmit' => 'return false;',
 
-        )
+        ),
     )); ?>
     <div class="row">
         <div class="search-examples">

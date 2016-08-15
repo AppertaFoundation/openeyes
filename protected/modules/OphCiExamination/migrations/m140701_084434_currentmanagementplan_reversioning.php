@@ -10,6 +10,6 @@ class m140701_084434_currentmanagementplan_reversioning extends OEMigration
 
     public function down()
     {
-        echo "Down method not supported";
+        echo 'Down method not supported';
     }
 }

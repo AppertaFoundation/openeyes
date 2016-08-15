@@ -17,7 +17,7 @@ class m140708_100802_remove_iop_17_default extends OEMigration
             'field_type_id' => 2, // Dropdown
             'key' => 'default_reading_id',
             'name' => 'Default reading',
-            'default_value' => $reading->id
+            'default_value' => $reading->id,
         ));
     }
 }

@@ -5,7 +5,7 @@ class m131003_134310_add_clinical_maculopathy_drgrading extends CDbMigration
     public function up()
     {
         $exam_event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')
-            ->where('name=:name', array(':name'=>'Examination'))->queryRow();
+            ->where('name=:name', array(':name' => 'Examination'))->queryRow();
 
         $exam_event_type_id = $exam_event_type['id'];
 
@@ -35,10 +35,10 @@ class m131003_134310_add_clinical_maculopathy_drgrading extends CDbMigration
                 'CONSTRAINT `ophciexamination_drgrading_clinicalm_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
             ), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
-        $this->insert('ophciexamination_drgrading_clinicalmaculopathy', array('name'=>'No macular oedema', 'display_order' => '1', 'class' => 'none'));
-        $this->insert('ophciexamination_drgrading_clinicalmaculopathy', array('name'=>'Diabetic macular oedema not clinically significant', 'display_order' => '2', 'class' => 'mild'));
-        $this->insert('ophciexamination_drgrading_clinicalmaculopathy', array('name'=>'Clinically significant macular oedema', 'display_order' => '3', 'class' => 'moderate'));
-        $this->insert('ophciexamination_drgrading_clinicalmaculopathy', array('name'=>'Centre involving diabetic macular oedema', 'display_order' => '4', 'class' => 'severe'));
+        $this->insert('ophciexamination_drgrading_clinicalmaculopathy', array('name' => 'No macular oedema', 'display_order' => '1', 'class' => 'none'));
+        $this->insert('ophciexamination_drgrading_clinicalmaculopathy', array('name' => 'Diabetic macular oedema not clinically significant', 'display_order' => '2', 'class' => 'mild'));
+        $this->insert('ophciexamination_drgrading_clinicalmaculopathy', array('name' => 'Clinically significant macular oedema', 'display_order' => '3', 'class' => 'moderate'));
+        $this->insert('ophciexamination_drgrading_clinicalmaculopathy', array('name' => 'Centre involving diabetic macular oedema', 'display_order' => '4', 'class' => 'severe'));
 
         $this->addColumn('et_ophciexamination_drgrading', 'left_clinicalmac_id', 'int(10) unsigned');
         $this->addForeignKey('et_ophciexamination_drgrading_l_clinmac_fk', 'et_ophciexamination_drgrading', 'left_clinicalmac_id', 'ophciexamination_drgrading_clinicalmaculopathy', 'id');
@@ -46,11 +46,11 @@ class m131003_134310_add_clinical_maculopathy_drgrading extends CDbMigration
         $this->addForeignKey('et_ophciexamination_drgrading_r_clinmac_fk', 'et_ophciexamination_drgrading', 'right_clinicalmac_id', 'ophciexamination_drgrading_clinicalmaculopathy', 'id');
 
         $this->update('patient_shortcode', array(
-                'method' => 'getLetterDRClinicalRetLeft'
+                'method' => 'getLetterDRClinicalRetLeft',
             ),
             'method = :meth', array(':meth' => 'getLetterDRClinicalLeft'));
         $this->update('patient_shortcode', array(
-                'method' => 'getLetterDRClinicalRetRight'
+                'method' => 'getLetterDRClinicalRetRight',
             ),
             'method = :meth', array(':meth' => 'getLetterDRClinicalRight'));
 
@@ -59,14 +59,14 @@ class m131003_134310_add_clinical_maculopathy_drgrading extends CDbMigration
                 'default_code' => 'clm',
                 'code' => 'clm',
                 'method' => 'getLetterDRClinicalMacLeft',
-                'description' => 'Clinical left maculopathy'
+                'description' => 'Clinical left maculopathy',
             ));
         $this->insert('patient_shortcode', array(
                 'event_type_id' => $exam_event_type_id,
                 'default_code' => 'crm',
                 'code' => 'crm',
                 'method' => 'getLetterDRClinicalMacRight',
-                'description' => 'Clinical left maculopathy'
+                'description' => 'Clinical left maculopathy',
             ));
     }
 
@@ -76,11 +76,11 @@ class m131003_134310_add_clinical_maculopathy_drgrading extends CDbMigration
         $this->delete('patient_shortcode', 'method = :method', array(':method' => 'getLetterDRClinicalMacLeft'));
 
         $this->update('patient_shortcode', array(
-                'method' => 'getLetterDRClinicalLeft'
+                'method' => 'getLetterDRClinicalLeft',
             ),
             'method = :method', array(':method' => 'getLetterDRClinicalRetLeft'));
         $this->update('patient_shortcode', array(
-                'method' => 'getLetterDRClinicalRight'
+                'method' => 'getLetterDRClinicalRight',
             ),
             'method = :method', array(':method' => 'getLetterDRClinicalRetRight'));
 

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
@@ -40,7 +40,7 @@ class WorklistController extends BaseController
     }
 
     /**
-     * Redirect to a suitable worklist default action
+     * Redirect to a suitable worklist default action.
      */
     public function actionIndex()
     {
@@ -48,7 +48,7 @@ class WorklistController extends BaseController
     }
 
     /**
-     * Manage User's manual worklists
+     * Manage User's manual worklists.
      */
     public function actionManual()
     {
@@ -57,7 +57,7 @@ class WorklistController extends BaseController
 
         $this->render('//worklist/manual/index', array(
             'current_worklists' => $current_worklists,
-            'available_worklists' => $available_worklists
+            'available_worklists' => $available_worklists,
         ));
     }
 
@@ -70,20 +70,19 @@ class WorklistController extends BaseController
             if ($this->manager->createWorklistForUser($worklist)) {
                 Audit::add('Manual-Worklist', 'add', $worklist->id);
                 $this->redirect('/worklist/manual');
-            }
-            else {
+            } else {
                 $errors = $worklist->getErrors();
             }
         }
 
         $this->render('//worklist/manual/add', array(
             'worklist' => $worklist,
-            'errors' => @$errors
+            'errors' => @$errors,
         ));
     }
 
     /**
-     * Update the worklist display order for the current user based on the submitted ids
+     * Update the worklist display order for the current user based on the submitted ids.
      */
     public function actionManualUpdateDisplayOrder()
     {
@@ -91,7 +90,7 @@ class WorklistController extends BaseController
 
         if (!$this->manager->setWorklistDisplayOrderForUser(Yii::app()->user, $worklist_ids)) {
             OELog::log(print_r($this->manager->getErrors(), true));
-            throw new Exception("Unable to save new display order for worklists");
+            throw new Exception('Unable to save new display order for worklists');
         }
 
         $this->redirect('/worklist/manual');

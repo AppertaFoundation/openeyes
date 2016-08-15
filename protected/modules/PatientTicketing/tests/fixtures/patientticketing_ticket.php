@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2014
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2014, OpenEyes Foundation
@@ -18,35 +18,35 @@
  */
 
 return array(
-		'ticket1' => array(
-				'id' => 1,
-				'patient_id' => 1,
-				'assignee_user_id' => 1,
-				'event_id' => 1,
-				'assignee_date' => '2014-09-04',
-		),
-		'ticket2' => array(
-				'id' => 2,
-				'patient_id' => 2,
-				'assignee_user_id' => 1,
-				'assignee_date' => '2014-09-04',
-		),
-		'ticket3' => array(
-				'id' => 3,
-				'patient_id' => 1,
-				'assignee_user_id' => 1,
-				'assignee_date' => '2014-09-05',
-		),
-		'ticket4' => array(
-				'id' => 4,
-				'patient_id' => 3,
-				'assignee_user_id' => 1,
-				'assignee_date' => '2014-09-04',
-		),
-		'ticket5' => array(
-				'id' => 5,
-				'patient_id' => 4,
-				'assignee_user_id' => 1,
-				'assignee_date' => '2014-09-04',
-	),
+        'ticket1' => array(
+                'id' => 1,
+                'patient_id' => 1,
+                'assignee_user_id' => 1,
+                'event_id' => 1,
+                'assignee_date' => '2014-09-04',
+        ),
+        'ticket2' => array(
+                'id' => 2,
+                'patient_id' => 2,
+                'assignee_user_id' => 1,
+                'assignee_date' => '2014-09-04',
+        ),
+        'ticket3' => array(
+                'id' => 3,
+                'patient_id' => 1,
+                'assignee_user_id' => 1,
+                'assignee_date' => '2014-09-05',
+        ),
+        'ticket4' => array(
+                'id' => 4,
+                'patient_id' => 3,
+                'assignee_user_id' => 1,
+                'assignee_date' => '2014-09-04',
+        ),
+        'ticket5' => array(
+                'id' => 5,
+                'patient_id' => 4,
+                'assignee_user_id' => 1,
+                'assignee_date' => '2014-09-04',
+    ),
 );

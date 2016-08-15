@@ -2,10 +2,9 @@
 
 class m150424_112812_cancel_dead_patients_bookings extends CDbMigration
 {
-
-	public function up()
-	{
-		$storedProcedure = <<<EOL
+    public function up()
+    {
+        $storedProcedure = <<<EOL
 CREATE PROCEDURE cancel_patient_bookings(IN patientToCancel INT)
   BEGIN
     DECLARE cancel_status, cancel_reason, booking_type, stored_event_id, episode_id, booking_id, operation_id, episode_status_id, done, rows_affected, admin_user INT DEFAULT 0;
@@ -109,7 +108,7 @@ CREATE PROCEDURE cancel_patient_bookings(IN patientToCancel INT)
 
 EOL;
 
-		$trigger = <<<EOL
+        $trigger = <<<EOL
 CREATE TRIGGER cancel_dead_patient_bookings AFTER UPDATE ON patient
 FOR EACH ROW
   BEGIN
@@ -119,14 +118,13 @@ FOR EACH ROW
     END IF;
   END;
 EOL;
-		$this->execute($storedProcedure);
-		$this->execute($trigger);
-	}
+        $this->execute($storedProcedure);
+        $this->execute($trigger);
+    }
 
-	public function down()
-	{
-		$this->execute("DROP PROCEDURE IF EXISTS cancel_patient_bookings;");
-		$this->execute("DROP TRIGGER cancel_dead_patient_bookings;");
-	}
-
+    public function down()
+    {
+        $this->execute('DROP PROCEDURE IF EXISTS cancel_patient_bookings;');
+        $this->execute('DROP TRIGGER cancel_dead_patient_bookings;');
+    }
 }

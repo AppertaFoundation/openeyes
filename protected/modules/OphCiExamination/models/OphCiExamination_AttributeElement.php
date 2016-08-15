@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -22,7 +22,7 @@ namespace OEModule\OphCiExamination\models;
 /**
  * This is the model class for table "ophciexamination_attribute_element".
  *
- * @property integer $id
+ * @property int $id
  * @property OphCiExamination_Attribute $attribute
  * @property ElementType $element_type
  * @property OphCiExamination_AttributeOption[] $options
@@ -46,7 +46,7 @@ class OphCiExamination_AttributeElement extends \BaseActiveRecordVersioned
     {
         return array(
             array('attribute_id, element_type_id', 'required'),
-            array('id, attribute_id, element_type_id', 'safe', 'on'=>'search'),
+            array('id, attribute_id, element_type_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -63,8 +63,10 @@ class OphCiExamination_AttributeElement extends \BaseActiveRecordVersioned
     }
 
     /**
-     * Fetches all the options for this attribute_element, standard _and_ subspecialty specific
-     * @param integer $subspecialty_id
+     * Fetches all the options for this attribute_element, standard _and_ subspecialty specific.
+     *
+     * @param int $subspecialty_id
+     *
      * @return OphCiExamination_AttributeOption[]
      */
     public function findAllOptionsForSubspecialty($subspecialty_id = null)
@@ -77,12 +79,13 @@ class OphCiExamination_AttributeElement extends \BaseActiveRecordVersioned
         } else {
             $condition .=  'subspecialty_id IS NULL';
         }
+
         return OphCiExamination_AttributeOption::model()->findAll($condition, $params);
     }
 
     public function getName()
     {
-        return $this->element_type->name . ' - ' . $this->attribute->name;
+        return $this->element_type->name.' - '.$this->attribute->name;
     }
 
     /**
@@ -94,7 +97,7 @@ class OphCiExamination_AttributeElement extends \BaseActiveRecordVersioned
             'attribute.name' => 'Attribute Name',
             'attribute.label' => 'Attribute Label',
             'element_type.name' => 'Element Mapping',
-            'attribute_elements.name' => 'Element Mapping'
+            'attribute_elements.name' => 'Element Mapping',
         );
     }
 }

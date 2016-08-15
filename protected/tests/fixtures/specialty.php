@@ -1,9 +1,9 @@
 <?php
 
 return array(
-	'example' => array(
-		'id' => 1,
-		'name' => 'Example Specialty',
-		'code' => 130,
-	),
+    'example' => array(
+        'id' => 1,
+        'name' => 'Example Specialty',
+        'code' => 130,
+    ),
 );

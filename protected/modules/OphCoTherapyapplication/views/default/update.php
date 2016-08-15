@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -19,22 +19,22 @@
 ?>
 
 <?php
-	$this->beginContent('//patient/event_container');
+    $this->beginContent('//patient/event_container');
 
-	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-		'id'=>'clinical-create',
-		'enableAjaxValidation'=>false,
-		'focus'=>'#procedure_id',
-		'layoutColumns' => array(
-			'label' => 2,
-			'field' => 10
-		)
+    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+        'id' => 'clinical-create',
+        'enableAjaxValidation' => false,
+        'focus' => '#procedure_id',
+        'layoutColumns' => array(
+            'label' => 2,
+            'field' => 10,
+        ),
 
-	));
-	$this->event_actions[] = EventAction::button('Save', 'save', array('level'=>'save'), array('form'=>'clinical-create'));
+    ));
+    $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => 'clinical-create'));
 
-	$service = new OphCoTherapyapplication_Processor($this->event);
-	if ($service->getApplicationStatus() == $service::STATUS_SENT) { ?>
+    $service = new OphCoTherapyapplication_Processor($this->event);
+    if ($service->getApplicationStatus() == $service::STATUS_SENT) { ?>
 		<div class="alertBox">
 			<strong>WARNING: This application has already been sent.  Editing it will allow it to be re-sent.</strong>
 		</div>
@@ -44,4 +44,4 @@
 	<?php $this->renderOptionalElements($this->action->id, $form)?>
 	<?php $this->displayErrors($errors)?>
 	<?php $this->endWidget()?>
-<?php $this->endContent() ;?>
+<?php $this->endContent();?>

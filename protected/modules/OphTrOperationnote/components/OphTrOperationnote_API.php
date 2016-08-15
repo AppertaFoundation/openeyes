@@ -99,7 +99,6 @@ class OphTrOperationnote_API extends BaseAPI
 
     public function getPatientUniqueCode($patient)
     {
-
         $patient_latest_event = $patient->getLatestOperationNoteEventUniqueCode();
         $event_unique_code = '';
         if (!empty($patient_latest_event)) {

@@ -23,7 +23,7 @@ class m160216_150501_store_pcr_risk_options extends OEMigration
                 'CONSTRAINT pcr_patient foreign key (patient_id) references patient (id)',
                 'CONSTRAINT pcr_eye foreign key (eye_id) references eye (id)',
                 'CONSTRAINT pcr_doctor_grade foreign key (doctor_grade_id) references doctor_grade (id)',
-                'CONSTRAINT unique_patient_eye UNIQUE (patient_id, eye_id)'
+                'CONSTRAINT unique_patient_eye UNIQUE (patient_id, eye_id)',
             ),
             true
         );
@@ -33,5 +33,4 @@ class m160216_150501_store_pcr_risk_options extends OEMigration
     {
         $this->dropOETable('pcr_risk_values', true);
     }
-
 }

@@ -15,7 +15,7 @@ class m150529_125639_allergies_short_code extends CDbMigration
             'default_code' => 'aka',
             'code' => 'aka',
             'method' => 'getAllergies',
-            'description' => 'List of patients allergies'
+            'description' => 'List of patients allergies',
         ));
     }
 

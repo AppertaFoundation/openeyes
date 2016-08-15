@@ -1,6 +1,6 @@
 <?php
 /**
- * ____________________________________________________________________________
+ * ____________________________________________________________________________.
  *
  * This file is part of OpenEyes.
  *
@@ -21,16 +21,17 @@
  * @author Bill Aylward <bill.aylward@openeyes.org.uk>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3.0
  * @license http://www.openeyes.org.uk/licenses/oepl-1.0.html OEPLv1.0
+ *
  * @version 0.9
  * Creation date: 27 December 2011
+ *
  * @copyright Copyright (c) 2012 OpenEyes Foundation, Moorfields Eye hospital
- * @package Clinical
  */
 
- /**
- * Element Generator Code - calls Element Code
+/**
+ * Element Generator Code - calls Element Code.
  */
 class ElementGenerator extends CCodeGenerator
 {
-	public $codeModel = 'application.gii.element.ElementCode';
+    public $codeModel = 'application.gii.element.ElementCode';
 }

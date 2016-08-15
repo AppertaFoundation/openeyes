@@ -22,12 +22,12 @@ class m140502_141417_multiple_iop_readings extends OEMigration
         );
 
         $this->execute(
-            'insert into ophciexamination_intraocularpressure_value (element_id, eye_id, reading_time, instrument_id, reading_id) ' .
+            'insert into ophciexamination_intraocularpressure_value (element_id, eye_id, reading_time, instrument_id, reading_id) '.
             'select id, 1, time(created_date), left_instrument_id, left_reading_id from et_ophciexamination_intraocularpressure where left_reading_id != 1'
         );
 
         $this->execute(
-            'insert into ophciexamination_intraocularpressure_value (element_id, eye_id, reading_time, instrument_id, reading_id) ' .
+            'insert into ophciexamination_intraocularpressure_value (element_id, eye_id, reading_time, instrument_id, reading_id) '.
             'select id, 2, time(created_date), right_instrument_id, right_reading_id from et_ophciexamination_intraocularpressure where right_reading_id != 1'
         );
 
@@ -36,8 +36,8 @@ class m140502_141417_multiple_iop_readings extends OEMigration
         $this->addColumn('et_ophciexamination_intraocularpressure', 'right_comments', 'text');
         $this->addColumn('et_ophciexamination_intraocularpressure_version', 'right_comments', 'text');
 
-        $this->update('et_ophciexamination_intraocularpressure', array('left_comments' => "No reading (legacy)"), 'left_reading_id = 1');
-        $this->update('et_ophciexamination_intraocularpressure', array('right_comments' => "No reading (legacy)"), 'right_reading_id = 1');
+        $this->update('et_ophciexamination_intraocularpressure', array('left_comments' => 'No reading (legacy)'), 'left_reading_id = 1');
+        $this->update('et_ophciexamination_intraocularpressure', array('right_comments' => 'No reading (legacy)'), 'right_reading_id = 1');
 
         $this->dropForeignKey('et_ophciexamination_intraocularpressure_li_fk', 'et_ophciexamination_intraocularpressure');
         $this->dropColumn('et_ophciexamination_intraocularpressure', 'left_instrument_id');
@@ -69,12 +69,12 @@ class m140502_141417_multiple_iop_readings extends OEMigration
         $this->addColumn('et_ophciexamination_intraocularpressure_version', 'right_reading_id', 'integer unsigned not null');
 
         $this->execute(
-            'update et_ophciexamination_intraocularpressure e left join ophciexamination_intraocularpressure_value v on v.element_id = e.id and v.eye_id = 1 ' .
+            'update et_ophciexamination_intraocularpressure e left join ophciexamination_intraocularpressure_value v on v.element_id = e.id and v.eye_id = 1 '.
             'set e.left_instrument_id = v.instrument_id, e.left_reading_id = IFNULL(v.reading_id, 1)'
         );
 
         $this->execute(
-            'update et_ophciexamination_intraocularpressure e right join ophciexamination_intraocularpressure_value v on v.element_id = e.id and v.eye_id = 1 ' .
+            'update et_ophciexamination_intraocularpressure e right join ophciexamination_intraocularpressure_value v on v.element_id = e.id and v.eye_id = 1 '.
             'set e.right_instrument_id = v.instrument_id, e.right_reading_id = IFNULL(v.reading_id, 1)'
         );
 

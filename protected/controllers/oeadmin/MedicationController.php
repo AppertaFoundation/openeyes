@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -10,8 +10,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -19,71 +19,71 @@
  */
 class MedicationController extends BaseAdminController
 {
-	/**
-	 * @var string
-	 */
-	public $layout = 'admin';
+    /**
+     * @var string
+     */
+    public $layout = 'admin';
 
-	/**
-	 * @var int
-	 */
-	public $itemsPerPage = 100;
+    /**
+     * @var int
+     */
+    public $itemsPerPage = 100;
 
-	/**
-	 * Lists medications
-	 *
-	 * @throws CHttpException
-	 */
-	public function actionList()
-	{
-		$admin = new Admin(MedicationDrug::model(), $this);
-		$admin->setListFields(array(
-			'id',
-			'name',
-			'external_code',
-			'external_source',
-			'aliases'
-		));
-		$admin->searchAll();
-		$admin->getSearch()->setItemsPerPage($this->itemsPerPage);
-		$admin->listModel();
-	}
+    /**
+     * Lists medications.
+     *
+     * @throws CHttpException
+     */
+    public function actionList()
+    {
+        $admin = new Admin(MedicationDrug::model(), $this);
+        $admin->setListFields(array(
+            'id',
+            'name',
+            'external_code',
+            'external_source',
+            'aliases',
+        ));
+        $admin->searchAll();
+        $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
+        $admin->listModel();
+    }
 
-	/**
-	 * Edits or adds medications
-	 *
-	 * @param bool|int $id
-	 * @throws CHttpException
-	 */
-	public function actionEdit($id = false)
-	{
-		$admin = new Admin(MedicationDrug::model(), $this);
-		if ($id) {
-			$admin->setModelId($id);
-		}
-		$admin->setEditFields(array(
-			'name' => 'text',
-			'aliases' => 'text',
-			'external_source' => array(
-				'widget' => 'DropDownList',
-				'options' => CHtml::listData(MedicationDrug::model()->findAll(new CDbCriteria(array('group' => 'external_source'))),
-					'external_source', 'external_source'),
-				'htmlOptions' => null,
-				'hidden' => false,
-				'layoutColumns' => null
-			),
-			'external_code' => 'text'
-		));
-		$admin->editModel();
-	}
+    /**
+     * Edits or adds medications.
+     *
+     * @param bool|int $id
+     *
+     * @throws CHttpException
+     */
+    public function actionEdit($id = false)
+    {
+        $admin = new Admin(MedicationDrug::model(), $this);
+        if ($id) {
+            $admin->setModelId($id);
+        }
+        $admin->setEditFields(array(
+            'name' => 'text',
+            'aliases' => 'text',
+            'external_source' => array(
+                'widget' => 'DropDownList',
+                'options' => CHtml::listData(MedicationDrug::model()->findAll(new CDbCriteria(array('group' => 'external_source'))),
+                    'external_source', 'external_source'),
+                'htmlOptions' => null,
+                'hidden' => false,
+                'layoutColumns' => null,
+            ),
+            'external_code' => 'text',
+        ));
+        $admin->editModel();
+    }
 
-
-	/**
-	 * Deletes rows for the model
-	 */
-	public function actionDelete()
-	{
-		$admin = new Admin(MedicationDrug::model(), $this);
-		$admin->deleteModel();
-	}
+    /**
+     * Deletes rows for the model.
+     */
+    public function actionDelete()
+    {
+        $admin = new Admin(MedicationDrug::model(), $this);
+        $admin->deleteModel();
+    }
 }

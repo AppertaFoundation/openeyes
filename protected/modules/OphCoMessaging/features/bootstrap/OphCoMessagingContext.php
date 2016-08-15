@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -8,13 +8,12 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 use \SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 
 class OphCoMessagingContext extends PageObjectContext
@@ -24,9 +23,9 @@ class OphCoMessagingContext extends PageObjectContext
     /**
      * @Given /^I select Create Message$/
      */
-    public function iSelectCreateMessage() {
-
-        $message = $this->getPage ( 'OphCoMessaging' );
+    public function iSelectCreateMessage()
+    {
+        $message = $this->getPage('OphCoMessaging');
         $message->createMessage();
     }
 
@@ -35,7 +34,7 @@ class OphCoMessagingContext extends PageObjectContext
      */
     public function applicationReturnsAnError($message)
     {
-        /**
+        /*
          * @var OphCoMessaging
          */
         $page = $this->getPage('OphCoMessaging');
@@ -49,7 +48,7 @@ class OphCoMessagingContext extends PageObjectContext
      */
     public function iAddANewEventFor($event_name, $subspecialty)
     {
-        /**
+        /*
          * @var OphCoMessaging
          */
         $message = $this->getPage('OphCoMessaging');
@@ -93,14 +92,14 @@ class OphCoMessagingContext extends PageObjectContext
     }
 
     /**
-     * index is 1-based, not zero based
+     * index is 1-based, not zero based.
      *
      * @Given /^I select option "([^"]*)" from the autocomplete list$/
      */
     public function iSelectOptionFromTheAutocompleteList($index)
     {
-        $message = $this->getPage("OphCoMessaging");
-        $message->selectAutoCompleteOptionByIndex($index-1);
+        $message = $this->getPage('OphCoMessaging');
+        $message->selectAutoCompleteOptionByIndex($index - 1);
     }
 
     /**
@@ -108,10 +107,10 @@ class OphCoMessagingContext extends PageObjectContext
      */
     public function iSaveTheMessageAndConfirmItHasBeenCreatedSuccessfully()
     {
-        /**
+        /*
          * @var OphCoMessaging
          */
-        $message = $this->getPage("OphCoMessaging");
+        $message = $this->getPage('OphCoMessaging');
         $message->saveAndConfirm();
     }
 
@@ -120,10 +119,10 @@ class OphCoMessagingContext extends PageObjectContext
      */
     public function iConfirmThatFaoUserIs($arg1)
     {
-        /**
+        /*
          * @var OphCoMessaging
          */
-        $message = $this->getPage("OphCoMessaging");
+        $message = $this->getPage('OphCoMessaging');
         $message->checkDisplayFaoIs($arg1);
     }
 
@@ -132,10 +131,10 @@ class OphCoMessagingContext extends PageObjectContext
      */
     public function iConfirmTheMessageTypeIs($arg1)
     {
-        /**
+        /*
          * @var OphCoMessaging
          */
-        $message = $this->getPage("OphCoMessaging");
+        $message = $this->getPage('OphCoMessaging');
         $message->checkDisplayTypeIs($arg1);
     }
 
@@ -144,10 +143,10 @@ class OphCoMessagingContext extends PageObjectContext
      */
     public function iConfirmThatTheMessageTextIs($arg1)
     {
-        /**
+        /*
          * @var OphCoMessaging
          */
-        $message = $this->getPage("OphCoMessaging");
+        $message = $this->getPage('OphCoMessaging');
         $message->checkDisplayMessageIs($arg1);
     }
 
@@ -156,7 +155,7 @@ class OphCoMessagingContext extends PageObjectContext
      */
     public function iEditTheDisplayedEvent()
     {
-        $message = $this->getPage("OphCoMessaging");
+        $message = $this->getPage('OphCoMessaging');
         $message->clickEditLink();
     }
 
@@ -165,7 +164,7 @@ class OphCoMessagingContext extends PageObjectContext
      */
     public function iConfirmICannotChangeTheFAOUser()
     {
-        $message = $this->getPage("OphCoMessaging");
+        $message = $this->getPage('OphCoMessaging');
         $message->checkNoUserSearchAvailable();
     }
 
@@ -174,10 +173,10 @@ class OphCoMessagingContext extends PageObjectContext
      */
     public function iSaveTheMessage()
     {
-        /**
+        /*
          * @var OphCoMessaging
          */
-        $message = $this->getPage("OphCoMessaging");
+        $message = $this->getPage('OphCoMessaging');
         $message->saveEvent();
     }
 
@@ -194,10 +193,10 @@ class OphCoMessagingContext extends PageObjectContext
      */
     public function iLogout()
     {
-        /**
+        /*
          * @var OphCoMessaging
          */
-        $message = $this->getPage("OphCoMessaging");
+        $message = $this->getPage('OphCoMessaging');
         $message->logout();
     }
 
@@ -206,10 +205,10 @@ class OphCoMessagingContext extends PageObjectContext
      */
     public function iSeeIHaveMessagesInTheMessagesDashboard()
     {
-        /**
+        /*
          * @var OphCoMessaging
          */
-        $message = $this->getPage("OphCoMessaging");
+        $message = $this->getPage('OphCoMessaging');
         $message->checkHaveMessagesInDashboard();
     }
 
@@ -218,11 +217,11 @@ class OphCoMessagingContext extends PageObjectContext
      */
     public function thereSARowForTheBookmark($arg1)
     {
-        /**
+        /*
          * @var OphCoMessaging
          */
         $url = $this->bookmarks[$arg1];
-        $message = $this->getPage("OphCoMessaging");
+        $message = $this->getPage('OphCoMessaging');
         $message->checkForLinkToUrl($url);
     }
 
@@ -231,11 +230,10 @@ class OphCoMessagingContext extends PageObjectContext
      */
     public function iSelectTheLatestEvent()
     {
-        /**
+        /*
          * @var OphCoMessaging
          */
-        $message = $this->getPage("OphCoMessaging");
+        $message = $this->getPage('OphCoMessaging');
         $message->selectLatestEvent();
     }
-
 }

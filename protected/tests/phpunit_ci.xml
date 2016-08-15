@@ -3,16 +3,17 @@
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
-         stopOnFailure="false"
+         stopOnFailure="true"
          verbose="true">
+    <directory suffix="Test.php">../modules/*/tests/unit/models</directory>
     <testsuites>
         <testsuite name="all">
-            <directory suffix="Test.php">../modules/*/tests/*</directory>
+            <directory suffix="Test.php">../modules/*/tests/unit/models</directory>
             <directory suffix="Test.php">./unit</directory>
         </testsuite>
         <testsuite name="Modules">
             <exclude>./</exclude>
-            <directory suffix="Test.php">../modules/*/tests/*</directory>
+            <directory suffix="Test.php">../modules/*/tests/unit/models</directory>
         </testsuite>
         <testsuite name="core">
             <directory suffix="Test.php">./unit</directory>
@@ -31,21 +32,12 @@
     <filter>
         <blacklist>
             <directory suffix=".php">../../../yii/</directory>
-            <directory suffix=".php">./unit/controllers/</directory>
         </blacklist>
         <whitelist>
-
-
             <directory suffix=".php">../models</directory>
             <directory suffix=".php">../components</directory>
             <directory suffix=".php">../controllers</directory>
-            <!-- <directory suffix=".php">../models/elements</directory>
-            <directory suffix=".php">../services</directory>
-            <directory suffix=".php">../components</directory>
-
-            <directory suffix=".php">../modules/admin/controllers</directory>
-            <directory suffix=".php">../models</directory>
-            -->
+            <directory suffix=".php">../modules/*/tests/unit/models</directory>
             <exclude>
                 <directory suffix=".php">../components/summaryWidgets/views</directory>
                 <directory suffix=".php">../components/views</directory>

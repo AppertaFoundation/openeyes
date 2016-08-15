@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2012
@@ -10,15 +10,15 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-class GenerateUniqueCodeCommand extends CConsoleCommand {
-
+class GenerateUniqueCodeCommand extends CConsoleCommand
+{
     protected $unique_code;
 
     protected $allowable_character_length;
@@ -27,24 +27,25 @@ class GenerateUniqueCodeCommand extends CConsoleCommand {
 
     const UNIQUE_CODE_LENGTH = 6;
 
-    public function getHelp() {
+    public function getHelp()
+    {
         return "Generate 6 character unique codes to be used in letters.\n";
     }
 
     /**
-     * Generate six characters unique code, and store them into the db
+     * Generate six characters unique code, and store them into the db.
      */
-    public function run($args) {
-
+    public function run($args)
+    {
         $this->setAlphabet(
                 implode(range('A', 'Z'))
-                . implode(range(2, 9))
+                .implode(range(2, 9))
         );
         if (!empty($args[0])) {
-            $this->limit = (int)$args[0];
+            $this->limit = (int) $args[0];
         }
 
-        for ($generation = 1; $generation <= $this->limit; $generation++) {
+        for ($generation = 1; $generation <= $this->limit; ++$generation) {
             $values = $this->generate(self::UNIQUE_CODE_LENGTH);
             $this->insert($values);
         }
@@ -53,15 +54,17 @@ class GenerateUniqueCodeCommand extends CConsoleCommand {
     /**
      * @param string $alphabet
      */
-    public function setAlphabet($alphabet) {
+    public function setAlphabet($alphabet)
+    {
         $this->unique_code = $alphabet;
         $this->allowable_character_length = strlen($alphabet);
     }
 
-    public function generate($length) {
+    public function generate($length)
+    {
         $token = '';
 
-        for ($i = 0; $i < $length; $i++) {
+        for ($i = 0; $i < $length; ++$i) {
             $randomKey = $this->getRandomInteger(0, $this->allowable_character_length);
             $token .= $this->unique_code[$randomKey];
         }
@@ -72,9 +75,11 @@ class GenerateUniqueCodeCommand extends CConsoleCommand {
     /**
      * @param int $min
      * @param int $max
+     *
      * @return int
      */
-    protected function getRandomInteger($min, $max) {
+    protected function getRandomInteger($min, $max)
+    {
         $range = ($max - $min);
 
         if ($range < 0) {
@@ -100,18 +105,16 @@ class GenerateUniqueCodeCommand extends CConsoleCommand {
             $rnd = $rnd & $filter;
         } while ($rnd >= $range);
 
-        return ($min + $rnd);
+        return $min + $rnd;
     }
 
     protected function insert($record)
     {
         try {
             $db = Yii::app()->db;
-            $query = "INSERT INTO ".$db->quoteTableName("unique_codes")." (code) VALUES ('".$record."')";
+            $query = 'INSERT INTO '.$db->quoteTableName('unique_codes')." (code) VALUES ('".$record."')";
             $db->createCommand($query)->execute();
-        }
-        catch(Exception $e) {
-
+        } catch (Exception $e) {
         }
     }
 }

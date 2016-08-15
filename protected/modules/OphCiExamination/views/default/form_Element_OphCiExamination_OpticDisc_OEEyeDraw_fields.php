@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -38,10 +38,10 @@
         $options = \OEModule\OphCiExamination\models\OphCiExamination_OpticDisc_CDRatio::model()->findAll();
         $cd_ratio_html_options = array('class' => 'cd-ratio', 'options' => array());
         foreach ($options as $ratio) {
-            $cd_ratio_html_options['options'][(string) $ratio->id] = array('data-value'=> $ratio->name);
+            $cd_ratio_html_options['options'][(string) $ratio->id] = array('data-value' => $ratio->name);
         }
         ?>
-		<?php echo CHtml::activeDropDownList($element, $side . '_cd_ratio_id', CHtml::listData($options, 'id', 'name'), $cd_ratio_html_options)?>
+		<?php echo CHtml::activeDropDownList($element, $side.'_cd_ratio_id', CHtml::listData($options, 'id', 'name'), $cd_ratio_html_options)?>
 	</div>
 	<div class="field-row">
 		<label for="<?php echo CHtml::modelName($element).'_'.$side.'_diameter';?>">
@@ -62,7 +62,7 @@
 		<label for="<?php echo CHtml::modelName($element).'_'.$side.'_description';?>">
 			<?php echo $element->getAttributeLabel($side.'_description')?>:
 		</label>
-		<?php echo CHtml::activeTextArea($element, $side.'_description', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'rows' => "2", 'cols' => "20", 'class' => 'autosize clearWithEyedraw')) ?>
+		<?php echo CHtml::activeTextArea($element, $side.'_description', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'rows' => '2', 'cols' => '20', 'class' => 'autosize clearWithEyedraw')) ?>
 	</div>
 	<div class="field-row">
 		<button class="ed_report secondary small">Report</button>

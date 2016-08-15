@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2014
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2014, OpenEyes Foundation
@@ -20,24 +20,24 @@
 namespace OEModule\PatientTicketing\models;
 
 /**
- * This is the model class for table "patientticketing_ticketqueue_assignment". THis is the link table between tickets and queues
+ * This is the model class for table "patientticketing_ticketqueue_assignment". THis is the link table between tickets and queues.
  *
  * The followings are the available columns in table:
+ *
  * @property string $id
- * @property integer $ticket_id
- * @property integer $queue_id
+ * @property int $ticket_id
+ * @property int $queue_id
  * @property datetime $assignment_date
- * @property integer $assignment_user_id
- * @property integer $assigment_firm_id
+ * @property int $assignment_user_id
+ * @property int $assigment_firm_id
  * @property string $notes
  * @property string $details
- * @property integer $created_user_id
+ * @property int $created_user_id
  * @property datetime $created_date
- * @property integer $last_modified_user_id
+ * @property int $last_modified_user_id
  * @property datetime $last_modified_date
  *
  * The followings are the available model relations:
- *
  * @property Ticket $ticket
  * @property Queue $queue
  * @property \User $assignment_user
@@ -47,112 +47,114 @@ namespace OEModule\PatientTicketing\models;
  */
 class TicketQueueAssignment extends \BaseActiveRecordVersioned
 {
-	/**
-	 * Returns the static model of the specified AR class.
-	 * @return OphTrOperationnote_GlaucomaTube_PlatePosition the static model class
-	 */
-	public static function model($className = __CLASS__)
-	{
-		return parent::model($className);
-	}
+    /**
+     * Returns the static model of the specified AR class.
+     *
+     * @return OphTrOperationnote_GlaucomaTube_PlatePosition the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
 
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'patientticketing_ticketqueue_assignment';
-	}
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'patientticketing_ticketqueue_assignment';
+    }
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		return array(
-				array('ticket_id, queue_id, assignment_date, assignment_user_id, assignment_firm_id', 'required'),
-		);
-	}
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        return array(
+                array('ticket_id, queue_id, assignment_date, assignment_user_id, assignment_firm_id', 'required'),
+        );
+    }
 
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		return array(
-				'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-				'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-				'assignment_user' => array(self::BELONGS_TO, 'User', 'assignment_user_id'),
-				'assignment_firm' => array(self::BELONGS_TO, 'Firm', 'assignment_firm_id'),
-				'ticket' => array(self::BELONGS_TO, 'OEModule\PatientTicketing\models\Ticket', 'ticket_id'),
-				'queue' => array(self::BELONGS_TO, 'OEModule\PatientTicketing\models\Queue', 'queue_id'),
-		);
-	}
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        return array(
+                'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+                'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+                'assignment_user' => array(self::BELONGS_TO, 'User', 'assignment_user_id'),
+                'assignment_firm' => array(self::BELONGS_TO, 'Firm', 'assignment_firm_id'),
+                'ticket' => array(self::BELONGS_TO, 'OEModule\PatientTicketing\models\Ticket', 'ticket_id'),
+                'queue' => array(self::BELONGS_TO, 'OEModule\PatientTicketing\models\Queue', 'queue_id'),
+        );
+    }
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
-	public function attributeLabels()
-	{
-		return array(
-		);
-	}
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+        );
+    }
 
-		/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		// Warning: Please modify the following code to remove attributes that
-		// should not be searched.
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     *
+     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     */
+    public function search()
+    {
+        // Warning: Please modify the following code to remove attributes that
+        // should not be searched.
 
-		$criteria = new CDbCriteria;
+        $criteria = new CDbCriteria();
 
-		$criteria->compare('id', $this->id, true);
+        $criteria->compare('id', $this->id, true);
 
-		return new CActiveDataProvider(get_class($this), array(
-				'criteria' => $criteria,
-		));
-	}
+        return new CActiveDataProvider(get_class($this), array(
+                'criteria' => $criteria,
+        ));
+    }
 
-	/**
-	 * Searches for string patterns to replace with assignment data and returns the resultant string.
-	 *
-	 * @param string $text
-	 * @return string $replaced_text
-	 */
-	public function replaceAssignmentCodes($text)
-	{
-		if ($this->details) {
-			$flds = json_decode($this->details, true);
+    /**
+     * Searches for string patterns to replace with assignment data and returns the resultant string.
+     *
+     * @param string $text
+     *
+     * @return string $replaced_text
+     */
+    public function replaceAssignmentCodes($text)
+    {
+        if ($this->details) {
+            $flds = json_decode($this->details, true);
 
-			$by_id = array();
-			foreach ($flds as $fld) {
-				if (@$fld['widget_name']) {
-					$cls_name = "OEModule\\PatientTicketing\\widgets\\" . $fld['widget_name'];
-					$widget = new $cls_name;
-					$by_id[$fld['id']] = $widget->getReportString($fld['value']);
-				}
-				else {
-					$by_id[$fld['id']] = $fld['value'];
-				}
-			}
+            $by_id = array();
+            foreach ($flds as $fld) {
+                if (@$fld['widget_name']) {
+                    $cls_name = 'OEModule\\PatientTicketing\\widgets\\'.$fld['widget_name'];
+                    $widget = new $cls_name();
+                    $by_id[$fld['id']] = $widget->getReportString($fld['value']);
+                } else {
+                    $by_id[$fld['id']] = $fld['value'];
+                }
+            }
 
-			// match for ticketing fields
-			preg_match_all('/\[pt_([a-z_]+)\]/is',$text,$m);
+            // match for ticketing fields
+            preg_match_all('/\[pt_([a-z_]+)\]/is', $text, $m);
 
-			foreach ($m[1] as $el) {
-				$text = preg_replace('/\[pt_' . $el . '\]/is', @$by_id[$el] ? $by_id[$el] : 'Unknown', $text);
-			}
+            foreach ($m[1] as $el) {
+                $text = preg_replace('/\[pt_'.$el.'\]/is', @$by_id[$el] ? $by_id[$el] : 'Unknown', $text);
+            }
 
-			return $text;
-		}
-	}
+            return $text;
+        }
+    }
 
-	/* Generate the report text */
-	public function generateReportText()
-	{
-		$this->report = \OEModule\PatientTicketing\components\Substitution::replace($this->replaceAssignmentCodes($this->queue->report_definition), $this->ticket->patient);
-	}
+    /* Generate the report text */
+    public function generateReportText()
+    {
+        $this->report = \OEModule\PatientTicketing\components\Substitution::replace($this->replaceAssignmentCodes($this->queue->report_definition), $this->ticket->patient);
+    }
 }

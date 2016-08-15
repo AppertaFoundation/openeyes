@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -10,8 +10,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -19,36 +19,41 @@
  */
 
 /**
- * The followings are the available columns in table 'et_ophdrprescription_details':
+ * The followings are the available columns in table 'et_ophdrprescription_details':.
+ *
  * @property string $id
- * @property integer $event_id
+ * @property int $event_id
  * @property string $comments
  *
  * The followings are the available model relations:
  * @property Event $event
  * @property Item[] $items
  */
-class Element_OphDrPrescription_Details extends BaseEventTypeElement {
-
+class Element_OphDrPrescription_Details extends BaseEventTypeElement
+{
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return Element_OphDrPrescription_Details the static model class
      */
-    public static function model($className = __CLASS__) {
+    public static function model($className = __CLASS__)
+    {
         return parent::model($className);
     }
 
     /**
      * @return string the associated database table name
      */
-    public function tableName() {
+    public function tableName()
+    {
         return 'et_ophdrprescription_details';
     }
 
     /**
      * @return array validation rules for model attributes.
      */
-    public function rules() {
+    public function rules()
+    {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
@@ -63,11 +68,12 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement {
     /**
      * @return array relational rules.
      */
-    public function relations() {
+    public function relations()
+    {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='" . get_class($this) . "'"),
+            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='".get_class($this)."'"),
             'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
@@ -79,19 +85,22 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement {
     /**
      * @return array customized attribute labels (name=>label)
      */
-    public function attributeLabels() {
+    public function attributeLabels()
+    {
         return array();
     }
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
-    public function search() {
+    public function search()
+    {
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria = new CDbCriteria;
+        $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
@@ -103,11 +112,12 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement {
     }
 
     /**
-     * Generates string for inclusion in letters that describes the prescription
+     * Generates string for inclusion in letters that describes the prescription.
      *
      * @return string
      */
-    public function getLetterText() {
+    public function getLetterText()
+    {
         $return = '';
         foreach ($this->items as $item) {
             if ($return) {
@@ -117,24 +127,28 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement {
 
             if ($item->tapers) {
                 foreach ($item->tapers as $taper) {
-                    $return .= "\n   " . $taper->getDescription();
+                    $return .= "\n   ".$taper->getDescription();
                 }
             }
         }
+
         return $return;
     }
 
     /**
-     * Get the common drugs for session firm
+     * Get the common drugs for session firm.
      *
      * @TODO: move this out of the model - it's not the right place for it as it's relying on session information
+     *
      * @return Drug[]
      */
-    public function commonDrugs() {
+    public function commonDrugs()
+    {
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
         $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
         $site_id = Yii::app()->session['selected_site_id'];
         $params = array(':subSpecialtyId' => $subspecialty_id, ':siteId' => $site_id);
+
         return Drug::model()->active()->findAll(array(
                     'condition' => 'ssd.subspecialty_id = :subSpecialtyId AND ssd.site_id = :siteId',
                     'join' => 'JOIN site_subspecialty_drug ssd ON ssd.drug_id = t.id',
@@ -144,13 +158,15 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement {
     }
 
     /**
-     * Get the drug list for a specified site and subspecialty
+     * Get the drug list for a specified site and subspecialty.
      *
      * @param $site_id
      * @param $subspecialty_id
+     *
      * @return SiteSubspecialtyDrug[]
      */
-    public function commonDrugsBySiteAndSpec($site_id, $subspecialty_id) {
+    public function commonDrugsBySiteAndSpec($site_id, $subspecialty_id)
+    {
         $params = array(':subSpecialtyId' => $subspecialty_id, ':siteId' => $site_id);
 
         return SiteSubspecialtyDrug::model()->with('drugs')->findAll(array(
@@ -161,15 +177,18 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement {
     }
 
     /**
-     * Get the drug sets for the current firm
+     * Get the drug sets for the current firm.
      *
      * @TODO: move this out of the model - it's not the right place for it as it's relying on session information
+     *
      * @return DrugSet[]
      */
-    public function drugSets() {
+    public function drugSets()
+    {
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
         $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
         $params = array(':subspecialty_id' => $subspecialty_id);
+
         return DrugSet::model()->findAll(array(
                     'condition' => 'subspecialty_id = :subspecialty_id AND active = 1',
                     'order' => 'name',
@@ -178,13 +197,15 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement {
     }
 
     /**
-     * Get all drug sets for admin page
+     * Get all drug sets for admin page.
+     *
      * @return mixed
      */
-    public function drugSetsAll() {
+    public function drugSetsAll()
+    {
         $drugSets = DrugSet::model()->findAll(array(
             'with' => 'subspecialty',
-            'order' => 't.name'
+            'order' => 't.name',
         ));
 
         /* foreach ($drugSets as $drugSet) {
@@ -195,12 +216,14 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement {
     }
 
     /**
-     * Gets listdata for the drugtypes
+     * Gets listdata for the drugtypes.
      *
      * @TODO: Should this be a static method on the DrugType model, rather than here?
+     *
      * @return CHtml::listData
      */
-    public function drugTypes() {
+    public function drugTypes()
+    {
         $drugTypes = CHtml::listData(DrugType::model()->active()->findAll(array(
                             'order' => 'name',
                         )), 'id', 'name');
@@ -211,26 +234,29 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement {
     }
 
     /**
-     * Prescription is always editable
+     * Prescription is always editable.
      *
      * @return bool
      */
-    public function isEditable() {
+    public function isEditable()
+    {
         return $this->draft;
     }
 
     /**
-     * Validate prescription items
+     * Validate prescription items.
      */
-    protected function afterValidate() {
+    protected function afterValidate()
+    {
         // Check that fields on prescription items are set
         foreach ($this->items as $i => $item) {
             if (!$item->validate()) {
                 foreach ($item->getErrors() as $fld => $err) {
-                    $this->addError('items', 'Item (' . ($i + 1) . '): ' . implode(', ', $err));
+                    $this->addError('items', 'Item ('.($i + 1).'): '.implode(', ', $err));
                 }
             }
         }
+
         return parent::afterValidate();
     }
 
@@ -241,15 +267,17 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement {
      * This instance must have been saved already.
      *
      * @param array() $items
+     *
      * @throws Exception
      */
-    public function updateItems($items) {
+    public function updateItems($items)
+    {
         $itemCount = count($items);
         if ($itemCount == 0) {
-            throw new Exception("Item cannot be blank.");
+            throw new Exception('Item cannot be blank.');
         } else {
             if (!$this->id) {
-                throw new Exception("Cannot call updateItems on unsaved instance.");
+                throw new Exception('Cannot call updateItems on unsaved instance.');
             }
 
             // Get a list of ids so we can keep track of what's been removed
@@ -319,11 +347,12 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement {
     }
 
     /**
-     * Returns string status to indicate if the prescription is draft or not
+     * Returns string status to indicate if the prescription is draft or not.
      *
      * @return string
      */
-    public function getInfotext() {
+    public function getInfotext()
+    {
         if (!$this->printed) {
             return 'Draft';
         } else {
@@ -331,16 +360,18 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement {
         }
     }
 
-    public function getContainer_form_view() {
+    public function getContainer_form_view()
+    {
         return false;
     }
 
-    public function getContainer_print_view() {
+    public function getContainer_print_view()
+    {
         return false;
     }
 
-    public function getPrint_view() {
-        return 'print_' . $this->getDefaultView();
+    public function getPrint_view()
+    {
+        return 'print_'.$this->getDefaultView();
     }
-
 }

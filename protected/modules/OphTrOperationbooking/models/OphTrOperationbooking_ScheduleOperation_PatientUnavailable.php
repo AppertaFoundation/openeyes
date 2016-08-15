@@ -1,5 +1,6 @@
-<?php /**
- * OpenEyes
+<?php
+/**
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -8,144 +9,146 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class OphTrOperationbooking_ScheduleOperation_PatientUnavailable extends BaseActiveRecordVersioned
 {
-	/**
-	 * Returns the static model of the specified AR class.
-	 * @return the static model class
-	 */
-	public static function model($className = __CLASS__)
-	{
-		return parent::model($className);
-	}
+    /**
+     * Returns the static model of the specified AR class.
+     *
+     * @return the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
 
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'ophtroperationbooking_scheduleope_patientunavail';
-	}
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'ophtroperationbooking_scheduleope_patientunavail';
+    }
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
-		return array(
-			array('start_date, end_date, reason_id', 'safe'),
-			array('start_date, end_date, reason_id', 'required'),
-			array('start_date', 'validateEarlierOrEqualDate', 'later_date' => 'end_date'),
-			array('reason_id', 'validateReasonIsEnabled',
-					'model' => 'OphTrOperationbooking_ScheduleOperation_PatientUnavailableReason', 'on' => 'insert'),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, start_date, end_date, reason', 'safe', 'on' => 'search'),
-		);
-	}
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return array(
+            array('start_date, end_date, reason_id', 'safe'),
+            array('start_date, end_date, reason_id', 'required'),
+            array('start_date', 'validateEarlierOrEqualDate', 'later_date' => 'end_date'),
+            array('reason_id', 'validateReasonIsEnabled',
+                    'model' => 'OphTrOperationbooking_ScheduleOperation_PatientUnavailableReason', 'on' => 'insert', ),
+            // The following rule is used by search().
+            // Please remove those attributes that should not be searched.
+            array('id, start_date, end_date, reason', 'safe', 'on' => 'search'),
+        );
+    }
 
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
-		return array(
-				'element' => array(self::BELONGS_TO, 'Element_OphTrOperationbooking_ScheduleOperation', 'element_id'),
-				'reason' => array(self::BELONGS_TO, 'OphTrOperationbooking_ScheduleOperation_PatientUnavailableReason', 'reason_id'),
-				'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-				'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-		);
-	}
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return array(
+                'element' => array(self::BELONGS_TO, 'Element_OphTrOperationbooking_ScheduleOperation', 'element_id'),
+                'reason' => array(self::BELONGS_TO, 'OphTrOperationbooking_ScheduleOperation_PatientUnavailableReason', 'reason_id'),
+                'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+                'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+        );
+    }
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
-	public function attributeLabels()
-	{
-		return array(
-				'reason_id' => 'Reason',
-				'start_date' => 'Start Date',
-				'end_date' => 'End Date',
-		);
-	}
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+                'reason_id' => 'Reason',
+                'start_date' => 'Start Date',
+                'end_date' => 'End Date',
+        );
+    }
 
-	public function setDefaultOptions() {}
+    public function setDefaultOptions()
+    {
+    }
 
-	/**
-	 * Retrieves all valid OphTrOperationBooking_ScheduleOperation_PatientUnavailableReason that can be used for this
-	 * instance (i.e. includes the current value even if its no longer active).
-	 *
-	 * @return OphTrOperationBooking_ScheduleOperation_PatientUnavailableReason[]
-	 */
-	public function getPatientUnavailbleReasons()
-	{
-		$criteria = new CDbCriteria;
-		$criteria->condition = 'enabled = true';
-		$criteria->order = 'display_order asc';
+    /**
+     * Retrieves all valid OphTrOperationBooking_ScheduleOperation_PatientUnavailableReason that can be used for this
+     * instance (i.e. includes the current value even if its no longer active).
+     *
+     * @return OphTrOperationBooking_ScheduleOperation_PatientUnavailableReason[]
+     */
+    public function getPatientUnavailbleReasons()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->condition = 'enabled = true';
+        $criteria->order = 'display_order asc';
 
-		$reasons = OphTrOperationbooking_ScheduleOperation_PatientUnavailableReason::model()->findAll($criteria);
-		// just use standard list
-		if (!$this->reason_id) {
-			return $reasons;
-		}
+        $reasons = OphTrOperationbooking_ScheduleOperation_PatientUnavailableReason::model()->findAll($criteria);
+        // just use standard list
+        if (!$this->reason_id) {
+            return $reasons;
+        }
 
-		$all_reasons = array();
-		$r_ids = array();
+        $all_reasons = array();
+        $r_ids = array();
 
-		foreach ($reasons as $reason) {
-			$all_reasons[] = $reason;
-			$r_ids[] = $reason->id;
-		}
+        foreach ($reasons as $reason) {
+            $all_reasons[] = $reason;
+            $r_ids[] = $reason->id;
+        }
 
-		if (!in_array($this->reason_id, $r_ids)) {
-			$all_reasons[] = $this->reason;
-		}
+        if (!in_array($this->reason_id, $r_ids)) {
+            $all_reasons[] = $this->reason;
+        }
 
-		return $all_reasons;
-	}
+        return $all_reasons;
+    }
 
-	/**
-	 * validate a date is earlier or equal to another
-	 *
-	 * @param $attribute - the element attribute that must be an earlier date
-	 * @param $params - 'later_date' is the attribute to compare it with
-	 */
-	public function validateEarlierOrEqualDate($attribute, $params)
-	{
-		$later_date = $params['later_date'];
-		if ($this->$attribute && $this->$later_date
-				&& $this->$attribute > $this->$later_date
-		) {
-			$this->addError($attribute, $this->getAttributeLabel($attribute) . " must be equal to or before " . $this->getAttributeLabel($later_date));
-		}
-	}
+    /**
+     * validate a date is earlier or equal to another.
+     *
+     * @param $attribute - the element attribute that must be an earlier date
+     * @param $params - 'later_date' is the attribute to compare it with
+     */
+    public function validateEarlierOrEqualDate($attribute, $params)
+    {
+        $later_date = $params['later_date'];
+        if ($this->$attribute && $this->$later_date
+                && $this->$attribute > $this->$later_date
+        ) {
+            $this->addError($attribute, $this->getAttributeLabel($attribute).' must be equal to or before '.$this->getAttributeLabel($later_date));
+        }
+    }
 
-	/**
-	 * validate the related object for $attribute is enabled
-	 *
-	 * @param $attribute
-	 * @param $params - 'model' is the model that the $attribute is the id for
-	 */
-	public function validateReasonIsEnabled($attribute, $params)
-	{
-		$model = $params['model'];
-		if ($this->$attribute) {
-			$obj = $model::model()->findByPk($this->$attribute);
-			if (!$obj->enabled) {
-				$this->addError($attribute, $this->getAttributeLabel($attribute) . " must be active for new entry");
-			}
-		}
-	}
+    /**
+     * validate the related object for $attribute is enabled.
+     *
+     * @param $attribute
+     * @param $params - 'model' is the model that the $attribute is the id for
+     */
+    public function validateReasonIsEnabled($attribute, $params)
+    {
+        $model = $params['model'];
+        if ($this->$attribute) {
+            $obj = $model::model()->findByPk($this->$attribute);
+            if (!$obj->enabled) {
+                $this->addError($attribute, $this->getAttributeLabel($attribute).' must be active for new entry');
+            }
+        }
+    }
 }

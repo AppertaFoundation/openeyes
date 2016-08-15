@@ -1,9 +1,10 @@
 <?php
+
 class m140429_140000_add_bleb_assessment_element extends OEMigration
 {
     public function up()
     {
-        $event_type_id = $this->dbConnection->createCommand()->select("id")->from("event_type")->where("class_name = :class_name", array(":class_name" => "OphCiExamination"))->queryScalar();
+        $event_type_id = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name = :class_name', array(':class_name' => 'OphCiExamination'))->queryScalar();
 
         $element_types = array(
             'OEModule\OphCiExamination\models\Element_OphCiExamination_BlebAssessment' => array('name' => 'Bleb Assessment', 'display_order' => 110),
@@ -88,13 +89,13 @@ class m140429_140000_add_bleb_assessment_element extends OEMigration
             'ophciexamination_bleb_assessment_vascularity',
             'ophciexamination_bleb_assessment_height',
             'ophciexamination_bleb_assessment_max_area',
-            'ophciexamination_bleb_assessment_central_area'
+            'ophciexamination_bleb_assessment_central_area',
         );
         foreach ($tables as $table) {
             $this->dropTable($table);
-            $this->dropTable($table .'_version');
+            $this->dropTable($table.'_version');
         }
 
-        $this->delete('element_type', 'name = :name', array(':name'=>'Bleb Assessment'));
+        $this->delete('element_type', 'name = :name', array(':name' => 'Bleb Assessment'));
     }
 }

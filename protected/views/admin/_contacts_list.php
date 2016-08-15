@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2012
@@ -9,14 +9,13 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 ?>
 <div id="searchResults" class="box admin">
 	<h2>Contacts</h2>
@@ -34,7 +33,7 @@
 			</thead>
 			<tbody>
 				<?php
-				foreach ($contacts['contacts'] as $i => $contact) {?>
+                foreach ($contacts['contacts'] as $i => $contact) {?>
 					<tr class="clickable" data-id="<?php echo $contact->id?>" data-uri="admin/editContact?contact_id=<?php echo $contact->id?>">
 						<td><?php echo $contact->id?></td>
 						<td><?php echo $contact->title?></td>
@@ -49,9 +48,9 @@
 				<tr>
 					<td colspan="6" class="clearfix">
 						<?php echo EventAction::button('Add', 'add', null, array('class' => 'small'))->toHtml()?>
-						<?php echo $this->renderPartial('//admin/_pagination',array(
-							'pagination' => $contacts['pagination'],
-						))?>
+						<?php echo $this->renderPartial('//admin/_pagination', array(
+                            'pagination' => $contacts['pagination'],
+                        ))?>
 					</td>
 				</tr>
 			</tfoot>

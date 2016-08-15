@@ -40,20 +40,19 @@ class EventLogController extends BaseAdminController
      */
     public function actionList()
     {
-
         $admin = new Admin(AutomaticExaminationEventLog::model(), $this);
         $admin->setModelDisplayName('Examination Event Log(s)');
         $admin->setListFields(array(
             'event_id',
             'unique_code',
             'examination_date',
-            'import_status.status_value'
+            'import_status.status_value',
         ));
 
         $admin->searchAll();
         $admin->getSearch()->addSearchItem('import_success', array(
             'type' => 'dropdown',
-            'options' => CHtml::listData(ImportStatus::model()->findAll(),'id', 'status_value'),
+            'options' => CHtml::listData(ImportStatus::model()->findAll(), 'id', 'status_value'),
         ));
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
         $admin->listModel(false);
@@ -61,6 +60,7 @@ class EventLogController extends BaseAdminController
 
     /**
      * @param bool $id
+     *
      * @throws CHttpException
      * @throws Exception
      */
@@ -72,10 +72,10 @@ class EventLogController extends BaseAdminController
         }
 
         if (!empty($_POST)) {
-            if($eventQuery->import_status->status_value === 'Duplicate Event'){
+            if ($eventQuery->import_status->status_value === 'Duplicate Event') {
                 $this->replaceEvent($eventQuery);
             }
-            if($eventQuery->import_status->status_value === 'Unfound Event'){
+            if ($eventQuery->import_status->status_value === 'Unfound Event') {
                 $this->assignEvent($eventQuery);
             }
             $this->redirect('/oeadmin/eventLog/list/');
@@ -132,13 +132,15 @@ class EventLogController extends BaseAdminController
 
     /**
      * @param $id
+     *
      * @return array
+     *
      * @throws CHttpException
      * @throws Exception
      */
     protected function replaceEvent($eventQuery)
     {
-        $creator = new ExaminationCreator();
+        $creator = new \OEModule\OphCiExamination\components\ExaminationCreator();
         $data = $eventQuery->examination_data;
         $examination = json_decode($data, true);
         $eventType = EventType::model()->find('name = "Examination"');
@@ -155,15 +157,15 @@ class EventLogController extends BaseAdminController
         }
     }
 
-
     /**
      * @param $eventQuery
+     *
      * @throws CHttpException
      * @throws Exception
      */
     protected function assignEvent($eventQuery)
     {
-        $creator = new ExaminationCreator();
+        $creator = new \OEModule\OphCiExamination\components\ExaminationCreator();
         $data = $eventQuery->examination_data;
         $examination = json_decode($data, true);
         $eventType = EventType::model()->find('name = "Examination"');
@@ -174,16 +176,16 @@ class EventLogController extends BaseAdminController
         $patient = Patient::model()->findByPk($patientId);
         $episodeId = $patient->getCataractEpisodeId();
 
-        if(!$episodeId){
+        if (!$episodeId) {
             throw new CHttpException(400, 'Patient has no cataract episode');
         }
 
         $this->createExamination($eventQuery, $episodeId, $creator, $portalUserId, $examination, $eventType, $eyeIds, $refractionType);
-
     }
 
     /**
      * @param $eventLog
+     *
      * @return mixed|string
      */
     protected function previousEventLogData($eventLog)
@@ -194,7 +196,7 @@ class EventLogController extends BaseAdminController
         $criteria->order = 'created_date DESC, id ASC';
         $previous = AutomaticExaminationEventLog::model()->find($criteria);
 
-        if(!$previous){
+        if (!$previous) {
             return '';
         }
 
@@ -210,6 +212,7 @@ class EventLogController extends BaseAdminController
      * @param $eventType
      * @param $eyeIds
      * @param $refractionType
+     *
      * @throws CHttpException
      */
     protected function createExamination($eventQuery, $episodeId, $creator, $portalUserId, $examination, $eventType, $eyeIds, $refractionType, $opNoteId = null)
@@ -217,9 +220,8 @@ class EventLogController extends BaseAdminController
         $transaction = $eventQuery->getDbConnection()->beginInternalTransaction();
 
         try {
-
             $examinationEvent = $creator->saveExamination($episodeId, $portalUserId, $examination, $eventType, $eyeIds, $refractionType, $opNoteId);
-            if($eventQuery->event){
+            if ($eventQuery->event) {
                 //delete old event
                 $eventQuery->event->deleted = 1;
                 $eventQuery->event->save();
@@ -228,7 +230,6 @@ class EventLogController extends BaseAdminController
             $eventQuery->import_success = ImportStatus::model()->find('status_value = "Success Event"')->id;
             $eventQuery->event_id = $examinationEvent->id;
             $eventQuery->save();
-
         } catch (Exception $e) {
             $transaction->rollback();
             throw new CHttpException(500, 'Saving Examination event failed');
@@ -236,6 +237,4 @@ class EventLogController extends BaseAdminController
 
         $transaction->commit();
     }
-
-
 }

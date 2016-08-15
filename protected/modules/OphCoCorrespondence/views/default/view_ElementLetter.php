@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -20,23 +20,23 @@
 
 <div id="correspondence_out" class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?>">
 	<header>
-		<?php $this->renderPartial("letter_start", array(
-			'toAddress' => $element->address,
-			'patient' => $this->patient,
-			'date' => $element->date,
-			'clinicDate' => $element->clinic_date,
-			'element' => $element,
-		))?>
+		<?php $this->renderPartial('letter_start', array(
+            'toAddress' => $element->address,
+            'patient' => $this->patient,
+            'date' => $element->date,
+            'clinicDate' => $element->clinic_date,
+            'element' => $element,
+        ))?>
 	</header>
 
-	<?php $this->renderPartial("reply_address", array(
-			'site' => $element->site,
-	))?>
+	<?php $this->renderPartial('reply_address', array(
+            'site' => $element->site,
+    ))?>
 
-	<?php $this->renderPartial("print_ElementLetter", array(
-			'element' => $element,
-			'no_header' => true,
-	))?>
+	<?php $this->renderPartial('print_ElementLetter', array(
+            'element' => $element,
+            'no_header' => true,
+    ))?>
 
 	<input type="hidden" name="OphCoCorrespondence_printLetter" id="OphCoCorrespondence_printLetter" value="<?php echo $element->print?>" />
 	<input type="hidden" name="OphCoCorrespondence_printLetter" id="OphCoCorrespondence_printLetter_all" value="<?php echo $element->print_all?>" />

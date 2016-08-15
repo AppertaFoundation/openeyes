@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,26 +9,24 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 if (!empty($episode)) {
+    if ($episode->diagnosis) {
+        $eye = $episode->eye ? $episode->eye->name : 'None';
+        $diagnosis = $episode->diagnosis ? $episode->diagnosis->term : 'none';
+    } else {
+        $eye = 'No diagnosis';
+        $diagnosis = 'No diagnosis';
+    }
 
-	if ($episode->diagnosis) {
-		$eye = $episode->eye ? $episode->eye->name : 'None';
-		$diagnosis = $episode->diagnosis ? $episode->diagnosis->term : 'none';
-	} else {
-		$eye = 'No diagnosis';
-		$diagnosis = 'No diagnosis';
-	}
-
-	$episode->audit('episode summary','view');
-	?>
+    $episode->audit('episode summary', 'view');
+    ?>
 
 	<div class="element-data">
 		<h2>Summary</h2>
@@ -47,14 +45,18 @@ if (!empty($episode)) {
 					<?= $episode->patient->age ?>,
 					CVI status: <?= $episode->patient->ophInfo->cvi_status->name ?>,
 					Driving status:
-					<?php if (!empty($episode->patient->socialhistory->driving_statuses)) {
-						foreach ($episode->patient->socialhistory->driving_statuses as $i => $driving_status) {
-							if ($i) echo '/';
-							echo $driving_status->name;
-						}
-					} else {
-						echo 'Unknown';
-					}?>
+					<?php 
+					if (!empty($episode->patient->socialhistory->driving_statuses)) {
+                        foreach ($episode->patient->socialhistory->driving_statuses as $i => $driving_status) {
+                            if ($i) {
+                                echo '/';
+                            }
+                            echo $driving_status->name;
+                        }
+                    } else {
+                        echo 'Unknown';
+                    }
+    ?>
 				</div>
 			</section>
 
@@ -75,40 +77,40 @@ if (!empty($episode)) {
 	</div>
 
 	<?php
-		$summaryItems = array();
-		if ($episode->subspecialty) {
-			$summaryItems = EpisodeSummaryItem::model()->enabled($episode->subspecialty->id)->findAll();
-		}
-		if (!$summaryItems) {
-			$summaryItems = EpisodeSummaryItem::model()->enabled()->findAll();
-		}
-	?>
+        $summaryItems = array();
+    if ($episode->subspecialty) {
+        $summaryItems = EpisodeSummaryItem::model()->enabled($episode->subspecialty->id)->findAll();
+    }
+    if (!$summaryItems) {
+        $summaryItems = EpisodeSummaryItem::model()->enabled()->findAll();
+    }
+    ?>
 
 	<?php if (count($summaryItems)) {?>
 		<div class="element element-data event-types">
 			<?php foreach ($summaryItems as $summaryItem) {
-				Yii::import("{$summaryItem->event_type->class_name}.widgets.{$summaryItem->getClassName()}");
-				$widget = $this->createWidget($summaryItem->getClassName(), array(
-					'episode' => $episode,
-					'event_type' => $summaryItem->event_type,
-				));
-				$className = '';
-				if ($widget->collapsible) {
-					$className .= 'collapsible';
-					if ($widget->openOnPageLoad) {
-						$className .= ' open';
-					}
-				}
-				?>
+    Yii::import("{$summaryItem->event_type->class_name}.widgets.{$summaryItem->getClassName()}");
+    $widget = $this->createWidget($summaryItem->getClassName(), array(
+                    'episode' => $episode,
+                    'event_type' => $summaryItem->event_type,
+                ));
+    $className = '';
+    if ($widget->collapsible) {
+        $className .= 'collapsible';
+        if ($widget->openOnPageLoad) {
+            $className .= ' open';
+        }
+    }
+    ?>
 				<div class="<?php echo $className;?>">
 					<h3 id="<?= $summaryItem->getClassName();?>" class="data-title">
 						<?= $summaryItem->name; ?>
-						<?php if ($widget->collapsible){
-							$text = $widget->openOnPageLoad ? 'hide' : 'show';
-							$toggleClassName = $widget->openOnPageLoad ? 'toggle-hide' : 'toggle-show';
-						?>
+						<?php if ($widget->collapsible) {
+                            $text = $widget->openOnPageLoad ? 'hide' : 'show';
+                            $toggleClassName = $widget->openOnPageLoad ? 'toggle-hide' : 'toggle-show';
+                            ?>
 							<a href="#" class="toggle-trigger toggle-<?php echo $toggleClassName;?>">
-								<span class="text"><?php echo $text ;?></span>
+								<span class="text"><?php echo $text;?></span>
 								<span class="icon-showhide">
 									Show/hide
 								</span>
@@ -199,7 +201,7 @@ if (!empty($episode)) {
 	<div class="metadata">
 		<span class="info">
 			<?php echo $episode->support_services ? 'Support services' : $episode->firm->getSubspecialtyText()?>: created by <span class="user"><?php echo $episode->user->fullName?></span>
-			on <?php echo $episode->NHSDate('created_date')?> at <?php echo substr($episode->created_date,11,5)?>
+			on <?php echo $episode->NHSDate('created_date')?> at <?php echo substr($episode->created_date, 11, 5)?>
 		</span>
 	</div>
 
@@ -217,7 +219,7 @@ if (!empty($episode)) {
 	<div class="metadata">
 		<span class="info">
 			Status last changed by <span class="user"><?php echo $episode->usermodified->fullName?></span>
-			on <?php echo $episode->NHSDate('last_modified_date')?> at <?php echo substr($episode->last_modified_date,11,5)?>
+			on <?php echo $episode->NHSDate('last_modified_date')?> at <?php echo substr($episode->last_modified_date, 11, 5)?>
 		</span>
 	</div>
 

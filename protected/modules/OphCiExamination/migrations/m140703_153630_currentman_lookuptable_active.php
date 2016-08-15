@@ -12,7 +12,7 @@ class m140703_153630_currentman_lookuptable_active extends OEMigration
     {
         foreach ($this->tables as $table) {
             $this->addColumn($table, 'active', 'tinyint(1) unsigned DEFAULT 1');
-            $this->addColumn($table . '_version', 'active', 'tinyint(1) unsigned DEFAULT 1');
+            $this->addColumn($table.'_version', 'active', 'tinyint(1) unsigned DEFAULT 1');
         }
     }
 
@@ -20,7 +20,7 @@ class m140703_153630_currentman_lookuptable_active extends OEMigration
     {
         foreach ($this->tables as $table) {
             $this->dropColumn($table, 'active');
-            $this->dropColumn($table . '_version', 'active');
+            $this->dropColumn($table.'_version', 'active');
         }
     }
 }
