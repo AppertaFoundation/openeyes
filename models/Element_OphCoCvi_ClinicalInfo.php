@@ -287,9 +287,11 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         return $data;
     }
 
-    public function getDisordersForSection($disorder_section) {
+    public function getDisordersForSection($disorder_section, $flag) {
         $data = array();
-        $data[] = array('','','','','');
+        if($flag == 0) {
+            $data[] = array('','','','','');
+        }
         $first = 1;
         foreach (OphCoCvi_ClinicalInfo_Disorder::model()
                      ->findAll('`active` = ? and section_id = ?',array(1, $disorder_section->id)) as $disorder) {
@@ -349,9 +351,12 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
 
         $result['sightVariesByLightLevelYes'] = ($this->sight_varies_by_light_levels === 1) ? 'X' : '';
         $result['sightVariesByLightLevelNo'] = ($this->sight_varies_by_light_levels === 0) ? '' : 'X';
+        $flag = 0;
         foreach(OphCoCvi_ClinicalInfo_Disorder_Section::model()
                     ->findAll('`active` = ?',array(1)) as $disorder_section) {
-            $result['disorder' . ucfirst($disorder_section->name) . 'Table'] = $this->getDisordersForSection($disorder_section);
+            $result['disorder' . ucfirst($disorder_section->name) . 'Table'] =
+                $this->getDisordersForSection($disorder_section, $flag);
+            $flag = 1;
         }
         $result['diagnosisNotCovered'] = $this->diagnoses_not_covered;
         return $result;
