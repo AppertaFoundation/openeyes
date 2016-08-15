@@ -199,6 +199,18 @@ class DefaultController extends \BaseEventTypeController
         }
         // TODO: we need to match the keys here!
         // we also need a method to generate the data structure with the ODTDataHandler!
+        $data["patientName"] = $this->patient->getFullName();
+        // TODO: do we have other names for patient?
+        $data["otherNames"] = '';
+        $data["patientDateOfBirth"] =  $this->patient->dob;
+        $data["nhsNumber"] = $this->patient->getNhsnum();
+        $data["gpName"] = $this->patient->gp->getFullName();
+        //$data["gpAddress"] = $this->patient->gp->contact->address->postcode."\n".$this->patient->gp->contact->address->address1;
+        $data["gpAddress"] = '';
+        $data["gpTel"] = '';
+        $data["patientAddress"] = $this->patient->getSummaryAddress();
+        $data["patientEmail"] = ''; // TODO: we need a get email address function
+        $data["patientTel"] = $this->patient->getPrimary_phone();
         $data["signatureName"] = $this->patient->getFullName();
         $data["signatureDate"] = date("d/m/Y");
 
@@ -206,7 +218,8 @@ class DefaultController extends \BaseEventTypeController
         $dob = ($this->patient->dob) ? $this->patient->NHSDate('dob') : '';
         $yearHeader = !empty($dob) ? array_merge(array(''),str_split(date('Y', strtotime($dob)))) : array('','','','','');
         $postCodeHeader = array('','','','','');
-        $data["genderTable"] = array(0=> array_merge($genderData, $yearHeader, $postCodeHeader ));
+        $spaceHolder = array('');
+        $data["genderTable"] = array(0=> array_merge($genderData, $spaceHolder, $yearHeader, $spaceHolder, $postCodeHeader ));
 
         return $data;
     }

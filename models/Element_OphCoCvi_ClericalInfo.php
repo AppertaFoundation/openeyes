@@ -254,10 +254,11 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 			if($is_factor == 0){$isFactor = "N";}
 			if($is_factor == 2){$isFactor = "";}
 
-			$result['patientFactor'] = array($factor->name, $isFactor);
+			$result['patientFactor'][] = array($factor->name, $isFactor);
 
 
 		}
+		//print_r($result['patientFactor']);die;
 		return $result;
 	}
 
