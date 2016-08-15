@@ -289,7 +289,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
 
     public function getDisordersForSection($disorder_section) {
         $data = array();
-        $data[] = array('','','','left','right');
+        $data[] = array('','','','','');
         $first = 1;
         foreach (OphCoCvi_ClinicalInfo_Disorder::model()
                      ->findAll('`active` = ? and section_id = ?',array(1, $disorder_section->id)) as $disorder) {
@@ -320,14 +320,13 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
     {
         $result = array();
         $isConsideredBlindNo = $isConsideredBlindYes = '';
+        $varyByLightLevelsYes = $varyByLightLevelsNo = '';
         $result['examinationDate'] = date('d/m/Y', strtotime($this->examination_date));
         if((int)$this->is_considered_blind === 0) { $isConsideredBlindNo = 'X';}
         if((int)$this->is_considered_blind === 1) { $isConsideredBlindYes = 'X';}
         $result['isConsideredBlind'] = array(
-            array('I consider (tick one)', $isConsideredBlindNo,
-                'That this person is sight impaired (partially sighted)'),
-            array('', $isConsideredBlindYes,
-                'That this person is severly sight impaired (blind)'),
+            array('', $isConsideredBlindNo, ''),
+            array('', $isConsideredBlindYes,''),
         );
         $result['visualAcuity'] = array(
             array('Visual acuity (Snellen, LogMAR or functional assessment, e.g. hand movement or finger counting)',
@@ -337,12 +336,9 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             array('Best corrected with both eyes',$this->best_corrected_binocular_va, ''),
         );
         $result['consultantName'] = $this->consultant->getFullName();
-        $result['unaidedRightVA'] = $this->unaided_right_va;
-        $result['unaidedLeftVA'] = $this->unaided_left_va;
-        $result['bestCorrectedLeftVA'] = $this->best_corrected_left_va;
-        $result['bestCorrectedRightVA'] = $this->best_corrected_right_va;
-        $result['bestCorrectedBinocularVA'] = $this->best_corrected_binocular_va;
-
+        if((int)$this->sight_varies_by_light_levels === 1) { $varyByLightLevelsYes = 'X';}
+        if((int)$this->sight_varies_by_light_levels === 0) { $varyByLightLevelsNo = 'X';}
+        $result['varyByLightLevels'] = array('',$varyByLightLevelsYes,'',$varyByLightLevelsNo);
         $fieldOfVisionData = $this->generateFieldOfVision();
         $lowVisionData = array_merge(array(0=>array('','')),$this->generateLowVisionStatus());
 

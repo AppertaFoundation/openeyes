@@ -181,7 +181,7 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
     {
         $result = array();
         $result['patientOrRepresentative'] = array(
-            array($this->is_patient ? 'X' : '','I am the patient'),
+            array($this->is_patient ? 'X' : '',''),
             array($this->is_patient ? '' : 'X',
             "the patient's representative and my name is (PLEASE PRINT): \n" . $this->representative_name)
         );
