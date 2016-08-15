@@ -114,21 +114,21 @@ class NodExportController extends BaseController
 
     private function getAllEpisodeId()
     {
-        $this->saveIds('tmp_episode_ids', $this->getEpisodeDiabeticDiagnosis());
+        //$this->saveIds('tmp_episode_ids', $this->getEpisodeDiabeticDiagnosis());
         $this->saveIds('tmp_episode_ids', $this->getEpisodeDrug());
         $this->saveIds('tmp_episode_ids', $this->getEpisodeBiometry());
-        $this->saveIds('tmp_episode_ids', $this->getEpisodePostOpComplication());
+        //$this->saveIds('tmp_episode_ids', $this->getEpisodePostOpComplication());
         $this->saveIds('tmp_episode_ids', $this->getEpisodePreOpAssessment());
         $this->saveIds('tmp_episode_ids', $this->getEpisodeIOP());
-        $this->saveIds('tmp_episode_ids', $this->getEpisodeVisualAcuity());
+        //$this->saveIds('tmp_episode_ids', $this->getEpisodeVisualAcuity());
         $this->saveIds('tmp_episode_ids', $this->getEpisodeRefraction());
-        $this->saveIds('tmp_operation_ids', $this->getEpisodeOperationCoPathology());
-        $this->saveIds('tmp_operation_ids', $this->getEpisodeOperationAnaesthesia());
-        $this->saveIds('tmp_operation_ids', $this->getEpisodeOperationIndication());
-        $this->saveIds('tmp_operation_ids', $this->getEpisodeOperationComplication());
-        $this->saveIds('tmp_episode_ids', $this->getEpisodeOperation());
-        $this->saveIds('tmp_treatment_ids', $this->getEpisodeTreatmentCataract());
-        $this->getEpisodeTreatment();
+        //$this->saveIds('tmp_operation_ids', $this->getEpisodeOperationCoPathology());
+        //$this->saveIds('tmp_operation_ids', $this->getEpisodeOperationAnaesthesia());
+        //$this->saveIds('tmp_operation_ids', $this->getEpisodeOperationIndication());
+        //$this->saveIds('tmp_operation_ids', $this->getEpisodeOperationComplication());
+        //$this->saveIds('tmp_episode_ids', $this->getEpisodeOperation());
+        //$this->saveIds('tmp_treatment_ids', $this->getEpisodeTreatmentCataract());
+        //$this->getEpisodeTreatment();
     }
 
     /**
@@ -173,7 +173,7 @@ class NodExportController extends BaseController
 
                 $offset+=$chunk;
                 unset($data);
-            }else {
+            } else {
                 break;
             }
         }
@@ -217,6 +217,8 @@ class NodExportController extends BaseController
         $this->createTmpRcoNodEpisodeRefraction();
         $this->createTmpRcoNodEpisodeDrug();
         $this->createTmpRcoNodEpisodeIOP();
+        $this->createTmpRcoNodEpisodeBiometry();
+        $this->createTmpRcoNodSurgeons();
         
         $createTempQuery = <<<EOL
 
@@ -488,6 +490,7 @@ EOL;
         $this->populateTmpRcoNodEpisodeRefraction();
         $this->populateTmpRcoNodEpisodeDrug();
         $this->populateTmpRcoNodEpisodeIOP();
+        $this->populateTmpRcoNodEpisodeBiometry();
     }
     
     private function clearAllTempTables()
@@ -501,6 +504,7 @@ EOL;
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeRefraction_{$this->extract_identifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeDrug_{$this->extract_identifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeIOP_{$this->extract_identifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeBiometry_{$this->extract_identifier};
 
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication_type;
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication;
@@ -520,7 +524,19 @@ EOL;
 
         Yii::app()->db->createCommand($cleanQuery)->execute();
     }
+    
+    
+    
+    
+    
+    /********** Surgeon **********/
 
+    private function createTmpRcoNodSurgeons()
+    {
+        $query = <<<EOL
+            
+EOL;
+    }
     /**
      * This table will contain the only person identifiable data (surgeon’s GMC number or national code
      * ) stored on the RCOphth NOD. This information will be used to match a surgeon to their
@@ -547,7 +563,11 @@ EOL;
         $this->saveCSVfile($dataQuery, 'Surgeon');
 
     }
+    
+    /********** end of Surgeon **********/
 
+    
+    
     
     
     /********** Patient **********/
@@ -1222,79 +1242,180 @@ EOL;
         return $output;
     }
     /********** end of EpisodeDrug **********/
-
-
-    private function getEpisodeBiometry()
+    
+    
+    
+    
+    
+    
+    
+    /********** EpisodeBiometry **********/
+    
+    
+    private function createTmpRcoNodEpisodeBiometry()
     {
-
-        $dateWhere = $this->getDateWhere('ev');
-
-        $query = "(
-                 SELECT
-                    ev.`episode_id` AS EpisodeId,
+        
+        $query = <<<EOL
+            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeBiometry_{$this->extract_identifier};
+            CREATE TABLE tmp_rco_nod_EpisodeBiometry_{$this->extract_identifier} (
+                    oe_event_id INT(10) NOT NULL,
+                    Eye CHAR(1) NOT NULL,
+                    AxialLength DECIMAL(6,2) DEFAULT NULL, 
+                    BiometryAScanId CHAR(1) DEFAULT NULL,
+                    BiometryKeratometerId INT(10) DEFAULT NULL,
+                    BiometryFormulaId INT(10) DEFAULT NULL,
+                    K1PreOperative DECIMAL(6,2),
+                    K2PreOperative DECIMAL(6,2),
+                    AxisK1 DECIMAL(5,1),
+                    AxisK2 DECIMAL(5,1),
+                    ACDepth DECIMAL(6,2),
+                    SNR DECIMAL(6,1)
+            );
+EOL;
+        
+        Yii::app()->db->createCommand($query)->execute();
+    }
+    
+    private function populateTmpRcoNodEpisodeBiometry()
+    {
+        $query = <<<EOL
+                INSERT INTO tmp_rco_nod_EpisodeBiometry_{$this->extract_identifier} (
+                    oe_event_id,
+                    Eye,
+                    AxialLength,
+                    BiometryAScanId,
+                    BiometryKeratometerId,
+                    BiometryFormulaId,
+                    K1PreOperative,
+                    K2PreOperative,
+                    AxisK1,
+                    AxisK2,
+                    ACDepth,
+                    SNR
+                )
+                SELECT
+                    ev.id,
                     'L' AS Eye,
                     axial_length_left AS AxialLength,
                     '' AS BiometryAScanId,
-                    (SELECT CASE
-                            WHEN ophinbiometry_imported_events.`device_model` = 'IOLmaster 500'  THEN 1
-                            WHEN ophinbiometry_imported_events.`device_model` = 'Haag-Streit LensStar' THEN 2
-                            WHEN ophinbiometry_imported_events.`device_model` = 'Other' THEN 9
-                     END) AS BiometryKeratometerId,
-                    ( SELECT `code` FROM tmp_biometry_formula WHERE tmp_biometry_formula.`desc` = ophinbiometry_calculation_formula.name COLLATE utf8_general_ci) AS BiometryFormulaId,
+                    (   SELECT CASE
+                                WHEN ophinbiometry_imported_events.device_model = 'IOLmaster 500'  THEN 1
+                                WHEN ophinbiometry_imported_events.device_model = 'Haag-Streit LensStar' THEN 2
+                                WHEN ophinbiometry_imported_events.device_model = 'Other' THEN 9
+                        END
+                    ) AS BiometryKeratometerId,
+                    ( 
+                        SELECT code 
+                        FROM tmp_biometry_formula 
+                        WHERE tmp_biometry_formula.desc = ophinbiometry_calculation_formula.name COLLATE utf8_general_ci
+                    ) AS BiometryFormulaId,
                     k1_left AS K1PreOperative,
                     k2_left AS K2PreOperative,
                     axis_k1_left AS AxisK1,
                     ms.k2_axis_left AS AxisK2,
                     ms.acd_left AS ACDepth,
                     ms.snr_left AS SNR
-                FROM episode ep
-                JOIN `event` ev ON ep.id =  ev.`episode_id`
-                JOIN event_type et ON ev.`event_type_id` = et.`id`
-                JOIN et_ophinbiometry_measurement ms ON ev.id = ms.event_id
-                JOIN `event` AS opnote ON ep.id = opnote.`episode_id`
-                        AND opnote.event_type_id = 4 AND opnote.created_date < ev.created_date
-                LEFT JOIN ophinbiometry_imported_events ON ev.id = ophinbiometry_imported_events.`event_id`
-                LEFT JOIN et_ophinbiometry_selection ON ev.id = et_ophinbiometry_selection.`event_id` AND et_ophinbiometry_selection.eye_id = 1 OR et_ophinbiometry_selection.eye_id = 3
-                LEFT JOIN ophinbiometry_calculation_formula ON et_ophinbiometry_selection.`formula_id_left` = ophinbiometry_calculation_formula.id
-                WHERE et.id = 37
-                AND ms.deleted = 0
-                AND ev.deleted = 0
-                ".$dateWhere."
-             )
-        UNION
-        (
+		
+                FROM tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c
+
+                #Joining event because we need the created date of the event
+                JOIN event AS ev ON c.oe_event_id = ev.id
+
+                JOIN et_ophinbiometry_measurement ms ON c.oe_event_id = ms.event_id
+
+                JOIN event AS opnote ON c.oe_event_id = opnote.id
+                        AND c.oe_event_type = 4 #Op Note
+                        AND opnote.created_date < ev.created_date
+
+                LEFT JOIN ophinbiometry_imported_events ON ev.id = ophinbiometry_imported_events.event_id
+                LEFT JOIN et_ophinbiometry_selection ON ev.id = et_ophinbiometry_selection.event_id 
+                        /* Restrict: LEFT/BOTH eyes */
+                        AND et_ophinbiometry_selection.eye_id = 1 OR et_ophinbiometry_selection.eye_id = 3
+
+                LEFT JOIN ophinbiometry_calculation_formula 
+                        ON et_ophinbiometry_selection.formula_id_left = ophinbiometry_calculation_formula.id
+
+                WHERE ms.deleted = 0 AND ev.deleted = 0;
+                
+                
+                
+                INSERT INTO tmp_rco_nod_EpisodeBiometry_{$this->extract_identifier} (
+                    oe_event_id,
+                    Eye,
+                    AxialLength,
+                    BiometryAScanId,
+                    BiometryKeratometerId,
+                    BiometryFormulaId,
+                    K1PreOperative,
+                    K2PreOperative,
+                    AxisK1,
+                    AxisK2,
+                    ACDepth,
+                    SNR
+                )
                 SELECT
-                    ev.`episode_id` AS EpisodeId,
+                    ev.episode_id AS EpisodeId,
                     'R' AS Eye,
-                    axial_length_right AS AxialLength,
+                    axial_length_left AS AxialLength,
                     '' AS BiometryAScanId,
                     (SELECT CASE
-                            WHEN ophinbiometry_imported_events.`device_model` = 'IOLmaster 500'  THEN 1
-                            WHEN ophinbiometry_imported_events.`device_model` = 'Haag-Streit LensStar' THEN 2
-                            WHEN ophinbiometry_imported_events.`device_model` = 'Other' THEN 9
-                     END) AS BiometryKeratometerId,
-                    ( SELECT `code` FROM tmp_biometry_formula WHERE tmp_biometry_formula.`desc` = ophinbiometry_calculation_formula.name COLLATE utf8_general_ci) AS BiometryFormulaId,
-                    k1_right AS K1PreOperative,
-                    k2_right AS K2PreOperative,
-                    axis_k1_right AS AxisK1,
-                    ms.k2_axis_right AS AxisK2,
-                    ms.acd_right AS ACDepth,
-                    ms.snr_right AS SNR
-            FROM episode ep
-            JOIN `event` ev ON ep.id =  ev.`episode_id`
-            JOIN event_type et ON ev.`event_type_id` = et.`id`
-            JOIN et_ophinbiometry_measurement ms ON ev.id = ms.event_id
-            JOIN `event` AS opnote ON ep.id = opnote.`episode_id`
-                    AND opnote.event_type_id = 4 AND opnote.created_date < ev.created_date
-            LEFT JOIN ophinbiometry_imported_events ON ev.id = ophinbiometry_imported_events.`event_id`
-            LEFT JOIN et_ophinbiometry_selection ON ev.id = et_ophinbiometry_selection.`event_id` AND et_ophinbiometry_selection.eye_id = 2 OR et_ophinbiometry_selection.eye_id = 3
-            LEFT JOIN ophinbiometry_calculation_formula ON et_ophinbiometry_selection.`formula_id_left` = ophinbiometry_calculation_formula.id
-            WHERE et.id = 37
-            AND ms.deleted = 0
-            AND ev.deleted = 0
-            ".$dateWhere."
-         )";
+                    WHEN ophinbiometry_imported_events.device_model = 'IOLmaster 500'  THEN 1
+                    WHEN ophinbiometry_imported_events.device_model = 'Haag-Streit LensStar' THEN 2
+                    WHEN ophinbiometry_imported_events.device_model = 'Other' THEN 9
+                    END) AS BiometryKeratometerId,
+                    ( SELECT code FROM tmp_biometry_formula WHERE tmp_biometry_formula.desc = ophinbiometry_calculation_formula.name COLLATE utf8_general_ci) AS BiometryFormulaId,
+                    k1_left AS K1PreOperative,
+                    k2_left AS K2PreOperative,
+                    axis_k1_left AS AxisK1,
+                    ms.k2_axis_left AS AxisK2,
+                    ms.acd_left AS ACDepth,
+                    ms.snr_left AS SNR
 
+                FROM tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c
+
+                #Joining event because we need the created date of the event
+                JOIN event AS ev ON c.oe_event_id = ev.id
+
+                JOIN et_ophinbiometry_measurement ms ON c.oe_event_id = ms.event_id
+
+                JOIN EVENT AS opnote ON c.oe_event_id = opnote.id
+                        AND c.oe_event_type = 4 #Op Note
+                        AND opnote.created_date < ev.created_date
+
+                LEFT JOIN ophinbiometry_imported_events ON ev.id = ophinbiometry_imported_events.event_id
+                LEFT JOIN et_ophinbiometry_selection ON ev.id = et_ophinbiometry_selection.event_id 
+                        /* Restrict: RIGHT/BOTH eyes */
+                        AND et_ophinbiometry_selection.eye_id = 2 OR et_ophinbiometry_selection.eye_id = 3
+
+                LEFT JOIN ophinbiometry_calculation_formula
+                        ON et_ophinbiometry_selection.formula_id_left = ophinbiometry_calculation_formula.id
+
+                WHERE ms.deleted = 0 AND ev.deleted = 0;
+                
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+    }
+
+    private function getEpisodeBiometry()
+    {
+        
+        $query = <<<EOL
+            SELECT  c.nod_episode_id,
+                    b.Eye,
+                    b.AxialLength,
+                    b.BiometryAScanId,
+                    b.BiometryKeratometerId,
+                    b.BiometryFormulaId,
+                    b.K1PreOperative,
+                    b.K2PreOperative,
+                    b.AxisK1,
+                    b.AxisK2,
+                    b.ACDepth,
+                    b.SNR
+            FROM tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c
+            JOIN tmp_rco_nod_EpisodeBiometry_{$this->extract_identifier} b ON c.oe_event_id = b.oe_event_id
+EOL;
+        
         $dataQuery = array(
             'query' => $query,
             'header' => array(
@@ -1313,11 +1434,18 @@ EOL;
             ),
         );
 
-        $output = $this->saveCSVfile($dataQuery, 'EpisodeBiometry', null, 'EpisodeId');
+        $output = $this->saveCSVfile($dataQuery, 'EpisodeBiometry');
 
-        
+
         return $output;
     }
+    
+    /********** EpisodeBiometry **********/
+    
+    
+    
+    
+    
 
     
     /********** EpisodeIOP **********/
@@ -2041,9 +2169,10 @@ EOL;
         $this->populateAllTempTables();
 
         $this->getAllEpisodeId();
+
         $this->getEpisodeDiagnosis();
         $this->getEpisode();
-        $this->getSurgeons();
+//$this->getSurgeons();
         $this->getPatientCviStatus();
         $this->getPatients();
         $this->clearAllTempTables();
