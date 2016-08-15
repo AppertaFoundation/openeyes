@@ -234,7 +234,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
                             throw new Exception('Unable to save MultiSelect item: '.print_r($disorder_comments->getErrors(),true));
                         }
                     }
-                    else if(isset($_POST['comments_disorder'][$sectionId])){
+                    else if(isset($_POST['comments_disorder'][$sectionId]) && in_array($sectionId,$existing_comment_ids)){
                         $criteria = new \CDbCriteria;
                         $criteria->compare('element_id', $this->id);
                         $criteria->compare('ophcocvi_clinicinfo_disorder_section_id', $sectionId);
