@@ -180,10 +180,14 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 	 */
 	public function generateEmployementStatus() {
 		$data = array();
-		$employement_status = (OphCoCvi_ClericalInfo_EmploymentStatus::model()->findAll(array('order' => 'display_order asc')));
-		foreach($employement_status as $employement) {
-			$key = $employement->name;
-			$data[][$key] = ($this->employment_status_id === $employement->id) ? 'X' : '';
+		$employement_status = (OphCoCvi_ClericalInfo_EmploymentStatus::model()->findAll('`active` = ?',array(1),array('order' => 'display_order asc')));
+		if( sizeof($employement_status ) > 1 ){
+			foreach($employement_status  as $employement){
+				for($i=0; $i<sizeof($employement)/2; $i++)
+					$data[] =  $employement->name;
+				$data[] = ($this->employment_status_id === $employement->id) ? 'X' : '';
+
+			}
 		}
 		return $data;
 	}
