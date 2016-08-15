@@ -106,32 +106,3 @@ $cols = array(
         </div>
     </div>
 </div>
-<script type="text/javascript">
-    function addConsultantToList(consultant)
-    {
-        var currentIds = $('#consultant_ids').val() ? $('#consultant_ids').val().split(',') : [];
-        currentIds.push(consultant.id);
-        $('#consultant_ids').val(currentIds.join());
-
-        $('#consultant_list').append('<li data-id="'+ consultant.id +'">' + consultant.value +'<a href="#" class="remove">X</a></li>');
-        $('#consultant_list').scrollTop($('#consultant_list')[0].scrollHeight);
-    }
-
-    $('#consultant_list').on('click', '.remove', function(e) {
-        var li = $(e.target).parents('li');
-        var consultantId = li.data('id');
-        var ids = $('#consultant_ids').val() ? $('#consultant_ids').val().split(',') : [];
-        var newIds = [];
-        for (var i in ids) {
-            if (String(ids[i]) != consultantId) {
-                newIds.push(ids[i]);
-            }
-        }
-        $('#consultant_ids').val(newIds.join());
-        $(li).remove();
-    });
-
-    $(document).ready(function() {
-        $('.datepicker').datepicker({'showAnim':'fold','dateFormat':'d M yy'});
-    });
-</script>

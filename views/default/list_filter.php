@@ -38,9 +38,9 @@
                 <div class="row">
 
                     <div class="column large-1 text-right"><label for="date_from">From:</label></div>
-                    <div class="column large-2"><input type="text" id="date_from" name="date_from" class="datepicker" value="<?=$this->request->getPost('date_from', '')?>" /></div>
+                    <div class="column large-2"><input type="text" id="date_from" name="date_from" class="datepicker filter-field" value="<?=$this->request->getPost('date_from', '')?>" /></div>
                     <div class="column large-1 text-right"><label for="date_to">To:</label></div>
-                    <div class="column large-2"><input type="text" id="date_to" name="date_to" class="datepicker" value="<?=$this->request->getPost('date_to', '')?>" /></div>
+                    <div class="column large-2"><input type="text" id="date_to" name="date_to" class="datepicker filter-field" value="<?=$this->request->getPost('date_to', '')?>" /></div>
                     <div class="column large-1 text-right"><label for="consultants">Consultant(s):</label></div>
                     <div class="column large-2"><?php
                         $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
@@ -96,16 +96,59 @@
                                     }
                                 }?>
                             </ul></div>
-                        <?= CHtml::hiddenField('consultant_ids', $this->request->getPost('consultant_ids', '')); ?>
+                        <?= CHtml::hiddenField('consultant_ids', $this->request->getPost('consultant_ids', ''), array('class' => 'filter-field')); ?>
                     </div>
                     <div class="column large-2 text-right"><label for="show-issued">Show Issued:</label></div>
-                    <div class="column large-1 end"><?php echo CHtml::checkBox('show_issued', ($this->request->getPost('show_issued', '') == 1))?></div>
+                    <div class="column large-1 end"><?php echo CHtml::checkBox('show_issued', ($this->request->getPost('show_issued', '') == 1), array('class' => 'filter-field'))?></div>
                 </div>
                 <div class="row">
-                    <div class="column large-12 text-right end"><button id="search_button" class="secondary small" type="submit">Apply</button></div>
+                    <div class="column large-12 text-right end">
+                        <?php if ($this->isListFiltered()) { ?>
+                            <button id="reset_button" class="warning small" type="submit">Reset</button>
+                        <?php } ?>
+                        <button id="search_button" class="secondary small" type="submit" disabled="true">Apply</button></div>
                 </div>
             </div>
         </div>
     </div>
     <?php $this->endWidget()?>
 </div>
+
+<script type="text/javascript">
+    function addConsultantToList(consultant)
+    {
+        var currentIds = $('#consultant_ids').val() ? $('#consultant_ids').val().split(',') : [];
+        currentIds.push(consultant.id);
+        $('#consultant_ids').val(currentIds.join());
+
+        $('#consultant_list').append('<li data-id="'+ consultant.id +'">' + consultant.value +'<a href="#" class="remove">X</a></li>');
+        $('#consultant_list').scrollTop($('#consultant_list')[0].scrollHeight);
+    }
+
+    $('#consultant_list').on('click', '.remove', function(e) {
+        var li = $(e.target).parents('li');
+        var consultantId = li.data('id');
+        var ids = $('#consultant_ids').val() ? $('#consultant_ids').val().split(',') : [];
+        var newIds = [];
+        for (var i in ids) {
+            if (String(ids[i]) != consultantId) {
+                newIds.push(ids[i]);
+            }
+        }
+        $('#consultant_ids').val(newIds.join());
+        $(li).remove();
+    });
+
+    $('#reset_button').on('click', function(e) {
+        e.preventDefault();
+        window.location.href = document.URL;
+    });
+
+    $('#cvi-filter').on('change', '.filter-field', function() {
+        $('#search_button').removeAttr('disabled');
+    });
+
+    $(document).ready(function() {
+        $('.datepicker').datepicker({'showAnim':'fold','dateFormat':'d M yy'});
+    });
+</script>

@@ -52,6 +52,37 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * @var bool internal flag to indicate a filter has been applied on the list view
+     */
+    private $is_list_filtered = false;
+
+    /**
+     * @return bool
+     */
+    public function isListFiltered()
+    {
+        return $this->is_list_filtered;
+    }
+
+    /**
+     *
+     * @return array
+     */
+    protected function getListFilter()
+    {
+        $filter = array();
+
+        foreach (array('date_from', 'date_to', 'consultant_ids', 'show_issued') as $key) {
+            $val = $this->request->getPost($key, null);
+            $filter[$key] = $val;
+            if ($val) {
+                $this->is_list_filtered = true;
+            }
+        }
+        return $filter;
+    }
+
+    /**
      * Generate a list of all the CVI events for clerical use.
      */
     public function actionList()
@@ -59,16 +90,13 @@ class DefaultController extends \BaseEventTypeController
         $this->layout = '//layouts/main';
         $this->renderPatientPanel = false;
 
-        $filter = array(
-            'date_from' => $this->request->getPost('date_from', null),
-            'date_to' => $this->request->getPost('date_to', null),
-            'consultant_ids' => $this->request->getPost('consultant_ids', null),
-            'show_issued' => $this->request->getPost('show_issued', false)
-        );
+        $filter = $this->getListFilter();
 
         $dp = $this->getManager()->getListDataProvider($filter);
 
         $this->render('list', array('dp' => $dp));
     }
+
+
 
 }
