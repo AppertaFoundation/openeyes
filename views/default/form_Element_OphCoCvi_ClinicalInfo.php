@@ -25,7 +25,7 @@ if ($this->checkClinicalEditAccess()) { ?>
             0 => 'Sight Impaired',
             1 => 'Severely Sight Impaired',
         ),
-            ($element->is_considered_blind === 0) ? $element->is_considered_blind : 0
+            isset($element->is_considered_blind) ? $element->is_considered_blind : 0
         ); ?>
         <?php echo $form->radioBoolean($element, 'sight_varies_by_light_levels') ?>
         <div class="element-eyes sub-element-fields">

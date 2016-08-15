@@ -319,10 +319,23 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
     public function getStructuredDataForPrint()
     {
         $result = array();
-        $result['examinationDateDate'] = date('d', strtotime($this->examination_date));
-        $result['examinationDateMonth'] = date('m', strtotime($this->examination_date));
-        $result['examinationDateYear'] = date('Y', strtotime($this->examination_date));
-        $result['isConsideredBlind'] = ($this->is_considered_blind) ? 'Yes' : 'No';
+        $isConsideredBlindNo = $isConsideredBlindYes = '';
+        $result['examinationDate'] = date('d/m/Y', strtotime($this->examination_date));
+        if((int)$this->is_considered_blind === 0) { $isConsideredBlindNo = 'X';}
+        if((int)$this->is_considered_blind === 1) { $isConsideredBlindYes = 'X';}
+        $result['isConsideredBlind'] = array(
+            array('I consider (tick one)', $isConsideredBlindNo,
+                'That this person is sight impaired (partially sighted)'),
+            array('', $isConsideredBlindYes,
+                'That this person is severly sight impaired (blind)'),
+        );
+        $result['visualAcuity'] = array(
+            array('Visual acuity (Snellen, LogMAR or functional assessment, e.g. hand movement or finger counting)',
+                'Right eye', 'Left eye'),
+            array('Unaided',$this->unaided_right_va, $this->unaided_left_va),
+            array('Best corrected',$this->best_corrected_right_va, $this->best_corrected_left_va),
+            array('Best corrected with both eyes',$this->best_corrected_binocular_va, ''),
+        );
         $result['consultantName'] = $this->consultant->getFullName();
         $result['unaidedRightVA'] = $this->unaided_right_va;
         $result['unaidedLeftVA'] = $this->unaided_left_va;
