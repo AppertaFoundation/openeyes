@@ -143,17 +143,17 @@ $cols = array(
                             'options' => array(
                                 'minLength' => '3',
                                 'select' => "js:function(event, ui) {
-									addConsultantToList(ui.item);
-									$('#consultant_auto_complete').val('');
-									return false;
-								}",
+                                    addConsultantToList(ui.item);
+                                    $('#consultant_auto_complete').val('');
+                                    return false;
+                                }",
                             ),
                             'htmlOptions' => array(
                                 'placeholder' => 'type to search for users',
                             ),
                         ));
                         ?>
-                        <div><ul id="consultant_list" style="overflow-y: auto; max-height: 40px;">
+                        <div><ul id="consultant_list" class="multi-select-search scroll">
                                 <?php $consultant_ids = $this->request->getPost('consultant_ids', '');
                                 if ($consultant_ids) {
                                     foreach(explode(',', $consultant_ids) as $id) {
