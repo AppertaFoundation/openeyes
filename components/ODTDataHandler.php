@@ -100,10 +100,14 @@ namespace OEModule\OphCoCvi\components;
                     $table = $this -> createTable( $key );
                     foreach($value as $oneRow){
                         $row = $this -> createRow();
-                        foreach( $oneRow as $oneCellData ){
-                            $cell = $this -> createCell();
-                            $this -> setAttribute($cell, 'data',$oneCellData);
-                            $row -> addCell($cell);
+                        if(is_array($oneRow)) {
+                            foreach ($oneRow as $oneCellData) {
+                                $cell = $this->createCell();
+                                $this->setAttribute($cell, 'data', $oneCellData);
+                                $row->addCell($cell);
+                            }
+                        }else{
+                            echo "Not properly formatted table: ".$key;die;
                         }
                         $this -> addRow($table, $row);
                     }

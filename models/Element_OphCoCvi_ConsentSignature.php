@@ -180,9 +180,12 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
     public function getStructuredDataForPrint()
     {
         $result = array();
-        $result['is_patient'] = $this->is_patient ? 'X' : '';
-        $result['is_representative'] = $this->is_patient ? '' : 'X';
-        //$result['patient_name'] = $this->patient->title . " " . $this->patient->first_name . " " . $this->patient->last_name;
+        $result['patientOrRepresentative'] = array(
+            array($this->is_patient ? 'X' : '',''),
+            array($this->is_patient ? '' : 'X','')
+        );
+        $result["representativeName"] = $this->representative_name;
+        //print_r($result['patientOrRepresentative']);die;
         $result['signature_date'] = $this->signature_date;
         return $result;
     }

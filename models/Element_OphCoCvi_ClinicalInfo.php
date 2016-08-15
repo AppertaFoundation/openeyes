@@ -234,7 +234,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
                             throw new Exception('Unable to save MultiSelect item: '.print_r($disorder_comments->getErrors(),true));
                         }
                     }
-                    else if(isset($_POST['comments_disorder'][$sectionId])){
+                    else if(isset($_POST['comments_disorder'][$sectionId]) && in_array($sectionId,$existing_comment_ids)){
                         $criteria = new \CDbCriteria;
                         $criteria->compare('element_id', $this->id);
                         $criteria->compare('ophcocvi_clinicinfo_disorder_section_id', $sectionId);
@@ -287,9 +287,11 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         return $data;
     }
 
-    public function getDisordersForSection($disorder_section) {
+    public function getDisordersForSection($disorder_section, $flag) {
         $data = array();
-        $data[] = array('','','','left','right');
+        if($flag == 0) {
+            $data[] = array('','','','','');
+        }
         $first = 1;
         foreach (OphCoCvi_ClinicalInfo_Disorder::model()
                      ->findAll('`active` = ? and section_id = ?',array(1, $disorder_section->id)) as $disorder) {
@@ -319,17 +321,26 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
     public function getStructuredDataForPrint()
     {
         $result = array();
-        $result['examinationDateDate'] = date('d', strtotime($this->examination_date));
-        $result['examinationDateMonth'] = date('m', strtotime($this->examination_date));
-        $result['examinationDateYear'] = date('Y', strtotime($this->examination_date));
-        $result['isConsideredBlind'] = ($this->is_considered_blind) ? 'Yes' : 'No';
+        $isConsideredBlindNo = $isConsideredBlindYes = '';
+        $varyByLightLevelsYes = $varyByLightLevelsNo = '';
+        $result['examinationDate'] = date('d/m/Y', strtotime($this->examination_date));
+        if((int)$this->is_considered_blind === 0) { $isConsideredBlindNo = 'X';}
+        if((int)$this->is_considered_blind === 1) { $isConsideredBlindYes = 'X';}
+        $result['isConsideredBlind'] = array(
+            array('', $isConsideredBlindNo, ''),
+            array('', $isConsideredBlindYes,''),
+        );
+        $result['visualAcuity'] = array(
+            array('Visual acuity (Snellen, LogMAR or functional assessment, e.g. hand movement or finger counting)',
+                'Right eye', 'Left eye'),
+            array('Unaided',$this->unaided_right_va, $this->unaided_left_va),
+            array('Best corrected',$this->best_corrected_right_va, $this->best_corrected_left_va),
+            array('Best corrected with both eyes',$this->best_corrected_binocular_va, ''),
+        );
         $result['consultantName'] = $this->consultant->getFullName();
-        $result['unaidedRightVA'] = $this->unaided_right_va;
-        $result['unaidedLeftVA'] = $this->unaided_left_va;
-        $result['bestCorrectedLeftVA'] = $this->best_corrected_left_va;
-        $result['bestCorrectedRightVA'] = $this->best_corrected_right_va;
-        $result['bestCorrectedBinocularVA'] = $this->best_corrected_binocular_va;
-
+        if((int)$this->sight_varies_by_light_levels === 1) { $varyByLightLevelsYes = 'X';}
+        if((int)$this->sight_varies_by_light_levels === 0) { $varyByLightLevelsNo = 'X';}
+        $result['varyByLightLevels'][0] = array('',$varyByLightLevelsYes,'',$varyByLightLevelsNo);
         $fieldOfVisionData = $this->generateFieldOfVision();
         $lowVisionData = array_merge(array(0=>array('','')),$this->generateLowVisionStatus());
 
@@ -340,9 +351,12 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
 
         $result['sightVariesByLightLevelYes'] = ($this->sight_varies_by_light_levels === 1) ? 'X' : '';
         $result['sightVariesByLightLevelNo'] = ($this->sight_varies_by_light_levels === 0) ? '' : 'X';
+        $flag = 0;
         foreach(OphCoCvi_ClinicalInfo_Disorder_Section::model()
                     ->findAll('`active` = ?',array(1)) as $disorder_section) {
-            $result['disorder' . ucfirst($disorder_section->name) . 'Table'] = $this->getDisordersForSection($disorder_section);
+            $result['disorder' . ucfirst($disorder_section->name) . 'Table'] =
+                $this->getDisordersForSection($disorder_section, $flag);
+            $flag = 1;
         }
         $result['diagnosisNotCovered'] = $this->diagnoses_not_covered;
         return $result;

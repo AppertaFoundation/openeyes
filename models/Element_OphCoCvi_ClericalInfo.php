@@ -40,6 +40,7 @@ namespace OEModule\OphCoCvi\models;
  * @property User $usermodified
  * @property OphCoCvi_ClericalInfo_EmploymentStatus $employment_status
  * @property OphCoCvi_ClericalInfo_PreferredInfoFmt $preferred_info_fmt
+ * @property OphCoCvi_ClericalInfo_PatientFactor $factor
  * @property OphCoCvi_ClericalInfo_ContactUrgency $contact_urgency
  * @property Language $preferred_language
  */
@@ -148,9 +149,12 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 					$item->element_id = $this->id;
 					$item->ophcocvi_clinicinfo_patient_factor_id = $id;
 					$item->is_factor = $_POST['is_factor'][$id];
-					$item->comments = $_POST['comments'][$id];
+					if($_POST['require_comments'][$id] ==1)
+					{
+						$item->comments = $_POST['comments'][$id];
+					}
 					if (!$item->save()) {
-						throw new Exception('Unable to save MultiSelect item: '.print_r($item->getErrors(),true));
+						throw new Exception('Unable to save patient factor : '.print_r($item->getErrors(),true));
 					}
 				}
 			}
@@ -159,7 +163,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 				if (!in_array($id,$_POST['ophcocvi_clinicinfo_patient_factor_id'])) {
 					$item = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->find('element_id = :elementId and ophcocvi_clinicinfo_patient_factor_id = :lookupfieldId',array(':elementId' => $this->id, ':lookupfieldId' => $id));
 					if (!$item->delete()) {
-						throw new Exception('Unable to delete MultiSelect item: '.print_r($item->getErrors(),true));
+						throw new Exception('Unable to delete patient factor: '.print_r($item->getErrors(),true));
 					}
 				}
 			}
@@ -179,7 +183,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 		$employement_status = (OphCoCvi_ClericalInfo_EmploymentStatus::model()->findAll(array('order' => 'display_order asc')));
 		foreach($employement_status as $employement) {
 			$key = $employement->name;
-			$data[][$key] = ($this->employeement_status_id === $employement->id) ? 'X' : '';
+			$data[][$key] = ($this->employment_status_id === $employement->id) ? 'X' : '';
 		}
 		return $data;
 	}
@@ -194,7 +198,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 		$preferredInfoFormats = (OphCoCvi_ClericalInfo_PreferredInfoFmt::model()->findAll(array('order' => 'display_order asc')));
 		foreach($preferredInfoFormats as $preferredInfoFormat) {
 			$key = $preferredInfoFormat->name;
-			$data[][$key] = ($this->preferred_info_fmt_id === $preferredInfoFormats->id) ? 'X' : '';
+			$data[][$key] = ($this->preferred_info_fmt_id === $preferredInfoFormat->id) ? 'X' : '';
 		}
 		return $data;
 	}
@@ -206,7 +210,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 	 */
 	public function generatePreferredLanguage() {
 		$data = array();
-		$preferredLanguages = (Language::model()->findAll(array('order' => 'display_order asc')));
+		$preferredLanguages = (\Language::model()->findAll());
 		foreach($preferredLanguages as $preferredLanguage) {
 			$key = $preferredLanguage->name;
 			$data[][$key] = ($this->preferred_language_id === $preferredLanguage->id) ? 'X' : '';
@@ -236,29 +240,27 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 	public function getStructuredDataForPrint()
 	{
 		$result = array();
-		/*
-		$result['liveAloneFactor'] = $this->live_alone_factor;
-		$result['hearingImpairmentFactor'] = $this->hearing_impairment_factor;
-	    $result['employmentStatus'] = $this->generateEmployementStatus();
+
+		$result['employmentStatus'] = $this->generateEmployementStatus();
 		$result['preferredInfoFormat'] = $this->generatePreferredInfoFormat();
 		$result['infoEmail'] = $this->info_email;
 		$result['contactUrgency'] = $this->generateContactUrgency();
 		$result['preferredLanguage'] = $this->generatePreferredLanguage();
 		$result['socialServiceComments'] = $this->social_service_comments;
-		
-		foreach (OphCoCvi_ClinicalInfo_PatientFactor::model()->findAll('`active` = ?') as $factor) {
+		$result['employmentStatus'] = $this->generateEmployementStatus();
+		foreach (OphCoCvi_ClinicalInfo_PatientFactor::model()->findAll('`active` = ?',array(1)) as $factor) {
 			$is_factor = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->getFactorAnswer($factor->id,$this->id);
-			$comments = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->getComments($factor->id,$this->id);
-			if($factor->require_comments == 1) {
-				$result['patientFactor'] = array($factor->name, $factor->code, $is_factor, $comments);
-			}
-			else{
-				$result['patientFactor'] = array($factor->name, $factor->code, $is_factor);
-			}
+			if($is_factor == 1){$isFactor = "Y";}
+			if($is_factor == 0){$isFactor = "N";}
+			if($is_factor == 2){$isFactor = "";}
+
+			$result['patientFactor'][] = array($factor->name, $isFactor);
+
 
 		}
-		*/
+		//print_r($result['patientFactor']);die;
 		return $result;
 	}
+
 }
 ?>
