@@ -134,7 +134,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             'id' => 'ID',
             'event_id' => 'Event',
             'examination_date' => 'Examination date',
-            'is_considered_blind' => 'Is considered blind',
+            'is_considered_blind' => 'I consider this person is',
             'sight_varies_by_light_levels' => 'Sight varies by light levels',
             'unaided_right_va' => 'Unaided right VA',
             'unaided_left_va' => 'Unaided left VA',
@@ -144,7 +144,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             'low_vision_status_id' => 'Low vision status',
             'field_of_vision_id' => 'Field of vision',
             'disorders' => 'Disorders',
-            'diagnoses_not_covered' => 'Diagnoses not covered',
+            'diagnoses_not_covered' => 'Diagnosis not covered in any of the above',
             'consultant_id' => 'Consultant',
         );
     }

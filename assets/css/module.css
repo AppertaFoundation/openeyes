@@ -50,3 +50,25 @@
 .multi-select-search a.remove {
   float: right;
 }
+
+/* line 15, ../sass/components/_elements.scss */
+.element .indent-correct {
+  margin-left: -10px;
+  margin-bottom: 6px;
+}
+
+/* line 20, ../sass/components/_elements.scss */
+.element legend {
+  font-style: italic;
+}
+
+/* line 24, ../sass/components/_elements.scss */
+.inline-header {
+  margin-bottom: 2px;
+}
+
+/* line 28, ../sass/components/_elements.scss */
+hr {
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+}

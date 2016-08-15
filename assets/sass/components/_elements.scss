@@ -12,8 +12,20 @@
 // * @copyright Copyright (c) 2016, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
-/** OphCoCvi module styles */
+.element .indent-correct {
+  margin-left: -10px;
+  margin-bottom: 6px;
+}
 
-@import "openeyes/module";
-@import "components/event";
-@import "components/elements";
+.element legend {
+  font-style: italic;
+}
+
+.inline-header {
+  margin-bottom: 2px;
+}
+
+hr {
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+}
