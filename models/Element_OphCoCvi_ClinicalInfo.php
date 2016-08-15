@@ -338,7 +338,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         $result['consultantName'] = $this->consultant->getFullName();
         if((int)$this->sight_varies_by_light_levels === 1) { $varyByLightLevelsYes = 'X';}
         if((int)$this->sight_varies_by_light_levels === 0) { $varyByLightLevelsNo = 'X';}
-        $result['varyByLightLevels'] = array('',$varyByLightLevelsYes,'',$varyByLightLevelsNo);
+        $result['varyByLightLevels'][0] = array('',$varyByLightLevelsYes,'',$varyByLightLevelsNo);
         $fieldOfVisionData = $this->generateFieldOfVision();
         $lowVisionData = array_merge(array(0=>array('','')),$this->generateLowVisionStatus());
 
