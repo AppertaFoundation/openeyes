@@ -112,7 +112,7 @@ class AdminController extends \ModuleAdminController
     public function actionEmployementStatus()
     {
         $this->genericAdmin(
-            'Clinical Disorders',
+            'Employment Status',
             'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_EmploymentStatus',
             array(
                 'extra_fields' => array(

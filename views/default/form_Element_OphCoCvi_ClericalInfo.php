@@ -31,8 +31,15 @@ $factor_answer = OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PatientFactor_An
 			$is_factor = $factor_answer->getFactorAnswer($factor->id,$element->id);
 			$comments = $factor_answer->getComments($factor->id,$element->id);
 			$i = $factor->id;
+
+			$value =$factor->require_comments ? '1' : '0';
+
 			?>
-			<?php echo CHtml::hiddenField("ophcocvi_clinicinfo_patient_factor_id[$i]" , $factor->id, array('id' => 'hiddenInput')); ?>
+			<?php
+				echo CHtml::hiddenField("ophcocvi_clinicinfo_patient_factor_id[$i]" , $factor->id, array('id' => 'hiddenInput'));
+				echo CHtml::hiddenField("require_comments[$i]" , $value, array('id' => 'hiddenInput'));
+
+			?>
 
 			<div class="large-9 column">
 				<label class="inline highlight">
@@ -63,7 +70,7 @@ $factor_answer = OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PatientFactor_An
 		<?php  }		}?>
 </div>
 <div class="element-fields row">
-	<?php echo $form->dropDownList($element, 'employment_status_id', CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_EmploymentStatus::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'))?>
+	<?php echo $form->dropDownList($element, 'employment_status_id', CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_EmploymentStatus::model()->findAll('`active` = ?',array(1),array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'))?>
 	<?php echo $form->dropDownList($element, 'preferred_info_fmt_id', CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PreferredInfoFmt::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'))?>
 	<?php echo $form->textField($element, 'info_email', array('size' => '20'))?>
 	<?php echo $form->dropDownList($element, 'contact_urgency_id', CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_ContactUrgency::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'))?>

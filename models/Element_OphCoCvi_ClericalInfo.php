@@ -149,9 +149,12 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 					$item->element_id = $this->id;
 					$item->ophcocvi_clinicinfo_patient_factor_id = $id;
 					$item->is_factor = $_POST['is_factor'][$id];
-					$item->comments = $_POST['comments'][$id];
+					if($_POST['require_comments'][$id] ==1)
+					{
+						$item->comments = $_POST['comments'][$id];
+					}
 					if (!$item->save()) {
-						throw new Exception('Unable to save MultiSelect item: '.print_r($item->getErrors(),true));
+						throw new Exception('Unable to save patient factor : '.print_r($item->getErrors(),true));
 					}
 				}
 			}
@@ -160,7 +163,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 				if (!in_array($id,$_POST['ophcocvi_clinicinfo_patient_factor_id'])) {
 					$item = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->find('element_id = :elementId and ophcocvi_clinicinfo_patient_factor_id = :lookupfieldId',array(':elementId' => $this->id, ':lookupfieldId' => $id));
 					if (!$item->delete()) {
-						throw new Exception('Unable to delete MultiSelect item: '.print_r($item->getErrors(),true));
+						throw new Exception('Unable to delete patient factor: '.print_r($item->getErrors(),true));
 					}
 				}
 			}
