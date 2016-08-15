@@ -214,7 +214,6 @@ class DefaultController extends \BaseEventTypeController
     /**
      * @param $id
      */
-     
     public function actionPDFPrint($id)
     {
         if (!$event = \Event::model()->findByPk($id)) {
@@ -224,18 +223,37 @@ class DefaultController extends \BaseEventTypeController
         $event->lock();
         $this->printInit($id);
 
-        $portalConnection = new optomPortalConnection();
-        print_r($portalConnection->signatureSearch());die;
-
+        $signatureElement = $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature');
         //  we need to check if we already have a signature file linked
-        if(!$this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature')->checkSignature()){
-            $QRContent = "@code:".\Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($event)."@key:".md5("here comes the key");
+        if(!$signatureElement->checkSignature()){
+            // we check if the signature is exists on the portal
+            $portalConnection = new optomPortalConnection();
+            $signatureData = $portalConnection->signatureSearch(null, \Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($event));
+            //$signatureData = $portalConnection->signatureSearch();
 
-            $QRHelper = new SignatureQRCodeGenerator();
-            $signature = $QRHelper->generateQRSignatureBox($QRContent);
+            //print_r($signatureData);die;
+            // TEST DATA!
+            //$signatureData = $portalConnection->signatureSearch(null, 'RP67-26B8MC-3');
+
+            if(is_array($signatureData) && isset($signatureData["image"]))
+            {
+                $imageFile = $portalConnection->createNewSignatureImage($signatureData["image"], $this->patient->id);
+                // save successful so we can attach the signature file to the event consent signature model
+                if($imageFile){
+                    $signatureElement->signature_file_id = $imageFile->id;
+                    $signatureElement->save();
+                    $signature = imagecreatefromstring($signatureElement->getDecryptedSignature());
+                }
+            }
+            else {
+                $QRContent = "@code:" . \Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($event) . "@key:" . $signatureElement->getEncryptionKey();
+
+                $QRHelper = new SignatureQRCodeGenerator();
+                $signature = $QRHelper->generateQRSignatureBox($QRContent);
+            }
         }else{
-            // we get the stored signature
-            $signature =  $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature')->signature_file;
+            // we get the stored signature and creates a GD object from the data
+            $signature = imagecreatefromstring($signatureElement->getDecryptedSignature());
         }
 
 
@@ -275,7 +293,7 @@ class DefaultController extends \BaseEventTypeController
         
         //$printHelper->exchangeAllStringValuesByNodes( $this->getStructuredDataForPrintPDF($id) );
         // TODO: we need to check which function to call
-        $printHelper->changeImageFromGDObject('signature1', $signature);
+        $printHelper->changeImageFromGDObject('signatureImagePatient', $signature);
         $printHelper->saveContentXML();
         $printHelper->generatePDF();
         $printHelper->getPDF();

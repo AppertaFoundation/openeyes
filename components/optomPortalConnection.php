@@ -70,12 +70,43 @@ class optomPortalConnection
      *
      * @return mixed
      */
-    public function signatureSearch()
+    public function signatureSearch( $startDate = null, $uniqueId = null)
     {
-        $this->client->setUri($this->config['uri'].$this->config['endpoints']['signatures']);
-//      $this->client->setParameterPost(array('start_date' => $lastExam->updated_at));
-        $response = $this->client->request('POST');
+        if($uniqueId){
+            $this->client->setUri($this->config['uri'] . str_replace('searches',$uniqueId, $this->config['endpoints']['signatures']));
+            $method = 'GET';
+            // just to make sure that start date is not specified
+            $startDate = null;
+        }else {
+            $this->client->setUri($this->config['uri'] . $this->config['endpoints']['signatures']);
+            $method = 'POST';
+        }
+
+        if($startDate) {
+            $this->client->setParameterPost(array('start_date' => $startDate));
+        }
+
+        $response = $this->client->request($method);
 
         return json_decode($response->getBody(), true);
+    }
+
+
+    /**
+     * Creates a new ProtectedFile for the new signature image
+     *
+     * @param $imageData
+     */
+    public function createNewSignatureImage($imageData, $patient)
+    {
+        $pFile = new \ProtectedFile();
+        $pFile = $pFile->createForWriting("cvi_patient_signature_".$patient);
+
+        if(file_put_contents($pFile->getPath(), $imageData))
+        {
+            $pFile->save();
+            return $pFile;
+        }
+        return false;
     }
 }
