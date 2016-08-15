@@ -144,7 +144,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 				$existing_ids[] = $item->ophcocvi_clinicinfo_patient_factor_id;
 			}
 			foreach ($_POST['ophcocvi_clinicinfo_patient_factor_id'] as $id) {
-				if (!in_array($id,$existing_ids)) {
+				if (!in_array($id,$existing_ids) && isset($_POST['is_factor'][$id])) {
 					$item = new OphCoCvi_ClericalInfo_PatientFactor_Answer;
 					$item->element_id = $this->id;
 					$item->ophcocvi_clinicinfo_patient_factor_id = $id;
