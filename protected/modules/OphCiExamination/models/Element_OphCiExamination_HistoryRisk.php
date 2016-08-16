@@ -96,7 +96,7 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
-     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     * @return \CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
     {
@@ -112,5 +112,47 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
         return new \CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
+    }
+
+    /**
+     * Returns the view text for anticoagulant
+     *
+     * @return string
+     */
+    public function anticoagulantText()
+    {
+        return 'Anticoagulants: ' . $this->yesNoText($this->anticoagulant) . (($this->anticoagulant_name) ? ' - ' . $this->anticoagulant_name : '' );
+    }
+
+    /**
+     * @return string
+     */
+    public function alphaBlockerText()
+    {
+        return 'Alpha-Blockers: ' . $this->yesNoText($this->alphablocker) . (($this->alpha_blocker_name) ? $this->alpha_blocker_name : '' );
+    }
+
+    /**
+     * @param $value
+     *
+     * @return string
+     */
+    protected function yesNoText($value)
+    {
+        $text = '';
+        switch ($value)
+        {
+            case '0':
+                $text = 'No';
+                break;
+            case '1':
+                $text = 'Yes';
+                break;
+            case '2':
+                $text = 'Not Checked';
+                break;
+        }
+
+        return $text;
     }
 }
