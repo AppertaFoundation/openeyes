@@ -15,7 +15,7 @@ class ProcedureComplicationTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new ProcedureComplication;
+        $this->object = new ProcedureComplication();
     }
 
     /**
@@ -28,6 +28,7 @@ class ProcedureComplicationTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers ProcedureComplication::model
+     *
      * @todo   Implement testModel().
      */
     public function testModel()
@@ -40,6 +41,7 @@ class ProcedureComplicationTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers ProcedureComplication::tableName
+     *
      * @todo   Implement testTableName().
      */
     public function testTableName()
@@ -52,6 +54,7 @@ class ProcedureComplicationTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers ProcedureComplication::rules
+     *
      * @todo   Implement testRules().
      */
     public function testRules()
@@ -64,6 +67,7 @@ class ProcedureComplicationTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers ProcedureComplication::relations
+     *
      * @todo   Implement testRelations().
      */
     public function testRelations()

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -22,20 +22,20 @@ namespace OEModule\OphCiExamination\models;
 /**
  * This is the model class for table "ophciexamination_workflow_rule".
  *
- * @property integer $id
- * @property integer $parent_id
+ * @property int $id
+ * @property int $parent_id
  * @property string $clause
  * @property string $value
  * @property OphCiExamination_Workflow $workflow
  */
-
 class OphCiExamination_Workflow_Rule extends \BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return OphCiExamination_Workflow_Rule the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }
@@ -55,7 +55,7 @@ class OphCiExamination_Workflow_Rule extends \BaseActiveRecordVersioned
     {
         return array(
             array('subspecialty_id, firm_id, episode_status_id, workflow_id', 'safe'),
-            array('id', 'safe', 'on'=>'search'),
+            array('id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -75,9 +75,11 @@ class OphCiExamination_Workflow_Rule extends \BaseActiveRecordVersioned
     }
 
     /**
-     * Finds the best matching workflow
-     * @param integer $firm_id
-     * @param integer $status_id
+     * Finds the best matching workflow.
+     *
+     * @param int $firm_id
+     * @param int $status_id
+     *
      * @return OphCiExamination_Workflow
      */
     public static function findWorkflow($firm_id, $status_id)
@@ -88,19 +90,19 @@ class OphCiExamination_Workflow_Rule extends \BaseActiveRecordVersioned
             $subspecialty_id = ($firm->serviceSubspecialtyAssignment) ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
         }
 
-        if ($rule = OphCiExamination_Workflow_Rule::model()->find('subspecialty_id=? and firm_id=? and episode_status_id=?', array($subspecialty_id, $firm_id, $status_id))) {
+        if ($rule = self::model()->find('subspecialty_id=? and firm_id=? and episode_status_id=?', array($subspecialty_id, $firm_id, $status_id))) {
             return $rule->workflow;
         }
 
-        if ($rule = OphCiExamination_Workflow_Rule::model()->find('subspecialty_id=? and episode_status_id=?', array($subspecialty_id, $status_id))) {
+        if ($rule = self::model()->find('subspecialty_id=? and episode_status_id=?', array($subspecialty_id, $status_id))) {
             return $rule->workflow;
         }
 
-        if ($rule = OphCiExamination_Workflow_Rule::model()->find('subspecialty_id=?', array($subspecialty_id))) {
+        if ($rule = self::model()->find('subspecialty_id=?', array($subspecialty_id))) {
             return $rule->workflow;
         }
 
-        if ($rule = OphCiExamination_Workflow_Rule::model()->find('subspecialty_id is null and episode_status_id is null')) {
+        if ($rule = self::model()->find('subspecialty_id is null and episode_status_id is null')) {
             return $rule->workflow;
         }
 
@@ -123,14 +125,16 @@ class OphCiExamination_Workflow_Rule extends \BaseActiveRecordVersioned
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
     {
-        $criteria=new \CDbCriteria;
+        $criteria = new \CDbCriteria();
         $criteria->compare('id', $this->id, true);
+
         return new \CActiveDataProvider(get_class($this), array(
-                'criteria'=>$criteria,
+                'criteria' => $criteria,
         ));
     }
 
@@ -159,7 +163,7 @@ class OphCiExamination_Workflow_Rule extends \BaseActiveRecordVersioned
             $whereParams[':episode_status_id'] = $this->episode_status_id;
         }
 
-        if (OphCiExamination_Workflow_Rule::model()->find($where, $whereParams)) {
+        if (self::model()->find($where, $whereParams)) {
             //$this->addError('id','There is already a rule for this subspecialty and episode status combination');
         }
 

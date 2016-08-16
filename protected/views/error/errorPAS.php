@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -18,9 +18,9 @@
  */
 ?>
 <?php
-	$helpdesk_phone = Yii::app()->params['helpdesk_phone'];
-	$helpdesk_email = Yii::app()->params['helpdesk_email'];
-	$this->layout = '//layouts/error';
+    $helpdesk_phone = Yii::app()->params['helpdesk_phone'];
+    $helpdesk_email = Yii::app()->params['helpdesk_email'];
+    $this->layout = '//layouts/error';
 ?>
 <h2>Merged patient record</h2>
 <p class="panel"><strong>The patient record you requested cannot be accessed due to an inconsistency in the PAS system.</strong></p>
@@ -32,5 +32,5 @@
 		href="mailto:<?php echo @$helpdesk_email?>"><?php echo @$helpdesk_email?>
 	</a></li>
 </ul>
-<p class="panel"><?php echo CHtml::link('Click here to go back to the search page',Yii::app()->baseUrl.'/')?></p>
+<p class="panel"><?php echo CHtml::link('Click here to go back to the search page', Yii::app()->baseUrl.'/')?></p>
 <p class="date"><?php echo date('r'); ?></p>

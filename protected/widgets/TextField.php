@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,26 +9,25 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class TextField extends BaseFieldWidget
 {
-	public $links = array();
+    public $links = array();
 
-	public function init()
-	{
-		parent::init();
+    public function init()
+    {
+        parent::init();
 
-		if (array_key_exists('password', $this->htmlOptions)) {
-			$this->htmlOptions['type'] = 'password';
-		} elseif(!array_key_exists('type', $this->htmlOptions)) {
-			$this->htmlOptions['type'] = 'text';
-		}
-	}
+        if (array_key_exists('password', $this->htmlOptions)) {
+            $this->htmlOptions['type'] = 'password';
+        } elseif (!array_key_exists('type', $this->htmlOptions)) {
+            $this->htmlOptions['type'] = 'text';
+        }
+    }
 }

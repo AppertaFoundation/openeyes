@@ -17,19 +17,20 @@ class m140620_135107_alter_comorbidities_items extends OEMigration
         $this->delete('ophciexamination_comorbidities_item', "name='Ethnicity'");
 
         // Adjust names
-        $this->update('ophciexamination_comorbidities_item', array('name'=>'Family history of Glaucoma'), "name='FOH'");
-        $this->update('ophciexamination_comorbidities_item', array('name'=>'Shortness of breath'), "name='SOB'");
+        $this->update('ophciexamination_comorbidities_item', array('name' => 'Family history of Glaucoma'), "name='FOH'");
+        $this->update('ophciexamination_comorbidities_item', array('name' => 'Shortness of breath'), "name='SOB'");
 
         // New item
         $this->insert('ophciexamination_comorbidities_item', array(
-            'name'=>'Chronic airway disease',
-            'display_order' => 45
+            'name' => 'Chronic airway disease',
+            'display_order' => 45,
         ));
     }
 
     public function down()
     {
         echo "m140620_135107_alter_comorbidities_items does not support migration down.\n";
+
         return false;
     }
 }

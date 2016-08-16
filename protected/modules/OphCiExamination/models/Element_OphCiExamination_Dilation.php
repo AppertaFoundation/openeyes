@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -25,18 +25,19 @@ use Yii;
  * This is the model class for table "et_ophciexamination_dilation".
  *
  * The followings are the available columns in table:
+ *
  * @property string $id
- * @property integer $event_id
- * @property integer $eye_id
+ * @property int $event_id
+ * @property int $eye_id
  *
  *
  * The followings are the available model relations:
  */
-
 class Element_OphCiExamination_Dilation extends \SplitEventTypeElement
 {
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return Element_OphCiExamination_Dilation
      */
     public static function model($className = __CLASS__)
@@ -81,8 +82,8 @@ class Element_OphCiExamination_Dilation extends \SplitEventTypeElement
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
             'treatments' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_Dilation_Treatment', 'element_id'),
-            'right_treatments' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_Dilation_Treatment', 'element_id', 'on' => 'right_treatments.side = ' . OphCiExamination_Dilation_Treatment::RIGHT),
-            'left_treatments' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_Dilation_Treatment', 'element_id', 'on' => 'left_treatments.side = ' . OphCiExamination_Dilation_Treatment::LEFT),
+            'right_treatments' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_Dilation_Treatment', 'element_id', 'on' => 'right_treatments.side = '.OphCiExamination_Dilation_Treatment::RIGHT),
+            'left_treatments' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_Dilation_Treatment', 'element_id', 'on' => 'left_treatments.side = '.OphCiExamination_Dilation_Treatment::LEFT),
         );
     }
 
@@ -96,12 +97,13 @@ class Element_OphCiExamination_Dilation extends \SplitEventTypeElement
             'event_id' => 'Event',
             'eye_id' => 'Eye',
             'left_treatments' => 'Treatments',
-            'right_treatments' => 'Treatments'
+            'right_treatments' => 'Treatments',
         );
     }
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
@@ -109,7 +111,7 @@ class Element_OphCiExamination_Dilation extends \SplitEventTypeElement
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria = new \CDbCriteria;
+        $criteria = new \CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
@@ -120,32 +122,34 @@ class Element_OphCiExamination_Dilation extends \SplitEventTypeElement
     }
 
     /**
-     * Get the a list of dilation drugs that have not been used on the given side
+     * Get the a list of dilation drugs that have not been used on the given side.
      *
      * @param $side
+     *
      * @return array
      */
     public function getUnselectedDilationDrugs($side)
     {
         $treatments = $this->{$side.'_treatments'};
-        $criteria = new \CDbCriteria;
+        $criteria = new \CDbCriteria();
         $drug_ids = \CHtml::listData($treatments, 'id', 'drug_id');
         $criteria->addNotInCondition('id', $drug_ids);
         $criteria->order = 'display_order asc';
+
         return \CHtml::listData(OphCiExamination_Dilation_Drugs::model()->findAll($criteria), 'id', 'name');
     }
 
     /**
-     * Validate each of the dilation treatments
+     * Validate each of the dilation treatments.
      */
     protected function afterValidate()
     {
         foreach (array('left' => 'hasLeft', 'right' => 'hasRight') as $side => $checkFunc) {
             if ($this->$checkFunc()) {
-                foreach ($this->{$side . '_treatments'} as $i => $treat) {
+                foreach ($this->{$side.'_treatments'} as $i => $treat) {
                     if (!$treat->validate()) {
                         foreach ($treat->getErrors() as $fld => $err) {
-                            $this->addError($side . '_treatments', ucfirst($side) . ' treatment (' .($i+1) . '): ' . implode(', ', $err));
+                            $this->addError($side.'_treatments', ucfirst($side).' treatment ('.($i + 1).'): '.implode(', ', $err));
                         }
                     }
                 }
@@ -157,6 +161,7 @@ class Element_OphCiExamination_Dilation extends \SplitEventTypeElement
      * extends standard delete method to remove all the treatments.
      *
      * (non-PHPdoc)
+     *
      * @see CActiveRecord::delete()
      */
     public function delete()
@@ -191,6 +196,7 @@ class Element_OphCiExamination_Dilation extends \SplitEventTypeElement
      *
      * @param $side
      * @param $treatments
+     *
      * @throws Exception
      */
     public function updateTreatments($side, $treatments)
@@ -227,13 +233,13 @@ class Element_OphCiExamination_Dilation extends \SplitEventTypeElement
         }
         foreach ($save as $s) {
             if (!$s->save()) {
-                throw new Exception('unable to save treatment:' . print_r($s->getErrors(), true));
+                throw new Exception('unable to save treatment:'.print_r($s->getErrors(), true));
             };
         }
 
         foreach ($curr_by_id as $curr) {
             if (!$curr->delete()) {
-                throw new Exception('unable to delete treatment:' . print_r($curr->getErrors(), true));
+                throw new Exception('unable to delete treatment:'.print_r($curr->getErrors(), true));
             }
         }
     }

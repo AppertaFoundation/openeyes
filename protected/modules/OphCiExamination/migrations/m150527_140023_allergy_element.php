@@ -15,7 +15,7 @@ class m150527_140023_allergy_element extends CDbMigration
                 'display_order' => 10,
                 'default' => 1,
                 'parent_element_type_id' => $historyElementId,
-                'required' => 0
+                'required' => 0,
             );
             $this->insert('element_type', $allergyElement);
         }

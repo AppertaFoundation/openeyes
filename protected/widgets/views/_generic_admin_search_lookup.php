@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2014
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2014, OpenEyes Foundation
@@ -19,14 +19,13 @@
 ?>
 <?php
 $htmlOptions = array();
-$collapse_style = "";
-$expand_style = "";
+$collapse_style = '';
+$expand_style = '';
 if (!$row->isNewRecord) {
-	$htmlOptions['style'] = "display: none;";
-	$collapse_style = "display: none;";
-}
-else {
-	$expand_style = "display: none;";
+    $htmlOptions['style'] = 'display: none;';
+    $collapse_style = 'display: none;';
+} else {
+    $expand_style = 'display: none;';
 }
 $search_field = $params['model']::model()->getAutocompleteField();
 ?>
@@ -36,11 +35,11 @@ $search_field = $params['model']::model()->getAutocompleteField();
 <input type="hidden" name="<?= "{$params['field']}[$i]" ?>" id="<?="{$params['field']}_{$i}"?>" value="<?= $row->{$params['field']} ?>"/>
 <?php
 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-		'name'=> "autocomplete_{$params['field']}[{$i}]",
-		'id'=>"autocomplete_{$params['field']}_{$i}",
-		'source'=>"js:function(request, response) {
+        'name' => "autocomplete_{$params['field']}[{$i}]",
+        'id' => "autocomplete_{$params['field']}_{$i}",
+        'source' => "js:function(request, response) {
 						$.ajax({
-							'url': '" . Yii::app()->createUrl('/autocomplete/search') . "',
+							'url': '".Yii::app()->createUrl('/autocomplete/search')."',
 							'type':'GET',
 							'data':{
 								'term': request.term,
@@ -53,17 +52,17 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 							},
 						});
 					}",
-		'options'=>array(
-			'minLength'=>'2',
-			'select'=>"js:function(event, ui) {
+        'options' => array(
+            'minLength' => '2',
+            'select' => "js:function(event, ui) {
 				$('#{$params['field']}_{$i}').val(ui.item.id);
 				$('#display_{$params['field']}_{$i}').text(ui.item.label);
 				$('#autocomplete_{$params['field']}_{$i}').val('');
 				return false;
 			}",
-		),
-		'htmlOptions'=>$htmlOptions
-	)); ?>
+        ),
+        'htmlOptions' => $htmlOptions,
+    )); ?>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('#<?= "expand_{$params['field']}_{$i}"?>').on('click', function() {

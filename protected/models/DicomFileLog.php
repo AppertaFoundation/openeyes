@@ -4,7 +4,7 @@
  * Created by PhpStorm.
  * User: PATELH3
  * Date: 26/11/2015
- * Time: 14:03
+ * Time: 14:03.
  */
 class DicomFileLog extends BaseActiveRecordVersioned
 {
@@ -12,6 +12,7 @@ class DicomFileLog extends BaseActiveRecordVersioned
 
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return Benefit the static model class
      */
     public static function model($className = __CLASS__)
@@ -45,10 +46,8 @@ class DicomFileLog extends BaseActiveRecordVersioned
             array('filename', 'required'),
             array(
                 'event_date_time, filename, status, process_name',
-                'safe'
+                'safe',
             ),
         );
     }
 }
-
-

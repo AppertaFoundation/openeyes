@@ -15,7 +15,7 @@ class ProcedureBenefitTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new ProcedureBenefit;
+        $this->object = new ProcedureBenefit();
     }
 
     /**
@@ -28,6 +28,7 @@ class ProcedureBenefitTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers ProcedureBenefit::model
+     *
      * @todo   Implement testModel().
      */
     public function testModel()
@@ -40,6 +41,7 @@ class ProcedureBenefitTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers ProcedureBenefit::tableName
+     *
      * @todo   Implement testTableName().
      */
     public function testTableName()
@@ -52,6 +54,7 @@ class ProcedureBenefitTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers ProcedureBenefit::rules
+     *
      * @todo   Implement testRules().
      */
     public function testRules()
@@ -64,6 +67,7 @@ class ProcedureBenefitTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers ProcedureBenefit::relations
+     *
      * @todo   Implement testRelations().
      */
     public function testRelations()

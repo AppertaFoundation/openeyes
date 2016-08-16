@@ -3,76 +3,136 @@
  * Created by PhpStorm.
  * User: petergallagher
  * Date: 26/03/15
- * Time: 12:45
+ * Time: 12:45.
  */
+class MenuHelper
+{
+    protected $menuOptions;
+    protected $user;
+    protected $uri;
+    /**
+     * @var CApplication
+     */
+    protected $app;
 
-class MenuHelper {
+    public function __construct(array $menuOptions, OEWebUser $user, $uri = '')
+    {
+        $this->menuOptions = $menuOptions;
+        $this->user = $user;
+        $this->uri = $uri;
+    }
 
-	protected $menuOptions;
+    /**
+     * @param CApplication $app
+     */
+    public function setApp(CApplication $app)
+    {
+        $this->app = $app;
+    }
 
-	protected $user;
+    /**
+     * @return CApplication
+     */
+    public function getApp()
+    {
+        if (!$this->app) {
+            $this->app = Yii::app();
+        }
 
-	protected $uri;
+        return $this->app;
+    }
 
-	public function __construct(array $menuOptions, OEWebUser $user, $uri = '')
-	{
-		$this->menuOptions = $menuOptions;
-		$this->user = $user;
-		$this->uri = $uri;
-	}
+    /**
+     * @return string
+     */
+    public function render()
+    {
+        return $this->getApp()->controller->renderPartial(
+            '//base/_menu',
+            array(
+                'menu' => $this->formatMenuOptions($this->menuOptions),
+                'uri' => $this->uri,
+            ),
+            true
+        );
+    }
 
-	public function render()
-	{
-		return Yii::app()->controller->renderPartial(
-			'//base/_menu',
-			array(
-				'menu' => $this->formatMenuOptions($this->menuOptions),
-				'uri' => $this->uri
-			),
-			true
-		);
-	}
+    /**
+     * Map auth item param specifications to actual values to pass for access checking
+     *
+     * @param array $params
+     * @return array
+     */
+    protected function getAuthItemParams($params = array())
+    {
+        $result = array();
+        foreach($params as $p) {
+            switch ($p)
+            {
+                case 'user_id':
+                    $result[] = $this->user->id;
+                    break;
+                default:
+                    $result[] = $p;
+                    break;
+            }
+        }
+        return $result;
+    }
 
-	protected function formatMenuOptions(array $menuOptions)
-	{
-		$menu = array();
+    /**
+     * @param array $menuOptions
+     * @return array
+     */
+    protected function formatMenuOptions(array $menuOptions)
+    {
+        $menu = array();
 
-		foreach ($menuOptions as $menu_item) {
-			if (isset($menu_item['restricted'])) {
-				$allowed = false;
-				foreach ($menu_item['restricted'] as $authitem) {
-					if ($this->user->checkAccess($authitem)) {
-						$allowed = true;
-						break;
-					}
-				}
-				if (!$allowed) {
-					if (isset($menu_item['userrule'])) {
-						if($this->user->{$menu_item['userrule']}()){
-							$allowed = true;
-						}
-					}
-					if (!$allowed) {
-						continue;
-					}
-				}
-			}
+        foreach ($menuOptions as $menu_item) {
+            if (isset($menu_item['restricted'])) {
+                $allowed = false;
+                foreach ($menu_item['restricted'] as $authitem) {
+                    if (is_array($authitem)) {
+                        $item = array_shift($authitem);
+                        $params = $this->getAuthItemParams($authitem);
+                        $allowed = $this->user->checkAccess($item, $params);
+                        if ($allowed) {
+                            break;
+                        }
 
-			if (isset($menu_item['api'])) {
-				$api = Yii::app()->moduleAPI->get($menu_item['api']);
-				foreach ($api->getMenuItems($menu_item['position']) as $item) {
-					$menu[$item['position']] = $item;
-				}
-			} else {
-				$menu[$menu_item['position']] = $menu_item;
-			}
+                    }
+                    elseif ($this->user->checkAccess($authitem)) {
+                        $allowed = true;
+                        break;
+                    }
+                }
+                if (!$allowed) {
+                    if (isset($menu_item['userrule'])) {
+                        if ($this->user->{$menu_item['userrule']}()) {
+                            $allowed = true;
+                        }
+                    }
+                    if (!$allowed) {
+                        continue;
+                    }
+                }
+            }
 
-			if(isset($menu_item['sub'])){
-				$menu[$menu_item['position']]['sub'] = $this->formatMenuOptions($menu_item['sub'], $this->user);
-			}
-		}
-		ksort($menu);
+            if (isset($menu_item['api'])) {
+                $api = Yii::app()->moduleAPI->get($menu_item['api']);
+                foreach ($api->getMenuItems($menu_item['position']) as $item) {
+                    $menu[$item['position']] = $item;
+                }
+            } else {
+                $menu[$menu_item['position']] = $menu_item;
+            }
 
-		return $menu;
-	}
+            if (isset($menu_item['sub'])) {
+                $menu[$menu_item['position']]['sub'] = $this->formatMenuOptions($menu_item['sub'], $this->user);
+            }
+        }
+        ksort($menu);
+
+        return $menu;
+    }
 }

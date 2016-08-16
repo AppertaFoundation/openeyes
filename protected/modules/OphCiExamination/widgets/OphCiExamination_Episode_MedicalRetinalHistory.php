@@ -6,13 +6,12 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (C) 2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 use OEModule\OphCiExamination\models;
 
 Yii::import('OphCiExamination.widgets.OphCiExamination_Episode_VisualAcuityHistory');
@@ -28,7 +27,7 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
     {
         $chart = parent::configureChart();
 
-        $sft_axis = "Central SFT (µm)";
+        $sft_axis = 'Central SFT (µm)';
 
         $chart->configureYAxis($sft_axis, array('position' => 'right', 'min' => 50, 'max' => 1500))
             ->configureSeries('Central SFT (right)', array('yaxis' => $sft_axis, 'lines' => array('show' => true), 'points' => array('show' => true)))
@@ -86,9 +85,9 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
     }
 
     /**
-     * @param \FlotChart $chart
+     * @param \FlotChart                   $chart
      * @param Element_OphCiExamination_OCT $oct
-     * @param string $side
+     * @param string                       $side
      */
     protected function addSftReading(\FlotChart $chart, models\Element_OphCiExamination_OCT $oct, $side)
     {
@@ -99,9 +98,9 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
 
     /**
      * @param \FlotChart $chart
-     * @param string $va_axis
-     * @param array $injection
-     * @param string $side
+     * @param string     $va_axis
+     * @param array      $injection
+     * @param string     $side
      * @param float|null &$injMin
      * @param float|null &$injMax
      */

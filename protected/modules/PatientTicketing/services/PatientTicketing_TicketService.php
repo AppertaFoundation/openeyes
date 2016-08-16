@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2014
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2014, OpenEyes Foundation
@@ -18,96 +18,102 @@
  */
 
 namespace OEModule\PatientTicketing\services;
+
 use OEModule\PatientTicketing\models;
 use Yii;
 
-class PatientTicketing_TicketService extends \services\ModelService {
+class PatientTicketing_TicketService extends \services\ModelService
+{
+    protected static $primary_model = 'OEModule\PatientTicketing\models\Ticket';
 
-	static protected $primary_model = 'OEModule\PatientTicketing\models\Ticket';
+    /**
+     * Pass through wrapper to generate Queue Resource.
+     *
+     * @param OEModule\PatientTicketing\models\Ticket $ticket
+     *
+     * @return resource
+     */
+    public function modelToResource($ticket)
+    {
+        $res = parent::modelToResource($ticket);
+        foreach (array('patient_id', 'priority_id', 'report', 'assignee_user_id', 'assignee_date',
+             'created_user_id', 'created_date', 'last_modified_user_id', 'last_modified_date', 'event_id', ) as $pass_thru) {
+            $res->$pass_thru = $ticket->$pass_thru;
+        }
 
-	/**
-	 * Pass through wrapper to generate Queue Resource
-	 *
-	 * @param OEModule\PatientTicketing\models\Ticket $ticket
-	 * @return Resource
-	 */
-	public function modelToResource($ticket)
-	{
-		$res = parent::modelToResource($ticket);
-		foreach (array('patient_id','priority_id','report','assignee_user_id','assignee_date',
-			 'created_user_id','created_date','last_modified_user_id','last_modified_date','event_id') as $pass_thru) {
-			$res->$pass_thru = $ticket->$pass_thru;
-		}
+        return $res;
+    }
 
-		return $res;
-	}
+    /**
+     * @param models\Ticket $ticket
+     *
+     * @return array|mixed|null|string
+     */
+    public function getTicketActionLabel(models\Ticket $ticket)
+    {
+        if (!$ticket->is_complete()) {
+            if ($label = $ticket->current_queue->action_label) {
+                return $label;
+            } else {
+                return 'Move';
+            }
+        }
+    }
 
-	/**
-	 * @param models\Ticket $ticket
-	 * @return array|mixed|null|string
-	 */
-	public function getTicketActionLabel(models\Ticket $ticket)
-	{
-		if (!$ticket->is_complete()) {
-			if ($label = $ticket->current_queue->action_label) {
-				return $label;
-			}
-			else {
-				return "Move";
-			}
-		}
-	}
+    /**
+     * @param \Patient $patient
+     * @param bool     $active
+     *
+     * @return models\Ticket[]
+     */
+    public function getTicketsForPatient(\Patient $patient, $active = true)
+    {
+        $criteria = new \CDbCriteria(array('order' => 't.created_date desc'));
+        $criteria->addColumnCondition(array('patient_id' => $patient->id));
 
-	/**
-	 * @param \Patient $patient
-	 * @param bool $active
-	 * @return models\Ticket[]
-	 */
-	public function getTicketsForPatient(\Patient $patient, $active = true)
-	{
-		$criteria = new \CDbCriteria(array('order' => 't.created_date desc'));
-		$criteria->addColumnCondition(array('patient_id' => $patient->id));
+        $tickets = models\Ticket::model()->with('current_queue')->findAll($criteria);
+        if ($active) {
+            $res = array();
+            foreach ($tickets as $t) {
+                if (!$t->is_complete()) {
+                    $res[] = $t;
+                }
+            }
 
-		$tickets = models\Ticket::model()->with('current_queue')->findAll($criteria);
-		if ($active) {
-			$res = array();
-			foreach ($tickets as $t) {
-				if (!$t->is_complete()) {
-					$res[] = $t;
-				}
-			}
-			return $res;
-		}
-		else {
-			return $tickets;
-		}
-	}
+            return $res;
+        } else {
+            return $tickets;
+        }
+    }
 
-	/**
-	 * Get the queueset category for the given ticket
-	 *
-	 * @param models\Ticket $ticket
-	 * @return models\QueueSetCategory
-	 */
-	public function getCategoryForTicket(models\Ticket $ticket)
-	{
-		$qs_svc = Yii::app()->service->getService('PatientTicketing_QueueSet');
-		$qs = $qs_svc->getQueueSetForQueue($ticket->current_queue->id);
+    /**
+     * Get the queueset category for the given ticket.
+     *
+     * @param models\Ticket $ticket
+     *
+     * @return models\QueueSetCategory
+     */
+    public function getCategoryForTicket(models\Ticket $ticket)
+    {
+        $qs_svc = Yii::app()->service->getService('PatientTicketing_QueueSet');
+        $qs = $qs_svc->getQueueSetForQueue($ticket->current_queue->id);
 
-		return $qs->category;
-	}
+        return $qs->category;
+    }
 
-	/**
-	 * Get the episode for the ticket if one exists
-	 *
-	 * @param models\Ticket $ticket
-	 * @return \Episode|null
-	 */
-	public function getTicketEpisode(models\Ticket $ticket)
-	{
-		if ($event = $ticket->event) {
-			return $event->episode;
-		}
-		return null;
-	}
+    /**
+     * Get the episode for the ticket if one exists.
+     *
+     * @param models\Ticket $ticket
+     *
+     * @return \Episode|null
+     */
+    public function getTicketEpisode(models\Ticket $ticket)
+    {
+        if ($event = $ticket->event) {
+            return $event->episode;
+        }
+
+        return;
+    }
 }

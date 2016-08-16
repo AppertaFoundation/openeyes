@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2012
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
@@ -29,23 +29,24 @@ use Yii;
  * constraint is not enforced to allow the SecondaryDiagnosis to be deleted as normal through the Patient view.
  *
  * The followings are the available columns in table:
+ *
  * @property string $id
- * @property integer $event_id
- * @property integer $eye_id
- * @property integer $secondarydiagnosis_id
- * @property integer $secondarydiagnosis_disorder_id
+ * @property int $event_id
+ * @property int $eye_id
+ * @property int $secondarydiagnosis_id
+ * @property int $secondarydiagnosis_disorder_id
  * @property string $left_nscretinopathy_id
  * @property string $left_nscmaculopathy_id
  * @property string $right_nscretionopathy_id
  * @property string $right_nscmaculopathy_id
- * @property boolean $left_nscretinopathy_photocoagulation
- * @property boolean $left_nscmaculopathy_photocoagulation
- * @property boolean $right_nscretinopathy_photocoagulation
- * @property boolean $right_nscmaculopathy_photocoagulation
- * @property integer $left_clinicalret_id
- * @property integer $right_clinicalret_id
- * @property integer $left_clinicalmac_id
- * @property integer $right_clinicalmac_id
+ * @property bool $left_nscretinopathy_photocoagulation
+ * @property bool $left_nscmaculopathy_photocoagulation
+ * @property bool $right_nscretinopathy_photocoagulation
+ * @property bool $right_nscmaculopathy_photocoagulation
+ * @property int $left_clinicalret_id
+ * @property int $right_clinicalret_id
+ * @property int $left_clinicalmac_id
+ * @property int $right_clinicalmac_id
  * The followings are the available model relations:
  * @property OphCiExamination_NSCRetinopathy $left_nscretinopathy
  * @property OphCiExamination_NSCRetinopathy $right_nscretinopathy
@@ -55,9 +56,7 @@ use Yii;
  * @property OphCiExamination_ClinicalRetinopathy $right_clinicalret
  * @property OphCiExamination_ClinicalMaculopathy $left_clinicalmac
  * @property OphCiExamination_ClinicalMaculopathy $right_clinicalretmac
- *
  */
-
 class Element_OphCiExamination_DRGrading extends \SplitEventTypeElement
 {
     public $service;
@@ -65,7 +64,9 @@ class Element_OphCiExamination_DRGrading extends \SplitEventTypeElement
 
     /**
      * Returns the static model of the specified AR class.
+     *
      * @param string $className
+     *
      * @return the static model class
      */
     public static function model($className = __CLASS__)
@@ -108,12 +109,13 @@ class Element_OphCiExamination_DRGrading extends \SplitEventTypeElement
 
     /**
      * @return array
-     * (non-phpdoc)
+     *               (non-phpdoc)
+     *
      * @see parent::sidedFields()
      */
     public function sidedFields()
     {
-        return array('nscretinopathy_id', 'nscmaculopathy_id','nscretinopathy_photocoagulation','nscmaculopathy_photocoagulation','clinicalret_id', 'clinicalmac_id');
+        return array('nscretinopathy_id', 'nscmaculopathy_id', 'nscretinopathy_photocoagulation', 'nscmaculopathy_photocoagulation', 'clinicalret_id', 'clinicalmac_id');
     }
 
     /**
@@ -124,7 +126,7 @@ class Element_OphCiExamination_DRGrading extends \SplitEventTypeElement
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-                'element_type' => array(self::HAS_ONE, '\ElementType', 'id','on' => "element_type.class_name='".get_class($this)."'"),
+                'element_type' => array(self::HAS_ONE, '\ElementType', 'id', 'on' => "element_type.class_name='".get_class($this)."'"),
                 'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
                 'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
                 'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
@@ -161,7 +163,7 @@ class Element_OphCiExamination_DRGrading extends \SplitEventTypeElement
                 'left_clinicalret_id' => 'Clinical Grading for retinopathy',
                 'right_clinicalret_id' => 'Clinical Grading for retinopathy',
                 'left_clinicalmac_id' => 'Clinical Grading for maculopathy',
-                'right_clinicalmac_id' => 'Clinical Grading for maculopathy'
+                'right_clinicalmac_id' => 'Clinical Grading for maculopathy',
         );
     }
 
@@ -175,7 +177,7 @@ class Element_OphCiExamination_DRGrading extends \SplitEventTypeElement
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria = new \CDbCriteria;
+        $criteria = new \CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
@@ -203,7 +205,7 @@ class Element_OphCiExamination_DRGrading extends \SplitEventTypeElement
     {
         return array(
             \Disorder::SNOMED_DIABETES_TYPE_I => \Disorder::model()->findByPk(\Disorder::SNOMED_DIABETES_TYPE_I)->term,
-            \Disorder::SNOMED_DIABETES_TYPE_II => \Disorder::model()->findByPk(\Disorder::SNOMED_DIABETES_TYPE_II)->term
+            \Disorder::SNOMED_DIABETES_TYPE_II => \Disorder::model()->findByPk(\Disorder::SNOMED_DIABETES_TYPE_II)->term,
         );
     }
 
@@ -217,11 +219,12 @@ class Element_OphCiExamination_DRGrading extends \SplitEventTypeElement
         if ($this->secondarydiagnosis_id) {
             return \SecondaryDiagnosis::model()->findByPk($this->secondarydiagnosis_id);
         }
-        return null;
+
+        return;
     }
 
     /**
-     * if a secondary diagnosis disorder id has been set, we need to ensure its created on the patient
+     * if a secondary diagnosis disorder id has been set, we need to ensure its created on the patient.
      *
      * @see parent::beforeSave()
      */
@@ -237,7 +240,7 @@ class Element_OphCiExamination_DRGrading extends \SplitEventTypeElement
             $curr_disorder = $curr_sd->disorder;
             $curr_sd->delete();
             $curr_sd = null;
-            Yii::app()->user->setFlash('warning.alert', "Disorder '" . $curr_disorder->term . "' has been removed because DR Grading diagnosis was updated.");
+            Yii::app()->user->setFlash('warning.alert', "Disorder '".$curr_disorder->term."' has been removed because DR Grading diagnosis was updated.");
         }
 
         if (!$curr_sd) {
@@ -270,11 +273,12 @@ class Element_OphCiExamination_DRGrading extends \SplitEventTypeElement
 
             if ($sd !== null) {
                 $sd->save();
-                \Audit::add("SecondaryDiagnosis", 'add', $sd->id, null, array('patient_id' => $patient->id));
+                \Audit::add('SecondaryDiagnosis', 'add', $sd->id, null, array('patient_id' => $patient->id));
                 $this->secondarydiagnosis_id = $sd->id;
-                Yii::app()->user->setFlash('info.info', "Disorder '" . $sd->disorder->term . "' has been added to patient by DR Grading.");
+                Yii::app()->user->setFlash('info.info', "Disorder '".$sd->disorder->term."' has been added to patient by DR Grading.");
             }
         }
+
         return parent::beforeSave();
     }
 
@@ -287,35 +291,38 @@ class Element_OphCiExamination_DRGrading extends \SplitEventTypeElement
             $disorder = $sd->disorder;
             $audit_data = serialize($sd->attributes);
             $sd->delete();
-            \Audit::add("SecondaryDiagnosis", 'delete', $sd->id, null, array('patient_id' => $sd->patient_id));
-            Yii::app()->user->setFlash('warning.alert', "Disorder '" . $disorder->term . "' has been removed because DR Grading was deleted.");
+            \Audit::add('SecondaryDiagnosis', 'delete', $sd->id, null, array('patient_id' => $sd->patient_id));
+            Yii::app()->user->setFlash('warning.alert', "Disorder '".$disorder->term."' has been removed because DR Grading was deleted.");
         }
     }
 
     /**
-     * (non-phpdoc)
+     * (non-phpdoc).
+     *
      * @see cleanUpSecondaryDiagnosis()
      * @see parent::softDelete()
      */
     public function softDelete()
     {
         $this->cleanUpSecondaryDiagnosis();
+
         return parent::softDelete();
     }
     /**
-     *
      * @see cleanUpSecondaryDiagnosis()
      * @see parent::delete()
+     *
      * @return bool
      */
     public function delete()
     {
         $this->cleanUpSecondaryDiagnosis();
+
         return parent::delete();
     }
 
     /**
-     * validator that requires the attribute only if the flag attribute on the element is true
+     * validator that requires the attribute only if the flag attribute on the element is true.
      *
      * @param $attribute
      * @param $params
@@ -324,7 +331,7 @@ class Element_OphCiExamination_DRGrading extends \SplitEventTypeElement
     {
         $flag = $params['flag'];
         if ($this->$flag && $this->$attribute == null) {
-            $this->addError($attribute, $this->getAttributeLabel($attribute) . " is required");
+            $this->addError($attribute, $this->getAttributeLabel($attribute).' is required');
         }
     }
 

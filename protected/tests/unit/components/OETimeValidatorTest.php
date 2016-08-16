@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
@@ -25,12 +25,13 @@ class OETimeValidatorTest extends BasePHPUnit
             array('1115', false),
             array('15:12', true),
             array('23:60', false),
-            array('8:04', true)
+            array('8:04', true),
         );
     }
 
     /**
      * @dataProvider validateValueProvider
+     *
      * @param $time
      * @param $valid
      */
@@ -45,20 +46,21 @@ class OETimeValidatorTest extends BasePHPUnit
     {
         return array(
             array(false, 1),
-            array(true, 0)
+            array(true, 0),
         );
     }
 
     /**
      * @dataProvider validateAttribute_empty_provider
-     * @param boolean $allowEmpty
+     *
+     * @param bool $allowEmpty
      * @param $addError_count
      */
     public function test_validateAttribute_empty($allowEmpty, $addError_count)
     {
         $validator = $this->getMockBuilder('OETimeValidator')
             ->disableOriginalConstructor()
-            ->setMethods(array('validateValue','addError'))
+            ->setMethods(array('validateValue', 'addError'))
             ->getMock();
 
         $validator->allowEmpty = $allowEmpty;
@@ -72,7 +74,7 @@ class OETimeValidatorTest extends BasePHPUnit
         $m = static::getProtectedMethod($validator, 'validateAttribute');
 
         $obj = ComponentStubGenerator::generate('CActiveRecord', array(
-            'attr' => ''
+            'attr' => '',
         ));
 
         $m->invokeArgs($validator, array($obj, 'attr'));
@@ -82,12 +84,13 @@ class OETimeValidatorTest extends BasePHPUnit
     {
         return array(
             array(false, 1),
-            array(true, 0)
+            array(true, 0),
         );
     }
-    
+
     /**
      * @dataProvider validateAttribute_value_provider
+     *
      * @param $valid
      * @param $addError_count
      */
@@ -95,7 +98,7 @@ class OETimeValidatorTest extends BasePHPUnit
     {
         $validator = $this->getMockBuilder('OETimeValidator')
             ->disableOriginalConstructor()
-            ->setMethods(array('validateValue','addError'))
+            ->setMethods(array('validateValue', 'addError'))
             ->getMock();
 
         $validator->allowEmpty = false;
@@ -110,10 +113,9 @@ class OETimeValidatorTest extends BasePHPUnit
         $m = static::getProtectedMethod($validator, 'validateAttribute');
 
         $obj = ComponentStubGenerator::generate('CActiveRecord', array(
-            'attr' => 'anything'
+            'attr' => 'anything',
         ));
 
         $m->invokeArgs($validator, array($obj, 'attr'));
     }
-
 }

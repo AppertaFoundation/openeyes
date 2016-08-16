@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
@@ -17,6 +17,4 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-
 // yes, this is empty, no need to display, but because of element types this file is required
-

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -39,9 +39,9 @@
 				<tr>
 					<td style="width: 53px;"><?php echo $operation->event->episode->patient->hos_num?></td>
 					<td>
-						<?php echo "<strong>" . trim(strtoupper($operation->event->episode->patient->last_name)) . '</strong>, ' . trim($operation->event->episode->patient->first_name)?>
+						<?php echo '<strong>'.trim(strtoupper($operation->event->episode->patient->last_name)).'</strong>, '.trim($operation->event->episode->patient->first_name)?>
 					</td>
-					<td style="width: 83px;"><?php echo date('j-M-Y',strtotime($operation->latestBooking->session_date))?></td>
+					<td style="width: 83px;"><?php echo date('j-M-Y', strtotime($operation->latestBooking->session_date))?></td>
 					<td style="width: 73px;"><?php echo $operation->latestBooking->session_start_time?></td>
 					<td style="width: 95px;"><?php echo $operation->latestBooking->theatre->site->shortName?></td>
 					<td style="width: 170px;"><?php echo $operation->latestBooking->ward->name?></td>

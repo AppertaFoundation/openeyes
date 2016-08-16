@@ -15,7 +15,7 @@ class SecondaryDiagnosisTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new SecondaryDiagnosis;
+        $this->object = new SecondaryDiagnosis();
     }
 
     /**
@@ -28,6 +28,7 @@ class SecondaryDiagnosisTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SecondaryDiagnosis::model
+     *
      * @todo   Implement testModel().
      */
     public function testModel()
@@ -40,6 +41,7 @@ class SecondaryDiagnosisTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SecondaryDiagnosis::tableName
+     *
      * @todo   Implement testTableName().
      */
     public function testTableName()
@@ -52,6 +54,7 @@ class SecondaryDiagnosisTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SecondaryDiagnosis::rules
+     *
      * @todo   Implement testRules().
      */
     public function testRules()
@@ -64,6 +67,7 @@ class SecondaryDiagnosisTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SecondaryDiagnosis::relations
+     *
      * @todo   Implement testRelations().
      */
     public function testRelations()
@@ -76,6 +80,7 @@ class SecondaryDiagnosisTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SecondaryDiagnosis::attributeLabels
+     *
      * @todo   Implement testAttributeLabels().
      */
     public function testAttributeLabels()
@@ -88,6 +93,7 @@ class SecondaryDiagnosisTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SecondaryDiagnosis::search
+     *
      * @todo   Implement testSearch().
      */
     public function testSearch()
@@ -100,6 +106,7 @@ class SecondaryDiagnosisTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SecondaryDiagnosis::getDateText
+     *
      * @todo   Implement testGetDateText().
      */
     public function testGetDateText()

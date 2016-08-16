@@ -101,73 +101,72 @@ class BaseActiveRecord extends CActiveRecord
         }
     }
 
-	/**
-	 * Default to the lower case of the class to match naming convention for model tables
-	 * 
-	 * @return string
-	 */
-	public function tableName()
-	{
-		return strtolower(get_class($this));
-	}
+    /**
+     * Default to the lower case of the class to match naming convention for model tables.
+     * 
+     * @return string
+     */
+    public function tableName()
+    {
+        return strtolower(get_class($this));
+    }
 
-	/**
-	 * If an array of arrays is passed for a HAS_MANY relation attribute, will create appropriate objects
-	 * to assign to the attribute. Sets up the afterSave method to saves these objects if they have validated.
-	 *
-	 * NOTE once a property is set, this magic method will not be called by php for setting it again, unless the property
-	 * is unset first.
-	 *
-	 * @param string $name
-	 * @param mixed $value
-	 * @throws Exception
-	 * @return mixed|void
-	 */
-	public function __set($name,$value)
-	{
-		// Only perform this override if turned on for the given model
-		if ($this->auto_update_relations
-				&& is_array($value) && count($value)
-				&& isset($this->getMetaData()->relations[$name])) {
-			$rel = $this->getMetaData()->relations[$name];
-			$cls = get_class($rel);
-			if ($cls == self::HAS_MANY || $cls == self::MANY_MANY) {
-				$rel_cls = $rel->className;
-				$pk_attr = $rel_cls::model()->getMetaData()->tableSchema->primaryKey;
-				// not supporting composite primary keys at this point
-				if (is_string($pk_attr)) {
-					$m_set = array();
-					foreach ($value as $v) {
-						if (is_array($v)) {
-							// looks like a list of attribute values, try to find or instantiate the classes
-							if (array_key_exists($pk_attr, $v) && isset($v[$pk_attr])) {
-								$m = $rel_cls::model()->findByPk($v[$pk_attr]);
-							}
-							else {
-								$m = new $rel_cls();
-							}
-							$m->attributes = array_merge($this->getRelationsDefaults($name), $v);
-							// set foreign key on the related object
-							$m->{$rel->foreignKey} = $this->getPrimaryKey();
-						}
-						elseif (is_object($v)) {
-							$m = $v;
-						}
-						else {
-							// try to find the instance
-							if (!$m = $rel_cls::model()->findByPk($v)) {
-								throw new Exception("Unable to understand value " . print_r($v, true) . " for {$name}");
-							}
-						}
-						$m_set[] = $m;
-					}
-					// reset the value for it to be set by parent method
-					$value = $m_set;
-				}
-			}
-		}
-		parent::__set($name, $value);
-	}
+    /**
+     * If an array of arrays is passed for a HAS_MANY relation attribute, will create appropriate objects
+     * to assign to the attribute. Sets up the afterSave method to saves these objects if they have validated.
+     *
+     * NOTE once a property is set, this magic method will not be called by php for setting it again, unless the property
+     * is unset first.
+     *
+     * @param string $name
+     * @param mixed  $value
+     *
+     * @throws Exception
+     *
+     * @return mixed|void
+     */
+    public function __set($name, $value)
+    {
+        // Only perform this override if turned on for the given model
+        if ($this->auto_update_relations
+                && is_array($value) && count($value)
+                && isset($this->getMetaData()->relations[$name])) {
+            $rel = $this->getMetaData()->relations[$name];
+            $cls = get_class($rel);
+            if ($cls == self::HAS_MANY || $cls == self::MANY_MANY) {
+                $rel_cls = $rel->className;
+                $pk_attr = $rel_cls::model()->getMetaData()->tableSchema->primaryKey;
+                // not supporting composite primary keys at this point
+                if (is_string($pk_attr)) {
+                    $m_set = array();
+                    foreach ($value as $v) {
+                        if (is_array($v)) {
+                            // looks like a list of attribute values, try to find or instantiate the classes
+                            if (array_key_exists($pk_attr, $v) && isset($v[$pk_attr])) {
+                                $m = $rel_cls::model()->findByPk($v[$pk_attr]);
+                            } else {
+                                $m = new $rel_cls();
+                            }
+                            $m->attributes = array_merge($this->getRelationsDefaults($name), $v);
+                            // set foreign key on the related object
+                            $m->{$rel->foreignKey} = $this->getPrimaryKey();
+                        } elseif (is_object($v)) {
+                            $m = $v;
+                        } else {
+                            // try to find the instance
+                            if (!$m = $rel_cls::model()->findByPk($v)) {
+                                throw new Exception('Unable to understand value '.print_r($v, true)." for {$name}");
+                            }
+                        }
+                        $m_set[] = $m;
+                    }
+                    // reset the value for it to be set by parent method
+                    $value = $m_set;
+                }
+            }
+        }
+        parent::__set($name, $value);
+    }
 
     // relation defaults are properties that need to be set on related models to define the records completely within the database
     // e.g. the side field on a record defines in the database that a record is a left or right record. So we need this attribute

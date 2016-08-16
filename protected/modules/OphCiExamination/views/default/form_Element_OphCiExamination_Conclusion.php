@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -22,6 +22,6 @@
 		<?php $this->renderPartial('_attributes', array('element' => $element, 'field' => 'description', 'form' => $form))?>
 	</div>
 	<div class="field-row">
-		<?php echo $form->textArea($element, 'description', array('rows' => "1", 'class' => 'autosize', 'nowrapper'=>true))?>
+		<?php echo $form->textArea($element, 'description', array('rows' => '1', 'class' => 'autosize', 'nowrapper' => true))?>
 	</div>
 </div>

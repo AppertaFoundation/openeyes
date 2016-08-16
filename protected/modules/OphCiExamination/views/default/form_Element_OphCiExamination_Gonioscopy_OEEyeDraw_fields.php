@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -20,7 +20,7 @@
 <?php
 $html_options = array();
 foreach (OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Description::model()->findAll() as $option) {
-    $html_options[(string) $option->id] = array('data-value'=> $option->name);
+    $html_options[(string) $option->id] = array('data-value' => $option->name);
 }
 ?>
 <div class="eyedraw-fields">
@@ -59,7 +59,7 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Descriptio
 		<div class="field-label">Angle Open?:</div>
 		<?php
             $basic_options = array('0' => 'No', '1' => 'Yes');
-            $html_options = array('1' => array('data-value'=> 'Yes'), '0' => array('data-value'=> 'No'));
+            $html_options = array('1' => array('data-value' => 'Yes'), '0' => array('data-value' => 'No'));
         ?>
 		<div class="gonio-cross">
 			<div class="gonio-sup">
@@ -104,7 +104,7 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Descriptio
 		<label for="<?php echo CHtml::modelName($element).'_'.$side.'_description';?>">
 			<?php echo $element->getAttributeLabel($side.'_description'); ?>:
 		</label>
-		<?php echo CHtml::activeTextArea($element, $side.'_description', array('rows' => "2", 'class' => 'autosize clearWithEyedraw')) ?>
+		<?php echo CHtml::activeTextArea($element, $side.'_description', array('rows' => '2', 'class' => 'autosize clearWithEyedraw')) ?>
 	</div>
 
 	<div class="field-row">

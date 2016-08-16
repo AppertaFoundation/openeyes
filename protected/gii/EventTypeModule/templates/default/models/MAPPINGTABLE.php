@@ -18,27 +18,35 @@
  */
 
 /**
- * This is the model class for table "<?php if (isset($mapping_table)) echo $mapping_table['name']?>".
+ * This is the model class for table "<?php if (isset($mapping_table)) {
+    echo $mapping_table['name'];
+}?>".
  *
  * The followings are the available columns in table:
  * @property string $id
  * @property integer $element_id
-<?php if (isset($mapping_table)) {?>
+<?php if (isset($mapping_table)) {
+    ?>
  * @property integer $<?php echo $mapping_table['lookup_table']?>_id
-<?php }?>
+<?php 
+}?>
  *
  * The followings are the available model relations:
  *
-<?php if (isset($mapping_table)) {?>
+<?php if (isset($mapping_table)) {
+    ?>
  * @property <?php echo $mapping_table['element_class']?> $element
  * @property <?php echo $mapping_table['lookup_class']?> $<?php echo $mapping_table['lookup_table']?>
 
-<?php }?>
+<?php 
+}?>
  * @property User $user
  * @property User $usermodified
  */
 
-class <?php if (isset($mapping_table)) echo $mapping_table['class']?> extends BaseActiveRecordVersioned
+class <?php if (isset($mapping_table)) {
+    echo $mapping_table['class'];
+}?> extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -54,7 +62,9 @@ class <?php if (isset($mapping_table)) echo $mapping_table['class']?> extends Ba
 	 */
 	public function tableName()
 	{
-		return '<?php if (isset($mapping_table)) echo $mapping_table['name']; ?>';
+		return '<?php if (isset($mapping_table)) {
+    echo $mapping_table['name'];
+} ?>';
 	}
 
 	/**
@@ -63,9 +73,15 @@ class <?php if (isset($mapping_table)) echo $mapping_table['class']?> extends Ba
 	public function rules()
 	{
 		return array(
-			array('element_id, <?php if (isset($mapping_table)) echo $mapping_table['lookup_table']?>_id', 'safe'),
-			array('element_id, <?php if (isset($mapping_table)) echo $mapping_table['lookup_table']?>_id', 'required'),
-			array('id, element_id, <?php if (isset($mapping_table)) echo $mapping_table['lookup_table']?>_id', 'safe', 'on' => 'search'),
+			array('element_id, <?php if (isset($mapping_table)) {
+    echo $mapping_table['lookup_table'];
+}?>_id', 'safe'),
+			array('element_id, <?php if (isset($mapping_table)) {
+    echo $mapping_table['lookup_table'];
+}?>_id', 'required'),
+			array('id, element_id, <?php if (isset($mapping_table)) {
+    echo $mapping_table['lookup_table'];
+}?>_id', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -75,8 +91,16 @@ class <?php if (isset($mapping_table)) echo $mapping_table['class']?> extends Ba
 	public function relations()
 	{
 		return array(
-			'element' => array(self::BELONGS_TO, '<?php if (isset($mapping_table)) echo $mapping_table['element_class']?>', 'element_id'),
-			'<?php if (isset($mapping_table)) echo $mapping_table['lookup_table']?>' => array(self::BELONGS_TO, '<?php if (isset($mapping_table)) echo $mapping_table['lookup_class']?>', '<?php if (isset($mapping_table)) echo $mapping_table['lookup_table']?>_id'),
+			'element' => array(self::BELONGS_TO, '<?php if (isset($mapping_table)) {
+    echo $mapping_table['element_class'];
+}?>', 'element_id'),
+			'<?php if (isset($mapping_table)) {
+    echo $mapping_table['lookup_table'];
+}?>' => array(self::BELONGS_TO, '<?php if (isset($mapping_table)) {
+    echo $mapping_table['lookup_class'];
+}?>', '<?php if (isset($mapping_table)) {
+    echo $mapping_table['lookup_table'];
+}?>_id'),
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 		);

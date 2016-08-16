@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -19,49 +19,46 @@
 ?>
 <?php
 if (!empty(Yii::app()->session['user'])) {
-	$user = Yii::app()->session['user'];
+    $user = Yii::app()->session['user'];
 } else {
-	$user = User::model()->findByPk(Yii::app()->user->id);
+    $user = User::model()->findByPk(Yii::app()->user->id);
 }
 $firm = Firm::model()->findByPk($this->selectedFirmId);
 
-if (file_exists("/etc/hostname")) {
-	$hostname = trim(file_get_contents("/etc/hostname"));
+if (file_exists('/etc/hostname')) {
+    $hostname = trim(file_get_contents('/etc/hostname'));
 } else {
-	$hostname = trim(`hostname`);
+    $hostname = trim(`hostname`);
 }
 
 if (is_object($user)) {
-	$username = "$user->username ($user->id)";
-	$firm = "$firm->name ($firm->id)";
+    $username = "$user->username ($user->id)";
+    $firm = "$firm->name ($firm->id)";
 } else {
-	$username = 'Not logged in';
-	$firm = 'Not logged in';
+    $username = 'Not logged in';
+    $firm = 'Not logged in';
 }
 
-$commit = preg_replace('/[\s\t].*$/s','',@file_get_contents(Yii::app()->basePath."/../.git/FETCH_HEAD"));
+$commit = preg_replace('/[\s\t].*$/s', '', @file_get_contents(Yii::app()->basePath.'/../.git/FETCH_HEAD'));
 
 $thisEnv = 'LIVE';
-if(file_exists("/etc/openeyes/env.conf"))
-{
-	$envvars = parse_ini_file("/etc/openeyes/env.conf");
-	if($envvars['env']=='DEV') $thisEnv = 'DEV';
+if (file_exists('/etc/openeyes/env.conf')) {
+    $envvars = parse_ini_file('/etc/openeyes/env.conf');
+    if ($envvars['env'] == 'DEV') {
+        $thisEnv = 'DEV';
+    }
 }
 
-if($thisEnv=='DEV')
-{
-	$branch = "<br/><div style='height:150px; overflow-y:scroll;border:1px solid #000; margin-bottom:10px'>";
-	$result = exec('oe-which',$lines);
-	foreach($lines as $line)
-	{
-		$branch .= trim(strtr($line, array('[32m'=>'', '[39m'=>'', '--'=>':'))) . "<br/>";
-	}
-	$branch .= "</div>";
-}
-else
-{
-	$ex = explode('/',file_get_contents(".git/HEAD"));
-	$branch = array_pop($ex);
+if ($thisEnv == 'DEV') {
+    $branch = "<br/><div style='height:150px; overflow-y:scroll;border:1px solid #000; margin-bottom:10px'>";
+    $result = exec('oe-which', $lines);
+    foreach ($lines as $line) {
+        $branch .= trim(strtr($line, array('[32m' => '', '[39m' => '', '--' => ':'))).'<br/>';
+    }
+    $branch .= '</div>';
+} else {
+    $ex = explode('/', file_get_contents('.git/HEAD'));
+    $branch = array_pop($ex);
 }
 ?>
 <div id="debug-info-modal">

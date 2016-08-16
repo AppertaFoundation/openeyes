@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -35,7 +35,7 @@ foreach ($dilation_drugs as $d_drug) {
 		<div class="active-form">
 			<a href="#" class="icon-remove-side remove-side">Remove side</a>
 			<div class="field-row">
-				<?php echo $form->dropDownListNoPost('dilation_drug_right', $element->getUnselectedDilationDrugs('right'), '', array('class'=> 'inline dilation_drug', 'empty'=>'--- Please select ---', 'nowrapper' => true, 'display_order' => $dilation_drugs_order))?>
+				<?php echo $form->dropDownListNoPost('dilation_drug_right', $element->getUnselectedDilationDrugs('right'), '', array('class' => 'inline dilation_drug', 'empty' => '--- Please select ---', 'nowrapper' => true, 'display_order' => $dilation_drugs_order))?>
 				<button class="small secondary clearDilation">
 					Clear
 				</button>
@@ -54,15 +54,15 @@ foreach ($dilation_drugs as $d_drug) {
 				<tbody class="plain" id="dilation_right">
 					<?php foreach ($element->right_treatments as $treatment) {
     $this->renderPartial('form_Element_OphCiExamination_Dilation_Treatment', array(
-                                'name_stub' => CHtml::modelName($element) . '[right_treatments]',
+                                'name_stub' => CHtml::modelName($element).'[right_treatments]',
                                 'treatment' => $treatment,
                                 'key' => $key,
                                 'side' => $treatment->side,
                                 'drug_name' => $treatment->drug->name,
                                 'drug_id' => $treatment->drug_id,
-                                'data_order' => $treatment->drug->display_order
+                                'data_order' => $treatment->drug->display_order,
                             ));
-    $key++;
+    ++$key;
 }?>
 				</tbody>
 			</table>
@@ -81,7 +81,7 @@ foreach ($dilation_drugs as $d_drug) {
 		<div class="active-form">
 			<a href="#" class="icon-remove-side remove-side">Remove side</a>
 			<div class="field-row">
-				<?php echo $form->dropDownListNoPost('dilation_drug_left', $element->getUnselectedDilationDrugs('left'), '', array('class'=> 'inline dilation_drug', 'empty'=>'--- Please select ---', 'nowrapper' => true, 'display_order' => $dilation_drugs_order))?>
+				<?php echo $form->dropDownListNoPost('dilation_drug_left', $element->getUnselectedDilationDrugs('left'), '', array('class' => 'inline dilation_drug', 'empty' => '--- Please select ---', 'nowrapper' => true, 'display_order' => $dilation_drugs_order))?>
 				<button class="small secondary clearDilation">
 					Clear
 				</button>
@@ -100,15 +100,15 @@ foreach ($dilation_drugs as $d_drug) {
 				<tbody class="plain" id="dilation_left">
 					<?php foreach ($element->left_treatments as $treatment) {
     $this->renderPartial('form_Element_OphCiExamination_Dilation_Treatment', array(
-                                'name_stub' => CHtml::modelName($element) . '[left_treatments]',
+                                'name_stub' => CHtml::modelName($element).'[left_treatments]',
                                 'treatment' => $treatment,
                                 'key' => $key,
                                 'side' => $treatment->side,
                                 'drug_name' => $treatment->drug->name,
                                 'drug_id' => $treatment->drug_id,
-                                'data_order' => $treatment->drug->display_order
+                                'data_order' => $treatment->drug->display_order,
                             ));
-    $key++;
+    ++$key;
 }?>
 				</tbody>
 			</table>
@@ -125,7 +125,7 @@ foreach ($dilation_drugs as $d_drug) {
 <script id="dilation_treatment_template" type="text/html">
 	<?php
     $this->renderPartial('form_Element_OphCiExamination_Dilation_Treatment', array(
-            'name_stub' => CHtml::modelName($element) . '[{{side}}_treatments]',
+            'name_stub' => CHtml::modelName($element).'[{{side}}_treatments]',
             'key' => '{{key}}',
             'side' => '{{side}}',
             'drug_name' => '{{drug_name}}',

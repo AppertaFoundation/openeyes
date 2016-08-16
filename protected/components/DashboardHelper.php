@@ -1,18 +1,18 @@
-<?php 
+<?php
+
 
 /**
  * Created by Mike Smith <mike.smith@camc-ltd.co.uk>.
  */
 
 /**
- * Class DashboardHelper
+ * Class DashboardHelper.
  *
  * Helper class to render dashboards based on configuration. By default will look directly at the 'dashboard_items' key
  * of the Yii params if none are provided.
- *
  */
-class DashboardHelper {
-
+class DashboardHelper
+{
     /**
      * @var array
      */
@@ -23,26 +23,26 @@ class DashboardHelper {
     protected $user;
 
     /**
-     * Flag to toggle the drag and drop sorting controls for widgets
+     * Flag to toggle the drag and drop sorting controls for widgets.
+     *
      * @TODO: this will be switched to true in the future when we set up controls for storing user preference for widgets
+     *
      * @var bool
      */
     public $sortable;
 
     /**
-     * @param array $items expected to be of the form:
-     *  [
-     *      [
-     *          'module' => 'ModuleName',
-     *          'restricted' => <array of auth items that will grant access to this dashboard> (optional)
-     *      ]
-     *  ]
-     *
+     * @param array     $items expected to be of the form:
+     *                         [
+     *                         [
+     *                         'module' => 'ModuleName',
+     *                         'restricted' => <array of auth items that will grant access to this dashboard> (optional)
+     *                         ]
+     *                         ]
      * @param OEWebUser $user
      */
     public function __construct(array $items = null, OEWebUser $user = null)
     {
-
         $this->items = $items;
         $this->user = $user;
 
@@ -58,9 +58,10 @@ class DashboardHelper {
     }
 
     /**
-     * Renders the HTML snippet of the Dashboard
+     * Renders the HTML snippet of the Dashboard.
      *
      * @return mixed
+     *
      * @throws
      */
     public function render()
@@ -98,20 +99,15 @@ class DashboardHelper {
 
             $item_render = null;
 
-
-            if ( isset($item['module']) )
-            {
+            if (isset($item['module'])) {
                 $this->moduleRender($renders, $item);
-            }
-            else if ( isset($item['class']) && isset($item['method']) ) {
+            } elseif (isset($item['class']) && isset($item['method'])) {
                 $this->objRender($renders, $item);
-            }
-            else if ( isset($item['title']) && isset($item['content']) ) {
+            } elseif (isset($item['title']) && isset($item['content'])) {
                 // just a straight dump of the item structure into the render list
                 $renders[] = $item;
-            }
-            else {
-                throw new Exception("Invalid dashboard configuration: module, static or object definition required");
+            } else {
+                throw new Exception('Invalid dashboard configuration: module, static or object definition required');
             }
         }
 
@@ -121,6 +117,7 @@ class DashboardHelper {
     /**
      * @param $renders
      * @param $item
+     *
      * @throws Exception
      */
     protected function moduleRender(&$renders, $item)
@@ -132,21 +129,22 @@ class DashboardHelper {
         if (!$module) {
             throw new Exception("$module_name not found");
         }
-        if( isset($item['actions']) && is_array($item['actions']) ) {
+        if (isset($item['actions']) && is_array($item['actions'])) {
             foreach ($item['actions'] as $method_name) {
-                if (!method_exists($module, $method_name))
+                if (!method_exists($module, $method_name)) {
                     throw new Exception("$method_name method not found for {$module_name}");
+                }
                 $render = $module->$method_name();
-                if ($render)
+                if ($render) {
                     $renders[] = $render;
+                }
             }
-        }
-        else if( method_exists($module, 'renderDashboard') ) {
+        } elseif (method_exists($module, 'renderDashboard')) {
             $render = $module->renderDashboard();
-            if ($render)
+            if ($render) {
                 $renders[] = $render;
-        }
-        else {
+            }
+        } else {
             throw new Exception('renderDashboard method not found for {$module_name}');
         }
     }
@@ -159,10 +157,10 @@ class DashboardHelper {
     {
         $class_name = $item['class'];
         $method = $item['method'];
-        $obj = new $class_name;
+        $obj = new $class_name();
         $render = $obj->$method();
-        if ($render)
+        if ($render) {
             $renders[] = $render;
-
+        }
     }
 }

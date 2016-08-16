@@ -1,9 +1,9 @@
-<?php 
+<?php
+
 
 /**
  * Created by Mike Smith <mike.smith@camc-ltd.co.uk>.
  */
-
 class DevSetupCommand extends CConsoleCommand
 {
     // this should be changed once we've worked out where we want to store the configs for different clients
@@ -16,10 +16,9 @@ class DevSetupCommand extends CConsoleCommand
     protected function getConfigPath()
     {
         if (!$this->config_path) {
-            return Yii::app()->basePath . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'local.sample' . DIRECTORY_SEPARATOR;
-        }
-        else {
-            return Yii::app()->basePath . DIRECTORY_SEPARATOR . $this->config_path;
+            return Yii::app()->basePath.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'local.sample'.DIRECTORY_SEPARATOR;
+        } else {
+            return Yii::app()->basePath.DIRECTORY_SEPARATOR.$this->config_path;
         }
     }
 
@@ -47,14 +46,15 @@ yiic devsetup --label=<configlabel> --gitowner=<username> --username=<gituser --
     The purpose of this command is to provide a convenience wrapper for checking out the modules for a configuration,
     and setting them up on a particular branch. It will then perform the appropriate migrations.
 EOH;
-
     }
 
     /**
-     * Iterate through configured git users to find the module repository
+     * Iterate through configured git users to find the module repository.
      *
      * @param $module
+     *
      * @return mixed
+     *
      * @throws Exception
      */
     protected function getGitAddress($module)
@@ -63,10 +63,10 @@ EOH;
         $clone_key = null;
 
         switch ($this->mode) {
-            case "ssh":
+            case 'ssh':
                 $clone_key = 'ssh_url';
                 break;
-            case "http":
+            case 'http':
                 $clone_key = 'clone_url';
                 break;
             default:
@@ -90,54 +90,54 @@ EOH;
                 if ($status == 200) {
                     $resp = json_decode($content);
                     if (!property_exists($resp, $clone_key)) {
-                        throw new \Exception("Unexpected github response, you may need to authenticate with the username option.");
+                        throw new \Exception('Unexpected github response, you may need to authenticate with the username option.');
                     }
+
                     return $resp->$clone_key;
                 }
             }
-
         }
     }
 
     /**
-     *
      * @param $module
+     *
      * @return string
      */
     protected function getModulePath($module)
     {
-        return Yii::app()->basePath . DIRECTORY_SEPARATOR . "modules/$module";
+        return Yii::app()->basePath.DIRECTORY_SEPARATOR."modules/$module";
     }
 
     /**
-     * Clone the module from the appropriate repository
+     * Clone the module from the appropriate repository.
      *
      * @param $module
+     *
      * @throws Exception
      */
     protected function cloneModule($module)
     {
         if ($address = $this->getGitAddress($module)) {
-            $cmd = "git clone {$address} " . $this->getModulePath($module);
+            $cmd = "git clone {$address} ".$this->getModulePath($module);
             if (!file_exists($this->getModulePath($module))) {
                 //echo "{$cmd}\n";
                 echo `$cmd`;
             }
-        }
-        else {
-            error_log(str_repeat("*", 30));
+        } else {
+            error_log(str_repeat('*', 30));
             error_log("WARNING: could not find repository for {$module}");
-            error_log(str_repeat("*", 30));
+            error_log(str_repeat('*', 30));
         }
     }
 
     /**
-     * Clone missing modules from the given list, and switch to specified branch
+     * Clone missing modules from the given list, and switch to specified branch.
      *
-     * @param array $modules
+     * @param array  $modules
      * @param string $branch
      */
-    protected function setupModules(array $modules, $branch='master')
+    protected function setupModules(array $modules, $branch = 'master')
     {
         echo "processing modules ...\n";
 
@@ -147,7 +147,7 @@ EOH;
                 $this->cloneModule($module);
             }
             if (file_exists($this->getModulePath($module))) {
-                $cmd = "cd " . $this->getModulePath($module) . "; git checkout {$branch};";
+                $cmd = 'cd '.$this->getModulePath($module)."; git checkout {$branch};";
                 echo `$cmd`;
             }
         }
@@ -160,17 +160,16 @@ EOH;
      */
     protected function copyConfig($config_file)
     {
-        $target_config = Yii::app()->basePath . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'local' . DIRECTORY_SEPARATOR . 'common.php';
+        $target_config = Yii::app()->basePath.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'local'.DIRECTORY_SEPARATOR.'common.php';
         if (file_exists($target_config)) {
-            copy($target_config, $target_config . '.bak');
+            copy($target_config, $target_config.'.bak');
             echo "Backed up previous configuration to {$target_config}.bak\n";
         }
         copy($config_file, $target_config);
-
     }
 
     /**
-     * Drop the current database and re-create
+     * Drop the current database and re-create.
      *
      * @TODO: support same for test database?
      * @TODO: use the config file to determine the database, rather than making assumptions.
@@ -178,7 +177,7 @@ EOH;
      */
     protected function resetDatabase($dumpfile)
     {
-        $cmd = "mysql -u root";
+        $cmd = 'mysql -u root';
         if ($this->mysqlp) {
             $cmd .= " -p{$this->mysqlp}";
         }
@@ -191,46 +190,45 @@ EOH;
             if (file_exists($dumpfile)) {
                 $cmd = "cat $dumpfile | mysql -u root openeyes";
                 `$cmd`;
-            }
-            else {
+            } else {
                 error_log("WARN: could not find {$dumpfile} to import.");
             }
         }
     }
 
     /**
-     * Run the core and module migrations
+     * Run the core and module migrations.
      */
     protected function runMigrations()
     {
         // run as separate shell command calls to ensure changes to configuration are loaded
-        $cmd_base = Yii::app()->getBasePath() . DIRECTORY_SEPARATOR . "yiic ";
-        $migrate = $cmd_base . "migrate";
-        $migratemodules = $cmd_base . "migratemodules";
+        $cmd_base = Yii::app()->getBasePath().DIRECTORY_SEPARATOR.'yiic ';
+        $migrate = $cmd_base.'migrate';
+        $migratemodules = $cmd_base.'migratemodules';
 
         echo `$migrate`;
         echo `$migratemodules`;
     }
 
     /**
-     * Default Action
+     * Default Action.
      *
      * @param string $label
      * @param string $mode
-     * @param null $username
+     * @param null   $username
      * @param string $branch
-     * @param array $gitowner
-     * @param bool $reset
-     * @param null $mysqlp
+     * @param array  $gitowner
+     * @param bool   $reset
+     * @param null   $mysqlp
      */
-    public function actionIndex($label="sample",
-                                $mode="http",
-                                $username=null,
-                                $branch="master",
-                                array $gitowner=array(),
-                                $reset=false,
-                                $resetfile=null,
-                                $mysqlp=null)
+    public function actionIndex($label = 'sample',
+                                $mode = 'http',
+                                $username = null,
+                                $branch = 'master',
+                                array $gitowner = array(),
+                                $reset = false,
+                                $resetfile = null,
+                                $mysqlp = null)
     {
         $this->mode = $mode;
         $this->username = $username;
@@ -240,7 +238,7 @@ EOH;
         }
 
         $this->gitowners = array_merge($gitowner, $this->gitowners);
-        $config_file = $this->getConfigPath() . "common.{$label}.php";
+        $config_file = $this->getConfigPath()."common.{$label}.php";
 
         echo "Retrieving config from {$config_file}\n";
         $config = array();
@@ -249,11 +247,10 @@ EOH;
             $this->usageError("Cannot find config file for {$label}");
             exit();
         }
-        include($config_file);
-
+        include $config_file;
 
         if (!@$config['modules']) {
-            $this->usageError("No modules parameter found in config file");
+            $this->usageError('No modules parameter found in config file');
         }
 
         $this->setUpModules($config['modules'], $branch);
@@ -265,8 +262,5 @@ EOH;
         }
 
         $this->runMigrations();
-
-
     }
-
 }

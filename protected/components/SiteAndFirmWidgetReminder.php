@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,30 +9,29 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class SiteAndFirmWidgetReminder extends CWidget
 {
-	public $title = 'You need to set your sites and firms';
-	public $subspecialty;
-	public $patient;
-	public $returnUrl;
+    public $title = 'You need to set your sites and firms';
+    public $subspecialty;
+    public $patient;
+    public $returnUrl;
 
-	public function init()
-	{
-		if (!$this->returnUrl) {
-			$this->returnUrl = Yii::app()->request->url;
-		}
-	}
+    public function init()
+    {
+        if (!$this->returnUrl) {
+            $this->returnUrl = Yii::app()->request->url;
+        }
+    }
 
-	public function run()
-	{
-		$this->render('SiteAndFirmWidgetReminder');
-	}
+    public function run()
+    {
+        $this->render('SiteAndFirmWidgetReminder');
+    }
 }

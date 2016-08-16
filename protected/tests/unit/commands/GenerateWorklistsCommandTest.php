@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
@@ -21,7 +21,7 @@ class GenerateWorklistsCommandTest extends PHPUnit_Framework_TestCase
 
     public function getMockCmd($manager, $methods = array())
     {
-        $name = "GenerateWorklists";
+        $name = 'GenerateWorklists';
         $runner = $this->getMockBuilder('CConsoleCommandRunner')
             ->disableOriginalConstructor()
             ->getMock();
@@ -34,7 +34,7 @@ class GenerateWorklistsCommandTest extends PHPUnit_Framework_TestCase
 
     public function test_actionGenerate()
     {
-        $horizon = "3 months";
+        $horizon = '3 months';
 
         $manager = $this->getMockBuilder('WorklistManager')
             ->disableOriginalConstructor()
@@ -60,7 +60,7 @@ class GenerateWorklistsCommandTest extends PHPUnit_Framework_TestCase
 
     public function test_actionGenerate_errors()
     {
-        $horizon = "3 months";
+        $horizon = '3 months';
 
         $manager = $this->getMockBuilder('WorklistManager')
             ->disableOriginalConstructor()
@@ -101,12 +101,13 @@ class GenerateWorklistsCommandTest extends PHPUnit_Framework_TestCase
         return array(
             array(null, (new DateTime())->format(self::$dateFormat)),
             array('6 months', (new DateTime())->add(DateInterval::createFromDateString('6 months'))->format(self::$dateFormat)),
-            array('nonsense', null)
+            array('nonsense', null),
         );
     }
 
     /**
      * @dataProvider getDateLimitProvider
+     *
      * @param $horizon
      * @param $expected
      */
@@ -120,8 +121,7 @@ class GenerateWorklistsCommandTest extends PHPUnit_Framework_TestCase
         if ($horizon) {
             $manager->expects($this->never())
                 ->method('getGenerationTimeLimitDate');
-        }
-        else {
+        } else {
             $manager->expects($this->once())
                 ->method('getGenerationTimeLimitDate')
                 ->will($this->returnValue(DateTime::createFromFormat(self::$dateFormat, $expected)));
@@ -134,8 +134,7 @@ class GenerateWorklistsCommandTest extends PHPUnit_Framework_TestCase
             $cmd->expects($this->once())
                 ->method('usageError');
             $cmd->getDateLimit($horizon);
-        }
-        else {
+        } else {
             $cmd->expects($this->never())
                 ->method('usageError');
             $res = $cmd->getDateLimit($horizon);
@@ -143,7 +142,5 @@ class GenerateWorklistsCommandTest extends PHPUnit_Framework_TestCase
             $this->assertEquals('DateTime', get_class($res));
             $this->assertEquals($expected, $res->format(self::$dateFormat));
         }
-
     }
-
 }

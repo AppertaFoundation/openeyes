@@ -19,13 +19,12 @@
  */
 class WhiteboardController extends BaseDashboardController
 {
-    
     protected $headerTemplate = 'header';
 
     protected $whiteboard;
 
     /**
-     * Define access rules for the controller
+     * Define access rules for the controller.
      *
      * @return array
      */
@@ -46,6 +45,7 @@ class WhiteboardController extends BaseDashboardController
      * registered scripts.
      *
      * @param CAction $action
+     *
      * @return bool
      */
     public function beforeAction($action)
@@ -64,18 +64,19 @@ class WhiteboardController extends BaseDashboardController
     }
 
     /**
-     * View the whiteboard
+     * View the whiteboard.
      *
      * View the whiteboard data, if there is no data for this event we will collate and persist it in the model.
      *
      * @param $id
+     *
      * @throws CException
      * @throws CHttpException
      */
     public function actionView($id)
     {
         $whiteboard = OphTrOperationbooking_Whiteboard::model()->with('booking')->findByAttributes(array('event_id' => $id));
-        if(!$whiteboard){
+        if (!$whiteboard) {
             $whiteboard = new OphTrOperationbooking_Whiteboard();
             $whiteboard->loadData($id);
         }
@@ -85,22 +86,23 @@ class WhiteboardController extends BaseDashboardController
     }
 
     /**
-     * Reload the data for the whiteboard
+     * Reload the data for the whiteboard.
      *
      * If the data is wrong we can reload it and update the database.
      * 
      * @param $id
+     *
      * @throws CException
      * @throws CHttpException
      */
     public function actionReload($id)
     {
         $whiteboard = OphTrOperationbooking_Whiteboard::model()->with('booking')->findByAttributes(array('event_id' => $id));
-        if(!$whiteboard){
+        if (!$whiteboard) {
             throw new CHttpException(400, 'No whiteboard found for reload with id '.$id);
         }
 
-        if(!$whiteboard->booking->isEditable()){
+        if (!$whiteboard->booking->isEditable()) {
             throw new CHttpException(400, 'Whiteboard is not editable '.$id);
         }
 
@@ -110,19 +112,20 @@ class WhiteboardController extends BaseDashboardController
     }
 
     /**
-     * Confirms the checks
+     * Confirms the checks.
      *
      * @param $id
+     *
      * @throws CHttpException
      */
     public function actionConfirm($id)
     {
         $whiteboard = OphTrOperationbooking_Whiteboard::model()->with('booking')->findByAttributes(array('event_id' => $id));
-        if(!$whiteboard){
+        if (!$whiteboard) {
             throw new CHttpException(400, 'No whiteboard found for reload with id '.$id);
         }
 
-        if(!$whiteboard->booking->isEditable()){
+        if (!$whiteboard->booking->isEditable()) {
             throw new CHttpException(400, 'Whiteboard is not editable '.$id);
         }
 

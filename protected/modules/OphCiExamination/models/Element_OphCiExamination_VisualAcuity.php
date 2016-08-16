@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -25,13 +25,14 @@ use Yii;
  * This is the model class for table "et_ophciexamination_visualacuity".
  *
  * The followings are the available columns in table:
+ *
  * @property string $id
- * @property integer $event_id
- * @property integer $eye_id
- * @property boolean $left_unable_to_assess
- * @property boolean $right_unable_to_assess
- * @property boolean $left_eye_missing
- * @property boolean $right_eye_missing
+ * @property int $event_id
+ * @property int $eye_id
+ * @property bool $left_unable_to_assess
+ * @property bool $right_unable_to_assess
+ * @property bool $left_eye_missing
+ * @property bool $right_eye_missing
  *
  * The followings are the available model relations:
  * @property OphCiExamination_VisualAcuityUnit $unit
@@ -44,22 +45,22 @@ use Yii;
  * @property EventType $eventType
  * @property Event $event
  */
-
 class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
 {
     public $service;
     protected $auto_update_relations = true;
     protected $relation_defaults = array(
         'left_readings' => array(
-            'side' => OphCiExamination_VisualAcuity_Reading::LEFT
+            'side' => OphCiExamination_VisualAcuity_Reading::LEFT,
         ),
         'right_readings' => array(
-            'side' => OphCiExamination_VisualAcuity_Reading::RIGHT
+            'side' => OphCiExamination_VisualAcuity_Reading::RIGHT,
         ),
     );
 
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return the static model class
      */
     public static function model($className = __CLASS__)
@@ -111,8 +112,8 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'unit' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit', 'unit_id', 'on' => 'unit.is_near = 0'),
             'readings' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading', 'element_id'),
-            'right_readings' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading', 'element_id', 'on' => 'right_readings.side = ' . OphCiExamination_VisualAcuity_Reading::RIGHT),
-            'left_readings' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading', 'element_id', 'on' => 'left_readings.side = ' . OphCiExamination_VisualAcuity_Reading::LEFT),
+            'right_readings' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading', 'element_id', 'on' => 'right_readings.side = '.OphCiExamination_VisualAcuity_Reading::RIGHT),
+            'left_readings' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading', 'element_id', 'on' => 'left_readings.side = '.OphCiExamination_VisualAcuity_Reading::LEFT),
         );
     }
 
@@ -140,28 +141,28 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
         foreach (array('left', 'right') as $side) {
             $check = 'has'.ucfirst($side);
             if ($this->$check()) {
-                if ($this->{$side . '_readings'}) {
-                    foreach ($this->{$side . '_readings'} as $i => $reading) {
+                if ($this->{$side.'_readings'}) {
+                    foreach ($this->{$side.'_readings'} as $i => $reading) {
                         if (!$reading->validate()) {
                             foreach ($reading->getErrors() as $fld => $err) {
-                                $this->addError($side . '_readings', ucfirst($side) . ' reading(' .($i+1) . '): ' . implode(', ', $err));
+                                $this->addError($side.'_readings', ucfirst($side).' reading('.($i + 1).'): '.implode(', ', $err));
                             }
                         }
                     }
                     foreach ($contra_flags as $f) {
-                        if ($this->{$side . $f}) {
-                            $this->addError($side . $f, 'Cannot be ' . $this->getAttributeLabel($side.$f) . ' with VA readings.');
+                        if ($this->{$side.$f}) {
+                            $this->addError($side.$f, 'Cannot be '.$this->getAttributeLabel($side.$f).' with VA readings.');
                         }
                     }
                 } else {
                     $valid = false;
                     foreach ($contra_flags as $f) {
-                        if ($this->{$side . $f}) {
+                        if ($this->{$side.$f}) {
                             $valid = true;
                         }
                     }
                     if (!$valid) {
-                        $this->addError($side, ucfirst($side) . ' side has no data.');
+                        $this->addError($side, ucfirst($side).' side has no data.');
                     }
                 }
             }
@@ -176,9 +177,9 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
         if ($rows = $this->getSetting('default_rows')) {
             $left_readings = array();
             $right_readings = array();
-            for ($i = 0; $i < $rows; $i++) {
-                $left_readings[]  = new OphCiExamination_VisualAcuity_Reading();
-                $right_readings[]  = new OphCiExamination_VisualAcuity_Reading();
+            for ($i = 0; $i < $rows; ++$i) {
+                $left_readings[] = new OphCiExamination_VisualAcuity_Reading();
+                $right_readings[] = new OphCiExamination_VisualAcuity_Reading();
             }
             $this->left_readings = $left_readings;
             $this->right_readings = $right_readings;
@@ -186,12 +187,14 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
     }
 
     /**
-     * Array of unit values for dropdown
-     * @param integer $unit_id
-     * @param boolean $selectable - whether want selectable values or all unit values
+     * Array of unit values for dropdown.
+     *
+     * @param int  $unit_id
+     * @param bool $selectable - whether want selectable values or all unit values
+     *
      * @return array
      */
-    public function getUnitValues($unit_id = null, $selectable=true)
+    public function getUnitValues($unit_id = null, $selectable = true)
     {
         if ($unit_id) {
             $unit = OphCiExamination_VisualAcuityUnit::model()->findByPk($unit_id);
@@ -207,10 +210,11 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
 
     /**
      * @param int|null $unit_id
-     * @param bool $is_near
+     * @param bool     $is_near
+     *
      * @return array
      */
-    public function getUnitValuesForForm($unit_id = null, $is_near=false)
+    public function getUnitValuesForForm($unit_id = null, $is_near = false)
     {
         if ($unit_id) {
             $unit = OphCiExamination_VisualAcuityUnit::model()->findByPk($unit_id);
@@ -264,22 +268,25 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
      * be converted to unit type of that id.
      *
      * @param string $side
-     * @param null $unit_id
+     * @param null   $unit_id
+     *
      * @return string
      */
     public function getCombined($side, $unit_id = null)
     {
         $combined = array();
         foreach ($this->{$side.'_readings'} as $reading) {
-            $combined[] = $reading->convertTo($reading->value, $unit_id) . ' ' . $reading->method->name;
+            $combined[] = $reading->convertTo($reading->value, $unit_id).' '.$reading->method->name;
         }
+
         return implode(', ', $combined);
     }
 
     /**
-     * Get the best reading for the given side
+     * Get the best reading for the given side.
      *
      * @param string $side
+     *
      * @return OphCiExamination_VisualAcuity_Reading|null
      */
     public function getBestReading($side)
@@ -290,29 +297,56 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
                 $best = $reading;
             }
         }
+
         return $best;
     }
 
+	/**
+	 * Get the best reading based on the type
+	 *
+	 * @param string $side
+	 * @param $method
+	 */
+	public function getBestReadingByMethods($side,$methods)
+    {
+        $best = null;
+		foreach($methods as $method) {
+			foreach ($this->{$side.'_readings'} as $reading) {
+				if($reading->method->id == $method->id) {
+					if (!$best || $reading->value >= $best->value) {
+						$best = $reading;
+					}
+				}
+			}
+		}
+        if ($best) {
+            return $best->convertTo($best->value);
+        }
+		return $best;
+    }
+
     /**
-     * Get the best reading for the given side
+     * Get the best reading for the given side.
      *
      * @param string $side
+     *
      * @return OphCiExamination_VisualAcuity_Reading|null
      */
     public function getAllReadings($side)
     {
         $r = array();
         foreach ($this->{$side.'_readings'} as $reading) {
-
             $r[] = $reading;
-
         }
+
         return $r;
     }
 
     /**
-     * Get the best reading for the specified side in current units
+     * Get the best reading for the specified side in current units.
+     *
      * @param string $side
+     *
      * @return string
      */
     public function getBest($side)
@@ -327,28 +361,31 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
      * Convenience function for generating string of why a reading wasn't recorded for a side.
      *
      * @param $side
+     *
      * @return string
      */
     public function getTextForSide($side)
     {
-        $checkFunc = 'has' . ucfirst($side);
-        if ($this->$checkFunc() && !$this->{$side . '_readings'}) {
-            if ($this->{$side . '_unable_to_assess'}) {
-                $text = $this->getAttributeLabel($side . '_unable_to_assess');
-                if ($this->{$side . '_eye_missing'}) {
-                    $text .= ", " . $this->getAttributeLabel($side . '_eye_missing');
+        $checkFunc = 'has'.ucfirst($side);
+        if ($this->$checkFunc() && !$this->{$side.'_readings'}) {
+            if ($this->{$side.'_unable_to_assess'}) {
+                $text = $this->getAttributeLabel($side.'_unable_to_assess');
+                if ($this->{$side.'_eye_missing'}) {
+                    $text .= ', '.$this->getAttributeLabel($side.'_eye_missing');
                 }
+
                 return $text;
-            } elseif ($this->{$side . '_eye_missing'}) {
-                return $this->getAttributeLabel($side . '_eye_missing');
+            } elseif ($this->{$side.'_eye_missing'}) {
+                return $this->getAttributeLabel($side.'_eye_missing');
             } else {
-                return "not recorded";
+                return 'not recorded';
             }
         }
     }
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
@@ -356,10 +393,11 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria = new \CDbCriteria;
+        $criteria = new \CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
+
         return new \CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
@@ -372,44 +410,45 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
      * @TODO: The units for correspondence should become a configuration variable
      *
      * @throws Exception
+     *
      * @return string
      */
     public function getLetter_string()
     {
         if (!$unit = OphCiExamination_VisualAcuityUnit::model()->find('name = ?', array(Yii::app()->params['ophciexamination_visualacuity_correspondence_unit']))) {
-            throw new Exception("Configured visual acuity correspondence unit was not found: ".Yii::app()->params['ophciexamination_visualacuity_correspondence_unit']);
+            throw new Exception('Configured visual acuity correspondence unit was not found: '.Yii::app()->params['ophciexamination_visualacuity_correspondence_unit']);
         }
 
         $text = "Visual acuity:\n";
 
         if ($this->hasRight()) {
-            $text .= "Right Eye: ";
+            $text .= 'Right Eye: ';
             if ($this->getCombined('right')) {
                 $text .= $this->getCombined('right', $unit->id);
             } else {
                 $text .= $this->getTextForSide('right');
             }
         } else {
-            $text .= "Right Eye: not recorded";
+            $text .= 'Right Eye: not recorded';
         }
         $text .= "\n";
 
         if ($this->hasLeft()) {
-            $text .= "Left Eye: ";
+            $text .= 'Left Eye: ';
             if ($this->getCombined('left')) {
                 $text .= $this->getCombined('left', $unit->id);
             } else {
                 $text .= $this->getTextForSide('left');
             }
         } else {
-            $text .= "Left Eye: not recorded";
+            $text .= 'Left Eye: not recorded';
         }
 
         return $text."\n";
     }
 
     /**
-     * Get the list of currently used method ids
+     * Get the list of currently used method ids.
      */
     public function getMethodValues()
     {

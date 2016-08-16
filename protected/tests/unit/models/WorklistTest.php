@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
@@ -22,7 +22,7 @@ class WorklistTest extends PHPUnit_Framework_TestCase
         return array(
             array('2015-06-05', '2015-06-05', true, null),
             array('2016-06-05', '2016-05-05', false, array(
-                'start' => array('Start Date must be on or before End Date')
+                'start' => array('Start Date must be on or before End Date'),
             )),
         );
     }
@@ -35,7 +35,7 @@ class WorklistTest extends PHPUnit_Framework_TestCase
         $worklist = new Worklist();
         $worklist->setAttributes(array(
             'start' => $start,
-            'end' => $end
+            'end' => $end,
         ));
 
         $res = $worklist->validate(array('start', 'end'));
@@ -49,8 +49,7 @@ class WorklistTest extends PHPUnit_Framework_TestCase
                     $this->assertTrue(in_array($error, $wl_errors[$fld]));
                 }
             }
-        }
-        else {
+        } else {
             $this->assertTrue(empty($wl_errors));
         }
     }
@@ -61,12 +60,13 @@ class WorklistTest extends PHPUnit_Framework_TestCase
             array(array()),
             array(array(
                 array('id' => 5, 'name' => 'foo'),
-                array('id' => 7, 'name' => 'bar')
-            ))
+                array('id' => 7, 'name' => 'bar'),
+            )),
         );
     }
     /**
      * @dataProvider getMappingAttributeIdsByNameProvider
+     *
      * @param $worklist_attrs
      */
     public function test_getMappingAttributeIdsByName($worklist_attrs)

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -21,22 +21,22 @@
 
 	<?php echo $form->hiddenField($element, 'booking_event_id')?>
 
-	<?php echo $form->radioButtons($element, 'eye_id', CHtml::listData(Eye::model()->findAll(array('order'=>'display_order asc')),'id','name'))?>
-	<?php $form->widget('application.widgets.ProcedureSelection',array(
-		'element' => $element,
-		'durations' => false,
-		'identifier' => 'procedures',
-		'read_only' => !@$_GET['unbooked'],
-		'restrict' => 'unbooked',
-		'restrict_common' => 'unbooked',
-	))?>
+	<?php echo $form->radioButtons($element, 'eye_id', CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'))?>
+	<?php $form->widget('application.widgets.ProcedureSelection', array(
+        'element' => $element,
+        'durations' => false,
+        'identifier' => 'procedures',
+        'read_only' => !@$_GET['unbooked'],
+        'restrict' => 'unbooked',
+        'restrict_common' => 'unbooked',
+    ))?>
 	<?php echo $form->radioButtons($element, 'anaesthetic_type_id', 'AnaestheticType')?>
-	<?php $form->widget('application.widgets.ProcedureSelection',array(
-		'element' => $element,
-		'durations' => false,
-		'relation' => 'additional_procedures',
-		'label' => 'Additional procedures',
-		'identifier' => 'additional',
-		'headertext' => 'Any extra procedures which may become necessary during the procedure.',
-	))?>
+	<?php $form->widget('application.widgets.ProcedureSelection', array(
+        'element' => $element,
+        'durations' => false,
+        'relation' => 'additional_procedures',
+        'label' => 'Additional procedures',
+        'identifier' => 'additional',
+        'headertext' => 'Any extra procedures which may become necessary during the procedure.',
+    ))?>
 </div>

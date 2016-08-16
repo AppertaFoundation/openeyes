@@ -2,7 +2,7 @@
 /**
  * The following variables are used in this template:
  * - $this: the CrudCode object
- * - $ignore: Array of fields to ignore when generating code
+ * - $ignore: Array of fields to ignore when generating code.
  */
 ?>
 <?php echo "<?php\n"; ?>
@@ -38,12 +38,14 @@
 <div class="view">
 <?php
 foreach ($this->tableSchema->columns as $column) {
-	if($column->isPrimaryKey)
-		continue;
-	if(in_array($column->name, $ignore))
-		continue;
-	echo "\t<b><?php echo CHtml::encode(\$data->getAttributeLabel('{$column->name}')); ?>:</b>\n";
-	echo "\t<?php echo CHtml::encode(\$data->{$column->name}); ?>\n\t<br />\n";
+    if ($column->isPrimaryKey) {
+        continue;
+    }
+    if (in_array($column->name, $ignore)) {
+        continue;
+    }
+    echo "\t<b><?php echo CHtml::encode(\$data->getAttributeLabel('{$column->name}')); ?>:</b>\n";
+    echo "\t<?php echo CHtml::encode(\$data->{$column->name}); ?>\n\t<br />\n";
 }
 ?>
 </div>

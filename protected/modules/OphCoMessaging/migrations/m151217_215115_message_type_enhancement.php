@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -8,26 +8,25 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class m151217_215115_message_type_enhancement extends OEMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->addColumn('ophcomessaging_message_message_type', 'reply_required', 'boolean DEFAULT false NOT NULL');
         $this->addColumn('ophcomessaging_message_message_type_version', 'reply_required', 'boolean DEFAULT false NOT NULL');
 
-        $this->insert('ophcomessaging_message_message_type',array('name'=>'Query','reply_required' => true, 'display_order'=>2));
-	}
+        $this->insert('ophcomessaging_message_message_type', array('name' => 'Query', 'reply_required' => true, 'display_order' => 2));
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->delete('ophcomessaging_message_message_type_version', 'reply_required = true');
-		$this->dropColumn('ophcomessaging_message_message_type_version', 'reply_required');
-	}
+        $this->dropColumn('ophcomessaging_message_message_type_version', 'reply_required');
+    }
 }

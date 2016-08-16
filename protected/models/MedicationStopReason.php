@@ -6,31 +6,30 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class MedicationStopReason extends BaseActiveRecordVersioned
 {
-	public function tableName()
-	{
-		return 'medication_stop_reason';
-	}
+    public function tableName()
+    {
+        return 'medication_stop_reason';
+    }
 
-	public function rules()
-	{
-		return array(
-			array('name, display_order, active', 'safe'),
-		);
-	}
+    public function rules()
+    {
+        return array(
+            array('name, display_order, active', 'safe'),
+        );
+    }
 
-	public function behaviors()
-	{
-		return array(
-			'LookupTable' => 'LookupTable',
-		);
-	}
+    public function behaviors()
+    {
+        return array(
+            'LookupTable' => 'LookupTable',
+        );
+    }
 }

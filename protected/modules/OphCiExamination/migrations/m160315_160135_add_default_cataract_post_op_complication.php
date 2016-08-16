@@ -2,7 +2,7 @@
 
 class m160315_160135_add_default_cataract_post_op_complication extends CDbMigration
 {
-        private $defaultCataractComplications = array(
+    private $defaultCataractComplications = array(
                 array('code' => 0, 'name' => 'none'),
                 array('code' => 1, 'name' => 'Anterior capsulophimosis'),
                 array('code' => 2, 'name' => 'choroidal effusion / detachment'),
@@ -49,34 +49,31 @@ class m160315_160135_add_default_cataract_post_op_complication extends CDbMigrat
                 array('code' => 43, 'name' => 'other'),
                 array('code' => 999, 'name' => 'not recorded'),
             );
-        
-	public function up()
-	{
-            
-            $subspecialty = \Subspecialty::model()->findByAttributes(array('name' => 'Cataract'));
-            
-            foreach ($this->defaultCataractComplications as $step => $complications) {
-                
-                $complication = \OEModule\OphCiExamination\models\OphCiExamination_PostOpComplications::model()->findByAttributes(array('code' => $complications['code']));
-                
-                $this->insert('ophciexamination_postop_complications_subspecialty', array(
+
+    public function up()
+    {
+        $subspecialty = \Subspecialty::model()->findByAttributes(array('name' => 'Cataract'));
+
+        foreach ($this->defaultCataractComplications as $step => $complications) {
+            $complication = \OEModule\OphCiExamination\models\OphCiExamination_PostOpComplications::model()->findByAttributes(array('code' => $complications['code']));
+
+            $this->insert('ophciexamination_postop_complications_subspecialty', array(
                             'subspecialty_id' => $subspecialty->id,
                             'complication_id' => $complication->id,
-                            'display_order' => ($step*2),
+                            'display_order' => ($step * 2),
                         )
                 );
-            }
-	}
+        }
+    }
 
-	public function down()
-	{
-            $subspecialty = \Subspecialty::model()->findByAttributes(array('name' => 'Cataract'));
-            
-            foreach($this->defaultCataractComplications as $defaultCataractComplication){
-                $complication = \OEModule\OphCiExamination\models\OphCiExamination_PostOpComplications::model()->findByAttributes(array('code' => $defaultCataractComplication['code']));
-                $where = "complication_id = '" . $complication->id . "' AND subspecialty_id = '" . $subspecialty->id . "'";
-                $this->delete('ophciexamination_postop_complications_subspecialty', $where);
-               
-            }
-	}
+    public function down()
+    {
+        $subspecialty = \Subspecialty::model()->findByAttributes(array('name' => 'Cataract'));
+
+        foreach ($this->defaultCataractComplications as $defaultCataractComplication) {
+            $complication = \OEModule\OphCiExamination\models\OphCiExamination_PostOpComplications::model()->findByAttributes(array('code' => $defaultCataractComplication['code']));
+            $where = "complication_id = '".$complication->id."' AND subspecialty_id = '".$subspecialty->id."'";
+            $this->delete('ophciexamination_postop_complications_subspecialty', $where);
+        }
+    }
 }

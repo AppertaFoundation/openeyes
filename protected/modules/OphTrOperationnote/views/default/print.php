@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -30,24 +30,24 @@
 
 	<!-- Anaesthetic Details -->
 	<?php
-		$anaesthetic_element = Element_OphTrOperationnote_Anaesthetic::model()->find("event_id = ?", array($this->event->id));
-		$this->renderElement($anaesthetic_element, 'print', false, false);
-	?>
+        $anaesthetic_element = Element_OphTrOperationnote_Anaesthetic::model()->find('event_id = ?', array($this->event->id));
+        $this->renderElement($anaesthetic_element, 'print', false, false);
+    ?>
 
 	<!-- Per-operative drugs -->
 	<?php
-		$postdrugs_element = Element_OphTrOperationnote_PostOpDrugs::model()->find("event_id = ?", array($this->event->id));
-		$this->renderElement($postdrugs_element, 'print', false, false);
-	?>
+        $postdrugs_element = Element_OphTrOperationnote_PostOpDrugs::model()->find('event_id = ?', array($this->event->id));
+        $this->renderElement($postdrugs_element, 'print', false, false);
+    ?>
 
 	<!-- Post-op instructions and Comments -->
 	<?php
-		$comments_element = Element_OphTrOperationnote_Comments::model()->find("event_id = ?", array($this->event->id));
-		$this->renderElement($comments_element, 'print', false, false);
-	?>
+        $comments_element = Element_OphTrOperationnote_Comments::model()->find('event_id = ?', array($this->event->id));
+        $this->renderElement($comments_element, 'print', false, false);
+    ?>
 
 	<!-- Metadata -->
 	<?php $this->renderPartial('//print/event_metadata', array(
-		'hide_modified' => @$hide_modified
-	));?>
+        'hide_modified' => @$hide_modified,
+    ));?>
 </div>

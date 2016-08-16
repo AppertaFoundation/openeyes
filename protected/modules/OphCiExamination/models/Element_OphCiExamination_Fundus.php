@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: mike
  * Date: 10/11/15
- * Time: 16:57
+ * Time: 16:57.
  */
 
 namespace OEModule\OphCiExamination\models;
-
 
 class Element_OphCiExamination_Fundus  extends \SplitEventTypeElement
 {
@@ -15,6 +14,7 @@ class Element_OphCiExamination_Fundus  extends \SplitEventTypeElement
 
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return the static model class
      */
     public static function model($className = __CLASS__)
@@ -92,6 +92,7 @@ class Element_OphCiExamination_Fundus  extends \SplitEventTypeElement
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
@@ -99,7 +100,7 @@ class Element_OphCiExamination_Fundus  extends \SplitEventTypeElement
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria = new \CDbCriteria;
+        $criteria = new \CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
@@ -113,6 +114,4 @@ class Element_OphCiExamination_Fundus  extends \SplitEventTypeElement
             'criteria' => $criteria,
         ));
     }
-
-
 }

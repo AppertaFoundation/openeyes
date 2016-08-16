@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -19,33 +19,33 @@
 ?>
 
 <?php
-if(!isset($displayOrder)){
-	$displayOrder = 0;
+if (!isset($displayOrder)) {
+    $displayOrder = 0;
 }
-if(!isset($uniqueid)){
-	$uniqueid = $this->uniqueid;
+if (!isset($uniqueid)) {
+    $uniqueid = $this->uniqueid;
 }
 ?>
 <div class="admin box">
-	<?php if(!$admin->isSubList()):?>
+	<?php if (!$admin->isSubList()):?>
 	<h2><?php echo $admin->getModelDisplayName(); ?></h2>
 	<?php endif;?>
 	<?php $this->widget('GenericSearch', array('search' => $admin->getSearch(), 'subList' => $admin->isSubList())); ?>
 
 	<?php
-	$returnUri = '';
-	if($admin->isSubList()):?>
+    $returnUri = '';
+    if ($admin->isSubList()):?>
 	<div id="generic-admin-sublist">
 		<?php
-		if($admin->getSubListParent() && is_array($admin->getSubListParent())):
-			foreach($admin->getSubListParent() as $key => $value):
-		?>
+        if ($admin->getSubListParent() && is_array($admin->getSubListParent())):
+            foreach ($admin->getSubListParent() as $key => $value):
+        ?>
 			<input type="hidden" name="default[<?=$key?>]" value="<?=$value?>" />
 		<?php
-			endforeach;
-		endif;
-		$returnUri = $admin->generateReturnUrl(Yii::app()->request->requestUri);
-		?>
+            endforeach;
+        endif;
+        $returnUri = $admin->generateReturnUrl(Yii::app()->request->requestUri);
+        ?>
 		<input type="hidden" name="returnUri" id="returnUri" value="<?=$returnUri ?>" />
 
 	<?php else: ?>
@@ -58,69 +58,69 @@ if(!isset($uniqueid)){
 			<tr>
 				<th><input type="checkbox" name="selectall" id="selectall"/></th>
 				<?php
-				foreach ($admin->getListFields() as $listItem):
-				if($listItem !== "attribute_elements_id.id") :?>
+                foreach ($admin->getListFields() as $listItem):
+                if ($listItem !== 'attribute_elements_id.id') :?>
 					<th>
 						<?php if ($admin->isSortableColumn($listItem)): ?>
 						<a href="/<?php echo $uniqueid ?>/list?<?php echo $admin->sortQuery($listItem, $displayOrder,
-							Yii::app()->request->getQueryString()) ?>">
+                            Yii::app()->request->getQueryString()) ?>">
 							<?php endif;
-							?>
+                            ?>
 							<?php echo $admin->getModel()->getAttributeLabel($listItem); ?>
 							<?php if ($admin->isSortableColumn($listItem)): ?>
 						</a>
 					<?php endif;
-					?>
+                    ?>
 					</th>
 				<?php else:?>
 					<th>Action</th>
 				<?php endif;
-				endforeach; ?>
+                endforeach; ?>
 			</tr>
 			</thead>
-			<tbody <?php if(in_array('display_order', $admin->getListFields())): echo 'class="sortable"'; endif; ?>>
+			<tbody <?php if (in_array('display_order', $admin->getListFields())): echo 'class="sortable"'; endif; ?>>
 			<?php
-			foreach ($admin->getSearch()->retrieveResults() as $i => $row) { ?>
+            foreach ($admin->getSearch()->retrieveResults() as $i => $row) { ?>
 				<tr class="clickable" data-id="<?php echo $row->id ?>"
 					data-uri="<?php echo $uniqueid ?>/edit/<?php echo $row->id ?>?returnUri=<?=$returnUri?>">
 					<td>
 						<input type="checkbox" name="<?php echo $admin->getModelName(); ?>[id][]" value="<?php echo $row->id ?>"/>
 					</td>
 					<?php foreach ($admin->getListFields() as $listItem):
-					if($listItem !== "attribute_elements_id.id"):
-						?>
+                    if ($listItem !== 'attribute_elements_id.id'):
+                        ?>
 						<td>
 							<?php
-							if (gettype($admin->attributeValue($row, $listItem)) === 'boolean'):
-								if ($admin->attributeValue($row, $listItem)):
-									?><i class="fa fa-check"></i><?php
-								else:
-									?><i class="fa fa-times"></i><?php
-								endif;
-							elseif($listItem === 'display_order'):
-								?>
+                            if (gettype($admin->attributeValue($row, $listItem)) === 'boolean'):
+                                if ($admin->attributeValue($row, $listItem)):
+                                    ?><i class="fa fa-check"></i><?php
+                                else:
+                                    ?><i class="fa fa-times"></i><?php
+                                endif;
+                            elseif($listItem === 'display_order'):
+                                ?>
 								&uarr;&darr;<input type="hidden" name="<?php echo $admin->getModelName(); ?>[display_order][]" value="<?php echo $row->id ?>">
 							<?php
-							else:
-								echo $admin->attributeValue($row, $listItem);
-							endif
-							?>
+                            else:
+                                echo $admin->attributeValue($row, $listItem);
+                endif
+                            ?>
 						</td>
 					<?php endif;
 
-					if($listItem === "attribute_elements_id.id"):
-						$mappingId =  $admin->attributeValue($row, $listItem);
-					endif;
+                if ($listItem === 'attribute_elements_id.id'):
+                        $mappingId = $admin->attributeValue($row, $listItem);
+                endif;
 
-					if($listItem === "attribute_elements.name"):?>
+                if ($listItem === 'attribute_elements.name'):?>
 					<td>
-						<?php if(($mappingId > 0)):?>
+						<?php if (($mappingId > 0)):?>
 							<a onMouseOver="this.style.color='#AFEEEE'" onMouseOut="this.style.color='#00F'" href="../../OphCiExamination/admin/manageElementAttributes?attribute_element_id=<?php echo $mappingId?>">Manage Options</a>
 						<?php endif; ?>
 					</td>
 					<?php
-					endif;
-					endforeach; ?>
+                    endif;
+                    endforeach; ?>
 
 				</tr>
 			<?php } ?>
@@ -135,8 +135,8 @@ if(!isset($uniqueid)){
                                                     array(),
                                                     array(
                                                             'class' => 'small',
-                                                            'data-uri' => '/' . $uniqueid . '/edit',
-                                                            'formmethod' => 'get'
+                                                            'data-uri' => '/'.$uniqueid.'/edit',
+                                                            'formmethod' => 'get',
                                                     )
                                             )->toHtml() ?>
                                             <?php echo EventAction::button(
@@ -145,30 +145,30 @@ if(!isset($uniqueid)){
                                                     array(),
                                                     array(
                                                             'class' => 'small',
-                                                            'data-uri' => '/' . $uniqueid . '/delete',
-                                                            'data-object' => $admin->getModelName()
+                                                            'data-uri' => '/'.$uniqueid.'/delete',
+                                                            'data-object' => $admin->getModelName(),
                                                     )
                                             )->toHtml() ?>
                                         <?php } ?>
 					<?php echo EventAction::button(
-						'Sort',
-						'sort',
-						array(),
-						array(
-							'class' => 'small',
-							'style' => 'display:none;',
-							'data-uri' => '/' . $uniqueid . '/sort',
-							'data-object' => $admin->getModelName()
-						)
-					)->toHtml() ?>
+                        'Sort',
+                        'sort',
+                        array(),
+                        array(
+                            'class' => 'small',
+                            'style' => 'display:none;',
+                            'data-uri' => '/'.$uniqueid.'/sort',
+                            'data-object' => $admin->getModelName(),
+                        )
+                    )->toHtml() ?>
 					<?php echo $this->renderPartial('//admin/_pagination', array(
-						'pagination' => $admin->getPagination()
-					)) ?>
+                        'pagination' => $admin->getPagination(),
+                    )) ?>
 				</td>
 			</tr>
 			</tfoot>
 		</table>
-	<?php if($admin->isSubList()):?>
+	<?php if ($admin->isSubList()):?>
 	</div>
 	<?php else: ?>
 	</form>

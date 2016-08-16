@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -23,9 +23,10 @@ namespace OEModule\OphCiExamination\models;
  * This is the model class for table "et_ophciexamination_posteriorpole".
  *
  * The followings are the available columns in table:
+ *
  * @property string $id
- * @property integer $event_id
- * @property integer $eye_id
+ * @property int $event_id
+ * @property int $eye_id
  * @property string $left_eyedraw
  * @property string $left_description
  * @property string $right_eyedraw
@@ -33,13 +34,13 @@ namespace OEModule\OphCiExamination\models;
  *
  * The followings are the available model relations:
  */
-
 class Element_OphCiExamination_PosteriorPole extends \SplitEventTypeElement
 {
     public $service;
 
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return the static model class
      */
     public static function model($className = __CLASS__)
@@ -117,6 +118,7 @@ class Element_OphCiExamination_PosteriorPole extends \SplitEventTypeElement
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
@@ -124,7 +126,7 @@ class Element_OphCiExamination_PosteriorPole extends \SplitEventTypeElement
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria = new \CDbCriteria;
+        $criteria = new \CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);

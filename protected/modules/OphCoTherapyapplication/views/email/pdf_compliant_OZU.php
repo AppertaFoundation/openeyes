@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
 *
 * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
 * (C) OpenEyes Foundation, 2011-2013
@@ -9,15 +9,15 @@
 * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 *
-* @package OpenEyes
 * @link http://www.openeyes.org.uk
+*
 * @author OpenEyes <info@openeyes.org.uk>
 * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
 * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
 * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 */
 $logoHelper = new LogoHelper();
-	
+
 ?>
 <div class="banner clearfix">
 		<?= $logoHelper->render() ?>
@@ -53,7 +53,7 @@ $gp_cb = $patient->gp ? $patient->practice->getCommissioningBodyOfType($cbody_ty
 <table cellpadding="5">
 <tr>
 <td>Patient NHS Number:</td>
-<td><?php echo $patient->nhs_num ? $patient->nhs_num : "Unknown" ?></td>
+<td><?php echo $patient->nhs_num ? $patient->nhs_num : 'Unknown' ?></td>
 <td>Trust</td>
 <td>Moorfields NHS Foundation Trust</td>
 <td>GP Name:</td>
@@ -66,7 +66,7 @@ $gp_cb = $patient->gp ? $patient->practice->getCommissioningBodyOfType($cbody_ty
 <td>Consultant Making Request:</td>
 <td><?php echo $service_info->consultant->getConsultantName() ?></td>
 <td>GP Practice Code:</td>
-<td><?php echo $patient->gp ? $patient->gp->nat_id : "Uknown" ?></td>
+<td><?php echo $patient->gp ? $patient->gp->nat_id : 'Uknown' ?></td>
 </tr>
 
 <tr>
@@ -82,12 +82,12 @@ $gp_cb = $patient->gp ? $patient->practice->getCommissioningBodyOfType($cbody_ty
 
 <tr>
 <td>Patient VA</td>
-<td colspan="5"><?php echo ($exam_api && ($va = $exam_api->getLetterVisualAcuityBoth($patient)) ) ? Yii::app()->format->Ntext($va) : "Not measured"; ?></td>
+<td colspan="5"><?php echo ($exam_api && ($va = $exam_api->getLetterVisualAcuityBoth($patient))) ? Yii::app()->format->Ntext($va) : 'Not measured'; ?></td>
 </tr>
 
 <tr>
 <td>GP CCG</td>
-<td colspan="5"><?php echo $gp_cb ? $gp_cb->code."," . $gp_cb->name . "\n" : "Unknown\n" ?></td>
+<td colspan="5"><?php echo $gp_cb ? $gp_cb->code.','.$gp_cb->name."\n" : "Unknown\n" ?></td>
 </tr>
 
 <tr>
