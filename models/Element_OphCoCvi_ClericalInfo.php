@@ -102,12 +102,12 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 		return array(
 			'id' => 'ID',
 			'event_id' => 'Event',
-			'employment_status_id' => 'Employment status',
-			'preferred_info_fmt_id' => 'Preferred information format',
+			'employment_status_id' => 'Is the patient',
+			'preferred_info_fmt_id' => 'Patient format preferences',
 			'info_email' => 'Info email',
 			'contact_urgency_id' => 'Contact urgency',
 			'preferred_language_id' => 'Preferred language',
-			'social_service_comments' => 'Social service comments',
+			'social_service_comments' => 'Comments to the Social Services Department',
 		);
 	}
 

@@ -23,10 +23,9 @@ $factor_answer = OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PatientFactor_An
 	<?php
 	foreach ($model->findAll('`active` = ?',array(1)) as $factor) {
 		?>
-		<fieldset class="row field-row">
-			<legend class="large-3 column">
-				<?php echo $factor->name?>
-			</legend>
+		<fieldset class="row field-row ">
+			<div class="large-9 column">
+			<label> <?php echo $factor->name?> </label>
 			<?php
 			$is_factor = $factor_answer->getFactorAnswer($factor->id,$element->id);
 			$comments = $factor_answer->getComments($factor->id,$element->id);
@@ -40,8 +39,9 @@ $factor_answer = OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PatientFactor_An
 				echo CHtml::hiddenField("require_comments[$i]" , $value, array('id' => 'hiddenInput'));
 
 			?>
+			</div>
 
-			<div class="large-9 column">
+			<div class="large-3 column">
 				<label class="inline highlight">
 					<?php echo CHtml::radioButton("is_factor[$i]", (isset($is_factor) && $is_factor == 1), array('id' => CHtml::modelName($factor_answer) . '_' . $factor->id . '_1', 'value' => 1))?>
 					Yes
@@ -59,22 +59,53 @@ $factor_answer = OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PatientFactor_An
 		</fieldset>
 		<?php if($factor->require_comments == 1){?>
 			<fieldset class="row field-row">
-				<legend class="large-3 column">
-					<?php echo $factor->comments_label; ?>
-				</legend>
-				<div class="large-9 column">
-
-					<?php echo  CHtml::textArea( "comments[$i]", ($comments), array('rows'=>3, 'cols'=>75));?>
+				<div class="large-4 column">
+					<label>	<?php echo $factor->comments_label; ?>	</label>
+				</div>
+				<div class="large-8 column end">
+					<?php echo  CHtml::textArea( "comments[$i]", ($comments), array('rows'=>2));?>
 				</div>
 			</fieldset>
-		<?php  }		}?>
+		<?php  }?>
+		<hr/><br/>
+
+	<?php }?>
+</div>
+
+<div class="element-fields row">
+	<div class="indent-correct row">
+		<div class="large-6 column">
+			<?php echo $form->dropDownList($element, 'employment_status_id', CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_EmploymentStatus::model()->findAll('`active` = ?',array(1),array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'), false, array('label' => 6, 'field' => 6))?>
+		</div>
+	</div>
+
 </div>
 <div class="element-fields row">
-	<?php echo $form->dropDownList($element, 'employment_status_id', CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_EmploymentStatus::model()->findAll('`active` = ?',array(1),array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'))?>
-	<?php echo $form->dropDownList($element, 'preferred_info_fmt_id', CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PreferredInfoFmt::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'))?>
-	<?php echo $form->textField($element, 'info_email', array('size' => '20'))?>
-	<?php echo $form->dropDownList($element, 'contact_urgency_id', CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_ContactUrgency::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'))?>
-	<?php echo $form->dropDownList($element, 'preferred_language_id', CHtml::listData(Language::model()->findAll(array('order'=> 'name asc')),'id','name'),array('empty'=>'- Please select -'))?>
-	<?php echo $form->textArea($element, 'social_service_comments', array('rows' => 6, 'cols' => 80))?>
+	<div class="indent-correct row">
+		<div class="large-6 column">
+			<?php echo $form->dropDownList($element, 'preferred_info_fmt_id', CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PreferredInfoFmt::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'), false, array('label' => 6, 'field' => 6))?>
+		</div>
+		<?php
+			$preferredInfoFormatEmail= OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PreferredInfoFmt::model()->findAll('`require_email` = ?',array(1));
+			if(sizeof($preferredInfoFormatEmail) == 1){
+		?>
+		<div class="large-6 column end">
+			<?php echo $form->textField($element, 'info_email', array('size' => '20'), false, array('label' => 6, 'field' => 6))?>
+		</div>
+		<?php } ?>
+	</div>
+</div>
+<div class="element-fields row">
+	<div class="indent-correct row">
+		<div class="large-6 column">
+			<?php echo $form->dropDownList($element, 'contact_urgency_id', CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_ContactUrgency::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'), false, array('label' => 6, 'field' => 6))?>
+		</div>
+		<div class="large-6 column end">
+			<?php echo $form->dropDownList($element, 'preferred_language_id', CHtml::listData(Language::model()->findAll(array('order'=> 'name asc')),'id','name'),array('empty'=>'- Please select -'), false, array('label' => 6, 'field' => 6))?>
+		</div>
+	</div>
+</div>
+<div class="element-fields row">
+	<?php echo $form->textArea($element, 'social_service_comments', array('rows' => 3, 'cols' => 80), false, array('label' => 3, 'field' => 6))?>
 </div>
 
