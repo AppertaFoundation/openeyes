@@ -47,7 +47,10 @@
 		<div class="box generic">
 
 			<?php
-				$from =($page_num * $items_per_page) + 1;
+			$dataProvided = $data_provider->getData();
+			$items_per_page = $data_provider->getPagination()->getPageSize();
+			$page_num = $data_provider->getPagination()->getCurrentPage();
+			$from =($page_num * $items_per_page) + 1;
 				$to = ($page_num + 1) * $items_per_page;
 				if ($to > $total_items) {
 					$to = $total_items;
@@ -64,7 +67,7 @@
 						<th id="patient-grid_c<?php echo $i; ?>">
 							<?php
 								$new_sort_dir = ($i == $sort_by) ? 1 - $sort_dir: 0;
-								echo CHtml::link($field,Yii::app()->createUrl('patient/search', $search_terms + array('sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num)));
+								echo CHtml::link($field,Yii::app()->createUrl('patient/search', array('term' => $term, 'sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num)));
 							?>
 						</th>
 						<?php }?>
@@ -86,22 +89,18 @@
 				<tfoot class="pagination-container">
 					<tr>
 						<td colspan="7">
-							<ul class="pagination patient-results right">
-								<li class="label">Viewing patients:</li>
-								<?php for ($i=0; $i < $pages; $i++) { ?>
-									<?php
-										$current_page = ( ($i+1) == $page_num);
-										$from = ($i * $items_per_page) + 1;
-										$to = ($i + 1) * $items_per_page;
-										if ($to > $total_items) {
-											$to = $total_items;
-										}
-									?>
-									<li class="<?php if ($current_page) { ?>current<?php } ?>">
-										<a href="<?php echo Yii::app()->createUrl('patient/search', array('Patient_page' => $i+1, 'sort_by' => $sort_by, 'sort_dir' => $sort_dir)); ?>"><?php echo $from; ?> - <?php echo $to; ?></a>
-									</li>
-								<?php } ?>
-							</ul>
+							<?php
+								$this->widget('LinkPager', array(
+									'pages' => $data_provider->getPagination(),
+									'maxButtonCount' => 15,
+									'cssFile' => false,
+									'selectedPageCssClass' => 'current',
+									'hiddenPageCssClass' => 'unavailable',
+									'htmlOptions' => array(
+										'class' => 'pagination'
+									)
+							));
+							?>
 						</td>
 					</tr>
 				</tfoot>
