@@ -62,6 +62,10 @@ Once the build has finished you can access OpenEyes using the link:
 
 **Note:** [Google Chrome](https://www.google.com/chrome/) is the supported browser for OpenEyes.
 
+#### Windows 10
+
+You will need to have downloaded VC++ for Vagrant to be able to download base boxes for the build see this issue for more information [https://github.com/mitchellh/vagrant/issues/6754](https://github.com/mitchellh/vagrant/issues/6754)
+
 ### Useful Vagrant Commands
 
 * `vagrant up` - Will build the environment if it hasn't already been built
