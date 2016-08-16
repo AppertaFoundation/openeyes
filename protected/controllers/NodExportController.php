@@ -165,7 +165,7 @@ class NodExportController extends BaseController
         //$this->saveIds('tmp_episode_ids', $this->getEpisodeDiabeticDiagnosis());
         $this->saveIds('tmp_episode_ids', $this->getEpisodeDrug());
         $this->saveIds('tmp_episode_ids', $this->getEpisodeBiometry());
-        //$this->saveIds('tmp_episode_ids', $this->getEpisodePostOpComplication());
+        $this->saveIds('tmp_episode_ids', $this->getEpisodePostOpComplication());
         $this->saveIds('tmp_episode_ids', $this->getEpisodePreOpAssessment());
         $this->saveIds('tmp_episode_ids', $this->getEpisodeIOP());
         //$this->saveIds('tmp_episode_ids', $this->getEpisodeVisualAcuity());
@@ -257,6 +257,7 @@ class NodExportController extends BaseController
         $query .= $this->createTmpRcoNodEpisodeIOP();
         $query .= $this->createTmpRcoNodEpisodeBiometry();
         $query .= $this->createTmpRcoNodSurgeon();
+        $query .= $this->createTmpRcoNodPostOpComplication();
         
         $createTempQuery = <<<EOL
 
@@ -532,6 +533,7 @@ EOL;
         $query .= $this->populateTmpRcoNodEpisodeIOP();
         $query .= $this->populateTmpRcoNodEpisodeBiometry();
         $query .= $this->populateTmpRcoNodSurgeon();
+        $query .= $this->populateTmpRcoNodPostOpComplication();
 
         return $query;
     }
@@ -549,6 +551,7 @@ EOL;
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeIOP_{$this->extract_identifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeBiometry_{$this->extract_identifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_Surgeon_{$this->extract_identifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodePostOpComplication_{$this->extract_identifier};
 
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication_type;
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication;
@@ -1650,43 +1653,75 @@ EOL;
         return $dateWhere;
     }
 
+    
+    
+    
+    
+    
+    /********** EpisodePostOpComplication **********/
+    
+    private function createTmpRcoNodPostOpComplication()
+    {
+        $query = <<<EOL
+            DROP TABLE IF EXISTS tmp_rco_nod_EpisodePostOpComplication_{$this->extract_identifier};
+            CREATE TABLE tmp_rco_nod_EpisodePostOpComplication_{$this->extract_identifier} (
+                    oe_event_id INT(10) NOT NULL,
+                    Eye CHAR(1) NOT NULL,
+                    ComplicationTypeId INT(10) DEFAULT NULL
+            );
+EOL;
+        return $query;
+    }
+    
+    private function populateTmpRcoNodPostOpComplication()
+    {
+        $query = <<<EOL
+            INSERT INTO tmp_rco_nod_EpisodePostOpComplication_{$this->extract_identifier} (
+                oe_event_id,
+                Eye,
+                ComplicationTypeId
+            ) 
+            SELECT
+              c.oe_event_id,
+              'L' AS Eye,
+              ophciexamination_postop_complications.code AS ComplicationTypeId
+
+            FROM tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c
+            JOIN et_ophciexamination_postop_complications ON c.oe_event_id = et_ophciexamination_postop_complications.event_id
+            JOIN ophciexamination_postop_et_complications ON et_ophciexamination_postop_complications.id = ophciexamination_postop_et_complications.element_id
+            JOIN ophciexamination_postop_complications ON ophciexamination_postop_et_complications.complication_id = ophciexamination_postop_complications.id 
+            AND ( ophciexamination_postop_et_complications.eye_id = 1 OR ophciexamination_postop_et_complications.eye_id = 3);
+                
+                
+            INSERT INTO tmp_rco_nod_EpisodePostOpComplication_{$this->extract_identifier} (
+                oe_event_id,
+                Eye,
+                ComplicationTypeId
+            ) 
+            SELECT
+              c.oe_event_id,
+              'L' AS Eye,
+              ophciexamination_postop_complications.code AS ComplicationTypeId
+
+            FROM tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c
+            JOIN et_ophciexamination_postop_complications ON c.oe_event_id = et_ophciexamination_postop_complications.event_id
+            JOIN ophciexamination_postop_et_complications ON et_ophciexamination_postop_complications.id = ophciexamination_postop_et_complications.element_id
+            JOIN ophciexamination_postop_complications ON ophciexamination_postop_et_complications.complication_id = ophciexamination_postop_complications.id 
+            AND ( ophciexamination_postop_et_complications.eye_id = 2 OR ophciexamination_postop_et_complications.eye_id = 3);
+                
+EOL;
+        return $query;
+        
+    }
+    
     private function getEpisodePostOpComplication()
     {
 
-        $dateWhere = $this->getDateWhere('et_ophciexamination_postop_complications');
-
-        $query = "(
-                    SELECT
-                    episode.id AS EpisodeId, 
-                    ophciexamination_postop_et_complications.`operation_note_id` AS OperationId, 
-                    'L' AS Eye,
-                    ophciexamination_postop_complications.`code` AS ComplicationTypeId
-                    FROM episode
-                    JOIN `event` ON episode.id = `event`.`episode_id`
-                    JOIN et_ophciexamination_postop_complications ON `event`.id = et_ophciexamination_postop_complications.`event_id`
-                    JOIN ophciexamination_postop_et_complications ON et_ophciexamination_postop_complications.id = ophciexamination_postop_et_complications.`element_id`
-                    JOIN ophciexamination_postop_complications ON ophciexamination_postop_et_complications.`complication_id` = ophciexamination_postop_complications.id 
-                    WHERE 1=1 " . $dateWhere . "
-                    AND ( ophciexamination_postop_et_complications.`eye_id` = 1 OR ophciexamination_postop_et_complications.`eye_id` = 3)
-                )
-                UNION
-                (
-                    SELECT
-                    episode.id AS EpisodeId, 
-                    ophciexamination_postop_et_complications.`operation_note_id` AS OperationId, 
-                    (SELECT CASE WHEN ophciexamination_postop_et_complications.`eye_id` = 1 THEN 'L' WHEN ophciexamination_postop_et_complications.`eye_id` = 2 THEN 'R' END ) AS Eye,
-                    ophciexamination_postop_complications.`code` AS ComplicationTypeId
-                    FROM episode
-                    JOIN `event` ON episode.id = `event`.`episode_id`
-                    JOIN et_ophciexamination_postop_complications ON `event`.id = et_ophciexamination_postop_complications.`event_id`
-                    JOIN ophciexamination_postop_et_complications ON et_ophciexamination_postop_complications.id = ophciexamination_postop_et_complications.`element_id`
-                    JOIN ophciexamination_postop_complications ON ophciexamination_postop_et_complications.`complication_id` = ophciexamination_postop_complications.id 
-                    WHERE 1=1 " . $dateWhere . "
-                    AND ( ophciexamination_postop_et_complications.`eye_id` = 2 OR ophciexamination_postop_et_complications.`eye_id` = 3)
-
-                )"
-                ;
-
+        $query = <<<EOL
+                SELECT c.nod_episode_id as EpisodeId, c.oe_event_id as OperationId, p.Eye, p.ComplicationTypeId
+                FROM tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c
+                JOIN tmp_rco_nod_EpisodePostOpComplication_{$this->extract_identifier} p ON c.oe_event_id = p.oe_event_id
+EOL;
         $dataQuery = array(
             'query' => $query,
             'header' => array('EpisodeId', 'OperationId', 'Eye', 'ComplicationTypeId'),
@@ -1696,6 +1731,13 @@ EOL;
         
         return $output;
     }
+    
+    /********** end of EpisodePostOpComplication **********/
+    
+    
+    
+    
+    
 
     private function getEpisodeOperationCoPathology()
     {
