@@ -42,16 +42,36 @@ Issues in the core should be logged through the [github issues system](https://g
 
 Dev Setup
 ---------
+To make life easier and also help ensure consistency in environments we use [Vagrant](http://vagrantup.com) + [Ansible](https://www.ansible.com) to build our development environments, the basic requirements for this are to have the following installed and available on the host machine:
 
-To begin development, the simplest approach is:
+* [Vagrant](http://vagrantup.com)
+* [Virtualbox](http://virtualbox.org) or [VMWare Fusion](http://www.vmware.com/products/fusion.html)
 
-1. clone the repository
-1. run vagrant up
-1. run devsetup:
+Running `vagrant up` the first time will install any missing vagrant plugins:
 
-    vagrant ssh 
-    cd /var/www/protected
-    ./yiic devsetup --resetfile=../features/testdata.sql
+* [vagrant-auto_network](https://github.com/oscar-stack/vagrant-auto_network)
+* [vagrant-hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater)
+* [vagrant-cachier](https://github.com/fgrehm/vagrant-cachier)
+
+
+Once the plugins have been installed you will need to run `vagrant up` again and then go and make a cup of tea whilst a base box is installed and configured.  You'll be asked for your root password (Linux / OSX) as part of the set up process as your `/etc/hosts` files is updated with the machine IP and hostname.
+
+Once the build has finished you can access OpenEyes using the link:
+
+[http://openeyes.vm](http://openeyes.vm)
+
+**Note:** [Google Chrome](https://www.google.com/chrome/) is the supported browser for OpenEyes.
+
+### Useful Vagrant Commands
+
+* `vagrant up` - Will build the environment if it hasn't already been built
+* `vagrant provision` - Will update the machine with any Ansible configuration changes
+* `vagrant status` - Will tell you the status of the box
+* `vagrant halt` - Halt's the machine (going home for the night)
+* `vagrant suspend` - Will suspend the machine
+* `vagrant destroy` - Will remove the machine build
+
+And if that's not enough there is the Vagrant [documentation](https://www.vagrantup.com/docs/) and also `vagrant help`
 
 Printing
 --------
