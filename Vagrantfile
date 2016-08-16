@@ -47,7 +47,7 @@ Vagrant.configure("2") do |config|
   config.vm.provider "vmware_fusion"
   config.vm.provider "virtualbox"
 
-	config.vm.provider "virtualbox" do |v, override|
+	config.vm.provider(:virtualbox) do |v|
 		v.customize [
       "modifyvm", :id,
       "--name", "OpenEyes Server",
@@ -59,17 +59,12 @@ Vagrant.configure("2") do |config|
 	end
 
   # VMWare Fusion
-  config.vm.provider "vmware_fusion" do |v, override|
+  config.vm.provider(:vmware_fusion) do |v, override|
     override.vm.box = "puppetlabs/ubuntu-14.04-64-nocm"
     v.vmx["displayname"] = "OpenEyes Server"
     v.vmx["memsize"] = "2048"
     v.vmx["numvcpus"] = "2"
     # v.gui = true
-  end
-
-  # AWS
-  config.vm.provider "AWS" do |v, override|
-    override.vm.box = "dummy"
   end
 
   if OS.windows?
