@@ -118,7 +118,6 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 	public function search()
 	{
 		$criteria = new CDbCriteria;
-
 		$criteria->compare('id', $this->id, true);
 		$criteria->compare('event_id', $this->event_id, true);
 		$criteria->compare('employment_status_id', $this->employment_status_id);
@@ -127,7 +126,6 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 		$criteria->compare('contact_urgency_id', $this->contact_urgency_id);
 		$criteria->compare('preferred_language_id', $this->preferred_language_id);
 		$criteria->compare('social_service_comments', $this->social_service_comments);
-
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria' => $criteria,
 		));
@@ -137,9 +135,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 	protected function afterSave()
 	{
 		if (!empty($_POST['ophcocvi_clinicinfo_patient_factor_id'])) {
-
 			$existing_ids = array();
-
 			foreach (OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->findAll('element_id = :elementId', array(':elementId' => $this->id)) as $item) {
 				$existing_ids[] = $item->ophcocvi_clinicinfo_patient_factor_id;
 			}
@@ -158,7 +154,6 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 					}
 				}
 			}
-
 			foreach ($existing_ids as $id) {
 				if (!in_array($id,$_POST['ophcocvi_clinicinfo_patient_factor_id'])) {
 					$item = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->find('element_id = :elementId and ophcocvi_clinicinfo_patient_factor_id = :lookupfieldId',array(':elementId' => $this->id, ':lookupfieldId' => $id));
@@ -168,7 +163,6 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 				}
 			}
 		}
-
 		return parent::afterSave();
 	}
 
@@ -180,10 +174,16 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 	 */
 	public function generateEmployementStatus() {
 		$data = array();
-		$employement_status = (OphCoCvi_ClericalInfo_EmploymentStatus::model()->findAll(array('order' => 'display_order asc')));
-		foreach($employement_status as $employement) {
-			$key = $employement->name;
-			$data[][$key] = ($this->employment_status_id === $employement->id) ? 'X' : '';
+		$employement_status = (OphCoCvi_ClericalInfo_EmploymentStatus::model()->findAll('`active` = ?',array(1),array('order' => 'display_order asc')));
+		if( sizeof($employement_status ) > 1 ){
+			$data[] = "Is the patient:";
+			foreach($employement_status  as $employement){
+
+				for($i=0; $i<sizeof($employement)/2; $i++)
+					$data[] =  $employement->name;
+				$data[] = ($this->employment_status_id === $employement->id) ? 'X' : '';
+
+			}
 		}
 		return $data;
 	}
@@ -195,12 +195,25 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 	 */
 	public function generatePreferredInfoFormat() {
 		$data = array();
-		$preferredInfoFormats = (OphCoCvi_ClericalInfo_PreferredInfoFmt::model()->findAll(array('order' => 'display_order asc')));
-		foreach($preferredInfoFormats as $preferredInfoFormat) {
-			$key = $preferredInfoFormat->name;
-			$data[][$key] = ($this->preferred_info_fmt_id === $preferredInfoFormat->id) ? 'X' : '';
+		$preferredInfoFormats = (OphCoCvi_ClericalInfo_PreferredInfoFmt::model()->findAll('`require_email` = ?',array(0),array('order' => 'display_order asc')));
+		foreach($preferredInfoFormats as $key => $preferredInfoFormat) {
+			if ($key != 4) {
+				for ($i = 0; $i < sizeof($preferredInfoFormat) / 2; $i++) {
+					$data[] = ($this->preferred_info_fmt_id === $preferredInfoFormat->id) ? 'X' : '';
+					$data[] = $preferredInfoFormat->name;
+				}
+			}
 		}
-		return $data;
+		$preferredInfoFormatEmail= (OphCoCvi_ClericalInfo_PreferredInfoFmt::model()->findAll('`require_email` = ?',array(1),array('order' => 'display_order asc')));
+		$emailData = array();
+		foreach($preferredInfoFormatEmail as $key => $infoEmail) {
+			for ($j = 0; $j < sizeof($infoEmail) / 2; $j++) {
+				$emailData[] = ($this->info_email === "") ? '' : 'X';
+				$emailData[] = $infoEmail->name;
+				$emailData[] = $this->info_email ;
+			}
+		}
+		return [$data,$emailData];
 	}
 
 	/**
@@ -228,7 +241,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 		$contactUrgencies = (OphCoCvi_ClericalInfo_ContactUrgency::model()->findAll(array('order' => 'display_order asc')));
 		foreach($contactUrgencies as $contactUrgency) {
 			$key = $contactUrgency->name;
-			$data[][$key] = ($this->contact_urgency_id === $contactUrgency->id) ? 'X' : '';
+			$data[]= array(($this->contact_urgency_id === $contactUrgency->id) ? 'X' : '',$key);
 		}
 		return $data;
 	}
@@ -240,25 +253,18 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 	public function getStructuredDataForPrint()
 	{
 		$result = array();
-
-		$result['employmentStatus'] = $this->generateEmployementStatus();
-		$result['preferredInfoFormat'] = $this->generatePreferredInfoFormat();
-		$result['infoEmail'] = $this->info_email;
-		$result['contactUrgency'] = $this->generateContactUrgency();
-		$result['preferredLanguage'] = $this->generatePreferredLanguage();
-		$result['socialServiceComments'] = $this->social_service_comments;
-		$result['employmentStatus'] = $this->generateEmployementStatus();
 		foreach (OphCoCvi_ClinicalInfo_PatientFactor::model()->findAll('`active` = ?',array(1)) as $factor) {
 			$is_factor = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->getFactorAnswer($factor->id,$this->id);
 			if($is_factor == 1){$isFactor = "Y";}
 			if($is_factor == 0){$isFactor = "N";}
 			if($is_factor == 2){$isFactor = "";}
-
 			$result['patientFactor'][] = array($factor->name, $isFactor);
-
-
 		}
-		//print_r($result['patientFactor']);die;
+		$result['employmentStatus'][] = $this->generateEmployementStatus();
+		$result['contactUrgency'] = $this->generateContactUrgency();
+		$result['preferredInfoFormat'] = $this->generatePreferredInfoFormat();
+		//$result['preferredLanguage'] = $this->generatePreferredLanguage();
+		$result['socialServiceComments'] = $this->social_service_comments;
 		return $result;
 	}
 

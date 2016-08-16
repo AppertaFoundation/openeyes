@@ -23,7 +23,7 @@ class m160728_111722_add_columns_ophcocvi_clericinfo_preferred_info_fmt extends 
     {
         $this->addColumn('ophcocvi_clericinfo_preferred_info_fmt', 'require_email', 'tinyint(1) unsigned NOT NULL DEFAULT 1 AFTER `name` ');
         $this->addColumn('ophcocvi_clericinfo_preferred_info_fmt', 'active', 'tinyint(1) unsigned not null default 1 AFTER `require_email` ');
-        $this->addColumn('ophcocvi_clericinfo_preferred_info_fmt_version', 'require_email', 'tinyint(1) unsigned NOT NULL DEFAULT 1 AFTER `name` ');
+        $this->addColumn('ophcocvi_clericinfo_preferred_info_fmt_version', 'require_email', 'tinyint(1) unsigned NOT NULL DEFAULT 0 AFTER `name` ');
         $this->addColumn('ophcocvi_clericinfo_preferred_info_fmt_version', 'active', 'tinyint(1) unsigned not null default 1 AFTER `require_email` ');
     }
 
