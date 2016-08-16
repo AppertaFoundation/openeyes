@@ -3,6 +3,25 @@
 
 Vagrant.require_version ">= 1.5"
 
+require 'getoptlong'
+
+opts = GetoptLong.new(
+  [ '--hostname', GetoptLong::OPTIONAL_ARGUMENT ],
+  [ '--servername', GetoptLong::OPTIONAL_ARGUMENT ]
+)
+
+hostname = 'openeyes.vm'
+servername = 'OpenEyes Dev Server'
+
+opts.each do |opt, arg|
+  case opt
+    when '--hostname'
+      hostname = arg
+    when '--servername'
+      servername = arg
+  end
+end
+
 PLUGINS = %w(vagrant-auto_network vagrant-hostsupdater vagrant-cachier)
 
 PLUGINS.reject! { |plugin| Vagrant.has_plugin? plugin }
@@ -40,7 +59,7 @@ Vagrant.configure("2") do |config|
     group: "www-data",
     mount_options: ["dmode=775,fmode=664"]
 
-  config.vm.hostname = "openeyes.vm"
+  config.vm.hostname = hostname
   config.hostsupdater.remove_on_suspend = true
 
   # Prefer VMware Fusion before VirtualBox
@@ -50,7 +69,7 @@ Vagrant.configure("2") do |config|
 	config.vm.provider(:virtualbox) do |v|
 		v.customize [
       "modifyvm", :id,
-      "--name", "OpenEyes Server",
+      "--name", servername,
       "--memory", 2048,
       "--natdnshostresolver1", "on",
       "--cpus", 2,
@@ -61,7 +80,7 @@ Vagrant.configure("2") do |config|
   # VMWare Fusion
   config.vm.provider(:vmware_fusion) do |v, override|
     override.vm.box = "puppetlabs/ubuntu-14.04-64-nocm"
-    v.vmx["displayname"] = "OpenEyes Server"
+    v.vmx["displayname"] = servername
     v.vmx["memsize"] = "2048"
     v.vmx["numvcpus"] = "2"
     # v.gui = true

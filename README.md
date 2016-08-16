@@ -62,6 +62,21 @@ Once the build has finished you can access OpenEyes using the link:
 
 **Note:** [Google Chrome](https://www.google.com/chrome/) is the supported browser for OpenEyes.
 
+## Command Line Options
+
+To allow for multiple environments to be built at the same time the hostname and the servername (used in the VM GUI to identify machines) can be changed via the command line as below when building the VM:
+
+	--hostname="openeyes.dev.local"
+	--servername="My Open Eyes Dev Server"
+
+Full usage:
+
+	$ vagrant --hostname="openeyes.dev.local" --servername="My Open Eyes Dev Server" up
+	
+If either are omitted the default vales of "openeyes.vm"" and "OpenEyes Dev Server" are used for the hostname and servername respectively.
+
+**Note:** if the options are omitted the default values are used, the command line options have to be before the vagrant command for them to work.
+
 #### Windows 10
 
 You will need to have downloaded VC++ for Vagrant to be able to download base boxes for the build see this issue for more information [https://github.com/mitchellh/vagrant/issues/6754](https://github.com/mitchellh/vagrant/issues/6754)
