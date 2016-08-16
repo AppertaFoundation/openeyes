@@ -19,6 +19,9 @@
 <?php
 if ($this->checkClinicalEditAccess()) { ?>
     <div class="element-fields row">
+        <?php $consultant_names = User::model()->getAllConsultants(); echo $form->dropDownList($element, 'consultant_id',
+            CHtml::listData($consultant_names,'id','name'),
+            array('empty' => '- Please select -')); ?>
         <?php echo $form->datePicker($element, 'examination_date', array('maxDate' => 'today'),
             array('style' => 'width: 110px;')) ?>
         <div class="indent-correct row">
@@ -130,10 +133,9 @@ if ($this->checkClinicalEditAccess()) { ?>
 
         ))?>
 
-        <?php echo $form->textArea($element, 'diagnoses_not_covered', array('rows' => 3, 'cols' => 80)) ?>
-        <hr />
-        <?php $consultant_names = User::model()->getAllConsultants(); echo $form->dropDownList($element, 'consultant_id',
-            CHtml::listData($consultant_names,'id','name'), array('empty' => '- Please select -')); ?>
+
+        <?php echo $form->textArea($element, 'diagnoses_not_covered', array('rows' => 6, 'cols' => 80)) ?>
+
     </div>
 <?php } else {
     $this->renderPartial('view_Element_OphCoCvi_ClinicalInfo', array('element' => $element));
