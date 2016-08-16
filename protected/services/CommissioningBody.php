@@ -6,8 +6,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
@@ -17,20 +17,20 @@ namespace services;
 
 class CommissioningBody extends Resource
 {
-	static protected $fhir_type = 'Organization';
-	static protected $fhir_prefix = 'cb';
+    protected static $fhir_type = 'Organization';
+    protected static $fhir_prefix = 'cb';
 
-	public $code;
-	public $name;
-	public $address = null;
+    public $code;
+    public $name;
+    public $address = null;
 
-	static protected function getFhirTemplate()
-	{
-		return \DataTemplate::fromJsonFile(
-			__DIR__ . '/fhir_templates/CommissioningBody.json',
-			array(
-				'system_uri_cb_code' => \Yii::app()->params['fhir_system_uris']['cb_code'],
-			)
-		);
-	}
+    protected static function getFhirTemplate()
+    {
+        return \DataTemplate::fromJsonFile(
+            __DIR__.'/fhir_templates/CommissioningBody.json',
+            array(
+                'system_uri_cb_code' => \Yii::app()->params['fhir_system_uris']['cb_code'],
+            )
+        );
+    }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,20 +9,19 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class DicomLogViewerController extends BaseController
 {
     /**
      * @var string the default layout for the views
      */
-    public $layout='//layouts/main';
+    public $layout = '//layouts/main';
 
     public $items_per_page = 200;
 
@@ -45,20 +44,22 @@ class DicomLogViewerController extends BaseController
     /**
      *
      */
-    public function actionLog(){
-        $data  = DicomFileLog::model()->with('dicom_file_id')->findAll();
-        $this->render('//dicomlogviewer/index', array( 'data' => $data));
+    public function actionLog()
+    {
+        $data = DicomFileLog::model()->with('dicom_file_id')->findAll();
+        $this->render('//dicomlogviewer/index', array('data' => $data));
     }
 
     /**
      *
      */
-    public function actionIndex(){
-        $data  = DicomFileLog::model()->findAll((array('order'=>'id desc')));
-        $this->render('//dicomlogviewer/dicom_file_log_viewer', array( 'data' => $data));
+    public function actionIndex()
+    {
+        $data = DicomFileLog::model()->findAll((array('order' => 'id desc')));
+        $this->render('//dicomlogviewer/dicom_file_log_viewer', array('data' => $data));
     }
 
-    public  function actionList()
+    public function actionList()
     {
         $this->render('//dicomlogviewer/index');
     }
@@ -74,13 +75,13 @@ class DicomLogViewerController extends BaseController
 
         Yii::app()->assetManager->registerScriptFile('js/audit.js');
         $this->renderPartial('//dicomlogviewer/_list', array('data' => $data), false, true);
-        echo "<!-------------------------->";
+        echo '<!-------------------------->';
         $this->renderPartial('//dicomlogviewer/_pagination', array('data' => $data), false, true);
     }
 
-    public function criteria($count=false)
+    public function criteria($count = false)
     {
-        $criteria = new CDbCriteria;
+        $criteria = new CDbCriteria();
 
         if (@$_REQUEST['hos_num']) {
             $criteria->addCondition('`dil`.`patient_number` = :hos_num');
@@ -95,21 +96,21 @@ class DicomLogViewerController extends BaseController
         if (@$_REQUEST['firm_id']) {
             $firm = Firm::model()->findByPk($_REQUEST['firm_id']);
             $firm_ids = array();
-            foreach (Firm::model()->findAll('name=?',array($firm->name)) as $firm) {
+            foreach (Firm::model()->findAll('name=?', array($firm->name)) as $firm) {
                 $firm_ids[] = $firm->id;
             }
             if (!empty($firm_ids)) {
-                $criteria->addInCondition('firm_id',$firm_ids);
+                $criteria->addInCondition('firm_id', $firm_ids);
             }
         }
 
         if (@$_REQUEST['action']) {
-            $criteria->addCondition("action_id=:action_id");
+            $criteria->addCondition('action_id=:action_id');
             $criteria->params[':action_id'] = $_REQUEST['action'];
         }
 
         if (@$_REQUEST['target_type']) {
-            $criteria->addCondition("type_id=:type_id");
+            $criteria->addCondition('type_id=:type_id');
             $criteria->params[':type_id'] = $_REQUEST['target_type'];
         }
 
@@ -120,24 +121,22 @@ class DicomLogViewerController extends BaseController
 
         if (@$_REQUEST['date_from']) {
             $date_from = Helper::convertNHS2MySQL($_REQUEST['date_from']).' 00:00:00';
-            $criteria->addCondition("`t`.created_date >= :date_from");
+            $criteria->addCondition('`t`.created_date >= :date_from');
             $criteria->params[':date_from'] = $date_from;
         }
 
         if (@$_REQUEST['date_to']) {
             $date_to = Helper::convertNHS2MySQL($_REQUEST['date_to']).' 23:59:59';
-            $criteria->addCondition("`t`.created_date <= :date_to");
+            $criteria->addCondition('`t`.created_date <= :date_to');
             $criteria->params[':date_to'] = $date_to;
         }
 
-
      //  !($count) && $criteria->join = 'left join event on t.event_id = event.id left join event_type on event.event_type_id = event_type.id';
-
 
         return $criteria;
     }
 
-    public function getData($page=1, $id=false)
+    public function getData($page = 1, $id = false)
     {
         $data = array();
 
@@ -148,8 +147,8 @@ class DicomLogViewerController extends BaseController
         }*/
 
         $data['total_items'] = count($this->getDicomFiles($page));
-        $data['pages'] =1;
-        $data['page'] =1;
+        $data['pages'] = 1;
+        $data['page'] = 1;
 
         $criteria = $this->criteria();
 
@@ -158,11 +157,11 @@ class DicomLogViewerController extends BaseController
         if ($id) {
             $criteria->addCondition('t.id > '.(integer) $id);
         } else {
-            $criteria->offset = (($page-1) * $this->items_per_page);
+            $criteria->offset = (($page - 1) * $this->items_per_page);
         }
        // $data['items'] = Audit::model()->findAll($criteria);
         $data['pages'] = ceil($data['total_items'] / $this->items_per_page);
-        if ($data['pages'] <1) {
+        if ($data['pages'] < 1) {
             $data['pages'] = 1;
         }
         if ($page > $data['pages']) {
@@ -175,6 +174,7 @@ class DicomLogViewerController extends BaseController
        // print_r($criteria);
 
         $data['items'] = $data['files_data'] = $this->getDicomFiles($page);
+
         return $data;
     }
 
@@ -184,11 +184,10 @@ class DicomLogViewerController extends BaseController
             throw new Exception('Log entry not found: '.@$_GET['last_id']);
         }
 
-        $this->renderPartial('_list_update', array('data' => $this->getData(null,$audit->id)), false, true);
+        $this->renderPartial('_list_update', array('data' => $this->getData(null, $audit->id)), false, true);
     }
 
     ///////////////
-
 
     protected function getDicomFiles($page, $sc = 'entry_date_time', $so = 'desc')
     {
@@ -199,7 +198,7 @@ class DicomLogViewerController extends BaseController
             ->from('dicom_files as df')
             ->leftJoin('dicom_import_log as dil', 'df.id = dil.dicom_file_id')
             ->leftJoin('patient as p', 'dil.patient_number = p.hos_num')
-            ->order($sc . ' ' . $so)
+            ->order($sc.' '.$so)
             ->limit($this->items_per_page)
             ->offset(($page - 1) * $this->items_per_page);
 
@@ -208,13 +207,13 @@ class DicomLogViewerController extends BaseController
         }
 
         if (@$_REQUEST['file_name']) {
-            $command->andWhere(['like', 'df.filename', '%' . $_REQUEST['file_name'] . '%']);
+            $command->andWhere(['like', 'df.filename', '%'.$_REQUEST['file_name'].'%']);
         }
         if (@$_REQUEST['study_id']) {
-            $command->andWhere(['like', 'dil.study_instance_id', '%' . $_REQUEST['study_id'] . '%']);
+            $command->andWhere(['like', 'dil.study_instance_id', '%'.$_REQUEST['study_id'].'%']);
         }
         if (@$_REQUEST['location']) {
-            $command->andWhere(['like', 'dil.study_location', '%' . $_REQUEST['location'] . '%']);
+            $command->andWhere(['like', 'dil.study_location', '%'.$_REQUEST['location'].'%']);
         }
         if (@$_REQUEST['station_id']) {
             $command->andWhere(['like', 'dil.station_id', $_REQUEST['station_id']]);
@@ -228,32 +227,33 @@ class DicomLogViewerController extends BaseController
             $command->andWhere(['like', 'dil.report_type', $_REQUEST['type']]);
         }
 
-
         if ($_REQUEST['date_type'] == 1) {
-            if(@$_REQUEST['date_from'] && @$_REQUEST['date_to']) {
-                $command->andWhere('dil.import_datetime > \'' . date("Y-m-d H:i:s", strtotime($_REQUEST['date_from'])) . '\' AND dil.import_datetime < \'' . date("Y-m-d H:i:s", strtotime($_REQUEST['date_to']. ' + 24 Hours')) . '\'');
+            if (@$_REQUEST['date_from'] && @$_REQUEST['date_to']) {
+                $command->andWhere('dil.import_datetime > \''.date('Y-m-d H:i:s', strtotime($_REQUEST['date_from'])).'\' AND dil.import_datetime < \''.date('Y-m-d H:i:s', strtotime($_REQUEST['date_to'].' + 24 Hours')).'\'');
             }
-        }else{
-            if(@$_REQUEST['date_from'] && @$_REQUEST['date_to']) {
-                $command->andWhere('dil.study_datetime > \'' . date("Y-m-d H:i:s", strtotime($_REQUEST['date_from'])) . '\' AND dil.import_datetime < \'' . date("Y-m-d H:i:s", strtotime($_REQUEST['date_to']. ' + 24 Hours')) . '\'');
+        } else {
+            if (@$_REQUEST['date_from'] && @$_REQUEST['date_to']) {
+                $command->andWhere('dil.study_datetime > \''.date('Y-m-d H:i:s', strtotime($_REQUEST['date_from'])).'\' AND dil.import_datetime < \''.date('Y-m-d H:i:s', strtotime($_REQUEST['date_to'].' + 24 Hours')).'\'');
             }
-       }
+        }
        // echo $command->getText();die;
         $data = array();
-       if ((!empty($_REQUEST['hos_num']) || !empty($_REQUEST['file_name']) || !empty($_REQUEST['study_id']) || !empty($_REQUEST['location']) || !empty($_REQUEST['station_id']) || !empty($_REQUEST['status']) || !empty($_REQUEST['type'] || !empty($_REQUEST['date_from']) || !empty($_REQUEST['date_to'])))) {
-           $data = $command->queryAll();
-       }
+        if ((!empty($_REQUEST['hos_num']) || !empty($_REQUEST['file_name']) || !empty($_REQUEST['study_id']) || !empty($_REQUEST['location']) || !empty($_REQUEST['station_id']) || !empty($_REQUEST['status']) || !empty($_REQUEST['type'] || !empty($_REQUEST['date_from']) || !empty($_REQUEST['date_to'])))) {
+            $data = $command->queryAll();
+        }
 
         foreach ($data as $k => $y) {
             $data[$k] = $y;
             $data[$k]['watcher_log'] = $this->getFileWatcherLog($y['id']);
           //  $patientInfo = Patient::model()->findByAttributes(array('hos_num'=> $y['patient_number']),'id');
            // $data[$k]['patient_id'] =  $patientInfo['id'];
-            $data[$k]['patient_id'] =  $y['pid'];
+            $data[$k]['patient_id'] = $y['pid'];
         }
-        return ($data);
+
+        return $data;
     }
-    protected function getFileWatcherLog($file_id){
+    protected function getFileWatcherLog($file_id)
+    {
         //select * from dicom_file_log where dicom_file_id=1;
 
         return Yii::app()->db->createCommand()
@@ -266,16 +266,16 @@ class DicomLogViewerController extends BaseController
             //->offset(($page-1)*$this->items_per_page)
             ->queryAll();
         //->getText();
-
     }
 
-    public function actionReprocess(){
+    public function actionReprocess()
+    {
         // check if it's an ajax call
 
-        if(Yii::app()->request->isAjaxRequest){
+        if (Yii::app()->request->isAjaxRequest) {
             $request = Yii::app()->getRequest();
-            $filename = $request->getQuery( 'filename');
-            if($filename != ""){
+            $filename = $request->getQuery('filename');
+            if ($filename != '') {
                 Yii::app()->db->createCommand("update dicom_file_queue set status_id=1 where filename = '".$filename."'")->execute();
             }
         }

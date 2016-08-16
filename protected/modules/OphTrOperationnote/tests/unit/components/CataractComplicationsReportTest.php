@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -10,8 +10,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -20,7 +20,7 @@
 class CataractComplicationsReportTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * Test the data set
+     * Test the data set.
      */
     public function testDataSet()
     {
@@ -40,7 +40,6 @@ class CataractComplicationsReportTest extends PHPUnit_Framework_TestCase
                 array('name' => 'Hyphaema', 'complication_count' => '3'),
                 array('name' => 'Zonular dialysis', 'complication_count' => '1'),
             )));
-
 
         $report->expects($this->any())
             ->method('allComplications')
@@ -82,7 +81,6 @@ class CataractComplicationsReportTest extends PHPUnit_Framework_TestCase
             ->method('queryData')
             ->will($this->returnValue(array()));
 
-
         $report->expects($this->any())
             ->method('allComplications')
             ->will($this->returnValue(array(
@@ -105,7 +103,7 @@ class CataractComplicationsReportTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test the series generation for the graph
+     * Test the series generation for the graph.
      */
     public function testSeries()
     {
@@ -127,11 +125,10 @@ class CataractComplicationsReportTest extends PHPUnit_Framework_TestCase
         $this->assertCount(1, $seriesDecoded); //Has 1 series when decoded
         $this->assertEquals('Complications', $seriesDecoded[0]['name']);
         $this->assertEquals($dataSet, $seriesDecoded[0]['data'][0]); //First series is the PCR data
-
     }
 
     /**
-     * Test the configuration for the graph
+     * Test the configuration for the graph.
      */
     public function testConfig()
     {
@@ -144,5 +141,4 @@ class CataractComplicationsReportTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(false, $configDecoded['credits']['enabled']); //check globabl config merge
         $this->assertEquals('CataractComplicationsReport', $configDecoded['chart']['renderTo']);
     }
-
 }

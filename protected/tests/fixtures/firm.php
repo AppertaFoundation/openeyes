@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,49 +9,48 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-
 return array(
-	'firm1' => array(
-		'id' => 1,
-		'service_subspecialty_assignment_id' => '1',
-		'pas_code' => 'AEAB',
-		'name' => 'Aylward Firm',
-		'consultant_id' => 1,
-	),
-	'firm2' => array(
-		'id' => 2,
-		'service_subspecialty_assignment_id' => '2',
-		'pas_code' => 'ADCR',
-		'name' => 'Collin Firm'
-	),
-	'firm3' => array(
-		'3' => 3,
-		'service_subspecialty_assignment_id' => '2',
-		'pas_code' => 'CAAB',
-		'name' => 'Allan Firm'
-	),
-	'firm4' => array(
-		'id' => 4,
-		'service_subspecialty_assignment_id' => null,
-		'name' => 'Support Services Firm'
-	),
-	'firm5' => array(
-		'id' => 5,
-		'service_subspecialty_assignment_id' => 3,
-		'name' => 'Blah'
-	),
-	'firm6' => array(
-		'id' => 6,
-		'service_subspecialty_assignment_id' => 4,
-		'name' => 'Blah'
-	),
-        
+    'firm1' => array(
+        'id' => 1,
+        'service_subspecialty_assignment_id' => '1',
+        'pas_code' => 'AEAB',
+        'name' => 'Aylward Firm',
+        'consultant_id' => 1,
+    ),
+    'firm2' => array(
+        'id' => 2,
+        'service_subspecialty_assignment_id' => '2',
+        'pas_code' => 'ADCR',
+        'name' => 'Collin Firm',
+    ),
+    'firm3' => array(
+        '3' => 3,
+        'service_subspecialty_assignment_id' => '2',
+        'pas_code' => 'CAAB',
+        'name' => 'Allan Firm',
+    ),
+    'firm4' => array(
+        'id' => 4,
+        'service_subspecialty_assignment_id' => null,
+        'name' => 'Support Services Firm',
+    ),
+    'firm5' => array(
+        'id' => 5,
+        'service_subspecialty_assignment_id' => 3,
+        'name' => 'Blah',
+    ),
+    'firm6' => array(
+        'id' => 6,
+        'service_subspecialty_assignment_id' => 4,
+        'name' => 'Blah',
+    ),
+
 );

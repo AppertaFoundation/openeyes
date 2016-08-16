@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -22,14 +22,14 @@
 	<div class="details">
 		<div class="element-data">
 			<?php
-				$columns = 6;
-				if ($element->anaesthetic_type->name == 'GA') {
-					$columns -= 2;
-				}
-				if (!$element->getSetting('fife')) {
-					$columns -= 1;
-				}
-			?>
+                $columns = 6;
+                if ($element->anaesthetic_type->name == 'GA') {
+                    $columns -= 2;
+                }
+                if (!$element->getSetting('fife')) {
+                    $columns -= 1;
+                }
+            ?>
 			<div class="row data-row columns-<?php echo $columns;?>">
 				<div class="column">
 					<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_type_id'))?></h4>
@@ -74,7 +74,7 @@
 						<div class="column">
 							<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_witness_id'))?></h4>
 							<div class="data-value<?php if (!$element->witness) {?> none<?php }?>">
-								<?php echo ($element->witness ? $element->witness->fullName : 'None')?>
+								<?php echo $element->witness ? $element->witness->fullName : 'None'?>
 							</div>
 						</div>
 					<?php }?>

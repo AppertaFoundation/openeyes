@@ -6,8 +6,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
@@ -17,151 +17,160 @@ namespace services;
 
 abstract class DataObject implements FhirCompatible
 {
-	/**
-	 * The FHIR type that this class corresponds to, if left unset the unqualified name of the class is assumed
-	 */
-	static protected $fhir_type;
+    /**
+     * The FHIR type that this class corresponds to, if left unset the unqualified name of the class is assumed.
+     */
+    protected static $fhir_type;
 
-	/**
-	 * Get the FHIR type that this class corresponds to
-	 *
-	 * @return string
-	 */
-	static public function getFhirType()
-	{
-		if (isset(static::$fhir_type)) {
-			return static::$fhir_type;
-		} else {
-			$class = new \ReflectionClass(get_called_class());
-			return $class->getShortName();
-		}
-	}
+    /**
+     * Get the FHIR type that this class corresponds to.
+     *
+     * @return string
+     */
+    public static function getFhirType()
+    {
+        if (isset(static::$fhir_type)) {
+            return static::$fhir_type;
+        } else {
+            $class = new \ReflectionClass(get_called_class());
 
-	/**
-	 * @param array $values
-	 * @return DataObject
-	 */
-	static public function fromFhirValues(array $values)
-	{
-		return new static($values);
-	}
+            return $class->getShortName();
+        }
+    }
 
-	/**
-	 * Convert a FHIR object into a service layer object
-	 *
-	 * @param StdClass $fhirObject
-	 * @return DataObject
-	 */
-	static public function fromFhir($fhir_object)
-	{
-		$fhir_object = clone($fhir_object);
+    /**
+     * @param array $values
+     *
+     * @return DataObject
+     */
+    public static function fromFhirValues(array $values)
+    {
+        return new static($values);
+    }
 
-		$fhir_type = static::getFhirType();
-		$schema = \Yii::app()->fhirMarshal->getSchema($fhir_type);
+    /**
+     * Convert a FHIR object into a service layer object.
+     *
+     * @param StdClass $fhirObject
+     *
+     * @return DataObject
+     */
+    public static function fromFhir($fhir_object)
+    {
+        $fhir_object = clone $fhir_object;
 
-		foreach ($fhir_object as $name => &$value) {
-			if ($name == 'resourceType' || $name[0] == '_') continue;
+        $fhir_type = static::getFhirType();
+        $schema = \Yii::app()->fhirMarshal->getSchema($fhir_type);
 
-			$valueType = $schema[$name]['type'];
-			$class = static::getServiceClass($valueType);
-			if (!$class) continue;
+        foreach ($fhir_object as $name => &$value) {
+            if ($name == 'resourceType' || $name[0] == '_') {
+                continue;
+            }
 
-			switch (gettype($value)) {
-				case "object":
-					$value = $class::fromFhir($value);
-					break;
-				case "array":
-					foreach ($value as &$v) {
-						$v = $class::fromFhir($v);
-					}
-			}
-		}
+            $valueType = $schema[$name]['type'];
+            $class = static::getServiceClass($valueType);
+            if (!$class) {
+                continue;
+            }
 
-		$values = static::getFhirTemplate()->match($fhir_object, $warnings);
-		if (is_null($values)) {
-			throw new InvalidStructure("Failed to match object of type '{$fhir_type}': " . implode("; ", $warnings));
-		}
+            switch (gettype($value)) {
+                case 'object':
+                    $value = $class::fromFhir($value);
+                    break;
+                case 'array':
+                    foreach ($value as &$v) {
+                        $v = $class::fromFhir($v);
+                    }
+            }
+        }
 
-		return static::fromFhirValues($values);
-	}
+        $values = static::getFhirTemplate()->match($fhir_object, $warnings);
+        if (is_null($values)) {
+            throw new InvalidStructure("Failed to match object of type '{$fhir_type}': ".implode('; ', $warnings));
+        }
 
-	static protected function getServiceClass($fhir_type)
-	{
-		$class = "services\\{$fhir_type}";
-		return @class_exists($class) ? $class : null;
-	}
+        return static::fromFhirValues($values);
+    }
 
-	static protected function getFhirTemplate()
-	{
-		$class = new \ReflectionClass(get_called_class());
-		$path = dirname($class->getFileName()) . '/fhir_templates/' . $class->getShortName() . '.json';
+    protected static function getServiceClass($fhir_type)
+    {
+        $class = "services\\{$fhir_type}";
 
-		return \DataTemplate::fromJsonFile($path);
-	}
+        return @class_exists($class) ? $class : null;
+    }
 
-	/**
-	 * @param array $values
-	 */
-	public function __construct(array $values)
-	{
-		foreach ($values as $name => $value) {
-			$this->$name = $value;
-		}
-	}
+    protected static function getFhirTemplate()
+    {
+        $class = new \ReflectionClass(get_called_class());
+        $path = dirname($class->getFileName()).'/fhir_templates/'.$class->getShortName().'.json';
 
-	/**
-	 * Compare two DataObjects in terms of their public properties
-	 *
-	 * @param DataObject $object
-	 * @return boolean
-	 */
-	public function isEqual(DataObject $object)
-	{
-		if (get_class($this) != get_class($object)) {
-			return false;
-		}
+        return \DataTemplate::fromJsonFile($path);
+    }
 
-		$rf_obj = new \ReflectionObject($this);
-		$rf_props = $rf_obj->getProperties(\ReflectionProperty::IS_PUBLIC);
+    /**
+     * @param array $values
+     */
+    public function __construct(array $values)
+    {
+        foreach ($values as $name => $value) {
+            $this->$name = $value;
+        }
+    }
 
-		foreach ($rf_props as $rf_prop) {
-			if ($rf_prop->getValue($this) != $rf_prop->getValue($object)) {
-				return false;
-			}
-		}
+    /**
+     * Compare two DataObjects in terms of their public properties.
+     *
+     * @param DataObject $object
+     *
+     * @return bool
+     */
+    public function isEqual(DataObject $object)
+    {
+        if (get_class($this) != get_class($object)) {
+            return false;
+        }
 
-		return true;
-	}
+        $rf_obj = new \ReflectionObject($this);
+        $rf_props = $rf_obj->getProperties(\ReflectionProperty::IS_PUBLIC);
 
-	/**
-	 * @return array
-	 */
-	public function toFhirValues()
-	{
-		return get_object_vars($this);
-	}
+        foreach ($rf_props as $rf_prop) {
+            if ($rf_prop->getValue($this) != $rf_prop->getValue($object)) {
+                return false;
+            }
+        }
 
-	/**
-	 * Convert this object to it's FHIR representation
-	 *
-	 * @return StdClass
-	 */
-	public function toFhir()
-	{
-		$values = $this->toFhirValues();
-		$this->subObjectsToFhir($values);
+        return true;
+    }
 
-		return static::getFhirTemplate()->generate($values);
-	}
+    /**
+     * @return array
+     */
+    public function toFhirValues()
+    {
+        return get_object_vars($this);
+    }
 
-	private function subObjectsToFhir(&$values)
-	{
-		foreach ($values as &$value) {
-			if ($value instanceof FhirCompatible) {
-				$value = $value->toFhir();
-			} elseif (is_array($value)) {
-				$this->subObjectsToFhir($value);
-			}
-		}
-	}
+    /**
+     * Convert this object to it's FHIR representation.
+     *
+     * @return StdClass
+     */
+    public function toFhir()
+    {
+        $values = $this->toFhirValues();
+        $this->subObjectsToFhir($values);
+
+        return static::getFhirTemplate()->generate($values);
+    }
+
+    private function subObjectsToFhir(&$values)
+    {
+        foreach ($values as &$value) {
+            if ($value instanceof FhirCompatible) {
+                $value = $value->toFhir();
+            } elseif (is_array($value)) {
+                $this->subObjectsToFhir($value);
+            }
+        }
+    }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,14 +9,13 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 Yii::app()->assetManager->registerScriptFile('js/allergies.js');
 ?>
 <section class="box patient-info associated-data js-toggle-container">
@@ -63,7 +62,7 @@ Yii::app()->assetManager->registerScriptFile('js/allergies.js');
 		</table>
 		<?php
 
-		if ($this->checkAccess('OprnEditAllergy')) { ?>
+        if ($this->checkAccess('OprnEditAllergy')) { ?>
 			<div class="box-actions">
 				<button id="btn-add_allergy" class="secondary small">
 					Edit
@@ -72,16 +71,16 @@ Yii::app()->assetManager->registerScriptFile('js/allergies.js');
 
 			<div id="add_allergy" style="display: none;">
 				<?php
-				$form = $this->beginWidget('FormLayout', array(
-					'id'=>'add-allergy',
-					'enableAjaxValidation'=>false,
-					'htmlOptions' => array('class'=>'form add-data'),
-					'action'=>array('patient/addAllergy'),
-					'layoutColumns'=>array(
-						'label' => 3,
-						'field' => 9
-					),
-				))?>
+                $form = $this->beginWidget('FormLayout', array(
+                    'id' => 'add-allergy',
+                    'enableAjaxValidation' => false,
+                    'htmlOptions' => array('class' => 'form add-data'),
+                    'action' => array('patient/addAllergy'),
+                    'layoutColumns' => array(
+                        'label' => 3,
+                        'field' => 9,
+                    ),
+                ))?>
 
 				<div class="allergies_confirm_no field-row row" <?php if ($this->patient->hasAllergyStatus() && !$this->patient->no_allergies_date) { echo 'style="display: none;"'; }?>>
 					<div class="allergies">
@@ -110,7 +109,7 @@ Yii::app()->assetManager->registerScriptFile('js/allergies.js');
 						<label for="allergy_id">Other allergy:</label>
 					</div>
 					<div class="<?php echo $form->columns('field');?>">
-						<?= CHtml::textField('other','',array('autocomplete'=>Yii::app()->params['html_autocomplete'])); ?>
+						<?= CHtml::textField('other', '', array('autocomplete' => Yii::app()->params['html_autocomplete'])); ?>
 					</div>
 				</div>
 				<div class="field-row row allergy_field" <?php if ($this->patient->no_allergies_date) { echo 'style="display: none;"'; }?>>
@@ -118,7 +117,7 @@ Yii::app()->assetManager->registerScriptFile('js/allergies.js');
 						<label for="comments">Comments:</label>
 					</div>
 					<div class="<?php echo $form->columns('field');?>">
-						<?php echo CHtml::textField('comments','',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+						<?php echo CHtml::textField('comments', '', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
 					</div>
 				</div>
 

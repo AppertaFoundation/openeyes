@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -19,22 +19,23 @@
 ?>
 
 <?php
-	$this->beginContent('//patient/event_container');
+    $this->beginContent('//patient/event_container');
 ?>
 
 	<?php
-		// Event actions
-		if ($this->checkPrintAccess()) {
-			$this->event_actions[] = EventAction::button('Print', 'print',null,array('class'=>'button small'));}
-	?>
+        // Event actions
+        if ($this->checkPrintAccess()) {
+            $this->event_actions[] = EventAction::button('Print', 'print', null, array('class' => 'button small'));
+        }
+    ?>
 
 	<?php if ($this->event->delete_pending) {?>
 		<div class="alert-box alert with-icon">
 			This event is pending deletion and has been locked.
 		</div>
-	<?php }?>
+	<?php}?>
 
 	<?php $this->renderOpenElements($this->action->id)?>
 	<?php $this->renderOptionalElements($this->action->id)?>
 
-<?php $this->endContent() ;?>
+<?php $this->endContent();?>

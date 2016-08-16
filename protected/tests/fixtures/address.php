@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -24,34 +24,34 @@
 // |  3 | flat 3   | bleakley creek | flitchley | ec1v 0dx | london |          1 | bleakley3@bleakley3.com |
 
 return array(
-	'address1' => array(
-		'address1' => 'flat 1',
-		'address2' => 'bleakley creek',
-		'city' => 'flitchley',
-		'postcode' => 'ec1v 0dx',
-		'county' => 'london',
-		'country_id' => 1,
-		'email' => 'bleakley1@bleakley1.com',
-		'contact_id' => 1,
-	),
-	'address2' => array(
-		'address1' => 'flat 2',
-		'address2' => 'bleakley creek',
-		'city' => 'flitchley',
-		'postcode' => 'ec1v 0dx',
-		'county' => 'london',
-		'country_id' => 1,
-		'email' => 'bleakley2@bleakley2.com',
-		'contact_id' => 2,
-	),
-	'address3' => array(
-		'address1' => 'flat 3',
-		'address2' => 'bleakley creek',
-		'city' => 'flitchley',
-		'postcode' => 'ec1v 0dx',
-		'county' => 'london',
-		'country_id' => 1,
-		'email' => 'bleakley3@bleakley3.com',
-		'contact_id' => 3,
-	),
+    'address1' => array(
+        'address1' => 'flat 1',
+        'address2' => 'bleakley creek',
+        'city' => 'flitchley',
+        'postcode' => 'ec1v 0dx',
+        'county' => 'london',
+        'country_id' => 1,
+        'email' => 'bleakley1@bleakley1.com',
+        'contact_id' => 1,
+    ),
+    'address2' => array(
+        'address1' => 'flat 2',
+        'address2' => 'bleakley creek',
+        'city' => 'flitchley',
+        'postcode' => 'ec1v 0dx',
+        'county' => 'london',
+        'country_id' => 1,
+        'email' => 'bleakley2@bleakley2.com',
+        'contact_id' => 2,
+    ),
+    'address3' => array(
+        'address1' => 'flat 3',
+        'address2' => 'bleakley creek',
+        'city' => 'flitchley',
+        'postcode' => 'ec1v 0dx',
+        'county' => 'london',
+        'country_id' => 1,
+        'email' => 'bleakley3@bleakley3.com',
+        'contact_id' => 3,
+    ),
 );

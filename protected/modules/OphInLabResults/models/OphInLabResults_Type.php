@@ -4,10 +4,10 @@
 class OphInLabResults_Type extends BaseActiveRecordVersioned
 {
     /**
-    * Returns the static model of the specified AR class.
+     * Returns the static model of the specified AR class.
      *
-    * @return OphInLabResults_Type static model class
-    */
+     * @return OphInLabResults_Type static model class
+     */
     public static function model($className = __CLASS__)
     {
         return parent::model($className);

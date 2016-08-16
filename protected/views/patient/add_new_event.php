@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -23,23 +23,22 @@
 </div>
 <ul class="events">
 	<?php foreach ($eventTypes as $eventType) {
-		if ($subspecialty || $eventType->support_services) {
-			if (file_exists(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img'))) {
-				$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img').'/').'/';
-			} else {
-				$assetpath = '/assets/';
-			}
-			// temporary hack to ensure that we are checking the right operation name for the event.
-			$oprn = 'OprnCreate' . ($eventType->class_name == 'OphDrPrescription' ? 'Prescription' : 'Event');
-			if ($this->checkAccess($oprn, $this->firm, Episode::getCurrentEpisodeByFirm($this->patient->id, $this->firm), $eventType)) {
-
-				?>
+    if ($subspecialty || $eventType->support_services) {
+        if (file_exists(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img'))) {
+            $assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img').'/').'/';
+        } else {
+            $assetpath = '/assets/';
+        }
+            // temporary hack to ensure that we are checking the right operation name for the event.
+            $oprn = 'OprnCreate'.($eventType->class_name == 'OphDrPrescription' ? 'Prescription' : 'Event');
+        if ($this->checkAccess($oprn, $this->firm, Episode::getCurrentEpisodeByFirm($this->patient->id, $this->firm), $eventType)) {
+            ?>
 				<li>
-					<?php echo CHtml::link('<img src="'.$assetpath.'small.png" alt="operation" /> - <strong>'.$eventType->name.'</strong>',Yii::app()->createUrl($eventType->class_name.'/Default/create').'?patient_id='.$patient->id)?>
+					<?php echo CHtml::link('<img src="'.$assetpath.'small.png" alt="operation" /> - <strong>'.$eventType->name.'</strong>', Yii::app()->createUrl($eventType->class_name.'/Default/create').'?patient_id='.$patient->id)?>
 				</li>
 			<?php } else { ?>
-				<li id="<?php echo $eventType->class_name?>_disabled" class="add_event_disabled" title="<?php echo $eventType->disabled ? $eventType->disabled_title : 'You do not have permission to add ' . $eventType->name ?>">
-					<?php echo CHtml::link('<img src="'.$assetpath.'small.png" alt="operation" /> - <strong>'.$eventType->name.'</strong>','#')?>
+				<li id="<?php echo $eventType->class_name?>_disabled" class="add_event_disabled" title="<?php echo $eventType->disabled ? $eventType->disabled_title : 'You do not have permission to add '.$eventType->name ?>">
+					<?php echo CHtml::link('<img src="'.$assetpath.'small.png" alt="operation" /> - <strong>'.$eventType->name.'</strong>', '#')?>
 				</li>
 			<?php }?>
 		<?php }?>

@@ -7,11 +7,12 @@ class BaseLabResultElement extends BaseEventTypeElement
 
     /**
      * @param $input
+     *
      * @return array|mixed
      */
     public function getHtmlOptionsForInput($input)
     {
-        if(array_key_exists($input, $this->htmlOptions)){
+        if (array_key_exists($input, $this->htmlOptions)) {
             return $this->htmlOptions[$input];
         }
 
@@ -19,7 +20,7 @@ class BaseLabResultElement extends BaseEventTypeElement
     }
 
     /**
-     * Overrides a set of rules with those of a child class
+     * Overrides a set of rules with those of a child class.
      *
      * When we override a model we should be able to override it's rules without redefining the entire rule array.
      * Because of the terrible format in which Yii declares it's rules this requires looping both sets of rules to look
@@ -27,6 +28,7 @@ class BaseLabResultElement extends BaseEventTypeElement
      *
      * @param $parentRules
      * @param $rules
+     *
      * @return array
      */
     protected function overrideRules($parentRules, $rules)
@@ -59,7 +61,7 @@ class BaseLabResultElement extends BaseEventTypeElement
         $criteria->limit = 1;
         $criteria->params = array(
             'type' => $type,
-            'patientId' => $patientId
+            'patientId' => $patientId,
         );
 
         return $this->find($criteria);

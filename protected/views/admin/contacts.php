@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2012
@@ -9,14 +9,13 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 ?>
 <div class="box admin">
 	<h2>Search contacts</h2>
@@ -26,7 +25,7 @@
 				<label for="q">Search:</label>
 			</div>
 			<div class="large-4 column end">
-				<?php echo CHtml::textField('q',@$_GET['q'],array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+				<?php echo CHtml::textField('q', @$_GET['q'], array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
 			</div>
 		</div>
 		<div class="row field-row">
@@ -34,7 +33,7 @@
 				<label for="label">Label:</label>
 			</div>
 			<div class="large-4 column end">
-				<?php echo CHtml::dropDownList('label',@$_GET['label'],CHtml::listData(ContactLabel::model()->active()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Any label -'))?>
+				<?php echo CHtml::dropDownList('label', @$_GET['label'], CHtml::listData(ContactLabel::model()->active()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => '- Any label -'))?>
 			</div>
 		</div>
 		<div class="row field-row">
@@ -46,7 +45,7 @@
 	</form>
 </div>
 <?php if (@$contacts) {?>
-		<?php echo $this->renderPartial('/admin/_contacts_list',array('contacts'=>$contacts))?>
+		<?php echo $this->renderPartial('/admin/_contacts_list', array('contacts' => $contacts))?>
 <?php }?>
 <script type="text/javascript">
 	var resultCache = {};

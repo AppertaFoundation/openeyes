@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -20,31 +20,31 @@
 <!---
 <?php
 if (!empty(Yii::app()->session['user'])) {
-	$user = Yii::app()->session['user'];
+    $user = Yii::app()->session['user'];
 } else {
-	$user = User::model()->findByPk(Yii::app()->user->id);
+    $user = User::model()->findByPk(Yii::app()->user->id);
 }
 $firm = Firm::model()->findByPk($this->selectedFirmId);
 
-if (file_exists("/etc/hostname")) {
-	$hostname = trim(file_get_contents("/etc/hostname"));
+if (file_exists('/etc/hostname')) {
+    $hostname = trim(file_get_contents('/etc/hostname'));
 } else {
-	$hostname = trim(`hostname`);
+    $hostname = trim(`hostname`);
 }
 
 if (is_object($user)) {
-	$username = "$user->username ($user->id)";
-	if ($firm) {
-		$firm = "$firm->name ($firm->id)";
-	} else {
-		$firm = 'Not found'; // selectedFirmId seems to not be getting initialised sometimes
-	}
+    $username = "$user->username ($user->id)";
+    if ($firm) {
+        $firm = "$firm->name ($firm->id)";
+    } else {
+        $firm = 'Not found'; // selectedFirmId seems to not be getting initialised sometimes
+    }
 } else {
-	$username = 'Not logged in';
-	$firm = 'Not logged in';
+    $username = 'Not logged in';
+    $firm = 'Not logged in';
 }
 
-$commit = preg_replace('/[\s\t].*$/s','',@file_get_contents(@$_SERVER['DOCUMENT_ROOT']."/.git/FETCH_HEAD"));
+$commit = preg_replace('/[\s\t].*$/s', '', @file_get_contents(@$_SERVER['DOCUMENT_ROOT'].'/.git/FETCH_HEAD'));
 ?>
 Server: <?php echo $hostname?>
 

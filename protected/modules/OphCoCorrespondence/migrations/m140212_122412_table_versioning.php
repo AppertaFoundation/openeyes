@@ -2,50 +2,52 @@
 
 class m140212_122412_table_versioning extends OEMigration
 {
-	public function up()
-	{
-		$this->versionExistingTable('ophcocorrespondence_firm_letter_macro');
-		$this->versionExistingTable('ophcocorrespondence_firm_letter_string');
-		$this->versionExistingTable('ophcocorrespondence_firm_site_secretary');
-		$this->versionExistingTable('et_ophcocorrespondence_letter');
-		$this->versionExistingTable('ophcocorrespondence_letter_macro');
-		$this->versionExistingTable('ophcocorrespondence_letter_string');
-		$this->versionExistingTable('ophcocorrespondence_letter_string_group');
-		$this->versionExistingTable('ophcocorrespondence_subspecialty_letter_macro');
-		$this->versionExistingTable('ophcocorrespondence_subspecialty_letter_string');
-		$this->versionExistingTable('ophcocorrespondence_cbt_recipient');
-		$this->versionExistingTable('ophcocorrespondence_letter_enclosure');
+    public function up()
+    {
+        $this->versionExistingTable('ophcocorrespondence_firm_letter_macro');
+        $this->versionExistingTable('ophcocorrespondence_firm_letter_string');
+        $this->versionExistingTable('ophcocorrespondence_firm_site_secretary');
+        $this->versionExistingTable('et_ophcocorrespondence_letter');
+        $this->versionExistingTable('ophcocorrespondence_letter_macro');
+        $this->versionExistingTable('ophcocorrespondence_letter_string');
+        $this->versionExistingTable('ophcocorrespondence_letter_string_group');
+        $this->versionExistingTable('ophcocorrespondence_subspecialty_letter_macro');
+        $this->versionExistingTable('ophcocorrespondence_subspecialty_letter_string');
+        $this->versionExistingTable('ophcocorrespondence_cbt_recipient');
+        $this->versionExistingTable('ophcocorrespondence_letter_enclosure');
 
-		$offset = 0;
+        $offset = 0;
 
-		while (1) {
-			$letters = $this->dbConnection->createCommand()
-				->select("et_ophcocorrespondence_letter_old.*, et_ophcocorrespondence_letter.event_id")
-				->from("et_ophcocorrespondence_letter_old")
-				->join("et_ophcocorrespondence_letter","et_ophcocorrespondence_letter.id = et_ophcocorrespondence_letter_old.letter_id")
-				->order("id asc")
-				->offset($offset)
-				->limit(1000)
-				->queryAll();
+        while (1) {
+            $letters = $this->dbConnection->createCommand()
+                ->select('et_ophcocorrespondence_letter_old.*, et_ophcocorrespondence_letter.event_id')
+                ->from('et_ophcocorrespondence_letter_old')
+                ->join('et_ophcocorrespondence_letter', 'et_ophcocorrespondence_letter.id = et_ophcocorrespondence_letter_old.letter_id')
+                ->order('id asc')
+                ->offset($offset)
+                ->limit(1000)
+                ->queryAll();
 
-			if (empty($letters)) break;
+            if (empty($letters)) {
+                break;
+            }
 
-			foreach ($letters as $old_letter) {
-				$old_letter['id'] = $old_letter['letter_id'];
-				unset($old_letter['letter_id']);
+            foreach ($letters as $old_letter) {
+                $old_letter['id'] = $old_letter['letter_id'];
+                unset($old_letter['letter_id']);
 
-				$this->insert('et_ophcocorrespondence_letter_version', $old_letter);
-			}
+                $this->insert('et_ophcocorrespondence_letter_version', $old_letter);
+            }
 
-			$offset += 1000;
-		}
+            $offset += 1000;
+        }
 
-		$this->dropTable('et_ophcocorrespondence_letter_old');
-	}
+        $this->dropTable('et_ophcocorrespondence_letter_old');
+    }
 
-	public function down()
-	{
-		$this->execute("
+    public function down()
+    {
+        $this->execute("
 CREATE TABLE `et_ophcocorrespondence_letter_old` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 	`letter_id` int(10) unsigned NOT NULL,
@@ -77,27 +79,27 @@ CREATE TABLE `et_ophcocorrespondence_letter_old` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
-		foreach ($this->dbConnection->createCommand()->select("*")->from("et_ophcocorrespondence_letter_version")->order("id asc")->queryAll() as $versiond_letter) {
-			$versiond_letter['letter_id'] = $versiond_letter['id'];
-			unset($versiond_letter['id']);
+        foreach ($this->dbConnection->createCommand()->select('*')->from('et_ophcocorrespondence_letter_version')->order('id asc')->queryAll() as $versiond_letter) {
+            $versiond_letter['letter_id'] = $versiond_letter['id'];
+            unset($versiond_letter['id']);
 
-			foreach (array('direct_line','fax','clinic_date','print_all') as $field) {
-				unset($versiond_letter[$field]);
-			}
+            foreach (array('direct_line', 'fax', 'clinic_date', 'print_all') as $field) {
+                unset($versiond_letter[$field]);
+            }
 
-			$this->insert('et_ophcocorrespondence_letter_old', $versiond_letter);
-		}
+            $this->insert('et_ophcocorrespondence_letter_old', $versiond_letter);
+        }
 
-		$this->dropTable('ophcocorrespondence_firm_letter_macro_version');
-		$this->dropTable('ophcocorrespondence_firm_letter_string_version');
-		$this->dropTable('ophcocorrespondence_firm_site_secretary_version');
-		$this->dropTable('et_ophcocorrespondence_letter_version');
-		$this->dropTable('ophcocorrespondence_letter_macro_version');
-		$this->dropTable('ophcocorrespondence_letter_string_version');
-		$this->dropTable('ophcocorrespondence_letter_string_group_version');
-		$this->dropTable('ophcocorrespondence_subspecialty_letter_macro_version');
-		$this->dropTable('ophcocorrespondence_subspecialty_letter_string_version');
-		$this->dropTable('ophcocorrespondence_cbt_recipient_version');
-		$this->dropTable('ophcocorrespondence_letter_enclosure_version');
-	}
+        $this->dropTable('ophcocorrespondence_firm_letter_macro_version');
+        $this->dropTable('ophcocorrespondence_firm_letter_string_version');
+        $this->dropTable('ophcocorrespondence_firm_site_secretary_version');
+        $this->dropTable('et_ophcocorrespondence_letter_version');
+        $this->dropTable('ophcocorrespondence_letter_macro_version');
+        $this->dropTable('ophcocorrespondence_letter_string_version');
+        $this->dropTable('ophcocorrespondence_letter_string_group_version');
+        $this->dropTable('ophcocorrespondence_subspecialty_letter_macro_version');
+        $this->dropTable('ophcocorrespondence_subspecialty_letter_string_version');
+        $this->dropTable('ophcocorrespondence_cbt_recipient_version');
+        $this->dropTable('ophcocorrespondence_letter_enclosure_version');
+    }
 }

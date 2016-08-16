@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -37,10 +37,10 @@
 							</thead>
 							<tbody>
 								<tr>
-									<td><?php echo CHtml::textField('station_id',@$_POST['station_id'],array('class'=>'small fixed-width')); ?></td>
-									<td><?php echo CHtml::textField('location',@$_POST['location'],array('class'=>'small fixed-width')); ?></td>
-									<td><?php echo CHtml::textField('hos_num',@$_POST['hos_num'],array('class'=>'small fixed-width')); ?></td>
-									<td><?php echo CHtml::dropDownList('status', 'status',array('' => 'All', 'success' => 'Success', 'failed' =>'Failed'));?></td>
+									<td><?php echo CHtml::textField('station_id', @$_POST['station_id'], array('class' => 'small fixed-width')); ?></td>
+									<td><?php echo CHtml::textField('location', @$_POST['location'], array('class' => 'small fixed-width')); ?></td>
+									<td><?php echo CHtml::textField('hos_num', @$_POST['hos_num'], array('class' => 'small fixed-width')); ?></td>
+									<td><?php echo CHtml::dropDownList('status', 'status', array('' => 'All', 'success' => 'Success', 'failed' => 'Failed'));?></td>
 								</tr>
 							</tbody>
 						</table>
@@ -60,40 +60,40 @@
 							<tr>
 								<td>
 									<?php
-									echo CHtml::dropDownList('type', 'type',array('' => 'All', 'biometry' => 'Biometry'));
-									?>
+                                    echo CHtml::dropDownList('type', 'type', array('' => 'All', 'biometry' => 'Biometry'));
+                                    ?>
 								</td>
 								<td>
 									<?php
-									$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-										'id'=>'study_id',
-										'name'=>'study_id',
-										'value'=>'',
-										'sourceUrl'=>array('audit/users'),
-										'options'=>array(
-											'minLength'=>'3',
-										),
-										'htmlOptions'=>array(
-											'placeholder' => 'Type to search for Study Instance ID...'
-										),
-									));
-									?>
+                                    $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+                                        'id' => 'study_id',
+                                        'name' => 'study_id',
+                                        'value' => '',
+                                        'sourceUrl' => array('audit/users'),
+                                        'options' => array(
+                                            'minLength' => '3',
+                                        ),
+                                        'htmlOptions' => array(
+                                            'placeholder' => 'Type to search for Study Instance ID...',
+                                        ),
+                                    ));
+                                    ?>
 								</td>
 								<td>
 									<?php
-									$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-										'id'=>'file_name',
-										'name'=>'file_name',
-										'value'=>'',
-										'sourceUrl'=>array('audit/users'),
-										'options'=>array(
-											'minLength'=>'3',
-										),
-										'htmlOptions'=>array(
-											'placeholder' => 'Type to search for File name...'
-										),
-									));
-									?>
+                                    $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+                                        'id' => 'file_name',
+                                        'name' => 'file_name',
+                                        'value' => '',
+                                        'sourceUrl' => array('audit/users'),
+                                        'options' => array(
+                                            'minLength' => '3',
+                                        ),
+                                        'htmlOptions' => array(
+                                            'placeholder' => 'Type to search for File name...',
+                                        ),
+                                    ));
+                                    ?>
 								</td>
 							</tr>
 							</tbody>
@@ -107,46 +107,46 @@
 							<fieldset class="inline highlight" style="border: 1px solid #ccd;">
 								<span class="inline" for="import_date">&nbsp;Import Date:
 								<?php
-								echo CHtml::radioButton('date_type', true, array(
-									'value'=>'1',
-									'id'=>'import_date',
-									'name' => 'date',
-									'uncheckValue'=>null
-								));?> Study Date:
+                                echo CHtml::radioButton('date_type', true, array(
+                                    'value' => '1',
+                                    'id' => 'import_date',
+                                    'name' => 'date',
+                                    'uncheckValue' => null,
+                                ));?> Study Date:
 								<?php
-								echo CHtml::radioButton('date_type', false, array(
-									'value'=>'2',
-									'id'=>'study_date',
-									'name' => 'date',
-									'uncheckValue'=>null
-								));
-								?></span>&nbsp;
+                                echo CHtml::radioButton('date_type', false, array(
+                                    'value' => '2',
+                                    'id' => 'study_date',
+                                    'name' => 'date',
+                                    'uncheckValue' => null,
+                                ));
+                                ?></span>&nbsp;
 								<label class="inline" for="date_from">From:</label>
 								<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-									'name' => 'date_from',
-									'id' => 'date_from',
-									'options' => array(
-										'showAnim'=>'fold',
-										'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
-									),
-									'value' => @$_POST['date_from'],
-									'htmlOptions' => array(
-										'class' => 'small fixed-width'
-									)
-								))?>
+                                    'name' => 'date_from',
+                                    'id' => 'date_from',
+                                    'options' => array(
+                                        'showAnim' => 'fold',
+                                        'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
+                                    ),
+                                    'value' => @$_POST['date_from'],
+                                    'htmlOptions' => array(
+                                        'class' => 'small fixed-width',
+                                    ),
+                                ))?>
 								<label class="inline" for="date_to">To:</label>
 								<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-									'name' => 'date_to',
-									'id' => 'date_to',
-									'options' => array(
-										'showAnim'=>'fold',
-										'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
-									),
-									'value' => @$_POST['date_to'],
-									'htmlOptions' => array(
-										'class' => 'small fixed-width'
-									)
-								))?>
+                                    'name' => 'date_to',
+                                    'id' => 'date_to',
+                                    'options' => array(
+                                        'showAnim' => 'fold',
+                                        'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
+                                    ),
+                                    'value' => @$_POST['date_to'],
+                                    'htmlOptions' => array(
+                                        'class' => 'small fixed-width',
+                                    ),
+                                ))?>
 
 <!--								<?php /*echo CHtml::textField('hos_num',@$_POST['hos_num'],array('autocomplete'=>Yii::app()->params['html_autocomplete'],'class'=>'small fixed-width'))*/?>
 								<?php /*echo CHtml::link('View all',array('audit/'),array('class'=>'inline'))*/?>

@@ -4,15 +4,16 @@
  * Created by PhpStorm.
  * User: PATELH3
  * Date: 11/12/2015
- * Time: 14:51
+ * Time: 14:51.
  */
 class Eye_Status extends BaseActiveRecord
 {
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return Eye the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }
@@ -46,7 +47,7 @@ class Eye_Status extends BaseActiveRecord
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria = new CDbCriteria;
+        $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('name', $this->name, true);
@@ -55,5 +56,4 @@ class Eye_Status extends BaseActiveRecord
             'criteria' => $criteria,
         ));
     }
-
 }

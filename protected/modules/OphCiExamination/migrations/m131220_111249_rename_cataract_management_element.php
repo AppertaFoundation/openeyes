@@ -4,7 +4,7 @@ class m131220_111249_rename_cataract_management_element extends CDbMigration
 {
     public function up()
     {
-        $event_type = $this->dbConnection->createCommand()->select("*")->from("event_type")->where("class_name = :class_name", array(":class_name" => "OphCiExamination"))->queryRow();
+        $event_type = $this->dbConnection->createCommand()->select('*')->from('event_type')->where('class_name = :class_name', array(':class_name' => 'OphCiExamination'))->queryRow();
 
         $this->update('element_type', array(
                 'name' => 'Cataract Surgical Management',
@@ -23,7 +23,7 @@ class m131220_111249_rename_cataract_management_element extends CDbMigration
         $this->renameTable('ophciexamination_cataractsurgicalmanagement_eye', 'ophciexamination_cataractmanagement_eye');
         $this->renameTable('et_ophciexamination_cataractsurgicalmanagement', 'et_ophciexamination_cataractmanagement');
 
-        $event_type = $this->dbConnection->createCommand()->select("*")->from("event_type")->where("class_name = :class_name", array(":class_name" => "OphCiExamination"))->queryRow();
+        $event_type = $this->dbConnection->createCommand()->select('*')->from('event_type')->where('class_name = :class_name', array(':class_name' => 'OphCiExamination'))->queryRow();
 
         $this->update('element_type', array(
                 'name' => 'Cataract Surgical Management',

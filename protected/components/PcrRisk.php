@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,15 +9,13 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-
 class PcrRisk
 {
     /**
@@ -28,6 +26,7 @@ class PcrRisk
      * @param $patientId
      * @param $side
      * @param $element
+     *
      * @return array
      */
     public function getPCRData($patientId, $side, $element)
@@ -37,9 +36,9 @@ class PcrRisk
         $patientAge = $this->patient->getAge();
         $eye = Eye::model()->find('LOWER(name) = ?', array(strtolower($side)));
         $pcrRiskValues = new PcrRiskValues();
-        if($eye){
+        if ($eye) {
             $storedValues = PcrRiskValues::model()->findByAttributes(array('eye_id' => $eye->id, 'patient_id' => $patientId));
-            if($storedValues){
+            if ($storedValues) {
                 $pcrRiskValues = $storedValues;
             }
         }
@@ -69,7 +68,7 @@ class PcrRisk
             $is_glaucoma = 'Y';
         }
 
-        $risk = PatientRiskAssignment::model()->findByAttributes(array("patient_id" => $patientId));
+        $risk = PatientRiskAssignment::model()->findByAttributes(array('patient_id' => $patientId));
 
         $user = Yii::app()->session['user'];
         $user_id = $user->id;
@@ -79,10 +78,9 @@ class PcrRisk
         $user_data = User::model()->findByPk($user_id);
         $doctor_grade_id = $user_data['originalAttributes']['doctor_grade_id'];
 
-        if(!$doctor_grade_id){
+        if (!$doctor_grade_id) {
             $doctor_grade_id = $pcrRiskValues->doctor_grade_id;
         }
-
 
         $pcr['patient_id'] = $patientId;
         $pcr['side'] = $side;
@@ -93,7 +91,7 @@ class PcrRisk
         $pcr['lie_flat'] = ($this->getCannotLieFlat($patientId)) ? $this->getCannotLieFlat($patientId) : $pcrRiskValues->can_lie_flat;
 
         $no_view = (!is_null($pcrRiskValues->no_fundal_view)) ? $pcrRiskValues->no_fundal_view : 'NK';
-        $no_view_data =  $this->getOpticDisc($patientId, $side);
+        $no_view_data = $this->getOpticDisc($patientId, $side);
         if (count($no_view_data) >= 1) {
             $no_view = 'Y';
         }
@@ -103,11 +101,13 @@ class PcrRisk
         $pcr['doctor_grade_id'] = $doctor_grade_id;
         $pcr['axial_length_group'] = ($this->getAxialLength($patientId, $side) !== 'N') ? $this->getAxialLength($patientId, $side) : $pcrRiskValues->axial_length_group;
         $pcr['arb'] = $pcrRiskValues->alpha_receptor_blocker;
+
         return $pcr;
     }
 
     /**
      * @param $patient_id
+     *
      * @return string
      */
     protected function getCannotLieFlat($patient_id)
@@ -130,6 +130,7 @@ class PcrRisk
 
     /**
      * @param $patient_id
+     *
      * @return int
      */
     protected function getOperationNoteSurgeonId($patient_id)
@@ -157,11 +158,12 @@ class PcrRisk
      * @param $patientId
      * @param $side
      * @param int $isAll
+     *
      * @return mixed
      */
     public function getOpticDisc($patientId, $side, $isAll = false)
     {
-        $criteria = new CDbCriteria;
+        $criteria = new CDbCriteria();
         $criteria->select = 'event.id, ophciexamination_opticdisc_cd_ratio.name';
 
         if ($side == 'right') {
@@ -174,17 +176,16 @@ class PcrRisk
 	JOIN ophciexamination_opticdisc_cd_ratio ON et_ophciexamination_opticdisc.left_cd_ratio_id = ophciexamination_opticdisc_cd_ratio.id';
         }
 
-
         if ($isAll) {
             $criteria->condition = 't.patient_id = :patient_id and event.deleted=:del';
-            $criteria->params = array(":patient_id" => $patientId, ":del" => 0);
+            $criteria->params = array(':patient_id' => $patientId, ':del' => 0);
         } else {
             $criteria->condition = 't.patient_id = :patient_id and ophciexamination_opticdisc_cd_ratio.name = :name and event.deleted=:del';
-            $criteria->params = array(":patient_id" => $patientId, ":name" => "No view", ":del" => 0);
-            $criteria->limit = "1";
+            $criteria->params = array(':patient_id' => $patientId, ':name' => 'No view', ':del' => 0);
+            $criteria->limit = '1';
         }
 
-        $criteria->order = "et_ophciexamination_opticdisc.last_modified_date DESC";
+        $criteria->order = 'et_ophciexamination_opticdisc.last_modified_date DESC';
 
         return Episode::model()->findAll($criteria);
     }
@@ -192,16 +193,16 @@ class PcrRisk
     /**
      * @param $patientId
      * @param $side
+     *
      * @return mixed
      */
-
     public function getPatientAnteriorSegment($patientId, $side, PcrRiskValues $storedValues)
     {
-        $as['pxf_phako'] = (!is_null($storedValues->pxf))? $storedValues->pxf : 'NK';
+        $as['pxf_phako'] = (!is_null($storedValues->pxf)) ? $storedValues->pxf : 'NK';
         $as['pxe'] = null;
         $as['phakodonesis'] = null;
-        $as['pupil_size'] = (!is_null($storedValues->pupil_size))? $storedValues->pupil_size : "Medium";
-        $as['brunescent_white_cataract'] = (!is_null($storedValues->brunescent_white_cataract))? $storedValues->brunescent_white_cataract : 'NK';
+        $as['pupil_size'] = (!is_null($storedValues->pupil_size)) ? $storedValues->pupil_size : 'Medium';
+        $as['brunescent_white_cataract'] = (!is_null($storedValues->brunescent_white_cataract)) ? $storedValues->brunescent_white_cataract : 'NK';
         $as['pxf_phako_nk'] = 0;
         $anteriorsegment = Yii::app()->db->createCommand()
             ->select('as.*')
@@ -255,6 +256,7 @@ class PcrRisk
     /**
      * @param $patientId
      * @param $side
+     *
      * @return int|string
      */
     public function getAxialLength($patientId, $side)
@@ -277,11 +279,11 @@ class PcrRisk
 
             if (($side == 'right') && ($biometry_measurement['eye_id'] == 2 || $biometry_measurement['eye_id'] == 3)) {
                 $axial_length = $biometry_measurement['axial_length_right'];
-            } elseif (($side == 'left') && ($biometry_measurement['eye_id'] == 1|| $biometry_measurement['eye_id'] == 3)) {
+            } elseif (($side == 'left') && ($biometry_measurement['eye_id'] == 1 || $biometry_measurement['eye_id'] == 3)) {
                 $axial_length = $biometry_measurement['axial_length_left'];
             }
 
-            if($axial_length >0) {
+            if ($axial_length > 0) {
                 if ($axial_length >= 26) {
                     $axial_length_group = 2;
                 } else {
@@ -296,19 +298,20 @@ class PcrRisk
     /**
      * @param $side
      * @param Patient $patient
-     * @param array $data
+     * @param array   $data
+     *
      * @throws CException
      * @throws Exception
      */
     public function persist($side, Patient $patient, $data = array())
     {
-        if(!$side){
+        if (!$side) {
             throw new CException('No Side provided');
         }
 
         $eye = Eye::model()->find('LOWER(name) = ?', array(strtolower($side)));
 
-        if(!$eye){
+        if (!$eye) {
             throw new CException('Cannot find eye');
         }
 
@@ -317,7 +320,7 @@ class PcrRisk
         $pcrRiskValues->eye_id = $eye->id;
 
         $existing = PcrRiskValues::model()->findByAttributes($pcrRiskValues->getAttributes(array('eye_id', 'patient_id')));
-        if($existing){
+        if ($existing) {
             $pcrRiskValues = $existing;
         }
         $data['doctor_grade_id'] = '1';
@@ -332,9 +335,8 @@ class PcrRisk
         $pcrRiskValues->doctor_grade_id = (isset($data['doctor_grade_id']) && $data['doctor_grade_id'] != '') ? $data['doctor_grade_id'] : null;
         $pcrRiskValues->can_lie_flat = (isset($data['abletolieflat']) && $data['abletolieflat'] != 'NK') ? $data['abletolieflat'] : null;
 
-        if(!$pcrRiskValues->save()){
+        if (!$pcrRiskValues->save()) {
             throw new CException('PCR Risk failed to save');
         }
-
     }
 }

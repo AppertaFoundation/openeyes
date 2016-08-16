@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,14 +9,13 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 ?>
 
 <?php
@@ -70,7 +69,7 @@ $warnings = $this->patient->getWarnings($clinical);
 						<?php foreach ($warnings as $warn) {?>
 							<strong><?php echo $warn['long_msg']; ?></strong>
 							- <?php echo $warn['details'];
-						}?>
+                        }?>
 					</div>
 				</div>
 			</div>
@@ -86,11 +85,11 @@ $warnings = $this->patient->getWarnings($clinical);
 					<div class="row data-row">
 						<?php $last_updated = strtotime($this->patient->last_modified_date) ?>
 						<div class="large-4 column data-label">Last updated:</div>
-						<div class="large-5 column data-value"><?= date(Helper::NHS_DATE_FORMAT . ' H:i', $last_updated) ?></div>
+						<div class="large-5 column data-value"><?= date(Helper::NHS_DATE_FORMAT.' H:i', $last_updated) ?></div>
 						<div class="large-3 column">
 							<?= CHtml::beginForm($refresh_url) ?>
 								<input type="hidden" name="patient_id" value="<?= $this->patient->id ?>">
-								<button class="small <?php if ($last_updated > (time() - 300)) echo " disabled" ?>">Refresh</button>
+								<button class="small <?php if ($last_updated > (time() - 300)) echo ' disabled' ?>">Refresh</button>
 							<?= CHtml::endForm() ?>
 						</div>
 					</div>
@@ -104,14 +103,14 @@ $warnings = $this->patient->getWarnings($clinical);
 		</div>
 		<div class="large-6 column" id="patient-summary-form-container">
 			<?php if ($this->checkAccess('OprnViewClinical')) {?>
-				<?php $this->renderPartial('_patient_episodes',array(
-					'episodes' => $episodes,
-					'ordered_episodes' => $ordered_episodes,
-					'legacyepisodes' => $legacyepisodes,
-					'episodes_open' => $episodes_open,
-					'episodes_closed' => $episodes_closed,
-					'firm' => $firm,
-				))?>
+				<?php $this->renderPartial('_patient_episodes', array(
+                    'episodes' => $episodes,
+                    'ordered_episodes' => $ordered_episodes,
+                    'legacyepisodes' => $legacyepisodes,
+                    'episodes_open' => $episodes_open,
+                    'episodes_closed' => $episodes_closed,
+                    'firm' => $firm,
+                ))?>
 			<?php }?>
 		</div>
 	</div>

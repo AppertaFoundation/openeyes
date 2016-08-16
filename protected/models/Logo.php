@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -10,8 +10,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -22,6 +22,7 @@
  * This is the model class for table "setting_metadata".
  *
  * The followings are the available columns in table 'setting_metadata':
+ *
  * @property string $id
  * @property string $element_type_id
  * @property string $display_order
@@ -31,23 +32,26 @@
  * @property string $data
  * @property string $default_value
  */
-class Logo extends CFormModel {
-
+class Logo extends CFormModel
+{
     public $header_logo;
     public $secondary_logo;
 
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return SettingMetadata the static model class
      */
-    public static function model($className = __CLASS__) {
+    public static function model($className = __CLASS__)
+    {
         return parent::model($className);
     }
 
     /**
      * @return array validation rules for model attributes.
      */
-    public function rules() {
+    public function rules()
+    {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
@@ -59,17 +63,19 @@ class Logo extends CFormModel {
     /**
      * Declares attribute labels.
      */
-    public function attributeLabels() {
+    public function attributeLabels()
+    {
         return array(
             'header_logo' => 'Header Logo',
-            'secondary_logo' => 'Secondary Logo'
+            'secondary_logo' => 'Secondary Logo',
         );
     }
 
     /**
      * @return array relational rules.
      */
-    public function relations() {
+    public function relations()
+    {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
@@ -80,11 +86,12 @@ class Logo extends CFormModel {
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
-    public function search() {
+    public function search()
+    {
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
     }
-
 }

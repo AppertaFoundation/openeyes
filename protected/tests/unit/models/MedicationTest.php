@@ -4,212 +4,215 @@
  */
 class MedicationTest extends PHPUnit_Framework_TestCase
 {
-	/**
-	 * @var Medication
-	 */
-	protected $object;
+    /**
+     * @var Medication
+     */
+    protected $object;
 
-	/**
-	 * Sets up the fixture, for example, opens a network connection.
-	 * This method is called before a test is executed.
-	 */
-	protected function setUp()
-	{
-			$this->object = new Medication;
-	}
+    /**
+     * Sets up the fixture, for example, opens a network connection.
+     * This method is called before a test is executed.
+     */
+    protected function setUp()
+    {
+        $this->object = new Medication();
+    }
 
-	/**
-	 * Tears down the fixture, for example, closes a network connection.
-	 * This method is called after a test is executed.
-	 */
-	protected function tearDown()
-	{
-	}
+    /**
+     * Tears down the fixture, for example, closes a network connection.
+     * This method is called after a test is executed.
+     */
+    protected function tearDown()
+    {
+    }
 
-	/**
-	 * @covers Medication::model
-	 * @todo   Implement testModel().
-	 */
-	public function testModel()
-	{
-			// Remove the following lines when you implement this test.
-			$this->markTestIncomplete(
-				'This test has not been implemented yet.'
-			);
-	}
+    /**
+     * @covers Medication::model
+     *
+     * @todo   Implement testModel().
+     */
+    public function testModel()
+    {
+        // Remove the following lines when you implement this test.
+            $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+            );
+    }
 
-	/**
-	 * @covers Medication::tableName
-	 * @todo   Implement testTableName().
-	 */
-	public function testTableName()
-	{
-			// Remove the following lines when you implement this test.
-			$this->markTestIncomplete(
-				'This test has not been implemented yet.'
-			);
-	}
+    /**
+     * @covers Medication::tableName
+     *
+     * @todo   Implement testTableName().
+     */
+    public function testTableName()
+    {
+        // Remove the following lines when you implement this test.
+            $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+            );
+    }
 
-	/**
-	 * @covers Medication::rules
-	 * @todo   Implement testRules().
-	 */
-	public function testRules()
-	{
-			// Remove the following lines when you implement this test.
-			$this->markTestIncomplete(
-				'This test has not been implemented yet.'
-			);
-	}
+    /**
+     * @covers Medication::rules
+     *
+     * @todo   Implement testRules().
+     */
+    public function testRules()
+    {
+        // Remove the following lines when you implement this test.
+            $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+            );
+    }
 
-	/**
-	 * @covers Medication::relations
-	 * @todo   Implement testRelations().
-	 */
-	public function testRelations()
-	{
-			// Remove the following lines when you implement this test.
-			$this->markTestIncomplete(
-				'This test has not been implemented yet.'
-			);
-	}
+    /**
+     * @covers Medication::relations
+     *
+     * @todo   Implement testRelations().
+     */
+    public function testRelations()
+    {
+        // Remove the following lines when you implement this test.
+            $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+            );
+    }
 
-	/**
-	 * @covers Medication::attributeLabels
-	 * @todo   Implement testAttributeLabels().
-	 */
-	public function testAttributeLabels()
-	{
-			// Remove the following lines when you implement this test.
-			$this->markTestIncomplete(
-				'This test has not been implemented yet.'
-			);
-	}
+    /**
+     * @covers Medication::attributeLabels
+     *
+     * @todo   Implement testAttributeLabels().
+     */
+    public function testAttributeLabels()
+    {
+        // Remove the following lines when you implement this test.
+            $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+            );
+    }
 
-	/**
-	 * @covers Medication::search
-	 * @todo   Implement testSearch().
-	 */
-	public function testSearch()
-	{
-			// Remove the following lines when you implement this test.
-			$this->markTestIncomplete(
-				'This test has not been implemented yet.'
-			);
-	}
+    /**
+     * @covers Medication::search
+     *
+     * @todo   Implement testSearch().
+     */
+    public function testSearch()
+    {
+        // Remove the following lines when you implement this test.
+            $this->markTestIncomplete(
+                'This test has not been implemented yet.'
+            );
+    }
 
-	public function testRemoveAdherenceOnDelete()
-	{
-		$patient = $this->getMockBuilder('Patient')
-			->disableOriginalConstructor()
-			->setMethods(array('patientMedications'))
-			->getMock();
+    public function testRemoveAdherenceOnDelete()
+    {
+        $patient = $this->getMockBuilder('Patient')
+            ->disableOriginalConstructor()
+            ->setMethods(array('patientMedications'))
+            ->getMock();
 
-		$patient->expects($this->any())
-			->method('patientMedications')
-			->will($this->returnValue(array()));
+        $patient->expects($this->any())
+            ->method('patientMedications')
+            ->will($this->returnValue(array()));
 
-		$adherence = $this->getMockBuilder('MedicationAdherence')
-				->disableOriginalConstructor()
-				->setMethods(array('delete'))
-				->getMock();
+        $adherence = $this->getMockBuilder('MedicationAdherence')
+                ->disableOriginalConstructor()
+                ->setMethods(array('delete'))
+                ->getMock();
 
-		$adherence->expects($this->once())
-			->method('delete')
-			->will($this->returnValue(true));
+        $adherence->expects($this->once())
+            ->method('delete')
+            ->will($this->returnValue(true));
 
-		$patient->adherence = $adherence;
+        $patient->adherence = $adherence;
 
-		$medication = $this->getMockBuilder('Medication')
-				->disableOriginalConstructor()
-				->setMethods(array('getIsNewRecord','deleteByPk'))
-				->getMock();
+        $medication = $this->getMockBuilder('Medication')
+                ->disableOriginalConstructor()
+                ->setMethods(array('getIsNewRecord', 'deleteByPk'))
+                ->getMock();
 
-		$medication->expects($this->once())
-			->method('getIsNewRecord')
-			->will($this->returnValue(false));
+        $medication->expects($this->once())
+            ->method('getIsNewRecord')
+            ->will($this->returnValue(false));
 
-		$medication->patient = $patient;
+        $medication->patient = $patient;
 
-		$medication->delete();
+        $medication->delete();
+    }
 
-	}
+    public function testRemoveAdherenceOnSave()
+    {
+        $patient = $this->getMockBuilder('Patient')
+            ->disableOriginalConstructor()
+            ->setMethods(array('patientMedications'))
+            ->getMock();
 
-	public function testRemoveAdherenceOnSave()
-	{
-		$patient = $this->getMockBuilder('Patient')
-			->disableOriginalConstructor()
-			->setMethods(array('patientMedications'))
-			->getMock();
+        $patient->expects($this->any())
+            ->method('patientMedications')
+            ->will($this->returnValue(array()));
 
-		$patient->expects($this->any())
-			->method('patientMedications')
-			->will($this->returnValue(array()));
+        $adherence = $this->getMockBuilder('MedicationAdherence')
+                ->disableOriginalConstructor()
+                ->setMethods(array('delete'))
+                ->getMock();
 
-		$adherence = $this->getMockBuilder('MedicationAdherence')
-				->disableOriginalConstructor()
-				->setMethods(array('delete'))
-				->getMock();
+        $adherence->expects($this->once())
+                ->method('delete')
+                ->will($this->returnValue(true));
 
-		$adherence->expects($this->once())
-				->method('delete')
-				->will($this->returnValue(true));
+        $patient->adherence = $adherence;
 
-		$patient->adherence = $adherence;
+        $medication = $this->getMockBuilder('Medication')
+                ->disableOriginalConstructor()
+                ->setMethods(array('getIsNewRecord', 'updateByPk'))
+                ->getMock();
 
-		$medication = $this->getMockBuilder('Medication')
-				->disableOriginalConstructor()
-				->setMethods(array('getIsNewRecord','updateByPk'))
-				->getMock();
+        $medication->end_date = '2014-07-01';
 
-		$medication->end_date = '2014-07-01';
+        $medication->expects($this->any())
+                ->method('getIsNewRecord')
+                ->will($this->returnValue(false));
 
-		$medication->expects($this->any())
-				->method('getIsNewRecord')
-				->will($this->returnValue(false));
+        $medication->patient = $patient;
 
-		$medication->patient = $patient;
+        $medication->save(false);
+    }
 
-		$medication->save(false);
+    public function testDoNotRemoveAdherenceOnSave()
+    {
+        $patient = $this->getMockBuilder('Patient')
+            ->disableOriginalConstructor()
+            ->setMethods(array('patientMedications'))
+            ->getMock();
 
-	}
+        $patient->expects($this->any())
+            ->method('patientMedications')
+            ->will($this->returnValue(array(new Medication())));
 
-	public function testDoNotRemoveAdherenceOnSave()
-	{
-		$patient = $this->getMockBuilder('Patient')
-			->disableOriginalConstructor()
-			->setMethods(array('patientMedications'))
-			->getMock();
+        $adherence = $this->getMockBuilder('MedicationAdherence')
+                ->disableOriginalConstructor()
+                ->setMethods(array('delete'))
+                ->getMock();
 
-		$patient->expects($this->any())
-			->method('patientMedications')
-			->will($this->returnValue(array(new Medication())));
+        $adherence->expects($this->never())
+                ->method('delete')
+                ->will($this->returnValue(true));
 
-		$adherence = $this->getMockBuilder('MedicationAdherence')
-				->disableOriginalConstructor()
-				->setMethods(array('delete'))
-				->getMock();
+        $patient->adherence = $adherence;
 
-		$adherence->expects($this->never())
-				->method('delete')
-				->will($this->returnValue(true));
+        $medication = $this->getMockBuilder('Medication')
+                ->disableOriginalConstructor()
+                ->setMethods(array('getIsNewRecord', 'updateByPk'))
+                ->getMock();
 
-		$patient->adherence = $adherence;
+        $medication->end_date = '2014-07-01';
 
-		$medication = $this->getMockBuilder('Medication')
-				->disableOriginalConstructor()
-				->setMethods(array('getIsNewRecord','updateByPk'))
-				->getMock();
+        $medication->expects($this->any())
+                ->method('getIsNewRecord')
+                ->will($this->returnValue(false));
 
-		$medication->end_date = '2014-07-01';
+        $medication->patient = $patient;
 
-		$medication->expects($this->any())
-				->method('getIsNewRecord')
-				->will($this->returnValue(false));
-
-		$medication->patient = $patient;
-
-		$medication->save(false);
-
-	}
+        $medication->save(false);
+    }
 }

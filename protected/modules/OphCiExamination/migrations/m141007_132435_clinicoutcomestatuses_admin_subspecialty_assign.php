@@ -7,7 +7,7 @@ class m141007_132435_clinicoutcomestatuses_admin_subspecialty_assign extends OEM
         $this->createOETable('ophciexamination_clinicoutcome_status_options', array(
                     'id' => 'pk',
                     'clinicoutcome_status_id' => 'int(10) unsigned NOT NULL',
-                    'subspecialty_id' => 'int(10) unsigned NOT NULL'
+                    'subspecialty_id' => 'int(10) unsigned NOT NULL',
                 ), true);
 
         $this->addForeignKey('ophciexamination_clinicoutcome_status_options_ciid_fk',

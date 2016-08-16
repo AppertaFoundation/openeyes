@@ -15,7 +15,7 @@ class SettingSpecialtyTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new SettingSpecialty;
+        $this->object = new SettingSpecialty();
     }
 
     /**
@@ -28,6 +28,7 @@ class SettingSpecialtyTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SettingSpecialty::model
+     *
      * @todo   Implement testModel().
      */
     public function testModel()
@@ -40,6 +41,7 @@ class SettingSpecialtyTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SettingSpecialty::tableName
+     *
      * @todo   Implement testTableName().
      */
     public function testTableName()
@@ -52,6 +54,7 @@ class SettingSpecialtyTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SettingSpecialty::rules
+     *
      * @todo   Implement testRules().
      */
     public function testRules()
@@ -64,6 +67,7 @@ class SettingSpecialtyTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SettingSpecialty::relations
+     *
      * @todo   Implement testRelations().
      */
     public function testRelations()
@@ -76,6 +80,7 @@ class SettingSpecialtyTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SettingSpecialty::attributeLabels
+     *
      * @todo   Implement testAttributeLabels().
      */
     public function testAttributeLabels()
@@ -88,6 +93,7 @@ class SettingSpecialtyTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers SettingSpecialty::search
+     *
      * @todo   Implement testSearch().
      */
     public function testSearch()

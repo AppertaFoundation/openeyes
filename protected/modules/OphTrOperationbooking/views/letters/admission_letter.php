@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -19,22 +19,22 @@
 ?>
 <div class="booking-letter">
 	<header>
-		<?php $this->renderPartial("../default/letter_start", array(
-			'toAddress' => $to_address,
-			'patient' => $patient,
-			'date' => date('Y-m-d'),
-			'site' => $site,
-		))?>
+		<?php $this->renderPartial('../default/letter_start', array(
+            'toAddress' => $to_address,
+            'patient' => $patient,
+            'date' => date('Y-m-d'),
+            'site' => $site,
+        ))?>
 	</header>
 	<div class="accessible">
 		<?php echo $this->renderPartial('../letters/letter_introduction', array(
-				'to' => $patient->salutationname,
-				'patient' => $patient,
-		))?>
+                'to' => $patient->salutationname,
+                'patient' => $patient,
+        ))?>
 
 		<p>
 			<?php if ($operation->status->name == 'Rescheduled') {?>
-				I am writing to inform you that the date for your <?php echo $operation->textOperationName?> has been changed<?php if (isset($operation->cancelledBookings[0])) {?> from <?php echo date('jS F Y',strtotime($operation->cancelledBookings[0]->session_date));}?>, the new details are:
+				I am writing to inform you that the date for your <?php echo $operation->textOperationName?> has been changed<?php if (isset($operation->cancelledBookings[0])) {?> from <?php echo date('jS F Y', strtotime($operation->cancelledBookings[0]->session_date));}?>, the new details are:
 			<?php } else {?>
 				I am pleased to confirm the date of your <?php echo $operation->textOperationName?> under care of <?php echo $firm->consultantName?>. The details are:
 			<?php }?>
@@ -47,7 +47,7 @@
 			</tr>
 			<tr>
 				<th>Time to arrive:</th>
-				<td><?php echo date('g:ia',strtotime($operation->booking->admission_time))?></td>
+				<td><?php echo date('g:ia', strtotime($operation->booking->admission_time))?></td>
 			</tr>
 			<tr>
 				<th>Ward:</th>

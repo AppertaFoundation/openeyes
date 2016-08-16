@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -18,7 +18,6 @@
  */
 
 namespace OEModule\OphCiExamination\components;
-
 
 class RefractiveOutcomeReport extends \Report implements \ReportInterface
 {
@@ -53,8 +52,8 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         ),
         'tooltip' => array(
             'headerFormat' => '<b>Refractive Outcome</b><br>',
-            'pointFormat' => '<i>Diff Post Op</i>: {point.category} <br /> <i>Num Eyes</i>: {point.y}'
-        )
+            'pointFormat' => '<i>Diff Post Op</i>: {point.category} <br /> <i>Num Eyes</i>: {point.y}',
+        ),
     );
 
     /**
@@ -66,7 +65,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         $this->procedures = $app->getRequest()->getQuery('procedures', array());
 
         //if they selected all set to empty array to ignore procedure check in query
-        if(in_array('all', $this->procedures)){
+        if (in_array('all', $this->procedures)) {
             $this->procedures = array();
         }
 
@@ -77,8 +76,9 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
      * @param $surgeon
      * @param $dateFrom
      * @param $dateTo
-     * @param int $months
+     * @param int   $months
      * @param array $procedures
+     *
      * @return array|\CDbDataReader
      */
     protected function queryData($surgeon, $dateFrom, $dateTo, $months = 0, $procedures = array())
@@ -92,7 +92,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
             ->join('event note_event', 'note_event.id = et_ophtroperationnote_surgeon.event_id')
             ->join('et_ophtroperationnote_procedurelist op_procedure', 'op_procedure.event_id = note_event.id #And the operation notes procedures')
             ->join('episode', 'note_event.episode_id = episode.id')
-            ->join('patient','episode.patient_id = patient.id')
+            ->join('patient', 'episode.patient_id = patient.id')
             ->join('event post_examination', 'post_examination.episode_id = note_event.episode_id
                AND post_examination.event_type_id = :examination
                AND post_examination.event_date >= note_event.event_date
@@ -115,18 +115,18 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
             $this->command->andWhere('note_event.event_date <= :dateTo', array('dateTo' => $dateTo));
         }
 
-        if($months){
+        if ($months) {
             $this->command->andWhere('post_examination.event_date BETWEEN DATE_ADD(note_event.event_date, INTERVAL :monthsBefore MONTH) AND DATE_ADD(note_event.event_date, INTERVAL :monthsAfter MONTH)',
                 array(
                     'monthsBefore' => ($months - 1),
-                    'monthsAfter' => ($months + 1)
+                    'monthsAfter' => ($months + 1),
                 ));
         }
 
-        if($procedures){
+        if ($procedures) {
             $this->command
                 ->join('ophtroperationnote_procedurelist_procedure_assignment proc_ass', 'proc_ass.procedurelist_id = op_procedure.id')
-                ->join('ophtroperationnote_procedure_element opnote', 'opnote.procedure_id = proc_ass.proc_id and proc_ass.proc_id in (:procedures)', array('procedures' => join(',', $procedures)));
+                ->join('ophtroperationnote_procedure_element opnote', 'opnote.procedure_id = proc_ass.proc_id and proc_ass.proc_id in (:procedures)', array('procedures' => implode(',', $procedures)));
         }
 
         return $this->command->queryAll();
@@ -141,9 +141,9 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         $count = array();
 
         $this->padCategories();
-        
+
         // fill up the array with 0, have to send 0 to highcharts if there is no data
-        foreach($this->graphConfig['xAxis']['categories'] as $xCat){
+        foreach ($this->graphConfig['xAxis']['categories'] as $xCat) {
             $count[] = 0;
         }
         $bestvalues = array();
@@ -153,33 +153,33 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
             if ($row['eye_id'] === '1') {
                 $side = 'left';
             }
-            $diff = (float)$row['predicted_refraction'] - ((float)$row[$side . '_sphere'] - ((float)$row[$side . '_cylinder'] / 2));
-                          
+            $diff = (float) $row['predicted_refraction'] - ((float) $row[$side.'_sphere'] - ((float) $row[$side.'_cylinder'] / 2));
+
             $diff = round($diff * 2) / 2;
 
             $diff = array_search($diff, $this->graphConfig['xAxis']['categories']);
 
-            if($diff >= 0 && $diff <= (count($this->graphConfig['xAxis']['categories'])-1)) {
-                if (!array_key_exists($row['patient_id'], $bestvalues)){
-                    $bestvalues[$row["patient_id"]] = $diff;
-                }else if( $diff < $bestvalues[$row["patient_id"]]){
-                    $bestvalues[$row["patient_id"]] = $diff;
+            if ($diff >= 0 && $diff <= (count($this->graphConfig['xAxis']['categories']) - 1)) {
+                if (!array_key_exists($row['patient_id'], $bestvalues)) {
+                    $bestvalues[$row['patient_id']] = $diff;
+                } elseif ($diff < $bestvalues[$row['patient_id']]) {
+                    $bestvalues[$row['patient_id']] = $diff;
                 }
             }
         }
 
-        foreach($bestvalues as $key => $diff){
+        foreach ($bestvalues as $key => $diff) {
             if (!array_key_exists("$diff", $count)) {
                 $count["$diff"] = 0;
             }
-            $count["$diff"]++;
+            ++$count["$diff"];
         }
-        
+
         ksort($count, SORT_NUMERIC);
-        
+
         $dataSet = array();
         foreach ($count as $category => $total) {
-            $rowTotal = array((float)$category, $total);
+            $rowTotal = array((float) $category, $total);
             $dataSet[] = $rowTotal;
         }
 
@@ -191,13 +191,12 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
      */
     protected function padCategories()
     {
-        for($i = -10; $i <= 10; $i += 0.5 ){
+        for ($i = -10; $i <= 10; $i += 0.5) {
             $this->graphConfig['xAxis']['categories'][] = $i;
         }
-        
-        $this->graphConfig['xAxis']['min'] = 0;
-        $this->graphConfig['xAxis']['max'] = count($this->graphConfig['xAxis']['categories'])-1;
 
+        $this->graphConfig['xAxis']['min'] = 0;
+        $this->graphConfig['xAxis']['max'] = count($this->graphConfig['xAxis']['categories']) - 1;
     }
 
     /**
@@ -220,7 +219,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
      */
     public function graphConfig()
     {
-        if(!isset($this->series[0]['data'])){
+        if (!isset($this->series[0]['data'])) {
             $data = $this->dataSet();
         } else {
             $data = $this->series[0]['data'];
@@ -232,28 +231,27 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         $plusOrMinusHalfPercent = 0;
         $plusOrMinusOnePercent = 0;
 
-        foreach($data as $dataRow){
-            $totalEyes += (int)$dataRow[1];
-            
+        foreach ($data as $dataRow) {
+            $totalEyes += (int) $dataRow[1];
+
             // 19 and 21 are the indexes of the -0.5 and +0.5 columns
-            if( $dataRow[0] < 19 || $dataRow[0] > 21 ){
-                $plusOrMinusHalf += (int)$dataRow[1];
+            if ($dataRow[0] < 19 || $dataRow[0] > 21) {
+                $plusOrMinusHalf += (int) $dataRow[1];
             }
-            
+
             // 18 and 22 are the indexes of the -1 and +1 columns
-            if( $dataRow[0] < 18 || $dataRow[0] > 22 ){
-                $plusOrMinusOne += (int)$dataRow[1];
+            if ($dataRow[0] < 18 || $dataRow[0] > 22) {
+                $plusOrMinusOne += (int) $dataRow[1];
             }
- 
         }
-        if($plusOrMinusOne > 0){
-            $plusOrMinusOnePercent = number_format((($plusOrMinusOne / $totalEyes) * 100), 1, '.', '' );
+        if ($plusOrMinusOne > 0) {
+            $plusOrMinusOnePercent = number_format((($plusOrMinusOne / $totalEyes) * 100), 1, '.', '');
         }
-        
-        if($plusOrMinusHalf > 0){
-            $plusOrMinusHalfPercent = number_format((($plusOrMinusHalf / $totalEyes) * 100) ,1, '.', '');
+
+        if ($plusOrMinusHalf > 0) {
+            $plusOrMinusHalfPercent = number_format((($plusOrMinusHalf / $totalEyes) * 100), 1, '.', '');
         }
-        
+
         $this->graphConfig['subtitle']['text'] = str_replace(
             array('{{eyes}}', '{{0.5}}', '{{1}}'),
             array($totalEyes, $plusOrMinusHalfPercent, $plusOrMinusOnePercent),
@@ -272,7 +270,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
     {
         $cataractProcedures = array();
         $cataractElement = \ElementType::model()->findByAttributes(array('name' => 'Cataract'));
-        if($cataractElement){
+        if ($cataractElement) {
             $procedure = new \Procedure();
             $cataractProcedures = $procedure->getProceduresByOpNote($cataractElement['id']);
         }

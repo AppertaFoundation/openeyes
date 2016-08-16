@@ -7,8 +7,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
@@ -32,35 +32,32 @@ class MedicationController extends BaseController
             $this->renderPartial(
                 'adherence_form',
                 array(
-                    "patient" => $this->fetchModel('Patient', $patientId),
+                    'patient' => $this->fetchModel('Patient', $patientId),
                 ),
                 false, true
             );
         } else {
             if ($medicationId) {
                 $medication = $this->fetchModel('Medication', $medicationId, true);
-            }
-            else if ($prescriptionItemId) {
+            } elseif ($prescriptionItemId) {
                 if ($api = Yii::app()->moduleAPI->get('OphDrPrescription')) {
                     $medication = $api->getMedicationForPrescriptionItem($patientId, $prescriptionItemId);
                     if (!$medication) {
-                        throw new CHttpException(404, "Could not get medication for prescription item.");
+                        throw new CHttpException(404, 'Could not get medication for prescription item.');
                     }
+                } else {
+                    throw new CHttpException(400, 'Missing prescription item or module');
                 }
-                else {
-                    throw new CHttpException(400, "Missing prescription item or module");
-                }
-            }
-            else {
+            } else {
                 $medication = new Medication();
             }
 
             $this->renderPartial(
                 'form',
                 array(
-                    "patient" => $this->fetchModel('Patient', $patientId),
-                    "medication" => $medication,
-                    "firm" => Firm::model()->findByPk($this->selectedFirmId),
+                    'patient' => $this->fetchModel('Patient', $patientId),
+                    'medication' => $medication,
+                    'firm' => Firm::model()->findByPk($this->selectedFirmId),
                 ),
                 false, true
             );
@@ -85,7 +82,7 @@ class MedicationController extends BaseController
             foreach (MedicationDrug::model()->findAll($criteria) as $md) {
                 $label = $md->name;
                 if (strpos(strtolower($md->name), $term) === false) {
-                    $label .= " (" . $md->aliases . ")";
+                    $label .= ' ('.$md->aliases.')';
                 }
                 $return[] = array(
                     'name' => $md->name,
@@ -98,13 +95,13 @@ class MedicationController extends BaseController
             foreach (Drug::model()->active()->findAll($criteria) as $drug) {
                 $label = $drug->tallmanlabel;
                 if (strpos(strtolower($drug->name), $term) === false) {
-                    $label .= " (" . $drug->aliases . ")";
+                    $label .= ' ('.$drug->aliases.')';
                 }
                 $return[] = array(
                     'name' => $drug->tallmanlabel,
                     'label' => $label,
                     'value' => $drug->id,
-                    'type' => 'd'
+                    'type' => 'd',
                 );
             }
         }
@@ -117,7 +114,6 @@ class MedicationController extends BaseController
         if (strpos($drug_id, '@@M') === false) {
             echo json_encode($this->fetchModel('Drug', $drug_id)->getDefaults());
         }
-
     }
 
     public function actionDrugRouteOptions($route_id)
@@ -125,8 +121,8 @@ class MedicationController extends BaseController
         $this->renderPartial(
             'route_option',
             array(
-                'medication' => new Medication,
-                'route' => $this->fetchModel('DrugRoute', $route_id)
+                'medication' => new Medication(),
+                'route' => $this->fetchModel('DrugRoute', $route_id),
             )
         );
     }
@@ -146,7 +142,7 @@ class MedicationController extends BaseController
             $medication_adherence->comments = $_POST['MedicationAdherence']['comments'];
 
             if ($medication_adherence->save()) {
-                $this->renderPartial('lists', array("patient" => $patient));
+                $this->renderPartial('lists', array('patient' => $patient));
             } else {
                 header('HTTP/1.1 422');
                 echo json_encode($medication_adherence->errors);
@@ -168,14 +164,14 @@ class MedicationController extends BaseController
 
             if (strpos($post_data['drug_id'], '@@M') !== false) {
                 $post_data['drug_id'] = null;
-                $medication_data = explode("@@M", $_POST['drug_id']);
+                $medication_data = explode('@@M', $_POST['drug_id']);
                 $post_data['medication_drug_id'] = $medication_data[0];
             }
 
             $medication->attributes = $post_data;
 
             if ($medication->save()) {
-                $this->renderPartial('lists', array("patient" => $patient));
+                $this->renderPartial('lists', array('patient' => $patient));
             } else {
                 header('HTTP/1.1 422');
                 echo json_encode($medication->errors);
@@ -188,13 +184,15 @@ class MedicationController extends BaseController
         $patient = $this->fetchModel('Patient', @$_POST['patient_id']);
         $medication = $this->fetchModel('Medication', @$_POST['medication_id']);
 
-        if ($patient->id != $medication->patient_id) throw new Exception("Patient ID mismatch");
+        if ($patient->id != $medication->patient_id) {
+            throw new Exception('Patient ID mismatch');
+        }
 
         $medication->end_date = @$_POST['end_date'];
         $medication->stop_reason_id = @$_POST['stop_reason_id'] ?: null;
         $medication->save();
 
-        $this->renderPartial('lists', array("patient" => $patient));
+        $this->renderPartial('lists', array('patient' => $patient));
     }
 
     public function actionDelete()
@@ -202,10 +200,12 @@ class MedicationController extends BaseController
         $patient = $this->fetchModel('Patient', @$_POST['patient_id']);
         $medication = $this->fetchModel('Medication', @$_POST['medication_id']);
 
-        if ($patient->id != $medication->patient_id) throw new Exception("Patient ID mismatch");
+        if ($patient->id != $medication->patient_id) {
+            throw new Exception('Patient ID mismatch');
+        }
 
         $medication->delete();
 
-        $this->renderPartial('lists', array("patient" => $patient));
+        $this->renderPartial('lists', array('patient' => $patient));
     }
 }

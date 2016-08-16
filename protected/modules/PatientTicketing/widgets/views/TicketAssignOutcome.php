@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2014
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2014, OpenEyes Foundation
@@ -24,8 +24,8 @@
 	</div>
 	<div class="large-<?= $this->data_width ?> column end">
 		<?php
-		$outcomes = $this->getOutcomeOptions();
-		echo CHtml::dropDownList($this->form_name . '[outcome]', @$this->form_data[$this->form_name]['outcome'], $outcomes['list_data'], array('empty' => '- Please select -', 'options' => $outcomes['options'], 'class' => 'outcome-select')); ?>
+        $outcomes = $this->getOutcomeOptions();
+        echo CHtml::dropDownList($this->form_name.'[outcome]', @$this->form_data[$this->form_name]['outcome'], $outcomes['list_data'], array('empty' => '- Please select -', 'options' => $outcomes['options'], 'class' => 'outcome-select')); ?>
 	</div>
 </fieldset>
 <span id="<?= $this->form_name ?>-followup"<?php if ($this->hideFollowUp && !@$this->form_data[$this->form_name]['followup_quantity']) {?> style="display: none;"<?php }?>>
@@ -35,10 +35,10 @@
 	</div>
 	<div class="large-<?= $this->data_width ?> column end">
 		<?php
-		$html_options = array('empty'=>'- Please select -', 'options' => array(), 'class'=>'inline');
-		echo CHtml::dropDownList($this->form_name . '[followup_quantity]', @$this->form_data[$this->form_name]['followup_quantity'], Yii::app()->params['follow_up_months'], $html_options);
-		echo CHtml::dropDownList($this->form_name . '[followup_period]', @$this->form_data[$this->form_name]['followup_period'], CHtml::listData(\Period::model()->findAll(array('order'=>'display_order')),'name','name'), $html_options);
-		?>
+        $html_options = array('empty' => '- Please select -', 'options' => array(), 'class' => 'inline');
+        echo CHtml::dropDownList($this->form_name.'[followup_quantity]', @$this->form_data[$this->form_name]['followup_quantity'], Yii::app()->params['follow_up_months'], $html_options);
+        echo CHtml::dropDownList($this->form_name.'[followup_period]', @$this->form_data[$this->form_name]['followup_period'], CHtml::listData(\Period::model()->findAll(array('order' => 'display_order')), 'name', 'name'), $html_options);
+        ?>
 	</div>
 </fieldset>
 <fieldset class="field-row row">
@@ -46,7 +46,7 @@
 		<label for="site">Clinic location:</label>
 	</div>
 	<div class="large-<?= $this->data_width ?> column end">
-		<?php echo CHtml::dropDownList($this->form_name . '[clinic_location]', @$this->form_data[$this->form_name]['clinic_location'], \CHtml::listData(OEModule\PatientTicketing\models\ClinicLocation::model()->findAll(array('order' => 'display_order asc')),'name','name'), $html_options); ?>
+		<?php echo CHtml::dropDownList($this->form_name.'[clinic_location]', @$this->form_data[$this->form_name]['clinic_location'], \CHtml::listData(OEModule\PatientTicketing\models\ClinicLocation::model()->findAll(array('order' => 'display_order asc')), 'name', 'name'), $html_options); ?>
 	</div>
 </fieldset>
 </span>

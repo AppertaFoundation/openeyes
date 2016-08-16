@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2012
@@ -9,14 +9,13 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 ?>
 <div class="box admin">
 	<div class="row">
@@ -25,12 +24,12 @@
 		</div>
 		<div class="large-4 column">
 			<?php
-			$form = $this->beginWidget('BaseEventTypeCActiveForm',array(
-					'id' => 'searchform',
-					'enableAjaxValidation' => false,
-					'focus' => '#search',
-					'action' => Yii::app()->createUrl('/admin/drugs'),
-				))?>
+            $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+                    'id' => 'searchform',
+                    'enableAjaxValidation' => false,
+                    'focus' => '#search',
+                    'action' => Yii::app()->createUrl('/admin/drugs'),
+                ))?>
 			<div class="row">
 				<div class="large-12 column">
 					<input type="text" autocomplete="<?php echo Yii::app()->params['html_autocomplete']?>" name="search" id="search" placeholder="Enter search query..." value="<?php echo strip_tags(@$_POST['search'])?>" />
@@ -57,7 +56,7 @@
 			</thead>
 			<tbody>
 			<?php
-			foreach ($drugs as $i => $drug) {?>
+            foreach ($drugs as $i => $drug) {?>
 				<tr class="clickable" data-id="<?php echo $drug->id?>" data-uri="admin/editdrug/<?php echo $drug->id?>">
 					<td><input type="checkbox" name="drugs[]" value="<?php echo $drug->id?>" /></td>
 					<td><?php echo $drug->id?></td>
@@ -65,9 +64,18 @@
 					<td><?php echo $drug->type->name?></td>
 					<td><?php echo $drug->default_dose?></td>
 					<td><?php echo $drug->dose_unit?></td>
-					<td><?php if(isset($drug->default_route)) echo $drug->default_route->name?></td>
-					<td><?php if(isset($drug->default_frequency)) echo $drug->default_frequency->name?></td>
-					<td><?php if(isset($drug->default_duration)) echo $drug->default_duration->name?></td>
+					<td><?php if(isset($drug->default_route)){
+							echo $drug->default_route->name;
+                        }?>
+					</td>
+					<td><?php if(isset($drug->default_frequency)) {
+							echo $drug->default_frequency->name;
+                        }?>
+					</td>
+					<td><?php if(isset($drug->default_duration)) {
+							echo $drug->default_duration->name;
+                        }?>
+					</td>
 				</tr>
 			<?php }?>
 			</tbody>
@@ -76,9 +84,9 @@
 				<td colspan="9">
 					<?php echo EventAction::button('Add', 'add', null, array('class' => 'small'))->toHtml()?>
 					<?php // echo EventAction::button('Delete', 'delete', null, array('class' => 'small'))->toHtml()?>
-					<?php echo $this->renderPartial('_pagination',array(
-							'pagination' => $pagination
-						))?>
+					<?php echo $this->renderPartial('_pagination', array(
+                            'pagination' => $pagination,
+                        ))?>
 				</td>
 			</tr>
 			</tfoot>

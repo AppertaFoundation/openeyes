@@ -13,5 +13,4 @@ class m160706_103845_add_confirmation extends CDbMigration
         $this->dropColumn('ophtroperationbooking_whiteboard', 'is_confirmed');
         $this->dropColumn('ophtroperationbooking_whiteboard_version', 'is_confirmed');
     }
-
 }

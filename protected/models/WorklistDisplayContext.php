@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -9,26 +9,24 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
 /**
- * Class WorklistDisplayContext
+ * Class WorklistDisplayContext.
  *
- * @property integer $worklist_id
- * @property integer $site_id
- * @property integer $subspecialty_id
- * @property integer $firm_id
- *
+ * @property int $worklist_id
+ * @property int $site_id
+ * @property int $subspecialty_id
+ * @property int $firm_id
  * @property Worklist $worklist
  * @property Site $site
  * @property Subspecialty $subspecialty
  * @property Firm $firm
- *
  */
 class WorklistDisplayContext extends BaseActiveRecord
 {
@@ -51,7 +49,7 @@ class WorklistDisplayContext extends BaseActiveRecord
             array('worklist_id', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, worklist_id, site_id, subspecialty_id, firm_id', 'safe', 'on'=>'search'),
+            array('id, worklist_id, site_id, subspecialty_id, firm_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -66,7 +64,7 @@ class WorklistDisplayContext extends BaseActiveRecord
             'worklist' => array(self::BELONGS_TO, 'Worklist', 'worklist_id'),
             'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
             'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
-            'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id')
+            'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
         );
     }
 
@@ -81,6 +79,7 @@ class WorklistDisplayContext extends BaseActiveRecord
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
@@ -88,16 +87,16 @@ class WorklistDisplayContext extends BaseActiveRecord
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria=new CDbCriteria;
+        $criteria = new CDbCriteria();
 
-        $criteria->compare('id',$this->id,true);
-        $criteria->compare('worklist_id',$this->worklist_id,true);
-        $criteria->compare('site_id',$this->site_id,true);
-        $criteria->compare('subspecialty_id',$this->subspecialty_id,true);
-        $criteria->compare('firm_id',$this->firm_id,true);
+        $criteria->compare('id', $this->id, true);
+        $criteria->compare('worklist_id', $this->worklist_id, true);
+        $criteria->compare('site_id', $this->site_id, true);
+        $criteria->compare('subspecialty_id', $this->subspecialty_id, true);
+        $criteria->compare('firm_id', $this->firm_id, true);
 
         return new CActiveDataProvider(get_class($this), array(
-            'criteria'=>$criteria,
+            'criteria' => $criteria,
         ));
     }
 }

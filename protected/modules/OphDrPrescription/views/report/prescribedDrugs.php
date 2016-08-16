@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -22,9 +22,9 @@
         <h2>Prescribed drugs report</h2>
         <?php
         $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-                'id'=>'report-form',
-                'enableAjaxValidation'=>false,
-                'layoutColumns'=>array('label'=>2,'field'=>10),
+                'id' => 'report-form',
+                'enableAjaxValidation' => false,
+                'layoutColumns' => array('label' => 2, 'field' => 10),
                 'action' => Yii::app()->createUrl('/OphDrPrescription/report/downloadReport'),
         ))?>
 
@@ -43,7 +43,7 @@
                         <?php
                             // set name to null as it is not required to send this value to the server
                             echo CHtml::dropDownList(null, null,
-                                CHtml::listData($drugs, 'id', 'name'), array("empty" => "-- Select --", "id" => "drug_id"));
+                                CHtml::listData($drugs, 'id', 'name'), array('empty' => '-- Select --', 'id' => 'drug_id'));
                         ?>
                     </div>
                 </div>
@@ -56,7 +56,7 @@
                     <div class="large-9 column end phraseList">
                         <div>
                             <?php
-                            $defaultURL = "/" . Yii::app()->getModule('OphDrPrescription')->id . "/" . Yii::app()->getModule('OphDrPrescription')->defaultController;
+                            $defaultURL = '/'.Yii::app()->getModule('OphDrPrescription')->id.'/'.Yii::app()->getModule('OphDrPrescription')->defaultController;
 
                             $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
                                     'name' => 'drug_id',
@@ -65,7 +65,7 @@
 
                                                         $.ajax({
                                                             dataType: 'json',
-                                                            url: '" . $defaultURL . "/DrugList',
+                                                            url: '".$defaultURL."/DrugList',
                                                             data: {
                                                                 term : request.term,
                                                                 type_id: $('#drug_type_id').val(),
@@ -88,7 +88,7 @@
                                     ),
                                     'htmlOptions' => array(
                                             'placeholder' => 'search for drugs',
-                                    )
+                                    ),
                             )); ?>
                         </div>
                     </div>
@@ -111,9 +111,9 @@
                                 'name' => 'OphDrPrescription_ReportPrescribedDrugs[start_date]',
                                 'options' => array(
                                         'showAnim' => 'fold',
-                                        'dateFormat' => Helper::NHS_DATE_FORMAT_JS
+                                        'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
                                 ),
-                                'value' => date('j M Y',strtotime('-1 year')),
+                                'value' => date('j M Y', strtotime('-1 year')),
                         ))?>
                     </div>
                 </div>
@@ -129,7 +129,7 @@
                             'name' => 'OphDrPrescription_ReportPrescribedDrugs[end_date]',
                             'options' => array(
                                     'showAnim' => 'fold',
-                                    'dateFormat' => Helper::NHS_DATE_FORMAT_JS
+                                    'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
                             ),
                             'value' => date('j M Y'),
                         ))?>
@@ -143,7 +143,7 @@
                             <label for="author_id">User</label>
                         </div>
                         <div class="large-7 column end">
-                            <?php echo CHtml::dropDownList('OphDrPrescription_ReportPrescribedDrugs[user_id]','',CHtml::listData($users,'id','fullName'),array('empty' => '--- Please select ---'))?>
+                            <?php echo CHtml::dropDownList('OphDrPrescription_ReportPrescribedDrugs[user_id]', '', CHtml::listData($users, 'id', 'fullName'), array('empty' => '--- Please select ---'))?>
                         </div>
                 </div>
                 

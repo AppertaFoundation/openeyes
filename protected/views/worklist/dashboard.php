@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -8,8 +8,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
@@ -25,6 +25,7 @@
                 No patients in this worklist.
             </div>
             <?php
+
         } else {
             $cols = array(
                 array(
@@ -38,20 +39,20 @@
                     'class' => 'CLinkColumn',
                     'header' => 'Name',
                     'urlExpression' => 'Yii::app()->createURL("/patient/view/", array("id" => $data->patient_id))',
-                    'labelExpression' => '$data->patient->getHSCICName()'
+                    'labelExpression' => '$data->patient->getHSCICName()',
                 ),
                 array(
                     'id' => 'gender',
                     'class' => 'CDataColumn',
                     'header' => 'Gender',
-                    'value' => '$data->patient->genderString'
+                    'value' => '$data->patient->genderString',
                 ),
                 array(
                     'id' => 'dob',
                     'class' => 'CDataColumn',
                     'header' => 'DOB',
                     'value' => 'Helper::convertMySQL2NHS($data->patient->dob)',
-                    'htmlOptions' => array('class' => 'date')
+                    'htmlOptions' => array('class' => 'date'),
                 ),
             );
             if ($worklist->scheduled) {
@@ -59,28 +60,28 @@
                     'id' => 'time',
                     'class' => 'CDataColumn',
                     'header' => 'Time',
-                    'value' => '$data->scheduledtime'
+                    'value' => '$data->scheduledtime',
                 ));
             }
 
             foreach ($worklist->displayed_mapping_attributes as $attr) {
                 $cols[] = array(
                     'id' => "{$worklist->id}-attr-{$attr->id}",
-                    'class' => "CDataColumn",
+                    'class' => 'CDataColumn',
                     'header' => $attr->name,
                     'value' => function ($data) use ($attr) {
                         return $data->getWorklistAttributeValue($attr);
                     },
-                    'type' => 'raw'
+                    'type' => 'raw',
                 );
             }
 
             $this->widget('zii.widgets.grid.CGridView', array(
                 'itemsCssClass' => 'grid',
-                'dataProvider'=> $worklist_patients,
+                'dataProvider' => $worklist_patients,
                 'htmlOptions' => array('id' => "worklist-table-{$worklist->id}", 'style' => 'padding: 0px;'),
                 'summaryText' => '<h3><small> {start}-{end} of {count} </small></h3>',
-                'columns' => $cols
+                'columns' => $cols,
             ));
         } ?>
     </div>

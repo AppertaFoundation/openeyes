@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -29,11 +29,15 @@
 			</thead>
 			<tbody class="sortable" data-sort-uri="/OphTrOperationbooking/admin/sortsessionunavailablereasons">
 			<?php
-			$criteria = new CDbCriteria;
-			$criteria->order = "display_order asc";
-			foreach (OphTrOperationbooking_Operation_Session_UnavailableReason::model()->findAll() as $i => $sessionunavailablereason) {?>
+            $criteria = new CDbCriteria();
+            $criteria->order = 'display_order asc';
+            foreach (OphTrOperationbooking_Operation_Session_UnavailableReason::model()->findAll() as $i => $sessionunavailablereason) {?>
 				<tr class="clickable" data-attr-id="<?php echo $sessionunavailablereason->id?>" data-uri="OphTrOperationbooking/admin/editsessionunavailablereason/<?php echo $sessionunavailablereason->id?>">
-					<td><input type="checkbox" name="sessionunavailablereason[]" value="<?php echo $sessionunavailablereason->id?>" class="sessionunavailablereasons-enabled" <?php if ($sessionunavailablereason->enabled) { echo "checked"; } ?> /></td>
+					<td>
+						<input type="checkbox" name="sessionunavailablereason[]" value="<?php echo $sessionunavailablereason->id?>" 
+							   class="sessionunavailablereasons-enabled" 
+							    <?php if ($sessionunavailablereason->enabled) { echo 'checked'; } ?> />
+					</td>
 					<td><?php echo $sessionunavailablereason->name?></td>
 				</tr>
 			<?php }?>
@@ -41,7 +45,7 @@
 			<tfoot>
 			<tr>
 				<td colspan="2">
-					<?php echo EventAction::button('Add', 'add', null,array('class'=>'button small', 'data-uri' => '/OphTrOperationbooking/admin/Addsessionunavailablereason'))->toHtml()?>
+					<?php echo EventAction::button('Add', 'add', null, array('class' => 'button small', 'data-uri' => '/OphTrOperationbooking/admin/Addsessionunavailablereason'))->toHtml()?>
 				</td>
 			</tr>
 			</tfoot>

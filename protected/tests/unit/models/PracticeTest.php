@@ -15,7 +15,7 @@ class PracticeTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new Practice;
+        $this->object = new Practice();
     }
 
     /**
@@ -28,6 +28,7 @@ class PracticeTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Practice::model
+     *
      * @todo   Implement testModel().
      */
     public function testModel()
@@ -40,6 +41,7 @@ class PracticeTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Practice::noPas
+     *
      * @todo   Implement testNoPas().
      */
     public function testNoPas()
@@ -52,6 +54,7 @@ class PracticeTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Practice::tableName
+     *
      * @todo   Implement testTableName().
      */
     public function testTableName()
@@ -64,6 +67,7 @@ class PracticeTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Practice::rules
+     *
      * @todo   Implement testRules().
      */
     public function testRules()
@@ -76,6 +80,7 @@ class PracticeTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Practice::relations
+     *
      * @todo   Implement testRelations().
      */
     public function testRelations()
@@ -88,6 +93,7 @@ class PracticeTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Practice::attributeLabels
+     *
      * @todo   Implement testAttributeLabels().
      */
     public function testAttributeLabels()
@@ -100,6 +106,7 @@ class PracticeTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Practice::search
+     *
      * @todo   Implement testSearch().
      */
     public function testSearch()

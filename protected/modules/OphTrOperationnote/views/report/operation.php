@@ -2,12 +2,12 @@
 	<div class="report-fields">
 		<h2>Operation Report</h2>
 		<?php
-		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-			'id'=>'module-report-form',
-			'enableAjaxValidation'=>false,
-			'layoutColumns' => array('label'=>2,'field'=>10),
-			'action' => Yii::app()->createUrl('/'.$this->module->id.'/report/downloadReport'),
-		))?>
+        $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+            'id' => 'module-report-form',
+            'enableAjaxValidation' => false,
+            'layoutColumns' => array('label' => 2, 'field' => 10),
+            'action' => Yii::app()->createUrl('/'.$this->module->id.'/report/downloadReport'),
+        ))?>
 			<input type="hidden" name="report-name" value="Operations" />
 			<div class="row field-row">
 				<div class="large-2 column">
@@ -18,21 +18,21 @@
 				</div>
 			</div>
 			<?php
-				$this->widget('application.widgets.ProcedureSelection',array(
-					'newRecord' => true,
-					'last' => true,
-				));
-			?>
+                $this->widget('application.widgets.ProcedureSelection', array(
+                    'newRecord' => true,
+                    'last' => true,
+                ));
+            ?>
 			<div class="row field-row">
 				<div class="large-2 column">
 					<?php echo CHtml::label('Cataract Complications', 'cat_complications'); ?>
 				</div>
 				<div class="large-4 column end">
 					<?php $this->widget('application.widgets.MultiSelectList', array(
-							'field' => 'complications',
-							'options' => CHtml::listData(OphTrOperationnote_CataractComplications::model()->findAll(), 'id', 'name'),
-							'htmlOptions' => array('empty' => '- Complications -', 'multiple' => 'multiple', 'nowrapper' => true)
-					)); ?>
+                            'field' => 'complications',
+                            'options' => CHtml::listData(OphTrOperationnote_CataractComplications::model()->findAll(), 'id', 'name'),
+                            'htmlOptions' => array('empty' => '- Complications -', 'multiple' => 'multiple', 'nowrapper' => true),
+                    )); ?>
 				</div>
 			</div>
 			<div class="row field-row">
@@ -41,16 +41,16 @@
 				</div>
 				<div class="large-4 column end">
 					<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-							'name'=>'date_from',
-							'id'=>'date_from',
-							'options'=>array(
-								'showAnim'=>'fold',
-								'dateFormat'=>Helper::NHS_DATE_FORMAT_JS,
-								'maxDate'=> 0,
-								'defaultDate' => "-1y"
-							),
-							'value'=>@$_GET['date_from']
-						))?>
+                            'name' => 'date_from',
+                            'id' => 'date_from',
+                            'options' => array(
+                                'showAnim' => 'fold',
+                                'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
+                                'maxDate' => 0,
+                                'defaultDate' => '-1y',
+                            ),
+                            'value' => @$_GET['date_from'],
+                        ))?>
 				</div>
 			</div>
 			<div class="row field-row">
@@ -59,16 +59,16 @@
 				</div>
 				<div class="large-4 column end">
 					<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-							'name'=>'date_to',
-							'id'=>'date_to',
-							'options'=>array(
-								'showAnim'=>'fold',
-								'dateFormat'=>Helper::NHS_DATE_FORMAT_JS,
-								'maxDate'=> 0,
-								'defaultDate' => 0
-							),
-							'value'=>@$_GET['date_to']
-						))?>
+                            'name' => 'date_to',
+                            'id' => 'date_to',
+                            'options' => array(
+                                'showAnim' => 'fold',
+                                'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
+                                'maxDate' => 0,
+                                'defaultDate' => 0,
+                            ),
+                            'value' => @$_GET['date_to'],
+                        ))?>
 				</div>
 			</div>
 			<h3>Operation Booking</h3>

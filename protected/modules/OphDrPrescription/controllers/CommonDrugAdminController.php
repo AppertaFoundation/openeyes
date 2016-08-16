@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2015
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2015, OpenEyes Foundation
@@ -18,61 +18,58 @@
  */
 class CommonDrugAdminController extends BaseAdminController
 {
+    public function actionList()
+    {
+        $admin = new AdminListAutocomplete(SiteSubspecialtyDrug::model(), $this);
 
-	public function actionList()
-	{
-		$admin = new AdminListAutocomplete(SiteSubspecialtyDrug::model(), $this);
+        $admin->setListFields(array(
+            'id',
+            'drugs.name',
+            'drugs.dose_unit',
+        ));
 
-		$admin->setListFields(array(
-			'id',
-			'drugs.name',
-			'drugs.dose_unit'
-		));
+        $admin->setCustomDeleteURL('/OphDrPrescription/admin/commondrugsdelete');
+        $admin->setCustomSaveURL('/OphDrPrescription/admin/commondrugsadd');
+        $admin->setModelDisplayName('Common Drugs List');
+        $admin->setFilterFields(
+            array(
+                array(
+                    'label' => 'Site',
+                    'dropDownName' => 'site_id',
+                    'defaultValue' => Yii::app()->session['selected_site_id'],
+                    'listModel' => Site::model(),
+                    'listIdField' => 'id',
+                    'listDisplayField' => 'short_name',
+                    ),
+                array(
+                    'label' => 'Subspecialty',
+                    'dropDownName' => 'subspecialty_id',
+                    'defaultValue' => Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id,
+                    'listModel' => Subspecialty::model(),
+                    'listIdField' => 'id',
+                    'listDisplayField' => 'name',
+                ),
+            )
+        );
+        // we set default search options
+        if ($this->request->getParam('search') == '') {
+            $admin->getSearch()->initSearch(array(
+                    'filterid' => array(
+                            'site_id' => Yii::app()->session['selected_site_id'],
+                            'subspecialty_id' => Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id,
+                        ),
+                )
+            );
+        }
 
-		$admin->setCustomDeleteURL('/OphDrPrescription/admin/commondrugsdelete');
-		$admin->setCustomSaveURL('/OphDrPrescription/admin/commondrugsadd');
-		$admin->setModelDisplayName('Common Drugs List');
-		$admin->setFilterFields(
-			array(
-				array(
-					'label' => 'Site',
-					'dropDownName' => 'site_id',
-					'defaultValue' => Yii::app()->session['selected_site_id'],
-					'listModel' => Site::model(),
-					'listIdField' => 'id',
-					'listDisplayField' => 'short_name'
-					),
-				array(
-					'label' => 'Subspecialty',
-					'dropDownName' => 'subspecialty_id',
-					'defaultValue' => Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id,
-					'listModel' => Subspecialty::model(),
-					'listIdField' => 'id',
-					'listDisplayField' => 'name'
-				)
-			)
-		);
-		// we set default search options
-		if ($this->request->getParam('search') == '') {
-			$admin->getSearch()->initSearch(array(
-					'filterid' =>
-						array(
-							'site_id' => Yii::app()->session['selected_site_id'],
-							'subspecialty_id' => Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id
-						)
-				)
-			);
-		}
-
-		$admin->setAutocompleteField(
-			array(
-				'fieldName' => 'drug_id',
-				'jsonURL' => '/OphDrPrescription/default/DrugList',
-				'placeholder' => 'search for drugs'
-			)
-		);
-		//$admin->searchAll();
-		$admin->listModel();
-	}
-
+        $admin->setAutocompleteField(
+            array(
+                'fieldName' => 'drug_id',
+                'jsonURL' => '/OphDrPrescription/default/DrugList',
+                'placeholder' => 'search for drugs',
+            )
+        );
+        //$admin->searchAll();
+        $admin->listModel();
+    }
 }

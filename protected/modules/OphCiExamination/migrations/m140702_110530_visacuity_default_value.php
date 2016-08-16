@@ -11,7 +11,7 @@ class m140702_110530_visacuity_default_value extends OEMigration
             'field_type_id' => 2, // Dropdown
             'key' => 'default_value',
             'name' => 'Default value',
-            'default_value' => $value['base_value']
+            'default_value' => $value['base_value'],
         ));
     }
 

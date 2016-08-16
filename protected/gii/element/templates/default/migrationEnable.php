@@ -1,6 +1,6 @@
 <?php
 /**
- * ____________________________________________________________________________
+ * ____________________________________________________________________________.
  *
  * This file is part of OpenEyes.
  *
@@ -21,10 +21,11 @@
  * @author Bill Aylward <bill.aylward@openeyes.org.uk>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3.0
  * @license http://www.openeyes.org.uk/licenses/oepl-1.0.html OEPLv1.0
+ *
  * @version 0.9
  * Creation date: 27 December 2011
+ *
  * @copyright Copyright (c) 2012 OpenEyes Foundation, Moorfields Eye hospital
- * @package Clinical
  */
 
 /**
@@ -37,7 +38,7 @@
  * - $eventName: name of the enclosing event
  * - $subSubspecialtyName: name of the subsubspecialty for testing
  * - $authorName: Name of the file's author
- * - $authorEmail: Email address of the file's author
+ * - $authorEmail: Email address of the file's author.
  */
 ?>
 <?php echo "<?php\n"; ?>
@@ -64,7 +65,7 @@
  * @license http://www.gnu.org/licenses/gpl.html GPLv3.0
  * @license http://www.openeyes.org.uk/licenses/oepl-1.0.html OEPLv1.0
  * @version 0.9
- * Creation date: <?php echo date("j F Y")."\n";?>
+ * Creation date: <?php echo date('j F Y')."\n";?>
  * @copyright Copyright (c) 2012 OpenEyes Foundation, Moorfields Eye hospital
  * @package Clinical
  *

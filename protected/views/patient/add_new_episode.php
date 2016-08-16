@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -19,25 +19,25 @@
 ?>
 <?php
 $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
-	'id' => 'add-new-episode-dialog',
-	'options' => array(
-		'title' => 'Create new episode',
-		'dialogClass' => 'dialog episode add-episode',
-		'autoOpen' => true,
-		'modal' => true,
-		'draggable' => false,
-		'resizable' => false,
-		'width' => 580,
-	),
+    'id' => 'add-new-episode-dialog',
+    'options' => array(
+        'title' => 'Create new episode',
+        'dialogClass' => 'dialog episode add-episode',
+        'autoOpen' => true,
+        'modal' => true,
+        'draggable' => false,
+        'resizable' => false,
+        'width' => 580,
+    ),
 ));
 ?>
 	<?php
-	$form = $this->beginWidget('CActiveForm', array(
-		'id' => 'add-new-episode-form',
-	));
-	?>
-		<?php echo CHtml::hiddenField('firm_id',$firm->id)?>
-		<?php echo CHtml::hiddenField('patient_id',$patient->id)?>
+    $form = $this->beginWidget('CActiveForm', array(
+        'id' => 'add-new-episode-form',
+    ));
+    ?>
+		<?php echo CHtml::hiddenField('firm_id', $firm->id)?>
+		<?php echo CHtml::hiddenField('patient_id', $patient->id)?>
 		<div class="details">
 			<p><span>Firm:</span> <strong><?php echo $firm->name?></strong></p>
 			<p><span>Subspecialty:</span> <strong><?php echo $firm->getSubspecialtyText()?></strong></p>
