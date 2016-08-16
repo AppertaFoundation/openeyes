@@ -131,7 +131,7 @@
             <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('consultant_id')) ?></div>
         </div>
         <div class="large-10 column end">
-            <div class="data-value"><?php echo $element->consultant ? $element->consultant->last_name : 'None' ?></div>
+            <div class="data-value"><?php echo $element->consultant ? $element->consultant->getFullName() : 'None' ?></div>
         </div>
     </div>
 </div>
