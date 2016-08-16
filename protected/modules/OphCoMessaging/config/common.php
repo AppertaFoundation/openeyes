@@ -24,7 +24,8 @@ return array(
                 'actions' => array(
                     'getInboxMessages',
                     'getSentMessages'
-                 )
+                 ),
+                'position' => 5
             )
         )
     )

@@ -96,9 +96,6 @@ class DashboardHelper {
                 }
             }
 
-            $item_render = null;
-
-
             if ( isset($item['module']) )
             {
                 $this->moduleRender($renders, $item);
@@ -108,12 +105,14 @@ class DashboardHelper {
             }
             else if ( isset($item['title']) && isset($item['content']) ) {
                 // just a straight dump of the item structure into the render list
-                $renders[] = $item;
+                $renders[$this->getItemPosition($item)] = $item;
             }
             else {
                 throw new Exception("Invalid dashboard configuration: module, static or object definition required");
             }
         }
+
+        ksort($renders);
 
         return $renders;
     }
@@ -133,18 +132,18 @@ class DashboardHelper {
             throw new Exception("$module_name not found");
         }
         if( isset($item['actions']) && is_array($item['actions']) ) {
-            foreach ($item['actions'] as $method_name) {
+            foreach ($item['actions'] as $i => $method_name) {
                 if (!method_exists($module, $method_name))
                     throw new Exception("$method_name method not found for {$module_name}");
                 $render = $module->$method_name();
                 if ($render)
-                    $renders[] = $render;
+                    $renders[$this->getItemPosition($item) . ".{$i}"] = $render;
             }
         }
         else if( method_exists($module, 'renderDashboard') ) {
             $render = $module->renderDashboard();
             if ($render)
-                $renders[] = $render;
+                $renders[$this->getItemPosition($item)] = $render;
         }
         else {
             throw new Exception('renderDashboard method not found for {$module_name}');
@@ -162,7 +161,50 @@ class DashboardHelper {
         $obj = new $class_name;
         $render = $obj->$method();
         if ($render)
-            $renders[] = $render;
+            $renders[$this->getItemPosition($item)] = $render;
+    }
 
+    private $calculated_position = null;
+
+    /**
+     * Calculates the next position index to use for a rendered item
+     *
+     * @return int
+     */
+    protected function getNextItemPosition()
+    {
+        if (is_null($this->calculated_position)) {
+            foreach ($this->items as $item) {
+                if (isset($item['position'])) {
+                    if (!isset($this->calculated_position)) {
+                        $this->calculated_position = $item['position'];
+                    } elseif ($item['position'] > $this->calculated_position) {
+                        $this->calculated_position = $item['position'];
+                    }
+                }
+            }
+            if (!isset($this->calculated_position)) {
+                // no items have a position value set
+                $this->calculated_position = 0;
+            }
+
+        }
+        return ++$this->calculated_position;
+    }
+
+    /**
+     * Gets the position for an item in the render list
+     *
+     * @param $item
+     * @return int|null
+     */
+    public function getItemPosition($item)
+    {
+        if (isset($item['position'])) {
+            return $item['position'];
+        }
+        else {
+            return $this->getNextItemPosition();
+        }
     }
 }
