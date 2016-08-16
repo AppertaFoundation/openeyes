@@ -411,22 +411,30 @@ EOF;
         $this->assertExpectedValuesMatch($expected_values, $patient);
     }
 
-    public function testPartialUpdateErrorsForNewRecord()
+    public function testPartialUpdateAllowedForNewRecord()
     {
         $xml = <<<EOF
 <Patient>
     <NHSNumber>0123456789</NHSNumber>
     <HospitalNumber>010101010010101</HospitalNumber>
+    <FirstName>Test First</FirstName>
+    <Surname>Test Last</Surname>
+    <DateOfBirth>1978-03-01</DateOfBirth>
 </Patient>
 EOF;
 
-        $this->setExpectedHttpError(400);
 
-        $this->put('PartialUpdateError', $xml, array(
+        $this->put('PartialUpdateNewPatient', $xml, array(
             'X-OE-Partial-Record' => 1
         ));
 
-        $this->assertXPathFound("/Failure");
+        $this->assertXPathFound("/Success");
+        $id = $this->xPathQuery("/Success//Id")->item(0)->nodeValue;
+
+        $patient = Patient::model()->findByPk($id);
+        $this->assertNotNull($patient);
+        $this->assertEquals("Test Last", $patient->last_name);
+
     }
 
     public function update_Provider()
