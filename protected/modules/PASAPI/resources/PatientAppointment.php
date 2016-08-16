@@ -55,6 +55,14 @@ class PatientAppointment extends BaseResource
     }
 
     /**
+     * @return bool
+     */
+    public function shouldValidateRequired()
+    {
+        return $this->isNewResource || !$this->partial_record;
+    }
+
+    /**
      * As a primary resource (i.e. mapped to external resource) we need to ensure we have an id for tracking
      * the resource in the system
      *
@@ -205,9 +213,16 @@ class PatientAppointment extends BaseResource
     {
         $attributes = $this->resolveAttributes();
         if ($this->partial_record) {
+            // get current values for attributes that have not been passed in as part of
+            // this partial record so we are applying the full set of attributes in later
+            // worklist resolution.
             foreach ($wp->worklist_attributes as $attr) {
-                if (!array_key_exists($attr->worklistattribute->name, $attributes))
+                if (!$attr->worklistattribute) {
+                    throw new \Exception("Data consistency issue with worklist attribute {$attr->id}");
+                }
+                if (!array_key_exists($attr->worklistattribute->name, $attributes)) {
                     $attributes[$attr->worklistattribute->name] = $attr->attribute_value;
+                }
             }
         }
         return $attributes;

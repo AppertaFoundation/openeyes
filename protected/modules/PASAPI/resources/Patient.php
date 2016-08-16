@@ -28,6 +28,9 @@ class Patient extends BaseResource
 
     public $isNewResource;
 
+    /**
+     * @return bool
+     */
     public function shouldValidateRequired()
     {
         return $this->isNewResource || !$this->partial_record;
@@ -57,11 +60,6 @@ class Patient extends BaseResource
         $assignment = $this->getAssignment();
         $model = $assignment->getInternal();
         $this->isNewResource = $model->isNewRecord;
-
-        if ($this->isNewResource && $this->partial_record) {
-            $this->addError("Cannot perform partial update on a new record");
-            return;
-        }
 
         if (!$this->validate())
             return;

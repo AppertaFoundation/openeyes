@@ -356,7 +356,8 @@ return array(
 		'dashboard_items' => array(
 			array(
 				'class' => 'WorklistManager',
-				'method' => 'renderAutomaticDashboard'
+				'method' => 'renderAutomaticDashboard',
+				'position' => 10
 			),
 			array(
 				'class' => 'WorklistManager',
