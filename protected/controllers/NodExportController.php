@@ -146,7 +146,7 @@ class NodExportController extends BaseController
 //echo $query; die;
         Yii::app()->db->createCommand($query)->execute();
 
-        $this->getAllEpisodeId();
+        $this->getAllEpisodeData();
 
         $this->getEpisodeDiagnosis();
         $this->getEpisode();
@@ -160,16 +160,16 @@ class NodExportController extends BaseController
     }
 
 
-    private function getAllEpisodeId()
+    private function getAllEpisodeData()
     {
-        //$this->saveIds('tmp_episode_ids', $this->getEpisodeDiabeticDiagnosis());
-        $this->saveIds('tmp_episode_ids', $this->getEpisodeDrug());
-        $this->saveIds('tmp_episode_ids', $this->getEpisodeBiometry());
+        $this->getEpisodeDiabeticDiagnosis();
+        $this->getEpisodeDrug();
+        $this->getEpisodeBiometry();
         //$this->saveIds('tmp_episode_ids', $this->getEpisodePostOpComplication());
-        $this->saveIds('tmp_episode_ids', $this->getEpisodePreOpAssessment());
-        $this->saveIds('tmp_episode_ids', $this->getEpisodeIOP());
+        $this->getEpisodePreOpAssessment();
+        $this->getEpisodeIOP();
         //$this->saveIds('tmp_episode_ids', $this->getEpisodeVisualAcuity());
-        $this->saveIds('tmp_episode_ids', $this->getEpisodeRefraction());
+        $this->getEpisodeRefraction();
         //$this->saveIds('tmp_operation_ids', $this->getEpisodeOperationCoPathology());
         //$this->saveIds('tmp_operation_ids', $this->getEpisodeOperationAnaesthesia());
         //$this->saveIds('tmp_operation_ids', $this->getEpisodeOperationIndication());
@@ -257,6 +257,7 @@ class NodExportController extends BaseController
         $query .= $this->createTmpRcoNodEpisodeIOP();
         $query .= $this->createTmpRcoNodEpisodeBiometry();
         $query .= $this->createTmpRcoNodSurgeon();
+        $query .= $this->createTmpRcoNodEpisodeDiabeticDiagnosis();
         
         $createTempQuery = <<<EOL
 
@@ -532,6 +533,7 @@ EOL;
         $query .= $this->populateTmpRcoNodEpisodeIOP();
         $query .= $this->populateTmpRcoNodEpisodeBiometry();
         $query .= $this->populateTmpRcoNodSurgeon();
+        $query .= $this->populateTmpRcoNodEpisodeDiabeticDiagnosis();
 
         return $query;
     }
@@ -549,6 +551,7 @@ EOL;
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeIOP_{$this->extract_identifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeBiometry_{$this->extract_identifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_Surgeon_{$this->extract_identifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeDiabeticDiagnosis_{$this->extract_identifier};
 
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication_type;
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication;
@@ -590,6 +593,7 @@ EOL;
 EOL;
         return $query;
     }
+
     /**
      * This table will contain the only person identifiable data (surgeon’s GMC number or national code
      * ) stored on the RCOphth NOD. This information will be used to match a surgeon to their
@@ -640,10 +644,73 @@ EOL;
     
     /********** end of Surgeon **********/
 
-    
-    
-    
-    
+    /********** EpisodeDiabeticDiagnosis **********/
+    private function createTmpRcoNodEpisodeDiabeticDiagnosis()
+    {
+        $query = <<<EOL
+            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeDiabeticDiagnosis_{$this->extract_identifier};
+            CREATE TABLE tmp_rco_nod_EpisodeDiabeticDiagnosis_{$this->extract_identifier} (
+                oe_event_id int(10) NOT NULL,
+                IsDiabetic char(1) DEFAULT NULL COMMENT '0 = no, 1 = yes',
+                DiabetesTypeId  int(10),
+                DiabetesRegimeId int(10),
+                AgeAtDiagnosis int(2)
+                UNIQUE KEY oe_event_id (oe_event_id)
+            );
+EOL;
+        return $query;
+    }
+
+    private function populateTmpRcoNodEpisodeDiabeticDiagnosis()
+    {
+        $disorder = Disorder::model()->findByPk(Disorder::SNOMED_DIABETES);
+        $disorder_ids = implode(",", $disorder->descendentIds());
+
+        $query = <<<EOL
+                    INSERT INTO tmp_rco_nod_EpisodeDiabeticDiagnosis_{$this->extract_identifier} (
+                        oe_event_id,
+                        IsDiabetic,
+                        DiabetesTypeId,
+                        DiabetesRegimeId,
+                        AgeAtDiagnosis
+                    )
+                    SELECT
+                    c.oe_event_id,
+                    CASE WHEN d.id IN ( $disorder_ids ) THEN 1 ELSE 0 AS IsDiabetic,
+                    (
+                            SELECT CASE
+                                    WHEN d.id IN (23045005,28032008,46635009,190368000,190369008,190371008,190372001,199229001,237618001,290002008,313435000,314771006,314893005,
+                                                               314894004,401110002,420270002,420486006,420514000,420789003,420825003,420868002,420918009,421165007,421305000,421365002,421468001,
+                                                               421893009,421920002,422228004,422297002,425159004,425442003,426907004,427571000,428896009,11530004) THEN 1
+                                    WHEN d.id IN (9859006,44054006,81531005,190388001,190389009,190390000,190392008,199230006,237599002,237604008,237614004,237650006,
+                                                               313436004,314772004,314902007,314903002,314904008,359642000,395204000,420279001,420414003,420436000,420715001,420756003,
+                                                               421326000,421631007,421707005,421750000,421779007,421847006,421986006,422014003,422034002,422099009,422166005,423263001,
+                                                               424989000,427027005,427134009,428007007,359638003) THEN 2
+                                    WHEN d.id IN (237626009,237627000,11687002,46894009,71546005,75022004,420491007,420738003,420989005,421223006,421389009,421443003,
+                                                               422155003,76751001,199223000,199225007,199227004) THEN 3
+                                    WHEN d.id IN (237619009,359939009) THEN 4
+                                    WHEN d.id IN (14052004,28453007) THEN 5
+                                    WHEN d.id IN (2751001,4307007,4783006,5368009,5969009,8801005,33559001,42954008,49817004,51002006,57886004,59079001,70694009,
+                                                              73211009,75524006,75682002,111552007,111554008,127012008,190329007,190330002,190331003,190406000,190407009,190410002,
+                                                              190411003,190412005,190416008,190447002,199226008,199228009,199231005,237600004,237601000,237603002,237611007,237612000,
+                                                              237616002,237617006,237620003,238981002,275918005,276560009,408540003,413183008,420422005,420683009,421256007,421895002,
+                                                              422088007,422183001,422275004,426705001,426875007,427089005,441628001,91352004,399144008) THEN 9
+                                    ELSE ""
+                                    END
+
+                    ) AS DiabetesTypeId,
+                    "" AS DiabetesRegimeId,
+                    IFNULL((DATE_FORMAT(`date`, '%Y') - DATE_FORMAT(p.dob, '%Y') - (DATE_FORMAT(`date`, '00-%m-%d') < DATE_FORMAT(p.dob, '00-%m-%d'))),"") AS AgeAtDiagnosis
+            FROM tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c
+            JOIN patient p ON c.patient_id = p.id
+            JOIN secondary_diagnosis s ON s.patient_id = p.id
+            JOIN disorder d ON d.id = s.disorder_id;
+EOL;
+        return $query;
+    }
+
+
+
     /********** Patient **********/
     
     /**
@@ -1129,46 +1196,12 @@ EOL;
 
     private function getEpisodeDiabeticDiagnosis()
     {
-        $dateWhere = $this->getDateWhere('s');
-
-        $disorder = Disorder::model()->findByPk(Disorder::SNOMED_DIABETES);
-        $disorder_ids = implode(",", $disorder->descendentIds());
-
-        $query = <<<EOL
-                    SELECT 	
-                    e.id AS EpisodeId, 
-                    1 AS IsDiabetic,
-
-                    (
-                            SELECT CASE 
-                                    WHEN d.id IN (23045005,28032008,46635009,190368000,190369008,190371008,190372001,199229001,237618001,290002008,313435000,314771006,314893005,
-                                                               314894004,401110002,420270002,420486006,420514000,420789003,420825003,420868002,420918009,421165007,421305000,421365002,421468001,
-                                                               421893009,421920002,422228004,422297002,425159004,425442003,426907004,427571000,428896009,11530004) THEN 1
-                                    WHEN d.id IN (9859006,44054006,81531005,190388001,190389009,190390000,190392008,199230006,237599002,237604008,237614004,237650006,
-                                                               313436004,314772004,314902007,314903002,314904008,359642000,395204000,420279001,420414003,420436000,420715001,420756003,
-                                                               421326000,421631007,421707005,421750000,421779007,421847006,421986006,422014003,422034002,422099009,422166005,423263001,
-                                                               424989000,427027005,427134009,428007007,359638003) THEN 2
-                                    WHEN d.id IN (237626009,237627000,11687002,46894009,71546005,75022004,420491007,420738003,420989005,421223006,421389009,421443003,
-                                                               422155003,76751001,199223000,199225007,199227004) THEN 3
-                                    WHEN d.id IN (237619009,359939009) THEN 4
-                                    WHEN d.id IN (14052004,28453007) THEN 5
-                                    WHEN d.id IN (2751001,4307007,4783006,5368009,5969009,8801005,33559001,42954008,49817004,51002006,57886004,59079001,70694009,
-                                                              73211009,75524006,75682002,111552007,111554008,127012008,190329007,190330002,190331003,190406000,190407009,190410002,
-                                                              190411003,190412005,190416008,190447002,199226008,199228009,199231005,237600004,237601000,237603002,237611007,237612000,
-                                                              237616002,237617006,237620003,238981002,275918005,276560009,408540003,413183008,420422005,420683009,421256007,421895002,
-                                                              422088007,422183001,422275004,426705001,426875007,427089005,441628001,91352004,399144008) THEN 9
-                                    ELSE ""
-                                    END 
-
-                    ) AS DiabetesTypeId,
-                    "" AS DiabetesRegimeId,
-                    IFNULL((DATE_FORMAT(`date`, '%Y') - DATE_FORMAT(dob, '%Y') - (DATE_FORMAT(`date`, '00-%m-%d') < DATE_FORMAT(dob, '00-%m-%d'))),"") AS AgeAtDiagnosis
-            FROM secondary_diagnosis s
-            JOIN disorder d ON d.id = s.disorder_id
-            JOIN episode e ON e.patient_id = s.patient_id
-            JOIN patient p ON e.patient_id = p.id
-            WHERE d.id IN ( $disorder_ids ) $dateWhere
+       $query = <<<EOL
+                SELECT c.nod_episode_id as EpisodeId, d.IsDiabetic, d.DiabetesTypeId, d.DiabetesRegimeId, d.AgeAtDiagnosis
+                FROM tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c
+                JOIN tmp_rco_nod_EpisodeDiabeticDiagnosis_{$this->extract_identifier} d ON c.oe_event_id = d.oe_event_id
 EOL;
+
 
         $dataQuery = array(
             'query' => $query,
