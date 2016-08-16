@@ -111,6 +111,54 @@ class NodExportController extends BaseController
 
         parent::init();
     }
+    
+    public function actionIndex()
+    {
+        // TODO: need to create views!!!
+        $this->render('//nodexport/index');
+    }
+    
+    
+     /**
+     * Generates CSV and zip files then sends to the browser 
+     */
+    public function actionGenerate()
+    {
+
+        $this->generateExport();
+
+        $this->createZipFile();
+
+        if (file_exists($this->exportPath . '/' . $this->zipName)) {
+            Yii::app()->getRequest()->sendFile($this->zipName, file_get_contents($this->exportPath . '/' . $this->zipName));
+        } else {
+        }
+    }
+    
+    /**
+     * Generates the CSV files
+     */
+    public function generateExport()
+    {
+
+        $query = $this->createAllTempTables();
+        $query .= $this->populateAllTempTables();
+//echo $query; die;
+        Yii::app()->db->createCommand($query)->execute();
+
+        $this->getAllEpisodeId();
+
+        $this->getEpisodeDiagnosis();
+        $this->getEpisode();
+        
+        $this->getSurgeons();
+        
+        $this->getPatientCviStatus();
+        $this->getPatients();
+        $this->clearAllTempTables();
+
+    }
+
 
     private function getAllEpisodeId()
     {
@@ -191,34 +239,24 @@ class NodExportController extends BaseController
         return $objectIds;
     }
 
-    public function actionIndex()
-    {
-        // TODO: need to create views!!!
-        $this->render('//nodexport/index');
-    }
 
-    public function actionTest()
-    {
-
-        $this->createAllTempTables();
-        $this->getAllEpisodeId();
-        $this->clearAllTempTables();
-    }
 
     private function createAllTempTables()
     {
         // DROP all tables if exsist before createing them
         $this->clearAllTempTables();
         
-        $this->createTmpRcoNodMainEventEpisodes();
-        $this->createTmpRcoNodPatients();
-        $this->createTmpRcoNodPatientCVIStatus();
-        $this->createTmpRcoNodEpisodePreOpAssessment();
-        $this->createTmpRcoNodEpisodeRefraction();
-        $this->createTmpRcoNodEpisodeDrug();
-        $this->createTmpRcoNodEpisodeIOP();
-        $this->createTmpRcoNodEpisodeBiometry();
-        $this->createTmpRcoNodSurgeons();
+        $query = '';
+
+        $query .= $this->createTmpRcoNodMainEventEpisodes();
+        $query .= $this->createTmpRcoNodPatients();
+        $query .= $this->createTmpRcoNodPatientCVIStatus();
+        $query .= $this->createTmpRcoNodEpisodePreOpAssessment();
+        $query .= $this->createTmpRcoNodEpisodeRefraction();
+        $query .= $this->createTmpRcoNodEpisodeDrug();
+        $query .= $this->createTmpRcoNodEpisodeIOP();
+        $query .= $this->createTmpRcoNodEpisodeBiometry();
+        $query .= $this->createTmpRcoNodSurgeon();
         
         $createTempQuery = <<<EOL
 
@@ -473,8 +511,8 @@ class NodExportController extends BaseController
              
                 
 EOL;
-        Yii::app()->db->createCommand($createTempQuery)->execute();
 
+        return $query . $createTempQuery;
     }
     
     // Refactoring :
@@ -483,14 +521,19 @@ EOL;
      */
     private function populateAllTempTables()
     {
-        $this->populateTmpRcoNodMainEventEpisodes();
-        $this->populateTmpRcoNodPatients();
-        $this->populateTmpRcoNodEpisodePreOpAssessment();
-        $this->populateTmpRcoNodPatientCVIStatus();
-        $this->populateTmpRcoNodEpisodeRefraction();
-        $this->populateTmpRcoNodEpisodeDrug();
-        $this->populateTmpRcoNodEpisodeIOP();
-        $this->populateTmpRcoNodEpisodeBiometry();
+        $query = '';
+        
+        $query .= $this->populateTmpRcoNodMainEventEpisodes();
+        $query .= $this->populateTmpRcoNodPatients();
+        $query .= $this->populateTmpRcoNodEpisodePreOpAssessment();
+        $query .= $this->populateTmpRcoNodPatientCVIStatus();
+        $query .= $this->populateTmpRcoNodEpisodeRefraction();
+        $query .= $this->populateTmpRcoNodEpisodeDrug();
+        $query .= $this->populateTmpRcoNodEpisodeIOP();
+        $query .= $this->populateTmpRcoNodEpisodeBiometry();
+        $query .= $this->populateTmpRcoNodSurgeon();
+
+        return $query;
     }
     
     private function clearAllTempTables()
@@ -505,6 +548,7 @@ EOL;
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeDrug_{$this->extract_identifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeIOP_{$this->extract_identifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeBiometry_{$this->extract_identifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_Surgeon_{$this->extract_identifier};
 
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication_type;
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication;
@@ -531,11 +575,20 @@ EOL;
     
     /********** Surgeon **********/
 
-    private function createTmpRcoNodSurgeons()
+    private function createTmpRcoNodSurgeon()
     {
         $query = <<<EOL
-            
+            DROP TABLE IF EXISTS tmp_rco_nod_Surgeon_{$this->extract_identifier};
+            CREATE TABLE tmp_rco_nod_Surgeon_{$this->extract_identifier} (
+                    Surgeonid INT(10) NOT NULL,
+                    GMCnumber VARCHAR(250) DEFAULT NULL,
+                    Title VARCHAR(40) NOT NULL,
+                    FirstName VARCHAR(40) NOT NULL,
+                    CurrentGradeId VARCHAR(10) DEFAULT NULL,
+                    PRIMARY KEY (Surgeonid)
+            );
 EOL;
+        return $query;
     }
     /**
      * This table will contain the only person identifiable data (surgeon’s GMC number or national code
@@ -544,15 +597,36 @@ EOL;
      * record if they move between centres. This was not done with the ‘legacy’ data already in
      *  NOD and therefore at present we do not have the ability to identify individual surgeons.
      */
+    
+    private function populateTmpRcoNodSurgeon()
+    {
+        $query = <<<EOL
+            INSERT INTO tmp_rco_nod_Surgeon_{$this->extract_identifier} (
+                Surgeonid,
+                GMCnumber,
+                Title,
+                FirstName,
+                CurrentGradeId
+            )
+            SELECT 
+                id AS Surgeonid, 
+                IFNULL(registration_code, '') AS GMCnumber, 
+                IFNULL(title, '') AS Title,
+                IFNULL(first_name, '') AS FirstName,
+                IFNULL(user.doctor_grade_id, '')  AS CurrentGradeId
+            FROM user
+            WHERE is_surgeon = 1 AND active = 1;
+EOL;
+        #Yii::app()->db->createCommand($query)->execute();
+        return $query;
+    }
+
     private function getSurgeons()
     {
 
-
         $query = <<<EOL
-    SELECT id as Surgeonid, IFNULL(registration_code, '') as GMCnumber, IFNULL(title, '') as Title, IFNULL(first_name, '') as FirstName,
-    user.`doctor_grade_id`  AS CurrentGradeId
-FROM user 
-WHERE is_surgeon = 1 AND active = 1 
+                SELECT * 
+                FROM tmp_rco_nod_Surgeon_{$this->extract_identifier}
 EOL;
 
         $dataQuery = array(
@@ -590,7 +664,7 @@ EOL;
                 PRIMARY KEY (PatientId)
             );
 EOL;
-        Yii::app()->db->createCommand($query)->execute();
+        return $query;
     }
     
     /**
@@ -621,9 +695,9 @@ EOL;
                     (
                         SELECT DISTINCT(c.patient_id)
                         FROM tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c
-                    )
+                    ); 
 EOL;
-        Yii::app()->db->createCommand($query)->execute();
+        return $query;
     }
     
     /**
@@ -663,7 +737,7 @@ EOL;
                 UNIQUE KEY PatientId (PatientId,date)
             );
 EOL;
-        Yii::app()->db->createCommand($query)->execute();
+        return $query;
     }
     
     /**
@@ -689,7 +763,7 @@ EOL;
                 /* Restriction: patients in control events */
                 WHERE poi.patient_id IN ( SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extract_identifier}  c );
 EOL;
-        Yii::app()->db->createCommand($query)->execute();
+        return $query;
     }       
     
     private function getPatientCviStatus()
@@ -726,7 +800,7 @@ EOL;
                 PRIMARY KEY (oe_event_id)
             );
 EOL;
-        Yii::app()->db->createCommand($query)->execute();
+        return $query;
     }
     
     /**
@@ -778,7 +852,7 @@ EOL;
                         WHERE event_type.`name` IN ('Examination', 'Biometry', 'Prescription')
                     );
 EOL;
-        Yii::app()->db->createCommand($query)->execute();
+        return $query;
     }
     
     private function getEpisode()
@@ -813,7 +887,7 @@ EOL;
                 UNIQUE KEY oe_event_id (oe_event_id,Eye)
             );
 EOL;
-        Yii::app()->db->createCommand($query)->execute();
+        return $query;
     }
     
     private function populateTmpRcoNodEpisodePreOpAssessment()
@@ -875,7 +949,7 @@ EOL;
                     /* Group by required as may have multiple procedures on eye */
                     GROUP BY oe_event_id, Eye, IsAbleToLieFlat, IsInabilityToCooperate;
 EOL;
-        Yii::app()->db->createCommand($query)->execute();
+        return $query;
     }
     
     private function getEpisodePreOpAssessment()
@@ -915,7 +989,7 @@ EOL;
                 );
 EOL;
                 
-        Yii::app()->db->createCommand($query)->execute();
+        return $query;
     }
     /**
      * Populate  tmp_rco_nod_EpisodeRefraction_* table
@@ -975,7 +1049,7 @@ EOL;
                 WHERE r.eye_id IN (2,3);
 EOL;
                 
-        Yii::app()->db->createCommand($query)->execute();
+        return $query;
         
     }
     
@@ -1124,7 +1198,7 @@ EOL;
                         IsStartDateApprox TINYINT(1) DEFAULT NULL
                 );
 EOL;
-        Yii::app()->db->createCommand($query)->execute();
+        return $query;
         
     }
     
@@ -1220,7 +1294,7 @@ EOL;
                     WHERE medication.id is NULL;
 EOL;
                       
-        Yii::app()->db->createCommand($query)->execute();
+        return $query;
     }
             
 
@@ -1273,7 +1347,7 @@ EOL;
             );
 EOL;
         
-        Yii::app()->db->createCommand($query)->execute();
+        return $query;
     }
     
     private function populateTmpRcoNodEpisodeBiometry()
@@ -1318,7 +1392,7 @@ EOL;
 		
                 FROM tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c
 
-                #Joining event because we need the created date of the event
+                /*Joining event because we need the created date of the event*/
                 JOIN event AS ev ON c.oe_event_id = ev.id
 
                 JOIN et_ophinbiometry_measurement ms ON c.oe_event_id = ms.event_id
@@ -1328,7 +1402,7 @@ EOL;
                         AND opnote.created_date < ev.created_date
 
                 LEFT JOIN ophinbiometry_imported_events ON ev.id = ophinbiometry_imported_events.event_id
-                LEFT JOIN et_ophinbiometry_selection ON ev.id = et_ophinbiometry_selection.event_id 
+                LEFT JOIN et_ophinbiometry_selection ON ev.id = et_ophinbiometry_selection.event_id
                         /* Restrict: LEFT/BOTH eyes */
                         AND et_ophinbiometry_selection.eye_id = 1 OR et_ophinbiometry_selection.eye_id = 3
 
@@ -1373,12 +1447,12 @@ EOL;
 
                 FROM tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c
 
-                #Joining event because we need the created date of the event
+                /*Joining event because we need the created date of the event*/
                 JOIN event AS ev ON c.oe_event_id = ev.id
 
                 JOIN et_ophinbiometry_measurement ms ON c.oe_event_id = ms.event_id
 
-                JOIN EVENT AS opnote ON c.oe_event_id = opnote.id
+                JOIN event AS opnote ON c.oe_event_id = opnote.id
                         AND c.oe_event_type = 4 #Op Note
                         AND opnote.created_date < ev.created_date
 
@@ -1393,7 +1467,7 @@ EOL;
                 WHERE ms.deleted = 0 AND ev.deleted = 0;
                 
 EOL;
-        Yii::app()->db->createCommand($query)->execute();
+        return $query;
     }
 
     private function getEpisodeBiometry()
@@ -1467,7 +1541,7 @@ EOL;
             );
 EOL;
         
-        Yii::app()->db->createCommand($query)->execute();
+        return $query;
     }
     
     /**
@@ -1522,7 +1596,7 @@ EOL;
                     WHERE oipv.eye_id IN (2,3);
             
 EOL;
-        Yii::app()->db->createCommand($query)->execute();
+        return $query;
     }
     
     private function getEpisodeIOP()
@@ -2141,42 +2215,6 @@ EOL;
             $zip->addFile($filename, basename($filename));
         }
         $zip->close();
-    }
-    
-    /**
-     * Generates CSV and zip files then sends to the browser 
-     */
-    public function actionGenerate()
-    {
-
-        $this->generateExport();
-
-        $this->createZipFile();
-
-        if (file_exists($this->exportPath . '/' . $this->zipName)) {
-            Yii::app()->getRequest()->sendFile($this->zipName, file_get_contents($this->exportPath . '/' . $this->zipName));
-        } else {
-        }
-    }
-
-    /**
-     * Generates the CSV files
-     */
-    public function generateExport()
-    {
-
-        $this->createAllTempTables();
-        $this->populateAllTempTables();
-
-        $this->getAllEpisodeId();
-
-        $this->getEpisodeDiagnosis();
-        $this->getEpisode();
-//$this->getSurgeons();
-        $this->getPatientCviStatus();
-        $this->getPatients();
-        $this->clearAllTempTables();
-
     }
 
     /**
