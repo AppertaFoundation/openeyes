@@ -143,13 +143,13 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
         switch ($value)
         {
             case '0':
-                $text = 'No';
+                $text = 'Not Checked';
                 break;
             case '1':
                 $text = 'Yes';
                 break;
             case '2':
-                $text = 'Not Checked';
+                $text = 'No';
                 break;
         }
 
