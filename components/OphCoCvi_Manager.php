@@ -118,6 +118,10 @@ class OphCoCvi_Manager extends \CComponent
         return $this->getElementForEvent($event, 'Element_OphCoCvi_ClericalInfo');
     }
 
+    public function getConsentSignatureElement(\Event $event)
+    {
+        return $this->getElementForEvent($event, 'Element_OphCoCvi_ConsentSignature');
+    }
 
     /**
      * Generate the text display of the status of the CVI
@@ -194,6 +198,50 @@ class OphCoCvi_Manager extends \CComponent
             return $clinical->consultant;
         }
         return null;
+    }
+
+    /**
+     * @param \Event $event
+     * @return bool
+     */
+    public function canIssueCvi(\Event $event)
+    {
+        if ($info = $this->getElementForEvent($event, 'Element_OphCoCvi_EventInfo')) {
+            if (!$info->is_draft) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+
+        if ($clinical = $this->getClinicalElementForEvent($event)) {
+            $clinical->setScenario('finalise');
+            if (!$clinical->validate()) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+
+        if ($clerical = $this->getClericalElementForEvent($event)) {
+            $clerical->setScenario('finalise');
+            if (!$clerical->validate()) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+
+        if ($signature = $this->getConsentSignatureElement($event)) {
+            if (!$signature->checkSignature()) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+
+
+        return true;
     }
 
     /**
@@ -307,4 +355,5 @@ class OphCoCvi_Manager extends \CComponent
             'criteria' => $criteria
         ));
     }
+
 }

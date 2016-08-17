@@ -94,6 +94,15 @@ class DefaultController extends \BaseEventTypeController
         return $this->checkAccess('OprnEditClinicalCvi', $this->getApp()->user->id);
     }
 
+    /**
+     * Determine if the current event can be issued
+     *
+     * @return bool
+     */
+    public function canIssue()
+    {
+        return $this->getManager()->canIssueCvi($this->event);
+    }
 
     /**
      * @param models\Element_OphCoCvi_ClinicalInfo $element
