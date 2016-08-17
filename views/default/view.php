@@ -22,7 +22,6 @@ if ($this->checkPrintAccess()) {
     $this->event_actions[] = EventAction::button('Print', 'print', null, array('class' => 'small button'));
 }
 $this->beginContent('//patient/event_container');
-$this->moduleNameCssClass .= " highlight-fields";
 ?>
 
 <?php if ($this->event->delete_pending) { ?>
