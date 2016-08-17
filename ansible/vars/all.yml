@@ -81,32 +81,19 @@ php_packages:
   - imagemagick
   - php5-mysql
   - php5-xsl
+
 # Change depending on PHP Version
 php_xdebug:
   - php5-xdebug
 # php_xdebug:
 #   - php7-xdebug
 
-# https://github.com/geerlingguy/ansible-role-composer
-composer_keep_updated: true
-# composer_github_oauth_token: ''
-
-# https://github.com/geerlingguy/ansible-role-php-xdebug
-# php_xdebug_default_enable: true
-# php_xdebug_coverage_enable: true
-# php_xdebug_cli_enable: false
-# php_xdebug_remote_enable: true
-# php_xdebug_remote_connect_back: true
-# php_xdebug_remote_port: "9000"
-# php_xdebug_idekey: across-health.xdebug
-# php_xdebug_remote_log: /tmp/xdebug.log # Useful for connection debug
-
-# https://github.com/MaximeThoonsen/ansible-role-php-xdebug
-# php_xdebug_remote_enable: true
-# php_xdebug_remote_connect_back: true
-# php_xdebug_remote_port: "9000"
-# php_xdebug_idekey: across-health.xdebug
-# php_xdebug_remote_log: /tmp/xdebug.log # Useful for connection debug
+# XDebug config, see app/defaults/main.yml for configurable options
+php_xdebug_remote_enable: true
+php_xdebug_remote_connect_back: true
+php_xdebug_remote_port: "9000"
+php_xdebug_idekey: across-health.xdebug
+php_xdebug_remote_log: /tmp/xdebug.log # Useful for connection debug
 
 # https://github.com/pludoni/ansible-wkhtmltox
 # No options configured at this time
