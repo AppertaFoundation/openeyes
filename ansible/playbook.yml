@@ -23,7 +23,5 @@
     - geerlingguy.nodejs
     - geerlingguy.php
     - geerlingguy.composer
-    # - geerlingguy.php-xdebug
-    # - MaximeThoonsen.php5-xdebug
     - pludoni.wkthmltox
     - app
