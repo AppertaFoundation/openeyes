@@ -77,6 +77,15 @@ If either are omitted the default vales of "openeyes.vm"" and "OpenEyes Dev Serv
 
 **Note:** if the options are omitted the default values are used, the command line options have to be before the vagrant command for them to work.
 
+#### XDebug
+
+Is enabled in Apache by default and carries an up to 1 second time penalty on requests, if you don't need or won't be using XDebug at all then commenting changing lines 85 - 86 in `ansible/vars/all.yml` to comment out the package name will ensure it isn't installed.
+
+	# php_xdebug:
+	#   - php5-xdebug
+
+Bt default Xdebug is disabled on the CLI due to [documented](https://getcomposer.org/doc/articles/troubleshooting.md#xdebug-impact-on-composer) performance issues when using composer.
+
 #### Windows 10
 
 You will need to have downloaded VC++ for Vagrant to be able to download base boxes for the build see this issue for more information [https://github.com/mitchellh/vagrant/issues/6754](https://github.com/mitchellh/vagrant/issues/6754)
@@ -90,7 +99,16 @@ You will need to have downloaded VC++ for Vagrant to be able to download base bo
 * `vagrant suspend` - Will suspend the machine
 * `vagrant destroy` - Will remove the machine build
 
-And if that's not enough there is the Vagrant [documentation](https://www.vagrantup.com/docs/) and also `vagrant help`
+And if that's not enough there is the Vagrant [documentation](https://www.vagrantup.com/docs/) and also `vagrant help
+
+#### Todo:
+
+Additional / Outstanding tasks to be completed:
+
+* Full Windows platform testing
+* Configuration optimisation to make it easier to make changes to the build from a single file
+* Changes to support AWS provisioning (although this may be better left to a build specific Ansible playbook)
+* Tailor the roles better to the OE build rather than coding around more generic [Ansible Galaxy](https://galaxy.ansible.com) based roles.
 
 Printing
 --------
