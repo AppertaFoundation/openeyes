@@ -17,12 +17,12 @@
 
 namespace OEModule\OphCoCvi\controllers;
 
-use OEModule\OphCoCvi\components\optomPortalConnection;
-use OEModule\OphCoCvi\models;
-use OEModule\OphCoCvi\components\OphCoCvi_Manager;
-use \OEModule\OphCoCvi\components\ODTTemplateManager;
-use \OEModule\OphCoCvi\components\ODTDataHandler;
-use \OEModule\OphCoCvi\components\SignatureQRCodeGenerator;
+use \optomPortalConnection;
+use \OEModule\OphCoCvi\models;
+use \OEModule\OphCoCvi\components\OphCoCvi_Manager;
+use \ODTTemplateManager;
+use \ODTDataHandler;
+use \SignatureQRCodeGenerator;
 
 
 class DefaultController extends \BaseEventTypeController
@@ -253,7 +253,7 @@ class DefaultController extends \BaseEventTypeController
         $postCodeHeader = array('','','','','');
         $spaceHolder = array('');
         $data["genderTable"] = array(0=> array_merge($genderData, $spaceHolder, $yearHeader, $spaceHolder, $postCodeHeader ));
-
+        
         return $data;
     }
 
@@ -275,12 +275,7 @@ class DefaultController extends \BaseEventTypeController
             // we check if the signature is exists on the portal
             $portalConnection = new optomPortalConnection();
             $signatureData = $portalConnection->signatureSearch(null, \Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($event));
-            //$signatureData = $portalConnection->signatureSearch();
-
-            //print_r($signatureData);die;
-            // TEST DATA!
-            //$signatureData = $portalConnection->signatureSearch(null, 'RP67-26B8MC-3');
-
+           
             if(is_array($signatureData) && isset($signatureData["image"]))
             {
                 $imageFile = $portalConnection->createNewSignatureImage($signatureData["image"], $this->patient->id);
@@ -303,55 +298,56 @@ class DefaultController extends \BaseEventTypeController
         }
 
 
-        // TODO: need to find a place for the template files! (eg. views/odtTemplates) ?
-        $inputFile = 'example_certificate_5.odt';
-        $printHelper = new ODTTemplateManager( $inputFile , realpath(__DIR__ . '/..').'/files', 'CVICert_'.\Yii::app()->user->id.'_'.rand().'.odt');
-
-        //print '<pre>'; print_r($this->getStructuredDataForPrintPDF($id)); die;
-
+        //views/odtTemplates/cviTemplate.odt)
+        $inputFile = 'cviTemplate.odt';
+        $printHelper = new ODTTemplateManager( 
+                $inputFile , 
+                realpath(__DIR__ . '/..').'/views/odtTemplate', 
+                \Yii::app()->basePath.'/runtime/cache/cvi/',
+                'CVICert_'.\Yii::app()->user->id.'_'.rand().'.odt'
+        );
+        
+      
+        
         $DH = new ODTDataHandler();
         $DH -> setTableAndSimpleTextDataFromArray( $this->getStructuredDataForPrintPDF($id) );
-        //print_r($DH->getDataSource());die;
-
-        $tables = $DH -> gettables();
         
+        $tables = $DH -> gettables();
+       
         foreach($tables as $oneTable){
             $name = $oneTable['name'];
             $data = $DH -> generateSimpleTableHashData( $oneTable );
             $printHelper->fillTableByName( $name , $data, 'name' );
+            
         }
-
-        // TEST DATA!!
+       
+    //******* TEST DATAS!!
+       
         $data = array( 
             array('','','','','','','','','','','Y'),
             array('','','','','','','','','','','Y'),
             array('','','','','','','','','','','N'),
             array('','','','','','','','','','','Y'),
             array('','','','','','','','','','','N'),
+            array('','','','','','','','','','','N'),
+            array('','','','','','','','','','','N'),
+            array('','','','','','','','','','','N'),
+            array('','','','','','','','','','','N'),
         );        
-        $printHelper->fillTableByName( 'otherRelevantFactors' , $data, 'name' );
-
+        $printHelper->fillTableByName( 'patientFactors' , $data, 'name' );
         
+    //******* TEST DATA END!!
         $texts = $DH -> getSimpleTexts();
         $printHelper->exchangeAllStringValuesByStyleName( $texts );
-        
+       
         //$printHelper->exchangeStringValues( $this->getStructuredDataForPrintPDF($id) );
         
-        //$printHelper->exchangeAllStringValuesByNodes( $this->getStructuredDataForPrintPDF($id) );
         // TODO: we need to check which function to call
         $printHelper->changeImageFromGDObject('signatureImagePatient', $signature);
         $printHelper->saveContentXML();
         $printHelper->generatePDF();
         $printHelper->getPDF();
         $event->unlock();
-
-        /*$pdf = $event->getPDF($this->pdf_print_suffix);
-
-        header('Content-Type: application/pdf');
-        header('Content-Length: '.filesize($pdf));
-
-        readfile($pdf);
-        @unlink($pdf);*/
 
     }
 
