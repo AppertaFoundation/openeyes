@@ -143,7 +143,7 @@ class NodExportController extends BaseController
 
         $query = $this->createAllTempTables();
         $query .= $this->populateAllTempTables();
-echo $query; die;
+//echo $query; die;
         Yii::app()->db->createCommand($query)->execute();
 
         $this->getAllEpisodeData();
@@ -174,7 +174,7 @@ echo $query; die;
         //$this->saveIds('tmp_operation_ids', $this->getEpisodeOperationAnaesthesia());
         //$this->saveIds('tmp_operation_ids', $this->getEpisodeOperationIndication());
         //$this->saveIds('tmp_operation_ids', $this->getEpisodeOperationComplication());
-        //$this->saveIds('tmp_episode_ids', $this->getEpisodeOperation());
+        $this->getEpisodeOperation();
         //$this->saveIds('tmp_treatment_ids', $this->getEpisodeTreatmentCataract());
         //$this->getEpisodeTreatment();
     }
@@ -260,6 +260,7 @@ echo $query; die;
         $query .= $this->createTmpRcoNodEpisodeDiabeticDiagnosis();
         $query .= $this->createTmpRcoNodPostOpComplication();
         $query .= $this->createTmpRcoNodEpisodeOperationCoPathology();
+        $query .= $this->createTmpRcoNodEpisodeOperation();
         
         $createTempQuery = <<<EOL
 
@@ -539,6 +540,7 @@ EOL;
         $query .= $this->populateTmpRcoNodEpisodeDiabeticDiagnosis();
         $query .= $this->populateTmpRcoNodPostOpComplication();
         $query .= $this->populateTmpRcoNodEpisodeOperationCoPathology();
+        $query .= $this->populateTmpRcoNodEpisodeOperation();
 
         return $query;
     }
@@ -559,6 +561,7 @@ EOL;
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeDiabeticDiagnosis_{$this->extract_identifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationCoPathology_{$this->extract_identifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodePostOpComplication_{$this->extract_identifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperation_{$this->extract_identifier};
                 
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication_type;
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication;
@@ -2128,33 +2131,96 @@ EOL;
         //return $this->getIdArray($data, 'OperationId');
     }
 
+    /********** EpisodeOperation **********/
+    
+    private function createTmpRcoNodEpisodeOperation()
+    {
+        $query = <<<EOL
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperation_{$this->extract_identifier};
+                CREATE TABLE tmp_rco_nod_EpisodeOperation_{$this->extract_identifier} (
+                    oe_event_id int(10) NOT NULL,
+                    OperationId int(10) NOT NULL,
+                    Description text,
+                    IsHypertensive VARCHAR(1) DEFAULT NULL,
+                    ListedDate date NOT NULL,
+                    SurgeonId int(10) NOT NULL,
+                    SurgeonGradeId int(11) NOT NULL,
+                    AssistantId varchar(10) DEFAULT NULL,
+                    AssistantGradeId varchar(10) DEFAULT NULL,
+                    ConsultantId varchar(10) DEFAULT NULL,
+                    PRIMARY KEY (oe_event_id),
+                    UNIQUE KEY OperationId (OperationId)
+                );
+EOL;
+        return $query;
+    }
+    
+    private function populateTmpRcoNodEpisodeOperation()
+    {
+        $query = <<<EOL
+            INSERT INTO tmp_rco_nod_EpisodeOperation_{$this->extract_identifier} (
+                oe_event_id,
+                OperationId,
+                Description,
+                IsHypertensive,
+                ListedDate,
+                SurgeonId,
+                SurgeonGradeId,
+                AssistantId,
+                AssistantGradeId,
+                ConsultantId
+            )
+            SELECT
+                c.oe_event_id, c.oe_event_id AS OperationId,
+               '' AS Description, /* TODO (not required for minimal data set) mapping: et_ophtroperationnote_procedurelist.id-> ophtroperationnote_procedurelist_procedure_assignment.proc_id->proc.snomed_term (semi-colon separated) */
+               '' AS IsHypertensive, /* TODO (not required for minimal data set) Toby Bisco said not currently in OE */
+               DATE(c.nod_date) AS ListedDate, /* TODO (not required for minimal data set) the specified mapping may not be correct */
+               s.surgeon_id AS SurgeonId,
+               su.doctor_grade_id AS SurgeonGradeId,
+               s.assistant_id AS AssistantId,
+               au.doctor_grade_id AS AssistantGradeId,
+               s.supervising_surgeon_id AS ConsultantId /* TODO (not required for minimal data set) but mapping not fully implemented */
+              /* Restriction: Start with control events */
+
+              FROM tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c
+
+              /* Join: Look up Operation Note SURGEON information */
+              /* LOOOOOOOOOOOOOOK TODO CHECK ASSUMPTION: only one et_ophtroperationnote_surgeon per operation note */
+              LEFT OUTER JOIN et_ophtroperationnote_surgeon s ON s.event_id = c.oe_event_id
+
+              /* Join: Look up SURGEON user information (LOJ used to return nulls if data problems (as opposed to loosing parent rows) */
+              LEFT OUTER JOIN user su ON s.surgeon_id = su.id
+
+              /* Join: Look up ASSISTANT user information (LOJ used to return nulls if data problems (as opposed to loosing parent rows) */
+              LEFT OUTER JOIN user au ON s.assistant_id = au.id
+
+              /* Restrict: Only OPERATION NOTE type events */
+              WHERE c.oe_event_type = 4 #'Operation Note';
+EOL;
+        return $query;
+    }
+    
+    
     private function getEpisodeOperation()
     {
-
-        $query = "SELECT e.id AS OperationId, e.episode_id AS EpisodeId, 
-                '' as Description, 
-                '' as IsHypertensive,
-                DATE(e.event_date) AS ListedDate,
-			s.surgeon_id AS SurgeonId, 
-			user.`doctor_grade_id` AS SurgeonGradeId,
-                        s.assistant_id as AssistantId,
-                        (SELECT doctor_grade_id FROM user WHERE id = s.assistant_id) as AssistantGradeId,
-                        s.supervising_surgeon_id as ConsultantId
-					FROM `event` e
-					JOIN event_type evt ON evt.id = e.event_type_id
-					LEFT JOIN et_ophtroperationnote_surgeon s ON s.event_id = e.id
-					INNER JOIN `user` ON s.`surgeon_id` = `user`.`id`
-					WHERE e.id in (SELECT id FROM tmp_operation_ids)";
-
-
+        $query = <<<EOL
+            SELECT  op.OperationId, c.nod_episode_id as EpisodeId, op.Description, op.IsHypertensive, op.ListedDate, op.SurgeonId, IFNULL(op.SurgeonGradeId, "") as SurgeonGradeId, 
+                    IFNULL(op.AssistantId, "") as AssistantId,
+                    IFNULL(op.AssistantGradeId, "") as AssistantGradeId, IFNULL(op.ConsultantId, "") as ConsultantId
+            FROM tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c
+            JOIN tmp_rco_nod_EpisodeOperation_{$this->extract_identifier} op ON c.oe_event_id = op.oe_event_id
+            
+EOL;
         $dataQuery = array(
             'query' => $query,
             'header' => array('OperationId', 'EpisodeId', 'Description', 'IsHypertensive', 'ListedDate', 'SurgeonId', 'SurgeonGradeId', 'AssistantId', 'AssistantGradeId','ConsultantId'),
         );
-        return $this->saveCSVfile($dataQuery, 'EpisodeOperation', null, 'OperationId');
+        return $this->saveCSVfile($dataQuery, 'EpisodeOperation');
 
         //return $this->getIdArray($data, 'OperationId');
     }
+    
+    /********** end of EpisodeOperation **********/
 
     private function getEpisodeVisualAcuity()
     {
