@@ -6,5 +6,4 @@
 - src: geerlingguy.mysql
 - src: geerlingguy.nodejs
 - src: geerlingguy.php
-- src: geerlingguy.php-xdebug
 - src: pludoni.wkthmltox
