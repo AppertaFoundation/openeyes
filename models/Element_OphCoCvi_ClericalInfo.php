@@ -71,7 +71,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 	{
 		return array(
 			array('event_id, employment_status_id, preferred_info_fmt_id, info_email, contact_urgency_id, preferred_language_id, social_service_comments, ', 'safe'),
-			//array('employment_status_id, preferred_info_fmt_id, contact_urgency_id, preferred_language_id, social_service_comments, ', 'required'),
+			array('employment_status_id, preferred_info_fmt_id, contact_urgency_id, preferred_language_id, social_service_comments, ', 'required', 'on' => 'finalise'),
 			array('id, event_id, employment_status_id, preferred_info_fmt_id, info_email, contact_urgency_id, preferred_language_id, social_service_comments, ', 'safe', 'on' => 'search'),
 		);
 	}

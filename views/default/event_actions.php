@@ -15,28 +15,5 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-?>
-
-<?php
-$this->beginContent('//patient/event_container'); ?>
-
-<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-    'id' => 'create-form',
-    'enableAjaxValidation' => false,
-    'layoutColumns' => array(
-        'label' => 2,
-        'field' => 10
-    )
-));
-
-$this->renderPartial('event_actions', array('form_id' => 'create-form'));
-?>
-
-<?php $this->displayErrors($errors) ?>
-<?php $this->renderPartial('//patient/event_elements', array('form' => $form)); ?>
-
-<?php $this->displayErrors($errors, true) ?>
-
-<?php $this->endWidget() ?>
-
-<?php $this->endContent() ?>
+$this->event_actions[] = EventAction::button('Save draft', 'savedraft', array('level' => 'secondary'), array('id' => 'et_save_draft', 'class' => 'button small', 'form' => $form_id, 'value' => 1));
+$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'primary'), array('class' => 'button small', 'form' => $form_id, 'value' => 1));

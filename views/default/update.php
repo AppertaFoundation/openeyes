@@ -31,7 +31,8 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 ));
 
 // Event actions
-$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => 'update-form'));
+$this->renderPartial('event_actions', array('form_id' => 'update-form'));
+
 
 ?>
 
