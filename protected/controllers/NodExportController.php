@@ -143,7 +143,7 @@ class NodExportController extends BaseController
 
         $query = $this->createAllTempTables();
         $query .= $this->populateAllTempTables();
-//echo $query; die;
+echo $query; die;
         Yii::app()->db->createCommand($query)->execute();
 
         $this->getAllEpisodeData();
