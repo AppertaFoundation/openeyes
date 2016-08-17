@@ -129,7 +129,7 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
      */
     public function alphaBlockerText()
     {
-        return 'Alpha-Blockers: ' . $this->yesNoText($this->alphablocker) . (($this->alpha_blocker_name) ? $this->alpha_blocker_name : '' );
+        return 'Alpha-Blockers: ' . $this->yesNoText($this->alphablocker) . (($this->alpha_blocker_name) ? ' - ' . $this->alpha_blocker_name : '' );
     }
 
     /**
