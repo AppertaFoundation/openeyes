@@ -48,7 +48,7 @@ class DefaultController extends \BaseEventTypeController
             ($_GET['createnewcvi'] == 1) ? parent::actionCreate()
                 : $this->redirect(array($cancel_url));
         } else {
-            $cvi_events = \Yii::app()->moduleAPI->get('OphCoCvi');
+            $cvi_events = $this->getApp()->moduleAPI->get('OphCoCvi');
             $cvi_created = $cvi_events->getEvents(\Patient::model()->findByPk($this->patient->id));
             if (count($cvi_created) >= $this->cvi_limit) {
                 $cvi_url = array();
@@ -274,7 +274,7 @@ class DefaultController extends \BaseEventTypeController
         if(!$signatureElement->checkSignature()){
             // we check if the signature is exists on the portal
             $portalConnection = new optomPortalConnection();
-            $signatureData = $portalConnection->signatureSearch(null, \Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($event));
+            $signatureData = $portalConnection->signatureSearch(null, $this->getApp()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($event));
             //$signatureData = $portalConnection->signatureSearch();
 
             //print_r($signatureData);die;
@@ -292,7 +292,7 @@ class DefaultController extends \BaseEventTypeController
                 }
             }
             else {
-                $QRContent = "@code:" . \Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($event) . "@key:" . $signatureElement->getEncryptionKey();
+                $QRContent = "@code:" . $this->getApp()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($event) . "@key:" . $signatureElement->getEncryptionKey();
 
                 $QRHelper = new SignatureQRCodeGenerator();
                 $signature = $QRHelper->generateQRSignatureBox($QRContent);
@@ -305,7 +305,7 @@ class DefaultController extends \BaseEventTypeController
 
         // TODO: need to find a place for the template files! (eg. views/odtTemplates) ?
         $inputFile = 'example_certificate_5.odt';
-        $printHelper = new ODTTemplateManager( $inputFile , realpath(__DIR__ . '/..').'/files', 'CVICert_'.\Yii::app()->user->id.'_'.rand().'.odt');
+        $printHelper = new ODTTemplateManager( $inputFile , realpath(__DIR__ . '/..').'/files', 'CVICert_'.$this->getApp()->user->id.'_'.rand().'.odt');
 
         //print '<pre>'; print_r($this->getStructuredDataForPrintPDF($id)); die;
 
