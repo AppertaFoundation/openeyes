@@ -63,9 +63,9 @@ class OphCoCvi_ClinicalInfo_Disorder extends \BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-            array('name,code,section_id,disorder_id', 'safe'),
-            array('name,code,section_id,disorder_id', 'required'),
-            array('id, name,code,section_id,disorder_id', 'safe', 'on' => 'search'),
+            array('name,section_id,disorder_id', 'safe'),
+            array('name,section_id,disorder_id', 'required'),
+            array('id, name,section_id,disorder_id', 'safe', 'on' => 'search'),
         );
     }
 

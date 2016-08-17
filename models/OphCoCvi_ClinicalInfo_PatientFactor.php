@@ -59,8 +59,8 @@ class OphCoCvi_ClinicalInfo_PatientFactor extends \BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-            array('name,code', 'safe'),
-            array('name,code', 'required'),
+            array('name', 'safe'),
+            array('name', 'required'),
             array('id, name', 'safe', 'on' => 'search'),
         );
     }
