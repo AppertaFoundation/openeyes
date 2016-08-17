@@ -1,4 +1,0 @@
-- hosts: all
-  sudo: true
-  roles:
-    - { role: ../../ansible-role-php-xdebug, tags: xdebug }
