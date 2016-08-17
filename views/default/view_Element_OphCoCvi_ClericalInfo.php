@@ -28,7 +28,10 @@
 		<tbody>
 		<?php
 		$model = OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_PatientFactor::model();
-		$factor_answer = OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PatientFactor_Answer::model();?>
+		$factor_answer = OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PatientFactor_Answer::model();
+		$is_factor = $factor_answer->getFactorAnswer($factor->id,$element->id);
+		$comments = $factor_answer->getComments($factor->id,$element->id);
+		?>
 		<?php
 		foreach ($model->findAll('`active` = ?',array(1)) as $factor) {?>
 			<tr>
@@ -41,10 +44,6 @@
 						</div>
 					<?php }?>
 				</td>
-				<?php
-				$is_factor = $factor_answer->getFactorAnswer($factor->id,$element->id);
-				$comments = $factor_answer->getComments($factor->id,$element->id);
-				?>
 				<td><?php if(isset($is_factor) && $is_factor == 1){echo "Y";} elseif(isset($is_factor) && $is_factor == 0){echo "N";} elseif(isset($is_factor) && $is_factor == 2){echo "Unknown";}else{ echo "None";}?></td>
 			</tr>
 		<?php }	?>
