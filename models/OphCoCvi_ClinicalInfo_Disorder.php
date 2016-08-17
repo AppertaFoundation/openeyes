@@ -63,9 +63,9 @@ class OphCoCvi_ClinicalInfo_Disorder extends \BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-            array('name,code,section_id', 'safe'),
-            array('name,code,section_id', 'required'),
-            array('id, name,code,section_id', 'safe', 'on' => 'search'),
+            array('name,code,section_id,disorder_id', 'safe'),
+            array('name,code,section_id,disorder_id', 'required'),
+            array('id, name,code,section_id,disorder_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -89,7 +89,8 @@ class OphCoCvi_ClinicalInfo_Disorder extends \BaseActiveRecordVersioned
                 self::BELONGS_TO,
                 'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder_Section',
                 'section_id'
-            )
+            ),
+            'disorder'  => array(self::BELONGS_TO, 'Disorder', 'disorder_id'),
         );
     }
 
@@ -101,7 +102,8 @@ class OphCoCvi_ClinicalInfo_Disorder extends \BaseActiveRecordVersioned
         return array(
             'id' => 'ID',
             'name' => 'Name',
-            'section_id' => 'Section'
+            'section_id' => 'Section',
+            'disorder_id' => 'Disorder',
         );
     }
 
