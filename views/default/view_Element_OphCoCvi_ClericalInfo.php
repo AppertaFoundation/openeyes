@@ -29,11 +29,11 @@
 		<?php
 		$model = OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_PatientFactor::model();
 		$factor_answer = OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PatientFactor_Answer::model();
-		$is_factor = $factor_answer->getFactorAnswer($factor->id,$element->id);
-		$comments = $factor_answer->getComments($factor->id,$element->id);
 		?>
 		<?php
-		foreach ($model->findAll('`active` = ?',array(1)) as $factor) {?>
+		foreach ($model->findAll('`active` = ?',array(1)) as $factor) {
+			$is_factor = $factor_answer->getFactorAnswer($factor->id,$element->id);
+			$comments = $factor_answer->getComments($factor->id,$element->id); ?>
 			<tr>
 				<td><?php echo CHtml::encode($factor->name)?>
 					<?php if($factor->require_comments == 1){?>
