@@ -1,21 +1,38 @@
 ---
-# application tasks to be customized and to run after the main provision
+# Application tasks to be customized and to run after the main provision
 
 # Kept seperate so as not to impact composer
-- name: Install XDebug
-  become: yes
-  become_method: sudo
-  apt: pkg={{ item }} state=latest
-  with_items: "{{ php_xdebug }}"
+- name: php5 - install xdebug
+  apt: pkg="{{ php_xdebug }}" state=latest update_cache=yes
   when: php_xdebug is defined
 
-# Remove XDebug from PHP CLI
+- name: Copy xdebug INI into mods-available folder.
+  template: >
+    src=xdebug.ini.j2
+    dest=/etc/php5/mods-available/xdebug.ini
+    owner=root group=root mode=644
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'trusty' and php_xdebug is defined
+
+- name: Copy xdebug INI into conf.d folder.
+  template: >
+    src=xdebug.ini.j2
+    dest=/etc/php5/conf.d/xdebug.ini
+    owner=root group=root mode=644
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'precise' and php_xdebug is defined
+
+# - name: Install XDebug
+#   become: true
+#   become_method: sudo
+#   apt: pkg={{ item }} state=latest
+#   with_items: "{{ php_xdebug }}"
+#   when: php_xdebug is defined
+
+# Remove XDebug SymLink from PHP CLI
 - name: Disable XDebug in PHP CLI
   file:
     path: /etc/php5/cli/conf.d/20-xdebug.ini
     state: absent
-  become: yes
-  become_method: sudo
+  when: php_xdebug is defined
 
 # Install project dependencies
 - name: Install composer dependencies (This can take up to 30 minutes to run the first time.)
@@ -61,7 +78,7 @@
 
 # Create required directories and assign users / groups / permissions
 - name: Create directories for Yii
-  become: yes
+  become: true
   become_method: sudo
   file:
     path: "{{ item }}"
