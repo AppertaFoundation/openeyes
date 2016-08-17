@@ -1,6 +1,14 @@
 ---
 # application tasks to be customized and to run after the main provision
 
+# Kept seperate so as not to impact composer
+- name: Install XDebug
+  become: yes
+  become_method: sudo
+  apt: pkg={{ item }} state=latest
+  with_items: "{{ php_xdebug }}"
+  when: php_xdebug is defined
+
 # Remove XDebug from PHP CLI
 - name: Disable XDebug in PHP CLI
   file:
