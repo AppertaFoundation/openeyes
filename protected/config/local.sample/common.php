@@ -159,6 +159,7 @@ $config = array(
             'endpoints' => array(
                 'auth' => '/oauth/access',
                 'examinations' => '/examinations/searches',
+                'signatures' => '/signatures/searches'
             ),
             'credentials' => array(
                 'username' => 'user@example.com',
