@@ -3,7 +3,7 @@
 
   hosts: all
 
-  become: yes
+  become: true
   become_method: sudo
 
   vars_files:
