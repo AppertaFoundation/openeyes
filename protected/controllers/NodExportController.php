@@ -165,17 +165,17 @@ class NodExportController extends BaseController
         $this->getEpisodeDiabeticDiagnosis();
         $this->getEpisodeDrug();
         $this->getEpisodeBiometry();
-        $this->saveIds('tmp_episode_ids', $this->getEpisodePostOpComplication());
+        $this->getEpisodePostOpComplication();
         $this->getEpisodePreOpAssessment();
         $this->getEpisodeIOP();
         //$this->saveIds('tmp_episode_ids', $this->getEpisodeVisualAcuity());
         $this->getEpisodeRefraction();
-        $this->saveIds('tmp_operation_ids', $this->getEpisodeOperationCoPathology());
+        $this->getEpisodeOperationCoPathology();
         //$this->saveIds('tmp_operation_ids', $this->getEpisodeOperationAnaesthesia());
-        //$this->saveIds('tmp_operation_ids', $this->getEpisodeOperationIndication());
+        $this->getEpisodeOperationIndication();
         //$this->saveIds('tmp_operation_ids', $this->getEpisodeOperationComplication());
         $this->getEpisodeOperation();
-        //$this->saveIds('tmp_treatment_ids', $this->getEpisodeTreatmentCataract());
+        $this->getEpisodeTreatmentCataract();
         //$this->getEpisodeTreatment();
     }
 
@@ -261,6 +261,8 @@ class NodExportController extends BaseController
         $query .= $this->createTmpRcoNodPostOpComplication();
         $query .= $this->createTmpRcoNodEpisodeOperationCoPathology();
         $query .= $this->createTmpRcoNodEpisodeOperation();
+        $query .= $this->createTmpRcoNodEpisodeTreatment();
+        $query .= $this->createTmpRcoNodEpisodeTreatmentCataract();
         
         $createTempQuery = <<<EOL
 
@@ -323,7 +325,7 @@ class NodExportController extends BaseController
 				(12, 'Sutured posterior chamber'),
 				(5, 'Iris fixated'),
 				(13, 'Other');
-							
+
 			DROP TEMPORARY TABLE IF EXISTS tmp_anesthesia_type;
 
 			CREATE TEMPORARY TABLE tmp_anesthesia_type(
@@ -541,6 +543,8 @@ EOL;
         $query .= $this->populateTmpRcoNodPostOpComplication();
         $query .= $this->populateTmpRcoNodEpisodeOperationCoPathology();
         $query .= $this->populateTmpRcoNodEpisodeOperation();
+        $query .= $this->populateTmpRcoNodEpisodeTreatment();
+        $query .= $this->populateTmpRcoNodEpisodeTreatmentCataract();
 
         return $query;
     }
@@ -562,6 +566,8 @@ EOL;
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationCoPathology_{$this->extract_identifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodePostOpComplication_{$this->extract_identifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperation_{$this->extract_identifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeTreatment_{$this->extract_identifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeTreatmentCataract_{$this->extract_identifier};
                 
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication_type;
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication;
@@ -1917,44 +1923,152 @@ EOL;
     }
     
     /********** end of EpisodeOperationCoPathology **********/
-
+    
+    
+    
+    
+    
+    /********** EpisodeTreatmentCataract **********/
+    
+    private function createTmpRcoNodEpisodeTreatmentCataract()
+    {
+        $query = <<<EOL
+            CREATE TABLE tmp_rco_nod_EpisodeTreatmentCataract_{$this->extract_identifier} (
+                oe_event_id int(10) NOT NULL,
+                TreatmentId int(10) NOT NULL,
+                IsFirstEye tinyint(1) NOT NULL,
+                PreparationDrugId varchar(1) DEFAULT NULL,
+                IncisionSiteId int(10) DEFAULT NULL,
+                IncisionLengthId varchar(5) DEFAULT '2.8',
+                IncisionPlanesId int(2) DEFAULT '4',
+                IncisionMeridean varchar(5) DEFAULT '180',
+                PupilSizeId int(10) DEFAULT NULL,
+                IOLPositionId int(10) DEFAULT NULL,
+                IOLModelId varchar(255) DEFAULT NULL,
+                IOLPower varchar(5) DEFAULT NULL,
+                PredictedPostOperativeRefraction decimal(4,2) DEFAULT NULL,
+                WoundClosureId varchar(1) DEFAULT NULL
+            );
+EOL;
+        return $query;
+    }
+    
+    private function populateTmpRcoNodEpisodeTreatmentCataract()
+    {
+        $query = <<<EOL
+            INSERT INTO tmp_rco_nod_EpisodeTreatmentCataract_{$this->extract_identifier} (
+                oe_event_id,
+                TreatmentId,
+                IsFirstEye,
+                PreparationDrugId,
+                IncisionSiteId,
+                IncisionLengthId,
+                IncisionPlanesId,
+                IncisionMeridean,
+                PupilSizeId,
+                IOLPositionId,
+                IOLModelId,
+                IOLPower,
+                PredictedPostOperativeRefraction,
+                WoundClosureId
+              ) 
+            SELECT 
+                  ct.oe_event_id
+                , ct.TreatmentId
+                , IF(
+                IFNULL(
+                  /* Correlated SCALAR subquery to get EYE NAME from cateract management for clostest event(exam) to event(opnote) within episode_id */
+                  /* This will return EYE NAME or null */
+                  ( 
+                    SELECT excme.name 
+                    /* Start with all events(examination) for the same episode_id for the seed opnote (correlated in WHERE clause) */
+                    FROM EVENT eex
+                    /* Hard Join: Event to cateract management, Implicit Restriction: reduce events to events(examinatio) */
+                    /* Assumption made that the Event(OpNote) and Event(Examination) will be in same episode_id at least */
+                    /* This is reasonable as even if CAT surgury is performed under another firm, e.g. GL, the examination would also be in GL) */
+                    JOIN et_ophciexamination_cataractsurgicalmanagement excm
+                      ON excm.event_id = eex.id
+                    /* Join: Look up cateract management EYE NAME (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
+                    JOIN ophciexamination_cataractsurgicalmanagement_eye excme
+                      ON excme.id = excm.eye_id 
+                    /* Restriction (correlated subquery): events(examination) with same episode_id as outer query event(opnote) */
+                    WHERE eex.episode_id = eon.episode_id
+                    /* Restriction: only events(examination) that are same date or before event(opnote) date */
+                    AND eex.event_date <= eon.event_date
+                    /* Sort most recent to top and limit results to just first result */
+                    ORDER BY 
+                      eex.event_date DESC
+                    LIMIT 1      
+                    )
+                  , 'First eye'
+                  ) = 'First eye'
+                , 1
+                , 0
+                ) AS IsFirstEye
+              , '' AS PreparationDrugId
+              , IF(
+                  oci.name = 'Limbal'
+                , 5
+                , IF(
+                    oci.name = 'Scleral'
+                  , 8
+                  , 4
+                  )
+                ) AS IncisionSiteId
+              , oc.length AS IncisionLengthId
+              , 4 AS IncisionPlanesId /* TODO what was #unkown about in original implementation */
+              , oc.meridian AS IncisionMeridean
+              , IF(
+                  oc.pupil_size = 'Small'
+                , 1
+                , IF(
+                    oc.pupil_size = 'Medium'
+                    , 2
+                    , IF(
+                        oc.pupil_size = 'Large'
+                      , 3
+                      , ''
+                    )
+                  )
+                ) AS PupilSizeId
+                , ocpt.nodcode AS IOLPositionId
+                , oclt.name AS IOLModelId
+                , oc.iol_power AS IOLPower
+                , oc.predicted_refraction AS PredictedPostOperativeRefraction
+                , '' AS WoundClosureId
+            /* Restriction: Start with treatment records (processed previously), seeded from control events */
+            FROM tmp_rco_nod_EpisodeTreatment_{$this->extract_identifier} ct
+            /* Join: Look up Cataract operation detail, Implicit Restriction: reduces = treatment records those only cataract operations */
+            JOIN et_ophtroperationnote_cataract oc 
+              ON oc.event_id = ct.oe_event_id 
+            /* Join: Look up INCISION SITE NAME (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
+            LEFT OUTER JOIN ophtroperationnote_cataract_incision_site AS oci 
+              ON oci.id = oc.incision_site_id 
+            /* Join: Look up IOL POSITION NAME (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
+            LEFT OUTER JOIN ophtroperationnote_cataract_iol_position ocp 
+              ON ocp.id = oc.iol_position_id
+            /* Join: Look up IOL POSITION CODE (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
+            LEFT OUTER JOIN tmp_iol_positions ocpt
+              ON ocpt.term = ocp.name
+            /* Join: Look up LENS TYPE (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
+            LEFT OUTER JOIN ophtroperationnote_cataract_iol_type oclt
+              ON oclt.id = oc.iol_type_id
+            /* Join: Look up original operation note EVENT (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
+            LEFT OUTER JOIN EVENT eon
+              ON eon.id = ct.oe_event_id ;
+EOL;
+        return $query;
+    }
+    
+    
     private function getEpisodeTreatmentCataract()
     {
-
-        $query = "
-                    select pa.id AS TreatmentId,
-					IFNULL((select
-						IF(eye.`name` = 'First eye', 1, 0)
-						from ophciexamination_cataractsurgicalmanagement_eye eye
-						join et_ophciexamination_cataractsurgicalmanagement mng on eye.id = mng.eye_id
-						join `event` as exam_event on mng.event_id = exam_event.id
-						where exam_event.episode_id = episode.id
-						and exam_event.event_date <= op_event.event_date
-						order by exam_event.event_date desc
-						limit 1
-					), 1) as IsFirstEye,
-					'' as PreparationDrugId,
-					if(inc_site.`name` = 'Limbal', 5, IF(inc_site.`name` = 'Scleral', 8, 4)) as IncisionSiteId,
-					cataract.length as IncisionLengthId,
-					4 as IncisionPlanesId, #unkown
-					cataract.meridian as IncisionMeridean,
-					if(cataract.pupil_size = 'Small', 1, if(cataract.pupil_size = 'Medium', 2, if(cataract.pupil_size = 'Large', 3, ''))) as PupilSizeId,
-					tmp_iol_positions.nodcode as IOLPositionId,
-					ophtroperationnote_cataract_iol_type.`name` as IOLModelId,
-					cataract.iol_power as IOLPower,
-					cataract.predicted_refraction as PredictedPostOperativeRefraction,
-					'' as WoundClosureId
-					FROM ophtroperationnote_procedurelist_procedure_assignment pa
-					JOIN et_ophtroperationnote_procedurelist ON pa.procedurelist_id = et_ophtroperationnote_procedurelist.id
-					join `event` as op_event on et_ophtroperationnote_procedurelist.event_id = op_event.id
-					join episode on op_event.episode_id = episode.id
-					join et_ophtroperationnote_cataract as cataract on op_event.id = cataract.event_id
-					join ophtroperationnote_cataract_incision_site as inc_site on cataract.incision_site_id = inc_site.id
-					join ophtroperationnote_cataract_iol_position iol_pos on cataract.iol_position_id = iol_pos.id
-					join tmp_iol_positions on iol_pos.`name` = tmp_iol_positions.term
-					join ophtroperationnote_cataract_iol_type on cataract.iol_type_id = ophtroperationnote_cataract_iol_type.id
-					WHERE 1=1 " . $this->getDateWhere('pa');
-
+        $query = <<<EOL
+            SELECT  tc.TreatmentId, tc.IsFirstEye, tc.PreparationDrugId, tc.IncisionSiteId, tc.IncisionLengthId, tc.IncisionPlanesId,
+                    tc.IncisionMeridean, tc.PupilSizeId, tc.IOLPositionId, tc.IOLModelId, tc.IOLPower, tc.PredictedPostOperativeRefraction, tc.WoundClosureId
+            FROM tmp_rco_nod_EpisodeTreatmentCataract_{$this->extract_identifier} tc
+EOL;
+        
         $dataQuery = array(
             'query' => $query,
             'header' => array(
@@ -1974,13 +2088,47 @@ EOL;
             ),
         );
 
-        return $this->saveCSVfile($dataQuery, 'EpisodeTreatmentCataract', null, 'TreatmentId');
-
-        //TODO: need to select episodeIds here!
-        //return $this->getIdArray($data, 'TreatmentId');
+        return $this->saveCSVfile($dataQuery, 'EpisodeTreatmentCataract');
 
     }
+    
+    /********** end of EpisodeTreatmentCataract **********/
 
+    
+    
+    
+    
+    /********** EpisodeTreatment **********/
+
+    private function createTmpRcoNodEpisodeTreatment()
+    {
+        $query = <<<EOL
+            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeTreatment_{$this->extract_identifier};
+            CREATE TABLE tmp_rco_nod_EpisodeTreatment_{$this->extract_identifier} (
+                oe_event_id int(10) NOT NULL,
+                TreatmentId int(10) NOT NULL,
+                OperationId int(10) NOT NULL,
+                Eye char(1) NOT NULL,
+                TreatmentTypeId int(10) NOT NULL,
+                TreatmentTypeDescription varchar(255) NOT NULL,
+                PRIMARY KEY (TreatmentId,TreatmentTypeId),
+                UNIQUE KEY oe_event_id (oe_event_id,TreatmentId,Eye)
+            );
+EOL;
+        return $query;
+    }
+    
+    
+    private function populateTmpRcoNodEpisodeTreatment()
+    {
+        $query = <<<EOL
+                
+EOL;
+        //return $query;
+    }
+    
+    
+    
     private function getEpisodeTreatment()
     {
         $query = "  (SELECT pa.id AS TreatmentId,
@@ -1999,7 +2147,7 @@ EOL;
                                 proc.snomed_code AS TreatmentTypeId
                     FROM ophtroperationnote_procedurelist_procedure_assignment pa
                     JOIN et_ophtroperationnote_procedurelist pl ON pa.procedurelist_id = pl.id
-					JOIN proc ON pa.`proc_id` = proc.`id`
+                    JOIN proc ON pa.`proc_id` = proc.`id`
                     JOIN event ON pl.`event_id` = event.id AND event.episode_id IN (SELECT id FROM tmp_episode_ids)
                     WHERE pa.id in (SELECT id FROM tmp_treatment_ids) AND (pl.eye_id=2 OR pl.eye_id=3))";
 
@@ -2044,6 +2192,19 @@ EOL;
         return $this->saveCSVfile($dataQuery, 'EpisodeOperationAnaesthesia', null, 'OperationId');
     }
 
+    
+    
+    
+    
+    /********** EpisodeOperationIndication **********/
+    
+    private function createTmpRcoNodEpisodeOperationIndication()
+    {
+        $query = <<<EOL
+                
+EOL;
+    }
+    
     private function getEpisodeOperationIndication()
     {
         $query = "(SELECT pl.`event_id` AS OperationId, 'L' AS Eye,
@@ -2096,6 +2257,8 @@ EOL;
         //return $this->getIdArray($data, 'OperationId');
 
     }
+    
+    /********** end of EpisodeOperationIndication **********/
 
     private function getEpisodeOperationComplication()
     {
@@ -2347,19 +2510,6 @@ EOL;
         //return $this->getIdArray($data, 'EpisodeId');
     }
     
-    /**
-     * Inserts Ids into the temp table
-     * 
-     * @param string $tableName
-     * @param array $idArray
-     */
-    private function saveIds($tableName, $idArray)
-    {
-        foreach ($idArray as $id) {
-            Yii::app()->db->createCommand("INSERT IGNORE INTO " . $tableName . " (id) VALUES (" . $id . ")")->execute();
-        }
-    }
-
     /**
      * Creates zip files from the CSV files
      */
