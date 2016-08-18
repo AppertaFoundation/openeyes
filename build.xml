@@ -118,12 +118,11 @@
     </target>
 
     <target name="lint" description="Perform syntax check of sourcecode files">
-        <apply executable="php" failonerror="true">
+        <apply executable="php" >
             <arg value="-l" />
 
             <fileset dir="${basedir}/protected">
                 <include name="**/*.php" />
-                <modified />
             </fileset>
         </apply>
     </target>
