@@ -20,12 +20,12 @@
     owner=root group=root mode=644
   when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'precise' and php_xdebug is defined
 
-# - name: Install XDebug
-#   become: true
-#   become_method: sudo
-#   apt: pkg={{ item }} state=latest
-#   with_items: "{{ php_xdebug }}"
-#   when: php_xdebug is defined
+# "Resolve" issues with the PHP.ini from geerlinguy.php being php7 specific. (Temp fix)
+- name: Move existing PHP.ini out of the way
+  command: creates=/etc/php5/apache2/php.ini.bak mv /etc/php5/apache2/php.ini /etc/php5/apache2/php.ini.bak
+
+- name: Link configured PHP.ini into Apache
+  command: creates=/etc/php5/apache2/php.ini ln -s /etc/php/7.0/apache2/php.ini /etc/php5/apache2/php.ini
 
 # Remove XDebug SymLink from PHP CLI
 - name: Disable XDebug in PHP CLI
@@ -79,7 +79,6 @@
 # Create required directories and assign users / groups / permissions
 - name: Create directories for Yii
   become: true
-  become_method: sudo
   file:
     path: "{{ item }}"
     mode: "0775"
