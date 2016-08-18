@@ -1053,10 +1053,16 @@ class Patient extends BaseActiveRecordVersioned
     *
     * @returns array() of disorder ids
     */
-    private function getAllDisorderIds()
+    private function getAllDisorderIds($eye_id = null)
     {
         // Get all the secondary disorders
         $criteria = new CDbCriteria();
+        // To determine the disorders based on the eye
+        if ($eye_id !== null) {
+            $criteria->addCondition('eye_id = :eye_id_side or eye_id = :eye_id_both');
+            $criteria->params[':eye_id_side'] = $eye_id;
+            $criteria->params[':eye_id_both'] = Eye::BOTH;
+        }
         $criteria->compare('patient_id', $this->id);
         $sd = SecondaryDiagnosis::model()->findAll($criteria);
         $disorder_ids = array();
@@ -1082,9 +1088,9 @@ class Patient extends BaseActiveRecordVersioned
      *
      * @returns array() of disorders
      */
-    public function getAllDisorders()
+    public function getAllDisorders($eye_id = null)
     {
-        return Disorder::model()->findAllByPk($this->getAllDisorderIds());
+        return Disorder::model()->findAllByPk($this->getAllDisorderIds($eye_id));
     }
 
     /*
