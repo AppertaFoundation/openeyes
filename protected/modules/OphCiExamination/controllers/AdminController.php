@@ -594,6 +594,28 @@ class AdminController extends \ModuleAdminController
         ));
     }
 
+    /**
+     * Deletes workflows if possible.
+     *
+     * @throws \CException
+     */
+    public function actionDeleteWorkflows()
+    {
+        $workflowIds = \Yii::app()->request->getPost('workflows', array());
+        if (is_array($workflowIds)) {
+            foreach ($workflowIds as $workflowId) {
+                $workflow = models\OphCiExamination_Workflow::model()->findByPk($workflowId);
+                if ($workflow) {
+                    if (!$workflow->delete()) {
+                        throw new \CException('Unable to delete workflow: '.print_r($workflow->getErrors(), true));
+                    }
+                }
+            }
+        }
+
+        echo "1";
+    }
+
     public function actionDeleteWorkflowRules()
     {
         if (is_array(@$_POST['workflowrules'])) {
