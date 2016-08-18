@@ -79,10 +79,6 @@ class DefaultController extends \BaseEventTypeController
      */
     public function checkClericalEditAccess()
     {
-        if ($this->checkAccess('admin')) {
-            return true;
-        }
-
         return $this->checkAccess('OprnEditClericalCvi', $this->getApp()->user->id);
     }
 
@@ -95,13 +91,35 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * @return bool
+     */
+    public function checkEditAccess()
+    {
+        if ($this->getManager()->canEditEvent($this->event)) {
+            return $this->checkAccess('OprnEditCvi', $this->getApp()->user->id) && parent::checkEditAccess();
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkCreateAccess()
+    {
+        return  $this->checkAccess('OprnEditCvi', $this->getApp()->user->id) && parent::checkCreateAccess();
+    }
+
+    /**
      * Determine if the current event can be issued
      *
      * @return bool
      */
     public function canIssue()
     {
-        return $this->getManager()->canIssueCvi($this->event);
+        if ($this->checkEditAccess()) {
+            return $this->getManager()->canIssueCvi($this->event);
+        } else {
+            return false;
+        }
     }
 
     /**

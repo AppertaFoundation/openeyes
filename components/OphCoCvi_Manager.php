@@ -262,6 +262,18 @@ class OphCoCvi_Manager extends \CComponent
     }
 
     /**
+     * @param \Event $event
+     * @return bool
+     */
+    public function canEditEvent(\Event $event)
+    {
+        if ($info_element = $this->getEventInfoElementForEvent($event)) {
+            return $info_element->is_draft;
+        }
+        return false;
+    }
+
+    /**
      * @param \CDbCriteria $criteria
      * @param array $filter
      */
