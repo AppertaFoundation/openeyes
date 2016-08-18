@@ -78,26 +78,39 @@ class OphCoCvi_Manager extends \CComponent
         return \Event::model()->getEventsOfTypeForPatient($this->event_type, $patient);
     }
 
-    protected $elements_for_events = array();
+    protected $info_element_for_events = array();
 
     /**
      * @param $event
      * @param $element_class
      * @return \CActiveRecord|null
      */
-    protected function getElementForEvent($event, $element_class, $namespace = '\\OEModule\OphCoCvi\\models\\')
+    protected function getElementForEvent($event, $element_class)
     {
-        $cls = $namespace . $element_class;
+        $core_class = 'Element_OphCoCvi_EventInfo';
+        $namespaced_class = '\\OEModule\OphCoCvi\\models\\' . $core_class;
 
-        if (!isset($this->elements_for_events[$event->id])) {
-            $elements_for_events[$event->id] = array();
+        $cls_rel_map = array(
+            'Element_OphCoCvi_ClinicalInfo' => 'clinical_element',
+            'Element_OphCoCvi_ClericalInfo' => 'clerical_element',
+            'Element_OphCoCvi_ConsentSignature' => 'consent_element',
+        );
+
+        if (!isset($this->info_element_for_events[$event->id])) {
+            $this->info_element_for_events[$event->id] = $namespaced_class::model()->with(array_values($cls_rel_map))->findByAttributes(array('event_id' => $event->id));
         }
 
-        if (!isset($this->elements_for_events[$event->id][$cls])) {
-            $this->elements_for_events[$event->id][$cls] = $cls::model()->findByAttributes(array('event_id' => $event->id));
+        if (array_key_exists($element_class, $cls_rel_map)) {
+            return $this->info_element_for_events[$event->id]->{$cls_rel_map[$element_class]};
         }
+        elseif ($element_class == $core_class) {
+            return $this->info_element_for_events[$event->id];
+        }
+    }
 
-        return $this->elements_for_events[$event->id][$cls];
+    public function getEventInfoElementForEvent(\Event $event)
+    {
+        return $this->getElementForEvent($event, 'Element_OphCoCvi_EventInfo');
     }
 
     /**
@@ -118,6 +131,10 @@ class OphCoCvi_Manager extends \CComponent
         return $this->getElementForEvent($event, 'Element_OphCoCvi_ClericalInfo');
     }
 
+    /**
+     * @param \Event $event
+     * @return \CActiveRecord|null
+     */
     public function getConsentSignatureElement(\Event $event)
     {
         return $this->getElementForEvent($event, 'Element_OphCoCvi_ConsentSignature');
@@ -141,8 +158,8 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function getDisplayStatusForEvent(\Event $event)
     {
-        $clinical = $this->getElementForEvent($event, 'Element_OphCoCvi_ClinicalInfo');
-        $info = $this->getElementForEvent($event, 'Element_OphCoCvi_EventInfo');
+        $clinical = $this->getClinicalElementForEvent($event);
+        $info = $this->getEventInfoElementForEvent($event);
 
         return $this->getDisplayStatus($clinical, $info);
     }
@@ -162,7 +179,7 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function getDisplayStatusDateForEvent(\Event $event)
     {
-        $clinical = $this->getElementForEvent($event, 'Element_OphCoCvi_ClinicalInfo');
+        $clinical = $this->getClinicalElementForEvent($event);
         return $clinical->examination_date;
     }
 
@@ -172,7 +189,7 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function getDisplayIssueDateForEvent(\Event $event)
     {
-        $info = $this->getElementForEvent($event, 'Element_OphCoCvi_EventInfo');
+        $info = $this->getEventInfoElementForEvent($event);
         return $info->getIssueDateForDisplay();
     }
 
@@ -206,7 +223,7 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function canIssueCvi(\Event $event)
     {
-        if ($info = $this->getElementForEvent($event, 'Element_OphCoCvi_EventInfo')) {
+        if ($info = $this->getEventInfoElementForEvent($event)) {
             if (!$info->is_draft) {
                 return false;
             }
