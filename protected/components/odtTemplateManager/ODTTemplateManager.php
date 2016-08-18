@@ -95,6 +95,11 @@ class ODTTemplateManager
      * @var string
      */
     private $newOdtFilename = '';
+    
+    /*
+     * @var string
+     */
+    private $fpName = '';
   
     /**
      * @param $filename 
@@ -143,23 +148,6 @@ class ODTTemplateManager
         $this->contentXml->save( $this->unzippedDir.$this->contentFilename );
     }
     
-    /*
-     * Generate pdf file from odt and delete temporary folder
-     */
-    public function generatePDF()
-    {
-        $path = $this->zipOdtFile();
-        if($path !== FALSE){
-            $shell = '/usr/bin/libreoffice --headless --convert-to pdf --outdir '.$this->outDir.'  '.$path;
-           
-            exec($shell, $output, $return); 
-            if($return == 0){
-                $odtPath = substr($path, 0, strrpos( $path, '/'));
-                $this->deleteDir( $odtPath );
-            }
-        }
-    }
-
     /*
      * Change ${} variables in odt xml to the param value 
      * @param $data
@@ -632,7 +620,24 @@ class ODTTemplateManager
             return unlink($path);
         }
     }
-
+    
+    /*
+     * Generate pdf file from odt and delete temporary folder
+     */
+    public function generatePDF()
+    {
+        $path = $this->zipOdtFile();
+        if($path !== FALSE){
+            $shell = '/usr/bin/libreoffice --headless --convert-to pdf --outdir '.$this->outDir.'  '.$path;
+           
+            exec($shell, $output, $return); 
+            if($return == 0){
+                $odtPath = substr($path, 0, strrpos( $path, '/'));
+                $this->deleteDir( $odtPath );
+            }
+        }
+    }
+    
     /*
      * Get generated pdf
      */
@@ -641,5 +646,28 @@ class ODTTemplateManager
         header('Content-type: application/pdf');
         header('Content-Length: ' . filesize($this->outDir.'/'.$this->outFile));
         @readfile($this->outDir.'/'.$this->outFile);
+    }
+    
+    
+    /*
+     * Convert the generated pdf first page
+     */
+    public function generatePDFFirstPage()
+    {
+        $pdf = realpath($this->outDir.'/'.$this->outFile);
+        $fileName = preg_replace('/\\.[^.\\s]{3,4}$/', '', $this->outFile);
+        
+        $this->fpName = $fileName.'_fp.pdf';
+        exec("convert ".$pdf."[0] -density 100  -quality 100 -sharpen 0x1.0 ".$this->outDir."/".$this->fpName);
+    }
+    
+    /*
+     * Get first page of generated pdf
+     */
+    public function getPDFFirstPage()
+    {
+        header('Content-type: application/pdf');
+        header('Content-Length: ' . filesize($this->outDir.'/'.$this->fpName));
+        @readfile($this->outDir.'/'.$this->fpName);
     }
 }
