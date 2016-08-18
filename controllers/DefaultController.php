@@ -75,6 +75,8 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * This is a granular permission check, and should be used in conjunection with checkEditAcess
+     *
      * @return boolean
      */
     public function checkClericalEditAccess()
@@ -83,6 +85,8 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * This is a granular permission check, and should be used in conjunection with checkEditAcess
+     *
      * @return boolean
      */
     public function checkClinicalEditAccess()
@@ -95,9 +99,10 @@ class DefaultController extends \BaseEventTypeController
      */
     public function checkEditAccess()
     {
-        if ($this->getManager()->canEditEvent($this->event)) {
-            return $this->checkAccess('OprnEditCvi', $this->getApp()->user->id) && parent::checkEditAccess();
-        }
+        return $this->checkAccess('OprnEditCvi', $this->getApp()->user->id, array(
+            'firm' => $this->firm,
+            'event' => $this->event
+        ));
     }
 
     /**
@@ -105,7 +110,10 @@ class DefaultController extends \BaseEventTypeController
      */
     public function checkCreateAccess()
     {
-        return  $this->checkAccess('OprnEditCvi', $this->getApp()->user->id) && parent::checkCreateAccess();
+        return  $this->checkAccess('OprnEditCvi', $this->getApp()->user->id, array(
+            'firm' => $this->firm,
+            'episode' => $this->episode
+        ));
     }
 
     /**

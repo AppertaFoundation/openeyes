@@ -108,6 +108,10 @@ class OphCoCvi_Manager extends \CComponent
         }
     }
 
+    /**
+     * @param \Event $event
+     * @return null|Element_OphCoCvi_EventInfo
+     */
     public function getEventInfoElementForEvent(\Event $event)
     {
         return $this->getElementForEvent($event, 'Element_OphCoCvi_EventInfo');
@@ -115,7 +119,7 @@ class OphCoCvi_Manager extends \CComponent
 
     /**
      * @param \Event $event
-     * @return \CActiveRecord|null
+     * @return null|Element_OphCoCvi_ClinicalInfo
      */
     public function getClinicalElementForEvent(\Event $event)
     {
@@ -124,7 +128,7 @@ class OphCoCvi_Manager extends \CComponent
 
     /**
      * @param \Event $event
-     * @return \CActiveRecord|null
+     * @return null|Element_OphCoCvi_ClericalInfo
      */
     public function getClericalElementForEvent(\Event $event)
     {
@@ -133,7 +137,7 @@ class OphCoCvi_Manager extends \CComponent
 
     /**
      * @param \Event $event
-     * @return \CActiveRecord|null
+     * @return null|Element_OphCoCvi_ConsentSignature
      */
     public function getConsentSignatureElement(\Event $event)
     {
