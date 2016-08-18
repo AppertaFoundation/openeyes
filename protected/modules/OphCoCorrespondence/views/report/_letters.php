@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes.
+ * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
+ * @package OpenEyes
  * @link http://www.openeyes.org.uk
- *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -24,6 +24,9 @@
 			<th><?php echo Patient::model()->getAttributeLabel('dob')?></th>
 			<th><?php echo Patient::model()->getAttributeLabel('first_name')?></th>
 			<th><?php echo Patient::model()->getAttributeLabel('last_name')?></th>
+			<th><?php echo Patient::model()->getAttributeLabel('gender')?></th>
+			<th>Site</th>
+			<th>Consultant's name</th>
 			<th>Date</th>
 			<th>Type</th>
 			<th>Link</th>
@@ -35,14 +38,17 @@
 					No letters were found with the selected search criteria.
 				</td>
 			</tr>
-		<?php } else {?>
+		<?php }else{?>
 			<?php foreach ($report->letters as $letter) {?>
 				<tr>
 					<td><?php echo $letter['hos_num']?></td>
-					<td><?php echo $letter['dob'] ? date('j M Y', strtotime($letter['dob'])) : 'Unknown'?></td>
+					<td><?php echo $letter['dob'] ? date('j M Y',strtotime($letter['dob'])) : 'Unknown'?></td>
 					<td><?php echo $letter['first_name']?></td>
 					<td><?php echo $letter['last_name']?></td>
-					<td><?php echo date('j M Y', strtotime($letter['created_date']))?> <?php echo substr($letter['created_date'], 11, 5)?></td>
+					<td><?php echo $letter['gender']?></td>
+					<td><?php echo isset($letter['name']) ? $letter['name'] : 'N/A'; ?></td>
+                    <td><?php echo $letter['cons_first_name'] ." ". $letter['cons_last_name']; ?></td>
+					<td><?php echo date('j M Y',strtotime($letter['created_date']))?> <?php echo substr($letter['created_date'],11,5)?></td>
 					<td><?php echo $letter['type']?></td>
 					<td><a href="<?php echo $letter['link']?>">view</a></td>
 				</tr>

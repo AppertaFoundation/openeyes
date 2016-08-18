@@ -1,0 +1,9 @@
+# install_roles.yml
+
+# From galaxy
+- src: geerlingguy.apache
+- src: geerlingguy.composer
+- src: geerlingguy.mysql
+- src: geerlingguy.nodejs
+- src: geerlingguy.php
+- src: pludoni.wkthmltox
