@@ -173,7 +173,7 @@ class NodExportController extends BaseController
         $this->getEpisodeOperationCoPathology();
         $this->getEpisodeOperationAnaesthesia();
         $this->getEpisodeOperationIndication();
-        //$this->saveIds('tmp_operation_ids', $this->getEpisodeOperationComplication());
+        $this->getEpisodeOperationComplication();
         $this->getEpisodeOperation();
         $this->getEpisodeTreatmentCataract();
         //$this->getEpisodeTreatment();
@@ -264,6 +264,8 @@ class NodExportController extends BaseController
         $query .= $this->createTmpRcoNodEpisodeTreatment();
         $query .= $this->createTmpRcoNodEpisodeTreatmentCataract();
         $query .= $this->createTmpRcoNodEpisodeOperationAnesthesia();
+        $query .= $this->createTmpRcoNodEpisodeOperationIndication();
+        $query .= $this->createTmpRcoNodEpisodeOperationComplication();
         
         $createTempQuery = <<<EOL
 
@@ -347,9 +349,9 @@ class NodExportController extends BaseController
 			(5, 'GA',      'GA',  1, 'General anaesthesia alone');
 			
 					
-		DROP TEMPORARY TABLE IF EXISTS tmp_complication_type;
+		DROP TABLE IF EXISTS tmp_complication_type;
 
-		CREATE TEMPORARY TABLE tmp_complication_type (
+		CREATE TABLE tmp_complication_type (
 			`code` INT(10) UNSIGNED NOT NULL,
 			`name` VARCHAR(100)
 		);
@@ -548,6 +550,8 @@ EOL;
         $query .= $this->populateTmpRcoNodEpisodeTreatment();
         $query .= $this->populateTmpRcoNodEpisodeTreatmentCataract();
         $query .= $this->populateTmpRcoNodEpisodeOperationAnesthesia();
+        $query .= $this->populateTmpRcoNodEpisodeOperationIndication();
+        $query .= $this->populateTmpRcoNodEpisodeOperationComplication();
 
         return $query;
     }
@@ -572,20 +576,21 @@ EOL;
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeTreatment_{$this->extract_identifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeTreatmentCataract_{$this->extract_identifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationAnesthesia_{$this->extract_identifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationComplication_{$this->extract_identifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationIndication_{$this->extract_identifier};
                 
-                DROP TEMPORARY TABLE IF EXISTS tmp_complication_type;
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication;
                 DROP TEMPORARY TABLE IF EXISTS tmp_anesthesia_type;
                 DROP TEMPORARY TABLE IF EXISTS tmp_anaesthetic_delivery;
                 DROP TEMPORARY TABLE IF EXISTS tmp_iol_positions;
                 DROP TEMPORARY TABLE IF EXISTS tmp_pathology_type;
+                DROP TEMPORARY TABLE IF EXISTS tmp_operation_ids;
+                DROP TABLE IF EXISTS tmp_complication_type;
                 DROP TABLE IF EXISTS tmp_biometry_formula;
                 DROP TABLE IF EXISTS tmp_episode_diagnosis;
                 DROP TABLE IF EXISTS tmp_episode_drug_route;
                 DROP TABLE IF EXISTS tmp_episode_ids;
-                DROP TEMPORARY TABLE IF EXISTS tmp_operation_ids;
                 DROP TABLE IF EXISTS tmp_treatment_ids;
-
 
 EOL;
 
@@ -2238,9 +2243,79 @@ EOL;
     
     /********** EpisodeOperationIndication **********/
     
-     private function createTmpRcoNodEpisodeOperationIndication()
+    private function createTmpRcoNodEpisodeOperationIndication()
     {
         $query = <<<EOL
+            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationIndication_{$this->extract_identifier};
+            CREATE TABLE tmp_rco_nod_EpisodeOperationIndication_{$this->extract_identifier} (
+                oe_event_id INT(10) NOT NULL,
+                OperationId INT(10) NOT NULL,
+                Eye CHAR(1) NOT NULL,
+                IndicationId INT(10) NOT NULL,
+                IndicationDescription VARCHAR(255) NOT NULL,
+            UNIQUE KEY OperationId (OperationId,Eye,IndicationId) 
+            );
+EOL;
+        return $query;
+    }
+    
+    private function populateTmpRcoNodEpisodeOperationIndication()
+    {
+        $query = <<<EOL
+            INSERT INTO tmp_rco_nod_EpisodeOperationIndication_{$this->extract_identifier} (
+                oe_event_id,
+                OperationId,
+                Eye,
+                IndicationId,
+                IndicationDescription
+              )
+            SELECT 
+                o.oe_event_id
+              , o.OperationId
+              , 'L' AS Eye
+              , d.id AS IndicationId
+              , d.term AS IndicationDescription
+              /* Restriction: Start with operations (processed previously) */
+            FROM tmp_rco_nod_EpisodeOperation_{$this->extract_identifier} o
+            /* Join: Look up PROCEDURE_LIST (containers) - (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
+            /* Cardinality: On investigation et_ophtroperationnote_procedurelist is a logical bucket for procedures on the */
+            /* on the LEFT Eye or the RIGHT Eye. Therefore if procedures were carried our on both eyes then */
+            /* two et_ophtroperationnote_procedurelist records would exist each with intersection records */
+            /* (ophtroperationnote_procedurelist_procedure_assignment) to the lookup procedure (proc) */
+            LEFT OUTER JOIN et_ophtroperationnote_procedurelist pl
+                ON pl.event_id = o.oe_event_id
+            /* Join: Get associated Booking Event DISORDERS - (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
+            LEFT OUTER JOIN et_ophtroperationbooking_diagnosis be
+                ON be.event_id = pl.booking_event_id
+            /* Join: Lookup DISORDER DETAIL - (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
+            LEFT OUTER JOIN disorder d
+                ON d.id = be.disorder_id
+              /* Restrict: LEFT or BOTH eyes only */
+              AND pl.eye_id IN (1, 3) /* 1 = LEFT EYE, 3 = BOTH EYES */
+              UNION ALL
+            SELECT 
+                o.oe_event_id
+              , o.OperationId
+              , 'R' AS Eye
+              , d.id AS IndicationId
+              , d.term AS IndicationDescription
+              /* Restriction: Start with operations (processed previously) */
+            FROM tmp_rco_nod_EpisodeOperation_{$this->extract_identifier} o
+            /* Join: Look up PROCEDURE_LIST (containers) - (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
+            /* Cardinality: On investigation et_ophtroperationnote_procedurelist is a logical bucket for procedures on the */
+            /* on the LEFT Eye or the RIGHT Eye. Therefore if procedures were carried our on both eyes then */
+            /* two et_ophtroperationnote_procedurelist records would exist each with intersection records */
+            /* (ophtroperationnote_procedurelist_procedure_assignment) to the lookup procedure (proc) */
+            LEFT OUTER JOIN et_ophtroperationnote_procedurelist pl
+              ON pl.event_id = o.oe_event_id
+            /* Join: Get associated Booking Event DISORDERS - (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
+            LEFT OUTER JOIN et_ophtroperationbooking_diagnosis be
+              ON be.event_id = pl.booking_event_id
+            /* Join: Lookup DISORDER DETAIL - (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
+            LEFT OUTER JOIN disorder d
+              ON d.id = be.disorder_id
+            /* Restrict: RIGHT or BOTH eyes only */
+            AND pl.eye_id IN (2, 3) /* 2 = RIGHT EYE, 3 = BOTH EYES */ ;
                 
 EOL;
         return $query;
@@ -2248,46 +2323,10 @@ EOL;
         
     private function getEpisodeOperationIndication()
     {
-        $query = "(SELECT pl.`event_id` AS OperationId, 'L' AS Eye,
-                            (
-                                    SELECT IF(	pl.`booking_event_id`,
-                                                    d.`disorder_id`, 
-                                                    (
-                                                            SELECT disorder_id
-                                                            FROM episode
-                                                            WHERE e.`episode_id` = episode.id
-                                                    )
-                                            ) 
-                            ) AS IndicationId
-                            FROM `event` e
-                            JOIN event_type evt ON evt.id = e.event_type_id
-                            JOIN et_ophtroperationnote_procedurelist pl ON e.id = pl.event_id
-                            LEFT JOIN `et_ophtroperationbooking_diagnosis` d ON pl.booking_event_id = d.`event_id`
-                            WHERE evt.name = 'Operation Note' " . $this->getDateWhere('e') ."
-                            AND (pl.eye_id = 1 OR pl.eye_id = 3))
-                    UNION
-                            (
-                                SELECT pl.`event_id` AS OperationId, 'R' AS Eye,
-                                (
-                                        SELECT IF(	pl.`booking_event_id`,
-                                                        d.`disorder_id`, 
-                                                        (
-                                                                SELECT disorder_id
-                                                                FROM episode
-                                                                WHERE e.`episode_id` = episode.id
-                                                        )
-                                                ) 
-                                ) AS IndicationId
-                                FROM `event` e
-                                JOIN event_type evt ON evt.id = e.event_type_id
-                                JOIN et_ophtroperationnote_procedurelist pl ON e.id = pl.event_id
-                                LEFT JOIN `et_ophtroperationbooking_diagnosis` d ON pl.booking_event_id = d.`event_id`
-                                WHERE evt.name = 'Operation Note' " . $this->getDateWhere('e') ."
-                                AND (pl.eye_id = 2 OR pl.eye_id = 3)
-                            )
-                            ";
-
-
+        $query = <<<EOL
+                SELECT i.OperationId, i.Eye, i.IndicationId, i.IndicationDescription
+                FROM tmp_rco_nod_EpisodeOperationIndication_{$this->extract_identifier} i
+EOL;
         $dataQuery = array(
             'query' => $query,
             'header' => array('OperationId', 'Eye', 'IndicationId'),
@@ -2302,40 +2341,129 @@ EOL;
     
     
     
+    /********** EpisodeOperationComplication **********/
+    
+    private function createTmpRcoNodEpisodeOperationComplication()
+    {
+        $query = <<<EOL
+            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationComplication_{$this->extract_identifier};
+            CREATE TABLE tmp_rco_nod_EpisodeOperationComplication_{$this->extract_identifier} (
+                oe_event_id int(10) NOT NULL,
+                OperationId int(10) NOT NULL,
+                Eye char(1) NOT NULL,
+                ComplicationTypeId int(10) NOT NULL,
+                ComplicationTypeDescription varchar(255) DEFAULT NULL,
+                UNIQUE KEY OperationId (OperationId,Eye,ComplicationTypeId)
+            ) ;
+EOL;
+        return $query;
+    }
+    
+    
+    private function populateTmpRcoNodEpisodeOperationComplication()
+    {
+        $query = <<<EOL
+            INSERT INTO tmp_rco_nod_EpisodeOperationComplication_{$this->extract_identifier} (
+                oe_event_id,
+                OperationId,
+                Eye,
+                ComplicationTypeId,
+                ComplicationTypeDescription
+              ) 
+            SELECT
+                co.oe_event_id
+                , co.OperationId
+                , 'L' AS Eye
+                , IFNULL(rcoct.code, oncc.id) AS ComplicationTypeId
+                , onccs.name AS ComplicationTypeDescription
+                
+                /* Restriction: Start with OPERATIONS (processed previously), seeded from control events */
+                FROM tmp_rco_nod_EpisodeOperation_{$this->extract_identifier} co
+                
+                /* Hard Join: Operation Note Cataract Detail */
+                JOIN et_ophtroperationnote_cataract onc
+                    ON onc.event_id = co.oe_event_id
+                /* Hard Join: Operation Note Complications */
+                JOIN ophtroperationnote_cataract_complication oncc
+                    ON oncc.cataract_id = onc.id
+                JOIN ophtroperationnote_cataract_complications onccs
+                    ON oncc.complication_id = onccs.id
+                /* Outer Join: Lookup RCO specific complication codes (LOJ to allow for unmapped codes) */
+                LEFT OUTER JOIN tmp_complication_type rcoct
+                    ON rcoct.name = onccs.name
+                
+                /* Hard Join (Implicit Cartesian Product): PROCEDURE_LIST(containers), Cartesian = Complications X Procedure_list
+                /* Cardinality: On investigation et_ophtroperationnote_procedurelist is a logical bucket for procedures on the */
+                /* on the LEFT Eye or the RIGHT Eye. Therefore if procedures were carried our on both eyes then */
+                /* two et_ophtroperationnote_procedurelist records would exist each with intersection records */
+                /* (ophtroperationnote_procedurelist_procedure_assignment) to the lookup procedure (proc) */
+                JOIN et_ophtroperationnote_procedurelist pl
+                    ON pl.event_id = co.oe_event_id  
+                
+                /* Restrict: LEFT or BOTH eyes only */
+                WHERE pl.eye_id IN (1, 3) /* 1 = LEFT EYE, 3 = BOTH EYES */
+            UNION ALL
+                
+                /* Complications for RIGHT eye */
+                
+            SELECT
+                co.oe_event_id
+                , co.OperationId
+                , 'R' AS Eye
+                , IFNULL(rcoct.code, oncc.id) AS ComplicationTypeId
+                , onccs.name AS ComplicationTypeDescription
+                
+                /* Restriction: Start with OPERATIONS (processed previously), seeded from control events */
+                FROM tmp_rco_nod_EpisodeOperation_{$this->extract_identifier} co
+                
+                /* Hard Join: Operation Note Cataract Detail */
+                JOIN et_ophtroperationnote_cataract onc
+                    ON onc.event_id = co.oe_event_id
+                
+                /* Hard Join: Operation Note Complications */
+                JOIN ophtroperationnote_cataract_complication oncc
+                    ON oncc.cataract_id = onc.id
+                
+                JOIN ophtroperationnote_cataract_complications onccs
+                    ON oncc.complication_id = onccs.id  
+                
+                /* Outer Join: Lookup RCO specific complication codes (LOJ to allow for unmapped codes) */
+                LEFT OUTER JOIN tmp_complication_type rcoct
+                    ON rcoct.name = onccs.name
+                
+                /* Hard Join (Implicit Cartesian Product): PROCEDURE_LIST(containers), Cartesian = Complications X Procedure_list
+                /* Cardinality: On investigation et_ophtroperationnote_procedurelist is a logical bucket for procedures on the */
+                /* on the LEFT Eye or the RIGHT Eye. Therefore if procedures were carried our on both eyes then */
+                /* two et_ophtroperationnote_procedurelist records would exist each with intersection records */
+                /* (ophtroperationnote_procedurelist_procedure_assignment) to the lookup procedure (proc) */
+                JOIN et_ophtroperationnote_procedurelist pl
+                    ON pl.event_id = co.oe_event_id  
+                
+                /* Restrict: RIGHT or BOTH eyes only */
+                WHERE pl.eye_id IN (2, 3); /* 2 = RIGHT EYE, 3 = BOTH EYES */
+                
+EOL;
+        return $query;
+    }
+    
+    
     
     private function getEpisodeOperationComplication()
     {
-
-        $query = "SELECT
-                        event.id AS OperationId, 
-                        (SELECT CASE 
-                            WHEN et_ophtroperationnote_procedurelist.eye_id = 1 THEN 'L' 
-                            WHEN et_ophtroperationnote_procedurelist.eye_id = 2 THEN 'R' 
-                            WHEN et_ophtroperationnote_procedurelist.eye_id = 3 THEN 'B' 
-                            END
-                        ) AS Eye,
-                        IFNULL(
-                            (SELECT `code`
-                                    FROM tmp_complication_type 
-                                    WHERE tmp_complication_type.`name` = ophtroperationnote_cataract_complications.name
-                            ),
-                            '') AS ComplicationTypeId
-                    FROM ophtroperationnote_cataract_complication
-                    INNER JOIN `et_ophtroperationnote_cataract` ON `ophtroperationnote_cataract_complication`.cataract_id = et_ophtroperationnote_cataract.id
-                    INNER JOIN ophtroperationnote_cataract_complications ON ophtroperationnote_cataract_complication.`complication_id` = ophtroperationnote_cataract_complications.`id`
-                    INNER JOIN `event` ON  et_ophtroperationnote_cataract.`event_id` = `event`.id
-                    INNER JOIN et_ophtroperationnote_procedurelist ON event.id = et_ophtroperationnote_procedurelist.event_id 
-					WHERE 1=1 " . $this->getDateWhere('ophtroperationnote_cataract_complication');
-
+        $query = <<<EOL
+                SELECT oc.OperationId, oc.Eye, oc.ComplicationTypeId
+                FROM tmp_rco_nod_EpisodeOperationComplication_{$this->extract_identifier} oc
+EOL;
+                
         $dataQuery = array(
             'query' => $query,
             'header' => array('OperationId', 'Eye', 'ComplicationTypeId'),
         );
 
         return $this->saveCSVfile($dataQuery, 'EpisodeOperationComplication', null, 'OperationId');
-
-        //return $this->getIdArray($data, 'OperationId');
     }
+    
+    /********** end of EpisodeOperationComplication **********/
 
     
     
