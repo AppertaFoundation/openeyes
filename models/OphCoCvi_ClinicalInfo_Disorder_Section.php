@@ -114,4 +114,22 @@ class OphCoCvi_ClinicalInfo_Disorder_Section extends \BaseActiveRecordVersioned
             'criteria' => $criteria,
         ));
     }
+
+    /**
+     * Returns all the active disorder sections
+     */
+    public function getAllDisorderSections($element) {
+        $disorder_sections = OphCoCvi_ClinicalInfo_Disorder_Section::model()
+            ->findAll('`active` = ?',array(1));
+        $disorder_sections_with_comment = array();
+        $i = 0;
+        foreach($disorder_sections as $disorder_section) {
+            $comments = Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments::model()
+                ->getDisorderSectionComments($disorder_section->id, $element->id);
+            $disorder_sections_with_comment[$i]['comment'] = $comments;
+            $disorder_sections_with_comment[$i]['disorder'] = $disorder_section;
+            $i++;
+        }
+        return($disorder_sections_with_comment);
+    }
 }
