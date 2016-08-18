@@ -143,10 +143,24 @@ class NodExportController extends BaseController
 
         $query = $this->createAllTempTables();
         $query .= $this->populateAllTempTables();
-//echo $query; die;
+
         Yii::app()->db->createCommand($query)->execute();
 
-        $this->getAllEpisodeData();
+        $this->getEpisodeDiabeticDiagnosis();
+        $this->getEpisodeDrug();
+        $this->getEpisodeBiometry();
+        $this->getEpisodePostOpComplication();
+        $this->getEpisodePreOpAssessment();
+        $this->getEpisodeIOP();
+        $this->getEpisodeVisualAcuity();
+        $this->getEpisodeRefraction();
+        $this->getEpisodeOperationCoPathology();
+        $this->getEpisodeOperationAnaesthesia();
+        $this->getEpisodeOperationIndication();
+        $this->getEpisodeOperationComplication();
+        $this->getEpisodeOperation();
+        $this->getEpisodeTreatmentCataract();
+        $this->getEpisodeTreatment();
 
         $this->getEpisodeDiagnosis();
         $this->getEpisode();
@@ -157,26 +171,6 @@ class NodExportController extends BaseController
         $this->getPatients();
         $this->clearAllTempTables();
 
-    }
-
-
-    private function getAllEpisodeData()
-    {
-        $this->getEpisodeDiabeticDiagnosis();
-        $this->getEpisodeDrug();
-        $this->getEpisodeBiometry();
-        $this->getEpisodePostOpComplication();
-        $this->getEpisodePreOpAssessment();
-        $this->getEpisodeIOP();
-        //$this->saveIds('tmp_episode_ids', $this->getEpisodeVisualAcuity());
-        $this->getEpisodeRefraction();
-        $this->getEpisodeOperationCoPathology();
-        $this->getEpisodeOperationAnaesthesia();
-        $this->getEpisodeOperationIndication();
-        $this->getEpisodeOperationComplication();
-        $this->getEpisodeOperation();
-        $this->getEpisodeTreatmentCataract();
-        //$this->getEpisodeTreatment();
     }
 
     /**
@@ -269,7 +263,7 @@ class NodExportController extends BaseController
         
         $createTempQuery = <<<EOL
 
-			DROP TABLE IF EXISTS tmp_episode_ids;			
+			DROP TABLE IF EXISTS tmp_episode_ids;
 			CREATE TABLE tmp_episode_ids(
 				id  int(10) UNSIGNED NOT NULL UNIQUE,
 				KEY `tmp_episode_ids_id` (`id`)
@@ -578,6 +572,7 @@ EOL;
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationAnesthesia_{$this->extract_identifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationComplication_{$this->extract_identifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationIndication_{$this->extract_identifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeTreatment_{$this->extract_identifier};
                 
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication;
                 DROP TEMPORARY TABLE IF EXISTS tmp_anesthesia_type;
@@ -2184,13 +2179,13 @@ EOL;
         $query = <<<EOL
             DROP TABLE IF EXISTS tmp_rco_nod_EpisodeTreatment_{$this->extract_identifier};
             CREATE TABLE tmp_rco_nod_EpisodeTreatment_{$this->extract_identifier} (
-                oe_event_id int(10) NOT NULL,
-                TreatmentId int(10) NOT NULL,
-                OperationId int(10) NOT NULL,
-                Eye char(1) NOT NULL,
-                TreatmentTypeId int(10) NOT NULL,
-                TreatmentTypeDescription varchar(255) NOT NULL,
-                PRIMARY KEY (TreatmentId,TreatmentTypeId),
+                oe_event_id INT(10) NOT NULL,
+                TreatmentId BIGINT NOT NULL,
+                OperationId INT(10) NOT NULL,
+                Eye CHAR(1) NOT NULL,
+                TreatmentTypeId INT(10) NOT NULL,
+                TreatmentTypeDescription VARCHAR(255) NOT NULL,
+                PRIMARY KEY (TreatmentId),
                 UNIQUE KEY oe_event_id (oe_event_id,TreatmentId,Eye)
             );
 EOL;
@@ -2201,7 +2196,80 @@ EOL;
     private function populateTmpRcoNodEpisodeTreatment()
     {
         $query = <<<EOL
-                
+            INSERT INTO tmp_rco_nod_EpisodeTreatment_{$this->extract_identifier} (
+                oe_event_id	
+                ,TreatmentId
+                ,OperationId
+                ,Eye
+                ,TreatmentTypeId
+                ,TreatmentTypeDescription
+                )
+                /* Procedures for LEFT eye */
+            SELECT 
+                c.oe_event_id ,
+                /* Note pa.id unique for each operation<->procedure intersection record */
+                /* However the procedure may be for BOTH EYES and the RCO needs this splitting out to two Treatment records LEFT + RIGHT */
+                /* We are creating "high range" Treatment IDs for LEFT eye only by adding 1,000,000,000,000) to the number-space */
+                1000000000000 + pa.id AS TreatmentId /* LEFT Eye so add 1,000,000,000,000 */
+                , c.oe_event_id AS OperationId
+                , 'L' AS Eye
+                , p.snomed_code AS TreatmentTypeId
+                , p.snomed_term AS TreatmentTypeDescription
+                /* Restriction: Start with control events */
+
+                FROM tmp_rco_nod_main_event_episodes_ c
+                /* Join: Look up PROCEDURE_LIST (containers) - (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
+                /* Cardinality: On investigation et_ophtroperationnote_procedurelist is a logical bucket for procedures on the */
+                /* on the LEFT Eye or the RIGHT Eye. Therefore if procedures were carried our on both eyes then */
+                /* two et_ophtroperationnote_procedurelist records would exist each with intersection records */
+                /* (ophtroperationnote_procedurelist_procedure_assignment) to the lookup procedure (proc) */
+                LEFT OUTER JOIN et_ophtroperationnote_procedurelist pl
+                  ON pl.event_id = c.oe_event_id
+                /* Join: Look up Procedure List ITEMS (intersection table to proc) - (LOJ used to return nulls if data problems) */
+                LEFT OUTER JOIN ophtroperationnote_procedurelist_procedure_assignment pa
+                  ON pa.procedurelist_id = pl.id
+                /* Join: Look up PROCEDURE DETAIL (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
+                LEFT OUTER JOIN proc p 
+                  ON p.id = pa.proc_id
+                /* Restrict: Only OPERATION NOTE type events */
+                WHERE c.oe_event_type = 4 #'Operation Note'
+                /* Restrict: LEFT or BOTH eyes only */
+                AND pl.eye_id IN (1, 3) /* 1 = LEFT EYE, 3 = BOTH EYES */
+            
+            UNION ALL
+            
+                /* Procedures for RIGHT eye */
+            SELECT 
+                c.oe_event_id
+                /* Note pa.id unique for each operation<->procedure intersection record */
+                /* However the procedure may be for BOTH EYES and the RCO needs this splitting out to two Treatment records LEFT + RIGHT */
+                /* We are creating "high range" Treatment IDs for LEFT eye only by adding 1,000,000,000,000) to the number-space */
+                , 0 + pa.id AS TreatmentId /* RIGHT Eye so add zero */
+                , c.oe_event_id AS OperationId
+                , 'R' AS Eye
+                , p.snomed_code AS TreatmentTypeId
+                , p.snomed_term AS TreatmentTypeDescription
+                /* Restriction: Start with control events */
+            
+                FROM tmp_rco_nod_main_event_episodes_ c 
+                /* Join: Look up PROCEDURE_LIST (containers) - (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
+                /* Cardinality: On investigation et_ophtroperationnote_procedurelist is a logical bucket for procedures on the */
+                /* on the LEFT Eye or the RIGHT Eye. Therefore if procedures were carried our on both eyes then */
+                /* two et_ophtroperationnote_procedurelist records would exist each with intersection records */
+                /* (ophtroperationnote_procedurelist_procedure_assignment) to the lookup procedure (proc) */
+                LEFT OUTER JOIN et_ophtroperationnote_procedurelist pl
+                  ON pl.event_id = c.oe_event_id
+                /* Join: Look up Procedure List ITEMS (intersection table to proc) - (LOJ used to return nulls if data problems) */
+                LEFT OUTER JOIN ophtroperationnote_procedurelist_procedure_assignment pa
+                  ON pa.procedurelist_id = pl.id
+                /* Join: Look up PROCEDURE DETAIL (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
+                LEFT OUTER JOIN proc p 
+                  ON p.id = pa.proc_id
+                /* Restrict: Only OPERATION NOTE type events */
+                WHERE c.oe_event_type = 4 #'Operation Note'
+                /* Restrict: RIGHT or BOTH eyes only */
+                AND pl.eye_id IN (2, 3); /* 2 = RIGHT EYE, 3 = BOTH EYES */
+            
 EOL;
         //return $query;
     }
@@ -2210,35 +2278,16 @@ EOL;
     
     private function getEpisodeTreatment()
     {
-        $query = "  (SELECT pa.id AS TreatmentId,
-                                pl.`event_id` AS OperationId, 
-                                'L' AS Eye,
-                                proc.snomed_code AS TreatmentTypeId
-                    FROM ophtroperationnote_procedurelist_procedure_assignment pa
-                    JOIN et_ophtroperationnote_procedurelist pl ON pa.procedurelist_id = pl.id 
-					JOIN proc ON pa.`proc_id` = proc.`id`
-					JOIN event ON pl.`event_id` = event.id AND event.episode_id IN (SELECT id FROM tmp_episode_ids)
-					WHERE pa.id in (SELECT id FROM tmp_treatment_ids) AND (pl.eye_id=1 OR pl.eye_id=3))
-					UNION
-					(SELECT pa.id AS TreatmentId,
-                                pl.`event_id` AS OperationId,
-                                'R' AS Eye,
-                                proc.snomed_code AS TreatmentTypeId
-                    FROM ophtroperationnote_procedurelist_procedure_assignment pa
-                    JOIN et_ophtroperationnote_procedurelist pl ON pa.procedurelist_id = pl.id
-                    JOIN proc ON pa.`proc_id` = proc.`id`
-                    JOIN event ON pl.`event_id` = event.id AND event.episode_id IN (SELECT id FROM tmp_episode_ids)
-                    WHERE pa.id in (SELECT id FROM tmp_treatment_ids) AND (pl.eye_id=2 OR pl.eye_id=3))";
-
+        $query = <<<EOL
+                SELECT t.TreatmentId, t.OperationId, t.Eye, t.TreatmentTypeId
+                FROM tmp_rco_nod_EpisodeTreatment_{$this->extract_identifier} t
+EOL;
         $dataQuery = array(
             'query' => $query,
             'header' => array('TreatmentId', 'OperationId', 'Eye', 'TreatmentTypeId'),
         );
 
-        return $this->saveCSVfile($dataQuery, 'EpisodeTreatment', null, 'TreatmentId');
-        //TODO: need to select episodeIds here!
-        //return $this->getIdArray($data, 'TreatmentId');
-
+        return $this->saveCSVfile($dataQuery, 'EpisodeTreatment');
     }
     
     /********** EpisodeOperationIndication **********/
