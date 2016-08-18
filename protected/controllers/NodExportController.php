@@ -171,7 +171,7 @@ class NodExportController extends BaseController
         //$this->saveIds('tmp_episode_ids', $this->getEpisodeVisualAcuity());
         $this->getEpisodeRefraction();
         $this->getEpisodeOperationCoPathology();
-        //$this->saveIds('tmp_operation_ids', $this->getEpisodeOperationAnaesthesia());
+        $this->getEpisodeOperationAnaesthesia();
         $this->getEpisodeOperationIndication();
         //$this->saveIds('tmp_operation_ids', $this->getEpisodeOperationComplication());
         $this->getEpisodeOperation();
@@ -263,6 +263,7 @@ class NodExportController extends BaseController
         $query .= $this->createTmpRcoNodEpisodeOperation();
         $query .= $this->createTmpRcoNodEpisodeTreatment();
         $query .= $this->createTmpRcoNodEpisodeTreatmentCataract();
+        $query .= $this->createTmpRcoNodEpisodeOperationAnesthesia();
         
         $createTempQuery = <<<EOL
 
@@ -358,6 +359,7 @@ class NodExportController extends BaseController
 			(0, 'None'),
 			(1, 'choroidal / suprachoroidal haemorrhage'),
 			(2, 'corneal burn'),
+			(3, 'corneal epithelial abrasion'),
 			(3, 'corneal epithelial abrasion'),
 			(4, 'corneal oedema'),
 			(5, 'endothelial damage / Descemet\'s tear'),
@@ -545,6 +547,7 @@ EOL;
         $query .= $this->populateTmpRcoNodEpisodeOperation();
         $query .= $this->populateTmpRcoNodEpisodeTreatment();
         $query .= $this->populateTmpRcoNodEpisodeTreatmentCataract();
+        $query .= $this->populateTmpRcoNodEpisodeOperationAnesthesia();
 
         return $query;
     }
@@ -568,6 +571,7 @@ EOL;
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperation_{$this->extract_identifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeTreatment_{$this->extract_identifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeTreatmentCataract_{$this->extract_identifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationAnesthesia_{$this->extract_identifier};
                 
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication_type;
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication;
@@ -2054,6 +2058,7 @@ EOL;
             /* Join: Look up LENS TYPE (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
             LEFT OUTER JOIN ophtroperationnote_cataract_iol_type oclt
               ON oclt.id = oc.iol_type_id
+
             /* Join: Look up original operation note event (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
             LEFT OUTER JOIN event eon
               ON eon.id = ct.oe_event_id ;
@@ -2094,7 +2099,75 @@ EOL;
     }
     
     /********** end of EpisodeTreatmentCataract **********/
+    
+    
+    
+    
+    
+    /*********** EpisodeOperationAnesthesia ****************/
+    
+    private function createTmpRcoNodEpisodeOperationAnesthesia()
+    {
+        $query = <<<EOL
+            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationAnesthesia_{$this->extract_identifier};
+            CREATE TABLE tmp_rco_nod_EpisodeOperationAnesthesia_{$this->extract_identifier} (
+                oe_event_id INT(10) NOT NULL,
+                AnaesthesiaTypeId INT(10),
+                AnaesthesiaNeedle INT(10),
+                Sedation INT(10),
+                SurgeonId INT(10),
+                ComplicationId INT(10)
+            );
+EOL;
+        return $query;
+    }
+    
+    private function populateTmpRcoNodEpisodeOperationAnesthesia()
+    {
+        $query = "INSERT INTO tmp_rco_nod_EpisodeOperationAnesthesia_{$this->extract_identifier}(
+                      oe_event_id,
+                      AnaesthesiaTypeId,
+                      AnaesthesiaNeedle,
+                      Sedation,
+                      SurgeonId,
+                      ComplicationId
+                  )
+                      SELECT event_id AS oe_event_id,
+                        (SELECT `nod_code` FROM tmp_anesthesia_type WHERE at.`name` = `name`) AS AnaesthesiaTypeId,
+                        IFNULL(
+                            (SELECT nod_id FROM tmp_anaesthetic_delivery WHERE a.anaesthetic_delivery_id = oe_id),
+                            0
+                        ) AS AnaesthesiaNeedle,
+                        '9' as Sedation,
+                        '' as SurgeonId,
+                        (
+                            SELECT tmp_complication.nod_id FROM tmp_complication WHERE oe_id = acs.id
+                        ) as ComplicationId
 
+                        FROM et_ophtroperationnote_anaesthetic a
+                        JOIN `anaesthetic_type` `at` ON a.`anaesthetic_type_id` = at.`id`
+                        JOIN ophtroperationnote_anaesthetic_anaesthetic_complication ac ON a.`id` = ac.`et_ophtroperationnote_anaesthetic_id`
+                        JOIN ophtroperationnote_anaesthetic_anaesthetic_complications acs ON ac.`anaesthetic_complication_id` = acs.id
+                        JOIN tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c ON c.oe_event_id = a.event_id;";
+
+        return $query;
+    }
+    
+    private function getEpisodeOperationAnaesthesia()
+    {
+        $query = "SELECT oe_event_id AS OperationId, AnaesthesiaTypeId, AnaesthesiaNeedle, Sedation, SurgeonId, ComplicationId
+                    FROM tmp_rco_nod_EpisodeOperationAnesthesia_{$this->extract_identifier}";
+
+        $dataQuery = array(
+            'query' => $query,
+            'header' => array('OperationId', 'AnaesthesiaTypeId', 'AnaesthesiaNeedle', 'Sedation', 'SurgeonId', 'ComplicationId'),
+        );
+
+        return $this->saveCSVfile($dataQuery, 'EpisodeOperationAnaesthesia', null, 'OperationId');
+    }
+
+    /********* end of EpisodeOperationAnesthesia***********/  
+    
     
     
     
@@ -2162,51 +2235,17 @@ EOL;
         //return $this->getIdArray($data, 'TreatmentId');
 
     }
-
-    private function getEpisodeOperationAnaesthesia()
-    {
-        $query = "SELECT event_id AS OperationId,
-                        (SELECT `nod_code` FROM tmp_anesthesia_type WHERE at.`name` = `name`) AS AnaesthesiaTypeId,
-                        IFNULL(
-                            (SELECT nod_id FROM tmp_anaesthetic_delivery WHERE a.anaesthetic_delivery_id = oe_id),
-                            0
-                        ) AS AnaesthesiaNeedle,
-                        '9' as Sedation,
-                        '' as SurgeonId,
-                        (
-                            SELECT tmp_complication.nod_id FROM tmp_complication WHERE oe_id = acs.id
-                        ) as ComplicationId
-
-                        FROM et_ophtroperationnote_anaesthetic a
-                        JOIN `anaesthetic_type` `at` ON a.`anaesthetic_type_id` = at.`id`
-                        JOIN ophtroperationnote_anaesthetic_anaesthetic_complication ac ON a.`id` = ac.`et_ophtroperationnote_anaesthetic_id`
-                        JOIN ophtroperationnote_anaesthetic_anaesthetic_complications acs ON ac.`anaesthetic_complication_id` = acs.id
-                        JOIN event ON a.event_id = event.id AND event.episode_id IN (SELECT id FROM tmp_episode_ids)
-                        WHERE 1=1 
-                        ".$this->getDateWhere('a');
-
-        $dataQuery = array(
-            'query' => $query,
-            'header' => array('OperationId', 'AnaesthesiaTypeId', 'AnaesthesiaNeedle', 'Sedation', 'SurgeonId', 'ComplicationId'),
-        );
-
-        return $this->saveCSVfile($dataQuery, 'EpisodeOperationAnaesthesia', null, 'OperationId');
-    }
-
-    
-    
-    
     
     /********** EpisodeOperationIndication **********/
     
-    private function createTmpRcoNodEpisodeOperationIndication()
+     private function createTmpRcoNodEpisodeOperationIndication()
     {
         $query = <<<EOL
                 
 EOL;
         return $query;
     }
-    
+        
     private function getEpisodeOperationIndication()
     {
         $query = "(SELECT pl.`event_id` AS OperationId, 'L' AS Eye,
@@ -2256,12 +2295,14 @@ EOL;
 
         return $this->saveCSVfile($dataQuery, 'EpisodeOperationIndication', null, 'OperationId');
 
-        //return $this->getIdArray($data, 'OperationId');
-
     }
     
     /********** end of EpisodeOperationIndication **********/
 
+    
+    
+    
+    
     private function getEpisodeOperationComplication()
     {
 
@@ -2296,6 +2337,10 @@ EOL;
         //return $this->getIdArray($data, 'OperationId');
     }
 
+    
+    
+    
+    
     /********** EpisodeOperation **********/
     
     private function createTmpRcoNodEpisodeOperation()
@@ -2383,11 +2428,14 @@ EOL;
         );
         return $this->saveCSVfile($dataQuery, 'EpisodeOperation');
 
-        //return $this->getIdArray($data, 'OperationId');
     }
     
     /********** end of EpisodeOperation **********/
 
+    
+    
+    
+    
     private function getEpisodeVisualAcuity()
     {
 
@@ -2509,8 +2557,6 @@ EOL;
         );
 
         return $this->saveCSVfile($dataQuery, 'EpisodeVisualAcuity', null, 'EpisodeId');
-
-        //return $this->getIdArray($data, 'EpisodeId');
     }
     
     /**
