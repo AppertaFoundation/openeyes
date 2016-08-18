@@ -264,6 +264,7 @@ class NodExportController extends BaseController
         $query .= $this->createTmpRcoNodEpisodeTreatment();
         $query .= $this->createTmpRcoNodEpisodeTreatmentCataract();
         $query .= $this->createTmpRcoNodEpisodeOperationAnesthesia();
+        $query .= $this->createTmpRcoNodEpisodeOperationIndication();
         
         $createTempQuery = <<<EOL
 
@@ -548,6 +549,7 @@ EOL;
         $query .= $this->populateTmpRcoNodEpisodeTreatment();
         $query .= $this->populateTmpRcoNodEpisodeTreatmentCataract();
         $query .= $this->populateTmpRcoNodEpisodeOperationAnesthesia();
+        $query .= $this->populateTmpRcoNodEpisodeOperationIndication();
 
         return $query;
     }
@@ -2238,9 +2240,79 @@ EOL;
     
     /********** EpisodeOperationIndication **********/
     
-     private function createTmpRcoNodEpisodeOperationIndication()
+    private function createTmpRcoNodEpisodeOperationIndication()
     {
         $query = <<<EOL
+            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationIndication_{$this->extract_identifier};
+            CREATE TABLE tmp_rco_nod_EpisodeOperationIndication_{$this->extract_identifier} (
+                oe_event_id INT(10) NOT NULL,
+                OperationId INT(10) NOT NULL,
+                Eye CHAR(1) NOT NULL,
+                IndicationId INT(10) NOT NULL,
+                IndicationDescription VARCHAR(255) NOT NULL,
+            UNIQUE KEY OperationId (OperationId,Eye,IndicationId) 
+            );
+EOL;
+        return $query;
+    }
+    
+    private function populateTmpRcoNodEpisodeOperationIndication()
+    {
+        $query = <<<EOL
+            INSERT INTO tmp_rco_nod_EpisodeOperationIndication_{$this->extract_identifier} (
+                oe_event_id,
+                OperationId,
+                Eye,
+                IndicationId,
+                IndicationDescription
+              )
+            SELECT 
+                o.oe_event_id
+              , o.OperationId
+              , 'L' AS Eye
+              , d.id AS IndicationId
+              , d.term AS IndicationDescription
+              /* Restriction: Start with operations (processed previously) */
+            FROM tmp_rco_nod_EpisodeOperation_{$this->extract_identifier} o
+            /* Join: Look up PROCEDURE_LIST (containers) - (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
+            /* Cardinality: On investigation et_ophtroperationnote_procedurelist is a logical bucket for procedures on the */
+            /* on the LEFT Eye or the RIGHT Eye. Therefore if procedures were carried our on both eyes then */
+            /* two et_ophtroperationnote_procedurelist records would exist each with intersection records */
+            /* (ophtroperationnote_procedurelist_procedure_assignment) to the lookup procedure (proc) */
+            LEFT OUTER JOIN et_ophtroperationnote_procedurelist pl
+                ON pl.event_id = o.oe_event_id
+            /* Join: Get associated Booking Event DISORDERS - (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
+            LEFT OUTER JOIN et_ophtroperationbooking_diagnosis be
+                ON be.event_id = pl.booking_event_id
+            /* Join: Lookup DISORDER DETAIL - (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
+            LEFT OUTER JOIN disorder d
+                ON d.id = be.disorder_id
+              /* Restrict: LEFT or BOTH eyes only */
+              AND pl.eye_id IN (1, 3) /* 1 = LEFT EYE, 3 = BOTH EYES */
+              UNION ALL
+            SELECT 
+                o.oe_event_id
+              , o.OperationId
+              , 'R' AS Eye
+              , d.id AS IndicationId
+              , d.term AS IndicationDescription
+              /* Restriction: Start with operations (processed previously) */
+            FROM tmp_rco_nod_EpisodeOperation_{$this->extract_identifier} o
+            /* Join: Look up PROCEDURE_LIST (containers) - (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
+            /* Cardinality: On investigation et_ophtroperationnote_procedurelist is a logical bucket for procedures on the */
+            /* on the LEFT Eye or the RIGHT Eye. Therefore if procedures were carried our on both eyes then */
+            /* two et_ophtroperationnote_procedurelist records would exist each with intersection records */
+            /* (ophtroperationnote_procedurelist_procedure_assignment) to the lookup procedure (proc) */
+            LEFT OUTER JOIN et_ophtroperationnote_procedurelist pl
+              ON pl.event_id = o.oe_event_id
+            /* Join: Get associated Booking Event DISORDERS - (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
+            LEFT OUTER JOIN et_ophtroperationbooking_diagnosis be
+              ON be.event_id = pl.booking_event_id
+            /* Join: Lookup DISORDER DETAIL - (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
+            LEFT OUTER JOIN disorder d
+              ON d.id = be.disorder_id
+            /* Restrict: RIGHT or BOTH eyes only */
+            AND pl.eye_id IN (2, 3) /* 2 = RIGHT EYE, 3 = BOTH EYES */ ;
                 
 EOL;
         return $query;
@@ -2248,46 +2320,10 @@ EOL;
         
     private function getEpisodeOperationIndication()
     {
-        $query = "(SELECT pl.`event_id` AS OperationId, 'L' AS Eye,
-                            (
-                                    SELECT IF(	pl.`booking_event_id`,
-                                                    d.`disorder_id`, 
-                                                    (
-                                                            SELECT disorder_id
-                                                            FROM episode
-                                                            WHERE e.`episode_id` = episode.id
-                                                    )
-                                            ) 
-                            ) AS IndicationId
-                            FROM `event` e
-                            JOIN event_type evt ON evt.id = e.event_type_id
-                            JOIN et_ophtroperationnote_procedurelist pl ON e.id = pl.event_id
-                            LEFT JOIN `et_ophtroperationbooking_diagnosis` d ON pl.booking_event_id = d.`event_id`
-                            WHERE evt.name = 'Operation Note' " . $this->getDateWhere('e') ."
-                            AND (pl.eye_id = 1 OR pl.eye_id = 3))
-                    UNION
-                            (
-                                SELECT pl.`event_id` AS OperationId, 'R' AS Eye,
-                                (
-                                        SELECT IF(	pl.`booking_event_id`,
-                                                        d.`disorder_id`, 
-                                                        (
-                                                                SELECT disorder_id
-                                                                FROM episode
-                                                                WHERE e.`episode_id` = episode.id
-                                                        )
-                                                ) 
-                                ) AS IndicationId
-                                FROM `event` e
-                                JOIN event_type evt ON evt.id = e.event_type_id
-                                JOIN et_ophtroperationnote_procedurelist pl ON e.id = pl.event_id
-                                LEFT JOIN `et_ophtroperationbooking_diagnosis` d ON pl.booking_event_id = d.`event_id`
-                                WHERE evt.name = 'Operation Note' " . $this->getDateWhere('e') ."
-                                AND (pl.eye_id = 2 OR pl.eye_id = 3)
-                            )
-                            ";
-
-
+        $query = <<<EOL
+                SELECT i.OperationId, i.Eye, i.IndicationId, i.IndicationDescription
+                FROM tmp_rco_nod_EpisodeOperationIndication_{$this->extract_identifier} i
+EOL;
         $dataQuery = array(
             'query' => $query,
             'header' => array('OperationId', 'Eye', 'IndicationId'),
