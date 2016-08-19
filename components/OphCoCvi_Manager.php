@@ -307,15 +307,14 @@ class OphCoCvi_Manager extends \CComponent
             if ($transaction) {
                 $transaction->commit();
             }
+            return true;
         }
         catch (\Exception $e) {
             if ($transaction) {
                 $transaction->rollback();
             }
-
         }
-
-        // commit
+        return false;
 
     }
 

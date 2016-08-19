@@ -246,7 +246,11 @@ class DefaultController extends \BaseEventTypeController
      */
     public function actionIssue($id)
     {
-        $this->getManager()->issueCvi($this->event, $this->getApp()->user->id);
+        if ($this->getManager()->issueCvi($this->event, $this->getApp()->user->id)) {
+            $this->getApp()->user->setFlash('success', 'The CVI has been successfully generated.');
+        } else {
+            $this->getApp()->user->setFlash('error', 'The CVI could not be generated.');
+        }
 
         $this->redirect(array('/'.$this->event->eventType->class_name.'/default/pdfPrint/'.$id));
     }
