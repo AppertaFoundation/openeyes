@@ -158,4 +158,10 @@ class MessageCreator
 
         return $controller->renderInternal(\Yii::getPathOfAlias($this->messageTemplate).'.php', $this->messageData, true);
     }
+
+    protected function emailAlert()
+    {
+        
+    }
+
 }
