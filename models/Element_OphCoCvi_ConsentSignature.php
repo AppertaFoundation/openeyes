@@ -40,91 +40,153 @@ namespace OEModule\OphCoCvi\models;
 
 class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
 {
-	/**
-	 * Returns the static model of the specified AR class.
-	 * @return the static model class
-	 */
-	public static function model($className = __CLASS__)
-	{
-		return parent::model($className);
-	}
+    /**
+     * Returns the static model of the specified AR class.
+     * @return the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
 
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'et_ophcocvi_consentsig';
-	}
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'et_ophcocvi_consentsig';
+    }
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		return array(
-			array('event_id, is_patient, signature_date, representative_name, signature_file_id, ', 'safe'),
-			//array('is_patient', 'required'),
-			array('id, event_id, is_patient, signature_date, representative_name, signature_file_id, ', 'safe', 'on' => 'search'),
-		);
-	}
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        return array(
+            array('event_id, is_patient, signature_date, representative_name, signature_file_id, ', 'safe'),
+            //array('is_patient', 'required'),
+            array(
+                'id, event_id, is_patient, signature_date, representative_name, signature_file_id, ',
+                'safe',
+                'on' => 'search'
+            ),
+        );
+    }
 
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		return array(
-			'element_type' => array(self::HAS_ONE, 'ElementType', 'id','on' => "element_type.class_name='".get_class($this)."'"),
-			'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
-			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-			'signature_file' => array(self::BELONGS_TO, 'ProtectedFile', 'signature_file_id'),
-		);
-	}
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        return array(
+            'element_type' => array(
+                self::HAS_ONE,
+                'ElementType',
+                'id',
+                'on' => "element_type.class_name='" . get_class($this) . "'"
+            ),
+            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
+            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'signature_file' => array(self::BELONGS_TO, 'ProtectedFile', 'signature_file_id'),
+        );
+    }
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
-	public function attributeLabels()
-	{
-		return array(
-			'id' => 'ID',
-			'event_id' => 'Event',
-			'is_patient' => 'Is patient',
-			'signature_date' => 'Signature date',
-			'representative_name' => 'Representative name',
-			'signature_file_id' => 'Signature File',
-		);
-	}
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+            'id' => 'ID',
+            'event_id' => 'Event',
+            'is_patient' => 'Is patient',
+            'signature_date' => 'Signature date',
+            'representative_name' => 'Representative name',
+            'signature_file_id' => 'Signature File',
+        );
+    }
 
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		$criteria = new CDbCriteria;
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     */
+    public function search()
+    {
+        $criteria = new CDbCriteria;
 
-		$criteria->compare('id', $this->id, true);
-		$criteria->compare('event_id', $this->event_id, true);
-		$criteria->compare('is_patient', $this->is_patient);
-		$criteria->compare('signature_date', $this->signature_date);
-		$criteria->compare('representative_name', $this->representative_name);
-		$criteria->compare('signature_file_id', $this->signature_file_id);
+        $criteria->compare('id', $this->id, true);
+        $criteria->compare('event_id', $this->event_id, true);
+        $criteria->compare('is_patient', $this->is_patient);
+        $criteria->compare('signature_date', $this->signature_date);
+        $criteria->compare('representative_name', $this->representative_name);
+        $criteria->compare('signature_file_id', $this->signature_file_id);
 
-		return new CActiveDataProvider(get_class($this), array(
-			'criteria' => $criteria,
-		));
-	}
+        return new CActiveDataProvider(get_class($this), array(
+            'criteria' => $criteria,
+        ));
+    }
 
 
+    protected function afterSave()
+    {
 
-	protected function afterSave()
-	{
+        return parent::afterSave();
+    }
 
-		return parent::afterSave();
-	}
+    /**
+     *  Checks if a patient signature file is already attached to the event
+     */
+    public function checkSignature()
+    {
+        return ($this->signature_file_id)?'true':false;
+    }
+
+    /**
+     * @param $text
+     * @param $key
+     * @return string
+     */
+    protected function decryptSignature($text, $key)
+    {
+        $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
+        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+        return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($text), MCRYPT_MODE_ECB, $iv));
+    }
+
+    /**
+     * @return string
+     */
+    public function getDecryptedSignature()
+    {
+        if($this->signature_file)
+        {
+            return base64_decode($this->decryptSignature(file_get_contents ($this->signature_file->getPath()), md5($this->getEncryptionKey().\Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($this->event))));
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getEncryptionKey()
+    {
+        return md5($this->patientId.$this->event_id.$this->event->episode->id);
+    }
+
+    /**
+     * Returns an associative array of the data values for printing
+     */
+    public function getStructuredDataForPrint()
+    {
+        $result = array();
+        $result['patientOrRepresentative'] = array(
+            array($this->is_patient ? 'X' : '',''),
+            array($this->is_patient ? '' : 'X','')
+        );
+        $result["representativeName"] = $this->representative_name;
+        //print_r($result['patientOrRepresentative']);die;
+        $result['signature_date'] = $this->signature_date;
+        return $result;
+    }
 }
-?>

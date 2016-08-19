@@ -16,12 +16,59 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-/* line 18, ../sass/components/_event.scss */
+/* line 16, ../sass/components/_event.scss */
 .event .event-content {
   border-color: #86cdff;
-  background-image: url('../img/watermark.png?1469454353');
+  background-image: url('../img/watermark.png?1470932098');
 }
-/* line 22, ../sass/components/_event.scss */
+/* line 20, ../sass/components/_event.scss */
 .event .event-title {
-  background-image: url('../img/medium.png?1469454353');
+  background-image: url('../img/medium.png?1470932098');
+}
+
+/* line 25, ../sass/components/_event.scss */
+.multi-select-search {
+  margin-left: 0px;
+  background-color: #999999;
+}
+/* line 28, ../sass/components/_event.scss */
+.multi-select-search li {
+  background-color: #DDDDDD;
+  padding: 2px;
+  margin-bottom: 1px;
+}
+/* line 33, ../sass/components/_event.scss */
+.multi-select-search li:last-child {
+  margin-bottom: 0px;
+}
+/* line 36, ../sass/components/_event.scss */
+.multi-select-search.scroll {
+  overflow-y: auto;
+  max-height: 50px;
+}
+/* line 40, ../sass/components/_event.scss */
+.multi-select-search a.remove {
+  float: right;
+}
+
+/* line 15, ../sass/components/_elements.scss */
+.element .indent-correct {
+  margin-left: -10px;
+  margin-bottom: 6px;
+}
+
+/* line 20, ../sass/components/_elements.scss */
+.element legend {
+  font-style: italic;
+}
+
+/* line 24, ../sass/components/_elements.scss */
+.inline-header {
+  margin-bottom: 2px;
+}
+
+/* line 28, ../sass/components/_elements.scss */
+hr {
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
 }

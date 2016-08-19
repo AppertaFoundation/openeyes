@@ -24,7 +24,7 @@ namespace OEModule\OphCoCvi\models;
  * The followings are the available columns in table:
  * @property string $id
  * @property integer $element_id
- * @property integer $ophcocvi_clinicinfo_disorders_id
+ * @property integer $ophcocvi_clinicinfo_disorder_id
  *
  * The followings are the available model relations:
  *
@@ -36,73 +36,112 @@ namespace OEModule\OphCoCvi\models;
 
 class Element_OphCoCvi_ClinicalInfo_Disorder_Assignment extends \BaseActiveRecordVersioned
 {
-	/**
-	 * Returns the static model of the specified AR class.
-	 * @return the static model class
-	 */
-	public static function model($className = __CLASS__)
-	{
-		return parent::model($className);
-	}
+    /**
+     * Returns the static model of the specified AR class.
+     * @return the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
 
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'et_ophcocvi_clinicinfo_disorder_assignment';
-	}
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'et_ophcocvi_clinicinfo_disorder_assignment';
+    }
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		return array(
-			array('element_id, ophcocvi_clinicinfo_disorder_id', 'safe'),
-			array('element_id, ophcocvi_clinicinfo_disorder_id', 'required'),
-			array('id, element_id, ophcocvi_clinicinfo_disorder_id', 'safe', 'on' => 'search'),
-		);
-	}
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        return array(
+            array('element_id, ophcocvi_clinicinfo_disorder_id,eye_id', 'safe'),
+            array('element_id, ophcocvi_clinicinfo_disorder_id,eye_id', 'required'),
+            array('id, element_id, ophcocvi_clinicinfo_disorder_id,eye_id', 'safe', 'on' => 'search'),
+        );
+    }
 
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		return array(
-			'element' => array(self::BELONGS_TO, 'Element_OphCoCvi_ClinicalInfo', 'element_id'),
-			'ophcocvi_clinicinfo_disorders' => array(self::BELONGS_TO, 'OphCoCvi_ClinicalInfo_Disorders', 'ophcocvi_clinicinfo_disorders_id'),
-			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-		);
-	}
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        return array(
+            'element' => array(self::BELONGS_TO, 'Element_OphCoCvi_ClinicalInfo', 'element_id'),
+            'ophcocvi_clinicinfo_disorder' => array(
+                self::BELONGS_TO,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder',
+                'ophcocvi_clinicinfo_disorder_id'
+            ),
+            'eye' => array(self::BELONGS_TO,'Eye','eye_id'),
+            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+        );
+    }
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
-	public function attributeLabels()
-	{
-		return array(
-			'id' => 'ID',
-			'name' => 'Name',
-		);
-	}
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+            'id' => 'ID',
+            'name' => 'Name',
+        );
+    }
 
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		$criteria = new CDbCriteria;
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     */
+    public function search()
+    {
+        $criteria = new CDbCriteria;
 
-		$criteria->compare('id', $this->id, true);
-		$criteria->compare('name', $this->name, true);
+        $criteria->compare('id', $this->id, true);
+        $criteria->compare('name', $this->name, true);
 
-		return new CActiveDataProvider(get_class($this), array(
-			'criteria' => $criteria,
-		));
-	}
+        return new CActiveDataProvider(get_class($this), array(
+            'criteria' => $criteria,
+        ));
+    }
+
+    public function getDisorderAffectedStatus($disorder_id,$element_id,$side) {
+        $eye_value = \Eye::model()->find("name = ?", array(ucfirst($side)));
+        $criteria=new \CDbCriteria;
+        $criteria->select='affected';
+        $criteria->condition="element_id=:element_id";
+        $criteria->addCondition("ophcocvi_clinicinfo_disorder_id=:disorder_id");
+        $criteria->addCondition("eye_id=:eye_id");
+        $criteria->params=array(':element_id'=>$element_id,':disorder_id'=>$disorder_id,':eye_id' => $eye_value->id);
+        $item = Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()->find($criteria);
+        return $item['affected'] ? $item['affected'] : 0;
+
+    }
+
+    public function getDisorderMainCause($disorder_id,$element_id,$side) {
+        $eye_value = \Eye::model()->find("name = ?", array(ucfirst($side)));
+        $criteria=new \CDbCriteria;
+        $criteria->select='main_cause';
+        $criteria->condition="element_id=:element_id";
+        $criteria->addCondition("ophcocvi_clinicinfo_disorder_id=:disorder_id");
+        $criteria->addCondition("eye_id=:eye_id");
+        $criteria->params=array(':element_id'=>$element_id,':disorder_id'=>$disorder_id,':eye_id' => $eye_value->id);
+        $item = Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()->find($criteria);
+        return $item['main_cause'] ? $item['main_cause'] : 0;
+    }
+
+    /**
+     * Returns an associative array of the data values for printing
+     */
+    public function getStructuredDataForPrint()
+    {
+        $result = array();
+
+        return $result;
+    }
 }
-?>

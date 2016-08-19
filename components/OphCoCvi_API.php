@@ -24,98 +24,130 @@ use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo;
 
 class OphCoCvi_API extends \BaseAPI
 {
-	protected $yii;
+    protected $yii;
 
-	public function __construct(CApplication $yii = null)
-	{
-		if (is_null($yii)) {
-			$yii = \Yii::app();
-		}
+    public function __construct(\CApplication $yii = null)
+    {
+        if (is_null($yii)) {
+            $yii = \Yii::app();
+        }
 
-		$this->yii = $yii;
-	}
+        $this->yii = $yii;
+    }
 
-	/**
-	 * Get all events regardless of episode.
-	 *
-	 * @param Patient $patient
-	 * @return \Event[]
-	 * @throws \Exception
-	 */
-	public function getEvents(Patient $patient)
-	{
-		return $this->getManager()->getEventsForPatient($patient);
-	}
+    public $createOprn = 'OprnCreateCvi';
+    public $createOprnArgs = array('user_id', 'firm', 'episode');
 
-	/**
-	 * Convenience wrapper to allow template rendering.
-	 *
-	 * @param $view
-	 * @param array $parameters
-	 * @return mixed
-	 */
-	protected function renderPartial($view, $parameters = array())
-	{
-		return $this->yii->controller->renderPartial($view, $parameters, true);
-	}
+    /**
+     * Get all events regardless of episode.
+     *
+     * @param Patient $patient
+     * @return \Event[]
+     * @throws \Exception
+     */
+    public function getEvents(Patient $patient)
+    {
+        return $this->getManager()->getEventsForPatient($patient);
+    }
 
-	/**
-	 * @var OphCoCvi_Manager
-	 */
-	protected $cvi_manager;
+    /**
+     * Convenience wrapper to allow template rendering.
+     *
+     * @param $view
+     * @param array $parameters
+     * @return mixed
+     */
+    protected function renderPartial($view, $parameters = array())
+    {
+        return $this->yii->controller->renderPartial($view, $parameters, true);
+    }
 
-	/**
-	 * @return OphCoCvi_Manager
-	 */
-	public function getManager()
-	{
-		if (!isset($this->cvi_manager)) {
-			$this->cvi_manager = new OphCoCvi_Manager($this->yii, $this->getEventType());
-		}
+    /**
+     * @var OphCoCvi_Manager
+     */
+    protected $cvi_manager;
 
-		return $this->cvi_manager;
-	}
+    /**
+     * @return OphCoCvi_Manager
+     */
+    public function getManager()
+    {
+        if (!isset($this->cvi_manager)) {
+            $this->cvi_manager = new OphCoCvi_Manager($this->yii, $this->getEventType());
+        }
 
-	/**
-	 * Render a patient summary widget to display CVI status based on the eCVI event and the core static model.
-	 *
-	 * @param Patient $patient
-	 * @return string
-	 */
-	public function patientSummaryRender(Patient $patient)
-	{
-		$rows = array();
-		$oph_info_editable = false;
+        return $this->cvi_manager;
+    }
 
-		foreach ($this->getEvents($patient) as $event) {
-			$rows[] = array(
-				'date' => $this->getManager()->getDisplayStatusDateForEvent($event),
-				'status' => $this->getManager()->getDisplayStatusForEvent($event),
-				'event_url' => $this->getManager()->getEventViewUri($event)
-			);
-		}
+    /**
+     * Render a patient summary widget to display CVI status based on the eCVI event and the core static model.
+     *
+     * @param Patient $patient
+     * @return string
+     */
+    public function patientSummaryRender(Patient $patient)
+    {
+        $rows = array();
+        $oph_info_editable = false;
 
-		$info = $patient->getOphInfo();
+        foreach ($this->getEvents($patient) as $event) {
+            $rows[] = array(
+                'date' => $this->getManager()->getDisplayStatusDateForEvent($event),
+                'status' => $this->getManager()->getDisplayStatusForEvent($event),
+                'event_url' => $this->getManager()->getEventViewUri($event)
+            );
+        }
 
-		if (!count($rows) || !$info->isNewRecord) {
-			$oph_info_editable = true;
-			$rows[] = array(
-				'date' => $info->cvi_status_date,
-				'status' => $info->cvi_status->name
-			);
-		}
+        $info = $patient->getOphInfo();
 
-		// slot the info record into the right place
-		uasort($rows, function ($a, $b) { return $a['date'] < $b['date'] ? -1 : 1; });
+        if (!count($rows) || !$info->isNewRecord) {
+            $oph_info_editable = true;
+            $rows[] = array(
+                'date' => $info->cvi_status_date,
+                'status' => $info->cvi_status->name
+            );
+        }
 
-		$params = array(
-			'rows' => $rows,
-			'oph_info_editable' => $oph_info_editable,
-			'oph_info' => $info,
-			'new_event_uri' => $this->yii->createUrl($this->getEventType()->class_name.'/default/create').'?patient_id='.$patient->id
+        // slot the info record into the right place
+        uasort($rows, function ($a, $b) {
+            return $a['date'] < $b['date'] ? -1 : 1;
+        });
 
-		);
+        $params = array(
+            'rows' => $rows,
+            'oph_info_editable' => $oph_info_editable,
+            'oph_info' => $info,
+            'new_event_uri' => $this->yii->createUrl($this->getEventType()->class_name . '/default/create') . '?patient_id=' . $patient->id
 
-		return $this->renderPartial('OphCoCvi.views.patient.cvi_status', $params);
-	}
+        );
+
+        return $this->renderPartial('OphCoCvi.views.patient.cvi_status', $params);
+    }
+
+    /**
+     * @param $event_id
+     * @return bool
+     */
+    public function canUpdate($event_id)
+    {
+        if ($event = \Event::model()->findByPk($event_id)) {
+            return $this->getManager()->canEditEvent($event);
+        }
+        return false;
+    }
+
+    /**
+     * @param $event
+     */
+    public function getUniqueCodeForCviEvent($event){
+        $eventUniqueCodeId = \UniqueCodeMapping::model()->findAllByAttributes(array('event_id' => $event->id));
+        $eventUniqueCode = \UniqueCodes::model()->findByPk($eventUniqueCodeId[0]->unique_code_id);
+
+        $salt = (isset(\Yii::app()->params['portal']['credentials']['client_id'])) ? \Yii::app()->params['portal']['credentials']['client_id'] : '';
+        $check_digit1 = new \CheckDigitGenerator(\Yii::app()->params['institution_code'].$eventUniqueCode->code, $salt);
+        $check_digit2 = new \CheckDigitGenerator($eventUniqueCode->code.$event->episode->patient->dob, $salt);
+        $finalEventUniqueCode = \Yii::app()->params['institution_code'].$check_digit1->generateCheckDigit().'-'.$eventUniqueCode->code.'-'.$check_digit2->generateCheckDigit();
+
+        return $finalEventUniqueCode;
+    }
 }

@@ -17,5 +17,4 @@
  */
 
 function printIframe() {
-	window.print();
 }

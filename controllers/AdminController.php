@@ -20,7 +20,6 @@
 namespace OEModule\OphCoCvi\controllers;
 
 use Yii;
-use Audit;
 use CDbCriteria;
 use OEModule\OphCoCvi\models;
 
@@ -29,9 +28,10 @@ class AdminController extends \ModuleAdminController
     public $defaultAction = "clinicalDisorderSection";
 
     /**
+     * Admin for the sections that the disorders are separated into on the clinical info element.
+     *
      * @throws \Exception
      */
-    // -- Clinical disorder section actions --
     public function actionClinicalDisorderSection()
     {
         $this->genericAdmin(
@@ -52,15 +52,15 @@ class AdminController extends \ModuleAdminController
     }
 
     /**
-     * @throws \Exception
+     * Admin for the disorder choices presented in the clinical element.
      */
-    // -- Clinical disorder actions --
     public function actionClinicalDisorders()
     {
         $this->genericAdmin(
             'Clinical Disorders',
             'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder',
             array(
+                'new_row_url' => Yii::app()->createUrl('/OphCoCvi/admin/newClinicalDisorderRow'),
                 'extra_fields' => array(
                     array(
                         'field' => 'code',
@@ -69,6 +69,12 @@ class AdminController extends \ModuleAdminController
                         'field' => 'section_id',
                         'type' => 'lookup',
                         'model' => 'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder_Section',
+                    ),
+                    array(
+                        'field' => 'disorder_id',
+                        'relation' => 'disorder',
+                        'type' => 'search_lookup',
+                        'model' => '\Disorder',
                     )
                 )
             )
@@ -76,9 +82,42 @@ class AdminController extends \ModuleAdminController
     }
 
     /**
+     * To create the row with the search from model
+     * @param $key
+     */
+    public function actionNewClinicalDisorderRow($key)
+    {
+        $this->genericAdmin(
+            'Clinical Disorders',
+            'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder',
+            array(
+                'new_row_url' => Yii::app()->createUrl('/OphCoCvi/admin/newClinicalDisorderRow'),
+                'extra_fields' => array(
+                    array(
+                        'field' => 'code',
+                        'type' => 'text'
+                    ), array(
+                        'field' => 'section_id',
+                        'type' => 'lookup',
+                        'model' => 'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder_Section',
+                    ),
+                    array(
+                        'field' => 'disorder_id',
+                        'relation' => 'disorder',
+                        'type' => 'search_lookup',
+                        'model' => '\Disorder',
+                    )
+                )
+            ),
+            $key
+        );
+    }
+
+    /**
+     * Admin for the patient factor questions on the clinical info element.
+     *
      * @throws \Exception
      */
-    // -- Patient factor actions --
     public function actionPatientFactor()
     {
         $this->genericAdmin(
@@ -103,13 +142,14 @@ class AdminController extends \ModuleAdminController
     }
 
     /**
+     * Admin for the employment status lookup on the clerical info element.
+     *
      * @throws \Exception
      */
-    // -- Employeement status actions --
-    public function actionEmployeementStatus()
+    public function actionEmployementStatus()
     {
         $this->genericAdmin(
-            'Clinical Disorders',
+            'Employment Status',
             'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_EmploymentStatus',
             array(
                 'extra_fields' => array(
@@ -127,9 +167,10 @@ class AdminController extends \ModuleAdminController
     }
 
     /**
+     * Admin for contact urgency options on clerical info.
+     *
      * @throws \Exception
      */
-    // -- Contact urgency for Generic type lookup --
     public function actionContactUrgency()
     {
         $this->genericAdmin(
@@ -147,9 +188,10 @@ class AdminController extends \ModuleAdminController
     }
 
     /**
+     * Admin for field of vision options on clinical info element.
+     *
      * @throws \Exception
      */
-    // -- Field of vision for Generic type lookup --
     public function actionFieldOfVision()
     {
         $this->genericAdmin(
@@ -167,9 +209,10 @@ class AdminController extends \ModuleAdminController
     }
 
     /**
+     * Admin for low vision status lookup on clinical info element.
+     *
      * @throws \Exception
      */
-    // -- Low vision status for Generic type lookup --
     public function actionLowVisionStatus()
     {
         $this->genericAdmin(
@@ -187,9 +230,10 @@ class AdminController extends \ModuleAdminController
     }
 
     /**
+     * Admin for information format options in clerical info element.
+     *
      * @throws \Exception
      */
-    // -- Preferred info format --
     public function actionPreferredInfoFormat()
     {
         $this->genericAdmin(

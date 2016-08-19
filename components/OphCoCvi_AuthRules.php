@@ -30,6 +30,23 @@ class OphCoCvi_AuthRules
     }
 
     /**
+     * @var \EventType
+     */
+    protected $event_type;
+
+    /**
+     * @return \EventType
+     */
+    protected function getEventType()
+    {
+        if (!isset($this->event_type)) {
+            $this->event_type = \EventType::model()->findbyAttributes(array('class_name' => 'OphCoCvi'));
+        }
+
+        return $this->event_type;
+    }
+
+    /**
      * Root permission checking function for edit ability
      *
      * @param $user_id
@@ -59,21 +76,45 @@ class OphCoCvi_AuthRules
     }
 
     /**
+     * Biz rule for RBAC. if only the user id is provided, determines whether the user for the id has permissions for creating a CVI event.
+     * If the view context (containing a Firm and Episode) is provided, checks whether the context is correct for creating a CVI event in the episode.
      * @param $user_id
+     * @param array $view_context
      * @return bool
      */
-    public function canCreateOphCoCvi($user_id)
+    public function canCreateOphCoCvi($user_id, $view_context = array())
     {
-        return $this->canEdit($user_id, true);
+        if ($this->canEdit($user_id, true)) {
+            if (isset($view_context['firm'])) {
+                return $this->yii->getAuthManager()->executeBizRule('canCreateEvent',
+                    array($view_context['firm'], $view_context['episode'], $this->getEventType()), null);
+            } else {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
+     * Biz rule for RBAC. if only the user id is provided, determines whether the user for the id has permissions for editing a CVI event.
+     * If the view context (containing a Firm and Event) is provided, checks whether the context is correct for editing the given CVI Event object.
+     * NB Event checks are purely about view context, and does not account for business rules around the status of the event.
+     *
      * @param $user_id
+     * @param array $view_context array containing the currently selected firm and Event for editing
      * @return bool
      */
-    public function canEditOphCoCvi($user_id)
+    public function canEditOphCoCvi($user_id, $view_context = array())
     {
-        return $this->canCreateOphCoCvi($user_id);
+        if ($this->canCreateOphCoCvi($user_id)) {
+            if (isset($view_context['firm'])) {
+                return $this->yii->getAuthManager()->executeBizRule('canEditEvent',
+                    array($view_context['firm'], $view_context['event']), null);
+            } else {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
