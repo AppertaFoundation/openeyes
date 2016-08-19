@@ -159,7 +159,7 @@ class PatientSearch
         $result = null;
         if (preg_match(self::HOSPITAL_NUMBER_REGEX, $term, $matches) || preg_match(Yii::app()->params['hos_num_regex'], $term, $matches)) {
             $hosnum = (isset($matches[2])) ? $matches[2] : $matches[1];
-            $result = sprintf('%07s', $hosnum);
+            $result = sprintf(Yii::app()->params['pad_hos_num'], $hosnum);
         }
 
         return $result;

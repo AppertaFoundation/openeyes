@@ -29,6 +29,14 @@ class Appointment extends BaseResource
 {
     protected static $resource_type = 'Appointment';
 
+    /**
+     * @return bool
+     */
+    public function shouldValidateRequired()
+    {
+        return !$this->partial_record;
+    }
+
     public function validate()
     {
         $mapping_keys = array();

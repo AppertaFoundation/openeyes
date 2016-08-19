@@ -25,6 +25,9 @@ class Patient extends BaseResource
 
     public $isNewResource;
 
+    /**
+     * @return bool
+     */
     public function shouldValidateRequired()
     {
         return $this->isNewResource || !$this->partial_record;
@@ -163,13 +166,24 @@ class Patient extends BaseResource
         }
     }
 
+    /**
+     * Handle mapping the ethnic group resource to the patient model.
+     *
+     * @param \Patient $patient
+     */
     private function mapEthnicGroup(\Patient $patient)
     {
-        if ($code = $this->getAssignedProperty('EthnicGroup')) {
-            if ($eg = \EthnicGroup::model()->findByAttributes(array('code' => $code))) {
-                $patient->ethnic_group_id = $eg->id;
-            } else {
-                $this->addWarning('Unrecognised ethnic group code '.$code);
+        if (property_exists($this, 'EthnicGroup')) {
+            $code = $this->getAssignedProperty('EthnicGroup');
+            if ($code) {
+                if ($eg = \EthnicGroup::model()->findByAttributes(array('code' => $code))) {
+                    $patient->ethnic_group_id = $eg->id;
+                } else {
+                    $this->addWarning('Unrecognised ethnic group code '.$code);
+                }
+            }
+            else {
+                $patient->ethnic_group_id = null;
             }
         } else {
             if (!$this->partial_record) {
@@ -178,13 +192,24 @@ class Patient extends BaseResource
         }
     }
 
+    /**
+     * Handle mapping of the Gp resource code to the patient model.
+     *
+     * @param \Patient $patient
+     */
     private function mapGp(\Patient $patient)
     {
-        if ($code = $this->getAssignedProperty('GpCode')) {
-            if ($gp = \Gp::model()->findByAttributes(array('nat_id' => $code))) {
-                $patient->gp_id = $gp->id;
-            } else {
-                $this->addWarning('Could not find GP for code '.$code);
+        if (property_exists($this, 'GpCode')) {
+            $code = $this->getAssignedProperty('GpCode');
+            if ($code) {
+                if ($gp = \Gp::model()->findByAttributes(array('nat_id' => $code))) {
+                    $patient->gp_id = $gp->id;
+                } else {
+                    $this->addWarning('Could not find GP for code '.$code);
+                }
+            }
+            else {
+                $patient->gp_id = null;
             }
         } else {
             if (!$this->partial_record) {
@@ -193,13 +218,23 @@ class Patient extends BaseResource
         }
     }
 
+    /**
+     * Handle mapping of the resource PracticeCode to the Patient model.
+     *
+     * @param \Patient $patient
+     */
     private function mapPractice(\Patient $patient)
     {
-        if ($code = $this->getAssignedProperty('PracticeCode')) {
-            if ($practice = \Practice::model()->findByAttributes(array('code' => $code))) {
-                $patient->practice_id = $practice->id;
-            } else {
-                $this->addWarning('Could not find Practice for code '.$code);
+        if (property_exists($this, 'PracticeCode')) {
+            if ($code = $this->getAssignedProperty('PracticeCode')) {
+                if ($practice = \Practice::model()->findByAttributes(array('code' => $code))) {
+                    $patient->practice_id = $practice->id;
+                } else {
+                    $this->addWarning('Could not find Practice for code ' . $code);
+                }
+            }
+            else {
+                $patient->practice_id = null;
             }
         } else {
             if (!$this->partial_record) {

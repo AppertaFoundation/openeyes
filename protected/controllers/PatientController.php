@@ -159,20 +159,17 @@ class PatientController extends BaseController
         ));
     }
 
-    public function actionSearch()
-    {
-        $term = \Yii::app()->request->getParam('term', '');
-
-        $patientSearch = new PatientSearch();
-        $dataProvider = $patientSearch->search($term);
-
-        $itemCount = $dataProvider->totalItemCount;
-        $page_size = $dataProvider->getPagination()->getPageSize();
-
-        $search_terms = $patientSearch->getSearchTerms();
-
-        if ($itemCount == 0) {
-            Audit::add('search', 'search-results', implode(',', $search_terms).' : No results');
+	public function actionSearch()
+	{
+                
+                $term = \Yii::app()->request->getParam("term", "");
+                $patientSearch = new PatientSearch();
+                $dataProvider = $patientSearch->search($term);
+                $itemCount = $dataProvider->totalItemCount;
+                $search_terms = $patientSearch->getSearchTerms();
+                
+		if ($itemCount == 0) {
+			Audit::add('search','search-results',implode(',',$search_terms) ." : No results");
 
             $message = 'Sorry, no results ';
             if ($search_terms['hos_num']) {
@@ -197,28 +194,28 @@ class PatientController extends BaseController
             }
             Yii::app()->user->setFlash('warning.no-results', $message);
 
-            $this->redirect(Yii::app()->homeUrl);
-        } elseif ($itemCount == 1) {
-            foreach ($dataProvider->getData() as $item) {
-                $this->redirect(array('patient/view/'.$item->id));
-            }
-        } else {
-            $this->renderPatientPanel = false;
-            $pages = ceil($itemCount / $page_size);
-            $this->render('results', array(
-                'data_provider' => $dataProvider,
-                'pages' => $pages,
-                'page_num' => \Yii::app()->request->getParam('Patient_page', 1),
-                'items_per_page' => $page_size,
-                'total_items' => $itemCount,
-                'term' => $term,
-                'search_terms' => $patientSearch->getSearchTerms(),
-                'sort_by' => (integer) \Yii::app()->request->getParam('sort_by', null),
-                'sort_dir' => (integer) \Yii::app()->request->getParam('sort_dir', null),
-            ));
-        }
-    }
+			$this->redirect(Yii::app()->homeUrl);
 
+		} elseif ($itemCount == 1) {
+			foreach ($dataProvider->getData() as $item) {
+				$this->redirect(array('patient/view/' . $item->id));
+			}
+		} else {
+			$this->renderPatientPanel = false;
+
+			$this->render('results', array(
+				'data_provider' => $dataProvider,
+				'page_num' => \Yii::app()->request->getParam('Patient_page', 0),
+				'total_items' => $itemCount,
+				'term' => $term,
+				'search_terms' => $patientSearch->getSearchTerms(),
+				'sort_by' => (integer) \Yii::app()->request->getParam('sort_by', null),
+				'sort_dir' => (integer) \Yii::app()->request->getParam('sort_dir', null),
+			));
+		}
+
+	}
+        
        /**
         * Ajax search.
         */

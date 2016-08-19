@@ -215,13 +215,3 @@ function show_letter_warnings(nogp) {
 		}).open();
 	}
 }
-
-function validateHosNum() {
-	if ($('#hos_num').val().length <1 || $('#hos_num').val().match(/^[0-9]+$/)) {
-		$('#hos_num_error').hide();
-		return true;
-	} else {
-		$('#hos_num_error').show();
-		return false;
-	}
-}
