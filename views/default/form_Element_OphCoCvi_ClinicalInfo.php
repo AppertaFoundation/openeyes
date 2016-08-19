@@ -134,7 +134,7 @@ if ($this->checkClinicalEditAccess()) { ?>
         ))?>
 
 
-        <?php echo $form->textArea($element, 'diagnoses_not_covered', array('rows' => 6, 'cols' => 80)) ?>
+        <?php echo $form->textArea($element, 'diagnoses_not_covered', array('rows' => 2, 'cols' => 80)) ?>
 
     </div>
 <?php } else {

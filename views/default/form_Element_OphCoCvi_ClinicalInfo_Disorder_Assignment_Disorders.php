@@ -33,10 +33,10 @@
                 if($disorder_section['disorder']->comments_allowed == 1)
                 { ?>
                 <fieldset class="row field-row">
-                    <div class="large-2 column large-push-2">
+                    <div class="large-4 column text-right">
                         <label><?php echo $disorder_section['disorder']->comments_label; ?></label>
                     </div>
-                    <div class="large-4 column large-push-2 end">
+                    <div class="large-7 column large-push-1 end">
                         <?php echo  CHtml::textArea( "comments_disorder[".$disorder_section['disorder']->id."]", $disorder_section['comment'], array('rows'=>2, 'cols'=>40));?>
                     </div>
                 </fieldset>
