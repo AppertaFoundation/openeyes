@@ -27,6 +27,7 @@ namespace OEModule\OphCoCvi\models;
  * @property integer $section_id
  * @property string $code
  * @property boolean $active
+ * @property integer $disorder_id
  *
  * The followings are the available model relations:
  *
@@ -36,6 +37,7 @@ namespace OEModule\OphCoCvi\models;
  * @property \User $user
  * @property \User $usermodified
  * @property OphCoCvi_ClinicalInfo_Disorder_Section $section
+ * @property \Disorder $disorder
  */
 
 class OphCoCvi_ClinicalInfo_Disorder extends \BaseActiveRecordVersioned
