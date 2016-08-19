@@ -87,6 +87,15 @@ class PatientController extends BaseController
         );
     }
 
+    public function behaviors()
+    {
+        return array(
+            'CreateEventBehavior' => array(
+                'class' => 'application.behaviors.CreateEventControllerBehavior',
+            ),
+        );
+    }
+
     protected function beforeAction($action)
     {
         parent::storeData();

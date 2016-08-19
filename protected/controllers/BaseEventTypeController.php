@@ -116,6 +116,15 @@ class BaseEventTypeController extends BaseModuleController
     public $pdf_print_documents = 1;
     public $pdf_print_html = null;
 
+    public function behaviors()
+    {
+        return array(
+            'CreateEventBehavior' => array(
+                'class' => 'application.behaviors.CreateEventControllerBehavior',
+            ),
+        );
+    }
+
     public function getTitle()
     {
         if (isset($this->title)) {

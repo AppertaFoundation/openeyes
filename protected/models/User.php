@@ -336,57 +336,60 @@ class User extends BaseActiveRecordVersioned
         }
     }
 
+    /**
+     * @return string
+     */
     public function getFullName()
     {
         return implode(' ', array($this->first_name, $this->last_name));
     }
 
+    /**
+     * @return string
+     */
     public function getFullNameAndUserName()
     {
         return implode(' ', array($this->first_name, $this->last_name)).(" ({$this->username})");
     }
 
+    /**
+     * @return string
+     */
     public function getReversedFullName()
     {
         return implode(' ', array($this->last_name, $this->first_name));
     }
 
+    /**
+     * @return string
+     */
     public function getReversedFullNameAndUserName()
     {
         return implode(' ', array($this->last_name, $this->first_name)).(" ({$this->username})");
     }
 
+    /**
+     * @return string
+     */
     public function getFullNameAndTitle()
     {
         return implode(' ', array($this->title, $this->first_name, $this->last_name));
     }
 
+    /**
+     * @return string
+     */
     public function getFullNameAndTitleAndQualifications()
     {
         return implode(' ', array($this->title, $this->first_name, $this->last_name)).($this->qualifications ? ' '.$this->qualifications : '');
     }
 
+    /**
+     * @return string
+     */
     public function getReversedFullNameAndTitle()
     {
         return implode(' ', array($this->title, $this->last_name, $this->first_name));
-    }
-
-    /**
-     * Returns whether this user has a contact entry and a consultant entry
-     *			i.e. they are a consultant for the centre.
-     *
-     * @return bool
-     */
-    public static function isConsultant()
-    {
-        $user = self::model()->findByPk(Yii::app()->id);
-
-        // Set whether they are an internal consultant or not. This gives them the ability to edit macros.
-        if (isset($user->contact->consultant)) {
-            return true;
-        }
-
-        return false;
     }
 
     /**
@@ -404,6 +407,15 @@ class User extends BaseActiveRecordVersioned
         return self::model()->findAll($criteria);
     }
 
+    /**
+     * Perform an audit log for the user
+     * 
+     * @param $target
+     * @param $action
+     * @param null $data
+     * @param bool $log
+     * @param array $properties
+     */
     public function audit($target, $action, $data = null, $log = false, $properties = array())
     {
         $properties['user_id'] = $this->id;
