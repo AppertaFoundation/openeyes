@@ -70,9 +70,20 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
     public function rules()
     {
         return array(
-            array('event_id, employment_status_id, preferred_info_fmt_id, info_email, contact_urgency_id, preferred_language_id, social_service_comments, ', 'safe'),
-            //array('employment_status_id, preferred_info_fmt_id, contact_urgency_id, preferred_language_id, social_service_comments, ', 'required'),
-            array('id, event_id, employment_status_id, preferred_info_fmt_id, info_email, contact_urgency_id, preferred_language_id, social_service_comments, ', 'safe', 'on' => 'search'),
+            array(
+                'event_id, employment_status_id, preferred_info_fmt_id, info_email, contact_urgency_id, preferred_language_id, social_service_comments, ',
+                'safe'
+            ),
+            array(
+                'employment_status_id, preferred_info_fmt_id, contact_urgency_id, preferred_language_id, social_service_comments, ',
+                'required',
+                'on' => 'finalise'
+            ),
+            array(
+                'id, event_id, employment_status_id, preferred_info_fmt_id, info_email, contact_urgency_id, preferred_language_id, social_service_comments, ',
+                'safe',
+                'on' => 'search'
+            ),
         );
     }
 
@@ -82,14 +93,31 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
     public function relations()
     {
         return array(
-            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='" . get_class($this) . "'"),
+            'element_type' => array(
+                self::HAS_ONE,
+                'ElementType',
+                'id',
+                'on' => "element_type.class_name='" . get_class($this) . "'"
+            ),
             'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'employment_status' => array(self::BELONGS_TO, 'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_EmploymentStatus', 'employment_status_id'),
-            'preferred_info_fmt' => array(self::BELONGS_TO, 'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PreferredInfoFmt', 'preferred_info_fmt_id'),
-            'contact_urgency' => array(self::BELONGS_TO, 'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_ContactUrgency', 'contact_urgency_id'),
+            'employment_status' => array(
+                self::BELONGS_TO,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_EmploymentStatus',
+                'employment_status_id'
+            ),
+            'preferred_info_fmt' => array(
+                self::BELONGS_TO,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PreferredInfoFmt',
+                'preferred_info_fmt_id'
+            ),
+            'contact_urgency' => array(
+                self::BELONGS_TO,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_ContactUrgency',
+                'contact_urgency_id'
+            ),
             'preferred_language' => array(self::BELONGS_TO, 'Language', 'preferred_language_id'),
         );
     }
@@ -168,7 +196,6 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
         }
         return parent::afterSave();
     }
-
 
     /**
      * To generate the employement status array for the pdf
@@ -292,12 +319,11 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
             $factors[$key]['name'] = $factor->name;
             $factors[$key]['is_comments'] = $factor->require_comments;
             $factors[$key]['label'] = $factor->comments_label;
-            $factors[$key]['is_factor'] = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->getFactorAnswer($factor->id, $element_id);
-            $factors[$key]['comments'] = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->getComments($factor->id, $element_id);
+            $factors[$key]['is_factor'] = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->getFactorAnswer($factor->id,
+                $element_id);
+            $factors[$key]['comments'] = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->getComments($factor->id,
+                $element_id);
         }
         return $factors;
     }
-
 }
-
-?>

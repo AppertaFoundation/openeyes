@@ -2,6 +2,7 @@
 
 class m160815_113951_patient_factor_data extends CDbMigration
 {
+
     public function up()
     {
         $this->insert('ophcocvi_clinicinfo_patient_factor', array('name' => 'Does the patient live alone?', 'code' => 'PF1', 'display_order' => 1));
@@ -17,7 +18,7 @@ class m160815_113951_patient_factor_data extends CDbMigration
 
     public function down()
     {
-
+		$this->truncateTable('ophcocvi_clinicinfo_patient_factor');
     }
 
     /*
