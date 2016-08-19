@@ -55,41 +55,49 @@
 
     <div class="indent-correct element-data element-eyes row">
         <div class="element-eye right-eye column">
-            <div class="data-row">
-                <div class="column large-4">
-                    <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('unaided_right_va'))?></div>
-                </div>
-                <div class="column large-8">
-                    <div class="data-value"><?php echo CHtml::encode($element->unaided_right_va)?></div>
-                </div>
-            </div>
-            <div class="data-row">
-                <div class="column large-4">
-                    <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('best_corrected_right_va'))?></div>
-                </div>
-                <div class="column large-8">
-                    <div class="data-value"><?php echo CHtml::encode($element->best_corrected_right_va)?></div>
-                </div>
-            </div>
+            <table>
+                <tbody>
+                <tr>
+                    <td>
+                        <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('unaided_right_va'))?></div>
+                    </td>
+                    <td>
+                        <div class="data-value"><?php echo CHtml::encode($element->unaided_right_va)?></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('best_corrected_right_va'))?></div>
+                    </td>
+                    <td>
+                        <div class="data-value"><?php echo CHtml::encode($element->best_corrected_right_va)?></div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
 
         <div class="element-eye left-eye column">
-            <div class="data-row">
-                <div class="column large-4">
+            <table>
+                <tbody>
+                <tr>
+                    <td>
                     <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('unaided_left_va'))?></div>
-                </div>
-                <div class="column large-8">
+                    </td>
+                    <td>
                     <div class="data-value"><?php echo CHtml::encode($element->unaided_right_va)?></div>
-                </div>
-            </div>
-            <div class="data-row">
-                <div class="column large-4">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
                     <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('best_corrected_left_va'))?></div>
-                </div>
-                <div class="column large-8">
+                    </td>
+                    <td>
                     <div class="data-value"><?php echo CHtml::encode($element->best_corrected_right_va)?></div>
-                </div>
-            </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
     <div class="row data-row">

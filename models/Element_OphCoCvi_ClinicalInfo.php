@@ -197,7 +197,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
                 }
                 foreach ($_POST['ophcocvi_clinicinfo_disorder_section_id'] as $sectionId) {
                     foreach ($_POST['ophcocvi_clinicinfo_disorder_id_'.$side] as $id) {
-                        if(isset($_POST['affected_'.$side][$sectionId][$id]) && $_POST['affected_'.$side][$sectionId][$id] == 1 && !in_array($id,$existing_assignment_ids)) {
+                        if(isset($_POST['affected_'.$side][$sectionId][$id]) && !in_array($id,$existing_assignment_ids)) {
                             $disorders = new Element_OphCoCvi_ClinicalInfo_Disorder_Assignment;
                             $disorders->element_id = $this->id;
                             $disorders->eye_id = $side_value;
