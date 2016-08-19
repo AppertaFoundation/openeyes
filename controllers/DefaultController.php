@@ -265,10 +265,10 @@ class DefaultController extends \BaseEventTypeController
         if (!$event = \Event::model()->findByPk($id)) {
             throw new Exception("Event not found: $id");
         }
-
+        
         $event->lock();
         $this->printInit($id);
-
+        
         $signatureElement = $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature');
         //  we need to check if we already have a signature file linked
         if(!$signatureElement->checkSignature()){
@@ -308,7 +308,7 @@ class DefaultController extends \BaseEventTypeController
         );
         
       
-        
+       
         $DH = new ODTDataHandler();
         $DH -> setTableAndSimpleTextDataFromArray( $this->getStructuredDataForPrintPDF($id) );
         
@@ -346,9 +346,15 @@ class DefaultController extends \BaseEventTypeController
         $printHelper->changeImageFromGDObject('signatureImagePatient', $signature);
         $printHelper->saveContentXML();
         $printHelper->generatePDF();
+        
+        //Print only the first page of the pdf
+        if(isset($_GET['firstPage']) && $_GET['firstPage'] == 1 ){
+            $printHelper->generatePDFPageN();
+        } 
+        
         $printHelper->getPDF();
+        
         $event->unlock();
 
     }
-
 }

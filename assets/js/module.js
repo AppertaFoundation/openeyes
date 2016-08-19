@@ -16,8 +16,30 @@ $(document).ready(function() {
     handleButton($('#et_deleteevent'));
 
     handleButton($('#et_canceldelete'));
-
+    
+    handleButton( $('#et_printfirstpage'),function(e) {
+        var data = {'firstPage':'1'};
+	printIFrameUrl(OE_print_url, data);
+        
+        iframeId = 'print_content_iframe',
+        $iframe = $('iframe#print_content_iframe');
+        
+        $iframe.load(function() {
+    		enableButtons();
+    		e.preventDefault();            
+           
+            try{
+                var PDF = document.getElementById(iframeId);
+                PDF.focus();
+                PDF.contentWindow.print();
+            } catch (e) {
+                alert("Exception thrown: " + e);
+            }                                    
+        });
+    });
+    
     handleButton($('#et_print'),function(e) {
+        
 	printIFrameUrl(OE_print_url, null);
 		
         iframeId = 'print_content_iframe',
@@ -26,7 +48,7 @@ $(document).ready(function() {
         $iframe.load(function() {
     		enableButtons();
     		e.preventDefault();            
-            console.log('IFrame loaded');
+           
             try{
                 var PDF = document.getElementById(iframeId);
                 PDF.focus();

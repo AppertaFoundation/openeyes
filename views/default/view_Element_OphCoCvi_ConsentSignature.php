@@ -54,3 +54,8 @@
         </div>
     </div>
 </div>
+<div class="element-data">
+    <div class="row data-row">
+        <?php echo CHtml::button('Print signature',  array('type'=> 'button' , 'id' => 'et_printfirstpage', 'name' => 'printFirstPage', 'class'=>'small button primary event-action')); ?>
+    </div>
+</div>
