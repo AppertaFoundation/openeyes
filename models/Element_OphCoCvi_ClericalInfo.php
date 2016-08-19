@@ -175,7 +175,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
                 if (!in_array($id, $existing_ids) && isset($_POST['is_factor'][$id])) {
                     $item = new OphCoCvi_ClericalInfo_PatientFactor_Answer;
                     $item->element_id = $this->id;
-                    $item->ophcocvi_clinicinfo_patient_factor_id = $id;
+                    $item->patient_factor_id = $id;
                     $item->is_factor = $_POST['is_factor'][$id];
                     if ($_POST['require_comments'][$id] == 1) {
                         $item->comments = $_POST['comments'][$id];
@@ -187,7 +187,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
             }
             foreach ($existing_ids as $id) {
                 if (!in_array($id, $_POST['ophcocvi_clinicinfo_patient_factor_id'])) {
-                    $item = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->find('element_id = :elementId and ophcocvi_clinicinfo_patient_factor_id = :lookupfieldId', array(':elementId' => $this->id, ':lookupfieldId' => $id));
+                    $item = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->find('element_id = :elementId and patient_factor_id = :lookupfieldId', array(':elementId' => $this->id, ':lookupfieldId' => $id));
                     if (!$item->delete()) {
                         throw new Exception('Unable to delete patient factor: ' . print_r($item->getErrors(), true));
                     }
@@ -284,7 +284,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
     public function getStructuredDataForPrint()
     {
         $result = array();
-        foreach (OphCoCvi_ClinicalInfo_PatientFactor::model()->findAll('`active` = ?', array(1)) as $factor) {
+        foreach (OphCoCvi_ClericalInfo_PatientFactor::model()->findAll('`active` = ?', array(1)) as $factor) {
             $is_factor = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->getFactorAnswer($factor->id, $this->id);
             if ($is_factor == 1) {
                 $isFactor = "Y";
@@ -313,7 +313,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
     public function patientFactorList($element_id)
     {
         $factors = array();
-        $patient_factor = OphCoCvi_ClinicalInfo_PatientFactor::model()->findAll('`active` = ?', array(1));
+        $patient_factor = OphCoCvi_ClericalInfo_PatientFactor::model()->findAll('`active` = ?', array(1));
         foreach ($patient_factor as $key => $factor) {
             $factors[$key]['id'] = $factor->id;
             $factors[$key]['name'] = $factor->name;

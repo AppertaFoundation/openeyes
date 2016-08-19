@@ -61,8 +61,8 @@ class OphCoCvi_ClericalInfo_PatientFactor_Answer extends \BaseEventTypeElement
     public function rules()
     {
         return array(
-            array('element_id, ophcocvi_clinicinfo_patient_factor_id', 'safe'),
-            array('element_id, ophcocvi_clinicinfo_patient_factor_id', 'required'),
+            array('element_id, patient_factor_id', 'safe'),
+            array('element_id, patient_factor_id', 'required'),
             array('id, element_id, ophcocvi_clinicinfo_patient_factor_id', 'safe', 'on' => 'search'),
         );
     }
@@ -74,7 +74,7 @@ class OphCoCvi_ClericalInfo_PatientFactor_Answer extends \BaseEventTypeElement
     {
         return array(
             'element' => array(self::BELONGS_TO, '\\OEModule\\OphCoCvi\\models\\Element_OphCoCvi_ClericalInfo', 'element_id'),
-            'patient_factor' => array(self::BELONGS_TO, '\\OEModule\\OphCoCvi\\models\\OphCoCvi_ClericalInfo_PatientFactor', 'ophcocvi_clinicinfo_patient_factor_id'),
+            'patient_factor' => array(self::BELONGS_TO, '\\OEModule\\OphCoCvi\\models\\OphCoCvi_ClericalInfo_PatientFactor', 'patient_factor_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
         );
@@ -90,8 +90,8 @@ class OphCoCvi_ClericalInfo_PatientFactor_Answer extends \BaseEventTypeElement
         $criteria = new \CDbCriteria;
         $criteria->select = 'is_factor';
         $criteria->condition = "element_id=:element_id";
-        $criteria->addCondition("ophcocvi_clinicinfo_patient_factor_id=:ophcocvi_clinicinfo_patient_factor_id");
-        $criteria->params = array(':element_id' => $element_id, ':ophcocvi_clinicinfo_patient_factor_id' => $factor_id);
+        $criteria->addCondition("patient_factor_id=:patient_factor_id");
+        $criteria->params = array(':element_id' => $element_id, ':patient_factor_id' => $factor_id);
         $item = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->find($criteria);
         return $item['is_factor'];
     }
@@ -106,8 +106,8 @@ class OphCoCvi_ClericalInfo_PatientFactor_Answer extends \BaseEventTypeElement
         $criteria = new \CDbCriteria;
         $criteria->select = 'comments';
         $criteria->condition = "element_id=:element_id";
-        $criteria->addCondition("ophcocvi_clinicinfo_patient_factor_id=:ophcocvi_clinicinfo_patient_factor_id");
-        $criteria->params = array(':element_id' => $element_id, ':ophcocvi_clinicinfo_patient_factor_id' => $factor_id);
+        $criteria->addCondition("patient_factor_id=:patient_factor_id");
+        $criteria->params = array(':element_id' => $element_id, ':patient_factor_id' => $factor_id);
         $item = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->find($criteria);
         return $item['comments'];
 

@@ -35,7 +35,7 @@ if ($this->checkClinicalEditAccess()) { ?>
                             0 => $element::$NOT_BLIND_STATUS,
                             1 => $element::$BLIND_STATUS,
                         ),
-                            (($element->is_considered_blind === 0) ? $element->is_considered_blind : 0),
+                            $element->is_considered_blind,
                             false, false, false, false,
                             array('nowrapper' => true)
                         ); ?>
