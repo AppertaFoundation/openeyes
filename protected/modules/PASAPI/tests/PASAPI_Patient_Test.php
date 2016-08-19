@@ -18,7 +18,7 @@
 require_once __DIR__.'/PASAPI_BaseTest.php';
 
 /**
- * TODO: setup fixtures for dependent models such as GP
+ * TODO: setup fixtures for dependent models such as GP.
  *
  * Class PASAPI_Patient_Test
  */
@@ -310,7 +310,7 @@ EOF;
             'nhsNumberStatus' => array('code' => '01'),
             'ethnic_group' => array('code' => 'A'),
             'gp' => array('nat_id' => 'G3258868'),
-            'practice' => array('code' => 'C82103')
+            'practice' => array('code' => 'C82103'),
         );
 
         return array(
@@ -353,7 +353,7 @@ EOF;
                     array(
                         'ethnic_group' => null,
                         'gp' => null,
-                        'practice' => null
+                        'practice' => null,
                     )
                 ),
             ),
@@ -421,18 +421,16 @@ EOF;
 </Patient>
 EOF;
 
-
         $this->put('PartialUpdateNewPatient', $xml, array(
             'X-OE-Partial-Record' => 1,
         ));
 
-        $this->assertXPathFound("/Success");
-        $id = $this->xPathQuery("/Success//Id")->item(0)->nodeValue;
+        $this->assertXPathFound('/Success');
+        $id = $this->xPathQuery('/Success//Id')->item(0)->nodeValue;
 
         $patient = Patient::model()->findByPk($id);
         $this->assertNotNull($patient);
-        $this->assertEquals("Test Last", $patient->last_name);
-
+        $this->assertEquals('Test Last', $patient->last_name);
     }
 
     public function update_Provider()
@@ -479,7 +477,7 @@ EOF;
             'nhsNumberStatus' => array('code' => '01'),
             'ethnic_group' => array('code' => 'A'),
             'gp' => array('nat_id' => 'G3258868'),
-            'practice' => array('code' => 'C82103')
+            'practice' => array('code' => 'C82103'),
         );
 
         $update1 = <<<EOF
@@ -517,7 +515,7 @@ EOF;
                         'title' => 'Mr',
                         'gp' => null,
                         'practice' => null,
-                        'ethnic_group' => null
+                        'ethnic_group' => null,
                     )
                 ),
             ),

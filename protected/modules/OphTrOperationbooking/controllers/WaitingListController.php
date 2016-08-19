@@ -81,12 +81,12 @@ class WaitingListController extends BaseModuleController
     {
         Audit::add('waiting list', 'search');
 
-		if (empty($_POST)) {
-			$operations = array();
-		} else {
-			$subspecialty_id = !empty($_POST['subspecialty-id']) ? $_POST['subspecialty-id'] : null;
-			$firm_id = !empty($_POST['firm-id']) ? $_POST['firm-id'] : null;
-			$status = !empty($_POST['status']) ? $_POST['status'] : null;
+        if (empty($_POST)) {
+            $operations = array();
+        } else {
+            $subspecialty_id = !empty($_POST['subspecialty-id']) ? $_POST['subspecialty-id'] : null;
+            $firm_id = !empty($_POST['firm-id']) ? $_POST['firm-id'] : null;
+            $status = !empty($_POST['status']) ? $_POST['status'] : null;
             $patient_search = new PatientSearch();
             $hos_num = $patient_search->getHospitalNumber($_POST['hos_num']);
             $site_id = !empty($_POST['site_id']) ? $_POST['site_id'] : false;
@@ -129,45 +129,46 @@ class WaitingListController extends BaseModuleController
             $whereParams[':subspecialty_id'] = $subspecialty_id;
         }
 
-		if ($hos_num) {
-			$whereSql .= " AND patient.hos_num = :hos_num";
-			$whereParams[":hos_num"] = $hos_num;
-		}
+        if ($hos_num) {
+            $whereSql .= ' AND patient.hos_num = :hos_num';
+            $whereParams[':hos_num'] = $hos_num;
+        }
 
         if ($site_id && ctype_digit($site_id)) {
             $whereSql .= ' AND t.site_id = :site_id';
             $whereParams[':site_id'] = $site_id;
         }
 
-		Yii::app()->event->dispatch('start_batch_mode');
+        Yii::app()->event->dispatch('start_batch_mode');
 
-		$operations = Element_OphTrOperationbooking_Operation::model()
-			->with(array(
-					'event',
-					'event.episode',
-					'event.episode.firm',
-					'event.episode.firm.serviceSubspecialtyAssignment',
-					'event.episode.firm.serviceSubspecialtyAssignment.subspecialty',
-					'event.episode.patient',
-					'event.episode.patient.contact',
-					'event.episode.patient.practice',
-					'event.episode.patient.contact.correspondAddress',
-					'site',
-					'eye',
-					'priority',
-					'status',
-					'date_letter_sent',
-					'procedures',
-				)
-			)->findAll(array(
-					'condition' => 'event.id IS NOT NULL AND episode.end_date IS NULL AND t.status_id IN (1,3) '.$whereSql,
-					'params' => $whereParams,
-					'order' => 'decision_date asc',
-				)
-			);
-		Yii::app()->event->dispatch('end_batch_mode');
-		return $operations;
-	}
+        $operations = Element_OphTrOperationbooking_Operation::model()
+            ->with(array(
+                    'event',
+                    'event.episode',
+                    'event.episode.firm',
+                    'event.episode.firm.serviceSubspecialtyAssignment',
+                    'event.episode.firm.serviceSubspecialtyAssignment.subspecialty',
+                    'event.episode.patient',
+                    'event.episode.patient.contact',
+                    'event.episode.patient.practice',
+                    'event.episode.patient.contact.correspondAddress',
+                    'site',
+                    'eye',
+                    'priority',
+                    'status',
+                    'date_letter_sent',
+                    'procedures',
+                )
+            )->findAll(array(
+                    'condition' => 'event.id IS NOT NULL AND episode.end_date IS NULL AND t.status_id IN (1,3) '.$whereSql,
+                    'params' => $whereParams,
+                    'order' => 'decision_date asc',
+                )
+            );
+        Yii::app()->event->dispatch('end_batch_mode');
+
+        return $operations;
+    }
 
     /**
      * Generates a firm list based on a subspecialty id provided via POST

@@ -118,13 +118,13 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
     }
 
     /**
-     * Returns the view text for anticoagulant
+     * Returns the view text for anticoagulant.
      *
      * @return string
      */
     public function anticoagulantText()
     {
-        return 'Anticoagulants: ' . $this->yesNoText($this->anticoagulant) . (($this->anticoagulant_name) ? ' - ' . $this->anticoagulant_name : '' );
+        return 'Anticoagulants: '.$this->yesNoText($this->anticoagulant).(($this->anticoagulant_name) ? ' - '.$this->anticoagulant_name : '');
     }
 
     /**
@@ -132,7 +132,7 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
      */
     public function alphaBlockerText()
     {
-        return 'Alpha-Blockers: ' . $this->yesNoText($this->alphablocker) . (($this->alpha_blocker_name) ? ' - ' . $this->alpha_blocker_name : '' );
+        return 'Alpha-Blockers: '.$this->yesNoText($this->alphablocker).(($this->alpha_blocker_name) ? ' - '.$this->alpha_blocker_name : '');
     }
 
     /**
@@ -143,8 +143,7 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
     protected function yesNoText($value)
     {
         $text = '';
-        switch ($value)
-        {
+        switch ($value) {
             case '0':
                 $text = 'Not Checked';
                 break;

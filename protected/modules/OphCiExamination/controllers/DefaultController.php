@@ -1211,7 +1211,7 @@ class DefaultController extends \BaseEventTypeController
             $firm_id = $this->firm->id;
             $status_id = ($this->episode) ? $this->episode->episode_status_id : 1;
             $workflow = new models\OphCiExamination_Workflow_Rule();
-            $this->set = $workflow->findWorkflowCascading($firm_id, $status_id)->getFirstStep();;
+            $this->set = $workflow->findWorkflowCascading($firm_id, $status_id)->getFirstStep();
             $this->mandatoryElements = $this->set->MandatoryElementTypes;
         }
     }

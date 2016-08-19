@@ -36,12 +36,14 @@ class AuthManager extends CDbAuthManager
     }
 
     /**
-     * Override of parent to utlise the namespaced rulesets that have been defined
+     * Override of parent to utlise the namespaced rulesets that have been defined.
      *
      * @param string $bizRule
-     * @param array $params
-     * @param mixed $data
+     * @param array  $params
+     * @param mixed  $data
+     *
      * @return bool
+     *
      * @throws Exception
      */
     public function executeBizRule($bizRule, $params, $data)
@@ -76,10 +78,10 @@ class AuthManager extends CDbAuthManager
     }
 
     /**
-     * Mechanism to store ruleset objects against a "namespace" for use when executing business rules
+     * Mechanism to store ruleset objects against a "namespace" for use when executing business rules.
      *
      * @param string $namespace Name of module
-     * @param object $ruleset Object on which the rule methods are defined
+     * @param object $ruleset   Object on which the rule methods are defined
      */
     public function registerRuleset($namespace, $ruleset)
     {
@@ -87,9 +89,10 @@ class AuthManager extends CDbAuthManager
     }
 
     /**
-     * Caching wrapper on the auth assignments for a user
+     * Caching wrapper on the auth assignments for a user.
      *
      * @param mixed $user_id
+     *
      * @return mixed
      */
     public function getAuthAssignments($user_id)

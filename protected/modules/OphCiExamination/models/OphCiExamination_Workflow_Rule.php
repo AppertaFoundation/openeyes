@@ -112,6 +112,7 @@ class OphCiExamination_Workflow_Rule extends \BaseActiveRecordVersioned
     /**
      * @param $firm_id
      * @param $status_id
+     *
      * @return mixed|null
      *
      * @throws \CException
@@ -125,36 +126,36 @@ class OphCiExamination_Workflow_Rule extends \BaseActiveRecordVersioned
         $criteria->order = 'firm_id DESC, episode_status_id DESC, subspecialty_id DESC';
         $criteria->params = array($firm_id);
 
-        $workflows = OphCiExamination_Workflow_Rule::model()->findAll($criteria);
+        $workflows = self::model()->findAll($criteria);
 
-        if(!$workflows){
+        if (!$workflows) {
             throw new \CException('Cannot find any workflow rules');
         }
 
         $workflow = null;
 
-        foreach($workflows as $possibleWorkflow){
+        foreach ($workflows as $possibleWorkflow) {
             //episode and speciality must match what we have or be null, if that's not the case continue
-            if(
+            if (
                 !($possibleWorkflow->episode_status_id == $status_id || !$possibleWorkflow->episode_status_id) ||
                 !($possibleWorkflow->subspecialty_id == $subspecialty_id || !$possibleWorkflow->subspecialty_id)
             ) {
                 continue;
             }
 
-            if($possibleWorkflow->episode_status_id == $status_id){ //If the episode status matches return it
+            if ($possibleWorkflow->episode_status_id == $status_id) { //If the episode status matches return it
                 $workflow = $possibleWorkflow->workflow;
                 break;
-            } elseif ($possibleWorkflow->subspecialty_id === $subspecialty_id){ //Otherwise the subspeciality should match
+            } elseif ($possibleWorkflow->subspecialty_id === $subspecialty_id) { //Otherwise the subspeciality should match
                 $workflow = $possibleWorkflow->workflow;
                 break;
-            } elseif(!$possibleWorkflow->episode_status_id && !$possibleWorkflow->subspecialty_id){ //else we take the one where everything is null
+            } elseif (!$possibleWorkflow->episode_status_id && !$possibleWorkflow->subspecialty_id) { //else we take the one where everything is null
                 $workflow = $possibleWorkflow->workflow;
                 break;
             }
         }
 
-        if(!$workflow){
+        if (!$workflow) {
             throw new \CException('Cannot find default workflow rule');
         }
 

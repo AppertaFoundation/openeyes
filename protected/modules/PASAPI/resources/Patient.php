@@ -181,8 +181,7 @@ class Patient extends BaseResource
                 } else {
                     $this->addWarning('Unrecognised ethnic group code '.$code);
                 }
-            }
-            else {
+            } else {
                 $patient->ethnic_group_id = null;
             }
         } else {
@@ -207,8 +206,7 @@ class Patient extends BaseResource
                 } else {
                     $this->addWarning('Could not find GP for code '.$code);
                 }
-            }
-            else {
+            } else {
                 $patient->gp_id = null;
             }
         } else {
@@ -230,10 +228,9 @@ class Patient extends BaseResource
                 if ($practice = \Practice::model()->findByAttributes(array('code' => $code))) {
                     $patient->practice_id = $practice->id;
                 } else {
-                    $this->addWarning('Could not find Practice for code ' . $code);
+                    $this->addWarning('Could not find Practice for code '.$code);
                 }
-            }
-            else {
+            } else {
                 $patient->practice_id = null;
             }
         } else {

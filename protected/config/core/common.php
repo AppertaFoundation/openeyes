@@ -357,7 +357,7 @@ return array(
             array(
                 'class' => 'WorklistManager',
                 'method' => 'renderAutomaticDashboard',
-                'position' => 10
+                'position' => 10,
             ),
             array(
                 'class' => 'WorklistManager',
