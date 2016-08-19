@@ -46,73 +46,82 @@ namespace OEModule\OphCoCvi\models;
 
 class OphCoCvi_ClericalInfo_PatientFactor_Answer extends \BaseEventTypeElement
 {
-	/**
-	 * Returns the static model of the specified AR class.
-	 * @return the static model class
-	 */
-	public static function model($className = __CLASS__)
-	{
-		return parent::model($className);
-	}
+    /**
+     * Returns the static model of the specified AR class.
+     * @return the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
 
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'et_ophcocvi_clericinfo_patient_factor_answer';
-	}
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'ophcocvi_clericinfo_patient_factor_answer';
+    }
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		return array(
-			array('element_id, ophcocvi_clinicinfo_patient_factor_id', 'safe'),
-			array('element_id, ophcocvi_clinicinfo_patient_factor_id', 'required'),
-			array('id, element_id, ophcocvi_clinicinfo_patient_factor_id', 'safe', 'on' => 'search'),
-		);
-	}
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        return array(
+            array('element_id, ophcocvi_clinicinfo_patient_factor_id', 'safe'),
+            array('element_id, ophcocvi_clinicinfo_patient_factor_id', 'required'),
+            array('id, element_id, ophcocvi_clinicinfo_patient_factor_id', 'safe', 'on' => 'search'),
+        );
+    }
 
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		return array(
-			'element' => array(self::BELONGS_TO, 'OphCoCvi_ClericalInfo_PatientFactor_Answer', 'element_id'),
-			'ophcocvi_clinicinfo_patient_factor_id' => array(self::BELONGS_TO, 'OphCoCvi_ClinicalInfo_PatientFactor', 'ophcocvi_clinicinfo_patient_factor_id'),
-			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-		);
-	}
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        return array(
+            'element' => array(self::BELONGS_TO, 'OphCoCvi_ClericalInfo_PatientFactor_Answer', 'element_id'),
+            'ophcocvi_clinicinfo_patient_factor_id' => array(self::BELONGS_TO, 'OphCoCvi_ClinicalInfo_PatientFactor', 'ophcocvi_clinicinfo_patient_factor_id'),
+            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+        );
+    }
 
-	public function getFactorAnswer($factor_id,$element_id)
-	{
+    /**
+     * @param $factor_id
+     * @param $element_id
+     * @return factor status for each factor to the clerical element
+     */
+    public function getFactorAnswer($factor_id, $element_id)
+    {
+        $criteria = new \CDbCriteria;
+        $criteria->select = 'is_factor';
+        $criteria->condition = "element_id=:element_id";
+        $criteria->addCondition("ophcocvi_clinicinfo_patient_factor_id=:ophcocvi_clinicinfo_patient_factor_id");
+        $criteria->params = array(':element_id' => $element_id, ':ophcocvi_clinicinfo_patient_factor_id' => $factor_id);
+        $item = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->find($criteria);
+        return $item['is_factor'];
 
-		$criteria=new \CDbCriteria;
-		$criteria->select='is_factor';
-		$criteria->condition="element_id=:element_id";
-		$criteria->addCondition("ophcocvi_clinicinfo_patient_factor_id=:ophcocvi_clinicinfo_patient_factor_id");
-		$criteria->params=array(':element_id'=>$element_id,':ophcocvi_clinicinfo_patient_factor_id'=>$factor_id);
-		$item = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->find($criteria);
-		return $item['is_factor'];
+    }
 
-	}
-	public function getComments($factor_id,$element_id)
-	{
+    /**
+     * @param $factor_id
+     * @param $element_id
+     * @return comments for each factor to the clerical element
+     */
+    public function getComments($factor_id, $element_id)
+    {
+        $criteria = new \CDbCriteria;
+        $criteria->select = 'comments';
+        $criteria->condition = "element_id=:element_id";
+        $criteria->addCondition("ophcocvi_clinicinfo_patient_factor_id=:ophcocvi_clinicinfo_patient_factor_id");
+        $criteria->params = array(':element_id' => $element_id, ':ophcocvi_clinicinfo_patient_factor_id' => $factor_id);
+        $item = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->find($criteria);
+        return $item['comments'];
 
-		$criteria=new \CDbCriteria;
-		$criteria->select='comments';
-		$criteria->condition="element_id=:element_id";
-		$criteria->addCondition("ophcocvi_clinicinfo_patient_factor_id=:ophcocvi_clinicinfo_patient_factor_id");
-		$criteria->params=array(':element_id'=>$element_id,':ophcocvi_clinicinfo_patient_factor_id'=>$factor_id);
-		$item = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->find($criteria);
-
-		return $item['comments'];
-
-	}
+    }
 
 }
+
 ?>
