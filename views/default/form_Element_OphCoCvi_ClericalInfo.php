@@ -17,64 +17,69 @@
 
 ?>
 <?php
-$model = OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_PatientFactor::model();
-$factor_answer = OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PatientFactor_Answer::model();?>
-<div class="element-fields row">
-	<?php
-	foreach ($model->findAll('`active` = ?',array(1)) as $factor) {
-		?>
-		<fieldset class="row field-row">
-			<legend class="large-3 column">
-				<?php echo $factor->name?>
-			</legend>
-			<?php
-			$is_factor = $factor_answer->getFactorAnswer($factor->id,$element->id);
-			$comments = $factor_answer->getComments($factor->id,$element->id);
-			$i = $factor->id;
+if ($this->checkClericalEditAccess()) {
 
-			$value =$factor->require_comments ? '1' : '0';
-
+	$model = OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_PatientFactor::model();
+	$factor_answer = OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PatientFactor_Answer::model();?>
+	<div class="element-fields row">
+		<?php
+		foreach ($model->findAll('`active` = ?',array(1)) as $factor) {
 			?>
-			<?php
-				echo CHtml::hiddenField("ophcocvi_clinicinfo_patient_factor_id[$i]" , $factor->id, array('id' => 'hiddenInput'));
-				echo CHtml::hiddenField("require_comments[$i]" , $value, array('id' => 'hiddenInput'));
-
-			?>
-
-			<div class="large-9 column">
-				<label class="inline highlight">
-					<?php echo CHtml::radioButton("is_factor[$i]", (isset($is_factor) && $is_factor == 1), array('id' => CHtml::modelName($factor_answer) . '_' . $factor->id . '_1', 'value' => 1))?>
-					Yes
-				</label>
-				<label class="inline highlight">
-					<?php echo CHtml::radioButton("is_factor[$i]", (isset($is_factor) && $is_factor == 0), array('id' => CHtml::modelName($factor_answer) . '_' .  $factor->id . '_0', 'value' => 0))?>
-					No
-				</label>
-				<label class="inline highlight">
-					<?php echo CHtml::radioButton("is_factor[$i]", (isset($is_factor) && $is_factor == 2), array('id' => CHtml::modelName($factor_answer) . '_' .  $factor->id . '_2', 'value' => 2))?>
-					Unknown
-				</label>
-
-			</div>
-		</fieldset>
-		<?php if($factor->require_comments == 1){?>
 			<fieldset class="row field-row">
 				<legend class="large-3 column">
-					<?php echo $factor->comments_label; ?>
+					<?php echo $factor->name?>
 				</legend>
-				<div class="large-9 column">
+				<?php
+				$is_factor = $factor_answer->getFactorAnswer($factor->id,$element->id);
+				$comments = $factor_answer->getComments($factor->id,$element->id);
+				$i = $factor->id;
 
-					<?php echo  CHtml::textArea( "comments[$i]", ($comments), array('rows'=>3, 'cols'=>75));?>
+				$value =$factor->require_comments ? '1' : '0';
+
+				?>
+				<?php
+					echo CHtml::hiddenField("ophcocvi_clinicinfo_patient_factor_id[$i]" , $factor->id, array('id' => 'hiddenInput'));
+					echo CHtml::hiddenField("require_comments[$i]" , $value, array('id' => 'hiddenInput'));
+
+				?>
+
+				<div class="large-9 column">
+					<label class="inline highlight">
+						<?php echo CHtml::radioButton("is_factor[$i]", (isset($is_factor) && $is_factor == 1), array('id' => CHtml::modelName($factor_answer) . '_' . $factor->id . '_1', 'value' => 1))?>
+						Yes
+					</label>
+					<label class="inline highlight">
+						<?php echo CHtml::radioButton("is_factor[$i]", (isset($is_factor) && $is_factor == 0), array('id' => CHtml::modelName($factor_answer) . '_' .  $factor->id . '_0', 'value' => 0))?>
+						No
+					</label>
+					<label class="inline highlight">
+						<?php echo CHtml::radioButton("is_factor[$i]", (isset($is_factor) && $is_factor == 2), array('id' => CHtml::modelName($factor_answer) . '_' .  $factor->id . '_2', 'value' => 2))?>
+						Unknown
+					</label>
+
 				</div>
 			</fieldset>
-		<?php  }		}?>
-</div>
-<div class="element-fields row">
-	<?php echo $form->dropDownList($element, 'employment_status_id', CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_EmploymentStatus::model()->findAll('`active` = ?',array(1),array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'))?>
-	<?php echo $form->dropDownList($element, 'preferred_info_fmt_id', CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PreferredInfoFmt::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'))?>
-	<?php echo $form->textField($element, 'info_email', array('size' => '20'))?>
-	<?php echo $form->dropDownList($element, 'contact_urgency_id', CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_ContactUrgency::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'))?>
-	<?php echo $form->dropDownList($element, 'preferred_language_id', CHtml::listData(Language::model()->findAll(array('order'=> 'name asc')),'id','name'),array('empty'=>'- Please select -'))?>
-	<?php echo $form->textArea($element, 'social_service_comments', array('rows' => 6, 'cols' => 80))?>
-</div>
+			<?php if($factor->require_comments == 1){?>
+				<fieldset class="row field-row">
+					<legend class="large-3 column">
+						<?php echo $factor->comments_label; ?>
+					</legend>
+					<div class="large-9 column">
+
+						<?php echo  CHtml::textArea( "comments[$i]", ($comments), array('rows'=>3, 'cols'=>75));?>
+					</div>
+				</fieldset>
+			<?php  }		}?>
+	</div>
+	<div class="element-fields row">
+		<?php echo $form->dropDownList($element, 'employment_status_id', CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_EmploymentStatus::model()->findAll('`active` = ?',array(1),array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'))?>
+		<?php echo $form->dropDownList($element, 'preferred_info_fmt_id', CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PreferredInfoFmt::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'))?>
+		<?php echo $form->textField($element, 'info_email', array('size' => '20'))?>
+		<?php echo $form->dropDownList($element, 'contact_urgency_id', CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_ContactUrgency::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'))?>
+		<?php echo $form->dropDownList($element, 'preferred_language_id', CHtml::listData(Language::model()->findAll(array('order'=> 'name asc')),'id','name'),array('empty'=>'- Please select -'))?>
+		<?php echo $form->textArea($element, 'social_service_comments', array('rows' => 6, 'cols' => 80))?>
+	</div>
+<?php } else {
+	$this->renderPartial('view_Element_OphCoCvi_ClericalInfo', array('element' => $element));
+}
 

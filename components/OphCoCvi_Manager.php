@@ -70,6 +70,18 @@ class OphCoCvi_Manager extends \CComponent
     }
 
     /**
+     * Wrapper for starting a transaction.
+     *
+     * @return \CDbTransaction|null
+     */
+    protected function startTransaction()
+    {
+        return $this->yii->db->getCurrentTransaction() === null
+            ? $this->yii->db->beginTransaction()
+            : null;
+    }
+
+    /**
      * @param \Patient $patient
      * @return \Event[]
      */
@@ -276,6 +288,37 @@ class OphCoCvi_Manager extends \CComponent
         }
         return false;
     }
+
+    public function issueCvi(\Event $event, $user_id)
+    {
+        // begin transaction
+        $transaction = $this->startTransaction();
+
+        try {
+            // TODO: generate the PDF
+
+            // set the status of the event to complete and assign the PDF to the event
+            $info_element = $this->getEventInfoElementForEvent($event);
+            $info_element->is_draft = false;
+            $info_element->save();
+
+            $event->audit('event', 'cvi-issued', null, 'CVI Issued', array('user_id' => $user_id));
+
+            if ($transaction) {
+                $transaction->commit();
+            }
+        }
+        catch (\Exception $e) {
+            if ($transaction) {
+                $transaction->rollback();
+            }
+
+        }
+
+        // commit
+
+    }
+
 
     /**
      * @param \CDbCriteria $criteria

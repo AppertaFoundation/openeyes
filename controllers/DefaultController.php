@@ -231,6 +231,27 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * @throws \CHttpException
+     */
+    public function initActionIssue()
+    {
+        $this->initWithEventId($this->request->get('id'));
+        if (!$this->canIssue()) {
+            throw new \CHttpException(403, 'Event cannot be issued.');
+        }
+    }
+
+    /**
+     * @param $id
+     */
+    public function actionIssue($id)
+    {
+        $this->getManager()->issueCvi($this->event, $this->getApp()->user->id);
+
+        $this->redirect(array('/'.$this->event->eventType->class_name.'/default/pdfPrint/'.$id));
+    }
+
+    /**
      * Override to support the fact that users might not have permission to edit specific event elements.
      *
      * @param \ElementType $element_type
