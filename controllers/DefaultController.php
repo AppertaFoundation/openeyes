@@ -110,10 +110,20 @@ class DefaultController extends \BaseEventTypeController
      */
     public function checkCreateAccess()
     {
-        return  $this->checkAccess('OprnEditCvi', $this->getApp()->user->id, array(
+        return  $this->checkAccess('OprnCreateCvi', $this->getApp()->user->id, array(
             'firm' => $this->firm,
             'episode' => $this->episode
         ));
+    }
+
+    /**
+     * Ensure we invoke the CVI RBAC rules around requesting deletion.
+     *
+     * @return bool
+     */
+    public function checkRequestDeleteAccess()
+    {
+        return $this->checkEditAccess() && parent::checkRequestDeleteAccess();
     }
 
     /**
