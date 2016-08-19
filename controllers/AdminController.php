@@ -122,7 +122,7 @@ class AdminController extends \ModuleAdminController
     {
         $this->genericAdmin(
             'Patient Factor',
-            'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_PatientFactor',
+            'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PatientFactor',
             array(
                 'extra_fields' => array(
                     array(

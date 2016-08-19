@@ -17,20 +17,6 @@ $(document).ready(function () {
         });
 
         /**
-         * Comments label validation if comments required in Patient factor
-         */
-        $("input[name^='require_comments']").each(function (key, value) {
-            if (key < ($("input[name^='require_comments']").length - 1) && $(this).is(':checked')) {
-                var textbox_value = $("input[name^='comments_label']").eq(key).val();
-                var text_length = (textbox_value).length;
-                if (text_length == 0) {
-                    alert("Please enter comments label");
-                    check = false;
-                }
-            }
-        });
-
-        /**
          * Maximum one child as to select for employment status
          */
         var chk = 0;

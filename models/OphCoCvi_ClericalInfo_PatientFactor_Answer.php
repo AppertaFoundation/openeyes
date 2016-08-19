@@ -19,29 +19,21 @@
 namespace OEModule\OphCoCvi\models;
 
 /**
- * This is the model class for table "et_ophcocvi_clericinfo".
+ * This is the model class for table "ophcocvi_clericinfo_patient_factor_answer".
  *
  * The followings are the available columns in table:
  * @property string $id
- * @property integer $event_id
- * @property integer $employment_status_id
- * @property integer $preferred_info_fmt_id
- * @property string $info_email
- * @property integer $contact_urgency_id
- * @property integer $preferred_language_id
- * @property string $social_service_comments
+ * @property integer $element_id
+ * @property integer $ophcocvi_clinicinfo_patient_factor_id
+ * @property string $is_factor
+ * @property string $comments
  *
  * The followings are the available model relations:
  *
- * @property ElementType $element_type
- * @property EventType $eventType
- * @property Event $event
+ * @property Element_OphCoCvi_ClericalInfo $element
+ * @property OphCoCvi_ClinicalInfo_PatientFactor $patient_factor
  * @property User $user
  * @property User $usermodified
- * @property OphCoCvi_ClericalInfo_EmploymentStatus $employment_status
- * @property OphCoCvi_ClericalInfo_PreferredInfoFmt $preferred_info_fmt
- * @property OphCoCvi_ClericalInfo_ContactUrgency $contact_urgency
- * @property Language $preferred_language
  */
 
 class OphCoCvi_ClericalInfo_PatientFactor_Answer extends \BaseEventTypeElement
@@ -81,8 +73,8 @@ class OphCoCvi_ClericalInfo_PatientFactor_Answer extends \BaseEventTypeElement
     public function relations()
     {
         return array(
-            'element' => array(self::BELONGS_TO, 'OphCoCvi_ClericalInfo_PatientFactor_Answer', 'element_id'),
-            'ophcocvi_clinicinfo_patient_factor_id' => array(self::BELONGS_TO, 'OphCoCvi_ClinicalInfo_PatientFactor', 'ophcocvi_clinicinfo_patient_factor_id'),
+            'element' => array(self::BELONGS_TO, '\\OEModule\\OphCoCvi\\models\\Element_OphCoCvi_ClericalInfo', 'element_id'),
+            'patient_factor' => array(self::BELONGS_TO, '\\OEModule\\OphCoCvi\\models\\OphCoCvi_ClericalInfo_PatientFactor', 'ophcocvi_clinicinfo_patient_factor_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
         );
@@ -102,7 +94,6 @@ class OphCoCvi_ClericalInfo_PatientFactor_Answer extends \BaseEventTypeElement
         $criteria->params = array(':element_id' => $element_id, ':ophcocvi_clinicinfo_patient_factor_id' => $factor_id);
         $item = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->find($criteria);
         return $item['is_factor'];
-
     }
 
     /**
