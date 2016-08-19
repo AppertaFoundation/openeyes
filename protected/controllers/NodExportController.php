@@ -35,8 +35,6 @@ class NodExportController extends BaseController
 
     private $startDate = '';
     private $endDate = '';
-
-    private $allEpisodeIds;
     
     // Refactoring : 
     /**
@@ -222,17 +220,6 @@ class NodExportController extends BaseController
         return $resultIds;
     }
 
-    private function getIdArray($data, $IdField)
-    {
-        $objectIds = array();
-        if ($IdField && $data) {
-            foreach ($data as $row) {
-                $objectIds[] = $row[$IdField];
-            }
-        }
-        return $objectIds;
-    }
-
 
 
     private function createAllTempTables()
@@ -261,6 +248,7 @@ class NodExportController extends BaseController
         $query .= $this->createTmpRcoNodEpisodeOperationIndication();
         $query .= $this->createTmpRcoNodEpisodeOperationComplication();
         $query .= $this->createTmpRcoNodEpisodeVisualAcuity();
+        $query .= $this->createTmpRcoNodEpisodeDiagnosis();
         
         $createTempQuery = <<<EOL
 
@@ -513,9 +501,7 @@ class NodExportController extends BaseController
                          (18, 'Topical', NULL, "", 23, 'Topically'), 
                          (19, 'n/a', NULL, "", 99, 'Other'), 
                          (20, 'Other', NULL, "", 99, 'Other');
-
-             
-                
+     
 EOL;
 
         return $query . $createTempQuery;
@@ -547,6 +533,7 @@ EOL;
         $query .= $this->populateTmpRcoNodEpisodeOperationAnesthesia();
         $query .= $this->populateTmpRcoNodEpisodeOperationIndication();
         $query .= $this->populateTmpRcoNodEpisodeOperationComplication();
+        $query .= $this->populateTmpRcoNodEpisodeDiagnosis();
 
         return $query;
     }
@@ -575,6 +562,7 @@ EOL;
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationIndication_{$this->extract_identifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeTreatment_{$this->extract_identifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeVisualAcuity_{$this->extract_identifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeDiagnoses_{$this->extract_identifier};
                 
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication;
                 DROP TEMPORARY TABLE IF EXISTS tmp_anesthesia_type;
@@ -666,7 +654,12 @@ EOL;
     
     /********** end of Surgeon **********/
 
+    
+    
+    
+    
     /********** EpisodeDiabeticDiagnosis **********/
+    
     private function createTmpRcoNodEpisodeDiabeticDiagnosis()
     {
         $query = <<<EOL
@@ -735,9 +728,32 @@ EOL;
 EOL;
         return $query;
     }
+    
+    private function getEpisodeDiabeticDiagnosis()
+    {
+       $query = <<<EOL
+                SELECT c.nod_episode_id as EpisodeId, d.IsDiabetic, d.DiabetesTypeId, d.DiabetesRegimeId, d.AgeAtDiagnosis
+                FROM tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c
+                JOIN tmp_rco_nod_EpisodeDiabeticDiagnosis_{$this->extract_identifier} d ON c.oe_event_id = d.oe_event_id
+EOL;
+
+
+        $dataQuery = array(
+            'query' => $query,
+            'header' => array('EpisodeId', 'IsDiabetic', 'DiabetesTypeId', 'DiabetesRegimeId', 'AgeAtDiagnosis'),
+        );
+
+        $output = $this->saveCSVfile($dataQuery, 'EpisodeDiabeticDiagnosis', null, 'EpisodeId');
+        
+        return $output;
+    }
+    
+    /********** end of EpisodeDiabeticDiagnosis **********/
 
 
 
+    
+    
     /********** Patient **********/
     
     /**
@@ -817,6 +833,8 @@ EOL;
     
     
     
+    
+    
     /********** PatientCVIStatus **********/
     
     private function createTmpRcoNodPatientCVIStatus()
@@ -877,6 +895,8 @@ EOL;
     }
     
     /********** end of PatientCVIStatus **********/
+    
+    
     
     
     
@@ -967,6 +987,8 @@ EOL;
     }
     
     /********** end of Episode **********/
+    
+    
     
     
     
@@ -1070,7 +1092,10 @@ EOL;
     
     
     
+    
+    
     /********** EpisodeRefraction **********/
+    
     private function createTmpRcoNodEpisodeRefraction()
     {
         $query = <<<EOL
@@ -1165,83 +1190,95 @@ EOL;
         return $this->saveCSVfile($dataQuery, 'EpisodeRefraction');
     }
     
-    
-    
     /********** end of EpisodeRefraction **********/
     
     
     
 
+    /********** EpisodeDiagnosis **********/
+    
+    private function createTmpRcoNodEpisodeDiagnosis()
+    {
+        $query = <<<EOL
+            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeDiagnoses_{$this->extract_identifier};
+            CREATE TABLE tmp_rco_nod_EpisodeDiagnoses_{$this->extract_identifier} (
+                oe_event_id INT(10) NOT NULL,
+                Eye CHAR(1) NOT NULL,
+                `Date` DATE DEFAULT NULL,
+                SurgeonId INT(10) DEFAULT NULL,
+                ConditionId INT(11) DEFAULT NULL,
+                DiagnosisTermId INT(10) DEFAULT NULL
+            );
+EOL;
+            
+        return $query;
+    }
+    
+    
+    private function populateTmpRcoNodEpisodeDiagnosis()
+    {
+        $query = <<<EOL
+            INSERT INTO tmp_rco_nod_EpisodeDiagnoses_{$this->extract_identifier} (
+                oe_event_id,
+                Eye,
+                Date,
+                SurgeonId,
+                ConditionId,
+                DiagnosisTermId
+            ) 
+            SELECT
+                c.oe_event_id,
+                (SELECT CASE WHEN eye_id = 1 THEN 'L' WHEN eye_id = 2 THEN 'R' WHEN eye_id = 3 THEN 'B' ELSE 'N' END ) AS Eye,
+                DATE(last_modified_date) AS Date,
+                (
+                        SELECT (
+                                IFNULL(
+                                        (SELECT last_modified_user_id FROM episode_version WHERE ep.id=id ORDER BY last_modified_date ASC LIMIT 1),
+                                        (SELECT last_modified_user_id FROM episode WHERE id = ep.id)
+                                )
+                        )
+                ) AS SurgeonId,
+                (
+                        SELECT rco_condition_id FROM tmp_episode_diagnosis WHERE oe_subspecialty_id = (
+                        SELECT service_subspecialty_assignment.subspecialty_id FROM firm 
+                        JOIN service_subspecialty_assignment ON firm.service_subspecialty_assignment_id = service_subspecialty_assignment.id
+                        WHERE firm.id = ep.firm_id)
+
+                ) AS ConditionId,
+                IFNULL(disorder_id, '') AS DiagnosisTermId
+            FROM tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c
+            JOIN episode ep ON c.oe_event_id = ep.id
+            WHERE ep.firm_id IS NOT NULL;
+EOL;
+            
+        return $query;
+    }
+    
+    
     private function getEpisodeDiagnosis()
     {
-
-        $query = "SELECT
-                        id AS EpisodeId,
-                        (SELECT CASE WHEN eye_id = 1 THEN 'L' WHEN eye_id = 2 THEN 'R' WHEN eye_id = 3 THEN 'B' ELSE 'N' END ) AS Eye,
-                        DATE(last_modified_date) AS `Date`,
-                        (
-                                SELECT (
-                                        IFNULL(
-                                                (SELECT last_modified_user_id FROM episode_version WHERE ep.id=id ORDER BY last_modified_date ASC LIMIT 1), 
-                                                (SELECT last_modified_user_id FROM episode WHERE id = ep.id)
-                                        )
-                                )
-                        ) AS SurgeonId,
-                        (
-                                SELECT rco_condition_id FROM tmp_episode_diagnosis WHERE oe_subspecialty_id = (
-                                SELECT service_subspecialty_assignment.`subspecialty_id` FROM firm 
-                                JOIN service_subspecialty_assignment ON firm.service_subspecialty_assignment_id = service_subspecialty_assignment.`id`
-                                WHERE firm.id = ep.`firm_id`)
-                                
-                        ) AS ConditionId,
-                        IFNULL(disorder_id, '') AS DiagnosisTermId
-                FROM episode ep 
-                WHERE 
-                ep.`firm_id` IS NOT NULL AND
-                ep.id IN
-                    (SELECT id FROM ((SELECT id FROM tmp_episode_ids)
-                            UNION ALL
-                    (SELECT episode_id AS id FROM event WHERE event.id in (SELECT id FROM tmp_operation_ids))
-                            UNION ALL
-                    (SELECT episode_id AS id FROM event e 
-                            JOIN et_ophtroperationnote_procedurelist eop ON eop.event_id = e.id 
-                            JOIN ophtroperationnote_procedurelist_procedure_assignment oppa ON oppa.procedurelist_id = eop.id 
-                            WHERE oppa.id IN (SELECT id FROM tmp_treatment_ids))) a )
-                HAVING ConditionId IS NOT NULL
-                "
-        ;
-
+        $query = <<<EOL
+                SELECT c.nod_episode_id as EpisodeId, d.Eye, d.Date, d.SurgeonId, d.ConditionId, d.DiagnosisTermId
+                FROM tmp_rco_nod_EpisodeDiagnoses_{$this->extract_identifier} d
+                JOIN tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c ON d.oe_event_id = c.oe_event_id
+                
+EOL;
         $dataQuery = array(
             'query' => $query,
             'header' => array('EpisodeId', 'Eye', 'Date', 'SurgeonId', 'ConditionId', 'DiagnosisTermId'),
         );
 
-        $output =  $this->saveCSVfile($dataQuery, 'EpisodeDiagnosis', null, 'EpisodeId');
-
+        $output =  $this->saveCSVfile($dataQuery, 'EpisodeDiagnosis');
         
         return $output;
     }
-
-    private function getEpisodeDiabeticDiagnosis()
-    {
-       $query = <<<EOL
-                SELECT c.nod_episode_id as EpisodeId, d.IsDiabetic, d.DiabetesTypeId, d.DiabetesRegimeId, d.AgeAtDiagnosis
-                FROM tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c
-                JOIN tmp_rco_nod_EpisodeDiabeticDiagnosis_{$this->extract_identifier} d ON c.oe_event_id = d.oe_event_id
-EOL;
-
-
-        $dataQuery = array(
-            'query' => $query,
-            'header' => array('EpisodeId', 'IsDiabetic', 'DiabetesTypeId', 'DiabetesRegimeId', 'AgeAtDiagnosis'),
-        );
-
-        $output = $this->saveCSVfile($dataQuery, 'EpisodeDiabeticDiagnosis', null, 'EpisodeId');
-        
-        return $output;
-    }
-
     
+    /********** end of EpisodeDiagnosis **********/
+
+
+
+
+
     /********** EpisodeDrug **********/
     
     private function createTmpRcoNodEpisodeDrug()
@@ -2646,7 +2683,7 @@ EOL;
     {
 
         $query = "(SELECT
-                    e.episode_id AS EpisodeId, 
+                    e.episode_id AS EpisodeId,
                     'L' AS Eye,
                     v.unit_id AS NotationRecordedId,
 
@@ -2757,12 +2794,18 @@ EOL;
                     INNER JOIN et_ophciexamination_visualacuity v ON v.event_id = e.id
                     WHERE v.eye_id = 2 OR v.eye_id=3 " . $this->getDateWhere('v').")";
 
+        
+        $query = <<<EOL
+                SELECT c.nod_episode_id as EpisodeId, va.Eye, va.NotationRecordedId, va.BestMeasure, va.Unaided, va.Pinhole, va.BestCorrected
+                FROM tmp_rco_nod_EpisodeVisualAcuity_{$this->extract_identifier} va
+                JOIN tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c ON va.oe_event_id = c.oe_event_id
+EOL;
         $dataQuery = array(
             'query' => $query,
             'header' => array('EpisodeId', 'Eye', 'NotationRecordedId', 'BestMeasure', 'Unaided', 'Pinhole', 'BestCorrected'),
         );
 
-        return $this->saveCSVfile($dataQuery, 'EpisodeVisualAcuity', null, 'EpisodeId');
+        return $this->saveCSVfile($dataQuery, 'EpisodeVisualAcuity');
     }
     
     /********** end of EpisodeVisualAcuity **********/
