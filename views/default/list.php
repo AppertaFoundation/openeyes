@@ -47,7 +47,14 @@ $cols = array(
     array(
         'id' => 'issue_status',
         'header' => $dp->getSort()->link('issue_status', 'Status', array('class' => 'sort-link')),
-        'value' => '$data->getIssueStatusForDisplay()'
+        'value' => function ($data) {
+            if ($data->event->info) {
+                return $data->event->info;
+            }
+            else {
+                return $data->getIssueStatusForDisplay();
+            }
+        }
     ),
     array(
         'id' => 'issue_date',

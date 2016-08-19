@@ -24,6 +24,32 @@ use OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo;
 
 class OphCoCvi_Manager extends \CComponent
 {
+    public static $CVI_COMPLETE = 1;
+    public static $CVI_CLINICAL_COMPLETE = 2;
+    public static $CVI_CLERICAL_COMPLETE = 3;
+    public static $CVI_INCOMPLETE = 4;
+    public static $ISSUED = 5;
+
+    /**
+     * @param $status
+     * @return string
+     */
+    public function getStatusText($status)
+    {
+        $lookup = array(
+            self::$ISSUED => "Issued",
+            self::$CVI_COMPLETE => "Complete",
+            self::$CVI_CLINICAL_COMPLETE => 'Clinically Complete',
+            self::$CVI_CLERICAL_COMPLETE => 'Clerically Complete',
+            self::$CVI_INCOMPLETE => 'Incomplete',
+        );
+        if (isset($lookup[$status])) {
+            return $lookup[$status];
+        }
+
+        return "Unrecognised Status";
+    }
+
     protected $yii;
     /**
      * @var \EventType
@@ -117,6 +143,22 @@ class OphCoCvi_Manager extends \CComponent
         }
         elseif ($element_class == $core_class) {
             return $this->info_element_for_events[$event->id];
+        }
+    }
+
+    /**
+     * Convenience wrapper to clear out element data when put into specific states that we don't want to keep
+     *
+     * @TODO this might not be necessary if there's a sensible way to clear out the validation state of an ActiveRecord
+     * @param \Event $event
+     */
+    protected function resetElementStore(\Event $event = null)
+    {
+        if ($event) {
+            unset($this->info_element_for_events[$event->id]);
+        }
+        else {
+            $this->info_element_for_events = array();
         }
     }
 
@@ -317,6 +359,36 @@ class OphCoCvi_Manager extends \CComponent
         return false;
 
     }
+
+    /**
+     * @param \Event $event
+     * @return mixed
+     */
+    public function calculateStatus(\Event $event)
+    {
+        $clerical = $this->getClericalElementForEvent($event);
+        $clerical->setScenario('finalise');
+        $clerical_complete = $clerical->validate();
+
+        $clinical = $this->getClinicalElementForEvent($event);
+        $clinical->setScenario('finalise');
+        $clinical_complete = $clinical->validate();
+
+        $this->resetElementStore($event);
+
+        if ($clerical_complete && $clinical_complete) {
+            return self::$CVI_COMPLETE;
+        }
+        if ($clinical_complete) {
+            return self::$CVI_CLINICAL_COMPLETE;
+        }
+        if ($clerical_complete) {
+            return self::$CVI_CLERICAL_COMPLETE;
+        }
+
+        return self::$CVI_INCOMPLETE;
+    }
+
 
 
     /**

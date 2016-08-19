@@ -312,6 +312,13 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
+    protected function updateEventInfo()
+    {
+        $status = $this->getManager()->calculateStatus($this->event);
+        $this->event->info = $this->getManager()->getStatusText($status);
+        $this->event->save();
+    }
+
     /**
      * Element based name and value pair
      * @param $id
