@@ -1208,7 +1208,8 @@ EOL;
                 Date DATE DEFAULT NULL,
                 SurgeonId INT(10) DEFAULT NULL,
                 ConditionId INT(11) DEFAULT NULL,
-                DiagnosisTermId INT(10) DEFAULT NULL
+                DiagnosisTermId INT(10) DEFAULT NULL,
+                DiagnosisTermDescription VARCHAR(255)
             );
 EOL;
             
@@ -1225,33 +1226,59 @@ EOL;
                 Date,
                 SurgeonId,
                 ConditionId,
-                DiagnosisTermId
+                DiagnosisTermId,
+                DiagnosisTermDescription
             ) 
             SELECT
-                c.oe_event_id,
-                (SELECT CASE WHEN eye_id = 1 THEN 'L' WHEN eye_id = 2 THEN 'R' WHEN eye_id = 3 THEN 'B' ELSE 'N' END ) AS Eye,
-                DATE(last_modified_date) AS Date,
-                (
-                        SELECT (
-                                IFNULL(
-                                        (SELECT last_modified_user_id FROM episode_version WHERE ep.id=id ORDER BY last_modified_date ASC LIMIT 1),
-                                        (SELECT last_modified_user_id FROM episode WHERE id = ep.id)
-                                )
-                        )
-                ) AS SurgeonId,
-                (
-                        SELECT rco_condition_id FROM tmp_episode_diagnosis WHERE oe_subspecialty_id = (
-                        SELECT service_subspecialty_assignment.subspecialty_id FROM firm 
-                        JOIN service_subspecialty_assignment ON firm.service_subspecialty_assignment_id = service_subspecialty_assignment.id
-                        WHERE firm.id = ep.firm_id)
-
-                ) AS ConditionId,
-                IFNULL(disorder_id, '') AS DiagnosisTermId
-            FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
-            JOIN episode ep ON c.oe_event_id = ep.id
-            WHERE ep.firm_id IS NOT NULL;
+                c.oe_event_id
+              , CASE eye_id WHEN 1 THEN 'L' WHEN 2 THEN 'R' WHEN 3 THEN 'B' ELSE 'N' END AS eye
+              , DATE(
+                  IFNULL ( 
+                    ( 
+                      SELECT epv.last_modified_date 
+                      FROM episode_version epv
+                      WHERE epv.id = ep.id 
+                      AND epv.disorder_id = ep.disorder_id
+                      ORDER BY epv.last_modified_date ASC 
+                      LIMIT 1
+                    ) 
+                    , ep.last_modified_date
+                  )
+                ) AS `Date`
+              , IFNULL ( 
+                  ( 
+                    SELECT epv.last_modified_user_id 
+                    FROM episode_version epv
+                    WHERE epv.id = ep.id 
+                    AND epv.disorder_id = ep.disorder_id
+                    ORDER BY epv.last_modified_date ASC 
+                    LIMIT 1
+                  ) 
+                , ep.last_modified_user_id
+              ) AS SurgeonId
+              , (
+                  SELECT rco_condition_id 
+                  FROM tmp_episode_diagnosis 
+                  WHERE oe_subspecialty_id = (
+                    SELECT ssa.subspecialty_id
+                    FROM firm f
+                    JOIN service_subspecialty_assignment ssa
+                    ON f.service_subspecialty_assignment_id = ssa.id
+                    WHERE f.id = ep.firm_id
+                  )
+                ) AS ConditionId
+              , IFNULL(disorder_id, '') AS DiagnosisTermId
+              , IFNULL(d.term, '') AS DiagnosisTermDescription
+              FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
+              JOIN event e
+                ON e.id = c.oe_event_id
+              LEFT OUTER JOIN episode ep
+                ON ep.id = e.episode_id
+              LEFT OUTER JOIN disorder d
+                ON d.id = ep.disorder_id
+              WHERE ep.firm_id IS NOT NULL;
 EOL;
-            
+
         return $query;
     }
     
@@ -1259,14 +1286,14 @@ EOL;
     private function getEpisodeDiagnosis()
     {
         $query = <<<EOL
-                SELECT c.nod_episode_id as EpisodeId, d.Eye, d.Date, d.SurgeonId, d.ConditionId, d.DiagnosisTermId
+                SELECT c.nod_episode_id as EpisodeId, d.Eye, d.Date, d.SurgeonId, d.ConditionId, d.DiagnosisTermId, d.DiagnosisTermDescription
                 FROM tmp_rco_nod_EpisodeDiagnoses_{$this->extractIdentifier} d
                 JOIN tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c ON d.oe_event_id = c.oe_event_id
                 
 EOL;
         $dataQuery = array(
             'query' => $query,
-            'header' => array('EpisodeId', 'Eye', 'Date', 'SurgeonId', 'ConditionId', 'DiagnosisTermId'),
+            'header' => array('EpisodeId', 'Eye', 'Date', 'SurgeonId', 'ConditionId', 'DiagnosisTermId', 'DiagnosisTermDescription'),
         );
 
         $output =  $this->saveCSVfile($dataQuery, 'EpisodeDiagnosis');
@@ -2295,12 +2322,12 @@ EOL;
     private function getEpisodeTreatment()
     {
         $query = <<<EOL
-                SELECT t.TreatmentId, t.OperationId, t.Eye, t.TreatmentTypeId
+                SELECT t.TreatmentId, t.OperationId, t.Eye, t.TreatmentTypeId, t.TreatmentTypeDescription
                 FROM tmp_rco_nod_EpisodeTreatment_{$this->extractIdentifier} t
 EOL;
         $dataQuery = array(
             'query' => $query,
-            'header' => array('TreatmentId', 'OperationId', 'Eye', 'TreatmentTypeId'),
+            'header' => array('TreatmentId', 'OperationId', 'Eye', 'TreatmentTypeId', 'TreatmentTypeDescription'),
         );
 
         return $this->saveCSVfile($dataQuery, 'EpisodeTreatment');
@@ -2394,7 +2421,7 @@ EOL;
 EOL;
         $dataQuery = array(
             'query' => $query,
-            'header' => array('OperationId', 'Eye', 'IndicationId'),
+            'header' => array('OperationId', 'Eye', 'IndicationId', 'IndicationDescription'),
         );
 
         return $this->saveCSVfile($dataQuery, 'EpisodeOperationIndication', null, 'OperationId');
@@ -2516,13 +2543,13 @@ EOL;
     private function getEpisodeOperationComplication()
     {
         $query = <<<EOL
-                SELECT oc.OperationId, oc.Eye, oc.ComplicationTypeId
+                SELECT oc.OperationId, oc.Eye, oc.ComplicationTypeId, oc.ComplicationTypeDescription
                 FROM tmp_rco_nod_EpisodeOperationComplication_{$this->extractIdentifier} oc
 EOL;
                 
         $dataQuery = array(
             'query' => $query,
-            'header' => array('OperationId', 'Eye', 'ComplicationTypeId'),
+            'header' => array('OperationId', 'Eye', 'ComplicationTypeId', 'ComplicationTypeDescription'),
         );
 
         return $this->saveCSVfile($dataQuery, 'EpisodeOperationComplication', null, 'OperationId');
