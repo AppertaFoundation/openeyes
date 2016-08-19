@@ -30,6 +30,11 @@
             </div>
 
         </div>
+        <div style="display:none" class="row timeout no-result-patients warning alert-box">
+            <div class="small-12 column text-center">
+                Search for a more appropriate, complete name or patient number.
+            </div>
+        </div>
         
         </div>
         <div class="large-3 column text-right">

@@ -1,0 +1,14 @@
+{
+  "Id": {
+    "type": "string"
+  },
+  "PasId": {
+    "type": "string"
+  },
+  "NHSNumber": {
+    "type": "string"
+  },
+  "HospitalNumber": {
+    "type": "string"
+  }
+}

@@ -1,0 +1,99 @@
+<?php
+
+/**
+ * OpenEyes
+ *
+ * (C) OpenEyes Foundation, 2016
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ */
+class WorklistController extends BaseController
+{
+    public $layout = 'worklist';
+    /**
+     * @var WorklistManager
+     */
+    private $manager;
+
+    public function accessRules()
+    {
+        return array(array('allow', 'roles' => array('User')));
+    }
+
+    protected function beforeAction($action)
+    {
+        // Pull in the admin layout controls for ease of UI setup
+        Yii::app()->assetManager->registerCssFile('css/admin.css', null, 10);
+        Yii::app()->assetManager->registerCssFile('components/font-awesome/css/font-awesome.css', null, 10);
+
+        $this->manager = new WorklistManager();
+
+        return parent::beforeAction($action);
+    }
+
+    /**
+     * Redirect to a suitable worklist default action
+     */
+    public function actionIndex()
+    {
+        return $this->redirect(array('/worklist/manual'));
+    }
+
+    /**
+     * Manage User's manual worklists
+     */
+    public function actionManual()
+    {
+        $current_worklists = $this->manager->getCurrentManualWorklistsForUser(Yii::app()->user);
+        $available_worklists = $this->manager->getAvailableManualWorklistsForUser(Yii::app()->user);
+
+        $this->render('//worklist/manual/index', array(
+            'current_worklists' => $current_worklists,
+            'available_worklists' => $available_worklists
+        ));
+    }
+
+    public function actionManualAdd()
+    {
+        $worklist = new Worklist();
+
+        if (!empty($_POST)) {
+            $worklist->attributes = $_POST['Worklist'];
+            if ($this->manager->createWorklistForUser($worklist)) {
+                Audit::add('Manual-Worklist', 'add', $worklist->id);
+                $this->redirect('/worklist/manual');
+            }
+            else {
+                $errors = $worklist->getErrors();
+            }
+        }
+
+        $this->render('//worklist/manual/add', array(
+            'worklist' => $worklist,
+            'errors' => @$errors
+        ));
+    }
+
+    /**
+     * Update the worklist display order for the current user based on the submitted ids
+     */
+    public function actionManualUpdateDisplayOrder()
+    {
+        $worklist_ids = @$_POST['item_ids'] ? explode(',', $_POST['item_ids']) : array();
+
+        if (!$this->manager->setWorklistDisplayOrderForUser(Yii::app()->user, $worklist_ids)) {
+            OELog::log(print_r($this->manager->getErrors(), true));
+            throw new Exception("Unable to save new display order for worklists");
+        }
+
+        $this->redirect('/worklist/manual');
+    }
+}

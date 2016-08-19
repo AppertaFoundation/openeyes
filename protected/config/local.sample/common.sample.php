@@ -110,7 +110,9 @@ $config = array(
 		'PatientTicketing' => array( 'class' => '\OEModule\PatientTicketing\PatientTicketingModule', ),
 		'OphInVisualfields',
 		'OphInBiometry',
-		'OphCoMessaging' => array( 'class' => '\OEModule\OphCoMessaging\OphCoMessagingModule', )
+		'OphCoMessaging' => array( 'class' => '\OEModule\OphCoMessaging\OphCoMessagingModule', ),
+		'PASAPI' => array( 'class' => '\OEModule\PASAPI\PASAPIModule', ),
+		'OphInLabResults',
 	),
 
 	'params'=>array(
@@ -131,8 +133,11 @@ $config = array(
 		//'default_site_code' => '',
 		'specialty_sort' => array(130, 'SUP'),
 		'OphCoTherapyapplication_sender_email' => array('email@example.com' => 'Test'),
+		// flag to turn on drag and drop sorting for dashboards
+		// 'dashboard_sortable' => true
 		'event_print_method' => 'pdf',
 		'wkhtmltopdf_nice_level' => 19,
+		'allow_clinical_summary' => false,
 		// flag to turn on drag and drop sorting for dashboards
 		// 'dashboard_sortable' => true
 	),

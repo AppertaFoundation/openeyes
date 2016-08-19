@@ -149,10 +149,17 @@ $current_episode = @$this->current_episode;
 												} else {
 													$assetpath = '/assets/';
 												}
+
+												$imgName = 'small.png';
+												if($event->is_automated && file_exists(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets'). '/img/small-auto.png')){
+													$imgName = 'small-auto.png';
+												}
 												?>
-												<img src="<?php echo $assetpath . 'img/small.png' ?>" alt="op" width="19" height="19" />
+												<img src="<?php echo $assetpath . 'img/'.$imgName ?>" alt="op" width="19" height="19" />
 											</span>
-											<span class="event-date <?php echo ($event->isEventDateDifferentFromCreated())?' ev_date':'' ?>"> <?php echo $event->event_date? $event->NHSDateAsHTML('event_date') : $event->NHSDateAsHTML('created_date'); ?></span>
+											<span class="event-date <?php echo ($event->isEventDateDifferentFromCreated())?' ev_date':'' ?>">
+												<?php echo $event->event_date? $event->NHSDateAsHTML('event_date') : $event->NHSDateAsHTML('created_date'); ?>
+											</span>
 										</a>
 
 									</li>

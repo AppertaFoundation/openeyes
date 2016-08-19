@@ -1,0 +1,1 @@
+<span id="automated-event"><?= $this->event->automatedText();?></span>

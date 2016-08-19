@@ -95,6 +95,7 @@ class PatientTest extends CDbTestCase
 			'ethnic_group_id' => 'Ethnic Group',
 			'hos_num' => 'Hospital Number',
 			'nhs_num' => 'NHS Number',
+			'deleted' => 'Is Deleted'
 		);
 
 		$this->assertEquals($expected, $this->model->attributeLabels());

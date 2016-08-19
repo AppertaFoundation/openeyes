@@ -43,6 +43,7 @@
 						<?php $this->renderPartial('//admin/sidebar'); ?>
 					</aside>
 					<div class="large-9 column content admin">
+						<?php $this->renderPartial('//base/_messages'); ?>
 						<?php echo $content; ?>
 					</div>
 				</div>

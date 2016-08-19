@@ -87,8 +87,9 @@ class WaitingListController extends BaseModuleController
 			$subspecialty_id = !empty($_POST['subspecialty-id']) ? $_POST['subspecialty-id'] : null;
 			$firm_id = !empty($_POST['firm-id']) ? $_POST['firm-id'] : null;
 			$status = !empty($_POST['status']) ? $_POST['status'] : null;
-			$hos_num = !empty($_POST['hos_num']) && ctype_digit($_POST['hos_num']) ? $_POST['hos_num'] : false;
-			$site_id = !empty($_POST['site_id']) ? $_POST['site_id'] : false;
+            $patient_search = new PatientSearch();
+            $hos_num = $patient_search->getHospitalNumber($_POST['hos_num']);
+            $site_id = !empty($_POST['site_id']) ? $_POST['site_id'] : false;
 
 			YiiSession::set('waitinglist_searchoptions',array(
 					'subspecialty-id' => $subspecialty_id,
@@ -127,10 +128,7 @@ class WaitingListController extends BaseModuleController
 			$whereParams[":subspecialty_id"] = $subspecialty_id;
 		}
 
-		if ($hos_num && ctype_digit($hos_num)) {
-			if (Yii::app()->params['pad_hos_num']) {
-				$hos_num = sprintf(Yii::app()->params['pad_hos_num'],$hos_num);
-			}
+		if ($hos_num) {
 			$whereSql .= " AND patient.hos_num = :hos_num";
 			$whereParams[":hos_num"] = $hos_num;
 		}
@@ -141,6 +139,7 @@ class WaitingListController extends BaseModuleController
 		}
 
 		Yii::app()->event->dispatch('start_batch_mode');
+
 		$operations = Element_OphTrOperationbooking_Operation::model()
 			->with(array(
 					'event',

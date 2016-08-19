@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes
  *
@@ -38,176 +37,188 @@
  * @property Contact $replyTo
  * @property ImportSource $import
  */
+class Site extends BaseActiveRecordVersioned
+{
+	/**
+	 * Returns the static model of the specified AR class.
+	 * @return Site the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
 
-class Site extends BaseActiveRecordVersioned {
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'site';
+	}
 
-    /**
-     * Returns the static model of the specified AR class.
-     * @return Site the static model class
-     */
-    public static function model($className = __CLASS__) {
-        return parent::model($className);
-    }
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.name');
+	}
 
-    /**
-     * @return string the associated database table name
-     */
-    public function tableName() {
-        return 'site';
-    }
+	public function behaviors()
+	{
+		return array(
+			'ContactBehavior' => array(
+				'class' => 'application.behaviors.ContactBehavior',
+			),
+		);
+	}
 
-    public function defaultScope() {
-        return array('order' => $this->getTableAlias(true, false) . '.name');
-    }
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+		return array(
+			array('name, short_name, remote_id, telephone', 'required'),
+			array('name', 'length', 'max'=>255),
+			array('institution_id, name, remote_id, short_name, fax, telephone, contact_id, replyto_contact_id, source_id, active','safe'),
+			// The following rule is used by search().
+			// Please remove those attributes that should not be searched.
+			array('id, name', 'safe', 'on'=>'search'),
+		);
+	}
 
-    public function behaviors() {
-        return array(
-            'ContactBehavior' => array(
-                'class' => 'application.behaviors.ContactBehavior',
-            ),
-        );
-    }
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
+			//'theatres' => array(self::HAS_MANY, 'Theatre', 'site_id'),
+			//'wards' => array(self::HAS_MANY, 'Ward', 'site_id'),
+			'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
+			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
+			'replyTo' => array(self::BELONGS_TO, 'Contact', 'replyto_contact_id'),
+			'import' => array(self::HAS_ONE, 'ImportSource', 'site_id'),
+		);
+	}
 
-    /**
-     * @return array validation rules for model attributes.
-     */
-    public function rules() {
-        // NOTE: you should only define rules for those attributes that
-        // will receive user inputs.
-        return array(
-            array('name, short_name, remote_id, telephone', 'required'),
-            array('name', 'length', 'max' => 255),
-            array('institution_id, name, remote_id, short_name, fax, telephone, contact_id, replyto_contact_id, source_id, active', 'safe'),
-            // The following rule is used by search().
-            // Please remove those attributes that should not be searched.
-            array('id, name', 'safe', 'on' => 'search'),
-        );
-    }
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'id' => 'ID',
+			'remote_id' => 'Code',
+			'name' => 'Name',
+			'institution_id' => 'Institution',
+		);
+	}
 
-    /**
-     * @return array relational rules.
-     */
-    public function relations() {
-        // NOTE: you may need to adjust the relation name and the related
-        // class name for the relations automatically generated below.
-        return array(
-            //'theatres' => array(self::HAS_MANY, 'Theatre', 'site_id'),
-            //'wards' => array(self::HAS_MANY, 'Ward', 'site_id'),
-            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
-            'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
-            'replyTo' => array(self::BELONGS_TO, 'Contact', 'replyto_contact_id'),
-            'import' => array(self::HAS_ONE, 'ImportSource', 'site_id'),
-        );
-    }
+	/**
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+	 */
+	public function search()
+	{
+		// Warning: Please modify the following code to remove attributes that
+		// should not be searched.
 
-    /**
-     * @return array customized attribute labels (name=>label)
-     */
-    public function attributeLabels() {
-        return array(
-            'id' => 'ID',
-            'remote_id' => 'Code',
-            'name' => 'Name',
-            'institution_id' => 'Institution',
-        );
-    }
+		$criteria=new CDbCriteria;
 
-    /**
-     * Retrieves a list of models based on the current search/filter conditions.
-     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-     */
-    public function search() {
-        // Warning: Please modify the following code to remove attributes that
-        // should not be searched.
+		$criteria->compare('id',$this->id,true);
+		$criteria->compare('name',$this->name,true);
 
-        $criteria = new CDbCriteria;
+		return new CActiveDataProvider(get_class($this), array(
+			'criteria'=>$criteria,
+		));
+	}
 
-        $criteria->compare('id', $this->id, true);
-        $criteria->compare('name', $this->name, true);
+	public function getListForCurrentInstitution($field = 'short_name')
+	{
+		$result = array();
+		foreach (Institution::model()->getCurrent()->sites as $site) {
+			$result[$site->id] = $site->$field;
+		}
 
-        return new CActiveDataProvider(get_class($this), array(
-            'criteria' => $criteria,
-        ));
-    }
+		return $result;
+	}
 
-    public function getListForCurrentInstitution($field = 'short_name') {
-        $result = array();
-        foreach (Institution::model()->getCurrent()->sites as $site) {
-            $result[$site->id] = $site->$field;
-        }
+	public function getLongListForCurrentInstitution()
+	{
+		$institution = Institution::model()->getCurrent();
 
-        return $result;
-    }
+		$display_query = SettingMetadata::model()->findByAttributes(array('key' => "display_institution_name"));
+		$display_institution = $display_query->getSettingName();
 
-    public function getLongListForCurrentInstitution() {
-        $institution = Institution::model()->getCurrent();
+		$result = array();
+		foreach ($institution->sites as $site) {
+			$site_name = '';
 
-        $displayQuery = SettingMetadata::model()->findByAttributes(array('key' => "display_institution_name"));
-        $displayInstitution = $displayQuery->getSettingName();
+			if ($institution->short_name && $site->name != 'Unknown') {
+				if ($display_institution) {
+					$site_name = $institution->short_name.' at ';
+				}
+			}
+			$site_name .= $site->name;
 
-        $result = array();
-        foreach ($institution->sites as $site) {
-            $site_name = '';
+			if ($site->location) {
+				$site_name .= ', '.$site->location;
+			}
 
-            if ($institution->short_name && $site->name != 'Unknown') {
-                if ($displayInstitution == "On") {
-                    $site_name = $institution->short_name . ' at ';
-                }
-            }
-            $site_name .= $site->name;
+			$result[$site->id] = $site_name;
+		}
 
-            if ($site->location) {
-                $site_name .= ', ' . $site->location;
-            }
+		return $result;
+	}
 
-            $result[$site->id] = $site_name;
-        }
+	public function getDefaultSite()
+	{
+		$site = null;
+		if (Yii::app()->params['default_site_code']) {
+			$site = $this->findByAttributes(array('code' => Yii::app()->params['default_site_code']));
+		}
+		if (!$site) {
+			$site = $this->find();
+		}
+		return $site;
+	}
 
-        return $result;
-    }
+	public function getCorrespondenceName()
+	{
+		if ($this->institution->short_name) {
+			$display_query = SettingMetadata::model()->findByAttributes(array('key' => "display_institution_name"));
+			$display_institution = $display_query->getSettingName();
 
-    public function getDefaultSite() {
-        $site = null;
-        if (Yii::app()->params['default_site_code']) {
-            $site = $this->findByAttributes(array('code' => Yii::app()->params['default_site_code']));
-        }
-        if (!$site) {
-            $site = $this->find();
-        }
-        return $site;
-    }
+			if (!strstr($this->name,$this->institution->short_name)) {
+				if ($display_institution  == "Off") {
+					return $this->name;
+				}
+				else {
+					return $this->institution->short_name.' at '.$this->name;
+				}
+			}
+		}
 
-    public function getCorrespondenceName() {
-        $displayQuery = SettingMetadata::model()->findByAttributes(array('key' => "display_institution_name"));
-        $displayInstitution = $displayQuery->getSettingName();
+		// this avoids duplicating lines on the addresses
+		if ($this->institution->name == $this->name) {
+			return $this->name;
+		}
+		return array($this->institution->name,$this->name);
+	}
 
-        if ($this->institution->short_name) {
-            if (!strstr($this->name, $this->institution->short_name)) {
+	public function getShortname()
+	{
+		return $this->short_name ? $this->short_name : $this->name;
+	}
 
-                if ($displayInstitution == "Off") {
-                    return $this->name;
-                } else {
-                    return $this->institution->short_name . ' at ' . $this->name;
-                }
-            }
-        }
-
-        // this avoids duplicating lines on the addresses
-        if ($this->institution->name == $this->name) {
-            return $this->name;
-        }
-        return array($this->institution->name, $this->name);
-    }
-
-    public function getShortname() {
-        return $this->short_name ? $this->short_name : $this->name;
-    }
-
-    public function getReplyToAddress($params = array()) {
-        if ($contact = $this->replyTo) {
-            $params['contact'] = 'replyTo';
-            return $this->getLetterAddress($params);
-        }
-    }
-
+	public function getReplyToAddress($params = array())
+	{
+		if ($contact = $this->replyTo) {
+			$params['contact'] = 'replyTo';
+			return $this->getLetterAddress($params);
+		}
+	}
 }

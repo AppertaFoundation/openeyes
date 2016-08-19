@@ -1,0 +1,52 @@
+{
+  "NHSNumber": {
+    "type": "string"
+  },
+  "NHSNumberStatus": {
+    "type": "string"
+  },
+  "HospitalNumber": {
+    "type": "string"
+  },
+  "Title": {
+    "type": "string"
+  },
+  "FirstName": {
+    "type": "string",
+    "required": true
+  },
+  "Surname": {
+    "type": "string",
+    "required": true
+  },
+  "DateOfBirth": {
+    "type": "date",
+    "required": true
+  },
+  "Gender": {
+    "type": "choice",
+    "choices": ["M", "F"]
+  },
+  "AddressList": {
+    "type": "list",
+    "resource": "Address"
+  },
+  "TelephoneNumber": {
+    "type": "string"
+  },
+  "EthnicGroup": {
+    "type": "string"
+  },
+  "DateOfDeath": {
+    "type": "date"
+  },
+  "IsDeceased": {
+    "type": "boolean"
+  },
+  "PracticeCode": {
+    "type": "string"
+  },
+  "GpCode": {
+    "type": "string"
+  }
+}

@@ -202,9 +202,9 @@ class BaseEventTypeElement extends BaseElement
 	{
 		foreach ($this->copiedFields() as $attribute) {
 			if( isset($element->$attribute) ){
-				$this->$attribute = $element->$attribute;
-			}
+			$this->$attribute = $element->$attribute;
 		}
+	}
 	}
 
 	public function render($action)

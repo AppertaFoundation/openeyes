@@ -336,6 +336,25 @@ $(document).ready(function() {
 
 });
 
+$('#et_save_draft').click(function(){             
+    var rowCount = $('#prescription_items tr').length;
+    if(rowCount == 1){
+	new OpenEyes.UI.Dialog.Alert({content: "Items cannot be blank."
+	}).open();
+	return false;
+    }
+    
+}); 
+
+$('#et_save_print').click(function(){             
+    var rowCount = $('#prescription_items tr').length;
+    if(rowCount == 1){
+	new OpenEyes.UI.Dialog.Alert({content: "Items cannot be blank."
+	}).open();
+	return false;
+    }
+    
+});
 
 function hide_dialog()
 {

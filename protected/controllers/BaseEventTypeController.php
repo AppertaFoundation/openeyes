@@ -62,6 +62,10 @@ class BaseEventTypeController extends BaseModuleController
 	const ACTION_TYPE_REQUESTDELETE = 'RequestDelete';
 	const ACTION_TYPE_FORM = 'Form';	// AJAX actions that are used during create and update but don't actually modify data themselves
 
+        private $unique_code_elements = array(
+            array('event' => 'OphTrOperationnote', 'element' => array('Element_OphTrOperationnote_Cataract')),
+        );
+
 	static private $base_action_types = array(
 		'create' => self::ACTION_TYPE_CREATE,
 		'view' => self::ACTION_TYPE_VIEW,
@@ -489,9 +493,7 @@ class BaseEventTypeController extends BaseModuleController
 
 		if ($previous_id && $element->canCopy()) {
 			$previous_element = $element_class::model()->findByPk($previous_id);
-			if( $previous_element ){
-				$element->loadFromExisting($previous_element);
-			}
+			$element->loadFromExisting($previous_element);
 		}
 		if ($additional) {
 			foreach (array_keys($additional) as $add) {
@@ -1334,14 +1336,14 @@ class BaseEventTypeController extends BaseModuleController
 			: $element->getDefaultContainerView();
 
 		$use_container_view = ($element->useContainerView && $container_view);
-                
-                $view_data = array_merge(array(
-                            'element' => $element,
-                            'data' => $data,
-                            'form' => $form,
-                            'child' => $element->getElementType()->isChild(),
-                            'container_view' => $container_view
-                        ), $view_data);
+		$view_data = array_merge(array(
+			'element' => $element,
+			'data' => $data,
+			'form' => $form,
+			'child' => $element->getElementType()->isChild(),
+			'container_view' => $container_view
+		), $view_data);
+
 
 		// Render the view.
 		($use_container_view) && $this->beginContent($container_view, $view_data);
@@ -1683,6 +1685,7 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	protected function afterUpdateElements($event)
 	{
+            $this->updateUniqueCode($event);
 	}
 
 	/**
@@ -1691,7 +1694,54 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	protected function afterCreateElements($event)
 	{
+            $this->updateUniqueCode($event);
 	}
+
+    /**
+     * Update Unique code for the event associated the specific procedures
+     */
+    private function updateUniqueCode($event)
+    {
+        foreach($this->unique_code_elements as $unique) {
+            if ($event->eventType->class_name === $unique['event']) {
+                foreach ($event->getElements() as $element) {
+                    if (in_array(Helper::getNSShortname($element), $unique['element'])) {
+                        $event_unique_code = UniqueCodeMapping::model()->findAllByAttributes(array('event_id' => $event->id));
+                        if(!$event_unique_code) {
+                            $event_unique_code = UniqueCodeMapping::model();
+                            $event_unique_code->lock();
+                            $event_unique_code->unique_code_id = $this->getActiveUnusedUniqueCode();
+                            $event_unique_code->event_id = $event->id;
+                            $event_unique_code->isNewRecord = true;
+                            $event_unique_code->save();
+                            $event_unique_code->unlock();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Getting the unused active unique codes
+     * @return type
+     */
+    private function getActiveUnusedUniqueCode()
+    {
+        $event_unique_codes = UniqueCodeMapping::model()->findAll(array("select"=>"unique_code_id"));
+        $unique_codes_used = array();
+        foreach($event_unique_codes as $event_unique_code) {
+            $unique_codes_used[] = $event_unique_code->unique_code_id;
+        }
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('active = 1');
+        $criteria->addNotInCondition("id", $unique_codes_used);
+        $criteria->limit = 1;
+        $result = UniqueCodes::model()->findAll($criteria);
+        foreach($result as $record) {
+                return $record->id;
+        }
+    }
 
 	/**
 	 * set base js vars for use in the standard scripts for the controller

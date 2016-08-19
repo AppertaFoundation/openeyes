@@ -25,7 +25,7 @@
 	</div>
 	<div class="row data-row">
 		<div class="large-3 column">
-			<?php echo CHtml::dropDownList('user_id','',CHtml::listData($user_list,'id','fullName'), array('empty' => '- Select user -'))?>
+			<?php echo CHtml::dropDownList('user_id','',CHtml::listData($user_list,'id','fullNameAndUserName'), array('empty' => '- Select user -'))?>
 		</div>
 		<div class="large-4 column end">
 			<?php echo CHtml::htmlButton("Add user",array('class' => 'button small addUser'))?>

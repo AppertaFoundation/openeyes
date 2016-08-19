@@ -3,6 +3,10 @@
 
 // change the following paths if necessary
 $dirname = dirname(__FILE__);
+
+if (file_exists($dirname . '/../vendor/autoload.php'))
+	require_once($dirname . '/../vendor/autoload.php');
+
 $yiic= $dirname .'/yii/framework/yiic.php';
 $config= $dirname .'/config/console.php';
 

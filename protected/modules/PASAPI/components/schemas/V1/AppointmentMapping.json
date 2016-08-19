@@ -1,0 +1,10 @@
+{
+  "Key": {
+    "type": "string",
+    "required": true
+  },
+  "Value": {
+    "type": "string",
+    "required": true
+  }
+}

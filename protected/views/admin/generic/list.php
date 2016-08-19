@@ -59,8 +59,7 @@ if(!isset($uniqueid)){
 				<th><input type="checkbox" name="selectall" id="selectall"/></th>
 				<?php
 				foreach ($admin->getListFields() as $listItem):
-				if($listItem != "attribute_elements_id.id")
-				{?>
+				if($listItem !== "attribute_elements_id.id") :?>
 					<th>
 						<?php if ($admin->isSortableColumn($listItem)): ?>
 						<a href="/<?php echo $uniqueid ?>/list?<?php echo $admin->sortQuery($listItem, $displayOrder,
@@ -73,12 +72,10 @@ if(!isset($uniqueid)){
 					<?php endif;
 					?>
 					</th>
-				<?php
-				}
+				<?php else:?>
+					<th>Action</th>
+				<?php endif;
 				endforeach; ?>
-				<?php if($listItem == "attribute_elements.name") { ?>
-				<th>Action</th>
-				<?php } ?>
 			</tr>
 			</thead>
 			<tbody <?php if(in_array('display_order', $admin->getListFields())): echo 'class="sortable"'; endif; ?>>
@@ -90,7 +87,7 @@ if(!isset($uniqueid)){
 						<input type="checkbox" name="<?php echo $admin->getModelName(); ?>[id][]" value="<?php echo $row->id ?>"/>
 					</td>
 					<?php foreach ($admin->getListFields() as $listItem):
-					if($listItem != "attribute_elements_id.id") {
+					if($listItem !== "attribute_elements_id.id"):
 						?>
 						<td>
 							<?php
@@ -109,47 +106,50 @@ if(!isset($uniqueid)){
 							endif
 							?>
 						</td>
-					<?php }
+					<?php endif;
 
-						if($listItem == "attribute_elements_id.id")
-						{
-							$mapping_id =  $admin->attributeValue($row, $listItem);
-						}
-					endforeach; ?>
-					<?php if($listItem == "attribute_elements.name")
-					{?>
+					if($listItem === "attribute_elements_id.id"):
+						$mappingId =  $admin->attributeValue($row, $listItem);
+					endif;
+
+					if($listItem === "attribute_elements.name"):?>
 					<td>
-							<?php if(($mapping_id > 0)) {?>
-							<a onMouseOver="this.style.color='#AFEEEE'" onMouseOut="this.style.color='#00F'" href="../../OphCiExamination/admin/manageElementAttributes?attribute_element_id=<?php echo $mapping_id?>">Manage Options</a>
-							<?php } ?>
+						<?php if(($mappingId > 0)):?>
+							<a onMouseOver="this.style.color='#AFEEEE'" onMouseOut="this.style.color='#00F'" href="../../OphCiExamination/admin/manageElementAttributes?attribute_element_id=<?php echo $mappingId?>">Manage Options</a>
+						<?php endif; ?>
 					</td>
-					<?php } ?>
+					<?php
+					endif;
+					endforeach; ?>
+
 				</tr>
 			<?php } ?>
 			</tbody>
 			<tfoot class="pagination-container">
 			<tr>
 				<td colspan="<?php echo count($admin->getListFields()) + 1; ?>">
-					<?php echo EventAction::button(
-						'Add',
-						'add',
-						array(),
-						array(
-							'class' => 'small',
-							'data-uri' => '/' . $uniqueid . '/edit',
-							'formmethod' => 'get'
-						)
-					)->toHtml() ?>
-					<?php echo EventAction::button(
-						'Delete',
-						'delete',
-						array(),
-						array(
-							'class' => 'small',
-							'data-uri' => '/' . $uniqueid . '/delete',
-							'data-object' => $admin->getModelName()
-						)
-					)->toHtml() ?>
+                                        <?php if(isset($buttons) && ($buttons == true)) { ?>
+                                            <?php echo EventAction::button(
+                                                    'Add',
+                                                    'add',
+                                                    array(),
+                                                    array(
+                                                            'class' => 'small',
+                                                            'data-uri' => '/' . $uniqueid . '/edit',
+                                                            'formmethod' => 'get'
+                                                    )
+                                            )->toHtml() ?>
+                                            <?php echo EventAction::button(
+                                                    'Delete',
+                                                    'delete',
+                                                    array(),
+                                                    array(
+                                                            'class' => 'small',
+                                                            'data-uri' => '/' . $uniqueid . '/delete',
+                                                            'data-object' => $admin->getModelName()
+                                                    )
+                                            )->toHtml() ?>
+                                        <?php } ?>
 					<?php echo EventAction::button(
 						'Sort',
 						'sort',

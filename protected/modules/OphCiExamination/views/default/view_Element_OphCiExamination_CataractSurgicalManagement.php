@@ -29,7 +29,7 @@
 						<?php echo $element->eye ? $element->eye->name : 'Not specified'?>
 					</td>
 				</tr>
-                                 <?php if($active_check === 'on') { ?>
+                                 <?php if (isset($active_check) && ($active_check === 'on')) { ?>
                                         <tr>
                                                 <td scope="row">
                                                         <?php echo $element->getAttributeLabel('city_road')?>:

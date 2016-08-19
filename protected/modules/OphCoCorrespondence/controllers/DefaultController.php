@@ -145,7 +145,7 @@ class DefaultController extends BaseEventTypeController
 		if ($macro->recipient && $macro->recipient->name == 'Patient') {
 			$data['sel_address_target'] = 'Patient'.$patient->id;
 			$contact = $patient;
-			if ($patient->date_of_death) {
+			if ($patient->isDeceased()) {
 				echo json_encode(array('error'=>'DECEASED'));
 				return;
 			}
@@ -187,7 +187,7 @@ class DefaultController extends BaseEventTypeController
 			'targets' => array()
 		);
 		if ($macro->cc_patient) {
-			if ($patient->date_of_death) {
+			if ($patient->isDeceased()) {
 				$data['alert'] = "Warning: the patient cannot be cc'd because they are deceased.";
 			} elseif ($patient->contact->address) {
 				$cc['text'][] = $patient->getLetterAddress(array(

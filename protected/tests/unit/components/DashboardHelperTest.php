@@ -8,7 +8,7 @@ class DashboardHelperTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->_orig_moduleAPI = \Yii::app()->moduleAPI;
+        $this->_orig_moduleAPI = Yii::app()->moduleAPI;
 
         $this->moduleAPI = $this->getMockBuilder('ModuleAPI')->disableOriginalConstructor()->getMock();
         \Yii::app()->setComponent('moduleAPI', $this->moduleAPI);
@@ -28,7 +28,7 @@ class DashboardHelperTest extends PHPUnit_Framework_TestCase
     {
         $user =  $this->getMock('OEWebUser', array('checkAccess'));
         $test = new DashboardHelper(array('restricted' => 1), $user);
-        $this->setExpectedException('Exception', "Invalid dashboard configuration, module or static content definition required");
+        $this->setExpectedException('Exception', "Invalid dashboard configuration: module, static or object definition required");
 
         $test->render();
     }
@@ -103,5 +103,33 @@ class DashboardHelperTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('first render', $test->render());
         $test->sortable = true;
         $this->assertEquals('first rendersecond render', $test->render());
+    }
+
+    public function test_getItemPosition_with_no_ordered_items()
+    {
+        $items = array(
+            array('title' => 'test1', 'content' => 'test1'),
+            array('title' => 'test2', 'content' => 'test2'),
+        );
+
+        $helper = new DashboardHelper($items);
+
+        $this->assertEquals(1,$helper->getItemPosition($items[0]));
+        $this->assertEquals(2,$helper->getItemPosition($items[1]));
+    }
+
+    public function test_getItemPosition_with_an_ordered_items()
+    {
+        $items = array(
+            array('title' => 'test1', 'content' => 'test1'),
+            array('title' => 'test2', 'content' => 'test2', 'position' => 3),
+            array('title' => 'test3', 'content' => 'test3'),
+        );
+
+        $helper = new DashboardHelper($items);
+
+        $this->assertEquals(4,$helper->getItemPosition($items[0]));
+        $this->assertEquals(3,$helper->getItemPosition($items[1]));
+        $this->assertEquals(5,$helper->getItemPosition($items[2]));
     }
 }

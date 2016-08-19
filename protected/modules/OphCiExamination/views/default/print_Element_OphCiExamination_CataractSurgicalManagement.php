@@ -20,7 +20,7 @@
 <div class="element-data row">
 	<ul>
 		<li><?php echo $element->eye ? $element->eye->name : 'Eye no specified'?></li>
-                <?php if($active_check === 'on') { ?>
+                <?php if (isset($active_check) && ($active_check === 'on')) { ?>
 		<?php if ($element->city_road) {
     ?>
 			<li>At City Road</li>

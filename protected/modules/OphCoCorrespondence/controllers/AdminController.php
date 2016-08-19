@@ -121,11 +121,12 @@ class AdminController extends \ModuleAdminController
 	public function actionAddMacro()
 	{
 		$macro = new LetterMacro;
-
+                
+                
 		$errors = array();
 
 		if (!empty($_POST)) {
-			$macro->attributes = $_POST['LetterMacro'];
+		    $macro->attributes = $_POST['LetterMacro'];
 
 			if (!$macro->validate()) {
 				$errors = $macro->errors;

@@ -57,7 +57,7 @@
 			&.stuck {
 				@include box-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 				position: fixed;
-                top: 74px;
+                top: 54px;
 				z-index: 199;
 			}
 		}
@@ -76,6 +76,10 @@
 		padding: 9px 0 9px 50px;
 		@media print {
 			padding-left: 0;
+		}
+		#automated-event {
+			font-size: rem-calc(12px);
+			color: #888888;
 		}
 	}
 	.metadata {

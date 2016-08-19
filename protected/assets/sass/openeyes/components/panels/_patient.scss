@@ -120,6 +120,19 @@
 				}
 			}
 		}
+        .clinical-summary-anchor  {
+          bottom: 12px;
+          font-size: rem-calc(11px);
+          padding-right: 8px;
+          position: absolute;
+          right: 63px;
+          @media screen {
+            .stuck & {
+              display: none;
+            }
+          }
+        }
+
 		.hospital-number {
 			margin-bottom: 3px;
 			@media screen {
@@ -154,17 +167,21 @@
 }
 
 .nhs-number {
-        @include border-radius(3px);
-        background: {
-                color: #107ebd;
-                image: image-url("_elements/icons/nhs_tiny.png");
-                position: center left;
-                repeat: no-repeat;
-        };
-        color: white;
-        display: inline-block;
-        padding: 2px 3px 1px 33px;
-        @media print {
-                padding-left: 0;
-        }
+  @include border-radius(3px);
+  background: {
+    color: #107ebd;
+    image: image-url("_elements/icons/nhs_tiny.png");
+    position: center left;
+    repeat: no-repeat;
+  }
+;
+  color: white;
+  display: inline-block;
+  padding: 2px 3px 1px 33px;
+  @media print {
+    padding-left: 0;
+  }
+  .messages {
+    display: none;
+  }
 }

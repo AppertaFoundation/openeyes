@@ -19,11 +19,26 @@ class DefaultController extends BaseEventTypeController
 	 * @param Event $unlinkedEvent
 	 * @param OphInBiometry_Imported_Events $importedEvent
      */
-	private function updateImportedEvent(Event $unlinkedEvent, OphInBiometry_Imported_Events $importedEvent){
-		$unlinkedEvent->episode_id = $this->episode->id;
-		$importedEvent->is_linked = 1;
-		$unlinkedEvent->save();
-		$importedEvent->save();
+	private function updateImportedEvent(Event $unlinkedEvent, OphInBiometry_Imported_Events $importedEvent)
+        {
+                $transaction = Yii::app()->db->beginTransaction();
+                try 
+                {
+                    $unlinkedEvent->episode_id = $this->episode->id;
+                    
+                    if($unlinkedEvent->save()){
+                        $importedEvent->is_linked = 1;
+                        $importedEvent->save();
+                    }
+                    
+                    $transaction->commit();
+                }
+                catch (Exception $e)
+                {
+                    $transaction->rollBack();
+                    Yii::app()->user->setFlash('warning.event_error', "{$e->getMessage()}");
+                    Yii::log($e->getMessage(), CLogger::LEVEL_ERROR);
+                }
 	}
 
 	/**

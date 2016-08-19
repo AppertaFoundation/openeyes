@@ -37,6 +37,7 @@ $can_process = $queueset && $qs_svc->isQueueSetPermissionedForUser($queueset, Yi
 	<div class="search-filters theatre-diaries">
 		<?php $this->beginWidget('CActiveForm', array(
 						'id'=>'ticket-filter',
+						'action' => Yii::app()->createUrl('/PatientTicketing/default', array('cat_id' => $cat_id)),
 						'htmlOptions'=>array(
 								'class' => 'row'
 						),

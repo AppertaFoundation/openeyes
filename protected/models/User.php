@@ -338,9 +338,19 @@ class User extends BaseActiveRecordVersioned
 		return implode(' ', array($this->first_name, $this->last_name));
 	}
 
+	public function getFullNameAndUserName()
+	{
+		return implode(' ', array($this->first_name, $this->last_name)) . (" ({$this->username})");
+	}
+
 	public function getReversedFullName()
 	{
 		return implode(' ', array($this->last_name, $this->first_name));
+	}
+
+	public function getReversedFullNameAndUserName()
+	{
+		return implode(' ', array($this->last_name, $this->first_name)) . (" ({$this->username})");
 	}
 
 	public function getFullNameAndTitle()
@@ -552,5 +562,19 @@ class User extends BaseActiveRecordVersioned
 			$crit->params['user_id'] = $this->id;
 		}
 		return Firm::model()->findAll($crit);
+	}
+
+	/**
+	 * Get the portal user if it exists
+	 *
+	 * @return CActiveRecord
+	 */
+	public function portalUser()
+	{
+		$username = (array_key_exists('portal_user', Yii::app()->params)) ? Yii::app()->params['portal_user'] : 'portal_user';
+		$crit = new CDbCriteria;
+		$crit->compare('username', $username);
+
+		return $this->find($crit);
 	}
 }

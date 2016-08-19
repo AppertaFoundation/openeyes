@@ -210,7 +210,9 @@ class AdminController extends BaseAdminController
 	public function actionDrugs()
 	{
 		$criteria = new CDbCriteria;
-		if (isset($_REQUEST['search'])) $criteria->compare('name', $_REQUEST['search'], true);
+		if (isset($_REQUEST['search'])) {
+			$criteria->compare('name', $_REQUEST['search'], true);
+		}
 		$pagination = $this->initPagination(Drug::model(), $criteria);
 		$this->render('/admin/drugs',array(
 				'drugs' => Drug::model()->findAll($criteria),
@@ -344,17 +346,19 @@ class AdminController extends BaseAdminController
 		Audit::add('admin-User','list');
 
 		$criteria = new CDbCriteria;
-		if (!empty($_POST['search'])) {
-			$criteria->compare("LOWER(username)", strtolower($_POST['search']),true, 'OR');
-			$criteria->compare("LOWER(first_name)",strtolower($_POST['search']),true, 'OR');
-			$criteria->compare("LOWER(last_name)",strtolower($_POST['search']),true, 'OR');
+        if (!empty($_GET['search'])) {
+            $criteria->compare("LOWER(username)", strtolower($_GET['search']), true, 'OR');
+            $criteria->compare("LOWER(first_name)", strtolower($_GET['search']), true, 'OR');
+            $criteria->compare("LOWER(last_name)", strtolower($_GET['search']), true, 'OR');
+            $criteria->compare("LOWER(id)", $_GET['search'], false, 'OR');
 		}
 
 		$pagination = $this->initPagination(User::model(), $criteria);
-
+        $search = !empty($_GET['search']) ? $_GET['search'] : '';
 		$this->render('/admin/users',array(
 			'users' => User::model()->findAll($criteria),
 			'pagination' => $pagination,
+            'search' => $search,
 		));
 	}
 
@@ -1708,9 +1712,66 @@ class AdminController extends BaseAdminController
 		$this->redirect(array('/admin/episodeSummaries', 'subspecialty_id' => $subspecialty_id));
 	}
 
+    public function actionLogo() {
+        $logo = new Logo;
+        if (isset($_FILES['Logo'])) {
+            $savePath = Yii::app()->basePath . '/runtime/';
+            $fileFormats = array('jpg', 'jpeg', 'png', 'gif');
+            $filter = array_filter($_FILES['Logo']['name']);
 
-	public function actionSettings()
-	{
+            foreach ($filter as $logoKey => $logoName) {
+                $uploadLogo = CUploadedFile::getInstance($logo, $logoKey);
+                $fileInfo = pathinfo($logoName);
+                foreach (glob($savePath . $logoKey) as $existingLogo) {
+                    unlink($savePath . $existingLogo);
+                }
+                if (in_array($fileInfo['extension'], $fileFormats)) {
+                if ($logoKey == "header_logo") {
+                        $logoTemp = $_FILES['Logo']['tmp_name']['header_logo'];
+                        list($width, $height) = getimagesize($logoTemp);
+                        $condition = $height . "==100 && " . $width . "==500";
+                }
+                if ($logoKey == "secondary_logo") {
+                        $logoTemp = $_FILES['Logo']['tmp_name']['secondary_logo'];
+                        list($width, $height) = getimagesize($logoTemp);
+                        $condition = $height . "==100 && " . $width . "==120";
+                    }
+
+                    if ($condition) {
+
+                        $uploadLogo->saveAs($savePath . $logoKey . '.' . $fileInfo['extension']);
+                        Yii::app()->user->setFlash('success', "Logo Saved Successfully");
+                    } else {
+                        Yii::app()->user->setFlash('error', ' logo size must be defined dimension');
+                    }
+                } else {
+                    Yii::app()->user->setFlash('error', 'Upload valid image formats (jpg,jpeg,png,gif)');
+                }
+            }
+
+
+            $this->redirect(array('/admin/logo'));
+        }
+        $this->render('/admin/logo', array('model' => $logo));
+    }
+
+    public function actionDeleteLogo() {
+        $deleteHeaderLogo = @$_GET['header_logo'];
+        $deleteSecondaryLogo = @$_GET['secondary_logo'];
+
+
+        if (!empty($deleteHeaderLogo)) {
+            @unlink(Yii::app()->basePath . '/runtime/' . $deleteHeaderLogo);
+            Yii::app()->user->setFlash('success', "Logo Deleted Successfully");
+            $this->redirect(array('/admin/logo'));
+        } elseif (!empty($deleteSecondaryLogo)) {
+            @unlink(Yii::app()->basePath . '/runtime/' . $deleteSecondaryLogo);
+            Yii::app()->user->setFlash('success', "Logo Deleted Successfully");
+            $this->redirect(array('/admin/logo'));
+        }
+    }
+
+    public function actionSettings() {
 		$this->render('/admin/settings');
 	}
 

@@ -129,10 +129,8 @@
 .theatre-bookings .specialists {
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
   opacity: 0.8;
-  -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
-  -ms-border-radius: 5px;
-  -o-border-radius: 5px;
+  -webkit-border-radius: 5px;
   border-radius: 5px;
   background: white;
   border: 2px solid #cccccc;
@@ -205,10 +203,8 @@ table.transport .status.Green {
 
 /* line 20, ../sass/components/panels/_session-options.scss */
 .panel.session-options {
-  -webkit-border-radius: 0;
   -moz-border-radius: 0;
-  -ms-border-radius: 0;
-  -o-border-radius: 0;
+  -webkit-border-radius: 0;
   border-radius: 0;
   background: #545065;
   border: 2px solid #602aba;
@@ -267,10 +263,8 @@ table.transport .status.Green {
 }
 /* line 35, ../sass/components/tabs/_theatre-booking-actions-tabs.scss */
 .tabs.theatre-booking-actions a {
-  -webkit-border-radius: 3px 3px 0 0;
   -moz-border-radius: 3px 3px 0 0;
-  -ms-border-radius: 3px 3px 0 0;
-  -o-border-radius: 3px 3px 0 0;
+  -webkit-border-radius: 3px;
   border-radius: 3px 3px 0 0;
   background: #dadada;
   padding: 5px 10px 4px 10px;
@@ -287,11 +281,11 @@ table.transport .status.Green {
 }
 /* line 19, ../sass/components/_event.scss */
 .event .event-title {
-  background: url('../img/medium.png?1393408384') no-repeat left center;
+  background: url('../img/medium.png?1460033158') no-repeat left center;
 }
 /* line 22, ../sass/components/_event.scss */
 .event .event-content {
-  background-image: url('../img/watermark.png?1393408384');
+  background-image: url('../img/watermark.png?1460033158');
 }
 /* line 26, ../sass/components/_event.scss */
 .event.schedule .event-title {
@@ -446,7 +440,7 @@ table.transport .status.Green {
 }
 /* line 134, ../sass/components/_schedule-booking.scss */
 #operation table tbody td.outside_rtt {
-  background-image: url('../img/bookingIcons/RTT-warning.png?1393408384');
+  background-image: url('../img/bookingIcons/RTT-warning.png?1460033158');
   background-position: bottom right;
   background-repeat: no-repeat;
 }
@@ -513,7 +507,7 @@ table.transport .status.Green {
 }
 /* line 192, ../sass/components/_schedule-booking.scss */
 #operation #key #outside_rtt .color_box {
-  background: transparent url('../img/bookingIcons/RTT-warning_tiny.png?1393408384') top left no-repeat;
+  background: transparent url('../img/bookingIcons/RTT-warning_tiny.png?1460033158') top left no-repeat;
 }
 /* line 195, ../sass/components/_schedule-booking.scss */
 #operation #key #patient-unavailable .color_box {

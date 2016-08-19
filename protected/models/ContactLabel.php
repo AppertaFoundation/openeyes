@@ -59,7 +59,8 @@ class ContactLabel extends BaseActiveRecordVersioned
 			array('name', 'length', 'max'=>40),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name', 'safe', 'on'=>'search'),
+			array('id, name, type', 'safe', 'on'=>'search'),
+			array('type', 'safe')
 		);
 	}
 
@@ -123,7 +124,6 @@ class ContactLabel extends BaseActiveRecordVersioned
 	public static function getList()
 	{
 		$list = array();
-
 		if (!empty(Yii::app()->params['contact_labels'])) {
 			foreach (Yii::app()->params['contact_labels'] as $label) {
 				if (preg_match('/{SPECIALTY}/',$label)) {
@@ -136,7 +136,7 @@ class ContactLabel extends BaseActiveRecordVersioned
 				}
 			}
 		}
-
 		return $list;
 	}
+	
 }

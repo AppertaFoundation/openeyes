@@ -31,7 +31,7 @@
 </div>
 <div class="box admin">
 	<h2><?php echo $title ?></h2>
-	<form id="admin_email_recipients">
+	<form id="admin_workflows">
 		<table class="grid">
 			<thead>
 				<tr>
@@ -55,7 +55,7 @@
 				<tr>
 					<td colspan="5">
 						<?php echo EventAction::button('Add', 'add', null, array('class' => 'small', 'data-uri' => '/OphCiExamination/admin/addWorkflow'))->toHtml()?>
-						<?php echo EventAction::button('Delete', 'delete', null, array('class' => 'small', 'data-uri' => '/OphCiExamination/admin/deleteWorkflows', 'data-object' => 'workflows'))->toHtml()?>
+						<?php echo EventAction::button('Delete', 'delete', null, array('class' => 'small', 'data-uri' => '/OphCiExamination/admin/deleteWorkflows', 'data-object' => 'email_recipients'))->toHtml()?>
 					</td>
 				</tr>
 			</tfoot>

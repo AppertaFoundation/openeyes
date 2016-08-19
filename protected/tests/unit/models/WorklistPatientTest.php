@@ -1,0 +1,131 @@
+<?php
+
+/**
+ * OpenEyes
+ *
+ * (C) OpenEyes Foundation, 2016
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ */
+class WorklistPatientTest extends PHPUnit_Framework_TestCase
+{
+
+    public function test_afterValidate_for_scheduled_worklist()
+    {
+        $wl = ComponentStubGenerator::generate('Worklist', array('scheduled' => true));
+
+        $wp = new WorklistPatient();
+        $wp->worklist = $wl;
+
+        $wp->afterValidate();
+
+        $this->assertTrue($wp->hasErrors());
+        $this->assertArrayHasKey('when', $wp->getErrors());
+    }
+
+    public function test_afterValidate_for_unscheduled_worklist()
+    {
+        $wl = ComponentStubGenerator::generate('Worklist', array('scheduled' => false));
+
+        $wp = new WorklistPatient();
+        $wp->worklist = $wl;
+        $wp->when = (new DateTime())->format('Y-m-d H:i:s');
+
+        $wp->afterValidate();
+
+        $this->assertTrue($wp->hasErrors());
+        $this->assertArrayHasKey('when', $wp->getErrors());
+    }
+
+    public function getWorklistAttributeValueProvider()
+    {
+        return array(
+            array(
+                array(
+                    array('worklist_attribute_id' => 3, 'attribute_value' => 'foo'),
+                    array('worklist_attribute_id' => 5, 'attribute_value' => 'bar'),
+                    array('worklist_attribute_id' => 8, 'attribute_value' => 'foo')
+                ),
+                array('id' => 5),
+                'bar'
+            ),
+            array(
+                array(
+                    array('worklist_attribute_id' => 3, 'attribute_value' => 'foo'),
+                    array('worklist_attribute_id' => 8, 'attribute_value' => 'foo')
+                ),
+                array('id' => 5),
+                null
+            ),
+            array(
+                array(
+                ),
+                array('id' => 5),
+                null
+            )
+        );
+    }
+
+    /**
+     * @dataProvider getWorklistAttributeValueProvider
+     * @param $wp_attrs
+     * @param $attr
+     * @param $expected
+     */
+    public function test_getWorklistAttributeValue($wp_attrs, $attr, $expected)
+    {
+
+        $worklist_attribute = ComponentStubGenerator::generate('WorklistAttribute', $attr);
+        $worklist_patient_attrs = array();
+        foreach ($wp_attrs as $attr) {
+            $worklist_patient_attrs[] = ComponentStubGenerator::generate('WorklistPatientAttribute', $attr);
+        }
+        $worklist_patient = new WorklistPatient();
+        $worklist_patient->worklist_attributes = $worklist_patient_attrs;
+
+        $this->assertEquals($expected, $worklist_patient->getWorklistAttributeValue($worklist_attribute));
+
+    }
+
+    public function getCurrentAttributesByIdProvider()
+    {
+        return array(
+            array(array()),
+            array(
+                array(
+                    array('worklist_attribute_id' => 5, 'attribute_value' => 'foo'),
+                    array('worklist_attribute_id' => 8, 'attribute_value' => 'foo')
+                )
+            )
+        );
+    }
+
+    /**
+     * @dataProvider getCurrentAttributesByIdProvider
+     *
+     * @param $wp_attrs
+     */
+    public function test_getCurrentAttributesById($wp_attrs)
+    {
+        $worklist_patient_attrs = array();
+        $expected = array();
+
+        foreach ($wp_attrs as $attr) {
+            $wpa = ComponentStubGenerator::generate('WorklistPatientAttribute', $attr);
+            $expected[$attr['worklist_attribute_id']] = $wpa;
+            $worklist_patient_attrs[] = $wpa;
+        }
+        $worklist_patient = new WorklistPatient();
+        $worklist_patient->worklist_attributes = $worklist_patient_attrs;
+
+        $this->assertEquals($expected, $worklist_patient->getCurrentAttributesById());
+    }
+}

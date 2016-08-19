@@ -516,6 +516,35 @@ class AdminController extends \ModuleAdminController
         echo "1";
     }
 
+	public function actionDeleteWorkflows()
+	{
+		if (!empty($_POST['workflows'])) {
+			$workflow_criteria = new CDbCriteria;
+			$workflow_criteria->addInCondition('workflow_id',$_POST['workflows']);
+			$step_ids = array();
+			foreach(models\OphCiExamination_ElementSet::model()->findAll($workflow_criteria) as $step) {
+				$step_ids[] = $step->id;
+			}
+			if (!empty($step_ids)) {
+				$setitem_criteria = new CDbCriteria;
+				$setitem_criteria->addInCondition('set_id',$step_ids);
+
+				models\OphCiExamination_ElementSetItem::model()->deleteAll($setitem_criteria);
+				$event_stepitem_criteria = new CDbCriteria;
+				$event_stepitem_criteria->addInCondition('step_id',$step_ids);
+				models\OphCiExamination_Event_ElementSet_Assignment::model()->deleteAll($event_stepitem_criteria);
+			}
+			models\OphCiExamination_ElementSet::model()->deleteAll($workflow_criteria);
+			models\OphCiExamination_Workflow_Rule::model()->deleteAll($workflow_criteria);
+			$workflow = new CDbCriteria;
+			$workflow->addInCondition('id',$_POST['workflows']);
+			if(!models\OphCiExamination_Workflow::model()->deleteAll($workflow)) {
+				 throw new \Exception("Unable to remove Workflow : ".print_r(models\OphCiExamination_Workflow::model()->getErrors(), true));
+			}
+			echo 1;
+		}
+	}
+
     public function actionSaveWorkflowStepName()
     {
         if (!$step = models\OphCiExamination_ElementSet::model()->find('workflow_id=? and id=?', array(@$_POST['workflow_id'], @$_POST['element_set_id']))) {

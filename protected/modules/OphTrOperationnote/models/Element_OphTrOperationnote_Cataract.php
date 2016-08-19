@@ -83,7 +83,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
 			array('length', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^[0-9](\.[0-9])?$/', 'message' => 'Length must be 0 - 9.9 in increments of 0.1'),
 			array('meridian', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^[0-9]{1,3}(\.[0-9])?$/', 'min' => 000, 'max' => 360, 'message' => 'Meridian must be 000.5 - 360.0 degrees'),
 			array('predicted_refraction', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', 'min' => -30, 'max' => 30, 'message' => 'Predicted refraction must be between -30.00 and 30.00'),
-			array('iol_power', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', 'min' => -10, 'max' => 40, 'message' => 'IOL power must be between -10 and 40'),
+            array('iol_power', 'validateIolpower'),
 			array('complications', 'validateComplications'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
@@ -91,6 +91,20 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
 		);
 	}
 
+     public function validateIolPower() {
+
+        $value = $this->iol_power;
+        if (!preg_match('/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', $value)) {
+                $message = $this->addError('iol_power', 'IOL power must be a number with an optional two decimal places between -10.00 and 40.00');
+        }
+        elseif ($value < -10 || $value > 40) {
+            $message = $this->addError('iol_power', 'IOL Power must be between -10 to 40');
+            
+        }
+                
+        
+    }
+   
     /**
      * @return array relational rules.
      */
@@ -273,13 +287,15 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
 
             if (!isset($this->iol_power)) {
                 $this->addError('iol_power', 'IOL power cannot be blank');
-            } elseif (!is_numeric($this->iol_power)) {
+            }
+            /* elseif (!is_numeric($this->iol_power) || strlen(substr(strrchr($this->iol_power, "."), 1)) > 2 || ((-999.99 > $this->iol_power) || ($this->iol_power > 999.99))) {
                 $this->addError('iol_power', 'IOL power must be a number with an optional two decimal places between -999.99 and 999.99');
-            } elseif (strlen(substr(strrchr($this->iol_power, "."), 1)) > 2) {
+              }
+              elseif (strlen(substr(strrchr($this->iol_power, "."), 1)) > 2) {
                 $this->addError('iol_power', 'IOL power must be a number with an optional two decimal places between -999.99 and 999.99');
             } elseif ((-999.99 > $this->iol_power) || ($this->iol_power > 999.99)) {
                 $this->addError('iol_power', 'IOL power must be a number with an optional two decimal places between -999.99 and 999.99');
-            }
+              } */
         }
 
         return parent::beforeValidate();

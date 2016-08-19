@@ -910,6 +910,7 @@ EOH;
         $file_handler = fopen($file, 'w');
         
         $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_PROXY, Yii::app()->params['curl_proxy']);
         curl_setopt($curl, CURLOPT_FILE, $file_handler);
         curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
         curl_exec($curl);

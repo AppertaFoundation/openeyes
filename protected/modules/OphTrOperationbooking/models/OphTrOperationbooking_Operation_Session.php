@@ -79,11 +79,11 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('sequence_id, date, start_time, end_time, theatre_id', 'required'),
+			array('date, start_time, end_time, theatre_id', 'required'),
 			array('sequence_id, theatre_id', 'length', 'max' => 10),
 			array('unavailablereason_id', 'validateRequiredIfAttrMatches', 'match_attr' => 'available', 'match_val' => false, 'message' => 'unavailable reason required if session unavailable.'),
 			array('max_procedures', 'numerical', 'integerOnly' => true, 'min' => 1),
-			array('comments, available, unavailablereason_id, consultant, paediatric, anaesthetist, general_anaesthetic, firm_id, theatre_id, start_time, end_time, deleted, default_admission_time', 'safe'),
+			array('sequence_id, comments, available, unavailablereason_id, consultant, paediatric, anaesthetist, general_anaesthetic, firm_id, theatre_id, start_time, end_time, deleted, default_admission_time', 'safe'),
 			array('date', 'CDateValidator', 'format' => array('yyyy-mm-dd', 'd MMM yyyy')),
 			array('start_time, end_time, default_admission_time', 'CDateValidator', 'format' => array('h:m:s', 'h:m')),
 			// The following rule is used by search().
@@ -408,6 +408,47 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
 						$this->addError('general_anaesthetic','One or more active bookings require general anaesthetic');
 				}
 			}
+		}
+		$criteria = new CDbCriteria;
+
+		$criteria->addCondition('theatre_id = :theatre_id');
+		$criteria->params[':theatre_id'] = $this->theatre_id;
+
+        if ($this->id) {
+            $criteria->addCondition('id <> :session_id');
+            $criteria->params[':session_id'] = $this->id;
+        }
+		$criteria->addCondition('date = :date');
+        $criteria->params[':date'] = $this->date;
+		$conflicts = array();
+		foreach ($this->findAll($criteria) as $session) {
+			$start = strtotime("$this->date $this->start_time");
+			$end = strtotime("$this->date $this->end_time");
+
+			$s_start = strtotime("$session->date $session->start_time");
+			$s_end = strtotime("$session->date $session->end_time");
+			if ($start < $s_end && $start >= $s_start) {
+				if (!isset($conflicts[$session->id]['start_time'])) {
+					$this->addError('start_time',"This start time conflicts with session $session->id");
+					$conflicts[$session->id]['start_time'] = 1;
+				}
+			}
+
+			if ($end > $s_start && $end <= $s_end) {
+				if (!isset($conflicts[$session->id]['end_time'])) {
+					$this->addError('end_time',"This end time conflicts with session $session->id");
+					$conflicts[$session->id]['end_time'] = 1;
+				}
+			}
+
+            if($start < $s_start && $end > $s_end) {
+                if (!isset($conflicts[$session->id]['end_time']) || !isset($conflicts[$session->id]['start_time'])) {
+                    $this->addError('start_time',"This start time conflicts with session $session->id");
+					$conflicts[$session->id]['start_time'] = 1;
+					$this->addError('end_time',"This end time conflicts with session $session->id");
+					$conflicts[$session->id]['end_time'] = 1;
+				}
+            }
 		}
 
 		return parent::beforeValidate();

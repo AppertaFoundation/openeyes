@@ -36,9 +36,9 @@
 	<?php echo $form->datePicker($sequence,'start_date',array(),array('null'=>true),array('field'=>2))?>
 	<?php echo $form->datePicker($sequence,'end_date',array(),array('null'=>true),array('field'=>2))?>
 	<?php echo $form->dropDownList($sequence,'weekday',array(1=>'Monday',2=>'Tuesday',3=>'Wednesday',4=>'Thursday',5=>'Friday',6=>'Saturday',7=>'Sunday'),array('empty'=>'- Weekday -'))?>
-	<?php echo $form->textField($sequence,'start_time',array(),array(),array('field'=>2))?>
-	<?php echo $form->textField($sequence,'end_time',array(),array(),array('field'=>2))?>
-	<?php echo $form->textField($sequence,'default_admission_time',array(),array(),array('field'=>2))?>
+	<?php echo $form->textField($sequence,'start_time',array('class' => 'time-picker'),array(),array('field'=>2))?>
+	<?php echo $form->textField($sequence,'end_time',array('class' => 'time-picker'),array(),array('field'=>2))?>
+	<?php echo $form->textField($sequence,'default_admission_time',array('class' => 'time-picker'),array(),array('field'=>2))?>
 	<?php echo $form->dropDownList($sequence,'interval_id','OphTrOperationbooking_Operation_Sequence_Interval')?>
 	<?php echo $form->radioBoolean($sequence,'consultant')?>
 	<?php echo $form->radioBoolean($sequence,'paediatric')?>
@@ -207,4 +207,5 @@
 		e.preventDefault();
 		$('#confirm_delete_sequence').dialog('close');
 	});
+	$('.time-picker').timepicker({ 'timeFormat': 'H:i:s', 'step' : 5 });
 </script>

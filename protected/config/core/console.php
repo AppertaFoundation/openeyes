@@ -39,4 +39,27 @@ if (preg_match('/\/protected\/modules\/deploy\/yiic$/',@$_SERVER['SCRIPT_FILENAM
 	$config['commandMap']['migrate']['migrationTable'] = 'tbl_migration_deploy';
 }
 
+//Module commands
+$modulesDir = __DIR__.'/../../modules/';
+$modules = opendir($modulesDir);
+if($modules){
+	while (false !== ($filename = readdir($modules))) {
+		if(!in_array($filename, array('.', '..'), true) && is_dir($modulesDir.$filename)){
+			$module = opendir($modulesDir.$filename);
+			while (false !== ($moduleSub = readdir($module))) {
+				if($moduleSub === 'commands' && is_dir($modulesDir.$filename.'/'.$moduleSub)){
+					$commands  = scandir($modulesDir.$filename.'/'.$moduleSub);
+					foreach ($commands as $command) {
+						if(strpos($command,'Command.php')){
+							$commandName = substr($command, 0, strpos($command, 'Command.php'));
+							$config['commandMap'][strtolower($commandName)] = array('class' => 'application.modules.'.$filename.'.commands.'.$commandName.'Command',);
+						}
+					}
+				}
+			}
+		}
+
+	}
+}
+
 return $config;

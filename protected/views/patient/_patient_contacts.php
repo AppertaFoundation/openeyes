@@ -35,9 +35,11 @@
 				</tr>
 			</thead>
 			<tbody id="patient_contacts">
-				<?php foreach ($this->patient->contactAssignments as $pca) {
+                <?php
+                foreach ($this->patient->contactAssignments as $pca) {
 					$this->renderPartial('_patient_contact_row',array('pca'=>$pca));
-				}?>
+                }
+                ?>
 			</tbody>
 		</table>
 		<?php if ($this->checkAccess('OprnEditContact')) {?>
@@ -136,13 +138,16 @@
 					?>
 				</div>
 
-				<div class="large-4 column">
-					<select id="contactfilter" name="contactfilter">
-						<?php foreach (ContactLabel::getList() as $key => $name) {?>
-							<option value="<?php echo $key?>"><?php echo $name?></option>
-						<?php }?>
-					</select>
-				</div>
+                <div class="large-4 column">
+
+                    
+
+        <select id="contactfilter" name="contactfilter">
+                    <?php foreach (ContactLabel::getList() as $key => $name) {?>
+                        <option value="<?php echo $key ?>"><?php echo $name ?></option>
+    <?php } ?>
+        </select>
+                </div>
 
 				<div class="large-2 column">
 					<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="loader hide" alt="loading..." />
@@ -259,17 +264,17 @@
 
 						<div class="add_contact_form_errors alert-box alert with-icon hide"></div>
 
-						<div class="row field-row">
-							<div class="large-5 column">
-								<button class="small btn_add_site" type="submit">Add site/institution</button>
-							</div>
-							<div class="large-7 column text-right">
-								<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="add_contact_loader" style="display: none;" />
-								<button class="secondary small btn_save_contact" type="submit">Save</button>
-								<button class="warning small btn_cancel_contact" type="submit">Cancel</button>
-							</div>
-						</div>
-					</fieldset>
+                    <div class="row field-row">
+                        <div class="large-5 column">
+                            <button class="small btn_add_site" type="submit">Add site/institution</button>
+                        </div>
+                        <div class="large-7 column text-right">
+                            <img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" class="add_contact_loader" style="display: none;" />
+                            <button class="secondary small btn_save_contact" type="submit">Save</button>
+                            <button class="warning small btn_cancel_contact" type="submit">Cancel</button>
+                        </div>
+                    </div>
+                </fieldset>
 
 				<?php $this->endWidget()?>
 			</div>
@@ -322,72 +327,73 @@
 
 						<div class="edit_contact_form_errors alert-box alert with-icon hide"></div>
 
-						<div class="row field-row">
-							<div class="large-5 column">
-								<button class="small btn_add_site" type="submit">Add site/institution</button>
-							</div>
-							<div class="large-7 column text-right">
-								<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="edit_contact_loader" style="display: none;" />
-								<button class="secondary small btn_save_editcontact" type="submit">Save</button>
-								<button class="warning small btn_cancel_editcontact" type="submit">Cancel</button>
-							</div>
-						</div>
-					</fieldset>
+                    <div class="row field-row">
+                        <div class="large-5 column">
+                            <button class="small btn_add_site" type="submit">Add site/institution</button>
+                        </div>
+                        <div class="large-7 column text-right">
+                            <img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" class="edit_contact_loader" style="display: none;" />
+                            <button class="secondary small btn_save_editcontact" type="submit">Save</button>
+                            <button class="warning small btn_cancel_editcontact" type="submit">Cancel</button>
+                        </div>
+                    </div>
+                </fieldset>
 
 				<?php $this->endWidget()?>
 			</div>
 
-			<!-- Add site or institution dialog -->
-			<div id="add_site_dialog" title="Add site or institution" style="display: none;">
-				<p>
-					This form allows you to send a request to the OpenEyes support team to add a site or institution to the system for you.
-				</p>
-				<?php
-				$form = $this->beginWidget('FormLayout', array(
-					'id'=>'add_site_form',
-					'enableAjaxValidation'=>false,
-					'action'=>array('patient/sendSiteMessage'),
-					'layoutColumns'=>array(
-						'label' => 3,
-						'field' => 9
-					),
-				))?>
-					<div class="row field-row">
-						<div class="<?php echo $form->columns('label');?>">
-							<label for="newsite_from">From:</label>
-						</div>
-						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::textField('newsite_from',User::model()->findByPk(Yii::app()->user->id)->email,array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
-						</div>
-					</div>
-					<div class="row field-row">
-						<div class="<?php echo $form->columns('label');?>">
-							<label for="newsite_subject">Subject:</label>
-						</div>
-						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::textField('newsite_subject','Please add the following site/institution',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
-						</div>
-					</div>
-					<div class="row field-row">
-						<div class="<?php echo $form->columns('label');?>">
-							<label for="newsite_message">Message:</label>
-						</div>
-						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::textArea('newsite_message',"Please could you add the following site/institution to OpenEyes:\n\n",array('rows'=>7,'cols'=>55))?>
-						</div>
-					</div>
-				<?php $this->endWidget()?>
-				<p>
-					We will respond to your request via email as soon as it has been completed.
-				</p>
-				<div class="buttons">
-					<button type="submit" class="secondary small btn_add_site_ok">Send</button>
-					<button type="submit" class="warning small btn_add_site_cancel">Cancel</button>
-					<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
-				</div>
-			</div>
-		<?php }?>
-	</div>
+            <!-- Add site or institution dialog -->
+            <div id="add_site_dialog" title="Add site/institution" style="display: none;">
+                <p>
+                    This form allows you to send a request to the OpenEyes support team to add a site/institution to the system for you.
+                </p>
+                <?php
+                $form = $this->beginWidget('FormLayout', array(
+                    'id' => 'add_site_form',
+                    'enableAjaxValidation' => false,
+                    'action' => array('patient/sendSiteMessage'),
+                    'layoutColumns' => array(
+                        'label' => 3,
+                        'field' => 9
+                    ),
+                        ))
+                ?>
+                <div class="row field-row">
+                    <div class="<?php echo $form->columns('label'); ?>">
+                        <label for="newsite_from">From:</label>
+                    </div>
+                    <div class="<?php echo $form->columns('field'); ?>">
+    <?php echo CHtml::textField('newsite_from', User::model()->findByPk(Yii::app()->user->id)->email, array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+                    </div>
+                </div>
+                <div class="row field-row">
+                    <div class="<?php echo $form->columns('label'); ?>">
+                        <label for="newsite_subject">Subject:</label>
+                    </div>
+                    <div class="<?php echo $form->columns('field'); ?>">
+    <?php echo CHtml::textField('newsite_subject', 'Please add the following site/institution', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+                    </div>
+                </div>
+                <div class="row field-row">
+                    <div class="<?php echo $form->columns('label'); ?>">
+                        <label for="newsite_message">Message:</label>
+                    </div>
+                    <div class="<?php echo $form->columns('field'); ?>">
+    <?php echo CHtml::textArea('newsite_message', "Please could you add the following site/institution to OpenEyes:\n\n", array('rows' => 7, 'cols' => 55)) ?>
+                    </div>
+                </div>
+    <?php $this->endWidget() ?>
+                <p>
+                    We will respond to your request via email as soon as it has been completed.
+                </p>
+                <div class="buttons">
+                    <button type="submit" class="secondary small btn_add_site_ok">Send</button>
+                    <button type="submit" class="warning small btn_add_site_cancel">Cancel</button>
+                    <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..." style="display: none;" />
+                </div>
+            </div>
+<?php } ?>
+    </div>
 </section>
 <script type="text/javascript">
 $(document).ready(function() {
@@ -576,9 +582,9 @@ $(document).ready(function() {
 	$('button.btn_add_site').click(function(e) {
 		e.preventDefault();
 
-		$('#newsite_from').val('<?php echo User::model()->findByPk(Yii::app()->user->id)->email?>');
-		$('#newsite_subject').val('Please add the following site/institution');
-		$('#newsite_message').val("Please could you add the following site/institution to OpenEyes:\n\n");
+            $('#newsite_from').val('<?php echo User::model()->findByPk(Yii::app()->user->id)->email ?>');
+            $('#newsite_subject').val('Please add the following site/institution');
+            $('#newsite_message').val("Please could you add the following site/institution to OpenEyes:\n\n");
 
 		$('#add_site_dialog').dialog({
 			resizable: false,

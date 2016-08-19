@@ -1,0 +1,56 @@
+/* line 17, ../sass/whiteboard.scss */
+#exit-button {
+  background-color: #f00;
+  color: #fff;
+}
+
+/* line 23, ../sass/whiteboard.scss */
+.mdl-grid .mdl-card {
+  min-height: 150px;
+  width: 100%;
+}
+/* line 26, ../sass/whiteboard.scss */
+.mdl-grid .mdl-card .mdl-card__title {
+  color: #fff;
+  min-height: 60px;
+}
+/* line 29, ../sass/whiteboard.scss */
+.mdl-grid .mdl-card .mdl-card__title.patient {
+  background-color: #3f51b5;
+}
+/* line 32, ../sass/whiteboard.scss */
+.mdl-grid .mdl-card .mdl-card__title.biometry {
+  background-color: #a53dcc;
+}
+/* line 35, ../sass/whiteboard.scss */
+.mdl-grid .mdl-card .mdl-card__title.risk {
+  background-color: #c23f3a;
+}
+/* line 38, ../sass/whiteboard.scss */
+.mdl-grid .mdl-card .mdl-card__title.comment {
+  background-color: #33c23d;
+}
+/* line 41, ../sass/whiteboard.scss */
+.mdl-grid .mdl-card .mdl-card__title .mdl-card__title-text {
+  font-size: 16px;
+}
+/* line 45, ../sass/whiteboard.scss */
+.mdl-grid .mdl-card .mdl-card__supporting-text {
+  min-height: 60px;
+  font-size: 18px;
+  line-height: 1.3em;
+}
+/* line 49, ../sass/whiteboard.scss */
+.mdl-grid .mdl-card .mdl-card__supporting-text dl {
+  margin: 0;
+}
+/* line 51, ../sass/whiteboard.scss */
+.mdl-grid .mdl-card .mdl-card__supporting-text dl dt {
+  display: inline-block;
+  min-width: 150px;
+}
+/* line 55, ../sass/whiteboard.scss */
+.mdl-grid .mdl-card .mdl-card__supporting-text dl dd {
+  display: inline-block;
+  margin: 0;
+}

@@ -111,7 +111,10 @@ class AuthRules
 	 */
 	private function canModifyEvent(Firm $firm, Event $event)
 	{
-		if ($event->episode->patient->date_of_death) return false;
+		if ($event->episode->patient->isDeceased()) {
+			return false;
+		}
+		
 		return $this->canEditEpisode($firm, $event->episode);
 	}
 

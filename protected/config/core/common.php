@@ -110,6 +110,23 @@ return array(
 					),
 					'basePath' => 'application.assets',
 					'depends' => array('jquery'),
+				),
+				'rrule' => array(
+					'js' => array(
+						'components/rrule/lib/rrule.js',
+						'components/rrule/lib/nlp.js'
+					),
+					'basePath' => 'application.assets'
+				),
+				'tagsinput' => array(
+					'css' => array(
+						'components/jquery.tagsinput/src/jquery.tagsinput.css'
+					),
+					'js' => array(
+						'components/jquery.tagsinput/src/jquery.tagsinput.js'
+					),
+					'basePath' => 'application.assets',
+					'depends' => array('jquery')
 				)
 			),
 		),
@@ -322,6 +339,12 @@ return array(
 					),
 				)
 			),
+// temporarily disabled
+//			'worklist' => array(
+//				'title' => 'Worklists',
+//				'uri' => '/worklist',
+//				'position' => 3,
+//			),
 			'logout' => array(
 				'title' => 'Logout',
 				'uri' => 'site/logout',
@@ -329,6 +352,17 @@ return array(
 			),
 		),
 		'admin_menu' => array(
+		),
+		'dashboard_items' => array(
+			array(
+				'class' => 'WorklistManager',
+				'method' => 'renderAutomaticDashboard',
+				'position' => 10
+			),
+			array(
+				'class' => 'WorklistManager',
+				'method' => 'renderManualDashboard'
+			)
 		),
 		'admin_email' => '',
 		'enable_transactions' => true,
@@ -350,7 +384,7 @@ return array(
 		'wkhtmltopdf_right_margin' => '20mm',
 		'wkhtmltopdf_nice_level' => false,
 		'OphCoTherapyapplication_sender_email' => array('openeyes.servicedesk@moorfields.nhs.uk' => 'OpenEyes Therapy Application'),
-
+		'curl_proxy' => null,
 		'hscic' => array(
 			'data' => array(
 				// to store processed zip files
