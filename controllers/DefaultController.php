@@ -300,7 +300,7 @@ class DefaultController extends \BaseEventTypeController
                     }
                     break;
                 case 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo':
-                    if ($this->checkClinicalEditAccess()) {
+                    if ($this->checkClericalEditAccess()) {
                         $element->setScenario('finalise');
                     }
                     break;
