@@ -534,6 +534,7 @@ EOL;
         $query .= $this->populateTmpRcoNodEpisodeOperationIndication();
         $query .= $this->populateTmpRcoNodEpisodeOperationComplication();
         $query .= $this->populateTmpRcoNodEpisodeDiagnosis();
+        $query .= $this->populateTmpRcoNodEpisodeVisualAcuity();
 
         return $query;
     }
@@ -1204,7 +1205,7 @@ EOL;
             CREATE TABLE tmp_rco_nod_EpisodeDiagnoses_{$this->extract_identifier} (
                 oe_event_id INT(10) NOT NULL,
                 Eye CHAR(1) NOT NULL,
-                `Date` DATE DEFAULT NULL,
+                Date DATE DEFAULT NULL,
                 SurgeonId INT(10) DEFAULT NULL,
                 ConditionId INT(11) DEFAULT NULL,
                 DiagnosisTermId INT(10) DEFAULT NULL
@@ -1397,8 +1398,6 @@ EOL;
         return $query;
     }
             
-
-    
     private function getEpisodeDrug()
     {
         $query = <<<EOL
@@ -1726,30 +1725,8 @@ EOL;
         fclose($df);
         return ob_get_clean();
     }
-
-    private function getDateWhere($tablename)
-    {
-        if ($this->startDate != "") {
-            $dateWhereStart = $tablename . ".last_modified_date >= '" . $this->startDate . "'";
-        }
-        if ($this->endDate != "") {
-            $dateWhereEnd = $tablename . ".last_modified_date <= '" . $this->endDate . "'";
-        }
-
-        $dateWhere = "";
-        if (isset($dateWhereStart) && isset($dateWhereEnd)) {
-            $dateWhere = "AND " . $dateWhereStart . " AND " . $dateWhereEnd;
-        } else if (isset($dateWhereStart)) {
-            $dateWhere = "AND " . $dateWhereStart;
-        } else if (isset($dateWhereEnd)) {
-            $dateWhere = "AND " . $dateWhereEnd;
-        }
-
-        return $dateWhere;
-    }
-
     
-    
+
     
     
     
@@ -2660,10 +2637,9 @@ EOL;
             DROP TABLE IF EXISTS tmp_rco_nod_EpisodeVisualAcuity_{$this->extract_identifier};
             CREATE TABLE tmp_rco_nod_EpisodeVisualAcuity_{$this->extract_identifier} (
                 oe_event_id INT(10) NOT NULL,
-                EpisodeId INT(10) NOT NULL,
                 Eye CHAR(1) NOT NULL,
-                NotationRecordedId INT(10) DEFAULT NULL,
-                BestMeasure VARCHAR(255) DEFAULT NULL,
+                NotationRecordedId INT(10) NOT NULL,
+                BestMeasure VARCHAR(255) NOT NULL,
                 Unaided INT(10) DEFAULT NULL,
                 Pinhole INT(10) DEFAULT NULL,
                 BestCorrected INT(10) DEFAULT NULL
@@ -2675,126 +2651,95 @@ EOL;
     private function populateTmpRcoNodEpisodeVisualAcuity()
     {
         $query = <<<EOL
+            INSERT INTO tmp_rco_nod_EpisodeVisualAcuity_{$this->extract_identifier} (
+                oe_event_id,
+                Eye,
+                NotationRecordedId,
+                BestMeasure,
+                Unaided,
+                Pinhole,
+                BestCorrected
+              ) 
+              /* Get best Visual Acuity for examination for each Method: Unaided Aided Pinhole */
+              SELECT
+                  bv.oe_event_id 
+                , bv.eye
+                , bv.orginal_unit_id AS NotationRecordedId /* TODO this needs a mapping from OE to NOD */
+                , IFNULL(CASE u_max_all.value WHEN 'CF' THEN 2.10 WHEN 'HM' THEN 2.40 WHEN 'PL' THEN 2.70 WHEN 'NPL' THEN 3.00 ELSE u_max_all.value END, '') AS BestMeasure
+                , IFNULL(CASE u_max_unaided.value WHEN 'CF' THEN 2.10 WHEN 'HM' THEN 2.40 WHEN 'PL' THEN 2.70 WHEN 'NPL' THEN 3.00 ELSE u_max_unaided.value END, '') AS Unaided
+                , IFNULL(CASE u_max_pinhole.value WHEN 'CF' THEN 2.10 WHEN 'HM' THEN 2.40 WHEN 'PL' THEN 2.70 WHEN 'NPL' THEN 3.00 ELSE u_max_pinhole.value END, '') AS Pinhole
+                , IFNULL(CASE u_max_aided.value WHEN 'CF' THEN 2.10 WHEN 'HM' THEN 2.40 WHEN 'PL' THEN 2.70 WHEN 'NPL' THEN 3.00 ELSE u_max_aided.value END, '') AS BestCorrected
+            FROM
+            (
+                    SELECT 
+                      v.oe_event_id
+                    , v.orginal_unit_id
+              , v.eye
+                    , MAX(IF(v.method IN ('Unaided','Aided','Pinhole'), v.reading_base_value, NULL)) AS max_all_base_value /* Higher base_value is better */
+                    , MAX(IF(v.method = 'Unaided', v.reading_base_value, NULL)) AS max_unaided_base_value /* Higher base_value is better */
+                    , MAX(IF(v.method = 'Aided', v.reading_base_value, NULL)) AS max_aided_base_value /* Higher base_value is better */
+                    , MAX(IF(v.method = 'Pinhole', v.reading_base_value, NULL)) AS max_pinhole_base_value /* Higher base_value is better */
+                    , v.logmar_single_letter_unit_id
+              FROM (
+                SELECT 
+                  c.oe_event_id
+                , CASE evar.side
+                  WHEN 0 THEN 'R'
+                  WHEN 1 THEN 'L'
+                  ELSE NULL
+                  END AS eye
+                , CASE vam.name
+                  WHEN 'Glasses' THEN 'Aided'
+                  WHEN 'Contact lens' THEN 'Aided'
+                  ELSE vam.name
+                  END AS method
+                , evar.value AS reading_base_value
+                , eva.unit_id orginal_unit_id
+                , u.id AS logmar_single_letter_unit_id
+                /* Restriction: Start with control events */
+                FROM tmp_rco_nod_main_event_episodes_{$this->extract_identifier} c 
+                /* Hard Join: Only examination events that have a Visual Acuity */
+                JOIN et_ophciexamination_visualacuity eva
+                  ON eva.event_id = c.oe_event_id
+                /* Hard Join: Visual Acuity individual readings (across both eyes and all methods ) */
+                JOIN ophciexamination_visualacuity_reading evar
+                  ON evar.element_id = eva.id
+                /* Join: Look up Visual Acuity individual readings for both eyes and all methods (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
+                LEFT OUTER JOIN ophciexamination_visualacuity_method vam 
+                  ON vam.id = evar.method_id
+                /* Cartesian: Convenience to get logMAR single-letter unit_id only once, used in outer queries */
+                CROSS JOIN ophciexamination_visual_acuity_unit u
+                WHERE u.name = 'logMAR single-letter'
+                    ) v
+                    /* Group by important to aggrigate multiple reading to get best reading each eye and method */
+              GROUP BY 
+                      v.oe_event_id
+                    , v.orginal_unit_id
+              , v.eye
+            ) bv
+            /* Join: Decode the overall base_value to logmar_single_letter (LOJ used to return nulls if data problems) */
+            LEFT OUTER JOIN ophciexamination_visual_acuity_unit_value u_max_all
+              ON  u_max_all.base_value = bv.max_all_base_value
+              AND u_max_all.unit_id = bv.logmar_single_letter_unit_id
+            /* Join: Decode the unaided base_value to logmar_single_letter (LOJ used to return nulls if data problems) */
+            LEFT OUTER JOIN ophciexamination_visual_acuity_unit_value u_max_unaided
+              ON  u_max_unaided.base_value = bv.max_unaided_base_value
+              AND u_max_unaided.unit_id = bv.logmar_single_letter_unit_id
+            /* Join: Decode the aided base_value to logmar_single_letter (LOJ used to return nulls if data problems) */
+            LEFT OUTER JOIN ophciexamination_visual_acuity_unit_value u_max_aided
+              ON  u_max_aided.base_value = bv.max_aided_base_value
+              AND u_max_aided.unit_id = bv.logmar_single_letter_unit_id
+            /* Join: Decode the pinhole base_value to logmar_single_letter (LOJ used to return nulls if data problems) */
+            LEFT OUTER JOIN ophciexamination_visual_acuity_unit_value u_max_pinhole
+              ON  u_max_pinhole.base_value = bv.max_pinhole_base_value
+              AND u_max_pinhole.unit_id = bv.logmar_single_letter_unit_id ;
+
 EOL;
         return $query;
     }
     
     private function getEpisodeVisualAcuity()
-    {
-
-        $query = "(SELECT
-                    e.episode_id AS EpisodeId,
-                    'L' AS Eye,
-                    v.unit_id AS NotationRecordedId,
-
-                    (   SELECT value 
-                        FROM ophciexamination_visual_acuity_unit_value 
-                        WHERE base_value = (
-                                SELECT MAX(VALUE) 
-                                FROM ophciexamination_visualacuity_reading r 
-                                JOIN et_ophciexamination_visualacuity va ON va.id = r.element_id 
-                                WHERE r.element_id = v.id) AND unit_id = (SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter')
-                    ) AS BestMeasure,
-                    IFNULL(
-                        (
-                        SELECT value
-                        FROM ophciexamination_visual_acuity_unit_value
-                        WHERE base_value = (
-                            SELECT MAX(r.value)
-                            FROM ophciexamination_visualacuity_reading r
-                            JOIN ophciexamination_visualacuity_method m ON r.`method_id` = m.`id`
-                            WHERE r.element_id = v.id
-                            AND m.name = 'Unaided'
-                            AND side = 1
-                        ) AND unit_id = (SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter')),
-                        ''
-                    ) AS Unaided,
-                    IFNULL(
-                        (
-                        SELECT value
-                        FROM ophciexamination_visual_acuity_unit_value
-                        WHERE base_value = (
-                            SELECT MAX(r.value)
-                            FROM ophciexamination_visualacuity_reading r
-                            JOIN ophciexamination_visualacuity_method m ON r.`method_id` = m.`id`
-                            WHERE r.element_id = v.id
-                            AND m.name = 'Pinhole'
-                            AND side = 1
-                        ) AND unit_id = (SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter')),
-                        ''
-                    ) AS Pinhole, 
-                    IFNULL(
-                        (SELECT VALUE
-                        FROM ophciexamination_visual_acuity_unit_value
-                        WHERE base_value = (
-                                SELECT MAX(r.value) FROM ophciexamination_visualacuity_reading r
-                                JOIN ophciexamination_visualacuity_method m ON r.`method_id` = m.id AND m.`name` = 'Glasses' OR m.`name` = 'Contact lens'
-                                WHERE r.element_id = v.id AND side = 1
-                        ) AND unit_id = (SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter')),
-                        ''
-                    ) AS BestCorrected
-                    FROM `event` e
-                    INNER JOIN et_ophciexamination_visualacuity v ON v.event_id = e.id
-                    WHERE v.eye_id = 1 OR v.eye_id=3 " . $this->getDateWhere('v').")
-                    UNION
-                    (SELECT
-                    e.episode_id AS EpisodeId,
-                    'R' AS Eye,
-                    v.unit_id AS NotationRecordedId,
-
-                    (   SELECT value 
-                        FROM ophciexamination_visual_acuity_unit_value 
-                        WHERE base_value = (
-                                SELECT MAX(VALUE) 
-                                FROM ophciexamination_visualacuity_reading r 
-                                JOIN et_ophciexamination_visualacuity va ON va.id = r.element_id 
-                                WHERE r.element_id = v.id) 
-                                AND unit_id = (
-                                    SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter')
-                    ) AS BestMeasure,
-                    IFNULL(
-                      ( SELECT value
-                        FROM ophciexamination_visual_acuity_unit_value
-                        WHERE base_value = (
-                            SELECT MAX(r.value)
-                            FROM ophciexamination_visualacuity_reading r
-                            JOIN ophciexamination_visualacuity_method m ON r.`method_id` = m.`id`
-                            WHERE r.element_id = v.id
-                            AND m.name = 'Unaided'
-                            AND side = 0
-                        ) AND unit_id = (SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter') ),
-                        ''
-                    ) AS Unaided,
-                    IFNULL(
-                        (
-                        SELECT value
-                        FROM ophciexamination_visual_acuity_unit_value
-                        WHERE base_value = (
-                            SELECT MAX(r.value)
-                            FROM ophciexamination_visualacuity_reading r
-                            JOIN ophciexamination_visualacuity_method m ON r.`method_id` = m.`id`
-                            WHERE r.element_id = v.id
-                            AND m.name = 'Pinhole'
-                            AND side = 0
-                        ) AND unit_id = (SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter')),
-                        ''
-                    ) AS Pinhole,
-                    IFNULL(
-                        (SELECT VALUE
-                        FROM ophciexamination_visual_acuity_unit_value
-                        WHERE base_value = (
-                                SELECT MAX(r.value) FROM ophciexamination_visualacuity_reading r
-                                JOIN ophciexamination_visualacuity_method m ON r.`method_id` = m.id AND m.`name` = 'Glasses' OR m.`name` = 'Contact lens'
-                                WHERE r.element_id = v.id
-                                AND side = 0
-                        ) AND unit_id = (SELECT id FROM ophciexamination_visual_acuity_unit WHERE NAME = 'logMAR single-letter')),
-                        ''
-                    ) AS BestCorrected
-                    FROM `event` e
-                    INNER JOIN et_ophciexamination_visualacuity v ON v.event_id = e.id
-                    WHERE v.eye_id = 2 OR v.eye_id=3 " . $this->getDateWhere('v').")";
-
-        
+    {        
         $query = <<<EOL
                 SELECT c.nod_episode_id as EpisodeId, va.Eye, va.NotationRecordedId, va.BestMeasure, va.Unaided, va.Pinhole, va.BestCorrected
                 FROM tmp_rco_nod_EpisodeVisualAcuity_{$this->extract_identifier} va
@@ -2809,8 +2754,7 @@ EOL;
     }
     
     /********** end of EpisodeVisualAcuity **********/
-    
-    
+        
     
     
     
