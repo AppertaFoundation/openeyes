@@ -52,6 +52,7 @@ $cols = array(
                 return $data->event->info;
             }
             else {
+                // TODO: possibly don't need this, or this method should handle the above conditional
                 return $data->getIssueStatusForDisplay();
             }
         }
