@@ -1063,7 +1063,8 @@ class Patient extends BaseActiveRecordVersioned
             $criteria->params[':eye_id_side'] = $eye_id;
             $criteria->params[':eye_id_both'] = Eye::BOTH;
         }
-        $criteria->compare('patient_id', $this->id);
+        $criteria->addCondition('patient_id = :patient_id');
+        $criteria->params[':patient_id'] =  $this->id;
         $sd = SecondaryDiagnosis::model()->findAll($criteria);
         $disorder_ids = array();
         foreach ($sd as $d) {
