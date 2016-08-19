@@ -15,6 +15,7 @@ Install the following packages:
 Run composer update (need to get the QR codes)
 
 Add the following section with proper data into your config/local/common.php params section:
+
     'portal' => array(
                 'uri' => 'http://api.localhost:8000',
                 'endpoints' => array(
@@ -30,6 +31,12 @@ Add the following section with proper data into your config/local/common.php par
                     'client_secret' => '4c7f6f8fa93d59c45502c0ae8c4a95b',
                 ),
             ),
+
+## User Permissions
+
+Bizrules have been implemented to support the management of user permissions on this event. Specifically this allows for automatic permissions to be granted the right to edit the clinical detail of cvis. See ```config/common.php``` for details.
+
+The sections of the form are divided so that only users with clerical permissions can edit the clerical element of the event. It's possible that if a user has clinical permission they should have clerical as well. This will require a small change if it proves necessary.
 
 ## Status
 
