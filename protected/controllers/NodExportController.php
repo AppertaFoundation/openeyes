@@ -260,6 +260,7 @@ class NodExportController extends BaseController
         $query .= $this->createTmpRcoNodEpisodeOperationAnesthesia();
         $query .= $this->createTmpRcoNodEpisodeOperationIndication();
         $query .= $this->createTmpRcoNodEpisodeOperationComplication();
+        $query .= $this->createTmpRcoNodEpisodeVisualAcuity();
         
         $createTempQuery = <<<EOL
 
@@ -573,6 +574,7 @@ EOL;
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationComplication_{$this->extract_identifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationIndication_{$this->extract_identifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeTreatment_{$this->extract_identifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeVisualAcuity_{$this->extract_identifier};
                 
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication;
                 DROP TEMPORARY TABLE IF EXISTS tmp_anesthesia_type;
@@ -2180,10 +2182,10 @@ EOL;
             DROP TABLE IF EXISTS tmp_rco_nod_EpisodeTreatment_{$this->extract_identifier};
             CREATE TABLE tmp_rco_nod_EpisodeTreatment_{$this->extract_identifier} (
                 oe_event_id INT(10) NOT NULL,
-                TreatmentId BIGINT NOT NULL,
+                TreatmentId INT(10) NOT NULL,
                 OperationId INT(10) NOT NULL,
                 Eye CHAR(1) NOT NULL,
-                TreatmentTypeId INT(10) NOT NULL,
+                TreatmentTypeId VARCHAR(20) NOT NULL,
                 TreatmentTypeDescription VARCHAR(255) NOT NULL,
                 PRIMARY KEY (TreatmentId),
                 UNIQUE KEY oe_event_id (oe_event_id,TreatmentId,Eye)
@@ -2210,7 +2212,7 @@ EOL;
                 /* Note pa.id unique for each operation<->procedure intersection record */
                 /* However the procedure may be for BOTH EYES and the RCO needs this splitting out to two Treatment records LEFT + RIGHT */
                 /* We are creating "high range" Treatment IDs for LEFT eye only by adding 1,000,000,000,000) to the number-space */
-                1000000000000 + pa.id AS TreatmentId /* LEFT Eye so add 1,000,000,000,000 */
+                (SELECT MAX(pa.id)+10000) + pa.id AS TreatmentId /* LEFT Eye so add 10,000 */
                 , c.oe_event_id AS OperationId
                 , 'L' AS Eye
                 , p.snomed_code AS TreatmentTypeId
@@ -2271,7 +2273,7 @@ EOL;
                 AND pl.eye_id IN (2, 3); /* 2 = RIGHT EYE, 3 = BOTH EYES */
             
 EOL;
-        //return $query;
+        return $query;
     }
     
     
@@ -2608,10 +2610,37 @@ EOL;
     }
     
     /********** end of EpisodeOperation **********/
-
     
     
     
+    
+    
+    /********** EpisodeVisualAcuity **********/
+    
+    private function createTmpRcoNodEpisodeVisualAcuity()
+    {
+        $query = <<<EOL
+            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeVisualAcuity_{$this->extract_identifier};
+            CREATE TABLE tmp_rco_nod_EpisodeVisualAcuity_{$this->extract_identifier} (
+                oe_event_id INT(10) NOT NULL,
+                EpisodeId INT(10) NOT NULL,
+                Eye CHAR(1) NOT NULL,
+                NotationRecordedId INT(10) DEFAULT NULL,
+                BestMeasure VARCHAR(255) DEFAULT NULL,
+                Unaided INT(10) DEFAULT NULL,
+                Pinhole INT(10) DEFAULT NULL,
+                BestCorrected INT(10) DEFAULT NULL
+            );
+EOL;
+        return $query;
+    }
+    
+    private function populateTmpRcoNodEpisodeVisualAcuity()
+    {
+        $query = <<<EOL
+EOL;
+        return $query;
+    }
     
     private function getEpisodeVisualAcuity()
     {
@@ -2735,6 +2764,13 @@ EOL;
 
         return $this->saveCSVfile($dataQuery, 'EpisodeVisualAcuity', null, 'EpisodeId');
     }
+    
+    /********** end of EpisodeVisualAcuity **********/
+    
+    
+    
+    
+    
     
     /**
      * Creates zip files from the CSV files
