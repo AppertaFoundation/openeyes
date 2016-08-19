@@ -20,7 +20,6 @@ use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 use DOMDocument;
 use DomXpath;
-
 /**
  * A class for odt document modify and generate pdf
  */
@@ -650,24 +649,22 @@ class ODTTemplateManager
     
     
     /*
-     * Convert the generated pdf first page
+     * Convert the generated pdf N page
+     * @param $pageNumber 
      */
-    public function generatePDFFirstPage()
+    public function generatePDFPageN( $pageNumber = 1 )
     {
-        $pdf = realpath($this->outDir.'/'.$this->outFile);
-        $fileName = preg_replace('/\\.[^.\\s]{3,4}$/', '', $this->outFile);
+        ob_start();
         
-        $this->fpName = $fileName.'_fp.pdf';
-        exec("convert ".$pdf."[0] -density 100  -quality 100 -sharpen 0x1.0 ".$this->outDir."/".$this->fpName);
-    }
-    
-    /*
-     * Get first page of generated pdf
-     */
-    public function getPDFFirstPage()
-    {
-        header('Content-type: application/pdf');
-        header('Content-Length: ' . filesize($this->outDir.'/'.$this->fpName));
-        @readfile($this->outDir.'/'.$this->fpName);
+        $pdf = new \FPDI();
+        $pageCount = $pdf->setSourceFile($this->outDir.'/'.$this->outFile);
+        $tplIdx = $pdf->importPage( $pageNumber , '/MediaBox');
+
+        $pdf->addPage();
+        $pdf->useTemplate($tplIdx);
+
+        $pdf->Output();
+        
+        ob_end_flush(); 
     }
 }
