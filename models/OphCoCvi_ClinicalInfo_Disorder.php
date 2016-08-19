@@ -135,11 +135,14 @@ class OphCoCvi_ClinicalInfo_Disorder extends \BaseActiveRecordVersioned
      */
     public function getAllPatientDisorderIds($side)
     {
-        $side_value = strtolower($side) ===  'right' ? \Eye::RIGHT : \Eye::LEFT;
-        $patient_disorders = \Patient::model()->getAllDisorders($side_value);
         $patient_disorder_list = array();
-        foreach ($patient_disorders as $disorder) {
-            $patient_disorder_list[] = $disorder->id;
+        $side_value = strtolower($side) ===  'right' ? \Eye::RIGHT : \Eye::LEFT;
+        if ($patient_id = \Yii::app()->getRequest()->getQuery('patient_id'))
+        {
+            $patient_disorders = \Patient::model()->findByPk($patient_id)->getAllDisorders($side_value);
+            foreach ($patient_disorders as $disorder) {
+                $patient_disorder_list[] = $disorder->id;
+            }
         }
         return $patient_disorder_list;
     }
