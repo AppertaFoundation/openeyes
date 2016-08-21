@@ -37,6 +37,7 @@ namespace OEModule\OphCoCvi\models;
  * @property User $usermodified
  * @property ProtectedFile $signature_file
  */
+use \optomPortalConnection;
 
 class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
 {
@@ -172,6 +173,36 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
     public function getEncryptionKey()
     {
         return md5($this->patientId.$this->event_id.$this->event->episode->id);
+    }
+
+    public function loadSignatureFromPortal()
+    {
+        $portalConnection = new optomPortalConnection();
+        if ($portalConnection) {
+            $signatureData = $portalConnection->signatureSearch(null,
+                \Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($this->event));
+        }
+        //$signatureData = $portalConnection->signatureSearch();
+
+        //print_r($signatureData);die;
+        // TEST DATA!
+        //$signatureData = $portalConnection->signatureSearch(null, 'RP67-26B8MC-3');
+
+        if (is_array($signatureData) && isset($signatureData["image"]) && $portalConnection) {
+            $imageFile = $portalConnection->createNewSignatureImage($signatureData["image"], $this->patient->id);
+            // save successful so we can attach the signature file to the event consent signature model
+            if ($imageFile) {
+                $this->signature_file_id = $imageFile->id;
+                $this->save();
+                $signature = imagecreatefromstring($this->getDecryptedSignature());
+            }
+        } else {
+            $QRContent = "@code:" . \Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($this->event) . "@key:" . $this->getEncryptionKey();
+
+            $QRHelper = new \SignatureQRCodeGenerator();
+            $signature = $QRHelper->generateQRSignatureBox($QRContent);
+        }
+        return $signature;
     }
 
     /**

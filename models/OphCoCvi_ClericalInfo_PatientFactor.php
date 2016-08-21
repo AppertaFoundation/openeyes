@@ -19,22 +19,24 @@
 namespace OEModule\OphCoCvi\models;
 
 /**
- * This is the model class for table "ophcocvi_clinicinfo_disorders".
+ * This is the model class for table "ophcocvi_clericinfo_patient_factor".
  *
  * The followings are the available columns in table:
  * @property string $id
  * @property string $name
+ * @property string $code
+ * @property boolean $require_comments
+ * @property string $comments_label
+ * @property integer $display_order
+ * @property boolean $active
  *
  * The followings are the available model relations:
  *
- * @property ElementType $element_type
- * @property EventType $eventType
- * @property Event $event
  * @property User $user
  * @property User $usermodified
  */
 
-class OphCoCvi_ClinicalInfo_PatientFactor extends \BaseActiveRecordVersioned
+class OphCoCvi_ClericalInfo_PatientFactor extends \BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
@@ -50,7 +52,7 @@ class OphCoCvi_ClinicalInfo_PatientFactor extends \BaseActiveRecordVersioned
      */
     public function tableName()
     {
-        return 'ophcocvi_clinicinfo_patient_factor';
+        return 'ophcocvi_clericinfo_patient_factor';
     }
 
     /**
@@ -59,8 +61,9 @@ class OphCoCvi_ClinicalInfo_PatientFactor extends \BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-            array('name,code', 'safe'),
-            array('name,code', 'required'),
+            array('name', 'safe'),
+            array('name', 'required'),
+            array('comments_label', 'RequiredIfFieldValidator', 'field' => 'require_comments', 'value' => 1, 'message' => 'A comments label is required if comments are allowed for a factor.'),
             array('id, name', 'safe', 'on' => 'search'),
         );
     }
@@ -71,14 +74,6 @@ class OphCoCvi_ClinicalInfo_PatientFactor extends \BaseActiveRecordVersioned
     public function relations()
     {
         return array(
-            'element_type' => array(
-                self::HAS_ONE,
-                'ElementType',
-                'id',
-                'on' => "element_type.class_name='" . get_class($this) . "'"
-            ),
-            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
-            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
         );
@@ -93,7 +88,8 @@ class OphCoCvi_ClinicalInfo_PatientFactor extends \BaseActiveRecordVersioned
             'id' => 'ID',
             'name' => 'Name',
             'code' => 'Code',
-            'active' => 'Active'
+            'active' => 'Active',
+            'require_comments' => 'Comments allowed'
 
         );
     }

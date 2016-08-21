@@ -35,6 +35,9 @@ class OphCoCvi_API extends \BaseAPI
         $this->yii = $yii;
     }
 
+    public $createOprn = 'OprnCreateCvi';
+    public $createOprnArgs = array('user_id', 'firm', 'episode');
+
     /**
      * Get all events regardless of episode.
      *
@@ -119,6 +122,18 @@ class OphCoCvi_API extends \BaseAPI
         );
 
         return $this->renderPartial('OphCoCvi.views.patient.cvi_status', $params);
+    }
+
+    /**
+     * @param $event_id
+     * @return bool
+     */
+    public function canUpdate($event_id)
+    {
+        if ($event = \Event::model()->findByPk($event_id)) {
+            return $this->getManager()->canEditEvent($event);
+        }
+        return false;
     }
 
     /**

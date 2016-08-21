@@ -2,7 +2,19 @@
 /* Module-specific javascript can be placed here */
 
 $(document).ready(function() {
-    handleButton($('#et_save'),function() {});
+	
+	$('#div_OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_info_email').hide();
+	$('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_preferred_info_fmt_id').change(function(){
+		var label_name = $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_preferred_info_fmt_id').find(":selected").text();
+		if (label_name.toLowerCase().indexOf("email") >= 0) {
+			$('#div_OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_info_email').show();
+		} else {
+			$('#div_OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_info_email').hide();
+		}
+	});
+
+			handleButton($('#et_save'),function() {
+					});
 	
     handleButton($('#et_cancel'),function(e) {
             if (m = window.location.href.match(/\/update\/[0-9]+/)) {

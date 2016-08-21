@@ -53,8 +53,6 @@ class AdminController extends \ModuleAdminController
 
     /**
      * Admin for the disorder choices presented in the clinical element.
-     *
-     * @throws \Exception
      */
     public function actionClinicalDisorders()
     {
@@ -62,6 +60,7 @@ class AdminController extends \ModuleAdminController
             'Clinical Disorders',
             'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder',
             array(
+                'new_row_url' => Yii::app()->createUrl('/OphCoCvi/admin/newClinicalDisorderRow'),
                 'extra_fields' => array(
                     array(
                         'field' => 'code',
@@ -70,9 +69,47 @@ class AdminController extends \ModuleAdminController
                         'field' => 'section_id',
                         'type' => 'lookup',
                         'model' => 'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder_Section',
+                    ),
+                    array(
+                        'field' => 'disorder_id',
+                        'relation' => 'disorder',
+                        'type' => 'search_lookup',
+                        'model' => '\Disorder',
                     )
                 )
             )
+        );
+    }
+
+    /**
+     * To create the row with the search from model
+     * @param $key
+     */
+    public function actionNewClinicalDisorderRow($key)
+    {
+        $this->genericAdmin(
+            'Clinical Disorders',
+            'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder',
+            array(
+                'new_row_url' => Yii::app()->createUrl('/OphCoCvi/admin/newClinicalDisorderRow'),
+                'extra_fields' => array(
+                    array(
+                        'field' => 'code',
+                        'type' => 'text'
+                    ), array(
+                        'field' => 'section_id',
+                        'type' => 'lookup',
+                        'model' => 'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder_Section',
+                    ),
+                    array(
+                        'field' => 'disorder_id',
+                        'relation' => 'disorder',
+                        'type' => 'search_lookup',
+                        'model' => '\Disorder',
+                    )
+                )
+            ),
+            $key
         );
     }
 
@@ -85,7 +122,7 @@ class AdminController extends \ModuleAdminController
     {
         $this->genericAdmin(
             'Patient Factor',
-            'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_PatientFactor',
+            'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PatientFactor',
             array(
                 'extra_fields' => array(
                     array(

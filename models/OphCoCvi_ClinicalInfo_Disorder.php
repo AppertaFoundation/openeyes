@@ -27,6 +27,7 @@ namespace OEModule\OphCoCvi\models;
  * @property integer $section_id
  * @property string $code
  * @property boolean $active
+ * @property integer $disorder_id
  *
  * The followings are the available model relations:
  *
@@ -36,6 +37,7 @@ namespace OEModule\OphCoCvi\models;
  * @property \User $user
  * @property \User $usermodified
  * @property OphCoCvi_ClinicalInfo_Disorder_Section $section
+ * @property \Disorder $disorder
  */
 
 class OphCoCvi_ClinicalInfo_Disorder extends \BaseActiveRecordVersioned
@@ -63,9 +65,9 @@ class OphCoCvi_ClinicalInfo_Disorder extends \BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-            array('name,code,section_id', 'safe'),
-            array('name,code,section_id', 'required'),
-            array('id, name,code,section_id', 'safe', 'on' => 'search'),
+            array('name,section_id', 'safe'),
+            array('name,section_id', 'required'),
+            array('id, name,section_id,disorder_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -89,7 +91,8 @@ class OphCoCvi_ClinicalInfo_Disorder extends \BaseActiveRecordVersioned
                 self::BELONGS_TO,
                 'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder_Section',
                 'section_id'
-            )
+            ),
+            'disorder'  => array(self::BELONGS_TO, 'Disorder', 'disorder_id'),
         );
     }
 
@@ -101,7 +104,8 @@ class OphCoCvi_ClinicalInfo_Disorder extends \BaseActiveRecordVersioned
         return array(
             'id' => 'ID',
             'name' => 'Name',
-            'section_id' => 'Section'
+            'section_id' => 'Section',
+            'disorder_id' => 'Disorder',
         );
     }
 
@@ -118,5 +122,57 @@ class OphCoCvi_ClinicalInfo_Disorder extends \BaseActiveRecordVersioned
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
+    }
+
+    public function getAllDisorderForSection($disorder_section)
+    {
+        return($this->findAll('`active` = ? and section_id = ?',array(1, $disorder_section->id)));
+    }
+
+    /**
+     * Get all the patient disorders based on eye as array
+     *
+     * @param $side
+     * @return array|mixed|null
+     */
+    public function getAllPatientDisorderIds($side)
+    {
+        $patient_disorder_list = array();
+        $side_value = strtolower($side) ===  'right' ? \Eye::RIGHT : \Eye::LEFT;
+        if ($patient_id = \Yii::app()->getRequest()->getQuery('patient_id'))
+        {
+            $patient_disorders = \Patient::model()->findByPk($patient_id)->getAllDisorders($side_value);
+            foreach ($patient_disorders as $disorder) {
+                $patient_disorder_list[] = $disorder->id;
+            }
+        }
+        return $patient_disorder_list;
+    }
+
+    public function getDisordersWithValuesAndComments($element,$side,$disorder_section)
+    {
+        $disorders = array();
+        $index_key = 0;
+        $disorder_list = $this->getAllDisorderForSection($disorder_section);
+        $disorder_ids_for_eye = $this->getAllPatientDisorderIds($side);
+        foreach ($disorder_list as $disorder) {
+            if(\Yii::app()->controller->action->id === 'create' )
+            {
+                $disorders[$index_key]['status'] = 0;
+                if (in_array($disorder->disorder_id, $disorder_ids_for_eye)) {
+                    $disorders[$index_key]['status'] = 1;
+                }
+                $disorders[$index_key]['value'] = 0;
+            }
+            else {
+            $disorders[$index_key]['status'] = Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()
+                ->getDisorderAffectedStatus($disorder->id,$element->id,$side);
+            $disorders[$index_key]['value'] = Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()
+                    ->getDisorderMainCause($disorder->id,$element->id,$side);
+            }
+            $disorders[$index_key]['disorder'] = $disorder;
+            $index_key++;
+        }
+        return $disorders;
     }
 }

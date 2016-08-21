@@ -29,9 +29,7 @@ $this->beginContent('//patient/event_container'); ?>
     )
 ));
 
-// Event actions
-$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => 'create-form'));
-
+$this->renderPartial('event_actions', array('form_id' => 'create-form'));
 ?>
 
 <?php $this->displayErrors($errors) ?>

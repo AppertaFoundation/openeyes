@@ -17,7 +17,6 @@
 
 namespace OEModule\OphCoCvi\controllers;
 
-use \optomPortalConnection;
 use \OEModule\OphCoCvi\models;
 use \OEModule\OphCoCvi\components\OphCoCvi_Manager;
 use \ODTTemplateManager;
@@ -28,7 +27,7 @@ use \SignatureQRCodeGenerator;
 class DefaultController extends \BaseEventTypeController
 {
     public $event_prompt;
-    public $cvi_limit = 2;
+    public $cvi_limit = 1;
     protected $cvi_manager;
 
     const ACTION_TYPE_LIST = 'List';
@@ -48,7 +47,7 @@ class DefaultController extends \BaseEventTypeController
             ($_GET['createnewcvi'] == 1) ? parent::actionCreate()
                 : $this->redirect(array($cancel_url));
         } else {
-            $cvi_events = \Yii::app()->moduleAPI->get('OphCoCvi');
+            $cvi_events = $this->getApp()->moduleAPI->get('OphCoCvi');
             $cvi_created = $cvi_events->getEvents(\Patient::model()->findByPk($this->patient->id));
             if (count($cvi_created) >= $this->cvi_limit) {
                 $cvi_url = array();
@@ -66,7 +65,7 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * Currently uses the OprnEditCvi operation to check for access
-     * 
+     *
      * @return boolean
      */
     public function checkListAccess()
@@ -75,18 +74,18 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * This is a granular permission check, and should be used in conjunection with checkEditAcess
+     *
      * @return boolean
      */
     public function checkClericalEditAccess()
     {
-        if ($this->checkAccess('admin')) {
-            return true;
-        }
-
         return $this->checkAccess('OprnEditClericalCvi', $this->getApp()->user->id);
     }
 
     /**
+     * This is a granular permission check, and should be used in conjunection with checkEditAcess
+     *
      * @return boolean
      */
     public function checkClinicalEditAccess()
@@ -94,6 +93,51 @@ class DefaultController extends \BaseEventTypeController
         return $this->checkAccess('OprnEditClinicalCvi', $this->getApp()->user->id);
     }
 
+    /**
+     * @return bool
+     */
+    public function checkEditAccess()
+    {
+        return $this->checkAccess('OprnEditCvi', $this->getApp()->user->id, array(
+            'firm' => $this->firm,
+            'event' => $this->event
+        ));
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkCreateAccess()
+    {
+        return  $this->checkAccess('OprnCreateCvi', $this->getApp()->user->id, array(
+            'firm' => $this->firm,
+            'episode' => $this->episode
+        ));
+    }
+
+    /**
+     * Ensure we invoke the CVI RBAC rules around requesting deletion.
+     *
+     * @return bool
+     */
+    public function checkRequestDeleteAccess()
+    {
+        return $this->checkEditAccess() && parent::checkRequestDeleteAccess();
+    }
+
+    /**
+     * Determine if the current event can be issued
+     *
+     * @return bool
+     */
+    public function canIssue()
+    {
+        if ($this->checkEditAccess()) {
+            return $this->getManager()->canIssueCvi($this->event);
+        } else {
+            return false;
+        }
+    }
 
     /**
      * @param models\Element_OphCoCvi_ClinicalInfo $element
@@ -102,8 +146,7 @@ class DefaultController extends \BaseEventTypeController
     protected function setElementDefaultOptions_Element_OphCoCvi_ClinicalInfo(
         models\Element_OphCoCvi_ClinicalInfo $element,
         $action
-    )
-    {
+    ) {
         // only populate values into the new element if a clinical user
         if ($action == 'create' && $this->checkClinicalEditAccess()) {
             if ($exam_api = $this->getApp()->moduleAPI->get('OphCiExamination')) {
@@ -187,6 +230,31 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * @throws \CHttpException
+     */
+    public function initActionIssue()
+    {
+        $this->initWithEventId($this->request->get('id'));
+        if (!$this->canIssue()) {
+            throw new \CHttpException(403, 'Event cannot be issued.');
+        }
+    }
+
+    /**
+     * @param $id
+     */
+    public function actionIssue($id)
+    {
+        if ($this->getManager()->issueCvi($this->event, $this->getApp()->user->id)) {
+            $this->getApp()->user->setFlash('success', 'The CVI has been successfully generated.');
+        } else {
+            $this->getApp()->user->setFlash('error', 'The CVI could not be generated.');
+        }
+
+        $this->redirect(array('/'.$this->event->eventType->class_name.'/default/pdfPrint/'.$id));
+    }
+
+    /**
      * Override to support the fact that users might not have permission to edit specific event elements.
      *
      * @param \ElementType $element_type
@@ -200,8 +268,7 @@ class DefaultController extends \BaseEventTypeController
         if (!$this->checkClinicalEditAccess() && $cls == 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo') {
             if ($this->event->isNewRecord) {
                 return array(new $cls);
-            }
-            else {
+            } else {
                 return array($this->getManager()->getClinicalElementForEvent($this->event));
             }
         }
@@ -209,8 +276,7 @@ class DefaultController extends \BaseEventTypeController
         if (!$this->checkClericalEditAccess() && $cls == 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo') {
             if ($this->event->isNewRecord) {
                 return array(new $cls);
-            }
-            else {
+            } else {
                 return array($this->getManager()->getClericalElementForEvent($this->event));
             }
         }
@@ -220,13 +286,47 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Element based name and value pair
-     *@param $id
+     * We set the validation scenario for the models based on whether the user is saving as draft or performing a full save
+     *
+     * @TODO extend this behaviour so that user can specify they are only interested in validating a specific section.
+     * @param $element
      */
-    public function getStructuredDataForPrintPDF($id) {
+    protected function setValidationScenarioForElement($element)
+    {
+        if  ($this->request->getPost('save', null)) {
+            // form has been submitted using the save button, so full validation rules should be applied to the elements
+            // TODO: validation for signature(s)
+            switch (get_class($element)) {
+                case 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo':
+                    if ($this->checkClinicalEditAccess()) {
+                        $element->setScenario('finalise');
+                    }
+                    break;
+                case 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo':
+                    if ($this->checkClericalEditAccess()) {
+                        $element->setScenario('finalise');
+                    }
+                    break;
+            }
+        }
+    }
+
+    protected function updateEventInfo()
+    {
+        $status = $this->getManager()->calculateStatus($this->event);
+        $this->event->info = $this->getManager()->getStatusText($status);
+        $this->event->save();
+    }
+
+    /**
+     * Element based name and value pair
+     * @param $id
+     */
+    public function getStructuredDataForPrintPDF($id)
+    {
         $data = array();
-        foreach($this->open_elements as $element) {
-            if(method_exists($element, "getStructuredDataForPrint")) {
+        foreach ($this->open_elements as $element) {
+            if (method_exists($element, "getStructuredDataForPrint")) {
                 $data = array_merge($data, $element->getStructuredDataForPrint());
             }
         }
@@ -235,7 +335,7 @@ class DefaultController extends \BaseEventTypeController
         $data["patientName"] = $this->patient->getFullName();
         // TODO: do we have other names for patient?
         $data["otherNames"] = '';
-        $data["patientDateOfBirth"] =  $this->patient->dob;
+        $data["patientDateOfBirth"] = $this->patient->dob;
         $data["nhsNumber"] = $this->patient->getNhsnum();
         $data["gpName"] = $this->patient->gp->getFullName();
         //$data["gpAddress"] = $this->patient->gp->contact->address->postcode."\n".$this->patient->gp->contact->address->address1;
@@ -247,13 +347,26 @@ class DefaultController extends \BaseEventTypeController
         $data["signatureName"] = $this->patient->getFullName();
         $data["signatureDate"] = date("d/m/Y");
 
-        $genderData = (strtolower($this->patient->getGenderString()) == 'male') ? array('','X','','') : array('','','','X');
+        $genderData = (strtolower($this->patient->getGenderString()) == 'male') ? array('', 'X', '', '') : array(
+            '',
+            '',
+            '',
+            'X'
+        );
         $dob = ($this->patient->dob) ? $this->patient->NHSDate('dob') : '';
-        $yearHeader = !empty($dob) ? array_merge(array(''),str_split(date('Y', strtotime($dob)))) : array('','','','','');
-        $postCodeHeader = array('','','','','');
+        $yearHeader = !empty($dob) ? array_merge(array(''), str_split(date('Y', strtotime($dob)))) : array(
+            '',
+            '',
+            '',
+            '',
+            ''
+        );
+        $postCodeHeader = array('', '', '', '', '');
         $spaceHolder = array('');
-        $data["genderTable"] = array(0=> array_merge($genderData, $spaceHolder, $yearHeader, $spaceHolder, $postCodeHeader ));
-        
+        $data["genderTable"] = array(
+            0 => array_merge($genderData, $spaceHolder, $yearHeader, $spaceHolder, $postCodeHeader)
+        );
+
         return $data;
     }
 
@@ -271,32 +384,13 @@ class DefaultController extends \BaseEventTypeController
         
         $signatureElement = $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature');
         //  we need to check if we already have a signature file linked
-        if(!$signatureElement->checkSignature()){
+        if (!$signatureElement->checkSignature()) {
             // we check if the signature is exists on the portal
-            $portalConnection = new optomPortalConnection();
-            $signatureData = $portalConnection->signatureSearch(null, \Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($event));
-           
-            if(is_array($signatureData) && isset($signatureData["image"]))
-            {
-                $imageFile = $portalConnection->createNewSignatureImage($signatureData["image"], $this->patient->id);
-                // save successful so we can attach the signature file to the event consent signature model
-                if($imageFile){
-                    $signatureElement->signature_file_id = $imageFile->id;
-                    $signatureElement->save();
-                    $signature = imagecreatefromstring($signatureElement->getDecryptedSignature());
-                }
-            }
-            else {
-                $QRContent = "@code:" . \Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($event) . "@key:" . $signatureElement->getEncryptionKey();
-
-                $QRHelper = new SignatureQRCodeGenerator();
-                $signature = $QRHelper->generateQRSignatureBox($QRContent);
-            }
-        }else{
+            $signature = $signatureElement->loadSignatureFromPortal();
+        } else {
             // we get the stored signature and creates a GD object from the data
             $signature = imagecreatefromstring($signatureElement->getDecryptedSignature());
         }
-
 
         //views/odtTemplates/cviTemplate.odt)
         $inputFile = 'cviTemplate.odt';
@@ -316,9 +410,8 @@ class DefaultController extends \BaseEventTypeController
        
         foreach($tables as $oneTable){
             $name = $oneTable['name'];
-            $data = $DH -> generateSimpleTableHashData( $oneTable );
-            $printHelper->fillTableByName( $name , $data, 'name' );
-            
+            $data = $DH->generateSimpleTableHashData($oneTable);
+            $printHelper->fillTableByName($name, $data, 'name');
         }
        
     //******* TEST DATAS!!

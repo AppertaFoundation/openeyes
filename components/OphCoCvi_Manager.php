@@ -24,6 +24,32 @@ use OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo;
 
 class OphCoCvi_Manager extends \CComponent
 {
+    public static $CVI_COMPLETE = 1;
+    public static $CVI_CLINICAL_COMPLETE = 2;
+    public static $CVI_CLERICAL_COMPLETE = 3;
+    public static $CVI_INCOMPLETE = 4;
+    public static $ISSUED = 5;
+
+    /**
+     * @param $status
+     * @return string
+     */
+    public function getStatusText($status)
+    {
+        $lookup = array(
+            self::$ISSUED => "Issued",
+            self::$CVI_COMPLETE => "Complete",
+            self::$CVI_CLINICAL_COMPLETE => 'Clinically Complete',
+            self::$CVI_CLERICAL_COMPLETE => 'Clerically Complete',
+            self::$CVI_INCOMPLETE => 'Incomplete',
+        );
+        if (isset($lookup[$status])) {
+            return $lookup[$status];
+        }
+
+        return "Unrecognised Status";
+    }
+
     protected $yii;
     /**
      * @var \EventType
@@ -70,6 +96,18 @@ class OphCoCvi_Manager extends \CComponent
     }
 
     /**
+     * Wrapper for starting a transaction.
+     *
+     * @return \CDbTransaction|null
+     */
+    protected function startTransaction()
+    {
+        return $this->yii->db->getCurrentTransaction() === null
+            ? $this->yii->db->beginTransaction()
+            : null;
+    }
+
+    /**
      * @param \Patient $patient
      * @return \Event[]
      */
@@ -78,31 +116,64 @@ class OphCoCvi_Manager extends \CComponent
         return \Event::model()->getEventsOfTypeForPatient($this->event_type, $patient);
     }
 
-    protected $elements_for_events = array();
+    protected $info_element_for_events = array();
 
     /**
      * @param $event
      * @param $element_class
      * @return \CActiveRecord|null
      */
-    protected function getElementForEvent($event, $element_class, $namespace = '\\OEModule\OphCoCvi\\models\\')
+    protected function getElementForEvent($event, $element_class)
     {
-        $cls = $namespace . $element_class;
+        $core_class = 'Element_OphCoCvi_EventInfo';
+        $namespaced_class = '\\OEModule\OphCoCvi\\models\\' . $core_class;
 
-        if (!isset($this->elements_for_events[$event->id])) {
-            $elements_for_events[$event->id] = array();
+        $cls_rel_map = array(
+            'Element_OphCoCvi_ClinicalInfo' => 'clinical_element',
+            'Element_OphCoCvi_ClericalInfo' => 'clerical_element',
+            'Element_OphCoCvi_ConsentSignature' => 'consent_element',
+        );
+
+        if (!isset($this->info_element_for_events[$event->id])) {
+            $this->info_element_for_events[$event->id] = $namespaced_class::model()->with(array_values($cls_rel_map))->findByAttributes(array('event_id' => $event->id));
         }
 
-        if (!isset($this->elements_for_events[$event->id][$cls])) {
-            $this->elements_for_events[$event->id][$cls] = $cls::model()->findByAttributes(array('event_id' => $event->id));
+        if (array_key_exists($element_class, $cls_rel_map)) {
+            return $this->info_element_for_events[$event->id]->{$cls_rel_map[$element_class]};
         }
+        elseif ($element_class == $core_class) {
+            return $this->info_element_for_events[$event->id];
+        }
+    }
 
-        return $this->elements_for_events[$event->id][$cls];
+    /**
+     * Convenience wrapper to clear out element data when put into specific states that we don't want to keep
+     *
+     * @TODO this might not be necessary if there's a sensible way to clear out the validation state of an ActiveRecord
+     * @param \Event $event
+     */
+    protected function resetElementStore(\Event $event = null)
+    {
+        if ($event) {
+            unset($this->info_element_for_events[$event->id]);
+        }
+        else {
+            $this->info_element_for_events = array();
+        }
     }
 
     /**
      * @param \Event $event
-     * @return \CActiveRecord|null
+     * @return null|Element_OphCoCvi_EventInfo
+     */
+    public function getEventInfoElementForEvent(\Event $event)
+    {
+        return $this->getElementForEvent($event, 'Element_OphCoCvi_EventInfo');
+    }
+
+    /**
+     * @param \Event $event
+     * @return null|Element_OphCoCvi_ClinicalInfo
      */
     public function getClinicalElementForEvent(\Event $event)
     {
@@ -111,13 +182,21 @@ class OphCoCvi_Manager extends \CComponent
 
     /**
      * @param \Event $event
-     * @return \CActiveRecord|null
+     * @return null|Element_OphCoCvi_ClericalInfo
      */
     public function getClericalElementForEvent(\Event $event)
     {
         return $this->getElementForEvent($event, 'Element_OphCoCvi_ClericalInfo');
     }
 
+    /**
+     * @param \Event $event
+     * @return null|Element_OphCoCvi_ConsentSignature
+     */
+    public function getConsentSignatureElement(\Event $event)
+    {
+        return $this->getElementForEvent($event, 'Element_OphCoCvi_ConsentSignature');
+    }
 
     /**
      * Generate the text display of the status of the CVI
@@ -137,8 +216,8 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function getDisplayStatusForEvent(\Event $event)
     {
-        $clinical = $this->getElementForEvent($event, 'Element_OphCoCvi_ClinicalInfo');
-        $info = $this->getElementForEvent($event, 'Element_OphCoCvi_EventInfo');
+        $clinical = $this->getClinicalElementForEvent($event);
+        $info = $this->getEventInfoElementForEvent($event);
 
         return $this->getDisplayStatus($clinical, $info);
     }
@@ -158,7 +237,7 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function getDisplayStatusDateForEvent(\Event $event)
     {
-        $clinical = $this->getElementForEvent($event, 'Element_OphCoCvi_ClinicalInfo');
+        $clinical = $this->getClinicalElementForEvent($event);
         return $clinical->examination_date;
     }
 
@@ -168,7 +247,7 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function getDisplayIssueDateForEvent(\Event $event)
     {
-        $info = $this->getElementForEvent($event, 'Element_OphCoCvi_EventInfo');
+        $info = $this->getEventInfoElementForEvent($event);
         return $info->getIssueDateForDisplay();
     }
 
@@ -195,6 +274,122 @@ class OphCoCvi_Manager extends \CComponent
         }
         return null;
     }
+
+    /**
+     * @param \Event $event
+     * @return bool
+     */
+    public function canIssueCvi(\Event $event)
+    {
+        if ($info = $this->getEventInfoElementForEvent($event)) {
+            if (!$info->is_draft) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+
+        if ($clinical = $this->getClinicalElementForEvent($event)) {
+            $clinical->setScenario('finalise');
+            if (!$clinical->validate()) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+
+        if ($clerical = $this->getClericalElementForEvent($event)) {
+            $clerical->setScenario('finalise');
+            if (!$clerical->validate()) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+
+        if ($signature = $this->getConsentSignatureElement($event)) {
+            if (!$signature->checkSignature()) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+
+
+        return true;
+    }
+
+    /**
+     * @param \Event $event
+     * @return bool
+     */
+    public function canEditEvent(\Event $event)
+    {
+        if ($info_element = $this->getEventInfoElementForEvent($event)) {
+            return $info_element->is_draft;
+        }
+        return false;
+    }
+
+    public function issueCvi(\Event $event, $user_id)
+    {
+        // begin transaction
+        $transaction = $this->startTransaction();
+
+        try {
+            // TODO: generate the PDF
+
+            // set the status of the event to complete and assign the PDF to the event
+            $info_element = $this->getEventInfoElementForEvent($event);
+            $info_element->is_draft = false;
+            $info_element->save();
+
+            $event->audit('event', 'cvi-issued', null, 'CVI Issued', array('user_id' => $user_id));
+
+            if ($transaction) {
+                $transaction->commit();
+            }
+            return true;
+        }
+        catch (\Exception $e) {
+            if ($transaction) {
+                $transaction->rollback();
+            }
+        }
+        return false;
+
+    }
+
+    /**
+     * @param \Event $event
+     * @return mixed
+     */
+    public function calculateStatus(\Event $event)
+    {
+        $clerical = $this->getClericalElementForEvent($event);
+        $clerical->setScenario('finalise');
+        $clerical_complete = $clerical->validate();
+
+        $clinical = $this->getClinicalElementForEvent($event);
+        $clinical->setScenario('finalise');
+        $clinical_complete = $clinical->validate();
+
+        $this->resetElementStore($event);
+
+        if ($clerical_complete && $clinical_complete) {
+            return self::$CVI_COMPLETE;
+        }
+        if ($clinical_complete) {
+            return self::$CVI_CLINICAL_COMPLETE;
+        }
+        if ($clerical_complete) {
+            return self::$CVI_CLERICAL_COMPLETE;
+        }
+
+        return self::$CVI_INCOMPLETE;
+    }
+
+
 
     /**
      * @param \CDbCriteria $criteria
@@ -307,4 +502,5 @@ class OphCoCvi_Manager extends \CComponent
             'criteria' => $criteria
         ));
     }
+
 }

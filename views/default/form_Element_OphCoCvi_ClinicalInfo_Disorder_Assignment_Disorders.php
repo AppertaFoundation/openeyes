@@ -2,13 +2,12 @@
     <div class="column large-3 end"><h3 class="inline-header">Disorders</h3></div>
 </div>
 <?php
-        foreach(OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder_Section::model()
-                    ->findAll('`active` = ?',array(1)) as $disorder_section) { ?>
+        foreach(OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder_Section::model()->getAllDisorderSections($element) as $disorder_section) { ?>
             <hr />
-            <?php echo CHtml::hiddenField("ophcocvi_clinicinfo_disorder_section_id[".$disorder_section->id."]" , $disorder_section->id, array('id' => 'hiddenInput')); ?>
+            <?php echo CHtml::hiddenField("ophcocvi_clinicinfo_disorder_section_id[".$disorder_section['disorder']->id."]" , $disorder_section['disorder']->id, array('id' => 'hiddenInput')); ?>
             <fieldset class="row">
                     <legend class="large-12 column">
-                        <?php echo $disorder_section->name; ?>
+                        <?php echo $disorder_section['disorder']->name; ?>
                     </legend>
                 </fieldset>
             <div class="sub-element-fields element-eyes row">
@@ -26,19 +25,19 @@
                         'element' => $element,
                         'form' => $form,
                         'disorder_section' => $disorder_section,
-                    ))?>
+                    ));?>
                 </div>
             </div>
 
             <?php
-                $comments = OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments::model()->getDisorderSectionComments($disorder_section->id,$element->id);
-                if($disorder_section->comments_allowed == 1){?>
+                if($disorder_section['disorder']->comments_allowed == 1)
+                { ?>
                 <fieldset class="row field-row">
-                    <div class="large-2 column large-push-2">
-                        <label><?php echo $disorder_section->comments_label; ?></label>
+                    <div class="large-4 column text-right">
+                        <label><?php echo $disorder_section['disorder']->comments_label; ?></label>
                     </div>
-                    <div class="large-4 column large-push-2 end">
-                        <?php echo  CHtml::textArea( "comments_disorder[".$disorder_section->id."]", $comments, array('rows'=>2, 'cols'=>40));?>
+                    <div class="large-7 column large-push-1 end">
+                        <?php echo  CHtml::textArea( "comments_disorder[".$disorder_section['disorder']->id."]", $disorder_section['comment'], array('rows'=>2, 'cols'=>40));?>
                     </div>
                 </fieldset>
             <?php }
