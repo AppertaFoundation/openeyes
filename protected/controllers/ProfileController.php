@@ -225,6 +225,68 @@ class ProfileController extends BaseController
             }
         }
 
-        echo '1';
+		echo "1";
+	}
+
+	public function actionSignature()
+    {
+        $user = User::model()->findByPk(Yii::app()->user->id);
+
+
+
+        $this->render('/profile/signature',array(
+            'user' => $user,
+        ));
+    }
+
+    public function actionGetSignatureFromPortal()
+    {
+        if(Yii::app()->user->id)
+        {
+            // TODO: query the portal here:
+            // TODO: get current unique ID for the user
+            // TODO: query the portal with the current unique ID
+            // TODO: if successfull save the signature as a ProtectedFile
+            // from the portal we receive binary data:
+            //$signatureFile = ProtectedFile::createForWriting();
+            $signatureFile = ProtectedFile::createFromFile('/var/www/signaturetest.jpg');
+            $signatureFile->save();
+            $user = User::model()->findByPk(Yii::app()->user->id);
+            $user->signature_file_id = $signatureFile->id;
+            if($user->save())
+            {
+                echo true;
+            }
+
+        }
+        echo false;
+
+    }
+
+    public function actionShowSignature()
+    {
+        if (Yii::app()->user->id) {
+            $user = User::model()->findByPk(Yii::app()->user->id);
+            if($user->signature_file_id)
+            {
+                $signatureFile = ProtectedFile::model()->findByPk($user->signature_file_id);
+                echo '/ProtectedFile/view/'.$signatureFile->id.'?name=signature';
+            }
+        }
+        echo false;
+    }
+
+    public function actionGenerateSignatureQR()
+    {
+        if (Yii::app()->user->id) {
+            $user = User::model()->findByPk(Yii::app()->user->id);
+            $qrImage = $user->generateSignatureQR();
+            // Output and free from memory
+            header('Content-Type: image/jpeg');
+
+            imagejpeg($qrImage);
+            imagedestroy($qrImage);
+
+        }
     }
 }

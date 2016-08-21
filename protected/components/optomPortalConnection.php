@@ -34,9 +34,11 @@ class optomPortalConnection
 
     public function __construct()
     {
-        $this->setConfig();
-        $this->initClient();
-        $this->login();
+        if($this->setConfig())
+        {
+            $this->initClient();
+            $this->login();
+        }
     }
 
     /**
@@ -44,7 +46,13 @@ class optomPortalConnection
      */
     protected function setConfig()
     {
-        $this->config = \Yii::app()->params['portal'];
+        if(\Yii::app()->params['portal'])
+        {
+            $this->config = \Yii::app()->params['portal'];
+        }else
+        {
+            return false;
+        }
     }
 
 
@@ -86,23 +94,25 @@ class optomPortalConnection
      */
     public function signatureSearch( $startDate = null, $uniqueId = null)
     {
-        if($uniqueId){
+        if($uniqueId && $this->client){
             $this->client->setUri($this->config['uri'] . str_replace('searches',$uniqueId, $this->config['endpoints']['signatures']));
             $method = 'GET';
             // just to make sure that start date is not specified
             $startDate = null;
-        }else {
+        }else if ($this->client)
+        {
             $this->client->setUri($this->config['uri'] . $this->config['endpoints']['signatures']);
             $method = 'POST';
         }
 
-        if($startDate) {
+        if($startDate && $this->client) {
             $this->client->setParameterPost(array('start_date' => $startDate));
         }
 
-        $response = $this->client->request($method);
-
-        return json_decode($response->getBody(), true);
+        if($this->client) {
+            $response = $this->client->request($method);
+            return json_decode($response->getBody(), true);
+        }
     }
 
 

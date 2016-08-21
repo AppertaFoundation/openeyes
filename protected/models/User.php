@@ -68,17 +68,17 @@ class User extends BaseActiveRecordVersioned
         );
     }
 
-    /**
-     * @return array validation rules for model attributes.
-     */
-    public function rules()
-    {
-        $commonRules = array(
-            // Added for uniqueness of username
-            array('username', 'unique', 'className' => 'User', 'attributeName' => 'username'),
-            array('id, username, first_name, last_name, email, active, global_firm_rights', 'safe', 'on' => 'search'),
-            array('username, first_name, last_name, email, active, global_firm_rights, is_doctor, title, qualifications, role, salt, password, is_clinical, is_consultant, is_surgeon, has_selected_firms,doctor_grade_id, registration_code', 'safe'),
-        );
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		$commonRules = array(
+			// Added for uniqueness of username
+			array('username', 'unique', 'className' => 'User', 'attributeName' => 'username'),
+			array('id, username, first_name, last_name, email, active, global_firm_rights', 'safe', 'on'=>'search'),
+			array('username, first_name, last_name, email, active, global_firm_rights, is_doctor, title, qualifications, role, salt, password, is_clinical, is_consultant, is_surgeon, has_selected_firms,doctor_grade_id, registration_code, signature_file_id', 'safe'),
+		);
 
         if (Yii::app()->params['auth_source'] == 'BASIC') {
             $user = Yii::app()->request->getPost('User');
@@ -148,26 +148,27 @@ class User extends BaseActiveRecordVersioned
         }
     }
 
-    /**
-     * @return array relational rules.
-     */
-    public function relations()
-    {
-        // NOTE: you may need to adjust the relation name and the related
-        // class name for the relations automatically generated below.
-        return array(
-            'firmUserAssignments' => array(self::HAS_MANY, 'FirmUserAssignment', 'user_id'),
-            'firms' => array(self::MANY_MANY, 'Firm', 'firm_user_assignment(firm_id, user_id)', 'condition' => 'firms.active = 1'),
-            'firmRights' => array(self::MANY_MANY, 'Firm', 'user_firm_rights(firm_id, user_id)'),
-            'serviceRights' => array(self::MANY_MANY, 'Service', 'user_service_rights(service_id, user_id)'),
-            'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
-            'firm_preferences' => array(self::HAS_MANY, 'UserFirmPreference', 'user_id'),
-            'preferred_firms' => array(self::HAS_MANY, 'Firm', 'firm_id', 'through' => 'firm_preferences', 'order' => 'firm_preferences.position DESC', 'limit' => 6),
-            'firmSelections' => array(self::MANY_MANY, 'Firm', 'user_firm(firm_id, user_id)', 'condition' => 'firmSelections.active = 1', 'order' => 'name asc'),
-            'siteSelections' => array(self::MANY_MANY, 'Site', 'user_site(site_id, user_id)', 'order' => 'name asc'),
-            'grade' => array(self::BELONGS_TO, 'DoctorGrade', 'doctor_grade_id'),
-        );
-    }
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
+			'firmUserAssignments' => array(self::HAS_MANY, 'FirmUserAssignment', 'user_id'),
+			'firms' => array(self::MANY_MANY, 'Firm', 'firm_user_assignment(firm_id, user_id)', 'condition' => 'firms.active = 1'),
+			'firmRights' => array(self::MANY_MANY, 'Firm', 'user_firm_rights(firm_id, user_id)'),
+			'serviceRights' => array(self::MANY_MANY, 'Service', 'user_service_rights(service_id, user_id)'),
+			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
+			'firm_preferences' => array(self::HAS_MANY, 'UserFirmPreference', 'user_id'),
+			'preferred_firms' => array(self::HAS_MANY, 'Firm', 'firm_id', 'through' => 'firm_preferences', 'order' => 'firm_preferences.position DESC', 'limit' => 6),
+			'firmSelections' => array(self::MANY_MANY, 'Firm', 'user_firm(firm_id, user_id)', 'condition' => 'firmSelections.active = 1', 'order' => 'name asc'),
+			'siteSelections' => array(self::MANY_MANY, 'Site', 'user_site(site_id, user_id)', 'order' => 'name asc'),
+			'grade' => array(self::BELONGS_TO, 'DoctorGrade', 'doctor_grade_id'),
+            'signature' => array(self::BELONGS_TO, 'ProtectedFile', 'signature_file_id'),
+		);
+	}
 
     public function changeFirm($firm_id)
     {
@@ -548,25 +549,35 @@ class User extends BaseActiveRecordVersioned
         }
     }
 
-    /**
-     * Return all firms that the user has access rights to.
-     *
-     * @return Firm[]
-     */
-    public function getAvailableFirms()
-    {
-        $crit = new CDbCriteria();
-        $crit->compare('active', 1);
-        if (!$this->global_firm_rights) {
-            $crit->join = 'left join firm_user_assignment fua on fua.firm_id = t.id and fua.user_id = :user_id '.
-                'left join user_firm_rights ufr on ufr.firm_id = t.id and ufr.user_id = :user_id '.
-                'left join service_subspecialty_assignment ssa on ssa.id = t.service_subspecialty_assignment_id '.
-                'left join user_service_rights usr on usr.service_id = ssa.service_id and usr.user_id = :user_id ';
-            $crit->addCondition('fua.id is not null or ufr.id is not null or usr.id is not null');
-            $crit->params['user_id'] = $this->id;
-        }
+	/**
+	 * Return all firms that the user has access rights to
+	 *
+	 * @return Firm[]
+	 */
+	public function getAvailableFirms()
+	{
+		$crit = new CDbCriteria;
+		$crit->compare('active', 1);
+		if (!$this->global_firm_rights) {
+			$crit->join = "left join firm_user_assignment fua on fua.firm_id = t.id and fua.user_id = :user_id " .
+				"left join user_firm_rights ufr on ufr.firm_id = t.id and ufr.user_id = :user_id " .
+				"left join service_subspecialty_assignment ssa on ssa.id = t.service_subspecialty_assignment_id " .
+				"left join user_service_rights usr on usr.service_id = ssa.service_id and usr.user_id = :user_id ";
+			$crit->addCondition("fua.id is not null or ufr.id is not null or usr.id is not null");
+			$crit->params['user_id'] = $this->id;
+		}
+		return Firm::model()->findAll($crit);
+	}
 
-        return Firm::model()->findAll($crit);
+	public function checkSignature()
+    {
+        if($this->signature_file_id)
+        {
+            return true;
+        }else
+        {
+            return false;
+        }
     }
 
     /**
@@ -581,5 +592,20 @@ class User extends BaseActiveRecordVersioned
         $crit->compare('username', $username);
 
         return $this->find($crit);
+    }
+
+    // TODO: merge the original function back here!
+    public function getAllConsultants()
+    {
+     return array();
+    }
+
+    public function generateSignatureQR()
+    {
+        $QRSignature = new SignatureQRCodeGenerator();
+        // TODO: need to get a unique code for the user and add a key here!
+        $QRimage = $QRSignature->createQRCode("@U:1@code:24344363@key:yuetuyetu752725762576257", 300);
+
+        return $QRimage;
     }
 }

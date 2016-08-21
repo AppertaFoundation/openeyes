@@ -15,11 +15,13 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+/*
 use ZipArchive;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 use DOMDocument;
 use DomXpath;
+*/
 /**
  * A class for odt document modify and generate pdf
  */
@@ -232,6 +234,11 @@ class ODTTemplateManager
     public function exchangeAllStringValuesByStyleName( $texts )
     {
         foreach( $texts as $text ){
+            // we replace the key with empty string to remove the sample content from the template
+            if(!isset($text['data']))
+            {
+                $text['data'] = "";
+            }
             $this->exchangeStringValueByStyleName( $text['name'], $text['data'] );   
         }
     }
