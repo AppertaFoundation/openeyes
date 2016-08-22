@@ -300,8 +300,12 @@ class ExaminationCreator
                     'ready' => $ready,
                     'comments' => $examination['patient']['comments'],
                 ));
-
-                $messageCreator->save('', array('event' => $examinationEvent->id));
+                $message = $messageCreator->save('', array('event' => $examinationEvent->id));
+                $emailSetting = \SettingInstallation::model()->find('`key` = "optom_comment_alert"');
+                if($emailSetting && $emailSetting->value){
+                    $recipients = explode(',', $emailSetting->value);
+                    $messageCreator->emailAlert($recipients, 'New Optom Comment', $message->message_text);
+                }
             }
         }
     }
