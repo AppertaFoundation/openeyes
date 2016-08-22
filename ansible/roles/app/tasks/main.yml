@@ -21,11 +21,16 @@
   when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'precise' and php_xdebug is defined
 
 # "Resolve" issues with the PHP.ini from geerlinguy.php being php7 specific. (Temp fix)
-- name: Move existing PHP.ini out of the way
-  command: creates=/etc/php5/apache2/php.ini.bak mv /etc/php5/apache2/php.ini /etc/php5/apache2/php.ini.bak
+- name: (re)Move existing PHP.ini out of the way
+  file:
+    path: /etc/php5/apache2/php.ini
+    state: absent
 
 - name: Link configured PHP.ini into Apache
-  command: creates=/etc/php5/apache2/php.ini ln -s /etc/php/7.0/apache2/php.ini /etc/php5/apache2/php.ini
+  file:
+    src: /etc/php/7.0/apache2/php.ini
+    dest: /etc/php5/apache2/php.ini
+    state: link
 
 # Remove XDebug SymLink from PHP CLI
 - name: Disable XDebug in PHP CLI
@@ -34,7 +39,15 @@
     state: absent
   when: php_xdebug is defined
 
-# Install project dependencies
+# Broken -> https://github.com/ansible/ansible-modules-extras/pull/1663
+# Install package.json (http://docs.ansible.com/ansible/npm_module.html)
+# - name: Install packages based on package.json.
+#   npm: path=/var/www/openeyes
+# Install JavaScript packages (http://docs.ansible.com/ansible/bower_module.html)
+# - name: Install packages based on bower.json.
+#   bower: path=/var/www/openeyes
+
+# Install project dependencies using composer (http://docs.ansible.com/ansible/composer_module.html)
 - name: Install composer dependencies (This can take up to 30 minutes to run the first time.)
   environment:
     COMPOSER_DISCARD_CHANGES: 1
