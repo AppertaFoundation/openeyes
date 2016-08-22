@@ -84,7 +84,7 @@ Is enabled in Apache by default and carries an up to 1 second time penalty on re
 	# php_xdebug:
 	#   - php5-xdebug
 
-Bt default Xdebug is disabled on the CLI due to [documented](https://getcomposer.org/doc/articles/troubleshooting.md#xdebug-impact-on-composer) performance issues when using composer.
+By default Xdebug is disabled on the CLI due to [documented](https://getcomposer.org/doc/articles/troubleshooting.md#xdebug-impact-on-composer) performance issues when using composer.
 
 #### Windows 10
 
