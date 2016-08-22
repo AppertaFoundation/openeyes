@@ -97,6 +97,9 @@ class MessageCreator
      * @param $message
      * @param OphCoMessaging_Message_MessageType $type
      * @param string                             $source
+     * @param string                             $alertAddress
+     *
+     * @return Element_OphCoMessaging_Message
      *
      * @throws \CDbException
      * @throws \Exception
@@ -131,6 +134,8 @@ class MessageCreator
         } else {
             throw new \CDbException('Event save failed: '.print_r($messageEvent->getErrors(), true));
         }
+
+        return $messageElement;
     }
 
     /**
@@ -158,4 +163,25 @@ class MessageCreator
 
         return $controller->renderInternal(\Yii::getPathOfAlias($this->messageTemplate).'.php', $this->messageData, true);
     }
+
+    /**
+     * Sends an email alert when a message is created
+     *
+     * @param $recipients
+     * @param $subject
+     * @param $content
+     *
+     * @return mixed
+     */
+    public function emailAlert(array $recipients, $subject, $content)
+    {
+        $message = \Yii::app()->mailer->newMessage();
+        $message->setFrom(array('noreply@openeyes.org.uk' => 'OpenEyes Alerts'));
+        $message->setTo($recipients);
+        $message->setSubject($subject);
+        $message->setBody($content);
+
+        return \Yii::app()->mailer->sendMessage($message);
+    }
+
 }
