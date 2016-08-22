@@ -569,15 +569,17 @@ class User extends BaseActiveRecordVersioned
 		return Firm::model()->findAll($crit);
 	}
 
-	public function checkSignature()
-    {
-        if($this->signature_file_id)
-        {
-            return true;
-        }else
-        {
-            return false;
+
+    public function getAllConsultants() {
+        $consultant_names = User::model()->findAll(array('order' => 'first_name asc'), 'id', 'first_name');
+        $consultant_name = array();
+        $i = 0;
+        foreach($consultant_names as $consultant) {
+            $consultant_name[$i]['id'] = $consultant->id;
+            $consultant_name[$i]['name'] = $consultant->getFullName();
+            $i++;
         }
+        return $consultant_name;
     }
 
     /**
@@ -594,10 +596,15 @@ class User extends BaseActiveRecordVersioned
         return $this->find($crit);
     }
 
-    // TODO: merge the original function back here!
-    public function getAllConsultants()
+    public function checkSignature()
     {
-     return array();
+        if($this->signature_file_id)
+        {
+            return true;
+        }else
+        {
+            return false;
+        }
     }
 
     public function generateSignatureQR()
