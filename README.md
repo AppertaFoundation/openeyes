@@ -99,7 +99,7 @@ You will need to have downloaded VC++ for Vagrant to be able to download base bo
 * `vagrant suspend` - Will suspend the machine
 * `vagrant destroy` - Will remove the machine build
 
-And if that's not enough there is the Vagrant [documentation](https://www.vagrantup.com/docs/) and also `vagrant help
+And if that's not enough there is the Vagrant [documentation](https://www.vagrantup.com/docs/) and also `vagrant help`
 
 #### Todo:
 
