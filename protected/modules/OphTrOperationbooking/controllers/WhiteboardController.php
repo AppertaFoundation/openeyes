@@ -58,7 +58,9 @@ class WhiteboardController extends BaseDashboardController
     {
         $id = Yii::app()->request->getParam('id');
         $whiteboard = OphTrOperationbooking_Whiteboard::model()->with('booking')->findByAttributes(array('event_id' => $id));
-        $this->setWhiteboard($whiteboard);
+        if($whiteboard){
+            $this->setWhiteboard($whiteboard);
+        }
     }
 
     /**
@@ -103,7 +105,7 @@ class WhiteboardController extends BaseDashboardController
             $whiteboard = new OphTrOperationbooking_Whiteboard();
             $whiteboard->loadData($id);
         }
-
+        $this->setWhiteboard($whiteboard);
 
         $this->render('view', array('data' => $whiteboard), false, true);
     }
