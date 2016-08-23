@@ -176,7 +176,8 @@ class MessageCreator
     public function emailAlert(array $recipients, $subject, $content)
     {
         $message = \Yii::app()->mailer->newMessage();
-        $message->setFrom(array('noreply@openeyes.org.uk' => 'OpenEyes Alerts'));
+        $from = (isset(\Yii::app()->params['from_address'])) ? \Yii::app()->params['from_address'] : 'noreply@openeyes.org.uk';
+        $message->setFrom(array($from => 'OpenEyes Alerts'));
         $message->setTo($recipients);
         $message->setSubject($subject);
         $message->setBody($content);
