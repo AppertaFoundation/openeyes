@@ -34,23 +34,33 @@
 .mdl-grid .mdl-card .mdl-card__title .mdl-card__title-text {
   font-size: 16px;
 }
-/* line 45, ../sass/whiteboard.scss */
+/* line 44, ../sass/whiteboard.scss */
+.mdl-grid .mdl-card .mdl-card__title .material-icons {
+  cursor: pointer;
+}
+/* line 48, ../sass/whiteboard.scss */
 .mdl-grid .mdl-card .mdl-card__supporting-text {
   min-height: 60px;
   font-size: 18px;
   line-height: 1.3em;
 }
-/* line 49, ../sass/whiteboard.scss */
+/* line 52, ../sass/whiteboard.scss */
 .mdl-grid .mdl-card .mdl-card__supporting-text dl {
   margin: 0;
 }
-/* line 51, ../sass/whiteboard.scss */
+/* line 54, ../sass/whiteboard.scss */
 .mdl-grid .mdl-card .mdl-card__supporting-text dl dt {
   display: inline-block;
   min-width: 150px;
 }
-/* line 55, ../sass/whiteboard.scss */
+/* line 58, ../sass/whiteboard.scss */
 .mdl-grid .mdl-card .mdl-card__supporting-text dl dd {
   display: inline-block;
   margin: 0;
+}
+/* line 63, ../sass/whiteboard.scss */
+.mdl-grid .mdl-card .mdl-card__supporting-text textarea {
+  font-size: inherit;
+  color: inherit;
+  width: 100%;
 }
