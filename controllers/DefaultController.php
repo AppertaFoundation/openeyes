@@ -117,6 +117,16 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * @return bool
+     */
+    public function checkPrintAccess()
+    {
+        // check that the user has the general edit cvi permission, but not the specific edit permission on
+        // the current event.
+        return $this->checkAccess('OprnEditCvi', $this->getApp()->user->id);
+    }
+
+    /**
      * Ensure we invoke the CVI RBAC rules around requesting deletion.
      *
      * @return bool
