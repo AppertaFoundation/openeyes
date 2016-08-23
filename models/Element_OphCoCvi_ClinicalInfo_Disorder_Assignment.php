@@ -19,7 +19,7 @@
 namespace OEModule\OphCoCvi\models;
 
 /**
- * This is the model class for table "et_ophcocvi_clinicinfo_disorders_assignment".
+ * This is the model class for table "et_ophcocvi_clinicinfo_disorder_assignment".
  *
  * The followings are the available columns in table:
  * @property string $id
