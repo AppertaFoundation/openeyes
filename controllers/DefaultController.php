@@ -276,6 +276,14 @@ class DefaultController extends \BaseEventTypeController
     protected function getElementsForElementType(\ElementType $element_type, $data)
     {
         $cls = $element_type->class_name;
+        if ($cls == 'OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo') {
+            if ($this->event->isNewRecord) {
+                return array(new $cls);
+            } else {
+                return array($this->getManager()->getEventInfoElementForEvent($this->event));
+            }
+        }
+
         if (!$this->checkClinicalEditAccess() && $cls == 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo') {
             if ($this->event->isNewRecord) {
                 return array(new $cls);

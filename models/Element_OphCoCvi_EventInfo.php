@@ -186,4 +186,6 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
 
         return $result;
     }
+
+    public $useContainerView = false;
 }
