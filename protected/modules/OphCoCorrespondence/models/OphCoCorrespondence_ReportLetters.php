@@ -117,9 +117,9 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
 		}
 
 		$this->letters = array();
-        $data->where($where,$where_params);
+		$data->where($where,$where_params);
 
-        
+
         if ($this->match_correspondence) {
             $data->join('site', 'l.site_id = site.id');
             $select[] = 'site.name';
@@ -128,6 +128,9 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
                 $data->andWhere('site.id = :site_id',array(':site_id' => $this->site_id) );
             }
         }
+        
+        $data->andWhere('e.deleted = 0');
+
 		$data->select(implode(',',$select));
 
 		$this->executeQuery($data);
