@@ -140,8 +140,7 @@ class OphCoCvi_Manager extends \CComponent
 
         if (array_key_exists($element_class, $cls_rel_map)) {
             return $this->info_element_for_events[$event->id]->{$cls_rel_map[$element_class]};
-        }
-        elseif ($element_class == $core_class) {
+        } elseif ($element_class == $core_class) {
             return $this->info_element_for_events[$event->id];
         }
     }
@@ -156,9 +155,45 @@ class OphCoCvi_Manager extends \CComponent
     {
         if ($event) {
             unset($this->info_element_for_events[$event->id]);
-        }
-        else {
+        } else {
             $this->info_element_for_events = array();
+        }
+    }
+
+    /**
+     * Wrapper to insert missing elements for a CVI event if they haven't been
+     * created (due to access restrictions)
+     *
+     * NB The inserted elements may be removed in the view context if the user still
+     * doesn't have the right to manage the data for that specific element.
+     *
+     * @param \Event $event
+     * @param bool $for_editing
+     * @return array|\BaseEventTypeElement[]
+     */
+    public function getEventElements(\Event $event, $for_editing = false)
+    {
+        if (!$for_editing) {
+            return $event->getElements();
+        } else {
+            $default = $event->eventType->getDefaultElements();
+            $current = $event->getElements();
+            if (count($current) == $default) {
+                // assume a match implies all the elements are already recorded for the event.
+                return $current;
+            }
+
+            $editable = array();
+            foreach ($default as $el) {
+                // check there's something in the current list as might be the last default elements that are not defined
+                if (isset($current[0]) && get_class($el) == get_class($current[0])) {
+                    // the order should be consistent across default and current.
+                    $editable[] = array_shift($current);
+                } else {
+                    $editable[] = $el;
+                }
+            }
+            return $editable;
         }
     }
 
@@ -261,6 +296,22 @@ class OphCoCvi_Manager extends \CComponent
     }
 
     /**
+     * @param \Event $event
+     * @return string
+     */
+    public function getTitle(\Event $event)
+    {
+        $title = $event->eventType->name;
+
+        if ($event->info) {
+            // this should always be set.
+            $title .= ' - ' . $event->info;
+        }
+
+        return $title;
+    }
+
+    /**
      * @param Element_OphCoCvi_EventInfo $event_info
      * @return \User|null
      */
@@ -344,14 +395,16 @@ class OphCoCvi_Manager extends \CComponent
             $info_element->is_draft = false;
             $info_element->save();
 
+            $event->info = $this->getStatusText(self::$ISSUED);
+            $event->save();
+
             $event->audit('event', 'cvi-issued', null, 'CVI Issued', array('user_id' => $user_id));
 
             if ($transaction) {
                 $transaction->commit();
             }
             return true;
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             if ($transaction) {
                 $transaction->rollback();
             }
@@ -362,17 +415,34 @@ class OphCoCvi_Manager extends \CComponent
 
     /**
      * @param \Event $event
+     * @return bool
+     */
+    public function isIssued(\Event $event)
+    {
+        $info_element = $this->getEventInfoElementForEvent($event);
+        return !$info_element->is_draft;
+    }
+
+    /**
+     * @param \Event $event
      * @return mixed
      */
     public function calculateStatus(\Event $event)
     {
-        $clerical = $this->getClericalElementForEvent($event);
-        $clerical->setScenario('finalise');
-        $clerical_complete = $clerical->validate();
+        if ($clerical = $this->getClericalElementForEvent($event)) {
+            $clerical->setScenario('finalise');
+            $clerical_complete = $clerical->validate();
+        } else {
+            $clerical_complete = false;
+        }
 
-        $clinical = $this->getClinicalElementForEvent($event);
-        $clinical->setScenario('finalise');
-        $clinical_complete = $clinical->validate();
+
+        if ($clinical = $this->getClinicalElementForEvent($event)) {
+            $clinical->setScenario('finalise');
+            $clinical_complete = $clinical->validate();
+        } else {
+            $clinical_complete = false;
+        }
 
         $this->resetElementStore($event);
 
@@ -388,7 +458,6 @@ class OphCoCvi_Manager extends \CComponent
 
         return self::$CVI_INCOMPLETE;
     }
-
 
 
     /**
@@ -437,7 +506,7 @@ class OphCoCvi_Manager extends \CComponent
      */
     private function handleIssuedFilter(\CDbCriteria $criteria, $filter = array())
     {
-        if (!isset($filter['show_issued']) || (isset($filter['show_issued']) && !(bool) $filter['show_issued'])) {
+        if (!isset($filter['show_issued']) || (isset($filter['show_issued']) && !(bool)$filter['show_issued'])) {
             $criteria->addCondition('t.is_draft = ?');
             $criteria->params[] = true;
         }
