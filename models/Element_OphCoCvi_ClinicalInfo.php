@@ -45,7 +45,10 @@ namespace OEModule\OphCoCvi\models;
  * @property User $usermodified
  * @property OphCoCvi_ClinicalInfo_LowVisionStatus $low_vision_status
  * @property OphCoCvi_ClinicalInfo_FieldOfVision $field_of_vision
- * @property Element_OphCoCvi_ClinicalInfo_Disorders_Assignment $disorderss
+ * @property Element_OphCoCvi_ClinicalInfo_Disorders_Assignment[] $cvi_disorder_assignments
+ * @property OphCoCvi_ClinicalInfo_Disorder[] $cvi_disorders
+ * @property OphCoCvi_ClinicalInfo_Disorder[] $left_affected_cvi_disorders
+ * @property OphCoCvi_ClinicalInfo_Disorder[] $right_affected_cvi_disorders
  * @property User $consultant
  */
 
@@ -120,10 +123,27 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
                 'field_of_vision_id'
             ),
             // probably more interested in relationship direct to disorders through this relation
-            'disorders' => array(
+            'cvi_disorder_assignments' => array(
                 self::HAS_MANY,
                 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment',
                 'element_id'
+            ),
+            'cvi_disorders' => array(
+                self::HAS_MANY,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder', 'ophcocvi_clinicinfo_disorder_id',
+                'through' => 'cvi_disorder_assignments'
+            ),
+            'left_affected_cvi_disorders' => array(
+                self::HAS_MANY,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder', 'ophcocvi_clinicinfo_disorder_id',
+                'through' => 'cvi_disorder_assignments',
+                'on' => 'cvi_disorder_assignments.eye_id = ' . \Eye::LEFT . ' AND cvi_disorder_assignments.affected = 1'
+            ),
+            'right_affected_cvi_disorders' => array(
+                self::HAS_MANY,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder', 'ophcocvi_clinicinfo_disorder_id',
+                'through' => 'cvi_disorder_assignments',
+                'on' => 'cvi_disorder_assignments.eye_id = ' . \Eye::RIGHT . ' AND cvi_disorder_assignments.affected = 1'
             ),
             'consultant' => array(self::BELONGS_TO, 'User', 'consultant_id'),
         );
@@ -291,12 +311,27 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         return $data;
     }
 
+    protected function getAffectedCviDisordersById($side)
+    {
+        if (!in_array($side, array('left', 'right'))) {
+            throw new \Exception("Invalid side value " . $side);
+        }
+        if (!isset($this->affected_cvi_disorders_by_id[$side])) {
+            $this->affected_cvi_disorders_by_id[$side] = array();
+            foreach ($this->{$side . '_affected_cvi_disorders'} as $cvi_disorder) {
+                $this->affected_cvi_disorders_by_id[$side][] = $cvi_disorder->id;
+            }
+        }
+        return $this->affected_cvi_disorders_by_id[$side];
+    }
+
     public function getDisordersForSection($disorder_section, $flag) {
         $data = array();
         if($flag == 0) {
             $data[] = array('','','','','');
         }
         $first = 1;
+
         foreach (OphCoCvi_ClinicalInfo_Disorder::model()
                      ->findAll('`active` = ? and section_id = ?',array(1, $disorder_section->id)) as $disorder) {
             $disorder_section_name = '';
@@ -316,6 +351,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
                 getDisorderSectionComments($disorder_section->id,$this->id);
             $data[] = array('', $disorder_section->comments_label.' : '.$comments, '','','');
         }
+        
         return $data;
     }
 
