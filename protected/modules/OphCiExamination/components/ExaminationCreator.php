@@ -299,6 +299,7 @@ class ExaminationCreator
                     'optom' => $examination['op_tom']['name'] . ' (' . $examination['op_tom']['goc_number'] . ')',
                     'ready' => $ready,
                     'comments' => $examination['patient']['comments'],
+                    'patient' => $episode->patient,
                 ));
                 $message = $messageCreator->save('', array('event' => $examinationEvent->id));
                 $emailSetting = \SettingInstallation::model()->find('`key` = "optom_comment_alert"');
