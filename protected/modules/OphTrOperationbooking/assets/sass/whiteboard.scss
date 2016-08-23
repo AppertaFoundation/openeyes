@@ -41,6 +41,9 @@
       .mdl-card__title-text {
         font-size: 16px;
       }
+      .material-icons {
+        cursor: pointer;
+      }
     }
     .mdl-card__supporting-text {
       min-height: 60px;
@@ -56,6 +59,11 @@
           display: inline-block;
           margin: 0;
         }
+      }
+      textarea {
+        font-size: inherit;
+        color: inherit;
+        width: 100%;
       }
     }
   }
