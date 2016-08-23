@@ -189,6 +189,7 @@ class Firm extends BaseActiveRecordVersioned
 
     /**
      * @param $include_non_subspecialty boolean defaults to false
+     *
      * @return array
      */
     public function getListWithSpecialties($include_non_subspecialty = false)
@@ -206,11 +207,12 @@ class Firm extends BaseActiveRecordVersioned
         foreach ($firms as $firm) {
             $display = $firm['name'];
             if ($firm['subspecialty']) {
-                $display .= ' (' . $firm['subspecialty'] . ')';
+                $display .= ' ('.$firm['subspecialty'].')';
             }
             $data[$firm['id']] = $display;
         }
         natcasesort($data);
+
         return $data;
     }
 
@@ -223,6 +225,7 @@ class Firm extends BaseActiveRecordVersioned
         foreach ($this->getListWithSpecialties() as $firm_id => $name) {
             $list[$firm_id] = $name;
         }
+
         return $list;
     }
 

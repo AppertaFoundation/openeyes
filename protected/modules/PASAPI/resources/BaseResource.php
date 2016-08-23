@@ -24,6 +24,7 @@ use OEModule\PASAPI\models\XpathRemap;
 abstract class BaseResource
 {
     protected static $resource_type;
+
     protected $version;
     protected $schema;
     private $audit_data;
@@ -388,6 +389,9 @@ abstract class BaseResource
         $model->$model_key = $this->getAssignedProperty($resource_key);
     }
 
+    /**
+     * @return bool
+     */
     public function shouldValidateRequired()
     {
         return !$this->partial_record;

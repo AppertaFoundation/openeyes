@@ -151,7 +151,7 @@ $current_episode = @$this->current_episode;
                                                 }
 
                                                 $imgName = 'small.png';
-                                                if ($event->is_automated) {
+                                                if ($event->is_automated && file_exists(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets'). '/img/small-auto.png')) {
                                                     $imgName = 'small-auto.png';
                                                 }
                                                 ?>

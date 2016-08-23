@@ -1,4 +1,4 @@
-<?php
+    <?php
 /**
  * OpenEyes.
  *
@@ -307,6 +307,7 @@ EOF;
         if ($error) {
             $this->setExpectedHttpError($error[0]);
         }
+
         $this->put('PartialUpdate', $partial, array(
             'X-OE-Partial-Record' => 1,
         ));

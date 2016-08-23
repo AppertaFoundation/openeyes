@@ -31,7 +31,7 @@
 </div>
 <div class="box admin">
 	<h2><?php echo $title ?></h2>
-	<form id="admin_email_recipients">
+	<form id="admin_workflows">
 		<table class="grid">
 			<thead>
 				<tr>

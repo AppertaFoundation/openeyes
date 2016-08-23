@@ -1,0 +1,16 @@
+---
+galaxy_info:
+  author: Stefan Wienert
+  description:  installs Wkhtmltox (wkhtmltopdf etc), also optional font config
+  company: pludoni GmbH
+  license: BSD
+  min_ansible_version: 1.7
+  platforms:
+  - name: Ubuntu
+    versions:
+    - all
+  categories:
+  - system
+  - web
+dependencies: []
+

@@ -17,6 +17,11 @@
  */
 require_once __DIR__.'/PASAPI_BaseTest.php';
 
+/**
+ * TODO: setup fixtures for dependent models such as GP.
+ *
+ * Class PASAPI_Patient_Test
+ */
 class PASAPI_Patient_Test extends PASAPI_BaseTest
 {
     protected $base_url_stub = 'Patient';
@@ -102,8 +107,8 @@ EOF;
     <TelephoneNumber>03040 6024378</TelephoneNumber>
     <EthnicGroup>A</EthnicGroup>
     <DateOfDeath/>
-    <PracticeCode>F001</PracticeCode>
-    <GpCode>G0102926</GpCode>
+    <PracticeCode>C82103</PracticeCode>
+    <GpCode>G3258868</GpCode>
 </Patient>
 EOF;
         $this->put('TEST02', $xml);
@@ -140,8 +145,8 @@ EOF;
     <TelephoneNumber>03040 6024378</TelephoneNumber>
     <EthnicGroup>A</EthnicGroup>
     <DateOfDeath/>
-    <PracticeCode>F001</PracticeCode>
-    <GpCode>G0102926</GpCode>
+    <PracticeCode>C82103</PracticeCode>
+    <GpCode>G3258868</GpCode>
 </Patient>
 EOF;
         $this->put('TESTUpdateOnly', $xml);
@@ -193,8 +198,8 @@ EOF;
     <TelephoneNumber>03040 6024378</TelephoneNumber>
     <EthnicGroup>A</EthnicGroup>
     <DateOfDeath/>
-    <PracticeCode>F001</PracticeCode>
-    <GpCode>G0102926</GpCode>
+    <PracticeCode>C82103</PracticeCode>
+    <GpCode>G3258868</GpCode>
 </Patient>
 EOF;
         $this->put('TEST03', $xml);
@@ -240,8 +245,8 @@ EOF;
     <TelephoneNumber>03040 6024378</TelephoneNumber>
     <EthnicGroup>A</EthnicGroup>
     <DateOfDeath/>
-    <PracticeCode>F001</PracticeCode>
-    <GpCode>G0102926</GpCode>
+    <PracticeCode>C82103</PracticeCode>
+    <GpCode>G3258868</GpCode>
 </Patient>
 EOF;
         $this->put('TESTUpdateOnly', $xml, array(
@@ -288,8 +293,8 @@ EOF;
     <TelephoneNumber>03040 6024378</TelephoneNumber>
     <EthnicGroup>A</EthnicGroup>
     <DateOfDeath/>
-    <PracticeCode>F001</PracticeCode>
-    <GpCode>G0102926</GpCode>
+    <PracticeCode>C82103</PracticeCode>
+    <GpCode>G3258868</GpCode>
 </Patient>
 EOF;
         // structure for expectation of values which can be merged with a new array to
@@ -303,6 +308,9 @@ EOF;
             'hos_num' => '4534563',
             'dob' => '1982-03-01',
             'nhsNumberStatus' => array('code' => '01'),
+            'ethnic_group' => array('code' => 'A'),
+            'gp' => array('nat_id' => 'G3258868'),
+            'practice' => array('code' => 'C82103'),
         );
 
         return array(
@@ -339,6 +347,18 @@ EOF;
             ),
             array(
                 $xml,
+                '<Patient><EthnicGroup/><GpCode /><PracticeCode /></Patient>',
+                array_merge(
+                    $original_expectation,
+                    array(
+                        'ethnic_group' => null,
+                        'gp' => null,
+                        'practice' => null,
+                    )
+                ),
+            ),
+            array(
+                $xml,
                 '<Patient><NHSNumberStatus>02</NHSNumberStatus><Gender/><DateOfBirth>1990-08-03</DateOfBirth></Patient>',
                 array_merge(
                     $original_expectation,
@@ -358,6 +378,7 @@ EOF;
             if (is_array($v)) {
                 $this->assertExpectedValuesMatch($v, $obj->$k);
             } else {
+                $this->assertNotNull($obj, "Expecting attribute value {$v} on null object");
                 $this->assertEquals($v, $obj->$k);
             }
         }
@@ -388,21 +409,139 @@ EOF;
         $this->assertExpectedValuesMatch($expected_values, $patient);
     }
 
-    public function testPartialUpdateErrorsForNewRecord()
+    public function testPartialUpdateAllowedForNewRecord()
     {
         $xml = <<<EOF
 <Patient>
     <NHSNumber>0123456789</NHSNumber>
     <HospitalNumber>010101010010101</HospitalNumber>
+    <FirstName>Test First</FirstName>
+    <Surname>Test Last</Surname>
+    <DateOfBirth>1978-03-01</DateOfBirth>
 </Patient>
 EOF;
 
-        $this->setExpectedHttpError(400);
-
-        $this->put('PartialUpdateError', $xml, array(
+        $this->put('PartialUpdateNewPatient', $xml, array(
             'X-OE-Partial-Record' => 1,
         ));
 
-        $this->assertXPathFound('/Failure');
+        $this->assertXPathFound('/Success');
+        $id = $this->xPathQuery('/Success//Id')->item(0)->nodeValue;
+
+        $patient = Patient::model()->findByPk($id);
+        $this->assertNotNull($patient);
+        $this->assertEquals('Test Last', $patient->last_name);
+    }
+
+    public function update_Provider()
+    {
+        // base xml patient to create for the test
+        $xml = <<<EOF
+<Patient>
+    <NHSNumber>456789123</NHSNumber>
+    <NHSNumberStatus>01</NHSNumberStatus>
+    <HospitalNumber>4534563</HospitalNumber>
+    <Title>MRS</Title>
+    <FirstName>Full</FirstName>
+    <Surname>Update</Surname>
+    <DateOfBirth>1982-03-01</DateOfBirth>
+    <Gender>F</Gender>
+    <AddressList>
+        <Address>
+            <Line1>82 Scarisbrick Lane</Line1>
+            <Line2/>
+            <City>Bethersden</City>
+            <County>West Yorkshire</County>
+            <Postcode>QA88 2GC</Postcode>
+            <Country>GB</Country>
+            <Type>HOME</Type>
+        </Address>
+    </AddressList>
+    <TelephoneNumber>03040 6024378</TelephoneNumber>
+    <EthnicGroup>A</EthnicGroup>
+    <DateOfDeath/>
+    <PracticeCode>C82103</PracticeCode>
+    <GpCode>G3258868</GpCode>
+</Patient>
+EOF;
+        // structure for expectation of values which can be merged with a new array to
+        // ensure a partial update request has worked as expected.
+        $original_expectation = array(
+            'title' => 'MRS',
+            'first_name' => 'Full',
+            'last_name' => 'Update',
+            'gender' => 'F',
+            'nhs_num' => '456789123',
+            'hos_num' => '4534563',
+            'dob' => '1982-03-01',
+            'nhsNumberStatus' => array('code' => '01'),
+            'ethnic_group' => array('code' => 'A'),
+            'gp' => array('nat_id' => 'G3258868'),
+            'practice' => array('code' => 'C82103'),
+        );
+
+        $update1 = <<<EOF
+<Patient>
+    <NHSNumber>456789123</NHSNumber>
+    <NHSNumberStatus>01</NHSNumberStatus>
+    <HospitalNumber>4534563</HospitalNumber>
+    <Title>Mr</Title>
+    <FirstName>Full</FirstName>
+    <Surname>Update</Surname>
+    <DateOfBirth>1982-03-01</DateOfBirth>
+    <Gender>F</Gender>
+    <AddressList>
+        <Address>
+            <Line1>82 Scarisbrick Lane</Line1>
+            <Line2/>
+            <City>Bethersden</City>
+            <County>West Yorkshire</County>
+            <Postcode>QA88 2GC</Postcode>
+            <Country>GB</Country>
+            <Type>HOME</Type>
+        </Address>
+    </AddressList>
+    <TelephoneNumber>03040 6024378</TelephoneNumber>
+</Patient>
+EOF;
+
+        return array(
+            array(
+                $xml,
+                $update1,
+                array_merge(
+                    $original_expectation,
+                    array(
+                        'title' => 'Mr',
+                        'gp' => null,
+                        'practice' => null,
+                        'ethnic_group' => null,
+                    )
+                ),
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider update_Provider
+     *
+     * @param $initial
+     * @param $update
+     * @param $expected_values
+     */
+    public function testUpdate($initial, $update, $expected_values)
+    {
+        $this->put('Update', $initial);
+
+        $id = $this->xPathQuery('/Success//Id')->item(0)->nodeValue;
+
+        $patient = Patient::model()->findByPk($id);
+        $this->assertNotNull($patient);
+
+        $this->put('Update', $update);
+
+        $patient = Patient::model()->findByPk($id);
+
+        $this->assertExpectedValuesMatch($expected_values, $patient);
     }
 }

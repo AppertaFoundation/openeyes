@@ -162,13 +162,9 @@ class PatientController extends BaseController
     public function actionSearch()
     {
         $term = \Yii::app()->request->getParam('term', '');
-
         $patientSearch = new PatientSearch();
         $dataProvider = $patientSearch->search($term);
-
         $itemCount = $dataProvider->totalItemCount;
-        $page_size = $dataProvider->getPagination()->getPageSize();
-
         $search_terms = $patientSearch->getSearchTerms();
 
         if ($itemCount == 0) {
@@ -204,12 +200,10 @@ class PatientController extends BaseController
             }
         } else {
             $this->renderPatientPanel = false;
-            $pages = ceil($itemCount / $page_size);
+
             $this->render('results', array(
                 'data_provider' => $dataProvider,
-                'pages' => $pages,
-                'page_num' => \Yii::app()->request->getParam('Patient_page', 1),
-                'items_per_page' => $page_size,
+                'page_num' => \Yii::app()->request->getParam('Patient_page', 0),
                 'total_items' => $itemCount,
                 'term' => $term,
                 'search_terms' => $patientSearch->getSearchTerms(),
