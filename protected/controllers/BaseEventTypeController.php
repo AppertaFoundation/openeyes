@@ -1766,13 +1766,7 @@ class BaseEventTypeController extends BaseModuleController
                     if (in_array(Helper::getNSShortname($element), $unique['element'])) {
                         $event_unique_code = UniqueCodeMapping::model()->findAllByAttributes(array('event_id' => $event->id));
                         if (!$event_unique_code) {
-                            $event_unique_code = UniqueCodeMapping::model();
-                            $event_unique_code->lock();
-                            $event_unique_code->unique_code_id = $this->getActiveUnusedUniqueCode();
-                            $event_unique_code->event_id = $event->id;
-                            $event_unique_code->isNewRecord = true;
-                            $event_unique_code->save();
-                            $event_unique_code->unlock();
+                            $this->createNewUniqueCodeMapping($event->id, null);
                         }
                     }
                 }
@@ -1780,27 +1774,6 @@ class BaseEventTypeController extends BaseModuleController
         }
     }
 
-    /**
-     * Getting the unused active unique codes.
-     *
-     * @return type
-     */
-    private function getActiveUnusedUniqueCode()
-    {
-        $event_unique_codes = UniqueCodeMapping::model()->findAll(array('select' => 'unique_code_id'));
-        $unique_codes_used = array();
-        foreach ($event_unique_codes as $event_unique_code) {
-            $unique_codes_used[] = $event_unique_code->unique_code_id;
-        }
-        $criteria = new CDbCriteria();
-        $criteria->addCondition('active = 1');
-        $criteria->addNotInCondition('id', $unique_codes_used);
-        $criteria->limit = 1;
-        $result = UniqueCodes::model()->findAll($criteria);
-        foreach ($result as $record) {
-            return $record->id;
-        }
-    }
 
     /**
      * set base js vars for use in the standard scripts for the controller.

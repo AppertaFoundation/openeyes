@@ -248,16 +248,26 @@ class ProfileController extends BaseController
             // TODO: query the portal with the current unique ID
             // TODO: if successfull save the signature as a ProtectedFile
             // from the portal we receive binary data:
-            //$signatureFile = ProtectedFile::createForWriting();
-            $signatureFile = ProtectedFile::createFromFile('/var/www/signaturetest.jpg');
-            $signatureFile->save();
+
             $user = User::model()->findByPk(Yii::app()->user->id);
-            $user->signature_file_id = $signatureFile->id;
-            if($user->save())
-            {
-                echo true;
+
+            $portalConnection = new optomPortalConnection();
+            if ($portalConnection) {
+                $signatureData = $portalConnection->signatureSearch(null,
+                    $user->generateUniqueCodeWithChecksum($this->getUniqueCodeForUser()));
             }
 
+            if (is_array($signatureData) && isset($signatureData["image"]) && $portalConnection) {
+                $signatureFile = $portalConnection->createNewSignatureImage($signatureData["image"], Yii::app()->user->id);
+                if($signatureFile)
+                {
+                    $user->signature_file_id = $signatureFile->id;
+                    if($user->save())
+                    {
+                        echo true;
+                    }
+                }
+            }
         }
         echo false;
 
@@ -265,12 +275,15 @@ class ProfileController extends BaseController
 
     public function actionShowSignature()
     {
-        if (Yii::app()->user->id) {
+        if (Yii::app()->user->id && Yii::app()->getRequest()->getParam("signaturePin")) {
             $user = User::model()->findByPk(Yii::app()->user->id);
             if($user->signature_file_id)
             {
-                $signatureFile = ProtectedFile::model()->findByPk($user->signature_file_id);
-                echo '/ProtectedFile/view/'.$signatureFile->id.'?name=signature';
+                $decodedImage = $user->getDecryptedSignature(Yii::app()->getRequest()->getParam("signaturePin"));
+                if($decodedImage)
+                {
+                    echo base64_encode($decodedImage);
+                }
             }
         }
         echo false;
@@ -279,14 +292,22 @@ class ProfileController extends BaseController
     public function actionGenerateSignatureQR()
     {
         if (Yii::app()->user->id) {
+
+            $QRSignature = new SignatureQRCodeGenerator();
+            // TODO: need to get a unique code for the user and add a key here!
+
             $user = User::model()->findByPk(Yii::app()->user->id);
-            $qrImage = $user->generateSignatureQR();
+            $finalUniqueCode = $user->generateUniqueCodeWithChecksum($this->getUniqueCodeForUser());
+
+            $QRimage = $QRSignature->createQRCode("@U:1@code:".$finalUniqueCode."@key:".md5(Yii::app()->user->id), 250);
+
             // Output and free from memory
             header('Content-Type: image/jpeg');
 
-            imagejpeg($qrImage);
-            imagedestroy($qrImage);
+            imagejpeg($QRimage);
+            imagedestroy($QRimage);
 
         }
     }
+
 }

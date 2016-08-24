@@ -607,12 +607,51 @@ class User extends BaseActiveRecordVersioned
         }
     }
 
-    public function generateSignatureQR()
+    /**
+     * @param $text
+     * @param $key
+     * @return string
+     */
+    protected function decryptSignature($text, $key)
     {
-        $QRSignature = new SignatureQRCodeGenerator();
-        // TODO: need to get a unique code for the user and add a key here!
-        $QRimage = $QRSignature->createQRCode("@U:1@code:24344363@key:yuetuyetu752725762576257", 300);
-
-        return $QRimage;
+        $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
+        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+        return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($text), MCRYPT_MODE_ECB, $iv));
     }
+
+
+    public function generateUniqueCodeWithChecksum($uniqueCodeId)
+    {
+        $uniqueCode = UniqueCodes::model()->findByPk($uniqueCodeId)->code;
+        $salt = (isset(Yii::app()->params['portal']['credentials']['client_id'])) ? Yii::app()->params['portal']['credentials']['client_id'] : '';
+        $check_digit1 = new CheckDigitGenerator(Yii::app()->params['institution_code'].$uniqueCode, $salt);
+        $check_digit2 = new CheckDigitGenerator($uniqueCode.Yii::app()->user->id, $salt);
+        $finalUniqueCode = Yii::app()->params['institution_code'].$check_digit1->generateCheckDigit().'-'.$uniqueCode.'-'.$check_digit2->generateCheckDigit();
+
+        return $finalUniqueCode;
+    }
+
+    protected function getUniqueCode()
+    {
+        $userUniqueCode = UniqueCodeMapping::model()->findByAttributes(array('user_id' => $this->id));
+        return $userUniqueCode->unique_code_id;
+    }
+
+    public function getDecryptedSignature($signaturePin)
+    {
+        if($signaturePin)
+        {
+            if($this->signature_file_id){
+                $signatureFile = ProtectedFile::model()->findByPk($this->signature_file_id);
+                $imageData = base64_decode($this->decryptSignature(file_get_contents ($signatureFile->getPath()), md5(md5($this->id).$this->generateUniqueCodeWithChecksum($this->getUniqueCode()).$signaturePin)));
+                if(strlen($imageData) > 100)
+                {
+                    return $imageData;
+                }
+            }
+        }
+        return false;
+    }
+
+
 }

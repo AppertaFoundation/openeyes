@@ -20,11 +20,15 @@ $(document).ready(function() {
 			'url': baseUrl + '/profile/showSignature',
 			'dataType': 'text',
 			'data': {
-				'pin': $('#signature_pin').val(),
+				'signaturePin': $('#signature_pin').val(),
 				'YII_CSRF_TOKEN': $('#YII_CSRF_TOKEN').val()
 			},
 			'success': function (result) {
-				$('#signature_image').append('<img src="'+result+'">');
+				if(result != false) {
+					$('#signature_image').append('<img src="data:image/png;base64,' + result + '">');
+				}else{
+					$('#signature_image').append('ERROR: Your PIN is not valid!');
+				}
 				enableButtons();
 			}
 		});

@@ -15,13 +15,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-/*
-use ZipArchive;
-use RecursiveIteratorIterator;
-use RecursiveDirectoryIterator;
-use DOMDocument;
-use DomXpath;
-*/
+// FPDI module is not working properly with the Yii Autoload so we have to include the parser class manually!
+
+require_once(str_replace("index.php","vendor/setasign/fpdi/pdf_parser.php", Yii::app()->getRequest()->getScriptFile()));
+
 /**
  * A class for odt document modify and generate pdf
  */
@@ -663,7 +660,7 @@ class ODTTemplateManager
     {
         ob_start();
         
-        $pdf = new \FPDI();
+        $pdf = new FPDI();
         $pageCount = $pdf->setSourceFile($this->outDir.'/'.$this->outFile);
         $tplIdx = $pdf->importPage( $pageNumber , '/MediaBox');
 

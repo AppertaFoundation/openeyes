@@ -46,9 +46,10 @@ class optomPortalConnection
      */
     protected function setConfig()
     {
-        if(\Yii::app()->params['portal'])
+        if(Yii::app()->params['portal'])
         {
-            $this->config = \Yii::app()->params['portal'];
+            $this->config = Yii::app()->params['portal'];
+            return true;
         }else
         {
             return false;
@@ -65,7 +66,7 @@ class optomPortalConnection
      */
     protected function initClient()
     {
-        $client = new \Zend_Http_Client($this->config['uri']);
+        $client = new Zend_Http_Client($this->config['uri']);
         $client->setHeaders('Accept', 'application/vnd.OpenEyesPortal.v1+json');
 
         $this->client = $client;
@@ -115,16 +116,15 @@ class optomPortalConnection
         }
     }
 
-
     /**
      * Creates a new ProtectedFile for the new signature image
      *
      * @param $imageData
      */
-    public function createNewSignatureImage($imageData, $patient)
+    public function createNewSignatureImage($imageData, $fileId)
     {
         $pFile = new \ProtectedFile();
-        $pFile = $pFile->createForWriting("cvi_patient_signature_".$patient);
+        $pFile = $pFile->createForWriting("cvi_signature_".$fileId);
 
         if(file_put_contents($pFile->getPath(), $imageData))
         {
