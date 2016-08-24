@@ -223,6 +223,16 @@ class DefaultController extends \BaseEventTypeController
             }
             $element->{$side . '_cvi_disorder_assignments'} = $cvi_assignments;
         }
+        $comments = array();
+        if (isset($data[$model_name]['cvi_disorder_section'])) {
+            foreach ($data[$model_name]['cvi_disorder_section'] as $id => $data_comments) {
+                $section_comment = new models\Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments();
+                $section_comment->ophcocvi_clinicinfo_disorder_section_id = $id;
+                $section_comment->comments = $data_comments['comments'];
+                $comments[] = $section_comment;
+            }
+        }
+        $element->cvi_disorder_section_comments = $comments;
     }
 
     /**
@@ -237,6 +247,8 @@ class DefaultController extends \BaseEventTypeController
             $side_data = isset($data[$model_name][$side.'_disorders']) ? $data[$model_name][$side.'_disorders'] : array();
             $element->updateDisorders($side, $side_data);
         }
+        $comments_data = isset($data[$model_name]['cvi_disorder_section']) ? $data[$model_name]['cvi_disorder_section'] : array();
+        $element->updateDisorderSectionComments($comments_data);
     }
 
     protected function setElementDefaultOptions_Element_OphCoCvi_DemographicInfo()

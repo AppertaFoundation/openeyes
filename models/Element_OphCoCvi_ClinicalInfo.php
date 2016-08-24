@@ -252,19 +252,19 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         // if the element has been saved before, then the assignment values will exist
         // and we can update, or delete those that are no longer required.
         while($assignment = array_shift($current)) {
-            if (in_array($assignment->ophcocvi_clinicinfo_disorder_id, $data)) {
-                $ass_data = $data[$current->ophcocvi_clinicinfo_disorder_id];
-                $current->affected = (boolean)$ass_data['affected'];
-                $current->main_cause = isset($ass_data['main_cause']) ? (boolean)$ass_data['main_cause'] : false;
+            if (in_array($assignment->ophcocvi_clinicinfo_disorder_id, array_keys($data))) {
+                $ass_data = $data[$assignment->ophcocvi_clinicinfo_disorder_id];
+                $assignment->affected = isset($ass_data['affected']) ? (boolean)$ass_data['affected'] : false;
+                $assignment->main_cause = isset($ass_data['main_cause']) ? (boolean)$ass_data['main_cause'] : false;
 
-                if (!$current->save()) {
-                    throw new \Exception('Unable to save CVI Disorder Assignment: ' . print_r($current->getErrors(), true));
+                if (!$assignment->save()) {
+                    throw new \Exception('Unable to save CVI Disorder Assignment: ' . print_r($assignment->getErrors(), true));
                 };
-                unset($data[$current->ophcocvi_clinicinfo_disorder_id]);
+                unset($data[$assignment->ophcocvi_clinicinfo_disorder_id]);
             }
             else {
                 if (!$assignment->delete()) {
-                    throw new \Exception('Unable to delete CVI Disorder Assignment: ' . print_r($current->getErrors(), true));
+                    throw new \Exception('Unable to delete CVI Disorder Assignment: ' . print_r($assignment->getErrors(), true));
                 }
             }
         }
@@ -275,11 +275,49 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             $ass->element_id = $this->id;
             $ass->eye_id = $eye_id;
             $ass->ophcocvi_clinicinfo_disorder_id = $cvi_disorder_id;
-            $ass->affected = (boolean)$values['affected'];
+            $ass->affected = isset($values['affected']) ? (boolean)$values['affected'] : false;
             $ass->main_cause = isset($values['main_cause']) ? (boolean)$values['main_cause'] : false;
             if (!$ass->save()) {
                 throw new \Exception('Unable to save CVI Disorder Assignment: ' .print_r($ass->getErrors(), true));
             };
+        }
+    }
+
+    /**
+     * Set the section comments on the element.
+     *
+     * @param $data
+     * @throws \CDbException
+     * @throws \Exception
+     */
+    public function updateDisorderSectionComments($data)
+    {
+        $current = $this->getRelated('cvi_disorder_section_comments', true);
+
+        while ($section_comment = array_shift($current)) {
+            if (in_array($section_comment->ophcocvi_clinicinfo_disorder_section_id, array_keys($data))) {
+                $comment_data = $data[$section_comment->ophcocvi_clinicinfo_disorder_section_id];
+                $section_comment->comments = isset($comment_data['comments']) ? $comment_data['comments'] : "";
+                if (!$section_comment->save()) {
+                    throw new \Exception('Unable to save CVI Disorder Section Comment: ' . print_r($section_comment->getErrors(), true));
+                }
+                unset($data[$section_comment->ophcocvi_clinicinfo_disorder_section_id]);
+            }
+            else {
+                if (!$section_comment->delete()) {
+                    throw new \Exception('Unable to delete CVI Disorder Section Comment: ' . print_r($section_comment->getErrors(), true));
+                }
+            }
+        }
+
+        foreach ($data as $section_id => $values) {
+            $section_comment = new Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments();
+            $section_comment->ophcocvi_clinicinfo_disorder_section_id = $section_id;
+            $section_comment->comments = isset($values['comments']) ? $values['comments'] : "";
+            $section_comment->element_id = $this->id;
+            if (!$section_comment->save()) {
+                throw new \Exception("Unable to save CVI Disorder Section Comment: " . print_r($section_comment->getErrors(), true));
+            }
         }
     }
 
@@ -319,20 +357,6 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             $data[] = array($key,($this->low_vision_status_id === $low_vision_status->id) ? 'X' : '');
         }
         return $data;
-    }
-
-    protected function getAffectedCviDisordersById($side)
-    {
-        if (!in_array($side, array('left', 'right'))) {
-            throw new \Exception("Invalid side value " . $side);
-        }
-        if (!isset($this->affected_cvi_disorders_by_id[$side])) {
-            $this->affected_cvi_disorders_by_id[$side] = array();
-            foreach ($this->{$side . '_affected_cvi_disorders'} as $cvi_disorder) {
-                $this->affected_cvi_disorders_by_id[$side][] = $cvi_disorder->id;
-            }
-        }
-        return $this->affected_cvi_disorders_by_id[$side];
     }
 
     public function getDisordersForSection($disorder_section, $flag) {

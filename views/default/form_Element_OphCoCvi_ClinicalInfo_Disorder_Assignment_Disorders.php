@@ -40,7 +40,7 @@ foreach ($this->getDisorderSections() as $disorder_section) { ?>
                 <?php
                 $section_comment = $element->getDisorderSectionComment($disorder_section);
                 $comments = $section_comment ? $section_comment->comments : null;
-                echo CHtml::textArea("comments_disorder[" . $disorder_section->id . "]",
+                echo CHtml::textArea(CHtml::modelName($element) . "[cvi_disorder_section][" . $disorder_section->id . "][comments]",
                     $comments, array('rows' => 2, 'cols' => 40)); ?>
             </div>
         </fieldset>
