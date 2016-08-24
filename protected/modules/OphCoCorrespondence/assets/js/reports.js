@@ -19,7 +19,7 @@
 $(document).ready(function() {
 	$(".lettersReport #add_letter_phrase").on("click", function(e) {
 		var container = $('.lettersReport .phraseList').first();
-		container.append('<div><input type="text" value="" name="phrases[]"/> <a class="removePhrase" href="#">Remove</a></div>');
+		container.append('<div><input type="text" value="" name="OphCoCorrespondence_ReportLetters[phrases][]"/> <a class="removePhrase" href="#">Remove</a></div>');
 		e.preventDefault();
 	});
 	$(".lettersReport").on("click", ".removePhrase", function(e) {
