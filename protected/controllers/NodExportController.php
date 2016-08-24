@@ -1765,8 +1765,10 @@ EOL;
             DROP TABLE IF EXISTS tmp_rco_nod_EpisodePostOpComplication_{$this->extractIdentifier};
             CREATE TABLE tmp_rco_nod_EpisodePostOpComplication_{$this->extractIdentifier} (
                     oe_event_id INT(10) NOT NULL,
+                    OperationId INT(10) NOT NULL,
                     Eye CHAR(1) NOT NULL,
-                    ComplicationTypeId INT(10) DEFAULT NULL
+                    ComplicationTypeId INT(10) DEFAULT NULL,
+                    ComplicationTypeDescription VARCHAR(64) DEFAULT NULL
             );
 EOL;
         return $query;
@@ -1777,37 +1779,78 @@ EOL;
         $query = <<<EOL
             INSERT INTO tmp_rco_nod_EpisodePostOpComplication_{$this->extractIdentifier} (
                 oe_event_id,
+                OperationId,
                 Eye,
-                ComplicationTypeId
+                ComplicationTypeId,
+                ComplicationTypeDescription
             ) 
             SELECT
-              c.oe_event_id,
-              'L' AS Eye,
-              ophciexamination_postop_complications.code AS ComplicationTypeId
-
-            FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
-            JOIN et_ophciexamination_postop_complications ON c.oe_event_id = et_ophciexamination_postop_complications.event_id
-            JOIN ophciexamination_postop_et_complications ON et_ophciexamination_postop_complications.id = ophciexamination_postop_et_complications.element_id
-            JOIN ophciexamination_postop_complications ON ophciexamination_postop_et_complications.complication_id = ophciexamination_postop_complications.id 
-            AND ( ophciexamination_postop_et_complications.eye_id = 1 OR ophciexamination_postop_et_complications.eye_id = 3);
+                c.oe_event_id
+                , (
+                /* Look up most recent operation outer query post op complication for same oe_episode */
+                SELECT eon.id
+                /* Start with same oe_episode as examination event (correlated from outer query) */
+                FROM event eon
+                JOIN event_type et
+                    ON et.id = eon.event_type_id 
+                /* Correlated operation notes to outer query for same oe_episode */
+                WHERE eon.episode_id = cev.episode_id
+                AND et.name = 'Operation Note'
+                AND eon.deleted = 0
+                /* Restrict to operations on or before examination post op complication date */
+                AND eon.event_date <= cev.event_date 
+                ORDER BY eon.event_date DESC
+                LIMIT 1
+                ) AS OperationId
+                , 'L' AS Eye
+                , poc.code AS ComplicationTypeId
+                , poc.name AS ComplicationTypeDescription
+                FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
+                JOIN et_ophciexamination_postop_complications epoc
+                    ON epoc.event_id = c.oe_event_id
+                JOIN ophciexamination_postop_et_complications epoce
+                    ON epoc.id = epoce.element_id
+                JOIN ophciexamination_postop_complications poc
+                    ON epoce.complication_id = poc.id 
+                /* Look up original oe_events to deterine oe_episode */
+                JOIN event cev
+                    ON cev.id = c.oe_event_id
+                WHERE epoce.eye_id IN (1, 3) /* 1 = LEFT EYE, 3 = BOTH EYES */
                 
+                UNION ALL
                 
-            INSERT INTO tmp_rco_nod_EpisodePostOpComplication_{$this->extractIdentifier} (
-                oe_event_id,
-                Eye,
-                ComplicationTypeId
-            ) 
-            SELECT
-              c.oe_event_id,
-              'L' AS Eye,
-              ophciexamination_postop_complications.code AS ComplicationTypeId
-
-            FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
-            JOIN et_ophciexamination_postop_complications ON c.oe_event_id = et_ophciexamination_postop_complications.event_id
-            JOIN ophciexamination_postop_et_complications ON et_ophciexamination_postop_complications.id = ophciexamination_postop_et_complications.element_id
-            JOIN ophciexamination_postop_complications ON ophciexamination_postop_et_complications.complication_id = ophciexamination_postop_complications.id 
-            AND ( ophciexamination_postop_et_complications.eye_id = 2 OR ophciexamination_postop_et_complications.eye_id = 3);
-                
+                SELECT
+                c.oe_event_id
+                , (
+                 /* Look up most recent operation outer query post op complication for same oe_episode */
+                 SELECT eon.id
+                 /* Start with same oe_episode as examination event (correlated from outer query) */
+                 FROM event eon
+                 JOIN event_type et
+                   ON et.id = eon.event_type_id 
+                 /* Correlated operation notes to outer query for same oe_episode */
+                 WHERE eon.episode_id = cev.episode_id
+                 AND et.name = 'Operation Note'
+                 AND eon.deleted = 0
+                 /* Restrict to operations on or before examination post op complication date */
+                 AND eon.event_date <= cev.event_date 
+                 ORDER BY eon.event_date DESC
+                 LIMIT 1
+                 ) AS OperationId
+                , 'R' AS Eye
+                , poc.code AS ComplicationTypeId
+                , poc.name AS ComplicationTypeDescription
+                FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
+                JOIN et_ophciexamination_postop_complications epoc
+                    ON epoc.event_id = c.oe_event_id
+                JOIN ophciexamination_postop_et_complications epoce
+                    ON epoc.id = epoce.element_id
+                JOIN ophciexamination_postop_complications poc
+                    ON epoce.complication_id = poc.id 
+                /* Look up original oe_events to deterine oe_episode */
+                JOIN event cev
+                    ON cev.id = c.oe_event_id
+                WHERE epoce.eye_id IN (2, 3) /* 2 = RIGHT EYE, 3 = BOTH EYES */ ;
 EOL;
         return $query;
         
@@ -1820,10 +1863,11 @@ EOL;
                 SELECT c.nod_episode_id as EpisodeId, c.oe_event_id as OperationId, p.Eye, p.ComplicationTypeId
                 FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
                 JOIN tmp_rco_nod_EpisodePostOpComplication_{$this->extractIdentifier} p ON c.oe_event_id = p.oe_event_id
+
 EOL;
         $dataQuery = array(
             'query' => $query,
-            'header' => array('EpisodeId', 'OperationId', 'Eye', 'ComplicationTypeId'),
+            'header' => array('EpisodeId', 'OperationId', 'Eye', 'ComplicationTypeId', 'ComplicationTypeDescription'),
         );
 
         $output = $this->saveCSVfile($dataQuery, 'EpisodePostOpComplication', null, 'EpisodeId');
@@ -1929,9 +1973,9 @@ EOL;
                 
                 
                 INSERT INTO tmp_rco_nod_EpisodeOperationCoPathology_{$this->extractIdentifier} (
-                    `oe_event_id`,
-                    `Eye`,
-                    `CoPathologyId`
+                    oe_event_id,
+                    Eye,
+                    CoPathologyId
                 ) 
                 SELECT
                     c.oe_event_id,
@@ -1945,8 +1989,8 @@ EOL;
 
                 FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
 
-                JOIN secondary_diagnosis ON c.`patient_id` = secondary_diagnosis.`patient_id`
-                JOIN `disorder` ON  secondary_diagnosis.`disorder_id` = `disorder`.id
+                JOIN secondary_diagnosis ON c.patient_id = secondary_diagnosis.patient_id
+                JOIN disorder ON  secondary_diagnosis.disorder_id = disorder.id
                 JOIN tmp_pathology_type ON LOWER(disorder.term) = LOWER(tmp_pathology_type.term);
 EOL;
     }
@@ -2176,7 +2220,7 @@ EOL;
                       ComplicationId
                   )
                       SELECT event_id AS oe_event_id,
-                        (SELECT `nod_code` FROM tmp_anesthesia_type WHERE at.`name` = `name`) AS AnaesthesiaTypeId,
+                        (SELECT nod_code FROM tmp_anesthesia_type WHERE at.name = name) AS AnaesthesiaTypeId,
                         IFNULL(
                             (SELECT nod_id FROM tmp_anaesthetic_delivery WHERE a.anaesthetic_delivery_id = oe_id),
                             0
@@ -2188,9 +2232,9 @@ EOL;
                         ) as ComplicationId
 
                         FROM et_ophtroperationnote_anaesthetic a
-                        JOIN `anaesthetic_type` `at` ON a.`anaesthetic_type_id` = at.`id`
-                        JOIN ophtroperationnote_anaesthetic_anaesthetic_complication ac ON a.`id` = ac.`et_ophtroperationnote_anaesthetic_id`
-                        JOIN ophtroperationnote_anaesthetic_anaesthetic_complications acs ON ac.`anaesthetic_complication_id` = acs.id
+                        JOIN anaesthetic_type at ON a.anaesthetic_type_id = at.id
+                        JOIN ophtroperationnote_anaesthetic_anaesthetic_complication ac ON a.id = ac.et_ophtroperationnote_anaesthetic_id
+                        JOIN ophtroperationnote_anaesthetic_anaesthetic_complications acs ON ac.anaesthetic_complication_id = acs.id
                         JOIN tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c ON c.oe_event_id = a.event_id;";
 
         return $query;
