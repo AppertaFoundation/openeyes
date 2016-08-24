@@ -89,11 +89,26 @@ class OphCoCvi_ClinicalInfo_Disorder_Section extends \BaseActiveRecordVersioned
         );
     }
 
+    /**
+     * Add Lookup behaviour
+     *
+     * @return array
+     */
     public function behaviors()
     {
         return array(
             'LookupTable' => 'LookupTable',
         );
+    }
+
+    /**
+     * always order by display_order
+     *
+     * @return array
+     */
+    public function defaultScope()
+    {
+        return array('order' => $this->getTableAlias(true, false).'.display_order asc');
     }
 
     /**

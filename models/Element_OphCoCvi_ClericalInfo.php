@@ -42,6 +42,7 @@ namespace OEModule\OphCoCvi\models;
  * @property OphCoCvi_ClericalInfo_PreferredInfoFmt $preferred_info_fmt
  * @property OphCoCvi_ClericalInfo_PatientFactor $factor
  * @property OphCoCvi_ClericalInfo_ContactUrgency $contact_urgency
+ * @property OphCoCvi_ClericalInfo_PatientFactor_Answer[] $patient_factor_answers
  * @property Language $preferred_language
  */
 
@@ -119,6 +120,11 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
                 'contact_urgency_id'
             ),
             'preferred_language' => array(self::BELONGS_TO, 'Language', 'preferred_language_id'),
+            'patient_factor_answers' => array(
+                self::HAS_MANY,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PatientFactor_Answer',
+                'element_id'
+            )
         );
     }
 
@@ -325,5 +331,19 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
                 $element_id);
         }
         return $factors;
+    }
+
+
+    /**
+     * @param OphCoCvi_ClericalInfo_PatientFactor $factor
+     * @return OphCoCvi_ClericalInfo_PatientFactor_Answer
+     */
+    public function getPatientFactorAnswer(OphCoCvi_ClericalInfo_PatientFactor $factor)
+    {
+        foreach ($this->patient_factor_answers as $answer) {
+            if ($answer->patient_factor_id == $factor->id) {
+                return $answer;
+            }
+        }
     }
 }

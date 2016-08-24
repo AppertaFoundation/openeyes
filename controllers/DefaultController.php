@@ -251,6 +251,24 @@ class DefaultController extends \BaseEventTypeController
         $element->updateDisorderSectionComments($comments_data);
     }
 
+    protected function setComplexAttributes_Element_OphCoCvi_ClericalInfo(models\Element_OphCoCvi_ClericalInfo $element, $data, $index)
+    {
+        $model_name = \CHtml::modelName($element);
+
+        $answers = array();
+        if (isset($data[$model_name]['patient_factors'])) {
+            foreach ($data[$model_name]['patient_factors'] as $id => $data_answer) {
+                $a = new models\OphCoCvi_ClericalInfo_PatientFactor_Answer();
+                $a->patient_factor_id = $id;
+                $a->is_factor = isset($data_answer['is_factor']) ? $data_answer['is_factor'] : null;
+                $a->comments = isset($data_answer['comments']) ? $data_answer['comments'] : null;
+                $answers[] = $a;
+            }
+        }
+
+        $element->patient_factor_answers = $answers;
+    }
+
     protected function setElementDefaultOptions_Element_OphCoCvi_DemographicInfo()
     {
 
@@ -602,9 +620,23 @@ class DefaultController extends \BaseEventTypeController
 
     }
 
+    /**
+     * Simple wrapper to get the disorder sections that should be rendered in the event form.
+     *
+     * @return mixed
+     */
     public function getDisorderSections()
     {
         return models\OphCoCvi_ClinicalInfo_Disorder_Section::model()->active()->findAll();
     }
 
+    /**
+     * Simple abstraction wrapper to get the patient factors that should be rendered in the event form.
+     *
+     * @return mixed
+     */
+    public function getPatientFactors()
+    {
+        return models\OphCoCvi_ClericalInfo_PatientFactor::model()->active()->findAll();
+    }
 }
