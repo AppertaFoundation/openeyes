@@ -80,6 +80,10 @@ class DefaultController extends \BaseEventTypeController
      */
     public function checkClericalEditAccess()
     {
+        if ($this->checkAdminAccess()) {
+            //TODO: consider encapsulating this in biz rule for edit clerical
+            return true;
+        }
         return $this->checkAccess('OprnEditClericalCvi', $this->getApp()->user->id);
     }
 
