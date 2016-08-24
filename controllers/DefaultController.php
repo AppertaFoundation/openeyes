@@ -225,6 +225,20 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
+    /**
+     * @param models\Element_OphCoCvi_ClinicalInfo $element
+     * @param $data
+     * @param $index
+     */
+    protected function saveComplexAttributes_Element_OphCoCvi_ClinicalInfo(models\Element_OphCoCvi_ClinicalInfo $element, $data, $index)
+    {
+        $model_name = \CHtml::modelName($element);
+        foreach (array('left', 'right') as $side) {
+            $side_data = isset($data[$model_name][$side.'_disorders']) ? $data[$model_name][$side.'_disorders'] : array();
+            $element->updateDisorders($side, $side_data);
+        }
+    }
+
     protected function setElementDefaultOptions_Element_OphCoCvi_DemographicInfo()
     {
 

@@ -132,15 +132,13 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
                 self::HAS_MANY,
                 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment',
                 'element_id',
-                'through' => 'cvi_disorder_assignments',
-                'on' => 'cvi_disorder_assignments.eye_id = ' . \Eye::LEFT
+                'on' => 'left_cvi_disorder_assignments.eye_id = ' . \Eye::LEFT
             ),
             'right_cvi_disorder_assignments' => array(
                 self::HAS_MANY,
                 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment',
                 'element_id',
-                'through' => 'cvi_disorder_assignments',
-                'on' => 'cvi_disorder_assignments.eye_id = ' . \Eye::RIGHT
+                'on' => 'right_cvi_disorder_assignments.eye_id = ' . \Eye::RIGHT
             ),
             'cvi_disorders' => array(
                 self::HAS_MANY,
@@ -233,75 +231,56 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         ));
     }
 
-    protected function afterSave()
+    /**
+     * Update the CVI Disorder status for this element.
+     *
+     * @param $side
+     * @param $data
+     * @throws \Exception
+     */
+    public function updateDisorders($side, $data)
     {
-        $sides = array('2'=>'right','1'=>'left');
-        foreach($sides as $side_value=>$side) {
-            if (!empty($_POST['ophcocvi_clinicinfo_disorder_id_'.$side])) {
-                $existing_comment_ids = array();
-                foreach (Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments::model()
-                             ->findAll('element_id = :elementId',
-                                 array(':elementId' => $this->id)) as $item) {
-                    $existing_comment_ids[] = $item->ophcocvi_clinicinfo_disorder_section_id;
-                }
-                $existing_assignment_ids = array();
-                foreach (Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()
-                             ->findAll('element_id = :elementId and eye_id = :eye_id',
-                                 array(':elementId' => $this->id,'eye_id'=>$side_value)) as $item) {
-                    $existing_assignment_ids[] = $item->ophcocvi_clinicinfo_disorder_id;
-                }
-                foreach ($_POST['ophcocvi_clinicinfo_disorder_section_id'] as $sectionId) {
-                    foreach ($_POST['ophcocvi_clinicinfo_disorder_id_'.$side] as $id) {
-                        if(isset($_POST['affected_'.$side][$sectionId][$id]) && !in_array($id,$existing_assignment_ids)) {
-                            $disorders = new Element_OphCoCvi_ClinicalInfo_Disorder_Assignment;
-                            $disorders->element_id = $this->id;
-                            $disorders->eye_id = $side_value;
-                            $disorders->ophcocvi_clinicinfo_disorder_id = $id;
-                            $disorders->affected = $_POST['affected_'.$side][$sectionId][$id];
-                            $disorders->main_cause = isset($_POST['main_cause_'.$side][$sectionId][$id]) ? $_POST['main_cause_'.$side][$sectionId][$id] : 0;
-                            if (!$disorders->save()) {
-                                throw new Exception('Unable to save MultiSelect item: '.print_r($disorders->getErrors(),true));
-                            }
-                        }
-                        else if(isset($_POST['affected_'.$side][$sectionId][$id])) {
-                            $criteria = new \CDbCriteria;
-                            $criteria->compare('element_id', $this->id);
-                            $criteria->compare('eye_id', $side_value);
-                            $criteria->compare('ophcocvi_clinicinfo_disorder_id', $id);
-                            $disorders = Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()->find($criteria);
-                            if(isset($disorders)) {
-                                $disorders->affected = $_POST['affected_'.$side][$sectionId][$id];
-                                $disorders->main_cause = (isset($_POST['main_cause_'.$side][$sectionId][$id]) &&
-                                    isset($_POST['affected_'.$side][$sectionId][$id]) &&
-                                    ($_POST['affected_'.$side][$sectionId][$id] == 1)) ?
-                                        $_POST['main_cause_'.$side][$sectionId][$id] : 0;
-                                $disorders->update();
-                            }
-                        }
-                    }
-                    if(isset($_POST['comments_disorder'][$sectionId]) && $_POST['comments_disorder'][$sectionId] != ''
-                        && !in_array($sectionId,$existing_comment_ids)) {
-                        $disorder_comments = new Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments;
-                        $disorder_comments->element_id = $this->id;
-                        $disorder_comments->ophcocvi_clinicinfo_disorder_section_id = $sectionId;
-                        $disorder_comments->comments = $_POST['comments_disorder'][$sectionId];
-                        if (!$disorder_comments->save()) {
-                            throw new Exception('Unable to save MultiSelect item: '.print_r($disorder_comments->getErrors(),true));
-                        }
-                    }
-                    else if(isset($_POST['comments_disorder'][$sectionId]) && in_array($sectionId,$existing_comment_ids)){
-                        $criteria = new \CDbCriteria;
-                        $criteria->compare('element_id', $this->id);
-                        $criteria->compare('ophcocvi_clinicinfo_disorder_section_id', $sectionId);
-                        $disorder_comments = Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments::model()->find($criteria);
-                        $disorder_comments->comments = $_POST['comments_disorder'][$sectionId];
-                        $disorder_comments->save();
-                    }
+        if (!in_array($side, array('left', 'right'))) {
+            throw new \Exception("invalid side specification");
+        }
+
+        $eye_id = $side == 'left' ? \Eye::LEFT : \Eye::RIGHT;
+
+        // ensure we're manipulating what is currently in the db
+        $current = $this->getRelated($side . "_cvi_disorder_assignments", true);
+
+        // if the element has been saved before, then the assignment values will exist
+        // and we can update, or delete those that are no longer required.
+        while($assignment = array_shift($current)) {
+            if (in_array($assignment->ophcocvi_clinicinfo_disorder_id, $data)) {
+                $ass_data = $data[$current->ophcocvi_clinicinfo_disorder_id];
+                $current->affected = (boolean)$ass_data['affected'];
+                $current->main_cause = isset($ass_data['main_cause']) ? (boolean)$ass_data['main_cause'] : false;
+
+                if (!$current->save()) {
+                    throw new \Exception('Unable to save CVI Disorder Assignment: ' . print_r($current->getErrors(), true));
+                };
+                unset($data[$current->ophcocvi_clinicinfo_disorder_id]);
+            }
+            else {
+                if (!$assignment->delete()) {
+                    throw new \Exception('Unable to delete CVI Disorder Assignment: ' . print_r($current->getErrors(), true));
                 }
             }
         }
 
-        return parent::afterSave();
+        // create new assignments that don't yet exist for the element
+        foreach ($data as $cvi_disorder_id => $values) {
+            $ass = new Element_OphCoCvi_ClinicalInfo_Disorder_Assignment();
+            $ass->element_id = $this->id;
+            $ass->eye_id = $eye_id;
+            $ass->ophcocvi_clinicinfo_disorder_id = $cvi_disorder_id;
+            $ass->affected = (boolean)$values['affected'];
+            $ass->main_cause = isset($values['main_cause']) ? (boolean)$values['main_cause'] : false;
+            if (!$ass->save()) {
+                throw new \Exception('Unable to save CVI Disorder Assignment: ' .print_r($ass->getErrors(), true));
+            };
+        }
     }
 
     /**
