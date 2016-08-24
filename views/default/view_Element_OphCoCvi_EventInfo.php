@@ -17,24 +17,4 @@
 
 ?>
 
-
-<div class="element-data">
-    <div class="row data-row">
-        <div class="large-2 column">
-            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('is_draft')) ?>:</div>
-        </div>
-        <div class="large-10 column end">
-            <div class="data-value"><?php echo $element->is_draft ? 'Yes' : 'No' ?></div>
-        </div>
-    </div>
-    <div class="row data-row">
-        <div class="large-2 column">
-            <div
-                class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('generated_document_id')) ?></div>
-        </div>
-        <div class="large-10 column end">
-            <div
-                class="data-value"><?php echo $element->generated_document ? $element->generated_document->name : 'None' ?></div>
-        </div>
-    </div>
-</div>
+<?php // currently don't render anything from event info in the view context ?>

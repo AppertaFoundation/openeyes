@@ -169,7 +169,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
         if (!empty($_POST['ophcocvi_clinicinfo_patient_factor_id'])) {
             $existing_ids = array();
             foreach (OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->findAll('element_id = :elementId', array(':elementId' => $this->id)) as $item) {
-                $existing_ids[] = $item->ophcocvi_clinicinfo_patient_factor_id;
+                $existing_ids[] = $item->patient_factor_id;
             }
             foreach ($_POST['ophcocvi_clinicinfo_patient_factor_id'] as $id) {
                 if (!in_array($id, $existing_ids) && isset($_POST['is_factor'][$id])) {

@@ -30,15 +30,15 @@ class m160725_134546_event_type_OphCoCvi extends CDbMigration
 		}
 
 		if (!$this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name and event_type_id=:eventTypeId', array(':name'=>'Clinical Info',':eventTypeId'=>$event_type['id']))->queryRow()) {
-			$this->insert('element_type', array('name' => 'Clinical Info','class_name' => 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo', 'event_type_id' => $event_type['id'], 'display_order' => 1, 'required' => 1));
+			$this->insert('element_type', array('name' => 'Clinical Info','class_name' => 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo', 'event_type_id' => $event_type['id'], 'display_order' => 10, 'required' => 1));
 		}
 
 		if (!$this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name and event_type_id=:eventTypeId', array(':name'=>'Consent Signature',':eventTypeId'=>$event_type['id']))->queryRow()) {
-			$this->insert('element_type', array('name' => 'Consent Signature','class_name' => 'OEModule\OphCoCvi\models\Element_OphCoCvi_ConsentSignature', 'event_type_id' => $event_type['id'], 'display_order' => 1, 'required' => 1));
+			$this->insert('element_type', array('name' => 'Consent Signature','class_name' => 'OEModule\OphCoCvi\models\Element_OphCoCvi_ConsentSignature', 'event_type_id' => $event_type['id'], 'display_order' => 20, 'required' => 1));
 		}
 
 		if (!$this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name and event_type_id=:eventTypeId', array(':name'=>'Clerical Info',':eventTypeId'=>$event_type['id']))->queryRow()) {
-			$this->insert('element_type', array('name' => 'Clerical Info','class_name' => 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo', 'event_type_id' => $event_type['id'], 'display_order' => 1, 'required' => 1));
+			$this->insert('element_type', array('name' => 'Clerical Info','class_name' => 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo', 'event_type_id' => $event_type['id'], 'display_order' => 30, 'required' => 1));
 		}
 
 
