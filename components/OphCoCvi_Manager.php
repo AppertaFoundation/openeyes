@@ -521,7 +521,7 @@ class OphCoCvi_Manager extends \CComponent
 
         return $document->storePDF();
     }
-    
+
     public function generateConsentForm(\Event $event)
     {
         $document = $this->populateCviCertificate($event);

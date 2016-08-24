@@ -34,6 +34,7 @@ class DefaultController extends \BaseEventTypeController
 
     protected static $action_types = array(
         'consentsignature' => self::ACTION_TYPE_PRINT,
+        'issue' => self::ACTION_TYPE_EDIT,
         'list' => self::ACTION_TYPE_LIST
     );
 
@@ -276,7 +277,7 @@ class DefaultController extends \BaseEventTypeController
      */
     public function initActionIssue()
     {
-        $this->initWithEventId($this->request->get('id'));
+        $this->initWithEventId($this->request->getParam('id'));
         if (!$this->canIssue()) {
             throw new \CHttpException(403, 'Event cannot be issued.');
         }
