@@ -156,7 +156,7 @@ $logoHelper = new LogoHelper();
 								<td><?php echo $patient->getGenderString() ?></td>
 							</tr>
 							<tr>
-								<th>Moorfield Consultant</th>
+								<th>Trust Consultant</th>
 								<td><?php echo $service_info->consultant->getConsultantName() ?></td>
 							</tr>
 							<tr>
