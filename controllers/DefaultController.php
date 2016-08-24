@@ -33,6 +33,7 @@ class DefaultController extends \BaseEventTypeController
     const ACTION_TYPE_LIST = 'List';
 
     protected static $action_types = array(
+        'consentsignature' => self::ACTION_TYPE_PRINT,
         'list' => self::ACTION_TYPE_LIST
     );
 
@@ -124,6 +125,10 @@ class DefaultController extends \BaseEventTypeController
      */
     public function checkPrintAccess()
     {
+        if ($this->checkAdminAccess()) {
+            return true;
+        }
+
         // check that the user has the general edit cvi permission, but not the specific edit permission on
         // the current event.
         return $this->checkAccess('OprnEditCvi', $this->getApp()->user->id) && $this->getManager()->isIssued($this->event);
@@ -403,57 +408,15 @@ class DefaultController extends \BaseEventTypeController
         $this->event->save();
     }
 
-    /**
-     * Element based name and value pair.
-     *
-     * @param $id
-     */
-    public function getStructuredDataForPrintPDF($id)
+    public function initActionConsentSignature()
     {
-        $data = array();
-        foreach ($this->open_elements as $element) {
-            if (method_exists($element, "getStructuredDataForPrint")) {
-                $data = array_merge($data, $element->getStructuredDataForPrint());
-            }
-        }
-        // TODO: we need to match the keys here!
-        // we also need a method to generate the data structure with the ODTDataHandler!
-        $data["patientName"] = $this->patient->getFullName();
-        // TODO: do we have other names for patient?
-        $data["otherNames"] = '';
-        $data["patientDateOfBirth"] = $this->patient->dob;
-        $data["nhsNumber"] = $this->patient->getNhsnum();
-        $data["gpName"] = $this->patient->gp->getFullName();
-        //$data["gpAddress"] = $this->patient->gp->contact->address->postcode."\n".$this->patient->gp->contact->address->address1;
-        $data["gpAddress"] = '';
-        $data["gpTel"] = '';
-        $data["patientAddress"] = $this->patient->getSummaryAddress();
-        $data["patientEmail"] = ''; // TODO: we need a get email address function
-        $data["patientTel"] = $this->patient->getPrimary_phone();
-        $data["signatureName"] = $this->patient->getFullName();
-        $data["signatureDate"] = date("d/m/Y");
+        $this->initWithEventId($this->request->getParam('id'));
+    }
 
-        $genderData = (strtolower($this->patient->getGenderString()) == 'male') ? array('', 'X', '', '') : array(
-            '',
-            '',
-            '',
-            'X'
-        );
-        $dob = ($this->patient->dob) ? $this->patient->NHSDate('dob') : '';
-        $yearHeader = !empty($dob) ? array_merge(array(''), str_split(date('Y', strtotime($dob)))) : array(
-            '',
-            '',
-            '',
-            '',
-            ''
-        );
-        $postCodeHeader = array('', '', '', '', '');
-        $spaceHolder = array('');
-        $data["genderTable"] = array(
-            0 => array_merge($genderData, $spaceHolder, $yearHeader, $spaceHolder, $postCodeHeader)
-        );
-
-        return $data;
+    public function actionConsentSignature($id)
+    {
+        $pdf = $this->getManager()->generateConsentForm($this->event);
+        $pdf->getPDF();
     }
 
     /**
@@ -461,79 +424,8 @@ class DefaultController extends \BaseEventTypeController
      */
     public function actionPDFPrint($id)
     {
-        if (!$event = \Event::model()->findByPk($id)) {
-            throw new Exception("Event not found: $id");
-        }
-        
-        $event->lock();
         $this->printInit($id);
-        
-        $signatureElement = $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature');
-        //  we need to check if we already have a signature file linked
-        if (!$signatureElement->checkSignature()) {
-            // we check if the signature is exists on the portal
-            $signature = $signatureElement->loadSignatureFromPortal();
-        } else {
-            // we get the stored signature and creates a GD object from the data
-            $signature = imagecreatefromstring($signatureElement->getDecryptedSignature());
-        }
 
-        //views/odtTemplates/cviTemplate.odt)
-        $inputFile = 'cviTemplate.odt';
-        $printHelper = new ODTTemplateManager( 
-                $inputFile , 
-                realpath(__DIR__ . '/..').'/views/odtTemplate', 
-                \Yii::app()->basePath.'/runtime/cache/cvi/',
-                'CVICert_'.\Yii::app()->user->id.'_'.rand().'.odt'
-        );
-        
-      
-       
-        $DH = new ODTDataHandler();
-        $DH -> setTableAndSimpleTextDataFromArray( $this->getStructuredDataForPrintPDF($id) );
-        
-        $tables = $DH -> gettables();
-       
-        foreach($tables as $oneTable){
-            $name = $oneTable['name'];
-            $data = $DH->generateSimpleTableHashData($oneTable);
-            $printHelper->fillTableByName($name, $data, 'name');
-        }
-       
-    //******* TEST DATAS!!
-       
-        $data = array( 
-            array('','','','','','','','','','','Y'),
-            array('','','','','','','','','','','Y'),
-            array('','','','','','','','','','','N'),
-            array('','','','','','','','','','','Y'),
-            array('','','','','','','','','','','N'),
-            array('','','','','','','','','','','N'),
-            array('','','','','','','','','','','N'),
-            array('','','','','','','','','','','N'),
-            array('','','','','','','','','','','N'),
-        );        
-        $printHelper->fillTableByName( 'patientFactors' , $data, 'name' );
-        
-    //******* TEST DATA END!!
-        $texts = $DH -> getSimpleTexts();
-        $printHelper->exchangeAllStringValuesByStyleName( $texts );
-       
-        //$printHelper->exchangeStringValues( $this->getStructuredDataForPrintPDF($id) );
-        
-        // TODO: we need to check which function to call
-        $printHelper->changeImageFromGDObject('signatureImagePatient', $signature);
-        $printHelper->saveContentXML();
-        $printHelper->generatePDF();
-        
-        //Print only the first page of the pdf
-        if(isset($_GET['firstPage']) && $_GET['firstPage'] == 1 ){
-            $printHelper->generatePDFPageN();
-        } 
-        
-        $printHelper->getPDF();
-        
-        $event->unlock();
 
     }
 }

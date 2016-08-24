@@ -161,6 +161,15 @@ class OphCoCvi_Manager extends \CComponent
     }
 
     /**
+     * @param \Event $event
+     * @return \Patient
+     */
+    protected function getPatientForEvent(\Event $event)
+    {
+        return $event->episode->patient;
+    }
+
+    /**
      * Wrapper to insert missing elements for a CVI event if they haven't been
      * created (due to access restrictions)
      *
@@ -228,7 +237,7 @@ class OphCoCvi_Manager extends \CComponent
      * @param \Event $event
      * @return null|Element_OphCoCvi_ConsentSignature
      */
-    public function getConsentSignatureElement(\Event $event)
+    public function getConsentSignatureElementForEvent(\Event $event)
     {
         return $this->getElementForEvent($event, 'Element_OphCoCvi_ConsentSignature');
     }
@@ -358,14 +367,13 @@ class OphCoCvi_Manager extends \CComponent
             return false;
         }
 
-        if ($signature = $this->getConsentSignatureElement($event)) {
+        if ($signature = $this->getConsentSignatureElementForEvent($event)) {
             if (!$signature->checkSignature()) {
                 return false;
             }
         } else {
             return false;
         }
-
 
         return true;
     }
@@ -382,17 +390,160 @@ class OphCoCvi_Manager extends \CComponent
         return false;
     }
 
+    /**
+     * Element based name and value pair.
+     *
+     * @param $id
+     */
+    protected function getStructuredDataForPrintPDF($event)
+    {
+        $data = array();
+        $elements_array = array('Clinical', 'Clerical', 'ConsentSignature');
+
+        foreach ($elements_array as $el_name) {
+            $element = $this->{"get{$el_name}ElementForEvent"}($event);
+            if (method_exists($element, "getStructuredDataForPrint")) {
+                $data = array_merge($data, $element->getStructuredDataForPrint());
+            }
+        }
+
+        $patient = $this->getPatientForEvent($event);
+
+        // TODO: we need to match the keys here!
+        // we also need a method to generate the data structure with the ODTDataHandler!
+        $data["patientName"] = $patient->getFullName();
+        // TODO: do we have other names for patient?
+        $data["otherNames"] = '';
+        $data["patientDateOfBirth"] = $patient->dob;
+        $data["nhsNumber"] = $patient->getNhsnum();
+        $data["gpName"] = $patient->gp->getFullName();
+        //$data["gpAddress"] = $patient->gp->contact->address->postcode."\n".$this->patient->gp->contact->address->address1;
+        $data["gpAddress"] = '';
+        $data["gpTel"] = '';
+        $data["patientAddress"] = $patient->getSummaryAddress();
+        $data["patientEmail"] = ''; // TODO: we need a get email address function
+        $data["patientTel"] = $patient->getPrimary_phone();
+
+        // These should be coming from the signature element
+//        $data["signatureName"] = $patient->getFullName();
+//        $data["signatureDate"] = date("d/m/Y");
+
+        $genderData = (strtolower($patient->getGenderString()) == 'male') ? array('', 'X', '', '') : array(
+            '',
+            '',
+            '',
+            'X'
+        );
+        $dob = ($patient->dob) ? $patient->NHSDate('dob') : '';
+        $yearHeader = !empty($dob) ? array_merge(array(''), str_split(date('Y', strtotime($dob)))) : array(
+            '',
+            '',
+            '',
+            '',
+            ''
+        );
+        $postCodeHeader = array('', '', '', '', '');
+        $spaceHolder = array('');
+        $data["genderTable"] = array(
+            0 => array_merge($genderData, $spaceHolder, $yearHeader, $spaceHolder, $postCodeHeader)
+        );
+
+        return $data;
+    }
+
+    protected function populateCviCertificate(\Event $event)
+    {
+        $signatureElement = $this->getConsentSignatureElementForEvent($event);
+
+        //  we need to check if we already have a signature file linked
+        if (!$signatureElement->checkSignature()) {
+            // TODO: consider whether this should be an error case as this should have probably prevented
+            // the issue command from being called at all.
+            // we check if the signature is exists on the portal
+            $signature = $signatureElement->loadSignatureFromPortal();
+        } else {
+            // we get the stored signature and creates a GD object from the data
+            $signature = imagecreatefromstring($signatureElement->getDecryptedSignature());
+        }
+
+        $inputFile = 'cviTemplate.odt';
+        // TODO: need to configure this more cleanly
+        $printHelper = new \ODTTemplateManager(
+            $inputFile ,
+            realpath(__DIR__ . '/..').'/views/odtTemplate',
+            $this->yii->basePath.'/runtime/cache/cvi/',
+            'CVICert_'.$event->id.'_'.rand().'.odt'
+        );
+
+        $data_handler = new \ODTDataHandler();
+        $data_handler->setTableAndSimpleTextDataFromArray( $this->getStructuredDataForPrintPDF($event) );
+
+        $tables = $data_handler->gettables();
+
+        foreach($tables as $oneTable){
+            $name = $oneTable['name'];
+            $data = $data_handler->generateSimpleTableHashData($oneTable);
+            $printHelper->fillTableByName($name, $data, 'name');
+        }
+
+        //******* TEST DATAS!!
+
+        $data = array(
+            array('','','','','','','','','','','Y'),
+            array('','','','','','','','','','','Y'),
+            array('','','','','','','','','','','N'),
+            array('','','','','','','','','','','Y'),
+            array('','','','','','','','','','','N'),
+            array('','','','','','','','','','','N'),
+            array('','','','','','','','','','','N'),
+            array('','','','','','','','','','','N'),
+            array('','','','','','','','','','','N'),
+        );
+        $printHelper->fillTableByName( 'patientFactors' , $data, 'name' );
+
+        //******* TEST DATA END!!
+        $texts = $data_handler->getSimpleTexts();
+        $printHelper->exchangeAllStringValuesByStyleName( $texts );
+
+        //$printHelper->exchangeStringValues( $this->getStructuredDataForPrintPDF($id) );
+
+        // TODO: we need to check which function to call
+        $printHelper->changeImageFromGDObject('signatureImagePatient', $signature);
+        $printHelper->saveContentXML();
+        $printHelper->generatePDF();
+
+        return $printHelper;
+    }
+
+    protected function generateCviCertificate(\Event $event)
+    {
+        $document = $this->populateCviCertificate($event);
+
+        return $document->storePDF();
+    }
+    
+    public function generateConsentForm(\Event $event)
+    {
+        $document = $this->populateCviCertificate($event);
+        $document->generatePDFPageN();
+
+        return $document;
+    }
+
     public function issueCvi(\Event $event, $user_id)
     {
         // begin transaction
         $transaction = $this->startTransaction();
 
         try {
-            // TODO: generate the PDF
+            $event->lock();
+
+            $cvi_certificate = $this->generateCviCertificate($event);
 
             // set the status of the event to complete and assign the PDF to the event
             $info_element = $this->getEventInfoElementForEvent($event);
             $info_element->is_draft = false;
+            $info_element->generated_document_id = $cvi_certificate->id;
             $info_element->save();
 
             $event->info = $this->getStatusText(self::$ISSUED);
@@ -403,6 +554,8 @@ class OphCoCvi_Manager extends \CComponent
             if ($transaction) {
                 $transaction->commit();
             }
+
+            $event->unlock();
             return true;
         } catch (\Exception $e) {
             if ($transaction) {
@@ -435,7 +588,6 @@ class OphCoCvi_Manager extends \CComponent
         } else {
             $clerical_complete = false;
         }
-
 
         if ($clinical = $this->getClinicalElementForEvent($event)) {
             $clinical->setScenario('finalise');

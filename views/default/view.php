@@ -23,7 +23,10 @@ if ($this->checkPrintAccess()) {
 }
 if ($this->canIssue()) {
     $this->event_actions[] = EventAction::button('Issue', 'issue', null, array('class' => 'small button secondary'));
+
 }
+
+$this->event_actions[] = EventAction::link('Consent Signature', '/OphCoCvi/default/consentsignature/' . $this->event->id, null, array('class' => 'small button secondary'));
 
 $this->beginContent('//patient/event_container');
 ?>
