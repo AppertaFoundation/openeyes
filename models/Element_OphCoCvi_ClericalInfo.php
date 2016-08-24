@@ -166,44 +166,6 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
     }
 
     /**
-     * Stores the patient factor with answer in clerical info element
-     * @throws Exception
-     * @throws \Exception
-     */
-    protected function afterSave()
-    {
-        if (!empty($_POST['ophcocvi_clinicinfo_patient_factor_id'])) {
-            $existing_ids = array();
-            foreach (OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->findAll('element_id = :elementId', array(':elementId' => $this->id)) as $item) {
-                $existing_ids[] = $item->patient_factor_id;
-            }
-            foreach ($_POST['ophcocvi_clinicinfo_patient_factor_id'] as $id) {
-                if (!in_array($id, $existing_ids) && isset($_POST['is_factor'][$id])) {
-                    $item = new OphCoCvi_ClericalInfo_PatientFactor_Answer;
-                    $item->element_id = $this->id;
-                    $item->patient_factor_id = $id;
-                    $item->is_factor = $_POST['is_factor'][$id];
-                    if ($_POST['require_comments'][$id] == 1) {
-                        $item->comments = $_POST['comments'][$id];
-                    }
-                    if (!$item->save()) {
-                        throw new Exception('Unable to save patient factor : ' . print_r($item->getErrors(), true));
-                    }
-                }
-            }
-            foreach ($existing_ids as $id) {
-                if (!in_array($id, $_POST['ophcocvi_clinicinfo_patient_factor_id'])) {
-                    $item = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->find('element_id = :elementId and patient_factor_id = :lookupfieldId', array(':elementId' => $this->id, ':lookupfieldId' => $id));
-                    if (!$item->delete()) {
-                        throw new Exception('Unable to delete patient factor: ' . print_r($item->getErrors(), true));
-                    }
-                }
-            }
-        }
-        return parent::afterSave();
-    }
-
-    /**
      * To generate the employement status array for the pdf
      *
      * @return array
@@ -333,6 +295,43 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
         return $factors;
     }
 
+    /**
+     * @param $data
+     * @throws \CDbException
+     * @throws \Exception
+     */
+    public function updatePatientFactorAnswers($data)
+    {
+        $current = $this->getRelated('patient_factor_answers', true);
+
+        while ($answer = array_shift($current)) {
+            if (in_array($answer->patient_factor_id, array_keys($data))) {
+                $answer_data = $data[$answer->patient_factor_id];
+                $answer->is_factor = isset($answer_data['is_factor']) ? $answer_data['is_factor'] : null;
+                $answer->comments = isset($answer_data['comments']) ? $answer_data['comments'] : null;
+                if (!$answer->save()) {
+                    throw new \Exception('Unable to save CVI Disorder Section Comment: ' . print_r($answer->getErrors(), true));
+                }
+                unset($data[$answer->patient_factor_id]);
+            }
+            else {
+                if (!$answer->delete()) {
+                    throw new \Exception('Unable to delete CVI Patient Factor Answer: ' . print_r($answer->getErrors(), true));
+                }
+            }
+        }
+
+        foreach ($data as $factor_id => $values) {
+            $answer = new OphCoCvi_ClericalInfo_PatientFactor_Answer();
+            $answer->patient_factor_id = $factor_id;
+            $answer->element_id = $this->id;
+            $answer->comments = isset($values['comments']) ? $values['comments'] : "";
+            $answer->is_factor = isset($values['is_factor']) ? $values['is_factor'] : null;
+            if (!$answer->save()) {
+                throw new \Exception("Unable to save CVI Patient Factor Answer: " . print_r($answer->getErrors(), true));
+            }
+        }
+    }
 
     /**
      * @param OphCoCvi_ClericalInfo_PatientFactor $factor

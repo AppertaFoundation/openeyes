@@ -251,6 +251,11 @@ class DefaultController extends \BaseEventTypeController
         $element->updateDisorderSectionComments($comments_data);
     }
 
+    /**
+     * @param models\Element_OphCoCvi_ClericalInfo $element
+     * @param $data
+     * @param $index
+     */
     protected function setComplexAttributes_Element_OphCoCvi_ClericalInfo(models\Element_OphCoCvi_ClericalInfo $element, $data, $index)
     {
         $model_name = \CHtml::modelName($element);
@@ -267,6 +272,18 @@ class DefaultController extends \BaseEventTypeController
         }
 
         $element->patient_factor_answers = $answers;
+    }
+
+    /**
+     * @param models\Element_OphCoCvi_ClericalInfo $element
+     * @param $data
+     * @param $index
+     */
+    public function saveComplexAttributes_Element_OphCoCvi_ClericalInfo(models\Element_OphCoCvi_ClericalInfo $element, $data, $index)
+    {
+        $model_name = \CHtml::modelName($element);
+        $answer_data = isset($data[$model_name]['patient_factors']) ? $data[$model_name]['patient_factors'] : array();
+        $element->updatePatientFactorAnswers($answer_data);
     }
 
     protected function setElementDefaultOptions_Element_OphCoCvi_DemographicInfo()
