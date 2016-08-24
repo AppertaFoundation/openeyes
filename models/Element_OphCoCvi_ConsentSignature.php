@@ -182,11 +182,8 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
             $signatureData = $portalConnection->signatureSearch(null,
                 \Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($this->event));
         }
+        // add this to list all available data!
         //$signatureData = $portalConnection->signatureSearch();
-
-        //print_r($signatureData);die;
-        // TEST DATA!
-        //$signatureData = $portalConnection->signatureSearch(null, 'RP67-26B8MC-3');
 
         if (is_array($signatureData) && isset($signatureData["image"]) && $portalConnection) {
             $imageFile = $portalConnection->createNewSignatureImage($signatureData["image"], $this->patient->id);
