@@ -298,4 +298,66 @@ class BaseController extends Controller
         return false;
     }
 
+    protected function getUniqueCodeForUser()
+    {
+        $userUniqueCode = UniqueCodeMapping::model()->findByAttributes(array('user_id' => Yii::app()->user->id));
+        if($userUniqueCode)
+        {
+            return $userUniqueCode->unique_code_id;
+        }else
+        {
+            $uniqueCode = $this->createNewUniqueCodeMapping(null, Yii::app()->user->id);
+            return $uniqueCode->unique_code_id;
+        }
+    }
+
+    protected function createNewUniqueCodeMapping($eventId=null, $userId=null)
+    {
+        $newUniqueCode = UniqueCodeMapping::model();
+        $newUniqueCode->lock();
+        $newUniqueCode->unique_code_id = $this->getActiveUnusedUniqueCode();
+        if($eventId > 0)
+        {
+            $newUniqueCode->event_id = $eventId;
+            $newUniqueCode->user_id = NULL;
+        }elseif($userId > 0)
+        {
+            $newUniqueCode->event_id = NULL;
+            $newUniqueCode->user_id = $userId;
+        }
+        $newUniqueCode->isNewRecord = true;
+        $newUniqueCode->save();
+        $newUniqueCode->unlock();
+        return $newUniqueCode;
+    }
+
+
+    /**
+     * Getting the unused active unique codes.
+     *
+     * @return type
+     */
+    private function getActiveUnusedUniqueCode()
+    {
+        UniqueCodeMapping::model()->lock();
+        //Yii::app()->db->createCommand("LOCK TABLES unique_codes READ, unique_codes_mapping WRITE")->execute();
+
+        $record = Yii::app()->db->createCommand()
+            ->select('unique_codes.id as id')
+            ->from('unique_codes')
+            ->leftJoin('unique_codes_mapping', 'unique_code_id=unique_codes.id')
+            ->where('unique_codes_mapping.id is null')
+            ->andWhere('active = 1')
+            ->limit(1)
+            ->queryRow();
+
+        UniqueCodeMapping::model()->unlock();
+        //Yii::app()->db->createCommand("UNLOCK TABLES")->execute();
+
+        if($record){
+            return $record["id"];
+        }
+
+    }
+
 }
