@@ -200,6 +200,31 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
+    /**
+     * This just sets assignments for validation and the re-use in forms if a form submit does not validate
+     *
+     * @param models\Element_OphCoCvi_ClinicalInfo $element
+     * @param $data
+     * @param $index
+     */
+    protected function setComplexAttributes_Element_OphCoCvi_ClinicalInfo($element, $data, $index)
+    {
+        $model_name = \CHtml::modelName($element);
+        foreach (array('left' => \Eye::LEFT, 'right' => \Eye::RIGHT) as $side => $eye_id) {
+            $cvi_assignments = array();
+            if (isset($data[$model_name][$side.'_disorders'])) {
+                foreach ($data[$model_name][$side.'_disorders'] as $idx => $data_disorder) {
+                    $cvi_ass = new models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment();
+                    $cvi_ass->ophcocvi_clinicinfo_disorder_id = $idx;
+                    $cvi_ass->affected = isset($data_disorder['affected']) ? $data_disorder['affected'] : false;
+                    $cvi_ass->main_cause = isset($data_disorder['main_cause']) ? $data_disorder['main_cause'] : false;
+                    $cvi_assignments[] = $cvi_ass;
+                }
+            }
+            $element->{$side . '_cvi_disorder_assignments'} = $cvi_assignments;
+        }
+    }
+
     protected function setElementDefaultOptions_Element_OphCoCvi_DemographicInfo()
     {
 
@@ -549,6 +574,11 @@ class DefaultController extends \BaseEventTypeController
         readfile($pdf);
         @unlink($pdf);*/
 
+    }
+
+    public function getDisorderSections()
+    {
+        return models\OphCoCvi_ClinicalInfo_Disorder_Section::model()->active()->findAll();
     }
 
 }

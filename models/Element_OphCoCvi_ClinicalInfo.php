@@ -49,6 +49,7 @@ namespace OEModule\OphCoCvi\models;
  * @property OphCoCvi_ClinicalInfo_Disorder[] $cvi_disorders
  * @property OphCoCvi_ClinicalInfo_Disorder[] $left_affected_cvi_disorders
  * @property OphCoCvi_ClinicalInfo_Disorder[] $right_affected_cvi_disorders
+ * @property Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments[] $cvi_disorder_section_comments
  * @property User $consultant
  */
 
@@ -122,16 +123,41 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
                 'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_FieldOfVision',
                 'field_of_vision_id'
             ),
-            // probably more interested in relationship direct to disorders through this relation
             'cvi_disorder_assignments' => array(
                 self::HAS_MANY,
                 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment',
                 'element_id'
             ),
+            'left_cvi_disorder_assignments' => array(
+                self::HAS_MANY,
+                'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment',
+                'element_id',
+                'through' => 'cvi_disorder_assignments',
+                'on' => 'cvi_disorder_assignments.eye_id = ' . \Eye::LEFT
+            ),
+            'right_cvi_disorder_assignments' => array(
+                self::HAS_MANY,
+                'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment',
+                'element_id',
+                'through' => 'cvi_disorder_assignments',
+                'on' => 'cvi_disorder_assignments.eye_id = ' . \Eye::RIGHT
+            ),
             'cvi_disorders' => array(
                 self::HAS_MANY,
                 'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder', 'ophcocvi_clinicinfo_disorder_id',
                 'through' => 'cvi_disorder_assignments'
+            ),
+            'left_cvi_disorders' => array(
+                self::HAS_MANY,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder', 'ophcocvi_clinicinfo_disorder_id',
+                'through' => 'cvi_disorder_assignments',
+                'on' => 'cvi_disorder_assignments.eye_id = ' . \Eye::LEFT
+            ),
+            'right_cvi_disorders' => array(
+                self::HAS_MANY,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder', 'ophcocvi_clinicinfo_disorder_id',
+                'through' => 'cvi_disorder_assignments',
+                'on' => 'cvi_disorder_assignments.eye_id = ' . \Eye::RIGHT
             ),
             'left_affected_cvi_disorders' => array(
                 self::HAS_MANY,
@@ -145,7 +171,12 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
                 'through' => 'cvi_disorder_assignments',
                 'on' => 'cvi_disorder_assignments.eye_id = ' . \Eye::RIGHT . ' AND cvi_disorder_assignments.affected = 1'
             ),
+            'cvi_disorder_section_comments' => array(
+                self::HAS_MANY,
+                'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments', 'element_id'
+            ),
             'consultant' => array(self::BELONGS_TO, 'User', 'consultant_id'),
+
         );
     }
 
@@ -399,5 +430,54 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         }
         $result['diagnosisNotCovered'] = $this->diagnoses_not_covered;
         return $result;
+    }
+
+    /**
+     * @param $section
+     * @return Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments
+     */
+    public function getDisorderSectionComment($section)
+    {
+        foreach ($this->cvi_disorder_section_comments as $comment) {
+            if ($section->id == $comment->ophcocvi_clinicinfo_disorder_section_id) {
+                return $comment;
+            }
+        }
+    }
+
+    /**
+     * @param OphCoCvi_ClinicalInfo_Disorder $cvi_disorder
+     * @param string $side left or right
+     * @return boolean
+     * @throws \Exception
+     */
+    public function hasCviDisorderForSide(OphCoCvi_ClinicalInfo_Disorder $cvi_disorder, $side)
+    {
+        if (!in_array($side, array('left', 'right'))) {
+            throw new \Exception("invalid side attribute");
+        }
+        foreach ($this->{$side . '_cvi_disorder_assignments'} as $recorded_cvi) {
+            if ($recorded_cvi->ophcocvi_clinicinfo_disorder_id == $cvi_disorder->id) {
+                return $recorded_cvi->affected;
+            }
+        }
+    }
+
+    /**
+     * @param OphCoCvi_ClinicalInfo_Disorder $cvi_disorder
+     * @param $side
+     * @return mixed
+     * @throws \Exception
+     */
+    public function isCviDisorderMainCauseForSide(OphCoCvi_ClinicalInfo_Disorder $cvi_disorder, $side)
+    {
+        if (!in_array($side, array('left', 'right'))) {
+            throw new \Exception("invalid side attribute");
+        }
+        foreach ($this->{$side . '_cvi_disorder_assignments'} as $recorded_cvi) {
+            if ($recorded_cvi->ophcocvi_clinicinfo_disorder_id == $cvi_disorder->id) {
+                return $recorded_cvi->main_cause;
+            }
+        }
     }
 }

@@ -19,7 +19,7 @@
 namespace OEModule\OphCoCvi\models;
 
 /**
- * This is the model class for table "et_ophcocvi_clinicinfo_disorders_assignment".
+ * This is the model class for table "et_ophcocvi_clinicinfo_disorder_section_comment".
  *
  * The followings are the available columns in table:
  * @property string $id
@@ -29,7 +29,8 @@ namespace OEModule\OphCoCvi\models;
  * The followings are the available model relations:
  *
  * @property Element_OphCoCvi_ClinicalInfo $element
- * @property OphCoCvi_ClinicalInfo_Disorders $ophcocvi_clinicinfo_disorders
+ * @property OphCoCvi_ClinicalInfo_Disorder_Section $ophcocvi_clinicinfo_disorder_section
+ *
  * @property User $user
  * @property User $usermodified
  */
@@ -72,7 +73,7 @@ class Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments extends \BaseEvent
     {
         return array(
             'element' => array(self::BELONGS_TO, 'Element_OphCoCvi_ClinicalInfo', 'element_id'),
-            'ophcocvi_clinicinfo_disorder_section_id' => array(
+            'ophcocvi_clinicinfo_disorder_section' => array(
                 self::BELONGS_TO,
                 'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder_Section',
                 'ophcocvi_clinicinfo_disorder_section_id'

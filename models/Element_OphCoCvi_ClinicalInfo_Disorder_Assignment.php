@@ -25,6 +25,9 @@ namespace OEModule\OphCoCvi\models;
  * @property string $id
  * @property integer $element_id
  * @property integer $ophcocvi_clinicinfo_disorder_id
+ * @property integer $eye_id
+ * @property boolean $affected
+ * @property boolean $main_cause
  *
  * The followings are the available model relations:
  *
