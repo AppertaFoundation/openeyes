@@ -38,6 +38,23 @@ Bizrules have been implemented to support the management of user permissions on 
 
 The sections of the form are divided so that only users with clerical permissions can edit the clerical element of the event. It's possible that if a user has clinical permission they should have clerical as well. This will require a small change if it proves necessary.
 
+## Code
+
+### Controller complexity
+
+Due to the user permissions regarding the different elements in the event, several of the standard methods have been overridden in the default controller to manipulate which elements are created/edited depending on the user permissions.
+
+### Manager Class
+
+In an effort to abstract the business logic, much of it has been encapsulated in a manager class. This is a new structure that has not been entirely adhered to during initial development, however the intent is for this to aid test-ability, subject to time and resources, as well make the code overall cleaner.
+
+### Refactoring
+
+There are some significant refactoring needs for how various of the related data is assigned and rendered for clinical and clerical elements (disorders and patient factors respectively). 
+
+At the moment, several static model calls will be impacting query volume, and it has led to inconsistency between how the data is retrieved depending on the context. This should be addressed.
+
+
 ## Status
 
 This module is in initial development and not intended for any use outside of core development. Feel free to take a look as code is developed though.

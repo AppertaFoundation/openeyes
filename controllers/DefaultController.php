@@ -110,7 +110,7 @@ class DefaultController extends \BaseEventTypeController
      */
     public function checkCreateAccess()
     {
-        return  $this->checkAccess('OprnCreateCvi', $this->getApp()->user->id, array(
+        return $this->checkAccess('OprnCreateCvi', $this->getApp()->user->id, array(
             'firm' => $this->firm,
             'episode' => $this->episode
         ));
@@ -123,7 +123,7 @@ class DefaultController extends \BaseEventTypeController
     {
         // check that the user has the general edit cvi permission, but not the specific edit permission on
         // the current event.
-        return $this->checkAccess('OprnEditCvi', $this->getApp()->user->id);
+        return $this->checkAccess('OprnEditCvi', $this->getApp()->user->id) && $this->getManager()->isIssued($this->event);
     }
 
     /**
@@ -134,6 +134,29 @@ class DefaultController extends \BaseEventTypeController
     public function checkRequestDeleteAccess()
     {
         return $this->checkEditAccess() && parent::checkRequestDeleteAccess();
+    }
+
+    /**
+     * Override as the optional elements should not be rendered until completed through the
+     * appropriate access levels.
+     *
+     * @return null
+     */
+    public function getOptionalElements()
+    {
+        return null;
+    }
+
+    /**
+     * Override because we don't want elements removed from the UI if we have rendered them
+     * Optionality is in place to support granular permission structure.
+     *
+     * @param \BaseEventTypeElement $element
+     * @return bool
+     */
+    public function isRequiredInUI(\BaseEventTypeElement $element)
+    {
+        return true;
     }
 
     /**
@@ -159,7 +182,7 @@ class DefaultController extends \BaseEventTypeController
         $action
     ) {
         // only populate values into the new element if a clinical user
-        if ($action == 'create' && $this->checkClinicalEditAccess()) {
+        if ($this->checkClinicalEditAccess() && $element->isNewRecord) {
             if ($exam_api = $this->getApp()->moduleAPI->get('OphCiExamination')) {
                 if ($latest_examination_event = $exam_api->getMostRecentVAElementForPatient($this->patient)) {
                     $element->examination_date = $latest_examination_event['event_date'];
@@ -262,7 +285,45 @@ class DefaultController extends \BaseEventTypeController
             $this->getApp()->user->setFlash('error', 'The CVI could not be generated.');
         }
 
-        $this->redirect(array('/'.$this->event->eventType->class_name.'/default/pdfPrint/'.$id));
+        $this->redirect(array('/' . $this->event->eventType->class_name . '/default/pdfPrint/' . $id));
+    }
+
+    public function initActionView()
+    {
+        parent::initActionView();
+        $this->setTitle($this->getManager()->getTitle($this->event));
+    }
+
+    /**
+     * @return array
+     */
+    protected function getEventElements()
+    {
+        if ($this->event && !$this->event->isNewRecord) {
+            $for_edit = in_array(strtolower($this->action->id), array('create', 'update'));
+            $elements = $this->getManager()->getEventElements($this->event, $for_edit);
+        } else {
+            $elements = $this->event_type->getDefaultElements();
+        }
+
+        $final_elements = array();
+        foreach ($elements as $el) {
+            $cls = get_class($el);
+            if (!$this->checkClinicalEditAccess() && $cls == 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo') {
+                if ($el->isNewRecord) {
+                    // implies no values have been recorded yet for this element
+                    continue;
+                }
+            }
+            if (!$this->checkClericalEditAccess() && $cls == 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo') {
+                if ($el->isNewRecord) {
+                    continue;
+                }
+            }
+
+            $final_elements[] = $el;
+        }
+        return $final_elements;
     }
 
     /**
@@ -276,6 +337,7 @@ class DefaultController extends \BaseEventTypeController
     protected function getElementsForElementType(\ElementType $element_type, $data)
     {
         $cls = $element_type->class_name;
+
         if ($cls == 'OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo') {
             if ($this->event->isNewRecord) {
                 return array(new $cls);
@@ -284,20 +346,16 @@ class DefaultController extends \BaseEventTypeController
             }
         }
 
+        // because form elements won't be submitted when editing without this access, we need to return the current
+        // event element if it exists
         if (!$this->checkClinicalEditAccess() && $cls == 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo') {
-            if ($this->event->isNewRecord) {
-                return array(new $cls);
-            } else {
-                return array($this->getManager()->getClinicalElementForEvent($this->event));
-            }
+            $el = $this->event->isNewRecord ? null : $this->getManager()->getClinicalElementForEvent($this->event);
+            return (!is_null($el)) ? array($el) : null;
         }
 
         if (!$this->checkClericalEditAccess() && $cls == 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo') {
-            if ($this->event->isNewRecord) {
-                return array(new $cls);
-            } else {
-                return array($this->getManager()->getClericalElementForEvent($this->event));
-            }
+            $el  = $this->event->isNewRecord ? null : $this->getManager()->getClericalElementForEvent($this->event);
+            return (!is_null($el)) ? array($el) : null;
         }
 
         return parent::getElementsForElementType($element_type, $data);
@@ -312,7 +370,7 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function setValidationScenarioForElement($element)
     {
-        if  ($this->request->getPost('save', null)) {
+        if ($this->request->getPost('save', null)) {
             // form has been submitted using the save button, so full validation rules should be applied to the elements
             // TODO: validation for signature(s)
             switch (get_class($element)) {
@@ -330,6 +388,11 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
+    /**
+     * Use the manager status for the event info text.
+     *
+     * @throws \Exception
+     */
     protected function updateEventInfo()
     {
         $status = $this->getManager()->calculateStatus($this->event);
@@ -338,7 +401,8 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Element based name and value pair
+     * Element based name and value pair.
+     *
      * @param $id
      */
     public function getStructuredDataForPrintPDF($id)
