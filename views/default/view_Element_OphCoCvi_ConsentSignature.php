@@ -35,15 +35,17 @@
             <div class="data-value"><?php echo CHtml::encode($element->NHSDate('signature_date')) ?></div>
         </div>
     </div>
-    <div class="row data-row">
-        <div class="large-2 column">
-            <div
-                class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('representative_name')) ?></div>
+    <?php if (!$element->is_patient) { ?>
+        <div class="row data-row">
+            <div class="large-2 column">
+                <div
+                    class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('representative_name')) ?></div>
+            </div>
+            <div class="large-10 column end">
+                <div class="data-value"><?php echo CHtml::encode($element->representative_name) ?></div>
+            </div>
         </div>
-        <div class="large-10 column end">
-            <div class="data-value"><?php echo CHtml::encode($element->representative_name) ?></div>
-        </div>
-    </div>
+    <?php } ?>
     <div class="row data-row">
         <?php if ($element->checkSignature()) { ?>
             <div class="large-2 column">
