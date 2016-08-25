@@ -250,9 +250,9 @@ class OphCoCvi_Manager extends \CComponent
      * @param Element_OphCoCvi_ClericalInfo $clerical
      * @return string
      */
-    protected function getDisplayStatus(Element_OphCoCvi_ClinicalInfo $clinical, Element_OphCoCvi_EventInfo $info)
+    protected function getDisplayStatus(Element_OphCoCvi_ClinicalInfo $clinical = null, Element_OphCoCvi_EventInfo $info)
     {
-        return $clinical->getDisplayStatus() . ' (' . $info->getIssueStatusForDisplay() . ')';
+        return ($clinical ? $clinical->getDisplayStatus() : "Not Assessed") . ' (' . $info->getIssueStatusForDisplay() . ')';
     }
 
     /**
@@ -282,8 +282,9 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function getDisplayStatusDateForEvent(\Event $event)
     {
-        $clinical = $this->getClinicalElementForEvent($event);
-        return $clinical->examination_date;
+        if ($clinical = $this->getClinicalElementForEvent($event)) {
+            return $clinical->examination_date;
+        }
     }
 
     /**
