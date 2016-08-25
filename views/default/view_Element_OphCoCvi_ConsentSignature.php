@@ -63,6 +63,7 @@
                         <li>Obtain patient/patient representative signature on the print out.</li>
                         <li>Visit <?= Yii::app()->params['signature_app_url'] ? : "the OpenEyes Phone Application" ?> on your mobile device.</li>
                         <li>Follow the instructions to scan the patient signature.</li>
+                        <li>Click the button retrieve the captured signature for this event.</li>
                     </ol>
                 </div>
                 <div class="large-4 column end">
