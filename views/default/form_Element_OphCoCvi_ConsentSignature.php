@@ -18,11 +18,18 @@
 ?>
 
 <div class="element-fields row">
-    <?php echo $form->radioBoolean($element, 'is_patient') ?>
     <?php echo $form->datePicker($element, 'signature_date', array('maxDate' => 'today'),
         array('style' => 'width: 110px;')) ?>
-    <?php echo $form->textField($element, 'representative_name', array('size' => '10')) ?>
-    <?php echo $form->dropDownList($element, 'signature_file_id',
-        CHtml::listData(\ProtectedFile::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
-        array('empty' => '- Please select -')) ?>
+    <fieldset id="OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature_is_patient" class="row field-row">
+        <div class="large-2 column">
+            <label>Is patient:</label>
+        </div>
+        <div class="large-10 column end">
+            <?php echo $form->radioBoolean($element, 'is_patient', array('nowrapper' => true)) ?>
+        </div>
+    </fieldset>
+
+    <?php echo $form->textField($element, 'representative_name', array('size' => '4'), null, array('field' => 4)) ?>
+
+
 </div>

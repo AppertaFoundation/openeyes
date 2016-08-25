@@ -7,11 +7,11 @@
  
 namespace OEModule\OphCoCvi\controllers;
 
-use \OEModule\OphCoCvi\components\ODTImage;
-use \OEModule\OphCoCvi\components\ODTTable;
-use \OEModule\OphCoCvi\components\ODTRow;
-use \OEModule\OphCoCvi\components\ODTCell;
-use \OEModule\OphCoCvi\components\ODTSimpleText;
+use \components\odtTemplateManager\ODTImage;
+use \components\odtTemplateManager\ODTTable;
+use \components\odtTemplateManager\ODTRow;
+use \components\odtTemplateManager\ODTCell;
+use \components\odtTemplateManager\ODTSimpleText;
     
 use \OEModule\OphCoCvi\components\ODTDataHandler;
 

@@ -76,7 +76,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
                 'safe'
             ),
             array(
-                'employment_status_id, preferred_info_fmt_id, contact_urgency_id, preferred_language_id, social_service_comments, ',
+                'employment_status_id, preferred_info_fmt_id, contact_urgency_id, preferred_language_id',
                 'required',
                 'on' => 'finalise'
             ),

@@ -17,12 +17,11 @@
 
 namespace OEModule\OphCoCvi\controllers;
 
-use OEModule\OphCoCvi\components\optomPortalConnection;
-use OEModule\OphCoCvi\models;
-use OEModule\OphCoCvi\components\OphCoCvi_Manager;
-use \OEModule\OphCoCvi\components\ODTTemplateManager;
-use \OEModule\OphCoCvi\components\ODTDataHandler;
-use \OEModule\OphCoCvi\components\SignatureQRCodeGenerator;
+use \OEModule\OphCoCvi\models;
+use \OEModule\OphCoCvi\components\OphCoCvi_Manager;
+use \ODTTemplateManager;
+use \ODTDataHandler;
+use \SignatureQRCodeGenerator;
 
 
 class DefaultController extends \BaseEventTypeController
@@ -34,6 +33,10 @@ class DefaultController extends \BaseEventTypeController
     const ACTION_TYPE_LIST = 'List';
 
     protected static $action_types = array(
+        'consentsignature' => self::ACTION_TYPE_PRINT,
+        'retrieveconsentsignature' => self::ACTION_TYPE_PRINT,
+        'displayconsentsignature' => self::ACTION_TYPE_VIEW,
+        'issue' => self::ACTION_TYPE_EDIT,
         'list' => self::ACTION_TYPE_LIST
     );
 
@@ -42,7 +45,7 @@ class DefaultController extends \BaseEventTypeController
      */
     public function actionCreate()
     {
-        if (isset($_GET['createnewcvi'])) {
+        if ($this->request->getParam('createnewcvi', null)) {
             $cancel_url = ($this->episode) ? '/patient/episode/' . $this->episode->id
                 : '/patient/episodes/' . $this->patient->id;
             ($_GET['createnewcvi'] == 1) ? parent::actionCreate()
@@ -57,7 +60,7 @@ class DefaultController extends \BaseEventTypeController
                 }
                 $this->render('select_event', array(
                     'cvi_url' => $cvi_url,
-                ), false, true);
+                ), false);
             } else {
                 parent::actionCreate();
             }
@@ -81,6 +84,10 @@ class DefaultController extends \BaseEventTypeController
      */
     public function checkClericalEditAccess()
     {
+        if ($this->checkAdminAccess()) {
+            //TODO: consider encapsulating this in biz rule for edit clerical
+            return true;
+        }
         return $this->checkAccess('OprnEditClericalCvi', $this->getApp()->user->id);
     }
 
@@ -121,9 +128,13 @@ class DefaultController extends \BaseEventTypeController
      */
     public function checkPrintAccess()
     {
+        if ($this->checkAdminAccess()) {
+            return true;
+        }
+
         // check that the user has the general edit cvi permission, but not the specific edit permission on
         // the current event.
-        return $this->checkAccess('OprnEditCvi', $this->getApp()->user->id) && $this->getManager()->isIssued($this->event);
+        return $this->checkAccess('OprnEditCvi', $this->getApp()->user->id);
     }
 
     /**
@@ -296,7 +307,7 @@ class DefaultController extends \BaseEventTypeController
      */
     public function getManager()
     {
-        if (!isset($this->cvi_manager)) {
+        if (is_null($this->cvi_manager)) {
             $this->cvi_manager = new OphCoCvi_Manager($this->getApp());
         }
 
@@ -354,7 +365,7 @@ class DefaultController extends \BaseEventTypeController
      */
     public function initActionIssue()
     {
-        $this->initWithEventId($this->request->get('id'));
+        $this->initWithEventId($this->request->getParam('id'));
         if (!$this->canIssue()) {
             throw new \CHttpException(403, 'Event cannot be issued.');
         }
@@ -381,6 +392,9 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * Sister method to the getElementsForEventType method, this loads up event elements for rendering (whether viewing or editing).
+     * Because of the permissioning behaviours, need to be able to filter out clinical/clerical elements as appropriate.
+     * 
      * @return array
      */
     protected function getEventElements()
@@ -413,6 +427,47 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * @return models\Element_OphCoCvi_EventInfo[]
+     */
+    private function getElementsForEventInfo()
+    {
+        if ($this->event->isNewRecord) {
+            return array(new models\Element_OphCoCvi_EventInfo());
+        } else {
+            return array($this->getManager()->getEventInfoElementForEvent($this->event));
+        }
+    }
+
+    /**
+     * Because form elements won't be submitted when editing without this access, we need to return the current
+     * event element if it exists
+     *
+     * @return models\Element_OphCoCvi_ClinicalInfo[]|bool|null
+     */
+    private function getElementsForClinical()
+    {
+        if (!$this->checkClinicalEditAccess()) {
+            $el = $this->event->isNewRecord ? null : $this->getManager()->getClinicalElementForEvent($this->event);
+            return (!is_null($el)) ? array($el) : null;
+        }
+        return false;
+    }
+
+    /**
+     * Because form elements won't be submitted when editing without this access, we need to return the current
+     * event element if it exists
+     *
+     * @return models\Element_OphCoCvi_ClericalInfo|bool|null
+     */
+    private function getElementsForClerical()
+    {
+        if (!$this->checkClericalEditAccess()) {
+            $el  = $this->event->isNewRecord ? null : $this->getManager()->getClericalElementForEvent($this->event);
+            return (!is_null($el)) ? array($el) : null;
+        }
+        return false;
+    }
+    /**
      * Override to support the fact that users might not have permission to edit specific event elements.
      *
      * @param \ElementType $element_type
@@ -424,28 +479,21 @@ class DefaultController extends \BaseEventTypeController
     {
         $cls = $element_type->class_name;
 
-        if ($cls == 'OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo') {
-            if ($this->event->isNewRecord) {
-                return array(new $cls);
-            } else {
-                return array($this->getManager()->getEventInfoElementForEvent($this->event));
+        $map = array(
+            'OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo' => 'EventInfo',
+            'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo' => 'Clinical',
+            'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo' => 'Clerical'
+        );
+
+        if (array_key_exists($cls, $map)) {
+            $id = $map[$cls];
+            $override = $this->{"getElementsFor{$id}"}();
+            if ($override !== false) {
+                return $override;
             }
         }
 
-        // because form elements won't be submitted when editing without this access, we need to return the current
-        // event element if it exists
-        if (!$this->checkClinicalEditAccess() && $cls == 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo') {
-            $el = $this->event->isNewRecord ? null : $this->getManager()->getClinicalElementForEvent($this->event);
-            return (!is_null($el)) ? array($el) : null;
-        }
-
-        if (!$this->checkClericalEditAccess() && $cls == 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo') {
-            $el  = $this->event->isNewRecord ? null : $this->getManager()->getClericalElementForEvent($this->event);
-            return (!is_null($el)) ? array($el) : null;
-        }
-
         return parent::getElementsForElementType($element_type, $data);
-
     }
 
     /**
@@ -486,57 +534,37 @@ class DefaultController extends \BaseEventTypeController
         $this->event->save();
     }
 
-    /**
-     * Element based name and value pair.
-     *
-     * @param $id
-     */
-    public function getStructuredDataForPrintPDF($id)
+    public function initActionConsentSignature()
     {
-        $data = array();
-        foreach ($this->open_elements as $element) {
-            if (method_exists($element, "getStructuredDataForPrint")) {
-                $data = array_merge($data, $element->getStructuredDataForPrint());
-            }
+        $this->initWithEventId($this->request->getParam('id'));
+    }
+
+    public function actionConsentSignature($id)
+    {
+        $pdf = $this->getManager()->generateConsentForm($this->event);
+        $pdf->getPDF();
+    }
+
+    public function initActionRetrieveConsentSignature()
+    {
+        $this->initWithEventId($this->request->getParam('id'));
+    }
+
+    /**
+     * @TODO: refactor
+     * @param $id
+     *
+     */
+    public function actionRetrieveConsentSignature($id)
+    {
+        $signature_element = $this->getManager()->getConsentSignatureElementForEvent($this->event);
+        if ($signature_element->saveSignatureImageFromPortal()) {
+            $this->getApp()->user->setFlash('success', 'Signature successfully loaded.');
+        } else {
+            $this->getApp()->user->setFlash('error', 'Signature could not be found');
         }
-        // TODO: we need to match the keys here!
-        // we also need a method to generate the data structure with the ODTDataHandler!
-        $data["patientName"] = $this->patient->getFullName();
-        // TODO: do we have other names for patient?
-        $data["otherNames"] = '';
-        $data["patientDateOfBirth"] = $this->patient->dob;
-        $data["nhsNumber"] = $this->patient->getNhsnum();
-        $data["gpName"] = $this->patient->gp->getFullName();
-        //$data["gpAddress"] = $this->patient->gp->contact->address->postcode."\n".$this->patient->gp->contact->address->address1;
-        $data["gpAddress"] = '';
-        $data["gpTel"] = '';
-        $data["patientAddress"] = $this->patient->getSummaryAddress();
-        $data["patientEmail"] = ''; // TODO: we need a get email address function
-        $data["patientTel"] = $this->patient->getPrimary_phone();
-        $data["signatureName"] = $this->patient->getFullName();
-        $data["signatureDate"] = date("d/m/Y");
 
-        $genderData = (strtolower($this->patient->getGenderString()) == 'male') ? array('', 'X', '', '') : array(
-            '',
-            '',
-            '',
-            'X'
-        );
-        $dob = ($this->patient->dob) ? $this->patient->NHSDate('dob') : '';
-        $yearHeader = !empty($dob) ? array_merge(array(''), str_split(date('Y', strtotime($dob)))) : array(
-            '',
-            '',
-            '',
-            '',
-            ''
-        );
-        $postCodeHeader = array('', '', '', '', '');
-        $spaceHolder = array('');
-        $data["genderTable"] = array(
-            0 => array_merge($genderData, $spaceHolder, $yearHeader, $spaceHolder, $postCodeHeader)
-        );
-
-        return $data;
+        $this->redirect(array('/' . $this->event->eventType->class_name . '/default/view/' . $id));
     }
 
     /**
@@ -544,96 +572,31 @@ class DefaultController extends \BaseEventTypeController
      */
     public function actionPDFPrint($id)
     {
-        if (!$event = \Event::model()->findByPk($id)) {
-            throw new Exception("Event not found: $id");
-        }
-
-        $event->lock();
         $this->printInit($id);
+    }
 
-        $signatureElement = $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature');
-        //  we need to check if we already have a signature file linked
-        if (!$signatureElement->checkSignature()) {
-            // we check if the signature is exists on the portal
-            $portalConnection = new optomPortalConnection();
-            $signatureData = $portalConnection->signatureSearch(null,
-                $this->getApp()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($event));
-            //$signatureData = $portalConnection->signatureSearch();
+    /**
+     * @throws \CHttpException
+     */
+    public function initActionDisplayConsentSignature()
+    {
+        $this->initWithEventId($this->request->getParam('id'));
+    }
 
-            //print_r($signatureData);die;
-            // TEST DATA!
-            //$signatureData = $portalConnection->signatureSearch(null, 'RP67-26B8MC-3');
-
-            if (is_array($signatureData) && isset($signatureData["image"])) {
-                $imageFile = $portalConnection->createNewSignatureImage($signatureData["image"], $this->patient->id);
-                // save successful so we can attach the signature file to the event consent signature model
-                if ($imageFile) {
-                    $signatureElement->signature_file_id = $imageFile->id;
-                    $signatureElement->save();
-                    $signature = imagecreatefromstring($signatureElement->getDecryptedSignature());
-                }
-            } else {
-                $QRContent = "@code:" . $this->getApp()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($event) . "@key:" . $signatureElement->getEncryptionKey();
-
-                $QRHelper = new SignatureQRCodeGenerator();
-                $signature = $QRHelper->generateQRSignatureBox($QRContent);
-            }
-        } else {
-            // we get the stored signature and creates a GD object from the data
-            $signature = imagecreatefromstring($signatureElement->getDecryptedSignature());
+    /**
+     * @param $id
+     * @throws \CHttpException
+     */
+    public function actionDisplayConsentSignature($id)
+    {
+        $signature_element = $this->getManager()->getConsentSignatureElementForEvent($this->event);
+        if (!$signature_element->checkSignature()) {
+            throw new \CHttpException(404);
         }
-
-
-        // TODO: need to find a place for the template files! (eg. views/odtTemplates) ?
-        $inputFile = 'example_certificate_5.odt';
-        $printHelper = new ODTTemplateManager($inputFile, realpath(__DIR__ . '/..') . '/files',
-            'CVICert_' . $this->getApp()->user->id . '_' . rand() . '.odt');
-
-        //print '<pre>'; print_r($this->getStructuredDataForPrintPDF($id)); die;
-
-        $DH = new ODTDataHandler();
-        $DH->setTableAndSimpleTextDataFromArray($this->getStructuredDataForPrintPDF($id));
-        //print_r($DH->getDataSource());die;
-
-        $tables = $DH->gettables();
-
-        foreach ($tables as $oneTable) {
-            $name = $oneTable['name'];
-            $data = $DH->generateSimpleTableHashData($oneTable);
-            $printHelper->fillTableByName($name, $data, 'name');
-        }
-
-        // TEST DATA!!
-        $data = array(
-            array('', '', '', '', '', '', '', '', '', '', 'Y'),
-            array('', '', '', '', '', '', '', '', '', '', 'Y'),
-            array('', '', '', '', '', '', '', '', '', '', 'N'),
-            array('', '', '', '', '', '', '', '', '', '', 'Y'),
-            array('', '', '', '', '', '', '', '', '', '', 'N'),
-        );
-        $printHelper->fillTableByName('otherRelevantFactors', $data, 'name');
-
-
-        $texts = $DH->getSimpleTexts();
-        $printHelper->exchangeAllStringValuesByStyleName($texts);
-
-        //$printHelper->exchangeStringValues( $this->getStructuredDataForPrintPDF($id) );
-
-        //$printHelper->exchangeAllStringValuesByNodes( $this->getStructuredDataForPrintPDF($id) );
-        // TODO: we need to check which function to call
-        $printHelper->changeImageFromGDObject('signatureImagePatient', $signature);
-        $printHelper->saveContentXML();
-        $printHelper->generatePDF();
-        $printHelper->getPDF();
-        $event->unlock();
-
-        /*$pdf = $event->getPDF($this->pdf_print_suffix);
-
-        header('Content-Type: application/pdf');
-        header('Content-Length: '.filesize($pdf));
-
-        readfile($pdf);
-        @unlink($pdf);*/
+        header('Content-Type: image/png');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        imagepng(imagecreatefromstring($signature_element->getDecryptedSignature()));
 
     }
 

@@ -88,7 +88,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             array('examination_date', 'OEDateValidatorNotFuture'),
             array('is_considered_blind', 'boolean'),
             array('unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va', 'length', 'max' => 20),
-            array('examination_date, is_considered_blind, sight_varies_by_light_levels, unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va, low_vision_status_id, field_of_vision_id, diagnoses_not_covered', 'required', 'on' => 'finalise'),
+            array('examination_date, is_considered_blind, sight_varies_by_light_levels, unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va, low_vision_status_id, field_of_vision_id', 'required', 'on' => 'finalise'),
             array(
                 'id, event_id, examination_date, is_considered_blind, sight_varies_by_light_levels, unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va, low_vision_status_id, field_of_vision_id, diagnoses_not_covered, consultant_id, ',
                 'safe',
@@ -410,7 +410,9 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             array('Best corrected',$this->best_corrected_right_va, $this->best_corrected_left_va),
             array('Best corrected with both eyes',$this->best_corrected_binocular_va, ''),
         );
-        $result['consultantName'] = $this->consultant->getFullName();
+        if($this->consultant) {
+            $result['consultantName'] = $this->consultant->getFullName();
+        }
         if((int)$this->sight_varies_by_light_levels === 1) { $varyByLightLevelsYes = 'X';}
         if((int)$this->sight_varies_by_light_levels === 0) { $varyByLightLevelsNo = 'X';}
         $result['varyByLightLevels'][0] = array('',$varyByLightLevelsYes,'',$varyByLightLevelsNo);
