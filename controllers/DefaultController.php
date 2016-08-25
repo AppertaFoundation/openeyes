@@ -472,10 +472,7 @@ class DefaultController extends \BaseEventTypeController
         header('Content-Type: image/png');
         header('Expires: 0');
         header('Cache-Control: must-revalidate');
+        imagepng(imagecreatefromstring($signature_element->getDecryptedSignature()));
 
-        // FIXME: this is not working with the test signatures I've created with my iphones
-        echo imagecreatefromstring($signature_element->getDecryptedSignature());
-
-        //echo file_get_contents($signature_element->signature_file->getPath());
     }
 }
