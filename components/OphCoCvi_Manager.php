@@ -38,8 +38,8 @@ class OphCoCvi_Manager extends \CComponent
     public function getStatusText($status)
     {
         $lookup = array(
-            self::$ISSUED => "Issued",
-            self::$CVI_COMPLETE => "Complete",
+            self::$ISSUED => 'Issued',
+            self::$CVI_COMPLETE => 'Complete',
             self::$CVI_CLINICAL_COMPLETE => 'Clinically Complete',
             self::$CVI_CLERICAL_COMPLETE => 'Clerically Complete',
             self::$CVI_INCOMPLETE => 'Incomplete',
@@ -48,7 +48,7 @@ class OphCoCvi_Manager extends \CComponent
             return $lookup[$status];
         }
 
-        return "Unrecognised Status";
+        return 'Unrecognised Status';
     }
 
     protected $yii;
@@ -403,7 +403,7 @@ class OphCoCvi_Manager extends \CComponent
 
         foreach ($elements_array as $el_name) {
             $element = $this->{"get{$el_name}ElementForEvent"}($event);
-            if (method_exists($element, "getStructuredDataForPrint")) {
+            if (method_exists($element, 'getStructuredDataForPrint')) {
                 $data = array_merge($data, $element->getStructuredDataForPrint());
             }
         }
@@ -412,18 +412,18 @@ class OphCoCvi_Manager extends \CComponent
 
         // TODO: we need to match the keys here!
         // we also need a method to generate the data structure with the ODTDataHandler!
-        $data["patientName"] = $patient->getFullName();
+        $data['patientName'] = $patient->getFullName();
         // TODO: do we have other names for patient?
-        $data["otherNames"] = '';
-        $data["patientDateOfBirth"] = $patient->dob;
-        $data["nhsNumber"] = $patient->getNhsnum();
-        $data["gpName"] = $patient->gp->getFullName();
+        $data['otherNames'] = '';
+        $data['patientDateOfBirth'] = $patient->dob;
+        $data['nhsNumber'] = $patient->getNhsnum();
+        $data['gpName'] = $patient->gp->getFullName();
         //$data["gpAddress"] = $patient->gp->contact->address->postcode."\n".$this->patient->gp->contact->address->address1;
-        $data["gpAddress"] = '';
-        $data["gpTel"] = '';
-        $data["patientAddress"] = $patient->getSummaryAddress();
-        $data["patientEmail"] = ''; // TODO: we need a get email address function
-        $data["patientTel"] = $patient->getPrimary_phone();
+        $data['gpAddress'] = '';
+        $data['gpTel'] = '';
+        $data['patientAddress'] = $patient->getSummaryAddress();
+        $data['patientEmail'] = ''; // TODO: we need a get email address function
+        $data['patientTel'] = $patient->getPrimary_phone();
 
         // These should be coming from the signature element
 //        $data["signatureName"] = $patient->getFullName();
@@ -445,7 +445,7 @@ class OphCoCvi_Manager extends \CComponent
         );
         $postCodeHeader = array('', '', '', '', '');
         $spaceHolder = array('');
-        $data["genderTable"] = array(
+        $data['genderTable'] = array(
             0 => array_merge($genderData, $spaceHolder, $yearHeader, $spaceHolder, $postCodeHeader)
         );
 
@@ -649,7 +649,7 @@ class OphCoCvi_Manager extends \CComponent
     private function handleConsultantListFilter(\CDbCriteria $criteria, $filter = array())
     {
         if (isset($filter['consultant_ids']) && strlen(trim($filter['consultant_ids']))) {
-            $criteria->addInCondition('clinical_element.consultant_id', explode(",", $filter['consultant_ids']));
+            $criteria->addInCondition('clinical_element.consultant_id', explode(',', $filter['consultant_ids']));
         }
     }
 

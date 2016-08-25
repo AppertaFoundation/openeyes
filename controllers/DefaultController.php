@@ -45,7 +45,7 @@ class DefaultController extends \BaseEventTypeController
      */
     public function actionCreate()
     {
-        if (isset($_GET['createnewcvi'])) {
+        if ($this->request->getParam('createnewcvi', null)) {
             $cancel_url = ($this->episode) ? '/patient/episode/' . $this->episode->id
                 : '/patient/episodes/' . $this->patient->id;
             ($_GET['createnewcvi'] == 1) ? parent::actionCreate()
@@ -60,7 +60,7 @@ class DefaultController extends \BaseEventTypeController
                 }
                 $this->render('select_event', array(
                     'cvi_url' => $cvi_url,
-                ), false, true);
+                ), false);
             } else {
                 parent::actionCreate();
             }
@@ -221,7 +221,7 @@ class DefaultController extends \BaseEventTypeController
      */
     public function getManager()
     {
-        if (!isset($this->cvi_manager)) {
+        if (is_null($this->cvi_manager)) {
             $this->cvi_manager = new OphCoCvi_Manager($this->getApp());
         }
 
@@ -338,6 +338,47 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * @return models\Element_OphCoCvi_EventInfo[]
+     */
+    private function getElementsForEventInfo()
+    {
+        if ($this->event->isNewRecord) {
+            return array(new models\Element_OphCoCvi_EventInfo());
+        } else {
+            return array($this->getManager()->getEventInfoElementForEvent($this->event));
+        }
+    }
+
+    /**
+     * Because form elements won't be submitted when editing without this access, we need to return the current
+     * event element if it exists
+     *
+     * @return models\Element_OphCoCvi_ClinicalInfo[]|bool|null
+     */
+    private function getElementsForClinical()
+    {
+        if (!$this->checkClinicalEditAccess()) {
+            $el = $this->event->isNewRecord ? null : $this->getManager()->getClinicalElementForEvent($this->event);
+            return (!is_null($el)) ? array($el) : null;
+        }
+        return false;
+    }
+
+    /**
+     * Because form elements won't be submitted when editing without this access, we need to return the current
+     * event element if it exists
+     *
+     * @return models\Element_OphCoCvi_ClericalInfo|bool|null
+     */
+    private function getElementsForClerical()
+    {
+        if (!$this->checkClericalEditAccess()) {
+            $el  = $this->event->isNewRecord ? null : $this->getManager()->getClericalElementForEvent($this->event);
+            return (!is_null($el)) ? array($el) : null;
+        }
+        return false;
+    }
+    /**
      * Override to support the fact that users might not have permission to edit specific event elements.
      *
      * @param \ElementType $element_type
@@ -349,28 +390,21 @@ class DefaultController extends \BaseEventTypeController
     {
         $cls = $element_type->class_name;
 
-        if ($cls == 'OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo') {
-            if ($this->event->isNewRecord) {
-                return array(new $cls);
-            } else {
-                return array($this->getManager()->getEventInfoElementForEvent($this->event));
+        $map = array(
+            'OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo' => 'EventInfo',
+            'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo' => 'Clinical',
+            'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo' => 'Clerical'
+        );
+
+        if (array_key_exists($cls, $map)) {
+            $id = $map[$cls];
+            $override = $this->{"getElementsFor{$id}"}();
+            if ($override !== false) {
+                return $override;
             }
         }
 
-        // because form elements won't be submitted when editing without this access, we need to return the current
-        // event element if it exists
-        if (!$this->checkClinicalEditAccess() && $cls == 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo') {
-            $el = $this->event->isNewRecord ? null : $this->getManager()->getClinicalElementForEvent($this->event);
-            return (!is_null($el)) ? array($el) : null;
-        }
-
-        if (!$this->checkClericalEditAccess() && $cls == 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo') {
-            $el  = $this->event->isNewRecord ? null : $this->getManager()->getClericalElementForEvent($this->event);
-            return (!is_null($el)) ? array($el) : null;
-        }
-
         return parent::getElementsForElementType($element_type, $data);
-
     }
 
     /**
