@@ -282,7 +282,8 @@ class WorklistManager extends CComponent
         $limit = $this->getAppParam('worklist_default_generation_limit') ?: self::$DEFAULT_GENERATION_LIMIT;
         $interval = DateInterval::createFromDateString($limit);
 
-        return (new DateTime())->add($interval);
+        $now = new DateTime();
+        return $now->add($interval);
     }
 
     /**
