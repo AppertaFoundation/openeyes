@@ -306,6 +306,9 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * Sister method to the getElementsForEventType method, this loads up event elements for rendering (whether viewing or editing).
+     * Because of the permissioning behaviours, need to be able to filter out clinical/clerical elements as appropriate.
+     * 
      * @return array
      */
     protected function getEventElements()
