@@ -28,10 +28,21 @@ $(document).ready(function() {
     handleButton($('#et_deleteevent'));
 
     handleButton($('#et_canceldelete'));
+
+    handleButton($('#capture-patient-signature'), function(e) {
+
+        $('#capture-patient-signature-instructions').show();
+        $('#capture-patient-signature').parent().hide();
+        // I honestly don't know wny this works, but it works and we have a demo to do:
+        // FIXME: this seems ridiculous
+        setTimeout(function() {e.preventDefault(); enableButtons();}, 100);
+        return false;
+
+    });
     
-    handleButton( $('#et_printfirstpage'),function(e) {
+    handleButton( $('#print-for-signature'),function(e) {
         var data = {'firstPage':'1'};
-	printIFrameUrl(OE_print_url, data);
+	    printIFrameUrl($(e.target).data('print-url'), data);
         
         iframeId = 'print_content_iframe',
         $iframe = $('iframe#print_content_iframe');

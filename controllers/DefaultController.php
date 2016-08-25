@@ -132,7 +132,7 @@ class DefaultController extends \BaseEventTypeController
 
         // check that the user has the general edit cvi permission, but not the specific edit permission on
         // the current event.
-        return $this->checkAccess('OprnEditCvi', $this->getApp()->user->id) && $this->getManager()->isIssued($this->event);
+        return $this->checkAccess('OprnEditCvi', $this->getApp()->user->id);
     }
 
     /**
