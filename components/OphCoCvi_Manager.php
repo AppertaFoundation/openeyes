@@ -480,7 +480,7 @@ class OphCoCvi_Manager extends \CComponent
         $data_handler = new \ODTDataHandler();
         $data_handler->setTableAndSimpleTextDataFromArray( $this->getStructuredDataForPrintPDF($event) );
 
-        $tables = $data_handler->gettables();
+        $tables = $data_handler->getTables();
 
         foreach($tables as $oneTable){
             $name = $oneTable['name'];

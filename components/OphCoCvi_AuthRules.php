@@ -40,7 +40,7 @@ class OphCoCvi_AuthRules
     protected function getEventType()
     {
         if (!isset($this->event_type)) {
-            $this->event_type = \EventType::model()->findbyAttributes(array('class_name' => 'OphCoCvi'));
+            $this->event_type = \EventType::model()->findByAttributes(array('class_name' => 'OphCoCvi'));
         }
 
         return $this->event_type;

@@ -296,6 +296,21 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
     }
 
     /**
+     * @param $answer
+     * @param $data
+     * @throws \Exception
+     */
+    private function updateAnswer($answer, $data)
+    {
+        $answer->element_id = $this->id;
+        $answer->is_factor = isset($data['is_factor']) ? $data['is_factor'] : null;
+        $answer->comments = isset($data['comments']) ? $data['comments'] : null;
+        if (!$answer->save()) {
+            throw new \Exception('Unable to save CVI Disorder Section Comment: ' . print_r($answer->getErrors(), true));
+        }
+    }
+
+    /**
      * @param $data
      * @throws \CDbException
      * @throws \Exception
@@ -306,12 +321,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 
         while ($answer = array_shift($current)) {
             if (in_array($answer->patient_factor_id, array_keys($data))) {
-                $answer_data = $data[$answer->patient_factor_id];
-                $answer->is_factor = isset($answer_data['is_factor']) ? $answer_data['is_factor'] : null;
-                $answer->comments = isset($answer_data['comments']) ? $answer_data['comments'] : null;
-                if (!$answer->save()) {
-                    throw new \Exception('Unable to save CVI Disorder Section Comment: ' . print_r($answer->getErrors(), true));
-                }
+                $this->updateAnswer($answer, $data[$answer->patient_factor_id]);
                 unset($data[$answer->patient_factor_id]);
             }
             else {
@@ -324,9 +334,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
         foreach ($data as $factor_id => $values) {
             $answer = new OphCoCvi_ClericalInfo_PatientFactor_Answer();
             $answer->patient_factor_id = $factor_id;
-            $answer->element_id = $this->id;
-            $answer->comments = isset($values['comments']) ? $values['comments'] : "";
-            $answer->is_factor = isset($values['is_factor']) ? $values['is_factor'] : null;
+            $this->updateAnswer($answer, $values);
             if (!$answer->save()) {
                 throw new \Exception("Unable to save CVI Patient Factor Answer: " . print_r($answer->getErrors(), true));
             }

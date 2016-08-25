@@ -29,7 +29,10 @@ if ($this->checkClericalEditAccess()) {
                     $field_base_name = CHtml::modelName($element) . "[patient_factors][{$factor->id}]";
                     $factor_field_name = "{$field_base_name}[is_factor]";
                     $answer = $element->getPatientFactorAnswer($factor);
-                    $value = $answer ? (!is_null($answer->is_factor) ? (integer) $answer->is_factor : null) : null;
+                    $value = $answer ? $answer->is_factor : null;
+                    if (!is_null($value)) {
+                        $value = (integer) $value;
+                    }
                     $comments = $answer ? $answer->comments : null;
                     ?>
 

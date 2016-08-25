@@ -232,6 +232,22 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
     }
 
     /**
+     * @param Element_OphCoCvi_ClinicalInfo_Disorder_Assignment $assignment
+     * @param $data
+     * @throws \Exception
+     */
+    private function updateDisorderAssignment(Element_OphCoCvi_ClinicalInfo_Disorder_Assignment $assignment, $data)
+    {
+        $assignment->element_id = $this->id;
+        $assignment->affected = isset($data['affected']) ? (boolean)$data['affected'] : false;
+        $assignment->main_cause = isset($data['main_cause']) ? (boolean)$data['main_cause'] : false;
+
+        if (!$assignment->save()) {
+            throw new \Exception('Unable to save CVI Disorder Assignment: ' . print_r($assignment->getErrors(), true));
+        }
+    }
+
+    /**
      * Update the CVI Disorder status for this element.
      *
      * @param $side
@@ -252,14 +268,8 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         // if the element has been saved before, then the assignment values will exist
         // and we can update, or delete those that are no longer required.
         while($assignment = array_shift($current)) {
-            if (in_array($assignment->ophcocvi_clinicinfo_disorder_id, array_keys($data))) {
-                $ass_data = $data[$assignment->ophcocvi_clinicinfo_disorder_id];
-                $assignment->affected = isset($ass_data['affected']) ? (boolean)$ass_data['affected'] : false;
-                $assignment->main_cause = isset($ass_data['main_cause']) ? (boolean)$ass_data['main_cause'] : false;
-
-                if (!$assignment->save()) {
-                    throw new \Exception('Unable to save CVI Disorder Assignment: ' . print_r($assignment->getErrors(), true));
-                };
+            if (array_key_exists($assignment->ophcocvi_clinicinfo_disorder_id, $data)) {
+                $this->updateDisorderAssignment($assignment, $data[$assignment->ophcocvi_clinicinfo_disorder_id]);
                 unset($data[$assignment->ophcocvi_clinicinfo_disorder_id]);
             }
             else {
@@ -271,17 +281,15 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
 
         // create new assignments that don't yet exist for the element
         foreach ($data as $cvi_disorder_id => $values) {
-            $ass = new Element_OphCoCvi_ClinicalInfo_Disorder_Assignment();
-            $ass->element_id = $this->id;
-            $ass->eye_id = $eye_id;
-            $ass->ophcocvi_clinicinfo_disorder_id = $cvi_disorder_id;
-            $ass->affected = isset($values['affected']) ? (boolean)$values['affected'] : false;
-            $ass->main_cause = isset($values['main_cause']) ? (boolean)$values['main_cause'] : false;
-            if (!$ass->save()) {
-                throw new \Exception('Unable to save CVI Disorder Assignment: ' .print_r($ass->getErrors(), true));
-            };
+            $assignment = new Element_OphCoCvi_ClinicalInfo_Disorder_Assignment();
+            $assignment->eye_id = $eye_id;
+            $assignment->ophcocvi_clinicinfo_disorder_id = $cvi_disorder_id;
+
+            $this->updateDisorderAssignment($assignment, $values);
         }
     }
+
+
 
     /**
      * Set the section comments on the element.
@@ -295,7 +303,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         $current = $this->getRelated('cvi_disorder_section_comments', true);
 
         while ($section_comment = array_shift($current)) {
-            if (in_array($section_comment->ophcocvi_clinicinfo_disorder_section_id, array_keys($data))) {
+            if (array_key_exists($section_comment->ophcocvi_clinicinfo_disorder_section_id, $data)) {
                 $comment_data = $data[$section_comment->ophcocvi_clinicinfo_disorder_section_id];
                 $section_comment->comments = isset($comment_data['comments']) ? $comment_data['comments'] : "";
                 if (!$section_comment->save()) {
@@ -419,7 +427,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         $fieldOfVisionData = $this->generateFieldOfVision();
         $lowVisionData = array_merge(array(0=>array('','')),$this->generateLowVisionStatus());
 
-        $result["fieldOfVisionAndLowVisionStatus"][0] = array('','','','');
+        $result['fieldOfVisionAndLowVisionStatus'][0] = array('','','','');
         for($k=0;$k<sizeof($fieldOfVisionData);$k++){
             $result["fieldOfVisionAndLowVisionStatus"][$k+1] = array_merge($fieldOfVisionData[$k],$lowVisionData[$k]);
         }
