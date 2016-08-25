@@ -46,7 +46,12 @@
     </div>
     <div class="row data-row">
         <?php if ($element->checkSignature()) { ?>
-            TODO: Show the signature!!
+            <div class="large-2 column">
+                <div class="data-label">Captured Signature</div>
+            </div>
+            <div class="large-6 column end">
+                <img src="/OphCoCvi/default/displayConsentSignature/<?=$this->event->id?>" style="height: 60px" />
+            </div>
         <?php } else { ?>
             <div class="large-12 column end">
                 <?php echo CHtml::button('Capture patient signature',  array('type'=> 'button' , 'id' => 'capture-patient-signature', 'name' => 'capturePatientSignature', 'class'=>'small button primary event-action')); ?>
@@ -61,7 +66,8 @@
                     </ol>
                 </div>
                 <div class="large-4 column end">
-                    <?php echo CHtml::button('Print first page',  array('data-print-url' => '/OphCoCvi/default/consentSignature/' . $this->event->id, 'type'=> 'button' , 'id' => 'print-for-signature', 'name' => 'printForSignature', 'class'=>'small button primary event-action')); ?> <br />
+                    <?php echo CHtml::button('Print first page',  array('data-print-url' => '/OphCoCvi/default/consentSignature/' . $this->event->id, 'type'=> 'button' , 'id' => 'print-for-signature', 'name' => 'printForSignature', 'class'=>'small button primary event-action')); ?> <br /><br />
+                    <?php echo CHtml::link('Retrieve Signature', '/OphCoCvi/default/retrieveConsentSignature/' . $this->event->id, array('class' => 'button small secondary')); ?>
                 </div>
             </div>
         <?php } ?>

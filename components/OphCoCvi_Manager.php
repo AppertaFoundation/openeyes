@@ -21,6 +21,7 @@ namespace OEModule\OphCoCvi\components;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo;
+use OEModule\OphCoCvi\models\Element_OphCoCvi_ConsentSignature;
 
 class OphCoCvi_Manager extends \CComponent
 {

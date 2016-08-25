@@ -172,10 +172,14 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
      */
     public function getEncryptionKey()
     {
-        return md5($this->patientId.$this->event_id.$this->event->episode->id);
+        return md5($this->event->episode->patient_id.$this->event_id.$this->event->episode->id);
     }
 
-    public function loadSignatureFromPortal()
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    public function saveSignatureImageFromPortal()
     {
         $portalConnection = new optomPortalConnection();
         if ($portalConnection) {
@@ -186,15 +190,29 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
         //$signatureData = $portalConnection->signatureSearch();
 
         if (is_array($signatureData) && isset($signatureData["image"]) && $portalConnection) {
-            $imageFile = $portalConnection->createNewSignatureImage($signatureData["image"], $this->patient->id);
+            $imageFile = $portalConnection->createNewSignatureImage($signatureData["image"], $this->event->episode->patient->id);
             // save successful so we can attach the signature file to the event consent signature model
             if ($imageFile) {
                 $this->signature_file_id = $imageFile->id;
-                $this->save();
-                $signature = imagecreatefromstring($this->getDecryptedSignature());
+                return $this->save();
             }
+        }
+        return false;
+    }
+
+    /**
+     * @TODO: refactor as this is an incorrect name for this method now
+     *
+     * @return resource
+     */
+    public function loadSignatureFromPortal()
+    {
+        if ($this->saveSignatureImageFromPortal()) {
+            $signature = imagecreatefromstring($this->getDecryptedSignature());
         } else {
-            $QRContent = "@code:" . \Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($this->event) . "@key:" . $this->getEncryptionKey();
+            $QRContent = "@code:"
+                . \Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($this->event)
+                . "@key:" . $this->getEncryptionKey();
 
             $QRHelper = new \SignatureQRCodeGenerator();
             $signature = $QRHelper->generateQRSignatureBox($QRContent);
@@ -212,9 +230,8 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
             array($this->is_patient ? 'X' : '',''),
             array($this->is_patient ? '' : 'X','')
         );
-        $result["representativeName"] = $this->representative_name;
-        //print_r($result['patientOrRepresentative']);die;
-        $result['signature_date'] = $this->signature_date;
+        $result["signatureName"] = $this->is_patient ? $this->event->episode->patient->getFullName() : $this->representative_name;
+        $result['signatureDate'] = \Helper::convertMySQL2NHS($this->signature_date);
         return $result;
     }
 }

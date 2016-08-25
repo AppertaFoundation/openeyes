@@ -34,6 +34,8 @@ class DefaultController extends \BaseEventTypeController
 
     protected static $action_types = array(
         'consentsignature' => self::ACTION_TYPE_PRINT,
+        'retrieveconsentsignature' => self::ACTION_TYPE_PRINT,
+        'displayconsentsignature' => self::ACTION_TYPE_VIEW,
         'issue' => self::ACTION_TYPE_EDIT,
         'list' => self::ACTION_TYPE_LIST
     );
@@ -420,13 +422,60 @@ class DefaultController extends \BaseEventTypeController
         $pdf->getPDF();
     }
 
+    public function initActionRetrieveConsentSignature()
+    {
+        $this->initWithEventId($this->request->getParam('id'));
+    }
+    /**
+     * @TODO: refactor
+     * @param $id
+     *
+     */
+    public function actionRetrieveConsentSignature($id)
+    {
+        $signature_element = $this->getManager()->getConsentSignatureElementForEvent($this->event);
+        if ($signature_element->saveSignatureImageFromPortal()) {
+            $this->getApp()->user->setFlash('success', 'Signature successfully loaded.');
+        } else {
+            $this->getApp()->user->setFlash('error', 'Signature could not be found');
+        }
+
+        $this->redirect(array('/' . $this->event->eventType->class_name . '/default/view/' . $id));
+    }
+
     /**
      * @param $id
      */
     public function actionPDFPrint($id)
     {
         $this->printInit($id);
+    }
 
+    /**
+     * @throws \CHttpException
+     */
+    public function initActionDisplayConsentSignature()
+    {
+        $this->initWithEventId($this->request->getParam('id'));
+    }
 
+    /**
+     * @param $id
+     * @throws \CHttpException
+     */
+    public function actionDisplayConsentSignature($id)
+    {
+        $signature_element = $this->getManager()->getConsentSignatureElementForEvent($this->event);
+        if (!$signature_element->checkSignature()) {
+            throw new \CHttpException(404);
+        }
+        header('Content-Type: image/png');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+
+        // FIXME: this is not working with the test signatures I've created with my iphones
+        echo imagecreatefromstring($signature_element->getDecryptedSignature());
+
+        //echo file_get_contents($signature_element->signature_file->getPath());
     }
 }
