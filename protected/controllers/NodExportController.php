@@ -1968,7 +1968,7 @@ EOL;
                 14 AS CoPathologyId
 
                 FROM et_ophciexamination_anteriorsegment a
-                JOIN tmp_rco_nod_main_event_episodes_ c ON c.oe_event_id = a.event_id
+                JOIN tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c ON c.oe_event_id = a.event_id
                 HAVING Eye IS NOT NULL;
                 
                 
@@ -1993,6 +1993,7 @@ EOL;
                 JOIN disorder ON  secondary_diagnosis.disorder_id = disorder.id
                 JOIN tmp_pathology_type ON LOWER(disorder.term) = LOWER(tmp_pathology_type.term);
 EOL;
+        return $query;    
     }
     
     
@@ -2001,14 +2002,15 @@ EOL;
 
         $query = <<<EOL
                 SELECT p.oe_event_id as OperationId, p.Eye, p.CoPathologyId
-                FROM tmp_rco_nod_EpisodeOperationCoPathology_{$this->extractIdentifier} p;
+                FROM tmp_rco_nod_EpisodeOperationCoPathology_{$this->extractIdentifier} p 
+
 EOL;
         $dataQuery = array(
             'query' => $query,
             'header' => array('OperationId', 'Eye', 'CoPathologyId'),
         );
 
-        $output = $this->saveCSVfile($dataQuery, 'EpisodeOperationCoPathology', null, 'OperationId');
+        $output = $this->saveCSVfile($dataQuery, 'EpisodeOperationCoPathology');
 
         return $output;
     }
