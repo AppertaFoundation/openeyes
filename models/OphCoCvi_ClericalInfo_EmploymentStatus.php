@@ -23,20 +23,23 @@ namespace OEModule\OphCoCvi\models;
  * The followings are the available columns in table:
  * @property string $id
  * @property string $name
+ * @property boolean $child_default
+ * @property integer social_history_occupation_id
  *
  * The followings are the available model relations:
  *
- * @property ElementType $element_type
- * @property EventType $eventType
- * @property Event $event
- * @property User $user
- * @property User $usermodified
+ * @property \ElementType $element_type
+ * @property \EventType $eventType
+ * @property \Event $event
+ * @property \User $user
+ * @property \User $usermodified
  */
 
 class OphCoCvi_ClericalInfo_EmploymentStatus extends \BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
+     * @param null|string $className
      * @return the static model class
      */
     public static function model($className = __CLASS__)
@@ -84,6 +87,28 @@ class OphCoCvi_ClericalInfo_EmploymentStatus extends \BaseActiveRecordVersioned
     }
 
     /**
+     * Add Lookup behaviour
+     *
+     * @return array
+     */
+    public function behaviors()
+    {
+        return array(
+            'LookupTable' => 'LookupTable',
+        );
+    }
+
+    /**
+     * always order by display_order
+     *
+     * @return array
+     */
+    public function defaultScope()
+    {
+        return array('order' => $this->getTableAlias(true, false).'.display_order asc');
+    }
+
+    /**
      * @return array customized attribute labels (name=>label)
      */
     public function attributeLabels()
@@ -96,16 +121,27 @@ class OphCoCvi_ClericalInfo_EmploymentStatus extends \BaseActiveRecordVersioned
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
-     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     * @return \CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
     {
-        $criteria = new CDbCriteria;
+        $criteria = new \CDbCriteria;
         $criteria->compare('id', $this->id, true);
         $criteria->compare('name', $this->name, true);
 
-        return new CActiveDataProvider(get_class($this), array(
+        return new \CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
+    }
+
+    /**
+     * @return integer|null
+     */
+    public static function defaultChildStatusId()
+    {
+        if ($child_default = self::model()->active()->findByAttributes(array('child_default' => 1))) {
+            return $child_default->id;
+        }
+        return null;
     }
 }

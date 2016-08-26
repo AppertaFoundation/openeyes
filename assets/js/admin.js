@@ -21,10 +21,11 @@ $(document).ready(function () {
          */
         var chk = 0;
         $("input[name^='child_default']").each(function () {
-            if ($(this).is(':checked')) {
+            if ($(this).is(':visible') && $(this).is(':checked')) {
                 chk++;
             }
         });
+
         if (chk > 1) {
             alert('Must be one child as default');
             check = false;
