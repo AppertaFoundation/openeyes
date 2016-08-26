@@ -419,10 +419,17 @@ class OphCoCvi_Manager extends \CComponent
         $data['otherNames'] = '';
         $data['patientDateOfBirth'] = $patient->dob;
         $data['nhsNumber'] = $patient->getNhsnum();
-        $data['gpName'] = $patient->gp->getFullName();
-        //$data["gpAddress"] = $patient->gp->contact->address->postcode."\n".$this->patient->gp->contact->address->address1;
-        $data['gpAddress'] = '';
-        $data['gpTel'] = '';
+        if ($patient->gp) {
+            $data['gpName'] = $patient->gp->getFullName();
+            if ($this->patient->gp->contact->address) {
+                $data['gpAddress'] = $this->patient->gp->contact->address->letterLine;
+            }
+            if ($this->patient->gp->contact->primary_phone) {
+                $data['gpTel'] = $this->patient->gp->contact->primary_phone;
+            }
+        }
+
+
         $data['patientAddress'] = $patient->getSummaryAddress();
         $data['patientEmail'] = ''; // TODO: we need a get email address function
         $data['patientTel'] = $patient->getPrimary_phone();
