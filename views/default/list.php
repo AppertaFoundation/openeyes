@@ -84,7 +84,7 @@ $cols = array(
             ),
             'edit' => array(
                 'options' => array('title' => 'Add a comment'),
-                'url' => 'Yii::app()->createURL("/OphCoMessaging/Default/update/", array(
+                'url' => 'Yii::app()->createURL("/OphCoCvi/Default/update/", array(
                                         "id" => $data->event_id))',
                 'label' => '<button class="secondary small">Edit</button>',
                 'visible' => function ($row, $data) {
