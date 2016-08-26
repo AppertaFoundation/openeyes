@@ -34,8 +34,12 @@
     }else
     {?>
         <div>
-            You have not captured any signature yet, if you want to add your signature to the system please read the following
-            QR code with the OpenEyes phone application and follow the instructions on your phone's screen:
+            You have not captured any signature yet. To do so please:
+            <ol>
+                <li>Visit <?= Yii::app()->params['signature_app_url'] ? : "the OpenEyes Phone Application" ?> on your mobile device.</li>
+                <li>Scan the QR code displayed below with the application.</li>
+                <li>Follow the prompts from there.</li>
+            </ol>
         </div>
 
     <?php }?>

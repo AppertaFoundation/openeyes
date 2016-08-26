@@ -671,4 +671,29 @@ class ODTTemplateManager
         
         ob_end_flush(); 
     }
+
+    /**
+     * deletes all the files generated in the process of generating the final output
+     * @TODO: determine all the files we should be removing
+     */
+    protected function cleanUp()
+    {
+        unlink($this->outDir.'/'.$this->outFile);
+
+
+    }
+
+    /**
+     * Store the PDF as a ProtectedFile in the system
+     *
+     * @return ProtectedFile
+     * @throws Exception
+     */
+    public function storePDF()
+    {
+        $pf = ProtectedFile::createFromFile($this->outDir.'/'.$this->outFile);
+        $pf->save();
+        $this->cleanUp();
+        return $pf;
+    }
 }

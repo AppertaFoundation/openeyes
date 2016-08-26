@@ -581,7 +581,9 @@ class User extends BaseActiveRecordVersioned
 		return Firm::model()->findAll($crit);
 	}
 
-
+    /**
+     * @return array
+     */
     public function getAllConsultants() {
         $consultant_names = User::model()->findAll(array('order' => 'first_name asc'), 'id', 'first_name');
         $consultant_name = array();
