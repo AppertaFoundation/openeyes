@@ -42,27 +42,28 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * Create Form with check for the cvi existing events count
+     * @throws \Exception
      */
     public function actionCreate()
     {
-        if ($this->request->getParam('createnewcvi', null)) {
-            $cancel_url = ($this->episode) ? '/patient/episode/' . $this->episode->id
+        $create_new_cvi = $this->request->getParam('createnewcvi', null);
+        if (!is_null($create_new_cvi)) {
+            $cancel_url = $this->episode ? '/patient/episode/' . $this->episode->id
                 : '/patient/episodes/' . $this->patient->id;
-            ($_GET['createnewcvi'] == 1) ? parent::actionCreate()
-                : $this->redirect(array($cancel_url));
+            if ($create_new_cvi == 1) {
+                return parent::actionCreate();
+            } else {
+                return $this->redirect(array($cancel_url));
+            }
         } else {
             $cvi_events = $this->getApp()->moduleAPI->get('OphCoCvi');
-            $cvi_created = $cvi_events->getEvents(\Patient::model()->findByPk($this->patient->id));
-            if (count($cvi_created) >= $this->cvi_limit) {
-                $cvi_url = array();
-                foreach ($cvi_created as $cvi_event) {
-                    $cvi_url[] = $this->getManager()->getEventViewUri($cvi_event);
-                }
+            $current_cvis = $cvi_events->getEvents($this->patient);
+            if (count($current_cvis) >= $this->cvi_limit) {
                 $this->render('select_event', array(
-                    'cvi_url' => $cvi_url,
+                    'current_cvis' => $current_cvis,
                 ), false);
             } else {
-                parent::actionCreate();
+                return parent::actionCreate();
             }
         }
     }
