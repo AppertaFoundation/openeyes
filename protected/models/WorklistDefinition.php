@@ -69,20 +69,30 @@ class WorklistDefinition extends BaseActiveRecordVersioned
             array('name, rrule, worklist_name, start_time, end_time, description', 'safe'),
             array('rrule', 'validateRrule'),
             array('name, rrule', 'required'),
-            array('name', 'length', 'max'=>100),
+            array('name', 'length', 'max' => 100),
             array('description', 'length', 'max' => 1000),
             array('start_time, end_time', 'OETimeValidator'),
             array('active_from, active_until', 'OEDateValidator'),
-            array('active_from', 'OEDateCompareValidator', 'compareAttribute' => 'active_until', 'allowEmpty' => true,
-                'allowCompareEmpty' => true, 'operator' => '<=',
-                'message' => '{attribute} must be on or before {compareAttribute}'),
+            array(
+                'active_from',
+                'OEDateCompareValidator',
+                'compareAttribute' => 'active_until',
+                'allowEmpty' => true,
+                'allowCompareEmpty' => true,
+                'operator' => '<=',
+                'message' => '{attribute} must be on or before {compareAttribute}'
+            ),
             array('active_from', 'default', 'setOnEmpty' => true, 'value' => date("Y-m-d H:i:s", time())),
             array('active_until', 'default', 'setOnEmpty' => true, 'value' => null),
             array('scheduled', 'boolean', 'allowEmpty' => false),
             array('display_order', 'numerical', 'integerOnly' => true),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, name, rrule, worklist_name, start_time, end_time, description, scheduled', 'safe', 'on'=>'search'),
+            array(
+                'id, name, rrule, worklist_name, start_time, end_time, description, scheduled',
+                'safe',
+                'on' => 'search'
+            ),
         );
     }
 
@@ -96,8 +106,19 @@ class WorklistDefinition extends BaseActiveRecordVersioned
         return array(
             'worklists' => array(self::HAS_MANY, 'Worklist', 'worklist_definition_id'),
             'mappings' => array(self::HAS_MANY, 'WorklistDefinitionMapping', 'worklist_definition_id'),
-            'displayed_mappings' => array(self::HAS_MANY, 'WorklistDefinitionMapping', 'worklist_definition_id', 'on' => 'display_order is NOT NULL', 'order' => 'display_order ASC'),
-            'hidden_mappings' => array(self::HAS_MANY, 'WorklistDefinitionMapping', 'worklist_definition_id', 'on' => 'display_order is NULL'),
+            'displayed_mappings' => array(
+                self::HAS_MANY,
+                'WorklistDefinitionMapping',
+                'worklist_definition_id',
+                'on' => 'display_order is NOT NULL',
+                'order' => 'display_order ASC'
+            ),
+            'hidden_mappings' => array(
+                self::HAS_MANY,
+                'WorklistDefinitionMapping',
+                'worklist_definition_id',
+                'on' => 'display_order is NULL'
+            ),
             'display_contexts' => array(self::HAS_MANY, 'WorklistDefinitionDisplayContext', 'worklist_definition_id')
         );
     }
@@ -121,18 +142,18 @@ class WorklistDefinition extends BaseActiveRecordVersioned
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria=new CDbCriteria;
+        $criteria = new CDbCriteria;
 
-        $criteria->compare('id',$this->id,true);
-        $criteria->compare('name',$this->name,true);
-        $criteria->compare('worklist_name',$this->worklist_name,true);
-        $criteria->compare('description',$this->description,true);
+        $criteria->compare('id', $this->id, true);
+        $criteria->compare('name', $this->name, true);
+        $criteria->compare('worklist_name', $this->worklist_name, true);
+        $criteria->compare('description', $this->description, true);
         $criteria->compare('scheduled', $this->scheduled, true);
 
         // TODO: proper support for date/time search
 
         return new CActiveDataProvider(get_class($this), array(
-            'criteria'=>$criteria,
+            'criteria' => $criteria,
         ));
     }
 
@@ -140,7 +161,7 @@ class WorklistDefinition extends BaseActiveRecordVersioned
     {
         // strip out the seconds from the time field
         foreach (array('start_time', 'end_time') as $time_attr) {
-            $this->$time_attr = substr($this->$time_attr,0, 5);
+            $this->$time_attr = substr($this->$time_attr, 0, 5);
         }
         parent::afterFind();
     }
@@ -152,8 +173,9 @@ class WorklistDefinition extends BaseActiveRecordVersioned
      */
     public function validateRrule($attribute)
     {
-        if (empty($this->$attribute))
+        if (empty($this->$attribute)) {
             return;
+        }
 
         $valid = true;
         try {
@@ -161,17 +183,15 @@ class WorklistDefinition extends BaseActiveRecordVersioned
                 // rrule instantiation falls over if no equals is found during parsing
                 // so this is a bit of a dirty hack to deal with that.
                 $valid = false;
-            }
-            else {
+            } else {
                 $rrule = new RRule($this->$attribute);
             }
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
             $valid = false;
         }
-        if (!$valid)
+        if (!$valid) {
             $this->addError($attribute, $this->getAttributeLabel($attribute) . ' is not valid');
+        }
     }
 
     /**
@@ -185,10 +205,12 @@ class WorklistDefinition extends BaseActiveRecordVersioned
     public function validateMappingKey($key, $id = null)
     {
         foreach ($this->mappings as $m) {
-            if ($m->id == $id)
+            if ($m->id == $id) {
                 continue;
-            if ($m->key == $key)
+            }
+            if ($m->key == $key) {
                 return false;
+            }
         }
         return true;
     }
@@ -202,8 +224,9 @@ class WorklistDefinition extends BaseActiveRecordVersioned
     {
         $display_order = 1;
         foreach ($this->mappings as $m) {
-            if ($m->display_order >= $display_order)
-                $display_order = $m->display_order+1;
+            if ($m->display_order >= $display_order) {
+                $display_order = $m->display_order + 1;
+            }
         }
         return $display_order;
     }
@@ -217,11 +240,16 @@ class WorklistDefinition extends BaseActiveRecordVersioned
     {
         if ($this->rrule) {
             $rrule_str = $this->rrule;
-            if (!$this->isNewRecord && !strpos($rrule_str, 'DTSTART='))
-                $rrule_str .= ";DTSTART=" . (new DateTime($this->created_date))->format('Y-m-d');
+            if (!$this->isNewRecord && !strpos($rrule_str, 'DTSTART=')) {
+                $dt = new DateTime($this->created_date);
+                $rrule_str .= ";DTSTART=" . $dt->format('Y-m-d');
+            }
 
-            return (new RRule($rrule_str))->humanReadable(array(
-                'date_formatter' => function ($d) { return $d->format(Helper::NHS_DATE_FORMAT); }
+            $final_rrule = new RRule($rrule_str);
+            return $final_rrule->humanReadable(array(
+                'date_formatter' => function ($d) {
+                    return $d->format(Helper::NHS_DATE_FORMAT);
+                }
             ));
         }
 
