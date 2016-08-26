@@ -22,7 +22,7 @@
         $user = \User::model()->findByPk(\Yii::app()->user->id);
         if($this->checkUserSigned()){
             $clinicalElement = $this->getManager()->getClinicalElementForEvent($this->event);?>
-            <div id="div_signature_pin" class="row field-row">
+            <div class="row field-row">
                 <div class="large-12 column">
                     This CVI has been signed by <b><?php echo $clinicalElement->consultant->getFullName()?></b>
                 </div>
