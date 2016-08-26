@@ -24,44 +24,53 @@
             $clinicalElement = $this->getManager()->getClinicalElementForEvent($this->event);?>
             <div class="row field-row">
                 <div class="large-12 column">
-                    This CVI has been signed by <b><?php echo $clinicalElement->consultant->getFullName()?></b>
+                    This CVI has been signed by <b><?php echo $clinical_element->consultant->getFullName()?></b>
                 </div>
             </div>
-        <?php }else {
-            if (!$user->checkSignature()) {
-                ?>
-                <div id="div_signature_pin" class="row field-row">
+        <?php } else {
+            if ($this->checkClinicalEditAccess()) {
+                if (!$user->checkSignature()) {
+                    ?>
+                    <div id="div_signature_pin" class="row field-row">
+                        <div class="large-12 column">
+                            <label>To sign this CVI, you will need to capture and upload your signature.
+                                <a href="/profile/signature">Please click here to capture consultant signature
+                                    now</a></label>
+                        </div>
+                    </div>
+                    <?php
+                } else {
+                    ?>
+                    <div id="div_signature_pin" class="row field-row">
+                        <div class="large-6 column">
+                            <label for="signature_pin">If you would like to sign this eCVI form please enter your
+                                PIN:</label>
+                        </div>
+                        <div class="large-2 column">
+                            <input type="text" maxlength="4" name="signature_pin" id="signature_pin">
+                        </div>
+                        <div class="large-4 column end">
+                            <?php echo CHtml::button('Sign this eCVI', array(
+                                'type' => 'button',
+                                'id' => 'et_sign_cvi',
+                                'name' => 'sign_cvi',
+                                'class' => 'small button primary event-action'
+                            )); ?>
+                            <input type="hidden" name="YII_CSRF_TOKEN" id="YII_CSRF_TOKEN"
+                                   value="<?php echo Yii::app()->request->csrfToken ?>"/>
+                        </div>
+                    </div>
+                    <?php
+                }
+            } else { ?>
+                <div class="row field-row">
                     <div class="large-12 column">
-                        <label>The current user has no signature file assigned, please capture and upload your signature
-                            before you can sign the eCVI form.
-                            <a href="/profile/signature">Please click here to capture consultant signature
-                                now</a></label>
+                        A consultant is required to sign this CVI.
                     </div>
                 </div>
-                <?php
-            } else {
-                ?>
-                <div id="div_signature_pin" class="row field-row">
-                    <div class="large-6 column">
-                        <label for="signature_pin">If you would like to sign this eCVI form please enter your
-                            PIN:</label>
-                    </div>
-                    <div class="large-2 column">
-                        <input type="text" maxlength="4" name="signature_pin" id="signature_pin">
-                    </div>
-                    <div class="large-4 column end">
-                        <?php echo CHtml::button('Sign this eCVI', array(
-                            'type' => 'button',
-                            'id' => 'et_sign_cvi',
-                            'name' => 'sign_cvi',
-                            'class' => 'small button primary event-action'
-                        )); ?>
-                        <input type="hidden" name="YII_CSRF_TOKEN" id="YII_CSRF_TOKEN"
-                               value="<?php echo Yii::app()->request->csrfToken ?>"/>
-                    </div>
-                </div>
-                <?php
-            }
+
+            <?php }
+
         }
         ?>
         </div>
