@@ -594,18 +594,6 @@ class User extends BaseActiveRecordVersioned
         return $consultant_name;
     }
 
-    public function getAllConsultants() {
-        $consultant_names = User::model()->findAll(array('order' => 'first_name asc'), 'id', 'first_name');
-        $consultant_name = array();
-        $i = 0;
-        foreach($consultant_names as $consultant) {
-            $consultant_name[$i]['id'] = $consultant->id;
-            $consultant_name[$i]['name'] = $consultant->getFullName();
-            $i++;
-        }
-        return $consultant_name;
-    }
-
     /**
      * Get the portal user if it exists.
      *

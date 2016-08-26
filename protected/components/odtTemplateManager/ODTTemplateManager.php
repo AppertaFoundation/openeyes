@@ -631,7 +631,7 @@ class ODTTemplateManager
     {
         $path = $this->zipOdtFile();
         if($path !== FALSE){
-            $shell = '/usr/bin/libreoffice --headless --convert-to pdf --outdir '.$this->outDir.'  '.$path;
+            $shell = 'export HOME=/tmp && /usr/bin/libreoffice --headless --convert-to pdf --outdir '.$this->outDir.'  '.$path;
            
             exec($shell, $output, $return); 
             if($return == 0){
