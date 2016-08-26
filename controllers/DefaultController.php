@@ -37,6 +37,7 @@ class DefaultController extends \BaseEventTypeController
         'retrieveconsentsignature' => self::ACTION_TYPE_PRINT,
         'displayconsentsignature' => self::ACTION_TYPE_VIEW,
         'issue' => self::ACTION_TYPE_EDIT,
+        'signCVI' => self::ACTION_TYPE_EDIT,
         'list' => self::ACTION_TYPE_LIST
     );
 
@@ -619,4 +620,37 @@ class DefaultController extends \BaseEventTypeController
     {
         return models\OphCoCvi_ClericalInfo_PatientFactor::model()->active()->findAll();
     }
+
+    public function initActionSignCVI()
+    {
+        $this->initWithEventId($this->request->getParam('id'));
+    }
+
+    public function actionSignCVI($id)
+    {
+        if (\Yii::app()->user->id && \Yii::app()->getRequest()->getParam("signaturePin")) {
+            $user = \User::model()->findByPk(\Yii::app()->user->id);
+            if($user->signature_file_id)
+            {
+                $decodedImage = $user->getDecryptedSignature(\Yii::app()->getRequest()->getParam("signaturePin"));
+                if($decodedImage)
+                {
+                    $this->getManager()->saveUserSignature($decodedImage, $id);
+                    echo 1;
+                }else
+                {
+                    echo 0;
+                }
+            }
+        }else{
+            echo 0;
+        }
+    }
+
+    protected function checkUserSigned()
+    {
+        $clinicalElement = $this->getManager()->getClinicalElementForEvent($this->event);
+        return $clinicalElement->isSigned();
+    }
+
 }

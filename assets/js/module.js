@@ -96,6 +96,30 @@ $(document).ready(function() {
                     }
             }
     });
+
+    handleButton($('#et_sign_cvi'),function (e) {
+        e.preventDefault();
+        urldata = window.location.href.split('/');
+        eventId = urldata[urldata.length-1];
+        $.ajax({
+            'type': 'POST',
+            'url': baseUrl + '/OphCoCvi/default/signCVI/'+eventId,
+            'dataType': 'text',
+            'data': {
+                'signaturePin': $('#signature_pin').val(),
+                'YII_CSRF_TOKEN': $('#YII_CSRF_TOKEN').val()
+            },
+            'success': function (result) {
+                if(result == 1) {
+                    window.location.reload();
+                }else
+                {
+                    $('#et_sign_cvi').after("<div>ERROR: You entered an invalid PIN number, please try again</div>");
+                    enableButtons();
+                }
+            }
+        });
+    });
 });
 
 function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }

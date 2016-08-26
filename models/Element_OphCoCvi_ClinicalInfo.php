@@ -82,7 +82,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
     {
         return array(
             array(
-                'event_id, examination_date, is_considered_blind, sight_varies_by_light_levels, unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va, low_vision_status_id, field_of_vision_id, diagnoses_not_covered, consultant_id, ',
+                'event_id, examination_date, is_considered_blind, sight_varies_by_light_levels, unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va, low_vision_status_id, field_of_vision_id, diagnoses_not_covered, consultant_id, consultant_signature_file_id ',
                 'safe'
             ),
             array('examination_date', 'OEDateValidatorNotFuture'),
@@ -174,7 +174,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
                 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments', 'element_id'
             ),
             'consultant' => array(self::BELONGS_TO, 'User', 'consultant_id'),
-
+            'consultant_signature' => array(self::BELONGS_TO, 'ProtectedFile', 'consultant_signature_file_id'),
         );
     }
 
@@ -492,5 +492,10 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
                 return $recorded_cvi->main_cause;
             }
         }
+    }
+
+    public function isSigned()
+    {
+        return ($this->consultant_signature_file_id)?true:false;
     }
 }

@@ -488,22 +488,6 @@ class OphCoCvi_Manager extends \CComponent
             $printHelper->fillTableByName($name, $data, 'name');
         }
 
-        //******* TEST DATAS!!
-
-        $data = array(
-            array('','','','','','','','','','','Y'),
-            array('','','','','','','','','','','Y'),
-            array('','','','','','','','','','','N'),
-            array('','','','','','','','','','','Y'),
-            array('','','','','','','','','','','N'),
-            array('','','','','','','','','','','N'),
-            array('','','','','','','','','','','N'),
-            array('','','','','','','','','','','N'),
-            array('','','','','','','','','','','N'),
-        );
-        $printHelper->fillTableByName( 'patientFactors' , $data, 'name' );
-
-        //******* TEST DATA END!!
         $texts = $data_handler->getSimpleTexts();
         $printHelper->exchangeAllStringValuesByStyleName( $texts );
 
@@ -724,6 +708,16 @@ class OphCoCvi_Manager extends \CComponent
             'sort' => $sort,
             'criteria' => $criteria
         ));
+    }
+
+    public function saveUserSignature($signatureFile, $eventId)
+    {
+        $portalConnection = new \optomPortalConnection();
+        $newFile = $portalConnection->createNewSignatureImage($signatureFile, $eventId);
+        $clinicElement = $this->getClinicalElementForEvent(\Event::model()->findByPk($eventId));
+        $clinicElement->consultant_signature_file_id = $newFile->id;
+        $clinicElement->consultant_id = \Yii::app()->user->id;
+        $clinicElement->save();
     }
 
 }

@@ -34,6 +34,8 @@ $this->beginContent('//patient/event_container');
     </div>
 <?php } ?>
 
+<?php $this->renderPartial('capture_signatures'); ?>
+
 <?php $this->renderOpenElements($this->action->id) ?>
 
 <?php $this->endContent() ?>
