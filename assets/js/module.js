@@ -110,13 +110,13 @@ $(document).ready(function() {
                 'YII_CSRF_TOKEN': $('#YII_CSRF_TOKEN').val()
             },
             'success': function (result) {
-                if(result == 1) {
-                    window.location.reload();
+                if(result == 0) {
+                    $('#et_sign_cvi').after("<div>ERROR: You entered an invalid PIN number, please try again</div>");
                 }else
                 {
-                    $('#et_sign_cvi').after("<div>ERROR: You entered an invalid PIN number, please try again</div>");
-                    enableButtons();
+                    $('#div_signature_pin').html('<div class="large-12 column">'+result+'</div>');
                 }
+                enableButtons();
             }
         });
     });

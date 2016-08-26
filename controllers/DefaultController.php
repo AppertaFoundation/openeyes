@@ -674,7 +674,7 @@ class DefaultController extends \BaseEventTypeController
                 if($decodedImage)
                 {
                     $this->getManager()->saveUserSignature($decodedImage, $id);
-                    echo 1;
+                    echo "This CVI has been signed by <b>".$user->getFullName()."</b>";
                 }else
                 {
                     echo 0;

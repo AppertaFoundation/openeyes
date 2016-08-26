@@ -17,19 +17,19 @@
 ?>
 <?php
 $user = \User::model()->findByPk(\Yii::app()->user->id);
-if($this->checkUserSigned()){
-    $clinical_element = $this->getManager()->getClinicalElementForEvent($this->event);?>
-<div class="element-data" xmlns="http://www.w3.org/1999/html">
-    <div class="row data-row">
-        <div class="large-12 column">
-            <div id="div_signature_pin" class="row field-row">
-                <div class="large-12 column">
-                    This CVI has been signed by <b><?php echo $clinical_element->consultant->getFullName()?></b>
+if ($this->checkUserSigned()) {
+    $clinical_element = $this->getManager()->getClinicalElementForEvent($this->event); ?>
+    <div class="element-data" xmlns="http://www.w3.org/1999/html">
+        <div class="row data-row">
+            <div class="large-12 column">
+                <div id="div_signature_pin"  class="row field-row">
+                    <div class="large-12 column">
+                        This CVI has been signed by <b><?php echo $clinical_element->consultant->getFullName()?></b>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 <?php } else {
     if ($this->checkClinicalEditAccess()) { ?>
         <div class="element-data" xmlns="http://www.w3.org/1999/html">
