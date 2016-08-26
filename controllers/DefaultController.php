@@ -268,6 +268,21 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * @param models\Element_OphCoCvi_ClericalInfo $element
+     * @param $action
+     */
+    protected function setElementDefaultOptions_Element_OphCoCvi_ClericalInfo(
+        models\Element_OphCoCvi_ClericalInfo $element,
+        $action
+    )
+    {
+        if ($element->isNewRecord && $this->checkClinicalEditAccess()) {
+            if ($this->patient->isChild()) {
+                $element->employment_status_id = models\OphCoCvi_ClericalInfo_EmploymentStatus::defaultChildStatusId();
+            }
+        }
+    }
+        /**
+     * @param models\Element_OphCoCvi_ClericalInfo $element
      * @param $data
      * @param $index
      */

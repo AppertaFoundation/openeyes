@@ -396,7 +396,6 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         
         return $data;
     }
-
     /**
      * Returns an associative array of the data values for printing
      */
