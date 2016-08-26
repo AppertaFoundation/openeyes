@@ -80,7 +80,7 @@ $cols = array(
                 'options' => array('title' => 'View CVI', 'class' => ''),
                 'url' => 'Yii::app()->createURL("/OphCoCvi/Default/view/", array(
                         "id" => $data->event_id))',
-                'label' => '<button class="secondary small">view</button>'
+                'label' => '<button class="secondary small">View</button>'
             ),
             'edit' => array(
                 'options' => array('title' => 'Add a comment'),
