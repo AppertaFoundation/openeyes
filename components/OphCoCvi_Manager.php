@@ -247,7 +247,7 @@ class OphCoCvi_Manager extends \CComponent
      * Generate the text display of the status of the CVI
      *
      * @param Element_OphCoCvi_ClinicalInfo $clinical
-     * @param Element_OphCoCvi_ClericalInfo $clerical
+     * @param Element_OphCoCvi_EventInfo $info
      * @return string
      */
     protected function getDisplayStatus(Element_OphCoCvi_ClinicalInfo $clinical = null, Element_OphCoCvi_EventInfo $info)
@@ -395,7 +395,8 @@ class OphCoCvi_Manager extends \CComponent
     /**
      * Element based name and value pair.
      *
-     * @param $id
+     * @param \Event $event
+     * @return array
      */
     protected function getStructuredDataForPrintPDF($event)
     {

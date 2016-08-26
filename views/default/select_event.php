@@ -34,24 +34,23 @@
 
 						<div class="field-row">
 							<div class="field-info">
-                                There are two or more CVIs for the patient. Please indicate whether you want another CVI to be created
+                                This patient already has a CVI. Are you sure you want to create a new one?
 							</div>
 						</div>
                         <div class="field-row">
 							<div class="field-info">
-                                Current cvi are as follows:
-                                <?php
-									if(!empty($cvi_url))
-									{
-										echo '<ul>';
-										foreach($cvi_url as $cvi_event) {
-											?>
-											<li><a href='<?= $cvi_event ?>'><?= $cvi_event ?></a></li>
-											<?php
-										}
-										echo '</ul>';
-									}
+                                Current CVI are as follows:
+                                <?php if($current_cvis) {
+									$manager = $this->getManager();
 								?>
+									<ul>
+									<?php foreach($current_cvis as $cvi_event) { ?>
+										<li><a href='<?= $manager->getEventViewUri($cvi_event) ?>'>
+												<?= Helper::convertMySQL2NHS($cvi_event->event_date) . ': ' . $manager->getDisplayStatusForEvent($cvi_event) ?></a>
+										</li>
+									<?php } ?>
+									</ul>
+								<?php } ?>
 							</div>
 						</div>
                         <div class="field-row">

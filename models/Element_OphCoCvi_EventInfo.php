@@ -174,7 +174,10 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
      */
     public function getIssueStatusForDisplay()
     {
-        return $this->is_draft ? 'Draft' : 'Issued';
+        if ($this->is_draft) {
+            return $this->event->info ? $this->event->info : 'Draft';
+        }
+        return 'Issued';
     }
 
     /**
