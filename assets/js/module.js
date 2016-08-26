@@ -99,6 +99,7 @@ $(document).ready(function() {
 
     handleButton($('#et_sign_cvi'),function (e) {
         e.preventDefault();
+        $('#signature_error').remove();
         urldata = window.location.href.split('/');
         eventId = urldata[urldata.length-1];
         $.ajax({
@@ -111,10 +112,10 @@ $(document).ready(function() {
             },
             'success': function (result) {
                 if(result == 0) {
-                    $('#et_sign_cvi').after("<div>ERROR: You entered an invalid PIN number, please try again</div>");
+                    $('#div_signature_pin').after('<div id="signature_error" class="row field-row"><div class="large-6 column"></div><div class="large-6 column"><label>ERROR: You entered an invalid PIN number, please try again</label></div></div>');
                 }else
                 {
-                    $('#div_signature_pin').html('<div class="large-12 column">'+result+'</div>');
+                    $('#div_signature_pin').html('<div class="large-12 column"><label>'+result+'</label></div>');
                 }
                 enableButtons();
             }
