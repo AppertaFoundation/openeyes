@@ -19,15 +19,15 @@
     <div class="row data-row">
         <div class="large-12 column">
         <?php
-        $user = \User::model()->findByPk(\Yii::app()->user->id);
         if($this->checkUserSigned()){
-            $clinicalElement = $this->getManager()->getClinicalElementForEvent($this->event);?>
+            $clinical_element = $this->getManager()->getClinicalElementForEvent($this->event);?>
             <div class="row field-row">
                 <div class="large-12 column">
-                    This CVI has been signed by <b><?php echo $clinical_element->consultant->getFullName()?></b>
+                    <label>This CVI has been signed by <b><?php echo $clinical_element->consultant->getFullName()?></b></label>
                 </div>
             </div>
         <?php } else {
+            $user = \User::model()->findByPk(\Yii::app()->user->id);
             if ($this->checkClinicalEditAccess()) {
                 if (!$user->checkSignature()) {
                     ?>
@@ -65,7 +65,9 @@
             } else { ?>
                 <div class="row field-row">
                     <div class="large-12 column">
-                        A consultant is required to sign this CVI.
+                        <label>
+                            A consultant is required to sign this CVI.
+                        </label>
                     </div>
                 </div>
 
