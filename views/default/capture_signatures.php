@@ -15,22 +15,27 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="element-data" xmlns="http://www.w3.org/1999/html">
-    <div class="row data-row">
-        <div class="large-12 column">
-        <?php
-        if($this->checkUserSigned()){
-            $clinical_element = $this->getManager()->getClinicalElementForEvent($this->event);?>
-            <div class="row field-row">
-                <div class="large-12 column">
-                    <label>This CVI has been signed by <b><?php echo $clinical_element->consultant->getFullName()?></b></label>
+<?php
+$user = \User::model()->findByPk(\Yii::app()->user->id);
+if ($this->checkUserSigned()) {
+    $clinical_element = $this->getManager()->getClinicalElementForEvent($this->event); ?>
+    <div class="element-data" xmlns="http://www.w3.org/1999/html">
+        <div class="row data-row">
+            <div class="large-12 column">
+                <div id="div_signature_pin"  class="row field-row">
+                    <div class="large-12 column">
+                        This CVI has been signed by <b><?php echo $clinical_element->consultant->getFullName()?></b>
+                    </div>
                 </div>
             </div>
-        <?php } else {
-            $user = \User::model()->findByPk(\Yii::app()->user->id);
-            if ($this->checkClinicalEditAccess()) {
-                if (!$user->checkSignature()) {
-                    ?>
+        </div>
+    </div>
+<?php } else {
+    if ($this->checkClinicalEditAccess()) { ?>
+        <div class="element-data" xmlns="http://www.w3.org/1999/html">
+            <div class="row data-row">
+                <div class="large-12 column">
+                <?php if (!$user->checkSignature()) { ?>
                     <div id="div_signature_pin" class="row field-row">
                         <div class="large-12 column">
                             <label>To sign this CVI, you will need to capture and upload your signature.
@@ -38,9 +43,7 @@
                                     now</a></label>
                         </div>
                     </div>
-                    <?php
-                } else {
-                    ?>
+                <?php } else { ?>
                     <div id="div_signature_pin" class="row field-row">
                         <div class="large-6 column">
                             <label for="signature_pin">If you would like to sign this eCVI form please enter your
@@ -60,23 +63,16 @@
                                    value="<?php echo Yii::app()->request->csrfToken ?>"/>
                         </div>
                     </div>
-                    <?php
-                }
-            } else { ?>
-                <div class="row field-row">
-                    <div class="large-12 column">
-                        <label>
-                            A consultant is required to sign this CVI.
-                        </label>
-                    </div>
+                    <?php } ?>
                 </div>
-
-            <?php }
-
-        }
-        ?>
+            </div>
         </div>
-    </div>
-</div>
+    <?php } else { ?>
+        <div class="large-12 column">
+            <div class="alert-box with-icon warning">
+                A consultant is required to sign this CVI.
+            </div>
+        </div>
 
-
+    <?php }
+}
