@@ -363,7 +363,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterVisualAcuityForEpisodeLeft($episode, $include_nr_values = false)
     {
-        if ($va = $this->getElementForLatestEventInEpisode($episode, 'models\Element_OphCiExamination_VisualAcuity')) {
+        if ($va = $this->getVAElementForLatestEventInEpisode($episode)) {
             if ($va->hasLeft()) {
                 if ($best = $va->getBestReading('left')) {
                     return $best->convertTo($best->value, $this->getSnellenUnitId());
@@ -384,7 +384,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterVisualAcuityForEpisodeRight($episode, $include_nr_values = false)
     {
-        if ($va = $this->getElementForLatestEventInEpisode($episode, 'models\Element_OphCiExamination_VisualAcuity')) {
+        if ($va = $this->getVAElementForLatestEventInEpisode($episode)) {
             if ($va->hasRight()) {
                 if ($best = $va->getBestReading('right')) {
                     return $best->convertTo($best->value, $this->getSnellenUnitId());
@@ -1457,5 +1457,29 @@ class OphCiExamination_API extends \BaseAPI
         }
 
         return 'none';
+    }
+
+    /**
+     * Method to get the latest event with the visual acuity values from the examination event
+     * @param \Episode $episode
+     * @param $model
+     */
+    public function getVAElementForLatestEventInEpisode(\Episode $episode) {
+        $event_type = $this->getEventType();
+        $criteria = new \CDbCriteria;
+        $criteria->select = '*';
+        $criteria->join = 'join episode on t.episode_id = :episode_id and event_type_id = :event_type_id';
+        $criteria->order = 't.event_date desc';
+        $criteria->condition = 't.deleted != 1';
+        $criteria->params = array(':episode_id' => $episode->id, ':event_type_id' => $event_type->id);
+        foreach (\Event::model()->findAll($criteria) as $event) {
+            $result_element = models\Element_OphCiExamination_VisualAcuity::model()
+                ->with('event')
+                ->find('event_id=?', array($event->id));
+            if ($result_element !== null) {
+                return ($result_element);
+            }
+        }
+        return false;
     }
 }
