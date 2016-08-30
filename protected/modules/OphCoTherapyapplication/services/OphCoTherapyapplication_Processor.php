@@ -90,11 +90,11 @@ class OphCoTherapyapplication_Processor
 
             // if the application doesn't have a given side, the VA value can be NR (e.g. eye missing etc)
             // but if it does, then we need an actual VA value.
-            if (!$api->getLetterVisualAcuityForEpisodeLeft($this->event->episode, !$el_diag->hasLeft())) {
+            if (!$api->getLetterVisualAcuityForEpisodeLeft($this->event->episode, !$el_diag->hasLeft(), $this->event)) {
                 $warnings[] = 'Visual acuity not found for left eye.';
             }
 
-            if (!$api->getLetterVisualAcuityForEpisodeRight($this->event->episode, !$el_diag->hasRight())) {
+            if (!$api->getLetterVisualAcuityForEpisodeRight($this->event->episode, !$el_diag->hasRight(), $this->event)) {
                 $warnings[] = 'Visual acuity not found for right eye.';
             }
         }

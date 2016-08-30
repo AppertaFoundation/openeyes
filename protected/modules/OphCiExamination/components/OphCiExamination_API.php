@@ -50,13 +50,13 @@ class OphCiExamination_API extends \BaseAPI
      *
      * @return \BaseEventTypeElement
      */
-    public function getMostRecentElementInEpisode($episode_id, $event_type_id, $model)
+    public function getMostRecentElementInEpisode($episode_id, $event_type_id, $model, $event_date = false)
     {
         if (strpos($model, 'models') == 0) {
             $model = 'OEModule\OphCiExamination\\'.$model;
         }
 
-        return parent::getMostRecentElementInEpisode($episode_id, $event_type_id, $model);
+        return parent::getMostRecentElementInEpisode($episode_id, $event_type_id, $model, $event_date);
     }
 
     /**
@@ -358,14 +358,14 @@ class OphCiExamination_API extends \BaseAPI
      *
      * @param Episode $episode
      * @param bool    $include_nr_values
-     *
+     * @param Event $event
      * @return OphCiExamination_VisualAcuity_Reading
      */
-    public function getLetterVisualAcuityForEpisodeLeft($episode, $include_nr_values = false)
+    public function getLetterVisualAcuityForEpisodeLeft($episode, $include_nr_values = false, $event = false)
     {
         $event_type = $this->getEventType();
         if ($va = $this->getMostRecentElementInEpisode($episode->id, $event_type->id,
-            'models\Element_OphCiExamination_VisualAcuity')) {
+            'models\Element_OphCiExamination_VisualAcuity', $event->created_date)) {
             if ($va->hasLeft()) {
                 if ($best = $va->getBestReading('left')) {
                     return $best->convertTo($best->value, $this->getSnellenUnitId());
@@ -381,14 +381,14 @@ class OphCiExamination_API extends \BaseAPI
      *
      * @param Episode $episode
      * @param bool    $include_nr_values
-     *
+     * @param Event $event
      * @return OphCiExamination_VisualAcuity_Reading
      */
-    public function getLetterVisualAcuityForEpisodeRight($episode, $include_nr_values = false)
+    public function getLetterVisualAcuityForEpisodeRight($episode, $include_nr_values = false, $event = false)
     {
         $event_type = $this->getEventType();
         if ($va = $this->getMostRecentElementInEpisode($episode->id, $event_type->id,
-            'models\Element_OphCiExamination_VisualAcuity')) {
+            'models\Element_OphCiExamination_VisualAcuity', $event->created_date)) {
             if ($va->hasRight()) {
                 if ($best = $va->getBestReading('right')) {
                     return $best->convertTo($best->value, $this->getSnellenUnitId());
