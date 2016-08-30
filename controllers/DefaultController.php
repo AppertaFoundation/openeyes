@@ -611,7 +611,9 @@ class DefaultController extends \BaseEventTypeController
      */
     public function actionPDFPrint($id)
     {
-        $this->printInit($id);
+        $this->initWithEventId($id);
+
+        $this->redirect('/protectedfile/view' . $this->getManager()->getEventInfoElementForEvent($this->event)->generated_document_id);
     }
 
     /**

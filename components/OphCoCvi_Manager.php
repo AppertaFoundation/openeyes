@@ -421,11 +421,11 @@ class OphCoCvi_Manager extends \CComponent
         $data['nhsNumber'] = $patient->getNhsnum();
         if ($patient->gp) {
             $data['gpName'] = $patient->gp->getFullName();
-            if ($this->patient->gp->contact->address) {
-                $data['gpAddress'] = $this->patient->gp->contact->address->letterLine;
+            if ($patient->gp->contact->address) {
+                $data['gpAddress'] = $patient->gp->contact->address->letterLine;
             }
-            if ($this->patient->gp->contact->primary_phone) {
-                $data['gpTel'] = $this->patient->gp->contact->primary_phone;
+            if ($patient->gp->contact->primary_phone) {
+                $data['gpTel'] = $patient->gp->contact->primary_phone;
             }
         }
 
