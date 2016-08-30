@@ -613,7 +613,7 @@ class DefaultController extends \BaseEventTypeController
     {
         $this->initWithEventId($id);
 
-        $this->redirect('/protectedfile/view' . $this->getManager()->getEventInfoElementForEvent($this->event)->generated_document_id);
+        $this->redirect('/file/view/' . $this->getManager()->getEventInfoElementForEvent($this->event)->generated_document_id . "/" . $this->getManager()->getEventInfoElementForEvent($this->event)->generated_document->name);
     }
 
     /**
