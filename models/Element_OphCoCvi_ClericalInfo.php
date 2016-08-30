@@ -170,16 +170,15 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
      *
      * @return array
      */
-    public function generateEmployementStatus()
+    public function generateEmploymentStatus()
     {
         $data = array();
-        $employement_status = (OphCoCvi_ClericalInfo_EmploymentStatus::model()->findAll('`active` = ?', array(1), array('order' => 'display_order asc')));
-        if (sizeof($employement_status) > 1) {
-            $data[] = "Is the patient:";
-            foreach ($employement_status as $employement) {
-                for ($i = 0; $i < sizeof($employement) / 2; $i++)
-                    $data[] = $employement->name;
-                    $data[] = ($this->employment_status_id === $employement->id) ? 'X' : '';
+        $employment_statuses = (OphCoCvi_ClericalInfo_EmploymentStatus::model()->findAll('`active` = ?', array(1), array('order' => 'display_order asc')));
+        if (count($employment_statuses)) {
+            $data[] = 'Is the patient:';
+            foreach ($employment_statuses as $employment) {
+                $data[] = $employment->name;
+                $data[] = ($this->employment_status_id === $employment->id) ? 'X' : '';
             }
         }
         return $data;
@@ -266,7 +265,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
             $result['patientFactors'][] = array($factor->name, $isFactor);
         }
 
-        $result['employmentStatus'][] = $this->generateEmployementStatus();
+        $result['employmentStatus'][] = $this->generateEmploymentStatus();
         $result['contactUrgency'] = $this->generateContactUrgency();
         $result['preferredInfoFormat'] = $this->generatePreferredInfoFormat();
         //$result['preferredLanguage'] = $this->generatePreferredLanguage();
