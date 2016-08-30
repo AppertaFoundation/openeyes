@@ -252,19 +252,20 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
     public function getStructuredDataForPrint()
     {
         $result = array();
-        foreach (OphCoCvi_ClericalInfo_PatientFactor::model()->findAll('`active` = ?', array(1)) as $factor) {
-            $is_factor = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->getFactorAnswer($factor->id, $this->id);
-            if ($is_factor == 1) {
-                $isFactor = "Y";
+        foreach (OphCoCvi_ClericalInfo_PatientFactor::model()->active()->findAll() as $factor) {
+            $answer = $this->getPatientFactorAnswer($factor);
+            if ($answer->is_factor == 1) {
+                $isFactor = 'Y';
             }
-            if ($is_factor == 0) {
-                $isFactor = "N";
+            if ($answer->is_factor == 0) {
+                $isFactor = 'N';
             }
-            if ($is_factor == 2) {
-                $isFactor = "";
+            if ($answer->is_factor == 2) {
+                $isFactor = '';
             }
-            $result['patientFactor'][] = array($factor->name, $isFactor);
+            $result['patientFactors'][] = array($factor->name, $isFactor);
         }
+
         $result['employmentStatus'][] = $this->generateEmployementStatus();
         $result['contactUrgency'] = $this->generateContactUrgency();
         $result['preferredInfoFormat'] = $this->generatePreferredInfoFormat();
