@@ -269,10 +269,18 @@ class DefaultController extends \BaseEventTypeController
         if ($action == 'step') {
             $action = 'update';
         }
-        $class_array = !empty($element) ? !empty(get_class($element)) ? explode('\\', (get_class($element))) : '' : '';
-        $active_check_value = '';
-        if (!empty($class_array)) {
-            if (array_pop($class_array) === 'Element_OphCiExamination_CataractSurgicalManagement') {
+
+        $class_array = '';
+        if (!empty($element)) {
+            $cls = get_class($element);
+            if (!empty($cls)) {
+                $class_array = explode('\\', (get_class($element)));
+            }
+        }
+
+		$active_check_value = "";
+        if (!empty($class_array)) {                    
+            if(array_pop($class_array) === 'Element_OphCiExamination_CataractSurgicalManagement') {
                 $active_check = \SettingInstallation::model()->find('t.key="city_road_satellite_view"');
                 if (!empty($active_check)) {
                     $active_check_value = $active_check->value;
