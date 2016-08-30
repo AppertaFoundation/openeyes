@@ -135,11 +135,6 @@
 
 		.hospital-number {
 			margin-bottom: 3px;
-			@media screen {
-				.stuck & {
-					float: left;
-				}
-			}
 		}
 		.patient-summary-anchor {
 			@media print {
