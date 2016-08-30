@@ -28,6 +28,9 @@ namespace OEModule\OphCiExamination\models;
  */
 class OphCiExamination_VisualAcuity_Method extends \BaseActiveRecordVersioned
 {
+    public static $UNAIDED_FLAG_TYPE = 1;
+    public static $AIDED_FLAG_TYPE = 2;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -69,6 +72,15 @@ class OphCiExamination_VisualAcuity_Method extends \BaseActiveRecordVersioned
     {
         return array(
         );
+    }
+
+    /**
+     * Returns the flag value for the based on the type
+     * @param $type
+     * @return int
+     */
+    public function getFlagValue($type) {
+        return ($type === 'aided') ? static::$AIDED_FLAG_TYPE : static::$UNAIDED_FLAG_TYPE;
     }
 
     /**

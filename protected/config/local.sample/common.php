@@ -159,6 +159,7 @@ $config = array(
             'endpoints' => array(
                 'auth' => '/oauth/access',
                 'examinations' => '/examinations/searches',
+                'signatures' => '/signatures/searches'
             ),
             'credentials' => array(
                 'username' => 'user@example.com',
@@ -168,6 +169,7 @@ $config = array(
                 'client_secret' => '4c7f6f8fa93d59c45502c0ae8c4a95b',
             ),
         ),
+        'signature_app_url' => 'http://tiny.cc/oe-sign'
     ),
 );
 

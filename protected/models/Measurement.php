@@ -19,7 +19,6 @@ abstract class Measurement extends BaseActiveRecordVersioned
                 $this->patient_measurement = PatientMeasurement::model()->findByPk($this->patient_measurement_id);
             }
         }
-
         return $this->patient_measurement;
     }
 
@@ -34,16 +33,16 @@ abstract class Measurement extends BaseActiveRecordVersioned
     }
 
     /**
-     * Attach this measurement to an Episode or Event.
+     * Attach this measurement to an Episode or Event
      *
      * @param Episode|Event $entity
-     * @param bool          $origin
-     *
+     * @param boolean $origin
      * @return MeasurementReference
+     * @throws Exception
      */
     public function attach($entity, $origin = false)
     {
-        $ref = new MeasurementReference();
+        $ref = new MeasurementReference;
         $ref->patient_measurement_id = $this->getPatientMeasurement()->id;
         $ref->origin = $origin;
 
@@ -52,11 +51,10 @@ abstract class Measurement extends BaseActiveRecordVersioned
         } elseif ($entity instanceof Event) {
             $ref->event_id = $entity->id;
         } else {
-            throw new Exception('Can only attach measurements to Episodes or Events, was passed an object of type '.get_class($entity));
+            throw new Exception("Can only attach measurements to Episodes or Events, was passed an object of type " . get_class($entity));
         }
 
         $ref->save();
-
         return $ref;
     }
 
@@ -80,7 +78,43 @@ abstract class Measurement extends BaseActiveRecordVersioned
         }
 
         $this->patient_measurement_id = $this->getPatientMeasurement()->id;
-
         return true;
+    }
+
+    /**
+     * Override to allow us to have classes defined outside of core that store the data in a different way
+     *
+     * @param array $attributes
+     * @return CActiveRecord
+     */
+    protected function instantiate($attributes)
+    {
+        if (isset($attributes['patient_measurement_id'])) {
+            if ($pm = PatientMeasurement::model()->findByPk($attributes['patient_measurement_id'])) {
+                $origin = $pm->originReference;
+                if ($origin->event) {
+                    $api = Yii::app()->moduleAPI->getForEventId($origin->event_id);
+                    if ($api) {
+                        OELog::log("we have an api");
+                        return $api->getMeasurementClassForEventId($origin->event_id);
+                    }
+                }
+            }
+        }
+        return parent::instantiate($attributes);
+    }
+
+    public function findAllForPatient(Patient $patient)
+    {
+        $crit = array(
+            "join" =>
+                "inner join patient_measurement pm on pm.id = t.patient_measurement_id ",
+            "condition" => "pm.patient_id = :patient_id",
+            "params" => array(
+                ":patient_id" => $patient->id,
+            ),
+        );
+
+        return $this->findAll($crit);
     }
 }

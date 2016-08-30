@@ -70,7 +70,7 @@ class Event extends BaseActiveRecordVersioned
         $table_alias = $this->getTableAlias(false, false);
 
         return array(
-            'condition' => $table_alias.'.deleted = 0',
+            'condition' => $table_alias . '.deleted = 0',
         );
     }
 
@@ -194,7 +194,7 @@ class Event extends BaseActiveRecordVersioned
      */
     public function hasIssue()
     {
-        return (boolean) $this->issues;
+        return (boolean)$this->issues;
     }
 
     /**
@@ -207,7 +207,7 @@ class Event extends BaseActiveRecordVersioned
         $text = '';
 
         foreach ($this->issues as $issue) {
-            $text .= $this->expandIssueText($issue->text)."\n";
+            $text .= $this->expandIssueText($issue->text) . "\n";
         }
 
         return $text;
@@ -282,7 +282,8 @@ class Event extends BaseActiveRecordVersioned
             return false;
         }
 
-        foreach (EventIssue::model()->findAll('event_id=? and issue_id = ?', array($this->id, $issue->id)) as $event_issue) {
+        foreach (EventIssue::model()->findAll('event_id=? and issue_id = ?',
+            array($this->id, $issue->id)) as $event_issue) {
             $event_issue->delete();
         }
 
@@ -334,7 +335,7 @@ class Event extends BaseActiveRecordVersioned
                 $element->softDelete();
             }
             if (!$this->save()) {
-                throw new Exception('Unable to mark event deleted: '.print_r($this->event->getErrors(), true));
+                throw new Exception('Unable to mark event deleted: ' . print_r($this->event->getErrors(), true));
             }
             if ($transaction) {
                 $transaction->commit();
@@ -413,8 +414,8 @@ class Event extends BaseActiveRecordVersioned
      *
      * @param $target
      * @param $action
-     * @param null  $data
-     * @param bool  $log
+     * @param null $data
+     * @param bool $log
      * @param array $properties
      */
     public function audit($target, $action, $data = null, $log = false, $properties = array())
@@ -453,7 +454,7 @@ class Event extends BaseActiveRecordVersioned
         $this->delete_pending = 1;
 
         if (!$this->save()) {
-            throw new Exception('Unable to mark event as delete pending: '.print_r($this->getErrors(), true));
+            throw new Exception('Unable to mark event as delete pending: ' . print_r($this->getErrors(), true));
         }
 
         $this->audit('event', 'delete-request', serialize(array(
@@ -496,7 +497,7 @@ class Event extends BaseActiveRecordVersioned
 
     public function getImageDirectory()
     {
-        return Yii::app()->basePath.DIRECTORY_SEPARATOR.'runtime'.DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR.'events'.DIRECTORY_SEPARATOR."event_{$this->id}_".strtotime($this->last_modified_date);
+        return Yii::app()->basePath . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'events' . DIRECTORY_SEPARATOR . "event_{$this->id}_" . strtotime($this->last_modified_date);
     }
 
     public function hasEventImage($name)
@@ -506,12 +507,12 @@ class Event extends BaseActiveRecordVersioned
 
     public function getImagePath($name)
     {
-        return $this->imageDirectory."/$name.png";
+        return $this->imageDirectory . "/$name.png";
     }
 
     public function getPDF($pdf_print_suffix = null)
     {
-        return $pdf_print_suffix ? "$this->imageDirectory".DIRECTORY_SEPARATOR."event_$pdf_print_suffix.pdf" : "$this->imageDirectory".DIRECTORY_SEPARATOR.'event.pdf';
+        return $pdf_print_suffix ? "$this->imageDirectory" . DIRECTORY_SEPARATOR . "event_$pdf_print_suffix.pdf" : "$this->imageDirectory" . DIRECTORY_SEPARATOR . 'event.pdf';
     }
 
     public function hasPDF($pdf_print_suffix = null)
@@ -532,7 +533,9 @@ class Event extends BaseActiveRecordVersioned
     {
         $cmd = $this->dbConnection->createCommand('SELECT GET_LOCK(?, 1)');
 
-        while (!$cmd->queryScalar(array($this->lockKey)));
+        while (!$cmd->queryScalar(array($this->lockKey))) {
+            ;
+        }
     }
 
     public function unlock()
@@ -549,15 +552,31 @@ class Event extends BaseActiveRecordVersioned
 
     public function getDocref()
     {
-        return "E:$this->id/".strtoupper(base_convert(time().sprintf('%04d', Yii::app()->user->getId()), 10, 32)).'/{{PAGE}}';
+        return "E:$this->id/" . strtoupper(base_convert(time() . sprintf('%04d', Yii::app()->user->getId()), 10,
+            32)) . '/{{PAGE}}';
     }
 
     public function automatedText()
     {
         if ($this->is_automated) {
             if (property_exists($this->automated_source, 'goc_number')) {
-                return ' - Community optometric examination by '.$this->automated_source->name.' ('.$this->automated_source->goc_number.')';
+                return ' - Community optometric examination by ' . $this->automated_source->name . ' (' . $this->automated_source->goc_number . ')';
             }
         }
+    }
+
+    /**
+     * @param EventType $event_type
+     * @param Patient $patient
+     *
+     * @return Event[]
+     */
+    public function getEventsOfTypeForPatient(EventType $event_type, Patient $patient)
+    {
+        $criteria = new CDbCriteria;
+        $criteria->compare('patient_id', $patient->id);
+        $criteria->compare('event_type_id', $event_type->id);
+        $criteria->order = 'event_date asc';
+        return Event::model()->with('episode')->findAll($criteria);
     }
 }

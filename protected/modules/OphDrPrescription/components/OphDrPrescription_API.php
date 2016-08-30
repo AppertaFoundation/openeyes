@@ -18,6 +18,8 @@
  */
 class OphDrPrescription_API extends BaseAPI
 {
+    public $createOprn = 'OprnCreatePrescription';
+
     /**
      * get the prescription letter text for the latest prescription in the episode for the patient.
      *

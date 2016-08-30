@@ -45,8 +45,8 @@ class UniqueCodeMapping extends BaseActiveRecord
     public function rules()
     {
         return array(
-            array('id,event_id,unique_code_id', 'safe'),
-            array('event_id,unique_code_id', 'required'),
+            array('id,event_id,unique_code_id,user_id', 'safe'),
+            array('unique_code_id', 'required'),
         );
     }
 
@@ -55,6 +55,7 @@ class UniqueCodeMapping extends BaseActiveRecord
         return array(
             'event_id' => array(self::BELONGS_TO, 'Event', 'id'),
             'unique_code_id' => array(self::BELONGS_TO, 'UniqueCodes', 'id'),
+            'user_id' => array(self::BELONGS_TO, 'User', 'id'),
         );
     }
 

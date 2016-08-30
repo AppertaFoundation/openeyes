@@ -818,9 +818,19 @@ class Patient extends BaseActiveRecordVersioned
         return $this->contact->primary_phone;
     }
 
-    public function getSummaryAddress()
+    public function getSummaryAddress($delimiter = '<br/>')
     {
-        return $this->contact->address ? $this->getLetterAddress(array('delimiter' => '<br/>')) : 'Unknown';
+        return $this->contact->address ? $this->getLetterAddress(array('delimiter' => $delimiter)) : 'Unknown';
+    }
+
+    /**
+     * Returns the contact address email
+     *
+     * @return mixed
+     */
+    public function getEmail()
+    {
+        return $this->contact->address->email;
     }
 
     /**
@@ -1053,11 +1063,18 @@ class Patient extends BaseActiveRecordVersioned
     *
     * @returns array() of disorder ids
     */
-    private function getAllDisorderIds()
+    private function getAllDisorderIds($eye_id = null)
     {
         // Get all the secondary disorders
         $criteria = new CDbCriteria();
-        $criteria->compare('patient_id', $this->id);
+        // To determine the disorders based on the eye
+        if ($eye_id !== null) {
+            $criteria->addCondition('eye_id = :eye_id_side or eye_id = :eye_id_both');
+            $criteria->params[':eye_id_side'] = $eye_id;
+            $criteria->params[':eye_id_both'] = Eye::BOTH;
+        }
+        $criteria->addCondition('patient_id = :patient_id');
+        $criteria->params[':patient_id'] =  $this->id;
         $sd = SecondaryDiagnosis::model()->findAll($criteria);
         $disorder_ids = array();
         foreach ($sd as $d) {
@@ -1082,9 +1099,9 @@ class Patient extends BaseActiveRecordVersioned
      *
      * @returns array() of disorders
      */
-    public function getAllDisorders()
+    public function getAllDisorders($eye_id = null)
     {
-        return Disorder::model()->findAllByPk($this->getAllDisorderIds());
+        return Disorder::model()->findAllByPk($this->getAllDisorderIds($eye_id));
     }
 
     /*

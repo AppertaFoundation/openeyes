@@ -23,12 +23,38 @@
  */
 class BaseController extends Controller
 {
+
     public $renderPatientPanel = false;
     public $selectedFirmId;
     public $selectedSiteId;
     public $firms;
     public $jsVars = array();
     public $assetManager;
+
+    /**
+     * @var CApplication
+     */
+    protected $app;
+
+    /**
+     * @param CApplication $app
+     */
+    public function setApp(CApplication $app)
+    {
+        $this->app = $app;
+    }
+
+    /**
+     * @return CApplication
+     */
+    public function getApp()
+    {
+        if (!$this->app) {
+            $this->app = Yii::app();
+        }
+
+        return $this->app;
+    }
 
     public function filters()
     {
@@ -139,7 +165,7 @@ class BaseController extends Controller
     {
         $app = Yii::app();
         $app->session['patient_id'] = $patient->id;
-        $app->session['patient_name'] = $patient->title.' '.$patient->first_name.' '.$patient->last_name;
+        $app->session['patient_name'] = $patient->title . ' ' . $patient->first_name . ' ' . $patient->last_name;
     }
 
     public function storeData()
@@ -156,7 +182,7 @@ class BaseController extends Controller
     {
         $addr = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown';
 
-        Yii::log($message.' from '.$addr, 'user', 'userActivity');
+        Yii::log($message . ' from ' . $addr, 'user', 'userActivity');
     }
 
     protected function beforeRender($view)
@@ -177,7 +203,7 @@ class BaseController extends Controller
 
         foreach ($this->jsVars as $key => $value) {
             $value = CJavaScript::encode($value);
-            Yii::app()->getClientScript()->registerScript('scr_'.$key, "$key = $value;", CClientScript::POS_HEAD);
+            Yii::app()->getClientScript()->registerScript('scr_' . $key, "$key = $value;", CClientScript::POS_HEAD);
         }
     }
 
@@ -201,7 +227,7 @@ class BaseController extends Controller
      *
      * @param string $class_name
      * @param scalar $pk
-     * @param bool   $create
+     * @param bool $create
      *
      * @return CActiveRecord|null - will actually be the class of the requested model if it exists.
      *
@@ -238,4 +264,100 @@ class BaseController extends Controller
         }
         Yii::app()->end();
     }
+
+    /**
+     * Simple abstraction to pull a param from yii config separated by dots.
+     * @param $config
+     * @param $key
+     * @return null
+     */
+    private function getParamAttribute($config, $key)
+    {
+        $break = strpos($key, ".");
+        $piece = $break === false ? $key : substr($key, 0, $break);
+        if (isset($config[$piece])) {
+            if ($piece == $key) {
+                return $config[$piece];
+            }
+            return $this->getParamAttribute($config[$piece], substr($key, $break + 1));
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @param $key
+     * @return bool
+     */
+    protected function renderOverride($key, $params = array())
+    {
+        if ($render_config = $this->getParamAttribute(Yii::app()->params, $key)) {
+            $api = Yii::app()->moduleAPI->get($render_config['module']);
+            return call_user_func_array(array($api, $render_config['method']), $params);
+        }
+        return false;
+    }
+
+    protected function getUniqueCodeForUser()
+    {
+        $userUniqueCode = UniqueCodeMapping::model()->findByAttributes(array('user_id' => Yii::app()->user->id));
+        if($userUniqueCode)
+        {
+            return $userUniqueCode->unique_code_id;
+        }else
+        {
+            $uniqueCode = $this->createNewUniqueCodeMapping(null, Yii::app()->user->id);
+            return $uniqueCode->unique_code_id;
+        }
+    }
+
+    protected function createNewUniqueCodeMapping($eventId=null, $userId=null)
+    {
+        $newUniqueCode = UniqueCodeMapping::model();
+        $newUniqueCode->lock();
+        $newUniqueCode->unique_code_id = $this->getActiveUnusedUniqueCode();
+        if($eventId > 0)
+        {
+            $newUniqueCode->event_id = $eventId;
+            $newUniqueCode->user_id = NULL;
+        }elseif($userId > 0)
+        {
+            $newUniqueCode->event_id = NULL;
+            $newUniqueCode->user_id = $userId;
+        }
+        $newUniqueCode->isNewRecord = true;
+        $newUniqueCode->save();
+        $newUniqueCode->unlock();
+        return $newUniqueCode;
+    }
+
+
+    /**
+     * Getting the unused active unique codes.
+     *
+     * @return type
+     */
+    private function getActiveUnusedUniqueCode()
+    {
+        UniqueCodeMapping::model()->lock();
+        //Yii::app()->db->createCommand("LOCK TABLES unique_codes READ, unique_codes_mapping WRITE")->execute();
+
+        $record = Yii::app()->db->createCommand()
+            ->select('unique_codes.id as id')
+            ->from('unique_codes')
+            ->leftJoin('unique_codes_mapping', 'unique_code_id=unique_codes.id')
+            ->where('unique_codes_mapping.id is null')
+            ->andWhere('active = 1')
+            ->limit(1)
+            ->queryRow();
+
+        UniqueCodeMapping::model()->unlock();
+        //Yii::app()->db->createCommand("UNLOCK TABLES")->execute();
+
+        if($record){
+            return $record["id"];
+        }
+
+    }
+
 }
