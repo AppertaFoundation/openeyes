@@ -59,7 +59,7 @@ class WorklistManager extends CComponent
      * @TODO: leverage for day or week selection for definition setup
      * @var array
      */
-    protected static $DEFAULT_DASHBOARD_SKIP_DAYS = ['Sun'];
+    protected static $DEFAULT_DASHBOARD_SKIP_DAYS = array('Sun');
 
     /**
      * Whether worklists with no patient assignments should be displayed or not
@@ -80,7 +80,7 @@ class WorklistManager extends CComponent
      *
      * @var array
      */
-    protected $errors = [];
+    protected $errors = array();
 
     /**
      * Flag to turn off auditing
@@ -282,7 +282,8 @@ class WorklistManager extends CComponent
         $limit = $this->getAppParam('worklist_default_generation_limit') ?: self::$DEFAULT_GENERATION_LIMIT;
         $interval = DateInterval::createFromDateString($limit);
 
-        return (new DateTime())->add($interval);
+        $now = new DateTime();
+        return $now->add($interval);
     }
 
     /**
