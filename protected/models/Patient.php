@@ -818,9 +818,19 @@ class Patient extends BaseActiveRecordVersioned
         return $this->contact->primary_phone;
     }
 
-    public function getSummaryAddress()
+    public function getSummaryAddress($delimiter = '<br/>')
     {
-        return $this->contact->address ? $this->getLetterAddress(array('delimiter' => '<br/>')) : 'Unknown';
+        return $this->contact->address ? $this->getLetterAddress(array('delimiter' => $delimiter)) : 'Unknown';
+    }
+
+    /**
+     * Returns the contact address email
+     *
+     * @return mixed
+     */
+    public function getEmail()
+    {
+        return $this->contact->address->email;
     }
 
     /**
