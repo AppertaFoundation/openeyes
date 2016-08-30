@@ -38,6 +38,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
         return array(
             array('event_id, name, date_of_birth, address, email, telephone, gender, gp_name, gp_address, gp_telephone', 'safe'),
             array('name, date_of_birth, address, telephone, gender, gp_name, gp_address, gp_telephone', 'required'),
+            array('date_of_birth', 'OEDateValidatorNotFuture'),
         );
     }
 
