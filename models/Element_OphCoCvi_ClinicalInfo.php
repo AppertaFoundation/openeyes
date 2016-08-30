@@ -38,19 +38,20 @@ namespace OEModule\OphCoCvi\models;
  *
  * The followings are the available model relations:
  *
- * @property ElementType $element_type
- * @property EventType $eventType
- * @property Event $event
- * @property User $user
- * @property User $usermodified
+ * @property \ElementType $element_type
+ * @property \EventType $eventType
+ * @property \Event $event
+ * @property \User $user
+ * @property \User $usermodified
  * @property OphCoCvi_ClinicalInfo_LowVisionStatus $low_vision_status
  * @property OphCoCvi_ClinicalInfo_FieldOfVision $field_of_vision
- * @property Element_OphCoCvi_ClinicalInfo_Disorders_Assignment[] $cvi_disorder_assignments
+ * @property Element_OphCoCvi_ClinicalInfo_Disorder_Assignment[] $cvi_disorder_assignments
  * @property OphCoCvi_ClinicalInfo_Disorder[] $cvi_disorders
  * @property OphCoCvi_ClinicalInfo_Disorder[] $left_affected_cvi_disorders
  * @property OphCoCvi_ClinicalInfo_Disorder[] $right_affected_cvi_disorders
  * @property Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments[] $cvi_disorder_section_comments
- * @property User $consultant
+ * @property \User $consultant
+ * @property \ProtectedFile $consultant_signature
  */
 
 class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
@@ -231,6 +232,16 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         ));
     }
 
+    /**
+     * @TODO: determine encryption/decryption process for the sig file
+     * @return mixed
+     */
+    protected function getDecryptedSignature()
+    {
+        if ($this->consultant_signature) {
+            return file_get_contents($this->consultant_signature->getPath());
+        }
+    }
     /**
      * @param Element_OphCoCvi_ClinicalInfo_Disorder_Assignment $assignment
      * @param $data
@@ -420,6 +431,9 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         if($this->consultant) {
             $result['consultantName'] = $this->consultant->getFullName();
         }
+
+        $result['signatureImageConsultant'] = imagecreatefromstring($this->getDecryptedSignature());
+
         if((int)$this->sight_varies_by_light_levels === 1) { $varyByLightLevelsYes = 'X';}
         if((int)$this->sight_varies_by_light_levels === 0) { $varyByLightLevelsNo = 'X';}
         $result['varyByLightLevels'][0] = array('',$varyByLightLevelsYes,'',$varyByLightLevelsNo);

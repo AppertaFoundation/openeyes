@@ -486,7 +486,8 @@ class OphCoCvi_Manager extends \CComponent
         );
 
         $data_handler = new \ODTDataHandler();
-        $data_handler->setTableAndSimpleTextDataFromArray( $this->getStructuredDataForPrintPDF($event) );
+        $structured_data = $this->getStructuredDataForPrintPDF($event);
+        $data_handler->setTableAndSimpleTextDataFromArray($structured_data);
 
         $tables = $data_handler->getTables();
 
@@ -503,6 +504,9 @@ class OphCoCvi_Manager extends \CComponent
 
         // TODO: we need to check which function to call
         $printHelper->changeImageFromGDObject('signatureImagePatient', $signature);
+        if (array_key_exists('signatureImageConsultant', $structured_data)) {
+            $printHelper->changeImageFromGDObject('signatureImageConsultant', $structured_data['signatureImageConsultant']);
+        }
         $printHelper->saveContentXML();
         $printHelper->generatePDF();
 
@@ -552,6 +556,7 @@ class OphCoCvi_Manager extends \CComponent
             $event->unlock();
             return true;
         } catch (\Exception $e) {
+            \OELog::log($e->getMessage());
             if ($transaction) {
                 $transaction->rollback();
             }
