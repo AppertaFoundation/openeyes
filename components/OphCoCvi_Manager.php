@@ -467,8 +467,8 @@ class OphCoCvi_Manager extends \CComponent
 
         //  we need to check if we already have a signature file linked
         if (!$signatureElement->checkSignature()) {
-            // TODO: consider whether this should be an error case as this should have probably prevented
-            // the issue command from being called at all.
+            //TODO: restructure or rename, as this process is basically also going to generate
+            //TODO: the QR code signature placeholder when its not yet been captured.
             // we check if the signature is exists on the portal
             $signature = $signatureElement->loadSignatureFromPortal();
         } else {
@@ -482,7 +482,7 @@ class OphCoCvi_Manager extends \CComponent
             $inputFile ,
             realpath(__DIR__ . '/..').'/views/odtTemplate',
             $this->yii->basePath.'/runtime/cache/cvi/',
-            'CVICert_'.$event->id.'_'.rand().'.odt'
+            'CVICert_'.$event->id.'_'.mt_rand().'.odt'
         );
 
         $data_handler = new \ODTDataHandler();
@@ -502,7 +502,7 @@ class OphCoCvi_Manager extends \CComponent
 
         //$printHelper->exchangeStringValues( $this->getStructuredDataForPrintPDF($id) );
 
-        // TODO: we need to check which function to call
+        // TODO: This should be handled more cleanly for the image manipulation
         $printHelper->changeImageFromGDObject('signatureImagePatient', $signature);
         if (array_key_exists('signatureImageConsultant', $structured_data)) {
             $printHelper->changeImageFromGDObject('signatureImageConsultant', $structured_data['signatureImageConsultant']);

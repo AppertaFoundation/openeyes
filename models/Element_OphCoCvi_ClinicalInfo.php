@@ -174,6 +174,13 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
                 self::HAS_MANY,
                 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments', 'element_id'
             ),
+            'cvi_disorder_sections' => array(
+                self::HAS_MANY,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder_Section', 'section_id',
+                'through' => 'cvi_disorders',
+                'select' => 'DISTINCT cvi_disorder_sections.*',
+                'order' => 'cvi_disorder_sections.display_order asc'
+            ),
             'consultant' => array(self::BELONGS_TO, 'User', 'consultant_id'),
             'consultant_signature' => array(self::BELONGS_TO, 'ProtectedFile', 'consultant_signature_file_id'),
         );
@@ -378,35 +385,85 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         return $data;
     }
 
-    public function getDisordersForSection($disorder_section, $flag) {
+    /**
+     * @var array
+     */
+    private $disorders_by_section;
+
+    /**
+     * @param OphCoCvi_ClinicalInfo_Disorder_Section $section
+     * @return mixed
+     * @throws \Exception
+     */
+    protected function getAllDisordersForSection(OphCoCvi_ClinicalInfo_Disorder_Section $section)
+    {
+        if (!$this->disorders_by_section) {
+            $this->disorders_by_section = array();
+            $seen = array();
+            foreach ($this->cvi_disorders as $disorder) {
+                if (in_array($disorder->id, $seen)) {
+                    continue;
+                }
+                if (!array_key_exists($disorder->section_id, $this->disorders_by_section)) {
+                    $this->disorders_by_section[$disorder->section_id] = array($disorder);
+                } else {
+                    $this->disorders_by_section[$disorder->section_id][] = $disorder;
+                }
+                $seen[] = $disorder->id;
+            }
+        }
+        if (!array_key_exists($section->id, $this->disorders_by_section)) {
+            throw new \Exception("No Disorders for section id {$section->id}. Available are: " . implode(", ", array_keys($this->disorders_by_section)));
+        }
+        return $this->disorders_by_section[$section->id];
+    }
+
+    protected function getStructuredTextForDisorderSide(OphCoCvi_ClinicalInfo_Disorder $disorder, $side)
+    {
+        $val = $this->hasCviDisorderForSide($disorder, $side) ? 'X' : '';
+        $val .= $this->isCviDisorderMainCauseForSide($disorder, $side) ? ' *' : '';
+
+        return $val;
+    }
+    /**
+     * @param OphCoCvi_ClinicalInfo_Disorder_Section $disorder_section
+     * @param int $header_rows - number of empty rows to prepend data with
+     * @return array
+     * @throws \Exception
+     */
+    public function getStructuredDisordersForSection(OphCoCvi_ClinicalInfo_Disorder_Section $disorder_section, $header_rows = 0) {
         $data = array();
-        if($flag == 0) {
+        for ($i = 0; $i < $header_rows; $i++) {
             $data[] = array('','','','','');
         }
-        $first = 1;
 
-        foreach (OphCoCvi_ClinicalInfo_Disorder::model()
-                     ->findAll('`active` = ? and section_id = ?',array(1, $disorder_section->id)) as $disorder) {
-            $disorder_section_name = '';
-            if($first === 1) {
-                $disorder_section_name = $disorder_section->name;
-                $first = 0;
+        foreach ($this->getAllDisordersForSection($disorder_section) as $i => $disorder) {
+            $section_name = '';
+            if ($i == 0) {
+                $section_name = $disorder_section->name;
             }
-            $value_right = Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()
-                ->getDisorderAffectedStatus($disorder->id,$this->id,'right');
-            $value_left = Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()
-                ->getDisorderAffectedStatus($disorder->id,$this->id,'left');
-            $data[] = array($disorder_section_name,$disorder->name,$disorder->code, !empty($value_right) ? 'Yes' : 'No',
-                !empty($value_left) ? 'Yes' : 'No');
+
+            $data[] = array(
+                $section_name,
+                $disorder->name,
+                $disorder->code,
+                $this->getStructuredTextForDisorderSide($disorder, 'right'),
+                $this->getStructuredTextForDisorderSide($disorder, 'left')
+            );
         }
-        if($disorder_section->comments_allowed == 1) {
-            $comments = Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments::model()->
-                getDisorderSectionComments($disorder_section->id,$this->id);
-            $data[] = array('', $disorder_section->comments_label.' : '.$comments, '','','');
+
+        if($disorder_section->comments_allowed) {
+            $comments_obj = $this->getDisorderSectionComment($disorder_section);
+            $text = $disorder_section->comments_label.' : ';
+            if ($comments_obj) {
+                $text .= $comments_obj->comments;
+            }
+            $data[] = array('', $text, '','','');
         }
-        
+
         return $data;
     }
+
     /**
      * Returns an associative array of the data values for printing
      */
@@ -441,19 +498,18 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         $lowVisionData = array_merge(array(0=>array('','')),$this->generateLowVisionStatus());
 
         $result['fieldOfVisionAndLowVisionStatus'][0] = array('','','','');
-        for($k=0;$k<sizeof($fieldOfVisionData);$k++){
+        for($k=0;$k<count($fieldOfVisionData);$k++){
             $result["fieldOfVisionAndLowVisionStatus"][$k+1] = array_merge($fieldOfVisionData[$k],$lowVisionData[$k]);
         }
 
         $result['sightVariesByLightLevelYes'] = ($this->sight_varies_by_light_levels === 1) ? 'X' : '';
         $result['sightVariesByLightLevelNo'] = ($this->sight_varies_by_light_levels === 0) ? '' : 'X';
-        $flag = 0;
-        foreach(OphCoCvi_ClinicalInfo_Disorder_Section::model()
-                    ->findAll('`active` = ?',array(1)) as $disorder_section) {
+
+        foreach($this->cvi_disorder_sections as $i => $disorder_section) {
             $result['disorder' . ucfirst($disorder_section->name) . 'Table'] =
-                $this->getDisordersForSection($disorder_section, $flag);
-            $flag = 1;
+                $this->getStructuredDisordersForSection($disorder_section, ($i === 0) ? 1 : 0);
         }
+
         $result['diagnosisNotCovered'] = $this->diagnoses_not_covered;
         return $result;
     }
