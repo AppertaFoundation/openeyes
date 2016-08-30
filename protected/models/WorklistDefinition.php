@@ -243,9 +243,11 @@ class WorklistDefinition extends BaseActiveRecordVersioned
     {
         if ($this->rrule) {
             $rrule_str = $this->rrule;
+            // ensure rrule string has a start date if not defined so that it will be part of the
+            // formatted output
             if (!$this->isNewRecord && !strpos($rrule_str, 'DTSTART=')) {
-                $dt = new DateTime($this->created_date);
-                $rrule_str .= ";DTSTART=" . $dt->format('Y-m-d');
+                $created_date = new DateTime($this->created_date);
+                $rrule_str .= ";DTSTART=" . $created_date->format('Y-m-d');
             }
 
             $final_rrule = new RRule($rrule_str);
