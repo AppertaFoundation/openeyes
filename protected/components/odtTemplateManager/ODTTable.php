@@ -25,7 +25,7 @@ class ODTTable
      */
     var $data = array();
 
-    function __construct( $tableName )
+    public function __construct( $tableName )
     {
         $this->data=array('name' => $tableName, 'element-type'=>'table');    
     }

@@ -14,59 +14,74 @@
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 /*
  * 
  */
-class ODTDataHandler 
+
+class ODTDataHandler
 {
     /**
      * @var array
      */
-    var $dataSource = array(); 
+    protected $dataSource = array();
 
-    function createTable( $tableName )
+    /**
+     * @param $tableName
+     * @return ODTTable
+     * @throws Exception
+     */
+    protected function createTable($tableName)
     {
-        $inArray = $this->alreadyInDataSource( 'table', $tableName  );
-        if( $inArray ){
-            throw( new Exception('Table name already exists. (createTable)') );
+        $inArray = $this->alreadyInDataSource('table', $tableName);
+        if ($inArray) {
+            throw(new Exception("Cannot create table when it already exists: {$tableName}"));
         }
 
         return new ODTTable($tableName);
-    }    
+    }
 
-    function createRow()
+    /**
+     * @return ODTRow
+     */
+    protected function createRow()
     {
         return new ODTRow();
     }
 
-    function createCell()
+    /**
+     * @return ODTCell
+     */
+    protected function createCell()
     {
         return new ODTCell();
     }
 
-    function createSimpleText($name)
+    /**
+     * @param $name
+     * @return ODTSimpleText
+     */
+    protected function createSimpleText($name)
     {
         return new ODTSimpleText($name);
     }
 
     function createImage($name, $type, $binarySource)
     {
-        $image = new ODTImage( $name, $type, $binarySource );
+        $image = new ODTImage($name, $type, $binarySource);
         return $image;
     }
 
-    function addRow( $table, $row )
+    function addRow($table, $row)
     {
         return $table->addRow($row);
     }
 
-    function addCell( $row, $cell )
+    function addCell($row, $cell)
     {
         return $row->addCell($cell);
     }
 
-    function setObjType($obj,$type) 
+    function setObjType($obj, $type)
     {
         $obj->setObjType($type);
     }
@@ -78,120 +93,144 @@ class ODTDataHandler
         $type = $obj->getObjType();
         $args = func_get_args();
 
-        switch( sizeof( $args ) ){
-            case 2 : 
-                if( is_array( $args[1] ) ){
+        switch (count($args)) {
+            case 2 :
+                if (is_array($args[1])) {
 
-                    foreach( $args[1] as $name => $value ){
-                        $obj->data[$name] = $value;        
+                    foreach ($args[1] as $name => $value) {
+                        $obj->data[$name] = $value;
                     }
                 }
                 break;
             case 3 :
-                if( !is_array( $args[1] ) && !is_array( $args[2] ) ){
-                    $obj->data[$args[1]]=$args[2];
+                if (!is_array($args[1]) && !is_array($args[2])) {
+                    $obj->data[$args[1]] = $args[2];
                 }
                 break;
-            default: throw new Exception('Invalid parameter list.');
+            default:
+                throw new Exception('Invalid parameter list.');
         }
 
     }
 
-    function setTableCellData($table,$row,$col,$cellData)
+    function setTableCellData($table, $row, $col, $cellData)
     {
-        $table->setCellData($row,$col,$cellData);
+        $table->setCellData($row, $col, $cellData);
     }
 
-    function setTableRowData($table,$row,$rowData)
+    function setTableRowData($table, $row, $rowData)
     {
-        $table->setRowData($row,$rowData);
+        $table->setRowData($row, $rowData);
     }
 
-    function fillTableData($table,$tableData)
+    function fillTableData($table, $tableData)
     {
         $table->FillData($tableData);
     }
 
-    function alreadyInDataSource( $objectType, $name )
+    function alreadyInDataSource($objectType, $name)
     {
-        if( !isset( $this->dataSource[$objectType] ) ) return false;
-        foreach( $this->dataSource[$objectType] as $oneSpecData ){
-            if( $oneSpecData['name'] == $name )    {
-                return true;    
+        if (!isset($this->dataSource[$objectType])) {
+            return false;
+        }
+        foreach ($this->dataSource[$objectType] as $oneSpecData) {
+            if ($oneSpecData['name'] == $name) {
+                return true;
             }
         }
 
         return false;
     }
 
-    function createText($name,$data=null)
+    function createText($name, $data = null)
     {
-        return new ODTSimpleText($name,$data);
+        return new ODTSimpleText($name, $data);
     }
 
-    function setTableAndSimpleTextDataFromArray( $array )
+    /**
+     * @param array $data
+     * @throws Exception
+     */
+    public function setTableAndSimpleTextDataFromArray($data)
     {
-        foreach($array as $key => $value){
-            
-            if( is_array($value) ){ // generate table data
-                $table = $this -> createTable( $key );
-                foreach($value as $oneRow){
-                    $row = $this -> createRow();
-                    if(is_array($oneRow)) {
-                        foreach ($oneRow as $oneCellData) {
+        foreach ($data as $key => $value) {
+
+            if (is_array($value)) { // generate table data
+                $table = $this->createTable($key);
+                foreach ($value as $row_data) {
+                    $row = $this->createRow();
+                    if (is_array($row_data)) {
+                        foreach ($row_data as $cell_data) {
                             $cell = $this->createCell();
-                            $this->setAttribute($cell, 'data', $oneCellData);
+                            $this->setAttribute($cell, 'data', $cell_data);
                             $row->addCell($cell);
                         }
-                    }else{
-                        echo "Not properly formatted table: ".$key;die;
+                    } else {
+                        throw new Exception("Table {$key} is incorrectly structured - cell data not provided");
                     }
-                    $this -> addRow($table, $row);
+                    $this->addRow($table, $row);
                 }
-                $this -> import($table);
+                $this->import($table);
             } else { // simple-text datas
-                $text = $this -> createText( $key , $value ); // name, data
-                $this -> import($text);
+                $text = $this->createText($key, $value); // name, data
+                $this->import($text);
             }
         }
     }
 
-    function getSimpleTexts()
+    /**
+     * @return array
+     */
+    public function getSimpleTexts()
     {
-        $texts = isset( $this->dataSource['simple-text'] ) ? $this->dataSource['simple-text'] : array();
+        $texts = isset($this->dataSource['simple-text']) ? $this->dataSource['simple-text'] : array();
         return $texts;
     }
 
-    function getTables()
+    /**
+     * @return array
+     */
+    public function getTables()
     {
-        $tables = isset( $this->dataSource['table'] ) ? $this->dataSource['table'] : array();
+        $tables = isset($this->dataSource['table']) ? $this->dataSource['table'] : array();
         return $tables;
     }
 
-    function import($obj)
+    /**
+     * @param $obj
+     * @throws Exception
+     */
+    protected function import($obj)
     {
         $data = $obj->getData();
         $name = $data['name'];
         $type = $data['element-type'];
 
-        $inArray = $this->alreadyInDataSource( $type, $name );            
-        if( $inArray ){
-            throw( new Exception('Table name already exists.') );
+        $inArray = $this->alreadyInDataSource($type, $name);
+        if ($inArray) {
+            throw new Exception('Table name already exists.');
         }
-        $this->dataSource[$type][]=$data;
-    }
-    
-    function getDataSource()
-    {
-        return $this->dataSource;   
+        $this->dataSource[$type][] = $data;
     }
 
-    function generateSimpleTableHashData( $table )
+    /**
+     * @return array
+     */
+    public function getDataSource()
+    {
+        return $this->dataSource;
+    }
+
+    /**
+     * @param array $table
+     * @return array
+     */
+    public function generateSimpleTableHashData($table)
     {
         $ret = array();
-        foreach($table['rows'] as $rowID => $oneRow){
+        foreach ($table['rows'] as $rowID => $oneRow) {
             if (array_key_exists('cells', $oneRow)) {
-                foreach($oneRow['cells'] as $colID => $oneCell){
+                foreach ($oneRow['cells'] as $colID => $oneCell) {
                     $ret[$rowID][$colID] = $oneCell['data'];
                 }
             }
@@ -200,4 +239,5 @@ class ODTDataHandler
         return $ret;
     }
 }
+
 ?>
