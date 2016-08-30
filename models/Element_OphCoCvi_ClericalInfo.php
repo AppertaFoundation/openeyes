@@ -262,7 +262,11 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
             if ($answer->is_factor == 2) {
                 $isFactor = '';
             }
-            $result['patientFactors'][] = array($factor->name, $isFactor);
+            $label = $factor->name;
+            if ($factor->require_comments) {
+                $label .= "\n{$factor->comments_label}";
+            }
+            $result['patientFactors'][] = array($label, $isFactor);
         }
 
         $result['employmentStatus'][] = $this->generateEmploymentStatus();

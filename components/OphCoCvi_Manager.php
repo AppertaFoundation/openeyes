@@ -458,6 +458,12 @@ class OphCoCvi_Manager extends \CComponent
             0 => array_merge($genderData, $spaceHolder, $yearHeader, $spaceHolder, $postCodeHeader)
         );
 
+        if ($group = $patient->ethnic_group) {
+            $data['ethnicGroup_' . $group->code] = 'X';
+        }
+
+
+
         return $data;
     }
 
@@ -498,6 +504,7 @@ class OphCoCvi_Manager extends \CComponent
         }
 
         $texts = $data_handler->getSimpleTexts();
+
         $printHelper->exchangeAllStringValuesByStyleName( $texts );
 
         //$printHelper->exchangeStringValues( $this->getStructuredDataForPrintPDF($id) );
