@@ -203,9 +203,16 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
-    protected function setElementDefaultOptions_Element_OphCoCvi_DemographicInfo()
+    /**
+     * Sets the default values for the element from the patient
+     * 
+     * @param models\Element_OphCoCvi_Demographics $element
+     */
+    protected function setElementDefaultOptions_Element_OphCoCvi_Demographics(models\Element_OphCoCvi_Demographics $element)
     {
-
+        if($element->isNewRecord) {
+            $element->initFromPatient($this->patient);
+        }
     }
 
     /**
@@ -408,7 +415,7 @@ class DefaultController extends \BaseEventTypeController
      *
      * @param $id
      */
-    public function getStructuredDataForPrintPDF($id)
+    public function getStructuredDataForPrintPDF()
     {
         $data = array();
         foreach ($this->open_elements as $element) {
@@ -416,24 +423,12 @@ class DefaultController extends \BaseEventTypeController
                 $data = array_merge($data, $element->getStructuredDataForPrint());
             }
         }
-        // TODO: we need to match the keys here!
-        // we also need a method to generate the data structure with the ODTDataHandler!
-        $data["patientName"] = $this->patient->getFullName();
-        // TODO: do we have other names for patient?
+
         $data["otherNames"] = '';
-        $data["patientDateOfBirth"] = $this->patient->dob;
-        $data["nhsNumber"] = $this->patient->getNhsnum();
-        $data["gpName"] = $this->patient->gp->getFullName();
-        //$data["gpAddress"] = $this->patient->gp->contact->address->postcode."\n".$this->patient->gp->contact->address->address1;
-        $data["gpAddress"] = '';
-        $data["gpTel"] = '';
-        $data["patientAddress"] = $this->patient->getSummaryAddress();
-        $data["patientEmail"] = ''; // TODO: we need a get email address function
-        $data["patientTel"] = $this->patient->getPrimary_phone();
         $data["signatureName"] = $this->patient->getFullName();
         $data["signatureDate"] = date("d/m/Y");
 
-        $genderData = (strtolower($this->patient->getGenderString()) == 'male') ? array('', 'X', '', '') : array(
+        $genderData = (strtolower($data['gender']) === 'male') ? array('', 'X', '', '') : array(
             '',
             '',
             '',
@@ -490,7 +485,7 @@ class DefaultController extends \BaseEventTypeController
       
        
         $DH = new ODTDataHandler();
-        $DH -> setTableAndSimpleTextDataFromArray( $this->getStructuredDataForPrintPDF($id) );
+        $DH -> setTableAndSimpleTextDataFromArray( $this->getStructuredDataForPrintPDF() );
         
         $tables = $DH -> gettables();
        
