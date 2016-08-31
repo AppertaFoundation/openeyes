@@ -54,10 +54,17 @@ Vagrant.configure("2") do |config|
 
   config.vm.network "private_network", :auto_network => true
 
-	config.vm.synced_folder "./", "/var/www/openeyes", id: "vagrant-root",
-    owner: "vagrant",
-    group: "www-data",
-    mount_options: ["dmode=775,fmode=664"]
+  if OS.windows?
+    config.vm.synced_folder "./", "/var/www/openeyes", id: "vagrant-root",
+      owner: "vagrant",
+      group: "www-data",
+      type: "smb"
+  else
+  	config.vm.synced_folder "./", "/var/www/openeyes", id: "vagrant-root",
+      owner: "vagrant",
+      group: "www-data",
+      mount_options: ["dmode=775,fmode=664"]
+  end
 
   config.vm.hostname = hostname
   config.hostsupdater.remove_on_suspend = true
@@ -86,13 +93,9 @@ Vagrant.configure("2") do |config|
     # v.gui = true
   end
 
-  if OS.windows?
-    config.vm.provision :shell, path: "ansible/windows.sh", args: ["default"]
-  else
-    config.vm.provision "ansible_local" do |ansible|
-      ansible.playbook = "ansible/playbook.yml"
-      # ansible.verbose = "vvv" # Debug
-    end
+  config.vm.provision "ansible_local" do |ansible|
+    ansible.playbook = "ansible/playbook.yml"
+    ansible.verbose = "vvv" # Debug
   end
 
   config.cache.synced_folder_opts = {
