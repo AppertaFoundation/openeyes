@@ -253,15 +253,14 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
         $result = array();
         foreach (OphCoCvi_ClericalInfo_PatientFactor::model()->active()->findAll() as $factor) {
             $answer = $this->getPatientFactorAnswer($factor);
-            if ($answer->is_factor == 1) {
+            if (!$answer || $answer->is_factor == 2) {
+                $isFactor = '';
+            } elseif ($answer->is_factor == 1) {
                 $isFactor = 'Y';
-            }
-            if ($answer->is_factor == 0) {
+            } elseif ($answer->is_factor == 0) {
                 $isFactor = 'N';
             }
-            if ($answer->is_factor == 2) {
-                $isFactor = '';
-            }
+
             $label = $factor->name;
             if ($factor->require_comments) {
                 $label .= "\n{$factor->comments_label}";

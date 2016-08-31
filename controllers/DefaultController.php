@@ -126,6 +126,10 @@ class DefaultController extends \BaseEventTypeController
      */
     public function checkPrintAccess()
     {
+        if (!$this->getManager()->isIssued($this->event)) {
+            return false;
+        }
+        
         if ($this->checkAdminAccess()) {
             return true;
         }
