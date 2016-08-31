@@ -147,11 +147,11 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
     public function getStructuredDataForPrint()
     {
         $data = array(
-            'patientName' => $this->name,
-            'otherNames' => '',
+            'patientName' => $this->title_surname,
+            'otherNames' => $this->other_names,
             'patientDateOfBirth' => $this->date_of_birth,
             'nhsNumber' => $this->nhs_number,
-            'gender' => $this->gender,
+            'gender' => $this->gender->name,
             'patientAddress' => $this->address,
             'patientEmail' => $this->email,
             'patientTel' => $this->telephone,
@@ -160,7 +160,17 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
             'gpTel' => $this->gp_telephone,
         );
 
-        $gender_data = (strtolower($this->gender) == 'male') ? array('', 'X', '', '') : array('','','','X');
+        // TODO: maybe try and clean this up a bit more
+        if ($gender = $this->gender) {
+            if (strtolower($gender->name) == 'male') {
+                $gender_data =  array('', 'X', '', '');
+            } elseif (strtolower($gender->name) == 'female') {
+                $gender_data =  array('','','','X');
+            }
+        } else {
+            $gender_data =  array('','','','');
+        }
+
 
         $dob = ($this->date_of_birth) ? \Helper::convertMySQL2NHS('dob') : '';
 
