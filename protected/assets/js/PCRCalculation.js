@@ -1,92 +1,5 @@
 
-/**
- * Maps elements in examination or op not to their respective elements in PCR risk so changes in the
- * examination are reflected in the PCR risk calculation automatically
- */
-function mapExaminationToPcr()
-{
-    var examinationMap = {
-            "#Element_OphTrOperationnote_Surgeon_surgeon_id": {
-                "pcr": '.pcr_doctor_grade',
-                "func": setSurgeonFromNote,
-                "init": true
-            },
-            "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_nuclear_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_nuclear_id": {
-                "pcr": {    "related" : {
-                                "left" : "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_cortical_id",
-                                "right" : "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_cortical_id"
-                            }, 
-                            "pcr" : '.pcrrisk_brunescent_white_cataract'},
-                "func": setPcrBrunescent,
-                "init": true
-            },
-            "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_cortical_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_cortical_id": {
-                "pcr": {    "related": {
-                                "left" : "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_nuclear_id",
-                                "right" : "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_nuclear_id"
-                            } , 
-                            "pcr": '.pcrrisk_brunescent_white_cataract'},
-                "func": setPcrBrunescent,
-                "init": true
-            },
-            
-            ":checkbox[id*='_pxe_control']": {
-                "pcr":  {   "related": ":checkbox[id*='_phako']", 
-                            "pcr": '.pcrrisk_pxf_phako'
-                        },
-                "func": setPcrPxf,
-                "init": true
-            },
-            ":checkbox[id*='_phako']": {
-                "pcr":  {   "related": ":checkbox[id*='_pxe_control']",
-                            "pcr": '.pcrrisk_pxf_phako'
-                        },
-                "func": setPcrPxf,
-                "init": true
-            },
-            
-            ":input[id*='_pupilSize_control']": {
-                "pcr":  '.pcrrisk_pupil_size',
-                "func": setPcrPupil,
-                "init": true
-            },
-            ":input[name^='diabetic_diagnoses']": {
-                "pcr": '.pcrrisk_diabetic',
-                "func": setDiabeticDisorder,
-                "init": true
-            },
-            ":input[name^='glaucoma_diagnoses']": {
-                "pcr": '.pcrrisk_glaucoma',
-                "func": setGlaucomaDisorder,
-                "init": true
-            },
-            "#OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_right_cd_ratio_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_left_cd_ratio_id": {
-                "pcr": '.pcrrisk_no_fundal_view',
-                "func": setFundalView,
-                "init": true
-            }
-        },
-        examinationObj,
-        examinationEl;
 
-    for(examinationEl in examinationMap){
-        if(examinationMap.hasOwnProperty(examinationEl)){
-            examinationObj = examinationMap[examinationEl];
-            if(typeof examinationObj.func === 'function'){
-                $('#event-content').on('change', examinationEl, examinationObj.pcr, examinationObj.func);
-            }
-            //Some stuff is set from PHP on page load, some is not so we need to init them
-            if(typeof examinationObj.init !== 'undefined' && examinationObj.init){
-                
-                if(typeof examinationObj.pcr === 'object'){
-                    $(examinationEl).trigger('change', [examinationObj.pcr.pcr]);
-                }else{
-                    $(examinationEl).trigger('change', [examinationObj.pcr]);
-                }
-            }
-        }
-    }
-}
 
 /**
  * Takes the element that has been changed and worked out which eye it should be altering in PCR risk
@@ -269,6 +182,95 @@ function setPcrPupil(ev, pcrEl)
 }
 
 /**
+ * Maps elements in examination or op not to their respective elements in PCR risk so changes in the
+ * examination are reflected in the PCR risk calculation automatically
+ */
+function mapExaminationToPcr()
+{
+    var examinationMap = {
+          "#Element_OphTrOperationnote_Surgeon_surgeon_id": {
+              "pcr": '.pcr_doctor_grade',
+              "func": setSurgeonFromNote,
+              "init": true
+          },
+          "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_nuclear_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_nuclear_id": {
+              "pcr": {    "related" : {
+                  "left" : "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_cortical_id",
+                  "right" : "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_cortical_id"
+              },
+                  "pcr" : '.pcrrisk_brunescent_white_cataract'},
+              "func": setPcrBrunescent,
+              "init": true
+          },
+          "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_cortical_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_cortical_id": {
+              "pcr": {    "related": {
+                  "left" : "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_nuclear_id",
+                  "right" : "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_nuclear_id"
+              } ,
+                  "pcr": '.pcrrisk_brunescent_white_cataract'},
+              "func": setPcrBrunescent,
+              "init": true
+          },
+
+          ":checkbox[id*='_pxe_control']": {
+              "pcr":  {   "related": ":checkbox[id*='_phako']",
+                  "pcr": '.pcrrisk_pxf_phako'
+              },
+              "func": setPcrPxf,
+              "init": true
+          },
+          ":checkbox[id*='_phako']": {
+              "pcr":  {   "related": ":checkbox[id*='_pxe_control']",
+                  "pcr": '.pcrrisk_pxf_phako'
+              },
+              "func": setPcrPxf,
+              "init": true
+          },
+
+          ":input[id*='_pupilSize_control']": {
+              "pcr":  '.pcrrisk_pupil_size',
+              "func": setPcrPupil,
+              "init": true
+          },
+          ":input[name^='diabetic_diagnoses']": {
+              "pcr": '.pcrrisk_diabetic',
+              "func": setDiabeticDisorder,
+              "init": true
+          },
+          ":input[name^='glaucoma_diagnoses']": {
+              "pcr": '.pcrrisk_glaucoma',
+              "func": setGlaucomaDisorder,
+              "init": true
+          },
+          "#OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_right_cd_ratio_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_left_cd_ratio_id": {
+              "pcr": '.pcrrisk_no_fundal_view',
+              "func": setFundalView,
+              "init": true
+          }
+      },
+      examinationObj,
+      examinationEl;
+
+    for(examinationEl in examinationMap){
+        if(examinationMap.hasOwnProperty(examinationEl)){
+            examinationObj = examinationMap[examinationEl];
+            if(typeof examinationObj.func === 'function'){
+                $('#event-content').on('change', examinationEl, examinationObj.pcr, examinationObj.func);
+            }
+            //Some stuff is set from PHP on page load, some is not so we need to init them
+            if(typeof examinationObj.init !== 'undefined' && examinationObj.init){
+
+                if(typeof examinationObj.pcr === 'object'){
+                    $(examinationEl).trigger('change', [examinationObj.pcr.pcr]);
+                }else{
+                    $(examinationEl).trigger('change', [examinationObj.pcr]);
+                }
+            }
+        }
+    }
+}
+
+/**
  * Capitalises the first letter of a string
  *
  * @param input
@@ -334,7 +336,27 @@ function calculateORValue( inputValues ){
      6 - Senior House Officer
      7 - House officer  -- ???? no value specified!! using: 1
      */
-    OR.doctorgrade = {'1':1, '2':1, '3':0.87 ,'4':1.65 , '5':1.60 ,'6':0.36 ,'7':0.36 , '8':1.60 ,'9':1.60 , '10':1.60 ,'11':1.60 , '12':1.60 , '13':1.60 , '14':1.60 , '15':1.60 , '16':1 , '17':3.73 , '18':0.36 , '19':0.36};
+    OR.doctorgrade = {
+        '1': 1,
+        '2': 1,
+        '3': 0.87,
+        '4': 1.65,
+        '5': 1.60,
+        '6': 0.36,
+        '7': 0.36,
+        '8': 1.60,
+        '9': 1.60,
+        '10': 1.60,
+        '11': 1.60,
+        '12': 1.60,
+        '13': 1.60,
+        '14': 1.60,
+        '15': 1.60,
+        '16': 1,
+        '17': 3.73,
+        '18': 0.36,
+        '19': 0.36
+    };
 
     for (var key in inputValues) {
         if(!inputValues.hasOwnProperty(key)){
