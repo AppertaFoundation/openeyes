@@ -38,6 +38,7 @@ namespace OEModule\OphCoCvi\models;
  * @property Element_OphCoCvi_ClinicalInfo $clinical_element
  * @property Element_OphCoCvi_ClericalInfo $clerical_element
  * @property Element_OphCoCvi_ConsentSignature $consent_element
+ * @property Element_OphCoCvi_Demographics $demographics_element
  */
 
 class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
@@ -110,6 +111,13 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
                 array('id' => 'event_id'),
                 'through' => 'consent_event'
             ),
+            'demographics_event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'demographics_element' => array(
+                self::HAS_ONE,
+                'OEModule\OphCoCvi\models\Element_OphCoCvi_Demographics',
+                array('id' => 'event_id'),
+                'through' => 'demographics_event'
+            )
         );
     }
 

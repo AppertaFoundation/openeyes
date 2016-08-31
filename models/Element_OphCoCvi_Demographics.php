@@ -9,7 +9,7 @@ namespace OEModule\OphCoCvi\models;
  * @package OEModule\OphCoCvi\models
  *
  * @property int $event_id
- * @property string $name
+ * @property string $title_surname
  * @property
  *
  * @property \EthnicGroup $ethnic_group
@@ -45,8 +45,8 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
     public function rules()
     {
         return array(
-            array('event_id, name, date_of_birth, address, email, telephone, gender_id, ethnic_group_id, nhs_number, gp_name, gp_address, gp_telephone', 'safe'),
-            array('name, date_of_birth, address, telephone, gender_id, ethnic_group_id, nhs_number, gp_name, gp_address, gp_telephone', 'required', 'on' => 'finalise'),
+            array('event_id, title_surname, other_names, date_of_birth, address, email, telephone, gender_id, ethnic_group_id, nhs_number, gp_name, gp_address, gp_telephone', 'safe'),
+            array('title_surname, other_names, date_of_birth, address, telephone, gender_id, ethnic_group_id, nhs_number, gp_name, gp_address, gp_telephone', 'required', 'on' => 'finalise'),
             array('date_of_birth', 'OEDateValidatorNotFuture'),
         );
     }

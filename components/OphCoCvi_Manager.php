@@ -26,11 +26,12 @@ use OEModule\OphCoCvi\models\Element_OphCoCvi_Demographics;
 
 class OphCoCvi_Manager extends \CComponent
 {
-    public static $CVI_COMPLETE = 1;
-    public static $CVI_CLINICAL_COMPLETE = 2;
-    public static $CVI_CLERICAL_COMPLETE = 3;
-    public static $CVI_INCOMPLETE = 4;
-    public static $ISSUED = 5;
+    public static $CLINICAL_COMPLETE = 1;
+    public static $CLERICAL_COMPLETE = 2;
+    public static $DEMOGRAPHICS_COMPLETE = 4;
+    public static $ISSUED = 8;
+    public static $CONSENTED = 16;
+    public static $CONSULTANT_SIGNED = 32;
 
     /**
      * @param $status
@@ -38,18 +39,31 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function getStatusText($status)
     {
-        $lookup = array(
-            self::$ISSUED => 'Issued',
-            self::$CVI_COMPLETE => 'Complete',
-            self::$CVI_CLINICAL_COMPLETE => 'Clinically Complete',
-            self::$CVI_CLERICAL_COMPLETE => 'Clerically Complete',
-            self::$CVI_INCOMPLETE => 'Incomplete',
+        \OELog::log("status: " . $status);
+        if ($status & self::$ISSUED) {
+            return 'Issued';
+        }
+        $map = array(
+            'Clinical' => self::$CLINICAL_COMPLETE,
+            'Clerical' => self::$CLERICAL_COMPLETE,
+            'Demographics' => self::$DEMOGRAPHICS_COMPLETE,
+            'Consent signature' => self::$CONSENTED,
+            'Consultant signature' => self::$CONSULTANT_SIGNED
         );
-        if (isset($lookup[$status])) {
-            return $lookup[$status];
+
+        foreach ($map as $label => $flag) {
+            if (($status & $flag) != $flag) {
+                $result[] = $label;
+            }
         }
 
-        return 'Unrecognised Status';
+        if (count($result) === count($map)) {
+            return 'Complete';
+        } elseif (count($result) === 0) {
+            return 'Incomplete';
+        } else {
+            return 'Incomplete/Missing: ' . implode(', ', $result);
+        }
     }
 
     protected $yii;
@@ -134,6 +148,7 @@ class OphCoCvi_Manager extends \CComponent
             'Element_OphCoCvi_ClinicalInfo' => 'clinical_element',
             'Element_OphCoCvi_ClericalInfo' => 'clerical_element',
             'Element_OphCoCvi_ConsentSignature' => 'consent_element',
+            'Element_OphCoCvi_Demographics' => 'demographics_element'
         );
 
         if (!isset($this->info_element_for_events[$event->id])) {
@@ -578,33 +593,46 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function calculateStatus(\Event $event)
     {
+        \OELog::log('calculating ...');
+        $status = 0;
+
+        if ($this->isIssued($event)) {
+            $status |= self::$ISSUED;
+        }
+
         if ($clerical = $this->getClericalElementForEvent($event)) {
             $clerical->setScenario('finalise');
-            $clerical_complete = $clerical->validate();
-        } else {
-            $clerical_complete = false;
+            if ($clerical->validate()) {
+                $status |= self::$CLERICAL_COMPLETE;
+            }
         }
 
         if ($clinical = $this->getClinicalElementForEvent($event)) {
             $clinical->setScenario('finalise');
-            $clinical_complete = $clinical->validate();
-        } else {
-            $clinical_complete = false;
+            if ($clinical->validate()) {
+                $status |= self::$CLINICAL_COMPLETE;
+            }
+            if ($clinical->isSigned()) {
+                $status |= self::$CONSULTANT_SIGNED;
+            }
+        }
+
+        if ($demographics = $this->getDemographicsElementForEvent($event)) {
+            $demographics->setScenario('finalise');
+            if ($demographics->validate()) {
+                $status |= self::$DEMOGRAPHICS_COMPLETE;
+            }
+        }
+
+        if ($signature = $this->getConsentSignatureElementForEvent($event)) {
+            if ($signature->checkSignature()) {
+                $status |= self::$CONSENTED;
+            }
         }
 
         $this->resetElementStore($event);
 
-        if ($clerical_complete && $clinical_complete) {
-            return self::$CVI_COMPLETE;
-        }
-        if ($clinical_complete) {
-            return self::$CVI_CLINICAL_COMPLETE;
-        }
-        if ($clerical_complete) {
-            return self::$CVI_CLERICAL_COMPLETE;
-        }
-
-        return self::$CVI_INCOMPLETE;
+        return $status;
     }
 
 
@@ -720,11 +748,11 @@ class OphCoCvi_Manager extends \CComponent
         ));
     }
 
-    public function saveUserSignature($signatureFile, $eventId)
+    public function saveUserSignature($signatureFile, \Event $event)
     {
         $portalConnection = new \optomPortalConnection();
-        $newFile = $portalConnection->createNewSignatureImage($signatureFile, $eventId);
-        $clinicElement = $this->getClinicalElementForEvent(\Event::model()->findByPk($eventId));
+        $newFile = $portalConnection->createNewSignatureImage($signatureFile, $event->id);
+        $clinicElement = $this->getClinicalElementForEvent($event);
         $clinicElement->consultant_signature_file_id = $newFile->id;
         $clinicElement->consultant_id = \Yii::app()->user->id;
         $clinicElement->save();

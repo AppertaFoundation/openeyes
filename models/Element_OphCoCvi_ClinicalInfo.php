@@ -565,6 +565,9 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         }
     }
 
+    /**
+     * @return bool
+     */
     public function isSigned()
     {
         return ($this->consultant_signature_file_id)?true:false;

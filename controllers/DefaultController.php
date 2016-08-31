@@ -129,7 +129,7 @@ class DefaultController extends \BaseEventTypeController
         if (!$this->getManager()->isIssued($this->event)) {
             return false;
         }
-        
+
         if ($this->checkAdminAccess()) {
             return true;
         }
@@ -694,7 +694,8 @@ class DefaultController extends \BaseEventTypeController
                 $decodedImage = $user->getDecryptedSignature(\Yii::app()->getRequest()->getParam("signaturePin"));
                 if($decodedImage)
                 {
-                    $this->getManager()->saveUserSignature($decodedImage, $id);
+                    $this->getManager()->saveUserSignature($decodedImage, $this->event);
+                    $this->updateEventInfo();
                     echo "This CVI has been signed by <b>".$user->getFullName()."</b>";
                 }else
                 {
