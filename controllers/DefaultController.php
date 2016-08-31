@@ -30,7 +30,7 @@ class DefaultController extends \BaseEventTypeController
 
     protected static $action_types = array(
         'consentsignature' => self::ACTION_TYPE_EDIT,
-        'retrieveconsentsignature' => self::ACTION_TYPE_PRINT,
+        'retrieveconsentsignature' => self::ACTION_TYPE_EDIT,
         'displayconsentsignature' => self::ACTION_TYPE_VIEW,
         'issue' => self::ACTION_TYPE_EDIT,
         'signCVI' => self::ACTION_TYPE_EDIT,
@@ -559,6 +559,9 @@ class DefaultController extends \BaseEventTypeController
                     if ($this->checkClericalEditAccess()) {
                         $element->setScenario('finalise');
                     }
+                    break;
+                case 'OEModule\OphCoCvi\models\Element_OphCoCvi_Demographics':
+                    $element->setScenario('finalise');
                     break;
             }
         }
