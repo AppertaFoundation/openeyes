@@ -55,7 +55,9 @@ Vagrant.configure("2") do |config|
   config.vm.network "private_network", :auto_network => true
 
   if OS.windows?
-    config.vm.synced_folder "./", "/var/www/openeyes", id: "vagrant-root", type: "smb"
+    config.vm.synced_folder "./", "/var/www/openeyes", id: "vagrant-root",
+      type: "rsync",
+      rsync__exclude: ".git/"
   else
   	config.vm.synced_folder "./", "/var/www/openeyes", id: "vagrant-root",
       owner: "vagrant",
