@@ -29,7 +29,7 @@ class DefaultController extends \BaseEventTypeController
     const ACTION_TYPE_LIST = 'List';
 
     protected static $action_types = array(
-        'consentsignature' => self::ACTION_TYPE_PRINT,
+        'consentsignature' => self::ACTION_TYPE_EDIT,
         'retrieveconsentsignature' => self::ACTION_TYPE_PRINT,
         'displayconsentsignature' => self::ACTION_TYPE_VIEW,
         'issue' => self::ACTION_TYPE_EDIT,
