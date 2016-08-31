@@ -467,25 +467,32 @@ class OphCoCvi_Manager extends \CComponent
         return $data;
     }
 
+    /**
+     * Prepare the Certificate template with the data available from the given event.
+     *
+     * @param \Event $event
+     * @return \ODTTemplateManager
+     * @throws \Exception
+     */
     protected function populateCviCertificate(\Event $event)
     {
-        $signatureElement = $this->getConsentSignatureElementForEvent($event);
+        $signature_element = $this->getConsentSignatureElementForEvent($event);
 
         //  we need to check if we already have a signature file linked
-        if (!$signatureElement->checkSignature()) {
+        if (!$signature_element->checkSignature()) {
             //TODO: restructure or rename, as this process is basically also going to generate
             //TODO: the QR code signature placeholder when its not yet been captured.
             // we check if the signature is exists on the portal
-            $signature = $signatureElement->loadSignatureFromPortal();
+            $signature = $signature_element->loadSignatureFromPortal();
         } else {
             // we get the stored signature and creates a GD object from the data
-            $signature = imagecreatefromstring($signatureElement->getDecryptedSignature());
+            $signature = imagecreatefromstring($signature_element->getDecryptedSignature());
         }
 
-        $inputFile = 'cviTemplate.odt';
+        $input_file = 'cviTemplate.odt';
         // TODO: need to configure this more cleanly
-        $printHelper = new \ODTTemplateManager(
-            $inputFile ,
+        $print_helper = new \ODTTemplateManager(
+            $input_file ,
             realpath(__DIR__ . '/..').'/views/odtTemplate',
             $this->yii->basePath.'/runtime/cache/cvi/',
             'CVICert_'.$event->id.'_'.mt_rand().'.odt'
@@ -497,29 +504,35 @@ class OphCoCvi_Manager extends \CComponent
 
         $tables = $data_handler->getTables();
 
-        foreach($tables as $oneTable){
-            $name = $oneTable['name'];
-            $data = $data_handler->generateSimpleTableHashData($oneTable);
-            $printHelper->fillTableByName($name, $data, 'name');
+        foreach($tables as $one_table){
+            $name = $one_table['name'];
+            $data = $data_handler->generateSimpleTableHashData($one_table);
+            $print_helper->fillTableByName($name, $data, 'name');
         }
 
         $texts = $data_handler->getSimpleTexts();
 
-        $printHelper->exchangeAllStringValuesByStyleName( $texts );
+        $print_helper->exchangeAllStringValuesByStyleName( $texts );
 
-        //$printHelper->exchangeStringValues( $this->getStructuredDataForPrintPDF($id) );
+        //$print_helper->exchangeStringValues( $this->getStructuredDataForPrintPDF($id) );
 
         // TODO: This should be handled more cleanly for the image manipulation
-        $printHelper->changeImageFromGDObject('signatureImagePatient', $signature);
+        $print_helper->changeImageFromGDObject('signatureImagePatient', $signature);
         if (array_key_exists('signatureImageConsultant', $structured_data)) {
-            $printHelper->changeImageFromGDObject('signatureImageConsultant', $structured_data['signatureImageConsultant']);
+            $print_helper->changeImageFromGDObject('signatureImageConsultant', $structured_data['signatureImageConsultant']);
         }
-        $printHelper->saveContentXML();
-        $printHelper->generatePDF();
+        $print_helper->saveContentXML();
+        $print_helper->generatePDF();
 
-        return $printHelper;
+        return $print_helper;
     }
 
+    /**
+     * Create the CVI Certificate and store it as a ProtectedFile.
+     *
+     * @param \Event $event
+     * @return \ProtectedFile
+     */
     protected function generateCviCertificate(\Event $event)
     {
         $document = $this->populateCviCertificate($event);
@@ -527,6 +540,12 @@ class OphCoCvi_Manager extends \CComponent
         return $document->storePDF();
     }
 
+    /**
+     * Generate the CVI Consent Form for the patient to sign.
+     *
+     * @param \Event $event
+     * @return \ODTTemplateManager
+     */
     public function generateConsentForm(\Event $event)
     {
         $document = $this->populateCviCertificate($event);
@@ -535,6 +554,13 @@ class OphCoCvi_Manager extends \CComponent
         return $document;
     }
 
+    /**
+     * Issue the CVI for the given event (recording it as an action performed by the given user id).
+     *
+     * @param \Event $event
+     * @param $user_id
+     * @return bool
+     */
     public function issueCvi(\Event $event, $user_id)
     {
         // begin transaction
