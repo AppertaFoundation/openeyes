@@ -48,9 +48,9 @@ class DefaultController extends \BaseEventTypeController
             $cancel_url = $this->episode ? '/patient/episode/' . $this->episode->id
                 : '/patient/episodes/' . $this->patient->id;
             if ($create_new_cvi == 1) {
-                return parent::actionCreate();
+                parent::actionCreate();
             } else {
-                return $this->redirect(array($cancel_url));
+                $this->redirect(array($cancel_url));
             }
         } else {
             $cvi_events = $this->getApp()->moduleAPI->get('OphCoCvi');
@@ -60,7 +60,7 @@ class DefaultController extends \BaseEventTypeController
                     'current_cvis' => $current_cvis,
                 ), false);
             } else {
-                return parent::actionCreate();
+                parent::actionCreate();
             }
         }
     }
@@ -197,24 +197,24 @@ class DefaultController extends \BaseEventTypeController
         // only populate values into the new element if a clinical user
         if ($element->isNewRecord && $this->checkClinicalEditAccess()) {
             if ($exam_api = $this->getApp()->moduleAPI->get('OphCiExamination')) {
-                if ($latest_examination_event = $exam_api->getMostRecentVAElementForPatient($this->patient)) {
-                    $element->examination_date = $latest_examination_event['event_date'];
+                if ($latest_exam = $exam_api->getMostRecentVAElementForPatient($this->patient)) {
+                    $element->examination_date = $latest_exam['event_date'];
                     $element->best_corrected_right_va = $exam_api->getMostRecentVAForPatient($this->patient, 'right',
-                        'aided', $latest_examination_event['element']);
+                        'aided', $latest_exam['element']);
                     $element->best_corrected_left_va = $exam_api->getMostRecentVAForPatient($this->patient, 'left',
-                        'aided', $latest_examination_event['element']);
+                        'aided', $latest_exam['element']);
                     $element->unaided_right_va = $exam_api->getMostRecentVAForPatient($this->patient, 'right',
                         'unaided',
-                        $latest_examination_event['element']);
+                        $latest_exam['element']);
                     $element->unaided_left_va = $exam_api->getMostRecentVAForPatient($this->patient, 'left', 'unaided',
-                        $latest_examination_event['element']);
+                        $latest_exam['element']);
                 }
             }
         }
     }
 
     /**
-<<<  * This just sets assignments for validation and the re-use in forms if a form submit does not validate
+     * <<<  * This just sets assignments for validation and the re-use in forms if a form submit does not validate
      *
      * @param models\Element_OphCoCvi_ClinicalInfo $element
      * @param $data
@@ -226,12 +226,14 @@ class DefaultController extends \BaseEventTypeController
         foreach (array('left', 'right') as $side) {
             $cvi_assignments = array();
             $key = $side . '_disorders';
-            if (isset($data[$model_name][$key])) {
+            if (array_key_exists($key, $data[$model_name])) {
                 foreach ($data[$model_name][$key] as $idx => $data_disorder) {
                     $cvi_ass = new models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment();
                     $cvi_ass->ophcocvi_clinicinfo_disorder_id = $idx;
-                    $cvi_ass->affected = array_key_exists('affected', $data_disorder) ? $data_disorder['affected'] : false;
-                    $cvi_ass->main_cause = array_key_exists('main_cause', $data_disorder) ? $data_disorder['main_cause'] : false;
+                    $cvi_ass->affected = array_key_exists('affected',
+                        $data_disorder) ? $data_disorder['affected'] : false;
+                    $cvi_ass->main_cause = array_key_exists('main_cause',
+                        $data_disorder) ? $data_disorder['main_cause'] : false;
                     $cvi_assignments[] = $cvi_ass;
                 }
             }
@@ -266,7 +268,8 @@ class DefaultController extends \BaseEventTypeController
             $side_data = array_key_exists($key, $data[$model_name]) ? $data[$model_name][$key] : array();
             $element->updateDisorders($side, $side_data);
         }
-        $comments_data = array_key_exists('cvi_disorder_section', $data[$model_name]) ? $data[$model_name]['cvi_disorder_section'] : array();
+        $comments_data = array_key_exists('cvi_disorder_section',
+            $data[$model_name]) ? $data[$model_name]['cvi_disorder_section'] : array();
         $element->updateDisorderSectionComments($comments_data);
     }
 
@@ -277,15 +280,15 @@ class DefaultController extends \BaseEventTypeController
     protected function setElementDefaultOptions_Element_OphCoCvi_ClericalInfo(
         models\Element_OphCoCvi_ClericalInfo $element,
         $action
-    )
-    {
+    ) {
         if ($element->isNewRecord && $this->checkClinicalEditAccess()) {
             if ($this->patient->isChild()) {
                 $element->employment_status_id = models\OphCoCvi_ClericalInfo_EmploymentStatus::defaultChildStatusId();
             }
         }
     }
-        /**
+
+    /**
      * @param models\Element_OphCoCvi_ClericalInfo $element
      * @param $data
      * @param $index
@@ -298,7 +301,7 @@ class DefaultController extends \BaseEventTypeController
         $model_name = \CHtml::modelName($element);
 
         $answers = array();
-        if (isset($data[$model_name]['patient_factors'])) {
+        if (array_key_exists('patient_factors', $data[$model_name])) {
             foreach ($data[$model_name]['patient_factors'] as $id => $data_answer) {
                 $a = new models\OphCoCvi_ClericalInfo_PatientFactor_Answer();
                 $a->patient_factor_id = $id;
@@ -323,7 +326,8 @@ class DefaultController extends \BaseEventTypeController
         $index
     ) {
         $model_name = \CHtml::modelName($element);
-        $answer_data = array_key_exists('patient_factors', $data[$model_name]) ? $data[$model_name]['patient_factors'] : array();
+        $answer_data = array_key_exists('patient_factors',
+            $data[$model_name]) ? $data[$model_name]['patient_factors'] : array();
         $element->updatePatientFactorAnswers($answer_data);
     }
 
@@ -332,9 +336,10 @@ class DefaultController extends \BaseEventTypeController
      *
      * @param models\Element_OphCoCvi_Demographics $element
      */
-    protected function setElementDefaultOptions_Element_OphCoCvi_Demographics(models\Element_OphCoCvi_Demographics $element)
-    {
-        if($element->isNewRecord) {
+    protected function setElementDefaultOptions_Element_OphCoCvi_Demographics(
+        models\Element_OphCoCvi_Demographics $element
+    ) {
+        if ($element->isNewRecord) {
             $element->initFromPatient($this->patient);
         }
     }
@@ -630,7 +635,7 @@ class DefaultController extends \BaseEventTypeController
     {
         $this->initWithEventId($id);
 
-        $this->redirect('/file/view/' . $this->getManager()->getEventInfoElementForEvent($this->event)->generated_document_id . "/" . $this->getManager()->getEventInfoElementForEvent($this->event)->generated_document->name);
+        $this->redirect('/file/view/' . $this->getManager()->getEventInfoElementForEvent($this->event)->generated_document_id . '/' . $this->getManager()->getEventInfoElementForEvent($this->event)->generated_document->name);
     }
 
     /**
@@ -688,22 +693,19 @@ class DefaultController extends \BaseEventTypeController
      */
     public function actionSignCVI($id)
     {
-        if (\Yii::app()->user->id && \Yii::app()->getRequest()->getParam("signaturePin")) {
+        if (\Yii::app()->user->id && \Yii::app()->getRequest()->getParam('signaturePin')) {
             $user = \User::model()->findByPk(\Yii::app()->user->id);
-            if($user->signature_file_id)
-            {
-                $decodedImage = $user->getDecryptedSignature(\Yii::app()->getRequest()->getParam("signaturePin"));
-                if($decodedImage)
-                {
+            if ($user->signature_file_id) {
+                $decodedImage = $user->getDecryptedSignature(\Yii::app()->getRequest()->getParam('signaturePin'));
+                if ($decodedImage) {
                     $this->getManager()->saveUserSignature($decodedImage, $this->event);
                     $this->updateEventInfo();
-                    echo "This CVI has been signed by <b>".$user->getFullName()."</b>";
-                }else
-                {
+                    echo 'This CVI has been signed by <b>' . $user->getFullName() . '</b>';
+                } else {
                     echo 0;
                 }
             }
-        }else{
+        } else {
             echo 0;
         }
     }
