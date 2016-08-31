@@ -615,6 +615,7 @@ class DefaultController extends \BaseEventTypeController
         $signature_element = $this->getManager()->getConsentSignatureElementForEvent($this->event);
         if ($signature_element->saveSignatureImageFromPortal()) {
             $this->getApp()->user->setFlash('success', 'Signature successfully loaded.');
+            $this->updateEventInfo();
         } else {
             $this->getApp()->user->setFlash('error', 'Signature could not be found');
         }
