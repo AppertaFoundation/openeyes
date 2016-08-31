@@ -489,7 +489,9 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             $result['consultantName'] = $this->consultant->getFullName();
         }
 
-        $result['signatureImageConsultant'] = imagecreatefromstring($this->getDecryptedSignature());
+        if ($sig_file = $this->getDecryptedSignature()) {
+            $result['signatureImageConsultant'] = imagecreatefromstring($sig_file);
+        }
 
         if((int)$this->sight_varies_by_light_levels === 1) { $varyByLightLevelsYes = 'X';}
         if((int)$this->sight_varies_by_light_levels === 0) { $varyByLightLevelsNo = 'X';}
