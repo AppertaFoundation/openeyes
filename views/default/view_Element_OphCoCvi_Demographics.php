@@ -2,10 +2,18 @@
     <div class="large-6 column">
         <div class="row data-row">
             <div class="large-4 column">
-                <div class="data-label"><?= $element->getAttributeLabel('name') ?>:</div>
+                <div class="data-label"><?= $element->getAttributeLabel('title_surname') ?>:</div>
             </div>
             <div class="large-8 column end">
-                <div class="data-value"><?= CHtml::encode($element->name) ?></div>
+                <div class="data-value"><?= CHtml::encode($element->title_surname) ?></div>
+            </div>
+        </div>
+        <div class="row data-row">
+            <div class="large-4 column">
+                <div class="data-label"><?= $element->getAttributeLabel('other_names') ?>:</div>
+            </div>
+            <div class="large-8 column end">
+                <div class="data-value"><?= CHtml::encode($element->other_names) ?></div>
             </div>
         </div>
         <div class="row data-row">
@@ -17,10 +25,10 @@
             </div>
         </div>
         <div class="row data-row">
-            <div class="large-8 column">
+            <div class="large-4 column">
                 <div class="data-label"><?= $element->getAttributeLabel('nhs_number') ?>:</div>
             </div>
-            <div class="large-10 column end">
+            <div class="large-8 column end">
                 <div class="data-value"><?= CHtml::encode($element->nhs_number) ?></div>
             </div>
         </div>
@@ -46,6 +54,22 @@
             </div>
             <div class="large-8 column end">
                 <div class="data-value"><?= CHtml::encode($element->telephone) ?></div>
+            </div>
+        </div>
+        <div class="row data-row">
+            <div class="large-4 column">
+                <div class="data-label"><?= $element->getAttributeLabel('gender') ?>:</div>
+            </div>
+            <div class="large-8 column end">
+                <div class="data-value"><?= CHtml::encode($element->gender ? $element->gender->name : '') ?></div>
+            </div>
+        </div>
+        <div class="row data-row">
+            <div class="large-4 column">
+                <div class="data-label"><?= $element->getAttributeLabel('ethnic_group') ?>:</div>
+            </div>
+            <div class="large-8 column end">
+                <div class="data-value"><?= CHtml::encode($element->ethnic_group ? $element->ethnic_group->name : '') ?></div>
             </div>
         </div>
     </div>

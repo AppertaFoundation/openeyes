@@ -8,7 +8,16 @@ namespace OEModule\OphCoCvi\models;
  *
  * @package OEModule\OphCoCvi\models
  *
- * @property string name
+ * @property int $event_id
+ * @property string $name
+ * @property
+ *
+ * @property \EthnicGroup $ethnic_group
+ * @property \Gender $gender
+ * @property \Event $event
+ * @property \User $usermodified
+ * @property \User $user
+ * @property \EventType $eventType
  */
 class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
 {
@@ -36,8 +45,8 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
     public function rules()
     {
         return array(
-            array('event_id, name, date_of_birth, address, email, telephone, gender, gp_name, gp_address, gp_telephone', 'safe'),
-            array('name, date_of_birth, address, telephone, gender, gp_name, gp_address, gp_telephone', 'required', 'on' => 'finalise'),
+            array('event_id, name, date_of_birth, address, email, telephone, gender_id, ethnic_group_id, nhs_number, gp_name, gp_address, gp_telephone', 'safe'),
+            array('name, date_of_birth, address, telephone, gender_id, ethnic_group_id, nhs_number, gp_name, gp_address, gp_telephone', 'required', 'on' => 'finalise'),
             array('date_of_birth', 'OEDateValidatorNotFuture'),
         );
     }
@@ -58,6 +67,9 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'gender' => array(self::BELONGS_TO, 'Gender', 'gender_id'),
+            'ethnic_group' => array(self::BELONGS_TO, 'EthnicGroup', 'ethnic_group_id'),
+
         );
     }
 
@@ -67,19 +79,41 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
     public function attributeLabels()
     {
         return array(
-            'name' => 'Name',
+            'title_surname' => 'Title and Surname',
             'date_of_birth' => 'Date of Birth',
             'nhs_number' => 'NHS Number',
             'address' => 'Address',
             'email' => 'Email',
             'telephone' => 'Telephone',
-            'gender' => 'Gender',
+            'gender_id' => 'Gender',
+            'ethnic_group_id' => 'Ethnic Group',
             'gp_name' => 'GP\'s Name',
             'gp_address' => 'GP\'s Address',
             'gp_telephone' => 'GP\'s Telephone',
         );
     }
 
+    /**
+     * @param \Patient $patient
+     */
+    protected function mapNamesFromPatient(\Patient $patient)
+    {
+        $this->title_surname = $patient->title . ' ' . $patient->last_name;
+        $this->other_names = $patient->first_name;
+
+    }
+
+    /**
+     * @param \Patient $patient
+     */
+    protected function mapGenderFromPatient(\Patient $patient)
+    {
+        $gender_string = $patient->getGenderString();
+        $gender = \Gender::model()->findByAttributes(array('name' => $gender_string));
+        if ($gender) {
+            $this->gender_id = $gender->id;
+        }
+    }
     /**
      * Initialises the element from the patient model.
      *
@@ -89,13 +123,15 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
      */
     public function initFromPatient(\Patient $patient)
     {
-        $this->name = $patient->getFullName();
         $this->date_of_birth = $patient->dob;
         $this->nhs_number = $patient->getNhsnum();
         $this->address = $patient->getSummaryAddress(',');
         $this->email = $patient->getEmail();
         $this->telephone = $patient->getPrimary_phone();
-        $this->gender = $patient->getGenderString();
+
+        $this->mapNamesFromPatient($patient);
+        $this->mapGenderFromPatient($patient);
+        $this->ethnic_group_id = $patient->ethnic_group_id;
 
         if($patient->gp){
             $this->gp_name = $patient->gp->getFullName();
