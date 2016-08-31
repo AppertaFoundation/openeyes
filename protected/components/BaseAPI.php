@@ -110,7 +110,7 @@ class BaseAPI
         $criteria = new CDbCriteria();
         $criteria->compare('event_type_id', $event_type_id);
         $criteria->compare('episode_id', $episode_id);
-        if (!empty($before_date)) {
+        if ($before_date) {
             $criteria->compare('event_date', '<='.$before_date);
         }
         $criteria->order = 'event_date desc, created_date desc';
