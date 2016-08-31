@@ -365,7 +365,7 @@ class OphCiExamination_API extends \BaseAPI
     {
         $event_type = $this->getEventType();
         if ($va = $this->getMostRecentElementInEpisode($episode->id, $event_type->id,
-            'models\Element_OphCiExamination_VisualAcuity', $event->created_date)) {
+            'models\Element_OphCiExamination_VisualAcuity', $event->event_date)) {
             if ($va->hasLeft()) {
                 if ($best = $va->getBestReading('left')) {
                     return $best->convertTo($best->value, $this->getSnellenUnitId());
@@ -388,7 +388,7 @@ class OphCiExamination_API extends \BaseAPI
     {
         $event_type = $this->getEventType();
         if ($va = $this->getMostRecentElementInEpisode($episode->id, $event_type->id,
-            'models\Element_OphCiExamination_VisualAcuity', $event->created_date)) {
+            'models\Element_OphCiExamination_VisualAcuity', $event->event_date)) {
             if ($va->hasRight()) {
                 if ($best = $va->getBestReading('right')) {
                     return $best->convertTo($best->value, $this->getSnellenUnitId());

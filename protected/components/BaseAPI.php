@@ -107,7 +107,7 @@ class BaseAPI
         $criteria->addCondition('event_type_id = :event_type_id');
         $criteria->addCondition('episode_id = :episode_id');
         if($event_date) {
-            $criteria->addCondition('created_date < :event_date');
+            $criteria->addCondition('event_date <= :event_date');
             $criteria->params = array(
                 ':event_date' => date('Y-m-d H:i:s', strtotime($event_date)),
                 ':event_type_id' => $event_type_id,
