@@ -95,9 +95,8 @@ Building and running under Windows has been tested using [Cygwin](https://www.cy
 The following commands should be installed as part of the Cygwin install:
 
 * git
+* openssh
 * rsync
-* SSH
-
 
 ### Useful Vagrant Commands
 
