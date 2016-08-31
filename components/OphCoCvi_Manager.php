@@ -22,6 +22,7 @@ use OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_ConsentSignature;
+use OEModule\OphCoCvi\models\Element_OphCoCvi_Demographics;
 
 class OphCoCvi_Manager extends \CComponent
 {
@@ -244,6 +245,15 @@ class OphCoCvi_Manager extends \CComponent
     }
 
     /**
+     * @param \Event $event
+     * @return Element_OphCoCvi_Demographics|null
+     */
+    public function getDemographicsElementForEvent(\Event $event)
+    {
+        return $this->getElementForEvent($event, 'Element_OphCoCvi_Demographics');
+    }
+
+    /**
      * Generate the text display of the status of the CVI
      *
      * @param Element_OphCoCvi_ClinicalInfo $clinical
@@ -401,7 +411,7 @@ class OphCoCvi_Manager extends \CComponent
     protected function getStructuredDataForPrintPDF($event)
     {
         $data = array();
-        $elements_array = array('Clinical', 'Clerical', 'ConsentSignature');
+        $elements_array = array('Clinical', 'Clerical', 'ConsentSignature', 'Demographics');
 
         foreach ($elements_array as $el_name) {
             $element = $this->{"get{$el_name}ElementForEvent"}($event);
@@ -411,52 +421,6 @@ class OphCoCvi_Manager extends \CComponent
         }
 
         $patient = $this->getPatientForEvent($event);
-
-        // TODO: we need to match the keys here!
-        // we also need a method to generate the data structure with the ODTDataHandler!
-        $data['patientName'] = $patient->getFullName();
-        // TODO: do we have other names for patient?
-        $data['otherNames'] = '';
-        $data['patientDateOfBirth'] = $patient->dob;
-        $data['nhsNumber'] = $patient->getNhsnum();
-        if ($patient->gp) {
-            $data['gpName'] = $patient->gp->getFullName();
-            if ($patient->gp->contact->address) {
-                $data['gpAddress'] = $patient->gp->contact->address->letterLine;
-            }
-            if ($patient->gp->contact->primary_phone) {
-                $data['gpTel'] = $patient->gp->contact->primary_phone;
-            }
-        }
-
-
-        $data['patientAddress'] = $patient->getSummaryAddress();
-        $data['patientEmail'] = ''; // TODO: we need a get email address function
-        $data['patientTel'] = $patient->getPrimary_phone();
-
-        // These should be coming from the signature element
-//        $data["signatureName"] = $patient->getFullName();
-//        $data["signatureDate"] = date("d/m/Y");
-
-        $genderData = (strtolower($patient->getGenderString()) == 'male') ? array('', 'X', '', '') : array(
-            '',
-            '',
-            '',
-            'X'
-        );
-        $dob = ($patient->dob) ? $patient->NHSDate('dob') : '';
-        $yearHeader = !empty($dob) ? array_merge(array(''), str_split(date('Y', strtotime($dob)))) : array(
-            '',
-            '',
-            '',
-            '',
-            ''
-        );
-        $postCodeHeader = array('', '', '', '', '');
-        $spaceHolder = array('');
-        $data['genderTable'] = array(
-            0 => array_merge($genderData, $spaceHolder, $yearHeader, $spaceHolder, $postCodeHeader)
-        );
 
         if ($group = $patient->ethnic_group) {
             $data['ethnicGroup_' . $group->code] = 'X';

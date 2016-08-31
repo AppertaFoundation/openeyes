@@ -37,7 +37,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
     {
         return array(
             array('event_id, name, date_of_birth, address, email, telephone, gender, gp_name, gp_address, gp_telephone', 'safe'),
-            array('name, date_of_birth, address, telephone, gender, gp_name, gp_address, gp_telephone', 'required'),
+            array('name, date_of_birth, address, telephone, gender, gp_name, gp_address, gp_telephone', 'required', 'on' => 'finalise'),
             array('date_of_birth', 'OEDateValidatorNotFuture'),
         );
     }
@@ -110,7 +110,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
      */
     public function getStructuredDataForPrint()
     {
-        return array(
+        $data = array(
             'patientName' => $this->name,
             'otherNames' => '',
             'patientDateOfBirth' => $this->date_of_birth,
@@ -123,5 +123,23 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
             'gpAddress' => $this->gp_address,
             'gpTel' => $this->gp_telephone,
         );
+
+        $gender_data = (strtolower($this->gender) == 'male') ? array('', 'X', '', '') : array('','','','X');
+
+        $dob = ($this->date_of_birth) ? \Helper::convertMySQL2NHS('dob') : '';
+
+        if (!empty($dob)) {
+            $year_header = array_merge(array(''), str_split(date('Y', strtotime($dob))));
+        } else {
+            $year_header = array('','','','','');
+        }
+
+        $postcode_header = array('', '', '', '', '');
+        $space_holder = array('');
+        $data['genderTable'] = array(
+            0 => array_merge($gender_data, $space_holder, $year_header, $space_holder, $postcode_header)
+        );
+
+        return $data;
     }
 }
