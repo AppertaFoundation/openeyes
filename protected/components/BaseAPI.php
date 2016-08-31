@@ -97,30 +97,24 @@ class BaseAPI
         return Event::model()->find($criteria);
     }
 
-    /*
+    /**
      * gets the most recent instance of a specific element in the current episode
-     *
+     * @param $episode_id
+     * @param $event_type_id
+     * @param $model
+     * @param string $before_date
+     * @return bool
      */
-    public function getMostRecentElementInEpisode($episode_id, $event_type_id, $model, $event_date = false)
+    public function getMostRecentElementInEpisode($episode_id, $event_type_id, $model, $before_date = '')
     {
         $criteria = new CDbCriteria();
-        $criteria->addCondition('event_type_id = :event_type_id');
-        $criteria->addCondition('episode_id = :episode_id');
-        if($event_date) {
-            $criteria->addCondition('event_date <= :event_date');
-            $criteria->params = array(
-                ':event_date' => date('Y-m-d H:i:s', strtotime($event_date)),
-                ':event_type_id' => $event_type_id,
-                ':episode_id' => $episode_id
-                );
-        }
-        else {
-            $criteria->params = array(
-                ':event_type_id' => $event_type_id,
-                ':episode_id' => $episode_id
-            );
+        $criteria->compare('event_type_id', $event_type_id);
+        $criteria->compare('episode_id', $episode_id);
+        if (!empty($before_date)) {
+            $criteria->compare('event_date', '<='.$before_date);
         }
         $criteria->order = 'event_date desc, created_date desc';
+
         foreach (Event::model()->findAll($criteria) as $event) {
             if ($element = $model::model()->find('event_id=?', array($event->id))) {
                 return $element;

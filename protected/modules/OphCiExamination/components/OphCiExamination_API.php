@@ -47,16 +47,16 @@ class OphCiExamination_API extends \BaseAPI
      * @param $episode_id
      * @param $event_type_id
      * @param $model
-     *
+     * @param $before_date
      * @return \BaseEventTypeElement
      */
-    public function getMostRecentElementInEpisode($episode_id, $event_type_id, $model, $event_date = false)
+    public function getMostRecentElementInEpisode($episode_id, $event_type_id, $model, $before_date = '')
     {
         if (strpos($model, 'models') == 0) {
             $model = 'OEModule\OphCiExamination\\'.$model;
         }
 
-        return parent::getMostRecentElementInEpisode($episode_id, $event_type_id, $model, $event_date);
+        return parent::getMostRecentElementInEpisode($episode_id, $event_type_id, $model, $before_date);
     }
 
     /**
@@ -355,17 +355,20 @@ class OphCiExamination_API extends \BaseAPI
 
     /**
      * get the va from the given episode for the left side of the episode patient.
-     *
      * @param Episode $episode
-     * @param bool    $include_nr_values
-     * @param Event $event
+     * @param bool $include_nr_values
+     * @param string $before_date
      * @return OphCiExamination_VisualAcuity_Reading
      */
-    public function getLetterVisualAcuityForEpisodeLeft($episode, $include_nr_values = false, $event = false)
+    public function getLetterVisualAcuityForEpisodeLeft($episode, $include_nr_values = false, $before_date = '')
     {
         $event_type = $this->getEventType();
-        if ($va = $this->getMostRecentElementInEpisode($episode->id, $event_type->id,
-            'models\Element_OphCiExamination_VisualAcuity', $event->event_date)) {
+        if ($va = $this->getMostRecentElementInEpisode(
+            $episode->id,
+            $event_type->id,
+            'models\Element_OphCiExamination_VisualAcuity',
+            $before_date
+        )) {
             if ($va->hasLeft()) {
                 if ($best = $va->getBestReading('left')) {
                     return $best->convertTo($best->value, $this->getSnellenUnitId());
@@ -378,17 +381,20 @@ class OphCiExamination_API extends \BaseAPI
 
     /**
      * get the va from the given episode for the right side of the episode patient.
-     *
      * @param Episode $episode
      * @param bool    $include_nr_values
-     * @param Event $event
+     * @param string $before_date
      * @return OphCiExamination_VisualAcuity_Reading
      */
-    public function getLetterVisualAcuityForEpisodeRight($episode, $include_nr_values = false, $event = false)
+    public function getLetterVisualAcuityForEpisodeRight($episode, $include_nr_values = false, $before_date = '')
     {
         $event_type = $this->getEventType();
-        if ($va = $this->getMostRecentElementInEpisode($episode->id, $event_type->id,
-            'models\Element_OphCiExamination_VisualAcuity', $event->event_date)) {
+        if ($va = $this->getMostRecentElementInEpisode(
+            $episode->id,
+            $event_type->id,
+            'models\Element_OphCiExamination_VisualAcuity',
+            $before_date
+        )) {
             if ($va->hasRight()) {
                 if ($best = $va->getBestReading('right')) {
                     return $best->convertTo($best->value, $this->getSnellenUnitId());
