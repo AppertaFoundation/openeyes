@@ -146,39 +146,54 @@ class ODTTemplateManager
         $this->contentXml->save( $this->unzippedDir.$this->contentFilename );
     }
     
+    private function createSingleOrMultilineTextNode( $node, $string, $existingStyleName=null ){
+        $stringArr = '';
+        $stringArr = explode("<br/>",$string);
+
+        if(count($stringArr)==1){
+        	$stringArr = explode("<br/>",$string);
+				}
+        
+        if(count($stringArr)==1){
+        	$stringArr = explode("\\n",$string);
+				}
+        
+        if(count($stringArr)>1){ // Is multiline
+            foreach ($stringArr as $inc => $oneLine){
+                if($inc > 0){
+                    $break = $this->contentXml->createElement('text:line-break');
+                    $node->appendChild($break);
+                }
+                $newTextNode = $this->contentXml->createElement('text:span');
+                $newTextNode -> nodeValue = $oneLine;
+                $newTextNode -> setAttribute('text:style-name',$existingStyleName);
+                $node->appendChild($newTextNode);                
+            }
+        } else { // is single line
+            $newTextNode = $this->contentXml->createElement('text:span');
+            $newTextNode -> nodeValue = $string;
+            $newTextNode -> setAttribute('text:style-name',$existingStyleName);
+            $node->appendChild($newTextNode);
+        }
+    }
+    
     /*
      * Change ${} variables in odt xml to the param value 
      * @param $data
      */
     public function exchangeStringValues( $data )
     {
+        /*
         $nodes = $this->xpath->query('//text()');
        
         foreach ($nodes as $node) {
             foreach ($data as $key => $value){
                 if(strpos($node->nodeValue, '${'.$key.'}') !== false){
-
-                    $valArr = explode("\n",$value);
-                    if(array_key_exists(1, $valArr)){
-                       
-                        foreach ($valArr as $c => $val){
-                            $val = str_replace("\r","",$val);
-                            $node->nodeValue='';
-                            
-                            if($c > 0){
-                                $break = $this->contentXml->createElement('text:line-break');
-                                $node->parentNode->appendChild($break);
-                            }
-
-                            $text = $this->contentXml->createElement('text:span', $val);
-                            $node->parentNode->appendChild($text);
-                        }   
-                    } else {
-                        $node->nodeValue = str_replace('${'.$key.'}', $valArr[0], $node->nodeValue, $count);
-                    }
+                	$this->createSingleOrMultilineTextNode($value);
                 }    
             }
         }
+        */
     }
   
     /*
@@ -188,8 +203,8 @@ class ODTTemplateManager
      */
     public function exchangeStringValueByStyleName( $styleName, $value )
     {
-
         $xpath = new DOMXpath($this->contentXml);
+        $existingStyleName = '';
         
         $element    = $xpath->query('//*[@text:style-name="'.$styleName.'"]')->item(0);
         if( $element != null ){
@@ -203,28 +218,8 @@ class ODTTemplateManager
                 $element->removeChild($x);
             }
             
-            $valueArray = explode( "<br/>" , $value);
-            if(array_key_exists(1, $valueArray)){
-                
-                foreach ($valueArray as $c => $val){
-                    $val = str_replace("\r","",$val);
-                    if($c > 0){
-                        $break = $this->contentXml->createElement('text:line-break');
-                        $element->appendChild($break);
-                    }
-                    
-                    $newTextNode = $this->contentXml->createElement('text:span');
-                    $newTextNode -> nodeValue = $val;
-                    $newTextNode -> setAttribute('text:style-name',$existingStyleName);
-                    $element->appendChild($newTextNode);
-                }
-            } else {
-                $newTextNode = $this->contentXml->createElement('text:span');
-                $newTextNode -> nodeValue = $value;
-                $newTextNode -> setAttribute('text:style-name',$existingStyleName);
-                $element->appendChild($newTextNode);
-            }
-            
+            $this->createSingleOrMultilineTextNode($element, $value, $existingStyleName);
+
         }
     }     
     
@@ -232,6 +227,8 @@ class ODTTemplateManager
     {
         foreach( $texts as $text ){
             // we replace the key with empty string to remove the sample content from the template
+            file_put_contents('kecso.xml',print_r($text,true),FILE_APPEND);
+            
             if(!isset($text['data']))
             {
                 $text['data'] = "";
@@ -344,10 +341,14 @@ class ODTTemplateManager
                 foreach($row->childNodes as $c => $cell){
                    
                     if ((array_key_exists($rowCount, $data)) && (array_key_exists($c, $data[$rowCount]))) { 
-                        //$cell->nodeValue = "";
+                        $cell->nodeValue = "";
                         if($data[$rowCount][$c] != "") {
+                            /*
                             $text = $this->contentXml->createElement('text:p', $data[$rowCount][$c]);
                             $cell->appendChild($text);
+                            */
+                            $this->createSingleOrMultilineTextNode( $cell, 'Kecso' );
+                            
                             $text->setAttribute("text:style-name", $this->textStyleName);
                         }
                     }
@@ -380,9 +381,16 @@ class ODTTemplateManager
                     foreach($cols as $oneCol){
                         if($oneCol->nodeName != 'table:covered-table-cell'){
                             $textNode = $oneCol->childNodes->item(0);
+                            
                             if(isset($data[$rowCount][$colCount])){
                                 if( $data[$rowCount][$colCount] != '' ){      
-                                    $textNode->nodeValue = htmlspecialchars($data[$rowCount][$colCount]);    
+    								while($textNode->hasChildNodes()) { // Delete all child (normalize)
+    								    $x = $textNode -> childNodes->item(0);
+    								    $textNode->removeChild($x);
+    								}
+                                	
+                                	$this->createSingleOrMultilineTextNode( $textNode, htmlspecialchars($data[$rowCount][$colCount] ) );
+                                    //$textNode->nodeValue = 'Kecso'; //htmlspecialchars($data[$rowCount][$colCount]);    
                                 }
                             }
                         }
@@ -426,25 +434,54 @@ class ODTTemplateManager
         $colCount=0;
         foreach($firstRow as $oneCell){
             if($oneCell['cell-type'] != 'covered'){
-                $colCount += ($oneCell['colspan'] > 0 ) ? $oneCell['colspan'] : 1;
+                if(isset($oneCell['colspan'])){
+                    $colCount += ($oneCell['colspan'] > 0 ) ? $oneCell['colspan'] : 1;
+                } else {
+                    $colCount++;
+                }
             }
         }
         return $colCount;
     }
     
     /*
+     * Add a new style to the office:automatic-styles node
+     * @param $tableName
+    */     
+    private function addStyleToHeader($tableName,$style){
+        
+        $xpath = new DOMXpath($this->contentXml);
+        
+        $styleElement = $xpath->query('//office:automatic-styles')->item(0); //:automatic-styles :automatic-styles
+        if( $styleElement != null ){
+            $newElement = $this->createNode( $this->contentXml, 'style:style', $style );
+            $styleElement->appendChild($newElement);
+        }
+    } 
+
+    /*
      * Generate xml format table
      * @param $dataTables
      * @return string
-     */
-    private function generateXmlTables( $dataTables )
+    */     
+    //private 
+    function generateXmlTables( $dataTables )
     {
         $colsLabel = range('A', 'Z');
-       
+           
         foreach( $dataTables as $tableKey => $oneTable ){
+            //print '<pre>';print_r($oneTable);die;
+            //<style:style style:name="Táblázat1" style:family="table">
             $tableXml = new DOMDocument('1.0', 'utf-8');
-            $tableName = 'mytable'.$tableKey;
-            $tableStyleName = 'mytable'.$tableKey;
+            $tableName = 'mytable'.$tableKey.uniqid();
+            $tableStyleName = $tableName;
+            
+            $style = array(
+                'style:name' => $tableName,
+            );
+            
+            $this->addStyleToHeader($tableName,$style);
+            
             $colsCount = $this -> getTableColsCount( $oneTable['rows'][0]['cells'] ); // parameter is the first row.
 
             $table  = $this -> createNode( $tableXml, 'table:table', array( 'table:name'=>$tableName, 'table:style-name' => $tableStyleName ) );
@@ -461,8 +498,8 @@ class ODTTemplateManager
                     
                     $params = array();
                     if($oneCell['cell-type'] != 'covered'){
-                        $rowspan = $oneCell['rowspan'];
-                        $colspan = $oneCell['colspan'];
+                        $rowspan = (isset($oneCell['rowspan'])? $oneCell['rowspan']:0);
+                        $colspan = (isset($oneCell['colspan'])? $oneCell['colspan']:0);
                         $cellValue = $oneCell['data'];
                     }
                     
@@ -478,6 +515,9 @@ class ODTTemplateManager
                         case 'covered'   : 
                             $cell = $this -> createNode( $tableXml, 'table:covered-table-cell', array() ); 
                         break;
+                        default:
+                            $cell = $this -> createNode( $tableXml, 'table:table-cell', $params ); 
+                        break;
                     }
                     
                     $cellVal = $this -> createNode( $tableXml, 'text:p', array('text:style-name' => 'Table_20_Contents'), $cellValue );
@@ -490,7 +530,8 @@ class ODTTemplateManager
                 $rowDeep++;
             }
             $tableXml  -> appendChild( $table );
-            $tables[$oneTable['template_variable_name']] = $tableXml;
+            $tables[$tableName] = $tableXml;
+            //file_put_contents('kecso.xml',$this->contentXml->saveXML()); die;
         }
        
         return $tables;

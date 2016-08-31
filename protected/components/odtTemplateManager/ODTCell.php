@@ -25,9 +25,10 @@ class ODTCell
      */
     var $data = array();
 
-    function __construct() 
+    function __construct( $cellType='normal' ) 
     {
         $this->data['element-type'] = 'cell';
+        $this->data['cell-type'] = $cellType;
     }
 
     function getData()
