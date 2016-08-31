@@ -28,10 +28,21 @@ $(document).ready(function() {
     handleButton($('#et_deleteevent'));
 
     handleButton($('#et_canceldelete'));
+
+    handleButton($('#capture-patient-signature'), function(e) {
+
+        $('#capture-patient-signature-instructions').show();
+        $('#capture-patient-signature').parent().hide();
+        // I honestly don't know wny this works, but it works and we have a demo to do:
+        // FIXME: this seems ridiculous
+        setTimeout(function() {e.preventDefault(); enableButtons();}, 100);
+        return false;
+
+    });
     
-    handleButton( $('#et_printfirstpage'),function(e) {
+    handleButton( $('#print-for-signature'),function(e) {
         var data = {'firstPage':'1'};
-	printIFrameUrl(OE_print_url, data);
+	    printIFrameUrl($(e.target).data('print-url'), data);
         
         iframeId = 'print_content_iframe',
         $iframe = $('iframe#print_content_iframe');
@@ -84,6 +95,31 @@ $(document).ready(function() {
                             el.text(currentText+', '+newText);
                     }
             }
+    });
+
+    handleButton($('#et_sign_cvi'),function (e) {
+        e.preventDefault();
+        $('#signature_error').remove();
+        urldata = window.location.href.split('/');
+        eventId = urldata[urldata.length-1];
+        $.ajax({
+            'type': 'POST',
+            'url': baseUrl + '/OphCoCvi/default/signCVI/'+eventId,
+            'dataType': 'text',
+            'data': {
+                'signaturePin': $('#signature_pin').val(),
+                'YII_CSRF_TOKEN': $('#YII_CSRF_TOKEN').val()
+            },
+            'success': function (result) {
+                if(result == 0) {
+                    $('#div_signature_pin').after('<div id="signature_error" class="row field-row"><div class="large-6 column"></div><div class="large-6 column"><label>ERROR: You entered an invalid PIN number, please try again</label></div></div>');
+                }else
+                {
+                    $('#div_signature_pin').html('<div class="large-12 column"><label>'+result+'</label></div>');
+                }
+                enableButtons();
+            }
+        });
     });
 });
 

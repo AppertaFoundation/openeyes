@@ -21,43 +21,44 @@ if ($this->checkClericalEditAccess()) {
 ?>
     <div class="element-fields row">
         <?php
-        foreach ($model->patientFactorList($element->id) as $factor) { ?>
+        foreach ($this->getPatientFactors() as $factor) { ?>
             <fieldset class="row field-row ">
                 <div class="large-9 column">
-                    <label> <?php echo $factor['name'] ?> </label>
+                    <label> <?php echo $factor->name ?> </label>
                     <?php
-                    $is_factor = $factor['is_factor'];
-                    $comments = $factor['comments'];
-                    $i = $factor['id'];
-                    $value = $factor['is_comments'] ? '1' : '0';
+                    $field_base_name = CHtml::modelName($element) . "[patient_factors][{$factor->id}]";
+                    $factor_field_name = "{$field_base_name}[is_factor]";
+                    $answer = $element->getPatientFactorAnswer($factor);
+                    $value = $answer ? $answer->is_factor : null;
+                    if (!is_null($value)) {
+                        $value = (integer) $value;
+                    }
+                    $comments = $answer ? $answer->comments : null;
                     ?>
-                    <?php
-                    echo CHtml::hiddenField("ophcocvi_clinicinfo_patient_factor_id[$i]", $factor['id'], array('id' => 'hiddenInput'));
-                    echo CHtml::hiddenField("require_comments[$i]", $value, array('id' => 'hiddenInput'));
-                    ?>
+
                 </div>
                 <div class="large-3 column">
                     <label class="inline highlight">
-                        <?php echo CHtml::radioButton("is_factor[$i]", (isset($is_factor) && $is_factor == 1), array('id' => $factor['id'] . '_1', 'value' => 1)) ?>
+                        <?php echo CHtml::radioButton($factor_field_name, ($value === 1), array('id' => $factor_field_name . '_1', 'value' => 1)) ?>
                         Yes
                     </label>
                     <label class="inline highlight">
-                        <?php echo CHtml::radioButton("is_factor[$i]", (isset($is_factor) && $is_factor == 0), array('id' => $factor['id'] . '_0', 'value' => 0)) ?>
+                        <?php echo CHtml::radioButton($factor_field_name, ($value === 0), array('id' => $factor_field_name . '_0', 'value' => 0)) ?>
                         No
                     </label>
                     <label class="inline highlight">
-                        <?php echo CHtml::radioButton("is_factor[$i]", (isset($is_factor) && $is_factor == 2), array('id' => $factor['id'] . '_2', 'value' => 2)) ?>
+                        <?php echo CHtml::radioButton($factor_field_name, ($value === 2), array('id' => $factor_field_name . '_2', 'value' => 2)) ?>
                         Unknown
                     </label>
                 </div>
             </fieldset>
-            <?php if ($value == 1) { ?>
+            <?php if ($factor->require_comments) { ?>
                 <fieldset class="row field-row">
                     <div class="large-4 column">
-                        <label>  <?php echo $factor['label'];?> </label>
+                        <label>  <?php echo $factor->comments_label; ?> </label>
                     </div>
                     <div class="large-8 column end">
-                        <?php echo CHtml::textArea("comments[$i]", ($comments), array('rows' => 2)); ?>
+                        <?php echo CHtml::textArea("{$field_base_name}[comments]", $comments, array('rows' => 2)); ?>
                     </div>
                 </fieldset>
             <?php } ?>

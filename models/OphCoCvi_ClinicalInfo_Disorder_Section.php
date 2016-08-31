@@ -85,7 +85,30 @@ class OphCoCvi_ClinicalInfo_Disorder_Section extends \BaseActiveRecordVersioned
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'disorders' => array(self::HAS_MANY, 'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder', 'section_id', 'on' => 'active = 1', 'order' => 'display_order asc')
         );
+    }
+
+    /**
+     * Add Lookup behaviour
+     *
+     * @return array
+     */
+    public function behaviors()
+    {
+        return array(
+            'LookupTable' => 'LookupTable',
+        );
+    }
+
+    /**
+     * always order by display_order
+     *
+     * @return array
+     */
+    public function defaultScope()
+    {
+        return array('order' => $this->getTableAlias(true, false).'.display_order asc');
     }
 
     /**

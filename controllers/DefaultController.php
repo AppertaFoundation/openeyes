@@ -19,10 +19,6 @@ namespace OEModule\OphCoCvi\controllers;
 
 use \OEModule\OphCoCvi\models;
 use \OEModule\OphCoCvi\components\OphCoCvi_Manager;
-use \ODTTemplateManager;
-use \ODTDataHandler;
-use \SignatureQRCodeGenerator;
-
 
 class DefaultController extends \BaseEventTypeController
 {
@@ -33,32 +29,38 @@ class DefaultController extends \BaseEventTypeController
     const ACTION_TYPE_LIST = 'List';
 
     protected static $action_types = array(
+        'consentsignature' => self::ACTION_TYPE_PRINT,
+        'retrieveconsentsignature' => self::ACTION_TYPE_PRINT,
+        'displayconsentsignature' => self::ACTION_TYPE_VIEW,
+        'issue' => self::ACTION_TYPE_EDIT,
+        'signCVI' => self::ACTION_TYPE_EDIT,
         'list' => self::ACTION_TYPE_LIST
     );
 
     /**
      * Create Form with check for the cvi existing events count
+     * @throws \Exception
      */
     public function actionCreate()
     {
-        if (isset($_GET['createnewcvi'])) {
-            $cancel_url = ($this->episode) ? '/patient/episode/' . $this->episode->id
+        $create_new_cvi = $this->request->getParam('createnewcvi', null);
+        if (!is_null($create_new_cvi)) {
+            $cancel_url = $this->episode ? '/patient/episode/' . $this->episode->id
                 : '/patient/episodes/' . $this->patient->id;
-            ($_GET['createnewcvi'] == 1) ? parent::actionCreate()
-                : $this->redirect(array($cancel_url));
+            if ($create_new_cvi == 1) {
+                return parent::actionCreate();
+            } else {
+                return $this->redirect(array($cancel_url));
+            }
         } else {
             $cvi_events = $this->getApp()->moduleAPI->get('OphCoCvi');
-            $cvi_created = $cvi_events->getEvents(\Patient::model()->findByPk($this->patient->id));
-            if (count($cvi_created) >= $this->cvi_limit) {
-                $cvi_url = array();
-                foreach ($cvi_created as $cvi_event) {
-                    $cvi_url[] = $this->getManager()->getEventViewUri($cvi_event);
-                }
+            $current_cvis = $cvi_events->getEvents($this->patient);
+            if (count($current_cvis) >= $this->cvi_limit) {
                 $this->render('select_event', array(
-                    'cvi_url' => $cvi_url,
-                ), false, true);
+                    'current_cvis' => $current_cvis,
+                ), false);
             } else {
-                parent::actionCreate();
+                return parent::actionCreate();
             }
         }
     }
@@ -124,9 +126,13 @@ class DefaultController extends \BaseEventTypeController
      */
     public function checkPrintAccess()
     {
+        if ($this->checkAdminAccess()) {
+            return true;
+        }
+
         // check that the user has the general edit cvi permission, but not the specific edit permission on
         // the current event.
-        return $this->checkAccess('OprnEditCvi', $this->getApp()->user->id) && $this->getManager()->isIssued($this->event);
+        return $this->checkAccess('OprnEditCvi', $this->getApp()->user->id);
     }
 
     /**
@@ -185,7 +191,7 @@ class DefaultController extends \BaseEventTypeController
         $action
     ) {
         // only populate values into the new element if a clinical user
-        if ($this->checkClinicalEditAccess() && $element->isNewRecord) {
+        if ($element->isNewRecord && $this->checkClinicalEditAccess()) {
             if ($exam_api = $this->getApp()->moduleAPI->get('OphCiExamination')) {
                 if ($latest_examination_event = $exam_api->getMostRecentVAElementForPatient($this->patient)) {
                     $element->examination_date = $latest_examination_event['event_date'];
@@ -204,8 +210,122 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+<<<  * This just sets assignments for validation and the re-use in forms if a form submit does not validate
+     *
+     * @param models\Element_OphCoCvi_ClinicalInfo $element
+     * @param $data
+     * @param $index
+     */
+    protected function setComplexAttributes_Element_OphCoCvi_ClinicalInfo($element, $data, $index)
+    {
+        $model_name = \CHtml::modelName($element);
+        foreach (array('left', 'right') as $side) {
+            $cvi_assignments = array();
+            $key = $side . '_disorders';
+            if (isset($data[$model_name][$key])) {
+                foreach ($data[$model_name][$key] as $idx => $data_disorder) {
+                    $cvi_ass = new models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment();
+                    $cvi_ass->ophcocvi_clinicinfo_disorder_id = $idx;
+                    $cvi_ass->affected = array_key_exists('affected', $data_disorder) ? $data_disorder['affected'] : false;
+                    $cvi_ass->main_cause = array_key_exists('main_cause', $data_disorder) ? $data_disorder['main_cause'] : false;
+                    $cvi_assignments[] = $cvi_ass;
+                }
+            }
+            $element->{$side . '_cvi_disorder_assignments'} = $cvi_assignments;
+        }
+        $comments = array();
+        if (array_key_exists('cvi_disorder_section', $data[$model_name])) {
+            foreach ($data[$model_name]['cvi_disorder_section'] as $id => $data_comments) {
+                $section_comment = new models\Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments();
+                $section_comment->ophcocvi_clinicinfo_disorder_section_id = $id;
+                $section_comment->comments = $data_comments['comments'];
+                $comments[] = $section_comment;
+            }
+        }
+        $element->cvi_disorder_section_comments = $comments;
+    }
+
+    /**
+     * @param models\Element_OphCoCvi_ClinicalInfo $element
+     * @param $data
+     * @param $index
+     * @throws \Exception
+     */
+    protected function saveComplexAttributes_Element_OphCoCvi_ClinicalInfo(
+        models\Element_OphCoCvi_ClinicalInfo $element,
+        $data,
+        $index
+    ) {
+        $model_name = \CHtml::modelName($element);
+        foreach (array('left', 'right') as $side) {
+            $key = $side . '_disorders';
+            $side_data = array_key_exists($key, $data[$model_name]) ? $data[$model_name][$key] : array();
+            $element->updateDisorders($side, $side_data);
+        }
+        $comments_data = array_key_exists('cvi_disorder_section', $data[$model_name]) ? $data[$model_name]['cvi_disorder_section'] : array();
+        $element->updateDisorderSectionComments($comments_data);
+    }
+
+    /**
+     * @param models\Element_OphCoCvi_ClericalInfo $element
+     * @param $action
+     */
+    protected function setElementDefaultOptions_Element_OphCoCvi_ClericalInfo(
+        models\Element_OphCoCvi_ClericalInfo $element,
+        $action
+    )
+    {
+        if ($element->isNewRecord && $this->checkClinicalEditAccess()) {
+            if ($this->patient->isChild()) {
+                $element->employment_status_id = models\OphCoCvi_ClericalInfo_EmploymentStatus::defaultChildStatusId();
+            }
+        }
+    }
+        /**
+     * @param models\Element_OphCoCvi_ClericalInfo $element
+     * @param $data
+     * @param $index
+     */
+    protected function setComplexAttributes_Element_OphCoCvi_ClericalInfo(
+        models\Element_OphCoCvi_ClericalInfo $element,
+        $data,
+        $index
+    ) {
+        $model_name = \CHtml::modelName($element);
+
+        $answers = array();
+        if (isset($data[$model_name]['patient_factors'])) {
+            foreach ($data[$model_name]['patient_factors'] as $id => $data_answer) {
+                $a = new models\OphCoCvi_ClericalInfo_PatientFactor_Answer();
+                $a->patient_factor_id = $id;
+                $a->is_factor = isset($data_answer['is_factor']) ? $data_answer['is_factor'] : null;
+                $a->comments = isset($data_answer['comments']) ? $data_answer['comments'] : null;
+                $answers[] = $a;
+            }
+        }
+
+        $element->patient_factor_answers = $answers;
+    }
+
+    /**
+     * @param models\Element_OphCoCvi_ClericalInfo $element
+     * @param $data
+     * @param $index
+     * @throws \Exception
+     */
+    public function saveComplexAttributes_Element_OphCoCvi_ClericalInfo(
+        models\Element_OphCoCvi_ClericalInfo $element,
+        $data,
+        $index
+    ) {
+        $model_name = \CHtml::modelName($element);
+        $answer_data = array_key_exists('patient_factors', $data[$model_name]) ? $data[$model_name]['patient_factors'] : array();
+        $element->updatePatientFactorAnswers($answer_data);
+    }
+
+    /**
      * Sets the default values for the element from the patient
-     * 
+     *
      * @param models\Element_OphCoCvi_Demographics $element
      */
     protected function setElementDefaultOptions_Element_OphCoCvi_Demographics(models\Element_OphCoCvi_Demographics $element)
@@ -220,7 +340,7 @@ class DefaultController extends \BaseEventTypeController
      */
     public function getManager()
     {
-        if (!isset($this->cvi_manager)) {
+        if (is_null($this->cvi_manager)) {
             $this->cvi_manager = new OphCoCvi_Manager($this->getApp());
         }
 
@@ -278,7 +398,7 @@ class DefaultController extends \BaseEventTypeController
      */
     public function initActionIssue()
     {
-        $this->initWithEventId($this->request->get('id'));
+        $this->initWithEventId($this->request->getParam('id'));
         if (!$this->canIssue()) {
             throw new \CHttpException(403, 'Event cannot be issued.');
         }
@@ -291,11 +411,13 @@ class DefaultController extends \BaseEventTypeController
     {
         if ($this->getManager()->issueCvi($this->event, $this->getApp()->user->id)) {
             $this->getApp()->user->setFlash('success', 'The CVI has been successfully generated.');
+            $this->redirect(array('/' . $this->event->eventType->class_name . '/default/pdfPrint/' . $id));
         } else {
             $this->getApp()->user->setFlash('error', 'The CVI could not be generated.');
+            $this->redirect(array('/' . $this->event->eventType->class_name . '/default/view/' . $id));
         }
 
-        $this->redirect(array('/' . $this->event->eventType->class_name . '/default/pdfPrint/' . $id));
+
     }
 
     public function initActionView()
@@ -305,6 +427,9 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * Sister method to the getElementsForEventType method, this loads up event elements for rendering (whether viewing or editing).
+     * Because of the permissioning behaviours, need to be able to filter out clinical/clerical elements as appropriate.
+     *
      * @return array
      */
     protected function getEventElements()
@@ -319,21 +444,65 @@ class DefaultController extends \BaseEventTypeController
         $final_elements = array();
         foreach ($elements as $el) {
             $cls = get_class($el);
-            if (!$this->checkClinicalEditAccess() && $cls == 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo') {
-                if ($el->isNewRecord) {
-                    // implies no values have been recorded yet for this element
-                    continue;
-                }
+            if ($cls === 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo'
+                && $el->isNewRecord
+                && !$this->checkClinicalEditAccess()
+            ) {
+                // implies no values have been recorded yet for this element
+                continue;
             }
-            if (!$this->checkClericalEditAccess() && $cls == 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo') {
-                if ($el->isNewRecord) {
-                    continue;
-                }
+            if ($cls === 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo'
+                && $el->isNewRecord
+                && !$this->checkClericalEditAccess()
+            ) {
+                continue;
             }
 
             $final_elements[] = $el;
         }
         return $final_elements;
+    }
+
+    /**
+     * @return models\Element_OphCoCvi_EventInfo[]
+     */
+    private function getElementsForEventInfo()
+    {
+        if ($this->event->isNewRecord) {
+            return array(new models\Element_OphCoCvi_EventInfo());
+        } else {
+            return array($this->getManager()->getEventInfoElementForEvent($this->event));
+        }
+    }
+
+    /**
+     * Because form elements won't be submitted when editing without this access, we need to return the current
+     * event element if it exists
+     *
+     * @return models\Element_OphCoCvi_ClinicalInfo[]|bool|null
+     */
+    private function getElementsForClinical()
+    {
+        if (!$this->checkClinicalEditAccess()) {
+            $el = $this->event->isNewRecord ? null : $this->getManager()->getClinicalElementForEvent($this->event);
+            return (!is_null($el)) ? array($el) : null;
+        }
+        return false;
+    }
+
+    /**
+     * Because form elements won't be submitted when editing without this access, we need to return the current
+     * event element if it exists
+     *
+     * @return models\Element_OphCoCvi_ClericalInfo|bool|null
+     */
+    private function getElementsForClerical()
+    {
+        if (!$this->checkClericalEditAccess()) {
+            $el = $this->event->isNewRecord ? null : $this->getManager()->getClericalElementForEvent($this->event);
+            return (!is_null($el)) ? array($el) : null;
+        }
+        return false;
     }
 
     /**
@@ -348,28 +517,21 @@ class DefaultController extends \BaseEventTypeController
     {
         $cls = $element_type->class_name;
 
-        if ($cls == 'OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo') {
-            if ($this->event->isNewRecord) {
-                return array(new $cls);
-            } else {
-                return array($this->getManager()->getEventInfoElementForEvent($this->event));
+        $map = array(
+            'OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo' => 'EventInfo',
+            'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo' => 'Clinical',
+            'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo' => 'Clerical'
+        );
+
+        if (array_key_exists($cls, $map)) {
+            $id = $map[$cls];
+            $override = $this->{"getElementsFor{$id}"}();
+            if ($override !== false) {
+                return $override;
             }
         }
 
-        // because form elements won't be submitted when editing without this access, we need to return the current
-        // event element if it exists
-        if (!$this->checkClinicalEditAccess() && $cls == 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo') {
-            $el = $this->event->isNewRecord ? null : $this->getManager()->getClinicalElementForEvent($this->event);
-            return (!is_null($el)) ? array($el) : null;
-        }
-
-        if (!$this->checkClericalEditAccess() && $cls == 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo') {
-            $el  = $this->event->isNewRecord ? null : $this->getManager()->getClericalElementForEvent($this->event);
-            return (!is_null($el)) ? array($el) : null;
-        }
-
         return parent::getElementsForElementType($element_type, $data);
-
     }
 
     /**
@@ -411,44 +573,46 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Element based name and value pair.
-     *
+     * @throws \CHttpException
+     */
+    public function initActionConsentSignature()
+    {
+        $this->initWithEventId($this->request->getParam('id'));
+    }
+
+    /**
      * @param $id
      */
-    public function getStructuredDataForPrintPDF()
+    public function actionConsentSignature($id)
     {
-        $data = array();
-        foreach ($this->open_elements as $element) {
-            if (method_exists($element, "getStructuredDataForPrint")) {
-                $data = array_merge($data, $element->getStructuredDataForPrint());
-            }
+        $pdf = $this->getManager()->generateConsentForm($this->event);
+        $pdf->getPDF();
+    }
+
+    /**
+     * @throws \CHttpException
+     */
+    public function initActionRetrieveConsentSignature()
+    {
+        $this->initWithEventId($this->request->getParam('id'));
+    }
+
+    /**
+     * @TODO: refactor
+     * @param $id
+     *
+     * @throws \Exception
+     */
+    public function actionRetrieveConsentSignature($id)
+    {
+        $signature_element = $this->getManager()->getConsentSignatureElementForEvent($this->event);
+        if ($signature_element->saveSignatureImageFromPortal()) {
+            $this->getApp()->user->setFlash('success', 'Signature successfully loaded.');
+        } else {
+            $this->getApp()->user->setFlash('error', 'Signature could not be found');
         }
 
-        $data["otherNames"] = '';
-        $data["signatureName"] = $this->patient->getFullName();
-        $data["signatureDate"] = date("d/m/Y");
-
-        $genderData = (strtolower($data['gender']) === 'male') ? array('', 'X', '', '') : array(
-            '',
-            '',
-            '',
-            'X'
-        );
-        $dob = ($this->patient->dob) ? $this->patient->NHSDate('dob') : '';
-        $yearHeader = !empty($dob) ? array_merge(array(''), str_split(date('Y', strtotime($dob)))) : array(
-            '',
-            '',
-            '',
-            '',
-            ''
-        );
-        $postCodeHeader = array('', '', '', '', '');
-        $spaceHolder = array('');
-        $data["genderTable"] = array(
-            0 => array_merge($genderData, $spaceHolder, $yearHeader, $spaceHolder, $postCodeHeader)
-        );
-
-        return $data;
+        $this->redirect(array('/' . $this->event->eventType->class_name . '/default/view/' . $id));
     }
 
     /**
@@ -456,79 +620,89 @@ class DefaultController extends \BaseEventTypeController
      */
     public function actionPDFPrint($id)
     {
-        if (!$event = \Event::model()->findByPk($id)) {
-            throw new Exception("Event not found: $id");
-        }
-        
-        $event->lock();
-        $this->printInit($id);
-        
-        $signatureElement = $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature');
-        //  we need to check if we already have a signature file linked
-        if (!$signatureElement->checkSignature()) {
-            // we check if the signature is exists on the portal
-            $signature = $signatureElement->loadSignatureFromPortal();
-        } else {
-            // we get the stored signature and creates a GD object from the data
-            $signature = imagecreatefromstring($signatureElement->getDecryptedSignature());
-        }
+        $this->initWithEventId($id);
 
-        //views/odtTemplates/cviTemplate.odt)
-        $inputFile = 'cviTemplate.odt';
-        $printHelper = new ODTTemplateManager( 
-                $inputFile , 
-                realpath(__DIR__ . '/..').'/views/odtTemplate', 
-                \Yii::app()->basePath.'/runtime/cache/cvi/',
-                'CVICert_'.\Yii::app()->user->id.'_'.rand().'.odt'
-        );
-        
-      
-       
-        $DH = new ODTDataHandler();
-        $DH -> setTableAndSimpleTextDataFromArray( $this->getStructuredDataForPrintPDF() );
-        
-        $tables = $DH -> gettables();
-       
-        foreach($tables as $oneTable){
-            $name = $oneTable['name'];
-            $data = $DH->generateSimpleTableHashData($oneTable);
-            $printHelper->fillTableByName($name, $data, 'name');
+        $this->redirect('/file/view/' . $this->getManager()->getEventInfoElementForEvent($this->event)->generated_document_id . "/" . $this->getManager()->getEventInfoElementForEvent($this->event)->generated_document->name);
+    }
+
+    /**
+     * @throws \CHttpException
+     */
+    public function initActionDisplayConsentSignature()
+    {
+        $this->initWithEventId($this->request->getParam('id'));
+    }
+
+    /**
+     * @param $id
+     * @throws \CHttpException
+     */
+    public function actionDisplayConsentSignature($id)
+    {
+        $signature_element = $this->getManager()->getConsentSignatureElementForEvent($this->event);
+        if (!$signature_element->checkSignature()) {
+            throw new \CHttpException(404);
         }
-       
-    //******* TEST DATAS!!
-       
-        $data = array( 
-            array('','','','','','','','','','','Y'),
-            array('','','','','','','','','','','Y'),
-            array('','','','','','','','','','','N'),
-            array('','','','','','','','','','','Y'),
-            array('','','','','','','','','','','N'),
-            array('','','','','','','','','','','N'),
-            array('','','','','','','','','','','N'),
-            array('','','','','','','','','','','N'),
-            array('','','','','','','','','','','N'),
-        );        
-        $printHelper->fillTableByName( 'patientFactors' , $data, 'name' );
-        
-    //******* TEST DATA END!!
-        $texts = $DH -> getSimpleTexts();
-        $printHelper->exchangeAllStringValuesByStyleName( $texts );
-       
-        //$printHelper->exchangeStringValues( $this->getStructuredDataForPrintPDF($id) );
-        
-        // TODO: we need to check which function to call
-        $printHelper->changeImageFromGDObject('signatureImagePatient', $signature);
-        $printHelper->saveContentXML();
-        $printHelper->generatePDF();
-        
-        //Print only the first page of the pdf
-        if(isset($_GET['firstPage']) && $_GET['firstPage'] == 1 ){
-            $printHelper->generatePDFPageN();
-        } 
-        
-        $printHelper->getPDF();
-        
-        $event->unlock();
+        header('Content-Type: image/png');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        imagepng(imagecreatefromstring($signature_element->getDecryptedSignature()));
 
     }
+
+    /**
+     * Simple wrapper to get the disorder sections that should be rendered in the event form.
+     *
+     * @return mixed
+     */
+    public function getDisorderSections()
+    {
+        return models\OphCoCvi_ClinicalInfo_Disorder_Section::model()->active()->findAll();
+    }
+
+    /**
+     * Simple abstraction wrapper to get the patient factors that should be rendered in the event form.
+     *
+     * @return mixed
+     */
+    public function getPatientFactors()
+    {
+        return models\OphCoCvi_ClericalInfo_PatientFactor::model()->active()->findAll();
+    }
+
+    public function initActionSignCVI()
+    {
+        $this->initWithEventId($this->request->getParam('id'));
+    }
+
+    /**
+     * @param $id
+     */
+    public function actionSignCVI($id)
+    {
+        if (\Yii::app()->user->id && \Yii::app()->getRequest()->getParam("signaturePin")) {
+            $user = \User::model()->findByPk(\Yii::app()->user->id);
+            if($user->signature_file_id)
+            {
+                $decodedImage = $user->getDecryptedSignature(\Yii::app()->getRequest()->getParam("signaturePin"));
+                if($decodedImage)
+                {
+                    $this->getManager()->saveUserSignature($decodedImage, $id);
+                    echo "This CVI has been signed by <b>".$user->getFullName()."</b>";
+                }else
+                {
+                    echo 0;
+                }
+            }
+        }else{
+            echo 0;
+        }
+    }
+
+    protected function checkUserSigned()
+    {
+        $clinicalElement = $this->getManager()->getClinicalElementForEvent($this->event);
+        return $clinicalElement->isSigned();
+    }
+
 }

@@ -19,9 +19,6 @@
 <?php
 if ($this->checkClinicalEditAccess()) { ?>
     <div class="element-fields row">
-        <?php $consultant_names = User::model()->getAllConsultants(); echo $form->dropDownList($element, 'consultant_id',
-            CHtml::listData($consultant_names,'id','name'),
-            array('empty' => '- Please select -')); ?>
         <?php echo $form->datePicker($element, 'examination_date', array('maxDate' => 'today'),
             array('style' => 'width: 110px;')) ?>
         <div class="indent-correct row">

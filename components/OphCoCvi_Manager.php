@@ -21,6 +21,7 @@ namespace OEModule\OphCoCvi\components;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo;
+use OEModule\OphCoCvi\models\Element_OphCoCvi_ConsentSignature;
 
 class OphCoCvi_Manager extends \CComponent
 {
@@ -37,8 +38,8 @@ class OphCoCvi_Manager extends \CComponent
     public function getStatusText($status)
     {
         $lookup = array(
-            self::$ISSUED => "Issued",
-            self::$CVI_COMPLETE => "Complete",
+            self::$ISSUED => 'Issued',
+            self::$CVI_COMPLETE => 'Complete',
             self::$CVI_CLINICAL_COMPLETE => 'Clinically Complete',
             self::$CVI_CLERICAL_COMPLETE => 'Clerically Complete',
             self::$CVI_INCOMPLETE => 'Incomplete',
@@ -47,7 +48,7 @@ class OphCoCvi_Manager extends \CComponent
             return $lookup[$status];
         }
 
-        return "Unrecognised Status";
+        return 'Unrecognised Status';
     }
 
     protected $yii;
@@ -161,6 +162,15 @@ class OphCoCvi_Manager extends \CComponent
     }
 
     /**
+     * @param \Event $event
+     * @return \Patient
+     */
+    protected function getPatientForEvent(\Event $event)
+    {
+        return $event->episode->patient;
+    }
+
+    /**
      * Wrapper to insert missing elements for a CVI event if they haven't been
      * created (due to access restrictions)
      *
@@ -228,7 +238,7 @@ class OphCoCvi_Manager extends \CComponent
      * @param \Event $event
      * @return null|Element_OphCoCvi_ConsentSignature
      */
-    public function getConsentSignatureElement(\Event $event)
+    public function getConsentSignatureElementForEvent(\Event $event)
     {
         return $this->getElementForEvent($event, 'Element_OphCoCvi_ConsentSignature');
     }
@@ -237,12 +247,12 @@ class OphCoCvi_Manager extends \CComponent
      * Generate the text display of the status of the CVI
      *
      * @param Element_OphCoCvi_ClinicalInfo $clinical
-     * @param Element_OphCoCvi_ClericalInfo $clerical
+     * @param Element_OphCoCvi_EventInfo $info
      * @return string
      */
-    protected function getDisplayStatus(Element_OphCoCvi_ClinicalInfo $clinical, Element_OphCoCvi_EventInfo $info)
+    protected function getDisplayStatus(Element_OphCoCvi_ClinicalInfo $clinical = null, Element_OphCoCvi_EventInfo $info)
     {
-        return $clinical->getDisplayStatus() . ' (' . $info->getIssueStatusForDisplay() . ')';
+        return ($clinical ? $clinical->getDisplayStatus() : "Not Assessed") . ' (' . $info->getIssueStatusForDisplay() . ')';
     }
 
     /**
@@ -272,8 +282,9 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function getDisplayStatusDateForEvent(\Event $event)
     {
-        $clinical = $this->getClinicalElementForEvent($event);
-        return $clinical->examination_date;
+        if ($clinical = $this->getClinicalElementForEvent($event)) {
+            return $clinical->examination_date;
+        }
     }
 
     /**
@@ -358,14 +369,13 @@ class OphCoCvi_Manager extends \CComponent
             return false;
         }
 
-        if ($signature = $this->getConsentSignatureElement($event)) {
+        if ($signature = $this->getConsentSignatureElementForEvent($event)) {
             if (!$signature->checkSignature()) {
                 return false;
             }
         } else {
             return false;
         }
-
 
         return true;
     }
@@ -382,17 +392,163 @@ class OphCoCvi_Manager extends \CComponent
         return false;
     }
 
+    /**
+     * Element based name and value pair.
+     *
+     * @param \Event $event
+     * @return array
+     */
+    protected function getStructuredDataForPrintPDF($event)
+    {
+        $data = array();
+        $elements_array = array('Clinical', 'Clerical', 'ConsentSignature');
+
+        foreach ($elements_array as $el_name) {
+            $element = $this->{"get{$el_name}ElementForEvent"}($event);
+            if (method_exists($element, 'getStructuredDataForPrint')) {
+                $data = array_merge($data, $element->getStructuredDataForPrint());
+            }
+        }
+
+        $patient = $this->getPatientForEvent($event);
+
+        // TODO: we need to match the keys here!
+        // we also need a method to generate the data structure with the ODTDataHandler!
+        $data['patientName'] = $patient->getFullName();
+        // TODO: do we have other names for patient?
+        $data['otherNames'] = '';
+        $data['patientDateOfBirth'] = $patient->dob;
+        $data['nhsNumber'] = $patient->getNhsnum();
+        if ($patient->gp) {
+            $data['gpName'] = $patient->gp->getFullName();
+            if ($patient->gp->contact->address) {
+                $data['gpAddress'] = $patient->gp->contact->address->letterLine;
+            }
+            if ($patient->gp->contact->primary_phone) {
+                $data['gpTel'] = $patient->gp->contact->primary_phone;
+            }
+        }
+
+
+        $data['patientAddress'] = $patient->getSummaryAddress();
+        $data['patientEmail'] = ''; // TODO: we need a get email address function
+        $data['patientTel'] = $patient->getPrimary_phone();
+
+        // These should be coming from the signature element
+//        $data["signatureName"] = $patient->getFullName();
+//        $data["signatureDate"] = date("d/m/Y");
+
+        $genderData = (strtolower($patient->getGenderString()) == 'male') ? array('', 'X', '', '') : array(
+            '',
+            '',
+            '',
+            'X'
+        );
+        $dob = ($patient->dob) ? $patient->NHSDate('dob') : '';
+        $yearHeader = !empty($dob) ? array_merge(array(''), str_split(date('Y', strtotime($dob)))) : array(
+            '',
+            '',
+            '',
+            '',
+            ''
+        );
+        $postCodeHeader = array('', '', '', '', '');
+        $spaceHolder = array('');
+        $data['genderTable'] = array(
+            0 => array_merge($genderData, $spaceHolder, $yearHeader, $spaceHolder, $postCodeHeader)
+        );
+
+        if ($group = $patient->ethnic_group) {
+            $data['ethnicGroup_' . $group->code] = 'X';
+        }
+
+
+
+        return $data;
+    }
+
+    protected function populateCviCertificate(\Event $event)
+    {
+        $signatureElement = $this->getConsentSignatureElementForEvent($event);
+
+        //  we need to check if we already have a signature file linked
+        if (!$signatureElement->checkSignature()) {
+            //TODO: restructure or rename, as this process is basically also going to generate
+            //TODO: the QR code signature placeholder when its not yet been captured.
+            // we check if the signature is exists on the portal
+            $signature = $signatureElement->loadSignatureFromPortal();
+        } else {
+            // we get the stored signature and creates a GD object from the data
+            $signature = imagecreatefromstring($signatureElement->getDecryptedSignature());
+        }
+
+        $inputFile = 'cviTemplate.odt';
+        // TODO: need to configure this more cleanly
+        $printHelper = new \ODTTemplateManager(
+            $inputFile ,
+            realpath(__DIR__ . '/..').'/views/odtTemplate',
+            $this->yii->basePath.'/runtime/cache/cvi/',
+            'CVICert_'.$event->id.'_'.mt_rand().'.odt'
+        );
+
+        $data_handler = new \ODTDataHandler();
+        $structured_data = $this->getStructuredDataForPrintPDF($event);
+        $data_handler->setTableAndSimpleTextDataFromArray($structured_data);
+
+        $tables = $data_handler->getTables();
+
+        foreach($tables as $oneTable){
+            $name = $oneTable['name'];
+            $data = $data_handler->generateSimpleTableHashData($oneTable);
+            $printHelper->fillTableByName($name, $data, 'name');
+        }
+
+        $texts = $data_handler->getSimpleTexts();
+
+        $printHelper->exchangeAllStringValuesByStyleName( $texts );
+
+        //$printHelper->exchangeStringValues( $this->getStructuredDataForPrintPDF($id) );
+
+        // TODO: This should be handled more cleanly for the image manipulation
+        $printHelper->changeImageFromGDObject('signatureImagePatient', $signature);
+        if (array_key_exists('signatureImageConsultant', $structured_data)) {
+            $printHelper->changeImageFromGDObject('signatureImageConsultant', $structured_data['signatureImageConsultant']);
+        }
+        $printHelper->saveContentXML();
+        $printHelper->generatePDF();
+
+        return $printHelper;
+    }
+
+    protected function generateCviCertificate(\Event $event)
+    {
+        $document = $this->populateCviCertificate($event);
+
+        return $document->storePDF();
+    }
+
+    public function generateConsentForm(\Event $event)
+    {
+        $document = $this->populateCviCertificate($event);
+        $document->generatePDFPageN();
+
+        return $document;
+    }
+
     public function issueCvi(\Event $event, $user_id)
     {
         // begin transaction
         $transaction = $this->startTransaction();
 
         try {
-            // TODO: generate the PDF
+            $event->lock();
+
+            $cvi_certificate = $this->generateCviCertificate($event);
 
             // set the status of the event to complete and assign the PDF to the event
             $info_element = $this->getEventInfoElementForEvent($event);
             $info_element->is_draft = false;
+            $info_element->generated_document_id = $cvi_certificate->id;
             $info_element->save();
 
             $event->info = $this->getStatusText(self::$ISSUED);
@@ -403,8 +559,11 @@ class OphCoCvi_Manager extends \CComponent
             if ($transaction) {
                 $transaction->commit();
             }
+
+            $event->unlock();
             return true;
         } catch (\Exception $e) {
+            \OELog::log($e->getMessage());
             if ($transaction) {
                 $transaction->rollback();
             }
@@ -435,7 +594,6 @@ class OphCoCvi_Manager extends \CComponent
         } else {
             $clerical_complete = false;
         }
-
 
         if ($clinical = $this->getClinicalElementForEvent($event)) {
             $clinical->setScenario('finalise');
@@ -496,7 +654,7 @@ class OphCoCvi_Manager extends \CComponent
     private function handleConsultantListFilter(\CDbCriteria $criteria, $filter = array())
     {
         if (isset($filter['consultant_ids']) && strlen(trim($filter['consultant_ids']))) {
-            $criteria->addInCondition('clinical_element.consultant_id', explode(",", $filter['consultant_ids']));
+            $criteria->addInCondition('clinical_element.consultant_id', explode(',', $filter['consultant_ids']));
         }
     }
 
@@ -570,6 +728,16 @@ class OphCoCvi_Manager extends \CComponent
             'sort' => $sort,
             'criteria' => $criteria
         ));
+    }
+
+    public function saveUserSignature($signatureFile, $eventId)
+    {
+        $portalConnection = new \optomPortalConnection();
+        $newFile = $portalConnection->createNewSignatureImage($signatureFile, $eventId);
+        $clinicElement = $this->getClinicalElementForEvent(\Event::model()->findByPk($eventId));
+        $clinicElement->consultant_signature_file_id = $newFile->id;
+        $clinicElement->consultant_id = \Yii::app()->user->id;
+        $clinicElement->save();
     }
 
 }

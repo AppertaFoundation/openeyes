@@ -80,6 +80,28 @@ class OphCoCvi_ClericalInfo_PatientFactor extends \BaseActiveRecordVersioned
     }
 
     /**
+     * Add Lookup behaviour
+     *
+     * @return array
+     */
+    public function behaviors()
+    {
+        return array(
+            'LookupTable' => 'LookupTable',
+        );
+    }
+
+    /**
+     * always order by display_order
+     *
+     * @return array
+     */
+    public function defaultScope()
+    {
+        return array('order' => $this->getTableAlias(true, false).'.display_order asc');
+    }
+
+    /**
      * @return array customized attribute labels (name=>label)
      */
     public function attributeLabels()

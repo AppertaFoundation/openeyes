@@ -38,15 +38,20 @@ namespace OEModule\OphCoCvi\models;
  *
  * The followings are the available model relations:
  *
- * @property ElementType $element_type
- * @property EventType $eventType
- * @property Event $event
- * @property User $user
- * @property User $usermodified
+ * @property \ElementType $element_type
+ * @property \EventType $eventType
+ * @property \Event $event
+ * @property \User $user
+ * @property \User $usermodified
  * @property OphCoCvi_ClinicalInfo_LowVisionStatus $low_vision_status
  * @property OphCoCvi_ClinicalInfo_FieldOfVision $field_of_vision
- * @property Element_OphCoCvi_ClinicalInfo_Disorders_Assignment $disorderss
- * @property User $consultant
+ * @property Element_OphCoCvi_ClinicalInfo_Disorder_Assignment[] $cvi_disorder_assignments
+ * @property OphCoCvi_ClinicalInfo_Disorder[] $cvi_disorders
+ * @property OphCoCvi_ClinicalInfo_Disorder[] $left_affected_cvi_disorders
+ * @property OphCoCvi_ClinicalInfo_Disorder[] $right_affected_cvi_disorders
+ * @property Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments[] $cvi_disorder_section_comments
+ * @property \User $consultant
+ * @property \ProtectedFile $consultant_signature
  */
 
 class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
@@ -78,13 +83,13 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
     {
         return array(
             array(
-                'event_id, examination_date, is_considered_blind, sight_varies_by_light_levels, unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va, low_vision_status_id, field_of_vision_id, diagnoses_not_covered, consultant_id, ',
+                'event_id, examination_date, is_considered_blind, sight_varies_by_light_levels, unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va, low_vision_status_id, field_of_vision_id, diagnoses_not_covered, consultant_id, consultant_signature_file_id ',
                 'safe'
             ),
             array('examination_date', 'OEDateValidatorNotFuture'),
             array('is_considered_blind', 'boolean'),
             array('unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va', 'length', 'max' => 20),
-            array('examination_date, is_considered_blind, sight_varies_by_light_levels, unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va, low_vision_status_id, field_of_vision_id, diagnoses_not_covered', 'required', 'on' => 'finalise'),
+            array('examination_date, is_considered_blind, sight_varies_by_light_levels, unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va, low_vision_status_id, field_of_vision_id', 'required', 'on' => 'finalise'),
             array(
                 'id, event_id, examination_date, is_considered_blind, sight_varies_by_light_levels, unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va, low_vision_status_id, field_of_vision_id, diagnoses_not_covered, consultant_id, ',
                 'safe',
@@ -119,13 +124,65 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
                 'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_FieldOfVision',
                 'field_of_vision_id'
             ),
-            // probably more interested in relationship direct to disorders through this relation
-            'disorders' => array(
+            'cvi_disorder_assignments' => array(
                 self::HAS_MANY,
                 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment',
                 'element_id'
             ),
+            'left_cvi_disorder_assignments' => array(
+                self::HAS_MANY,
+                'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment',
+                'element_id',
+                'on' => 'left_cvi_disorder_assignments.eye_id = ' . \Eye::LEFT
+            ),
+            'right_cvi_disorder_assignments' => array(
+                self::HAS_MANY,
+                'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment',
+                'element_id',
+                'on' => 'right_cvi_disorder_assignments.eye_id = ' . \Eye::RIGHT
+            ),
+            'cvi_disorders' => array(
+                self::HAS_MANY,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder', 'ophcocvi_clinicinfo_disorder_id',
+                'through' => 'cvi_disorder_assignments'
+            ),
+            'left_cvi_disorders' => array(
+                self::HAS_MANY,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder', 'ophcocvi_clinicinfo_disorder_id',
+                'through' => 'cvi_disorder_assignments',
+                'on' => 'cvi_disorder_assignments.eye_id = ' . \Eye::LEFT
+            ),
+            'right_cvi_disorders' => array(
+                self::HAS_MANY,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder', 'ophcocvi_clinicinfo_disorder_id',
+                'through' => 'cvi_disorder_assignments',
+                'on' => 'cvi_disorder_assignments.eye_id = ' . \Eye::RIGHT
+            ),
+            'left_affected_cvi_disorders' => array(
+                self::HAS_MANY,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder', 'ophcocvi_clinicinfo_disorder_id',
+                'through' => 'cvi_disorder_assignments',
+                'on' => 'cvi_disorder_assignments.eye_id = ' . \Eye::LEFT . ' AND cvi_disorder_assignments.affected = 1'
+            ),
+            'right_affected_cvi_disorders' => array(
+                self::HAS_MANY,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder', 'ophcocvi_clinicinfo_disorder_id',
+                'through' => 'cvi_disorder_assignments',
+                'on' => 'cvi_disorder_assignments.eye_id = ' . \Eye::RIGHT . ' AND cvi_disorder_assignments.affected = 1'
+            ),
+            'cvi_disorder_section_comments' => array(
+                self::HAS_MANY,
+                'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments', 'element_id'
+            ),
+            'cvi_disorder_sections' => array(
+                self::HAS_MANY,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder_Section', 'section_id',
+                'through' => 'cvi_disorders',
+                'select' => 'DISTINCT cvi_disorder_sections.*',
+                'order' => 'cvi_disorder_sections.display_order asc'
+            ),
             'consultant' => array(self::BELONGS_TO, 'User', 'consultant_id'),
+            'consultant_signature' => array(self::BELONGS_TO, 'ProtectedFile', 'consultant_signature_file_id'),
         );
     }
 
@@ -182,75 +239,112 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         ));
     }
 
-    protected function afterSave()
+    /**
+     * @TODO: determine encryption/decryption process for the sig file
+     * @return mixed
+     */
+    protected function getDecryptedSignature()
     {
-        $sides = array('2'=>'right','1'=>'left');
-        foreach($sides as $side_value=>$side) {
-            if (!empty($_POST['ophcocvi_clinicinfo_disorder_id_'.$side])) {
-                $existing_comment_ids = array();
-                foreach (Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments::model()
-                             ->findAll('element_id = :elementId',
-                                 array(':elementId' => $this->id)) as $item) {
-                    $existing_comment_ids[] = $item->ophcocvi_clinicinfo_disorder_section_id;
-                }
-                $existing_assignment_ids = array();
-                foreach (Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()
-                             ->findAll('element_id = :elementId and eye_id = :eye_id',
-                                 array(':elementId' => $this->id,'eye_id'=>$side_value)) as $item) {
-                    $existing_assignment_ids[] = $item->ophcocvi_clinicinfo_disorder_id;
-                }
-                foreach ($_POST['ophcocvi_clinicinfo_disorder_section_id'] as $sectionId) {
-                    foreach ($_POST['ophcocvi_clinicinfo_disorder_id_'.$side] as $id) {
-                        if(isset($_POST['affected_'.$side][$sectionId][$id]) && !in_array($id,$existing_assignment_ids)) {
-                            $disorders = new Element_OphCoCvi_ClinicalInfo_Disorder_Assignment;
-                            $disorders->element_id = $this->id;
-                            $disorders->eye_id = $side_value;
-                            $disorders->ophcocvi_clinicinfo_disorder_id = $id;
-                            $disorders->affected = $_POST['affected_'.$side][$sectionId][$id];
-                            $disorders->main_cause = isset($_POST['main_cause_'.$side][$sectionId][$id]) ? $_POST['main_cause_'.$side][$sectionId][$id] : 0;
-                            if (!$disorders->save()) {
-                                throw new Exception('Unable to save MultiSelect item: '.print_r($disorders->getErrors(),true));
-                            }
-                        }
-                        else if(isset($_POST['affected_'.$side][$sectionId][$id])) {
-                            $criteria = new \CDbCriteria;
-                            $criteria->compare('element_id', $this->id);
-                            $criteria->compare('eye_id', $side_value);
-                            $criteria->compare('ophcocvi_clinicinfo_disorder_id', $id);
-                            $disorders = Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()->find($criteria);
-                            if(isset($disorders)) {
-                                $disorders->affected = $_POST['affected_'.$side][$sectionId][$id];
-                                $disorders->main_cause = (isset($_POST['main_cause_'.$side][$sectionId][$id]) &&
-                                    isset($_POST['affected_'.$side][$sectionId][$id]) &&
-                                    ($_POST['affected_'.$side][$sectionId][$id] == 1)) ?
-                                        $_POST['main_cause_'.$side][$sectionId][$id] : 0;
-                                $disorders->update();
-                            }
-                        }
-                    }
-                    if(isset($_POST['comments_disorder'][$sectionId]) && $_POST['comments_disorder'][$sectionId] != ''
-                        && !in_array($sectionId,$existing_comment_ids)) {
-                        $disorder_comments = new Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments;
-                        $disorder_comments->element_id = $this->id;
-                        $disorder_comments->ophcocvi_clinicinfo_disorder_section_id = $sectionId;
-                        $disorder_comments->comments = $_POST['comments_disorder'][$sectionId];
-                        if (!$disorder_comments->save()) {
-                            throw new Exception('Unable to save MultiSelect item: '.print_r($disorder_comments->getErrors(),true));
-                        }
-                    }
-                    else if(isset($_POST['comments_disorder'][$sectionId]) && in_array($sectionId,$existing_comment_ids)){
-                        $criteria = new \CDbCriteria;
-                        $criteria->compare('element_id', $this->id);
-                        $criteria->compare('ophcocvi_clinicinfo_disorder_section_id', $sectionId);
-                        $disorder_comments = Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments::model()->find($criteria);
-                        $disorder_comments->comments = $_POST['comments_disorder'][$sectionId];
-                        $disorder_comments->save();
-                    }
+        if ($this->consultant_signature) {
+            return file_get_contents($this->consultant_signature->getPath());
+        }
+    }
+    /**
+     * @param Element_OphCoCvi_ClinicalInfo_Disorder_Assignment $assignment
+     * @param $data
+     * @throws \Exception
+     */
+    private function updateDisorderAssignment(Element_OphCoCvi_ClinicalInfo_Disorder_Assignment $assignment, $data)
+    {
+        $assignment->element_id = $this->id;
+        $assignment->affected = isset($data['affected']) ? (boolean)$data['affected'] : false;
+        $assignment->main_cause = isset($data['main_cause']) ? (boolean)$data['main_cause'] : false;
+
+        if (!$assignment->save()) {
+            throw new \Exception('Unable to save CVI Disorder Assignment: ' . print_r($assignment->getErrors(), true));
+        }
+    }
+
+    /**
+     * Update the CVI Disorder status for this element.
+     *
+     * @param $side
+     * @param $data
+     * @throws \Exception
+     */
+    public function updateDisorders($side, $data)
+    {
+        if (!in_array($side, array('left', 'right'))) {
+            throw new \Exception("invalid side specification");
+        }
+
+        $eye_id = $side == 'left' ? \Eye::LEFT : \Eye::RIGHT;
+
+        // ensure we're manipulating what is currently in the db
+        $current = $this->getRelated($side . "_cvi_disorder_assignments", true);
+
+        // if the element has been saved before, then the assignment values will exist
+        // and we can update, or delete those that are no longer required.
+        while($assignment = array_shift($current)) {
+            if (array_key_exists($assignment->ophcocvi_clinicinfo_disorder_id, $data)) {
+                $this->updateDisorderAssignment($assignment, $data[$assignment->ophcocvi_clinicinfo_disorder_id]);
+                unset($data[$assignment->ophcocvi_clinicinfo_disorder_id]);
+            }
+            else {
+                if (!$assignment->delete()) {
+                    throw new \Exception('Unable to delete CVI Disorder Assignment: ' . print_r($assignment->getErrors(), true));
                 }
             }
         }
 
-        return parent::afterSave();
+        // create new assignments that don't yet exist for the element
+        foreach ($data as $cvi_disorder_id => $values) {
+            $assignment = new Element_OphCoCvi_ClinicalInfo_Disorder_Assignment();
+            $assignment->eye_id = $eye_id;
+            $assignment->ophcocvi_clinicinfo_disorder_id = $cvi_disorder_id;
+
+            $this->updateDisorderAssignment($assignment, $values);
+        }
+    }
+
+
+
+    /**
+     * Set the section comments on the element.
+     *
+     * @param $data
+     * @throws \CDbException
+     * @throws \Exception
+     */
+    public function updateDisorderSectionComments($data)
+    {
+        $current = $this->getRelated('cvi_disorder_section_comments', true);
+
+        while ($section_comment = array_shift($current)) {
+            if (array_key_exists($section_comment->ophcocvi_clinicinfo_disorder_section_id, $data)) {
+                $comment_data = $data[$section_comment->ophcocvi_clinicinfo_disorder_section_id];
+                $section_comment->comments = isset($comment_data['comments']) ? $comment_data['comments'] : "";
+                if (!$section_comment->save()) {
+                    throw new \Exception('Unable to save CVI Disorder Section Comment: ' . print_r($section_comment->getErrors(), true));
+                }
+                unset($data[$section_comment->ophcocvi_clinicinfo_disorder_section_id]);
+            }
+            else {
+                if (!$section_comment->delete()) {
+                    throw new \Exception('Unable to delete CVI Disorder Section Comment: ' . print_r($section_comment->getErrors(), true));
+                }
+            }
+        }
+
+        foreach ($data as $section_id => $values) {
+            $section_comment = new Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments();
+            $section_comment->ophcocvi_clinicinfo_disorder_section_id = $section_id;
+            $section_comment->comments = isset($values['comments']) ? $values['comments'] : "";
+            $section_comment->element_id = $this->id;
+            if (!$section_comment->save()) {
+                throw new \Exception("Unable to save CVI Disorder Section Comment: " . print_r($section_comment->getErrors(), true));
+            }
+        }
     }
 
     /**
@@ -291,31 +385,82 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         return $data;
     }
 
-    public function getDisordersForSection($disorder_section, $flag) {
+    /**
+     * @var array
+     */
+    private $disorders_by_section;
+
+    /**
+     * @param OphCoCvi_ClinicalInfo_Disorder_Section $section
+     * @return mixed
+     * @throws \Exception
+     */
+    protected function getAllDisordersForSection(OphCoCvi_ClinicalInfo_Disorder_Section $section)
+    {
+        if (!$this->disorders_by_section) {
+            $this->disorders_by_section = array();
+            $seen = array();
+            foreach ($this->cvi_disorders as $disorder) {
+                if (in_array($disorder->id, $seen)) {
+                    continue;
+                }
+                if (!array_key_exists($disorder->section_id, $this->disorders_by_section)) {
+                    $this->disorders_by_section[$disorder->section_id] = array($disorder);
+                } else {
+                    $this->disorders_by_section[$disorder->section_id][] = $disorder;
+                }
+                $seen[] = $disorder->id;
+            }
+        }
+        if (!array_key_exists($section->id, $this->disorders_by_section)) {
+            throw new \Exception("No Disorders for section id {$section->id}. Available are: " . implode(", ", array_keys($this->disorders_by_section)));
+        }
+        return $this->disorders_by_section[$section->id];
+    }
+
+    protected function getStructuredTextForDisorderSide(OphCoCvi_ClinicalInfo_Disorder $disorder, $side)
+    {
+        $val = $this->hasCviDisorderForSide($disorder, $side) ? 'X' : '';
+        $val .= $this->isCviDisorderMainCauseForSide($disorder, $side) ? ' *' : '';
+
+        return $val;
+    }
+    /**
+     * @param OphCoCvi_ClinicalInfo_Disorder_Section $disorder_section
+     * @param int $header_rows - number of empty rows to prepend data with
+     * @return array
+     * @throws \Exception
+     */
+    public function getStructuredDisordersForSection(OphCoCvi_ClinicalInfo_Disorder_Section $disorder_section, $header_rows = 0) {
         $data = array();
-        if($flag == 0) {
+        for ($i = 0; $i < $header_rows; $i++) {
             $data[] = array('','','','','');
         }
-        $first = 1;
-        foreach (OphCoCvi_ClinicalInfo_Disorder::model()
-                     ->findAll('`active` = ? and section_id = ?',array(1, $disorder_section->id)) as $disorder) {
-            $disorder_section_name = '';
-            if($first === 1) {
-                $disorder_section_name = $disorder_section->name;
-                $first = 0;
+
+        foreach ($this->getAllDisordersForSection($disorder_section) as $i => $disorder) {
+            $section_name = '';
+            if ($i == 0) {
+                $section_name = $disorder_section->name;
             }
-            $value_right = Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()
-                ->getDisorderAffectedStatus($disorder->id,$this->id,'right');
-            $value_left = Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()
-                ->getDisorderAffectedStatus($disorder->id,$this->id,'left');
-            $data[] = array($disorder_section_name,$disorder->name,$disorder->code, !empty($value_right) ? 'Yes' : 'No',
-                !empty($value_left) ? 'Yes' : 'No');
+
+            $data[] = array(
+                $section_name,
+                $disorder->name,
+                $disorder->code,
+                $this->getStructuredTextForDisorderSide($disorder, 'right'),
+                $this->getStructuredTextForDisorderSide($disorder, 'left')
+            );
         }
-        if($disorder_section->comments_allowed == 1) {
-            $comments = Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments::model()->
-                getDisorderSectionComments($disorder_section->id,$this->id);
-            $data[] = array('', $disorder_section->comments_label.' : '.$comments, '','','');
+
+        if($disorder_section->comments_allowed) {
+            $comments_obj = $this->getDisorderSectionComment($disorder_section);
+            $text = $disorder_section->comments_label.' : ';
+            if ($comments_obj) {
+                $text .= $comments_obj->comments;
+            }
+            $data[] = array('', $text, '','','');
         }
+
         return $data;
     }
 
@@ -343,27 +488,83 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         if($this->consultant) {
             $result['consultantName'] = $this->consultant->getFullName();
         }
+
+        $result['signatureImageConsultant'] = imagecreatefromstring($this->getDecryptedSignature());
+
         if((int)$this->sight_varies_by_light_levels === 1) { $varyByLightLevelsYes = 'X';}
         if((int)$this->sight_varies_by_light_levels === 0) { $varyByLightLevelsNo = 'X';}
         $result['varyByLightLevels'][0] = array('',$varyByLightLevelsYes,'',$varyByLightLevelsNo);
         $fieldOfVisionData = $this->generateFieldOfVision();
         $lowVisionData = array_merge(array(0=>array('','')),$this->generateLowVisionStatus());
 
-        $result["fieldOfVisionAndLowVisionStatus"][0] = array('','','','');
-        for($k=0;$k<sizeof($fieldOfVisionData);$k++){
+        $result['fieldOfVisionAndLowVisionStatus'][0] = array('','','','');
+        for($k=0;$k<count($fieldOfVisionData);$k++){
             $result["fieldOfVisionAndLowVisionStatus"][$k+1] = array_merge($fieldOfVisionData[$k],$lowVisionData[$k]);
         }
 
         $result['sightVariesByLightLevelYes'] = ($this->sight_varies_by_light_levels === 1) ? 'X' : '';
         $result['sightVariesByLightLevelNo'] = ($this->sight_varies_by_light_levels === 0) ? '' : 'X';
-        $flag = 0;
-        foreach(OphCoCvi_ClinicalInfo_Disorder_Section::model()
-                    ->findAll('`active` = ?',array(1)) as $disorder_section) {
+
+        foreach($this->cvi_disorder_sections as $i => $disorder_section) {
             $result['disorder' . ucfirst($disorder_section->name) . 'Table'] =
-                $this->getDisordersForSection($disorder_section, $flag);
-            $flag = 1;
+                $this->getStructuredDisordersForSection($disorder_section, ($i === 0) ? 1 : 0);
         }
+
         $result['diagnosisNotCovered'] = $this->diagnoses_not_covered;
         return $result;
+    }
+
+    /**
+     * @param $section
+     * @return Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments
+     */
+    public function getDisorderSectionComment($section)
+    {
+        foreach ($this->cvi_disorder_section_comments as $comment) {
+            if ($section->id == $comment->ophcocvi_clinicinfo_disorder_section_id) {
+                return $comment;
+            }
+        }
+    }
+
+    /**
+     * @param OphCoCvi_ClinicalInfo_Disorder $cvi_disorder
+     * @param string $side left or right
+     * @return boolean
+     * @throws \Exception
+     */
+    public function hasCviDisorderForSide(OphCoCvi_ClinicalInfo_Disorder $cvi_disorder, $side)
+    {
+        if (!in_array($side, array('left', 'right'))) {
+            throw new \Exception("invalid side attribute");
+        }
+        foreach ($this->{$side . '_cvi_disorder_assignments'} as $recorded_cvi) {
+            if ($recorded_cvi->ophcocvi_clinicinfo_disorder_id == $cvi_disorder->id) {
+                return $recorded_cvi->affected;
+            }
+        }
+    }
+
+    /**
+     * @param OphCoCvi_ClinicalInfo_Disorder $cvi_disorder
+     * @param $side
+     * @return mixed
+     * @throws \Exception
+     */
+    public function isCviDisorderMainCauseForSide(OphCoCvi_ClinicalInfo_Disorder $cvi_disorder, $side)
+    {
+        if (!in_array($side, array('left', 'right'))) {
+            throw new \Exception("invalid side attribute");
+        }
+        foreach ($this->{$side . '_cvi_disorder_assignments'} as $recorded_cvi) {
+            if ($recorded_cvi->ophcocvi_clinicinfo_disorder_id == $cvi_disorder->id) {
+                return $recorded_cvi->main_cause;
+            }
+        }
+    }
+
+    public function isSigned()
+    {
+        return ($this->consultant_signature_file_id)?true:false;
     }
 }

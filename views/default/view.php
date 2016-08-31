@@ -22,7 +22,7 @@ if ($this->checkPrintAccess()) {
     $this->event_actions[] = EventAction::button('Print', 'print', null, array('class' => 'small button'));
 }
 if ($this->canIssue()) {
-    $this->event_actions[] = EventAction::button('Issue', 'issue', null, array('class' => 'small button secondary'));
+    $this->event_actions[] = EventAction::link('Issue', '/OphCoCvi/default/issue/' . $this->event->id, null, array('class' => 'small button secondary'));
 }
 
 $this->beginContent('//patient/event_container');
@@ -33,6 +33,8 @@ $this->beginContent('//patient/event_container');
         This event is pending deletion and has been locked.
     </div>
 <?php } ?>
+
+<?php $this->renderPartial('capture_signatures'); ?>
 
 <?php $this->renderOpenElements($this->action->id) ?>
 
