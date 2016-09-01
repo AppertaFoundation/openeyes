@@ -396,6 +396,15 @@ class OphCoCvi_Manager extends \CComponent
             return false;
         }
 
+        if ($demographics = $this->getDemographicsElementForEvent($event)) {
+            $demographics->setScenario('finalise');
+            if (!$demographics->validate()) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+
         if ($signature = $this->getConsentSignatureElementForEvent($event)) {
             if (!$signature->checkSignature()) {
                 return false;

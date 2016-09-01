@@ -167,12 +167,23 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
      */
     public function getCompleteName()
     {
-        list($title, $surname) = explode(' ', $this->title_surname, 2);
-        if (!$surname) {
-            $surname = $title;
-            $title = '';
+        $name = array();
+
+        if ($this->other_names) {
+            $name[] = $this->other_names;
         }
-        return $title . ' ' . $this->other_names . ' ' . $surname;
+
+        if ($parts = explode(' ', $this->title_surname, 2)) {
+            if (count($parts) == 1) {
+                $name[] = $parts[0];
+            }
+            else {
+                array_unshift($name, $parts[0]);
+                $name[] = $parts[1];
+            }
+        }
+
+        return implode(' ', $name);
     }
 
     /**
