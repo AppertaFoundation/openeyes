@@ -206,20 +206,21 @@ class ODTTemplateManager
         $xpath = new DOMXpath($this->contentXml);
         $existingStyleName = '';
         
-        $element    = $xpath->query('//*[@text:style-name="'.$styleName.'"]')->item(0);
-        if( $element != null ){
-            $firstChild = $element -> childNodes->item(0);
-            if($firstChild->hasAttribute('text:style-name')){
-                $existingStyleName = $firstChild->getAttribute('text:style-name'); // get firstChild style
-            }
-            
-            while($element->hasChildNodes()) { // Delete all child (normalize)
-                $x = $element -> childNodes->item(0);
-                $element->removeChild($x);
-            }
-            
-            $this->createSingleOrMultilineTextNode($element, $value, $existingStyleName);
+        $elements = $xpath->query('//*[@text:style-name="'.$styleName.'"]');
 
+        if( $elements != null ){
+            foreach( $elements as $oneElement ){
+                if($oneElement->hasAttribute('text:style-name')){
+                    $existingStyleName = $oneElement->getAttribute('text:style-name'); // get style
+                }
+                
+                while($oneElement->hasChildNodes()) { // Delete all child (normalize)
+                    $x = $oneElement-> childNodes->item(0);
+                    $oneElement->removeChild($x);
+                }
+                
+                $this->createSingleOrMultilineTextNode($oneElement, $value, $existingStyleName);
+            }
         }
     }     
     
@@ -227,7 +228,7 @@ class ODTTemplateManager
     {
         foreach( $texts as $text ){
             // we replace the key with empty string to remove the sample content from the template
-            file_put_contents('kecso.xml',print_r($text,true),FILE_APPEND);
+            //file_put_contents('kecso.xml',print_r($text,true),FILE_APPEND);
             
             if(!isset($text['data']))
             {
