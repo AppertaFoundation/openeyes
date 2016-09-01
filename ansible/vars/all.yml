@@ -61,7 +61,7 @@ nodejs_npm_global_packages:
 
 # https://github.com/geerlingguy/drupal-vm/blob/master/provisioning/playbook.yml (For specific PHP version code)
 # https://github.com/geerlingguy/ansible-role-php
-php_version: "5.6"
+php_version: "5.6"    # 5.6 or 7.0
 php_webserver_daemon: "apache2"
 php_use_managed_ini: true
 php_date_timezone: "Europe/London"
