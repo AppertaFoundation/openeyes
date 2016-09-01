@@ -311,7 +311,12 @@ function collectValues( side ){
  * @param inputValues
  * @returns {*}
  */
-function calculateORValue( inputValues ){
+function calculateORValue( inputValues )
+{
+    if(Object.keys(inputValues).length === 0){
+        return 0;
+    }
+
     var OR ={};
     var orMultiplied = 1;  // base value
 
@@ -327,16 +332,11 @@ function calculateORValue( inputValues ){
     OR.axiallength = {'1':1, '2':1.47};
     OR.alpareceptorblocker = {'Y':1.51, 'N':1, 'NK':1};
     OR.abletolieflat = {'Y':1, 'N':1.27};
-    /*
-     1 - Consultant
-     2 - Associate specialist
-     3 - Trust doctor  // !!!??? Staff grade??
-     4 - Fellow
-     5 - Specialist Registrar
-     6 - Senior House Officer
-     7 - House officer  -- ???? no value specified!! using: 1
-     */
     OR.doctorgrade = {};
+
+    if(Object.keys(inputValues).length !== Object.keys(OR).length){
+        return 0;
+    }
 
     for (var key in inputValues) {
         if(!inputValues.hasOwnProperty(key)){
