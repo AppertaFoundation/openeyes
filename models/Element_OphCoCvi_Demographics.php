@@ -10,7 +10,18 @@ namespace OEModule\OphCoCvi\models;
  *
  * @property int $event_id
  * @property string $title_surname
- * @property
+ * @property string $other_names
+ * @property date $date_of_birth
+ * @property string $address
+ * @property string $postcode
+ * @property string $email
+ * @property string $telephone
+ * @property int $gender_id
+ * @property int $ethnic_group_id
+ * @property string $nhs_number
+ * @property string $gp_name
+ * @property string $gp_address
+ * @property string $gp_telephone
  *
  * @property \EthnicGroup $ethnic_group
  * @property \Gender $gender
@@ -45,8 +56,15 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
     public function rules()
     {
         return array(
-            array('event_id, title_surname, other_names, date_of_birth, address, email, telephone, gender_id, ethnic_group_id, nhs_number, gp_name, gp_address, gp_telephone', 'safe'),
-            array('title_surname, other_names, date_of_birth, address, telephone, gender_id, ethnic_group_id, nhs_number, gp_name, gp_address, gp_telephone', 'required', 'on' => 'finalise'),
+            array(
+                'event_id, title_surname, other_names, date_of_birth, address, postcode, email, telephone, gender_id, ethnic_group_id, nhs_number, gp_name, gp_address, gp_telephone',
+                'safe'
+            ),
+            array(
+                'title_surname, other_names, date_of_birth, address, postcode, telephone, gender_id, ethnic_group_id, nhs_number, gp_name, gp_address, gp_telephone',
+                'required',
+                'on' => 'finalise'
+            ),
             array('date_of_birth', 'OEDateValidatorNotFuture'),
         );
     }
@@ -82,7 +100,8 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
             'title_surname' => 'Title and Surname',
             'date_of_birth' => 'Date of Birth',
             'nhs_number' => 'NHS Number',
-            'address' => 'Address',
+            'address' => 'Address (incl. Post Code)',
+            'postcode' => 'Post Code',
             'email' => 'Email',
             'telephone' => 'Telephone',
             'gender_id' => 'Gender',
@@ -114,6 +133,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
             $this->gender_id = $gender->id;
         }
     }
+
     /**
      * Initialises the element from the patient model.
      *
@@ -133,7 +153,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
         $this->mapGenderFromPatient($patient);
         $this->ethnic_group_id = $patient->ethnic_group_id;
 
-        if($patient->gp){
+        if ($patient->gp) {
             $this->gp_name = $patient->gp->getFullName();
             $this->gp_address = $patient->gp->getLetterAddress(array('delimiter' => ',', 'patient' => $patient));
             $this->gp_telephone = $patient->practice->phone;
@@ -141,7 +161,22 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
     }
 
     /**
-     * Return the element data 
+     * Use the stored values to make a decent stab at putting together the patient name in its normalised form.
+     *
+     * @return string
+     */
+    public function getCompleteName()
+    {
+        list($title, $surname) = explode(' ', $this->title_surname, 2);
+        if (!$surname) {
+            $surname = $title;
+            $title = '';
+        }
+        return $title . ' ' . $this->other_names . ' ' . $surname;
+    }
+
+    /**
+     * Return the element data
      * @return array
      */
     public function getStructuredDataForPrint()
@@ -163,27 +198,41 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
         // TODO: maybe try and clean this up a bit more
         if ($gender = $this->gender) {
             if (strtolower($gender->name) == 'male') {
-                $gender_data =  array('', 'X', '', '');
+                $gender_data = array('', 'X', '', '');
             } elseif (strtolower($gender->name) == 'female') {
-                $gender_data =  array('','','','X');
+                $gender_data = array('', '', '', 'X');
             }
         } else {
-            $gender_data =  array('','','','');
+            $gender_data = array('', '', '', '');
         }
 
+        if ($group = $this->ethnic_group) {
+            $data['ethnicGroup_' . $group->code] = 'X';
+        }
+
+        $data['signatureName'] = $this->getCompleteName();
 
         $dob = ($this->date_of_birth) ? \Helper::convertMySQL2NHS('dob') : '';
 
         if (!empty($dob)) {
             $year_header = array_merge(array(''), str_split(date('Y', strtotime($dob))));
         } else {
-            $year_header = array('','','','','');
+            $year_header = array('', '', '', '', '');
         }
 
-        $postcode_header = array('', '', '', '', '');
+        list($first, $second) = explode(' ', $this->postcode, 2);
+
+        $postcode_header = str_split($first);
+        while (count($postcode_header) > 4) {
+            array_pop($postcode_header);
+        }
+        while (count($postcode_header) < 4) {
+            $postcode_header[] = ' ';
+        }
+
         $space_holder = array('');
-        $data['genderTable'] = array(
-            0 => array_merge($gender_data, $space_holder, $year_header, $space_holder, $postcode_header)
+        $data['demographicSummaryTable'] = array(
+            0 => array_merge($gender_data, $space_holder, $year_header, $space_holder, $space_holder, $postcode_header)
         );
 
         return $data;

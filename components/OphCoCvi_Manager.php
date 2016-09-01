@@ -437,14 +437,6 @@ class OphCoCvi_Manager extends \CComponent
             }
         }
 
-        $patient = $this->getPatientForEvent($event);
-
-        if ($group = $patient->ethnic_group) {
-            $data['ethnicGroup_' . $group->code] = 'X';
-        }
-
-
-
         return $data;
     }
 

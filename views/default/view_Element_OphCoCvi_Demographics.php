@@ -42,6 +42,14 @@
         </div>
         <div class="row data-row">
             <div class="large-4 column">
+                <div class="data-label"><?= $element->getAttributeLabel('postcode') ?>:</div>
+            </div>
+            <div class="large-8 column end">
+                <div class="data-value"><?= CHtml::encode($element->postcode) ?></div>
+            </div>
+        </div>
+        <div class="row data-row">
+            <div class="large-4 column">
                 <div class="data-label"><?= $element->getAttributeLabel('email') ?>:</div>
             </div>
             <div class="large-8 column end">

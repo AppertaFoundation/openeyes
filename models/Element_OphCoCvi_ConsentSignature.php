@@ -237,8 +237,10 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
             array($this->is_patient ? 'X' : '',''),
             array($this->is_patient ? '' : 'X','')
         );
-        $result["signatureName"] = $this->is_patient ? $this->event->episode->patient->getFullName() : $this->representative_name;
+
         $result['signatureDate'] = \Helper::convertMySQL2NHS($this->signature_date);
+        $result['representativeName'] = $this->is_patient ? '' : $this->representative_name;
+
         return $result;
     }
 }
