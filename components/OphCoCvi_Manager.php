@@ -40,7 +40,7 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function getStatusText($status)
     {
-        \OELog::log("status: " . $status);
+
         if ($status & self::$ISSUED) {
             return 'Issued';
         }
@@ -52,6 +52,7 @@ class OphCoCvi_Manager extends \CComponent
             'Consultant signature' => self::$CONSULTANT_SIGNED
         );
 
+        $result = array();
         foreach ($map as $label => $flag) {
             if (($status & $flag) != $flag) {
                 $result[] = $label;
@@ -59,9 +60,9 @@ class OphCoCvi_Manager extends \CComponent
         }
 
         if (count($result) === count($map)) {
-            return 'Complete';
-        } elseif (count($result) === 0) {
             return 'Incomplete';
+        } elseif (count($result) === 0) {
+            return 'Complete';
         } else {
             return 'Incomplete/Missing: ' . implode(', ', $result);
         }
@@ -596,8 +597,12 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function calculateStatus(\Event $event)
     {
-        \OELog::log('calculating ...');
         $status = 0;
+        // need to reset to ensure we are getting the correct values for the elements
+        // after any edits that have taken place (edits taking place in the controller
+        // operate on different instances of the event elements from those cached in the manager)
+        // TODO: Would be good to fix the Controller so this was no longer the case.
+        $this->resetElementStore($event);
 
         if ($this->isIssued($event)) {
             $status |= self::$ISSUED;
