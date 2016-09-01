@@ -187,6 +187,77 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
     }
 
     /**
+     * @return array
+     */
+    protected function generateStructuredGenderHeader()
+    {
+        $gender_data = array_fill(0,3, '');
+
+        if ($gender = $this->gender) {
+            if (strtolower($gender->name) == 'male') {
+                $gender_data[1] = 'X';
+            } elseif (strtolower($gender->name) == 'female') {
+                $gender_data[3] = 'X';
+            }
+        }
+
+        return $gender_data;
+    }
+
+    /**
+     * @return array
+     */
+    protected function generateStructuredYearHeader()
+    {
+        if ($this->date_of_birth) {
+            $year_header = array_merge(array(''), str_split(date('Y', strtotime($this->date_of_birth))));
+        } else {
+            $year_header = array('', '', '', '', '');
+        }
+
+        return $year_header;
+    }
+
+    /**
+     * @return array
+     */
+    protected function generateStructuredPostcodeHeader()
+    {
+        $postcode_header = array_fill(0,3,'');
+
+        if ($this->postcode) {
+            $parts = explode(' ', $this->postcode, 2);
+            $postcode_header = str_split($parts[0]);
+
+            // make sure correct length
+            while (count($postcode_header) > 4) {
+                array_pop($postcode_header);
+            }
+            while (count($postcode_header) < 4) {
+                $postcode_header[] = '';
+            }
+        }
+
+        return $postcode_header;
+    }
+
+    /**
+     * @return array
+     */
+    protected function generateStructuredSummaryTable()
+    {
+
+        $gender_data = $this->generateStructuredGenderHeader();
+        $year_header = $this->generateStructuredYearHeader();
+        $postcode_header = $this->generateStructuredPostcodeHeader();
+
+        $space_holder = array('');
+        return array(
+            0 => array_merge($gender_data, $space_holder, $year_header, $space_holder, $space_holder, $postcode_header)
+        );
+    }
+
+    /**
      * Return the element data
      * @return array
      */
@@ -206,45 +277,13 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
             'gpTel' => $this->gp_telephone,
         );
 
-        // TODO: maybe try and clean this up a bit more
-        if ($gender = $this->gender) {
-            if (strtolower($gender->name) == 'male') {
-                $gender_data = array('', 'X', '', '');
-            } elseif (strtolower($gender->name) == 'female') {
-                $gender_data = array('', '', '', 'X');
-            }
-        } else {
-            $gender_data = array('', '', '', '');
-        }
-
         if ($group = $this->ethnic_group) {
             $data['ethnicGroup' . $group->code] = 'X';
         }
 
         $data['signatureName'] = $this->getCompleteName();
 
-        $dob = ($this->date_of_birth) ? \Helper::convertMySQL2NHS('dob') : '';
-
-        if (!empty($dob)) {
-            $year_header = array_merge(array(''), str_split(date('Y', strtotime($dob))));
-        } else {
-            $year_header = array('', '', '', '', '');
-        }
-
-        list($first, $second) = explode(' ', $this->postcode, 2);
-
-        $postcode_header = str_split($first);
-        while (count($postcode_header) > 4) {
-            array_pop($postcode_header);
-        }
-        while (count($postcode_header) < 4) {
-            $postcode_header[] = ' ';
-        }
-
-        $space_holder = array('');
-        $data['demographicSummaryTable'] = array(
-            0 => array_merge($gender_data, $space_holder, $year_header, $space_holder, $space_holder, $postcode_header)
-        );
+        $data['demographicSummaryTable'] = $this->generateStructuredSummaryTable();
 
         return $data;
     }
