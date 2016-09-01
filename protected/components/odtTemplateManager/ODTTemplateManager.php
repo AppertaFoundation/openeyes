@@ -270,7 +270,9 @@ class ODTTemplateManager
     public function changeImageFromGDObject( $imageName, $image )
     {
         if ($image !== false) {
-            imagepng($image, $this->unzippedDir.$this->getImageHrefFromImageNode( $imageName ) );
+            if($this->getImageHrefFromImageNode( $imageName )) {
+                imagepng($image, $this->unzippedDir . $this->getImageHrefFromImageNode($imageName));
+            }
             imagedestroy($image);
         }
     }
@@ -471,7 +473,7 @@ class ODTTemplateManager
            
         foreach( $dataTables as $tableKey => $oneTable ){
             //print '<pre>';print_r($oneTable);die;
-            //<style:style style:name="Táblázat1" style:family="table">
+            //<style:style style:name="Tï¿½blï¿½zat1" style:family="table">
             $tableXml = new DOMDocument('1.0', 'utf-8');
             $tableName = 'mytable'.$tableKey.uniqid();
             $tableStyleName = $tableName;
