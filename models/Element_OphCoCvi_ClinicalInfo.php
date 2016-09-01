@@ -88,8 +88,16 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             ),
             array('examination_date', 'OEDateValidatorNotFuture'),
             array('is_considered_blind', 'boolean'),
-            array('unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va', 'length', 'max' => 20),
-            array('examination_date, is_considered_blind, sight_varies_by_light_levels, unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va, low_vision_status_id, field_of_vision_id', 'required', 'on' => 'finalise'),
+            array(
+                'unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va',
+                'length',
+                'max' => 20
+            ),
+            array(
+                'examination_date, is_considered_blind, sight_varies_by_light_levels, unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va, low_vision_status_id, field_of_vision_id',
+                'required',
+                'on' => 'finalise'
+            ),
             array(
                 'id, event_id, examination_date, is_considered_blind, sight_varies_by_light_levels, unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va, low_vision_status_id, field_of_vision_id, diagnoses_not_covered, consultant_id, ',
                 'safe',
@@ -143,40 +151,47 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             ),
             'cvi_disorders' => array(
                 self::HAS_MANY,
-                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder', 'ophcocvi_clinicinfo_disorder_id',
+                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder',
+                'ophcocvi_clinicinfo_disorder_id',
                 'through' => 'cvi_disorder_assignments'
             ),
             'left_cvi_disorders' => array(
                 self::HAS_MANY,
-                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder', 'ophcocvi_clinicinfo_disorder_id',
+                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder',
+                'ophcocvi_clinicinfo_disorder_id',
                 'through' => 'cvi_disorder_assignments',
                 'on' => 'cvi_disorder_assignments.eye_id = ' . \Eye::LEFT
             ),
             'right_cvi_disorders' => array(
                 self::HAS_MANY,
-                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder', 'ophcocvi_clinicinfo_disorder_id',
+                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder',
+                'ophcocvi_clinicinfo_disorder_id',
                 'through' => 'cvi_disorder_assignments',
                 'on' => 'cvi_disorder_assignments.eye_id = ' . \Eye::RIGHT
             ),
             'left_affected_cvi_disorders' => array(
                 self::HAS_MANY,
-                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder', 'ophcocvi_clinicinfo_disorder_id',
+                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder',
+                'ophcocvi_clinicinfo_disorder_id',
                 'through' => 'cvi_disorder_assignments',
                 'on' => 'cvi_disorder_assignments.eye_id = ' . \Eye::LEFT . ' AND cvi_disorder_assignments.affected = 1'
             ),
             'right_affected_cvi_disorders' => array(
                 self::HAS_MANY,
-                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder', 'ophcocvi_clinicinfo_disorder_id',
+                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder',
+                'ophcocvi_clinicinfo_disorder_id',
                 'through' => 'cvi_disorder_assignments',
                 'on' => 'cvi_disorder_assignments.eye_id = ' . \Eye::RIGHT . ' AND cvi_disorder_assignments.affected = 1'
             ),
             'cvi_disorder_section_comments' => array(
                 self::HAS_MANY,
-                'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments', 'element_id'
+                'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments',
+                'element_id'
             ),
             'cvi_disorder_sections' => array(
                 self::HAS_MANY,
-                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder_Section', 'section_id',
+                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder_Section',
+                'section_id',
                 'through' => 'cvi_disorders',
                 'select' => 'DISTINCT cvi_disorder_sections.*',
                 'order' => 'cvi_disorder_sections.display_order asc'
@@ -249,6 +264,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             return file_get_contents($this->consultant_signature->getPath());
         }
     }
+
     /**
      * @param Element_OphCoCvi_ClinicalInfo_Disorder_Assignment $assignment
      * @param $data
@@ -285,14 +301,14 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
 
         // if the element has been saved before, then the assignment values will exist
         // and we can update, or delete those that are no longer required.
-        while($assignment = array_shift($current)) {
+        while ($assignment = array_shift($current)) {
             if (array_key_exists($assignment->ophcocvi_clinicinfo_disorder_id, $data)) {
                 $this->updateDisorderAssignment($assignment, $data[$assignment->ophcocvi_clinicinfo_disorder_id]);
                 unset($data[$assignment->ophcocvi_clinicinfo_disorder_id]);
-            }
-            else {
+            } else {
                 if (!$assignment->delete()) {
-                    throw new \Exception('Unable to delete CVI Disorder Assignment: ' . print_r($assignment->getErrors(), true));
+                    throw new \Exception('Unable to delete CVI Disorder Assignment: ' . print_r($assignment->getErrors(),
+                            true));
                 }
             }
         }
@@ -306,7 +322,6 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             $this->updateDisorderAssignment($assignment, $values);
         }
     }
-
 
 
     /**
@@ -325,13 +340,14 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
                 $comment_data = $data[$section_comment->ophcocvi_clinicinfo_disorder_section_id];
                 $section_comment->comments = isset($comment_data['comments']) ? $comment_data['comments'] : "";
                 if (!$section_comment->save()) {
-                    throw new \Exception('Unable to save CVI Disorder Section Comment: ' . print_r($section_comment->getErrors(), true));
+                    throw new \Exception('Unable to save CVI Disorder Section Comment: ' . print_r($section_comment->getErrors(),
+                            true));
                 }
                 unset($data[$section_comment->ophcocvi_clinicinfo_disorder_section_id]);
-            }
-            else {
+            } else {
                 if (!$section_comment->delete()) {
-                    throw new \Exception('Unable to delete CVI Disorder Section Comment: ' . print_r($section_comment->getErrors(), true));
+                    throw new \Exception('Unable to delete CVI Disorder Section Comment: ' . print_r($section_comment->getErrors(),
+                            true));
                 }
             }
         }
@@ -342,7 +358,8 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             $section_comment->comments = isset($values['comments']) ? $values['comments'] : "";
             $section_comment->element_id = $this->id;
             if (!$section_comment->save()) {
-                throw new \Exception("Unable to save CVI Disorder Section Comment: " . print_r($section_comment->getErrors(), true));
+                throw new \Exception("Unable to save CVI Disorder Section Comment: " . print_r($section_comment->getErrors(),
+                        true));
             }
         }
     }
@@ -360,12 +377,13 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
      *
      * @return array
      */
-    public function generateFieldOfVision() {
+    public function generateFieldOfVision()
+    {
         $data = array();
-        $field_of_vision_statuses = (OphCoCvi_ClinicalInfo_FieldOfVision::model()->findAll(array('order' => 'display_order asc')));
-        foreach($field_of_vision_statuses as $field_of_vision_status) {
+        $field_of_vision_statuses = OphCoCvi_ClinicalInfo_FieldOfVision::model()->findAll(array('order' => 'display_order asc'));
+        foreach ($field_of_vision_statuses as $field_of_vision_status) {
             $key = $field_of_vision_status->name;
-            $data[] = array($key,($this->field_of_vision_id === $field_of_vision_status->id) ? 'X' : '');
+            $data[] = array($key, ($this->field_of_vision_id === $field_of_vision_status->id) ? 'X' : '');
         }
         return $data;
     }
@@ -375,12 +393,13 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
      *
      * @return array
      */
-    public function generateLowVisionStatus() {
+    public function generateLowVisionStatus()
+    {
         $data = array();
-        $low_vision_statuses = (OphCoCvi_ClinicalInfo_LowVisionStatus::model()->findAll(array('order' => 'display_order asc')));
-        foreach($low_vision_statuses as $low_vision_status) {
+        $low_vision_statuses = OphCoCvi_ClinicalInfo_LowVisionStatus::model()->findAll(array('order' => 'display_order asc'));
+        foreach ($low_vision_statuses as $low_vision_status) {
             $key = $low_vision_status->name;
-            $data[] = array($key,($this->low_vision_status_id === $low_vision_status->id) ? 'X' : '');
+            $data[] = array($key, ($this->low_vision_status_id === $low_vision_status->id) ? 'X' : '');
         }
         return $data;
     }
@@ -413,7 +432,8 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             }
         }
         if (!array_key_exists($section->id, $this->disorders_by_section)) {
-            throw new \Exception("No Disorders for section id {$section->id}. Available are: " . implode(", ", array_keys($this->disorders_by_section)));
+            throw new \Exception("No Disorders for section id {$section->id}. Available are: " . implode(", ",
+                    array_keys($this->disorders_by_section)));
         }
         return $this->disorders_by_section[$section->id];
     }
@@ -425,16 +445,20 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
 
         return $val;
     }
+
     /**
      * @param OphCoCvi_ClinicalInfo_Disorder_Section $disorder_section
      * @param int $header_rows - number of empty rows to prepend data with
      * @return array
      * @throws \Exception
      */
-    public function getStructuredDisordersForSection(OphCoCvi_ClinicalInfo_Disorder_Section $disorder_section, $header_rows = 0) {
+    public function getStructuredDisordersForSection(
+        OphCoCvi_ClinicalInfo_Disorder_Section $disorder_section,
+        $header_rows = 0
+    ) {
         $data = array();
         for ($i = 0; $i < $header_rows; $i++) {
-            $data[] = array('','','','','');
+            $data[] = array('', '', '', '', '');
         }
 
         foreach ($this->getAllDisordersForSection($disorder_section) as $i => $disorder) {
@@ -452,16 +476,37 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             );
         }
 
-        if($disorder_section->comments_allowed) {
+        if ($disorder_section->comments_allowed) {
             $comments_obj = $this->getDisorderSectionComment($disorder_section);
-            $text = $disorder_section->comments_label.' : ';
+            $text = $disorder_section->comments_label . ' : ';
             if ($comments_obj) {
                 $text .= $comments_obj->comments;
             }
-            $data[] = array('', $text, '','','');
+            $data[] = array('', $text, '', '', '');
         }
 
         return $data;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getStructuredBlind()
+    {
+        return array(
+            array('', !$this->is_considered_blind ? 'X' : '', ''),
+            array('', $this->is_considered_blind ? 'X' : '', ''),
+        );
+    }
+
+    protected function getStructuredVA()
+    {
+        return array(
+            array('', '', ''),
+            array('Unaided', $this->unaided_right_va, $this->unaided_left_va),
+            array('Best corrected', $this->best_corrected_right_va, $this->best_corrected_left_va),
+            array('Best corrected with both eyes', $this->best_corrected_binocular_va, ''),
+        );
     }
 
     /**
@@ -470,22 +515,11 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
     public function getStructuredDataForPrint()
     {
         $result = array();
-        $isConsideredBlindNo = $isConsideredBlindYes = '';
-        $varyByLightLevelsYes = $varyByLightLevelsNo = '';
         $result['examinationDate'] = date('d/m/Y', strtotime($this->examination_date));
-        if((int)$this->is_considered_blind === 0) { $isConsideredBlindNo = 'X';}
-        if((int)$this->is_considered_blind === 1) { $isConsideredBlindYes = 'X';}
-        $result['isConsideredBlind'] = array(
-            array('', $isConsideredBlindNo, ''),
-            array('', $isConsideredBlindYes,''),
-        );
-        $result['visualAcuity'] = array(
-            array('','',''),
-            array('Unaided',$this->unaided_right_va, $this->unaided_left_va),
-            array('Best corrected',$this->best_corrected_right_va, $this->best_corrected_left_va),
-            array('Best corrected with both eyes',$this->best_corrected_binocular_va, ''),
-        );
-        if($this->consultant) {
+        $result['isConsideredBlind'] = $this->getStructuredBlind();
+        $result['visualAcuity'] = $this->getStructuredVA();
+
+        if ($this->consultant) {
             $result['consultantName'] = $this->consultant->getFullName();
         }
 
@@ -493,22 +527,20 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             $result['signatureImageConsultant'] = imagecreatefromstring($sig_file);
         }
 
-        if((int)$this->sight_varies_by_light_levels === 1) { $varyByLightLevelsYes = 'X';}
-        if((int)$this->sight_varies_by_light_levels === 0) { $varyByLightLevelsNo = 'X';}
-        $result['varyByLightLevels'][0] = array('',$varyByLightLevelsYes,'',$varyByLightLevelsNo);
         $field_of_vision_data = $this->generateFieldOfVision();
         $low_vision_data = $this->generateLowVisionStatus();
-        $low_vision_data[] = array('','');
+        $low_vision_data[] = array('', '');
 
-        $result['fieldOfVisionAndLowVisionStatus'][0] = array('','','','');
-        for($k=0;$k<count($field_of_vision_data);$k++){
-            $result["fieldOfVisionAndLowVisionStatus"][$k+1] = array_merge($field_of_vision_data[$k],$low_vision_data[$k]);
+        $result['fieldOfVisionAndLowVisionStatus'][0] = array('', '', '', '');
+        for ($k = 0; $k < count($field_of_vision_data); $k++) {
+            $result["fieldOfVisionAndLowVisionStatus"][$k + 1] = array_merge($field_of_vision_data[$k],
+                $low_vision_data[$k]);
         }
 
-        $result['sightVariesByLightLevelYes'] = ($this->sight_varies_by_light_levels === 1) ? 'X' : '';
-        $result['sightVariesByLightLevelNo'] = ($this->sight_varies_by_light_levels === 0) ? '' : 'X';
+        $result['sightVariesByLightLevelYes'] = $this->sight_varies_by_light_levels ? 'X' : '';
+        $result['sightVariesByLightLevelNo'] = $this->sight_varies_by_light_levels ? '' : 'X';
 
-        foreach($this->cvi_disorder_sections as $i => $disorder_section) {
+        foreach ($this->cvi_disorder_sections as $i => $disorder_section) {
             $result['disorder' . ucfirst($disorder_section->name) . 'Table'] =
                 $this->getStructuredDisordersForSection($disorder_section, ($i === 0) ? 1 : 0);
         }
@@ -571,6 +603,6 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
      */
     public function isSigned()
     {
-        return ($this->consultant_signature_file_id)?true:false;
+        return $this->consultant_signature_file_id ? true : false;
     }
 }
