@@ -287,23 +287,23 @@ function capitalizeFirstLetter( input) {
  * @returns {{}}
  */
 function collectValues( side ){
-    var pcrdata = {},
+    var pcrData = {},
         $eyeSide = $('#ophCiExaminationPCRRisk' + side + 'Eye');
 
-    pcrdata.age = $eyeSide.find(":input[id$='age']").val();
-    pcrdata.gender = $eyeSide.find(":input[id$='gender']").val();
-    pcrdata.glaucoma = $eyeSide.find("select[id$='glaucoma']").val();
-    pcrdata.diabetic = $eyeSide.find("select[id$='diabetic']").val();
-    pcrdata.fundalview = $eyeSide.find("select[id$='no_fundal_view']").val();
-    pcrdata.brunescentwhitecataract = $eyeSide.find("select[id$='brunescent_white_cataract']").val();
-    pcrdata.pxf = $eyeSide.find("select[id$='pxf_phako']").val();
-    pcrdata.pupilsize = $eyeSide.find("select[id$='pupil_size']").val();
-    pcrdata.axiallength = $eyeSide.find("select[id$='axial_length']").val();
-    pcrdata.alpareceptorblocker = $eyeSide.find("select[id$='arb']").val();
-    pcrdata.abletolieflat = $eyeSide.find("select[id$='abletolieflat']").val();
-    pcrdata.doctorgrade = $eyeSide.find("select[id$='doctor_grade_id']").val();
+    pcrData.age = $eyeSide.find(":input[id$='age']").val();
+    pcrData.gender = $eyeSide.find(":input[id$='gender']").val();
+    pcrData.glaucoma = $eyeSide.find("select[id$='glaucoma']").val();
+    pcrData.diabetic = $eyeSide.find("select[id$='diabetic']").val();
+    pcrData.fundalview = $eyeSide.find("select[id$='no_fundal_view']").val();
+    pcrData.brunescentwhitecataract = $eyeSide.find("select[id$='brunescent_white_cataract']").val();
+    pcrData.pxf = $eyeSide.find("select[id$='pxf_phako']").val();
+    pcrData.pupilsize = $eyeSide.find("select[id$='pupil_size']").val();
+    pcrData.axiallength = $eyeSide.find("select[id$='axial_length']").val();
+    pcrData.alpareceptorblocker = $eyeSide.find("select[id$='arb']").val();
+    pcrData.abletolieflat = $eyeSide.find("select[id$='abletolieflat']").val();
+    pcrData.doctorgrade = $eyeSide.find("select[id$='doctor_grade_id']").val();
 
-    return pcrdata;
+    return pcrData;
 }
 
 /**
@@ -313,7 +313,7 @@ function collectValues( side ){
  */
 function calculateORValue( inputValues ){
     var OR ={};
-    var ORMultiplicated = 1;  // base value
+    var orMultiplied = 1;  // base value
 
     // multipliers for the attributes and selected values
     OR.age = {'1':1, '2':1.14, '3':1.42, '4':1.58, '5':2.37};
@@ -336,36 +336,23 @@ function calculateORValue( inputValues ){
      6 - Senior House Officer
      7 - House officer  -- ???? no value specified!! using: 1
      */
-    OR.doctorgrade = {
-        '1': 1,
-        '2': 1,
-        '3': 0.87,
-        '4': 1.65,
-        '5': 1.60,
-        '6': 0.36,
-        '7': 0.36,
-        '8': 1.60,
-        '9': 1.60,
-        '10': 1.60,
-        '11': 1.60,
-        '12': 1.60,
-        '13': 1.60,
-        '14': 1.60,
-        '15': 1.60,
-        '16': 1,
-        '17': 3.73,
-        '18': 0.36,
-        '19': 0.36
-    };
+    OR.doctorgrade = {};
 
     for (var key in inputValues) {
         if(!inputValues.hasOwnProperty(key)){
             continue;
         }
-        ORMultiplicated *= OR[key][inputValues[key]];
+        var riskFactor;
+        //if we have a key to factor relationship use that, otherwise the factor is in the input value itself.
+        if(OR[key].hasOwnProperty(inputValues[key])){
+            riskFactor = OR[key][inputValues[key]];
+        } else {
+            riskFactor = inputValues[key];
+        }
+        orMultiplied *= riskFactor;
     }
 
-    return ORMultiplicated;
+    return orMultiplied;
 }
 
 /**
