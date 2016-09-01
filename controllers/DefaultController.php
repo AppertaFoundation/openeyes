@@ -429,6 +429,9 @@ class DefaultController extends \BaseEventTypeController
 
     }
 
+    /**
+     * Sets the title for the event display.
+     */
     public function initActionView()
     {
         parent::initActionView();
@@ -683,6 +686,9 @@ class DefaultController extends \BaseEventTypeController
         return models\OphCoCvi_ClericalInfo_PatientFactor::model()->active()->findAll();
     }
 
+    /**
+     * @throws \CHttpException
+     */
     public function initActionSignCVI()
     {
         $this->initWithEventId($this->request->getParam('id'));
@@ -710,6 +716,9 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
+    /**
+     * @return bool
+     */
     protected function checkUserSigned()
     {
         $clinicalElement = $this->getManager()->getClinicalElementForEvent($this->event);
