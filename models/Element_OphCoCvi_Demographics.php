@@ -207,7 +207,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
         }
 
         if ($group = $this->ethnic_group) {
-            $data['ethnicGroup_' . $group->code] = 'X';
+            $data['ethnicGroup' . $group->code] = 'X';
         }
 
         $data['signatureName'] = $this->getCompleteName();
