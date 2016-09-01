@@ -365,7 +365,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         $field_of_vision_statuses = (OphCoCvi_ClinicalInfo_FieldOfVision::model()->findAll(array('order' => 'display_order asc')));
         foreach($field_of_vision_statuses as $field_of_vision_status) {
             $key = $field_of_vision_status->name;
-            $data[] = array($key,($this->field_of_vision === $field_of_vision_status->id) ? 'X' : '');
+            $data[] = array($key,($this->field_of_vision_id === $field_of_vision_status->id) ? 'X' : '');
         }
         return $data;
     }
@@ -496,12 +496,13 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         if((int)$this->sight_varies_by_light_levels === 1) { $varyByLightLevelsYes = 'X';}
         if((int)$this->sight_varies_by_light_levels === 0) { $varyByLightLevelsNo = 'X';}
         $result['varyByLightLevels'][0] = array('',$varyByLightLevelsYes,'',$varyByLightLevelsNo);
-        $fieldOfVisionData = $this->generateFieldOfVision();
-        $lowVisionData = array_merge(array(0=>array('','')),$this->generateLowVisionStatus());
+        $field_of_vision_data = $this->generateFieldOfVision();
+        $low_vision_data = $this->generateLowVisionStatus();
+        $low_vision_data[] = array('','');
 
         $result['fieldOfVisionAndLowVisionStatus'][0] = array('','','','');
-        for($k=0;$k<count($fieldOfVisionData);$k++){
-            $result["fieldOfVisionAndLowVisionStatus"][$k+1] = array_merge($fieldOfVisionData[$k],$lowVisionData[$k]);
+        for($k=0;$k<count($field_of_vision_data);$k++){
+            $result["fieldOfVisionAndLowVisionStatus"][$k+1] = array_merge($field_of_vision_data[$k],$low_vision_data[$k]);
         }
 
         $result['sightVariesByLightLevelYes'] = ($this->sight_varies_by_light_levels === 1) ? 'X' : '';
