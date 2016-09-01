@@ -32,6 +32,7 @@ class OphCoCvi_Manager extends \CComponent
     public static $ISSUED = 8;
     public static $CONSENTED = 16;
     public static $CONSULTANT_SIGNED = 32;
+    private  $input_template_file = 'cviTemplate.odt';
 
     /**
      * @param $status
@@ -468,10 +469,10 @@ class OphCoCvi_Manager extends \CComponent
             $signature = imagecreatefromstring($signature_element->getDecryptedSignature());
         }
 
-        $input_file = 'cviTemplate.odt';
+
         // TODO: need to configure this more cleanly
         $print_helper = new \ODTTemplateManager(
-            $input_file ,
+            $this->input_template_file ,
             realpath(__DIR__ . '/..').'/views/odtTemplate',
             $this->yii->basePath.'/runtime/cache/cvi/',
             'CVICert_'.$event->id.'_'.mt_rand().'.odt'
@@ -527,6 +528,8 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function generateConsentForm(\Event $event)
     {
+
+        $this->input_template_file = "signatureTemplate.odt";
         $document = $this->populateCviCertificate($event);
         $document->generatePDFPageN();
 

@@ -222,7 +222,7 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
                 . "@key:" . $this->getEncryptionKey();
 
             $QRHelper = new \SignatureQRCodeGenerator();
-            $signature = $QRHelper->generateQRSignatureBox($QRContent);
+            $signature = $QRHelper->generateQRSignatureBox($QRContent, true, array("x"=>1000,"y"=>600), 200);
         }
         return $signature;
     }
