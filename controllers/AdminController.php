@@ -242,6 +242,10 @@ class AdminController extends \ModuleAdminController
             array(
                 'extra_fields' => array(
                     array(
+                        'field' => 'code',
+                        'type' => 'text'
+                    ),
+                    array(
                         'field' => 'require_email',
                         'type' => 'boolean'
                     )

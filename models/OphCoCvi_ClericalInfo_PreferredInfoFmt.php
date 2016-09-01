@@ -23,6 +23,7 @@ namespace OEModule\OphCoCvi\models;
  * The followings are the available columns in table:
  * @property string $id
  * @property string $name
+ * @property string $code
  * @property boolean $require_email
  * @property boolean $active
  *
@@ -93,6 +94,7 @@ class OphCoCvi_ClericalInfo_PreferredInfoFmt extends \BaseActiveRecordVersioned
         return array(
             'id' => 'ID',
             'name' => 'Name',
+            'code' => 'Template Code'
         );
     }
 

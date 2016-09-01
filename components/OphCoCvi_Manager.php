@@ -438,6 +438,7 @@ class OphCoCvi_Manager extends \CComponent
         }
 
         $data['hospitalAddress'] = \Institution::model()->getCurrent()->getLetterAddress(array('include_name' => true, 'delimiter' => '\n'));
+        $data['hospitalNumber'] = $event->episode->patient->hos_num;
 
         return $data;
     }

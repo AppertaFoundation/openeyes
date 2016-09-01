@@ -185,51 +185,6 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
     }
 
     /**
-     * To generate the preferred info format array for the pdf
-     *
-     * @return array
-     */
-    public function generatePreferredInfoFormat()
-    {
-        $data = array();
-        $preferredInfoFormats = (OphCoCvi_ClericalInfo_PreferredInfoFmt::model()->findAll('`require_email` = ?', array(0), array('order' => 'display_order asc')));
-        foreach ($preferredInfoFormats as $key => $preferredInfoFormat) {
-            if ($key != 4) {
-                for ($i = 0; $i < sizeof($preferredInfoFormat) / 2; $i++) {
-                    $data[] = ($this->preferred_info_fmt_id === $preferredInfoFormat->id) ? 'X' : '';
-                    $data[] = $preferredInfoFormat->name;
-                }
-            }
-        }
-        $preferredInfoFormatEmail = (OphCoCvi_ClericalInfo_PreferredInfoFmt::model()->findAll('`require_email` = ?', array(1), array('order' => 'display_order asc')));
-        $emailData = array();
-        foreach ($preferredInfoFormatEmail as $key => $infoEmail) {
-            for ($j = 0; $j < sizeof($infoEmail) / 2; $j++) {
-                $emailData[] = ($this->info_email === "") ? '' : 'X';
-                $emailData[] = $infoEmail->name;
-                $emailData[] = $this->info_email;
-            }
-        }
-        return [$data, $emailData];
-    }
-
-    /**
-     * To generate the preferred language array for the pdf
-     *
-     * @return array
-     */
-    public function generatePreferredLanguage()
-    {
-        $data = array();
-        $preferredLanguages = (\Language::model()->findAll());
-        foreach ($preferredLanguages as $preferredLanguage) {
-            $key = $preferredLanguage->name;
-            $data[][$key] = ($this->preferred_language_id === $preferredLanguage->id) ? 'X' : '';
-        }
-        return $data;
-    }
-
-    /**
      * To generate the contact urgency array for the pdf
      *
      * @return array
@@ -270,8 +225,16 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 
         $result['employmentStatus'][] = $this->generateEmploymentStatus();
         $result['contactUrgency'] = $this->generateContactUrgency();
-        $result['preferredInfoFormat'] = $this->generatePreferredInfoFormat();
-        //$result['preferredLanguage'] = $this->generatePreferredLanguage();
+        if ($fmt = $this->preferred_info_fmt) {
+            $result['preferredInfoFormat' . $fmt->code] = 'X';
+            if ($fmt->require_email) {
+                $result['preferredInfoFormatEmailAddress'] = $this->info_email ?: ' ';
+            }
+            else {
+                $result['preferredInfoFormatEmailAddress'] = ' ';
+            }
+        }
+        $result['preferredLanguage'] = $this->preferred_language ? $this->preferred_language->name : ' ';
         $result['socialServiceComments'] = $this->social_service_comments;
         return $result;
     }
