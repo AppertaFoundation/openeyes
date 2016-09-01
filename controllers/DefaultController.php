@@ -631,13 +631,16 @@ class DefaultController extends \BaseEventTypeController
         $this->redirect(array('/' . $this->event->eventType->class_name . '/default/view/' . $id));
     }
 
+    public function initActionPDFPrint()
+    {
+        $this->initWithEventId($this->request->getParam('id'));
+    }
+
     /**
      * @param $id
      */
     public function actionPDFPrint($id)
     {
-        $this->initWithEventId($id);
-
         $this->redirect('/file/view/' . $this->getManager()->getEventInfoElementForEvent($this->event)->generated_document_id . '/' . $this->getManager()->getEventInfoElementForEvent($this->event)->generated_document->name);
     }
 
