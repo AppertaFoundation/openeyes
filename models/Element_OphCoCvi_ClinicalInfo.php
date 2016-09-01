@@ -491,7 +491,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
     /**
      * @return array
      */
-    protected function getStructuredBlind()
+    protected function generateStructuredBlind()
     {
         return array(
             array('', !$this->is_considered_blind ? 'X' : '', ''),
@@ -499,7 +499,10 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         );
     }
 
-    protected function getStructuredVA()
+    /**
+     * @return array
+     */
+    protected function generateStructuredVA()
     {
         return array(
             array('', '', ''),
@@ -510,14 +513,52 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
     }
 
     /**
+     * @return array
+     */
+    protected function generateStructuredVisionTable()
+    {
+        $field_of_vision_data = $this->generateFieldOfVision();
+        $low_vision_data = $this->generateLowVisionStatus();
+        // mismatch in row count between the two lists.
+        $low_vision_data[] = array('', '');
+
+        // empty header row
+        $data = array(
+            array('', '', '', '')
+        );
+
+        for ($k = 0, $k_max = count($field_of_vision_data); $k < $k_max; $k++) {
+            $data[$k + 1] = array_merge($field_of_vision_data[$k],
+                $low_vision_data[$k]);
+        }
+
+        return $data;
+    }
+
+    /**
+     * @return array
+     */
+    protected function generateStructuredDisorderTable()
+    {
+        $data = array();
+
+        foreach ($this->cvi_disorder_sections as $i => $disorder_section) {
+            $data['disorder' . ucfirst($disorder_section->name) . 'Table'] =
+                $this->getStructuredDisordersForSection($disorder_section, ($i === 0) ? 1 : 0);
+        }
+
+        return $data;
+    }
+
+    /**
      * Returns an associative array of the data values for printing
      */
     public function getStructuredDataForPrint()
     {
         $result = array();
         $result['examinationDate'] = date('d/m/Y', strtotime($this->examination_date));
-        $result['isConsideredBlind'] = $this->getStructuredBlind();
-        $result['visualAcuity'] = $this->getStructuredVA();
+        $result['isConsideredBlind'] = $this->generateStructuredBlind();
+        $result['visualAcuity'] = $this->generateStructuredVA();
 
         if ($this->consultant) {
             $result['consultantName'] = $this->consultant->getFullName();
@@ -527,23 +568,12 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             $result['signatureImageConsultant'] = imagecreatefromstring($sig_file);
         }
 
-        $field_of_vision_data = $this->generateFieldOfVision();
-        $low_vision_data = $this->generateLowVisionStatus();
-        $low_vision_data[] = array('', '');
-
-        $result['fieldOfVisionAndLowVisionStatus'][0] = array('', '', '', '');
-        for ($k = 0; $k < count($field_of_vision_data); $k++) {
-            $result["fieldOfVisionAndLowVisionStatus"][$k + 1] = array_merge($field_of_vision_data[$k],
-                $low_vision_data[$k]);
-        }
+        $result['fieldOfVisionAndLowVisionStatus'] = $this->generateStructuredVisionTable();
 
         $result['sightVariesByLightLevelYes'] = $this->sight_varies_by_light_levels ? 'X' : '';
         $result['sightVariesByLightLevelNo'] = $this->sight_varies_by_light_levels ? '' : 'X';
 
-        foreach ($this->cvi_disorder_sections as $i => $disorder_section) {
-            $result['disorder' . ucfirst($disorder_section->name) . 'Table'] =
-                $this->getStructuredDisordersForSection($disorder_section, ($i === 0) ? 1 : 0);
-        }
+        $result = array_merge($result, $this->generateStructuredDisorderTable());
 
         $result['diagnosisNotCovered'] = $this->diagnoses_not_covered;
         return $result;
