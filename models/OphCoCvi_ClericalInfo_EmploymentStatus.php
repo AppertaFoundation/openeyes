@@ -148,4 +148,18 @@ class OphCoCvi_ClericalInfo_EmploymentStatus extends \BaseActiveRecordVersioned
         }
         return null;
     }
+
+    /**
+     * @param \SocialHistory $history
+     * @return int|null
+     */
+    public static function defaultForSocialHistoryId(\SocialHistory $history)
+    {
+        if ($history->occupation_id !== null) {
+            if ($default = self::model()->active()->findByAttributes(array('social_history_occupation_id' => $history->occupation_id))) {
+                return $default->id;
+            }
+        }
+        return null;
+    }
 }

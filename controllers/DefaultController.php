@@ -284,6 +284,8 @@ class DefaultController extends \BaseEventTypeController
         if ($element->isNewRecord && $this->checkClinicalEditAccess()) {
             if ($this->patient->isChild()) {
                 $element->employment_status_id = models\OphCoCvi_ClericalInfo_EmploymentStatus::defaultChildStatusId();
+            } elseif ($this->patient->socialhistory) {
+                $element->employment_status_id = models\OphCoCvi_ClericalInfo_EmploymentStatus::defaultForSocialHistoryId($this->patient->socialhistory);
             }
         }
     }
