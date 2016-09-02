@@ -299,7 +299,7 @@ function collectValues( side ){
     pcrData.pxf = $eyeSide.find("select[id$='pxf_phako']").val();
     pcrData.pupilsize = $eyeSide.find("select[id$='pupil_size']").val();
     pcrData.axiallength = $eyeSide.find("select[id$='axial_length']").val();
-    pcrData.alpareceptorblocker = $eyeSide.find("select[id$='arb']").val();
+    pcrData.alphareceptorblocker = $eyeSide.find("select[id$='arb']").val();
     pcrData.abletolieflat = $eyeSide.find("select[id$='abletolieflat']").val();
     pcrData.doctorgrade = $eyeSide.find("select[id$='doctor_grade_id']").val();
 
@@ -321,17 +321,17 @@ function calculateORValue( inputValues )
     var orMultiplied = 1;  // base value
 
     // multipliers for the attributes and selected values
-    OR.age = {'1':1, '2':1.14, '3':1.42, '4':1.58, '5':2.37};
-    OR.gender = {'Male':1.28, 'Female':1, 'Other':1.14, 'Unknown':1.14};
-    OR.glaucoma = {'Y':1.30, 'N':1, 'NK':1};
-    OR.diabetic = {'Y':1.63, 'N':1, 'NK':1};
-    OR.fundalview = {'Y':2.46, 'N':1, 'NK':1};
-    OR.brunescentwhitecataract = {'Y':2.99, 'N':1, 'NK':1};
-    OR.pxf = {'Y':2.92, 'N':1, 'NK':1};
-    OR.pupilsize = {'Small': 1.45, 'Medium':1.14, 'Large':1, 'NK':1};
-    OR.axiallength = {'1':1, '2':1.47};
-    OR.alpareceptorblocker = {'Y':1.51, 'N':1, 'NK':1};
-    OR.abletolieflat = {'Y':1, 'N':1.27};
+    OR.age = {'1': 1, '2': 1.14, '3': 1.42, '4': 1.58, '5': 2.37};
+    OR.gender = {'Male': 1.28, 'Female': 1, 'Other': 1.14, 'Unknown': 1.14};
+    OR.glaucoma = {'Y': 1.30, 'N': 1, 'NK': 1};
+    OR.diabetic = {'Y': 1.63, 'N': 1, 'NK': 1};
+    OR.fundalview = {'Y': 2.46, 'N': 1, 'NK': 1};
+    OR.brunescentwhitecataract = {'Y': 2.99, 'N': 1, 'NK': 1};
+    OR.pxf = {'Y': 2.92, 'N': 1, 'NK': 1};
+    OR.pupilsize = {'Small': 1.45, 'Medium': 1.14, 'Large': 1, 'NK': 1};
+    OR.axiallength = {'1': 1, '2': 1.47};
+    OR.alphareceptorblocker = {'Y': 1.51, 'N': 1, 'NK': 1};
+    OR.abletolieflat = {'Y': 1, 'N': 1.27};
     OR.doctorgrade = {};
 
     if(Object.keys(inputValues).length !== Object.keys(OR).length){
@@ -356,6 +356,42 @@ function calculateORValue( inputValues )
 }
 
 /**
+ * Calculates the value
+ */
+function calculatePcrValue(ORValue) {
+    var averageRiskConst,
+      pcrRisk,
+      excessRisk,
+      pcrColour;
+
+    if (ORValue) {
+        pcrRisk = ORValue * (0.00736 / (1 - 0.00736)) / (1 + (ORValue * 0.00736 / (1 - 0.00736))) * 100;
+        averageRiskConst = 1.92;
+        excessRisk = pcrRisk / averageRiskConst;
+        excessRisk = excessRisk.toFixed(2);
+        pcrRisk = pcrRisk.toFixed(2);
+
+        if (pcrRisk <= 1) {
+            pcrColour = 'green';
+        } else if (pcrRisk > 1 && pcrRisk <= 5) {
+            pcrColour = 'orange';
+        } else {
+            pcrColour = 'red';
+        }
+    } else {
+        pcrRisk = "N/A";
+        excessRisk = "N/A";
+        pcrColour = 'blue';
+    }
+
+    return {
+        pcrRisk: pcrRisk,
+        excessRisk: excessRisk,
+        pcrColour: pcrColour
+    };
+}
+
+/**
  * Calculates the PCR risk for a given side
  *
  * @param side
@@ -366,42 +402,22 @@ function pcrCalculate( side ){
 
     var pcrDataValues = collectValues( side),
         ORValue = calculateORValue( pcrDataValues),
-        pcrRisk,
-        excessRisk,
-        pcrColor,
-        averageRiskConst;
+        pcrData;
 
-    if( ORValue ) {
-        pcrRisk = ORValue * (0.00736 / (1 - 0.00736)) / (1 + (ORValue * 0.00736 / (1 - 0.00736))) * 100;
-        averageRiskConst = 1.92;
-        excessRisk = pcrRisk / averageRiskConst;
-        excessRisk = excessRisk.toFixed(2);
-        pcrRisk = pcrRisk.toFixed(2);
+    pcrData = calculatePcrValue(ORValue);
 
-        if (pcrRisk <= 1) {
-            pcrColor = 'green';
-        } else if (pcrRisk > 1 && pcrRisk <= 5) {
-            pcrColor = 'orange';
-        } else {
-            pcrColor = 'red';
-        }
-    }else{
-        pcrRisk = "N/A";
-        excessRisk = "N/A";
-        pcrColor = 'blue';
-    }
-    $('#ophCiExaminationPCRRisk'+side+'Eye').find('#pcr-risk-div').css('background', pcrColor);
-    $('#ophCiExaminationPCRRisk'+side+'Eye').find('.pcr-span').html(pcrRisk);
-    $('#ophCiExaminationPCRRisk'+side+'Eye').find('.pcr-erisk').html(excessRisk);
+    $('#ophCiExaminationPCRRisk'+side+'Eye').find('#pcr-risk-div').css('background', pcrData.pcrColour);
+    $('#ophCiExaminationPCRRisk'+side+'Eye').find('.pcr-span').html(pcrData.pcrRisk);
+    $('#ophCiExaminationPCRRisk'+side+'Eye').find('.pcr-erisk').html(pcrData.excessRisk);
 
-    $('#ophCiExaminationPCRRisk'+side+'EyeLabel').find('a').css('color', pcrColor);
-    $('#ophCiExaminationPCRRisk'+side+'EyeLabel').find('.pcr-span1').html(pcrRisk);
+    $('#ophCiExaminationPCRRisk'+side+'EyeLabel').find('a').css('color', pcrData.pcrColour);
+    $('#ophCiExaminationPCRRisk'+side+'EyeLabel').find('.pcr-span1').html(pcrData.pcrRisk);
 
-    $('#ophCiExaminationPCRRiskEyeLabel').find('a').css('color', pcrColor);
-    $('#ophCiExaminationPCRRiskEyeLabel').find('.pcr-span1').html(pcrRisk);
+    $('#ophCiExaminationPCRRiskEyeLabel').find('a').css('color', pcrData.pcrColour);
+    $('#ophCiExaminationPCRRiskEyeLabel').find('.pcr-span1').html(pcrData.pcrRisk);
     //$('#ophCiExaminationPCRRisk'+side+'EyeLabel').find('.pcr-span1').css('color', pcrColor);
-    if(pcrRisk !== 'N/A'){
-        $('#Element_OphTrOperationnote_Cataract_pcr_risk').val(pcrRisk);
+    if(pcrData.pcrRisk !== 'N/A'){
+        $('#Element_OphTrOperationnote_Cataract_pcr_risk').val(pcrData.pcrRisk);
     }
 }
 
