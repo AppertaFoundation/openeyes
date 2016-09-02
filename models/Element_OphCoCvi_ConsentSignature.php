@@ -188,10 +188,16 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
      */
     public function saveSignatureImageFromPortal()
     {
-        $portalConnection = new optomPortalConnection();
-        if ($portalConnection) {
-            $signatureData = $portalConnection->signatureSearch(null,
-                \Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($this->event));
+        try {
+            $portalConnection = new optomPortalConnection();
+
+            if ($portalConnection) {
+                $signatureData = $portalConnection->signatureSearch(null,
+                    \Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($this->event));
+            }
+        }
+        catch (Exception $e) {
+            //pass
         }
         // add this to list all available data!
         //$signatureData = $portalConnection->signatureSearch();

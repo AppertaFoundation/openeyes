@@ -130,3 +130,16 @@ function eDparameterListener(_drawing) {
             // handle event
     }
 }
+
+function updateLAFields(item) {
+    if (item.service) {
+        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_la_name').val(item.service.name);
+        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_la_address').val(item.service.address);
+        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_la_telephone').val(item.service.telephone);
+    } else if (item.body) {
+        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_la_name').val(item.body.name);
+        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_la_address').val(item.body.address);
+        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_la_telephone').val(item.body.telephone);
+    }
+
+}

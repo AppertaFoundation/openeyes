@@ -163,7 +163,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
 
         if ($patient->gp) {
             $this->gp_name = $patient->gp->getFullName();
-            $this->gp_address = $patient->gp->getLetterAddress(array('delimiter' => ',', 'patient' => $patient));
+            $this->gp_address = $patient->gp->getLetterAddress(array('delimiter' => ', ', 'patient' => $patient));
             $this->gp_telephone = $patient->practice->phone;
         }
     }
