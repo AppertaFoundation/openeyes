@@ -146,7 +146,7 @@ class AdminController extends \ModuleAdminController
      *
      * @throws \Exception
      */
-    public function actionEmployementStatus()
+    public function actionEmploymentStatus()
     {
         $this->genericAdmin(
             'Employment Status',

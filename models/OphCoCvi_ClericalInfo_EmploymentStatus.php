@@ -33,6 +33,7 @@ namespace OEModule\OphCoCvi\models;
  * @property \Event $event
  * @property \User $user
  * @property \User $usermodified
+ * @property \SocialHistoryOccupation $social_history_occupation
  */
 
 class OphCoCvi_ClericalInfo_EmploymentStatus extends \BaseActiveRecordVersioned
@@ -61,9 +62,9 @@ class OphCoCvi_ClericalInfo_EmploymentStatus extends \BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-            array('name', 'safe'),
+            array('name, child_default, social_history_occupation_id', 'safe'),
             array('name', 'required'),
-            array('id, name', 'safe', 'on' => 'search'),
+            array('id, name, child_default, social_history_occupation_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -83,6 +84,7 @@ class OphCoCvi_ClericalInfo_EmploymentStatus extends \BaseActiveRecordVersioned
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'social_history_occupation' => array(self::BELONGS_TO, 'SocialHistoryOccupation', 'social_history_occupation_id')
         );
     }
 
@@ -116,6 +118,8 @@ class OphCoCvi_ClericalInfo_EmploymentStatus extends \BaseActiveRecordVersioned
         return array(
             'id' => 'ID',
             'name' => 'Name',
+            'child_default' => 'Is Default for Children',
+            'social_history_occupation_id' => 'Social History Mapping'
         );
     }
 

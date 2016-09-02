@@ -21,13 +21,23 @@ class m160728_085205_add_new_columns_ophcocvi_clericinfo_employment_status exten
 {
     public function up()
     {
-        $this->addColumn('ophcocvi_clericinfo_employment_status', 'child_default', 'tinyint(1) unsigned NOT NULL DEFAULT 1 AFTER `name` ');
+        $this->addColumn('ophcocvi_clericinfo_employment_status', 'child_default', 'tinyint(1) unsigned NOT NULL DEFAULT 0 AFTER `name` ');
         $this->addColumn('ophcocvi_clericinfo_employment_status', 'social_history_occupation_id', 'int(12) NULL AFTER `child_default`  ');
         $this->addColumn('ophcocvi_clericinfo_employment_status', 'active', 'tinyint(1) unsigned not null default 1 AFTER `social_history_occupation_id` ');
-        $this->addColumn('ophcocvi_clericinfo_employment_status_version', 'child_default', 'tinyint(1) unsigned NOT NULL DEFAULT 1 AFTER `name`');
+        $this->addColumn('ophcocvi_clericinfo_employment_status_version', 'child_default', 'tinyint(1) unsigned NOT NULL DEFAULT 0 AFTER `name`');
         $this->addColumn('ophcocvi_clericinfo_employment_status_version', 'social_history_occupation_id', 'int(12) NULL AFTER `child_default`');
         $this->addColumn('ophcocvi_clericinfo_employment_status_version', 'active', 'tinyint(1) unsigned not null default 1 AFTER `social_history_occupation_id`');
 
+        $this->update('ophcocvi_clericinfo_employment_status', array('child_default' => true), 'name = :name', array(':name' => 'Child'));
+        foreach (array('Retired', 'Employed', 'Unemployed', 'Student') as $label) {
+            $sh_occ = $this->dbConnection->createCommand()->select('id')->from('socialhistory_occupation')
+                ->where('name = :name', array(':name' => $label))
+                ->queryRow();
+
+            if ($sh_occ) {
+                $this->update('ophcocvi_clericinfo_employment_status', array('social_history_occupation_id' => $sh_occ['id']), 'name = :name', array(':name' => $label));
+            }
+        }
     }
 
     public function down()
