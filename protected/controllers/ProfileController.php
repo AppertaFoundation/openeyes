@@ -297,7 +297,11 @@ class ProfileController extends BaseController
             // TODO: need to get a unique code for the user and add a key here!
 
             $user = User::model()->findByPk(Yii::app()->user->id);
-            $finalUniqueCode = $user->generateUniqueCodeWithChecksum($this->getUniqueCodeForUser());
+            $user_code = $this->getUniqueCodeForUser();
+            if (!$user_code) {
+                throw new CHttpException('Could not get unique code for user - unique codes might need to be generated');
+            }
+            $finalUniqueCode = $user->generateUniqueCodeWithChecksum();
 
             $QRimage = $QRSignature->createQRCode("@U:1@code:".$finalUniqueCode."@key:".md5(Yii::app()->user->id), 250);
 

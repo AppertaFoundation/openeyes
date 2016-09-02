@@ -53,6 +53,8 @@
  * @property Allergy[] $allergies
  * @property EthnicGroup $ethnic_group
  * @property CommissioningBody[] $commissioningbodies
+ * @property SocialHistory $socialhistory
+ *
  */
 class Patient extends BaseActiveRecordVersioned
 {
