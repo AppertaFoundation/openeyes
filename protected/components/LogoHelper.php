@@ -61,6 +61,11 @@ class LogoHelper
         return $logo;
     }
 
+    /**
+     * Get the logo from the repo
+     *
+     * @return mixed
+     */
     protected function getVersionedLogo()
     {
         $path = Yii::app()->basePath . '/assets/img/_print/';
