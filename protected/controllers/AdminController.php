@@ -1460,28 +1460,36 @@ class AdminController extends BaseAdminController
     {
         $address = new Address();
         $address->country_id = 1;
+        // to allow the commissioning body type list to be filtered
+        $commissioning_bt = null;
+        $commissioning_bst = null;
 
-		if (isset($_GET['commissioning_body_service_id'])) {
-			if (!$cbs = CommissioningBodyService::model()->findByPk(@$_GET['commissioning_body_service_id'])) {
-				throw new Exception("CommissioningBody not found: ".@$_GET['commissioning_body_service_id']);
+		if ($cbs_id = $this->getApp()->request->getQuery('commissioning_body_service_id')) {
+			if (!$cbs = CommissioningBodyService::model()->findByPk($cbs_id)) {
+				throw new Exception('CommissioningBody not found: ' . $cbs_id);
 			}
 			if ($cbs->contact && $cbs->contact->address) {
 				$address = $cbs->contact->address;
 			}
 		} else {
 			$cbs = new CommissioningBodyService;
-            if ($commBodyId = Yii::app()->request->getQuery('commissioning_body_id')){
-                $cbs->setAttribute('commissioning_body_id', $commBodyId);
+            if ($commissioning_bt_id = Yii::app()->request->getQuery('commissioning_body_type_id')){
+                if (!$commissioning_bt = CommissioningBodyType::model()->findByPk($commissioning_bt_id)) {
+                    throw new CHttpException(404, 'Unrecognised Commissioning Body Type ID');
+                }
             }
-            if ($serviceTypeId = Yii::app()->request->getQuery('service_type_id')){
-                $cbs->setAttribute('commissioning_body_service_type_id', $serviceTypeId );
+            if ($service_type_id = Yii::app()->request->getQuery('service_type_id')){
+                if (!$commissioning_bst = CommissioningBodyServiceType::model()->findByPk($service_type_id)) {
+                    throw new CHttpException(404, 'Unrecognised Service Type ID');
+                };
+                $cbs->setAttribute('commissioning_body_service_type_id', $service_type_id );
             }
 		}
 
         $errors = array();
 
-        if(! $returnUrl = Yii::app()->request->getQuery('return_url')){
-            $returnUrl = '/admin/commissioning_body_services';
+        if(!$return_url = Yii::app()->request->getQuery('return_url')){
+            $return_url = '/admin/commissioning_body_services';
         }
 
 		if (!empty($_POST)) {
@@ -1527,18 +1535,17 @@ class AdminController extends BaseAdminController
 
                 Audit::add('admin-CommissioningBodyService', $method, $cbs->id);
 
-				$this->redirect($returnUrl);
+				$this->redirect($return_url);
 			}
 		}
 
-		$data = array();
-        $data["returnUrl"] = $returnUrl;
-
 		$this->render('//admin/editCommissioningBodyService',array(
+            'commissioning_bt' => $commissioning_bt,
+            'commissioning_bst' => $commissioning_bst,
 			'cbs' => $cbs,
 			'address' => $address,
 			'errors' => $errors,
-			'data' => $data
+			'return_url' => $return_url
 		));
 	}
 

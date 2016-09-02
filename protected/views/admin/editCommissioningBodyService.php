@@ -30,36 +30,31 @@
 			'field' => 5
 		)
 	));
-		if($data["returnUrl"]=='/OphCoCvi/localAuthoritiesAdmin/list'){
-			?>
-			<div id="div_CommissioningBodyService_commissioning_body_id" class="row field-row">
-				<div class="large-2 column">
-					<label for="CommissioningBodyService_commissioning_body_id">Commissioning body:</label>
-				</div>
-				<div class="large-5 column end">
+
+	$criteria = new CDbCriteria();
+	$criteria->order = 't.name asc';
+	if ($commissioning_bt) {
+		$criteria->addColumnCondition(array('commissioning_body_type_id' => $commissioning_bt->id));
+	}
+	echo $form->dropDownList($cbs, 'commissioning_body_id', CHtml::listData(CommissioningBody::model()->findAll($criteria), 'id', 'name'), array('style' => 'margin-bottom:6px;'));
+
+	if ($commissioning_bst) { ?>
+		<div id="div_CommissioningBodyService_commissioning_body_service_type_id" class="row field-row">
+			<div class="large-2 column">
+				<label for="div_CommissioningBodyService_commissioning_body_service_type_id">Service type:</label>
+			</div>
+			<div class="large-5 column end">
 				<?php
-					echo $form->hiddenInput($cbs, 'commissioning_body_id');
-					echo $cbs->commissioning_body->name;
+				echo $form->hiddenInput($cbs, 'commissioning_body_service_type_id', $commissioning_bst->id);
+				echo $commissioning_bst->name;
 				?>
-				</div>
 			</div>
-			<div id="div_CommissioningBodyService_commissioning_body_service_type_id" class="row field-row">
-				<div class="large-2 column">
-					<label for="div_CommissioningBodyService_commissioning_body_service_type_id">Service type:</label>
-				</div>
-				<div class="large-5 column end">
-					<?php
-					echo $form->hiddenInput($cbs, 'commissioning_body_service_type_id');
-					echo $cbs->type->name;
-					?>
-				</div>
-			</div>
-		<?php
-		}else{
-			echo $form->dropDownList($cbs, 'commissioning_body_id', 'CommissioningBody', array('style' => 'margin-bottom:6px;'));
-			echo $form->dropDownList($cbs,'commissioning_body_service_type_id','CommissioningBodyServiceType',array('style'=>'margin-bottom:6px;'));
-		}
-		?>
+		</div>
+	<?php
+	} else {
+		echo $form->dropDownList($cbs,'commissioning_body_service_type_id','CommissioningBodyServiceType',array('style'=>'margin-bottom:6px;'));
+	}
+	?>
 		<?php echo $form->textField($cbs,'name',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 		<?php echo $form->textField($cbs,'code',array('autocomplete'=>Yii::app()->params['html_autocomplete']),null,array('field'=>2))?>
 		<?php echo $form->textField($address,'address1',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
@@ -68,7 +63,7 @@
 		<?php echo $form->textField($address,'county',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 		<?php echo $form->textField($address,'postcode',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 		<?php echo $form->dropDownList($address,'country_id','Country')?>
-		<?php echo $form->formActions(array('cancel-uri' => $data["returnUrl"]));?>
+		<?php echo $form->formActions(array('cancel-uri' => $return_url));?>
 	<?php $this->endWidget()?>
 </div>
 
