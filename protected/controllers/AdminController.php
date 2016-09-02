@@ -1713,8 +1713,18 @@ class AdminController extends BaseAdminController
         $this->redirect(array('/admin/episodeSummaries', 'subspecialty_id' => $subspecialty_id));
     }
 
+    /**
+     * Allows the upload of images for correspondence.
+     *
+     * @throws CException
+     */
     public function actionLogo()
     {
+
+        if(!isset(Yii::app()->params['letter_logo_upload']) || !Yii::app()->params['letter_logo_upload']){
+            throw new CHttpException(404);
+        }
+
         $logo = new Logo();
         if (isset($_FILES['Logo'])) {
             $savePath = Yii::app()->basePath.'/runtime/';
@@ -1727,13 +1737,13 @@ class AdminController extends BaseAdminController
                 foreach (glob($savePath.$logoKey) as $existingLogo) {
                     unlink($savePath.$existingLogo);
                 }
-                if (in_array($fileInfo['extension'], $fileFormats)) {
-                    if ($logoKey == 'header_logo') {
+                if (in_array($fileInfo['extension'], $fileFormats, true)) {
+                    if ($logoKey === 'header_logo') {
                         $logoTemp = $_FILES['Logo']['tmp_name']['header_logo'];
                         list($width, $height) = getimagesize($logoTemp);
                         $condition = $height.'==100 && '.$width.'==500';
                     }
-                    if ($logoKey == 'secondary_logo') {
+                    if ($logoKey === 'secondary_logo') {
                         $logoTemp = $_FILES['Logo']['tmp_name']['secondary_logo'];
                         list($width, $height) = getimagesize($logoTemp);
                         $condition = $height.'==100 && '.$width.'==120';
