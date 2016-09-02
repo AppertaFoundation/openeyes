@@ -301,7 +301,7 @@ class ProfileController extends BaseController
             if (!$user_code) {
                 throw new CHttpException('Could not get unique code for user - unique codes might need to be generated');
             }
-            $finalUniqueCode = $user->generateUniqueCodeWithChecksum();
+            $finalUniqueCode = $user->generateUniqueCodeWithChecksum($user_code);
 
             $QRimage = $QRSignature->createQRCode("@U:1@code:".$finalUniqueCode."@key:".md5(Yii::app()->user->id), 250);
 

@@ -29,6 +29,7 @@
  * @property Contact $contact
  * @property CommissioningBodyType $type
  * @property Practice[] $practices
+ * @property CommissioningBodyService[] $services
  */
 class CommissioningBody extends BaseActiveRecordVersioned
 {
