@@ -631,6 +631,11 @@ class DefaultController extends \BaseEventTypeController
         $this->redirect(array('/' . $this->event->eventType->class_name . '/default/view/' . $id));
     }
 
+    /**
+     * Ensure the event is setup on the controller
+     *
+     * @throws \CHttpException
+     */
     public function initActionPDFPrint()
     {
         $this->initWithEventId($this->request->getParam('id'));
@@ -670,26 +675,6 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Simple wrapper to get the disorder sections that should be rendered in the event form.
-     *
-     * @return mixed
-     */
-    public function getDisorderSections()
-    {
-        return models\OphCoCvi_ClinicalInfo_Disorder_Section::model()->active()->findAll();
-    }
-
-    /**
-     * Simple abstraction wrapper to get the patient factors that should be rendered in the event form.
-     *
-     * @return mixed
-     */
-    public function getPatientFactors()
-    {
-        return models\OphCoCvi_ClericalInfo_PatientFactor::model()->active()->findAll();
-    }
-
-    /**
      * @throws \CHttpException
      */
     public function initActionSignCVI()
@@ -717,6 +702,26 @@ class DefaultController extends \BaseEventTypeController
         } else {
             echo 0;
         }
+    }
+
+    /**
+     * Simple wrapper to get the disorder sections that should be rendered in the event form.
+     *
+     * @return mixed
+     */
+    public function getDisorderSections()
+    {
+        return models\OphCoCvi_ClinicalInfo_Disorder_Section::model()->active()->findAll();
+    }
+
+    /**
+     * Simple abstraction wrapper to get the patient factors that should be rendered in the event form.
+     *
+     * @return mixed
+     */
+    public function getPatientFactors()
+    {
+        return models\OphCoCvi_ClericalInfo_PatientFactor::model()->active()->findAll();
     }
 
     /**
