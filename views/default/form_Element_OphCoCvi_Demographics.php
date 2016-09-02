@@ -16,5 +16,8 @@
         <?php echo $form->textField($element, 'gp_name', array(), array(), array('label' => 4, 'field' => 8)) ?>
         <?php echo $form->textField($element, 'gp_address', array(), array(), array('label' => 4, 'field' => 8)) ?>
         <?php echo $form->textField($element, 'gp_telephone', array(), array(), array('label' => 4, 'field' => 8)) ?>
+        <?php echo $form->textField($element, 'la_name', array(), array(), array('label' => 4, 'field' => 8)) ?>
+        <?php echo $form->textField($element, 'la_address', array(), array(), array('label' => 4, 'field' => 8)) ?>
+        <?php echo $form->textField($element, 'la_telephone', array(), array(), array('label' => 4, 'field' => 8)) ?>
     </div>
 </div>

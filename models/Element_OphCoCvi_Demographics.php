@@ -22,6 +22,9 @@ namespace OEModule\OphCoCvi\models;
  * @property string $gp_name
  * @property string $gp_address
  * @property string $gp_telephone
+ * @property string $la_name
+ * @property string $la_address
+ * @property string $la_telephone
  *
  * @property \EthnicGroup $ethnic_group
  * @property \Gender $gender
@@ -57,11 +60,13 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
     {
         return array(
             array(
-                'event_id, title_surname, other_names, date_of_birth, address, postcode, email, telephone, gender_id, ethnic_group_id, nhs_number, gp_name, gp_address, gp_telephone',
+                'event_id, title_surname, other_names, date_of_birth, address, postcode, email, telephone, gender_id, '
+                . 'ethnic_group_id, nhs_number, gp_name, gp_address, gp_telephone, la_name, la_address, la_telephone',
                 'safe'
             ),
             array(
-                'title_surname, other_names, date_of_birth, address, postcode, telephone, gender_id, ethnic_group_id, nhs_number, gp_name, gp_address, gp_telephone',
+                'title_surname, other_names, date_of_birth, address, postcode, telephone, gender_id, ethnic_group_id, '
+                . 'nhs_number, gp_name, gp_address, gp_telephone, la_name, la_address, la_telephone',
                 'required',
                 'on' => 'finalise'
             ),
@@ -109,6 +114,9 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
             'gp_name' => 'GP\'s Name',
             'gp_address' => 'GP\'s Address',
             'gp_telephone' => 'GP\'s Telephone',
+            'la_name' => 'Local Authority Name',
+            'la_address' => 'Local Authority Address',
+            'la_telephone' => 'Local Authority Telephone',
         );
     }
 
@@ -275,6 +283,9 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
             'gpName' => $this->gp_name,
             'gpAddress' => $this->gp_address,
             'gpTel' => $this->gp_telephone,
+            'localAuthorityName' => $this->la_name,
+            'localAuthorityAddress' => $this->la_address,
+            'localAuthorityTel' => $this->la_telephone,
         );
 
         if ($group = $this->ethnic_group) {
