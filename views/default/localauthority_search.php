@@ -14,45 +14,52 @@
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-    'id' => 'la_auto_complete',
-    'name' => 'la_auto_complete',
-    'value' => '',
-    'source' => "js:function(request, response) {
-    var existing = [];
-    $('#consultant_list').children('li').map(function() {
-        existing.push(String($(this).data('id')));
-    });
-
-    $.ajax({
-        'url': '".Yii::app()->createUrl('/OphCoCvi/localAuthority/autocomplete')."',
-        'type':'GET',
-        'data':{'term': request.term},
-        'success':function(data) {
-            data = $.parseJSON(data);
-            if (!data.length) {
-                data = [
-                {
-                    'label': 'No results found',
-                    'value': response.term
-                }
-                ];
-            }
-            response(data);
-        }
-    });
-    }",
-    'options' => array(
-        'minLength' => '3',
-        'select' => "js:function(event, ui) {
-            updateLAFields(ui.item);
-            $('#la_auto_complete').val('');
-            return false;
-        }",
-    ),
-    'htmlOptions' => array(
-        'placeholder' => 'type to search for local authorities',
-    ),
-));
 ?>
+
+<div id="local_authority_search_wrapper" class="row field-row<?= $hidden ? ' hidden':''?>">
+    <div class="large-4 column"><label for="la_auto_complete">Load Local Authority Details</label></div>
+    <div class="large-8 column end">
+    <?php
+        $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+            'id' => 'la_auto_complete',
+            'name' => 'la_auto_complete',
+            'value' => '',
+            'source' => "js:function(request, response) {
+            var existing = [];
+            $('#consultant_list').children('li').map(function() {
+                existing.push(String($(this).data('id')));
+            });
+
+            $.ajax({
+                'url': '".Yii::app()->createUrl('/OphCoCvi/localAuthority/autocomplete')."',
+                'type':'GET',
+                'data':{'term': request.term},
+                'success':function(data) {
+                    data = $.parseJSON(data);
+                    if (!data.length) {
+                        data = [
+                        {
+                            'label': 'No results found',
+                            'value': response.term
+                        }
+                        ];
+                    }
+                    response(data);
+                }
+            });
+            }",
+            'options' => array(
+                'minLength' => '3',
+                'select' => "js:function(event, ui) {
+                    updateLAFields(ui.item);
+                    $('#la_auto_complete').val('');
+                    return false;
+                }",
+            ),
+            'htmlOptions' => array(
+                'placeholder' => 'type to search for local authorities',
+            ),
+        ));
+    ?>
+    </div>
+</div>

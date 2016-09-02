@@ -1,5 +1,4 @@
-
-<div class="element-fields row">
+<div class="element-fields row" xmlns="http://www.w3.org/1999/html">
     <div class="large-6 column">
         <?php echo $form->textField($element, 'title_surname', array(), array(), array('label' => 4, 'field' => 8)) ?>
         <?php echo $form->textField($element, 'other_names', array(), array(), array('label' => 4, 'field' => 8)) ?>
@@ -16,10 +15,14 @@
         <?php echo $form->textField($element, 'gp_name', array(), array(), array('label' => 4, 'field' => 8)) ?>
         <?php echo $form->textField($element, 'gp_address', array(), array(), array('label' => 4, 'field' => 8)) ?>
         <?php echo $form->textField($element, 'gp_telephone', array(), array(), array('label' => 4, 'field' => 8)) ?>
-        <hr />
-        <?php $this->renderPartial('localauthority_search'); ?>
+
         <?php echo $form->textField($element, 'la_name', array(), array(), array('label' => 4, 'field' => 8)) ?>
         <?php echo $form->textField($element, 'la_address', array(), array(), array('label' => 4, 'field' => 8)) ?>
         <?php echo $form->textField($element, 'la_telephone', array(), array(), array('label' => 4, 'field' => 8)) ?>
+        <hr />
+        <div class="row field-row">
+            <div class="small-push-6 column-5"><a href="#" id="la-search-toggle" class="button secondary small">Retrieve Local Authority Details</a></div>
+        </div>
+        <?php $this->renderPartial('localauthority_search', array('hidden' => strlen($element->la_name) > 0)); ?>
     </div>
 </div>
