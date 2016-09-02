@@ -84,7 +84,7 @@ Is enabled in Apache by default and carries an up to 1 second time penalty on re
 	# php_xdebug:
 	#   - php5-xdebug
 
-Bt default Xdebug is disabled on the CLI due to [documented](https://getcomposer.org/doc/articles/troubleshooting.md#xdebug-impact-on-composer) performance issues when using composer.
+By default Xdebug is disabled on the CLI due to [documented](https://getcomposer.org/doc/articles/troubleshooting.md#xdebug-impact-on-composer) performance issues when using composer.
 
 #### Windows 10
 
@@ -99,12 +99,13 @@ You will need to have downloaded VC++ for Vagrant to be able to download base bo
 * `vagrant suspend` - Will suspend the machine
 * `vagrant destroy` - Will remove the machine build
 
-And if that's not enough there is the Vagrant [documentation](https://www.vagrantup.com/docs/) and also `vagrant help
+And if that's not enough there is the Vagrant [documentation](https://www.vagrantup.com/docs/) and also `vagrant help`
 
 #### Todo:
 
 Additional / Outstanding tasks to be completed:
 
+* Tidy up the PHP build implementation
 * Full Windows platform testing
 * Configuration optimisation to make it easier to make changes to the build from a single file
 * Changes to support AWS provisioning (although this may be better left to a build specific Ansible playbook)

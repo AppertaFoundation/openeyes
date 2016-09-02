@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * OpenEyes.
  *
@@ -57,38 +57,53 @@ class ProcessHscicDataCommand extends CConsoleCommand
     private $countryId;
     private $cbtId;
 
-    private static $files = array(
+    /**
+     * Base URL for file retrieval (pre-pended to URLs in the file config below
+     *
+     * @var string
+     */
+    private static $base_url = 'http://systems.digital.nhs.uk';
+
+
+    /**
+     * Static config - note that any 'url' elements that do not begin with http will have $base_url prepended.
+     *
+     * @var array
+     */
+    private static $file_config = array(
         'full' => array(
             'gp' => array(
-                    'url' => 'http://systems.hscic.gov.uk/data/ods/datadownloads/data-files/egpcur.zip',
+                    'url' => '/data/ods/datadownloads/data-files/egpcur.zip',
                     'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
              ),
             'practice' => array(
-                    'url' => 'http://systems.hscic.gov.uk/data/ods/datadownloads/data-files/epraccur.zip',
+                    'url' => '/data/ods/datadownloads/data-files/epraccur.zip',
                     'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
             ),
             'ccg' => array(
-                    'url' => 'http://systems.hscic.gov.uk/data/ods/datadownloads/data-files/eccg.zip',
+                    'url' => '/data/ods/datadownloads/data-files/eccg.zip',
                     'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode'),
             ),
             'ccgAssignment' => array(
-                    'url' => 'http://systems.hscic.gov.uk/data/ods/datadownloads/data-files/epcmem.zip',
+                    'url' => '/data/ods/datadownloads/data-files/epcmem.zip',
                     'fields' => array('practice_code', 'ccg_code'),
             ),
         ),
         'monthly' => array(
             'gp' => array(
-                'url' => 'http://systems.hscic.gov.uk/data/ods/datadownloads/monthamend/current/egpam.zip',
+                'url' => '/data/ods/datadownloads/monthamend/current/egpam.zip',
                 'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
             ),
         ),
         'quarterly' => array(
             'gp' => array(
-                'url' => 'http://systems.hscic.gov.uk/data/ods/datadownloads/quartamend/current/egpaq.zip',
+                'url' => '/data/ods/datadownloads/quartamend/current/egpaq.zip',
                 'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
             ),
         ),
     );
+
+    private $files = array();
 
     public function __construct()
     {
@@ -103,7 +118,37 @@ class ProcessHscicDataCommand extends CConsoleCommand
             mkdir($this->tempPath, 0777, true);
         }
 
+        $this->files = $this->mapFileConfig(static::$file_config);
+
         parent::__construct(null, null);
+    }
+
+    /**
+     * @param $config
+     * @return array
+     */
+    private function mapFileConfig($config)
+    {
+        $struct = array();
+        foreach ($config as $k => $v) {
+            if (is_array($v)) {
+                $struct[$k] = $this->mapFileConfig($v);
+            }
+            else {
+                switch ((string) $k) {
+                    case 'url':
+                        if (substr($v, 0, 4) == 'http') {
+                            $struct[$k] = $v;
+                        } else {
+                            $struct[$k] = static::$base_url . $v;
+                        }
+                        break;
+                    default:
+                        $struct[$k] = $v;
+                }
+            }
+        }
+        return $struct;
     }
 
     /**
@@ -196,13 +241,14 @@ EOH;
      */
     public function actionImport($type, $interval = 'full')
     {
-        if (!isset(self::$files[$interval])) {
+        exit();
+        if (!isset($this->files[$interval])) {
             $this->usageError("Interval not found: $interval");
-        } elseif (!isset(self::$files[$interval][$type])) {
+        } elseif (!isset($this->files[$interval][$type])) {
             $this->usageError("Type not found: $type");
         } else {
             try {
-                $this->processFile($type, $interval, self::$files[$interval][$type]);
+                $this->processFile($type, $interval, $this->files[$interval][$type]);
             } catch (Exception $e) {
                 return $this->handleException($e);
             }
@@ -224,12 +270,12 @@ EOH;
     }
 
     /**
-     * Imports all the full files listed in self::$files['full'], Gp, Practice, CCG, CCG Assignment.
+     * Imports all the full files listed in $this->files['full'], Gp, Practice, CCG, CCG Assignment.
      */
     public function actionImportall()
     {
         try {
-            foreach (self::$files['full'] as $type => $file) {
+            foreach ($this->files['full'] as $type => $file) {
                 $this->processFile($type, 'full', $file);
             }
         } catch (Exception $e) {
@@ -702,7 +748,7 @@ EOH;
      */
     public function actionCheckRemovedFromFile($type = 'gp')
     {
-        if (!isset(self::$files['full'][$type]['url']) || ($type != 'gp' && $type != 'practice')) {
+        if (!isset($this->files['full'][$type]['url']) || ($type != 'gp' && $type != 'practice')) {
             $this->usageError("Invalid type: $type");
         }
 
@@ -711,7 +757,7 @@ EOH;
 
             $this->createTempTable($dbTable);
 
-            $file = $this->getFileFromUrl(self::$files['full'][$type]['url']);
+            $file = $this->getFileFromUrl($this->files['full'][$type]['url']);
             $this->fillTempTable($type, $file);
 
             $this->markInactiveMissingModels($dbTable);
@@ -788,7 +834,7 @@ EOH;
         $i = 0;
         $insertBulkData = array();
         while (($row = fgetcsv($fileHandler))) {
-            $data = array_combine(array_pad(self::$files['full'][$type]['fields'], count($row), ''), $row);
+            $data = array_combine(array_pad($this->files['full'][$type]['fields'], count($row), ''), $row);
 
             if ($dbTable == 'gp') {
                 $insertData = array(
@@ -866,14 +912,14 @@ EOH;
      */
     public function actionDownload($type, $interval = 'full')
     {
-        if (!isset(self::$files[$interval])) {
+        if (!isset($this->files[$interval])) {
             $this->usageError("Interval not found: $interval");
-        } elseif (!isset(self::$files[$interval][$type])) {
+        } elseif (!isset($this->files[$interval][$type])) {
             $this->usageError("\n$type has no $interval file");
         } else {
             try {
-                $fileName = $this->getFileFromUrl($this->url == '' ? self::$files[$interval][$type]['url'] : $this->url);
-                $this->download($this->url == '' ? self::$files[$interval][$type]['url'] : $this->url, $this->tempPath.'/'.$fileName);
+                $fileName = $this->getFileFromUrl($this->url == '' ? $this->files[$interval][$type]['url'] : $this->url);
+                $this->download($this->url == '' ? $this->files[$interval][$type]['url'] : $this->url, $this->tempPath.'/'.$fileName);
             } catch (Exception $e) {
                 return $this->handleException($e);
             }
@@ -881,13 +927,13 @@ EOH;
     }
 
     /**
-     * Downloads all the full files listed in self::$files['full'] , Gp, Practice, CCG, CCG Assignment
+     * Downloads all the full files listed in $this->files['full'] , Gp, Practice, CCG, CCG Assignment
      * can be useful on the first run.
      */
     public function actionDownloadall()
     {
         try {
-            foreach (self::$files['full'] as $file) {
+            foreach ($this->files['full'] as $file) {
                 $fileName = $this->getFileFromUrl($file['url']);
                 $this->download($file['url'], $this->tempPath.'/'.$fileName);
             }

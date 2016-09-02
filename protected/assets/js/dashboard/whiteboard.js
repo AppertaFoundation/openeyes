@@ -9,5 +9,34 @@ document.addEventListener("DOMContentLoaded", function() {
   $('#exit-button').on('click', function (event) {
     event.preventDefault();
     window.close();
-  })
+  });
+
+  var $commentCard = $('#comment-card');
+  $commentCard.find('.material-icons').on('click', function(){
+    var $cardContent = $commentCard.find('.mdl-card__supporting-text');
+    var icon = this;
+    var whiteboardEventId = icon.dataset.whiteboardEventId;
+    var textArea;
+
+    if(icon.textContent !== 'done'){
+      textArea = $('<textarea />');
+      icon.textContent = 'done';
+      textArea[0].value = $cardContent.get(0).textContent.trim();
+      $cardContent.html(textArea);
+    } else {
+      var comments = $cardContent.find('textarea').val();
+      $.ajax({
+        'type': 'POST',
+        'url': '/OphTrOperationbooking/whiteboard/saveComment/' + whiteboardEventId,
+        'data': {comments: comments, YII_CSRF_TOKEN: YII_CSRF_TOKEN},
+        'success': function () {
+          $cardContent.text(comments);
+          icon.textContent = 'create';
+        },
+        'error' : function() {
+          alert('Something went wrong, please try again.');
+        }
+      });
+    }
+  });
 });

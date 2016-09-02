@@ -269,10 +269,18 @@ class DefaultController extends \BaseEventTypeController
         if ($action == 'step') {
             $action = 'update';
         }
-        $class_array = !empty($element) ? !empty(get_class($element)) ? explode('\\', (get_class($element))) : '' : '';
-        $active_check_value = '';
-        if (!empty($class_array)) {
-            if (array_pop($class_array) === 'Element_OphCiExamination_CataractSurgicalManagement') {
+
+        $class_array = '';
+        if (!empty($element)) {
+            $cls = get_class($element);
+            if (!empty($cls)) {
+                $class_array = explode('\\', (get_class($element)));
+            }
+        }
+
+		$active_check_value = "";
+        if (!empty($class_array)) {                    
+            if(array_pop($class_array) === 'Element_OphCiExamination_CataractSurgicalManagement') {
                 $active_check = \SettingInstallation::model()->find('t.key="city_road_satellite_view"');
                 if (!empty($active_check)) {
                     $active_check_value = $active_check->value;
@@ -350,8 +358,9 @@ class DefaultController extends \BaseEventTypeController
     {
         $firm_id = $this->firm->id;
         $status_id = $this->episode->episode_status_id;
+        $workflow = new models\OphCiExamination_Workflow_Rule();
 
-        return models\OphCiExamination_Workflow_Rule::findWorkflow($firm_id, $status_id)->getFirstStep();
+        return $workflow->findWorkflowCascading($firm_id, $status_id)->getFirstStep();
     }
 
     /**
@@ -445,11 +454,10 @@ class DefaultController extends \BaseEventTypeController
     {
         $elements = array();
         if (!$set) {
-            $site_id = Yii::app()->session['selected_site_id'];
             $firm_id = $this->firm->id;
-            $subspecialty_id = $this->firm->getSubspecialtyID();
             $status_id = ($episode) ? $episode->episode_status_id : 1;
-            $set = models\OphCiExamination_Workflow_Rule::findWorkflow($firm_id, $status_id)->getFirstStep();
+            $workflow = new models\OphCiExamination_Workflow_Rule();
+            $set = $workflow->findWorkflowCascading($firm_id, $status_id)->getFirstStep();
         }
 
         if ($set) {
@@ -1203,16 +1211,16 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * @throws models\CException
+     * @throws \CException
      */
     protected function setCurrentSet()
     {
         if (!$this->set) {
             $firm_id = $this->firm->id;
             $status_id = ($this->episode) ? $this->episode->episode_status_id : 1;
-            $set = models\OphCiExamination_Workflow_Rule::findWorkflow($firm_id, $status_id)->getFirstStep();
-            $this->set = $set;
-            $this->mandatoryElements = $set->MandatoryElementTypes;
+            $workflow = new models\OphCiExamination_Workflow_Rule();
+            $this->set = $workflow->findWorkflowCascading($firm_id, $status_id)->getFirstStep();
+            $this->mandatoryElements = $this->set->MandatoryElementTypes;
         }
     }
 

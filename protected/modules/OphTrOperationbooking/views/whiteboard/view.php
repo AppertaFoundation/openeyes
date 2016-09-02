@@ -124,10 +124,14 @@
             </div>
         </div>
     </div>
-    <div class="mdl-cell mdl-cell--8-col">
+    <div class="mdl-cell mdl-cell--8-col" id="comment-card">
         <div class="mdl-card mdl-shadow--2dp">
             <div class="mdl-card__title mdl-card--expand comment">
                 <h2 class="mdl-card__title-text">Comments</h2>
+                <?php if (is_object($this->getWhiteboard()->booking) && $this->getWhiteboard()->booking->isEditable() && !$this->getWhiteboard()->is_confirmed):?>
+                    <div class="mdl-layout-spacer"></div>
+                    <i class="material-icons right" data-whiteboard-event-id="<?=$data->event_id?>">create</i>
+                <?php endif; ?>
             </div>
             <div class="mdl-card__supporting-text">
                 <?=nl2br($data->comments)?>

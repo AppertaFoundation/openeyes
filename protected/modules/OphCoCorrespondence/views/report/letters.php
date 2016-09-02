@@ -156,7 +156,7 @@
 				</label>
 			</div>
 			<div class="large-3 column end">
-				<?php echo CHtml::dropDownList('OphCoCorrespondence_ReportLetters[site_id]', '', Site::model()->getLongListForCurrentInstitution(), array('empty' => '--- Please select ---'))?>
+				<?php echo CHtml::dropDownList('OphCoCorrespondence_ReportLetters[site_id]', '', Site::model()->getListForCurrentInstitution(), array('empty' => '--- Please select ---'))?>
 			</div>
 		</div>
 

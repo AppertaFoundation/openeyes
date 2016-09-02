@@ -459,7 +459,7 @@ class Patient extends BaseActiveRecordVersioned
     public function isDeceased()
     {
         // Assume that if the patient has a date of death then they are actually dead, even if the date is in the future
-        return !empty($this->date_of_death);
+        return $this->is_deceased;
     }
 
     /**

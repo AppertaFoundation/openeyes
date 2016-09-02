@@ -25,6 +25,7 @@ return array(
                     'getInboxMessages',
                     'getSentMessages',
                  ),
+                'position' => 5,
             ),
         ),
     ),

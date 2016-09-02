@@ -72,16 +72,26 @@ class WorklistDefinition extends BaseActiveRecordVersioned
             array('description', 'length', 'max' => 1000),
             array('start_time, end_time', 'OETimeValidator'),
             array('active_from, active_until', 'OEDateValidator'),
-            array('active_from', 'OEDateCompareValidator', 'compareAttribute' => 'active_until', 'allowEmpty' => true,
-                'allowCompareEmpty' => true, 'operator' => '<=',
-                'message' => '{attribute} must be on or before {compareAttribute}', ),
-            array('active_from', 'default', 'setOnEmpty' => true, 'value' => date('Y-m-d H:i:s', time())),
+            array(
+                'active_from',
+                'OEDateCompareValidator',
+                'compareAttribute' => 'active_until',
+                'allowEmpty' => true,
+                'allowCompareEmpty' => true,
+                'operator' => '<=',
+                'message' => '{attribute} must be on or before {compareAttribute}'
+            ),
+            array('active_from', 'default', 'setOnEmpty' => true, 'value' => date("Y-m-d H:i:s", time())),
             array('active_until', 'default', 'setOnEmpty' => true, 'value' => null),
             array('scheduled', 'boolean', 'allowEmpty' => false),
             array('display_order', 'numerical', 'integerOnly' => true),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, name, rrule, worklist_name, start_time, end_time, description, scheduled', 'safe', 'on' => 'search'),
+            array(
+                'id, name, rrule, worklist_name, start_time, end_time, description, scheduled',
+                'safe',
+                'on' => 'search'
+            ),
         );
     }
 
@@ -95,9 +105,20 @@ class WorklistDefinition extends BaseActiveRecordVersioned
         return array(
             'worklists' => array(self::HAS_MANY, 'Worklist', 'worklist_definition_id'),
             'mappings' => array(self::HAS_MANY, 'WorklistDefinitionMapping', 'worklist_definition_id'),
-            'displayed_mappings' => array(self::HAS_MANY, 'WorklistDefinitionMapping', 'worklist_definition_id', 'on' => 'display_order is NOT NULL', 'order' => 'display_order ASC'),
-            'hidden_mappings' => array(self::HAS_MANY, 'WorklistDefinitionMapping', 'worklist_definition_id', 'on' => 'display_order is NULL'),
-            'display_contexts' => array(self::HAS_MANY, 'WorklistDefinitionDisplayContext', 'worklist_definition_id'),
+            'displayed_mappings' => array(
+                self::HAS_MANY,
+                'WorklistDefinitionMapping',
+                'worklist_definition_id',
+                'on' => 'display_order is NOT NULL',
+                'order' => 'display_order ASC'
+            ),
+            'hidden_mappings' => array(
+                self::HAS_MANY,
+                'WorklistDefinitionMapping',
+                'worklist_definition_id',
+                'on' => 'display_order is NULL'
+            ),
+            'display_contexts' => array(self::HAS_MANY, 'WorklistDefinitionDisplayContext', 'worklist_definition_id')
         );
     }
 
@@ -222,12 +243,18 @@ class WorklistDefinition extends BaseActiveRecordVersioned
     {
         if ($this->rrule) {
             $rrule_str = $this->rrule;
+            // ensure rrule string has a start date if not defined so that it will be part of the
+            // formatted output
             if (!$this->isNewRecord && !strpos($rrule_str, 'DTSTART=')) {
-                $rrule_str .= ';DTSTART='.(new DateTime($this->created_date))->format('Y-m-d');
+                $created_date = new DateTime($this->created_date);
+                $rrule_str .= ";DTSTART=" . $created_date->format('Y-m-d');
             }
 
-            return (new RRule($rrule_str))->humanReadable(array(
-                'date_formatter' => function ($d) { return $d->format(Helper::NHS_DATE_FORMAT); },
+            $final_rrule = new RRule($rrule_str);
+            return $final_rrule->humanReadable(array(
+                'date_formatter' => function ($d) {
+                    return $d->format(Helper::NHS_DATE_FORMAT);
+                }
             ));
         }
     }
