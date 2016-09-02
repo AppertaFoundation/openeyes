@@ -17,9 +17,16 @@ class LocalAuthoritiesAdminController extends \AdminController
     {
         return array_merge(
             array(
-                array('allow',
-                    'actions'=>array('list', 'editCommissioningBodyService', 'addCommissioningBodyService', 'verifyDeleteCommissioningBodyServices', 'deleteCommissioningBodyServices'),
-                    'roles'=>array('OprnEditClericalCvi'),
+                array(
+                    'allow',
+                    'actions' => array(
+                        'list',
+                        'editCommissioningBodyService',
+                        'addCommissioningBodyService',
+                        'verifyDeleteCommissioningBodyServices',
+                        'deleteCommissioningBodyServices'
+                    ),
+                    'roles' => array('OprnEditClericalCvi'),
                 ),
             ),
             parent::accessRules()
@@ -35,13 +42,18 @@ class LocalAuthoritiesAdminController extends \AdminController
     {
         \Audit::add('admin-CommissioningBodyService', 'list');
 
-        $commissioningBody = \CommissioningBody::model()->findByAttributes(array('code' => 'eCVILA'));
-        $serviceType = \CommissioningBodyServiceType::model()->findByAttributes(array('shortname' => 'SSD'));
+        if (!$commissioning_bt = \CommissioningBodyType::model()->findByAttributes(array('shortname' => 'LA'))) {
+            throw new \CHttpException(500, 'Local Authority Commissioning Body Type is not configured.');
+        }
 
-        $data["commissioningBodyId"] = $commissioningBody->id;
-        $data["serviceTypeId"] = $serviceType->id;
-        $data["returnUrl"] = '/OphCoCvi/localAuthoritiesAdmin/list';
+        $service_type = \CommissioningBodyServiceType::model()->findByAttributes(array('shortname' => 'SSD'));
 
-        $this->render('//admin/commissioning_body_services', array("data" => $data));
+        $data['title'] = 'CVI Social Services Depts.';
+        $data['commissioning_bt'] = $commissioning_bt;
+        $data['service_type'] = $service_type;
+        $data['return_url'] = '/OphCoCvi/localAuthoritiesAdmin/list';
+        $data['base_data_url'] = 'OphCoCvi/localAuthoritiesAdmin/';
+
+        $this->render('//admin/commissioning_body_services', $data);
     }
 }

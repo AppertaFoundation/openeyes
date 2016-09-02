@@ -25,7 +25,7 @@ use OEModule\OphCoCvi\models;
 
 class AdminController extends \ModuleAdminController
 {
-    public $defaultAction = "clinicalDisorderSection";
+    public $defaultAction = 'clinicalDisorderSection';
 
     /**
      * Admin for the sections that the disorders are separated into on the clinical info element.
