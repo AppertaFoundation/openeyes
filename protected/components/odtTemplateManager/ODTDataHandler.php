@@ -65,28 +65,28 @@ class ODTDataHandler
         return new ODTSimpleText($name);
     }
 
-    function createImage($name, $type, $binarySource)
+    public function createImage($name, $type, $binarySource)
     {
         $image = new ODTImage($name, $type, $binarySource);
         return $image;
     }
 
-    function addRow($table, $row)
+    public function addRow($table, $row)
     {
         return $table->addRow($row);
     }
 
-    function addCell($row, $cell)
+    public function addCell($row, $cell)
     {
         return $row->addCell($cell);
     }
 
-    function setObjType($obj, $type)
+    public function setObjType($obj, $type)
     {
         $obj->setObjType($type);
     }
 
-    function setAttribute($obj)
+    public function setAttribute($obj)
     {
         $args = func_get_args();
 
@@ -113,22 +113,22 @@ class ODTDataHandler
 
     }
 
-    function setTableCellData($table, $row, $col, $cellData)
+    public function setTableCellData($table, $row, $col, $cellData)
     {
         $table->setCellData($row, $col, $cellData);
     }
 
-    function setTableRowData($table, $row, $rowData)
+    public function setTableRowData($table, $row, $rowData)
     {
         $table->setRowData($row, $rowData);
     }
 
-    function fillTableData($table, $tableData)
+    public function fillTableData($table, $tableData)
     {
-        $table->FillData($tableData);
+        $table->fillData($tableData);
     }
 
-    function alreadyInDataSource($objectType, $name)
+    public function alreadyInDataSource($objectType, $name)
     {
         if (!isset($this->dataSource[$objectType])) {
             return false;
@@ -142,7 +142,7 @@ class ODTDataHandler
         return false;
     }
 
-    function createText($name, $data = null)
+    public function createText($name, $data = null)
     {
         return new ODTSimpleText($name, $data);
     }
@@ -239,5 +239,3 @@ class ODTDataHandler
         return $ret;
     }
 }
-
-?>

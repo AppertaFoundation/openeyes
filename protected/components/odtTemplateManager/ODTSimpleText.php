@@ -44,4 +44,3 @@ class ODTSimpleText
         return $this->data['element-type'];
     }
 }
-?>

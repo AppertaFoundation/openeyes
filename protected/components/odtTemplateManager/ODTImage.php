@@ -25,7 +25,7 @@ class ODTImage
      */
     var $data = array();
 
-    function __construct( $name, $type, $binarySource ) 
+    public function __construct( $name, $type, $binarySource )
     {
         $this->data['element-type'] = 'image';
         $this->data['image-type'] = $type;
@@ -35,14 +35,13 @@ class ODTImage
         $this->data['binary-source'] = $binarySource;
     }        
 
-    function getData()
+    public function getData()
     {
         return $this->data;
     }    
 
-    function getObjType()
+    public function getObjType()
     {
         return $this->data['element-type'];
     }                
 }
-?>

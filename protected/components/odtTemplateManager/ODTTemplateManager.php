@@ -17,7 +17,7 @@
 
 // FPDI module is not working properly with the Yii Autoload so we have to include the parser class manually!
 
-require_once(str_replace("index.php","vendor/setasign/fpdi/pdf_parser.php", Yii::app()->getRequest()->getScriptFile()));
+require_once str_replace('index.php', 'vendor/setasign/fpdi/pdf_parser.php', Yii::app()->getRequest()->getScriptFile());
 
 /**
  * A class for odt document modify and generate pdf
@@ -148,10 +148,10 @@ class ODTTemplateManager
     
     private function createSingleOrMultilineTextNode( $node, $string, $existingStyleName=null ){
         $stringArr = '';
-        $stringArr = explode("<br/>",$string);
+        $stringArr = explode('<br/>',$string);
 
         if(count($stringArr)==1){
-        	$stringArr = explode("<br/>",$string);
+        	$stringArr = explode('<br/>',$string);
 				}
         
         if(count($stringArr)==1){
@@ -232,7 +232,7 @@ class ODTTemplateManager
             
             if(!isset($text['data']))
             {
-                $text['data'] = "";
+                $text['data'] = '';
             }
             $this->exchangeStringValueByStyleName( $text['name'], $text['data'] );   
         }
@@ -296,7 +296,7 @@ class ODTTemplateManager
 
     private function replaceTableNode( $templateVariableName, $tableXml )
     {
-        $tableNodeStr = "table:table";
+        $tableNodeStr = 'table:table';
         $table  = $tableXml->getElementsByTagName('table:table');
         $text = $this->contentXml->getElementsByTagName('p');
         $targetNode = $this->getTableVariableNode( $templateVariableName, $text );
@@ -343,16 +343,16 @@ class ODTTemplateManager
                 
                 foreach($row->childNodes as $c => $cell){
                    
-                    if ((array_key_exists($rowCount, $data)) && (array_key_exists($c, $data[$rowCount]))) { 
-                        $cell->nodeValue = "";
-                        if($data[$rowCount][$c] != "") {
+                    if (array_key_exists($rowCount, $data) && array_key_exists($c, $data[$rowCount])) {
+                        $cell->nodeValue = '';
+                        if($data[$rowCount][$c] != '') {
                             /*
                             $text = $this->contentXml->createElement('text:p', $data[$rowCount][$c]);
                             $cell->appendChild($text);
                             */
                             $this->createSingleOrMultilineTextNode( $cell, 'Kecso' );
                             
-                            $text->setAttribute("text:style-name", $this->textStyleName);
+                            $text->setAttribute('text:style-name', $this->textStyleName);
                         }
                     }
                 }
@@ -379,7 +379,7 @@ class ODTTemplateManager
         $colCount = 0;
         if( $table != null ){
             foreach($table->childNodes as $r => $tableNode) {
-                if( $tableNode->nodeName == "table:table-row" ){
+                if( $tableNode->nodeName == 'table:table-row'){
                     $cols = $tableNode->childNodes;
                     foreach($cols as $oneCol){
                         if($oneCol->nodeName != 'table:covered-table-cell'){
@@ -488,7 +488,7 @@ class ODTTemplateManager
             $colsCount = $this -> getTableColsCount( $oneTable['rows'][0]['cells'] ); // parameter is the first row.
 
             $table  = $this -> createNode( $tableXml, 'table:table', array( 'table:name'=>$tableName, 'table:style-name' => $tableStyleName ) );
-            $tableHeader = $this -> createNode( $tableXml, 'table:table-column', array( 'table:style-name'=>"T1.A", 'table:number-columns-repeated' => $colsCount) );
+            $tableHeader = $this -> createNode( $tableXml, 'table:table-column', array( 'table:style-name'=> 'T1.A', 'table:number-columns-repeated' => $colsCount) );
             $table -> appendChild( $tableHeader );
             
             $rowDeep = 0;
@@ -507,7 +507,7 @@ class ODTTemplateManager
                     }
                     
                     $params[ 'table:style-name'] = $tableName.'.'.$colsLabel[$rowDeep].$colDeep;
-                    $params[ 'office:value-type'] = "string";
+                    $params[ 'office:value-type'] = 'string';
                     if( $rowspan != '' ) $params['table:number-rows-spanned'   ] = $rowspan;
                     if( $colspan != '' ) $params['table:number-columns-spanned'] = $colspan;
                   
@@ -551,20 +551,20 @@ class ODTTemplateManager
         
         if( $zip = zip_open( $srcFile ) ) {
             if( $zip ) {
-                $splitter = ($createZipNameDir === true) ? "." : "/";
-                if($destDir === false) $destDir = substr($srcFile, 0, strrpos($srcFile, $splitter))."/";
+                $splitter = ($createZipNameDir === true) ? '.' : '/';
+                if($destDir === false) $destDir = substr($srcFile, 0, strrpos($srcFile, $splitter)). '/';
 
                 $this -> createDirs($destDir);
                  
                 while($zipEntry = zip_read($zip)){
                     
-                    $posLastSlash = strrpos(zip_entry_name($zipEntry), "/");
+                    $posLastSlash = strrpos(zip_entry_name($zipEntry), '/');
 
                     if ($posLastSlash !== false) {
                         $this -> createDirs($destDir.substr(zip_entry_name($zipEntry), 0, $posLastSlash+1));
                     }
 
-                    if (zip_entry_open($zip,$zipEntry,"r")) {
+                    if (zip_entry_open($zip,$zipEntry, 'r')) {
                         $fileName = $destDir.zip_entry_name($zipEntry);
                         if ($overwrite === true || ($overwrite === false && !is_file($fileName))) {
                             $fstream = zip_entry_read($zipEntry, zip_entry_filesize($zipEntry));
@@ -636,12 +636,12 @@ class ODTTemplateManager
     private function createDirs( $path )
     {
         if (!is_dir($path)){
-            $directoryPath = "";
-            $directories = explode("/",$path);
+            $directoryPath = '';
+            $directories = explode('/',$path);
             array_pop($directories);
 
             foreach($directories as $directory) {
-                $directoryPath .= $directory."/";
+                $directoryPath .= $directory. '/';
                 if (!is_dir($directoryPath)) {
                     mkdir($directoryPath, 0777, true);
                     //chmod($directoryPath, $this -> right );
@@ -708,7 +708,7 @@ class ODTTemplateManager
         $pageCount = $pdf->setSourceFile($this->outDir.'/'.$this->outFile);
         $tplIdx = $pdf->importPage( $pageNumber , '/MediaBox');
 
-        $pdf->addPage();
+        $pdf->AddPage();
         $pdf->useTemplate($tplIdx);
 
         $pdf->Output();

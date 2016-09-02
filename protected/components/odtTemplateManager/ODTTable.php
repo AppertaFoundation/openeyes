@@ -14,69 +14,68 @@
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 /*
  * Generate xml table to odt file
  */
+
 class ODTTable
 {
     /**
      * @var array
      */
-    var $data = array();
+    protected $data = array();
 
-    public function __construct( $tableName )
+    public function __construct($tableName)
     {
-        $this->data=array('name' => $tableName, 'element-type'=>'table');    
+        $this->data = array('name' => $tableName, 'element-type' => 'table');
     }
 
-    function createRow()
+    public function createRow()
     {
         return new Row();
     }
 
-    function addRow( $row )
+    public function addRow($row)
     {
         $rowData = $row->getData();
-        $this->data['rows'][]=$rowData;
+        $this->data['rows'][] = $rowData;
     }
 
-    function createCell()
+    public function createCell()
     {
         return new Cell();
-    }        
-
-    function getData()
-    {
-        return $this->data;    
     }
 
-    function setCellData( $row , $col , $cellData )
+    public function getData()
     {
-        $this->data['rows'][$row-1]['cells'][$col-1]['data']=$cellData;
+        return $this->data;
     }
 
-    function setRowData( $row , $rowData )
+    public function setCellData($row, $col, $cellData)
     {
-        foreach( $this->data['rows'][$row-1]['cells'] as $key => $oneCell ){
-            $this->data['rows'][$row-1]['cells'][$key]['data'] = $rowData[ $key ];
+        $this->data['rows'][$row - 1]['cells'][$col - 1]['data'] = $cellData;
+    }
+
+    public function setRowData($row, $rowData)
+    {
+        foreach ($this->data['rows'][$row - 1]['cells'] as $key => $oneCell) {
+            $this->data['rows'][$row - 1]['cells'][$key]['data'] = $rowData[$key];
         }
     }
 
-    function FillData($tableData)
+    public function fillData($tableData)
     {
-        foreach( $this->data['rows'] as $rowKey => $oneRow ){
-            foreach( $oneRow['cells'] as $colKey => $oneCell ){
-                if($oneCell['cell-type']!='covered'){
-                    $this->data['rows'][$rowKey]['cells'][$colKey]['data']=$tableData[$rowKey][$colKey];
+        foreach ($this->data['rows'] as $rowKey => $oneRow) {
+            foreach ($oneRow['cells'] as $colKey => $oneCell) {
+                if ($oneCell['cell-type'] != 'covered') {
+                    $this->data['rows'][$rowKey]['cells'][$colKey]['data'] = $tableData[$rowKey][$colKey];
                 }
             }
         }
     }
 
-    function getObjType()
+    public function getObjType()
     {
         return $this->data['element-type'];
-    }    
+    }
 }
-?>
