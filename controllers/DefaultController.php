@@ -96,7 +96,7 @@ class DefaultController extends \BaseEventTypeController
      */
     public function checkClinicalEditAccess()
     {
-        return $this->checkAccess('OprnEditClinicalCvi', $this->getApp()->user->id);
+        return $this->checkAccess('OprnEditClinicalCvi', $this->getApp()->user->id) && $this->checkEditAccess();
     }
 
     /**
