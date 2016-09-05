@@ -48,14 +48,8 @@ Due to the user permissions regarding the different elements in the event, sever
 
 In an effort to abstract the business logic, much of it has been encapsulated in a manager class. This is a new structure that has not been entirely adhered to during initial development, however the intent is for this to aid test-ability, subject to time and resources, as well make the code overall cleaner.
 
-### Refactoring
-
-There are some significant refactoring needs for how various of the related data is assigned and rendered for clinical and clerical elements (disorders and patient factors respectively). 
-
-At the moment, several static model calls will be impacting query volume, and it has led to inconsistency between how the data is retrieved depending on the context. This should be addressed.
-
-
 ## Status
 
-This module is in initial development and not intended for any use outside of core development. Feel free to take a look as code is developed though.
+This module is targeted for release in v1.16
 
+The initial release will have some rough edges due to time constraints. The intent is to refine over time, in particular allowing for a vanilla setup to allow signing printed versions of the certificate, rather than relying on electronic capture.
