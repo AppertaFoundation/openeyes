@@ -85,7 +85,7 @@
                     <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('unaided_left_va'))?></div>
                     </td>
                     <td>
-                    <div class="data-value"><?php echo CHtml::encode($element->unaided_right_va)?></div>
+                    <div class="data-value"><?php echo CHtml::encode($element->unaided_left_va)?></div>
                     </td>
                 </tr>
                 <tr>
@@ -93,7 +93,7 @@
                     <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('best_corrected_left_va'))?></div>
                     </td>
                     <td>
-                    <div class="data-value"><?php echo CHtml::encode($element->best_corrected_right_va)?></div>
+                    <div class="data-value"><?php echo CHtml::encode($element->best_corrected_left_va)?></div>
                     </td>
                 </tr>
                 </tbody>
