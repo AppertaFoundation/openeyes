@@ -1459,29 +1459,42 @@ class AdminController extends BaseAdminController
     public function actionEditCommissioningBodyService()
     {
         $address = new Address();
+        $contact = new Contact();
         $address->country_id = 1;
+        // to allow the commissioning body type list to be filtered
+        $commissioning_bt = null;
+        $commissioning_bst = null;
 
-		if (isset($_GET['commissioning_body_service_id'])) {
-			if (!$cbs = CommissioningBodyService::model()->findByPk(@$_GET['commissioning_body_service_id'])) {
-				throw new Exception("CommissioningBody not found: ".@$_GET['commissioning_body_service_id']);
+		if ($cbs_id = $this->getApp()->request->getQuery('commissioning_body_service_id')) {
+			if (!$cbs = CommissioningBodyService::model()->findByPk($cbs_id)) {
+				throw new Exception('CommissioningBody not found: ' . $cbs_id);
 			}
-			if ($cbs->contact && $cbs->contact->address) {
-				$address = $cbs->contact->address;
+
+			if ($cbs->contact) {
+                $contact = $cbs->contact;
+                if ($cbs->contact->address) {
+                    $address = $cbs->contact->address;
+                }
 			}
 		} else {
 			$cbs = new CommissioningBodyService;
-            if ($commBodyId = Yii::app()->request->getQuery('commissioning_body_id')){
-                $cbs->setAttribute('commissioning_body_id', $commBodyId);
+            if ($commissioning_bt_id = Yii::app()->request->getQuery('commissioning_body_type_id')){
+                if (!$commissioning_bt = CommissioningBodyType::model()->findByPk($commissioning_bt_id)) {
+                    throw new CHttpException(404, 'Unrecognised Commissioning Body Type ID');
+                }
             }
-            if ($serviceTypeId = Yii::app()->request->getQuery('service_type_id')){
-                $cbs->setAttribute('commissioning_body_service_type_id', $serviceTypeId );
+            if ($service_type_id = Yii::app()->request->getQuery('service_type_id')){
+                if (!$commissioning_bst = CommissioningBodyServiceType::model()->findByPk($service_type_id)) {
+                    throw new CHttpException(404, 'Unrecognised Service Type ID');
+                };
+                $cbs->setAttribute('commissioning_body_service_type_id', $service_type_id );
             }
 		}
 
         $errors = array();
 
-        if(! $returnUrl = Yii::app()->request->getQuery('return_url')){
-            $returnUrl = '/admin/commissioning_body_services';
+        if(!$return_url = Yii::app()->request->getQuery('return_url')){
+            $return_url = '/admin/commissioning_body_services';
         }
 
 		if (!empty($_POST)) {
@@ -1489,6 +1502,10 @@ class AdminController extends BaseAdminController
 
             if (!$cbs->validate()) {
                 $errors = $cbs->getErrors();
+            }
+            $contact->attributes = $_POST['Contact'];
+            if (!$contact->validate()) {
+                $errors = array_merge($errors, $contact->getErrors());
             }
 
             $address->attributes = $_POST['Address'];
@@ -1498,47 +1515,47 @@ class AdminController extends BaseAdminController
             }
 
             if (empty($errors)) {
-                if (!$address->id) {
-                    $contact = new Contact();
+                $transaction = Yii::app()->db->beginInternalTransaction();
+                try {
                     if (!$contact->save()) {
                         throw new Exception('Unable to save contact: '.print_r($contact->getErrors(), true));
                     }
 
-                    $cbs->contact_id = $contact->id;
+                    if (!$address->id) {
+                        $cbs->contact_id = $contact->id;
+                        $address->contact_id = $contact->id;
+                    }
 
-                    $address->contact_id = $contact->id;
+                    $method = $cbs->id ? 'edit' : 'add';
+
+                    if (!$cbs->save()) {
+                        throw new Exception('Unable to save CommissioningBodyService: '.print_r($cbs->getErrors(), true));
+                    }
+
+                    if (!$address->save()) {
+                        throw new Exception('Unable to save CommissioningBodyService address: '.print_r($address->getErrors(), true));
+                    }
+
+                    Audit::add('admin-CommissioningBodyService', $method, $cbs->id);
+                    $transaction->commit();
+                }
+                catch (Exception $e) {
+                    $transaction->rollback();
+                    throw $e;
                 }
 
-                $method = $cbs->id ? 'edit' : 'add';
 
-                $audit = $_POST;
-
-                if ($method == 'edit') {
-                    $audit['id'] = $cbs->id;
-                }
-
-                if (!$cbs->save()) {
-                    throw new Exception('Unable to save CommissioningBodyService: '.print_r($cbs->getErrors(), true));
-                }
-
-                if (!$address->save()) {
-                    throw new Exception('Unable to save CommissioningBodyService address: '.print_r($address->getErrors(), true));
-                }
-
-                Audit::add('admin-CommissioningBodyService', $method, $cbs->id);
-
-				$this->redirect($returnUrl);
+				$this->redirect($return_url);
 			}
 		}
 
-		$data = array();
-        $data["returnUrl"] = $returnUrl;
-
 		$this->render('//admin/editCommissioningBodyService',array(
+            'commissioning_bt' => $commissioning_bt,
+            'commissioning_bst' => $commissioning_bst,
 			'cbs' => $cbs,
 			'address' => $address,
 			'errors' => $errors,
-			'data' => $data
+			'return_url' => $return_url
 		));
 	}
 
@@ -1728,8 +1745,18 @@ class AdminController extends BaseAdminController
         $this->redirect(array('/admin/episodeSummaries', 'subspecialty_id' => $subspecialty_id));
     }
 
+    /**
+     * Allows the upload of images for correspondence.
+     *
+     * @throws CException
+     */
     public function actionLogo()
     {
+
+        if(!isset(Yii::app()->params['letter_logo_upload']) || !Yii::app()->params['letter_logo_upload']){
+            throw new CHttpException(404);
+        }
+
         $logo = new Logo();
         if (isset($_FILES['Logo'])) {
             $savePath = Yii::app()->basePath.'/runtime/';
@@ -1742,13 +1769,13 @@ class AdminController extends BaseAdminController
                 foreach (glob($savePath.$logoKey) as $existingLogo) {
                     unlink($savePath.$existingLogo);
                 }
-                if (in_array($fileInfo['extension'], $fileFormats)) {
-                    if ($logoKey == 'header_logo') {
+                if (in_array($fileInfo['extension'], $fileFormats, true)) {
+                    if ($logoKey === 'header_logo') {
                         $logoTemp = $_FILES['Logo']['tmp_name']['header_logo'];
                         list($width, $height) = getimagesize($logoTemp);
                         $condition = $height.'==100 && '.$width.'==500';
                     }
-                    if ($logoKey == 'secondary_logo') {
+                    if ($logoKey === 'secondary_logo') {
                         $logoTemp = $_FILES['Logo']['tmp_name']['secondary_logo'];
                         list($width, $height) = getimagesize($logoTemp);
                         $condition = $height.'==100 && '.$width.'==120';

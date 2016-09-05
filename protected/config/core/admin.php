@@ -22,7 +22,7 @@ return array(
         'admin_structure' => array(
             'System' => array(
                 'Settings' => '/admin/settings',
-                'Logo' => '/admin/logo',
+                'Logo' => array('parameter' => 'letter_logo_upload', 'uri' => '/admin/logo'),
                 'DICOM Log Viewer' => '/DicomLogViewer/list',
             ),
             'Core' => array(
@@ -61,13 +61,13 @@ return array(
                 'OPCS Codes' => '/oeadmin/opcsCode/list',
             ),
             'Drugs' => array(
-                'Common Drugs List' => array('OphDrPrescription' => '/OphDrPrescription/commonDrugAdmin/list'),
-                'Drug Sets' => array('OphDrPrescription' => '/OphDrPrescription/DrugSetAdmin/DrugSets'),
+                'Common Drugs List' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/commonDrugAdmin/list'),
+                'Drug Sets' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/DrugSetAdmin/DrugSets'),
                 'Common Medications List ' => '/oeadmin/commonMedications/list',
                 'Medication List' => '/oeadmin/medication/list',
                 'Formulary Drugs' => '/oeadmin/formularyDrugs/list',
-                'Per Op Drugs' => array('OphTrOperationnote' => '/OphTrOperationnote/admin/viewPostOpDrugs'),
-                'Per Op Drug Mappings' => array('OphTrOperationnote' => '/oeadmin/PostOpDrugMappings/list'),
+                'Per Op Drugs' => array('module' => 'OphTrOperationnote', 'uri' => '/OphTrOperationnote/admin/viewPostOpDrugs'),
+                'Per Op Drug Mappings' => array('module' => 'OphTrOperationnote', 'uri' => '/oeadmin/PostOpDrugMappings/list'),
             ),
             'Disorders' => array(
                 'Common Ophthalmic Disorder Groups' => '/admin/editcommonophthalmicdisordergroups',
@@ -76,8 +76,8 @@ return array(
                 'Common Systemic Disorders' => '/oeadmin/CommonSystemicDisorder/list',
             ),
             'Consent' => array(
-                'Leaflets' => array('OphTrConsent' => '/oeadmin/Leaflets/list'),
-                'Leaflet Subspecialty and Firm Assignment' => array('OphTrConsent' => '/oeadmin/LeafletSubspecialtyFirm/list'),
+                'Leaflets' => array('module' => 'OphTrConsent', 'uri' => '/oeadmin/Leaflets/list'),
+                'Leaflet Subspecialty and Firm Assignment' => array('module' => 'OphTrConsent', 'uri' => '/oeadmin/LeafletSubspecialtyFirm/list'),
             ),
         ),
     ),

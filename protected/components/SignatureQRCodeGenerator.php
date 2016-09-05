@@ -56,21 +56,20 @@ class SignatureQRCodeGenerator
      * @param bool $returnObject
      * @return resource
      */
-    public function generateQRSignatureBox( $text, $returnObject = true )
+    public function generateQRSignatureBox( $text, $returnObject = true, $box_size =array("x"=>700, "y"=>140), $qr_size =130 )
     {
-        $canvas = imagecreatetruecolor(700,140);
+        $canvas = imagecreatetruecolor($box_size["x"],$box_size["y"]);
         $black = imagecolorallocate($canvas, 0,0,0);
         $white = imagecolorallocate($canvas, 255,255,255);
         imagefill($canvas,0,0,$black);
 
         imagefilledrectangle($canvas, 3, 3, imagesx($canvas)-4, imagesy($canvas)-4, $white);
 
-        $qrCode = $this->createQRCode( $text, 130 );
+        $qrCode = $this->createQRCode( $text, $qr_size );
         imagecopy($canvas, $qrCode, (imagesx($canvas)-imagesx($qrCode))-3, 3, 0, 0, imagesx($qrCode), imagesy($qrCode));
         //imageloadfont("Arial.ttf");
         // TODO: check how to load font here!
-        imagestring($canvas, null, 10, 145, "This signature will be user for OpenEyes eCVI module to print.", $black);
-        //imagestring($canvas, null, 10, 145, "This signature will be user for OpenEyes eCVI module to print.");
+        //imagestring($canvas, null, 10, 145, "This signature will be user for OpenEyes eCVI module to print.", $black);
         if($returnObject){
             return $canvas;
         }else {

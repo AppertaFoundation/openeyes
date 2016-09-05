@@ -23,21 +23,21 @@ class ODTCell
     /**
      * @var array
      */
-    var $data = array();
+    public $data = array();
 
-    function __construct() 
+    public function __construct( $cellType='normal' )
     {
         $this->data['element-type'] = 'cell';
+        $this->data['cell-type'] = $cellType;
     }
 
-    function getData()
+    public function getData()
     {
         return $this->data;
     }
 
-    function getObjType()
+    public function getObjType()
     {
         return $this->data['element-type'];
     }    
 }
-?>

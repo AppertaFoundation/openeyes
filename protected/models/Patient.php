@@ -41,6 +41,7 @@
  * @property int $last_modified_user_id
  * @property datetime $no_allergies_date
  * @property tinyint $deleted
+ * @property int $ethnic_group_id
  *
  * The followings are the available model relations:
  * @property Episode[] $episodes
@@ -52,6 +53,8 @@
  * @property Allergy[] $allergies
  * @property EthnicGroup $ethnic_group
  * @property CommissioningBody[] $commissioningbodies
+ * @property SocialHistory $socialhistory
+ *
  */
 class Patient extends BaseActiveRecordVersioned
 {
@@ -830,7 +833,7 @@ class Patient extends BaseActiveRecordVersioned
      */
     public function getEmail()
     {
-        return $this->contact->address->email;
+        return $this->contact->address ? $this->contact->address->email : '';
     }
 
     /**
