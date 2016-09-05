@@ -20,9 +20,12 @@
         <?php echo $form->textField($element, 'la_address', array(), array(), array('label' => 4, 'field' => 8)) ?>
         <?php echo $form->textField($element, 'la_telephone', array(), array(), array('label' => 4, 'field' => 8)) ?>
         <hr />
+        <?php
+        $hide_search = strlen($element->la_name) > 0;
+        ?>
         <div class="row field-row">
-            <div class="small-push-6 column-5"><a href="#" id="la-search-toggle" class="button secondary small">Retrieve Local Authority Details</a></div>
+            <div class="small-push-6 column-5"><a href="#" id="la-search-toggle" class="button secondary small<?= $hide_search ? '': ' disabled'?>">Retrieve Local Authority Details</a></div>
         </div>
-        <?php $this->renderPartial('localauthority_search', array('hidden' => strlen($element->la_name) > 0)); ?>
+        <?php $this->renderPartial('localauthority_search', array('hidden' => $hide_search)); ?>
     </div>
 </div>

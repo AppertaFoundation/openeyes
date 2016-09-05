@@ -85,7 +85,7 @@ $(document).ready(function() {
     handleButton($('#la-search-toggle'), function(e) {
         e.preventDefault();
         $('#local_authority_search_wrapper').show();
-        setTimeout(function() {$(e.target).blur(); enableButtons();}, 100);
+        setTimeout(function() {$(e.target).blur(); enableButtons(); $(e.target).addClass('disabled'); }, 100);
     });
 
     $('select.populate_textarea').unbind('change').change(function() {
@@ -147,5 +147,6 @@ function updateLAFields(item) {
         $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_la_address').val(item.body.address);
         $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_la_telephone').val(item.body.telephone);
     }
-
+    $('#local_authority_search_wrapper').hide();
+    $('#la-search-toggle').removeClass('disabled');
 }
