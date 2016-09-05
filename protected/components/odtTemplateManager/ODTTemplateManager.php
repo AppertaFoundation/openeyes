@@ -327,6 +327,8 @@ class ODTTemplateManager
      * @param $data
      * @param $headerRow
      */
+    
+    /* removed 2016.09.05. 22:50:23
     public function fillTable( $name , $data, $headerRow = 0 )
     {
        
@@ -346,10 +348,10 @@ class ODTTemplateManager
                     if (array_key_exists($rowCount, $data) && array_key_exists($c, $data[$rowCount])) {
                         $cell->nodeValue = '';
                         if($data[$rowCount][$c] != '') {
-                            /*
-                            $text = $this->contentXml->createElement('text:p', $data[$rowCount][$c]);
-                            $cell->appendChild($text);
-                            */
+                            
+                            //$text = $this->contentXml->createElement('text:p', $data[$rowCount][$c]);
+                            //$cell->appendChild($text);
+                            
                             $this->createSingleOrMultilineTextNode( $cell, 'Kecso' );
                             
                             $text->setAttribute('text:style-name', $this->textStyleName);
@@ -360,6 +362,7 @@ class ODTTemplateManager
            
         }
     }
+    */
     
     /*
      * Find table in xml and fill it with data values
@@ -383,17 +386,17 @@ class ODTTemplateManager
                     $cols = $tableNode->childNodes;
                     foreach($cols as $oneCol){
                         if($oneCol->nodeName != 'table:covered-table-cell'){
-                            $textNode = $oneCol->childNodes->item(0);
                             
                             if(isset($data[$rowCount][$colCount])){
                                 if( $data[$rowCount][$colCount] != '' ){      
-    								while($textNode->hasChildNodes()) { // Delete all child (normalize)
-    								    $x = $textNode -> childNodes->item(0);
-    								    $textNode->removeChild($x);
-    								}
-                                	
-                                	$this->createSingleOrMultilineTextNode( $textNode, htmlspecialchars($data[$rowCount][$colCount] ) );
-                                    //$textNode->nodeValue = 'Kecso'; //htmlspecialchars($data[$rowCount][$colCount]);    
+                                    $textNodes = $oneCol->childNodes;
+                                    $firstTextNode = $textNodes -> item(0);
+                                    foreach( $textNodes as $oneTextNode ){
+                                        $oneTextNode->nodeValue = '';
+                                        //$oneCol->removeChild($oneTextNode);
+                                    }
+                               	    $this->createSingleOrMultilineTextNode( $firstTextNode, htmlspecialchars($data[$rowCount][$colCount] ) );
+                                    
                                 }
                             }
                         }
