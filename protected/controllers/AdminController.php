@@ -1459,6 +1459,7 @@ class AdminController extends BaseAdminController
     public function actionEditCommissioningBodyService()
     {
         $address = new Address();
+        $contact = new Contact();
         $address->country_id = 1;
         // to allow the commissioning body type list to be filtered
         $commissioning_bt = null;
@@ -1468,8 +1469,12 @@ class AdminController extends BaseAdminController
 			if (!$cbs = CommissioningBodyService::model()->findByPk($cbs_id)) {
 				throw new Exception('CommissioningBody not found: ' . $cbs_id);
 			}
-			if ($cbs->contact && $cbs->contact->address) {
-				$address = $cbs->contact->address;
+
+			if ($cbs->contact) {
+                $contact = $cbs->contact;
+                if ($cbs->contact->address) {
+                    $address = $cbs->contact->address;
+                }
 			}
 		} else {
 			$cbs = new CommissioningBodyService;
@@ -1498,6 +1503,10 @@ class AdminController extends BaseAdminController
             if (!$cbs->validate()) {
                 $errors = $cbs->getErrors();
             }
+            $contact->attributes = $_POST['Contact'];
+            if (!$contact->validate()) {
+                $errors = array_merge($errors, $contact->getErrors());
+            }
 
             $address->attributes = $_POST['Address'];
 
@@ -1506,34 +1515,35 @@ class AdminController extends BaseAdminController
             }
 
             if (empty($errors)) {
-                if (!$address->id) {
-                    $contact = new Contact();
+                $transaction = Yii::app()->db->beginInternalTransaction();
+                try {
                     if (!$contact->save()) {
                         throw new Exception('Unable to save contact: '.print_r($contact->getErrors(), true));
                     }
 
-                    $cbs->contact_id = $contact->id;
+                    if (!$address->id) {
+                        $cbs->contact_id = $contact->id;
+                        $address->contact_id = $contact->id;
+                    }
 
-                    $address->contact_id = $contact->id;
+                    $method = $cbs->id ? 'edit' : 'add';
+
+                    if (!$cbs->save()) {
+                        throw new Exception('Unable to save CommissioningBodyService: '.print_r($cbs->getErrors(), true));
+                    }
+
+                    if (!$address->save()) {
+                        throw new Exception('Unable to save CommissioningBodyService address: '.print_r($address->getErrors(), true));
+                    }
+
+                    Audit::add('admin-CommissioningBodyService', $method, $cbs->id);
+                    $transaction->commit();
+                }
+                catch (Exception $e) {
+                    $transaction->rollback();
+                    throw $e;
                 }
 
-                $method = $cbs->id ? 'edit' : 'add';
-
-                $audit = $_POST;
-
-                if ($method == 'edit') {
-                    $audit['id'] = $cbs->id;
-                }
-
-                if (!$cbs->save()) {
-                    throw new Exception('Unable to save CommissioningBodyService: '.print_r($cbs->getErrors(), true));
-                }
-
-                if (!$address->save()) {
-                    throw new Exception('Unable to save CommissioningBodyService address: '.print_r($address->getErrors(), true));
-                }
-
-                Audit::add('admin-CommissioningBodyService', $method, $cbs->id);
 
 				$this->redirect($return_url);
 			}
