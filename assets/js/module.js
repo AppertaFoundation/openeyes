@@ -2,7 +2,11 @@
 /* Module-specific javascript can be placed here */
 
 $(document).ready(function() {
-	
+
+    if (typeof(cvi_do_print) !== 'undefined' && cvi_do_print == 1) {
+        doPrint();
+    }
+
 	$('#div_OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_info_email').hide();
 	$('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_preferred_info_fmt_id').change(function(){
 		var label_name = $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_preferred_info_fmt_id').find(":selected").text();
@@ -13,9 +17,9 @@ $(document).ready(function() {
 		}
 	});
 
-			handleButton($('#et_save'),function() {
-					});
-	
+    handleButton($('#et_save'),function() {
+    });
+
     handleButton($('#et_cancel'),function(e) {
             if (m = window.location.href.match(/\/update\/[0-9]+/)) {
                     window.location.href = window.location.href.replace('/update/','/view/');
@@ -62,24 +66,7 @@ $(document).ready(function() {
     });
     
     handleButton($('#et_print'),function(e) {
-        
-	printIFrameUrl(OE_print_url, null);
-		
-        iframeId = 'print_content_iframe',
-        $iframe = $('iframe#print_content_iframe');
-        
-        $iframe.load(function() {
-    		enableButtons();
-    		e.preventDefault();            
-           
-            try{
-                var PDF = document.getElementById(iframeId);
-                PDF.focus();
-                PDF.contentWindow.print();
-            } catch (e) {
-                alert("Exception thrown: " + e);
-            }                                    
-        });
+        doPrint(e);
     });
 
     handleButton($('#la-search-toggle'), function(e) {
@@ -149,4 +136,26 @@ function updateLAFields(item) {
     }
     $('#local_authority_search_wrapper').hide();
     $('#la-search-toggle').removeClass('disabled');
+}
+
+function doPrint(e) {
+    printIFrameUrl(cvi_print_url, null);
+
+    iframeId = 'print_content_iframe',
+        $iframe = $('iframe#print_content_iframe');
+
+    $iframe.load(function() {
+        if (e != undefined) {
+            enableButtons();
+            e.preventDefault();
+        }
+
+        try{
+            var PDF = document.getElementById(iframeId);
+            PDF.focus();
+            PDF.contentWindow.print();
+        } catch (e) {
+            alert("Exception thrown: " + e);
+        }
+    });
 }

@@ -422,7 +422,8 @@ class DefaultController extends \BaseEventTypeController
     {
         if ($this->getManager()->issueCvi($this->event, $this->getApp()->user->id)) {
             $this->getApp()->user->setFlash('success', 'The CVI has been successfully generated.');
-            $this->redirect(array('/' . $this->event->eventType->class_name . '/default/pdfPrint/' . $id));
+            //$this->redirect(array('/' . $this->event->eventType->class_name . '/default/pdfPrint/' . $id));
+            $this->redirect(array('/' . $this->event->eventType->class_name . '/default/view/' . $id . '?print=1'));
         } else {
             $this->getApp()->user->setFlash('error', 'The CVI could not be generated.');
             $this->redirect(array('/' . $this->event->eventType->class_name . '/default/view/' . $id));
@@ -438,6 +439,11 @@ class DefaultController extends \BaseEventTypeController
     {
         parent::initActionView();
         $this->setTitle($this->getManager()->getTitle($this->event));
+        $this->jsVars['cvi_print_url'] = $this->getApp()->createUrl($this->getModule()->name.'/default/PDFprint/'.$this->event->id);
+        if ($this->getApp()->request->getParam('print', null) == 1) {
+            $this->jsVars['cvi_do_print'] = 1;
+        }
+
     }
 
     /**
@@ -731,8 +737,11 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function checkUserSigned()
     {
-        $clinicalElement = $this->getManager()->getClinicalElementForEvent($this->event);
-        return $clinicalElement->isSigned();
+        if ($clinicalElement = $this->getManager()->getClinicalElementForEvent($this->event)) {
+            return $clinicalElement->isSigned();
+        } else {
+            return false;
+        }
     }
 
 }
