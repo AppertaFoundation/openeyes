@@ -1,0 +1,74 @@
+/** OphCoCvi module styles */
+/**
+ * OpenEyes
+ *
+ * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+ * (C) OpenEyes Foundation, 2011-2013
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ */
+/* line 16, ../sass/components/_event.scss */
+.event .event-content {
+  border-color: #86cdff;
+  background-image: url('../img/watermark.png?1470932098');
+}
+/* line 20, ../sass/components/_event.scss */
+.event .event-title {
+  background-image: url('../img/medium.png?1470932098');
+}
+
+/* line 25, ../sass/components/_event.scss */
+.multi-select-search {
+  margin-left: 0px;
+  background-color: #999999;
+}
+/* line 28, ../sass/components/_event.scss */
+.multi-select-search li {
+  background-color: #DDDDDD;
+  padding: 2px;
+  margin-bottom: 1px;
+}
+/* line 33, ../sass/components/_event.scss */
+.multi-select-search li:last-child {
+  margin-bottom: 0px;
+}
+/* line 36, ../sass/components/_event.scss */
+.multi-select-search.scroll {
+  overflow-y: auto;
+  max-height: 50px;
+}
+/* line 40, ../sass/components/_event.scss */
+.multi-select-search a.remove {
+  float: right;
+}
+
+/* line 15, ../sass/components/_elements.scss */
+.element .indent-correct {
+  margin-left: -10px;
+  margin-bottom: 6px;
+}
+
+/* line 20, ../sass/components/_elements.scss */
+.element legend {
+  font-style: italic;
+}
+
+/* line 24, ../sass/components/_elements.scss */
+.inline-header {
+  margin-bottom: 2px;
+}
+
+/* line 28, ../sass/components/_elements.scss */
+hr {
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+}
