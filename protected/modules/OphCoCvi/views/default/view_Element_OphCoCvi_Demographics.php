@@ -106,5 +106,29 @@
                 <div class="data-value"><?= CHtml::encode($element->gp_telephone) ?></div>
             </div>
         </div>
+        <div class="row data-row">
+            <div class="large-4 column">
+                <div class="data-label"><?= $element->getAttributeLabel('la_name') ?>:</div>
+            </div>
+            <div class="large-8 column end">
+                <div class="data-value"><?= CHtml::encode($element->la_name) ?></div>
+            </div>
+        </div>
+        <div class="row data-row">
+            <div class="large-4 column">
+                <div class="data-label"><?= $element->getAttributeLabel('la_address') ?>:</div>
+            </div>
+            <div class="large-8 column end">
+                <div class="data-value"><?= CHtml::encode($element->la_address) ?></div>
+            </div>
+        </div>
+        <div class="row data-row">
+            <div class="large-4 column">
+                <div class="data-label"><?= $element->getAttributeLabel('la_telephone') ?>:</div>
+            </div>
+            <div class="large-8 column end">
+                <div class="data-value"><?= CHtml::encode($element->la_telephone) ?></div>
+            </div>
+        </div>
     </div>
 </div>
