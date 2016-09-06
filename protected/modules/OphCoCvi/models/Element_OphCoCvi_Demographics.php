@@ -237,7 +237,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
      */
     protected function generateStructuredPostcodeHeader()
     {
-        $postcode_header = array_fill(0,3,'');
+        $postcode_header = array_fill(0,4,'');
 
         if ($this->postcode) {
             $parts = explode(' ', $this->postcode, 2);
@@ -260,7 +260,6 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
      */
     protected function generateStructuredSummaryTable()
     {
-
         $gender_data = $this->generateStructuredGenderHeader();
         $year_header = $this->generateStructuredYearHeader();
         $postcode_header = $this->generateStructuredPostcodeHeader();
