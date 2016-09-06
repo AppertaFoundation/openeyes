@@ -18,9 +18,9 @@
  */
 ?>
 <div class="box admin">
-	<h2>Add user</h2>
-	<?php echo $this->renderPartial('_form_errors', array('errors' => $errors))?>
-	<?php
+    <h2>Add user</h2>
+    <?php echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
+    <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => 'adminform',
         'enableAjaxValidation' => false,
@@ -29,35 +29,46 @@
             'label' => 2,
             'field' => 5,
         ),
-    ))?>
-		<?php echo $form->textField($user, 'username', array('autocomplete' => Yii::app()->params['html_autocomplete']), array(array(
-            'id' => 'lookup_user',
-            'title' => 'Lookup user',
-            'href' => '#',
-        )))?>
-		<?php echo $form->textField($user, 'title', array('autocomplete' => Yii::app()->params['html_autocomplete']), null, array('field' => 2))?>
-		<?php echo $form->textField($user, 'first_name', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-		<?php echo $form->textField($user, 'last_name', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-		<?php echo $form->textField($user, 'email', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-		<?php echo $form->textField($user, 'role', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-		<?php echo $form->textField($user, 'qualifications', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-		<?php echo $form->radioBoolean($user, 'active')?>
-		<?php echo $form->radioBoolean($user, 'global_firm_rights')?>
-		<?php echo $form->radioBoolean($user, 'is_doctor')?>
-		<?php echo $form->textField($user, 'registration_code', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-	    <?php echo $form->dropDownList($user, 'doctor_grade_id', CHtml::listData(DoctorGrade::model()->findAll(array('order' => 'display_order')), 'id', 'grade'), array('empty' => '- Select Doctor Grade -'));?>
-	<?php echo $form->radioBoolean($user, 'is_clinical') ?>
-	<?php echo $form->radioBoolean($user, 'is_consultant') ?>
-	<?php echo $form->radioBoolean($user, 'is_surgeon') ?>
-	<?php echo $form->passwordField($user, 'password',
+    )) ?>
+    <?php echo $form->textField($user, 'username', array('autocomplete' => Yii::app()->params['html_autocomplete']),
+        array(
+            array(
+                'id' => 'lookup_user',
+                'title' => 'Lookup user',
+                'href' => '#',
+            ),
+        )) ?>
+    <?php echo $form->textField($user, 'title', array('autocomplete' => Yii::app()->params['html_autocomplete']), null,
+        array('field' => 2)) ?>
+    <?php echo $form->textField($user, 'first_name',
         array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-		<?php echo $form->passwordConfirmField($user, 'Confirm', 'User[password_repeat]')?>
-		<?php echo $form->multiSelectList($user, 'User[roles]', 'roles', 'name', CHtml::listData(Yii::app()->authManager->getRoles(), 'name', 'name'), array(), array('label' => 'Roles', 'empty' => '-- Add --'));?>
-		<?php echo $form->formActions();?>
-	<?php $this->endWidget()?>
+    <?php echo $form->textField($user, 'last_name', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+    <?php echo $form->textField($user, 'email', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+    <?php echo $form->textField($user, 'role', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+    <?php echo $form->textField($user, 'qualifications',
+        array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+    <?php echo $form->radioBoolean($user, 'active') ?>
+    <?php echo $form->radioBoolean($user, 'global_firm_rights') ?>
+    <?php echo $form->radioBoolean($user, 'is_doctor') ?>
+    <?php echo $form->textField($user, 'registration_code',
+        array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+    <?php echo $form->dropDownList($user, 'doctor_grade_id',
+        CHtml::listData(DoctorGrade::model()->findAll(array('order' => 'display_order')), 'id', 'grade'),
+        array('empty' => '- Select Doctor Grade -')); ?>
+    <?php echo $form->radioBoolean($user, 'is_clinical') ?>
+    <?php echo $form->radioBoolean($user, 'is_consultant') ?>
+    <?php echo $form->radioBoolean($user, 'is_surgeon') ?>
+    <?php echo $form->passwordField($user, 'password',
+        array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+    <?php echo $form->passwordChangeField($user, 'Confirm', 'User[password_repeat]') ?>
+    <?php echo $form->multiSelectList($user, 'User[roles]', 'roles', 'name',
+        CHtml::listData(Yii::app()->authManager->getRoles(), 'name', 'name'), array(),
+        array('label' => 'Roles', 'empty' => '-- Add --')); ?>
+    <?php echo $form->formActions(); ?>
+    <?php $this->endWidget() ?>
 </div>
 <script type="text/javascript">
-	$(document).ready(function() {
-		$('#User_username').focus();
-	});
+    $(document).ready(function () {
+        $('#User_username').focus();
+    });
 </script>

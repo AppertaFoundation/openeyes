@@ -35,11 +35,11 @@
     <?php } ?>
     <?php $this->renderPartial('//base/_messages') ?>
     <?php $this->renderPartial('//elements/form_errors', array('errors' => $errors)) ?>
-    <?php echo $form->passwordConfirmField($user, 'Old Password', 'User[password_old]',
+    <?php echo $form->passwordChangeField($user, 'Old Password', 'User[password_old]',
         array('readonly' => !Yii::app()->params['profile_user_can_change_password'])) ?>
-    <?php echo $form->passwordConfirmField($user, 'New Password', 'User[password_new]',
+    <?php echo $form->passwordChangeField($user, 'New Password', 'User[password_new]',
         array('readonly' => !Yii::app()->params['profile_user_can_change_password'])) ?>
-    <?php echo $form->passwordConfirmField($user, 'Confirm', 'User[password_confirm]',
+    <?php echo $form->passwordChangeField($user, 'Confirm', 'User[password_confirm]',
         array('readonly' => !Yii::app()->params['profile_user_can_change_password'])) ?>
 
     <?php if (Yii::app()->params['profile_user_can_change_password']) { ?>
