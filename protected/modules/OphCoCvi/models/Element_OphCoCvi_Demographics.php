@@ -205,7 +205,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
      */
     protected function generateStructuredGenderHeader()
     {
-        $gender_data = array_fill(0,3, '');
+        $gender_data = array_fill(0,4, '');
 
         if ($gender = $this->gender) {
             if (strtolower($gender->name) == 'male') {

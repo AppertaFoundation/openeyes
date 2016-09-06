@@ -104,7 +104,7 @@ class DefaultController extends \BaseEventTypeController
      */
     public function checkEditAccess()
     {
-        return $this->checkAccess('OprnEditCvi', $this->getApp()->user->id, array(
+        return !$this->getManager()->isIssued($this->event) && $this->checkAccess('OprnEditCvi', $this->getApp()->user->id, array(
             'firm' => $this->firm,
             'event' => $this->event
         ));
