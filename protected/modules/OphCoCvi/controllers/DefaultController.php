@@ -302,18 +302,19 @@ class DefaultController extends \BaseEventTypeController
     ) {
         $model_name = \CHtml::modelName($element);
 
-        $answers = array();
-        if (array_key_exists('patient_factors', $data[$model_name])) {
-            foreach ($data[$model_name]['patient_factors'] as $id => $data_answer) {
-                $a = new models\OphCoCvi_ClericalInfo_PatientFactor_Answer();
-                $a->patient_factor_id = $id;
-                $a->is_factor = isset($data_answer['is_factor']) ? $data_answer['is_factor'] : null;
-                $a->comments = isset($data_answer['comments']) ? $data_answer['comments'] : null;
-                $answers[] = $a;
+        if (array_key_exists($model_name, $data)) {
+            $answers = array();
+            if (array_key_exists('patient_factors', $data[$model_name])) {
+                foreach ($data[$model_name]['patient_factors'] as $id => $data_answer) {
+                    $a = new models\OphCoCvi_ClericalInfo_PatientFactor_Answer();
+                    $a->patient_factor_id = $id;
+                    $a->is_factor = isset($data_answer['is_factor']) ? $data_answer['is_factor'] : null;
+                    $a->comments = isset($data_answer['comments']) ? $data_answer['comments'] : null;
+                    $answers[] = $a;
+                }
             }
+            $element->patient_factor_answers = $answers;
         }
-
-        $element->patient_factor_answers = $answers;
     }
 
     /**
