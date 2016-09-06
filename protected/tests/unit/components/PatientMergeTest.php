@@ -152,15 +152,19 @@ class PatientMergeTest extends CDbTestCase
         $this->assertEquals($eposode10->patient_id, 7);
     }
 
+    /**
+     * We have to keep the newer/most recent episode
+     * so if the Secondary Episode is the older one than we flag it as deleted
+     */
     public function testUpdateEpisodesWhenBothHaveEpisodesConflict_secondaryEpisodeOlder()
     {
         $mergeHandler = new PatientMerge();
 
         // $primaryPatient has episode7 and episode8
-        $primaryPatient = $this->patients('patient7');
+        $primaryPatient = $this->patients('patient7'); // episode7
 
         // $secondaryPatient has episode9, episode10
-        $secondaryPatient = $this->patients('patient8');
+        $secondaryPatient = $this->patients('patient8'); //episode9
 
         $episode7 = $this->episodes('episode7');
         $episode7->created_date = date('Y-m-d', strtotime('-15 days'));
@@ -190,10 +194,10 @@ class PatientMergeTest extends CDbTestCase
         $this->assertEquals(count($primaryPatient->episodes), 2);
 
         $event16 = $this->events('event16');
-        $this->assertEquals($event16->episode_id, 9);
+        $this->assertEquals($event16->episode_id, 7);
 
         $event17 = $this->events('event17');
-        $this->assertEquals($event17->episode_id, 9);
+        $this->assertEquals($event17->episode_id, 7);
 
         $episode8 = $this->episodes('episode8');
         $episode8->refresh();
@@ -201,7 +205,13 @@ class PatientMergeTest extends CDbTestCase
 
         $episode9 = $this->episodes('episode9');
         $episode9->refresh();
-        $this->assertEquals($episode9->patient_id, 7);
+        $this->assertEquals($episode9->patient_id, 8); // will be deleted
+
+        $event20 = $this->events('event20');
+        $this->assertEquals($event20->episode_id, 7);
+
+        $event21 = $this->events('event21');
+        $this->assertEquals($event21->episode_id, 7);
 
         $episode10 = $this->episodes('episode10');
         $episode10->refresh();
@@ -239,19 +249,19 @@ class PatientMergeTest extends CDbTestCase
         $this->assertTrue($result, 'Merge result FALSE.');
 
         $event16 = $this->events('event16');
-        $this->assertEquals($event16->episode_id, 7);
+        $this->assertEquals($event16->episode_id, 9);
 
         $event17 = $this->events('event17');
-        $this->assertEquals($event17->episode_id, 7);
+        $this->assertEquals($event17->episode_id, 9);
 
         $event20 = $this->events('event20');
-        $this->assertEquals($event20->episode_id, 7);
+        $this->assertEquals($event20->episode_id, 9);
 
         $event21 = $this->events('event21');
-        $this->assertEquals($event20->episode_id, 7);
+        $this->assertEquals($event21->episode_id, 9);
 
         $episode7->refresh();
-        $this->assertEquals(count($episode7->events), 4);
+        $this->assertEquals(count($episode7->events), 0);
 
         $episode10 = $this->episodes('episode10');
         $this->assertEquals($episode10->patient_id, 7);

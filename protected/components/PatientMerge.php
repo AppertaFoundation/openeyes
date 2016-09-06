@@ -217,9 +217,9 @@ class PatientMerge
 
                     if ($secondary_subspecialty == $primary_subspecialty) {
 
-                        /* We need to keep the older episode so we compare the dates **/
+                        /* We need to keep the newer/most recent episode so we compare the dates **/
 
-                        if ($primaryEpisode->created_date < $secondaryEpisode->created_date) {
+                        if ($primaryEpisode->created_date > $secondaryEpisode->created_date) {
                             // the primary episode is older than the secondary so we move the events from the Secondary into the Primary
                             $this->updateEventsEpisodeId($primaryEpisode->id, $secondaryEpisode->events);
 
