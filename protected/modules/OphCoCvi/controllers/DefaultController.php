@@ -223,32 +223,34 @@ class DefaultController extends \BaseEventTypeController
     protected function setComplexAttributes_Element_OphCoCvi_ClinicalInfo($element, $data, $index)
     {
         $model_name = \CHtml::modelName($element);
-        foreach (array('left', 'right') as $side) {
-            $cvi_assignments = array();
-            $key = $side . '_disorders';
-            if (array_key_exists($key, $data[$model_name])) {
-                foreach ($data[$model_name][$key] as $idx => $data_disorder) {
-                    $cvi_ass = new models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment();
-                    $cvi_ass->ophcocvi_clinicinfo_disorder_id = $idx;
-                    $cvi_ass->affected = array_key_exists('affected',
-                        $data_disorder) ? $data_disorder['affected'] : false;
-                    $cvi_ass->main_cause = array_key_exists('main_cause',
-                        $data_disorder) ? $data_disorder['main_cause'] : false;
-                    $cvi_assignments[] = $cvi_ass;
+        if (array_key_exists($model_name, $data)) {
+            foreach (array('left', 'right') as $side) {
+                $cvi_assignments = array();
+                $key = $side . '_disorders';
+                if (array_key_exists($key, $data[$model_name])) {
+                    foreach ($data[$model_name][$key] as $idx => $data_disorder) {
+                        $cvi_ass = new models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment();
+                        $cvi_ass->ophcocvi_clinicinfo_disorder_id = $idx;
+                        $cvi_ass->affected = array_key_exists('affected',
+                            $data_disorder) ? $data_disorder['affected'] : false;
+                        $cvi_ass->main_cause = array_key_exists('main_cause',
+                            $data_disorder) ? $data_disorder['main_cause'] : false;
+                        $cvi_assignments[] = $cvi_ass;
+                    }
+                }
+                $element->{$side . '_cvi_disorder_assignments'} = $cvi_assignments;
+            }
+            $comments = array();
+            if (array_key_exists('cvi_disorder_section', $data[$model_name])) {
+                foreach ($data[$model_name]['cvi_disorder_section'] as $id => $data_comments) {
+                    $section_comment = new models\Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments();
+                    $section_comment->ophcocvi_clinicinfo_disorder_section_id = $id;
+                    $section_comment->comments = $data_comments['comments'];
+                    $comments[] = $section_comment;
                 }
             }
-            $element->{$side . '_cvi_disorder_assignments'} = $cvi_assignments;
+            $element->cvi_disorder_section_comments = $comments;
         }
-        $comments = array();
-        if (array_key_exists('cvi_disorder_section', $data[$model_name])) {
-            foreach ($data[$model_name]['cvi_disorder_section'] as $id => $data_comments) {
-                $section_comment = new models\Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments();
-                $section_comment->ophcocvi_clinicinfo_disorder_section_id = $id;
-                $section_comment->comments = $data_comments['comments'];
-                $comments[] = $section_comment;
-            }
-        }
-        $element->cvi_disorder_section_comments = $comments;
     }
 
     /**
