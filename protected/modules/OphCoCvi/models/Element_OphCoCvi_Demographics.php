@@ -106,7 +106,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
             'date_of_birth' => 'Date of Birth',
             'nhs_number' => 'NHS Number',
             'address' => 'Address (incl. Post Code)',
-            'postcode' => 'Post Code',
+            'postcode' => 'Post Code (1st half)',
             'email' => 'Email',
             'telephone' => 'Telephone',
             'gender_id' => 'Gender',
@@ -154,6 +154,9 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
         $this->date_of_birth = $patient->dob;
         $this->nhs_number = $patient->getNhsnum();
         $this->address = $patient->getSummaryAddress(',');
+        if ($patient->contact && $patient->contact->address) {
+            $this->postcode = substr($patient->contact->address->postcode,0,4);
+        }
         $this->email = $patient->getEmail();
         $this->telephone = $patient->getPrimary_phone();
 
