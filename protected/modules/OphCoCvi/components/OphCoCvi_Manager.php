@@ -728,6 +728,7 @@ class OphCoCvi_Manager extends \CComponent
     {
         $model = Element_OphCoCvi_EventInfo::model()->with(
             'clinical_element',
+            'clinical_element.user',
             'clinical_element.consultant',
             'clerical_element',
             'event.episode.patient.contact');
@@ -742,6 +743,10 @@ class OphCoCvi_Manager extends \CComponent
             'patient_name' => array(
                 'asc' => 'lower(contact.last_name) asc, lower(contact.first_name) asc',
                 'desc' => 'lower(contact.last_name) desc, lower(contact.first_name) desc',
+            ),
+            'creator' => array(
+                'asc' => 'lower(user.last_name) asc, lower(user.first_name) asc, event.id asc',
+                'desc' => 'lower(user.last_name) desc, lower(user.first_name) desc, event.id desc',
             ),
             'consultant' => array(
                 'asc' => 'lower(consultant.last_name) asc, lower(consultant.first_name) asc, event.id asc',

@@ -651,10 +651,10 @@ class DefaultController extends \BaseEventTypeController
     {
         $signature_element = $this->getManager()->getConsentSignatureElementForEvent($this->event);
         if ($signature_element->saveSignatureImageFromPortal()) {
-            $this->getApp()->user->setFlash('success', 'Signature successfully loaded.');
+            $this->getApp()->user->setFlash('success.cvi_consent_signature', 'Signature successfully loaded.');
             $this->updateEventInfo();
         } else {
-            $this->getApp()->user->setFlash('error', 'Signature could not be found');
+            $this->getApp()->user->setFlash('error.cvi_consent_signature', 'Signature could not be found');
         }
 
         $this->redirect(array('/' . $this->event->eventType->class_name . '/default/view/' . $id));
