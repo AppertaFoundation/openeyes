@@ -106,7 +106,7 @@
                         <?php if ($this->isListFiltered()) { ?>
                             <button id="reset_button" class="warning small" type="submit">Reset</button>
                         <?php } ?>
-                        <button id="search_button" class="secondary small" type="submit" disabled="true">Apply</button></div>
+                        <button id="search_button" class="secondary small" type="submit" disabled="true">Search</button></div>
                 </div>
             </div>
         </div>
