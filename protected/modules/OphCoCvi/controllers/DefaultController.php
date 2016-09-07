@@ -37,6 +37,7 @@ class DefaultController extends \BaseEventTypeController
         'list' => self::ACTION_TYPE_LIST
     );
 
+    /** @var string label used in session storage for the list filter values */
     protected static $FILTER_LIST_KEY = 'OphCoCvi_list_filter';
 
     /**
@@ -106,10 +107,16 @@ class DefaultController extends \BaseEventTypeController
      */
     public function checkEditAccess()
     {
-        return !$this->getManager()->isIssued($this->event) && $this->checkAccess('OprnEditCvi', $this->getApp()->user->id, array(
-            'firm' => $this->firm,
-            'event' => $this->event
-        ));
+        if ($this->event->isNewRecord) {
+            // because we are using this check for clinical edit access checks, we need to handle new events as well
+            return $this->checkCreateAccess();
+        } else {
+            return !$this->getManager()->isIssued($this->event) && $this->checkAccess('OprnEditCvi',
+                $this->getApp()->user->id, array(
+                    'firm' => $this->firm,
+                    'event' => $this->event
+                ));
+        }
     }
 
     /**
