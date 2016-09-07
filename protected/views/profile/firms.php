@@ -23,7 +23,7 @@
 		<table class="grid">
 			<thead>
 				<tr>
-					<th><input type="checkbox" id="checkall" /></th>
+					<th><input type="checkbox" id="checkall"  /></th>
 					<th>Name</th>
 					<th>Subspecialty</th>
 				</tr>
@@ -82,9 +82,28 @@
 		$('input[name="firms[]"]').attr('checked',$(this).is(':checked') ? 'checked' : false);
 	});
 
-	$('#et_delete').click(function() {
-		$('#profile_firms').submit();
+	$('#et_delete').click(function(e) {
+		e.preventDefault();
+
+		if ($('input[type="checkbox"][name="firms[]"]:checked').length <1) {
+			alert("Please select the firms you wish to delete.");
+			return;
+		}
+
+		$.ajax({
+			'type': 'POST',
+			'url': baseUrl+'/profile/deleteFirms',
+			'data': $('#profile_firms').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
+			'success': function(resp) {
+				if (resp >= "1") {
+					window.location.reload();
+				} else {
+					alert("There was an unexpected error deleting the firms, please try again or contact support for assistance");
+				}
+			}
+		});
 	});
+
 
 	$('#add_all').click(function() {
 		$.ajax({

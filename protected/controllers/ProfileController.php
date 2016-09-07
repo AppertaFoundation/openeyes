@@ -174,12 +174,26 @@ class ProfileController extends BaseController
     {
         $user = User::model()->findByPk(Yii::app()->user->id);
 
+        $this->render('/profile/firms', array(
+            'user' => $user,
+        ));
+    }
+
+    public function actionDeleteFirms()
+    {
+        $user = User::model()->findByPk(Yii::app()->user->id);
+
         if (!empty($_POST['firms'])) {
             foreach ($_POST['firms'] as $firm_id) {
                 if ($uf = UserFirm::model()->find('user_id=? and firm_id=?', array($user->id, $firm_id))) {
                     if (!$uf->delete()) {
+                        echo '0';
                         throw new Exception('Unable to delete UserFirm: '.print_r($uf->getErrors(), true));
                     }
+                    else{
+                        echo '1';
+                    }
+
                 }
             }
 
@@ -193,10 +207,6 @@ class ProfileController extends BaseController
                 }
             }
         }
-
-        $this->render('/profile/firms', array(
-            'user' => $user,
-        ));
     }
 
     public function actionAddFirm()
