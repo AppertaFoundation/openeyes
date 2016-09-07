@@ -120,9 +120,7 @@ class OphCoCvi_Manager extends \CComponent
      */
     protected function startTransaction()
     {
-        return $this->yii->db->getCurrentTransaction() === null
-            ? $this->yii->db->beginTransaction()
-            : null;
+        return $this->yii->db->beginInternalTransaction();
     }
 
     /**
@@ -569,17 +567,13 @@ class OphCoCvi_Manager extends \CComponent
 
             $event->audit('event', 'cvi-issued', null, 'CVI Issued', array('user_id' => $user_id));
 
-            if ($transaction) {
-                $transaction->commit();
-            }
+            $transaction->commit();
 
             $event->unlock();
             return true;
         } catch (\Exception $e) {
             \OELog::log($e->getMessage());
-            if ($transaction) {
-                $transaction->rollback();
-            }
+            $transaction->rollback();
         }
         return false;
 
@@ -769,14 +763,69 @@ class OphCoCvi_Manager extends \CComponent
         ));
     }
 
+    /**
+     * @param $event
+     */
+    public function updateEventInfo($event)
+    {
+        $status = $this->calculateStatus($event);
+        $event->info = $this->getStatusText($status);
+        $event->save();
+    }
+
+    /**
+     * @param $signatureFile
+     * @param \Event $event
+     * @throws \Exception
+     */
     public function saveUserSignature($signatureFile, \Event $event)
     {
-        $portalConnection = new \optomPortalConnection();
-        $newFile = $portalConnection->createNewSignatureImage($signatureFile, $event->id);
-        $clinicElement = $this->getClinicalElementForEvent($event);
-        $clinicElement->consultant_signature_file_id = $newFile->id;
-        $clinicElement->consultant_id = \Yii::app()->user->id;
-        $clinicElement->save();
+        $portal_connection = new \optomPortalConnection();
+        if ($new_file = $portal_connection->createNewSignatureImage($signatureFile, $event->id)) {
+            if ($clinic_element = $this->getClinicalElementForEvent($event)) {
+                $clinic_element->consultant_signature_file_id = $new_file->id;
+                $clinic_element->consultant_id = \Yii::app()->user->id;
+                $clinic_element->save();
+            } else {
+                throw new \Exception("Could not find clinical element for event " . $event->id);
+            }
+        } else {
+            throw new \Exception("could not create event signature file");
+        }
+
+    }
+
+    /**
+     * @param \Event $event
+     * @param \User $user
+     * @param $pin
+     * @return bool
+     */
+    public function signCvi(\Event $event, \User $user, $pin)
+    {
+        if ($user->signature_file_id) {
+
+            $decodedImage = $user->getDecryptedSignature($pin);
+            if ($decodedImage) {
+                $transaction = $this->startTransaction();
+                try {
+                    $this->saveUserSignature($decodedImage, $event);
+                    $this->updateEventInfo($event);
+                    $transaction->commit();
+                    return true;
+                }
+                catch (\Exception $e) {
+                    \OELog::log($e->getMessage());
+                    $transaction->rollback();
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
     }
 
 }

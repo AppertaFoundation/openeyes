@@ -340,9 +340,12 @@ class DefaultController extends \BaseEventTypeController
         $index
     ) {
         $model_name = \CHtml::modelName($element);
-        $answer_data = array_key_exists('patient_factors',
-            $data[$model_name]) ? $data[$model_name]['patient_factors'] : array();
-        $element->updatePatientFactorAnswers($answer_data);
+        if (array_key_exists($model_name, $data)) {
+            $answer_data = array_key_exists('patient_factors',
+                $data[$model_name]) ? $data[$model_name]['patient_factors'] : array();
+            $element->updatePatientFactorAnswers($answer_data);
+        }
+
     }
 
     /**
@@ -618,9 +621,7 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function updateEventInfo()
     {
-        $status = $this->getManager()->calculateStatus($this->event);
-        $this->event->info = $this->getManager()->getStatusText($status);
-        $this->event->save();
+        $this->getManager()->updateEventInfo($this->event);
     }
 
     /**
@@ -632,6 +633,8 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * Generate a version of the certificate for signing by the patient/representative for consent.
+     *
      * @param $id
      */
     public function actionConsentSignature($id)
@@ -720,24 +723,25 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * @param $id
+     * @throws \CHttpException
      */
     public function actionSignCVI($id)
     {
-        if (\Yii::app()->user->id && \Yii::app()->getRequest()->getParam('signaturePin')) {
-            $user = \User::model()->findByPk(\Yii::app()->user->id);
-            if ($user->signature_file_id) {
-                $decodedImage = $user->getDecryptedSignature(\Yii::app()->getRequest()->getParam('signaturePin'));
-                if ($decodedImage) {
-                    $this->getManager()->saveUserSignature($decodedImage, $this->event);
-                    $this->updateEventInfo();
-                    echo 'This CVI has been signed by <b>' . $user->getFullName() . '</b>';
-                } else {
-                    echo 0;
-                }
+        $pin = $this->getApp()->getRequest()->getParam('signature_pin', null);
+        if ($pin !== null) {
+            $user = \User::model()->findByPk($this->getApp()->user->id);
+            if ($this->getManager()->signCvi($this->event, $user, $pin)) {
+                $this->getApp()->user->setFlash('success.cvi_consultant_signature', 'CVI signed.');
+                $this->updateEventInfo();
+            } else {
+                $this->getApp()->user->setFlash('error.cvi_consultant_signature', 'Unable to sign the CVI');
             }
-        } else {
-            echo 0;
         }
+        else {
+            throw new \CHttpException(403, "Invalid Request");
+        }
+
+        $this->redirect(array('/' . $this->event->eventType->class_name . '/default/view/' . $id));
     }
 
     /**
