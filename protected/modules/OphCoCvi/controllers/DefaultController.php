@@ -37,6 +37,8 @@ class DefaultController extends \BaseEventTypeController
         'list' => self::ACTION_TYPE_LIST
     );
 
+    protected static $FILTER_LIST_KEY = 'OphCoCvi_list_filter';
+
     /**
      * Create Form with check for the cvi existing events count
      * @throws \Exception
@@ -382,13 +384,29 @@ class DefaultController extends \BaseEventTypeController
     {
         $filter = array();
 
-        foreach (array('date_from', 'date_to', 'consultant_ids', 'show_issued') as $key) {
-            $val = $this->request->getPost($key, null);
-            $filter[$key] = $val;
-            if ($val) {
-                $this->is_list_filtered = true;
+        // if POST, then a new filter is to be applied, otherwise retrieve from the session
+        if ($this->request->isPostRequest) {
+            foreach (array('date_from', 'date_to', 'consultant_ids', 'show_issued') as $key) {
+                $val = $this->request->getPost($key, null);
+                $filter[$key] = $val;
+            }
+        } else {
+            if ($session_filter = $this->getApp()->session[static::$FILTER_LIST_KEY]) {
+                $filter = $session_filter;
             }
         }
+
+        // set the is filtered flag for the controller
+        foreach ($filter as $val) {
+            if ($val) {
+                $this->is_list_filtered = true;
+                break;
+            }
+        }
+
+        // store filter for later use
+        $this->getApp()->session[static::$FILTER_LIST_KEY] = $filter;
+
         return $filter;
     }
 
@@ -404,7 +422,7 @@ class DefaultController extends \BaseEventTypeController
 
         $dp = $this->getManager()->getListDataProvider($filter);
 
-        $this->render('list', array('dp' => $dp));
+        $this->render('list', array('dp' => $dp, 'list_filter' => $filter));
     }
 
     /**

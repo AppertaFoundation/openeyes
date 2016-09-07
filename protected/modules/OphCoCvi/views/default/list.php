@@ -98,7 +98,7 @@ $cols = array(
 ?>
 <h1 class="badge">CVI List</h1>
 <div class="box content">
-    <?php $this->renderPartial('list_filter') ?>
+    <?php $this->renderPartial('list_filter', array('list_filter' => $list_filter)) ?>
 
     <div class="row">
         <div class="large-12 column">

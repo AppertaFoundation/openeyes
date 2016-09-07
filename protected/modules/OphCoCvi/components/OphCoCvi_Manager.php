@@ -673,11 +673,11 @@ class OphCoCvi_Manager extends \CComponent
                 $criteria->addBetweenCondition('event.event_date', $from, $to);
             }
         } elseif ($from) {
-            $criteria->addCondition('event.event_date >= ?');
-            $criteria->params[] = $from;
+            $criteria->addCondition('event.event_date >= :from');
+            $criteria->params[':from'] = $from;
         } elseif ($to) {
-            $criteria->addCondition('event.event_date <= ?');
-            $criteria->params[] = $to;
+            $criteria->addCondition('event.event_date <= :to');
+            $criteria->params[':to'] = $to;
         }
     }
 
@@ -699,8 +699,8 @@ class OphCoCvi_Manager extends \CComponent
     private function handleIssuedFilter(\CDbCriteria $criteria, $filter = array())
     {
         if (!isset($filter['show_issued']) || (isset($filter['show_issued']) && !(bool)$filter['show_issued'])) {
-            $criteria->addCondition('t.is_draft = ?');
-            $criteria->params[] = true;
+            $criteria->addCondition('t.is_draft = :isdraft');
+            $criteria->params[':isdraft'] = true;
         }
     }
 
