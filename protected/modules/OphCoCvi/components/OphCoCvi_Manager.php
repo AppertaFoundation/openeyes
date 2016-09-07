@@ -591,8 +591,12 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function isIssued(\Event $event)
     {
-        $info_element = $this->getEventInfoElementForEvent($event);
-        return !$info_element->is_draft;
+        if ($info_element = $this->getEventInfoElementForEvent($event)) {
+            return !$info_element->is_draft;
+        }
+        else {
+            return false;
+        }
     }
 
     /**
