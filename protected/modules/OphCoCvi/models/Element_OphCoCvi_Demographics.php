@@ -168,7 +168,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
     {
         $this->date_of_birth = $patient->dob;
         $this->nhs_number = $patient->getNhsnum();
-        $this->address = $patient->getSummaryAddress(',');
+        $this->address = $patient->getSummaryAddress(",\n");
         if ($patient->contact && $patient->contact->address) {
             $this->postcode = substr($patient->contact->address->postcode,0,4);
         }
@@ -181,7 +181,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
 
         if ($patient->gp) {
             $this->gp_name = $patient->gp->getFullName();
-            $this->gp_address = $patient->gp->getLetterAddress(array('delimiter' => ', ', 'patient' => $patient));
+            $this->gp_address = $patient->gp->getLetterAddress(array('delimiter' => ",\n", 'patient' => $patient));
             if ($practice = $patient->practice) {
                 $this->gp_telephone = $practice->phone;
             }
