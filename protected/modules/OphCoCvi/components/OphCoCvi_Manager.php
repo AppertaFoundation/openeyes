@@ -738,6 +738,10 @@ class OphCoCvi_Manager extends \CComponent
                 'asc' => 'lower(contact.last_name) asc, lower(contact.first_name) asc',
                 'desc' => 'lower(contact.last_name) desc, lower(contact.first_name) desc',
             ),
+            'hosnum' => array(
+                'asc' => 'patient.hos_num asc, patient.id asc, event.id asc',
+                'desc' => 'patient.hos_num desc, patient.id desc, event.id desc',
+            ),
             'creator' => array(
                 'asc' => 'lower(user.last_name) asc, lower(user.first_name) asc, event.id asc',
                 'desc' => 'lower(user.last_name) desc, lower(user.first_name) desc, event.id desc',

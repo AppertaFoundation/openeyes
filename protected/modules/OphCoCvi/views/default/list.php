@@ -21,9 +21,9 @@ $cols = array(
     array(
         'id' => 'event_date',
         'class' => 'CDataColumn',
-        'header' => $dp->getSort()->link('event_date', 'Date', array('class' => 'sort-link')),
+        'header' => $dp->getSort()->link('event_date', 'Event Date', array('class' => 'sort-link')),
         'value' => 'Helper::convertMySQL2NHS($data->event->event_date)',
-        'htmlOptions' => array('class' => 'date'),
+        'htmlOptions' => array('class' => 'date', 'style' => 'whitespace: nowrap;'),
     ),
     array(
         'id' => 'patient_name',
@@ -32,6 +32,12 @@ $cols = array(
         'urlExpression' => 'Yii::app()->createURL("/patient/view/", array("id" => $data->event->episode->patient_id))',
         //'urlExpression' => '$this->grid->controller->getManager()->getEventViewUri($data->event)',
         'labelExpression' => '$data->event->episode->patient->getHSCICName()',
+    ),
+    array(
+        'id' => 'hosnum',
+        'class' => 'CDataColumn',
+        'header' => $dp->getSort()->link('hosnum', 'Hospital No.', array('class' => 'sort-link')),
+        'value' => '$data->event->episode->patient->hos_num'
     ),
     array(
         'id' => 'creator',

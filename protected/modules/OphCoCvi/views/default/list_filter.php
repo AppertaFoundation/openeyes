@@ -37,11 +37,11 @@
             <div class=" js-toggle-body">
                 <div class="row">
 
-                    <div class="column large-1 text-right"><label for="date_from">From:</label></div>
+                    <div class="column large-1 text-right"><label for="date_from">Date From:</label></div>
                     <div class="column large-2">
                         <input type="text" id="date_from" name="date_from" class="datepicker filter-field"
                                value="<?= array_key_exists('date_from', $list_filter) ? $list_filter['date_from'] : ''; ?>" /></div>
-                    <div class="column large-1 text-right"><label for="date_to">To:</label></div>
+                    <div class="column large-1 text-right"><label for="date_to">Date To:</label></div>
                     <div class="column large-2">
                         <input type="text" id="date_to" name="date_to" class="datepicker filter-field"
                                value="<?= array_key_exists('date_to', $list_filter) ? $list_filter['date_to'] : ''; ?>" /></div>
