@@ -58,9 +58,8 @@ if ($this->checkUserSigned()) {
                         ));
                         ?>
                         <div id="div_signature_pin" class="row field-row">
-                            <div class="large-6 column">
-                                <label for="signature_pin">If you would like to sign this eCVI form please enter your
-                                    PIN:</label>
+                            <div class="large-4 column">
+                                <label for="signature_pin">Consultant's signature - please enter your PIN:</label>
                             </div>
                             <div class="large-2 column">
                                 <input type="text" maxlength="4" name="signature_pin" id="signature_pin">
