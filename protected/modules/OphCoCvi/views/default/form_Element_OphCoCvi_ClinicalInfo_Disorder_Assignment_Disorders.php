@@ -1,14 +1,29 @@
 <div class="row">
     <div class="column large-3 end"><h3 class="inline-header">Disorders</h3></div>
 </div>
+<div class="row">
+    <div class="column large-2 large-push-3"><h3>RIGHT</h3></div>
+    <div class="column large-2 large-push-6 end"><h3>LEFT</h3></div>
+</div>
 <?php
-foreach ($this->getDisorderSections() as $disorder_section) { ?>
+foreach ($this->getDisorderSections() as $disorder_section) {
+    $is_open = $element->hasAffectedCviDisorderInSection($disorder_section);
+    ?>
     <hr/>
-    <fieldset class="row">
-        <legend class="large-12 column">
-            <?php echo $disorder_section->name; ?>
-        </legend>
-    </fieldset>
+    <section class="js-toggle-container">
+    <div class="row">
+        <div class="large-4 column">
+            <h4><?= $disorder_section->name; ?></h4>
+        </div>
+        <div class="large-1 large-push-6 column end">
+            <a href="#" class="toggle-trigger js-toggle <?= $is_open ? 'toggle-hide' : 'toggle-show' ?>">
+                <span class="icon-showhide">
+                    Show/hide this section
+                </span>
+            </a>
+        </div>
+    </div>
+    <div class="js-toggle-body" style="<?=  $is_open ? 'display:block' : 'display:none' ?>">
     <?php if ($disorder_section->disorders) { ?>
         <div class="sub-element-fields element-eyes row">
             <div class="element-eye right-eye column left side" data-side="right">
@@ -44,6 +59,7 @@ foreach ($this->getDisorderSections() as $disorder_section) { ?>
                     $comments, array('rows' => 2, 'cols' => 40)); ?>
             </div>
         </fieldset>
-    <?php }
-}
-?>
+    <?php } ?>
+    </div>
+    </section>
+<?php }

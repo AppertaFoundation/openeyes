@@ -21,9 +21,9 @@ $cols = array(
     array(
         'id' => 'event_date',
         'class' => 'CDataColumn',
-        'header' => $dp->getSort()->link('event_date', 'Date', array('class' => 'sort-link')),
+        'header' => $dp->getSort()->link('event_date', 'Event Date', array('class' => 'sort-link')),
         'value' => 'Helper::convertMySQL2NHS($data->event->event_date)',
-        'htmlOptions' => array('class' => 'date'),
+        'htmlOptions' => array('class' => 'date', 'style' => 'whitespace: nowrap;'),
     ),
     array(
         'id' => 'patient_name',
@@ -34,8 +34,19 @@ $cols = array(
         'labelExpression' => '$data->event->episode->patient->getHSCICName()',
     ),
     array(
+        'id' => 'hosnum',
+        'class' => 'CDataColumn',
+        'header' => $dp->getSort()->link('hosnum', 'Hospital No.', array('class' => 'sort-link')),
+        'value' => '$data->event->episode->patient->hos_num'
+    ),
+    array(
+        'id' => 'creator',
+        'header' => $dp->getSort()->link('creator', 'Created By', array('class' => 'sort-link')),
+        'value' => '$data->user->getFullNameAndTitle()'
+    ),
+    array(
         'id' => 'consultant',
-        'header' => $dp->getSort()->link('consultant', 'From', array('class' => 'sort-link')),
+        'header' => $dp->getSort()->link('consultant', 'Consultant', array('class' => 'sort-link')),
         'value' => function ($data) use ($manager) {
             if ($consultant = $manager->getClinicalConsultant($data)) {
                 return $consultant->getFullNameAndTitle();
@@ -98,7 +109,7 @@ $cols = array(
 ?>
 <h1 class="badge">CVI List</h1>
 <div class="box content">
-    <?php $this->renderPartial('list_filter') ?>
+    <?php $this->renderPartial('list_filter', array('list_filter' => $list_filter)) ?>
 
     <div class="row">
         <div class="large-12 column">

@@ -90,30 +90,6 @@ $(document).ready(function() {
             }
     });
 
-    handleButton($('#et_sign_cvi'),function (e) {
-        e.preventDefault();
-        $('#signature_error').remove();
-        urldata = window.location.href.split('/');
-        eventId = urldata[urldata.length-1];
-        $.ajax({
-            'type': 'POST',
-            'url': baseUrl + '/OphCoCvi/default/signCVI/'+eventId,
-            'dataType': 'text',
-            'data': {
-                'signaturePin': $('#signature_pin').val(),
-                'YII_CSRF_TOKEN': $('#YII_CSRF_TOKEN').val()
-            },
-            'success': function (result) {
-                if(result == 0) {
-                    $('#div_signature_pin').after('<div id="signature_error" class="row field-row"><div class="large-6 column"></div><div class="large-6 column"><label>ERROR: You entered an invalid PIN number, please try again</label></div></div>');
-                }else
-                {
-                    $('#div_signature_pin').html('<div class="large-12 column"><label>'+result+'</label></div>');
-                }
-                enableButtons();
-            }
-        });
-    });
 });
 
 function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }

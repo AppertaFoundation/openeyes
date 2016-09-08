@@ -410,6 +410,20 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
     private $disorders_by_section;
 
     /**
+     * @return mixed
+     */
+    private function getAllDisordersFromAssignments() {
+        $ids = array();
+        foreach ($this->left_cvi_disorder_assignments as $ass) {
+            $ids[] = $ass->ophcocvi_clinicinfo_disorder_id;
+        }
+        foreach ($this->right_cvi_disorder_assignments as $ass) {
+            $ids[] = $ass->ophcocvi_clinicinfo_disorder_id;
+        }
+        return OphCoCvi_ClinicalInfo_Disorder::model()->findAllByPk($ids);
+    }
+
+    /**
      * @param OphCoCvi_ClinicalInfo_Disorder_Section $section
      * @return mixed
      * @throws \Exception
@@ -419,7 +433,16 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         if (!$this->disorders_by_section) {
             $this->disorders_by_section = array();
             $seen = array();
-            foreach ($this->cvi_disorders as $disorder) {
+
+            // assume here that the assignment attributes have been set from the default controller.
+            if ($this->isModelDirty()) {
+                $cvi_disorders = $this->getAllDisordersFromAssignments();
+            }
+            else {
+                $cvi_disorders = $this->cvi_disorders;
+            }
+
+            foreach ($cvi_disorders as $disorder) {
                 if (in_array($disorder->id, $seen)) {
                     continue;
                 }
@@ -432,8 +455,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             }
         }
         if (!array_key_exists($section->id, $this->disorders_by_section)) {
-            throw new \Exception("No Disorders for section id {$section->id}. Available are: " . implode(", ",
-                    array_keys($this->disorders_by_section)));
+            return array();
         }
         return $this->disorders_by_section[$section->id];
     }
@@ -608,6 +630,24 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
                 return $recorded_cvi->affected;
             }
         }
+    }
+
+    /**
+     * @param OphCoCvi_ClinicalInfo_Disorder $cvi_disorder
+     * @return bool
+     * @throws \Exception
+     */
+    public function hasAffectedCviDisorderInSection(OphCoCvi_ClinicalInfo_Disorder_Section $cvi_disorder_section)
+    {
+        foreach ($this->getAllDisordersForSection($cvi_disorder_section) as $cvi_disorder) {
+            if ($this->hasCviDisorderForSide($cvi_disorder, 'right')) {
+                return true;
+            }
+            if ($this->hasCviDisorderForSide($cvi_disorder, 'left')) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

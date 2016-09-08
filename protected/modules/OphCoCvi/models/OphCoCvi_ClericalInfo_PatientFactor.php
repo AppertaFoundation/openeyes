@@ -63,6 +63,8 @@ class OphCoCvi_ClericalInfo_PatientFactor extends \BaseActiveRecordVersioned
         return array(
             array('name', 'safe'),
             array('name', 'required'),
+            array('name, comments_label', 'length', 'max' => 128),
+            array('code', 'length', 'max' => 20),
             array('comments_label', 'RequiredIfFieldValidator', 'field' => 'require_comments', 'value' => 1, 'message' => 'A comments label is required if comments are allowed for a factor.'),
             array('id, name', 'safe', 'on' => 'search'),
         );

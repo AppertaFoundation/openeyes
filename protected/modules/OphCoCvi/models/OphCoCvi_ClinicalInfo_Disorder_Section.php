@@ -65,6 +65,7 @@ class OphCoCvi_ClinicalInfo_Disorder_Section extends \BaseActiveRecordVersioned
         return array(
             array('name', 'safe'),
             array('name', 'required'),
+            array('name, comments_label', 'length', 'max' => 128),
             array('id, name', 'safe', 'on' => 'search'),
         );
     }

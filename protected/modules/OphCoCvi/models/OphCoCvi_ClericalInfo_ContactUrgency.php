@@ -61,6 +61,8 @@ class OphCoCvi_ClericalInfo_ContactUrgency extends \BaseActiveRecordVersioned
     {
         return array(
             array('name', 'safe'),
+            array('name', 'length', 'max' => 128),
+            array('code', 'length', 'max' => 20),
             array('name', 'required'),
             array('id, name', 'safe', 'on' => 'search'),
         );
