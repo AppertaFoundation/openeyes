@@ -37,6 +37,9 @@ class DefaultController extends \BaseEventTypeController
         'list' => self::ACTION_TYPE_LIST
     );
 
+    /** @var string label used in session storage for the list filter values */
+    protected static $FILTER_LIST_KEY = 'OphCoCvi_list_filter';
+
     /**
      * Create Form with check for the cvi existing events count
      * @throws \Exception
@@ -104,10 +107,16 @@ class DefaultController extends \BaseEventTypeController
      */
     public function checkEditAccess()
     {
-        return $this->checkAccess('OprnEditCvi', $this->getApp()->user->id, array(
-            'firm' => $this->firm,
-            'event' => $this->event
-        ));
+        if ($this->event->isNewRecord) {
+            // because we are using this check for clinical edit access checks, we need to handle new events as well
+            return $this->checkCreateAccess();
+        } else {
+            return !$this->getManager()->isIssued($this->event) && $this->checkAccess('OprnEditCvi',
+                $this->getApp()->user->id, array(
+                    'firm' => $this->firm,
+                    'event' => $this->event
+                ));
+        }
     }
 
     /**
@@ -223,32 +232,34 @@ class DefaultController extends \BaseEventTypeController
     protected function setComplexAttributes_Element_OphCoCvi_ClinicalInfo($element, $data, $index)
     {
         $model_name = \CHtml::modelName($element);
-        foreach (array('left', 'right') as $side) {
-            $cvi_assignments = array();
-            $key = $side . '_disorders';
-            if (array_key_exists($key, $data[$model_name])) {
-                foreach ($data[$model_name][$key] as $idx => $data_disorder) {
-                    $cvi_ass = new models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment();
-                    $cvi_ass->ophcocvi_clinicinfo_disorder_id = $idx;
-                    $cvi_ass->affected = array_key_exists('affected',
-                        $data_disorder) ? $data_disorder['affected'] : false;
-                    $cvi_ass->main_cause = array_key_exists('main_cause',
-                        $data_disorder) ? $data_disorder['main_cause'] : false;
-                    $cvi_assignments[] = $cvi_ass;
+        if (array_key_exists($model_name, $data)) {
+            foreach (array('left', 'right') as $side) {
+                $cvi_assignments = array();
+                $key = $side . '_disorders';
+                if (array_key_exists($key, $data[$model_name])) {
+                    foreach ($data[$model_name][$key] as $idx => $data_disorder) {
+                        $cvi_ass = new models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment();
+                        $cvi_ass->ophcocvi_clinicinfo_disorder_id = $idx;
+                        $cvi_ass->affected = array_key_exists('affected',
+                            $data_disorder) ? $data_disorder['affected'] : false;
+                        $cvi_ass->main_cause = array_key_exists('main_cause',
+                            $data_disorder) ? $data_disorder['main_cause'] : false;
+                        $cvi_assignments[] = $cvi_ass;
+                    }
+                }
+                $element->{$side . '_cvi_disorder_assignments'} = $cvi_assignments;
+            }
+            $comments = array();
+            if (array_key_exists('cvi_disorder_section', $data[$model_name])) {
+                foreach ($data[$model_name]['cvi_disorder_section'] as $id => $data_comments) {
+                    $section_comment = new models\Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments();
+                    $section_comment->ophcocvi_clinicinfo_disorder_section_id = $id;
+                    $section_comment->comments = $data_comments['comments'];
+                    $comments[] = $section_comment;
                 }
             }
-            $element->{$side . '_cvi_disorder_assignments'} = $cvi_assignments;
+            $element->cvi_disorder_section_comments = $comments;
         }
-        $comments = array();
-        if (array_key_exists('cvi_disorder_section', $data[$model_name])) {
-            foreach ($data[$model_name]['cvi_disorder_section'] as $id => $data_comments) {
-                $section_comment = new models\Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments();
-                $section_comment->ophcocvi_clinicinfo_disorder_section_id = $id;
-                $section_comment->comments = $data_comments['comments'];
-                $comments[] = $section_comment;
-            }
-        }
-        $element->cvi_disorder_section_comments = $comments;
     }
 
     /**
@@ -302,18 +313,19 @@ class DefaultController extends \BaseEventTypeController
     ) {
         $model_name = \CHtml::modelName($element);
 
-        $answers = array();
-        if (array_key_exists('patient_factors', $data[$model_name])) {
-            foreach ($data[$model_name]['patient_factors'] as $id => $data_answer) {
-                $a = new models\OphCoCvi_ClericalInfo_PatientFactor_Answer();
-                $a->patient_factor_id = $id;
-                $a->is_factor = isset($data_answer['is_factor']) ? $data_answer['is_factor'] : null;
-                $a->comments = isset($data_answer['comments']) ? $data_answer['comments'] : null;
-                $answers[] = $a;
+        if (array_key_exists($model_name, $data)) {
+            $answers = array();
+            if (array_key_exists('patient_factors', $data[$model_name])) {
+                foreach ($data[$model_name]['patient_factors'] as $id => $data_answer) {
+                    $a = new models\OphCoCvi_ClericalInfo_PatientFactor_Answer();
+                    $a->patient_factor_id = $id;
+                    $a->is_factor = isset($data_answer['is_factor']) ? $data_answer['is_factor'] : null;
+                    $a->comments = isset($data_answer['comments']) ? $data_answer['comments'] : null;
+                    $answers[] = $a;
+                }
             }
+            $element->patient_factor_answers = $answers;
         }
-
-        $element->patient_factor_answers = $answers;
     }
 
     /**
@@ -328,9 +340,12 @@ class DefaultController extends \BaseEventTypeController
         $index
     ) {
         $model_name = \CHtml::modelName($element);
-        $answer_data = array_key_exists('patient_factors',
-            $data[$model_name]) ? $data[$model_name]['patient_factors'] : array();
-        $element->updatePatientFactorAnswers($answer_data);
+        if (array_key_exists($model_name, $data)) {
+            $answer_data = array_key_exists('patient_factors',
+                $data[$model_name]) ? $data[$model_name]['patient_factors'] : array();
+            $element->updatePatientFactorAnswers($answer_data);
+        }
+
     }
 
     /**
@@ -379,13 +394,29 @@ class DefaultController extends \BaseEventTypeController
     {
         $filter = array();
 
-        foreach (array('date_from', 'date_to', 'consultant_ids', 'show_issued') as $key) {
-            $val = $this->request->getPost($key, null);
-            $filter[$key] = $val;
-            if ($val) {
-                $this->is_list_filtered = true;
+        // if POST, then a new filter is to be applied, otherwise retrieve from the session
+        if ($this->request->isPostRequest) {
+            foreach (array('date_from', 'date_to', 'consultant_ids', 'show_issued') as $key) {
+                $val = $this->request->getPost($key, null);
+                $filter[$key] = $val;
+            }
+        } else {
+            if ($session_filter = $this->getApp()->session[static::$FILTER_LIST_KEY]) {
+                $filter = $session_filter;
             }
         }
+
+        // set the is filtered flag for the controller
+        foreach ($filter as $val) {
+            if ($val) {
+                $this->is_list_filtered = true;
+                break;
+            }
+        }
+
+        // store filter for later use
+        $this->getApp()->session[static::$FILTER_LIST_KEY] = $filter;
+
         return $filter;
     }
 
@@ -401,7 +432,7 @@ class DefaultController extends \BaseEventTypeController
 
         $dp = $this->getManager()->getListDataProvider($filter);
 
-        $this->render('list', array('dp' => $dp));
+        $this->render('list', array('dp' => $dp, 'list_filter' => $filter));
     }
 
     /**
@@ -590,9 +621,7 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function updateEventInfo()
     {
-        $status = $this->getManager()->calculateStatus($this->event);
-        $this->event->info = $this->getManager()->getStatusText($status);
-        $this->event->save();
+        $this->getManager()->updateEventInfo($this->event);
     }
 
     /**
@@ -604,6 +633,8 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * Generate a version of the certificate for signing by the patient/representative for consent.
+     *
      * @param $id
      */
     public function actionConsentSignature($id)
@@ -630,10 +661,10 @@ class DefaultController extends \BaseEventTypeController
     {
         $signature_element = $this->getManager()->getConsentSignatureElementForEvent($this->event);
         if ($signature_element->saveSignatureImageFromPortal()) {
-            $this->getApp()->user->setFlash('success', 'Signature successfully loaded.');
+            $this->getApp()->user->setFlash('success.cvi_consent_signature', 'Signature successfully loaded.');
             $this->updateEventInfo();
         } else {
-            $this->getApp()->user->setFlash('error', 'Signature could not be found');
+            $this->getApp()->user->setFlash('error.cvi_consent_signature', 'Signature could not be found');
         }
 
         $this->redirect(array('/' . $this->event->eventType->class_name . '/default/view/' . $id));
@@ -692,24 +723,25 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * @param $id
+     * @throws \CHttpException
      */
     public function actionSignCVI($id)
     {
-        if (\Yii::app()->user->id && \Yii::app()->getRequest()->getParam('signaturePin')) {
-            $user = \User::model()->findByPk(\Yii::app()->user->id);
-            if ($user->signature_file_id) {
-                $decodedImage = $user->getDecryptedSignature(\Yii::app()->getRequest()->getParam('signaturePin'));
-                if ($decodedImage) {
-                    $this->getManager()->saveUserSignature($decodedImage, $this->event);
-                    $this->updateEventInfo();
-                    echo 'This CVI has been signed by <b>' . $user->getFullName() . '</b>';
-                } else {
-                    echo 0;
-                }
+        $pin = $this->getApp()->getRequest()->getParam('signature_pin', null);
+        if ($pin !== null) {
+            $user = \User::model()->findByPk($this->getApp()->user->id);
+            if ($this->getManager()->signCvi($this->event, $user, $pin)) {
+                $this->getApp()->user->setFlash('success.cvi_consultant_signature', 'CVI signed.');
+                $this->updateEventInfo();
+            } else {
+                $this->getApp()->user->setFlash('error.cvi_consultant_signature', 'Unable to sign the CVI');
             }
-        } else {
-            echo 0;
         }
+        else {
+            throw new \CHttpException(403, "Invalid Request");
+        }
+
+        $this->redirect(array('/' . $this->event->eventType->class_name . '/default/view/' . $id));
     }
 
     /**

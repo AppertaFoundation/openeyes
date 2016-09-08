@@ -106,7 +106,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
             'date_of_birth' => 'Date of Birth',
             'nhs_number' => 'NHS Number',
             'address' => 'Address (incl. Post Code)',
-            'postcode' => 'Post Code',
+            'postcode' => 'Post Code (1st half)',
             'email' => 'Email',
             'telephone' => 'Telephone',
             'gender_id' => 'Gender',
@@ -154,6 +154,9 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
         $this->date_of_birth = $patient->dob;
         $this->nhs_number = $patient->getNhsnum();
         $this->address = $patient->getSummaryAddress(',');
+        if ($patient->contact && $patient->contact->address) {
+            $this->postcode = substr($patient->contact->address->postcode,0,4);
+        }
         $this->email = $patient->getEmail();
         $this->telephone = $patient->getPrimary_phone();
 
@@ -202,7 +205,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
      */
     protected function generateStructuredGenderHeader()
     {
-        $gender_data = array_fill(0,3, '');
+        $gender_data = array_fill(0,4, '');
 
         if ($gender = $this->gender) {
             if (strtolower($gender->name) == 'male') {
@@ -234,7 +237,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
      */
     protected function generateStructuredPostcodeHeader()
     {
-        $postcode_header = array_fill(0,3,'');
+        $postcode_header = array_fill(0,4,'');
 
         if ($this->postcode) {
             $parts = explode(' ', $this->postcode, 2);
@@ -257,7 +260,6 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
      */
     protected function generateStructuredSummaryTable()
     {
-
         $gender_data = $this->generateStructuredGenderHeader();
         $year_header = $this->generateStructuredYearHeader();
         $postcode_header = $this->generateStructuredPostcodeHeader();

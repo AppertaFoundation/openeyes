@@ -38,9 +38,13 @@
                 <div class="row">
 
                     <div class="column large-1 text-right"><label for="date_from">From:</label></div>
-                    <div class="column large-2"><input type="text" id="date_from" name="date_from" class="datepicker filter-field" value="<?=$this->request->getPost('date_from', '')?>" /></div>
+                    <div class="column large-2">
+                        <input type="text" id="date_from" name="date_from" class="datepicker filter-field"
+                               value="<?= array_key_exists('date_from', $list_filter) ? $list_filter['date_from'] : ''; ?>" /></div>
                     <div class="column large-1 text-right"><label for="date_to">To:</label></div>
-                    <div class="column large-2"><input type="text" id="date_to" name="date_to" class="datepicker filter-field" value="<?=$this->request->getPost('date_to', '')?>" /></div>
+                    <div class="column large-2">
+                        <input type="text" id="date_to" name="date_to" class="datepicker filter-field"
+                               value="<?= array_key_exists('date_to', $list_filter) ? $list_filter['date_to'] : ''; ?>" /></div>
                     <div class="column large-1 text-right"><label for="consultants">Consultant(s):</label></div>
                     <div class="column large-2"><?php
                         $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
@@ -87,7 +91,7 @@
                         ));
                         ?>
                         <div><ul id="consultant_list" class="multi-select-search scroll">
-                                <?php $consultant_ids = $this->request->getPost('consultant_ids', '');
+                                <?php $consultant_ids = array_key_exists('consultant_ids', $list_filter) ? $list_filter['consultant_ids'] : '';
                                 if ($consultant_ids) {
                                     foreach(explode(',', $consultant_ids) as $id) {
                                         if ($user = User::model()->findByPk($id)) { ?>
@@ -99,14 +103,18 @@
                         <?= CHtml::hiddenField('consultant_ids', $this->request->getPost('consultant_ids', ''), array('class' => 'filter-field')); ?>
                     </div>
                     <div class="column large-2 text-right"><label for="show-issued">Show Issued:</label></div>
-                    <div class="column large-1 end"><?php echo CHtml::checkBox('show_issued', ($this->request->getPost('show_issued', '') == 1), array('class' => 'filter-field'))?></div>
+                    <div class="column large-1 end">
+                        <?php
+                            $show_issued = array_key_exists('show_issued', $list_filter) ? $list_filter['show_issued'] : false;
+                            echo CHtml::checkBox('show_issued', ($show_issued == 1), array('class' => 'filter-field'));
+                        ?></div>
                 </div>
                 <div class="row">
                     <div class="column large-12 text-right end">
                         <?php if ($this->isListFiltered()) { ?>
                             <button id="reset_button" class="warning small" type="submit">Reset</button>
                         <?php } ?>
-                        <button id="search_button" class="secondary small" type="submit" disabled="true">Apply</button></div>
+                        <button id="search_button" class="secondary small" type="submit" disabled="true">Search</button></div>
                 </div>
             </div>
         </div>
@@ -123,6 +131,7 @@
 
         $('#consultant_list').append('<li data-id="'+ consultant.id +'">' + consultant.value +'<a href="#" class="remove">X</a></li>');
         $('#consultant_list').scrollTop($('#consultant_list')[0].scrollHeight);
+        $('#consultant_ids').trigger('change');
     }
 
     $('#consultant_list').on('click', '.remove', function(e) {
@@ -136,12 +145,14 @@
             }
         }
         $('#consultant_ids').val(newIds.join());
+        $('#consultant_ids').trigger('change');
         $(li).remove();
     });
 
     $('#reset_button').on('click', function(e) {
         e.preventDefault();
-        window.location.href = document.URL;
+        $('.filter-field').val('');
+        $('#cvi-filter').submit();
     });
 
     $('#cvi-filter').on('change', '.filter-field', function() {

@@ -43,6 +43,7 @@ namespace OEModule\OphCoCvi\models;
 
 class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
 {
+    private $defaultScopeDisabled = false;
     /**
      * Returns the static model of the specified AR class.
      * @return the static model class
@@ -58,6 +59,38 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
     public function tableName()
     {
         return 'et_ophcocvi_eventinfo';
+    }
+
+    /**
+     * Sets default scope for events such that we never pull back any rows that have deleted set to 1.
+     *
+     * @return array of mandatory conditions
+     */
+    public function defaultScope()
+    {
+        if ($this->defaultScopeDisabled) {
+            return array();
+        }
+
+        return array(
+            'with' => array(
+                'event' => array(
+                    'condition' => 'event.deleted = false'
+                )
+            )
+        );
+    }
+
+    /**
+     * Turn off the default scope
+     *
+     * @return $this
+     */
+    public function disableDefaultScope()
+    {
+        $this->defaultScopeDisabled = true;
+
+        return $this;
     }
 
     /**

@@ -17,6 +17,7 @@
 ?>
 <?php
 $user = \User::model()->findByPk(\Yii::app()->user->id);
+
 if ($this->checkUserSigned()) {
     $clinical_element = $this->getManager()->getClinicalElementForEvent($this->event); ?>
     <div class="element-data" xmlns="http://www.w3.org/1999/html">
@@ -43,27 +44,47 @@ if ($this->checkUserSigned()) {
                                     now</a></label>
                         </div>
                     </div>
-                <?php } else { ?>
-                    <div id="div_signature_pin" class="row field-row">
-                        <div class="large-6 column">
-                            <label for="signature_pin">If you would like to sign this eCVI form please enter your
-                                PIN:</label>
+                <?php } else {
+                    if ($this->getManager()->getClinicalElementForEvent($this->event)) {
+                        $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+                            'id' => 'sign-cvi-form',
+                            'enableAjaxValidation' => false,
+                            'layoutColumns' => array(
+                                'label' => 2,
+                                'field' => 10
+                            ),
+                            'action' => '/OphCoCvi/default/signCVI/' . $this->event->id,
+                            'method' => 'POST'
+                        ));
+                        ?>
+                        <div id="div_signature_pin" class="row field-row">
+                            <div class="large-6 column">
+                                <label for="signature_pin">If you would like to sign this eCVI form please enter your
+                                    PIN:</label>
+                            </div>
+                            <div class="large-2 column">
+                                <input type="text" maxlength="4" name="signature_pin" id="signature_pin">
+                            </div>
+                            <div class="large-4 column end">
+                                <?php echo CHtml::button('Sign this eCVI', array(
+                                    'type' => 'submit',
+                                    'id' => 'et_sign_cvi',
+                                    'name' => 'sign_cvi',
+                                    'class' => 'small button primary event-action'
+                                )); ?>
+
+                            </div>
                         </div>
-                        <div class="large-2 column">
-                            <input type="text" maxlength="4" name="signature_pin" id="signature_pin">
-                        </div>
-                        <div class="large-4 column end">
-                            <?php echo CHtml::button('Sign this eCVI', array(
-                                'type' => 'button',
-                                'id' => 'et_sign_cvi',
-                                'name' => 'sign_cvi',
-                                'class' => 'small button primary event-action'
-                            )); ?>
-                            <input type="hidden" name="YII_CSRF_TOKEN" id="YII_CSRF_TOKEN"
-                                   value="<?php echo Yii::app()->request->csrfToken ?>"/>
+                        <?php
+                        $this->endWidget();
+                    } else { ?>
+                        <div id="div_signature_pin" class="row field-row">
+                        <div class="large-12 column">
+                            <label>You can sign this CVI once the clinical data has been created.</label>
                         </div>
                     </div>
-                    <?php } ?>
+                    <?php }
+                } ?>
                 </div>
             </div>
         </div>

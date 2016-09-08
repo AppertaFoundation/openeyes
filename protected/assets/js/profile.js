@@ -25,9 +25,9 @@ $(document).ready(function() {
 			},
 			'success': function (result) {
 				if(result != false) {
-					$('#signature_image').append('<img src="data:image/png;base64,' + result + '">');
+					$('#signature_image').html('<img src="data:image/png;base64,' + result + '">');
 				}else{
-					$('#signature_image').append('ERROR: Your PIN is not valid!');
+					$('#signature_image').html('<p>ERROR: Your PIN is not valid!</p>');
 				}
 				enableButtons();
 			}
