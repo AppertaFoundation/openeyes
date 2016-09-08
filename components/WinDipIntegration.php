@@ -32,7 +32,7 @@ namespace OEModule\Internalreferral\components;
 class WinDipIntegration extends \CApplicationComponent implements ExternalIntegration
 {
     protected $yii;
-    protected $required_params = array(
+    protected static $required_params = array(
         'launch_uri',
         'application_id',
         'hashing_function',
@@ -65,7 +65,7 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
             $this->yii = \Yii::app();
         }
 
-        foreach ($this->required_params as $p) {
+        foreach (static::$required_params as $p) {
             if (!isset($this->$p) || is_null($this->$p)) {
                 throw new \Exception("Missing required parameter {$p}");
             }
@@ -173,10 +173,12 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
      *
      * @param \Event $event
      * @return string
+     * @throws \Exception
      */
     public function generateUrlForNewEvent(\Event $event)
     {
-        return $this->launch_uri . '?XML=' . urlencode($this->generateXmlRequest($event));
+        $xml = $this->generateXmlRequest($event);
+        return $this->launch_uri . '?XML=' . urlencode($xml);
     }
 
     /**
@@ -189,7 +191,7 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
     {
         $request = preg_replace('/>\s+</', '><', $request);
         $request = preg_replace('/[\n\r]/', '', $request);
-        return \CHtml::encode($request);
+        return $request;
     }
 
     /**
