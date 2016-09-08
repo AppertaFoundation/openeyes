@@ -219,6 +219,28 @@ class DefaultController extends \BaseEventTypeController
                         $latest_exam['element']);
                 }
             }
+            $cvi_disorders = models\OphCoCvi_ClinicalInfo_Disorder::model()->active()->findAll();
+            $cvi_ids_by_disorder_id = array();
+            foreach ($cvi_disorders as $cvid) {
+                if ($disorder_id = $cvid->disorder_id) {
+                    $cvi_ids_by_disorder_id[$disorder_id] = $cvid->id;
+                }
+            }
+
+            if (count($cvi_ids_by_disorder_id)) {
+                foreach (array('left' => \Eye::LEFT, 'right' => \Eye::RIGHT) as $side => $eye_id) {
+                    $assignments = array();
+                    foreach ($this->patient->getAllDisorders($eye_id) as $patient_disorder) {
+                        if (array_key_exists($patient_disorder->id, $cvi_ids_by_disorder_id)) {
+                            $cvi_ass = new models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment();
+                            $cvi_ass->ophcocvi_clinicinfo_disorder_id = $cvi_ids_by_disorder_id[$patient_disorder->id];
+                            $cvi_ass->affected = true;
+                            $assignments[] = $cvi_ass;
+                        }
+                    }
+                    $element->{$side . '_cvi_disorder_assignments'} = $assignments;
+                }
+            }
         }
     }
 

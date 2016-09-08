@@ -99,6 +99,18 @@ class OphCoCvi_ClinicalInfo_Disorder extends \BaseActiveRecordVersioned
     }
 
     /**
+     * Add Lookup behaviour
+     *
+     * @return array
+     */
+    public function behaviors()
+    {
+        return array(
+            'LookupTable' => 'LookupTable',
+        );
+    }
+
+    /**
      * @return array customized attribute labels (name=>label)
      */
     public function attributeLabels()
