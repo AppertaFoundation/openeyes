@@ -35,12 +35,14 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
 	protected $required_params =  array(
 		'launch_uri',
 		'application_id',
-		'hashing_function'
+		'hashing_function',
+		'form_id'
 	);
 
 	public $launch_uri;
 	public $application_id;
 	public $hashing_function;
+	public $form_id;
 
 	/**
 	 * Template path for the WinDip request
@@ -109,7 +111,7 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
 			'user_displayname' => $user->getReversedFullName(),
 			'event_id' => $event->id,
 			// TODO: make this dynamic
-			'windip_type_id' => 1,
+			'windip_type_id' => $this->form_id,
 			'event_date' => $event_date->format('Y-m-d'),
 			'event_time' => $event_date->format('H:i:s'),
 			'additional_indexes' => $indexes

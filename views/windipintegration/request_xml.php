@@ -29,7 +29,8 @@
 		<id><?=$username?></id>
 		<name><?=$user_displayname?></name>
 	</user>
-	<primarylink><process>0</process>
+	<primarylink>
+		<process>2</process>
 		<uniquereference type="I"><?=$event_id?></uniquereference>
 		<typeid><?=$windip_type_id?></typeid>
 		<eventdate><?=$event_date?></eventdate>

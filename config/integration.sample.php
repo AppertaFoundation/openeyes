@@ -21,11 +21,13 @@
 // and will be straight forward to implement for users with a genuine need and appropriate
 // documentation from WinDip themselves.
 return array(
-	'internalReferralIntegration' => array(
-		'class' => '\OEModule\Internalreferral\components\WinDipIntegration',
-		'launch_uri' => 'http://172.20.10.3:9001',
-		'application_id' => 'OpenEyes',
-		// private function to be implemented for specific installations
-		'hashing_function' => null
-	)
+    'internalReferralIntegration' => array(
+        'class' => '\OEModule\Internalreferral\components\WinDipIntegration',
+        'launch_uri' => 'http://172.20.10.3:9001',
+        'application_id' => 'OpenEyes',
+        // form id is specific to the instance of WinDIP being integrated with.
+        'form_id' => '',
+        // private function to be implemented for specific installations
+        'hashing_function' => null
+    )
 );
