@@ -63,6 +63,8 @@ class OphCoCvi_ClinicalInfo_FieldOfVision extends \BaseActiveRecordVersioned
         return array(
             array('name', 'safe'),
             array('name', 'required'),
+            array('name', 'length', 'max' => 128),
+            array('code', 'length', 'max' => 20),
             array('id, name', 'safe', 'on' => 'search'),
         );
     }

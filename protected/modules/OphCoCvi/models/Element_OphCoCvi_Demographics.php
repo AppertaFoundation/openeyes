@@ -65,6 +65,21 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
                 'safe'
             ),
             array(
+                'title_surname', 'length', 'max' => 120
+            ),
+            array(
+                'other_names', 'length', 'max' => 100
+            ),
+            array(
+                'postcode', 'length', 'max' => 4
+            ),
+            array(
+                'email, gp_name, la_name', 'length', 'max' => 255
+            ),
+            array(
+                'telephone, gp_telephone, la_telephone', 'length', 'max' => 20
+            ),
+            array(
                 'title_surname, other_names, date_of_birth, address, postcode, telephone, gender_id, ethnic_group_id, '
                 . 'nhs_number, gp_name, gp_address, gp_telephone, la_name, la_address, la_telephone',
                 'required',

@@ -82,6 +82,9 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
                 'on' => 'finalise'
             ),
             array(
+                'info_email', 'length', 'max' => 255
+            ),
+            array(
                 'id, event_id, employment_status_id, preferred_info_fmt_id, info_email, contact_urgency_id, preferred_language_id, social_service_comments, ',
                 'safe',
                 'on' => 'search'

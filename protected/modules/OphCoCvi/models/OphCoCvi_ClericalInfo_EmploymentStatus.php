@@ -63,6 +63,7 @@ class OphCoCvi_ClericalInfo_EmploymentStatus extends \BaseActiveRecordVersioned
     {
         return array(
             array('name, child_default, social_history_occupation_id', 'safe'),
+            array('name', 'length', 'max' => 128),
             array('name', 'required'),
             array('id, name, child_default, social_history_occupation_id', 'safe', 'on' => 'search'),
         );
