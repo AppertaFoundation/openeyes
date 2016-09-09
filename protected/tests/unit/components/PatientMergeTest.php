@@ -32,6 +32,8 @@ class PatientMergeTest extends CDbTestCase
             'services' => 'Service',
             'specialties' => 'Specialty',
             'patient_allergy_assignment' => 'patientAllergyAssignment',
+            'secondary_diagnosis' => 'secondaryDiagnosis',
+            'previous_operation' => 'previousOperation',
     );
 
     public function setUp()
@@ -513,7 +515,104 @@ class PatientMergeTest extends CDbTestCase
 
     public function testUpdatePreviousOperations()
     {
+        $mergeHandler = new PatientMerge();
+        
+        $primaryPatient = $this->patients('patient7');
+        $secondaryPatient = $this->patients('patient8');
+        
+        $previousOperation1 = $this->previous_operation('previousOperation1');
+        
+        $previousOperation1->patient_id = 8;
+        $previousOperation1->save();
+        $previousOperation1->refresh();
+        
+        // Before we update the Previous Operations we check if the patient id is equals to the secondary patient id
+        $this->assertEquals(8, $previousOperation1->patient_id);
+        
+        $primaryPatient->refresh();
+        $secondaryPatient->refresh();
+        $this->assertEquals(0, count($primaryPatient->previousOperations) );
+        $this->assertEquals(1, count($secondaryPatient->previousOperations) );
+        
+        $mergeHandler->updatePreviousOperations($primaryPatient, $secondaryPatient->previousOperations);
+        
+        $primaryPatient->refresh();
+        $secondaryPatient->refresh();
+        $this->assertTrue(is_array($secondaryPatient->previousOperations));
+        
+        $this->assertEquals(0, count($secondaryPatient->previousOperations) );
+        $this->assertEquals(1, count($primaryPatient->previousOperations) );
+        
+        $previousOperation1->refresh();
+        
+        $this->assertEquals(7, $previousOperation1->patient_id);
     }
+    
+    public function testUpdateOphthalmicDiagnoses()
+    {
+        $mergeHandler = new PatientMerge();
+        
+        $primaryPatient = $this->patients('patient7');
+        $secondaryPatient = $this->patients('patient8');
+        
+        $secondaryDiagnoses8 = $this->secondary_diagnosis('secondaryDiagnoses8');
+        $secondaryDiagnoses8->patient_id = 8;
+        $secondaryDiagnoses8->save();
+        $secondaryDiagnoses8->refresh();
+        
+        // Before we update the Ophthalmic Diagnoses we check if the patient id is equals to the secondary patient id
+        $this->assertEquals(8, $secondaryDiagnoses8->patient_id);
+        
+        $secondaryPatient->refresh();
+        $this->assertTrue(is_array($secondaryPatient->ophthalmicDiagnoses) );
+        $this->assertEquals(1, count($secondaryPatient->ophthalmicDiagnoses) );
+        
+        $mergeHandler->updateOphthalmicDiagnoses($primaryPatient, $secondaryPatient->ophthalmicDiagnoses);
+        
+        $secondaryDiagnoses8->refresh();
+        $secondaryPatient->refresh();
+        
+        $this->assertEquals(0, count($secondaryPatient->ophthalmicDiagnoses) );
+        
+        $this->assertEquals(7, $secondaryDiagnoses8->patient_id);
+        
+        
+    }
+    
+    public function testUpdateSystemicDiagnoses()
+    {
+        $mergeHandler = new PatientMerge();
+        
+        $primaryPatient = $this->patients('patient7');
+        $secondaryPatient = $this->patients('patient8');
+        
+        $secondaryDiagnoses8 = $this->secondary_diagnosis('secondaryDiagnoses8');
+        $secondaryDiagnoses8->patient_id = 8;
+        $secondaryDiagnoses8->disorder_id = 5;
+        $secondaryDiagnoses8->save();
+        $secondaryDiagnoses8->refresh();
+        
+        
+        
+        // Befor we update the Ophthalmic Diagnoses we check if the patient id is equals to the secondary patient id
+        $this->assertEquals(8, $secondaryDiagnoses8->patient_id);
+        $this->assertEquals(5, $secondaryDiagnoses8->disorder_id);
+        
+        $secondaryPatient->refresh();
+        $this->assertTrue(is_array($secondaryPatient->systemicDiagnoses) );
+        $this->assertEquals(1, count($secondaryPatient->systemicDiagnoses) );
+        
+        $mergeHandler->updateOphthalmicDiagnoses($primaryPatient, $secondaryPatient->systemicDiagnoses);
+        
+        $secondaryDiagnoses8->refresh();
+        
+        $this->assertEquals(7, $secondaryDiagnoses8->patient_id);
+        
+        $this->assertEquals(0, count($secondaryPatient->systemicDiagnoses) );
+        $this->assertEquals(1, count($primaryPatient->systemicDiagnoses) );
+    }
+    
+    
 
     public function testIsSecondaryPatientDeleted()
     {
