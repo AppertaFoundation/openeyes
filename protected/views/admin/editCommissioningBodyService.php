@@ -57,7 +57,12 @@
 	?>
 		<?php echo $form->textField($cbs,'name',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 		<?php echo $form->textField($cbs,'code',array('autocomplete'=>Yii::app()->params['html_autocomplete']),null,array('field'=>2))?>
-	<?php echo $form->textField($cbs->contact,'primary_phone',array('autocomplete'=>Yii::app()->params['html_autocomplete']),null,array('field'=>2))?>
+		<?php 
+			if(!$cbs->contact)
+			{
+				$cbs->contact = new Contact();
+			}echo $form->textField($cbs->contact,'primary_phone',array('autocomplete'=>Yii::app()->params['html_autocomplete']),null,array('field'=>2));
+		?>
 		<?php echo $form->textField($address,'address1',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 		<?php echo $form->textField($address,'address2',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 		<?php echo $form->textField($address,'city',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
