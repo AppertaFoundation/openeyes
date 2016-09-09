@@ -44,7 +44,7 @@
                 }
             } else { ?>
                 <tr>
-                    <td colspan = "2">No allergies</td>
+                    <td colspan="2">No allergies</td>
                 </tr>
             <?php }
             ?>
