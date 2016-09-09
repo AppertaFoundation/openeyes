@@ -128,4 +128,14 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->inr = ($labResult) ? $labResult : 'None';
         $this->save();
     }
+
+    /**
+     * Is the whiteboard editable.
+     *
+     * @return bool
+     */
+    public function isEditable()
+    {
+        return is_object($this->booking) && $this->booking->isEditable() && !$this->is_confirmed;
+    }
 }
