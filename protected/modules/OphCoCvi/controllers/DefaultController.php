@@ -19,6 +19,7 @@ namespace OEModule\OphCoCvi\controllers;
 
 use \OEModule\OphCoCvi\models;
 use \OEModule\OphCoCvi\components\OphCoCvi_Manager;
+use \OEModule\OphCoCvi\components\LabelManager;
 
 class DefaultController extends \BaseEventTypeController
 {
@@ -34,7 +35,8 @@ class DefaultController extends \BaseEventTypeController
         'displayconsentsignature' => self::ACTION_TYPE_VIEW,
         'issue' => self::ACTION_TYPE_EDIT,
         'signCVI' => self::ACTION_TYPE_EDIT,
-        'list' => self::ACTION_TYPE_LIST
+        'list' => self::ACTION_TYPE_LIST,
+        'LabelPDFprint'=> self::ACTION_TYPE_VIEW
     );
 
     /** @var string label used in session storage for the list filter values */
@@ -508,6 +510,7 @@ class DefaultController extends \BaseEventTypeController
         parent::initActionView();
         $this->setTitle($this->getManager()->getTitle($this->event));
         $this->jsVars['cvi_print_url'] = $this->getApp()->createUrl($this->getModule()->name.'/default/PDFprint/'.$this->event->id);
+        $this->jsVars['label_print_url'] = $this->getApp()->createUrl($this->getModule()->name.'/default/LabelPDFprint/'.$this->event->id);
         if ($this->getApp()->request->getParam('print', null) == 1) {
             $this->jsVars['cvi_do_print'] = 1;
         }
@@ -722,6 +725,33 @@ class DefaultController extends \BaseEventTypeController
     public function actionPDFPrint($id)
     {
         $this->redirect('/file/view/' . $this->getManager()->getEventInfoElementForEvent($this->event)->generated_document_id . '/' . $this->getManager()->getEventInfoElementForEvent($this->event)->generated_document->name);
+    }
+    
+    public function initActionLabelPDFprint()
+    {
+        $this->initWithEventId($this->request->getParam('id'));
+    }
+    /**
+     * @param $id
+     */
+    public function actionLabelPDFprint($id)
+    {
+        
+        $firstLabel = (int)$_GET['firstLabel'];
+        
+        $labelClass = new LabelManager( 
+                'labels.odt' ,
+                realpath(__DIR__ . '/..').'/views/odtTemplate',
+                \Yii::app()->basePath.'/runtime/cache/cvi',
+                'labels_'.mt_rand().'.odt'
+        );
+        
+        $addresses[] = '';
+
+        $labelClass->fillLabelsInTable( 'LabelsTable', $addresses , $firstLabel);
+        $labelClass->saveContentXML();
+        $labelClass->generatePDF();
+        $labelClass->getPDF();
     }
 
     /**

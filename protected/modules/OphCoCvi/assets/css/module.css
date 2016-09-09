@@ -19,11 +19,11 @@
 /* line 16, ../sass/components/_event.scss */
 .event .event-content {
   border-color: #86cdff;
-  background-image: url('../img/watermark.png?1473166690');
+  background-image: url('../img/watermark.png?1474038891');
 }
 /* line 20, ../sass/components/_event.scss */
 .event .event-title {
-  background-image: url('../img/medium.png?1473166690');
+  background-image: url('../img/medium.png?1474038891');
 }
 
 /* line 25, ../sass/components/_event.scss */
@@ -49,6 +49,20 @@
 /* line 40, ../sass/components/_event.scss */
 .multi-select-search a.remove {
   float: right;
+}
+
+/* line 45, ../sass/components/_event.scss */
+#printLabelPanel tr td {
+  background: #FFF;
+  width: 20px;
+  cursor: pointer;
+  border: 1px solid #c1c1c1;
+}
+
+/* line 46, ../sass/components/_event.scss */
+#printLabelPanel tr td.active-panel {
+  background: #dae6f1;
+  color: #FFF;
 }
 
 /* line 15, ../sass/components/_elements.scss */
