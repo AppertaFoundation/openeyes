@@ -54,6 +54,7 @@ class Element_OphInLabResults_ResultTimedNumeric extends BaseLabResultElement
     {
         return array(
             'id' => 'ID',
+            'time' => 'Time of Recording'
         );
     }
 
