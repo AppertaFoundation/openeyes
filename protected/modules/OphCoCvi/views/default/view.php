@@ -21,6 +21,7 @@
 if ($this->checkPrintAccess()) {
     $this->event_actions[] = EventAction::button('Print', 'print', null, array('class' => 'small button'));
 }
+$this->event_actions[] = EventAction::button('Print Labels', 'print_labels', null, array('class' => 'small button'));
 if ($this->canIssue()) {
     $this->event_actions[] = EventAction::link('Issue', '/OphCoCvi/default/issue/' . $this->event->id, null, array('class' => 'small button secondary'));
 }

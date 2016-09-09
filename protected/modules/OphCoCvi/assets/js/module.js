@@ -68,6 +68,83 @@ $(document).ready(function() {
     handleButton($('#et_print'),function(e) {
         doPrint(e);
     });
+    
+    handleButton($('#et_print_labels'),function(e) {
+        
+        var table = generateTable();
+        var dialogContainer = '<div id="label-print-dialog">'
+            + generateLabelInput()
+            + table.outerHTML
+        +'</div>';
+       
+        var labelDialog = new OpenEyes.UI.Dialog({
+            content: dialogContainer,
+            title: "Print Labels",
+            autoOpen: false,
+            onClose: function() { enableButtons(); },
+            buttons: {
+                "Close" : {
+                    text: "Close",
+                    id: "my-button-id",
+                    click: function(){
+                        $( this ).dialog( "close" );
+                        enableButtons();
+                    }   
+                },
+                "Print":{
+                    text: "Print",
+                    id: "my-button-id",
+                    click: function(){
+                        var num = $('#firstLabel').val();
+                        
+                        if(num > 0){
+                            var data = {'firstLabel':num};
+                            printIFrameUrl(label_print_url, data);
+
+                            iframeId = 'print_content_iframe',
+                            $iframe = $('iframe#print_content_iframe');
+
+                            $iframe.load(function() {
+                                    enableButtons();
+                                    e.preventDefault();            
+
+                                try{
+                                    var PDF = document.getElementById(iframeId);
+                                    PDF.focus();
+                                    PDF.contentWindow.print();
+                                    
+                                } catch (e) {
+                                    alert("Exception thrown: " + e);
+                                }   
+
+                            });
+                        } else {
+                            new OpenEyes.UI.Dialog.Alert({
+                               content: 'The value cannot be less than 1'
+                            }).open();
+                        }
+                        
+                    }   
+                }
+               
+            }
+        });
+        
+        labelDialog.open();
+        
+                
+                
+        
+        $('#printLabelPanel tr td').click(function(){
+            $('#printLabelPanel tr td').removeClass('active-panel');
+            var tdID = $(this).attr('id').match(/\d+/);
+            $('input#firstLabel').val(tdID);
+            for(var i = 1; i<= tdID; i++ ){
+               $('#labelPanel_'+i).addClass('active-panel');
+            } 
+        })
+     
+    });
 
     handleButton($('#la-search-toggle'), function(e) {
         e.preventDefault();
@@ -134,4 +211,45 @@ function doPrint(e) {
             alert("Exception thrown: " + e);
         }
     });
+}
+
+function generateLabelInput(){
+    var inputField = '<div class="large-8 column">'
+        +'<label>Please enter the start label number:</label>'
+    +'</div>'
+    +'<div class="large-4 column">'
+        +'<input type="text" name="firstLabel" id="firstLabel" value=""/>'
+    +'</div>';
+    
+    return inputField;
+}
+
+function generateTable(){
+    var tbl     = document.createElement("table");
+    tbl.setAttribute("id", "printLabelPanel");
+    var tblBody = document.createElement("tbody");
+    var counter = 1;
+    for (var j = 1; j <= 8; j++) {
+        // table row creation
+        var row = document.createElement("tr");
+
+        for (var i = 1; i <= 3; i++) {
+            
+            var cell = document.createElement("td");   
+            cell.setAttribute("id", 'labelPanel_'+counter);
+            var cellText = document.createTextNode("cell:"+counter); 
+
+            cell.appendChild(cellText);
+            row.appendChild(cell);
+            counter++;
+        }
+
+        //row added to end of table body
+        tblBody.appendChild(row);
+    }
+
+    
+    tbl.appendChild(tblBody);
+    
+    return tbl;
 }
