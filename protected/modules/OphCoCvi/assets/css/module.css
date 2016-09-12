@@ -74,4 +74,4 @@ hr {
 }
 
 #printLabelPanel tr td{background:#FFF; width:20px; cursor: pointer; border:1px solid #c1c1c1;}
-#printLabelPanel tr td.active-panel{background:#dae6f1; color:#FFF;}
+#printLabelPanel tr td.active-panel{background:#c90000; color:#FFF;}
