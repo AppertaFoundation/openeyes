@@ -77,9 +77,9 @@ class LabelManager extends ODTTemplateManager{
                     $row++;
                 }
             }
-        } else {
-            $i = 1;
         }
+        
+        $i = 1;
        
         foreach ($addressesArray as $key => $val){
            
@@ -93,13 +93,12 @@ class LabelManager extends ODTTemplateManager{
             
             $result[$row][$colCount] = $val;
 
-            if($i % $this->cols === 0){
+            if(($i % $this->cols === 0) && ($i != 0)){
                 $row++;
             }
             $i++;
           
         }
-        
         return $result;
     }
 }

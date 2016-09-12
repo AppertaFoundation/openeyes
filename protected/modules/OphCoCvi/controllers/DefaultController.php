@@ -26,8 +26,6 @@ class DefaultController extends \BaseEventTypeController
     public $event_prompt;
     public $cvi_limit = 1;
     protected $cvi_manager;
-    
-    public $demographicsData;
 
     const ACTION_TYPE_LIST = 'List';
 
@@ -733,19 +731,6 @@ class DefaultController extends \BaseEventTypeController
     {
         $this->initWithEventId($this->request->getParam('id'));
     }
-    
-    public function checkLabelPrintAccess()
-    {
-        $this->demographicsData = $this->getManager()->getDemographicsElementForEvent($this->event);
-        if((empty($this->demographicsData['address'])) &&
-           (empty($this->demographicsData['gp_address'])) &&
-           (empty($this->demographicsData['la_address'])))
-        {
-            return FALSE;
-        }
-        
-        return TRUE;
-    }
     /**
      * @param $id
      */
@@ -761,18 +746,9 @@ class DefaultController extends \BaseEventTypeController
                 'labels_'.mt_rand().'.odt'
         );
         
-        if(!$this->checkLabelPrintAccess()){
-            throw new \CHttpException(404);
-        }
-      
-        $labelAddress = array(
-            $this->demographicsData['address'],
-            $this->demographicsData['gp_address'],
-            $this->demographicsData['la_address']
-        );
-       
-        $labelClass->fillLabelsInTable( 'LabelsTable', $labelAddress , $firstLabel);
-        
+        $addresses[] = '';
+
+        $labelClass->fillLabelsInTable( 'LabelsTable', $addresses , $firstLabel);
         $labelClass->saveContentXML();
         $labelClass->generatePDF();
         $labelClass->getPDF();

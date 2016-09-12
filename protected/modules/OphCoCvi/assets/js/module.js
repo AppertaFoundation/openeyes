@@ -137,33 +137,12 @@ $(document).ready(function() {
         
         $('#printLabelPanel tr td').click(function(){
             $('#printLabelPanel tr td').removeClass('active-panel');
-            $('#printLabelPanel tr td').text('Label');
-            
             var tdID = $(this).attr('id').match(/\d+/);
             $('input#firstLabel').val(tdID);
             for(var i = 1; i<= tdID; i++ ){
-                if(i == tdID){
-                   $('#labelPanel_'+i).text('First empty label');
-                } else {
-                   $('#labelPanel_'+i).addClass('active-panel');
-                    $('#labelPanel_'+i).text('Used label'); 
-                }
+               $('#labelPanel_'+i).addClass('active-panel');
             } 
-        });
-        $('#firstLabel').keyup(function() {
-            $('#printLabelPanel tr td').removeClass('active-panel');
-            $('#printLabelPanel tr td').text('Label');
-            
-            var tdID = $(this).val();
-            for(var i = 1; i <= tdID; i++ ){
-                if(i == tdID){
-                   $('#labelPanel_'+i).text('First empty label');
-                } else {
-                    $('#labelPanel_'+i).addClass('active-panel');
-                    $('#labelPanel_'+i).text('Used label');
-                }
-            } 
-        });
+        })
      
     });
 
@@ -273,7 +252,7 @@ function generateTable(){
             
             var cell = document.createElement("td");   
             cell.setAttribute("id", 'labelPanel_'+counter);
-            var cellText = document.createTextNode("Label"); 
+            var cellText = document.createTextNode("cell:"+counter); 
 
             cell.appendChild(cellText);
             row.appendChild(cell);
