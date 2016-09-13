@@ -29,7 +29,6 @@
         </div>
     </fieldset>
 
-    <?php echo $form->textField($element, 'representative_name', array('size' => '4'), null, array('field' => 4)) ?>
-
+    <?php echo $form->textField($element, 'representative_name', array('hide' => $element->is_patient), null, array('field' => 4)) ?>
 
 </div>

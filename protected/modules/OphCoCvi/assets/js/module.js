@@ -96,6 +96,15 @@ $(document).ready(function() {
             $(this).closest('.column').find('.affected-selector[value="1"]').prop('checked', 'checked');
         }
     });
+
+    $(document).on('change', 'input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature[is_patient]"][type="radio"]',function(e) {
+        if ($(e.target).val() === '1') {
+            $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature_representative_name').prop('disabled', 'disabled').closest('.field-row').hide();
+        } else {
+            $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature_representative_name').removeProp('disabled').closest('.field-row').show();
+        }
+
+    });
 });
 
 function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }
