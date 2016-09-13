@@ -47,11 +47,16 @@ class DefaultController extends \BaseEventTypeController
     public function actionCreate()
     {
         $create_new_cvi = $this->request->getParam('createnewcvi', null);
-        if (!is_null($create_new_cvi)) {
+        if ($create_new_cvi !== null) {
             $cancel_url = $this->episode ? '/patient/episode/' . $this->episode->id
                 : '/patient/episodes/' . $this->patient->id;
             if ($create_new_cvi == 1) {
-                parent::actionCreate();
+                if (!$this->getManager()->canCreateEventForPatient($this->patient)) {
+                    $this->getApp()->user->setFlash('warning.cvi_create', 'You cannot create another CVI whilst one exists that has not been issued.');
+                    $this->redirect(array($cancel_url));
+                } else {
+                    parent::actionCreate();
+                }
             } else {
                 $this->redirect(array($cancel_url));
             }
@@ -61,6 +66,7 @@ class DefaultController extends \BaseEventTypeController
             if (count($current_cvis) >= $this->cvi_limit) {
                 $this->render('select_event', array(
                     'current_cvis' => $current_cvis,
+                    'can_create' => $this->getManager()->canCreateEventForPatient($this->patient)
                 ), false);
             } else {
                 parent::actionCreate();
@@ -474,11 +480,11 @@ class DefaultController extends \BaseEventTypeController
     public function actionIssue($id)
     {
         if ($this->getManager()->issueCvi($this->event, $this->getApp()->user->id)) {
-            $this->getApp()->user->setFlash('success', 'The CVI has been successfully generated.');
+            $this->getApp()->user->setFlash('success.cvi_issue', 'The CVI has been successfully generated.');
             //$this->redirect(array('/' . $this->event->eventType->class_name . '/default/pdfPrint/' . $id));
             $this->redirect(array('/' . $this->event->eventType->class_name . '/default/view/' . $id . '?print=1'));
         } else {
-            $this->getApp()->user->setFlash('error', 'The CVI could not be generated.');
+            $this->getApp()->user->setFlash('error.cvi_issue', 'The CVI could not be generated.');
             $this->redirect(array('/' . $this->event->eventType->class_name . '/default/view/' . $id));
         }
 

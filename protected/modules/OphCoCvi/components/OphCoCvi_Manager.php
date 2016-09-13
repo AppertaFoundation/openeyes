@@ -427,6 +427,20 @@ class OphCoCvi_Manager extends \CComponent
     }
 
     /**
+     * @param \Patient $patient
+     * @return bool
+     */
+    public function canCreateEventForPatient(\Patient $patient)
+    {
+        foreach ($this->getEventsForPatient($patient) as $e) {
+            if (!$this->isIssued($e)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Element based name and value pair.
      *
      * @param \Event $event
