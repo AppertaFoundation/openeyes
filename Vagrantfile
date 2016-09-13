@@ -11,7 +11,7 @@ opts = GetoptLong.new(
 )
 
 hostname = 'openeyes.vm'
-servername = 'OpenEyes Dev Server'
+servername = 'OpenEyes'
 
 opts.each do |opt, arg|
   case opt
