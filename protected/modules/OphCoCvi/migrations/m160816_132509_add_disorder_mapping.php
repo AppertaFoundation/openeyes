@@ -2,6 +2,18 @@
 
 class m160816_132509_add_disorder_mapping extends CDbMigration
 {
+
+    public function insert($table, $params)
+    {
+        if (array_key_exists('disorder_id', $params)) {
+            $disorder = $this->dbConnection->createCommand()->select('id')->from('disorder')->where('id=:disorder_id', array(':disorder_id'=>$params['disorder_id']))->queryRow();
+            if (!$disorder) {
+                unset($params['disorder_id']);
+            }
+        }
+        parent::insert($table, $params);
+    }
+
 	public function up()
 	{
         $this->addColumn('ophcocvi_clinicinfo_disorder', 'disorder_id','int(10) unsigned');
