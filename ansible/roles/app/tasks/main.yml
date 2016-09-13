@@ -47,12 +47,15 @@
 # - name: Install packages based on bower.json.
 #   bower: path=/var/www/openeyes
 
+- name: Remove vendor directory
+  file: path=//var/www/openeyes/vendor state=absent
+
 - name: Git clone OE Vendor dependencies
   git:
-    repo: https://github.com/{{ item }}.git
-    dest: /var/www/openeyes/vendor
-    update: yes
-    force: yes
+    repo=https://github.com/{{ item }}.git
+    dest=/var/www/openeyes/vendor
+    update=yes
+    force=yes
   with_items:
     - "{{ openeyes.vendor_repo }}"
 
