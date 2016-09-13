@@ -92,6 +92,8 @@ You will need to have downloaded VC++ for Vagrant to be able to download base bo
 
 Building and running under Windows has been tested using [Cygwin](https://www.cygwin.com).  Under Windows RSync is used to keep the local development files and folders in sync on the guest server, when actively making changes to files and folders on the host you need to have `vagrant rsync-auto` running to ensure changed files are mirrored.
 
+**Note:** You should ensure that that the path you clone the repository to doesn't have any spaces in as Virtualbox complains about this during the build process.
+
 The following commands should be installed as part of the Cygwin install:
 
 * git
