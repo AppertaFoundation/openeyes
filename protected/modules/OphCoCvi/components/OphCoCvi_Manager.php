@@ -457,10 +457,8 @@ class OphCoCvi_Manager extends \CComponent
                 $data = array_merge($data, $element->getStructuredDataForPrint());
             }
         }
-        $address = \Institution::model()->getCurrent()->getLetterAddress(array('include_name' => false, 'delimiter' => "\n"));
-        \OELog::log($address);
-        \OELog::log(\Helper::lineLimit($address,4));
-    $data['hospitalAddress'] = \Helper::lineLimit($address,4,1);
+        $address = \Institution::model()->getCurrent()->getLetterAddress(array('include_name' => false, 'delimiter' => '\n'));
+        $data['hospitalAddress'] = \Helper::lineLimit($address,4,1,'\n');
         $data['hospitalNumber'] = $event->episode->patient->hos_num;
 
         return $data;
