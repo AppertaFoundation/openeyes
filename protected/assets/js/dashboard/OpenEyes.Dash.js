@@ -206,9 +206,9 @@
             }else if($('#pcr-risk-mode').val() == 1){
                 newTitle = 'PCR Rate (risk unadjusted)';
             }else if($('#pcr-risk-mode').val() == 2){
-                newTitle = 'PCR Rate (risk adjusted and unadjusted)';
+                newTitle = 'PCR Rate (risk adjusted & unadjusted)';
             }
-            chart.setTitle({text: newTitle}, {text: 'Total Operations: ' +  data[0][0]} );
+            chart.setTitle({text: newTitle}, {text: 'Total Operations: ' +  data[0]['x']} );
         },
         'OEModule_OphCiExamination_components_RefractiveOutcomeReport': function(data){
             var total = 0,
