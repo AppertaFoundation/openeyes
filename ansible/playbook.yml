@@ -23,6 +23,6 @@
     - geerlingguy.nodejs
     - geerlingguy.php
     - geerlingguy.composer
-    - pludoni.wkthmltox
+    - zealot128.wkhtmltox
     - angstwad.docker_ubuntu
     - app

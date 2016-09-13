@@ -47,14 +47,14 @@
 # - name: Install packages based on bower.json.
 #   bower: path=/var/www/openeyes
 
-# - name: Git clone OE Vendor dependencies
-#   git:
-#     repo: https://github.com/{{ item }}.git
-#     dest: /var/www/openeyes/vendor
-#     update: yes
-#     force: yes
-#   with_items:
-#     - "{{ openeyes.vendor_repo }}"
+- name: Git clone OE Vendor dependencies
+  git:
+    repo: https://github.com/{{ item }}.git
+    dest: /var/www/openeyes/vendor
+    update: yes
+    force: yes
+  with_items:
+    - "{{ openeyes.vendor_repo }}"
 
 
 # Install project dependencies using composer (http://docs.ansible.com/ansible/composer_module.html)
