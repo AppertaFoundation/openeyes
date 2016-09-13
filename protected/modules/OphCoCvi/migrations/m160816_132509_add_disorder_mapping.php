@@ -65,6 +65,7 @@ class m160816_132509_add_disorder_mapping extends CDbMigration
         $this->truncateTable('ophcocvi_clinicinfo_disorder');
 
         $this->dropForeignKey('ophcocvi_clinicinfo_disorder_section_fk',
+            'ophcocvi_clinicinfo_disorder');
 
         $this->dropForeignKey('ophcocvi_clinicinfo_disorder_disorder_fk',
             'ophcocvi_clinicinfo_disorder');
