@@ -1708,18 +1708,6 @@
         },
         {
             "name": "jms/serializer",
-<<<<<<< HEAD
-            "version": "1.3.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/schmittjoh/serializer.git",
-                "reference": "03dd41f40c7d9dd1eaf0d59c8e31a18f73c3c684"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/serializer/zipball/03dd41f40c7d9dd1eaf0d59c8e31a18f73c3c684",
-                "reference": "03dd41f40c7d9dd1eaf0d59c8e31a18f73c3c684",
-=======
             "version": "1.3.1",
             "source": {
                 "type": "git",
@@ -1730,7 +1718,6 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/schmittjoh/serializer/zipball/705d0b4633b9c44e6253aa18306b3972282cd3a3",
                 "reference": "705d0b4633b9c44e6253aa18306b3972282cd3a3",
->>>>>>> develop
                 "shasum": ""
             },
             "require": {
@@ -1764,11 +1751,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-<<<<<<< HEAD
-                    "dev-master": "1.2-dev"
-=======
                     "dev-master": "1.3-dev"
->>>>>>> develop
                 }
             },
             "autoload": {
@@ -1795,11 +1778,7 @@
                 "serialization",
                 "xml"
             ],
-<<<<<<< HEAD
-            "time": "2016-08-17 17:28:49"
-=======
             "time": "2016-08-23 17:20:24"
->>>>>>> develop
         },
         {
             "name": "justinrainbow/json-schema",
@@ -3579,11 +3558,7 @@
         },
         {
             "name": "symfony/browser-kit",
-<<<<<<< HEAD
-            "version": "v2.8.9",
-=======
             "version": "v3.1.4",
->>>>>>> develop
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/browser-kit.git",
@@ -3753,11 +3728,7 @@
         },
         {
             "name": "symfony/css-selector",
-<<<<<<< HEAD
-            "version": "v2.8.9",
-=======
             "version": "v3.1.4",
->>>>>>> develop
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/css-selector.git",
@@ -3873,18 +3844,6 @@
         },
         {
             "name": "symfony/dom-crawler",
-<<<<<<< HEAD
-            "version": "v2.8.9",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/dom-crawler.git",
-                "reference": "aac03b7ea2a7adff10a3599d614e79e6101230ab"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/aac03b7ea2a7adff10a3599d614e79e6101230ab",
-                "reference": "aac03b7ea2a7adff10a3599d614e79e6101230ab",
-=======
             "version": "v3.1.4",
             "source": {
                 "type": "git",
@@ -3895,7 +3854,6 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/bb7395e8b1db3654de82b9f35d019958276de4d7",
                 "reference": "bb7395e8b1db3654de82b9f35d019958276de4d7",
->>>>>>> develop
                 "shasum": ""
             },
             "require": {
@@ -3938,11 +3896,7 @@
             ],
             "description": "Symfony DomCrawler Component",
             "homepage": "https://symfony.com",
-<<<<<<< HEAD
-            "time": "2016-07-30 07:20:35"
-=======
             "time": "2016-08-05 08:37:39"
->>>>>>> develop
         },
         {
             "name": "symfony/event-dispatcher",
