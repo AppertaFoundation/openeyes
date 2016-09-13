@@ -15,7 +15,7 @@ class m160823_100518_add_user_id_to_unique_codes_mapping extends CDbMigration
 	{
 		$this->dropForeignKey('unique_codes_mapping_user_id_fk', 'unique_codes_mapping');
 		$this->dropColumn('unique_codes_mapping', 'user_id');
-		$this->dropColumn('unique_codes_mapping', 'user_id');
+		$this->dropColumn('unique_codes_mapping_version', 'user_id');
 	}
 
 	/*
