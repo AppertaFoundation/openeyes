@@ -83,7 +83,7 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
 
     public function requiredIfRefractionTypeOther($attribute, $params)
     {
-        if (($params['side'] === 'left' && $this->left_type_id == '') || ($params['side'] === 'right' && $this->right_type_id == '')) {
+        if (($params['side'] === 'left' && $this->left_type_id === '') || ($params['side'] === 'right' && $this->right_type_id === '')) {
             if (empty($this->{$params['side'].'_type_other'})) {
                 $this->addError($attribute, ucfirst($params['side']).' Other cannot be blank.');
             }
