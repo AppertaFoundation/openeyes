@@ -90,6 +90,12 @@ $(document).ready(function() {
             }
     });
 
+    // if a disorder is a main cause, it should be marked as "affected"
+    $(document).on('change', '.disorder-main-cause', function(e) {
+        if (e.target.checked) {
+            $(this).closest('.column').find('.affected-selector[value="1"]').prop('checked', 'checked');
+        }
+    });
 });
 
 function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }

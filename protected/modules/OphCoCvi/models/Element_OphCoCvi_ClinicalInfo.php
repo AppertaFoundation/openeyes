@@ -281,6 +281,22 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         }
     }
 
+    public function afterValidate()
+    {
+        foreach (array('left', 'right') as $side) {
+
+            foreach ($this->{$side . '_cvi_disorder_assignments'} as $ass) {
+                // would prefer this to be just on the assignment validation, but having trouble
+                // with scenario specification for different contexts (i.e. validating for errors to return
+                // to the user versus actually saving (where the element id is requred)
+                if ($ass->main_cause && !$ass->affected) {
+                    $this->addError('disorders', "{$side} disorder - '{$ass->ophcocvi_clinicinfo_disorder->name}'' cannot be main cause when eye not affected.");
+                }
+            }
+        }
+        parent::afterValidate();
+    }
+
     /**
      * Update the CVI Disorder status for this element.
      *

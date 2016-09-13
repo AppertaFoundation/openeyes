@@ -32,7 +32,7 @@ namespace OEModule\OphCoCvi\models;
  * The followings are the available model relations:
  *
  * @property Element_OphCoCvi_ClinicalInfo $element
- * @property OphCoCvi_ClinicalInfo_Disorders $ophcocvi_clinicinfo_disorders
+ * @property OphCoCvi_ClinicalInfo_Disorders $ophcocvi_clinicinfo_disorder
  * @property User $user
  * @property User $usermodified
  */
