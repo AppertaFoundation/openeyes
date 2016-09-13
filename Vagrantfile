@@ -94,7 +94,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "ansible_local" do |ansible|
     ansible.playbook = "ansible/playbook.yml"
-    ansible.verbose = "vvv" # Debug
+    # ansible.verbose = "vvv" # Debug
   end
 
   config.cache.synced_folder_opts = {

@@ -5,6 +5,7 @@ openeyes:
   mysql_password: "oe_test"
   mysql_dump: "/var/www/openeyes/features/vagrant_openeyes.sql"
   # mysql_dump: "/var/www/openeyes/protected/modules/sample/sql/openeyes_sample_data.sql"
+  vendor_repo: [ "wirewool/oe_vendor_dev" ]
   modules: [ eyedraw, sample ]
 
 server:
