@@ -87,7 +87,8 @@ class PortalExamsCommand extends CConsoleCommand
                     if (!$examinationEventLog->save()) {
                         throw new CDbException('$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true));
                     }
-                    echo 'Failed for examination '.$examination['patient']['unique_identifier'].' with exception: '.$e->getMessage().'on line '.$e->getLine().' in file '.$e->getFile().PHP_EOL.$e->getTraceAsString();
+                    echo 'Failed for examination '.$examination['patient']['unique_identifier'].' with exception: '.
+                        $e->getMessage().'on line '.$e->getLine().' in file '.$e->getFile().PHP_EOL.$e->getTraceAsString();
                     continue;
                 }
                 $importStatus = ImportStatus::model()->find('status_value = "Success Event"');

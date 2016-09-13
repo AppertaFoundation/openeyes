@@ -106,46 +106,71 @@ class BaseEventTypeCActiveForm extends FormLayout
         ));
     }
 
+	/**
+	 * @param $element
+	 * @param $field
+	 * @param array $htmlOptions
+	 * @param array $layoutColumns
+	 */
+	public function radioBoolean($element, $field, $htmlOptions=array(), $layoutColumns=array())
+	{
+		$this->widget('application.widgets.RadioButtonList', array(
+			'element' => $element,
+			'name' => CHtml::modelName($element)."[$field]",
+			'field' => $field,
+			'data' => array(
+				1 => 'Yes',
+				0 => 'No'
+			),
+			'selected_item' => $element->$field,
+			'htmlOptions' => $htmlOptions,
+			'layoutColumns' => $layoutColumns
+		));
+	}
+        
     /**
-     * @param $element
-     * @param $field
-     * @param array $htmlOptions
-     * @param array $layoutColumns
-     */
-    public function radioBoolean($element, $field, $htmlOptions = array(), $layoutColumns = array())
-    {
-        $this->widget('application.widgets.RadioButtonList', array(
-            'element' => $element,
-            'name' => CHtml::modelName($element)."[$field]",
-            'field' => $field,
-            'data' => array(
-                1 => 'Yes',
-                0 => 'No',
-            ),
-            'selected_item' => $element->$field,
-            'htmlOptions' => $htmlOptions,
-            'layoutColumns' => $layoutColumns,
-        ));
-    }
+	 * @param $element
+	 * @param $field
+	 * @param array $htmlOptions
+	 * @param array $layoutColumns
 
-    /**
-     * @param $element
-     * @param $field
-     * @param array $options
-     * @param array $htmlOptions
-     * @param array $layoutColumns
-     */
-    public function datePicker($element, $field, $options = array(), $htmlOptions = array(), $layoutColumns = array())
-    {
-        $this->widget('application.widgets.DatePicker', array(
-            'element' => $element,
-            'name' => CHtml::modelName($element)."[$field]",
-            'field' => $field,
-            'options' => $options,
-            'htmlOptions' => $htmlOptions,
-            'layoutColumns' => $layoutColumns,
-        ));
-    }
+	 */
+	public function radioMultiOption($element, $field, $field_value, $htmlOptions=array(), $layoutColumns=array())
+	{
+		$this->widget('application.widgets.RadioButtonList', array(
+			'element' => $element,
+			'name' => CHtml::modelName($element)."[$field]",
+			'field' => $field,
+			'field_value' => $field_value,
+			'data' => array(
+				1 => 'Yes',
+				0 => 'No',
+				2 => 'Unknown'
+                                
+			),
+			'selected_item' => $element->$field,
+			'htmlOptions' => $htmlOptions,
+			'layoutColumns' => $layoutColumns
+		));
+	}
+	/**
+	 * @param $element
+	 * @param $field
+	 * @param array $options
+	 * @param array $htmlOptions
+	 * @param array $layoutColumns
+	 */
+	public function datePicker($element, $field, $options=array(), $htmlOptions=array(), $layoutColumns=array())
+	{
+		$this->widget('application.widgets.DatePicker', array(
+			'element' => $element,
+			'name' => CHtml::modelName($element)."[$field]",
+			'field' => $field,
+			'options' => $options,
+			'htmlOptions' => $htmlOptions,
+			'layoutColumns' => $layoutColumns
+		));
+	}
 
     /**
      * @param CModel $element
@@ -228,7 +253,7 @@ class BaseEventTypeCActiveForm extends FormLayout
      * @param array $htmlOptions
      * @param array $layoutColumns
      */
-    public function passwordConfirmField($element, $label, $name, $htmlOptions = array(), $layoutColumns = array())
+    public function passwordChangeField($element, $label, $name, $htmlOptions = array(), $layoutColumns = array())
     {
         $htmlOptions = array_merge(array(
             'label' => $label,

@@ -28,18 +28,26 @@
             </tr>
             </thead>
             <tbody id="OphCiExamination_allergy">
-            <?php foreach ($this->patient->allergyAssignments as $aa) {
-    ?>
-                <script type="text/javascript">
-                    removeAllergyFromSelect(<?= $aa->allergy->id?>, '<?= $aa->allergy->name ?>');
-                </script>
-                <tr data-assignment-id="<?= $aa->id ?>" data-allergy-id="<?= $aa->allergy->id ?>" data-allergy-name="<?= $aa->allergy->name ?>">
-                    <td><?= CHtml::encode($aa->name) ?>
-                    </td>
-                    <td><?= CHtml::encode($aa->comments) ?></td>
+            <?php if ($this->patient->allergyAssignments) {
+                foreach ($this->patient->allergyAssignments as $aa) {
+                    ?>
+                    <script type="text/javascript">
+                        removeAllergyFromSelect(<?= $aa->allergy->id?>, '<?= $aa->allergy->name ?>');
+                    </script>
+                    <tr data-assignment-id="<?= $aa->id ?>" data-allergy-id="<?= $aa->allergy->id ?>"
+                        data-allergy-name="<?= $aa->allergy->name ?>">
+                        <td><?= CHtml::encode($aa->name) ?>
+                        </td>
+                        <td><?= CHtml::encode($aa->comments) ?></td>
+                    </tr>
+                    <?php
+                }
+            } else { ?>
+                <tr>
+                    <td colspan="2">No allergies</td>
                 </tr>
-            <?php 
-} ?>
+            <?php }
+            ?>
             </tbody>
         </table>
     </div>

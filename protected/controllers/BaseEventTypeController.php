@@ -63,6 +63,7 @@ class BaseEventTypeController extends BaseModuleController
 
         private $unique_code_elements = array(
             array('event' => 'OphTrOperationnote', 'element' => array('Element_OphTrOperationnote_Cataract')),
+            array('event' => 'OphCoCvi', 'element' => array('Element_OphCoCvi_EventInfo')),
         );
 
     private static $base_action_types = array(
@@ -114,6 +115,15 @@ class BaseEventTypeController extends BaseModuleController
     public $pdf_print_suffix = null;
     public $pdf_print_documents = 1;
     public $pdf_print_html = null;
+
+    public function behaviors()
+    {
+        return array(
+            'CreateEventBehavior' => array(
+                'class' => 'application.behaviors.CreateEventControllerBehavior',
+            ),
+        );
+    }
 
     public function getTitle()
     {
@@ -1058,6 +1068,54 @@ class BaseEventTypeController extends BaseModuleController
     }
 
     /**
+     * Processes provided form data to create 1 or more elements of the provided type.
+     *
+     * @param ElementType $element_type
+     * @param $data
+     * @return array
+     * @throws Exception
+     */
+    protected function getElementsForElementType(ElementType $element_type, $data)
+    {
+        $elements = array();
+        $el_cls_name = $element_type->class_name;
+        $f_key = CHtml::modelName($el_cls_name);
+
+        if (isset($data[$f_key])) {
+            $keys = array_keys($data[$f_key]);
+
+            if (is_array($data[$f_key][$keys[0]]) && !count(array_filter(array_keys($data[$f_key]), 'is_string'))) {
+                // there is more than one element of this type
+                $pk_field = $el_cls_name::model()->tableSchema->primaryKey;
+                foreach ($data[$f_key] as $i => $attrs) {
+                    if (!$this->event->isNewRecord && !isset($attrs[$pk_field])) {
+                        throw new Exception('missing primary key field for multiple elements for editing an event');
+                    }
+                    if ($pk = @$attrs[$pk_field]) {
+                        $element = $el_cls_name::model()->findByPk($pk);
+                    } else {
+                        $element = $element_type->getInstance();
+                    }
+                    $element->attributes = Helper::convertNHS2MySQL($attrs);
+                    $this->setElementComplexAttributesFromData($element, $data, $i);
+                    $element->event = $this->event;
+                    $elements[] = $element;
+                }
+            } else {
+                if ($this->event->isNewRecord
+                    || !$element = $el_cls_name::model()->find('event_id=?', array($this->event->id))) {
+                    $element = $element_type->getInstance();
+                }
+                $element->attributes = Helper::convertNHS2MySQL($data[$f_key]);
+                $this->setElementComplexAttributesFromData($element, $data);
+                $element->event = $this->event;
+                $elements[] = $element;
+            }
+        }
+        return $elements;
+    }
+    
+    /**
      * Set the attributes of the given $elements from the given structured array.
      * Returns any validation errors that arise.
      *
@@ -1074,38 +1132,9 @@ class BaseEventTypeController extends BaseModuleController
 
         // only process data for elements that are part of the element type set for the controller event type
         foreach ($this->event_type->getAllElementTypes() as $element_type) {
-            $el_cls_name = $element_type->class_name;
-            $f_key = CHtml::modelName($el_cls_name);
-            if (isset($data[$f_key])) {
-                $keys = array_keys($data[$f_key]);
-
-                if (is_array($data[$f_key][$keys[0]]) && !count(array_filter(array_keys($data[$f_key]), 'is_string'))) {
-                    // there is more than one element of this type
-                    $pk_field = $el_cls_name::model()->tableSchema->primaryKey;
-                    foreach ($data[$f_key] as $i => $attrs) {
-                        if (!$this->event->isNewRecord && !isset($attrs[$pk_field])) {
-                            throw new Exception('missing primary key field for multiple elements for editing an event');
-                        }
-                        if ($pk = @$attrs[$pk_field]) {
-                            $element = $el_cls_name::model()->findByPk($pk);
-                        } else {
-                            $element = $element_type->getInstance();
-                        }
-                        $element->attributes = Helper::convertNHS2MySQL($attrs);
-                        $this->setElementComplexAttributesFromData($element, $data, $i);
-                        $element->event = $this->event;
-                        $elements[] = $element;
-                    }
-                } else {
-                    if ($this->event->isNewRecord
-                        || !$element = $el_cls_name::model()->find('event_id=?', array($this->event->id))) {
-                        $element = $element_type->getInstance();
-                    }
-                    $element->attributes = Helper::convertNHS2MySQL($data[$f_key]);
-                    $this->setElementComplexAttributesFromData($element, $data);
-                    $element->event = $this->event;
-                    $elements[] = $element;
-                }
+            $from_data = $this->getElementsForElementType($element_type, $data);
+            if (count($from_data) > 0) {
+                $elements = array_merge($elements, $from_data);
             } elseif ($element_type->required) {
                 $errors[$this->event_type->name][] = $element_type->name.' is required';
                 $elements[] = $element_type->getInstance();
@@ -1746,13 +1775,7 @@ class BaseEventTypeController extends BaseModuleController
                     if (in_array(Helper::getNSShortname($element), $unique['element'])) {
                         $event_unique_code = UniqueCodeMapping::model()->findAllByAttributes(array('event_id' => $event->id));
                         if (!$event_unique_code) {
-                            $event_unique_code = UniqueCodeMapping::model();
-                            $event_unique_code->lock();
-                            $event_unique_code->unique_code_id = $this->getActiveUnusedUniqueCode();
-                            $event_unique_code->event_id = $event->id;
-                            $event_unique_code->isNewRecord = true;
-                            $event_unique_code->save();
-                            $event_unique_code->unlock();
+                            $this->createNewUniqueCodeMapping($event->id, null);
                         }
                     }
                 }
@@ -1760,27 +1783,6 @@ class BaseEventTypeController extends BaseModuleController
         }
     }
 
-    /**
-     * Getting the unused active unique codes.
-     *
-     * @return type
-     */
-    private function getActiveUnusedUniqueCode()
-    {
-        $event_unique_codes = UniqueCodeMapping::model()->findAll(array('select' => 'unique_code_id'));
-        $unique_codes_used = array();
-        foreach ($event_unique_codes as $event_unique_code) {
-            $unique_codes_used[] = $event_unique_code->unique_code_id;
-        }
-        $criteria = new CDbCriteria();
-        $criteria->addCondition('active = 1');
-        $criteria->addNotInCondition('id', $unique_codes_used);
-        $criteria->limit = 1;
-        $result = UniqueCodes::model()->findAll($criteria);
-        foreach ($result as $record) {
-            return $record->id;
-        }
-    }
 
     /**
      * set base js vars for use in the standard scripts for the controller.

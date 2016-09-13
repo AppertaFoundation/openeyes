@@ -18,10 +18,11 @@
  */
 class RadioButtonList extends SelectionWidget
 {
-    public $selected_item;
-    public $maxwidth;
-    public $no_element = false;
-    public $label_above = false;
+	public $selected_item;
+	public $maxwidth;
+	public $no_element = false;
+	public $label_above = false;
+	public $field_value = false;
 
     public function init()
     {

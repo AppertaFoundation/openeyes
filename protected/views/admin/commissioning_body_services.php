@@ -17,8 +17,23 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<?php
+if (!isset($title)) {
+	$title = 'Commissioning body services';
+}
+// some base initialisation
+$url_query = '';
+if (!isset($return_url)) {
+	$return_url = '';
+}
+if (!isset($base_data_url)) {
+	$base_data_url = 'admin/';
+}
+
+?>
+
 <div class="box admin">
-	<h2>Commissioning body services</h2>
+	<h2><?= $title ?></h2>
 	<form id="admin_commissioning_body_services">
 		<table class="grid">
 			<thead>
@@ -31,8 +46,21 @@
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach (CommissioningBodyService::model()->findAll(array('order' => 'name asc')) as $i => $cbs) {?>
-					<tr class="clickable" data-id="<?php echo $cbs->id?>" data-uri="admin/editCommissioningBodyService?commissioning_body_service_id=<?php echo $cbs->id?>">
+				<?php
+				$criteria = new CDbCriteria();
+				$criteria->with = array('commissioning_body');
+				$criteria->order = 't.name asc';
+
+				if (isset($commissioning_bt)) {
+					$criteria->addColumnCondition(array('commissioning_body.commissioning_body_type_id' => $commissioning_bt->id));
+					$url_query = 'commissioning_body_type_id=' . $commissioning_bt->id;
+				}
+				if (isset($service_type)) {
+					$url_query .= '&service_type_id='.$service_type->id.'&return_url='.$return_url;
+				}
+
+				foreach (CommissioningBodyService::model()->findAll($criteria) as $i => $cbs) {?>
+					<tr class="clickable" data-id="<?php echo $cbs->id?>" data-uri="<?php echo $base_data_url?>editCommissioningBodyService?commissioning_body_service_id=<?php echo $cbs->id; if(isset($data["returnUrl"])){echo "&return_url=".$data["returnUrl"];}?>">
 						<td><input type="checkbox" name="commissioning_body_service[]" value="<?php echo $cbs->id?>" class="wards" /></td>
 						<td><?php echo $cbs->code?></td>
 						<td><?php echo $cbs->name?></td>
@@ -44,7 +72,7 @@
 			<tfoot>
 				<tr>
 					<td colspan="5">
-						<?php echo EventAction::button('Add', 'add_commissioning_body_service', array(), array('class' => 'small'))->toHtml()?>
+						<?php echo EventAction::button('Add', 'add_commissioning_body_service', array(), array('class' => 'small','data-uri'=>$url_query))->toHtml()?>
 						<?php echo EventAction::button('Delete', 'delete_commissioning_body_service', array(), array('class' => 'small'))->toHtml()?>
 					</td>
 				</tr>
@@ -56,7 +84,7 @@
 	<div>
 		<div id="delete_commissioning_body_services">
 			<div class="alertBox" style="margin-top: 10px; margin-bottom: 15px;">
-				<strong>WARNING: This will remove the commissioning body services from the system.<br/>This action cannot be undone.</strong>
+				<strong>WARNING: This will remove the commissioning body service from the system.<br/>This action cannot be undone.</strong>
 			</div>
 			<p>
 				<strong>Are you sure you want to proceed?</strong>
@@ -72,12 +100,12 @@
 <script type="text/javascript">
 	$('li.even .column_code, li.even .column_name, li.even .column_type, li.even .column_address, li.odd .column_code, li.odd .column_name, li.odd .column_type, li.odd .column_address').click(function(e) {
 		e.preventDefault();
-		window.location.href = baseUrl+'/admin/editCommissioningBodyService?commissioning_body_service_id='+$(this).parent().attr('data-attr-id');
+		window.location.href = baseUrl+'/<?php echo $base_data_url?>editCommissioningBodyService?commissioning_body_service_id='+$(this).parent().attr('data-attr-id');
 	});
 
 	$('#et_add_commissioning_body_service').click(function(e) {
 		e.preventDefault();
-		window.location.href = baseUrl+'/admin/addCommissioningBodyService';
+		window.location.href = baseUrl+'/<?php echo $base_data_url?>addCommissioningBodyService?'+$(this).data('uri');
 	});
 
 	$('#checkall').click(function(e) {
@@ -95,10 +123,10 @@
 
 		$.ajax({
 			'type': 'POST',
-			'url': baseUrl+'/admin/verifyDeleteCommissioningBodyServices',
+			'url': baseUrl+'/<?php echo $base_data_url?>verifyDeleteCommissioningBodyServices',
 			'data': $('#admin_commissioning_bodies').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 			'success': function(resp) {
-				var mention = ($('input[type="checkbox"][name="commissioning_body_service[]"]:checked').length == 1) ? 'commissioning body' : 'commissioning bodies';
+				var mention = ($('input[type="checkbox"][name="commissioning_body_service[]"]:checked').length == 1) ? 'commissioning body service' : 'commissioning body services';
 
 				if (resp == "1") {
 					enableButtons();
@@ -130,7 +158,7 @@
 
 		$.ajax({
 			'type': 'POST',
-			'url': baseUrl+'/admin/deleteCommissioningBodyServices',
+			'url': baseUrl+'/<?php echo $base_data_url?>deleteCommissioningBodyServices',
 			'data': $('#admin_commissioning_body_services').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 			'success': function(resp) {
 				if (resp == "1") {

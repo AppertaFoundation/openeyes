@@ -3,7 +3,9 @@
   "description": "Electronic Patient Record system for use in Ophthalmology clinics",
   "require": {
     "yiisoft/yii": "1.1.14",
-    "rlanvin/php-rrule": "1.2.0"
+    "rlanvin/php-rrule": "1.*",
+    "endroid/qrcode": "^1.7",
+    "setasign/fpdi-fpdf": "1.6.1"
   },
   "require-dev": {
     "behat/behat": "~2",
@@ -25,6 +27,7 @@
     "squizlabs/php_codesniffer": "2.*",
     "sebastian/phpcpd": "*",
     "phpdocumentor/phpdocumentor": "2.*"
+    
   },
   "config": {
     "bin-dir": "bin"

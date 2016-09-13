@@ -85,13 +85,13 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
         return parent::afterValidate();
     }
 
-    public function run()
-    {
-        $params = array();
+	public function run()
+	{
+		$params = array();
 
-        $where_clauses = array();
-        $where_params = array();
-        $type_clauses = array();
+		$where_clauses = array();
+		$where_params = array();
+		$type_clauses = array();
         $where_operator = ' '.($this->condition_type == 'and' ? 'and' : 'or').' ';
 
         $select = array('c.first_name', 'c.last_name', 'p.dob', 'p.gender', 'p.hos_num', 'cons.first_name as cons_first_name', 'cons.last_name as cons_last_name', 'e.created_date', 'ep.patient_id');
@@ -128,7 +128,8 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
             }
         }
         $data->select(implode(',', $select));
-
+        $data->andWhere('e.deleted = 0');
+        
         $this->executeQuery($data);
     }
 
@@ -227,19 +228,19 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
         $where_params[':dateTo'] = date('Y-m-d', strtotime($this->end_date)).' 23:59:59';
     }
 
-    public function description()
-    {
-        if ($this->match_correspondence) {
-            $description = 'Correspondence';
-        }
+	public function description()
+	{
+		if ($this->match_correspondence) {
+			$description = 'Correspondence';
+		}
 
-        if ($this->match_legacy_letters) {
-            if (@$description) {
-                $description .= ' and legacy letters';
-            } else {
-                $description = 'Legacy letters';
-            }
-        }
+		if ($this->match_legacy_letters) {
+			if (@$description) {
+				$description .= ' and legacy letters';
+			} else {
+				$description = 'Legacy letters';
+			}
+		}
 
         if ($this->phrases) {
             $description .= ' containing '.($this->condition_type == 'and' ? 'all' : 'any')." of these phrases:\n";

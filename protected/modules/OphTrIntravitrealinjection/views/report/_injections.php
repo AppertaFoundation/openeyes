@@ -77,7 +77,7 @@
 					<?php }?>
 					<?php if ($report->post_va) {?>
 						<td><?php echo $injection['left_postinjection_va']?></td>
-						<td><?php echo $injection['left_postinjection_va']?></td>
+						<td><?php echo $injection['right_postinjection_va']?></td>
 					<?php }?>
 					<td><?php echo $injection['pre_antisept_drug_left']?></td>
 					<td><?php echo $injection['pre_antisept_drug_right']?></td>

@@ -301,6 +301,30 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
         return $best;
     }
 
+	/**
+	 * Get the best reading based on the type
+	 *
+	 * @param string $side
+	 * @param $method
+	 */
+	public function getBestReadingByMethods($side,$methods)
+    {
+        $best = null;
+		foreach($methods as $method) {
+			foreach ($this->{$side.'_readings'} as $reading) {
+				if($reading->method->id == $method->id) {
+					if (!$best || $reading->value >= $best->value) {
+						$best = $reading;
+					}
+				}
+			}
+		}
+        if ($best) {
+            return $best->convertTo($best->value);
+        }
+		return $best;
+    }
+
     /**
      * Get the best reading for the given side.
      *

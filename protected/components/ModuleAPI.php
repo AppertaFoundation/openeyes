@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -18,6 +19,11 @@
  */
 class ModuleAPI extends CApplicationComponent
 {
+
+    /**
+     * @param $moduleName
+     * @return BaseAPI|bool
+     */
     public function get($moduleName)
     {
         if ($module = Yii::app()->getModule($moduleName)) {
@@ -30,15 +36,16 @@ class ModuleAPI extends CApplicationComponent
                 }
             }
 
-            if (file_exists(Yii::getPathOfAlias("application.modules.{$moduleName}.components").DIRECTORY_SEPARATOR."{$moduleName}_API.php")) {
+            if (file_exists(Yii::getPathOfAlias("application.modules.{$moduleName}.components") . DIRECTORY_SEPARATOR . "{$moduleName}_API.php")) {
                 $APIClass_prefix = '';
                 $ns_components = explode('\\', get_class($module));
                 if (count($ns_components) > 1) {
                     // we're namespaced so the class for the api will also be namespaced.
-                    $APIClass_prefix = implode('\\', array_slice($ns_components, 0, count($ns_components) - 1)).'\components\\';
+                    $APIClass_prefix = implode('\\',
+                            array_slice($ns_components, 0, count($ns_components) - 1)) . '\components\\';
                 }
 
-                $APIClass = $APIClass_prefix.$moduleName.'_API';
+                $APIClass = $APIClass_prefix . $moduleName . '_API';
                 if (class_exists($APIClass)) {
                     return new $APIClass();
                 }
@@ -64,7 +71,20 @@ class ModuleAPI extends CApplicationComponent
                 $this->_module_class_map[$mc['class']] = $id;
             }
         }
-
         return @$this->_module_class_map[$class_name];
+    }
+
+    /**
+     * Convenience wrapper to retrieve the API relevant to the given event id
+     *
+     * @param $event_id
+     * @return BaseAPI|bool
+     */
+    public function getForEventId($event_id)
+    {
+        if ($event = Event::model()->with('eventType')->findByPk($event_id)) {
+            return $this->get($event->eventType->class_name);
+        }
+        return false;
     }
 }
