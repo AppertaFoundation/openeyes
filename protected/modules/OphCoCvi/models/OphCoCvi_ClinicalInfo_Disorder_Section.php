@@ -142,6 +142,7 @@ class OphCoCvi_ClinicalInfo_Disorder_Section extends \BaseActiveRecordVersioned
     /**
      * Returns all the active disorder sections
      */
+    /*
     public function getAllDisorderSections($element) {
         $disorder_sections = OphCoCvi_ClinicalInfo_Disorder_Section::model()
             ->findAll('`active` = ?',array(1));
@@ -156,4 +157,5 @@ class OphCoCvi_ClinicalInfo_Disorder_Section extends \BaseActiveRecordVersioned
         }
         return($disorder_sections_with_comment);
     }
+    */
 }
