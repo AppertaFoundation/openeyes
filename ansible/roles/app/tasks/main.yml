@@ -51,12 +51,13 @@
   git:
     repo: https://github.com/{{ item }}.git
     dest: /var/www/openeyes/vendor
+    update: yes
   with_items:
     - "{{ openeyes.vendor_repo }}"
 
 
 # Install project dependencies using composer (http://docs.ansible.com/ansible/composer_module.html)
-- name: Install composer dependencies (This can take up to 30 minutes to run the first time.)
+- name: Install / Update composer dependencies
   environment:
     COMPOSER_DISCARD_CHANGES: 1
   composer:
@@ -73,6 +74,7 @@
   git:
     repo: https://github.com/openeyes/{{ item }}.git
     dest: /var/www/openeyes/protected/modules/{{ item }}
+    update: yes
   with_items:
     - "{{ openeyes.modules }}"
 
