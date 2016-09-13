@@ -1,19 +1,35 @@
 ---
+# __php_packages:
+#   - php7.0-common
+#   - php7.0-cli
+#   - php7.0-dev
+#   - php7.0-fpm
+#   - libpcre3-dev
+#   - php7.0-gd
+#   - php7.0-curl
+#   - php7.0-imap
+#   - php7.0-json
+#   - php7.0-opcache
+#   - php7.0-xml
+#   - php7.0-mbstring
+#   - php-sqlite3
+#   - php-apcu
+#   when: php_version == "7.0"
+
 __php_packages:
-  - php7.0-common
-  - php7.0-cli
-  - php7.0-dev
-  - php7.0-fpm
-  - libpcre3-dev
-  - php7.0-gd
-  - php7.0-curl
-  - php7.0-imap
-  - php7.0-json
-  - php7.0-opcache
-  - php7.0-xml
-  - php7.0-mbstring
-  - php-sqlite3
-  - php-apcu
+  - libapache2-mod-php5
+  - php5-cli
+  - php5-dev
+  - php5-intl
+  - php5-mcrypt
+  - php5-curl
+  - php5-imagick
+  - php5-gd
+  - imagemagick
+  - php5-mysql
+  - php5-xsl
+  # when: php_version == "5.6"
+
 __php_webserver_daemon: "apache2"
 
 # Vendor-specific configuration paths on Debian/Ubuntu make my brain asplode.
