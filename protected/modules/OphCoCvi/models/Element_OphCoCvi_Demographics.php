@@ -297,14 +297,14 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
             'patientDateOfBirth' => $this->date_of_birth,
             'nhsNumber' => $this->nhs_number,
             'gender' => $this->gender->name,
-            'patientAddress' => $this->address,
+            'patientAddress' => \Helper::lineLimit($this->address,1),
             'patientEmail' => $this->email,
             'patientTel' => $this->telephone,
             'gpName' => $this->gp_name,
-            'gpAddress' => $this->gp_address,
+            'gpAddress' => \Helper::lineLimit($this->gp_address,1),
             'gpTel' => $this->gp_telephone,
             'localAuthorityName' => $this->la_name,
-            'localAuthorityAddress' => $this->la_address,
+            'localAuthorityAddress' => \Helper::lineLimit($this->la_address,1),
             'localAuthorityTel' => $this->la_telephone,
         );
 

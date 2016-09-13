@@ -165,4 +165,33 @@ class HelperTest extends CTestCase
     {
         $this->assertEquals($expected, Helper::getDateForAge($dob, $age, $date_of_death));
     }
+
+    public function lineLimitProvider()
+    {
+        return array(
+            array("foo\nbar\ncow, dog", array("foo\nbar\ncow\ndog", 3)),
+            array("foo\nbar\ncow\ndog", array("foo\nbar\ncow\ndog", 5)),
+            array("foo, bar, cow, dog", array("foo\nbar\ncow\ndog", 1)),
+            array('', array("foo\nbar\ncow\ndog", 1, 2), 'InvalidArgumentException'),
+            array('foo bar cow', array("foo bar cow", 1)),
+            array('', array("foo bar car", 0), 'InvalidArgumentException'),
+            array("foo\nbar, cow\ndog", array("foo\nbar\ncow\ndog", 3, 1))
+        );
+    }
+
+    /**
+     * @dataProvider lineLimitProvider
+     * @param $expected
+     * @param $args
+     * @params $exception
+     */
+    public function testLineLimit($expected, $args, $exception = null)
+    {
+        if ($exception) {
+            $this->setExpectedException($exception);
+            forward_static_call_array(array('Helper', 'lineLimit'), $args);
+        } else {
+            $this->assertEquals($expected, forward_static_call_array(array('Helper', 'lineLimit'), $args));
+        }
+    }
 }

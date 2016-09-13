@@ -80,7 +80,7 @@ class PatientSearch
         $model->nhs_num = $search_terms['nhs_num'];
 
         // Get the valuse from URL
-        $currentPage = Yii::app()->request->getParam('currentPage');
+        $currentPage = Yii::app()->request->getParam('Patient_page');
         $pageSize = Yii::app()->request->getParam('pageSize', 20);
 
         // if no GET param we try to fetch the value from the $criteria, default value 0 is none of them set
@@ -118,6 +118,7 @@ class PatientSearch
             'pageSize' => $pageSize,
             'sortBy' => $sortBy,
             'sortDir' => $sortDir,
+            'currentPage' => $currentPage,
             'first_name' => CHtml::decode($search_terms['first_name']),
             'last_name' => CHtml::decode($search_terms['last_name']),
         );

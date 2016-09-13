@@ -179,7 +179,7 @@ class NodExportController extends BaseController
      * @param string $episodeIdField
      * @return null|array
      */
-    private function saveCSVfile($dataQuery, $filename, $dataFormatter = null, $IdField = null)
+    private function saveCSVfile($dataQuery, $filename, $dataFormatter = null)
     {
         $resultIds = array();
         $offset = 0;
@@ -195,21 +195,15 @@ class NodExportController extends BaseController
 
             $data = $dataCmd->queryAll();
 
-            if($offset == 0 && (!count($data)>0)){
-                file_put_contents($this->exportPath . '/' . $filename . '.csv', implode(',', $dataQuery['header']), FILE_APPEND);
+            if($offset == 0){
+                file_put_contents($this->exportPath . '/' . $filename . '.csv', ((implode(',', $dataQuery['header'])) . "\n"), FILE_APPEND);
             }
 
             if(count($data) > 0)
             {
-                $csv = $this->array2Csv($data, ($offset == 0 && isset($dataQuery['header'])) ? $dataQuery['header'] : null, $dataFormatter);
+                $csv = $this->array2Csv($data, null, $dataFormatter);
 
                 file_put_contents($this->exportPath . '/' . $filename . '.csv', $csv, FILE_APPEND);
-
-                if($IdField) {
-                    foreach ($data as $d) {
-                        $resultIds[] = $d[$IdField];
-                    }
-                }
 
                 $offset+=$chunk;
                 unset($data);
@@ -744,7 +738,7 @@ EOL;
             'header' => array('EpisodeId', 'IsDiabetic', 'DiabetesTypeId', 'DiabetesRegimeId', 'AgeAtDiagnosis'),
         );
 
-        $output = $this->saveCSVfile($dataQuery, 'EpisodeDiabeticDiagnosis', null, 'EpisodeId');
+        $output = $this->saveCSVfile($dataQuery, 'EpisodeDiabeticDiagnosis');
         
         return $output;
     }
@@ -1738,7 +1732,6 @@ EOL;
         $df = fopen("php://output", 'w');
 
         if (count($data) !== 0) {
-            fputcsv($df, array_keys(reset($data)));
             foreach ($data as $row) {
                 if (method_exists($this, $dataFormatter)) {
                     $row = $this->$dataFormatter($row);
@@ -1870,7 +1863,7 @@ EOL;
             'header' => array('EpisodeId', 'OperationId', 'Eye', 'ComplicationTypeId', 'ComplicationTypeDescription'),
         );
 
-        $output = $this->saveCSVfile($dataQuery, 'EpisodePostOpComplication', null, 'EpisodeId');
+        $output = $this->saveCSVfile($dataQuery, 'EpisodePostOpComplication');
         
         return $output;
     }
@@ -2252,7 +2245,7 @@ EOL;
             'header' => array('OperationId', 'AnaesthesiaTypeId', 'AnaesthesiaNeedle', 'Sedation', 'SurgeonId', 'ComplicationId'),
         );
 
-        return $this->saveCSVfile($dataQuery, 'EpisodeOperationAnaesthesia', null, 'OperationId');
+        return $this->saveCSVfile($dataQuery, 'EpisodeOperationAnaesthesia');
     }
 
     /********* end of EpisodeOperationAnesthesia***********/  
@@ -2295,11 +2288,11 @@ EOL;
                 )
                 /* Procedures for LEFT eye */
             SELECT 
-                c.oe_event_id ,
+                c.oe_event_id
                 /* Note pa.id unique for each operation<->procedure intersection record */
                 /* However the procedure may be for BOTH EYES and the RCO needs this splitting out to two Treatment records LEFT + RIGHT */
-                /* We are creating "high range" Treatment IDs for LEFT eye only by adding 1,000,000,000,000) to the number-space */
-                (SELECT MAX(pa.id)+10000) + pa.id AS TreatmentId /* LEFT Eye so add 10,000 */
+                /* We are creating "high range" Treatment IDs for LEFT eye only by adding 1,000,000,000,000) to the number-space */        
+                ,  v.l_eye_offset + pa.id AS TreatmentId /* LEFT Eye so add max rox offset plus 10,000 */
                 , c.oe_event_id AS OperationId
                 , 'L' AS Eye
                 , p.snomed_code AS TreatmentTypeId
@@ -2312,14 +2305,18 @@ EOL;
                 /* on the LEFT Eye or the RIGHT Eye. Therefore if procedures were carried our on both eyes then */
                 /* two et_ophtroperationnote_procedurelist records would exist each with intersection records */
                 /* (ophtroperationnote_procedurelist_procedure_assignment) to the lookup procedure (proc) */
-                LEFT OUTER JOIN et_ophtroperationnote_procedurelist pl
+                JOIN et_ophtroperationnote_procedurelist pl
                   ON pl.event_id = c.oe_event_id
                 /* Join: Look up Procedure List ITEMS (intersection table to proc) - (LOJ used to return nulls if data problems) */
-                LEFT OUTER JOIN ophtroperationnote_procedurelist_procedure_assignment pa
+                JOIN ophtroperationnote_procedurelist_procedure_assignment pa
                   ON pa.procedurelist_id = pl.id
                 /* Join: Look up PROCEDURE DETAIL (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
                 LEFT OUTER JOIN proc p 
                   ON p.id = pa.proc_id
+                CROSS JOIN (
+                    SELECT MAX(os.id)+10000 l_eye_offset
+                    FROM ophtroperationnote_procedurelist_procedure_assignment os
+                ) AS v
                 /* Restrict: Only OPERATION NOTE type events */
                 WHERE c.oe_event_type = 4 #'Operation Note'
                 /* Restrict: LEFT or BOTH eyes only */
@@ -2470,7 +2467,7 @@ EOL;
             'header' => array('OperationId', 'Eye', 'IndicationId', 'IndicationDescription'),
         );
 
-        return $this->saveCSVfile($dataQuery, 'EpisodeOperationIndication', null, 'OperationId');
+        return $this->saveCSVfile($dataQuery, 'EpisodeOperationIndication');
 
     }
     
@@ -2512,7 +2509,7 @@ EOL;
                 co.oe_event_id
                 , co.OperationId
                 , 'L' AS Eye
-                , IFNULL(rcoct.code, oncc.id) AS ComplicationTypeId
+                , IFNULL(rcoct.code, onccs.id) AS ComplicationTypeId
                 , onccs.name AS ComplicationTypeDescription
                 
                 /* Restriction: Start with OPERATIONS (processed previously), seeded from control events */
@@ -2548,7 +2545,7 @@ EOL;
                 co.oe_event_id
                 , co.OperationId
                 , 'R' AS Eye
-                , IFNULL(rcoct.code, oncc.id) AS ComplicationTypeId
+                , IFNULL(rcoct.code, onccs.id) AS ComplicationTypeId
                 , onccs.name AS ComplicationTypeDescription
                 
                 /* Restriction: Start with OPERATIONS (processed previously), seeded from control events */
@@ -2598,7 +2595,7 @@ EOL;
             'header' => array('OperationId', 'Eye', 'ComplicationTypeId', 'ComplicationTypeDescription'),
         );
 
-        return $this->saveCSVfile($dataQuery, 'EpisodeOperationComplication', null, 'OperationId');
+        return $this->saveCSVfile($dataQuery, 'EpisodeOperationComplication');
     }
     
     /********** end of EpisodeOperationComplication **********/

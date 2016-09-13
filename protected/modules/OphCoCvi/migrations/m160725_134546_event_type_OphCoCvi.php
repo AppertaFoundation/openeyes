@@ -208,10 +208,6 @@ class m160725_134546_event_type_OphCoCvi extends CDbMigration
 			'CONSTRAINT `ophcocvi_clinicinfo_disorder_aid_fk` FOREIGN KEY (`id`) REFERENCES `ophcocvi_clinicinfo_disorder` (`id`)',
 		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
-		$this->insert('ophcocvi_clinicinfo_disorder',array('name'=>'age-related macular degeneration – subretinal neovascularisation','display_order'=>1));
-
-
-
 		$this->createTable('et_ophcocvi_clinicinfo', array(
 			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 			'event_id' => 'int(10) unsigned NOT NULL',
