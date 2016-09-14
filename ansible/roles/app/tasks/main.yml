@@ -1,52 +1,6 @@
 ---
 # Application tasks to be customized and to run after the main provision
 
-# Kept seperate so as not to impact composer
-- name: php5 - install xdebug
-  apt: pkg="{{ php_xdebug }}" state=latest update_cache=yes
-  when: php_xdebug is defined
-
-- name: Copy xdebug INI into mods-available folder.
-  template: >
-    src=xdebug.ini.j2
-    dest=/etc/php5/mods-available/xdebug.ini
-    owner=root group=root mode=644
-  when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'trusty' and php_xdebug is defined
-
-- name: Copy xdebug INI into conf.d folder.
-  template: >
-    src=xdebug.ini.j2
-    dest=/etc/php5/conf.d/xdebug.ini
-    owner=root group=root mode=644
-  when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'precise' and php_xdebug is defined
-
-# "Resolve" issues with the PHP.ini from geerlinguy.php being php7 specific. (Temp fix)
-- name: (re)Move existing PHP.ini out of the way
-  file:
-    path: /etc/php5/apache2/php.ini
-    state: absent
-
-- name: Link configured PHP.ini into Apache
-  file:
-    src: /etc/php/7.0/apache2/php.ini
-    dest: /etc/php5/apache2/php.ini
-    state: link
-
-# Remove XDebug SymLink from PHP CLI
-- name: Disable XDebug in PHP CLI
-  file:
-    path: /etc/php5/cli/conf.d/20-xdebug.ini
-    state: absent
-  when: php_xdebug is defined
-
-# Broken -> https://github.com/ansible/ansible-modules-extras/pull/1663
-# Install package.json (http://docs.ansible.com/ansible/npm_module.html)
-# - name: Install packages based on package.json.
-#   npm: path=/var/www/openeyes
-# Install JavaScript packages (http://docs.ansible.com/ansible/bower_module.html)
-# - name: Install packages based on bower.json.
-#   bower: path=/var/www/openeyes
-
 - name: Remove vendor directory
   file: path=//var/www/openeyes/vendor state=absent
 
@@ -126,15 +80,3 @@
 
 - name: Copy console.php into place
   command: creates=/var/www/openeyes/protected/config/local/console.php cp /var/www/openeyes/protected/config/local.sample/console.vagrant.php /var/www/openeyes/protected/config/local/console.php
-
-# - name: Migrate using YIIC of openeyes DB
-#   command: php /var/www/openeyes/protected/yiic.php migrate --interactive=0
-
-# - name: Migrate Modules using YIIC of openeyes DB
-#   command: php /var/www/openeyes/protected/yiic.php migratemodules --interactive=0
-
-# - name: Migrate using YIIC of testdb
-#   command: php /var/www/openeyes/protected/yiic.php migrate  --connectionID=testdb --interactive=0
-
-# - name: Migrate Modules using YIIC of testdb
-#   command: php /var/www/openeyes/protected/yiic.php migratemodules  --connectionID=testdb --interactive=0
