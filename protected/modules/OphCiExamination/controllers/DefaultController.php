@@ -37,6 +37,7 @@ class DefaultController extends \BaseEventTypeController
         'getPreviousIOPAverage' => self::ACTION_TYPE_FORM,
         'getPostOpComplicationList' => self::ACTION_TYPE_FORM,
         'getPostOpComplicationAutocopleteList' => self::ACTION_TYPE_FORM,
+        'getVisulaAcuityCVIAlert' => self::ACTION_TYPE_FORM,
     );
 
     // if set to true, we are advancing the current event step
@@ -1300,4 +1301,28 @@ class DefaultController extends \BaseEventTypeController
             echo \CJSON::encode($select);
         }
     }
+    
+    public function actionGetVisulaAcuityCVIAlert()
+    {
+        $isAjax = \Yii::app()->request->getParam('ajax', false);
+        $alertHTML = '';
+        
+        if (\Yii::app()->request->isAjaxRequest || $isAjax) {
+            $ophCoCviModule = Yii::app()->moduleAPI->get('OphCoCvi');
+            if($ophCoCviModule){
+                $va_base_values = \Yii::app()->request->getPost('va_base_values');
+                
+                foreach($va_base_values as $value){
+                    if( $ophCoCviModule->isVAbelowThreshold($value) ){
+                        $alertHTML = $ophCoCviModule->getVisualAcuityAlert();
+                        break;
+                    }
+                }
+            }
+        }
+        
+        echo $alertHTML;
+        \Yii::app()->end();
+    }
+    
 }

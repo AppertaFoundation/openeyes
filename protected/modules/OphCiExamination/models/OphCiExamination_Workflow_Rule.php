@@ -119,8 +119,9 @@ class OphCiExamination_Workflow_Rule extends \BaseActiveRecordVersioned
      */
     public function findWorkflowCascading($firm_id, $status_id)
     {
-        $firm = \Firm::model()->findByPk($firm_id);
-        $subspecialty_id = ($firm->serviceSubspecialtyAssignment) ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+      $firm = \Firm::model()->findByPk($firm_id);
+      $subspecialty_id = ($firm->serviceSubspecialtyAssignment) ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+
         $criteria = new \CDbCriteria();
         $criteria->addCondition('firm_id = ? OR firm_id IS NULL');
         $criteria->order = 'firm_id DESC, episode_status_id DESC, subspecialty_id DESC';

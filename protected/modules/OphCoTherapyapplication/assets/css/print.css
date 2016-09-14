@@ -83,6 +83,17 @@
     margin: 10px 0;
   }
 }
+@media print {
+  /* line 73, ../../../../assets/sass/openeyes/components/print/_event.scss */
+  .container.content {
+    background: none;
+  }
+
+  /* line 74, ../../../../assets/sass/openeyes/components/print/_event.scss */
+  .metadata {
+    display: none;
+  }
+}
 /* line 20, ../sass/print.scss */
 h2 {
   margin-bottom: 20px;
@@ -147,7 +158,7 @@ table.layout {
   width: 100%;
 }
 
-/* line 82, ../sass/print.scss */
+/* line 81, ../sass/print.scss */
 table.layout th,
 table.layout td {
   border: 1px solid #999;
@@ -172,7 +183,7 @@ td.row-title {
   vertical-align: top;
 }
 
-/* line 103, ../sass/print.scss */
+/* line 102, ../sass/print.scss */
 table.inner td,
 table.inner th {
   border-bottom: 1px solid #ccc;
@@ -185,7 +196,7 @@ table.inner th {
   color: #666;
 }
 
-/* line 114, ../sass/print.scss */
+/* line 113, ../sass/print.scss */
 table.inner tr.last td,
 table.inner tr.last th {
   border-bottom: none;

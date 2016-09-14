@@ -150,4 +150,35 @@ class OphCoCvi_API extends \BaseAPI
 
         return $finalEventUniqueCode;
     }
+    
+    /*public function isVAlessThanThreshold($va_value, $unit_id)
+    {
+        $isVAlessThanThreshold = false;
+        
+        
+        
+        $unitValue = \OphCiExamination_VisualAcuityUnitValue::model()->findAllByAttributes(array(
+            'unit_id' => $unit_id,
+            'value' => $va_value
+            )
+        );
+
+        if($unitValue->base_value < $thresholdBaseValue){
+            $isVAlessThanThreshold = true;
+        }
+        
+        return $isVAlessThanThreshold;
+        
+    }*/
+    
+    public function isVAbelowThreshold($va_base_value)
+    {
+        $thresholdBaseValue = \Yii::app()->params['alert']['visualAcuity']['thresholdBaseValue'];
+        return $va_base_value < $thresholdBaseValue;
+    }
+    
+    public function getVisualAcuityAlert()
+    {
+       return $this->renderPartial('OphCoCvi.views.patient._va_alert');
+    }
 }

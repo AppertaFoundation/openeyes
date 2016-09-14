@@ -1,4 +1,3 @@
-@charset "UTF-8";
 /** Consent */
 /**
  * OpenEyes
@@ -23,11 +22,11 @@
 }
 /* line 19, ../sass/components/_event.scss */
 .event .event-content {
-  background-image: url('../img/watermark.png?1427455781');
+  background-image: url('../img/watermark.png?1457349981');
 }
 /* line 22, ../sass/components/_event.scss */
 .event .event-title {
-  background-image: url('../img/medium.png?1427455781');
+  background-image: url('../img/medium.png?1457349981');
 }
 
 /* line 27, ../sass/components/_event.scss */
@@ -55,7 +54,7 @@ textarea[name="LetterMacro[body]"], textarea[name="LetterString[body]"] {
 }
 /* line 25, ../sass/components/_letter.scss */
 .correspondence-letter.draft {
-  background: #fff url('../img/bg_draft.png?1427455781') center top no-repeat;
+  background: #fff url('../img/bg_draft.png?1457349981') center top no-repeat;
 }
 /* line 28, ../sass/components/_letter.scss */
 .correspondence-letter .accessible {

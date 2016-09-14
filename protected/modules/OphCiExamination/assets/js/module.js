@@ -1280,9 +1280,44 @@ $(document).ready(function() {
             
         });
         
-       
-        
         /** End of Post Operative Complication Event Bindings **/ 
+        
+        /* Visual Acuity readings event binding */
+        
+        $('#examination-update').on('change', '.va-selector', function(){
+            
+            var $right_side = $(this).closest('.element-eye.right-eye'),
+                $left_side = $(this).closest('.element-eye.left-eye');
+                $section =  $(this).closest('section');
+                
+            var va_base_values = [];
+            
+            $('.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity')
+                .find('.va-selector').each(function(k,v){
+                    var val = $(this).val();
+                    if(val !== ''){
+                        va_base_values.push(val);
+                    }
+            });
+
+            var data = {
+                'YII_CSRF_TOKEN': YII_CSRF_TOKEN,
+                'va_base_values[]': va_base_values,
+                ajax: 'ajax'
+            };
+            
+            $.ajax({
+               'url': baseUrl + '/OphCiExamination/default/getVisulaAcuityCVIAlert',
+                type: 'POST',
+                data: data,
+                success: function(response){
+                    $section.find('.cvi-alert').remove();
+                    $section.find('header').append(response);
+                },
+            });
+        });
+        
+        /* End of Visual Acuity readings event binding */
 });
 
     /** Post Operative Complication function **/

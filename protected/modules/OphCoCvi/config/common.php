@@ -60,5 +60,11 @@ return array(
             ),
         ),
         'ophcocvi_allow_all_consultants' => false,
+        'alert' => array(
+            'visualAcuity' => array(
+                'thresholdBaseValue' => 100
+                 
+            )
+        ),
     )
 );

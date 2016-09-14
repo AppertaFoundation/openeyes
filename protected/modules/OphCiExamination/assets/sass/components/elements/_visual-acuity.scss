@@ -15,6 +15,12 @@
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
 .#{$OE_MODEL_PREFIX}Element_OphCiExamination_VisualAcuity, .#{$OE_MODEL_PREFIX}Element_OphCiExamination_NearVisualAcuity {
+        header{
+            .cvi-alert{
+                background: orange none repeat scroll 0 0;
+                padding: 5px;
+            }
+        }
 	.visual-acuity-reading, .near-visual-acuity-reading {
 		select {
 			width: auto;
@@ -26,5 +32,6 @@
 			padding: 0 10px 0 0;
 		}
 	}
+
 }
 
