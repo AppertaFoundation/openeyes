@@ -61,6 +61,10 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
      */
     public function init()
     {
+        if ($this->yii === null) {
+            $this->yii = \Yii::app();
+        }
+        
         foreach (static::$required_params as $p) {
             if (!isset($this->$p) || $this->$p === null) {
                 throw new \Exception("Missing required parameter {$p}");
