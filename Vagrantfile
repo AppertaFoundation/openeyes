@@ -56,8 +56,10 @@ Vagrant.configure("2") do |config|
 
   if OS.windows?
     config.vm.synced_folder "./", "/var/www/openeyes", id: "vagrant-root",
-      type: "rsync",
-      rsync__exclude: ".git/"
+      type: "smb",
+      mount_options: ["vers=3.02","mfsymlinks"]
+      # type: "rsync",
+      # rsync__exclude: ".git/"
   else
   	config.vm.synced_folder "./", "/var/www/openeyes", id: "vagrant-root",
       owner: "vagrant",
@@ -90,6 +92,40 @@ Vagrant.configure("2") do |config|
     v.vmx["memsize"] = "1024"
     v.vmx["numvcpus"] = "2"
     # v.gui = true
+  end
+
+  # AWS
+  # https://github.com/mitchellh/vagrant-aws
+  # vagrant box add dummy https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box
+  config.vm.provider(:aws) do |aws, override|
+    # https://github.com/mitchellh/vagrant/issues/5401
+    override.nfs.functional = false
+
+    override.vm.box = "dummy"
+    override.vm.box_url = "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box"
+    override.ssh.username = "ubuntu"
+    override.ssh.private_key_path = "~/.ssh/aws.pem"
+
+    override.vm.hostname = "openeyes-dev-aws.vm"
+    override.vm.network "private_network", :host_updater => "skip"
+
+    # Explicit AWS access pair
+    # aws.access_key_id = ""
+    # aws.secret_access_key = ""
+
+    aws.keypair_name = "aws"
+    aws.security_groups = "default"
+
+    aws.ami = "ami-ed82e39e"
+    aws.region = "eu-west-1"
+    aws.instance_type = "m3.medium"
+
+    aws.tags = {
+      'Name'    => 'OpenEyes_Development',
+      'Client'  => 'OpenEyes',
+      'Role'    => 'Development'
+    }
+
   end
 
   config.vm.provision "ansible_local" do |ansible|
