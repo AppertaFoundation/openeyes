@@ -693,12 +693,26 @@ class OphCoCvi_Manager extends \CComponent
      * @param \CDbCriteria $criteria
      * @param array $filter
      */
+    private function handleSubspecialtyListFilter(\CDbCriteria $criteria, $filter = array())
+    {
+        if (array_key_exists('subspecialty_id', $filter) && $filter['subspecialty_id'] !== '') {
+            $criteria->addCondition('subspecialty.id = :subspecialty_id');
+            $criteria->params[':subspecialty_id'] = $filter['subspecialty_id'];
+        }
+    }
+
+    /**
+     * @param \CDbCriteria $criteria
+     * @param array $filter
+     */
     private function handleConsultantListFilter(\CDbCriteria $criteria, $filter = array())
     {
         if (isset($filter['consultant_ids']) && strlen(trim($filter['consultant_ids']))) {
             $criteria->addInCondition('clinical_element.consultant_id', explode(',', $filter['consultant_ids']));
         }
     }
+
+
 
     /**
      * @param \CDbCriteria $criteria
@@ -722,6 +736,7 @@ class OphCoCvi_Manager extends \CComponent
 
         $this->handleDateRangeFilter($criteria, $filter);
         $this->handleConsultantListFilter($criteria, $filter);
+        $this->handleSubspecialtyListFilter($criteria, $filter);
         $this->handleIssuedFilter($criteria, $filter);
         return $criteria;
     }
@@ -735,11 +750,12 @@ class OphCoCvi_Manager extends \CComponent
     public function getListDataProvider($filter = array())
     {
         $model = Element_OphCoCvi_EventInfo::model()->with(
+            'user',
             'clinical_element',
-            'clinical_element.user',
             'clinical_element.consultant',
             'clerical_element',
-            'event.episode.patient.contact');
+            'event.episode.patient.contact',
+            'event.episode.firm.serviceSubspecialtyAssignment.subspecialty');
 
         $sort = new \CSort();
 
@@ -747,6 +763,10 @@ class OphCoCvi_Manager extends \CComponent
             'event_date' => array(
                 'asc' => 'event.event_date asc, event.id asc',
                 'desc' => 'event.event_date desc, event.id desc',
+            ),
+            'subspecialty' => array(
+                'asc' => 'lower(subspecialty.name) asc, event.id asc',
+                'desc' => 'lower(subspecialty.name) desc, event.id desc',
             ),
             'patient_name' => array(
                 'asc' => 'lower(contact.last_name) asc, lower(contact.first_name) asc',
