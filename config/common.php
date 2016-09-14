@@ -21,7 +21,7 @@ $config = array(
 	)
 );
 
-$integration_config_file = dirname(__FILE__) . '/integration.php';
+$integration_config_file = __DIR__ . '/integration.php';
 if (file_exists($integration_config_file)) {
 	$config['components'] = include $integration_config_file;
 }

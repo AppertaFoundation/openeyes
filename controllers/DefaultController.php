@@ -19,67 +19,68 @@ namespace OEModule\Internalreferral\controllers;
 
 class DefaultController extends \BaseEventTypeController
 {
-	static protected $ALLOW_EDIT = false;
+    // default behaviour as to whether a referral should be editable.
+    static protected $ALLOW_EDIT = false;
 
-	/**
-	 * Set up the default values on create.
-	 *
-	 * @param $element
-	 * @param $action
-	 */
-	public function setElementDefaultOptions_Element_Internalreferral_ReferralDetails($element, $action)
-	{
-		if ($action == "create") {
-			$user = \User::model()->findByPk(\Yii::app()->user->id);
-			if ($user->is_consultant)
-				$element->referrer_id = \Yii::app()->user->id;
-			$element->from_subspecialty_id = $this->firm->getSubspecialtyID();
-		}
-	}
+    /**
+     * Set up the default values on create.
+     *
+     * @param $element
+     * @param $action
+     */
+    public function setElementDefaultOptions_Element_Internalreferral_ReferralDetails($element, $action)
+    {
+        if ($action == 'create') {
+            $user = \User::model()->findByPk(\Yii::app()->user->id);
+            if ($user->is_consultant) {
+                $element->referrer_id = \Yii::app()->user->id;
+            }
+            $element->from_subspecialty_id = $this->firm->getSubspecialtyID();
+        }
+    }
 
-	/**
-	 * Typically don't want to allow edits when internal referral is integrated
-	 * with a 3rd party system.
-	 *
-	 * @return bool
-	 */
-	public function checkEditAccess()
-	{
-		if (isset($this->getApp()->params['internalreferral_allowedit']))
-			return $this->getApp()->params['internalreferral_allowedit'];
+    /**
+     * Typically don't want to allow edits when internal referral is integrated
+     * with a 3rd party system.
+     *
+     * @return bool
+     */
+    public function checkEditAccess()
+    {
+        if (isset($this->getApp()->params['internalreferral_allowedit'])) {
+            return $this->getApp()->params['internalreferral_allowedit'] && parent::checkEditAccess();
+        }
 
-		return self::$ALLOW_EDIT;
-	}
+        return self::$ALLOW_EDIT && parent::checkEditAccess();
+    }
 
-	/**
-	 * Partial render to insert values into event view.
-	 */
-	public function renderIntegration()
-	{
-		if ($component = $this->getApp()->internalReferralIntegration) {
-			echo $component->renderEventView($this->event);
-		}
-	}
+    /**
+     * Partial render to insert values into event view.
+     */
+    public function renderIntegration()
+    {
+        if ($component = $this->getApp()->internalReferralIntegration) {
+            echo $component->renderEventView($this->event);
+        }
+    }
 
-	/**
-	 * Handle external application call for a referral update.
-	 *
-	 * @throws \CHttpException
-	 */
-	public function actionExternalReferralResponse()
-	{
-		if ($component = $this->getApp()->internalReferralIntegration) {
-			if ($this->getApp()->request->isPostRequest)
-			{
-				list($status_code, $response) = $component->processExternalResponse($_POST);
-			}
-			else {
-				list($status_code, $response) = $component->processExternalResponse($_GET);
-			}
-			header('HTTP/1.1 '.$status_code);
-			echo $response;
-			$this->getApp()->end();
-		}
-		throw new \CHttpException(404, 'External Integration Not Configured.');
-	}
+    /**
+     * Handle external application call for a referral update.
+     *
+     * @throws \CHttpException
+     */
+    public function actionExternalReferralResponse()
+    {
+        if ($component = $this->getApp()->internalReferralIntegration) {
+            if ($this->getApp()->request->isPostRequest) {
+                list($status_code, $response) = $component->processExternalResponse($_POST);
+            } else {
+                list($status_code, $response) = $component->processExternalResponse($_GET);
+            }
+            header('HTTP/1.1 ' . $status_code);
+            echo $response;
+            $this->getApp()->end();
+        }
+        throw new \CHttpException(404, 'External Integration Not Configured.');
+    }
 }

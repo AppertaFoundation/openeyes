@@ -61,12 +61,8 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
      */
     public function init()
     {
-        if (is_null($this->yii)) {
-            $this->yii = \Yii::app();
-        }
-
         foreach (static::$required_params as $p) {
-            if (!isset($this->$p) || is_null($this->$p)) {
+            if (!isset($this->$p) || $this->$p === null) {
                 throw new \Exception("Missing required parameter {$p}");
             }
         }
@@ -112,7 +108,6 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
             'username' => $user->username,
             'user_displayname' => $user->getReversedFullName(),
             'event_id' => $event->id,
-            // TODO: make this dynamic
             'windip_type_id' => $this->form_id,
             'event_date' => $event_date->format('Y-m-d'),
             'event_time' => $event_date->format('H:i:s'),
@@ -143,7 +138,7 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
     private function generateAuthenticationHash($data)
     {
         if (!is_callable($this->hashing_function)) {
-            throw new \Exception("A hashing function must be provided to generate the authentication hash for the WinDip integration.");
+            throw new \Exception('A hashing function must be provided to generate the authentication hash for the WinDip integration.');
         }
 
         return call_user_func($this->hashing_function, $this, $data, $this->request_template);
@@ -164,7 +159,7 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
 
         $data['authentication_hash'] = $this->generateAuthenticationHash($data);
 
-        $request = $this->renderPartial($this->request_template, $data, true);
+        $request = $this->renderPartial($this->request_template, $data);
         return $this->cleanRequest($request);
     }
 
@@ -191,6 +186,7 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
     {
         $request = preg_replace('/>\s+</', '><', $request);
         $request = preg_replace('/[\n\r]/', '', $request);
+
         return $request;
     }
 

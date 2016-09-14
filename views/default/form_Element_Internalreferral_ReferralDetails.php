@@ -22,11 +22,11 @@
 
 		<div class="large-4 column autocomplete-row">
 			<span id="referrer-field">
-                    <span id="referrer-user-display"><?php echo $element->referrer ? $element->referrer->getFullnameAndTitle() : ""; ?></span>
+                    <span id="referrer-user-display"><?php echo $element->referrer ? $element->referrer->getFullnameAndTitle() : ''; ?></span>
 	<?php
 	$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-		'name' => "find_user",
-		'id' => "find-user",
+		'name' => 'find_user',
+		'id' => 'find-user',
 		'value'=>'',
 		'source'=>"js:function(request, response) {
                                     $.ajax({
