@@ -57,7 +57,7 @@ Vagrant.configure("2") do |config|
   if OS.windows?
     config.vm.synced_folder "./", "/var/www/openeyes", id: "vagrant-root",
       type: "smb",
-      mount_options: ["vers=3.02","mfsymlinks"]
+      mount_options: ["vers=3.02","mfsymlinks,dmode=775,fmode=664"]
       # type: "rsync",
       # rsync__exclude: ".git/"
   else
@@ -113,8 +113,7 @@ Vagrant.configure("2") do |config|
     # aws.access_key_id = ""
     # aws.secret_access_key = ""
 
-    aws.keypair_name = "aws"
-    aws.security_groups = "default"
+    aws.aws_profile = "AcrossHealth"
 
     aws.ami = "ami-ed82e39e"
     aws.region = "eu-west-1"
