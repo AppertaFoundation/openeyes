@@ -46,10 +46,6 @@ mysql_users:
     host: "%"
     password: "{{ openeyes.mysql_password }}"
     priv: "*.*:ALL"
-  # - name: "{{ openeyes.mysql_user }}"
-  #   host: "%"
-  #   password: "{{ openeyes.mysql_password }}"
-  #   priv: "openeyestest.*:ALL"
 
 # https://github.com/geerlingguy/ansible-role-nodejs
 nodejs_version: "6.x"
@@ -62,13 +58,18 @@ nodejs_npm_global_packages:
 
 # https://github.com/geerlingguy/drupal-vm/blob/master/provisioning/playbook.yml (For specific PHP version code)
 # https://github.com/geerlingguy/ansible-role-php
-php_version: "5.6"    # 5.6 or 7.0
 php_webserver_daemon: "apache2"
 php_use_managed_ini: true
 php_date_timezone: "Europe/London"
 php_error_reporting: "E_ALL"
 php_display_errors: "On"
 php_display_startup_errors: "On"
+
+# http://docs.drupalvm.com/en/latest/other/php-56/
+# PHP 5.6 Packages and config start
+php_version: "5.6"
+php_opcache_enable: false
+php_enable_apc: false
 php_packages:
   - libapache2-mod-php5
   - php5-cli
@@ -81,12 +82,23 @@ php_packages:
   - imagemagick
   - php5-mysql
   - php5-xsl
-
-# Change depending on PHP Version
+php_conf_paths:
+  - /etc/php5/fpm
+  - /etc/php5/apache2
+  - /etc/php5/cli
+php_extension_conf_paths:
+  - /etc/php5/fpm/conf.d
+  - /etc/php5/apache2/conf.d
+  - /etc/php5/cli/conf.d
 php_xdebug:
   - php5-xdebug
+# PHP 5.6 Packages and config end
+
+# PHP 7.0 Packages and config start
+# php_version: "7.0"
 # php_xdebug:
 #   - php7-xdebug
+# PHP 7.0 Packages and config end
 
 # XDebug config, see app/defaults/main.yml for configurable options
 php_xdebug_remote_enable: true
@@ -94,9 +106,6 @@ php_xdebug_remote_connect_back: true
 php_xdebug_remote_port: "9000"
 php_xdebug_idekey: across-health.xdebug
 php_xdebug_remote_log: /tmp/xdebug.log # Useful for connection debug
-
-# https://github.com/pludoni/ansible-wkhtmltox
-# No options configured at this time
 
 # https://github.com/angstwad/docker.ubuntu
 # No options configured at this time

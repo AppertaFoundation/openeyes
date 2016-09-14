@@ -5,6 +5,8 @@
   version: 1.7.3
 - src: geerlingguy.mysql
   version: 2.3.2
+- src: geerlingguy.php
+  version: 3.2.2
 - src: geerlingguy.composer
   version: 1.4.2
 - src: geerlingguy.nodejs
