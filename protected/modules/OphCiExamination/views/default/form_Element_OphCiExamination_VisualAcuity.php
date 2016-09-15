@@ -39,12 +39,27 @@ if ($element->isNewRecord) {
 }
 $this->endClip('element-title-additional');
 ?>
+<?php
+    // CVI alert
+    $ophCoCviModule = Yii::app()->moduleAPI->get('OphCoCvi');
+    if($ophCoCviModule){
+        $va_values = array();
+        foreach(array_merge($element->right_readings,$element->left_readings) as $reading){
+            $va_values[] = $reading->value;
+        }
 
-
+        echo $ophCoCviModule->getVisualAcuityAlert($element->id, $va_values);
+    }
+?>
 <div class="element-fields element-eyes row">
 	<input type="hidden" name="visualacuity_readings_valid" value="1" />
+	<?php echo $form->hiddenInput($element, 'id', false, array('class' => 'element_id')); ?>
 	<?php echo $form->hiddenInput($element, 'unit_id', false); ?>
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
+	
+        <?php echo $form->hiddenInput($element, 'cvi_alert_dismissed', false, array('class' => 'cvi_alert_dismissed')); ?>
+
+
 	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {
     ?> inactive<?php 
 }?>" data-side="right">

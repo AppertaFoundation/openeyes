@@ -21,6 +21,7 @@ namespace OEModule\OphCoCvi\components;
 use \Patient;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo;
+use OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity;
 
 class OphCoCvi_API extends \BaseAPI
 {
@@ -151,34 +152,39 @@ class OphCoCvi_API extends \BaseAPI
         return $finalEventUniqueCode;
     }
     
-    /*public function isVAlessThanThreshold($va_value, $unit_id)
-    {
-        $isVAlessThanThreshold = false;
-        
-        
-        
-        $unitValue = \OphCiExamination_VisualAcuityUnitValue::model()->findAllByAttributes(array(
-            'unit_id' => $unit_id,
-            'value' => $va_value
-            )
-        );
-
-        if($unitValue->base_value < $thresholdBaseValue){
-            $isVAlessThanThreshold = true;
-        }
-        
-        return $isVAlessThanThreshold;
-        
-    }*/
-    
     public function isVAbelowThreshold($va_base_value)
     {
-        $thresholdBaseValue = \Yii::app()->params['alert']['visualAcuity']['thresholdBaseValue'];
-        return $va_base_value < $thresholdBaseValue;
+        $isBelowThreshold = false;
+        $thresholdBaseValue = \Yii::app()->params['thresholds']['visualAcuity']['alert_base_value'];
+        
+        if( is_array($va_base_value) ){
+            foreach($va_base_value as $value){
+                if( is_numeric($value) && ($value < $thresholdBaseValue)){
+                    $isBelowThreshold = true;
+                    break;
+                }
+            }
+        } else{
+            $isBelowThreshold = is_numeric($va_base_value) && ($va_base_value < $thresholdBaseValue);
+        }
+        return $isBelowThreshold;
     }
     
-    public function getVisualAcuityAlert()
+    
+    public function getVisualAcuityAlert($va_element_id, $base_values)
     {
-       return $this->renderPartial('OphCoCvi.views.patient._va_alert');
+        
+        $displayAlert = false;
+        $visulaAcuity = Element_OphCiExamination_VisualAcuity::model()->findByPk($va_element_id);
+
+        if( ($visulaAcuity && $visulaAcuity->cvi_alert_dismissed != 1) || !$visulaAcuity ){
+            // VA element exsists and alert not dismissed
+            // or VA element does not exsist
+            $displayAlert = $this->isVAbelowThreshold($base_values);
+        } else {
+            // VA element exist and alert already dismissed
+        }
+        
+       return $displayAlert ? $this->renderPartial('OphCoCvi.views.patient._va_alert') : '';
     }
 }

@@ -33,6 +33,7 @@ use Yii;
  * @property bool $right_unable_to_assess
  * @property bool $left_eye_missing
  * @property bool $right_eye_missing
+ * @property bool $cvi_alert_dismissed
  *
  * The followings are the available model relations:
  * @property OphCiExamination_VisualAcuityUnit $unit
@@ -57,6 +58,8 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
             'side' => OphCiExamination_VisualAcuity_Reading::RIGHT,
         ),
     );
+    
+    public $cvi_alert_dismissed;
 
     /**
      * Returns the static model of the specified AR class.
@@ -85,7 +88,7 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
         // will receive user inputs.
         return array(
             array(' right_readings, left_readings, eye_id, unit_id, left_unable_to_assess,
-					right_unable_to_assess, left_eye_missing, right_eye_missing', 'safe'),
+					right_unable_to_assess, left_eye_missing, right_eye_missing, cvi_alert_dismissed', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, , eye_id', 'safe', 'on' => 'search'),
@@ -129,6 +132,7 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
             'right_unable_to_assess' => 'Unable to assess',
             'left_eye_missing' => 'Eye missing',
             'right_eye_missing' => 'Eye missing',
+            'cvi_alert_dismissed' => 'Is CVI alert dismissed',
         );
     }
 

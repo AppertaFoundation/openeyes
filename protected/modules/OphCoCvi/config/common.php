@@ -60,10 +60,9 @@ return array(
             ),
         ),
         'ophcocvi_allow_all_consultants' => false,
-        'alert' => array(
+        'thresholds' => array(
             'visualAcuity' => array(
-                'thresholdBaseValue' => 100
-                 
+                'alert_base_value' => 100
             )
         ),
     )

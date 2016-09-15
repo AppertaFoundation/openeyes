@@ -111,15 +111,28 @@
 }
 
 /* line 19, ../sass/components/elements/_visual-acuity.scss */
-.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity header .cvi-alert, .OEModule_OphCiExamination_models_Element_OphCiExamination_NearVisualAcuity header .cvi-alert {
+.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .cvi-alert, .OEModule_OphCiExamination_models_Element_OphCiExamination_NearVisualAcuity .cvi-alert {
   background: orange none repeat scroll 0 0;
+  letter-spacing: 1px;
+  color: #ffffff;
+}
+/* line 24, ../sass/components/elements/_visual-acuity.scss */
+.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .cvi-alert .column, .OEModule_OphCiExamination_models_Element_OphCiExamination_NearVisualAcuity .cvi-alert .column {
   padding: 5px;
 }
-/* line 25, ../sass/components/elements/_visual-acuity.scss */
+/* line 27, ../sass/components/elements/_visual-acuity.scss */
+.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .cvi-alert::after, .OEModule_OphCiExamination_models_Element_OphCiExamination_NearVisualAcuity .cvi-alert::after {
+  border: none;
+}
+/* line 30, ../sass/components/elements/_visual-acuity.scss */
+.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .cvi-alert .dismiss, .OEModule_OphCiExamination_models_Element_OphCiExamination_NearVisualAcuity .cvi-alert .dismiss {
+  margin-left: 20px;
+}
+/* line 36, ../sass/components/elements/_visual-acuity.scss */
 .OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .visual-acuity-reading select, .OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .near-visual-acuity-reading select, .OEModule_OphCiExamination_models_Element_OphCiExamination_NearVisualAcuity .visual-acuity-reading select, .OEModule_OphCiExamination_models_Element_OphCiExamination_NearVisualAcuity .near-visual-acuity-reading select {
   width: auto;
 }
-/* line 30, ../sass/components/elements/_visual-acuity.scss */
+/* line 41, ../sass/components/elements/_visual-acuity.scss */
 .OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .noReadings label, .OEModule_OphCiExamination_models_Element_OphCiExamination_NearVisualAcuity .noReadings label {
   display: inline-block;
   padding: 0 10px 0 0;

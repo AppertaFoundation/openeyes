@@ -1284,16 +1284,15 @@ $(document).ready(function() {
         
         /* Visual Acuity readings event binding */
         
-        $('#examination-update').on('change', '.va-selector', function(){
+        $('#event-content').on('change', '.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .va-selector', function(){
             
             var $right_side = $(this).closest('.element-eye.right-eye'),
-                $left_side = $(this).closest('.element-eye.left-eye');
+                $left_side = $(this).closest('.element-eye.left-eye'),
                 $section =  $(this).closest('section');
                 
             var va_base_values = [];
             
-            $('.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity')
-                .find('.va-selector').each(function(k,v){
+            $section.find('.va-selector').each(function(k,v){
                     var val = $(this).val();
                     if(val !== ''){
                         va_base_values.push(val);
@@ -1303,18 +1302,28 @@ $(document).ready(function() {
             var data = {
                 'YII_CSRF_TOKEN': YII_CSRF_TOKEN,
                 'va_base_values[]': va_base_values,
-                ajax: 'ajax'
+                'ajax': 'ajax',
+                'va_element_id': $section.find('.element_id').val()
             };
-            
-            $.ajax({
-               'url': baseUrl + '/OphCiExamination/default/getVisulaAcuityCVIAlert',
-                type: 'POST',
-                data: data,
-                success: function(response){
-                    $section.find('.cvi-alert').remove();
-                    $section.find('header').append(response);
-                },
-            });
+
+            if( $section.find('.cvi_alert_dismissed').val() !== "1"){
+                $.ajax({
+                   'url': baseUrl + '/OphCiExamination/default/getVisulaAcuityCVIAlert',
+                    type: 'POST',
+                    data: data,
+                    success: function(response){
+                        $section.find('.cvi-alert').remove();
+                        $section.find('header').after(response);
+                    },
+                });
+            }
+        });
+        
+        // Dismiss alert box
+        $('#event-content').on('click', '.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .dismiss_cva_alert', function(){
+            var $section = $(this).closest('section');
+            $section.find('.cvi-alert').slideUp(500).remove();
+            $section.find('.cvi_alert_dismissed').val("1");
         });
         
         /* End of Visual Acuity readings event binding */

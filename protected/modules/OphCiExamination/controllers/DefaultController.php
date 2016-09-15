@@ -38,6 +38,7 @@ class DefaultController extends \BaseEventTypeController
         'getPostOpComplicationList' => self::ACTION_TYPE_FORM,
         'getPostOpComplicationAutocopleteList' => self::ACTION_TYPE_FORM,
         'getVisulaAcuityCVIAlert' => self::ACTION_TYPE_FORM,
+        'dismissCVIalert' => self::ACTION_TYPE_FORM,
     );
 
     // if set to true, we are advancing the current event step
@@ -1307,21 +1308,33 @@ class DefaultController extends \BaseEventTypeController
         $isAjax = \Yii::app()->request->getParam('ajax', false);
         $alertHTML = '';
         
-        if (\Yii::app()->request->isAjaxRequest || $isAjax) {
-            $ophCoCviModule = Yii::app()->moduleAPI->get('OphCoCvi');
-            if($ophCoCviModule){
-                $va_base_values = \Yii::app()->request->getPost('va_base_values');
-                
-                foreach($va_base_values as $value){
-                    if( $ophCoCviModule->isVAbelowThreshold($value) ){
-                        $alertHTML = $ophCoCviModule->getVisualAcuityAlert();
-                        break;
-                    }
-                }
-            }
+        $ophCoCviModule = Yii::app()->moduleAPI->get('OphCoCvi');
+        
+        if ($ophCoCviModule && (\Yii::app()->request->isAjaxRequest || $isAjax)) {
+            $va_base_values = \Yii::app()->request->getPost('va_base_values', array());
+            $va_element_id = \Yii::app()->request->getPost('va_element_id');
+
+            $alertHTML = $ophCoCviModule->getVisualAcuityAlert($va_element_id, $va_base_values);
         }
         
         echo $alertHTML;
+        \Yii::app()->end();
+    }
+    
+    public function actionDismissCVIalert($element_id)
+    {
+        
+        $isAjax = \Yii::app()->request->getParam('ajax', false);
+        $ophCoCviModule = Yii::app()->moduleAPI->get('OphCoCvi');
+        
+        if ($ophCoCviModule && (\Yii::app()->request->isAjaxRequest || $isAjax)) {
+            $visulaAcuity = models\Element_OphCiExamination_VisualAcuity::model()->findByPk($element_id);
+            $visulaAcuity->cvi_alert_dismissed = 1;
+            
+            if($visulaAcuity->save()){
+                echo \CJSON::encode(array('success' => 'true'));
+            }
+        }
         \Yii::app()->end();
     }
     

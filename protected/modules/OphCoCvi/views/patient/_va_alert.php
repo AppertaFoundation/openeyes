@@ -16,15 +16,14 @@
  */
 ?>
 
-<div class="cvi-alert column text-center"> 
+<div class="element-eyes cvi-alert row">
   
-    <div class="cvi-alert large-6 column text-right"> 
+    <div class="large-6 column text-right"> 
         <span>CVI may be applicable</span>
     </div>
   
-    <div class="cvi-alert large-6 column text-left">
-        <button class="small secondary ">add</button>
-        <button class="small warning">dismiss</button>
+    <div class="large-6 column text-left">
+        <a href="javascript:void(0)" class="button small warning dismiss dismiss_cva_alert">dissmiss</a>
     </div>
   
 </div>
