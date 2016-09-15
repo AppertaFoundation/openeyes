@@ -2,9 +2,13 @@
 # Application tasks to be customized and to run after the main provision
 
 - name: Remove vendor directory
+  become: true
+  become_method: sudo
   file: path=//var/www/openeyes/vendor state=absent
 
 - name: Git clone OE Vendor dependencies
+  become: true
+  become_user: vagrant
   git:
     repo=https://github.com/{{ item }}.git
     dest=/var/www/openeyes/vendor
@@ -13,7 +17,7 @@
   with_items:
     - "{{ openeyes.vendor_repo }}"
 
-
+# TODO: Remove dependency directories?
 # Install project dependencies using composer (http://docs.ansible.com/ansible/composer_module.html)
 - name: Install / Update composer dependencies
   environment:
@@ -29,6 +33,8 @@
 
 # Git Clone OE depenandcies
 - name: Git clone OE dependencies
+  become: true
+  become_user: vagrant
   git:
     repo: https://github.com/openeyes/{{ item }}.git
     dest: /var/www/openeyes/protected/modules/{{ item }}
@@ -61,6 +67,7 @@
 # Create required directories and assign users / groups / permissions
 - name: Create directories for Yii
   become: true
+  become_user: vagrant
   file:
     path: "{{ item }}"
     mode: "0775"
@@ -76,7 +83,11 @@
 
 # TODO Change to use a template
 - name: Copy common.php into place
+  become: true
+  become_user: vagrant
   command: creates=/var/www/openeyes/protected/config/local/common.php cp /var/www/openeyes/protected/config/local.sample/common.php /var/www/openeyes/protected/config/local/common.php
 
 - name: Copy console.php into place
+  become: true
+  become_user: vagrant
   command: creates=/var/www/openeyes/protected/config/local/console.php cp /var/www/openeyes/protected/config/local.sample/console.vagrant.php /var/www/openeyes/protected/config/local/console.php
