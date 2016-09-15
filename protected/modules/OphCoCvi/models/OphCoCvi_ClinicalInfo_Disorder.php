@@ -138,10 +138,12 @@ class OphCoCvi_ClinicalInfo_Disorder extends \BaseActiveRecordVersioned
         ));
     }
 
+    /*
     public function getAllDisorderForSection($disorder_section)
     {
         return($this->findAll('`active` = ? and section_id = ?',array(1, $disorder_section->id)));
     }
+
 
     /**
      * Get all the patient disorders based on eye as array
@@ -149,6 +151,7 @@ class OphCoCvi_ClinicalInfo_Disorder extends \BaseActiveRecordVersioned
      * @param $side
      * @return array|mixed|null
      */
+    /*
     public function getAllPatientDisorderIds($side)
     {
         $patient_disorder_list = array();
@@ -162,6 +165,7 @@ class OphCoCvi_ClinicalInfo_Disorder extends \BaseActiveRecordVersioned
         }
         return $patient_disorder_list;
     }
+
 
     public function getDisordersWithValuesAndComments($element,$side,$disorder_section)
     {
@@ -189,4 +193,5 @@ class OphCoCvi_ClinicalInfo_Disorder extends \BaseActiveRecordVersioned
         }
         return $disorders;
     }
+    */
 }
