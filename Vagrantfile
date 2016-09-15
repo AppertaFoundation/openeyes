@@ -81,7 +81,7 @@ Vagrant.configure("2") do |config|
 		v.customize [
       "modifyvm", :id,
       "--name", servername,
-      "--memory", 1024,
+      "--memory", 2048,
       "--natdnshostresolver1", "on",
       "--cpus", 2,
     ]
@@ -92,7 +92,7 @@ Vagrant.configure("2") do |config|
   config.vm.provider(:vmware_fusion) do |v, override|
     override.vm.box = "puppetlabs/ubuntu-14.04-64-nocm"
     v.vmx["displayname"] = servername
-    v.vmx["memsize"] = "1024"
+    v.vmx["memsize"] = "2048"
     v.vmx["numvcpus"] = "2"
     # v.gui = true
   end
