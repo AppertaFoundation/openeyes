@@ -57,7 +57,10 @@ Vagrant.configure("2") do |config|
   if OS.windows?
     config.vm.synced_folder "./", "/var/www/openeyes", id: "vagrant-root",
       type: "rsync",
-      rsync__exclude: ".git/"
+      rsync__exclude: ".git/",
+      owner: "vagrant",
+      group: "www-data"
+
       # type: "smb",
       # mount_options: ["vers=3.02","mfsymlinks,dmode=775,fmode=664"]
   else
