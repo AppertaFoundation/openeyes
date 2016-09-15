@@ -113,7 +113,7 @@ Vagrant.configure("2") do |config|
     # aws.access_key_id = ""
     # aws.secret_access_key = ""
 
-    aws.aws_profile = "AcrossHealth"
+    # aws.aws_profile = "AcrossHealth"
 
     aws.ami = "ami-ed82e39e"
     aws.region = "eu-west-1"
