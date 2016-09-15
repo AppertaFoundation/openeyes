@@ -162,10 +162,10 @@ class PatientMerge
         $isMerged = $isMerged && $this->updatePreviousOperations($this->primaryPatient, $this->secondaryPatient->previousOperations);
 
         //Update Other ophthalmic diagnoses
-        $isMerged = $isMerged && $this->updateOphthalmicDiagnoses($this->primaryPatient, $this->patient->ophthalmicDiagnoses);
+        $isMerged = $isMerged && $this->updateOphthalmicDiagnoses($this->primaryPatient, $this->secondaryPatient->ophthalmicDiagnoses);
         
         // Update Systemic Diagnoses
-        $isMerged = $isMerged && $this->updateSystemicDiagnoses($this->primaryPatient, $this->patient->systemicDiagnoses);
+        $isMerged = $isMerged && $this->updateSystemicDiagnoses($this->primaryPatient, $this->secondaryPatient->systemicDiagnoses);
 
         if ($isMerged) {
             $secondaryPatient = $this->secondaryPatient;
@@ -504,7 +504,7 @@ class PatientMerge
     public function updateSystemicDiagnoses($newPatient, $systemicDiagnoses)
     {
         foreach ($systemicDiagnoses as $systemicDiagnosis) {
-            $msg = 'Systemic Diagnoses ' . $systemicDiagnosis->id . ' moved from Patient ' . $ophthalmicDiagnosis->patient->hos_num . ' to ' . $newPatient->hos_num;
+            $msg = 'Systemic Diagnoses ' . $systemicDiagnosis->id . ' moved from Patient ' . $systemicDiagnosis->patient->hos_num . ' to ' . $newPatient->hos_num;
             $systemicDiagnosis->patient_id = $newPatient->id;
             if ($systemicDiagnosis->save()) {
                 $this->addLog($msg);
