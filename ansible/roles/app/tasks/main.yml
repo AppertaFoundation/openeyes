@@ -33,8 +33,6 @@
 
 # Git Clone OE depenandcies
 - name: Git clone OE dependencies
-  become: true
-  become_user: vagrant
   git:
     repo: https://github.com/openeyes/{{ item }}.git
     dest: /var/www/openeyes/protected/modules/{{ item }}
@@ -66,8 +64,6 @@
 
 # Create required directories and assign users / groups / permissions
 - name: Create directories for Yii
-  become: true
-  become_user: vagrant
   file:
     path: "{{ item }}"
     mode: "0775"
