@@ -345,4 +345,38 @@ class Helper
 
         return $r->getShortName();
     }
+
+    /**
+     * @param $string
+     * @param integer $line_count
+     * @param integer $protect
+     * @param string $delimiter
+     * @param string $joiner
+
+     * @return string $result
+     * @throws InvalidArgumentException
+     */
+    public static function lineLimit($string, $line_count, $protect = 0, $delimiter = "\n", $joiner = ', ')
+    {
+        if ($protect >= $line_count) {
+            throw new InvalidArgumentException("protect must be less than the line_count");
+        }
+
+        $bits = explode($delimiter, $string);
+        if (count($bits) <= $line_count) {
+            return implode($delimiter, $bits);
+        }
+        $protected = array();
+        for ($i = 0; $i < $protect; $i++) {
+            array_unshift($protected, array_pop($bits));
+        }
+
+        while ((count($bits) + $protect) > $line_count) {
+            $last = array_pop($bits);
+            $bits[count($bits)-1] .= $joiner . $last;
+        }
+
+        return implode($delimiter, array_merge($bits, $protected));
+    }
+
 }

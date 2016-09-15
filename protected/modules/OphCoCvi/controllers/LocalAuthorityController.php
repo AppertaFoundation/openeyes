@@ -75,13 +75,13 @@ class LocalAuthorityController extends \BaseModuleController
                 'service' => array(
                     'id' => $cbs->id,
                     'name' => $cbs->name,
-                    'address' => $cbs->getLetterAddress(array('delimiter' => ', ')),
+                    'address' => $cbs->getLetterAddress(array('delimiter' => ",\n")),
                     'telephone' => $cbs->contact->primary_phone
                 ),
                 'body' => array(
                     'id' => $body->id,
                     'name' => $body->name,
-                    'address' => $body->getLetterAddress(array('delimiter' => ', ')),
+                    'address' => $body->getLetterAddress(array('delimiter' => ",\n")),
                     'telephone' => $body->contact->primary_phone
                 )
             );
@@ -104,7 +104,7 @@ class LocalAuthorityController extends \BaseModuleController
                 'body' => array(
                     'id' => $body->id,
                     'name' => $body->name,
-                    'address' => $body->getLetterAddress(array('delimiter' => ', ')),
+                    'address' => $body->getLetterAddress(array('delimiter' => ",\n")),
                     'telephone' => $body->contact->primary_phone
                 )
             );

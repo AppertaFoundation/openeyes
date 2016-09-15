@@ -26,6 +26,12 @@ $cols = array(
         'htmlOptions' => array('class' => 'date', 'style' => 'whitespace: nowrap;'),
     ),
     array(
+        'id' => 'subspecialty',
+        'class' => 'CDataColumn',
+        'header' => $dp->getSort()->link('subspecialty', 'Subspecialty', array('class' => 'sort-link')),
+        'value' => '$data->event->episode->getSubspecialtyText()'
+    ),
+    array(
         'id' => 'patient_name',
         'class' => 'CLinkColumn',
         'header' => $dp->getSort()->link('patient_name', 'Name', array('class' => 'sort-link')),

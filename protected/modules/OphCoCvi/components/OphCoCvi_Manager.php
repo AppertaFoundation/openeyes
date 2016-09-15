@@ -132,7 +132,7 @@ class OphCoCvi_Manager extends \CComponent
         return \Event::model()->getEventsOfTypeForPatient($this->event_type, $patient);
     }
 
-    protected $info_element_for_events = array();
+    protected $info_el_for_events = array();
 
     /**
      * @param $event
@@ -151,14 +151,14 @@ class OphCoCvi_Manager extends \CComponent
             'Element_OphCoCvi_Demographics' => 'demographics_element'
         );
 
-        if (!isset($this->info_element_for_events[$event->id])) {
-            $this->info_element_for_events[$event->id] = $namespaced_class::model()->with(array_values($cls_rel_map))->findByAttributes(array('event_id' => $event->id));
+        if (!isset($this->info_el_for_events[$event->id])) {
+            $this->info_el_for_events[$event->id] = $namespaced_class::model()->with(array_values($cls_rel_map))->findByAttributes(array('event_id' => $event->id));
         }
 
         if (array_key_exists($element_class, $cls_rel_map)) {
-            return $this->info_element_for_events[$event->id]->{$cls_rel_map[$element_class]};
+            return $this->info_el_for_events[$event->id]->{$cls_rel_map[$element_class]};
         } elseif ($element_class == $core_class) {
-            return $this->info_element_for_events[$event->id];
+            return $this->info_el_for_events[$event->id];
         }
     }
 
@@ -171,9 +171,9 @@ class OphCoCvi_Manager extends \CComponent
     protected function resetElementStore(\Event $event = null)
     {
         if ($event) {
-            unset($this->info_element_for_events[$event->id]);
+            unset($this->info_el_for_events[$event->id]);
         } else {
-            $this->info_element_for_events = array();
+            $this->info_el_for_events = array();
         }
     }
 
@@ -427,6 +427,20 @@ class OphCoCvi_Manager extends \CComponent
     }
 
     /**
+     * @param \Patient $patient
+     * @return bool
+     */
+    public function canCreateEventForPatient(\Patient $patient)
+    {
+        foreach ($this->getEventsForPatient($patient) as $e) {
+            if (!$this->isIssued($e)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Element based name and value pair.
      *
      * @param \Event $event
@@ -443,8 +457,8 @@ class OphCoCvi_Manager extends \CComponent
                 $data = array_merge($data, $element->getStructuredDataForPrint());
             }
         }
-
-        $data['hospitalAddress'] = \Institution::model()->getCurrent()->getLetterAddress(array('include_name' => true, 'delimiter' => '\n'));
+        $address = \Institution::model()->getCurrent()->getLetterAddress(array('include_name' => false, 'delimiter' => '\n'));
+        $data['hospitalAddress'] = \Helper::lineLimit($address,4,1,'\n');
         $data['hospitalNumber'] = $event->episode->patient->hos_num;
 
         return $data;
@@ -679,12 +693,26 @@ class OphCoCvi_Manager extends \CComponent
      * @param \CDbCriteria $criteria
      * @param array $filter
      */
+    private function handleSubspecialtyListFilter(\CDbCriteria $criteria, $filter = array())
+    {
+        if (array_key_exists('subspecialty_id', $filter) && $filter['subspecialty_id'] !== '') {
+            $criteria->addCondition('subspecialty.id = :subspecialty_id');
+            $criteria->params[':subspecialty_id'] = $filter['subspecialty_id'];
+        }
+    }
+
+    /**
+     * @param \CDbCriteria $criteria
+     * @param array $filter
+     */
     private function handleConsultantListFilter(\CDbCriteria $criteria, $filter = array())
     {
         if (isset($filter['consultant_ids']) && strlen(trim($filter['consultant_ids']))) {
             $criteria->addInCondition('clinical_element.consultant_id', explode(',', $filter['consultant_ids']));
         }
     }
+
+
 
     /**
      * @param \CDbCriteria $criteria
@@ -708,6 +736,7 @@ class OphCoCvi_Manager extends \CComponent
 
         $this->handleDateRangeFilter($criteria, $filter);
         $this->handleConsultantListFilter($criteria, $filter);
+        $this->handleSubspecialtyListFilter($criteria, $filter);
         $this->handleIssuedFilter($criteria, $filter);
         return $criteria;
     }
@@ -721,11 +750,12 @@ class OphCoCvi_Manager extends \CComponent
     public function getListDataProvider($filter = array())
     {
         $model = Element_OphCoCvi_EventInfo::model()->with(
+            'user',
             'clinical_element',
-            'clinical_element.user',
             'clinical_element.consultant',
             'clerical_element',
-            'event.episode.patient.contact');
+            'event.episode.patient.contact',
+            'event.episode.firm.serviceSubspecialtyAssignment.subspecialty');
 
         $sort = new \CSort();
 
@@ -733,6 +763,10 @@ class OphCoCvi_Manager extends \CComponent
             'event_date' => array(
                 'asc' => 'event.event_date asc, event.id asc',
                 'desc' => 'event.event_date desc, event.id desc',
+            ),
+            'subspecialty' => array(
+                'asc' => 'lower(subspecialty.name) asc, event.id asc',
+                'desc' => 'lower(subspecialty.name) desc, event.id desc',
             ),
             'patient_name' => array(
                 'asc' => 'lower(contact.last_name) asc, lower(contact.first_name) asc',
