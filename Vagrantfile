@@ -22,7 +22,7 @@ opts.each do |opt, arg|
   end
 end
 
-PLUGINS = %w(vagrant-auto_network vagrant-hostsupdater vagrant-cachier)
+PLUGINS = %w(vagrant-auto_network vagrant-hostsupdater vagrant-cachier vagrant-vbguest)
 
 PLUGINS.reject! { |plugin| Vagrant.has_plugin? plugin }
 
@@ -55,11 +55,11 @@ Vagrant.configure("2") do |config|
   config.vm.network "private_network", :auto_network => true
 
   if OS.windows?
-    config.vm.synced_folder "./", "/var/www/openeyes", id: "vagrant-root",
-      type: "rsync",
-      rsync__exclude: ".git/",
-      owner: "vagrant",
-      group: "www-data"
+    config.vm.synced_folder "./", "/var/www/openeyes", id: "vagrant-root"
+      # type: "rsync",
+      # rsync__exclude: ".git/",
+      # owner: "vagrant",
+      # group: "www-data"
 
       # type: "smb",
       # mount_options: ["vers=3.02","mfsymlinks,dmode=775,fmode=664"]
