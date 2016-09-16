@@ -1323,8 +1323,19 @@ $(document).ready(function() {
         // Dismiss alert box
         $('#event-content').on('click', '.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .dismiss_cva_alert', function(){
             var $section = $(this).closest('section');
-            $section.find('.cvi-alert').slideUp(500).remove();
-            $section.find('.cvi_alert_dismissed').val("1");
+            
+            if( $('.ophciexamination.column.event.view').length ) {
+                $.get( baseUrl + '/OphCiExamination/default/dismissCVIalert', { "element_id": $section.find('.element_id').val() }, function( result ) {
+                    var response = $.parseJSON(result);
+                    if(response.success === 'true'){
+                        $section.find('.cvi-alert').slideUp(500).remove();
+                        $section.find('.cvi_alert_dismissed').val("1");
+                    }
+                });
+            } else {
+                $section.find('.cvi-alert').slideUp(500).remove();
+                $section.find('.cvi_alert_dismissed').val("1");
+            }
         });
         
         /* End of Visual Acuity readings event binding */

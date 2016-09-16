@@ -665,7 +665,17 @@ class Patient extends BaseActiveRecordVersioned
 
         return $info;
     }
-
+    
+    /**
+     * Checks if the patient has CVI or not
+     * @return type
+     */
+    public function hasCVI()
+    {
+        $info = $this->getOphInfo();
+        return $info->cvi_status_id == 1 ? false : true;
+    }
+    
     public function getGenderString()
     {
         switch ($this->gender) {

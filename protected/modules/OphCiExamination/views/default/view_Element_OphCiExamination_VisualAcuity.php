@@ -17,6 +17,19 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<?php
+    $ophCoCviModule = Yii::app()->moduleAPI->get('OphCoCvi');
+    if($ophCoCviModule && !$this->patient->hasCVI() && ($element->cvi_alert_dismissed != "1") ){
+
+        if( $ophCoCviModule->isVAalertApplicable($element->id, null)){
+            echo $this->renderPartial('OphCoCvi.views.patient._va_alert', array('buttons' => array('create')) );
+        }
+
+    }
+?>
+
+<?php echo CHtml::hiddenField('element_id',$element->id, array('class' => 'element_id') ); ?>
+
 <div class="element-data element-eyes row">
 	<div class="element-eye right-eye column">
 		<?php if ($element->hasRight()) {

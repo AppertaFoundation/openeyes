@@ -181,13 +181,20 @@ class OphCoCvi_API extends \BaseAPI
      * 
      * @param int $va_element_id
      * @param array|int $base_values
-     * @return html | empty string if alert dismissed or value is not below the threshold
+     * @return bool
      */
-    public function getVisualAcuityAlert($va_element_id, $base_values)
+    public function isVAalertApplicable($va_element_id, $base_values = null)
     {
 
         $displayAlert = false;
         $visulaAcuity = Element_OphCiExamination_VisualAcuity::model()->findByPk($va_element_id);
+        
+        // get the values from the element
+        if($visulaAcuity && is_null($base_values)){
+            foreach(array_merge($visulaAcuity->right_readings, $visulaAcuity->left_readings) as $reading){
+                $base_values[] = $reading->value;
+            }
+        }
 
         if( ($visulaAcuity && $visulaAcuity->cvi_alert_dismissed != 1) || !$visulaAcuity ){
             // VA element exsists and alert not dismissed
@@ -197,6 +204,6 @@ class OphCoCvi_API extends \BaseAPI
             // VA element exist and alert already dismissed
         }
         
-       return $displayAlert ? $this->renderPartial('OphCoCvi.views.patient._va_alert') : '';
+       return $displayAlert;
     }
 }

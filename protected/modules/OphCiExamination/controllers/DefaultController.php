@@ -39,6 +39,7 @@ class DefaultController extends \BaseEventTypeController
         'getPostOpComplicationAutocopleteList' => self::ACTION_TYPE_FORM,
         'getVisulaAcuityCVIAlert' => self::ACTION_TYPE_FORM,
         'dismissCVIalert' => self::ACTION_TYPE_FORM,
+        'dismissCVIalert' => self::ACTION_TYPE_FORM,
     );
 
     // if set to true, we are advancing the current event step
@@ -1310,7 +1311,7 @@ class DefaultController extends \BaseEventTypeController
     public function actionGetVisulaAcuityCVIAlert()
     {
         $isAjax = \Yii::app()->request->getParam('ajax', false);
-        $alertHTML = '';
+        $displayAlert = false;
         
         $ophCoCviModule = Yii::app()->moduleAPI->get('OphCoCvi');
         
@@ -1318,10 +1319,30 @@ class DefaultController extends \BaseEventTypeController
             $va_base_values = \Yii::app()->request->getPost('va_base_values', array());
             $va_element_id = \Yii::app()->request->getPost('va_element_id');
 
-            $alertHTML = $ophCoCviModule->getVisualAcuityAlert($va_element_id, $va_base_values);
+            $displayAlert = $ophCoCviModule->isVAalertApplicable($va_element_id, $va_base_values);
         }
         
-        echo $alertHTML;
+        echo $displayAlert ? $this->renderPartial('OphCoCvi.views.patient._va_alert') : '';
+        \Yii::app()->end();
+    }
+    
+    /**
+     * Setting the CVA alert flag to dismiss
+     * @param int $element_id
+     */
+    public function actionDismissCVIalert($element_id)
+    {
+        $isAjax = \Yii::app()->request->getParam('ajax', false);
+        $ophCoCviModule = Yii::app()->moduleAPI->get('OphCoCvi');
+        
+        if ($ophCoCviModule && (\Yii::app()->request->isAjaxRequest || $isAjax)) {
+            $visulaAcuity = models\Element_OphCiExamination_VisualAcuity::model()->findByPk($element_id);
+            $visulaAcuity->cvi_alert_dismissed = 1;
+            
+            if($visulaAcuity->save()){
+                echo \CJSON::encode(array('success' => 'true'));
+            }
+        }
         \Yii::app()->end();
     }
 }

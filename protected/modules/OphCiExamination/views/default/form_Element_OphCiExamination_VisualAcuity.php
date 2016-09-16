@@ -48,7 +48,9 @@ $this->endClip('element-title-additional');
             $va_values[] = $reading->value;
         }
 
-        echo $ophCoCviModule->getVisualAcuityAlert($element->id, $va_values);
+        if( $ophCoCviModule->isVAalertApplicable($element->id, $va_values) ){
+            echo $this->renderPartial('OphCoCvi.views.patient._va_alert');
+        }
     }
 ?>
 <div class="element-fields element-eyes row">

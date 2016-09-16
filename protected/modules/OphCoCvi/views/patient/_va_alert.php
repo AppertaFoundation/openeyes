@@ -16,14 +16,10 @@
  */
 ?>
 
-<div class="element-eyes cvi-alert row">
-  
-    <div class="large-6 column text-right"> 
-        <span>CVI may be applicable</span>
-    </div>
-  
-    <div class="large-6 column text-left">
-        <a href="javascript:void(0)" class="button small warning dismiss dismiss_cva_alert">dissmiss</a>
-    </div>
-  
+<div class="cvi-alert alert-box warning round" data-alert="CVI may be applicable">
+    CVI may be applicable
+    <a class="dismiss_cva_alert dismiss right" href="javascript:void(0)">dismiss</a>
+    <?php if(isset($buttons) && in_array('create', $buttons)): ?>
+        <a class="create-cvi create right" href="<?php echo Yii::app()->createUrl('/OphCoCvi/Default/create', array('patient_id' => $this->patient->id) ); ?>">create</a>
+    <?php endif; ?>
 </div>
