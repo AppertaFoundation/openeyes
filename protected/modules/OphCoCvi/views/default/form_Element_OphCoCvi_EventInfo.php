@@ -17,4 +17,8 @@
 
 ?>
 
-<?php // event info not rendered in form context ?>
+<div class="element-fields">
+    <div class="fields-row">
+        <?php echo $form->dropDownList($element, 'site_id', Site::model()->getListForCurrentInstitution(), array('empty' => '- Please Select -', 'style' => 'margin-left:8px'), false, array('label' => 2, 'field' => 3)) ?>
+    </div>
+</div>

@@ -201,6 +201,15 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
+    protected function setElementDefaultOptions_Element_OphCoCvi_EventInfo(
+        models\Element_OphCoCvi_EventInfo $element,
+        $action
+    ) {
+        if ($element->isNewRecord) {
+            $element->site_id = $this->getApp()->session['selected_site_id'];
+        }
+    }
+
     /**
      * @param models\Element_OphCoCvi_ClinicalInfo $element
      * @param $action
@@ -424,7 +433,7 @@ class DefaultController extends \BaseEventTypeController
 
         // if POST, then a new filter is to be applied, otherwise retrieve from the session
         if ($this->request->isPostRequest) {
-            foreach (array('date_from', 'date_to', 'subspecialty_id', 'consultant_ids', 'show_issued') as $key) {
+            foreach (array('date_from', 'date_to', 'subspecialty_id', 'site_id', 'consultant_ids', 'show_issued') as $key) {
                 $val = $this->request->getPost($key, null);
                 $filter[$key] = $val;
             }
@@ -597,7 +606,6 @@ class DefaultController extends \BaseEventTypeController
         $cls = $element_type->class_name;
 
         $map = array(
-            'OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo' => 'EventInfo',
             'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo' => 'Clinical',
             'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo' => 'Clerical'
         );

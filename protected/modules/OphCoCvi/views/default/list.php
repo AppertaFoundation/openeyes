@@ -32,6 +32,12 @@ $cols = array(
         'value' => '$data->event->episode->getSubspecialtyText()'
     ),
     array(
+        'id' => 'site',
+        'class' => 'CDataColumn',
+        'header' => $dp->getSort()->link('site', 'Site', array('class' => 'sort-link')),
+        'value' => '$data->site ? $data->site->name : "-"',
+    ),
+    array(
         'id' => 'patient_name',
         'class' => 'CLinkColumn',
         'header' => $dp->getSort()->link('patient_name', 'Name', array('class' => 'sort-link')),

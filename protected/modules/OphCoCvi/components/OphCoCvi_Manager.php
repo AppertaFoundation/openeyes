@@ -705,6 +705,17 @@ class OphCoCvi_Manager extends \CComponent
      * @param \CDbCriteria $criteria
      * @param array $filter
      */
+    private function handleSiteListFilter(\CDbCriteria $criteria, $filter = array())
+    {
+        if (array_key_exists('site_id', $filter) && $filter['site_id'] !== '') {
+            $criteria->addCondition('site_id = :site_id');
+            $criteria->params[':site_id'] = $filter['site_id'];
+        }
+    }
+    /**
+     * @param \CDbCriteria $criteria
+     * @param array $filter
+     */
     private function handleConsultantListFilter(\CDbCriteria $criteria, $filter = array())
     {
         if (isset($filter['consultant_ids']) && strlen(trim($filter['consultant_ids']))) {
@@ -735,8 +746,9 @@ class OphCoCvi_Manager extends \CComponent
         $criteria = new \CDbCriteria();
 
         $this->handleDateRangeFilter($criteria, $filter);
-        $this->handleConsultantListFilter($criteria, $filter);
         $this->handleSubspecialtyListFilter($criteria, $filter);
+        $this->handleSiteListFilter($criteria, $filter);
+        $this->handleConsultantListFilter($criteria, $filter);
         $this->handleIssuedFilter($criteria, $filter);
         return $criteria;
     }
@@ -750,6 +762,7 @@ class OphCoCvi_Manager extends \CComponent
     public function getListDataProvider($filter = array())
     {
         $model = Element_OphCoCvi_EventInfo::model()->with(
+            'site',
             'user',
             'clinical_element',
             'clinical_element.consultant',
@@ -767,6 +780,10 @@ class OphCoCvi_Manager extends \CComponent
             'subspecialty' => array(
                 'asc' => 'lower(subspecialty.name) asc, event.id asc',
                 'desc' => 'lower(subspecialty.name) desc, event.id desc',
+            ),
+            'site' => array(
+                'asc' => 'lower(site.name) asc, event.id asc',
+                'desc' => 'lower(site.name) desc, event.id desc',
             ),
             'patient_name' => array(
                 'asc' => 'lower(contact.last_name) asc, lower(contact.first_name) asc',
