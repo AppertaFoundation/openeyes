@@ -24,7 +24,7 @@ if (file_exists('/etc/openeyes/db.conf')) {
         'port' => '=3306',
         'dbname' => 'openeyes',
         'username' => 'openeyes',
-        'password' => 'oe_test',
+        'password' => 'openeyes',
     );
 }
 

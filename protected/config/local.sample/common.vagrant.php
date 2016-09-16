@@ -25,7 +25,7 @@ $config = array(
         'db' => array(
             'connectionString' => "mysql:host=$host;port=$port;dbname=openeyes",
             'username' => 'openeyes',
-            'password' => 'oe_test',
+            'password' => 'openeyes',
         ),
         'session' => array(
             'timeout' => 86400,

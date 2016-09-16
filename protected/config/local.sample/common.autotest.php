@@ -23,9 +23,9 @@ $port = $isLocal ? '3306' : '3333';
 $config = array(
     'components' => array(
         'db' => array(
-            'connectionString' => "mysql:host=$host;port=$port;dbname=openeyes",
+            'connectionString' => "mysql:host=$host;port=$port;dbname=openeyes-test",
             'username' => 'openeyes',
-            'password' => 'oe_test',
+            'password' => 'openeyes',
             'enableParamLogging' => true,
         ),
         'session' => array(

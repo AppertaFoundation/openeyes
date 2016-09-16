@@ -22,13 +22,13 @@ return array(
         'db' => array(
             'connectionString' => 'mysql:host=127.0.0.1;port=3306;dbname=openeyes',
             'username' => 'openeyes',
-            'password' => 'oe_test',
+            'password' => 'openeyes',
         ),
         'testdb' => array(
             'class' => 'CDbConnection',
-            'connectionString' => 'mysql:host=127.0.0.1;port=3306;dbname=openeyes',
+            'connectionString' => 'mysql:host=127.0.0.1;port=3306;dbname=openeyes-test',
             'username' => 'openeyes',
-            'password' => 'oe_test',
+            'password' => 'openeyes',
         ),
     ),
 );
