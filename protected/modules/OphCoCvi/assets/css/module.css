@@ -19,11 +19,11 @@
 /* line 16, ../sass/components/_event.scss */
 .event .event-content {
   border-color: #86cdff;
-  background-image: url('../img/watermark.png?1470932098');
+  background-image: url('../img/watermark.png?1473166690');
 }
 /* line 20, ../sass/components/_event.scss */
 .event .event-title {
-  background-image: url('../img/medium.png?1470932098');
+  background-image: url('../img/medium.png?1473166690');
 }
 
 /* line 25, ../sass/components/_event.scss */
@@ -71,4 +71,17 @@
 hr {
   margin-top: 0.1em;
   margin-bottom: 0.1em;
+}
+
+/* line 33, ../sass/components/_elements.scss */
+.disorder-toggle {
+  margin-left: 10px;
+  margin-right: 10px;
+  border-radius: 5px;
+}
+
+/* line 39, ../sass/components/_elements.scss */
+.disorder-toggle:hover {
+  background-color: #3665ff;
+  cursor: pointer;
 }
