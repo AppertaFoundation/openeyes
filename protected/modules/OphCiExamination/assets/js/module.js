@@ -1285,28 +1285,29 @@ $(document).ready(function() {
         /* Visual Acuity readings event binding */
         
         $('#event-content').on('change', '.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .va-selector', function(){
-            
-            var $right_side = $(this).closest('.element-eye.right-eye'),
-                $left_side = $(this).closest('.element-eye.left-eye'),
-                $section =  $(this).closest('section');
-                
-            var va_base_values = [];
-            
-            $section.find('.va-selector').each(function(k,v){
-                    var val = $(this).val();
-                    if(val !== ''){
-                        va_base_values.push(val);
-                    }
-            });
 
-            var data = {
-                'YII_CSRF_TOKEN': YII_CSRF_TOKEN,
-                'va_base_values[]': va_base_values,
-                'ajax': 'ajax',
-                'va_element_id': $section.find('.element_id').val()
-            };
+            var $section =  $(this).closest('section');
+
+            var va_base_values = [];
+            var data = {};
 
             if( $section.find('.cvi_alert_dismissed').val() !== "1"){
+
+                $section.find('.va-selector').each(function(k,v){
+                        var val = $(this).val();
+                        if(val !== ''){
+                            va_base_values.push(val);
+                        }
+                });
+
+                data = {
+                    'YII_CSRF_TOKEN': YII_CSRF_TOKEN,
+                    'va_base_values[]': va_base_values,
+                    'ajax': 'ajax',
+                    'va_element_id': $section.find('.element_id').val()
+                };
+
+
                 $.ajax({
                    'url': baseUrl + '/OphCiExamination/default/getVisulaAcuityCVIAlert',
                     type: 'POST',

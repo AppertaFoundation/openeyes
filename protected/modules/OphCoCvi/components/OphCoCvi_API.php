@@ -152,6 +152,12 @@ class OphCoCvi_API extends \BaseAPI
         return $finalEventUniqueCode;
     }
     
+    /**
+     * Checks whether the VA value(s) is below the threshold
+     * 
+     * @param int|array $va_base_value
+     * @return bool true if value below the threshold
+     */
     public function isVAbelowThreshold($va_base_value)
     {
         $isBelowThreshold = false;
@@ -170,10 +176,16 @@ class OphCoCvi_API extends \BaseAPI
         return $isBelowThreshold;
     }
     
-    
+    /**
+     * Returns the CVI alert box for the VA(Examination) if the value is below the threshold
+     * 
+     * @param int $va_element_id
+     * @param array|int $base_values
+     * @return html | empty string if alert dismissed or value is not below the threshold
+     */
     public function getVisualAcuityAlert($va_element_id, $base_values)
     {
-        
+
         $displayAlert = false;
         $visulaAcuity = Element_OphCiExamination_VisualAcuity::model()->findByPk($va_element_id);
 

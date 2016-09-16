@@ -1303,6 +1303,10 @@ class DefaultController extends \BaseEventTypeController
         }
     }
     
+    /**
+     * Returns the CVI alert box for the VA
+     * return html alert|empty string
+     */
     public function actionGetVisulaAcuityCVIAlert()
     {
         $isAjax = \Yii::app()->request->getParam('ajax', false);
@@ -1320,22 +1324,4 @@ class DefaultController extends \BaseEventTypeController
         echo $alertHTML;
         \Yii::app()->end();
     }
-    
-    public function actionDismissCVIalert($element_id)
-    {
-        
-        $isAjax = \Yii::app()->request->getParam('ajax', false);
-        $ophCoCviModule = Yii::app()->moduleAPI->get('OphCoCvi');
-        
-        if ($ophCoCviModule && (\Yii::app()->request->isAjaxRequest || $isAjax)) {
-            $visulaAcuity = models\Element_OphCiExamination_VisualAcuity::model()->findByPk($element_id);
-            $visulaAcuity->cvi_alert_dismissed = 1;
-            
-            if($visulaAcuity->save()){
-                echo \CJSON::encode(array('success' => 'true'));
-            }
-        }
-        \Yii::app()->end();
-    }
-    
 }
