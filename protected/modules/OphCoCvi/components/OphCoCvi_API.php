@@ -153,6 +153,21 @@ class OphCoCvi_API extends \BaseAPI
     }
     
     /**
+     * Checking if the patient has CVI
+     * 
+     * @param Patient $patient
+     * @return boolean
+     */
+    public function hasCVI(\Patient $patient)
+    {
+        if (count($this->getEvents($patient))) {
+            return true;
+        }
+        $oph_info = $patient->getOphInfo();
+        return !$oph_info->isNewRecord;
+    }
+    
+    /**
      * Checks whether the VA value(s) is below the threshold
      * 
      * @param int|array $va_base_value
@@ -189,19 +204,25 @@ class OphCoCvi_API extends \BaseAPI
         $displayAlert = false;
         $visulaAcuity = Element_OphCiExamination_VisualAcuity::model()->findByPk($va_element_id);
         
-        // get the values from the element
-        if($visulaAcuity && is_null($base_values)){
-            foreach(array_merge($visulaAcuity->right_readings, $visulaAcuity->left_readings) as $reading){
-                $base_values[] = $reading->value;
+        $patient = $visulaAcuity->event->episode->patient;
+        
+        //check if the patient already has CVI
+        if( !$this->hasCVI($patient) ){
+        
+            // get the values from the element
+            if($visulaAcuity && is_null($base_values)){
+                foreach(array_merge($visulaAcuity->right_readings, $visulaAcuity->left_readings) as $reading){
+                    $base_values[] = $reading->value;
+                }
             }
-        }
 
-        if( ($visulaAcuity && $visulaAcuity->cvi_alert_dismissed != 1) || !$visulaAcuity ){
-            // VA element exsists and alert not dismissed
-            // or VA element does not exsist
-            $displayAlert = $this->isVAbelowThreshold($base_values);
-        } else {
-            // VA element exist and alert already dismissed
+            if( ($visulaAcuity && $visulaAcuity->cvi_alert_dismissed != 1) || !$visulaAcuity ){
+                // VA element exsists and alert not dismissed
+                // or VA element does not exsist
+                $displayAlert = $this->isVAbelowThreshold($base_values);
+            } else {
+                // VA element exist and alert already dismissed
+            }
         }
         
        return $displayAlert;
