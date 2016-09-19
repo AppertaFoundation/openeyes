@@ -29,10 +29,19 @@ class OptomPortalConnection
 {
     private $yii;
 
+    /**
+     * For validating the configuration keys
+     * @var array
+     */
     protected static $required_config_keys = array(
         'uri',
         'endpoints.auth',
-        'endpoints.signatures'
+        'endpoints.signatures',
+        'credentials.username',
+        'credentials.password',
+        'credentials.grant_type',
+        'credentials.client_id',
+        'credentials.client_secret'
     );
 
     /**
@@ -42,6 +51,11 @@ class OptomPortalConnection
     protected $config = array();
 
 
+    /**
+     * OptomPortalConnection constructor.
+     * 
+     * @param CApplication $yii - for dependency injection/testing
+     */
     public function __construct($yii = null)
     {
         if ($yii === null) {
@@ -61,6 +75,9 @@ class OptomPortalConnection
     protected function setConfig()
     {
         $config = $this->yii->params['portal'];
+        if (!$config) {
+            throw new InvalidArgumentException('Missing portal configuration for ' . __CLASS__);
+        }
 
         foreach (static::$required_config_keys as $k) {
             if (Helper::elementFinder($k, $config) === null) {
@@ -110,14 +127,14 @@ class OptomPortalConnection
      * @return mixed
      * @throws Zend_Http_Client_Exception
      */
-    public function signatureSearch($startDate = null, $uniqueId = null)
+    public function signatureSearch($start_date = null, $uniqueId = null)
     {
         if ($uniqueId && $this->client) {
             $this->client->setUri($this->config['uri'] . str_replace('searches', $uniqueId,
                     $this->config['endpoints']['signatures']));
             $method = 'GET';
             // just to make sure that start date is not specified
-            $startDate = null;
+            $start_date = null;
         } else {
             if ($this->client) {
                 $this->client->setUri($this->config['uri'] . $this->config['endpoints']['signatures']);
@@ -125,8 +142,8 @@ class OptomPortalConnection
             }
         }
 
-        if ($startDate && $this->client) {
-            $this->client->setParameterPost(array('start_date' => $startDate));
+        if ($start_date && $this->client) {
+            $this->client->setParameterPost(array('start_date' => $start_date));
         }
 
         if ($this->client) {
@@ -143,12 +160,12 @@ class OptomPortalConnection
      */
     public function createNewSignatureImage($imageData, $fileId)
     {
-        $pFile = new \ProtectedFile();
-        $pFile = $pFile->createForWriting('cvi_signature_' . $fileId);
+        $protected_file = new \ProtectedFile();
+        $protected_file = $protected_file->createForWriting('cvi_signature_' . $fileId);
 
-        if (file_put_contents($pFile->getPath(), $imageData)) {
-            $pFile->save();
-            return $pFile;
+        if (file_put_contents($protected_file->getPath(), $imageData)) {
+            $protected_file->save();
+            return $protected_file;
         }
     }
 }
