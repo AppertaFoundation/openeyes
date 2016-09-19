@@ -147,9 +147,14 @@ class ProfileController extends BaseController
         $user = User::model()->findByPk(Yii::app()->user->id);
         if (!empty($_POST['sites'])) {
             foreach ($_POST['sites'] as $site_id) {
+                $transaction = Yii::app()->db->beginTransaction();
                 if ($us = UserSite::model()->find('user_id=? and site_id=?', array($user->id, $site_id))) {
                     if (!$us->delete()) {
                         throw new Exception('Unable to delete UserSite: '.print_r($us->getErrors(), true));
+                    }
+                    else
+                    {
+                        $transaction->commit();
                     }
                 }
             }
