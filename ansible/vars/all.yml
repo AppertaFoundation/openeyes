@@ -106,6 +106,3 @@ php_xdebug_remote_connect_back: true
 php_xdebug_remote_port: "9000"
 php_xdebug_idekey: across-health.xdebug
 php_xdebug_remote_log: /tmp/xdebug.log # Useful for connection debug
-
-# https://github.com/angstwad/docker.ubuntu
-# No options configured at this time
