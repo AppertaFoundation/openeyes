@@ -12,8 +12,6 @@
   pre_tasks:
     - include: tasks/init-debian.yml
       when: ansible_os_family == 'Debian'
-    - include: tasks/init-redhat.yml
-      when: ansible_os_family == 'RedHat'
 
   roles:
     - server
