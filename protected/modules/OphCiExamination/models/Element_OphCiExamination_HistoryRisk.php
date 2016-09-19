@@ -68,6 +68,12 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
         );
     }
 
+    /**
+     * Validate the drug name
+     *
+     * @param $attribute
+     * @param $params
+     */
     public function validateName($attribute,$params)
     {
         if($this->$params['type'] === '1' && !$this->$attribute){
