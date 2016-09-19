@@ -177,4 +177,12 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
 
         return $text;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function canCopy()
+    {
+        return true;
+    }
 }
