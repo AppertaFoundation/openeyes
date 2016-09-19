@@ -187,13 +187,8 @@ class ProfileController extends BaseController
             foreach ($_POST['firms'] as $firm_id) {
                 if ($uf = UserFirm::model()->find('user_id=? and firm_id=?', array($user->id, $firm_id))) {
                     if (!$uf->delete()) {
-                        echo '0';
                         throw new Exception('Unable to delete UserFirm: '.print_r($uf->getErrors(), true));
                     }
-                    else{
-                        echo '1';
-                    }
-
                 }
             }
 
