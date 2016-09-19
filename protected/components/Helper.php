@@ -379,4 +379,26 @@ class Helper
         return implode($delimiter, array_merge($bits, $protected));
     }
 
+    /**
+     * Find an element in a nested hasharray $haystack with a string $needle separated by $delimiter
+     *
+     * @param array $haystack
+     * @param $needle
+     * @param string $delimiter
+     * @return null
+     */
+    public static function elementFinder($needle, $haystack, $delimiter = '.')
+    {
+        $break = strpos($needle, $delimiter);
+        $key = $break === false ? $needle : substr($needle, 0, $break);
+        if (isset($haystack[$key])) {
+            if ($key == $needle) {
+                return $haystack[$key];
+            }
+            return static::elementFinder(substr($needle, $break + 1), $haystack[$key]);
+        } else {
+            return null;
+        }
+    }
+
 }

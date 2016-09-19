@@ -836,7 +836,7 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function saveUserSignature($signatureFile, \Event $event)
     {
-        $portal_connection = new \optomPortalConnection();
+        $portal_connection = new \OptomPortalConnection();
         if ($new_file = $portal_connection->createNewSignatureImage($signatureFile, $event->id)) {
             if ($clinic_element = $this->getClinicalElementForEvent($event)) {
                 $clinic_element->consultant_signature_file_id = $new_file->id;

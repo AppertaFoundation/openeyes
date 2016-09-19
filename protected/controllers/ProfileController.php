@@ -251,7 +251,7 @@ class ProfileController extends BaseController
 
             $user = User::model()->findByPk(Yii::app()->user->id);
 
-            $portalConnection = new optomPortalConnection();
+            $portalConnection = new OptomPortalConnection();
             if ($portalConnection) {
                 $signatureData = $portalConnection->signatureSearch(null,
                     $user->generateUniqueCodeWithChecksum($this->getUniqueCodeForUser()));
