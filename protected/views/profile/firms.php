@@ -82,6 +82,10 @@
 		$('input[name="firms[]"]').attr('checked',$(this).is(':checked') ? 'checked' : false);
 	});
 
+	/**
+	 *Firm deletion from user profile
+	 */
+
 	$('#et_delete').click(function(e) {
 		e.preventDefault();
 
@@ -94,15 +98,25 @@
 			'type': 'POST',
 			'url': baseUrl+'/profile/deleteFirms',
 			'data': $('#profile_firms').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
-			'success': function(resp) {
-				if (resp >= "1") {
+			'success': function(html) {
+				if (html === "success") {
 					window.location.reload();
 				} else {
-					alert("There was an unexpected error deleting the firms, please try again or contact support for assistance");
+					new OpenEyes.UI.Dialog.Alert({
+						content: "There was an unexpected error deleting the firms, please try again or contact support for assistance."
+					}).open();
 				}
+			},
+			'error': function() {
+				new OpenEyes.UI.Dialog.Alert({
+					content: "Sorry, There was an unexpected error deleting the firms, please try again or contact support for assistance."
+				}).open();
 			}
+
 		});
 	});
+
+
 
 
 	$('#add_all').click(function() {

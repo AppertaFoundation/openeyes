@@ -201,6 +201,7 @@ class ProfileController extends BaseController
                     }
                 }
             }
+            echo "success";
         }
     }
 
