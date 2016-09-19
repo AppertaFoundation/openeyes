@@ -37,7 +37,7 @@ namespace OEModule\OphCoCvi\models;
  * @property User $usermodified
  * @property ProtectedFile $signature_file
  */
-use \optomPortalConnection;
+use \OptomPortalConnection;
 
 class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
 {
@@ -189,7 +189,7 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
     public function saveSignatureImageFromPortal()
     {
         try {
-            $portalConnection = new optomPortalConnection();
+            $portalConnection = new OptomPortalConnection();
 
             if ($portalConnection) {
                 $signatureData = $portalConnection->signatureSearch(null,

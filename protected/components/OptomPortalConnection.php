@@ -25,35 +25,50 @@
 //use Zend;
 require_once 'Zend/Http/Client.php';
 
-class optomPortalConnection
+class OptomPortalConnection
 {
+    private $yii;
 
+    protected static $required_config_keys = array(
+        'uri',
+        'endpoints.auth',
+        'endpoints.signatures'
+    );
+
+    /**
+     * @var Zend_Http_Client
+     */
     protected $client;
-
     protected $config = array();
 
-    public function __construct()
+
+    public function __construct($yii = null)
     {
-        if($this->setConfig())
-        {
-            $this->initClient();
-            $this->login();
+        if ($yii === null) {
+            $this->yii = Yii::app();
         }
+
+        $this->setConfig();
+        $this->initClient();
+        $this->login();
     }
 
     /**
      * Set portal config.
+     *
+     * @throws InvalidArgumentException
      */
     protected function setConfig()
     {
-        if(Yii::app()->params['portal'])
-        {
-            $this->config = Yii::app()->params['portal'];
-            return true;
-        }else
-        {
-            return false;
+        $config = $this->yii->params['portal'];
+
+        foreach (static::$required_config_keys as $k) {
+            if (Helper::elementFinder($k, $config) === null) {
+                throw new InvalidArgumentException('Missing required config parameter for ' . __CLASS__);
+            }
         }
+
+        $this->config = $config;
     }
 
 
@@ -61,7 +76,6 @@ class optomPortalConnection
      * Init HTTP client.
      *
      * @return Zend_Http_Client
-     *
      * @throws Zend_Http_Client_Exception
      */
     protected function initClient()
@@ -74,10 +88,12 @@ class optomPortalConnection
 
     /**
      * Login to the API, set the auth header.
+     * @throws Zend_Http_Client_Exception
+     * @throws Exception
      */
     protected function login()
     {
-        $this->client->setUri($this->config['uri'].$this->config['endpoints']['auth']);
+        $this->client->setUri($this->config['uri'] . $this->config['endpoints']['auth']);
         $this->client->setParameterPost($this->config['credentials']);
         $response = $this->client->request('POST');
         if ($response->getStatus() > 299) {
@@ -85,32 +101,35 @@ class optomPortalConnection
         }
         $jsonResponse = json_decode($response->getBody(), true);
         $this->client->resetParameters();
-        $this->client->setHeaders('Authorization', 'Bearer '.$jsonResponse['access_token']);
+        $this->client->setHeaders('Authorization', 'Bearer ' . $jsonResponse['access_token']);
     }
 
     /**
      * Search the API for signatures.
      *
      * @return mixed
+     * @throws Zend_Http_Client_Exception
      */
-    public function signatureSearch( $startDate = null, $uniqueId = null)
+    public function signatureSearch($startDate = null, $uniqueId = null)
     {
-        if($uniqueId && $this->client){
-            $this->client->setUri($this->config['uri'] . str_replace('searches',$uniqueId, $this->config['endpoints']['signatures']));
+        if ($uniqueId && $this->client) {
+            $this->client->setUri($this->config['uri'] . str_replace('searches', $uniqueId,
+                    $this->config['endpoints']['signatures']));
             $method = 'GET';
             // just to make sure that start date is not specified
             $startDate = null;
-        }else if ($this->client)
-        {
-            $this->client->setUri($this->config['uri'] . $this->config['endpoints']['signatures']);
-            $method = 'POST';
+        } else {
+            if ($this->client) {
+                $this->client->setUri($this->config['uri'] . $this->config['endpoints']['signatures']);
+                $method = 'POST';
+            }
         }
 
-        if($startDate && $this->client) {
+        if ($startDate && $this->client) {
             $this->client->setParameterPost(array('start_date' => $startDate));
         }
 
-        if($this->client) {
+        if ($this->client) {
             $response = $this->client->request($method);
             return json_decode($response->getBody(), true);
         }
@@ -120,17 +139,16 @@ class optomPortalConnection
      * Creates a new ProtectedFile for the new signature image
      *
      * @param $imageData
+     * @return ProtectedFile
      */
     public function createNewSignatureImage($imageData, $fileId)
     {
         $pFile = new \ProtectedFile();
-        $pFile = $pFile->createForWriting("cvi_signature_".$fileId);
+        $pFile = $pFile->createForWriting('cvi_signature_' . $fileId);
 
-        if(file_put_contents($pFile->getPath(), $imageData))
-        {
+        if (file_put_contents($pFile->getPath(), $imageData)) {
             $pFile->save();
             return $pFile;
         }
-        return false;
     }
 }
