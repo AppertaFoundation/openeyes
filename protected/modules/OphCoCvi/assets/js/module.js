@@ -41,9 +41,28 @@ $(document).ready(function() {
         // FIXME: this seems ridiculous
         setTimeout(function() {e.preventDefault(); enableButtons();}, 100);
         return false;
-
     });
-    
+
+    $('#remove-patient-signature').on('click', function(e) {
+
+        e.preventDefault();
+
+        var confirmDialog = new OpenEyes.UI.Dialog.Confirm({
+            title: "Remove Patient Signature",
+            'content': 'Are you sure you want to delete the current Patient Signature?',
+            'okButton': 'Remove'
+        });
+        confirmDialog.open();
+        // suppress default ok behaviour
+        confirmDialog.content.off('click', '.ok');
+        // manage form submission and response
+        confirmDialog.content.on('click', '.ok', function() {
+            $('#remove-consent-signature-form').submit();
+        });
+
+        return false;
+    });
+
     handleButton( $('#print-for-signature'),function(e) {
         var data = {'firstPage':'1'};
 	    printIFrameUrl($(e.target).data('print-url'), data);

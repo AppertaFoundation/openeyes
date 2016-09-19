@@ -35,6 +35,7 @@ class DefaultController extends \BaseEventTypeController
         'consentsignature' => self::ACTION_TYPE_EDIT,
         'retrieveconsentsignature' => self::ACTION_TYPE_EDIT,
         'displayconsentsignature' => self::ACTION_TYPE_VIEW,
+        'removeconsentsignature' => self::ACTION_TYPE_EDIT,
         'issue' => self::ACTION_TYPE_EDIT,
         'signCVI' => self::ACTION_TYPE_EDIT,
         'list' => self::ACTION_TYPE_LIST,
@@ -687,6 +688,35 @@ class DefaultController extends \BaseEventTypeController
     /**
      * @throws \CHttpException
      */
+    public function initActionRemoveConsentSignature()
+    {
+        $this->initWithEventId($this->request->getParam('id'));
+    }
+
+    /**
+     * @param $id
+     */
+    public function actionRemoveConsentSignature($id)
+    {
+        $signature_file_id = (int) $this->request->getParam('signature_file_id');
+        if ($signature_file_id) {
+            $user = \User::model()->findByPk($this->getApp()->user->id);
+            if ($this->getManager()->removeConsentSignature($this->event, $user, $signature_file_id)) {
+                $this->getApp()->user->setFlash('success.cvi_consent_signature', 'Consent Signature removed.');
+            } else {
+                $this->getApp()->user->setFlash('error.cvi_consent_signature', 'Could not remove the consent signature.');
+            }
+        } else {
+            throw new \CHttpException(403, 'Invalid Request');
+        }
+
+
+        $this->redirect(array('/' . $this->event->eventType->class_name . '/default/view/' . $id));
+    }
+
+    /**
+     * @throws \CHttpException
+     */
     public function initActionRetrieveConsentSignature()
     {
         $this->initWithEventId($this->request->getParam('id'));
@@ -702,6 +732,7 @@ class DefaultController extends \BaseEventTypeController
     {
         $signature_element = $this->getManager()->getConsentSignatureElementForEvent($this->event);
         if ($signature_element->saveSignatureImageFromPortal()) {
+            $this->event->audit('event', 'cvi-consent-added', null, 'CVI Consent Signature Added', array('user_id' => $this->getApp()->user->id));
             $this->getApp()->user->setFlash('success.cvi_consent_signature', 'Signature successfully loaded.');
             $this->updateEventInfo();
         } else {

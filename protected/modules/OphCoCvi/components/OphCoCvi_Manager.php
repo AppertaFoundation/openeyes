@@ -866,6 +866,7 @@ class OphCoCvi_Manager extends \CComponent
                 try {
                     $this->saveUserSignature($decodedImage, $event);
                     $this->updateEventInfo($event);
+                    $event->audit('event', 'cvi-consultant-signed', null, 'CVI Consultant Signature added', array('user_id' => $user->id));
                     $transaction->commit();
                     return true;
                 }
@@ -874,13 +875,41 @@ class OphCoCvi_Manager extends \CComponent
                     $transaction->rollback();
                     return false;
                 }
-            } else {
-                return false;
             }
         }
-        else {
-            return false;
-        }
+        return false;
     }
+
+    /**
+     * @param \Event $event
+     * @param \User $user
+     * @param $signature_file_id
+     * @return bool
+     * @throws \CDbException
+     * @throws \Exception
+     */
+    public function removeConsentSignature(\Event $event, \User $user, $signature_file_id)
+    {
+        if ($element = $this->getConsentSignatureElementForEvent($event)) {
+            if ($element->signature_file_id == $signature_file_id) {
+                $transaction = $this->startTransaction();
+                try {
+                    $element->signature_file_id = null;
+                    $element->save();
+                    $this->updateEventInfo($event);
+                    $event->audit('event', 'cvi-consent-removed', null, 'CVI Consent Signature Removed', array('user_id' => $user->id));
+                    $transaction->commit();
+                    return true;
+                }
+                catch (\Exception $e) {
+                    \OELog::log($e->getMessage());
+                    $transaction->rollback();
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
 
 }
