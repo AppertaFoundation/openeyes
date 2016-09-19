@@ -184,8 +184,8 @@ class ProfileController extends BaseController
 
 
     /**
-     * @throws Exception
      * Firm deletion from user profile
+     * @throws Exception
      */
     public function actionDeleteFirms()
     {
