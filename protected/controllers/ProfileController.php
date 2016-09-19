@@ -141,7 +141,6 @@ class ProfileController extends BaseController
      * @throws Exception
      * Sites deletion from user profile
      */
-
     public function actionDeleteSites()
     {
         $user = User::model()->findByPk(Yii::app()->user->id);
