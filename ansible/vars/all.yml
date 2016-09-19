@@ -40,7 +40,7 @@ mysql_packages:
   - python-mysqldb
 mysql_databases:
   - name: openeyes
-  - name: openeyes-test
+  - name: openeyes_test
 mysql_users:
   - name: "{{ openeyes.mysql_user }}"
     host: "%"
