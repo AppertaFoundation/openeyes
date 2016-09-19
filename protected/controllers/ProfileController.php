@@ -138,8 +138,8 @@ class ProfileController extends BaseController
     }
 
     /**
-     * @throws Exception
      * Sites deletion from user profile
+     * @throws Exception
      */
     public function actionDeleteSites()
     {
