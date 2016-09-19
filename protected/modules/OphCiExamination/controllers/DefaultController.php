@@ -37,9 +37,7 @@ class DefaultController extends \BaseEventTypeController
         'getPreviousIOPAverage' => self::ACTION_TYPE_FORM,
         'getPostOpComplicationList' => self::ACTION_TYPE_FORM,
         'getPostOpComplicationAutocopleteList' => self::ACTION_TYPE_FORM,
-        'getVisulaAcuityCVIAlert' => self::ACTION_TYPE_FORM,
-        'dismissCVIalert' => self::ACTION_TYPE_FORM,
-        'dismissCVIalert' => self::ACTION_TYPE_FORM,
+        'dismissCVIalert' => self::ACTION_TYPE_FORM
     );
 
     // if set to true, we are advancing the current event step
@@ -282,7 +280,7 @@ class DefaultController extends \BaseEventTypeController
         }
 
 		$active_check_value = "";
-        if (!empty($class_array)) {                    
+        if (!empty($class_array)) {
             if(array_pop($class_array) === 'Element_OphCiExamination_CataractSurgicalManagement') {
                 $active_check = \SettingInstallation::model()->find('t.key="city_road_satellite_view"');
                 if (!empty($active_check)) {
@@ -1303,46 +1301,23 @@ class DefaultController extends \BaseEventTypeController
             echo \CJSON::encode($select);
         }
     }
-    
-    /**
-     * Returns the CVI alert box for the VA
-     * return html alert|empty string
-     */
-    public function actionGetVisulaAcuityCVIAlert()
-    {
-        $isAjax = \Yii::app()->request->getParam('ajax', false);
-        $displayAlert = false;
-        
-        $ophCoCviModule = Yii::app()->moduleAPI->get('OphCoCvi');
-        
-        if ($ophCoCviModule && (\Yii::app()->request->isAjaxRequest || $isAjax)) {
-            $va_base_values = \Yii::app()->request->getPost('va_base_values', array());
-            $va_element_id = \Yii::app()->request->getPost('va_element_id');
 
-            $displayAlert = $ophCoCviModule->isVAalertApplicable($va_element_id, $va_base_values);
-        }
-        
-        echo $displayAlert ? $this->renderPartial('OphCoCvi.views.patient._va_alert') : '';
-        \Yii::app()->end();
-    }
-    
     /**
-     * Setting the CVA alert flag to dismiss
+     * Setting the CVI alert flag to dismiss
      * @param int $element_id
      */
     public function actionDismissCVIalert($element_id)
     {
-        $isAjax = \Yii::app()->request->getParam('ajax', false);
-        $ophCoCviModule = Yii::app()->moduleAPI->get('OphCoCvi');
-        
-        if ($ophCoCviModule && (\Yii::app()->request->isAjaxRequest || $isAjax)) {
-            $visulaAcuity = models\Element_OphCiExamination_VisualAcuity::model()->findByPk($element_id);
-            $visulaAcuity->cvi_alert_dismissed = 1;
-            
-            if($visulaAcuity->save()){
+        $is_ajax = $this->getApp()->request->getParam('ajax', false);
+        $cvi_api = $this->getApp()->moduleAPI->get('OphCoCvi');
+
+        if ($cvi_api && ($this->getApp()->request->isAjaxRequest || $is_ajax)) {
+            $element = models\Element_OphCiExamination_VisualAcuity::model()->findByPk($element_id);
+            $element->cvi_alert_dismissed = 1;
+
+            if($element->save()) {
                 echo \CJSON::encode(array('success' => 'true'));
             }
         }
-        \Yii::app()->end();
     }
 }

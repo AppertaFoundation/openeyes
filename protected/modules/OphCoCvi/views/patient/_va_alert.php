@@ -16,10 +16,10 @@
  */
 ?>
 
-<div class="cvi-alert alert-box warning round" data-alert="CVI may be applicable">
+<div class="cvi-alert alert-box warning round <?= $visible ? '': ' hidden' ?>" data-alert="CVI may be applicable" data-threshold="<?= $threshold ?>">
     CVI may be applicable
     <a class="dismiss_cva_alert dismiss right" href="javascript:void(0)">dismiss</a>
-    <?php if(isset($buttons) && in_array('create', $buttons)): ?>
+    <?php if($show_create): ?>
         <a class="create-cvi create right" href="<?php echo Yii::app()->createUrl('/OphCoCvi/Default/create', array('patient_id' => $this->patient->id) ); ?>">create</a>
     <?php endif; ?>
 </div>

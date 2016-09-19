@@ -140,21 +140,23 @@ class OphCoCvi_API extends \BaseAPI
     /**
      * @param $event
      */
-    public function getUniqueCodeForCviEvent($event){
+    public function getUniqueCodeForCviEvent($event)
+    {
         $eventUniqueCodeId = \UniqueCodeMapping::model()->findAllByAttributes(array('event_id' => $event->id));
         $eventUniqueCode = \UniqueCodes::model()->findByPk($eventUniqueCodeId[0]->unique_code_id);
 
         $salt = (isset(\Yii::app()->params['portal']['credentials']['client_id'])) ? \Yii::app()->params['portal']['credentials']['client_id'] : '';
-        $check_digit1 = new \CheckDigitGenerator(\Yii::app()->params['institution_code'].$eventUniqueCode->code, $salt);
-        $check_digit2 = new \CheckDigitGenerator($eventUniqueCode->code.$event->episode->patient->dob, $salt);
-        $finalEventUniqueCode = \Yii::app()->params['institution_code'].$check_digit1->generateCheckDigit().'-'.$eventUniqueCode->code.'-'.$check_digit2->generateCheckDigit();
+        $check_digit1 = new \CheckDigitGenerator(\Yii::app()->params['institution_code'] . $eventUniqueCode->code,
+            $salt);
+        $check_digit2 = new \CheckDigitGenerator($eventUniqueCode->code . $event->episode->patient->dob, $salt);
+        $finalEventUniqueCode = \Yii::app()->params['institution_code'] . $check_digit1->generateCheckDigit() . '-' . $eventUniqueCode->code . '-' . $check_digit2->generateCheckDigit();
 
         return $finalEventUniqueCode;
     }
-    
+
     /**
      * Checking if the patient has CVI
-     * 
+     *
      * @param Patient $patient
      * @return boolean
      */
@@ -166,65 +168,50 @@ class OphCoCvi_API extends \BaseAPI
         $oph_info = $patient->getOphInfo();
         return !$oph_info->isNewRecord;
     }
-    
+
     /**
      * Checks whether the VA value(s) is below the threshold
-     * 
+     *
      * @param int|array $va_base_value
      * @return bool true if value below the threshold
      */
-    public function isVAbelowThreshold($va_base_value)
+    public function isVaBelowThreshold($va_base_value)
     {
-        $isBelowThreshold = false;
-        $thresholdBaseValue = \Yii::app()->params['thresholds']['visualAcuity']['alert_base_value'];
-        
-        if( is_array($va_base_value) ){
-            foreach($va_base_value as $value){
-                if( is_numeric($value) && ($value < $thresholdBaseValue)){
-                    $isBelowThreshold = true;
-                    break;
+        $threshold = $this->yii->params['thresholds']['visualAcuity']['alert_base_value'];
+
+        if (is_array($va_base_value)) {
+            foreach ($va_base_value as $value) {
+                if (is_numeric($value) && ($value < $threshold)) {
+                    return true;
                 }
             }
-        } else{
-            $isBelowThreshold = is_numeric($va_base_value) && ($va_base_value < $thresholdBaseValue);
+            return false;
+        } else {
+            return is_numeric($va_base_value) && ($va_base_value < $threshold);
         }
-        return $isBelowThreshold;
     }
-    
+
     /**
-     * Returns the CVI alert box for the VA(Examination) if the value is below the threshold
-     * 
-     * @param int $va_element_id
-     * @param array|int $base_values
-     * @return bool
+     * @param Patient $patient
+     * @param $element
+     * @param $show_create - flag to indicate whether the create button should be shown
+     * @return mixed
      */
-    public function isVAalertApplicable($va_element_id, $base_values = null)
+    public function renderAlertForVA(Patient $patient, $element, $show_create = false)
     {
-
-        $displayAlert = false;
-        $visulaAcuity = Element_OphCiExamination_VisualAcuity::model()->findByPk($va_element_id);
-        
-        $patient = $visulaAcuity->event->episode->patient;
-        
-        //check if the patient already has CVI
-        if( !$this->hasCVI($patient) ){
-        
-            // get the values from the element
-            if($visulaAcuity && is_null($base_values)){
-                foreach(array_merge($visulaAcuity->right_readings, $visulaAcuity->left_readings) as $reading){
-                    $base_values[] = $reading->value;
-                }
+        if (!$element->cvi_alert_dismissed && !$this->hasCVI($patient)) {
+            $base_values = array();
+            foreach (array_merge($element->right_readings, $element->left_readings) as $reading) {
+                $base_values[] = $reading->value;
             }
 
-            if( ($visulaAcuity && $visulaAcuity->cvi_alert_dismissed != 1) || !$visulaAcuity ){
-                // VA element exsists and alert not dismissed
-                // or VA element does not exsist
-                $displayAlert = $this->isVAbelowThreshold($base_values);
-            } else {
-                // VA element exist and alert already dismissed
-            }
+            return $this->renderPartial('OphCoCvi.views.patient._va_alert', array(
+                'threshold' => $this->yii->params['thresholds']['visualAcuity']['alert_base_value'],
+                'visible' => $this->isVaBelowThreshold($base_values),
+                'show_create' => $show_create
+            ));
         }
-        
-       return $displayAlert;
+
+        return '';
     }
 }

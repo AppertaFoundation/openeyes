@@ -666,19 +666,6 @@ class Patient extends BaseActiveRecordVersioned
         return $info;
     }
     
-    /**
-     * Checks if the patient has CVI or not
-     * @return type
-     */
-    public function hasCvi()
-    {
-        if ($OphCoCvi = Yii::app()->moduleAPI->get('OphCoCvi') ) {
-            return $OphCoCvi->hasCvi($this);
-    }
-        $oph_info = $this->getOphInfo();
-        return !$oph_info->isNewRecord;
-    }
-    
     public function getGenderString()
     {
         switch ($this->gender) {
