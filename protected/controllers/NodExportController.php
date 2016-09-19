@@ -862,10 +862,13 @@ EOL;
                         IsCVIPartial )
                 SELECT
                 poi.patient_id AS PatientId,
-                poi.cvi_status_date AS `Date`,
-                (SELECT CASE WHEN DAYNAME(DATE) IS NULL THEN 1 ELSE 0 END) AS IsDateApprox,
-                (SELECT CASE WHEN poi.cvi_status_id=4 THEN 1 ELSE 0 END) AS IsCVIBlind,
-                (SELECT CASE WHEN poi.cvi_status_id=3 THEN 1 ELSE 0 END) AS IsCVIPartial
+                IFNULL(
+                        STR_TO_DATE(REPLACE(poi.cvi_status_date, '-00', 'BAD-DATE'), '%Y-%m-%d'),
+                        DATE(poi.created_date)
+                ) AS `Date`,
+                (CASE WHEN DAYNAME(poi.cvi_status_date) IS NULL THEN 1 ELSE 0 END) AS IsDateApprox,
+                (CASE WHEN poi.cvi_status_id=4 THEN 1 ELSE 0 END) AS IsCVIBlind,
+                (CASE WHEN poi.cvi_status_id=3 THEN 1 ELSE 0 END) AS IsCVIPartial
                 FROM patient_oph_info poi
 
                 /* Restriction: patients in control events */
