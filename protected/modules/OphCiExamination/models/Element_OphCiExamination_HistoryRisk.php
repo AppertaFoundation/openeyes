@@ -73,6 +73,10 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
         if($this->$params['type'] === '1' && !$this->$attribute){
             $this->addError($attribute, 'When checked a drug name is required');
         }
+
+        if($this->$params['type'] === '2' && $this->$attribute){
+            $this->addError($attribute, 'A drug name cannot be supplied without selecting yes.');
+        }
     }
 
     /**
