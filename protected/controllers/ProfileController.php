@@ -170,6 +170,9 @@ class ProfileController extends BaseController
         echo '1';
     }
 
+    /**
+     * Firm view in user profile
+     */
     public function actionFirms()
     {
         $user = User::model()->findByPk(Yii::app()->user->id);
@@ -179,25 +182,38 @@ class ProfileController extends BaseController
         ));
     }
 
+
+    /**
+     * @throws Exception
+     * Firm deletion from user profile
+     */
     public function actionDeleteFirms()
     {
         $user = User::model()->findByPk(Yii::app()->user->id);
 
         if (!empty($_POST['firms'])) {
             foreach ($_POST['firms'] as $firm_id) {
+                $firm_transaction = Yii::app()->db->beginTransaction();
                 if ($uf = UserFirm::model()->find('user_id=? and firm_id=?', array($user->id, $firm_id))) {
                     if (!$uf->delete()) {
                         throw new Exception('Unable to delete UserFirm: '.print_r($uf->getErrors(), true));
+                    }
+                    else{
+                        $firm_transaction->commit();
                     }
                 }
             }
 
             if (!UserFirm::model()->find('user_id=?', array(Yii::app()->user->id))) {
+                $transaction = Yii::app()->db->beginTransaction();
                 $user = User::model()->findByPk(Yii::app()->user->id);
                 if ($user->has_selected_firms) {
                     $user->has_selected_firms = 0;
                     if (!$user->save()) {
                         throw new Exception('Unable to save user: '.print_r($user->getErrors(), true));
+                    }
+                    else{
+                        $transaction->commit();
                     }
                 }
             }
