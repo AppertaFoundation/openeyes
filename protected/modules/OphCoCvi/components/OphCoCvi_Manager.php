@@ -468,10 +468,11 @@ class OphCoCvi_Manager extends \CComponent
      * Prepare the Certificate template with the data available from the given event.
      *
      * @param \Event $event
+     * @param boolean $ignore_portal - if true, will force the signature box to be rendered rather than checking the portal
      * @return \ODTTemplateManager
      * @throws \Exception
      */
-    protected function populateCviCertificate(\Event $event)
+    protected function populateCviCertificate(\Event $event, $ignore_portal = false)
     {
         $signature_element = $this->getConsentSignatureElementForEvent($event);
 
@@ -480,7 +481,7 @@ class OphCoCvi_Manager extends \CComponent
             //TODO: restructure or rename, as this process is basically also going to generate
             //TODO: the QR code signature placeholder when its not yet been captured.
             // we check if the signature is exists on the portal
-            $signature = $signature_element->loadSignatureFromPortal();
+            $signature = $ignore_portal ? $signature_element->getSignatureBox() : $signature_element->loadSignatureFromPortal();
         } else {
             // we get the stored signature and creates a GD object from the data
             $signature = imagecreatefromstring($signature_element->getDecryptedSignature());
@@ -547,7 +548,7 @@ class OphCoCvi_Manager extends \CComponent
     {
 
         $this->input_template_file = "signatureTemplate.odt";
-        $document = $this->populateCviCertificate($event);
+        $document = $this->populateCviCertificate($event, true);
         $document->generatePDFPageN();
 
         return $document;

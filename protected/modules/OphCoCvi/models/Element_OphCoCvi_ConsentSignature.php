@@ -214,8 +214,25 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
     }
 
     /**
-     * @TODO: refactor as this is an incorrect name for this method now
+     * @return resource
+     */
+    public function getSignatureBox()
+    {
+        $QRContent = "@code:"
+            . \Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($this->event)
+            . "@key:" . $this->getEncryptionKey();
+
+        $QRHelper = new \SignatureQRCodeGenerator();
+        return $QRHelper->generateQRSignatureBox($QRContent, true, array("x"=>1000,"y"=>600), 200);
+    }
+
+    /**
+     * This will always return an image for use in the signature placeholder. It will first try to load the signature from the portal
+     * and otherwise will return the signature capture box.
      *
+     * This should be used with caution as it will not respect a signature having been deleted on the server side, but remaining on the portal.
+     *
+     * @TODO: re-factor so that signature retrieval is always explicit.
      * @return resource
      */
     public function loadSignatureFromPortal()
@@ -223,12 +240,7 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
         if ($this->saveSignatureImageFromPortal()) {
             $signature = imagecreatefromstring($this->getDecryptedSignature());
         } else {
-            $QRContent = "@code:"
-                . \Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($this->event)
-                . "@key:" . $this->getEncryptionKey();
-
-            $QRHelper = new \SignatureQRCodeGenerator();
-            $signature = $QRHelper->generateQRSignatureBox($QRContent, true, array("x"=>1000,"y"=>600), 200);
+            $signature = $this->getSignatureBox();
         }
         return $signature;
     }
