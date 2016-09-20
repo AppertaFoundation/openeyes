@@ -51,8 +51,7 @@
     login_password: "{{ openeyes.mysql_root_password }}"
   when: openeyes.mysql_dump
   with_items:
-    - openeyes
-    - openeyestest
+    - "{{ openeyes.mysql_databases }}"
 
 # Add in banner (TODO: Only works if the sameple dataset loaded)
 # - name: Add banner info into MySQL
