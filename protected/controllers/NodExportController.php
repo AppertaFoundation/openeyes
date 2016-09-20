@@ -167,6 +167,10 @@ class NodExportController extends BaseController
         
         $this->getPatientCviStatus();
         $this->getPatients();
+        
+        // Write out extra description files
+        $this->getExtraCsvs();
+        
         $this->clearAllTempTables();
 
     }
@@ -2513,7 +2517,8 @@ EOL;
                 , co.OperationId
                 , 'L' AS Eye
                 , IFNULL(rcoct.code, onccs.id) AS ComplicationTypeId
-                , onccs.name AS ComplicationTypeDescription
+                , IF(rcoct.code IS NULL, onccs.name, rcoct.name) as ComplicationTypeDescription
+                #, onccs.name AS ComplicationTypeDescription
                 
                 /* Restriction: Start with OPERATIONS (processed previously), seeded from control events */
                 FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} co
@@ -2549,7 +2554,8 @@ EOL;
                 , co.OperationId
                 , 'R' AS Eye
                 , IFNULL(rcoct.code, onccs.id) AS ComplicationTypeId
-                , onccs.name AS ComplicationTypeDescription
+                , IF(rcoct.code IS NULL, onccs.name, rcoct.name) as ComplicationTypeDescription
+                #, onccs.name AS ComplicationTypeDescription
                 
                 /* Restriction: Start with OPERATIONS (processed previously), seeded from control events */
                 FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} co
@@ -2828,7 +2834,32 @@ EOL;
     
     /********** end of EpisodeVisualAcuity **********/
         
-    
+    public function getExtraCsvs()
+    {
+        // Write out distorder
+        $query = <<<EOL
+                SELECT d.id as IndicationId, d.term as IndicationDescription
+                FROM disorder d
+EOL;
+        $dataQuery = array(
+            'query' => $query,
+            'header' => array('IndicationId', 'IndicationDescription'),
+        );
+        $this->saveCSVfile($dataQuery, 'IndicationDescription');
+        
+        
+        // Write out distorder
+        $query = <<<EOL
+                SELECT p.snomed_code AS TreatmentTypeId, p.snomed_term AS TreatmentTypeDescription
+                FROM proc p
+EOL;
+        $dataQuery = array(
+            'query' => $query,
+            'header' => array('TreatmentTypeId', 'TreatmentTypeDescription'),
+        );
+        $this->saveCSVfile($dataQuery, 'TreatmentTypeDescription');
+
+    }
     
     
     
