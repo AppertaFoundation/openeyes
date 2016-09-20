@@ -16,6 +16,7 @@
   roles:
     - server
     - vagrant_local
+    - franklinkim.environment
     - geerlingguy.apache
     - geerlingguy.mysql
     - geerlingguy.nodejs
