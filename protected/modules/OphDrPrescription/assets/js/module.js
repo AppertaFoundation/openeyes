@@ -22,8 +22,7 @@ $(document).ready(function () {
     var rowCount = $('#prescription_items tr').length;
     if (rowCount === 1) {
       new OpenEyes.UI.Dialog.Alert({
-        content: "Items cannot be blank.",
-        closeCallback: enableButtons
+        content: "Items cannot be blank."
       }).open();
 
       return false;
