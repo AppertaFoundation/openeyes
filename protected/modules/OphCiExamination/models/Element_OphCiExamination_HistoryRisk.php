@@ -62,7 +62,27 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, anticoagulant, alphablocker', 'safe', 'on' => 'search'),
+            array('anticoagulant_name', 'validateName', 'type' => 'anticoagulant'),
+            array('alpha_blocker_name', 'validateName', 'type' => 'alphablocker'),
+
         );
+    }
+
+    /**
+     * Validate the drug name
+     *
+     * @param $attribute
+     * @param $params
+     */
+    public function validateName($attribute,$params)
+    {
+        if($this->$params['type'] === '1' && !$this->$attribute){
+            $this->addError($attribute, 'When checked a drug name is required');
+        }
+
+        if($this->$params['type'] === '2' && $this->$attribute){
+            $this->addError($attribute, 'A drug name cannot be supplied without selecting yes.');
+        }
     }
 
     /**
@@ -156,5 +176,13 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
         }
 
         return $text;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function canCopy()
+    {
+        return true;
     }
 }

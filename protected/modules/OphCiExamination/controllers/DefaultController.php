@@ -880,26 +880,23 @@ class DefaultController extends \BaseEventTypeController
      * @param $data
      * @param $index
      */
-    protected function saveComplexAttributes_Element_OphCiExamination_HistoryRisk($element, $data, $index)
+    protected function saveComplexAttributes_Element_OphCiExamination_HistoryRisk($element)
     {
         $event_type = \EventType::model()->find('name=?', array('Examination'));
         $event = $this->episode->getMostRecentEventByType($event_type->id);
-        if (($event->id === $this->event->id) && (array_key_exists('anticoagulant', $element->attributes) || array_key_exists('alphablocker', $element->attributes))) {
-            foreach ($element->attributes as $risk_name => $risk_value) {
-                if ($risk_name === 'anticoagulant' || $risk_name === 'alphablocker') {
-                    $this->updateRisk($risk_name, $risk_value);
-                }
-            }
+        if ($event->id === $this->event->id) {
+            $this->updateRisk('anticoagulant', $element->anticoagulant, $element->anticoagulant_name);
+            $this->updateRisk('alphablocker', $element->alphablocker, $element->alpha_blocker_name);
         }
     }
 
     /**
      * Updating Patient Risk details.
      *
-     * @param type $risk_name
-     * @param type $risk_value
+     * @param string $risk_name
+     * @param string $risk_value
      */
-    protected function updateRisk($risk_name, $risk_value)
+    protected function updateRisk($risk_name, $risk_value, $risk_comment)
     {
         $risk_check = ($risk_name === 'anticoagulant') ? 'Anticoagulants' : 'Alpha blockers';
         $risk = \Risk::model()->find('name=?', array($risk_check));
@@ -911,6 +908,7 @@ class DefaultController extends \BaseEventTypeController
             $patient_risk = (!$patient_risk) ? new \PatientRiskAssignment() : $patient_risk;
             $patient_risk->risk_id = $risk['id'];
             $patient_risk->patient_id = $this->patient->id;
+            $patient_risk->comments = $risk_comment;
             $patient_risk->save();
         } elseif ($patient_risk && ($risk_value === '2')) {
             \PatientRiskAssignment::model()->deleteByPk($patient_risk->id);
