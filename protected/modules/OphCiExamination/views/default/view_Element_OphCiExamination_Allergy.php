@@ -21,6 +21,8 @@
 <div class="field-row row">
     <div class="large-12 column">
         <table>
+            <?php if ($this->patient->allergyAssignments) {
+            ?>
             <thead>
             <tr>
                 <th>Name</th>
@@ -28,8 +30,8 @@
             </tr>
             </thead>
             <tbody id="OphCiExamination_allergy">
-            <?php if ($this->patient->allergyAssignments) {
-                foreach ($this->patient->allergyAssignments as $aa) {
+            <?php
+            foreach ($this->patient->allergyAssignments as $aa) {
                     ?>
                     <script type="text/javascript">
                         removeAllergyFromSelect(<?= $aa->allergy->id?>, '<?= $aa->allergy->name ?>');
@@ -44,7 +46,7 @@
                 }
             } else { ?>
                 <tr>
-                    <td colspan="2">No allergies</td>
+                    <td colspan="2">Patient has no known allergies</td>
                 </tr>
             <?php }
             ?>
