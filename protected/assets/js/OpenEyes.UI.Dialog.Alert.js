@@ -15,101 +15,107 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-(function(exports, Util) {
+(function (exports, Util) {
 
-	'use strict';
+  'use strict';
 
-	// Base Dialog.
-	var Dialog = exports;
+  // Base Dialog.
+  var Dialog = exports,
+    closeCallback;
 
-	/**
-	 * AlertDialog constructor. The AlertDialog extends the base Dialog and provides
-	 * an 'Ok' button for the user to click on.
-	 * @constructor
-	 * @name OpenEyes.UI.Dialog.Alert
-	 * @tutorial dialog_alert
-	 * @extends OpenEyes.UI.Dialog
-	 * @example
-	 * var alert = new OpenEyes.UI.Dialog.Alert({
+  /**
+   * AlertDialog constructor. The AlertDialog extends the base Dialog and provides
+   * an 'Ok' button for the user to click on.
+   * @constructor
+   * @name OpenEyes.UI.Dialog.Alert
+   * @tutorial dialog_alert
+   * @extends OpenEyes.UI.Dialog
+   * @example
+   * var alert = new OpenEyes.UI.Dialog.Alert({
 	 *   content: 'Here is some content.'
 	 * });
-	 * alert.open();
-	 */
-	function AlertDialog(options) {
+   * alert.open();
+   */
+  function AlertDialog(options) {
 
-		options = $.extend(true, {}, AlertDialog._defaultOptions, options);
+    options = $.extend(true, {}, AlertDialog._defaultOptions, options);
 
-		Dialog.call(this, options);
-	}
+    closeCallback = options.closeCallback;
 
-	Util.inherits(Dialog, AlertDialog);
+    Dialog.call(this, options);
+  }
 
-	/**
-	 * The default alert dialog options. These options will be merged into the
-	 * default dialog options.
-	 * @name OpenEyes.UI.Dialog.Alert#_defaultOptions
-	 * @private
-	 */
-	AlertDialog._defaultOptions = {
-		modal: true,
-		width: 400,
-		minHeight: 'auto',
-		title: 'Alert',
-		dialogClass: 'dialog alert'
-	};
+  Util.inherits(Dialog, AlertDialog);
 
-	/**
-	 * Get the dialog content. Do some basic content formatting, then compile
-	 * and return the alert dialog template.
-	 * @name OpenEyes.UI.Dialog.Alert#getContent
-	 * @method
-	 * @private
-	 * @param {string} content - The main alert dialog content to display.
-	 * @returns {string}
-	 */
-	AlertDialog.prototype.getContent = function(options) {
+  /**
+   * The default alert dialog options. These options will be merged into the
+   * default dialog options.
+   * @name OpenEyes.UI.Dialog.Alert#_defaultOptions
+   * @private
+   */
+  AlertDialog._defaultOptions = {
+    modal: true,
+    width: 400,
+    minHeight: 'auto',
+    title: 'Alert',
+    dialogClass: 'dialog alert'
+  };
 
-		// Replace new line characters with html breaks
-		options.content = (options.content || '').replace(/\n/g, '<br/>');
+  /**
+   * Get the dialog content. Do some basic content formatting, then compile
+   * and return the alert dialog template.
+   * @name OpenEyes.UI.Dialog.Alert#getContent
+   * @method
+   * @private
+   * @param {string} content - The main alert dialog content to display.
+   * @returns {string}
+   */
+  AlertDialog.prototype.getContent = function (options) {
 
-		// Compile the template, get the HTML
-		return this.compileTemplate({
-			selector: '#dialog-alert-template',
-			data: {
-				content: options.content
-			}
-		});
-	};
+    // Replace new line characters with html breaks
+    options.content = (options.content || '').replace(/\n/g, '<br/>');
 
-	/**
-	 * Bind events
-	 * @name OpenEyes.UI.Dialog.Alert#bindEvents
-	 * @method
-	 * @private
-	 */
-	AlertDialog.prototype.bindEvents = function() {
-		Dialog.prototype.bindEvents.apply(this, arguments);
-		this.content.on('click', '.ok', this.onButtonClick.bind(this));
-	};
+    // Compile the template, get the HTML
+    return this.compileTemplate({
+      selector: '#dialog-alert-template',
+      data: {
+        content: options.content
+      }
+    });
+  };
 
-	/** Event handlers */
+  /**
+   * Bind events
+   * @name OpenEyes.UI.Dialog.Alert#bindEvents
+   * @method
+   * @private
+   */
+  AlertDialog.prototype.bindEvents = function () {
+    Dialog.prototype.bindEvents.apply(this, arguments);
+    this.content.on('click', '.ok', this.onButtonClick.bind(this));
+  };
 
-	/**
-	 * 'OK' button click handler. Simply close the dialog on click.
-	 * @name OpenEyes.UI.Dialog.Alert#onButtonClick
-	 * @method
-	 * @private
-	 */
-	AlertDialog.prototype.onButtonClick = function() {
-		this.close();
-		/**
-		 * Emitted after the use has clicked on the 'OK' button.
-		 *
-		 * @event OpenEyes.UI.Dialog.Alert#ok
-		 */
-		this.emit('ok');
-	};
+  /** Event handlers */
 
-	exports.Alert = AlertDialog;
+  /**
+   * 'OK' button click handler. Simply close the dialog on click.
+   * @name OpenEyes.UI.Dialog.Alert#onButtonClick
+   * @method
+   * @private
+   */
+  AlertDialog.prototype.onButtonClick = function () {
+    if (typeof closeCallback === 'function') {
+      closeCallback();
+    }
+    this.close();
+    /**
+     * Emitted after the use has clicked on the 'OK' button.
+     *
+     * @event OpenEyes.UI.Dialog.Alert#ok
+     */
+    this.emit('ok');
+  };
+
+  exports.Alert = AlertDialog;
 
 }(OpenEyes.UI.Dialog, OpenEyes.Util));
