@@ -3,12 +3,31 @@
     <property name="toolsdir" value="${basedir}/bin/"/>
     <property name="prefer" value="dist"/>
     <property name="dockerName" value="docker"/>
+    <property name="MYSQLDRIVER" value="/usr/share/java/mysql-connector-java.jar"/>
+    <property environment="env"/>
+
+    <path id="CLASSPATH">
+        <pathelement location="${MYSQLDRIVER}"/>
+    </path>
+
+    <property name="DATABASE_TEST_NAME" value="${env.DATABASE_TEST_NAME}"/>
+    <property name="DATABASE_TEST_HOST" value="${env.DATABASE_TEST_HOST}"/>
+    <property name="DATABASE_TEST_PORT" value="${env.DATABASE_TEST_PORT}"/>
+    <property name="DATABASE_TEST_USER" value="${env.DATABASE_TEST_USER}"/>
+    <property name="DATABASE_TEST_PASS" value="${env.DATABASE_TEST_PASS}"/>
+
+    <echo message="DATABASE_TEST_NAME is ${DATABASE_TEST_NAME}"/>
+    <echo message="DATABASE_TEST_HOST is ${DATABASE_TEST_HOST}"/>
+    <echo message="DATABASE_TEST_PORT is ${DATABASE_TEST_PORT}"/>
+    <echo message="DATABASE_TEST_USER is ${DATABASE_TEST_USER}"/>
+    <echo message="DATABASE_TEST_PASS is ${DATABASE_TEST_PASS}"/>
+
 
     <!-- Uncomment the following when the tools are in ${basedir}/vendor/bin -->
     <!-- <property name="toolsdir" value="${basedir}/vendor/bin/"/> -->
 
     <target name="build"
-            depends="prepare,composer,npm,bower,grunt,docker,migrate,migrate-modules,lint,mocha,phploc-ci,pdepend,phpmd-ci,phpcs-ci,phpcpd-ci,phpunit"
+            depends="prepare,composer,npm,bower,grunt,database-populate,migrate,migrate-modules,lint,mocha,phploc-ci,pdepend,phpmd-ci,phpcs-ci,phpcpd-ci,phpunit"
             description=""/>
 
     <target name="build-parallel"
@@ -20,7 +39,7 @@
             description=""/>
 
     <target name="run-tests"
-            depends="prepare,composer,npm,bower,grunt,docker,migrate,migrate-modules,lint,mocha,phpunit"
+            depends="prepare,composer,npm,bower,grunt,database-populate,migrate,migrate-modules,lint,mocha,phpunit"
             description="" />
 
     <target name="tools-parallel" description="Run tools in parallel">
@@ -76,6 +95,12 @@
             <arg value="-c" />
             <arg value="${toolsdir}spin_up_docker_db.sh '${dockerName}'" />
         </exec>
+    </target>
+
+    <target name="database-populate" description="Populates an existing MySQL / MariaDB database with the test database" depends="prepare">
+        <sql driver="com.mysql.jdbc.Driver" url="jdbc:mysql://${DATABASE_TEST_HOST}:${DATABASE_TEST_PORT}/${DATABASE_TEST_NAME}" userid="${DATABASE_TEST_USER}" password="${DATABASE_TEST_PASS}" classpathref="CLASSPATH" onerror="continue">
+            <transaction src="${basedir}/protected/modules/sample/sql/openeyes_sample_data.sql"/>
+        </sql>
     </target>
 
     <target name="composer" description="Install composer packages">
