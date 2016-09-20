@@ -13,9 +13,21 @@ server:
   timezone: Europe/London
   locale: en_US.UTF-8
   vagrant_user_password: "vagrant"
-  packages: [ build-essential, curl, git, sendmail-bin, vim, default-jre, openjdk-7-jdk, ant, libbatik-java, libreoffice-core, libreoffice-common, libreoffice-writer ]
+  packages: [ build-essential, curl, git, sendmail-bin, vim, default-jre, openjdk-7-jdk, ant, libbatik-java, libmysql-java, libreoffice-core, libreoffice-common, libreoffice-writer ]
 vagrant_local:
     vm: { hostname: openeyes.vm }
+
+environment_config:
+  DATABASE_NAME: "openeyes"
+  DATABASE_HOST: "127.0.0.1"
+  DATABASE_PORT: "3306"
+  DATABASE_USER: "openeyes"
+  DATABASE_PASS: "openeyes"
+  DATABASE_TEST_NAME: "openeyes"
+  DATABASE_TEST_HOST: "127.0.0.1"
+  DATABASE_TEST_PORT: "3306"
+  DATABASE_TEST_USER: "openeyes"
+  DATABASE_TEST_PASS: "openeyes"
 
 # https://github.com/geerlingguy/ansible-role-apache
 apache_remove_default_vhost: true
@@ -25,7 +37,7 @@ apache_vhosts:
   - servername: "openeyes.vm"
     documentroot: "/var/www/openeyes"
     extra_parameters: |
-      SetEnv DATABASE_NAME openeyes
+      SetEnv ssudo find / -name 'mysql-connector*' openeyes
       SetEnv DATABASE_HOST 127.0.0.1
       SetEnv DATABASE_PORT 3306
       SetEnv DATABASE_USER "{{ openeyes.mysql_user }}"
@@ -73,6 +85,7 @@ nodejs_npm_global_packages:
 php_webserver_daemon: "apache2"
 php_use_managed_ini: true
 php_date_timezone: "Europe/London"
+php_memory_limit: "512M"
 php_error_reporting: "E_ALL"
 php_display_errors: "On"
 php_display_startup_errors: "On"

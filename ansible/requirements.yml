@@ -1,4 +1,5 @@
 ---
+- src: franklinkim.environment
 - src: geerlingguy.apache
   version: 1.7.3
 - src: geerlingguy.mysql
