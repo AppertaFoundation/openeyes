@@ -63,7 +63,7 @@ class ElementLetter extends BaseEventTypeElement
         // will receive user inputs.
         return array(
             array('event_id, site_id, print, address, use_nickname, date, introduction, cc, re, body, footer, draft, direct_line, fax, clinic_date, print_all', 'safe'),
-            array('use_nickname, site_id, date, address, introduction, body, footer', 'required'),
+            array('use_nickname, site_id, date, introduction, body, footer', 'required'),
             array('date', 'OEDateValidator'),
             array('clinic_date', 'OEDateValidatorNotFuture'),
             // The following rule is used by search().
@@ -136,7 +136,7 @@ class ElementLetter extends BaseEventTypeElement
 
     public function getAddress_targets()
     {
-        if (Yii::app()->getController()->getAction()->id == 'create') {
+        if (Yii::app()->getController()->getAction()->id == 'create' || !isset($this->event)) {
             if (!$patient = Patient::model()->with(array('gp', 'practice'))->findByPk(@$_GET['patient_id'])) {
                 throw new Exception('patient not found: '.@$_GET['patient_id']);
             }
@@ -144,23 +144,23 @@ class ElementLetter extends BaseEventTypeElement
             $patient = $this->event->episode->patient;
         }
 
-        $options = array('Patient'.$patient->id => $patient->fullname.' (Patient)');
+        $options = array($patient->contact->id => $patient->fullname.' (Patient)');
         if (!isset($patient->contact->address)) {
             $options['Patient'.$patient->id] .= ' - NO ADDRESS';
         }
 
         if ($patient->gp) {
             if (@$patient->gp->contact) {
-                $options['Gp'.$patient->gp_id] = $patient->gp->contact->fullname.' (GP)';
+                $options[$patient->gp->contact->id] = $patient->gp->contact->fullname.' (GP)';
             } else {
-                $options['Gp'.$patient->gp_id] = Gp::UNKNOWN_NAME.' (GP)';
+                $options[$patient->gp->contact->id] = Gp::UNKNOWN_NAME.' (GP)';
             }
             if (!$patient->practice || !@$patient->practice->contact->address) {
-                $options['Gp'.$patient->gp_id] .= ' - NO ADDRESS';
+                $options[$patient->gp->contact->id] .= ' - NO ADDRESS';
             }
         } else {
             if ($patient->practice) {
-                $options['Practice'.$patient->practice_id] = Gp::UNKNOWN_NAME.' (GP)';
+                $options[$patient->practice->contact->id] = Gp::UNKNOWN_NAME.' (GP)';
                 if (@$patient->practice->contact && !@$patient->practice->contact->address) {
                     $options['Practice'.$patient->practice_id] .= ' - NO ADDRESS';
                 }
@@ -181,7 +181,7 @@ class ElementLetter extends BaseEventTypeElement
             foreach ($cbs as $cb_type_id => $cb_list) {
                 foreach ($cb_list as $cb) {
                     if (in_array($cb_type_id, $cbt_ids)) {
-                        $options['CommissioningBody'.$cb->id] = $cb->name.' ('.$cbtype_lookup[$cb_type_id].')';
+                        $options[$cb->contact->id] = $cb->name.' ('.$cbtype_lookup[$cb_type_id].')';
                         if (!$cb->getAddress()) {
                             $options['CommissioningBody'.$cb->id] .= ' - NO ADDRESS';
                         }
@@ -190,7 +190,7 @@ class ElementLetter extends BaseEventTypeElement
                     // include all services at the moment, regardless of whether the commissioning body type is filtered
                     if ($services = $cb->services) {
                         foreach ($services as $svc) {
-                            $options['CommissioningBodyService'.$svc->id] = $svc->name.' ('.$svc->getTypeShortName().')';
+                            $options[$svc->contact->id] = $svc->name.' ('.$svc->getTypeShortName().')';
                         }
                     }
                 }
@@ -476,6 +476,12 @@ class ElementLetter extends BaseEventTypeElement
                     }
                 }
             }
+        }
+        if(Yii::app()->getController()->getAction()->id == 'create' || Yii::app()->getController()->getAction()->id == 'update')
+        {
+            $document = new Document();
+            $document->event_id = $this->event_id;
+            $document->createNewDocSet();
         }
 
         return parent::afterSave();
