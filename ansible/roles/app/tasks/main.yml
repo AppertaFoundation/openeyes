@@ -1,6 +1,14 @@
 ---
 # Application tasks to be customized and to run after the main provision
 
+- name: Install Compass (Ruby)
+  become: true
+  become_method: sudo
+  gem:
+    name: compass
+    state: latest
+    user_install: false
+
 - name: Remove vendor directory
   become: true
   become_method: sudo
