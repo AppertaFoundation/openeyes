@@ -51,7 +51,10 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
     public function run()
     {
         $command = Yii::app()->db->createCommand()
-            ->select('patient.hos_num, contact.last_name, contact.first_name, patient.dob, address.postcode, d.created_date, drug.name, user.first_name as user_first_name, user.last_name as user_last_name, user.role, event.created_date as event_date')
+            ->select(
+                'patient.hos_num, contact.last_name, contact.first_name, patient.dob, address.postcode, d.created_date, drug.tallman, drug.preservative_free,
+                user.first_name as user_first_name, user.last_name as user_last_name, user.role, event.created_date as event_date'
+            )
             ->from('episode')
             ->join('event', 'episode.id = event.episode_id AND event.deleted = 0')
             ->join('et_ophdrprescription_details d', 'event.id = d.event_id')
@@ -82,8 +85,10 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
     {
         $output = "Patient's no,  Patient's Surname, Patient's First name,  Patient's DOB, Patient's Post code, Date of Prescription, Drug name, Prescribed Clinician's name, Prescribed Clinician's Job-role, Prescription event date\n";
         foreach ($this->items as $item) {
+            $drug = new Drug();
+            $drug->attributes = $item;
             $output .= $item['hos_num'].', '.$item['last_name'].', '.$item['first_name'].', '.($item['dob'] ? date('j M Y', strtotime($item['dob'])) : 'Unknown').', '.$item['postcode'].', ';
-            $output .= (date('j M Y', strtotime($item['created_date'])).' '.(substr($item['created_date'], 11, 5))).', '.$item['name'].', ';
+            $output .= (date('j M Y', strtotime($item['created_date'])).' '.(substr($item['created_date'], 11, 5))).', '.$drug->tallmanLabel.', ';
             $output .= $item['user_first_name'].' '.$item['user_last_name'].', '.$item['role'].', '.(date('j M Y', strtotime($item['event_date'])).' '.(substr($item['event_date'], 11, 5)));
             $output .= "\n";
         }
