@@ -401,4 +401,22 @@ class Helper
         }
     }
 
+    /**
+     * Extracts what should be the md5 from the end of a string to verify against the remainder
+     * Returns the verified data if the md5 is correct, null otherwise.
+     *
+     * @param $data
+     * @return null|string
+     */
+    public static function md5Verified($data)
+    {
+        $actual_data = substr($data, 0, -32);
+        $checksum = substr($data, -32);
+        if (md5($actual_data) === $checksum) {
+            return $actual_data;
+        }
+        return null;
+
+    }
+
 }

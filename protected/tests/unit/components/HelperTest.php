@@ -222,4 +222,19 @@ class HelperTest extends CTestCase
         $this->assertEquals($expected, forward_static_call_array(array('Helper', 'elementFinder'), $args));
     }
 
+    public function test_md5Verified()
+    {
+        $random_string = '';
+        for ($i = 0; $i < 5; $i++) {
+            $random_string .= substr( md5(mt_rand()), 0, mt_rand(1,32));
+        }
+
+        $checksum = md5($random_string);
+
+        $pass_test = $random_string . $checksum;
+        $this->assertEquals($random_string, Helper::md5Verified($pass_test));
+        $fail_test = $random_string . 'a' . $checksum;
+        $this->assertNull(Helper::md5Verified($fail_test));
+    }
+
 }
