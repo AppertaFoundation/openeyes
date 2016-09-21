@@ -68,7 +68,7 @@ class ReportController extends BaseReportController
             foreach ($drugs as $drug) {
                 $commonDrugs[] = array(
                     'id' => $drug->id,
-                    'label' => $drug->name,
+                    'label' => $drug->tallmanlabel,
                 );
             }
         }
