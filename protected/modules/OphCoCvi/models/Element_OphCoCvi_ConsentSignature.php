@@ -160,13 +160,6 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
         return Helper::md5Verified($decrypt);
     }
 
-    protected function encryptSignature($text, $key)
-    {
-        $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
-        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-        return base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $text, MCRYPT_MODE_ECB, $iv));
-    }
-
     /**
      * @return string
      */
