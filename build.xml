@@ -99,7 +99,7 @@
 
     <target name="database-populate" description="Populates an existing MySQL / MariaDB database with the test database" depends="prepare">
         <sql driver="com.mysql.jdbc.Driver" url="jdbc:mysql://${DATABASE_TEST_HOST}:${DATABASE_TEST_PORT}/${DATABASE_TEST_NAME}" userid="${DATABASE_TEST_USER}" password="${DATABASE_TEST_PASS}" classpathref="CLASSPATH" onerror="continue">
-            <transaction src="${basedir}/protected/modules/sample/sql/openeyes_sample_data.sql"/>
+            <transaction src="${basedir}/features/vagrant_openeyes.sql"/>
         </sql>
     </target>
 
