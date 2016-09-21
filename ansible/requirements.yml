@@ -10,4 +10,6 @@
   version: 1.4.2
 - src: geerlingguy.nodejs
   version: 3.3.0
+- src: geerlingguy.ruby
+  version: 2.4.1
 - src: zealot128.wkhtmltox
