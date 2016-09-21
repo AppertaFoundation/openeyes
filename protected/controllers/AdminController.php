@@ -357,6 +357,11 @@ class AdminController extends BaseAdminController
         ));
     }
 
+    /**
+     * Add a user
+     *
+     * @throws Exception
+     */
     public function actionAddUser()
     {
         $user = new User();
@@ -378,9 +383,19 @@ class AdminController extends BaseAdminController
                     $userAtt['roles'] = array();
                 }
 
+                if (!array_key_exists('firms', $userAtt) || !is_array($userAtt['firms'])) {
+                    $userAtt['firms'] = array();
+                }
+
                 $user->saveRoles($userAtt['roles']);
 
-                $this->redirect('/admin/users/' . ceil($user->id / $this->items_per_page));
+                try {
+                    $user->saveFirms($userAtt['firms']);
+                    $this->redirect('/admin/users/' . ceil($user->id / $this->items_per_page));
+                } catch (FirmSaveException $e) {
+                    $user->addError('global_firm_rights', 'When no global firm rights is set, a firm must be selected');
+                    $errors = $user->getErrors();
+                }
             }
         }
 
@@ -392,6 +407,10 @@ class AdminController extends BaseAdminController
         ));
     }
 
+    /**
+     * @param $id
+     * @throws Exception
+     */
     public function actionEditUser($id)
     {
         if (!$user = User::model()->findByPk($id)) {
@@ -451,9 +470,13 @@ class AdminController extends BaseAdminController
 
                 $user->saveRoles($userAtt['roles']);
 
-                $user->saveFirms($userAtt['firms']);
-
-                $this->redirect('/admin/users/' . ceil($user->id / $this->items_per_page));
+                try {
+                    $user->saveFirms($userAtt['firms']);
+                    $this->redirect('/admin/users/' . ceil($user->id / $this->items_per_page));
+                } catch (FirmSaveException $e) {
+                    $user->addError('global_firm_rights', 'When no global firm rights is set, a firm must be selected');
+                    $errors = $user->getErrors();
+                }
             }
         } else {
             Audit::add('admin-User', 'view', $id);
