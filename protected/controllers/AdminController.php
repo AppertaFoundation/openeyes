@@ -445,7 +445,13 @@ class AdminController extends BaseAdminController
                     $userAtt['roles'] = array();
                 }
 
+                if (!array_key_exists('firms', $userAtt) || !is_array($userAtt['firms'])) {
+                    $userAtt['firms'] = array();
+                }
+
                 $user->saveRoles($userAtt['roles']);
+
+                $user->saveFirms($userAtt['firms']);
 
                 $this->redirect('/admin/users/' . ceil($user->id / $this->items_per_page));
             }
