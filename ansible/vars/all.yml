@@ -15,7 +15,7 @@ server:
   timezone: Europe/London
   locale: en_US.UTF-8
   vagrant_user_password: "vagrant"
-  packages: [ build-essential, linux-image-generic-lts-xenial, linux-generic-lts-xenial, curl, git, sendmail-bin, vim, default-jre, openjdk-7-jdk, ant, libbatik-java, libmysql-java, libreoffice-core, libreoffice-common, libreoffice-writer ]
+  packages: [ build-essential, linux-image-generic-lts-xenial, linux-generic-lts-xenial, curl, git, sendmail-bin, vim, default-jre, openjdk-7-jdk, ant, libbatik-java, libmysql-java, ruby-full, rubygems-integration, libreoffice-core, libreoffice-common, libreoffice-writer ]
 vagrant_local:
     vm: { hostname: openeyes.vm }
 
@@ -130,8 +130,3 @@ php_xdebug_remote_connect_back: true
 php_xdebug_remote_port: "9000"
 php_xdebug_idekey: across-health.xdebug
 php_xdebug_remote_log: /tmp/xdebug.log # Useful for connection debug
-
-# Ruby ruby ruby
-# https://github.com/geerlingguy/ansible-role-ruby
-ruby_install_gems_user: root
-ruby_install_gems: [ compass ]
