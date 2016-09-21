@@ -2,7 +2,6 @@
 <project name="OpenEyes" default="build">
     <property name="toolsdir" value="${basedir}/bin/"/>
     <property name="prefer" value="dist"/>
-    <property name="dockerName" value="docker"/>
     <property name="MYSQLDRIVER" value="/usr/share/java/mysql-connector-java.jar"/>
     <property environment="env"/>
 
@@ -81,20 +80,10 @@
         <mkdir dir="${basedir}/protected/runtime/cache"/>
         <mkdir dir="${basedir}/cache"/>
         <mkdir dir="${basedir}/protected/cache"/>
-        <chmod file="${toolsdir}spin_up_docker_db.sh" perm="+x" />
         <copy file="${basedir}/protected/config/local.sample/common.sample.php" tofile="${basedir}/protected/config/local/common.php" overwrite="false" />
         <copy file="${basedir}/protected/config/local.sample/test.php" tofile="${basedir}/protected/config/local/test.php" overwrite="false" />
         <copy file="${basedir}/protected/config/local.sample/console.sample.php" tofile="${basedir}/protected/config/local/console.php" overwrite="false" />
         <property name="prepare.done" value="true"/>
-    </target>
-
-    <!-- This task is used for creating a docker container with the DB in it so that unit tests which access it can
-    do so without conflicting with each other. For that purporse it should only be run as part of an automated build task-->
-    <target name="docker" description="Run up a docker container with the DB in it for unit testing against" depends="prepare">
-        <exec executable="/bin/bash" failonerror="true">
-            <arg value="-c" />
-            <arg value="${toolsdir}spin_up_docker_db.sh '${dockerName}'" />
-        </exec>
     </target>
 
     <target name="database-populate" description="Populates an existing MySQL / MariaDB database with the test database" depends="prepare">
