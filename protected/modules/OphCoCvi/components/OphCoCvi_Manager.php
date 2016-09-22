@@ -307,19 +307,8 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function getDisplayStatusDateForEvent(\Event $event)
     {
-        if ($clinical = $this->getClinicalElementForEvent($event)) {
-            return $clinical->examination_date;
-        }
-    }
-
-    /**
-     * @param \Event $event
-     * @return mixed|null
-     */
-    public function getDisplayIssueDateForEvent(\Event $event)
-    {
-        $info = $this->getEventInfoElementForEvent($event);
-        return $info->getIssueDateForDisplay();
+        // this used to be the examination date ... and in the future we could perhaps pull out an issue date
+        return $event->event_date;
     }
 
     /**
