@@ -17,12 +17,19 @@
 * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 */
 
+
+$db_test_name = getenv('DATABASE_TEST_NAME') ? getenv('DATABASE_TEST_NAME') : 'openeyes_test';
+$db_test_host = getenv('DATABASE_TEST_HOST') ? getenv('DATABASE_TEST_HOST') : '127.0.0.1';
+$db_test_port = getenv('DATABASE_TEST_PORT') ? getenv('DATABASE_TEST_PORT') : '3306';
+$db_test_user = getenv('DATABASE_TEST_USER') ? getenv('DATABASE_TEST_USER') : 'openeyes';
+$db_test_pass = getenv('DATABASE_TEST_PASS') ? getenv('DATABASE_TEST_PASS') : 'openeyes';
+
 return array(
     'components' => array(
         'db' => array(
-            'connectionString' => 'mysql:host=127.0.0.1;port=3306;dbname=openeyes_test',
-            'username' => 'openeyes',
-            'password' => 'openeyes',
+            'connectionString' => "mysql:host=$db_test_host;port=$db_test_port;dbname=$db_test_name",
+            'username' => $db_test_user,
+            'password' => $db_test_pass,
         ),
     ),
 );
