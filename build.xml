@@ -120,6 +120,7 @@
         <exec executable="php" failonerror="true">
             <arg value="${basedir}/protected/yiic" />
             <arg value="migrate" />
+            <arg value="--connectionID=testdb" />
             <arg value="--interactive=0" />
         </exec>
     </target>
@@ -245,11 +246,6 @@
             <arg value="--stop-on-failure"/>
             <arg value="--configuration"/>
             <arg path="${basedir}/protected/tests/phpunit_ci.xml"/>
-            <env key="DATABASE_TEST_NAME" value="${DATABASE_TEST_NAME}"/>
-            <env key="DATABASE_TEST_HOST" value="${DATABASE_TEST_HOST}"/>
-            <env key="DATABASE_TEST_PORT" value="${DATABASE_TEST_PORT}"/>
-            <env key="DATABASE_TEST_USER" value="${DATABASE_TEST_USER}"/>
-            <env key="DATABASE_TEST_PASS" value="${DATABASE_TEST_PASS}"/>
         </exec>
     </target>
 
