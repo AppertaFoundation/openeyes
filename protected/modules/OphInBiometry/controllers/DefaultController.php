@@ -107,8 +107,8 @@ class DefaultController extends BaseEventTypeController
         if ($this->isAutoBiometryEvent($id)) {
             $this->is_auto = 1;
             $event_data = $this->getAutoBiometryEventData($id);
-            $isAlMod = $this->isAlModified($id);
-            $isKMod = $this->isKModified($id);
+            $isAlMod = $this->isAlModified();
+            $isKMod = $this->isKModified();
             $warning_flash_message = '';
             $issue_flash_message = '';
             $success_flash_message = '';
@@ -145,18 +145,18 @@ class DefaultController extends BaseEventTypeController
                     $success_flash_message .= 'The event has been added to this episode.<br>';
                 }
             }
-            $quality = $this->isBadQuality($id);
+            $quality = $this->isBadQuality();
 
             if (!empty($quality) && (!empty($quality['reason']))) {
                 $warning_flash_message .= '<li><b>The quality of this data is bad and not recommended for clinical use </b>: (' . $quality['reason'] . ')</li>';
             } else {
-                $quality = $this->isBordelineQuality($id);
+                $quality = $this->isBordelineQuality();
                 if (!empty($quality) && (!empty($quality['reason']))) {
                     $warning_flash_message .= '<li><b>The quality of this data is borderline </b>: (' . $quality['reason'] . ')</li>';
                 }
             }
 
-            $checkalqual = $this->checkALQuality($id);
+            $checkalqual = $this->checkALQuality();
             if (!empty($checkalqual) && ($checkalqual['code'])) {
                 foreach ($checkalqual['reason'] as $v) {
                     if (!empty($v)) {
@@ -165,7 +165,7 @@ class DefaultController extends BaseEventTypeController
                 }
             }
 
-            $checkaldiff = $this->checkALDiff($id);
+            $checkaldiff = $this->checkALDiff();
             if (!empty($checkaldiff) && (!empty($checkaldiff['reason']))) {
                 $warning_flash_message .= '<li>' . $checkaldiff['reason'] . '</li>';
             }
@@ -369,6 +369,10 @@ class DefaultController extends BaseEventTypeController
      */
     private function isBadQuality()
     {
+        if($this->isAutoBiometryEvent($this->event->id) && $this->getAutoBiometryEventData($this->event->id)[0]->is700()) {
+            return array();
+        }
+
         $reason = array();
         $measurementValues = $this->getMeasurementData();
         $measurementData = $measurementValues[0];
@@ -416,6 +420,10 @@ class DefaultController extends BaseEventTypeController
      */
     private function isBordelineQuality()
     {
+        if($this->isAutoBiometryEvent($this->event->id) && $this->getAutoBiometryEventData($this->event->id)[0]->is700()) {
+            return array();
+        }
+
         $reason = array();
         $measurementValues = $this->getMeasurementData();
         $measurementData = $measurementValues[0];
