@@ -129,6 +129,7 @@
         <exec executable="php" failonerror="true">
             <arg value="${basedir}/protected/yiic" />
             <arg value="migratemodules" />
+            <arg value="--connectionID=testdb" />
             <arg value="--interactive=0" />
         </exec>
     </target>
