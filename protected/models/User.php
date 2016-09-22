@@ -592,6 +592,30 @@ class User extends BaseActiveRecordVersioned
     }
 
     /**
+     * @param array $firms
+     * @throws CDbException
+     * @throws FirmSaveException
+     */
+    public function saveFirms(array $firms)
+    {
+        if(!$this->global_firm_rights && count($firms) === 0){
+            throw new FirmSaveException('When global firm rights are not set, a firm must be selected');
+        }
+
+        $transaction = Yii::app()->db->beginTransaction();
+        FirmUserAssignment::model()->deleteAll('user_id = :user_id', array('user_id' => $this->id));
+        foreach($firms as $firm){
+            $firmUserAssign = new FirmUserAssignment();
+            $firmUserAssign->user_id = $this->id;
+            $firmUserAssign->firm_id = $firm;
+            if(!$firmUserAssign->insert()){
+                throw new CDbException('Unable to save firm assignment');
+            }
+        }
+        $transaction->commit();
+    }
+
+    /**
      * Return all firms that the user has access rights to
      *
      * @return Firm[]
