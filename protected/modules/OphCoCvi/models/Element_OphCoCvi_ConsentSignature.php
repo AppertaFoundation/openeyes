@@ -154,10 +154,10 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
         $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
         $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
         $decrypt = trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($text), MCRYPT_MODE_ECB, $iv));
-        if (Yii::app()->params['no_md5_verify']) {
+        if (\Yii::app()->params['no_md5_verify']) {
             return $decrypt;
         }
-        return Helper::md5Verified($decrypt);
+        return \Helper::md5Verified($decrypt);
     }
 
     /**
