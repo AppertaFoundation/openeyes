@@ -995,6 +995,8 @@ EOL;
   AND et.name IN ('Examination', 'Biometry', 'Prescription')
   AND ev.deleted = 0;
 
+EOL;
+
         return $query;
     }
     
