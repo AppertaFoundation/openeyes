@@ -273,29 +273,46 @@ class NodExportController extends BaseController
 				id  int(10) UNSIGNED NOT NULL UNIQUE,
 				KEY `tmp_treatment_ids_id` (`id`)
 			);
-			
-
-			DROP TEMPORARY TABLE IF EXISTS tmp_pathology_type;
-			CREATE TEMPORARY TABLE tmp_pathology_type (
-				`nodcode` INT(10) UNSIGNED NOT NULL,
-				`term` VARCHAR(100)
-			);
-			INSERT INTO tmp_pathology_type (`nodcode`, `term`)
-			VALUES
-				(0, 'None'),
-				(1, 'Age related macular degeneration'),
-				(2, 'Amblyopia'),
-				(4, 'Diabetic retinopathy'),
-				(5, 'Glaucoma'),
-				(7, 'Degenerative progressive high myopia'),
-				(8, 'Ocular Hypertension'),
-				(11, 'Stickler Syndrome'),
-				(12, 'Uveitis'),
-				(13, 'Pseudoexfoliation'),
-				(13, 'phacodonesis'),
-				(18, 'macular hole'),
-				(19, 'epiretinal membrane'),
-				(20, 'retinal detachment ');
+			       
+ 			DROP TEMPORARY TABLE IF EXISTS tmp_pathology_type;
+			CREATE TEMPORARY TABLE tmp_pathology_type
+      AS
+      SELECT 
+        d.id snomed_disorder_id
+      , LOWER(d.term) lowcase_snomed_term
+      , CASE LOWER(d.term) 
+        WHEN 'age related macular degeneration' THEN 1
+        WHEN 'amblyopia' THEN 2
+        /* no mapping 3 Corneal pathology */
+        WHEN 'diabetic retinopathy' THEN 4
+        WHEN 'glaucoma' THEN 5
+        WHEN 'glaucoma suspect' THEN 6
+        /* no mapping 7 High myopia */
+        WHEN 'ocular hypertension' THEN 8
+        /* no mapping 9 Inherited eye diseases */
+        /* no mapping 10 Optic nerve / CNS disease */
+        WHEN 'stickler syndrome' THEN 11
+        WHEN 'uveitis' THEN 12
+        WHEN 'pseudoexfoliation' THEN 13 /* multiple mappings */
+        WHEN 'phacodonesis' THEN 13 /* multiple mappings */
+        WHEN 'cataracta brunescens' THEN 14 /* cross check Brunescent / white cataract */
+        WHEN 'vitreous opacities' THEN 15 
+        /* no mapping 16 Other macular pathology */
+        WHEN 'retinal vascular disorder' THEN 17 /* cross check Other retinal vascular pathology */
+        WHEN 'macular hole' THEN 18 /* multiple cross check macular hole */
+        WHEN 'full thickness macular hole stage ii' THEN 18 /* multiple cross check macular hole */
+        WHEN 'full thickness macular hole stage iii' THEN 18 /* multiple cross check macular hole */
+        WHEN 'full thickness macular hole stage iv' THEN 18 /* multiple cross check macular hole */
+        WHEN 'epiretinal membrane' THEN 19
+        WHEN 'retinal detachment' THEN 20 /* cross check - potential others */
+        /* no mapping 21 Previous retinal detachment surgery */
+        /* no mapping 22 Vitrectomy */
+        /* no mapping 23 previous vitrectomy for FTMH / ERM / other reason */
+        /* no mapping 24 Previous laser refractive surgery */
+        /* no mapping 25 Previous trabeculectomy */
+        ELSE 26 /* Other */
+        END nod_id
+      FROM disorder d;       
 
 			DROP TEMPORARY TABLE IF EXISTS tmp_iol_positions;
 			CREATE TEMPORARY TABLE tmp_iol_positions (
@@ -517,7 +534,8 @@ EOL;
     {
         $query = '';
         
-        $query .= $this->populateTmpRcoNodMainEventEpisodes();
+        $query .= $this->populateTmpRcoNodMainEventEpisodes(); ##
+        $query .= $this->populateTmpRcoNodEpisodeOperation(); ##
         ##$query .= $this->populateTmpRcoNodPatients();
         ##$query .= $this->populateTmpRcoNodEpisodePreOpAssessment();
         ##$query .= $this->populateTmpRcoNodPatientCVIStatus();
@@ -528,8 +546,7 @@ EOL;
         ##$query .= $this->populateTmpRcoNodSurgeon();
         ##$query .= $this->populateTmpRcoNodEpisodeDiabeticDiagnosis();
         ##$query .= $this->populateTmpRcoNodPostOpComplication();
-        ##$query .= $this->populateTmpRcoNodEpisodeOperationCoPathology();
-        ##$query .= $this->populateTmpRcoNodEpisodeOperation();
+        $query .= $this->populateTmpRcoNodEpisodeOperationCoPathology();
         ##$query .= $this->populateTmpRcoNodEpisodeTreatment();
         ##$query .= $this->populateTmpRcoNodEpisodeTreatmentCataract();
         ##$query .= $this->populateTmpRcoNodEpisodeOperationAnesthesia();
@@ -917,7 +934,7 @@ EOL;
                 patient_id int(10) NOT NULL,
                 nod_episode_id int(10) NOT NULL,
                 nod_date date NOT NULL,
-                oe_event_type tinyint(2) NOT NULL,
+                oe_event_type_name VARCHAR(40) NOT NULL,
                 nod_episode_seq int(10),
                 PRIMARY KEY (oe_event_id)
             );
@@ -931,57 +948,53 @@ EOL;
     private function populateTmpRcoNodMainEventEpisodes()
     {
         $query = <<<EOL
-                #Load main control table with ALL operation events
-                INSERT INTO tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} (
-                    oe_event_id,
-                    patient_id,
-                    nod_episode_id,
-                    nod_date,
-                    oe_event_type,
-                    nod_episode_seq
-                )
-                SELECT
-                    event.id AS oe_event_id,
-                    episode.patient_id AS patient_id,
-                    event.id AS nod_episode_id,
-                    DATE(event.event_date) AS nod_date,
-                    event_type_id AS oe_event_type,
-                    1 AS nod_episode_seq
-                FROM event
-                JOIN episode ON event.episode_id = episode.id
-                JOIN event_type ON event.event_type_id = event_type.id AND event_type.name = 'Operation Note'
-                WHERE DATE(event.event_date) 
-                BETWEEN STR_TO_DATE('2015-09-01', '%Y-%m-%d') 
-                AND STR_TO_DATE('2016-08-31', '%Y-%m-%d')
-                AND event.deleted = 0;
+        
+  #Load main control table with ALL operation events
+  INSERT INTO tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} (
+    oe_event_id
+  , patient_id
+  , nod_episode_id
+  , nod_date
+  , oe_event_type_name
+  , nod_episode_seq
+  )
+  SELECT
+    ev.id AS oe_event_id
+  , ep.patient_id AS patient_id
+  , ev.id AS nod_episode_id
+  , DATE(ev.event_date) AS nod_date
+  , et.name AS oe_event_type_name
+  , 1 AS nod_episode_seq
+  FROM event ev
+  JOIN episode ep ON ev.episode_id = ep.id
+  JOIN event_type et ON ev.event_type_id = et.id 
+  WHERE DATE(ev.event_date) BETWEEN STR_TO_DATE('2015-09-01', '%Y-%m-%d') AND STR_TO_DATE('2016-08-31', '%Y-%m-%d')
+  AND et.name = 'Operation Note'
+  AND ev.deleted = 0;
 
-                #Load main control table with ALL examination events (using previously identified patients in control table)
-                INSERT INTO  tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} (
-                                oe_event_id,
-                                patient_id,
-                                nod_episode_id,
-                                nod_date,
-                                oe_event_type,
-                                nod_episode_seq 
-                )
-                SELECT
-                        event.id AS oe_event_id,
-                        episode.patient_id AS patient_id,
-                        event.id AS nod_episode_id,
-                        DATE(event.event_date) AS nod_date,
-                        event.event_type_id AS oe_event_type,
-                        1 AS nod_episode_seq
-                FROM event
-                JOIN episode ON event.episode_id = episode.id
-                WHERE  episode.patient_id IN (SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c)
-                AND event.event_type_id IN
-                    (
-                        SELECT event_type.id
-                        FROM event_type
-                        WHERE event_type.`name` IN ('Examination', 'Biometry', 'Prescription')
-                    )
-                AND event.deleted = 0;
-EOL;
+  #Load main control table with ALL examination events (using previously identified patients in control table)
+  INSERT INTO  tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} (
+    oe_event_id
+  , patient_id
+  , nod_episode_id
+  , nod_date
+  , oe_event_type_name
+  , nod_episode_seq
+  )
+  SELECT
+    ev.id AS oe_event_id
+  , ep.patient_id AS patient_id
+  , ev.id AS nod_episode_id
+  , DATE(ev.event_date) AS nod_date
+  , et.name AS oe_event_type_name
+  , 1 AS nod_episode_seq
+  FROM event ev
+  JOIN episode ep ON ev.episode_id = ep.id
+  JOIN event_type et ON ev.event_type_id = et.id 
+  WHERE ep.patient_id IN (SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c)
+  AND et.name IN ('Examination', 'Biometry', 'Prescription')
+  AND ev.deleted = 0;
+
         return $query;
     }
     
@@ -2336,7 +2349,7 @@ EOL;
                     FROM ophtroperationnote_procedurelist_procedure_assignment os
                 ) AS v
                 /* Restrict: Only OPERATION NOTE type events */
-                WHERE c.oe_event_type = 4 #'Operation Note'
+                WHERE c.oe_event_type_name = 'Operation Note'
                 /* Restrict: LEFT or BOTH eyes only */
                 AND pl.eye_id IN (1, 3) /* 1 = LEFT EYE, 3 = BOTH EYES */
             
@@ -2370,7 +2383,7 @@ EOL;
                 LEFT OUTER JOIN proc p 
                   ON p.id = pa.proc_id
                 /* Restrict: Only OPERATION NOTE type events */
-                WHERE c.oe_event_type = 4 #'Operation Note'
+                WHERE c.oe_event_type_name = 'Operation Note'
                 /* Restrict: RIGHT or BOTH eyes only */
                 AND pl.eye_id IN (2, 3); /* 2 = RIGHT EYE, 3 = BOTH EYES */
             
@@ -2688,7 +2701,7 @@ EOL;
               LEFT OUTER JOIN user au ON s.assistant_id = au.id
 
               /* Restrict: Only OPERATION NOTE type events */
-              WHERE c.oe_event_type = 4; #'Operation Note';
+              WHERE c.oe_event_type_name = 'Operation Note';
               
 EOL;
         return $query;
