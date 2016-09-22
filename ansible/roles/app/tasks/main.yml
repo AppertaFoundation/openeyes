@@ -6,7 +6,7 @@
   become_method: sudo
   gem:
     name: compass
-    state: latest
+    version: 1.0.3
     user_install: false
 
 - name: Remove vendor directory
