@@ -37,7 +37,7 @@ namespace OEModule\OphCoCvi\models;
  * @property User $usermodified
  * @property ProtectedFile $signature_file
  */
-use \optomPortalConnection;
+use \OptomPortalConnection;
 
 class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
 {
@@ -153,14 +153,11 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
     {
         $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
         $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-        return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($text), MCRYPT_MODE_ECB, $iv));
-    }
-
-    protected function encryptSignature($text, $key)
-    {
-        $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
-        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-        return base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $text, MCRYPT_MODE_ECB, $iv));
+        $decrypt = trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($text), MCRYPT_MODE_ECB, $iv));
+        if (\Yii::app()->params['no_md5_verify']) {
+            return $decrypt;
+        }
+        return \Helper::md5Verified($decrypt);
     }
 
     /**
@@ -189,7 +186,7 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
     public function saveSignatureImageFromPortal()
     {
         try {
-            $portalConnection = new optomPortalConnection();
+            $portalConnection = new OptomPortalConnection();
 
             if ($portalConnection) {
                 $signatureData = $portalConnection->signatureSearch(null,
@@ -214,8 +211,25 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
     }
 
     /**
-     * @TODO: refactor as this is an incorrect name for this method now
+     * @return resource
+     */
+    public function getSignatureBox()
+    {
+        $QRContent = "@code:"
+            . \Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($this->event)
+            . "@key:" . $this->getEncryptionKey();
+
+        $QRHelper = new \SignatureQRCodeGenerator();
+        return $QRHelper->generateQRSignatureBox($QRContent, true, array("x"=>1000,"y"=>600), 200);
+    }
+
+    /**
+     * This will always return an image for use in the signature placeholder. It will first try to load the signature from the portal
+     * and otherwise will return the signature capture box.
      *
+     * This should be used with caution as it will not respect a signature having been deleted on the server side, but remaining on the portal.
+     *
+     * @TODO: re-factor so that signature retrieval is always explicit.
      * @return resource
      */
     public function loadSignatureFromPortal()
@@ -223,12 +237,7 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
         if ($this->saveSignatureImageFromPortal()) {
             $signature = imagecreatefromstring($this->getDecryptedSignature());
         } else {
-            $QRContent = "@code:"
-                . \Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($this->event)
-                . "@key:" . $this->getEncryptionKey();
-
-            $QRHelper = new \SignatureQRCodeGenerator();
-            $signature = $QRHelper->generateQRSignatureBox($QRContent, true, array("x"=>1000,"y"=>600), 200);
+            $signature = $this->getSignatureBox();
         }
         return $signature;
     }

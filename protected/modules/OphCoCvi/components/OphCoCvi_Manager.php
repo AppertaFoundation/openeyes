@@ -307,19 +307,8 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function getDisplayStatusDateForEvent(\Event $event)
     {
-        if ($clinical = $this->getClinicalElementForEvent($event)) {
-            return $clinical->examination_date;
-        }
-    }
-
-    /**
-     * @param \Event $event
-     * @return mixed|null
-     */
-    public function getDisplayIssueDateForEvent(\Event $event)
-    {
-        $info = $this->getEventInfoElementForEvent($event);
-        return $info->getIssueDateForDisplay();
+        // this used to be the examination date ... and in the future we could perhaps pull out an issue date
+        return $event->event_date;
     }
 
     /**
@@ -468,10 +457,11 @@ class OphCoCvi_Manager extends \CComponent
      * Prepare the Certificate template with the data available from the given event.
      *
      * @param \Event $event
+     * @param boolean $ignore_portal - if true, will force the signature box to be rendered rather than checking the portal
      * @return \ODTTemplateManager
      * @throws \Exception
      */
-    protected function populateCviCertificate(\Event $event)
+    protected function populateCviCertificate(\Event $event, $ignore_portal = false)
     {
         $signature_element = $this->getConsentSignatureElementForEvent($event);
 
@@ -480,7 +470,7 @@ class OphCoCvi_Manager extends \CComponent
             //TODO: restructure or rename, as this process is basically also going to generate
             //TODO: the QR code signature placeholder when its not yet been captured.
             // we check if the signature is exists on the portal
-            $signature = $signature_element->loadSignatureFromPortal();
+            $signature = $ignore_portal ? $signature_element->getSignatureBox() : $signature_element->loadSignatureFromPortal();
         } else {
             // we get the stored signature and creates a GD object from the data
             $signature = imagecreatefromstring($signature_element->getDecryptedSignature());
@@ -547,7 +537,7 @@ class OphCoCvi_Manager extends \CComponent
     {
 
         $this->input_template_file = "signatureTemplate.odt";
-        $document = $this->populateCviCertificate($event);
+        $document = $this->populateCviCertificate($event, true);
         $document->generatePDFPageN();
 
         return $document;
@@ -705,6 +695,17 @@ class OphCoCvi_Manager extends \CComponent
      * @param \CDbCriteria $criteria
      * @param array $filter
      */
+    private function handleSiteListFilter(\CDbCriteria $criteria, $filter = array())
+    {
+        if (array_key_exists('site_id', $filter) && $filter['site_id'] !== '') {
+            $criteria->addCondition('site_id = :site_id');
+            $criteria->params[':site_id'] = $filter['site_id'];
+        }
+    }
+    /**
+     * @param \CDbCriteria $criteria
+     * @param array $filter
+     */
     private function handleConsultantListFilter(\CDbCriteria $criteria, $filter = array())
     {
         if (isset($filter['consultant_ids']) && strlen(trim($filter['consultant_ids']))) {
@@ -735,8 +736,9 @@ class OphCoCvi_Manager extends \CComponent
         $criteria = new \CDbCriteria();
 
         $this->handleDateRangeFilter($criteria, $filter);
-        $this->handleConsultantListFilter($criteria, $filter);
         $this->handleSubspecialtyListFilter($criteria, $filter);
+        $this->handleSiteListFilter($criteria, $filter);
+        $this->handleConsultantListFilter($criteria, $filter);
         $this->handleIssuedFilter($criteria, $filter);
         return $criteria;
     }
@@ -750,6 +752,7 @@ class OphCoCvi_Manager extends \CComponent
     public function getListDataProvider($filter = array())
     {
         $model = Element_OphCoCvi_EventInfo::model()->with(
+            'site',
             'user',
             'clinical_element',
             'clinical_element.consultant',
@@ -767,6 +770,10 @@ class OphCoCvi_Manager extends \CComponent
             'subspecialty' => array(
                 'asc' => 'lower(subspecialty.name) asc, event.id asc',
                 'desc' => 'lower(subspecialty.name) desc, event.id desc',
+            ),
+            'site' => array(
+                'asc' => 'lower(site.name) asc, event.id asc',
+                'desc' => 'lower(site.name) desc, event.id desc',
             ),
             'patient_name' => array(
                 'asc' => 'lower(contact.last_name) asc, lower(contact.first_name) asc',
@@ -818,7 +825,7 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function saveUserSignature($signatureFile, \Event $event)
     {
-        $portal_connection = new \optomPortalConnection();
+        $portal_connection = new \OptomPortalConnection();
         if ($new_file = $portal_connection->createNewSignatureImage($signatureFile, $event->id)) {
             if ($clinic_element = $this->getClinicalElementForEvent($event)) {
                 $clinic_element->consultant_signature_file_id = $new_file->id;
@@ -849,6 +856,7 @@ class OphCoCvi_Manager extends \CComponent
                 try {
                     $this->saveUserSignature($decodedImage, $event);
                     $this->updateEventInfo($event);
+                    $event->audit('event', 'cvi-consultant-signed', null, 'CVI Consultant Signature added', array('user_id' => $user->id));
                     $transaction->commit();
                     return true;
                 }
@@ -857,13 +865,41 @@ class OphCoCvi_Manager extends \CComponent
                     $transaction->rollback();
                     return false;
                 }
-            } else {
-                return false;
             }
         }
-        else {
-            return false;
-        }
+        return false;
     }
+
+    /**
+     * @param \Event $event
+     * @param \User $user
+     * @param $signature_file_id
+     * @return bool
+     * @throws \CDbException
+     * @throws \Exception
+     */
+    public function removeConsentSignature(\Event $event, \User $user, $signature_file_id)
+    {
+        if ($element = $this->getConsentSignatureElementForEvent($event)) {
+            if ($element->signature_file_id == $signature_file_id) {
+                $transaction = $this->startTransaction();
+                try {
+                    $element->signature_file_id = null;
+                    $element->save();
+                    $this->updateEventInfo($event);
+                    $event->audit('event', 'cvi-consent-removed', null, 'CVI Consent Signature Removed', array('user_id' => $user->id));
+                    $transaction->commit();
+                    return true;
+                }
+                catch (\Exception $e) {
+                    \OELog::log($e->getMessage());
+                    $transaction->rollback();
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
 
 }

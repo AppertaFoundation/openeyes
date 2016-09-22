@@ -12,7 +12,7 @@
  * @copyright Copyright (C) 2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'HelperTestNS.php';
+require_once __DIR__.DIRECTORY_SEPARATOR.'HelperTestNS.php';
 
 class HelperTest extends CTestCase
 {
@@ -144,9 +144,9 @@ class HelperTest extends CTestCase
 
     public function testgetNSShortname()
     {
-        $test = new HelperTestNS\models\NamespacedElement();
+        $test = new HelperTestNS\models\HelperTestNS();
 
-        $this->assertEquals('NamespacedElement', Helper::getNSShortname($test));
+        $this->assertEquals('HelperTestNS', Helper::getNSShortname($test));
     }
 
     public function getDateForAgeProvider()
@@ -194,4 +194,47 @@ class HelperTest extends CTestCase
             $this->assertEquals($expected, forward_static_call_array(array('Helper', 'lineLimit'), $args));
         }
     }
+
+    public function elementFinderProvider()
+    {
+        return array(
+            array('foo', array('foo', array('foo' => 'foo')) ),
+            array('foo', array('foo.bar', array('foo' => array('bar' => 'foo'))) ),
+            array('foo', array('foo.bar', array('foo' => array('bar' => 'foo')) ) ),
+            array(null, array('foo.bar', array('foo' => array('bar' => 'foo')), ':')),
+            array(null, array('foobar', array('foo' => array('bar' => 'foo'))) ),
+            array(array('car' => 'wilson'), array('foo.bar', array('foo' => array('bar' => array('car' => 'wilson')) ) )),
+            array('wilson', array('foo.bar.car', array('foo' => array('bar' => array('car' => 'wilson')) ) ) )
+        );
+    }
+
+    /**
+     * @dataProvider elementFinderProvider
+     * @param $expected
+     * @param $args
+     */
+    public function testElementFinder($expected, $args)
+    {
+        $this->assertEquals($expected, forward_static_call_array(array('Helper', 'elementFinder'), $args));
+        // we use the CAttributeCollection in places, so want to check it works with this as well
+        $collection = new CAttributeCollection($args[1]);
+        $args[1] = $collection;
+        $this->assertEquals($expected, forward_static_call_array(array('Helper', 'elementFinder'), $args));
+    }
+
+    public function test_md5Verified()
+    {
+        $random_string = '';
+        for ($i = 0; $i < 5; $i++) {
+            $random_string .= substr( md5(mt_rand()), 0, mt_rand(1,32));
+        }
+
+        $checksum = md5($random_string);
+
+        $pass_test = $random_string . $checksum;
+        $this->assertEquals($random_string, Helper::md5Verified($pass_test));
+        $fail_test = $random_string . 'a' . $checksum;
+        $this->assertNull(Helper::md5Verified($fail_test));
+    }
+
 }

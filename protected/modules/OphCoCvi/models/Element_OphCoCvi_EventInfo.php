@@ -26,6 +26,7 @@ namespace OEModule\OphCoCvi\models;
  * @property integer $is_draft
  * @property integer $generated_document_id
  * @property string last_modified_date
+ * @property integer $site_id
  *
  * The followings are the available model relations:
  *
@@ -35,6 +36,7 @@ namespace OEModule\OphCoCvi\models;
  * @property \User $user
  * @property \User $usermodified
  * @property \ProtectedFile $generated_document
+ * @property \Site
  * @property Element_OphCoCvi_ClinicalInfo $clinical_element
  * @property Element_OphCoCvi_ClericalInfo $clerical_element
  * @property Element_OphCoCvi_ConsentSignature $consent_element
@@ -99,8 +101,7 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
     public function rules()
     {
         return array(
-            array('event_id, is_draft, generated_document_id, ', 'safe'),
-            //array('is_draft', 'required'),
+            array('event_id, is_draft, generated_document_id, site_id', 'safe'),
             array('id, event_id, is_draft, generated_document_id, ', 'safe', 'on' => 'search'),
         );
     }
@@ -122,6 +123,7 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'generated_document' => array(self::BELONGS_TO, 'ProtectedFile', 'generated_document_id'),
+            'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
             // define duplicate event relations for elements to be eager loaded in the same call
             'clinical_event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'clinical_element' => array(
@@ -164,6 +166,7 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
             'event_id' => 'Event',
             'is_draft' => 'Is draft',
             'generated_document_id' => 'Generated file',
+            'site_id' => 'Site',
         );
     }
 

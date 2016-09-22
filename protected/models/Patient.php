@@ -665,7 +665,7 @@ class Patient extends BaseActiveRecordVersioned
 
         return $info;
     }
-
+    
     public function getGenderString()
     {
         switch ($this->gender) {

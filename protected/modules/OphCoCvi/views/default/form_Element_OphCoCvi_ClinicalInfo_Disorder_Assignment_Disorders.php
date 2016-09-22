@@ -11,18 +11,17 @@ foreach ($this->getDisorderSections() as $disorder_section) {
     ?>
     <hr/>
     <section class="js-toggle-container">
-    <div class="row">
-        <div class="large-4 column">
-            <h4><?= $disorder_section->name; ?></h4>
+
+        <div class="row">
+            <div class="large-11 column disorder-toggle js-toggle">
+                <h4><?= $disorder_section->name; ?></h4>
+                <a href="#" style="width:100% text-align: right" class="toggle-trigger <?= $is_open ? 'toggle-hide' : 'toggle-show' ?>">
+                    <span class="icon-showhide">
+                        Show/hide this section
+                    </span>
+                </a>
+            </div>
         </div>
-        <div class="large-1 large-push-6 column end">
-            <a href="#" class="toggle-trigger js-toggle <?= $is_open ? 'toggle-hide' : 'toggle-show' ?>">
-                <span class="icon-showhide">
-                    Show/hide this section
-                </span>
-            </a>
-        </div>
-    </div>
     <div class="js-toggle-body" style="<?=  $is_open ? 'display:block' : 'display:none' ?>">
     <?php if ($disorder_section->disorders) { ?>
         <div class="sub-element-fields element-eyes row">

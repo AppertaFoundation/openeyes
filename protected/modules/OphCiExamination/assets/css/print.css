@@ -1,4 +1,3 @@
-@charset "UTF-8";
 /**
  * OpenEyes
  *
@@ -82,6 +81,17 @@
   .event .metadata {
     padding: 10px 0;
     margin: 10px 0;
+  }
+}
+@media print {
+  /* line 73, ../../../../assets/sass/openeyes/components/print/_event.scss */
+  .container.content {
+    background: none;
+  }
+
+  /* line 74, ../../../../assets/sass/openeyes/components/print/_event.scss */
+  .metadata {
+    display: none;
   }
 }
 /* line 20, ../sass/print.scss */

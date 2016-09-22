@@ -62,6 +62,13 @@
                                     Subspecialty::model()->getList(),
                                     array('class' => 'filter-field', 'empty' => 'All specialties',))?>
                             </div>
+                            <div class="column large-4 text-right"><label for="site_id">Site:</label></div>
+                            <div class="column large-8">
+                                <?php echo CHtml::dropDownList('site_id',
+                                    (array_key_exists('site_id', $list_filter) ? $list_filter['site_id'] : null),
+                                    Site::model()->getListForCurrentInstitution(),
+                                    array('class' => 'filter-field', 'empty' => 'All sites',))?>
+                            </div>
                         </div>
                     </div>
 

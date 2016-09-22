@@ -32,12 +32,21 @@ $cols = array(
         'value' => '$data->event->episode->getSubspecialtyText()'
     ),
     array(
+        'id' => 'site',
+        'class' => 'CDataColumn',
+        'header' => $dp->getSort()->link('site', 'Site', array('class' => 'sort-link')),
+        'value' => '$data->site ? $data->site->name : "-"',
+    ),
+    array(
         'id' => 'patient_name',
         'class' => 'CLinkColumn',
         'header' => $dp->getSort()->link('patient_name', 'Name', array('class' => 'sort-link')),
         'urlExpression' => 'Yii::app()->createURL("/patient/view/", array("id" => $data->event->episode->patient_id))',
-        //'urlExpression' => '$this->grid->controller->getManager()->getEventViewUri($data->event)',
-        'labelExpression' => '$data->event->episode->patient->getHSCICName()',
+        'labelExpression' => '$data->event->episode->patient->getDisplayName() . " (" . $data->event->episode->patient->getAge() . "y)"',
+// this would be consistent with HSCIC guidance (minus the NHS Number)
+//        'labelExpression' => '$data->event->episode->patient->getHSCICName() . "<br /><span style=\"font-size: 0.8em\"><i>Born</i> " . ' .
+//            'Helper::convertMySQL2NHS($data->event->episode->patient->dob) . " (" . $data->event->episode->patient->getAge() . "y)</span>"',
+
     ),
     array(
         'id' => 'hosnum',
