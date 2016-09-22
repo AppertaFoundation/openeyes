@@ -88,11 +88,21 @@ class OphInBiometry_Imported_Events extends BaseActiveRecord
             'event_id' => 'Event',
             'patient_id' => 'Patient',
             'study_id' => 'Study ID',
-            'device_id' => 'Devide unique ID',
+            'device_id' => 'Device unique ID',
             'device_name' => 'Device name',
             'device_model' => 'Device model',
             'device_manufacturer' => 'Device manufacturer',
             'device_software_version' => 'Device software version',
         );
+    }
+
+    /**
+     * Is this from a IOL 700?
+     *
+     * @return bool
+     */
+    public function is700()
+    {
+        return $this->device_id === 'IOLMASTER700';
     }
 }
