@@ -125,12 +125,13 @@ class NodExportController extends BaseController
 
         $this->generateExport();
 
-        $this->createZipFile();
+        ##$this->createZipFile();
 
         if (file_exists($this->exportPath . '/' . $this->zipName)) {
             Yii::app()->getRequest()->sendFile($this->zipName, file_get_contents($this->exportPath . '/' . $this->zipName));
         } else {
         }
+        
     }
     
     /**
@@ -139,11 +140,14 @@ class NodExportController extends BaseController
     public function generateExport()
     {
 
+        // Concatinate sequence of statements to create and load working tables
         $query = $this->createAllTempTables();
         $query .= $this->populateAllTempTables();
 
+        // Execute all statements to create and populate working tables 
         Yii::app()->db->createCommand($query)->execute();
 
+        // Extract results from tables into csv files
         $this->getEpisodeDiabeticDiagnosis();
         $this->getEpisodeDrug();
         $this->getEpisodeBiometry();
@@ -171,7 +175,7 @@ class NodExportController extends BaseController
         // Write out extra description files
         $this->getExtraCsvs();
         
-        $this->clearAllTempTables();
+        ##$this->clearAllTempTables();
 
     }
 
@@ -514,25 +518,25 @@ EOL;
         $query = '';
         
         $query .= $this->populateTmpRcoNodMainEventEpisodes();
-        $query .= $this->populateTmpRcoNodPatients();
-        $query .= $this->populateTmpRcoNodEpisodePreOpAssessment();
-        $query .= $this->populateTmpRcoNodPatientCVIStatus();
-        $query .= $this->populateTmpRcoNodEpisodeRefraction();
-        $query .= $this->populateTmpRcoNodEpisodeDrug();
-        $query .= $this->populateTmpRcoNodEpisodeIOP();
-        $query .= $this->populateTmpRcoNodEpisodeBiometry();
-        $query .= $this->populateTmpRcoNodSurgeon();
-        $query .= $this->populateTmpRcoNodEpisodeDiabeticDiagnosis();
-        $query .= $this->populateTmpRcoNodPostOpComplication();
-        $query .= $this->populateTmpRcoNodEpisodeOperationCoPathology();
-        $query .= $this->populateTmpRcoNodEpisodeOperation();
-        $query .= $this->populateTmpRcoNodEpisodeTreatment();
-        $query .= $this->populateTmpRcoNodEpisodeTreatmentCataract();
-        $query .= $this->populateTmpRcoNodEpisodeOperationAnesthesia();
-        $query .= $this->populateTmpRcoNodEpisodeOperationIndication();
-        $query .= $this->populateTmpRcoNodEpisodeOperationComplication();
-        $query .= $this->populateTmpRcoNodEpisodeDiagnosis();
-        $query .= $this->populateTmpRcoNodEpisodeVisualAcuity();
+        ##$query .= $this->populateTmpRcoNodPatients();
+        ##$query .= $this->populateTmpRcoNodEpisodePreOpAssessment();
+        ##$query .= $this->populateTmpRcoNodPatientCVIStatus();
+        ##$query .= $this->populateTmpRcoNodEpisodeRefraction();
+        ##$query .= $this->populateTmpRcoNodEpisodeDrug();
+        ##$query .= $this->populateTmpRcoNodEpisodeIOP();
+        ##$query .= $this->populateTmpRcoNodEpisodeBiometry();
+        ##$query .= $this->populateTmpRcoNodSurgeon();
+        ##$query .= $this->populateTmpRcoNodEpisodeDiabeticDiagnosis();
+        ##$query .= $this->populateTmpRcoNodPostOpComplication();
+        ##$query .= $this->populateTmpRcoNodEpisodeOperationCoPathology();
+        ##$query .= $this->populateTmpRcoNodEpisodeOperation();
+        ##$query .= $this->populateTmpRcoNodEpisodeTreatment();
+        ##$query .= $this->populateTmpRcoNodEpisodeTreatmentCataract();
+        ##$query .= $this->populateTmpRcoNodEpisodeOperationAnesthesia();
+        ##$query .= $this->populateTmpRcoNodEpisodeOperationIndication();
+        ##$query .= $this->populateTmpRcoNodEpisodeOperationComplication();
+        ##$query .= $this->populateTmpRcoNodEpisodeDiagnosis();
+        ##$query .= $this->populateTmpRcoNodEpisodeVisualAcuity();
 
         return $query;
     }
@@ -914,6 +918,7 @@ EOL;
                 nod_episode_id int(10) NOT NULL,
                 nod_date date NOT NULL,
                 oe_event_type tinyint(2) NOT NULL,
+                nod_episode_seq int(10),
                 PRIMARY KEY (oe_event_id)
             );
 EOL;
@@ -932,34 +937,40 @@ EOL;
                     patient_id,
                     nod_episode_id,
                     nod_date,
-                    oe_event_type
+                    oe_event_type,
+                    nod_episode_seq
                 )
                 SELECT
                     event.id AS oe_event_id,
                     episode.patient_id AS patient_id,
                     event.id AS nod_episode_id,
                     DATE(event.event_date) AS nod_date,
-                    event_type_id AS oe_event_type
+                    event_type_id AS oe_event_type,
+                    1 AS nod_episode_seq
                 FROM event
                 JOIN episode ON event.episode_id = episode.id
                 JOIN event_type ON event.event_type_id = event_type.id AND event_type.name = 'Operation Note'
-                WHERE event.deleted = 0;
-                
-                
+                WHERE DATE(event.event_date) 
+                BETWEEN STR_TO_DATE('2015-09-01', '%Y-%m-%d') 
+                AND STR_TO_DATE('2016-08-31', '%Y-%m-%d')
+                AND event.deleted = 0;
+
                 #Load main control table with ALL examination events (using previously identified patients in control table)
                 INSERT INTO  tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} (
                                 oe_event_id,
                                 patient_id,
                                 nod_episode_id,
                                 nod_date,
-                                oe_event_type 
+                                oe_event_type,
+                                nod_episode_seq 
                 )
                 SELECT
                         event.id AS oe_event_id,
                         episode.patient_id AS patient_id,
                         event.id AS nod_episode_id,
                         DATE(event.event_date) AS nod_date,
-                        event.event_type_id AS oe_event_type
+                        event.event_type_id AS oe_event_type,
+                        1 AS nod_episode_seq
                 FROM event
                 JOIN episode ON event.episode_id = episode.id
                 WHERE  episode.patient_id IN (SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c)
