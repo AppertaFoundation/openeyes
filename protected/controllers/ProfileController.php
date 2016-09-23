@@ -33,12 +33,9 @@ class ProfileController extends BaseController
         if (!Yii::app()->params['profile_user_can_edit']) {
             $this->redirect('/');
         }
-
         Yii::app()->assetManager->registerCssFile('css/admin.css');
         Yii::app()->assetManager->registerScriptFile('js/profile.js');
-
         $this->jsVars['items_per_page'] = $this->items_per_page;
-
         return parent::beforeAction($action);
     }
 
@@ -52,11 +49,8 @@ class ProfileController extends BaseController
         if (!Yii::app()->params['profile_user_can_edit']) {
             $this->redirect(array('/profile/password'));
         }
-
         $errors = array();
-
         $user = User::model()->findByPk(Yii::app()->user->id);
-
         if (!empty($_POST)) {
             if (Yii::app()->params['profile_user_can_edit']) {
                 foreach (array('title', 'first_name', 'last_name', 'email', 'qualifications') as $field) {
@@ -71,7 +65,6 @@ class ProfileController extends BaseController
                 }
             }
         }
-
         $this->render('/profile/info', array(
             'user' => $user,
             'errors' => $errors,
@@ -83,11 +76,8 @@ class ProfileController extends BaseController
         if (!Yii::app()->params['profile_user_can_change_password']) {
             $this->redirect(array('/profile/sites'));
         }
-
         $errors = array();
-
         $user = User::model()->findByPk(Yii::app()->user->id);
-
         if (!empty($_POST)) {
             if (Yii::app()->params['profile_user_can_change_password']) {
                 if (empty($_POST['User']['password_old'])) {
@@ -117,12 +107,10 @@ class ProfileController extends BaseController
                     }
                 }
             }
-
             unset($_POST['User']['password_old']);
             unset($_POST['User']['password_new']);
             unset($_POST['User']['password_confirm']);
         }
-
         $this->render('/profile/password', array(
             'user' => $user,
             'errors' => $errors,
@@ -132,7 +120,6 @@ class ProfileController extends BaseController
     public function actionSites()
     {
         $user = User::model()->findByPk(Yii::app()->user->id);
-
         if (!empty($_POST['sites'])) {
             foreach ($_POST['sites'] as $site_id) {
                 if ($us = UserSite::model()->find('user_id=? and site_id=?', array($user->id, $site_id))) {
@@ -142,7 +129,6 @@ class ProfileController extends BaseController
                 }
             }
         }
-
         $this->render('/profile/sites', array(
             'user' => $user,
         ));
@@ -155,7 +141,6 @@ class ProfileController extends BaseController
         } else {
             $sites = Site::model()->findAllByPk(@$_POST['site_id']);
         }
-
         foreach ($sites as $site) {
             if (!$us = UserSite::model()->find('site_id=? and user_id=?', array($site->id, Yii::app()->user->id))) {
                 $us = new UserSite();
@@ -166,7 +151,6 @@ class ProfileController extends BaseController
                 }
             }
         }
-
         echo '1';
     }
 
@@ -176,7 +160,6 @@ class ProfileController extends BaseController
     public function actionFirms()
     {
         $user = User::model()->findByPk(Yii::app()->user->id);
-
         $this->render('/profile/firms', array(
             'user' => $user,
         ));
@@ -185,40 +168,36 @@ class ProfileController extends BaseController
 
     /**
      * Firm deletion from user profile
+     *
      * @throws Exception
      */
     public function actionDeleteFirms()
     {
         $user = User::model()->findByPk(Yii::app()->user->id);
-
+        $firm_transaction = Yii::app()->db->beginTransaction();
         if (!empty($_POST['firms'])) {
+
             foreach ($_POST['firms'] as $firm_id) {
-                $firm_transaction = Yii::app()->db->beginTransaction();
+
                 if ($uf = UserFirm::model()->find('user_id=? and firm_id=?', array($user->id, $firm_id))) {
                     if (!$uf->delete()) {
                         throw new Exception('Unable to delete UserFirm: '.print_r($uf->getErrors(), true));
-                    }
-                    else{
-                        $firm_transaction->commit();
                     }
                 }
             }
 
             if (!UserFirm::model()->find('user_id=?', array(Yii::app()->user->id))) {
-                $transaction = Yii::app()->db->beginTransaction();
                 $user = User::model()->findByPk(Yii::app()->user->id);
                 if ($user->has_selected_firms) {
                     $user->has_selected_firms = 0;
                     if (!$user->save()) {
                         throw new Exception('Unable to save user: '.print_r($user->getErrors(), true));
                     }
-                    else{
-                        $transaction->commit();
-                    }
                 }
             }
             echo "success";
         }
+        $firm_transaction->commit();
     }
 
     public function actionAddFirm()

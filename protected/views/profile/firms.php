@@ -29,14 +29,14 @@
 				</tr>
 			</thead>
 			<tbody>
-				<?php
-                foreach ($user->firmSelections as $i => $firm) {?>
-					<tr data-attr-id="<?php echo $firm->id?>">
-						<td><input type="checkbox" name="firms[]" value="<?php echo $firm->id?>" /></td>
-						<td><?php echo $firm->name?></td>
-						<td><?php echo $firm->subspecialtyText?></td>
-					</tr>
-				<?php }?>
+			<?php
+			foreach ($user->firmSelections as $i => $firm) {?>
+				<tr data-attr-id="<?php echo $firm->id?>">
+					<td><input type="checkbox" name="firms[]" value="<?php echo $firm->id?>" /></td>
+					<td><?php echo $firm->name?></td>
+					<td><?php echo $firm->subspecialtyText?></td>
+				</tr>
+			<?php }?>
 			</tbody>
 		</table>
 	</form>
@@ -88,12 +88,10 @@
 
 	$('#et_delete').click(function(e) {
 		e.preventDefault();
-
 		if ($('input[type="checkbox"][name="firms[]"]:checked').length <1) {
 			alert("Please select the firms you wish to delete.");
 			return;
 		}
-
 		$.ajax({
 			'type': 'POST',
 			'url': baseUrl+'/profile/deleteFirms',
@@ -112,7 +110,6 @@
 					content: "Sorry, There was an unexpected error deleting the firms, please try again or contact support for assistance."
 				}).open();
 			}
-
 		});
 	});
 
