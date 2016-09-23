@@ -23,8 +23,8 @@
   .mdl-card {
     min-height: 100px;
     width: 100%;
-    display: auto;
-    .mdl-card__title, .mdl-card--expand {
+    display: block;
+    .mdl-card__title {
       color: #fff;
       &.patient {
         background-color: rgb(63,81,181);
@@ -54,7 +54,7 @@
         dt {
           display: inline-block;
           min-width: 180px;
-          @media screen and (min-width: 700px){
+          @media screen and (max-width: 700px){
             width: 100%;
           }
         }
