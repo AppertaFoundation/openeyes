@@ -90,12 +90,10 @@
 
 	$('#et_delete').click(function(e) {
 		e.preventDefault();
-
 		if ($('input[type="checkbox"][name="sites[]"]:checked').length <1) {
 			alert("Please select the sites you wish to delete.");
 			return;
 		}
-
 		$.ajax({
 			'type': 'POST',
 			'url': baseUrl+'/profile/deleteSites',
@@ -114,7 +112,6 @@
 					content: "Sorry, There was an unexpected error deleting the sites, please try again or contact support for assistance."
 				}).open();
 			}
-
 		});
 	});
 

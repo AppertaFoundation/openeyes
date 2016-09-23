@@ -139,26 +139,24 @@ class ProfileController extends BaseController
 
     /**
      * Sites deletion from user profile
+     *
      * @throws Exception
      */
     public function actionDeleteSites()
     {
         $user = User::model()->findByPk(Yii::app()->user->id);
+        $transaction = Yii::app()->db->beginTransaction();
         if (!empty($_POST['sites'])) {
             foreach ($_POST['sites'] as $site_id) {
-                $transaction = Yii::app()->db->beginTransaction();
                 if ($us = UserSite::model()->find('user_id=? and site_id=?', array($user->id, $site_id))) {
                     if (!$us->delete()) {
                         throw new Exception('Unable to delete UserSite: '.print_r($us->getErrors(), true));
-                    }
-                    else
-                    {
-                        $transaction->commit();
                     }
                 }
             }
             echo 'success';
         }
+        $transaction->commit();
     }
 
     public function actionAddSite()
