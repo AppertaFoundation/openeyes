@@ -38,6 +38,11 @@ this.OpenEyes = this.OpenEyes || {};
       disagree: Dialog.disagree || "Cancel"
     });
 
+    //if the polyfil is available use it
+    if(window.hasOwnProperty('dialogPolyfill')){
+      dialogPolyfill.registerDialog(dialog);
+    }
+
     return dialog;
   }
 
@@ -50,12 +55,14 @@ this.OpenEyes = this.OpenEyes || {};
    * @param content
    */
   Dialog.init = function(container, trigger, title, content){
-    var dialog = render(title, content);
-    var close;
+    var dialog = render(title, content),
+      close,
+      accept,
+      i,
+      className = 'modaled';
 
     function handleTrigger(e){
-      var target = e.target,
-        className = 'modaled';
+      var target = e.target;
 
       if(target.className.indexOf(className) === -1){
         e.preventDefault();
@@ -71,14 +78,15 @@ this.OpenEyes = this.OpenEyes || {};
     }
 
     close = dialog.getElementsByClassName('close');
-    for(var i = 0; i < close.length; i++){
+    for(i = 0; i < close.length; i++){
       close[i].addEventListener('click', function(){
-        dialog.close()
+        trigger.classList.remove(className);
+        dialog.close();
       });
     }
 
     accept = dialog.getElementsByClassName('accept');
-    for(var i = 0; i < accept.length; i++){
+    for(i = 0; i < accept.length; i++){
       accept[i].addEventListener('click', function(){
         trigger.click();
       });
