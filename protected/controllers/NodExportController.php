@@ -172,8 +172,6 @@ class NodExportController extends BaseController
         $this->getPatientCviStatus();
         $this->getPatients();
         
-        // Write out extra description files
-        $this->getExtraCsvs();
         
         ##$this->clearAllTempTables();
 
@@ -3158,12 +3156,7 @@ EOL;
     
     /********** end of EpisodeVisualAcuity **********/
         
-    public function getExtraCsvs()
-    {
-
-Treatment
-    }
-    
+  
     
     
     /**
