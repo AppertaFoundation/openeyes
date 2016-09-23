@@ -562,27 +562,27 @@ EOL;
     {
         $cleanQuery = <<<EOL
                 
-                DROP TABLE IF EXISTS tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/;
-                DROP TABLE IF EXISTS tmp_rco_nod_patients_/*{$this->extractIdentifier}*/;
-                DROP TABLE IF EXISTS tmp_rco_nod_EpisodePreOpAssessment_/*{$this->extractIdentifier}*/;
-                DROP TABLE IF EXISTS tmp_rco_nod_PatientCVIStatus_/*{$this->extractIdentifier}*/;
-                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeRefraction_/*{$this->extractIdentifier}*/;
-                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeDrug_/*{$this->extractIdentifier}*/;
-                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeIOP_/*{$this->extractIdentifier}*/;
-                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeBiometry_/*{$this->extractIdentifier}*/;
-                DROP TABLE IF EXISTS tmp_rco_nod_Surgeon_/*{$this->extractIdentifier}*/;
-                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeDiabeticDiagnosis_/*{$this->extractIdentifier}*/;
-                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationCoPathology_/*{$this->extractIdentifier}*/;
-                DROP TABLE IF EXISTS tmp_rco_nod_EpisodePostOpComplication_/*{$this->extractIdentifier}*/;
-                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperation_/*{$this->extractIdentifier}*/;
-                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeTreatment_/*{$this->extractIdentifier}*/;
-                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeTreatmentCataract_/*{$this->extractIdentifier}*/;
-                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationAnesthesia_/*{$this->extractIdentifier}*/;
-                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationComplication_/*{$this->extractIdentifier}*/;
-                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationIndication_/*{$this->extractIdentifier}*/;
-                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeTreatment_/*{$this->extractIdentifier}*/;
-                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeVisualAcuity_/*{$this->extractIdentifier}*/;
-                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeDiagnoses_/*{$this->extractIdentifier}*/;
+                DROP TABLE IF EXISTS tmp_rco_nod_main_event_episodes_{$this->extractIdentifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_patients_{$this->extractIdentifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodePreOpAssessment_{$this->extractIdentifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_PatientCVIStatus_{$this->extractIdentifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeRefraction_{$this->extractIdentifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeDrug_{$this->extractIdentifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeIOP_{$this->extractIdentifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeBiometry_{$this->extractIdentifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_Surgeon_{$this->extractIdentifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeDiabeticDiagnosis_{$this->extractIdentifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationCoPathology_{$this->extractIdentifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodePostOpComplication_{$this->extractIdentifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeTreatment_{$this->extractIdentifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeTreatmentCataract_{$this->extractIdentifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationAnesthesia_{$this->extractIdentifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationComplication_{$this->extractIdentifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationIndication_{$this->extractIdentifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeTreatment_{$this->extractIdentifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeVisualAcuity_{$this->extractIdentifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeDiagnoses_{$this->extractIdentifier};
                 
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication;
                 DROP TEMPORARY TABLE IF EXISTS tmp_anesthesia_type;
@@ -611,8 +611,8 @@ EOL;
     private function createTmpRcoNodSurgeon()
     {
         $query = <<<EOL
-            DROP TABLE IF EXISTS tmp_rco_nod_Surgeon_/*{$this->extractIdentifier}*/;
-            CREATE TABLE tmp_rco_nod_Surgeon_/*{$this->extractIdentifier}*/ (
+            DROP TABLE IF EXISTS tmp_rco_nod_Surgeon_{$this->extractIdentifier};
+            CREATE TABLE tmp_rco_nod_Surgeon_{$this->extractIdentifier} (
                     Surgeonid INT(10) NOT NULL,
                     GMCnumber VARCHAR(250) DEFAULT NULL,
                     Title VARCHAR(40) NOT NULL,
@@ -635,7 +635,7 @@ EOL;
     private function populateTmpRcoNodSurgeon()
     {
         $query = <<<EOL
-            INSERT INTO tmp_rco_nod_Surgeon_/*{$this->extractIdentifier}*/ (
+            INSERT INTO tmp_rco_nod_Surgeon_{$this->extractIdentifier} (
                 Surgeonid,
                 GMCnumber,
                 Title,
@@ -660,7 +660,7 @@ EOL;
 
         $query = <<<EOL
                 SELECT * 
-                FROM tmp_rco_nod_Surgeon_/*{$this->extractIdentifier}*/
+                FROM tmp_rco_nod_Surgeon_{$this->extractIdentifier}
 EOL;
 
         $dataQuery = array(
@@ -683,8 +683,8 @@ EOL;
     private function createTmpRcoNodEpisodeDiabeticDiagnosis()
     {
         $query = <<<EOL
-            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeDiabeticDiagnosis_/*{$this->extractIdentifier}*/;
-            CREATE TABLE tmp_rco_nod_EpisodeDiabeticDiagnosis_/*{$this->extractIdentifier}*/ (
+            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeDiabeticDiagnosis_{$this->extractIdentifier};
+            CREATE TABLE tmp_rco_nod_EpisodeDiabeticDiagnosis_{$this->extractIdentifier} (
                 oe_event_id int(10) NOT NULL,
                 IsDiabetic char(1) DEFAULT NULL COMMENT '0 = no, 1 = yes',
                 DiabetesTypeId  VARCHAR(10),
@@ -701,7 +701,7 @@ EOL;
         $disorder_ids = implode(",", $disorder->descendentIds());
 
         $query = <<<EOL
-                    INSERT INTO tmp_rco_nod_EpisodeDiabeticDiagnosis_/*{$this->extractIdentifier}*/ (
+                    INSERT INTO tmp_rco_nod_EpisodeDiabeticDiagnosis_{$this->extractIdentifier} (
                         oe_event_id,
                         IsDiabetic,
                         DiabetesTypeId,
@@ -741,7 +741,7 @@ EOL;
 				END
                     )
 		    AS AgeAtDiagnosis
-            FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c
+            FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
             JOIN patient p ON c.patient_id = p.id
             JOIN secondary_diagnosis s ON s.patient_id = p.id
             JOIN disorder d ON d.id = s.disorder_id;
@@ -753,8 +753,8 @@ EOL;
     {
        $query = <<<EOL
                 SELECT c.nod_episode_id as EpisodeId, d.IsDiabetic, d.DiabetesTypeId, d.DiabetesRegimeId, d.AgeAtDiagnosis
-                FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c
-                JOIN tmp_rco_nod_EpisodeDiabeticDiagnosis_/*{$this->extractIdentifier}*/ d ON c.oe_event_id = d.oe_event_id
+                FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
+                JOIN tmp_rco_nod_EpisodeDiabeticDiagnosis_{$this->extractIdentifier} d ON c.oe_event_id = d.oe_event_id
 EOL;
 
 
@@ -777,13 +777,13 @@ EOL;
     /********** Patient **********/
     
     /**
-     * Create tmp_rco_nod_patients_/*{$this->extractIdentifier}*/ table
+     * Create tmp_rco_nod_patients_{$this->extractIdentifier} table
      */
     private function createTmpRcoNodPatients()
     {
         $query = <<<EOL
-            DROP TABLE IF EXISTS tmp_rco_nod_patients_/*{$this->extractIdentifier}*/;
-            CREATE TABLE tmp_rco_nod_patients_/*{$this->extractIdentifier}*/ (
+            DROP TABLE IF EXISTS tmp_rco_nod_patients_{$this->extractIdentifier};
+            CREATE TABLE tmp_rco_nod_patients_{$this->extractIdentifier} (
                 PatientId INT(10) NOT NULL,
                 GenderId TINYINT(1) NOT NULL,
                 EthnicityId VARCHAR(2) NOT NULL,
@@ -803,7 +803,7 @@ EOL;
     private function populateTmpRcoNodPatients()
     {
         $query = <<<EOL
-                INSERT INTO tmp_rco_nod_patients_/*{$this->extractIdentifier}*/ (
+                INSERT INTO tmp_rco_nod_patients_{$this->extractIdentifier} (
                     PatientId,
                     GenderId,
                     EthnicityId,
@@ -824,7 +824,7 @@ EOL;
                   WHERE p.id IN
                     (
                         SELECT DISTINCT(c.patient_id)
-                        FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c
+                        FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
                     ); 
 EOL;
         return $query;
@@ -838,7 +838,7 @@ EOL;
     {
         $query = <<<EOL
                 SELECT * 
-                FROM tmp_rco_nod_patients_/*{$this->extractIdentifier}*/
+                FROM tmp_rco_nod_patients_{$this->extractIdentifier}
 EOL;
         
         $dataQuery = array(
@@ -860,8 +860,8 @@ EOL;
     private function createTmpRcoNodPatientCVIStatus()
     {
         $query = <<<EOL
-            DROP TABLE IF EXISTS tmp_rco_nod_PatientCVIStatus_/*{$this->extractIdentifier}*/;
-            CREATE TABLE tmp_rco_nod_PatientCVIStatus_/*{$this->extractIdentifier}*/ (
+            DROP TABLE IF EXISTS tmp_rco_nod_PatientCVIStatus_{$this->extractIdentifier};
+            CREATE TABLE tmp_rco_nod_PatientCVIStatus_{$this->extractIdentifier} (
                 PatientId int(10) NOT NULL,
                 date date NOT NULL,
                 IsDateApprox tinyint(1) DEFAULT NULL,
@@ -879,7 +879,7 @@ EOL;
     private function populateTmpRcoNodPatientCVIStatus()
     {
         $query = <<<EOL
-                INSERT INTO tmp_rco_nod_PatientCVIStatus_/*{$this->extractIdentifier}*/ (
+                INSERT INTO tmp_rco_nod_PatientCVIStatus_{$this->extractIdentifier} (
                         PatientId,
                         date,
                         IsDateApprox,
@@ -897,7 +897,7 @@ EOL;
                 FROM patient_oph_info poi
 
                 /* Restriction: patients in control events */
-                WHERE poi.patient_id IN ( SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/  c );
+                WHERE poi.patient_id IN ( SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier}  c );
 EOL;
         return $query;
     }       
@@ -906,7 +906,7 @@ EOL;
     {
         $query = <<<EOL
                 SELECT *
-                FROM tmp_rco_nod_PatientCVIStatus_/*{$this->extractIdentifier}*/
+                FROM tmp_rco_nod_PatientCVIStatus_{$this->extractIdentifier}
 EOL;
                 
         $dataQuery = array(
@@ -929,8 +929,8 @@ EOL;
     {
         $query = <<<EOL
 
-DROP TABLE IF EXISTS tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/;
-CREATE TABLE tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ (
+DROP TABLE IF EXISTS tmp_rco_nod_main_event_episodes_{$this->extractIdentifier};
+CREATE TABLE tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} (
     oe_event_id int(10) NOT NULL,
     patient_id int(10) NOT NULL,
     nod_episode_id int(10) NOT NULL,
@@ -952,7 +952,7 @@ EOL;
         $query = <<<EOL
         
 # Load main control table with ALL operation events
-INSERT INTO tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ (
+INSERT INTO tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} (
   oe_event_id
 , patient_id
 , nod_episode_id
@@ -975,7 +975,7 @@ AND DATE(ev.event_date) BETWEEN STR_TO_DATE('2015-09-01', '%Y-%m-%d') AND STR_TO
 AND ev.deleted = 0;
 
 #Load main control table with ALL examination events (using previously identified patients in control table)
-INSERT INTO  tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ (
+INSERT INTO  tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} (
   oe_event_id
 , patient_id
 , nod_episode_id
@@ -993,7 +993,7 @@ SELECT
 FROM event ev
 JOIN episode ep ON ev.episode_id = ep.id
 JOIN event_type et ON ev.event_type_id = et.id 
-WHERE ep.patient_id IN (SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c)
+WHERE ep.patient_id IN (SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c)
 AND et.name IN ('Examination', 'Biometry', 'Prescription')
 AND ev.deleted = 0;
 
@@ -1006,7 +1006,7 @@ EOL;
     {
         $query = <<<EOL
                 SELECT c.patient_id as PatientId, c.nod_episode_id as EpisodeId, c.nod_date as Date
-                FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c
+                FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
 EOL;
         $dataQuery = array(
             'query' => $query,
@@ -1027,8 +1027,8 @@ EOL;
     private function createTmpRcoNodEpisodePreOpAssessment()
     {
         $query = <<<EOL
-            DROP TABLE IF EXISTS tmp_rco_nod_EpisodePreOpAssessment_/*{$this->extractIdentifier}*/;
-            CREATE TABLE tmp_rco_nod_EpisodePreOpAssessment_/*{$this->extractIdentifier}*/ (
+            DROP TABLE IF EXISTS tmp_rco_nod_EpisodePreOpAssessment_{$this->extractIdentifier};
+            CREATE TABLE tmp_rco_nod_EpisodePreOpAssessment_{$this->extractIdentifier} (
                 oe_event_id int(10) NOT NULL,
                 Eye char(1) NOT NULL COMMENT 'L / R',
                 IsAbleToLieFlat char(1) DEFAULT NULL COMMENT '0 = no, 1 = yes',
@@ -1043,7 +1043,7 @@ EOL;
     {
         $query = <<<EOL
                 
-INSERT INTO tmp_rco_nod_EpisodePreOpAssessment_/*{$this->extractIdentifier}*/ (
+INSERT INTO tmp_rco_nod_EpisodePreOpAssessment_{$this->extractIdentifier} (
   oe_event_id,
   Eye,
   IsAbleToLieFlat,
@@ -1055,7 +1055,7 @@ CASE WHEN pl.eye_id IN (1, 3) THEN 'L' ELSE NULL END AS Eye, /* Belt+Brace with 
 (SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 1 THEN 1 ELSE 0 END) AS IsAbleToLieFlat,
 (SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 4 THEN 1 ELSE 0 END) AS IsInabilityToCooperate
 /* Restriction: Start with control events */
-FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c 
+FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c 
 /* Join: Associated procedures, Implicit Restriction: Operations with procedures */
 JOIN et_ophtroperationnote_procedurelist pl ON pl.event_id = c.oe_event_id
 /* Outer Join: patient risks, Implicit Cartesian: all risk_ids  */
@@ -1066,7 +1066,7 @@ WHERE pl.eye_id IN (1, 3)
 GROUP BY oe_event_id, Eye, IsAbleToLieFlat, IsInabilityToCooperate;
                 
                 
-INSERT INTO tmp_rco_nod_EpisodePreOpAssessment_/*{$this->extractIdentifier}*/ (
+INSERT INTO tmp_rco_nod_EpisodePreOpAssessment_{$this->extractIdentifier} (
   oe_event_id,
   Eye,
   IsAbleToLieFlat,
@@ -1078,7 +1078,7 @@ CASE WHEN pl.eye_id IN (2, 3) THEN 'R' ELSE NULL END AS Eye, /* Belt+Brace with 
 (SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 1 THEN 1 ELSE 0 END) AS IsAbleToLieFlat,
 (SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 4 THEN 1 ELSE 0 END) AS IsInabilityToCooperate
 /* Restriction: Start with control events */
-FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c 
+FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c 
 /* Join: Associated procedures, Implicit Restriction: Operations with procedures */
 JOIN et_ophtroperationnote_procedurelist pl ON pl.event_id = c.oe_event_id
 /* Outer Join: patient risks, Implicit Cartesian: all risk_ids  */
@@ -1096,8 +1096,8 @@ EOL;
 
         $query = <<<EOL
                 SELECT c.nod_episode_id as EpisodeId, p.Eye, p.isAbleToLieFlat, p.IsInabilityToCooperate
-                FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c
-                JOIN tmp_rco_nod_EpisodePreOpAssessment_/*{$this->extractIdentifier}*/ p ON c.oe_event_id = p.oe_event_id
+                FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
+                JOIN tmp_rco_nod_EpisodePreOpAssessment_{$this->extractIdentifier} p ON c.oe_event_id = p.oe_event_id
 EOL;
 
         $dataQuery = array(
@@ -1119,8 +1119,8 @@ EOL;
     private function createTmpRcoNodEpisodeRefraction()
     {
         $query = <<<EOL
-                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeRefraction_/*{$this->extractIdentifier}*/;
-                CREATE TABLE tmp_rco_nod_EpisodeRefraction_/*{$this->extractIdentifier}*/ (
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeRefraction_{$this->extractIdentifier};
+                CREATE TABLE tmp_rco_nod_EpisodeRefraction_{$this->extractIdentifier} (
                     oe_event_id INT(10) NOT NULL,
                     Eye CHAR(1) NOT NULL,
                     RefractionTypeId CHAR(1) DEFAULT NULL,
@@ -1139,7 +1139,7 @@ EOL;
     private function populateTmpRcoNodEpisodeRefraction()
     {
         $query = <<<EOL
-                INSERT INTO tmp_rco_nod_EpisodeRefraction_/*{$this->extractIdentifier}*/ (
+                INSERT INTO tmp_rco_nod_EpisodeRefraction_{$this->extractIdentifier} (
                     oe_event_id,
                     Eye,
                     RefractionTypeId,
@@ -1158,14 +1158,14 @@ EOL;
                       '' AS ReadingAdd
                 
                 /* Restriction: Start with control events */
-                FROM  tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c
+                FROM  tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
                 JOIN et_ophciexamination_refraction r ON r.event_id = c.oe_event_id
                 
                 /* Restrict: LEFT/BOTH eyes */
                 WHERE r.eye_id IN (1,3);
                 
                 
-                INSERT INTO tmp_rco_nod_EpisodeRefraction_/*{$this->extractIdentifier}*/ (
+                INSERT INTO tmp_rco_nod_EpisodeRefraction_{$this->extractIdentifier} (
                     oe_event_id,
                     Eye,
                     RefractionTypeId,
@@ -1184,7 +1184,7 @@ EOL;
                       '' AS ReadingAdd
                 
                 /* Restriction: Start with control events */
-                FROM  tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c
+                FROM  tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
                 JOIN et_ophciexamination_refraction r ON r.event_id = c.oe_event_id
                 
                 /* Restrict: RIGHT/BOTH eyes */
@@ -1199,8 +1199,8 @@ EOL;
     {
         $query = <<<EOL
                 SELECT c.nod_episode_id as EpisodeId, r.Eye, r.RefractionTypeId, r.Sphere, r.Cylinder, r.Axis, r.ReadingAdd
-                FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c
-                JOIN tmp_rco_nod_EpisodeRefraction_/*{$this->extractIdentifier}*/ r ON c.oe_event_id = r.oe_event_id
+                FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
+                JOIN tmp_rco_nod_EpisodeRefraction_{$this->extractIdentifier} r ON c.oe_event_id = r.oe_event_id
 EOL;
         $dataQuery = array(
             'query' => $query,
@@ -1220,8 +1220,8 @@ EOL;
     private function createTmpRcoNodEpisodeDiagnosis()
     {
         $query = <<<EOL
-            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeDiagnoses_/*{$this->extractIdentifier}*/;
-            CREATE TABLE tmp_rco_nod_EpisodeDiagnoses_/*{$this->extractIdentifier}*/ (
+            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeDiagnoses_{$this->extractIdentifier};
+            CREATE TABLE tmp_rco_nod_EpisodeDiagnoses_{$this->extractIdentifier} (
                 oe_event_id INT(10) NOT NULL,
                 Eye CHAR(1) NOT NULL,
                 Date DATE DEFAULT NULL,
@@ -1239,7 +1239,7 @@ EOL;
     private function populateTmpRcoNodEpisodeDiagnosis()
     {
         $query = <<<EOL
-            INSERT INTO tmp_rco_nod_EpisodeDiagnoses_/*{$this->extractIdentifier}*/ (
+            INSERT INTO tmp_rco_nod_EpisodeDiagnoses_{$this->extractIdentifier} (
                 oe_event_id,
                 Eye,
                 Date,
@@ -1288,7 +1288,7 @@ EOL;
                 ) AS ConditionId
               , IFNULL(disorder_id, '') AS DiagnosisTermId
               , IFNULL(d.term, '') AS DiagnosisTermDescription
-              FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c
+              FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
               JOIN event e
                 ON e.id = c.oe_event_id
               LEFT OUTER JOIN episode ep
@@ -1306,8 +1306,8 @@ EOL;
     {
         $query = <<<EOL
                 SELECT c.nod_episode_id as EpisodeId, d.Eye, d.Date, d.SurgeonId, d.ConditionId, d.DiagnosisTermId, d.DiagnosisTermDescription
-                FROM tmp_rco_nod_EpisodeDiagnoses_/*{$this->extractIdentifier}*/ d
-                JOIN tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c ON d.oe_event_id = c.oe_event_id
+                FROM tmp_rco_nod_EpisodeDiagnoses_{$this->extractIdentifier} d
+                JOIN tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c ON d.oe_event_id = c.oe_event_id
                 
 EOL;
         $dataQuery = array(
@@ -1332,8 +1332,8 @@ EOL;
     {
         
         $query = <<<EOL
-                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeDrug_/*{$this->extractIdentifier}*/;
-                CREATE TABLE tmp_rco_nod_EpisodeDrug_/*{$this->extractIdentifier}*/ (
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeDrug_{$this->extractIdentifier};
+                CREATE TABLE tmp_rco_nod_EpisodeDrug_{$this->extractIdentifier} (
                         oe_event_id INT(10) NOT NULL,
                         Eye CHAR(1) NOT NULL,
                         DrugId VARCHAR(150) DEFAULT NULL, 
@@ -1352,7 +1352,7 @@ EOL;
     private function populateTmpRcoNodEpisodeDrug()
     {
         $query = <<<EOL
-                INSERT INTO tmp_rco_nod_EpisodeDrug_/*{$this->extractIdentifier}*/ (
+                INSERT INTO tmp_rco_nod_EpisodeDrug_{$this->extractIdentifier} (
                     oe_event_id,
                     Eye,
                     DrugId,
@@ -1382,13 +1382,13 @@ EOL;
                         (SELECT CASE WHEN opi.continue_by_gp IS NULL THEN 0 ELSE opi.continue_by_gp END) AS IsContinueIndefinitely,
                         (SELECT CASE WHEN DAYNAME(m.start_date) IS NULL THEN 1 ELSE 0 END) AS IsStartDateApprox
 
-                    FROM  tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c 
+                    FROM  tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c 
                     JOIN medication m ON c.patient_id = m.patient_id
                     LEFT JOIN ophdrprescription_item opi ON m.prescription_item_id = opi.id;
                 
                 
   
-                INSERT INTO tmp_rco_nod_EpisodeDrug_/*{$this->extractIdentifier}*/ (
+                INSERT INTO tmp_rco_nod_EpisodeDrug_{$this->extractIdentifier} (
                     oe_event_id,
                     Eye,
                     DrugId,
@@ -1432,7 +1432,7 @@ EOL;
                     FROM ophdrprescription_item AS opi
                     JOIN et_ophdrprescription_details ON opi.prescription_id = et_ophdrprescription_details.id
 
-                    JOIN tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c ON et_ophdrprescription_details.event_id = c.oe_event_id
+                    JOIN tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c ON et_ophdrprescription_details.event_id = c.oe_event_id
                     JOIN event ON c.oe_event_id = event.id
 
                     JOIN drug ON opi.drug_id = drug.id
@@ -1448,8 +1448,8 @@ EOL;
     {
         $query = <<<EOL
                 SELECT c.nod_episode_id as EpisodeId, d.Eye, d.DrugId, d.DrugRouteId, d.StartDate, d.StopDate, d.IsAddedByPrescription, d.IsContinueIndefinitely, d.IsStartDateApprox
-                FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c
-                JOIN tmp_rco_nod_EpisodeDrug_/*{$this->extractIdentifier}*/ d ON c.oe_event_id = d.oe_event_id
+                FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
+                JOIN tmp_rco_nod_EpisodeDrug_{$this->extractIdentifier} d ON c.oe_event_id = d.oe_event_id
 EOL;
         $dataQuery = array(
             'query' => $query,
@@ -1475,8 +1475,8 @@ EOL;
     {
         
         $query = <<<EOL
-            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeBiometry_/*{$this->extractIdentifier}*/;
-            CREATE TABLE tmp_rco_nod_EpisodeBiometry_/*{$this->extractIdentifier}*/ (
+            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeBiometry_{$this->extractIdentifier};
+            CREATE TABLE tmp_rco_nod_EpisodeBiometry_{$this->extractIdentifier} (
                     oe_event_id INT(10) NOT NULL,
                     Eye CHAR(1) NOT NULL,
                     AxialLength DECIMAL(6,2) DEFAULT NULL, 
@@ -1498,7 +1498,7 @@ EOL;
     private function populateTmpRcoNodEpisodeBiometry()
     {
         $query = <<<EOL
-                INSERT INTO tmp_rco_nod_EpisodeBiometry_/*{$this->extractIdentifier}*/ (
+                INSERT INTO tmp_rco_nod_EpisodeBiometry_{$this->extractIdentifier} (
                     oe_event_id,
                     Eye,
                     AxialLength,
@@ -1535,7 +1535,7 @@ EOL;
                     ms.acd_left AS ACDepth,
                     ms.snr_left AS SNR
 		
-                FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c
+                FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
 
                 JOIN et_ophinbiometry_measurement ms ON c.oe_event_id = ms.event_id
 
@@ -1551,7 +1551,7 @@ EOL;
                 
                 
                 
-                INSERT INTO tmp_rco_nod_EpisodeBiometry_/*{$this->extractIdentifier}*/ (
+                INSERT INTO tmp_rco_nod_EpisodeBiometry_{$this->extractIdentifier} (
                     oe_event_id,
                     Eye,
                     AxialLength,
@@ -1583,7 +1583,7 @@ EOL;
                     ms.acd_left AS ACDepth,
                     ms.snr_left AS SNR
 
-                FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c
+                FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
 
                 JOIN et_ophinbiometry_measurement ms ON c.oe_event_id = ms.event_id
 
@@ -1617,8 +1617,8 @@ EOL;
                     b.AxisK2,
                     b.ACDepth,
                     b.SNR
-            FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c
-            JOIN tmp_rco_nod_EpisodeBiometry_/*{$this->extractIdentifier}*/ b ON c.oe_event_id = b.oe_event_id
+            FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
+            JOIN tmp_rco_nod_EpisodeBiometry_{$this->extractIdentifier} b ON c.oe_event_id = b.oe_event_id
 EOL;
         
         $dataQuery = array(
@@ -1662,8 +1662,8 @@ EOL;
     {
         
         $query = <<<EOL
-            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeIOP_/*{$this->extractIdentifier}*/;
-            CREATE TABLE tmp_rco_nod_EpisodeIOP_/*{$this->extractIdentifier}*/ (
+            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeIOP_{$this->extractIdentifier};
+            CREATE TABLE tmp_rco_nod_EpisodeIOP_{$this->extractIdentifier} (
                 oe_event_id INT(10) NOT NULL,
                 Eye CHAR(1) NOT NULL,
                 type CHAR(1) DEFAULT NULL, 
@@ -1681,7 +1681,7 @@ EOL;
     private function populateTmpRcoNodEpisodeIOP()
     {
         $query = <<<EOL
-            INSERT INTO tmp_rco_nod_EpisodeIOP_/*{$this->extractIdentifier}*/ (
+            INSERT INTO tmp_rco_nod_EpisodeIOP_{$this->extractIdentifier} (
                 oe_event_id,
                 Eye,
                 Type,
@@ -1695,7 +1695,7 @@ EOL;
                 9 AS GlaucomaMedicationStatusId,
                 (oipvr.value + 0.0) AS VALUE
 
-                FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c
+                FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
 
                 JOIN et_ophciexamination_intraocularpressure etoi ON etoi.event_id = c.oe_event_id
                 JOIN ophciexamination_intraocularpressure_value oipv ON oipv.element_id = etoi.id
@@ -1705,7 +1705,7 @@ EOL;
                 WHERE oipv.eye_id IN (1,3);
             
             	
-            INSERT INTO tmp_rco_nod_EpisodeIOP_/*{$this->extractIdentifier}*/ (
+            INSERT INTO tmp_rco_nod_EpisodeIOP_{$this->extractIdentifier} (
                 oe_event_id,
                 Eye,
                 Type,
@@ -1718,7 +1718,7 @@ EOL;
                     9 AS GlaucomaMedicationStatusId,
                     (oipvr.value + 0.0) AS VALUE
 
-                    FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c
+                    FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
                     JOIN et_ophciexamination_intraocularpressure etoi ON etoi.event_id = c.oe_event_id
                     JOIN ophciexamination_intraocularpressure_value oipv ON oipv.element_id = etoi.id
                     JOIN ophciexamination_intraocularpressure_reading oipvr ON oipv.reading_id = oipvr.id
@@ -1734,8 +1734,8 @@ EOL;
     {
         $query = <<<EOL
                 SELECT  c.nod_episode_id as EpisodeId, iop.Eye, iop.Type, iop.GlaucomaMedicationStatusId, iop.Value
-                FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c
-                JOIN tmp_rco_nod_EpisodeIOP_/*{$this->extractIdentifier}*/ iop ON c.oe_event_id = iop.oe_event_id
+                FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
+                JOIN tmp_rco_nod_EpisodeIOP_{$this->extractIdentifier} iop ON c.oe_event_id = iop.oe_event_id
 EOL;
 
         $dataQuery = array(
@@ -1780,8 +1780,8 @@ EOL;
     private function createTmpRcoNodPostOpComplication()
     {
         $query = <<<EOL
-            DROP TABLE IF EXISTS tmp_rco_nod_EpisodePostOpComplication_/*{$this->extractIdentifier}*/;
-            CREATE TABLE tmp_rco_nod_EpisodePostOpComplication_/*{$this->extractIdentifier}*/ (
+            DROP TABLE IF EXISTS tmp_rco_nod_EpisodePostOpComplication_{$this->extractIdentifier};
+            CREATE TABLE tmp_rco_nod_EpisodePostOpComplication_{$this->extractIdentifier} (
                     oe_event_id INT(10) NOT NULL,
                     OperationId INT(10) NOT NULL,
                     Eye CHAR(1) NOT NULL,
@@ -1795,7 +1795,7 @@ EOL;
     private function populateTmpRcoNodPostOpComplication()
     {
         $query = <<<EOL
-            INSERT INTO tmp_rco_nod_EpisodePostOpComplication_/*{$this->extractIdentifier}*/ (
+            INSERT INTO tmp_rco_nod_EpisodePostOpComplication_{$this->extractIdentifier} (
                 oe_event_id,
                 OperationId,
                 Eye,
@@ -1823,7 +1823,7 @@ EOL;
                 , 'L' AS Eye
                 , poc.code AS ComplicationTypeId
                 , poc.name AS ComplicationTypeDescription
-                FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c
+                FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
                 JOIN et_ophciexamination_postop_complications epoc
                     ON epoc.event_id = c.oe_event_id
                 JOIN ophciexamination_postop_et_complications epoce
@@ -1858,7 +1858,7 @@ EOL;
                 , 'R' AS Eye
                 , poc.code AS ComplicationTypeId
                 , poc.name AS ComplicationTypeDescription
-                FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c
+                FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
                 JOIN et_ophciexamination_postop_complications epoc
                     ON epoc.event_id = c.oe_event_id
                 JOIN ophciexamination_postop_et_complications epoce
@@ -1879,8 +1879,8 @@ EOL;
 
         $query = <<<EOL
                 SELECT c.nod_episode_id as EpisodeId, c.oe_event_id as OperationId, p.Eye, p.ComplicationTypeId
-                FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c
-                JOIN tmp_rco_nod_EpisodePostOpComplication_/*{$this->extractIdentifier}*/ p ON c.oe_event_id = p.oe_event_id
+                FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
+                JOIN tmp_rco_nod_EpisodePostOpComplication_{$this->extractIdentifier} p ON c.oe_event_id = p.oe_event_id
 
 EOL;
         $dataQuery = array(
@@ -1904,8 +1904,8 @@ EOL;
     private function createTmpRcoNodEpisodeOperationCoPathology()
     {
         $query = <<<EOL
-            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationCoPathology_/*{$this->extractIdentifier}*/;
-            CREATE TABLE tmp_rco_nod_EpisodeOperationCoPathology_/*{$this->extractIdentifier}*/ (
+            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationCoPathology_{$this->extractIdentifier};
+            CREATE TABLE tmp_rco_nod_EpisodeOperationCoPathology_{$this->extractIdentifier} (
                 oe_event_id INT(10) NOT NULL,
                 Eye CHAR(1) NOT NULL,
                 CoPathologyId INT(10) DEFAULT NULL
@@ -1918,7 +1918,7 @@ EOL;
     {
         $query = <<<EOL
 
-INSERT INTO tmp_rco_nod_EpisodeOperationCoPathology_/*{$this->extractIdentifier}*/ (
+INSERT INTO tmp_rco_nod_EpisodeOperationCoPathology_{$this->extractIdentifier} (
   oe_event_id
 , Eye
 , CoPathologyId
@@ -1929,7 +1929,7 @@ SELECT
 , CASE WHEN edl.eye_id IN (1, 3) THEN 'L' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
 , np.nod_id AS CoPathologyId
 /* Start from the operation note being reported */ 
-FROM tmp_rco_nod_EpisodeOperation_/*{$this->extractIdentifier}*/ op
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
 /* Join: all OE_epispodes relating to patient */
 JOIN episode ep
   ON ep.patient_id = op.patient_id
@@ -1956,7 +1956,7 @@ SELECT
 , CASE WHEN edl.eye_id IN (2, 3) THEN 'R' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
 , np.nod_id AS CoPathologyId
 /* Start from the operation note being reported */ 
-FROM tmp_rco_nod_EpisodeOperation_/*{$this->extractIdentifier}*/ op
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
 /* Join: all OE_epispodes relating to patient */
 JOIN episode ep
   ON ep.patient_id = op.patient_id
@@ -1983,7 +1983,7 @@ SELECT
 , CASE WHEN pl.eye_id IN (1, 3) THEN 'L' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
 , np.nod_id AS CoPathologyId
 /* Start from the operation note being reported */ 
-FROM tmp_rco_nod_EpisodeOperation_/*{$this->extractIdentifier}*/ op
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
 /* Join: Look up PROCEDURE_LIST (containers)  */
 /* Cardinality: On investigation et_ophtroperationnote_procedurelist is a logical bucket for procedures on the */
 /* on the LEFT Eye or the RIGHT Eye. Therefore if procedures were carried our on both eyes then */
@@ -2005,7 +2005,7 @@ SELECT
 , CASE WHEN pl.eye_id IN (2, 3) THEN 'R' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
 , np.nod_id AS CoPathologyId
 /* Start from the operation note being reported */ 
-FROM tmp_rco_nod_EpisodeOperation_/*{$this->extractIdentifier}*/ op
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
 /* Join: Look up PROCEDURE_LIST (containers)  */
 /* Cardinality: On investigation et_ophtroperationnote_procedurelist is a logical bucket for procedures on the */
 /* on the LEFT Eye or the RIGHT Eye. Therefore if procedures were carried our on both eyes then */
@@ -2027,7 +2027,7 @@ SELECT
 , CASE WHEN ep.eye_id IN (1, 3) THEN 'L' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
 , np.nod_id AS CoPathologyId
 /* Start from the operation note being reported */ 
-FROM tmp_rco_nod_EpisodeOperation_/*{$this->extractIdentifier}*/ op
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
 /* Lookup: Event for this operation */
 JOIN event ev
   ON ev.id = op.oe_event_id
@@ -2048,7 +2048,7 @@ SELECT
 , CASE WHEN ep.eye_id IN (2, 3) THEN 'R' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
 , np.nod_id AS CoPathologyId
 /* Start from the operation note being reported */ 
-FROM tmp_rco_nod_EpisodeOperation_/*{$this->extractIdentifier}*/ op
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
 /* Lookup: Event for this operation */
 JOIN event ev
   ON ev.id = op.oe_event_id
@@ -2069,7 +2069,7 @@ SELECT
 , CASE WHEN sd.eye_id IN (1, 3) OR sd.eye_id IS NULL THEN 'L' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
 , np.nod_id AS CoPathologyId
 /* Start from the operation note being reported */ 
-FROM tmp_rco_nod_EpisodeOperation_/*{$this->extractIdentifier}*/ op
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
 /* Lookup: Other Opthalmic + Systemic Diagnoses (eye_id=null) */
 JOIN secondary_diagnosis sd
   ON sd.patient_id = op.patient_id
@@ -2085,7 +2085,7 @@ SELECT
 , CASE WHEN sd.eye_id IN (2, 3) OR sd.eye_id IS NULL THEN 'R' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
 , np.nod_id AS CoPathologyId
 /* Start from the operation note being reported */ 
-FROM tmp_rco_nod_EpisodeOperation_/*{$this->extractIdentifier}*/ op
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
 /* Lookup: Other Opthalmic + Systemic Diagnoses (eye_id=null) */
 JOIN secondary_diagnosis sd
   ON sd.patient_id = op.patient_id
@@ -2101,7 +2101,7 @@ SELECT
 , 'L' AS Eye 
 , np.nod_id AS CoPathologyId
 /* Start from the operation note being reported */ 
-FROM tmp_rco_nod_EpisodeOperation_/*{$this->extractIdentifier}*/ op
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
 /* Join: all OE_epispodes relating to patient */
 JOIN episode ep
   ON ep.patient_id = op.patient_id
@@ -2123,7 +2123,7 @@ SELECT
 , 'L' AS Eye 
 , np.nod_id AS CoPathologyId
 /* Start from the operation note being reported */ 
-FROM tmp_rco_nod_EpisodeOperation_/*{$this->extractIdentifier}*/ op
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
 /* Join: all OE_epispodes relating to patient */
 JOIN episode ep
   ON ep.patient_id = op.patient_id
@@ -2145,7 +2145,7 @@ SELECT
 , 'R' AS Eye 
 , np.nod_id AS CoPathologyId
 /* Start from the operation note being reported */ 
-FROM tmp_rco_nod_EpisodeOperation_/*{$this->extractIdentifier}*/ op
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
 /* Join: all OE_epispodes relating to patient */
 JOIN episode ep
   ON ep.patient_id = op.patient_id
@@ -2167,7 +2167,7 @@ SELECT
 , 'R' AS Eye 
 , np.nod_id AS CoPathologyId
 /* Start from the operation note being reported */ 
-FROM tmp_rco_nod_EpisodeOperation_/*{$this->extractIdentifier}*/ op
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
 /* Join: all OE_epispodes relating to patient */
 JOIN episode ep
   ON ep.patient_id = op.patient_id
@@ -2188,7 +2188,7 @@ SELECT
   c.oe_event_id AS OperationId
 , CASE WHEN proc_list.eye_id IN (1, 3) THEN 'L' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
 , IF(element_type.name = 'Trabeculectomy', 25, 23)  AS CoPathologyId
-FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c
+FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
 JOIN et_ophtroperationnote_procedurelist AS proc_list ON proc_list.event_id = c.oe_event_id
 JOIN ophtroperationnote_procedurelist_procedure_assignment AS proc_list_asgn ON proc_list_asgn.procedurelist_id = proc_list.id
 JOIN proc ON proc_list_asgn.proc_id = proc.id
@@ -2203,7 +2203,7 @@ SELECT
   c.oe_event_id AS OperationId
 , CASE WHEN proc_list.eye_id IN (2, 3) THEN 'R' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
 , IF(element_type.name = 'Trabeculectomy', 25, 23)  AS CoPathologyId
-FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c
+FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
 JOIN et_ophtroperationnote_procedurelist AS proc_list ON proc_list.event_id = c.oe_event_id
 JOIN ophtroperationnote_procedurelist_procedure_assignment AS proc_list_asgn ON proc_list_asgn.procedurelist_id = proc_list.id
 JOIN proc ON proc_list_asgn.proc_id = proc.id
@@ -2218,7 +2218,7 @@ SELECT
   c.oe_event_id AS OperationId
 , CASE WHEN proc_list.eye_id IN (1, 3) THEN 'L' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
 , 21 AS CoPathologyId
-FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c
+FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
 JOIN et_ophtroperationnote_procedurelist AS proc_list ON proc_list.event_id = c.oe_event_id
 JOIN ophtroperationnote_procedurelist_procedure_assignment AS proc_list_asgn ON proc_list_asgn.procedurelist_id = proc_list.id
 JOIN proc ON proc_list_asgn.proc_id = proc.id
@@ -2233,7 +2233,7 @@ SELECT
   c.oe_event_id AS OperationId
 , CASE WHEN proc_list.eye_id IN (2, 3) THEN 'R' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
 , 21 AS CoPathologyId
-FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c
+FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
 JOIN et_ophtroperationnote_procedurelist AS proc_list ON proc_list.event_id = c.oe_event_id
 JOIN ophtroperationnote_procedurelist_procedure_assignment AS proc_list_asgn ON proc_list_asgn.procedurelist_id = proc_list.id
 JOIN proc ON proc_list_asgn.proc_id = proc.id
@@ -2248,7 +2248,7 @@ SELECT
   c.oe_event_id
 , 'L' AS Eye
 , 14 AS CoPathologyId
-FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c
+FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
 JOIN et_ophciexamination_anteriorsegment a
   ON a.event_id = c.oe_event_id
 WHERE (left_cortical_id = 4 OR left_nuclear_id = 4)
@@ -2258,7 +2258,7 @@ SELECT
   c.oe_event_id
 , 'R' AS Eye
 , 14 AS CoPathologyId
-FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c
+FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
 JOIN et_ophciexamination_anteriorsegment a
   ON a.event_id = c.oe_event_id
 WHERE (right_cortical_id = 4 OR right_nuclear_id = 4);
@@ -2276,7 +2276,7 @@ EOL;
 
         $query = <<<EOL
                 SELECT p.oe_event_id as OperationId, p.Eye, p.CoPathologyId
-                FROM tmp_rco_nod_EpisodeOperationCoPathology_/*{$this->extractIdentifier}*/ p 
+                FROM tmp_rco_nod_EpisodeOperationCoPathology_{$this->extractIdentifier} p 
 
 EOL;
         $dataQuery = array(
@@ -2300,8 +2300,8 @@ EOL;
     private function createTmpRcoNodEpisodeTreatmentCataract()
     {
         $query = <<<EOL
-            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeTreatmentCataract_/*{$this->extractIdentifier}*/;
-            CREATE TABLE tmp_rco_nod_EpisodeTreatmentCataract_/*{$this->extractIdentifier}*/ (
+            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeTreatmentCataract_{$this->extractIdentifier};
+            CREATE TABLE tmp_rco_nod_EpisodeTreatmentCataract_{$this->extractIdentifier} (
                 oe_event_id int(10) NOT NULL,
                 TreatmentId int(10) NOT NULL,
                 IsFirstEye tinyint(1) NOT NULL,
@@ -2324,7 +2324,7 @@ EOL;
     private function populateTmpRcoNodEpisodeTreatmentCataract()
     {
         $query = <<<EOL
-            INSERT INTO tmp_rco_nod_EpisodeTreatmentCataract_/*{$this->extractIdentifier}*/ (
+            INSERT INTO tmp_rco_nod_EpisodeTreatmentCataract_{$this->extractIdentifier} (
                 oe_event_id,
                 TreatmentId,
                 IsFirstEye,
@@ -2405,7 +2405,7 @@ EOL;
                 , oc.predicted_refraction AS PredictedPostOperativeRefraction
                 , '' AS WoundClosureId
             /* Restriction: Start with treatment records (processed previously), seeded from control events */
-            FROM tmp_rco_nod_EpisodeTreatment_/*{$this->extractIdentifier}*/ ct
+            FROM tmp_rco_nod_EpisodeTreatment_{$this->extractIdentifier} ct
             /* Join: Look up Cataract operation detail, Implicit Restriction: reduces = treatment records those only cataract operations */
             JOIN et_ophtroperationnote_cataract oc 
               ON oc.event_id = ct.oe_event_id 
@@ -2435,7 +2435,7 @@ EOL;
         $query = <<<EOL
             SELECT  tc.TreatmentId, tc.IsFirstEye, tc.PreparationDrugId, tc.IncisionSiteId, tc.IncisionLengthId, tc.IncisionPlanesId,
                     tc.IncisionMeridean, tc.PupilSizeId, tc.IOLPositionId, tc.IOLModelId, tc.IOLPower, tc.PredictedPostOperativeRefraction, tc.WoundClosureId
-            FROM tmp_rco_nod_EpisodeTreatmentCataract_/*{$this->extractIdentifier}*/ tc
+            FROM tmp_rco_nod_EpisodeTreatmentCataract_{$this->extractIdentifier} tc
 EOL;
         
         $dataQuery = array(
@@ -2472,8 +2472,8 @@ EOL;
     private function createTmpRcoNodEpisodeOperationAnesthesia()
     {
         $query = <<<EOL
-            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationAnesthesia_/*{$this->extractIdentifier}*/;
-            CREATE TABLE tmp_rco_nod_EpisodeOperationAnesthesia_/*{$this->extractIdentifier}*/ (
+            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationAnesthesia_{$this->extractIdentifier};
+            CREATE TABLE tmp_rco_nod_EpisodeOperationAnesthesia_{$this->extractIdentifier} (
                 oe_event_id INT(10) NOT NULL,
                 AnaesthesiaTypeId INT(10),
                 AnaesthesiaNeedle INT(10),
@@ -2487,7 +2487,7 @@ EOL;
     
     private function populateTmpRcoNodEpisodeOperationAnesthesia()
     {
-        $query = "INSERT INTO tmp_rco_nod_EpisodeOperationAnesthesia_/*{$this->extractIdentifier}*/(
+        $query = "INSERT INTO tmp_rco_nod_EpisodeOperationAnesthesia_{$this->extractIdentifier}(
                       oe_event_id,
                       AnaesthesiaTypeId,
                       AnaesthesiaNeedle,
@@ -2511,7 +2511,7 @@ EOL;
                         JOIN anaesthetic_type at ON a.anaesthetic_type_id = at.id
                         JOIN ophtroperationnote_anaesthetic_anaesthetic_complication ac ON a.id = ac.et_ophtroperationnote_anaesthetic_id
                         JOIN ophtroperationnote_anaesthetic_anaesthetic_complications acs ON ac.anaesthetic_complication_id = acs.id
-                        JOIN tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c ON c.oe_event_id = a.event_id;";
+                        JOIN tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c ON c.oe_event_id = a.event_id;";
 
         return $query;
     }
@@ -2519,7 +2519,7 @@ EOL;
     private function getEpisodeOperationAnaesthesia()
     {
         $query = "SELECT oe_event_id AS OperationId, AnaesthesiaTypeId, AnaesthesiaNeedle, Sedation, SurgeonId, ComplicationId
-                    FROM tmp_rco_nod_EpisodeOperationAnesthesia_/*{$this->extractIdentifier}*/";
+                    FROM tmp_rco_nod_EpisodeOperationAnesthesia_{$this->extractIdentifier}";
 
         $dataQuery = array(
             'query' => $query,
@@ -2540,8 +2540,8 @@ EOL;
     private function createTmpRcoNodEpisodeTreatment()
     {
         $query = <<<EOL
-            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeTreatment_/*{$this->extractIdentifier}*/;
-            CREATE TABLE tmp_rco_nod_EpisodeTreatment_/*{$this->extractIdentifier}*/ (
+            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeTreatment_{$this->extractIdentifier};
+            CREATE TABLE tmp_rco_nod_EpisodeTreatment_{$this->extractIdentifier} (
                 oe_event_id INT(10) NOT NULL,
                 TreatmentId INT(10) NOT NULL,
                 OperationId INT(10) NOT NULL,
@@ -2559,7 +2559,7 @@ EOL;
     private function populateTmpRcoNodEpisodeTreatment()
     {
         $query = <<<EOL
-            INSERT INTO tmp_rco_nod_EpisodeTreatment_/*{$this->extractIdentifier}*/ (
+            INSERT INTO tmp_rco_nod_EpisodeTreatment_{$this->extractIdentifier} (
                 oe_event_id	
                 ,TreatmentId
                 ,OperationId
@@ -2580,7 +2580,7 @@ EOL;
                 , p.snomed_term AS TreatmentTypeDescription
                 /* Restriction: Start with control events */
 
-                FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c
+                FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
                 /* Join: Look up PROCEDURE_LIST (containers) - (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
                 /* Cardinality: On investigation et_ophtroperationnote_procedurelist is a logical bucket for procedures on the */
                 /* on the LEFT Eye or the RIGHT Eye. Therefore if procedures were carried our on both eyes then */
@@ -2618,7 +2618,7 @@ EOL;
                 , p.snomed_term AS TreatmentTypeDescription
                 /* Restriction: Start with control events */
             
-                FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c 
+                FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c 
                 /* Join: Look up PROCEDURE_LIST (containers) - (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
                 /* Cardinality: On investigation et_ophtroperationnote_procedurelist is a logical bucket for procedures on the */
                 /* on the LEFT Eye or the RIGHT Eye. Therefore if procedures were carried our on both eyes then */
@@ -2647,7 +2647,7 @@ EOL;
     {
         $query = <<<EOL
                 SELECT t.TreatmentId, t.OperationId, t.Eye, t.TreatmentTypeId, t.TreatmentTypeDescription
-                FROM tmp_rco_nod_EpisodeTreatment_/*{$this->extractIdentifier}*/ t
+                FROM tmp_rco_nod_EpisodeTreatment_{$this->extractIdentifier} t
 EOL;
         $dataQuery = array(
             'query' => $query,
@@ -2662,8 +2662,8 @@ EOL;
     private function createTmpRcoNodEpisodeOperationIndication()
     {
         $query = <<<EOL
-            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationIndication_/*{$this->extractIdentifier}*/;
-            CREATE TABLE tmp_rco_nod_EpisodeOperationIndication_/*{$this->extractIdentifier}*/ (
+            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationIndication_{$this->extractIdentifier};
+            CREATE TABLE tmp_rco_nod_EpisodeOperationIndication_{$this->extractIdentifier} (
                 oe_event_id INT(10) NOT NULL,
                 OperationId INT(10) NOT NULL,
                 Eye CHAR(1) NOT NULL,
@@ -2678,7 +2678,7 @@ EOL;
     private function populateTmpRcoNodEpisodeOperationIndication()
     {
         $query = <<<EOL
-            INSERT INTO tmp_rco_nod_EpisodeOperationIndication_/*{$this->extractIdentifier}*/ (
+            INSERT INTO tmp_rco_nod_EpisodeOperationIndication_{$this->extractIdentifier} (
                 oe_event_id,
                 OperationId,
                 Eye,
@@ -2692,7 +2692,7 @@ EOL;
               , d.id AS IndicationId
               , d.term AS IndicationDescription
               /* Restriction: Start with operations (processed previously) */
-            FROM tmp_rco_nod_EpisodeOperation_/*{$this->extractIdentifier}*/ o
+            FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} o
             /* Join: Look up PROCEDURE_LIST (containers) - (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
             /* Cardinality: On investigation et_ophtroperationnote_procedurelist is a logical bucket for procedures on the */
             /* on the LEFT Eye or the RIGHT Eye. Therefore if procedures were carried our on both eyes then */
@@ -2716,7 +2716,7 @@ EOL;
               , d.id AS IndicationId
               , d.term AS IndicationDescription
               /* Restriction: Start with operations (processed previously) */
-            FROM tmp_rco_nod_EpisodeOperation_/*{$this->extractIdentifier}*/ o
+            FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} o
             /* Join: Look up PROCEDURE_LIST (containers) - (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
             /* Cardinality: On investigation et_ophtroperationnote_procedurelist is a logical bucket for procedures on the */
             /* on the LEFT Eye or the RIGHT Eye. Therefore if procedures were carried our on both eyes then */
@@ -2741,7 +2741,7 @@ EOL;
     {
         $query = <<<EOL
                 SELECT i.OperationId, i.Eye, i.IndicationId, i.IndicationDescription
-                FROM tmp_rco_nod_EpisodeOperationIndication_/*{$this->extractIdentifier}*/ i
+                FROM tmp_rco_nod_EpisodeOperationIndication_{$this->extractIdentifier} i
 EOL;
         $dataQuery = array(
             'query' => $query,
@@ -2762,8 +2762,8 @@ EOL;
     private function createTmpRcoNodEpisodeOperationComplication()
     {
         $query = <<<EOL
-            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationComplication_/*{$this->extractIdentifier}*/;
-            CREATE TABLE tmp_rco_nod_EpisodeOperationComplication_/*{$this->extractIdentifier}*/ (
+            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationComplication_{$this->extractIdentifier};
+            CREATE TABLE tmp_rco_nod_EpisodeOperationComplication_{$this->extractIdentifier} (
                 oe_event_id int(10) NOT NULL,
                 OperationId int(10) NOT NULL,
                 Eye char(1) NOT NULL,
@@ -2779,7 +2779,7 @@ EOL;
     private function populateTmpRcoNodEpisodeOperationComplication()
     {
         $query = <<<EOL
-            INSERT INTO tmp_rco_nod_EpisodeOperationComplication_/*{$this->extractIdentifier}*/ (
+            INSERT INTO tmp_rco_nod_EpisodeOperationComplication_{$this->extractIdentifier} (
                 oe_event_id,
                 OperationId,
                 Eye,
@@ -2795,7 +2795,7 @@ EOL;
                 #, onccs.name AS ComplicationTypeDescription
                 
                 /* Restriction: Start with OPERATIONS (processed previously), seeded from control events */
-                FROM tmp_rco_nod_EpisodeOperation_/*{$this->extractIdentifier}*/ co
+                FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} co
                 
                 /* Hard Join: Operation Note Cataract Detail */
                 JOIN et_ophtroperationnote_cataract onc
@@ -2832,7 +2832,7 @@ EOL;
                 #, onccs.name AS ComplicationTypeDescription
                 
                 /* Restriction: Start with OPERATIONS (processed previously), seeded from control events */
-                FROM tmp_rco_nod_EpisodeOperation_/*{$this->extractIdentifier}*/ co
+                FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} co
                 
                 /* Hard Join: Operation Note Cataract Detail */
                 JOIN et_ophtroperationnote_cataract onc
@@ -2870,7 +2870,7 @@ EOL;
     {
         $query = <<<EOL
                 SELECT oc.OperationId, oc.Eye, oc.ComplicationTypeId, oc.ComplicationTypeDescription
-                FROM tmp_rco_nod_EpisodeOperationComplication_/*{$this->extractIdentifier}*/ oc
+                FROM tmp_rco_nod_EpisodeOperationComplication_{$this->extractIdentifier} oc
 EOL;
                 
         $dataQuery = array(
@@ -2893,8 +2893,8 @@ EOL;
     {
         $query = <<<EOL
         
-DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperation_/*{$this->extractIdentifier}*/;
-CREATE TABLE tmp_rco_nod_EpisodeOperation_/*{$this->extractIdentifier}*/ (
+DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier};
+CREATE TABLE tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} (
   oe_event_id int(10) NOT NULL
 , patient_id int(10) NOT NULL
 , OperationId int(10) NOT NULL
@@ -2918,7 +2918,7 @@ EOL;
     {
         $query = <<<EOL
         
-INSERT INTO tmp_rco_nod_EpisodeOperation_/*{$this->extractIdentifier}*/ (
+INSERT INTO tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} (
   oe_event_id
 , patient_id
 , OperationId
@@ -2944,7 +2944,7 @@ SELECT
 , au.doctor_grade_id AS AssistantGradeId
 , s.supervising_surgeon_id AS ConsultantId /* TODO (not required for minimal data set) but mapping not fully implemented */
 /* Restriction: Start with control events */
-FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c
+FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
 /* Join: Look up Operation Note SURGEON information */
 /* LOOOOOOOOOOOOOOK TODO CHECK ASSUMPTION: only one et_ophtroperationnote_surgeon per operation note */
 LEFT OUTER JOIN et_ophtroperationnote_surgeon s ON s.event_id = c.oe_event_id
@@ -2966,8 +2966,8 @@ EOL;
             SELECT  op.OperationId, c.nod_episode_id as EpisodeId, op.Description, op.IsHypertensive, op.ListedDate, op.SurgeonId, IFNULL(op.SurgeonGradeId, "") as SurgeonGradeId, 
                     IFNULL(op.AssistantId, "") as AssistantId,
                     IFNULL(op.AssistantGradeId, "") as AssistantGradeId, IFNULL(op.ConsultantId, "") as ConsultantId
-            FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c
-            JOIN tmp_rco_nod_EpisodeOperation_/*{$this->extractIdentifier}*/ op ON c.oe_event_id = op.oe_event_id
+            FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
+            JOIN tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op ON c.oe_event_id = op.oe_event_id
             
 EOL;
         $dataQuery = array(
@@ -2989,8 +2989,8 @@ EOL;
     private function createTmpRcoNodEpisodeVisualAcuity()
     {
         $query = <<<EOL
-            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeVisualAcuity_/*{$this->extractIdentifier}*/;
-            CREATE TABLE tmp_rco_nod_EpisodeVisualAcuity_/*{$this->extractIdentifier}*/ (
+            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeVisualAcuity_{$this->extractIdentifier};
+            CREATE TABLE tmp_rco_nod_EpisodeVisualAcuity_{$this->extractIdentifier} (
                 oe_event_id INT(10) NOT NULL,
                 Eye CHAR(1) NOT NULL,
                 NotationRecordedId INT(10) NOT NULL,
@@ -3006,7 +3006,7 @@ EOL;
     private function populateTmpRcoNodEpisodeVisualAcuity()
     {
         $query = <<<EOL
-            INSERT INTO tmp_rco_nod_EpisodeVisualAcuity_/*{$this->extractIdentifier}*/ (
+            INSERT INTO tmp_rco_nod_EpisodeVisualAcuity_{$this->extractIdentifier} (
                 oe_event_id,
                 Eye,
                 NotationRecordedId,
@@ -3052,7 +3052,7 @@ EOL;
                 , eva.unit_id orginal_unit_id
                 , u.id AS logmar_single_letter_unit_id
                 /* Restriction: Start with control events */
-                FROM tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c 
+                FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c 
                 /* Hard Join: Only examination events that have a Visual Acuity */
                 JOIN et_ophciexamination_visualacuity eva
                   ON eva.event_id = c.oe_event_id
@@ -3097,8 +3097,8 @@ EOL;
     {        
         $query = <<<EOL
                 SELECT c.nod_episode_id as EpisodeId, va.Eye, va.NotationRecordedId, va.BestMeasure, va.Unaided, va.Pinhole, va.BestCorrected
-                FROM tmp_rco_nod_EpisodeVisualAcuity_/*{$this->extractIdentifier}*/ va
-                JOIN tmp_rco_nod_main_event_episodes_/*{$this->extractIdentifier}*/ c ON va.oe_event_id = c.oe_event_id
+                FROM tmp_rco_nod_EpisodeVisualAcuity_{$this->extractIdentifier} va
+                JOIN tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c ON va.oe_event_id = c.oe_event_id
 EOL;
         $dataQuery = array(
             'query' => $query,
