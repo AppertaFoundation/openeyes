@@ -21,6 +21,7 @@
     - geerlingguy.mysql
     - geerlingguy.nodejs
     - geerlingguy.php
+    - geerlingguy.php-xdebug
     - geerlingguy.composer
     - zealot128.wkhtmltox
     - app
