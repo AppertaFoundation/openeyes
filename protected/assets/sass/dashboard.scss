@@ -202,9 +202,12 @@ select:focus {
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
   height: auto;
+  @media screen and (max-width: 1024px) {
+    padding: 5px;
+  }
   &>*{
     width: 100%;
-    @media screen and (min-width: 800px){
+    @media screen and (min-width: 700px){
       width: auto;
     }
   }
@@ -213,7 +216,7 @@ select:focus {
     margin-bottom: 5px;
     div {
       width: 100%;
-      @media screen and (min-width: 800px){
+      @media screen and (min-width: 700px){
         width: auto;
       }
       #from-date, #to-date {

@@ -47,13 +47,14 @@
     }
     .mdl-card__supporting-text {
       min-height: 60px;
-      font-size: 18px;
+      font-size: 22px;
       line-height: 1.3em;
+      font-weight: 700;
       dl {
         margin: 0;
         dt {
           display: inline-block;
-          min-width: 150px;
+          min-width: 180px;
         }
         dd {
           display: inline-block;
