@@ -15,13 +15,6 @@
     <property name="DATABASE_TEST_USER" value="${env.DATABASE_TEST_USER}"/>
     <property name="DATABASE_TEST_PASS" value="${env.DATABASE_TEST_PASS}"/>
 
-    <echo message="DATABASE_TEST_NAME is ${DATABASE_TEST_NAME}"/>
-    <echo message="DATABASE_TEST_HOST is ${DATABASE_TEST_HOST}"/>
-    <echo message="DATABASE_TEST_PORT is ${DATABASE_TEST_PORT}"/>
-    <echo message="DATABASE_TEST_USER is ${DATABASE_TEST_USER}"/>
-    <echo message="DATABASE_TEST_PASS is ${DATABASE_TEST_PASS}"/>
-
-
     <!-- Uncomment the following when the tools are in ${basedir}/vendor/bin -->
     <!-- <property name="toolsdir" value="${basedir}/vendor/bin/"/> -->
 
