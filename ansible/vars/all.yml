@@ -124,7 +124,7 @@ php_extension_conf_paths:
 
 # https://github.com/geerlingguy/ansible-role-php-xdebug
 php_xdebug_default_enable: true
-php_xdebug_coverage_enable: false
+php_xdebug_coverage_enable: true
 php_xdebug_cli_enable: false
 php_xdebug_remote_enable: true
 php_xdebug_remote_connect_back: true
