@@ -125,7 +125,7 @@ class NodExportController extends BaseController
 
         $this->generateExport();
 
-        ##$this->createZipFile();
+        $this->createZipFile();
 
         if (file_exists($this->exportPath . '/' . $this->zipName)) {
             Yii::app()->getRequest()->sendFile($this->zipName, file_get_contents($this->exportPath . '/' . $this->zipName));
@@ -534,26 +534,26 @@ EOL;
     {
         $query = '';
         
-        $query .= $this->populateTmpRcoNodMainEventEpisodes(); ##
-        $query .= $this->populateTmpRcoNodEpisodeOperation(); ##
-        ##$query .= $this->populateTmpRcoNodPatients();
-        ##$query .= $this->populateTmpRcoNodEpisodePreOpAssessment();
-        ##$query .= $this->populateTmpRcoNodPatientCVIStatus();
-        ##$query .= $this->populateTmpRcoNodEpisodeRefraction();
-        ##$query .= $this->populateTmpRcoNodEpisodeDrug();
-        ##$query .= $this->populateTmpRcoNodEpisodeIOP();
-        ##$query .= $this->populateTmpRcoNodEpisodeBiometry();
-        ##$query .= $this->populateTmpRcoNodSurgeon();
-        ##$query .= $this->populateTmpRcoNodEpisodeDiabeticDiagnosis();
-        ##$query .= $this->populateTmpRcoNodPostOpComplication();
+        $query .= $this->populateTmpRcoNodMainEventEpisodes();
+        $query .= $this->populateTmpRcoNodEpisodeOperation();
+        $query .= $this->populateTmpRcoNodPatients();
+        $query .= $this->populateTmpRcoNodEpisodePreOpAssessment();
+        $query .= $this->populateTmpRcoNodPatientCVIStatus();
+        $query .= $this->populateTmpRcoNodEpisodeRefraction();
+        $query .= $this->populateTmpRcoNodEpisodeDrug();
+        $query .= $this->populateTmpRcoNodEpisodeIOP();
+        $query .= $this->populateTmpRcoNodEpisodeBiometry();
+        $query .= $this->populateTmpRcoNodSurgeon();
+        $query .= $this->populateTmpRcoNodEpisodeDiabeticDiagnosis();
+        $query .= $this->populateTmpRcoNodPostOpComplication();
         $query .= $this->populateTmpRcoNodEpisodeOperationCoPathology();
-        ##$query .= $this->populateTmpRcoNodEpisodeTreatment();
-        ##$query .= $this->populateTmpRcoNodEpisodeTreatmentCataract();
-        ##$query .= $this->populateTmpRcoNodEpisodeOperationAnesthesia();
-        ##$query .= $this->populateTmpRcoNodEpisodeOperationIndication();
-        ##$query .= $this->populateTmpRcoNodEpisodeOperationComplication();
-        ##$query .= $this->populateTmpRcoNodEpisodeDiagnosis();
-        ##$query .= $this->populateTmpRcoNodEpisodeVisualAcuity();
+        $query .= $this->populateTmpRcoNodEpisodeTreatment();
+        $query .= $this->populateTmpRcoNodEpisodeTreatmentCataract();
+        $query .= $this->populateTmpRcoNodEpisodeOperationAnesthesia();
+        $query .= $this->populateTmpRcoNodEpisodeOperationIndication();
+        $query .= $this->populateTmpRcoNodEpisodeOperationComplication();
+        $query .= $this->populateTmpRcoNodEpisodeDiagnosis();
+        $query .= $this->populateTmpRcoNodEpisodeVisualAcuity();
 
         return $query;
     }
@@ -1005,12 +1005,12 @@ EOL;
     private function getEpisode()
     {
         $query = <<<EOL
-                SELECT c.patient_id as PatientId, c.nod_episode_id as EpisodeId, c.nod_date as Date
+                SELECT c.patient_id as PatientId, c.nod_episode_id as EpisodeId, c.nod_date as Date, c.nod_episode_seq as Seq
                 FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
 EOL;
         $dataQuery = array(
             'query' => $query,
-            'header' => array('PatientId', 'EpisodeId', 'Date'),
+            'header' => array('PatientId', 'EpisodeId', 'Date', 'Seq'),
         );
 
         $this->saveCSVfile($dataQuery, 'Episode');
@@ -2433,9 +2433,11 @@ EOL;
     private function getEpisodeTreatmentCataract()
     {
         $query = <<<EOL
-            SELECT  tc.TreatmentId, tc.IsFirstEye, tc.PreparationDrugId, tc.IncisionSiteId, tc.IncisionLengthId, tc.IncisionPlanesId,
-                    tc.IncisionMeridean, tc.PupilSizeId, tc.IOLPositionId, tc.IOLModelId, tc.IOLPower, tc.PredictedPostOperativeRefraction, tc.WoundClosureId
-            FROM tmp_rco_nod_EpisodeTreatmentCataract_{$this->extractIdentifier} tc
+        
+SELECT  tc.TreatmentId, tc.IsFirstEye, tc.PreparationDrugId, tc.IncisionSiteId, tc.IncisionLengthId, tc.IncisionPlanesId,
+        tc.IncisionMeridean, tc.PupilSizeId, tc.IOLPositionId, tc.IOLModelId, tc.IOLPower, tc.PredictedPostOperativeRefraction, tc.WoundClosureId
+FROM tmp_rco_nod_EpisodeTreatmentCataract_{$this->extractIdentifier} tc
+
 EOL;
         
         $dataQuery = array(
@@ -2456,7 +2458,7 @@ EOL;
                 'WoundClosureId',
             ),
         );
-
+        
         return $this->saveCSVfile($dataQuery, 'EpisodeTreatmentCataract');
 
     }
@@ -2646,15 +2648,30 @@ EOL;
     private function getEpisodeTreatment()
     {
         $query = <<<EOL
-                SELECT t.TreatmentId, t.OperationId, t.Eye, t.TreatmentTypeId, t.TreatmentTypeDescription
-                FROM tmp_rco_nod_EpisodeTreatment_{$this->extractIdentifier} t
+        
+SELECT t.TreatmentId, t.OperationId, t.Eye, t.TreatmentTypeId, t.TreatmentTypeDescription
+FROM tmp_rco_nod_EpisodeTreatment_{$this->extractIdentifier} t
+
 EOL;
         $dataQuery = array(
             'query' => $query,
             'header' => array('TreatmentId', 'OperationId', 'Eye', 'TreatmentTypeId', 'TreatmentTypeDescription'),
         );
+        
+        $this->saveCSVfile($dataQuery, 'EpisodeTreatment');
+        
+        $query = <<<EOL
+        
+SELECT DISTINCT t.TreatmentTypeId, t.TreatmentTypeDescription
+FROM tmp_rco_nod_EpisodeTreatment_{$this->extractIdentifier} t
 
-        return $this->saveCSVfile($dataQuery, 'EpisodeTreatment');
+EOL;
+        $dataQuery = array(
+            'query' => $query,
+            'header' => array('TreatmentTypeId', 'TreatmentTypeDescription'),
+        );
+        
+        return $this->saveCSVfile($dataQuery, 'TreatmentCodeLookup');
     }
     
     /********** EpisodeOperationIndication **********/
@@ -2740,15 +2757,30 @@ EOL;
     private function getEpisodeOperationIndication()
     {
         $query = <<<EOL
-                SELECT i.OperationId, i.Eye, i.IndicationId, i.IndicationDescription
-                FROM tmp_rco_nod_EpisodeOperationIndication_{$this->extractIdentifier} i
+        
+SELECT i.OperationId, i.Eye, i.IndicationId, i.IndicationDescription
+FROM tmp_rco_nod_EpisodeOperationIndication_{$this->extractIdentifier} i
+
 EOL;
         $dataQuery = array(
             'query' => $query,
             'header' => array('OperationId', 'Eye', 'IndicationId', 'IndicationDescription'),
         );
 
-        return $this->saveCSVfile($dataQuery, 'EpisodeOperationIndication');
+        $this->saveCSVfile($dataQuery, 'EpisodeOperationIndication');
+
+        $query = <<<EOL
+        
+SELECT DISTINCT i.IndicationId, i.IndicationDescription
+FROM tmp_rco_nod_EpisodeOperationIndication_{$this->extractIdentifier} i
+
+EOL;
+        $dataQuery = array(
+            'query' => $query,
+            'header' => array('IndicationId', 'IndicationDescription'),
+        );
+        
+        return $this->saveCSVfile($dataQuery, 'OperationIndicationCodeLookup');
 
     }
     
@@ -2869,16 +2901,32 @@ EOL;
     private function getEpisodeOperationComplication()
     {
         $query = <<<EOL
-                SELECT oc.OperationId, oc.Eye, oc.ComplicationTypeId, oc.ComplicationTypeDescription
-                FROM tmp_rco_nod_EpisodeOperationComplication_{$this->extractIdentifier} oc
+        
+SELECT oc.OperationId, oc.Eye, oc.ComplicationTypeId, oc.ComplicationTypeDescription
+FROM tmp_rco_nod_EpisodeOperationComplication_{$this->extractIdentifier} oc
+
 EOL;
                 
         $dataQuery = array(
             'query' => $query,
             'header' => array('OperationId', 'Eye', 'ComplicationTypeId', 'ComplicationTypeDescription'),
         );
+        
+        $this->saveCSVfile($dataQuery, 'EpisodeOperationComplication');
+        
+        $query = <<<EOL
+        
+SELECT DISTINCT oc.ComplicationTypeId, oc.ComplicationTypeDescription
+FROM tmp_rco_nod_EpisodeOperationComplication_{$this->extractIdentifier} oc
 
-        return $this->saveCSVfile($dataQuery, 'EpisodeOperationComplication');
+EOL;
+  
+        $dataQuery = array(
+            'query' => $query,
+            'header' => array('ComplicationTypeId', 'ComplicationTypeDescription'),
+        );
+        
+        return $this->saveCSVfile($dataQuery, 'OperationComplicationCodeLookup');
     }
     
     /********** end of EpisodeOperationComplication **********/
@@ -2995,9 +3043,9 @@ EOL;
                 Eye CHAR(1) NOT NULL,
                 NotationRecordedId INT(10) NOT NULL,
                 BestMeasure VARCHAR(255) NOT NULL,
-                Unaided INT(10) DEFAULT NULL,
-                Pinhole INT(10) DEFAULT NULL,
-                BestCorrected INT(10) DEFAULT NULL
+                Unaided VARCHAR(255) DEFAULT NULL,
+                Pinhole VARCHAR(255) DEFAULT NULL,
+                BestCorrected VARCHAR(255) DEFAULT NULL
             );
 EOL;
         return $query;
@@ -3006,88 +3054,88 @@ EOL;
     private function populateTmpRcoNodEpisodeVisualAcuity()
     {
         $query = <<<EOL
-            INSERT INTO tmp_rco_nod_EpisodeVisualAcuity_{$this->extractIdentifier} (
-                oe_event_id,
-                Eye,
-                NotationRecordedId,
-                BestMeasure,
-                Unaided,
-                Pinhole,
-                BestCorrected
-              ) 
-              /* Get best Visual Acuity for examination for each Method: Unaided Aided Pinhole */
-              SELECT
-                  bv.oe_event_id 
-                , bv.eye
-                , bv.orginal_unit_id AS NotationRecordedId /* TODO this needs a mapping from OE to NOD */
-                , IFNULL(CASE u_max_all.value WHEN 'CF' THEN 2.10 WHEN 'HM' THEN 2.40 WHEN 'PL' THEN 2.70 WHEN 'NPL' THEN 3.00 ELSE u_max_all.value END, '') AS BestMeasure
-                , IFNULL(CASE u_max_unaided.value WHEN 'CF' THEN 2.10 WHEN 'HM' THEN 2.40 WHEN 'PL' THEN 2.70 WHEN 'NPL' THEN 3.00 ELSE u_max_unaided.value END, '') AS Unaided
-                , IFNULL(CASE u_max_pinhole.value WHEN 'CF' THEN 2.10 WHEN 'HM' THEN 2.40 WHEN 'PL' THEN 2.70 WHEN 'NPL' THEN 3.00 ELSE u_max_pinhole.value END, '') AS Pinhole
-                , IFNULL(CASE u_max_aided.value WHEN 'CF' THEN 2.10 WHEN 'HM' THEN 2.40 WHEN 'PL' THEN 2.70 WHEN 'NPL' THEN 3.00 ELSE u_max_aided.value END, '') AS BestCorrected
-            FROM
-            (
-                    SELECT 
-                      v.oe_event_id
-                    , v.orginal_unit_id
-              , v.eye
-                    , MAX(IF(v.method IN ('Unaided','Aided','Pinhole'), v.reading_base_value, NULL)) AS max_all_base_value /* Higher base_value is better */
-                    , MAX(IF(v.method = 'Unaided', v.reading_base_value, NULL)) AS max_unaided_base_value /* Higher base_value is better */
-                    , MAX(IF(v.method = 'Aided', v.reading_base_value, NULL)) AS max_aided_base_value /* Higher base_value is better */
-                    , MAX(IF(v.method = 'Pinhole', v.reading_base_value, NULL)) AS max_pinhole_base_value /* Higher base_value is better */
-                    , v.logmar_single_letter_unit_id
-              FROM (
-                SELECT 
-                  c.oe_event_id
-                , CASE evar.side
-                  WHEN 0 THEN 'R'
-                  WHEN 1 THEN 'L'
-                  ELSE NULL
-                  END AS eye
-                , CASE vam.name
-                  WHEN 'Glasses' THEN 'Aided'
-                  WHEN 'Contact lens' THEN 'Aided'
-                  ELSE vam.name
-                  END AS method
-                , evar.value AS reading_base_value
-                , eva.unit_id orginal_unit_id
-                , u.id AS logmar_single_letter_unit_id
-                /* Restriction: Start with control events */
-                FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c 
-                /* Hard Join: Only examination events that have a Visual Acuity */
-                JOIN et_ophciexamination_visualacuity eva
-                  ON eva.event_id = c.oe_event_id
-                /* Hard Join: Visual Acuity individual readings (across both eyes and all methods ) */
-                JOIN ophciexamination_visualacuity_reading evar
-                  ON evar.element_id = eva.id
-                /* Join: Look up Visual Acuity individual readings for both eyes and all methods (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
-                LEFT OUTER JOIN ophciexamination_visualacuity_method vam 
-                  ON vam.id = evar.method_id
-                /* Cartesian: Convenience to get logMAR single-letter unit_id only once, used in outer queries */
-                CROSS JOIN ophciexamination_visual_acuity_unit u
-                WHERE u.name = 'logMAR single-letter'
-                    ) v
-                    /* Group by important to aggrigate multiple reading to get best reading each eye and method */
-              GROUP BY 
-                      v.oe_event_id
-                    , v.orginal_unit_id
-              , v.eye
-            ) bv
-            /* Join: Decode the overall base_value to logmar_single_letter (LOJ used to return nulls if data problems) */
-            LEFT OUTER JOIN ophciexamination_visual_acuity_unit_value u_max_all
-              ON  u_max_all.base_value = bv.max_all_base_value
-              AND u_max_all.unit_id = bv.logmar_single_letter_unit_id
-            /* Join: Decode the unaided base_value to logmar_single_letter (LOJ used to return nulls if data problems) */
-            LEFT OUTER JOIN ophciexamination_visual_acuity_unit_value u_max_unaided
-              ON  u_max_unaided.base_value = bv.max_unaided_base_value
-              AND u_max_unaided.unit_id = bv.logmar_single_letter_unit_id
-            /* Join: Decode the aided base_value to logmar_single_letter (LOJ used to return nulls if data problems) */
-            LEFT OUTER JOIN ophciexamination_visual_acuity_unit_value u_max_aided
-              ON  u_max_aided.base_value = bv.max_aided_base_value
-              AND u_max_aided.unit_id = bv.logmar_single_letter_unit_id
-            /* Join: Decode the pinhole base_value to logmar_single_letter (LOJ used to return nulls if data problems) */
-            LEFT OUTER JOIN ophciexamination_visual_acuity_unit_value u_max_pinhole
-              ON  u_max_pinhole.base_value = bv.max_pinhole_base_value
-              AND u_max_pinhole.unit_id = bv.logmar_single_letter_unit_id ;
+INSERT INTO tmp_rco_nod_EpisodeVisualAcuity_{$this->extractIdentifier} (
+  oe_event_id,
+  Eye,
+  NotationRecordedId,
+  BestMeasure,
+  Unaided,
+  Pinhole,
+  BestCorrected
+) 
+/* Get best Visual Acuity for examination for each Method: Unaided Aided Pinhole */
+SELECT
+    bv.oe_event_id 
+  , bv.eye
+  , bv.orginal_unit_id AS NotationRecordedId /* TODO this needs a mapping from OE to NOD */
+  , IFNULL(CASE u_max_all.value WHEN 'CF' THEN 2.10 WHEN 'HM' THEN 2.40 WHEN 'PL' THEN 2.70 WHEN 'NPL' THEN 3.00 ELSE u_max_all.value END, '') AS BestMeasure
+  , IFNULL(CASE u_max_unaided.value WHEN 'CF' THEN 2.10 WHEN 'HM' THEN 2.40 WHEN 'PL' THEN 2.70 WHEN 'NPL' THEN 3.00 ELSE u_max_unaided.value END, '') AS Unaided
+  , IFNULL(CASE u_max_pinhole.value WHEN 'CF' THEN 2.10 WHEN 'HM' THEN 2.40 WHEN 'PL' THEN 2.70 WHEN 'NPL' THEN 3.00 ELSE u_max_pinhole.value END, '') AS Pinhole
+  , IFNULL(CASE u_max_aided.value WHEN 'CF' THEN 2.10 WHEN 'HM' THEN 2.40 WHEN 'PL' THEN 2.70 WHEN 'NPL' THEN 3.00 ELSE u_max_aided.value END, '') AS BestCorrected
+FROM
+(
+  SELECT 
+    v.oe_event_id
+  , v.orginal_unit_id
+  , v.eye
+  , MAX(IF(v.method IN ('Unaided','Aided','Pinhole'), v.reading_base_value, NULL)) AS max_all_base_value /* Higher base_value is better */
+  , MAX(IF(v.method = 'Unaided', v.reading_base_value, NULL)) AS max_unaided_base_value /* Higher base_value is better */
+  , MAX(IF(v.method = 'Aided', v.reading_base_value, NULL)) AS max_aided_base_value /* Higher base_value is better */
+  , MAX(IF(v.method = 'Pinhole', v.reading_base_value, NULL)) AS max_pinhole_base_value /* Higher base_value is better */
+  , v.logmar_single_letter_unit_id
+  FROM (
+    SELECT 
+      c.oe_event_id
+    , CASE evar.side
+      WHEN 0 THEN 'R'
+      WHEN 1 THEN 'L'
+      ELSE NULL
+      END AS eye
+    , CASE vam.name
+      WHEN 'Glasses' THEN 'Aided'
+      WHEN 'Contact lens' THEN 'Aided'
+      ELSE vam.name
+      END AS method
+    , evar.value AS reading_base_value
+    , eva.unit_id orginal_unit_id
+    , u.id AS logmar_single_letter_unit_id
+    /* Restriction: Start with control events */
+    FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c 
+    /* Hard Join: Only examination events that have a Visual Acuity */
+    JOIN et_ophciexamination_visualacuity eva
+      ON eva.event_id = c.oe_event_id
+    /* Hard Join: Visual Acuity individual readings (across both eyes and all methods ) */
+    JOIN ophciexamination_visualacuity_reading evar
+      ON evar.element_id = eva.id
+    /* Join: Look up Visual Acuity individual readings for both eyes and all methods (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
+    LEFT OUTER JOIN ophciexamination_visualacuity_method vam 
+      ON vam.id = evar.method_id
+    /* Cartesian: Convenience to get logMAR single-letter unit_id only once, used in outer queries */
+    CROSS JOIN ophciexamination_visual_acuity_unit u
+    WHERE u.name = 'logMAR single-letter'
+  ) v
+  /* Group by important to aggrigate multiple reading to get best reading each eye and method */
+  GROUP BY 
+    v.oe_event_id
+  , v.orginal_unit_id
+  , v.eye
+) bv
+/* Join: Decode the overall base_value to logmar_single_letter (LOJ used to return nulls if data problems) */
+LEFT OUTER JOIN ophciexamination_visual_acuity_unit_value u_max_all
+ON  u_max_all.base_value = bv.max_all_base_value
+AND u_max_all.unit_id = bv.logmar_single_letter_unit_id
+/* Join: Decode the unaided base_value to logmar_single_letter (LOJ used to return nulls if data problems) */
+LEFT OUTER JOIN ophciexamination_visual_acuity_unit_value u_max_unaided
+ON  u_max_unaided.base_value = bv.max_unaided_base_value
+AND u_max_unaided.unit_id = bv.logmar_single_letter_unit_id
+/* Join: Decode the aided base_value to logmar_single_letter (LOJ used to return nulls if data problems) */
+LEFT OUTER JOIN ophciexamination_visual_acuity_unit_value u_max_aided
+ON  u_max_aided.base_value = bv.max_aided_base_value
+AND u_max_aided.unit_id = bv.logmar_single_letter_unit_id
+/* Join: Decode the pinhole base_value to logmar_single_letter (LOJ used to return nulls if data problems) */
+LEFT OUTER JOIN ophciexamination_visual_acuity_unit_value u_max_pinhole
+ON  u_max_pinhole.base_value = bv.max_pinhole_base_value
+AND u_max_pinhole.unit_id = bv.logmar_single_letter_unit_id;
 
 EOL;
         return $query;
@@ -3112,29 +3160,8 @@ EOL;
         
     public function getExtraCsvs()
     {
-        // Write out distorder
-        $query = <<<EOL
-                SELECT d.id as IndicationId, d.term as IndicationDescription
-                FROM disorder d
-EOL;
-        $dataQuery = array(
-            'query' => $query,
-            'header' => array('IndicationId', 'IndicationDescription'),
-        );
-        $this->saveCSVfile($dataQuery, 'IndicationDescription');
-        
-        
-        // Write out distorder
-        $query = <<<EOL
-                SELECT p.snomed_code AS TreatmentTypeId, p.snomed_term AS TreatmentTypeDescription
-                FROM proc p
-EOL;
-        $dataQuery = array(
-            'query' => $query,
-            'header' => array('TreatmentTypeId', 'TreatmentTypeDescription'),
-        );
-        $this->saveCSVfile($dataQuery, 'TreatmentTypeDescription');
 
+Treatment
     }
     
     
