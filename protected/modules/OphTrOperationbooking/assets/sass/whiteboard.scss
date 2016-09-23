@@ -21,11 +21,11 @@
 
 .mdl-grid {
   .mdl-card {
-    min-height: 150px;
+    min-height: 100px;
     width: 100%;
-    .mdl-card__title {
+    display: auto;
+    .mdl-card__title, .mdl-card--expand {
       color: #fff;
-      min-height: 60px;
       &.patient {
         background-color: rgb(63,81,181);
       }
@@ -46,15 +46,17 @@
       }
     }
     .mdl-card__supporting-text {
-      min-height: 60px;
-      font-size: 22px;
-      line-height: 1.3em;
+      font-size: 20px;
+      line-height: 1.1em;
       font-weight: 700;
       dl {
         margin: 0;
         dt {
           display: inline-block;
           min-width: 180px;
+          @media screen and (min-width: 700px){
+            width: 100%;
+          }
         }
         dd {
           display: inline-block;
