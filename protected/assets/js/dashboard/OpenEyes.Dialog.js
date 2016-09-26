@@ -17,7 +17,7 @@
  */
 this.OpenEyes = this.OpenEyes || {};
 
-(function(exports) {
+(function (exports) {
 
   var template =  '<h4 class="mdl-dialog__title">{{title}}</h4>' +
     '<div class="mdl-dialog__content">{{content}}</div>' +
@@ -26,8 +26,9 @@ this.OpenEyes = this.OpenEyes || {};
     '<button type="button" class="mdl-button close">{{disagree}}</button>' +
     '</div>';
   var Dialog = {};
+  var clickEvents = ['click', 'touchstart'];
 
-  function render(title, content){
+  function render(title, content) {
     var dialog = document.createElement("dialog");
     dialog.className = 'mdl-dialog';
     dialog.id = Math.random().toString(36).slice(2);
@@ -37,6 +38,11 @@ this.OpenEyes = this.OpenEyes || {};
       agree: Dialog.agree || "Continue",
       disagree: Dialog.disagree || "Cancel"
     });
+
+    //if the polyfil is available use it
+    if (window.hasOwnProperty('dialogPolyfill')) {
+      dialogPolyfill.registerDialog(dialog);
+    }
 
     return dialog;
   }
@@ -49,15 +55,17 @@ this.OpenEyes = this.OpenEyes || {};
    * @param title
    * @param content
    */
-  Dialog.init = function(container, trigger, title, content){
-    var dialog = render(title, content);
-    var close;
+  Dialog.init = function (container, trigger, title, content) {
+    var dialog = render(title, content),
+      close,
+      accept,
+      i,
+      className = 'modaled';
 
-    function handleTrigger(e){
-      var target = e.target,
-        className = 'modaled';
+    function handleTrigger(e) {
+      var target = e.target;
 
-      if(target.className.indexOf(className) === -1){
+      if (target.className.indexOf(className) === -1) {
         e.preventDefault();
         dialog.showModal();
         target.classList.add(className);
@@ -66,21 +74,26 @@ this.OpenEyes = this.OpenEyes || {};
 
     container.appendChild(dialog);
 
-    if(trigger instanceof HTMLElement){
+    if (trigger instanceof HTMLElement) {
       trigger.addEventListener('click', handleTrigger);
     }
 
     close = dialog.getElementsByClassName('close');
-    for(var i = 0; i < close.length; i++){
-      close[i].addEventListener('click', function(){
-        dialog.close()
+    for (i = 0; i < close.length; i++) {
+      clickEvents.forEach(function (eventType) {
+        close[i].addEventListener(eventType, function () {
+          trigger.classList.remove(className);
+          dialog.close();
+        });
       });
     }
 
     accept = dialog.getElementsByClassName('accept');
-    for(var i = 0; i < accept.length; i++){
-      accept[i].addEventListener('click', function(){
-        trigger.click();
+    for (i = 0; i < accept.length; i++) {
+      clickEvents.forEach(function(eventType) {
+        accept[i].addEventListener(eventType, function () {
+          trigger.click();
+        });
       });
     }
   };
