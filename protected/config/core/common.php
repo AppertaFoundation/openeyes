@@ -370,6 +370,7 @@ return array(
         'event_lock_disable' => false,
         'reports' => array(
         ),
+        'opbooking_disable_both_eyes' => true,
         'html_autocomplete' => 'off',
         // html|pdf, pdf requires wkhtmltopdf with patched QT
         'event_print_method' => 'pdf',
