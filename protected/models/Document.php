@@ -213,9 +213,9 @@ class Document //extends BaseActiveRecord
 		$doc_instance_version->macro_id = $_POST['macro_id'];
 		$doc_instance_version->save();
 
-		if(is_array(@$_POST['contact_id']))
+		if(is_array(@$_POST['target_type']))
 		{
-			foreach($_POST['contact_id'] as $key=>$val)
+			foreach($_POST['target_type'] as $key=>$val)
 			{
 				$data = array(	'contact_type'=>$_POST['contact_type'][$key],
 								'contact_id' => $_POST['contact_id'][$key],
@@ -244,7 +244,10 @@ class Document //extends BaseActiveRecord
 		$doc_target->document_instance_id = $doc_instance->id;
 		$doc_target->contact_type = $data['contact_type'];
 		$doc_target->contact_id = $data['contact_id'];
-		$doc_target->contact_name = Contact::model()->findByPk($data['contact_id'])->getFullName();
+		if($data['contact_id'])
+		{
+			$doc_target->contact_name = Contact::model()->findByPk($data['contact_id'])->getFullName();
+		}
 		$doc_target->address = $data['address'];
 		$doc_target->save();
 		return $doc_target;
