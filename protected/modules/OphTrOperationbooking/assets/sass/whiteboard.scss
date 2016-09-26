@@ -24,6 +24,9 @@
     min-height: 100px;
     width: 100%;
     display: block;
+    @media screen and (min-width: 840px){
+      min-height: 150px;
+    }
     .mdl-card__title {
       color: #fff;
       &.patient {
@@ -43,6 +46,7 @@
       }
       .material-icons {
         cursor: pointer;
+        font-size: 18px;
       }
     }
     .mdl-card__supporting-text {
@@ -54,7 +58,7 @@
         dt {
           display: inline-block;
           min-width: 180px;
-          @media screen and (max-width: 700px){
+          @media screen and (max-width: 1200px){
             width: 100%;
           }
         }
