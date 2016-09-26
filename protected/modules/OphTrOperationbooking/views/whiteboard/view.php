@@ -44,7 +44,7 @@
     <div class="mdl-cell mdl-cell--4-col">
         <div class="mdl-card mdl-shadow--2dp">
             <div class="mdl-card__title mdl-card--expand biometry">
-                <h2 class="mdl-card__title-text">IOL Model</h2>
+                <h2 class="mdl-card__title-text">IOL Model &amp; Formula</h2>
             </div>
             <div class="mdl-card__supporting-text">
                 <?=$data->iol_model?>
