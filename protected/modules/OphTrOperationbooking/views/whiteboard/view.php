@@ -90,7 +90,7 @@
                 <?php if ($data->alpha_blockers):?>
                     Yes - <?=$data->alpha_blocker_name?>
                 <?php else: ?>
-                    No
+                    No - <?=$data->alpha_blocker_name?>
                 <?php endif;?>
             </div>
         </div>
@@ -123,7 +123,7 @@
                     Yes - <?=$data->anticoagulant_name?> <br>
                     INR: <?=$data->inr?>
                 <?php else: ?>
-                    No
+                    No - <?=$data->anticoagulant_name?>
                 <?php endif;?>
             </div>
         </div>

@@ -24,8 +24,8 @@ namespace OEModule\OphCiExamination\models;
  *
  * The followings are the available columns in table:
  *
- * @property int $id
- * @property int $event_id
+ * @property int                                $id
+ * @property int                                $event_id
  * @property OphCiExamination_GlaucomaRisk_Risk $risk
  *
  * The followings are the available model relations:
@@ -74,13 +74,13 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
      * @param $attribute
      * @param $params
      */
-    public function validateName($attribute,$params)
+    public function validateName($attribute, $params)
     {
-        if($this->$params['type'] === '1' && !$this->$attribute){
+        if ($this->$params['type'] === '1' && !$this->$attribute) {
             $this->addError($attribute, 'When checked a drug name is required');
         }
 
-        if($this->$params['type'] !== '1' && $this->$attribute){
+        if ($this->$params['type'] !== '1' && $this->$attribute) {
             $this->addError($attribute, 'A drug name cannot be supplied without selecting yes.');
         }
     }
@@ -144,7 +144,7 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
      */
     public function anticoagulantText()
     {
-        return 'Anticoagulants: '.$this->yesNoText($this->anticoagulant).(($this->anticoagulant_name) ? ' - '.$this->anticoagulant_name : '');
+        return 'Anticoagulants: ' . $this->yesNoText($this->anticoagulant) . (($this->anticoagulant_name) ? ' - ' . $this->anticoagulant_name : '');
     }
 
     /**
@@ -152,7 +152,7 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
      */
     public function alphaBlockerText()
     {
-        return 'Alpha-Blockers: '.$this->yesNoText($this->alphablocker).(($this->alpha_blocker_name) ? ' - '.$this->alpha_blocker_name : '');
+        return 'Alpha-Blockers: ' . $this->yesNoText($this->alphablocker) . (($this->alpha_blocker_name) ? ' - ' . $this->alpha_blocker_name : '');
     }
 
     /**
@@ -185,4 +185,47 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
     {
         return true;
     }
+
+    /**
+     * @return array|mixed|null
+     */
+    public function mostRecentCheckedAlpha($id)
+    {
+        return $this->mostRecentChecked('alphablocker', $id);
+    }
+
+    /**
+     * @return array|mixed|null
+     */
+    public function mostRecentCheckedAnticoag($id)
+    {
+        return $this->mostRecentChecked('anticoagulant', $id);
+    }
+
+    /**
+     * Find the most recent element that has actually been checked
+     *
+     * Finds the most recent element where the question of $type has
+     * actually been checked, yes or no.
+     *
+     * @param $type
+     *
+     * @return array|mixed|null
+     */
+    protected function mostRecentChecked($type, $id)
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->join = 'join event on t.event_id = event.id ';
+        $criteria->join .= 'join episode on event.episode_id = episode.id ';
+        $criteria->join .= 'join patient on episode.patient_id = patient.id ';
+        $criteria->addCondition($type . ' > 0');
+        $criteria->addCondition('episode.patient_id = :patient_id');
+        $criteria->addCondition('event.event_date > patient.no_risks_date');
+        $criteria->params = array('patient_id' => $id);
+        $criteria->order = 'event.event_date DESC';
+        $criteria->limit = 1;
+
+        return self::model()->find($criteria);
+    }
+
 }
