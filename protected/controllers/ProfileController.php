@@ -121,6 +121,20 @@ class ProfileController extends BaseController
     public function actionSites()
     {
         $user = User::model()->findByPk(Yii::app()->user->id);
+        $this->render('/profile/sites', array(
+            'user' => $user,
+        ));
+    }
+
+    /**
+     * Sites deletion from user profile
+     *
+     * @throws Exception
+     */
+    public function actionDeleteSites()
+    {
+        $user = User::model()->findByPk(Yii::app()->user->id);
+        $transaction = Yii::app()->db->beginTransaction();
         if (!empty($_POST['sites'])) {
             foreach ($_POST['sites'] as $site_id) {
                 if ($us = UserSite::model()->find('user_id=? and site_id=?', array($user->id, $site_id))) {
@@ -129,10 +143,9 @@ class ProfileController extends BaseController
                     }
                 }
             }
+            echo 'success';
         }
-        $this->render('/profile/sites', array(
-            'user' => $user,
-        ));
+        $transaction->commit();
     }
 
     public function actionAddSite()
