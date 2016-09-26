@@ -39,6 +39,10 @@
             </tr>
         <?php else: ?>
             <?php foreach ($report->items as $drug):?>
+                <?php
+                $drugObj = new Drug();
+                $drugObj->attributes = $drug;
+                ?>
                 <tr>
                     <td><?php echo $drug['hos_num']?></td>
                     <td><?php echo $drug['last_name']?></td>
@@ -46,7 +50,7 @@
                     <td><?php echo $drug['dob'] ? date('j M Y', strtotime($drug['dob'])) : 'Unknown'?></td>
                     <td><?php echo $drug['postcode']?></td>
                     <td><?php echo date('j M Y', strtotime($drug['created_date']))?> <?php echo substr($drug['created_date'], 11, 5)?></td>
-                    <td><?php echo $drug['name']?></td>
+                    <td><?php echo $drugObj->tallmanLabel?></td>
                     <td><?php echo $drug['user_first_name'].' '.$drug['user_last_name']; ?></td>
                     <td><?php echo $drug['role']; ?></td>
                     <td><?php echo date('j M Y', strtotime($drug['event_date']))?> <?php echo substr($drug['event_date'], 11, 5)?></td>

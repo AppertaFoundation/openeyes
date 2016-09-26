@@ -35,6 +35,7 @@ class DefaultController extends \BaseEventTypeController
         'consentsignature' => self::ACTION_TYPE_EDIT,
         'retrieveconsentsignature' => self::ACTION_TYPE_EDIT,
         'displayconsentsignature' => self::ACTION_TYPE_VIEW,
+        'removeconsentsignature' => self::ACTION_TYPE_EDIT,
         'issue' => self::ACTION_TYPE_EDIT,
         'signCVI' => self::ACTION_TYPE_EDIT,
         'list' => self::ACTION_TYPE_LIST,
@@ -51,11 +52,16 @@ class DefaultController extends \BaseEventTypeController
     public function actionCreate()
     {
         $create_new_cvi = $this->request->getParam('createnewcvi', null);
-        if (!is_null($create_new_cvi)) {
+        if ($create_new_cvi !== null) {
             $cancel_url = $this->episode ? '/patient/episode/' . $this->episode->id
                 : '/patient/episodes/' . $this->patient->id;
             if ($create_new_cvi == 1) {
-                parent::actionCreate();
+                if (!$this->getManager()->canCreateEventForPatient($this->patient)) {
+                    $this->getApp()->user->setFlash('warning.cvi_create', 'You cannot create another CVI whilst one exists that has not been issued.');
+                    $this->redirect(array($cancel_url));
+                } else {
+                    parent::actionCreate();
+                }
             } else {
                 $this->redirect(array($cancel_url));
             }
@@ -65,6 +71,7 @@ class DefaultController extends \BaseEventTypeController
             if (count($current_cvis) >= $this->cvi_limit) {
                 $this->render('select_event', array(
                     'current_cvis' => $current_cvis,
+                    'can_create' => $this->getManager()->canCreateEventForPatient($this->patient)
                 ), false);
             } else {
                 parent::actionCreate();
@@ -196,6 +203,15 @@ class DefaultController extends \BaseEventTypeController
             return $this->getManager()->canIssueCvi($this->event);
         } else {
             return false;
+        }
+    }
+
+    protected function setElementDefaultOptions_Element_OphCoCvi_EventInfo(
+        models\Element_OphCoCvi_EventInfo $element,
+        $action
+    ) {
+        if ($element->isNewRecord) {
+            $element->site_id = $this->getApp()->session['selected_site_id'];
         }
     }
 
@@ -422,7 +438,7 @@ class DefaultController extends \BaseEventTypeController
 
         // if POST, then a new filter is to be applied, otherwise retrieve from the session
         if ($this->request->isPostRequest) {
-            foreach (array('date_from', 'date_to', 'consultant_ids', 'show_issued') as $key) {
+            foreach (array('date_from', 'date_to', 'subspecialty_id', 'site_id', 'consultant_ids', 'show_issued') as $key) {
                 $val = $this->request->getPost($key, null);
                 $filter[$key] = $val;
             }
@@ -478,11 +494,11 @@ class DefaultController extends \BaseEventTypeController
     public function actionIssue($id)
     {
         if ($this->getManager()->issueCvi($this->event, $this->getApp()->user->id)) {
-            $this->getApp()->user->setFlash('success', 'The CVI has been successfully generated.');
+            $this->getApp()->user->setFlash('success.cvi_issue', 'The CVI has been successfully generated.');
             //$this->redirect(array('/' . $this->event->eventType->class_name . '/default/pdfPrint/' . $id));
             $this->redirect(array('/' . $this->event->eventType->class_name . '/default/view/' . $id . '?print=1'));
         } else {
-            $this->getApp()->user->setFlash('error', 'The CVI could not be generated.');
+            $this->getApp()->user->setFlash('error.cvi_issue', 'The CVI could not be generated.');
             $this->redirect(array('/' . $this->event->eventType->class_name . '/default/view/' . $id));
         }
 
@@ -596,7 +612,6 @@ class DefaultController extends \BaseEventTypeController
         $cls = $element_type->class_name;
 
         $map = array(
-            'OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo' => 'EventInfo',
             'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo' => 'Clinical',
             'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo' => 'Clerical'
         );
@@ -673,6 +688,35 @@ class DefaultController extends \BaseEventTypeController
     /**
      * @throws \CHttpException
      */
+    public function initActionRemoveConsentSignature()
+    {
+        $this->initWithEventId($this->request->getParam('id'));
+    }
+
+    /**
+     * @param $id
+     */
+    public function actionRemoveConsentSignature($id)
+    {
+        $signature_file_id = (int) $this->request->getParam('signature_file_id');
+        if ($signature_file_id) {
+            $user = \User::model()->findByPk($this->getApp()->user->id);
+            if ($this->getManager()->removeConsentSignature($this->event, $user, $signature_file_id)) {
+                $this->getApp()->user->setFlash('success.cvi_consent_signature', 'Consent Signature removed.');
+            } else {
+                $this->getApp()->user->setFlash('error.cvi_consent_signature', 'Could not remove the consent signature.');
+            }
+        } else {
+            throw new \CHttpException(403, 'Invalid Request');
+        }
+
+
+        $this->redirect(array('/' . $this->event->eventType->class_name . '/default/view/' . $id));
+    }
+
+    /**
+     * @throws \CHttpException
+     */
     public function initActionRetrieveConsentSignature()
     {
         $this->initWithEventId($this->request->getParam('id'));
@@ -688,6 +732,7 @@ class DefaultController extends \BaseEventTypeController
     {
         $signature_element = $this->getManager()->getConsentSignatureElementForEvent($this->event);
         if ($signature_element->saveSignatureImageFromPortal()) {
+            $this->event->audit('event', 'cvi-consent-added', null, 'CVI Consent Signature Added', array('user_id' => $this->getApp()->user->id));
             $this->getApp()->user->setFlash('success.cvi_consent_signature', 'Signature successfully loaded.');
             $this->updateEventInfo();
         } else {

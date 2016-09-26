@@ -36,15 +36,42 @@
             </a>
             <div class=" js-toggle-body">
                 <div class="row">
+                    <div class="column large-3">
+                        <div class="row">
+                            <div class="column large-4 text-right"><label for="date_from">Date From:</label></div>
+                            <div class="column large-8">
+                                <input type="text" id="date_from" name="date_from" class="datepicker filter-field"
+                                       value="<?= array_key_exists('date_from', $list_filter) ? $list_filter['date_from'] : ''; ?>" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column large-4 text-right"><label for="date_to">Date To:</label></div>
+                            <div class="column large-8">
+                                <input type="text" id="date_to" name="date_to" class="datepicker filter-field"
+                                       value="<?= array_key_exists('date_to', $list_filter) ? $list_filter['date_to'] : ''; ?>" />
+                            </div>
+                        </div>
+                    </div>
 
-                    <div class="column large-1 text-right"><label for="date_from">Date From:</label></div>
-                    <div class="column large-2">
-                        <input type="text" id="date_from" name="date_from" class="datepicker filter-field"
-                               value="<?= array_key_exists('date_from', $list_filter) ? $list_filter['date_from'] : ''; ?>" /></div>
-                    <div class="column large-1 text-right"><label for="date_to">Date To:</label></div>
-                    <div class="column large-2">
-                        <input type="text" id="date_to" name="date_to" class="datepicker filter-field"
-                               value="<?= array_key_exists('date_to', $list_filter) ? $list_filter['date_to'] : ''; ?>" /></div>
+                    <div class="column large-3">
+                        <div class="row">
+                            <div class="column large-4 text-right"><label for="subspecialty_id">Subspecialty:</label></div>
+                            <div class="column large-8">
+                                <?php echo CHtml::dropDownList('subspecialty_id',
+                                    (array_key_exists('subspecialty_id', $list_filter) ? $list_filter['subspecialty_id'] : null),
+                                    Subspecialty::model()->getList(),
+                                    array('class' => 'filter-field', 'empty' => 'All specialties',))?>
+                            </div>
+                            <div class="column large-4 text-right"><label for="site_id">Site:</label></div>
+                            <div class="column large-8">
+                                <?php echo CHtml::dropDownList('site_id',
+                                    (array_key_exists('site_id', $list_filter) ? $list_filter['site_id'] : null),
+                                    Site::model()->getListForCurrentInstitution(),
+                                    array('class' => 'filter-field', 'empty' => 'All sites',))?>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="column large-1 text-right"><label for="consultants">Consultant(s):</label></div>
                     <div class="column large-2"><?php
                         $this->widget('zii.widgets.jui.CJuiAutoComplete', array(

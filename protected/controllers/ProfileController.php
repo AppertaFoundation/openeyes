@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -33,12 +34,9 @@ class ProfileController extends BaseController
         if (!Yii::app()->params['profile_user_can_edit']) {
             $this->redirect('/');
         }
-
         Yii::app()->assetManager->registerCssFile('css/admin.css');
         Yii::app()->assetManager->registerScriptFile('js/profile.js');
-
         $this->jsVars['items_per_page'] = $this->items_per_page;
-
         return parent::beforeAction($action);
     }
 
@@ -52,11 +50,8 @@ class ProfileController extends BaseController
         if (!Yii::app()->params['profile_user_can_edit']) {
             $this->redirect(array('/profile/password'));
         }
-
         $errors = array();
-
         $user = User::model()->findByPk(Yii::app()->user->id);
-
         if (!empty($_POST)) {
             if (Yii::app()->params['profile_user_can_edit']) {
                 foreach (array('title', 'first_name', 'last_name', 'email', 'qualifications') as $field) {
@@ -71,7 +66,6 @@ class ProfileController extends BaseController
                 }
             }
         }
-
         $this->render('/profile/info', array(
             'user' => $user,
             'errors' => $errors,
@@ -83,16 +77,13 @@ class ProfileController extends BaseController
         if (!Yii::app()->params['profile_user_can_change_password']) {
             $this->redirect(array('/profile/sites'));
         }
-
         $errors = array();
-
         $user = User::model()->findByPk(Yii::app()->user->id);
-
         if (!empty($_POST)) {
             if (Yii::app()->params['profile_user_can_change_password']) {
                 if (empty($_POST['User']['password_old'])) {
                     $errors['Current password'] = array('Please enter your current password');
-                } elseif ($user->password !== md5($user->salt.$_POST['User']['password_old'])) {
+                } elseif ($user->password !== md5($user->salt . $_POST['User']['password_old'])) {
                     $errors['Current password'] = array('Password is incorrect');
                 }
 
@@ -117,12 +108,10 @@ class ProfileController extends BaseController
                     }
                 }
             }
-
             unset($_POST['User']['password_old']);
             unset($_POST['User']['password_new']);
             unset($_POST['User']['password_confirm']);
         }
-
         $this->render('/profile/password', array(
             'user' => $user,
             'errors' => $errors,
@@ -150,7 +139,7 @@ class ProfileController extends BaseController
             foreach ($_POST['sites'] as $site_id) {
                 if ($us = UserSite::model()->find('user_id=? and site_id=?', array($user->id, $site_id))) {
                     if (!$us->delete()) {
-                        throw new Exception('Unable to delete UserSite: '.print_r($us->getErrors(), true));
+                        throw new Exception('Unable to delete UserSite: ' . print_r($us->getErrors(), true));
                     }
                 }
             }
@@ -166,30 +155,47 @@ class ProfileController extends BaseController
         } else {
             $sites = Site::model()->findAllByPk(@$_POST['site_id']);
         }
-
         foreach ($sites as $site) {
             if (!$us = UserSite::model()->find('site_id=? and user_id=?', array($site->id, Yii::app()->user->id))) {
                 $us = new UserSite();
                 $us->site_id = $site->id;
                 $us->user_id = Yii::app()->user->id;
                 if (!$us->save()) {
-                    throw new Exception('Unable to save UserSite: '.print_r($us->getErrors(), true));
+                    throw new Exception('Unable to save UserSite: ' . print_r($us->getErrors(), true));
                 }
             }
         }
-
         echo '1';
     }
 
+    /**
+     * Firm view in user profile
+     */
     public function actionFirms()
     {
         $user = User::model()->findByPk(Yii::app()->user->id);
+        $this->render('/profile/firms', array(
+            'user' => $user,
+        ));
+    }
 
+
+    /**
+     * Firm deletion from user profile
+     *
+     * @throws Exception
+     */
+    public function actionDeleteFirms()
+    {
+        $user = User::model()->findByPk(Yii::app()->user->id);
+        $firm_transaction = Yii::app()->db->beginTransaction();
         if (!empty($_POST['firms'])) {
+
             foreach ($_POST['firms'] as $firm_id) {
+
                 if ($uf = UserFirm::model()->find('user_id=? and firm_id=?', array($user->id, $firm_id))) {
                     if (!$uf->delete()) {
-                        throw new Exception('Unable to delete UserFirm: '.print_r($uf->getErrors(), true));
+                        throw new Exception('Unable to delete UserFirm: ' . print_r($uf->getErrors(), true));
                     }
                 }
             }
@@ -199,15 +205,13 @@ class ProfileController extends BaseController
                 if ($user->has_selected_firms) {
                     $user->has_selected_firms = 0;
                     if (!$user->save()) {
-                        throw new Exception('Unable to save user: '.print_r($user->getErrors(), true));
+                        throw new Exception('Unable to save user: ' . print_r($user->getErrors(), true));
                     }
                 }
             }
+            echo "success";
         }
-
-        $this->render('/profile/firms', array(
-            'user' => $user,
-        ));
+        $firm_transaction->commit();
     }
 
     public function actionAddFirm()
@@ -226,34 +230,32 @@ class ProfileController extends BaseController
                 $us->firm_id = $firm->id;
                 $us->user_id = Yii::app()->user->id;
                 if (!$us->save()) {
-                    throw new Exception('Unable to save UserFirm: '.print_r($us->getErrors(), true));
+                    throw new Exception('Unable to save UserFirm: ' . print_r($us->getErrors(), true));
                 }
 
                 $user->has_selected_firms = 1;
                 if (!$user->save()) {
-                    throw new Exception('Unable to save user: '.print_r($user->getErrors(), true));
+                    throw new Exception('Unable to save user: ' . print_r($user->getErrors(), true));
                 }
             }
         }
 
-		echo "1";
-	}
+        echo "1";
+    }
 
-	public function actionSignature()
+    public function actionSignature()
     {
         $user = User::model()->findByPk(Yii::app()->user->id);
 
 
-
-        $this->render('/profile/signature',array(
+        $this->render('/profile/signature', array(
             'user' => $user,
         ));
     }
 
     public function actionGetSignatureFromPortal()
     {
-        if(Yii::app()->user->id)
-        {
+        if (Yii::app()->user->id) {
             // TODO: query the portal here:
             // TODO: get current unique ID for the user
             // TODO: query the portal with the current unique ID
@@ -262,23 +264,24 @@ class ProfileController extends BaseController
 
             $user = User::model()->findByPk(Yii::app()->user->id);
 
-            $portalConnection = new optomPortalConnection();
-            if ($portalConnection) {
-                $signatureData = $portalConnection->signatureSearch(null,
+            $portal_conn = new OptomPortalConnection();
+            if ($portal_conn) {
+                $signature_data = $portal_conn->signatureSearch(null,
                     $user->generateUniqueCodeWithChecksum($this->getUniqueCodeForUser()));
-            }
 
-            if (is_array($signatureData) && isset($signatureData["image"]) && $portalConnection) {
-                $signatureFile = $portalConnection->createNewSignatureImage($signatureData["image"], Yii::app()->user->id);
-                if($signatureFile)
-                {
-                    $user->signature_file_id = $signatureFile->id;
-                    if($user->save())
-                    {
-                        echo true;
+                if (is_array($signature_data) && isset($signature_data["image"])) {
+                    $signature_file = $portal_conn->createNewSignatureImage($signature_data["image"],
+                        Yii::app()->user->id);
+                    if ($signature_file) {
+                        $user->signature_file_id = $signature_file->id;
+                        if ($user->save()) {
+                            echo true;
+                        }
                     }
                 }
             }
+
+
         }
         echo false;
 
@@ -288,11 +291,9 @@ class ProfileController extends BaseController
     {
         if (Yii::app()->user->id && Yii::app()->getRequest()->getParam("signaturePin")) {
             $user = User::model()->findByPk(Yii::app()->user->id);
-            if($user->signature_file_id)
-            {
+            if ($user->signature_file_id) {
                 $decodedImage = $user->getDecryptedSignature(Yii::app()->getRequest()->getParam("signaturePin"));
-                if($decodedImage)
-                {
+                if ($decodedImage) {
                     echo base64_encode($decodedImage);
                 }
             }
@@ -314,7 +315,8 @@ class ProfileController extends BaseController
             }
             $finalUniqueCode = $user->generateUniqueCodeWithChecksum($user_code);
 
-            $QRimage = $QRSignature->createQRCode("@U:1@code:".$finalUniqueCode."@key:".md5(Yii::app()->user->id), 250);
+            $QRimage = $QRSignature->createQRCode("@U:1@code:" . $finalUniqueCode . "@key:" . md5(Yii::app()->user->id),
+                250);
 
             // Output and free from memory
             header('Content-Type: image/jpeg');

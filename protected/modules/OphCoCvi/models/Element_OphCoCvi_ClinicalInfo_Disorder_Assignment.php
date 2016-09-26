@@ -32,7 +32,7 @@ namespace OEModule\OphCoCvi\models;
  * The followings are the available model relations:
  *
  * @property Element_OphCoCvi_ClinicalInfo $element
- * @property OphCoCvi_ClinicalInfo_Disorders $ophcocvi_clinicinfo_disorders
+ * @property OphCoCvi_ClinicalInfo_Disorders $ophcocvi_clinicinfo_disorder
  * @property User $user
  * @property User $usermodified
  */
@@ -113,6 +113,7 @@ class Element_OphCoCvi_ClinicalInfo_Disorder_Assignment extends \BaseActiveRecor
         ));
     }
 
+    /*
     public function getDisorderAffectedStatus($disorder_id,$element_id,$side) {
         $eye_value = \Eye::model()->find("name = ?", array(ucfirst($side)));
         $criteria=new \CDbCriteria;
@@ -126,6 +127,7 @@ class Element_OphCoCvi_ClinicalInfo_Disorder_Assignment extends \BaseActiveRecor
 
     }
 
+
     public function getDisorderMainCause($disorder_id,$element_id,$side) {
         $eye_value = \Eye::model()->find("name = ?", array(ucfirst($side)));
         $criteria=new \CDbCriteria;
@@ -137,14 +139,6 @@ class Element_OphCoCvi_ClinicalInfo_Disorder_Assignment extends \BaseActiveRecor
         $item = Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()->find($criteria);
         return $item['main_cause'] ? $item['main_cause'] : 0;
     }
+    */
 
-    /**
-     * Returns an associative array of the data values for printing
-     */
-    public function getStructuredDataForPrint()
-    {
-        $result = array();
-
-        return $result;
-    }
 }

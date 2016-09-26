@@ -21,11 +21,11 @@
 }
 /* line 19, ../sass/components/_event.scss */
 .event .event-content {
-  background-image: url('../img/watermark.png?1399992053');
+  background-image: url('../img/watermark.png?1457349998');
 }
 /* line 22, ../sass/components/_event.scss */
 .event .event-title {
-  background-image: url('../img/medium.png?1399992053');
+  background-image: url('../img/medium.png?1457349998');
 }
 
 /* line 29, ../sass/components/_event.scss */
@@ -131,6 +131,28 @@
     text-align: center;
   }
 }
+/* line 106, ../sass/components/_elements.scss */
+.highlighted-eye {
+  border: 2px solid orange !important;
+}
+
+/* line 110, ../sass/components/_elements.scss */
+.disabled-eye {
+  opacity: 0.4;
+}
+
+/* line 114, ../sass/components/_elements.scss */
+.iolDisplay {
+  font-size: 18px;
+  background-color: #ffff66;
+  border-color: gray;
+  border-width: 2px;
+  border-style: solid;
+  padding-left: 5px;
+  padding-right: 5px;
+  float: left;
+}
+
 /* line 17, ../sass/components/_eyedraw.scss */
 #eyedrawwidget_Cataract {
   margin: 0;
@@ -240,23 +262,4 @@
     margin-top: 1em;
     width: 100%;
   }
-}
-
-.highlighted-eye{
-    border: 2px solid orange !important;
-}
-
-.disabled-eye{
-    opacity: 0.4;
-}
-
-.iolDisplayHighlited {
-  font-size: 18px;
-  background-color: #ffff66;
-  border-color: gray;
-  border-width: 2px;
-  border-style: solid;
-  padding-left: 5px;
-  padding-right: 5px;
-  float: left;
 }

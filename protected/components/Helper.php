@@ -345,4 +345,78 @@ class Helper
 
         return $r->getShortName();
     }
+
+    /**
+     * @param $string
+     * @param integer $line_count
+     * @param integer $protect
+     * @param string $delimiter
+     * @param string $joiner
+
+     * @return string $result
+     * @throws InvalidArgumentException
+     */
+    public static function lineLimit($string, $line_count, $protect = 0, $delimiter = "\n", $joiner = ', ')
+    {
+        if ($protect >= $line_count) {
+            throw new InvalidArgumentException("protect must be less than the line_count");
+        }
+
+        $bits = explode($delimiter, $string);
+        if (count($bits) <= $line_count) {
+            return implode($delimiter, $bits);
+        }
+        $protected = array();
+        for ($i = 0; $i < $protect; $i++) {
+            array_unshift($protected, array_pop($bits));
+        }
+
+        while ((count($bits) + $protect) > $line_count) {
+            $last = array_pop($bits);
+            $bits[count($bits)-1] .= $joiner . $last;
+        }
+
+        return implode($delimiter, array_merge($bits, $protected));
+    }
+
+    /**
+     * Find an element in a nested hasharray $haystack with a string $needle separated by $delimiter
+     *
+     * @param array $haystack
+     * @param $needle
+     * @param string $delimiter
+     * @return null
+     */
+    public static function elementFinder($needle, $haystack, $delimiter = '.')
+    {
+        $break = strpos($needle, $delimiter);
+        $key = $break === false ? $needle : substr($needle, 0, $break);
+        if (isset($haystack[$key])) {
+            if ($key == $needle) {
+                return $haystack[$key];
+            }
+            return static::elementFinder(substr($needle, $break + 1), $haystack[$key]);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Extracts what should be the md5 from the end of a string to verify against the remainder
+     * Returns the verified data if the md5 is correct, null otherwise.
+     *
+     * @param $data
+     * @return null|string
+     */
+    public static function md5Verified($data)
+    {
+        $actual_data = substr($data, 0, -32);
+        $checksum = substr($data, -32);
+        if (md5($actual_data) === $checksum) {
+            return $actual_data;
+        }
+        return null;
+
+    }
+
 }

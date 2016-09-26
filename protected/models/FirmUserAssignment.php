@@ -60,6 +60,7 @@ class FirmUserAssignment extends BaseActiveRecordVersioned
         return array(
             array('firm_id', 'required'),
             array('firm_id', 'length', 'max' => 10),
+            array('user_id, firm_id', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, firm_id', 'safe', 'on' => 'search'),

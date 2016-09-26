@@ -29,3 +29,14 @@ hr {
   margin-top: 0.1em;
   margin-bottom: 0.1em;
 }
+
+.disorder-toggle {
+  margin-left: 10px;
+  margin-right: 10px;
+  border-radius: 5px;
+}
+
+.disorder-toggle:hover {
+  background-color: #3665ff;
+  cursor: pointer;
+}

@@ -167,6 +167,10 @@ class NodExportController extends BaseController
         
         $this->getPatientCviStatus();
         $this->getPatients();
+        
+        // Write out extra description files
+        $this->getExtraCsvs();
+        
         $this->clearAllTempTables();
 
     }
@@ -862,10 +866,13 @@ EOL;
                         IsCVIPartial )
                 SELECT
                 poi.patient_id AS PatientId,
-                poi.cvi_status_date AS `Date`,
-                (SELECT CASE WHEN DAYNAME(DATE) IS NULL THEN 1 ELSE 0 END) AS IsDateApprox,
-                (SELECT CASE WHEN poi.cvi_status_id=4 THEN 1 ELSE 0 END) AS IsCVIBlind,
-                (SELECT CASE WHEN poi.cvi_status_id=3 THEN 1 ELSE 0 END) AS IsCVIPartial
+                IFNULL(
+                        STR_TO_DATE(REPLACE(poi.cvi_status_date, '-00', 'BAD-DATE'), '%Y-%m-%d'),
+                        DATE(poi.created_date)
+                ) AS `Date`,
+                (CASE WHEN DAYNAME(poi.cvi_status_date) IS NULL THEN 1 ELSE 0 END) AS IsDateApprox,
+                (CASE WHEN poi.cvi_status_id=4 THEN 1 ELSE 0 END) AS IsCVIBlind,
+                (CASE WHEN poi.cvi_status_id=3 THEN 1 ELSE 0 END) AS IsCVIPartial
                 FROM patient_oph_info poi
 
                 /* Restriction: patients in control events */
@@ -2510,7 +2517,8 @@ EOL;
                 , co.OperationId
                 , 'L' AS Eye
                 , IFNULL(rcoct.code, onccs.id) AS ComplicationTypeId
-                , onccs.name AS ComplicationTypeDescription
+                , IF(rcoct.code IS NULL, onccs.name, rcoct.name) as ComplicationTypeDescription
+                #, onccs.name AS ComplicationTypeDescription
                 
                 /* Restriction: Start with OPERATIONS (processed previously), seeded from control events */
                 FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} co
@@ -2546,7 +2554,8 @@ EOL;
                 , co.OperationId
                 , 'R' AS Eye
                 , IFNULL(rcoct.code, onccs.id) AS ComplicationTypeId
-                , onccs.name AS ComplicationTypeDescription
+                , IF(rcoct.code IS NULL, onccs.name, rcoct.name) as ComplicationTypeDescription
+                #, onccs.name AS ComplicationTypeDescription
                 
                 /* Restriction: Start with OPERATIONS (processed previously), seeded from control events */
                 FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} co
@@ -2825,7 +2834,32 @@ EOL;
     
     /********** end of EpisodeVisualAcuity **********/
         
-    
+    public function getExtraCsvs()
+    {
+        // Write out distorder
+        $query = <<<EOL
+                SELECT d.id as IndicationId, d.term as IndicationDescription
+                FROM disorder d
+EOL;
+        $dataQuery = array(
+            'query' => $query,
+            'header' => array('IndicationId', 'IndicationDescription'),
+        );
+        $this->saveCSVfile($dataQuery, 'IndicationDescription');
+        
+        
+        // Write out distorder
+        $query = <<<EOL
+                SELECT p.snomed_code AS TreatmentTypeId, p.snomed_term AS TreatmentTypeDescription
+                FROM proc p
+EOL;
+        $dataQuery = array(
+            'query' => $query,
+            'header' => array('TreatmentTypeId', 'TreatmentTypeDescription'),
+        );
+        $this->saveCSVfile($dataQuery, 'TreatmentTypeDescription');
+
+    }
     
     
     

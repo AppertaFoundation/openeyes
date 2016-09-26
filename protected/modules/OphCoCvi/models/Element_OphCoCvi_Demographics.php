@@ -168,7 +168,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
     {
         $this->date_of_birth = $patient->dob;
         $this->nhs_number = $patient->getNhsnum();
-        $this->address = $patient->getSummaryAddress(',');
+        $this->address = $patient->getSummaryAddress(",\n");
         if ($patient->contact && $patient->contact->address) {
             $this->postcode = substr($patient->contact->address->postcode,0,4);
         }
@@ -181,7 +181,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
 
         if ($patient->gp) {
             $this->gp_name = $patient->gp->getFullName();
-            $this->gp_address = $patient->gp->getLetterAddress(array('delimiter' => ', ', 'patient' => $patient));
+            $this->gp_address = $patient->gp->getLetterAddress(array('delimiter' => ",\n", 'patient' => $patient));
             if ($practice = $patient->practice) {
                 $this->gp_telephone = $practice->phone;
             }
@@ -297,14 +297,14 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
             'patientDateOfBirth' => $this->date_of_birth,
             'nhsNumber' => $this->nhs_number,
             'gender' => $this->gender->name,
-            'patientAddress' => $this->address,
+            'patientAddress' => \Helper::lineLimit($this->address,1),
             'patientEmail' => $this->email,
             'patientTel' => $this->telephone,
             'gpName' => $this->gp_name,
-            'gpAddress' => $this->gp_address,
+            'gpAddress' => \Helper::lineLimit($this->gp_address,1),
             'gpTel' => $this->gp_telephone,
             'localAuthorityName' => $this->la_name,
-            'localAuthorityAddress' => $this->la_address,
+            'localAuthorityAddress' => \Helper::lineLimit($this->la_address,1),
             'localAuthorityTel' => $this->la_telephone,
         );
 

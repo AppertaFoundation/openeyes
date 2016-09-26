@@ -51,9 +51,32 @@
             <div class="large-2 column">
                 <div class="data-label">Captured Signature</div>
             </div>
-            <div class="large-6 column end">
+            <div class="large-4 column">
                 <img src="/OphCoCvi/default/displayConsentSignature/<?=$this->event->id?>" style="height: 60px" />
             </div>
+            <?php if ($this->checkEditAccess()) {
+                $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+                    'id' => 'remove-consent-signature-form',
+                    'action' => $this->getApp()->createUrl($this->getModule()->name.'/default/removeConsentSignature/'.$this->event->id),
+                    'enableAjaxValidation' => false,
+                    'layoutColumns' => array(
+                        'label' => 2,
+                        'field' => 10
+                    )
+                ));
+            ?>
+            <input type="hidden" name="signature_file_id" value="<?= $element->signature_file_id ?>" />
+            <div class="large-4 column end">
+                <?php echo CHtml::button('Remove patient signature', array(
+                    'type' => 'button',
+                    'id' => 'remove-patient-signature',
+                    'name' => 'capturePatientSignature',
+                    'class' => 'small button warning event-action'
+                )); ?>
+            </div>
+            <?php
+                $this->endWidget();
+            } ?>
         <?php } else { ?>
             <?php if ($this->checkEditAccess()) { ?>
                 <div class="large-12 column end">

@@ -34,9 +34,15 @@ return array(
                 'sub' => array(
                     'cvi' => array(
                         'title' => 'CVI',
-                        'uri' => '/OphCoCvi/Default/list',
                         'position' => 7,
-                        'restricted' => array(array('OprnCreateCvi', 'user_id'))
+                        'restricted' => array(array('OprnCreateCvi', 'user_id')),
+                        'uri' => '/OphCoCvi/Default/list',
+                    ),
+                    'la' => array(
+                        'title' => 'LA Admin',
+                        'uri' => '/OphCoCvi/LocalAuthoritiesAdmin/list',
+                        'position' => 8,
+                        'restricted' => array(array('OprnCreateCvi', 'user_id')),
                     ),
                 )
             ),
@@ -54,5 +60,10 @@ return array(
             ),
         ),
         'ophcocvi_allow_all_consultants' => false,
+        'thresholds' => array(
+            'visualAcuity' => array(
+                'alert_base_value' => 100
+            )
+        ),
     )
 );

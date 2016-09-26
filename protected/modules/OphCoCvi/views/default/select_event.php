@@ -55,8 +55,8 @@
 						</div>
                         <div class="field-row">
 							<div class="field-info">
-                                <a href='<?= \Yii::app()->request->requestUri."&createnewcvi=1" ?>' >
-                                    <button type="submit">
+                                <a href="<?= $can_create ? \Yii::app()->request->requestUri."&createnewcvi=1" : '#'; ?>" >
+                                    <button class="primary small<?= $can_create ? '' : ' disabled' ?>">
                                         Proceed to Create new CVI
                                     </button>
                                 </a>

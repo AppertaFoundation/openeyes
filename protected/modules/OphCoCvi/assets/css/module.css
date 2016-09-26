@@ -19,11 +19,11 @@
 /* line 16, ../sass/components/_event.scss */
 .event .event-content {
   border-color: #86cdff;
-  background-image: url('../img/watermark.png?1470932098');
+  background-image: url('../img/watermark.png?1474038891');
 }
 /* line 20, ../sass/components/_event.scss */
 .event .event-title {
-  background-image: url('../img/medium.png?1470932098');
+  background-image: url('../img/medium.png?1474038891');
 }
 
 /* line 25, ../sass/components/_event.scss */
@@ -51,6 +51,20 @@
   float: right;
 }
 
+/* line 45, ../sass/components/_event.scss */
+#printLabelPanel tr td {
+  background: #FFF;
+  width: 20px;
+  cursor: pointer;
+  border: 1px solid #c1c1c1;
+}
+
+/* line 46, ../sass/components/_event.scss */
+#printLabelPanel tr td.active-panel {
+  background: #c90000;
+  color: #FFF;
+}
+
 /* line 15, ../sass/components/_elements.scss */
 .element .indent-correct {
   margin-left: -10px;
@@ -73,5 +87,15 @@ hr {
   margin-bottom: 0.1em;
 }
 
-#printLabelPanel tr td{background:#FFF; width:20px; cursor: pointer; border:1px solid #c1c1c1;}
-#printLabelPanel tr td.active-panel{background:#c90000; color:#FFF;}
+/* line 33, ../sass/components/_elements.scss */
+.disorder-toggle {
+  margin-left: 10px;
+  margin-right: 10px;
+  border-radius: 5px;
+}
+
+/* line 39, ../sass/components/_elements.scss */
+.disorder-toggle:hover {
+  background-color: #3665ff;
+  cursor: pointer;
+}

@@ -41,9 +41,28 @@ $(document).ready(function() {
         // FIXME: this seems ridiculous
         setTimeout(function() {e.preventDefault(); enableButtons();}, 100);
         return false;
-
     });
-    
+
+    $('#remove-patient-signature').on('click', function(e) {
+
+        e.preventDefault();
+
+        var confirmDialog = new OpenEyes.UI.Dialog.Confirm({
+            title: "Remove Patient Signature",
+            'content': 'Are you sure you want to delete the current Patient Signature?',
+            'okButton': 'Remove'
+        });
+        confirmDialog.open();
+        // suppress default ok behaviour
+        confirmDialog.content.off('click', '.ok');
+        // manage form submission and response
+        confirmDialog.content.on('click', '.ok', function() {
+            $('#remove-consent-signature-form').submit();
+        });
+
+        return false;
+    });
+
     handleButton( $('#print-for-signature'),function(e) {
         var data = {'firstPage':'1'};
 	    printIFrameUrl($(e.target).data('print-url'), data);
@@ -188,6 +207,21 @@ $(document).ready(function() {
             }
     });
 
+    // if a disorder is a main cause, it should be marked as "affected"
+    $(document).on('change', '.disorder-main-cause', function(e) {
+        if (e.target.checked) {
+            $(this).closest('.column').find('.affected-selector[value="1"]').prop('checked', 'checked');
+        }
+    });
+
+    $(document).on('change', 'input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature[is_patient]"][type="radio"]',function(e) {
+        if ($(e.target).val() === '1') {
+            $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature_representative_name').prop('disabled', 'disabled').closest('.field-row').hide();
+        } else {
+            $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature_representative_name').removeProp('disabled').closest('.field-row').show();
+        }
+
+    });
 });
 
 function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }

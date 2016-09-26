@@ -23,9 +23,7 @@
   border-color: gray;
   border-width: 1px;
   border-style: solid;
-  padding-left: 5px;
-  padding-right: 5px;
-  float: left;
+  padding-left: 10px;
 }
 
 /* line 17, ../sass/components/_event.scss */
@@ -34,11 +32,11 @@
 }
 /* line 19, ../sass/components/_event.scss */
 .event .event-content {
-  background-image: url('../img/watermark.png?1406619609');
+  background-image: url('../img/watermark.png?1457349986');
 }
 /* line 22, ../sass/components/_event.scss */
 .event .event-title {
-  background-image: url('../img/medium.png?1406619609');
+  background-image: url('../img/medium.png?1457349986');
 }
 
 /* line 27, ../sass/components/_event.scss */
@@ -52,36 +50,6 @@
 /* line 35, ../sass/components/_event.scss */
 .element-side-header.right-side h4 {
   margin-left: 0.7em;
-}
-
-.highlighted-lens {
-  border-top: 3px solid #FF9900 !important;
-  border-left: 3px solid #FF9900 !important;
-  border-right: 3px solid #FF9900 !important;
-}
-
-.highlighted-selection{
-  border-left: 3px solid #FF9900 !important;
-  border-right: 3px solid #FF9900 !important;
-  border-top:3px solid transparent;
-  margin-bottom:3px;
-}
-
-.highlighted-calculation{
-    border-left: 3px solid #FF9900 !important;
-    border-right: 3px solid #FF9900 !important;
-    border-bottom: 3px solid #FF9900;
-}
-
-.disabled{
-    opacity: 0.60;
-    border-bottom: 3px solid transparent;
-}
-.top-pad{
-  border-top:3px solid transparent;
-  border-left:3px solid transparent;
-  border-right:3px solid transparent;
-  border-bottom:3px solid transparent;
 }
 
 /* line 41, ../sass/components/_event.scss */
@@ -127,36 +95,77 @@ label.rse_d_left, label.rse_d_right {
   margin-left: 14.5em;
 }
 
-tr:hover,tr.even:hover, tr:nth-of-type(even):hover, tr.alt.hover {
-  border:0px solid #FF9900;
+/* line 77, ../sass/components/_event.scss */
+.highlighted-lens {
+  border-top: 3px solid #FF9900 !important;
+  border-left: 3px solid #FF9900 !important;
+  border-right: 3px solid #FF9900 !important;
+}
+
+/* line 83, ../sass/components/_event.scss */
+.highlighted-selection {
+  border-left: 3px solid #FF9900 !important;
+  border-right: 3px solid #FF9900 !important;
+  border-top: 3px solid transparent;
+  margin-bottom: 3px;
+}
+
+/* line 90, ../sass/components/_event.scss */
+.highlighted-calculation {
+  border-left: 3px solid #FF9900 !important;
+  border-right: 3px solid #FF9900 !important;
+  border-bottom: 3px solid #FF9900;
+}
+
+/* line 96, ../sass/components/_event.scss */
+.disabled {
+  opacity: 0.60;
+  border-bottom: 3px solid transparent;
+}
+
+/* line 101, ../sass/components/_event.scss */
+.top-pad {
+  border-top: 3px solid transparent;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+}
+
+/* line 108, ../sass/components/_event.scss */
+tr:hover, tr.even:hover, tr:nth-of-type(even):hover, tr.alt.hover {
+  border: 0px solid #FF9900;
   background: #FFFFE0;
 }
 
-.highlighted,tr:nth-of-type(even).highlighted {
-  background-color : #FF9900;
+/* line 113, ../sass/components/_event.scss */
+.highlighted, tr:nth-of-type(even).highlighted {
+  background-color: #FF9900;
 }
 
-.readonly-box  {
+/* line 117, ../sass/components/_event.scss */
+.readonly-box {
   background-color: #dddddd;
   padding: 4px 6px;
   border: 1px solid #6b8aaa;
   margin: 0;
-  font-size:small;
+  font-size: small;
   border-radius: 3px;
 }
 
-.box-margin  {
+/* line 126, ../sass/components/_event.scss */
+.box-margin {
   margin-left: 40px;
-  display: block;
-  min-width: 55px;
 }
 
-.readonly-div{
+/* line 129, ../sass/components/_event.scss */
+.readonly-div {
   height: auto;
   border: 1px solid #6b8aaa;
   background-color: #dddddd;
   width: 1025px;
 }
-.closest{
+
+/* line 135, ../sass/components/_event.scss */
+.closest {
   font-weight: bold;
 }

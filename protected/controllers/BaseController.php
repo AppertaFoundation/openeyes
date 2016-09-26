@@ -273,16 +273,7 @@ class BaseController extends Controller
      */
     private function getParamAttribute($config, $key)
     {
-        $break = strpos($key, ".");
-        $piece = $break === false ? $key : substr($key, 0, $break);
-        if (isset($config[$piece])) {
-            if ($piece == $key) {
-                return $config[$piece];
-            }
-            return $this->getParamAttribute($config[$piece], substr($key, $break + 1));
-        } else {
-            return null;
-        }
+        return Helper::elementFinder($key, $config);
     }
 
     /**

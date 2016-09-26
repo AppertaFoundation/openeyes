@@ -37,7 +37,7 @@
                 <div class="data-label"><?= $element->getAttributeLabel('address') ?>:</div>
             </div>
             <div class="large-8 column end">
-                <div class="data-value"><?= CHtml::encode($element->address) ?></div>
+                <div class="data-value"><?= nl2br(CHtml::encode($element->address)) ?></div>
             </div>
         </div>
         <div class="row data-row">
@@ -95,7 +95,7 @@
                 <div class="data-label"><?= $element->getAttributeLabel('gp_address') ?>:</div>
             </div>
             <div class="large-8 column end">
-                <div class="data-value"><?= CHtml::encode($element->gp_address) ?></div>
+                <div class="data-value"><?= nl2br(CHtml::encode($element->gp_address)) ?></div>
             </div>
         </div>
         <div class="row data-row">
@@ -119,7 +119,7 @@
                 <div class="data-label"><?= $element->getAttributeLabel('la_address') ?>:</div>
             </div>
             <div class="large-8 column end">
-                <div class="data-value"><?= CHtml::encode($element->la_address) ?></div>
+                <div class="data-value"><?= nl2br(CHtml::encode($element->la_address)) ?></div>
             </div>
         </div>
         <div class="row data-row">
