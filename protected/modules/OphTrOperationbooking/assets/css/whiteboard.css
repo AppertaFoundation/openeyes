@@ -39,39 +39,20 @@
 /* line 44, ../sass/whiteboard.scss */
 .mdl-grid .mdl-card .mdl-card__title .mdl-card__title-text {
   font-size: 16px;
+  font-weight: 700;
 }
-/* line 47, ../sass/whiteboard.scss */
+/* line 48, ../sass/whiteboard.scss */
 .mdl-grid .mdl-card .mdl-card__title .material-icons {
   cursor: pointer;
   font-size: 18px;
 }
-/* line 52, ../sass/whiteboard.scss */
+/* line 53, ../sass/whiteboard.scss */
 .mdl-grid .mdl-card .mdl-card__supporting-text {
   font-size: 18px;
   line-height: 1.1em;
   font-weight: 700;
 }
-/* line 56, ../sass/whiteboard.scss */
-.mdl-grid .mdl-card .mdl-card__supporting-text dl {
-  margin: 0;
-}
-/* line 58, ../sass/whiteboard.scss */
-.mdl-grid .mdl-card .mdl-card__supporting-text dl dt {
-  display: inline-block;
-  min-width: 180px;
-}
-@media screen and (max-width: 1200px) {
-  /* line 58, ../sass/whiteboard.scss */
-  .mdl-grid .mdl-card .mdl-card__supporting-text dl dt {
-    width: 100%;
-  }
-}
-/* line 65, ../sass/whiteboard.scss */
-.mdl-grid .mdl-card .mdl-card__supporting-text dl dd {
-  display: inline-block;
-  margin: 0;
-}
-/* line 70, ../sass/whiteboard.scss */
+/* line 57, ../sass/whiteboard.scss */
 .mdl-grid .mdl-card .mdl-card__supporting-text textarea {
   font-size: inherit;
   color: inherit;

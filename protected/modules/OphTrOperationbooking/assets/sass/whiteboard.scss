@@ -43,6 +43,7 @@
       }
       .mdl-card__title-text {
         font-size: 16px;
+        font-weight: 700;
       }
       .material-icons {
         cursor: pointer;
@@ -53,20 +54,6 @@
       font-size: 18px;
       line-height: 1.1em;
       font-weight: 700;
-      dl {
-        margin: 0;
-        dt {
-          display: inline-block;
-          min-width: 180px;
-          @media screen and (max-width: 1200px){
-            width: 100%;
-          }
-        }
-        dd {
-          display: inline-block;
-          margin: 0;
-        }
-      }
       textarea {
         font-size: inherit;
         color: inherit;
