@@ -217,10 +217,8 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
         $criteria = new \CDbCriteria();
         $criteria->join = 'join event on t.event_id = event.id ';
         $criteria->join .= 'join episode on event.episode_id = episode.id ';
-        $criteria->join .= 'join patient on episode.patient_id = patient.id ';
         $criteria->addCondition($type . ' > 0');
         $criteria->addCondition('episode.patient_id = :patient_id');
-        $criteria->addCondition('event.event_date > patient.no_risks_date');
         $criteria->params = array('patient_id' => $id);
         $criteria->order = 'event.event_date DESC';
         $criteria->limit = 1;

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -32,7 +33,14 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
     {
         return array(
             'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
-            'booking' => array(self::BELONGS_TO, 'Element_OphTrOperationbooking_Operation', '', 'on' => 't.event_id = booking.event_id', 'joinType' => 'INNER JOIN', 'alias' => 'booking'),
+            'booking' => array(
+                self::BELONGS_TO,
+                'Element_OphTrOperationbooking_Operation',
+                '',
+                'on' => 't.event_id = booking.event_id',
+                'joinType' => 'INNER JOIN',
+                'alias' => 'booking',
+            ),
         );
     }
 
@@ -66,17 +74,11 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $episode = Episode::model()->findByPk($event->episode_id);
         $patient = Patient::model()->findByPk($episode->patient_id);
         $contact = Contact::model()->findByPk($patient->contact_id);
-
         $biometry = $this->recentBiometry($patient);
-
-        $risks = new \OEModule\OphCiExamination\models\Element_OphCiExamination_HistoryRisk();
-        $blockers = $risks->mostRecentCheckedAlpha($patient->id);
-        $anticoag = $risks->mostRecentCheckedAnticoag($patient->id);
-
+        $blockers = $this->alphaBlockerStatusAndDate($patient);
+        $anticoag = $this->anticoagsStatusAndDate($patient);
         $labResult = Element_OphInLabResults_Inr::model()->findPatientResultByType($patient->id, '1');
-
         $allergyString = $this->allergyString($episode);
-
         $operation = $this->operation($id);
 
         $this->event_id = $id;
@@ -85,18 +87,18 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->eye = $eye;
         $this->predicted_additional_equipment = $booking->special_equipment_details;
         $this->comments = '';
-        $this->patient_name = $contact['title'].' '.$contact['first_name'].' '.$contact['last_name'];
+        $this->patient_name = $contact['title'] . ' ' . $contact['first_name'] . ' ' . $contact['last_name'];
         $this->date_of_birth = $patient['dob'];
         $this->hos_num = $patient['hos_num'];
         $this->procedure = implode(',', array_column($operation, 'term'));
         $this->allergies = $allergyString;
-        $this->iol_model = ($biometry) ? $biometry->attributes['lens_description_'.$eyeLabel] : 'Unknown';
-        $this->iol_power = ($biometry) ? $biometry->attributes['iol_power_'.$eyeLabel] : 'none';
-        $this->predicted_refractive_outcome = ($biometry) ? $biometry->attributes['predicted_refraction_'.$eyeLabel] : 'Unknown';
+        $this->iol_model = ($biometry) ? $biometry->attributes['lens_description_' . $eyeLabel] : 'Unknown';
+        $this->iol_power = ($biometry) ? $biometry->attributes['iol_power_' . $eyeLabel] : 'none';
+        $this->predicted_refractive_outcome = ($biometry) ? $biometry->attributes['predicted_refraction_' . $eyeLabel] : 'Unknown';
         $this->alpha_blockers = $patient->hasRisk('Alpha blockers');
         $this->anticoagulants = $patient->hasRisk('Anticoagulants');
-        $this->alpha_blocker_name = ($blockers) ? $blockers->alpha_blocker_name . ' (' . $blockers->event->event_date . ')' : '';
-        $this->anticoagulant_name = ($anticoag) ? $anticoag->anticoagulant_name . ' (' . $anticoag->event->event_date . ')' : '';
+        $this->alpha_blocker_name = $blockers;
+        $this->anticoagulant_name = $anticoag;
         $this->inr = ($labResult) ? $labResult : 'None';
         $this->save();
     }
@@ -168,5 +170,45 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             ->queryAll();
 
         return $operation;
+    }
+
+    /**
+     * @param $patient
+     *
+     * @return string
+     */
+    protected function alphaBlockerStatusAndDate($patient)
+    {
+        $risks = new \OEModule\OphCiExamination\models\Element_OphCiExamination_HistoryRisk();
+        $blockers = $risks->mostRecentCheckedAlpha($patient->id);
+        if ($blockers) {
+            if ($blockers->alphablocker === '2') {
+                return 'No (' . $blockers->event->event_date . ')';
+            } else {
+                return 'Yes - ' . $blockers->alpha_blocker_name . ' (' . $blockers->event->event_date . ')';
+            }
+        } else {
+            return 'Not Checked';
+        }
+    }
+
+    /**
+     * @param $patient
+     *
+     * @return string
+     */
+    protected function anticoagsStatusAndDate($patient)
+    {
+        $risks = new \OEModule\OphCiExamination\models\Element_OphCiExamination_HistoryRisk();
+        $anticoag = $risks->mostRecentCheckedAnticoag($patient->id);
+        if ($anticoag) {
+            if ($anticoag->anticoagulant === '2') {
+                return 'No (' . $anticoag->event->event_date . ')';
+            } else {
+                return 'Yes - ' . $anticoag->anticoagulant_name . ' (' . $anticoag->event->event_date . ')';
+            }
+        } else {
+            return 'Not Checked';
+        }
     }
 }
