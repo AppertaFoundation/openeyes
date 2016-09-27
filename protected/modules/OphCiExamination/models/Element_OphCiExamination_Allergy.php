@@ -21,6 +21,9 @@ namespace OEModule\OphCiExamination\models;
 
 class Element_OphCiExamination_Allergy extends \BaseEventTypeElement
 {
+    // Custom attribute to determine the allergy validation
+    public $allergy_group;
+
     public function tableName()
     {
         return 'et_ophciexamination_allergy';
@@ -35,6 +38,7 @@ class Element_OphCiExamination_Allergy extends \BaseEventTypeElement
         // will receive user inputs.
         return array(
             array('event_id', 'safe'),
+            array('allergy_group', 'validateAllergy'),
         );
     }
 
@@ -51,4 +55,26 @@ class Element_OphCiExamination_Allergy extends \BaseEventTypeElement
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
         );
     }
+
+    /**
+     * To validate the allergy elements
+     * @param $attribute
+     * @param $param
+     */
+    public function validateAllergy($attribute, $param)
+    {
+        if ( $this->event->episode->patient->allergyAssignments &&
+            !\Yii::app()->request->getParam('no_allergies') &&
+            !\Yii::app()->request->getParam('selected_allergies') &&
+            !\Yii::app()->request->getParam('deleted_allergies')
+        )
+        {
+            return;
+        }
+        if (!\Yii::app()->request->getParam('no_allergies') && !\Yii::app()->request->getParam('selected_allergies'))
+        {
+            $this->addError($attribute, 'Please select an allergy or confirm patient has no allergies');
+        }
+    }
+
 }

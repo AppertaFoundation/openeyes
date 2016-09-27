@@ -24,7 +24,10 @@
     ?>
 				<input type="hidden" name="OEModule_OphCiExamination_models_Element_OphCiExamination_Allergy[allergy_loaded]" value="1">
 				<div id="add_allergy">
-					<div class="allergies_confirm_no field-row row" <?php if ($this->patient->hasAllergyStatus() && !$this->patient->no_allergies_date) {
+					<div class="allergies_confirm_no field-row row"
+						<?php
+						$selected_allergies = Yii::app()->request->getParam('selected_allergies');
+						if ($this->patient->hasAllergyStatus() && !$this->patient->no_allergies_date && $selected_allergies) {
     echo 'style="display: none;"';
 }
     ?>>
