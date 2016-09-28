@@ -4,15 +4,16 @@
  * Created by PhpStorm.
  * User: PATELH3
  * Date: 03/12/2015
- * Time: 10:50
+ * Time: 10:50.
  */
 class DicomFiles  extends BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return UserFirm the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }
@@ -35,7 +36,7 @@ class DicomFiles  extends BaseActiveRecordVersioned
         return array(
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id', 'safe', 'on'=>'search'),
+            array('id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -64,6 +65,7 @@ class DicomFiles  extends BaseActiveRecordVersioned
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
@@ -71,13 +73,13 @@ class DicomFiles  extends BaseActiveRecordVersioned
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria=new CDbCriteria;
+        $criteria = new CDbCriteria();
 
-        $criteria->compare('id',$this->id,true);
-        $criteria->compare('name',$this->name,true);
+        $criteria->compare('id', $this->id, true);
+        $criteria->compare('name', $this->name, true);
 
         return new CActiveDataProvider(get_class($this), array(
-            'criteria'=>$criteria,
+            'criteria' => $criteria,
         ));
     }
 }

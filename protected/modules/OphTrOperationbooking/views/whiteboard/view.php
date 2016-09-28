@@ -87,7 +87,7 @@
                 <h2 class="mdl-card__title-text">Alpha-blockers</h2>
             </div>
             <div class="mdl-card__supporting-text">
-                <?php if($data->alpha_blockers):?>
+                <?php if ($data->alpha_blockers):?>
                     Yes - <?=$data->alpha_blocker_name?>
                 <?php else: ?>
                     No
@@ -95,13 +95,17 @@
             </div>
         </div>
     </div>
-    <div class="mdl-cell mdl-cell--4-col">
+    <div class="mdl-cell mdl-cell--4-col editable">
         <div class="mdl-card mdl-shadow--2dp">
             <div class="mdl-card__title mdl-card--expand comment">
                 <h2 class="mdl-card__title-text">Predicted additional equipment</h2>
+                <?php if ($this->getWhiteboard()->isEditable()):?>
+                    <div class="mdl-layout-spacer"></div>
+                    <i class="material-icons right" data-whiteboard-event-id="<?=$data->event_id?>">create</i>
+                <?php endif; ?>
             </div>
-            <div class="mdl-card__supporting-text">
-                <?php if($data->predicted_additional_equipment): ?>
+            <div class="mdl-card__supporting-text" id="predicted_additional_equipment">
+                <?php if ($data->predicted_additional_equipment): ?>
                     <?=nl2br($data->predicted_additional_equipment)?>
                 <?php else:?>
                     None
@@ -115,7 +119,7 @@
                 <h2 class="mdl-card__title-text">Anticoagulants</h2>
             </div>
             <div class="mdl-card__supporting-text">
-                <?php if($data->anticoagulants):?>
+                <?php if ($data->anticoagulants):?>
                     Yes - <?=$data->anticoagulant_name?> <br>
                     INR: <?=$data->inr?>
                 <?php else: ?>
@@ -124,12 +128,16 @@
             </div>
         </div>
     </div>
-    <div class="mdl-cell mdl-cell--8-col">
+    <div class="mdl-cell mdl-cell--8-col editable">
         <div class="mdl-card mdl-shadow--2dp">
             <div class="mdl-card__title mdl-card--expand comment">
                 <h2 class="mdl-card__title-text">Comments</h2>
+                <?php if ($this->getWhiteboard()->isEditable()):?>
+                    <div class="mdl-layout-spacer"></div>
+                    <i class="material-icons right" data-whiteboard-event-id="<?=$data->event_id?>">create</i>
+                <?php endif; ?>
             </div>
-            <div class="mdl-card__supporting-text">
+            <div class="mdl-card__supporting-text" id="comments">
                 <?=nl2br($data->comments)?>
             </div>
         </div>

@@ -1,7 +1,7 @@
 <div class="box reports">
     <div class="report-fields">
         <h2>Pending Therapy Applications Report</h2>
-        <?php if($sent):?>
+        <?php if ($sent):?>
             <span>Report sent</span>
         <?php else:?>
             <form>

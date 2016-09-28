@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class ResultTypeController
+ * Class ResultTypeController.
  *
  * Controller to administer result types
  */
@@ -18,7 +18,7 @@ class ResultTypeController  extends ModuleAdminController
     }
 
     /**
-     * Lists Result Types
+     * Lists Result Types.
      *
      * @throws CHttpException
      */
@@ -32,24 +32,24 @@ class ResultTypeController  extends ModuleAdminController
     }
 
     /**
-     * Edits or adds a Type
+     * Edits or adds a Type.
      *
      * @param bool|int $id
+     *
      * @throws CHttpException
      */
     public function actionEdit($id = false)
     {
-
-        if($id){
+        if ($id) {
             $this->admin->setModelId($id);
         }
 
         $eventType = EventType::model()->findByAttributes(array('name' => 'Lab Results'));
 
-        if($eventType){
-            $options = CHtml::listData(ElementType::model()->findAllByAttributes(array('event_type_id' => $eventType->id)),'id', 'name');
+        if ($eventType) {
+            $options = CHtml::listData(ElementType::model()->findAllByAttributes(array('event_type_id' => $eventType->id)), 'id', 'name');
         } else {
-            $options = CHtml::listData(ElementType::model()->findAll(),'id', 'name');
+            $options = CHtml::listData(ElementType::model()->findAll(), 'id', 'name');
         }
 
         $this->admin->setEditFields(array(
@@ -59,14 +59,14 @@ class ResultTypeController  extends ModuleAdminController
                 'options' => $options,
                 'htmlOptions' => null,
                 'hidden' => false,
-                'layoutColumns' => null
+                'layoutColumns' => null,
             ),
         ));
         $this->admin->editModel();
     }
 
     /**
-     * Deletes rows for the model
+     * Deletes rows for the model.
      */
     public function actionDelete()
     {
@@ -74,12 +74,10 @@ class ResultTypeController  extends ModuleAdminController
     }
 
     /**
-     * Save ordering of the objects
+     * Save ordering of the objects.
      */
     public function actionSort()
     {
         $this->admin->sortModel();
     }
-
-
 }

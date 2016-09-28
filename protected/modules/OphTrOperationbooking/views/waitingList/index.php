@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -35,19 +35,19 @@
 					<div class="panel admin">
 						<label for="adminconfirmdate">Set latest letter sent to be:</label>
 						<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-								'name'=>'adminconfirmdate',
-								'id'=>'adminconfirmdate',
-								// additional javascript options for the date picker plugin
-								'options'=>array(
-									'showAnim'=>'fold',
-									'dateFormat'=>Helper::NHS_DATE_FORMAT_JS,
-									'maxDate'=>'today'
-								),
-								'value' => date("j M Y"),
-								'htmlOptions'=>array(
-									'class' => 'small fixed-width'
-								)
-							))?>
+                                'name' => 'adminconfirmdate',
+                                'id' => 'adminconfirmdate',
+                                // additional javascript options for the date picker plugin
+                                'options' => array(
+                                    'showAnim' => 'fold',
+                                    'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
+                                    'maxDate' => 'today',
+                                ),
+                                'value' => date('j M Y'),
+                                'htmlOptions' => array(
+                                    'class' => 'small fixed-width',
+                                ),
+                            ))?>
 					</div>
 					<div class="panel admin">
 						<select name="adminconfirmto" id="adminconfirmto">
@@ -94,11 +94,11 @@
 					<tr>
 						<td>
 							<?php echo CHtml::dropDownList('subspecialty-id', @$_POST['subspecialty-id'], Subspecialty::model()->getList(),
-								array('empty'=>'All specialties', 'ajax'=>array(
-									'type'=>'POST',
-									'data'=>array('subspecialty_id'=>'js:this.value','YII_CSRF_TOKEN'=>Yii::app()->request->csrfToken),
-									'url'=>Yii::app()->createUrl('/OphTrOperationbooking/waitingList/filterFirms'),
-									'success'=>"js:function(data) {
+                                array('empty' => 'All specialties', 'ajax' => array(
+                                    'type' => 'POST',
+                                    'data' => array('subspecialty_id' => 'js:this.value', 'YII_CSRF_TOKEN' => Yii::app()->request->csrfToken),
+                                    'url' => Yii::app()->createUrl('/OphTrOperationbooking/waitingList/filterFirms'),
+                                    'success' => "js:function(data) {
 											if ($('#subspecialty-id').val() != '') {
 												$('#firm-id').attr('disabled', false);
 												$('#firm-id').html(data);
@@ -107,19 +107,19 @@
 												$('#firm-id').html(data);
 											}
 										}",
-								)))?>
+                                )))?>
 						</td>
 						<td>
-							<?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'], $this->getFilteredFirms(@$_POST['subspecialty-id']), array('empty'=>'All firms', 'disabled'=>!@$_POST['firm-id']))?>
+							<?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'], $this->getFilteredFirms(@$_POST['subspecialty-id']), array('empty' => 'All firms', 'disabled' => !@$_POST['firm-id']))?>
 						</td>
 						<td>
 							<?php echo CHtml::dropDownList('status', @$_POST['status'], Element_OphTrOperationbooking_Operation::getLetterOptions())?>
 						</td>
 						<td>
-							<?php echo CHtml::dropDownList('site_id',@$_POST['site_id'],Site::model()->getListForCurrentInstitution(),array('empty'=>'All sites'))?>
+							<?php echo CHtml::dropDownList('site_id', @$_POST['site_id'], Site::model()->getListForCurrentInstitution(), array('empty' => 'All sites'))?>
 						</td>
 						<td>
-							<?php echo CHtml::textField('hos_num',@$_POST['hos_num'],array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 12))?>
+							<?php echo CHtml::textField('hos_num', @$_POST['hos_num'], array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 12))?>
 							<span id="hos_num_error" class="red"<?php if (!@$_POST['hos_num'] || ctype_digit($_POST['hos_num'])) {?> style="display: none;"<?php }?>>Invalid hospital number</span>
 						</td>
 						<td class="text-right">

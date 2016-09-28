@@ -16,10 +16,8 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 {
-
     /**
      * Returns the static model of the specified AR class.
      *
@@ -34,7 +32,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
     {
         return array(
             'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
-            'booking' => array(self::BELONGS_TO, 'Element_OphTrOperationbooking_Operation','', 'on'=>'t.event_id = booking.event_id', 'joinType'=>'INNER JOIN', 'alias'=>'booking'),
+            'booking' => array(self::BELONGS_TO, 'Element_OphTrOperationbooking_Operation', '', 'on' => 't.event_id = booking.event_id', 'joinType' => 'INNER JOIN', 'alias' => 'booking'),
         );
     }
 
@@ -47,9 +45,10 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
     }
 
     /**
-     * Collate the data and persist it to the table
+     * Collate the data and persist it to the table.
      *
      * @param $id
+     *
      * @throws CHttpException
      * @throws Exception
      */
@@ -58,7 +57,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $booking = Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($id));
 
         $eye = Eye::model()->findByPk($booking->eye_id);
-        if($eye->name === 'Both'){
+        if ($eye->name === 'Both') {
             throw new CHttpException(400, 'Can\'t display whiteboard for dual eye bookings');
         }
         $eyeLabel = strtolower($eye->name);
@@ -76,11 +75,11 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $biometry = Element_OphTrOperationnote_Biometry::model()->find($biometryCriteria);
 
         $examination = $event->getPreviousInEpisode(EventType::model()->findByAttributes(array('name' => 'Examination'))->id);
-        $management = new \OEModule\OphCiExamination\models\Element_OphCiExamination_Management();
+        //$management = new \OEModule\OphCiExamination\models\Element_OphCiExamination_Management();
         //$anterior = new \OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment();
         $risks = new \OEModule\OphCiExamination\models\Element_OphCiExamination_HistoryRisk();
-        if($examination){
-            $management = $management->findByAttributes(array('event_id' => $examination->id));
+        if ($examination) {
+            //$management = $management->findByAttributes(array('event_id' => $examination->id));
             //$anterior = $anterior->findByAttributes(array('event_id' => $examination->id));
             $risks = $risks->findByAttributes(array('event_id' => $examination->id));
         }
@@ -96,7 +95,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             ->queryAll();
 
         $allergyString = 'None';
-        if($allergies){
+        if ($allergies) {
             $allergyString = implode(',', array_column($allergies, 'name'));
         }
 
@@ -113,7 +112,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->eye_id = $eye->id;
         $this->eye = $eye;
         $this->predicted_additional_equipment = $booking->special_equipment_details;
-        $this->comments = ($management) ? $management->comments : '';
+        $this->comments = '';
         $this->patient_name = $contact['title'].' '.$contact['first_name'].' '.$contact['last_name'];
         $this->date_of_birth = $patient['dob'];
         $this->hos_num = $patient['hos_num'];
@@ -126,7 +125,17 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->anticoagulants = $patient->hasRisk('Anticoagulants');
         $this->alpha_blocker_name = ($risks) ? $risks->alpha_blocker_name : '';
         $this->anticoagulant_name = ($risks) ? $risks->anticoagulant_name : '';
-        $this->inr = ($labResult) ? $labResult : 'None' ;
+        $this->inr = ($labResult) ? $labResult : 'None';
         $this->save();
+    }
+
+    /**
+     * Is the whiteboard editable.
+     *
+     * @return bool
+     */
+    public function isEditable()
+    {
+        return is_object($this->booking) && $this->booking->isEditable() && !$this->is_confirmed;
     }
 }

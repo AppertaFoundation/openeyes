@@ -28,7 +28,6 @@ class m160725_090151_portal_exam_comment extends OEMigration
             'ready_for_second_eye' => 'boolean default null',
             'comment' => 'text',
         ), true);
-
     }
 
     public function down()

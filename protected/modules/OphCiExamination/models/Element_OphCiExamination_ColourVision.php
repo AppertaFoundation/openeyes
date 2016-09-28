@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -25,12 +25,10 @@ use Yii;
  * This is the model class for table "et_ophciexamination_colourvision".
  *
  * The followings are the available columns in table:
+ *
  * @property string $id
- * @property integer $event_id
- * @property integer $eye_id
- *
- *
- * The followings are the available model relations:
+ * @property int $event_id
+ * @property int $eye_id
  * @property \EventType $eventType
  * @property \Event $event
  * @property \User $user
@@ -40,11 +38,11 @@ use Yii;
  * @property OphCiExamination_ColourVision_Reading $left_readings
  * @property OphCiExamination_ColourVision_Reading $right_readings
  */
-
 class Element_OphCiExamination_ColourVision extends \SplitEventTypeElement
 {
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return Element_OphCiExamination_Dilation
      */
     public static function model($className = __CLASS__)
@@ -89,8 +87,8 @@ class Element_OphCiExamination_ColourVision extends \SplitEventTypeElement
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
             'readings' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Reading', 'element_id'),
-            'right_readings' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Reading', 'element_id', 'on' => 'right_readings.eye_id = ' . \Eye::RIGHT),
-            'left_readings' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Reading', 'element_id', 'on' => 'left_readings.eye_id = ' . \Eye::LEFT),
+            'right_readings' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Reading', 'element_id', 'on' => 'right_readings.eye_id = '.\Eye::RIGHT),
+            'left_readings' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Reading', 'element_id', 'on' => 'left_readings.eye_id = '.\Eye::LEFT),
         );
     }
 
@@ -104,12 +102,13 @@ class Element_OphCiExamination_ColourVision extends \SplitEventTypeElement
             'event_id' => 'Event',
             'eye_id' => 'Eye',
             'left_readings' => 'Readings',
-            'right_readings' => 'Readings'
+            'right_readings' => 'Readings',
         );
     }
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
@@ -117,7 +116,7 @@ class Element_OphCiExamination_ColourVision extends \SplitEventTypeElement
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria = new \CDbCriteria;
+        $criteria = new \CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
@@ -130,10 +129,11 @@ class Element_OphCiExamination_ColourVision extends \SplitEventTypeElement
     protected $_readings_by_method;
 
     /**
-     * Get the colour vision reading for the given side and method if it's defined
+     * Get the colour vision reading for the given side and method if it's defined.
      *
-     * @param  string $side - left or right
+     * @param string                               $side   - left or right
      * @param OphCiExamination_ColourVision_Method $method
+     *
      * @return OphCiExamination_ColourVision_Readin|null
      */
     public function getReading($side, $method)
@@ -143,24 +143,26 @@ class Element_OphCiExamination_ColourVision extends \SplitEventTypeElement
             );
             foreach (array('left', 'right') as $side) {
                 $this->_readings_by_method[$side] = array();
-                foreach ($this->{$side . '_readings'} as $reading) {
+                foreach ($this->{$side.'_readings'} as $reading) {
                     $this->_readings_by_method[$side][$reading->method_id] = $reading;
                 }
             }
         }
+
         return @$this->_readings_by_method[$side][$method->id];
     }
 
     /**
-     * Get the colour vision reading methods that have not been used for this element
+     * Get the colour vision reading methods that have not been used for this element.
      *
      * @param string $side
+     *
      * @return OphCiExamination_ColourVision_Method[]
      */
     public function getUnusedReadingMethods($side)
     {
         $readings = $this->{$side.'_readings'};
-        $criteria = new \CDbCriteria;
+        $criteria = new \CDbCriteria();
         $curr = array();
         foreach ($readings as $reading) {
             if ($meth = $reading->method) {
@@ -170,20 +172,21 @@ class Element_OphCiExamination_ColourVision extends \SplitEventTypeElement
 
         $criteria->addNotInCondition('id', $curr);
         $criteria->order = 'display_order asc';
+
         return OphCiExamination_ColourVision_Method::model()->findAll($criteria);
     }
 
     /**
-     * Validate each of the readings
+     * Validate each of the readings.
      */
     protected function afterValidate()
     {
         foreach (array('left' => 'hasLeft', 'right' => 'hasRight') as $side => $checkFunc) {
             if ($this->$checkFunc()) {
-                foreach ($this->{$side . '_readings'} as $i => $reading) {
+                foreach ($this->{$side.'_readings'} as $i => $reading) {
                     if (!$reading->validate()) {
                         foreach ($reading->getErrors() as $fld => $err) {
-                            $this->addError($side . '_readings', ucfirst($side) . ' reading (' .($i+1) . '): ' . implode(', ', $err));
+                            $this->addError($side.'_readings', ucfirst($side).' reading ('.($i + 1).'): '.implode(', ', $err));
                         }
                     }
                 }
@@ -195,6 +198,7 @@ class Element_OphCiExamination_ColourVision extends \SplitEventTypeElement
      * extends standard delete method to remove all the treatments.
      *
      * (non-PHPdoc)
+     *
      * @see CActiveRecord::delete()
      */
     public function delete()
@@ -229,6 +233,7 @@ class Element_OphCiExamination_ColourVision extends \SplitEventTypeElement
      *
      * @param $side \Eye::LEFT or \Eye::RIGHT
      * @param array $readings
+     *
      * @throws Exception
      */
     public function updateReadings($side, $readings)
@@ -260,13 +265,13 @@ class Element_OphCiExamination_ColourVision extends \SplitEventTypeElement
 
         foreach ($save as $s) {
             if (!$s->save()) {
-                throw new \Exception('unable to save reading:' . print_r($s->getErrors(), true));
+                throw new \Exception('unable to save reading:'.print_r($s->getErrors(), true));
             };
         }
 
         foreach ($curr_by_id as $curr) {
             if (!$curr->delete()) {
-                throw new \Exception('unable to delete reading:' . print_r($curr->getErrors(), true));
+                throw new \Exception('unable to delete reading:'.print_r($curr->getErrors(), true));
             }
         }
     }

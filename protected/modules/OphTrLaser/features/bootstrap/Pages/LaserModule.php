@@ -1,13 +1,14 @@
 <?php
+
 use Behat\Behat\Exception\BehaviorException;
 
 class LaserModule extends OpenEyesPage
 {
-    protected $path ="/site/OphTrLaser/Default/create?patient_id={patientId}";
+    protected $path = '/site/OphTrLaser/Default/create?patient_id={patientId}';
 
     protected $elements = array(
 
-        'laserSiteID' => array ('xpath' => "//*[@id='Element_OphTrLaser_Site_site_id']"),
+        'laserSiteID' => array('xpath' => "//*[@id='Element_OphTrLaser_Site_site_id']"),
         'laserID' => array('xpath' => "//*[@id='Element_OphTrLaser_Site_laser_id']"),
         'laserSurgeon' => array('xpath' => "//*[@id='Element_OphTrLaser_Site_surgeon_id']"),
         'rightProcedure' => array('xpath' => ".//*[@id='treatment_right_procedures']"),
@@ -23,46 +24,45 @@ class LaserModule extends OpenEyesPage
         'expandComments' => array('xpath' => "//*[@class='optional-elements-list']//a[contains(text(),'Comments')]"),
         'commentsField' => array('xpath' => "//*[@id='Element_OphTrLaser_Comments_comments']"),
         'collapseComments' => array('xpath' => "//*[@class='icon-button-small-mini-cross']"),
-				'createLaserEvent' => array('css'=>'.episode-links a:nth-child(1)')
+                'createLaserEvent' => array('css' => '.episode-links a:nth-child(1)'),
     );
 
-		public function createLaserEvent ()
-		{
-			$this->getElement('createLaserEvent')->click();
-		}
+    public function createLaserEvent()
+    {
+        $this->getElement('createLaserEvent')->click();
+    }
 
-    public function laserSiteID ($site)
+    public function laserSiteID($site)
     {
         $this->getElement('laserSiteID')->selectOption($site);
     }
 
-    public function laserID ($ID)
+    public function laserID($ID)
     {
         $this->getElement('laserID')->selectOption($ID);
     }
 
-    public function laserSurgeon ($surgeon)
+    public function laserSurgeon($surgeon)
     {
         $this->getElement('laserSurgeon')->selectOption($surgeon);
-
     }
 
-    public function rightProcedure ($right)
+    public function rightProcedure($right)
     {
         $this->getElement('rightProcedure')->selectOption($right);
     }
 
-    public function leftProcedure ($left)
+    public function leftProcedure($left)
     {
         $this->getElement('leftProcedure')->selectOption($left);
     }
 
-    public function saveLaser ()
+    public function saveLaser()
     {
         $this->getElement('saveLaser')->click();
     }
 
-    public function laserValidationError ()
+    public function laserValidationError()
     {
         return (bool) $this->find('xpath', $this->getElement('siteValidationError')->getXpath()) &&
         (bool) $this->find('xpath', $this->getElement('laserValidationError')->getXpath()) &&
@@ -70,47 +70,43 @@ class LaserModule extends OpenEyesPage
         (bool) $this->find('xpath', $this->getElement('treatmentRightValidationError')->getXpath());
     }
 
-    public function laserValiditionCheck ()
+    public function laserValiditionCheck()
     {
-        if ($this->laserValidationError()){
-            print "Laser validation errors have been displayed correctly";
-        }
-        else{
-            throw new BehaviorException ("LASER VALIDATION ERRORS HAVE NOT BEEN DISPLAYED CORRECTLY");
+        if ($this->laserValidationError()) {
+            echo 'Laser validation errors have been displayed correctly';
+        } else {
+            throw new BehaviorException('LASER VALIDATION ERRORS HAVE NOT BEEN DISPLAYED CORRECTLY');
         }
     }
 
-    public function removeLastProcedure ()
+    public function removeLastProcedure()
     {
         $this->getElement('removeLastProcedure')->click();
     }
 
-    public function removeRightEye ()
+    public function removeRightEye()
     {
         $this->getElement('removeRightEye')->click();
-
     }
 
-    public function addRightEye ()
+    public function addRightEye()
     {
         $this->getElement('addRightEye')->click();
     }
 
-    public function expandComments ()
+    public function expandComments()
     {
         $this->getElement('expandComments')->click();
         $this->getSession()->wait(5000, '$.active == 0');
     }
 
-    public function addComments ($comments)
+    public function addComments($comments)
     {
         $this->getElement('commentsField')->setValue($comments);
     }
 
-    public function removeComments ()
+    public function removeComments()
     {
         $this->getElement('collapseComments')->click();
     }
-
-
 }

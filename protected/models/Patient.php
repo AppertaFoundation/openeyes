@@ -41,6 +41,7 @@
  * @property int $last_modified_user_id
  * @property datetime $no_allergies_date
  * @property tinyint $deleted
+ * @property int $ethnic_group_id
  *
  * The followings are the available model relations:
  * @property Episode[] $episodes
@@ -52,6 +53,8 @@
  * @property Allergy[] $allergies
  * @property EthnicGroup $ethnic_group
  * @property CommissioningBody[] $commissioningbodies
+ * @property SocialHistory $socialhistory
+ *
  */
 class Patient extends BaseActiveRecordVersioned
 {
@@ -178,7 +181,7 @@ class Patient extends BaseActiveRecordVersioned
             'ethnic_group_id' => 'Ethnic Group',
             'hos_num' => 'Hospital Number',
             'nhs_num' => 'NHS Number',
-            'deleted' => 'Is Deleted'
+            'deleted' => 'Is Deleted',
         );
     }
 
@@ -228,8 +231,8 @@ class Patient extends BaseActiveRecordVersioned
             $criteria->compare('hos_num', $this->hos_num, false);
         }
         $criteria->compare('deleted', 0);
-        
-        $criteria->order = $params['sortBy'] . ' ' . $params['sortDir'];
+
+        $criteria->order = $params['sortBy'].' '.$params['sortDir'];
 
         Yii::app()->event->dispatch('patient_search_criteria', array('patient' => $this, 'criteria' => $criteria, 'params' => $params));
 
@@ -254,13 +257,12 @@ class Patient extends BaseActiveRecordVersioned
 
     public function beforeValidate()
     {
-
-        if(!parent::beforeValidate()){
+        if (!parent::beforeValidate()) {
             return false;
         }
 
         //If someone is marked as dead by date, set the boolean flag.
-        if($this->isAttributeDirty('date_of_death') && $this->date_of_death){
+        if ($this->isAttributeDirty('date_of_death') && $this->date_of_death) {
             $this->is_deceased = 1;
         }
 
@@ -269,7 +271,7 @@ class Patient extends BaseActiveRecordVersioned
 
     public function validateDeceased($attribute, $params)
     {
-        if(!$this->is_deceased && $this->date_of_death){
+        if (!$this->is_deceased && $this->date_of_death) {
             $this->addError($attribute, 'A patient can only have a date of death if they are deceased');
 
             return false;
@@ -549,6 +551,7 @@ class Patient extends BaseActiveRecordVersioned
 
     /**
      * @param array $exclude
+     *
      * @return array|CActiveRecord[]|null
      */
     public function prescriptionItems(array $exclude)
@@ -662,7 +665,7 @@ class Patient extends BaseActiveRecordVersioned
 
         return $info;
     }
-
+    
     public function getGenderString()
     {
         switch ($this->gender) {
@@ -818,9 +821,19 @@ class Patient extends BaseActiveRecordVersioned
         return $this->contact->primary_phone;
     }
 
-    public function getSummaryAddress()
+    public function getSummaryAddress($delimiter = '<br/>')
     {
-        return $this->contact->address ? $this->getLetterAddress(array('delimiter' => '<br/>')) : 'Unknown';
+        return $this->contact->address ? $this->getLetterAddress(array('delimiter' => $delimiter)) : 'Unknown';
+    }
+
+    /**
+     * Returns the contact address email
+     *
+     * @return mixed
+     */
+    public function getEmail()
+    {
+        return $this->contact->address ? $this->contact->address->email : '';
     }
 
     /**
@@ -1008,15 +1021,16 @@ class Patient extends BaseActiveRecordVersioned
     }
 
     /**
-     * Check if the patient has a given risk
+     * Check if the patient has a given risk.
      * 
      * @param $riskCompare
+     *
      * @return bool
      */
     public function hasRisk($riskCompare)
     {
-        foreach($this->risks as $risk) {
-            if($risk->name === $riskCompare) {
+        foreach ($this->risks as $risk) {
+            if ($risk->name === $riskCompare) {
                 return true;
             }
         }
@@ -1024,9 +1038,8 @@ class Patient extends BaseActiveRecordVersioned
         return false;
     }
 
-
     /**
-     * marks the patient as having no family history
+     * marks the patient as having no family history.
      *
      * @throws Exception
      */
@@ -1053,11 +1066,18 @@ class Patient extends BaseActiveRecordVersioned
     *
     * @returns array() of disorder ids
     */
-    private function getAllDisorderIds()
+    private function getAllDisorderIds($eye_id = null)
     {
         // Get all the secondary disorders
         $criteria = new CDbCriteria();
-        $criteria->compare('patient_id', $this->id);
+        // To determine the disorders based on the eye
+        if ($eye_id !== null) {
+            $criteria->addCondition('eye_id = :eye_id_side or eye_id = :eye_id_both');
+            $criteria->params[':eye_id_side'] = $eye_id;
+            $criteria->params[':eye_id_both'] = Eye::BOTH;
+        }
+        $criteria->addCondition('patient_id = :patient_id');
+        $criteria->params[':patient_id'] =  $this->id;
         $sd = SecondaryDiagnosis::model()->findAll($criteria);
         $disorder_ids = array();
         foreach ($sd as $d) {
@@ -1082,9 +1102,9 @@ class Patient extends BaseActiveRecordVersioned
      *
      * @returns array() of disorders
      */
-    public function getAllDisorders()
+    public function getAllDisorders($eye_id = null)
     {
-        return Disorder::model()->findAllByPk($this->getAllDisorderIds());
+        return Disorder::model()->findAllByPk($this->getAllDisorderIds($eye_id));
     }
 
     /*
@@ -1554,10 +1574,10 @@ class Patient extends BaseActiveRecordVersioned
         $criteria->order = 't.event_date DESC, t.created_date DESC';
         $criteria->limit = 1;
         $event = Event::model()->with('episode')->find($criteria);
-        if(!empty($event)) {
+        if (!empty($event)) {
             return $this->getUniqueCodeForEvent($event->id);
         } else {
-           return '';
+            return '';
         }
     }
 
@@ -1692,7 +1712,7 @@ class Patient extends BaseActiveRecordVersioned
 
     /**
      * I think this override is here to enforce the override of the medications relation
-     * and merge in the prescription items as appropriate
+     * and merge in the prescription items as appropriate.
      *
      * @param string $prop
      *
@@ -1710,7 +1730,7 @@ class Patient extends BaseActiveRecordVersioned
 
     /**
      * I think this override is here to enforce the override of the medications relation
-     * and merge in the prescription items as appropriate
+     * and merge in the prescription items as appropriate.
      *
      * @param string $prop
      *
@@ -1743,7 +1763,7 @@ class Patient extends BaseActiveRecordVersioned
             foreach ($prescriptionItems as $item) {
                 $medication = new Medication();
                 $medication->createFromPrescriptionItem($item);
-                if($medication->isCurrentMedication()){
+                if ($medication->isCurrentMedication()) {
                     $medications[] = $medication;
                 }
             }
@@ -1771,7 +1791,7 @@ class Patient extends BaseActiveRecordVersioned
             foreach ($prescriptionItems as $item) {
                 $medication = new Medication();
                 $medication->createFromPrescriptionItem($item);
-                if($medication->isPreviousMedication()){
+                if ($medication->isPreviousMedication()) {
                     $medications[] = $medication;
                 }
             }
@@ -1819,12 +1839,12 @@ class Patient extends BaseActiveRecordVersioned
     }
 
     /**
-     * Get the episode ID of the patient's cataract if it exists
+     * Get the episode ID of the patient's cataract if it exists.
+     *
      * @return mixed
      */
     public function getCataractEpisodeId()
     {
-        
         $criteria = new CDbCriteria();
         $criteria->select = 'episode.id';
         $criteria->with = array('episodes', 'episodes.firm', 'episodes.firm.serviceSubspecialtyAssignment', 'episodes.firm.serviceSubspecialtyAssignment.subspecialty');
@@ -1832,7 +1852,7 @@ class Patient extends BaseActiveRecordVersioned
         $criteria->addCondition('subspecialty.ref_spec = "CA"');
         $criteria->params = array('patient_id' => $this->id);
         $patient = $this->find($criteria);
-        if(!$patient){
+        if (!$patient) {
             return false;
         }
 

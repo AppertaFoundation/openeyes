@@ -6,13 +6,12 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 use OEModule\OphCiExamination\models;
 
 class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
@@ -29,32 +28,32 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
             ->configureXAxis(array('mode' => 'time'))
             ->configureYAxis('mmHg', array(
                 'min' => 0,
-                'max' => 80
+                'max' => 80,
             ))
             ->configureSeries('RE', array(
                 'points' => array('show' => true),
                 'lines' => array(
-                    'show' => true
-                )
+                    'show' => true,
+                ),
             ))
             ->configureSeries('LE', array(
                 'points' => array('show' => true),
-                'lines' => array('show' => true)
+                'lines' => array('show' => true),
             ))
             ->configureSeries('Target RE', array(
-                'colors' => array("#fff", "#fff", "#fff"),
+                'colors' => array('#fff', '#fff', '#fff'),
                 'points' => array('show' => true),
                 'dashes' => array(
                     'show' => true,
-                    'style' => array(6)
-                )
+                    'style' => array(6),
+                ),
             ))
             ->configureSeries('Target LE', array(
                 'points' => array('show' => true),
                 'dashes' => array(
                     'show' => true,
-                    'style' => array(6)
-                )
+                    'style' => array(6),
+                ),
             ));
 
         $events = $this->event_type->api->getEventsInEpisode($this->episode->patient, $this->episode);

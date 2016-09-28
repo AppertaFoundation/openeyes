@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   OpenEyes.Dialog.init(
     document.getElementById('dialog-container'),
     document.getElementById('refresh-button'),
@@ -9,5 +9,39 @@ document.addEventListener("DOMContentLoaded", function() {
   $('#exit-button').on('click', function (event) {
     event.preventDefault();
     window.close();
-  })
+  });
+
+  $('.editable').find('.material-icons').on('click', function () {
+    var icon = this;
+    var $cardContent = $(icon).parents('.editable').find('.mdl-card__supporting-text');
+    var whiteboardEventId = icon.dataset.whiteboardEventId;
+    var textArea;
+    var data = {};
+    var contentId;
+    var text;
+
+    if (icon.textContent !== 'done') {
+      textArea = $('<textarea />');
+      icon.textContent = 'done';
+      textArea[0].value = $cardContent.get(0).textContent.trim();
+      $cardContent.html(textArea);
+    } else {
+      contentId = $cardContent.get(0).id;
+      text = $cardContent.find('textarea').val();
+      data[contentId] = text;
+      data.YII_CSRF_TOKEN = YII_CSRF_TOKEN;
+      $.ajax({
+        'type': 'POST',
+        'url': '/OphTrOperationbooking/whiteboard/saveComment/' + whiteboardEventId,
+        'data':data,
+        'success': function () {
+          $cardContent.text(text);
+          icon.textContent = 'create';
+        },
+        'error': function () {
+          alert('Something went wrong, please try again.');
+        }
+      });
+    }
+  });
 });

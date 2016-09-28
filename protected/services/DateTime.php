@@ -6,8 +6,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
@@ -15,15 +15,15 @@
 
 namespace services;
 
-class Date extends \DateTime implements FhirCompatible
+class DateTime extends \DateTime implements FhirCompatible
 {
-	static public function fromFhir($value)
-	{
-		return new self($value);
-	}
+    public static function fromFhir($value)
+    {
+        return new self($value);
+    }
 
-	public function toFhir()
-	{
-		return $this->format(DATE_RFC3339);
-	}
+    public function toFhir()
+    {
+        return $this->format(DATE_RFC3339);
+    }
 }

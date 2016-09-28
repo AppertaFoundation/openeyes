@@ -15,7 +15,7 @@ class ProcedureAdditionalTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new ProcedureAdditional;
+        $this->object = new ProcedureAdditional();
     }
 
     /**
@@ -28,6 +28,7 @@ class ProcedureAdditionalTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers ProcedureAdditional::model
+     *
      * @todo   Implement testModel().
      */
     public function testModel()
@@ -40,6 +41,7 @@ class ProcedureAdditionalTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers ProcedureAdditional::tableName
+     *
      * @todo   Implement testTableName().
      */
     public function testTableName()
@@ -52,6 +54,7 @@ class ProcedureAdditionalTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers ProcedureAdditional::rules
+     *
      * @todo   Implement testRules().
      */
     public function testRules()
@@ -64,6 +67,7 @@ class ProcedureAdditionalTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers ProcedureAdditional::relations
+     *
      * @todo   Implement testRelations().
      */
     public function testRelations()

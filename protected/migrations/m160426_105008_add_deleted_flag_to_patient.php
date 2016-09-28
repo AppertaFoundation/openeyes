@@ -13,5 +13,4 @@ class m160426_105008_add_deleted_flag_to_patient extends CDbMigration
         $this->dropColumn('patient', 'deleted');
         $this->dropColumn('patient_version', 'deleted');
     }
-
 }

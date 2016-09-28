@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -8,8 +8,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
@@ -18,21 +18,21 @@
 
 <div class="admin box">
     <h2>Display Context For <?=$display_context->worklist_definition->name?></h2>
-    <?php echo $this->renderPartial('//admin/_form_errors',array('errors'=>$errors))?>
+    <?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors))?>
     <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id'=>'display-context-form',
-        'enableAjaxValidation'=>false,
+        'id' => 'display-context-form',
+        'enableAjaxValidation' => false,
         'focus' => '#site_id',
         'layoutColumns' => array(
             'label' => 2,
-            'field' => 5
-        )
+            'field' => 5,
+        ),
     ))?>
-    <?php echo $form->dropDownList($display_context,'site_id',Site::model()->getListForCurrentInstitution(),array('empty'=>'- Any -')) ?>
-    <?php echo $form->dropDownList($display_context,'subspecialty_id',Subspecialty::model()->getList(),array('empty'=>'- Any -')) ?>
-    <?php echo $form->dropDownList($display_context,'firm_id',Firm::model()->getListWithSpecialties(),array('empty'=>'- Any -')) ?>
+    <?php echo $form->dropDownList($display_context, 'site_id', Site::model()->getListForCurrentInstitution(), array('empty' => '- Any -')) ?>
+    <?php echo $form->dropDownList($display_context, 'subspecialty_id', Subspecialty::model()->getList(), array('empty' => '- Any -')) ?>
+    <?php echo $form->dropDownList($display_context, 'firm_id', Firm::model()->getListWithSpecialties(), array('empty' => '- Any -')) ?>
 
-    <?php echo $form->formActions(array('cancel-uri' => '/worklistAdmin/definitionDisplayContexts/' . $display_context->worklist_definition->id ))?>
+    <?php echo $form->formActions(array('cancel-uri' => '/worklistAdmin/definitionDisplayContexts/'.$display_context->worklist_definition->id))?>
     <?php $this->endWidget()?>
 </div>

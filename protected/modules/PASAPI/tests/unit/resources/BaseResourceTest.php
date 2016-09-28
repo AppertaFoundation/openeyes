@@ -93,7 +93,7 @@ class BaseResourceTest extends \PHPUnit_Framework_TestCase
 
     public function test_validate_checks_child_resources()
     {
-        $test = $this->getMockBuilder("\\OEModule\\PASAPI\\resources\\BaseResource")
+        $test = $this->getMockBuilder('\\OEModule\\PASAPI\\resources\\BaseResource')
             ->disableOriginalConstructor()
             ->setMethods(array())
             ->getMockForAbstractClass();
@@ -103,11 +103,11 @@ class BaseResourceTest extends \PHPUnit_Framework_TestCase
         $p->setAccessible(true);
         $p->setValue($test, array(
             'sampleResource' => array(
-                'resource' => 'sampleResource'
-            )
+                'resource' => 'sampleResource',
+            ),
         ));
 
-        $test->sampleResource = $this->getMockBuilder("\\OEModule\\PASAPI\\resources\\BaseResource")
+        $test->sampleResource = $this->getMockBuilder('\\OEModule\\PASAPI\\resources\\BaseResource')
             ->disableOriginalConstructor()
             ->setMethods(array('validate'))
             ->getMockForAbstractClass();
@@ -119,6 +119,6 @@ class BaseResourceTest extends \PHPUnit_Framework_TestCase
         $test->sampleResource->errors = ['test error'];
 
         $this->assertFalse($test->validate());
-        $this->assertEquals(array("sampleResource error: test error"), $test->errors);
+        $this->assertEquals(array('sampleResource error: test error'), $test->errors);
     }
 }

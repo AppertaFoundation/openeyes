@@ -1,6 +1,6 @@
 <?php
 /**
-* OpenEyes
+* OpenEyes.
 *
 * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
 * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
 * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 *
-* @package OpenEyes
 * @link http://www.openeyes.org.uk
+*
 * @author OpenEyes <info@openeyes.org.uk>
 * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
 * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -23,38 +23,43 @@
  */
 class CacheBuster extends CApplicationComponent
 {
-	/**
-	 * The time string to append to the URL.
-	 * @var string
-	 */
-	public $time;
+    /**
+     * The time string to append to the URL.
+     *
+     * @var string
+     */
+    public $time;
 
-	/**
-	 * Create a cache busted URL.
-	 * @param  string $url  The URL to cache bust.
-	 * @param  string $time The time string to append to the url.
-	 * @return String       The cache busted URL.
-	 */
-	public function createUrl($url = '', $time = null)
-	{
-		$time = $time ?: $this->time;
+    /**
+     * Create a cache busted URL.
+     *
+     * @param string $url  The URL to cache bust.
+     * @param string $time The time string to append to the url.
+     *
+     * @return string The cache busted URL.
+     */
+    public function createUrl($url = '', $time = null)
+    {
+        $time = $time ?: $this->time;
 
-		if ($time) {
-			$joiner = $this->getJoiner($url);
-			$url .= $joiner.$time;
-		}
+        if ($time) {
+            $joiner = $this->getJoiner($url);
+            $url .= $joiner.$time;
+        }
 
-		return $url;
-	}
+        return $url;
+    }
 
-	/**
-	 * Determine the joiner required to append the cache busting string. This checks
-	 * if the URL contains query string params and returns the appropriate joiner.
-	 * @param  string $url The URL to check.
-	 * @return string      The joiner char (either '?' or '&')
-	 */
-	protected function getJoiner($url = '')
-	{
-		return preg_match('/\?/',$url) ? '&' : '?';
-	}
+    /**
+     * Determine the joiner required to append the cache busting string. This checks
+     * if the URL contains query string params and returns the appropriate joiner.
+     *
+     * @param string $url The URL to check.
+     *
+     * @return string The joiner char (either '?' or '&')
+     */
+    protected function getJoiner($url = '')
+    {
+        return preg_match('/\?/', $url) ? '&' : '?';
+    }
 }

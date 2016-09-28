@@ -36,7 +36,7 @@ class PortalExamsCommand extends CConsoleCommand
 
         $eventType = EventType::model()->find('name = "Examination"');
         $portalUser = $user->portalUser();
-        if(!$portalUser){
+        if (!$portalUser) {
             throw new Exception('No User found for import');
         }
         $portalUserId = $portalUser->id;
@@ -56,7 +56,7 @@ class PortalExamsCommand extends CConsoleCommand
             if (!$opNoteEvent) {
                 echo 'No Event found for identifier: '.$examination['patient']['unique_identifier'].PHP_EOL;
                 $existingUnfound = $examinationEventLog->findByAttributes(array('unique_code' => $uniqueCode));
-                if($existingUnfound){
+                if ($existingUnfound) {
                     $examinationEventLog = $existingUnfound;
                 }
                 $examinationEventLog->unique_code = $uniqueCode;
@@ -87,7 +87,8 @@ class PortalExamsCommand extends CConsoleCommand
                     if (!$examinationEventLog->save()) {
                         throw new CDbException('$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true));
                     }
-                    echo 'Failed for examination '.$examination['patient']['unique_identifier'].' with exception: '.$e->getMessage().'on line '.$e->getLine().' in file '.$e->getFile().PHP_EOL.$e->getTraceAsString();
+                    echo 'Failed for examination '.$examination['patient']['unique_identifier'].' with exception: '.
+                        $e->getMessage().'on line '.$e->getLine().' in file '.$e->getFile().PHP_EOL.$e->getTraceAsString();
                     continue;
                 }
                 $importStatus = ImportStatus::model()->find('status_value = "Success Event"');
@@ -120,7 +121,7 @@ class PortalExamsCommand extends CConsoleCommand
     }
 
     /**
-     * Set portal config
+     * Set portal config.
      */
     protected function setConfig()
     {
@@ -128,9 +129,10 @@ class PortalExamsCommand extends CConsoleCommand
     }
 
     /**
-     * Init HTTP client
+     * Init HTTP client.
      *
      * @return Zend_Http_Client
+     *
      * @throws Zend_Http_Client_Exception
      */
     protected function initClient()
@@ -142,14 +144,14 @@ class PortalExamsCommand extends CConsoleCommand
     }
 
     /**
-     * Login to the API, set the auth header
+     * Login to the API, set the auth header.
      */
     protected function login()
     {
         $this->client->setUri($this->config['uri'].$this->config['endpoints']['auth']);
         $this->client->setParameterPost($this->config['credentials']);
         $response = $this->client->request('POST');
-        if($response->getStatus() > 299){
+        if ($response->getStatus() > 299) {
             throw new Exception('Unable to login, user credentials in config incorrect');
         }
         $jsonResponse = json_decode($response->getBody(), true);
@@ -158,7 +160,7 @@ class PortalExamsCommand extends CConsoleCommand
     }
 
     /**
-     * Search the API for examinations
+     * Search the API for examinations.
      *
      * @return mixed
      */
@@ -175,6 +177,4 @@ class PortalExamsCommand extends CConsoleCommand
 
         return json_decode($response->getBody(), true);
     }
-
-    
 }

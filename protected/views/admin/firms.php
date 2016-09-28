@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2012
@@ -9,14 +9,13 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 ?>
 <div class="admin box">
 
@@ -40,16 +39,16 @@
 			</thead>
 			<tbody>
 			<?php
-			foreach ($firms as $i => $firm) { ?>
+            foreach ($firms as $i => $firm) { ?>
 				<tr class="clickable" data-id="<?php echo $firm->id ?>"
 					data-uri="admin/editFirm/<?php echo $firm->id ?>">
 					<td><input type="checkbox" name="firms[]" value="<?php echo $firm->id ?>"/></td>
 					<td><?php echo $firm->id ?></td>
 					<td><?php echo $firm->pas_code ?></td>
 					<td><?php echo $firm->name ?></td>
-					<td><?php echo(($firm->serviceSubspecialtyAssignment) ? $firm->serviceSubspecialtyAssignment->subspecialty->name : 'None') ?></td>
-					<td><?php echo(($firm->consultant) ? $firm->consultant->fullName : 'None') ?></td>
-					<td><?php echo(($firm->active) ? 'Active' : 'Inactive') ?></td>
+					<td><?php echo ($firm->serviceSubspecialtyAssignment) ? $firm->serviceSubspecialtyAssignment->subspecialty->name : 'None' ?></td>
+					<td><?php echo ($firm->consultant) ? $firm->consultant->fullName : 'None' ?></td>
+					<td><?php echo ($firm->active) ? 'Active' : 'Inactive' ?></td>
 				</tr>
 			<?php } ?>
 			</tbody>
@@ -59,8 +58,8 @@
 					<?php echo EventAction::button('Add', 'add', array(), array('class' => 'small'))->toHtml() ?>
 					<?php echo EventAction::button('Delete', 'delete', array(), array('class' => 'small'))->toHtml() ?>
 					<?php echo $this->renderPartial('_pagination', array(
-						'pagination' => $pagination
-					)) ?>
+                        'pagination' => $pagination,
+                    )) ?>
 				</td>
 			</tr>
 			</tfoot>

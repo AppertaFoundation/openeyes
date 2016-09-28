@@ -15,7 +15,7 @@ class SiteSubspecialtyAnaestheticAgentDefaultTest extends PHPUnit_Framework_Test
      */
     protected function setUp()
     {
-        $this->object = new SiteSubspecialtyAnaestheticAgentDefault;
+        $this->object = new SiteSubspecialtyAnaestheticAgentDefault();
     }
 
     /**
@@ -28,6 +28,7 @@ class SiteSubspecialtyAnaestheticAgentDefaultTest extends PHPUnit_Framework_Test
 
     /**
      * @covers SiteSubspecialtyAnaestheticAgentDefault::model
+     *
      * @todo   Implement testModel().
      */
     public function testModel()
@@ -40,6 +41,7 @@ class SiteSubspecialtyAnaestheticAgentDefaultTest extends PHPUnit_Framework_Test
 
     /**
      * @covers SiteSubspecialtyAnaestheticAgentDefault::tableName
+     *
      * @todo   Implement testTableName().
      */
     public function testTableName()
@@ -52,6 +54,7 @@ class SiteSubspecialtyAnaestheticAgentDefaultTest extends PHPUnit_Framework_Test
 
     /**
      * @covers SiteSubspecialtyAnaestheticAgentDefault::rules
+     *
      * @todo   Implement testRules().
      */
     public function testRules()
@@ -64,6 +67,7 @@ class SiteSubspecialtyAnaestheticAgentDefaultTest extends PHPUnit_Framework_Test
 
     /**
      * @covers SiteSubspecialtyAnaestheticAgentDefault::relations
+     *
      * @todo   Implement testRelations().
      */
     public function testRelations()

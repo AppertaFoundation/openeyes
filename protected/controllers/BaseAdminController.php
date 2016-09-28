@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2012
@@ -10,8 +10,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
@@ -19,232 +19,233 @@
  */
 class BaseAdminController extends BaseController
 {
-	public $layout = '//layouts/admin';
-	public $items_per_page = 30;
+    public $layout = '//layouts/admin';
+    public $items_per_page = 30;
 
-	public function accessRules()
-	{
-		return array(array('allow', 'roles' => array('admin')));
-	}
+    public function accessRules()
+    {
+        return array(array('allow', 'roles' => array('admin')));
+    }
 
-	protected function beforeAction($action)
-	{
-		Yii::app()->assetManager->registerCssFile('css/admin.css', null, 10);
-		Yii::app()->assetManager->registerCssFile('components/font-awesome/css/font-awesome.css', null, 10);
-		Yii::app()->assetManager->registerCssFile('components/jt.timepicker/jquery.timepicker.css', null, 10);
-		Yii::app()->assetManager->registerScriptFile('js/admin.js', null, 10);
-		$this->jsVars['items_per_page'] = $this->items_per_page;
+    protected function beforeAction($action)
+    {
+        Yii::app()->assetManager->registerCssFile('css/admin.css', null, 10);
+        Yii::app()->assetManager->registerCssFile('components/font-awesome/css/font-awesome.css', null, 10);
+        Yii::app()->assetManager->registerCssFile('components/jt.timepicker/jquery.timepicker.css', null, 10);
+        Yii::app()->assetManager->registerScriptFile('js/admin.js', null, 10);
+        $this->jsVars['items_per_page'] = $this->items_per_page;
 
-		return parent::beforeAction($action);
-	}
+        return parent::beforeAction($action);
+    }
 
-	/**
-	 * @description Initialise and handle admin pagination
-	 * @author bizmate
-	 * @param class $model
-	 * @param string $criteria
-	 * @return CPagination
-	 */
-	protected function initPagination($model, $criteria = null)
-	{
-		$criteria = is_null($criteria) ? new CDbCriteria() : $criteria;
-		$itemsCount = $model->count($criteria);
-		$pagination = new CPagination($itemsCount);
-		$pagination->pageSize = $this->items_per_page;
-		$pagination->applyLimit($criteria);
-		return $pagination;
-	}
+    /**
+     * @description Initialise and handle admin pagination
+     *
+     * @author bizmate
+     *
+     * @param class  $model
+     * @param string $criteria
+     *
+     * @return CPagination
+     */
+    protected function initPagination($model, $criteria = null)
+    {
+        $criteria = is_null($criteria) ? new CDbCriteria() : $criteria;
+        $itemsCount = $model->count($criteria);
+        $pagination = new CPagination($itemsCount);
+        $pagination->pageSize = $this->items_per_page;
+        $pagination->applyLimit($criteria);
 
-	/**
-	 * Allows generic CRUD operations on models
-	 *
-	 * @param string $title	The title of the form to be rendered
-	 * @param string $model The model for which we are generating a form
-	 * @param array $options An array of options that will configure how the form is generated.
-	 * 							label_field - Will set which field is displayed as a text input for the model
-	 * 							extra_fields - An array of arrays for which extra fields to render. Each array should contain
-	 *							an attribute of the model in assigned to field. Passing a type and model will allow
-	 * 							either a dropdown or search box for finding related objects eg:
-	 *							array(
-	 *								'field' => 'site_id',
-	 *								'type' => 'lookup',
-	 *								'model' => 'Site'
-	 *							),
-	 * 							filter_fields - Will allow you to filter results, expects an array the same as extra_fields
-	 *
-	 * @param integer $key - if provided will only generate a single row for a null instance of the $model (for ajax additions)
-	 *
-	 */
-	protected function genericAdmin($title, $model, array $options = array(), $key = null)
-	{
-		$options = array_merge(array(
-			'label_field' => $model::SELECTION_LABEL_FIELD,
-			'extra_fields' => array(),
-			'filter_fields' => array(),
-			'filters_ready' => true,
-			'label_extra_field' => false,
-		), $options);
+        return $pagination;
+    }
 
-		$columns = $model::model()->metadata->columns;
+    /**
+     * Allows generic CRUD operations on models.
+     *
+     * @param string $title   The title of the form to be rendered
+     * @param string $model   The model for which we are generating a form
+     * @param array  $options An array of options that will configure how the form is generated.
+     *                        label_field - Will set which field is displayed as a text input for the model
+     *                        extra_fields - An array of arrays for which extra fields to render. Each array should contain
+     *                        an attribute of the model in assigned to field. Passing a type and model will allow
+     *                        either a dropdown or search box for finding related objects eg:
+     *                        array(
+     *                        'field' => 'site_id',
+     *                        'type' => 'lookup',
+     *                        'model' => 'Site'
+     *                        ),
+     *                        filter_fields - Will allow you to filter results, expects an array the same as extra_fields
+     * @param int    $key     - if provided will only generate a single row for a null instance of the $model (for ajax additions)
+     */
+    protected function genericAdmin($title, $model, array $options = array(), $key = null)
+    {
+        $options = array_merge(array(
+            'label_field' => $model::SELECTION_LABEL_FIELD,
+            'extra_fields' => array(),
+            'filter_fields' => array(),
+            'filters_ready' => true,
+            'label_extra_field' => false,
+        ), $options);
 
-		foreach ($options['extra_fields'] as $extraKey => $extraField) {
-			switch ($extraField['type']) {
-				case 'lookup':
-					$options['extra_fields'][$extraKey]['allow_null'] = $columns[$extraField['field']]->allowNull;
-					break;
-			}
-			if($extraField['field'] === $options['label_field']){
-				$options['label_extra_field'] = true;
-			}
-		}
+        $columns = $model::model()->metadata->columns;
 
-		foreach ($options['filter_fields'] as $filterKey => $filterField) {
-			$options['filter_fields'][$filterKey]['value'] = null;
-			if(isset($_GET[$filterField['field']])){
-				$options['filter_fields'][$filterKey]['value'] = $_GET[$filterField['field']];
-			}
+        foreach ($options['extra_fields'] as $extraKey => $extraField) {
+            switch ($extraField['type']) {
+                case 'lookup':
+                    $options['extra_fields'][$extraKey]['allow_null'] = $columns[$extraField['field']]->allowNull;
+                    break;
+            }
+            if ($extraField['field'] === $options['label_field']) {
+                $options['label_extra_field'] = true;
+            }
+        }
 
-			if ($options['filter_fields'][$filterKey]['value'] === null && !$columns[$filterField['field']]->allowNull) {
-				$options['filters_ready'] = false;
-			}
-		}
+        foreach ($options['filter_fields'] as $filterKey => $filterField) {
+            $options['filter_fields'][$filterKey]['value'] = null;
+            if (isset($_GET[$filterField['field']])) {
+                $options['filter_fields'][$filterKey]['value'] = $_GET[$filterField['field']];
+            }
 
-		$items = array();
-		$errors = array();
-		$options['display_order'] = false;
+            if ($options['filter_fields'][$filterKey]['value'] === null && !$columns[$filterField['field']]->allowNull) {
+                $options['filters_ready'] = false;
+            }
+        }
 
-		if ($key !== null) {
-			$items = array($key => new $model);
-			$options['get_row'] = true;
-			if ($model::model()->hasAttribute('display_order')) {
-				$options['display_order'] = true;
-			}
-			$this->renderPartial('//admin/generic_admin', array(
-				'title' => $title,
-				'model' => $model,
-				'items' => $items,
-				'errors' => $errors,
-				'options' => $options,
-			), false, true);
-		} else {
-			if ($options['filters_ready']) {
-				if (Yii::app()->request->isPostRequest) {
-					$tx = Yii::app()->db->beginTransaction();
-					$j = 0;
+        $items = array();
+        $errors = array();
+        $options['display_order'] = false;
 
-					foreach ((array)@$_POST['id'] as $i => $id) {
-						if ($id) {
-							$item = $model::model()->findByPk($id);
-							$new = false;
-						} else {
-							$item = new $model;
-							$new = true;
-						}
+        if ($key !== null) {
+            $items = array($key => new $model());
+            $options['get_row'] = true;
+            if ($model::model()->hasAttribute('display_order')) {
+                $options['display_order'] = true;
+            }
+            $this->renderPartial('//admin/generic_admin', array(
+                'title' => $title,
+                'model' => $model,
+                'items' => $items,
+                'errors' => $errors,
+                'options' => $options,
+            ), false, true);
+        } else {
+            if ($options['filters_ready']) {
+                if (Yii::app()->request->isPostRequest) {
+                    $tx = Yii::app()->db->beginTransaction();
+                    $j = 0;
 
-						$attributes = $item->getAttributes();
-						if (!empty($_POST[$options['label_field']][$i])) {
-							$item->{$options['label_field']} = $_POST[$options['label_field']][$i];
-							if ($item->hasAttribute('display_order')) {
-								$options['display_order'] = true;
-								$item->display_order = $j + 1;
-							}
+                    foreach ((array) @$_POST['id'] as $i => $id) {
+                        if ($id) {
+                            $item = $model::model()->findByPk($id);
+                            $new = false;
+                        } else {
+                            $item = new $model();
+                            $new = true;
+                        }
 
-							if (array_key_exists('active', $attributes)) {
-								$item->active = (isset($_POST['active'][$i]) || $item->isNewRecord) ? 1 : 0;
-							}
+                        $attributes = $item->getAttributes();
+                        if (!empty($_POST[$options['label_field']][$i])) {
+                            $item->{$options['label_field']} = $_POST[$options['label_field']][$i];
+                            if ($item->hasAttribute('display_order')) {
+                                $options['display_order'] = true;
+                                $item->display_order = $j + 1;
+                            }
 
-							foreach ($options['extra_fields'] as $field) {
-								$name = $field['field'];
-								$item->$name = @$_POST[$name][$i];
-							}
+                            if (array_key_exists('active', $attributes)) {
+                                $item->active = (isset($_POST['active'][$i]) || $item->isNewRecord) ? 1 : 0;
+                            }
 
-							if ($item->hasAttribute('default')) {
-								if (isset($_POST['default']) && $_POST['default'] !== 'NONE' && $_POST['default'] == $j) {
-									$item->default = 1;
-								} else {
-									$item->default = 0;
-								}
-							}
+                            foreach ($options['extra_fields'] as $field) {
+                                $name = $field['field'];
+                                $item->$name = @$_POST[$name][$i];
+                            }
 
-							foreach ($options['filter_fields'] as $field) {
-								$item->{$field['field']} = $field['value'];
-							}
+                            if ($item->hasAttribute('default')) {
+                                if (isset($_POST['default']) && $_POST['default'] !== 'NONE' && $_POST['default'] == $j) {
+                                    $item->default = 1;
+                                } else {
+                                    $item->default = 0;
+                                }
+                            }
 
-							if ($new || $item->getAttributes() != $attributes) {
-								if (!$item->save()) {
-									$errors = $item->getErrors();
-									foreach ($errors as $error) {
-										$errors[$i] = $error[0];
-									}
-								}
-								Audit::add('admin', $new ? 'create' : 'update', $item->primaryKey, null, array(
-									'module' => (is_object($this->module)) ? $this->module->id : 'core',
-									'model' => $model::getShortModelName()
-								));
-							}
+                            foreach ($options['filter_fields'] as $field) {
+                                $item->{$field['field']} = $field['value'];
+                            }
 
-							$items[] = $item;
-							$j++;
+                            if ($new || $item->getAttributes() != $attributes) {
+                                if (!$item->save()) {
+                                    $errors = $item->getErrors();
+                                    foreach ($errors as $error) {
+                                        $errors[$i] = $error[0];
+                                    }
+                                }
+                                Audit::add('admin', $new ? 'create' : 'update', $item->primaryKey, null, array(
+                                    'module' => (is_object($this->module)) ? $this->module->id : 'core',
+                                    'model' => $model::getShortModelName(),
+                                ));
+                            }
 
-						}
-					}
+                            $items[] = $item;
+                            ++$j;
+                        }
+                    }
 
-					if (empty($errors)) {
-						$criteria = new CDbCriteria;
+                    if (empty($errors)) {
+                        $criteria = new CDbCriteria();
 
-						if ($items) {
-							$criteria->addNotInCondition('id', array_map(function ($i) {
-								return $i->id;
-							}, $items));
-						}
-						$this->addFilterCriteria($criteria, $options['filter_fields']);
+                        if ($items) {
+                            $criteria->addNotInCondition('id', array_map(function ($i) {
+                                return $i->id;
+                            }, $items));
+                        }
+                        $this->addFilterCriteria($criteria, $options['filter_fields']);
 
-						$to_delete = $model::model()->findAll($criteria);
-						foreach ($to_delete as $item) {
-							if (!$item->delete()) {
-								throw new Exception("Unable to delete {$model}:{$item->primaryKey}");
-							}
-							Audit::add('admin', 'delete', $item->primaryKey, null, array(
-								'module' => (is_object($this->module)) ? $this->module->id : 'core',
-								'model' => $model::getShortModelName()
-							));
-						}
+                        $to_delete = $model::model()->findAll($criteria);
+                        foreach ($to_delete as $item) {
+                            if (!$item->delete()) {
+                                throw new Exception("Unable to delete {$model}:{$item->primaryKey}");
+                            }
+                            Audit::add('admin', 'delete', $item->primaryKey, null, array(
+                                'module' => (is_object($this->module)) ? $this->module->id : 'core',
+                                'model' => $model::getShortModelName(),
+                            ));
+                        }
 
-						$tx->commit();
+                        $tx->commit();
 
-						Yii::app()->user->setFlash('success', "List updated.");
+                        Yii::app()->user->setFlash('success', 'List updated.');
 
-						$this->redirect(Yii::app()->request->url);
-					} else {
-						$tx->rollback();
-					}
-				} else {
-					$order = array();
+                        $this->redirect(Yii::app()->request->url);
+                    } else {
+                        $tx->rollback();
+                    }
+                } else {
+                    $order = array();
 
-					if ($model::model()->hasAttribute('display_order')) {
-						$order = array('order' => 'display_order');
-						$options['display_order'] = true;
-					}
-					$crit = new CDbCriteria($order);
-					$this->addFilterCriteria($crit, $options['filter_fields']);
-					$items = $model::model()->findAll($crit);
-				}
-			}
+                    if ($model::model()->hasAttribute('display_order')) {
+                        $order = array('order' => 'display_order');
+                        $options['display_order'] = true;
+                    }
+                    $crit = new CDbCriteria($order);
+                    $this->addFilterCriteria($crit, $options['filter_fields']);
+                    $items = $model::model()->findAll($crit);
+                }
+            }
 
-			$this->render('//admin/generic_admin', array(
-				'title' => $title,
-				'model' => $model,
-				'items' => $items,
-				'errors' => $errors,
-				'options' => $options,
-			));
-		}
-	}
+            $this->render('//admin/generic_admin', array(
+                'title' => $title,
+                'model' => $model,
+                'items' => $items,
+                'errors' => $errors,
+                'options' => $options,
+            ));
+        }
+    }
 
-	private function addFilterCriteria(CDbCriteria $crit, array $filter_fields)
-	{
-		foreach ($filter_fields as $filter_field) {
-			$crit->compare($filter_field['field'], $filter_field['value']);
-		}
-	}
+    private function addFilterCriteria(CDbCriteria $crit, array $filter_fields)
+    {
+        foreach ($filter_fields as $filter_field) {
+            $crit->compare($filter_field['field'], $filter_field['value']);
+        }
+    }
 }

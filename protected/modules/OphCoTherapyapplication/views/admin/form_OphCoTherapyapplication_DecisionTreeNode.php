@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -19,78 +19,78 @@
 ?>
 <?php
 $form->layoutColumns = array(
-	'label' => 3,
-	'field' => 9
+    'label' => 3,
+    'field' => 9,
 );
 ?>
 
 <p class="note">Fields with <span class="required">*</span> are required.</p>
 
 <?php echo $form->errorSummary($model); ?>
-<?php echo $form->textField($model,'question',array('autocomplete' => Yii::app()->params['html_autocomplete'], 'maxlength'=>256)); ?>
-<?php echo $form->dropdownlist($model,'outcome_id','OphCoTherapyapplication_DecisionTreeOutcome',array('empty'=>'- Please select -')); ?>
+<?php echo $form->textField($model, 'question', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'maxlength' => 256)); ?>
+<?php echo $form->dropdownlist($model, 'outcome_id', 'OphCoTherapyapplication_DecisionTreeOutcome', array('empty' => '- Please select -')); ?>
 
 <?php
 $func_list = array();
 foreach ($model->getDefaultFunctions() as $func) {
-	$func_list[$func] = $func;
+    $func_list[$func] = $func;
 }
 echo $form->dropdownlist($model, 'default_function', $func_list, array('empty' => '- Please select -')); ?>
 
 
 <div class="row field-row">
 	<div class="large-<?php echo $form->layoutColumns['label'];?> column">
-		<?php echo $form->labelEx($model,'default_value'); ?>
+		<?php echo $form->labelEx($model, 'default_value'); ?>
 	</div>
 	<div class="large-<?php echo $form->layoutColumns['field'];?> column end">
 		<?php
-			if ($model->response_type && $model->response_type->datatype == 'bool') {
-				$this->renderPartial('template_OphCoTherapyapplication_DecisionTreeNode_default_value_bool',
-						array('name' => get_class($model) . '[default_value]',
-								'id' => get_class($model) . '_default_value',
-								'val'=> $model->default_value,
+            if ($model->response_type && $model->response_type->datatype == 'bool') {
+                $this->renderPartial('template_OphCoTherapyapplication_DecisionTreeNode_default_value_bool',
+                        array('name' => get_class($model).'[default_value]',
+                                'id' => get_class($model).'_default_value',
+                                'val' => $model->default_value,
 
-						));
-			} else {
-				$this->renderPartial('template_OphCoTherapyapplication_DecisionTreeNode_default_value_default',
-						array('name' => get_class($model) . '[default_value]',
-						'id' => get_class($model) . '_default_value',
-						'val'=> $model->default_value,
-				));
-			}
-		?>
+                        ));
+            } else {
+                $this->renderPartial('template_OphCoTherapyapplication_DecisionTreeNode_default_value_default',
+                        array('name' => get_class($model).'[default_value]',
+                        'id' => get_class($model).'_default_value',
+                        'val' => $model->default_value,
+                ));
+            }
+        ?>
 	</div>
 </div>
 
 <?php
 $html_options = array(
-		'options' => array(),
-		'empty'=>'- Please select -',
+        'options' => array(),
+        'empty' => '- Please select -',
 );
 foreach (OphCoTherapyapplication_DecisionTreeNode_ResponseType::model()->findAll() as $rt) {
-	$html_options['options'][(string) $rt->id] = array('data-datatype' => $rt->datatype);
+    $html_options['options'][(string) $rt->id] = array('data-datatype' => $rt->datatype);
 }
 
-echo $form->dropdownlist($model,'response_type_id',CHtml::listData(OphCoTherapyapplication_DecisionTreeNode_ResponseType::model()->findAll(),'id','label'),$html_options); ?>
+echo $form->dropdownlist($model, 'response_type_id', CHtml::listData(OphCoTherapyapplication_DecisionTreeNode_ResponseType::model()->findAll(), 'id', 'label'), $html_options); ?>
 <script id="template_default_value_default" type="text/html">
 	<?php
-		$this->renderPartial('template_OphCoTherapyapplication_DecisionTreeNode_default_value_default',
-			array(
-				'name' => '{{name}}',
-				'id' => '{{id}}',
-				'val'=> null
-			)
-		);
-	?>
+        $this->renderPartial('template_OphCoTherapyapplication_DecisionTreeNode_default_value_default',
+            array(
+                'name' => '{{name}}',
+                'id' => '{{id}}',
+                'val' => null,
+            )
+        );
+    ?>
 </script>
 <script id="template_default_value_bool" type="text/html">
 	<?php
-		$this->renderPartial('template_OphCoTherapyapplication_DecisionTreeNode_default_value_bool',
-			array(
-				'name' => '{{name}}',
-				'id' => '{{id}}',
-				'val'=> null,
-			)
-		);
-	?>
+        $this->renderPartial('template_OphCoTherapyapplication_DecisionTreeNode_default_value_bool',
+            array(
+                'name' => '{{name}}',
+                'id' => '{{id}}',
+                'val' => null,
+            )
+        );
+    ?>
 </script>

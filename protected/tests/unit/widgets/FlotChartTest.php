@@ -6,67 +6,66 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class FlotChartTest extends CTestCase
 {
-	private $controller;
-	private $chart;
+    private $controller;
+    private $chart;
 
-	public function setUp()
-	{
-		$this->chart = new FlotChart(ComponentStubGenerator::generate('CController'));
-	}
+    public function setUp()
+    {
+        $this->chart = new FlotChart(ComponentStubGenerator::generate('CController'));
+    }
 
-	public function testHasData_NoData()
-	{
-		$this->assertFalse($this->chart->hasData());
-	}
+    public function testHasData_NoData()
+    {
+        $this->assertFalse($this->chart->hasData());
+    }
 
-	public function testHasData_Data()
-	{
-		$this->chart->addPoint('Series 1', 100, 100);
-		$this->assertTrue($this->chart->hasData());
-	}
+    public function testHasData_Data()
+    {
+        $this->chart->addPoint('Series 1', 100, 100);
+        $this->assertTrue($this->chart->hasData());
+    }
 
-	public function testGetXMin_NoData()
-	{
-		$this->assertNull($this->chart->getXMin());
-	}
+    public function testGetXMin_NoData()
+    {
+        $this->assertNull($this->chart->getXMin());
+    }
 
-	public function testGetXMin_OnePoint()
-	{
-		$this->chart->addPoint('Series 1', 100, 100);
-		$this->assertEquals(100, $this->chart->getXMin());
-	}
+    public function testGetXMin_OnePoint()
+    {
+        $this->chart->addPoint('Series 1', 100, 100);
+        $this->assertEquals(100, $this->chart->getXMin());
+    }
 
-	public function testGetXMin_TwoPoints()
-	{
-		$this->chart->addPoint('Series 1', 100, 100);
-		$this->chart->addPoint('Series 1', 50, 200);
-		$this->assertEquals(50, $this->chart->getXMin());
-	}
+    public function testGetXMin_TwoPoints()
+    {
+        $this->chart->addPoint('Series 1', 100, 100);
+        $this->chart->addPoint('Series 1', 50, 200);
+        $this->assertEquals(50, $this->chart->getXMin());
+    }
 
-	public function testGetXMax_NoData()
-	{
-		$this->assertNull($this->chart->getXMax());
-	}
+    public function testGetXMax_NoData()
+    {
+        $this->assertNull($this->chart->getXMax());
+    }
 
-	public function testGetXMax_OnePoint()
-	{
-		$this->chart->addPoint('Series 1', 100, 100);
-		$this->assertEquals(100, $this->chart->getXMax());
-	}
+    public function testGetXMax_OnePoint()
+    {
+        $this->chart->addPoint('Series 1', 100, 100);
+        $this->assertEquals(100, $this->chart->getXMax());
+    }
 
-	public function testGetXMax_TwoPoints()
-	{
-		$this->chart->addPoint('Series 1', 100, 100);
-		$this->chart->addPoint('Series 1', 50, 200);
-		$this->assertEquals(100, $this->chart->getXMax());
-	}
+    public function testGetXMax_TwoPoints()
+    {
+        $this->chart->addPoint('Series 1', 100, 100);
+        $this->chart->addPoint('Series 1', 50, 200);
+        $this->assertEquals(100, $this->chart->getXMax());
+    }
 }

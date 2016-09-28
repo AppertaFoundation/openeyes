@@ -15,7 +15,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new Period;
+        $this->object = new Period();
     }
 
     /**
@@ -28,6 +28,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Period::model
+     *
      * @todo   Implement testModel().
      */
     public function testModel()
@@ -40,6 +41,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Period::tableName
+     *
      * @todo   Implement testTableName().
      */
     public function testTableName()
@@ -52,6 +54,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Period::__toString
+     *
      * @todo   Implement test__toString().
      */
     public function test__toString()
@@ -64,6 +67,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Period::rules
+     *
      * @todo   Implement testRules().
      */
     public function testRules()
@@ -76,6 +80,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Period::relations
+     *
      * @todo   Implement testRelations().
      */
     public function testRelations()

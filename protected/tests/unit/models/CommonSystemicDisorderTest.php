@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -10,8 +10,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -19,107 +19,103 @@
  */
 class CommonSystemicDisorderTest extends CDbTestCase
 {
+    public $fixtures = array(
+        'Disorder',
+        'specialties' => 'Specialty',
+        'commonsystemicdisorder' => 'CommonSystemicDisorder',
+    );
 
-	public $fixtures = array(
-		'Disorder',
-		'specialties' => 'Specialty',
-		'commonsystemicdisorder' => 'CommonSystemicDisorder'
-	);
+    public function dataProvider_Search()
+    {
+        return array(
+            array(array('disorder_id' => 5), 1, array('commonSystemicDisorder1')),
+            array(array('disorder_id' => 6), 1, array('commonSystemicDisorder2')),
+            array(array('disorder_id' => 7), 1, array('commonSystemicDisorder3')),
+            array(array('disorder_id' => 1), 0, array()),
+        );
+    }
 
-	public function dataProvider_Search()
-	{
-		return array(
-			array(array('disorder_id' => 5), 1, array('commonSystemicDisorder1')),
-			array(array('disorder_id' => 6), 1, array('commonSystemicDisorder2')),
-			array(array('disorder_id' => 7), 1, array('commonSystemicDisorder3')),
-			array(array('disorder_id' => 1), 0, array()),
-		);
-	}
+    /**
+     * Sets up the fixture, for example, opens a network connection.
+     * This method is called before a test is executed.
+     */
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->model = new CommonSystemicDisorder();
+    }
 
-	/**
-	 * Sets up the fixture, for example, opens a network connection.
-	 * This method is called before a test is executed.
-	 */
-	protected function setUp()
-	{
+    /**
+     * @covers CommonSystemicDisorder::model
+     */
+    public function testModel()
+    {
+        $this->assertEquals('CommonSystemicDisorder', get_class(CommonSystemicDisorder::model()), 'Class name should match model.');
+    }
 
-		parent::setUp();
-		$this->model = new CommonSystemicDisorder;
-	}
+    /**
+     * @covers CommonSystemicDisorder::tableName
+     */
+    public function testTableName()
+    {
+        $this->assertEquals('common_systemic_disorder', $this->model->tableName());
+    }
 
-	/**
-	 * @covers CommonSystemicDisorder::model
-	 */
-	public function testModel()
-	{
-		$this->assertEquals('CommonSystemicDisorder', get_class(CommonSystemicDisorder::model()), 'Class name should match model.');
-	}
+    /**
+     * @covers CommonSystemicDisorder::rules
+     */
+    public function testRules()
+    {
+        $this->assertTrue($this->commonsystemicdisorder('commonSystemicDisorder1')->validate());
+        $this->assertEmpty($this->commonsystemicdisorder('commonSystemicDisorder1')->errors);
+    }
 
-	/**
-	 * @covers CommonSystemicDisorder::tableName
-	 */
-	public function testTableName()
-	{
-		$this->assertEquals('common_systemic_disorder', $this->model->tableName());
-	}
+    /**
+     * @covers CommonSystemicDisorder::attributeLabels
+     */
+    public function testAttributeLabels()
+    {
+        $expected = array(
+            'id' => 'ID',
+            'disorder_id' => 'Disorder',
+        );
 
-	/**
-	 * @covers CommonSystemicDisorder::rules
-	 */
-	public function testRules()
-	{
+        $this->assertEquals($expected, $this->model->attributeLabels(), 'Attribute labels should match.');
+    }
 
-		$this->assertTrue($this->commonsystemicdisorder('commonSystemicDisorder1')->validate());
-		$this->assertEmpty($this->commonsystemicdisorder('commonSystemicDisorder1')->errors);
-	}
+    /**
+     * @covers CommonSystemicDisorder::getList
+     */
+    public function testGetList()
+    {
+        $expected = array();
+        foreach ($this->commonsystemicdisorder as $data) {
+            $disorder = Disorder::model()->findByPk($data['disorder_id']);
+            $expected[$disorder->id] = $disorder->term;
+        }
 
-	/**
-	 * @covers CommonSystemicDisorder::attributeLabels
-	 */
-	public function testAttributeLabels()
-	{
-		$expected = array(
-			'id' => 'ID',
-			'disorder_id' => 'Disorder',
-		);
+        $firm = $this->getMockBuilder('Firm')->disableOriginalConstructor()->getMock();
+        $this->assertEquals($expected, $this->model->getList($firm), 'List results should match.');
+    }
 
-		$this->assertEquals($expected, $this->model->attributeLabels(), 'Attribute labels should match.');
-	}
+    /**
+     * @dataProvider dataProvider_Search
+     */
+    public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
+    {
+        $commonsystemicdisorder = new CommonSystemicDisorder();
+        $commonsystemicdisorder->setAttributes($searchTerms);
+        $results = $commonsystemicdisorder->search();
+        $data = $results->getData();
 
-	/**
-	 * @covers CommonSystemicDisorder::getList
-	 */
-	public function testGetList()
-	{
-		$expected = array();
-		foreach ($this->commonsystemicdisorder as $data) {
-			$disorder = Disorder::model()->findByPk($data['disorder_id']);
-			$expected[$disorder->id] = $disorder->term;
-		}
+        $expectedResults = array();
+        if (!empty($expectedKeys)) {
+            foreach ($expectedKeys as $key) {
+                $expectedResults[] = $this->commonsystemicdisorder($key);
+            }
+        }
 
-		$firm = $this->getMockBuilder('Firm')->disableOriginalConstructor()->getMock();
-		$this->assertEquals($expected, $this->model->getList($firm), 'List results should match.');
-	}
-
-	/**
-	 * @dataProvider dataProvider_Search
-	 */
-	public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
-	{
-		$commonsystemicdisorder = new CommonSystemicDisorder;
-		$commonsystemicdisorder->setAttributes($searchTerms);
-		$results = $commonsystemicdisorder->search();
-		$data = $results->getData();
-
-		$expectedResults = array();
-		if (!empty($expectedKeys)) {
-			foreach ($expectedKeys as $key) {
-				$expectedResults[] = $this->commonsystemicdisorder($key);
-			}
-		}
-
-		$this->assertEquals($numResults, $results->getItemCount(), 'Number of results should match.');
-		$this->assertEquals($expectedResults, $data, 'Results list should match.');
-	}
-
+        $this->assertEquals($numResults, $results->getItemCount(), 'Number of results should match.');
+        $this->assertEquals($expectedResults, $data, 'Results list should match.');
+    }
 }

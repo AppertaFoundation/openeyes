@@ -2,7 +2,7 @@
 
 class m140619_091711_overall_management_changes extends OEMigration
 {
-    private $defaults = array('clinic_interval' ,'photo' ,'oct' ,'hfa' ,'hrt');
+    private $defaults = array('clinic_interval', 'photo', 'oct', 'hfa', 'hrt');
     public function up()
     {
         $this->dropForeignKey('et_ophciexam_overallmanagementplan_clinic_internal_id_fk', 'et_ophciexamination_overallmanagementplan');
@@ -24,19 +24,18 @@ class m140619_091711_overall_management_changes extends OEMigration
             $this->insert('setting_metadata', array(
                 'element_type_id' => $this->getIdOfElementTypeByClassName('OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan'),
                 'field_type_id' => 2, // Dropdown
-                'key' => $default .'_id',
+                'key' => $default.'_id',
                 'name' => 'Default Period',
-                'default_value' => $period['id']
+                'default_value' => $period['id'],
             ));
         }
 
         $this->createOETable('ophciexamination_visitinterval',
-            array('id' => 'pk', 'name' => 'text', 'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',    ), true);
+            array('id' => 'pk', 'name' => 'text', 'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1'), true);
 
         $this->dropForeignKey('et_ophciexam_overallmanagementplan_lgonio_id_fk', 'et_ophciexamination_overallmanagementplan');
         $this->dropForeignKey('et_ophciexam_overallmanagementplan_rgonio_id_fk', 'et_ophciexamination_overallmanagementplan');
         $this->update('et_ophciexamination_overallmanagementplan', array('left_gonio_id' => 1, 'right_gonio_id' => 1));
-
 
         $migrations_path = dirname(__FILE__);
         $this->initialiseData($migrations_path);
@@ -65,7 +64,7 @@ class m140619_091711_overall_management_changes extends OEMigration
         $element_type_id = $this->getIdOfElementTypeByClassName('OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan');
 
         foreach ($this->defaults as $default) {
-            $this->delete('setting_metadata', '`element_type_id` = '.$element_type_id.' AND `key` = "' . $default . '_id"');
+            $this->delete('setting_metadata', '`element_type_id` = '.$element_type_id.' AND `key` = "'.$default.'_id"');
         }
 
         $this->dropForeignKey('et_ophciexam_overallmanagementplan_lgonio_id_fk', 'et_ophciexamination_overallmanagementplan');

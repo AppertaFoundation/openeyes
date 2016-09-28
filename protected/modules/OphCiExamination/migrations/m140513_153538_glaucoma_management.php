@@ -1,32 +1,31 @@
-<?php 
+<?php
+
 class m140513_153538_glaucoma_management extends OEMigration
 {
     public function up()
     {
-        $event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name'=>'OphCiExamination'))->queryRow();
+        $event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name' => 'OphCiExamination'))->queryRow();
 
         $element_types = array(
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan' =>
-                array('name' => 'Overall Management Plan', 'parent_element_type_id' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Management'),
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_CurrentManagementPlan' =>
-                array('name' => 'Current Management Plan', 'parent_element_type_id' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Management'),
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan' => array('name' => 'Overall Management Plan', 'parent_element_type_id' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Management'),
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_CurrentManagementPlan' => array('name' => 'Current Management Plan', 'parent_element_type_id' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Management'),
         );
 
         $this->insertOEElementType($element_types, $event_type['id']);
         $this->createOETable('ophciexamination_overallperiod',
-            array('id' => 'pk', 'name' => 'text', 'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',    ), true);
+            array('id' => 'pk', 'name' => 'text', 'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1'), true);
 
         $this->createOETable('ophciexamination_managementglaucomastatus',
-            array('id' => 'pk', 'name' => 'text', 'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1', ), true);
+            array('id' => 'pk', 'name' => 'text', 'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1'), true);
 
         $this->createOETable('ophciexamination_managementrelproblem',
-            array('id' => 'pk', 'name' => 'text', 'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1', ), true);
+            array('id' => 'pk', 'name' => 'text', 'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1'), true);
 
         $this->createOETable('ophciexamination_managementdrops',
-            array(    'id' => 'pk', 'name' => 'text', 'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1', ), true);
+            array('id' => 'pk', 'name' => 'text', 'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1'), true);
 
         $this->createOETable('ophciexamination_managementsurgery',
-            array('id' => 'pk', 'name' => 'text',    'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1', ), true);
+            array('id' => 'pk', 'name' => 'text',    'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1'), true);
 
         $this->createOETable('et_ophciexamination_overallmanagementplan', array(
             'id' => 'pk',

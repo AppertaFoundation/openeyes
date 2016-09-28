@@ -20,7 +20,21 @@ OpenEyes.Lab = OpenEyes.Lab || {};
 (function(exports) {
   var Form = {};
   var ajaxElementUri = '/OphInLabResults/Default/elementForm';
+  var $resultTypeSelect;
 
+  /**
+   * Reset the dropdown when an element is removed.
+   */
+  function removeResultElement() {
+    $resultTypeSelect.val('');
+  }
+
+  /**
+   * Load the apropriate form for the lab result type.
+   *
+   * @param e
+   * @returns {boolean}
+   */
   function loadResultElement(e) {
     var option = e.target.options[e.target.selectedIndex];
 
@@ -36,14 +50,17 @@ OpenEyes.Lab = OpenEyes.Lab || {};
         id: option.dataset.elementId
       },
       dataType: 'html',
-      success: function (data, textStatus, jqXHR) {
-        $('.lab-results-type').after(data);
+      success: function (data) {
+        var $dataElement  = $('<div></div>').html(data);
+        $dataElement.find('.js-remove-element').on('click', removeResultElement);
+        $('.lab-results-type').after($dataElement);
       }
     });
   }
 
   Form.init = function ($resultType) {
-    $resultType.on('change', loadResultElement);
+    $resultTypeSelect = $resultType;
+    $resultTypeSelect.on('change', loadResultElement);
   };
 
   exports.Form = Form;

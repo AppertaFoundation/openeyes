@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -19,16 +19,16 @@
 
 /**
  * @property string $id
- * @property integer $event_id
- * @property integer $occupation_id
- * @property integer $driving_status_id
- * @property integer $smoking_status_id
- * @property integer $accommodation_id
+ * @property int $event_id
+ * @property int $occupation_id
+ * @property int $driving_status_id
+ * @property int $smoking_status_id
+ * @property int $accommodation_id
  * @property string $comments
  * @property string $type_of_job
- * @property integer $carer_id
- * @property integer $alcohol_intake
- * @property integer $substance_misuse_id
+ * @property int $carer_id
+ * @property int $alcohol_intake
+ * @property int $substance_misuse_id
  *
  * relations:
  * @property User $user
@@ -41,77 +41,76 @@
  * @property SocialHistoryCarer $carer
  * @property SocialHistorySubstanceMisuse $substance_misuse
  */
-
 class SocialHistory  extends  BaseActiveRecordVersioned
 {
-	protected $auto_update_relations = true;
+    protected $auto_update_relations = true;
 
-	public static function model($className = __CLASS__)
-	{
-		return parent::model($className);
-	}
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
 
-	public function tableName()
-	{
-		return 'socialhistory';
-	}
+    public function tableName()
+    {
+        return 'socialhistory';
+    }
 
-	public function rules()
-	{
-		return array(
-			array('event_id, occupation_id, driving_status_id, accommodation_id, comments, type_of_job, carer_id, alcohol_intake, substance_misuse_id, driving_statuses', 'safe'),
-			array('smoking_status_id','required'),
-			array('id, event_id, occupation_id, driving_status_id, smoking_status_id, accommodation_id, comments, type_of_job, carer_id, alcohol_intake, substance_misuse_id, ', 'safe', 'on' => 'search'),
-			array('alcohol_intake', 'default', 'setOnEmpty' => true, 'value' => null),
-		);
-	}
+    public function rules()
+    {
+        return array(
+            array('event_id, occupation_id, driving_status_id, accommodation_id, comments, type_of_job, carer_id, alcohol_intake, substance_misuse_id, driving_statuses', 'safe'),
+            array('smoking_status_id', 'required'),
+            array('id, event_id, occupation_id, driving_status_id, smoking_status_id, accommodation_id, comments, type_of_job, carer_id, alcohol_intake, substance_misuse_id, ', 'safe', 'on' => 'search'),
+            array('alcohol_intake', 'default', 'setOnEmpty' => true, 'value' => null),
+        );
+    }
 
-	public function relations()
-	{
-		return array(
-			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-			'occupation' => array(self::BELONGS_TO, 'SocialHistoryOccupation', 'occupation_id'),
-			'driving_status_assignments' => array(self::HAS_MANY, 'SocialHistoryDrivingStatusAssignment', 'socialhistory_id', 'order' => 'display_order asc'),
-			'driving_statuses' => array(self::HAS_MANY, 'SocialHistoryDrivingStatus', 'driving_status_id', 'through' => 'driving_status_assignments'),
-			'smoking_status' => array(self::BELONGS_TO, 'SocialHistorySmokingStatus', 'smoking_status_id'),
-			'accommodation' => array(self::BELONGS_TO, 'SocialHistoryAccommodation', 'accommodation_id'),
-			'carer' => array(self::BELONGS_TO, 'SocialHistoryCarer', 'carer_id'),
-			'substance_misuse' => array(self::BELONGS_TO, 'SocialHistorySubstanceMisuse', 'substance_misuse_id'),
-			'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
-		);
-	}
+    public function relations()
+    {
+        return array(
+            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'occupation' => array(self::BELONGS_TO, 'SocialHistoryOccupation', 'occupation_id'),
+            'driving_status_assignments' => array(self::HAS_MANY, 'SocialHistoryDrivingStatusAssignment', 'socialhistory_id', 'order' => 'display_order asc'),
+            'driving_statuses' => array(self::HAS_MANY, 'SocialHistoryDrivingStatus', 'driving_status_id', 'through' => 'driving_status_assignments'),
+            'smoking_status' => array(self::BELONGS_TO, 'SocialHistorySmokingStatus', 'smoking_status_id'),
+            'accommodation' => array(self::BELONGS_TO, 'SocialHistoryAccommodation', 'accommodation_id'),
+            'carer' => array(self::BELONGS_TO, 'SocialHistoryCarer', 'carer_id'),
+            'substance_misuse' => array(self::BELONGS_TO, 'SocialHistorySubstanceMisuse', 'substance_misuse_id'),
+            'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
+        );
+    }
 
-	public function attributeLabels()
-	{
-		return array(
-			'occupation_id' => 'Employment',
-			'driving_statuses' => 'Driving Status',
-			'smoking_status_id' => 'Smoking Status',
-			'accommodation_id' => 'Accommodation',
-			'comments' => 'Comments',
-			'type_of_job' => 'Type of job',
-			'carer_id' => 'Carer',
-			'alcohol_intake' => 'Alcohol Intake',
-			'substance_misuse_id' => 'Substance Misuse',
-		);
-	}
+    public function attributeLabels()
+    {
+        return array(
+            'occupation_id' => 'Employment',
+            'driving_statuses' => 'Driving Status',
+            'smoking_status_id' => 'Smoking Status',
+            'accommodation_id' => 'Accommodation',
+            'comments' => 'Comments',
+            'type_of_job' => 'Type of job',
+            'carer_id' => 'Carer',
+            'alcohol_intake' => 'Alcohol Intake',
+            'substance_misuse_id' => 'Substance Misuse',
+        );
+    }
 
-	public function search()
-	{
-		$criteria = new CDbCriteria;
-		$criteria->compare('occupation_id', $this->occupation_id);
-		$criteria->compare('driving_status_id', $this->driving_status_id);
-		$criteria->compare('smoking_status_id', $this->smoking_status_id);
-		$criteria->compare('accommodation_id', $this->accommodation_id);
-		$criteria->compare('comments', $this->comments);
-		$criteria->compare('type_of_job', $this->type_of_job);
-		$criteria->compare('carer_id', $this->carer_id);
-		$criteria->compare('alcohol_intake', $this->alcohol_intake);
-		$criteria->compare('substance_misuse_id', $this->substance_misuse_id);
+    public function search()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->compare('occupation_id', $this->occupation_id);
+        $criteria->compare('driving_status_id', $this->driving_status_id);
+        $criteria->compare('smoking_status_id', $this->smoking_status_id);
+        $criteria->compare('accommodation_id', $this->accommodation_id);
+        $criteria->compare('comments', $this->comments);
+        $criteria->compare('type_of_job', $this->type_of_job);
+        $criteria->compare('carer_id', $this->carer_id);
+        $criteria->compare('alcohol_intake', $this->alcohol_intake);
+        $criteria->compare('substance_misuse_id', $this->substance_misuse_id);
 
-		return new CActiveDataProvider(get_class($this), array(
-			'criteria' => $criteria,
-		));
-	}
+        return new CActiveDataProvider(get_class($this), array(
+            'criteria' => $criteria,
+        ));
+    }
 }

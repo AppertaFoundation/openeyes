@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -8,8 +8,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
@@ -24,7 +24,7 @@ return array(
     'mapping1.2' => array(
         'id' => 2,
         'worklist_definition_id' => 1,
-        'key' => 'Doctor'
+        'key' => 'Doctor',
     ),
     'mapping2.1' => array(
         'id' => 3,
@@ -34,6 +34,6 @@ return array(
     'mapping2.2' => array(
         'id' => 4,
         'worklist_definition_id' => 2,
-        'key' => 'Doctor'
-    )
+        'key' => 'Doctor',
+    ),
 );

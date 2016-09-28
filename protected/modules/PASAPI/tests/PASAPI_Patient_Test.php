@@ -15,11 +15,10 @@
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-require_once(__DIR__ . '/PASAPI_BaseTest.php');
+require_once __DIR__.'/PASAPI_BaseTest.php';
 
 /**
- * TODO: setup fixtures for dependent models such as GP
+ * TODO: setup fixtures for dependent models such as GP.
  *
  * Class PASAPI_Patient_Test
  */
@@ -250,22 +249,21 @@ EOF;
     <GpCode>G3258868</GpCode>
 </Patient>
 EOF;
-        $this->put("TESTUpdateOnly", $xml, array(
-            'X-OE-Update-Only' => 1
+        $this->put('TESTUpdateOnly', $xml, array(
+            'X-OE-Update-Only' => 1,
         ));
 
-        $this->assertXPathFound("/Success");
+        $this->assertXPathFound('/Success');
 
-        $message = $this->xPathQuery("/Success//Message")->item(0)->nodeValue;
+        $message = $this->xPathQuery('/Success//Message')->item(0)->nodeValue;
 
-        $this->assertEquals("Patient not created", $message);
+        $this->assertEquals('Patient not created', $message);
 
         $this->assertNull(
             Patient::model()->findByAttributes(
             array('hos_num' => '010101010010101')
             )
         );
-
     }
 
     public function partialUpdate_Provider()
@@ -312,40 +310,40 @@ EOF;
             'nhsNumberStatus' => array('code' => '01'),
             'ethnic_group' => array('code' => 'A'),
             'gp' => array('nat_id' => 'G3258868'),
-            'practice' => array('code' => 'C82103')
+            'practice' => array('code' => 'C82103'),
         );
 
         return array(
             array(
                 $xml,
-                "<Patient><Title>Mr</Title></Patient>",
+                '<Patient><Title>Mr</Title></Patient>',
                 array_merge(
                     $original_expectation,
                     array(
                         'title' => 'Mr',
                     )
-                )
+                ),
             ),
             array(
                 $xml,
-                "<Patient><Title>Dr</Title><Gender>M</Gender></Patient>",
+                '<Patient><Title>Dr</Title><Gender>M</Gender></Patient>',
                 array_merge(
                     $original_expectation,
                     array(
                         'title' => 'Dr',
-                        'gender' => 'M'
+                        'gender' => 'M',
                     )
-                )
+                ),
             ),
             array(
                 $xml,
-                "<Patient><Gender/></Patient>",
+                '<Patient><Gender/></Patient>',
                 array_merge(
                     $original_expectation,
                     array(
-                        'gender' => null
+                        'gender' => null,
                     )
-                )
+                ),
             ),
             array(
                 $xml,
@@ -355,7 +353,7 @@ EOF;
                     array(
                         'ethnic_group' => null,
                         'gp' => null,
-                        'practice' => null
+                        'practice' => null,
                     )
                 ),
             ),
@@ -367,10 +365,10 @@ EOF;
                     array(
                         'gender' => null,
                         'dob' => '1990-08-03',
-                        'nhsNumberStatus' => array('code' => '02')
+                        'nhsNumberStatus' => array('code' => '02'),
                     )
-                )
-            )
+                ),
+            ),
         );
     }
 
@@ -397,13 +395,13 @@ EOF;
     {
         $this->put('PartialUpdate', $initial);
 
-        $id = $this->xPathQuery("/Success//Id")->item(0)->nodeValue;
+        $id = $this->xPathQuery('/Success//Id')->item(0)->nodeValue;
 
         $patient = Patient::model()->findByPk($id);
         $this->assertNotNull($patient);
 
         $this->put('PartialUpdate', $partial, array(
-            'X-OE-Partial-Record' => 1
+            'X-OE-Partial-Record' => 1,
         ));
 
         $patient = Patient::model()->findByPk($id);
@@ -423,18 +421,16 @@ EOF;
 </Patient>
 EOF;
 
-
         $this->put('PartialUpdateNewPatient', $xml, array(
-            'X-OE-Partial-Record' => 1
+            'X-OE-Partial-Record' => 1,
         ));
 
-        $this->assertXPathFound("/Success");
-        $id = $this->xPathQuery("/Success//Id")->item(0)->nodeValue;
+        $this->assertXPathFound('/Success');
+        $id = $this->xPathQuery('/Success//Id')->item(0)->nodeValue;
 
         $patient = Patient::model()->findByPk($id);
         $this->assertNotNull($patient);
-        $this->assertEquals("Test Last", $patient->last_name);
-
+        $this->assertEquals('Test Last', $patient->last_name);
     }
 
     public function update_Provider()
@@ -481,7 +477,7 @@ EOF;
             'nhsNumberStatus' => array('code' => '01'),
             'ethnic_group' => array('code' => 'A'),
             'gp' => array('nat_id' => 'G3258868'),
-            'practice' => array('code' => 'C82103')
+            'practice' => array('code' => 'C82103'),
         );
 
         $update1 = <<<EOF
@@ -519,7 +515,7 @@ EOF;
                         'title' => 'Mr',
                         'gp' => null,
                         'practice' => null,
-                        'ethnic_group' => null
+                        'ethnic_group' => null,
                     )
                 ),
             ),

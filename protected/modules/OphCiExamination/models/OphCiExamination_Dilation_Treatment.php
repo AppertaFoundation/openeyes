@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -22,12 +22,11 @@ namespace OEModule\OphCiExamination\models;
 /**
  * This is the model class for table "ophciexamination_dilation_treatment".
  *
- * @property integer $id
- * @property integer $element_id
- * @property integer $side
- * @property integer $drug_id
- * @property integer $drops
- *
+ * @property int $id
+ * @property int $element_id
+ * @property int $side
+ * @property int $drug_id
+ * @property int $drops
  */
 class OphCiExamination_Dilation_Treatment extends \BaseActiveRecordVersioned
 {
@@ -36,9 +35,10 @@ class OphCiExamination_Dilation_Treatment extends \BaseActiveRecordVersioned
 
     /**
      * Returns the static model of the specified AR class.
+     *
      * @return OphCiExamination_Dilation_Treatment the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }
@@ -59,7 +59,7 @@ class OphCiExamination_Dilation_Treatment extends \BaseActiveRecordVersioned
         return array(
                 array('side, drug_id, drops, element_id, treatment_time', 'safe'),
                 array('treatment_time', 'isValidTimeValue'),
-                array('id, side, drug_id, drops, element_id, treatment_time', 'safe', 'on'=>'search'),
+                array('id, side, drug_id, drops, element_id, treatment_time', 'safe', 'on' => 'search'),
         );
     }
 
@@ -81,14 +81,16 @@ class OphCiExamination_Dilation_Treatment extends \BaseActiveRecordVersioned
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
     {
-        $criteria=new \CDbCriteria;
+        $criteria = new \CDbCriteria();
         $criteria->compare('id', $this->id, true);
+
         return new \CActiveDataProvider(get_class($this), array(
-                'criteria'=>$criteria,
+                'criteria' => $criteria,
         ));
     }
 
@@ -100,7 +102,7 @@ class OphCiExamination_Dilation_Treatment extends \BaseActiveRecordVersioned
      */
     public function isValidTimeValue($attribute, $params)
     {
-        if (!preg_match("/^(([01]?[0-9])|(2[0-3])):?[0-5][0-9]$/", $this->$attribute)) {
+        if (!preg_match('/^(([01]?[0-9])|(2[0-3])):?[0-5][0-9]$/', $this->$attribute)) {
             $this->addError($attribute, 'Invalid treatment time');
         }
     }

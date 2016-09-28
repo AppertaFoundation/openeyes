@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2012
@@ -9,41 +9,40 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 ?>
 <div class="box admin">
 	<h2><?php echo $sequence->id ? 'Edit' : 'Add'?> sequence</h2>
 	<?php
-	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-		'id'=>'adminform',
-		'enableAjaxValidation'=>false,
-		'focus'=>'#username',
-		'layoutColumns' => array(
-			'label' => 2,
-			'field' => 5
-		)
-	))?>
+    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+        'id' => 'adminform',
+        'enableAjaxValidation' => false,
+        'focus' => '#username',
+        'layoutColumns' => array(
+            'label' => 2,
+            'field' => 5,
+        ),
+    ))?>
 	<?php echo $form->errorSummary($sequence); ?>
-	<?php echo $form->dropDownList($sequence,'firm_id',Firm::model()->getListWithSpecialties(),array('empty'=>'- Emergency -'))?>
-	<?php echo $form->dropDownList($sequence,'theatre_id',CHtml::listData(OphTrOperationbooking_Operation_Theatre::model()->activeOrPk($sequence->theatre_id)->findAll(array('order'=>'name')),'id','nameWithSite'),array('empty'=>'- None -'))?>
-	<?php echo $form->datePicker($sequence,'start_date',array(),array('null'=>true),array('field'=>2))?>
-	<?php echo $form->datePicker($sequence,'end_date',array(),array('null'=>true),array('field'=>2))?>
-	<?php echo $form->dropDownList($sequence,'weekday',array(1=>'Monday',2=>'Tuesday',3=>'Wednesday',4=>'Thursday',5=>'Friday',6=>'Saturday',7=>'Sunday'),array('empty'=>'- Weekday -'))?>
-	<?php echo $form->textField($sequence,'start_time',array('class' => 'time-picker'),array(),array('field'=>2))?>
-	<?php echo $form->textField($sequence,'end_time',array('class' => 'time-picker'),array(),array('field'=>2))?>
-	<?php echo $form->textField($sequence,'default_admission_time',array('class' => 'time-picker'),array(),array('field'=>2))?>
-	<?php echo $form->dropDownList($sequence,'interval_id','OphTrOperationbooking_Operation_Sequence_Interval')?>
-	<?php echo $form->radioBoolean($sequence,'consultant')?>
-	<?php echo $form->radioBoolean($sequence,'paediatric')?>
-	<?php echo $form->radioBoolean($sequence,'anaesthetist')?>
-	<?php echo $form->radioBoolean($sequence,'general_anaesthetic')?>
+	<?php echo $form->dropDownList($sequence, 'firm_id', Firm::model()->getListWithSpecialties(), array('empty' => '- Emergency -'))?>
+	<?php echo $form->dropDownList($sequence, 'theatre_id', CHtml::listData(OphTrOperationbooking_Operation_Theatre::model()->activeOrPk($sequence->theatre_id)->findAll(array('order' => 'name')), 'id', 'nameWithSite'), array('empty' => '- None -'))?>
+	<?php echo $form->datePicker($sequence, 'start_date', array(), array('null' => true), array('field' => 2))?>
+	<?php echo $form->datePicker($sequence, 'end_date', array(), array('null' => true), array('field' => 2))?>
+	<?php echo $form->dropDownList($sequence, 'weekday', array(1 => 'Monday', 2 => 'Tuesday', 3 => 'Wednesday', 4 => 'Thursday', 5 => 'Friday', 6 => 'Saturday', 7 => 'Sunday'), array('empty' => '- Weekday -'))?>
+	<?php echo $form->textField($sequence, 'start_time', array('class' => 'time-picker'), array(), array('field' => 2))?>
+	<?php echo $form->textField($sequence, 'end_time', array('class' => 'time-picker'), array(), array('field' => 2))?>
+	<?php echo $form->textField($sequence, 'default_admission_time', array('class' => 'time-picker'), array(), array('field' => 2))?>
+	<?php echo $form->dropDownList($sequence, 'interval_id', 'OphTrOperationbooking_Operation_Sequence_Interval')?>
+	<?php echo $form->radioBoolean($sequence, 'consultant')?>
+	<?php echo $form->radioBoolean($sequence, 'paediatric')?>
+	<?php echo $form->radioBoolean($sequence, 'anaesthetist')?>
+	<?php echo $form->radioBoolean($sequence, 'general_anaesthetic')?>
 	<fieldset id="OphTrOperationbooking_Operation_Sequence_week_selection" class="row field-row">
 		<legend class="large-2 column">
 			Week selection:
@@ -75,18 +74,18 @@
 	<?php echo $form->errorSummary($sequence); ?>
 	<div class="field-row row">
 		<div class="large-10 large-offset-2 column">
-			<?php echo EventAction::button('Save', 'save', array('level'=>'save'))->toHtml()?>
+			<?php echo EventAction::button('Save', 'save', array('level' => 'save'))->toHtml()?>
 			<?php echo EventAction::link('Cancel',
-					Yii::app()->createUrl('OphTrOperationbooking/admin/viewSequences'),
-					array('level' => 'cancel')
-				)->toHtml();
-			?>
+                    Yii::app()->createUrl('OphTrOperationbooking/admin/viewSequences'),
+                    array('level' => 'cancel')
+                )->toHtml();
+            ?>
 			<?php if ($sequence->id) {?>
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<?php echo EventAction::button('View sessions','view_sessions',array(),array('class'=>'button small'))->toHtml()?>
-				<?php echo EventAction::button('Add session','add_session_to_sequence',array(),array('class'=>'button small'))->toHtml()?>
+				<?php echo EventAction::button('View sessions', 'view_sessions', array(), array('class' => 'button small'))->toHtml()?>
+				<?php echo EventAction::button('Add session', 'add_session_to_sequence', array(), array('class' => 'button small'))->toHtml()?>
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<?php echo EventAction::button('Delete sequence','delete_sequence',array('level'=>'warning'),array('class'=>'button small'))->toHtml()?>
+				<?php echo EventAction::button('Delete sequence', 'delete_sequence', array('level' => 'warning'), array('class' => 'button small'))->toHtml()?>
 			<?php }?>
 			<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 		</div>

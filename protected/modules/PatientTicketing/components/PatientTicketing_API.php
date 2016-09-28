@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2014
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2014, OpenEyes Foundation
@@ -19,319 +19,325 @@
 
 namespace OEModule\PatientTicketing\components;
 
-use OEModule\PatientTicketing\models\QueueSetCategory;
 use OEModule\PatientTicketing\models\Queue;
 use OEModule\PatientTicketing\models\Ticket;
 use OEModule\PatientTicketing\models\TicketAssignOutcomeOption;
-use OEModule\PatientTicketing\widgets;
-use OEModule\PatientTicketing\components\AutoSaveTicket;
 use Yii;
 
 class PatientTicketing_API extends \BaseAPI
 {
+    public static $TICKET_SUMMARY_WIDGET = 'OEModule\PatientTicketing\widgets\TicketSummary';
+    public static $QUEUE_ASSIGNMENT_WIDGET = 'OEModule\PatientTicketing\widgets\QueueAssign';
+    public static $QUEUESETCATEGORY_SERVICE = 'PatientTicketing_QueueSetCategory';
+    public static $TICKET_SERVICE = 'PatientTicketing_Ticket';
 
-	public static $TICKET_SUMMARY_WIDGET = 'OEModule\PatientTicketing\widgets\TicketSummary';
-	public static $QUEUE_ASSIGNMENT_WIDGET = 'OEModule\PatientTicketing\widgets\QueueAssign';
-	public static $QUEUESETCATEGORY_SERVICE = 'PatientTicketing_QueueSetCategory';
-	public static $TICKET_SERVICE = 'PatientTicketing_Ticket';
+    /**
+     * Returns the most recent followup value for a patient.
+     *
+     * @param $patient
+     *
+     * @return array|bool followup value or false if not present
+     */
+    public function getLatestFollowUp($patient)
+    {
+        $ticket_service = Yii::app()->service->getService(self::$TICKET_SERVICE);
+        $tickets = $ticket_service->getTicketsForPatient($patient);
 
+        foreach ($tickets as $ticket) {
+            if ($follow_up = $this->getFollowUpFromAutoSave($patient->id, $ticket->current_queue->id)) {
+                return $follow_up;
+            } elseif ($follow_up = $this->getFollowUp($ticket->id)) {
+                return $follow_up;
+            }
+        }
 
-	/**
-	 * Returns the most recent followup value for a patient
-	 * @param $patient
-	 * @return array|bool followup value or false if not present
-	 */
-	public function getLatestFollowUp($patient)
-	{
-		$ticket_service = Yii::app()->service->getService(self::$TICKET_SERVICE);
-		$tickets = $ticket_service->getTicketsForPatient($patient);
+        return false;
+    }
 
-		foreach($tickets as $ticket){
-			if($follow_up = $this->getFollowUpFromAutoSave($patient->id,$ticket->current_queue->id)){
-				return $follow_up;
-			}
-			else if($follow_up = $this->getFollowUp($ticket->id)){
-				return $follow_up;
-			}
-		}
-		return false;
-	}
+    public function getFollowUpFromAutoSave($patient_id, $current_queue_id)
+    {
+        if ($data = AutoSaveTicket::getFormData($patient_id, $current_queue_id)) {
+            if ($data['validated']) {
+                if (isset($data['patientticketing_glreview'])) {
+                    return $data['patientticketing_glreview'];
+                }
+            }
+        }
+    }
 
-	public function getFollowUpFromAutoSave($patient_id,$current_queue_id)
-	{
-		if($data =	AutoSaveTicket::getFormData($patient_id,$current_queue_id)){
-			if($data['validated']){
-				if(isset ($data['patientticketing_glreview'])){
-					return $data['patientticketing_glreview'];
-				}
-			}
-		}
-	}
+    /**
+     * Returns a followup value from a patient ticket if present.
+     *
+     * @param $ticket_id
+     *
+     * @return array|bool followup value or false if not present
+     */
+    public function getFollowUp($ticket_id)
+    {
+        if (!$ticket = Ticket::model()->findByPk((int) $ticket_id)) {
+            return false;
+        };
 
-	/**
-	 * Returns a followup value from a patient ticket if present
-	 * @param $ticket_id
-	 * @return array|bool followup value or false if not present
-	 */
-	public function getFollowUp($ticket_id)
-	{
-		if (!$ticket = Ticket::model()->findByPk((int)$ticket_id)) {
-			return false;
-		};
+        if ($queue_assignments = $ticket->queue_assignments) {
+            foreach ($queue_assignments as $queue_assignment) {
+                $ticket_fields = json_decode($queue_assignment->details, true);
+                if ($ticket_fields) {
+                    foreach ($ticket_fields as $ticket_field) {
+                        if (@$ticket_field['widget_name'] == 'TicketAssignOutcome') {
+                            if (@isset($ticket_field['value']['outcome'])) {
+                                if ($ticket_outcome_option = TicketAssignOutcomeOption::model()->findByPk((int) $ticket_field['value']['outcome'])) {
+                                    if ($ticket_outcome_option->followup == 1) {
+                                        return $ticket_field['value'];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
-		if ($queue_assignments = $ticket->queue_assignments) {
-			foreach ($queue_assignments as $queue_assignment) {
-				$ticket_fields = json_decode($queue_assignment->details,true);
-				if ($ticket_fields) {
-					foreach ($ticket_fields as $ticket_field) {
-						if (@$ticket_field['widget_name'] == "TicketAssignOutcome") {
-							if (@isset($ticket_field['value']['outcome'])) {
-								if ($ticket_outcome_option = TicketAssignOutcomeOption::model()->findByPk((int)$ticket_field['value']['outcome'])) {
-									if ($ticket_outcome_option->followup == 1) {
-										return $ticket_field['value'];
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		return false;
-	}
+        return false;
+    }
 
-	public function getMenuItems($position = 1)
-	{
-		$result = array();
+    public function getMenuItems($position = 1)
+    {
+        $result = array();
 
-		$qsc_svc = Yii::app()->service->getService(self::$QUEUESETCATEGORY_SERVICE);
-		$user = Yii::app()->user;
-		foreach ($qsc_svc->getCategoriesForUser($user->id) as $qsc) {
-			$result[] = array(
-					'uri' => '/PatientTicketing/default/?cat_id='.$qsc->id,
-					'title' => $qsc->name,
-					'position' => $position++,
-			);
-		};
+        $qsc_svc = Yii::app()->service->getService(self::$QUEUESETCATEGORY_SERVICE);
+        $user = Yii::app()->user;
+        foreach ($qsc_svc->getCategoriesForUser($user->id) as $qsc) {
+            $result[] = array(
+                    'uri' => '/PatientTicketing/default/?cat_id='.$qsc->id,
+                    'title' => $qsc->name,
+                    'position' => $position++,
+            );
+        };
 
-		return $result;
-	}
+        return $result;
+    }
 
-	/**
-	 * Simple function to standardise access to the retrieving the Queue Assignment Form
-	 *
-	 * @return string
-	 */
-	public function getQueueAssignmentFormURI()
-	{
-		return "/PatientTicketing/Default/GetQueueAssignmentForm/";
-	}
+    /**
+     * Simple function to standardise access to the retrieving the Queue Assignment Form.
+     *
+     * @return string
+     */
+    public function getQueueAssignmentFormURI()
+    {
+        return '/PatientTicketing/Default/GetQueueAssignmentForm/';
+    }
 
-	/**
-	 * @param $event
-	 * @return mixed
-	 */
-	public function getTicketForEvent($event)
-	{
-		if ($event->id) {
-			return Ticket::model()->findByAttributes(array('event_id' => $event->id));
-		}
-	}
+    /**
+     * @param $event
+     *
+     * @return mixed
+     */
+    public function getTicketForEvent($event)
+    {
+        if ($event->id) {
+            return Ticket::model()->findByAttributes(array('event_id' => $event->id));
+        }
+    }
 
-	/**
-	 * Filters and purifies passed array to get data relevant to a ticket queue assignment
-	 *
-	 * @param \OEModule\PatientTicketing\models\Queue $queue
-	 * @param $data
-	 * @param bool $validate
-	 * @return array
-	 */
-	public function extractQueueData(Queue $queue, $data, $validate = false)
-	{
-		$result = array();
-		$errors = array();
-		$p = new \CHtmlPurifier();
+    /**
+     * Filters and purifies passed array to get data relevant to a ticket queue assignment.
+     *
+     * @param \OEModule\PatientTicketing\models\Queue $queue
+     * @param $data
+     * @param bool $validate
+     *
+     * @return array
+     */
+    public function extractQueueData(Queue $queue, $data, $validate = false)
+    {
+        $result = array();
+        $errors = array();
+        $p = new \CHtmlPurifier();
 
-		foreach ($queue->getFormFields() as $field) {
-			$field_name = $field['form_name'];
-			if (@$field['type'] == 'widget') {
-				$class_name = "OEModule\\PatientTicketing\\widgets\\" . $field['widget_name'];
-				$widget = new $class_name;
+        foreach ($queue->getFormFields() as $field) {
+            $field_name = $field['form_name'];
+            if (@$field['type'] == 'widget') {
+                $class_name = 'OEModule\\PatientTicketing\\widgets\\'.$field['widget_name'];
+                $widget = new $class_name();
 
-				if (isset($data[$field['form_name']])) { // if widget is missing don't validate
-					$result[$field_name] = $widget->extractFormData($data[$field['form_name']]);
-					if ($validate) {
-						$errors = array_merge($errors, $widget->validate($data[$field['form_name']]));
-					}
-				}
-			}
-			else {
-				$result[$field_name] = $p->purify(@$data[$field_name]);
-				if ($validate) {
-					if ($field['required'] && !@$data[$field_name]) {
-						$errors[$field_name] = $field['label'] . " is required";
-					}
-					elseif (@$field['choices'] && @$data[$field_name]) {
-						$match = false;
-						foreach ($field['choices'] as $k => $v) {
-							if ($data[$field_name] == $k) {
-								$match = true;
-								break;
-							}
-						}
-						if (!$match) {
-							$errors[$field_name] = $field['label'] .": invalid choice";
-						}
-					}
-				}
-			}
-		}
+                if (isset($data[$field['form_name']])) { // if widget is missing don't validate
+                    $result[$field_name] = $widget->extractFormData($data[$field['form_name']]);
+                    if ($validate) {
+                        $errors = array_merge($errors, $widget->validate($data[$field['form_name']]));
+                    }
+                }
+            } else {
+                $result[$field_name] = $p->purify(@$data[$field_name]);
+                if ($validate) {
+                    if ($field['required'] && !@$data[$field_name]) {
+                        $errors[$field_name] = $field['label'].' is required';
+                    } elseif (@$field['choices'] && @$data[$field_name]) {
+                        $match = false;
+                        foreach ($field['choices'] as $k => $v) {
+                            if ($data[$field_name] == $k) {
+                                $match = true;
+                                break;
+                            }
+                        }
+                        if (!$match) {
+                            $errors[$field_name] = $field['label'].': invalid choice';
+                        }
+                    }
+                }
+            }
+        }
 
-		if ($validate) {
-			return array($result, $errors);
-		}
-		else {
-			return $result;
-		}
-	}
+        if ($validate) {
+            return array($result, $errors);
+        } else {
+            return $result;
+        }
+    }
 
-	/**
-	 *
-	 * @param \Event $event
-	 * @param Queue $initial_queue
-	 * @param \CWebUser $user
-	 * @param \Firm $firm
-	 * @param $data
-	 * @throws \Exception
-	 * @return \OEModule\PatientTicketing\models\Ticket
-	 */
-	public function createTicketForEvent(\Event $event, Queue $initial_queue, \CWebUser $user, \Firm $firm, $data)
-	{
-		$patient = $event->episode->patient;
-		if ($ticket = $this->createTicketForPatient($patient, $initial_queue, $user, $firm, $data)) {
-			$ticket->event_id = $event->id;
-			$ticket->save();
-		}
-		else {
-			throw new \Exception('Ticket was not created for an unknown reason');
-		}
+    /**
+     * @param \Event    $event
+     * @param Queue     $initial_queue
+     * @param \CWebUser $user
+     * @param \Firm     $firm
+     * @param $data
+     *
+     * @throws \Exception
+     *
+     * @return \OEModule\PatientTicketing\models\Ticket
+     */
+    public function createTicketForEvent(\Event $event, Queue $initial_queue, \CWebUser $user, \Firm $firm, $data)
+    {
+        $patient = $event->episode->patient;
+        if ($ticket = $this->createTicketForPatient($patient, $initial_queue, $user, $firm, $data)) {
+            $ticket->event_id = $event->id;
+            $ticket->save();
+        } else {
+            throw new \Exception('Ticket was not created for an unknown reason');
+        }
 
-		return $ticket;
-	}
+        return $ticket;
+    }
 
-	/*
-	 * @param Event $event
-	 * @param array $data
-	 */
-	public function updateTicketForEvent(\Event $event)
-	{
-		if (!$ticket = $this->getTicketForEvent($event)) {
-			throw new \Exception("Event has no ticket: $event->id");
-		}
-		$assignment = $ticket->initial_queue_assignment;
+    /*
+     * @param Event $event
+     * @param array $data
+     */
+    public function updateTicketForEvent(\Event $event)
+    {
+        if (!$ticket = $this->getTicketForEvent($event)) {
+            throw new \Exception("Event has no ticket: $event->id");
+        }
+        $assignment = $ticket->initial_queue_assignment;
 
-		// regenerate the report field on the ticket.
-		if ($assignment->queue->report_definition) {
-			$assignment->generateReportText();
-		}
-		if (!$assignment->save()) {
-			throw new \Exception("Unable to save queue assignment");
-		}
-	}
+        // regenerate the report field on the ticket.
+        if ($assignment->queue->report_definition) {
+            $assignment->generateReportText();
+        }
+        if (!$assignment->save()) {
+            throw new \Exception('Unable to save queue assignment');
+        }
+    }
 
-	/**
-	 * @param \Patient $patient
-	 * @param Queue $initial_queue
-	 * @param \CWebUser $user
-	 * @param \Firm $firm
-	 * @param $data
-	 * @throws \Exception
-	 * @return \OEModule\PatientTicketing\models\Ticket
-	 */
-	public function createTicketForPatient(\Patient $patient, Queue $initial_queue, \CWebUser $user, \Firm $firm, $data)
-	{
-		$transaction = Yii::app()->db->getCurrentTransaction() === null
-				? Yii::app()->db->beginTransaction()
-				: false;
+    /**
+     * @param \Patient  $patient
+     * @param Queue     $initial_queue
+     * @param \CWebUser $user
+     * @param \Firm     $firm
+     * @param $data
+     *
+     * @throws \Exception
+     *
+     * @return \OEModule\PatientTicketing\models\Ticket
+     */
+    public function createTicketForPatient(\Patient $patient, Queue $initial_queue, \CWebUser $user, \Firm $firm, $data)
+    {
+        $transaction = Yii::app()->db->getCurrentTransaction() === null
+                ? Yii::app()->db->beginTransaction()
+                : false;
 
-		try {
-			$ticket = new Ticket();
-			$ticket->patient_id = $patient->id;
-			$ticket->created_user_id = $user->id;
-			$ticket->last_modified_user_id = $user->id;
-			$ticket->priority_id = $data['patientticketing__priority'];
-			$ticket->save();
-			$ticket->audit('ticket', 'create', $ticket->id);
+        try {
+            $ticket = new Ticket();
+            $ticket->patient_id = $patient->id;
+            $ticket->created_user_id = $user->id;
+            $ticket->last_modified_user_id = $user->id;
+            $ticket->priority_id = $data['patientticketing__priority'];
+            $ticket->save();
+            $ticket->audit('ticket', 'create', $ticket->id);
 
-			$initial_queue->addTicket($ticket, $user, $firm, $data);
-			if ($transaction) {
-				$transaction->commit();
-			}
-			return $ticket;
+            $initial_queue->addTicket($ticket, $user, $firm, $data);
+            if ($transaction) {
+                $transaction->commit();
+            }
 
-		}
-		catch (\Exception $e) {
-			if ($transaction) {
-				$transaction->rollback();
-			}
-			throw $e;
-		}
-	}
+            return $ticket;
+        } catch (\Exception $e) {
+            if ($transaction) {
+                $transaction->rollback();
+            }
+            throw $e;
+        }
+    }
 
-	/**
-	 * Verifies that the provided queue id is an id for a Queue that the User can add to as the given Firm
-	 * At the moment, no verification takes place beyond the fact that the id is valid and active
-	 *
-	 * @param \CWebUser $user
-	 * @param \Firm $firm
-	 * @param integer $id
-	 */
-	public function getQueueForUserAndFirm(\CWebUser $user, \Firm $firm, $id)
-	{
-		return Queue::model()->active()->findByPk($id);
-	}
+    /**
+     * Verifies that the provided queue id is an id for a Queue that the User can add to as the given Firm
+     * At the moment, no verification takes place beyond the fact that the id is valid and active.
+     *
+     * @param \CWebUser $user
+     * @param \Firm     $firm
+     * @param int       $id
+     */
+    public function getQueueForUserAndFirm(\CWebUser $user, \Firm $firm, $id)
+    {
+        return Queue::model()->active()->findByPk($id);
+    }
 
-	/**
-	 * Returns the initial queues a patient ticket can be created against.
-	 *
-	 * @param \Firm $firm
-	 * @return Queue[]
-	 */
-	public function getInitialQueues(\Firm $firm)
-	{
-		$criteria = new \CDbCriteria();
-		$criteria->addColumnCondition( array('is_initial' => true));
-		return Queue::model()->active()->findAll($criteria);
-	}
+    /**
+     * Returns the initial queues a patient ticket can be created against.
+     *
+     * @param \Firm $firm
+     *
+     * @return Queue[]
+     */
+    public function getInitialQueues(\Firm $firm)
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->addColumnCondition(array('is_initial' => true));
 
-	/**
-	 * Returns the Queue Sets a patient ticket can be created in for the given firm.
-	 * (Note: firm filtering is not currently implemented)
-	 *
-	 * @param \Firm $firm
-	 * @return mixed
-	 */
-	public function getQueueSetList(\Firm $firm, \Patient $patient = null)
-	{
-		$qs_svc = Yii::app()->service->getService("PatientTicketing_QueueSet");
-		$res = array();
-		foreach ($qs_svc->getQueueSetsForFirm($firm) as $qs_r) {
-			if ($patient && $qs_svc->canAddPatientToQueueSet($patient, $qs_r->getId())) {
-				$res[$qs_r->initial_queue->getId()] = $qs_r->name;
-			}
-		}
-		return $res;
-	}
+        return Queue::model()->active()->findAll($criteria);
+    }
 
-	/**
-	 * @param \Patient $patient
-	 * @param Queue $queue
-	 * @return mixed
-	 */
-	public function canAddPatientToQueue(\Patient $patient, Queue $queue)
-	{
-		$qs_svc = Yii::app()->service->getService("PatientTicketing_QueueSet");
-		$qs_r = $qs_svc->getQueueSetForQueue($queue->id);
-		return $qs_svc->canAddPatientToQueueSet($patient, $qs_r->getId());
-	}
+    /**
+     * Returns the Queue Sets a patient ticket can be created in for the given firm.
+     * (Note: firm filtering is not currently implemented).
+     *
+     * @param \Firm $firm
+     *
+     * @return mixed
+     */
+    public function getQueueSetList(\Firm $firm, \Patient $patient = null)
+    {
+        $qs_svc = Yii::app()->service->getService('PatientTicketing_QueueSet');
+        $res = array();
+        foreach ($qs_svc->getQueueSetsForFirm($firm) as $qs_r) {
+            if ($patient && $qs_svc->canAddPatientToQueueSet($patient, $qs_r->getId())) {
+                $res[$qs_r->initial_queue->getId()] = $qs_r->name;
+            }
+        }
+
+        return $res;
+    }
+
+    /**
+     * @param \Patient $patient
+     * @param Queue    $queue
+     *
+     * @return mixed
+     */
+    public function canAddPatientToQueue(\Patient $patient, Queue $queue)
+    {
+        $qs_svc = Yii::app()->service->getService('PatientTicketing_QueueSet');
+        $qs_r = $qs_svc->getQueueSetForQueue($queue->id);
+
+        return $qs_svc->canAddPatientToQueueSet($patient, $qs_r->getId());
+    }
 }

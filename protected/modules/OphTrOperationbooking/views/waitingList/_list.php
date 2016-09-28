@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -59,29 +59,29 @@
 			</tr>
 		<?php } else {?>
 			<?php
-			$i = 0;
-			foreach ($operations as $eo) {
-				$patient = $eo->event->episode->patient;
-				$contact = $patient->contact;
-				if (isset($_POST['status']) and $_POST['status'] != '') {
-					if ($eo->getNextLetter() != $_POST['status']) {
-						continue;
-					}
-				}?>
+            $i = 0;
+    foreach ($operations as $eo) {
+        $patient = $eo->event->episode->patient;
+        $contact = $patient->contact;
+        if (isset($_POST['status']) and $_POST['status'] != '') {
+            if ($eo->getNextLetter() != $_POST['status']) {
+                continue;
+            }
+                }?>
 
 				<?php if ($eo->getWaitingListStatus() == Element_OphTrOperationbooking_Operation::STATUS_PURPLE) {
-					$letterStatusClass = "send-invitation-letter";
-				} elseif ($eo->getWaitingListStatus() == Element_OphTrOperationbooking_Operation::STATUS_GREEN1) {
-					$letterStatusClass = "send-another-reminder";
-				} elseif ($eo->getWaitingListStatus() == Element_OphTrOperationbooking_Operation::STATUS_GREEN2) {
-					$letterStatusClass = "send-another-reminder";
-				} elseif ($eo->getWaitingListStatus() == Element_OphTrOperationbooking_Operation::STATUS_ORANGE) {
-					$letterStatusClass = "send-gp-removal-letter";
-				} elseif ($eo->getWaitingListStatus() == Element_OphTrOperationbooking_Operation::STATUS_RED) {
-					$letterStatusClass = "patient-due-removed";
-				} else {
-					$letterStatusClass = "";
-				}?>
+    $letterStatusClass = 'send-invitation-letter';
+} elseif ($eo->getWaitingListStatus() == Element_OphTrOperationbooking_Operation::STATUS_GREEN1) {
+    $letterStatusClass = 'send-another-reminder';
+} elseif ($eo->getWaitingListStatus() == Element_OphTrOperationbooking_Operation::STATUS_GREEN2) {
+    $letterStatusClass = 'send-another-reminder';
+} elseif ($eo->getWaitingListStatus() == Element_OphTrOperationbooking_Operation::STATUS_ORANGE) {
+    $letterStatusClass = 'send-gp-removal-letter';
+} elseif ($eo->getWaitingListStatus() == Element_OphTrOperationbooking_Operation::STATUS_RED) {
+    $letterStatusClass = 'patient-due-removed';
+} else {
+    $letterStatusClass = '';
+                }?>
 
 				<tr>
 					<?php //FIXME: waiting list color needs adding to style for below to work ?>
@@ -100,7 +100,7 @@
 						<?php }?>
 					</td>
 					<td class="patient">
-						<?php echo CHtml::link("<strong>" . trim(strtoupper($contact->last_name)) . '</strong>, ' . $contact->first_name . " ({$patient->age})", Yii::app()->createUrl('/OphTrOperationbooking/default/view/'.$eo->event_id))?>
+						<?php echo CHtml::link('<strong>'.trim(strtoupper($contact->last_name)).'</strong>, '.$contact->first_name." ({$patient->age})", Yii::app()->createUrl('/OphTrOperationbooking/default/view/'.$eo->event_id))?>
 					</td>
 					<td><?php echo $patient->hos_num ?></td>
 					<td><?php echo $eo->site->short_name?></td>
@@ -109,14 +109,14 @@
 					<td><?php echo $eo->event->episode->firm->name ?> (<?php echo $eo->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name?>)</td>
 					<td><?php echo $eo->NHSDate('decision_date') ?></td>
 					<td><?php echo $eo->priority->name?></td>
-					<td><?php echo ucfirst(preg_replace('/^Requires /','',$eo->status->name)) ?></td>
+					<td><?php echo ucfirst(preg_replace('/^Requires /', '', $eo->status->name)) ?></td>
 					<td<?php if ($letterStatusClass == '' && Yii::app()->user->checkAccess('admin')) { ?> class="admin-td"<?php } ?>>
 
 						<?php if (($patient && $patient->contact->correspondAddress)
-							&& $eo->id
-							&& ($eo->getDueLetter() != Element_OphTrOperationbooking_Operation::LETTER_GP
-								|| ($eo->getDueLetter() == Element_OphTrOperationbooking_Operation::LETTER_GP && $patient->practice && $patient->practice->contact->address)
-							)) {?>
+                            && $eo->id
+                            && ($eo->getDueLetter() != Element_OphTrOperationbooking_Operation::LETTER_GP
+                                || ($eo->getDueLetter() == Element_OphTrOperationbooking_Operation::LETTER_GP && $patient->practice && $patient->practice->contact->address)
+                            )) {?>
 							<div>
 								<input<?php if ($letterStatusClass == '' && !Yii::app()->user->checkAccess('admin')) { ?> disabled="disabled"<?php } ?> type="checkbox" id="operation<?php echo $eo->id ?>" value="1" />
 							</div>
@@ -140,10 +140,10 @@
 					</td>
 				</tr>
 				<?php
-				$i++;
-			}
+                ++$i;
+    }
 
-			if ($i == 0) {?>
+            if ($i == 0) {?>
 				<tr>
 					<td colspan="7">
 						There are no patients who match the specified criteria.

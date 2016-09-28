@@ -2418,7 +2418,6 @@ th,
 td {
   margin: 0;
   padding: 0;
-
 }
 
 /* Default Link Styles */
@@ -2780,9 +2779,8 @@ html, body {
 }
 
 /* line 35, ../sass/openeyes/components/_global.scss */
-.wordbreak{
-  word-wrap: break-word;
-  word-break:break-all;
+.wordbreak {
+  background: #ffffff;
 }
 
 /* line 17, ../sass/openeyes/components/_containers.scss */
@@ -5381,6 +5379,13 @@ tfoot.pagination-container .pagination-view-all {
   position: absolute;
   right: 0;
 }
+@media screen {
+  /* line 118, ../sass/openeyes/components/panels/_patient.scss */
+  .stuck .panel.patient .patient-summary-anchor {
+    display: none;
+  }
+}
+/* line 123, ../sass/openeyes/components/panels/_patient.scss */
 .panel.patient .clinical-summary-anchor {
   bottom: 12px;
   font-size: 0.6875rem;
@@ -5389,34 +5394,28 @@ tfoot.pagination-container .pagination-view-all {
   right: 63px;
 }
 @media screen {
-  /* line 118, ../sass/openeyes/components/panels/_patient.scss */
-  .stuck .panel.patient .patient-summary-anchor {
+  /* line 130, ../sass/openeyes/components/panels/_patient.scss */
+  .stuck .panel.patient .clinical-summary-anchor {
     display: none;
   }
 }
-/* line 123, ../sass/openeyes/components/panels/_patient.scss */
+/* line 136, ../sass/openeyes/components/panels/_patient.scss */
 .panel.patient .hospital-number {
   margin-bottom: 3px;
 }
-@media screen {
-  /* line 126, ../sass/openeyes/components/panels/_patient.scss */
-  .stuck .panel.patient .hospital-number {
-    float: left;
-  }
-}
 @media print {
-  /* line 131, ../sass/openeyes/components/panels/_patient.scss */
+  /* line 139, ../sass/openeyes/components/panels/_patient.scss */
   .panel.patient .patient-summary-anchor {
     display: none;
   }
 }
 @media print {
-  /* line 136, ../sass/openeyes/components/panels/_patient.scss */
+  /* line 144, ../sass/openeyes/components/panels/_patient.scss */
   .panel.patient .column, .panel.patient .columns {
     width: 100%;
   }
 }
-/* line 141, ../sass/openeyes/components/panels/_patient.scss */
+/* line 149, ../sass/openeyes/components/panels/_patient.scss */
 .panel.patient.warning {
   background: url('../img/_elements/icons/patient/patient-id_small-warning.png?1457349956'), url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgeDE9IjAuNSIgeTE9IjAuMCIgeDI9IjAuNSIgeTI9IjEuMCI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZjJkOCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2ZmZTZiMyIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');
   background: url('../img/_elements/icons/patient/patient-id_small-warning.png?1457349956'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
@@ -5426,12 +5425,12 @@ tfoot.pagination-container .pagination-view-all {
   background-position: 98% 2px, top;
   background-repeat: no-repeat, no-repeat;
 }
-/* line 144, ../sass/openeyes/components/panels/_patient.scss */
+/* line 152, ../sass/openeyes/components/panels/_patient.scss */
 .panel.patient.warning .warning .messages {
   display: none;
 }
 
-/* line 156, ../sass/openeyes/components/panels/_patient.scss */
+/* line 164, ../sass/openeyes/components/panels/_patient.scss */
 .nhs-number {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
@@ -5444,15 +5443,15 @@ tfoot.pagination-container .pagination-view-all {
   display: inline-block;
   padding: 2px 3px 1px 33px;
 }
-.nhs-number .messages{
-  display: none;
-}
-
 @media print {
-  /* line 156, ../sass/openeyes/components/panels/_patient.scss */
+  /* line 164, ../sass/openeyes/components/panels/_patient.scss */
   .nhs-number {
     padding-left: 0;
   }
+}
+/* line 179, ../sass/openeyes/components/panels/_patient.scss */
+.nhs-number .messages {
+  display: none;
 }
 
 /* line 35, ../sass/openeyes/components/panels/_search.scss */
@@ -6062,7 +6061,7 @@ tfoot.pagination-container .pagination-view-all {
     -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     position: fixed;
-    top: 54px;
+    top: 74px;
     z-index: 199;
   }
 }
@@ -6086,13 +6085,18 @@ tfoot.pagination-container .pagination-view-all {
     padding-left: 0;
   }
 }
-/* line 81, ../sass/openeyes/components/events/_event.scss */
+/* line 80, ../sass/openeyes/components/events/_event.scss */
+.event .event-title #automated-event {
+  font-size: 0.75rem;
+  color: #888888;
+}
+/* line 85, ../sass/openeyes/components/events/_event.scss */
 .event .metadata {
   border-top: 1px dotted #dae6f1;
   margin: 10px;
   padding-top: 8px;
 }
-/* line 85, ../sass/openeyes/components/events/_event.scss */
+/* line 89, ../sass/openeyes/components/events/_event.scss */
 .event .metadata .info {
   color: #888888;
   display: inline-block;
@@ -6100,17 +6104,17 @@ tfoot.pagination-container .pagination-view-all {
   font-style: italic;
   padding-right: 15px;
 }
-/* line 92, ../sass/openeyes/components/events/_event.scss */
+/* line 96, ../sass/openeyes/components/events/_event.scss */
 .event .metadata .user {
   color: #333333;
 }
-/* line 97, ../sass/openeyes/components/events/_event.scss */
+/* line 101, ../sass/openeyes/components/events/_event.scss */
 .event .panel.comments {
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px;
 }
-/* line 102, ../sass/openeyes/components/events/_event.scss */
+/* line 106, ../sass/openeyes/components/events/_event.scss */
 .event.previous-elements .metadata {
   margin-left: 0;
 }
@@ -7375,115 +7379,55 @@ tfoot.pagination-container .pagination-view-all {
 #patientMergeWrapper #patientDialog h2 {
   padding-bottom: 15px;
 }
-/* line 91, ../sass/openeyes/components/_patient-merge.scss */
-#patientMergeWrapper #patientMergeRequestList1 tr th.checkbox {
-  width: 11px;
-  max-width: 11px;
-}
-/* line 95, ../sass/openeyes/components/_patient-merge.scss */
-#patientMergeWrapper #patientMergeRequestList1 tr th.secondary {
-  max-width: 115px;
-  width: 115px;
-}
-/* line 99, ../sass/openeyes/components/_patient-merge.scss */
-#patientMergeWrapper #patientMergeRequestList1 tr th.secondary span.span {
-  font-size: 10px;
-}
-/* line 104, ../sass/openeyes/components/_patient-merge.scss */
-#patientMergeWrapper #patientMergeRequestList1 tr th.into {
-  width: 80px;
-  max-width: 80px;
-}
-/* line 108, ../sass/openeyes/components/_patient-merge.scss */
-#patientMergeWrapper #patientMergeRequestList1 tr th.primary {
-  max-width: 70px;
-}
-/* line 112, ../sass/openeyes/components/_patient-merge.scss */
-#patientMergeWrapper #patientMergeRequestList1 tr th.status {
-  text-align: center;
-}
-/* line 115, ../sass/openeyes/components/_patient-merge.scss */
-#patientMergeWrapper #patientMergeRequestList1 tr th.created {
-  text-align: center;
-}
-/* line 123, ../sass/openeyes/components/_patient-merge.scss */
-#patientMergeWrapper #patientMergeRequestList1 tr td.secondary {
-  border-right-width: 0px;
-}
-/* line 127, ../sass/openeyes/components/_patient-merge.scss */
-#patientMergeWrapper #patientMergeRequestList1 tr td.into {
-  border-right-width: 0px;
-  width: 90px;
-}
-/* line 132, ../sass/openeyes/components/_patient-merge.scss */
-#patientMergeWrapper #patientMergeRequestList1 tr td.status {
-  width: 220px;
-  padding-left: 55px;
-}
-/* line 137, ../sass/openeyes/components/_patient-merge.scss */
-#patientMergeWrapper #patientMergeRequestList1 tr td.created {
-  text-align: center;
-}
-/* line 147, ../sass/openeyes/components/_patient-merge.scss */
+/* line 89, ../sass/openeyes/components/_patient-merge.scss */
 #patientMergeWrapper form.panel.search .no-result-patients {
   font-weight: bold;
   line-height: 25px;
   margin: 5px 0 0;
   padding: 0;
 }
-/* line 159, ../sass/openeyes/components/_patient-merge.scss */
+/* line 101, ../sass/openeyes/components/_patient-merge.scss */
 #patientMergeWrapper .filter.panel label {
   height: 26px;
   line-height: 15px;
   vertical-align: middle;
   display: table-cell;
 }
-/* line 177, ../sass/openeyes/components/_patient-merge.scss */
+/* line 119, ../sass/openeyes/components/_patient-merge.scss */
 #patientMergeWrapper #patientMergeRequestList.grid tr.table-filter td.filter-col {
   width: 142px;
 }
-/* line 184, ../sass/openeyes/components/_patient-merge.scss */
+/* line 126, ../sass/openeyes/components/_patient-merge.scss */
 #patientMergeWrapper #patientMergeRequestList.grid .status {
   text-align: center;
   width: 172px;
 }
-/* line 189, ../sass/openeyes/components/_patient-merge.scss */
+/* line 131, ../sass/openeyes/components/_patient-merge.scss */
 #patientMergeWrapper #patientMergeRequestList.grid .created {
   text-align: center;
 }
 
-/* line 199, ../sass/openeyes/components/_patient-merge.scss */
-.ui-menu .ui-menu-item a, .ui-menu .ui-menu-item a.ui-state-focus {
-  border: 1px solid #4a4a4a;
-  margin: 0 0 5px;
-  padding: 10px 5px;
-}
-/* line 204, ../sass/openeyes/components/_patient-merge.scss */
-.ui-menu .ui-menu-item a .nhs-number, .ui-menu .ui-menu-item a.ui-state-focus .nhs-number {
-  float: right;
-}
-
-/* line 211, ../sass/openeyes/components/_patient-merge.scss */
+/* line 138, ../sass/openeyes/components/_patient-merge.scss */
 .circle {
   border-radius: 50%;
   display: inline-block;
   height: 10px;
   width: 10px;
 }
-/* line 218, ../sass/openeyes/components/_patient-merge.scss */
+/* line 145, ../sass/openeyes/components/_patient-merge.scss */
 .circle.not-processed {
   background-color: lightgray;
 }
-/* line 222, ../sass/openeyes/components/_patient-merge.scss */
+/* line 149, ../sass/openeyes/components/_patient-merge.scss */
 .circle.merged {
   background-color: green;
 }
-/* line 226, ../sass/openeyes/components/_patient-merge.scss */
+/* line 153, ../sass/openeyes/components/_patient-merge.scss */
 .circle.conflict {
   background-color: red;
 }
 
-/* line 232, ../sass/openeyes/components/_patient-merge.scss */
+/* line 159, ../sass/openeyes/components/_patient-merge.scss */
 .ui-autocomplete.z-index-1000 {
   z-index: 1000 !important;
 }

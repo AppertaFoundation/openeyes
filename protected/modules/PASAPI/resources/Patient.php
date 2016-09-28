@@ -18,11 +18,8 @@ namespace OEModule\PASAPI\resources;
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-use OEModule\PASAPI\models\PasApiAssignment;
-
 class Patient extends BaseResource
 {
-
     protected static $resource_type = 'Patient';
     protected static $model_class = 'Patient';
 
@@ -61,8 +58,15 @@ class Patient extends BaseResource
         $model = $assignment->getInternal();
         $this->isNewResource = $model->isNewRecord;
 
-        if (!$this->validate())
+        if ($this->isNewResource && $this->partial_record) {
+            $this->addError('Cannot perform partial update on a new record');
+
             return;
+        }
+
+        if (!$this->validate()) {
+            return;
+        }
 
         $transaction = $this->startTransaction();
 
@@ -102,7 +106,9 @@ class Patient extends BaseResource
      * and save it.
      *
      * @param \Patient $patient
+     *
      * @throws \Exception
+     *
      * @return bool|null
      */
     public function saveModel(\Patient $patient)
@@ -153,10 +159,10 @@ class Patient extends BaseResource
     {
         if (property_exists($this, 'Gender')) {
             $patient->gender = strtoupper($this->getAssignedProperty('Gender'));
-        }
-        else {
-            if (!$this->partial_record)
+        } else {
+            if (!$this->partial_record) {
                 $patient->gender = null;
+            }
         }
     }
 
@@ -175,14 +181,13 @@ class Patient extends BaseResource
                 } else {
                     $this->addWarning('Unrecognised ethnic group code '.$code);
                 }
-            }
-            else {
+            } else {
                 $patient->ethnic_group_id = null;
             }
-        }
-        else {
-            if (!$this->partial_record)
+        } else {
+            if (!$this->partial_record) {
                 $patient->ethnic_group_id = null;
+            }
         }
     }
 
@@ -201,14 +206,13 @@ class Patient extends BaseResource
                 } else {
                     $this->addWarning('Could not find GP for code '.$code);
                 }
-            }
-            else {
+            } else {
                 $patient->gp_id = null;
             }
-        }
-        else {
-            if (!$this->partial_record)
+        } else {
+            if (!$this->partial_record) {
                 $patient->gp_id = null;
+            }
         }
     }
 
@@ -224,14 +228,12 @@ class Patient extends BaseResource
                 if ($practice = \Practice::model()->findByAttributes(array('code' => $code))) {
                     $patient->practice_id = $practice->id;
                 } else {
-                    $this->addWarning('Could not find Practice for code ' . $code);
+                    $this->addWarning('Could not find Practice for code '.$code);
                 }
-            }
-            else {
+            } else {
                 $patient->practice_id = null;
             }
-        }
-        else {
+        } else {
             if (!$this->partial_record) {
                 $patient->practice_id = null;
             }
@@ -250,7 +252,7 @@ class Patient extends BaseResource
      */
     private function mapAddresses(\Contact $contact)
     {
-        if (property_exists($this,"AddressList")) {
+        if (property_exists($this, 'AddressList')) {
             $matched_address_ids = array();
             foreach ($this->AddressList as $idx => $address_resource) {
                 $matched_clause = ($matched_address_ids) ? ' AND id NOT IN ('.implode(',', $matched_address_ids).')' : '';
@@ -278,20 +280,21 @@ class Patient extends BaseResource
             }
             // clear out any addresses not matched
             $this->deleteAddresses($contact, $matched_address_ids);
-        }
-        else {
-            if (!$this->partial_record)
+        } else {
+            if (!$this->partial_record) {
                 $this->deleteAddresses($contact);
+            }
         }
     }
 
     private function deleteAddresses(\Contact $contact, $except_ids = array())
     {
         // delete any address that are no longer relevant
-        $matched_string = implode(',',$except_ids);
-        $condition_str = "contact_id = :contact_id";
-        if ($matched_string)
+        $matched_string = implode(',', $except_ids);
+        $condition_str = 'contact_id = :contact_id';
+        if ($matched_string) {
             $condition_str .= " AND id NOT IN($matched_string)";
+        }
 
         \Address::model()->deleteAll(array(
             'condition' => $condition_str,
@@ -310,16 +313,15 @@ class Patient extends BaseResource
                 if ($status = \NhsNumberVerificationStatus::model()->findByAttributes(array('code' => $code))) {
                     $patient->nhs_num_status_id = $status->id;
                 } else {
-                    $this->addWarning('Unrecognised NHS number status code ' . $code);
+                    $this->addWarning('Unrecognised NHS number status code '.$code);
                 }
-            }
-            else {
+            } else {
                 $patient->nhs_num_status_id = null;
             }
-        }
-        else {
-            if (!$this->partial_record)
+        } else {
+            if (!$this->partial_record) {
                 $patient->nhs_num_status_id = null;
+            }
         }
     }
 }

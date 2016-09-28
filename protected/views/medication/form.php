@@ -6,19 +6,18 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-$form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' => 3, 'field' => 9),));
+$form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' => 3, 'field' => 9)));
 
 ?>
     <fieldset class="field-row">
 
-        <legend><strong><?= $medication->isNewRecord ? "Add" : "Edit" ?> medication</strong></legend>
+        <legend><strong><?= $medication->isNewRecord ? 'Add' : 'Edit' ?> medication</strong></legend>
 
         <input type="hidden" name="medication_id" id="medication_id" value="<?= $medication->id ?>"/>
         <input type="hidden" name="patient_id" id="medication_id" value="<?= $patient->id ?>"/>
@@ -48,14 +47,14 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
                         array(
                             'name' => 'drug_autocomplete',
                             'source' => new CJavaScriptExpression(
-                                'function (req, res) { $.getJSON(' . json_encode($this->createUrl('medication/finddrug')) . ', req, res); }'
+                                'function (req, res) { $.getJSON('.json_encode($this->createUrl('medication/finddrug')).', req, res); }'
                             ),
                             'options' => array(
                                 'minLength' => 3,
                                 'focus' => "js:function(e,ui) {
                                 $('#drug_autocomplete').val(ui.item.label);
                                 e.preventDefault();
-                            }"
+                            }",
                             ),
                             'htmlOptions' => array('placeholder' => 'or search'),
                         )
@@ -70,7 +69,9 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
         <?php $form->widget('application.widgets.DropDownList', array('element' => $medication, 'field' => 'route_id', 'data' => 'DrugRoute', 'htmlOptions' => array('name' => 'route_id', 'empty' => '- Select -'))); ?>
 
         <div id="medication_route_option">
-            <?php if ($medication->route) $this->renderPartial('route_option', array('medication' => $medication, 'route' => $medication->route)); ?>
+            <?php if ($medication->route) {
+                $this->renderPartial('route_option', array('medication' => $medication, 'route' => $medication->route));
+            } ?>
         </div>
 
         <?php $form->widget('application.widgets.DropDownList', array('element' => $medication, 'field' => 'frequency_id', 'data' => 'DrugFrequency', 'htmlOptions' => array('name' => 'frequency_id', 'empty' => '- Select -'))); ?>
@@ -91,7 +92,7 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
             </div>
         </div>
 
-        <div id="medication_end" class="<?= $medication->end_date ? "" : "hidden" ?>">
+        <div id="medication_end" class="<?= $medication->end_date ? '' : 'hidden' ?>">
             <input type="hidden" name="end_date">
             <?php
 

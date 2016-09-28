@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,36 +9,36 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class OphCoCorrespondence_API extends BaseAPI
 {
-	/**
-	 * @param integer $event_id
-	 * @return boolean
-	 */
-	public function canUpdate($event_id)
-	{
-		// FIXME: Correspondence locking is suspended while draft usage is discussed
-		return true;
+    /**
+     * @param int $event_id
+     *
+     * @return bool
+     */
+    public function canUpdate($event_id)
+    {
+        // FIXME: Correspondence locking is suspended while draft usage is discussed
+        return true;
 
-		$letter = ElementLetter::model()->find('event_id=?',array($event_id));
+        $letter = ElementLetter::model()->find('event_id=?', array($event_id));
 
-		return $letter->isEditable();
-	}
+        return $letter->isEditable();
+    }
 
-	public function getLatestEvent($episode)
-	{
-		$event_type = $this->getEventType();
+    public function getLatestEvent($episode)
+    {
+        $event_type = $this->getEventType();
 
-		if ($event = $episode->getMostRecentEventByType($event_type->id)) {
-				return $event;
-		}
-	}
+        if ($event = $episode->getMostRecentEventByType($event_type->id)) {
+            return $event;
+        }
+    }
 }

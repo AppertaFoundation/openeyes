@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -8,8 +8,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
@@ -35,62 +35,62 @@ $cols = array(
     array(
         'name' => 'priority',
         // not ideal using the error class, but a simple solution for now.
-        'value' => function($data) {
-            return $data->urgent ? "<span class=\"priority fa fa-exclamation\"></span>" : "<span class=\"fa fa-minus\"></span>";
+        'value' => function ($data) {
+            return $data->urgent ? '<span class="priority fa fa-exclamation"></span>' : '<span class="fa fa-minus"></span>';
         },
         'type' => 'raw',
         'htmlOptions' => array(
-            'class' => 'text-center'
-        )
+            'class' => 'text-center',
+        ),
     ),
     array(
         'id' => 'event_date',
         'class' => 'CDataColumn',
-        'header' => $dataProvider->getSort()->link('event_date','Date',array('class'=>'sort-link')),
+        'header' => $dataProvider->getSort()->link('event_date', 'Date', array('class' => 'sort-link')),
         'value' => 'Helper::convertMySQL2NHS($data->created_date)',
-        'htmlOptions' => array('class' => 'date')
+        'htmlOptions' => array('class' => 'date'),
     ),
     array(
         'id' => 'hos_num',
         'header' => $dataProvider->getSort()->link('hos_num', 'Hospital No.', array('class' => 'sort-link')),
-        'value' => '$data->event->episode->patient->hos_num'
+        'value' => '$data->event->episode->patient->hos_num',
     ),
     array(
         'id' => 'patient_name',
         'class' => 'CLinkColumn',
-        'header' => $dataProvider->getSort()->link('patient_name','Name',array('class'=>'sort-link')),
+        'header' => $dataProvider->getSort()->link('patient_name', 'Name', array('class' => 'sort-link')),
         'urlExpression' => 'Yii::app()->createURL("/OphCoMessaging/default/view/", array("id" => $data->event_id))',
-        'labelExpression' => '$data->event->episode->patient->getHSCICName()'
+        'labelExpression' => '$data->event->episode->patient->getHSCICName()',
     ),
     array(
         'id' => 'dob',
         'class' => 'CDataColumn',
-        'header' => $dataProvider->getSort()->link('dob','DOB',array('class'=>'sort-link')),
+        'header' => $dataProvider->getSort()->link('dob', 'DOB', array('class' => 'sort-link')),
         'value' => 'Helper::convertMySQL2NHS($data->event->episode->patient->dob)',
-        'htmlOptions' => array('class' => 'date')
+        'htmlOptions' => array('class' => 'date'),
     ),
     array(
         'id' => 'user',
-        'header' => $dataProvider->getSort()->link('user','To',array('class'=>'sort-link')),
+        'header' => $dataProvider->getSort()->link('user', 'To', array('class' => 'sort-link')),
         'value' => '\User::model()->findByPk($data->for_the_attention_of_user_id)->getFullNameAndTitle()',
-       
+
     ),
     array(
         'name' => 'Message',
-        'value' => function($data) {
-            return strlen($data->message_text) > 50 ? \Yii::app()->format->Ntext(substr($data->message_text, 0, 50) . ' ...') : \Yii::app()->format->Ntext($data->message_text);
+        'value' => function ($data) {
+            return strlen($data->message_text) > 50 ? \Yii::app()->format->Ntext(substr($data->message_text, 0, 50).' ...') : \Yii::app()->format->Ntext($data->message_text);
         },
         'type' => 'raw',
-    )
+    ),
 );
 
 $this->widget('zii.widgets.grid.CGridView', array(
     'itemsCssClass' => 'grid',
-    'dataProvider'=>$dataProvider,
+    'dataProvider' => $dataProvider,
     'htmlOptions' => array('id' => 'sent-table'),
     'summaryText' => '<h3>Sent Messages<small> {start}-{end} of {count} </small></h3>',
     'columns' => $cols,
-        
+
 ));
 ?>
 

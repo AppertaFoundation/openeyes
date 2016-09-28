@@ -2,12 +2,12 @@
 	<div class="report-fields">
 		<h2>Intravitreal Injection Report</h2>
 		<?php
-		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-			'id'=>'module-report-form',
-			'enableAjaxValidation'=>false,
-			'layoutColumns' => array('label'=>2,'field'=>10),
-			'action' => Yii::app()->createUrl('/'.$this->module->id.'/report/downloadReport'),
-		))?>
+        $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+            'id' => 'module-report-form',
+            'enableAjaxValidation' => false,
+            'layoutColumns' => array('label' => 2, 'field' => 10),
+            'action' => Yii::app()->createUrl('/'.$this->module->id.'/report/downloadReport'),
+        ))?>
 			<input type="hidden" name="report-name" value="Injections" />
 			<div class="row field-row">
 				<div class="large-2 column">
@@ -15,16 +15,16 @@
 				</div>
 				<div class="large-4 column end">
 					<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-									'name'=>'date_from',
-									'id'=>'date_from',
-									'options'=>array(
-											'showAnim'=>'fold',
-											'dateFormat'=>Helper::NHS_DATE_FORMAT_JS,
-											'maxDate'=> 0,
-											'defaultDate' => "-1y"
-									),
-									'value'=> date('j M Y',strtotime('-1 year')),
-							))?>
+                                    'name' => 'date_from',
+                                    'id' => 'date_from',
+                                    'options' => array(
+                                            'showAnim' => 'fold',
+                                            'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
+                                            'maxDate' => 0,
+                                            'defaultDate' => '-1y',
+                                    ),
+                                    'value' => date('j M Y', strtotime('-1 year')),
+                            ))?>
 				</div>
 			</div>
 			<div class="row field-row">
@@ -33,16 +33,16 @@
 				</div>
 				<div class="large-4 column end">
 					<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-									'name'=>'date_to',
-									'id'=>'date_to',
-									'options'=>array(
-											'showAnim'=>'fold',
-											'dateFormat'=>Helper::NHS_DATE_FORMAT_JS,
-											'maxDate'=> 0,
-											'defaultDate' => 0
-									),
-									'value'=> date('j M Y'),
-							))?>
+                                    'name' => 'date_to',
+                                    'id' => 'date_to',
+                                    'options' => array(
+                                            'showAnim' => 'fold',
+                                            'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
+                                            'maxDate' => 0,
+                                            'defaultDate' => 0,
+                                    ),
+                                    'value' => date('j M Y'),
+                            ))?>
 				</div>
 			</div>
 
@@ -51,7 +51,7 @@
 					<?php echo CHtml::label('Given by', 'given_by_id') ?>
 				</div>
 				<div class="large-4 column end">
-					<?php echo CHtml::dropDownList('given_by_id','',CHtml::listData(User::model()->findAll(array('order' => 'first_name asc,last_name asc')),'id','fullName'),array('empty' => '- Please select -'))?>
+					<?php echo CHtml::dropDownList('given_by_id', '', CHtml::listData(User::model()->findAll(array('order' => 'first_name asc,last_name asc')), 'id', 'fullName'), array('empty' => '- Please select -'))?>
 				</div>
 			</div>
 
@@ -60,7 +60,7 @@
 					<?php echo CHtml::label('Drugs', 'drug_id') ?>
 				</div>
 				<div class="large-4 column end">
-					<?php echo CHtml::dropDownList('drug_id','',CHtml::listData(OphTrIntravitrealinjection_Treatment_Drug::model()->findAll(array('order' => 'name asc')),'id','name'),array('empty' => '- Please select -'))?>
+					<?php echo CHtml::dropDownList('drug_id', '', CHtml::listData(OphTrIntravitrealinjection_Treatment_Drug::model()->findAll(array('order' => 'name asc')), 'id', 'name'), array('empty' => '- Please select -'))?>
 				</div>
 			</div>
 
@@ -69,7 +69,7 @@
 					<?php echo CHtml::label('Pre Injection Antiseptic', 'pre_antisept_drug_id') ?>
 				</div>
 				<div class="large-4 column end">
-					<?php echo CHtml::dropDownList('pre_antisept_drug_id','',CHtml::listData(OphTrIntravitrealinjection_AntiSepticDrug::model()->findAll(array('order' => 'name asc')),'id','name'),array('empty' => '- Please select -'))?>
+					<?php echo CHtml::dropDownList('pre_antisept_drug_id', '', CHtml::listData(OphTrIntravitrealinjection_AntiSepticDrug::model()->findAll(array('order' => 'name asc')), 'id', 'name'), array('empty' => '- Please select -'))?>
 				</div>
 			</div>
 

@@ -42,16 +42,74 @@ Issues in the core should be logged through the [github issues system](https://g
 
 Dev Setup
 ---------
+To make life easier and also help ensure consistency in environments we use [Vagrant](http://vagrantup.com) + [Ansible](https://www.ansible.com) to build our development environments, the basic requirements for this are to have the following installed and available on the host machine:
 
-To begin development, the simplest approach is:
+* [Vagrant](http://vagrantup.com)
+* [Virtualbox](http://virtualbox.org) or [VMWare Fusion](http://www.vmware.com/products/fusion.html)
 
-1. clone the repository
-1. run vagrant up
-1. run devsetup:
+Running `vagrant up` the first time will install any missing vagrant plugins:
 
-    vagrant ssh 
-    cd /var/www/protected
-    ./yiic devsetup --resetfile=../features/testdata.sql
+* [vagrant-auto_network](https://github.com/oscar-stack/vagrant-auto_network)
+* [vagrant-hostsupdater](https://github.com/cogitatio/vagrant-hostsupdater)
+* [vagrant-cachier](https://github.com/fgrehm/vagrant-cachier)
+
+
+Once the plugins have been installed you will need to run `vagrant up` again and then go and make a cup of tea whilst a base box is installed and configured.  You'll be asked for your root password (Linux / OSX) as part of the set up process as your `/etc/hosts` files is updated with the machine IP and hostname.
+
+Once the build has finished you can access OpenEyes using the link:
+
+[http://openeyes.vm](http://openeyes.vm)
+
+**Note:** [Google Chrome](https://www.google.com/chrome/) is the supported browser for OpenEyes.
+
+## Command Line Options
+
+To allow for multiple environments to be built at the same time the hostname and the servername (used in the VM GUI to identify machines) can be changed via the command line as below when building the VM:
+
+	--hostname="openeyes.dev.local"
+	--servername="My Open Eyes Dev Server"
+
+Full usage:
+
+	$ vagrant --hostname="openeyes.dev.local" --servername="My Open Eyes Dev Server" up
+	
+If either are omitted the default vales of "openeyes.vm"" and "OpenEyes Dev Server" are used for the hostname and servername respectively.
+
+**Note:** if the options are omitted the default values are used, the command line options have to be before the vagrant command for them to work.
+
+#### XDebug
+
+Is enabled in Apache by default and carries an up to 1 second time penalty on requests, if you don't need or won't be using XDebug at all then commenting changing lines 85 - 86 in `ansible/vars/all.yml` to comment out the package name will ensure it isn't installed.
+
+	# php_xdebug:
+	#   - php5-xdebug
+
+By default Xdebug is disabled on the CLI due to [documented](https://getcomposer.org/doc/articles/troubleshooting.md#xdebug-impact-on-composer) performance issues when using composer.
+
+#### Windows 10
+
+You will need to have downloaded VC++ for Vagrant to be able to download base boxes for the build see this issue for more information [https://github.com/mitchellh/vagrant/issues/6754](https://github.com/mitchellh/vagrant/issues/6754)
+
+### Useful Vagrant Commands
+
+* `vagrant up` - Will build the environment if it hasn't already been built
+* `vagrant provision` - Will update the machine with any Ansible configuration changes
+* `vagrant status` - Will tell you the status of the box
+* `vagrant halt` - Halt's the machine (going home for the night)
+* `vagrant suspend` - Will suspend the machine
+* `vagrant destroy` - Will remove the machine build
+
+And if that's not enough there is the Vagrant [documentation](https://www.vagrantup.com/docs/) and also `vagrant help`
+
+#### Todo:
+
+Additional / Outstanding tasks to be completed:
+
+* Tidy up the PHP build implementation
+* Full Windows platform testing
+* Configuration optimisation to make it easier to make changes to the build from a single file
+* Changes to support AWS provisioning (although this may be better left to a build specific Ansible playbook)
+* Tailor the roles better to the OE build rather than coding around more generic [Ansible Galaxy](https://galaxy.ansible.com) based roles.
 
 Printing
 --------

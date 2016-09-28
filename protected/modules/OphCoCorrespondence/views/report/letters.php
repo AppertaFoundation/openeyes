@@ -37,7 +37,7 @@
 			</div>
 			<div class="large-5 column end phraseList">
 				<div>
-					<?php echo CHtml::textField('phrases[]','')?>
+					<?php echo CHtml::textField('OphCoCorrespondence_ReportLetters[phrases][]','')?>
 				</div>
 			</div>
 		</div>
@@ -58,7 +58,7 @@
 				</label>
 			</div>
 			<div class="large-9 column end">
-				<input type="radio" name="condition_type" id="condition_or" value="or" checked="checked" />
+				<input type="radio" name="OphCoCorrespondence_ReportLetters[condition_type]" id="condition_or" value="or" checked="checked" />
 				<label for="condition_or">
 					Must contain <strong>any</strong> of the phrases
 				</label>
@@ -70,7 +70,7 @@
 				<label></label>
 			</div>
 			<div class="large-9 column end">
-				<input type="radio" name="condition_type" id="condition_and" value="and" />
+				<input type="radio" name="OphCoCorrespondence_ReportLetters[condition_type]" id="condition_and" value="and" />
 				<label for="condition_and">
 					Must contain <strong>all</strong> of the phrases
 				</label>
@@ -82,8 +82,8 @@
 				<label></label>
 			</div>
 			<div class="large-9 column end">
-				<input type="hidden" name="match_correspondence" value="0" />
-				<input type="checkbox" id="match_correspondence" name="match_correspondence" value="1" checked="checked" />
+				<input type="hidden" name="OphCoCorrespondence_ReportLetters[match_correspondence]" value="0" />
+				<input type="checkbox" id="match_correspondence" name="OphCoCorrespondence_ReportLetters[match_correspondence]" value="1" checked="checked" />
 				<label for="match_correspondence">
 					Match correspondence
 				</label>
@@ -95,8 +95,8 @@
 				<label></label>
 			</div>
 			<div class="large-9 column end">
-				<input type="hidden" name="match_legacy_letters" value="0" />
-				<input type="checkbox" id="match_legacy_letters" name="match_legacy_letters" value="1" checked="checked" />
+				<input type="hidden" name="OphCoCorrespondence_ReportLetters[match_legacy_letters]" value="0" />
+				<input type="checkbox" id="match_legacy_letters" name="OphCoCorrespondence_ReportLetters[match_legacy_letters]" value="1" checked="checked" />
 				<label for="match_legacy_letters">
 					Match legacy letters
 				</label>
@@ -105,13 +105,13 @@
 
 		<div class="row field-row">
 			<div class="large-2 column">
-				<label for="start_date">
+				<label for="OphCoCorrespondence_ReportLetters_start_date">
 					Date from:
 				</label>
 			</div>
 			<div class="large-2 column end">
 				<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-					'name' => 'start_date',
+					'name' => 'OphCoCorrespondence_ReportLetters[start_date]',
 					'options' => array(
 						'showAnim' => 'fold',
 						'dateFormat' => Helper::NHS_DATE_FORMAT_JS
@@ -123,13 +123,13 @@
 
 		<div class="row field-row">
 			<div class="large-2 column">
-				<label for="end_date">
+				<label for="OphCoCorrespondence_ReportLetters_end_date">
 					Date to:
 				</label>
 			</div>
 			<div class="large-2 column end">
 				<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-					'name' => 'end_date',
+					'name' => 'OphCoCorrespondence_ReportLetters[end_date]',
 					'options' => array(
 						'showAnim' => 'fold',
 						'dateFormat' => Helper::NHS_DATE_FORMAT_JS
@@ -146,7 +146,17 @@
 				</label>
 			</div>
 			<div class="large-3 column end">
-				<?php echo CHtml::dropDownList('author_id','',CHtml::listData(User::model()->findAll(array('order' => 'first_name asc,last_name asc')),'id','fullName'),array('empty' => '--- Please select ---'))?>
+				<?php echo CHtml::dropDownList('OphCoCorrespondence_ReportLetters[author_id]','',CHtml::listData(User::model()->findAll(array('order' => 'first_name asc,last_name asc')),'id','fullName'),array('empty' => '--- Please select ---'))?>
+			</div>
+		</div>
+		<div class="row field-row">
+			<div class="large-2 column">
+				<label for="site_id">
+					Site
+				</label>
+			</div>
+			<div class="large-3 column end">
+				<?php echo CHtml::dropDownList('OphCoCorrespondence_ReportLetters[site_id]', '', Site::model()->getListForCurrentInstitution(), array('empty' => '--- Please select ---'))?>
 			</div>
 		</div>
 
@@ -169,5 +179,5 @@
 	</div>
 </div>
 <script type="text/javascript">
-	$('input[name="phrases[]"]').focus();
+	$('input[name="OphCoCorrespondence_ReportLetters[phrases][]"]').focus();
 </script>

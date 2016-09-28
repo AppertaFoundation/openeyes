@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -20,25 +20,24 @@
 <?php
 $event = $this->event;
 $event_type = $event->eventType->name;
-$path = Yii::app()->basePath . '/runtime/';
+$path = Yii::app()->basePath.'/runtime/';
 $yourImageUrl = Yii::app()->assetManager->publish($path);
 $imageLists = scandir($path, 1);
 foreach ($imageLists as $imageList) {
-if(strpos($imageList,"header") !== false) {
-    $headerLogo = $imageList;
-}
-if(strpos($imageList,"secondary") !== false)  {
-    $secondaryLogo = $imageList;
-        
-}
+    if (strpos($imageList, 'header') !== false) {
+        $headerLogo = $imageList;
+    }
+    if (strpos($imageList, 'secondary') !== false) {
+        $secondaryLogo = $imageList;
+    }
 }
 
 ?>
 <header class="header">
 	<div class="title">
         <?php if(!empty($headerLogo)){?>	
-            <img src="<?php echo $yourImageUrl . "/" . $headerLogo;?>" alt="letterhead_seal" width="100" height="83"/>
-                <?php } ?>
+            <img src="<?php echo $yourImageUrl.'/'.$headerLogo;?>" alt="letterhead_seal" width="100" height="83"/>
+        <?php } ?>
 
 		<h1><?php echo $event_type;?></h1>
 	</div>
@@ -49,8 +48,8 @@ if(strpos($imageList,"secondary") !== false)  {
 			<br />
 			<p>
 			<?php echo $this->patient->getLetterAddress(array(
-				'delimiter' => '<br/>',
-			))?>
+                'delimiter' => '<br/>',
+            ))?>
 			</p>
 		</div>
 		<div class="large-4 column firm">

@@ -6,105 +6,104 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (C) 2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class OphTrOperationbooking_BookingHelperTest extends CTestCase
 {
-	static public function setupBeforeClass()
-	{
-		Yii::import('application.modules.OphTrOperationbooking.helpers.*');
-	}
+    public static function setupBeforeClass()
+    {
+        Yii::import('application.modules.OphTrOperationbooking.helpers.*');
+    }
 
-	private $helper;
+    private $helper;
 
-	private $session;
-	private $op;
+    private $session;
+    private $op;
 
-	public function setUp()
-	{
-		$this->helper = new OphTrOperationbooking_BookingHelper;
+    public function setUp()
+    {
+        $this->helper = new OphTrOperationbooking_BookingHelper();
 
-		$this->session = ComponentStubGenerator::generate(
-			'OphTrOperationbooking_Operation_Session',
-			array(
-				'anaesthetist' => 1,
-				'consultant' => 1,
-				'paediatric' => 1,
-				'general_anaesthetic' => 1,
-			)
-		);
-		$this->op = ComponentStubGenerator::generate(
-			'Element_OphTrOperationbooking_Operation',
-			array(
-				'anaesthetist_required' => 1,
-				'consultant_required' => 1,
-				'event' => ComponentStubGenerator::generate(
-					'Event',
-					array(
-						'episode' => ComponentStubGenerator::generate(
-							'Episode',
-							array('patient' => ComponentStubGenerator::generate('Patient'))
-						)
-					)
-				),
-				'anaesthetic_type' => ComponentStubGenerator::generate('AnaestheticType', array('name' => 'GA')),
-			)
-		);
-	}
+        $this->session = ComponentStubGenerator::generate(
+            'OphTrOperationbooking_Operation_Session',
+            array(
+                'anaesthetist' => 1,
+                'consultant' => 1,
+                'paediatric' => 1,
+                'general_anaesthetic' => 1,
+            )
+        );
+        $this->op = ComponentStubGenerator::generate(
+            'Element_OphTrOperationbooking_Operation',
+            array(
+                'anaesthetist_required' => 1,
+                'consultant_required' => 1,
+                'event' => ComponentStubGenerator::generate(
+                    'Event',
+                    array(
+                        'episode' => ComponentStubGenerator::generate(
+                            'Episode',
+                            array('patient' => ComponentStubGenerator::generate('Patient'))
+                        ),
+                    )
+                ),
+                'anaesthetic_type' => ComponentStubGenerator::generate('AnaestheticType', array('name' => 'GA')),
+            )
+        );
+    }
 
-	public function testAllRequirementsMet()
-	{
-		$this->op->event->episode->patient->expects($this->any())->method('isChild')->will($this->returnValue(true));
+    public function testAllRequirementsMet()
+    {
+        $this->op->event->episode->patient->expects($this->any())->method('isChild')->will($this->returnValue(true));
 
-		$this->assertEquals(
-			array(),
-			$this->helper->checkSessionCompatibleWithOperation($this->session, $this->op)
-		);
-	}
+        $this->assertEquals(
+            array(),
+            $this->helper->checkSessionCompatibleWithOperation($this->session, $this->op)
+        );
+    }
 
-	public function testAnaesthetistRequired()
-	{
-		$this->session->anaesthetist = 0;
+    public function testAnaesthetistRequired()
+    {
+        $this->session->anaesthetist = 0;
 
-		$this->assertEquals(
-			array(OphTrOperationbooking_BookingHelper::ANAESTHETIST_REQUIRED),
-			$this->helper->checkSessionCompatibleWithOperation($this->session, $this->op)
-		);
-	}
+        $this->assertEquals(
+            array(OphTrOperationbooking_BookingHelper::ANAESTHETIST_REQUIRED),
+            $this->helper->checkSessionCompatibleWithOperation($this->session, $this->op)
+        );
+    }
 
-	public function testConsultantRequired()
-	{
-		$this->session->consultant = 0;
+    public function testConsultantRequired()
+    {
+        $this->session->consultant = 0;
 
-		$this->assertEquals(
-			array(OphTrOperationbooking_BookingHelper::CONSULTANT_REQUIRED),
-			$this->helper->checkSessionCompatibleWithOperation($this->session, $this->op)
-		);
-	}
+        $this->assertEquals(
+            array(OphTrOperationbooking_BookingHelper::CONSULTANT_REQUIRED),
+            $this->helper->checkSessionCompatibleWithOperation($this->session, $this->op)
+        );
+    }
 
-	public function testPaediatricSessionRequired()
-	{
-		$this->session->paediatric = 0;
-		$this->op->event->episode->patient->expects($this->any())->method('isChild')->will($this->returnValue(true));
+    public function testPaediatricSessionRequired()
+    {
+        $this->session->paediatric = 0;
+        $this->op->event->episode->patient->expects($this->any())->method('isChild')->will($this->returnValue(true));
 
-		$this->assertEquals(
-			array(OphTrOperationbooking_BookingHelper::PAEDIATRIC_SESSION_REQUIRED),
-			$this->helper->checkSessionCompatibleWithOperation($this->session, $this->op)
-		);
-	}
+        $this->assertEquals(
+            array(OphTrOperationbooking_BookingHelper::PAEDIATRIC_SESSION_REQUIRED),
+            $this->helper->checkSessionCompatibleWithOperation($this->session, $this->op)
+        );
+    }
 
-	public function testGeneralAnaestheticRequired()
-	{
-		$this->session->general_anaesthetic = 0;
+    public function testGeneralAnaestheticRequired()
+    {
+        $this->session->general_anaesthetic = 0;
 
-		$this->assertEquals(
-			array(OphTrOperationbooking_BookingHelper::GENERAL_ANAESTHETIC_REQUIRED),
-			$this->helper->checkSessionCompatibleWithOperation($this->session, $this->op)
-		);
-	}
+        $this->assertEquals(
+            array(OphTrOperationbooking_BookingHelper::GENERAL_ANAESTHETIC_REQUIRED),
+            $this->helper->checkSessionCompatibleWithOperation($this->session, $this->op)
+        );
+    }
 }

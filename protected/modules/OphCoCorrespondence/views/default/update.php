@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -20,29 +20,29 @@
 <?php $this->beginContent('//patient/event_container'); ?>
 
 	<?php
-		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-			'id'=>'correspondence-create',
-			'enableAjaxValidation'=>false,
-			'layoutColumns' => array(
-				'label'=> 2,
-				'field'=>10
-			)
-		));
+        $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+            'id' => 'correspondence-create',
+            'enableAjaxValidation' => false,
+            'layoutColumns' => array(
+                'label' => 2,
+                'field' => 10,
+            ),
+        ));
 
-		// Event actions
-		$this->event_actions[] = EventAction::button(
-			'Save draft',
-			'savedraft',
-			array('level' => 'secondary'),
-			array('id' => 'et_save_draft', 'class'=>'button small', 'form' => 'correspondence-create')
-		);
-		$this->event_actions[] = EventAction::button(
-			'Save and print',
-			'saveprint',
-			array('level' => 'secondary'),
-			array('id' => 'et_save_print', 'class'=>'button small', 'form' => 'correspondence-create')
-		);
-	?>
+        // Event actions
+        $this->event_actions[] = EventAction::button(
+            'Save draft',
+            'savedraft',
+            array('level' => 'secondary'),
+            array('id' => 'et_save_draft', 'class' => 'button small', 'form' => 'correspondence-create')
+        );
+        $this->event_actions[] = EventAction::button(
+            'Save and print',
+            'saveprint',
+            array('level' => 'secondary'),
+            array('id' => 'et_save_print', 'class' => 'button small', 'form' => 'correspondence-create')
+        );
+    ?>
 
 		<?php if (!$this->patient->practice || !$this->patient->practice->contact->address) { ?>
 			<div id="no-practice-address" class="alert-box alert with-icon">
@@ -57,4 +57,4 @@
 
 	<?php $this->endWidget(); ?>
 
-<?php $this->endContent() ;?>
+<?php $this->endContent();?>

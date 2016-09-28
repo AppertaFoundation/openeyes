@@ -18,7 +18,6 @@ tags
 /protected/models/elements/ElementExample.php
 /protected/modules/sample
 /protected/modules/eyedraw
-/protected/modules/PASAPI
 /protected/runtime/
 /protected/tests/report/
 /protected/tests/test_results/
@@ -90,3 +89,5 @@ bin/phploc
 bin/phpmd
 bin/validate-json
 bin/yiic
+
+build/logs

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -9,20 +9,20 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 use \RRule\RRule;
 
 /**
- * Class WorklistDefinition
+ * Class WorklistDefinition.
  *
  * The followings are the available columns in table:
- * @property integer $id
+ *
+ * @property int $id
  * @property string $name
  * @property string $rrule
  * @property string $description
@@ -31,7 +31,6 @@ use \RRule\RRule;
  * @property string $end_time
  * @property DateTime $active_from
  * @property DateTime $active_until
- *
  * @property Worklist[] $worklists
  * @property WorklistDefinitionMapping[] $mappings
  * @property WorklistDefinitionMappingp[] $displayed_mappings
@@ -49,13 +48,13 @@ class WorklistDefinition extends BaseActiveRecordVersioned
     }
 
     /**
-     * Default to ordering by the display order property
+     * Default to ordering by the display order property.
      *
      * @return array
      */
     public function defaultScope()
     {
-        return array('order' => $this->getTableAlias(true, false) . '.display_order');
+        return array('order' => $this->getTableAlias(true, false).'.display_order');
     }
 
     /**
@@ -129,12 +128,13 @@ class WorklistDefinition extends BaseActiveRecordVersioned
     public function attributeLabels()
     {
         return array(
-            'rrule' => 'Frequency'
+            'rrule' => 'Frequency',
         );
     }
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
+     *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
@@ -142,7 +142,7 @@ class WorklistDefinition extends BaseActiveRecordVersioned
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria = new CDbCriteria;
+        $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('name', $this->name, true);
@@ -167,7 +167,7 @@ class WorklistDefinition extends BaseActiveRecordVersioned
     }
 
     /**
-     * Simple wrapper around RRule construction to validate the string definition
+     * Simple wrapper around RRule construction to validate the string definition.
      *
      * @param $attribute
      */
@@ -190,16 +190,17 @@ class WorklistDefinition extends BaseActiveRecordVersioned
             $valid = false;
         }
         if (!$valid) {
-            $this->addError($attribute, $this->getAttributeLabel($attribute) . ' is not valid');
+            $this->addError($attribute, $this->getAttributeLabel($attribute).' is not valid');
         }
     }
 
     /**
      * Check whether the given key would be unique on the Definition
-     * (optional id indicates the current mapping the key is from so it is not checked against itself)
+     * (optional id indicates the current mapping the key is from so it is not checked against itself).
      *
      * @param $key
-     * @param integer $id
+     * @param int $id
+     *
      * @return bool
      */
     public function validateMappingKey($key, $id = null)
@@ -212,13 +213,14 @@ class WorklistDefinition extends BaseActiveRecordVersioned
                 return false;
             }
         }
+
         return true;
     }
 
     /**
-     * Gets the next display order for a new mapping
+     * Gets the next display order for a new mapping.
      *
-     * @return integer
+     * @return int
      */
     public function getNextDisplayOrder()
     {
@@ -228,11 +230,12 @@ class WorklistDefinition extends BaseActiveRecordVersioned
                 $display_order = $m->display_order + 1;
             }
         }
+
         return $display_order;
     }
 
     /**
-     * Simple wrapper function to convert the RRule into its human readable form
+     * Simple wrapper function to convert the RRule into its human readable form.
      *
      * @return string
      */
@@ -240,9 +243,11 @@ class WorklistDefinition extends BaseActiveRecordVersioned
     {
         if ($this->rrule) {
             $rrule_str = $this->rrule;
+            // ensure rrule string has a start date if not defined so that it will be part of the
+            // formatted output
             if (!$this->isNewRecord && !strpos($rrule_str, 'DTSTART=')) {
-                $dt = new DateTime($this->created_date);
-                $rrule_str .= ";DTSTART=" . $dt->format('Y-m-d');
+                $created_date = new DateTime($this->created_date);
+                $rrule_str .= ";DTSTART=" . $created_date->format('Y-m-d');
             }
 
             $final_rrule = new RRule($rrule_str);
@@ -252,7 +257,5 @@ class WorklistDefinition extends BaseActiveRecordVersioned
                 }
             ));
         }
-
     }
-
 }

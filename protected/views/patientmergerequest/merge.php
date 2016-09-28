@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -25,13 +25,13 @@
             <div class="large-3 column large-centered text-right large-offset-9">
                 <section class="box dashboard">
                 <?php 
-                    echo CHtml::link('Back to Patient Merge list',array('patientMergeRequest/index'), array('class' => 'button small'));
+                    echo CHtml::link('Back to Patient Merge list', array('patientMergeRequest/index'), array('class' => 'button small'));
                 ?>
                 </section>
             </div>
         </div>
 
-        <form id="grid_header_form" action="<?php echo Yii::app()->createUrl('/patientMergeRequest/merge',array('id' => $model->id))?>" method="post">
+        <form id="grid_header_form" action="<?php echo Yii::app()->createUrl('/patientMergeRequest/merge', array('id' => $model->id))?>" method="post">
             <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
             <?php echo CHTML::activeHiddenField($model, 'id') ?>
             <div class="row">
@@ -53,11 +53,11 @@
             <hr>
             <div class="row">
                 <div class="large-5 column">Comment:
-                    <?php echo CHTML::activeTextArea($model, "comment"); ?>
+                    <?php echo CHTML::activeTextArea($model, 'comment'); ?>
                 </div>
             </div>
             <br>
-            <?php if($personalDetailsConflictConfirm && Yii::app()->user->checkAccess('Patient Merge')):?>
+            <?php if ($personalDetailsConflictConfirm && Yii::app()->user->checkAccess('Patient Merge')):?>
                 <div id="patientDataConflictConfirmation" class="row">
                     <div class="large-10 large-offset-1 column alert-box with-icon warning">
                         <h2> Personal details are conflicting. </h2>
@@ -73,7 +73,7 @@
                 </div>
             <?php endif; ?>
             <?php $this->renderPartial('//base/_messages')?>
-            <?php if ( Yii::app()->user->checkAccess('Patient Merge') ): ?>
+            <?php if (Yii::app()->user->checkAccess('Patient Merge')): ?>
             <div class="row">
                 <div class="large-5 column text-right large-offset-7">
                     <div class="row">
@@ -90,7 +90,7 @@
                     <div class="row">
                         <div class="large-3 column text-right large-offset-9">
                      
-                            <?php echo CHtml::link('cancel',array('patientMergeRequest/index'), array('class' => 'button primary')); ?> 
+                            <?php echo CHtml::link('cancel', array('patientMergeRequest/index'), array('class' => 'button primary')); ?> 
                         </div>
                     </div>
                     

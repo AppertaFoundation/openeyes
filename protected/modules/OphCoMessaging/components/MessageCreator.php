@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -19,20 +19,16 @@
 
 namespace OEModule\OphCoMessaging\components;
 
-
 use OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message;
 use OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType;
 
 /**
- * Class MessageCreator
+ * Class MessageCreator.
  *
  * Create a Message event
- *
- * @package OEModule\OphCoMessaging\components
  */
 class MessageCreator
 {
-
     /**
      * @var \Episode
      */
@@ -68,7 +64,7 @@ class MessageCreator
      */
     public function setMessageTemplate($template)
     {
-        if(\Yii::getPathOfAlias($template) && is_readable(\Yii::getPathOfAlias($template).'.php')){
+        if (\Yii::getPathOfAlias($template) && is_readable(\Yii::getPathOfAlias($template).'.php')) {
             $this->messageTemplate = $template;
         }
     }
@@ -83,9 +79,10 @@ class MessageCreator
 
     /**
      * MessageCreator constructor.
-     * @param \Episode $episode
-     * @param \User $sender
-     * @param \User $recipient
+     *
+     * @param \Episode                           $episode
+     * @param \User                              $sender
+     * @param \User                              $recipient
      * @param OphCoMessaging_Message_MessageType $type
      */
     public function __construct(\Episode $episode, \User $sender, \User $recipient, OphCoMessaging_Message_MessageType $type)
@@ -99,7 +96,11 @@ class MessageCreator
     /**
      * @param $message
      * @param OphCoMessaging_Message_MessageType $type
-     * @param string $source
+     * @param string                             $source
+     * @param string                             $alertAddress
+     *
+     * @return Element_OphCoMessaging_Message
+     *
      * @throws \CDbException
      * @throws \Exception
      */
@@ -121,29 +122,32 @@ class MessageCreator
             $messageElement->created_user_id = $messageElement->last_modified_user_id = $this->sender->id;
             $messageElement->for_the_attention_of_user_id = $this->recipient->id;
             $messageElement->message_type_id = $this->type->id;
-            if($this->messageTemplate){
+            if ($this->messageTemplate) {
                 $messageElement->message_text = $this->renderTemplate();
             } else {
                 $messageElement->message_text = $message;
             }
 
-            if(!$messageElement->save()){
-                throw new \CDbException('Element save failed: ' . print_r($messageElement->getErrors(), true));
+            if (!$messageElement->save()) {
+                throw new \CDbException('Element save failed: '.print_r($messageElement->getErrors(), true));
             }
         } else {
-            throw new \CDbException('Event save failed: ' . print_r($messageEvent->getErrors(), true));
+            throw new \CDbException('Event save failed: '.print_r($messageEvent->getErrors(), true));
         }
+
+        return $messageElement;
     }
-    
+
     /**
      * @return \CActiveRecord
+     *
      * @throws \CDbException
      */
     protected function getEventType()
     {
         $eventType = \EventType::model()->findByAttributes(array('class_name' => 'OphCoMessaging'));
 
-        if(!$eventType){
+        if (!$eventType) {
             throw new \CDbException('Event Type for messaging not found');
         }
 
@@ -159,4 +163,26 @@ class MessageCreator
 
         return $controller->renderInternal(\Yii::getPathOfAlias($this->messageTemplate).'.php', $this->messageData, true);
     }
+
+    /**
+     * Sends an email alert when a message is created
+     *
+     * @param $recipients
+     * @param $subject
+     * @param $content
+     *
+     * @return mixed
+     */
+    public function emailAlert(array $recipients, $subject, $content)
+    {
+        $message = \Yii::app()->mailer->newMessage();
+        $from = (isset(\Yii::app()->params['from_address'])) ? \Yii::app()->params['from_address'] : 'noreply@openeyes.org.uk';
+        $message->setFrom(array($from => 'OpenEyes Alerts'));
+        $message->setTo($recipients);
+        $message->setSubject($subject);
+        $message->setBody($content);
+
+        return \Yii::app()->mailer->sendMessage($message);
+    }
+
 }

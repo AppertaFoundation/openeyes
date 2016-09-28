@@ -19,13 +19,28 @@
  */
 class WhiteboardController extends BaseDashboardController
 {
-    
     protected $headerTemplate = 'header';
 
     protected $whiteboard;
 
     /**
-     * Define access rules for the controller
+     * @param OphTrOperationbooking_Whiteboard $whiteboard
+     */
+    public function setWhiteboard(OphTrOperationbooking_Whiteboard $whiteboard)
+    {
+        $this->whiteboard = $whiteboard;
+    }
+
+    /**
+     * @return null|OphTrOperationbooking_Whiteboard
+     */
+    public function getWhiteboard()
+    {
+        return $this->whiteboard;
+    }
+
+    /**
+     * Define access rules for the controller.
      *
      * @return array
      */
@@ -33,10 +48,19 @@ class WhiteboardController extends BaseDashboardController
     {
         return array(
             array('allow',
-                'actions' => array('view', 'reload', 'confirm'),
+                'actions' => array('view', 'reload', 'confirm', 'saveComment'),
                 'roles' => array('OprnViewClinical'),
             ),
         );
+    }
+
+    public function init()
+    {
+        $id = Yii::app()->request->getParam('id');
+        $whiteboard = OphTrOperationbooking_Whiteboard::model()->with('booking')->findByAttributes(array('event_id' => $id));
+        if($whiteboard){
+            $this->setWhiteboard($whiteboard);
+        }
     }
 
     /**
@@ -46,6 +70,7 @@ class WhiteboardController extends BaseDashboardController
      * registered scripts.
      *
      * @param CAction $action
+     *
      * @return bool
      */
     public function beforeAction($action)
@@ -64,18 +89,19 @@ class WhiteboardController extends BaseDashboardController
     }
 
     /**
-     * View the whiteboard
+     * View the whiteboard.
      *
      * View the whiteboard data, if there is no data for this event we will collate and persist it in the model.
      *
      * @param $id
+     *
      * @throws CException
      * @throws CHttpException
      */
     public function actionView($id)
     {
-        $whiteboard = OphTrOperationbooking_Whiteboard::model()->with('booking')->findByAttributes(array('event_id' => $id));
-        if(!$whiteboard){
+        $whiteboard = $this->getWhiteboard();
+        if (!$whiteboard) {
             $whiteboard = new OphTrOperationbooking_Whiteboard();
             $whiteboard->loadData($id);
         }
@@ -85,22 +111,23 @@ class WhiteboardController extends BaseDashboardController
     }
 
     /**
-     * Reload the data for the whiteboard
+     * Reload the data for the whiteboard.
      *
      * If the data is wrong we can reload it and update the database.
      * 
      * @param $id
+     *
      * @throws CException
      * @throws CHttpException
      */
     public function actionReload($id)
     {
-        $whiteboard = OphTrOperationbooking_Whiteboard::model()->with('booking')->findByAttributes(array('event_id' => $id));
-        if(!$whiteboard){
+        $whiteboard = $this->getWhiteboard();
+        if (!$whiteboard) {
             throw new CHttpException(400, 'No whiteboard found for reload with id '.$id);
         }
 
-        if(!$whiteboard->booking->isEditable()){
+        if (!$whiteboard->booking->isEditable()) {
             throw new CHttpException(400, 'Whiteboard is not editable '.$id);
         }
 
@@ -110,19 +137,20 @@ class WhiteboardController extends BaseDashboardController
     }
 
     /**
-     * Confirms the checks
+     * Confirms the checks.
      *
      * @param $id
+     *
      * @throws CHttpException
      */
     public function actionConfirm($id)
     {
-        $whiteboard = OphTrOperationbooking_Whiteboard::model()->with('booking')->findByAttributes(array('event_id' => $id));
-        if(!$whiteboard){
-            throw new CHttpException(400, 'No whiteboard found for reload with id '.$id);
+        $whiteboard = $this->getWhiteboard();
+        if (!$whiteboard) {
+            throw new CHttpException(400, 'No whiteboard found for save with id '.$id);
         }
 
-        if(!$whiteboard->booking->isEditable()){
+        if (!$whiteboard->booking->isEditable()) {
             throw new CHttpException(400, 'Whiteboard is not editable '.$id);
         }
 
@@ -133,18 +161,35 @@ class WhiteboardController extends BaseDashboardController
     }
 
     /**
-     * @param OphTrOperationbooking_Whiteboard $whiteboard
+     * @param $id
+     *
+     * @throws CHttpException
+     * @throws Exception
      */
-    public function setWhiteboard(OphTrOperationbooking_Whiteboard $whiteboard)
+    public function actionSaveComment($id)
     {
-        $this->whiteboard = $whiteboard;
-    }
+        $whiteboard = $this->getWhiteboard();
+        if (!$whiteboard) {
+            throw new CHttpException(400, 'No whiteboard found for comment save with id '.$id);
+        }
 
-    /**
-     * @return null|OphTrOperationbooking_Whiteboard
-     */
-    public function getWhiteboard()
-    {
-        return $this->whiteboard;
+        if (!$whiteboard->booking->isEditable()) {
+            throw new CHttpException(400, 'Whiteboard is not editable '.$id);
+        }
+
+        $savable = array('comments', 'predicted_additional_equipment');
+        foreach($savable as $toSave){
+            if(Yii::app()->request->getPost($toSave, '')){
+                $whiteboard->$toSave = Yii::app()->request->getPost($toSave);
+            }
+        }
+
+        $whiteboard->save();
+
+        if(Yii::app()->request->isAjaxRequest){
+            $this->renderJSON(array('success' => true));
+        } else {
+            $this->redirect('/OphTrOperationbooking/whiteboard/view/'.$id);
+        }
     }
 }

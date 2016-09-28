@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -19,7 +19,7 @@
 ?>
 <div class="sub-element-fields">
 	<div class="field-row">
-		<?php echo $form->radioButtons($element, 'eye_id', CHtml::listData(\OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::model()->findAll(), 'id', 'name'), null, false, false, false, false, array('nowrapper'=>true))?>
+		<?php echo $form->radioButtons($element, 'eye_id', CHtml::listData(\OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::model()->findAll(), 'id', 'name'), null, false, false, false, false, array('nowrapper' => true))?>
 		<span class="pcr-exam-link">
                 <span id="ophCiExaminationPCRRiskRightEyeLabel">
                     <a href="javascript:showhidePCR('ophCiExaminationPCRRiskRightEye')">Right Eye - PCR Risk <span class="pcr-span1"></span>%</a>
@@ -32,30 +32,30 @@
     
 	<div class="field-row">
         <?php
-                if($active_check === 'on') {
-                            echo $form->checkbox($element, 'city_road', array('nowrapper'=>true));
-                            echo $form->checkbox($element, 'satellite', array('nowrapper'=>true));
+                if ($active_check === 'on') {
+                    echo $form->checkbox($element, 'city_road', array('nowrapper' => true));
+                    echo $form->checkbox($element, 'satellite', array('nowrapper' => true));
                 }
                 ?>
-		<?php echo $form->checkbox($element, 'fast_track', array('nowrapper'=>true))?>
+		<?php echo $form->checkbox($element, 'fast_track', array('nowrapper' => true))?>
 	</div>
 
 	<?php echo $form->textfield($element, 'target_postop_refraction', array(), array(), array('label' => 3, 'field' => 1));
         $this->widget('zii.widgets.jui.CJuiSliderInput', array(
-            'name'=>'refraction',
-            'value'=>$element->target_postop_refraction,
-            'event'=>'change',
-            'attribute'=>'value',
+            'name' => 'refraction',
+            'value' => $element->target_postop_refraction,
+            'event' => 'change',
+            'attribute' => 'value',
             // additional javascript options for the slider plugin
-            'options'=>array(
-                'min'=>-10,
-                'max'=>10,
-                'step'=>0.25,
-                'animate'=>true,
-                'slide'=>'js:function(event,ui){$("#OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_target_postop_refraction").val(ui.value);}',
+            'options' => array(
+                'min' => -10,
+                'max' => 10,
+                'step' => 0.25,
+                'animate' => true,
+                'slide' => 'js:function(event,ui){$("#OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_target_postop_refraction").val(ui.value);}',
             ),
-            'htmlOptions'=>array(
-                'style'=>'height:10px; width:400px;margin-top:-10px;margin-bottom:20px;margin-left:250px;',
+            'htmlOptions' => array(
+                'style' => 'height:10px; width:400px;margin-top:-10px;margin-bottom:20px;margin-left:250px;',
             ),
         ));
     ?>
@@ -67,9 +67,9 @@
 			</label>
 		</div>
 		<div class="large-9 column">
-			<?php echo $form->dropDownList($element, 'suitable_for_surgeon_id', '\OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_SuitableForSurgeon', array('class'=>'inline', 'empty'=>'- Please select -', 'nowrapper'=>true))?>
+			<?php echo $form->dropDownList($element, 'suitable_for_surgeon_id', '\OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_SuitableForSurgeon', array('class' => 'inline', 'empty' => '- Please select -', 'nowrapper' => true))?>
 			<label class="inline">
-				<?php echo $form->checkbox($element, 'supervised', array('nowrapper' => true, 'no-label'=>true))?>
+				<?php echo $form->checkbox($element, 'supervised', array('nowrapper' => true, 'no-label' => true))?>
 				<?php echo $element->getAttributeLabel('supervised')?>
 			</label>
 		</div>
@@ -94,7 +94,7 @@
                 array(
                     'empty' => '',
                     'label' => 'Primary Reason For Cataract Surgery',
-                    'nowrapper' => true
+                    'nowrapper' => true,
                 ),
                 false,
                 true,

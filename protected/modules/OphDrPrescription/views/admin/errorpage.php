@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2015
@@ -9,19 +9,17 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2015, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-
 $errorMessages = array(
-	"badreferer" => "ERROR: Bad referer, you are not allowed to open this page directly! Use the administration menu for managing common drugs list.",
-	"recordmissing" => "ERROR: The requested record is not exists in the database!",
-	"notajaxcall" => "ERROR: This page cannot be accessed directly, please use the Manage Common Drugs list to add new record!"
+    'badreferer' => 'ERROR: Bad referer, you are not allowed to open this page directly! Use the administration menu for managing common drugs list.',
+    'recordmissing' => 'ERROR: The requested record is not exists in the database!',
+    'notajaxcall' => 'ERROR: This page cannot be accessed directly, please use the Manage Common Drugs list to add new record!',
 );
 ?>
 <div class="large-12 column">

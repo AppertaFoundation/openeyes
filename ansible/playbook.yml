@@ -1,0 +1,27 @@
+---
+- name: OpenEyes Development Server
+
+  hosts: all
+
+  become: true
+  become_method: sudo
+
+  vars_files:
+    - vars/all.yml
+
+  pre_tasks:
+    - include: tasks/init-debian.yml
+      when: ansible_os_family == 'Debian'
+    - include: tasks/init-redhat.yml
+      when: ansible_os_family == 'RedHat'
+
+  roles:
+    - server
+    - vagrant_local
+    - geerlingguy.apache
+    - geerlingguy.mysql
+    - geerlingguy.nodejs
+    - geerlingguy.php
+    - geerlingguy.composer
+    - pludoni.wkthmltox
+    - app
