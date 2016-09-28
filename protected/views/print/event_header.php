@@ -25,7 +25,7 @@ $logoHelper = new LogoHelper();
 ?>
 <header class="header">
 	<div class="title">
-	<?php $logoHelper->render('//base/_logo_seal'); ?>	
+	<?php echo $logoHelper->render('//base/_logo_seal'); ?>	
 	<h1><?php echo $event_type;?></h1>
 	</div>
 	<div class="row">
