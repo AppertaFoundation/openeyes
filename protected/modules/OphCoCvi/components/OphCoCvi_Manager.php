@@ -370,6 +370,9 @@ class OphCoCvi_Manager extends \CComponent
             if (!$clinical->validate()) {
                 return false;
             }
+            if (!$clinical->consultant_signature_file_id){
+                return false;
+            }
         } else {
             return false;
         }
@@ -447,7 +450,8 @@ class OphCoCvi_Manager extends \CComponent
             }
         }
         $address = \Institution::model()->getCurrent()->getLetterAddress(array('include_name' => false, 'delimiter' => '\n'));
-        $data['hospitalAddress'] = \Helper::lineLimit($address,4,1,'\n');
+        $data['hospitalAddress'] = \Helper::lineLimit($address,2,1,'\n');
+        $data['hospitalAddressMultiline'] = \Helper::lineLimit($address,4,1,'\n');
         $data['hospitalNumber'] = $event->episode->patient->hos_num;
 
         return $data;
@@ -472,8 +476,16 @@ class OphCoCvi_Manager extends \CComponent
             // we check if the signature is exists on the portal
             $signature = $ignore_portal ? $signature_element->getSignatureBox() : $signature_element->loadSignatureFromPortal();
         } else {
+            // TODO: this should be checked before, when we retrieve the patient signature!!!
             // we get the stored signature and creates a GD object from the data
-            $signature = imagecreatefromstring($signature_element->getDecryptedSignature());
+            if ($signature_element->getDecryptedSignature())
+            {
+                $signature = imagecreatefromstring($signature_element->getDecryptedSignature());
+            }else
+            {
+                $signature = imagecreatetruecolor(1,1);
+            }
+
         }
 
 

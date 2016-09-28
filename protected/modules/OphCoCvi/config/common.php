@@ -30,7 +30,7 @@ return array(
         ),
         'menu_bar_items' => array(
             'admin' => array(
-                'restricted' => array('cvi'),
+                'restricted' => array(array('OprnCreateCvi', 'user_id')),
                 'sub' => array(
                     'cvi' => array(
                         'title' => 'CVI',

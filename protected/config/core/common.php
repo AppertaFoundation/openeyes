@@ -286,6 +286,7 @@ return array(
         'hos_num_regex' => '/^([0-9]{1,9})$/',
         'pad_hos_num' => '%07s',
         'profile_user_can_edit' => true,
+        'profile_user_show_menu' => true,
         'profile_user_can_change_password' => true,
         'menu_bar_items' => array(
             'home' => array(
