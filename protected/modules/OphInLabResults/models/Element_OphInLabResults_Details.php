@@ -31,6 +31,7 @@ class Element_OphInLabResults_Details extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
+            array('result_type_id', 'numerical', 'integerOnly' => true, 'message' => 'Please select the Type'),
             array('event_id, result_type_id', 'safe'),
         );
     }
