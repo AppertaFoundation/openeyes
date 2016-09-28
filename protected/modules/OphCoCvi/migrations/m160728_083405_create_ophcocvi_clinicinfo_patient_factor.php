@@ -23,7 +23,7 @@ class m160728_083405_create_ophcocvi_clinicinfo_patient_factor extends CDbMigrat
     {
         $this->createTable('ophcocvi_clinicinfo_patient_factor', array(
             'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-            'name' => 'varchar(128) NOT NULL',
+            'name' => 'varchar(255) NOT NULL',
             'code' => 'varchar(20) NOT NULL',
             'require_comments' => 'tinyint(1) unsigned NOT NULL DEFAULT 0',
             'comments_label' => 'varchar(128) NOT NULL',
@@ -43,7 +43,7 @@ class m160728_083405_create_ophcocvi_clinicinfo_patient_factor extends CDbMigrat
 
         $this->createTable('ophcocvi_clinicinfo_patient_factor_version', array(
             'id' => 'int(10) unsigned NOT NULL',
-            'name' => 'varchar(128) NOT NULL',
+            'name' => 'varchar(255) NOT NULL',
             'code' => 'varchar(20) NOT NULL',
             'require_comments' => 'tinyint(1) unsigned NOT NULL DEFAULT 0',
             'comments_label' => 'varchar(128) NOT NULL',
