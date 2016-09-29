@@ -16,16 +16,19 @@
 * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 */
-$isLocal = is_file('/etc/vagrant_box_build_time');
-$host = $isLocal ? 'localhost' : '127.0.0.1';
-$port = $isLocal ? '3306' : '3333';
+
+$db_name = getenv('DATABASE_TEST_NAME') ? getenv('DATABASE_TEST_NAME') : 'openeyes_test';
+$db_host = getenv('DATABASE_TEST_HOST') ? getenv('DATABASE_TEST_HOST') : '127.0.0.1';
+$db_port = getenv('DATABASE_TEST_PORT') ? getenv('DATABASE_TEST_PORT') : '3306';
+$db_user = getenv('DATABASE_TEST_USER') ? getenv('DATABASE_TEST_USER') : 'openeyes';
+$db_pass = getenv('DATABASE_TEST_PASS') ? getenv('DATABASE_TEST_PASS') : 'openeyes';
 
 $config = array(
     'components' => array(
         'db' => array(
-            'connectionString' => "mysql:host=$host;port=$port;dbname=openeyes",
-            'username' => 'openeyes',
-            'password' => 'oe_test',
+            'connectionString' => "mysql:host=$db_host;port=$db_port;dbname=$db_name",
+            'username' => $db_user,
+            'password' => $db_pass,
             'enableParamLogging' => true,
         ),
         'session' => array(

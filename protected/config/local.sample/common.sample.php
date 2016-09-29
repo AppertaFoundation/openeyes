@@ -20,11 +20,11 @@ if (file_exists('/etc/openeyes/db.conf')) {
     $db = parse_ini_file('/etc/openeyes/db.conf');
 } else {
     $db = array(
-        'host' => '127.0.0.1',
-        'port' => '=3306',
-        'dbname' => 'openeyes',
-        'username' => 'openeyes',
-        'password' => 'openeyes',
+        'host' => getenv('DATABASE_HOST') ? getenv('DATABASE_HOST') : '127.0.0.1',
+        'port' => getenv('DATABASE_PORT') ? getenv('DATABASE_PORT') : '3306',
+        'dbname' => getenv('DATABASE_NAME') ? getenv('DATABASE_NAME') : 'openeyes',
+        'username' => getenv('DATABASE_USER') ? getenv('DATABASE_USER') : 'openeyes',
+        'password' => getenv('DATABASE_PASS') ? getenv('DATABASE_PASS') : 'openeyes',
     );
 }
 

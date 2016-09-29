@@ -17,18 +17,30 @@
 * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 */
 
+$db_name = getenv('DATABASE_NAME') ? getenv('DATABASE_NAME') : 'openeyes';
+$db_host = getenv('DATABASE_HOST') ? getenv('DATABASE_HOST') : '127.0.0.1';
+$db_port = getenv('DATABASE_PORT') ? getenv('DATABASE_PORT') : '3306';
+$db_user = getenv('DATABASE_USER') ? getenv('DATABASE_USER') : 'openeyes';
+$db_pass = getenv('DATABASE_PASS') ? getenv('DATABASE_PASS') : 'openeyes';
+
+$db_test_name = getenv('DATABASE_TEST_NAME') ? getenv('DATABASE_TEST_NAME') : 'openeyes_test';
+$db_test_host = getenv('DATABASE_TEST_HOST') ? getenv('DATABASE_TEST_HOST') : '127.0.0.1';
+$db_test_port = getenv('DATABASE_TEST_PORT') ? getenv('DATABASE_TEST_PORT') : '3306';
+$db_test_user = getenv('DATABASE_TEST_USER') ? getenv('DATABASE_TEST_USER') : 'openeyes';
+$db_test_pass = getenv('DATABASE_TEST_PASS') ? getenv('DATABASE_TEST_PASS') : 'openeyes';
+
 return array(
     'components' => array(
         'db' => array(
-            'connectionString' => 'mysql:host=localhost;port=3333;dbname=openeyes',
-            'username' => 'openeyes',
-            'password' => 'oe_test',
+            'connectionString' => "mysql:host=$db_host;port=$db_port;dbname=$db_name",
+            'username' => $db_user,
+            'password' => $db_pass,
         ),
         'testdb' => array(
             'class' => 'CDbConnection',
-            'connectionString' => 'mysql:host=localhost;port=3333;dbname=openeyes',
-            'username' => 'openeyes',
-            'password' => 'oe_test',
+            'connectionString' => "mysql:host=$db_test_host;port=$db_test_port;dbname=$db_test_name",
+            'username' => $db_test_user,
+            'password' => $db_test_pass,
         ),
     ),
 );

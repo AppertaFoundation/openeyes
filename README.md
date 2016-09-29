@@ -34,7 +34,7 @@ If you need to share repositories with members of the core development team, you
 
 OpenEyes follows the [gitflow](http://nvie.com/posts/a-successful-git-branching-model/) model for git branches. As such, the stable release branch is always on master. For bleeding edge development, use the develop branch.
 
-Setup and installation documentation is available from the README file in the oe_installer repository. 
+Setup and installation documentation is available from the README file in the oe_installer repository.
 
 We are beginning to evolve some documentation for developers on [our github wiki](https://github.com/openeyes/OpenEyes/wiki) including [coding guidelines](https://github.com/openeyes/OpenEyes/wiki/Coding-Guidelines), [working with the core team](https://github.com/openeyes/OpenEyes/wiki/Working-With-The-Core-Team) and our [Event type module development guide](https://github.com/openeyes/OpenEyes/wiki/Event-Type-Module-Development-Guide).
 
@@ -72,7 +72,7 @@ To allow for multiple environments to be built at the same time the hostname and
 Full usage:
 
 	$ vagrant --hostname="openeyes.dev.local" --servername="My Open Eyes Dev Server" up
-	
+
 If either are omitted the default vales of "openeyes.vm"" and "OpenEyes Dev Server" are used for the hostname and servername respectively.
 
 **Note:** if the options are omitted the default values are used, the command line options have to be before the vagrant command for them to work.
@@ -90,7 +90,7 @@ By default Xdebug is disabled on the CLI due to [documented](https://getcomposer
 
 You will need to have downloaded VC++ for Vagrant to be able to download base boxes for the build, (see this issue for more information [https://github.com/mitchellh/vagrant/issues/6754](https://github.com/mitchellh/vagrant/issues/6754))
 
-Building and running under Windows has been tested using [Cygwin](https://www.cygwin.com).  Under Windows RSync is used to keep the local development files and folders in sync on the guest server, when actively making changes to files and folders on the host you need to have `vagrant rsync-auto` running to ensure changed files are mirrored.
+Building and running under Windows has been tested using [Cygwin](https://www.cygwin.com) (run as administrator - right click on the shortcut "Run as Administrator") to run git clone against the repository and also run the various vagrant commands.
 
 **Note:** You should ensure that that the path you clone the repository to doesn't have any spaces in as Virtualbox complains about this during the build process.
 
@@ -115,10 +115,13 @@ And if that's not enough there is the Vagrant [documentation](https://www.vagran
 
 Additional / Outstanding tasks to be completed:
 
-* Tidy up the PHP build implementation
-* Configuration optimisation to make it easier to make changes to the build from a single file
 * Changes to support AWS provisioning (although this may be better left to a build specific Ansible playbook)
 * Tailor the roles better to the OE build rather than coding around more generic [Ansible Galaxy](https://galaxy.ansible.com) based roles.
+
+#### Known issues
+
+1. XDebug enabled in CLI - setting in `ansible/vars/all.yml` is ignored - https://github.com/geerlingguy/ansible-role-php-xdebug/issues/34
+
 
 Printing
 --------

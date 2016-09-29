@@ -22,7 +22,7 @@ opts.each do |opt, arg|
   end
 end
 
-PLUGINS = %w(vagrant-auto_network vagrant-hostsupdater vagrant-cachier)
+PLUGINS = %w(vagrant-auto_network vagrant-hostsupdater vagrant-cachier vagrant-vbguest)
 
 PLUGINS.reject! { |plugin| Vagrant.has_plugin? plugin }
 
@@ -55,9 +55,7 @@ Vagrant.configure("2") do |config|
   config.vm.network "private_network", :auto_network => true
 
   if OS.windows?
-    config.vm.synced_folder "./", "/var/www/openeyes", id: "vagrant-root",
-      type: "rsync",
-      rsync__exclude: ".git/"
+    config.vm.synced_folder "./", "/var/www/openeyes", id: "vagrant-root"
   else
   	config.vm.synced_folder "./", "/var/www/openeyes", id: "vagrant-root",
       owner: "vagrant",
@@ -76,7 +74,7 @@ Vagrant.configure("2") do |config|
 		v.customize [
       "modifyvm", :id,
       "--name", servername,
-      "--memory", 1024,
+      "--memory", 2048,
       "--natdnshostresolver1", "on",
       "--cpus", 2,
     ]
@@ -87,9 +85,42 @@ Vagrant.configure("2") do |config|
   config.vm.provider(:vmware_fusion) do |v, override|
     override.vm.box = "puppetlabs/ubuntu-14.04-64-nocm"
     v.vmx["displayname"] = servername
-    v.vmx["memsize"] = "1024"
+    v.vmx["memsize"] = "2048"
     v.vmx["numvcpus"] = "2"
     # v.gui = true
+  end
+
+  # AWS
+  # https://github.com/mitchellh/vagrant-aws
+  # vagrant box add dummy https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box
+  config.vm.provider(:aws) do |aws, override|
+    # https://github.com/mitchellh/vagrant/issues/5401
+    override.nfs.functional = false
+
+    override.vm.box = "dummy"
+    override.vm.box_url = "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box"
+    override.ssh.username = "ubuntu"
+    override.ssh.private_key_path = "~/.ssh/aws.pem"
+
+    override.vm.hostname = "openeyes-dev-aws.vm"
+    override.vm.network "private_network", :host_updater => "skip"
+
+    # Explicit AWS access pair
+    # aws.access_key_id = ""
+    # aws.secret_access_key = ""
+
+    # aws.aws_profile = "AcrossHealth"
+
+    aws.ami = "ami-ed82e39e"
+    aws.region = "eu-west-1"
+    aws.instance_type = "m3.medium"
+
+    aws.tags = {
+      'Name'    => 'OpenEyes_Development',
+      'Client'  => 'OpenEyes',
+      'Role'    => 'Development'
+    }
+
   end
 
   config.vm.provision "ansible_local" do |ansible|

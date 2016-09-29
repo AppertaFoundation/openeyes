@@ -1,10 +1,13 @@
 ---
-- src: angstwad.docker_ubuntu
-  version: v1.1.10
+- src: franklinkim.environment
 - src: geerlingguy.apache
   version: 1.7.3
 - src: geerlingguy.mysql
   version: 2.3.2
+- src: geerlingguy.php
+  version: 3.2.2
+- src: geerlingguy.php-xdebug
+  version: 2.1.1
 - src: geerlingguy.composer
   version: 1.4.2
 - src: geerlingguy.nodejs
