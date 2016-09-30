@@ -381,4 +381,50 @@ class OphTrOperationbooking_API extends BaseAPI
 
         return false;
     }
+
+    /**
+     * To get All Bookings associated with OperationNotes
+     * @param Patient $patient
+     * @return array|string
+     */
+    public function getAllBookingsWithOperationNote(\Patient $patient)
+    {
+        $event_type = $this->getEventType();
+        $criteria = new \CDbCriteria;
+        $criteria->select = '*';
+        $criteria->join = 'join episode on t.episode_id = episode.id and patient_id = :patient_id and event_type_id = :event_type_id';
+        $criteria->join .= ' join et_ophtroperationnote_procedurelist on booking_event_id = t.id';
+        $criteria->order = 't.event_date desc';
+        $criteria->condition = 't.deleted != 1';
+        $criteria->params = array(':patient_id' => $patient->id, ':event_type_id' => $event_type->id);
+        $opnote_mapped_bookings = '';
+        foreach (\Event::model()->findAll($criteria) as $event) {
+            $opnote_mapped_bookings[] = $event->id;
+        }
+        return $opnote_mapped_bookings;
+    }
+
+    /**
+     * To get All Bookings Without OperationNotes
+     * @param Patient $patient
+     * @return array|string
+     */
+    public function getAllBookingsWithoutOperationNotes(\Patient $patient)
+    {
+        $opnote_bookings = implode(',', $this->getAllBookingsWithOperationNote($patient));
+        $event_type = $this->getEventType();
+        $criteria = new \CDbCriteria;
+        $criteria->select = '*';
+        $criteria->join = 'join episode on t.episode_id = episode.id and patient_id = :patient_id and event_type_id = :event_type_id';
+        $criteria->order = 't.event_date desc';
+        $criteria->condition = "t.deleted != 1 and t.id not in (:opnote_bookings)";
+        $criteria->params = array(':patient_id' => $patient->id, ':event_type_id' => $event_type->id, ':opnote_bookings' => $opnote_bookings);
+
+        foreach (\Event::model()->findAll($criteria) as $event) {
+            $bookings_without_opnote[] = $event->id;
+        }
+        $bookings_without_opnote =  isset($bookings_without_opnote) ? implode(',', $bookings_without_opnote) : '';
+        return $bookings_without_opnote;
+    }
+
 }
