@@ -173,7 +173,7 @@ class NodExportController extends BaseController
         $this->getPatients();
         
         
-        ##$this->clearAllTempTables();
+        $this->clearAllTempTables();
 
     }
 
@@ -182,7 +182,7 @@ class NodExportController extends BaseController
      *
      * @param string $dataQuery SQL query
      * @param string $filename
-     * @param string $episodeIdField
+     * @param string $dataFormatter
      * @return null|array
      */
     private function saveCSVfile($dataQuery, $filename, $dataFormatter = null)
