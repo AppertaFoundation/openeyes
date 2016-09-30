@@ -40,7 +40,7 @@
             </div>
         </div>
         <div class="large-4 column">
-            <div class="data-value"><?php echo $element->is_considered_blind ? $element::$BLIND_STATUS : $element::$NOT_BLIND_STATUS ?></div>
+            <div class="data-value"><?php echo ($element->is_considered_blind === null) ? '-' : ($element->is_considered_blind ? $element::$BLIND_STATUS : $element::$NOT_BLIND_STATUS) ?></div>
         </div>
         <div class="large-2 column">
             <div
