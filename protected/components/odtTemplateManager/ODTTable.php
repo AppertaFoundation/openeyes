@@ -53,7 +53,7 @@ class ODTTable
 
     public function setCellData($row, $col, $cellData)
     {
-        $this->data['rows'][$row - 1]['cells'][$col - 1]['data'] = $cellData;
+        $this->data['rows'][$row - 1]['cells'][$col - 1]['data'] = ODTDataHandler::encodeTextForODT($cellData);
     }
 
     public function setRowData($row, $rowData)
