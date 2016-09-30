@@ -20,9 +20,18 @@
 
 class ODTDataHandler
 {
+    /**
+     * Wrapper function to consistently encode text where appropriate for template functionality
+     *
+     * @param $text
+     * @return string
+     */
     public static function encodeTextForODT($text)
     {
-        return htmlspecialchars($text, ENT_XML1);
+        if (is_string($text)) {
+            return htmlspecialchars($text, ENT_XML1);
+        }
+        return $text;
     }
 
     /**

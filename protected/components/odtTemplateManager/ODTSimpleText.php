@@ -29,7 +29,7 @@ class ODTSimpleText
     {
         $this->data['element-type'] = 'simple-text';
         $this->data['name'] = $name;
-        if($data !== null){
+        if ($data !== null) {
             $this->data['data'] = ODTDataHandler::encodeTextForODT($data);
         }
     }        
