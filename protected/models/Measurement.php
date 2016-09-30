@@ -92,7 +92,7 @@ abstract class Measurement extends BaseActiveRecordVersioned
         if (isset($attributes['patient_measurement_id'])) {
             if ($pm = PatientMeasurement::model()->findByPk($attributes['patient_measurement_id'])) {
                 $origin = $pm->originReference;
-                if ($origin->event) {
+                if ($origin && $origin->event) {
                     $api = Yii::app()->moduleAPI->getForEventId($origin->event_id);
                     if ($api) {
                         OELog::log("we have an api");
