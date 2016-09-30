@@ -11,12 +11,14 @@ class LogoHelper
     /**
      * Renders the template
      *
+     * @param $template
+     *
      * @return mixed
      */
-    public function render()
+    public function render($template = '//base/_logo')
     {
         return Yii::app()->controller->renderPartial(
-            '//base/_logo',
+            $template,
             array(
                 'logo' => $this->getLogo(),
             ),

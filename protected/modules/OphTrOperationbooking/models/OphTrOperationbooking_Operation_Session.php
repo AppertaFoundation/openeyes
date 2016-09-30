@@ -384,11 +384,21 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
         }
     }
 
+    /**
+     * Get the weekday name from the date
+     *
+     * @return false|string
+     */
     public function getWeekdayText()
     {
         return date('l', strtotime($this->date));
     }
 
+    /**
+     * Checks made before the validation runs
+     *
+     * @return bool
+     */
     protected function beforeValidate()
     {
         if ($this->date && !preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $this->date)) {
@@ -414,47 +424,8 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
                 }
             }
         }
-        $criteria = new CDbCriteria();
 
-        $criteria->addCondition('theatre_id = :theatre_id');
-        $criteria->params[':theatre_id'] = $this->theatre_id;
-
-        if ($this->id) {
-            $criteria->addCondition('id <> :session_id');
-            $criteria->params[':session_id'] = $this->id;
-        }
-        $criteria->addCondition('date = :date');
-        $criteria->params[':date'] = $this->date;
-        $conflicts = array();
-        foreach ($this->findAll($criteria) as $session) {
-            $start = strtotime("$this->date $this->start_time");
-            $end = strtotime("$this->date $this->end_time");
-
-            $s_start = strtotime("$session->date $session->start_time");
-            $s_end = strtotime("$session->date $session->end_time");
-            if ($start < $s_end && $start >= $s_start) {
-                if (!isset($conflicts[$session->id]['start_time'])) {
-                    $this->addError('start_time', "This start time conflicts with session $session->id");
-                    $conflicts[$session->id]['start_time'] = 1;
-                }
-            }
-
-            if ($end > $s_start && $end <= $s_end) {
-                if (!isset($conflicts[$session->id]['end_time'])) {
-                    $this->addError('end_time', "This end time conflicts with session $session->id");
-                    $conflicts[$session->id]['end_time'] = 1;
-                }
-            }
-
-            if ($start < $s_start && $end > $s_end) {
-                if (!isset($conflicts[$session->id]['end_time']) || !isset($conflicts[$session->id]['start_time'])) {
-                    $this->addError('start_time', "This start time conflicts with session $session->id");
-                    $conflicts[$session->id]['start_time'] = 1;
-                    $this->addError('end_time', "This end time conflicts with session $session->id");
-                    $conflicts[$session->id]['end_time'] = 1;
-                }
-            }
-        }
+        $this->validateNewSessionConflict();
 
         return parent::beforeValidate();
     }
@@ -583,5 +554,57 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
         }
 
         return $warnings;
+    }
+
+
+    /**
+     * Validates new sessions to find conflicts with existing sessions
+     */
+    protected function validateNewSessionConflict()
+    {
+        if($this->isNewRecord){
+
+            $criteria = new CDbCriteria();
+
+            $criteria->addCondition('theatre_id = :theatre_id');
+            $criteria->params[':theatre_id'] = $this->theatre_id;
+
+            if ($this->id) {
+                $criteria->addCondition('id <> :session_id');
+                $criteria->params[':session_id'] = $this->id;
+            }
+            $criteria->addCondition('date = :date');
+            $criteria->params[':date'] = $this->date;
+            $conflicts = array();
+            foreach ($this->findAll($criteria) as $session) {
+                $start = strtotime("$this->date $this->start_time");
+                $end = strtotime("$this->date $this->end_time");
+
+                $s_start = strtotime("$session->date $session->start_time");
+                $s_end = strtotime("$session->date $session->end_time");
+                if ($start < $s_end && $start >= $s_start) {
+                    if (!isset($conflicts[$session->id]['start_time'])) {
+                        $this->addError('start_time', "This start time conflicts with session $session->id");
+                        $conflicts[$session->id]['start_time'] = 1;
+                    }
+                }
+
+                if ($end > $s_start && $end <= $s_end) {
+                    if (!isset($conflicts[$session->id]['end_time'])) {
+                        $this->addError('end_time', "This end time conflicts with session $session->id");
+                        $conflicts[$session->id]['end_time'] = 1;
+                    }
+                }
+
+                if ($start < $s_start && $end > $s_end) {
+                    if (!isset($conflicts[$session->id]['end_time'], $conflicts[$session->id]['start_time'])) {
+                        $this->addError('start_time', "This start time conflicts with session $session->id");
+                        $conflicts[$session->id]['start_time'] = 1;
+                        $this->addError('end_time', "This end time conflicts with session $session->id");
+                        $conflicts[$session->id]['end_time'] = 1;
+                    }
+                }
+            }
+        }
     }
 }

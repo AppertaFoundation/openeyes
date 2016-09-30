@@ -27,8 +27,12 @@
             </div>
 
             <br>
-            If you want to change your current signature and PIN just read the following QR code with the OpenEyes phone application
-            and follow the instructions on your phone's screen:
+            If you want to change your current signature and PIN:
+            <ol>
+                <li>Visit <?= Yii::app()->params['signature_app_url'] ? : "the OpenEyes Phone Application" ?> on your mobile device.</li>
+                <li>Scan the QR code displayed below with the application.</li>
+                <li>Follow the prompts from there.</li>
+            </ol>
         </div>
     <?php
     }else

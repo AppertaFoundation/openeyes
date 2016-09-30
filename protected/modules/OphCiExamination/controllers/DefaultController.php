@@ -37,6 +37,7 @@ class DefaultController extends \BaseEventTypeController
         'getPreviousIOPAverage' => self::ACTION_TYPE_FORM,
         'getPostOpComplicationList' => self::ACTION_TYPE_FORM,
         'getPostOpComplicationAutocopleteList' => self::ACTION_TYPE_FORM,
+        'dismissCVIalert' => self::ACTION_TYPE_FORM
     );
 
     // if set to true, we are advancing the current event step
@@ -279,7 +280,7 @@ class DefaultController extends \BaseEventTypeController
         }
 
 		$active_check_value = "";
-        if (!empty($class_array)) {                    
+        if (!empty($class_array)) {
             if(array_pop($class_array) === 'Element_OphCiExamination_CataractSurgicalManagement') {
                 $active_check = \SettingInstallation::model()->find('t.key="city_road_satellite_view"');
                 if (!empty($active_check)) {
@@ -1298,6 +1299,25 @@ class DefaultController extends \BaseEventTypeController
             }
 
             echo \CJSON::encode($select);
+        }
+    }
+
+    /**
+     * Setting the CVI alert flag to dismiss
+     * @param int $element_id
+     */
+    public function actionDismissCVIalert($element_id)
+    {
+        $is_ajax = $this->getApp()->request->getParam('ajax', false);
+        $cvi_api = $this->getApp()->moduleAPI->get('OphCoCvi');
+
+        if ($cvi_api && ($this->getApp()->request->isAjaxRequest || $is_ajax)) {
+            $element = models\Element_OphCiExamination_VisualAcuity::model()->findByPk($element_id);
+            $element->cvi_alert_dismissed = 1;
+
+            if($element->save()) {
+                echo \CJSON::encode(array('success' => 'true'));
+            }
         }
     }
 }

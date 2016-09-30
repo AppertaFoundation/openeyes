@@ -18,108 +18,111 @@
  */
 ?>
 <?php
-    $based_on = array();
-    if ($search_terms['last_name']) {
-        $based_on[] = 'LAST NAME: <strong>"'.$search_terms['last_name'].'"</strong>';
-    }
-    if ($search_terms['first_name']) {
-        $based_on[] = 'FIRST NAME: <strong>"'.$search_terms['first_name'].'"</strong>';
-    }
-    if ($search_terms['hos_num']) {
-        $based_on[] = 'HOSPITAL NUMBER: <strong>'.$search_terms['hos_num'].'</strong>';
-    }
-    $based_on = implode(', ', $based_on);
-    ?>
+$based_on = array();
+if ($search_terms['last_name']) {
+    $based_on[] = 'LAST NAME: <strong>"' . $search_terms['last_name'] . '"</strong>';
+}
+if ($search_terms['first_name']) {
+    $based_on[] = 'FIRST NAME: <strong>"' . $search_terms['first_name'] . '"</strong>';
+}
+if ($search_terms['hos_num']) {
+    $based_on[] = 'HOSPITAL NUMBER: <strong>' . $search_terms['hos_num'] . '</strong>';
+}
+$based_on = implode(', ', $based_on);
+?>
 <h1 class="badge">Search Results</h1>
 
 <div class="row">
-	<div class="large-9 column">
+    <div class="large-9 column">
 
-		<div class="box generic">
-			<p>
-				<strong><?php echo $total_items?> patients found</strong>, based on
-				<?php echo $based_on?>
-			</p>
-		</div>
+        <div class="box generic">
+            <p>
+                <strong><?php echo $total_items ?> patients found</strong>, based on
+                <?php echo $based_on ?>
+            </p>
+        </div>
 
-		<?php $this->renderPartial('//base/_messages'); ?>
+        <?php $this->renderPartial('//base/_messages'); ?>
 
-		<div class="box generic">
+        <div class="box generic">
 
-			<?php
-			$dataProvided = $data_provider->getData();
-			$items_per_page = $data_provider->getPagination()->getPageSize();
-			$page_num = $data_provider->getPagination()->getCurrentPage();
-			$from =($page_num * $items_per_page) + 1;
-				$to = ($page_num + 1) * $items_per_page;
-				if ($to > $total_items) {
-					$to = $total_items;
-				}
-			?>
-			<h2>
-				Results. You are viewing patients <?php echo $from ?> - <?php echo $to ?> of <?php echo $total_items?>
-			</h2>
+            <?php
+            $dataProvided = $data_provider->getData();
+            $items_per_page = $data_provider->getPagination()->getPageSize();
+            $page_num = $data_provider->getPagination()->getCurrentPage();
+            $from = ($page_num * $items_per_page) + 1;
+            $to = ($page_num + 1) * $items_per_page;
+            if ($to > $total_items) {
+                $to = $total_items;
+            }
+            ?>
+            <h2>
+                Results. You are viewing patients <?php echo $from ?> - <?php echo $to ?> of <?php echo $total_items ?>
+            </h2>
 
-			<table id="patient-grid" class="grid">
-				<thead>
-					<tr>
-						<?php foreach (array('Hospital Number', 'Title', 'First name', 'Last name', 'Date of birth', 'Gender', 'NHS number') as $i => $field) {?>
-						<th id="patient-grid_c<?php echo $i; ?>">
-							<?php
-								$new_sort_dir = ($i == $sort_by) ? 1 - $sort_dir: 0;
-								echo CHtml::link($field,Yii::app()->createUrl('patient/search', array('term' => $term, 'sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num)));
-							?>
-						</th>
-						<?php }?>
-					</tr>
-				</thead>
-				<tbody>
-					<?php foreach ($data_provider->getData() as $i => $result) {?>
-					<tr id="r<?php echo $result->id?>" class="clickable">
-						<td><?php echo $result->hos_num?></td>
-						<td><?php echo $result->title?></td>
-						<td><?php echo $result->first_name?></td>
-						<td><?php echo $result->last_name?></td>
-						<td><?php echo date('d/m/Y', strtotime($result->dob));?></td>
-						<td><?php echo $result->gender?></td>
-						<td><?php echo $result->nhsnum?></td>
-					</tr>
-					<?php }?>
-				</tbody>
-				<tfoot class="pagination-container">
-					<tr>
-						<td colspan="7">
-							<?php
-								$this->widget('LinkPager', array(
-									'pages' => $data_provider->getPagination(),
-									'maxButtonCount' => 15,
-									'cssFile' => false,
-									'selectedPageCssClass' => 'current',
-									'hiddenPageCssClass' => 'unavailable',
-									'htmlOptions' => array(
-										'class' => 'pagination'
-									)
-							));
-							?>
-						</td>
-					</tr>
-				</tfoot>
-			</table>
-		</div><!--- /.box -->
+            <table id="patient-grid" class="grid">
+                <thead>
+                <tr>
+                    <?php foreach (array('Hospital Number', 'Title', 'First name', 'Last name', 'Date of birth', 'Gender', 'NHS number') as $i => $field) { ?>
+                        <th id="patient-grid_c<?php echo $i; ?>">
+                            <?php
+                            $new_sort_dir = ($i == $sort_by) ? 1 - $sort_dir : 0;
+                            echo CHtml::link(
+                                $field,
+                                Yii::app()->createUrl('patient/search', array('term' => $term, 'sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num))
+                            );
+                            ?>
+                        </th>
+                    <?php } ?>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($dataProvided as $i => $result) { ?>
+                    <tr id="r<?php echo $result->id ?>" class="clickable">
+                        <td><?php echo $result->hos_num ?></td>
+                        <td><?php echo $result->title ?></td>
+                        <td><?php echo $result->first_name ?></td>
+                        <td><?php echo $result->last_name ?></td>
+                        <td><?php echo date('d/m/Y', strtotime($result->dob)); ?></td>
+                        <td><?php echo $result->gender ?></td>
+                        <td><?php echo $result->nhsnum ?></td>
+                    </tr>
+                <?php } ?>
+                </tbody>
+                <tfoot class="pagination-container">
+                <tr>
+                    <td colspan="7">
+                        <?php
+                        $this->widget('LinkPager', array(
+                            'pages' => $data_provider->getPagination(),
+                            'maxButtonCount' => 15,
+                            'cssFile' => false,
+                            'selectedPageCssClass' => 'current',
+                            'hiddenPageCssClass' => 'unavailable',
+                            'htmlOptions' => array(
+                                'class' => 'pagination',
+                            ),
+                        ));
+                        ?>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </div><!--- /.box -->
 
-	</div><!-- /.large-9.column -->
+    </div><!-- /.large-9.column -->
 
-	<div class="large-3 column">
-		<div class="box generic">
-			<p><?php echo CHtml::link('Clear this search and <span class="highlight">start a new search.</span>', Yii::app()->baseUrl.'/')?></p>
-		</div>
-	</div>
+    <div class="large-3 column">
+        <div class="box generic">
+            <p><?php echo CHtml::link('Clear this search and <span class="highlight">start a new search.</span>', Yii::app()->baseUrl . '/') ?></p>
+        </div>
+    </div>
 
 </div><!-- /.row -->
 
 <script type="text/javascript">
-	$('#patient-grid tr.clickable').click(function() {
-		window.location.href = '<?php echo Yii::app()->createUrl('patient/view')?>/'+$(this).attr('id').match(/[0-9]+/);
-		return false;
-	});
+    $('#patient-grid tr.clickable').click(function () {
+        window.location.href = '<?php echo Yii::app()->createUrl('patient/view')?>/' + $(this).attr('id').match(/[0-9]+/);
+        return false;
+    });
 </script>

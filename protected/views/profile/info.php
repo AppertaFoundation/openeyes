@@ -30,7 +30,7 @@
         ),
     ))?>
 
-		<?php if (!Yii::app()->params['profile_user_can_edit']) {?>
+		<?php if (!Yii::app()->params['profile_user_can_edit'] || !Yii::app()->params['profile_user_show_menu']) {?>
 			<div class="alert-box alert">
 				User editing of basic information is administratively disabled.
 			</div>
@@ -39,11 +39,11 @@
 		<?php $this->renderPartial('//base/_messages')?>
 		<?php $this->renderPartial('//elements/form_errors', array('errors' => $errors))?>
 
-		<?php echo $form->textField($user, 'title', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'readonly' => !Yii::app()->params['profile_user_can_edit']), null, array('field' => 2));?>
-		<?php echo $form->textField($user, 'first_name', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'readonly' => !Yii::app()->params['profile_user_can_edit']));?>
-		<?php echo $form->textField($user, 'last_name', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'readonly' => !Yii::app()->params['profile_user_can_edit']));?>
-		<?php echo $form->textField($user, 'email', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'readonly' => !Yii::app()->params['profile_user_can_edit']));?>
-		<?php echo $form->textField($user, 'qualifications', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'readonly' => !Yii::app()->params['profile_user_can_edit']));?>
+		<?php echo $form->textField($user, 'title', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'readonly' => (!Yii::app()->params['profile_user_can_edit'] || !Yii::app()->params['profile_user_show_menu'])), null, array('field' => 2));?>
+		<?php echo $form->textField($user, 'first_name', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'readonly' => (!Yii::app()->params['profile_user_can_edit'] || !Yii::app()->params['profile_user_show_menu'])));?>
+		<?php echo $form->textField($user, 'last_name', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'readonly' => (!Yii::app()->params['profile_user_can_edit'] || !Yii::app()->params['profile_user_show_menu'])));?>
+		<?php echo $form->textField($user, 'email', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'readonly' => (!Yii::app()->params['profile_user_can_edit'] || !Yii::app()->params['profile_user_show_menu'])));?>
+		<?php echo $form->textField($user, 'qualifications', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'readonly' => (!Yii::app()->params['profile_user_can_edit'] || !Yii::app()->params['profile_user_show_menu'])));?>
 
 		<?php if (Yii::app()->params['profile_user_can_edit']) {?>
 			<div class="row field-row">

@@ -177,7 +177,13 @@ class WhiteboardController extends BaseDashboardController
             throw new CHttpException(400, 'Whiteboard is not editable '.$id);
         }
 
-        $whiteboard->comments = Yii::app()->request->getPost('comments');
+        $savable = array('comments', 'predicted_additional_equipment');
+        foreach($savable as $toSave){
+            if(Yii::app()->request->getPost($toSave, '')){
+                $whiteboard->$toSave = Yii::app()->request->getPost($toSave);
+            }
+        }
+
         $whiteboard->save();
 
         if(Yii::app()->request->isAjaxRequest){

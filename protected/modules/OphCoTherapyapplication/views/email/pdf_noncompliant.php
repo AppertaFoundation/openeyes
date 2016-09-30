@@ -22,7 +22,7 @@ $logoHelper = new LogoHelper();
 
 <div class="therapy-application-wrapper">
 	<div class="banner clearfix">
-		<?= $logoHelper->render() ?>
+		<?= $logoHelper->render('letter_head') ?>
 	</div>
 	<body>
 	<?php

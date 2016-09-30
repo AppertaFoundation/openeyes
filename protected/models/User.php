@@ -610,27 +610,28 @@ class User extends BaseActiveRecordVersioned
         return $this->find($crit);
     }
 
+    /**
+     * @return bool
+     */
     public function checkSignature()
     {
-        if($this->signature_file_id)
-        {
-            return true;
-        }else
-        {
-            return false;
-        }
+        return ($this->signature_file_id) ? true : false;
     }
 
     /**
      * @param $text
      * @param $key
-     * @return string
+     * @return string|null
      */
     protected function decryptSignature($text, $key)
     {
         $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
         $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-        return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($text), MCRYPT_MODE_ECB, $iv));
+        $decrypt = trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($text), MCRYPT_MODE_ECB, $iv));
+        if (Yii::app()->params['no_md5_verify']) {
+            return $decrypt;
+        }
+        return Helper::md5Verified($decrypt);
     }
 
 
@@ -651,16 +652,18 @@ class User extends BaseActiveRecordVersioned
         return $userUniqueCode->unique_code_id;
     }
 
-    public function getDecryptedSignature($signaturePin)
+    public function getDecryptedSignature($signature_pin)
     {
-        if($signaturePin)
+        if($signature_pin)
         {
             if($this->signature_file_id){
-                $signatureFile = ProtectedFile::model()->findByPk($this->signature_file_id);
-                $imageData = base64_decode($this->decryptSignature(file_get_contents ($signatureFile->getPath()), md5(md5($this->id).$this->generateUniqueCodeWithChecksum($this->getUniqueCode()).$signaturePin)));
-                if(strlen($imageData) > 100)
+                $signature_file = ProtectedFile::model()->findByPk($this->signature_file_id);
+                $image_data = base64_decode($this->decryptSignature(
+                    file_get_contents($signature_file->getPath()),
+                    md5(md5($this->id).$this->generateUniqueCodeWithChecksum($this->getUniqueCode()).$signature_pin)));
+                if(strlen($image_data) > 100)
                 {
-                    return $imageData;
+                    return $image_data;
                 }
             }
         }
