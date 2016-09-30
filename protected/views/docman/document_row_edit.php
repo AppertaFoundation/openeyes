@@ -32,7 +32,7 @@ $row_index = 0;
         }
         ?>
 
-    <td rowspan="<?php echo $row_count;?>">
+    <td>
         <?php
             if(isset($data['macro_id'])){
                 $macro_id = $data['macro_id'];
@@ -55,14 +55,17 @@ $row_index = 0;
                 <textarea rows="4" cols="10" name="address[]" id="address_<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>"><?php echo $data["to"]["address"]?></textarea>
             </td>
             <td>
-                <?php echo CHtml::dropDownList('contact_type[]', $data["to"]["contact_type"], array('Gp'=>'Gp','Patient'=>'Patient', 'DRSS'=>'DRSS', 'Legacy'=>'Legacy', 'Other'=>'Other'), array('empty' => '- Type -', 'nowrapper' => true, 'class' => 'full-width', 'id'=>'contact_type_'.$row_index, 'data-rowindex'=>$row_index));?>
+                <?php echo CHtml::dropDownList('contact_type[]', $data["to"]["contact_type"], array('Gp'=>'Gp','Patient'=>'Patient', 'DRSS'=>'DRSS', 'Legacy'=>'Legacy', 'Other'=>'Other'), array('empty' => '- Type -', 'nowrapper' => true, 'class' => 'full-width docman_contact_type', 'id'=>'contact_type_'.$row_index, 'data-rowindex'=>$row_index));?>
             </td>
-            <td>
+            <td class="docman_delivery_method">
                 <label><input type="checkbox" name="print[]"  <?php if($data["to"]["contact_type"] != 'Gp'){ echo 'checked';}?>>Print</label><br>
                 <?php if($data["to"]["contact_type"] == 'Gp'){?>
-                    <label><input type="checkbox" name="docman[]" data-rowindex="<?php echo $row_index?>" checked>DocMan</label><br>
+                    <label><input type="checkbox" class="docman_delivery" name="docman[]" data-rowindex="<?php echo $row_index?>" checked>DocMan</label><br>
                 <?php }?>
                 <!--<label><input type="checkbox" name="to_email" disabled>Email</label>!-->
+            </td>
+            <td>
+                <a class="remove_recipient removeItem" data-rowindex="<?php echo $row_index ?>">Remove</a>
             </td>
         <?php
         $row_index++;
@@ -75,6 +78,7 @@ $row_index = 0;
             //var_dump($row);
         ?>
             <tr class="new_entry_row" data-rowindex="<?php echo $row_index ?>">
+                <td></td>
                 <td>
                     <?php echo CHtml::dropDownList('target_type[]', 'CC', array('To'=>'To','CC'=>'CC'), array('empty' => '- To/CC -', 'nowrapper' => true, 'class' => 'full-width', 'data-rowindex'=>$row_index));?>
                 </td>
@@ -84,14 +88,17 @@ $row_index = 0;
                     <textarea rows="4" cols="10" name="address[]" id="address_<?php echo $row_index ?>" data-rowindex="<?php echo $row_index?>"><?php echo $row["address"]?></textarea>
                 </td>
                 <td>
-                    <?php echo CHtml::dropDownList('contact_type[]', $row["contact_type"], array('Gp'=>'Gp','Patient'=>'Patient', 'DRSS'=>'DRSS', 'Legacy'=>'Legacy', 'Other'=>'Other'), array('empty' => '- Type -', 'nowrapper' => true, 'class' => 'full-width', 'id'=>'contact_type_'.$row_index, 'data-rowindex'=>$row_index));?>
+                    <?php echo CHtml::dropDownList('contact_type[]', $row["contact_type"], array('Gp'=>'Gp','Patient'=>'Patient', 'DRSS'=>'DRSS', 'Legacy'=>'Legacy', 'Other'=>'Other'), array('empty' => '- Type -', 'nowrapper' => true, 'class' => 'full-width docman_contact_type', 'id'=>'contact_type_'.$row_index, 'data-rowindex'=>$row_index));?>
                 </td>
-                <td>
+                <td class="docman_delivery_method">
                     <label><input type="checkbox" name="print[]" <?php if($row["contact_type"] != 'Gp'){ echo 'checked';}?>>Print</label><br>
                     <?php if($row["contact_type"] == 'Gp'){?>
-                        <label><input type="checkbox" name="docman[]" data-rowindex="<?php echo $row_index?>" checked>DocMan</label><br>
+                        <label><input type="checkbox" class="docman_delivery" name="docman[]" data-rowindex="<?php echo $row_index?>" checked>DocMan</label><br>
                     <?php }?>
                     <!--<label><input type="checkbox" name="cc_email[]" disabled>Email</label>!-->
+                </td>
+                <td>
+                    <a class="remove_recipient removeItem" data-rowindex="<?php echo $row_index ?>">Remove</a>
                 </td>
             </tr>
         <?php
@@ -101,7 +108,7 @@ $row_index = 0;
 
     ?>
     <tr class="new_entry_row">
-        <td colspan="5">
+        <td colspan="6">
             <button class="button small secondary" id="docman_add_new_recipient">Add new recipient</button>
         </td>
     </tr>

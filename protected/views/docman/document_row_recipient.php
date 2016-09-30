@@ -16,11 +16,14 @@
         <textarea rows="4" cols="10" name="address[]" id="address_<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>"></textarea>
     </td>
     <td>
-        <?php echo CHtml::dropDownList('contact_type[]', '', array('Gp'=>'Gp','Patient'=>'Patient', 'DRSS'=>'DRSS', 'Legacy'=>'Legacy', 'Other'=>'Other'), array('empty' => '- Type -', 'nowrapper' => true, 'class' => 'full-width', 'id'=>'contact_type_'.$row_index, 'data-rowindex'=>$row_index));?>
+        <?php echo CHtml::dropDownList('contact_type[]', '', array('Gp'=>'Gp','Patient'=>'Patient', 'DRSS'=>'DRSS', 'Legacy'=>'Legacy', 'Other'=>'Other'), array('empty' => '- Type -', 'nowrapper' => true, 'class' => 'full-width docman_contact_type', 'id'=>'contact_type_'.$row_index, 'data-rowindex'=>$row_index));?>
+    </td>
+    <td class="docman_delivery_method">
+        <label><input type="checkbox" name="print[]" data-rowindex="<?php echo $row_index ?>" checked>Print</label><br>
+        <label><input type="checkbox" class="docman_delivery" name="docman[]" data-rowindex="<?php echo $row_index ?>">DocMan</label><br>
+        <!--<label><input type="checkbox" name="cc_email[]" disabled>Email</label>!-->
     </td>
     <td>
-        <label><input type="checkbox" name="print[]" data-rowindex="<?php echo $row_index ?>" checked>Print</label><br>
-        <label><input type="checkbox" name="docman[]" data-rowindex="<?php echo $row_index ?>">DocMan</label><br>
-        <!--<label><input type="checkbox" name="cc_email[]" disabled>Email</label>!-->
+        <a class="remove_recipient removeItem" data-rowindex="<?php echo $row_index ?>">Remove</a>
     </td>
 </tr>

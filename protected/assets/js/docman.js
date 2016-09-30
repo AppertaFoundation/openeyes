@@ -60,9 +60,6 @@ var docman = (function() {
 			}
 		},
 
-		removeDocumentRecipients: function (rowNum) {
-			
-		},
 
         addMacroHandler: function(){
             $('#macro_id').on('change', function(){ docman2.changeSelectedMacro($('#macro_id').val(), $('#macro_id'));});
@@ -73,6 +70,78 @@ var docman = (function() {
             $('.docman_recipient').on("change", function(event)
             {
                 docman.getRecipientData(event.target.value, event.target);;
+            });
+            $('.docman_contact_type').on("change", function ()
+            {
+                var rowindex = $(this).data("rowindex");
+                if($(this).val() == 'Other')
+                {
+
+                   $(this).hide();
+                   $('.docman_recipient').each(function()
+                   {
+                        if($(this).data("rowindex") == rowindex)
+                        {
+                            $(this).parent().html('<input type="text" name="contact_id[]"><textarea rows="4" cols="10" name="address[]" id="address_"'+rowindex+' data-rowindex="'+rowindex+'"></textarea>');
+                        }
+                   });
+                }
+                docman.setDeliveryMethods(rowindex);
+            });
+        },
+
+		addRemoveHandler: function(){
+			$('.remove_recipient').on("click", function(event)
+			{
+                event.target.closest('tr').remove();
+                //$('#dm_table tr:has(td[rowspan])').attr("rowspan", $(this).attr("rowspan")-1);
+			});
+		},
+
+		addHandlers: function(){
+			this.addMacroHandler();
+			this.addNewRecipientHandler();
+			this.addRemoveHandler();
+            this.addDocmanMethodMandatory();
+		},
+
+        addDocmanMethodMandatory: function()
+        {
+            $('.docman_delivery').on("click", function(e)
+            {
+                if(docman.checkRecipientType($(this).data("rowindex")) == 'Gp')
+                {
+                    $(this).prop('checked', true);
+                }
+            });
+        },
+
+        checkRecipientType: function(row)
+        {
+            var contact_type;
+            $('#dm_table tr').each(function() {
+                if ($(this).data("rowindex") == row) {
+                    contact_type = $(this).find('.docman_contact_type').val();
+                }
+            });
+            return contact_type;
+        },
+
+        setDeliveryMethods: function(row)
+        {
+            $('#dm_table tr').each(function()
+            {
+                if($(this).data("rowindex") == row)
+                {
+                    if($(this).find('.docman_contact_type').val() == 'Gp')
+                    {
+                        var delivery_methods = '<label><input type="checkbox" name="print[]">Print</label><br><label><input type="checkbox" name="docman[]" data-rowindex="0" checked="">DocMan</label>';
+                    }else
+                    {
+                        var delivery_methods = '<label><input type="checkbox" name="print[]" checked>Print</label>';
+                    }
+                    $(this).find('.docman_delivery_method').html(delivery_methods);
+                }
             });
         },
 
@@ -95,8 +164,7 @@ var docman = (function() {
                         });
                         //$('#dm_0').after(resp);
 						//console.log(resp);
-                        this.addMacroHandler();
-                        this.addNewRecipientHandler();
+						this.addHandlers();
                         //setTimeout(function(){ docman2.loadDocumentSet() }, 3000);
                     }
                 }
@@ -137,7 +205,6 @@ var docman = (function() {
 				context: this,
 				dataType: 'html',
 				'success': function(resp) {
-					console.log(resp);
 					$('#docman_block').html(resp);
                     $('#docman_add_new').on("click", docman_add_new);
                     $('#docman_add_new_recipient').on("click", function(e){
@@ -145,9 +212,7 @@ var docman = (function() {
                         docman.createNewRecipientEntry();
                     });
 
-                    this.addNewRecipientHandler();
-
-                    this.addMacroHandler();
+                    this.addHandlers();
                     if(macro_id > 0){
                         $('#macro_id').val(macro_id).change();
                     }
@@ -162,10 +227,10 @@ var docman = (function() {
 				context: this,
 				dataType: 'json',
 				'success': function(resp) {
-                    console.log(resp);
                     rowindex = $(element).data("rowindex");
                     $('#address_'+rowindex).val(resp.address);
                     $('#contact_type_'+rowindex).val(resp.contact_type);
+                    docman.setDeliveryMethods(rowindex);
 				}
 			});
 		},
@@ -203,6 +268,8 @@ var docman = (function() {
                     $('#dm_table tr:last').before(resp);
 					//this.addMacroHandler();
                     this.addNewRecipientHandler();
+                    this.addRemoveHandler();
+                    this.addDocmanMethodMandatory();
 				}
 			});
 		},

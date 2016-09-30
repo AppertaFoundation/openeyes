@@ -41,6 +41,15 @@ $layoutColumns = $form->layoutColumns;
 	</div>
 
 	<div class="row field-row">
+		<div class="large-<?php echo $layoutColumns['label'];?> column">
+			<label>Letter type:</label>
+		</div>
+		<div class="large-2 column end">
+			<?php echo $form->dropDownListNoPost('letter_type', array('1'=>'Clinic discharge letter', '2'=>'Other letter'), $element->letter_type, array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'full-width'))?>
+		</div>
+	</div>
+
+	<div class="row field-row">
 		<?php
 		$document_manager = new DocmanController('docman');
 		$macro_id = null;
@@ -50,15 +59,6 @@ $layoutColumns = $form->layoutColumns;
 		}
 		$document_manager->addTableToEvent(Yii::app()->getController()->event_type->name, array('macro'=> $macro_id));
 		?>
-	</div>
-
-	<div class="row field-row">
-		<div class="large-<?php echo $layoutColumns['label'];?> column">
-			<?php //echo $form->dropDownListNoPost('address_target', $element->address_targets, $element->address_target, array('empty' => '- Recipient -', 'nowrapper' => true, 'class' => 'full-width'))?>
-		</div>
-		<div class="large-6 column end">
-			<?php echo $form->hiddenField($element, 'address', array('rows' => 7, 'label' => false, 'nowrapper' => true), false, array('class' => 'address'))?>
-		</div>
 	</div>
 
 	<div class="row field-row">

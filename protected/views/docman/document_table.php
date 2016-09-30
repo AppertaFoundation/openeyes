@@ -41,6 +41,7 @@ function getCorrespondenceId($doc_instance_id)
         <th>Recipient/Address</th>
         <th>Role</th>
         <th>Delivery Method(s)</th>
+        <th>Actions</th>
     </tr>
     <?php
 
@@ -60,7 +61,7 @@ function getCorrespondenceId($doc_instance_id)
                         ?>
                         <tr>
                             <?php if ($line_count == 0) { ?>
-                                <td rowspan="<?php echo $row_count; ?>">
+                                <td>
                                     <?php echo getMacroName($doc_target["document_instance_id"]); ?>
                                     <?php if(!isset($data['correspondence_mode']))
                                         {?>
@@ -70,6 +71,8 @@ function getCorrespondenceId($doc_instance_id)
                                         }
                                     ?>
                                 </td>
+                            <?php }else{ ?>
+                                <td></td>
                             <?php } ?>
 
                             <td>

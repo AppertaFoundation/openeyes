@@ -22,8 +22,9 @@
 	<?php
         // Event actions
         if ($this->checkPrintAccess()) {
-            $this->event_actions[] = EventAction::button('Print', 'print', null, array('class' => 'small'));
-            $this->event_actions[] = EventAction::button('Print all', 'printall', null, array('id' => 'et_print_all', 'class' => 'small'));
+            $this->event_actions[] = EventAction::button('Print Draft', 'printdraft', null, array('class' => 'small'));
+            $this->event_actions[] = EventAction::button('Print and Send', 'print', null, array('class' => 'small'));
+            $this->event_actions[] = EventAction::button('Print all and Send all', 'printall', null, array('id' => 'et_print_all', 'class' => 'small'));
         }
     ?>
 
