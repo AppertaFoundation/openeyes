@@ -110,4 +110,109 @@ class OphTrOperationnote_API extends BaseAPI
 
         return $event_unique_code;
     }
+
+    /**
+     *  Get the last operation date
+     * @param Patient $patient
+     * @return false|string
+     */
+    public function getLastOperationDate(\Patient $patient)
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
+            $event = $this->getMostRecentEventInEpisode($episode->id, $event_type->id);
+            if (isset($event->event_date))
+            {
+                return date('d F Y', strtotime($event->event_date));
+            }
+        }
+    }
+
+    /**
+     *  Get the last operation's surgeon name
+     * @param Patient $patient
+     * @return false|string
+     */
+    public function getLastOperationSurgeonName(\Patient $patient)
+    {
+        $surgeon_name = '';
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            if ($surgeon_element = $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrOperationnote_Surgeon')) {
+                $surgeon_name = ($surgeon = User::model()->findByPk($surgeon_element->surgeon_id)) ? $surgeon->getFullNameAndTitle() : '';
+            }
+        }
+        return $surgeon_name;
+    }
+
+    /**
+     * Get the last operation's location
+     * @param Patient $patient
+     * @return string
+     */
+    public function getLastOperationLocation(\Patient $patient)
+    {
+        $site = '';
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            if ($site_element = $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrOperationnote_SiteTheatre'))
+            {
+                $site = $site_element->site->name;
+            }
+        }
+        return $site;
+    }
+
+    /**
+     * Get the last operation Incision Merdian
+     * @param Patient $patient
+     * @return string
+     */
+    public function getLastOperationIncisionMeridian(\Patient $patient)
+    {
+        $meridian = '';
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            if ($cataract_element = $this->getElementForLatestEventInEpisode($episode,
+                'Element_OphTrOperationnote_Cataract')
+            ) {
+                $meridian = $cataract_element->meridian ? $cataract_element->meridian . ' degrees' : '';
+            }
+        }
+        return $meridian;
+    }
+
+    /**
+     * Get the last operation Predicted Refraction
+     * @param Patient $patient
+     * @return string
+     */
+    public function getLastOperationPredictedRefraction(\Patient $patient)
+    {
+        $predicted_refraction = '';
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            if ($cataract_element = $this->getElementForLatestEventInEpisode($episode,
+                'Element_OphTrOperationnote_Cataract')
+            ) {
+                $predicted_refraction = $cataract_element->predicted_refraction ? $cataract_element->predicted_refraction : '';
+            }
+        }
+        return $predicted_refraction;
+    }
+
+    /**
+     * Get the last operation Details
+     * @param Patient $patient
+     * @return string
+     */
+    public function getLastOperationDetails(\Patient $patient)
+    {
+        $details = '';
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            if ($cataract_element = $this->getElementForLatestEventInEpisode($episode,
+                'Element_OphTrOperationnote_Cataract')
+            ) {
+                $details = $cataract_element->report2 ? $cataract_element->report2 : '';
+            }
+        }
+        return $details;
+    }
+
 }
