@@ -131,6 +131,7 @@ class NodExportController extends BaseController
             Yii::app()->getRequest()->sendFile($this->zipName, file_get_contents($this->exportPath . '/' . $this->zipName));
         } else {
         }
+        
     }
     
     /**
@@ -139,11 +140,14 @@ class NodExportController extends BaseController
     public function generateExport()
     {
 
+        // Concatinate sequence of statements to create and load working tables
         $query = $this->createAllTempTables();
         $query .= $this->populateAllTempTables();
 
+        // Execute all statements to create and populate working tables 
         Yii::app()->db->createCommand($query)->execute();
 
+        // Extract results from tables into csv files
         $this->getEpisodeDiabeticDiagnosis();
         $this->getEpisodeDrug();
         $this->getEpisodeBiometry();
@@ -168,8 +172,6 @@ class NodExportController extends BaseController
         $this->getPatientCviStatus();
         $this->getPatients();
         
-        // Write out extra description files
-        $this->getExtraCsvs();
         
         $this->clearAllTempTables();
 
@@ -180,7 +182,7 @@ class NodExportController extends BaseController
      *
      * @param string $dataQuery SQL query
      * @param string $filename
-     * @param string $episodeIdField
+     * @param string $dataFormatter
      * @return null|array
      */
     private function saveCSVfile($dataQuery, $filename, $dataFormatter = null)
@@ -269,29 +271,46 @@ class NodExportController extends BaseController
 				id  int(10) UNSIGNED NOT NULL UNIQUE,
 				KEY `tmp_treatment_ids_id` (`id`)
 			);
-			
-
-			DROP TEMPORARY TABLE IF EXISTS tmp_pathology_type;
-			CREATE TEMPORARY TABLE tmp_pathology_type (
-				`nodcode` INT(10) UNSIGNED NOT NULL,
-				`term` VARCHAR(100)
-			);
-			INSERT INTO tmp_pathology_type (`nodcode`, `term`)
-			VALUES
-				(0, 'None'),
-				(1, 'Age related macular degeneration'),
-				(2, 'Amblyopia'),
-				(4, 'Diabetic retinopathy'),
-				(5, 'Glaucoma'),
-				(7, 'Degenerative progressive high myopia'),
-				(8, 'Ocular Hypertension'),
-				(11, 'Stickler Syndrome'),
-				(12, 'Uveitis'),
-				(13, 'Pseudoexfoliation'),
-				(13, 'phacodonesis'),
-				(18, 'macular hole'),
-				(19, 'epiretinal membrane'),
-				(20, 'retinal detachment ');
+			       
+DROP TABLE IF EXISTS tmp_rco_nod_pathology_type;
+CREATE TABLE tmp_rco_nod_pathology_type
+AS
+SELECT 
+  d.id snomed_disorder_id
+, LOWER(d.term) lowcase_snomed_term
+, CASE LOWER(d.term) 
+  WHEN 'age related macular degeneration' THEN 1
+  WHEN 'amblyopia' THEN 2
+  /* no mapping 3 Corneal pathology */
+  WHEN 'diabetic retinopathy' THEN 4
+  WHEN 'glaucoma' THEN 5
+  WHEN 'glaucoma suspect' THEN 6
+  /* no mapping 7 High myopia */
+  WHEN 'ocular hypertension' THEN 8
+  /* no mapping 9 Inherited eye diseases */
+  /* no mapping 10 Optic nerve / CNS disease */
+  WHEN 'stickler syndrome' THEN 11
+  WHEN 'uveitis' THEN 12
+  WHEN 'pseudoexfoliation' THEN 13 /* multiple mappings */
+  WHEN 'phacodonesis' THEN 13 /* multiple mappings */
+  WHEN 'cataracta brunescens' THEN 14 /* cross check Brunescent / white cataract */
+  WHEN 'vitreous opacities' THEN 15 
+  /* no mapping 16 Other macular pathology */
+  WHEN 'retinal vascular disorder' THEN 17 /* cross check Other retinal vascular pathology */
+  WHEN 'macular hole' THEN 18 /* multiple cross check macular hole */
+  WHEN 'full thickness macular hole stage ii' THEN 18 /* multiple cross check macular hole */
+  WHEN 'full thickness macular hole stage iii' THEN 18 /* multiple cross check macular hole */
+  WHEN 'full thickness macular hole stage iv' THEN 18 /* multiple cross check macular hole */
+  WHEN 'epiretinal membrane' THEN 19
+  WHEN 'retinal detachment' THEN 20 /* cross check - potential others */
+  /* no mapping 21 Previous retinal detachment surgery */
+  /* no mapping 22 Vitrectomy */
+  /* no mapping 23 previous vitrectomy for FTMH / ERM / other reason */
+  /* no mapping 24 Previous laser refractive surgery */
+  /* no mapping 25 Previous trabeculectomy */
+  ELSE 26 /* Other */
+  END nod_id
+FROM disorder d;      
 
 			DROP TEMPORARY TABLE IF EXISTS tmp_iol_positions;
 			CREATE TEMPORARY TABLE tmp_iol_positions (
@@ -514,6 +533,7 @@ EOL;
         $query = '';
         
         $query .= $this->populateTmpRcoNodMainEventEpisodes();
+        $query .= $this->populateTmpRcoNodEpisodeOperation();
         $query .= $this->populateTmpRcoNodPatients();
         $query .= $this->populateTmpRcoNodEpisodePreOpAssessment();
         $query .= $this->populateTmpRcoNodPatientCVIStatus();
@@ -525,7 +545,6 @@ EOL;
         $query .= $this->populateTmpRcoNodEpisodeDiabeticDiagnosis();
         $query .= $this->populateTmpRcoNodPostOpComplication();
         $query .= $this->populateTmpRcoNodEpisodeOperationCoPathology();
-        $query .= $this->populateTmpRcoNodEpisodeOperation();
         $query .= $this->populateTmpRcoNodEpisodeTreatment();
         $query .= $this->populateTmpRcoNodEpisodeTreatmentCataract();
         $query .= $this->populateTmpRcoNodEpisodeOperationAnesthesia();
@@ -567,7 +586,7 @@ EOL;
                 DROP TEMPORARY TABLE IF EXISTS tmp_anesthesia_type;
                 DROP TEMPORARY TABLE IF EXISTS tmp_anaesthetic_delivery;
                 DROP TEMPORARY TABLE IF EXISTS tmp_iol_positions;
-                DROP TEMPORARY TABLE IF EXISTS tmp_pathology_type;
+                DROP TEMPORARY TABLE IF EXISTS tmp_rco_nod_pathology_type;
                 DROP TEMPORARY TABLE IF EXISTS tmp_operation_ids;
                 DROP TABLE IF EXISTS tmp_complication_type;
                 DROP TABLE IF EXISTS tmp_biometry_formula;
@@ -907,15 +926,18 @@ EOL;
     private function createTmpRcoNodMainEventEpisodes()
     {
         $query = <<<EOL
-            DROP TABLE IF EXISTS tmp_rco_nod_main_event_episodes_{$this->extractIdentifier};
-            CREATE TABLE tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} (
-                oe_event_id int(10) NOT NULL,
-                patient_id int(10) NOT NULL,
-                nod_episode_id int(10) NOT NULL,
-                nod_date date NOT NULL,
-                oe_event_type tinyint(2) NOT NULL,
-                PRIMARY KEY (oe_event_id)
-            );
+
+DROP TABLE IF EXISTS tmp_rco_nod_main_event_episodes_{$this->extractIdentifier};
+CREATE TABLE tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} (
+    oe_event_id int(10) NOT NULL,
+    patient_id int(10) NOT NULL,
+    nod_episode_id int(10) NOT NULL,
+    nod_date date NOT NULL,
+    oe_event_type_name VARCHAR(40) NOT NULL,
+    nod_episode_seq int(10),
+    PRIMARY KEY (oe_event_id)
+);
+
 EOL;
         return $query;
     }
@@ -926,63 +948,67 @@ EOL;
     private function populateTmpRcoNodMainEventEpisodes()
     {
         $query = <<<EOL
-                #Load main control table with ALL operation events
-                INSERT INTO tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} (
-                    oe_event_id,
-                    patient_id,
-                    nod_episode_id,
-                    nod_date,
-                    oe_event_type
-                )
-                SELECT
-                    event.id AS oe_event_id,
-                    episode.patient_id AS patient_id,
-                    event.id AS nod_episode_id,
-                    DATE(event.event_date) AS nod_date,
-                    event_type_id AS oe_event_type
-                FROM event
-                JOIN episode ON event.episode_id = episode.id
-                JOIN event_type ON event.event_type_id = event_type.id AND event_type.name = 'Operation Note'
-                WHERE event.deleted = 0;
-                
-                
-                #Load main control table with ALL examination events (using previously identified patients in control table)
-                INSERT INTO  tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} (
-                                oe_event_id,
-                                patient_id,
-                                nod_episode_id,
-                                nod_date,
-                                oe_event_type 
-                )
-                SELECT
-                        event.id AS oe_event_id,
-                        episode.patient_id AS patient_id,
-                        event.id AS nod_episode_id,
-                        DATE(event.event_date) AS nod_date,
-                        event.event_type_id AS oe_event_type
-                FROM event
-                JOIN episode ON event.episode_id = episode.id
-                WHERE  episode.patient_id IN (SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c)
-                AND event.event_type_id IN
-                    (
-                        SELECT event_type.id
-                        FROM event_type
-                        WHERE event_type.`name` IN ('Examination', 'Biometry', 'Prescription')
-                    )
-                AND event.deleted = 0;
+        
+# Load main control table with ALL operation events
+INSERT INTO tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} (
+  oe_event_id
+, patient_id
+, nod_episode_id
+, nod_date
+, oe_event_type_name
+, nod_episode_seq
+)
+SELECT
+  ev.id AS oe_event_id
+, ep.patient_id AS patient_id
+, ev.id AS nod_episode_id
+, DATE(ev.event_date) AS nod_date
+, et.name AS oe_event_type_name
+, 1 AS nod_episode_seq
+FROM event ev
+JOIN episode ep ON ev.episode_id = ep.id
+JOIN event_type et ON ev.event_type_id = et.id 
+WHERE et.name = 'Operation Note'
+AND DATE(ev.event_date) BETWEEN STR_TO_DATE('2015-09-01', '%Y-%m-%d') AND STR_TO_DATE('2016-08-31', '%Y-%m-%d')
+AND ev.deleted = 0;
+
+#Load main control table with ALL examination events (using previously identified patients in control table)
+INSERT INTO  tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} (
+  oe_event_id
+, patient_id
+, nod_episode_id
+, nod_date
+, oe_event_type_name
+, nod_episode_seq
+)
+SELECT
+  ev.id AS oe_event_id
+, ep.patient_id AS patient_id
+, ev.id AS nod_episode_id
+, DATE(ev.event_date) AS nod_date
+, et.name AS oe_event_type_name
+, 1 AS nod_episode_seq
+FROM event ev
+JOIN episode ep ON ev.episode_id = ep.id
+JOIN event_type et ON ev.event_type_id = et.id 
+WHERE ep.patient_id IN (SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c)
+AND et.name IN ('Examination', 'Biometry', 'Prescription')
+AND ev.deleted = 0;
+
 EOL;
+
         return $query;
     }
     
     private function getEpisode()
     {
         $query = <<<EOL
-                SELECT c.patient_id as PatientId, c.nod_episode_id as EpisodeId, c.nod_date as Date
+                SELECT c.patient_id as PatientId, c.nod_episode_id as EpisodeId, c.nod_date as Date, c.nod_episode_seq as Seq
                 FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
 EOL;
         $dataQuery = array(
             'query' => $query,
-            'header' => array('PatientId', 'EpisodeId', 'Date'),
+            'header' => array('PatientId', 'EpisodeId', 'Date', 'Seq'),
         );
 
         $this->saveCSVfile($dataQuery, 'Episode');
@@ -1015,60 +1041,50 @@ EOL;
     {
         $query = <<<EOL
                 
-                INSERT INTO tmp_rco_nod_EpisodePreOpAssessment_{$this->extractIdentifier} (
-                    oe_event_id,
-                    Eye,
-                    IsAbleToLieFlat,
-                    IsInabilityToCooperate
-                  )
-                SELECT 
-                    c.oe_event_id,
-                    'L' AS Eye,
-                    (SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 1 THEN 1 ELSE 0 END) AS IsAbleToLieFlat,
-                    (SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 4 THEN 1 ELSE 0 END) AS IsInabilityToCooperate
-
-                    /* Restriction: Start with control events */
-                    FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c 
-
-                    /* Join: Associated procedures, Implicit Restriction: Operations with procedures */
-                    JOIN et_ophtroperationnote_procedurelist pl ON pl.event_id = c.oe_event_id
-
-                    /* Outer Join: patient risks, Implicit Cartesian: all risk_ids  */
-                    LEFT OUTER JOIN patient_risk_assignment pr ON pr.patient_id = c.patient_id # specify LEFT OUTER JOIN syntax in full
-
-                    /* Restrict: LEFT/BOTH eyes */
-                    WHERE pl.eye_id IN (1, 3)
-
-                    /* Group by required as may have multiple procedures on eye */
-                    GROUP BY oe_event_id, Eye, IsAbleToLieFlat, IsInabilityToCooperate;
+INSERT INTO tmp_rco_nod_EpisodePreOpAssessment_{$this->extractIdentifier} (
+  oe_event_id,
+  Eye,
+  IsAbleToLieFlat,
+  IsInabilityToCooperate
+)
+SELECT 
+c.oe_event_id,
+CASE WHEN pl.eye_id IN (1, 3) THEN 'L' ELSE NULL END AS Eye, /* Belt+Brace with WHERE clause or NULL */
+(SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 1 THEN 1 ELSE 0 END) AS IsAbleToLieFlat,
+(SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 4 THEN 1 ELSE 0 END) AS IsInabilityToCooperate
+/* Restriction: Start with control events */
+FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c 
+/* Join: Associated procedures, Implicit Restriction: Operations with procedures */
+JOIN et_ophtroperationnote_procedurelist pl ON pl.event_id = c.oe_event_id
+/* Outer Join: patient risks, Implicit Cartesian: all risk_ids  */
+LEFT OUTER JOIN patient_risk_assignment pr ON pr.patient_id = c.patient_id # specify LEFT OUTER JOIN syntax in full
+/* Restrict: LEFT/BOTH eyes */
+WHERE pl.eye_id IN (1, 3)
+/* Group by required as may have multiple procedures on eye */
+GROUP BY oe_event_id, Eye, IsAbleToLieFlat, IsInabilityToCooperate;
                 
                 
-                INSERT INTO tmp_rco_nod_EpisodePreOpAssessment_{$this->extractIdentifier} (
-                    oe_event_id,
-                    Eye,
-                    IsAbleToLieFlat,
-                    IsInabilityToCooperate
-                  )
-                SELECT 
-                    c.oe_event_id,
-                    'R' AS Eye,
-                    (SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 1 THEN 1 ELSE 0 END) AS IsAbleToLieFlat,
-                    (SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 4 THEN 1 ELSE 0 END) AS IsInabilityToCooperate
-
-                    /* Restriction: Start with control events */
-                    FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c 
-
-                    /* Join: Associated procedures, Implicit Restriction: Operations with procedures */
-                    JOIN et_ophtroperationnote_procedurelist pl ON pl.event_id = c.oe_event_id
-
-                    /* Outer Join: patient risks, Implicit Cartesian: all risk_ids  */
-                    LEFT OUTER JOIN patient_risk_assignment pr ON pr.patient_id = c.patient_id # specify LEFT OUTER JOIN syntax in full
-
-                    /* Restrict: LEFT/BOTH eyes */
-                    WHERE pl.eye_id IN (2, 3)
-
-                    /* Group by required as may have multiple procedures on eye */
-                    GROUP BY oe_event_id, Eye, IsAbleToLieFlat, IsInabilityToCooperate;
+INSERT INTO tmp_rco_nod_EpisodePreOpAssessment_{$this->extractIdentifier} (
+  oe_event_id,
+  Eye,
+  IsAbleToLieFlat,
+  IsInabilityToCooperate
+)
+SELECT 
+c.oe_event_id,
+CASE WHEN pl.eye_id IN (2, 3) THEN 'R' ELSE NULL END AS Eye, /* Belt+Brace with WHERE clause or NULL */ 
+(SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 1 THEN 1 ELSE 0 END) AS IsAbleToLieFlat,
+(SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 4 THEN 1 ELSE 0 END) AS IsInabilityToCooperate
+/* Restriction: Start with control events */
+FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c 
+/* Join: Associated procedures, Implicit Restriction: Operations with procedures */
+JOIN et_ophtroperationnote_procedurelist pl ON pl.event_id = c.oe_event_id
+/* Outer Join: patient risks, Implicit Cartesian: all risk_ids  */
+LEFT OUTER JOIN patient_risk_assignment pr ON pr.patient_id = c.patient_id # specify LEFT OUTER JOIN syntax in full
+/* Restrict: LEFT/BOTH eyes */
+WHERE pl.eye_id IN (2, 3)
+/* Group by required as may have multiple procedures on eye */
+GROUP BY oe_event_id, Eye, IsAbleToLieFlat, IsInabilityToCooperate;
 EOL;
         return $query;
     }
@@ -1899,99 +1915,355 @@ EOL;
     private function populateTmpRcoNodEpisodeOperationCoPathology()
     {
         $query = <<<EOL
-            INSERT INTO tmp_rco_nod_EpisodeOperationCoPathology_{$this->extractIdentifier} (
-                oe_event_id,
-                Eye,
-                CoPathologyId
-            )
-            SELECT
-                c.oe_event_id AS OperationId,
-                (SELECT
-                        CASE
-                                WHEN (proc_list.eye_id = 3) THEN 'B'
-                                WHEN (proc_list.eye_id = 2) THEN 'R'
-                                WHEN (proc_list.eye_id = 1) THEN 'L'
-                            END
-                ) AS Eye,
-                IF(element_type.name = 'Trabeculectomy', 25,23)  AS CoPathologyId
 
-                FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
-                JOIN et_ophtroperationnote_procedurelist AS proc_list ON proc_list.event_id = c.oe_event_id
-                JOIN ophtroperationnote_procedurelist_procedure_assignment AS proc_list_asgn ON proc_list_asgn.procedurelist_id = proc_list.id
-                JOIN proc ON proc_list_asgn.proc_id = proc.id
-                JOIN ophtroperationnote_procedure_element ON ophtroperationnote_procedure_element.procedure_id = proc.id
+INSERT INTO tmp_rco_nod_EpisodeOperationCoPathology_{$this->extractIdentifier} (
+  oe_event_id
+, Eye
+, CoPathologyId
+)
+/* CoPathology: LEFT Previous Examination Diagnoses XX – on or prior to operation "Listed Date" */
+SELECT 
+  op.oe_event_id
+, CASE WHEN edl.eye_id IN (1, 3) THEN 'L' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
+, np.nod_id AS CoPathologyId
+/* Start from the operation note being reported */ 
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
+/* Join: all OE_epispodes relating to patient */
+JOIN episode ep
+  ON ep.patient_id = op.patient_id
+/* Join: all OE_event relating to patient */
+JOIN event ev
+  ON ev.episode_id = ep.id
+/* Join: Examination Diagnosis (container) */
+JOIN et_ophciexamination_diagnoses ed
+  ON ed.event_id = ev.id
+/* Join: Examination Diagnosis (list) */
+JOIN ophciexamination_diagnosis edl 
+  ON edl.element_diagnoses_id = ed.id
+/* Lookup: RCO NOD CoPathology Code from SnomedCT Diagnosis_id (LOJ used to cause error if values not mapped (but they should be above) */
+LEFT OUTER JOIN tmp_rco_nod_pathology_type np
+  ON np.snomed_disorder_id = edl.disorder_id
+/* Restrict: only OE_event occuring on or prior to operation "Listed Date" */
+WHERE ev.event_date <= op.ListedDate
+/* Restrict: Relevant Eye or Both as per SELECT CASE Clause */
+AND edl.eye_id IN (1, 3)
+UNION 
+/* CoPathology: RIGHT Previous Examination Diagnoses XX – on or prior to operation "Listed Date" */
+SELECT 
+  op.oe_event_id
+, CASE WHEN edl.eye_id IN (2, 3) THEN 'R' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
+, np.nod_id AS CoPathologyId
+/* Start from the operation note being reported */ 
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
+/* Join: all OE_epispodes relating to patient */
+JOIN episode ep
+  ON ep.patient_id = op.patient_id
+/* Join: all OE_event relating to patient */
+JOIN event ev
+  ON ev.episode_id = ep.id
+/* Join: Examination Diagnosis (container) */
+JOIN et_ophciexamination_diagnoses ed
+  ON ed.event_id = ev.id
+/* Join: Examination Diagnosis (list) */
+JOIN ophciexamination_diagnosis edl 
+  ON edl.element_diagnoses_id = ed.id
+/* Lookup: RCO NOD CoPathology Code from SnomedCT Diagnosis_id (LOJ used to cause error if values not mapped (but they should be above) */
+LEFT OUTER JOIN tmp_rco_nod_pathology_type np
+  ON np.snomed_disorder_id = edl.disorder_id
+/* Restrict: only OE_event occuring on or prior to operation "Listed Date" */
+WHERE ev.event_date <= op.ListedDate
+/* Restrict: Relevant Eye or Both as per SELECT CASE Clause */
+AND edl.eye_id IN (2, 3)
+UNION
+/* CoPathology: LEFT This Operation Booking Diagnosis*/
+SELECT 
+  op.oe_event_id
+, CASE WHEN pl.eye_id IN (1, 3) THEN 'L' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
+, np.nod_id AS CoPathologyId
+/* Start from the operation note being reported */ 
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
+/* Join: Look up PROCEDURE_LIST (containers)  */
+/* Cardinality: On investigation et_ophtroperationnote_procedurelist is a logical bucket for procedures on the */
+/* on the LEFT Eye or the RIGHT Eye. Therefore if procedures were carried our on both eyes then */
+/* two et_ophtroperationnote_procedurelist records would exist each with intersection records */
+JOIN et_ophtroperationnote_procedurelist pl
+    ON pl.event_id = op.oe_event_id
+/* Join: Get associated Booking Event DISORDERS - (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
+JOIN et_ophtroperationbooking_diagnosis opd
+    ON opd.event_id = pl.booking_event_id
+/* Lookup: RCO NOD CoPathology Code from SnomedCT Diagnosis_id (LOJ used to cause error if values not mapped (but they should be above) */
+LEFT OUTER JOIN tmp_rco_nod_pathology_type np
+  ON np.snomed_disorder_id = opd.disorder_id
+/* Restrict: Relevant Eye or Both as per SELECT CASE Clause */
+WHERE pl.eye_id IN (1, 3)
+UNION 
+/* CoPathology: RIGHT This Operation Booking Diagnosis*/
+SELECT 
+  op.oe_event_id
+, CASE WHEN pl.eye_id IN (2, 3) THEN 'R' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
+, np.nod_id AS CoPathologyId
+/* Start from the operation note being reported */ 
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
+/* Join: Look up PROCEDURE_LIST (containers)  */
+/* Cardinality: On investigation et_ophtroperationnote_procedurelist is a logical bucket for procedures on the */
+/* on the LEFT Eye or the RIGHT Eye. Therefore if procedures were carried our on both eyes then */
+/* two et_ophtroperationnote_procedurelist records would exist each with intersection records */
+JOIN et_ophtroperationnote_procedurelist pl
+    ON pl.event_id = op.oe_event_id
+/* Join: Get associated Booking Event DISORDERS - (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
+JOIN et_ophtroperationbooking_diagnosis opd
+    ON opd.event_id = pl.booking_event_id
+/* Lookup: RCO NOD CoPathology Code from SnomedCT Diagnosis_id (LOJ used to cause error if values not mapped (but they should be above) */
+LEFT OUTER JOIN tmp_rco_nod_pathology_type np
+  ON np.snomed_disorder_id = opd.disorder_id
+/* Restrict: Relevant Eye or Both as per SELECT CASE Clause */
+WHERE pl.eye_id IN (2, 3)
+UNION
+/* CoPathology: LEFT This OE_Episode Diagnosis*/
+SELECT 
+  op.oe_event_id
+, CASE WHEN ep.eye_id IN (1, 3) THEN 'L' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
+, np.nod_id AS CoPathologyId
+/* Start from the operation note being reported */ 
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
+/* Lookup: Event for this operation */
+JOIN event ev
+  ON ev.id = op.oe_event_id
+/* Lookup: THIS Episode for this operation */
+JOIN episode ep
+  ON ep.id = ev.episode_id
+/* Lookup: RCO NOD CoPathology Code from SnomedCT Diagnosis_id (LOJ used to cause error if values not mapped (but they should be above) */
+LEFT OUTER JOIN tmp_rco_nod_pathology_type np
+  ON np.snomed_disorder_id = ep.disorder_id
+/* Restrict: Relevant Eye or Both as per SELECT CASE Clause */
+WHERE ep.eye_id IN (1, 3)
+/* Restrict: Diagnosis made */
+AND ep.disorder_id IS NOT NULL
+UNION
+/* CoPathology: RIGHT This OE_Episode Diagnosis*/
+SELECT 
+  op.oe_event_id
+, CASE WHEN ep.eye_id IN (2, 3) THEN 'R' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
+, np.nod_id AS CoPathologyId
+/* Start from the operation note being reported */ 
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
+/* Lookup: Event for this operation */
+JOIN event ev
+  ON ev.id = op.oe_event_id
+/* Lookup: THIS Episode for this operation */
+JOIN episode ep
+  ON ep.id = ev.episode_id
+/* Lookup: RCO NOD CoPathology Code from SnomedCT Diagnosis_id (LOJ used to cause error if values not mapped (but they should be above) */
+LEFT OUTER JOIN tmp_rco_nod_pathology_type np
+  ON np.snomed_disorder_id = ep.disorder_id
+/* Restrict: Relevant Eye or Both as per SELECT CASE Clause */
+WHERE ep.eye_id IN (2, 3)
+/* Restrict: Diagnosis made */
+AND ep.disorder_id IS NOT NULL
+UNION
+/* CoPathology: LEFT Other Opthalmic + Systemic Diagnoses */
+SELECT 
+  op.oe_event_id
+, CASE WHEN sd.eye_id IN (1, 3) OR sd.eye_id IS NULL THEN 'L' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
+, np.nod_id AS CoPathologyId
+/* Start from the operation note being reported */ 
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
+/* Lookup: Other Opthalmic + Systemic Diagnoses (eye_id=null) */
+JOIN secondary_diagnosis sd
+  ON sd.patient_id = op.patient_id
+/* Lookup: RCO NOD CoPathology Code from SnomedCT Diagnosis_id (LOJ used to cause error if values not mapped (but they should be above) */
+LEFT OUTER JOIN tmp_rco_nod_pathology_type np
+  ON np.snomed_disorder_id = sd.disorder_id
+/* Restrict: Relevant Eye or Both as per SELECT CASE Clause */
+WHERE (sd.eye_id IN (1, 3) OR sd.eye_id IS NULL /* other Systemic Diagnoses*/)
+UNION
+/* CoPathology: LEFT Other Opthalmic + Systemic Diagnoses */
+SELECT 
+  op.oe_event_id
+, CASE WHEN sd.eye_id IN (2, 3) OR sd.eye_id IS NULL THEN 'R' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
+, np.nod_id AS CoPathologyId
+/* Start from the operation note being reported */ 
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
+/* Lookup: Other Opthalmic + Systemic Diagnoses (eye_id=null) */
+JOIN secondary_diagnosis sd
+  ON sd.patient_id = op.patient_id
+/* Lookup: RCO NOD CoPathology Code from SnomedCT Diagnosis_id (LOJ used to cause error if values not mapped (but they should be above) */
+LEFT OUTER JOIN tmp_rco_nod_pathology_type np
+  ON np.snomed_disorder_id = sd.disorder_id
+/* Restrict: Relevant Eye or Both as per SELECT CASE Clause */
+WHERE (sd.eye_id IN (2, 3) OR sd.eye_id IS NULL /* other Systemic Diagnoses*/)
+UNION
+/* CoPathology: LEFT-DIAGNOSIS-1 Previous Injection management – on or prior to operation "Listed Date" */
+SELECT 
+  op.oe_event_id
+, 'L' AS Eye 
+, np.nod_id AS CoPathologyId
+/* Start from the operation note being reported */ 
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
+/* Join: all OE_epispodes relating to patient */
+JOIN episode ep
+  ON ep.patient_id = op.patient_id
+/* Join: all OE_event relating to patient */
+JOIN event ev
+  ON ev.episode_id = ep.id
+/* Join: all Injection events relating to patient */
+JOIN et_ophciexamination_injectionmanagementcomplex inj
+  ON inj.event_id = ev.id
+/* Lookup: RCO NOD CoPathology Code from SnomedCT Diagnosis_id (hard join if diagnosis not made/NULL) */
+JOIN tmp_rco_nod_pathology_type np
+  ON np.snomed_disorder_id = inj.left_diagnosis1_id
+/* Restrict: only OE_event occuring on or prior to operation "Listed Date" */
+WHERE ev.event_date <= op.ListedDate
+UNION
+/* CoPathology: LEFT-DIAGNOSIS-2 Previous Injection management – on or prior to operation "Listed Date" */
+SELECT 
+  op.oe_event_id
+, 'L' AS Eye 
+, np.nod_id AS CoPathologyId
+/* Start from the operation note being reported */ 
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
+/* Join: all OE_epispodes relating to patient */
+JOIN episode ep
+  ON ep.patient_id = op.patient_id
+/* Join: all OE_event relating to patient */
+JOIN event ev
+  ON ev.episode_id = ep.id
+/* Join: all Injection events relating to patient */
+JOIN et_ophciexamination_injectionmanagementcomplex inj
+  ON inj.event_id = ev.id
+/* Lookup: RCO NOD CoPathology Code from SnomedCT Diagnosis_id (hard join if diagnosis not made/NULL) */
+JOIN tmp_rco_nod_pathology_type np
+  ON np.snomed_disorder_id = inj.left_diagnosis2_id
+/* Restrict: only OE_event occuring on or prior to operation "Listed Date" */
+WHERE ev.event_date <= op.ListedDate
+UNION
+/* CoPathology: RIGHT-DIAGNOSIS-1 Previous Injection management – on or prior to operation "Listed Date" */
+SELECT 
+  op.oe_event_id
+, 'R' AS Eye 
+, np.nod_id AS CoPathologyId
+/* Start from the operation note being reported */ 
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
+/* Join: all OE_epispodes relating to patient */
+JOIN episode ep
+  ON ep.patient_id = op.patient_id
+/* Join: all OE_event relating to patient */
+JOIN event ev
+  ON ev.episode_id = ep.id
+/* Join: all Injection events relating to patient */
+JOIN et_ophciexamination_injectionmanagementcomplex inj
+  ON inj.event_id = ev.id
+/* Lookup: RCO NOD CoPathology Code from SnomedCT Diagnosis_id (hard join if diagnosis not made/NULL) */
+JOIN tmp_rco_nod_pathology_type np
+  ON np.snomed_disorder_id = inj.right_diagnosis1_id
+/* Restrict: only OE_event occuring on or prior to operation "Listed Date" */
+WHERE ev.event_date <= op.ListedDate
+UNION
+/* CoPathology: RIGHT-DIAGNOSIS-2 Previous Injection management – on or prior to operation "Listed Date" */
+SELECT 
+  op.oe_event_id
+, 'R' AS Eye 
+, np.nod_id AS CoPathologyId
+/* Start from the operation note being reported */ 
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
+/* Join: all OE_epispodes relating to patient */
+JOIN episode ep
+  ON ep.patient_id = op.patient_id
+/* Join: all OE_event relating to patient */
+JOIN event ev
+  ON ev.episode_id = ep.id
+/* Join: all Injection events relating to patient */
+JOIN et_ophciexamination_injectionmanagementcomplex inj
+  ON inj.event_id = ev.id
+/* Lookup: RCO NOD CoPathology Code from SnomedCT Diagnosis_id (hard join if diagnosis not made/NULL) */
+JOIN tmp_rco_nod_pathology_type np
+  ON np.snomed_disorder_id = inj.right_diagnosis2_id
+/* Restrict: only OE_event occuring on or prior to operation "Listed Date" */
+WHERE ev.event_date <= op.ListedDate
+UNION
+/* Op-Procedures: LEFT 23 (previous vitrectomy for FTMH / ERM / other reason) or 25 (Previous trabeculectomy) */
+SELECT
+  c.oe_event_id AS OperationId
+, CASE WHEN proc_list.eye_id IN (1, 3) THEN 'L' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
+, IF(element_type.name = 'Trabeculectomy', 25, 23)  AS CoPathologyId
+FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
+JOIN et_ophtroperationnote_procedurelist AS proc_list ON proc_list.event_id = c.oe_event_id
+JOIN ophtroperationnote_procedurelist_procedure_assignment AS proc_list_asgn ON proc_list_asgn.procedurelist_id = proc_list.id
+JOIN proc ON proc_list_asgn.proc_id = proc.id
+JOIN ophtroperationnote_procedure_element ON ophtroperationnote_procedure_element.procedure_id = proc.id
+JOIN element_type ON ophtroperationnote_procedure_element.element_type_id = element_type.id
+WHERE element_type.name IN ('Vitrectomy', 'Trabeculectomy')
+/* Restrict: Relevant Eye or Both as per SELECT CASE Clause */
+AND proc_list.eye_id IN (1, 3)                    
+UNION
+/* Op-Procedures: RIGHT 23 (previous vitrectomy for FTMH / ERM / other reason) or 25 (Previous trabeculectomy) */
+SELECT
+  c.oe_event_id AS OperationId
+, CASE WHEN proc_list.eye_id IN (2, 3) THEN 'R' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
+, IF(element_type.name = 'Trabeculectomy', 25, 23)  AS CoPathologyId
+FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
+JOIN et_ophtroperationnote_procedurelist AS proc_list ON proc_list.event_id = c.oe_event_id
+JOIN ophtroperationnote_procedurelist_procedure_assignment AS proc_list_asgn ON proc_list_asgn.procedurelist_id = proc_list.id
+JOIN proc ON proc_list_asgn.proc_id = proc.id
+JOIN ophtroperationnote_procedure_element ON ophtroperationnote_procedure_element.procedure_id = proc.id
+JOIN element_type ON ophtroperationnote_procedure_element.element_type_id = element_type.id
+WHERE element_type.name IN ('Vitrectomy', 'Trabeculectomy')
+/* Restrict: Relevant Eye or Both as per SELECT CASE Clause */
+AND proc_list.eye_id IN (2, 3)                    
+UNION
+/* Op-Procedures: LEFT 21 (Previous retinal detachment surgery) */
+SELECT
+  c.oe_event_id AS OperationId
+, CASE WHEN proc_list.eye_id IN (1, 3) THEN 'L' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
+, 21 AS CoPathologyId
+FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
+JOIN et_ophtroperationnote_procedurelist AS proc_list ON proc_list.event_id = c.oe_event_id
+JOIN ophtroperationnote_procedurelist_procedure_assignment AS proc_list_asgn ON proc_list_asgn.procedurelist_id = proc_list.id
+JOIN proc ON proc_list_asgn.proc_id = proc.id
+JOIN procedure_benefit ON procedure_benefit.proc_id = proc.id
+JOIN benefit ON procedure_benefit.benefit_id = benefit.id
+WHERE benefit.name = 'to prevent retinal detachment'
+/* Restrict: Relevant Eye or Both as per SELECT CASE Clause */
+AND proc_list.eye_id IN (1, 3)  
+UNION
+/* Op-Procedures: RIGHT 21 (Previous retinal detachment surgery) */
+SELECT
+  c.oe_event_id AS OperationId
+, CASE WHEN proc_list.eye_id IN (2, 3) THEN 'R' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
+, 21 AS CoPathologyId
+FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
+JOIN et_ophtroperationnote_procedurelist AS proc_list ON proc_list.event_id = c.oe_event_id
+JOIN ophtroperationnote_procedurelist_procedure_assignment AS proc_list_asgn ON proc_list_asgn.procedurelist_id = proc_list.id
+JOIN proc ON proc_list_asgn.proc_id = proc.id
+JOIN procedure_benefit ON procedure_benefit.proc_id = proc.id
+JOIN benefit ON procedure_benefit.benefit_id = benefit.id
+WHERE benefit.name = 'to prevent retinal detachment'
+/* Restrict: Relevant Eye or Both as per SELECT CASE Clause */
+AND proc_list.eye_id IN (2, 3)  
+UNION         
+/* Examination: LEFT 14 Brunescent / white cataract */
+SELECT 
+  c.oe_event_id
+, 'L' AS Eye
+, 14 AS CoPathologyId
+FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
+JOIN et_ophciexamination_anteriorsegment a
+  ON a.event_id = c.oe_event_id
+WHERE (left_cortical_id = 4 OR left_nuclear_id = 4)
+UNION
+/* Examination: RIGHT 14 Brunescent / white cataract */
+SELECT 
+  c.oe_event_id
+, 'R' AS Eye
+, 14 AS CoPathologyId
+FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
+JOIN et_ophciexamination_anteriorsegment a
+  ON a.event_id = c.oe_event_id
+WHERE (right_cortical_id = 4 OR right_nuclear_id = 4);
 
-                JOIN element_type ON ophtroperationnote_procedure_element.element_type_id = element_type.id
-                WHERE
-                element_type.name IN ('Vitrectomy', 'Trabeculectomy');
-                    
+    
+    
             
-            
-            INSERT INTO tmp_rco_nod_EpisodeOperationCoPathology_{$this->extractIdentifier} (
-                `oe_event_id`,
-                `Eye`,
-                `CoPathologyId`
-              ) 		
-            SELECT
-            c.oe_event_id AS OperationId,
-            (SELECT
-                CASE
-                        WHEN (proc_list.eye_id = 3) THEN 'B'
-                        WHEN (proc_list.eye_id = 2) THEN 'R'
-                        WHEN (proc_list.eye_id = 1) THEN 'L'
-                    END
-            ) AS Eye,
-            21 AS CoPathologyId
-            FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
-
-            JOIN `et_ophtroperationnote_procedurelist` AS proc_list ON proc_list.event_id = c.oe_event_id
-            JOIN `ophtroperationnote_procedurelist_procedure_assignment` AS proc_list_asgn ON proc_list_asgn.procedurelist_id = proc_list.id
-            JOIN proc ON proc_list_asgn.proc_id = proc.id
-            JOIN procedure_benefit ON procedure_benefit.proc_id = proc.id
-            JOIN benefit ON procedure_benefit.benefit_id = benefit.id
-	    
-            WHERE benefit.`name` = 'to prevent retinal detachment';
-                
-            INSERT INTO tmp_rco_nod_EpisodeOperationCoPathology_{$this->extractIdentifier} (
-                `oe_event_id`,
-                `Eye`,
-                `CoPathologyId`
-            ) 
-            SELECT 
-                c.oe_event_id,
-                (SELECT CASE
-                        WHEN (left_cortical_id = 4 OR left_nuclear_id = 4) AND (right_cortical_id = 4 OR right_nuclear_id = 4) THEN 'B'
-                        WHEN (left_cortical_id = 4 OR left_nuclear_id = 4) THEN 'L'
-                        WHEN (right_cortical_id = 4 OR right_nuclear_id = 4) THEN 'R'
-                        END
-                ) AS Eye,
-                14 AS CoPathologyId
-
-                FROM et_ophciexamination_anteriorsegment a
-                JOIN tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c ON c.oe_event_id = a.event_id
-                HAVING Eye IS NOT NULL;
-                
-                
-                INSERT INTO tmp_rco_nod_EpisodeOperationCoPathology_{$this->extractIdentifier} (
-                    oe_event_id,
-                    Eye,
-                    CoPathologyId
-                ) 
-                SELECT
-                    c.oe_event_id,
-                    (SELECT CASE
-                            WHEN secondary_diagnosis.eye_id = 1 THEN 'L'
-                            WHEN secondary_diagnosis.eye_id = 2 THEN 'R'
-                            WHEN secondary_diagnosis.eye_id = 3 THEN 'B'
-                    END
-                    ) AS Eye,
-                    tmp_pathology_type.nodcode AS CoPathologyId
-
-                FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
-
-                JOIN secondary_diagnosis ON c.patient_id = secondary_diagnosis.patient_id
-                JOIN disorder ON  secondary_diagnosis.disorder_id = disorder.id
-                JOIN tmp_pathology_type ON LOWER(disorder.term) = LOWER(tmp_pathology_type.term);
 EOL;
         return $query;    
     }
@@ -2159,9 +2431,11 @@ EOL;
     private function getEpisodeTreatmentCataract()
     {
         $query = <<<EOL
-            SELECT  tc.TreatmentId, tc.IsFirstEye, tc.PreparationDrugId, tc.IncisionSiteId, tc.IncisionLengthId, tc.IncisionPlanesId,
-                    tc.IncisionMeridean, tc.PupilSizeId, tc.IOLPositionId, tc.IOLModelId, tc.IOLPower, tc.PredictedPostOperativeRefraction, tc.WoundClosureId
-            FROM tmp_rco_nod_EpisodeTreatmentCataract_{$this->extractIdentifier} tc
+        
+SELECT  tc.TreatmentId, tc.IsFirstEye, tc.PreparationDrugId, tc.IncisionSiteId, tc.IncisionLengthId, tc.IncisionPlanesId,
+        tc.IncisionMeridean, tc.PupilSizeId, tc.IOLPositionId, tc.IOLModelId, tc.IOLPower, tc.PredictedPostOperativeRefraction, tc.WoundClosureId
+FROM tmp_rco_nod_EpisodeTreatmentCataract_{$this->extractIdentifier} tc
+
 EOL;
         
         $dataQuery = array(
@@ -2182,7 +2456,7 @@ EOL;
                 'WoundClosureId',
             ),
         );
-
+        
         return $this->saveCSVfile($dataQuery, 'EpisodeTreatmentCataract');
 
     }
@@ -2325,7 +2599,7 @@ EOL;
                     FROM ophtroperationnote_procedurelist_procedure_assignment os
                 ) AS v
                 /* Restrict: Only OPERATION NOTE type events */
-                WHERE c.oe_event_type = 4 #'Operation Note'
+                WHERE c.oe_event_type_name = 'Operation Note'
                 /* Restrict: LEFT or BOTH eyes only */
                 AND pl.eye_id IN (1, 3) /* 1 = LEFT EYE, 3 = BOTH EYES */
             
@@ -2359,7 +2633,7 @@ EOL;
                 LEFT OUTER JOIN proc p 
                   ON p.id = pa.proc_id
                 /* Restrict: Only OPERATION NOTE type events */
-                WHERE c.oe_event_type = 4 #'Operation Note'
+                WHERE c.oe_event_type_name = 'Operation Note'
                 /* Restrict: RIGHT or BOTH eyes only */
                 AND pl.eye_id IN (2, 3); /* 2 = RIGHT EYE, 3 = BOTH EYES */
             
@@ -2372,15 +2646,30 @@ EOL;
     private function getEpisodeTreatment()
     {
         $query = <<<EOL
-                SELECT t.TreatmentId, t.OperationId, t.Eye, t.TreatmentTypeId, t.TreatmentTypeDescription
-                FROM tmp_rco_nod_EpisodeTreatment_{$this->extractIdentifier} t
+        
+SELECT t.TreatmentId, t.OperationId, t.Eye, t.TreatmentTypeId, t.TreatmentTypeDescription
+FROM tmp_rco_nod_EpisodeTreatment_{$this->extractIdentifier} t
+
 EOL;
         $dataQuery = array(
             'query' => $query,
             'header' => array('TreatmentId', 'OperationId', 'Eye', 'TreatmentTypeId', 'TreatmentTypeDescription'),
         );
+        
+        $this->saveCSVfile($dataQuery, 'EpisodeTreatment');
+        
+        $query = <<<EOL
+        
+SELECT DISTINCT t.TreatmentTypeId, t.TreatmentTypeDescription
+FROM tmp_rco_nod_EpisodeTreatment_{$this->extractIdentifier} t
 
-        return $this->saveCSVfile($dataQuery, 'EpisodeTreatment');
+EOL;
+        $dataQuery = array(
+            'query' => $query,
+            'header' => array('TreatmentTypeId', 'TreatmentTypeDescription'),
+        );
+        
+        return $this->saveCSVfile($dataQuery, 'TreatmentCodeLookup');
     }
     
     /********** EpisodeOperationIndication **********/
@@ -2466,15 +2755,30 @@ EOL;
     private function getEpisodeOperationIndication()
     {
         $query = <<<EOL
-                SELECT i.OperationId, i.Eye, i.IndicationId, i.IndicationDescription
-                FROM tmp_rco_nod_EpisodeOperationIndication_{$this->extractIdentifier} i
+        
+SELECT i.OperationId, i.Eye, i.IndicationId, i.IndicationDescription
+FROM tmp_rco_nod_EpisodeOperationIndication_{$this->extractIdentifier} i
+
 EOL;
         $dataQuery = array(
             'query' => $query,
             'header' => array('OperationId', 'Eye', 'IndicationId', 'IndicationDescription'),
         );
 
-        return $this->saveCSVfile($dataQuery, 'EpisodeOperationIndication');
+        $this->saveCSVfile($dataQuery, 'EpisodeOperationIndication');
+
+        $query = <<<EOL
+        
+SELECT DISTINCT i.IndicationId, i.IndicationDescription
+FROM tmp_rco_nod_EpisodeOperationIndication_{$this->extractIdentifier} i
+
+EOL;
+        $dataQuery = array(
+            'query' => $query,
+            'header' => array('IndicationId', 'IndicationDescription'),
+        );
+        
+        return $this->saveCSVfile($dataQuery, 'OperationIndicationCodeLookup');
 
     }
     
@@ -2595,16 +2899,32 @@ EOL;
     private function getEpisodeOperationComplication()
     {
         $query = <<<EOL
-                SELECT oc.OperationId, oc.Eye, oc.ComplicationTypeId, oc.ComplicationTypeDescription
-                FROM tmp_rco_nod_EpisodeOperationComplication_{$this->extractIdentifier} oc
+        
+SELECT oc.OperationId, oc.Eye, oc.ComplicationTypeId, oc.ComplicationTypeDescription
+FROM tmp_rco_nod_EpisodeOperationComplication_{$this->extractIdentifier} oc
+
 EOL;
                 
         $dataQuery = array(
             'query' => $query,
             'header' => array('OperationId', 'Eye', 'ComplicationTypeId', 'ComplicationTypeDescription'),
         );
+        
+        $this->saveCSVfile($dataQuery, 'EpisodeOperationComplication');
+        
+        $query = <<<EOL
+        
+SELECT DISTINCT oc.ComplicationTypeId, oc.ComplicationTypeDescription
+FROM tmp_rco_nod_EpisodeOperationComplication_{$this->extractIdentifier} oc
 
-        return $this->saveCSVfile($dataQuery, 'EpisodeOperationComplication');
+EOL;
+  
+        $dataQuery = array(
+            'query' => $query,
+            'header' => array('ComplicationTypeId', 'ComplicationTypeDescription'),
+        );
+        
+        return $this->saveCSVfile($dataQuery, 'OperationComplicationCodeLookup');
     }
     
     /********** end of EpisodeOperationComplication **********/
@@ -2618,21 +2938,24 @@ EOL;
     private function createTmpRcoNodEpisodeOperation()
     {
         $query = <<<EOL
-                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier};
-                CREATE TABLE tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} (
-                    oe_event_id int(10) NOT NULL,
-                    OperationId int(10) NOT NULL,
-                    Description text,
-                    IsHypertensive VARCHAR(1) DEFAULT NULL,
-                    ListedDate date NOT NULL,
-                    SurgeonId int(10) NOT NULL,
-                    SurgeonGradeId int(11) DEFAULT NULL,
-                    AssistantId varchar(10) DEFAULT NULL,
-                    AssistantGradeId varchar(10) DEFAULT NULL,
-                    ConsultantId varchar(10) DEFAULT NULL,
-                    PRIMARY KEY (oe_event_id),
-                    UNIQUE KEY OperationId (OperationId)
-                );
+        
+DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier};
+CREATE TABLE tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} (
+  oe_event_id int(10) NOT NULL
+, patient_id int(10) NOT NULL
+, OperationId int(10) NOT NULL
+, Description text
+, IsHypertensive VARCHAR(1) DEFAULT NULL
+, ListedDate date NOT NULL
+, SurgeonId int(10) NOT NULL
+, SurgeonGradeId int(11) DEFAULT NULL
+, AssistantId varchar(10) DEFAULT NULL
+, AssistantGradeId varchar(10) DEFAULT NULL
+, ConsultantId varchar(10) DEFAULT NULL
+, PRIMARY KEY (oe_event_id)
+, UNIQUE KEY OperationId (OperationId)
+);
+
 EOL;
         return $query;
     }
@@ -2640,44 +2963,43 @@ EOL;
     private function populateTmpRcoNodEpisodeOperation()
     {
         $query = <<<EOL
-            INSERT INTO tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} (
-                oe_event_id,
-                OperationId,
-                Description,
-                IsHypertensive,
-                ListedDate,
-                SurgeonId,
-                SurgeonGradeId,
-                AssistantId,
-                AssistantGradeId,
-                ConsultantId
-            )
-            SELECT
-                c.oe_event_id, c.oe_event_id AS OperationId,
-               '' AS Description, /* TODO (not required for minimal data set) mapping: et_ophtroperationnote_procedurelist.id-> ophtroperationnote_procedurelist_procedure_assignment.proc_id->proc.snomed_term (semi-colon separated) */
-               '' AS IsHypertensive, /* TODO (not required for minimal data set) Toby Bisco said not currently in OE */
-               DATE(c.nod_date) AS ListedDate, /* TODO (not required for minimal data set) the specified mapping may not be correct */
-               s.surgeon_id AS SurgeonId,
-               su.doctor_grade_id AS SurgeonGradeId,
-               s.assistant_id AS AssistantId,
-               au.doctor_grade_id AS AssistantGradeId,
-               s.supervising_surgeon_id AS ConsultantId /* TODO (not required for minimal data set) but mapping not fully implemented */
-              /* Restriction: Start with control events */
-
-              FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
-
-              /* Join: Look up Operation Note SURGEON information */
-              /* LOOOOOOOOOOOOOOK TODO CHECK ASSUMPTION: only one et_ophtroperationnote_surgeon per operation note */
-              LEFT OUTER JOIN et_ophtroperationnote_surgeon s ON s.event_id = c.oe_event_id
-
-              /* Join: Look up SURGEON user information (LOJ used to return nulls if data problems (as opposed to loosing parent rows) */
-              LEFT OUTER JOIN user su ON s.surgeon_id = su.id
-
-              /* Join: Look up ASSISTANT user information (LOJ used to return nulls if data problems (as opposed to loosing parent rows) */
-              LEFT OUTER JOIN user au ON s.assistant_id = au.id
-
-              /* Restrict: Only OPERATION NOTE type events */
-              WHERE c.oe_event_type = 4; #'Operation Note';
+        
+INSERT INTO tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} (
+  oe_event_id
+, patient_id
+, OperationId
+, Description
+, IsHypertensive
+, ListedDate
+, SurgeonId
+, SurgeonGradeId
+, AssistantId
+, AssistantGradeId
+, ConsultantId
+)
+SELECT
+  c.oe_event_id
+, c.patient_id
+, c.oe_event_id AS OperationId
+, '' AS Description /* TODO (not required for minimal data set) mapping: et_ophtroperationnote_procedurelist.id-> ophtroperationnote_procedurelist_procedure_assignment.proc_id->proc.snomed_term (semi-colon separated) */
+, '' AS IsHypertensive /* TODO (not required for minimal data set) Toby Bisco said not currently in OE */
+, DATE(c.nod_date) AS ListedDate /* TODO (not required for minimal data set) the specified mapping may not be correct */
+, s.surgeon_id AS SurgeonId
+, su.doctor_grade_id AS SurgeonGradeId
+, s.assistant_id AS AssistantId
+, au.doctor_grade_id AS AssistantGradeId
+, s.supervising_surgeon_id AS ConsultantId /* TODO (not required for minimal data set) but mapping not fully implemented */
+/* Restriction: Start with control events */
+FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
+/* Join: Look up Operation Note SURGEON information */
+/* LOOOOOOOOOOOOOOK TODO CHECK ASSUMPTION: only one et_ophtroperationnote_surgeon per operation note */
+LEFT OUTER JOIN et_ophtroperationnote_surgeon s ON s.event_id = c.oe_event_id
+/* Join: Look up SURGEON user information (LOJ used to return nulls if data problems (as opposed to loosing parent rows) */
+LEFT OUTER JOIN user su ON s.surgeon_id = su.id
+/* Join: Look up ASSISTANT user information (LOJ used to return nulls if data problems (as opposed to loosing parent rows) */
+LEFT OUTER JOIN user au ON s.assistant_id = au.id
+/* Restrict: Only OPERATION NOTE type events */
+WHERE c.oe_event_type_name = 'Operation Note';    
               
 EOL;
         return $query;
@@ -2719,9 +3041,9 @@ EOL;
                 Eye CHAR(1) NOT NULL,
                 NotationRecordedId INT(10) NOT NULL,
                 BestMeasure VARCHAR(255) NOT NULL,
-                Unaided INT(10) DEFAULT NULL,
-                Pinhole INT(10) DEFAULT NULL,
-                BestCorrected INT(10) DEFAULT NULL
+                Unaided VARCHAR(255) DEFAULT NULL,
+                Pinhole VARCHAR(255) DEFAULT NULL,
+                BestCorrected VARCHAR(255) DEFAULT NULL
             );
 EOL;
         return $query;
@@ -2730,88 +3052,88 @@ EOL;
     private function populateTmpRcoNodEpisodeVisualAcuity()
     {
         $query = <<<EOL
-            INSERT INTO tmp_rco_nod_EpisodeVisualAcuity_{$this->extractIdentifier} (
-                oe_event_id,
-                Eye,
-                NotationRecordedId,
-                BestMeasure,
-                Unaided,
-                Pinhole,
-                BestCorrected
-              ) 
-              /* Get best Visual Acuity for examination for each Method: Unaided Aided Pinhole */
-              SELECT
-                  bv.oe_event_id 
-                , bv.eye
-                , bv.orginal_unit_id AS NotationRecordedId /* TODO this needs a mapping from OE to NOD */
-                , IFNULL(CASE u_max_all.value WHEN 'CF' THEN 2.10 WHEN 'HM' THEN 2.40 WHEN 'PL' THEN 2.70 WHEN 'NPL' THEN 3.00 ELSE u_max_all.value END, '') AS BestMeasure
-                , IFNULL(CASE u_max_unaided.value WHEN 'CF' THEN 2.10 WHEN 'HM' THEN 2.40 WHEN 'PL' THEN 2.70 WHEN 'NPL' THEN 3.00 ELSE u_max_unaided.value END, '') AS Unaided
-                , IFNULL(CASE u_max_pinhole.value WHEN 'CF' THEN 2.10 WHEN 'HM' THEN 2.40 WHEN 'PL' THEN 2.70 WHEN 'NPL' THEN 3.00 ELSE u_max_pinhole.value END, '') AS Pinhole
-                , IFNULL(CASE u_max_aided.value WHEN 'CF' THEN 2.10 WHEN 'HM' THEN 2.40 WHEN 'PL' THEN 2.70 WHEN 'NPL' THEN 3.00 ELSE u_max_aided.value END, '') AS BestCorrected
-            FROM
-            (
-                    SELECT 
-                      v.oe_event_id
-                    , v.orginal_unit_id
-              , v.eye
-                    , MAX(IF(v.method IN ('Unaided','Aided','Pinhole'), v.reading_base_value, NULL)) AS max_all_base_value /* Higher base_value is better */
-                    , MAX(IF(v.method = 'Unaided', v.reading_base_value, NULL)) AS max_unaided_base_value /* Higher base_value is better */
-                    , MAX(IF(v.method = 'Aided', v.reading_base_value, NULL)) AS max_aided_base_value /* Higher base_value is better */
-                    , MAX(IF(v.method = 'Pinhole', v.reading_base_value, NULL)) AS max_pinhole_base_value /* Higher base_value is better */
-                    , v.logmar_single_letter_unit_id
-              FROM (
-                SELECT 
-                  c.oe_event_id
-                , CASE evar.side
-                  WHEN 0 THEN 'R'
-                  WHEN 1 THEN 'L'
-                  ELSE NULL
-                  END AS eye
-                , CASE vam.name
-                  WHEN 'Glasses' THEN 'Aided'
-                  WHEN 'Contact lens' THEN 'Aided'
-                  ELSE vam.name
-                  END AS method
-                , evar.value AS reading_base_value
-                , eva.unit_id orginal_unit_id
-                , u.id AS logmar_single_letter_unit_id
-                /* Restriction: Start with control events */
-                FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c 
-                /* Hard Join: Only examination events that have a Visual Acuity */
-                JOIN et_ophciexamination_visualacuity eva
-                  ON eva.event_id = c.oe_event_id
-                /* Hard Join: Visual Acuity individual readings (across both eyes and all methods ) */
-                JOIN ophciexamination_visualacuity_reading evar
-                  ON evar.element_id = eva.id
-                /* Join: Look up Visual Acuity individual readings for both eyes and all methods (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
-                LEFT OUTER JOIN ophciexamination_visualacuity_method vam 
-                  ON vam.id = evar.method_id
-                /* Cartesian: Convenience to get logMAR single-letter unit_id only once, used in outer queries */
-                CROSS JOIN ophciexamination_visual_acuity_unit u
-                WHERE u.name = 'logMAR single-letter'
-                    ) v
-                    /* Group by important to aggrigate multiple reading to get best reading each eye and method */
-              GROUP BY 
-                      v.oe_event_id
-                    , v.orginal_unit_id
-              , v.eye
-            ) bv
-            /* Join: Decode the overall base_value to logmar_single_letter (LOJ used to return nulls if data problems) */
-            LEFT OUTER JOIN ophciexamination_visual_acuity_unit_value u_max_all
-              ON  u_max_all.base_value = bv.max_all_base_value
-              AND u_max_all.unit_id = bv.logmar_single_letter_unit_id
-            /* Join: Decode the unaided base_value to logmar_single_letter (LOJ used to return nulls if data problems) */
-            LEFT OUTER JOIN ophciexamination_visual_acuity_unit_value u_max_unaided
-              ON  u_max_unaided.base_value = bv.max_unaided_base_value
-              AND u_max_unaided.unit_id = bv.logmar_single_letter_unit_id
-            /* Join: Decode the aided base_value to logmar_single_letter (LOJ used to return nulls if data problems) */
-            LEFT OUTER JOIN ophciexamination_visual_acuity_unit_value u_max_aided
-              ON  u_max_aided.base_value = bv.max_aided_base_value
-              AND u_max_aided.unit_id = bv.logmar_single_letter_unit_id
-            /* Join: Decode the pinhole base_value to logmar_single_letter (LOJ used to return nulls if data problems) */
-            LEFT OUTER JOIN ophciexamination_visual_acuity_unit_value u_max_pinhole
-              ON  u_max_pinhole.base_value = bv.max_pinhole_base_value
-              AND u_max_pinhole.unit_id = bv.logmar_single_letter_unit_id ;
+INSERT INTO tmp_rco_nod_EpisodeVisualAcuity_{$this->extractIdentifier} (
+  oe_event_id,
+  Eye,
+  NotationRecordedId,
+  BestMeasure,
+  Unaided,
+  Pinhole,
+  BestCorrected
+) 
+/* Get best Visual Acuity for examination for each Method: Unaided Aided Pinhole */
+SELECT
+    bv.oe_event_id 
+  , bv.eye
+  , bv.orginal_unit_id AS NotationRecordedId /* TODO this needs a mapping from OE to NOD */
+  , IFNULL(CASE u_max_all.value WHEN 'CF' THEN 2.10 WHEN 'HM' THEN 2.40 WHEN 'PL' THEN 2.70 WHEN 'NPL' THEN 3.00 ELSE u_max_all.value END, '') AS BestMeasure
+  , IFNULL(CASE u_max_unaided.value WHEN 'CF' THEN 2.10 WHEN 'HM' THEN 2.40 WHEN 'PL' THEN 2.70 WHEN 'NPL' THEN 3.00 ELSE u_max_unaided.value END, '') AS Unaided
+  , IFNULL(CASE u_max_pinhole.value WHEN 'CF' THEN 2.10 WHEN 'HM' THEN 2.40 WHEN 'PL' THEN 2.70 WHEN 'NPL' THEN 3.00 ELSE u_max_pinhole.value END, '') AS Pinhole
+  , IFNULL(CASE u_max_aided.value WHEN 'CF' THEN 2.10 WHEN 'HM' THEN 2.40 WHEN 'PL' THEN 2.70 WHEN 'NPL' THEN 3.00 ELSE u_max_aided.value END, '') AS BestCorrected
+FROM
+(
+  SELECT 
+    v.oe_event_id
+  , v.orginal_unit_id
+  , v.eye
+  , MAX(IF(v.method IN ('Unaided','Aided','Pinhole'), v.reading_base_value, NULL)) AS max_all_base_value /* Higher base_value is better */
+  , MAX(IF(v.method = 'Unaided', v.reading_base_value, NULL)) AS max_unaided_base_value /* Higher base_value is better */
+  , MAX(IF(v.method = 'Aided', v.reading_base_value, NULL)) AS max_aided_base_value /* Higher base_value is better */
+  , MAX(IF(v.method = 'Pinhole', v.reading_base_value, NULL)) AS max_pinhole_base_value /* Higher base_value is better */
+  , v.logmar_single_letter_unit_id
+  FROM (
+    SELECT 
+      c.oe_event_id
+    , CASE evar.side
+      WHEN 0 THEN 'R'
+      WHEN 1 THEN 'L'
+      ELSE NULL
+      END AS eye
+    , CASE vam.name
+      WHEN 'Glasses' THEN 'Aided'
+      WHEN 'Contact lens' THEN 'Aided'
+      ELSE vam.name
+      END AS method
+    , evar.value AS reading_base_value
+    , eva.unit_id orginal_unit_id
+    , u.id AS logmar_single_letter_unit_id
+    /* Restriction: Start with control events */
+    FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c 
+    /* Hard Join: Only examination events that have a Visual Acuity */
+    JOIN et_ophciexamination_visualacuity eva
+      ON eva.event_id = c.oe_event_id
+    /* Hard Join: Visual Acuity individual readings (across both eyes and all methods ) */
+    JOIN ophciexamination_visualacuity_reading evar
+      ON evar.element_id = eva.id
+    /* Join: Look up Visual Acuity individual readings for both eyes and all methods (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
+    LEFT OUTER JOIN ophciexamination_visualacuity_method vam 
+      ON vam.id = evar.method_id
+    /* Cartesian: Convenience to get logMAR single-letter unit_id only once, used in outer queries */
+    CROSS JOIN ophciexamination_visual_acuity_unit u
+    WHERE u.name = 'logMAR single-letter'
+  ) v
+  /* Group by important to aggrigate multiple reading to get best reading each eye and method */
+  GROUP BY 
+    v.oe_event_id
+  , v.orginal_unit_id
+  , v.eye
+) bv
+/* Join: Decode the overall base_value to logmar_single_letter (LOJ used to return nulls if data problems) */
+LEFT OUTER JOIN ophciexamination_visual_acuity_unit_value u_max_all
+ON  u_max_all.base_value = bv.max_all_base_value
+AND u_max_all.unit_id = bv.logmar_single_letter_unit_id
+/* Join: Decode the unaided base_value to logmar_single_letter (LOJ used to return nulls if data problems) */
+LEFT OUTER JOIN ophciexamination_visual_acuity_unit_value u_max_unaided
+ON  u_max_unaided.base_value = bv.max_unaided_base_value
+AND u_max_unaided.unit_id = bv.logmar_single_letter_unit_id
+/* Join: Decode the aided base_value to logmar_single_letter (LOJ used to return nulls if data problems) */
+LEFT OUTER JOIN ophciexamination_visual_acuity_unit_value u_max_aided
+ON  u_max_aided.base_value = bv.max_aided_base_value
+AND u_max_aided.unit_id = bv.logmar_single_letter_unit_id
+/* Join: Decode the pinhole base_value to logmar_single_letter (LOJ used to return nulls if data problems) */
+LEFT OUTER JOIN ophciexamination_visual_acuity_unit_value u_max_pinhole
+ON  u_max_pinhole.base_value = bv.max_pinhole_base_value
+AND u_max_pinhole.unit_id = bv.logmar_single_letter_unit_id;
 
 EOL;
         return $query;
@@ -2834,33 +3156,7 @@ EOL;
     
     /********** end of EpisodeVisualAcuity **********/
         
-    public function getExtraCsvs()
-    {
-        // Write out distorder
-        $query = <<<EOL
-                SELECT d.id as IndicationId, d.term as IndicationDescription
-                FROM disorder d
-EOL;
-        $dataQuery = array(
-            'query' => $query,
-            'header' => array('IndicationId', 'IndicationDescription'),
-        );
-        $this->saveCSVfile($dataQuery, 'IndicationDescription');
-        
-        
-        // Write out distorder
-        $query = <<<EOL
-                SELECT p.snomed_code AS TreatmentTypeId, p.snomed_term AS TreatmentTypeDescription
-                FROM proc p
-EOL;
-        $dataQuery = array(
-            'query' => $query,
-            'header' => array('TreatmentTypeId', 'TreatmentTypeDescription'),
-        );
-        $this->saveCSVfile($dataQuery, 'TreatmentTypeDescription');
-
-    }
-    
+  
     
     
     /**
