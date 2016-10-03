@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -32,7 +33,14 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
     {
         return array(
             'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
-            'booking' => array(self::BELONGS_TO, 'Element_OphTrOperationbooking_Operation', '', 'on' => 't.event_id = booking.event_id', 'joinType' => 'INNER JOIN', 'alias' => 'booking'),
+            'booking' => array(
+                self::BELONGS_TO,
+                'Element_OphTrOperationbooking_Operation',
+                '',
+                'on' => 't.event_id = booking.event_id',
+                'joinType' => 'INNER JOIN',
+                'alias' => 'booking',
+            ),
         );
     }
 
@@ -75,12 +83,8 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $biometry = Element_OphTrOperationnote_Biometry::model()->find($biometryCriteria);
 
         $examination = $event->getPreviousInEpisode(EventType::model()->findByAttributes(array('name' => 'Examination'))->id);
-        //$management = new \OEModule\OphCiExamination\models\Element_OphCiExamination_Management();
-        //$anterior = new \OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment();
         $risks = new \OEModule\OphCiExamination\models\Element_OphCiExamination_HistoryRisk();
         if ($examination) {
-            //$management = $management->findByAttributes(array('event_id' => $examination->id));
-            //$anterior = $anterior->findByAttributes(array('event_id' => $examination->id));
             $risks = $risks->findByAttributes(array('event_id' => $examination->id));
         }
 
@@ -111,21 +115,28 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->booking = $booking;
         $this->eye_id = $eye->id;
         $this->eye = $eye;
-        $this->predicted_additional_equipment = $booking->special_equipment_details;
-        $this->comments = '';
-        $this->patient_name = $contact['title'].' '.$contact['first_name'].' '.$contact['last_name'];
+        $this->patient_name = $contact['title'] . ' ' . $contact['first_name'] . ' ' . $contact['last_name'];
         $this->date_of_birth = $patient['dob'];
         $this->hos_num = $patient['hos_num'];
         $this->procedure = implode(',', array_column($operation, 'term'));
         $this->allergies = $allergyString;
-        $this->iol_model = ($biometry) ? $biometry->attributes['lens_description_'.$eyeLabel] : 'Unknown';
-        $this->iol_power = ($biometry) ? $biometry->attributes['iol_power_'.$eyeLabel] : 'none';
-        $this->predicted_refractive_outcome = ($biometry) ? $biometry->attributes['predicted_refraction_'.$eyeLabel] : 'Unknown';
+        $this->iol_model = ($biometry) ? $biometry->attributes['lens_description_' . $eyeLabel] . ' <br /> ' . $biometry->attributes['formula_' . $eyeLabel] : 'Unknown';
+        $this->iol_power = ($biometry) ? $biometry->attributes['iol_power_' . $eyeLabel] : 'None';
+        $this->predicted_refractive_outcome = ($biometry) ? $biometry->attributes['predicted_refraction_' . $eyeLabel] : 'Unknown';
         $this->alpha_blockers = $patient->hasRisk('Alpha blockers');
         $this->anticoagulants = $patient->hasRisk('Anticoagulants');
         $this->alpha_blocker_name = ($risks) ? $risks->alpha_blocker_name : '';
         $this->anticoagulant_name = ($risks) ? $risks->anticoagulant_name : '';
         $this->inr = ($labResult) ? $labResult : 'None';
+
+        if (!$this->predicted_additional_equipment) {
+            $this->predicted_additional_equipment = $booking->special_equipment_details;
+        }
+
+        if (!$this->comments) {
+            $this->comments = '';
+        }
+
         $this->save();
     }
 

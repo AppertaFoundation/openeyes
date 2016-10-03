@@ -84,8 +84,35 @@
 		$('input[name="sites[]"]').attr('checked',$(this).is(':checked') ? 'checked' : false);
 	});
 
-	$('#et_delete').click(function() {
-		$('#profile_sites').submit();
+	/*
+	* Site deletion from user profile
+	* */
+
+	$('#et_delete').click(function(e) {
+		e.preventDefault();
+		if ($('input[type="checkbox"][name="sites[]"]:checked').length <1) {
+			alert("Please select the sites you wish to delete.");
+			return;
+		}
+		$.ajax({
+			'type': 'POST',
+			'url': baseUrl+'/profile/deleteSites',
+			'data': $('#profile_sites').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
+			'success': function(html) {
+				if (html === "success") {
+					window.location.reload();
+				} else {
+					new OpenEyes.UI.Dialog.Alert({
+						content: "There was an unexpected error deleting the sites, please try again or contact support for assistance."
+					}).open();
+				}
+			},
+			'error': function() {
+				new OpenEyes.UI.Dialog.Alert({
+					content: "Sorry, There was an unexpected error deleting the sites, please try again or contact support for assistance."
+				}).open();
+			}
+		});
 	});
 
 	$('#add_all').click(function() {

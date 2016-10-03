@@ -19,7 +19,7 @@
 ?>
 <?php if (isset($errors) && !empty($errors)) {
     ?>
-	<div class="alert-box error with-icon<?php if ($bottom) {
+	<div class="alert-box error with-icon<?php if(isset($bottom) && $bottom) {
     echo ' bottom';
 }
     ?>">

@@ -24,7 +24,7 @@ class CommonDrugAdminController extends BaseAdminController
 
         $admin->setListFields(array(
             'id',
-            'drugs.name',
+            'drugs.tallmanlabel',
             'drugs.dose_unit',
         ));
 

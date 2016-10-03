@@ -25,6 +25,8 @@ use OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType;
 
 class ExaminationCreator
 {
+    protected $examinationEyeId;
+
     /**
      * Create an examination event.
      *
@@ -44,6 +46,7 @@ class ExaminationCreator
     public function save($episodeId, $userId, $examination, $eventType, $eyeIds, $refractionType, $opNoteEventId = null)
     {
         $examinationEvent = $this->createExamination($episodeId, $userId, $examination, $eventType);
+        $this->examinationEye($examination['patient']['eyes'], $eyeIds);
 
         if ($examinationEvent->save(true, null, true)) {
             $examinationEvent->refresh();
@@ -51,27 +54,27 @@ class ExaminationCreator
             $refraction->event_id = $examinationEvent->id;
             $refraction->created_user_id = $refraction->last_modified_user_id = $userId;
 
-            $iop = $this->createIop($userId, $eyeIds, $examinationEvent);
+            $iop = $this->createIop($userId, $examinationEvent);
 
-            $complications = $this->createComplications($userId, $eyeIds, $examinationEvent);
+            $complications = $this->createComplications($userId, $examinationEvent);
 
             $this->createComments($userId, $examination, $examinationEvent);
 
             $this->createMessage($episodeId, $userId, $examination, $examinationEvent);
 
             if (count($examination['patient']['eyes'][0]['reading'][0]['visual_acuity']) || count($examination['patient']['eyes'][0]['reading'][0]['near_visual_acuity'])) {
-                $this->createVisualFunction($userId, $eyeIds, $examinationEvent);
+                $this->createVisualFunction($userId, $examinationEvent);
 
                 if (count($examination['patient']['eyes'][0]['reading'][0]['visual_acuity'])) {
                     $measure = $examination['patient']['eyes'][0]['reading'][0]['visual_acuity'][0]['measure'];
                     $unit = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->find('name = :measure', array('measure' => $measure));
-                    $visualAcuity = $this->createVisualAcuity($userId, $eyeIds, $examinationEvent, $unit);
+                    $visualAcuity = $this->createVisualAcuity($userId, $examinationEvent, $unit);
                 }
 
                 if (count($examination['patient']['eyes'][0]['reading'][0]['near_visual_acuity'])) {
                     $nearMeasure = $examination['patient']['eyes'][0]['reading'][0]['near_visual_acuity'][0]['measure'];
                     $nearUnit = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->find('name = :measure', array('measure' => $nearMeasure));
-                    $nearVisualAcuity = $this->createVisualAcuity($userId, $eyeIds, $examinationEvent, $nearUnit, true);
+                    $nearVisualAcuity = $this->createVisualAcuity($userId, $examinationEvent, $nearUnit, true);
                 }
             }
 
@@ -96,13 +99,13 @@ class ExaminationCreator
                 }
 
                 $this->addIop($eyeIds, $eye, $iop, $eyeLabel);
-
                 $this->addComplication($userId, $eyeIds, $opNoteEventId, $eye, $complications, $eyeLabel);
             }
 
-            $refraction->eye_id = $eyeIds['both'];
+            $refraction->eye_id = $this->examinationEyeId;
+
             if (!$refraction->save(true, null, true)) {
-                throw new \CDbException('Refraction failed: '.print_r($iop->getErrors(), true));
+                throw new \CDbException('Refraction failed: '.print_r($refraction->getErrors(), true));
             }
 
             return $examinationEvent;
@@ -144,20 +147,17 @@ class ExaminationCreator
     /**
      * @param $userId
      * @param $examination
-     * @param $eyeIds
      * @param $examinationEvent
-     *
-     * @return array
      *
      * @throws \CDbException
      * @throws \Exception
      */
-    protected function createVisualFunction($userId, $eyeIds, $examinationEvent)
+    protected function createVisualFunction($userId, $examinationEvent)
     {
         //create VisualFunction, required for visual acuity to show.
         $visualFunction = new \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualFunction();
         $visualFunction->event_id = $examinationEvent->id;
-        $visualFunction->eye_id = $eyeIds['both'];
+        $visualFunction->eye_id = $this->examinationEyeId;
         $visualFunction->left_rapd = 0;
         $visualFunction->right_rapd = 0;
         $visualFunction->created_user_id = $visualFunction->last_modified_user_id = $userId;
@@ -168,7 +168,6 @@ class ExaminationCreator
 
     /**
      * @param $userId
-     * @param $eyeIds
      * @param $examinationEvent
      * @param $unit
      * @param $near
@@ -178,7 +177,7 @@ class ExaminationCreator
      * @throws \CDbException
      * @throws \Exception
      */
-    protected function createVisualAcuity($userId, $eyeIds, $examinationEvent, $unit, $near = false)
+    protected function createVisualAcuity($userId, $examinationEvent, $unit, $near = false)
     {
         //Create visual acuity
         $visualAcuity = new \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity();
@@ -187,7 +186,7 @@ class ExaminationCreator
         }
         $visualAcuity->event_id = $examinationEvent->id;
         $visualAcuity->created_user_id = $visualAcuity->last_modified_user_id = $userId;
-        $visualAcuity->eye_id = $eyeIds['both'];
+        $visualAcuity->eye_id = $this->examinationEyeId;
         $visualAcuity->unit_id = $unit->id;
         if (!$visualAcuity->save(false, null, true)) {
             throw new \CDbException('Visual Acuity failed: '.print_r($visualAcuity->getErrors(), true));
@@ -250,18 +249,17 @@ class ExaminationCreator
 
     /**
      * @param $userId
-     * @param $eyeIds
      * @param $examinationEvent
      * @return \OEModule\OphCiExamination\models\Element_OphCiExamination_PostOpComplications
      * @throws \CDbException
      * @throws \Exception
      */
-    protected function createComplications($userId, $eyeIds, $examinationEvent)
+    protected function createComplications($userId, $examinationEvent)
     {
         $complications = new \OEModule\OphCiExamination\models\Element_OphCiExamination_PostOpComplications();
         $complications->event_id = $examinationEvent->id;
         $complications->created_user_id = $complications->last_modified_user_id = $userId;
-        $complications->eye_id = $eyeIds['both'];
+        $complications->eye_id = $this->examinationEyeId;
         if (!$complications->save(true, null, true)) {
             throw new \CDbException('Complications failed: ' . print_r($complications->getErrors(), true));
         }
@@ -324,8 +322,7 @@ class ExaminationCreator
         $examinationEvent = new \Event();
         $examinationEvent->episode_id = $episodeId;
         $examinationEvent->created_user_id = $examinationEvent->last_modified_user_id = $userId;
-        $examinationEvent->event_date = \DateTime::createFromFormat('Y-m-d\TH:i:sP',
-            $examination['examination_date'])->format('Y-m-d');
+        $examinationEvent->event_date = \DateTime::createFromFormat('Y-m-d\TH:i:sP', $examination['examination_date'])->format('Y-m-d');
         $examinationEvent->event_type_id = $eventType['id'];
         $examinationEvent->is_automated = 1;
         $examinationEvent->automated_source = json_encode($examination['op_tom']);
@@ -396,18 +393,17 @@ class ExaminationCreator
 
     /**
      * @param $userId
-     * @param $eyeIds
      * @param $examinationEvent
      * @return \OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure
      * @throws \CDbException
      * @throws \Exception
      */
-    protected function createIop($userId, $eyeIds, $examinationEvent)
+    protected function createIop($userId, $examinationEvent)
     {
         $iop = new \OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure();
         $iop->event_id = $examinationEvent->id;
         $iop->created_user_id = $iop->last_modified_user_id = $userId;
-        $iop->eye_id = $eyeIds['both'];
+        $iop->eye_id = $this->examinationEyeId;
         $iop->left_comments = 'Portal Add';
         $iop->right_comments = 'Portal Add';
         if (!$iop->save(true, null, true)) {
@@ -416,5 +412,14 @@ class ExaminationCreator
         $iop->refresh();
 
         return $iop;
+    }
+
+    protected function examinationEye(Array $eyes, Array $eyeIds)
+    {
+        if(count($eyes) === 2){
+            $this->examinationEyeId = $eyeIds['both'];
+        } else {
+            $this->examinationEyeId = $eyeIds[strtolower($eyes[0]['label'])];
+        }
     }
 }

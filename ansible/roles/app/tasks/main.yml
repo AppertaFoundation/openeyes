@@ -1,41 +1,33 @@
 ---
 # Application tasks to be customized and to run after the main provision
 
-# Kept seperate so as not to impact composer
-- name: php5 - install xdebug
-  apt: pkg="{{ php_xdebug }}" state=latest update_cache=yes
-  when: php_xdebug is defined
+- name: Install Compass (Ruby)
+  become: true
+  become_method: sudo
+  gem:
+    name: compass
+    version: 1.0.3
+    user_install: false
 
-- name: Copy xdebug INI into mods-available folder.
-  template: >
-    src=xdebug.ini.j2
-    dest=/etc/php5/mods-available/xdebug.ini
-    owner=root group=root mode=644
-  when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'trusty' and php_xdebug is defined
+- name: Remove vendor directory
+  become: true
+  become_method: sudo
+  file: path=//var/www/openeyes/vendor state=absent
 
-- name: Copy xdebug INI into conf.d folder.
-  template: >
-    src=xdebug.ini.j2
-    dest=/etc/php5/conf.d/xdebug.ini
-    owner=root group=root mode=644
-  when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'precise' and php_xdebug is defined
+- name: Git clone OE Vendor dependencies
+  become: true
+  become_user: vagrant
+  git:
+    repo=https://github.com/{{ item }}.git
+    dest=/var/www/openeyes/vendor
+    update=yes
+    force=yes
+  with_items:
+    - "{{ openeyes.vendor_repo }}"
 
-# "Resolve" issues with the PHP.ini from geerlinguy.php being php7 specific. (Temp fix)
-- name: Move existing PHP.ini out of the way
-  command: creates=/etc/php5/apache2/php.ini.bak mv /etc/php5/apache2/php.ini /etc/php5/apache2/php.ini.bak
-
-- name: Link configured PHP.ini into Apache
-  command: creates=/etc/php5/apache2/php.ini ln -s /etc/php/7.0/apache2/php.ini /etc/php5/apache2/php.ini
-
-# Remove XDebug SymLink from PHP CLI
-- name: Disable XDebug in PHP CLI
-  file:
-    path: /etc/php5/cli/conf.d/20-xdebug.ini
-    state: absent
-  when: php_xdebug is defined
-
-# Install project dependencies
-- name: Install composer dependencies (This can take up to 30 minutes to run the first time.)
+# TODO: Remove dependency directories?
+# Install project dependencies using composer (http://docs.ansible.com/ansible/composer_module.html)
+- name: Install / Update composer dependencies
   environment:
     COMPOSER_DISCARD_CHANGES: 1
   composer:
@@ -52,6 +44,8 @@
   git:
     repo: https://github.com/openeyes/{{ item }}.git
     dest: /var/www/openeyes/protected/modules/{{ item }}
+    update: yes
+    force: yes
   with_items:
     - "{{ openeyes.modules }}"
 
@@ -65,8 +59,7 @@
     login_password: "{{ openeyes.mysql_root_password }}"
   when: openeyes.mysql_dump
   with_items:
-    - openeyes
-    - openeyestest
+    - "{{ openeyes.mysql_databases }}"
 
 # Add in banner (TODO: Only works if the sameple dataset loaded)
 # - name: Add banner info into MySQL
@@ -78,7 +71,6 @@
 
 # Create required directories and assign users / groups / permissions
 - name: Create directories for Yii
-  become: true
   file:
     path: "{{ item }}"
     mode: "0775"
@@ -94,19 +86,23 @@
 
 # TODO Change to use a template
 - name: Copy common.php into place
+  become: true
+  become_user: vagrant
   command: creates=/var/www/openeyes/protected/config/local/common.php cp /var/www/openeyes/protected/config/local.sample/common.php /var/www/openeyes/protected/config/local/common.php
 
 - name: Copy console.php into place
+  become: true
+  become_user: vagrant
   command: creates=/var/www/openeyes/protected/config/local/console.php cp /var/www/openeyes/protected/config/local.sample/console.vagrant.php /var/www/openeyes/protected/config/local/console.php
 
-# - name: Migrate using YIIC of openeyes DB
-#   command: php /var/www/openeyes/protected/yiic.php migrate --interactive=0
+- name: Migrate using YIIC of openeyes DB
+  command: php /var/www/openeyes/protected/yiic.php migrate --interactive=0
 
-# - name: Migrate Modules using YIIC of openeyes DB
-#   command: php /var/www/openeyes/protected/yiic.php migratemodules --interactive=0
+- name: Migrate Modules using YIIC of openeyes DB
+  command: php /var/www/openeyes/protected/yiic.php migratemodules --interactive=0
 
-# - name: Migrate using YIIC of testdb
-#   command: php /var/www/openeyes/protected/yiic.php migrate  --connectionID=testdb --interactive=0
+- name: Migrate Modules using YIIC of openeyes DB
+  command: php /var/www/openeyes/protected/yiic.php generateuniquecode --interactive=0
 
-# - name: Migrate Modules using YIIC of testdb
-#   command: php /var/www/openeyes/protected/yiic.php migratemodules  --connectionID=testdb --interactive=0
+- name: Migrate Modules using YIIC of openeyes DB
+  command: php /var/www/openeyes/protected/yiic.php generatesessions --interactive=0

@@ -200,50 +200,56 @@ select:focus {
   flex-wrap: wrap;
   height: auto;
 }
-/* line 205, ../sass/dashboard.scss */
+@media screen and (max-width: 1024px) {
+  /* line 200, ../sass/dashboard.scss */
+  .mdl-layout__header-row {
+    padding: 5px;
+  }
+}
+/* line 208, ../sass/dashboard.scss */
 .mdl-layout__header-row > * {
   width: 100%;
 }
-@media screen and (min-width: 800px) {
-  /* line 205, ../sass/dashboard.scss */
+@media screen and (min-width: 700px) {
+  /* line 208, ../sass/dashboard.scss */
   .mdl-layout__header-row > * {
     width: auto;
   }
 }
-/* line 212, ../sass/dashboard.scss */
+/* line 215, ../sass/dashboard.scss */
 .mdl-layout__header-row #search-form {
   margin-bottom: 5px;
 }
-/* line 214, ../sass/dashboard.scss */
+/* line 217, ../sass/dashboard.scss */
 .mdl-layout__header-row #search-form div {
   width: 100%;
 }
-@media screen and (min-width: 800px) {
-  /* line 214, ../sass/dashboard.scss */
+@media screen and (min-width: 700px) {
+  /* line 217, ../sass/dashboard.scss */
   .mdl-layout__header-row #search-form div {
     width: auto;
   }
 }
-/* line 219, ../sass/dashboard.scss */
+/* line 222, ../sass/dashboard.scss */
 .mdl-layout__header-row #search-form div #from-date, .mdl-layout__header-row #search-form div #to-date {
   position: relative;
   z-index: 50;
 }
-/* line 225, ../sass/dashboard.scss */
+/* line 228, ../sass/dashboard.scss */
 .mdl-layout__header-row #export {
   cursor: pointer;
   vertical-align: middle;
 }
 
-/* line 231, ../sass/dashboard.scss */
+/* line 234, ../sass/dashboard.scss */
 .mdl-layout__content {
   height: calc(100% - 64px);
 }
-/* line 233, ../sass/dashboard.scss */
+/* line 236, ../sass/dashboard.scss */
 .mdl-layout__content #dash-grid {
   height: calc(100% - 64px);
 }
-/* line 235, ../sass/dashboard.scss */
+/* line 238, ../sass/dashboard.scss */
 .mdl-layout__content #dash-grid .mdl-cell {
   background-color: white;
   padding: 0;
@@ -251,17 +257,17 @@ select:focus {
   height: 50%;
   overflow: hidden;
 }
-/* line 243, ../sass/dashboard.scss */
+/* line 246, ../sass/dashboard.scss */
 .mdl-layout__content #dash-grid .highcharts-xaxis-labels text, .mdl-layout__content #dash-grid .highcharts-yaxis-labels text {
   font-size: 0.8em !important;
 }
 
-/* line 251, ../sass/dashboard.scss */
+/* line 254, ../sass/dashboard.scss */
 .report-container {
   position: relative;
   height: 100%;
 }
-/* line 254, ../sass/dashboard.scss */
+/* line 257, ../sass/dashboard.scss */
 .report-container .search-icon {
   position: absolute;
   right: 0;
@@ -269,7 +275,7 @@ select:focus {
   z-index: 1;
   cursor: pointer;
 }
-/* line 260, ../sass/dashboard.scss */
+/* line 263, ../sass/dashboard.scss */
 .report-container .search-icon:after {
   font-family: "Roboto","Helvetica","Arial",sans-serif;
   font-size: 0.7em;
@@ -280,47 +286,47 @@ select:focus {
   width: 0;
   display: inline-block;
 }
-/* line 270, ../sass/dashboard.scss */
+/* line 273, ../sass/dashboard.scss */
 .report-container .search-icon:hover:after {
   width: 55px;
 }
-/* line 275, ../sass/dashboard.scss */
+/* line 278, ../sass/dashboard.scss */
 .report-container > div {
   height: 100%;
 }
-/* line 278, ../sass/dashboard.scss */
+/* line 281, ../sass/dashboard.scss */
 .report-container .report-search {
   height: 0;
   overflow: hidden;
 }
-/* line 281, ../sass/dashboard.scss */
+/* line 284, ../sass/dashboard.scss */
 .report-container .report-search fieldset {
   width: 60%;
   margin: auto;
 }
-/* line 284, ../sass/dashboard.scss */
+/* line 287, ../sass/dashboard.scss */
 .report-container .report-search fieldset div {
   margin: 20px;
 }
-/* line 287, ../sass/dashboard.scss */
+/* line 290, ../sass/dashboard.scss */
 .report-container .report-search fieldset div.checkbox-select {
   height: 200px;
   overflow-y: scroll;
 }
-/* line 291, ../sass/dashboard.scss */
+/* line 294, ../sass/dashboard.scss */
 .report-container .report-search fieldset div .mdl-radio {
   margin-right: 20px;
 }
-/* line 294, ../sass/dashboard.scss */
+/* line 297, ../sass/dashboard.scss */
 .report-container .report-search fieldset div button[type="submit"] {
   float: right;
 }
-/* line 300, ../sass/dashboard.scss */
+/* line 303, ../sass/dashboard.scss */
 .report-container .chart-container {
   z-index: 5;
 }
 
-/* line 305, ../sass/dashboard.scss */
+/* line 308, ../sass/dashboard.scss */
 .mdl-layout__content #dash-grid .mdl-cell-top {
   background-color: white;
   padding: 0;
@@ -329,7 +335,7 @@ select:focus {
   overflow: hidden;
 }
 
-/* line 313, ../sass/dashboard.scss */
+/* line 316, ../sass/dashboard.scss */
 .mdl-layout__content #dash-grid .mdl-cell-bottom {
   background-color: white;
   padding: 0;
@@ -338,7 +344,7 @@ select:focus {
   overflow: hidden;
 }
 
-/* line 321, ../sass/dashboard.scss */
+/* line 324, ../sass/dashboard.scss */
 .mdl-layout__content #dash-grid .mdl-cell-top-right {
   background-color: white;
   padding: 0;
@@ -347,7 +353,7 @@ select:focus {
   overflow: hidden;
 }
 
-/* line 329, ../sass/dashboard.scss */
+/* line 332, ../sass/dashboard.scss */
 .mdl-layout__content #dash-grid .mdl-cell-bottom-right {
   background-color: white;
   padding: 0;
@@ -358,7 +364,7 @@ select:focus {
   overflow: hidden;
 }
 
-/* line 339, ../sass/dashboard.scss */
+/* line 342, ../sass/dashboard.scss */
 .mdl-tabs__tab-bar {
   align-content: space-between;
   align-items: flex-start;
@@ -371,7 +377,7 @@ select:focus {
   padding: 0;
 }
 
-/* line 351, ../sass/dashboard.scss */
+/* line 354, ../sass/dashboard.scss */
 .mdl-tabs__tab {
   border: medium none;
   color: rgba(0, 0, 0, 0.54);
@@ -390,7 +396,7 @@ select:focus {
   text-transform: uppercase;
 }
 
-/* line 369, ../sass/dashboard.scss */
+/* line 372, ../sass/dashboard.scss */
 .mdl-layout__content #dash-grid .mdl-cell-side {
   background-color: white;
   padding: 0;
@@ -398,7 +404,7 @@ select:focus {
   height: 100%;
 }
 
-/* line 376, ../sass/dashboard.scss */
+/* line 379, ../sass/dashboard.scss */
 .nhs-number {
   background-color: #107ebd;
   background-image: url("../img/_elements/icons/nhs_tiny.png?1456827980");
@@ -410,92 +416,92 @@ select:focus {
   padding: 2px 3px 1px 33px;
 }
 
-/* line 387, ../sass/dashboard.scss */
+/* line 390, ../sass/dashboard.scss */
 .patient-details {
   clear: both;
   display: block;
   padding: 10px;
 }
 
-/* line 393, ../sass/dashboard.scss */
+/* line 396, ../sass/dashboard.scss */
 .openeyes-logo {
   display: block;
   float: left;
 }
 
-/* line 398, ../sass/dashboard.scss */
+/* line 401, ../sass/dashboard.scss */
 .vfthumbnail {
   width: 100%;
 }
 
-/* line 402, ../sass/dashboard.scss */
+/* line 405, ../sass/dashboard.scss */
 .vfthumbnail-hidden {
   width: 100%;
   display: none;
 }
 
-/* line 407, ../sass/dashboard.scss */
+/* line 410, ../sass/dashboard.scss */
 .octimage-hidden {
   display: none;
 }
 
-/* line 411, ../sass/dashboard.scss */
+/* line 414, ../sass/dashboard.scss */
 .regression_chart {
   width: 100%;
   display: block;
 }
 
-/* line 416, ../sass/dashboard.scss */
+/* line 419, ../sass/dashboard.scss */
 .left-side {
   display: block;
   float: right;
   width: 50%;
 }
 
-/* line 422, ../sass/dashboard.scss */
+/* line 425, ../sass/dashboard.scss */
 .right-side {
   display: block;
   float: left;
   width: 50%;
 }
 
-/* line 428, ../sass/dashboard.scss */
+/* line 431, ../sass/dashboard.scss */
 .side-title {
   text-align: center;
   font-weight: bold;
   display: block;
 }
 
-/* line 434, ../sass/dashboard.scss */
+/* line 437, ../sass/dashboard.scss */
 .vfimage {
   width: 70%;
   margin: 0 auto;
 }
 
-/* line 439, ../sass/dashboard.scss */
+/* line 442, ../sass/dashboard.scss */
 .kowaimage {
   width: 100%;
   margin: 0 auto;
 }
 
-/* line 444, ../sass/dashboard.scss */
+/* line 447, ../sass/dashboard.scss */
 .vfcolorplot {
   width: 55%;
   margin: 0 auto;
 }
 
-/* line 449, ../sass/dashboard.scss */
+/* line 452, ../sass/dashboard.scss */
 .colorplot-hover {
   border: 1px solid black;
 }
 
-/* line 453, ../sass/dashboard.scss */
+/* line 456, ../sass/dashboard.scss */
 .oescape-images {
   background: white;
   height: calc(100% - 23px);
 }
 
-/* line 458, ../sass/dashboard.scss */
+/* line 461, ../sass/dashboard.scss */
 .header-icon {
   font-size: 32px;
 }

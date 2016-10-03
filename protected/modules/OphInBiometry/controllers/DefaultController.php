@@ -49,10 +49,10 @@ class DefaultController extends BaseEventTypeController
     {
         $errors = array();
         // if we are after the submit we need to check if any event is selected
-        if (preg_match('/^biometry([0-9]+)$/', Yii::app()->request->getPost('SelectBiometry'), $m)) {
-            $importedEvent = OphInBiometry_Imported_Events::model()->findByPk($m[1]);
+        if (preg_match('/^biometry([0-9]+)$/', Yii::app()->request->getPost('SelectBiometry'), $matches)) {
+            $importedEvent = OphInBiometry_Imported_Events::model()->findByPk($matches[1]);
             $this->updateImportedEvent(Event::model()->findByPk($importedEvent->event_id), $importedEvent);
-            $this->redirect(array('/OphInBiometry/default/view/'.$importedEvent->event_id.'?autosaved=1'));
+            $this->redirect(array('/OphInBiometry/default/view/' . $importedEvent->event_id . '?autosaved=1'));
         }
 
         $criteria = new CDbCriteria();
@@ -65,13 +65,13 @@ class DefaultController extends BaseEventTypeController
         $unlinkedEvents = OphInBiometry_Imported_Events::model()->with(array('patient', 'event'))->findAll($criteria);
 
         // if we have 0 unlinked event we follow the manual process
-        if (sizeof($unlinkedEvents) == 0 || Yii::app()->request->getQuery('force_manual') == '1') {
+        if (count($unlinkedEvents) === 0 || Yii::app()->request->getQuery('force_manual') == '1') {
             Yii::app()->user->setFlash('issue.formula', $this->flash_message);
             parent::actionCreate();
         }
         // we might need this later for automated linking process
         //elseif (sizeof($unlinkedEvents) == 1) {
-            // if we have only 1 unlinked event we just simply link that event to the episode
+        // if we have only 1 unlinked event we just simply link that event to the episode
         //	$this->updateImportedEvent(Event::model()->findByPk($unlinkedEvents[0]->event_id), $unlinkedEvents[0]);
         //	$this->redirect(array('/OphInBiometry/default/update/' . $unlinkedEvents[0]->event_id));
         //}elseif (sizeof($unlinkedEvents) > 1) {
@@ -84,7 +84,7 @@ class DefaultController extends BaseEventTypeController
                     'active' => true,
                 ),
             );
-            $cancel_url = ($this->episode) ? '/patient/episode/'.$this->episode->id : '/patient/episodes/'.$this->patient->id;
+            $cancel_url = ($this->episode) ? '/patient/episode/' . $this->episode->id : '/patient/episodes/' . $this->patient->id;
             $this->event_actions = array(
                 EventAction::link('Cancel',
                     Yii::app()->createUrl($cancel_url),
@@ -107,8 +107,8 @@ class DefaultController extends BaseEventTypeController
         if ($this->isAutoBiometryEvent($id)) {
             $this->is_auto = 1;
             $event_data = $this->getAutoBiometryEventData($id);
-            $isAlMod = $this->isAlModified($id);
-            $isKMod = $this->isKModified($id);
+            $isAlMod = $this->isAlModified();
+            $isKMod = $this->isKModified();
             $warning_flash_message = '';
             $issue_flash_message = '';
             $success_flash_message = '';
@@ -134,43 +134,43 @@ class DefaultController extends BaseEventTypeController
             }
 
             foreach ($event_data as $detail) {
-                $issue_flash_message .= '<b>Data Source</b>: '.$detail['device_name'].' (<i>'.$detail['device_manufacturer'].' '.$detail['device_model'].'</i>)';
+                $issue_flash_message .= '<b>Data Source</b>: ' . $detail['device_name'] . ' (<i>' . $detail['device_manufacturer'] . ' ' . $detail['device_model'] . '</i>)';
 
                 if ($detail['is_merged']) {
                     $success_flash_message .= 'New data has been added to this event.<br>';
-                    $this->mergedView($id);
+                    $this->mergedView();
                 }
 
                 if (Yii::app()->request->getParam('autosaved')) {
                     $success_flash_message .= 'The event has been added to this episode.<br>';
                 }
             }
-            $quality = $this->isBadQuality($id);
+            $quality = $this->isBadQuality();
 
             if (!empty($quality) && (!empty($quality['reason']))) {
-                $warning_flash_message .= '<li><b>The quality of this data is bad and not recommended for clinical use </b>: ('.$quality['reason'].')</li>';
+                $warning_flash_message .= '<li><b>The quality of this data is bad and not recommended for clinical use </b>: (' . $quality['reason'] . ')</li>';
             } else {
-                $quality = $this->isBordelineQuality($id);
+                $quality = $this->isBordelineQuality();
                 if (!empty($quality) && (!empty($quality['reason']))) {
-                    $warning_flash_message .= '<li><b>The quality of this data is borderline </b>: ('.$quality['reason'].')</li>';
+                    $warning_flash_message .= '<li><b>The quality of this data is borderline </b>: (' . $quality['reason'] . ')</li>';
                 }
             }
 
-            $checkalqual = $this->checkALQuality($id);
+            $checkalqual = $this->checkALQuality();
             if (!empty($checkalqual) && ($checkalqual['code'])) {
-                foreach ($checkalqual['reason'] as $k => $v) {
+                foreach ($checkalqual['reason'] as $v) {
                     if (!empty($v)) {
-                        $warning_flash_message .= '<li>'.$v.'</li>';
+                        $warning_flash_message .= '<li>' . $v . '</li>';
                     }
                 }
             }
 
-            $checkaldiff = $this->checkALDiff($id);
+            $checkaldiff = $this->checkALDiff();
             if (!empty($checkaldiff) && (!empty($checkaldiff['reason']))) {
-                $warning_flash_message .= '<li>'.$checkaldiff['reason'].'</li>';
+                $warning_flash_message .= '<li>' . $checkaldiff['reason'] . '</li>';
             }
 
-            if (!empty($this->iolRefValues)) {
+            if (count($this->iolRefValues) !== 0) {
                 foreach ($this->iolRefValues as $measurementData) {
                     if (!empty($measurementData->{'iol_ref_values_left'})) {
                         $lens_left[] = $measurementData->{'lens_id'};
@@ -181,24 +181,24 @@ class DefaultController extends BaseEventTypeController
                 }
             }
 
-            if (empty($lens_left) && empty($lens_right) && $this->getLensCalc($id, 1) && $this->getLensCalc($id, 2)) {
+            if (empty($lens_left) && empty($lens_right) && $this->getLensCalc(1) && $this->getLensCalc(2)) {
                 $warning_flash_message .= '<li>No lens options are available for either eye. Please recalculate lenses on the IOL Master device and resend</li>';
             } else {
-                if (empty($lens_left) && $this->getLensCalc($id, 1)) {
+                if (empty($lens_left) && $this->getLensCalc(1)) {
                     $warning_flash_message .= '<li>No lens options are available for the left eye. Please recalculate lenses on the IOL Master device and resend</li>';
-                } elseif (empty($lens_right) && $this->getLensCalc($id, 2)) {
+                } elseif (empty($lens_right) && $this->getLensCalc(2)) {
                     $warning_flash_message .= '<li>No lens options are available for the right eye. Please recalculate lenses on the IOL Master device and resend</li>';
                 }
             }
 
             if ($warning_flash_message != '') {
-                Yii::app()->user->setFlash('warning.data', '<ul>'.$warning_flash_message.'</ul>');
+                Yii::app()->user->setFlash('warning.data', '<ul>' . $warning_flash_message . '</ul>');
             }
             if ($issue_flash_message != '') {
-                Yii::app()->user->setFlash('issue.data', '<ul>'.$issue_flash_message.'</ul>');
+                Yii::app()->user->setFlash('issue.data', '<ul>' . $issue_flash_message . '</ul>');
             }
             if ($success_flash_message != '') {
-                Yii::app()->user->setFlash('success.data', '<ul>'.$success_flash_message.'</ul>');
+                Yii::app()->user->setFlash('success.data', '<ul>' . $success_flash_message . '</ul>');
             }
         } else {
             Yii::app()->user->setFlash('issue.formula', $this->flash_message);
@@ -211,10 +211,10 @@ class DefaultController extends BaseEventTypeController
      *
      * @return int
      */
-    public function getLensCalc($id, $eye)
+    public function getLensCalc($eye)
     {
         $available = 0;
-        $measurementValues = $this->getMeasurementData($id);
+        $measurementValues = $this->getMeasurementData();
         $measurementData = $measurementValues[0];
         if ($eye == 1) {
             if (($measurementData->{'axial_length_left'}) > 0 || ($measurementData->{'k1_left'}) > 0 || ($measurementData->{'k2_left'}) > 0) {
@@ -234,7 +234,7 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionUpdate($id)
     {
-        if ($this->event != null &&  $this->event->id > 0) {
+        if ($this->event != null && $this->event->id > 0) {
             $this->iolRefValues = Element_OphInBiometry_IolRefValues::Model()->findAllByAttributes(
                 array(
                     'event_id' => $this->event->id,
@@ -259,7 +259,7 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionView($id)
     {
-        if ($this->event != null &&  $this->event->id > 0) {
+        if ($this->event != null && $this->event->id > 0) {
             $this->iolRefValues = Element_OphInBiometry_IolRefValues::Model()->findAllByAttributes(
                 array(
                     'event_id' => $this->event->id,
@@ -273,11 +273,17 @@ class DefaultController extends BaseEventTypeController
         parent::actionView($id);
     }
 
+    /**
+     * @param int $id
+     */
     public function actionPrint($id)
     {
         parent::actionPrint($id);
     }
 
+    /**
+     * Process the js vars
+     */
     public function processJsVars()
     {
         $lens_types = array();
@@ -286,7 +292,7 @@ class DefaultController extends BaseEventTypeController
             $lens_types[$lens->name] = array(
                 'model' => $lens->name,
                 'description' => $lens->description,
-                'acon' => (float) $lens->acon,
+                'acon' => (float)$lens->acon,
             );
         }
 
@@ -318,11 +324,7 @@ class DefaultController extends BaseEventTypeController
      */
     protected function isAutoBiometryEvent($id)
     {
-        if (count(OphInBiometry_Imported_Events::model()->findAllByAttributes(array('event_id' => $id))) > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return count(OphInBiometry_Imported_Events::model()->findAllByAttributes(array('event_id' => $id))) > 0;
     }
 
     /**
@@ -340,7 +342,7 @@ class DefaultController extends BaseEventTypeController
     /**
      * @param $id
      */
-    protected function getMeasurementData($id)
+    protected function getMeasurementData()
     {
         return Element_OphInBiometry_Measurement::Model()->findAllByAttributes(
             array(
@@ -351,7 +353,7 @@ class DefaultController extends BaseEventTypeController
     /**
      * @param $id
      */
-    protected function mergedView($id)
+    protected function mergedView()
     {
         Yii::app()->db->createCommand()
             ->update('ophinbiometry_imported_events',
@@ -360,21 +362,29 @@ class DefaultController extends BaseEventTypeController
                 array(':id' => $this->event->id)
             );
     }
+
     /**
-     * @param $id
      *
      * @return array
      */
-    private function isBadQuality($id)
+    private function isBadQuality()
     {
+        if($this->isAutoBiometryEvent($this->event->id) && $this->getAutoBiometryEventData($this->event->id)[0]->is700()) {
+            return array();
+        }
+
         $reason = array();
-        $measurementValues = $this->getMeasurementData($id);
+        $measurementValues = $this->getMeasurementData();
         $measurementData = $measurementValues[0];
 
         if (($measurementData->{'snr_left'}) < self::BADCOMSNRLIMIT || ($measurementData->{'snr_right'} < self::BADCOMSNRLIMIT)) {
             if ($measurementData->{'eye_id'} == 3) {
                 $reason['code'] = 1;
-                if (($measurementData->{'snr_right'} < self::BADCOMSNRLIMIT) && ($measurementData->{'snr_left'} < self::BADCOMSNRLIMIT) && ($measurementData->{'snr_right'}) > 0 && ($measurementData->{'snr_left'} > 0 && !$measurementData->{'al_modified_left'} && !$measurementData->{'al_modified_right'})) {
+                if (
+                    ($measurementData->{'snr_right'} < self::BADCOMSNRLIMIT) && ($measurementData->{'snr_left'} < self::BADCOMSNRLIMIT)
+                    && ($measurementData->{'snr_right'}) > 0
+                    && ($measurementData->{'snr_left'} > 0 && !$measurementData->{'al_modified_left'} && !$measurementData->{'al_modified_right'})
+                ) {
                     $reason['reason'] = 'the composite SNR for both eyes is less than 10';
                 } else {
                     if ($measurementData->{'snr_right'} < self::BADCOMSNRLIMIT && $measurementData->{'snr_right'} > 0 && !$measurementData->{'al_modified_right'}) {
@@ -384,10 +394,17 @@ class DefaultController extends BaseEventTypeController
                     }
                 }
             } else {
-                if ($measurementData->{'eye_id'} == 2 && ($measurementData->{'snr_right'} < self::BADCOMSNRLIMIT) && $measurementData->{'snr_right'} > 0 && !$measurementData->{'al_modified_right'}) {
+                if (
+                    $measurementData->{'eye_id'} == 2
+                    && ($measurementData->{'snr_right'} < self::BADCOMSNRLIMIT)
+                    && $measurementData->{'snr_right'} > 0 && !$measurementData->{'al_modified_right'}
+                    ) {
                     $reason['code'] = 1;
                     $reason['reason'] = 'the composite SNR for the right eye is less than 10';
-                } elseif ($measurementData->{'eye_id'} == 1 && ($measurementData->{'snr_left'} < self::BADCOMSNRLIMIT) && $measurementData->{'snr_left'} > 0 && !$measurementData->{'al_modified_left'}) {
+                } elseif (
+                    $measurementData->{'eye_id'} == 1 && ($measurementData->{'snr_left'} < self::BADCOMSNRLIMIT)
+                    && $measurementData->{'snr_left'} > 0 && !$measurementData->{'al_modified_left'}
+                    ) {
                     $reason['code'] = 1;
                     $reason['reason'] = 'the composite SNR for the left eye is less than 10';
                 }
@@ -398,23 +415,30 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
-     * @param $id
      *
      * @return array
      */
-    private function isBordelineQuality($id)
+    private function isBordelineQuality()
     {
+        if($this->isAutoBiometryEvent($this->event->id) && $this->getAutoBiometryEventData($this->event->id)[0]->is700()) {
+            return array();
+        }
+
         $reason = array();
-        $measurementValues = $this->getMeasurementData($id);
+        $measurementValues = $this->getMeasurementData();
         $measurementData = $measurementValues[0];
 
         if (($measurementData->{'snr_left'}) < self::BORDERCOMSNRLIMIT || ($measurementData->{'snr_right'} < self::BORDERCOMSNRLIMIT)) {
             if ($measurementData->{'eye_id'} == 3) {
-                if ((($measurementData->{'snr_right'} > 0) && $measurementData->{'snr_right'} < self::BORDERCOMSNRLIMIT) && ($measurementData->{'snr_left'} > 0) && ($measurementData->{'snr_left'}) < self::BORDERCOMSNRLIMIT && !$measurementData->{'al_modified_left'} && !$measurementData->{'al_modified_right'}) {
+                if (
+                    (($measurementData->{'snr_right'} > 0) && $measurementData->{'snr_right'} < self::BORDERCOMSNRLIMIT)
+                    && ($measurementData->{'snr_left'} > 0) && ($measurementData->{'snr_left'}) < self::BORDERCOMSNRLIMIT
+                    && !$measurementData->{'al_modified_left'} && !$measurementData->{'al_modified_right'}
+                ) {
                     $reason['reason'] = 'the composite SNR for both eyes is less than 15';
                     $reason['code'] = 1;
                 } else {
-                    if ($measurementData->{'snr_right'} > 0 &&  $measurementData->{'snr_right'} < self::BORDERCOMSNRLIMIT && !$measurementData->{'al_modified_right'}) {
+                    if ($measurementData->{'snr_right'} > 0 && $measurementData->{'snr_right'} < self::BORDERCOMSNRLIMIT && !$measurementData->{'al_modified_right'}) {
                         $reason['reason'] = 'the composite SNR for the right eye is less than 15';
                         $reason['code'] = 1;
                     } elseif ($measurementData->{'snr_left'} > 0 && ($measurementData->{'snr_left'}) < self::BORDERCOMSNRLIMIT && !$measurementData->{'al_modified_left'}) {
@@ -423,10 +447,16 @@ class DefaultController extends BaseEventTypeController
                     }
                 }
             } else {
-                if (($measurementData->{'eye_id'} == 2) && ($measurementData->{'snr_right'} > 0) && ($measurementData->{'snr_right'} < self::BORDERCOMSNRLIMIT && !$measurementData->{'al_modified_right'})) {
+                if (
+                    ($measurementData->{'eye_id'} == 2) && ($measurementData->{'snr_right'} > 0)
+                    && ($measurementData->{'snr_right'} < self::BORDERCOMSNRLIMIT && !$measurementData->{'al_modified_right'})
+                ) {
                     $reason['code'] = 1;
                     $reason['reason'] = 'the composite SNR for the right eye is less than 15';
-                } elseif ($measurementData->{'eye_id'} == 1 && ($measurementData->{'snr_left'} > 0) && ($measurementData->{'snr_left'}) < self::BORDERCOMSNRLIMIT && !$measurementData->{'al_modified_left'}) {
+                } elseif (
+                    $measurementData->{'eye_id'} == 1 && ($measurementData->{'snr_left'} > 0)
+                    && ($measurementData->{'snr_left'}) < self::BORDERCOMSNRLIMIT && !$measurementData->{'al_modified_left'}
+                ) {
                     $reason['code'] = 1;
                     $reason['reason'] = 'the composite SNR for the left eye is less than 15';
                 }
@@ -437,15 +467,14 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
-     * @param $id
      *
      * @return array
      */
-    private function checkALQuality($id)
+    private function checkALQuality()
     {
         $reason = array();
         $reason['code'] = 0;
-        $measurementValues = $this->getMeasurementData($id);
+        $measurementValues = $this->getMeasurementData();
         $measurementData = $measurementValues[0];
 
         if (($measurementData->{'axial_length_left'}) < self::SHORTALLIMIT || ($measurementData->{'axial_length_right'} < self::SHORTALLIMIT)) {
@@ -495,11 +524,14 @@ class DefaultController extends BaseEventTypeController
         return $reason;
     }
 
-    private function checkALDiff($id)
+    /**
+     * @return array
+     */
+    private function checkALDiff()
     {
         $reason = array();
         $reason['code'] = 0;
-        $measurementValues = $this->getMeasurementData($id);
+        $measurementValues = $this->getMeasurementData();
         $measurementData = $measurementValues[0];
 
         if ((($measurementData->{'axial_length_left'}) > ($measurementData->{'axial_length_right'}))) {
@@ -522,13 +554,14 @@ class DefaultController extends BaseEventTypeController
             }
         }
 
-        //echo '<pre>'; print_r($reason); die;
         return $reason;
     }
 
     /**
      * @param $search
      * @param $arr
+     *
+     * @return null
      */
     public function getClosest($search, $arr)
     {
@@ -542,6 +575,11 @@ class DefaultController extends BaseEventTypeController
         return $closest;
     }
 
+    /**
+     * @param $data
+     *
+     * @return mixed
+     */
     public function orderIOLData($data)
     {
         // A simple bubble order (should work with just array_size/2)
@@ -566,9 +604,9 @@ class DefaultController extends BaseEventTypeController
      *
      * @return mixed
      */
-    private function isAlModified($id)
+    private function isAlModified()
     {
-        $measurementValues = $this->getMeasurementData($id);
+        $measurementValues = $this->getMeasurementData();
         $measurementData = $measurementValues[0];
 
         $data['left'] = $measurementData->{'al_modified_left'};
@@ -582,9 +620,9 @@ class DefaultController extends BaseEventTypeController
      *
      * @return mixed
      */
-    private function isKModified($id)
+    private function isKModified()
     {
-        $measurementValues = $this->getMeasurementData($id);
+        $measurementValues = $this->getMeasurementData();
         $measurementData = $measurementValues[0];
 
         $data['left'] = $measurementData->{'k_modified_left'};
@@ -604,7 +642,7 @@ class DefaultController extends BaseEventTypeController
             ->where('`key`=:id', array(':id' => 'disable_manual_biometry'))
             ->queryRow();
 
-        if ($state['value'] == 'off') {
+        if ($state['value'] === 'off') {
             return true;
         } else {
             return false;
@@ -629,8 +667,8 @@ class DefaultController extends BaseEventTypeController
         * 118.120
 
         */
-        $formatted = (float) $aconst;
-        if ($formatted == (int) $formatted) {
+        $formatted = (float)$aconst;
+        if ($formatted == (int)$formatted) {
             $formatted .= '.0';
         }
 

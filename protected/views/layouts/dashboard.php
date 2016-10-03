@@ -53,6 +53,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="format-detection" content="telephone=no">
         <title>OpenEyes Analytics</title>
 
         <!-- Tile icon for Win8 (144x144 + tile color) -->
@@ -75,5 +76,6 @@
             </header>
                 <?php echo $content; ?>
         </div>
+        <div id="dialog-container"></div>
     </body>
 </html>
