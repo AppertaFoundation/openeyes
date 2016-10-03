@@ -25,21 +25,21 @@ class ODTSimpleText
      */
     var $data = array();
 
-    function __construct( $name , $data=null ) 
+    public function __construct( $name , $data=null )
     {
         $this->data['element-type'] = 'simple-text';
         $this->data['name'] = $name;
-        if($data !== null){
-            $this->data['data'] = $data;
+        if ($data !== null) {
+            $this->data['data'] = ODTDataHandler::encodeTextForODT($data);
         }
     }        
 
-    function getData()
+    public function getData()
     {
         return $this->data;
     }    
 
-    function getObjType()
+    public function getObjType()
     {
         return $this->data['element-type'];
     }
