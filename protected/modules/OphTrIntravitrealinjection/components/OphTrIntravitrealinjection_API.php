@@ -91,6 +91,15 @@ class OphTrIntravitrealinjection_API extends BaseAPI
     public function previousInjections($patient, $episode, $side, $drug = null, $since = 'now')
     {
         $res = array();
+        // NOTE: we assume that all legacy injections would be from before any injections in
+        // this module. Should this prove not to be the case, we would need to sort the result
+        // data structure by date
+        if ($legacy_api = $this->getLegacyAPI()) {
+            foreach ($legacy_api->previousInjections($patient, $episode, $side, $drug) as $legacy) {
+                $res[] = $legacy;
+            }
+        }
+
         $injections = $this->injectionsSinceByEpisodeSideAndDrug($episode, $side, $drug, $since);
 
         foreach ($injections as $injection) {
@@ -101,15 +110,6 @@ class OphTrIntravitrealinjection_API extends BaseAPI
                 'date' => $injection->event->event_date,
                 'event_id' => $injection->event_id,
             );
-        }
-
-        // NOTE: we assume that all legacy injections would be from before any injections in
-        // this module. Should this prove not to be the case, we would need to sort the result
-        // data structure by date
-        if ($legacy_api = $this->getLegacyAPI()) {
-            foreach ($legacy_api->previousInjections($patient, $episode, $side, $drug) as $legacy) {
-                $res[] = $legacy;
-            }
         }
 
         return $res;
