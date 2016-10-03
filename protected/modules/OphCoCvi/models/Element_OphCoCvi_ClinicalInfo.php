@@ -56,9 +56,9 @@ namespace OEModule\OphCoCvi\models;
 
 class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
 {
-    public static $BLIND_STATUS = "Severely Sight Impaired";
-    public static $NOT_BLIND_STATUS = "Sight Impaired";
-
+    public static $BLIND_STATUS = 'Severely Sight Impaired';
+    public static $NOT_BLIND_STATUS = 'Sight Impaired';
+    public static $NULL_BOOLEAN = '-';
     /**
      * Returns the static model of the specified AR class.
      * @return the static model class
@@ -385,7 +385,33 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
      */
     public function getDisplayStatus()
     {
-        return ($this->is_considered_blind === null) ? '' : ($this->is_considered_blind ? static::$BLIND_STATUS : static::$NOT_BLIND_STATUS);
+        $considered_blind = $this->getDisplayConsideredBlind();
+        return $considered_blind === static::$NULL_BOOLEAN ? $considered_blind : '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getDisplayConsideredBlind()
+    {
+        if ($this->is_considered_blind === null) {
+            return static::$NULL_BOOLEAN;
+        }
+        else {
+            return $this->is_considered_blind ? static::$BLIND_STATUS : static::$NOT_BLIND_STATUS;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getDisplayLightLevels()
+    {
+        if ($this->sight_varies_by_light_levels === null) {
+            return static::$NULL_BOOLEAN;
+        } else {
+            return $this->sight_varies_by_light_levels ? 'Yes' : 'No';
+        }
     }
 
     /**
