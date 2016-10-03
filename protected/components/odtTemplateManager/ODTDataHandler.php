@@ -21,6 +21,20 @@
 class ODTDataHandler
 {
     /**
+     * Wrapper function to consistently encode text where appropriate for template functionality
+     *
+     * @param $text
+     * @return string
+     */
+    public static function encodeTextForODT($text)
+    {
+        if (is_string($text)) {
+            return htmlspecialchars($text, ENT_XML1);
+        }
+        return $text;
+    }
+
+    /**
      * @var array
      */
     protected $dataSource = array();
@@ -98,13 +112,13 @@ class ODTDataHandler
                 if (is_array($args[1])) {
 
                     foreach ($args[1] as $name => $value) {
-                        $obj->data[$name] = $value;
+                        $obj->data[$name] = static::encodeTextForODT($value);
                     }
                 }
                 break;
             case 3 :
                 if (!is_array($args[1]) && !is_array($args[2])) {
-                    $obj->data[$args[1]] = $args[2];
+                    $obj->data[$args[1]] = static::encodeTextForODT($args[2]);
                 }
                 break;
             default:
