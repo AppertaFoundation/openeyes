@@ -146,7 +146,6 @@ foreach ($drugs as $drug) {
         $previous = $injection_api->previousInjectionsByEvent($element->event_id, $side, $drug);
     } else {
         $previous = $injection_api->previousInjections($this->patient, $episode, $side, $drug);
-        var_dump($previous);
     }
     $count = 0;
     if (count($previous)) {
