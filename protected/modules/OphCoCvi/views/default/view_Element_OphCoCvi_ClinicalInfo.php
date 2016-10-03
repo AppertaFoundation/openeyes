@@ -20,7 +20,7 @@
 <div class="element-data">
     <div class="row data-row">
         <div class="large-2 column">
-            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('consultant_id')) ?></div>
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('consultant_id')) ?>:</div>
         </div>
         <div class="large-10 column end">
             <div class="data-value"><?php echo $element->consultant ? $element->consultant->last_name : 'None' ?></div>
@@ -28,7 +28,7 @@
     </div>
     <div class="row data-row">
         <div class="large-2 column">
-            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('examination_date')) ?></div>
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('examination_date')) ?>:</div>
         </div>
         <div class="large-10 column end">
             <div class="data-value"><?php echo CHtml::encode($element->NHSDate('examination_date')) ?></div>
@@ -40,16 +40,13 @@
             </div>
         </div>
         <div class="large-4 column">
-            <div class="data-value"><?php echo $element->is_considered_blind ? $element::$BLIND_STATUS : $element::$NOT_BLIND_STATUS ?></div>
+            <div class="data-value"><?php echo $element->displayconsideredblind; ?></div>
         </div>
         <div class="large-2 column">
-            <div
-                class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('sight_varies_by_light_levels')) ?>
-                :
-            </div>
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('sight_varies_by_light_levels')) ?>:</div>
         </div>
         <div class="large-4 column end">
-            <div class="data-value"><?php echo $element->sight_varies_by_light_levels ? 'Yes' : 'No' ?></div>
+            <div class="data-value"><?php echo $element->displaylightlevels; ?></div>
         </div>
     </div>
 
@@ -59,7 +56,7 @@
                 <tbody>
                 <tr>
                     <td>
-                        <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('unaided_right_va'))?></div>
+                        <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('unaided_right_va'))?>:</div>
                     </td>
                     <td>
                         <div class="data-value"><?php echo CHtml::encode($element->unaided_right_va)?></div>
@@ -67,7 +64,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('best_corrected_right_va'))?></div>
+                        <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('best_corrected_right_va'))?>:</div>
                     </td>
                     <td>
                         <div class="data-value"><?php echo CHtml::encode($element->best_corrected_right_va)?></div>
@@ -82,7 +79,7 @@
                 <tbody>
                 <tr>
                     <td>
-                    <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('unaided_left_va'))?></div>
+                    <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('unaided_left_va'))?>:</div>
                     </td>
                     <td>
                     <div class="data-value"><?php echo CHtml::encode($element->unaided_left_va)?></div>
@@ -90,7 +87,7 @@
                 </tr>
                 <tr>
                     <td>
-                    <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('best_corrected_left_va'))?></div>
+                    <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('best_corrected_left_va'))?>:</div>
                     </td>
                     <td>
                     <div class="data-value"><?php echo CHtml::encode($element->best_corrected_left_va)?></div>
@@ -103,7 +100,7 @@
     <div class="row data-row">
         <div class="large-3 large-push-2 column">
             <div
-                class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('best_corrected_binocular_va')) ?></div>
+                class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('best_corrected_binocular_va')) ?>:</div>
         </div>
         <div class="large-3 large-push-2 column end">
             <div class="data-value"><?php echo CHtml::encode($element->best_corrected_binocular_va) ?></div>
@@ -111,13 +108,13 @@
     </div>
     <div class="row data-row">
         <div class="large-2 column">
-            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('low_vision_status_id')) ?></div>
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('low_vision_status_id')) ?>:</div>
         </div>
         <div class="large-4 column">
             <div class="data-value"><?php echo $element->low_vision_status ? $element->low_vision_status->name : 'None' ?></div>
         </div>
         <div class="large-2 column">
-            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('field_of_vision_id')) ?></div>
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('field_of_vision_id')) ?>:</div>
         </div>
         <div class="large-4 column end">
             <div
@@ -136,7 +133,7 @@
     <div class="row data-row">
         <div class="large-2 column">
             <div
-                class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('diagnoses_not_covered')) ?></div>
+                class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('diagnoses_not_covered')) ?>:</div>
         </div>
         <div class="large-10 column end">
             <div class="data-value"><?php echo CHtml::encode($element->diagnoses_not_covered) ?></div>
