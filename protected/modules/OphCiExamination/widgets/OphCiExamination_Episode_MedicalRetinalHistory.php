@@ -85,9 +85,9 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
     }
 
     /**
-     * @param \FlotChart                   $chart
-     * @param Element_OphCiExamination_OCT $oct
-     * @param string                       $side
+     * @param \FlotChart                            $chart
+     * @param models\Element_OphCiExamination_OCT   $oct
+     * @param string                                $side
      */
     protected function addSftReading(\FlotChart $chart, models\Element_OphCiExamination_OCT $oct, $side)
     {
@@ -114,10 +114,10 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
 
         $this->injections[$timestamp][$side] = $drug;
 
-        if ($side == 'right' && (!$injMin || $timestamp < $injMin)) {
+        if ($side === 'right' && (!$injMin || $timestamp < $injMin)) {
             $injMin = $timestamp;
         }
-        if ($side == 'left' && (!$injMax || $timestamp > $injMax)) {
+        if ($side === 'left' && (!$injMax || $timestamp > $injMax)) {
             $injMax = $timestamp;
         }
     }

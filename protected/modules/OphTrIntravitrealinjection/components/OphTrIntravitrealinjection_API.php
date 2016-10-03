@@ -71,61 +71,36 @@ class OphTrIntravitrealinjection_API extends BaseAPI
         $event = Event::model()->find('id = :id', array(':id' => $event_id));
         $episode = $event->episode;
         $patient = $event->episode->patient;
-        $injections = $this->previousInjections($patient, $episode, $side, $drug);
 
-        //remove this event and events in the future
-        $previousInjections = array();
-        foreach ($injections as $injection) {
-            if ($event_id > $injection['event_id']) {
-                $previousInjections[] = $injection;
-            }
-        }
-
-        return $previousInjections;
+        return $this->previousInjections($patient, $episode, $side, $drug, $event->event_date);
     }
 
     /**
      * return the set of treatment elements from previous injection events in descending order.
      *
-     * @param Patient $patient
-     * @param Episode $episode
-     * @param string  $side
-     * @param Drug    $drug
+     * @param Patient                                   $patient
+     * @param Episode                                   $episode
+     * @param string                                    $side
+     * @param OphTrIntravitrealinjection_Treatment_Drug $drug
+     * @param string                                    $since
      *
      * @throws Exception
      *
      * @return array {$side . '_drug_id' => integer, $side . '_number' => integer, 'date' => datetime}[] - array of treatment elements for the eye and optional drug
      */
-    public function previousInjections($patient, $episode, $side, $drug = null)
+    public function previousInjections($patient, $episode, $side, $drug = null, $since = 'now')
     {
         $res = array();
+        $injections = $this->injectionsSinceByEpisodeSideAndDrug($episode, $side, $drug, $since);
 
-        $previous = $this->previousInjectionsForPatientEpisode($patient, $episode);
-
-        switch ($side) {
-            case 'left':
-                $eye_ids = array(SplitEventTypeElement::LEFT, SplitEventTypeElement::BOTH);
-                break;
-            case 'right':
-                $eye_ids = array(SplitEventTypeElement::RIGHT, SplitEventTypeElement::BOTH);
-                break;
-            default:
-                throw new Exception('invalid side value provided: '.$side);
-                break;
-        }
-
-        foreach ($previous as $prev) {
-            if (in_array($prev->eye_id, $eye_ids)) {
-                if ($drug == null || $prev->{$side.'_drug_id'} == $drug->id) {
-                    $res[] = array(
-                            $side.'_drug_id' => $prev->{$side.'_drug_id'},
-                            $side.'_drug' => $prev->{$side.'_drug'}->name,
-                            $side.'_number' => $prev->{$side.'_number'},
-                            'date' => $prev->created_date,
-                            'event_id' => $prev->event_id,
-                    );
-                }
-            }
+        foreach ($injections as $injection) {
+            $res[] = array(
+                $side.'_drug_id' => $injection->{$side.'_drug_id'},
+                $side.'_drug' => $injection->{$side.'_drug'}->name,
+                $side.'_number' => $injection->{$side.'_number'},
+                'date' => $injection->event->event_date,
+                'event_id' => $injection->event_id,
+            );
         }
 
         // NOTE: we assume that all legacy injections would be from before any injections in
@@ -140,6 +115,54 @@ class OphTrIntravitrealinjection_API extends BaseAPI
         return $res;
     }
 
+
+    /**
+     * @param Episode                                   $episode
+     * @param string                                    $side
+     * @param OphTrIntravitrealinjection_Treatment_Drug $drug
+     * @param string                                    $since
+     *
+     * @return mixed
+     *
+     * @throws Exception
+     */
+    protected function injectionsSinceByEpisodeSideAndDrug(Episode $episode, $side, OphTrIntravitrealinjection_Treatment_Drug $drug, $since = 'now')
+    {
+        switch ($side) {
+            case 'left':
+                $eye_ids = array(SplitEventTypeElement::LEFT, SplitEventTypeElement::BOTH);
+                break;
+            case 'right':
+                $eye_ids = array(SplitEventTypeElement::RIGHT, SplitEventTypeElement::BOTH);
+                break;
+            default:
+                throw new Exception('invalid side value provided: '.$side);
+                break;
+        }
+
+        $sinceDate = new DateTime($since);
+
+        $criteria = new CDbCriteria();
+        $criteria->alias = 'treatment';
+        $criteria->addCondition('event.episode_id = :episode_id');
+        $criteria->addCondition('treatment.eye_id in (:eye_ids)');
+        $criteria->addCondition('event_date < :since');
+        $criteria->join = 'JOIN event ON treatment.event_id = event.id';
+        $criteria->order = 'event.event_date ASC';
+        $criteria->params = array(
+            'episode_id' => $episode->id,
+            'eye_ids' => implode(',', $eye_ids),
+            'since' => $sinceDate->format('Y-m-d'),
+        );
+
+        if ($drug->id) {
+            $criteria->addCondition('treatment.' . $side . '_drug_id = :drug_id');
+            $criteria->params['drug_id'] = $drug->id;
+        }
+
+        return Element_OphTrIntravitrealinjection_Treatment::model()->findAll($criteria);
+    }
+
     /**
      * get the most recent treatment element that has data for the given eye side.
      *
@@ -151,7 +174,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      */
     protected function getPreviousTreatmentForSide($patient, $episode, $side)
     {
-        $checker = ($side == 'left') ? 'hasLeft' : 'hasRight';
+        $checker = ($side === 'left') ? 'hasLeft' : 'hasRight';
         $treatment = $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrIntravitrealinjection_Treatment');
         if ($treatment && $treatment->$checker()) {
             return $treatment;
