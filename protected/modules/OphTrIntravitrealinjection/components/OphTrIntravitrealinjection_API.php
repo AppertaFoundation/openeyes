@@ -18,7 +18,7 @@
  */
 class OphTrIntravitrealinjection_API extends BaseAPI
 {
-    private $previous_treatments = array();
+
     private $legacy_api;
 
     /**
@@ -33,34 +33,6 @@ class OphTrIntravitrealinjection_API extends BaseAPI
         }
 
         return $this->legacy_api;
-    }
-
-    /**
-     * caching method for previous injections store.
-     *
-     * @param Patient $patient
-     * @param Episode $episode
-     *
-     * @return Element_OphTrIntravitrealinjection_Treatment[]
-     */
-    protected function previousInjectionsForPatientEpisode($patient, $episode)
-    {
-        if (!isset($this->previous_treatments[$patient->id])) {
-            $this->previous_treatments[$patient->id] = array();
-        }
-
-        if (!isset($this->previous_treatments[$patient->id][$episode->id])) {
-            $events = $this->getEventsInEpisode($patient, $episode);
-            $previous = array();
-            foreach ($events as $event) {
-                if ($treat = Element_OphTrIntravitrealinjection_Treatment::model()->find('event_id = :event_id', array(':event_id' => $event->id))) {
-                    $previous[] = $treat;
-                }
-            }
-            $this->previous_treatments[$patient->id][$episode->id] = $previous;
-        }
-
-        return $this->previous_treatments[$patient->id][$episode->id];
     }
 
     /**
