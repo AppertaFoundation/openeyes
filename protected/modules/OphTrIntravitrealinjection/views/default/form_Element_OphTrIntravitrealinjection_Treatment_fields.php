@@ -149,9 +149,9 @@ foreach ($drugs as $drug) {
     }
     $count = 0;
     if (count($previous)) {
-        $count = $previous[0][$side . '_number'];
+        $count = $previous[count($previous) - 1][$side . '_number'];
     }
-    $drug_history[$drug->id] = array_reverse($previous);
+    $drug_history[$drug->id] = $previous;
 
     $html_options['options'][$drug->id] = array(
         'data-previous' => $count,
