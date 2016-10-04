@@ -99,10 +99,13 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
 
         <input type="hidden" name="start_date">
         <?php
-        $medication_start_date = $medication->start_date ?: '';
-        $medication_start_date = (array_key_exists('enable_concise_med_history', Yii::app()->params)
-            && Yii::app()->params['enable_concise_med_history']
-            && !$medication_start_date) ? date('Y-m-d') : null;
+        $medication_start_date = null;
+        if ($medication->start_date) {
+            $medication_start_date = $medication->start_date;
+        }
+        else if (isset(Yii::app()->params['enable_concise_med_history']) && Yii::app()->params['enable_concise_med_history']) {
+            $medication_start_date = date('Y-m-d');
+        }
         $this->renderPartial(
             '/patient/_fuzzy_date',
             array(
@@ -122,7 +125,7 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
                 <label
                     class="inline"><?= CHtml::radioButton('current', $medication->end_date, array('value' => false)) ?>
                     No</label>
-                <?php if (!array_key_exists('enable_concise_med_history', Yii::app()->params) || !Yii::app()->params['enable_concise_med_history']) { ?>
+                <?php if (!Yii::app()->params['enable_concise_med_history'] || !Yii::app()->params['enable_concise_med_history']) { ?>
                     <button id="medication_from_today" type="button" class="tiny right">From today</button>
                 <?php } ?>
             </div>
@@ -131,10 +134,13 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
         <div id="medication_end" class="<?= $medication->end_date ? '' : 'hidden' ?>">
             <input type="hidden" name="end_date">
             <?php
-            $medication_end_date = $medication->end_date ?: '';
-            $medication_end_date = (array_key_exists('enable_concise_med_history', Yii::app()->params)
-                && Yii::app()->params['enable_concise_med_history']
-                && !$medication_end_date) ? date('Y-m-d') : null;
+            $medication_end_date = null;
+            if ($medication->end_date) {
+                $medication_end_date = $medication->end_date;
+            }
+            else if (isset(Yii::app()->params['enable_concise_med_history']) && Yii::app()->params['enable_concise_med_history']) {
+                $medication_end_date = date('Y-m-d');
+            }
             $this->renderPartial(
                 '/patient/_fuzzy_date',
                 array(
