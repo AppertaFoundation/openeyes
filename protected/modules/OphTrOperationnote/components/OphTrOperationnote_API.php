@@ -146,12 +146,14 @@ class OphTrOperationnote_API extends BaseAPI
     public function getLastOperationSurgeonName(\Patient $patient)
     {
         $surgeon_name = '';
-        $episode = $patient->getEpisodeForCurrentSubspecialty();
-        $surgeon_element = $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrOperationnote_Surgeon');
-        if ($episode && $surgeon_element) {
-            $surgeon_name = ($surgeon = User::model()->findByPk($surgeon_element->surgeon_id)) ? $surgeon->getFullNameAndTitle() : '';
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            if ($surgeon_element = $this->getElementForLatestEventInEpisode($episode,
+                'Element_OphTrOperationnote_Surgeon')
+            ) {
+                $surgeon_name = ($surgeon = User::model()->findByPk($surgeon_element->surgeon_id)) ? $surgeon->getFullNameAndTitle() : '';
+            }
         }
-
+        
         return $surgeon_name;
     }
 
