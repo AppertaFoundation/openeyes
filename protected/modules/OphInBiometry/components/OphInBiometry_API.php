@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -22,14 +23,21 @@ class OphInBiometry_API extends BaseAPI
     public function getLastBiometryTargetRefraction(\Patient $patient)
     {
         $target_refraction_details = 'The patient\'s target refractions are ';
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            if ($biometry_element = $this->getElementForLatestEventInEpisode($episode,
-                'Element_OphInBiometry_Calculation')
-            ) {
-                    $target_refraction_details .= $biometry_element->hasLeft() && !empty($biometry_element->{'target_refraction_left'}) ? 'LEFT: ' . $biometry_element->{'target_refraction_left'} . ' ' : 'LEFT: Not Recorded ';
-                    $target_refraction_details .= $biometry_element->hasRight() && !empty($biometry_element->{'target_refraction_right'}) ? 'RIGHT: ' . $biometry_element->{'target_refraction_right'} : 'RIGHT: Not Recorded';
+        $biometry_element_left = 'LEFT: Not Recorded ';
+        $biometry_element_right = 'RIGHT: Not Recorded';
+        $episode = $patient->getEpisodeForCurrentSubspecialty();
+        $biometry_element = $this->getElementForLatestEventInEpisode($episode, 'Element_OphInBiometry_Calculation');
+        if ($episode && $biometry_element) {
+            if ($biometry_element->hasLeft() && !empty($biometry_element->{'target_refraction_left'})) {
+                $biometry_element_left = 'LEFT: ' . $biometry_element->{'target_refraction_left'} . ' ';
+            }
+            if ($biometry_element->hasRight() && !empty($biometry_element->{'target_refraction_right'})) {
+                $biometry_element_right = 'RIGHT: ' . $biometry_element->{'target_refraction_right'};
             }
         }
+        $target_refraction_details .= $biometry_element_left . $biometry_element_right;
+
         return $target_refraction_details;
     }
+
 }

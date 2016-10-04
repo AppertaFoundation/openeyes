@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -20,8 +21,8 @@ class OphTrOperationbooking_API extends BaseAPI
 {
     /**
      * Gets latest booking diagnosis from completed operation booking or defaults to episode diagnosis.
-     *
-     * @return string
+     * @param $patient
+     * @return mixed
      */
     public function getLatestCompletedOperationBookingDiagnosis($patient)
     {
@@ -35,12 +36,14 @@ class OphTrOperationbooking_API extends BaseAPI
         $criteria->params[':status_id'] = $completed->id;
 
         if ($operation = Element_OphTrOperationbooking_Operation::model()->with(array(
-                'event' => array(
-                    'with' => 'episode',
-                ),
-            ))
-            ->find($criteria)) {
-            return Element_OphTrOperationbooking_Diagnosis::model()->find('event_id=?', array($operation->event_id))->disorder->term;
+            'event' => array(
+                'with' => 'episode',
+            ),
+        ))
+            ->find($criteria)
+        ) {
+            return Element_OphTrOperationbooking_Diagnosis::model()->find('event_id=?',
+                array($operation->event_id))->disorder->term;
         }
 
         return $patient->epd;
@@ -82,12 +85,10 @@ class OphTrOperationbooking_API extends BaseAPI
     }
 
     /**
-     *	Gets 'open' bookings for the specified episode
+     * Gets 'open' bookings for the specified episode
      * A booking is deemed open if it has no operation note linked to it.
-     *
-     *	@params integer $episode_id
-     *
-     *	@return OphTrOperationbooking_Operation_Booking[]
+     * @param $episode_id
+     * @return mixed
      */
     public function getOpenBookingsForEpisode($episode_id)
     {
@@ -127,7 +128,9 @@ class OphTrOperationbooking_API extends BaseAPI
         }
 
         if ($status_name == 'Scheduled or Rescheduled') {
-            if (OphTrOperationbooking_Operation_Booking::model()->find('element_id=? and booking_cancellation_date is not null', array($operation->id))) {
+            if (OphTrOperationbooking_Operation_Booking::model()->find('element_id=? and booking_cancellation_date is not null',
+                array($operation->id))
+            ) {
                 $status_name = 'Rescheduled';
             } else {
                 $status_name = 'Scheduled';
@@ -142,7 +145,7 @@ class OphTrOperationbooking_API extends BaseAPI
             $operation->status_id = $status->id;
 
             if (!$operation->save()) {
-                throw new Exception('Unable to save operation: '.print_r($operation->getErrors(), true));
+                throw new Exception('Unable to save operation: ' . print_r($operation->getErrors(), true));
             }
         }
     }
@@ -191,7 +194,6 @@ class OphTrOperationbooking_API extends BaseAPI
      * get the procedures for this patient and episode as a string for use in correspondence.
      *
      * @param Patient $patient
-     * @param Episode $episode
      *
      * @return string
      */
@@ -200,12 +202,14 @@ class OphTrOperationbooking_API extends BaseAPI
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
             $return = '';
 
-            if ($operation = $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrOperationbooking_Operation')) {
+            if ($operation = $this->getElementForLatestEventInEpisode($episode,
+                'Element_OphTrOperationbooking_Operation')
+            ) {
                 foreach ($operation->procedures as $i => $procedure) {
                     if ($i) {
                         $return .= ', ';
                     }
-                    $return .= $operation->eye->adjective.' '.$procedure->term;
+                    $return .= $operation->eye->adjective . ' ' . $procedure->term;
                 }
             }
 
@@ -271,7 +275,8 @@ class OphTrOperationbooking_API extends BaseAPI
                     $date = date('Y-m-d', mktime(0, 0, 0, date('m', $time), date('d', $time) + 1, date('Y', $time)));
                     $time = strtotime($date);
                 }
-                $dateList = $sequence->getWeekOccurrences($sequence->weekday, $sequence->week_selection, $time, $endDate, $date, date('Y-m-d', $endDate));
+                $dateList = $sequence->getWeekOccurrences($sequence->weekday, $sequence->week_selection, $time,
+                    $endDate, $date, date('Y-m-d', $endDate));
             } else {
                 // WEEKLY REPEAT (every x weeks)
                 // There is a repeat interval, e.g. once every two weeks. In the instance of two weeks, the
@@ -310,7 +315,8 @@ class OphTrOperationbooking_API extends BaseAPI
                 while ($time <= $endDate) {
                     $dateList[] = $date;
 
-                    $date = date('Y-m-d', mktime(0, 0, 0, date('m', $time), date('d', $time) + $days, date('Y', $time)));
+                    $date = date('Y-m-d',
+                        mktime(0, 0, 0, date('m', $time), date('d', $time) + $days, date('Y', $time)));
                     $time = strtotime($date);
                 }
             }
@@ -320,7 +326,16 @@ class OphTrOperationbooking_API extends BaseAPI
                 foreach ($dateList as $date) {
                     // TODO: Check for collisions, maybe in Session validation code
                     $new_session = new OphTrOperationbooking_Operation_Session();
-                    foreach (array('start_time', 'end_time', 'consultant', 'anaesthetist', 'paediatric', 'general_anaesthetic', 'theatre_id', 'default_admission_time') as $attribute) {
+                    foreach (array(
+                                 'start_time',
+                                 'end_time',
+                                 'consultant',
+                                 'anaesthetist',
+                                 'paediatric',
+                                 'general_anaesthetic',
+                                 'theatre_id',
+                                 'default_admission_time',
+                             ) as $attribute) {
                         $new_session->$attribute = $sequence->$attribute;
                     }
                     $new_session->date = $date;
@@ -332,7 +347,7 @@ class OphTrOperationbooking_API extends BaseAPI
                     }
                     $new_session->save();
                 }
-                $output .= "Sequence ID {$sequence->id}: Created ".count($dateList)." session(s).\n";
+                $output .= "Sequence ID {$sequence->id}: Created " . count($dateList) . " session(s).\n";
             }
         }
 
@@ -343,7 +358,9 @@ class OphTrOperationbooking_API extends BaseAPI
 
     public function findSiteForBookingEvent($event)
     {
-        if ($eo = Element_OphTrOperationbooking_Operation::model()->with('booking')->find('event_id=?', array($event->id))) {
+        if ($eo = Element_OphTrOperationbooking_Operation::model()->with('booking')->find('event_id=?',
+            array($event->id))
+        ) {
             if ($eo->booking) {
                 return $eo->booking->theatre->site;
             }
@@ -352,7 +369,9 @@ class OphTrOperationbooking_API extends BaseAPI
 
     public function findTheatreForBookingEvent($event)
     {
-        if ($eo = Element_OphTrOperationbooking_Operation::model()->with('booking')->find('event_id=?', array($event->id))) {
+        if ($eo = Element_OphTrOperationbooking_Operation::model()->with('booking')->find('event_id=?',
+            array($event->id))
+        ) {
             if ($eo->booking) {
                 return $eo->booking->theatre;
             }
@@ -375,33 +394,13 @@ class OphTrOperationbooking_API extends BaseAPI
 
     public function findBookingByEventID($event_id)
     {
-        if ($eo = Element_OphTrOperationbooking_Operation::model()->with('booking')->find('event_id=?', array($event_id))) {
+        if ($eo = Element_OphTrOperationbooking_Operation::model()->with('booking')->find('event_id=?',
+            array($event_id))
+        ) {
             return $eo->booking;
         }
 
         return false;
-    }
-
-    /**
-     * To get All Bookings associated with OperationNotes
-     * @param Patient $patient
-     * @return array|string
-     */
-    public function getAllBookingsWithOperationNote(\Patient $patient)
-    {
-        $event_type = $this->getEventType();
-        $criteria = new \CDbCriteria;
-        $criteria->select = '*';
-        $criteria->join = 'join episode on t.episode_id = episode.id and patient_id = :patient_id and event_type_id = :event_type_id';
-        $criteria->join .= ' join et_ophtroperationnote_procedurelist on booking_event_id = t.id';
-        $criteria->order = 't.event_date desc';
-        $criteria->condition = 't.deleted != 1';
-        $criteria->params = array(':patient_id' => $patient->id, ':event_type_id' => $event_type->id);
-        $opnote_mapped_bookings = '';
-        foreach (\Event::model()->findAll($criteria) as $event) {
-            $opnote_mapped_bookings[] = $event->id;
-        }
-        return $opnote_mapped_bookings;
     }
 
     /**
@@ -411,20 +410,25 @@ class OphTrOperationbooking_API extends BaseAPI
      */
     public function getAllBookingsWithoutOperationNotes(\Patient $patient)
     {
-        $opnote_bookings = implode(',', $this->getAllBookingsWithOperationNote($patient));
         $event_type = $this->getEventType();
         $criteria = new \CDbCriteria;
-        $criteria->select = '*';
-        $criteria->join = 'join episode on t.episode_id = episode.id and patient_id = :patient_id and event_type_id = :event_type_id';
-        $criteria->order = 't.event_date desc';
-        $criteria->condition = "t.deleted != 1 and t.id not in (:opnote_bookings)";
-        $criteria->params = array(':patient_id' => $patient->id, ':event_type_id' => $event_type->id, ':opnote_bookings' => $opnote_bookings);
-
-        foreach (\Event::model()->findAll($criteria) as $event) {
-            $bookings_without_opnote[] = $event->id;
+        $criteria->select = 't.id';
+        $criteria->join = 'join episode on t.episode_id = episode.id ';
+        $criteria->join .= 'left join et_ophtroperationnote_procedurelist eop on t.id = eop.booking_event_id';
+        $criteria->condition = 't.event_type_id = :event_type_id and episode.patient_id = :patient_id ';
+        $criteria->condition .= 'and eop.booking_event_id is null';
+        $criteria->params = array(
+            ':patient_id' => $patient->id,
+            ':event_type_id' => $event_type->id,
+        );
+        $not_booked_events = array();
+        $event_results = \Event::model()->findAll($criteria);
+        if ($event_results) {
+            foreach ($event_results as $event) {
+                $not_booked_events[] = $event->id;
+            }
         }
-        $bookings_without_opnote =  isset($bookings_without_opnote) ? implode(',', $bookings_without_opnote) : '';
-        return $bookings_without_opnote;
+        return($not_booked_events ? implode(',', $not_booked_events) : '');
     }
 
 }
