@@ -77,6 +77,8 @@ If either are omitted the default vales of "openeyes.vm"" and "OpenEyes Dev Serv
 
 **Note:** if the options are omitted the default values are used, the command line options have to be before the vagrant command for them to work.
 
+**Further Note:** These options must be used each time the box is brought up; at the moment vagrant does not respect the original values used, and will fall over. See [issue 457](https://github.com/openeyes/OpenEyes/issues/457)
+
 #### XDebug
 
 Is enabled in Apache by default and carries an up to 1 second time penalty on requests, if you don't need or won't be using XDebug at all then commenting changing lines 85 - 86 in `ansible/vars/all.yml` to comment out the package name will ensure it isn't installed.
@@ -115,6 +117,7 @@ And if that's not enough there is the Vagrant [documentation](https://www.vagran
 
 Additional / Outstanding tasks to be completed:
 
+* Resolve PHP 5.3 support [issue 398](https://github.com/openeyes/OpenEyes/issues/398)
 * Changes to support AWS provisioning (although this may be better left to a build specific Ansible playbook)
 * Tailor the roles better to the OE build rather than coding around more generic [Ansible Galaxy](https://galaxy.ansible.com) based roles.
 
