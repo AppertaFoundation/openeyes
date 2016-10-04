@@ -429,7 +429,7 @@ class OphTrOperationbooking_API extends BaseAPI
             }
         }
 
-        return($not_booked_events ? implode(',', $not_booked_events) : '');
+        return ($not_booked_events ? implode(',', $not_booked_events) : '');
     }
 
 }
