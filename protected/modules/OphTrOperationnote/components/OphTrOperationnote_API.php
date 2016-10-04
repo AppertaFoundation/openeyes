@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -23,8 +24,6 @@ class OphTrOperationnote_API extends BaseAPI
      * if the $snomed_terms is true, return the snomed_term, otherwise the standard text term.
      *
      * @param Patient $patient
-     * @param Episode $episode
-     * @param bool    $snomed_terms
      *
      * @return string
      */
@@ -33,12 +32,14 @@ class OphTrOperationnote_API extends BaseAPI
         $return = '';
 
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            if ($plist = $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrOperationnote_ProcedureList')) {
+            if ($plist = $this->getElementForLatestEventInEpisode($episode,
+                'Element_OphTrOperationnote_ProcedureList')
+            ) {
                 foreach ($plist->procedures as $i => $procedure) {
                     if ($i) {
                         $return .= ', ';
                     }
-                    $return .= $plist->eye->adjective.' '.$procedure->term;
+                    $return .= $plist->eye->adjective . ' ' . $procedure->term;
                 }
             }
         }
@@ -49,7 +50,9 @@ class OphTrOperationnote_API extends BaseAPI
     public function getLetterProceduresBookingEventID($patient)
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            if ($plist = $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrOperationnote_ProcedureList')) {
+            if ($plist = $this->getElementForLatestEventInEpisode($episode,
+                'Element_OphTrOperationnote_ProcedureList')
+            ) {
                 return $plist->booking_event_id;
             }
         }
@@ -58,7 +61,9 @@ class OphTrOperationnote_API extends BaseAPI
     public function getLastEye($patient)
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            if ($plist = $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrOperationnote_ProcedureList')) {
+            if ($plist = $this->getElementForLatestEventInEpisode($episode,
+                'Element_OphTrOperationnote_ProcedureList')
+            ) {
                 return $plist->eye_id;
             }
         }
@@ -69,12 +74,14 @@ class OphTrOperationnote_API extends BaseAPI
         $return = '';
 
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            if ($plist = $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrOperationnote_ProcedureList')) {
+            if ($plist = $this->getElementForLatestEventInEpisode($episode,
+                'Element_OphTrOperationnote_ProcedureList')
+            ) {
                 foreach ($plist->procedures as $i => $procedure) {
                     if ($i) {
                         $return .= ', ';
                     }
-                    $return .= $plist->eye->adjective.' '.$procedure->snomed_term;
+                    $return .= $plist->eye->adjective . ' ' . $procedure->snomed_term;
                 }
             }
         }
@@ -102,10 +109,12 @@ class OphTrOperationnote_API extends BaseAPI
         $patient_latest_event = $patient->getLatestOperationNoteEventUniqueCode();
         $event_unique_code = '';
         if (!empty($patient_latest_event)) {
-            $salt = (isset(Yii::app()->params['portal']['credentials']['client_id'])) ? Yii::app()->params['portal']['credentials']['client_id'] : '';
-            $check_digit1 = new CheckDigitGenerator(Yii::app()->params['institution_code'].$patient_latest_event, $salt);
-            $check_digit2 = new CheckDigitGenerator($patient_latest_event.$patient->dob, $salt);
-            $event_unique_code = Yii::app()->params['institution_code'].$check_digit1->generateCheckDigit().'-'.$patient_latest_event.'-'.$check_digit2->generateCheckDigit();
+            $salt = isset(Yii::app()->params['portal']['credentials']['client_id']) ? Yii::app()->params['portal']['credentials']['client_id'] : '';
+            $check_digit1 = new CheckDigitGenerator(Yii::app()->params['institution_code'] . $patient_latest_event,
+                $salt);
+            $check_digit2 = new CheckDigitGenerator($patient_latest_event . $patient->dob, $salt);
+            $event_unique_code = Yii::app()->params['institution_code'] . $check_digit1->generateCheckDigit()
+                . '-' . $patient_latest_event . '-' . $check_digit2->generateCheckDigit();
         }
 
         return $event_unique_code;
@@ -121,11 +130,12 @@ class OphTrOperationnote_API extends BaseAPI
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
             $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
             $event = $this->getMostRecentEventInEpisode($episode->id, $event_type->id);
-            if (isset($event->event_date))
-            {
-                return date('d F Y', strtotime($event->event_date));
+            if (isset($event->event_date)) {
+                return Helper::convertDate2NHS($event->event_date);
             }
         }
+
+        return '';
     }
 
     /**
@@ -136,11 +146,12 @@ class OphTrOperationnote_API extends BaseAPI
     public function getLastOperationSurgeonName(\Patient $patient)
     {
         $surgeon_name = '';
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            if ($surgeon_element = $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrOperationnote_Surgeon')) {
-                $surgeon_name = ($surgeon = User::model()->findByPk($surgeon_element->surgeon_id)) ? $surgeon->getFullNameAndTitle() : '';
-            }
+        $episode = $patient->getEpisodeForCurrentSubspecialty();
+        $surgeon_element = $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrOperationnote_Surgeon');
+        if ($episode && $surgeon_element) {
+            $surgeon_name = ($surgeon = User::model()->findByPk($surgeon_element->surgeon_id)) ? $surgeon->getFullNameAndTitle() : '';
         }
+
         return $surgeon_name;
     }
 
@@ -152,30 +163,45 @@ class OphTrOperationnote_API extends BaseAPI
     public function getLastOperationLocation(\Patient $patient)
     {
         $site = '';
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            if ($site_element = $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrOperationnote_SiteTheatre'))
-            {
-                $site = $site_element->site->name;
-            }
+        $episode = $patient->getEpisodeForCurrentSubspecialty();
+        $site_element = $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrOperationnote_SiteTheatre');
+        if ($episode && $site_element) {
+            $site = $site_element->site->name;
         }
+
         return $site;
     }
 
     /**
-     * Get the last operation Incision Merdian
+     * Cataract Element from the latest operation note
+     * @param Patient $patient
+     * @return Element_OphTrOperationnote_Cataract | bool
+     */
+    public function getLatestCataractElementForEpisode(\Patient $patient)
+    {
+        $episode = $patient->getEpisodeForCurrentSubspecialty();
+        if ($episode) {
+            $cataract_element = $this->getElementForLatestEventInEpisode($episode,
+                'Element_OphTrOperationnote_Cataract');
+
+            return ($cataract_element ?: false);
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the last operation Incision Meridian
      * @param Patient $patient
      * @return string
      */
     public function getLastOperationIncisionMeridian(\Patient $patient)
     {
         $meridian = '';
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            if ($cataract_element = $this->getElementForLatestEventInEpisode($episode,
-                'Element_OphTrOperationnote_Cataract')
-            ) {
-                $meridian = $cataract_element->meridian ? $cataract_element->meridian . ' degrees' : '';
-            }
+        if ($cataract_element = $this->getLatestCataractElementForEpisode($patient)) {
+            $meridian = $cataract_element->meridian ? $cataract_element->meridian . ' degrees' : '';
         }
+
         return $meridian;
     }
 
@@ -187,13 +213,10 @@ class OphTrOperationnote_API extends BaseAPI
     public function getLastOperationPredictedRefraction(\Patient $patient)
     {
         $predicted_refraction = '';
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            if ($cataract_element = $this->getElementForLatestEventInEpisode($episode,
-                'Element_OphTrOperationnote_Cataract')
-            ) {
-                $predicted_refraction = $cataract_element->predicted_refraction ? $cataract_element->predicted_refraction : '';
-            }
+        if ($cataract_element = $this->getLatestCataractElementForEpisode($patient)) {
+            $predicted_refraction = $cataract_element->predicted_refraction ?: '';
         }
+
         return $predicted_refraction;
     }
 
@@ -205,13 +228,10 @@ class OphTrOperationnote_API extends BaseAPI
     public function getLastOperationDetails(\Patient $patient)
     {
         $details = '';
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            if ($cataract_element = $this->getElementForLatestEventInEpisode($episode,
-                'Element_OphTrOperationnote_Cataract')
-            ) {
-                $details = $cataract_element->report2 ? $cataract_element->report2 : '';
-            }
+        if ($cataract_element = $this->getLatestCataractElementForEpisode($patient)) {
+            $details = $cataract_element->report2 ?: '';
         }
+
         return $details;
     }
 
