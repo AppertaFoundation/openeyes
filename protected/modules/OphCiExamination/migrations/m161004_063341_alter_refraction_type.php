@@ -9,17 +9,7 @@ class m161004_063341_alter_refraction_type extends CDbMigration
 
 	public function down()
 	{
-	    return true;
+        $this->update('ophciexamination_refraction_type', array('name' => 'Own Glasses'), 'name = "Focimetry"');
 	}
-
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
-
-	public function safeDown()
-	{
-	}
-	*/
+    
 }
