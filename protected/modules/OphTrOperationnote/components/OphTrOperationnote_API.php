@@ -110,9 +110,14 @@ class OphTrOperationnote_API extends BaseAPI
         $event_unique_code = '';
         if (!empty($patient_latest_event)) {
             $salt = isset(Yii::app()->params['portal']['credentials']['client_id']) ? Yii::app()->params['portal']['credentials']['client_id'] : '';
-            $check_digit1 = new CheckDigitGenerator(Yii::app()->params['institution_code'] . $patient_latest_event,
-                $salt);
-            $check_digit2 = new CheckDigitGenerator($patient_latest_event . $patient->dob, $salt);
+            $check_digit1 = new CheckDigitGenerator(
+                Yii::app()->params['institution_code'] . $patient_latest_event,
+                $salt
+            );
+            $check_digit2 = new CheckDigitGenerator(
+                $patient_latest_event . $patient->dob,
+                $salt
+            );
             $event_unique_code = Yii::app()->params['institution_code'] . $check_digit1->generateCheckDigit()
                 . '-' . $patient_latest_event . '-' . $check_digit2->generateCheckDigit();
         }
@@ -121,8 +126,10 @@ class OphTrOperationnote_API extends BaseAPI
     }
 
     /**
-     *  Get the last operation date
+     * Get the last operation date
+     *
      * @param Patient $patient
+     *
      * @return false|string
      */
     public function getLastOperationDate(\Patient $patient)
@@ -138,18 +145,21 @@ class OphTrOperationnote_API extends BaseAPI
         return '';
     }
 
+
     /**
-     *  Get the last operation's surgeon name
+     * Get the last operation's surgeon name
+     *
      * @param Patient $patient
-     * @return false|string
+     *
+     * @return string
      */
     public function getLastOperationSurgeonName(\Patient $patient)
     {
         $surgeon_name = '';
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            if ($surgeon_element = $this->getElementForLatestEventInEpisode($episode,
-                'Element_OphTrOperationnote_Surgeon')
-            ) {
+        $episode = $patient->getEpisodeForCurrentSubspecialty();
+        if ($episode) {
+            $surgeon_element = $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrOperationnote_Surgeon');
+            if ($surgeon_element) {
                 $surgeon_name = ($surgeon = User::model()->findByPk($surgeon_element->surgeon_id)) ? $surgeon->getFullNameAndTitle() : '';
             }
         }
@@ -159,16 +169,20 @@ class OphTrOperationnote_API extends BaseAPI
 
     /**
      * Get the last operation's location
+     *
      * @param Patient $patient
+     *
      * @return string
      */
     public function getLastOperationLocation(\Patient $patient)
     {
         $site = '';
         $episode = $patient->getEpisodeForCurrentSubspecialty();
-        $site_element = $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrOperationnote_SiteTheatre');
-        if ($episode && $site_element) {
-            $site = $site_element->site->name;
+        if ($episode) {
+            $site_element = $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrOperationnote_SiteTheatre');
+            if($site_element){
+                $site = $site_element->site->name;
+            }
         }
 
         return $site;
@@ -176,17 +190,19 @@ class OphTrOperationnote_API extends BaseAPI
 
     /**
      * Cataract Element from the latest operation note
+     *
      * @param Patient $patient
+     *
      * @return Element_OphTrOperationnote_Cataract | bool
      */
     public function getLatestCataractElementForEpisode(\Patient $patient)
     {
         $episode = $patient->getEpisodeForCurrentSubspecialty();
         if ($episode) {
-            $cataract_element = $this->getElementForLatestEventInEpisode($episode,
-                'Element_OphTrOperationnote_Cataract');
-
-            return ($cataract_element ?: false);
+            $cataract_element = $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrOperationnote_Cataract');
+            if ($cataract_element) {
+                return $cataract_element;
+            }
         }
 
         return false;

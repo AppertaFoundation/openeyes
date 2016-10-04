@@ -358,53 +358,48 @@ class OphTrOperationbooking_API extends BaseAPI
 
     public function findSiteForBookingEvent($event)
     {
-        if ($eo = Element_OphTrOperationbooking_Operation::model()->with('booking')->find('event_id=?',
-            array($event->id))
-        ) {
-            if ($eo->booking) {
-                return $eo->booking->theatre->site;
+        if ($operation = Element_OphTrOperationbooking_Operation::model()->with('booking')->find('event_id=?', array($event->id))) {
+            if ($operation->booking) {
+                return $operation->booking->theatre->site;
             }
         }
     }
 
     public function findTheatreForBookingEvent($event)
     {
-        if ($eo = Element_OphTrOperationbooking_Operation::model()->with('booking')->find('event_id=?',
-            array($event->id))
-        ) {
-            if ($eo->booking) {
-                return $eo->booking->theatre;
+        if ($operation = Element_OphTrOperationbooking_Operation::model()->with('booking')->find('event_id=?', array($event->id))) {
+            if ($operation->booking) {
+                return $operation->booking->theatre;
             }
         }
     }
 
     public function canUpdate($event_id)
     {
-        $eo = Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($event_id));
+        $operation = Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($event_id));
 
-        return $eo->isEditable();
+        return $operation->isEditable();
     }
 
     public function showDeleteIcon($event_id)
     {
-        $eo = Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($event_id));
+        $operation = Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($event_id));
 
-        return $eo->isEditable();
+        return $operation->isEditable();
     }
 
     public function findBookingByEventID($event_id)
     {
-        if ($eo = Element_OphTrOperationbooking_Operation::model()->with('booking')->find('event_id=?',
-            array($event_id))
-        ) {
-            return $eo->booking;
+        if ($operation = Element_OphTrOperationbooking_Operation::model()->with('booking')->find('event_id=?', array($event_id))) {
+            return $operation->booking;
         }
 
         return false;
     }
 
     /**
-     * To get All Bookings Without OperationNotes
+     * To get All Booked procedures Without OperationNotes
+     *
      * @param Patient $patient
      * @return array|string
      */
@@ -412,24 +407,27 @@ class OphTrOperationbooking_API extends BaseAPI
     {
         $event_type = $this->getEventType();
         $criteria = new \CDbCriteria;
-        $criteria->select = 't.id';
-        $criteria->join = 'join episode on t.episode_id = episode.id ';
-        $criteria->join .= 'left join et_ophtroperationnote_procedurelist eop on t.id = eop.booking_event_id';
-        $criteria->condition = 't.event_type_id = :event_type_id and episode.patient_id = :patient_id ';
-        $criteria->condition .= 'and eop.booking_event_id is null';
+        $criteria->join .= 'join et_ophtroperationbooking_operation on t.element_id = et_ophtroperationbooking_operation.id ';
+        $criteria->join .= 'join event on et_ophtroperationbooking_operation.event_id = event.id ';
+        $criteria->join .= 'join episode on event.episode_id = episode.id ';
+        $criteria->join .= 'left join et_ophtroperationnote_procedurelist eop on event.id = eop.booking_event_id';
+        $criteria->addCondition('event.deleted <> 1');
+        $criteria->addCondition('event.event_type_id = :event_type_id and episode.patient_id = :patient_id');
+        $criteria->addCondition('episode.patient_id = :patient_id');
+        $criteria->addCondition('eop.booking_event_id is null');
         $criteria->params = array(
             ':patient_id' => $patient->id,
             ':event_type_id' => $event_type->id,
         );
         $not_booked_events = array();
-        $event_results = \Event::model()->findAll($criteria);
-        if ($event_results) {
-            foreach ($event_results as $event) {
-                $not_booked_events[] = $event->id;
+        $booking_procs = OphTrOperationbooking_Operation_Procedures::model()->findAll($criteria);
+        if ($booking_procs) {
+            foreach ($booking_procs as $proc) {
+                $not_booked_events[] = $proc->procedure->term;
             }
         }
 
-        return ($not_booked_events ? implode(',', $not_booked_events) : '');
+        return implode(', ', $not_booked_events);
     }
 
 }
