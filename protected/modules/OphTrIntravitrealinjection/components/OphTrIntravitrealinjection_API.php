@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -72,7 +73,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
             }
         }
 
-        if(!$drug || get_class($drug) !== 'OphTrIntravitrealinjection_Treatment_Drug'){
+        if (!$drug || get_class($drug) !== 'OphTrIntravitrealinjection_Treatment_Drug') {
             $drug = new OphTrIntravitrealinjection_Treatment_Drug();
         }
 
@@ -80,9 +81,9 @@ class OphTrIntravitrealinjection_API extends BaseAPI
 
         foreach ($injections as $injection) {
             $res[] = array(
-                $side.'_drug_id' => $injection->{$side.'_drug_id'},
-                $side.'_drug' => $injection->{$side.'_drug'}->name,
-                $side.'_number' => $injection->{$side.'_number'},
+                $side . '_drug_id' => $injection->{$side . '_drug_id'},
+                $side . '_drug' => $injection->{$side . '_drug'}->name,
+                $side . '_number' => $injection->{$side . '_number'},
                 'date' => $injection->event->event_date,
                 'event_id' => $injection->event_id,
             );
@@ -112,7 +113,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
                 $eye_ids = array(SplitEventTypeElement::RIGHT, SplitEventTypeElement::BOTH);
                 break;
             default:
-                throw new Exception('invalid side value provided: '.$side);
+                throw new Exception('invalid side value provided: ' . $side);
                 break;
         }
 
@@ -169,7 +170,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
     public function getLetterTreatmentDrugForSide($patient, $episode, $side)
     {
         if ($injection = $this->getPreviousTreatmentForSide($patient, $episode, $side)) {
-            return $injection->{$side.'_drug'}->name;
+            return $injection->{$side . '_drug'}->name;
         }
     }
 
@@ -215,12 +216,12 @@ class OphTrIntravitrealinjection_API extends BaseAPI
             $right = $this->getLetterTreatmentDrugForSide($patient, $episode, 'right');
             $left = $this->getLetterTreatmentDrugForSide($patient, $episode, 'left');
             if ($right) {
-                $res = $right.' injection to the right eye';
+                $res = $right . ' injection to the right eye';
                 if ($left) {
-                    $res .= ', and '.$left.' injection to the left eye';
+                    $res .= ', and ' . $left . ' injection to the left eye';
                 }
             } elseif ($left) {
-                $res = $left.' injection on the left eye';
+                $res = $left . ' injection on the left eye';
             }
 
             return $res;
@@ -239,7 +240,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
     public function getLetterTreatmentNumberForSide($patient, $episode, $side)
     {
         if ($injection = $this->getPreviousTreatmentForSide($patient, $episode, $side)) {
-            return $injection->{$side.'_number'};
+            return $injection->{$side . '_number'};
         }
     }
 
@@ -282,12 +283,12 @@ class OphTrIntravitrealinjection_API extends BaseAPI
         $left = $this->getLetterTreatmentNumberLeft($patient);
         $res = '';
         if ($right) {
-            $res = $right.' on the right eye';
+            $res = $right . ' on the right eye';
             if ($left) {
-                $res .= ', and '.$left.' on the left eye';
+                $res .= ', and ' . $left . ' on the left eye';
             }
         } elseif ($left) {
-            $res = $left.' on the left eye';
+            $res = $left . ' on the left eye';
         }
 
         return $res;
@@ -306,10 +307,10 @@ class OphTrIntravitrealinjection_API extends BaseAPI
             if ($el = $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrIntravitrealinjection_PostInjectionExamination')) {
                 $drops = array();
                 if ($el->hasRight()) {
-                    $drops[] = $el->right_drops->name.' to the right eye';
+                    $drops[] = $el->right_drops->name . ' to the right eye';
                 }
                 if ($el->hasLeft()) {
-                    $drops[] = $el->left_drops->name.' to the left eye';
+                    $drops[] = $el->left_drops->name . ' to the left eye';
                 }
 
                 return implode(', and ', $drops);
