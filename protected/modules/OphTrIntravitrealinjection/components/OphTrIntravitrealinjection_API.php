@@ -72,6 +72,10 @@ class OphTrIntravitrealinjection_API extends BaseAPI
             }
         }
 
+        if(!$drug || get_class($drug) !== 'OphTrIntravitrealinjection_Treatment_Drug'){
+            $drug = new OphTrIntravitrealinjection_Treatment_Drug();
+        }
+
         $injections = $this->injectionsSinceByEpisodeSideAndDrug($episode, $side, $drug, $since);
 
         foreach ($injections as $injection) {
