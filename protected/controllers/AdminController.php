@@ -1868,9 +1868,7 @@ class AdminController extends BaseAdminController
                         $setting = new SettingInstallation();
                         $setting->key = $metadata->key;
                     }
-
-                    $setting->value = @$_POST[$metadata->key];
-
+                    $setting->value = htmlspecialchars(@$_POST[$metadata->key]);
                     if (!$setting->save()) {
                         $errors = $setting->errors;
                     } else {
