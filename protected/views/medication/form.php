@@ -21,7 +21,8 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
 
         <input type="hidden" name="medication_id" id="medication_id" value="<?= $medication->id ?>"/>
         <input type="hidden" name="patient_id" id="medication_id" value="<?= $patient->id ?>"/>
-        <input type="hidden" name="prescription_item_id" id="prescription_item_id" value="<?= $medication->prescription_item_id ?>"/>
+        <input type="hidden" name="prescription_item_id" id="prescription_item_id"
+               value="<?= $medication->prescription_item_id ?>"/>
 
         <div class="field-row row">
             <div class="<?= $form->columns('label'); ?>">
@@ -69,7 +70,8 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
             </div>
         </div>
 
-        <?php $form->widget('application.widgets.TextField', array('element' => $medication, 'field' => 'dose', 'name' => 'dose')); ?>
+        <?php $form->widget('application.widgets.TextField',
+            array('element' => $medication, 'field' => 'dose', 'name' => 'dose')); ?>
 
         <?php $form->widget(
             'application.widgets.DropDownList',
@@ -77,7 +79,7 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
                 'element' => $medication,
                 'field' => 'route_id',
                 'data' => 'DrugRoute',
-                'htmlOptions' => array('name' => 'route_id', 'empty' => '- Select -')
+                'htmlOptions' => array('name' => 'route_id', 'empty' => '- Select -'),
             )
         ); ?>
 
@@ -93,19 +95,16 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
                 'element' => $medication,
                 'field' => 'frequency_id',
                 'data' => 'DrugFrequency',
-                'htmlOptions' => array('name' => 'frequency_id', 'empty' => '- Select -')
+                'htmlOptions' => array('name' => 'frequency_id', 'empty' => '- Select -'),
             )
         ); ?>
 
         <input type="hidden" name="start_date">
         <?php
         $medication_start_date = null;
-        if ($medication->start_date)
-        {
+        if ($medication->start_date) {
             $medication_start_date = $medication->start_date;
-        }
-        else if (isset(Yii::app()->params['enable_concise_med_history']) && Yii::app()->params['enable_concise_med_history'])
-        {
+        } elseif (isset(Yii::app()->params['enable_concise_med_history']) && Yii::app()->params['enable_concise_med_history']) {
             $medication_start_date = date('Y-m-d');
         }
         $this->renderPartial(
@@ -114,7 +113,7 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
                 'form' => $form,
                 'date' => $medication_start_date,
                 'class' => 'medication_start_date',
-                'label' => 'Date from'
+                'label' => 'Date from',
             )
         ); ?>
 
@@ -137,12 +136,9 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
             <input type="hidden" name="end_date">
             <?php
             $medication_end_date = null;
-            if ($medication->end_date)
-            {
+            if ($medication->end_date) {
                 $medication_end_date = $medication->end_date;
-            }
-            else if (isset(Yii::app()->params['enable_concise_med_history']) && Yii::app()->params['enable_concise_med_history'])
-            {
+            } elseif (isset(Yii::app()->params['enable_concise_med_history']) && Yii::app()->params['enable_concise_med_history']) {
                 $medication_end_date = date('Y-m-d');
             }
             $this->renderPartial(
@@ -151,7 +147,7 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
                     'form' => $form,
                     'date' => $medication_end_date,
                     'class' => 'medication_end_date',
-                    'label' => 'Date to'
+                    'label' => 'Date to',
                 )
             );
             $this->renderPartial('stop_reason', array('form' => $form, 'medication' => $medication));
