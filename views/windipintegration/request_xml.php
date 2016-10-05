@@ -22,7 +22,7 @@
 		<timestamp><?=$timestamp?></timestamp>
 		<xmlid><?=$message_id?></xmlid>
 	</security>
-	<revision number="3.1" />
+	<revision number="4.2" />
 	<applicationid><?=$application_id?></applicationid>
 	<user>
 		<id><?=$username?></id>
