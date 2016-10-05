@@ -150,7 +150,7 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
         $command = Yii::app()->db->createCommand()
             ->select(
                 'p.id as patient_id, treat.left_drug_id, treat.right_drug_id, treat.left_number, treat.right_number, e.id,
-						e.created_date, c.first_name, c.last_name, e.created_date, p.hos_num,p.gender, p.dob, eye.name AS eye, site.name as site_name'
+						e.event_date, c.first_name, c.last_name, e.created_date, p.hos_num,p.gender, p.dob, eye.name AS eye, site.name as site_name'
             )
             ->from('et_ophtrintravitinjection_treatment treat')
             ->join('event e', 'e.id = treat.event_id')
@@ -160,13 +160,13 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
             ->join('eye', 'eye.id = treat.eye_id')
             ->join('et_ophtrintravitinjection_site insite', 'insite.event_id = treat.event_id')
             ->leftJoin('site', 'insite.site_id = site.id')
-            ->order('p.id, e.created_date asc');
+            ->order('p.id, e.event_date asc');
         // for debug
         if ($this->patient_id) {
-            $where = 'ep.patient_id = :pat_id and e.deleted = 0 and ep.deleted = 0 and e.created_date >= :from_date and e.created_date < (:to_date + interval 1 day)';
+            $where = 'ep.patient_id = :pat_id and e.deleted = 0 and ep.deleted = 0 and e.event_date >= :from_date and e.event_date < (:to_date + interval 1 day)';
             $params = array(':from_date' => $date_from, ':to_date' => $date_to, ':pat_id' => $this->patient_id);
         } else {
-            $where = 'e.deleted = 0 and ep.deleted = 0 and e.created_date >= :from_date and e.created_date < (:to_date + interval 1 day)';
+            $where = 'e.deleted = 0 and ep.deleted = 0 and e.event_date >= :from_date and e.event_date < (:to_date + interval 1 day)';
             $params = array(':from_date' => $date_from, ':to_date' => $date_to);
         }
 
@@ -208,7 +208,7 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
                 $site = 'Unknown';
             }
             foreach (array('left', 'right') as $side) {
-                $dt = date('j M Y', strtotime($row['created_date']));
+                $dt = date('j M Y', strtotime($row['event_date']));
                 if ($drug = $this->getDrugById($row[$side . '_drug_id'])) {
                     $patient_data[$side][$drug->name][$site]['last_injection_date'] = $dt;
                     $patient_data[$side][$drug->name][$site]['injection_number'] = $row[$side . '_number'];
