@@ -224,12 +224,12 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
 
     protected function getInjections($date_from, $date_to, $given_by_user, $drug, $pre_antisept_drug)
     {
-        $where = 'e.deleted = 0 and ep.deleted = 0 and e.created_date >= :from_date and e.created_date < (:to_date + interval 1 day)';
+        $where = 'e.deleted = 0 and ep.deleted = 0 and e.event_date >= :from_date and e.event_date < (:to_date + interval 1 day)';
 
         $command = Yii::app()->db->createCommand()
                 ->select(
                         'p.id as patient_id, treat.left_drug_id, treat.right_drug_id, treat.left_number, treat.right_number, e.id,
-						e.created_date, c.first_name, c.last_name, e.created_date, p.hos_num,p.gender, p.dob, eye.name AS eye, site.name as site_name,treat.left_injection_given_by_id, treat.right_injection_given_by_id,
+						e.event_date, c.first_name, c.last_name, e.created_date, p.hos_num,p.gender, p.dob, eye.name AS eye, site.name as site_name,treat.left_injection_given_by_id, treat.right_injection_given_by_id,
 						treat.left_pre_antisept_drug_id, treat.right_pre_antisept_drug_id, anteriorseg.left_lens_status_id, anteriorseg.right_lens_status_id'
                 )
                 ->from('et_ophtrintravitinjection_treatment treat')
@@ -241,7 +241,7 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
                 ->join('et_ophtrintravitinjection_site insite', 'insite.event_id = treat.event_id')
                 ->join('et_ophtrintravitinjection_anteriorseg anteriorseg', 'anteriorseg.event_id = treat.event_id')
                 ->join('site', 'insite.site_id = site.id')
-                ->order('p.id, e.created_date asc');
+                ->order('p.id, e.event_date asc');
         $params = array(':from_date' => $date_from, ':to_date' => $date_to);
 
         if ($given_by_user) {
@@ -263,10 +263,10 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
 
         $results = array();
         foreach ($command->queryAll(true, $params) as $row) {
-            $diagnosisData = $this->getDiagnosisData($row['patient_id'], $row['created_date']);
+            $diagnosisData = $this->getDiagnosisData($row['patient_id'], $row['event_date']);
 
             $record = array(
-                    'injection_date' => date('j M Y', strtotime($row['created_date'])),
+                    'injection_date' => date('j M Y', strtotime($row['event_date'])),
                     'patient_hosnum' => $row['hos_num'],
                     'patient_firstname' => $row['first_name'],
                     'patient_surname' => $row['last_name'],
@@ -288,7 +288,7 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
                     'diagnosis_right' => $this->getDiagnosisName($diagnosisData['right_diagnosis_id']),
             );
 
-            $this->appendExaminationValues($record, $row['patient_id'], $row['created_date']);
+            $this->appendExaminationValues($record, $row['patient_id'], $row['event_date']);
 
             $results[] = $record;
         }
@@ -509,9 +509,9 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
             $before = null;
             $after = null;
             foreach ($vas as $va) {
-                if ($va->created_date < $event_date) {
+                if ($va->event->event_date < $event_date) {
                     $before = $va;
-                } elseif ($va->created_date > $event_date) {
+                } elseif ($va->event->event_date > $event_date) {
                     $after = $va;
                     break;
                 }
@@ -564,7 +564,7 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
             }
             $criteria = new CDbCriteria();
             $criteria->addInCondition('event_id', $event_ids);
-            $this->_patient_vas = OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity::model()->with('right_readings', 'left_readings')->findAll($criteria);
+            $this->_patient_vas = OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity::model()->with('right_readings', 'left_readings','event')->findAll($criteria);
         }
 
         return $this->_patient_vas;
