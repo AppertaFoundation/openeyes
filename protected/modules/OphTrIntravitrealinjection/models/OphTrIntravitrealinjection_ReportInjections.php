@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -87,27 +88,29 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
 
         if ($this->given_by_id) {
             if (!$user = User::model()->findByPk($this->given_by_id)) {
-                throw new Exception('User not found: '.$this->given_by_id);
+                throw new Exception('User not found: ' . $this->given_by_id);
             }
         }
 
         if ($this->drug_id) {
             if (!$drug = OphTrIntravitrealinjection_Treatment_Drug::model()->findByPk($this->drug_id)) {
-                throw new Exception('Drug not found: '.$this->drug_id);
+                throw new Exception('Drug not found: ' . $this->drug_id);
             }
         }
 
         if ($this->pre_antisept_drug_id) {
             if (!$pre_antisept_drug = OphTrIntravitrealinjection_AntiSepticDrug::model()->findByPk($this->pre_antisept_drug_id)) {
-                throw new Exception('Drug not found: '.$this->pre_antisept_drug_id);
+                throw new Exception('Drug not found: ' . $this->pre_antisept_drug_id);
             }
         }
 
         if ($this->summary) {
-            $this->injections = $this->getSummaryInjections($this->date_from, $this->date_to, @$user, @$drug, @$pre_antisept_drug);
+            $this->injections = $this->getSummaryInjections($this->date_from, $this->date_to, @$user, @$drug,
+                @$pre_antisept_drug);
             $this->view = '_summary_injections';
         } else {
-            $this->injections = $this->getInjections($this->date_from, $this->date_to, @$user, @$drug, @$pre_antisept_drug);
+            $this->injections = $this->getInjections($this->date_from, $this->date_to, @$user, @$drug,
+                @$pre_antisept_drug);
             $this->view = '_injections';
         }
     }
@@ -145,19 +148,19 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
         $patient_data = array();
         $where = '';
         $command = Yii::app()->db->createCommand()
-                ->select(
-                        'p.id as patient_id, treat.left_drug_id, treat.right_drug_id, treat.left_number, treat.right_number, e.id,
+            ->select(
+                'p.id as patient_id, treat.left_drug_id, treat.right_drug_id, treat.left_number, treat.right_number, e.id,
 						e.created_date, c.first_name, c.last_name, e.created_date, p.hos_num,p.gender, p.dob, eye.name AS eye, site.name as site_name'
-                )
-                ->from('et_ophtrintravitinjection_treatment treat')
-                ->join('event e', 'e.id = treat.event_id')
-                ->join('episode ep', 'e.episode_id = ep.id')
-                ->join('patient p', 'ep.patient_id = p.id')
-                ->join('contact c', 'p.contact_id = c.id')
-                ->join('eye', 'eye.id = treat.eye_id')
-                ->join('et_ophtrintravitinjection_site insite', 'insite.event_id = treat.event_id')
-                ->leftJoin('site', 'insite.site_id = site.id')
-                ->order('p.id, e.created_date asc');
+            )
+            ->from('et_ophtrintravitinjection_treatment treat')
+            ->join('event e', 'e.id = treat.event_id')
+            ->join('episode ep', 'e.episode_id = ep.id')
+            ->join('patient p', 'ep.patient_id = p.id')
+            ->join('contact c', 'p.contact_id = c.id')
+            ->join('eye', 'eye.id = treat.eye_id')
+            ->join('et_ophtrintravitinjection_site insite', 'insite.event_id = treat.event_id')
+            ->leftJoin('site', 'insite.site_id = site.id')
+            ->order('p.id, e.created_date asc');
         // for debug
         if ($this->patient_id) {
             $where = 'ep.patient_id = :pat_id and e.deleted = 0 and ep.deleted = 0 and e.created_date >= :from_date and e.created_date < (:to_date + interval 1 day)';
@@ -206,9 +209,9 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
             }
             foreach (array('left', 'right') as $side) {
                 $dt = date('j M Y', strtotime($row['created_date']));
-                if ($drug = $this->getDrugById($row[$side.'_drug_id'])) {
+                if ($drug = $this->getDrugById($row[$side . '_drug_id'])) {
                     $patient_data[$side][$drug->name][$site]['last_injection_date'] = $dt;
-                    $patient_data[$side][$drug->name][$site]['injection_number'] = $row[$side.'_number'];
+                    $patient_data[$side][$drug->name][$site]['injection_number'] = $row[$side . '_number'];
                     if (!isset($patient_data[$side][$drug->name][$site]['first_injection_date'])) {
                         $patient_data[$side][$drug->name][$site]['first_injection_date'] = $dt;
                     }
@@ -227,21 +230,22 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
         $where = 'e.deleted = 0 and ep.deleted = 0 and e.created_date >= :from_date and e.created_date < (:to_date + interval 1 day)';
 
         $command = Yii::app()->db->createCommand()
-                ->select(
-                        'p.id as patient_id, treat.left_drug_id, treat.right_drug_id, treat.left_number, treat.right_number, e.id,
-						e.created_date, c.first_name, c.last_name, e.created_date, p.hos_num,p.gender, p.dob, eye.name AS eye, site.name as site_name,treat.left_injection_given_by_id, treat.right_injection_given_by_id,
-						treat.left_pre_antisept_drug_id, treat.right_pre_antisept_drug_id, anteriorseg.left_lens_status_id, anteriorseg.right_lens_status_id'
-                )
-                ->from('et_ophtrintravitinjection_treatment treat')
-                ->join('event e', 'e.id = treat.event_id')
-                ->join('episode ep', 'e.episode_id = ep.id')
-                ->join('patient p', 'ep.patient_id = p.id')
-                ->join('contact c', 'p.contact_id = c.id')
-                ->join('eye', 'eye.id = treat.eye_id')
-                ->join('et_ophtrintravitinjection_site insite', 'insite.event_id = treat.event_id')
-                ->join('et_ophtrintravitinjection_anteriorseg anteriorseg', 'anteriorseg.event_id = treat.event_id')
-                ->join('site', 'insite.site_id = site.id')
-                ->order('p.id, e.created_date asc');
+            ->select(
+                'p.id as patient_id, treat.left_drug_id, treat.right_drug_id, treat.left_number, treat.right_number, e.id,
+                e.event_date, c.first_name, c.last_name, p.hos_num, p.gender, p.dob, eye.name AS eye, site.name as site_name,
+                treat.left_injection_given_by_id, treat.right_injection_given_by_id,
+                treat.left_pre_antisept_drug_id, treat.right_pre_antisept_drug_id, anteriorseg.left_lens_status_id, anteriorseg.right_lens_status_id'
+            )
+            ->from('et_ophtrintravitinjection_treatment treat')
+            ->join('event e', 'e.id = treat.event_id')
+            ->join('episode ep', 'e.episode_id = ep.id')
+            ->join('patient p', 'ep.patient_id = p.id')
+            ->join('contact c', 'p.contact_id = c.id')
+            ->join('eye', 'eye.id = treat.eye_id')
+            ->join('et_ophtrintravitinjection_site insite', 'insite.event_id = treat.event_id')
+            ->join('et_ophtrintravitinjection_anteriorseg anteriorseg', 'anteriorseg.event_id = treat.event_id')
+            ->join('site', 'insite.site_id = site.id')
+            ->order('p.id, e.event_date asc');
         $params = array(':from_date' => $date_from, ':to_date' => $date_to);
 
         if ($given_by_user) {
@@ -263,32 +267,32 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
 
         $results = array();
         foreach ($command->queryAll(true, $params) as $row) {
-            $diagnosisData = $this->getDiagnosisData($row['patient_id'], $row['created_date']);
+            $diagnosisData = $this->getDiagnosisData($row['patient_id'], $row['event_date']);
 
             $record = array(
-                    'injection_date' => date('j M Y', strtotime($row['created_date'])),
-                    'patient_hosnum' => $row['hos_num'],
-                    'patient_firstname' => $row['first_name'],
-                    'patient_surname' => $row['last_name'],
-                    'patient_gender' => $row['gender'],
-                    'patient_dob' => date('j M Y', strtotime($row['dob'])),
-                    'eye' => $row['eye'],
-                    'site_name' => $row['site_name'],
-                    'left_drug' => $this->getDrugString($row['left_drug_id']),
-                    'left_injection_number' => $row['left_number'],
-                    'right_drug' => $this->getDrugString($row['right_drug_id']),
-                    'right_injection_number' => $row['right_number'],
-                    'pre_antisept_drug_left' => $this->getPreAntiseptDrugString($row['left_pre_antisept_drug_id']),
-                    'pre_antisept_drug_right' => $this->getPreAntiseptDrugString($row['right_pre_antisept_drug_id']),
-                    'given_by_left' => $this->getGivenByName($row['left_injection_given_by_id']),
-                    'given_by_right' => $this->getGivenByName($row['right_injection_given_by_id']),
-                    'lens_status_left' => $this->getLensStatus($row['left_lens_status_id']),
-                    'lens_status_right' => $this->getLensStatus($row['right_lens_status_id']),
-                    'diagnosis_left' => $this->getDiagnosisName($diagnosisData['left_diagnosis_id']),
-                    'diagnosis_right' => $this->getDiagnosisName($diagnosisData['right_diagnosis_id']),
+                'injection_date' => date('j M Y', strtotime($row['event_date'])),
+                'patient_hosnum' => $row['hos_num'],
+                'patient_firstname' => $row['first_name'],
+                'patient_surname' => $row['last_name'],
+                'patient_gender' => $row['gender'],
+                'patient_dob' => date('j M Y', strtotime($row['dob'])),
+                'eye' => $row['eye'],
+                'site_name' => $row['site_name'],
+                'left_drug' => $this->getDrugString($row['left_drug_id']),
+                'left_injection_number' => $row['left_number'],
+                'right_drug' => $this->getDrugString($row['right_drug_id']),
+                'right_injection_number' => $row['right_number'],
+                'pre_antisept_drug_left' => $this->getPreAntiseptDrugString($row['left_pre_antisept_drug_id']),
+                'pre_antisept_drug_right' => $this->getPreAntiseptDrugString($row['right_pre_antisept_drug_id']),
+                'given_by_left' => $this->getGivenByName($row['left_injection_given_by_id']),
+                'given_by_right' => $this->getGivenByName($row['right_injection_given_by_id']),
+                'lens_status_left' => $this->getLensStatus($row['left_lens_status_id']),
+                'lens_status_right' => $this->getLensStatus($row['right_lens_status_id']),
+                'diagnosis_left' => $this->getDiagnosisName($diagnosisData['left_diagnosis_id']),
+                'diagnosis_right' => $this->getDiagnosisName($diagnosisData['right_diagnosis_id']),
             );
 
-            $this->appendExaminationValues($record, $row['patient_id'], $row['created_date']);
+            $this->appendExaminationValues($record, $row['patient_id'], $row['event_date']);
 
             $results[] = $record;
         }
@@ -305,10 +309,11 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
         }
 
         if ($this->given_by_id) {
-            $description .= ' given by '.User::model()->findByPk($this->given_by_id)->fullName;
+            $description .= ' given by ' . User::model()->findByPk($this->given_by_id)->fullName;
         }
 
-        $description .= ' between '.date('j M Y', strtotime($this->date_from)).' and '.date('j M Y', strtotime($this->date_to));
+        $description .= ' between ' . date('j M Y', strtotime($this->date_from)) . ' and ' . date('j M Y',
+                strtotime($this->date_to));
 
         if ($this->pre_va && $this->post_va) {
             $description .= ' with pre-injection and post-injection VA';
@@ -328,10 +333,10 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
      */
     public function toCSV()
     {
-        $output = $this->description()."\n\n";
+        $output = $this->description() . "\n\n";
 
         if ($this->summary) {
-            $output .= Patient::model()->getAttributeLabel('hos_num').','.Patient::model()->getAttributeLabel('first_name').','.Patient::model()->getAttributeLabel('last_name').','.Patient::model()->getAttributeLabel('gender').','.Patient::model()->getAttributeLabel('dob').',Eye,Drug,Site,First injection date,Last injection date,Injection no';
+            $output .= Patient::model()->getAttributeLabel('hos_num') . ',' . Patient::model()->getAttributeLabel('first_name') . ',' . Patient::model()->getAttributeLabel('last_name') . ',' . Patient::model()->getAttributeLabel('gender') . ',' . Patient::model()->getAttributeLabel('dob') . ',Eye,Drug,Site,First injection date,Last injection date,Injection no';
 
             if ($this->pre_va) {
                 $output .= ',Left pre-injection VA,Right pre-injection VA';
@@ -341,7 +346,7 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
             }
             $output .= "\n";
         } else {
-            $output .= 'Date,'.Patient::model()->getAttributeLabel('hos_num').','.Patient::model()->getAttributeLabel('first_name').','.Patient::model()->getAttributeLabel('last_name').','.Patient::model()->getAttributeLabel('gender').','.Patient::model()->getAttributeLabel('dob').',Eye,Site,Left drug,Left injection no,Right drug,Right injection no,Left Pre-injection Antiseptics,Right Pre-injection Antiseptics,Left Injection given by,Right Injection given by,Left Lens Status,Right Lens Status,Left Diagnosis,Right Diagnosis';
+            $output .= 'Date,' . Patient::model()->getAttributeLabel('hos_num') . ',' . Patient::model()->getAttributeLabel('first_name') . ',' . Patient::model()->getAttributeLabel('last_name') . ',' . Patient::model()->getAttributeLabel('gender') . ',' . Patient::model()->getAttributeLabel('dob') . ',Eye,Site,Left drug,Left injection no,Right drug,Right injection no,Left Pre-injection Antiseptics,Right Pre-injection Antiseptics,Left Injection given by,Right Injection given by,Left Lens Status,Right Lens Status,Left Diagnosis,Right Diagnosis';
 
             if ($this->pre_va) {
                 $output .= ',Left pre-injection VA,Right pre-injection VA';
@@ -352,7 +357,7 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
             $output .= "\n";
         }
 
-        return $output.$this->array2Csv($this->injections);
+        return $output . $this->array2Csv($this->injections);
     }
 
     protected function getDiagnosisDataFromEvent($patient_id, $close_to_date, $event_type_id, $model)
@@ -374,7 +379,7 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
 
         if ($eventData) {
             $criteria = new CDbCriteria();
-            $criteria->addCondition('event_id = '.$eventData['id']);
+            $criteria->addCondition('event_id = ' . $eventData['id']);
             $injectionManagementData = $model::model()->find($criteria);
 
             //var_dump($injectionManagementData);
@@ -392,14 +397,18 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
                 }
             }
         }
+
         //var_dump('Patient: '.$patient_id.' LEFT: '.$left_diagnosis_id." RIGHT: ".$right_diagnosis_id." Command: ".$command->getText()." :: ".print_r($command->params));
         return array('left_diagnosis_id' => $left_diagnosis_id, 'right_diagnosis_id' => $right_diagnosis_id);
     }
 
     /**
-     *  a) From the injection management element under Examination event saved before the injection event - usually on the same day
-     *	b) If no injection management saved then this can be obtained from the application event If there is an application event saved before the injection started for the patient
-     *	c) if there is no application then diagnoses for the episode.
+     * a) From the injection management element under Examination event saved before the injection event - usually on the same day
+     *    b) If no injection management saved then this can be obtained from the application event If there is an application event saved before the injection started for the patient
+     *    c) if there is no application then diagnoses for the episode.
+     * @param $patient_id
+     * @param $close_to_date
+     * @return array
      */
     protected function getDiagnosisData($patient_id, $close_to_date)
     {
@@ -407,10 +416,13 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
         // check for examination data
         // search for the closest examination event first
 
-        $diagnosisData = $this->getDiagnosisDataFromEvent($patient_id, $close_to_date, $this->getExaminationEventTypeId(), 'OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex');
+        $diagnosisData = $this->getDiagnosisDataFromEvent($patient_id, $close_to_date,
+            $this->getExaminationEventTypeId(),
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex');
 
         if (!$diagnosisData['left_diagnosis_id'] || !$diagnosisData['right_diagnosis_id']) {
-            $diagnosisData = $this->getDiagnosisDataFromEvent($patient_id, $close_to_date, $this->getApplicationEventTypeID(), 'Element_OphCoTherapyapplication_Therapydiagnosis');
+            $diagnosisData = $this->getDiagnosisDataFromEvent($patient_id, $close_to_date,
+                $this->getApplicationEventTypeID(), 'Element_OphCoTherapyapplication_Therapydiagnosis');
         }
 
         return $diagnosisData;
@@ -450,7 +462,7 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
             return 'N/A';
         }
         if ($user = User::model()->findByPk($user_id)) {
-            return $user->first_name.' '.$user->last_name;
+            return $user->first_name . ' ' . $user->last_name;
         } else {
             return 'UNKNOWN';
         }
@@ -502,16 +514,21 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
     protected function appendExaminationValues(&$record, $patient_id, $event_date)
     {
         if ($this->pre_va || $this->post_va) {
-            foreach (array('left_preinjection_va', 'right_preinjection_va', 'left_postinjection_va', 'right_postinjection_va') as $k) {
+            foreach (array(
+                         'left_preinjection_va',
+                         'right_preinjection_va',
+                         'left_postinjection_va',
+                         'right_postinjection_va',
+                     ) as $k) {
                 $record[$k] = 'N/A';
             }
             $vas = $this->getPatientVAElements($patient_id);
             $before = null;
             $after = null;
             foreach ($vas as $va) {
-                if ($va->created_date < $event_date) {
+                if ($va->event->event_date < $event_date) {
                     $before = $va;
-                } elseif ($va->created_date > $event_date) {
+                } elseif ($va->event->event_date > $event_date) {
                     $after = $va;
                     break;
                 }
@@ -550,21 +567,22 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
         if ($patient_id != $this->_current_patient_id) {
             $this->_current_patient_id = $patient_id;
             $command = Yii::app()->db->createCommand()
-                    ->select(
-                            'e.id'
-                    )
-                    ->from('event e')
-                    ->join('episode ep', 'e.episode_id = ep.id')
-                    ->where('e.deleted = 0 and ep.deleted = 0 and ep.patient_id = :patient_id and e.event_type_id = :etype_id',
-                            array(':patient_id' => $patient_id, ':etype_id' => $this->getExaminationEventTypeId())
-                    );
+                ->select(
+                    'e.id'
+                )
+                ->from('event e')
+                ->join('episode ep', 'e.episode_id = ep.id')
+                ->where('e.deleted = 0 and ep.deleted = 0 and ep.patient_id = :patient_id and e.event_type_id = :etype_id',
+                    array(':patient_id' => $patient_id, ':etype_id' => $this->getExaminationEventTypeId())
+                );
             $event_ids = array();
             foreach ($command->queryAll() as $res) {
                 $event_ids[] = $res['id'];
             }
             $criteria = new CDbCriteria();
             $criteria->addInCondition('event_id', $event_ids);
-            $this->_patient_vas = OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity::model()->with('right_readings', 'left_readings')->findAll($criteria);
+            $this->_patient_vas = OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity::model()->with('right_readings',
+                'left_readings', 'event')->findAll($criteria);
         }
 
         return $this->_patient_vas;
@@ -574,14 +592,16 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
      * Simple wrapper function for getting a string representation of the best VA reading for a side from the given element.
      *
      * @param $side
-     * @param Element_OphCiExamination_VisualAcuity $va
+     * @param OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity $va
      *
      * @return string
      */
-    protected function getBestVaFromReading($side, OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity $va)
-    {
+    protected function getBestVaFromReading(
+        $side,
+        OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity $va
+    ) {
         if ($reading = $va->getBestReading($side)) {
-            return $reading->convertTo($reading->value, $va->unit_id).' ('.$reading->method->name.')';
+            return $reading->convertTo($reading->value, $va->unit_id) . ' (' . $reading->method->name . ')';
         }
 
         return 'N/A';
