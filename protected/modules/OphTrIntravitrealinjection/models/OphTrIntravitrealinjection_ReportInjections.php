@@ -227,7 +227,7 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
 
     protected function getInjections($date_from, $date_to, $given_by_user, $drug, $pre_antisept_drug)
     {
-        $where = 'e.deleted = 0 and ep.deleted = 0 and e.created_date >= :from_date and e.created_date < (:to_date + interval 1 day)';
+        $where = 'e.deleted = 0 and ep.deleted = 0 and e.event_date >= :from_date and e.event_date < (:to_date + interval 1 day)';
 
         $command = Yii::app()->db->createCommand()
             ->select(
