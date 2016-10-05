@@ -56,16 +56,17 @@
                 $criteria = new CDbCriteria();
 
         if (!empty(${'lens_'.$side})) {
-            $numberOfLens = count(OphInBiometry_LensType_Lens::model()->findAll($criteria->condition = ' id in ('.implode(',', array_unique(${'lens_'.$side})).')'));
-            if ($numberOfLens == 1) {
-                $please_select = null;
-            } else {
-                $please_select = array('empty' => '- Please select -');
-            }
-
-            echo $form->dropDownList($element, 'lens_id_'.$side, CHtml::listData(
-                        OphInBiometry_LensType_Lens::model()->findAll($criteria->condition = 'id in ('.implode(',', array_unique(${'lens_'.$side})).')', array('order' => 'display_order')), 'id', 'name'
-                    ), $please_select, null, array('label' => 4, 'field' => 6));
+            $criteria->condition = 'id in (' . implode(',', array_unique(${'lens_' . $side})) . ')';
+            $lenses = OphInBiometry_LensType_Lens::model()->findAll($criteria, array('order' => 'display_order'));
+            echo $form->dropDownList(
+                $element, 'lens_id_' . $side,
+                CHtml::listData(
+                    $lenses, 'id', 'name'
+                ),
+                array('empty' => '- Please select -'),
+                null,
+                array('label' => 4, 'field' => 6)
+            );
         }
         ?>
             </div>
@@ -117,14 +118,16 @@
             <div class="large-12 column">
                 <?php
                 if (!empty(${"formulas_$side"})) {
-                    if (count(OphInBiometry_Calculation_Formula::model()->findAll($criteria->condition = 'id in ('.implode(',', array_unique(${"formulas_$side"})).')')) == 1) {
-                        $please_select = null;
-                    } else {
-                        $please_select = array('empty' => '- Please select -');
-                    }
-                    echo $form->dropDownList($element, 'formula_id_'.$side, CHtml::listData(
-                        OphInBiometry_Calculation_Formula::model()->findAll($criteria->condition = 'id in ('.implode(',', array_unique(${"formulas_$side"})).')', array('order' => 'display_order')), 'id', 'name'
-                    ), $please_select, null, array('label' => 4, 'field' => 6));
+                    $criteria->condition = 'id in (' . implode(',', array_unique(${"formulas_$side"})) . ')';
+                    $formulae = OphInBiometry_Calculation_Formula::model()->findAll($criteria, array('order' => 'display_order'));
+                    echo $form->dropDownList(
+                        $element,
+                        'formula_id_'.$side,
+                        CHtml::listData($formulae, 'id', 'name'),
+                        array('empty' => '- Please select -'),
+                        null,
+                        array('label' => 4, 'field' => 6)
+                    );
                 }
         ?>
             </div>
@@ -139,7 +142,7 @@
 <!--                    <span id="acon_<?php /*echo $side */?>"
                           class="field-info"><?php /*echo $element->{'lens_' . $side} ? number_format($element->{'lens_' . $side}->acon, 1) : '' */?></span>-->
                         <?php
-                        if ($side == 'left') {
+                        if ($side === 'left') {
                             if (!empty($iolrefdata['left'])) {
                                 $acon_left = $acon['left'];
                                 foreach ($acon_left as $k => $v) {
