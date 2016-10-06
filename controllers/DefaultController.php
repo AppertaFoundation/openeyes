@@ -83,4 +83,14 @@ class DefaultController extends \BaseEventTypeController
         }
         throw new \CHttpException(404, 'External Integration Not Configured.');
     }
+    
+    /**
+     * Extending the parent function to set up session variable to open popup window on first view page visit
+     * @param type $event
+     */
+    protected function afterCreateElements($event)
+    {
+        $this->getApp()->user->setState("new_referral", true);
+        parent::afterCreateElements($event);
+    }
 }

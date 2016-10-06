@@ -26,7 +26,7 @@ $this->beginContent('//patient/event_container');?>
 	<div class="alert-box alert with-icon">
 		<strong>WARNING: This will permanently delete the event and remove it from view.<br><br>THIS ACTION CANNOT BE UNDONE.</strong>
 	</div>
-	<?php $this->displayErrors($errors)?>
+	<?php $this->displayErrors(@$errors)?>
 	<div style="width:300px; margin-bottom: 0.6em;">
 		<p>Reason for deletion:</p>
 		<?php echo CHtml::textArea('delete_reason','')?>

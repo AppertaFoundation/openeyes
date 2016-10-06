@@ -2,8 +2,7 @@
 /* Module-specific javascript can be placed here */
 
 $(document).ready(function() {
-			handleButton($('#et_save'),function() {
-					});
+        handleButton($('#et_save'),function() {});
 	
 	handleButton($('#et_cancel'),function(e) {
 		if (m = window.location.href.match(/\/update\/[0-9]+/)) {
@@ -38,12 +37,30 @@ $(document).ready(function() {
 			}
 		}
 	});
+        
+        $('#event-content').on('click', '#external-referral-button a', function(e){
+            var link = $(this).attr('href');
+            e.preventDefault();
+            createNewWindow(link);
+        });
 });
 
 function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }
 
 function eDparameterListener(_drawing) {
-	if (_drawing.selectedDoodle != null) {
-		// handle event
-	}
+    if (_drawing.selectedDoodle != null) {
+        // handle event
+    }
+}
+
+function createNewWindow(link){
+    OpenEyes.UI.Window.createNewWindow(link, 'Internalreferralintegration',
+        function(popup) {
+                popup.focus();
+                $('#external-referral-status').removeClass('hidden');
+        },
+        function(){ 
+              $('#external-referral-popup-blocked').removeClass('hidden');
+        }
+    );
 }

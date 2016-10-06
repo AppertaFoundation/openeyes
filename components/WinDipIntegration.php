@@ -191,7 +191,7 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
         $request = preg_replace('/>\s+</', '><', $request);
         $request = preg_replace('/[\n\r]/', '', $request);
 
-        return $request;
+        return trim($request);
     }
 
     /**
