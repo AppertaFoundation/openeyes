@@ -16,7 +16,6 @@
  */
 
 ?>
-<?php $is_new_referral = $this->getApp()->user->getState("new_referral") == true ? true : false; ?>
 <div class="element">
     <div class="element-data">
         <div class="row data-row">
