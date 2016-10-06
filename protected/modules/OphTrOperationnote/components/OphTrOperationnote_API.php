@@ -216,8 +216,9 @@ class OphTrOperationnote_API extends BaseAPI
     public function getLastOperationIncisionMeridian(\Patient $patient)
     {
         $meridian = '';
-        if ($cataract_element = $this->getLatestCataractElementForEpisode($patient)) {
-            $meridian = $cataract_element->meridian ? $cataract_element->meridian . ' degrees' : '';
+        $cataract_element = $this->getLatestCataractElementForEpisode($patient);
+        if ($cataract_element) {
+            $meridian = $cataract_element->meridian . ' degrees';
         }
 
         return $meridian;
