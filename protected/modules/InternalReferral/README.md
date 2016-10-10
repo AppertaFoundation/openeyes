@@ -22,6 +22,12 @@ The following implementations are currently defined
 
 The WinDIP integration requires the request that is passed to WinDIP to be hashed. The details of this algorithm are proprietary, and as such are not committed to the public repository for this module. The functionality should be implemented as a callback function in the integration component. Please contact the OpenEyes Foundation for details of this if you are implementing this.
 
+### File history
+
+Because this module was merged in from a separate repository, the individual file history is only available through the use of the `--follow` option:
+
+`git log --follow InternalReferralModule.php`
+
 ## Status
 
 This module is in initial development and not intended for any use outside of core development. Feel free to take a look as code is developed though.
