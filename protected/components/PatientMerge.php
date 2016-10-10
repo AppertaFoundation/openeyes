@@ -159,7 +159,13 @@ class PatientMerge
         $isMerged = $isMerged && $this->updateRiskAssignments($this->primaryPatient->id, $this->secondaryPatient->riskAssignments);
 
         // Update previousOperations
-        $isMerged = $isMerged && $this->updatePreviousOperations($this->primaryPatient->id, $this->secondaryPatient->previousOperations);
+        $isMerged = $isMerged && $this->updatePreviousOperations($this->primaryPatient, $this->secondaryPatient->previousOperations);
+
+        //Update Other ophthalmic diagnoses
+        $isMerged = $isMerged && $this->updateOphthalmicDiagnoses($this->primaryPatient, $this->secondaryPatient->ophthalmicDiagnoses);
+        
+        // Update Systemic Diagnoses
+        $isMerged = $isMerged && $this->updateSystemicDiagnoses($this->primaryPatient, $this->secondaryPatient->systemicDiagnoses);
 
         if ($isMerged) {
             $secondaryPatient = $this->secondaryPatient;
@@ -217,9 +223,9 @@ class PatientMerge
 
                     if ($secondary_subspecialty == $primary_subspecialty) {
 
-                        /* We need to keep the older episode so we compare the dates **/
+                        /* We need to keep the newer/most recent episode so we compare the dates **/
 
-                        if ($primaryEpisode->created_date < $secondaryEpisode->created_date) {
+                        if ($primaryEpisode->created_date > $secondaryEpisode->created_date) {
                             // the primary episode is older than the secondary so we move the events from the Secondary into the Primary
                             $this->updateEventsEpisodeId($primaryEpisode->id, $secondaryEpisode->events);
 
@@ -292,7 +298,7 @@ class PatientMerge
 
                 $legacyEpisode->patient_id = $primaryPatient->id;
                 if ($legacyEpisode->save()) {
-                    $msg = 'Legacy Episode '.$legacyEpisode->id.' moved from patient '.$secondaryPatient->id.' to '.$primaryPatient->id;
+                    $msg = 'Legacy Episode '.$legacyEpisode->id.' moved from patient '.$secondaryPatient->hos_num.' to '.$primaryPatient->hos_num;
                     $this->addLog($msg);
                     Audit::add('Patient Merge', 'Legacy Episode moved', $msg);
                 } else {
@@ -359,7 +365,7 @@ class PatientMerge
 
         if (!$primaryAssignments && $secondaryAssignments) {
             foreach ($secondaryAssignments as $allergyAssignment) {
-                $msg = 'AllergyAssignment '.$allergyAssignment->id.' moved from patient '.$allergyAssignment->patient_id.' to '.$primaryPatient->id;
+                $msg = 'AllergyAssignment '.$allergyAssignment->id.' moved from patient '.$allergyAssignment->patient->hos_num.' to '.$primaryPatient->hos_num;
                 $allergyAssignment->patient_id = $primaryPatient->id;
                 if ($allergyAssignment->save()) {
                     $this->addLog($msg);
@@ -400,7 +406,7 @@ class PatientMerge
                 if (!$sameAssignment) {
                     $secondaryAssignment->patient_id = $primaryPatient->id;
                     if ($secondaryAssignment->save()) {
-                        $msg = 'AllergyAssignment '.$secondaryAssignment->id.' moved from patient '.$secondaryPatient->id.' to '.$primaryPatient->id;
+                        $msg = 'AllergyAssignment '.$secondaryAssignment->id.' moved from patient '.$secondaryPatient->hos_num.' to '.$primaryPatient->hos_num;
                         $this->addLog($msg);
                         Audit::add('Patient Merge', 'AllergyAssignment moved from patient', $msg);
                     } else {
@@ -424,7 +430,7 @@ class PatientMerge
     public function updateRiskAssignments($newPatientId, $riskAssignments)
     {
         foreach ($riskAssignments as $riskAssignment) {
-            $msg = 'RiskAssignment '.$riskAssignment->id.' moved from patient '.$riskAssignment->patient_id.' to '.$newPatientId;
+            $msg = 'RiskAssignment '.$riskAssignment->id.' moved from patient '.$riskAssignment->patient->hos_num.' to '.$newPatientId;
             $riskAssignment->patient_id = $newPatientId;
             if ($riskAssignment->save()) {
                 $this->addLog($msg);
@@ -440,33 +446,83 @@ class PatientMerge
     /**
      * Moving previous operations from secondaty patient to primary.
      * 
-     * @param type $newPatientId
+     * @param Patient $newPatient
      * @param type $previousOperations
      *
      * @return bool
      *
      * @throws Exception
      */
-    public function updatePreviousOperations($newPatientId, $previousOperations)
+    public function updatePreviousOperations($newPatient, $previousOperations)
     {
+
         foreach ($previousOperations as $previousOperation) {
-            $msg = 'Previous Operation '.$previousOperation->id.' moved from Patient '.$previousOperation->patient_id.' to '.$newPatientId;
-            $previousOperation->patient_id = $newPatientId;
+            $msg = 'Previous Operation '.$previousOperation->id.' moved from Patient ' . $previousOperation->patient->hos_num.' to '.$newPatient->hos_num;
+            $previousOperation->patient_id = $newPatient->id;
             if ($previousOperation->save()) {
                 $this->addLog($msg);
                 Audit::add('Patient Merge', 'Previous Operation moved patient', $msg);
             } else {
-                throw new Exception('Failed to update Previous Operation: '.$previousOperation->id.' '.print_r($previousOperation->errors, true));
+                throw new Exception('Failed to update Previous Operation: ' . $previousOperation->id.' ' . print_r($previousOperation->errors, true));
             }
         }
 
         return true;
     }
+    
+    /**
+     * Updates the Ophthalmic Diagnoses' patient_id
+     * 
+     * @param Patient $newPatient
+     * @param type $ophthalmicDiagnoses
+     * @throws Exception
+     */
+    public function updateOphthalmicDiagnoses($newPatient, $ophthalmicDiagnoses)
+    {
+        foreach ($ophthalmicDiagnoses as $ophthalmicDiagnosis) {
+            $msg = 'Ophthalmic Diagnosis(SecondaryDiagnosis) ' . $ophthalmicDiagnosis->id . ' moved from Patient ' . $ophthalmicDiagnosis->patient->hos_num . ' to ' . $newPatient->hos_num;
+            $ophthalmicDiagnosis->patient_id = $newPatient->id;
+            if ($ophthalmicDiagnosis->save()) {
+                $this->addLog($msg);
+                Audit::add('Patient Merge', 'Ophthalmic Diagnosis(SecondaryDiagnosis) moved patient', $msg);
+            } else {
+                throw new Exception('Failed to update Ophthalmic Diagnosis(SecondaryDiagnosis): ' . $ophthalmicDiagnosis->id . ' ' . print_r($ophthalmicDiagnosis->errors, true));
+            }
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Update Systemati Diagnoses' patient id
+     * 
+     * @param Patient $newPatient
+     * @param type $systemicDiagnoses
+     * @return boolean
+     * @throws Exception
+     */
+    public function updateSystemicDiagnoses($newPatient, $systemicDiagnoses)
+    {
+        foreach ($systemicDiagnoses as $systemicDiagnosis) {
+            $msg = 'Systemic Diagnoses ' . $systemicDiagnosis->id . ' moved from Patient ' . $systemicDiagnosis->patient->hos_num . ' to ' . $newPatient->hos_num;
+            $systemicDiagnosis->patient_id = $newPatient->id;
+            if ($systemicDiagnosis->save()) {
+                $this->addLog($msg);
+                Audit::add('Patient Merge', 'Systemic Diagnoses moved patient', $msg);
+            } else {
+                throw new Exception('Failed to update Systemic Diagnoses: ' . $systemicDiagnosis->id . ' ' . print_r($systemicDiagnosis->errors, true));
+            }
+        }
+        
+        return true;
+    }
+    
+    
 
     /**
      * Assign episodes to a new paient id.
      *
-     * @param int         $patientId the primary Patient Id
+     * @param int $patientId the primary Patient Id
      * @param array of AR $episodes
      *
      * @return bool true if no error thrown

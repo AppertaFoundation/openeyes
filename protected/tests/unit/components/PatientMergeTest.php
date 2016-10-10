@@ -32,6 +32,8 @@ class PatientMergeTest extends CDbTestCase
             'services' => 'Service',
             'specialties' => 'Specialty',
             'patient_allergy_assignment' => 'patientAllergyAssignment',
+            'secondary_diagnosis' => 'secondaryDiagnosis',
+            'previous_operation' => 'previousOperation',
     );
 
     public function setUp()
@@ -152,15 +154,19 @@ class PatientMergeTest extends CDbTestCase
         $this->assertEquals($eposode10->patient_id, 7);
     }
 
+    /**
+     * We have to keep the newer/most recent episode
+     * so if the Secondary Episode is the older one than we flag it as deleted
+     */
     public function testUpdateEpisodesWhenBothHaveEpisodesConflict_secondaryEpisodeOlder()
     {
         $mergeHandler = new PatientMerge();
 
         // $primaryPatient has episode7 and episode8
-        $primaryPatient = $this->patients('patient7');
+        $primaryPatient = $this->patients('patient7'); // episode7
 
         // $secondaryPatient has episode9, episode10
-        $secondaryPatient = $this->patients('patient8');
+        $secondaryPatient = $this->patients('patient8'); //episode9
 
         $episode7 = $this->episodes('episode7');
         $episode7->created_date = date('Y-m-d', strtotime('-15 days'));
@@ -190,10 +196,10 @@ class PatientMergeTest extends CDbTestCase
         $this->assertEquals(count($primaryPatient->episodes), 2);
 
         $event16 = $this->events('event16');
-        $this->assertEquals($event16->episode_id, 9);
+        $this->assertEquals($event16->episode_id, 7);
 
         $event17 = $this->events('event17');
-        $this->assertEquals($event17->episode_id, 9);
+        $this->assertEquals($event17->episode_id, 7);
 
         $episode8 = $this->episodes('episode8');
         $episode8->refresh();
@@ -201,7 +207,13 @@ class PatientMergeTest extends CDbTestCase
 
         $episode9 = $this->episodes('episode9');
         $episode9->refresh();
-        $this->assertEquals($episode9->patient_id, 7);
+        $this->assertEquals($episode9->patient_id, 8); // will be deleted
+
+        $event20 = $this->events('event20');
+        $this->assertEquals($event20->episode_id, 7);
+
+        $event21 = $this->events('event21');
+        $this->assertEquals($event21->episode_id, 7);
 
         $episode10 = $this->episodes('episode10');
         $episode10->refresh();
@@ -239,19 +251,19 @@ class PatientMergeTest extends CDbTestCase
         $this->assertTrue($result, 'Merge result FALSE.');
 
         $event16 = $this->events('event16');
-        $this->assertEquals($event16->episode_id, 7);
+        $this->assertEquals($event16->episode_id, 9);
 
         $event17 = $this->events('event17');
-        $this->assertEquals($event17->episode_id, 7);
+        $this->assertEquals($event17->episode_id, 9);
 
         $event20 = $this->events('event20');
-        $this->assertEquals($event20->episode_id, 7);
+        $this->assertEquals($event20->episode_id, 9);
 
         $event21 = $this->events('event21');
-        $this->assertEquals($event20->episode_id, 7);
+        $this->assertEquals($event21->episode_id, 9);
 
         $episode7->refresh();
-        $this->assertEquals(count($episode7->events), 4);
+        $this->assertEquals(count($episode7->events), 0);
 
         $episode10 = $this->episodes('episode10');
         $this->assertEquals($episode10->patient_id, 7);
@@ -503,7 +515,104 @@ class PatientMergeTest extends CDbTestCase
 
     public function testUpdatePreviousOperations()
     {
+        $mergeHandler = new PatientMerge();
+        
+        $primaryPatient = $this->patients('patient7');
+        $secondaryPatient = $this->patients('patient8');
+        
+        $previousOperation1 = $this->previous_operation('previousOperation1');
+        
+        $previousOperation1->patient_id = 8;
+        $previousOperation1->save();
+        $previousOperation1->refresh();
+        
+        // Before we update the Previous Operations we check if the patient id is equals to the secondary patient id
+        $this->assertEquals(8, $previousOperation1->patient_id);
+        
+        $primaryPatient->refresh();
+        $secondaryPatient->refresh();
+        $this->assertEquals(0, count($primaryPatient->previousOperations) );
+        $this->assertEquals(1, count($secondaryPatient->previousOperations) );
+        
+        $mergeHandler->updatePreviousOperations($primaryPatient, $secondaryPatient->previousOperations);
+        
+        $primaryPatient->refresh();
+        $secondaryPatient->refresh();
+        $this->assertTrue(is_array($secondaryPatient->previousOperations));
+        
+        $this->assertEquals(0, count($secondaryPatient->previousOperations) );
+        $this->assertEquals(1, count($primaryPatient->previousOperations) );
+        
+        $previousOperation1->refresh();
+        
+        $this->assertEquals(7, $previousOperation1->patient_id);
     }
+    
+    public function testUpdateOphthalmicDiagnoses()
+    {
+        $mergeHandler = new PatientMerge();
+        
+        $primaryPatient = $this->patients('patient7');
+        $secondaryPatient = $this->patients('patient8');
+        
+        $secondaryDiagnoses8 = $this->secondary_diagnosis('secondaryDiagnoses8');
+        $secondaryDiagnoses8->patient_id = 8;
+        $secondaryDiagnoses8->save();
+        $secondaryDiagnoses8->refresh();
+        
+        // Before we update the Ophthalmic Diagnoses we check if the patient id is equals to the secondary patient id
+        $this->assertEquals(8, $secondaryDiagnoses8->patient_id);
+        
+        $secondaryPatient->refresh();
+        $this->assertTrue(is_array($secondaryPatient->ophthalmicDiagnoses) );
+        $this->assertEquals(1, count($secondaryPatient->ophthalmicDiagnoses) );
+        
+        $mergeHandler->updateOphthalmicDiagnoses($primaryPatient, $secondaryPatient->ophthalmicDiagnoses);
+        
+        $secondaryDiagnoses8->refresh();
+        $secondaryPatient->refresh();
+        
+        $this->assertEquals(0, count($secondaryPatient->ophthalmicDiagnoses) );
+        
+        $this->assertEquals(7, $secondaryDiagnoses8->patient_id);
+        
+        
+    }
+    
+    public function testUpdateSystemicDiagnoses()
+    {
+        $mergeHandler = new PatientMerge();
+        
+        $primaryPatient = $this->patients('patient7');
+        $secondaryPatient = $this->patients('patient8');
+        
+        $secondaryDiagnoses8 = $this->secondary_diagnosis('secondaryDiagnoses8');
+        $secondaryDiagnoses8->patient_id = 8;
+        $secondaryDiagnoses8->disorder_id = 5;
+        $secondaryDiagnoses8->save();
+        $secondaryDiagnoses8->refresh();
+        
+        
+        
+        // Befor we update the Ophthalmic Diagnoses we check if the patient id is equals to the secondary patient id
+        $this->assertEquals(8, $secondaryDiagnoses8->patient_id);
+        $this->assertEquals(5, $secondaryDiagnoses8->disorder_id);
+        
+        $secondaryPatient->refresh();
+        $this->assertTrue(is_array($secondaryPatient->systemicDiagnoses) );
+        $this->assertEquals(1, count($secondaryPatient->systemicDiagnoses) );
+        
+        $mergeHandler->updateOphthalmicDiagnoses($primaryPatient, $secondaryPatient->systemicDiagnoses);
+        
+        $secondaryDiagnoses8->refresh();
+        
+        $this->assertEquals(7, $secondaryDiagnoses8->patient_id);
+        
+        $this->assertEquals(0, count($secondaryPatient->systemicDiagnoses) );
+        $this->assertEquals(1, count($primaryPatient->systemicDiagnoses) );
+    }
+    
+    
 
     public function testIsSecondaryPatientDeleted()
     {
