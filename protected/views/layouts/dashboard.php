@@ -21,10 +21,9 @@
 <html lang="en">
     <head>
         <script type="text/javascript">var OpenEyes = OpenEyes || {};</script>
-        <link href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en" rel="stylesheet">
+        <link href="<?= Yii::app()->assetManager->createUrl('fonts/Roboto/roboto.css')?>" rel="stylesheet">
         <link href="<?= Yii::app()->assetManager->createUrl('fonts/material-design/material-icons.css')?>" rel="stylesheet">
         <link rel="stylesheet" href="<?= Yii::app()->assetManager->createUrl('components/material-design-lite/material.min.css')?>">
-        <link rel="stylesheet" href="<?= Yii::app()->assetManager->createUrl('components/mdi/css/materialdesignicons.min.css')?>" media="all" type="text/css" />
         <link rel="stylesheet" href="<?= Yii::app()->assetManager->createUrl('css/dashboard.css')?>">
         <link rel="stylesheet" href="<?= Yii::app()->assetManager->createUrl('components/jquery-ui/themes/base/minified/jquery.ui.datepicker.min.css')?>">
 
@@ -33,15 +32,11 @@
         <script src="<?= Yii::app()->assetManager->createUrl('components/jquery-ui/ui/jquery.ui.datepicker.js')?>"></script>
         <script src="<?= Yii::app()->assetManager->createUrl('components/material-design-lite/material.min.js')?>"></script>
         <?php
-        if(Yii::app()->controller->action->id == 'oescape'){ ?>
+        if(Yii::app()->controller->action->id === 'oescape'){ ?>
             <script src="<?= Yii::app()->assetManager->createUrl('components/highcharts/highstock.js')?>"></script>
-
-            <?php
-        }else{?>
+        <?php } else { ?>
         <script src="<?= Yii::app()->assetManager->createUrl('components/highcharts/highcharts.js')?>"></script>
-        <?php
-        }
-        ?>
+        <?php } ?>
 
         <script src="<?= Yii::app()->assetManager->createUrl('components/highcharts/modules/exporting.js')?>"></script>
         <script src="<?= Yii::app()->assetManager->createUrl('components/highcharts/modules/offline-exporting.js')?>"></script>
@@ -59,8 +54,6 @@
         <!-- Tile icon for Win8 (144x144 + tile color) -->
         <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
         <meta name="msapplication-TileColor" content="#3372DF">
-
-        <link rel="shortcut icon" href="images/favicon.png">
 
         <!-- SEO: If your mobile URL is different from the desktop URL, add a canonical link to the desktop page https://developers.google.com/webmasters/smartphone-sites/feature-phones -->
         <!--
