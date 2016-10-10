@@ -51,6 +51,7 @@ class UserController extends BaseController
 			if ($consultant_only) {
 				$criteria->compare("is_consultant", true);
 			}
+			$criteria->compare('active', true);
 
 			foreach (\User::model()->findAll($criteria) as $user) {
 				$res[] = array(
