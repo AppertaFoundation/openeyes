@@ -32,11 +32,6 @@ class ODTTemplateManager
     /**
      * @var string
      */
-    private $sourceDir = './files/';
-
-    /**
-     * @var string
-     */
     private $unzippedDir;
 
     /**
@@ -65,12 +60,7 @@ class ODTTemplateManager
     private $outDir;
 
     /**
-     * @var string
-     */
-    private $inputFile;
-
-    /**
-     * @var string
+     * @var DOMDocument
      */
     private $contentXml;
 
@@ -94,11 +84,6 @@ class ODTTemplateManager
      */
     private $newOdtFilename = '';
 
-    /*
-     * @var string
-     */
-    private $fpName = '';
-
     /**
      * @param $filename
      * @param $templateDir
@@ -109,7 +94,7 @@ class ODTTemplateManager
     {
         $this->uniqueId = time();
         $this->templateDir = $templateDir;
-        if (substr($outputName, -3) == 'odt') {
+        if (substr($outputName, -3) === 'odt') {
             $this->generatedOdt = $outputName;
         }
         $this->openedSablonFilename = $filename;
@@ -126,7 +111,7 @@ class ODTTemplateManager
         $this->openContentXML();
     }
 
-    /*
+    /**
      * Open xml file 
      */
     private function openContentXML()
@@ -138,7 +123,7 @@ class ODTTemplateManager
         $this->xpath = new DomXpath($this->contentXml);
     }
 
-    /*
+    /**
      * Save xml file content after edit
      */
     public function saveContentXML()
@@ -146,9 +131,13 @@ class ODTTemplateManager
         $this->contentXml->save($this->unzippedDir . $this->contentFilename);
     }
 
+    /**
+     * @param      $node
+     * @param      $string
+     * @param null $existingStyleName
+     */
     private function createSingleOrMultilineTextNode($node, $string, $existingStyleName = null)
     {
-        $stringArr = '';
         $stringArr = explode('<br/>', $string);
 
         if (count($stringArr) == 1) {
@@ -178,7 +167,7 @@ class ODTTemplateManager
         }
     }
 
-    /*
+    /**
      * Change ${} variables in odt xml to the param value 
      * @param $data
      */
@@ -197,7 +186,7 @@ class ODTTemplateManager
         */
     }
 
-    /*
+    /**
      * Change variables in odt xml by style-name property
      * @param $styleName
      * @param $value
@@ -225,6 +214,9 @@ class ODTTemplateManager
         }
     }
 
+    /**
+     * @param $texts
+     */
     public function exchangeAllStringValuesByStyleName($texts)
     {
         foreach ($texts as $text) {
@@ -238,7 +230,7 @@ class ODTTemplateManager
         }
     }
 
-    /*
+    /**
      * Get image path from the xml document
      * @param $imageName
      * @return string
@@ -254,7 +246,7 @@ class ODTTemplateManager
         return $imageNode->getAttribute('xlink:href');
     }
 
-    /*
+    /**
      * Change an existing image in document by new image url
      * @param $imageName
      * @param $newImageUrl
@@ -264,7 +256,7 @@ class ODTTemplateManager
         copy($newImageUrl, $this->unzippedDir . $this->getImageHrefFromImageNode($imageName));
     }
 
-    /*
+    /**
      * Change an existing image in document by GD object
      * @param $imageName
      * @param $image
@@ -279,10 +271,13 @@ class ODTTemplateManager
         }
     }
 
-    /*
+    /**
      * Find and change ${} varibale in table
+     *
      * @param $nodeValue
      * @param $text
+     *
+     * @return bool
      */
     private function getTableVariableNode($nodeValue, $text)
     {
@@ -298,19 +293,25 @@ class ODTTemplateManager
         return false;
     }
 
+    /**
+     * @param $templateVariableName
+     * @param $tableXml
+     */
     private function replaceTableNode($templateVariableName, $tableXml)
     {
-        $tableNodeStr = 'table:table';
         $table = $tableXml->getElementsByTagName('table:table');
         $text = $this->contentXml->getElementsByTagName('p');
         $targetNode = $this->getTableVariableNode($templateVariableName, $text);
 
         $node = $this->contentXml->importNode($table->item(0), true);
-        if ($targetNode != false) {
+        if ($targetNode !== false) {
             $targetNode->parentNode->replaceChild($node, $targetNode);
         }
     }
 
+    /**
+     * @param $data
+     */
     public function exchangeGeneratedTablesWithTextNodes($data)
     {
         //generate tables, if needed..
@@ -324,51 +325,7 @@ class ODTTemplateManager
         }
     }
 
-    /*
-     * Fill table with array data
-     * If table has header, you can set the number of header rows
-     * @param $name
-     * @param $data
-     * @param $headerRow
-     */
-
-    /* removed 2016.09.05. 22:50:23
-    public function fillTable( $name , $data, $headerRow = 0 )
-    {
-       
-        foreach ($this->xpath->query('//office:text/table:table[@table:name="'.$name.'"]') as $table) {
-            foreach($table->childNodes as $r => $row) {
-                if ($headerRow > 0){
-                    if($headerRow >= $r){
-                       continue;
-                    } 
-                    $rowCount = $r-$headerRow-1;
-                } else{
-                    $rowCount = $r-1;
-                }
-                
-                foreach($row->childNodes as $c => $cell){
-                   
-                    if (array_key_exists($rowCount, $data) && array_key_exists($c, $data[$rowCount])) {
-                        $cell->nodeValue = '';
-                        if($data[$rowCount][$c] != '') {
-                            
-                            //$text = $this->contentXml->createElement('text:p', $data[$rowCount][$c]);
-                            //$cell->appendChild($text);
-                            
-                            $this->createSingleOrMultilineTextNode( $cell, 'Kecso' );
-                            
-                            $text->setAttribute('text:style-name', $this->textStyleName);
-                        }
-                    }
-                }
-            } 
-           
-        }
-    }
-    */
-
-    /*
+    /**
      * Find table in xml and fill it with data values
      * @param $name
      * @param $data
@@ -391,12 +348,11 @@ class ODTTemplateManager
         $rowCount = 0;
         $colCount = 0;
         if ($table != null) {
-            foreach ($table->childNodes as $r => $tableNode) {
-                if ($tableNode->nodeName == 'table:table-row') {
+            foreach ($table->childNodes as $tableNode) {
+                if ($tableNode->nodeName === 'table:table-row') {
                     $cols = $tableNode->childNodes;
                     foreach ($cols as $oneCol) {
-                        if ($oneCol->nodeName != 'table:covered-table-cell') {
-
+                        if ($oneCol->nodeName !== 'table:covered-table-cell') {
                             if (isset($data[$rowCount][$colCount])) {
                                 if ($data[$rowCount][$colCount] != '') {
                                     $textNodes = $oneCol->childNodes;
@@ -420,12 +376,14 @@ class ODTTemplateManager
         }
     }
 
-    /*
+    /**
      * Create new element,set attributes and append to xml node
+     *
      * @param $xml
      * @param $tag
      * @param $attribs
      * @param $value
+     *
      * @return string
      */
     private function createNode($xml, $tag, $attribs, $value = '')
@@ -441,7 +399,7 @@ class ODTTemplateManager
         return $element;
     }
 
-    /*
+    /**
      * Count table columns
      * @param $firstRow
      * @return int
@@ -450,7 +408,7 @@ class ODTTemplateManager
     {
         $colCount = 0;
         foreach ($firstRow as $oneCell) {
-            if ($oneCell['cell-type'] != 'covered') {
+            if ($oneCell['cell-type'] !== 'covered') {
                 if (isset($oneCell['colspan'])) {
                     $colCount += ($oneCell['colspan'] > 0) ? $oneCell['colspan'] : 1;
                 } else {
@@ -462,13 +420,13 @@ class ODTTemplateManager
         return $colCount;
     }
 
-    /*
+    /**
      * Add a new style to the office:automatic-styles node
-     * @param $tableName
-    */
-    private function addStyleToHeader($tableName, $style)
+     *
+     * @param $style
+     */
+    private function addStyleToHeader($style)
     {
-
         $xpath = new DOMXpath($this->contentXml);
 
         $styleElement = $xpath->query('//office:automatic-styles')->item(0); //:automatic-styles :automatic-styles
@@ -500,7 +458,7 @@ class ODTTemplateManager
                 'style:name' => $tableName,
             );
 
-            $this->addStyleToHeader($tableName, $style);
+            $this->addStyleToHeader($style);
 
             $colsCount = $this->getTableColsCount($oneTable['rows'][0]['cells']); // parameter is the first row.
 
@@ -513,11 +471,11 @@ class ODTTemplateManager
                 $row = $this->createNode($tableXml, 'table:table-row', array());
                 $colDeep = 0;
 
-                foreach ($oneRow['cells'] as $cellKey => $oneCell) {
+                foreach ($oneRow['cells'] as $oneCell) {
                     $colDeep++;
 
                     $params = array();
-                    if ($oneCell['cell-type'] != 'covered') {
+                    if ($oneCell['cell-type'] !== 'covered') {
                         $rowspan = (isset($oneCell['rowspan']) ? $oneCell['rowspan'] : 0);
                         $colspan = (isset($oneCell['colspan']) ? $oneCell['colspan'] : 0);
                         $cellValue = $oneCell['data'];
@@ -549,7 +507,6 @@ class ODTTemplateManager
                     $cell->appendChild($cellVal);
                     $row->appendChild($cell);
                 }
-                $colDeep = 0;
                 $table->appendChild($row);
                 $rowDeep++;
             }
@@ -561,12 +518,11 @@ class ODTTemplateManager
         return $tables;
     }
 
-    /*
+    /**
      * Unzip odt file into the temporary directory
      */
     private function unZip($createZipNameDir = true, $overwrite = true)
     {
-        $zip = new ZipArchive;
         $destDir = $this->unzippedDir;
         $srcFile = $this->odtFilename;
 
@@ -603,11 +559,11 @@ class ODTTemplateManager
                 $this->openedSablonFilename = $destDir . $this->contentFilename;
             }
         } else {
-            $this->dropException('Failed unzip ODT. File: ' . $this->templateDir . $this->odtFilename);
+            throw new CException('Failed unzip ODT. File: ' . $this->templateDir . $this->odtFilename);
         }
     }
 
-    /*
+    /**
      * Zip xml files 
      * @return string
      */
@@ -617,8 +573,6 @@ class ODTTemplateManager
         $destPath = $this->zippedDir;
         mkdir($destPath, 0777, true);
         $zip = new ZipArchive();
-
-
         $zip->open($this->newOdtFilename, ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
         $inputFolder = str_replace('\\', DIRECTORY_SEPARATOR, realpath($inputFolder));
@@ -656,8 +610,8 @@ class ODTTemplateManager
         return $destPath . $this->generatedOdt;
     }
 
-    /*
-     * Create directoy by path
+    /**
+     * Create directory by path
      * @param $path
      */
     private function createDirs($path)
@@ -677,7 +631,7 @@ class ODTTemplateManager
         }
     }
 
-    /*
+    /**
      * Delete temporary files by path
      * @param $path
      * @return bool
@@ -698,7 +652,7 @@ class ODTTemplateManager
         }
     }
 
-    /*
+    /**
      * Generate pdf file from odt and delete temporary folder
      */
     public function generatePDF()
@@ -715,7 +669,7 @@ class ODTTemplateManager
         }
     }
 
-    /*
+    /**
      * Get generated pdf
      */
     public function getPDF()
@@ -726,7 +680,7 @@ class ODTTemplateManager
     }
 
 
-    /*
+    /**
      * Convert the generated pdf N page
      * @param $pageNumber 
      */
@@ -735,7 +689,7 @@ class ODTTemplateManager
         ob_start();
 
         $pdf = new FPDI();
-        $pageCount = $pdf->setSourceFile($this->outDir . '/' . $this->outFile);
+        $pdf->setSourceFile($this->outDir . '/' . $this->outFile);
         $tplIdx = $pdf->importPage($pageNumber, '/MediaBox');
 
         $pdf->AddPage();
@@ -754,8 +708,6 @@ class ODTTemplateManager
     protected function cleanUp()
     {
         unlink($this->outDir . '/' . $this->outFile);
-
-
     }
 
     /**
@@ -766,10 +718,10 @@ class ODTTemplateManager
      */
     public function storePDF()
     {
-        $pf = ProtectedFile::createFromFile($this->outDir . '/' . $this->outFile);
-        $pf->save();
+        $file = ProtectedFile::createFromFile($this->outDir . '/' . $this->outFile);
+        $file->save();
         $this->cleanUp();
 
-        return $pf;
+        return $file;
     }
 }

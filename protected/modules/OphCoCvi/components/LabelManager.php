@@ -42,20 +42,19 @@ class LabelManager extends ODTTemplateManager
         parent::__construct($filename, $templateDir, $outputDir, $outputName);
     }
 
-    /*
+    /**
      * Fill labels in document table by table-name
      * @param $tableName
      * @param $addressesArray 
      * @param $firstEmptyCell 
      */
-
     public function fillLabelsInTable($tableName, $addressesArray, $firstEmptyCell)
     {
         $dataArray = $this->generateArrayToTable($addressesArray, $firstEmptyCell);
         $this->fillTableByName($tableName, $dataArray);
     }
 
-    /*
+    /**
      * Generate array to ODTTemplatemanager fillTableByName valid data array from a simple array
      * @param $addressesArray
      * @param $firstEmptyCell
@@ -65,9 +64,7 @@ class LabelManager extends ODTTemplateManager
         $result[] = array();
         $row = 0;
         if ($firstEmptyCell > 1) {
-
             for ($i = 1; $i < $firstEmptyCell; $i++) {
-
                 if ($i % $this->cols == 1) {
                     $colCount = 0;
                 } else {
@@ -87,7 +84,7 @@ class LabelManager extends ODTTemplateManager
             $i = 1;
         }
 
-        foreach ($addressesArray as $key => $val) {
+        foreach ($addressesArray as $val) {
 
             if ($i % $this->cols == 1) {
                 $colCount = 0;
@@ -99,7 +96,7 @@ class LabelManager extends ODTTemplateManager
                 }
             }
 
-            $result[$row][$colCount] = $val;
+            $result[$row][$colCount] = str_replace(array("\r\n", ','), array('', "\\n"), $val);
 
             if ($i % $this->cols === 0) {
                 $row++;
