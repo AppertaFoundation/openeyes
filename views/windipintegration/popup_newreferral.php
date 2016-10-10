@@ -16,6 +16,11 @@
  */
 
 ?>
+<div class="row data-row">
+    <div class="large-3 column right" id="external-referral-help">
+        <a href="javascript:void(0)" class="windip-help">Problems reaching WinDIP ?</a>
+    </div>
+</div>
 <div class="element">
     <div class="element-data">
         <div class="row data-row">

@@ -43,7 +43,47 @@ $(document).ready(function() {
             e.preventDefault();
             createNewWindow(link);
         });
+
+        $('#event-content').on('click', '.windip-help', function(e){
+            e.preventDefault();
+            var html = '';
+            
+            if( isIE() ){
+                html = 'Please contact support.';
+            } else {
+                html = 'To access WinDIP you will need to Install the IETAB browser extension - please contact support.';
+            }
+            new OpenEyes.UI.Dialog({
+                title: 'Problems reaching WinDIP ?',
+                content: html,
+                dialogClass: 'dialog event'
+            }).open();
+            
+        });
+
 });
+
+/**
+ * detect IE up to 11 - well, EDGE could be the 12
+ * returns version of IE or false, if browser is not Internet Explorer
+ */
+function isIE(){
+    
+    var ua = window.navigator.userAgent;
+    var msie = ua.indexOf('MSIE ');
+    
+    if (msie > 0) {
+        // IE 10 or older => return version number
+        return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+    }
+
+    var trident = ua.indexOf('Trident/');
+    if (trident > 0) {
+        // IE 11 => return version number
+        var rv = ua.indexOf('rv:');
+        return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+    }
+}
 
 function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }
 
