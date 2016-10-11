@@ -17,8 +17,7 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-class OperativeDeviceMappingController  extends BaseAdminController
+class OperativeDeviceMappingController extends BaseAdminController
 {
     public function actionList()
     {
@@ -96,6 +95,62 @@ class OperativeDeviceMappingController  extends BaseAdminController
         }
     }
 
+    /**
+     * To set default values to Operative Device
+     * @param $item_id
+     * @param $site_id
+     * @param $subspecialty_id
+     */
+    public function actionSetDefault($itemId)
+    {
+        /*
+        * We make sure to not allow deleting directly with the URL, user must come from the commondrugs list page
+        */
+        if (!Yii::app()->request->isAjaxRequest) {
+            $this->render('errorpage', array('errorMessage' => 'notajaxcall'));
+        } else {
+            $currentSSOD = SiteSubspecialtyOperativeDevice::model()->findByPk($itemId);
+            if ($currentSSOD) {
+                $currentSSOD->default = 1;
+                if ($currentSSOD->update()) {
+                    echo 'success set default to SSOD';
+                } else {
+                    echo 'error';
+                }
+            } else {
+                echo 'error';
+            }
+        }
+    }
+
+    /**
+     * To remove default values to Operative Device
+     * @param $item_id
+     * @param $site_id
+     * @param $subspecialty_id
+     */
+    public function actionRemoveDefault($itemId)
+    {
+        /*
+        * We make sure to not allow deleting directly with the URL, user must come from the commondrugs list page
+        */
+        if (!Yii::app()->request->isAjaxRequest) {
+            $this->render('errorpage', array('errorMessage' => 'notajaxcall'));
+        } else {
+            $currentSSOD = SiteSubspecialtyOperativeDevice::model()->findByPk($itemId);
+            if ($currentSSOD) {
+                $currentSSOD->default = 0;
+                if ($currentSSOD->save()) {
+                    echo 'success remove default to SSOD';
+                } else {
+                    echo 'error';
+                }
+            } else {
+                echo 'error';
+            }
+        }
+    }
+
     public function actionAdd()
     {
         $subspecialtyId = $this->request->getParam('subspecialty_id');
@@ -140,7 +195,7 @@ class OperativeDeviceMappingController  extends BaseAdminController
                 $term = $_GET['term'];
                 $criteria->addCondition(array('LOWER(name) LIKE :term'),
                     'OR');
-                $params[':term'] = '%'.strtolower(strtr($term, array('%' => '\%'))).'%';
+                $params[':term'] = '%' . strtolower(strtr($term, array('%' => '\%'))) . '%';
             }
 
             $criteria->order = 'name';
