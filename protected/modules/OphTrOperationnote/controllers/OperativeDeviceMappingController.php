@@ -19,6 +19,9 @@
  */
 class OperativeDeviceMappingController extends BaseAdminController
 {
+    /**
+     * To list the operative devices per site per subspeciality
+     */
     public function actionList()
     {
         $admin = new AdminListAutocomplete(SiteSubspecialtyOperativeDevice::model(), $this);
@@ -78,6 +81,10 @@ class OperativeDeviceMappingController extends BaseAdminController
         $admin->listModel();
     }
 
+    /**
+     * Delete an operative device association with the site
+     * @param $itemId
+     */
     public function actionDelete($itemId)
     {
         /*
@@ -98,8 +105,6 @@ class OperativeDeviceMappingController extends BaseAdminController
     /**
      * To set default values to Operative Device
      * @param $item_id
-     * @param $site_id
-     * @param $subspecialty_id
      */
     public function actionSetDefault($itemId)
     {
@@ -126,8 +131,6 @@ class OperativeDeviceMappingController extends BaseAdminController
     /**
      * To remove default values to Operative Device
      * @param $item_id
-     * @param $site_id
-     * @param $subspecialty_id
      */
     public function actionRemoveDefault($itemId)
     {
@@ -151,6 +154,9 @@ class OperativeDeviceMappingController extends BaseAdminController
         }
     }
 
+    /**
+     * To add new operative devices to the site.
+     */
     public function actionAdd()
     {
         $subspecialtyId = $this->request->getParam('subspecialty_id');
@@ -169,13 +175,13 @@ class OperativeDeviceMappingController extends BaseAdminController
                     ':site_id' => $siteId,
                     ':subspecialty_id' => $subspecialtyId,
                 );
-                $currentSSAA = SiteSubspecialtyOperativeDevice::model()->findall($criteria);
-                if (!$currentSSAA) {
-                    $newSSAA = new SiteSubspecialtyOperativeDevice();
-                    $newSSAA->subspecialty_id = $subspecialtyId;
-                    $newSSAA->site_id = $siteId;
-                    $newSSAA->operative_device_id = $operativeDeviceId;
-                    if ($newSSAA->save()) {
+                $currentSSOD = SiteSubspecialtyOperativeDevice::model()->findall($criteria);
+                if (!$currentSSOD) {
+                    $newSSOD = new SiteSubspecialtyOperativeDevice();
+                    $newSSOD->subspecialty_id = $subspecialtyId;
+                    $newSSOD->site_id = $siteId;
+                    $newSSOD->operative_device_id = $operativeDeviceId;
+                    if ($newSSOD->save()) {
                         echo 'success added to SSAA';
                     } else {
                         echo 'error';
@@ -187,6 +193,9 @@ class OperativeDeviceMappingController extends BaseAdminController
         }
     }
 
+    /**
+     * To search the operative devices.
+     */
     public function actionSearch()
     {
         if (Yii::app()->request->isAjaxRequest) {
