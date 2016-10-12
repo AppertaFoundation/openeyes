@@ -67,7 +67,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
     }
 
     /**
-     * Pass English as default Preferred Language
+     * Pass English as default Preferred Language id
      */
 
     public function init()
