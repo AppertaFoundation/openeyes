@@ -92,7 +92,7 @@ if ($this->checkClericalEditAccess()) {
                 <?php echo $form->dropDownList($element, 'contact_urgency_id', CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_ContactUrgency::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'), array('empty' => '- Please select -'), false, array('label' => 6, 'field' => 6)) ?>
             </div>
             <div class="large-6 column end">
-                <?php echo $form->dropDownList($element, 'preferred_language_id', CHtml::listData(Language::model()->findAll(array('order' => 'name asc')), 'id', 'name'), array('empty' => '- Please select -'), false, array('label' => 6, 'field' => 6)) ?>
+                <?php echo $form->dropDownList($element, 'preferred_language_id', CHtml::listData(Language::model()->findAll(array('order' => 'name asc')), 'id', 'name'), array(), false, array('label' => 6, 'field' => 6)) ?>
             </div>
         </div>
     </div>
