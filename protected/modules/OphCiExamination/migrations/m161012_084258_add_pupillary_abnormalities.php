@@ -13,7 +13,7 @@ class m161012_084258_add_pupillary_abnormalities extends CDbMigration
 
 	public function down()
 	{
-        $this->delete($this->table, 'name = :name', array(':name' => $this->pupillaryabnormalities_abnormality));
+	    $this->delete($this->table, 'name = :name', array(':name' => $this->pupillaryabnormalities_abnormality));
 	}
 
 }
