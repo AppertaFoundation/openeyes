@@ -16,21 +16,12 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-?>
-<?php
-    $helpdesk_phone = Yii::app()->params['helpdesk_phone'];
-    $helpdesk_email = Yii::app()->params['helpdesk_email'];
-    $this->layout = '//layouts/error';
+
+$this->layout = '//layouts/error';
 ?>
 <h2>Forbidden</h2>
 <p class="panel">
 	<strong>You do not have permission to access this page</strong>
 </p>
-<h3>Support Options</h3>
-<ul>
-	<li>Immediate support (8:00am to 8:00pm) - Phone <?php echo @$helpdesk_phone?></li>
-	<li>Less urgent issues email <a
-		href="mailto:<?php echo @$helpdesk_email?>"><?php echo @$helpdesk_email?>
-	</a></li>
-</ul>
+<?php echo $this->renderPartial('//error/support') ?>
 <p class="date"><?php echo date('r'); ?></p>

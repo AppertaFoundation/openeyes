@@ -1667,7 +1667,7 @@ class BaseEventTypeController extends BaseModuleController
     protected function printLog($id, $pdf)
     {
         $this->logActivity("printed event (pdf=$pdf)");
-        $this->event->audit('event', 'print', false);
+        $this->event->audit('event', ( strpos($this->pdf_print_suffix, 'all') === 0  ? 'print all' : 'print'), false);
     }
 
     /**
