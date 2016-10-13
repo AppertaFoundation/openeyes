@@ -24,6 +24,11 @@ use OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_ConsentSignature;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_Demographics;
 
+/**
+ * Class OphCoCvi_Manager
+ *
+ * @package OEModule\OphCoCvi\components
+ */
 class OphCoCvi_Manager extends \CComponent
 {
     public static $CLINICAL_COMPLETE = 1;
@@ -32,7 +37,7 @@ class OphCoCvi_Manager extends \CComponent
     public static $ISSUED = 8;
     public static $CONSENTED = 16;
     public static $CONSULTANT_SIGNED = 32;
-    private  $input_template_file = 'cviTemplate.odt';
+    private $input_template_file = 'cviTemplate.odt';
 
     /**
      * @param $status
@@ -49,7 +54,7 @@ class OphCoCvi_Manager extends \CComponent
             'Clerical' => self::$CLERICAL_COMPLETE,
             'Demographics' => self::$DEMOGRAPHICS_COMPLETE,
             'Consent signature' => self::$CONSENTED,
-            'Consultant signature' => self::$CONSULTANT_SIGNED
+            'Consultant signature' => self::$CONSULTANT_SIGNED,
         );
 
         $result = array();
@@ -69,11 +74,18 @@ class OphCoCvi_Manager extends \CComponent
     }
 
     protected $yii;
+
     /**
      * @var \EventType
      */
     protected $event_type;
 
+    /**
+     * OphCoCvi_Manager constructor.
+     *
+     * @param \CApplication|null $yii
+     * @param \EventType|null    $event_type
+     */
     public function __construct(\CApplication $yii = null, \EventType $event_type = null)
     {
         if (is_null($yii)) {
@@ -96,6 +108,7 @@ class OphCoCvi_Manager extends \CComponent
     protected function getModuleClass()
     {
         $namespace_pieces = explode("\\", __NAMESPACE__);
+
         return $namespace_pieces[1];
     }
 
@@ -110,6 +123,7 @@ class OphCoCvi_Manager extends \CComponent
         if (!$event_type = \EventType::model()->find('class_name=?', array($module_class))) {
             throw new \Exception("Module is not migrated: $module_class");
         }
+
         return $event_type;
     }
 
@@ -148,7 +162,7 @@ class OphCoCvi_Manager extends \CComponent
             'Element_OphCoCvi_ClinicalInfo' => 'clinical_element',
             'Element_OphCoCvi_ClericalInfo' => 'clerical_element',
             'Element_OphCoCvi_ConsentSignature' => 'consent_element',
-            'Element_OphCoCvi_Demographics' => 'demographics_element'
+            'Element_OphCoCvi_Demographics' => 'demographics_element',
         );
 
         if (!isset($this->info_el_for_events[$event->id])) {
@@ -194,7 +208,7 @@ class OphCoCvi_Manager extends \CComponent
      * doesn't have the right to manage the data for that specific element.
      *
      * @param \Event $event
-     * @param bool $for_editing
+     * @param bool   $for_editing
      * @return array|\BaseEventTypeElement[]
      */
     public function getEventElements(\Event $event, $for_editing = false)
@@ -219,6 +233,7 @@ class OphCoCvi_Manager extends \CComponent
                     $editable[] = $el;
                 }
             }
+
             return $editable;
         }
     }
@@ -272,7 +287,7 @@ class OphCoCvi_Manager extends \CComponent
      * Generate the text display of the status of the CVI
      *
      * @param Element_OphCoCvi_ClinicalInfo $clinical
-     * @param Element_OphCoCvi_EventInfo $info
+     * @param Element_OphCoCvi_EventInfo    $info
      * @return string
      */
     protected function getDisplayStatus(Element_OphCoCvi_ClinicalInfo $clinical = null, Element_OphCoCvi_EventInfo $info)
@@ -348,6 +363,7 @@ class OphCoCvi_Manager extends \CComponent
         if ($clinical = $event_info->clinical_element) {
             return $clinical->consultant;
         }
+
         return null;
     }
 
@@ -370,7 +386,7 @@ class OphCoCvi_Manager extends \CComponent
             if (!$clinical->validate()) {
                 return false;
             }
-            if (!$clinical->consultant_signature_file_id){
+            if (!$clinical->consultant_signature_file_id) {
                 return false;
             }
         } else {
@@ -415,6 +431,7 @@ class OphCoCvi_Manager extends \CComponent
         if ($info_element = $this->getEventInfoElementForEvent($event)) {
             return $info_element->is_draft;
         }
+
         return false;
     }
 
@@ -429,6 +446,7 @@ class OphCoCvi_Manager extends \CComponent
                 return false;
             }
         }
+
         return true;
     }
 
@@ -450,8 +468,8 @@ class OphCoCvi_Manager extends \CComponent
             }
         }
         $address = \Institution::model()->getCurrent()->getLetterAddress(array('include_name' => false, 'delimiter' => '\n'));
-        $data['hospitalAddress'] = \Helper::lineLimit($address,2,1,'\n');
-        $data['hospitalAddressMultiline'] = \Helper::lineLimit($address,4,1,'\n');
+        $data['hospitalAddress'] = \Helper::lineLimit($address, 2, 1, '\n');
+        $data['hospitalAddressMultiline'] = \Helper::lineLimit($address, 4, 1, '\n');
         $data['hospitalNumber'] = $event->episode->patient->hos_num;
 
         return $data;
@@ -460,7 +478,7 @@ class OphCoCvi_Manager extends \CComponent
     /**
      * Prepare the Certificate template with the data available from the given event.
      *
-     * @param \Event $event
+     * @param \Event  $event
      * @param boolean $ignore_portal - if true, will force the signature box to be rendered rather than checking the portal
      * @return \ODTTemplateManager
      * @throws \Exception
@@ -478,12 +496,10 @@ class OphCoCvi_Manager extends \CComponent
         } else {
             // TODO: this should be checked before, when we retrieve the patient signature!!!
             // we get the stored signature and creates a GD object from the data
-            if ($signature_element->getDecryptedSignature())
-            {
+            if ($signature_element->getDecryptedSignature()) {
                 $signature = imagecreatefromstring($signature_element->getDecryptedSignature());
-            }else
-            {
-                $signature = imagecreatetruecolor(1,1);
+            } else {
+                $signature = imagecreatetruecolor(1, 1);
             }
 
         }
@@ -491,10 +507,10 @@ class OphCoCvi_Manager extends \CComponent
 
         // TODO: need to configure this more cleanly
         $print_helper = new \ODTTemplateManager(
-            $this->input_template_file ,
-            realpath(__DIR__ . '/..').'/views/odtTemplate',
-            $this->yii->basePath.'/runtime/cache/cvi/',
-            'CVICert_'.$event->id.'_'.mt_rand().'.odt'
+            $this->input_template_file,
+            realpath(__DIR__ . '/..') . '/views/odtTemplate',
+            $this->yii->basePath . '/runtime/cache/cvi/',
+            'CVICert_' . $event->id . '_' . mt_rand() . '.odt'
         );
 
         $data_handler = new \ODTDataHandler();
@@ -503,7 +519,7 @@ class OphCoCvi_Manager extends \CComponent
 
         $tables = $data_handler->getTables();
 
-        foreach($tables as $one_table){
+        foreach ($tables as $one_table) {
             $name = $one_table['name'];
             $data = $data_handler->generateSimpleTableHashData($one_table);
             $print_helper->fillTableByName($name, $data, 'name');
@@ -511,7 +527,7 @@ class OphCoCvi_Manager extends \CComponent
 
         $texts = $data_handler->getSimpleTexts();
 
-        $print_helper->exchangeAllStringValuesByStyleName( $texts );
+        $print_helper->exchangeAllStringValuesByStyleName($texts);
 
         //$print_helper->exchangeStringValues( $this->getStructuredDataForPrintPDF($id) );
 
@@ -547,7 +563,6 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function generateConsentForm(\Event $event)
     {
-
         $this->input_template_file = "signatureTemplate.odt";
         $document = $this->populateCviCertificate($event, true);
         $document->generatePDFPageN();
@@ -559,7 +574,7 @@ class OphCoCvi_Manager extends \CComponent
      * Issue the CVI for the given event (recording it as an action performed by the given user id).
      *
      * @param \Event $event
-     * @param $user_id
+     * @param        $user_id
      * @return bool
      */
     public function issueCvi(\Event $event, $user_id)
@@ -586,11 +601,13 @@ class OphCoCvi_Manager extends \CComponent
             $transaction->commit();
 
             $event->unlock();
+
             return true;
         } catch (\Exception $e) {
             \OELog::log($e->getMessage());
             $transaction->rollback();
         }
+
         return false;
 
     }
@@ -603,8 +620,7 @@ class OphCoCvi_Manager extends \CComponent
     {
         if ($info_element = $this->getEventInfoElementForEvent($event)) {
             return !$info_element->is_draft;
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -664,7 +680,7 @@ class OphCoCvi_Manager extends \CComponent
 
     /**
      * @param \CDbCriteria $criteria
-     * @param array $filter
+     * @param array        $filter
      */
     private function handleDateRangeFilter(\CDbCriteria $criteria, $filter = array())
     {
@@ -693,7 +709,7 @@ class OphCoCvi_Manager extends \CComponent
 
     /**
      * @param \CDbCriteria $criteria
-     * @param array $filter
+     * @param array        $filter
      */
     private function handleSubspecialtyListFilter(\CDbCriteria $criteria, $filter = array())
     {
@@ -705,7 +721,7 @@ class OphCoCvi_Manager extends \CComponent
 
     /**
      * @param \CDbCriteria $criteria
-     * @param array $filter
+     * @param array        $filter
      */
     private function handleSiteListFilter(\CDbCriteria $criteria, $filter = array())
     {
@@ -714,9 +730,10 @@ class OphCoCvi_Manager extends \CComponent
             $criteria->params[':site_id'] = $filter['site_id'];
         }
     }
+
     /**
      * @param \CDbCriteria $criteria
-     * @param array $filter
+     * @param array        $filter
      */
     private function handleConsultantListFilter(\CDbCriteria $criteria, $filter = array())
     {
@@ -726,10 +743,9 @@ class OphCoCvi_Manager extends \CComponent
     }
 
 
-
     /**
      * @param \CDbCriteria $criteria
-     * @param array $filter
+     * @param array        $filter
      */
     private function handleIssuedFilter(\CDbCriteria $criteria, $filter = array())
     {
@@ -752,6 +768,7 @@ class OphCoCvi_Manager extends \CComponent
         $this->handleSiteListFilter($criteria, $filter);
         $this->handleConsultantListFilter($criteria, $filter);
         $this->handleIssuedFilter($criteria, $filter);
+
         return $criteria;
     }
 
@@ -808,7 +825,7 @@ class OphCoCvi_Manager extends \CComponent
             // TODO: retrieve the date attribute from the info element class
             'issue_date' => array(
                 'asc' => 'is_draft asc, t.last_modified_date asc',
-                'desc' => 'is_draft asc, t.last_modified_date desc'
+                'desc' => 'is_draft asc, t.last_modified_date desc',
             ),
         );
 
@@ -816,7 +833,7 @@ class OphCoCvi_Manager extends \CComponent
 
         return new \CActiveDataProvider($model, array(
             'sort' => $sort,
-            'criteria' => $criteria
+            'criteria' => $criteria,
         ));
     }
 
@@ -831,7 +848,7 @@ class OphCoCvi_Manager extends \CComponent
     }
 
     /**
-     * @param $signatureFile
+     * @param        $signatureFile
      * @param \Event $event
      * @throws \Exception
      */
@@ -854,8 +871,8 @@ class OphCoCvi_Manager extends \CComponent
 
     /**
      * @param \Event $event
-     * @param \User $user
-     * @param $pin
+     * @param \User  $user
+     * @param        $pin
      * @return bool
      */
     public function signCvi(\Event $event, \User $user, $pin)
@@ -870,22 +887,24 @@ class OphCoCvi_Manager extends \CComponent
                     $this->updateEventInfo($event);
                     $event->audit('event', 'cvi-consultant-signed', null, 'CVI Consultant Signature added', array('user_id' => $user->id));
                     $transaction->commit();
+
                     return true;
-                }
-                catch (\Exception $e) {
+                } catch (\Exception $e) {
                     \OELog::log($e->getMessage());
                     $transaction->rollback();
+
                     return false;
                 }
             }
         }
+
         return false;
     }
 
     /**
      * @param \Event $event
-     * @param \User $user
-     * @param $signature_file_id
+     * @param \User  $user
+     * @param        $signature_file_id
      * @return bool
      * @throws \CDbException
      * @throws \Exception
@@ -901,17 +920,17 @@ class OphCoCvi_Manager extends \CComponent
                     $this->updateEventInfo($event);
                     $event->audit('event', 'cvi-consent-removed', null, 'CVI Consent Signature Removed', array('user_id' => $user->id));
                     $transaction->commit();
+
                     return true;
-                }
-                catch (\Exception $e) {
+                } catch (\Exception $e) {
                     \OELog::log($e->getMessage());
                     $transaction->rollback();
+
                     return false;
                 }
             }
         }
+
         return false;
     }
-
-
 }

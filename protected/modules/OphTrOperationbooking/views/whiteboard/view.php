@@ -6,18 +6,9 @@
                 <h2 class="mdl-card__title-text">Patient Details</h2>
             </div>
             <div class="mdl-card__supporting-text">
-                <dl>
-                    <dt>Name</dt>
-                    <dd><?=$data->patient_name?></dd>
-                </dl>
-                <dl>
-                    <dt>Date of Birth</dt>
-                    <dd><?=date_create_from_format('Y-m-d', $data->date_of_birth)->format('j M Y')?></dd>
-                </dl>
-                <dl>
-                    <dt>Hospital Number</dt>
-                    <dd><?=$data->hos_num?></dd>
-                </dl>
+                <?=$data->patient_name?> <br />
+                <?=date_create_from_format('Y-m-d', $data->date_of_birth)->format('j M Y')?> <br />
+                <?=$data->hos_num?>
             </div>
         </div>
     </div>
@@ -44,7 +35,7 @@
     <div class="mdl-cell mdl-cell--4-col">
         <div class="mdl-card mdl-shadow--2dp">
             <div class="mdl-card__title mdl-card--expand biometry">
-                <h2 class="mdl-card__title-text">IOL Model</h2>
+                <h2 class="mdl-card__title-text">IOL Model &amp; Formula</h2>
             </div>
             <div class="mdl-card__supporting-text">
                 <?=$data->iol_model?>
@@ -95,7 +86,36 @@
             </div>
         </div>
     </div>
+    <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-card mdl-shadow--2dp">
+            <div class="mdl-card__title mdl-card--expand risk">
+                <h2 class="mdl-card__title-text">Anticoagulants</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                <?php if ($data->anticoagulants):?>
+                    Yes - <?=$data->anticoagulant_name?> <br>
+                    INR: <?=$data->inr?>
+                <?php else: ?>
+                    No
+                <?php endif;?>
+            </div>
+        </div>
+    </div>
     <div class="mdl-cell mdl-cell--4-col editable">
+        <div class="mdl-card mdl-shadow--2dp">
+            <div class="mdl-card__title mdl-card--expand comment">
+                <h2 class="mdl-card__title-text">Comments</h2>
+                <?php if ($this->getWhiteboard()->isEditable()):?>
+                    <div class="mdl-layout-spacer"></div>
+                    <i class="material-icons right" data-whiteboard-event-id="<?=$data->event_id?>">create</i>
+                <?php endif; ?>
+            </div>
+            <div class="mdl-card__supporting-text" id="comments">
+                <?=nl2br($data->comments)?>
+            </div>
+        </div>
+    </div>
+    <div class="mdl-cell mdl-cell--8-col mdl-cell--8-col-tablet editable">
         <div class="mdl-card mdl-shadow--2dp">
             <div class="mdl-card__title mdl-card--expand comment">
                 <h2 class="mdl-card__title-text">Predicted additional equipment</h2>
@@ -113,34 +133,6 @@
             </div>
         </div>
     </div>
-    <div class="mdl-cell mdl-cell--4-col">
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand risk">
-                <h2 class="mdl-card__title-text">Anticoagulants</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <?php if ($data->anticoagulants):?>
-                    Yes - <?=$data->anticoagulant_name?> <br>
-                    INR: <?=$data->inr?>
-                <?php else: ?>
-                    No
-                <?php endif;?>
-            </div>
-        </div>
-    </div>
-    <div class="mdl-cell mdl-cell--8-col editable">
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand comment">
-                <h2 class="mdl-card__title-text">Comments</h2>
-                <?php if ($this->getWhiteboard()->isEditable()):?>
-                    <div class="mdl-layout-spacer"></div>
-                    <i class="material-icons right" data-whiteboard-event-id="<?=$data->event_id?>">create</i>
-                <?php endif; ?>
-            </div>
-            <div class="mdl-card__supporting-text" id="comments">
-                <?=nl2br($data->comments)?>
-            </div>
-        </div>
-    </div>
+
 </div>
-<div id="dialog-container"></div>
+

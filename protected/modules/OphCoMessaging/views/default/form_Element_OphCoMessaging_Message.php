@@ -32,9 +32,9 @@
                         'value' => '',
                         'source' => "js:function(request, response) {
                                     $.ajax({
-                                        'url': '".Yii::app()->createUrl('/OphCoMessaging/default/userfind')."',
+                                        'url': '" . Yii::app()->createUrl('/user/autocomplete') . "',
                                         'type':'GET',
-                                        'data':{'search': request.term},
+                                        'data':{'term': request.term},
                                         'success':function(data) {
                                             data = $.parseJSON(data);
                                             response(data);

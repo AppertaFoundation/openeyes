@@ -27,150 +27,153 @@ if (!isset($uniqueid)) {
 }
 ?>
 <div class="admin box">
-	<?php if (!$admin->isSubList()):?>
-	<h2><?php echo $admin->getModelDisplayName(); ?></h2>
-	<?php endif;?>
-	<?php $this->widget('GenericSearch', array('search' => $admin->getSearch(), 'subList' => $admin->isSubList())); ?>
+    <?php if (!$admin->isSubList()): ?>
+        <h2><?php echo $admin->getModelDisplayName(); ?></h2>
+    <?php endif; ?>
+    <?php $this->widget('GenericSearch', array('search' => $admin->getSearch(), 'subList' => $admin->isSubList())); ?>
 
-	<?php
+    <?php
     $returnUri = '';
-    if ($admin->isSubList()):?>
-	<div id="generic-admin-sublist">
-		<?php
+    if ($admin->isSubList()): ?>
+    <div id="generic-admin-sublist">
+        <?php
         if ($admin->getSubListParent() && is_array($admin->getSubListParent())):
             foreach ($admin->getSubListParent() as $key => $value):
-        ?>
-			<input type="hidden" name="default[<?=$key?>]" value="<?=$value?>" />
-		<?php
+                ?>
+                <input type="hidden" name="default[<?= $key ?>]" value="<?= $value ?>"/>
+                <?php
             endforeach;
         endif;
         $returnUri = $admin->generateReturnUrl(Yii::app()->request->requestUri);
         ?>
-		<input type="hidden" name="returnUri" id="returnUri" value="<?=$returnUri ?>" />
+        <input type="hidden" name="returnUri" id="returnUri" value="<?= $returnUri ?>"/>
 
-	<?php else: ?>
-	<form id="generic-admin-list">
-		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
-	<?php endif;?>
-		<input type="hidden" name="page" value="<?php echo Yii::app()->request->getParam('page', 1) ?>"/>
-		<table class="grid">
-			<thead>
-			<tr>
-				<th><input type="checkbox" name="selectall" id="selectall"/></th>
-				<?php
-                foreach ($admin->getListFields() as $listItem):
-                if ($listItem !== 'attribute_elements_id.id') :?>
-					<th>
-						<?php if ($admin->isSortableColumn($listItem)): ?>
-						<a href="/<?php echo $uniqueid ?>/list?<?php echo $admin->sortQuery($listItem, $displayOrder,
-                            Yii::app()->request->getQueryString()) ?>">
-							<?php endif;
+        <?php else: ?>
+        <form id="generic-admin-list">
+            <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
+            <?php endif; ?>
+            <input type="hidden" name="page" value="<?php echo Yii::app()->request->getParam('page', 1) ?>"/>
+            <table class="grid">
+                <thead>
+                <tr>
+                    <th><input type="checkbox" name="selectall" id="selectall"/></th>
+                    <?php
+                    foreach ($admin->getListFields() as $listItem):
+                        if ($listItem !== 'attribute_elements_id.id') :?>
+                            <th>
+                                <?php if ($admin->isSortableColumn($listItem)): ?>
+                                <a href="/<?php echo $uniqueid ?>/list?<?php echo $admin->sortQuery($listItem, $displayOrder,
+                                    Yii::app()->request->getQueryString()) ?>">
+                                    <?php endif;
+                                    ?>
+                                    <?php echo $admin->getModel()->getAttributeLabel($listItem); ?>
+                                    <?php if ($admin->isSortableColumn($listItem)): ?>
+                                </a>
+                            <?php endif;
                             ?>
-							<?php echo $admin->getModel()->getAttributeLabel($listItem); ?>
-							<?php if ($admin->isSortableColumn($listItem)): ?>
-						</a>
-					<?php endif;
-                    ?>
-					</th>
-				<?php else:?>
-					<th>Action</th>
-				<?php endif;
-                endforeach; ?>
-			</tr>
-			</thead>
-			<tbody <?php if (in_array('display_order', $admin->getListFields())): echo 'class="sortable"'; endif; ?>>
-			<?php
-            foreach ($admin->getSearch()->retrieveResults() as $i => $row) { ?>
-				<tr class="clickable" data-id="<?php echo $row->id ?>"
-					data-uri="<?php echo $uniqueid ?>/edit/<?php echo $row->id ?>?returnUri=<?=$returnUri?>">
-					<td>
-						<input type="checkbox" name="<?php echo $admin->getModelName(); ?>[id][]" value="<?php echo $row->id ?>"/>
-					</td>
-					<?php foreach ($admin->getListFields() as $listItem):
-                    if ($listItem !== 'attribute_elements_id.id'):
-                        ?>
-						<td>
-							<?php
-                            if (gettype($admin->attributeValue($row, $listItem)) === 'boolean'):
-                                if ($admin->attributeValue($row, $listItem)):
-                                    ?><i class="fa fa-check"></i><?php
-                                else:
-                                    ?><i class="fa fa-times"></i><?php
-                                endif;
-                            elseif($listItem === 'display_order'):
-                                ?>
-								&uarr;&darr;<input type="hidden" name="<?php echo $admin->getModelName(); ?>[display_order][]" value="<?php echo $row->id ?>">
-							<?php
-                            else:
-                                echo $admin->attributeValue($row, $listItem);
-                endif
-                            ?>
-						</td>
-					<?php endif;
-
-                if ($listItem === 'attribute_elements_id.id'):
-                        $mappingId = $admin->attributeValue($row, $listItem);
-                endif;
-
-                if ($listItem === 'attribute_elements.name'):?>
-					<td>
-						<?php if (($mappingId > 0)):?>
-							<a onMouseOver="this.style.color='#AFEEEE'" onMouseOut="this.style.color='#00F'" href="../../OphCiExamination/admin/manageElementAttributes?attribute_element_id=<?php echo $mappingId?>">Manage Options</a>
-						<?php endif; ?>
-					</td>
-					<?php
-                    endif;
+                            </th>
+                        <?php else: ?>
+                            <th>Action</th>
+                        <?php endif;
                     endforeach; ?>
+                </tr>
+                </thead>
+                <tbody <?php if (in_array('display_order', $admin->getListFields())): echo 'class="sortable"'; endif; ?>>
+                <?php
+                foreach ($admin->getSearch()->retrieveResults() as $i => $row) { ?>
+                    <tr class="clickable" data-id="<?php echo $row->id ?>"
+                        data-uri="<?php echo $uniqueid ?>/edit/<?php echo $row->id ?>?returnUri=<?= $returnUri ?>">
+                        <td>
+                            <input type="checkbox" name="<?php echo $admin->getModelName(); ?>[id][]" value="<?php echo $row->id ?>"/>
+                        </td>
+                        <?php foreach ($admin->getListFields() as $listItem):
+                            if ($listItem !== 'attribute_elements_id.id'):
+                                ?>
+                                <td>
+                                    <?php
+                                    if (gettype($admin->attributeValue($row, $listItem)) === 'boolean'):
+                                        if ($admin->attributeValue($row, $listItem)):
+                                            ?><i class="fa fa-check"></i><?php
+                                        else:
+                                            ?><i class="fa fa-times"></i><?php
+                                        endif;
+                                    elseif(gettype($admin->attributeValue($row, $listItem)) === 'array'):
+                                        echo implode(',', $admin->attributeValue($row, $listItem));
+                                    elseif ($listItem === 'display_order'):
+                                        ?>
+                                        &uarr;&darr;<input type="hidden" name="<?php echo $admin->getModelName(); ?>[display_order][]" value="<?php echo $row->id ?>">
+                                        <?php
+                                    else:
+                                        echo $admin->attributeValue($row, $listItem);
+                                    endif
+                                    ?>
+                                </td>
+                            <?php endif;
 
-				</tr>
-			<?php } ?>
-			</tbody>
-			<tfoot class="pagination-container">
-			<tr>
-				<td colspan="<?php echo count($admin->getListFields()) + 1; ?>">
-                                        <?php if(isset($buttons) && ($buttons == true)) { ?>
-                                            <?php echo EventAction::button(
-                                                    'Add',
-                                                    'add',
-                                                    array(),
-                                                    array(
-                                                            'class' => 'small',
-                                                            'data-uri' => '/'.$uniqueid.'/edit',
-                                                            'formmethod' => 'get',
-                                                    )
-                                            )->toHtml() ?>
-                                            <?php echo EventAction::button(
-                                                    'Delete',
-                                                    'delete',
-                                                    array(),
-                                                    array(
-                                                            'class' => 'small',
-                                                            'data-uri' => '/'.$uniqueid.'/delete',
-                                                            'data-object' => $admin->getModelName(),
-                                                    )
-                                            )->toHtml() ?>
-                                        <?php } ?>
-					<?php echo EventAction::button(
-                        'Sort',
-                        'sort',
-                        array(),
-                        array(
-                            'class' => 'small',
-                            'style' => 'display:none;',
-                            'data-uri' => '/'.$uniqueid.'/sort',
-                            'data-object' => $admin->getModelName(),
-                        )
-                    )->toHtml() ?>
-					<?php echo $this->renderPartial('//admin/_pagination', array(
-                        'pagination' => $admin->getPagination(),
-                    )) ?>
-				</td>
-			</tr>
-			</tfoot>
-		</table>
-	<?php if ($admin->isSubList()):?>
-	</div>
-	<?php else: ?>
-	</form>
-	<?php endif;?>
+                            if ($listItem === 'attribute_elements_id.id'):
+                                $mappingId = $admin->attributeValue($row, $listItem);
+                            endif;
+
+                            if ($listItem === 'attribute_elements.name'):?>
+                                <td>
+                                    <?php if (($mappingId > 0)): ?>
+                                        <a onMouseOver="this.style.color='#AFEEEE'" onMouseOut="this.style.color='#00F'"
+                                           href="../../OphCiExamination/admin/manageElementAttributes?attribute_element_id=<?php echo $mappingId ?>">Manage Options</a>
+                                    <?php endif; ?>
+                                </td>
+                                <?php
+                            endif;
+                        endforeach; ?>
+
+                    </tr>
+                <?php } ?>
+                </tbody>
+                <tfoot class="pagination-container">
+                <tr>
+                    <td colspan="<?php echo count($admin->getListFields()) + 1; ?>">
+                        <?php if (isset($buttons) && ($buttons == true)) { ?>
+                            <?php echo EventAction::button(
+                                'Add',
+                                'add',
+                                array(),
+                                array(
+                                    'class' => 'small',
+                                    'data-uri' => '/' . $uniqueid . '/edit',
+                                    'formmethod' => 'get',
+                                )
+                            )->toHtml() ?>
+                            <?php echo EventAction::button(
+                                'Delete',
+                                'delete',
+                                array(),
+                                array(
+                                    'class' => 'small',
+                                    'data-uri' => '/' . $uniqueid . '/delete',
+                                    'data-object' => $admin->getModelName(),
+                                )
+                            )->toHtml() ?>
+                        <?php } ?>
+                        <?php echo EventAction::button(
+                            'Sort',
+                            'sort',
+                            array(),
+                            array(
+                                'class' => 'small',
+                                'style' => 'display:none;',
+                                'data-uri' => '/' . $uniqueid . '/sort',
+                                'data-object' => $admin->getModelName(),
+                            )
+                        )->toHtml() ?>
+                        <?php echo $this->renderPartial('//admin/_pagination', array(
+                            'pagination' => $admin->getPagination(),
+                        )) ?>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+            <?php if ($admin->isSubList()): ?>
+    </div>
+<?php else: ?>
+    </form>
+<?php endif; ?>
 </div>

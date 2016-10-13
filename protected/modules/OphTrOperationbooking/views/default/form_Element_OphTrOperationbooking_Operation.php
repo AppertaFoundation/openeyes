@@ -17,7 +17,24 @@
  */
  ?>
 <fieldset class="element-fields">
-	<?php echo $form->radioButtons($element, 'eye_id', CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'))?>
+	<?php
+	/**
+	 * Check the Subspecialty is 'Cataract', and check opbooking_disable_both_eyes is True.  Used to remove BOTH eyes option for Cataract operations.
+	 */
+	if ($episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
+	}
+	?>
+	<?php
+		if ($episode->getSubspecialtyText() == "Cataract" And Yii::app()->params['opbooking_disable_both_eyes'] == true) {
+			?>
+			<?php echo $form->radioButtons($element, 'eye_id', CHtml::listData(Eye::model()->findAll(array('condition' => 'name != "Both"', 'order' => 'display_order asc')), 'id', 'name'))?>
+	<?php
+		} else {
+	?>
+			<?php echo $form->radioButtons($element, 'eye_id', CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'))?>
+	<?php
+	}
+	?>
 	<?php $form->widget('application.widgets.ProcedureSelection', array(
         'element' => $element,
         'durations' => true,

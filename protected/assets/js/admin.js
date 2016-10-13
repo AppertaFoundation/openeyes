@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    var $globalFirmRights = $("input[name='User[global_firm_rights]']");
 
     $('#selectall').click(function () {
         $('input[type="checkbox"]').attr('checked', this.checked);
@@ -307,5 +308,15 @@ $(document).ready(function () {
             $("#User_grade").val(null).change();
         }
     });
+
+    $globalFirmRights.on('change', function(){
+        if($("input:radio[name='User[global_firm_rights]']:checked").val() === '1'){
+            $('#div_User_Firms').hide();
+        } else {
+            $('#div_User_Firms').show();
+        }
+    });
+
+    $globalFirmRights.trigger('change');
 
 });

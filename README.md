@@ -10,6 +10,14 @@ The initial focus is on Ophthalmology, but the design is sufficiently flexible t
 
 Ophthalmic units of any size, from a single practitioner to a large eye hospital, should be able to make use of the structure, design, and code to produce a functional, easy to use EPR at minimal cost. By sharing experience, pooling ideas, and distributing development effort, it is expected that the range and capability of OpenEyes will evolve rapidly.
 
+Disclaimer
+----------
+OpenEyes is provided under a GPL v3 license and all terms of that license apply ([https://www.gnu.org/licenses/gpl-3.0.html](https://www.gnu.org/licenses/gpl-3.0.html)). Use of the OpenEyes software or code is entirely at your own risk. Neither the OpenEyes Foundation, ACROSS Health Ltd 
+nor Moorfields Eye Hospital NHS Foundation Trust accept any responsibility for loss or damage to any person, property or
+reputation as a result of using the software or code. No warranty is provided by any party, implied or
+otherwise. This software and code is not guaranteed safe to use in a clinical environment and you
+should make your own assessment on the suitability for such use.
+
 Resources
 ---------
 
@@ -34,7 +42,7 @@ If you need to share repositories with members of the core development team, you
 
 OpenEyes follows the [gitflow](http://nvie.com/posts/a-successful-git-branching-model/) model for git branches. As such, the stable release branch is always on master. For bleeding edge development, use the develop branch.
 
-Setup and installation documentation is available from the README file in the oe_installer repository. 
+Setup and installation documentation is available from the README file in the oe_installer repository.
 
 We are beginning to evolve some documentation for developers on [our github wiki](https://github.com/openeyes/OpenEyes/wiki) including [coding guidelines](https://github.com/openeyes/OpenEyes/wiki/Coding-Guidelines), [working with the core team](https://github.com/openeyes/OpenEyes/wiki/Working-With-The-Core-Team) and our [Event type module development guide](https://github.com/openeyes/OpenEyes/wiki/Event-Type-Module-Development-Guide).
 
@@ -72,10 +80,12 @@ To allow for multiple environments to be built at the same time the hostname and
 Full usage:
 
 	$ vagrant --hostname="openeyes.dev.local" --servername="My Open Eyes Dev Server" up
-	
+
 If either are omitted the default vales of "openeyes.vm"" and "OpenEyes Dev Server" are used for the hostname and servername respectively.
 
 **Note:** if the options are omitted the default values are used, the command line options have to be before the vagrant command for them to work.
+
+**Further Note:** These options must be used each time the box is brought up; at the moment vagrant does not respect the original values used, and will fall over. See [issue 457](https://github.com/openeyes/OpenEyes/issues/457)
 
 #### XDebug
 
@@ -88,7 +98,17 @@ By default Xdebug is disabled on the CLI due to [documented](https://getcomposer
 
 #### Windows 10
 
-You will need to have downloaded VC++ for Vagrant to be able to download base boxes for the build see this issue for more information [https://github.com/mitchellh/vagrant/issues/6754](https://github.com/mitchellh/vagrant/issues/6754)
+You will need to have downloaded VC++ for Vagrant to be able to download base boxes for the build, (see this issue for more information [https://github.com/mitchellh/vagrant/issues/6754](https://github.com/mitchellh/vagrant/issues/6754))
+
+Building and running under Windows has been tested using [Cygwin](https://www.cygwin.com) (run as administrator - right click on the shortcut "Run as Administrator") to run git clone against the repository and also run the various vagrant commands.
+
+**Note:** You should ensure that that the path you clone the repository to doesn't have any spaces in as Virtualbox complains about this during the build process.
+
+The following commands should be installed as part of the Cygwin install:
+
+* git
+* openssh
+* rsync
 
 ### Useful Vagrant Commands
 
@@ -105,11 +125,14 @@ And if that's not enough there is the Vagrant [documentation](https://www.vagran
 
 Additional / Outstanding tasks to be completed:
 
-* Tidy up the PHP build implementation
-* Full Windows platform testing
-* Configuration optimisation to make it easier to make changes to the build from a single file
+* Resolve PHP 5.3 support [issue 398](https://github.com/openeyes/OpenEyes/issues/398)
 * Changes to support AWS provisioning (although this may be better left to a build specific Ansible playbook)
 * Tailor the roles better to the OE build rather than coding around more generic [Ansible Galaxy](https://galaxy.ansible.com) based roles.
+
+#### Known issues
+
+1. XDebug enabled in CLI - setting in `ansible/vars/all.yml` is ignored - https://github.com/geerlingguy/ansible-role-php-xdebug/issues/34
+
 
 Printing
 --------

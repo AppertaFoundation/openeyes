@@ -34,6 +34,7 @@
                 <div class="large-12 column">
                     <div class="panel">
                         <div class="row">
+                           
                             <div class="large-10 column">
                                 <div class="search-filters-extra audit-filters clearfix">
                                     <fieldset class="inline highlight">
@@ -66,7 +67,7 @@
 
                                     </fieldset>
                                 </div>
-                            </div>
+                            </div> 
                             <div class="large-2 column text-right">
                                 <img class="loader hidden" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif');?>" alt="loading..." style="margin-right:10px" />
                                 <button type="submit" class="secondary long">Generate</button>

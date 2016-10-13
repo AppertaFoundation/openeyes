@@ -27,7 +27,6 @@ tags
 /protected/config/local
 /protected/views/patient/custom/info/php
 /protected/yii
-/protected/vendors
 *zip
 vendor
 .sass-cache
