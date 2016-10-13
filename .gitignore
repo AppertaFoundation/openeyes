@@ -26,7 +26,6 @@ tags
 /protected/config/db_muu.php
 /protected/config/local
 /protected/views/patient/custom/info/php
-/protected/commands/
 /protected/yii
 /protected/vendors
 *zip
