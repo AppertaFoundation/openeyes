@@ -22,6 +22,13 @@
 <?php echo $form->hiddenInput($element, 'draft', 1)?>
 <?php
 $layoutColumns = $form->layoutColumns;
+if(isset($data['macro_id']))
+{
+    $macro_id = $data['macro_id'];
+}else
+{
+    $macro_id = null;
+}
 ?>
 <div class="element-fields">
 
@@ -42,10 +49,19 @@ $layoutColumns = $form->layoutColumns;
 
 	<div class="row field-row">
 		<div class="large-<?php echo $layoutColumns['label'];?> column">
+			<label>Macro:</label>
+		</div>
+		<div class="large-2 column end">
+			<?php echo CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros, '', array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'full-width'));?>
+		</div>
+	</div>
+
+	<div class="row field-row">
+		<div class="large-<?php echo $layoutColumns['label'];?> column">
 			<label>Letter type:</label>
 		</div>
 		<div class="large-2 column end">
-			<?php echo $form->dropDownListNoPost('letter_type', array('1'=>'Clinic discharge letter', '2'=>'Other letter'), $element->letter_type, array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'full-width'))?>
+			<?php echo $form->dropDownList($element, 'letter_type', array('1'=>'Clinic discharge letter', '2'=>'Post-op letter', '3'=>'Clinic letter', '4'=>'Other letter'), array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'full-width'))?>
 		</div>
 	</div>
 

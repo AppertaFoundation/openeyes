@@ -609,8 +609,8 @@ class ElementLetter extends BaseEventTypeElement
      *
      * @return mixed
      */
-    public function renderSourceAddress()
+    public function renderSourceAddress($address)
     {
-        return preg_replace('/[\r\n]+/', ', ', CHtml::encode($this->source_address));
+        return preg_replace('/[\r\n]+/', ', ', CHtml::encode($address));
     }
 }

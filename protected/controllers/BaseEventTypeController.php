@@ -1564,7 +1564,11 @@ class BaseEventTypeController extends BaseModuleController
         $event->lock();
 
         // Ensure exclusivity of PDF to avoid race conditions
-        $this->pdf_print_suffix .= Yii::app()->user->id.'_'.rand();
+        if(method_exists($this,"getSession")) {
+            $this->pdf_print_suffix .= Yii::app()->user->id . '_' . rand();
+        }else{
+            $this->pdf_print_suffix .= getmypid().rand();
+        }
 
         if (!$event->hasPDF($this->pdf_print_suffix) || @$_GET['html']) {
             if (!$this->pdf_print_html) {

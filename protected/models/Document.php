@@ -135,7 +135,37 @@ class Document //extends BaseActiveRecord
 		$array['docoutputs'] = $this->getValues($data);
 		return $array;
 	}
-	
+
+	public function getDocumentTargetsStructured($event_id)
+    {
+        $array = array();
+        $return = array();
+
+        $instance = DocumentInstance::model()->findByAttributes(array('event_id'=>$event_id));
+        $data = DocumentTarget::model()->findAllByAttributes(array('document_instance_id'=>$instance->id));
+
+        $array['doctargets'] = $this->getValues($data);
+
+        foreach($array['doctargets'] as $target)
+        {
+            $output_data = DocumentOutput::model()->findAllByAttributes(array('document_target_id'=>$target->id));
+            if($output_data->ToCc == 'to')
+            {
+                $return["to"]["contact_type"] = $target->contact_name;
+                $return["to"]["contact_id"] = $target->contact_id;
+                $return["to"]["contact_name"] = $target->contact_name;
+                $return["to"]["address"] = $target->address;
+            }else
+            {
+                $return["cc"][]["contact_type"] = $target->contact_name;
+                $return["cc"][]["contact_id"] = $target->contact_id;
+                $return["cc"][]["contact_name"] = $target->contact_name;
+                $return["cc"][]["address"] = $target->address;
+            }
+        }
+
+        return $return;
+    }
 	
 	/**
 	 * Load the entire document set in to an object, for sending to the UI as JSON array
@@ -224,13 +254,13 @@ class Document //extends BaseActiveRecord
 
 				if(@$_POST['print'][$key])
 				{
-					$data = array(	'ToCc'=>$_POST['target_type'][$key],
+					$data = array(	'ToCc'=>$val,
 									'output_type'=>'Print');
 					$this->createNewDocOutput($doc_target, $doc_instance_version, $data);
 				}
 				if(@$_POST['docman'][$key])
 				{
-					$data = array(	'ToCc'=>$_POST['target_type'][$key],
+					$data = array(	'ToCc'=>$val,
 									'output_type'=>'Docman');
 					$this->createNewDocOutput($doc_target, $doc_instance_version, $data);
 				}
@@ -244,9 +274,13 @@ class Document //extends BaseActiveRecord
 		$doc_target->document_instance_id = $doc_instance->id;
 		$doc_target->contact_type = $data['contact_type'];
 		$doc_target->contact_id = $data['contact_id'];
-		if($data['contact_id'])
+		if(is_numeric($data['contact_id']))
 		{
 			$doc_target->contact_name = Contact::model()->findByPk($data['contact_id'])->getFullName();
+		}else
+		{
+			$doc_target->contact_name = $data['contact_id'];
+			$data['contact_id'] = null;
 		}
 		$doc_target->address = $data['address'];
 		$doc_target->save();
@@ -264,4 +298,5 @@ class Document //extends BaseActiveRecord
 		$doc_output->save();
 
 	}
+
 }

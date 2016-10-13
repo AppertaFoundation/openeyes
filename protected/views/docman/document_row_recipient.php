@@ -6,8 +6,6 @@
 ?>
 <tr class="new_entry_row" data-rowindex="<?php echo $row_index ?>">
     <td>
-    </td>
-    <td>
         <?php echo CHtml::dropDownList('target_type[]', ($row_index > 0) ? 'CC' : 'To', array('To'=>'To','CC'=>'CC'), array('empty' => '- To/CC -', 'nowrapper' => true, 'class' => 'full-width', 'data-rowindex'=>$row_index));?>
     </td>
     <td>

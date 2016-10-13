@@ -90,7 +90,6 @@ class m160915_093448_add_document_management_tables extends OEMigration
 
 
         $this->addForeignKey('fk_document_target_document_instance_id', 'document_target', 'document_instance_id', 'document_instance', 'id');
-        $this->addForeignKey('fk_document_target_document_contact_id', 'document_target', 'contact_id', 'contact', 'id');
         $this->addForeignKey('fk_document_target_created_user_id', 'document_target', 'created_user_id', 'user', 'id');
 
     }
@@ -98,7 +97,6 @@ class m160915_093448_add_document_management_tables extends OEMigration
 	public function down()
 	{
 		$this->dropForeignKey('fk_document_target_created_user_id', 'document_target');
-        $this->dropForeignKey('fk_document_target_document_contact_id', 'document_target');
         $this->dropForeignKey('fk_document_target_document_instance_id', 'document_target');
 
         $this->dropForeignKey('fk_document_output_created_user_id', 'document_output');

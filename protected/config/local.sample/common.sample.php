@@ -136,6 +136,12 @@ $config = array(
         'event_print_method' => 'pdf',
         'wkhtmltopdf_nice_level' => 19,
         'allow_clinical_summary' => false,
+        'docman_export_dir' => '/tmp/docman',
+        'docman_login_url' => 'http://localhost/site/login',
+        'docman_user' => 'admin',
+        'docman_password' => 'admin',
+        'docman_print_url' => 'http://localhost/OphCoCorrespondence/default/PDFprint/',
+
         // flag to turn on drag and drop sorting for dashboards
         // 'dashboard_sortable' => true
     ),

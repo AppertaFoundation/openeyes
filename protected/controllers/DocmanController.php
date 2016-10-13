@@ -75,6 +75,7 @@ class DocmanController extends BaseController
 		}
 		$docSet = DocumentSet::model()->findByAttributes(array("event_id"=>$event_id));
 		$doc = new Document($docSet->id);
+
 		return $doc->ajaxGetDocSet($event_id, $json);
 	}
 
