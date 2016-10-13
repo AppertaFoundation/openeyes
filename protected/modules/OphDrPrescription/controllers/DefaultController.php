@@ -344,6 +344,7 @@ class DefaultController extends BaseEventTypeController
     public function actionPrint($id)
     {
         $this->printInit($id);
+        $this->printLog($id, false);
         $this->layout = '//layouts/print';
 
         $this->render('print');
