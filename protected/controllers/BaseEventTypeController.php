@@ -1549,13 +1549,9 @@ class BaseEventTypeController extends BaseModuleController
      *
      * @param int $id event id
      */
-    public function actionPrint($id, $log = true)
+    public function actionPrint($id)
     {
         $this->printInit($id);
-        if($log){
-            $this->printLog($id, false);
-        }
-
         $this->printHTML($id, $this->open_elements);
     }
 
@@ -1610,6 +1606,9 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         $event->unlock();
+        
+        $this->printInit($id);
+        $this->printLog($id, false);
 
         if (@$_GET['html']) {
             return Yii::app()->end();
