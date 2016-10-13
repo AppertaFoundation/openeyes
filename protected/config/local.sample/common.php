@@ -173,7 +173,13 @@ $config = array(
                 'client_secret' => '4c7f6f8fa93d59c45502c0ae8c4a95b',
             ),
         ),
-        'signature_app_url' => 'http://tiny.cc/oe-sign'
+        'signature_app_url' => 'http://tiny.cc/oe-sign',
+        'docman_export_dir' => '/tmp/docman',
+        'docman_login_url' => 'http://localhost/site/login',
+        'docman_user' => 'admin',
+        'docman_password' => 'admin',
+        'docman_print_url' => 'http://localhost/OphCoCorrespondence/default/PDFprint/',
+
     ),
 );
 

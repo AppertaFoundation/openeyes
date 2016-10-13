@@ -19,8 +19,33 @@
 ?>
 <?php if (!@$no_header) {?>
 	<header>
-		<?php $this->renderPartial('letter_start', array(
-            'toAddress' => $element->address,
+		<?php
+        $docManData = DocumentInstance::model()->findByAttributes(array('correspondence_event_id'=>$element->event_id));
+        $document = new Document();
+        $ccString = "";
+
+        if($docManData && $docTargets = $document->getDocumentTargets(array($docManData->id))) {
+            foreach ($docTargets["docoutputs"] as $k=>$output) {
+                if($output["ToCc"] == 'To')
+                {
+                    $toAddress = $docTargets["doctargets"][$k]["contact_name"]."\n".$docTargets["doctargets"][$k]["address"];
+                }else
+                {
+                    $ccString .= "CC: ".ucfirst(strtolower($docTargets["doctargets"][$k]["contact_type"])).": ".$docTargets["doctargets"][$k]["contact_name"].", ".$element->renderSourceAddress($docTargets["doctargets"][$k]["address"])."<br/>";
+                }
+            }
+        }else
+        {
+            $toAddress = $element->address;
+            foreach (explode("\n", trim($element->cc)) as $line) {
+                if (trim($line)) {
+                    $ccString .= "CC: " . str_replace(';', ',', $line)."<br/>";
+                }
+            }
+        }
+
+        $this->renderPartial('letter_start', array(
+            'toAddress' => $toAddress,
             'patient' => $this->patient,
             'date' => $element->date,
             'clinicDate' => $element->clinic_date,
@@ -51,13 +76,14 @@
 <p nobr="true">
 	<?php if ($element->cc) {?>
 		To:
-		<?php echo $element->renderSourceAddress()?>
-		<?php foreach (explode("\n", trim($element->cc)) as $line) {
-                if (trim($line)) {?>
-		<br />CC:
-		<?php echo str_replace(';', ',', $line) ?>
-		<?php }
-        }
+		<?php
+			echo $element->renderSourceAddress($toAddress);
+		?>
+		<br/>
+		<?php
+			echo $ccString;
+		?>
+	<?php
     }
     foreach ($element->enclosures as $enclosure) {?>
 		<br/>Enc: <?php echo $enclosure->content?>
