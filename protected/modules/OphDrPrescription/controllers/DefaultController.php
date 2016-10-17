@@ -356,6 +356,9 @@ class DefaultController extends BaseEventTypeController
         $this->pdf_print_suffix = Site::model()->findByPk(Yii::app()->session['selected_site_id'])->id;
         $this->pdf_print_documents = 3;
 
+        $this->printInit($id);
+        $this->printLog($id, false);
+
         return parent::actionPDFPrint($id);
     }
 
