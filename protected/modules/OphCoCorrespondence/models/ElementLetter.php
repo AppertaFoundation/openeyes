@@ -128,6 +128,16 @@ class ElementLetter extends BaseEventTypeElement
         ));
     }
 
+    public function afterValidate()
+    {
+
+        if(!is_array(@$_POST['target_type']))
+        {
+            $this->addError('toAddress', 'Please add at least one recipient!');
+        }
+        parent::afterValidate();
+    }
+
     public function afterFind()
     {
         parent::afterFind();
@@ -162,7 +172,7 @@ class ElementLetter extends BaseEventTypeElement
             if ($patient->practice) {
                 $options[$patient->practice->contact->id] = Gp::UNKNOWN_NAME.' (GP)';
                 if (@$patient->practice->contact && !@$patient->practice->contact->address) {
-                    $options['Practice'.$patient->practice_id] .= ' - NO ADDRESS';
+                    $options[$patient->practice->contact->id] .= ' - NO ADDRESS';
                 }
             }
         }
