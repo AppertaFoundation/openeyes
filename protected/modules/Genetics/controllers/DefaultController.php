@@ -277,7 +277,7 @@ class DefaultController extends BaseEventTypeController
 
         if (Yii::app()->request->isPostRequest) {
             if (Yii::app()->request->getPost('cancel')) {
-                return $this->redirect(array('/Genetics/default/index'));
+                $this->redirect(array('/Genetics/default/index'));
             }
 
             $pedigree->attributes = Yii::app()->request->getPost('Pedigree');
@@ -285,7 +285,7 @@ class DefaultController extends BaseEventTypeController
             if (!$pedigree->save()) {
                 $errors = $pedigree->getErrors();
             } else {
-                return $this->redirect(array('/Genetics/default/index'));
+                $this->redirect(array('/Genetics/default/index'));
             }
         }
 

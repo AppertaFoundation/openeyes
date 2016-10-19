@@ -36,6 +36,32 @@ $base-line-height: 1.5 !default;
   }
 }
 
+@mixin sidebar-box() {
+  background: #fafafa;
+  margin: 0 0 $oe-box-gutter 0;
+  h2 {
+    margin-bottom: 12px;
+  }
+  .table-actions {
+    select {
+      width: auto;
+    }
+  }
+  .box-header {
+    margin: 0;
+    .box-title {
+      float: left;
+    }
+  }
+  .box-actions {
+    float: right;
+  }
+  @media print {
+    border: 0;
+    padding: 0;
+  }
+}
+
 // @mixins
 //
 // We use this to create equal side border radius on elements.

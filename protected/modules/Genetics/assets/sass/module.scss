@@ -1,3 +1,13 @@
 /** Genetics */
+@import "foundation/components/panels";
+@import "openeyes/module";
+@import "openeyes/components/admin/sidebar";
+@import "openeyes/components/admin/navigation";
 
-@import "openeyes";
+.box {
+  &.admin {
+    @include panel;
+    @include radius;
+    @include sidebar-box;
+  }
+}
