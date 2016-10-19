@@ -80,22 +80,25 @@ class DefaultController extends BaseEventTypeController
     {
         $errors = array();
 
-        if (isset($_POST['add'])) {
+        if (Yii::app()->request->getPost('add')) {
             $this->redirect(Yii::app()->createUrl('/Genetics/default/addPedigree'));
         }
 
-        if (isset($_POST['delete'])) {
+        if (Yii::app()->request->getPost('delete')) {
             $criteria = new CDbCriteria();
-            $criteria->addInCondition('id', $_POST['pedigrees']);
+            $criteria->addInCondition('id', Yii::app()->request->getPost('pedigrees'));
 
-            foreach (Pedigree::model()->findAll($criteria) as $pedigree) {
-                try {
-                    $pedigree->delete();
-                } catch (Exception $e) {
-                    if (!isset($errors['Error'])) {
-                        $errors['Error'] = array();
+            $pedigrees = Pedigree::model()->findAll($criteria);
+            if(is_array($pedigrees)){
+                foreach ($pedigrees as $pedigree) {
+                    try {
+                        $pedigree->delete();
+                    } catch (Exception $e) {
+                        if (!isset($errors['Error'])) {
+                            $errors['Error'] = array();
+                        }
+                        $errors['Error'][] = "unable to delete pedigree $pedigree->id: in use";
                     }
-                    $errors['Error'][] = "unable to delete pedigree $pedigree->id: in use";
                 }
             }
         }
@@ -103,38 +106,38 @@ class DefaultController extends BaseEventTypeController
         $pedigrees = array();
         $pagination = null;
 
-        if (@$_GET['search']) {
+        if (Yii::app()->request->getQuery('search')) {
             $criteria = new CDbCriteria();
 
-            if (@$_GET['family-id']) {
+            if (Yii::app()->request->getQuery('family-id')) {
                 $criteria->addCondition('t.id = :id');
-                $criteria->params[':id'] = $_GET['family-id'];
+                $criteria->params[':id'] = Yii::app()->request->getQuery('family-id');
             }
 
-            if (@$_GET['gene-id']) {
+            if (Yii::app()->request->getQuery('gene-id')) {
                 $criteria->addCondition('gene_id = :gene_id');
-                $criteria->params[':gene_id'] = $_GET['gene-id'];
+                $criteria->params[':gene_id'] = Yii::app()->request->getQuery('gene-id');
             }
 
-            if (strlen(@$_GET['consanguineous']) > 0) {
+            if (strlen(Yii::app()->request->getQuery('consanguineous', '')) > 0) {
                 $criteria->addCondition('consanguinity = :consanguineous');
-                $criteria->params[':consanguineous'] = $_GET['consanguineous'];
+                $criteria->params[':consanguineous'] = Yii::app()->request->getQuery('consanguineous');
             }
 
-            if (@$_GET['disorder-id']) {
+            if (Yii::app()->request->getQuery('disorder-id')) {
                 $criteria->addCondition('disorder_id = :disorder_id');
-                $criteria->params[':disorder_id'] = $_GET['disorder-id'];
+                $criteria->params[':disorder_id'] = Yii::app()->request->getQuery('disorder-id');
             }
 
-            if (@$_GET['molecular-diagnosis'] == 'true') {
+            if (Yii::app()->request->getQuery('molecular-diagnosis') === 'true') {
                 $criteria->addCondition('gene_id is not null');
             }
 
-            $dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
+            $dir = Yii::app()->request->getQuery('order') === 'desc' ? 'desc' : 'asc';
 
             $order = 't.id desc';
 
-            switch (@$_GET['sortby']) {
+            switch (Yii::app()->request->getQuery('sortby')) {
                 case 'inheritance':
                     $order = "inheritance.name $dir";
                     break;
@@ -168,7 +171,7 @@ class DefaultController extends BaseEventTypeController
                     'gene',
                     'disorder',
                 ),
-                'page' => (Integer) @$_GET['page'],
+                'page' => (int)Yii::app()->request->getQuery('page', ''),
                 'criteria' => $criteria,
                 'order' => $order,
             ));
@@ -238,17 +241,17 @@ class DefaultController extends BaseEventTypeController
 
         $errors = array();
 
-        if (!empty($_POST)) {
-            if (isset($_POST['cancel'])) {
-                return $this->redirect(array('/Genetics/default/index'));
+        if (Yii::app()->request->isPostRequest) {
+            if (Yii::app()->request->getPost('cancel')) {
+                $this->redirect(array('/Genetics/default/index'));
             }
 
-            $pedigree->attributes = $_POST['Pedigree'];
+            $pedigree->attributes = Yii::app()->request->getQuery('Pedigree');
 
             if (!$pedigree->save()) {
                 $errors = $pedigree->getErrors();
             } else {
-                return $this->redirect(array('/Genetics/default/index'));
+                $this->redirect(array('/Genetics/default/index'));
             }
         }
 
@@ -272,12 +275,12 @@ class DefaultController extends BaseEventTypeController
 
         $errors = array();
 
-        if (!empty($_POST)) {
-            if (isset($_POST['cancel'])) {
+        if (Yii::app()->request->isPostRequest) {
+            if (Yii::app()->request->getPost('cancel')) {
                 return $this->redirect(array('/Genetics/default/index'));
             }
 
-            $pedigree->attributes = $_POST['Pedigree'];
+            $pedigree->attributes = Yii::app()->request->getPost('Pedigree');
 
             if (!$pedigree->save()) {
                 $errors = $pedigree->getErrors();
@@ -301,25 +304,26 @@ class DefaultController extends BaseEventTypeController
 
         $errors = array();
 
-        $patient_pedigree->pedigree_id = @$_GET['pedigree'];
-        $patient_pedigree->patient_id = @$_GET['patient'];
+        $patient_pedigree->pedigree_id = Yii::app()->request->getQuery('pedigree');
+        $patient_pedigree->patient_id = Yii::app()->request->getQuery('patient');
 
-        if (!empty($_POST)) {
-            if (isset($_POST['cancel'])) {
+        if (Yii::app()->request->isPostRequest) {
+            if (Yii::app()->request->getPost('cancel')) {
                 $this->redirect(array('/Genetics/default/ViewPedigree/'.$patient_pedigree->pedigree_id));
             }
 
-            $patient_pedigree->patient_id = $_POST['PatientPedigree']['patient_id'];
+            $pedigree_post = Yii::app()->request->getPst('PatientPedigree', array());
+            $patient_pedigree->patient_id = $pedigree_post['patient_id'];
 
-            if (!Patient::model()->find('id=?', array($_POST['PatientPedigree']['patient_id']))) {
+            if (!Patient::model()->find('id=?', array($pedigree_post['patient_id']))) {
                 $errors[] = array('Patient' => 'Patient not found');
-            } elseif (!Pedigree::model()->find('id=?', array($_POST['PatientPedigree']['pedigree_id']))) {
+            } elseif (!Pedigree::model()->find('id=?', array($pedigree_post['pedigree_id']))) {
                 $errors[] = array('Pedigree' => 'Pedigree not found');
-            } elseif (PatientPedigree::model()->find('patient_id=?', array($_POST['PatientPedigree']['patient_id']))) {
+            } elseif (PatientPedigree::model()->find('patient_id=?', array($pedigree_post['patient_id']))) {
                 $errors[] = array('Patient' => 'Patient already in pedigree');
             } else {
-                $patient_pedigree->pedigree_id = $_POST['PatientPedigree']['pedigree_id'];
-                $patient_pedigree->status_id = $_POST['PatientPedigree']['status_id'];
+                $patient_pedigree->pedigree_id = $pedigree_post['pedigree_id'];
+                $patient_pedigree->status_id = $pedigree_post['status_id'];
 
                 if (!$patient_pedigree->save()) {
                     $errors = $patient_pedigree->getErrors();
@@ -384,13 +388,13 @@ class DefaultController extends BaseEventTypeController
     {
         $errors = array();
 
-        if (isset($_POST['add'])) {
+        if (Yii::app()->request->getPost('add')) {
             $this->redirect(Yii::app()->createUrl('/Genetics/default/addInheritance'));
         }
 
-        if (isset($_POST['delete'])) {
+        if (Yii::app()->request->getPost('delete')) {
             $criteria = new CDbCriteria();
-            $criteria->addInCondition('id', $_POST['inheritance']);
+            $criteria->addInCondition('id', Yii::app()->request->getPost('inheritance'));
 
             foreach (PedigreeInheritance::model()->findAll($criteria) as $inheritance) {
                 try {
@@ -409,7 +413,7 @@ class DefaultController extends BaseEventTypeController
         $this->render('inheritance', array(
             'inheritance' => $this->getItems(array(
                     'model' => 'PedigreeInheritance',
-                    'page' => (Integer) @$_GET['page'],
+                    'page' => (int)Yii::app()->request->getQuery('page'),
                 )),
             'pagination' => $pagination,
             'errors' => $errors,
@@ -442,12 +446,12 @@ class DefaultController extends BaseEventTypeController
 
         $errors = array();
 
-        if (!empty($_POST)) {
-            if (isset($_POST['cancel'])) {
+        if (Yii::app()->request->isPostRequest) {
+            if (Yii::app()->request->getPost('cancel')) {
                 return $this->redirect(array('/Genetics/default/inheritance'));
             }
 
-            $inheritance->attributes = $_POST['PedigreeInheritance'];
+            $inheritance->attributes = Yii::app()->request->getPost('PedigreeInheritance');
 
             if (!$inheritance->save()) {
                 $errors = $inheritance->getErrors();
@@ -476,17 +480,17 @@ class DefaultController extends BaseEventTypeController
 
         $errors = array();
 
-        if (!empty($_POST)) {
-            if (isset($_POST['cancel'])) {
-                return $this->redirect(array('/Genetics/default/inheritance'));
+        if (Yii::app()->request->isPostRequest) {
+            if (Yii::app()->request->getPost('cancel')) {
+                $this->redirect(array('/Genetics/default/inheritance'));
             }
 
-            $inheritance->attributes = $_POST['PedigreeInheritance'];
+            $inheritance->attributes = Yii::app()->request->getPost('PedigreeInheritance');
 
             if (!$inheritance->save()) {
                 $errors = $inheritance->getErrors();
             } else {
-                return $this->redirect(array('/Genetics/default/inheritance'));
+                $this->redirect(array('/Genetics/default/inheritance'));
             }
         }
 
@@ -503,13 +507,13 @@ class DefaultController extends BaseEventTypeController
     {
         $errors = array();
 
-        if (isset($_POST['add'])) {
+        if (Yii::app()->request->getPost('add')) {
             $this->redirect(Yii::app()->createUrl('/Genetics/default/addGene'));
         }
 
-        if (isset($_POST['delete'])) {
+        if (Yii::app()->request->getPost('delete')) {
             $criteria = new CDbCriteria();
-            $criteria->addInCondition('id', $_POST['genes']);
+            $criteria->addInCondition('id', Yii::app()->request->getPost('genes'));
 
             foreach (PedigreeGene::model()->findAll($criteria) as $gene) {
                 try {
@@ -525,10 +529,10 @@ class DefaultController extends BaseEventTypeController
 
         $criteria = new CDbCriteria();
 
-        $dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
+        $dir = Yii::app()->request->getQuery('order') === 'desc' ? 'desc' : 'asc';
         $order = "name $dir";
 
-        switch (@$_GET['sortby']) {
+        switch (Yii::app()->request->getQuery('sortby')) {
             case 'name':
                 $order = "name $dir";
                 break;
@@ -543,7 +547,7 @@ class DefaultController extends BaseEventTypeController
         $this->render('genes', array(
             'genes' => $this->getItems(array(
                     'model' => 'PedigreeGene',
-                    'page' => (Integer) @$_GET['page'],
+                    'page' => (int)Yii::app()->request->getQuery('page'),
                     'order' => $order,
                 )),
             'pagination' => $pagination,
@@ -577,8 +581,8 @@ class DefaultController extends BaseEventTypeController
     {
         $return = '';
         foreach (array('date_from', 'date_to', 'include_bookings' => 0, 'include_reschedules' => 0, 'include_cancellations' => 0) as $token) {
-            if (isset($_GET[$token])) {
-                $return .= '&'.$token.'='.$_GET[$token];
+            if (Yii::app()->request->getQuery($token)) {
+                $return .= '&'.$token.'='.Yii::app()->request->getPost($token);
             }
         }
 
@@ -622,12 +626,12 @@ class DefaultController extends BaseEventTypeController
 
         $errors = array();
 
-        if (!empty($_POST)) {
-            if (isset($_POST['cancel'])) {
+        if (Yii::app()->request->isPostRequest) {
+            if (Yii::app()->request->getPost('cancel')) {
                 $this->redirect(array('/Genetics/default/genes'));
             }
 
-            $gene->attributes = $_POST['PedigreeGene'];
+            $gene->attributes = Yii::app()->request->getPost('PedigreeGene');
 
             if (!$gene->save()) {
                 $errors = $gene->getErrors();
@@ -656,12 +660,12 @@ class DefaultController extends BaseEventTypeController
 
         $errors = array();
 
-        if (!empty($_POST)) {
-            if (isset($_POST['cancel'])) {
+        if (Yii::app()->request->isPostRequest) {
+            if (Yii::app()->request->getPost('cancel')) {
                 $this->redirect(array('/Genetics/default/genes'));
             }
 
-            $gene->attributes = $_POST['PedigreeGene'];
+            $gene->attributes = Yii::app()->request->getPost('PedigreeGene');
 
             if (!$gene->save()) {
                 $errors = $gene->getErrors();
