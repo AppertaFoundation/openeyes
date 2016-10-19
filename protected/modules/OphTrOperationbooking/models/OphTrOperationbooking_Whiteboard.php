@@ -85,8 +85,6 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->booking = $booking;
         $this->eye_id = $eye->id;
         $this->eye = $eye;
-        $this->predicted_additional_equipment = $booking->special_equipment_details;
-        $this->comments = '';
         $this->patient_name = $contact['title'] . ' ' . $contact['first_name'] . ' ' . $contact['last_name'];
         $this->date_of_birth = $patient['dob'];
         $this->hos_num = $patient['hos_num'];
