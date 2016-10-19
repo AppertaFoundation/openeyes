@@ -21,7 +21,8 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
 
         <input type="hidden" name="medication_id" id="medication_id" value="<?= $medication->id ?>"/>
         <input type="hidden" name="patient_id" id="medication_id" value="<?= $patient->id ?>"/>
-        <input type="hidden" name="prescription_item_id" id="prescription_item_id" value="<?= $medication->prescription_item_id ?>"/>
+        <input type="hidden" name="prescription_item_id" id="prescription_item_id"
+               value="<?= $medication->prescription_item_id ?>"/>
 
         <div class="field-row row">
             <div class="<?= $form->columns('label'); ?>">
@@ -36,7 +37,12 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
                      id="medication_drug_name"><?= CHtml::encode($medication->getDrugLabel()) ?></div>
 
                 <div class="field-row">
-                    <?= CHtml::dropDownList('drug_select', '', Drug::model()->listBySubspecialtyWithCommonMedications($firm->getSubspecialtyID()), array('empty' => '- Select -')) ?>
+                    <?= CHtml::dropDownList(
+                        'drug_select',
+                        '',
+                        Drug::model()->listBySubspecialtyWithCommonMedications($firm->getSubspecialtyID()),
+                        array('empty' => '- Select -')
+                    ) ?>
                 </div>
 
                 <div class="field-row">
@@ -64,9 +70,18 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
             </div>
         </div>
 
-        <?php $form->widget('application.widgets.TextField', array('element' => $medication, 'field' => 'dose', 'name' => 'dose')); ?>
+        <?php $form->widget('application.widgets.TextField',
+            array('element' => $medication, 'field' => 'dose', 'name' => 'dose')); ?>
 
-        <?php $form->widget('application.widgets.DropDownList', array('element' => $medication, 'field' => 'route_id', 'data' => 'DrugRoute', 'htmlOptions' => array('name' => 'route_id', 'empty' => '- Select -'))); ?>
+        <?php $form->widget(
+            'application.widgets.DropDownList',
+            array(
+                'element' => $medication,
+                'field' => 'route_id',
+                'data' => 'DrugRoute',
+                'htmlOptions' => array('name' => 'route_id', 'empty' => '- Select -'),
+            )
+        ); ?>
 
         <div id="medication_route_option">
             <?php if ($medication->route) {
@@ -74,10 +89,33 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
             } ?>
         </div>
 
-        <?php $form->widget('application.widgets.DropDownList', array('element' => $medication, 'field' => 'frequency_id', 'data' => 'DrugFrequency', 'htmlOptions' => array('name' => 'frequency_id', 'empty' => '- Select -'))); ?>
+        <?php $form->widget(
+            'application.widgets.DropDownList',
+            array(
+                'element' => $medication,
+                'field' => 'frequency_id',
+                'data' => 'DrugFrequency',
+                'htmlOptions' => array('name' => 'frequency_id', 'empty' => '- Select -'),
+            )
+        ); ?>
 
         <input type="hidden" name="start_date">
-        <?php $this->renderPartial('/patient/_fuzzy_date', array('form' => $form, 'date' => $medication->start_date, 'class' => 'medication_start_date', 'label' => 'Date from')); ?>
+        <?php
+        $medication_start_date = null;
+        if ($medication->start_date) {
+            $medication_start_date = $medication->start_date;
+        } elseif (isset(Yii::app()->params['enable_concise_med_history']) && Yii::app()->params['enable_concise_med_history']) {
+            $medication_start_date = date('Y-m-d');
+        }
+        $this->renderPartial(
+            '/patient/_fuzzy_date',
+            array(
+                'form' => $form,
+                'date' => $medication_start_date,
+                'class' => 'medication_start_date',
+                'label' => 'Date from',
+            )
+        ); ?>
 
         <div class="row field-row">
             <div class="<?= $form->columns('label') ?>"><label for="current">Current:</label></div>
@@ -88,15 +126,30 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
                 <label
                     class="inline"><?= CHtml::radioButton('current', $medication->end_date, array('value' => false)) ?>
                     No</label>
-                <button id="medication_from_today" type="button" class="tiny right">From today</button>
+                <?php if (!isset(Yii::app()->params['enable_concise_med_history']) || !Yii::app()->params['enable_concise_med_history']) { ?>
+                    <button id="medication_from_today" type="button" class="tiny right">From today</button>
+                <?php } ?>
             </div>
         </div>
 
         <div id="medication_end" class="<?= $medication->end_date ? '' : 'hidden' ?>">
             <input type="hidden" name="end_date">
             <?php
-
-            $this->renderPartial('/patient/_fuzzy_date', array('form' => $form, 'date' => $medication->end_date, 'class' => 'medication_end_date', 'label' => 'Date to'));
+            $medication_end_date = null;
+            if ($medication->end_date) {
+                $medication_end_date = $medication->end_date;
+            } elseif (isset(Yii::app()->params['enable_concise_med_history']) && Yii::app()->params['enable_concise_med_history']) {
+                $medication_end_date = date('Y-m-d');
+            }
+            $this->renderPartial(
+                '/patient/_fuzzy_date',
+                array(
+                    'form' => $form,
+                    'date' => $medication_end_date,
+                    'class' => 'medication_end_date',
+                    'label' => 'Date to',
+                )
+            );
             $this->renderPartial('stop_reason', array('form' => $form, 'medication' => $medication));
 
             ?>

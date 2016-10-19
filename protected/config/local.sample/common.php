@@ -138,6 +138,7 @@ $config = array(
         'event_print_method' => 'pdf',
         'wkhtmltopdf_nice_level' => 19,
         'city_road_satellite_view' => 1,
+        'enable_concise_med_history' => true,
         // default start time used for automatic worklist definitions
         //'worklist_default_start_time' => 'H:i',
         // default end time used for automatic worklist definitions
