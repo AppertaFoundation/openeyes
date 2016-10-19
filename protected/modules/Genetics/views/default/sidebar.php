@@ -1,6 +1,6 @@
-<div class="box admin">
+<div class="box genetics panel">
 	<h2>Menu</h2>
-	<ul class="navigation admin">
+	<ul class="navigation">
 		<?php foreach (array(
 			'Pedigrees' => Yii::app()->createUrl('/Genetics/default/pedigrees'),
 			'Genes' => Yii::app()->createUrl('/Genetics/default/genes'),

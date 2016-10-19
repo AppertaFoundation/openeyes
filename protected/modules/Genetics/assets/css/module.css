@@ -1,257 +1,4 @@
 /** Genetics */
-/* line 374, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-meta.foundation-version {
-  font-family: "/5.5.1/";
-}
-
-/* line 378, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-meta.foundation-mq-small {
-  font-family: "/only screen/";
-  width: 0;
-}
-
-/* line 383, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-meta.foundation-mq-small-only {
-  font-family: "/only screen and (max-width: 40em)/";
-  width: 0;
-}
-
-/* line 388, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-meta.foundation-mq-medium {
-  font-family: "/only screen and (min-width:40.063em)/";
-  width: 40.063em;
-}
-
-/* line 393, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-meta.foundation-mq-medium-only {
-  font-family: "/only screen and (min-width:40.063em) and (max-width:64em)/";
-  width: 40.063em;
-}
-
-/* line 398, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-meta.foundation-mq-large {
-  font-family: "/only screen and (min-width:64.063em)/";
-  width: 64.063em;
-}
-
-/* line 403, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-meta.foundation-mq-large-only {
-  font-family: "/only screen and (min-width:64.063em) and (max-width:90em)/";
-  width: 64.063em;
-}
-
-/* line 408, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-meta.foundation-mq-xlarge {
-  font-family: "/only screen and (min-width:90.063em)/";
-  width: 90.063em;
-}
-
-/* line 413, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-meta.foundation-mq-xlarge-only {
-  font-family: "/only screen and (min-width:90.063em) and (max-width:120em)/";
-  width: 90.063em;
-}
-
-/* line 418, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-meta.foundation-mq-xxlarge {
-  font-family: "/only screen and (min-width:120.063em)/";
-  width: 120.063em;
-}
-
-/* line 423, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-meta.foundation-data-attribute-namespace {
-  font-family: false;
-}
-
-/* line 430, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-html, body {
-  height: 100%;
-}
-
-/* line 433, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-*,
-*:before,
-*:after {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
-
-/* line 439, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-html,
-body {
-  font-size: 100%;
-}
-
-/* line 443, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-body {
-  background: #fff;
-  color: #222;
-  padding: 0;
-  margin: 0;
-  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
-  font-weight: normal;
-  font-style: normal;
-  line-height: 1.5;
-  position: relative;
-  cursor: auto;
-}
-
-/* line 456, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-a:hover {
-  cursor: pointer;
-}
-
-/* line 459, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-/* line 461, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-img {
-  -ms-interpolation-mode: bicubic;
-}
-
-/* line 465, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-#map_canvas img,
-#map_canvas embed,
-#map_canvas object,
-.map_canvas img,
-.map_canvas embed,
-.map_canvas object {
-  max-width: none !important;
-}
-
-/* line 472, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-.left {
-  float: left !important;
-}
-
-/* line 473, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-.right {
-  float: right !important;
-}
-
-/* line 198, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-.clearfix:before, .clearfix:after {
-  content: " ";
-  display: table;
-}
-/* line 199, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-.clearfix:after {
-  clear: both;
-}
-
-/* line 477, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-.hide {
-  display: none;
-}
-
-/* line 482, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-.invisible {
-  visibility: hidden;
-}
-
-/* line 488, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-.antialiased {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* line 491, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-img {
-  display: inline-block;
-  vertical-align: middle;
-}
-
-/* line 501, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-textarea {
-  height: auto;
-  min-height: 50px;
-}
-
-/* line 504, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-select {
-  width: 100%;
-}
-
-/* Panels */
-/* line 80, ../../../../assets/components/foundation/scss/foundation/components/_panels.scss */
-.panel {
-  border-style: solid;
-  border-width: 1px;
-  border-color: #d8d8d8;
-  margin-bottom: 1.25rem;
-  padding: 1.25rem;
-  background: #f2f2f2;
-  color: #333333;
-}
-/* line 55, ../../../../assets/components/foundation/scss/foundation/components/_panels.scss */
-.panel > :first-child {
-  margin-top: 0;
-}
-/* line 56, ../../../../assets/components/foundation/scss/foundation/components/_panels.scss */
-.panel > :last-child {
-  margin-bottom: 0;
-}
-/* line 61, ../../../../assets/components/foundation/scss/foundation/components/_panels.scss */
-.panel h1, .panel h2, .panel h3, .panel h4, .panel h5, .panel h6, .panel p, .panel li, .panel dl {
-  color: #333333;
-}
-/* line 68, ../../../../assets/components/foundation/scss/foundation/components/_panels.scss */
-.panel h1, .panel h2, .panel h3, .panel h4, .panel h5, .panel h6 {
-  line-height: 1;
-  margin-bottom: 0.625rem;
-}
-/* line 70, ../../../../assets/components/foundation/scss/foundation/components/_panels.scss */
-.panel h1.subheader, .panel h2.subheader, .panel h3.subheader, .panel h4.subheader, .panel h5.subheader, .panel h6.subheader {
-  line-height: 1.4;
-}
-/* line 82, ../../../../assets/components/foundation/scss/foundation/components/_panels.scss */
-.panel.callout {
-  border-style: solid;
-  border-width: 1px;
-  border-color: #b6edff;
-  margin-bottom: 1.25rem;
-  padding: 1.25rem;
-  background: #ecfaff;
-  color: #333333;
-}
-/* line 55, ../../../../assets/components/foundation/scss/foundation/components/_panels.scss */
-.panel.callout > :first-child {
-  margin-top: 0;
-}
-/* line 56, ../../../../assets/components/foundation/scss/foundation/components/_panels.scss */
-.panel.callout > :last-child {
-  margin-bottom: 0;
-}
-/* line 61, ../../../../assets/components/foundation/scss/foundation/components/_panels.scss */
-.panel.callout h1, .panel.callout h2, .panel.callout h3, .panel.callout h4, .panel.callout h5, .panel.callout h6, .panel.callout p, .panel.callout li, .panel.callout dl {
-  color: #333333;
-}
-/* line 68, ../../../../assets/components/foundation/scss/foundation/components/_panels.scss */
-.panel.callout h1, .panel.callout h2, .panel.callout h3, .panel.callout h4, .panel.callout h5, .panel.callout h6 {
-  line-height: 1;
-  margin-bottom: 0.625rem;
-}
-/* line 70, ../../../../assets/components/foundation/scss/foundation/components/_panels.scss */
-.panel.callout h1.subheader, .panel.callout h2.subheader, .panel.callout h3.subheader, .panel.callout h4.subheader, .panel.callout h5.subheader, .panel.callout h6.subheader {
-  line-height: 1.4;
-}
-/* line 84, ../../../../assets/components/foundation/scss/foundation/components/_panels.scss */
-.panel.callout a:not(.button) {
-  color: #008CBA;
-}
-/* line 87, ../../../../assets/components/foundation/scss/foundation/components/_panels.scss */
-.panel.callout a:not(.button):hover, .panel.callout a:not(.button):focus {
-  color: #0078a0;
-}
-/* line 94, ../../../../assets/components/foundation/scss/foundation/components/_panels.scss */
-.panel.radius {
-  border-radius: 3px;
-}
-
 /**
  * OpenEyes
  *
@@ -282,13 +29,13 @@ select {
   }
 }
 
-/* line 3, ../../../../assets/sass/openeyes/components/admin/_navigation.scss */
-.navigation.admin {
+/* line 5, ../sass/module.scss */
+.navigation {
   list-style-type: none;
   margin: 0;
 }
-/* line 6, ../../../../assets/sass/openeyes/components/admin/_navigation.scss */
-.navigation.admin a {
+/* line 143, ../../../../assets/sass/openeyes/_mixins.scss */
+.navigation a {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   border-radius: 3px;
@@ -297,78 +44,50 @@ select {
   margin-bottom: 4px;
   padding: 4px 8px;
 }
-/* line 12, ../../../../assets/sass/openeyes/components/admin/_navigation.scss */
-.navigation.admin a:hover {
+/* line 149, ../../../../assets/sass/openeyes/_mixins.scss */
+.navigation a:hover {
   background: #3665ff;
   color: #fff;
 }
-/* line 16, ../../../../assets/sass/openeyes/components/admin/_navigation.scss */
-.navigation.admin a.selected {
+/* line 153, ../../../../assets/sass/openeyes/_mixins.scss */
+.navigation a.selected {
   background: #ccc;
   color: #333;
 }
-/* line 22, ../../../../assets/sass/openeyes/components/admin/_navigation.scss */
-.navigation.admin li:last-child a {
+/* line 159, ../../../../assets/sass/openeyes/_mixins.scss */
+.navigation li:last-child a {
   margin: 0;
 }
 
-/* line 8, ../sass/module.scss */
-.box.admin {
-  border-style: solid;
-  border-width: 1px;
-  border-color: #f3f3f3;
-  margin-bottom: 16px;
-  padding: 10px;
-  background: #f2f2f2;
-  color: #333333;
+/* line 10, ../sass/module.scss */
+.box.genetics {
   border-radius: 5px;
   background: #fafafa;
   margin: 0 0 0.75rem 0;
 }
-/* line 55, ../../../../assets/components/foundation/scss/foundation/components/_panels.scss */
-.box.admin > :first-child {
-  margin-top: 0;
-}
-/* line 56, ../../../../assets/components/foundation/scss/foundation/components/_panels.scss */
-.box.admin > :last-child {
-  margin-bottom: 0;
-}
-/* line 61, ../../../../assets/components/foundation/scss/foundation/components/_panels.scss */
-.box.admin h1, .box.admin h2, .box.admin h3, .box.admin h4, .box.admin h5, .box.admin h6, .box.admin p, .box.admin li, .box.admin dl {
-  color: #333333;
-}
-/* line 68, ../../../../assets/components/foundation/scss/foundation/components/_panels.scss */
-.box.admin h1, .box.admin h2, .box.admin h3, .box.admin h4, .box.admin h5, .box.admin h6 {
-  line-height: 1;
-  margin-bottom: 0.625rem;
-}
-/* line 70, ../../../../assets/components/foundation/scss/foundation/components/_panels.scss */
-.box.admin h1.subheader, .box.admin h2.subheader, .box.admin h3.subheader, .box.admin h4.subheader, .box.admin h5.subheader, .box.admin h6.subheader {
-  line-height: 1.4;
-}
-/* line 42, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-.box.admin h2 {
+/* line 168, ../../../../assets/sass/openeyes/_mixins.scss */
+.box.genetics h2 {
   margin-bottom: 12px;
 }
-/* line 46, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-.box.admin .table-actions select {
+/* line 172, ../../../../assets/sass/openeyes/_mixins.scss */
+.box.genetics .table-actions select {
   width: auto;
 }
-/* line 50, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-.box.admin .box-header {
+/* line 176, ../../../../assets/sass/openeyes/_mixins.scss */
+.box.genetics .box-header {
   margin: 0;
 }
-/* line 52, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-.box.admin .box-header .box-title {
+/* line 178, ../../../../assets/sass/openeyes/_mixins.scss */
+.box.genetics .box-header .box-title {
   float: left;
 }
-/* line 56, ../../../../assets/components/foundation/scss/foundation/components/_global.scss */
-.box.admin .box-actions {
+/* line 182, ../../../../assets/sass/openeyes/_mixins.scss */
+.box.genetics .box-actions {
   float: right;
 }
 @media print {
-  /* line 8, ../sass/module.scss */
-  .box.admin {
+  /* line 10, ../sass/module.scss */
+  .box.genetics {
     border: 0;
     padding: 0;
   }
