@@ -63,7 +63,6 @@ class PedigreeStatus extends BaseActiveRecord
      */
     public function relations()
     {
-        return array(
-        );
+        return array();
     }
 }

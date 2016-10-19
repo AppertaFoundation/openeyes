@@ -53,8 +53,7 @@ class PatientPedigree extends BaseActiveRecord
     {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
-        return array(
-        );
+        return array();
     }
 
     /**
@@ -69,6 +68,9 @@ class PatientPedigree extends BaseActiveRecord
         );
     }
 
+    /**
+     * @return string
+     */
     public function getHoverText()
     {
         if ($api = Yii::app()->moduleAPI->get('OphInGenetictest')) {

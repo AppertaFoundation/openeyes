@@ -21,6 +21,11 @@ class SearchController extends BaseController
     public $layout = '//layouts/advanced_search';
     public $items_per_page = 30;
 
+    /**
+     * Setup access rules
+     *
+     * @return array
+     */
     public function accessRules()
     {
         return array(
@@ -31,6 +36,12 @@ class SearchController extends BaseController
         );
     }
 
+    /**
+     * Register admin CSS.
+     *
+     * @param CAction $action
+     * @return bool
+     */
     protected function beforeAction($action)
     {
         Yii::app()->assetManager->registerCssFile('css/admin.css', null, 10);
@@ -38,6 +49,9 @@ class SearchController extends BaseController
         return parent::beforeAction($action);
     }
 
+    /**
+     * Genetics patient search
+     */
     public function actionGeneticPatients()
     {
         $pages = 1;
@@ -108,6 +122,12 @@ class SearchController extends BaseController
         ));
     }
 
+    /**
+     * Cretae a search command
+     *
+     * @param $select
+     * @return mixed
+     */
     private function buildSearchCommand($select)
     {
         $pedigree_id = @$_GET['pedigree-id'];
@@ -174,6 +194,12 @@ class SearchController extends BaseController
         return $command;
     }
 
+    /**
+     * @todo delete this dangerous duplicated crazy.
+     *
+     * @param $elements
+     * @return mixed|string
+     */
     public function getUri($elements)
     {
         $uri = preg_replace('/\?.*$/', '', $_SERVER['REQUEST_URI']);
@@ -198,6 +224,13 @@ class SearchController extends BaseController
         return $uri;
     }
 
+    /**
+     * Init pagination
+     *
+     * @param      $model
+     * @param null $criteria
+     * @return CPagination
+     */
     private function initPagination($model, $criteria = null)
     {
         $criteria = is_null($criteria) ? new CDbCriteria() : $criteria;

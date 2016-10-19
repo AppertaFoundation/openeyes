@@ -16,13 +16,30 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
 class Genetics_API extends BaseAPI
 {
+    /**
+     * @param $patient_id
+     *
+     * @return array|CActiveRecord|mixed|null
+     */
     public function findPatientPedigree($patient_id)
     {
-        return PatientPedigree::model()->with(array('patient', 'pedigree' => array('with' => array('inheritance', 'gene', 'disorder')), 'status'))->find('patient_id=?', array($patient_id));
+        return PatientPedigree::model()->with(
+            array(
+                'patient',
+                'pedigree' => array('with' => array('inheritance', 'gene', 'disorder')),
+                'status')
+        )->find('patient_id=?', array($patient_id));
     }
 
+    /**
+     * @param $type
+     * @param $partial
+     *
+     * @return bool|string
+     */
     public function findViewFile($type, $partial)
     {
         $viewFile = Yii::getPathOfAlias('Genetics.views.'.$type.'.'.$partial).'.php';

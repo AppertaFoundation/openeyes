@@ -16,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
 class DefaultController extends BaseEventTypeController
 {
     public $items_per_page = 100;
@@ -25,11 +26,36 @@ class DefaultController extends BaseEventTypeController
     public $renderPatientPanel = false;
     public $layout = 'genetics';
 
+    protected static $action_types = array(
+        'index' => self::ACTION_TYPE_FORM,
+        'Pedigrees' => self::ACTION_TYPE_FORM,
+        'AddPedigree' => self::ACTION_TYPE_FORM,
+        'EditPedigree' => self::ACTION_TYPE_FORM,
+        'ViewPedigree' => self::ACTION_TYPE_FORM,
+        'Genes' => self::ACTION_TYPE_FORM,
+        'AddGene' => self::ACTION_TYPE_FORM,
+        'EditGene' => self::ACTION_TYPE_FORM,
+        'Inheritance' => self::ACTION_TYPE_FORM,
+        'AddInheritance' => self::ACTION_TYPE_FORM,
+        'EditInheritance' => self::ACTION_TYPE_FORM,
+        'AddPatientToPedigree' => self::ACTION_TYPE_FORM,
+        'RemovePatient' => self::ACTION_TYPE_FORM,
+    );
+
+    /**
+     * Index action
+     */
     public function actionIndex()
     {
         $this->redirect(Yii::app()->createUrl('/Genetics/default/pedigrees'));
     }
 
+    /**
+     * Register admin CSS.
+     *
+     * @param CAction $action
+     * @return bool
+     */
     protected function beforeAction($action)
     {
         Yii::app()->assetManager->registerCssFile('css/admin.css', null, 10);
@@ -37,6 +63,11 @@ class DefaultController extends BaseEventTypeController
         return parent::beforeAction($action);
     }
 
+    /**
+     * Configure access rules
+     *
+     * @return array
+     */
     public function accessRules()
     {
         return array(
@@ -55,22 +86,9 @@ class DefaultController extends BaseEventTypeController
         );
     }
 
-    protected static $action_types = array(
-        'index' => self::ACTION_TYPE_FORM,
-        'Pedigrees' => self::ACTION_TYPE_FORM,
-        'AddPedigree' => self::ACTION_TYPE_FORM,
-        'EditPedigree' => self::ACTION_TYPE_FORM,
-        'ViewPedigree' => self::ACTION_TYPE_FORM,
-        'Genes' => self::ACTION_TYPE_FORM,
-        'AddGene' => self::ACTION_TYPE_FORM,
-        'EditGene' => self::ACTION_TYPE_FORM,
-        'Inheritance' => self::ACTION_TYPE_FORM,
-        'AddInheritance' => self::ACTION_TYPE_FORM,
-        'EditInheritance' => self::ACTION_TYPE_FORM,
-        'AddPatientToPedigree' => self::ACTION_TYPE_FORM,
-        'RemovePatient' => self::ACTION_TYPE_FORM,
-    );
-
+    /**
+     * Pedigrees action
+     */
     public function actionPedigrees()
     {
         $errors = array();
@@ -176,6 +194,10 @@ class DefaultController extends BaseEventTypeController
         ));
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function getItems($params)
     {
         if (isset($params['criteria'])) {
@@ -204,6 +226,11 @@ class DefaultController extends BaseEventTypeController
         return $model::model()->with($with)->findAll($criteria);
     }
 
+    /**
+     * @param      $model
+     * @param null $criteria
+     * @return CPagination
+     */
     private function initPagination($model, $criteria = null)
     {
         $criteria = is_null($criteria) ? new CDbCriteria() : $criteria;
@@ -215,6 +242,9 @@ class DefaultController extends BaseEventTypeController
         return $pagination;
     }
 
+    /**
+     * Add a pedigree
+     */
     public function actionAddPedigree()
     {
         $pedigree = new Pedigree();
@@ -241,6 +271,12 @@ class DefaultController extends BaseEventTypeController
         ));
     }
 
+    /**
+     * Edit a pedigree
+     *
+     * @param $id
+     * @throws Exception
+     */
     public function actionEditPedigree($id)
     {
         if (!$pedigree = Pedigree::model()->findByPk($id)) {
@@ -269,6 +305,9 @@ class DefaultController extends BaseEventTypeController
         ));
     }
 
+    /**
+     * Add a patient to pedigree
+     */
     public function actionAddPatientToPedigree()
     {
         $patient_pedigree = new PatientPedigree();
@@ -280,7 +319,7 @@ class DefaultController extends BaseEventTypeController
 
         if (!empty($_POST)) {
             if (isset($_POST['cancel'])) {
-                return $this->redirect(array('/Genetics/default/ViewPedigree/'.$patient_pedigree->pedigree_id));
+                $this->redirect(array('/Genetics/default/ViewPedigree/'.$patient_pedigree->pedigree_id));
             }
 
             $patient_pedigree->patient_id = $_POST['PatientPedigree']['patient_id'];
@@ -300,7 +339,7 @@ class DefaultController extends BaseEventTypeController
                 } else {
                     PedigreeDiagnosisAlgorithm::updatePedigreeDiagnosisByPatient($patient_pedigree->patient_id);
 
-                    return $this->redirect(array('/Genetics/default/ViewPedigree/'.$patient_pedigree->pedigree_id));
+                    $this->redirect(array('/Genetics/default/ViewPedigree/'.$patient_pedigree->pedigree_id));
                 }
             }
         }
@@ -311,6 +350,12 @@ class DefaultController extends BaseEventTypeController
         ));
     }
 
+    /**
+     * View pedigrees
+     *
+     * @param $id
+     * @throws Exception
+     */
     public function actionViewPedigree($id)
     {
         if (!$pedigree = Pedigree::model()->findByPk($id)) {
@@ -325,6 +370,12 @@ class DefaultController extends BaseEventTypeController
         ));
     }
 
+    /**
+     * Remove patients
+     *
+     * @param $id
+     * @throws Exception
+     */
     public function actionRemovePatient($id)
     {
         if (!$patient_pedigree = PatientPedigree::model()->find('patient_id=?', array($id))) {
@@ -339,6 +390,9 @@ class DefaultController extends BaseEventTypeController
         $this->redirect(array('/Genetics/default/viewPedigree/'.$pedigree_id));
     }
 
+    /**
+     * Inheritance action
+     */
     public function actionInheritance()
     {
         $errors = array();
@@ -375,6 +429,11 @@ class DefaultController extends BaseEventTypeController
         ));
     }
 
+    /**
+     * Get the inheritances
+     *
+     * @return CActiveRecord[]
+     */
     public function getInheritance()
     {
         $this->total_items = PedigreeInheritance::model()->count(array('order' => 't.id asc'));
@@ -387,6 +446,9 @@ class DefaultController extends BaseEventTypeController
         ));
     }
 
+    /**
+     * Add an inheritance
+     */
     public function actionAddInheritance()
     {
         $inheritance = new PedigreeInheritance();
@@ -413,6 +475,12 @@ class DefaultController extends BaseEventTypeController
         ));
     }
 
+    /**
+     * Edit an inheritance
+     *
+     * @param $id
+     * @throws Exception
+     */
     public function actionEditInheritance($id)
     {
         if (!$inheritance = PedigreeInheritance::model()->findByPk($id)) {
@@ -441,6 +509,9 @@ class DefaultController extends BaseEventTypeController
         ));
     }
 
+    /**
+     * Genes action
+     */
     public function actionGenes()
     {
         $errors = array();
@@ -493,6 +564,11 @@ class DefaultController extends BaseEventTypeController
         ));
     }
 
+    /**
+     * Get the genes
+     *
+     * @return CActiveRecord[]
+     */
     public function getGenes()
     {
         $this->total_items = PedigreeGene::model()->count(array('order' => 't.asc'));
@@ -505,6 +581,11 @@ class DefaultController extends BaseEventTypeController
         ));
     }
 
+    /**
+     * @todo delete this crazy.
+     *
+     * @return string
+     */
     public function getUriAppend()
     {
         $return = '';
@@ -517,6 +598,12 @@ class DefaultController extends BaseEventTypeController
         return $return;
     }
 
+    /**
+     * @todo delete this dangerous crazy.
+     *
+     * @param $elements
+     * @return mixed|string
+     */
     public function getUri($elements)
     {
         $uri = preg_replace('/\?.*$/', '', $_SERVER['REQUEST_URI']);
@@ -539,6 +626,9 @@ class DefaultController extends BaseEventTypeController
         return $uri;
     }
 
+    /**
+     * Add a gene
+     */
     public function actionAddGene()
     {
         $gene = new PedigreeGene();
@@ -547,7 +637,7 @@ class DefaultController extends BaseEventTypeController
 
         if (!empty($_POST)) {
             if (isset($_POST['cancel'])) {
-                return $this->redirect(array('/Genetics/default/genes'));
+                $this->redirect(array('/Genetics/default/genes'));
             }
 
             $gene->attributes = $_POST['PedigreeGene'];
@@ -555,7 +645,7 @@ class DefaultController extends BaseEventTypeController
             if (!$gene->save()) {
                 $errors = $gene->getErrors();
             } else {
-                return $this->redirect(array('/Genetics/default/genes'));
+                $this->redirect(array('/Genetics/default/genes'));
             }
         }
 
@@ -565,6 +655,12 @@ class DefaultController extends BaseEventTypeController
         ));
     }
 
+    /**
+     * Edit a gene
+     *
+     * @param $id
+     * @throws Exception
+     */
     public function actionEditGene($id)
     {
         if (!$gene = PedigreeGene::model()->findByPk($id)) {
@@ -575,7 +671,7 @@ class DefaultController extends BaseEventTypeController
 
         if (!empty($_POST)) {
             if (isset($_POST['cancel'])) {
-                return $this->redirect(array('/Genetics/default/genes'));
+                $this->redirect(array('/Genetics/default/genes'));
             }
 
             $gene->attributes = $_POST['PedigreeGene'];
@@ -583,7 +679,7 @@ class DefaultController extends BaseEventTypeController
             if (!$gene->save()) {
                 $errors = $gene->getErrors();
             } else {
-                return $this->redirect(array('/Genetics/default/genes'));
+                $this->redirect(array('/Genetics/default/genes'));
             }
         }
 

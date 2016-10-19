@@ -24,6 +24,7 @@ class DiagnosisObserver
 {
     /**
      * @param array $params
+     * @throws Exception
      */
     public function patientAddDiagnosis(array $params)
     {
@@ -34,6 +35,10 @@ class DiagnosisObserver
         self::updatePedigreeDiagnosis($secondary_diagnosis->patient);
     }
 
+    /**
+     * @param array $params
+     * @throws Exception
+     */
     public function patientRemoveDiagnosis(array $params)
     {
         if (!(array_key_exists('patient', $params) && is_a($params['patient'], 'patient'))) {
@@ -43,12 +48,16 @@ class DiagnosisObserver
         self::updatePedigreeDiagnosis($patient->id);
     }
 
+    /**
+     * @param $patient
+     * @throws Exception
+     */
     private function updatePedigreeDiagnosis($patient)
     {
         try {
             PedigreeDiagnosisAlgorithm::updatePedigreeDiagnosisByPatient($patient->id);
         } catch (Exception $exp) {
-            if (!$exp->getMessage() == 'Patient has no pedigree') {
+            if ($exp->getMessage() !== 'Patient has no pedigree') {
                 throw $exp;
             }
         }

@@ -22,6 +22,10 @@
  */
 class PedigreeDiagnosisAlgorithm
 {
+    /**
+     * @param $patient_id
+     * @throws Exception
+     */
     public static function updatePedigreeDiagnosisByPatient($patient_id)
     {
         if ($pedigree = self::findPedigreeByPatient($patient_id)) {
@@ -31,6 +35,10 @@ class PedigreeDiagnosisAlgorithm
         }
     }
 
+    /**
+     * @param $pedigree_id
+     * @throws Exception
+     */
     public static function updatePedigreeDiagnosisByPedigreeID($pedigree_id)
     {
         if ($pedigree = Pedigree::model()->find('id=?', array($pedigree_id))) {
@@ -40,6 +48,9 @@ class PedigreeDiagnosisAlgorithm
         }
     }
 
+    /**
+     * @param $pedigree
+     */
     public static function updatePedigreeDiagnosisByPedigree($pedigree)
     {
         $disorder_id = self::mostCommonDiagnosis($pedigree->members);
@@ -47,17 +58,23 @@ class PedigreeDiagnosisAlgorithm
         $pedigree->save();
     }
 
+    /**
+     * @param $patient_id
+     * @return bool|mixed|null
+     */
     private static function findPedigreeByPatient($patient_id)
     {
         if ($patient_pedigree = PatientPedigree::model()->find('patient_id=?', array($patient_id))) {
-            $pedigree = $patient_pedigree->pedigree;
 
-            return $pedigree;
+            return $patient_pedigree->pedigree;;
         }
 
         return false;
     }
 
+    /**
+     * @param $pedigree_members
+     */
     private static function mostCommonDiagnosis($pedigree_members)
     {
         $diagnoses_count = self::countDiagnoses($pedigree_members);
@@ -69,6 +86,10 @@ class PedigreeDiagnosisAlgorithm
         }
     }
 
+    /**
+     * @param $pedigree_members
+     * @return array
+     */
     private static function countDiagnoses($pedigree_members)
     {
         $table_results = array();
@@ -78,11 +99,11 @@ class PedigreeDiagnosisAlgorithm
             $member_diagnoses = array_merge($systemic_diagnoses, $ophthalmic_diagnoses);
             if (!empty($member_diagnoses)) {
                 foreach ($member_diagnoses as $diagnosis) {
-                    $diagnosis_disorder_id = $diagnosis->disorder_id;
-                    if (array_key_exists($diagnosis_disorder_id, $table_results)) {
-                        $table_results[$diagnosis_disorder_id]  += 1;
+                    $disorder_id = $diagnosis->disorder_id;
+                    if (array_key_exists($disorder_id, $table_results)) {
+                        $table_results[$disorder_id]  += 1;
                     } else {
-                        $table_results[$diagnosis_disorder_id] = 1;
+                        $table_results[$disorder_id] = 1;
                     }
                 }
             }

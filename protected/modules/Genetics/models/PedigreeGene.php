@@ -68,7 +68,6 @@ class PedigreeGene extends BaseActiveRecord
      */
     public function relations()
     {
-        return array(
-        );
+        return array();
     }
 }
