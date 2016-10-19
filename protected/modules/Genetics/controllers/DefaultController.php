@@ -312,7 +312,7 @@ class DefaultController extends BaseEventTypeController
                 $this->redirect(array('/Genetics/default/ViewPedigree/'.$patient_pedigree->pedigree_id));
             }
 
-            $pedigree_post = Yii::app()->request->getPst('PatientPedigree', array());
+            $pedigree_post = Yii::app()->request->getPost('PatientPedigree', array());
             $patient_pedigree->patient_id = $pedigree_post['patient_id'];
 
             if (!Patient::model()->find('id=?', array($pedigree_post['patient_id']))) {
