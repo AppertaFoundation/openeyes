@@ -37,19 +37,6 @@ class SearchController extends BaseController
     }
 
     /**
-     * Register admin CSS.
-     *
-     * @param CAction $action
-     * @return bool
-     */
-    protected function beforeAction($action)
-    {
-        Yii::app()->assetManager->registerCssFile('css/admin.css', null, 10);
-
-        return parent::beforeAction($action);
-    }
-
-    /**
      * Genetics patient search
      */
     public function actionGeneticPatients()

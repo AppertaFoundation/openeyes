@@ -51,19 +51,6 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
-     * Register admin CSS.
-     *
-     * @param CAction $action
-     * @return bool
-     */
-    protected function beforeAction($action)
-    {
-        Yii::app()->assetManager->registerCssFile('css/admin.css', null, 10);
-
-        return parent::beforeAction($action);
-    }
-
-    /**
      * Configure access rules
      *
      * @return array
