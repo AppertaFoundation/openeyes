@@ -62,6 +62,11 @@ class SiteSubspecialtyOperativeDevice extends BaseActiveRecordVersioned
      */
     public function relations()
     {
-        return array();
+        return array(
+            'sites' => array(self::BELONGS_TO, 'Site', 'site_id'),
+            'subspecialties' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
+            'devices' => array(self::BELONGS_TO, 'OperativeDevice', 'operative_device_id'),
+        );
     }
+
 }
