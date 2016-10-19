@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -18,40 +18,39 @@
  */
 
 /**
- * Class DiagnosisObserver
+ * Class DiagnosisObserver.
  */
 class DiagnosisObserver
 {
-	/**
-	 * @param array $params
-	 */
-	public function patientAddDiagnosis(array $params)
-	{
-		if(!(array_key_exists('diagnosis',$params) && is_a($params['diagnosis'],'SecondaryDiagnosis'))) {
-			throw new Exception('Parameters Incorrect');
-		}
-		$secondary_diagnosis = $params['diagnosis'];
-		self::updatePedigreeDiagnosis($secondary_diagnosis->patient);
-	}
+    /**
+     * @param array $params
+     */
+    public function patientAddDiagnosis(array $params)
+    {
+        if (!(array_key_exists('diagnosis', $params) && is_a($params['diagnosis'], 'SecondaryDiagnosis'))) {
+            throw new Exception('Parameters Incorrect');
+        }
+        $secondary_diagnosis = $params['diagnosis'];
+        self::updatePedigreeDiagnosis($secondary_diagnosis->patient);
+    }
 
-	public function patientRemoveDiagnosis(array $params)
-	{
-		if(!(array_key_exists('patient',$params) && is_a($params['patient'],'patient'))) {
-			throw new Exception('Parameters Incorrect');
-		}
-		$patient = $params['patient'];
-		self::updatePedigreeDiagnosis($patient->id);
-	}
+    public function patientRemoveDiagnosis(array $params)
+    {
+        if (!(array_key_exists('patient', $params) && is_a($params['patient'], 'patient'))) {
+            throw new Exception('Parameters Incorrect');
+        }
+        $patient = $params['patient'];
+        self::updatePedigreeDiagnosis($patient->id);
+    }
 
-	private function updatePedigreeDiagnosis($patient)
-	{
-		try {
-			PedigreeDiagnosisAlgorithm::updatePedigreeDiagnosisByPatient($patient->id);
-		}
-		catch (Exception $exp) {
-			if(!$exp->getMessage() == 'Patient has no pedigree'){
-				throw $exp;
-			}
-		}
-	}
+    private function updatePedigreeDiagnosis($patient)
+    {
+        try {
+            PedigreeDiagnosisAlgorithm::updatePedigreeDiagnosisByPatient($patient->id);
+        } catch (Exception $exp) {
+            if (!$exp->getMessage() == 'Patient has no pedigree') {
+                throw $exp;
+            }
+        }
+    }
 }
