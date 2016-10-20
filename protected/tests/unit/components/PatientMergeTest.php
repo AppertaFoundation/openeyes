@@ -155,10 +155,10 @@ class PatientMergeTest extends CDbTestCase
     }
 
     /**
-     * We have to keep the newer/most recent episode
-     * so if the Secondary Episode is the older one than we flag it as deleted
+     * We have to keep the episode with greater status
+     * so if the Secondary Episode has greater status we flag it as deleted
      */
-    public function testUpdateEpisodesWhenBothHaveEpisodesConflict_secondaryEpisodeOlder()
+    public function testUpdateEpisodesWhenBothHaveEpisodesConflict_secondaryEpisodeHasLessStatus()
     {
         $merge_handler = new PatientMerge();
 
@@ -169,17 +169,19 @@ class PatientMergeTest extends CDbTestCase
         $secondary_patient = $this->patients('patient8'); //episode9
 
         $episode7 = $this->episodes('episode7');
-        $episode7->created_date = date('Y-m-d', strtotime('-15 days'));
+        $episode7->episode_status_id = 5;
+        $episode7->start_date = date('Y-m-d', strtotime('-30 days'));
+        $episode7->end_date = date('Y-m-d', strtotime('-15 days'));
         $episode7->save();
 
         $episode9 = $this->episodes('episode9');
-        $episode9->created_date = date('Y-m-d', strtotime('-30 days'));
+        $episode9->episode_status_id = 2;
+        $episode9->start_date = date('Y-m-d', strtotime('-20 days'));
+        $episode9->end_date = date('Y-m-d', strtotime('-10 days'));
         $episode9->save();
+        
+        $this->assertTrue($episode7->status->order > $episode9->status->order);
 
-        // conflicting episodes :
-        // episode7 <-> episode9
-
-        $this->assertTrue($episode7->created_date > $episode9->created_date);
 
         $this->assertEquals(count($primary_patient->episodes), 2);
         $this->assertEquals(count($secondary_patient->episodes), 2);
@@ -187,11 +189,11 @@ class PatientMergeTest extends CDbTestCase
         // move the episodes , (secondary INTO primary)
         $result = $merge_handler->updateEpisodes($primary_patient, $secondary_patient);
 
-        $this->assertTrue($result, 'Merge result FALSE.');
+        $episode7->refresh();
+        $this->assertEquals( date('Y-m-d 00:00:00', strtotime('-30 days')), $episode7->start_date );
+        $this->assertEquals( date('Y-m-d 00:00:00', strtotime('-10 days')), $episode7->end_date );
 
-        // The conflicting episodes:
-        // episode9 created 30 days ago and the episode7 created 15 days ago
-        // as we keep the older episode we move events from episode7 to episode9 than move episode9 to Patient7
+        $this->assertTrue($result, 'Merge result FALSE.');
 
         $this->assertEquals(count($primary_patient->episodes), 2);
 
@@ -226,7 +228,7 @@ class PatientMergeTest extends CDbTestCase
         $this->assertEquals(count($primary_patient->episodes), 3);
     }
 
-    public function testUpdateEpisodesWhenBothHaveEpisodesConflict_primaryEpisodeOlder()
+    public function testUpdateEpisodesWhenBothHaveEpisodesConflict_primaryEpisodeHasLessStatus()
     {
         $merge_handler = new PatientMerge();
 
@@ -240,13 +242,27 @@ class PatientMergeTest extends CDbTestCase
         // episode7 <-> episode9
 
         $episode7 = $this->episodes('episode7');
+        $episode7->episode_status_id = 2;
+        $episode7->start_date = date('Y-m-d', strtotime('-20 days'));
+        $episode7->end_date = date('Y-m-d', strtotime('-10 days'));
+        $episode7->save();
+
         $episode9 = $this->episodes('episode9');
-        $this->assertTrue($episode7->created_date < $episode9->created_date);
+        $episode9->episode_status_id = 5;
+        $episode9->start_date = date('Y-m-d', strtotime('-30 days'));
+        $episode9->end_date = null;
+        $episode9->save();
+        
+        $this->assertTrue($episode7->status->order < $episode9->status->order);
 
         $this->assertEquals(count($primary_patient->episodes), 2);
         $this->assertEquals(count($secondary_patient->episodes), 2);
 
         $result = $merge_handler->updateEpisodes($primary_patient, $secondary_patient);
+
+        $episode9->refresh();
+        $this->assertEquals( date('Y-m-d 00:00:00', strtotime('-30 days')), $episode9->start_date );
+        $this->assertEquals( null, $episode9->end_date );
 
         $this->assertTrue($result, 'Merge result FALSE.');
 
@@ -593,7 +609,7 @@ class PatientMergeTest extends CDbTestCase
         $secondary_diagnoses8->refresh();
         
         
-        
+
         // Befor we update the Ophthalmic Diagnoses we check if the patient id is equals to the secondary patient id
         $this->assertEquals(8, $secondary_diagnoses8->patient_id);
         $this->assertEquals(5, $secondary_diagnoses8->disorder_id);
@@ -612,7 +628,75 @@ class PatientMergeTest extends CDbTestCase
         $this->assertEquals(1, count($primary_patient->systemicDiagnoses) );
     }
     
-    
+    public function testGetTwoEpisodesStartEndDate()
+    {
+        $merge_handler = new PatientMerge();
+        
+        $episode7 = $this->episodes('episode7');
+        $episode7->start_date = date('Y-m-d', strtotime('-30 days'));
+        $episode7->end_date = date('Y-m-d', strtotime('-15 days'));
+        $episode7->save();
+        
+        $episode9 = $this->episodes('episode9');
+        $episode9->start_date = date('Y-m-d', strtotime('-20 days'));
+        $episode9->end_date = date('Y-m-d', strtotime('-10 days'));
+        $episode9->save();
+        
+        list($start_date, $end_date) = $merge_handler->getTwoEpisodesStartEndDate($episode7, $episode9);
+        
+        $this->assertEquals($start_date,  $episode7->start_date);
+        $this->assertEquals($end_date,  $episode9->end_date);
+        
+        /******/
+        
+        $episode7->start_date = date('Y-m-d', strtotime('-20 days'));
+        $episode7->save();
+        
+        $episode9->start_date = date('Y-m-d', strtotime('-30 days'));
+        $episode9->save();
+        
+        list($start_date, $end_date) = $merge_handler->getTwoEpisodesStartEndDate($episode7, $episode9);
+        
+        $this->assertEquals($start_date,  $episode9->start_date);
+        $this->assertEquals($end_date,  $episode9->end_date);
+        
+        /******/
+        
+        $episode7->end_date = null;
+        $episode7->save();
+        
+        list($start_date, $end_date) = $merge_handler->getTwoEpisodesStartEndDate($episode7, $episode9);
+        
+        $this->assertEquals($start_date,  $episode9->start_date);
+        $this->assertEquals($end_date,  null);
+        
+        /******/
+        
+        $episode7->end_date = date('Y-m-d', strtotime('-15 days'));
+        $episode7->save();
+        
+        $episode9->end_date = null;
+        $episode9->save();
+        
+        list($start_date, $end_date) = $merge_handler->getTwoEpisodesStartEndDate($episode7, $episode9);
+        
+        $this->assertEquals($start_date,  $episode9->start_date);
+        $this->assertEquals($end_date,  null);
+        
+        /******/
+        
+        $episode7->end_date = date('Y-m-d', strtotime('-10 days'));
+        $episode7->save();
+        
+        $episode9->end_date = date('Y-m-d', strtotime('-15 days'));
+        $episode9->save();
+        
+        list($start_date, $end_date) = $merge_handler->getTwoEpisodesStartEndDate($episode7, $episode9);
+        
+        $this->assertEquals($start_date,  $episode9->start_date);
+        $this->assertEquals($end_date,  $episode7->end_date);
+
+    }
 
     public function testIsSecondaryPatientDeleted()
     {

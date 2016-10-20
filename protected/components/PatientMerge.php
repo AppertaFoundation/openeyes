@@ -191,7 +191,9 @@ class PatientMerge
      *  - if secondary patient has no episodes we have nothing to do here
      *  - if both patiens have episode we have to check if there is any conflicting(same subspeicaly like cataract or glaucoma) episodes
      *      - we move the non conflictong episodes from secondary to primary
-     *      - when two episodes are conflicting we move the events from the secondary patient's episode to the primary patient's episode then delete the secondary empty episode.
+     *      - when two episodes are conflicting we have to keep the episode with the highest status (when compared using the standard order of status from New to Discharged).
+     *      - start date should be the earliest start date of the two episodes
+     *      - end date should be the latest end date of the two episodes (null is classed as later than any date).
      *   
      * @param Patient $primary_patient
      * @param Patient $secondary_patient
@@ -223,11 +225,16 @@ class PatientMerge
 
                     if ($secondary_subspecialty == $primary_subspecialty) {
 
-                        /* We need to keep the newer/most recent episode so we compare the dates **/
+                        /* We have to keep the episode withe the highest status */             
 
-                        if ($primary_episode->created_date > $secondary_episode->created_date) {
-                            // the primary episode is older than the secondary so we move the events from the Secondary into the Primary
+                        if ($primary_episode->status->order > $secondary_episode->status->order) {
+                            // the primary episode has greater status than the secondary so we move the events from the Secondary into the Primary
                             $this->updateEventsEpisodeId($primary_episode->id, $secondary_episode->events);
+
+                            //set earliest start date and latest end date of the two episodes
+                            list($primary_episode->start_date, $primary_episode->end_date) = $this->getTwoEpisodesStartEndDate($primary_episode, $secondary_episode);
+
+                            $primary_episode->save();
 
                             // after all events are moved we flag the secondary episode as deleted
                             $secondary_episode->deleted = 1;
@@ -240,8 +247,10 @@ class PatientMerge
                             }
                         } else {
 
-                            // the secondary episode is older than the primary so we move the events from the Primary into the Secondary
+                            // the secondary episode has greated status than the primary so we move the events from the Primary into the Secondary
                             $this->updateEventsEpisodeId($secondary_episode->id, $primary_episode->events);
+
+                            list($secondary_episode->start_date, $secondary_episode->end_date) = $this->getTwoEpisodesStartEndDate($primary_episode, $secondary_episode);
 
                             /* BUT do not forget we have to delete the primary episode AND move the secondary episode to the primary patient **/
                             $primary_episode->deleted = 1;
@@ -570,5 +579,25 @@ class PatientMerge
         }
 
         return true;
+    }
+
+    /**
+     * Returns the  earliest start date and the latest end date of the two episodes
+     * 
+     * @param Episode $primary_episode
+     * @param Episode $secondary_episode
+     * @return array start date, end date
+     */
+    public function getTwoEpisodesStartEndDate(Episode $primary_episode, Episode $secondary_episode)
+    {
+        $start_date = ($primary_episode->start_date > $secondary_episode->start_date) ? $secondary_episode->start_date : $primary_episode->start_date;
+
+        if( !$primary_episode->end_date || !$secondary_episode->end_date){
+            $end_date = null;
+        } else {
+            $end_date = ($primary_episode->end_date < $secondary_episode->end_date) ? $secondary_episode->end_date : $primary_episode->end_date;
+        }
+
+        return array($start_date, $end_date);
     }
 }
