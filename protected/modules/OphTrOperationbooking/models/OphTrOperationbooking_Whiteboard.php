@@ -210,9 +210,9 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $anticoag = $risks->mostRecentCheckedAnticoag($patient->id);
         if ($anticoag) {
             if ($anticoag->anticoagulant === '2') {
-                return 'No (' . $anticoag->event->event_date . ')';
+                return 'No (' . $this->NHSDate($anticoag->event->event_date) . ')';
             } else {
-                return 'Yes - ' . $anticoag->anticoagulant_name . ' (' . $anticoag->event->event_date . ')';
+                return 'Yes - ' . $anticoag->anticoagulant_name . ' (' . $this->NHSDate($anticoag->event->event_date) . ')';
             }
         } else {
             return 'Not Checked';
