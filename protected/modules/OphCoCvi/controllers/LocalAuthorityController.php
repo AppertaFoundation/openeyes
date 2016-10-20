@@ -18,7 +18,11 @@
 
 namespace OEModule\OphCoCvi\controllers;
 
-
+/**
+ * Class LocalAuthorityController
+ *
+ * @package OEModule\OphCoCvi\controllers
+ */
 class LocalAuthorityController extends \BaseModuleController
 {
     /**
@@ -27,7 +31,8 @@ class LocalAuthorityController extends \BaseModuleController
     public function accessRules()
     {
         return array(
-            array('allow',
+            array(
+                'allow',
                 'actions' => array('autoComplete'),
                 'roles' => array('OprnViewClinical'),
             ),
@@ -54,7 +59,7 @@ class LocalAuthorityController extends \BaseModuleController
 //            'commissioning_body.contact.address',
 //            'commissioning_body.contact.correspondAddress',
             'type' => array('alias' => 'service_type'),
-            'commissioning_body.type' => array('alias' => 'body_type')
+            'commissioning_body.type' => array('alias' => 'body_type'),
         );
         $crit->compare('LOWER(t.name)', strtolower($term), true);
         $crit->compare('LOWER(commissioning_body.name)', strtolower($term), true, 'OR');
@@ -76,14 +81,14 @@ class LocalAuthorityController extends \BaseModuleController
                     'id' => $cbs->id,
                     'name' => $cbs->name,
                     'address' => $cbs->getLetterAddress(array('delimiter' => ",\n")),
-                    'telephone' => $cbs->contact->primary_phone
+                    'telephone' => $cbs->contact->primary_phone,
                 ),
                 'body' => array(
                     'id' => $body->id,
                     'name' => $body->name,
                     'address' => $body->getLetterAddress(array('delimiter' => ",\n")),
-                    'telephone' => $body->contact->primary_phone
-                )
+                    'telephone' => $body->contact->primary_phone,
+                ),
             );
         }
 
@@ -105,8 +110,8 @@ class LocalAuthorityController extends \BaseModuleController
                     'id' => $body->id,
                     'name' => $body->name,
                     'address' => $body->getLetterAddress(array('delimiter' => ",\n")),
-                    'telephone' => $body->contact->primary_phone
-                )
+                    'telephone' => $body->contact->primary_phone,
+                ),
             );
         }
 

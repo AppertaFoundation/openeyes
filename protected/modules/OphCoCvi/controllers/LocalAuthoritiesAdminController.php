@@ -8,11 +8,18 @@
 
 namespace OEModule\OphCoCvi\controllers;
 
-
+/**
+ * Class LocalAuthoritiesAdminController
+ *
+ * @package OEModule\OphCoCvi\controllers
+ */
 class LocalAuthoritiesAdminController extends \AdminController
 {
     public $layout = 'clerical_admin';
 
+    /**
+     * @return array
+     */
     public function accessRules()
     {
         return array_merge(
@@ -24,7 +31,7 @@ class LocalAuthoritiesAdminController extends \AdminController
                         'editCommissioningBodyService',
                         'addCommissioningBodyService',
                         'verifyDeleteCommissioningBodyServices',
-                        'deleteCommissioningBodyServices'
+                        'deleteCommissioningBodyServices',
                     ),
                     'roles' => array('OprnEditClericalCvi'),
                 ),
@@ -36,7 +43,7 @@ class LocalAuthoritiesAdminController extends \AdminController
     /**
      * Lists local authorities from Commissioning Body Service
      *
-     * @throws CHttpException
+     * @throws \CHttpException
      */
     public function actionList()
     {

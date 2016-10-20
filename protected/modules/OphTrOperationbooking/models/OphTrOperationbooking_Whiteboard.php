@@ -74,42 +74,12 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $episode = Episode::model()->findByPk($event->episode_id);
         $patient = Patient::model()->findByPk($episode->patient_id);
         $contact = Contact::model()->findByPk($patient->contact_id);
-
-        $biometryCriteria = new CDbCriteria();
-        $biometryCriteria->addCondition('patient_id = :patient_id');
-        $biometryCriteria->params = array('patient_id' => $patient->id);
-        $biometryCriteria->order = 'last_modified_date DESC';
-        $biometryCriteria->limit = 1;
-        $biometry = Element_OphTrOperationnote_Biometry::model()->find($biometryCriteria);
-
-        $examination = $event->getPreviousInEpisode(EventType::model()->findByAttributes(array('name' => 'Examination'))->id);
-        $risks = new \OEModule\OphCiExamination\models\Element_OphCiExamination_HistoryRisk();
-        if ($examination) {
-            $risks = $risks->findByAttributes(array('event_id' => $examination->id));
-        }
-
+        $biometry = $this->recentBiometry($patient);
+        $blockers = $this->alphaBlockerStatusAndDate($patient);
+        $anticoag = $this->anticoagsStatusAndDate($patient);
         $labResult = Element_OphInLabResults_Inr::model()->findPatientResultByType($patient->id, '1');
-
-        $allergies = Yii::app()->db->createCommand()
-            ->select('a.name as name')
-            ->from('patient_allergy_assignment pas')
-            ->leftJoin('allergy a', 'pas.allergy_id = a.id')
-            ->where("pas.patient_id = {$episode->patient_id}")
-            ->order('a.name')
-            ->queryAll();
-
-        $allergyString = 'None';
-        if ($allergies) {
-            $allergyString = implode(',', array_column($allergies, 'name'));
-        }
-
-        $operation = Yii::app()->db->createCommand()
-            ->select('proc.term as term')
-            ->from('et_ophtroperationbooking_operation op')
-            ->leftJoin('ophtroperationbooking_operation_procedures_procedures opp', 'opp.element_id = op.id')
-            ->leftJoin('proc', 'opp.proc_id = proc.id')
-            ->where("op.event_id = {$id}")
-            ->queryAll();
+        $allergyString = $this->allergyString($episode);
+        $operation = $this->operation($id);
 
         $this->event_id = $id;
         $this->booking = $booking;
@@ -125,8 +95,8 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->predicted_refractive_outcome = ($biometry) ? $biometry->attributes['predicted_refraction_' . $eyeLabel] : 'Unknown';
         $this->alpha_blockers = $patient->hasRisk('Alpha blockers');
         $this->anticoagulants = $patient->hasRisk('Anticoagulants');
-        $this->alpha_blocker_name = ($risks) ? $risks->alpha_blocker_name : '';
-        $this->anticoagulant_name = ($risks) ? $risks->anticoagulant_name : '';
+        $this->alpha_blocker_name = $blockers;
+        $this->anticoagulant_name = $anticoag;
         $this->inr = ($labResult) ? $labResult : 'None';
 
         if (!$this->predicted_additional_equipment) {
@@ -148,5 +118,104 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
     public function isEditable()
     {
         return is_object($this->booking) && $this->booking->isEditable() && !$this->is_confirmed;
+    }
+
+    /**
+     * @param $patient
+     * @return mixed
+     */
+    protected function recentBiometry($patient)
+    {
+        $biometryCriteria = new CDbCriteria();
+        $biometryCriteria->addCondition('patient_id = :patient_id');
+        $biometryCriteria->params = array('patient_id' => $patient->id);
+        $biometryCriteria->order = 'last_modified_date DESC';
+        $biometryCriteria->limit = 1;
+        $biometry = Element_OphTrOperationnote_Biometry::model()->find($biometryCriteria);
+
+        return $biometry;
+    }
+
+    /**
+     * @param $episode
+     *
+     * @return string
+     */
+    protected function allergyString($episode)
+    {
+        $allergies = Yii::app()->db->createCommand()
+            ->select('a.name as name')
+            ->from('patient_allergy_assignment pas')
+            ->leftJoin('allergy a', 'pas.allergy_id = a.id')
+            ->where("pas.patient_id = {$episode->patient_id}")
+            ->order('a.name')
+            ->queryAll();
+
+        $allergyString = 'None';
+        if ($allergies) {
+            $allergyString = implode(',', array_column($allergies, 'name'));
+
+            return $allergyString;
+        }
+
+        return $allergyString;
+    }
+
+    /**
+     * @param $id
+     *
+     * @return mixed
+     */
+    protected function operation($id)
+    {
+        $operation = Yii::app()->db->createCommand()
+            ->select('proc.term as term')
+            ->from('et_ophtroperationbooking_operation op')
+            ->leftJoin('ophtroperationbooking_operation_procedures_procedures opp', 'opp.element_id = op.id')
+            ->leftJoin('proc', 'opp.proc_id = proc.id')
+            ->where("op.event_id = {$id}")
+            ->queryAll();
+
+        return $operation;
+    }
+
+    /**
+     * @param $patient
+     *
+     * @return string
+     */
+    protected function alphaBlockerStatusAndDate($patient)
+    {
+        $risks = new \OEModule\OphCiExamination\models\Element_OphCiExamination_HistoryRisk();
+        $blockers = $risks->mostRecentCheckedAlpha($patient->id);
+        if ($blockers) {
+            if ($blockers->alphablocker === '2') {
+                return 'No (' . $blockers->event->event_date . ')';
+            } else {
+                return 'Yes - ' . $blockers->alpha_blocker_name . ' (' . $blockers->event->event_date . ')';
+            }
+        } else {
+            return 'Not Checked';
+        }
+    }
+
+    /**
+     * @param $patient
+     *
+     * @return string
+     */
+    protected function anticoagsStatusAndDate($patient)
+    {
+        $risks = new \OEModule\OphCiExamination\models\Element_OphCiExamination_HistoryRisk();
+        $anticoag = $risks->mostRecentCheckedAnticoag($patient->id);
+        if ($anticoag) {
+            if ($anticoag->anticoagulant === '2') {
+                return 'No (' . $anticoag->event->event_date . ')';
+            } else {
+                return 'Yes - ' . $anticoag->anticoagulant_name . ' (' . $anticoag->event->event_date . ')';
+            }
+        } else {
+            return 'Not Checked';
+        }
     }
 }

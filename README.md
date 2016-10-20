@@ -10,6 +10,14 @@ The initial focus is on Ophthalmology, but the design is sufficiently flexible t
 
 Ophthalmic units of any size, from a single practitioner to a large eye hospital, should be able to make use of the structure, design, and code to produce a functional, easy to use EPR at minimal cost. By sharing experience, pooling ideas, and distributing development effort, it is expected that the range and capability of OpenEyes will evolve rapidly.
 
+Disclaimer
+----------
+OpenEyes is provided under a GPL v3 license and all terms of that license apply ([https://www.gnu.org/licenses/gpl-3.0.html](https://www.gnu.org/licenses/gpl-3.0.html)). Use of the OpenEyes software or code is entirely at your own risk. Neither the OpenEyes Foundation, ACROSS Health Ltd 
+nor Moorfields Eye Hospital NHS Foundation Trust accept any responsibility for loss or damage to any person, property or
+reputation as a result of using the software or code. No warranty is provided by any party, implied or
+otherwise. This software and code is not guaranteed safe to use in a clinical environment and you
+should make your own assessment on the suitability for such use.
+
 Resources
 ---------
 

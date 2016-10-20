@@ -22,6 +22,13 @@
 <?php echo $form->hiddenInput($element, 'draft', 1)?>
 <?php
 $layoutColumns = $form->layoutColumns;
+if(isset($data['macro_id']))
+{
+	$macro_id = $data['macro_id'];
+}else
+{
+	$macro_id = null;
+}
 ?>
 
 <input type="hidden" id="re_default" value="<?php echo $element->calculateRe($element->event->episode->patient)?>" />
@@ -36,19 +43,45 @@ $layoutColumns = $form->layoutColumns;
 
 	<div class="row field-row">
 		<div class="large-<?php echo $layoutColumns['label'];?> column">
-			<?php echo $form->dropDownListNoPost('address_target', $element->address_targets, $element->address_target, array('empty' => '- Recipient -', 'nowrapper' => true, 'class' => 'full-width'))?>
+			<label>Date:</label>
 		</div>
-		<div class="large-6 column end">
-			<?php echo $form->textArea($element, 'address', array('rows' => 7, 'label' => false, 'nowrapper' => true), false, array('class' => 'address'))?>
+		<div class="large-2 column end">
+			<?php echo $form->datePicker($element, 'date', array('maxDate' => 'today'), array('nowrapper' => true))?>
 		</div>
 	</div>
 
 	<div class="row field-row">
 		<div class="large-<?php echo $layoutColumns['label'];?> column">
-			<?php echo $form->dropDownListNoPost('macro', $element->letter_macros, '', array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'full-width'))?>
+			<label>Macro:</label>
 		</div>
 		<div class="large-2 column end">
-			<?php echo $form->datePicker($element, 'date', array('maxDate' => 'today'), array('nowrapper' => true))?>
+			<?php echo CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros, '', array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'full-width'));?>
+		</div>
+	</div>
+
+	<div class="row field-row">
+		<div class="large-<?php echo $layoutColumns['label'];?> column">
+			<label>Letter type:</label>
+		</div>
+		<div class="large-2 column end">
+			<?php echo $form->dropDownList($element, 'letter_type', array('1'=>'Clinic discharge letter', '2'=>'Post-op letter', '3'=>'Clinic letter', '4'=>'Other letter'), array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'full-width'))?>
+		</div>
+	</div>
+
+
+	<div class="row field-row">
+		<?php
+		$document_manager = new DocmanController('docman');
+		$document_manager->addTableToEvent(Yii::app()->getController()->event_type->name, array('event_id'=> $element->event_id));
+		?>
+	</div>
+
+	<div class="row field-row">
+		<div class="large-<?php echo $layoutColumns['label'];?> column">
+			<?php //echo $form->dropDownListNoPost('address_target', $element->address_targets, $element->address_target, array('empty' => '- Recipient -', 'nowrapper' => true, 'class' => 'full-width'))?>
+		</div>
+		<div class="large-6 column end">
+			<?php echo $form->hiddenField($element, 'address', array('rows' => 7, 'label' => false, 'nowrapper' => true), false, array('class' => 'address'))?>
 		</div>
 	</div>
 
@@ -193,10 +226,10 @@ $layoutColumns = $form->layoutColumns;
 
 	<div class="row field-row">
 		<div class="large-<?php echo $layoutColumns['label'];?> column">
-			<?php echo $form->dropDownListNoPost('cc', $element->address_targets, '', array('empty' => '- Cc -', 'nowrapper' => true))?>
+			<?php //echo $form->dropDownListNoPost('cc', $element->address_targets, '', array('empty' => '- Cc -', 'nowrapper' => true))?>
 		</div>
 		<div class="large-<?php echo $layoutColumns['field'];?> column end">
-			<?php echo $form->textArea($element, 'cc', array('rows' => 8, 'label' => false, 'nowrapper' => true), false, array('class' => 'address'))?>
+			<?php echo $form->hiddenField($element, 'cc', array('rows' => 8, 'label' => false, 'nowrapper' => true), false, array('class' => 'address'))?>
 		</div>
 		<div id="cc_targets">
 		</div>

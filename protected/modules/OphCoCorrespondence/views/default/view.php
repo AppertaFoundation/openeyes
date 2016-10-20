@@ -22,8 +22,16 @@
 	<?php
         // Event actions
         if ($this->checkPrintAccess()) {
-            $this->event_actions[] = EventAction::button('Print', 'print', null, array('class' => 'small'));
-            $this->event_actions[] = EventAction::button('Print all', 'printall', null, array('id' => 'et_print_all', 'class' => 'small'));
+			// TODO: need to check if the event is draft!
+			$elementLetter = ElementLetter::model()->findByAttributes(array('event_id'=>$this->event->id));
+			if($elementLetter->draft)
+			{
+            	$this->event_actions[] = EventAction::button('Print Draft', 'printdraft', null, array('class' => 'small'));
+			}else
+			{
+				$this->event_actions[] = EventAction::button('Print and Send', 'print', null, array('class' => 'small'));
+			}
+            $this->event_actions[] = EventAction::button('Print all and Send all', 'printall', null, array('id' => 'et_print_all', 'class' => 'small'));
         }
     ?>
 

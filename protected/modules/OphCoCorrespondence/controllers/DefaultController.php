@@ -233,6 +233,7 @@ class DefaultController extends BaseEventTypeController
 
         $data['textappend_ElementLetter_cc'] = implode("\n", $cc['text']);
         $data['elementappend_cc_targets'] = implode("\n", $cc['targets']);
+        $data['sel_letter_type'] = $macro->letter_type;
         echo json_encode($data);
     }
 
@@ -385,6 +386,27 @@ class DefaultController extends BaseEventTypeController
             $this->pdf_print_documents = 2 + count($letter->getCcTargets());
         }
 
+        $related_documents = DocumentInstance::model()->findAllByAttributes(array("correspondence_event_id"=>$id));
+        foreach($related_documents as $document)
+        {
+            $doc_targets = DocumentTarget::model()->findAllByAttributes(array("document_instance_id"=>$document->id));
+            foreach($doc_targets as $target)
+            {
+                $doc_outputs = DocumentOutput::model()->findAllByAttributes(array("document_target_id"=>$target->id));
+                foreach($doc_outputs as $output)
+                {
+                    if($output->output_type == "Docman")
+                    {
+                        $output->output_status = "PENDING";
+                    }else if($output->output_type == "Print")
+                    {
+                        $output->output_status = "COMPLETE";
+                    }
+                    $output->save();
+                }
+            }
+        }
+
         return parent::actionPDFPrint($id);
     }
 
@@ -531,4 +553,5 @@ class DefaultController extends BaseEventTypeController
             echo '1';
         }
     }
+
 }

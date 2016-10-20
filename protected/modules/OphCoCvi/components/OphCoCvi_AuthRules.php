@@ -1,5 +1,4 @@
-<?php namespace OEModule\OphCoCvi\components;
-
+<?php
 /**
  * OpenEyes
  *
@@ -15,11 +14,22 @@
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+namespace OEModule\OphCoCvi\components;
 
+/**
+ * Class OphCoCvi_AuthRules
+ *
+ * @package OEModule\OphCoCvi\components
+ */
 class OphCoCvi_AuthRules
 {
     protected $yii;
 
+    /**
+     * OphCoCvi_AuthRules constructor.
+     *
+     * @param \CApplication|null $yii
+     */
     public function __construct(\CApplication $yii = null)
     {
         if (is_null($yii)) {
@@ -49,7 +59,7 @@ class OphCoCvi_AuthRules
     /**
      * Root permission checking function for edit ability
      *
-     * @param $user_id
+     * @param      $user_id
      * @param bool $clerical
      * @return bool
      */
@@ -78,7 +88,8 @@ class OphCoCvi_AuthRules
     /**
      * Biz rule for RBAC. if only the user id is provided, determines whether the user for the id has permissions for creating a CVI event.
      * If the view context (containing a Firm and Episode) is provided, checks whether the context is correct for creating a CVI event in the episode.
-     * @param $user_id
+     *
+     * @param       $user_id
      * @param array $view_context
      * @return bool
      */
@@ -92,6 +103,7 @@ class OphCoCvi_AuthRules
                 return true;
             }
         }
+
         return false;
     }
 
@@ -100,7 +112,7 @@ class OphCoCvi_AuthRules
      * If the view context (containing a Firm and Event) is provided, checks whether the context is correct for editing the given CVI Event object.
      * NB Event checks are purely about view context, and does not account for business rules around the status of the event.
      *
-     * @param $user_id
+     * @param       $user_id
      * @param array $view_context array containing the currently selected firm and Event for editing
      * @return bool
      */
@@ -114,6 +126,7 @@ class OphCoCvi_AuthRules
                 return true;
             }
         }
+
         return false;
     }
 

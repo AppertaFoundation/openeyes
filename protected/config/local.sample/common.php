@@ -138,6 +138,7 @@ $config = array(
         'event_print_method' => 'pdf',
         'wkhtmltopdf_nice_level' => 19,
         'city_road_satellite_view' => 1,
+        'enable_concise_med_history' => true,
         // default start time used for automatic worklist definitions
         //'worklist_default_start_time' => 'H:i',
         // default end time used for automatic worklist definitions
@@ -173,7 +174,13 @@ $config = array(
                 'client_secret' => '4c7f6f8fa93d59c45502c0ae8c4a95b',
             ),
         ),
-        'signature_app_url' => 'http://tiny.cc/oe-sign'
+        'signature_app_url' => 'http://tiny.cc/oe-sign',
+        'docman_export_dir' => '/tmp/docman',
+        'docman_login_url' => 'http://localhost/site/login',
+        'docman_user' => 'admin',
+        'docman_password' => 'admin',
+        'docman_print_url' => 'http://localhost/OphCoCorrespondence/default/PDFprint/',
+
     ),
 );
 

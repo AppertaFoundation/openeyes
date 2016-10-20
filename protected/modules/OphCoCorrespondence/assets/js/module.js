@@ -17,6 +17,37 @@
  */
 
 var correspondence_markprinted_url, correspondence_print_url;
+
+function updateCorrespondence( macro_id)
+{
+    var nickname = $('input[id="ElementLetter_use_nickname"][type="checkbox"]').is(':checked') ? '1' : '0';
+    var obj = $(this);
+
+    if ( macro_id != '') {
+
+        $.ajax({
+            'type': 'GET',
+            'dataType': 'json',
+            'url': baseUrl+'/OphCoCorrespondence/Default/getMacroData?patient_id=' + OE_patient_id + '&macro_id=' + macro_id + '&nickname=' + nickname,
+            'success': function(data) {
+                if (data['error'] == 'DECEASED') {
+                    new OpenEyes.UI.Dialog.Alert({
+                        content: "The patient is deceased so this macro cannot be used."
+                    }).open();
+                    obj.val('');
+                    return false;
+                }
+                $('#ElementLetter_cc').val('');
+                $('#cc_targets').html('');
+                correspondence_load_data(data);
+                et_oph_correspondence_body_cursor_position = $('#ElementLetter_body').val().length;
+                obj.val('');
+            }
+        });
+    }
+}
+
+
 $(document).ready(function() {
 	$(this).delegate('#ElementLetter_site_id', 'change', function() {
 		if (correspondence_directlines) {
@@ -236,35 +267,6 @@ $(document).ready(function() {
 							}
 						});
 					}
-				}
-			});
-		}
-	});
-
-	$('#macro').change(function() {
-		var nickname = $('input[id="ElementLetter_use_nickname"][type="checkbox"]').is(':checked') ? '1' : '0';
-		var obj = $(this);
-
-		if ($(this).val() != '') {
-			var macro_id = $(this).val();
-
-			$.ajax({
-				'type': 'GET',
-				'dataType': 'json',
-				'url': baseUrl+'/OphCoCorrespondence/Default/getMacroData?patient_id=' + OE_patient_id + '&macro_id=' + macro_id + '&nickname=' + nickname,
-				'success': function(data) {
-					if (data['error'] == 'DECEASED') {
-						new OpenEyes.UI.Dialog.Alert({
-							content: "The patient is deceased so this macro cannot be used."
-						}).open();
-						obj.val('');
-						return false;
-					}
-					$('#ElementLetter_cc').val('');
-					$('#cc_targets').html('');
-					correspondence_load_data(data);
-					et_oph_correspondence_body_cursor_position = $('#ElementLetter_body').val().length;
-					obj.val('');
 				}
 			});
 		}
