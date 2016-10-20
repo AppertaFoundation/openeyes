@@ -567,9 +567,7 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
         if ($patient_id != $this->_current_patient_id) {
             $this->_current_patient_id = $patient_id;
             $command = Yii::app()->db->createCommand()
-                ->select(
-                    'e.id'
-                )
+                ->select('e.id')
                 ->from('event e')
                 ->join('episode ep', 'e.episode_id = ep.id')
                 ->where('e.deleted = 0 and ep.deleted = 0 and ep.patient_id = :patient_id and e.event_type_id = :etype_id',
@@ -581,8 +579,10 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
             }
             $criteria = new CDbCriteria();
             $criteria->addInCondition('event_id', $event_ids);
-            $this->_patient_vas = OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity::model()->with('right_readings',
-                'left_readings', 'event')->findAll($criteria);
+            $criteria->order = 'event_date asc';
+            $this->_patient_vas = OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity::model()
+                ->with('right_readings', 'left_readings', 'event')
+                ->findAll($criteria);
         }
 
         return $this->_patient_vas;
