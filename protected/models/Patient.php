@@ -1038,6 +1038,22 @@ class Patient extends BaseActiveRecordVersioned
     }
 
     /**
+     * @param $riskCompare
+     *
+     * @return Risk|null
+     */
+    public function getAssignedRisk($riskCompare)
+    {
+        foreach ($this->riskAssignments as $riskAssignment) {
+            if ($riskAssignment->risk->name === $riskCompare) {
+                return $riskAssignment;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * marks the patient as having no family history.
      *
      * @throws Exception
