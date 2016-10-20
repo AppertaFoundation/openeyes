@@ -107,10 +107,10 @@ class OphTrIntravitrealinjection_API extends BaseAPI
     {
         switch ($side) {
             case 'left':
-                $eye_ids = array(SplitEventTypeElement::LEFT, SplitEventTypeElement::BOTH);
+                $eye_id = SplitEventTypeElement::LEFT;
                 break;
             case 'right':
-                $eye_ids = array(SplitEventTypeElement::RIGHT, SplitEventTypeElement::BOTH);
+                $eye_id = SplitEventTypeElement::RIGHT;
                 break;
             default:
                 throw new Exception('invalid side value provided: ' . $side);
@@ -121,14 +121,17 @@ class OphTrIntravitrealinjection_API extends BaseAPI
 
         $criteria = new CDbCriteria();
         $criteria->alias = 'treatment';
-        $criteria->addCondition('event.episode_id = :episode_id');
-        $criteria->addCondition('treatment.eye_id in (:eye_ids)');
-        $criteria->addCondition('event_date < :since');
+        $criteria->addCondition(array(
+            'event.episode_id = :episode_id',
+            'treatment.eye_id in (:eye_id,'.SplitEventTypeElement::BOTH.')',
+            'event_date <= :since',
+            )
+        );
         $criteria->join = 'JOIN event ON treatment.event_id = event.id';
         $criteria->order = 'event.event_date ASC';
         $criteria->params = array(
             'episode_id' => $episode->id,
-            'eye_ids' => implode(',', $eye_ids),
+            'eye_id' => $eye_id,
             'since' => $sinceDate->format('Y-m-d'),
         );
 
