@@ -2,13 +2,3 @@
 @import "openeyes/module";
 @import "openeyes/components/admin/sidebar";
 
-.navigation {
-  @include navigation;
-}
-
-.box {
-  &.genetics {
-    @include radius;
-    @include sidebar-box;
-  }
-}
