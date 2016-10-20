@@ -156,7 +156,7 @@ class PatientMerge
         $is_merged = $is_merged && $this->updateAllergyAssignments($this->primary_patient, $this->secondary_patient);
 
         // Updates riskAssignments
-        $is_merged = $is_merged && $this->updateRiskAssignments($this->primary_patient->id, $this->secondary_patient->riskAssignments);
+        $is_merged = $is_merged && $this->updateRiskAssignments($this->primary_patient, $this->secondary_patient->riskAssignments);
 
         // Update previousOperations
         $is_merged = $is_merged && $this->updatePreviousOperations($this->primary_patient, $this->secondary_patient->previousOperations);
@@ -427,11 +427,11 @@ class PatientMerge
      *
      * @throws Exception Failed to save RiskAssigment
      */
-    public function updateRiskAssignments($new_patient_id, $risk_assignments)
+    public function updateRiskAssignments($primary_patient, $risk_assignments)
     {
         foreach ($risk_assignments as $risk_assignment) {
-            $msg = 'RiskAssignment '.$risk_assignment->id.' moved from patient '.$risk_assignment->patient->hos_num.' to '.$new_patient_id;
-            $risk_assignment->patient_id = $new_patient_id;
+            $msg = 'RiskAssignment '.$risk_assignment->id.' moved from patient '.$risk_assignment->patient->hos_num.' to '.$primary_patient->id;
+            $risk_assignment->patient_id = $primary_patient->id;
             if ($risk_assignment->save()) {
                 $this->addLog($msg);
                 Audit::add('Patient Merge', 'RiskAssignment moved patient', $msg);
