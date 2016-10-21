@@ -24,7 +24,7 @@
 
         <?php $this->widget('zii.widgets.grid.CGridView', array(
                     'itemsCssClass' => 'grid',
-                    'dataProvider' => $dataProvider,
+                    'dataProvider' => $data_provider,
                     'summaryText' => '<h3><small> {start}-{end} of {count} </small></h3>',
                     'htmlOptions' => array('id' => 'patientMergeList'),
                     'columns' => array('log'),

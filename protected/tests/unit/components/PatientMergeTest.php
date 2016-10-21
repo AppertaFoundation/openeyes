@@ -43,26 +43,26 @@ class PatientMergeTest extends CDbTestCase
 
     public function testComparePatientDetails()
     {
-        $mergeHandler = new PatientMerge();
+        $merge_handler = new PatientMerge();
 
-        $primaryPatient = $this->patients('patient7');
-        $secondaryPatient = $this->patients('patient8');
+        $primary_patient = $this->patients('patient7');
+        $secondary_patient = $this->patients('patient8');
 
-        $result = $mergeHandler->comparePatientDetails($primaryPatient, $secondaryPatient);
+        $result = $merge_handler->comparePatientDetails($primary_patient, $secondary_patient);
 
         $this->assertTrue(is_array($result));
-        $this->assertFalse($result['isConflict'], 'Personal details should be the same at this point.');
+        $this->assertFalse($result['is_conflict'], 'Personal details should be the same at this point.');
         $this->assertEmpty($result['details']);
 
         // Change the dob and gender 
-        $primaryPatient->gender = 'M';
-        $primaryPatient->dob = '1981-12-21';
+        $primary_patient->gender = 'M';
+        $primary_patient->dob = '1981-12-21';
 
-        $primaryPatient->save();
+        $primary_patient->save();
 
-        $result = $mergeHandler->comparePatientDetails($primaryPatient, $secondaryPatient);
+        $result = $merge_handler->comparePatientDetails($primary_patient, $secondary_patient);
 
-        $this->assertTrue($result['isConflict'], 'Personal details should NOT be the same. Both DOB and Gender are different at this point.');
+        $this->assertTrue($result['is_conflict'], 'Personal details should NOT be the same. Both DOB and Gender are different at this point.');
 
         $this->assertEquals($result['details'][0]['column'], 'dob');
         $this->assertEquals($result['details'][0]['primary'], '1981-12-21');
@@ -75,10 +75,10 @@ class PatientMergeTest extends CDbTestCase
 
     public function testUpdateEpisodesWhenPrimaryHasNoEpisodes()
     {
-        $mergeHandler = new PatientMerge();
+        $merge_handler = new PatientMerge();
 
-        $primaryPatient = $this->patients('patient7');
-        $secondaryPatient = $this->patients('patient8');
+        $primary_patient = $this->patients('patient7');
+        $secondary_patient = $this->patients('patient8');
 
         $episode7 = $this->episodes('episode7');
         $episode7->patient_id = 1;
@@ -88,15 +88,15 @@ class PatientMergeTest extends CDbTestCase
         $episode8->patient_id = 1;
         $episode8->save();
 
-        $primaryPatient->refresh();
+        $primary_patient->refresh();
 
         // primary has no episodes
-        $this->assertEquals(count($primaryPatient->episodes), 0);
+        $this->assertEquals(count($primary_patient->episodes), 0);
 
         // at this pont the primary patient has no episodes and the secondary has
 
         // move the episodes , (secondary INTO primary)
-        $result = $mergeHandler->updateEpisodes($primaryPatient, $secondaryPatient);
+        $result = $merge_handler->updateEpisodes($primary_patient, $secondary_patient);
 
         $this->assertTrue($result);
 
@@ -106,25 +106,25 @@ class PatientMergeTest extends CDbTestCase
         $episode10 = $this->episodes('episode10');
         $this->assertEquals($episode10->patient_id, 7);
 
-        $secondaryPatient->refresh();
+        $secondary_patient->refresh();
 
         // secondary has no episodes
-        $this->assertEquals(count($secondaryPatient->episodes), 0);
+        $this->assertEquals(count($secondary_patient->episodes), 0);
     }
 
     public function testUpdateEpisodesWhenBothHaveEpisodesNoConflict()
     {
-        $mergeHandler = new PatientMerge();
+        $merge_handler = new PatientMerge();
 
-        $primaryPatient = $this->patients('patient7');
-        $secondaryPatient = $this->patients('patient8');
+        $primary_patient = $this->patients('patient7');
+        $secondary_patient = $this->patients('patient8');
 
         // this episode conflicts with episode7, so assign it to a different user to avoid the conflict
         $eposode9 = $this->episodes('episode9');
         $eposode9->patient_id = 1;
         $eposode9->save();
 
-        $secondaryPatient->refresh();
+        $secondary_patient->refresh();
 
         // now primary has Episode7 and Episode8
         //secondary has Episode 10
@@ -138,10 +138,10 @@ class PatientMergeTest extends CDbTestCase
         $eposode10 = $this->episodes('episode10');
         $this->assertEquals($eposode10->patient_id, 8);
 
-        $this->assertEquals(2, count($primaryPatient->episodes));
-        $this->assertEquals(1, count($secondaryPatient->episodes));
+        $this->assertEquals(2, count($primary_patient->episodes));
+        $this->assertEquals(1, count($secondary_patient->episodes));
 
-        $result = $mergeHandler->updateEpisodes($primaryPatient, $secondaryPatient);
+        $result = $merge_handler->updateEpisodes($primary_patient, $secondary_patient);
 
         $this->assertTrue($result);
 
@@ -155,45 +155,47 @@ class PatientMergeTest extends CDbTestCase
     }
 
     /**
-     * We have to keep the newer/most recent episode
-     * so if the Secondary Episode is the older one than we flag it as deleted
+     * We have to keep the episode with greater status
+     * so if the Secondary Episode has greater status we flag it as deleted
      */
-    public function testUpdateEpisodesWhenBothHaveEpisodesConflict_secondaryEpisodeOlder()
+    public function testUpdateEpisodesWhenBothHaveEpisodesConflict_secondaryEpisodeHasLessStatus()
     {
-        $mergeHandler = new PatientMerge();
+        $merge_handler = new PatientMerge();
 
-        // $primaryPatient has episode7 and episode8
-        $primaryPatient = $this->patients('patient7'); // episode7
+        // $primary_patient has episode7 and episode8
+        $primary_patient = $this->patients('patient7'); // episode7
 
-        // $secondaryPatient has episode9, episode10
-        $secondaryPatient = $this->patients('patient8'); //episode9
+        // $secondary_patient has episode9, episode10
+        $secondary_patient = $this->patients('patient8'); //episode9
 
         $episode7 = $this->episodes('episode7');
-        $episode7->created_date = date('Y-m-d', strtotime('-15 days'));
+        $episode7->episode_status_id = 5;
+        $episode7->start_date = date('Y-m-d', strtotime('-30 days'));
+        $episode7->end_date = date('Y-m-d', strtotime('-15 days'));
         $episode7->save();
 
         $episode9 = $this->episodes('episode9');
-        $episode9->created_date = date('Y-m-d', strtotime('-30 days'));
+        $episode9->episode_status_id = 2;
+        $episode9->start_date = date('Y-m-d', strtotime('-20 days'));
+        $episode9->end_date = date('Y-m-d', strtotime('-10 days'));
         $episode9->save();
+        
+        $this->assertTrue($episode7->status->order > $episode9->status->order);
 
-        // conflicting episodes :
-        // episode7 <-> episode9
 
-        $this->assertTrue($episode7->created_date > $episode9->created_date);
-
-        $this->assertEquals(count($primaryPatient->episodes), 2);
-        $this->assertEquals(count($secondaryPatient->episodes), 2);
+        $this->assertEquals(count($primary_patient->episodes), 2);
+        $this->assertEquals(count($secondary_patient->episodes), 2);
 
         // move the episodes , (secondary INTO primary)
-        $result = $mergeHandler->updateEpisodes($primaryPatient, $secondaryPatient);
+        $result = $merge_handler->updateEpisodes($primary_patient, $secondary_patient);
+
+        $episode7->refresh();
+        $this->assertEquals( date('Y-m-d 00:00:00', strtotime('-30 days')), $episode7->start_date );
+        $this->assertEquals( date('Y-m-d 00:00:00', strtotime('-10 days')), $episode7->end_date );
 
         $this->assertTrue($result, 'Merge result FALSE.');
 
-        // The conflicting episodes:
-        // episode9 created 30 days ago and the episode7 created 15 days ago
-        // as we keep the older episode we move events from episode7 to episode9 than move episode9 to Patient7
-
-        $this->assertEquals(count($primaryPatient->episodes), 2);
+        $this->assertEquals(count($primary_patient->episodes), 2);
 
         $event16 = $this->events('event16');
         $this->assertEquals($event16->episode_id, 7);
@@ -219,34 +221,48 @@ class PatientMergeTest extends CDbTestCase
         $episode10->refresh();
         $this->assertEquals($episode10->patient_id, 7);
 
-        $secondaryPatient->refresh();
-        $this->assertEquals(count($secondaryPatient->episodes), 0);
+        $secondary_patient->refresh();
+        $this->assertEquals(count($secondary_patient->episodes), 0);
 
-        $primaryPatient->refresh();
-        $this->assertEquals(count($primaryPatient->episodes), 3);
+        $primary_patient->refresh();
+        $this->assertEquals(count($primary_patient->episodes), 3);
     }
 
-    public function testUpdateEpisodesWhenBothHaveEpisodesConflict_primaryEpisodeOlder()
+    public function testUpdateEpisodesWhenBothHaveEpisodesConflict_primaryEpisodeHasLessStatus()
     {
-        $mergeHandler = new PatientMerge();
+        $merge_handler = new PatientMerge();
 
-        // $primaryPatient has episode7 and episode8
-        $primaryPatient = $this->patients('patient7');
+        // $primary_patient has episode7 and episode8
+        $primary_patient = $this->patients('patient7');
 
-        // $secondaryPatient has episode9, episode10
-        $secondaryPatient = $this->patients('patient8');
+        // $secondary_patient has episode9, episode10
+        $secondary_patient = $this->patients('patient8');
 
         // conflicting episodes :
         // episode7 <-> episode9
 
         $episode7 = $this->episodes('episode7');
+        $episode7->episode_status_id = 2;
+        $episode7->start_date = date('Y-m-d', strtotime('-20 days'));
+        $episode7->end_date = date('Y-m-d', strtotime('-10 days'));
+        $episode7->save();
+
         $episode9 = $this->episodes('episode9');
-        $this->assertTrue($episode7->created_date < $episode9->created_date);
+        $episode9->episode_status_id = 5;
+        $episode9->start_date = date('Y-m-d', strtotime('-30 days'));
+        $episode9->end_date = null;
+        $episode9->save();
+        
+        $this->assertTrue($episode7->status->order < $episode9->status->order);
 
-        $this->assertEquals(count($primaryPatient->episodes), 2);
-        $this->assertEquals(count($secondaryPatient->episodes), 2);
+        $this->assertEquals(count($primary_patient->episodes), 2);
+        $this->assertEquals(count($secondary_patient->episodes), 2);
 
-        $result = $mergeHandler->updateEpisodes($primaryPatient, $secondaryPatient);
+        $result = $merge_handler->updateEpisodes($primary_patient, $secondary_patient);
+
+        $episode9->refresh();
+        $this->assertEquals( date('Y-m-d 00:00:00', strtotime('-30 days')), $episode9->start_date );
+        $this->assertEquals( null, $episode9->end_date );
 
         $this->assertTrue($result, 'Merge result FALSE.');
 
@@ -273,22 +289,22 @@ class PatientMergeTest extends CDbTestCase
         $episode8 = $this->episodes('episode8');
         $this->assertEquals($episode8->patient_id, 7);
 
-        $secondaryPatient->refresh();
-        $this->assertEquals(count($secondaryPatient->episodes), 0);
+        $secondary_patient->refresh();
+        $this->assertEquals(count($secondary_patient->episodes), 0);
 
-        $primaryPatient->refresh();
-        $this->assertEquals(count($primaryPatient->episodes), 3);
+        $primary_patient->refresh();
+        $this->assertEquals(count($primary_patient->episodes), 3);
     }
 
     public function testUpdateLegacyEpisodes_primaryNoLegacyEpisodes()
     {
-        $mergeHandler = new PatientMerge();
+        $merge_handler = new PatientMerge();
 
-        // $primaryPatient has episode7 and episode8
-        $primaryPatient = $this->patients('patient7');
+        // $primary_patient has episode7 and episode8
+        $primary_patient = $this->patients('patient7');
 
-        // $secondaryPatient has episode9, episode10
-        $secondaryPatient = $this->patients('patient8');
+        // $secondary_patient has episode9, episode10
+        $secondary_patient = $this->patients('patient8');
 
         // Lets modify the episodes to have a legacy episode
 
@@ -300,9 +316,9 @@ class PatientMergeTest extends CDbTestCase
         $episode9->save();
         $this->assertEquals(1, $episode9->legacy);
 
-        $primaryPatient->refresh();
+        $primary_patient->refresh();
 
-        $result = $mergeHandler->updateLegacyEpisodes($primaryPatient, $secondaryPatient);
+        $result = $merge_handler->updateLegacyEpisodes($primary_patient, $secondary_patient);
 
         $this->assertTrue($result, 'Merge result FALSE.');
 
@@ -311,22 +327,22 @@ class PatientMergeTest extends CDbTestCase
         $episode9 = $this->episodes('episode9');
         $this->assertEquals($episode9->patient_id, 7);
 
-        $secondaryPatient->refresh();
-        $this->assertEquals(count($secondaryPatient->legacyepisodes), 0);
+        $secondary_patient->refresh();
+        $this->assertEquals(count($secondary_patient->legacyepisodes), 0);
 
-        $primaryPatient->refresh();
-        $this->assertEquals(count($primaryPatient->legacyepisodes), 1);
+        $primary_patient->refresh();
+        $this->assertEquals(count($primary_patient->legacyepisodes), 1);
     }
 
     public function testUpdateLegacyEpisodes_bothHaveLegacyEpisodes_secondaryOlder()
     {
-        $mergeHandler = new PatientMerge();
+        $merge_handler = new PatientMerge();
 
-        // $primaryPatient has episode7 and episode8
-        $primaryPatient = $this->patients('patient7');
+        // $primary_patient has episode7 and episode8
+        $primary_patient = $this->patients('patient7');
 
-        // $secondaryPatient has episode9, episode10
-        $secondaryPatient = $this->patients('patient8');
+        // $secondary_patient has episode9, episode10
+        $secondary_patient = $this->patients('patient8');
 
         // Lets modify the episodes to have a legacy episode
 
@@ -346,7 +362,7 @@ class PatientMergeTest extends CDbTestCase
 
         $this->assertTrue($episode7->created_date > $episode9->created_date);
 
-        $result = $mergeHandler->updateLegacyEpisodes($primaryPatient, $secondaryPatient);
+        $result = $merge_handler->updateLegacyEpisodes($primary_patient, $secondary_patient);
 
         $this->assertTrue($result, 'Merge result FALSE.');
 
@@ -361,23 +377,23 @@ class PatientMergeTest extends CDbTestCase
         $this->assertEquals($episode9->patient_id, 7);
         $this->assertEquals(count($episode9->events), 4);
 
-        $primaryPatient->refresh();
-        $this->assertEquals(count($primaryPatient->legacyepisodes), 1);
-        $this->assertEquals(count($primaryPatient->legacyepisodes[0]->events), 4);
+        $primary_patient->refresh();
+        $this->assertEquals(count($primary_patient->legacyepisodes), 1);
+        $this->assertEquals(count($primary_patient->legacyepisodes[0]->events), 4);
 
-        $secondaryPatient->refresh();
-        $this->assertEquals(count($secondaryPatient->legacyepisodes), 0);
+        $secondary_patient->refresh();
+        $this->assertEquals(count($secondary_patient->legacyepisodes), 0);
     }
 
     public function testUpdateLegacyEpisodes_bothHaveLegacyEpisodes_primaryOlder()
     {
-        $mergeHandler = new PatientMerge();
+        $merge_handler = new PatientMerge();
 
-        // $primaryPatient has episode7 and episode8
-        $primaryPatient = $this->patients('patient7');
+        // $primary_patient has episode7 and episode8
+        $primary_patient = $this->patients('patient7');
 
-        // $secondaryPatient has episode9, episode10
-        $secondaryPatient = $this->patients('patient8');
+        // $secondary_patient has episode9, episode10
+        $secondary_patient = $this->patients('patient8');
 
         // Lets modify the episodes to have a legacy episode
 
@@ -395,7 +411,7 @@ class PatientMergeTest extends CDbTestCase
 
         $this->assertTrue($episode7->created_date < $episode9->created_date);
 
-        $result = $mergeHandler->updateLegacyEpisodes($primaryPatient, $secondaryPatient);
+        $result = $merge_handler->updateLegacyEpisodes($primary_patient, $secondary_patient);
 
         $this->assertTrue($result, 'Merge result FALSE.');
 
@@ -411,16 +427,16 @@ class PatientMergeTest extends CDbTestCase
         $episode9->refresh();
         $this->assertEquals(count($episode9->events), 0);
 
-        $primaryPatient->refresh();
-        $this->assertEquals(count($primaryPatient->legacyepisodes), 1);
+        $primary_patient->refresh();
+        $this->assertEquals(count($primary_patient->legacyepisodes), 1);
 
-        $secondaryPatient->refresh();
-        $this->assertEquals(count($secondaryPatient->legacyepisodes), 0);
+        $secondary_patient->refresh();
+        $this->assertEquals(count($secondary_patient->legacyepisodes), 0);
     }
 
     public function testUpdateAllergyAssignments_primaryHasNoAllergyAssignments()
     {
-        $mergeHandler = new PatientMerge();
+        $merge_handler = new PatientMerge();
 
         $assignment1 = $this->patient_allergy_assignment('assignment1');
         $assignment2 = $this->patient_allergy_assignment('assignment2');
@@ -428,43 +444,43 @@ class PatientMergeTest extends CDbTestCase
         $assignment1->patient_id = 1;
         $assignment1->save();
 
-        $primaryPatient = $this->patients('patient7');
-        $secondaryPatient = $this->patients('patient8');
+        $primary_patient = $this->patients('patient7');
+        $secondary_patient = $this->patients('patient8');
 
-        $this->assertEquals(count($primaryPatient->allergyAssignments), 0);
-        $this->assertEquals(count($secondaryPatient->allergyAssignments), 1);
+        $this->assertEquals(count($primary_patient->allergyAssignments), 0);
+        $this->assertEquals(count($secondary_patient->allergyAssignments), 1);
 
-        $result = $mergeHandler->updateAllergyAssignments($primaryPatient, $secondaryPatient);
+        $result = $merge_handler->updateAllergyAssignments($primary_patient, $secondary_patient);
 
-        $primaryPatient->refresh();
-        $secondaryPatient->refresh();
+        $primary_patient->refresh();
+        $secondary_patient->refresh();
 
         $this->assertTrue($result, 'Update Allergy Assigmant FAILED.');
 
         $assignment2->refresh();
         $this->assertEquals($assignment2->patient_id, 7);
 
-        $this->assertEquals(count($primaryPatient->allergyAssignments), 1);
-        $this->assertEquals(count($secondaryPatient->allergyAssignments), 0);
+        $this->assertEquals(count($primary_patient->allergyAssignments), 1);
+        $this->assertEquals(count($secondary_patient->allergyAssignments), 0);
     }
 
     public function testUpdateAllergyAssignments_bothHaveDifferentAllergyAssignments()
     {
-        $mergeHandler = new PatientMerge();
+        $merge_handler = new PatientMerge();
 
         $assignment1 = $this->patient_allergy_assignment('assignment1');
         $assignment2 = $this->patient_allergy_assignment('assignment2');
 
-        $primaryPatient = $this->patients('patient7');
-        $secondaryPatient = $this->patients('patient8');
+        $primary_patient = $this->patients('patient7');
+        $secondary_patient = $this->patients('patient8');
 
-        $this->assertEquals(count($primaryPatient->allergyAssignments), 1);
-        $this->assertEquals(count($secondaryPatient->allergyAssignments), 1);
+        $this->assertEquals(count($primary_patient->allergyAssignments), 1);
+        $this->assertEquals(count($secondary_patient->allergyAssignments), 1);
 
-        $result = $mergeHandler->updateAllergyAssignments($primaryPatient, $secondaryPatient);
+        $result = $merge_handler->updateAllergyAssignments($primary_patient, $secondary_patient);
 
-        $primaryPatient->refresh();
-        $secondaryPatient->refresh();
+        $primary_patient->refresh();
+        $secondary_patient->refresh();
 
         $this->assertTrue($result, 'Update Allergy Assigmant FAILED.');
 
@@ -474,13 +490,13 @@ class PatientMergeTest extends CDbTestCase
         $assignment2->refresh();
         $this->assertEquals($assignment2->patient_id, 7);
 
-        $this->assertEquals(count($primaryPatient->allergyAssignments), 2);
-        $this->assertEquals(count($secondaryPatient->allergyAssignments), 0);
+        $this->assertEquals(count($primary_patient->allergyAssignments), 2);
+        $this->assertEquals(count($secondary_patient->allergyAssignments), 0);
     }
 
     public function testUpdateAllergyAssignments_bothHaveSameAllergyAssignments()
     {
-        $mergeHandler = new PatientMerge();
+        $merge_handler = new PatientMerge();
 
         $assignment1 = $this->patient_allergy_assignment('assignment1');
         $assignment2 = $this->patient_allergy_assignment('assignment2');
@@ -491,16 +507,16 @@ class PatientMergeTest extends CDbTestCase
 
         $this->assertEquals($assignment1->allergy_id, $assignment2->allergy_id);
 
-        $primaryPatient = $this->patients('patient7');
-        $secondaryPatient = $this->patients('patient8');
+        $primary_patient = $this->patients('patient7');
+        $secondary_patient = $this->patients('patient8');
 
-        $this->assertEquals(count($primaryPatient->allergyAssignments), 1);
-        $this->assertEquals(count($secondaryPatient->allergyAssignments), 1);
+        $this->assertEquals(count($primary_patient->allergyAssignments), 1);
+        $this->assertEquals(count($secondary_patient->allergyAssignments), 1);
 
-        $result = $mergeHandler->updateAllergyAssignments($primaryPatient, $secondaryPatient);
+        $result = $merge_handler->updateAllergyAssignments($primary_patient, $secondary_patient);
 
-        $primaryPatient->refresh();
-        $secondaryPatient->refresh();
+        $primary_patient->refresh();
+        $secondary_patient->refresh();
 
         $assignment1->refresh();
         $this->assertEquals($assignment1->patient_id, 7);
@@ -515,104 +531,172 @@ class PatientMergeTest extends CDbTestCase
 
     public function testUpdatePreviousOperations()
     {
-        $mergeHandler = new PatientMerge();
+        $merge_handler = new PatientMerge();
         
-        $primaryPatient = $this->patients('patient7');
-        $secondaryPatient = $this->patients('patient8');
+        $primary_patient = $this->patients('patient7');
+        $secondary_patient = $this->patients('patient8');
         
-        $previousOperation1 = $this->previous_operation('previousOperation1');
+        $previous_operation1 = $this->previous_operation('previousOperation1');
         
-        $previousOperation1->patient_id = 8;
-        $previousOperation1->save();
-        $previousOperation1->refresh();
+        $previous_operation1->patient_id = 8;
+        $previous_operation1->save();
+        $previous_operation1->refresh();
         
         // Before we update the Previous Operations we check if the patient id is equals to the secondary patient id
-        $this->assertEquals(8, $previousOperation1->patient_id);
+        $this->assertEquals(8, $previous_operation1->patient_id);
         
-        $primaryPatient->refresh();
-        $secondaryPatient->refresh();
-        $this->assertEquals(0, count($primaryPatient->previousOperations) );
-        $this->assertEquals(1, count($secondaryPatient->previousOperations) );
+        $primary_patient->refresh();
+        $secondary_patient->refresh();
+        $this->assertEquals(0, count($primary_patient->previousOperations) );
+        $this->assertEquals(1, count($secondary_patient->previousOperations) );
         
-        $mergeHandler->updatePreviousOperations($primaryPatient, $secondaryPatient->previousOperations);
+        $merge_handler->updatePreviousOperations($primary_patient, $secondary_patient->previousOperations);
         
-        $primaryPatient->refresh();
-        $secondaryPatient->refresh();
-        $this->assertTrue(is_array($secondaryPatient->previousOperations));
+        $primary_patient->refresh();
+        $secondary_patient->refresh();
+        $this->assertTrue(is_array($secondary_patient->previousOperations));
         
-        $this->assertEquals(0, count($secondaryPatient->previousOperations) );
-        $this->assertEquals(1, count($primaryPatient->previousOperations) );
+        $this->assertEquals(0, count($secondary_patient->previousOperations) );
+        $this->assertEquals(1, count($primary_patient->previousOperations) );
         
-        $previousOperation1->refresh();
+        $previous_operation1->refresh();
         
-        $this->assertEquals(7, $previousOperation1->patient_id);
+        $this->assertEquals(7, $previous_operation1->patient_id);
     }
     
     public function testUpdateOphthalmicDiagnoses()
     {
-        $mergeHandler = new PatientMerge();
+        $merge_handler = new PatientMerge();
         
-        $primaryPatient = $this->patients('patient7');
-        $secondaryPatient = $this->patients('patient8');
+        $primary_patient = $this->patients('patient7');
+        $secondary_patient = $this->patients('patient8');
         
-        $secondaryDiagnoses8 = $this->secondary_diagnosis('secondaryDiagnoses8');
-        $secondaryDiagnoses8->patient_id = 8;
-        $secondaryDiagnoses8->save();
-        $secondaryDiagnoses8->refresh();
+        $secondary_diagnoses8 = $this->secondary_diagnosis('secondaryDiagnoses8');
+        $secondary_diagnoses8->patient_id = 8;
+        $secondary_diagnoses8->save();
+        $secondary_diagnoses8->refresh();
         
         // Before we update the Ophthalmic Diagnoses we check if the patient id is equals to the secondary patient id
-        $this->assertEquals(8, $secondaryDiagnoses8->patient_id);
+        $this->assertEquals(8, $secondary_diagnoses8->patient_id);
         
-        $secondaryPatient->refresh();
-        $this->assertTrue(is_array($secondaryPatient->ophthalmicDiagnoses) );
-        $this->assertEquals(1, count($secondaryPatient->ophthalmicDiagnoses) );
+        $secondary_patient->refresh();
+        $this->assertTrue(is_array($secondary_patient->ophthalmicDiagnoses) );
+        $this->assertEquals(1, count($secondary_patient->ophthalmicDiagnoses) );
         
-        $mergeHandler->updateOphthalmicDiagnoses($primaryPatient, $secondaryPatient->ophthalmicDiagnoses);
+        $merge_handler->updateOphthalmicDiagnoses($primary_patient, $secondary_patient->ophthalmicDiagnoses);
         
-        $secondaryDiagnoses8->refresh();
-        $secondaryPatient->refresh();
+        $secondary_diagnoses8->refresh();
+        $secondary_patient->refresh();
         
-        $this->assertEquals(0, count($secondaryPatient->ophthalmicDiagnoses) );
+        $this->assertEquals(0, count($secondary_patient->ophthalmicDiagnoses) );
         
-        $this->assertEquals(7, $secondaryDiagnoses8->patient_id);
+        $this->assertEquals(7, $secondary_diagnoses8->patient_id);
         
         
     }
     
     public function testUpdateSystemicDiagnoses()
     {
-        $mergeHandler = new PatientMerge();
+        $merge_handler = new PatientMerge();
         
-        $primaryPatient = $this->patients('patient7');
-        $secondaryPatient = $this->patients('patient8');
+        $primary_patient = $this->patients('patient7');
+        $secondary_patient = $this->patients('patient8');
         
-        $secondaryDiagnoses8 = $this->secondary_diagnosis('secondaryDiagnoses8');
-        $secondaryDiagnoses8->patient_id = 8;
-        $secondaryDiagnoses8->disorder_id = 5;
-        $secondaryDiagnoses8->save();
-        $secondaryDiagnoses8->refresh();
+        $secondary_diagnoses8 = $this->secondary_diagnosis('secondaryDiagnoses8');
+        $secondary_diagnoses8->patient_id = 8;
+        $secondary_diagnoses8->disorder_id = 5;
+        $secondary_diagnoses8->save();
+        $secondary_diagnoses8->refresh();
         
         
-        
+
         // Befor we update the Ophthalmic Diagnoses we check if the patient id is equals to the secondary patient id
-        $this->assertEquals(8, $secondaryDiagnoses8->patient_id);
-        $this->assertEquals(5, $secondaryDiagnoses8->disorder_id);
+        $this->assertEquals(8, $secondary_diagnoses8->patient_id);
+        $this->assertEquals(5, $secondary_diagnoses8->disorder_id);
         
-        $secondaryPatient->refresh();
-        $this->assertTrue(is_array($secondaryPatient->systemicDiagnoses) );
-        $this->assertEquals(1, count($secondaryPatient->systemicDiagnoses) );
+        $secondary_patient->refresh();
+        $this->assertTrue(is_array($secondary_patient->systemicDiagnoses) );
+        $this->assertEquals(1, count($secondary_patient->systemicDiagnoses) );
         
-        $mergeHandler->updateOphthalmicDiagnoses($primaryPatient, $secondaryPatient->systemicDiagnoses);
+        $merge_handler->updateOphthalmicDiagnoses($primary_patient, $secondary_patient->systemicDiagnoses);
         
-        $secondaryDiagnoses8->refresh();
+        $secondary_diagnoses8->refresh();
         
-        $this->assertEquals(7, $secondaryDiagnoses8->patient_id);
+        $this->assertEquals(7, $secondary_diagnoses8->patient_id);
         
-        $this->assertEquals(0, count($secondaryPatient->systemicDiagnoses) );
-        $this->assertEquals(1, count($primaryPatient->systemicDiagnoses) );
+        $this->assertEquals(0, count($secondary_patient->systemicDiagnoses) );
+        $this->assertEquals(1, count($primary_patient->systemicDiagnoses) );
     }
     
-    
+    public function testGetTwoEpisodesStartEndDate()
+    {
+        $merge_handler = new PatientMerge();
+        
+        $episode7 = $this->episodes('episode7');
+        $episode7->start_date = date('Y-m-d', strtotime('-30 days'));
+        $episode7->end_date = date('Y-m-d', strtotime('-15 days'));
+        $episode7->save();
+        
+        $episode9 = $this->episodes('episode9');
+        $episode9->start_date = date('Y-m-d', strtotime('-20 days'));
+        $episode9->end_date = date('Y-m-d', strtotime('-10 days'));
+        $episode9->save();
+        
+        list($start_date, $end_date) = $merge_handler->getTwoEpisodesStartEndDate($episode7, $episode9);
+        
+        $this->assertEquals($start_date,  $episode7->start_date);
+        $this->assertEquals($end_date,  $episode9->end_date);
+        
+        /******/
+        
+        $episode7->start_date = date('Y-m-d', strtotime('-20 days'));
+        $episode7->save();
+        
+        $episode9->start_date = date('Y-m-d', strtotime('-30 days'));
+        $episode9->save();
+        
+        list($start_date, $end_date) = $merge_handler->getTwoEpisodesStartEndDate($episode7, $episode9);
+        
+        $this->assertEquals($start_date,  $episode9->start_date);
+        $this->assertEquals($end_date,  $episode9->end_date);
+        
+        /******/
+        
+        $episode7->end_date = null;
+        $episode7->save();
+        
+        list($start_date, $end_date) = $merge_handler->getTwoEpisodesStartEndDate($episode7, $episode9);
+        
+        $this->assertEquals($start_date,  $episode9->start_date);
+        $this->assertEquals($end_date,  null);
+        
+        /******/
+        
+        $episode7->end_date = date('Y-m-d', strtotime('-15 days'));
+        $episode7->save();
+        
+        $episode9->end_date = null;
+        $episode9->save();
+        
+        list($start_date, $end_date) = $merge_handler->getTwoEpisodesStartEndDate($episode7, $episode9);
+        
+        $this->assertEquals($start_date,  $episode9->start_date);
+        $this->assertEquals($end_date,  null);
+        
+        /******/
+        
+        $episode7->end_date = date('Y-m-d', strtotime('-10 days'));
+        $episode7->save();
+        
+        $episode9->end_date = date('Y-m-d', strtotime('-15 days'));
+        $episode9->save();
+        
+        list($start_date, $end_date) = $merge_handler->getTwoEpisodesStartEndDate($episode7, $episode9);
+        
+        $this->assertEquals($start_date,  $episode9->start_date);
+        $this->assertEquals($end_date,  $episode7->end_date);
+
+    }
 
     public function testIsSecondaryPatientDeleted()
     {
