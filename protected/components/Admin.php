@@ -396,9 +396,9 @@ class Admin
 
     /**
      * @param BaseActiveRecord    $model
-     * @param BaseAdminController $controller
+     * @param BaseController $controller
      */
-    public function __construct(BaseActiveRecord $model, BaseAdminController $controller)
+    public function __construct(BaseActiveRecord $model, BaseController $controller)
     {
         $this->setModel($model);
         $this->controller = $controller;
@@ -445,7 +445,7 @@ class Admin
             $post = Yii::app()->request->getPost($this->modelName);
             if (empty($post)) {
                 $this->modelName = str_replace('\\', '_', $this->modelName);
-                $post = $_POST[$this->modelName];
+                $post = Yii::app()->request->getPost($this->modelName);
             }
             if (array_key_exists('id', $post) && $post['id']) {
                 $this->model->attributes = $post;
@@ -647,6 +647,11 @@ class Admin
         return http_build_query($queryArray);
     }
 
+    /**
+     * @param       $relation
+     * @param array $listFields
+     * @return Admin
+     */
     public function generateAdminForRelationList($relation, array $listFields)
     {
         $relatedModel = $this->relationClassFromRelation($relation);

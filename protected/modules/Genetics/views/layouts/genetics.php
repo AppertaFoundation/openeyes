@@ -20,30 +20,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<?php $this->renderPartial('//base/head/_meta'); ?>
-	<?php $this->renderPartial('//base/head/_assets'); ?>
-	<?php $this->renderPartial('//base/head/_tracking'); ?>
+    <?php $this->renderPartial('//base/head/_meta'); ?>
+    <?php $this->renderPartial('//base/head/_assets'); ?>
+    <?php $this->renderPartial('//base/head/_tracking'); ?>
 </head>
 <body class="open-eyes">
-	<?php $this->renderPartial('//base/_banner_watermark'); ?>
-	<?php $this->renderPartial('//base/_debug'); ?>
-	<div class="container main" role="main">
-		<?php $this->renderPartial('//base/_header'); ?>
-		<div class="container content">
-			<h1 class="badge admin">Genetics</h1>
-			<div class="box content admin-content">
-				<div class="row">
-					<aside class="large-2 column sidebar admin">
-						<?php $this->renderPartial('sidebar'); ?>
-					</aside>
-					<div class="large-10 column">
-						<?php echo $content; ?>
-					</div>
-				</div>
-			</div>
-		</div>
-		<?php $this->renderPartial('//base/_footer'); ?>
-	</div>
+<?php $this->renderPartial('//base/_banner_watermark'); ?>
+<?php $this->renderPartial('//base/_debug'); ?>
+<div class="container main" role="main">
+    <?php $this->renderPartial('//base/_header'); ?>
+    <div class="container content">
+        <h1 class="badge admin">Genetics</h1>
+        <div class="box content admin-content">
+            <div class="row">
+                <aside class="large-2 column sidebar admin">
+                    <?php $this->renderPartial('/default/sidebar'); ?>
+                </aside>
+                <div class="large-10 column">
+                    <?php echo $content; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php $this->renderPartial('//base/_footer'); ?>
+</div>
 </body>
 </html>
 

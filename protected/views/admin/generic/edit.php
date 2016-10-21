@@ -20,9 +20,9 @@ $assetManager = Yii::app()->getAssetManager();
 ?>
 
 <div class="box admin">
-	<h2><?php echo($admin->getModel()->id ? 'Edit' : 'Add').' '.$admin->getModelDisplayName() ?></h2>
-	<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors)) ?>
-	<?php
+    <h2><?php echo ($admin->getModel()->id ? 'Edit' : 'Add') . ' ' . $admin->getModelDisplayName() ?></h2>
+    <?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors)) ?>
+    <?php
     if ($admin->getCustomSaveURL() !== '') {
         $formAction = $admin->getCustomSaveURL();
     } else {
@@ -45,16 +45,16 @@ $assetManager = Yii::app()->getAssetManager();
     }
     ?>
 
-	<?php foreach ($admin->getEditFields() as $field => $type) {
-    if (is_array($type)) {
-        switch ($type['widget']) {
+    <?php foreach ($admin->getEditFields() as $field => $type) {
+        if (is_array($type)) {
+            switch ($type['widget']) {
                 case 'MultiSelectList':
                     ?>
-					<div class="field-row furtherfindings-multi-select">
-						<?php
+                    <div class="field-row furtherfindings-multi-select">
+                        <?php
                         echo $form->multiSelectList(
                             $admin->getModel(),
-                            $admin->getModelName().'['.$field.']',
+                            $admin->getModelName() . '[' . $field . ']',
                             $field,
                             $type['relation_field_id'],
                             $type['options'],
@@ -68,8 +68,8 @@ $assetManager = Yii::app()->getAssetManager();
                             true
                         );
                         ?>
-					</div>
-					<?php
+                    </div>
+                    <?php
                     break;
                 case 'DropDownList':
                     $form->dropDownList(
@@ -99,8 +99,8 @@ $assetManager = Yii::app()->getAssetManager();
                         break;
                     }
             }
-    } else {
-        switch ($type) {
+        } else {
+            switch ($type) {
                 case 'checkbox':
                     echo $form->checkBox($admin->getModel(), $field, $autoComplete);
                     break;
@@ -115,18 +115,18 @@ $assetManager = Yii::app()->getAssetManager();
                     echo $form->textField($admin->getModel(), $field, $autoComplete);
                     break;
             }
+        }
     }
-}
     ?>
 
-	<?php
+    <?php
     if ($admin->getCustomCancelURL() != '') {
         echo $form->formActions(array('cancel-uri' => $admin->getCustomCancelURL()));
     } else {
-        echo $form->formActions(array('cancel-uri' => (Yii::app()->request->getParam('returnUri')) ? Yii::app()->request->getParam('returnUri') : '/'.$this->uniqueid.'/list'));
+        echo $form->formActions(array('cancel-uri' => (Yii::app()->request->getParam('returnUri')) ? Yii::app()->request->getParam('returnUri') : '/' . $this->uniqueid . '/list'));
     }
 
     ?>
 
-	<?php $this->endWidget() ?>
+    <?php $this->endWidget() ?>
 </div>

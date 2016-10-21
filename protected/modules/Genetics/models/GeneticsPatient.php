@@ -54,6 +54,7 @@ class GeneticsPatient extends BaseActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
+            array('patient_id, comments, gender_id, is_deceased', 'safe'),
         );
     }
 
@@ -64,6 +65,20 @@ class GeneticsPatient extends BaseActiveRecord
     {
         return array(
             'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
+            'gender' => array(self::BELONGS_TO, 'Gender', 'gender_id'),
+        );
+    }
+
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+            'id' => 'ID',
+            'patient_id' => 'Patient',
+            'gender_id' => 'Karyotypic Sex',
+            'is_deceased' => 'Is Deceased'
         );
     }
 }
