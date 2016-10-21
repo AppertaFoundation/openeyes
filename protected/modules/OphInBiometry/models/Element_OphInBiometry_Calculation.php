@@ -65,7 +65,7 @@ class Element_OphInBiometry_Calculation extends SplitEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, target_refraction_left, eye_id, formula_id_left,target_refraction_right, formula_id_right, comments', 'safe'),
+            array('event_id, target_refraction_left, eye_id, formula_id_left,target_refraction_right, formula_id_right, comments, comments_left, comments_right', 'safe'),
             array('target_refraction_left, target_refraction_right', 'match', 'pattern' => '/([0-9]*?)(\.[0-9]{0,2})?/'),
             array('target_refraction_left', 'checkNumericRangeIfSide', 'side' => 'left', 'max' => 10, 'min' => -10),
             array('target_refraction_right', 'checkNumericRangeIfSide', 'side' => 'right', 'max' => 10, 'min' => -10),
@@ -108,6 +108,8 @@ class Element_OphInBiometry_Calculation extends SplitEventTypeElement
             'formula_id_right' => 'Formula',
             'emmetropia_left' => 'Emmetropic IOL power',
             'emmetropia_right' => 'Emmetropic IOL power',
+            'comments_right' => 'General Comments (Right)',
+            'comments_left' => 'General Comments (Left)',
         );
     }
 
