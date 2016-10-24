@@ -18,63 +18,54 @@
 
 /**
  *  HOW TO USE
+    
+    Intit the search by calling the
+    OpenEyes.UI.Search.init( $('#patient_merge_search') );
+    and pass the input DOM
+    Clik on one item in the autocomplete list will redirect to the patien's summery page like:  /patient/view/19942
 
- Intit the search by calling the
- OpenEyes.UI.Search.init( $('#patient_merge_search') );
- and pass the input DOM
- Clik on one item in the autocomplete list will redirect to the patien's summery page like:  /patient/view/19942
+    To override the default functionality
+    
+    Set the ajax URL to be called (default: /patient/ajaxSearch ):
 
- To override the default functionality
+    OpenEyes.UI.Search.setSourceURL('/patientMergeRequest/search');
 
- Set the ajax URL to be called (default: /patient/ajaxSearch ):
+    To override the jquery autocomplete defaults:
 
- OpenEyes.UI.Search.setSourceURL('/patientMergeRequest/search');
+    use the OpenEyes.UI.Search.getElement() to get back the input DOM with jquery autocomple
 
- To override the jquery autocomplete defaults:
-
- use the OpenEyes.UI.Search.getElement() to get back the input DOM with jquery autocomple
-
- _renderItem:
- OpenEyes.UI.Search.getElement().data('autocomplete')._renderItem = function (ul, item) {
+    _renderItem:
+    OpenEyes.UI.Search.getElement().data('autocomplete')._renderItem = function (ul, item) {
         return $("<li></li>")
           .data("item.autocomplete", item)
           .append("<a><strong>" + item.first_name + " " + item.last_name + "</strong></a>")
           .appendTo(ul);
     };
 
- select:
- OpenEyes.UI.Search.getElement().autocomplete('option', 'select', function(event, ui){
+    select:
+    OpenEyes.UI.Search.getElement().autocomplete('option', 'select', function(event, ui){
         alert(ui.item.id);   
     });
 
- close:
- OpenEyes.UI.Search.getElement().autocomplete('option', 'close', function(event, ui){
+    close:
+    OpenEyes.UI.Search.getElement().autocomplete('option', 'close', function(event, ui){
         console.log(event, ui);
     });
 
-
-
- *
- *
+    
+    
+ * 
+ * 
  */
 
 (function (exports) {
-    /**
-     * OpenEyes UI namespace
-     * @namespace OpenEyes.UI
-     * @memberOf OpenEyes
-     */
-
+  /**
+   * OpenEyes UI namespace
+   * @namespace OpenEyes.UI
+   * @memberOf OpenEyes
+   */
+  
     var autocompleteSource = '/patient/ajaxSearch';
-
-    var renderItem = function (ul, item) {
-        ul.addClass("z-index-1000 patient-ajax-list");
-        return $("<li></li>")
-          .data("item.autocomplete", item)
-          .append("<a><strong>" + item.first_name + " " + item.last_name + "</strong>" + " (" + item.age + ")" + "<span class='icon icon-alert icon-alert-" + item.gender.toLowerCase() + "_trans'>Male</span>" + "<div class='nhs-number'>" + item.nhsnum + "</div><br>Hospital No.: " + item.hos_num + "<br>Date of birth: " + item.dob + "</a>")
-          .appendTo(ul);
-    };
-
 
     function initAutocomplete() {
 
@@ -100,11 +91,17 @@
                 } else {
                     $('.no-result-patients').slideUp();
                 }
-            }
+            },
         });
 
         if (this.$searchInput !== 'undefined' && this.$searchInput.length) {
-            this.$searchInput.data("autocomplete")._renderItem = renderItem;
+            this.$searchInput.data("autocomplete")._renderItem = function (ul, item) {
+                ul.addClass("z-index-1000 patient-ajax-list");
+                return $("<li></li>")
+                    .data("item.autocomplete", item)
+                    .append("<a><strong>" + item.first_name + " " + item.last_name + "</strong>" + " (" + item.age + ")" + "<span class='icon icon-alert icon-alert-" + item.gender.toLowerCase() + "_trans'>Male</span>" + "<div class='nhs-number'>" + item.nhsnum + "</div><br>Hospital No.: " + item.hos_num + "<br>Date of birth: " + item.dob + "</a>")
+                    .appendTo(ul);
+            };
         }
     }
 
@@ -117,11 +114,9 @@
         setSourceURL: function(url){
             autocompleteSource = url;
         },
-        setRenderItem: function(renderItem){
-            this.$searchInput.data("autocomplete")._renderItem = renderItem;
-        },
+
         getElement: function(){
             return this.$searchInput;
         }
-    };
+  };
 }(this.OpenEyes.UI));
