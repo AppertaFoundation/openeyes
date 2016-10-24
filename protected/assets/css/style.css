@@ -5387,7 +5387,7 @@ tfoot.pagination-container .pagination-view-all {
 @media screen {
   /* line 118, ../sass/openeyes/components/panels/_patient.scss */
   .stuck .panel.patient .patient-summary-anchor {
-    display: none;
+  /*    display: none; - Removed OE-6252 */
   }
 }
 /* line 123, ../sass/openeyes/components/panels/_patient.scss */
