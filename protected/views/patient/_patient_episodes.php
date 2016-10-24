@@ -16,6 +16,12 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+?>
+<?php
+if ( $this->getApp()->internalReferralIntegration ) {
+    $this->renderPartial('application.modules.Internalreferral.views.default.patient._patient_summary_link');
+}
+
 $this->renderPartial('_patient_all_episodes', array(
                         'episodes' => $episodes,
                         'ordered_episodes' => $ordered_episodes,

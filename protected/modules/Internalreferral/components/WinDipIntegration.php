@@ -166,6 +166,27 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
         $request = $this->renderPartial($this->request_template, $data);
         return $this->cleanRequest($request);
     }
+    
+    /**
+     * Generate a request XML for document list
+     * @return type
+     */
+    public function generateDocumentListRequest()
+    {
+        $this->request_template = 'Internalreferral.views.windipintegration.document_list_xml_test';
+        $when = new \DateTime();
+        
+        $data['timestamp'] = $when->format('Y-m-d H:i:s');
+        $data['message_id'] = $this->getMessageId(new \Event());
+        $data['application_id'] = $this->application_id;
+        $data['event_date'] = $when->format('Y-m-d');
+        $data['event_time'] = $when->format('H:i:s');
+        
+        $data['authentication_hash'] = $this->generateAuthenticationHash($data);
+
+        $request = $this->renderPartial($this->request_template, $data);
+        return $this->cleanRequest($request);
+    }
 
     /**
      * Generate the external application URL for a new WinDip referral event.
@@ -177,6 +198,16 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
     public function generateUrlForNewEvent(\Event $event)
     {
         $xml = $this->generateXmlRequest($event);
+        return $this->launch_uri . '?XML=' . urlencode($xml);
+    }
+    
+    /**
+     * Generate the external application URL for document list
+     * @return string
+     */
+    public function generateUrlForDocumentList()
+    {
+        $xml = $this->generateDocumentListRequest();
         return $this->launch_uri . '?XML=' . urlencode($xml);
     }
 
