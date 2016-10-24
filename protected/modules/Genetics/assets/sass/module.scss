@@ -2,3 +2,14 @@
 @import "openeyes/module";
 @import "openeyes/components/admin/sidebar";
 
+
+#relationships_list {
+  list-style: none;
+  margin: 0;
+  padding-top: 15px;
+  li {
+    select {
+      width: auto;
+    }
+  }
+}

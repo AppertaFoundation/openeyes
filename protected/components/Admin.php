@@ -425,10 +425,14 @@ class Admin
             $this->displayOrder = 1;
         }
 
-        $this->assetManager->registerScriptFile('js/oeadmin/list.js');
+        $this->assetManager->registerScriptFile('/js/oeadmin/list.js');
         $this->audit('list');
         $this->pagination = $this->getSearch()->initPagination();
-        $this->render($this->listTemplate, array('admin' => $this, 'displayOrder' => $this->displayOrder, 'buttons' => $buttons));
+        if($this->request->isAjaxRequest){
+            $this->ajaxResponse();
+        } else {
+            $this->render($this->listTemplate, array('admin' => $this, 'displayOrder' => $this->displayOrder, 'buttons' => $buttons));
+        }
     }
 
     /**
@@ -437,9 +441,9 @@ class Admin
      * @throws CHttpException
      * @throws Exception
      */
-    public function editModel()
+    public function editModel($redirect = true)
     {
-        $this->assetManager->registerScriptFile('js/oeadmin/edit.js');
+        $this->assetManager->registerScriptFile('/js/oeadmin/edit.js');
         $errors = array();
         if (Yii::app()->request->isPostRequest) {
             $post = Yii::app()->request->getPost($this->modelName);
@@ -458,16 +462,14 @@ class Admin
                 $errors = $this->model->getErrors();
             } else {
                 if (!$this->model->save()) {
-                    throw new CHttpException(500,
-                        'Unable to save '.$this->modelName.': '.print_r($this->model->getErrors(), true));
+                    throw new CHttpException(500, 'Unable to save '.$this->modelName.': '.print_r($this->model->getErrors(), true));
                 }
-
                 $this->audit('edit', $this->model->id);
-                $return = '/'.$this->controller->uniqueid.'/list';
-                if (Yii::app()->request->getPost('returnUriEdit')) {
-                    $return = urldecode(Yii::app()->request->getPost('returnUriEdit'));
+                if($redirect){
+                    $this->redirect();
+                } else {
+                    return;
                 }
-                $this->controller->redirect($return);
             }
         } else {
             $defaults = Yii::app()->request->getParam('default', array());
@@ -726,9 +728,7 @@ class Admin
             throw new CException('Relation does not exist');
         }
 
-        $relationDefinition = $relations[$relation];
-
-        return $relationDefinition;
+        return $relations[$relation];
     }
 
     /**
@@ -743,8 +743,45 @@ class Admin
             unset($queryArray['returnUri']);
             $split[1] = urlencode(http_build_query($queryArray));
         }
-        $returnUri = implode('?', $split);
 
-        return $returnUri;
+        return implode('?', $split);
+    }
+
+    /**
+     * Respond with JSON for ajax requests
+     */
+    protected function ajaxResponse()
+    {
+        $results = $this->search->retrieveResults();
+        $jsonArray = array();
+        foreach ($results as $result) {
+            $resultJson = array();
+            foreach ($this->getListFields() as $listItem) {
+                $resultJson[$listItem] = $this->attributeValue($result, $listItem);
+            }
+            $jsonArray[] = $resultJson;
+        }
+
+        header('Content-type: application/json');
+        echo CJSON::encode($jsonArray);
+
+        foreach (Yii::app()->log->routes as $route) {
+            if ($route instanceof CWebLogRoute) {
+                $route->enabled = false; // disable any weblogroutes
+            }
+        }
+        Yii::app()->end();
+    }
+
+    /**
+     * Redirect to somewhere
+     */
+    public function redirect()
+    {
+        $return = '/' . $this->controller->uniqueid . '/list';
+        if (Yii::app()->request->getPost('returnUriEdit')) {
+            $return = urldecode(Yii::app()->request->getPost('returnUriEdit'));
+        }
+        $this->controller->redirect($return);
     }
 }

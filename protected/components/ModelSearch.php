@@ -285,6 +285,9 @@ class ModelSearch
         return $this->model->findAll($this->criteria);
     }
 
+    /**
+     * Add a filter for active
+     */
     public function addActiveFilter()
     {
         $this->addSearchItem('active', array('type' => 'boolean'));

@@ -67,6 +67,15 @@
   
     var autocompleteSource = '/patient/ajaxSearch';
 
+    var renderItem = function (ul, item) {
+        ul.addClass("z-index-1000 patient-ajax-list");
+        return $("<li></li>")
+          .data("item.autocomplete", item)
+          .append("<a><strong>" + item.first_name + " " + item.last_name + "</strong>" + " (" + item.age + ")" + "<span class='icon icon-alert icon-alert-" + item.gender.toLowerCase() + "_trans'>Male</span>" + "<div class='nhs-number'>" + item.nhsnum + "</div><br>Hospital No.: " + item.hos_num + "<br>Date of birth: " + item.dob + "</a>")
+          .appendTo(ul);
+    };
+
+
     function initAutocomplete() {
 
         this.$searchInput.autocomplete({
@@ -75,7 +84,7 @@
             source: function (request, response) {
                 $.getJSON(autocompleteSource, {
                     term: request.term,
-                    ajax: 'ajax',
+                    ajax: 'ajax'
                 }, response);
             },
             search: function () {
@@ -91,17 +100,11 @@
                 } else {
                     $('.no-result-patients').slideUp();
                 }
-            },
+            }
         });
 
         if (this.$searchInput !== 'undefined' && this.$searchInput.length) {
-            this.$searchInput.data("autocomplete")._renderItem = function (ul, item) {
-                ul.addClass("z-index-1000 patient-ajax-list");
-                return $("<li></li>")
-                    .data("item.autocomplete", item)
-                    .append("<a><strong>" + item.first_name + " " + item.last_name + "</strong>" + " (" + item.age + ")" + "<span class='icon icon-alert icon-alert-" + item.gender.toLowerCase() + "_trans'>Male</span>" + "<div class='nhs-number'>" + item.nhsnum + "</div><br>Hospital No.: " + item.hos_num + "<br>Date of birth: " + item.dob + "</a>")
-                    .appendTo(ul);
-            };
+            this.$searchInput.data("autocomplete")._renderItem = renderItem;
         }
     }
 
@@ -114,7 +117,9 @@
         setSourceURL: function(url){
             autocompleteSource = url;
         },
-
+        setRenderItem: function(renderItem){
+            this.$searchInput.data("autocomplete")._renderItem = renderItem;
+        },
         getElement: function(){
             return this.$searchInput;
         }

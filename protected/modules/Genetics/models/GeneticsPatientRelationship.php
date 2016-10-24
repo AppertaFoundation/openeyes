@@ -18,18 +18,16 @@
  */
 
 /**
- * This is the model class for table "patient_pedigree".
+ * This is the model class for table "genetics_patient_relationship".
  *
- * The followings are the available columns in table 'patient_pedigree':
+ * The followings are the available columns in table 'genetics_patient_relationship':
  *
  * @property int $id
  *
  * The followings are the available model relations:
  */
-class GeneticsPatient extends BaseActiveRecord
+class GeneticsPatientRelationship extends BaseActiveRecord
 {
-    protected $auto_update_relations = true;
-
     /**
      * Returns the static model of the specified AR class.
      *
@@ -45,7 +43,7 @@ class GeneticsPatient extends BaseActiveRecord
      */
     public function tableName()
     {
-        return 'genetics_patient';
+        return 'genetics_patient_relationship';
     }
 
     /**
@@ -56,7 +54,7 @@ class GeneticsPatient extends BaseActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('patient_id, comments, gender_id, is_deceased, relationships', 'safe'),
+            array('patient_id, related_to_id, relationship_id', 'safe'),
         );
     }
 
@@ -66,9 +64,9 @@ class GeneticsPatient extends BaseActiveRecord
     public function relations()
     {
         return array(
-            'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
-            'gender' => array(self::BELONGS_TO, 'Gender', 'gender_id'),
-            'relationships' => array(self::HAS_MANY, 'GeneticsPatientRelationship', 'patient_id'),
+            'patient' => array(self::BELONGS_TO, 'GeneticsPatient', 'patient_id'),
+            'relation' => array(self::BELONGS_TO, 'GeneticsPatient', 'related_to_id'),
+            'relationship' => array(self::BELONGS_TO, 'GeneticsRelationship', 'relationship_id')
         );
     }
 
@@ -77,11 +75,6 @@ class GeneticsPatient extends BaseActiveRecord
      */
     public function attributeLabels()
     {
-        return array(
-            'id' => 'ID',
-            'patient_id' => 'Patient',
-            'gender_id' => 'Karyotypic Sex',
-            'is_deceased' => 'Is Deceased'
-        );
+        return array();
     }
 }

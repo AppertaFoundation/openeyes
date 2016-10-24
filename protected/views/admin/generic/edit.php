@@ -96,8 +96,11 @@ $assetManager = Yii::app()->getAssetManager();
                             'admin' => $subAdmin,
                             'uniqueid' => $type['action'],
                         ));
-                        break;
                     }
+                    break;
+                case 'PatientLookup':
+                    $this->renderPartial('//admin//generic/patientLookup', array('model' => $admin->getModel()));
+                    break;
             }
         } else {
             switch ($type) {

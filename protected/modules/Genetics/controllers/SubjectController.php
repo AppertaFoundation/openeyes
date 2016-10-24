@@ -31,7 +31,30 @@ class SubjectController extends BaseModuleController
     }
 
     /**
-     * @param bool|int $id
+     * @param CAction $action
+     * @return bool
+     */
+    public function beforeAction($action)
+    {
+        if($action->id === "edit") {
+            $relations = CHtml::listData(GeneticsRelationship::model()->findAll(), 'id', 'relationship');
+            $relationsForJson = array();
+            foreach ($relations as $key => $relation) {
+                $relationsForJson[] = array(
+                    'id' => $key,
+                    'name' => $relation,
+                );
+            }
+            $this->jsVars['geneticsRelationships'] = $relationsForJson;
+        }
+        return parent::beforeAction($action);
+    }
+
+    /**
+     * @param bool $id
+     *
+     * @throws CHttpException
+     * @throws Exception
      */
     public function actionEdit($id = false)
     {
@@ -42,11 +65,8 @@ class SubjectController extends BaseModuleController
         $admin->setModelDisplayName('Patient');
         $admin->setEditFields(array(
             'patient_id' => array(
-                'widget' => 'DropDownList',
+                'widget' => 'PatientLookup',
                 'options' => CHtml::listData(Patient::model()->findAll(), 'id', 'fullName'),
-                'htmlOptions' => null,
-                'hidden' => false,
-                'layoutColumns' => null,
             ),
             'gender_id' => array(
                 'widget' => 'DropDownList',
@@ -57,8 +77,24 @@ class SubjectController extends BaseModuleController
             ),
             'is_deceased' => 'checkbox',
             'comments' => 'textarea',
+            'family' => array(
+                'widget' => 'CustomView',
+                'viewName' => 'relationships',
+                'viewArguments' => array(
+                    'model' => $admin->getModel(),
+                ),
+            )
         ));
-        $admin->editModel();
+        $admin->editModel(false);
+        if(Yii::app()->request->isPostRequest){
+            foreach ($admin->getModel()->relationships as $relationship) {
+                if(isset(Yii::app()->request->getPost('GeneticsPatient')['relationships'])){
+                    $relationship->relationship_id = Yii::app()->request->getPost('GeneticsPatient')['relationships'][$relationship->related_to_id]['relationship_id'];
+                    $relationship->save();
+                }
+            }
+            $admin->redirect();
+        }
     }
 
     /**
@@ -71,6 +107,7 @@ class SubjectController extends BaseModuleController
             'id',
             'patient.fullName',
         ));
+        $admin->getSearch()->addSearchItem('patient.contact.first_name', array('type' => 'compare', 'compare_to' => array('patient.contact.last_name')));
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
         $admin->listModel();
     }

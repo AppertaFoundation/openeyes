@@ -16,10 +16,29 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-$(document).ready(function(){
-    var $genericLists = $('#generic-admin-list .sortable, #generic-admin-sublist .sortable');
-    OpenEyes.Admin.cacheList($genericLists);
-    $genericLists.sortable({
-        stop: OpenEyes.Admin.saveSorted
-    });
+$(document).ready(function () {
+  var $genericLists = $('#generic-admin-list .sortable, #generic-admin-sublist .sortable');
+  OpenEyes.Admin.cacheList($genericLists);
+  $genericLists.sortable({
+    stop: OpenEyes.Admin.saveSorted
+  });
+
+  $('table').on('click', 'tr.clickable', function (e) {
+
+    var target = $(e.target);
+
+    // If the user clicked on an input element, or if this cell contains an input
+    // element then do nothing.
+    if (target.is(':input') || (target.is('td') && target.find('input').length)) {
+      return;
+    }
+
+    var uri = $(this).data('uri');
+
+    if (uri) {
+      var url = uri.split('/');
+      url.unshift(baseUrl);
+      window.location.href = url.join('/');
+    }
+  });
 });

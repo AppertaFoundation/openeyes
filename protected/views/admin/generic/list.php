@@ -82,7 +82,7 @@ if (!isset($uniqueid)) {
                 <?php
                 foreach ($admin->getSearch()->retrieveResults() as $i => $row) { ?>
                     <tr class="clickable" data-id="<?php echo $row->id ?>"
-                        data-uri="/<?php echo $uniqueid ?>/edit/<?php echo $row->id ?>?returnUri=<?= $returnUri ?>">
+                        data-uri="<?php echo $uniqueid ?>/edit/<?php echo $row->id ?>?returnUri=<?= $returnUri ?>">
                         <td>
                             <input type="checkbox" name="<?php echo $admin->getModelName(); ?>[id][]" value="<?php echo $row->id ?>"/>
                         </td>

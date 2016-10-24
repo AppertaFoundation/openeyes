@@ -28,3 +28,14 @@
     display: none;
   }
 }
+
+/* line 6, ../sass/module.scss */
+#relationships_list {
+  list-style: none;
+  margin: 0;
+  padding-top: 15px;
+}
+/* line 11, ../sass/module.scss */
+#relationships_list li select {
+  width: auto;
+}
