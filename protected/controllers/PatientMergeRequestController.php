@@ -320,7 +320,7 @@ class PatientMergeRequestController extends BaseController
                     $mergeRequest->status = $mergeRequest::STATUS_MERGED;
                     $mergeRequest->merge_json = json_encode(array('log' => $mergeHandler->getLog()));
                     $mergeRequest->save();
-                    Audit::add('Patient Merge', $msg);
+                    Audit::add('Patient Merge', 'Patient Merge Request successfully done.', $msg);
                     $this->redirect(array('log', 'id' => $mergeRequest->id));
                 } else {
                     $msg = 'Merge Request '.$mergeRequest->secondaryPatient->hos_num.' INTO '.$mergeRequest->primaryPatient->hos_num.' FAILED.';
@@ -356,7 +356,7 @@ class PatientMergeRequestController extends BaseController
                 $request->deleted = 1;
 
                 if ($request->save()) {
-                    Audit::add('Patient Merge', 'Patient Merge Request flagged as deleted. id: '.$request->id);
+                    Audit::add('Patient Merge', 'Patient Merge Request flagged as deleted.', "Patient merge request id:{$request->id} deleted.");
                 } else {
                     throw new Exception('Unable to save Patient Merge Request: '.print_r($request->getErrors(), true));
                 }
