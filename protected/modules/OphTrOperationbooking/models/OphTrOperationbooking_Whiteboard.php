@@ -190,9 +190,9 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $blockers = $risks->mostRecentCheckedAlpha($patient->id);
         if ($blockers) {
             if ($blockers->alphablocker === '2') {
-                return 'No (' . $blockers->event->event_date . ')';
+                return 'No (' . Helper::convertMySQL2NHS($blockers->event->event_date) . ')';
             } else {
-                return 'Yes - ' . $blockers->alpha_blocker_name . ' (' . $blockers->event->event_date . ')';
+                return 'Yes - ' . $blockers->alpha_blocker_name . ' (' . Helper::convertMySQL2NHS($blockers->event->event_date) . ')';
             }
         } else {
             return 'Not Checked';
@@ -210,9 +210,9 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $anticoag = $risks->mostRecentCheckedAnticoag($patient->id);
         if ($anticoag) {
             if ($anticoag->anticoagulant === '2') {
-                return 'No (' . $anticoag->event->event_date . ')';
+                return 'No (' . Helper::convertMySQL2NHS($anticoag->event->event_date) . ')';
             } else {
-                return 'Yes - ' . $anticoag->anticoagulant_name . ' (' . $anticoag->event->event_date . ')';
+                return 'Yes - ' . $anticoag->anticoagulant_name . ' (' . Helper::convertMySQL2NHS($anticoag->event->event_date) . ')';
             }
         } else {
             return 'Not Checked';
