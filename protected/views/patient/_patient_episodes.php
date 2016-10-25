@@ -18,7 +18,7 @@
  */
 ?>
 <?php
-if ( $this->getApp()->internalReferralIntegration ) {
+if ( isset($this->getApp()->modules['Internalreferral']) ) {
     $this->renderPartial('application.modules.Internalreferral.views.default.patient._patient_summary_link');
 }
 
