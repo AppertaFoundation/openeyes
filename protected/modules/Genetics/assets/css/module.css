@@ -36,6 +36,10 @@
   padding-top: 15px;
 }
 /* line 11, ../sass/module.scss */
+#relationships_list li .fa {
+  cursor: pointer;
+}
+/* line 14, ../sass/module.scss */
 #relationships_list li select {
   width: auto;
 }

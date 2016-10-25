@@ -47,6 +47,8 @@ class SubjectController extends BaseModuleController
             }
             $this->jsVars['geneticsRelationships'] = $relationsForJson;
         }
+        Yii::app()->assetManager->registerCssFile('/components/font-awesome/css/font-awesome.css', null, 10);
+
         return parent::beforeAction($action);
     }
 
@@ -62,7 +64,7 @@ class SubjectController extends BaseModuleController
         if ($id) {
             $admin->setModelId($id);
         }
-        $admin->setModelDisplayName('Patient');
+        $admin->setModelDisplayName('Genetics Subject');
         $admin->setEditFields(array(
             'patient_id' => array(
                 'widget' => 'PatientLookup',
@@ -87,10 +89,13 @@ class SubjectController extends BaseModuleController
         ));
         $admin->editModel(false);
         if(Yii::app()->request->isPostRequest){
-            foreach ($admin->getModel()->relationships as $relationship) {
-                if(isset(Yii::app()->request->getPost('GeneticsPatient')['relationships'])){
-                    $relationship->relationship_id = Yii::app()->request->getPost('GeneticsPatient')['relationships'][$relationship->related_to_id]['relationship_id'];
-                    $relationship->save();
+            $relationshipPost = Yii::app()->request->getPost('GeneticsPatient', array());
+            if(isset($relationshipPost['relationships'])){
+                foreach ($admin->getModel()->relationships as $relationship) {
+                    if(array_key_exists($relationship->related_to_id, $relationshipPost['relationships'])){
+                        $relationship->relationship_id = $relationshipPost['relationships'][$relationship->related_to_id]['relationship_id'];
+                        $relationship->save();
+                    }
                 }
             }
             $admin->redirect();

@@ -11,9 +11,14 @@ this.OpenEyes.Genetics = this.OpenEyes.Genetics || {};
     possibleRelationships,
     existingRelationships;
 
+  Relationships.remove = function(event) {
+    $(event.target).closest('li').remove();
+  };
+
   Relationships.init = function (relationsList, existingList) {
     possibleRelationships = relationsList;
     existingRelationships = existingList;
+    $('.genetics_relationship_remove').on('click', Relationships.remove);
   };
 
   Relationships.newRelationshipForm = function(item) {
