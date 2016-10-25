@@ -97,6 +97,7 @@ class Address extends BaseActiveRecordVersioned
             'county' => 'County',
             'country_id' => 'Country',
             'email' => 'Email',
+            'address_type_id' => 'Address Type',
         );
     }
 

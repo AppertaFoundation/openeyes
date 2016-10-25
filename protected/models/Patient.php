@@ -182,6 +182,9 @@ class Patient extends BaseActiveRecordVersioned
             'hos_num' => 'Hospital Number',
             'nhs_num' => 'NHS Number',
             'deleted' => 'Is Deleted',
+            'nhs_num_status_id' => 'NHS Number Status',
+            'gp_id' => 'General Practitioner',
+            'practice_id' => 'Practice',
         );
     }
 

@@ -40,7 +40,7 @@ class PatientController extends BaseController
     {
         return array(
             array('allow',
-                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent'),
+                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'create'),
                 'users' => array('@'),
             ),
             array('allow',
@@ -1440,7 +1440,6 @@ class PatientController extends BaseController
             }
         }
     }
-
     public function renderModulePartials($area)
     {
         if (isset(Yii::app()->params['module_partials'][$area])) {
@@ -1458,4 +1457,99 @@ class PatientController extends BaseController
             }
         }
     }
+    
+    /**
+     * Creates a new model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     */
+    public function actionCreate()
+    {
+        Yii::app()->assetManager->registerScriptFile('js/patient.js');
+        //Don't render patient summary box on top as we have no selected patient
+        $this->renderPatientPanel = false;
+       
+        $patient = new Patient;
+        $contact = new Contact;
+        $address = new Address;
+        
+        $this->performAjaxValidation($patient);
+        
+        if(isset($_POST['Patient']))
+        {
+            $patient->attributes = $_POST['Patient'];
+            if($patient->save()){
+                $this->redirect(array('view','id' => $patient->id));
+            }
+        }
+
+        $nhs_num_statuses = CHtml::listData( NhsNumberVerificationStatus::model()->findAll(), 'id', 'description');
+        $countries = CHtml::listData( Country::model()->findAll(), 'id', 'name');
+        $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name');
+        
+        $general_practitioners = CHtml::listData(Gp::model()->findAll(), 'id', 'correspondenceName');
+        
+        $practice_models = Practice::model()->findAll();
+        foreach($practice_models as $practice_model){
+            if ($practice_model->contact->address){
+                $practices[$practice_model->contact->address->id] = $practice_model->contact->address->letterLine;
+            }
+        }
+
+        $genders = CHtml::listData(Gender::model()->findAll(), 'name', 'name');
+        $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
+        
+        $this->render('create',array(
+                        'patient' => $patient,
+                        'contact' => $contact,
+                        'nhs_num_statuses' => $nhs_num_statuses,
+                        'address' => $address,
+                        'address_type_ids' => $address_type_ids,
+                        'countries' => $countries,
+                        'general_practitioners' => $general_practitioners,
+                        'practices' => $practices,
+                        'genders' => $genders,
+                        'ethnic_groups' => $ethnic_groups,
+		));
+	
+   }
+   
+    /**
+     * Updates a particular model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id the ID of the model to be updated
+     */
+    public function actionUpdate($id)
+    {
+        $model = $this->loadModel($id);
+        $this->performAjaxValidation($model);
+        
+        if(isset($_POST['Patient']))
+        {
+            $model->attributes = $_POST['Patient'];
+            
+            if($model->save()){
+                $this->redirect(array('view','id'=>$model->id));    
+            }
+            
+        }
+        $this->render('update',array(
+                        'model' => $model,
+                ));
+    }
+    
+    /**
+     * Deletes a particular model.
+     * If deletion is successful, the browser will be redirected to the 'admin' page.
+     * @param integer $id the ID of the model to be deleted
+     */
+    public function actionDelete($id)
+    {
+        $this->loadModel($id)->delete();
+        
+        // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+        if(!isset($_GET['ajax'])){
+            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('site'));
+        }
+    }
+    
 }
