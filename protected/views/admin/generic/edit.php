@@ -107,6 +107,9 @@ $assetManager = Yii::app()->getAssetManager();
                 case 'checkbox':
                     echo $form->checkBox($admin->getModel(), $field, $autoComplete);
                     break;
+                case 'date':
+                    echo $form->datePicker($admin->getModel(), $field, $autoComplete, array('null' => true));
+                    break;
                 case 'label':
                     echo $form->textField($admin->getModel(), $field, array('readonly' => true));
                     break;

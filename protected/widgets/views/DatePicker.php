@@ -18,21 +18,21 @@
  */
 ?>
 
-<?php if (!@$htmlOptions['nowrapper']) {?>
-	<div class="row field-row"<?php if (@$htmlOptions['hidden']) {?> style="display: none;"<?php }?>>
-		<?php unset($htmlOptions['hidden'])?>
+<?php if (!@$htmlOptions['nowrapper']) { ?>
+<div class="row field-row"<?php if (@$htmlOptions['hidden']) { ?> style="display: none;"<?php } ?>>
+    <?php unset($htmlOptions['hidden']) ?>
 
-		<div class="large-<?php echo $layoutColumns['label'];?> column">
-			<label for="<?php echo CHtml::modelName($element).'_'.$field.'_0';?>">
-				<?php echo CHtml::encode($element->getAttributeLabel($field))?>:
-			</label>
-		</div>
-		<div class="large-<?php echo $layoutColumns['field'];?> column end">
-<?php }?>
+    <div class="large-<?php echo $layoutColumns['label']; ?> column">
+        <label for="<?php echo CHtml::modelName($element) . '_' . $field . '_0'; ?>">
+            <?php echo CHtml::encode($element->getAttributeLabel($field)) ?>:
+        </label>
+    </div>
+    <div class="large-<?php echo $layoutColumns['field']; ?> column end">
+<?php } ?>
 
-	<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+    <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
         'name' => $name,
-        'id' => CHtml::modelName($element).'_'.$field.'_0',
+        'id' => CHtml::modelName($element) . '_' . $field . '_0',
         // additional javascript options for the date picker plugin
         'options' => array_merge($options, array(
             'showAnim' => 'fold',
@@ -42,7 +42,7 @@
         'htmlOptions' => $htmlOptions,
     )); ?>
 
-<?php if (!@$htmlOptions['nowrapper']) {?>
-		</div>
-	</div>
-<?php }?>
+<?php if (!@$htmlOptions['nowrapper']) { ?>
+    </div>
+</div>
+<?php } ?>
