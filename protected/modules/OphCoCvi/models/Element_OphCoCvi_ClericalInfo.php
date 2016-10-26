@@ -69,10 +69,10 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
     /**
      * Pass English as default Preferred Language id
      */
-
     public function init()
     {
-        $this->preferred_language_id = $this->preferred_language_id ? preferred_language_id : 12;
+        $preferred_language_id= \Language::model()->findByAttributes(array('name'=>'English'));
+        $this->preferred_language_id = $this->preferred_language_id ? $this->preferred_language_id : $preferred_language_id;
     }
 
     /**
