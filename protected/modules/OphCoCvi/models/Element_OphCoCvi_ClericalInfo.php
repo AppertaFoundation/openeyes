@@ -67,12 +67,12 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
     }
 
     /**
-     * Pass English as default Preferred Language
+     * Pass English as default Preferred Language id
      */
-
     public function init()
     {
-        $this->preferred_language_id = $this->preferred_language_id ? preferred_language_id : 12;
+        $preferred_language_id= \Language::model()->findByAttributes(array('name'=>'English'));
+        $this->preferred_language_id = $this->preferred_language_id ? $this->preferred_language_id : $preferred_language_id;
     }
 
     /**
@@ -230,9 +230,10 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
                 $isFactor = 'N';
             }
 
+            $comments = $answer ? $answer->comments : '';
             $label = $factor->name;
             if ($factor->require_comments) {
-                $label .= "\n{$factor->comments_label}";
+                $label .= "\n{$factor->comments_label}: {$comments}";
             }
             $data[] = array($label, $isFactor);
         }

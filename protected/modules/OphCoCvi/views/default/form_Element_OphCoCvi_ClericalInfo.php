@@ -14,6 +14,7 @@
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
 ?>
 <?php
 if ($this->checkClericalEditAccess()) {

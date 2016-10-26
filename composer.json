@@ -25,7 +25,8 @@
     "phpmd/phpmd": "@stable",
     "squizlabs/php_codesniffer": "2.*",
     "sebastian/phpcpd": "*",
-    "phpdocumentor/phpdocumentor": "2.*"
+    "phpdocumentor/phpdocumentor": "2.*",
+    "guzzle/guzzle": "^3.9.3"
     
   },
   "config": {
