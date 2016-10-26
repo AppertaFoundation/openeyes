@@ -76,10 +76,8 @@
 <div id="comments">
 	<span class="field-info">
 	<?php
-	// If the Device is a 700 Series then don't show the comments box, unless there is data in there.
-	if ($this->getAutoBiometryEventData($this->event->id)[0]->is700() && !$element->{'comments'}) {
-	} else {
-		if ($this->is_auto) {
+	if ($this->is_auto) {
+		if (!$this->getAutoBiometryEventData($this->event->id)[0]->is700() || $element->{'comments'}) {
 			echo '<b>Device Comments:</b>';
 			if (!$element->{'comments'}) {
 				echo "  <i>Empty</i>";
@@ -90,6 +88,7 @@
 				array('label' => 4, 'field' => 200));
 		}
 	}
+
     ?>
 	</span>
 </div>
