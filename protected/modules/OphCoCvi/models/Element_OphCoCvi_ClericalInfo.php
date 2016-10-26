@@ -67,7 +67,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
     }
 
     /**
-     * Pass English as default Preferred Language
+     * Pass English as default Preferred Language id
      */
 
     public function init()
@@ -230,9 +230,10 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
                 $isFactor = 'N';
             }
 
+            $comments = $answer ? $answer->comments : '';
             $label = $factor->name;
             if ($factor->require_comments) {
-                $label .= "\n{$factor->comments_label}";
+                $label .= "\n{$factor->comments_label}: {$comments}";
             }
             $data[] = array($label, $isFactor);
         }
