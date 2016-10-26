@@ -128,8 +128,6 @@ class PatientMergeRequestController extends BaseController
             // we do not allow the same patient id in the list multiple times
             $criteria = new CDbCriteria();
 
-            //$criteria->condition = '((primary_id=:primary_id OR primary_id=:secondary_id OR secondary_id=:secondary_id OR secondary_id=:primary_id) AND ( deleted = 0))';
-
             // as secondary records will be deleted the numbers cannot be in the secondry columns
             $criteria->condition = '(secondary_id=:secondary_id OR secondary_id=:primary_id) ';
 
@@ -333,9 +331,6 @@ class PatientMergeRequestController extends BaseController
                 }
             }
         }
-
-        $primary = Patient::model()->findByPk($mergeRequest->primary_id);
-        $secondary = Patient::model()->findByPk($mergeRequest->secondary_id);
 
         $this->render('//patientmergerequest/merge', array(
             'model' => $mergeRequest,
