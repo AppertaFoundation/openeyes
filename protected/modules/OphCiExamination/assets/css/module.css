@@ -110,19 +110,19 @@
   padding-top: 140px;
 }
 
-/* line 18, ../sass/components/elements/_visual-acuity.scss */
+/* line 19, ../sass/components/elements/_visual-acuity.scss */
 .OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .cvi-alert, .OEModule_OphCiExamination_models_Element_OphCiExamination_NearVisualAcuity .cvi-alert {
   margin: 6px 0;
 }
-/* line 21, ../sass/components/elements/_visual-acuity.scss */
+/* line 22, ../sass/components/elements/_visual-acuity.scss */
 .OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .cvi-alert .create-cvi, .OEModule_OphCiExamination_models_Element_OphCiExamination_NearVisualAcuity .cvi-alert .create-cvi {
   margin-right: 15px;
 }
-/* line 26, ../sass/components/elements/_visual-acuity.scss */
+/* line 27, ../sass/components/elements/_visual-acuity.scss */
 .OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .visual-acuity-reading select, .OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .near-visual-acuity-reading select, .OEModule_OphCiExamination_models_Element_OphCiExamination_NearVisualAcuity .visual-acuity-reading select, .OEModule_OphCiExamination_models_Element_OphCiExamination_NearVisualAcuity .near-visual-acuity-reading select {
   width: auto;
 }
-/* line 31, ../sass/components/elements/_visual-acuity.scss */
+/* line 32, ../sass/components/elements/_visual-acuity.scss */
 .OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .noReadings label, .OEModule_OphCiExamination_models_Element_OphCiExamination_NearVisualAcuity .noReadings label {
   display: inline-block;
   padding: 0 10px 0 0;

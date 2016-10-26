@@ -1,4 +1,4 @@
-/** OphCoInternalreferral module styles */
+<?php
 /**
  * OpenEyes
  *
@@ -16,12 +16,10 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-/* line 18, ../sass/components/_event.scss */
-.event .event-content {
-  border-color: #86cdff;
-  background-image: url('../img/watermark.png?1477320434');
-}
-/* line 22, ../sass/components/_event.scss */
-.event .event-title {
-  background-image: url('../img/medium.png?1477320434');
-}
+?>
+<section class="box patient-info internalreferral internalreferral-doclist">
+    <?php if ($component = $this->getApp()->internalReferralIntegration): ?>
+        <?php echo CHtml::link('View internal referrals',$component->generateUrlForDocumentList()); ?>
+        <span>e-WinDIP</span>
+    <?php endif; ?>
+</section>
