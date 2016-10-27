@@ -1,34 +1,74 @@
+<?php
+Yii::app()->getAssetManager()->registerScriptFile('js/PCRCalculation.js')
+?>
+
 <div class="element-eyes element-fields">
 <?php
 $criteria = new CDbCriteria();
 $criteria->condition = 'has_pcr_risk';
 $grades = \DoctorGrade::model()->findAll($criteria, array('order' => 'display_order'));
 $dropDowns = array(
-    'glaucoma' => array('NK' => 'Not Known', 'N' => 'No Glaucoma', 'Y' => 'Glaucoma present'),
-    'pxf' => array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
-    'diabetic' => array('NK' => 'Not Known', 'N' => 'No Diabetes', 'Y' => 'Diabetes present'),
-    'pupil_size' => array('Large' => 'Large', 'Medium' => 'Medium', 'Small' => 'Small'),
-    'no_fundal_view' => array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
-    'axial_length_group' => array('NK' => 'Not Known', 1 => '< 26', 2 => '> or = 26'),
-    'brunescent_white_cataract' => array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
-    'alpha_receptor_blocker' => array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
-    'doctor_grade_id' => CHtml::listData($grades, 'pcr_risk_value', 'grade'),
-    'can_lie_flat' => array('N' => 'No', 'Y' => 'Yes'),
+    'glaucoma' => array(
+        'options' => array('NK' => 'Not Known', 'N' => 'No Glaucoma', 'Y' => 'Glaucoma present'),
+        'class' => 'pcrrisk_glaucoma',
+    ),
+    'pxf' => array(
+        'options' => array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
+        'class' => 'pcrrisk_pxf_phako',
+    ),
+    'diabetic' => array(
+        'options' => array('NK' => 'Not Known', 'N' => 'No Diabetes', 'Y' => 'Diabetes present'),
+        'class' => 'pcrrisk_diabetic',
+    ),
+    'pupil_size' => array(
+        'options' => array('Large' => 'Large', 'Medium' => 'Medium', 'Small' => 'Small'),
+        'class' => 'pcrrisk_pupil_size',
+    ),
+    'no_fundal_view' => array(
+        'options' => array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
+        'class' => 'pcrrisk_no_fundal_view',
+    ),
+    'axial_length_group' => array(
+        'options' => array('NK' => 'Not Known', 1 => '< 26', 2 => '> or = 26'),
+        'class' => '',
+    ),
+    'brunescent_white_cataract' => array(
+        'options' => array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
+        'class' => 'pcrrisk_brunescent_white_cataract',
+    ),
+    'alpha_receptor_blocker' => array(
+        'options' => array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
+        'class' => '',
+    ),
+    'doctor_grade_id' => array(
+        'options' => CHtml::listData($grades, 'pcr_risk_value', 'grade'),
+        'class' => 'pcr_doctor_grade',
+    ),
+    'can_lie_flat' => array(
+        'options' => array('N' => 'No', 'Y' => 'Yes'),
+        'class' => '',
+    ),
 );
+echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'));
+
 foreach (array('right', 'left') as $side):
-    $opposite = ($side === 'right') ? 'left' : 'right'
-?>
-    <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')) ?>
-    <?php $activeClass = ($element->{'has'.ucfirst($side)}()) ? 'active' : 'inactive'; ?>
+    $opposite = ($side === 'right') ? 'left' : 'right';
+    $pcrRisk = new PcrRisk();
+    $activeClass = ($element->{'has'.ucfirst($side)}()) ? 'active' : 'inactive'; ?>
     <div class="element-eye <?=$side?>-eye column <?=$opposite?> side <?=$activeClass?>" data-side="<?=$side?>">
+        <?php
+        $pcr = $pcrRisk->getPCRData($this->event->episode->patient->id, $side, $element);
+        echo CHtml::hiddenField('age', $pcr['age_group']);
+        echo CHtml::hiddenField('gender', $pcr['gender']);
+        ?>
         <div class="active-form">
             <a href="#" class="icon-remove-side remove-side">Remove side</a>
             <?php foreach ($dropDowns as $key => $data):
                 echo $form->dropDownList(
                     $element,
                     $side.'_'.$key,
-                    $data,
-                    array(),
+                    $data['options'],
+                    array('class' => $data['class']),
                     false,
                     array('label' => 4, 'field' => 4)
                 );
@@ -63,4 +103,22 @@ foreach (array('right', 'left') as $side):
         </a>
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        //Map the elements
+        mapExaminationToPcr();
+        //Make the initial calculations
+        var $pcrRiskEl = $('section.Element_OphCiExamination_PcrRisk');
+        pcrCalculate($pcrRiskEl.find('.left-eye'), 'left');
+        pcrCalculate($pcrRiskEl.find('.right-eye'), 'right');
+
+        $(document.body).on('change', $pcrRiskEl.find('.left-eye'), function () {
+            pcrCalculate($pcrRiskEl.find('.left-eye'), 'left');
+        });
+
+        $(document.body).on('change', $pcrRiskEl.find('.right-eye'), function () {
+            pcrCalculate($pcrRiskEl.find('.right-eye'), 'right');
+        });
+    });
+</script>
 

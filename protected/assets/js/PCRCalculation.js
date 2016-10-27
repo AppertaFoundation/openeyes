@@ -1,22 +1,18 @@
-
-
-
 /**
  * Takes the element that has been changed and worked out which eye it should be altering in PCR risk
  *
  * @param ev
  * @returns {*|jQuery|HTMLElement}
  */
-function getPcrContainer(ev)
-{
-    var isRight = (ev.target.id.indexOf('right') > -1),
-        $container = $('#ophCiExaminationPCRRiskLeftEye');
+function getPcrContainer(ev) {
+  var isRight = (ev.target.id.indexOf('right') > -1),
+    $container = $('#ophCiExaminationPCRRiskLeftEye, section.Element_OphCiExamination_PcrRisk .left-eye');
 
-    if(isRight){
-        $container = $('#ophCiExaminationPCRRiskRightEye');
-    }
+  if (isRight) {
+    $container = $('#ophCiExaminationPCRRiskRightEye, section.Element_OphCiExamination_PcrRisk .right-eye');
+  }
 
-    return $container;
+  return $container;
 }
 
 /**
@@ -25,20 +21,19 @@ function getPcrContainer(ev)
  * @param ev
  * @param pcrEl
  */
-function setFundalView(ev, pcrEl)
-{
-    if (!pcrEl) {
-        pcrEl = ev.data;
-    }
+function setFundalView(ev, pcrEl) {
+  if (!pcrEl) {
+    pcrEl = ev.data;
+  }
 
-    var $container = getPcrContainer(ev);
-    if($(ev.target).find(':selected').data('value') === 'No view'){
-        $container.find(pcrEl).val('Y');
-    } else {
-        $container.find(pcrEl).val('N');
-    }
+  var $container = getPcrContainer(ev);
+  if ($(ev.target).find(':selected').data('value') === 'No view') {
+    $container.find(pcrEl).val('Y');
+  } else {
+    $container.find(pcrEl).val('N');
+  }
 
-    $(pcrEl).trigger('change');
+  $(pcrEl).trigger('change');
 }
 
 /**
@@ -47,17 +42,16 @@ function setFundalView(ev, pcrEl)
  * @param ev
  * @param pcrEl
  */
-function setDiabeticDisorder(ev, pcrEl)
-{
-    if (!pcrEl) {
-        pcrEl = ev.data;
-    }
+function setDiabeticDisorder(ev, pcrEl) {
+  if (!pcrEl) {
+    pcrEl = ev.data;
+  }
 
-    if($('input[name^="diabetic_diagnoses"]').length){
-        $(pcrEl).val('Y');
-    }
+  if ($('input[name^="diabetic_diagnoses"]').length) {
+    $(pcrEl).val('Y');
+  }
 
-    $(pcrEl).trigger('change');
+  $(pcrEl).trigger('change');
 }
 
 /**
@@ -66,17 +60,16 @@ function setDiabeticDisorder(ev, pcrEl)
  * @param ev
  * @param pcrEl
  */
-function setGlaucomaDisorder(ev, pcrEl)
-{
-    if (!pcrEl) {
-        pcrEl = ev.data;
-    }
+function setGlaucomaDisorder(ev, pcrEl) {
+  if (!pcrEl) {
+    pcrEl = ev.data;
+  }
 
-    if($('input[name^="glaucoma_diagnoses"]').length){
-        $(pcrEl).val('Y');
-    }
+  if ($('input[name^="glaucoma_diagnoses"]').length) {
+    $(pcrEl).val('Y');
+  }
 
-    $(pcrEl).trigger('change');
+  $(pcrEl).trigger('change');
 }
 
 /**
@@ -87,29 +80,28 @@ function setGlaucomaDisorder(ev, pcrEl)
  * @param ev
  * @param pcrEl
  */
-function setSurgeonFromNote(ev, pcrEl)
-{
-    if(!pcrEl){
-        pcrEl = ev.data;
-    }
+function setSurgeonFromNote(ev, pcrEl) {
+  if (!pcrEl) {
+    pcrEl = ev.data;
+  }
 
-    var surgeonId = $(ev.target).val();
-    if(!surgeonId){
-        $(pcrEl).val('');
-        $(pcrEl).trigger('change');
-        return;
-    }
-
-    $.ajax({
-        'type': 'GET',
-        'url': '/user/surgeonGrade/',
-        'data': {'id': surgeonId},
-        'success': function(data){
-            $(pcrEl).val(data.id);
-            $(pcrEl).trigger('change');
-        }
-    });
+  var surgeonId = $(ev.target).val();
+  if (!surgeonId) {
+    $(pcrEl).val('');
     $(pcrEl).trigger('change');
+    return;
+  }
+
+  $.ajax({
+    'type': 'GET',
+    'url': '/user/surgeonGrade/',
+    'data': {'id': surgeonId},
+    'success': function (data) {
+      $(pcrEl).val(data.id);
+      $(pcrEl).trigger('change');
+    }
+  });
+  $(pcrEl).trigger('change');
 }
 
 /**
@@ -118,26 +110,25 @@ function setSurgeonFromNote(ev, pcrEl)
  * @param ev
  * @param pcrEl
  */
-function setPcrBrunescent(ev, pcrEl)
-{
-    if(!pcrEl){
-        pcrEl = ev.data.pcr;
-    }
+function setPcrBrunescent(ev, pcrEl) {
+  if (!pcrEl) {
+    pcrEl = ev.data.pcr;
+  }
 
-    var $container = getPcrContainer(ev);
-    var $cataractDrop = $(ev.target);
-    
-    var isRight = (ev.target.id.indexOf('right') > -1);
-    var $related = isRight ? $(ev.data.related.right) : $(ev.data.related.left);
+  var $container = getPcrContainer(ev);
+  var $cataractDrop = $(ev.target);
 
-    var value = $cataractDrop.find(':selected').data('value');
-    var related_value = $related.find(':selected').data('value');
-    if( (value === 'Brunescent' || value === 'White') || (related_value === "Brunescent" || related_value === "White") ){
-        $container.find(pcrEl).val('Y');
-    } else {
-        $container.find(pcrEl).val('N');
-    }
-    $(pcrEl).trigger('change');
+  var isRight = (ev.target.id.indexOf('right') > -1);
+  var $related = isRight ? $(ev.data.related.right) : $(ev.data.related.left);
+
+  var value = $cataractDrop.find(':selected').data('value');
+  var related_value = $related.find(':selected').data('value');
+  if ((value === 'Brunescent' || value === 'White') || (related_value === "Brunescent" || related_value === "White")) {
+    $container.find(pcrEl).val('Y');
+  } else {
+    $container.find(pcrEl).val('N');
+  }
+  $(pcrEl).trigger('change');
 
 }
 
@@ -146,21 +137,20 @@ function setPcrBrunescent(ev, pcrEl)
  * @param ev
  * @param pcrEl
  */
-function setPcrPxf(ev, pcrEl)
-{    
-    if(!pcrEl){
-        pcrEl = ev.data.pcr;
-    }
+function setPcrPxf(ev, pcrEl) {
+  if (!pcrEl) {
+    pcrEl = ev.data.pcr;
+  }
 
-    var $container = getPcrContainer(ev);
-    var $related = $(ev.data.related);
-    
-    if(ev.target.checked || $related.is(':checked') ){
-        $container.find(pcrEl).val('Y');
-    } else {
-        $container.find(pcrEl).val('N');
-    }
-    $(pcrEl).trigger('change');
+  var $container = getPcrContainer(ev);
+  var $related = $(ev.data.related);
+
+  if (ev.target.checked || $related.is(':checked')) {
+    $container.find(pcrEl).val('Y');
+  } else {
+    $container.find(pcrEl).val('N');
+  }
+  $(pcrEl).trigger('change');
 
 }
 
@@ -169,15 +159,14 @@ function setPcrPxf(ev, pcrEl)
  * @param ev
  * @param pcrEl
  */
-function setPcrPupil(ev, pcrEl)
-{
-    if(!pcrEl){
-        pcrEl = ev.data;
-    }
+function setPcrPupil(ev, pcrEl) {
+  if (!pcrEl) {
+    pcrEl = ev.data;
+  }
 
-    var $container = getPcrContainer(ev);
-    $container.find(pcrEl).val($(ev.target).val());
-    $(pcrEl).trigger('change');
+  var $container = getPcrContainer(ev);
+  $container.find(pcrEl).val($(ev.target).val());
+  $(pcrEl).trigger('change');
 
 }
 
@@ -185,89 +174,93 @@ function setPcrPupil(ev, pcrEl)
  * Maps elements in examination or op not to their respective elements in PCR risk so changes in the
  * examination are reflected in the PCR risk calculation automatically
  */
-function mapExaminationToPcr()
-{
-    var examinationMap = {
-          "#Element_OphTrOperationnote_Surgeon_surgeon_id": {
-              "pcr": '.pcr_doctor_grade',
-              "func": setSurgeonFromNote,
-              "init": true
-          },
-          "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_nuclear_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_nuclear_id": {
-              "pcr": {    "related" : {
-                  "left" : "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_cortical_id",
-                  "right" : "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_cortical_id"
-              },
-                  "pcr" : '.pcrrisk_brunescent_white_cataract'},
-              "func": setPcrBrunescent,
-              "init": true
-          },
-          "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_cortical_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_cortical_id": {
-              "pcr": {    "related": {
-                  "left" : "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_nuclear_id",
-                  "right" : "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_nuclear_id"
-              } ,
-                  "pcr": '.pcrrisk_brunescent_white_cataract'},
-              "func": setPcrBrunescent,
-              "init": true
-          },
-
-          ":checkbox[id*='_pxe_control']": {
-              "pcr":  {   "related": ":checkbox[id*='_phako']",
-                  "pcr": '.pcrrisk_pxf_phako'
-              },
-              "func": setPcrPxf,
-              "init": true
-          },
-          ":checkbox[id*='_phako']": {
-              "pcr":  {   "related": ":checkbox[id*='_pxe_control']",
-                  "pcr": '.pcrrisk_pxf_phako'
-              },
-              "func": setPcrPxf,
-              "init": true
-          },
-
-          ":input[id*='_pupilSize_control']": {
-              "pcr":  '.pcrrisk_pupil_size',
-              "func": setPcrPupil,
-              "init": true
-          },
-          ":input[name^='diabetic_diagnoses']": {
-              "pcr": '.pcrrisk_diabetic',
-              "func": setDiabeticDisorder,
-              "init": true
-          },
-          ":input[name^='glaucoma_diagnoses']": {
-              "pcr": '.pcrrisk_glaucoma',
-              "func": setGlaucomaDisorder,
-              "init": true
-          },
-          "#OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_right_cd_ratio_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_left_cd_ratio_id": {
-              "pcr": '.pcrrisk_no_fundal_view',
-              "func": setFundalView,
-              "init": true
-          }
+function mapExaminationToPcr() {
+  var examinationMap = {
+      "#Element_OphTrOperationnote_Surgeon_surgeon_id": {
+        "pcr": '.pcr_doctor_grade',
+        "func": setSurgeonFromNote,
+        "init": true
       },
-      examinationObj,
-      examinationEl;
+      "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_nuclear_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_nuclear_id": {
+        "pcr": {
+          "related": {
+            "left": "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_cortical_id",
+            "right": "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_cortical_id"
+          },
+          "pcr": '.pcrrisk_brunescent_white_cataract'
+        },
+        "func": setPcrBrunescent,
+        "init": true
+      },
+      "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_cortical_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_cortical_id": {
+        "pcr": {
+          "related": {
+            "left": "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_nuclear_id",
+            "right": "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_nuclear_id"
+          },
+          "pcr": '.pcrrisk_brunescent_white_cataract'
+        },
+        "func": setPcrBrunescent,
+        "init": true
+      },
 
-    for(examinationEl in examinationMap){
-        if(examinationMap.hasOwnProperty(examinationEl)){
-            examinationObj = examinationMap[examinationEl];
-            if(typeof examinationObj.func === 'function'){
-                $('#event-content').on('change', examinationEl, examinationObj.pcr, examinationObj.func);
-            }
-            //Some stuff is set from PHP on page load, some is not so we need to init them
-            if(typeof examinationObj.init !== 'undefined' && examinationObj.init){
+      ":checkbox[id*='_pxe_control']": {
+        "pcr": {
+          "related": ":checkbox[id*='_phako']",
+          "pcr": '.pcrrisk_pxf_phako'
+        },
+        "func": setPcrPxf,
+        "init": true
+      },
+      ":checkbox[id*='_phako']": {
+        "pcr": {
+          "related": ":checkbox[id*='_pxe_control']",
+          "pcr": '.pcrrisk_pxf_phako'
+        },
+        "func": setPcrPxf,
+        "init": true
+      },
+      ":input[id*='_pupilSize_control']": {
+        "pcr": '.pcrrisk_pupil_size',
+        "func": setPcrPupil,
+        "init": true
+      },
+      ":input[name^='diabetic_diagnoses']": {
+        "pcr": '.pcrrisk_diabetic',
+        "func": setDiabeticDisorder,
+        "init": true
+      },
+      ":input[name^='glaucoma_diagnoses']": {
+        "pcr": '.pcrrisk_glaucoma',
+        "func": setGlaucomaDisorder,
+        "init": true
+      },
+      "#OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_right_cd_ratio_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_left_cd_ratio_id": {
+        "pcr": '.pcrrisk_no_fundal_view',
+        "func": setFundalView,
+        "init": true
+      }
+    },
+    examinationObj,
+    examinationEl;
 
-                if(typeof examinationObj.pcr === 'object'){
-                    $(examinationEl).trigger('change', [examinationObj.pcr.pcr]);
-                }else{
-                    $(examinationEl).trigger('change', [examinationObj.pcr]);
-                }
-            }
+  for (examinationEl in examinationMap) {
+    if (examinationMap.hasOwnProperty(examinationEl)) {
+      examinationObj = examinationMap[examinationEl];
+      if (typeof examinationObj.func === 'function') {
+        $('#event-content').on('change', examinationEl, examinationObj.pcr, examinationObj.func);
+      }
+      //Some stuff is set from PHP on page load, some is not so we need to init them
+      if (typeof examinationObj.init !== 'undefined' && examinationObj.init) {
+
+        if (typeof examinationObj.pcr === 'object') {
+          $(examinationEl).trigger('change', [examinationObj.pcr.pcr]);
+        } else {
+          $(examinationEl).trigger('change', [examinationObj.pcr]);
         }
+      }
     }
+  }
 }
 
 /**
@@ -276,34 +269,33 @@ function mapExaminationToPcr()
  * @param input
  * @returns {string}
  */
-function capitalizeFirstLetter( input) {
-    return input.charAt(0).toUpperCase() + input.slice(1);
+function capitalizeFirstLetter(input) {
+  return input.charAt(0).toUpperCase() + input.slice(1);
 }
 
 /**
  * Collects the data from the form in to an object
  *
- * @param side
+ * @param $eyeSide
  * @returns {{}}
  */
-function collectValues( side ){
-    var pcrData = {},
-        $eyeSide = $('#ophCiExaminationPCRRisk' + side + 'Eye');
+function collectValues($eyeSide) {
+  var pcrData = {};
 
-    pcrData.age = $eyeSide.find(":input[id$='age']").val();
-    pcrData.gender = $eyeSide.find(":input[id$='gender']").val();
-    pcrData.glaucoma = $eyeSide.find("select[id$='glaucoma']").val();
-    pcrData.diabetic = $eyeSide.find("select[id$='diabetic']").val();
-    pcrData.fundalview = $eyeSide.find("select[id$='no_fundal_view']").val();
-    pcrData.brunescentwhitecataract = $eyeSide.find("select[id$='brunescent_white_cataract']").val();
-    pcrData.pxf = $eyeSide.find("select[id$='pxf_phako']").val();
-    pcrData.pupilsize = $eyeSide.find("select[id$='pupil_size']").val();
-    pcrData.axiallength = $eyeSide.find("select[id$='axial_length']").val();
-    pcrData.alphareceptorblocker = $eyeSide.find("select[id$='arb']").val();
-    pcrData.abletolieflat = $eyeSide.find("select[id$='abletolieflat']").val();
-    pcrData.doctorgrade = $eyeSide.find("select[id$='doctor_grade_id']").val();
+  pcrData.age = $eyeSide.find(":input[id$='age']").val();
+  pcrData.gender = $eyeSide.find(":input[id$='gender']").val();
+  pcrData.glaucoma = $eyeSide.find("select[id$='glaucoma']").val();
+  pcrData.diabetic = $eyeSide.find("select[id$='diabetic']").val();
+  pcrData.fundalview = $eyeSide.find("select[id$='no_fundal_view']").val();
+  pcrData.brunescentwhitecataract = $eyeSide.find("select[id$='brunescent_white_cataract']").val();
+  pcrData.pxf = $eyeSide.find("select[id$='pxf_phako'], select[id$='pxf']").val();
+  pcrData.pupilsize = $eyeSide.find("select[id$='pupil_size']").val();
+  pcrData.axiallength = $eyeSide.find("select[id$='axial_length'], select[id$='axial_length_group']").val();
+  pcrData.alphareceptorblocker = $eyeSide.find("select[id$='arb'], select[id$='alpha_receptor_blocker']").val();
+  pcrData.abletolieflat = $eyeSide.find("select[id$='abletolieflat'], select[id$='can_lie_flat']").val();
+  pcrData.doctorgrade = $eyeSide.find("select[id$='doctor_grade_id']").val();
 
-    return pcrData;
+  return pcrData;
 }
 
 /**
@@ -311,130 +303,110 @@ function collectValues( side ){
  * @param inputValues
  * @returns {*}
  */
-function calculateORValue( inputValues )
-{
-    if(Object.keys(inputValues).length === 0){
-        return 0;
+function calculateORValue(inputValues) {
+  if (Object.keys(inputValues).length === 0) {
+    return 0;
+  }
+
+  var OR = {};
+  var orMultiplied = 1;  // base value
+
+  // multipliers for the attributes and selected values
+  OR.age = {'1': 1, '2': 1.14, '3': 1.42, '4': 1.58, '5': 2.37};
+  OR.gender = {'Male': 1.28, 'Female': 1, 'Other': 1.14, 'Unknown': 1.14};
+  OR.glaucoma = {'Y': 1.30, 'N': 1, 'NK': 1};
+  OR.diabetic = {'Y': 1.63, 'N': 1, 'NK': 1};
+  OR.fundalview = {'Y': 2.46, 'N': 1, 'NK': 1};
+  OR.brunescentwhitecataract = {'Y': 2.99, 'N': 1, 'NK': 1};
+  OR.pxf = {'Y': 2.92, 'N': 1, 'NK': 1};
+  OR.pupilsize = {'Small': 1.45, 'Medium': 1.14, 'Large': 1, 'NK': 1};
+  OR.axiallength = {'1': 1, '2': 1.47};
+  OR.alphareceptorblocker = {'Y': 1.51, 'N': 1, 'NK': 1};
+  OR.abletolieflat = {'Y': 1, 'N': 1.27};
+  OR.doctorgrade = {};
+
+  if (Object.keys(inputValues).length !== Object.keys(OR).length) {
+    return 0;
+  }
+
+  for (var key in inputValues) {
+    if (!inputValues.hasOwnProperty(key)) {
+      continue;
     }
-
-    var OR ={};
-    var orMultiplied = 1;  // base value
-
-    // multipliers for the attributes and selected values
-    OR.age = {'1': 1, '2': 1.14, '3': 1.42, '4': 1.58, '5': 2.37};
-    OR.gender = {'Male': 1.28, 'Female': 1, 'Other': 1.14, 'Unknown': 1.14};
-    OR.glaucoma = {'Y': 1.30, 'N': 1, 'NK': 1};
-    OR.diabetic = {'Y': 1.63, 'N': 1, 'NK': 1};
-    OR.fundalview = {'Y': 2.46, 'N': 1, 'NK': 1};
-    OR.brunescentwhitecataract = {'Y': 2.99, 'N': 1, 'NK': 1};
-    OR.pxf = {'Y': 2.92, 'N': 1, 'NK': 1};
-    OR.pupilsize = {'Small': 1.45, 'Medium': 1.14, 'Large': 1, 'NK': 1};
-    OR.axiallength = {'1': 1, '2': 1.47};
-    OR.alphareceptorblocker = {'Y': 1.51, 'N': 1, 'NK': 1};
-    OR.abletolieflat = {'Y': 1, 'N': 1.27};
-    OR.doctorgrade = {};
-
-    if(Object.keys(inputValues).length !== Object.keys(OR).length){
-        return 0;
+    var riskFactor;
+    //if we have a key to factor relationship use that, otherwise the factor is in the input value itself.
+    if (OR[key].hasOwnProperty(inputValues[key])) {
+      riskFactor = OR[key][inputValues[key]];
+    } else {
+      riskFactor = inputValues[key];
     }
+    orMultiplied *= riskFactor;
+  }
 
-    for (var key in inputValues) {
-        if(!inputValues.hasOwnProperty(key)){
-            continue;
-        }
-        var riskFactor;
-        //if we have a key to factor relationship use that, otherwise the factor is in the input value itself.
-        if(OR[key].hasOwnProperty(inputValues[key])){
-            riskFactor = OR[key][inputValues[key]];
-        } else {
-            riskFactor = inputValues[key];
-        }
-        orMultiplied *= riskFactor;
-    }
-
-    return orMultiplied;
+  return orMultiplied;
 }
 
 /**
  * Calculates the value
  */
 function calculatePcrValue(ORValue) {
-    var averageRiskConst,
-      pcrRisk,
-      excessRisk,
-      pcrColour;
+  var averageRiskConst,
+    pcrRisk,
+    excessRisk,
+    pcrColour;
 
-    if (ORValue) {
-        pcrRisk = ORValue * (0.00736 / (1 - 0.00736)) / (1 + (ORValue * 0.00736 / (1 - 0.00736))) * 100;
-        averageRiskConst = 1.92;
-        excessRisk = pcrRisk / averageRiskConst;
-        excessRisk = excessRisk.toFixed(2);
-        pcrRisk = pcrRisk.toFixed(2);
+  if (ORValue) {
+    pcrRisk = ORValue * (0.00736 / (1 - 0.00736)) / (1 + (ORValue * 0.00736 / (1 - 0.00736))) * 100;
+    averageRiskConst = 1.92;
+    excessRisk = pcrRisk / averageRiskConst;
+    excessRisk = excessRisk.toFixed(2);
+    pcrRisk = pcrRisk.toFixed(2);
 
-        if (pcrRisk <= 1) {
-            pcrColour = 'green';
-        } else if (pcrRisk > 1 && pcrRisk <= 5) {
-            pcrColour = 'orange';
-        } else {
-            pcrColour = 'red';
-        }
+    if (pcrRisk <= 1) {
+      pcrColour = 'green';
+    } else if (pcrRisk > 1 && pcrRisk <= 5) {
+      pcrColour = 'orange';
     } else {
-        pcrRisk = "N/A";
-        excessRisk = "N/A";
-        pcrColour = 'blue';
+      pcrColour = 'red';
     }
+  } else {
+    pcrRisk = "N/A";
+    excessRisk = "N/A";
+    pcrColour = 'blue';
+  }
 
-    return {
-        pcrRisk: pcrRisk,
-        excessRisk: excessRisk,
-        pcrColour: pcrColour
-    };
+  return {
+    pcrRisk: pcrRisk,
+    excessRisk: excessRisk,
+    pcrColour: pcrColour
+  };
 }
 
 /**
  * Calculates the PCR risk for a given side
  *
+ * @param $eyeSide
  * @param side
  */
-function pcrCalculate( side ){
+function pcrCalculate($eyeSide, side) {
+  var pcrDataValues = collectValues($eyeSide),
+    ORValue = calculateORValue(pcrDataValues),
+    pcrData;
 
-    side = capitalizeFirstLetter(side);  // we use this to keep camelCase div names
+  side = capitalizeFirstLetter(side);
+  pcrData = calculatePcrValue(ORValue);
 
-    var pcrDataValues = collectValues( side),
-        ORValue = calculateORValue( pcrDataValues),
-        pcrData;
+  $eyeSide.find('#pcr-risk-div, .pcr-risk-div label').css('background', pcrData.pcrColour);
+  $eyeSide.find('.pcr-span').html(pcrData.pcrRisk);
+  $eyeSide.find('.pcr-erisk').html(pcrData.excessRisk);
 
-    pcrData = calculatePcrValue(ORValue);
+  $('#ophCiExaminationPCRRisk' + side + 'EyeLabel').find('a').css('color', pcrData.pcrColour);
+  $('#ophCiExaminationPCRRisk' + side + 'EyeLabel').find('.pcr-span1').html(pcrData.pcrRisk);
 
-    $('#ophCiExaminationPCRRisk'+side+'Eye').find('#pcr-risk-div').css('background', pcrData.pcrColour);
-    $('#ophCiExaminationPCRRisk'+side+'Eye').find('.pcr-span').html(pcrData.pcrRisk);
-    $('#ophCiExaminationPCRRisk'+side+'Eye').find('.pcr-erisk').html(pcrData.excessRisk);
-
-    $('#ophCiExaminationPCRRisk'+side+'EyeLabel').find('a').css('color', pcrData.pcrColour);
-    $('#ophCiExaminationPCRRisk'+side+'EyeLabel').find('.pcr-span1').html(pcrData.pcrRisk);
-
-    $('#ophCiExaminationPCRRiskEyeLabel').find('a').css('color', pcrData.pcrColour);
-    $('#ophCiExaminationPCRRiskEyeLabel').find('.pcr-span1').html(pcrData.pcrRisk);
-    //$('#ophCiExaminationPCRRisk'+side+'EyeLabel').find('.pcr-span1').css('color', pcrColor);
-    if(pcrData.pcrRisk !== 'N/A'){
-        $('#Element_OphTrOperationnote_Cataract_pcr_risk').val(pcrData.pcrRisk);
-    }
+  $('#ophCiExaminationPCRRiskEyeLabel').find('a').css('color', pcrData.pcrColour);
+  $('#ophCiExaminationPCRRiskEyeLabel').find('.pcr-span1').html(pcrData.pcrRisk);
+  //$('#ophCiExaminationPCRRisk'+side+'EyeLabel').find('.pcr-span1').css('color', pcrColor);
+  if (pcrData.pcrRisk !== 'N/A') {
+    $('#Element_OphTrOperationnote_Cataract_pcr_risk').val(pcrData.pcrRisk);
+  }
 }
-
-$(document).ready(function()
-{
-    //Map the elements
-    mapExaminationToPcr();
-    //Make the initial calculations
-    pcrCalculate('left');
-    pcrCalculate('right');
-
-    $(document.body).on('change','#ophCiExaminationPCRRiskLeftEye',function(){
-        pcrCalculate('left');
-    });
-
-    $(document.body).on('change','#ophCiExaminationPCRRiskRightEye',function(){
-        pcrCalculate('right');
-    });
-
-});
