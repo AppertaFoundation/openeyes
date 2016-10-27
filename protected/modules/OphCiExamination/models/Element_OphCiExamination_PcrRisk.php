@@ -1,0 +1,122 @@
+<?php
+
+/**
+ * Class Element_OphCiExamination_PcrRisk
+ */
+class Element_OphCiExamination_PcrRisk  extends \SplitEventTypeElement
+{
+    /**
+     * Returns the static model of the specified AR class.
+     *
+     * @return Element_OphCiExamination_PcrRisk static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
+
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'et_ophciexamination_pcr_risk';
+    }
+
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        return array(
+            array(
+                'event_id, eye_id,
+                    left_glaucoma, left_pxf, left_diabetic, left_pupil_size, left_no_fundal_view, left_axial_length_group, 
+                    left_brunescent_white_cataract, left_alpha_receptor_blocker, left_doctor_grade_id, left_can_lie_flat,
+                    right_glaucoma, right_pxf, right_diabetic, right_pupil_size, right_no_fundal_view, right_axial_length_group, 
+                    right_brunescent_white_cataract, right_alpha_receptor_blocker, right_doctor_grade_id, right_can_lie_flat',
+                'safe',
+            ),
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function sidedFields()
+    {
+        return array(
+            'glaucoma',
+            'pxf',
+            'diabetic',
+            'pupil_size',
+            'no_fundal_view',
+            'axial_length_group',
+            'brunescent_white_cataract',
+            'alpha_receptor_blocker',
+            'doctor_grade_id',
+            'can_lie_flat',
+        );
+    }
+
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return array(
+            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
+            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
+        );
+    }
+
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+            'id' => 'ID',
+            'event_id' => 'Event',
+            'left_glaucoma' => 'Glaucoma',
+            'left_pxf' => 'PXF/Phacodonesis',
+            'left_diabetic' => 'Diabetic',
+            'left_pupil_size' => 'Pupil Size',
+            'left_no_fundal_view' => 'No fundal view/Vitreous opacities',
+            'left_axial_length_group' => 'Axial Length (mm)',
+            'left_brunescent_white_cataract' => 'Brunescent/White Cataract',
+            'left_alpha_receptor_blocker' => 'Alpha receptor blocker',
+            'left_doctor_grade_id' => 'Surgeon Grade',
+            'left_can_lie_flat' => 'Can lie flat',
+            'right_glaucoma' => 'Glaucoma',
+            'right_pxf' => 'PXF/Phacodonesis',
+            'right_diabetic' => 'Diabetic',
+            'right_pupil_size' => 'Pupil Size',
+            'right_no_fundal_view' => 'No fundal view/Vitreous opacities',
+            'right_axial_length_group' => 'Axial Length (mm)',
+            'right_brunescent_white_cataract' => 'Brunescent/White Cataract',
+            'right_alpha_receptor_blocker' => 'Alpha receptor blocker',
+            'right_doctor_grade_id' => 'Surgeon Grade',
+            'right_can_lie_flat' => 'Can lie flat',
+        );
+    }
+
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     *
+     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     */
+    public function search()
+    {
+        $criteria = new \CDbCriteria();
+
+        return new \CActiveDataProvider(get_class($this), array(
+            'criteria' => $criteria,
+        ));
+    }
+}
