@@ -21,6 +21,27 @@
 /* @var $this PatientController */
 /* @var $patient Patient */
 /* @var $form CActiveForm */
+
+$nhs_num_statuses = CHtml::listData( NhsNumberVerificationStatus::model()->findAll(), 'id', 'description');
+$countries = CHtml::listData( Country::model()->findAll(), 'id', 'name');
+$address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name');
+
+$general_practitioners = CHtml::listData(Gp::model()->findAll(), 'id', 'correspondenceName');
+
+$practice_models = Practice::model()->findAll();
+foreach($practice_models as $practice_model){
+    if ($practice_model->contact->address){
+        $practices[$practice_model->id] = $practice_model->contact->address->letterLine;
+    }
+}
+
+$gender_models = Gender::model()->findAll();
+$genders = CHtml::listData($gender_models, function($gender_model){
+    return CHtml::encode($gender_model->name)[0];
+}, 'name');
+
+$ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
+        
 ?>
 
 <div class="form">
@@ -31,7 +52,7 @@
 	// controller action is handling ajax validation correctly.
 	// There is a call to performAjaxValidation() commented in generated controller code.
 	// See class documentation of CActiveForm for details on this.
-	'enableAjaxValidation' => false,
+	'enableAjaxValidation' => true,
 )); ?>
 
 	<p class="note text-right">Fields with <span class="required">*</span> are required.</p>
@@ -46,7 +67,7 @@
             </div>
 	</div>
 	<div class="row field-row">
-            <div class="large-3 column nhs-number-wrapper"><?php //echo $form->labelEx($patient,'nhs_num'); ?>
+            <div class="large-3 column nhs-number-wrapper">
                 <div class="nhs-number warning">
                     <span class="hide-text print-only">NHS Number:</span>
                 </div>
@@ -57,7 +78,7 @@
                 <?php echo $form->error($patient,'nhs_num'); ?>
             </div>
 	</div>
-        <div class="row field-row nhs-num-status hide">
+        <div class="row field-row nhs-num-status <?php echo (!$patient->nhs_num ? 'hide':''); ?>">
             <div class="large-3 column"><?php echo $form->labelEx($patient,'nhs_num_status_id'); ?></div>
             <div class="large-4 column end">
                 <?php echo $form->dropDownList($patient,'nhs_num_status_id', $nhs_num_statuses, array('empty'=>'-- select --')); ?>
@@ -101,7 +122,7 @@
                             'showAnim' => 'fold',
                             'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
                         ),
-                        'value' => isset($_POST['Patient[dob]']) ? $_POST['Patient[dob]'] : '',
+                        'value' => Helper::convertMySQL2NHS($patient->dob, ''),
                         'htmlOptions' => array(
                             'class' => 'small fixed-width',
                         ),
@@ -133,7 +154,7 @@
         <div class="row field-row">
             <div class="large-3 column"><?php echo $form->labelEx($contact,'primary_phone'); ?></div>
             <div class="large-4 column end">
-                <?php echo $form->textField($contact,'primary_phone',array('size'=>10,'maxlength'=>10)); ?>
+                <?php echo $form->telField($contact,'primary_phone',array('size'=>15,'maxlength'=>20)); ?>
                 <?php echo $form->error($contact,'primary_phone'); ?>
             </div>
 	</div>
@@ -141,7 +162,7 @@
         <div class="row field-row">
             <div class="large-3 column"><?php echo $form->labelEx($address,'email'); ?></div>
             <div class="large-4 column end">
-                <?php echo $form->textField($address,'email',array('size'=>10,'maxlength'=>10)); ?>
+                <?php echo $form->emailField($address,'email',array('size'=>15, 'maxlength'=>255)); ?>
                 <?php echo $form->error($address,'email'); ?>
             </div>
 	</div>
@@ -155,7 +176,7 @@
                 <?php echo $form->error($patient,'is_deceased'); ?>
             </div>
 	</div>
-        <div class="row field-row hide date_of_death">
+        <div class="row field-row date_of_death <?php echo ($patient->is_deceased == 0 ? 'hide':''); ?>">
             <div class="large-3 column"><?php echo $form->labelEx($patient,'date_of_death'); ?></div>
             <div class="large-4 column end">
             <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
@@ -165,7 +186,7 @@
                             'showAnim' => 'fold',
                             'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
                         ),
-                        'value' => isset($_POST['Patient[date_of_death]']) ? $_POST['Patient[date_of_death]'] : '',
+                        'value' => Helper::convertMySQL2NHS($patient->date_of_death, ''),
                         'htmlOptions' => array(
                             'class' => 'small fixed-width',
                         ),

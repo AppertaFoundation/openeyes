@@ -40,7 +40,7 @@ class PatientController extends BaseController
     {
         return array(
             array('allow',
-                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'create'),
+                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'create', 'update'),
                 'users' => array('@'),
             ),
             array('allow',
@@ -1472,43 +1472,32 @@ class PatientController extends BaseController
         $contact = new Contact;
         $address = new Address;
         
-        $this->performAjaxValidation($patient);
+        $this->performAjaxValidation(array($patient, $contact, $address));
         
-        if(isset($_POST['Patient']))
+        if( isset($_POST['Contact'], $_POST['Address'], $_POST['Patient']) )
         {
+            
+            $contact->attributes = $_POST['Contact'];
+            if($contact->save()){
+            }
+            
             $patient->attributes = $_POST['Patient'];
+            $patient->contact_id = $contact->id;
+            
             if($patient->save()){
-                $this->redirect(array('view','id' => $patient->id));
+            }
+            
+            $address->attributes = $_POST['Address'];
+            $address->contact_id = $contact->id;
+            if($address->save()){
+                $this->redirect(array('view', 'id' => $patient->id));
             }
         }
-
-        $nhs_num_statuses = CHtml::listData( NhsNumberVerificationStatus::model()->findAll(), 'id', 'description');
-        $countries = CHtml::listData( Country::model()->findAll(), 'id', 'name');
-        $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name');
         
-        $general_practitioners = CHtml::listData(Gp::model()->findAll(), 'id', 'correspondenceName');
-        
-        $practice_models = Practice::model()->findAll();
-        foreach($practice_models as $practice_model){
-            if ($practice_model->contact->address){
-                $practices[$practice_model->contact->address->id] = $practice_model->contact->address->letterLine;
-            }
-        }
-
-        $genders = CHtml::listData(Gender::model()->findAll(), 'name', 'name');
-        $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
-        
-        $this->render('create',array(
+        $this->render('crud/create',array(
                         'patient' => $patient,
                         'contact' => $contact,
-                        'nhs_num_statuses' => $nhs_num_statuses,
                         'address' => $address,
-                        'address_type_ids' => $address_type_ids,
-                        'countries' => $countries,
-                        'general_practitioners' => $general_practitioners,
-                        'practices' => $practices,
-                        'genders' => $genders,
-                        'ethnic_groups' => $ethnic_groups,
 		));
 	
    }
@@ -1520,21 +1509,47 @@ class PatientController extends BaseController
      */
     public function actionUpdate($id)
     {
-        $model = $this->loadModel($id);
-        $this->performAjaxValidation($model);
+        Yii::app()->assetManager->registerScriptFile('js/patient.js');
         
-        if(isset($_POST['Patient']))
+        //Don't render patient summary box on top as we have no selected patient
+        $this->renderPatientPanel = false;
+        
+        $patient = $this->loadModel($id);
+        $contact = $patient->contact;
+        $address = $patient->contact->address;
+        
+        $this->performAjaxValidation(array($patient, $contact, $address));
+        
+        if( isset($_POST['Contact'], $_POST['Address'], $_POST['Patient']) )
         {
-            $model->attributes = $_POST['Patient'];
-            
-            if($model->save()){
-                $this->redirect(array('view','id'=>$model->id));    
+         
+            $contact->attributes = $_POST['Contact'];
+            if($contact->save()){
+            }
+
+            $patient->attributes = $_POST['Patient'];
+            $patient->contact_id = $contact->id;
+
+            //This could be handled in OeDateFormat Behaviour
+            //make sure that if no date_of_death has been posted than we insert NULL instad of 000-00-00 into the DB
+            $patient->date_of_death = $patient->date_of_death == '' ? null : Helper::convertNHS2MySQL($patient->date_of_death);
+            $patient->dob = $patient->dob == '' ? null : Helper::convertNHS2MySQL($patient->dob);
+
+            if($patient->save()){
             }
             
+            $address->attributes = $_POST['Address'];
+            $address->contact_id = $contact->id;
+            if($address->save()){
+                $this->redirect(array('view', 'id' => $patient->id));
+            }
         }
-        $this->render('update',array(
-                        'model' => $model,
-                ));
+        
+        $this->render('crud/update',array(
+                        'patient' => $patient,
+                        'contact' => $contact,
+                        'address' => $address,
+        ));
     }
     
     /**

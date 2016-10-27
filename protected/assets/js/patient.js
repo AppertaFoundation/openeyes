@@ -8,7 +8,7 @@ $(document).ready(function(){
         }
     });
     
-    $('#Patient_is_deceased').on('click', function(){
+    $('#Patient_is_deceased').on('change', function(){
         var selector = $(this).data('child_row');
         $(selector).hide();
         $(selector).find('input').val('');
