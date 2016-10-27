@@ -16,7 +16,6 @@ class m161021_110716_add_eye_comments extends CDbMigration
 
 	/*
 	// Use safeUp/safeDown to do migration with transaction
-
 	public function safeUp()
 	{
 	}
