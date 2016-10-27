@@ -24,7 +24,21 @@ if ($side === 'left') {
         false, -1);
     ?>
     <script type="text/javascript">
-        $.getScript('<?=$jsPath?>/PCRCalculation.js');
+        $.getScript('<?=$jsPath?>/PCRCalculation.js', function(){
+            //Map the elements
+            mapExaminationToPcr();
+            //Make the initial calculations
+            pcrCalculate($('#ophCiExaminationPCRRiskLeftEye'), 'left');
+            pcrCalculate($('#ophCiExaminationPCRRiskRightEye'), 'right');
+
+            $(document.body).on('change', '#ophCiExaminationPCRRiskLeftEye', function () {
+                pcrCalculate($('#ophCiExaminationPCRRiskLeftEye'), 'left');
+            });
+
+            $(document.body).on('change', '#ophCiExaminationPCRRiskRightEye', function () {
+                pcrCalculate($('#ophCiExaminationPCRRiskRightEye'), 'right');
+            });
+        });
     </script>
     <?php
 

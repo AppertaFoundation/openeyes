@@ -103,7 +103,7 @@ foreach (array('right', 'left') as $side):
         </a>
     </div>
 </div>
-<script>
+<script type="text/javascript">
     $(document).ready(function () {
         //Map the elements
         mapExaminationToPcr();

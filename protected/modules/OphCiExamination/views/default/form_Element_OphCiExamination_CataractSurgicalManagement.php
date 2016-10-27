@@ -137,21 +137,4 @@
     });
 
     $('#refraction_slider').after('<div style="width:410px;margin-top:-14px;margin-bottom:20px;margin-left:240px;font-size:10px;"><span>-10</span><span style="margin-left:194px;">0</span><span style="margin-left:194px;">10</span></div>');
-
-    $(document).ready(function () {
-        //Map the elements
-        mapExaminationToPcr();
-        //Make the initial calculations
-        pcrCalculate($('#ophCiExaminationPCRRiskLeftEye'), 'left');
-        pcrCalculate($('#ophCiExaminationPCRRiskRightEye'), 'right');
-
-        $(document.body).on('change', '#ophCiExaminationPCRRiskLeftEye', function () {
-            pcrCalculate($('#ophCiExaminationPCRRiskLeftEye'), 'left');
-        });
-
-        $(document.body).on('change', '#ophCiExaminationPCRRiskRightEye', function () {
-            pcrCalculate($('#ophCiExaminationPCRRiskRightEye'), 'right');
-        });
-
-    });
 </script>
