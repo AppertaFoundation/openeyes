@@ -31,17 +31,22 @@
 	<primarylink>
 		<process>2</process>
 		<uniquereference type="I"><?=$event_id?></uniquereference>
+		<?php if($is_new_event): ?>
+			<uniquereference2><?=$event_id?>-2</uniquereference2>
+		<?php endif; ?>
 		<typeid><?=$windip_type_id?></typeid>
 		<eventdate><?=$event_date?></eventdate>
 		<eventtime><?=$event_time?></eventtime>
 	</primarylink>
+	<?php if(count($additional_indexes)): ?>
 	<additionalindexes count="<?=count($additional_indexes)?>">
 		<?php foreach ($additional_indexes as $i=>$index) {?>
 		<index_<?=$i+1?>>
 			<id><?=$index['id']?></id>
-			<value><?=	$index['value']?></value>
+			<value><?=$index['value']?></value>
 		</index_<?=$i+1?>>
 		<?php } ?>
-</additionalindexes>
+	</additionalindexes>
+	<?php endif; ?>
 <event><status>0</status><failuredescription></failuredescription></event>
 </linkparameters>
