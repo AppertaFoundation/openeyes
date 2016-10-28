@@ -74,19 +74,16 @@
 
 
 <div id="comments">
-	<span class="field-info">
+	<span class="field-info large-12">
 	<?php
 	if ($this->is_auto) {
 		if (!$this->getAutoBiometryEventData($this->event->id)[0]->is700() || $element->{'comments'}) {
-			echo '<b>Device Comments:</b>';
-			if (!$element->{'comments'}) {
-				echo "  <i>Empty</i>";
-			}
-			echo '<div class="readonly-div">' . $element->{'comments'} . '<br></div>';
-		} else {
-			echo $form->textField($element, 'comments', array('style' => 'width:1027px;'), null,
-				array('label' => 4, 'field' => 200));
+			echo 'Device Comments:';
+			echo '<div class="readonly-box">' . $element->{'comments'} . '<br></div>';
 		}
+	} else {
+		echo $form->textField($element, 'comments', array('style' => 'width:1027px;'), null,
+			array('label' => 4, 'field' => 200));
 	}
 
     ?>

@@ -108,8 +108,8 @@ class Element_OphInBiometry_Calculation extends SplitEventTypeElement
             'formula_id_right' => 'Formula',
             'emmetropia_left' => 'Emmetropic IOL power',
             'emmetropia_right' => 'Emmetropic IOL power',
-            'comments_right' => 'General Comments (Right)',
-            'comments_left' => 'General Comments (Left)',
+            'comments_right' => 'General Comments',
+            'comments_left' => 'General Comments',
         );
     }
 
