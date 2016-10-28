@@ -33,6 +33,7 @@
 		<uniquereference type="I"><?=$event_id?></uniquereference>
 		<?php if($is_new_event): ?>
 			<uniquereference2><?=$event_id?>-2</uniquereference2>
+			<loadlatestform>True</loadlatestform>
 		<?php endif; ?>
 		<typeid><?=$windip_type_id?></typeid>
 		<eventdate><?=$event_date?></eventdate>

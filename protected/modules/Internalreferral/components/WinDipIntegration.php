@@ -95,7 +95,7 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
     protected function constructRequestData(\Event $event, \DateTime $when, $message_id)
     {
         
-        $is_new_event = Yii::app()->user->getState("new_referral", false);
+        $is_new_event = \Yii::app()->user->getState("new_referral", false);
         
         //TODO: better way of handling mysql date to datetime
         $event_date = \DateTime::createFromFormat('Y-m-d H:i:s', $event->event_date);
@@ -115,11 +115,10 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
             'username' => $user->username,
             'user_displayname' => $user->getReversedFullName(),
             'event_id' => $event->id,
-            'load_latest_form' => !$is_new_event,
-            'windip_type_id' => $is_new_event ? '' : $this->form_id,
+            'windip_type_id' => !$is_new_event ? '' : $this->form_id,
             'event_date' => $event_date->format('Y-m-d'),
             'event_time' => $event_date->format('H:i:s'),
-            'additional_indexes' => $is_new_event ? array() : $indexes,
+            'additional_indexes' => !$is_new_event ? array() : $indexes,
             'is_new_event' => $is_new_event
         );
     }
