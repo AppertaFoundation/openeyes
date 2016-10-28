@@ -1086,7 +1086,7 @@ class Patient extends BaseActiveRecordVersioned
 
         foreach ($this->episodes as $ep) {
             if ($ep->eye_id){
-                if ($ep->disorder_id && (is_null($eye_id) || $ep->eye_id == $eye_id)) {
+                if ($ep->disorder_id && (is_null($eye_id) || $ep->eye_id == $eye_id || $ep->eye_id == Eye::BOTH)) {
                     $disorder_ids[] = $ep->disorder_id;
                 }
             }
