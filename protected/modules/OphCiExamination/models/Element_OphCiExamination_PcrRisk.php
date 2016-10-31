@@ -182,24 +182,26 @@ class Element_OphCiExamination_PcrRisk extends \SplitEventTypeElement
         }
     }
 
+    /**
+     * Set the data from other parts of the system if it's available.
+     */
     public function afterConstruct()
     {
         if ($this->getIsNewRecord() && Yii::app()->request->getQuery('patient_id', false)) {
             $pcr = new PcrRisk();
-            foreach(array('left', 'right') as $side){
+            foreach (array('left', 'right') as $side) {
                 $data = $pcr->getPCRData(Yii::app()->request->getQuery('patient_id'), $side, $this);
-                $this->{$side.'_glaucoma'} = $data['glaucoma'];
-                $this->{$side.'_diabetic'} = $data['diabetic'];
-                $this->{$side.'_can_lie_flat'} = $data['lie_flat'];
-                $this->{$side.'_no_fundal_view'} = $data['noview'];
-                $this->{$side.'_pxf'} = $data['anteriorsegment']['pxf_phako'];
-                $this->{$side.'_pupil_size'} = $data['anteriorsegment']['pupil_size'];
-                $this->{$side.'_brunescent_white_cataract'} = $data['anteriorsegment']['brunescent_white_cataract'];
-                $this->{$side.'_doctor_grade_id'} = $data['doctor_grade_id'];
-                $this->{$side.'_axial_length_group'} = $data['axial_length_group'];
-                $this->{$side.'_alpha_receptor_blocker'} = $data['arb'];
+                $this->{$side . '_glaucoma'} = $data['glaucoma'];
+                $this->{$side . '_diabetic'} = $data['diabetic'];
+                $this->{$side . '_can_lie_flat'} = $data['lie_flat'];
+                $this->{$side . '_no_fundal_view'} = $data['noview'];
+                $this->{$side . '_pxf'} = $data['anteriorsegment']['pxf_phako'];
+                $this->{$side . '_pupil_size'} = $data['anteriorsegment']['pupil_size'];
+                $this->{$side . '_brunescent_white_cataract'} = $data['anteriorsegment']['brunescent_white_cataract'];
+                $this->{$side . '_doctor_grade_id'} = $data['doctor_grade_id'];
+                $this->{$side . '_axial_length_group'} = $data['axial_length_group'];
+                $this->{$side . '_alpha_receptor_blocker'} = $data['arb'];
             }
-
         }
 
         parent::afterConstruct();
