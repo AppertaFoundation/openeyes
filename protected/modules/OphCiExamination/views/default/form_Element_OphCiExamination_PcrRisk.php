@@ -77,11 +77,13 @@ foreach (array('right', 'left') as $side):
                 <div class="large-4 column pcr-risk-div">
                     <label>
                         PCR Risk <span class="pcr-span">&nbsp;</span> %
+                        <?php $form->hiddenInput($element, $side.'_pcr_risk', false, array('class' => 'pcr-input'));?>
                     </label>
                 </div>
                 <div class="large-8 column end">
                     <label>
                         Excess risk compared to average eye <span class="pcr-erisk">&nbsp;</span> times
+                        <?php $form->hiddenInput($element, $side.'_excess_risk', false, array('class' => 'pcr-erisk-input'));?>
                     </label>
                 </div>
             </div>

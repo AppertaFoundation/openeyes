@@ -146,9 +146,21 @@
 
 /* line 6, ../sass/components/elements/_pcr.scss */
 .pcr-risk-div label {
-  background-color: #00f;
+  background-color: #f00;
   padding: 5px;
   text-align: center;
+}
+/* line 10, ../sass/components/elements/_pcr.scss */
+.pcr-risk-div label.red {
+  background-color: #f00;
+}
+/* line 13, ../sass/components/elements/_pcr.scss */
+.pcr-risk-div label.blue {
+  background-color: #00f;
+}
+/* line 16, ../sass/components/elements/_pcr.scss */
+.pcr-risk-div label.orange {
+  background-color: #ffa500;
 }
 
 /* line 17, ../sass/components/_gonio-cross.scss */

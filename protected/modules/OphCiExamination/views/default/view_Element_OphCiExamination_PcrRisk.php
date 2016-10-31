@@ -86,6 +86,18 @@ $activeClass = ($element->{'has'.ucfirst($side)}()) ? 'active' : 'inactive';
                 <div class="data-value"><?php echo $pcr->displayValues($element->{$side.'_can_lie_flat'})?></div>
             </div>
         </div>
+        <div class="row data-row">
+            <div class="large-4 column pcr-risk-div">
+                <label class="<?php echo $element->pcrRiskColour($side)?>">
+                    PCR Risk <span class="pcr-span "><?php echo ($element->{$side.'_pcr_risk'}) ? $element->{$side.'_pcr_risk'} : 'N/A' ?></span> %
+                </label>
+            </div>
+            <div class="large-8 column end">
+                <label>
+                    Excess risk compared to average eye <span class="pcr-erisk"><?php echo $element->{$side.'_excess_risk'}?></span> times
+                </label>
+            </div>
+        </div>
     </div>
 <?php endforeach; ?>
 </div>

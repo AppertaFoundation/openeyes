@@ -20,6 +20,8 @@ class m161026_095125_pcr_risk_element extends OEMigration
                 'left_alpha_receptor_blocker' => 'VARCHAR(2)',
                 'left_doctor_grade_id' => 'INTEGER(11) NOT NULL',
                 'left_can_lie_flat' => 'VARCHAR(2)',
+                'left_pcr_risk' => 'DECIMAL(5,2)',
+                'left_excess_risk' => 'DECIMAL(5,2)',
                 'right_glaucoma' => 'VARCHAR(2)',
                 'right_pxf' => 'VARCHAR(2)',
                 'right_diabetic' => 'VARCHAR(2)',
@@ -30,6 +32,8 @@ class m161026_095125_pcr_risk_element extends OEMigration
                 'right_alpha_receptor_blocker' => 'VARCHAR(2)',
                 'right_doctor_grade_id' => 'INTEGER(11) NOT NULL',
                 'right_can_lie_flat' => 'VARCHAR(2)',
+                'right_pcr_risk' => 'DECIMAL(5,2)',
+                'right_excess_risk' => 'DECIMAL(5,2)',
                 'CONSTRAINT el_pcr_eye foreign key (eye_id) references eye (id)',
                 'CONSTRAINT el_right_pcr_doctor_grade foreign key (right_doctor_grade_id) references doctor_grade (id)',
                 'CONSTRAINT el_left_pcr_doctor_grade foreign key (left_doctor_grade_id) references doctor_grade (id)',
@@ -44,7 +48,7 @@ class m161026_095125_pcr_risk_element extends OEMigration
 
     public function down()
     {
-        //$this->dropOETable('et_ophciexamination_pcr_risk', true);
+        $this->dropOETable('et_ophciexamination_pcr_risk', true);
         $this->delete('element_type', 'class_name = "Element_OphCiExamination_PcrRisk"');
     }
 }

@@ -399,6 +399,12 @@ function pcrCalculate($eyeSide, side) {
   $eyeSide.find('#pcr-risk-div, .pcr-risk-div label').css('background', pcrData.pcrColour);
   $eyeSide.find('.pcr-span').html(pcrData.pcrRisk);
   $eyeSide.find('.pcr-erisk').html(pcrData.excessRisk);
+  if(pcrData.pcrRisk !== 'N/A'){
+    $eyeSide.find('.pcr-input').val(pcrData.pcrRisk);
+  } else {
+    $eyeSide.find('.pcr-input').val('');
+  }
+  $eyeSide.find('.pcr-erisk-input').val(pcrData.excessRisk);
 
   $('#ophCiExaminationPCRRisk' + side + 'EyeLabel').find('a').css('color', pcrData.pcrColour);
   $('#ophCiExaminationPCRRisk' + side + 'EyeLabel').find('.pcr-span1').html(pcrData.pcrRisk);
