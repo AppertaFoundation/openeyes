@@ -177,14 +177,20 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
      */
     public function generateDocumentListRequest()
     {
-        $this->request_template = 'Internalreferral.views.windipintegration.document_list_xml_test';
-        $when = new \DateTime();
+        //$this->request_template = 'Internalreferral.views.windipintegration.document_list_xml_test';
+        $user = \User::model()->findByPk(\Yii::app()->user->id);
         
+        $when = new \DateTime();
+        $data['username'] = $user->username;
+        $data['user_displayname'] = $user->getReversedFullName();
         $data['timestamp'] = $when->format('Y-m-d H:i:s');
         $data['message_id'] = $this->getMessageId(new \Event());
         $data['application_id'] = $this->application_id;
+        $data['event_id'] = '';
         $data['event_date'] = $when->format('Y-m-d');
         $data['event_time'] = $when->format('H:i:s');
+        $data['is_new_event'] = false;
+        $data['additional_indexes'] = array();//array(array('id' => 'HosNum','value' => 0123456));
         
         $data['authentication_hash'] = $this->generateAuthenticationHash($data);
 
