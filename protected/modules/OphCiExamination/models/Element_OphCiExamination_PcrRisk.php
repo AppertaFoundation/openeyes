@@ -148,7 +148,7 @@ class Element_OphCiExamination_PcrRisk  extends \SplitEventTypeElement
                 'axial_length' => $this->{$side.'_axial_length_group'},
                 'brunescent_white_cataract' => $this->{$side.'_brunescent_white_cataract'},
                 'arb' => $this->{$side.'_alpha_receptor_blocker'},
-                'doctor_grade_id' => $this->{$side.'_doctor_grade_id'},
+                'pcr_doctor_grade' => $this->{$side.'_doctor_grade_id'},
                 'abletolieflat' => $this->{$side.'_can_lie_flat'},
             );
             $pcr->persist($side, $this->event->episode->patient, $data);

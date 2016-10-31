@@ -1,7 +1,24 @@
 <?php
-Yii::app()->getAssetManager()->registerScriptFile('js/PCRCalculation.js')
+$jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js'), false, -1);
 ?>
+<script type="text/javascript">
+    $.getScript('<?=$jsPath?>/PCRCalculation.js', function(){
+        //Map the elements
+        mapExaminationToPcr();
+        //Make the initial calculations
+        var $pcrRiskEl = $('section.Element_OphCiExamination_PcrRisk');
+        pcrCalculate($pcrRiskEl.find('.left-eye'), 'left');
+        pcrCalculate($pcrRiskEl.find('.right-eye'), 'right');
 
+        $(document.body).on('change', $pcrRiskEl.find('.left-eye'), function () {
+            pcrCalculate($pcrRiskEl.find('.left-eye'), 'left');
+        });
+
+        $(document.body).on('change', $pcrRiskEl.find('.right-eye'), function () {
+            pcrCalculate($pcrRiskEl.find('.right-eye'), 'right');
+        });
+    });
+</script>
 <div class="element-eyes element-fields">
 <?php
 $criteria = new CDbCriteria();
@@ -57,7 +74,7 @@ foreach (array('right', 'left') as $side):
     $activeClass = ($element->{'has'.ucfirst($side)}()) ? 'active' : 'inactive'; ?>
     <div class="element-eye <?=$side?>-eye column <?=$opposite?> side <?=$activeClass?>" data-side="<?=$side?>">
         <?php
-        $pcr = $pcrRisk->getPCRData($this->event->episode->patient->id, $side, $element);
+        $pcr = $pcrRisk->getPCRData(Yii::app()->request->getQuery('patient_id'), $side, $element);
         echo CHtml::hiddenField('age', $pcr['age_group']);
         echo CHtml::hiddenField('gender', $pcr['gender']);
         ?>
@@ -105,22 +122,4 @@ foreach (array('right', 'left') as $side):
         </a>
     </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        //Map the elements
-        mapExaminationToPcr();
-        //Make the initial calculations
-        var $pcrRiskEl = $('section.Element_OphCiExamination_PcrRisk');
-        pcrCalculate($pcrRiskEl.find('.left-eye'), 'left');
-        pcrCalculate($pcrRiskEl.find('.right-eye'), 'right');
-
-        $(document.body).on('change', $pcrRiskEl.find('.left-eye'), function () {
-            pcrCalculate($pcrRiskEl.find('.left-eye'), 'left');
-        });
-
-        $(document.body).on('change', $pcrRiskEl.find('.right-eye'), function () {
-            pcrCalculate($pcrRiskEl.find('.right-eye'), 'right');
-        });
-    });
-</script>
 
