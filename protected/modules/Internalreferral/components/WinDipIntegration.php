@@ -195,7 +195,7 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
      * @return string
      * @throws \Exception
      */
-    public function generateUrlForNewEvent(\Event $event)
+    public function generateUrlForEvent(\Event $event)
     {
         $xml = $this->generateXmlRequest($event);
         return $this->launch_uri . '?XML=' . urlencode($xml);
@@ -234,7 +234,7 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
     public function renderEventView(\Event $event)
     {
         return $this->renderPartial($this->new_event_template, array(
-                'external_link' => $this->generateUrlForNewEvent($event),
+                'external_link' => $this->generateUrlForEvent($event),
                 'event' => $event,
                 'is_new_referral' => \Yii::app()->user->getState("new_referral", false)
             )
