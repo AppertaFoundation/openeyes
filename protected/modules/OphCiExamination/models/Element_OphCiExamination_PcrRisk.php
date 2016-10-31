@@ -3,7 +3,7 @@
 /**
  * Class Element_OphCiExamination_PcrRisk
  */
-class Element_OphCiExamination_PcrRisk  extends \SplitEventTypeElement
+class Element_OphCiExamination_PcrRisk extends \SplitEventTypeElement
 {
     /**
      * Returns the static model of the specified AR class.
@@ -129,27 +129,27 @@ class Element_OphCiExamination_PcrRisk  extends \SplitEventTypeElement
      */
     public function beforeSave()
     {
-        if($this->left_pcr_risk === ''){
+        if ($this->left_pcr_risk === '') {
             $this->left_pcr_risk = null;
         }
 
-        if($this->right_pcr_risk === ''){
+        if ($this->right_pcr_risk === '') {
             $this->right_pcr_risk = null;
         }
 
         $pcr = new PcrRisk();
-        foreach(array('left', 'right') as $side){
+        foreach (array('left', 'right') as $side) {
             $data = array(
-                'glaucoma' => $this->{$side.'_glaucoma'},
-                'pxf_phako' => $this->{$side.'_pxf'},
-                'diabetic' => $this->{$side.'_diabetic'},
-                'pupil_size' => $this->{$side.'_pupil_size'},
-                'no_fundal_view' => $this->{$side.'_no_fundal_view'},
-                'axial_length' => $this->{$side.'_axial_length_group'},
-                'brunescent_white_cataract' => $this->{$side.'_brunescent_white_cataract'},
-                'arb' => $this->{$side.'_alpha_receptor_blocker'},
-                'pcr_doctor_grade' => $this->{$side.'_doctor_grade_id'},
-                'abletolieflat' => $this->{$side.'_can_lie_flat'},
+                'glaucoma' => $this->{$side . '_glaucoma'},
+                'pxf_phako' => $this->{$side . '_pxf'},
+                'diabetic' => $this->{$side . '_diabetic'},
+                'pupil_size' => $this->{$side . '_pupil_size'},
+                'no_fundal_view' => $this->{$side . '_no_fundal_view'},
+                'axial_length' => $this->{$side . '_axial_length_group'},
+                'brunescent_white_cataract' => $this->{$side . '_brunescent_white_cataract'},
+                'arb' => $this->{$side . '_alpha_receptor_blocker'},
+                'pcr_doctor_grade' => $this->{$side . '_doctor_grade_id'},
+                'abletolieflat' => $this->{$side . '_can_lie_flat'},
             );
             $pcr->persist($side, $this->event->episode->patient, $data);
         }
@@ -165,18 +165,43 @@ class Element_OphCiExamination_PcrRisk  extends \SplitEventTypeElement
      */
     public function pcrRiskColour($side)
     {
-        $value = $this->{$side.'_pcr_risk'};
+        $value = $this->{$side . '_pcr_risk'};
 
-        if(!$value){
+        if (!$value) {
             return 'blue';
         }
 
-        if($value <= 1){
+        if ($value <= 1) {
             return 'green';
-        }else if ($value > 1 && $value <= 5) {
-            return 'orange';
         } else {
-            return 'red';
+            if ($value > 1 && $value <= 5) {
+                return 'orange';
+            } else {
+                return 'red';
+            }
         }
+    }
+
+    public function afterConstruct()
+    {
+        if ($this->getIsNewRecord() && Yii::app()->request->getQuery('patient_id', false)) {
+            $pcr = new PcrRisk();
+            foreach(array('left', 'right') as $side){
+                $data = $pcr->getPCRData(Yii::app()->request->getQuery('patient_id'), $side, $this);
+                $this->{$side.'_glaucoma'} = $data['glaucoma'];
+                $this->{$side.'_diabetic'} = $data['diabetic'];
+                $this->{$side.'_can_lie_flat'} = $data['lie_flat'];
+                $this->{$side.'_no_fundal_view'} = $data['noview'];
+                $this->{$side.'_pxf'} = $data['anteriorsegment']['pxf_phako'];
+                $this->{$side.'_pupil_size'} = $data['anteriorsegment']['pupil_size'];
+                $this->{$side.'_brunescent_white_cataract'} = $data['anteriorsegment']['brunescent_white_cataract'];
+                $this->{$side.'_doctor_grade_id'} = $data['doctor_grade_id'];
+                $this->{$side.'_axial_length_group'} = $data['axial_length_group'];
+                $this->{$side.'_alpha_receptor_blocker'} = $data['arb'];
+            }
+
+        }
+
+        parent::afterConstruct();
     }
 }
