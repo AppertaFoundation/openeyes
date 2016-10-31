@@ -215,7 +215,7 @@ $criteria = new CDbCriteria();
                 <div class="large-2 column">
 
                     <?php $grades = DoctorGrade::model()->findAll($criteria->condition = 'has_pcr_risk', array('order' => 'display_order'));?>
-                    <select id="<?='pcrrisk_'.$side.'_doctor_grade_id'?>" class="pcr_doctor_grade">
+                    <select id="<?='pcrrisk_'.$side.'_doctor_grade_id'?>" class="pcr_doctor_grade" name="PcrRisk[<?= $side ?>][pcr_doctor_grade]">
                         <?php if(is_array($grades)):?>
                             <?php foreach ($grades as $grade):?>
                                     <option value="<?=$grade->pcr_risk_value?>"><?=$grade->grade?></option>
