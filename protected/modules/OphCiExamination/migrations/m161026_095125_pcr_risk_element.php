@@ -43,6 +43,7 @@ class m161026_095125_pcr_risk_element extends OEMigration
 
         $this->createElementType('OphCiExamination', 'PCR Risk', array(
             'class_name' => 'Element_OphCiExamination_PcrRisk',
+            'display_order' => '50',
         ));
     }
 
