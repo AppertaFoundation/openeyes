@@ -29,7 +29,7 @@ $dropDowns = array(
         'class' => 'pcrrisk_no_fundal_view',
     ),
     'axial_length_group' => array(
-        'options' => array('NK' => 'Not Known', 1 => '< 26', 2 => '> or = 26'),
+        'options' => array(0 => 'Not Known', 1 => '< 26', 2 => '> or = 26'),
         'class' => '',
     ),
     'brunescent_white_cataract' => array(

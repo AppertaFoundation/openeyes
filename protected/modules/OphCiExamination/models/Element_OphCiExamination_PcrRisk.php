@@ -72,6 +72,8 @@ class Element_OphCiExamination_PcrRisk  extends \SplitEventTypeElement
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
+            'right_doctor' => array(self::BELONGS_TO, 'DoctorGrade', 'right_doctor_grade_id'),
+            'left_doctor' => array(self::BELONGS_TO, 'DoctorGrade', 'left_doctor_grade_id'),
         );
     }
 

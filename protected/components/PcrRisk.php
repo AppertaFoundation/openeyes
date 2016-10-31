@@ -18,10 +18,34 @@
  */
 class PcrRisk
 {
+    protected $stringMap = array(
+        'general' => array(
+            'NK' => 'Not Known',
+            'N' => 'No',
+            'Y' => 'Yes',
+        ),
+        'glaucoma' => array(
+            'NK' => 'Not Known',
+            'N' => 'No Glaucoma',
+            'Y' => 'Glaucoma Present',
+        ),
+        'diabetes' => array(
+            'NK' => 'Not Known',
+            'N' => 'No Diabetes',
+            'Y' => 'Diabetes Present',
+        ),
+        'axial' => array(
+            '0' => 'Not Known',
+            '1' => '< 26',
+            '2' => '> or = 26',
+        ),
+    );
+
     /**
      * @var Patient
      */
     protected $patient;
+
     /**
      * @param $patientId
      * @param $side
@@ -338,5 +362,23 @@ class PcrRisk
         if (!$pcrRiskValues->save()) {
             throw new CException('PCR Risk failed to save');
         }
+    }
+
+    /**
+     * @param string $value
+     * @param string $type
+     * @return string
+     */
+    public function displayValues($value, $type = 'general')
+    {
+        if(!array_key_exists($type, $this->stringMap)){
+            $type = 'general';
+        }
+
+        if(array_key_exists($value, $this->stringMap[$type])){
+            return $this->stringMap[$type][$value];
+        }
+
+        return $value;
     }
 }
