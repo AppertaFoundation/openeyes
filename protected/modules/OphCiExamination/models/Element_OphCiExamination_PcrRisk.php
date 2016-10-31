@@ -137,6 +137,23 @@ class Element_OphCiExamination_PcrRisk  extends \SplitEventTypeElement
             $this->right_pcr_risk = null;
         }
 
+        $pcr = new PcrRisk();
+        foreach(array('left', 'right') as $side){
+            $data = array(
+                'glaucoma' => $this->{$side.'_glaucoma'},
+                'pxf_phako' => $this->{$side.'_pxf'},
+                'diabetic' => $this->{$side.'_diabetic'},
+                'pupil_size' => $this->{$side.'_pupil_size'},
+                'no_fundal_view' => $this->{$side.'_no_fundal_view'},
+                'axial_length' => $this->{$side.'_axial_length_group'},
+                'brunescent_white_cataract' => $this->{$side.'_brunescent_white_cataract'},
+                'arb' => $this->{$side.'_alpha_receptor_blocker'},
+                'doctor_grade_id' => $this->{$side.'_doctor_grade_id'},
+                'abletolieflat' => $this->{$side.'_can_lie_flat'},
+            );
+            $pcr->persist($side, $this->event->episode->patient, $data);
+        }
+
         return parent::beforeSave();
     }
 
