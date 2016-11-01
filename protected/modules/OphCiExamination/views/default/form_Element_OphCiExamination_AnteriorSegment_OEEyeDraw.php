@@ -29,6 +29,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     ),
     'onReadyCommandArray' => array(
         array('addDoodle', array('AntSeg')),
+        array('addDoodle', array('Lens')),
         array('deselectDoodles', array()),
     ),
     'bindingArray' => array(
@@ -43,7 +44,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         'OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'.$side.'_nuclear_id' => '',
         'OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'.$side.'_cortical_id' => '',
     ),
-    'listenerArray' => array('anteriorListener', 'pupilListener'),
+    'listenerArray' => array('anteriorSegmentListener', 'anteriorListener', 'pupilListener'),
 
     'idSuffix' => $side.'_'.$element->elementType->id,
     'side' => ($side == 'right') ? 'R' : 'L',
@@ -55,10 +56,6 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'maxToolbarButtons' => 7,
     'template' => 'OEEyeDrawWidget_InlineToolbar',
     'toggleScale' => 0.72,
-    'fields' => $this->renderPartial($element->form_view.'_OEEyeDraw_fields', array(
-        'form' => $form,
-        'side' => $side,
-        'element' => $element,
-    ), true),
+    'fields' => '<div class="eyedraw-fields" style="margin-top: 69px; margin-left:-15px;"><canvas id="ed_canvas_edit_' . $side.'_'.$element->elementType->id. '_side" width="200" height="300" class="ed-canvas-edit secondary" /></div>'
 ));
 ?>
