@@ -18,10 +18,34 @@
  */
 class PcrRisk
 {
+    protected $stringMap = array(
+        'general' => array(
+            'NK' => 'Not Known',
+            'N' => 'No',
+            'Y' => 'Yes',
+        ),
+        'glaucoma' => array(
+            'NK' => 'Not Known',
+            'N' => 'No Glaucoma',
+            'Y' => 'Glaucoma Present',
+        ),
+        'diabetes' => array(
+            'NK' => 'Not Known',
+            'N' => 'No Diabetes',
+            'Y' => 'Diabetes Present',
+        ),
+        'axial' => array(
+            '0' => 'Not Known',
+            '1' => '< 26',
+            '2' => '> or = 26',
+        ),
+    );
+
     /**
      * @var Patient
      */
     protected $patient;
+
     /**
      * @param $patientId
      * @param $side
@@ -166,14 +190,14 @@ class PcrRisk
         $criteria = new CDbCriteria();
         $criteria->select = 'event.id, ophciexamination_opticdisc_cd_ratio.name';
 
-        if ($side == 'right') {
+        if ($side === 'right') {
             $criteria->join = 'JOIN event ON event.episode_id = t.id
-	JOIN et_ophciexamination_opticdisc ON et_ophciexamination_opticdisc.event_id = event.id
-	JOIN ophciexamination_opticdisc_cd_ratio ON et_ophciexamination_opticdisc.right_cd_ratio_id = ophciexamination_opticdisc_cd_ratio.id';
-        } elseif ($side == 'left') {
+                                JOIN et_ophciexamination_opticdisc ON et_ophciexamination_opticdisc.event_id = event.id
+                                JOIN ophciexamination_opticdisc_cd_ratio ON et_ophciexamination_opticdisc.right_cd_ratio_id = ophciexamination_opticdisc_cd_ratio.id';
+        } elseif ($side === 'left') {
             $criteria->join = 'JOIN event ON event.episode_id = t.id
-	JOIN et_ophciexamination_opticdisc ON et_ophciexamination_opticdisc.event_id = event.id
-	JOIN ophciexamination_opticdisc_cd_ratio ON et_ophciexamination_opticdisc.left_cd_ratio_id = ophciexamination_opticdisc_cd_ratio.id';
+                                JOIN et_ophciexamination_opticdisc ON et_ophciexamination_opticdisc.event_id = event.id
+                                JOIN ophciexamination_opticdisc_cd_ratio ON et_ophciexamination_opticdisc.left_cd_ratio_id = ophciexamination_opticdisc_cd_ratio.id';
         }
 
         if ($isAll) {
@@ -227,7 +251,7 @@ class PcrRisk
         }
 
         if (is_array($eyedraw)) {
-            foreach ($eyedraw as $key => $val) {
+            foreach ($eyedraw as $val) {
                 if (!empty($val['pupilSize'])) {
                     $as['pupil_size'] = $val['pupilSize'];
                 }
@@ -277,9 +301,9 @@ class PcrRisk
 
             $axial_length = 0;
 
-            if (($side == 'right') && ($biometry_measurement['eye_id'] == 2 || $biometry_measurement['eye_id'] == 3)) {
+            if (($side === 'right') && ($biometry_measurement['eye_id'] == 2 || $biometry_measurement['eye_id'] == 3)) {
                 $axial_length = $biometry_measurement['axial_length_right'];
-            } elseif (($side == 'left') && ($biometry_measurement['eye_id'] == 1 || $biometry_measurement['eye_id'] == 3)) {
+            } elseif (($side === 'left') && ($biometry_measurement['eye_id'] == 1 || $biometry_measurement['eye_id'] == 3)) {
                 $axial_length = $biometry_measurement['axial_length_left'];
             }
 
@@ -323,20 +347,38 @@ class PcrRisk
         if ($existing) {
             $pcrRiskValues = $existing;
         }
-        $data['doctor_grade_id'] = '1';
-        $pcrRiskValues->glaucoma = (isset($data['glaucoma']) && $data['glaucoma'] != 'NK') ? $data['glaucoma'] : null;
-        $pcrRiskValues->pxf = (isset($data['pxf_phako']) && $data['pxf_phako'] != 'NK') ? $data['pxf_phako'] : null;
-        $pcrRiskValues->diabetic = (isset($data['diabetic']) && $data['diabetic'] != 'NK') ? $data['diabetic'] : null;
-        $pcrRiskValues->pupil_size = (isset($data['pupil_size']) && $data['pupil_size'] != 'NK') ? $data['pupil_size'] : null;
-        $pcrRiskValues->no_fundal_view = (isset($data['no_fundal_view']) && $data['no_fundal_view'] != 'NK') ? $data['no_fundal_view'] : null;
-        $pcrRiskValues->axial_length_group = (isset($data['axial_length']) && $data['axial_length'] != 'NK') ? $data['axial_length'] : null;
-        $pcrRiskValues->brunescent_white_cataract = (isset($data['brunescent_white_cataract']) && $data['brunescent_white_cataract'] != 'NK') ? $data['brunescent_white_cataract'] : null;
-        $pcrRiskValues->alpha_receptor_blocker = (isset($data['arb']) && $data['arb'] != 'NK') ? $data['arb'] : null;
-        $pcrRiskValues->doctor_grade_id = (isset($data['doctor_grade_id']) && $data['doctor_grade_id'] != '') ? $data['doctor_grade_id'] : null;
-        $pcrRiskValues->can_lie_flat = (isset($data['abletolieflat']) && $data['abletolieflat'] != 'NK') ? $data['abletolieflat'] : null;
+
+        $pcrRiskValues->glaucoma = (isset($data['glaucoma']) && $data['glaucoma'] !== 'NK') ? $data['glaucoma'] : null;
+        $pcrRiskValues->pxf = (isset($data['pxf_phako']) && $data['pxf_phako'] !== 'NK') ? $data['pxf_phako'] : null;
+        $pcrRiskValues->diabetic = (isset($data['diabetic']) && $data['diabetic'] !== 'NK') ? $data['diabetic'] : null;
+        $pcrRiskValues->pupil_size = (isset($data['pupil_size']) && $data['pupil_size'] !== 'NK') ? $data['pupil_size'] : null;
+        $pcrRiskValues->no_fundal_view = (isset($data['no_fundal_view']) && $data['no_fundal_view'] !== 'NK') ? $data['no_fundal_view'] : null;
+        $pcrRiskValues->axial_length_group = (isset($data['axial_length']) && $data['axial_length'] !== 'NK') ? $data['axial_length'] : null;
+        $pcrRiskValues->brunescent_white_cataract = (isset($data['brunescent_white_cataract']) && $data['brunescent_white_cataract'] !== 'NK') ? $data['brunescent_white_cataract'] : null;
+        $pcrRiskValues->alpha_receptor_blocker = (isset($data['arb']) && $data['arb'] !== 'NK') ? $data['arb'] : null;
+        $pcrRiskValues->doctor_grade_id = (isset($data['pcr_doctor_grade']) && $data['pcr_doctor_grade'] !== '') ? $data['pcr_doctor_grade'] : null;
+        $pcrRiskValues->can_lie_flat = (isset($data['abletolieflat']) && $data['abletolieflat'] !== 'NK') ? $data['abletolieflat'] : null;
 
         if (!$pcrRiskValues->save()) {
             throw new CException('PCR Risk failed to save');
         }
+    }
+
+    /**
+     * @param string $value
+     * @param string $type
+     * @return string
+     */
+    public function displayValues($value, $type = 'general')
+    {
+        if(!array_key_exists($type, $this->stringMap)){
+            $type = 'general';
+        }
+
+        if(array_key_exists($value, $this->stringMap[$type])){
+            return $this->stringMap[$type][$value];
+        }
+
+        return $value;
     }
 }
