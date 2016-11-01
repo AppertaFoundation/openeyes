@@ -186,20 +186,25 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
         return true;
     }
 
+
     /**
+     * @param $patientId
+     *
      * @return array|mixed|null
      */
-    public function mostRecentCheckedAlpha($id)
+    public function mostRecentCheckedAlpha($patientId)
     {
-        return $this->mostRecentChecked('alphablocker', $id);
+        return $this->mostRecentChecked('alphablocker', $patientId);
     }
 
     /**
+     * @param $patientId
+     *
      * @return array|mixed|null
      */
-    public function mostRecentCheckedAnticoag($id)
+    public function mostRecentCheckedAnticoag($patientId)
     {
-        return $this->mostRecentChecked('anticoagulant', $id);
+        return $this->mostRecentChecked('anticoagulant', $patientId);
     }
 
     /**
@@ -209,17 +214,19 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
      * actually been checked, yes or no.
      *
      * @param $type
+     * @param $patientId
      *
      * @return array|mixed|null
      */
-    protected function mostRecentChecked($type, $id)
+    protected function mostRecentChecked($type, $patientId)
     {
         $criteria = new \CDbCriteria();
         $criteria->join = 'join event on t.event_id = event.id ';
         $criteria->join .= 'join episode on event.episode_id = episode.id ';
         $criteria->addCondition($type . ' > 0');
+        $criteria->addCondition('event.deleted <> 1');
         $criteria->addCondition('episode.patient_id = :patient_id');
-        $criteria->params = array('patient_id' => $id);
+        $criteria->params = array('patient_id' => $patientId);
         $criteria->order = 'event.event_date DESC';
         $criteria->limit = 1;
 
