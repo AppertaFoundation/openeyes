@@ -6,10 +6,10 @@
  */
 function getPcrContainer(ev) {
   var isRight = (ev.target.id.indexOf('right') > -1),
-    $container = $('#ophCiExaminationPCRRiskLeftEye, section.Element_OphCiExamination_PcrRisk .left-eye');
+    $container = $('#ophCiExaminationPCRRiskLeftEye, section.OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk .left-eye');
 
   if (isRight) {
-    $container = $('#ophCiExaminationPCRRiskRightEye, section.Element_OphCiExamination_PcrRisk .right-eye');
+    $container = $('#ophCiExaminationPCRRiskRightEye, section.OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk .right-eye');
   }
 
   return $container;
