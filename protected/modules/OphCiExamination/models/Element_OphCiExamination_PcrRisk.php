@@ -1,5 +1,7 @@
 <?php
 
+namespace OEModule\OphCiExamination\models;
+
 /**
  * Class Element_OphCiExamination_PcrRisk
  */
@@ -187,10 +189,10 @@ class Element_OphCiExamination_PcrRisk extends \SplitEventTypeElement
      */
     public function afterConstruct()
     {
-        if ($this->getIsNewRecord() && Yii::app()->request->getQuery('patient_id', false)) {
-            $pcr = new PcrRisk();
+        if ($this->getIsNewRecord() && \Yii::app()->request->getQuery('patient_id', false)) {
+            $pcr = new \PcrRisk();
             foreach (array('left', 'right') as $side) {
-                $data = $pcr->getPCRData(Yii::app()->request->getQuery('patient_id'), $side, $this);
+                $data = $pcr->getPCRData(\Yii::app()->request->getQuery('patient_id'), $side, $this);
                 $this->{$side . '_glaucoma'} = $data['glaucoma'];
                 $this->{$side . '_diabetic'} = $data['diabetic'];
                 $this->{$side . '_can_lie_flat'} = $data['lie_flat'];

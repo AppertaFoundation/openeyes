@@ -6,7 +6,7 @@ $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applicatio
         //Map the elements
         mapExaminationToPcr();
         //Make the initial calculations
-        var $pcrRiskEl = $('section.Element_OphCiExamination_PcrRisk');
+        var $pcrRiskEl = $('section.OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk');
         pcrCalculate($pcrRiskEl.find('.left-eye'), 'left');
         pcrCalculate($pcrRiskEl.find('.right-eye'), 'right');
 

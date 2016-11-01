@@ -22,14 +22,16 @@
         <?php echo $form->radioButtons($element, 'eye_id',
             CHtml::listData(\OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::model()->findAll(), 'id', 'name'), null, false, false, false, false,
             array('nowrapper' => true)) ?>
+        <?php if(Yii::app()->params['clinical_management_pcr']): ?>
         <span class="pcr-exam-link">
-                <span id="ophCiExaminationPCRRiskRightEyeLabel">
-                    <a href="javascript:showhidePCR('ophCiExaminationPCRRiskRightEye')">Right Eye - PCR Risk <span class="pcr-span1"></span>%</a>
-                </span>&nbsp;|&nbsp;
-                <span id="ophCiExaminationPCRRiskLeftEyeLabel">
-                    <a href="javascript:showhidePCR('ophCiExaminationPCRRiskLeftEye')">Left Eye - PCR Risk <span class="pcr-span1"></span>%</a>
-                </span>
+            <span id="ophCiExaminationPCRRiskRightEyeLabel">
+                <a href="javascript:showhidePCR('ophCiExaminationPCRRiskRightEye')">Right Eye - PCR Risk <span class="pcr-span1"></span>%</a>
+            </span>&nbsp;|&nbsp;
+            <span id="ophCiExaminationPCRRiskLeftEyeLabel">
+                <a href="javascript:showhidePCR('ophCiExaminationPCRRiskLeftEye')">Left Eye - PCR Risk <span class="pcr-span1"></span>%</a>
+            </span>
         </span>
+        <?php endif; ?>
     </div>
 
     <div class="field-row">
@@ -111,7 +113,7 @@
         <div class="large-3 column"></div>
     </div>
 </div>
-
+<?php if(Yii::app()->params['clinical_management_pcr']): ?>
 <div id="ophCiExaminationPCRRiskLeftEye" class="pcr-opnote-eye">
     <?php
     $this->renderPartial('application.views.default._pcr_risk_form', array('side' => 'left', 'element' => $element));
@@ -122,7 +124,7 @@
     $this->renderPartial('application.views.default._pcr_risk_form', array('side' => 'right', 'element' => $element));
     ?>
 </div>
-
+<?php endif; ?>
 <script type="text/javascript">
     $('#OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_target_postop_refraction').change(function () {
 
