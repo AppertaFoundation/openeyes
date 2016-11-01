@@ -94,6 +94,9 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
      */
     protected function constructRequestData(\Event $event, \DateTime $when, $message_id)
     {
+        
+        $is_new_event = \Yii::app()->user->getState("new_referral", false);
+        
         //TODO: better way of handling mysql date to datetime
         $event_date = \DateTime::createFromFormat('Y-m-d H:i:s', $event->event_date);
 
@@ -112,10 +115,11 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
             'username' => $user->username,
             'user_displayname' => $user->getReversedFullName(),
             'event_id' => $event->id,
-            'windip_type_id' => $this->form_id,
+            'windip_type_id' => !$is_new_event ? '' : $this->form_id,
             'event_date' => $event_date->format('Y-m-d'),
             'event_time' => $event_date->format('H:i:s'),
-            'additional_indexes' => $indexes
+            'additional_indexes' => !$is_new_event ? array() : $indexes,
+            'is_new_event' => $is_new_event
         );
     }
 
@@ -173,14 +177,20 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
      */
     public function generateDocumentListRequest()
     {
-        $this->request_template = 'Internalreferral.views.windipintegration.document_list_xml_test';
-        $when = new \DateTime();
+        //$this->request_template = 'Internalreferral.views.windipintegration.document_list_xml_test';
+        $user = \User::model()->findByPk(\Yii::app()->user->id);
         
+        $when = new \DateTime();
+        $data['username'] = $user->username;
+        $data['user_displayname'] = $user->getReversedFullName();
         $data['timestamp'] = $when->format('Y-m-d H:i:s');
         $data['message_id'] = $this->getMessageId(new \Event());
         $data['application_id'] = $this->application_id;
+        $data['event_id'] = '';
         $data['event_date'] = $when->format('Y-m-d');
         $data['event_time'] = $when->format('H:i:s');
+        $data['is_new_event'] = false;
+        $data['additional_indexes'] = array();//array(array('id' => 'HosNum','value' => 0123456));
         
         $data['authentication_hash'] = $this->generateAuthenticationHash($data);
 
@@ -189,13 +199,13 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
     }
 
     /**
-     * Generate the external application URL for a new WinDip referral event.
+     * Generate the external application URL for a WinDip referral event.
      *
      * @param \Event $event
      * @return string
      * @throws \Exception
      */
-    public function generateUrlForNewEvent(\Event $event)
+    public function generateUrlForEvent(\Event $event)
     {
         $xml = $this->generateXmlRequest($event);
         return $this->launch_uri . '?XML=' . urlencode($xml);
@@ -234,9 +244,9 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
     public function renderEventView(\Event $event)
     {
         return $this->renderPartial($this->new_event_template, array(
-                'external_link' => $this->generateUrlForNewEvent($event),
+                'external_link' => $this->generateUrlForEvent($event),
                 'event' => $event,
-                'is_new_referral' => \Yii::app()->user->getState("new_referral", false)
+                'is_new_referral' => \Yii::app()->user->getState("new_referral", false),
             )
         );
     }
