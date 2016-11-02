@@ -26,7 +26,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
                 other: {
                     AntSeg: { AntSegCrossSection: {parameters:['apexY']} },
                     Lens: {
-                        LensCrossSection: { parameters: ['originY', 'nuclearGrade', 'corticalGrade'] }
+                        LensCrossSection: { parameters: ['originY', 'nuclearGrade', 'corticalGrade', 'posteriorSubcapsularGrade'] }
                     },
                     ACIOL: { ACIOLCrossSection: { parameters: ['originY'] } },
                     PCIOL: { PCIOLCrossSection: { parameters: ['originY', 'fx'] } },
