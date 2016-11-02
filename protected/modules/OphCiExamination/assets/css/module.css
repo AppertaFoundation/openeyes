@@ -162,6 +162,10 @@
 .pcr-risk-div label.orange {
   background-color: #ffa500;
 }
+/* line 19, ../sass/components/elements/_pcr.scss */
+.pcr-risk-div label.green {
+  background-color: #008000;
+}
 
 /* line 17, ../sass/components/_gonio-cross.scss */
 .gonio-cross {
