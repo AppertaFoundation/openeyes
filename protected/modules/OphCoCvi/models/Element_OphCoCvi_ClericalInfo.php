@@ -72,7 +72,8 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 
     public function init()
     {
-        $this->preferred_language_id = $this->preferred_language_id ? preferred_language_id : 12;
+        $preferred_language_id= \Language::model()->findByAttributes(array('name'=>'English'));
+        $this->preferred_language_id = $this->preferred_language_id ? $this->preferred_language_id : $preferred_language_id;
     }
 
     /**
@@ -82,7 +83,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
     {
         return array(
             array(
-                'event_id, employment_status_id, preferred_info_fmt_id, info_email, contact_urgency_id, preferred_language_id, social_service_comments, ',
+                'event_id, employment_status_id, preferred_info_fmt_id, info_email, contact_urgency_id, preferred_language_id, social_service_comments, preferred_language_text, ',
                 'safe'
             ),
             array(
@@ -155,6 +156,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
             'contact_urgency_id' => 'Contact urgency',
             'preferred_language_id' => 'Preferred language',
             'social_service_comments' => 'Social service comments',
+            'preferred_language_text' => "Preferred Language",
         );
     }
 
@@ -261,7 +263,11 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
             }
         }
 
-        $result['preferredLanguage'] = $this->preferred_language ? $this->preferred_language->name : ' ';
+        if ($this->preferred_language_text){
+            $result['preferredLanguage'] = $this->preferred_language_text;
+        } else {
+            $result['preferredLanguage'] = $this->preferred_language ? $this->preferred_language->name : ' ';
+        }
         $result['socialServiceComments'] = $this->social_service_comments;
 
         return $result;
