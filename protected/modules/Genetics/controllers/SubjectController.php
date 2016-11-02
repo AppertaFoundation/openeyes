@@ -47,6 +47,7 @@ class SubjectController extends BaseModuleController
             }
             $this->jsVars['geneticsRelationships'] = $relationsForJson;
         }
+        Yii::app()->assetManager->registerScriptFile('/js/admin.js');
         Yii::app()->assetManager->registerCssFile('/components/font-awesome/css/font-awesome.css', null, 10);
 
         return parent::beforeAction($action);
