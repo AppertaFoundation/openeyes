@@ -23,7 +23,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         array('Lens', 'PCIOL', 'ACIOL', 'Bleb', 'PI',
             'Fuchs', 'RK', 'LasikFlap', 'CornealScar', 'SectorIridectomy', 'PosteriorSynechia', 'Rubeosis',
             'TransilluminationDefect', 'KrukenbergSpindle', 'KeraticPrecipitates', 'PosteriorCapsule', 'Hypopyon',
-            'CornealOedema', 'Episcleritis', 'Hyphaema', ),
+            'CornealOpacity', 'CornealOedema', 'Episcleritis', 'Hyphaema', ),
         array('TrabySuture', 'Supramid', 'TubeLigation', 'CornealSuture', 'TrabyFlap', 'SidePort', 'Patch',
             'ConjunctivalSuture', 'ACMaintainer', 'Tube', 'TubeExtender', ),
     ),
@@ -68,9 +68,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
                 'LensCrossSection' => array('Lens' => array('parameters' => array('originY') ) ),
                 'ACIOLCrossSection' => array('ACIOL' => array('parameters' => array('originY') ) ),
                 'PCIOLCrossSection' => array('PCIOL' => array('parameters' => array('originY', 'fx') ) ),
-                'NuclearCataractCrossSection' => array('NuclearCataract' => array('parameters' => array('apexY') ) ),
-                'CorticalCataractCrossSection' => array('CorticalCataract' => array('parameters' => array('apexY') ) ),
-                'CornealOpacityCrossSection' => array('CornealOpacity' => array('parameters' => array('yMidPoint', 'd', 'h', 'w', 'iW') ) )
+                //'CornealOpacityCrossSection' => array('CornealOpacity' => array('parameters' => array('yMidPoint', 'd', 'h', 'w', 'iW') ) )
             ),
         ),
         'idSuffix' => $side.'_'.$element->elementType->id . '_side',
