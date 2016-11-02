@@ -19,6 +19,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use services\DateTime;
+
 /**
  * This is the model class for table "et_ophciexamination_glaucomarisk".
  *
@@ -186,20 +188,47 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
         return true;
     }
 
+
     /**
+     * @param $patientId
+     *
      * @return array|mixed|null
      */
-    public function mostRecentCheckedAlpha($id)
+    public function mostRecentCheckedAlpha($patientId)
     {
-        return $this->mostRecentChecked('alphablocker', $id);
+        return $this->mostRecentChecked('alphablocker', $patientId);
     }
 
     /**
+     * @param $patientId
+     *
      * @return array|mixed|null
      */
-    public function mostRecentCheckedAnticoag($id)
+    public function mostRecentCheckedAnticoag($patientId)
     {
-        return $this->mostRecentChecked('anticoagulant', $id);
+        return $this->mostRecentChecked('anticoagulant', $patientId);
+    }
+
+    /**
+     * @param $patientId
+     * @param $date
+     *
+     * @return array|mixed|null
+     */
+    public function previousCheckedAlpha($patientId, $date = 'now')
+    {
+        return $this->previousChecked('alphablocker', $patientId, $date);
+    }
+
+    /**
+     * @param $patientId
+     * @param $date
+     *
+     * @return array|mixed|null
+     */
+    public function previousCheckedAnticoag($patientId, $date = 'now')
+    {
+        return $this->previousChecked('anticoagulant', $patientId, $date);
     }
 
     /**
@@ -209,21 +238,53 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
      * actually been checked, yes or no.
      *
      * @param $type
+     * @param $patientId
      *
      * @return array|mixed|null
      */
-    protected function mostRecentChecked($type, $id)
+    protected function mostRecentChecked($type, $patientId)
+    {
+        $criteria = $this->risksByTypeForPatient($type, $patientId);
+        $criteria->limit = 1;
+
+        return self::model()->find($criteria);
+    }
+
+    /**
+     * @param        $type
+     * @param        $patientId
+     * @param string $before
+     *
+     * @return array|mixed|null
+     */
+    protected function previousChecked($type, $patientId, $before = 'now')
+    {
+        $date = new \DateTime($before);
+        $criteria = $this->risksByTypeForPatient($type, $patientId);
+        $criteria->limit = 1;
+        $criteria->addCondition('event.event_date < :date');
+        $criteria->params['date'] = $date->format('Y-m-d H:i:s');
+
+        return self::model()->find($criteria);
+    }
+
+    /**
+     * @param $type
+     * @param $patientId
+     * @return \CDbCriteria
+     */
+    protected function risksByTypeForPatient($type, $patientId)
     {
         $criteria = new \CDbCriteria();
         $criteria->join = 'join event on t.event_id = event.id ';
         $criteria->join .= 'join episode on event.episode_id = episode.id ';
         $criteria->addCondition($type . ' > 0');
+        $criteria->addCondition('event.deleted <> 1');
         $criteria->addCondition('episode.patient_id = :patient_id');
-        $criteria->params = array('patient_id' => $id);
+        $criteria->params = array('patient_id' => $patientId);
         $criteria->order = 'event.event_date DESC';
-        $criteria->limit = 1;
 
-        return self::model()->find($criteria);
+        return $criteria;
     }
 
 }
