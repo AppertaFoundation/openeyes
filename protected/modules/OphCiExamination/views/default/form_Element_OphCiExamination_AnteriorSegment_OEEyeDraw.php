@@ -56,6 +56,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'maxToolbarButtons' => 7,
     'template' => 'OEEyeDrawWidget_InlineToolbar',
     'toggleScale' => 0.72,
-    'fields' => '<div class="eyedraw-fields" style="margin-top: 69px; margin-left:-15px;"><canvas id="ed_canvas_edit_' . $side.'_'.$element->elementType->id. '_side" width="200" height="300" class="ed-canvas-edit secondary" /></div>'
+    'popupDisplaySide' => 'left',
+    'fields' => '<div class="eyedraw-fields" style="margin-top: 69px; margin-left:-15px;"><canvas id="ed_canvas_edit_' . $side.'_'.$element->elementType->id. '_side" width="198" height="300" class="ed-canvas-edit secondary" /></div>'
 ));
 ?>

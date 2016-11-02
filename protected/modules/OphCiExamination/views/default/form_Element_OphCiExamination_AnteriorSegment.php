@@ -18,11 +18,11 @@
  */
 ?>
 
-<div class="element-fields element-eyes row">
+<div class="element-fields element-eyes row" style="overflow: inherit;">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 	<div class="element-eye right-eye column side left<?php if (!$element->hasRight()) {
     ?> inactive<?php 
-}?>" data-side="right">
+}?>" data-side="right" style="border-right: 1px solid white;">
 		<div class="active-form">
 			<a href="#" class="icon-remove-side remove-side">Remove side</a>
 			<div class="eyedraw-row anterior-segment">
