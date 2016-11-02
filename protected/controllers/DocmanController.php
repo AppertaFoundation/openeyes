@@ -6,7 +6,7 @@ class DocmanController extends BaseController
 	public function accessRules()
     {
         return array(
-            array('allow', 'roles' => array('admin')),
+            array('allow', 'roles' => array('admin', 'User')),
         );
     }
 	
