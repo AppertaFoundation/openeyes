@@ -20,7 +20,7 @@
 <?php
 $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'doodleToolBarArray' => array(
-        array('NuclearCataract', 'CorticalCataract', 'PostSubcapCataract', 'PCIOL', 'ACIOL', 'Bleb', 'PI',
+        array('Lens', 'PCIOL', 'ACIOL', 'Bleb', 'PI',
             'Fuchs', 'RK', 'LasikFlap', 'CornealScar', 'SectorIridectomy', 'PosteriorSynechia', 'Rubeosis',
             'TransilluminationDefect', 'KrukenbergSpindle', 'KeraticPrecipitates', 'PosteriorCapsule', 'Hypopyon',
             'CornealOedema', 'Episcleritis', 'Hyphaema', ),
@@ -32,19 +32,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         array('addDoodle', array('Lens')),
         array('deselectDoodles', array()),
     ),
-    'bindingArray' => array(
-        'NuclearCataract' => array(
-            'grade' => array('id' => 'OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'.$side.'_nuclear_id', 'attribute' => 'data-value'),
-        ),
-        'CorticalCataract' => array(
-            'grade' => array('id' => 'OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'.$side.'_cortical_id', 'attribute' => 'data-value'),
-        ),
-    ),
-    'deleteValueArray' => array(
-        'OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'.$side.'_nuclear_id' => '',
-        'OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'.$side.'_cortical_id' => '',
-    ),
-    'listenerArray' => array('anteriorSegmentListener', 'anteriorListener', 'pupilListener'),
+    'listenerArray' => array('anteriorSegmentListener'),
 
     'idSuffix' => $side.'_'.$element->elementType->id,
     'side' => ($side == 'right') ? 'R' : 'L',
@@ -57,6 +45,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'template' => 'OEEyeDrawWidget_InlineToolbar',
     'toggleScale' => 0.72,
     'popupDisplaySide' => 'left',
+    'autoReport' => 'OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'.$side.'_description',
     'fields' => '<div class="eyedraw-fields" style="margin-top: 69px; margin-left:-15px;"><canvas id="ed_canvas_edit_' . $side.'_'.$element->elementType->id. '_side" width="198" height="300" class="ed-canvas-edit secondary" /></div>'
 ));
 ?>
