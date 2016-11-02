@@ -14,9 +14,6 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
     AnteriorSegmentController._defaultOptions = {
         pairArray: {
             Lens:'LensCrossSection',
-            CorticalCataract:'CorticalCataractCrossSection',
-            NuclearCataract:'NuclearCataractCrossSection',
-            PostSubcapCataract:'PostSubcapCataractCrossSection',
             PCIOL:'PCIOLCrossSection',
             ACIOL: 'ACIOLCrossSection',
             CornealOpacity: 'CornealOpacityCrossSection'
