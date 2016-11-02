@@ -74,7 +74,13 @@ foreach (array('right', 'left') as $side):
     $activeClass = ($element->{'has'.ucfirst($side)}()) ? 'active' : 'inactive'; ?>
     <div class="element-eye <?=$side?>-eye column <?=$opposite?> side <?=$activeClass?>" data-side="<?=$side?>">
         <?php
-        $pcr = $pcrRisk->getPCRData(Yii::app()->request->getQuery('patient_id'), $side, $element);
+        if($this->event){
+            $patientId = $this->event->episode->patient->id;
+        } else {
+            $patientId = Yii::app()->request->getQuery('patient_id');
+        }
+
+        $pcr = $pcrRisk->getPCRData($patientId, $side, $element);
         echo CHtml::hiddenField('age', $pcr['age_group']);
         echo CHtml::hiddenField('gender', $pcr['gender']);
         ?>
@@ -92,7 +98,14 @@ foreach (array('right', 'left') as $side):
                                     name="OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk[<?= $side ?>_doctor_grade_id]">
                                 <?php if(is_array($grades)):?>
                                     <?php foreach ($grades as $grade):?>
-                                        <option value="<?=$grade->id?>" data-pcr-value="<?=$grade->pcr_risk_value?>"><?=$grade->grade?></option>
+                                        <?php
+                                            if($element->{$side . '_doctor_grade_id'} === $grade->id):
+                                                $selected = 'selected';
+                                            else:
+                                                $selected = '';
+                                            endif;
+                                        ?>
+                                        <option value="<?=$grade->id?>" data-pcr-value="<?=$grade->pcr_risk_value?>" <?=$selected?>><?=$grade->grade?></option>
                                     <?php endforeach;?>
                                 <?php endif;?>
                             </select>
