@@ -909,20 +909,7 @@ class DefaultController extends \BaseEventTypeController
         }
 
         if (is_null($recent) || strtotime($this->event->event_date) >= strtotime($recent->event->event_date)) {
-            $risk = \Risk::model()->find('name=?', array($risk_check));
-            $criteria = new \CDbCriteria();
-            $criteria->compare('risk_id', $risk['id']);
-            $criteria->compare('patient_id', $this->patient->id);
-            $patient_risk = \PatientRiskAssignment::model()->find($criteria);
-            if ($risk_value === '1') {
-                $patient_risk = (!$patient_risk) ? new \PatientRiskAssignment() : $patient_risk;
-                $patient_risk->risk_id = $risk['id'];
-                $patient_risk->patient_id = $this->patient->id;
-                $patient_risk->comments = $risk_comment;
-                $patient_risk->save();
-            } elseif ($patient_risk && ($risk_value === '2')) {
-                \PatientRiskAssignment::model()->deleteByPk($patient_risk->id);
-            }
+            $this->updateSummaryRisk($risk_value, $risk_comment, $risk_check);
         }
     }
 
@@ -1312,6 +1299,7 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * Setting the CVI alert flag to dismiss
+     *
      * @param int $element_id
      */
     public function actionDismissCVIalert($element_id)
@@ -1326,6 +1314,59 @@ class DefaultController extends \BaseEventTypeController
             if($element->save()) {
                 echo \CJSON::encode(array('success' => 'true'));
             }
+        }
+    }
+
+    /**
+     * @param $id
+     *
+     * @return bool
+     */
+    public function actionDelete($id)
+    {
+        $historyRisk = new models\Element_OphCiExamination_HistoryRisk();
+        $recentAnticoag = $historyRisk->mostRecentCheckedAnticoag($this->patient->id);
+        $recentAlpha = $historyRisk->mostRecentCheckedAlpha($this->patient->id);
+        $thisRisk = $historyRisk->find('event_id = ?', array($this->event->id));
+
+        if ($thisRisk) {
+            if (is_null($recentAnticoag) || $recentAnticoag->anticoagulant === '0' || $recentAnticoag->event->id === $thisRisk->event->id) {
+                $previous = $historyRisk->previousCheckedAnticoag($this->patient->id, $thisRisk->event->event_date);
+                if ($previous->anticoagulant !== $thisRisk->anticoagulant) {
+                    $this->updateSummaryRisk($previous->anticoagulant, $previous->anticoagulant_name, 'Anticoagulants');
+                }
+            }
+            if (is_null($recentAlpha) || $recentAlpha->alphablocker === '0' || $recentAnticoag->event->id === $thisRisk->event->id) {
+                $previous = $historyRisk->previousCheckedAlpha($this->patient->id, $thisRisk->event->event_date);
+                if ($previous->alphablocker !== $thisRisk->alphablocker) {
+                    $this->updateSummaryRisk($previous->alphablocker, $previous->alpha_blocker_name, 'Alpha blockers');
+                }
+            }
+        }
+
+        return parent::actionDelete($id);
+    }
+
+    /**
+     * @param $risk_value
+     * @param $risk_comment
+     * @param $risk_check
+     */
+    protected function updateSummaryRisk($risk_value, $risk_comment, $risk_check)
+    {
+        $risk = \Risk::model()->find('name=?', array($risk_check));
+        $criteria = new \CDbCriteria();
+        $criteria->compare('risk_id', $risk['id']);
+        $criteria->compare('patient_id', $this->patient->id);
+        $patient_risk = \PatientRiskAssignment::model()->find($criteria);
+        if ($risk_value === '1') {
+            $patient_risk = (!$patient_risk) ? new \PatientRiskAssignment() : $patient_risk;
+            $patient_risk->risk_id = $risk['id'];
+            $patient_risk->patient_id = $this->patient->id;
+            $patient_risk->comments = $risk_comment;
+            $patient_risk->save();
+        } elseif ($patient_risk && ($risk_value === '2')) {
+            \PatientRiskAssignment::model()->deleteByPk($patient_risk->id);
         }
     }
 }
