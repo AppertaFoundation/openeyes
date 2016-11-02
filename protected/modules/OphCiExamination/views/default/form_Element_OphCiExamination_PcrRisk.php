@@ -58,7 +58,7 @@ $dropDowns = array(
         'class' => '',
     ),
     'doctor_grade_id' => array(
-        'options' => CHtml::listData($grades, 'pcr_risk_value', 'grade'),
+        'options' => $grades,
         'class' => 'pcr_doctor_grade',
     ),
     'can_lie_flat' => array(
@@ -81,14 +81,34 @@ foreach (array('right', 'left') as $side):
         <div class="active-form">
             <a href="#" class="icon-remove-side remove-side">Remove side</a>
             <?php foreach ($dropDowns as $key => $data):
-                echo $form->dropDownList(
-                    $element,
-                    $side.'_'.$key,
-                    $data['options'],
-                    array('class' => $data['class']),
-                    false,
-                    array('label' => 4, 'field' => 4)
-                );
+                if ($key === 'doctor_grade_id'):?>
+                    <div id="div_OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_pcr_doctor_grade" class="row field-row">
+                        <div class="large-4 column">
+                            <label for="OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_pcr_doctor_grade">Surgeon Grade:</label>
+                        </div>
+                        <div class="large-4 column end">
+                            <select id="<?='pcrrisk_'.$side.'_doctor_grade_id'?>"
+                                    class="pcr_doctor_grade"
+                                    name="OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk[<?= $side ?>_pcr_doctor_grade]">
+                                <?php if(is_array($grades)):?>
+                                    <?php foreach ($grades as $grade):?>
+                                        <option value="<?=$grade->pcr_risk_value?>"><?=$grade->grade?></option>
+                                    <?php endforeach;?>
+                                <?php endif;?>
+                            </select>
+                        </div>
+                    </div>
+                <?php
+                else:
+                    echo $form->dropDownList(
+                        $element,
+                        $side.'_'.$key,
+                        $data['options'],
+                        array('class' => $data['class']),
+                        false,
+                        array('label' => 4, 'field' => 4)
+                    );
+                endif;
             endforeach;?>
             <div class="row field-row">
                 <div class="large-4 column pcr-risk-div">
