@@ -139,7 +139,7 @@ class Element_OphCiExamination_PcrRisk extends \SplitEventTypeElement
             $this->right_pcr_risk = null;
         }
 
-        $pcr = new PcrRisk();
+        $pcr = new \PcrRisk();
         foreach (array('left', 'right') as $side) {
             $data = array(
                 'glaucoma' => $this->{$side . '_glaucoma'},

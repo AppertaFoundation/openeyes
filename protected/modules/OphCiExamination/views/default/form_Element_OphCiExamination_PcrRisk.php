@@ -84,15 +84,15 @@ foreach (array('right', 'left') as $side):
                 if ($key === 'doctor_grade_id'):?>
                     <div id="div_OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_pcr_doctor_grade" class="row field-row">
                         <div class="large-4 column">
-                            <label for="OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_pcr_doctor_grade">Surgeon Grade:</label>
+                            <label for="<?='pcrrisk_'.$side.'_doctor_grade_id'?>">Surgeon Grade:</label>
                         </div>
                         <div class="large-4 column end">
                             <select id="<?='pcrrisk_'.$side.'_doctor_grade_id'?>"
                                     class="pcr_doctor_grade"
-                                    name="OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk[<?= $side ?>_pcr_doctor_grade]">
+                                    name="OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk[<?= $side ?>_doctor_grade_id]">
                                 <?php if(is_array($grades)):?>
                                     <?php foreach ($grades as $grade):?>
-                                        <option value="<?=$grade->pcr_risk_value?>"><?=$grade->grade?></option>
+                                        <option value="<?=$grade->id?>" data-pcr-value="<?=$grade->pcr_risk_value?>"><?=$grade->grade?></option>
                                     <?php endforeach;?>
                                 <?php endif;?>
                             </select>

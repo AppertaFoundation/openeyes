@@ -293,7 +293,7 @@ function collectValues($eyeSide) {
   pcrData.axiallength = $eyeSide.find("select[id$='axial_length'], select[id$='axial_length_group']").val();
   pcrData.alphareceptorblocker = $eyeSide.find("select[id$='arb'], select[id$='alpha_receptor_blocker']").val();
   pcrData.abletolieflat = $eyeSide.find("select[id$='abletolieflat'], select[id$='can_lie_flat']").val();
-  pcrData.doctorgrade = $eyeSide.find("select[id$='doctor_grade_id']").val();
+  pcrData.doctorgrade = $eyeSide.find("select[id$='doctor_grade_id']").find(":selected").data('pcrValue');
 
   return pcrData;
 }

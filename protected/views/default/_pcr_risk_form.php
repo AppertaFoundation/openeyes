@@ -217,7 +217,7 @@ $criteria = new CDbCriteria();
                     <select id="<?='pcrrisk_'.$side.'_doctor_grade_id'?>" class="pcr_doctor_grade" name="PcrRisk[<?= $side ?>][pcr_doctor_grade]">
                         <?php if(is_array($grades)):?>
                             <?php foreach ($grades as $grade):?>
-                                    <option value="<?=$grade->pcr_risk_value?>"><?=$grade->grade?></option>
+                                <option value="<?=$grade->id?>" data-pcr-value="<?=$grade->pcr_risk_value?>"><?=$grade->grade?></option>
                             <?php endforeach;?>
                         <?php endif;?>
                     </select>
