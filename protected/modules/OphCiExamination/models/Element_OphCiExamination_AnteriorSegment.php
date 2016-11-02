@@ -74,8 +74,8 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array('eye_id, left_eyedraw, left_pupil_id, left_nuclear_id, left_cortical_id, left_pxe, left_phako, left_description,
-						right_eyedraw, right_pupil_id, right_nuclear_id, right_cortical_id, right_pxe, right_phako, right_description', 'safe'),
+                array('eye_id, left_eyedraw, left_eyedraw2, left_pupil_id, left_nuclear_id, left_cortical_id, left_pxe, left_phako, left_description,
+						right_eyedraw, right_eyedraw2, right_pupil_id, right_nuclear_id, right_cortical_id, right_pxe, right_phako, right_description', 'safe'),
                 array('left_eyedraw, left_description', 'requiredIfSide', 'side' => 'left'),
                 array('right_eyedraw, right_description', 'requiredIfSide', 'side' => 'right'),
                 // The following rule is used by search().
@@ -87,7 +87,7 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
 
     public function sidedFields()
     {
-        return array('pupil_id', 'cortical_id', 'pxe', 'eyedraw', 'phako', 'description', 'nuclear_id');
+        return array('pupil_id', 'cortical_id', 'pxe', 'eyedraw', 'eyedraw2', 'phako', 'description', 'nuclear_id');
     }
 
     public function sidedDefaults()

@@ -33,7 +33,15 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         array('deselectDoodles', array()),
     ),
     'listenerArray' => array('anteriorSegmentListener'),
-
+    'syncArray' => array(
+        $side .'_'.$element->elementType->id . '_side' => array(
+            'AntSeg' => array('AntSegCrossSection' => array('parameters' => array('apexY') ) ),
+            'Lens' => array('LensCrossSection' => array('parameters' => array('originY', 'nuclearGrade', 'corticalGrade', 'posteriorSubcapsularGrade') ) ),
+            'ACIOL' => array('ACIOLCrossSection' => array('parameters' => array('originY') ) ),
+            'PCIOL' => array('PCIOLCrossSection' => array('parameters' => array('originY', 'fx') ) ),
+            'CornealOpacity' => array('CornealOpacityCrossSection' => array('parameters' => array('yMidPoint','d','h','w','iW','originY') ) )
+        )
+    ),
     'idSuffix' => $side.'_'.$element->elementType->id,
     'side' => ($side == 'right') ? 'R' : 'L',
     'mode' => 'edit',
@@ -46,6 +54,39 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'toggleScale' => 0.72,
     'popupDisplaySide' => 'left',
     'autoReport' => 'OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'.$side.'_description',
-    'fields' => '<div class="eyedraw-fields" style="margin-top: 69px; margin-left:-15px;"><canvas id="ed_canvas_edit_' . $side.'_'.$element->elementType->id. '_side" width="198" height="300" class="ed-canvas-edit secondary" /></div>'
+    'fields' => $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+        'onReadyCommandArray' => array(
+            array('addDoodle', array('CorneaCrossSection')),
+            array('addDoodle', array('AntSegCrossSection')),
+            array('addDoodle', array('LensCrossSection')),
+            array('deselectDoodles', array()),
+        ),
+        'listenerArray' => array('anteriorSegmentListener'),
+        'syncArray' => array(
+            $side.'_'.$element->elementType->id => array(
+                'AntSegCrossSection' => array('AntSeg' => array('parameters' => array('apexY') ) ),
+                'LensCrossSection' => array('Lens' => array('parameters' => array('originY') ) ),
+                'ACIOLCrossSection' => array('ACIOL' => array('parameters' => array('originY') ) ),
+                'PCIOLCrossSection' => array('PCIOL' => array('parameters' => array('originY', 'fx') ) ),
+                'NuclearCataractCrossSection' => array('NuclearCataract' => array('parameters' => array('apexY') ) ),
+                'CorticalCataractCrossSection' => array('CorticalCataract' => array('parameters' => array('apexY') ) ),
+                'CornealOpacityCrossSection' => array('CornealOpacity' => array('parameters' => array('yMidPoint', 'd', 'h', 'w', 'iW') ) )
+            ),
+        ),
+        'idSuffix' => $side.'_'.$element->elementType->id . '_side',
+        'side' => ($side == 'right') ? 'R' : 'L',
+        'mode' => 'edit',
+        'width' => 198,
+        'height' => 300,
+        'model' => $element,
+        'attribute' => $side . '_eyedraw2',
+        'offsetX' => 10,
+        'offsetY' => 10,
+        'toolbar' => false,
+        'showDrawingControls' => false,
+        'showDoodlePopup' => false,
+        'template' => 'OEEyeDrawWidget_InlineToolbar',
+    ), true)
 ));
+
 ?>

@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="column fixed">
+<div class="field-row">
     <?php
     $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         'idSuffix' => $side.'_'.$element->elementType->id.'_'.$element->id,
@@ -28,15 +28,30 @@
         'model' => $element,
         'attribute' => $side.'_eyedraw',
         'toggleScale' => 0.72,
-    ))?>
+    )); ?>
+    <?php
+    $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+        'idSuffix' => $side.'_'.$element->elementType->id.'_'.$element->id . '_side',
+        'side' => ($side == 'right') ? 'R' : 'L',
+        'mode' => 'view',
+        'width' => 130,
+        'height' => 200,
+        'model' => $element,
+        'attribute' => $side.'_eyedraw2',
+        'toggleScale' => 0.72,
+        ));
+    ?>
+
 </div>
 
-<div class="column fluid">
+<div class="field-row">
     <?php if ($description = $element->{$side.'_description'}) {
     ?>
         <div class="data-row description">
-            <div class="data-value">
-                <?php echo CHtml::encode($description)?>
+            <div class="large-12 column">
+                <div class="data-value">
+                    <?php echo CHtml::encode($description)?>
+                </div>
             </div>
         </div>
     <?php
