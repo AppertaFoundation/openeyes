@@ -138,21 +138,21 @@ foreach (array('right', 'left') as $side):
                 </div>
             </div>
         </div>
-    </div>
-    <div class="inactive-form">
-        <div class="add-side">
-            <a href="#">
-                Add <?=$side?> side <span class="icon-add-side"></span>
-            </a>
+        <div class="inactive-form">
+            <div class="add-side">
+                <a href="#">
+                    Add <?=$side?> side <span class="icon-add-side"></span>
+                </a>
+            </div>
         </div>
     </div>
-<?php endforeach; ?>
-    <div class="large-6 column pcr-link">
-        Calculation data derived from
-        <a href="http://www.researchgate.net/publication/5525424_The_Cataract_National_Dataset_electronic_multicentre_audit_of_55_567_operations_Risk_stratification_for_posterior_capsule_rupture_and_vitreous_loss"
-           target="_blank">
-            Narendran et al. The Cataract National Dataset electronic multicentre audit of 55,567 operations
-        </a>
-    </div>
-</div>
 
+<?php endforeach; ?>
+</div>
+<div class="large-6 column pcr-link">
+    Calculation data derived from
+    <a href="http://www.researchgate.net/publication/5525424_The_Cataract_National_Dataset_electronic_multicentre_audit_of_55_567_operations_Risk_stratification_for_posterior_capsule_rupture_and_vitreous_loss"
+       target="_blank">
+        Narendran et al. The Cataract National Dataset electronic multicentre audit of 55,567 operations
+    </a>
+</div>
