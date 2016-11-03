@@ -2,8 +2,11 @@
 <?php
 $pcr = new PcrRisk();
 foreach (array('right', 'left') as $side):
-$opposite = ($side === 'right') ? 'left' : 'right';
-$activeClass = ($element->{'has'.ucfirst($side)}()) ? 'active' : 'inactive';
+    $opposite = ($side === 'right') ? 'left' : 'right';
+    $activeClass = ($element->{'has'.ucfirst($side)}()) ? 'active' : 'inactive';
+    if(!$element->{$side.'_glaucoma'}){
+        continue;
+    }
 ?>
     <div class="element-eye <?=$side?>-eye column <?=$opposite?> side <?=$activeClass?>" data-side="<?=$side?>">
         <div class="row data-row">
@@ -75,7 +78,13 @@ $activeClass = ($element->{'has'.ucfirst($side)}()) ? 'active' : 'inactive';
                 <div class="data-label"><?php echo $element->getAttributeLabel($side.'_doctor_grade_id')?>:</div>
             </div>
             <div class="large-4 column end">
-                <div class="data-value"><?php echo $element->{$side.'_doctor'}->grade?></div>
+                <div class="data-value">
+                    <?php
+                    if($element->{$side.'_doctor'}) {
+                        echo $element->{$side.'_doctor'}->grade;
+                    }
+                    ?>
+                </div>
             </div>
         </div>
         <div class="row data-row">
