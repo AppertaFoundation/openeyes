@@ -22,20 +22,16 @@
 <?php echo $form->hiddenInput($element, 'draft', 1)?>
 <?php
 $layoutColumns = $form->layoutColumns;
-if(isset($data['macro_id']))
-{
-    $macro_id = $data['macro_id'];
-}else
-{
-    $macro_id = null;
-}
+$macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : null;
 ?>
 <div class="element-fields">
-
 	<div class="row field-row">
-		<div class="large-4 column large-offset-<?php echo $layoutColumns['label'];?> end">
-			<?php echo $form->dropDownList($element, 'site_id', Site::model()->getLongListForCurrentInstitution(), array('nowrapper' => true), false, array('field' => 2))?>
+                <div class="large-<?php echo $layoutColumns['label'];?> column">
+			<label>Site:</label>
 		</div>
+		<div class="large-3 column end">
+			<?php echo $form->dropDownList($element, 'site_id', Site::model()->getLongListForCurrentInstitution(), array('empty' => '- Please select -', 'nowrapper' => true), false, array('field' => 2))?>
+	</div>
 	</div>
 
 	<div class="row field-row">

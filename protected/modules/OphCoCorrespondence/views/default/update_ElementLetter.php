@@ -22,13 +22,14 @@
 <?php echo $form->hiddenInput($element, 'draft', 1)?>
 <?php
 $layoutColumns = $form->layoutColumns;
-if(isset($data['macro_id']))
-{
-	$macro_id = $data['macro_id'];
-}else
-{
-	$macro_id = null;
+
+$macro_id = null;
+if( isset($_POST['macro_id']) ){
+    $macro_id = $_POST['macro_id'];
+} else if( isset($element->documentInstance->documentInstanceData[0]) ){
+    $macro_id = $element->documentInstance->documentInstanceData[0]->macro_id;
 }
+
 ?>
 
 <input type="hidden" id="re_default" value="<?php echo $element->calculateRe($element->event->episode->patient)?>" />
@@ -36,9 +37,12 @@ if(isset($data['macro_id']))
 <div class="element-fields">
 
 	<div class="row field-row">
-		<div class="large-4 column large-offset-<?php echo $layoutColumns['label'];?> end">
-			<?php echo $form->dropDownList($element, 'site_id', Site::model()->getLongListForCurrentInstitution(), array('nowrapper' => true))?>
+                <div class="large-<?php echo $layoutColumns['label'];?> column">
+			<label>Site:</label>
 		</div>
+		<div class="large-3 column end">
+			<?php echo $form->dropDownList($element, 'site_id', Site::model()->getLongListForCurrentInstitution(), array('empty' => '- Please select -', 'nowrapper' => true))?>
+	</div>
 	</div>
 
 	<div class="row field-row">
