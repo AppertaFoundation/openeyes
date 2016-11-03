@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -22,12 +22,12 @@
 
 	<div class="large-12 column">
 		<?php
-		$form = $this->beginWidget('BaseEventTypeCActiveForm',array(
-			'id' => 'searchform',
-			'enableAjaxValidation' => false,
-			'focus' => '#search',
-			'action' => Yii::app()->createUrl('/OphInGenetictest/search/geneticTests'),
-		))?>
+        $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+            'id' => 'searchform',
+            'enableAjaxValidation' => false,
+            'focus' => '#search',
+            'action' => Yii::app()->createUrl('/OphInGenetictest/search/geneticTests'),
+        ))?>
 			<div class="large-12 column">
 				<div class="panel">
 					<div class="row">
@@ -44,16 +44,16 @@
 								<tbody>
 									<tr>
 										<td>
-											<?php echo CHtml::dropDownList('gene-id',@$_GET['gene-id'],CHtml::listData(PedigreeGene::model()->findAll(array('order'=>'name asc')),'id','name'),array('empty' => '- All -'))?>
+											<?php echo CHtml::dropDownList('gene-id', @$_GET['gene-id'], CHtml::listData(PedigreeGene::model()->findAll(array('order' => 'name asc')), 'id', 'name'), array('empty' => '- All -'))?>
 										</td>
 										<td>
-											<?php echo CHtml::dropDownList('method-id',@$_GET['method-id'],CHtml::listData(OphInGenetictest_Test_Method::model()->findAll(array('order'=>'name asc')),'id','name'),array('empty' => '- All -'))?>
+											<?php echo CHtml::dropDownList('method-id', @$_GET['method-id'], CHtml::listData(OphInGenetictest_Test_Method::model()->findAll(array('order' => 'name asc')), 'id', 'name'), array('empty' => '- All -'))?>
 										</td>
 										<td>
-											<?php echo CHtml::dropDownList('homo',@$_GET['homo'],array(1 => 'Yes', 0 => 'No'),array('empty' => '- All -'))?>
+											<?php echo CHtml::dropDownList('homo', @$_GET['homo'], array(1 => 'Yes', 0 => 'No'), array('empty' => '- All -'))?>
 										</td>
 										<td>
-											<?php echo CHtml::dropDownList('effect-id',@$_GET['effect-id'],CHtml::listData(OphInGenetictest_Test_Effect::model()->findAll(array('order'=>'name asc')),'id','name'),array('empty' => '- All -'))?>
+											<?php echo CHtml::dropDownList('effect-id', @$_GET['effect-id'], CHtml::listData(OphInGenetictest_Test_Effect::model()->findAll(array('order' => 'name asc')), 'id', 'name'), array('empty' => '- All -'))?>
 										</td>
 									</tr>
 								</tbody>
@@ -70,28 +70,28 @@
 									<tr>
 										<td>
 											<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-												'name' => 'date-from',
-												'id' => 'date-from',
-												'options' => array(
-													'showAnim'=>'fold',
-													'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
-												),
-												'value' => @$_GET['date-from'],
-											))?>
+                                                'name' => 'date-from',
+                                                'id' => 'date-from',
+                                                'options' => array(
+                                                    'showAnim' => 'fold',
+                                                    'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
+                                                ),
+                                                'value' => @$_GET['date-from'],
+                                            ))?>
 										</td>
 										<td>
 											<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-												'name' => 'date-to',
-												'id' => 'date-to',
-												'options' => array(
-													'showAnim'=>'fold',
-													'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
-												),
-												'value' => @$_GET['date-to'],
-											))?>
+                                                'name' => 'date-to',
+                                                'id' => 'date-to',
+                                                'options' => array(
+                                                    'showAnim' => 'fold',
+                                                    'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
+                                                ),
+                                                'value' => @$_GET['date-to'],
+                                            ))?>
 										</td>
 										<td>
-											<?php echo CHtml::textField('query',@$_GET['query'])?>
+											<?php echo CHtml::textField('query', @$_GET['query'])?>
 										</td>
 										<td>
 											<button id="search_tests" class="secondary" type="submit">
@@ -116,12 +116,11 @@
 		<?php if (count($genetic_tests) <1) {?>
 			<div class="alert-box no_results">
 				<span class="column_no_results">
-		<?php if (@$_GET['query']) {?>
-			No genetic results were found with the selected criteria.
-		<?php }
-		else { ?>
-			Enter criteria to search for genetic results.
-		<?php }?>
+                <?php if (@$_GET['query']) {?>
+                    No genetic results were found with the selected criteria.
+                <?php } else { ?>
+                    Enter criteria to search for genetic results.
+                <?php }?>
 				</span>
 			</div>
 		<?php }?>
@@ -130,20 +129,21 @@
 			<table class="grid">
 				<thead>
 					<tr>
-						<th><?php echo CHtml::link('Result date',$this->getUri(array('sortby'=>'date')))?></th>
-						<th><?php echo CHtml::link('Hospital no',$this->getUri(array('sortby'=>'hos_num')))?></th>
-						<th><?php echo CHtml::link('Patient name',$this->getUri(array('sortby'=>'patient_name')))?></th>
-						<th><?php echo CHtml::link('Gene',$this->getUri(array('sortby'=>'gene')))?></th>
-						<th><?php echo CHtml::link('Method',$this->getUri(array('sortby'=>'method')))?></th>
-						<th><?php echo CHtml::link('Homo',$this->getUri(array('sortby'=>'homo')))?></th>
-						<th><?php echo CHtml::link('Base change',$this->getUri(array('sortby'=>'base_change')))?></th>
-						<th><?php echo CHtml::link('Amino acid change',$this->getUri(array('sortby'=>'amino_acid_change')))?></th>
-						<th><?php echo CHtml::link('Result',$this->getUri(array('sortby'=>'result')))?></th>
+						<th><?php echo CHtml::link('Result date', $this->getUri(array('sortby' => 'date')))?></th>
+						<th><?php echo CHtml::link('Hospital no', $this->getUri(array('sortby' => 'hos_num')))?></th>
+						<th><?php echo CHtml::link('Patient name', $this->getUri(array('sortby' => 'patient_name')))?></th>
+						<th><?php echo CHtml::link('Gene', $this->getUri(array('sortby' => 'gene')))?></th>
+						<th><?php echo CHtml::link('Method', $this->getUri(array('sortby' => 'method')))?></th>
+						<th><?php echo CHtml::link('Homo', $this->getUri(array('sortby' => 'homo')))?></th>
+						<th><?php echo CHtml::link('Base change', $this->getUri(array('sortby' => 'base_change')))?></th>
+						<th><?php echo CHtml::link('Amino acid change', $this->getUri(array('sortby' => 'amino_acid_change')))?></th>
+						<th><?php echo CHtml::link('Result', $this->getUri(array('sortby' => 'result')))?></th>
 					</tr>
 				</thead>
 				<tbody>
 					<?php
-					foreach ($genetic_tests as $i => $test) {?>
+                    foreach ($genetic_tests as $i => $test) {
+                        ?>
 						<tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/OphInGenetictest/default/view/'.$test->event_id)?>">
 							<td><?php echo $test->NHSDate('result_date')?></td>
 							<td><?php echo $test->event->episode->patient->hos_num?></td>
@@ -160,10 +160,10 @@
 				<tfoot class="pagination-container">
 					<tr>
 						<td colspan="8">
-							<?php echo $this->renderPartial('_pagination',array(
-								'page' => $page,
-								'pages' => $pages,
-							))?>
+							<?php echo $this->renderPartial('_pagination', array(
+                                'page' => $page,
+                                'pages' => $pages,
+                            ))?>
 						</td>
 					</tr>
 				</tfoot>

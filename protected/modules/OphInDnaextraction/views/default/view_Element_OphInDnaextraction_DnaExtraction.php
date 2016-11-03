@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,8 +9,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -21,8 +21,8 @@
 	<header class="sub-element-header">
 		<h3 class="sub-element-title"><?php echo $element->elementType->name?></h3>
 		&nbsp;&nbsp;
-		<?php echo CHtml::link("edit",Yii::app()->createUrl('/'.$element->elementType->eventType->class_name.'/default/update/'.$element->event_id))?>&nbsp;&nbsp;
-		<?php echo CHtml::link("delete",Yii::app()->createUrl('/'.$element->elementType->eventType->class_name.'/default/delete/'.$element->event_id))?>
+		<?php echo CHtml::link('edit', Yii::app()->createUrl('/'.$element->elementType->eventType->class_name.'/default/update/'.$element->event_id))?>&nbsp;&nbsp;
+		<?php echo CHtml::link('delete', Yii::app()->createUrl('/'.$element->elementType->eventType->class_name.'/default/delete/'.$element->event_id))?>
 	</header>
 	<div class="sub-element-data">
 		<div class="row data-row">
@@ -106,11 +106,11 @@
 	</div>
 	<div class="element-data">
 	<?php
-	$this->widget('Caption',
-		array(
-			'label'=>'Volume Remaining',
-			'value'=>$this->volumeRemaining($element->event_id),
-		));
-	?>
+    $this->widget('Caption',
+        array(
+            'label' => 'Volume Remaining',
+            'value' => $this->volumeRemaining($element->event_id),
+        ));
+    ?>
 	</div>
 </section>
