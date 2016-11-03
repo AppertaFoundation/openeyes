@@ -7,7 +7,22 @@ $(document).ready(function() {
         doPrint();
     }
 
-	$('#div_OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_info_email').hide();
+""
+
+  $('#div_OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_preferred_language_text').hide();
+
+  $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_preferred_language_id').change(function(){
+    var label_name = $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_preferred_language_id').find(":selected").text();
+    if (label_name.toLowerCase().indexOf("other") >= 0) {
+      $('#div_OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_preferred_language_text').show();
+    } else {
+      $('#div_OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_preferred_language_text').hide();
+    }
+  });
+
+
+  $('#div_OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_info_email').hide();
+
 	$('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_preferred_info_fmt_id').change(function(){
 		var label_name = $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_preferred_info_fmt_id').find(":selected").text();
 		if (label_name.toLowerCase().indexOf("email") >= 0) {
