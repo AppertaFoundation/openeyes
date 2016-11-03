@@ -12,7 +12,7 @@ class m140929_115949_laboratory_rbac extends OEMigration
 
 		$this->addTaskToRole('TaskEditGeneticsWithdrawals','Genetics Admin');
 		$this->addTaskToRole('TaskCreateDnaExtraction','Genetics Laboratory Technician');
-		$this->addTaskToRole('TaskEditDnaExtraction','Genetics Laboratory Technician');
+		$this->addTaskToRole('TaskEditDNAExtraction','Genetics Laboratory Technician');
 
 	}
 
