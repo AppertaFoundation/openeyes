@@ -458,6 +458,16 @@ class Admin
                 $this->model->attributes = $post;
             }
 
+            foreach($this->editFields as $editField => $type){
+                //widgets et al can be dealt with in the widget
+                if(is_array($type)){
+                    continue;
+                }
+                if(method_exists($this, $type.'Format')){
+                    $this->model->$editField = $this->{$type.'Format'}($this->model->attributes[$editField]);
+                }
+            }
+
             if (!$this->model->validate()) {
                 $errors = $this->model->getErrors();
             } else {
@@ -783,5 +793,14 @@ class Admin
             $return = urldecode(Yii::app()->request->getPost('returnUriEdit'));
         }
         $this->controller->redirect($return);
+    }
+
+    /**
+     * @param $date
+     * @return string
+     */
+    protected function dateFormat($date)
+    {
+        return Helper::convertNHS2MySQL($date);
     }
 }

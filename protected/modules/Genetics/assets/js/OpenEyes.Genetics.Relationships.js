@@ -5,7 +5,7 @@ this.OpenEyes.Genetics = this.OpenEyes.Genetics || {};
   var template = '<li><input type="hidden" name="GeneticsPatient[relationships][{{relatedId}}][related_to_id]" value="{{relatedId}}">' +
       '{{name}} is a ' +
       '<select id="relationship_id" name="GeneticsPatient[relationships][{{relatedId}}][relationship_id]">' +
-      '{{#relationships}}<option value="{{id}}" >{{name}}</option>{{/relationships}}</select>' +
+      '{{#relationships}} <option value="{{id}}" >{{name}}</option>{{/relationships}}</select> ' +
       'to the patient</li>',
     Relationships = {},
     possibleRelationships,
