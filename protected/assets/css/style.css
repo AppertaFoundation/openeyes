@@ -4059,12 +4059,12 @@ button.disabled, button.inactive, .button.inactive, input[type="submit"].inactiv
 }
 
 /* line 22, ../sass/openeyes/components/_navigation.scss */
-.navigation {
+.genetics .navigation {
   list-style-type: none;
   margin: 0;
 }
 /* line 143, ../sass/openeyes/_mixins.scss */
-.navigation a {
+.genetics .navigation a {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   border-radius: 3px;
@@ -4074,17 +4074,17 @@ button.disabled, button.inactive, .button.inactive, input[type="submit"].inactiv
   padding: 4px 8px;
 }
 /* line 149, ../sass/openeyes/_mixins.scss */
-.navigation a:hover {
+.genetics .navigation a:hover {
   background: #3665ff;
   color: #fff;
 }
 /* line 153, ../sass/openeyes/_mixins.scss */
-.navigation a.selected {
+.genetics .navigation a.selected {
   background: #ccc;
   color: #333;
 }
 /* line 159, ../sass/openeyes/_mixins.scss */
-.navigation li:last-child a {
+.genetics .navigation li:last-child a {
   margin: 0;
 }
 
