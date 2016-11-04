@@ -19,24 +19,25 @@ $row_index = 0;
 ?>
     <tr class="new_entry_row" <?php if(isset($data['macro_id'])){?> data-rowindex="<?php echo $row_index;?>" <?php }?>>
         <?php
-        $row_count = 1;
+            $row_count = 1;
 
-        if(!isset($element))
-        {
-            $element = new ElementLetter();
-        }
+            if(!isset($element))
+            {
+                $element = new ElementLetter();
+            }
 
-        if(isset($data["cc"]))
-        {
-            $row_count += count($data["cc"]);
-        }
+            if(isset($data["cc"]))
+            {
+                $row_count += count($data["cc"]);
+            }
         ?>
 
-    <?php
-        if(isset($data["to"]))
-        { ?>
+    
+        <?php if(isset($data["to"])): ?>
             <td>
-                <?php echo CHtml::dropDownList('target_type['.$row_index.']', 'To', array('To'=>'To','CC'=>'CC'), array('empty' => '- To/CC -', 'nowrapper' => true, 'class' => 'full-width', 'data-rowindex'=>$row_index));?>
+                To
+                <?php echo  CHtml::hiddenField('target_type['.$row_index.']', 'To', array('data-rowindex' => $row_index)); ?>
+                <?php //echo CHtml::dropDownList('target_type['.$row_index.']', 'To', array('To'=>'To','CC'=>'CC'), array('empty' => '- To/CC -', 'nowrapper' => true, 'class' => 'full-width', 'data-rowindex'=>$row_index));?>
             </td>
             <td>
                 <?php echo CHtml::dropDownList('contact_id['.$row_index.']', $data["to"]["contact_id"], $element->address_targets,  array('empty' => '- Recipient -', 'nowrapper' => true, 'class' => 'full-width docman_recipient', 'data-rowindex'=>$row_index))?>
@@ -53,21 +54,20 @@ $row_index = 0;
                 <?php }?>
                 <!--<label><input type="checkbox" name="to_email[<?php echo $row_index;?>]" disabled>Email</label>!-->
             </td>
-            <td>
-            </td>
-        <?php
-        $row_index++;
-        }
-    ?>
+            <td></td>
+            <?php $row_index++; ?>
+       <?php endif; ?>
+        
     </tr>
-    <?php
-    if(isset($data["cc"])){
-        foreach($data["cc"] as $row){
-            //var_dump($row);
-        ?>
+    
+    
+    <?php if(isset($data["cc"])): ?>
+        <?php foreach($data["cc"] as $row): ?>
             <tr class="new_entry_row" data-rowindex="<?php echo $row_index ?>">
                 <td>
-                    <?php echo CHtml::dropDownList('target_type['.$row_index.']', 'CC', array('To'=>'To','CC'=>'CC'), array('empty' => '- To/CC -', 'nowrapper' => true, 'class' => 'full-width', 'data-rowindex'=>$row_index));?>
+                    CC
+                    <?php echo  CHtml::hiddenField('target_type['.$row_index.']', 'CC', array('data-rowindex' => $row_index)); ?>
+                    <?php //echo CHtml::dropDownList('target_type['.$row_index.']', 'CC', array('To'=>'To','CC'=>'CC'), array('empty' => '- To/CC -', 'nowrapper' => true, 'class' => 'full-width', 'data-rowindex'=>$row_index));?>
                 </td>
                 <td>
                     <?php echo CHtml::dropDownList('contact_id['.$row_index.']', $row["contact_id"], $element->address_targets, array('empty' => '- CC -', 'nowrapper' => true, 'class' => 'full-width docman_recipient', 'data-rowindex'=>$row_index));?>
@@ -88,12 +88,10 @@ $row_index = 0;
                     <a class="remove_recipient removeItem" data-rowindex="<?php echo $row_index ?>">Remove</a>
                 </td>
             </tr>
-        <?php
-        $row_index++;
-        }
-    }
+            <?php $row_index++; ?>
+        <?php endforeach; ?>   
+    <?php endif; ?>
 
-    ?>
     <tr class="new_entry_row">
         <td colspan="6">
             <button class="button small secondary" id="docman_add_new_recipient">Add new recipient</button>
