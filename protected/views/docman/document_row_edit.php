@@ -37,7 +37,6 @@ $row_index = 0;
             <td>
                 To
                 <?php echo  CHtml::hiddenField('target_type['.$row_index.']', 'To', array('data-rowindex' => $row_index)); ?>
-                <?php //echo CHtml::dropDownList('target_type['.$row_index.']', 'To', array('To'=>'To','CC'=>'CC'), array('empty' => '- To/CC -', 'nowrapper' => true, 'class' => 'full-width', 'data-rowindex'=>$row_index));?>
             </td>
             <td>
                 <?php echo CHtml::dropDownList('contact_id['.$row_index.']', $data["to"]["contact_id"], $element->address_targets,  array('empty' => '- Recipient -', 'nowrapper' => true, 'class' => 'full-width docman_recipient', 'data-rowindex'=>$row_index))?>
@@ -67,7 +66,6 @@ $row_index = 0;
                 <td>
                     CC
                     <?php echo  CHtml::hiddenField('target_type['.$row_index.']', 'CC', array('data-rowindex' => $row_index)); ?>
-                    <?php //echo CHtml::dropDownList('target_type['.$row_index.']', 'CC', array('To'=>'To','CC'=>'CC'), array('empty' => '- To/CC -', 'nowrapper' => true, 'class' => 'full-width', 'data-rowindex'=>$row_index));?>
                 </td>
                 <td>
                     <?php echo CHtml::dropDownList('contact_id['.$row_index.']', $row["contact_id"], $element->address_targets, array('empty' => '- CC -', 'nowrapper' => true, 'class' => 'full-width docman_recipient', 'data-rowindex'=>$row_index));?>

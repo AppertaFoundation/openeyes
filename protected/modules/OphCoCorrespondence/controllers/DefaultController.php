@@ -397,7 +397,12 @@ class DefaultController extends BaseEventTypeController
                 $doc_outputs = DocumentOutput::model()->findAllByAttributes(array("document_target_id"=>$target->id));
                 foreach($doc_outputs as $output)
                 {
-                    if($output->output_type == "Docman")
+                    /**
+                     * We will not send the same "record" again
+                     * when the user wants to resend the document (after save on edit page)
+                     * we create a new 'target' instance
+                     */
+                    if($output->output_type == "Docman" && $output->output_status != "COMPLETE")
                     {
                         $output->output_status = "PENDING";
                     }else if($output->output_type == "Print")

@@ -25,44 +25,53 @@
         <th>Actions</th>
     </tr>
     <?php
-
         if(isset($data["doctargets"])) {
+            $row_index = 0;
             foreach($data["doctargets"] as $doc_target) {
-                $row_index = 0;
-                foreach($data["docoutputs"] as $doc_output){
-                    if ($doc_output["document_target_id"] == $doc_target["id"]) {
-                        ?>
+                foreach($data["docoutputs"] as $k => $doc_output){ ?>
+                    <?php if ($doc_output["document_target_id"] == $doc_target["id"]): ?>
+                        
                         <tr>
                             <td>
-                                <?php echo $doc_output["ToCc"] ?>
+                                <?php echo $doc_output["ToCc"]; ?>
+                                <?php echo  CHtml::hiddenField('target_type['.$row_index.']', $doc_output["ToCc"], array('data-rowindex' => $row_index)); ?>
                             </td>
                             <td>
                                 <?php echo $doc_target["contact_name"] ?>
+                                <?php echo  CHtml::hiddenField('contact_id['.$row_index.']', $doc_target["contact_id"], array('data-rowindex' => $row_index)); ?>
                                 <br>
-                                <div id="docman_address_<?php echo $doc_target["id"]?>"><?php echo $doc_target["address"]; ?></div>
+                                <div id="docman_address_<?php echo $doc_target["id"]?>">
+                                    <?php echo $doc_target["address"]; ?>
+                                    <?php echo  CHtml::hiddenField('address['.$row_index.']', $doc_target["address"], array('data-rowindex' => $row_index)); ?>
+                                </div>
                                 <br>
+                                
                                 <a id="docman_edit_button_<?php echo $doc_target["id"]?>" onClick="docman2.editAddress(<?php echo $doc_target["id"]?>);">Edit Address</a>
+                            
                             </td>
                             <td>
                                 <?php echo ucfirst($doc_target["contact_type"]);?>
                                 <?php if($doc_target["contact_modified"]){ echo "<br>(Modified)";}?>
+                                <?php echo  CHtml::hiddenField('contact_type['.$row_index.']', $doc_target["contact_type"], array('data-rowindex' => $row_index)); ?>
                             </td>
                             <td>
                                 <?php echo ucfirst($doc_output["output_type"]).' - '.ucfirst($doc_output["output_status"]);?>
+                                <?php echo  CHtml::hiddenField(lcfirst($doc_output["output_type"]).'['.$row_index.']', lcfirst($doc_output["output_type"]), array('data-rowindex' => $row_index)); ?>
                             </td>
                             <td>
                                 <?php
                                 if($doc_output["ToCc"] != "To")
                                 {?>
+                                
                                     <a class="remove_recipient removeItem" data-rowindex="<?php echo $row_index ?>">Remove</a>
+                                
                                 <?php
                                 }
                                 ?>
                             </td>
                         </tr>
-                        <?php
-                        $row_index++;
-                    }
+                        <?php $row_index++; ?>
+                    <?php  endif;
                 }
             }
         }

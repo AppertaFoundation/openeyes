@@ -6,7 +6,7 @@
 ?>
 <tr class="new_entry_row" data-rowindex="<?php echo $row_index ?>">
     <td>
-        CC <?php echo  CHtml::hiddenField('target_type['.$row_index.']', 'CC', array('data-rowindex' => $row_index)); ?>
+        CC <?php echo CHtml::hiddenField('target_type['.$row_index.']', 'CC', array('data-rowindex' => $row_index)); ?>
     </td>
     <td>
         <?php echo CHtml::dropDownList('contact_id[]', '', $element->address_targets, array('empty' => '- Recipient -', 'nowrapper' => true, 'class' => 'full-width docman_recipient', 'data-rowindex'=>$row_index));?>
