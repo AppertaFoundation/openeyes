@@ -124,7 +124,7 @@ class PcrRisk
         $pcr['anteriorsegment'] = $this->getPatientAnteriorSegment($patientId, $side, $pcrRiskValues);
         $pcr['doctor_grade_id'] = $doctor_grade_id;
         $pcr['axial_length_group'] = ($this->getAxialLength($patientId, $side) !== 'N') ? $this->getAxialLength($patientId, $side) : $pcrRiskValues->axial_length_group;
-        $pcr['arb'] = $pcrRiskValues->alpha_receptor_blocker;
+        $pcr['arb'] = ($this->getAlphaBlocker($this->patient)) ? $this->getAlphaBlocker($this->patient) : $pcrRiskValues->alpha_receptor_blocker;
 
         return $pcr;
     }
@@ -317,6 +317,25 @@ class PcrRisk
         }
 
         return $axial_length_group;
+    }
+
+    /**
+     * @param Patient $patient
+     *
+     * @return string
+     */
+    protected function getAlphaBlocker(Patient $patient)
+    {
+        $historyRisk = new \OEModule\OphCiExamination\models\Element_OphCiExamination_HistoryRisk();
+        $alphaBlocker = $historyRisk->mostRecentCheckedAlpha($patient->id);
+
+        if(!$alphaBlocker || $alphaBlocker->alphablocker === '0') {
+            return 'NK';
+        } elseif ($alphaBlocker->alphablocker === '1') {
+            return 'Y';
+        } else {
+            return 'N';
+        }
     }
 
     /**
