@@ -142,7 +142,7 @@ class DocManDeliveryCommand extends CConsoleCommand
             <AddressPostcode>".$this->event->episode->patient->contact->address->postcode."</AddressPostcode>
             <GP>".$this->event->episode->patient->gp->nat_id."</GP>
             <GPName>".$this->event->episode->patient->gp->contact->getFullName()."</GPName>
-            <Surgery>XXXXXX</Surgery>
+            <Surgery>" . $this->event->episode->patient->practice->code . "</Surgery>
             <SurgeryName>XXXXXXXXX</SurgeryName>
             <LetterType>".$letter_types[$element_letter->letter_type]."</LetterType>
             <ActivityID>".$this->event->id."</ActivityID>
