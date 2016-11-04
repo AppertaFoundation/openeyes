@@ -55,7 +55,7 @@ $dropDowns = array(
     ),
     'alpha_receptor_blocker' => array(
         'options' => array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
-        'class' => '',
+        'class' => 'pcrrisk_arb',
     ),
     'doctor_grade_id' => array(
         'options' => $grades,

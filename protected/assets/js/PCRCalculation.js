@@ -171,6 +171,27 @@ function setPcrPupil(ev, pcrEl) {
 }
 
 /**
+ * Sets alpha blocker
+ * @param ev
+ * @param pcrEl
+ */
+function setAlphaBlocker(ev, pcrEl) {
+  if (!pcrEl) {
+    pcrEl = ev.data;
+  }
+
+  if($(ev.target).val() === '0'){
+    return;
+  }
+  if ($(ev.target).val() === '1') {
+    $(pcrEl).val('Y');
+  } else {
+    $(pcrEl).val('N');
+  }
+  $(pcrEl).trigger('change');
+}
+
+/**
  * Maps elements in examination or op not to their respective elements in PCR risk so changes in the
  * examination are reflected in the PCR risk calculation automatically
  */
@@ -238,6 +259,11 @@ function mapExaminationToPcr() {
       "#OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_right_cd_ratio_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_left_cd_ratio_id": {
         "pcr": '.pcrrisk_no_fundal_view',
         "func": setFundalView,
+        "init": true
+      },
+      "#OEModule_OphCiExamination_models_Element_OphCiExamination_HistoryRisk_alphablocker input[type='radio']": {
+        "pcr": '.pcrrisk_arb',
+        "func": setAlphaBlocker,
         "init": true
       }
     },
