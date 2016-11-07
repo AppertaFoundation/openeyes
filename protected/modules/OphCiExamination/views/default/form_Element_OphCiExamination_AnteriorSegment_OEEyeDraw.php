@@ -40,7 +40,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
             'Lens' => array('LensCrossSection' => array('parameters' => array('originY', 'nuclearGrade', 'corticalGrade', 'posteriorSubcapsularGrade') ) ),
             'ACIOL' => array('ACIOLCrossSection' => array('parameters' => array('originY') ) ),
             'PCIOL' => array('PCIOLCrossSection' => array('parameters' => array('originY', 'fx') ) ),
-            'CornealOpacity' => array('CornealOpacityCrossSection' => array('parameters' => array('yMidPoint','d','h','w','iW','originY') ) )
+            'CornealOpacity' => array('CornealOpacityCrossSection' => array('parameters' => array('yMidPoint','d','h','w','iW','originY','minY','maxY') ) )
         )
     ),
     'idSuffix' => $side.'_'.$element->elementType->id,
@@ -83,7 +83,9 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         'offsetY' => 10,
         'toolbar' => false,
         'showDrawingControls' => false,
-        'showDoodlePopup' => false,
+        'showDoodlePopup' => true,
+        'showDoodlePopupForDoodles' => array('CorneaCrossSection'),
+        'popupDisplaySide' => 'left',
         'template' => 'OEEyeDrawWidget_InlineToolbar',
     ), true)
 ));

@@ -98,14 +98,16 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
         switch (msgArray['eventName'])
         {
         case 'doodlesLoaded':
-            console.log('primary loaded');
             this.primaryDrawingReady = true;
             break;
 
         case 'doodleSelected':
             // Ensure that selecting a doodle in one drawing de-deselects the others
-            if (this.secondaryDrawingReady())
+            if (this.secondaryDrawingReady()) {
                 this.secondaryDrawing.deselectDoodles();
+
+            }
+
             break;
 
         case 'doodleAdded':
@@ -161,7 +163,6 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
     {
         switch (msgArray['eventName']) {
             case 'doodlesLoaded':
-                console.log('secondary loaded');
                 this.secondaryDrawingReady = true;
                 break;
             case 'doodleSelected':
