@@ -469,7 +469,7 @@ class OphCoCvi_Manager extends \CComponent
         }
 
         $institutionInfo = \Institution::model()->getCurrent();
-        $address = $institutionInfo->name . ", " . \Institution::model()->getCurrent()->getLetterAddress(array('include_name' => false, 'delimiter' => '\n'));
+        $address = $institutionInfo->name . '\n' . \Institution::model()->getCurrent()->getLetterAddress(array('include_name' => false, 'delimiter' => '\n'));
         $data['hospitalAddress'] = \Helper::lineLimit($address, 2, 1, '\n');
         $data['hospitalAddressMultiline'] = \Helper::lineLimit($address, 4, 1, '\n');
         $data['hospitalNumber'] = $event->episode->patient->hos_num;
@@ -737,6 +737,18 @@ class OphCoCvi_Manager extends \CComponent
      * @param \CDbCriteria $criteria
      * @param array        $filter
      */
+    private function handleCreatedByListFilter(\CDbCriteria $criteria, $filter = array())
+    {
+        if (isset($filter['createdby_ids']) && strlen(trim($filter['createdby_ids']))) {
+            $criteria->addInCondition('event.created_user_id', explode(',', $filter['createdby_ids']));
+        }
+    }
+
+
+    /**
+     * @param \CDbCriteria $criteria
+     * @param array        $filter
+     */
     private function handleConsultantListFilter(\CDbCriteria $criteria, $filter = array())
     {
         if (isset($filter['consultant_ids']) && strlen(trim($filter['consultant_ids']))) {
@@ -755,6 +767,14 @@ class OphCoCvi_Manager extends \CComponent
             $criteria->addCondition('t.is_draft = :isdraft');
             $criteria->params[':isdraft'] = true;
         }
+        if (isset($filter['issue_complete']) && (bool)$filter['issue_complete']) {
+            $criteria->addCondition('event.info LIKE "Complete%"');
+//            $criteria->params[':iscomplete'] = "Complete%";
+        }
+        if (isset($filter['issue_incomplete']) && (bool)$filter['issue_incomplete']) {
+            $criteria->addCondition('event.info LIKE "Incomplete%"');
+//            $criteria->params[':isincomplete'] = "Incomplete%";
+        }
     }
 
     /**
@@ -768,6 +788,7 @@ class OphCoCvi_Manager extends \CComponent
         $this->handleDateRangeFilter($criteria, $filter);
         $this->handleSubspecialtyListFilter($criteria, $filter);
         $this->handleSiteListFilter($criteria, $filter);
+        $this->handleCreatedByListFilter($criteria, $filter);
         $this->handleConsultantListFilter($criteria, $filter);
         $this->handleIssuedFilter($criteria, $filter);
 
@@ -830,8 +851,8 @@ class OphCoCvi_Manager extends \CComponent
                 'desc' => 'is_draft asc, t.last_modified_date desc',
             ),
         );
-
         $criteria = $this->buildFilterCriteria($filter);
+//        print_r($filter);
 
         return new \CActiveDataProvider($model, array(
             'sort' => $sort,

@@ -155,7 +155,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
             'contact_urgency_id' => 'Contact urgency',
             'preferred_language_id' => 'Preferred language',
             'social_service_comments' => 'Social service comments',
-            'preferred_language_text' => "Preferred Language",
+            'preferred_language_text' => "Other Language",
         );
     }
 
@@ -180,7 +180,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
     }
 
     /**
-     * To generate the employement status array for the pdf
+     * To generate the employment status array for the pdf
      *
      * @return array
      */
