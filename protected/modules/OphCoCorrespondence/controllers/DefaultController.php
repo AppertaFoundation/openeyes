@@ -402,7 +402,7 @@ class DefaultController extends BaseEventTypeController
                      * when the user wants to resend the document (after save on edit page)
                      * we create a new 'target' instance
                      */
-                    if($output->output_type == "Docman" && $output->output_status != "COMPLETE")
+                    if($output->output_type == "Docman")
                     {
                         $output->output_status = "PENDING";
                     }else if($output->output_type == "Print")

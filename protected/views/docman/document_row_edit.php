@@ -47,7 +47,10 @@ $row_index = 0;
                 <?php echo CHtml::dropDownList('contact_type['.$row_index.']', $data["to"]["contact_type"], array('Gp'=>'Gp','Patient'=>'Patient', 'DRSS'=>'DRSS', 'Legacy'=>'Legacy', 'Other'=>'Other'), array('empty' => '- Type -', 'nowrapper' => true, 'class' => 'full-width docman_contact_type', 'id'=>'contact_type_'.$row_index, 'data-rowindex'=>$row_index));?>
             </td>
             <td class="docman_delivery_method">
-                <label><input type="checkbox" name="print[<?php echo $row_index;?>]"  <?php if($data["to"]["contact_type"] != 'Gp'){ echo 'checked';}?>>Print</label><br>
+                <label>
+                    <input type="checkbox" name="print[<?php echo $row_index;?>]"  <?php if($data["to"]["contact_type"] != 'Gp'){ echo 'checked';}?>>Print
+                </label>
+                <br>
                 <?php if($data["to"]["contact_type"] == 'Gp'){?>
                     <label><input type="checkbox" class="docman_delivery" name="docman[<?php echo $row_index;?>]" data-rowindex="<?php echo $row_index?>" checked>DocMan</label><br>
                 <?php }?>

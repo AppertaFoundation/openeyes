@@ -287,28 +287,28 @@ class Document //extends BaseActiveRecord
 	}
 
 	public function createNewDocTarget( $doc_instance, $data )
-	{                
-                $doc_target = null;
-          
-                if( isset($data['id'])){
-                    $doc_target = DocumentTarget::model()->findByPk($data['id']);
-                }
-                $doc_target = $doc_target ? $doc_target : new DocumentTarget();
-                
-		$doc_target->document_instance_id = $doc_instance->id;
-		$doc_target->contact_type = $data['contact_type'];
-		$doc_target->contact_id = $data['contact_id'];
-		if(is_numeric($data['contact_id']))
-		{
-			$doc_target->contact_name = Contact::model()->findByPk($data['contact_id'])->getFullName();
-		}else
-		{
-			$doc_target->contact_name = $data['contact_id'];
-			$data['contact_id'] = null;
-		}
-		$doc_target->address = $data['address'];
-		$doc_target->save();
-		return $doc_target;
+	{
+            $doc_target = null;
+
+            if( isset($data['id'])){
+                $doc_target = DocumentTarget::model()->findByPk($data['id']);
+            }
+            $doc_target = $doc_target ? $doc_target : new DocumentTarget();
+
+            $doc_target->document_instance_id = $doc_instance->id;
+            $doc_target->contact_type = $data['contact_type'];
+            $doc_target->contact_id = $data['contact_id'];
+            if(is_numeric($data['contact_id']))
+            {
+                $doc_target->contact_name = Contact::model()->findByPk($data['contact_id'])->getFullName();
+            }else
+            {
+                $doc_target->contact_name = $data['contact_id'];
+                $data['contact_id'] = null;
+            }
+            $doc_target->address = $data['address'];
+            $doc_target->save();
+            return $doc_target;
 	}
 
 	public function createNewDocOutput($doc_target, $doc_instance_version, $data)

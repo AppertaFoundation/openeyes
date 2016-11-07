@@ -22,7 +22,6 @@
         <th>Recipient/Address</th>
         <th>Role</th>
         <th>Delivery Method(s)</th>
-        <th>Actions</th>
     </tr>
     <?php    
         if(isset($data["document_set_id"]) ){
@@ -39,7 +38,7 @@
                         
                         <tr data-rowindex="<?php echo $row_index ?>">
                             <td>
-                                <?php echo $doc_output["ToCc"] ." - " . $doc_output["id"]; ?>
+                                <?php echo $doc_output["ToCc"]; ?>
                                 <?php echo  CHtml::hiddenField('target_type['.$row_index.']', $doc_output["ToCc"], array('data-rowindex' => $row_index)); ?>                            
                                 <?php echo  CHtml::hiddenField('document_target_id['.$row_index.']', $doc_target["id"], array('data-rowindex' => $row_index)); ?>
                                 <?php echo  CHtml::hiddenField('id['.$row_index.']', $doc_output["id"], array('data-rowindex' => $row_index)); ?>
@@ -54,29 +53,29 @@
                                 </div>
                                 <br>
                                 
-                                <a id="docman_edit_button_<?php echo $doc_target["id"]?>" onClick="docman2.editAddress(<?php echo $doc_target["id"]?>);">Edit Address</a>
+                                <!--<a id="docman_edit_button_<?php echo $doc_target["id"]?>" onClick="docman2.editAddress(<?php echo $doc_target["id"]?>);">Edit Address</a>-->
                             
                             </td>
                             <td>
-                                <?php echo ucfirst($doc_target["contact_type"]);?>
+                                <?php echo ucfirst(strtolower($doc_target["contact_type"]));?>
                                 <?php if($doc_target["contact_modified"]){ echo "<br>(Modified)";}?>
                                 <?php echo  CHtml::hiddenField('contact_type['.$row_index.']', $doc_target["contact_type"], array('data-rowindex' => $row_index)); ?>
                             </td>
                             <td>
-                                <?php echo ucfirst($doc_output["output_type"]).' - '.ucfirst($doc_output["output_status"]);?>
+                                <?php if($doc_target["contact_type"] == 'GP'): ?>
+                                <label>
+                                    <input type="checkbox" name="docman[<?php echo $row_index;?>]"  checked disabled>Docman
+                                </label>
+                                <?php endif; ?>
+                                <label>
+                                    <input type="checkbox" name="print[<?php echo $row_index;?>]"  <?php if($doc_target["contact_type"] != 'GP'){ echo 'checked';}?> > Print
+                                </label>
+                                
+                                <?php echo  CHtml::hiddenField("print[$row_index]", 1, array('data-rowindex' => $row_index)); ?>
+                                
                                 <?php echo  CHtml::hiddenField(lcfirst($doc_output["output_type"]).'['.$row_index.']', lcfirst($doc_output["output_type"]), array('data-rowindex' => $row_index)); ?>
                             </td>
-                            <td>
-                                <?php
-                                if($doc_output["ToCc"] != "To")
-                                {?>
-                                
-                                    <a class="remove_recipient removeItem" data-rowindex="<?php echo $row_index ?>">Remove</a>
-                                
-                                <?php
-                                }
-                                ?>
-                            </td>
+                          
                         </tr>
                         <?php $row_index++; ?>
                     <?php  endif;
