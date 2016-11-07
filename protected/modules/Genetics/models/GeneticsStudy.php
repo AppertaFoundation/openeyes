@@ -28,6 +28,7 @@
  */
 class GeneticsStudy extends BaseActiveRecord
 {
+
     protected $auto_update_relations = true;
 
     /**
@@ -68,7 +69,7 @@ class GeneticsStudy extends BaseActiveRecord
     {
         return array(
             'proposers' => array(self::MANY_MANY, 'User', 'genetics_study_proposer(study_id, user_id)'),
-            'patients' => array(self::MANY_MANY, 'GeneticsPatient', 'genetics_study_subject(study_id, subject_id)'),
+            'subjects' => array(self::MANY_MANY, 'GeneticsPatient', 'genetics_study_subject(study_id, subject_id)'),
         );
     }
 

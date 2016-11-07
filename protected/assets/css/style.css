@@ -7510,3 +7510,9 @@ tfoot.pagination-container .pagination-view-all {
 .ui-autocomplete.ui-menu.patient-ajax-list .ui-menu-item a .nhs-number, .ui-autocomplete.ui-menu.patient-ajax-list .ui-menu-item a.ui-state-focus .nhs-number {
   float: right;
 }
+
+/* line 2, ../sass/openeyes/components/_studies.scss */
+.previous_studies_list {
+  list-style: none;
+  margin: 0;
+}

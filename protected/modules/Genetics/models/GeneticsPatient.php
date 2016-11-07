@@ -56,7 +56,7 @@ class GeneticsPatient extends BaseActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('patient_id, comments, gender_id, is_deceased, relationships', 'safe'),
+            array('patient_id, comments, gender_id, is_deceased, relationships, studies', 'safe'),
         );
     }
 
@@ -69,6 +69,8 @@ class GeneticsPatient extends BaseActiveRecord
             'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
             'gender' => array(self::BELONGS_TO, 'Gender', 'gender_id'),
             'relationships' => array(self::HAS_MANY, 'GeneticsPatientRelationship', 'patient_id'),
+            'studies' => array(self::MANY_MANY, 'GeneticsStudy', 'genetics_study_subject(subject_id, study_id)'),
+            'previous_studies' => array(self::MANY_MANY, 'GeneticsStudy', 'genetics_study_subject(subject_id, study_id)', 'condition' => 'end_date < NOW()')
         );
     }
 

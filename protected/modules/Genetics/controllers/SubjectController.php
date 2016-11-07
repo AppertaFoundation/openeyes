@@ -65,6 +65,14 @@ class SubjectController extends BaseModuleController
         if ($id) {
             $admin->setModelId($id);
         }
+
+        $criteria = new CDbCriteria();
+        $criteria->join = 'JOIN genetics_study_proposer ON genetics_study_proposer.study_id = t.id';
+        $criteria->addCondition('genetics_study_proposer.user_id = ?');
+        $criteria->addCondition('t.end_date > NOW()');
+        $criteria->params[] = Yii::app()->user->id;
+        $proposableStudies = GeneticsStudy::model()->findAll($criteria);
+
         $admin->setModelDisplayName('Genetics Subject');
         $admin->setEditFields(array(
             'patient_id' => array(
@@ -86,8 +94,28 @@ class SubjectController extends BaseModuleController
                 'viewArguments' => array(
                     'model' => $admin->getModel(),
                 ),
-            )
+            ),
+            'previous_studies' => array(
+                'widget' => 'CustomView',
+                'viewName' => '//studies/previous',
+                'viewArguments' => array(
+                    'model' => $admin->getModel(),
+                ),
+            ),
+            'studies' => array(
+                'widget' => 'MultiSelectList',
+                'relation_field_id' => 'id',
+                'label' => 'Study Proposal',
+                'options' => CHtml::encodeArray(
+                    CHtml::listData(
+                        $proposableStudies,
+                        'id',
+                        'name'
+                    )
+                ),
+            ),
         ));
+
         $admin->editModel(false);
         if(Yii::app()->request->isPostRequest){
             $relationshipPost = Yii::app()->request->getPost('GeneticsPatient', array());
@@ -109,6 +137,7 @@ class SubjectController extends BaseModuleController
     public function actionList()
     {
         $admin = new Crud(GeneticsPatient::model(), $this);
+        $admin->setModelDisplayName('Genetics Subject');
         $admin->setListFields(array(
             'id',
             'patient.fullName',
