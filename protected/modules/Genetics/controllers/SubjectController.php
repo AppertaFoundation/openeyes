@@ -66,13 +66,6 @@ class SubjectController extends BaseModuleController
             $admin->setModelId($id);
         }
 
-        $criteria = new CDbCriteria();
-        $criteria->join = 'JOIN genetics_study_proposer ON genetics_study_proposer.study_id = t.id';
-        $criteria->addCondition('genetics_study_proposer.user_id = ?');
-        $criteria->addCondition('t.end_date > NOW()');
-        $criteria->params[] = Yii::app()->user->id;
-        $proposableStudies = GeneticsStudy::model()->findAll($criteria);
-
         $admin->setModelDisplayName('Genetics Subject');
         $admin->setEditFields(array(
             'patient_id' => array(
@@ -97,9 +90,29 @@ class SubjectController extends BaseModuleController
             ),
             'previous_studies' => array(
                 'widget' => 'CustomView',
-                'viewName' => '//studies/previous',
+                'viewName' => '//studies/list',
                 'viewArguments' => array(
                     'model' => $admin->getModel(),
+                    'list' => 'previous_studies',
+                    'label' => 'Previous Studies',
+                ),
+            ),
+            'rejected_studies' => array(
+                'widget' => 'CustomView',
+                'viewName' => '//studies/list',
+                'viewArguments' => array(
+                    'model' => $admin->getModel(),
+                    'list' => 'rejected_studies',
+                    'label' => 'Rejected Studies',
+                ),
+            ),
+            'current_studies' => array(
+                'widget' => 'CustomView',
+                'viewName' => '//studies/list',
+                'viewArguments' => array(
+                    'model' => $admin->getModel(),
+                    'list' => 'current_studies',
+                    'label' => 'Current Studies',
                 ),
             ),
             'studies' => array(
@@ -108,7 +121,7 @@ class SubjectController extends BaseModuleController
                 'label' => 'Study Proposal',
                 'options' => CHtml::encodeArray(
                     CHtml::listData(
-                        $proposableStudies,
+                        GeneticsStudy::model()->findAll(),
                         'id',
                         'name'
                     )

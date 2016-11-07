@@ -7512,7 +7512,7 @@ tfoot.pagination-container .pagination-view-all {
 }
 
 /* line 2, ../sass/openeyes/components/_studies.scss */
-.previous_studies_list {
+.studies_list {
   list-style: none;
   margin: 0;
 }

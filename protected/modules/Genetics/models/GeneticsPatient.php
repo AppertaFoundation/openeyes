@@ -30,6 +30,8 @@ class GeneticsPatient extends BaseActiveRecord
 {
     protected $auto_update_relations = true;
 
+    protected $participation_statuses = array();
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -65,12 +67,43 @@ class GeneticsPatient extends BaseActiveRecord
      */
     public function relations()
     {
+        //Was unable to join on the pivot table as any joins added with the relationship are inserted in to
+        //the query string before the join generated for the relationship, so selecting status ID here and
+        //inserting it in to condition manually.
+        if(!array_key_exists('Rejected', $this->participation_statuses)){
+            $participationStatuses = StudyParticipationStatus::model()->findAll();
+            foreach ($participationStatuses as $status) {
+                $this->participation_statuses[$status->status] = $status->id;
+            }
+        }
+
         return array(
             'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
             'gender' => array(self::BELONGS_TO, 'Gender', 'gender_id'),
             'relationships' => array(self::HAS_MANY, 'GeneticsPatientRelationship', 'patient_id'),
             'studies' => array(self::MANY_MANY, 'GeneticsStudy', 'genetics_study_subject(subject_id, study_id)'),
-            'previous_studies' => array(self::MANY_MANY, 'GeneticsStudy', 'genetics_study_subject(subject_id, study_id)', 'condition' => 'end_date < NOW()')
+            'previous_studies' => array(
+                self::MANY_MANY,
+                'GeneticsStudy',
+                'genetics_study_subject(subject_id, study_id)',
+                'condition' => 'end_date < NOW() ' .
+                    'AND (previous_studies_previous_studies.participation_status_id IS NULL ' .
+                    'OR previous_studies_previous_studies.participation_status_id <> ' . $this->participation_statuses['Rejected'] . ')',
+            ),
+            'current_studies' => array(
+                self::MANY_MANY,
+                'GeneticsStudy',
+                'genetics_study_subject(subject_id, study_id)',
+                'condition' => 'end_date > NOW() ' .
+                    'AND (current_studies_current_studies.participation_status_id IS NULL ' .
+                    'OR current_studies_current_studies.participation_status_id <> ' . $this->participation_statuses['Rejected'] . ')',
+            ),
+            'rejected_studies' => array(
+                self::MANY_MANY,
+                'GeneticsStudy',
+                'genetics_study_subject(subject_id, study_id)',
+                'condition' => 'rejected_studies_rejected_studies.participation_status_id = ' . $this->participation_statuses['Rejected'],
+            )
         );
     }
 
