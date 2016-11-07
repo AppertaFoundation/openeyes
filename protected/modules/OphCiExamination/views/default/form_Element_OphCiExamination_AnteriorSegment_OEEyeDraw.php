@@ -22,8 +22,8 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'doodleToolBarArray' => array(
         array('Lens', 'PCIOL', 'ACIOL', 'Bleb', 'PI',
             'Fuchs', 'RK', 'LasikFlap', 'CornealScar', 'SectorIridectomy', 'PosteriorSynechia', 'Rubeosis',
-            'TransilluminationDefect', 'KrukenbergSpindle', 'KeraticPrecipitates', 'PosteriorCapsule', 'Hypopyon',
-            'CornealOpacity', 'CornealOedema', 'Episcleritis', 'Hyphaema', ),
+            'TransilluminationDefect', 'CornealEpithelialDefect', 'SPEE', 'CornealPigmentation',
+            'PosteriorCapsule', 'Hypopyon', 'CornealOpacity', 'CornealOedema', 'Episcleritis', 'Hyphaema', ),
         array('TrabySuture', 'Supramid', 'TubeLigation', 'CornealSuture', 'TrabyFlap', 'SidePort', 'Patch',
             'ConjunctivalSuture', 'ACMaintainer', 'Tube', 'TubeExtender', ),
     ),
