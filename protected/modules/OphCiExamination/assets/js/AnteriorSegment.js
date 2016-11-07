@@ -134,12 +134,6 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
                 }
             }
 
-            // Adjust position in relation to other doodles (array defined in the doodle subclass)
-            for (var i = 0; i < newDoodle.inFrontOfClassArray.length; i++)
-            {
-                newDoodle.drawing.moveNextTo(newDoodle, newDoodle.inFrontOfClassArray[i], true)
-            }
-
             break;
         case 'doodleDeleted':
 
