@@ -9,16 +9,16 @@
         CC <?php echo CHtml::hiddenField('target_type['.$row_index.']', 'CC', array('data-rowindex' => $row_index)); ?>
     </td>
     <td>
-        <?php echo CHtml::dropDownList('contact_id[]', '', $element->address_targets, array('empty' => '- Recipient -', 'nowrapper' => true, 'class' => 'full-width docman_recipient', 'data-rowindex'=>$row_index));?>
+        <?php echo CHtml::dropDownList('contact_id[' . $row_index . ']', '', $element->address_targets, array('empty' => '- Recipient -', 'nowrapper' => true, 'class' => 'full-width docman_recipient', 'data-rowindex'=>$row_index));?>
         <br>
-        <textarea rows="4" cols="10" name="address[]" id="address_<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>"></textarea>
+        <textarea rows="4" cols="10" name="address[<?php echo $row_index ?>]" id="address_<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>"></textarea>
     </td>
     <td>
-        <?php echo CHtml::dropDownList('contact_type[]', '', array('Gp'=>'Gp','Patient'=>'Patient', 'DRSS'=>'DRSS', 'Legacy'=>'Legacy', 'Other'=>'Other'), array('empty' => '- Type -', 'nowrapper' => true, 'class' => 'full-width docman_contact_type', 'id'=>'contact_type_'.$row_index, 'data-rowindex'=>$row_index));?>
+        <?php echo CHtml::dropDownList('contact_type[' . $row_index . ']', '', array('Gp'=>'Gp','Patient'=>'Patient', 'DRSS'=>'DRSS', 'Legacy'=>'Legacy', 'Other'=>'Other'), array('empty' => '- Type -', 'nowrapper' => true, 'class' => 'full-width docman_contact_type', 'id'=>'contact_type_'.$row_index, 'data-rowindex'=>$row_index));?>
     </td>
     <td class="docman_delivery_method">
-        <label><input type="checkbox" name="print[]" data-rowindex="<?php echo $row_index ?>" checked>Print</label><br>
-        <label><input type="checkbox" class="docman_delivery" name="docman[]" data-rowindex="<?php echo $row_index ?>">DocMan</label><br>
+        <label><input type="checkbox" name="print[<?php echo $row_index ?>]" data-rowindex="<?php echo $row_index ?>" checked>Print</label><br>
+        <label><input type="checkbox" class="docman_delivery" name="docman[<?php echo $row_index ?>]" data-rowindex="<?php echo $row_index ?>">DocMan</label><br>
         <!--<label><input type="checkbox" name="cc_email[]" disabled>Email</label>!-->
     </td>
     <td>

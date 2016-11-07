@@ -27,24 +27,6 @@ class Document //extends BaseActiveRecord
         $this->docsetid = $docsetid;
     }
 
-	/**
-	 * Returns the static model of the specified AR class.
-	 * @return Site the static model class
-	 */
-	public static function model($className=__CLASS__)
-	{
-		return parent::model($className);
-	}
-
-
-	/**
-	 * @return string the associated database table nae
-	 */
-	public function tableName()
-	{
-		return '';
-	}
-
 
 	/**
 	 * Pull the record values from this AR data
@@ -109,13 +91,16 @@ class Document //extends BaseActiveRecord
 		//  GET THE DOCUMENT TARGETS
 		$data = $this->getDocumentTargets($document_instance_ids);
 		$array['data'] = array_merge($array['data'],$data);
+                
+                $data['document_set_id'] = $document_set_id;
+                $array['data']['document_set_id'] = $document_set_id;
 		
 //		$contacts[0] = array('type'=>'PATIENT')
 		if($jsonOutput) {
-            $json = json_encode($array);
-			return $json;
+                    $json = json_encode($array);
+                    return $json;
 		}else{
-			return $data;
+                    return $data;
 		}
 	}
 	
@@ -228,40 +213,73 @@ class Document //extends BaseActiveRecord
 
 	public function createNewDocSet()
 	{
-		$doc_set = new DocumentSet();
+                $doc_set = null;
+                if( isset($_POST['document_set_id']) ){
+                    $doc_set = DocumentSet::model()->findByPk($_POST['document_set_id']);
+                }
+		$doc_set = $doc_set ? $doc_set : new DocumentSet();
+                
 		$doc_set->event_id = $this->event_id;
 		// TODO: check errors here!
 		$doc_set->save();
 
-		$doc_instance = new DocumentInstance();
+                
+                $doc_instance = null;
+                if( isset($_POST['document_instance_id']) ){
+                    $doc_instance = DocumentInstance::model()->findByPk($_POST['document_instance_id']);
+                }
+		$doc_instance = $doc_instance ? $doc_instance : new DocumentInstance();
+      
 		$doc_instance->document_set_id = $doc_set->id;
 		$doc_instance->correspondence_event_id = $this->event_id;
 		$doc_instance->save();
 
-		$doc_instance_version = new DocumentInstanceData();
+                
+                $doc_instance_version = null;
+                if( isset($_POST['document_instance_data_id']) ){
+                    $doc_instance_version = DocumentInstanceData::model()->findByPk($_POST['document_instance_data_id']);
+                }
+		$doc_instance_version = $doc_instance_version ? $doc_instance_version : new DocumentInstanceData();
+                
 		$doc_instance_version->document_instance_id = $doc_instance->id;
 		$doc_instance_version->macro_id = $_POST['macro_id'];
+                
 		$doc_instance_version->save();
 
 		if(is_array(@$_POST['target_type']))
 		{
-			foreach($_POST['target_type'] as $key=>$val)
+			foreach($_POST['target_type'] as $key => $val)
 			{
-				$data = array(	'contact_type'=>$_POST['contact_type'][$key],
-								'contact_id' => $_POST['contact_id'][$key],
-								'address' => $_POST['address'][$key]);
+				$data = array(
+                                    'contact_type' => $_POST['contact_type'][$key],
+                                    'contact_id' => $_POST['contact_id'][$key],
+                                    'address' => $_POST['address'][$key]);
+                                
+                                if(isset($_POST['document_target_id'][$key])){
+                                    $data['id'] = $_POST['document_target_id'][$key];
+                                }
 				$doc_target = $this->createNewDocTarget($doc_instance, $data);
 
 				if(@$_POST['print'][$key])
 				{
-					$data = array(	'ToCc'=>$val,
-									'output_type'=>'Print');
+					$data = array(
+                                            'ToCc'=>$val,
+                                            'output_type'=>'Print');
+                                        
+                                        if(isset($_POST['id'][$key])){
+                                            $data['id'] = $_POST['id'][$key];
+                                        }
 					$this->createNewDocOutput($doc_target, $doc_instance_version, $data);
 				}
 				if(@$_POST['docman'][$key])
 				{
-					$data = array(	'ToCc'=>$val,
-									'output_type'=>'Docman');
+					$data = array(
+                                            'ToCc'=>$val,
+                                            'output_type'=>'Docman');
+                                        if(isset($_POST['id'][$key])){
+                                            $data['id'] = $_POST['id'][$key];
+                                        }
+
 					$this->createNewDocOutput($doc_target, $doc_instance_version, $data);
 				}
 			}
@@ -269,8 +287,14 @@ class Document //extends BaseActiveRecord
 	}
 
 	public function createNewDocTarget( $doc_instance, $data )
-	{
-		$doc_target = new DocumentTarget();
+	{                
+                $doc_target = null;
+          
+                if( isset($data['id'])){
+                    $doc_target = DocumentTarget::model()->findByPk($data['id']);
+                }
+                $doc_target = $doc_target ? $doc_target : new DocumentTarget();
+                
 		$doc_target->document_instance_id = $doc_instance->id;
 		$doc_target->contact_type = $data['contact_type'];
 		$doc_target->contact_id = $data['contact_id'];
@@ -289,7 +313,13 @@ class Document //extends BaseActiveRecord
 
 	public function createNewDocOutput($doc_target, $doc_instance_version, $data)
 	{
-		$doc_output = new DocumentOutput();
+                $doc_output = null;
+          
+                if( isset($data['id'])){
+                    $doc_output = DocumentOutput::model()->findByPk($data['id']);
+                }
+                $doc_output = $doc_output ? $doc_output : new DocumentOutput();
+                
 		$doc_output->document_target_id=$doc_target->id;
 		$doc_output->document_instance_data_id = $doc_instance_version->id;
 		$doc_output->ToCc = $data['ToCc'];

@@ -87,6 +87,8 @@ class ElementLetter extends BaseEventTypeElement
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
             'enclosures' => array(self::HAS_MANY, 'LetterEnclosure', 'element_letter_id', 'order' => 'display_order'),
+            'documentInstance' => array(self::HAS_MANY, 'DocumentInstance', array( 'correspondence_event_id' => 'event_id')),
+            
         );
     }
 

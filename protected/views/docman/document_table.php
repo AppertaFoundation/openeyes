@@ -24,17 +24,25 @@
         <th>Delivery Method(s)</th>
         <th>Actions</th>
     </tr>
-    <?php
+    <?php    
+        if(isset($data["document_set_id"]) ){
+            echo  CHtml::hiddenField('document_set_id', $data["document_set_id"]);
+            echo  CHtml::hiddenField('document_instance_id', $data['doctargets'][0]['document_instance_id']);
+            echo  CHtml::hiddenField('document_instance_data_id', $data['docoutputs'][0]['document_instance_data_id']);
+        }
+        
         if(isset($data["doctargets"])) {
             $row_index = 0;
             foreach($data["doctargets"] as $doc_target) {
                 foreach($data["docoutputs"] as $k => $doc_output){ ?>
                     <?php if ($doc_output["document_target_id"] == $doc_target["id"]): ?>
                         
-                        <tr>
+                        <tr data-rowindex="<?php echo $row_index ?>">
                             <td>
-                                <?php echo $doc_output["ToCc"]; ?>
-                                <?php echo  CHtml::hiddenField('target_type['.$row_index.']', $doc_output["ToCc"], array('data-rowindex' => $row_index)); ?>
+                                <?php echo $doc_output["ToCc"] ." - " . $doc_output["id"]; ?>
+                                <?php echo  CHtml::hiddenField('target_type['.$row_index.']', $doc_output["ToCc"], array('data-rowindex' => $row_index)); ?>                            
+                                <?php echo  CHtml::hiddenField('document_target_id['.$row_index.']', $doc_target["id"], array('data-rowindex' => $row_index)); ?>
+                                <?php echo  CHtml::hiddenField('id['.$row_index.']', $doc_output["id"], array('data-rowindex' => $row_index)); ?>
                             </td>
                             <td>
                                 <?php echo $doc_target["contact_name"] ?>
