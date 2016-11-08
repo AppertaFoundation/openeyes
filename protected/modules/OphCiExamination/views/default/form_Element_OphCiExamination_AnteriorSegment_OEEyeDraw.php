@@ -54,7 +54,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'template' => 'OEEyeDrawWidget_InlineToolbar',
     'toggleScale' => 0.72,
     'popupDisplaySide' => 'left',
-    'autoReport' => 'OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'.$side.'_description',
+    'autoReport' => 'OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'.$side.'_ed_report',
     'fields' => $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         'onReadyCommandArray' => array(
             array('addDoodle', array('CorneaCrossSection')),

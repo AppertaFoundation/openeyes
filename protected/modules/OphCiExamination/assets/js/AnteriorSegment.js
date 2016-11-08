@@ -80,7 +80,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
 
     AnteriorSegmentController.prototype.initialise = function()
     {
-        //
+        
     };
 
     AnteriorSegmentController.prototype.primaryDrawingReady = function()

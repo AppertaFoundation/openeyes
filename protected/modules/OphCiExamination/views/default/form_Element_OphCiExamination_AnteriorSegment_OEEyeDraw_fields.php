@@ -18,6 +18,15 @@
  */
 ?>
 <div class="field-row">
+    <?php CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
+    <div class="large-2 column">
+        <label>
+            <?php echo $element->getAttributeLabel($side . '_ed_report') ?>:
+        </label>
+    </div>
+    <div class="large-10 column end">
+        <span id="<?= CHtml::modelName($element) . '_' . $side . '_ed_report_display'?>"></span>
+    </div>
     <div class="large-2 column">
         <label for="<?php echo CHtml::modelName($element) . '_' . $side . '_description'; ?>">
             <?php echo $element->getAttributeLabel($side . '_description') ?>:
