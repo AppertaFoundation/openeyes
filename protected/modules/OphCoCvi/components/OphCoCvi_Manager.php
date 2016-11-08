@@ -763,17 +763,16 @@ class OphCoCvi_Manager extends \CComponent
      */
     private function handleIssuedFilter(\CDbCriteria $criteria, $filter = array())
     {
-        if (!isset($filter['show_issued']) || (isset($filter['show_issued']) && !(bool)$filter['show_issued'])) {
-            $criteria->addCondition('t.is_draft = :isdraft');
-            $criteria->params[':isdraft'] = true;
+
+        if (isset($filter['show_issued']) && (bool)$filter['show_issued']) {
+            $criteria->addCondition('t.is_draft = :isdraft', 'OR');
+            $criteria->params[':isdraft'] = false;
         }
-        if (isset($filter['issue_complete']) && (bool)$filter['issue_complete']) {
-            $criteria->addCondition('event.info LIKE "Complete%"');
-//            $criteria->params[':iscomplete'] = "Complete%";
+        if (!array_key_exists('issue_complete', $filter) || (isset($filter['issue_complete']) && (bool)$filter['issue_complete'])) {
+            $criteria->addCondition('event.info LIKE "Complete%"', 'OR');
         }
-        if (isset($filter['issue_incomplete']) && (bool)$filter['issue_incomplete']) {
-            $criteria->addCondition('event.info LIKE "Incomplete%"');
-//            $criteria->params[':isincomplete'] = "Incomplete%";
+        if (!array_key_exists('issue_incomplete', $filter) || (isset($filter['issue_incomplete']) && (bool)$filter['issue_incomplete'])) {
+            $criteria->addCondition('event.info LIKE "Incomplete%"', 'OR');
         }
     }
 
@@ -852,7 +851,6 @@ class OphCoCvi_Manager extends \CComponent
             ),
         );
         $criteria = $this->buildFilterCriteria($filter);
-//        print_r($filter);
 
         return new \CActiveDataProvider($model, array(
             'sort' => $sort,

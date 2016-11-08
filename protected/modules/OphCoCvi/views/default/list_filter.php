@@ -203,7 +203,7 @@
                             <div class="column large-6 text-right"><label for="issue_complete">Complete:</label></div>
                             <div class="column large-6">
                                 <?php
-                                $issue_complete = array_key_exists('issue_complete', $list_filter) ? $list_filter['issue_complete'] : false;
+                                $issue_complete = array_key_exists('issue_complete', $list_filter) ? $list_filter['issue_complete'] : true;
                                 echo CHtml::checkBox('issue_complete', ($issue_complete == 1), array('class' => 'filter-field'));
                                 ?>
                             </div>
@@ -212,7 +212,7 @@
                             <div class="column large-6 text-right"><label for="issue_incomplete">Incomplete:</label></div>
                             <div class="column large-6">
                                 <?php
-                                $issue_incomplete = array_key_exists('issue_incomplete', $list_filter) ? $list_filter['issue_incomplete'] : false;
+                                $issue_incomplete = array_key_exists('issue_incomplete', $list_filter) ? $list_filter['issue_incomplete'] : true;
                                 echo CHtml::checkBox('issue_incomplete', ($issue_incomplete == 1), array('class' => 'filter-field'));
                                 ?>
                             </div>
