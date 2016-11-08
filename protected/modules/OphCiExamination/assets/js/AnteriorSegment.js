@@ -105,7 +105,6 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
         switch (msgArray['eventName'])
         {
         case 'doodlesLoaded':
-            this.primaryDrawingReady = true;
             this.updateReport();
             break;
 
@@ -173,7 +172,6 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
     {
         switch (msgArray['eventName']) {
             case 'doodlesLoaded':
-                this.secondaryDrawingReady = true;
                 break;
             case 'doodleSelected':
                 if (this.primaryDrawingReady())
