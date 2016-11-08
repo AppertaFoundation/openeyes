@@ -68,7 +68,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
     {
         if (!this.primaryDrawing) {
             this.primaryDrawing = drawing;
-            this.primaryDrawing.registerForNotifications(this, 'primaryDrawingNotification', ['doodlesLoaded', 'doodleSelected', 'doodleAdded', 'doodleDeleted']);
+            this.primaryDrawing.registerForNotifications(this, 'primaryDrawingNotification', ['doodlesLoaded', 'doodleSelected', 'doodleAdded', 'doodleDeleted', 'parameterChanged']);
         }
     };
 
@@ -80,7 +80,9 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
 
     AnteriorSegmentController.prototype.initialise = function()
     {
-        
+        this.$edReportField = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_' + this.options.side + '_ed_report');
+        this.$edReportDisplay = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'+this.options.side+'_ed_report_display');
+
     };
 
     AnteriorSegmentController.prototype.primaryDrawingReady = function()
@@ -93,12 +95,18 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
         return this.secondaryDrawing && this.secondaryDrawing.isReady;
     };
 
+    AnteriorSegmentController.prototype.updateReport = function()
+    {
+        this.$edReportDisplay.html(this.$edReportField.val().replace(/\n/g,'<br />'));
+    };
+
     AnteriorSegmentController.prototype.primaryDrawingNotification = function(msgArray)
     {
         switch (msgArray['eventName'])
         {
         case 'doodlesLoaded':
             this.primaryDrawingReady = true;
+            this.updateReport();
             break;
 
         case 'doodleSelected':
@@ -107,7 +115,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
                 this.secondaryDrawing.deselectDoodles();
 
             }
-
+            this.updateReport();
             break;
 
         case 'doodleAdded':
@@ -135,7 +143,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
                     }
                 }
             }
-
+            this.updateReport();
             break;
         case 'doodleDeleted':
 
@@ -153,9 +161,11 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
                     }
                 }
             }
-
+            this.updateReport();
             break;
-
+        case 'parameterChanged':
+            this.updateReport();
+            break;
         }
     };
 
@@ -185,7 +195,9 @@ function anteriorSegmentListener(_drawing)
     }
     var controller = canvas.data('controller');
     if (!controller) {
-        controller = new OpenEyes.OphCiExamination.AnteriorSegmentController();
+        controller = new OpenEyes.OphCiExamination.AnteriorSegmentController(
+          {side: (_drawing.eye === 1 ? 'left' : 'right')}
+        );
         canvas.data('controller', controller);
     }
     if (secondary) {

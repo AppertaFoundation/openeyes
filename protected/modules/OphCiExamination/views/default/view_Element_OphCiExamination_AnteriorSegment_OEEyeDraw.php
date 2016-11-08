@@ -34,7 +34,7 @@
         'idSuffix' => $side.'_'.$element->elementType->id.'_'.$element->id . '_side',
         'side' => ($side == 'right') ? 'R' : 'L',
         'mode' => 'view',
-        'width' => 130,
+        'width' => 132,
         'height' => 200,
         'model' => $element,
         'attribute' => $side.'_eyedraw2',
@@ -44,18 +44,36 @@
 
 </div>
 
-<div class="field-row">
+<div class="element-fields column">
+    <?php if ($report = $element->{$side.'_ed_report'}) {
+        ?>
+        <div class="row data-row description">
+            <div class="large-2 column">
+                <div class="data-label"><?php echo $element->getAttributeLabel($side.'_ed_report')?>:</div>
+            </div>
+            <div class="large-10 column">
+                <div class="data-value">
+                    <?php echo nl2br($report)?>
+                </div>
+            </div>
+        </div>
+        <?php
+    } ?>
+
     <?php if ($description = $element->{$side.'_description'}) {
     ?>
-        <div class="data-row description">
-            <div class="large-12 column">
+        <div class="row data-row">
+            <div class="large-2 column">
+                <div class="data-label"><?php echo $element->getAttributeLabel($side.'_description')?>:</div>
+            </div>
+            <div class="large-10 column">
                 <div class="data-value">
                     <?php echo CHtml::encode($description)?>
                 </div>
             </div>
         </div>
     <?php
-} ?>
+    } ?>
     <?php /* See OE-4283 */ ?>
     <?php if ($element->{$side.'_pupil'}) {
     ?>
@@ -118,5 +136,4 @@
     </div>
 	<?php
 	} ?>
-
 </div>

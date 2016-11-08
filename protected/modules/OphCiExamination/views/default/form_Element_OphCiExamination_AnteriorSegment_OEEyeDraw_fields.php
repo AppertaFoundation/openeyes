@@ -18,7 +18,7 @@
  */
 ?>
 <div class="field-row">
-    <?php CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
+    <?php echo CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
     <div class="large-2 column">
         <label>
             <?php echo $element->getAttributeLabel($side . '_ed_report') ?>:
