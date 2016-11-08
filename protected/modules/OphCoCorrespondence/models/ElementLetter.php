@@ -63,7 +63,7 @@ class ElementLetter extends BaseEventTypeElement
         // will receive user inputs.
         return array(
             array('event_id, site_id, print, address, use_nickname, date, introduction, cc, re, body, footer, draft, direct_line, fax, clinic_date, print_all, letter_type', 'safe'),
-            array('use_nickname, site_id, date, introduction, body, footer, letter_type', 'required'),
+            array('use_nickname, site_id, date, introduction, body, footer', 'required'),
             array('date', 'OEDateValidator'),
             array('clinic_date', 'OEDateValidatorNotFuture'),
             // The following rule is used by search().

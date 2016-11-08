@@ -4,9 +4,10 @@
         $element = new ElementLetter();
     }
 ?>
-<tr class="new_entry_row" data-rowindex="<?php echo $row_index ?>">
+<tr class="new_entry_row rowindex-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
     <td>
-        CC <?php echo CHtml::hiddenField('target_type['.$row_index.']', 'CC', array('data-rowindex' => $row_index)); ?>
+        <?php echo ($row_index == 0 ? 'To' : 'Cc') ?>
+        <?php echo CHtml::hiddenField('target_type['.$row_index.']', ($row_index == 0 ? 'To' : 'Cc'), array('data-rowindex' => $row_index)); ?>
     </td>
     <td>
         <?php echo CHtml::dropDownList('contact_id[' . $row_index . ']', '', $element->address_targets, array('empty' => '- Recipient -', 'nowrapper' => true, 'class' => 'full-width docman_recipient', 'data-rowindex'=>$row_index));?>

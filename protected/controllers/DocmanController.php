@@ -108,7 +108,9 @@ class DocmanController extends BaseController
         if (!Yii::app()->request->isAjaxRequest) { return; }
         $patient_id = Yii::app()->request->getQuery('patient_id');
         $last_row_index = Yii::app()->request->getQuery('last_row_index');
-        echo $this->renderPartial('/docman/document_row_recipient', array('row_index'=>$last_row_index+1));
+
+        echo $this->renderPartial('/docman/document_row_recipient', array('row_index' => $last_row_index + 1));
+        $this->getApp()->end();
     }
 
     public function actionAjaxGetContactData()

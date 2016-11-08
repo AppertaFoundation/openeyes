@@ -37,7 +37,7 @@
                 foreach($data["docoutputs"] as $k => $doc_output){ ?>
                     <?php if ($doc_output["document_target_id"] == $doc_target["id"]): ?>
                         
-                        <tr data-rowindex="<?php echo $row_index ?>">
+                        <tr class="rowindex-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
                             <td>
                                 <?php echo $doc_output["ToCc"]; ?>
                                 <?php echo  CHtml::hiddenField('target_type['.$row_index.']', $doc_output["ToCc"], array('data-rowindex' => $row_index)); ?>                            
@@ -68,8 +68,11 @@
                                     <input type="checkbox" name="docman[<?php echo $row_index;?>]" checked disabled>Docman
                                 </label>
                                 <?php endif; ?>
-                                <label><?php echo $row_index;?>
-                                    <input type="checkbox" name="print[<?php echo $row_index;?>]"  <?php if($doc_target["contact_type"] != 'GP' || isset($_POST['print'][$row_index])){ echo 'checked';}?> > Print
+                                <label>
+                                    <?php 
+                                        $is_checked = isset($_POST['print'][$row_index]) && $_POST['print'][$row_index] == "0" ? '' : 'checked';
+                                        echo  CHtml::hiddenField('print['.$row_index.']', 0, array('data-rowindex' => $row_index)); ?>
+                                    <input type="checkbox" name="print[<?php echo $row_index;?>]"  <?php echo $is_checked; ?> > Print
                                 </label>
                                 
                                 <?php echo  CHtml::hiddenField("print[$row_index]", 1, array('data-rowindex' => $row_index)); ?>

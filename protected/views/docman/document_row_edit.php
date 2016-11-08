@@ -17,7 +17,7 @@
 
 $row_index = 0;
 ?>
-    <tr class="new_entry_row" <?php if(isset($data['macro_id'])){?> data-rowindex="<?php echo $row_index;?>" <?php }?>>
+    <tr class="new_entry_row rowindex-<?php echo $row_index;?>" <?php if(isset($data['macro_id'])){?> data-rowindex="<?php echo $row_index;?>" <?php }?>>
         <?php
             $row_count = 1;
 
@@ -39,7 +39,7 @@ $row_index = 0;
                 <?php echo  CHtml::hiddenField('target_type['.$row_index.']', 'To', array('data-rowindex' => $row_index)); ?>
             </td>
             <td>
-                <?php echo CHtml::dropDownList('contact_id['.$row_index.']', $data["to"]["contact_id"], $element->address_targets,  array('empty' => '- Recipient -', 'nowrapper' => true, 'class' => 'full-width docman_recipient', 'data-rowindex'=>$row_index))?>
+                <?php echo CHtml::dropDownList('contact_id['.$row_index.']', $data["to"]["contact_id"], $element->address_targets,  array('empty' => '- Recipient -', 'nowrapper' => true, 'class' => 'full-width docman_recipient', 'data-rowindex'=>$row_index, 'data-previous' => $data["to"]["contact_id"]))?>
                 <br>
                 <textarea rows="4" cols="10" name="address[<?php echo $row_index;?>]" id="address_<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>"><?php echo $data["to"]["address"]?></textarea>
             </td>
@@ -65,13 +65,13 @@ $row_index = 0;
     
     <?php if(isset($data["cc"])): ?>
         <?php foreach($data["cc"] as $row): ?>
-            <tr class="new_entry_row" data-rowindex="<?php echo $row_index ?>">
+            <tr class="new_entry_row rowindex-<?php echo $row_index;?>" data-rowindex="<?php echo $row_index ?>">
                 <td>
                     CC
                     <?php echo  CHtml::hiddenField('target_type['.$row_index.']', 'CC', array('data-rowindex' => $row_index)); ?>
                 </td>
                 <td>
-                    <?php echo CHtml::dropDownList('contact_id['.$row_index.']', $row["contact_id"], $element->address_targets, array('empty' => '- CC -', 'nowrapper' => true, 'class' => 'full-width docman_recipient', 'data-rowindex'=>$row_index));?>
+                    <?php echo CHtml::dropDownList('contact_id['.$row_index.']', $row["contact_id"], $element->address_targets, array('empty' => '- CC -', 'nowrapper' => true, 'class' => 'full-width docman_recipient', 'data-rowindex' => $row_index, 'data-previous' => $row["contact_id"]));?>
                     <br>
                     <textarea rows="4" cols="10" name="address[<?php echo $row_index;?>]" id="address_<?php echo $row_index ?>" data-rowindex="<?php echo $row_index?>"><?php echo $row["address"]?></textarea>
                 </td>

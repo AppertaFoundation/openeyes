@@ -83,7 +83,7 @@ var docman = (function() {
         {
             $('#docman_block').on("change", '.docman_recipient', function(event){
                 if(event.target.value){
-                    docman.getRecipientData(event.target.value, event.target);
+                   docman.getRecipientData(event.target.value, event.target);
                 }
             });
             $('#docman_block').on("change", '.docman_contact_type', function (){
@@ -226,13 +226,47 @@ var docman = (function() {
                 context: this,
                 dataType: 'json',
                 'success': function(resp) {
-                    rowindex = $(element).data("rowindex");
+                    var rowindex = $(element).data("rowindex");
+                    var this_recipient = $(element).data('previous');
+
+                    var this_address = $('#address_'+rowindex).val();
+                    var this_contact_type = $('#contact_type_'+rowindex).val();
+                    var other_rowindex = $('#docman_block select option[value="' + resp.contact_type + '"]:selected').closest('tr').data('rowindex');
+                    var $other_docman_recipient = $('tr.rowindex-' + other_rowindex + ' .docman_recipient');
+
                     $('#address_'+rowindex).val(resp.address);
-                    $('#contact_type_'+rowindex).val(resp.contact_type);
-                    docman.setDeliveryMethods(rowindex);                
+                    $('#contact_type_'+rowindex).val(resp.contact_type).trigger('change');
+
+                    if(resp.contact_type === 'Gp' || resp.contact_type === 'Patient'){
+                        $other_docman_recipient.val(this_recipient);
+                        $('#address_' + other_rowindex).val(this_address);
+                        $('#contact_type_' + other_rowindex).val(this_contact_type).trigger('change');
+                    }
+                    $(element).data('previous', $(element).val());
+                    $other_docman_recipient.data('previous', $other_docman_recipient.val());
                 }
             });
         },
+        
+        swapGpPatent: function(rowindex, contact_type){
+            
+            var gp_rowindex = $('select option[value="Gp"]:selected').closest('tr').data('rowindex');
+            var patient_rowindex = $('select option[value="Patient"]:selected').closest('tr').data('rowindex');
+            this.swapRecipients(gp_rowindex, patient_rowindex);
+
+        },
+       /* 
+        swapRecipients: function(from_rowindex, to_rowindex){
+            //change recipient dropdown
+            var $from = $('#docman_block').find('tr.rowindex-' + from_rowindex + ' .docman_recipient');
+            var $to = $('#docman_block').find('tr.rowindex-' + to_rowindex + ' .docman_recipient');
+            var from_val = $('#docman_block').find('tr.rowindex-' + from_rowindex + ' .docman_recipient').val();
+            var to_val = $('#docman_block').find('tr.rowindex-' + to_rowindex + ' .docman_recipient').val();
+            
+            $from.val(to_val);
+            $to.val(from_val);
+            
+        },*/
 
         //------------------------------------------------------------
         //  Create a new entry row at the end of the table
