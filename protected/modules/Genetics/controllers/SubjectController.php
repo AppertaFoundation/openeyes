@@ -129,18 +129,21 @@ class SubjectController extends BaseModuleController
             ),
         ));
 
-        $admin->editModel(false);
-        if(Yii::app()->request->isPostRequest){
-            $relationshipPost = Yii::app()->request->getPost('GeneticsPatient', array());
-            if(isset($relationshipPost['relationships'])){
-                foreach ($admin->getModel()->relationships as $relationship) {
-                    if(array_key_exists($relationship->related_to_id, $relationshipPost['relationships'])){
-                        $relationship->relationship_id = $relationshipPost['relationships'][$relationship->related_to_id]['relationship_id'];
-                        $relationship->save();
+        if($admin->editModel(false)){
+            if(Yii::app()->request->isPostRequest){
+                $relationshipPost = Yii::app()->request->getPost('GeneticsPatient', array());
+                if(isset($relationshipPost['relationships'])){
+                    foreach ($admin->getModel()->relationships as $relationship) {
+                        if(array_key_exists($relationship->related_to_id, $relationshipPost['relationships'])){
+                            $relationship->relationship_id = $relationshipPost['relationships'][$relationship->related_to_id]['relationship_id'];
+                            $relationship->save();
+                        }
                     }
                 }
+                $admin->redirect();
             }
-            $admin->redirect();
+        } else {
+            $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
         }
     }
 

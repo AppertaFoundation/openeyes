@@ -28,8 +28,11 @@
  */
 class GeneticsStudy extends BaseActiveRecord
 {
+    use Study;
 
     protected $auto_update_relations = true;
+
+    protected $pivot = 'genetics_study_subject';
 
     /**
      * Returns the static model of the specified AR class.

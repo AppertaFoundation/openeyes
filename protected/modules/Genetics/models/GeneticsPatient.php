@@ -30,7 +30,7 @@ class GeneticsPatient extends BaseActiveRecord
 {
     protected $auto_update_relations = true;
 
-    protected $participation_statuses = array();
+    protected $statuses = array();
 
     /**
      * Returns the static model of the specified AR class.
@@ -58,8 +58,31 @@ class GeneticsPatient extends BaseActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
+            array('studies', 'isProposable'),
             array('patient_id, comments, gender_id, is_deceased, relationships, studies', 'safe'),
         );
+    }
+
+    /**
+     * Checks if it's possible for the user to propose this patient for the study.
+     *
+     * @param $attribute
+     * @param $params
+     */
+    public function isProposable($attribute, $params)
+    {
+        if ($this->isAttributeDirty('studies')) {
+            $existing = GeneticsStudy::model()->participatingStudyIds($this);
+            foreach ($this->studies as $study) {
+                if (in_array($study->id, $existing, true)) {
+                    continue;
+                }
+                //New study has been added, make sure that it's possible for the user to propose this.
+                if(!$study->canBeProposedByUser(Yii::app()->user)){
+                    $this->addError($attribute, 'You do not have permission to propose subjects for ' . $study->name);
+                }
+            }
+        }
     }
 
     /**
@@ -70,10 +93,10 @@ class GeneticsPatient extends BaseActiveRecord
         //Was unable to join on the pivot table as any joins added with the relationship are inserted in to
         //the query string before the join generated for the relationship, so selecting status ID here and
         //inserting it in to condition manually.
-        if(!array_key_exists('Rejected', $this->participation_statuses)){
-            $participationStatuses = StudyParticipationStatus::model()->findAll();
-            foreach ($participationStatuses as $status) {
-                $this->participation_statuses[$status->status] = $status->id;
+        if (!array_key_exists('Rejected', $this->statuses)) {
+            $statuses = StudyParticipationStatus::model()->findAll();
+            foreach ($statuses as $status) {
+                $this->statuses[$status->status] = $status->id;
             }
         }
 
@@ -88,7 +111,7 @@ class GeneticsPatient extends BaseActiveRecord
                 'genetics_study_subject(subject_id, study_id)',
                 'condition' => 'end_date < NOW() ' .
                     'AND (previous_studies_previous_studies.participation_status_id IS NULL ' .
-                    'OR previous_studies_previous_studies.participation_status_id <> ' . $this->participation_statuses['Rejected'] . ')',
+                    'OR previous_studies_previous_studies.participation_status_id <> ' . $this->statuses['Rejected'] . ')',
             ),
             'current_studies' => array(
                 self::MANY_MANY,
@@ -96,14 +119,14 @@ class GeneticsPatient extends BaseActiveRecord
                 'genetics_study_subject(subject_id, study_id)',
                 'condition' => 'end_date > NOW() ' .
                     'AND (current_studies_current_studies.participation_status_id IS NULL ' .
-                    'OR current_studies_current_studies.participation_status_id <> ' . $this->participation_statuses['Rejected'] . ')',
+                    'OR current_studies_current_studies.participation_status_id <> ' . $this->statuses['Rejected'] . ')',
             ),
             'rejected_studies' => array(
                 self::MANY_MANY,
                 'GeneticsStudy',
                 'genetics_study_subject(subject_id, study_id)',
-                'condition' => 'rejected_studies_rejected_studies.participation_status_id = ' . $this->participation_statuses['Rejected'],
-            )
+                'condition' => 'rejected_studies_rejected_studies.participation_status_id = ' . $this->statuses['Rejected'],
+            ),
         );
     }
 
@@ -116,7 +139,7 @@ class GeneticsPatient extends BaseActiveRecord
             'id' => 'ID',
             'patient_id' => 'Patient',
             'gender_id' => 'Karyotypic Sex',
-            'is_deceased' => 'Is Deceased'
+            'is_deceased' => 'Is Deceased',
         );
     }
 }
