@@ -19,19 +19,22 @@
 ?>
 <?php if (!@$no_header) {?>
 	<header>
-		<?php
-        $docManData = DocumentInstance::model()->findByAttributes(array('correspondence_event_id'=>$element->event_id));
-        $document = new Document();
+	<?php
         $ccString = "";
+        $toAddress = "";
 
-        if($docManData && $docTargets = $document->getDocumentTargets(array($docManData->id))) {
-            foreach ($docTargets["docoutputs"] as $k=>$output) {
-                if($output["ToCc"] == 'To')
-                {
-                    $toAddress = $docTargets["doctargets"][$k]["contact_name"]."\n".$docTargets["doctargets"][$k]["address"];
-                }else
-                {
-                    $ccString .= "CC: ".ucfirst(strtolower($docTargets["doctargets"][$k]["contact_type"])).": ".$docTargets["doctargets"][$k]["contact_name"].", ".$element->renderSourceAddress($docTargets["doctargets"][$k]["address"])."<br/>";
+        if($element->documentInstance) {
+            
+            foreach ($element->documentInstance as $instance) {
+                foreach ($instance->documentTarget as $target) {
+                    foreach ($target->documentOutput as $output) {
+                        if($output->ToCc == 'To'){
+                            $toAddress = $target->contact_name . "\n" . $target->address;
+                        } else {
+                            $ccString .= "CC: ".ucfirst(strtolower($target->contact_type)). ": " . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
+                        }
+                        
+                    }
                 }
             }
         }else

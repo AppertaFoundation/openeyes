@@ -22,6 +22,7 @@
         <th>Recipient/Address</th>
         <th>Role</th>
         <th>Delivery Method(s)</th>
+        <th> </th>
     </tr>
     <?php    
         if(isset($data["document_set_id"]) ){
@@ -64,17 +65,18 @@
                             <td>
                                 <?php if($doc_target["contact_type"] == 'GP'): ?>
                                 <label>
-                                    <input type="checkbox" name="docman[<?php echo $row_index;?>]"  checked disabled>Docman
+                                    <input type="checkbox" name="docman[<?php echo $row_index;?>]" checked disabled>Docman
                                 </label>
                                 <?php endif; ?>
-                                <label>
-                                    <input type="checkbox" name="print[<?php echo $row_index;?>]"  <?php if($doc_target["contact_type"] != 'GP'){ echo 'checked';}?> > Print
+                                <label><?php echo $row_index;?>
+                                    <input type="checkbox" name="print[<?php echo $row_index;?>]"  <?php if($doc_target["contact_type"] != 'GP' || isset($_POST['print'][$row_index])){ echo 'checked';}?> > Print
                                 </label>
                                 
                                 <?php echo  CHtml::hiddenField("print[$row_index]", 1, array('data-rowindex' => $row_index)); ?>
                                 
                                 <?php echo  CHtml::hiddenField(lcfirst($doc_output["output_type"]).'['.$row_index.']', lcfirst($doc_output["output_type"]), array('data-rowindex' => $row_index)); ?>
                             </td>
+                            <td></td>
                           
                         </tr>
                         <?php $row_index++; ?>
