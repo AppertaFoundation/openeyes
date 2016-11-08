@@ -82,7 +82,9 @@ var docman = (function() {
         addNewRecipientHandler: function()
         {
             $('#docman_block').on("change", '.docman_recipient', function(event){
-                docman.getRecipientData(event.target.value, event.target);
+                if(event.target.value){
+                    docman.getRecipientData(event.target.value, event.target);
+                }
             });
             $('#docman_block').on("change", '.docman_contact_type', function (){
                 var rowindex = $(this).data("rowindex");
@@ -224,10 +226,11 @@ var docman = (function() {
 				context: this,
 				dataType: 'json',
 				'success': function(resp) {
-                    rowindex = $(element).data("rowindex");
-                    $('#address_'+rowindex).val(resp.address);
-                    $('#contact_type_'+rowindex).val(resp.contact_type);
-                    docman.setDeliveryMethods(rowindex);
+                                    rowindex = $(element).data("rowindex");
+                                    $('#address_'+rowindex).val(resp.address);
+                                    $('#contact_type_'+rowindex).val(resp.contact_type);
+                                    docman.setDeliveryMethods(rowindex);
+                                    
 				}
 			});
 		},
