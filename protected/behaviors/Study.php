@@ -14,6 +14,10 @@ trait Study {
      */
     public function canBeProposedByUser(CWebUser $user)
     {
+        if (new DateTime($this->end_date) < new DateTime('midnight')) {
+            return false;
+        }
+
         foreach ($this->proposers as $proposer) {
             if ($proposer->id === $user->id) {
                 return true;

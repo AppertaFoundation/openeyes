@@ -129,8 +129,10 @@ class SubjectController extends BaseModuleController
             ),
         ));
 
-        if($admin->editModel(false)){
-            if(Yii::app()->request->isPostRequest){
+        $valid = $admin->editModel(false);
+
+        if(Yii::app()->request->isPostRequest){
+            if($valid){
                 $relationshipPost = Yii::app()->request->getPost('GeneticsPatient', array());
                 if(isset($relationshipPost['relationships'])){
                     foreach ($admin->getModel()->relationships as $relationship) {
@@ -141,9 +143,9 @@ class SubjectController extends BaseModuleController
                     }
                 }
                 $admin->redirect();
+            } else {
+                $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
             }
-        } else {
-            $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
         }
     }
 
