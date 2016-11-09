@@ -57,6 +57,8 @@ class DefaultController extends BaseEventTypeController
             $this->jsVars['OE_gp_id'] = $this->patient->gp_id;
             $this->jsVars['OE_practice_id'] = $this->patient->practice_id;
 
+            $this->getApp()->assetManager->registerScriptFile('js/docman.js');
+
             $this->loadDirectLines();
         }
     }

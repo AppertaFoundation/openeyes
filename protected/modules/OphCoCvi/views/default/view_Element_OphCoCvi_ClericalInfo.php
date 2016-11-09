@@ -117,7 +117,13 @@
                     <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('preferred_language_id')) ?></div>
                 </div>
                 <div class="large-6 column end">
-                    <div class="data-value"><?php echo $element->preferred_language ? $element->preferred_language->name : 'None' ?></div>
+                    <div class="data-value"><?php
+                        if($element->preferred_language_text){
+                            echo $element->preferred_language_text;
+                        } else {
+                            echo $element->preferred_language ? $element->preferred_language->name : 'None';
+                        }
+                        ?></div>
                 </div>
             </div>
         </div>

@@ -10,6 +10,20 @@ var docman = (function() {
 
 	return {
 
+                init: function(){
+                    $('#docman_block').on("click", '#docman_add_new', function(){
+                        // insert new edit row after the dm_table last TR
+                        var lastrow = $('#dm_table tr:last');
+                        this.createNewEntry(lastrow);
+                    });
+                    $('#docman_block').on("click", '#docman_add_new_recipient', function(e){
+                        e.preventDefault();
+                        docman.createNewRecipientEntry();
+                    });
+                    
+                    this.addHandlers();
+                },
+
 		//-------------------------------------------------------------
 		//  Sets the id of the containing DOM object, and the prefix
 		//  used for all DOM elements created within that.
@@ -67,21 +81,16 @@ var docman = (function() {
 
         addNewRecipientHandler: function()
         {
-            $('.docman_recipient').on("change", function(event)
-            {
-                docman.getRecipientData(event.target.value, event.target);;
+            $('#docman_block').on("change", '.docman_recipient', function(event){
+                docman.getRecipientData(event.target.value, event.target);
             });
-            $('.docman_contact_type').on("change", function ()
-            {
+            $('#docman_block').on("change", '.docman_contact_type', function (){
                 var rowindex = $(this).data("rowindex");
-                if($(this).val() == 'Other')
-                {
+                if($(this).val() == 'Other'){
 
                    $(this).hide();
-                   $('.docman_recipient').each(function()
-                   {
-                        if($(this).data("rowindex") == rowindex)
-                        {
+                   $('.docman_recipient').each(function(){
+                        if($(this).data("rowindex") == rowindex){
                             $(this).parent().html('<input type="text" name="contact_id[]"><textarea rows="4" cols="10" name="address[]" id="address_"'+rowindex+' data-rowindex="'+rowindex+'"></textarea>');
                         }
                    });
@@ -91,7 +100,7 @@ var docman = (function() {
         },
 
 		addRemoveHandler: function(){
-			$('.remove_recipient').on("click", function(event)
+			$('#docman_block').on("click", '.remove_recipient', function(event)
 			{
                 event.target.closest('tr').remove();
                 //$('#dm_table tr:has(td[rowspan])').attr("rowspan", $(this).attr("rowspan")-1);
@@ -107,19 +116,16 @@ var docman = (function() {
 
         addDocmanMethodMandatory: function()
         {
-            $('.docman_delivery').on("click", function(e)
-            {
-                if(docman.checkRecipientType($(this).data("rowindex")) == 'Gp')
-                {
+            $('#docman_block').on("click", '.docman_delivery', function(e){
+                if(docman.checkRecipientType($(this).data("rowindex")) == 'Gp'){
                     $(this).prop('checked', true);
                 }
             });
         },
 
-        checkRecipientType: function(row)
-        {
+        checkRecipientType: function(row){
             var contact_type;
-            $('#dm_table tr').each(function() {
+            $('#dm_tabledm_tabledm_table tr').each(function() {
                 if ($(this).data("rowindex") == row) {
                     contact_type = $(this).find('.docman_contact_type').val();
                 }
@@ -158,14 +164,6 @@ var docman = (function() {
                     'success': function(resp) {
                         $('.new_entry_row').remove();
                         $('#dm_table tr:first').after(resp);
-                        $('#docman_add_new_recipient').on("click", function(e){
-                            e.preventDefault();
-                            docman.createNewRecipientEntry();
-                        });
-                        //$('#dm_0').after(resp);
-						//console.log(resp);
-						this.addHandlers();
-                        //setTimeout(function(){ docman2.loadDocumentSet() }, 3000);
                     }
                 }
             );
@@ -198,6 +196,7 @@ var docman = (function() {
             {
                 correspondence_mode = '&in_correspondence=1';
             }
+
             $.ajax({
 				'type': 'GET',
 				'url': this.baseUrl + 'ajaxGetDocTable?id='+event_id+correspondence_mode,
@@ -205,19 +204,17 @@ var docman = (function() {
 				context: this,
 				dataType: 'html',
 				'success': function(resp) {
-					$('#docman_block').html(resp);
-                    $('#docman_add_new').on("click", docman_add_new);
-                    $('#docman_add_new_recipient').on("click", function(e){
-                        e.preventDefault();
-                        docman.createNewRecipientEntry();
+                    this.setDocTableToHTML(resp);
+				}
                     });
+		},
 
-                    this.addHandlers();
+        setDocTableToHTML: function(data){
+            $('#docman_block').html(data);
+
                     if(macro_id > 0){
                         $('#macro_id').val(macro_id).change();
                     }
-				}
-			});
 		},
 
 		getRecipientData: function(contact_id, element) {
@@ -247,7 +244,6 @@ var docman = (function() {
 				'success': function(resp) {
 					//console.log(resp);
 					element.before(resp);
-                    this.addMacroHandler();
                     $('#docman_add_new').hide();
 				}
 			});
@@ -264,10 +260,7 @@ var docman = (function() {
 				'url': this.baseUrl + 'ajaxGetDocTableRecipientRow?patient_id='+OE_patient_id+'&last_row_index='+last_row_index,
 				'context': this,
 				'success': function(resp) {
-					//console.log(resp);
                     $('#dm_table tr:last').before(resp);
-					//this.addMacroHandler();
-                    this.addNewRecipientHandler();
                     this.addRemoveHandler();
                     this.addDocmanMethodMandatory();
 				}

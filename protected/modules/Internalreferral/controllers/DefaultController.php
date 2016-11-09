@@ -22,6 +22,10 @@ class DefaultController extends \BaseEventTypeController
     // default behaviour as to whether a referral should be editable.
     static protected $ALLOW_EDIT = false;
 
+    protected static $action_types = array(
+        'getIntegratedServiceUrlForEvent' => self::ACTION_TYPE_FORM
+    );
+
     /**
      * Set up the default values on create.
      *
@@ -92,5 +96,31 @@ class DefaultController extends \BaseEventTypeController
     {
         $this->getApp()->user->setState("new_referral", true);
         parent::afterCreateElements($event);
+    }
+    
+    /**
+     * Returns the URL for the integrated service like WinDIP
+     * 
+     * @param string $type type of the request
+     * @param int $event_id
+     */
+    public function actionGetIntegratedServiceUrlForEvent($type = 'create', $patient_id, $event_id = null)
+    {
+        $link = '';
+        if ($component = $this->getApp()->internalReferralIntegration) {
+            
+            //we are using the same call here for the create and view
+            //please note, a SESSION variable called 'new_referral' set after the element was created 
+            //to determinate if the event was new (and we need to send a slightly different 'Create' xml to WinDIP)
+            if(in_array($type, array('create', 'view')) && $event_id){
+                $event = \Event::model()->findByPk($event_id);
+                $link = $event ? $component->generateUrlForEvent($event) : '';
+            } elseif($type == 'list'){
+                $link = $component->generateUrlForDocumentList();
+            }
+        }
+        
+        echo \CJSON::encode(array('link' => $link));
+        $this->getApp()->end();
     }
 }

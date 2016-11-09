@@ -10,14 +10,8 @@ button.docman { width:80px; background: none; font-size:13px; line-height:20px; 
 button.red { background-color:red; color: white; }
 button.green { background-color:green; color: white; }
 </style>
-<script type="text/javascript" src="<?= Yii::app()->assetManager->createUrl('js/docman.js')?>"></script>
+
 <script>
-function docman_add_new()
-{
-	// insert new edit row after the dm_table last TR
-	var lastrow = $('#dm_table tr:last');
-	docman2.createNewEntry(lastrow);
-}
 
 $(document).ready(function()
 {
@@ -49,10 +43,37 @@ $(document).ready(function()
 		}
 	?>
 
+        docman2.init();
+        <?php if( !$this->getApp()->request->isPostRequest ): ?>
 	docman2.getDocTable(event_id, macro_id);
+        <?php endif; ?>
 });
 
 </script>
 
 <div id='docman_block'>
+    <?php 
+        // loading back the data if validation is failed
+        if($this->getApp()->request->isPostRequest){
+            $data = $_POST;
+            $data['correspondence_mode'] = true;
+            foreach($_POST['target_type'] as $key => $target_type){
+                if($target_type == 'To'){
+                    $data['to'] = array(
+                        'contact_id' => $_POST['contact_id'][$key],
+                        'contact_type' => $_POST['contact_type'][$key],
+                        'address' => $_POST['address'][$key],
+                    );
+                    
+                } else {
+                    $data['cc'][] = array(
+                        'contact_id' => $_POST['contact_id'][$key],
+                        'contact_type' => $_POST['contact_type'][$key],
+                        'address' => $_POST['address'][$key],
+                    );
+                }
+            }  
+            echo $this->renderPartial('/docman/document_table', array('data' => $data));
+        }
+        ?>
 </div>
