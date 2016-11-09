@@ -277,7 +277,7 @@ class ExaminationCreator
      */
     protected function createMessage($episodeId, $userId, $examination, $examinationEvent)
     {
-        if (isset(\Yii::app()->modules['OphCoMessaging']) && ($examination['patient']['comments'] || $examination['patient']['ready_for_second_eye'] === false)) {
+        if (isset(\Yii::app()->modules['OphCoMessaging'])) {
             $episode = \Episode::model()->findByPk($episodeId);
             $recipient = \User::model()->findByPk($episode->firm->consultant_id);
             if ($recipient) {
@@ -296,7 +296,7 @@ class ExaminationCreator
                 $messageCreator->setMessageData(array(
                     'optom' => $examination['op_tom']['name'] . ' (' . $examination['op_tom']['goc_number'] . ')',
                     'ready' => $ready,
-                    'comments' => $examination['patient']['comments'],
+                    'comments' => ($examination['patient']['comments']) ? $examination['patient']['comments'] : 'No Comments',
                     'patient' => $episode->patient,
                 ));
                 $message = $messageCreator->save('', array('event' => $examinationEvent->id));
