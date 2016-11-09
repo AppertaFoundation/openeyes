@@ -765,7 +765,7 @@ class OphCoCvi_Manager extends \CComponent
     {
 
         if (isset($filter['show_issued']) && (bool)$filter['show_issued']) {
-            $criteria->addCondition('t.is_draft = :isdraft', 'OR');
+            $criteria->addCondition('t.is_draft = :isdraft', 'AND');
             $criteria->params[':isdraft'] = false;
         }
         if (!array_key_exists('issue_complete', $filter) || (isset($filter['issue_complete']) && (bool)$filter['issue_complete'])) {
