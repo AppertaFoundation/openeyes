@@ -55,4 +55,16 @@ trait Study {
 
         return $ids;
     }
+
+    /**
+     * @param BaseActiveRecord $subject
+     *
+     * @return CActiveRecord
+     */
+    public function participationForSubject(BaseActiveRecord $subject)
+    {
+        $model = new $this->pivot_model();
+
+        return $model->findByAttributes(array('study_id' => $this->id, 'subject_id' => $subject->id));
+    }
 }

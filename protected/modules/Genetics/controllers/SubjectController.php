@@ -113,6 +113,7 @@ class SubjectController extends BaseModuleController
                     'model' => $admin->getModel(),
                     'list' => 'current_studies',
                     'label' => 'Current Studies',
+                    'edit_status_url' => '/Genetics/subject/editStudyStatus/',
                 ),
             ),
             'studies' => array(
@@ -169,6 +170,7 @@ class SubjectController extends BaseModuleController
      * Edit the status of a study - subject relationship.
      *
      * @param $id
+     * @throws CHttpException
      */
     public function actionEditStudyStatus($id)
     {
@@ -179,7 +181,12 @@ class SubjectController extends BaseModuleController
 
         if( Yii::app()->request->isPostRequest) {
             $pivot->attributes = Yii::app()->request->getPost('GeneticsStudySubject');
-            $pivot->save();
+            if($pivot->is_consent_given){
+                $pivot->consent_given_on = date_create('now')->format('Y-m-d H:i:s');
+            }
+            if($pivot->save() && Yii::app()->request->getPost('return')) {
+                $this->redirect(Yii::app()->request->getPost('return'));
+            }
         }
 
         $this->render('//studies/editStatus', array(

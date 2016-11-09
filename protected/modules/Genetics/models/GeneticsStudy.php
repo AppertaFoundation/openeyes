@@ -34,6 +34,8 @@ class GeneticsStudy extends BaseActiveRecordVersioned
 
     protected $pivot = 'genetics_study_subject';
 
+    protected $pivot_model = 'GeneticsStudySubject';
+
     /**
      * Returns the static model of the specified AR class.
      *

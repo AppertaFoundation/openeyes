@@ -10,11 +10,20 @@ $name = get_class($model);
         <ul class="<?= $list ?> studies_list">
             <?php if($studies):?>
                 <?php foreach ($studies as $study):?>
+                    <?php $participation = $study->participationForSubject($model) ?>
                     <li>
                         <input type="hidden" name="<?=$name?>[<?=$list?>][]" value="<?=$study->id?>">
-                        <?= $study->name ?>
                         <?php if($study->end_date < date_create('now')->format('Y-m-d')): ?>
-                            - <i>Ended: <?= Helper::convertMySQL2NHS($study->end_date) ?></i>
+                            <?= $study->name ?>
+                            - <i>Ended: <?= Helper::convertMySQL2NHS($study->end_date) ?></i><br>
+                        <?php else: ?>
+                            <?php if($edit_status_url && $participation):?>
+                            <a href="<?=$edit_status_url . $participation->id?>?return=<?=Yii::app()->request->requestUri?>" title="Edit Participation" class="edit-study-participation"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                            <?php endif;?>
+                            <?= $study->name ?>
+                            <?php if($participation && $participation->is_consent_given): ?>
+                                - <i>Consent Given: <?= Helper::convertMySQL2NHS($participation->consent_given_on) ?></i><br>
+                            <?php endif;?>
                         <?php endif;?>
                     </li>
                 <?php endforeach?>

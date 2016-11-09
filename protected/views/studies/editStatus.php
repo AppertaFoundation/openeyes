@@ -14,7 +14,7 @@
         ),
     ));
     ?>
-
+    <input type="hidden" name="return" value="<?=Yii::app()->request->getQuery('return', '')?>">
     <div class="row field-row">
         <div class="large-2 column">
             <label>Subject:</label>
