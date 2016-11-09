@@ -292,4 +292,16 @@ class OphCoCorrespondence_API extends BaseAPI
         $event->save();
         return $event;
     }
+    
+    /**
+     * Returns the letter targets by element id
+     * 
+     * @param int $id
+     * @return array
+     */
+    public function getMacroTargetsByElementLetterId($id)
+    {
+        $element_letter = ElementLetter::model()->findByPk($id);
+        return $element_letter->letter_targets;
+    }
 }

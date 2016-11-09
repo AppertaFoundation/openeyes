@@ -23,11 +23,11 @@
         $ccString = "";
         $toAddress = "";
 
-        if($element->documentInstance) {
+        if($element->document_instance) {
             
-            foreach ($element->documentInstance as $instance) {
-                foreach ($instance->documentTarget as $target) {
-                    foreach ($target->documentOutput as $output) {
+            foreach ($element->document_instance as $instance) {
+                foreach ($instance->document_target as $target) {
+                    foreach ($target->document_output as $output) {
                         if($output->ToCc == 'To'){
                             $toAddress = $target->contact_name . "\n" . $target->address;
                         } else {

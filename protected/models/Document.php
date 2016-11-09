@@ -213,9 +213,10 @@ class Document //extends BaseActiveRecord
 
 	public function createNewDocSet()
 	{
+                $post_document_targets = Yii::app()->request->getPost('DocumentTarget', null);
                 $doc_set = null;
-                if( isset($_POST['document_set_id']) ){
-                    $doc_set = DocumentSet::model()->findByPk($_POST['document_set_id']);
+                if( isset($_POST['DocumentSet']['id']) ){
+                    $doc_set = DocumentSet::model()->findByPk($_POST['DocumentSet']['id']);
                 }
 		$doc_set = $doc_set ? $doc_set : new DocumentSet();
                 
@@ -225,8 +226,8 @@ class Document //extends BaseActiveRecord
 
                 
                 $doc_instance = null;
-                if( isset($_POST['document_instance_id']) ){
-                    $doc_instance = DocumentInstance::model()->findByPk($_POST['document_instance_id']);
+                if( isset($_POST['DocumentInstance']['id']) ){
+                    $doc_instance = DocumentInstance::model()->findByPk($_POST['DocumentInstance']['id']);
                 }
 		$doc_instance = $doc_instance ? $doc_instance : new DocumentInstance();
       
@@ -236,8 +237,8 @@ class Document //extends BaseActiveRecord
 
                 
                 $doc_instance_version = null;
-                if( isset($_POST['document_instance_data_id']) ){
-                    $doc_instance_version = DocumentInstanceData::model()->findByPk($_POST['document_instance_data_id']);
+                if( isset($_POST['DocumentInstanceData']['id']) ){
+                    $doc_instance_version = DocumentInstanceData::model()->findByPk($_POST['DocumentInstanceData']['id']);
                 }
 		$doc_instance_version = $doc_instance_version ? $doc_instance_version : new DocumentInstanceData();
                 
@@ -245,43 +246,33 @@ class Document //extends BaseActiveRecord
 		$doc_instance_version->macro_id = $_POST['macro_id'];
                 
 		$doc_instance_version->save();
+                
+		if(isset($post_document_targets)){
 
-		if(is_array(@$_POST['target_type']))
-		{
-			foreach($_POST['target_type'] as $key => $val)
-			{
+			foreach($post_document_targets as $key => $post_document_target){
 				$data = array(
-                                    'contact_type' => $_POST['contact_type'][$key],
-                                    'contact_id' => $_POST['contact_id'][$key],
-                                    'address' => $_POST['address'][$key]);
+                                    'contact_type' => $post_document_target['attributes']['contact_type'],
+                                    'contact_id' => $post_document_target['attributes']['contact_id'],
+                                    'address' => $post_document_target['attributes']['address']);
                                 
-                                if(isset($_POST['document_target_id'][$key])){
-                                    $data['id'] = $_POST['document_target_id'][$key];
+                                if(isset($post_document_target['attributes']['id'])){
+                                    $data['id'] = $post_document_target['attributes']['id'];
                                 }
 				$doc_target = $this->createNewDocTarget($doc_instance, $data);
 
-				if(@$_POST['print'][$key])
-				{
-					$data = array(
-                                            'ToCc'=>$val,
-                                            'output_type'=>'Print');
+                                foreach($post_document_target['DocumentOutput'] as $document_output){
+                                    
+                                    if( isset($document_output['output_type']) ){
+                                        $data = array(
+                                            'ToCc' => $document_output['ToCc'],
+                                            'output_type' => $document_output['output_type']);
                                         
-                                        if(isset($_POST['id'][$key])){
-                                            $data['id'] = $_POST['id'][$key];
+                                        if(isset($document_output['id'])){
+                                            $data['id'] = $document_output['id'];
                                         }
 					$this->createNewDocOutput($doc_target, $doc_instance_version, $data);
-				}
-				if(@$_POST['docman'][$key])
-				{
-					$data = array(
-                                            'ToCc'=>$val,
-                                            'output_type'=>'Docman');
-                                        if(isset($_POST['id'][$key])){
-                                            $data['id'] = $_POST['id'][$key];
-                                        }
-
-					$this->createNewDocOutput($doc_target, $doc_instance_version, $data);
-				}
+                                    }
+                                }
 			}
 		}
 	}

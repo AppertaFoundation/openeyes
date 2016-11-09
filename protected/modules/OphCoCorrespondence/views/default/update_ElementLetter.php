@@ -26,8 +26,8 @@ $layoutColumns = $form->layoutColumns;
 $macro_id = null;
 if( isset($_POST['macro_id']) ){
     $macro_id = $_POST['macro_id'];
-} else if( isset($element->documentInstance->documentInstanceData[0]) ){
-    $macro_id = $element->documentInstance->documentInstanceData[0]->macro_id;
+} else if( isset($element->documentInstance->document_instance_data[0]) ){
+    $macro_id = $element->documentInstance->document_instance_data[0]->macro_id;
 }
 
 ?>

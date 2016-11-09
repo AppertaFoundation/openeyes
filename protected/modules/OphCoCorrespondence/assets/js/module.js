@@ -520,6 +520,17 @@ $(document).ready(function() {
 	var selected_recipient = $('#address_target').val();
 
 	$('#ElementLetter_body').tabby();
+        
+        if( $('#dm_table').length > 0 ){
+            // we have docman table here
+            docman2 = docman;
+            docman2.baseUrl = location.protocol + '//' + location.host + '/docman/'; // TODO add this to the config!
+            docman2.setDOMid('docman_block','dm_');
+            docman2.module_correspondence = 1;
+            
+            docman2.init();
+            //docman2.getDocTable(OE_event_id, $('#dm_table').data('macro_id'));
+        }
 });
 
 var et_oph_correspondence_body_cursor_position = 0;

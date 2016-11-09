@@ -35,6 +35,34 @@ class DocmanController extends BaseController
         //$this->renderPartial('/docman/index');
     }
 
+    public function actionGetCreateTable($element_id = null, $macro_id = 7)
+    {
+        $document_set = new DocumentSet();
+        $document_instance = new DocumentInstance();
+        $document_target = new DocumentTarget();
+        $document_output = new DocumentOutput();
+        $macro_data = array();
+        $letter_targets = array();
+        
+        if (($api = Yii::app()->moduleAPI->get('OphCoCorrespondence')) && $macro_id) {
+            $patient_id = Yii::app()->request->getQuery('patient_id');
+            $macro_data = $api->getMacroTargets($patient_id, $macro_id);
+            $letter_targets = $api->getMacroTargetsByElementLetterId($element_id);
+        }
+        
+        echo "<pre>" . print_r($macro_data, true) . "</pre>";
+        
+        $this->renderPartial('/docman/_create', array(
+            'row_index' => ( isset($row_index) ? $row_index : 0),
+            'document_set' => $document_set,
+            'document_target' => $document_target,
+            'document_output' => $document_output,
+            'macro_data' => $macro_data,
+            'macro_id' => $macro_id,
+            'letter_targets' => $letter_targets,
+        ));
+    }
+    
     public function addTableToEvent( $module, $data )
     {
         $this->renderPartial('/docman/index', array('module'=>$module, 'data'=>$data));
@@ -51,7 +79,7 @@ class DocmanController extends BaseController
     public function actionAjaxGetDocTable()
     {
         if (!Yii::app()->request->isAjaxRequest) { return; }
-        if(Yii::app()->request->getQuery('id'))
+        if($event_id = Yii::app()->request->getQuery('id'))
         {
             $data = $this->getDocSetData(0);
         }else

@@ -63,7 +63,7 @@ class DocumentTarget extends BaseActiveRecord
 			'created_user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'document_instance' => array(self::BELONGS_TO, 'DocumentInstance', 'document_instance_id'),
                         'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
-                        'documentOutput' => array(self::HAS_MANY, 'DocumentOutput', 'document_target_id'),
+                        'document_output' => array(self::HAS_MANY, 'DocumentOutput', 'document_target_id'),
 		);
 	}
 

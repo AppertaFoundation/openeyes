@@ -75,7 +75,7 @@ $(document).ready(function()
                     }
                 }  
             }
-            echo $this->renderPartial('/docman/document_table', array('data' => $data));
+            echo $this->renderPartial('/docman/document_table', array('data' => $data, 'document_set' => $document_set));
         }
         ?>
 </div>

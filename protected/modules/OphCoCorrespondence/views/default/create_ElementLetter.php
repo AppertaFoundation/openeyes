@@ -22,7 +22,7 @@
 <?php echo $form->hiddenInput($element, 'draft', 1)?>
 <?php
 $layoutColumns = $form->layoutColumns;
-$macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : null;
+$macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : ( isset($element->macro->id) ? $element->macro->id : null );
 ?>
 <div class="element-fields">
 	<div class="row field-row">
@@ -63,13 +63,24 @@ $macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : null;
 
 	<div class="row field-row">
 		<?php
-		$document_manager = new DocmanController('docman');
-		$macro_id = null;
-		if(isset($element->macro))
-		{
-			$macro_id = $element->macro->id;
-		}
-		$document_manager->addTableToEvent(Yii::app()->getController()->event_type->name, array('macro'=> $macro_id));
+                    $document_manager = new DocmanController('docman');
+                    $macro_data = array();
+                    if(isset($element->macro)){
+                        $patient_id = Yii::app()->request->getQuery('patient_id');
+                        
+                        $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
+                        $macro_data = $api->getMacroTargets($patient_id, $macro_id);
+                    }
+                    //$document_manager->addTableToEvent(Yii::app()->getController()->event_type->name, array('macro'=> $macro_id));
+                        $this->renderPartial('//docman/_create', array(
+                            'row_index' => ( isset($row_index) ? $row_index : 0),
+
+                            'document_output' => new DocumentOutput(),
+                            'macro_data' => $macro_data,
+                            'macro_id' => $macro_id,
+                            'element' => $element
+                        ));
+                
 		?>
 	</div>
 

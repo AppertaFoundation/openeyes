@@ -87,7 +87,7 @@ class ElementLetter extends BaseEventTypeElement
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
             'enclosures' => array(self::HAS_MANY, 'LetterEnclosure', 'element_letter_id', 'order' => 'display_order'),
-            'documentInstance' => array(self::HAS_MANY, 'DocumentInstance', array( 'correspondence_event_id' => 'event_id')),
+            'document_instance' => array(self::HAS_MANY, 'DocumentInstance', array( 'correspondence_event_id' => 'event_id')),
             
         );
     }
@@ -132,9 +132,8 @@ class ElementLetter extends BaseEventTypeElement
 
     public function afterValidate()
     {
-
-        if(!is_array(@$_POST['target_type']) && Yii::app()->getController()->getAction()->id == 'create')
-        {
+        $document_target = Yii::app()->request->getPost('DocumentTarget', null);
+        if(!isset($document_target[0]['DocumentOutput'][0]['ToCc']) && Yii::app()->getController()->getAction()->id == 'create'){
             $this->addError('toAddress', 'Please add at least one recipient!');
         }
         parent::afterValidate();
@@ -449,7 +448,7 @@ class ElementLetter extends BaseEventTypeElement
     }
 
     public function beforeSave()
-    {
+    {        
         if (in_array(Yii::app()->getController()->getAction()->id, array('create', 'update'))) {
             if (!$this->draft) {
                 $this->print = 1;
@@ -491,8 +490,7 @@ class ElementLetter extends BaseEventTypeElement
                 }
             }
         }
-        if(Yii::app()->getController()->getAction()->id == 'create' || Yii::app()->getController()->getAction()->id == 'update')
-        {
+        if(Yii::app()->getController()->getAction()->id == 'create' || Yii::app()->getController()->getAction()->id == 'update'){
             $document = new Document();
             $document->event_id = $this->event_id;
             $document->createNewDocSet();
