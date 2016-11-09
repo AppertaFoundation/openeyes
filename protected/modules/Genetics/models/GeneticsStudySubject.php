@@ -18,26 +18,20 @@
  */
 
 /**
- * This is the model class for table "genetics_study".
+ * This is the model class for table "genetics_study_subject".
  *
- * The followings are the available columns in table 'genetics_study':
+ * The followings are the available columns in table 'genetics_study_subject':
  *
  * @property int $id
  *
  * The followings are the available model relations:
  */
-class GeneticsStudy extends BaseActiveRecordVersioned
+class GeneticsStudySubject extends BaseActiveRecord
 {
-    use Study;
-
-    protected $auto_update_relations = true;
-
-    protected $pivot = 'genetics_study_subject';
-
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return GeneticsStudy Issue the static model class
+     * @return GeneticsStudySubject Issue the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -49,7 +43,7 @@ class GeneticsStudy extends BaseActiveRecordVersioned
      */
     public function tableName()
     {
-        return 'genetics_study';
+        return 'genetics_study_subject';
     }
 
     /**
@@ -60,8 +54,7 @@ class GeneticsStudy extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name, criteria, end_date, patients, proposers', 'safe'),
-            array('name', 'required'),
+            array('participation_status_id, is_consent_given, consent_received_by, comments', 'safe'),
         );
     }
 
@@ -71,8 +64,9 @@ class GeneticsStudy extends BaseActiveRecordVersioned
     public function relations()
     {
         return array(
-            'proposers' => array(self::MANY_MANY, 'User', 'genetics_study_proposer(study_id, user_id)'),
-            'subjects' => array(self::MANY_MANY, 'GeneticsPatient', 'genetics_study_subject(study_id, subject_id)'),
+            'subject' => array(self::BELONGS_TO, 'GeneticsPatient', 'subject_id'),
+            'study' => array(self::BELONGS_TO, 'GeneticsStudy', 'study_id'),
+            'status' => array(self::BELONGS_TO, 'StudyParticipationStatus', 'participation_status_id')
         );
     }
 
@@ -81,18 +75,8 @@ class GeneticsStudy extends BaseActiveRecordVersioned
      */
     public function attributeLabels()
     {
-        return array();
-    }
-
-    /**
-     * @return bool
-     */
-    public function beforeSave()
-    {
-        //Set the date to null if it's not truthy so empty strings don't convert to 0000-00-00....
-        if(!$this->end_date){
-            $this->end_date = null;
-        }
-        return parent::beforeSave();
+        return array(
+            'participation_status_id' => 'Participation Status',
+        );
     }
 }

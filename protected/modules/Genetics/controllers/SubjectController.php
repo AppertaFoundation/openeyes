@@ -20,7 +20,7 @@ class SubjectController extends BaseModuleController
     {
         return array(
             array('allow',
-                'actions' => array('Edit'),
+                'actions' => array('Edit', 'EditStudyStatus'),
                 'roles' => array('OprnEditGeneticPatient'),
             ),
             array('allow',
@@ -163,5 +163,27 @@ class SubjectController extends BaseModuleController
         $admin->getSearch()->addSearchItem('patient.contact.first_name', array('type' => 'compare', 'compare_to' => array('patient.contact.last_name')));
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
         $admin->listModel();
+    }
+
+    /**
+     * Edit the status of a study - subject relationship.
+     *
+     * @param $id
+     */
+    public function actionEditStudyStatus($id)
+    {
+        $pivot = GeneticsStudySubject::model()->findByPk($id);
+        if(!$pivot){
+            throw new CHttpException(404, 'No pivot found for relationship');
+        }
+
+        if( Yii::app()->request->isPostRequest) {
+            $pivot->attributes = Yii::app()->request->getPost('GeneticsStudySubject');
+            $pivot->save();
+        }
+
+        $this->render('//studies/editStatus', array(
+            'pivot' => $pivot
+        ));
     }
 }
