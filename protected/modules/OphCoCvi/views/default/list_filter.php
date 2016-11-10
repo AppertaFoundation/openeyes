@@ -25,7 +25,6 @@
         ),
         'enableAjaxValidation' => false,
     ))?>
-
     <div class="large-12 column">
         <div class="panel box js-toggle-container">
             <h3>Filter CVIs</h3>
@@ -291,7 +290,16 @@
 
     $('#reset_button').on('click', function(e) {
         e.preventDefault();
-        $('.filter-field').val('');
+//        $('.filter-field').val(''); subspecialty_id
+        $('#date_from').val('');
+        $('#date_to').val('');
+        $('#subspecialty_id').val('');
+        $('#site_id').val('');
+        $('#consultant_ids').val('');
+        $('#show_issued').val('');
+        $('#createdby_ids').val('');
+        $('#issue_complete').prop("checked", true);
+        $('#issue_incomplete').prop("checked", true);
         $('#cvi-filter').submit();
     });
 
