@@ -26,6 +26,11 @@ return array(
                 'Advanced Patient Search' => 'geneticPatients',
             ),
         ),
+        'admin_structure' => array(
+            'Studies' => array(
+                'Genetics' => 'Genetics/studyAdmin/list',
+            )
+        ),
     ),
     'components' => array(
     'event' => array(
