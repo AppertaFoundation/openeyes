@@ -62,33 +62,52 @@ $macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : ( isset($element->m
 	</div>
 
 	<div class="row field-row">
+            <div id="docman_block">
 		<?php
                     $document_manager = new DocmanController('docman');
                     $macro_data = array();
-                    if(isset($element->macro)){
-                        $patient_id = Yii::app()->request->getQuery('patient_id');
-                        
+                    $patient_id = Yii::app()->request->getQuery('patient_id');
+                    
+                    if(isset($element->macro) && !isset($_POST['DocumentTarget'])){
                         $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
                         $macro_data = $api->getMacroTargets($patient_id, $macro_id);
                     }
-                    //$document_manager->addTableToEvent(Yii::app()->getController()->event_type->name, array('macro'=> $macro_id));
-                        $this->renderPartial('//docman/_create', array(
-                            'row_index' => ( isset($row_index) ? $row_index : 0),
+                    
+                    // set back posted data on error
+                    if(isset($_POST['DocumentTarget'])){
+                        foreach($_POST['DocumentTarget'] as $document_target){
 
-                            'document_output' => new DocumentOutput(),
-                            'macro_data' => $macro_data,
-                            'macro_id' => $macro_id,
-                            'element' => $element
-                        ));
+                            if( isset($document_target['DocumentOutput'][0]['ToCc']) && $document_target['DocumentOutput'][0]['ToCc'] == 'To'){
+                                $macro_data['to'] = array(
+                                    'contact_type' => $document_target['attributes']['contact_type'],
+                                    'contact_id' => $document_target['attributes']['contact_id'],
+                                    'address' => $document_target['attributes']['address'],
+                                );
+                            } else if( isset($document_target['DocumentOutput'][0]['ToCc']) && $document_target['DocumentOutput'][0]['ToCc'] == 'Cc'){
+                                $macro_data['cc'][] = array(
+                                    'contact_type' => $document_target['attributes']['contact_type'],
+                                    'contact_id' => $document_target['attributes']['contact_id'],
+                                    'address' => $document_target['attributes']['address'],
+                                );
+                            }
+                        }
+                    }
+                    $this->renderPartial('//docman/_create', array(
+                        'row_index' => ( isset($row_index) ? $row_index : 0),
+                        'macro_data' => $macro_data,
+                        'macro_id' => $macro_id,
+                        'element' => $element
+                    ));
                 
 		?>
+            </div>
 	</div>
 
 	<div class="row field-row">
 		<div class="large-<?php echo $layoutColumns['label'];?> column OphCoCorrespondence_footerLabel">
-			<label for="<?php echo get_class($element).'_clinic_date_0';?>">
-				<?php echo $element->getAttributeLabel('clinic_date')?>:
-			</label>
+                    <label for="<?php echo get_class($element).'_clinic_date_0';?>">
+                        <?php echo $element->getAttributeLabel('clinic_date')?>:
+                    </label>
 		</div>
 		<div class="large-2 column end">
 			<?php echo $form->datePicker($element, 'clinic_date', array('maxDate' => 'today'), array('nowrapper' => true, 'null' => true))?>

@@ -29,7 +29,7 @@ button.docman { width:80px; background: none; font-size:13px; line-height:20px; 
 button.red { background-color:red; color: white; }
 button.green { background-color:green; color: white; }
 </style>
-<div id="docman_block">
+
     <table id="dm_table" data-macro_id="<?php echo $macro_id; ?>">
         <tbody>
             <tr id="dm_0">
@@ -45,7 +45,7 @@ button.green { background-color:green; color: white; }
                 <tr class="rowindex-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
                     <td> To <?php echo CHtml::hiddenField("DocumentTarget[" . $row_index . "][DocumentOutput][0][ToCc]", 'To'); ?> </td>
                     <td>
-                        <?php echo CHtml::dropDownList('DocumentTarget['.$row_index.'][attributes][contact_id]', $macro_data["to"]["contact_id"], $element->address_targets,  array('empty' => '- Recipient -', 'nowrapper' => true, 'class' => 'full-width docman_recipient', 'data-rowindex'=>$row_index, 'data-previous' => $macro_data["to"]["contact_id"]))?>
+                        <?php echo CHtml::dropDownList('DocumentTarget['.$row_index.'][attributes][contact_id]', $macro_data["to"]["contact_id"], $element->address_targets, array('empty' => '- Recipient -', 'nowrapper' => true, 'class' => 'full-width docman_recipient', 'data-rowindex'=>$row_index, 'data-previous' => $macro_data["to"]["contact_id"]))?>
 
                         <br>
                         <textarea rows="4" cols="10" name="DocumentTarget[<?php echo $row_index;?>][attributes][address]" id="Document_Target_Address_<?php echo $row_index;?>" data-rowindex="<?php echo $row_index ?>"><?php echo $macro_data["to"]["address"]?></textarea>
@@ -61,22 +61,33 @@ button.green { background-color:green; color: white; }
                             array(  'empty' => '- Type -',
                                     'nowrapper' => true, 
                                     'class' => 'full-width docman_contact_type',
-                                    'id'=>'contact_type_'.$row_index,
                                     'data-rowindex' => $row_index
                                 )
                         );?>
                     </td>
                     <td class="docman_delivery_method">
+                        <?php $output_index = 0; ?>
                         <?php if($macro_data["to"]["contact_type"] == 'Gp'){ ?>
                             <label>
-                                <input type="checkbox" class="docman_delivery" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][0][output_type]" data-rowindex="<?php echo $row_index?>" value="docman" checked>DocMan
+                                <?php 
+                                    $is_checked = 'checked';
+                                    if(Yii::app()->request->isPostRequest){
+                                        $is_checked = isset($_POST["DocumentTarget"][$row_index]['DocumentOutput'][$output_index]['output_type']) ? 'checked' : ''; 
+                                        
+                                    }
+                                ?>   
+                                    
+                                <input type="checkbox" value="Docman" class="docman_delivery" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][0][output_type]" data-rowindex="<?php echo $row_index?>" <?php echo $is_checked; ?>>DocMan
+                                <?php echo CHtml::hiddenField("DocumentTarget[" . $row_index . "][DocumentOutput][$output_index][ToCc]", 'To'); ?>
                             </label>
+                            <?php $output_index++; ?>
                             <br>
                         <?php }?>
-                        <label>
-                            <input type="checkbox" value="print" name="DocumentTarget[<?php echo $row_index; ?>]DocumentOutput[][output_type]" <?php if($macro_data["to"]["contact_type"] != 'Gp'){ echo 'checked';}?>>Print
-                        </label>
-                        <?php echo CHtml::hiddenField("DocumentTarget[" . $row_index . "][DocumentOutput][1][ToCc]", 'To'); ?> <?php /* well, thanks for the design */ ?>
+                            <label>
+                                <?php $is_checked = isset($_POST["DocumentTarget"][$row_index]['DocumentOutput'][$output_index]['output_type']) ? 'checked' : ''; ?>
+                                <input type="checkbox" value="Print" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][<?php echo $output_index; ?>][output_type]" <?php echo $is_checked; ?>>Print
+                            </label>
+                        <?php echo CHtml::hiddenField("DocumentTarget[" . $row_index . "][DocumentOutput][$output_index][ToCc]", 'To'); ?> <?php /* well, thanks for the design */ ?>
                     </td>
                     <td> </td>
                 </tr>
@@ -100,24 +111,38 @@ button.green { background-color:green; color: white; }
                             'Other' => 'Other'
                             ), 
                             array(  'empty' => '- Type -',
-                                    'nowrapper' => true, 
+                                    'nowrapper' => true,
                                     'class' => 'full-width docman_contact_type',
-                                    'id'=>'contact_type_'.$row_index,
                                     'data-rowindex' => $row_index
                                 )
                         );?>
                     </td>
                     <td class="docman_delivery_method">
+                        <?php $output_index = 0; ?>
                         <?php if($macro["contact_type"] == 'Gp'){ ?>
                             <label>
-                                <input type="checkbox" value="Docman" class="docman_delivery" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][0][output_type]" data-rowindex="<?php echo $row_index?>" checked>DocMan
+                                <?php
+                                    $is_checked = 'checked';
+                                    if(Yii::app()->request->isPostRequest){
+                                        $is_checked = isset($_POST["DocumentTarget"][$row_index]['DocumentOutput'][$output_index]['output_type']) ? 'checked' : '';
+                                    }
+                                ?>
+                                <input type="checkbox" value="Docman" class="docman_delivery" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][0][output_type]" data-rowindex="<?php echo $row_index?>" <?php echo $is_checked; ?>>DocMan
                             </label>
+                            <?php echo CHtml::hiddenField("DocumentTarget[" . $row_index . "][DocumentOutput][$output_index][ToCc]", 'Cc'); ?>
+                            <?php $output_index++; ?>
                             <br>
-                        <?php }?>
+                        <?php } ?>
                         <label>
-                            <input type="checkbox" value="Print" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][1][output_type]" <?php if($macro["contact_type"] != 'Gp'){ echo 'checked';}?>>Print
+                            <?php 
+                                $is_checked = $macro["contact_type"] == 'Gp' ? '' : 'checked';
+                                if(Yii::app()->request->isPostRequest){
+                                    $is_checked = isset($_POST["DocumentTarget"][$row_index]['DocumentOutput'][$output_index]['output_type']) ? 'checked' : ''; 
+                                }
+                            ?> 
+                            <input type="checkbox" value="Print" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][<?php echo $output_index ?>][output_type]" <?php echo $is_checked; ?>>Print
                         </label>
-                        <?php echo CHtml::hiddenField("DocumentTarget[" . $row_index . "][DocumentOutput][1][ToCc]", 'Cc'); ?>
+                        <?php echo CHtml::hiddenField("DocumentTarget[" . $row_index . "][DocumentOutput][$output_index][ToCc]", 'Cc'); ?>
                     </td>
                     <td> </td>
 
@@ -132,4 +157,3 @@ button.green { background-color:green; color: white; }
             </tr>
         </tbody>
     </table>
-</div>    

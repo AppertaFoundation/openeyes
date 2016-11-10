@@ -24,11 +24,7 @@
 $layoutColumns = $form->layoutColumns;
 
 $macro_id = null;
-if( isset($_POST['macro_id']) ){
-    $macro_id = $_POST['macro_id'];
-} else if( isset($element->documentInstance->document_instance_data[0]) ){
-    $macro_id = $element->documentInstance->document_instance_data[0]->macro_id;
-}
+$macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : ( isset($element->macro->id) ? $element->macro->id : null );
 
 ?>
 
@@ -74,10 +70,17 @@ if( isset($_POST['macro_id']) ){
 
 
 	<div class="row field-row">
+            <div id="docman_block">
 		<?php
-		$document_manager = new DocmanController('docman');
-		$document_manager->addTableToEvent(Yii::app()->getController()->event_type->name, array('event_id'=> $element->event_id));
+                
+                $this->renderPartial('//docman/_update', array(
+                            'row_index' => ( isset($row_index) ? $row_index : 0),
+                            'document_set' => (DocumentSet::model()->findByAttributes(array('event_id' => $element->event_id))),
+                            'macro_id' => $macro_id,
+                            'element' => $element,
+                        ));
 		?>
+            </div>
 	</div>
 
 	<div class="row field-row">

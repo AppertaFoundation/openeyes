@@ -214,7 +214,14 @@ class DocmanController extends BaseController
                 $macro_data = $api->getMacroTargets($patient_id, $macro_id);
             }
         }
-        echo $this->renderPartial('/docman/document_row_edit',array('data'=>$macro_data));
+
+        echo $this->renderPartial('/docman/_create',array(
+            'row_index' => ( isset($row_index) ? $row_index : 0),
+            'macro_data' => $macro_data, 
+            'macro_id' => $macro_id, 
+            'element' => (new ElementLetter())
+            )
+        );
     }
 
     public function actionCreateNewCorrespondence($macroId)

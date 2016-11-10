@@ -137,16 +137,19 @@ var docman = (function() {
 
         setDeliveryMethods: function(row)
         {
+            var delivery_methods = '';
+            
             $('#dm_table tr').each(function()
             {
                 if($(this).data("rowindex") == row)
                 {
                     if($(this).find('.docman_contact_type').val() == 'Gp')
                     {
-                        var delivery_methods = '<label><input type="checkbox" name="print[]">Print</label><br><label><input type="checkbox" name="docman[]" data-rowindex="0" checked="">DocMan</label>';
+                        delivery_methods = '<label><input value="Docman" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]" type="checkbox" checked>DocMan</label><br>';
+                        delivery_methods += '<label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox">Print</label>';
                     }else
                     {
-                        var delivery_methods = '<label><input type="checkbox" name="print[]" checked>Print</label>';
+                        delivery_methods = '<label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]" type="checkbox" checked>Print</label>';
                     }
                     $(this).find('.docman_delivery_method').html(delivery_methods);
                 }
@@ -163,9 +166,8 @@ var docman = (function() {
                     'data':  null,
                     context: this,
                     async: false,
-                    'success': function(resp) {
-                        $('.new_entry_row').remove();
-                        $('#dm_table tr:first').after(resp);
+                    'success': function(resp) {                       
+                        $('#dm_table').replaceWith(resp);
                     }
                 }
             );
@@ -229,18 +231,18 @@ var docman = (function() {
                     var rowindex = $(element).data("rowindex");
                     var this_recipient = $(element).data('previous');
 
-                    var this_address = $('#address_'+rowindex).val();
-                    var this_contact_type = $('#contact_type_'+rowindex).val();
+                    var this_address = $('#Document_Target_Address_' + rowindex).val();
+                    var this_contact_type = $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val();
                     var other_rowindex = $('#docman_block select option[value="' + resp.contact_type + '"]:selected').closest('tr').data('rowindex');
                     var $other_docman_recipient = $('tr.rowindex-' + other_rowindex + ' .docman_recipient');
 
-                    $('#address_'+rowindex).val(resp.address);
-                    $('#contact_type_'+rowindex).val(resp.contact_type).trigger('change');
+                    $('#Document_Target_Address_' + rowindex).val(resp.address);
+                    $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val(resp.contact_type).trigger('change');
 
                     if(resp.contact_type === 'Gp' || resp.contact_type === 'Patient'){
                         $other_docman_recipient.val(this_recipient);
-                        $('#address_' + other_rowindex).val(this_address);
-                        $('#contact_type_' + other_rowindex).val(this_contact_type).trigger('change');
+                        $('#Document_Target_Address_' + other_rowindex).val(this_address);
+                        $('#DocumentTarget_' + other_rowindex + '_attributes_contact_type').val(this_contact_type).trigger('change');
                     }
                     $(element).data('previous', $(element).val());
                     $other_docman_recipient.data('previous', $other_docman_recipient.val());
