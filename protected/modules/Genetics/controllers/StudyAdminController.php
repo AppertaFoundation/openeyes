@@ -56,7 +56,7 @@ class StudyAdminController extends BaseAdminController
             'proposers' => array(
                 'widget' => 'MultiSelectList',
                 'relation_field_id' => 'id',
-                'label' => 'Proposer',
+                'label' => 'Investigator',
                 'options' => CHtml::encodeArray(CHtml::listData(
                     User::model()->findAll(),
                     'id',
