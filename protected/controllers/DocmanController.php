@@ -6,7 +6,7 @@ class DocmanController extends BaseController
 	public function accessRules()
     {
         return array(
-            array('allow', 'roles' => array('admin')),
+            array('allow', 'roles' => array('admin', 'User')),
         );
     }
 	
@@ -184,7 +184,6 @@ class DocmanController extends BaseController
 				$macro_data = $api->getMacroTargets($patient_id, $macro_id);
 			}
 		}
-		var_dump($macro_data);
 		echo $this->renderPartial('/docman/document_row_edit',array('data'=>$macro_data));
 	}
 

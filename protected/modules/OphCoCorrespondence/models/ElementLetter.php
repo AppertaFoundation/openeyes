@@ -200,11 +200,13 @@ class ElementLetter extends BaseEventTypeElement
                     // include all services at the moment, regardless of whether the commissioning body type is filtered
                     if ($services = $cb->services) {
                         foreach ($services as $svc) {
+                            if($svc->contact){
                             $options[$svc->contact->id] = $svc->name.' ('.$svc->getTypeShortName().')';
                         }
                     }
                 }
             }
+        }
         }
 
         foreach (PatientContactAssignment::model()->with(array(
@@ -623,4 +625,9 @@ class ElementLetter extends BaseEventTypeElement
     {
         return preg_replace('/[\r\n]+/', ', ', CHtml::encode($address));
     }
+    
+    public function getDocumentInstance()
+    {
+        return \DocumentInstance::model()->findByAttributes(array('correspondence_event_id' => $this->event_id));
+}
 }

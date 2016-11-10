@@ -82,6 +82,24 @@ $(document).ready(function() {
 	$('#contactfilter').change(function() {
 		$('#contactname').focus();
 	});
+
+	$('#patient-summary-form-container').on('click', '.internalreferral-doclist a', function(e){
+		var link = $(this).attr('href');
+		e.preventDefault();
+
+		OpenEyes.UI.Window.createNewWindow(link, 'Internalreferralintegration',
+			function(popup) {
+				// get new link as we need new message_id to re-open the window
+				$.get( "/Internalreferral/default/getIntegratedServiceUrlForEvent/type/list/patient_id/" + OE_patient_id, function( data ) {
+					var json = JSON.parse(data);
+					$('.internalreferral-doclist a').attr('href', json.link);
+				});
+				popup.focus();
+			},
+			function(){
+			}
+		);
+	});
 });
 
 var contactCache = {};
