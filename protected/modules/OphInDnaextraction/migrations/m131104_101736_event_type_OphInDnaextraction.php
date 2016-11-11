@@ -13,9 +13,20 @@ class m131104_101736_event_type_OphInDnaextraction extends CDbMigration
             $group = $this->dbConnection->createCommand()->select('id')->from('event_group')->where('name=:name', array(':name' => 'Investigation events'))->queryRow();
             $this->insert('event_type', array('class_name' => 'OphInDnaextraction', 'name' => 'DNA extraction', 'event_group_id' => $group['id'], 'parent_id' => $parent_id));
         }
-        $event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name' => 'OphInDnaextraction'))->queryRow();
-        if (!$this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name and event_type_id=:eventTypeId', array(':name' => 'DNA extraction', ':eventTypeId' => $event_type['id']))->queryRow()) {
-            $this->insert('element_type', array('name' => 'DNA extraction', 'class_name' => 'Element_OphInDnaextraction_DnaExtraction', 'event_type_id' => $event_type['id'], 'display_order' => 1));
+        $event_type = $this->dbConnection->createCommand()
+            ->select('id')
+            ->from('event_type')
+            ->where('class_name=:class_name', array(':class_name' => 'OphInDnaextraction'))
+            ->queryRow();
+        if (!$this->dbConnection->createCommand()->select('id')
+            ->from('element_type')
+            ->where('name=:name and event_type_id=:eventTypeId', array(':name' => 'DNA extraction', ':eventTypeId' => $event_type['id']))
+            ->queryRow()
+        ) {
+            $this->insert(
+                'element_type',
+                array('name' => 'DNA extraction', 'class_name' => 'Element_OphInDnaextraction_DnaExtraction', 'event_type_id' => $event_type['id'], 'display_order' => 1)
+            );
         }
 
         $element_type = $this->dbConnection->createCommand()->select('id')->from('element_type')->where('event_type_id=:eventTypeId and name=:name', array(':eventTypeId' => $event_type['id'], ':name' => 'DNA extraction'))->queryRow();
