@@ -56,22 +56,38 @@
 		</div>
 
 	</div>
-<div class="element-fields element-eyes row">
-	<div class="large-2 column">
-		<span class="field-info">General Comments:</span>
+<div class="element-fields element-eyes row edit element">
+	<div id="right-eye-comments" class="element-eye right-eye left side disabled" data-side="right"
+		 onclick="switchSides($(this));">
+		<div class="active-form">
+			<div class="element-fields">
+				<span class="field-info">General Comments:</span>
+			</div>
+		</div>
+		<div class="active-form">
+			<div class="element-fields">
+				<?php echo $form->textArea($element, 'comments_right',
+					array('rows' => 3, 'label' => false, 'nowrapper' => true), false,
+					array('class' => 'comments_right')) ?>
+			</div>
+		</div>
 	</div>
-	<div class="large-4 column">
-		<?php echo $form->textArea($element, 'comments_right', array('rows' => 7, 'label' => false, 'nowrapper' => true), false, array('class' => 'comments_right'))?>
-	</div>
-	<div class="large-2 column">
-		<span class="field-info">General Comments:</span>
-	</div>
-	<div class="large-4 column">
-		<?php echo $form->textArea($element, 'comments_left', array('rows' => 7, 'label' => false, 'nowrapper' => true), false, array('class' => 'comments_left'))?>
+	<div id="left-eye-comments" class="element-eye left-eye right side column disabled" data-side="left"
+		 onclick="switchSides($(this));">
+		<div class="active-form">
+			<div class="element-fields">
+				<span class="field-info">General Comments:</span>
+			</div>
+		</div>
+		<div class="active-form">
+			<div class="element-fields">
+			<?php echo $form->textArea($element, 'comments_left',
+				array('rows' => 3, 'label' => false, 'nowrapper' => true), false,
+				array('class' => 'comments_left')) ?>
+		</div>
+		</div>
 	</div>
 </div>
-
-
 
 <div id="comments">
 	<span class="field-info large-12">
@@ -85,8 +101,7 @@
 		echo $form->textField($element, 'comments', array('style' => 'width:1027px;'), null,
 			array('label' => 4, 'field' => 200));
 	}
-
-    ?>
+	?>
 	</span>
 </div>
 
