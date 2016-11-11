@@ -14,24 +14,6 @@
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-function getMacroName($doc_instance_id)
-{
-    $doc_instance_version = DocumentInstanceData::model()->findByAttributes(array('document_instance_id'=>$doc_instance_id));
-    if($doc_instance_version->macro_id > 0)
-    {
-        $macro = LetterMacro::model()->findByPk($doc_instance_version->macro_id);
-        return $macro->name;
-    }
-    return '';
-}
-
-function getCorrespondenceId($doc_instance_id)
-{
-    $doc_instance = DocumentInstance::model()->findByAttributes(array('id'=>$doc_instance_id));
-    return $doc_instance->correspondence_event_id;
-}
-
 ?>
     <table id="dm_table">
     <tbody>

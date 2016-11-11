@@ -67,13 +67,22 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
     }
 
     /**
+     * Pass English as default Preferred Language id
+     */
+    public function init()
+    {
+        $preferred_language_id= \Language::model()->findByAttributes(array('name'=>'English'));
+        $this->preferred_language_id = $this->preferred_language_id ? $this->preferred_language_id : $preferred_language_id;
+    }
+
+    /**
      * @return array validation rules for model attributes.
      */
     public function rules()
     {
         return array(
             array(
-                'event_id, employment_status_id, preferred_info_fmt_id, info_email, contact_urgency_id, preferred_language_id, social_service_comments, ',
+                'event_id, employment_status_id, preferred_info_fmt_id, info_email, contact_urgency_id, preferred_language_id, social_service_comments, preferred_language_text, ',
                 'safe'
             ),
             array(
@@ -146,6 +155,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
             'contact_urgency_id' => 'Contact urgency',
             'preferred_language_id' => 'Preferred language',
             'social_service_comments' => 'Social service comments',
+            'preferred_language_text' => "Other Language",
         );
     }
 
@@ -170,7 +180,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
     }
 
     /**
-     * To generate the employement status array for the pdf
+     * To generate the employment status array for the pdf
      *
      * @return array
      */
@@ -221,9 +231,10 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
                 $isFactor = 'N';
             }
 
+            $comments = $answer ? $answer->comments : '';
             $label = $factor->name;
             if ($factor->require_comments) {
-                $label .= "\n{$factor->comments_label}";
+                $label .= "\n{$factor->comments_label}: {$comments}";
             }
             $data[] = array($label, $isFactor);
         }
@@ -251,7 +262,11 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
             }
         }
 
-        $result['preferredLanguage'] = $this->preferred_language ? $this->preferred_language->name : ' ';
+        if ($this->preferred_language_text){
+            $result['preferredLanguage'] = $this->preferred_language_text;
+        } else {
+            $result['preferredLanguage'] = $this->preferred_language ? $this->preferred_language->name : ' ';
+        }
         $result['socialServiceComments'] = $this->social_service_comments;
 
         return $result;

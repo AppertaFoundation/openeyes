@@ -675,11 +675,11 @@ function changeEye() {
 
     if(typeof pcrCalculate === 'function'){
         if($("#Element_OphTrOperationnote_ProcedureList_eye_id_2").attr('checked') == "checked") {
-            pcrCalculate('right');
+            pcrCalculate($('#ophCiExaminationPCRRiskRightEye'), 'right');
         }
 
         if($("#Element_OphTrOperationnote_ProcedureList_eye_id_1").attr('checked') == "checked") {
-            pcrCalculate('left');
+            pcrCalculate($('#ophCiExaminationPCRRiskLeftEye'), 'left');
         }
     }
 

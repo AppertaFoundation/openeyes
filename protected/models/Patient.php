@@ -1100,12 +1100,12 @@ class Patient extends BaseActiveRecordVersioned
         }
 
         foreach ($this->episodes as $ep) {
-            //primary disorder for episode
-            if ($ep->disorder_id) {
-                $disorder_ids[] = $ep->disorder_id;
+            if ($ep->eye_id){
+                if ($ep->disorder_id && (is_null($eye_id) || $ep->eye_id == $eye_id || $ep->eye_id == Eye::BOTH)) {
+                    $disorder_ids[] = $ep->disorder_id;
+                }
             }
         }
-
         return array_unique($disorder_ids);
     }
 

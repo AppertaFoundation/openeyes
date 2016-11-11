@@ -42,6 +42,12 @@ $(document).ready(function() {
             var link = $(this).attr('href');
             e.preventDefault();
             createNewWindow(link);
+
+            // get new link as we need new message_id to re-open the window
+            $.get( "/Internalreferral/default/getIntegratedServiceUrlForEvent/type/create/patient_id/" + OE_patient_id + "/event_id/" + OE_event_id, function( data ) {
+                var json = JSON.parse(data);
+                $('#external-referral-button').attr('href', json.link);
+            });
         });
 
         $('#event-content').on('click', '.windip-help', function(e){

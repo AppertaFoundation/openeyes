@@ -346,6 +346,11 @@ class EventType extends BaseActiveRecordVersioned
         $criteria->addInCondition('event_type_id', $ids);
         $criteria->order = 'display_order asc';
 
+        if(Yii::app()->params['clinical_management_pcr']){
+            $criteria->addCondition('class_name <> :class');
+            $criteria->params['class'] = 'OEModule\\OphCiExamination\\models\\Element_OphCiExamination_PcrRisk';
+        }
+
         return ElementType::model()->findAll($criteria);
     }
 }

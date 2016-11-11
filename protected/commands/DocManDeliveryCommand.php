@@ -56,58 +56,72 @@ class DocManDeliveryCommand extends CConsoleCommand
 
     private function savePDFFile($event_id, $output_id)
     {
-        $this->event = Event::model()->findByPk($event_id);
+        if($this->event = Event::model()->findByPk($event_id)) {
 
-        $login_page = Yii::app()->params['docman_login_url'];
-        $username = Yii::app()->params['docman_user'];
-        $password = Yii::app()->params['docman_password'];
-        $print_url = Yii::app()->params['docman_print_url'];
+            $login_page = Yii::app()->params['docman_login_url'];
+            $username = Yii::app()->params['docman_user'];
+            $password = Yii::app()->params['docman_password'];
+            $print_url = Yii::app()->params['docman_print_url'];
 
-        $ch = curl_init();
+            $ch = curl_init();
 
-        curl_setopt($ch, CURLOPT_URL, $login_page);
-        curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
-        curl_setopt($ch, CURLOPT_COOKIESESSION, true);
-        curl_setopt($ch, CURLOPT_COOKIEJAR, '/tmp/cookie.txt');
-        curl_setopt($ch, CURLOPT_COOKIEFILE, '/tmp/cookie.txt');
+            curl_setopt($ch, CURLOPT_URL, $login_page);
+            curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+            curl_setopt($ch, CURLOPT_COOKIESESSION, true);
+            curl_setopt($ch, CURLOPT_COOKIEJAR, '/tmp/cookie.txt');
+            curl_setopt($ch, CURLOPT_COOKIEFILE, '/tmp/cookie.txt');
 
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($ch);
-        if (curl_errno($ch)) die(curl_error($ch));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+            if (curl_errno($ch)) {
+                die(curl_error($ch));
+            }
 
-        preg_match("/YII_CSRF_TOKEN = '(.*)';/", $response, $token);
+            preg_match("/YII_CSRF_TOKEN = '(.*)';/", $response, $token);
 
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
-        curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
+            curl_setopt($ch, CURLOPT_POST, true);
 
-        $params = array(
-            'LoginForm[username]' => $username,
-            'LoginForm[password]' => $password,
-            'LoginForm[YII_CSRF_TOKEN]' => $token[0],
-            'YII_CSRF_TOKEN' => $token[0],
-        );
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+            $params = array(
+                'LoginForm[username]' => $username,
+                'LoginForm[password]' => $password,
+                'LoginForm[YII_CSRF_TOKEN]' => $token[0],
+                'YII_CSRF_TOKEN' => $token[0],
+            );
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
 
-        curl_exec($ch);
+            curl_exec($ch);
 
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, false);
-        curl_setopt($ch, CURLOPT_URL, $print_url.$event_id);
-        $content = curl_exec($ch);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, false);
+            curl_setopt($ch, CURLOPT_URL, $print_url . $this->event->id);
+            $content = curl_exec($ch);
 
-        curl_close($ch);
-        $filename = "OPENEYES_".$event_id."_".rand();
-        file_put_contents($this->path."/".$filename.".pdf", $content);
-        $this->generateXMLOutput($filename, $output_id);
+            curl_close($ch);
+
+            if (!isset(Yii::app()->params['docman_filename_format']) || Yii::app()->params['docman_filename_format'] == 'format1') {
+                $filename = "OPENEYES_" . $this->event->id . "_" . rand();
+            } else if (Yii::app()->params['docman_filename_format'] == 'format2') {
+                $filename = $this->event->episode->patient->hos_num . '_' . date('YmdHi',
+                        strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
+            } else if (Yii::app()->params['docman_filename_format'] == 'format3') {
+                $filename = $this->event->episode->patient->hos_num . '_edtdep-OEY_' . date('Ymd_His',
+                        strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
+            }
+            file_put_contents($this->path . "/" . $filename . ".pdf", $content);
+            if (!isset(Yii::app()->params['docman_xml_format']) || Yii::app()->params['docman_xml_format'] != 'none') {
+                $this->generateXMLOutput($filename, $output_id);
+            }
+            $this->updateDelivery($output_id);
+        }
     }
 
-    private function generateXMLOutput($filename, $output_id)
+    private function generateXMLOutput($filename)
     {
         $element_letter = ElementLetter::model()->findByAttributes(array("event_id"=>$this->event->id));
         $letter_types = array("0"=>"","1"=>"Clinic discharge letter","2"=>"Post-op letter","3"=>"Clinic letter","4"=>"Other letter");
 
-        $xml = "
-            <?xml version=\"1.0\" encoding=\"UTF-8\"?>
+        $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
             <DocumentInformation>
             <PatientNumber>".$this->event->episode->patient->hos_num."</PatientNumber>
             <NhsNumber>".$this->event->episode->patient->nhs_num."</NhsNumber>
@@ -142,11 +156,9 @@ class DocManDeliveryCommand extends CConsoleCommand
             <LocationName>Moorfields Eye Hospital</LocationName>
             <SubLocation>A&amp;E</SubLocation>
             <SubLocationName>A&amp;E Department</SubLocationName>
-            </DocumentInformation>
-         ";
-        file_put_contents($this->path."/".$filename.".XML", $xml);
+            </DocumentInformation>";
 
-        $this->updateDelivery($output_id);
+        file_put_contents($this->path."/".$filename.".XML", $xml);
     }
 
     private function updateDelivery($output_id)

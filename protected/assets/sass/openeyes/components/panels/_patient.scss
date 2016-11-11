@@ -114,11 +114,6 @@
 			padding-right: 8px;
 			position: absolute;
 			right: 0;
-			@media screen {
-				.stuck & {
-					display: none;
-				}
-			}
 		}
         .clinical-summary-anchor  {
           bottom: 12px;
@@ -132,7 +127,6 @@
             }
           }
         }
-
 		.hospital-number {
 			margin-bottom: 3px;
 		}

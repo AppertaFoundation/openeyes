@@ -128,6 +128,16 @@ class ElementLetter extends BaseEventTypeElement
         ));
     }
 
+    public function afterValidate()
+    {
+
+        if(!is_array(@$_POST['target_type']) && Yii::app()->getController()->getAction()->id == 'create')
+        {
+            $this->addError('toAddress', 'Please add at least one recipient!');
+        }
+        parent::afterValidate();
+    }
+
     public function afterFind()
     {
         parent::afterFind();
@@ -162,7 +172,7 @@ class ElementLetter extends BaseEventTypeElement
             if ($patient->practice) {
                 $options[$patient->practice->contact->id] = Gp::UNKNOWN_NAME.' (GP)';
                 if (@$patient->practice->contact && !@$patient->practice->contact->address) {
-                    $options['Practice'.$patient->practice_id] .= ' - NO ADDRESS';
+                    $options[$patient->practice->contact->id] .= ' - NO ADDRESS';
                 }
             }
         }
@@ -190,11 +200,13 @@ class ElementLetter extends BaseEventTypeElement
                     // include all services at the moment, regardless of whether the commissioning body type is filtered
                     if ($services = $cb->services) {
                         foreach ($services as $svc) {
+                            if($svc->contact){
                             $options[$svc->contact->id] = $svc->name.' ('.$svc->getTypeShortName().')';
                         }
                     }
                 }
             }
+        }
         }
 
         foreach (PatientContactAssignment::model()->with(array(
@@ -613,4 +625,9 @@ class ElementLetter extends BaseEventTypeElement
     {
         return preg_replace('/[\r\n]+/', ', ', CHtml::encode($address));
     }
+    
+    public function getDocumentInstance()
+    {
+        return \DocumentInstance::model()->findByAttributes(array('correspondence_event_id' => $this->event_id));
+}
 }

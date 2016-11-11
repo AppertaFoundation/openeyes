@@ -397,5 +397,6 @@ return array(
                 'temp_path' => realpath(dirname(__FILE__).'/../..').'/data/hscic/temp',
             ),
         ),
+        'clinical_management_pcr' => true,
     ),
 );

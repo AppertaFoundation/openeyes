@@ -1562,7 +1562,6 @@ class BaseEventTypeController extends BaseModuleController
      */
     public function actionPrint($id)
     {
-        $this->printLog($id, false);
         $this->printInit($id);
         $this->printHTML($id, $this->open_elements);
     }
@@ -1622,8 +1621,6 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         $event->unlock();
-
-        $this->printLog($id, true);
 
         if (@$_GET['html']) {
             return Yii::app()->end();
@@ -1950,11 +1947,13 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         ob_start();
-        $this->actionPrint($id);
+        $this->actionPrint($id, false);
         $html = ob_get_contents();
         ob_end_clean();
 
         $event->unlock();
+        
+        $this->printLog($id, false);
 
         // Verify we have all the images by detecting eyedraw canvas elements in the page.
         // If we don't, the "outofdate" response will trigger a page-refresh so we can re-send the canvas elements to the

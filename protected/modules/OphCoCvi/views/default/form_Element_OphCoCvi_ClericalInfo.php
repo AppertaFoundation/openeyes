@@ -14,6 +14,7 @@
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
 ?>
 <?php
 if ($this->checkClericalEditAccess()) {
@@ -92,7 +93,9 @@ if ($this->checkClericalEditAccess()) {
                 <?php echo $form->dropDownList($element, 'contact_urgency_id', CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_ContactUrgency::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'), array('empty' => '- Please select -'), false, array('label' => 6, 'field' => 6)) ?>
             </div>
             <div class="large-6 column end">
-                <?php echo $form->dropDownList($element, 'preferred_language_id', CHtml::listData(Language::model()->findAll(array('order' => 'name asc')), 'id', 'name'), array('empty' => '- Please select -'), false, array('label' => 6, 'field' => 6)) ?>
+                <?php echo $form->dropDownList($element, 'preferred_language_id',
+                    CHtml::listData(Language::model()->findAll(array('order' => 'name asc')), 'id', 'name') + array('0'=>'Other'), array(), false, array('label' => 6, 'field' => 6)) ?>
+                <?php echo $form->textField($element, 'preferred_language_text', array('size' => '20'), false, array('label' => 6, 'field' => 6)) ?>
             </div>
         </div>
     </div>

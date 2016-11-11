@@ -56,15 +56,36 @@
 		</div>
 
 	</div>
+<div class="element-fields element-eyes row">
+	<div class="large-2 column">
+		<span class="field-info">General Comments:</span>
+	</div>
+	<div class="large-4 column">
+		<?php echo $form->textArea($element, 'comments_right', array('rows' => 7, 'label' => false, 'nowrapper' => true), false, array('class' => 'comments_right'))?>
+	</div>
+	<div class="large-2 column">
+		<span class="field-info">General Comments:</span>
+	</div>
+	<div class="large-4 column">
+		<?php echo $form->textArea($element, 'comments_left', array('rows' => 7, 'label' => false, 'nowrapper' => true), false, array('class' => 'comments_left'))?>
+	</div>
+</div>
+
+
 
 <div id="comments">
-	<span class="field-info">
+	<span class="field-info large-12">
 	<?php
-    if ($this->is_auto) {
-        echo '<b>Comments:</b><div class="readonly-div">'.$element->{'comments'}.'</div>';
-    } else {
-        echo $form->textField($element, 'comments', array('style' => 'width:1027px;'), null, array('label' => 4, 'field' => 200));
-    }
+	if ($this->is_auto) {
+		if (!$this->getAutoBiometryEventData($this->event->id)[0]->is700() || $element->{'comments'}) {
+			echo 'Device Comments:';
+			echo '<div class="readonly-box">' . $element->{'comments'} . '<br></div>';
+		}
+	} else {
+		echo $form->textField($element, 'comments', array('style' => 'width:1027px;'), null,
+			array('label' => 4, 'field' => 200));
+	}
+
     ?>
 	</span>
 </div>

@@ -128,8 +128,6 @@ class PatientMergeRequestController extends BaseController
             // we do not allow the same patient id in the list multiple times
             $criteria = new CDbCriteria();
 
-            //$criteria->condition = '((primary_id=:primary_id OR primary_id=:secondary_id OR secondary_id=:secondary_id OR secondary_id=:primary_id) AND ( deleted = 0))';
-
             // as secondary records will be deleted the numbers cannot be in the secondry columns
             $criteria->condition = '(secondary_id=:secondary_id OR secondary_id=:primary_id) ';
 
@@ -320,7 +318,7 @@ class PatientMergeRequestController extends BaseController
                     $merge_request->status = $merge_request::STATUS_MERGED;
                     $merge_request->merge_json = json_encode(array('log' => $merge_handler->getLog()));
                     $merge_request->save();
-                    Audit::add('Patient Merge', $msg);
+                    Audit::add('Patient Merge', 'Patient Merge Request successfully done.', $msg);
                     $this->redirect(array('log', 'id' => $merge_request->id));
                 } else {
                     $msg = 'Merge Request '.$merge_request->secondaryPatient->hos_num.' INTO '.$merge_request->primaryPatient->hos_num.' FAILED.';
@@ -334,8 +332,6 @@ class PatientMergeRequestController extends BaseController
             }
         }
 
-        $primary = Patient::model()->findByPk($merge_request->primary_id);
-        $secondary = Patient::model()->findByPk($merge_request->secondary_id);
 
         $this->render('//patientmergerequest/merge', array(
             'model' => $merge_request,
@@ -356,7 +352,7 @@ class PatientMergeRequestController extends BaseController
                 $request->deleted = 1;
 
                 if ($request->save()) {
-                    Audit::add('Patient Merge', 'Patient Merge Request flagged as deleted. id: '.$request->id);
+                    Audit::add('Patient Merge', 'Patient Merge Request flagged as deleted.', "Patient merge request id:{$request->id} deleted.");
                 } else {
                     throw new Exception('Unable to save Patient Merge Request: '.print_r($request->getErrors(), true));
                 }
