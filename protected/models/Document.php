@@ -213,6 +213,7 @@ class Document //extends BaseActiveRecord
 
 	public function createNewDocSet()
 	{
+
                 $post_document_targets = Yii::app()->request->getPost('DocumentTarget', null);
                 $doc_set = null;
                 if( isset($_POST['DocumentSet']['id']) ){
@@ -246,11 +247,12 @@ class Document //extends BaseActiveRecord
 		$doc_instance_version->macro_id = $_POST['macro_id'];
                 
 		$doc_instance_version->save();
-                
+
 		if(isset($post_document_targets)){
 
 			foreach($post_document_targets as $key => $post_document_target){
 				$data = array(
+                                    'to_cc' => $post_document_target['attributes']['ToCc'],
                                     'contact_type' => $post_document_target['attributes']['contact_type'],
                                     'contact_id' => $post_document_target['attributes']['contact_id'],
                                     'address' => $post_document_target['attributes']['address']);
@@ -259,12 +261,11 @@ class Document //extends BaseActiveRecord
                                     $data['id'] = $post_document_target['attributes']['id'];
                                 }
 				$doc_target = $this->createNewDocTarget($doc_instance, $data);
-
+                                    
                                 foreach($post_document_target['DocumentOutput'] as $document_output){
                                     
                                     if( isset($document_output['output_type']) ){
                                         $data = array(
-                                            'ToCc' => $document_output['ToCc'],
                                             'output_type' => $document_output['output_type']);
                                         
                                         if(isset($document_output['id'])){
@@ -289,6 +290,7 @@ class Document //extends BaseActiveRecord
             $doc_target->document_instance_id = $doc_instance->id;
             $doc_target->contact_type = $data['contact_type'];
             $doc_target->contact_id = $data['contact_id'];
+            $doc_target->ToCc = $data['to_cc'];
             if(is_numeric($data['contact_id']))
             {
                 $doc_target->contact_name = Contact::model()->findByPk($data['contact_id'])->getFullName();
@@ -313,7 +315,6 @@ class Document //extends BaseActiveRecord
                 
 		$doc_output->document_target_id=$doc_target->id;
 		$doc_output->document_instance_data_id = $doc_instance_version->id;
-		$doc_output->ToCc = $data['ToCc'];
 		$doc_output->output_type = $data['output_type'];
 		$doc_output->requestor_id = 'OE';
 		$doc_output->save();

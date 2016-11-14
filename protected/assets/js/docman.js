@@ -93,7 +93,7 @@ var docman = (function() {
                    $(this).hide();
                    $('.docman_recipient').each(function(){
                         if($(this).data("rowindex") == rowindex){
-                            $(this).parent().html('<input type="text" name="contact_id[]"><textarea rows="4" cols="10" name="address[]" id="address_"'+rowindex+' data-rowindex="'+rowindex+'"></textarea>');
+                            $(this).parent().html('<input type="text" name="DocumentTarget['+rowindex+'][attributes][contact_id]"><textarea rows="4" cols="10" name="DocumentTarget['+rowindex+'][attributes][address]" data-rowindex="'+rowindex+'"></textarea>');
                         }
                    });
                 }
@@ -138,14 +138,15 @@ var docman = (function() {
         setDeliveryMethods: function(row)
         {
             var delivery_methods = '';
-            
+
             $('#dm_table tr').each(function()
             {
                 if($(this).data("rowindex") == row)
-                {
-                    if($(this).find('.docman_contact_type').val() == 'Gp')
-                    {
-                        delivery_methods = '<label><input value="Docman" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]" type="checkbox" checked>DocMan</label><br>';
+                {                            
+                    if($(this).find('.docman_contact_type').val() == 'GP')
+                    {                 
+                        delivery_methods = '<label><input value="Docman" name="DocumentTarget_' + row + '_DocumentOutput_0_output_type" type="checkbox" disabled checked>DocMan';
+                        delivery_methods += '<input type="hidden" value="Docman" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]"></label><br>';
                         delivery_methods += '<label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox">Print</label>';
                     }else
                     {
@@ -233,42 +234,25 @@ var docman = (function() {
 
                     var this_address = $('#Document_Target_Address_' + rowindex).val();
                     var this_contact_type = $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val();
-                    var other_rowindex = $('#docman_block select option[value="' + resp.contact_type + '"]:selected').closest('tr').data('rowindex');
+                    var other_rowindex = $('#docman_block select option[value="' + resp.contact_type.toUpperCase() + '"]:selected').closest('tr').data('rowindex');
                     var $other_docman_recipient = $('tr.rowindex-' + other_rowindex + ' .docman_recipient');
 
                     $('#Document_Target_Address_' + rowindex).val(resp.address);
-                    $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val(resp.contact_type).trigger('change');
+                    $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val(resp.contact_type.toUpperCase()).trigger('change');
 
-                    if(resp.contact_type === 'Gp' || resp.contact_type === 'Patient'){
+                    if(resp.contact_type.toUpperCase() === 'GP' || resp.contact_type.toUpperCase() === 'PATIENT'){
                         $other_docman_recipient.val(this_recipient);
                         $('#Document_Target_Address_' + other_rowindex).val(this_address);
                         $('#DocumentTarget_' + other_rowindex + '_attributes_contact_type').val(this_contact_type).trigger('change');
                     }
                     $(element).data('previous', $(element).val());
                     $other_docman_recipient.data('previous', $other_docman_recipient.val());
+                    
+                    $('#DocumentTarget_' + rowindex + '_attributes_contact_type').trigger('change');
+                    $('#DocumentTarget_' + other_rowindex + '_attributes_contact_type').trigger('change');
                 }
             });
         },
-        
-        swapGpPatent: function(rowindex, contact_type){
-            
-            var gp_rowindex = $('select option[value="Gp"]:selected').closest('tr').data('rowindex');
-            var patient_rowindex = $('select option[value="Patient"]:selected').closest('tr').data('rowindex');
-            this.swapRecipients(gp_rowindex, patient_rowindex);
-
-        },
-       /* 
-        swapRecipients: function(from_rowindex, to_rowindex){
-            //change recipient dropdown
-            var $from = $('#docman_block').find('tr.rowindex-' + from_rowindex + ' .docman_recipient');
-            var $to = $('#docman_block').find('tr.rowindex-' + to_rowindex + ' .docman_recipient');
-            var from_val = $('#docman_block').find('tr.rowindex-' + from_rowindex + ' .docman_recipient').val();
-            var to_val = $('#docman_block').find('tr.rowindex-' + to_rowindex + ' .docman_recipient').val();
-            
-            $from.val(to_val);
-            $to.val(from_val);
-            
-        },*/
 
         //------------------------------------------------------------
         //  Create a new entry row at the end of the table
@@ -347,13 +331,13 @@ var docman = (function() {
             }
             return n;
         },
-
-
-        editAddress: function(addressId) {
-            $('#docman_edit_button_'+addressId).hide();
-            data = $('#docman_address_'+addressId).html();
-            $('#docman_address_'+addressId).html('<textarea rows="3" cols="10" id="docman_address_edit_'+addressId+'">'+data+'</textarea><button onclick="docman2.saveAddress(event, '+addressId+')" class="secondary small right" >Save</button>');
-        },
+//
+//
+//        editAddress: function(addressId) {
+//            $('#docman_edit_button_'+addressId).hide();
+//            data = $('#docman_address_'+addressId).html();
+//            $('#docman_address_'+addressId).html('<textarea rows="3" cols="10" id="docman_address_edit_'+addressId+'">'+data+'</textarea><button onclick="docman2.saveAddress(event, '+addressId+')" class="secondary small right" >Save</button>');
+//        },
 
         saveAddress: function(event, addressId){
             event.preventDefault();

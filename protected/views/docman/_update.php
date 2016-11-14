@@ -43,84 +43,65 @@ button.green { background-color:green; color: white; }
             </tr>
             
             <?php foreach($document_set->document_instance[0]->document_target as $row_index => $target):?>
+            
+                <?php 
+                    if( Yii::app()->request->isPostRequest ){
+                        $post_target = Yii::app()->request->getPost('DocumentTarget');
+
+                        if( isset($post_target[$row_index]) ){
+                            $target->attributes = $post_target[$row_index]['attributes'];
+                        }
+                    }
+                ?>
                 <tr class="rowindex-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
                     <td> 
-                        <?php echo (isset($target->document_output[0]->ToCc) ? $target->document_output[0]->ToCc : ''); ?>
-                        
+                        <?php echo $target->ToCc; ?>
                         <?php echo CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][id]", $target->id); ?>
-                    </td>
-                    
-                    <td>
-                         <?php echo $target->contact_name; ?>
-                        <?php echo CHtml::hiddenField('DocumentTarget['.$row_index.'][attributes][contact_id]', $target->contact_id); ?>
-                        <br>                        
-                        <div id="docman_address_<?php echo $target->id; ?>">
-                            <?php echo $target->address; ?>
-                            <?php echo  CHtml::hiddenField("DocumentTarget[$row_index][attributes][address]", $target->address, array('data-rowindex' => $row_index)); ?>
-                        </div>
+                        <?php echo CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][ToCc]", $target->ToCc); ?>
                     </td>
                     <td>
-                        <?php echo ucfirst(strtolower($target->contact_type));?>
-                        <?php if($target->contact_modified){ echo "<br>(Modified)";}?>
-                        <?php echo  CHtml::hiddenField('DocumentTarget['.$row_index.'][attributes][contact_type]', $target->contact_type, array('data-rowindex' => $row_index)); ?>
-                    </td>
-                    <td>
-                        <?php
-                            $pre_output_key = 0;
-                            // check if the it is a GP and if the GP has a Docman or Print
-                            $docnam_output = null;
-                            $print_output = null;
-                            foreach($target->document_output as $output_key => $doc_output){
-                                if($doc_output->output_type == 'Docman'){
-                                    $docnam_output = $doc_output;
-                                } else if($doc_output->output_type == 'Print'){
-                                    $print_output = $doc_output->output_type;
-                                }
-                            }
+                        <?php $this->renderPartial('//docman/table/contact_name_address', array(
+                                'contact_id' => $target->contact_id,
+                                'contact_name' => $target->contact_name,
+                                'address_targets' => $element->address_targets,
+                                'target' => $target,
+                                'contact_type' => $target->contact_type,
+                                'row_index' => $row_index,
+                                'address' => $target->address,
+                                'is_editable' => $element->draft));
                         ?>
-                        <?php if(!$docnam_output && $target->contact_type == 'GP'): /* if no docman set for the GP we still need to display the chk box */?>
-                            <label>
-                                <input type="checkbox" value="Docmam" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][<?php echo $pre_output_key++; ?>][output_type]" checked>DocMan
-                            </label>
-                        <?php endif; ?>
-                        
-                        <?php if(!$print_output): /* if no Print output saved before, we still need to display the option */ ?>
-                            <label>
-                                <input type="checkbox" value="Print" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][<?php echo $pre_output_key++; ?>][output_type]">Print
-                            </label>
-                        <?php endif; ?>
-               
-                        <?php foreach($target->document_output as $key => $doc_output): ?>
-                            
-                            <?php $output_key = $pre_output_key + $key; ?>
-                        
-                            <?php
-                                // on error we check what had been submited and restore
-                                $is_checked = ($doc_output->output_type == 'Docman' && $target->contact_type == 'GP') ? 'checked disabled' : '';
-                                if (isset($_POST['DocumentTarget'][$row_index]['DocumentOutput'][$output_key]['output_type'])){
-                                    
-                                    if($_POST['DocumentTarget'][$row_index]['DocumentOutput'][$output_key]['output_type'] == 'Docnman'){
-                                        $is_checked = 'checked disabled'; // disabled, we will resend it
-                                    } else {
-                                        $is_checked = 'checked';
-                                    }
-                                    
-                                } else if( Yii::app()->request->isPostRequest && !isset($_POST['DocumentTarget'][$row_index]['DocumentOutput'][$output_key]['output_type']) && $target->contact_type != 'GP') {
-                                    $is_checked = '';
-                                }
-                            ?>
-                            
-                            <label>
-                                <input type="checkbox" value="<?php echo $doc_output->output_type;?>" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][<?php echo $output_key; ?>][output_type]" <?php echo $is_checked; ?>><?php echo $doc_output->output_type; ?>
-                                <?php echo CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][$output_key][id]", $doc_output->id); ?>
-                                <?php echo CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][$output_key][ToCc]", $doc_output->ToCc); ?>
-                            </label>
-                                
-                        <?php endforeach; ?>
                     </td>
-                    <td></td>
+                    <td>
+                        <?php if($element->draft): ?>
+                            <?php $this->renderPartial('//docman/table/contact_type', array(
+                                        'contact_type' => $target->contact_type,
+                                        'row_index' => $row_index));
+                            ?>
+                        <?php else: ?>
+                            <?php echo $target->contact_type != 'GP' ? (ucfirst(strtolower($target->contact_type))) : $target->contact_type; ?>
+                            <?php if($target->contact_modified){ echo "<br>(Modified)";}?>
+                            <?php echo  CHtml::hiddenField('DocumentTarget['.$row_index.'][attributes][contact_type]', $target->contact_type, array('data-rowindex' => $row_index)); ?>
+                        <?php endif; ?>
+                    </td>
+                    <td class="docman_delivery_method">
+                        <?php $this->renderPartial('//docman/table/delivery_methods', array(
+                                        'is_draft' => $element->draft,
+                                        'contact_type' => $target->contact_type,
+                                        'row_index' => $row_index));
+                        ?>
+                    </td>
+                    <td>
+                        <?php if($element->draft == "1"): ?>
+                            <a class="remove_recipient removeItem" data-rowindex="<?php echo $row_index ?>">Remove</a>
+                        <?php endif; ?>
+                    </td>
                 </tr>
             <?php endforeach; ?>
+            <tr class="new_entry_row">
+                <td colspan="6">
+                    <button class="button small secondary" id="docman_add_new_recipient">Add new recipient</button>
+                </td>
+            </tr>
     </table>         
             
             
