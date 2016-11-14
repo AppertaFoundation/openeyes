@@ -55,7 +55,7 @@ $macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : ( isset($element->m
 			<label>Macro:</label>
 		</div>
 		<div class="large-2 column end">
-			<?php echo CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros, '', array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'full-width'));?>
+			<?php echo CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros, array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'full-width'));?>
 		</div>
 	</div>
 

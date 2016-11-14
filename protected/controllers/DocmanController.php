@@ -135,9 +135,34 @@ class DocmanController extends BaseController
     {
         if (!Yii::app()->request->isAjaxRequest) { return; }
         $patient_id = Yii::app()->request->getQuery('patient_id');
+        $patient = Patient::model()->findByPk($patient_id);
         $last_row_index = Yii::app()->request->getQuery('last_row_index');
+        $selected_contact_type = Yii::app()->request->getQuery('selected_contact_type');
+        
+        $contact_id = null;
+        $address = null;
+        if($selected_contact_type == 'PATIENT'){
+            $contact_id = $patient->contact_id;
+        } else if($selected_contact_type == 'GP'){
+            if(isset($patient->gp->contact)){
+                $contact_id = $patient->gp->contact->id;
+            } else if (isset($patient->practice) ) {
+                $contact_id = $patient->practice->contact->id;
+            }
+        }
+        
+        if ($contact_id){
+            $contact = Contact::model()->findByPk($contact_id);
+            $address = isset($contact->correspondAddress) ? $contact->correspondAddress : $contact->address;
+            if(!$address){
+                if($selected_contact_type == 'GP'){
+                    $address = isset($patient->practice->contact->correspondAddress) ? $patient->practice->contact->correspondAddress : $patient->practice->contact->address;
+                }
+            }
+        }
+        
 
-        echo $this->renderPartial('/docman/document_row_recipient', array('row_index' => $last_row_index + 1));
+        echo $this->renderPartial('/docman/document_row_recipient', array('contact_id' => $contact_id, 'address' => $address, 'row_index' => $last_row_index + 1, 'selected_contact_type' => $selected_contact_type));
         $this->getApp()->end();
     }
 
@@ -145,6 +170,7 @@ class DocmanController extends BaseController
     {
         if (!Yii::app()->request->isAjaxRequest) { return; }
         $contact_id = Yii::app()->request->getQuery('contact_id');
+        $document_set_id = Yii::app()->request->getQuery('document_set_id');
         if($contact_id)
         {
             $contact = Contact::model()->findByPk($contact_id);
@@ -154,10 +180,8 @@ class DocmanController extends BaseController
             if(!$address){
                 if($data["contact_type"] == 'Gp'){
                     $patient_id = Yii::app()->request->getQuery('patient_id');
-                    $document_set_id = Yii::app()->request->getQuery('document_set_id');
                     $patient = Patient::model()->findByPk($patient_id);
                     $address = isset($patient->practice->contact->correspondAddress) ? $patient->practice->contact->correspondAddress : $patient->practice->contact->address;
-                    }
                 }
             }
 
@@ -168,8 +192,10 @@ class DocmanController extends BaseController
             }
             
             //check if there are saved outputs for the contact
-            $document_set = DocumentSet::model()->findByPk($document_set_id);
-
+            if($document_set_id){
+                $document_set = DocumentSet::model()->findByPk($document_set_id);
+            }
+            
             if(isset($document_set->document_instance[0]->document_target)){                 
                 foreach($document_set->document_instance[0]->document_target as $target){
                     if( $target->contact_id == $contact_id && isset($target->document_output) ){
@@ -181,7 +207,7 @@ class DocmanController extends BaseController
                         }
                     }
                 }
-
+            }
             echo json_encode($data);
         }
     }

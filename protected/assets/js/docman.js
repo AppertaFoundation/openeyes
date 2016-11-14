@@ -18,7 +18,7 @@ var docman = (function() {
             });
             $('#docman_block').on("click", '#docman_add_new_recipient', function(e){
                 e.preventDefault();
-                docman.createNewRecipientEntry();
+                docman.createNewRecipientEntry('');
             });
 
             this.addHandlers();
@@ -180,6 +180,7 @@ var docman = (function() {
         //-------------------------------------------------------------
 
         getDocSet: function(eventId) {
+            $('#dm_table .docman_loader').show();
             $.ajax({
                 'type': 'GET',
                 'url': this.baseUrl + 'ajaxGetDocSet?id='+eventId,
@@ -187,6 +188,7 @@ var docman = (function() {
                 context: this,
                 'success': function(resp) {
                     this.data = resp;
+                    $('#dm_table .docman_loader').hide();
                 }
             });
         },
@@ -201,7 +203,7 @@ var docman = (function() {
             {
                 correspondence_mode = '&in_correspondence=1';
             }
-
+            $('#dm_table .docman_loader').show();
             $.ajax({
                 'type': 'GET',
                 'url': this.baseUrl + 'ajaxGetDocTable?id='+event_id+correspondence_mode,
@@ -210,6 +212,7 @@ var docman = (function() {
                 dataType: 'html',
                 'success': function(resp) {
                     this.setDocTableToHTML(resp);
+                    $('#dm_table .docman_loader').hide();
                 }
                     });
         },
@@ -229,6 +232,7 @@ var docman = (function() {
                 document_set_id = $('#DocumentSet_id').val();
                 document_set_id_param = '&document_set_id=' + document_set_id;
             }
+            $('#dm_table .docman_loader').show();
             $.ajax({
                 'type': 'GET',
                 'url': this.baseUrl + 'ajaxGetContactData?contact_id='+contact_id+'&patient_id='+OE_patient_id + document_set_id_param,
@@ -256,6 +260,21 @@ var docman = (function() {
                     
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_type').trigger('change');
                     $('#DocumentTarget_' + other_rowindex + '_attributes_contact_type').trigger('change');
+                    
+                    /* If gp selected add Patient */
+                    if(resp.contact_type === 'Gp'){
+                        var is_patient_added = false;
+                        $('.docman_contact_type').each(function(i,$element){
+                            if( $($element).val() == 'PATIENT'){
+                                is_patient_added = true;
+                            }
+                        });
+                        
+                        if(!is_patient_added){
+                            docman.createNewRecipientEntry('PATIENT');
+                        }
+                    }
+                    $('#dm_table .docman_loader').hide();
                 }
             });
         },
@@ -264,6 +283,7 @@ var docman = (function() {
         //  Create a new entry row at the end of the table
         //------------------------------------------------------------
         createNewEntry: function(element) {
+            $('#dm_table .docman_loader').show();
             $.ajax({
                 'type': 'GET',
                 'url': this.baseUrl + 'ajaxGetDocTableEditRow?patient_id='+OE_patient_id,
@@ -273,6 +293,7 @@ var docman = (function() {
                     //console.log(resp);
                     element.before(resp);
                     $('#docman_add_new').hide();
+                    $('#dm_table .docman_loader').hdie();
                 }
             });
         },
@@ -280,17 +301,20 @@ var docman = (function() {
         //------------------------------------------------------------
         //  Create a new recipient entry row at the end of the table
         //------------------------------------------------------------
-        createNewRecipientEntry: function()
+        createNewRecipientEntry: function(selected_contact_type)
         {
             last_row_index = this.getLastRowIndex();
+            $('#dm_table .docman_loader').show();
             $.ajax({
                 'type': 'GET',
-                'url': this.baseUrl + 'ajaxGetDocTableRecipientRow?patient_id='+OE_patient_id+'&last_row_index='+last_row_index,
+                'url': this.baseUrl + 'ajaxGetDocTableRecipientRow?patient_id='+OE_patient_id+'&last_row_index='+last_row_index+'&selected_contact_type='+selected_contact_type,
                 'context': this,
                 'success': function(resp) {
                     $('#dm_table tr:last').before(resp);
                     this.addRemoveHandler();
                     this.addDocmanMethodMandatory();
+                    $('tr.rowindex-' + (++last_row_index) + ' .docman_recipient').trigger('change');
+                    $('#dm_table .docman_loader').hide();
                 }
             });
         },
@@ -347,6 +371,7 @@ var docman = (function() {
 
         saveAddress: function(event, addressId){
             event.preventDefault();
+            $('#dm_table .docman_loader').show();
             $.ajax(
                 {
                     // TODO: should be POST but we need the YII_TOKEN for that!!!
@@ -357,6 +382,7 @@ var docman = (function() {
                     'success': function(resp) {
                         $('#docman_address_'+addressId).html(resp);
                         $('#docman_edit_button_'+addressId).show();
+                        $('#dm_table .docman_loader').hide();
                     }
                 }
             );

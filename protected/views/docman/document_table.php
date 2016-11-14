@@ -23,7 +23,7 @@
         <th>Recipient/Address</th>
         <th>Role</th>
         <th>Delivery Method(s)</th>
-        <th> </th>
+        <th><img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;"> </th>
     </tr>
     <?php    
     

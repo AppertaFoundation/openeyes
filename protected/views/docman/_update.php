@@ -21,6 +21,7 @@
 table { border:1px solid black; cell-spacing:0; cell-padding:0; }
 td { border:1px solid black; border-collapse: 1; vertical-align:top; }
 tr { background-color: #eee; color: black; padding:2px 5px; }
+th.actions {padding:0 10px}
 select.addr { width:200px !important; max-width:200px; }
 div#docman_block select.macro { max-width:220px; }
 table.docman tbody tr td img { vertical-align: text-top; height:13px; width:13px; }
@@ -39,7 +40,7 @@ button.green { background-color:green; color: white; }
                 <th>Recipient/Address</th>
                 <th>Role</th>
                 <th>Delivery Method(s)</th>
-                <th> </th>
+                <th class="actions"><img class="docman_loader right" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;"></th>
             </tr>
             
             <?php foreach($document_set->document_instance[0]->document_target as $row_index => $target):?>
