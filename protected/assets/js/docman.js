@@ -223,9 +223,15 @@ var docman = (function() {
         },
 
         getRecipientData: function(contact_id, element) {
+            var document_set_id = '';
+            var document_set_id_param = '';
+            if( $('#DocumentSet_id').length > 0 ){
+                document_set_id = $('#DocumentSet_id').val();
+                document_set_id_param = '&document_set_id=' + document_set_id;
+            }
             $.ajax({
                 'type': 'GET',
-                'url': this.baseUrl + 'ajaxGetContactData?contact_id='+contact_id+'&patient_id='+OE_patient_id,
+                'url': this.baseUrl + 'ajaxGetContactData?contact_id='+contact_id+'&patient_id='+OE_patient_id + document_set_id_param,
                 context: this,
                 dataType: 'json',
                 'success': function(resp) {

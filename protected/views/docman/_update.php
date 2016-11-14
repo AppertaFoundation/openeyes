@@ -87,6 +87,7 @@ button.green { background-color:green; color: white; }
                         <?php $this->renderPartial('//docman/table/delivery_methods', array(
                                         'is_draft' => $element->draft,
                                         'contact_type' => $target->contact_type,
+                                        'target' => $target,
                                         'row_index' => $row_index));
                         ?>
                     </td>

@@ -262,16 +262,18 @@ class Document //extends BaseActiveRecord
                                 }
 				$doc_target = $this->createNewDocTarget($doc_instance, $data);
                                     
-                                foreach($post_document_target['DocumentOutput'] as $document_output){
-                                    
-                                    if( isset($document_output['output_type']) ){
-                                        $data = array(
-                                            'output_type' => $document_output['output_type']);
-                                        
-                                        if(isset($document_output['id'])){
-                                            $data['id'] = $document_output['id'];
+                                if(isset($post_document_target['DocumentOutput'])){
+                                    foreach($post_document_target['DocumentOutput'] as $document_output){
+
+                                        if( isset($document_output['output_type']) ){
+                                            $data = array(
+                                                'output_type' => $document_output['output_type']);
+
+                                            if(isset($document_output['id'])){
+                                                $data['id'] = $document_output['id'];
+                                            }
+                                            $this->createNewDocOutput($doc_target, $doc_instance_version, $data);
                                         }
-					$this->createNewDocOutput($doc_target, $doc_instance_version, $data);
                                     }
                                 }
 			}

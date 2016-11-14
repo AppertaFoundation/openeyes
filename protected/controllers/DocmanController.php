@@ -151,23 +151,36 @@ class DocmanController extends BaseController
             $address = isset($contact->correspondAddress) ? $contact->correspondAddress : $contact->address;
             $data["contact_type"] = $contact->getType();
             // if the contact type is GP it's possible that it has no address, so we have to look for practice
-            if(!$address)
-            {
-                if($data["contact_type"] == 'Gp')
-                {
+            if(!$address){
+                if($data["contact_type"] == 'Gp'){
                     $patient_id = Yii::app()->request->getQuery('patient_id');
+                    $document_set_id = Yii::app()->request->getQuery('document_set_id');
                     $patient = Patient::model()->findByPk($patient_id);
                     $address = isset($patient->practice->contact->correspondAddress) ? $patient->practice->contact->correspondAddress : $patient->practice->contact->address;
+                    }
                 }
             }
 
-            if(!$address)
-            {
+            if(!$address){
                 $data["address"] = "N/A";
-            }else
-            {
+            } else {
                 $data["address"] = implode("\n", $address->getLetterArray());
             }
+            
+            //check if there are saved outputs for the contact
+            $document_set = DocumentSet::model()->findByPk($document_set_id);
+
+            if(isset($document_set->document_instance[0]->document_target)){                 
+                foreach($document_set->document_instance[0]->document_target as $target){
+                    if( $target->contact_id == $contact_id && isset($target->document_output) ){
+                        foreach($target->document_output as $output){
+                            $data["DocumentOutputs"][] = array(
+                                'output_id' => $output->id,
+                                'output_type' => $output->output_type,
+                            );
+                        }
+                    }
+                }
 
             echo json_encode($data);
         }
