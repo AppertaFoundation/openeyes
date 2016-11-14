@@ -18,19 +18,19 @@
  */
 
 /**
- * This is the model class for table "pedigree_inheritance".
+ * This is the model class for table "pedigree_amino_acid_change_type".
  *
  * The followings are the available columns in table 'issue':
  *
  * @property int $id
  * @property string $name
  */
-class PedigreeInheritance extends BaseActiveRecord
+class PedigreeAminoAcidChangeType extends BaseActiveRecord
 {
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return Issue the static model class
+     * @return PedigreeAminoAcidChangeType Issue the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -42,7 +42,7 @@ class PedigreeInheritance extends BaseActiveRecord
      */
     public function tableName()
     {
-        return 'pedigree_inheritance';
+        return 'pedigree_amino_acid_change_type';
     }
 
     /**
@@ -53,8 +53,8 @@ class PedigreeInheritance extends BaseActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name', 'safe'),
-            array('name', 'required'),
+            array('change', 'safe'),
+            array('change', 'required'),
         );
     }
 
@@ -64,15 +64,5 @@ class PedigreeInheritance extends BaseActiveRecord
     public function relations()
     {
         return array();
-    }
-
-    /**
-     * @return array
-     */
-    public function attributeLabels()
-    {
-        return array(
-            'name' => 'Inheritance',
-        );
     }
 }

@@ -40,6 +40,10 @@
  */
 class Pedigree extends BaseActiveRecord
 {
+    protected $lowest_version = 37;
+
+    protected $highest_version = 38;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -66,7 +70,11 @@ class Pedigree extends BaseActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('inheritance_id, comments, consanguinity, gene_id, base_change, amino_acid_change, disorder_id', 'safe'),
+            array(
+                'inheritance_id, comments, consanguinity, gene_id, base_change, amino_acid_change, disorder_id,' .
+                'base_change_id, amino_acid_change_id, genomic_coordinate, genome_version, gene_transcript',
+                'safe'
+            ),
             array('consanguinity', 'required'),
         );
     }
@@ -90,12 +98,24 @@ class Pedigree extends BaseActiveRecord
     public function attributeLabels()
     {
         return array(
-            'id' => 'ID',
+            'id' => 'Family ID',
             'inheritance_id' => 'Inheritance',
             'base_change' => 'Base change',
             'gene_id' => 'Gene',
             'amino_acid_change' => 'Amino acid change',
             'disorder_id' => 'Disorder',
+            'base_change_id' => 'Base change type',
+            'amino_acid_change_id' => 'Amino acid change type',
         );
+    }
+
+    /**
+     * Get the possible versions for a genome
+     *
+     * @return array
+     */
+    public function genomeVersions()
+    {
+        return range($this->lowest_version, $this->highest_version);
     }
 }

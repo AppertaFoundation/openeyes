@@ -64,10 +64,12 @@ class PedigreeGene extends BaseActiveRecord
     }
 
     /**
-     * @return array relational rules.
+     * @return array
      */
-    public function relations()
+    public function attributeLabels()
     {
-        return array();
+        return array(
+            'name' => 'Gene',
+        );
     }
 }
