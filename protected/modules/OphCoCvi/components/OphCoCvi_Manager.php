@@ -763,16 +763,27 @@ class OphCoCvi_Manager extends \CComponent
      */
     private function handleIssuedFilter(\CDbCriteria $criteria, $filter = array())
     {
-
-        if (isset($filter['show_issued']) && (bool)$filter['show_issued']) {
-            $criteria->addCondition('t.is_draft = :isdraft', 'AND');
-            $criteria->params[':isdraft'] = false;
-        }
-        if (!array_key_exists('issue_complete', $filter) || (isset($filter['issue_complete']) && (bool)$filter['issue_complete'])) {
-            $criteria->addCondition('event.info LIKE "Complete%"', 'OR');
-        }
-        if (!array_key_exists('issue_incomplete', $filter) || (isset($filter['issue_incomplete']) && (bool)$filter['issue_incomplete'])) {
-            $criteria->addCondition('event.info LIKE "Incomplete%"', 'OR');
+        if ((!array_key_exists('issue_complete', $filter) || (isset($filter['issue_complete']) && (bool)$filter['issue_complete']))
+            AND (!array_key_exists('issue_incomplete', $filter) || (isset($filter['issue_incomplete']) && (bool)$filter['issue_incomplete']))
+            AND (isset($filter['show_issued']) && (bool)$filter['show_issued'])) {
+                $criteria->addCondition('t.is_draft = false OR event.info LIKE "Complete%" OR event.info LIKE "Incomplete%"');
+        } elseif ((!array_key_exists('issue_complete', $filter) || (isset($filter['issue_complete']) && (bool)$filter['issue_complete']))
+        AND (!array_key_exists('issue_incomplete', $filter) || (isset($filter['issue_incomplete']) && (bool)$filter['issue_incomplete']))){
+            $criteria->addCondition('event.info LIKE "Complete%" OR event.info LIKE "Incomplete%"');
+        }  elseif ((!array_key_exists('issue_complete', $filter) || (isset($filter['issue_complete']) && (bool)$filter['issue_complete']))
+            AND (isset($filter['show_issued']) && (bool)$filter['show_issued'])) {
+               $criteria->addCondition('t.is_draft = false OR event.info LIKE "Complete%"');
+        } elseif ((!array_key_exists('issue_incomplete', $filter) || (isset($filter['issue_incomplete']) && (bool)$filter['issue_incomplete']))
+            AND (isset($filter['show_issued']) && (bool)$filter['show_issued'])) {
+            $criteria->addCondition('t.is_draft = false OR event.info LIKE "Incomplete%"');
+        } elseif ((!array_key_exists('issue_complete', $filter) || (isset($filter['issue_complete']) && (bool)$filter['issue_complete'])))
+        {
+            $criteria->addCondition('event.info LIKE "Complete%"');
+        } elseif ((!array_key_exists('issue_incomplete', $filter) || (isset($filter['issue_incomplete']) && (bool)$filter['issue_incomplete'])))
+            {
+            $criteria->addCondition('event.info LIKE "Incomplete%"');
+        } elseif (isset($filter['show_issued']) && (bool)$filter['show_issued']) {
+            $criteria->addCondition('t.is_draft = false');
         }
     }
 
