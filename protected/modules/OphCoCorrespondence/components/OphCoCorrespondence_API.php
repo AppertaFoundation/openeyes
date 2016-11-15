@@ -124,8 +124,8 @@ class OphCoCorrespondence_API extends BaseAPI
 
         if ($macro->cc_drss) {
             $commissioningbodytype = CommissioningBodyType::model()->find('shortname = ?', array('CCG'));
-            if($commissioningbodytype && $commissioningbody = $patient->getCommissioningBodyOfType($commissioningbodytype)) {
-                $drss = null;
+            $commissioningbody = $patient->getCommissioningBodyOfType($commissioningbodytype);
+            if($commissioningbodytype && $commissioningbody) {
                 foreach($commissioningbody->services as $service) {
                     if($service->type->shortname == 'DRSS') {
                         $data['cc'][$k]['contact_type'] = 'DRSS';

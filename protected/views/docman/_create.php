@@ -18,105 +18,181 @@
  */
 ?>
 <style type='text/css'>
-table { border:1px solid black; cell-spacing:0; cell-padding:0; }
-td { border:1px solid black; border-collapse: 1; vertical-align:top; }
-tr { background-color: #eee; color: black; padding:2px 5px; }
-th.actions {padding:0 10px}
-select.addr { width:200px !important; max-width:200px; }
-div#docman_block select.macro { max-width:220px; }
-table.docman tbody tr td img { vertical-align: text-top; height:13px; width:13px; }
-table.docman > tbody > tr > td:first-child { width:200px; max-width:200px; }
-button.docman { width:80px; background: none; font-size:13px; line-height:20px; height:20px; margin:5px 0; padding:0; text-align:center; }
-button.red { background-color:red; color: white; }
-button.green { background-color:green; color: white; }
+    table {
+        border: 1px solid black;
+        cell-spacing: 0;
+        cell-padding: 0;
+    }
+
+    td {
+        border: 1px solid black;
+        border-collapse: 1;
+        vertical-align: top;
+    }
+
+    tr {
+        background-color: #eee;
+        color: black;
+        padding: 2px 5px;
+    }
+
+    th.actions {
+        padding: 0 10px
+    }
+
+    select.addr {
+        width: 200px !important;
+        max-width: 200px;
+    }
+
+    div#docman_block select.macro {
+        max-width: 220px;
+    }
+
+    table.docman tbody tr td img {
+        vertical-align: text-top;
+        height: 13px;
+        width: 13px;
+    }
+
+    table.docman > tbody > tr > td:first-child {
+        width: 200px;
+        max-width: 200px;
+    }
+
+    button.docman {
+        width: 80px;
+        background: none;
+        font-size: 13px;
+        line-height: 20px;
+        height: 20px;
+        margin: 5px 0;
+        padding: 0;
+        text-align: center;
+    }
+
+    button.red {
+        background-color: red;
+        color: white;
+    }
+
+    button.green {
+        background-color: green;
+        color: white;
+    }
 </style>
 
-    <table id="dm_table" data-macro_id="<?php echo $macro_id; ?>">
-        <tbody>
-            <tr id="dm_0">
-                <th>To/CC</th>
-                <th>Recipient/Address</th>
-                <th>Role</th>
-                <th>Delivery Method(s)</th>
-                <th class="actions"> 
-                    <img class="docman_loader right" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;">
-                </th>
-            </tr>
+<table id="dm_table" data-macro_id="<?php echo $macro_id; ?>">
+    <tbody>
+    <tr id="dm_0">
+        <th>To/CC</th>
+        <th>Recipient/Address</th>
+        <th>Role</th>
+        <th>Delivery Method(s)</th>
+        <th class="actions">
+            <img class="docman_loader right" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..." style="display: none;">
+        </th>
+    </tr>
 
-            <?php /* Generate recipients by macro */ ?>
-            <?php if(!empty($macro_data)): ?>
-                <tr class="rowindex-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
-                    <td> To <?php echo CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][ToCc]", 'To'); ?> </td>
-                    <td>
-                        <?php echo CHtml::dropDownList('DocumentTarget['.$row_index.'][attributes][contact_id]', $macro_data["to"]["contact_id"], $element->address_targets, array('empty' => '- Recipient -', 'nowrapper' => true, 'class' => 'full-width docman_recipient', 'data-rowindex'=>$row_index, 'data-previous' => $macro_data["to"]["contact_id"]))?>
+    <?php /* Generate recipients by macro */ ?>
+    <?php if (!empty($macro_data)):
+        if (array_key_exists('to', $macro_data)):
+        ?>
+        <tr class="rowindex-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
+            <td> To <?php echo CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][ToCc]", 'To'); ?> </td>
+            <td>
+                <?php echo CHtml::dropDownList('DocumentTarget[' . $row_index . '][attributes][contact_id]', $macro_data["to"]["contact_id"], $element->address_targets, array(
+                    'empty' => '- Recipient -',
+                    'nowrapper' => true,
+                    'class' => 'full-width docman_recipient',
+                    'data-rowindex' => $row_index,
+                    'data-previous' => $macro_data["to"]["contact_id"],
+                )) ?>
 
-                        <br>
-                        <textarea rows="4" cols="10" name="DocumentTarget[<?php echo $row_index;?>][attributes][address]" id="Document_Target_Address_<?php echo $row_index;?>" data-rowindex="<?php echo $row_index ?>"><?php echo $macro_data["to"]["address"]?></textarea>
-                    </td>
-                    <td>
-                        <?php $this->renderPartial('//docman/table/contact_type', array(
-                                        'contact_type' => strtoupper($macro_data["to"]["contact_type"]),
-                                        'row_index' => $row_index));
-                            ?>
-                    </td>
-                    <td class="docman_delivery_method">
-                        <?php $this->renderPartial('//docman/table/delivery_methods', array(
-                                    'is_draft' => $element->draft,
-                                    'contact_type' => strtoupper($macro_data["to"]["contact_type"]),
-                                    'row_index' => $row_index));
-                        ?>  
-                    </td>
-                    <td> </td>
-                </tr>
-                <?php $row_index++; ?>
+                <br>
+                <textarea rows="4" cols="10" name="DocumentTarget[<?php echo $row_index; ?>][attributes][address]" id="Document_Target_Address_<?php echo $row_index; ?>"
+                          data-rowindex="<?php echo $row_index ?>"><?php echo $macro_data["to"]["address"] ?></textarea>
+            </td>
+            <td>
+                <?php $this->renderPartial('//docman/table/contact_type', array(
+                    'contact_type' => strtoupper($macro_data["to"]["contact_type"]),
+                    'row_index' => $row_index,
+                ));
+                ?>
+            </td>
+            <td class="docman_delivery_method">
+                <?php $this->renderPartial('//docman/table/delivery_methods', array(
+                    'is_draft' => $element->draft,
+                    'contact_type' => strtoupper($macro_data["to"]["contact_type"]),
+                    'row_index' => $row_index,
+                ));
+                ?>
+            </td>
+            <td></td>
+        </tr>
+        <?php
+            $row_index++;
+            endif;
+        ?>
 
-                <?php foreach($macro_data['cc'] as $cc_index => $macro): ?>
-                    <?php $index = $row_index + $cc_index ?>
-                    <tr class="rowindex-<?php echo $index ?>" data-rowindex="<?php echo $index ?>">
-                        <td> Cc <?php echo CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][ToCc]", 'Cc'); ?> </td>
-                        <td>
-                            <?php echo CHtml::dropDownList('DocumentTarget['.$row_index.'][attributes][contact_id]', $macro["contact_id"], $element->address_targets,  array('empty' => '- Recipient -', 'nowrapper' => true, 'class' => 'full-width docman_recipient', 'data-rowindex'=>$row_index, 'data-previous' => $macro["contact_id"]))?>
-                        <br>
-                        <textarea rows="4" cols="10" name="DocumentTarget[<?php echo $row_index;?>][attributes][address]" id="Document_Target_Address_<?php echo $row_index;?>" data-rowindex="<?php echo $row_index ?>"><?php echo $macro["address"]?></textarea>
-                    </td>
-                    <td>
-                        <?php $this->renderPartial('//docman/table/contact_type', array(
-                                        'contact_type' => strtoupper($macro["contact_type"]),
-                                        'row_index' => $row_index));
-                            ?>
-                    </td>
-                    <td class="docman_delivery_method">
-                        <?php $output_index = 0; ?>
-                        <?php if(strtoupper($macro["contact_type"]) == 'GP'): ?>
-                            <label>
-                                <input type="checkbox" value="Docman" class="docman_delivery" name="DocumentTarget_<?php echo $row_index; ?>_DocumentOutput_0_[output_type" data-rowindex="<?php echo $row_index?>" checked disabled>DocMan
-                                <input type="hidden" value="Docman" class="docman_delivery hidden" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][0][output_type]" data-rowindex="<?php echo $row_index?>">
-                            </label>
-                            <?php $output_index++; ?>
-                            <br>
-                        <?php endif; ?>
-                        <label>
-                            <?php 
-                                $is_checked = $macro["contact_type"] == 'Gp' ? '' : 'checked';
-                                if(Yii::app()->request->isPostRequest){
-                                    $is_checked = isset($_POST["DocumentTarget"][$row_index]['DocumentOutput'][$output_index]['output_type']) ? 'checked' : ''; 
-                                }
-                            ?> 
-                            <input type="checkbox" value="Print" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][<?php echo $output_index ?>][output_type]" <?php echo $is_checked; ?>>Print
-                        </label>
-                    </td>
-                    <td>
-                        <a class="remove_recipient removeItem" data-rowindex="<?php echo $row_index ?>">Remove</a>
-                    </td>
-
-                    </tr>
-                <?php endforeach; ?>
-            <?php endif; ?>
-
-            <tr class="new_entry_row">
-                <td colspan="6">
-                    <button class="button small secondary" id="docman_add_new_recipient">Add new recipient</button>
+        <?php foreach ($macro_data['cc'] as $cc_index => $macro): ?>
+            <?php $index = $row_index + $cc_index ?>
+            <tr class="rowindex-<?php echo $index ?>" data-rowindex="<?php echo $index ?>">
+                <td> Cc <?php echo CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][ToCc]", 'Cc'); ?> </td>
+                <td>
+                    <?php echo CHtml::dropDownList('DocumentTarget[' . $row_index . '][attributes][contact_id]', $macro["contact_id"], $element->address_targets, array(
+                        'empty' => '- Recipient -',
+                        'nowrapper' => true,
+                        'class' => 'full-width docman_recipient',
+                        'data-rowindex' => $row_index,
+                        'data-previous' => $macro["contact_id"],
+                    )) ?>
+                    <br>
+                    <textarea rows="4" cols="10" name="DocumentTarget[<?php echo $row_index; ?>][attributes][address]" id="Document_Target_Address_<?php echo $row_index; ?>"
+                              data-rowindex="<?php echo $row_index ?>"><?php echo $macro["address"] ?></textarea>
                 </td>
+                <td>
+                    <?php $this->renderPartial('//docman/table/contact_type', array(
+                        'contact_type' => strtoupper($macro["contact_type"]),
+                        'row_index' => $row_index,
+                    ));
+                    ?>
+                </td>
+                <td class="docman_delivery_method">
+                    <?php $output_index = 0; ?>
+                    <?php if (strtoupper($macro["contact_type"]) == 'GP'): ?>
+                        <label>
+                            <input type="checkbox" value="Docman" class="docman_delivery" name="DocumentTarget_<?php echo $row_index; ?>_DocumentOutput_0_[output_type"
+                                   data-rowindex="<?php echo $row_index ?>" checked disabled>DocMan
+                            <input type="hidden" value="Docman" class="docman_delivery hidden" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][0][output_type]"
+                                   data-rowindex="<?php echo $row_index ?>">
+                        </label>
+                        <?php $output_index++; ?>
+                        <br>
+                    <?php endif; ?>
+                    <label>
+                        <?php
+                        $is_checked = $macro["contact_type"] == 'Gp' ? '' : 'checked';
+                        if (Yii::app()->request->isPostRequest) {
+                            $is_checked = isset($_POST["DocumentTarget"][$row_index]['DocumentOutput'][$output_index]['output_type']) ? 'checked' : '';
+                        }
+                        ?>
+                        <input type="checkbox" value="Print"
+                               name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][<?php echo $output_index ?>][output_type]" <?php echo $is_checked; ?>>Print
+                    </label>
+                </td>
+                <td>
+                    <a class="remove_recipient removeItem" data-rowindex="<?php echo $row_index ?>">Remove</a>
+                </td>
+
             </tr>
-        </tbody>
-    </table>
+        <?php endforeach; ?>
+    <?php endif; ?>
+
+    <tr class="new_entry_row">
+        <td colspan="6">
+            <button class="button small secondary" id="docman_add_new_recipient">Add new recipient</button>
+        </td>
+    </tr>
+    </tbody>
+</table>
