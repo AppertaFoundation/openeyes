@@ -47,8 +47,17 @@ function updateCorrespondence( macro_id)
     }
 }
 
+function togglePrintDisabled (isSignedOff) {
+	$('#et_save_print').prop('disabled', !isSignedOff);
+}
 
 $(document).ready(function() {
+	var $letterIsSignedOff = $('#ElementLetter_is_signed_off');
+	togglePrintDisabled($letterIsSignedOff.is(':checked'));
+	$letterIsSignedOff.change(function() {
+		togglePrintDisabled(this.checked);
+	});
+
 	$(this).delegate('#ElementLetter_site_id', 'change', function() {
 		if (correspondence_directlines) {
 			$('#ElementLetter_direct_line').val(correspondence_directlines[$('#ElementLetter_site_id').val()]);

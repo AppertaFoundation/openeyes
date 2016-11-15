@@ -62,7 +62,11 @@ class ElementLetter extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, site_id, print, address, use_nickname, date, introduction, cc, re, body, footer, draft, direct_line, fax, clinic_date, print_all, letter_type', 'safe'),
+            array(
+                'event_id, site_id, print, address, use_nickname, date, introduction, cc, re, body, footer, draft, direct_line, fax, clinic_date,' .
+                'print_all, letter_type, is_signed_off',
+                'safe'
+            ),
             array('use_nickname, site_id, date, introduction, body, footer', 'required'),
             array('date', 'OEDateValidator'),
             array('clinic_date', 'OEDateValidatorNotFuture'),
@@ -107,6 +111,7 @@ class ElementLetter extends BaseEventTypeElement
             'draft' => 'Draft',
             'direct_line' => 'Direct line',
             'fax' => 'Direct fax',
+            'is_signed_off' => 'Approved by a clinician'
         );
     }
 
@@ -158,7 +163,7 @@ class ElementLetter extends BaseEventTypeElement
 
         $options = array($patient->contact->id => $patient->fullname.' (Patient)');
         if (!isset($patient->contact->address)) {
-            $options['Patient'.$patient->id] .= ' - NO ADDRESS';
+            $options[$patient->contact->id] .= ' - NO ADDRESS';
         }
 
         if ($patient->gp) {
