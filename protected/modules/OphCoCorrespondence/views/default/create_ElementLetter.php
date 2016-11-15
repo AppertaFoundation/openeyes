@@ -19,123 +19,127 @@
 ?>
 
 
-<?php echo $form->hiddenInput($element, 'draft', 1)?>
+<?php echo $form->hiddenInput($element, 'draft', 1) ?>
 <?php
 $layoutColumns = $form->layoutColumns;
-$macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : ( isset($element->macro->id) ? $element->macro->id : null );
+$macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : (isset($element->macro->id) ? $element->macro->id : null);
 ?>
 <div class="element-fields">
-	<div class="row field-row">
-                <div class="large-<?php echo $layoutColumns['label'];?> column">
-			<label>Site:</label>
-		</div>
-		<div class="large-3 column end">
-			<?php echo $form->dropDownList($element, 'site_id', Site::model()->getLongListForCurrentInstitution(), array('empty' => '- Please select -', 'nowrapper' => true), false, array('field' => 2))?>
-	</div>
-	</div>
+    <div class="row field-row">
+        <div class="large-<?php echo $layoutColumns['label']; ?> column">
+            <label>Site:</label>
+        </div>
+        <div class="large-3 column end">
+            <?php echo $form->dropDownList($element, 'site_id', Site::model()->getLongListForCurrentInstitution(), array('empty' => '- Please select -', 'nowrapper' => true),
+                false, array('field' => 2)) ?>
+        </div>
+    </div>
 
-	<div class="row field-row">
-		<div class="large-<?php echo $layoutColumns['label'];?> column">
-			<label>Date:</label>
-		</div>
-		<div class="large-2 column end">
-			<?php echo $form->datePicker($element, 'date', array('maxDate' => 'today'), array('nowrapper' => true))?>
-		</div>
-	</div>
+    <div class="row field-row">
+        <div class="large-<?php echo $layoutColumns['label']; ?> column">
+            <label>Date:</label>
+        </div>
+        <div class="large-2 column end">
+            <?php echo $form->datePicker($element, 'date', array('maxDate' => 'today'), array('nowrapper' => true)) ?>
+        </div>
+    </div>
 
-	<div class="row field-row">
-		<div class="large-<?php echo $layoutColumns['label'];?> column">
-			<label>Macro:</label>
-		</div>
-		<div class="large-2 column end">
-			<?php echo CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros, array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'full-width'));?>
-		</div>
-	</div>
+    <div class="row field-row">
+        <div class="large-<?php echo $layoutColumns['label']; ?> column">
+            <label>Macro:</label>
+        </div>
+        <div class="large-2 column end">
+            <?php echo CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros, array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'full-width')); ?>
+        </div>
+    </div>
 
-	<div class="row field-row">
-		<div class="large-<?php echo $layoutColumns['label'];?> column">
-			<label>Letter type:</label>
-		</div>
-		<div class="large-2 column end">
-			<?php echo $form->dropDownList($element, 'letter_type', array('1'=>'Clinic discharge letter', '2'=>'Post-op letter', '3'=>'Clinic letter', '4'=>'Other letter'), array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'full-width'))?>
-		</div>
-	</div>
+    <div class="row field-row">
+        <div class="large-<?php echo $layoutColumns['label']; ?> column">
+            <label>Letter type:</label>
+        </div>
+        <div class="large-2 column end">
+            <?php echo $form->dropDownList($element, 'letter_type', array('1' => 'Clinic discharge letter', '2' => 'Post-op letter', '3' => 'Clinic letter', '4' => 'Other letter'),
+                array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'full-width')) ?>
+        </div>
+    </div>
 
-	<div class="row field-row">
-            <div id="docman_block">
-		<?php
-                    $document_manager = new DocmanController('docman');
-                    $macro_data = array();
-                    $patient_id = Yii::app()->request->getQuery('patient_id');
-                    
-                    if(isset($element->macro) && !isset($_POST['DocumentTarget'])){
-                        $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
-                        $macro_data = $api->getMacroTargets($patient_id, $macro_id);
-                    }
-                    
-                    // set back posted data on error
-                    if(isset($_POST['DocumentTarget'])){
-               
-                        foreach($_POST['DocumentTarget'] as $document_target){
-       
-                            if( isset($document_target['attributes']['ToCc']) && $document_target['attributes']['ToCc'] == 'To'){
-                                $macro_data['to'] = array(
-                                    'contact_type' => $document_target['attributes']['contact_type'],
-                                    'contact_id' => isset($document_target['attributes']['contact_id']) ? $document_target['attributes']['contact_id'] : null ,
-                                    'address' => isset($document_target['attributes']['address']) ? $document_target['attributes']['address'] : null,
-                                );
-                            } else if( isset($document_target['attributes']['ToCc']) && $document_target['attributes']['ToCc'] == 'Cc'){
-                                $macro_data['cc'][] = array(
-                                    'contact_type' => $document_target['attributes']['contact_type'],
-                                    'contact_id' => isset($document_target['attributes']['contact_id']) ? $document_target['attributes']['contact_id'] : null,
-                                    'address' => isset($document_target['attributes']['address']) ? $document_target['attributes']['address'] : null,
-                                );
-                            }
+    <div class="row field-row">
+        <div id="docman_block">
+            <?php
+            $document_manager = new DocmanController('docman');
+            $macro_data = array();
+            $patient_id = Yii::app()->request->getQuery('patient_id');
+
+            if (isset($element->macro) && !isset($_POST['DocumentTarget'])) {
+                $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
+                $macro_data = $api->getMacroTargets($patient_id, $macro_id);
+            }
+
+            // set back posted data on error
+            if (isset($_POST['DocumentTarget'])) {
+
+                foreach ($_POST['DocumentTarget'] as $document_target) {
+
+                    if (isset($document_target['attributes']['ToCc']) && $document_target['attributes']['ToCc'] == 'To') {
+                        $macro_data['to'] = array(
+                            'contact_type' => $document_target['attributes']['contact_type'],
+                            'contact_id' => isset($document_target['attributes']['contact_id']) ? $document_target['attributes']['contact_id'] : null,
+                            'address' => isset($document_target['attributes']['address']) ? $document_target['attributes']['address'] : null,
+                        );
+                    } else {
+                        if (isset($document_target['attributes']['ToCc']) && $document_target['attributes']['ToCc'] == 'Cc') {
+                            $macro_data['cc'][] = array(
+                                'contact_type' => $document_target['attributes']['contact_type'],
+                                'contact_id' => isset($document_target['attributes']['contact_id']) ? $document_target['attributes']['contact_id'] : null,
+                                'address' => isset($document_target['attributes']['address']) ? $document_target['attributes']['address'] : null,
+                            );
                         }
                     }
-                    $this->renderPartial('//docman/_create', array(
-                        'row_index' => ( isset($row_index) ? $row_index : 0),
-                        'macro_data' => $macro_data,
-                        'macro_id' => $macro_id,
-                        'element' => $element
-                    ));
-                
-		?>
-            </div>
-	</div>
+                }
+            }
+            $this->renderPartial('//docman/_create', array(
+                'row_index' => (isset($row_index) ? $row_index : 0),
+                'macro_data' => $macro_data,
+                'macro_id' => $macro_id,
+                'element' => $element,
+            ));
 
-	<div class="row field-row">
-		<div class="large-<?php echo $layoutColumns['label'];?> column OphCoCorrespondence_footerLabel">
-                    <label for="<?php echo get_class($element).'_clinic_date_0';?>">
-                        <?php echo $element->getAttributeLabel('clinic_date')?>:
-                    </label>
-		</div>
-		<div class="large-2 column end">
-			<?php echo $form->datePicker($element, 'clinic_date', array('maxDate' => 'today'), array('nowrapper' => true, 'null' => true))?>
-		</div>
-	</div>
+            ?>
+        </div>
+    </div>
 
-	<?php echo $form->textField($element, 'direct_line', array(), array(), array_merge($layoutColumns, array('field' => 2)))?>
-	<?php echo $form->textField($element, 'fax', array(), array(), array_merge($layoutColumns, array('field' => 2)))?>
+    <div class="row field-row">
+        <div class="large-<?php echo $layoutColumns['label']; ?> column OphCoCorrespondence_footerLabel">
+            <label for="<?php echo get_class($element) . '_clinic_date_0'; ?>">
+                <?php echo $element->getAttributeLabel('clinic_date') ?>:
+            </label>
+        </div>
+        <div class="large-2 column end">
+            <?php echo $form->datePicker($element, 'clinic_date', array('maxDate' => 'today'), array('nowrapper' => true, 'null' => true)) ?>
+        </div>
+    </div>
 
-	<div class="row field-row">
-		<div class="large-7 column large-offset-<?php echo $layoutColumns['label'];?>">
-			<?php echo $form->textArea($element, 'introduction', array('rows' => 2, 'label' => false, 'nowrapper' => true), false, array('class' => 'address'))?>
-		</div>
-		<div class="large-3 column">
-			<?php echo $form->checkBox($element, 'use_nickname', array('nowrapper' => true))?>
-		</div>
-	</div>
+    <?php echo $form->textField($element, 'direct_line', array(), array(), array_merge($layoutColumns, array('field' => 2))) ?>
+    <?php echo $form->textField($element, 'fax', array(), array(), array_merge($layoutColumns, array('field' => 2))) ?>
 
-	<div class="row field-row">
-		<div class="large-<?php echo $layoutColumns['field'];?> column large-offset-<?php echo $layoutColumns['label'];?> end">
-			<?php echo $form->textArea($element, 're', array('rows' => 2, 'label' => false, 'nowrapper' => true), false, array('class' => 'address'))?>
-		</div>
-	</div>
+    <div class="row field-row">
+        <div class="large-7 column large-offset-<?php echo $layoutColumns['label']; ?>">
+            <?php echo $form->textArea($element, 'introduction', array('rows' => 2, 'label' => false, 'nowrapper' => true), false, array('class' => 'address')) ?>
+        </div>
+        <div class="large-3 column">
+            <?php echo $form->checkBox($element, 'use_nickname', array('nowrapper' => true)) ?>
+        </div>
+    </div>
 
-	<div class="row field-row">
-		<div class="large-<?php echo $layoutColumns['label'];?> column">
-			<?php
+    <div class="row field-row">
+        <div class="large-<?php echo $layoutColumns['field']; ?> column large-offset-<?php echo $layoutColumns['label']; ?> end">
+            <?php echo $form->textArea($element, 're', array('rows' => 2, 'label' => false, 'nowrapper' => true), false, array('class' => 'address')) ?>
+        </div>
+    </div>
+
+    <div class="row field-row">
+        <div class="large-<?php echo $layoutColumns['label']; ?> column">
+            <?php
             $firm = Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(Yii::app()->session['selected_firm_id']);
 
             $event_types = array();
@@ -180,106 +184,115 @@ $macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : ( isset($element->m
             foreach (LetterStringGroup::model()->with($with)->findAll(array('order' => 't.display_order')) as $string_group) {
                 $strings = $string_group->getStrings($patient, $event_types);
                 ?>
-				<div class="field-row">
-					<?php echo $form->dropDownListNoPost(strtolower($string_group->name), $strings, '', array(
-                        'empty' => '- '.$string_group->name.' -',
+                <div class="field-row">
+                    <?php echo $form->dropDownListNoPost(strtolower($string_group->name), $strings, '', array(
+                        'empty' => '- ' . $string_group->name . ' -',
                         'nowrapper' => true,
                         'class' => 'stringgroup full-width',
                         'disabled' => empty($strings),
-                    ))?>
-				</div>
-			<?php }?>
-		</div>
-		<div class="large-<?php echo $layoutColumns['field'];?> column end">
-			<?php echo $form->textArea($element, 'body', array('rows' => 20, 'label' => false, 'nowrapper' => true), false, array('class' => 'address'))?>
-		</div>
-	</div>
+                    )) ?>
+                </div>
+            <?php } ?>
+        </div>
+        <div class="large-<?php echo $layoutColumns['field']; ?> column end">
+            <?php echo $form->textArea($element, 'body', array('rows' => 20, 'label' => false, 'nowrapper' => true), false, array('class' => 'address')) ?>
+        </div>
+    </div>
 
-	<div class="row field-row">
-		<div class="large-<?php echo $layoutColumns['label'];?> column OphCoCorrespondence_footerLabel">
-			<label for="OphCoCorrespondence_footerAutoComplete">
-				From:
-			</label>
-		</div>
-		<div class="large-<?php echo $layoutColumns['field'];?> column end">
-			<div class="row field-row">
-				<div class="large-6 column end">
-					<?php
-                        $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                            'id' => 'OphCoCorrespondence_footerAutoComplete',
-                            'name' => 'OphCoCorrespondence_footerAutoComplete',
-                            'value' => '',
-                            'sourceUrl' => array('default/users'),
-                            'options' => array(
-                                'minLength' => '3',
-                                'select' => "js:function(event, ui) {
+    <div class="row field-row">
+        <div class="large-<?php echo $layoutColumns['label']; ?> column OphCoCorrespondence_footerLabel">
+            <label for="OphCoCorrespondence_footerAutoComplete">
+                From:
+            </label>
+        </div>
+        <div class="large-<?php echo $layoutColumns['field']; ?> column end">
+            <div class="row field-row">
+                <div class="large-6 column end">
+                    <?php
+                    $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+                        'id' => 'OphCoCorrespondence_footerAutoComplete',
+                        'name' => 'OphCoCorrespondence_footerAutoComplete',
+                        'value' => '',
+                        'sourceUrl' => array('default/users'),
+                        'options' => array(
+                            'minLength' => '3',
+                            'select' => "js:function(event, ui) {
 									$('#ElementLetter_footer').val(\"Yours sincerely\\n\\n\\n\\n\\n\"+ui.item.fullname+\"\\n\"+ui.item.role+\"\\n\"+(ui.item.consultant?\"Consultant: \"+ui.item.consultant:''));
 									$('#OphCoCorrespondence_footerAutoComplete').val('');
 									return false;
 								}",
-                            ),
-                            'htmlOptions' => array(
-                                'placeholder' => 'type to search for users',
-                            ),
-                        ));
+                        ),
+                        'htmlOptions' => array(
+                            'placeholder' => 'type to search for users',
+                        ),
+                    ));
                     ?>
-				</div>
-			</div>
-			<div class="row field-row" id="OphCoCorrespondence_footerDiv">
-				<div class="large-8 column end">
-					<?php echo $form->textArea($element, 'footer', array('rows' => 9, 'label' => false, 'nowrapper' => true), false, array('class' => 'address'))?>
-				</div>
-			</div>
-		</div>
-	</div>
+                </div>
+            </div>
+            <div class="row field-row" id="OphCoCorrespondence_footerDiv">
+                <div class="large-8 column end">
+                    <?php echo $form->textArea($element, 'footer', array('rows' => 9, 'label' => false, 'nowrapper' => true), false, array('class' => 'address')) ?>
+                </div>
+            </div>
+        </div>
+    </div>
 
- 	<div class="row field-row">
-		<div class="large-<?php echo $layoutColumns['label'];?> column">
-			<?php //echo $form->dropDownListNoPost('cc', $element->address_targets, '', array('empty' => '- Cc -', 'nowrapper' => true))?>
-		</div>
-		<div class="large-<?php echo $layoutColumns['field'];?> column end">
-			<?php echo $form->hiddenField($element, 'cc', array('rows' => 8, 'label' => false, 'nowrapper' => true), false, array('class' => 'address'))?>
-		</div>
-		<div id="cc_targets">
-			<?php foreach ($element->cc_targets as $cc_target) {
-    ?>
-				<input type="hidden" name="CC_Targets[]" value="<?php echo $cc_target?>" />
-			<?php 
-}?>
-		</div>
-	</div>
+    <div class="row field-row">
+        <div class="large-<?php echo $layoutColumns['label']; ?> column">
+            <?php //echo $form->dropDownListNoPost('cc', $element->address_targets, '', array('empty' => '- Cc -', 'nowrapper' => true))?>
+        </div>
+        <div class="large-<?php echo $layoutColumns['field']; ?> column end">
+            <?php echo $form->hiddenField($element, 'cc', array('rows' => 8, 'label' => false, 'nowrapper' => true), false, array('class' => 'address')) ?>
+        </div>
+        <div id="cc_targets">
+            <?php foreach ($element->cc_targets as $cc_target) {
+                ?>
+                <input type="hidden" name="CC_Targets[]" value="<?php echo $cc_target ?>"/>
+                <?php
+            } ?>
+        </div>
+    </div>
 
-	<fieldset class="row field-row enclosures">
-		<legend class="large-<?php echo $layoutColumns['label'];?> column OphCoCorrespondence_footerLabel">
-			Enclosures:
-		</legend>
-		<div class="large-<?php echo $layoutColumns['field'];?> column end">
-			<input type="hidden" name="update_enclosures" value="1" />
-			<div id="enclosureItems" class="field-row<?php echo !is_array(@$_POST['EnclosureItems']) ? ' hide' : '';?>">
-				<?php if (is_array(@$_POST['EnclosureItems'])) {
-    ?>
-					<?php foreach ($_POST['EnclosureItems'] as $key => $value) {
-    ?>
-						<div class="field-row row collapse enclosureItem">
-							<div class="large-8 column">
-								<?php echo CHtml::textField("EnclosureItems[$key]", $value, array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 60))?>
-							</div>
-							<div class="large-4 column end">
-								<div class="postfix align"><a href="#" class="field-info removeEnclosure">Remove</a></div>
-							</div>
-						</div>
-					<?php 
-}
-    ?>
-				<?php 
-}?>
-			</div>
-			<div class="field-row">
-				<button class="addEnclosure secondary small" type="button">
-					Add
-				</button>
-			</div>
-		</div>
-	</fieldset>
-
+    <fieldset class="row field-row enclosures">
+        <legend class="large-<?php echo $layoutColumns['label']; ?> column OphCoCorrespondence_footerLabel">
+            Enclosures:
+        </legend>
+        <div class="large-<?php echo $layoutColumns['field']; ?> column end">
+            <input type="hidden" name="update_enclosures" value="1"/>
+            <div id="enclosureItems" class="field-row<?php echo !is_array(@$_POST['EnclosureItems']) ? ' hide' : ''; ?>">
+                <?php if (is_array(@$_POST['EnclosureItems'])) {
+                    ?>
+                    <?php foreach ($_POST['EnclosureItems'] as $key => $value) {
+                        ?>
+                        <div class="field-row row collapse enclosureItem">
+                            <div class="large-8 column">
+                                <?php echo CHtml::textField("EnclosureItems[$key]", $value, array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 60)) ?>
+                            </div>
+                            <div class="large-4 column end">
+                                <div class="postfix align"><a href="#" class="field-info removeEnclosure">Remove</a></div>
+                            </div>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                    <?php
+                } ?>
+            </div>
+            <div class="field-row">
+                <button class="addEnclosure secondary small" type="button">
+                    Add
+                </button>
+            </div>
+        </div>
+    </fieldset>
+    <div class="row field-row">
+        <div class="large-<?php echo $layoutColumns['label']; ?> column">
+            <label for="<?php echo get_class($element) . '_is_signed_off'; ?>">
+                <?php echo $element->getAttributeLabel('is_signed_off') ?>:
+            </label>
+        </div>
+        <div class="large-8 column end">
+            <?php echo $form->checkBox($element, 'is_signed_off', array('nowrapper' => true, 'no-label' => true)) ?>
+        </div>
+    </div>
 </div>

@@ -380,11 +380,13 @@ class DefaultController extends BaseEventTypeController
 
     public function actionPDFPrint($id)
     {
-        if (@$_GET['all']) {
+        $letter = ElementLetter::model()->find('event_id=?', array($id));
+        if (!$letter->is_signed_off) {
+             throw new CHttpException(400, 'Can not print letter with for event ' . $id);
+        }
+
+        if (Yii::app()->request->getQuery('all', false)) {
             $this->pdf_print_suffix = 'all';
-
-            $letter = ElementLetter::model()->find('event_id=?', array($id));
-
             $this->pdf_print_documents = 2 + count($letter->getCcTargets());
         }
 
