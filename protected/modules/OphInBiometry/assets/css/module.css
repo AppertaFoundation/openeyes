@@ -32,11 +32,11 @@
 }
 /* line 19, ../sass/components/_event.scss */
 .event .event-content {
-  background-image: url('../img/watermark.png?1457349986');
+  background-image: url('../img/watermark.png?1473759482');
 }
 /* line 22, ../sass/components/_event.scss */
 .event .event-title {
-  background-image: url('../img/medium.png?1457349986');
+  background-image: url('../img/medium.png?1473759482');
 }
 
 /* line 27, ../sass/components/_event.scss */
@@ -114,16 +114,25 @@ label.rse_d_left, label.rse_d_right {
 .highlighted-calculation {
   border-left: 3px solid #FF9900 !important;
   border-right: 3px solid #FF9900 !important;
-  border-bottom: 3px solid #FF9900;
+  border-top: 3px solid transparent;
 }
 
 /* line 96, ../sass/components/_event.scss */
+.highlighted-comments {
+  border-bottom: 3px solid transparent;
+  border-left: 3px solid #FF9900 !important;
+  border-right: 3px solid #FF9900 !important;
+  border-bottom: 3px solid #FF9900;
+  margin-bottom: 3px;
+}
+
+/* line 104, ../sass/components/_event.scss */
 .disabled {
   opacity: 0.60;
   border-bottom: 3px solid transparent;
 }
 
-/* line 101, ../sass/components/_event.scss */
+/* line 109, ../sass/components/_event.scss */
 .top-pad {
   border-top: 3px solid transparent;
   border-left: 3px solid transparent;
@@ -131,18 +140,18 @@ label.rse_d_left, label.rse_d_right {
   border-bottom: 3px solid transparent;
 }
 
-/* line 108, ../sass/components/_event.scss */
+/* line 116, ../sass/components/_event.scss */
 tr:hover, tr.even:hover, tr:nth-of-type(even):hover, tr.alt.hover {
   border: 0px solid #FF9900;
   background: #FFFFE0;
 }
 
-/* line 113, ../sass/components/_event.scss */
+/* line 121, ../sass/components/_event.scss */
 .highlighted, tr:nth-of-type(even).highlighted {
   background-color: #FF9900;
 }
 
-/* line 117, ../sass/components/_event.scss */
+/* line 125, ../sass/components/_event.scss */
 .readonly-box {
   background-color: #dddddd;
   padding: 4px 6px;
@@ -152,12 +161,12 @@ tr:hover, tr.even:hover, tr:nth-of-type(even):hover, tr.alt.hover {
   border-radius: 3px;
 }
 
-/* line 126, ../sass/components/_event.scss */
+/* line 134, ../sass/components/_event.scss */
 .box-margin {
   margin-left: 40px;
 }
 
-/* line 129, ../sass/components/_event.scss */
+/* line 137, ../sass/components/_event.scss */
 .readonly-div {
   height: auto;
   border: 1px solid #6b8aaa;
@@ -165,7 +174,7 @@ tr:hover, tr.even:hover, tr:nth-of-type(even):hover, tr.alt.hover {
   width: 1025px;
 }
 
-/* line 135, ../sass/components/_event.scss */
+/* line 143, ../sass/components/_event.scss */
 .closest {
   font-weight: bold;
 }

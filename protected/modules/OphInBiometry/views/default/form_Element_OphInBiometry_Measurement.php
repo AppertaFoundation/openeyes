@@ -82,19 +82,23 @@
 			$('#right-eye-lens').addClass('disabled').removeClass('highlighted-lens');
 			$('#right-eye-selection').addClass('disabled').removeClass('highlighted-selection');
 			$('#right-eye-calculation').addClass('disabled').removeClass('highlighted-calculation');
+			$('#right-eye-comments').addClass('disabled').removeClass('highlighted-comments');
 
 			$('#left-eye-lens').removeClass('disabled').addClass('highlighted-lens');
 			$('#left-eye-selection').removeClass('disabled').addClass('highlighted-selection');
 			$('#left-eye-calculation').removeClass('disabled').addClass('highlighted-calculation');
+			$('#left-eye-comments').removeClass('disabled').addClass('highlighted-comments');
 
 		}else if( $(element).hasClass('right-eye') ){
 			$('#left-eye-lens').addClass('disabled').removeClass('highlighted-lens');
 			$('#left-eye-selection').addClass('disabled').removeClass('highlighted-selection');
 			$('#left-eye-calculation').addClass('disabled').removeClass('highlighted-calculation');
+			$('#left-eye-comments').addClass('disabled').removeClass('highlighted-comments');
 
 			$('#right-eye-lens').removeClass('disabled').addClass('highlighted-lens');
 			$('#right-eye-selection').removeClass('disabled').addClass('highlighted-selection');
 			$('#right-eye-calculation').removeClass('disabled').addClass('highlighted-calculation');
+			$('#right-eye-comments').removeClass('disabled').addClass('highlighted-comments');
 		}
 	}
 </script>
