@@ -18,5 +18,6 @@
  */
 ?>
 <div class="print-letter-div">
-	<?php echo $this->renderPartial('print_ElementLetter', array('element' => $element))?>
+    <?php $letter_address = isset($letter_address) ? $letter_address : null; ?>
+	<?php echo $this->renderPartial('print_ElementLetter', array('element' => $element, 'letter_address' => $letter_address))?>
 </div>

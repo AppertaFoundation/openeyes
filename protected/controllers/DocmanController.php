@@ -50,8 +50,6 @@ class DocmanController extends BaseController
             $letter_targets = $api->getMacroTargetsByElementLetterId($element_id);
         }
 
-        echo "<pre>" . print_r($macro_data, true) . "</pre>";
-
         $this->renderPartial('/docman/_create', array(
             'row_index' => (isset($row_index) ? $row_index : 0),
             'document_set' => $document_set,

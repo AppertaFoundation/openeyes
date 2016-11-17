@@ -23,17 +23,14 @@
         $ccString = "";
         $toAddress = "";
 
-        if($element->document_instance) {
+        if($element->document_instance && $element->document_instance[0]->document_target) {
             
             foreach ($element->document_instance as $instance) {
                 foreach ($instance->document_target as $target) {
-                    foreach ($target->document_output as $output) {
-                        if($target->ToCc == 'To'){
-                            $toAddress = $target->contact_name . "\n" . $target->address;
-                        } else {
-                            $ccString .= "CC: ".ucfirst(strtolower($target->contact_type)). ": " . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
-                        }
-                        
+                    if($target->ToCc == 'To'){
+                        $toAddress = $target->contact_name . "\n" . $target->address;
+                    } else {
+                        $ccString .= "CC: ".ucfirst(strtolower($target->contact_type)). ": " . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
                     }
                 }
             }
@@ -48,7 +45,7 @@
         }
 
         $this->renderPartial('letter_start', array(
-            'toAddress' => $toAddress,
+            'toAddress' => isset($letter_address) ? $letter_address : $toAddress, // defaut address is coming from the 'To'
             'patient' => $this->patient,
             'date' => $element->date,
             'clinicDate' => $element->clinic_date,

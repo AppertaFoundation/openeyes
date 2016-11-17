@@ -358,22 +358,21 @@ class DefaultController extends BaseEventTypeController
             }
         }
     }
-
+    
     public function actionPrint($id)
-    {
+    {        
         $letter = ElementLetter::model()->find('event_id=?', array($id));
 
         $this->printInit($id);
         $this->layout = '//layouts/print';
 
         $this->render('print', array('element' => $letter));
-
+        
         if ($this->pdf_print_suffix == 'all' || @$_GET['all']) {
             $this->render('print', array('element' => $letter));
 
-            foreach ($letter->getCcTargets() as $cc) {
-                $letter->address = implode("\n", preg_replace('/^[a-zA-Z]+: /', '', str_replace(';', ',', $cc)));
-                $this->render('print', array('element' => $letter));
+            foreach ($letter->getCcTargets() as $letter_address) {
+                $this->render('print', array('element' => $letter, 'letter_address' => $letter_address));
             }
         }
     }
@@ -381,8 +380,8 @@ class DefaultController extends BaseEventTypeController
     public function actionPDFPrint($id)
     {
         $letter = ElementLetter::model()->find('event_id=?', array($id));
-        if (!$letter->is_signed_off) {
-             throw new CHttpException(400, 'Can not print letter with for event ' . $id);
+        if (!$letter->is_signed_off && $letter->document_instance ) {
+            throw new CHttpException(400, 'Can not print letter with for event ' . $id);
         }
 
         if (Yii::app()->request->getQuery('all', false)) {
@@ -511,7 +510,7 @@ class DefaultController extends BaseEventTypeController
         if (!$letter = ElementLetter::model()->find('event_id=?', array($id))) {
             throw new Exception("Letter not found for event id: $id");
         }
-
+                
         $letter->print = 1;
         $letter->draft = 0;
 

@@ -515,17 +515,29 @@ class ElementLetter extends BaseEventTypeElement
     public function getCcTargets()
     {
         $targets = array();
-
-        if (trim($this->cc)) {
-            foreach (explode("\n", trim($this->cc)) as $cc) {
-                $ex = explode(', ', trim($cc));
-
-                if (isset($ex[1]) && (ctype_digit($ex[1]) || is_int($ex[1]))) {
-                    $ex[1] .= ' '.$ex[2];
-                    unset($ex[2]);
+        
+        if( isset($this->document_set) ){
+            if( isset($this->document_set->document_instance[0]->document_target) ){
+                foreach($this->document_set->document_instance[0]->document_target as $target){
+                    if($target->ToCc == 'Cc'){
+                        $targets[] = $target->contact_name . "\n" . $target->address;
+                    }
                 }
+            }
+        } else {
 
-                $targets[] = explode(',', implode(',', $ex));
+            if (trim($this->cc)) {
+                foreach (explode("\n", trim($this->cc)) as $cc) {
+                    $ex = explode(', ', trim($cc));
+
+                    if (isset($ex[1]) && (ctype_digit($ex[1]) || is_int($ex[1]))) {
+                        $ex[1] .= ' '.$ex[2];
+                        unset($ex[2]);
+                    }
+
+                    $cc = explode(',', implode(',', $ex));
+                    $targets[] = implode("\n", preg_replace('/^[a-zA-Z]+: /', '', str_replace(';', ',', $cc)));
+                }
             }
         }
 
@@ -635,5 +647,30 @@ class ElementLetter extends BaseEventTypeElement
     public function getDocumentInstance()
     {
         return \DocumentInstance::model()->findByAttributes(array('correspondence_event_id' => $this->event_id));
-}
+    }
+    
+    /**
+     * 
+     * @param type $type
+   
+     * @param type $type
+     * @return \typeReturns  * @return typeReturns the Outputs by type
+     */
+    public function getOutputByType($type = 'Print')
+    {
+        $prints = array();
+
+        $criteria = new CDbCriteria();
+        $criteria = "JOIN document_instance ins ON t.id = ins.document_set_id" .
+                    "JOIN document_target tar ON ins.id = tar.document_instance_id" .
+                    "JOIN document_output output ON tar.id = output.document_target_id";
+
+         $criteria->compare('t.id', $this->document_set->id);
+        if($type){
+            $criteria->compare('output.output_type', $type);
+        }
+
+        return DocumentSet::model()->find($criteria);
+
+    }
 }
