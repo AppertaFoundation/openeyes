@@ -179,6 +179,8 @@ class DocmanController extends BaseController
         if (!Yii::app()->request->isAjaxRequest) {
             return;
         }
+        $patient_id = Yii::app()->request->getQuery('patient_id');
+        $patient = Patient::model()->findByPk($patient_id);
         $contact_id = Yii::app()->request->getQuery('contact_id');
         $document_set_id = Yii::app()->request->getQuery('document_set_id');
         if ($contact_id) {
@@ -187,18 +189,25 @@ class DocmanController extends BaseController
             $contact_type = $contact->getType();
             $data["contact_type"] = $contact_type ? $contact_type : '';
             if(!$contact_type){
-                //check if the contact_id is a DRSS
-                $comission_body = CommissioningBody::model()->findByAttributes(array('contact_id' => $contact_id) );
-                if($comission_body){
-                    $data["contact_type"] = 'DRSS';
+
+                $comission_body = $patient->getDistinctCommissioningBodiesByType();
+                        
+                foreach ($comission_body as $cb_type_id => $cb_list) {
+                    foreach ($cb_list as $cb) {
+                        if ($services = $cb->services) {
+                            foreach ($services as $svc) {
+                                if($svc->contact && $svc->contact->id == $contact_id){
+                                    $data["contact_type"] = 'DRSS';
+                                }
+                            }
+                        }
+                    }
                 }
             }
             
             // if the contact type is GP it's possible that it has no address, so we have to look for practice
             if (!$address) {
                 if ($data["contact_type"] == 'Gp') {
-                    $patient_id = Yii::app()->request->getQuery('patient_id');
-                    $patient = Patient::model()->findByPk($patient_id);
                     $address = isset($patient->practice->contact->correspondAddress) ? $patient->practice->contact->correspondAddress : $patient->practice->contact->address;
                 }
             }
