@@ -186,6 +186,14 @@ class DocmanController extends BaseController
             $address = isset($contact->correspondAddress) ? $contact->correspondAddress : $contact->address;
             $contact_type = $contact->getType();
             $data["contact_type"] = $contact_type ? $contact_type : '';
+            if(!$contact_type){
+                //check if the contact_id is a DRSS
+                $comission_body = CommissioningBody::model()->findByAttributes(array('contact_id' => $contact_id) );
+                if($comission_body){
+                    $contact_type = 'DRSS';
+                }
+            }
+            
             // if the contact type is GP it's possible that it has no address, so we have to look for practice
             if (!$address) {
                 if ($data["contact_type"] == 'Gp') {
