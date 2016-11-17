@@ -241,7 +241,6 @@ EOH;
      */
     public function actionImport($type, $interval = 'full')
     {
-        exit();
         if (!isset($this->files[$interval])) {
             $this->usageError("Interval not found: $interval");
         } elseif (!isset($this->files[$interval][$type])) {
