@@ -137,11 +137,20 @@ class ElementLetter extends BaseEventTypeElement
 
     public function afterValidate()
     {
-//echo "<pre>" . print_r($_POST, true) . "</pre>";die;
         $document_target = Yii::app()->request->getPost('DocumentTarget', null);
         if(!isset($document_target[0]['attributes']['ToCc']) && Yii::app()->getController()->getAction()->id == 'create'){
             $this->addError('toAddress', 'Please add at least one recipient!');
         }
+        if(isset($document_target)){
+            foreach($document_target as $target){
+                if( !isset($target['attributes']['address']) || empty($target['attributes']['address']) ){
+                    $this->addError('toAddress', 'Address cannot be empty!');
+                }
+            }
+        }
+        
+        
+        
         parent::afterValidate();
     }
 

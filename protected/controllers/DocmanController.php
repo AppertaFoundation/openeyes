@@ -184,7 +184,8 @@ class DocmanController extends BaseController
         if ($contact_id) {
             $contact = Contact::model()->findByPk($contact_id);
             $address = isset($contact->correspondAddress) ? $contact->correspondAddress : $contact->address;
-            $data["contact_type"] = $contact->getType();
+            $contact_type = $contact->getType();
+            $data["contact_type"] = $contact_type ? $contact_type : '';
             // if the contact type is GP it's possible that it has no address, so we have to look for practice
             if (!$address) {
                 if ($data["contact_type"] == 'Gp') {

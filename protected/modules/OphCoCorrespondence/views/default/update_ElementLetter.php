@@ -74,12 +74,16 @@ $macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : (isset($element->ma
         <div id="docman_block">
             <?php
 
-            $this->renderPartial('//docman/_update', array(
-                'row_index' => (isset($row_index) ? $row_index : 0),
-                'document_set' => (DocumentSet::model()->findByAttributes(array('event_id' => $element->event_id))),
-                'macro_id' => $macro_id,
-                'element' => $element,
-            ));
+                $document_set = DocumentSet::model()->findByAttributes(array('event_id' => $element->event_id));
+
+                if($document_set){
+                    $this->renderPartial('//docman/_update', array(
+                        'row_index' => (isset($row_index) ? $row_index : 0),
+                        'document_set' => $document_set,
+                        'macro_id' => $macro_id,
+                        'element' => $element,
+                    ));
+                }
             ?>
         </div>
     </div>
