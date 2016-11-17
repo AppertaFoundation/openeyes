@@ -190,7 +190,7 @@ class DocmanController extends BaseController
                 //check if the contact_id is a DRSS
                 $comission_body = CommissioningBody::model()->findByAttributes(array('contact_id' => $contact_id) );
                 if($comission_body){
-                    $contact_type = 'DRSS';
+                    $data["contact_type"] = 'DRSS';
                 }
             }
             
