@@ -24,6 +24,8 @@
         
     </td>
     <td>
-        <a class="remove_recipient removeItem" data-rowindex="<?php echo $row_index ?>">Remove</a>
+        <?php if($row_index > 0): ?>
+            <a class="remove_recipient removeItem" data-rowindex="<?php echo $row_index ?>">Remove</a>
+        <?php endif; ?>
     </td>
 </tr>

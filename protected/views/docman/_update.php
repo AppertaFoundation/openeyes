@@ -29,6 +29,9 @@ table.docman > tbody > tr > td:first-child { width:200px; max-width:200px; }
 button.docman { width:80px; background: none; font-size:13px; line-height:20px; height:20px; margin:5px 0; padding:0; text-align:center; }
 button.red { background-color:red; color: white; }
 button.green { background-color:green; color: white; }
+    th.actions{
+        min-width: 113px;
+    }
 </style>
 
     <?php echo CHtml::activeHiddenField($document_set, 'id') ?>

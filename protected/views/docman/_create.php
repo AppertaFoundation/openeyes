@@ -80,6 +80,9 @@
         background-color: green;
         color: white;
     }
+    th.actions{
+        min-width: 113px;
+    }
 </style>
 
 <table id="dm_table" data-macro_id="<?php echo $macro_id; ?>">
@@ -95,9 +98,9 @@
     </tr>
 
     <?php /* Generate recipients by macro */ ?>
-    <?php if (!empty($macro_data)):
-        if (array_key_exists('to', $macro_data)):
-        ?>
+    <?php if (!empty($macro_data)):?>
+      <?php if (array_key_exists('to', $macro_data)):?>
+       
         <tr class="rowindex-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
             <td> To <?php echo CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][ToCc]", 'To'); ?> </td>
             <td>
@@ -190,6 +193,16 @@
     <?php endif; ?>
 
     <tr class="new_entry_row">
+        <?php 
+            if(empty($macro_data)){
+                /* generates a default 'To' row */
+                echo $this->renderPartial(
+                    '//docman/document_row_recipient',
+                    array('contact_id' => null, 'address' => null, 'row_index' => 0, 'selected_contact_type' => null)
+                );
+            }
+        ?>
+        
         <td colspan="6">
             <button class="button small secondary" id="docman_add_new_recipient">Add new recipient</button>
         </td>

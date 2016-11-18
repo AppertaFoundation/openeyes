@@ -66,7 +66,6 @@ $macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : (isset($element->ma
     <div class="row field-row">
         <div id="docman_block">
             <?php
-            $document_manager = new DocmanController('docman');
             $macro_data = array();
             $patient_id = Yii::app()->request->getQuery('patient_id');
 

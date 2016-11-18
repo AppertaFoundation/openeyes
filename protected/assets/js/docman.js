@@ -261,18 +261,20 @@ var docman = (function() {
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_type').trigger('change');
                     $('#DocumentTarget_' + other_rowindex + '_attributes_contact_type').trigger('change');
                     
-                    /* If gp selected add Patient */
-                    if(resp.contact_type === 'Gp'){
-                        if(!this.isContactTypeAdded("PATIENT")){
-                            docman.createNewRecipientEntry('PATIENT');
-                        }
-                    } else {
-                        /* anyone else is the Recipient other than GP than a cc goes to GP */
-                        if(!this.isContactTypeAdded("GP")){
-                            docman.createNewRecipientEntry('GP');
+                    // if the 'To' dropdown has changed we check the Cc and add recipients
+                    if( rowindex === 0 ){
+                        /* If gp selected add Patient */
+                        if(resp.contact_type === 'Gp'){
+                            if(!this.isContactTypeAdded("PATIENT")){
+                                docman.createNewRecipientEntry('PATIENT');
+                            }
+                        } else {
+                            /* anyone else is the Recipient other than GP than a cc goes to GP */
+                            if(!this.isContactTypeAdded("GP")){
+                                docman.createNewRecipientEntry('GP');
+                            }
                         }
                     }
-                    
                     /* If DRSS selected add GP and Patient */
                     $('#dm_table .docman_loader').hide();
                 }
