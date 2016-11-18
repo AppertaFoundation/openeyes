@@ -263,20 +263,30 @@ var docman = (function() {
                     
                     /* If gp selected add Patient */
                     if(resp.contact_type === 'Gp'){
-                        var is_patient_added = false;
-                        $('.docman_contact_type').each(function(i,$element){
-                            if( $($element).val() == 'PATIENT'){
-                                is_patient_added = true;
-                            }
-                        });
-                        
-                        if(!is_patient_added){
+                        if(!this.isContactTypeAdded("PATIENT")){
                             docman.createNewRecipientEntry('PATIENT');
                         }
+                    } else {
+                        /* anyone else is the Recipient other than GP than a cc goes to GP */
+                        if(!this.isContactTypeAdded("GP")){
+                            docman.createNewRecipientEntry('GP');
+                        }
                     }
+                    
+                    /* If DRSS selected add GP and Patient */
                     $('#dm_table .docman_loader').hide();
                 }
             });
+        },
+        
+        isContactTypeAdded: function(type){
+            var is_added = false;
+            $('.docman_contact_type').each(function(i,$element){
+                if( $($element).val() === type){
+                    is_added = true;
+                }
+            });
+            return is_added;
         },
 
         //------------------------------------------------------------
