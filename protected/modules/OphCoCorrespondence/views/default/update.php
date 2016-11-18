@@ -44,7 +44,6 @@ $this->event_actions[] = EventAction::button(
         'id' => 'et_save_print',
         'class' => 'button small',
         'form' => 'correspondence-create',
-        'disabled' => true,
     )
 );
 ?>

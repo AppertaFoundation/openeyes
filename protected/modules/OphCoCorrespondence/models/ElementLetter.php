@@ -70,6 +70,7 @@ class ElementLetter extends BaseEventTypeElement
             array('use_nickname, site_id, date, introduction, body, footer', 'required'),
             array('date', 'OEDateValidator'),
             array('clinic_date', 'OEDateValidatorNotFuture'),
+            array('is_signed_off', 'isDraftValidator'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, site_id, use_nickname, date, introduction, re, body, footer, draft, direct_line, letter_type', 'safe', 'on' => 'search'),
@@ -150,8 +151,16 @@ class ElementLetter extends BaseEventTypeElement
         }
         
         
-        
+
         parent::afterValidate();
+    }
+    
+    
+    public function isDraftValidator($attribute, $params)
+    {    
+        if( $this->draft != 1 && !$this->$attribute){
+            $this->addError($attribute, 'You have to check the following checkbox: Approved by a clinician');
+        }
     }
 
     public function afterFind()

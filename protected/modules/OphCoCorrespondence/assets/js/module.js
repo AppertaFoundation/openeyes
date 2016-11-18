@@ -53,10 +53,11 @@ function togglePrintDisabled (isSignedOff) {
 
 $(document).ready(function() {
 	var $letterIsSignedOff = $('#ElementLetter_is_signed_off');
-	togglePrintDisabled($letterIsSignedOff.is(':checked'));
-	$letterIsSignedOff.change(function() {
-		togglePrintDisabled(this.checked);
-	});
+// leave this for a while until the requirements gets clear
+//	togglePrintDisabled($letterIsSignedOff.is(':checked'));
+//	$letterIsSignedOff.change(function() {
+//		togglePrintDisabled(this.checked);
+//	});
 
 	$(this).delegate('#ElementLetter_site_id', 'change', function() {
 		if (correspondence_directlines) {

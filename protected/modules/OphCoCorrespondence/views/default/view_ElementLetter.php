@@ -28,13 +28,10 @@
             
             foreach ($element->document_instance as $instance) {
                 foreach ($instance->document_target as $target) {
-                    foreach ($target->document_output as $output) {
-                        if($target->ToCc == 'To'){
-                            $toAddress = $target->contact_name . "\n" . $target->address;
-                        } else {
-                            $ccString .= "CC: ".ucfirst(strtolower($target->contact_type)). ": " . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
-                        }
-                        
+                    if($target->ToCc == 'To'){
+                        $toAddress = $target->contact_name . "\n" . $target->address;
+                    } else {
+                        $ccString .= "CC: ".ucfirst(strtolower($target->contact_type)). ": " . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
                     }
                 }
             }
