@@ -67,7 +67,7 @@ class ElementLetter extends BaseEventTypeElement
                 'print_all, letter_type, is_signed_off',
                 'safe'
             ),
-            array('use_nickname, site_id, date, introduction, body, footer', 'required'),
+            array('use_nickname, site_id, date, introduction, body, footer, letter_type', 'required'),
             array('date', 'OEDateValidator'),
             array('clinic_date', 'OEDateValidatorNotFuture'),
             array('is_signed_off', 'isDraftValidator'),
