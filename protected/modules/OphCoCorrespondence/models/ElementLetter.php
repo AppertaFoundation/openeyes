@@ -534,9 +534,9 @@ class ElementLetter extends BaseEventTypeElement
     {
         $targets = array();
         
-        if( isset($this->document_set) ){
-            if( isset($this->document_set->document_instance[0]->document_target) ){
-                foreach($this->document_set->document_instance[0]->document_target as $target){
+        if( isset($this->document_instance) ){
+            if( isset($this->document_instance[0]->document_target) ){
+                foreach($this->document_instance[0]->document_target as $target){
                     if($target->ToCc == 'Cc'){
                         $targets[] = $target->contact_name . "\n" . $target->address;
                     }
