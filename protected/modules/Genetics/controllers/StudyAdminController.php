@@ -18,7 +18,7 @@ class StudyAdminController extends BaseAdminController
     public $itemsPerPage = 100;
 
     /**
-     * Lists procedures.
+     * Lists studies.
      *
      * @throws CHttpException
      */

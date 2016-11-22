@@ -28,8 +28,12 @@ return array(
         ),
         'admin_structure' => array(
             'Studies' => array(
-                'Genetics' => 'Genetics/studyAdmin/list',
-            )
+                'Genetics' => '/Genetics/studyAdmin/list',
+            ),
+        ),
+        'admin_menu' => array(
+            'Base Change Type' => '/Genetics/baseChangeAdmin/list',
+            'Amino Acid Change Type' => '/Genetics/aminoAcidChangeAdmin/list',
         ),
     ),
     'components' => array(

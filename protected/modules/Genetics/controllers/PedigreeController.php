@@ -78,7 +78,7 @@ class PedigreeController extends BaseModuleController
             'base_change_id' => array(
                 'widget' => 'DropDownList',
                 'options' => CHtml::listData(PedigreeBaseChangeType::model()->findAll(), 'id', 'change'),
-                'htmlOptions' => null,
+                'htmlOptions' => array('empty' => '- Base Change Type -'),
                 'hidden' => false,
                 'layoutColumns' => null,
             ),
@@ -86,7 +86,7 @@ class PedigreeController extends BaseModuleController
             'amino_acid_change_id' => array(
                 'widget' => 'DropDownList',
                 'options' => CHtml::listData(PedigreeAminoAcidChangeType::model()->findAll(), 'id', 'change'),
-                'htmlOptions' => null,
+                'htmlOptions' => array('empty' => '- Amino Acid Change Type -'),
                 'hidden' => false,
                 'layoutColumns' => null,
             ),
