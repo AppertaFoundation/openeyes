@@ -20,6 +20,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
                     $('#" . $class . '_' . $name . "_0').val('');
                     $('#enteredDiagnosisText').html(ui.item.value+' $clear_diagnosis ');
                     $('#enteredDiagnosisText').show();
+                    $('input[id=savedDiagnosisText]').val(ui.item.value);
                     $('input[id=savedDiagnosis]').val(ui.item.id);
                     $('#" . $class . '_' . $name . "').focus();
                     return false;
@@ -30,4 +31,4 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
     ),
 ));
 ?>
-<input type="hidden" name="<?php echo $class ?>[<?php echo $name ?>]" id="savedDiagnosis" value="<?php echo $value ?>"/>
+<input type="hidden" name="<?php echo $class ?>[<?php echo $name ?>]" id="savedDiagnosis" value="<?=$value?>"/>

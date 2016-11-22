@@ -63,6 +63,10 @@ class PedigreeController extends BaseModuleController
                 'layoutColumns' => null,
             ),
             'comments' => 'textarea',
+            'disorder_id' => array(
+                'widget' => 'DisorderLookup',
+                'relation' => 'disorder',
+            ),
             'consanguinity' => 'checkbox',
             'gene_id' => array(
                 'widget' => 'DropDownList',
