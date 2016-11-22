@@ -39,15 +39,15 @@
         </div>
         <div class="field-row">
             <?php
-            $this->render('disorderAutoComplete', array(
+            $this->controller->renderPartial('//disorder/disorderAutoComplete', array(
                 'class' => $class,
                 'name' => $field,
                 'code' => $code,
                 'clear_diagnosis' => $clear_diagnosis,
+                'value' => $value,
                 'placeholder' => 'or type the first few characters of a diagnosis',
             ));
             ?>
-            <input type="hidden" name="<?php echo $class ?>[<?php echo $field ?>]" id="savedDiagnosis" value="<?php echo $value ?>"/>
         </div>
     </div>
 </div>
