@@ -80,10 +80,6 @@ class DefaultController extends BaseEventTypeController
     {
         $errors = array();
 
-        if (Yii::app()->request->getPost('add')) {
-            $this->redirect(Yii::app()->createUrl('/Genetics/default/addPedigree'));
-        }
-
         if (Yii::app()->request->getPost('delete')) {
             $criteria = new CDbCriteria();
             $criteria->addInCondition('id', Yii::app()->request->getPost('pedigrees'));
@@ -230,69 +226,6 @@ class DefaultController extends BaseEventTypeController
         $pagination->applyLimit($criteria);
 
         return $pagination;
-    }
-
-    /**
-     * Add a pedigree
-     */
-    public function actionAddPedigree()
-    {
-        $pedigree = new Pedigree();
-
-        $errors = array();
-
-        if (Yii::app()->request->isPostRequest) {
-            if (Yii::app()->request->getPost('cancel')) {
-                $this->redirect(array('/Genetics/default/index'));
-            }
-
-            $pedigree->attributes = Yii::app()->request->getQuery('Pedigree');
-
-            if (!$pedigree->save()) {
-                $errors = $pedigree->getErrors();
-            } else {
-                $this->redirect(array('/Genetics/default/index'));
-            }
-        }
-
-        $this->render('edit_pedigree', array(
-            'pedigree' => $pedigree,
-            'errors' => $errors,
-        ));
-    }
-
-    /**
-     * Edit a pedigree
-     *
-     * @param $id
-     * @throws Exception
-     */
-    public function actionEditPedigree($id)
-    {
-        if (!$pedigree = Pedigree::model()->findByPk($id)) {
-            throw new Exception("Pedigree not found: $id");
-        }
-
-        $errors = array();
-
-        if (Yii::app()->request->isPostRequest) {
-            if (Yii::app()->request->getPost('cancel')) {
-                $this->redirect(array('/Genetics/default/index'));
-            }
-
-            $pedigree->attributes = Yii::app()->request->getPost('Pedigree');
-
-            if (!$pedigree->save()) {
-                $errors = $pedigree->getErrors();
-            } else {
-                $this->redirect(array('/Genetics/default/index'));
-            }
-        }
-
-        $this->render('edit_pedigree', array(
-            'pedigree' => $pedigree,
-            'errors' => $errors,
-        ));
     }
 
     /**
