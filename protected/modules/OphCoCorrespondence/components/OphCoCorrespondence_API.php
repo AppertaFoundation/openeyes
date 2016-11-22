@@ -25,10 +25,14 @@ class OphCoCorrespondence_API extends BaseAPI
      */
     public function canUpdate($event_id)
     {
+        $letter = ElementLetter::model()->find('event_id=?', array($event_id));
+
+        // for the new correspondence with DocMan
+        // once the letter is generated for the DocMan only admin can edit
+        return !$letter->isGeneratedForDocMan();
+
         // FIXME: Correspondence locking is suspended while draft usage is discussed
         return true;
-
-        $letter = ElementLetter::model()->find('event_id=?', array($event_id));
 
         return $letter->isEditable();
     }

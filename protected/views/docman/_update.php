@@ -96,7 +96,7 @@ button.green { background-color:green; color: white; }
                         ?>
                     </td>
                     <td>
-                        <?php if($element->draft == "1"): ?>
+                        <?php if($element->draft == "1" && $target->ToCc != 'To'): ?>
                             <a class="remove_recipient removeItem" data-rowindex="<?php echo $row_index ?>">Remove</a>
                         <?php endif; ?>
                     </td>

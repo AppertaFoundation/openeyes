@@ -564,7 +564,27 @@ class ElementLetter extends BaseEventTypeElement
 
     public function isEditable()
     {
-        return $this->draft;
+        return !$this->isGeneratedForDocMan();
+    }
+    
+    
+    /**
+     * Determinate if wheter PDF and XML files are generated for the DocMan
+     * @return type
+     */
+    public function isGeneratedForDocMan()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->join =   "JOIN document_instance ins ON t.id = ins.document_set_id " .
+                            "JOIN document_target tar ON ins.id = tar.document_instance_id " .
+                            "JOIN document_output output ON tar.id = output.document_target_id";
+
+        $criteria->compare('t.event_id', $this->event_id);
+        $criteria->compare('output.output_type', 'Docman');
+        $criteria->compare('output.output_status', 'COMPLETE');
+
+        return DocumentSet::model()->find($criteria) ? true : false;
+        
     }
 
     public function getFirm_members()
