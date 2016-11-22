@@ -122,10 +122,12 @@ class PedigreeController extends BaseModuleController
         $admin->getSearch()->addSearchItem('inheritance_id', array(
             'type' => 'dropdown',
             'options' => CHtml::listData(PedigreeInheritance::model()->findAll(), 'id', 'name'),
+            'empty' => '- Inheritance -',
         ));
         $admin->getSearch()->addSearchItem('gene_id', array(
             'type' => 'dropdown',
             'options' => CHtml::listData(PedigreeGene::model()->findAll(), 'id', 'name'),
+            'empty' => '- Gene -',
         ));
         $admin->getSearch()->addSearchItem('consanguinity', array('type' => 'boolean'));
         $admin->getSearch()->addSearchItem('disorder_id', array('type' => 'disorder'));

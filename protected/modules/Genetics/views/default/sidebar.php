@@ -2,7 +2,7 @@
     <h2>Menu</h2>
     <ul class="navigation">
         <?php $sidebarLinks = array(
-            'Pedigrees' => Yii::app()->createUrl('/Genetics/default/pedigrees'),
+            'Pedigrees' => Yii::app()->createUrl('/Genetics/pedigree/list'),
             'Genes' => Yii::app()->createUrl('/Genetics/default/genes'),
             'Subjects' => Yii::app()->createUrl('/Genetics/subject/list'),
         );

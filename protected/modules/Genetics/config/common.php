@@ -8,10 +8,10 @@ return array(
     'params' => array(
         'menu_bar_items' => array(
             'pedigrees' => array(
-                'title' => 'Pedigrees',
+                'title' => 'Genetics',
                 'uri' => 'Genetics/default/index',
                 'position' => 40,
-                'restricted' => array('TaskViewPedigreeData'),
+                'restricted' => array('Genetics User'),
             ),
         ),
         'module_partials' => array(

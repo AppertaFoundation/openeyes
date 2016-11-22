@@ -47,7 +47,7 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionIndex()
     {
-        $this->redirect(Yii::app()->createUrl('/Genetics/default/pedigrees'));
+        $this->redirect(Yii::app()->createUrl('/Genetics/subject/list'));
     }
 
     /**
