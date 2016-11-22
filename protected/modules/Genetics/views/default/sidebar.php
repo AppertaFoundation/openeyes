@@ -3,7 +3,7 @@
     <ul class="navigation">
         <?php $sidebarLinks = array(
             'Pedigrees' => Yii::app()->createUrl('/Genetics/pedigree/list'),
-            'Genes' => Yii::app()->createUrl('/Genetics/default/genes'),
+            'Genes' => Yii::app()->createUrl('/Genetics/gene/list'),
             'Subjects' => Yii::app()->createUrl('/Genetics/subject/list'),
         );
         foreach ($sidebarLinks as $title => $uri) { ?>
