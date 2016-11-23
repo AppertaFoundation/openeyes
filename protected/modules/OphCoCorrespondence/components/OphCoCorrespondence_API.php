@@ -36,6 +36,13 @@ class OphCoCorrespondence_API extends BaseAPI
 
         return $letter->isEditable();
     }
+    
+    public function showDeleteIcon($event_id)
+    {
+        $letter = ElementLetter::model()->find('event_id=?', array($event_id));
+        
+        return !$letter->isGeneratedForDocMan();
+    }
 
     public function getLatestEvent($episode)
     {

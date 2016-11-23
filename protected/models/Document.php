@@ -289,7 +289,7 @@ class Document //extends BaseActiveRecord
             }
         }
     }
-
+    
     public function createNewDocTarget($doc_instance, $data)
     {
         $doc_target = null;
