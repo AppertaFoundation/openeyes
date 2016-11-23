@@ -36,6 +36,9 @@ button.green { background-color:green; color: white; }
 
     <?php echo CHtml::activeHiddenField($document_set, 'id') ?>
     <?php echo CHtml::activeHiddenField($document_set->document_instance[0], 'id') ?>
+
+<?php $element->draft = 1; ?>
+
     <table id="dm_table" data-macro_id="<?php echo $macro_id; ?>">
         <tbody>
             <tr id="dm_0">

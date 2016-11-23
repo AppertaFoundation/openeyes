@@ -21,7 +21,7 @@
         $contact_id,
         $address_targets, 
         array(
-            'empty' => '- Recipient -', 
+            'empty' => '- Recipient -',
             'nowrapper' => true, 
             'class' => 'full-width docman_recipient',
             'data-rowindex' => $row_index, 
@@ -33,7 +33,6 @@
     <?php echo $contact_name; ?>
     <?php echo CHtml::hiddenField('DocumentTarget['.$row_index.'][attributes][contact_id]', $contact_id); ?>
 <?php endif; ?>
-<br>
 <div>
     <?php if($is_editable): ?>
         <textarea rows="4" cols="10" name="DocumentTarget[<?php echo $row_index;?>][attributes][address]" id="Document_Target_Address_<?php echo $row_index;?>" data-rowindex="<?php echo $row_index ?>"><?php echo $address; ?></textarea>

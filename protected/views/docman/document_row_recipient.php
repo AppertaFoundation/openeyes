@@ -11,7 +11,6 @@
     </td>
     <td>
         <?php echo CHtml::dropDownList('DocumentTarget['.$row_index.'][attributes][contact_id]', $contact_id, $element->address_targets, array('empty' => '- Recipient -', 'nowrapper' => true, 'class' => 'full-width docman_recipient', 'data-rowindex'=>$row_index, 'data-previous' => ''))?>
-        <br>
         <textarea rows="4" cols="10" name="DocumentTarget[<?php echo $row_index;?>][attributes][address]" id="Document_Target_Address_<?php echo $row_index;?>" data-rowindex="<?php echo $row_index ?>"><?php $address; ?></textarea>
     </td>
     <td>

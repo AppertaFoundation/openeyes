@@ -88,15 +88,33 @@ var docman = (function() {
             });
             $('#docman_block').on("change", '.docman_contact_type', function (){
                 var rowindex = $(this).data("rowindex");
+                var $tr, text;
                 if($(this).val() == 'Other'){
 
-                   $(this).hide();
-                   $('.docman_recipient').each(function(){
-                        if($(this).data("rowindex") == rowindex){
-                            $(this).parent().html('<input type="text" name="DocumentTarget['+rowindex+'][attributes][contact_id]"><textarea rows="4" cols="10" name="DocumentTarget['+rowindex+'][attributes][address]" data-rowindex="'+rowindex+'"></textarea>');
+                    $tr = $(this).closest('tr'),
+                    $docman_recipient = $tr.find('.docman_recipient');
+                    
+                    $docman_recipient.hide();
+                    $docman_recipient.data('name', $docman_recipient.attr('name') ).removeAttr('name');
+                    $docman_recipient.after('<input type="text" class="docman_recipient_freetext" name="DocumentTarget['+rowindex+'][attributes][contact_id]">');
+                    
+                } else {
+                    $tr = $(this).closest('tr'),
+                    $docman_recipient = $tr.find('.docman_recipient');
+                    if( $tr.find('.docman_recipient_freetext').length > 0 ){
+                        $docman_recipient.show();
+                        $docman_recipient.attr('name', $docman_recipient.data('name'));
+                        $tr.find('.docman_recipient_freetext').remove();
+
+                        docman_recipient_value = $tr.find(".docman_recipient option:contains('(" + $(this).val() + ")')").val();                       
+                        if(typeof docman_recipient_value === 'undefined'){
+                            text = $(this).val().charAt(0) + $(this).val().toLowerCase().slice(1);
+                            docman_recipient_value = $tr.find(".docman_recipient option:contains('(" + text + ")')").val();                
                         }
-                   });
+                        $docman_recipient.val(docman_recipient_value).trigger('change');
+                    }
                 }
+                
                 docman.setDeliveryMethods(rowindex);
             });
         },
@@ -250,17 +268,17 @@ var docman = (function() {
                     $('#Document_Target_Address_' + rowindex).val(resp.address);
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val(resp.contact_type.toUpperCase()).trigger('change');
 
-                    if(resp.contact_type.toUpperCase() === 'GP' || resp.contact_type.toUpperCase() === 'PATIENT'){
+                    if((resp.contact_type.toUpperCase() === 'GP' || resp.contact_type.toUpperCase() === 'PATIENT') && rowindex !== other_rowindex){
                         $other_docman_recipient.val(this_recipient);
                         $('#Document_Target_Address_' + other_rowindex).val(this_address);
                         $('#DocumentTarget_' + other_rowindex + '_attributes_contact_type').val(this_contact_type).trigger('change');
+                    
+                        $(element).data('previous', $(element).val());
+                        $other_docman_recipient.data('previous', $other_docman_recipient.val());
+                    
+                        $('#DocumentTarget_' + rowindex + '_attributes_contact_type').trigger('change');
+                        $('#DocumentTarget_' + other_rowindex + '_attributes_contact_type').trigger('change');
                     }
-                    $(element).data('previous', $(element).val());
-                    $other_docman_recipient.data('previous', $other_docman_recipient.val());
-                    
-                    $('#DocumentTarget_' + rowindex + '_attributes_contact_type').trigger('change');
-                    $('#DocumentTarget_' + other_rowindex + '_attributes_contact_type').trigger('change');
-                    
                     // if the 'To' dropdown has changed we check the Cc and add recipients
                     if( rowindex === 0 ){
                         /* If gp selected add Patient */

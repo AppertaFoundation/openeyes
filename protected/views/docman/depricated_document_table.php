@@ -52,8 +52,6 @@
                 </td>
                 <td>
                     <?php echo $doc_target->contact_name; ?>
-                    <?php echo  CHtml::hiddenField('contact_id['.$row_index.']', $doc_target->contact_id, array('data-rowindex' => $row_index)); ?>
-                    <br>
                     <div id="docman_address_<?php echo $doc_target->id; ?>">
                         <?php echo $doc_target["address"]; ?>
                         <?php echo  CHtml::hiddenField('address['.$row_index.']', $doc_target->address, array('data-rowindex' => $row_index)); ?>
