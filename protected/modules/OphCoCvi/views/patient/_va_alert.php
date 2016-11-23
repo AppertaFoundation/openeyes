@@ -16,7 +16,7 @@
  */
 ?>
 
-<div class="cvi-alert alert-box warning round <?= $visible ? '': ' hidden' ?>" data-alert="CVI may be applicable" data-threshold="<?= $threshold ?>">
+<br clear="all"/><div class="cvi-alert alert-box warning round <?= $visible ? '': ' hidden' ?>" data-alert="CVI may be applicable" data-threshold="<?= $threshold ?>">
     CVI may be applicable
     <a class="dismiss_cva_alert dismiss right" href="javascript:void(0)">dismiss</a>
     <?php if($show_create): ?>
