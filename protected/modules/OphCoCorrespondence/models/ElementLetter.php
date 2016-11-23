@@ -517,6 +517,7 @@ class ElementLetter extends BaseEventTypeElement
         if(Yii::app()->getController()->getAction()->id == 'create' || Yii::app()->getController()->getAction()->id == 'update'){
             $document = new Document();
             $document->event_id = $this->event_id;
+            $document->is_draft = $this->draft;
             $document->createNewDocSet();
         }
 

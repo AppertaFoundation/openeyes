@@ -36,11 +36,8 @@
                     array(
                         'id' => 'et_print_all',
                         'class' => 'small',
-    //                    'disabled' => !$elementLetter->is_signed_off,
                     )
                 );
-
-                $this->event_actions[] = EventAction::button('Send to DocMan', 'print', null, array('class' => 'small'));
             }
             
         }
