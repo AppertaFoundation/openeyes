@@ -142,23 +142,23 @@
             <?php foreach ($macro_data['cc'] as $cc_index => $macro): ?>
                 <?php $index = $row_index + $cc_index ?>
                 <tr class="rowindex-<?php echo $index ?>" data-rowindex="<?php echo $index ?>">
-                    <td> Cc <?php echo CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][ToCc]", 'Cc'); ?> </td>
+                    <td> Cc <?php echo CHtml::hiddenField("DocumentTarget[" . $index . "][attributes][ToCc]", 'Cc'); ?> </td>
                     <td>
-                        <?php echo CHtml::dropDownList('DocumentTarget[' . $row_index . '][attributes][contact_id]', $macro["contact_id"], $element->address_targets, array(
+                        <?php echo CHtml::dropDownList('DocumentTarget[' . $index . '][attributes][contact_id]', $macro["contact_id"], $element->address_targets, array(
                             'empty' => '- Recipient -',
                             'nowrapper' => true,
                             'class' => 'full-width docman_recipient',
-                            'data-rowindex' => $row_index,
+                            'data-rowindex' => $index,
                             'data-previous' => $macro["contact_id"],
                         )) ?>
                         <br>
-                        <textarea rows="4" cols="10" name="DocumentTarget[<?php echo $row_index; ?>][attributes][address]" id="Document_Target_Address_<?php echo $row_index; ?>"
-                                  data-rowindex="<?php echo $row_index ?>"><?php echo $macro["address"] ?></textarea>
+                        <textarea rows="4" cols="10" name="DocumentTarget[<?php echo $index; ?>][attributes][address]" id="Document_Target_Address_<?php echo $index; ?>"
+                                  data-rowindex="<?php echo $index ?>"><?php echo $macro["address"] ?></textarea>
                     </td>
                     <td>
                         <?php $this->renderPartial('//docman/table/contact_type', array(
                             'contact_type' => strtoupper($macro["contact_type"]),
-                            'row_index' => $row_index,
+                            'row_index' => $index,
                         ));
                         ?>
                     </td>
@@ -166,10 +166,10 @@
                         <?php $output_index = 0; ?>
                         <?php if (strtoupper($macro["contact_type"]) == 'GP'): ?>
                             <label>
-                                <input type="checkbox" value="Docman" class="docman_delivery" name="DocumentTarget_<?php echo $row_index; ?>_DocumentOutput_0_[output_type"
-                                       data-rowindex="<?php echo $row_index ?>" checked disabled>DocMan
-                                <input type="hidden" value="Docman" class="docman_delivery hidden" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][0][output_type]"
-                                       data-rowindex="<?php echo $row_index ?>">
+                                <input type="checkbox" value="Docman" class="docman_delivery" name="DocumentTarget_<?php echo $index; ?>_DocumentOutput_0_[output_type"
+                                       data-rowindex="<?php echo $index ?>" checked disabled>DocMan
+                                <input type="hidden" value="Docman" class="docman_delivery hidden" name="DocumentTarget[<?php echo $index; ?>][DocumentOutput][0][output_type]"
+                                       data-rowindex="<?php echo $index ?>">
                             </label>
                             <?php $output_index++; ?>
                             <br>
@@ -178,15 +178,15 @@
                             <?php
                             $is_checked = $macro["contact_type"] == 'Gp' ? '' : 'checked';
                             if (Yii::app()->request->isPostRequest) {
-                                $is_checked = isset($_POST["DocumentTarget"][$row_index]['DocumentOutput'][$output_index]['output_type']) ? 'checked' : '';
+                                $is_checked = isset($_POST["DocumentTarget"][$index]['DocumentOutput'][$output_index]['output_type']) ? 'checked' : '';
                             }
                             ?>
                             <input type="checkbox" value="Print"
-                                   name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][<?php echo $output_index ?>][output_type]" <?php echo $is_checked; ?>>Print
+                                   name="DocumentTarget[<?php echo $index; ?>][DocumentOutput][<?php echo $output_index ?>][output_type]" <?php echo $is_checked; ?>>Print
                         </label>
                     </td>
                     <td>
-                        <a class="remove_recipient removeItem" data-rowindex="<?php echo $row_index ?>">Remove</a>
+                        <a class="remove_recipient removeItem" data-rowindex="<?php echo $index ?>">Remove</a>
                     </td>
 
                 </tr>
