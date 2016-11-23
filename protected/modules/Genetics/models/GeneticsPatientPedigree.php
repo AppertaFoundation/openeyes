@@ -26,7 +26,7 @@
  *
  * The followings are the available model relations:
  */
-class PatientPedigree extends BaseActiveRecord
+class GeneticsPatientPedigree extends BaseActiveRecord
 {
     /**
      * Returns the static model of the specified AR class.
@@ -43,7 +43,7 @@ class PatientPedigree extends BaseActiveRecord
      */
     public function tableName()
     {
-        return 'patient_pedigree';
+        return 'genetics_patient_pedigree';
     }
 
     /**

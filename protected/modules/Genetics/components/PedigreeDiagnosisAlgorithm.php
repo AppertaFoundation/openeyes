@@ -64,7 +64,7 @@ class PedigreeDiagnosisAlgorithm
      */
     private static function findPedigreeByPatient($patient_id)
     {
-        if ($patient_pedigree = PatientPedigree::model()->find('patient_id=?', array($patient_id))) {
+        if ($patient_pedigree = GeneticsPatientPedigree::model()->find('patient_id=?', array($patient_id))) {
 
             return $patient_pedigree->pedigree;;
         }

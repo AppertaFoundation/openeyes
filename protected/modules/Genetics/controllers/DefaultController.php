@@ -233,7 +233,7 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionAddPatientToPedigree()
     {
-        $patient_pedigree = new PatientPedigree();
+        $patient_pedigree = new GeneticsPatientPedigree();
 
         $errors = array();
 
@@ -245,14 +245,14 @@ class DefaultController extends BaseEventTypeController
                 $this->redirect(array('/Genetics/default/ViewPedigree/'.$patient_pedigree->pedigree_id));
             }
 
-            $pedigree_post = Yii::app()->request->getPost('PatientPedigree', array());
+            $pedigree_post = Yii::app()->request->getPost('GeneticsPatientPedigree', array());
             $patient_pedigree->patient_id = $pedigree_post['patient_id'];
 
             if (!Patient::model()->find('id=?', array($pedigree_post['patient_id']))) {
                 $errors[] = array('Patient' => 'Patient not found');
             } elseif (!Pedigree::model()->find('id=?', array($pedigree_post['pedigree_id']))) {
                 $errors[] = array('Pedigree' => 'Pedigree not found');
-            } elseif (PatientPedigree::model()->find('patient_id=?', array($pedigree_post['patient_id']))) {
+            } elseif (GeneticsPatientPedigree::model()->find('patient_id=?', array($pedigree_post['patient_id']))) {
                 $errors[] = array('Patient' => 'Patient already in pedigree');
             } else {
                 $patient_pedigree->pedigree_id = $pedigree_post['pedigree_id'];
@@ -302,7 +302,7 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionRemovePatient($id)
     {
-        if (!$patient_pedigree = PatientPedigree::model()->find('patient_id=?', array($id))) {
+        if (!$patient_pedigree = GeneticsPatientPedigree::model()->find('patient_id=?', array($id))) {
             throw new Exception("Patient not found: $id");
         }
 
