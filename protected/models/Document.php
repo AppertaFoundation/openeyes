@@ -258,6 +258,11 @@ class Document //extends BaseActiveRecord
         $doc_instance_version->save();
 
         if (isset($post_document_targets)) {
+            
+            // Before saving new Targets we check if there were any Recipients to remove
+            if( Yii::app()->controller->action->id === 'update'){
+                $this->removeTargetAndOutput($doc_set->id, $post_document_targets);
+            }
 
             foreach ($post_document_targets as $key => $post_document_target) {
                 $data = array(
@@ -320,7 +325,7 @@ class Document //extends BaseActiveRecord
 
         return $doc_target;
     }
-
+    
     public function createNewDocOutput($doc_target, $doc_instance_version, $data)
     {
         $doc_output = null;
@@ -341,6 +346,50 @@ class Document //extends BaseActiveRecord
 
         $doc_output->save();
 
+    }
+    
+    protected function removeTargetAndOutput($document_id, $new_document_targets)
+    {
+        $document_set = DocumentSet::model()->findByPk($document_id);
+        
+        if( isset($document_set->document_instance[0]->document_target) ){
+            
+            // get saved document_targets
+            $document_targets = $document_set->document_instance[0]->document_target;
+            foreach($document_targets as $document_target){
+                
+                //check if the document_target is in he posted ones
+                $is_in = false;
+                foreach($new_document_targets as $new_document_target){
+                    if( isset($new_document_target['attributes']['id']) && $document_target->id == $new_document_target['attributes']['id']){
+                        $is_in = true;
+                    }
+                }
+                
+                // the target in the DB is not posted back so we can delete it as they rremoved it from the UI
+                if(!$is_in){
+
+                    $deletable = true;
+                    foreach($document_target->document_output as $document_output){
+                        
+                        // we don't delete if it is already DocMan delivered
+                        if( $document_output->output_status == 'COMPLETE' && $document_output->output_type == 'Docman' ){
+                            $deletable = false;
+                        }
+                    }
+                    
+                    if($deletable){
+                        foreach($document_target->document_output as $document_output){
+                            $document_output->delete();
+                        }
+                        $document_target->delete();
+                    }
+                    
+                    
+                }
+            }
+            
+        }
     }
 
 }

@@ -110,33 +110,4 @@ button.green { background-color:green; color: white; }
                     <button class="button small secondary" id="docman_add_new_recipient">Add new recipient</button>
                 </td>
             </tr>
-    </table>         
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
+    </table>
