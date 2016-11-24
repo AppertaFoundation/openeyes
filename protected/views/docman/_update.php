@@ -49,17 +49,23 @@ button.green { background-color:green; color: white; }
                 <th class="actions"><img class="docman_loader right" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;"></th>
             </tr>
             
-            <?php foreach($document_set->document_instance[0]->document_target as $row_index => $target):?>
-            
-                <?php 
-                    if( Yii::app()->request->isPostRequest ){
-                        $post_target = Yii::app()->request->getPost('DocumentTarget');
+            <?php 
+                    $document_targets = $document_set->document_instance[0]->document_target;
 
-                        if( isset($post_target[$row_index]) ){
-                            $target->attributes = $post_target[$row_index]['attributes'];
+                    if( Yii::app()->request->isPostRequest ){
+                        $document_targets = array();
+                        $post_targets = Yii::app()->request->getPost('DocumentTarget');
+
+                        foreach($post_targets as $post_target){
+                            $target = new DocumentTarget();
+                            $target->attributes = $post_target['attributes'];
+                            $document_targets[] = $target;
                         }
                     }
                 ?>
+
+            <?php foreach($document_targets as $row_index => $target):?>
+
                 <tr class="rowindex-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
                     <td> 
                         <?php echo $target->ToCc; ?>
@@ -81,7 +87,7 @@ button.green { background-color:green; color: white; }
                     <td>
                         <?php if($element->draft): ?>
                             <?php $this->renderPartial('//docman/table/contact_type', array(
-                                        'contact_type' => $target->contact_type,
+                                        'contact_type' => strtoupper($target->contact_type),
                                         'row_index' => $row_index));
                             ?>
                         <?php else: ?>

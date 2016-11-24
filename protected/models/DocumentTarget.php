@@ -47,7 +47,7 @@ class DocumentTarget extends BaseActiveRecord
 	public function rules()
 	{
 		return array(
-			array('document_instance_id, contact_type, contact_id, contact_name, contact_modified, address, emailemail', 'safe'),
+			array('document_instance_id, contact_type, contact_id, contact_name, contact_modified, address, emailemail, ToCc', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('document_instance_id, contact_type, contact_id, contact_name, contact_modified, address, emailemail', 'safe', 'on' => 'search'),

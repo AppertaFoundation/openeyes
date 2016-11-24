@@ -104,17 +104,25 @@
         <tr class="rowindex-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
             <td> To <?php echo CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][ToCc]", 'To'); ?> </td>
             <td>
-                <?php echo CHtml::dropDownList('DocumentTarget[' . $row_index . '][attributes][contact_id]', $macro_data["to"]["contact_id"], $element->address_targets, array(
-                    'empty' => '- Recipient -',
-                    'nowrapper' => true,
-                    'class' => 'full-width docman_recipient',
-                    'data-rowindex' => $row_index,
-                    'data-previous' => $macro_data["to"]["contact_id"],
-                )) ?>
-
-                <br>
-                <textarea rows="4" cols="10" name="DocumentTarget[<?php echo $row_index; ?>][attributes][address]" id="Document_Target_Address_<?php echo $row_index; ?>"
-                          data-rowindex="<?php echo $row_index ?>"><?php echo $macro_data["to"]["address"] ?></textarea>
+                                
+                <?php 
+                    $target = new DocumentTarget();
+                    $target->contact_id = $macro_data["to"]["contact_id"];
+                    $target->address = $macro_data["to"]["address"];
+                  
+                            
+                    $this->renderPartial('//docman/table/contact_name_address', array(
+                                'contact_id' => $target->contact_id,
+                                'contact_name' => $target->contact_name,
+                                'address_targets' => $element->address_targets,
+                                'target' => $target,
+                                'contact_type' => $target->contact_type,
+                                'row_index' => $row_index,
+                                'address' => $target->address,
+                                'is_editable' => true));
+                ?>
+                
+                
             </td>
             <td>
                 <?php $this->renderPartial('//docman/table/contact_type', array(
@@ -144,16 +152,21 @@
                 <tr class="rowindex-<?php echo $index ?>" data-rowindex="<?php echo $index ?>">
                     <td> Cc <?php echo CHtml::hiddenField("DocumentTarget[" . $index . "][attributes][ToCc]", 'Cc'); ?> </td>
                     <td>
-                        <?php echo CHtml::dropDownList('DocumentTarget[' . $index . '][attributes][contact_id]', $macro["contact_id"], $element->address_targets, array(
-                            'empty' => '- Recipient -',
-                            'nowrapper' => true,
-                            'class' => 'full-width docman_recipient',
-                            'data-rowindex' => $index,
-                            'data-previous' => $macro["contact_id"],
-                        )) ?>
-                        <br>
-                        <textarea rows="4" cols="10" name="DocumentTarget[<?php echo $index; ?>][attributes][address]" id="Document_Target_Address_<?php echo $index; ?>"
-                                  data-rowindex="<?php echo $index ?>"><?php echo $macro["address"] ?></textarea>
+                        <?php 
+                            $target = new DocumentTarget();
+                            $target->contact_id = $macro["contact_id"];
+                            $target->address = $macro["address"];
+
+                            $this->renderPartial('//docman/table/contact_name_address', array(
+                                        'contact_id' => $target->contact_id,
+                                        'contact_name' => $target->contact_name,
+                                        'address_targets' => $element->address_targets,
+                                        'target' => $target,
+                                        'contact_type' => $target->contact_type,
+                                        'row_index' => $index,
+                                        'address' => $target->address,
+                                        'is_editable' => true));
+                        ?>
                     </td>
                     <td>
                         <?php $this->renderPartial('//docman/table/contact_type', array(

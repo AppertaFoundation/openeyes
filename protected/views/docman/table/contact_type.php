@@ -18,11 +18,10 @@
 
 <?php
     echo CHtml::dropDownList('DocumentTarget['.$row_index.'][attributes][contact_type]', $contact_type, array(
-        'GP' => 'Gp',
+        'GP' => 'GP',
         'PATIENT' => 'Patient',
         'DRSS' => 'DRSS',
-        'Legacy' => 'Legacy',
-        'Other' => 'Other'
+        'OTHER' => 'Other'
         ), 
         array(  'empty' => '- Type -',
                 'nowrapper' => true,

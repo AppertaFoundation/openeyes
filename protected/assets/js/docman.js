@@ -89,7 +89,7 @@ var docman = (function() {
             $('#docman_block').on("change", '.docman_contact_type', function (){
                 var rowindex = $(this).data("rowindex");
                 var $tr, text;
-                if($(this).val() == 'Other'){
+                if($(this).val() == 'OTHER'){
 
                     $tr = $(this).closest('tr'),
                     $docman_recipient = $tr.find('.docman_recipient');
