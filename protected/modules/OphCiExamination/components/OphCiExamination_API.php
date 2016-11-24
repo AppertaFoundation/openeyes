@@ -24,6 +24,10 @@ use OEModule\OphCiExamination\models;
 
 class OphCiExamination_API extends \BaseAPI
 {
+
+    const LEFT = 1;
+    const RIGHT = 0;
+
     /**
      * Extends parent method to prepend model namespace.
      *
@@ -364,7 +368,8 @@ class OphCiExamination_API extends \BaseAPI
 
     public function getVARight($vaid)
     {
-        if ($unit = models\OphCiExamination_VisualAcuity_Reading::model()->findAll('element_id = ' . $vaid . ' AND side = 0')) {
+        if ($unit = models\OphCiExamination_VisualAcuity_Reading::model()->findAll('element_id = '
+            . $vaid . ' AND side = ' . self::RIGHT)) {
             return $unit;
         }
 
@@ -374,7 +379,8 @@ class OphCiExamination_API extends \BaseAPI
 
     public function getVALeft($vaid)
     {
-        if ($unit = models\OphCiExamination_VisualAcuity_Reading::model()->findAll('element_id = ' . $vaid . ' AND side = 1')) {
+        if ($unit = models\OphCiExamination_VisualAcuity_Reading::model()->findAll('element_id = '
+            . $vaid . ' AND side = ' . self::LEFT)) {
             return $unit;
         }
 
@@ -385,7 +391,8 @@ class OphCiExamination_API extends \BaseAPI
 
     public function getNearVARight($vaid)
     {
-        if ($unit = models\OphCiExamination_NearVisualAcuity_Reading::model()->findAll('element_id = ' . $vaid . ' AND side = 0')) {
+        if ($unit = models\OphCiExamination_NearVisualAcuity_Reading::model()->findAll('element_id = '
+            . $vaid . ' AND side = ' . self::RIGHT)) {
             return $unit;
         }
 
@@ -395,7 +402,8 @@ class OphCiExamination_API extends \BaseAPI
 
     public function getNearVALeft($vaid)
     {
-        if ($unit = models\OphCiExamination_NearVisualAcuity_Reading::model()->findAll('element_id = ' . $vaid . ' AND side = 1')) {
+        if ($unit = models\OphCiExamination_NearVisualAcuity_Reading::model()->findAll('element_id = '
+            . $vaid . ' AND side = ' . self::LEFT)) {
             return $unit;
         }
 
@@ -406,16 +414,18 @@ class OphCiExamination_API extends \BaseAPI
 
     public function getMethodIdRight($vaid, $episode)
     {
-        if ($unit = models\OphCiExamination_VisualAcuity_Reading::model()->findAll('element_id = ' . $vaid . ' AND side = 0', array($vaid))) {
+        if ($unit = models\OphCiExamination_VisualAcuity_Reading::model()->findAll('element_id = '
+            . $vaid . ' AND side = ' . self::RIGHT)) {
             return $unit;
         }
 
         return;
     }
 
-    public function getMethodIdNearRight($vaid, $episode)
+    public function getMethodIdNearRight($vaid)
     {
-        if ($unit = models\OphCiExamination_NearVisualAcuity_Reading::model()->findAll('element_id = ' . $vaid . ' AND side = 0', array($vaid))) {
+        if ($unit = models\OphCiExamination_NearVisualAcuity_Reading::model()->findAll('element_id = ' . $vaid
+            . ' AND side = ' . self::RIGHT)) {
             return $unit;
         }
 
@@ -425,16 +435,18 @@ class OphCiExamination_API extends \BaseAPI
 
     public function getMethodIdLeft($vaid, $episode)
     {
-        if ($unit = models\OphCiExamination_VisualAcuity_Reading::model()->findAll('element_id = ' . $vaid . ' AND side = 1', array($vaid))) {
+        if ($unit = models\OphCiExamination_VisualAcuity_Reading::model()->findAll('element_id = ' . $vaid
+            . ' AND side = ' . self::LEFT)) {
             return $unit;
         }
 
         return;
     }
 
-    public function getMethodIdNearLeft($vaid, $episode)
+    public function getMethodIdNearLeft($vaid)
     {
-        if ($unit = models\OphCiExamination_NearVisualAcuity_Reading::model()->findAll('element_id = ' . $vaid . ' AND side = 1', array($vaid))) {
+        if ($unit = models\OphCiExamination_NearVisualAcuity_Reading::model()->findAll('element_id = ' . $vaid
+            . ' AND side = ' . self::LEFT)) {
             return $unit;
         }
 
