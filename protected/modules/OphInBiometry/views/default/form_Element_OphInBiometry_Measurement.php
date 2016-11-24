@@ -28,8 +28,270 @@
     } else {
         $iolRefValues = array();
     }
+    ?>
+<?php
+$VAdate = " - (Not Recorded)";
+foreach($this->patient->episodes as $episode ){
+//					echo $episode->id;
+}
+if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
+	if ($api->getLetterVisualAcuityRight($this->patient) || $api->getLetterVisualAcuityLeft($this->patient)){
+
+		$VAid = $api->getVAId($this->patient, $episode);
+		$unitId = $api->getUnitId($VAid->id, $episode);
+
+		$VAright = $api->getVARight($VAid->id);
+		for ($i = 0; $i < count($VAright); ++$i) {
+			$VAfinalright = $api->getVAvalue($VAright[$i]->value, $unitId);
+		}
+
+		$VAleft = $api->getVALeft($VAid->id);
+		for ($i = 0; $i < count($VAright); ++$i) {
+			$VAfinalleft = $api->getVAvalue($VAleft[$i]->value, $unitId);
+		}
+		$VAdate = "- (exam date " . date("d M Y h:ia", strtotime($VAid->last_modified_date)) . ")";
+
+		$methodIdRight = $api->getMethodIdRight($VAid->id, $episode);
+		for ($i = 0; $i < count($methodIdRight); ++$i) {
+			$methodnameRight[$i] = $api->getMethodName($methodIdRight[$i]->method_id);
+		}
+
+		$methodIdLeft = $api->getMethodIdLeft($VAid->id, $episode);
+		for ($i = 0; $i < count($methodIdLeft); ++$i) {
+			$methodnameLeft[$i] = $api->getMethodName($methodIdLeft[$i]->method_id);
+		}
+
+		$unitnameRight = $api->getUnitName($unitId);
+		$unitnameLeft = $unitnameRight;
+	}
+}
 ?>
 
+<div class="element-fields element-eyes row">
+	<div>&nbsp;
+	</div>
+</div>
+	<section><header class="sub-element-header">
+			<h3 class="element-title">Visual Acuity <?php echo $VAdate; ?></h3>
+		</header>
+<div class="element-fields element-eyes row">
+<div class="element-eye right-eye column">
+	<?php if ($element->hasRight()) {
+		if ($api->getLetterVisualAcuityRight($this->patient)) {
+			?>
+			<div class="data-row">
+				<div class="data-value">
+					<?php echo $unitnameRight ?>
+				</div>
+			</div>
+			<div class="data-row">
+				<div class="data-value">
+					<?php
+					for ($i = 0; $i < count($methodnameRight); ++$i) {
+						echo $api->getVAvalue($VAright[$i]->value, $unitId) . " " . $methodnameRight[$i];
+						if ($i != (count($methodnameRight) - 1)) {
+							echo ", ";
+						}
+					}
+					?>
+				</div>
+			</div>
+			<?php
+		} else {
+			?>
+			<div class="data-row">
+				<div class="data-value">
+					Not recorded
+				</div>
+			</div>
+			<?php
+		}
+	}?>
+</div>
+	<div class="element-eye left-eye column">
+	<?php
+	if ($api->getLetterVisualAcuityLeft($this->patient)) {
+		?>
+		<div class="data-row">
+			<div class="data-value">
+				<?php echo $unitnameLeft ?>
+			</div>
+		</div>
+		<div class="data-row">
+			<div class="data-value">
+				<?php
+				for ($i = 0; $i < count($methodnameLeft); ++$i) {
+					echo $api->getVAvalue($VAleft[$i]->value, $unitId) . " " . $methodnameLeft[$i];
+					if ($i != (count($methodnameLeft) - 1)) {
+						echo ", ";
+					}
+					}
+				?>
+			</div>
+		</div>
+		<?php
+	} else {
+		?>
+		<div class="data-row">
+			<div class="data-value">
+				Not recorded
+			</div>
+		</div>
+		<?php
+	}
+	?>
+		</div>
+	</section>
+
+<?php
+// Near VA
+if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
+	if ($api->getBestNearVisualAcuity($this->patient, $episode, 'right') || $api->getBestNearVisualAcuity($this->patient, $episode, 'left')){
+
+		$VAid = $api->getNearVAId($this->patient, $episode);
+		$unitId = $api->getNearUnitId($VAid, $episode);
+
+		$VAright = $api->getNearVARight($VAid);
+		for ($i = 0; $i < count($VAright); ++$i) {
+			$VAfinalright = $api->getVAvalue($VAright[$i]->value, $unitId);
+		}
+
+		$VAleft = $api->getNearVALeft($VAid);
+		for ($i = 0; $i < count($VAright); ++$i) {
+			$VAfinalleft = $api->getVAvalue($VAleft[$i]->value, $unitId);
+		}
+
+		$methodIdRight = $api->getMethodIdNearRight($VAid, $episode);
+		for ($i = 0; $i < count($methodIdRight); ++$i) {
+			$methodnameRight[$i] = $api->getMethodName($methodIdRight[$i]->method_id);
+		}
+
+		$methodIdLeft = $api->getMethodIdNearLeft($VAid, $episode);
+		for ($i = 0; $i < count($methodIdLeft); ++$i) {
+			$methodnameLeft[$i] = $api->getMethodName($methodIdLeft[$i]->method_id);
+		}
+
+		$unitnameRight = $api->getUnitName($unitId);
+		$unitnameLeft = $unitnameRight;
+	}
+}
+?>
+
+	<section><header class="sub-element-header">
+			<h3 class="element-title">Near Visual Acuity</h3>
+		</header>
+<div class="element-fields element-eyes row">
+	<div class="element-eye right-eye column">
+		<?php if ($element->hasRight()) {
+			if ($api->getBestNearVisualAcuity($this->patient, $episode, 'left')) {
+				?>
+				<div class="data-row">
+					<div class="data-value">
+						<?php echo $unitnameRight ?>
+					</div>
+				</div>
+				<div class="data-row">
+					<div class="data-value">
+						<?php
+						for ($i = 0; $i < count($methodnameRight); ++$i) {
+							echo $api->getVAvalue($VAright[$i]->value, $unitId) . " " . $methodnameRight[$i];
+							if ($i != (count($methodnameRight) - 1)) {
+								echo ", ";
+							}
+						}
+						?>
+					</div>
+				</div>
+				<?php
+			} else {
+				?>
+				<div class="data-row">
+					<div class="data-value">
+						Not recorded
+					</div>
+				</div>
+				<?php
+			}
+		}?>
+	</div>
+	<div class="element-eye left-eye column">
+	<?php
+	if ($api->getBestNearVisualAcuity($this->patient, $episode, 'right')) {
+		?>
+		<div class="data-row">
+			<div class="data-value">
+				<?php echo $unitnameLeft ?>
+			</div>
+		</div>
+		<div class="data-row">
+			<div class="data-value">
+				<?php
+				for ($i = 0; $i < count($methodnameLeft); ++$i) {
+					echo $api->getVAvalue($VAleft[$i]->value, $unitId) . " " . $methodnameLeft[$i];
+					if ($i != (count($methodnameLeft) - 1)) {
+						echo ", ";
+					}
+				}
+				?>
+			</div>
+		</div>
+		<?php
+	} else {
+		?>
+		<div class="data-row">
+			<div class="data-value">
+				Not recorded
+			</div>
+		</div>
+		<?php
+	}
+	?>
+	</div>
+	</section>
+</div>
+<?php
+// Refraction here
+if($eventid = Event::model()->find('event_type_id = 27 AND episode_id = ' . $episode->id)){
+if ($refractelement = $api->getRefractionValues($eventid->id)) {
+?>
+<section>
+	<header class="sub-element-header">
+		<h3 class="element-title">Refraction - (exam date <?php echo date("d M Y h:ia",
+				strtotime($refractelement->last_modified_date)); ?>)</h3>
+	</header>
+	<div class="element-fields element-eyes row">
+		<div class="element-eye right-eye column">
+			<?php if ($refractelement->hasRight()) {
+				?>
+				<?php $this->renderPartial($element->view_view . '_OEEyeDraw',
+					array('side' => 'right', 'element' => $refractelement));
+				?>
+				<?php
+			} else {
+				?>
+				Not recorded
+				<?php
+			} ?>
+		</div>
+		<div class="element-eye left-eye column">
+			<?php if ($refractelement->hasLeft()) {
+				?>
+				<?php $this->renderPartial($element->view_view . '_OEEyeDraw',
+					array('side' => 'left', 'element' => $refractelement));
+				?>
+				<?php
+			} else {
+				?>
+				Not recorded
+				<?php
+			} ?>
+		</div>
+	</div>
+	<?php
+	}
+	}
+	?>
+	<br/>
 <section class="element <?php echo $element->elementType->class_name?>"
 	data-element-type-id="<?php echo $element->elementType->id?>"
 	data-element-type-class="<?php echo $element->elementType->class_name?>"
@@ -45,6 +307,7 @@
 			</div>
 			<div class="active-form">
 				<a href="#" class="icon-remove-side remove-side">Remove side</a>
+				<?php echo CHtml::hiddenField('element_id', $element->id, array('class' => 'element_id')); ?>
 				<?php $this->renderPartial('form_Element_OphInBiometry_Measurement_fields', array('side' => 'right', 'element' => $element, 'form' => $form, 'data' => $data, 'measurementInput' => $iolRefValues)); ?>
 			</div>
 			<div class="inactive-form">
@@ -62,17 +325,29 @@
 				<h4><b>LEFT</b></h4>
 			</div>
 			<div class="active-form">
-				<a href="#" class="icon-remove-side remove-side">Remove side</a>
-				<?php $this->renderPartial('form_Element_OphInBiometry_Measurement_fields', array('side' => 'left', 'element' => $element, 'form' => $form, 'data' => $data, 'measurementInput' => $iolRefValues)); ?>
-			</div>
-			<div class="inactive-form">
-				<div class="add-side">
-					<a href="#">
-						Add left side <span class="icon-add-side"></span>
-					</a>
+				<?php if ($element->hasLeft()) {
+				?>
+				<div class="active-form">
+					<a href="#" class="icon-remove-side remove-side">Remove side</a>
+					<?php $this->renderPartial('form_Element_OphInBiometry_Measurement_fields', array(
+						'side' => 'left',
+						'element' => $element,
+						'form' => $form,
+						'data' => $data,
+						'measurementInput' => $iolRefValues
+					)); ?>
 				</div>
+				<div class="inactive-form">
+					<div class="add-side">
+						<a href="#">
+							Add left side <span class="icon-add-side"></span>
+						</a>
+					</div>
+				</div>
+					<?php
+				}
+				?>
 			</div>
-		</div>
 	</div>
 </section>
 <script type="text/javascript">
