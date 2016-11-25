@@ -423,7 +423,7 @@ class OphTrOperationbooking_API extends BaseAPI
         $booking_procs = OphTrOperationbooking_Operation_Procedures::model()->findAll($criteria);
         if ($booking_procs) {
             foreach ($booking_procs as $proc) {
-                $not_booked_events[] = $proc->procedure->term;
+                $not_booked_events[] = $proc->element->eye->getAdjective() . ' ' . $proc->procedure->term;
             }
         }
 

@@ -63,14 +63,14 @@
             </div>
             <br>
             <?php $this->renderPartial('//base/_messages')?>
-            <?php if ($personalDetailsConflictConfirm && Yii::app()->user->checkAccess('Patient Merge')):?>
+            <?php if ($personal_details_conflict_confirm && Yii::app()->user->checkAccess('Patient Merge')):?>
                 <div id="patientDataConflictConfirmation" class="row">
                     <div class="large-10 large-offset-1 column alert-box with-icon warning">
                         <h2> Personal details are conflicting. </h2>
                         Please confirm you selected the right patients. <br>
                         Note, the primary patient's personal details will <strong>NOT</strong> be overwritten.<br><br>
                         <label>
-                        <?php echo CHTML::checkBox('PatientMergeRequest[personalDetailsConflictConfirm]', false); ?> I hereby confirm that I selected the right patients.</label>
+                        <?php echo CHTML::checkBox('PatientMergeRequest[personal_details_conflict_confirm]', false); ?> I hereby confirm that I selected the right patients.</label>
                     </div>
                 </div>
                 <div class="row">
@@ -92,10 +92,10 @@
     </div>
 <script>
     
-    patientMerge.patients.primary = JSON.parse('<?php echo $primaryPatientJSON; ?>');
+    patientMerge.patients.primary = JSON.parse('<?php echo $primary_patient_JSON; ?>');
     patientMerge.patients.primary['all-episodes'] = $('<textarea />').html(patientMerge.patients.primary['all-episodes']).text();
     
-    patientMerge.patients.secondary = JSON.parse('<?php echo $secondaryPatientJSON; ?>');
+    patientMerge.patients.secondary = JSON.parse('<?php echo $secondary_patient_JSON; ?>');
     patientMerge.patients.secondary['all-episodes'] = $('<textarea />').html(patientMerge.patients.secondary['all-episodes']).text();
     
     patientMerge.updateDOM('primary');

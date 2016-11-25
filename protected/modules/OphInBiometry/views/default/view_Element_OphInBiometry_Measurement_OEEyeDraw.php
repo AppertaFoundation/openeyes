@@ -16,26 +16,24 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-return array(
-    'params' => array(
-        'eyedraw_iol_classes' => array(
-            'PCIOL',
-            'ACIOL',
-            'ToricPCIOL',
-        ),
-        'admin_menu' => array(
-            'Per Op Instructions' => '/OphTrOperationnote/admin/postOpInstructions',
-            'Default Incision Length' => '/OphTrOperationnote/admin/viewIncisionLengthDefaults',
-            'Operative Devices' => '/OphTrOperationnote/OperativeDevice/list',
-            'Operative Devices Mapping' => '/OphTrOperationnote/OperativeDeviceMapping/list',
-        ),
-        'reports' => array(
-            'Operations' => '/OphTrOperationnote/report/operation',
-        ),
-
-        // Default anaesthetic settings
-                //'ophtroperationnote_default_anaesthetic_child' => 'GA',
-                //'ophtroperationnote_default_anaesthetic' => 'GA',
-    ),
-);
+?>
+<div class="data-value">
+	<?= Yii::app()->format->text($element->getCombined($side)) ?><br/>
+	Spherical equivalent: <?php echo number_format($element->{$side.'_sphere'} + 0.5 * $element->{$side.'_cylinder'}, 2)?>
+	<?php  if ($element->{$side.'_notes'}) {
+		?>
+		<?php  echo $element->textWithLineBreaks($side.'_notes')?>
+		<?php
+	}?>
+</div>
+<div class="data-value">
+	<?php $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+            'idSuffix' => $side.'_'.$element->elementType->id.'_'.$element->id,
+            'side' => ($side == 'right') ? 'R' : 'L',
+            'mode' => 'view',
+            'width' => 100,
+            'height' => 100,
+            'model' => $element,
+            'attribute' => $side.'_axis_eyedraw',
+    ))?>
+</div>

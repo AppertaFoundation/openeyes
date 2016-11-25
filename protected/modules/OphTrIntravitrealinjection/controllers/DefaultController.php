@@ -155,7 +155,7 @@ class DefaultController extends BaseEventTypeController
                 $element->eye_id = $default_eye;
             }
 
-            if (get_class($element) == 'Element_OphTrIntravitrealinjection_Treatment') {
+            if (get_class($element) === 'Element_OphTrIntravitrealinjection_Treatment') {
                 if ($therapy_api) {
                     // get the latest drug that has been applied for and set it as default (for the appropriate eye)
                     if ($default_left_drug) {
@@ -176,7 +176,7 @@ class DefaultController extends BaseEventTypeController
                 $element->left_injection_given_by_id = Yii::app()->user->id;
                 $element->right_injection_given_by_id = Yii::app()->user->id;
             }
-            if (get_class($element) == 'Element_OphTrIntravitrealinjection_Site') {
+            if (get_class($element) === 'Element_OphTrIntravitrealinjection_Site') {
                 $element->site_id = $this->selectedSiteId;
             }
         }

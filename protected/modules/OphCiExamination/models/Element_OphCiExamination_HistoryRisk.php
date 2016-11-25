@@ -19,13 +19,15 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use services\DateTime;
+
 /**
  * This is the model class for table "et_ophciexamination_glaucomarisk".
  *
  * The followings are the available columns in table:
  *
- * @property int $id
- * @property int $event_id
+ * @property int                                $id
+ * @property int                                $event_id
  * @property OphCiExamination_GlaucomaRisk_Risk $risk
  *
  * The followings are the available model relations:
@@ -74,13 +76,13 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
      * @param $attribute
      * @param $params
      */
-    public function validateName($attribute,$params)
+    public function validateName($attribute, $params)
     {
-        if($this->$params['type'] === '1' && !$this->$attribute){
+        if ($this->$params['type'] === '1' && !$this->$attribute) {
             $this->addError($attribute, 'When checked a drug name is required');
         }
 
-        if($this->$params['type'] !== '1' && $this->$attribute){
+        if ($this->$params['type'] !== '1' && $this->$attribute) {
             $this->addError($attribute, 'A drug name cannot be supplied without selecting yes.');
         }
     }
@@ -144,7 +146,7 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
      */
     public function anticoagulantText()
     {
-        return 'Anticoagulants: '.$this->yesNoText($this->anticoagulant).(($this->anticoagulant_name) ? ' - '.$this->anticoagulant_name : '');
+        return 'Anticoagulants: ' . $this->yesNoText($this->anticoagulant) . (($this->anticoagulant_name) ? ' - ' . $this->anticoagulant_name : '');
     }
 
     /**
@@ -152,7 +154,7 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
      */
     public function alphaBlockerText()
     {
-        return 'Alpha-Blockers: '.$this->yesNoText($this->alphablocker).(($this->alpha_blocker_name) ? ' - '.$this->alpha_blocker_name : '');
+        return 'Alpha-Blockers: ' . $this->yesNoText($this->alphablocker) . (($this->alpha_blocker_name) ? ' - ' . $this->alpha_blocker_name : '');
     }
 
     /**
@@ -185,4 +187,104 @@ class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
     {
         return true;
     }
+
+
+    /**
+     * @param $patientId
+     *
+     * @return array|mixed|null
+     */
+    public function mostRecentCheckedAlpha($patientId)
+    {
+        return $this->mostRecentChecked('alphablocker', $patientId);
+    }
+
+    /**
+     * @param $patientId
+     *
+     * @return array|mixed|null
+     */
+    public function mostRecentCheckedAnticoag($patientId)
+    {
+        return $this->mostRecentChecked('anticoagulant', $patientId);
+    }
+
+    /**
+     * @param $patientId
+     * @param $date
+     *
+     * @return array|mixed|null
+     */
+    public function previousCheckedAlpha($patientId, $date = 'now')
+    {
+        return $this->previousChecked('alphablocker', $patientId, $date);
+    }
+
+    /**
+     * @param $patientId
+     * @param $date
+     *
+     * @return array|mixed|null
+     */
+    public function previousCheckedAnticoag($patientId, $date = 'now')
+    {
+        return $this->previousChecked('anticoagulant', $patientId, $date);
+    }
+
+    /**
+     * Find the most recent element that has actually been checked
+     *
+     * Finds the most recent element where the question of $type has
+     * actually been checked, yes or no.
+     *
+     * @param $type
+     * @param $patientId
+     *
+     * @return array|mixed|null
+     */
+    protected function mostRecentChecked($type, $patientId)
+    {
+        $criteria = $this->risksByTypeForPatient($type, $patientId);
+        $criteria->limit = 1;
+
+        return self::model()->find($criteria);
+    }
+
+    /**
+     * @param        $type
+     * @param        $patientId
+     * @param string $before
+     *
+     * @return array|mixed|null
+     */
+    protected function previousChecked($type, $patientId, $before = 'now')
+    {
+        $date = new \DateTime($before);
+        $criteria = $this->risksByTypeForPatient($type, $patientId);
+        $criteria->limit = 1;
+        $criteria->addCondition('event.event_date < :date');
+        $criteria->params['date'] = $date->format('Y-m-d H:i:s');
+
+        return self::model()->find($criteria);
+    }
+
+    /**
+     * @param $type
+     * @param $patientId
+     * @return \CDbCriteria
+     */
+    protected function risksByTypeForPatient($type, $patientId)
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->join = 'join event on t.event_id = event.id ';
+        $criteria->join .= 'join episode on event.episode_id = episode.id ';
+        $criteria->addCondition($type . ' > 0');
+        $criteria->addCondition('event.deleted <> 1');
+        $criteria->addCondition('episode.patient_id = :patient_id');
+        $criteria->params = array('patient_id' => $patientId);
+        $criteria->order = 'event.event_date DESC';
+
+        return $criteria;
+    }
+
 }

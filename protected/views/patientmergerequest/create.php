@@ -68,7 +68,7 @@
                     Please confirm you selected the right patients. <br>
                     Note, the primary patient's personal details will <strong>NOT</strong> be overwritten.<br><br>
                     <label>
-                    <input type="checkbox" id="PatientMergeRequest_personalDetailsConflictConfirm" value="1" data-name="PatientMergeRequest[personalDetailsConflictConfirm]"> I hereby confirm that I selected the right patients.</label>
+                    <input type="checkbox" id="PatientMergeRequest_personal_details_conflict_confirm" value="1" data-name="PatientMergeRequest[personal_details_conflict_confirm]"> I hereby confirm that I selected the right patients.</label>
                 </div>
             </div>
             <div class="row">
