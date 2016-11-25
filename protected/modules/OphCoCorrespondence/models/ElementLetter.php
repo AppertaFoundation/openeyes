@@ -697,19 +697,16 @@ class ElementLetter extends BaseEventTypeElement
      */
     public function getOutputByType($type = 'Print')
     {
-        $prints = array();
-
         $criteria = new CDbCriteria();
-        $criteria = "JOIN document_instance ins ON t.id = ins.document_set_id" .
-                    "JOIN document_target tar ON ins.id = tar.document_instance_id" .
-                    "JOIN document_output output ON tar.id = output.document_target_id";
+        $criteria->join =   "JOIN document_target target ON t.document_target_id = target.id " .
+                            "JOIN document_instance instance ON target.document_instance_id = instance.id ";
 
-         $criteria->compare('t.id', $this->document_set->id);
+        $criteria->compare('instance.correspondence_event_id', $this->event->id);
         if($type){
-            $criteria->compare('output.output_type', $type);
+            $criteria->compare('t.output_type', $type);
         }
 
-        return DocumentSet::model()->find($criteria);
+        return DocumentOutput::model()->findAll($criteria);
 
     }
 }

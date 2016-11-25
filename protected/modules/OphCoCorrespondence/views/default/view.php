@@ -26,7 +26,7 @@
             $elementLetter = ElementLetter::model()->findByAttributes(array('event_id'=>$this->event->id));
 
             if($elementLetter->draft){
-                $this->event_actions[] = EventAction::button('Print Draft', 'printdraft', null, array('class' => 'small'));
+                $this->event_actions[] = EventAction::button('Print Draft', 'print', null, array('class' => 'small'));
             } else {
                 $this->event_actions[] = EventAction::button('Print', 'print', null, array('class' => 'button small'));
                 $this->event_actions[] = EventAction::button(

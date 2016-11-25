@@ -352,7 +352,6 @@ class DefaultController extends BaseEventTypeController
     {
         if ($letter = ElementLetter::model()->find('event_id=?', array($id))) {
             $letter->print = 0;
-            $letter->draft = 0;
             if (!$letter->save()) {
                 throw new Exception('Unable to mark letter printed: '.print_r($letter->getErrors(), true));
             }
@@ -360,7 +359,7 @@ class DefaultController extends BaseEventTypeController
     }
     
     public function actionPrint($id)
-    {        
+    {
         $letter = ElementLetter::model()->find('event_id=?', array($id));
 
         $this->printInit($id);
@@ -388,34 +387,34 @@ class DefaultController extends BaseEventTypeController
             $this->pdf_print_suffix = 'all';
             $this->pdf_print_documents = 2 + count($letter->getCcTargets());
         }
-
-        $related_documents = DocumentInstance::model()->findAllByAttributes(array("correspondence_event_id"=>$id));
-        foreach($related_documents as $document)
-        {
-            $doc_targets = DocumentTarget::model()->findAllByAttributes(array("document_instance_id"=>$document->id));
-            foreach($doc_targets as $target)
-            {
-                $doc_outputs = DocumentOutput::model()->findAllByAttributes(array("document_target_id"=>$target->id));
-                foreach($doc_outputs as $output)
-                {
-                    /**
-                     * We will not send the same "record" again
-                     * when the user wants to resend the document (after save on edit page)
-                     * we create a new 'target' instance
-                     */
-                    if($output->output_type == "Docman")
-                    {
-                        $output->output_status = "PENDING";
-                    }else if($output->output_type == "Print")
-                    {
-                        $output->output_status = "COMPLETE";
-                    }
-                    $output->save();
-                }
+        
+        $outputs = $letter->getOutputByType("Print");
+        if( $outputs ){
+            foreach($outputs as $output){
+                $output->output_status = "COMPLETE";
+                $output->save();
             }
+        }
+        
+        if( $letter->draft == 0 ){
+            $this->markRedyToSend($id);
         }
 
         return parent::actionPDFPrint($id);
+    }
+    
+    public function markRedyToSend($id)
+    {
+        $letter = ElementLetter::model()->find('event_id=?', array($id));
+        
+        $outputs = $letter->getOutputByType("Docman");
+        
+        if( $outputs ){
+            foreach($outputs as $output){
+                $output->output_status = "PENDING";
+                $output->save();
+            }
+        }
     }
 
     /**
@@ -512,7 +511,6 @@ class DefaultController extends BaseEventTypeController
         }
                 
         $letter->print = 1;
-        $letter->draft = 0;
 
         if (@$_GET['all']) {
             $letter->print_all = 1;
