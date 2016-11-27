@@ -47,9 +47,8 @@
         <?php if($docnam_output):?>
             <?php echo CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $docnam_output->id); ?>
         <?php endif; ?>
-    <?php endif; ?>
-
-    <?php $pre_output_key++; ?>
+        <?php $pre_output_key++; ?>
+    <?php endif; ?>    
 
     <label>
         <?php 
@@ -65,6 +64,6 @@
         <input type="checkbox" value="Print" 
                name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][<?php echo $pre_output_key; ?>][output_type]" <?php echo $is_checked?>>  Print
     </label>
-    <?php if($print_output && $is_draft): ?>
+    <?php if($print_output): ?>
         <?php echo CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $print_output->id); ?>
     <?php endif; ?>

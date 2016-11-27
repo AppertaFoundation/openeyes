@@ -23,6 +23,8 @@
 <?php
 $layoutColumns = $form->layoutColumns;
 $macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : (isset($element->macro->id) ? $element->macro->id : null);
+$patient_id = Yii::app()->request->getQuery('patient_id', null);
+$patient = Patient::model()->findByPk($patient_id);
 ?>
 <div class="element-fields">
     <div class="row field-row">
@@ -83,24 +85,60 @@ $macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : (isset($element->ma
                         $macro_data['to'] = array(
                             'contact_type' => $document_target['attributes']['contact_type'],
                             'contact_id' => isset($document_target['attributes']['contact_id']) ? $document_target['attributes']['contact_id'] : null,
+                            'contact_name' => isset($document_target['attributes']['contact_name']) ? $document_target['attributes']['contact_name'] : null,
                             'address' => isset($document_target['attributes']['address']) ? $document_target['attributes']['address'] : null,
                         );
                     } else {
-                        if (isset($document_target['attributes']['ToCc']) && $document_target['attributes']['ToCc'] == 'Cc') {
+                        if (isset($document_target['attributes']['ToCc']) && $document_target['attributes']['ToCc'] == 'Cc') {                      
                             $macro_data['cc'][] = array(
                                 'contact_type' => $document_target['attributes']['contact_type'],
                                 'contact_id' => isset($document_target['attributes']['contact_id']) ? $document_target['attributes']['contact_id'] : null,
+                                'contact_name' => isset($document_target['attributes']['contact_name']) ? $document_target['attributes']['contact_name'] : null,
                                 'address' => isset($document_target['attributes']['address']) ? $document_target['attributes']['address'] : null,
                             );
                         }
                     }
                 }
             }
+            $gp_address = isset($patient->gp->contact->correspondAddress) ? $patient->gp->contact->correspondAddress : $patient->gp->contact->address;
+            if (!$gp_address) {
+                $gp_address = isset($patient->practice->contact->correspondAddress) ? $patient->practice->contact->correspondAddress : $patient->practice->contact->address;
+            }
+
+            if (!$gp_address) {
+                $gp_address = "N/A";
+            } else {
+                $gp_address = implode("\n", $gp_address->getLetterArray());
+            }
+            
+            
+            $patient_address = isset($patient->contact->correspondAddress) ? $patient->contact->correspondAddress : $patient->contact->address;
+
+            if (!$patient_address) {
+                $patient_address = "N/A";
+            } else {
+                $patient_address = implode("\n", $patient_address->getLetterArray());
+            }
+            
+            
             $this->renderPartial('//docman/_create', array(
                 'row_index' => (isset($row_index) ? $row_index : 0),
                 'macro_data' => $macro_data,
                 'macro_id' => $macro_id,
                 'element' => $element,
+                'defaults' => array(
+                    'To' => array(
+                        'contact_id' => $patient->gp->contact->id,
+                        'contact_type' => 'GP',
+                        'address' => $gp_address
+                    ),
+                    'Cc' => array(
+                        'contact_id' => $patient->contact->id,
+                        'contact_type' => 'PATIENT',
+                        'address' => $patient_address
+                        
+                    ),
+                )
             ));
 
             ?>
@@ -238,7 +276,6 @@ $macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : (isset($element->ma
 
     <div class="row field-row">
         <div class="large-<?php echo $layoutColumns['label']; ?> column">
-            <?php //echo $form->dropDownListNoPost('cc', $element->address_targets, '', array('empty' => '- Cc -', 'nowrapper' => true))?>
         </div>
         <div class="large-<?php echo $layoutColumns['field']; ?> column end">
             <?php echo $form->hiddenField($element, 'cc', array('rows' => 8, 'label' => false, 'nowrapper' => true), false, array('class' => 'address')) ?>

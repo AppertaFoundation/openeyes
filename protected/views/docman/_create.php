@@ -108,9 +108,9 @@
                 <?php 
                     $target = new DocumentTarget();
                     $target->contact_id = $macro_data["to"]["contact_id"];
+                    $target->contact_name = $macro_data["to"]["contact_name"];
                     $target->address = $macro_data["to"]["address"];
                   
-                            
                     $this->renderPartial('//docman/table/contact_name_address', array(
                                 'contact_id' => $target->contact_id,
                                 'contact_name' => $target->contact_name,
@@ -155,8 +155,9 @@
                         <?php 
                             $target = new DocumentTarget();
                             $target->contact_id = $macro["contact_id"];
+                            $target->contact_name = isset($macro["contact_name"]) ? $macro["contact_name"] : null;
                             $target->address = $macro["address"];
-
+                            
                             $this->renderPartial('//docman/table/contact_name_address', array(
                                         'contact_id' => $target->contact_id,
                                         'contact_name' => $target->contact_name,
@@ -207,13 +208,52 @@
         <?php endif; ?>
     <?php endif; ?>
 
-    <tr class="new_entry_row">
+    <tr class="rowindex-0" data-indexrow="0">
         <?php 
+            /* generates a default 'To' and 'Cc' rows */
             if(empty($macro_data)){
-                /* generates a default 'To' row */
+                $contact_id = null;
+                if(isset($defaults['To']['contact_id'])){
+                    $contact_id = $defaults['To']['contact_id'];
+                }
+                $contact_type = null;
+                if(isset($defaults['To']['contact_type'])){
+                    $contact_type = $defaults['To']['contact_type'];
+                }
+                $address = null;
+                if(isset($defaults['To']['address'])){
+                    $address = $defaults['To']['address'];
+                }
+                
                 echo $this->renderPartial(
                     '//docman/document_row_recipient',
-                    array('contact_id' => null, 'address' => null, 'row_index' => 0, 'selected_contact_type' => null)
+                    array('contact_id' => $contact_id, 'address' => $address, 'row_index' => 0, 'selected_contact_type' => $contact_type)
+                );
+            }
+        ?>
+    </tr>
+    
+    <tr class="rowindex-1" data-indexrow="1">
+        <?php 
+            if(empty($macro_data)){
+                $contact_id = null;
+                if(isset($defaults['Cc']['contact_id'])){
+                    $contact_id = $defaults['Cc']['contact_id'];
+                }
+                $contact_type = null;
+                if(isset($defaults['Cc']['contact_type'])){
+                    $contact_type = $defaults['Cc']['contact_type'];
+                }
+                $address = null;
+                if(isset($defaults['Cc']['address'])){
+                    $address = $defaults['Cc']['address'];
+                }
+                
+                
+                /* generates a default 'To' and 'Cc' rows */
+                echo $this->renderPartial(
+                    '//docman/document_row_recipient',
+                    array('contact_id' => $contact_id, 'address' => $address, 'row_index' => 1, 'selected_contact_type' => $contact_type)
                 );
             }
         ?>
@@ -222,5 +262,6 @@
             <button class="button small secondary" id="docman_add_new_recipient">Add new recipient</button>
         </td>
     </tr>
+    
     </tbody>
 </table>
