@@ -30,7 +30,7 @@ style="background-image:url(file://<?php echo Yii::getPathOfAlias('application.m
 http://wkhtmltopdf.org/usage/wkhtmltopdf.txt
     
 ?>
-<div class="print-letter-div1 draft" >
+<div class="print-letter-div" >
     
     <?php if($element->draft) :?>
         <img style="position: absolute; z-index: -1000;width:100%" src="<?php echo Yii::app()->assetManager->createUrl('img/bg_draft.png', 'application.modules.OphCoCorrespondence.assets') ?>" />
