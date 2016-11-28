@@ -294,6 +294,11 @@ class ElementLetter extends BaseEventTypeElement
             if (!$patient = Patient::model()->with(array('contact' => array('with' => array('address'))))->findByPk(@$_GET['patient_id'])) {
                 throw new Exception('Patient not found: '.@$_GET['patient_id']);
             }
+            
+            // default to GP
+            if( isset($patient->gp) ){
+                $this->introduction = $patient->gp->getLetterIntroduction();
+            }
 
             $this->re = $patient->first_name.' '.$patient->last_name;
 
