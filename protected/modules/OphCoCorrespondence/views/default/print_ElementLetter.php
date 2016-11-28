@@ -19,7 +19,7 @@
 ?>
 <?php if (!@$no_header) {?>
 	<header>
-	<?php
+	<?php 
         $ccString = "";
         $toAddress = "";
 

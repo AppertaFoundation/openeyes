@@ -165,9 +165,13 @@ class DocmanController extends BaseController
                 }
             }
         }
+        
+        if($address){
+            $address = implode("\n", $address->getLetterArray());
+        }
 
 
-        echo $this->renderPartial(
+        $this->renderPartial(
             '/docman/document_row_recipient',
             array('contact_id' => $contact_id, 'address' => $address, 'row_index' => $last_row_index + 1, 'selected_contact_type' => $selected_contact_type)
         );

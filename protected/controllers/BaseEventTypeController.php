@@ -1585,7 +1585,7 @@ class BaseEventTypeController extends BaseModuleController
             $wk->setDocref($event->docref);
             $wk->setPatient($event->episode->patient);
             $wk->setBarcode($event->barcodeHTML);
-
+            
             foreach (array('left', 'middle', 'right') as $section) {
                 if (isset(Yii::app()->params['wkhtmltopdf_footer_'.$section.'_'.$this->event_type->class_name])) {
                     $setMethod = 'set'.ucfirst($section);

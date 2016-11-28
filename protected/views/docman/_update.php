@@ -52,7 +52,7 @@ button.green { background-color:green; color: white; }
             <?php 
                     $document_targets = $document_set->document_instance[0]->document_target;
 
-                    if( Yii::app()->request->isPostRequest ){
+                    if( Yii::app()->request->isPostRequest ){                  
                         $document_targets = array();
                         $post_targets = Yii::app()->request->getPost('DocumentTarget');
 

@@ -559,5 +559,5 @@ class DefaultController extends BaseEventTypeController
             echo '1';
         }
     }
-
+  
 }
