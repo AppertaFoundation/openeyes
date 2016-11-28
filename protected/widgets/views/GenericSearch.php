@@ -79,7 +79,7 @@ if ($search->getSearchItems() && is_array($search->getSearchItems())):
                                 $name,
                                 $search->getSearchTermForAttribute($key, $default),
                                 $value['options'],
-                                array('empty' => $value['empty'] ? $value['empty'] : '- Select-')
+                                array('empty' => array_key_exists('empty', $value) && $value['empty'] ? $value['empty'] : '- Select-')
                             );
                             echo CHtml::hiddenField('search[exact][' . $key . ']', true)
                             ?>

@@ -88,6 +88,18 @@ class SubjectController extends BaseModuleController
                     'model' => $admin->getModel(),
                 ),
             ),
+            'pedigrees' => array(
+                'widget' => 'MultiSelectList',
+                'relation_field_id' => 'id',
+                'label' => 'Pedigree',
+                'options' => CHtml::encodeArray(
+                    CHtml::listData(
+                        Pedigree::model()->findAll(),
+                        'id',
+                        'gene_transcript'
+                    )
+                ),
+            ),
             'previous_studies' => array(
                 'widget' => 'CustomView',
                 'viewName' => '//studies/list',

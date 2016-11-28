@@ -59,7 +59,7 @@ class GeneticsPatient extends BaseActiveRecord
         // will receive user inputs.
         return array(
             array('studies', 'isProposable'),
-            array('patient_id, comments, gender_id, is_deceased, relationships, studies', 'safe'),
+            array('patient_id, comments, gender_id, is_deceased, relationships, studies, pedigrees', 'safe'),
         );
     }
 
@@ -126,6 +126,11 @@ class GeneticsPatient extends BaseActiveRecord
                 'GeneticsStudy',
                 'genetics_study_subject(subject_id, study_id)',
                 'condition' => 'rejected_studies_rejected_studies.participation_status_id = ' . $this->statuses['Rejected'],
+            ),
+            'pedigrees' => array(
+                self::MANY_MANY,
+                'GeneticsStudy',
+                'genetics_patient_pedigree(patient_id, pedigree_id)',
             ),
         );
     }

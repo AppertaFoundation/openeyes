@@ -62,7 +62,7 @@ class GeneticsPatientPedigree extends BaseActiveRecord
     public function relations()
     {
         return array(
-            'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
+            'patient' => array(self::BELONGS_TO, 'GeneticsPatient', 'patient_id'),
             'pedigree' => array(self::BELONGS_TO, 'Pedigree', 'pedigree_id'),
             'status' => array(self::BELONGS_TO, 'PedigreeStatus', 'status_id'),
         );
