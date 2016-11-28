@@ -20,7 +20,7 @@ class GeneController extends BaseModuleController
     {
         return array(
             array('allow',
-                'actions' => array('Edit'),
+                'actions' => array('Edit', 'Delete'),
                 'roles' => array('OprnEditGene'),
             ),
             array('allow',
@@ -66,7 +66,8 @@ class GeneController extends BaseModuleController
         $admin->setListFields(array(
             'id',
             'name',
-            'location'
+            'location',
+            'description',
         ));
         $admin->searchAll();
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
