@@ -72,6 +72,24 @@ class DefaultController extends BaseEventTypeController
         $this->jsVars['correspondence_markprinted_url'] = Yii::app()->createUrl('OphCoCorrespondence/Default/markPrinted/'.$this->event->id);
         $this->jsVars['correspondence_print_url'] = Yii::app()->createUrl('OphCoCorrespondence/Default/print/'.$this->event->id);
     }
+    
+    public function actionView($id)
+    {
+        $title = '';
+        $letter = ElementLetter::model()->find('event_id=?', array($id));
+        
+        $output = $letter->getOutputByType($type = 'Docman');
+        if($output){
+            $docnam = $output[0]; //for now only one Docman allowed
+            $title = $docnam->output_status;
+            if($docnam->output_status == 'COMPLETE'){
+                $title = 'Sent';
+            }
+            $title = strtolower($title);
+            $this->title .= ' (' . ucfirst($title) . ')';
+        }
+        parent::actionView($id);
+    }
 
     /**
      * Ajax action to get the address for a contact.
