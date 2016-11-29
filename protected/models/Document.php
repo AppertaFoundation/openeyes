@@ -268,8 +268,7 @@ class Document //extends BaseActiveRecord
                 $data = array(
                     'to_cc' => $post_document_target['attributes']['ToCc'],
                     'contact_type' => $post_document_target['attributes']['contact_type'],
-                    'contact_id' => isset($post_document_target['attributes']['contact_id']) ? $post_document_target['attributes']['contact_id'] : null,
-                    'contact_name' => isset($post_document_target['attributes']['contact_name']) ? $post_document_target['attributes']['contact_name'] : null,
+                    'contact_id' => $post_document_target['attributes']['contact_id'],
                     'address' => $post_document_target['attributes']['address'],
                 );
 
@@ -314,8 +313,13 @@ class Document //extends BaseActiveRecord
         $doc_target->document_instance_id = $doc_instance->id;
         $doc_target->contact_type = $data['contact_type'];
         $doc_target->contact_id = $data['contact_id'];
-        $doc_target->contact_name = $data['contact_name'];
         $doc_target->ToCc = $data['to_cc'];
+        if (is_numeric($data['contact_id'])) {
+            $doc_target->contact_name = Contact::model()->findByPk($data['contact_id'])->getFullName();
+        } else {
+            $doc_target->contact_name = $data['contact_id'];
+            $data['contact_id'] = null;
+        }
         $doc_target->address = $data['address'];
         $doc_target->save();
 
