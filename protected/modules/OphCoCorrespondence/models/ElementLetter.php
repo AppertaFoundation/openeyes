@@ -70,7 +70,7 @@ class ElementLetter extends BaseEventTypeElement
             array('use_nickname, site_id, date, introduction, body, footer, letter_type', 'required'),
             array('date', 'OEDateValidator'),
             array('clinic_date', 'OEDateValidatorNotFuture'),
-            array('is_signed_off', 'isDraftValidator'),
+            //array('is_signed_off', 'isDraftValidator'), // they do not want this at the moment - waiting for the demo/feedback
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, site_id, use_nickname, date, introduction, re, body, footer, draft, direct_line, letter_type', 'safe', 'on' => 'search'),

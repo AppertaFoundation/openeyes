@@ -324,7 +324,14 @@ if( !$macro_id ){
             </label>
         </div>
         <div class="large-8 column end">
-            <?php echo $form->checkBox($element, 'is_signed_off', array('nowrapper' => true, 'no-label' => true)) ?>
+            <?php echo $form->radioButtons($element, 'is_signed_off', array(
+                    1 => 'Yes',
+                    0 => 'No',
+                ),
+                    $element->is_signed_off,
+                    false, false, false, false,
+                    array('nowrapper' => true)
+                ); ?>
         </div>
     </div>
 </div>
