@@ -525,6 +525,12 @@ class ElementLetter extends BaseEventTypeElement
             $document->is_draft = $this->draft;
             $document->createNewDocSet();
         }
+        
+        if( $this->draft ){
+            $this->event->addIssue('Draft');
+        } else {
+            $this->event->deleteIssue('Draft');
+        }
 
         return parent::afterSave();
     }

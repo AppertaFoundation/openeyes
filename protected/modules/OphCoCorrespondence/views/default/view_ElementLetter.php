@@ -17,12 +17,18 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="row field-row">
-    <div class="small-4 small-offset-4 text-right columns">
-        <?php echo CHtml::encode($element->getAttributeLabel('is_signed_off')) . ': '; ?>
-        <?php echo $element->is_signed_off == 1 ? 'Yes' : ( $element->is_signed_off === 0 ? 'No' : 'N/A' ); ?>
+<section class="element">
+    <h3 class="element-title highlight">Other information</h3>
+    <div class="element-data">
+        <div class="row data-row">
+            <div class="large-2 column">
+                <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('is_signed_off')) . ': '; ?></h4>
+                <div class="data-value"><?php echo $element->is_signed_off == 1 ? 'Yes' : ( $element->is_signed_off === 0 ? 'No' : 'N/A' ); ?></div>
+            </div>
+        </div>
     </div>
-</div>
+</section>
+<br>
         
 <div id="correspondence_out" class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?>">
 	<header>
