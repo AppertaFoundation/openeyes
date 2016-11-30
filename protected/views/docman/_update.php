@@ -81,7 +81,7 @@ button.green { background-color:green; color: white; }
                                 'contact_type' => $target->contact_type,
                                 'row_index' => $row_index,
                                 'address' => $target->address,
-                                'is_editable' => $element->draft));
+                                'is_editable' => true));
                         ?>
                     </td>
                     <td>

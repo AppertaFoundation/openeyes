@@ -122,7 +122,6 @@ if( !$macro_id ){
         <div class="large-3 column">
             <label>
                 <?php echo $form->checkBox($element, 'use_nickname', array('nowrapper' => true)) ?>
-                <?php echo $element->getAttributeLabel('use_nickname') ?>
             </label>
         </div>
     </div>

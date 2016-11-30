@@ -48,6 +48,9 @@
     div#docman_block select.macro {
         max-width: 220px;
     }
+    .event-content div#docman_block textarea{
+        font-size: 13px;
+    }
 
     table.docman tbody tr td img {
         vertical-align: text-top;
@@ -104,7 +107,6 @@
         <tr class="rowindex-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
             <td> To <?php echo CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][ToCc]", 'To'); ?> </td>
             <td>
-                                
                 <?php 
                     $target = new DocumentTarget();
                     $target->contact_id = $macro_data["to"]["contact_id"];
@@ -224,10 +226,14 @@
                 if(isset($defaults['To']['address'])){
                     $address = $defaults['To']['address'];
                 }
+                $contact_name = null;
+                if(isset($defaults['To']['contact_name'])){
+                    $contact_name = $defaults['To']['contact_name'];
+                }
                 
                 echo $this->renderPartial(
                     '//docman/document_row_recipient',
-                    array('contact_id' => $contact_id, 'address' => $address, 'row_index' => 0, 'selected_contact_type' => $contact_type)
+                    array('contact_id' => $contact_id, 'address' => $address, 'row_index' => 0, 'selected_contact_type' => $contact_type, 'contact_name' => $contact_name)
                 );
             }
         ?>
@@ -248,12 +254,15 @@
                 if(isset($defaults['Cc']['address'])){
                     $address = $defaults['Cc']['address'];
                 }
-                
+                $contact_name = null;
+                if(isset($defaults['Cc']['contact_name'])){
+                    $contact_name = $defaults['Cc']['contact_name'];
+                }
                 
                 /* generates a default 'To' and 'Cc' rows */
                 echo $this->renderPartial(
                     '//docman/document_row_recipient',
-                    array('contact_id' => $contact_id, 'address' => $address, 'row_index' => 1, 'selected_contact_type' => $contact_type)
+                    array('contact_id' => $contact_id, 'address' => $address, 'row_index' => 1, 'selected_contact_type' => $contact_type, 'contact_name' => $contact_name)
                 );
             }
         ?>

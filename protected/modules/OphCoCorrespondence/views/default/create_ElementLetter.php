@@ -120,7 +120,7 @@ $patient = Patient::model()->findByPk($patient_id);
                 $patient_address = implode("\n", $patient_address->getLetterArray());
             }
             
-            
+
             $this->renderPartial('//docman/_create', array(
                 'row_index' => (isset($row_index) ? $row_index : 0),
                 'macro_data' => $macro_data,
@@ -130,10 +130,12 @@ $patient = Patient::model()->findByPk($patient_id);
                     'To' => array(
                         'contact_id' => $patient->gp->contact->id,
                         'contact_type' => 'GP',
+                        'contact_name' => $patient->gp->contact->getFullName(),
                         'address' => $gp_address
                     ),
                     'Cc' => array(
                         'contact_id' => $patient->contact->id,
+                        'contact_name' => $patient->contact->getFullName(),
                         'contact_type' => 'PATIENT',
                         'address' => $patient_address
                         

@@ -45,7 +45,7 @@
             <input type="hidden" value="Docman" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][<?php echo $pre_output_key; ?>][output_type]" >
         </label>
         <?php if($docnam_output):?>
-            <?php echo CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $docnam_output->id); ?>
+            <?php echo CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $docnam_output->id, array('class'=>'document_target_' . $row_index . '_document_output_id')); ?>
         <?php endif; ?>
         <?php $pre_output_key++; ?>
     <?php endif; ?>    

@@ -17,24 +17,25 @@
 ?>
 
 <?php if($is_editable): ?>
-    <?php echo CHtml::dropDownList( ( $contact_id && is_numeric($contact_id) ? 'DocumentTarget['.$row_index.'][attributes][contact_id]' : ' '),
-            $contact_id,
+    <?php echo CHtml::dropDownList('',
+            null,
             $address_targets,
             array(
                 'empty' => '- Recipient -',
                 'nowrapper' => true, 
-                'class' => 'full-width docman_recipient ' . ( $contact_id && is_numeric($contact_id) ? '' : 'hidden') ,
+                'class' => 'full-width docman_recipient' ,
                 'data-rowindex' => $row_index, 
                 'data-previous' => $contact_id,
-                'data-name' => 'DocumentTarget['.$row_index.'][attributes][contact_id]'
+                'data-name' => 'DocumentTarget['.$row_index.'][attributes][contact_id]',
+                'id' => 'docman_recipient_' . $row_index,
             )
         );
+    
+        echo CHtml::hiddenField('DocumentTarget['.$row_index.'][attributes][contact_id]', $contact_id );
     ?>
-    <?php if( !$contact_id || !is_numeric($contact_id)): ?>
-        <?php echo CHtml::textField('DocumentTarget['.$row_index.'][attributes][contact_name]', $contact_name, array(
-            'class' => 'docman_recipient_freetext'
-        )); ?>
-    <?php endif; ?>
+    <br><br>
+    <?php echo CHtml::textField('DocumentTarget['.$row_index.'][attributes][contact_name]', $contact_name); ?>
+
 <?php else: ?>
     <?php echo $contact_name; ?>
     <?php echo CHtml::hiddenField('DocumentTarget['.$row_index.'][attributes][' . (!$contact_id || !is_numeric($contact_id) ? 'contact_name' : 'contact_id') . ']', (!$contact_id || !is_numeric($contact_id) ? $contact_name : $contact_id)); ?>

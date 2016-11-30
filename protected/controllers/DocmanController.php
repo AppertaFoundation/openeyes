@@ -156,6 +156,7 @@ class DocmanController extends BaseController
             }
         }
 
+        $contact_name = null;
         if ($contact_id) {
             $contact = Contact::model()->findByPk($contact_id);
             $address = isset($contact->correspondAddress) ? $contact->correspondAddress : $contact->address;
@@ -164,6 +165,7 @@ class DocmanController extends BaseController
                     $address = isset($patient->practice->contact->correspondAddress) ? $patient->practice->contact->correspondAddress : $patient->practice->contact->address;
                 }
             }
+            $contact_name = $contact->getFullName();
         }
         
         if($address){
@@ -173,7 +175,7 @@ class DocmanController extends BaseController
 
         $this->renderPartial(
             '/docman/document_row_recipient',
-            array('contact_id' => $contact_id, 'address' => $address, 'row_index' => $last_row_index + 1, 'selected_contact_type' => $selected_contact_type)
+            array('contact_id' => $contact_id, 'address' => $address, 'row_index' => $last_row_index + 1, 'selected_contact_type' => $selected_contact_type, 'contact_name' => $contact_name)
         );
         $this->getApp()->end();
     }
@@ -183,12 +185,19 @@ class DocmanController extends BaseController
         if (!Yii::app()->request->isAjaxRequest) {
             return;
         }
+        
+        $data = array();
+        $data["contact_name"] = '';
+                
         $patient_id = Yii::app()->request->getQuery('patient_id');
         $patient = Patient::model()->findByPk($patient_id);
         $contact_id = Yii::app()->request->getQuery('contact_id');
         $document_set_id = Yii::app()->request->getQuery('document_set_id');
         if ($contact_id) {
             $contact = Contact::model()->findByPk($contact_id);
+            $data["contact_name"] = $contact->getFullName();
+            $data["contact_id"] = $contact_id;
+                    
             $address = isset($contact->correspondAddress) ? $contact->correspondAddress : $contact->address;
             $contact_type = $contact->getType();
             $data["contact_type"] = $contact_type ? $contact_type : '';
@@ -207,6 +216,12 @@ class DocmanController extends BaseController
                         }
                     }
                 }
+            }
+            
+            if($data["contact_type"] == 'Gp'){
+                $data["introduction"] = $patient->gp->getLetterIntroduction();
+            } else if($data["contact_type"] == 'Patient'){
+                $data["introduction"] = $patient->getLetterIntroduction();
             }
             
             // if the contact type is GP it's possible that it has no address, so we have to look for practice
@@ -242,7 +257,7 @@ class DocmanController extends BaseController
             echo json_encode($data);
         }
     }
-
+    
     public function actionAjaxGetMacros()
     {
         header("Content-Type: application/json");

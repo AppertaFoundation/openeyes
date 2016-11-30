@@ -222,7 +222,7 @@ class Document //extends BaseActiveRecord
 
     public function createNewDocSet()
     {
- 
+
         $post_document_targets = Yii::app()->request->getPost('DocumentTarget', null);
         $doc_set = null;
         if (isset($_POST['DocumentSet']['id'])) {
@@ -268,7 +268,8 @@ class Document //extends BaseActiveRecord
                 $data = array(
                     'to_cc' => $post_document_target['attributes']['ToCc'],
                     'contact_type' => $post_document_target['attributes']['contact_type'],
-                    'contact_id' => $post_document_target['attributes']['contact_id'],
+                    'contact_id' => isset($post_document_target['attributes']['contact_id']) ? $post_document_target['attributes']['contact_id'] : null,
+                    'contact_name' => isset($post_document_target['attributes']['contact_name']) ? $post_document_target['attributes']['contact_name'] : null,
                     'address' => $post_document_target['attributes']['address'],
                 );
 
@@ -278,6 +279,10 @@ class Document //extends BaseActiveRecord
                 $doc_target = $this->createNewDocTarget($doc_instance, $data);
 
                 if (isset($post_document_target['DocumentOutput'])) {
+                    
+                    // If an output id is not posted back we remove it from the DB
+                    $this->removeOutputs($post_document_target['attributes']['id'], $post_document_target['DocumentOutput']);
+                    
                     foreach ($post_document_target['DocumentOutput'] as $document_output) {
 
                         if (isset($document_output['output_type'])) {
@@ -313,13 +318,8 @@ class Document //extends BaseActiveRecord
         $doc_target->document_instance_id = $doc_instance->id;
         $doc_target->contact_type = $data['contact_type'];
         $doc_target->contact_id = $data['contact_id'];
+        $doc_target->contact_name = $data['contact_name'];
         $doc_target->ToCc = $data['to_cc'];
-        if (is_numeric($data['contact_id'])) {
-            $doc_target->contact_name = Contact::model()->findByPk($data['contact_id'])->getFullName();
-        } else {
-            $doc_target->contact_name = $data['contact_id'];
-            $data['contact_id'] = null;
-        }
         $doc_target->address = $data['address'];
         $doc_target->save();
 
@@ -348,6 +348,11 @@ class Document //extends BaseActiveRecord
 
     }
     
+    /**
+     * When the user removes a saved DocumentTarget we remove the target and the output from the DB
+     * @param type $document_id
+     * @param type $new_document_targets
+     */
     protected function removeTargetAndOutput($document_id, $new_document_targets)
     {
         $document_set = DocumentSet::model()->findByPk($document_id);
@@ -366,7 +371,7 @@ class Document //extends BaseActiveRecord
                     }
                 }
                 
-                // the target in the DB is not posted back so we can delete it as they rremoved it from the UI
+                // the target in the DB is not posted back so we can delete it as they removed it from the UI
                 if(!$is_in){
 
                     $deletable = true;
@@ -384,12 +389,38 @@ class Document //extends BaseActiveRecord
                         }
                         $document_target->delete();
                     }
-                    
-                    
                 }
             }
             
         }
+    }
+    
+    protected function removeOutputs($document_target_id, $new_document_outputs)
+    {
+        $document_target = DocumentTarget::model()->findByPk($document_target_id);
+
+        $document_output_ids = array();
+        foreach($new_document_outputs as $document_output){
+            if( isset($document_output['attributes']['id']) ){
+                $document_output_ids[] = $document_output['attributes']['id'];
+            }
+        }
+        
+        $criteria = new CDbCriteria();
+        
+        $criteria->addCondition('document_target_id = :document_target_id');
+        $criteria->params[':document_target_id'] = $document_target_id;
+        
+        $criteria->addCondition('output_status != :output_status');
+        $criteria->params[':output_status'] = "COMPLETE";
+        
+        $criteria->addNotInCondition('id', $document_output_ids);
+        
+        DocumentOutput::model()->deleteAll($criteria);
+        
+        
+        
+        
     }
 
 }

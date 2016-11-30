@@ -83,21 +83,22 @@ var docman = (function() {
         {
             $('#docman_block').on("change", '.docman_recipient', function(event){
                 if(event.target.value){
-                   docman.getRecipientData(event.target.value, event.target);
+                    docman.getRecipientData(event.target.value, event.target);
                 }
             });
             $('#docman_block').on("change", '.docman_contact_type', function (){
                 var rowindex = $(this).data("rowindex");
-                var $tr, text;
+                var $tr, text;            
                 if($(this).val() == 'OTHER'){
-
-                    $tr = $(this).closest('tr'),
-                    $docman_recipient = $tr.find('.docman_recipient');
-                    
-                    $docman_recipient.hide();
-                    $docman_recipient.data('name', $docman_recipient.attr('name') ).removeAttr('name');
-                    $docman_recipient.after('<input type="text" class="docman_recipient_freetext" name="DocumentTarget['+rowindex+'][attributes][contact_id]">');
-                    
+//
+//                    $tr = $(this).closest('tr'),
+//                    $docman_recipient = $tr.find('.docman_recipient');
+//                    $tr.find('textarea').val('');
+//                    
+//                    $docman_recipient.hide();
+//                    $docman_recipient.data('name', $docman_recipient.attr('name') ).removeAttr('name');
+//                    $docman_recipient.after('<input type="text" class="docman_recipient_freetext" name="DocumentTarget['+rowindex+'][attributes][contact_id]">');
+//                    
                 } else {
                     $tr = $(this).closest('tr'),
                     $docman_recipient = $tr.find('.docman_recipient');
@@ -106,24 +107,22 @@ var docman = (function() {
                         $docman_recipient.attr('name', $docman_recipient.data('name'));
                         $tr.find('.docman_recipient_freetext').remove();
 
-                        docman_recipient_value = $tr.find(".docman_recipient option:contains('(" + $(this).val() + ")')").val();                       
+                        docman_recipient_value = $tr.find(".docman_recipient option:contains('(" + $(this).val() + ")')").val();
                         if(typeof docman_recipient_value === 'undefined'){
                             text = $(this).val().charAt(0) + $(this).val().toLowerCase().slice(1);
-                            docman_recipient_value = $tr.find(".docman_recipient option:contains('(" + text + ")')").val();                
+                            docman_recipient_value = $tr.find(".docman_recipient option:contains('(" + text + ")')").val();
                         }
                         $docman_recipient.val(docman_recipient_value).trigger('change');
                     }
                 }
-                
                 docman.setDeliveryMethods(rowindex);
             });
         },
-
+                
         addRemoveHandler: function(){
             $('#docman_block').on("click", '.remove_recipient', function(event)
             {
                 event.target.closest('tr').remove();
-                //$('#dm_table tr:has(td[rowspan])').attr("rowspan", $(this).attr("rowspan")-1);
             });
         },
 
@@ -156,16 +155,16 @@ var docman = (function() {
         setDeliveryMethods: function(row)
         {
             var delivery_methods = '';
-
+             
             $('#dm_table tr').each(function()
             {
                 if($(this).data("rowindex") == row)
                 {                            
                     if($(this).find('.docman_contact_type').val() == 'GP')
                     {                 
-                        delivery_methods = '<label><input value="Docman" name="DocumentTarget_' + row + '_DocumentOutput_0_output_type" type="checkbox" disabled checked>DocMan';
-                        delivery_methods += '<input type="hidden" value="Docman" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]"></label><br>';
-                        delivery_methods += '<label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox">Print</label>';
+                            delivery_methods = '<label><input value="Docman" name="DocumentTarget_' + row + '_DocumentOutput_0_output_type" type="checkbox" disabled checked>DocMan';
+                            delivery_methods += '<input type="hidden" value="Docman" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]"></label><br>';
+                            delivery_methods += '<label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox">Print</label>';
                     }else
                     {
                         delivery_methods = '<label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]" type="checkbox" checked>Print</label>';
@@ -258,26 +257,50 @@ var docman = (function() {
                 dataType: 'json',
                 'success': function(resp) {
                     var rowindex = $(element).data("rowindex");
+                    var $tr = $('tr.rowindex-' + rowindex);
                     var this_recipient = $(element).data('previous');
 
+                    var this_contact_name = $('#DocumentTarget_' + rowindex + '_attributes_contact_name').val();
                     var this_address = $('#Document_Target_Address_' + rowindex).val();
+                    var this_contact_id = $('#DocumentTarget_' + rowindex + '_attributes_contact_id').val();
                     var this_contact_type = $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val();
                     var other_rowindex = $('#docman_block select option[value="' + resp.contact_type.toUpperCase() + '"]:selected').closest('tr').data('rowindex');
                     var $other_docman_recipient = $('tr.rowindex-' + other_rowindex + ' .docman_recipient');
+                    
+                    var other_contact_name = $('#DocumentTarget_' + other_rowindex + '_attributes_contact_name').val();
+                    var other_contact_id = $('#DocumentTarget_' + other_rowindex + '_attributes_contact_id').val();
 
                     $('#Document_Target_Address_' + rowindex).val(resp.address);
+                    $('#DocumentTarget_' + rowindex + '_attributes_contact_name').val(resp.contact_name);
+                    $('#DocumentTarget_' + rowindex + '_attributes_contact_id').val(resp.contact_id);
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val(resp.contact_type.toUpperCase()).trigger('change');
+//                    
+//                    //DocumentTarget_1_DocumentOutput_1_id
+//                    $('.document_target_' + rowindex + '_document_output_id').remove();
+//                    if(resp.DocumentOutputs){
+//                        for(i=0; i<resp.DocumentOutputs.length; i++){
+//                                                       
+//                            var input_class = 'document_target_' + rowindex + '_document_output_id';
+//                            
+//                            var name = 'DocumentTarget['+rowindex+'][DocumentOutput]['+i+'][id]';
+//                            $output_hidden_field = $('<input>',{'class':input_class, 'name' : name, 'type':'hidden', 'value':resp.DocumentOutputs[i].output_id});
+//                            $tr.append($output_hidden_field);
+//                        }
+//                        
+//                    }
 
                     if((resp.contact_type.toUpperCase() === 'GP' || resp.contact_type.toUpperCase() === 'PATIENT') && rowindex !== other_rowindex){
                         $other_docman_recipient.val(this_recipient);
                         $('#Document_Target_Address_' + other_rowindex).val(this_address);
+                        $('#DocumentTarget_' + other_rowindex + '_attributes_contact_name').val(this_contact_name);
+                        $('#DocumentTarget_' + other_rowindex + '_attributes_contact_id').val(this_contact_id);
                         $('#DocumentTarget_' + other_rowindex + '_attributes_contact_type').val(this_contact_type).trigger('change');
                     
                         $(element).data('previous', $(element).val());
                         $other_docman_recipient.data('previous', $other_docman_recipient.val());
                     
-                        $('#DocumentTarget_' + rowindex + '_attributes_contact_type').trigger('change');
-                        $('#DocumentTarget_' + other_rowindex + '_attributes_contact_type').trigger('change');
+//                        $('#DocumentTarget_' + rowindex + '_attributes_contact_type').trigger('change');
+//                        $('#DocumentTarget_' + other_rowindex + '_attributes_contact_type').trigger('change');
                     }
                     // if the 'To' dropdown has changed we check the Cc and add recipients
                     if( rowindex === 0 ){
@@ -292,7 +315,12 @@ var docman = (function() {
                                 docman.createNewRecipientEntry('GP');
                             }
                         }
+                        $("#ElementLetter_introduction").val( resp.introduction );
                     }
+                    
+                    $('#docman_recipient_' + rowindex).val('');
+                    $('#docman_recipient_' + other_rowindex).val('');
+                    
                     /* If DRSS selected add GP and Patient */
                     $('#dm_table .docman_loader').hide();
                 }
