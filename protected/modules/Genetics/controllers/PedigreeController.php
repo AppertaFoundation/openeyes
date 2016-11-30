@@ -68,7 +68,7 @@ class PedigreeController extends BaseModuleController
             'gene_id' => array(
                 'widget' => 'DropDownList',
                 'options' => CHtml::listData(PedigreeGene::model()->findAll(), 'id', 'name'),
-                'htmlOptions' => null,
+                'htmlOptions' => array('empty' => '- Gene -'),
                 'hidden' => false,
                 'layoutColumns' => null,
             ),
