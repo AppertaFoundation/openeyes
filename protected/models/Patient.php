@@ -1165,6 +1165,9 @@ class Patient extends BaseActiveRecordVersioned
         return $res;
     }
 
+    /**
+     * @return array|mixed|null
+     */
     public function getSystemicDiagnoses()
     {
         $criteria = new CDbCriteria();
@@ -1175,6 +1178,9 @@ class Patient extends BaseActiveRecordVersioned
         return SecondaryDiagnosis::model()->findAll($criteria);
     }
 
+    /**
+     * @return array|mixed|null
+     */
     public function getOphthalmicDiagnoses()
     {
         $criteria = new CDbCriteria();

@@ -32,6 +32,8 @@ class GeneticsPatient extends BaseActiveRecord
 
     protected $statuses = array();
 
+    protected $preExistingPedigreesIds = array();
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -129,7 +131,7 @@ class GeneticsPatient extends BaseActiveRecord
             ),
             'pedigrees' => array(
                 self::MANY_MANY,
-                'GeneticsStudy',
+                'Pedigree',
                 'genetics_patient_pedigree(patient_id, pedigree_id)',
             ),
         );
@@ -146,5 +148,39 @@ class GeneticsPatient extends BaseActiveRecord
             'gender_id' => 'Karyotypic Sex',
             'is_deceased' => 'Is Deceased',
         );
+    }
+
+    /**
+     * Set the pedigrees that exist on load to compare to when saved.
+     */
+    protected function afterFind()
+    {
+        parent::afterFind();
+        foreach($this->pedigrees as $pedigree) {
+            $this->preExistingPedigreesIds[] = $pedigree->attributes['id'];
+        }
+    }
+
+    /**
+     * Update the pedigrees this patient has been added to.
+     */
+    protected function afterSave()
+    {
+        parent::afterSave();
+
+        $pedigrees = GeneticsPatientPedigree::model()->findAllByAttributes(array('patient_id' => $this->id), array('select' =>  'pedigree_id'));
+        $pedigreeIds = array();
+        foreach($pedigrees as $pedigree) {
+            $pedigreeIds[] = $pedigree->attributes['pedigree_id'];
+        }
+
+        $added = array_diff($this->preExistingPedigreesIds, $pedigreeIds);
+        $deleted = array_diff($pedigreeIds, $this->preExistingPedigreesIds);
+
+        $difference = Pedigree::model()->findAllByPk(array_merge($added, $deleted));
+
+        foreach ($difference as $pedigree) {
+            $pedigree->updateDiagnosis();
+        }
     }
 }

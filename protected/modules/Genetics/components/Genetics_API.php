@@ -31,7 +31,7 @@ class Genetics_API extends BaseAPI
                 'patient',
                 'pedigree' => array('with' => array('inheritance', 'gene', 'disorder')),
                 'status')
-        )->find('patient_id=?', array($patient_id));
+        )->find('t.patient_id=?', array($patient_id));
     }
 
     /**

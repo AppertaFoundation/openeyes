@@ -17,8 +17,10 @@ $name = get_class($model);
                             <?= $study->name ?>
                             - <i>Ended: <?= Helper::convertMySQL2NHS($study->end_date) ?></i><br>
                         <?php else: ?>
-                            <?php if($edit_status_url && $participation):?>
-                            <a href="<?=$edit_status_url . $participation->id?>?return=<?=Yii::app()->request->requestUri?>" title="Edit Participation" class="edit-study-participation"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                            <?php if(isset($edit_status_url, $participation) && $edit_status_url && $participation):?>
+                            <a href="<?=$edit_status_url . $participation->id?>?return=<?=Yii::app()->request->requestUri?>" title="Edit Participation" class="edit-study-participation">
+                              <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                            </a>
                             <?php endif;?>
                             <?= $study->name ?>
                             <?php if($participation && $participation->is_consent_given): ?>

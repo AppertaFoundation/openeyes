@@ -71,7 +71,7 @@ class Pedigree extends BaseActiveRecord
         // will receive user inputs.
         return array(
             array(
-                'inheritance_id, comments, consanguinity, gene_id, base_change, amino_acid_change, disorder_id,' .
+                'inheritance_id, comments, consanguinity, gene_id, base_change, amino_acid_change,' .
                 'base_change_id, amino_acid_change_id, genomic_coordinate, genome_version, gene_transcript',
                 'safe'
             ),
@@ -117,5 +117,49 @@ class Pedigree extends BaseActiveRecord
     public function genomeVersions()
     {
         return range($this->lowest_version, $this->highest_version);
+    }
+
+    public function updateDiagnosis()
+    {
+        $sql = 'SELECT
+                  count(all_diagnoses.id) AS occurances,
+                  all_diagnoses.id,
+                  all_diagnoses.term
+                FROM
+                  (SELECT
+                     disorder.id,
+                     disorder.term
+                   FROM pedigree
+                     JOIN genetics_patient_pedigree ON pedigree.id = genetics_patient_pedigree.pedigree_id
+                     JOIN genetics_patient ON genetics_patient.id = genetics_patient_pedigree.patient_id
+                     JOIN patient ON genetics_patient.patient_id = patient.id
+                     JOIN episode ON patient.id = episode.patient_id
+                     JOIN disorder ON episode.disorder_id = disorder.id
+                   WHERE pedigree.id = ' . $this->id . '
+                   UNION ALL
+                   SELECT
+                     disorder.id,
+                     disorder.term
+                   FROM pedigree
+                     JOIN genetics_patient_pedigree ON pedigree.id = genetics_patient_pedigree.pedigree_id
+                     JOIN genetics_patient ON genetics_patient.id = genetics_patient_pedigree.patient_id
+                     JOIN patient ON genetics_patient.patient_id = patient.id
+                     JOIN secondary_diagnosis ON patient.id = secondary_diagnosis.patient_id
+                     JOIN disorder ON secondary_diagnosis.disorder_id = disorder.id
+                   WHERE pedigree.id = ' . $this->id . ') AS all_diagnoses
+                GROUP BY all_diagnoses.term
+                ORDER BY occurances DESC
+                LIMIT 1;';
+
+        $query = $this->getDbConnection()->createCommand($sql);
+        $diagnosis = $query->queryRow();
+
+        if($diagnosis){
+            $this->disorder_id = $diagnosis['id'];
+        } else {
+            $this->disorder_id = null;
+        }
+
+        $this->save();
     }
 }
