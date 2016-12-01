@@ -209,8 +209,9 @@ class DocmanController extends BaseController
                     foreach ($cb_list as $cb) {
                         if ($services = $cb->services) {
                             foreach ($services as $svc) {
-                                if($svc->contact && $svc->contact->id == $contact_id){
+                                if($svc->contact && $svc->contact->id == $contact_id && $svc->type->shortname == 'DRSS'){
                                     $data["contact_type"] = 'DRSS';
+                                    $data["contact_name"] = $svc->name;
                                 }
                             }
                         }
