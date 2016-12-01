@@ -62,7 +62,7 @@ class ProcessHscicDataCommand extends CConsoleCommand
      *
      * @var string
      */
-    private static $base_url = 'http://systems.digital.nhs.uk';
+    private static $base_url = 'https://digital.nhs.uk';
 
 
     /**
@@ -73,31 +73,31 @@ class ProcessHscicDataCommand extends CConsoleCommand
     private static $file_config = array(
         'full' => array(
             'gp' => array(
-                    'url' => '/data/ods/datadownloads/data-files/egpcur.zip',
+                    'url' => '/media/370/egpcur/zip/egpcur.zip',
                     'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
              ),
             'practice' => array(
-                    'url' => '/data/ods/datadownloads/data-files/epraccur.zip',
+                    'url' => '/media/372/epraccur/zip/epraccur.zip',
                     'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
             ),
             'ccg' => array(
-                    'url' => '/data/ods/datadownloads/data-files/eccg.zip',
+                    'url' => '/media/354/eccg/zip/eccg1.zip',
                     'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode'),
             ),
             'ccgAssignment' => array(
-                    'url' => '/data/ods/datadownloads/data-files/epcmem.zip',
+                    'url' => '/media/378/epcmem/zip/epcmem.zip',
                     'fields' => array('practice_code', 'ccg_code'),
             ),
         ),
         'monthly' => array(
             'gp' => array(
-                'url' => '/data/ods/datadownloads/monthamend/current/egpam.zip',
+                'url' => '/media/510/egpam/zip/egpam.zip',
                 'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
             ),
         ),
         'quarterly' => array(
             'gp' => array(
-                'url' => '/data/ods/datadownloads/quartamend/current/egpaq.zip',
+                'url' => '/media/530/egpaq/zip/egpaq.zip',
                 'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
             ),
         ),
