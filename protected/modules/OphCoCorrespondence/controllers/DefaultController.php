@@ -77,7 +77,7 @@ class DefaultController extends BaseEventTypeController
     {
         $title = '';
         $letter = ElementLetter::model()->find('event_id=?', array($id));
-        
+
         $output = $letter->getOutputByType($type = 'Docman');
         if($output){
             $docnam = $output[0]; //for now only one Docman allowed
@@ -90,7 +90,7 @@ class DefaultController extends BaseEventTypeController
         }
         parent::actionView($id);
     }
-
+    
     /**
      * Ajax action to get the address for a contact.
      *
@@ -397,10 +397,6 @@ class DefaultController extends BaseEventTypeController
     public function actionPDFPrint($id)
     {
         $letter = ElementLetter::model()->find('event_id=?', array($id));
-//        comment out until we decide 
-//        if (!$letter->is_signed_off && $letter->document_instance ) {
-//            throw new CHttpException(400, 'Can not print letter with for event ' . $id);
-//        }
 
         if (Yii::app()->request->getQuery('all', false)) {
             $this->pdf_print_suffix = 'all';
@@ -414,10 +410,6 @@ class DefaultController extends BaseEventTypeController
                 $output->save();
             }
         }
-        
-        if( $letter->draft == 0 ){
-            $this->markRedyToSend($id);
-        }
 
         return parent::actionPDFPrint($id);
     }
@@ -430,8 +422,10 @@ class DefaultController extends BaseEventTypeController
         
         if( $outputs ){
             foreach($outputs as $output){
-                $output->output_status = "PENDING";
-                $output->save();
+                if( $output->output_status != "COMPLETE" ){
+                    $output->output_status = "PENDING";
+                    $output->save();
+                }
             }
         }
     }

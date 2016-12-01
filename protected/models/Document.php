@@ -281,7 +281,9 @@ class Document //extends BaseActiveRecord
                 if (isset($post_document_target['DocumentOutput'])) {
                     
                     // If an output id is not posted back we remove it from the DB
-                    $this->removeOutputs($post_document_target['attributes']['id'], $post_document_target['DocumentOutput']);
+                    if(isset($post_document_target['attributes']['id'])){
+                        $this->removeOutputs($post_document_target['attributes']['id'], $post_document_target['DocumentOutput']);
+                    }
                     
                     foreach ($post_document_target['DocumentOutput'] as $document_output) {
 
@@ -339,6 +341,9 @@ class Document //extends BaseActiveRecord
         $doc_output->document_instance_data_id = $doc_instance_version->id;
         $doc_output->output_type = $data['output_type'];
         $doc_output->requestor_id = 'OE';
+        if ( isset($_POST['saveprint']) ){
+            $doc_output->output_status = "PENDING";
+        }
         
         if( isset($data['output_status']) && $doc_output->output_type != "COMPLETE"){
             $doc_output->output_status = $data['output_status'];
@@ -401,8 +406,8 @@ class Document //extends BaseActiveRecord
 
         $document_output_ids = array();
         foreach($new_document_outputs as $document_output){
-            if( isset($document_output['attributes']['id']) ){
-                $document_output_ids[] = $document_output['attributes']['id'];
+            if( isset($document_output['id']) ){
+                $document_output_ids[] = $document_output['id'];
             }
         }
         
