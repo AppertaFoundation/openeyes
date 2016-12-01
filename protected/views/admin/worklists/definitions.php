@@ -37,9 +37,9 @@
                     <td><?=$definition->name?></td>
                     <td><?php if ($this->manager->canUpdateWorklistDefinition($definition)) {?><a href="/worklistAdmin/definitionUpdate/<?=$definition->id?>">Edit</a> |<?php }?>
                         <a href="/worklistAdmin/definition/<?=$definition->id?>">View</a> |
-                        <a href="/worklistAdmin/definitionWorklists/<?=$definition->id?>">Instances (<?=count($definition->worklists)?>)</a> |
-                        <a href="/worklistAdmin/definitionMappings/<?=$definition->id?>">Mapping Items(<?=count($definition->mappings)?>)</a> |
-                        <a href="/worklistAdmin/definitionDisplayContexts/<?=$definition->id?>">Display Context (<?=count($definition->display_contexts) > 0 ? 'limited' : 'any';?>)</a> |
+                        <a href="/worklistAdmin/definitionWorklists/<?=$definition->id?>">Instances (<?=$definition->worklistCount?>)</a> |
+                        <a href="/worklistAdmin/definitionMappings/<?=$definition->id?>">Mapping Items(<?=$definition->mappingCount?>)</a> |
+                        <a href="/worklistAdmin/definitionDisplayContexts/<?=$definition->id?>">Display Context (<?=$definition->displayContextCount > 0 ? 'limited' : 'any';?>)</a> |
                         <?php if (count($definition->worklists)) {?>
                             <a href="/worklistAdmin/definitionWorklistsDelete/<?=$definition->id?>">Delete Instances</a>
                         <?php } else { ?>
