@@ -81,7 +81,7 @@ class ProcessHscicDataCommand extends CConsoleCommand
                     'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
             ),
             'ccg' => array(
-                    'url' => '/media/354/eccg/zip/eccg1.zip',
+                    'url' => '/media/354/eccg/zip/eccg.zip',
                     'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode'),
             ),
             'ccgAssignment' => array(
