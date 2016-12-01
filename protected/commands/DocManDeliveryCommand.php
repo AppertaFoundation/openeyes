@@ -143,19 +143,19 @@ class DocManDeliveryCommand extends CConsoleCommand
             <GP>".$this->event->episode->patient->gp->nat_id."</GP>
             <GPName>".$this->event->episode->patient->gp->contact->getFullName()."</GPName>
             <Surgery>" . $this->event->episode->patient->practice->code . "</Surgery>
-            <SurgeryName>XXXXXXXXX</SurgeryName>
+            <SurgeryName></SurgeryName>
             <LetterType>".$letter_types[$element_letter->letter_type]."</LetterType>
             <ActivityID>".$this->event->id."</ActivityID>
             <ActivityDate>".$this->event->event_date."</ActivityDate>
-            <ClinicianType>OMED</ClinicianType>
-            <Clinician>XXXXXXXXXX</Clinician>
-            <ClinicianName>XXXXXXXXXXX</ClinicianName>
+            <ClinicianType></ClinicianType>
+            <Clinician></Clinician>
+            <ClinicianName></ClinicianName>
             <Specialty>".$this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->ref_spec."</Specialty>
             <SpecialtyName>".$this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name."</SpecialtyName>
-            <Location>CR</Location>
-            <LocationName>Moorfields Eye Hospital</LocationName>
-            <SubLocation>A&amp;E</SubLocation>
-            <SubLocationName>A&amp;E Department</SubLocationName>
+            <Location>" . $element_letter->site->short_name . "</Location>
+            <LocationName>" . $element_letter->site->name . "</LocationName>
+            <SubLocation></SubLocation>
+            <SubLocationName></SubLocationName>
             </DocumentInformation>";
 
         file_put_contents($this->path."/".$filename.".XML", $xml);
