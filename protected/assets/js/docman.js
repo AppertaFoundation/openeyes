@@ -162,7 +162,7 @@ var docman = (function() {
                 {                            
                     if($(this).find('.docman_contact_type').val() == 'GP')
                     {                 
-                            delivery_methods = '<label><input value="Docman" name="DocumentTarget_' + row + '_DocumentOutput_0_output_type" type="checkbox" disabled checked>DocMan';
+                            delivery_methods = '<label><input value="Docman" name="DocumentTarget_' + row + '_DocumentOutput_0_output_type" type="checkbox" disabled checked>Electronic (DocMan)';
                             delivery_methods += '<input type="hidden" value="Docman" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]"></label><br>';
                             delivery_methods += '<label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox">Print</label>';
                     }else

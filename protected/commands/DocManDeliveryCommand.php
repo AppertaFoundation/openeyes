@@ -120,6 +120,9 @@ class DocManDeliveryCommand extends CConsoleCommand
     {
         $element_letter = ElementLetter::model()->findByAttributes(array("event_id"=>$this->event->id));
         $letter_types = array("0"=>"","1"=>"Clinic discharge letter","2"=>"Post-op letter","3"=>"Clinic letter","4"=>"Other letter");
+        
+        $subspeciality = isset($this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->ref_spec) ? $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->ref_spec : 'SS';
+        $subspeciality_name = isset($this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name) ? $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name : 'Support Services';
 
         $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
             <DocumentInformation>
@@ -150,8 +153,8 @@ class DocManDeliveryCommand extends CConsoleCommand
             <ClinicianType></ClinicianType>
             <Clinician></Clinician>
             <ClinicianName></ClinicianName>
-            <Specialty>".$this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->ref_spec."</Specialty>
-            <SpecialtyName>".$this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name."</SpecialtyName>
+            <Specialty>".$subspeciality."</Specialty>
+            <SpecialtyName>".$subspeciality_name."</SpecialtyName>
             <Location>" . $element_letter->site->short_name . "</Location>
             <LocationName>" . $element_letter->site->name . "</LocationName>
             <SubLocation></SubLocation>

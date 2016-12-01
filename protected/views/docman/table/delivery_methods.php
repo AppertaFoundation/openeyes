@@ -41,7 +41,7 @@
                 $is_checked = 'checked disabled';
             ?>
             <input type="checkbox" value="Docman" name="DocumentTarget_<?php echo $row_index; ?>_DocumentOutput_<?php echo $pre_output_key; ?>_output_type" 
-                <?php echo $is_checked; ?>>  DocMan
+                <?php echo $is_checked; ?>>  Electronic (DocMan)
             <input type="hidden" value="Docman" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][<?php echo $pre_output_key; ?>][output_type]" >
         </label>
         <?php if($docnam_output):?>
