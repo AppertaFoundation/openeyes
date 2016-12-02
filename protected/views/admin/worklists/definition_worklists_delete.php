@@ -19,7 +19,7 @@
 <div class="admin box">
     <h2>Confirm Delete</h2>
     <p>Are you sure you want to delete all the instances for the worklist definition <?= $definition->name ?>?
-        There are currently <?= count($definition->worklists) ?> instances that have been generated.</p>
+        There are currently <?= $definition->getWorklistCount() ?> instances that have been generated.</p>
 
     <form id="definition-delete" method="POST">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
