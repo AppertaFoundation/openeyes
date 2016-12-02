@@ -88,6 +88,10 @@ class SubjectController extends BaseModuleController
                     'model' => $admin->getModel(),
                 ),
             ),
+            'diagnoses' => array(
+                'widget' => 'DisorderLookup',
+                'relation' => 'diagnoses',
+            ),
             'pedigrees' => array(
                 'widget' => 'MultiSelectList',
                 'relation_field_id' => 'id',

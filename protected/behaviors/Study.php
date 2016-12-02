@@ -38,6 +38,10 @@ trait Study {
      */
     public function participatingStudyIds(BaseActiveRecord $subject)
     {
+        if(!$subject->id) {
+            return array();
+        }
+
         $criteria = new CDbCriteria();
         $criteria->addCondition('subject_id = ?');
         $criteria->select = 'study_id';

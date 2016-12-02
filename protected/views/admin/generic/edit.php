@@ -102,6 +102,11 @@ $assetManager = Yii::app()->getAssetManager();
                     $this->renderPartial('//admin//generic/patientLookup', array('model' => $admin->getModel()));
                     break;
                 case 'DisorderLookup':
+                    if (!is_array($admin->getModel()->{$type['relation']})) {
+                        $relations = array($admin->getModel()->{$type['relation']});
+                    } else {
+                        $relations = $admin->getModel()->{$type['relation']};
+                    }
                     ?>
                     <div class="row field-row">
                         <div class="large-2 column">
@@ -110,20 +115,22 @@ $assetManager = Yii::app()->getAssetManager();
                         <div class="large-5 column end">
                             <span id="enteredDiagnosisText">
                                 <?php
-                                if($admin->getModel()->{$type['relation']}){
-                                    echo $admin->getModel()->{$type['relation']}->term . '<i class="fa fa-times" aria-hidden="true" id="clear-diagnosis-widget"></i>';
-                                }?>
+                                foreach($relations as $relation) {
+                                    if($relation){
+                                        echo $relation->term . '<i class="fa fa-times" aria-hidden="true" data-diagnosis-id="'.$relation->id.'" class="clear-diagnosis-widget"></i><br>';
+                                    }
+                                } ?>
                             </span>
-                    <?php
-                            $this->renderPartial('//disorder/disorderAutoComplete', array(
-                                'class' => get_class($admin->getModel()),
-                                'name' => $field,
-                                'code' => '',
-                                'value' => $admin->getModel()->$field,
-                                'clear_diagnosis' => '<i class="fa fa-times" aria-hidden="true" id="clear-diagnosis-widget"></i>',
-                                'placeholder' => 'Search for a diagnosis',
-                            ));
-                    ?>
+                        <?php
+                          $this->renderPartial('//disorder/disorderAutoComplete', array(
+                              'class' => get_class($admin->getModel()),
+                              'name' => $field,
+                              'code' => '',
+                              'value' => $admin->getModel()->$field,
+                              'clear_diagnosis' => '<i class="fa fa-times" aria-hidden="true" data-diagnosis-id="" class="clear-diagnosis-widget"></i>',
+                              'placeholder' => 'Search for a diagnosis',
+                          ));
+                        ?>
                         </div>
                     </div>
                     <?php

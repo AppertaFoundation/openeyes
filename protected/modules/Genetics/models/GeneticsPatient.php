@@ -134,6 +134,11 @@ class GeneticsPatient extends BaseActiveRecord
                 'Pedigree',
                 'genetics_patient_pedigree(patient_id, pedigree_id)',
             ),
+            'diagnoses' => array(
+                self::MANY_MANY,
+                'Disorder',
+                'genetics_patient_diagnosis(patient_id, disorder_id)',
+            ),
         );
     }
 
@@ -168,6 +173,10 @@ class GeneticsPatient extends BaseActiveRecord
     {
         parent::afterSave();
 
+        if($this->getIsNewRecord()) {
+            $this->updateDiagnoses();
+        }
+
         $pedigrees = GeneticsPatientPedigree::model()->findAllByAttributes(array('patient_id' => $this->id), array('select' =>  'pedigree_id'));
         $pedigreeIds = array();
         foreach($pedigrees as $pedigree) {
@@ -181,6 +190,18 @@ class GeneticsPatient extends BaseActiveRecord
 
         foreach ($difference as $pedigree) {
             $pedigree->updateDiagnosis();
+        }
+    }
+
+    protected function updateDiagnoses()
+    {
+        $diagnoses = $this->patient->getAllDisorders();
+
+        foreach($diagnoses as $diagnosis) {
+            $geneticsDiagnosis = new GeneticsPatientDiagnosis();
+            $geneticsDiagnosis->patient_id = $this->id;
+            $geneticsDiagnosis->disorder_id = $diagnosis->id;
+            $geneticsDiagnosis->save();
         }
     }
 }
