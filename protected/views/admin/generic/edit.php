@@ -113,21 +113,23 @@ $assetManager = Yii::app()->getAssetManager();
                             <label>Diagnosis</label>
                         </div>
                         <div class="large-5 column end">
-                            <span id="enteredDiagnosisText">
+                            <div id="enteredDiagnosisText">
                                 <?php
                                 foreach($relations as $relation) {
                                     if($relation){
-                                        echo $relation->term . '<i class="fa fa-times" aria-hidden="true" data-diagnosis-id="'.$relation->id.'" class="clear-diagnosis-widget"></i><br>';
+                                        echo '<span>' . $relation->term .
+                                            '<i class="fa fa-times clear-diagnosis-widget" aria-hidden="true" data-diagnosis-id="'.$relation->id.'"></i><br>' .
+                                            '</span>';
                                     }
                                 } ?>
-                            </span>
+                            </div>
                         <?php
                           $this->renderPartial('//disorder/disorderAutoComplete', array(
                               'class' => get_class($admin->getModel()),
                               'name' => $field,
                               'code' => '',
                               'value' => $admin->getModel()->$field,
-                              'clear_diagnosis' => '<i class="fa fa-times" aria-hidden="true" data-diagnosis-id="" class="clear-diagnosis-widget"></i>',
+                              'clear_diagnosis' => '<i class="fa fa-times clear-diagnosis-widget" aria-hidden="true" data-diagnosis-id=""></i>',
                               'placeholder' => 'Search for a diagnosis',
                           ));
                         ?>

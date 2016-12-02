@@ -1,4 +1,10 @@
 <script type="text/javascript">
+  $(document).ready(function() {
+    $('#enteredDiagnosisText').on('click', '.clear-diagnosis-widget', function (e) {
+      $('.multiDiagnosis[value="' + $(this).data('diagnosisId') +'"').remove();
+      $(this).parent().remove();
+    });
+  });
   var source = function(request, response) {
     $.ajax({
       'url': '<?=Yii::app()->createUrl('/disorder/autocomplete')?>',
@@ -15,16 +21,17 @@
 if(is_array($value)):
 ?>
   var select = function(event, ui) {
-    var $clear = $('<?=$clear_diagnosis?>');
-    console.log($clear);
-    console.log($clear.data());
+    var $clear = $('<?=$clear_diagnosis?>'),
+      $new= $('<span></span>');
+
     $clear.data('diagnosisId', ui.item.id);
-    console.log($clear.data());
     $('#<?=$class?>_<?=$name?>_0').val('');
-    $('#enteredDiagnosisText').append(ui.item.value).append($clear);
+    $new.text(ui.item.value).append($clear);
+    $('#enteredDiagnosisText').append($new.append('<br>'));
     $('#enteredDiagnosisText').show();
     $('.multiDiagnosis:last').after('<input type="hidden" name="<?=$class ?>[<?=$name ?>][]" class="multiDiagnosis" value="' + ui.item.id + '">');
     $('#<?=$class?>_<?=$name?>').focus();
+
     return false;
   };
 <?php else: ?>
@@ -35,6 +42,7 @@ if(is_array($value)):
     $('input[id=savedDiagnosisText]').val(ui.item.value);
     $('input[id=savedDiagnosis]').val(ui.item.id);
     $('#<?=$class?>_<?=$name?>').focus();
+
     return false;
   };
 <?php endif;?>
