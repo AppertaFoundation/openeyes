@@ -1,27 +1,48 @@
 <?php
-    if(!isset($element))
-    {
+    if(!isset($element)){
         $element = new ElementLetter();
     }
+
 ?>
-<tr class="new_entry_row" data-rowindex="<?php echo $row_index ?>">
+<tr class="new_entry_row rowindex-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
     <td>
-        <?php echo CHtml::dropDownList('target_type[]', ($row_index > 0) ? 'CC' : 'To', array('To'=>'To','CC'=>'CC'), array('empty' => '- To/CC -', 'nowrapper' => true, 'class' => 'full-width', 'data-rowindex'=>$row_index));?>
+        <?php echo ($row_index == 0 ? 'To' : 'Cc') ?>
+        <?php echo CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][ToCc]",($row_index == 0 ? 'To' : 'Cc')); ?>
     </td>
     <td>
-        <?php echo CHtml::dropDownList('contact_id[]', '', $element->address_targets, array('empty' => '- Recipient -', 'nowrapper' => true, 'class' => 'full-width docman_recipient', 'data-rowindex'=>$row_index));?>
-        <br>
-        <textarea rows="4" cols="10" name="address[]" id="address_<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>"></textarea>
+        
+        <?php $this->renderPartial('//docman/table/contact_name_address', array(
+                'contact_id' => $contact_id,
+                'contact_name' => $contact_name,
+                'address_targets' => $element->address_targets,
+
+                'contact_type' => ( isset($selected_contact_type) ? $selected_contact_type : null ),
+                'row_index' => $row_index,
+                'address' => $address,
+                'is_editable' => true));
+        
+            echo CHtml::hiddenField("DocumentTarget[$row_index][attributes][contact_id]", $contact_id);
+        ?>
     </td>
     <td>
-        <?php echo CHtml::dropDownList('contact_type[]', '', array('Gp'=>'Gp','Patient'=>'Patient', 'DRSS'=>'DRSS', 'Legacy'=>'Legacy', 'Other'=>'Other'), array('empty' => '- Type -', 'nowrapper' => true, 'class' => 'full-width docman_contact_type', 'id'=>'contact_type_'.$row_index, 'data-rowindex'=>$row_index));?>
+        <?php $this->renderPartial('//docman/table/contact_type', array(
+                                        'contact_type' => isset($selected_contact_type) ? $selected_contact_type : null,
+                                        'row_index' => $row_index));
+                            ?>
     </td>
     <td class="docman_delivery_method">
-        <label><input type="checkbox" name="print[]" data-rowindex="<?php echo $row_index ?>" checked>Print</label><br>
-        <label><input type="checkbox" class="docman_delivery" name="docman[]" data-rowindex="<?php echo $row_index ?>">DocMan</label><br>
-        <!--<label><input type="checkbox" name="cc_email[]" disabled>Email</label>!-->
+        <?php if(isset($selected_contact_type) && $selected_contact_type == 'GP'):?>
+            <label><input value="Docman" name="DocumentTarget_<?php echo $row_index; ?>_DocumentOutput_0_output_type" type="checkbox" disabled checked>DocMan
+            <input type="hidden" value="Docman" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][0][output_type]"></label><br>
+            <label><input value="Print" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][1][output_type]" type="checkbox">Print</label>
+        <?php elseif(isset($selected_contact_type) && $selected_contact_type == 'PATIENT'): ?>
+            <label><input value="Print" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][0][output_type]" type="checkbox" checked>Print</label>
+        <?php endif;?>
+        
     </td>
     <td>
-        <a class="remove_recipient removeItem" data-rowindex="<?php echo $row_index ?>">Remove</a>
+        <?php if($row_index > 0): ?>
+            <a class="remove_recipient removeItem" data-rowindex="<?php echo $row_index ?>">Remove</a>
+        <?php endif; ?>
     </td>
 </tr>

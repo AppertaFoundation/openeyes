@@ -19,19 +19,19 @@
 ?>
 <?php if (!@$no_header) {?>
 	<header>
-		<?php
-        $docManData = DocumentInstance::model()->findByAttributes(array('correspondence_event_id'=>$element->event_id));
-        $document = new Document();
+	<?php 
         $ccString = "";
+        $toAddress = "";
 
-        if($docManData && $docTargets = $document->getDocumentTargets(array($docManData->id))) {
-            foreach ($docTargets["docoutputs"] as $k=>$output) {
-                if($output["ToCc"] == 'To')
-                {
-                    $toAddress = $docTargets["doctargets"][$k]["contact_name"]."\n".$docTargets["doctargets"][$k]["address"];
-                }else
-                {
-                    $ccString .= "CC: ".ucfirst(strtolower($docTargets["doctargets"][$k]["contact_type"])).": ".$docTargets["doctargets"][$k]["contact_name"].", ".$element->renderSourceAddress($docTargets["doctargets"][$k]["address"])."<br/>";
+        if($element->document_instance && $element->document_instance[0]->document_target) {
+            
+            foreach ($element->document_instance as $instance) {
+                foreach ($instance->document_target as $target) {
+                    if($target->ToCc == 'To'){
+                        $toAddress = $target->contact_name . "\n" . $target->address;
+                    } else {
+                        $ccString .= "CC: ".ucfirst(strtolower($target->contact_type)). ": " . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
+                    }
                 }
             }
         }else
@@ -45,7 +45,7 @@
         }
 
         $this->renderPartial('letter_start', array(
-            'toAddress' => $toAddress,
+            'toAddress' => isset($letter_address) ? $letter_address : $toAddress, // defaut address is coming from the 'To'
             'patient' => $this->patient,
             'date' => $element->date,
             'clinicDate' => $element->clinic_date,

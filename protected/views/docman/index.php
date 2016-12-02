@@ -57,23 +57,25 @@ $(document).ready(function()
         if($this->getApp()->request->isPostRequest){
             $data = $_POST;
             $data['correspondence_mode'] = true;
-            foreach($_POST['target_type'] as $key => $target_type){
-                if($target_type == 'To'){
-                    $data['to'] = array(
-                        'contact_id' => $_POST['contact_id'][$key],
-                        'contact_type' => $_POST['contact_type'][$key],
-                        'address' => $_POST['address'][$key],
-                    );
-                    
-                } else {
-                    $data['cc'][] = array(
-                        'contact_id' => $_POST['contact_id'][$key],
-                        'contact_type' => $_POST['contact_type'][$key],
-                        'address' => $_POST['address'][$key],
-                    );
-                }
-            }  
-            echo $this->renderPartial('/docman/document_table', array('data' => $data));
+            if( isset($_POST['target_type']) ){
+                foreach($_POST['target_type'] as $key => $target_type){
+                    if($target_type == 'To'){
+                        $data['to'] = array(
+                            'contact_id' => $_POST['contact_id'][$key],
+                            'contact_type' => $_POST['contact_type'][$key],
+                            'address' => $_POST['address'][$key],
+                        );
+
+                    } else {
+                        $data['cc'][] = array(
+                            'contact_id' => $_POST['contact_id'][$key],
+                            'contact_type' => $_POST['contact_type'][$key],
+                            'address' => $_POST['address'][$key],
+                        );
+                    }
+                }  
+            }
+            echo $this->renderPartial('/docman/document_table', array('data' => $data, 'document_set' => $document_set));
         }
         ?>
 </div>

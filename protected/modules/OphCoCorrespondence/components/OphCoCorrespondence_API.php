@@ -25,12 +25,23 @@ class OphCoCorrespondence_API extends BaseAPI
      */
     public function canUpdate($event_id)
     {
+        $letter = ElementLetter::model()->find('event_id=?', array($event_id));
+
+        // for the new correspondence with DocMan
+        // once the letter is generated for the DocMan only admin can edit
+        return !$letter->isGeneratedForDocMan();
+
         // FIXME: Correspondence locking is suspended while draft usage is discussed
         return true;
 
-        $letter = ElementLetter::model()->find('event_id=?', array($event_id));
-
         return $letter->isEditable();
+    }
+    
+    public function showDeleteIcon($event_id)
+    {
+        $letter = ElementLetter::model()->find('event_id=?', array($event_id));
+        
+        return !$letter->isGeneratedForDocMan();
     }
 
     public function getLatestEvent($episode)
@@ -124,8 +135,8 @@ class OphCoCorrespondence_API extends BaseAPI
 
         if ($macro->cc_drss) {
             $commissioningbodytype = CommissioningBodyType::model()->find('shortname = ?', array('CCG'));
-            if($commissioningbodytype && $commissioningbody = $patient->getCommissioningBodyOfType($commissioningbodytype)) {
-                $drss = null;
+            $commissioningbody = $patient->getCommissioningBodyOfType($commissioningbodytype);
+            if($commissioningbodytype && $commissioningbody) {
                 foreach($commissioningbody->services as $service) {
                     if($service->type->shortname == 'DRSS') {
                         $data['cc'][$k]['contact_type'] = 'DRSS';
@@ -291,5 +302,17 @@ class OphCoCorrespondence_API extends BaseAPI
         $event->event_date = date('Y-m-d');
         $event->save();
         return $event;
+    }
+    
+    /**
+     * Returns the letter targets by element id
+     * 
+     * @param int $id
+     * @return array
+     */
+    public function getMacroTargetsByElementLetterId($id)
+    {
+        $element_letter = ElementLetter::model()->findByPk($id);
+        return $element_letter->letter_targets;
     }
 }

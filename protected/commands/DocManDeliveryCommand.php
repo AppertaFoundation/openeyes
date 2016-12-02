@@ -120,6 +120,9 @@ class DocManDeliveryCommand extends CConsoleCommand
     {
         $element_letter = ElementLetter::model()->findByAttributes(array("event_id"=>$this->event->id));
         $letter_types = array("0"=>"","1"=>"Clinic discharge letter","2"=>"Post-op letter","3"=>"Clinic letter","4"=>"Other letter");
+        
+        $subspeciality = isset($this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->ref_spec) ? $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->ref_spec : 'SS';
+        $subspeciality_name = isset($this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name) ? $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name : 'Support Services';
 
         $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
             <DocumentInformation>
@@ -142,20 +145,20 @@ class DocManDeliveryCommand extends CConsoleCommand
             <AddressPostcode>".$this->event->episode->patient->contact->address->postcode."</AddressPostcode>
             <GP>".$this->event->episode->patient->gp->nat_id."</GP>
             <GPName>".$this->event->episode->patient->gp->contact->getFullName()."</GPName>
-            <Surgery>XXXXXX</Surgery>
-            <SurgeryName>XXXXXXXXX</SurgeryName>
+            <Surgery>" . $this->event->episode->patient->practice->code . "</Surgery>
+            <SurgeryName></SurgeryName>
             <LetterType>".$letter_types[$element_letter->letter_type]."</LetterType>
             <ActivityID>".$this->event->id."</ActivityID>
             <ActivityDate>".$this->event->event_date."</ActivityDate>
-            <ClinicianType>OMED</ClinicianType>
-            <Clinician>XXXXXXXXXX</Clinician>
-            <ClinicianName>XXXXXXXXXXX</ClinicianName>
-            <Specialty>".$this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->ref_spec."</Specialty>
-            <SpecialtyName>".$this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name."</SpecialtyName>
-            <Location>CR</Location>
-            <LocationName>Moorfields Eye Hospital</LocationName>
-            <SubLocation>A&amp;E</SubLocation>
-            <SubLocationName>A&amp;E Department</SubLocationName>
+            <ClinicianType></ClinicianType>
+            <Clinician></Clinician>
+            <ClinicianName></ClinicianName>
+            <Specialty>".$subspeciality."</Specialty>
+            <SpecialtyName>".$subspeciality_name."</SpecialtyName>
+            <Location>" . $element_letter->site->short_name . "</Location>
+            <LocationName>" . $element_letter->site->name . "</LocationName>
+            <SubLocation></SubLocation>
+            <SubLocationName></SubLocationName>
             </DocumentInformation>";
 
         file_put_contents($this->path."/".$filename.".XML", $xml);

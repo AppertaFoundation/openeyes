@@ -72,7 +72,25 @@ class DefaultController extends BaseEventTypeController
         $this->jsVars['correspondence_markprinted_url'] = Yii::app()->createUrl('OphCoCorrespondence/Default/markPrinted/'.$this->event->id);
         $this->jsVars['correspondence_print_url'] = Yii::app()->createUrl('OphCoCorrespondence/Default/print/'.$this->event->id);
     }
+    
+    public function actionView($id)
+    {
+        $title = '';
+        $letter = ElementLetter::model()->find('event_id=?', array($id));
 
+        $output = $letter->getOutputByType($type = 'Docman');
+        if($output){
+            $docnam = $output[0]; //for now only one Docman allowed
+            $title = $docnam->output_status;
+            if($docnam->output_status == 'COMPLETE'){
+                $title = 'Sent';
+            }
+            $title = strtolower($title);
+            $this->title .= ' (' . ucfirst($title) . ')';
+        }
+        parent::actionView($id);
+    }
+    
     /**
      * Ajax action to get the address for a contact.
      *
@@ -352,13 +370,12 @@ class DefaultController extends BaseEventTypeController
     {
         if ($letter = ElementLetter::model()->find('event_id=?', array($id))) {
             $letter->print = 0;
-            $letter->draft = 0;
             if (!$letter->save()) {
                 throw new Exception('Unable to mark letter printed: '.print_r($letter->getErrors(), true));
             }
         }
     }
-
+    
     public function actionPrint($id)
     {
         $letter = ElementLetter::model()->find('event_id=?', array($id));
@@ -367,49 +384,50 @@ class DefaultController extends BaseEventTypeController
         $this->layout = '//layouts/print';
 
         $this->render('print', array('element' => $letter));
-
+        
         if ($this->pdf_print_suffix == 'all' || @$_GET['all']) {
             $this->render('print', array('element' => $letter));
 
-            foreach ($letter->getCcTargets() as $cc) {
-                $letter->address = implode("\n", preg_replace('/^[a-zA-Z]+: /', '', str_replace(';', ',', $cc)));
-                $this->render('print', array('element' => $letter));
+            foreach ($letter->getCcTargets() as $letter_address) {
+                $this->render('print', array('element' => $letter, 'letter_address' => $letter_address));
             }
         }
     }
 
     public function actionPDFPrint($id)
     {
-        if (@$_GET['all']) {
+        $letter = ElementLetter::model()->find('event_id=?', array($id));
+
+        if (Yii::app()->request->getQuery('all', false)) {
             $this->pdf_print_suffix = 'all';
-
-            $letter = ElementLetter::model()->find('event_id=?', array($id));
-
             $this->pdf_print_documents = 2 + count($letter->getCcTargets());
         }
-
-        $related_documents = DocumentInstance::model()->findAllByAttributes(array("correspondence_event_id"=>$id));
-        foreach($related_documents as $document)
-        {
-            $doc_targets = DocumentTarget::model()->findAllByAttributes(array("document_instance_id"=>$document->id));
-            foreach($doc_targets as $target)
-            {
-                $doc_outputs = DocumentOutput::model()->findAllByAttributes(array("document_target_id"=>$target->id));
-                foreach($doc_outputs as $output)
-                {
-                    if($output->output_type == "Docman")
-                    {
-                        $output->output_status = "PENDING";
-                    }else if($output->output_type == "Print")
-                    {
-                        $output->output_status = "COMPLETE";
-                    }
-                    $output->save();
-                }
+        
+        $outputs = $letter->getOutputByType("Print");
+        if( $outputs ){
+            foreach($outputs as $output){
+                $output->output_status = "COMPLETE";
+                $output->save();
             }
         }
 
         return parent::actionPDFPrint($id);
+    }
+    
+    public function markRedyToSend($id)
+    {
+        $letter = ElementLetter::model()->find('event_id=?', array($id));
+        
+        $outputs = $letter->getOutputByType("Docman");
+        
+        if( $outputs ){
+            foreach($outputs as $output){
+                if( $output->output_status != "COMPLETE" ){
+                    $output->output_status = "PENDING";
+                    $output->save();
+                }
+            }
+        }
     }
 
     /**
@@ -504,9 +522,8 @@ class DefaultController extends BaseEventTypeController
         if (!$letter = ElementLetter::model()->find('event_id=?', array($id))) {
             throw new Exception("Letter not found for event id: $id");
         }
-
+                
         $letter->print = 1;
-        $letter->draft = 0;
 
         if (@$_GET['all']) {
             $letter->print_all = 1;
@@ -555,5 +572,5 @@ class DefaultController extends BaseEventTypeController
             echo '1';
         }
     }
-
+  
 }

@@ -47,8 +47,18 @@ function updateCorrespondence( macro_id)
     }
 }
 
+function togglePrintDisabled (isSignedOff) {
+	$('#et_save_print').prop('disabled', !isSignedOff);
+}
 
 $(document).ready(function() {
+	var $letterIsSignedOff = $('#ElementLetter_is_signed_off');
+// leave this for a while until the requirements gets clear
+//	togglePrintDisabled($letterIsSignedOff.is(':checked'));
+//	$letterIsSignedOff.change(function() {
+//		togglePrintDisabled(this.checked);
+//	});
+
 	$(this).delegate('#ElementLetter_site_id', 'change', function() {
 		if (correspondence_directlines) {
 			$('#ElementLetter_direct_line').val(correspondence_directlines[$('#ElementLetter_site_id').val()]);
@@ -520,6 +530,17 @@ $(document).ready(function() {
 	var selected_recipient = $('#address_target').val();
 
 	$('#ElementLetter_body').tabby();
+        
+        if( $('#dm_table').length > 0 ){
+            // we have docman table here
+            docman2 = docman;
+            docman2.baseUrl = location.protocol + '//' + location.host + '/docman/'; // TODO add this to the config!
+            docman2.setDOMid('docman_block','dm_');
+            docman2.module_correspondence = 1;
+            
+            docman2.init();
+            //docman2.getDocTable(OE_event_id, $('#dm_table').data('macro_id'));
+        }
 });
 
 var et_oph_correspondence_body_cursor_position = 0;

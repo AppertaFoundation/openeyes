@@ -47,7 +47,7 @@ class DocumentTarget extends BaseActiveRecord
 	public function rules()
 	{
 		return array(
-			array('document_instance_id, contact_type, contact_id, contact_name, contact_modified, address, emailemail', 'safe'),
+			array('document_instance_id, contact_type, contact_id, contact_name, contact_modified, address, emailemail, ToCc', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('document_instance_id, contact_type, contact_id, contact_name, contact_modified, address, emailemail', 'safe', 'on' => 'search'),
@@ -62,7 +62,8 @@ class DocumentTarget extends BaseActiveRecord
 		return array(
 			'created_user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'document_instance' => array(self::BELONGS_TO, 'DocumentInstance', 'document_instance_id'),
-            'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
+                        'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
+                        'document_output' => array(self::HAS_MANY, 'DocumentOutput', 'document_target_id'),
 		);
 	}
 

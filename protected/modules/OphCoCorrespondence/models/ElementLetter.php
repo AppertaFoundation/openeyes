@@ -62,10 +62,15 @@ class ElementLetter extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, site_id, print, address, use_nickname, date, introduction, cc, re, body, footer, draft, direct_line, fax, clinic_date, print_all, letter_type', 'safe'),
+            array(
+                'event_id, site_id, print, address, use_nickname, date, introduction, cc, re, body, footer, draft, direct_line, fax, clinic_date,' .
+                'print_all, letter_type, is_signed_off',
+                'safe'
+            ),
             array('use_nickname, site_id, date, introduction, body, footer, letter_type', 'required'),
             array('date', 'OEDateValidator'),
             array('clinic_date', 'OEDateValidatorNotFuture'),
+            //array('is_signed_off', 'isDraftValidator'), // they do not want this at the moment - waiting for the demo/feedback
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, site_id, use_nickname, date, introduction, re, body, footer, draft, direct_line, letter_type', 'safe', 'on' => 'search'),
@@ -87,6 +92,8 @@ class ElementLetter extends BaseEventTypeElement
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
             'enclosures' => array(self::HAS_MANY, 'LetterEnclosure', 'element_letter_id', 'order' => 'display_order'),
+            'document_instance' => array(self::HAS_MANY, 'DocumentInstance', array( 'correspondence_event_id' => 'event_id')),
+            
         );
     }
 
@@ -105,6 +112,7 @@ class ElementLetter extends BaseEventTypeElement
             'draft' => 'Draft',
             'direct_line' => 'Direct line',
             'fax' => 'Direct fax',
+            'is_signed_off' => 'Approved by a clinician'
         );
     }
 
@@ -130,12 +138,29 @@ class ElementLetter extends BaseEventTypeElement
 
     public function afterValidate()
     {
-
-        if(!is_array(@$_POST['target_type']) && Yii::app()->getController()->getAction()->id == 'create')
-        {
+        $document_target = Yii::app()->request->getPost('DocumentTarget', null);
+        if(!isset($document_target[0]['attributes']['ToCc']) && Yii::app()->getController()->getAction()->id == 'create'){
             $this->addError('toAddress', 'Please add at least one recipient!');
         }
+        if(isset($document_target)){
+            foreach($document_target as $target){
+                if( !isset($target['attributes']['address']) || empty($target['attributes']['address']) ){
+                    $this->addError('toAddress', 'Address cannot be empty!');
+                }
+            }
+        }
+        
+        
+
         parent::afterValidate();
+    }
+    
+    
+    public function isDraftValidator($attribute, $params)
+    {    
+        if( $this->draft != 1 && !$this->$attribute){
+            $this->addError($attribute, 'You have to check the following checkbox: Approved by a clinician');
+        }
     }
 
     public function afterFind()
@@ -156,7 +181,7 @@ class ElementLetter extends BaseEventTypeElement
 
         $options = array($patient->contact->id => $patient->fullname.' (Patient)');
         if (!isset($patient->contact->address)) {
-            $options['Patient'.$patient->id] .= ' - NO ADDRESS';
+            $options[$patient->contact->id] .= ' - NO ADDRESS';
         }
 
         if ($patient->gp) {
@@ -268,6 +293,11 @@ class ElementLetter extends BaseEventTypeElement
 
             if (!$patient = Patient::model()->with(array('contact' => array('with' => array('address'))))->findByPk(@$_GET['patient_id'])) {
                 throw new Exception('Patient not found: '.@$_GET['patient_id']);
+            }
+            
+            // default to GP
+            if( isset($patient->gp) ){
+                $this->introduction = $patient->gp->getLetterIntroduction();
             }
 
             $this->re = $patient->first_name.' '.$patient->last_name;
@@ -447,7 +477,7 @@ class ElementLetter extends BaseEventTypeElement
     }
 
     public function beforeSave()
-    {
+    {        
         if (in_array(Yii::app()->getController()->getAction()->id, array('create', 'update'))) {
             if (!$this->draft) {
                 $this->print = 1;
@@ -489,11 +519,17 @@ class ElementLetter extends BaseEventTypeElement
                 }
             }
         }
-        if(Yii::app()->getController()->getAction()->id == 'create' || Yii::app()->getController()->getAction()->id == 'update')
-        {
+        if(Yii::app()->getController()->getAction()->id == 'create' || Yii::app()->getController()->getAction()->id == 'update'){
             $document = new Document();
             $document->event_id = $this->event_id;
+            $document->is_draft = $this->draft;
             $document->createNewDocSet();
+        }
+        
+        if( $this->draft ){
+            $this->event->addIssue('Draft');
+        } else {
+            $this->event->deleteIssue('Draft');
         }
 
         return parent::afterSave();
@@ -509,17 +545,29 @@ class ElementLetter extends BaseEventTypeElement
     public function getCcTargets()
     {
         $targets = array();
-
-        if (trim($this->cc)) {
-            foreach (explode("\n", trim($this->cc)) as $cc) {
-                $ex = explode(', ', trim($cc));
-
-                if (isset($ex[1]) && (ctype_digit($ex[1]) || is_int($ex[1]))) {
-                    $ex[1] .= ' '.$ex[2];
-                    unset($ex[2]);
+        
+        if( isset($this->document_instance) ){
+            if( isset($this->document_instance[0]->document_target) ){
+                foreach($this->document_instance[0]->document_target as $target){
+                    if($target->ToCc == 'Cc'){
+                        $targets[] = $target->contact_name . "\n" . $target->address;
+                    }
                 }
+            }
+        } else {
 
-                $targets[] = explode(',', implode(',', $ex));
+            if (trim($this->cc)) {
+                foreach (explode("\n", trim($this->cc)) as $cc) {
+                    $ex = explode(', ', trim($cc));
+
+                    if (isset($ex[1]) && (ctype_digit($ex[1]) || is_int($ex[1]))) {
+                        $ex[1] .= ' '.$ex[2];
+                        unset($ex[2]);
+                    }
+
+                    $cc = explode(',', implode(',', $ex));
+                    $targets[] = implode("\n", preg_replace('/^[a-zA-Z]+: /', '', str_replace(';', ',', $cc)));
+                }
             }
         }
 
@@ -528,7 +576,27 @@ class ElementLetter extends BaseEventTypeElement
 
     public function isEditable()
     {
-        return $this->draft;
+        return !$this->isGeneratedForDocMan();
+    }
+    
+    
+    /**
+     * Determinate if wheter PDF and XML files are generated for the DocMan
+     * @return type
+     */
+    public function isGeneratedForDocMan()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->join =   "JOIN document_instance ins ON t.id = ins.document_set_id " .
+                            "JOIN document_target tar ON ins.id = tar.document_instance_id " .
+                            "JOIN document_output output ON tar.id = output.document_target_id";
+
+        $criteria->compare('t.event_id', $this->event_id);
+        $criteria->compare('output.output_type', 'Docman');
+        $criteria->compare('output.output_status', 'COMPLETE');
+
+        return DocumentSet::model()->find($criteria) ? true : false;
+        
     }
 
     public function getFirm_members()
@@ -629,5 +697,27 @@ class ElementLetter extends BaseEventTypeElement
     public function getDocumentInstance()
     {
         return \DocumentInstance::model()->findByAttributes(array('correspondence_event_id' => $this->event_id));
-}
+    }
+    
+    /**
+     * 
+     * @param type $type
+   
+     * @param type $type
+     * @return \typeReturns  * @return typeReturns the Outputs by type
+     */
+    public function getOutputByType($type = 'Print')
+    {
+        $criteria = new CDbCriteria();
+        $criteria->join =   "JOIN document_target target ON t.document_target_id = target.id " .
+                            "JOIN document_instance instance ON target.document_instance_id = instance.id ";
+
+        $criteria->compare('instance.correspondence_event_id', $this->event->id);
+        if($type){
+            $criteria->compare('t.output_type', $type);
+        }
+
+        return DocumentOutput::model()->findAll($criteria);
+
+    }
 }

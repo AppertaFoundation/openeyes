@@ -17,40 +17,53 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-
+<section class="element">
+    <h3 class="element-title highlight">Other information</h3>
+    <div class="element-data">
+        <div class="row data-row">
+            <div class="large-2 column">
+                <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('is_signed_off')) . ': '; ?></h4>
+                <div class="data-value"><?php echo $element->is_signed_off == 1 ? 'Yes' : ( $element->is_signed_off === 0 ? 'No' : 'N/A' ); ?></div>
+            </div>
+        </div>
+    </div>
+</section>
+<br>
+        
 <div id="correspondence_out" class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?>">
 	<header>
-		<?php
-		$docManData = DocumentInstance::model()->findByAttributes(array('correspondence_event_id'=>$element->event_id));
-		$document = new Document();
+        <?php
         $ccString = "";
+        $toAddress = "";
 
-        if($docManData && $docTargets = $document->getDocumentTargets(array($docManData->id))) {
-			foreach ($docTargets["docoutputs"] as $k=>$output) {
-				if($output["ToCc"] == 'To')
-				{
-					$toAddress = $docTargets["doctargets"][$k]["contact_name"]."\n".$docTargets["doctargets"][$k]["address"];
-				}else
-				{
-                    $ccString .= "CC: ".ucfirst(strtolower($docTargets["doctargets"][$k]["contact_type"])).": ".$docTargets["doctargets"][$k]["contact_name"].", ".$element->renderSourceAddress($docTargets["doctargets"][$k]["address"])."<br/>";
-				}
-			}
-		}else
-		{
-			$toAddress = $element->address;
+        if($element->document_instance) {
+            
+            foreach ($element->document_instance as $instance) {
+                foreach ($instance->document_target as $target) {
+                    if($target->ToCc == 'To'){
+                        $toAddress = $target->contact_name . "\n" . $target->address;
+                    } else {
+                        $ccString .= "CC: ".ucfirst(strtolower($target->contact_type)). ": " . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
+                    }
+                }
+            }
+        }else
+        {
+            $toAddress = $element->address;
             foreach (explode("\n", trim($element->cc)) as $line) {
                 if (trim($line)) {
                     $ccString .= "CC: " . str_replace(';', ',', $line)."<br/>";
                 }
             }
-		}
-		$this->renderPartial('letter_start', array(
+        }
+        $this->renderPartial('letter_start', array(
             'toAddress' => $toAddress,
             'patient' => $this->patient,
             'date' => $element->date,
             'clinicDate' => $element->clinic_date,
             'element' => $element,
-        ))?>
+        ));
+                ?>
 	</header>
 
 	<?php $this->renderPartial('reply_address', array(
@@ -63,7 +76,7 @@
             'ccString' => $ccString,
             'no_header' => true,
     ))?>
-
+    
 	<input type="hidden" name="OphCoCorrespondence_printLetter" id="OphCoCorrespondence_printLetter" value="<?php echo $element->print?>" />
 	<input type="hidden" name="OphCoCorrespondence_printLetter" id="OphCoCorrespondence_printLetter_all" value="<?php echo $element->print_all?>" />
 </div>
