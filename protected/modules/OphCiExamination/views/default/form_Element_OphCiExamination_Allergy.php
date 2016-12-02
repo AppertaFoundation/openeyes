@@ -26,7 +26,7 @@
 					<div class="allergies_confirm_no field-row row"
 						<?php
 							$selected_allergies = Yii::app()->request->getParam('selected_allergies');
-							if (!$this->patient->no_allergies_date || $this->patient->hasAllergyStatus() || $selected_allergies)
+							if ($this->patient->no_allergies_date || $this->patient->hasAllergyStatus() || $selected_allergies)
 							{
 								echo 'style="display: none;"';
 							} ?>>
