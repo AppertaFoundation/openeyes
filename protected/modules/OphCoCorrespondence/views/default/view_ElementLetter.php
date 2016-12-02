@@ -18,7 +18,6 @@
  */
 ?>
 <section class="element">
-    <h3 class="element-title highlight">Other information</h3>
     <div class="element-data">
         <div class="row data-row">
             <div class="large-2 column">

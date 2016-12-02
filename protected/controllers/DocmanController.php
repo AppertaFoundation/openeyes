@@ -188,6 +188,7 @@ class DocmanController extends BaseController
         
         $data = array();
         $data["contact_name"] = '';
+        $data["contact_type"] = 'Other';
                 
         $patient_id = Yii::app()->request->getQuery('patient_id');
         $patient = Patient::model()->findByPk($patient_id);
@@ -195,7 +196,7 @@ class DocmanController extends BaseController
         $document_set_id = Yii::app()->request->getQuery('document_set_id');
         if ($contact_id) {
             $contact = Contact::model()->findByPk($contact_id);
-            $data["contact_name"] = $contact->getFullName();
+            $data["contact_name"] = $contact ? $contact->getFullName() : '';
             $data["contact_id"] = $contact_id;
                     
             $address = isset($contact->correspondAddress) ? $contact->correspondAddress : $contact->address;

@@ -25,6 +25,8 @@ $layoutColumns = $form->layoutColumns;
 $macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : (isset($element->macro->id) ? $element->macro->id : null);
 $patient_id = Yii::app()->request->getQuery('patient_id', null);
 $patient = Patient::model()->findByPk($patient_id);
+
+$element->letter_type = ($element->letter_type ? $element->letter_type : ( $macro_id == 2 ? 'Post-op letter' : null  ) );
 ?>
 <div class="element-fields">
     <div class="row field-row">
@@ -60,13 +62,17 @@ $patient = Patient::model()->findByPk($patient_id);
             <label>Letter type:</label>
         </div>
         <div class="large-2 column end">
-            <?php echo $form->dropDownList($element, 'letter_type', array('1' => 'Clinic discharge letter', '2' => 'Post-op letter', '3' => 'Clinic letter', '4' => 'Other letter'),
+            <?php echo $form->dropDownList($element, 'letter_type', 
+                    array(  '1' => 'Clinic discharge letter',
+                            '2' => 'Post-op letter',
+                            '3' => 'Clinic letter',
+                            '4' => 'Other letter'),
                 array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'full-width')) ?>
         </div>
     </div>
 
     <div class="row field-row">
-        <div id="docman_block">
+        <div id="docman_block" class="large-12 column">
             <?php
             $macro_data = array();
             $patient_id = Yii::app()->request->getQuery('patient_id');

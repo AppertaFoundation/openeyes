@@ -40,7 +40,7 @@ button.green { background-color:green; color: white; }
 <?php $element->draft = 1; ?>
 
     <table id="dm_table" data-macro_id="<?php echo $macro_id; ?>">
-        <tbody>
+        <thead>
             <tr id="dm_0">
                 <th>To/CC</th>
                 <th>Recipient/Address</th>
@@ -48,7 +48,8 @@ button.green { background-color:green; color: white; }
                 <th>Delivery Method(s)</th>
                 <th class="actions"><img class="docman_loader right" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;"></th>
             </tr>
-            
+        </thead>
+        <tbody>
             <?php 
                     $document_targets = $document_set->document_instance[0]->document_target;
 
@@ -112,7 +113,7 @@ button.green { background-color:green; color: white; }
                 </tr>
             <?php endforeach; ?>
             <tr class="new_entry_row">
-                <td colspan="6">
+                <td colspan="5">
                     <button class="button small secondary" id="docman_add_new_recipient">Add new recipient</button>
                 </td>
             </tr>

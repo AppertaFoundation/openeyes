@@ -15,6 +15,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<?php $address_targets = $address_targets + array('OTHER' => 'Other'); ?>
 
 <?php if($is_editable): ?>
     <?php echo CHtml::dropDownList('',

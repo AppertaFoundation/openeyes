@@ -75,7 +75,7 @@ if( !$macro_id ){
 
 
     <div class="row field-row">
-        <div id="docman_block">
+        <div id="docman_block" class="large-12 column">
             <?php
 
                 $document_set = DocumentSet::model()->findByAttributes(array('event_id' => $element->event_id));

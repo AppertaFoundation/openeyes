@@ -89,7 +89,7 @@
 </style>
 
 <table id="dm_table" data-macro_id="<?php echo $macro_id; ?>">
-    <tbody>
+    
     <tr id="dm_0">
         <th>To/CC</th>
         <th>Recipient/Address</th>
@@ -99,7 +99,7 @@
             <img class="docman_loader right" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..." style="display: none;">
         </th>
     </tr>
-
+    <tbody>
     <?php /* Generate recipients by macro */ ?>
     <?php if (!empty($macro_data)):?>
       <?php if (array_key_exists('to', $macro_data)):?>
@@ -267,7 +267,7 @@
             }
         ?>
         
-        <td colspan="6">
+        <td colspan="5">
             <button class="button small secondary" id="docman_add_new_recipient">Add new recipient</button>
         </td>
     </tr>
