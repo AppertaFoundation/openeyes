@@ -654,15 +654,25 @@ function inArray(needle, haystack) {
 }
 
 function OphCoCorrespondence_do_print(all) {
+        
+        var data = {};
+        if(all){
+            data['all'] = 1;
+        }
+
+        if( $('#OphCoCorrespondence_print_checked').length && $('#OphCoCorrespondence_print_checked').val() == 1 ){
+            data['OphCoCorrespondence_print_checked'] = 1;
+            
+            // remove OphCoCorrespondence_print_checked, so Print and Print all will do what it says
+            $('#OphCoCorrespondence_print_checked').remove();
+            
+        }
+        
 	$.ajax({
 		'type': 'GET',
 		'url': correspondence_markprinted_url,
 		'success': function(html) {
-			if (all) {
-				printEvent({"all":1});
-			} else {
-				printEvent(null);
-			}
+			printEvent(data);
 			enableButtons();
 		}
 	});

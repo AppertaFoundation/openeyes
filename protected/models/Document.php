@@ -406,7 +406,7 @@ class Document //extends BaseActiveRecord
 
         $document_output_ids = array();
         foreach($new_document_outputs as $document_output){
-            if( isset($document_output['id']) ){
+            if( isset($document_output['id']) && isset($document_output['output_type']) ){
                 $document_output_ids[] = $document_output['id'];
             }
         }
@@ -416,8 +416,9 @@ class Document //extends BaseActiveRecord
         $criteria->addCondition('document_target_id = :document_target_id');
         $criteria->params[':document_target_id'] = $document_target_id;
         
-        $criteria->addCondition('output_status != :output_status');
-        $criteria->params[':output_status'] = "COMPLETE";
+        // we do not delete docman
+        $criteria->addCondition('output_type != :output_type');
+        $criteria->params[':output_type'] = "Docman";
         
         $criteria->addNotInCondition('id', $document_output_ids);
         

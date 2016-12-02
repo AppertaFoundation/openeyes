@@ -78,5 +78,12 @@
     ))?>
     
 	<input type="hidden" name="OphCoCorrespondence_printLetter" id="OphCoCorrespondence_printLetter" value="<?php echo $element->print?>" />
-	<input type="hidden" name="OphCoCorrespondence_printLetter" id="OphCoCorrespondence_printLetter_all" value="<?php echo $element->print_all?>" />
+
+        <?php if(Yii::app()->user->getState('correspondece_element_letter_saved', true)): ?>
+            <?php Yii::app()->user->setState('correspondece_element_letter_saved', false); ?>
+            <input type="hidden" name="OphCoCorrespondence_print_checked" id="OphCoCorrespondence_print_checked" value="1" />
+        <?php else: ?>
+            <input type="hidden" name="OphCoCorrespondence_printLetter" id="OphCoCorrespondence_printLetter_all" value="<?php echo $element->print_all?>" />
+        <?php endif; ?>
+            
 </div>

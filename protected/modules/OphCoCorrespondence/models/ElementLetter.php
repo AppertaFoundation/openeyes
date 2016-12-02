@@ -531,6 +531,10 @@ class ElementLetter extends BaseEventTypeElement
         } else {
             $this->event->deleteIssue('Draft');
         }
+        
+        if(isset($_POST['saveprint'])){
+            Yii::app()->user->setState('correspondece_element_letter_saved', true);
+        }
 
         return parent::afterSave();
     }

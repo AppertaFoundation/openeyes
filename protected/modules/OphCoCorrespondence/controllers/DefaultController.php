@@ -382,14 +382,28 @@ class DefaultController extends BaseEventTypeController
 
         $this->printInit($id);
         $this->layout = '//layouts/print';
-
-        $this->render('print', array('element' => $letter));
         
-        if ($this->pdf_print_suffix == 'all' || @$_GET['all']) {
+        // after "Save and Print" button clicked we only print out what the user checked
+        if( isset($_GET['OphCoCorrespondence_print_checked']) && $_GET['OphCoCorrespondence_print_checked'] == "1" ){
+
+            $print_outputs = $letter->getOutputByType("Print");
+            if($print_outputs){
+                foreach($print_outputs as $print_output){
+                    $document_target = $print_output->document_target;
+                    $this->render('print', array('element' => $letter, 'letter_address' => ($document_target->contact_name . "\n" . $document_target->address)));
+                }
+            }
+
+        } else {
+
             $this->render('print', array('element' => $letter));
 
-            foreach ($letter->getCcTargets() as $letter_address) {
-                $this->render('print', array('element' => $letter, 'letter_address' => $letter_address));
+            if ($this->pdf_print_suffix == 'all' || @$_GET['all']) {
+                $this->render('print', array('element' => $letter));
+
+                foreach ($letter->getCcTargets() as $letter_address) {
+                    $this->render('print', array('element' => $letter, 'letter_address' => $letter_address));
+                }
             }
         }
     }
@@ -397,10 +411,15 @@ class DefaultController extends BaseEventTypeController
     public function actionPDFPrint($id)
     {
         $letter = ElementLetter::model()->find('event_id=?', array($id));
+        $print_outputs = $letter->getOutputByType("Print");
 
         if (Yii::app()->request->getQuery('all', false)) {
             $this->pdf_print_suffix = 'all';
             $this->pdf_print_documents = 2 + count($letter->getCcTargets());
+        }
+        if (Yii::app()->request->getQuery('OphCoCorrespondence_print_checked', false)) {
+            $this->pdf_print_suffix = 'all';
+            $this->pdf_print_documents = count($print_outputs);
         }
         
         $outputs = $letter->getOutputByType("Print");
