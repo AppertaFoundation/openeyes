@@ -397,5 +397,10 @@ return array(
                 'temp_path' => realpath(dirname(__FILE__).'/../..').'/data/hscic/temp',
             ),
         ),
+        /**
+         * Text to be displayed for sending correspondence electronically e.g.: 'Electronic (DocMan)'
+         * To be overriden in local config
+         */
+        'electronic_sending_method_label' => 'Electronic',
     ),
 );

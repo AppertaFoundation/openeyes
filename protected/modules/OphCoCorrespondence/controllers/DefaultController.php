@@ -52,6 +52,7 @@ class DefaultController extends BaseEventTypeController
     protected function initAction($action)
     {
         parent::initAction($action);
+        $this->jsVars['electronic_sending_method_label'] = Yii::app()->params['electronic_sending_method_label'];
 
         if (in_array($action, array('create', 'update'))) {
             $this->jsVars['OE_gp_id'] = $this->patient->gp_id;
