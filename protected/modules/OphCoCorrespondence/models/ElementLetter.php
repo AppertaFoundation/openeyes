@@ -479,7 +479,7 @@ class ElementLetter extends BaseEventTypeElement
     public function beforeSave()
     {        
         if (in_array(Yii::app()->getController()->getAction()->id, array('create', 'update'))) {
-            if (!$this->draft) {
+            if (isset($_POST['saveprint'])) {
                 $this->print = 1;
                 $this->print_all = 1;
             }

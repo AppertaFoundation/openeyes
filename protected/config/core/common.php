@@ -402,5 +402,22 @@ return array(
          * To be overriden in local config
          */
         'electronic_sending_method_label' => 'Electronic',
+        
+        /**
+         * Action buttons to be displayed when create/update a correspondence letter
+         * Available actions
+         *      - 'savedraft' => 'Save draft',
+         *      - 'save' => 'Save',
+         *      - 'saveprint' => 'Save and print'
+         * To remove an option set it to NULL 
+         * e.g: saveprint' => null,
+         */
+        'OphCoCorrespondence_event_actions' => array(
+                'create' => array(
+                    'savedraft' => 'Save draft',
+                    'save' => null,
+                    'saveprint' => 'Save and print'
+            )
+        ),
     ),
 );

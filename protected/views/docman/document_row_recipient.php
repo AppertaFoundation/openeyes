@@ -31,13 +31,12 @@
                             ?>
     </td>
     <td class="docman_delivery_method">
-        <?php if(isset($selected_contact_type) && $selected_contact_type == 'GP'):?>
-            <label><input value="Docman" name="DocumentTarget_<?php echo $row_index; ?>_DocumentOutput_0_output_type" type="checkbox" disabled checked>DocMan
-            <input type="hidden" value="Docman" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][0][output_type]"></label><br>
-            <label><input value="Print" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][1][output_type]" type="checkbox">Print</label>
-        <?php elseif(isset($selected_contact_type) && $selected_contact_type == 'PATIENT'): ?>
-            <label><input value="Print" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][0][output_type]" type="checkbox" checked>Print</label>
-        <?php endif;?>
+        <?php $this->renderPartial('//docman/table/delivery_methods', array(
+                    'is_draft' => $element->draft,
+                    'contact_type' => $selected_contact_type,
+                    'row_index' => $row_index,
+                ));
+                ?>
         
     </td>
     <td>

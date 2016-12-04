@@ -59,9 +59,16 @@ class DefaultController extends BaseEventTypeController
             $this->jsVars['OE_practice_id'] = $this->patient->practice_id;
 
             $this->getApp()->assetManager->registerScriptFile('js/docman.js');
-
+            
             $this->loadDirectLines();
         }
+
+        $event_id = Yii::app()->request->getQuery('id');
+        if($event_id){
+            $letter = ElementLetter::model()->find('event_id=?', array($event_id));
+            $this->editable = $letter->isEditable();
+        }
+        
     }
 
     /**
@@ -90,6 +97,15 @@ class DefaultController extends BaseEventTypeController
             $this->title .= ' (' . ucfirst($title) . ')';
         }
         parent::actionView($id);
+    }
+    
+    public function actionUpdate($id)
+    {
+        $letter = ElementLetter::model()->find('event_id=?', array($id));
+        if(!$letter->isEditable()){
+            $this->redirect(array('default/view/'.$id));
+        }
+        parent::actionUpdate($id);
     }
     
     /**

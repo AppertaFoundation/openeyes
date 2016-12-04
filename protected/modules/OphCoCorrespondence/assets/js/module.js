@@ -42,6 +42,11 @@ function updateCorrespondence( macro_id)
                 correspondence_load_data(data);
                 et_oph_correspondence_body_cursor_position = $('#ElementLetter_body').val().length;
                 obj.val('');
+                
+                //set letter type
+                if(macro_id == 2){
+                    $('#ElementLetter_letter_type').val(2);
+                }
             }
         });
     }
@@ -65,11 +70,11 @@ $(document).ready(function() {
 		}
 	});
 
-	handleButton($('#et_save_draft'),function() {
+	handleButton($('#et_savedraft'),function() {
 		$('#ElementLetter_draft').val(1);
 	});
 
-	handleButton($('#et_save_print'),function() {
+	handleButton($('#et_saveprint'),function() {
 		$('#ElementLetter_draft').val(0);
 	});
 
@@ -539,7 +544,6 @@ $(document).ready(function() {
             docman2.module_correspondence = 1;
             
             docman2.init();
-            //docman2.getDocTable(OE_event_id, $('#dm_table').data('macro_id'));
         }
 });
 

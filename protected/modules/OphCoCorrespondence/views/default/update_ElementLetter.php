@@ -30,6 +30,8 @@ if( !$macro_id ){
     $macro_id = isset($element->document_instance[0]->document_instance_data[0]->macro_id) ? $element->document_instance[0]->document_instance_data[0]->macro_id : null;
 }
 
+$element->letter_type = ($element->letter_type ? $element->letter_type : ( $macro_id == 2 ? 2 : null  ) );
+
 ?>
 
 <input type="hidden" id="re_default" value="<?php echo $element->calculateRe($element->event->episode->patient) ?>"/>

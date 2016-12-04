@@ -140,10 +140,18 @@ var docman = (function() {
 
                             delivery_methods = '<label><input value="Docman" name="DocumentTarget_' + row + '_DocumentOutput_0_output_type" type="checkbox" disabled checked>' + electronic_sending_method_label;
                             delivery_methods += '<input type="hidden" value="Docman" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]"></label><br>';
-                            delivery_methods += '<label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox">Print</label>';
+
+                            // if the print option is not set we will not display the button
+                            if( $('button#et_saveprint').length ){
+                                delivery_methods += '<label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox">Print</label>';
+                            }
+
                     }else
                     {
-                        delivery_methods = '<label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]" type="checkbox" checked>Print</label>';
+                        // if the print option is not set we will not display the button
+                        if( $('button#et_saveprint').length ){
+                            delivery_methods = '<label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]" type="checkbox" checked>Print</label>';
+                        }
                     }
                     $(this).find('.docman_delivery_method').html(delivery_methods);
                 }
