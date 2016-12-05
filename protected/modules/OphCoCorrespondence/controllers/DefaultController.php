@@ -57,8 +57,6 @@ class DefaultController extends BaseEventTypeController
         if (in_array($action, array('create', 'update'))) {
             $this->jsVars['OE_gp_id'] = $this->patient->gp_id;
             $this->jsVars['OE_practice_id'] = $this->patient->practice_id;
-            $this->jsVars['OE_patient_has_gp_or_practice'] = isset($this->patient->gp) || isset($this->patient->practice);
-            
 
             $this->getApp()->assetManager->registerScriptFile('js/docman.js');
             

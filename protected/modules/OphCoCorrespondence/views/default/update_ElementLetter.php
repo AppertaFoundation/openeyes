@@ -90,7 +90,7 @@ $patient = Patient::model()->findByPk($patient_id);
                         'document_set' => $document_set,
                         'macro_id' => $macro_id,
                         'element' => $element,
-                        'can_send_electronically' => isset($patient->gp) || isset($patient->practice),
+                        'can_send_electronically' => true,
                     ));
                 }
             ?>

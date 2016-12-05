@@ -57,11 +57,14 @@ button.green { background-color:green; color: white; }
                         $document_targets = array();
                         $post_targets = Yii::app()->request->getPost('DocumentTarget');
 
-                        foreach($post_targets as $post_target){
-                            $target = new DocumentTarget();
-                            $target->attributes = $post_target['attributes'];
-                            $document_targets[] = $target;
+                        if($post_targets){
+                            foreach($post_targets as $post_target){
+                                $target = new DocumentTarget();
+                                $target->attributes = $post_target['attributes'];
+                                $document_targets[] = $target;
+                            }
                         }
+                        
                     }
                 ?>
 

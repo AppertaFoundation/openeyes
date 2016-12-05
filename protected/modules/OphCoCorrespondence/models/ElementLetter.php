@@ -64,10 +64,11 @@ class ElementLetter extends BaseEventTypeElement
         return array(
             array(
                 'event_id, site_id, print, address, use_nickname, date, introduction, cc, re, body, footer, draft, direct_line, fax, clinic_date,' .
-                'print_all, letter_type, is_signed_off',
+                'print_all, is_signed_off',
                 'safe'
             ),
-            array('use_nickname, site_id, date, introduction, body, footer, letter_type', 'requiredIfNotDraft'),
+            array('letter_type', 'letterTypeValidator'),
+            array('use_nickname, site_id, date, introduction, body, footer', 'requiredIfNotDraft'),
             array('date', 'OEDateValidator'),
             array('clinic_date', 'OEDateValidatorNotFuture'),
             //array('is_signed_off', 'isSignedOffValidator'), // they do not want this at the moment - waiting for the demo/feedback
@@ -160,6 +161,28 @@ class ElementLetter extends BaseEventTypeElement
     {
         if( $this->draft != 1 && !$this->$attribute){
             $this->addError($attribute, $this->getAttributeLabel($attribute) . ": Cannot be empty");
+        }
+    }
+    
+    /**
+     * This attribute only required when Document is posted, so old correspondece will save without letter type
+     * @param type $attribute
+     * @param type $params
+     */
+    public function requiredIfDocumentPosted($attribute, $params)
+    {
+        $post_document_targets = Yii::app()->request->getPost('DocumentTarget', null);
+        if($post_document_targets && !$this->$attribute){
+            $this->addError($attribute, $this->getAttributeLabel($attribute) . ": Cannot be empty");
+        }
+    }
+    
+    public function letterTypeValidator($attribute, $params)
+    {
+        if( $this->draft == 1 ){
+            //if it's a draft we do not validate
+        } else {
+            $this->requiredIfDocumentPosted($attribute, $params);
         }
     }
     

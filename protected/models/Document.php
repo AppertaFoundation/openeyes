@@ -224,6 +224,11 @@ class Document //extends BaseActiveRecord
     {
 
         $post_document_targets = Yii::app()->request->getPost('DocumentTarget', null);
+        
+        if( !$post_document_targets ){
+            return;
+        }
+        
         $doc_set = null;
         if (isset($_POST['DocumentSet']['id'])) {
             $doc_set = DocumentSet::model()->findByPk($_POST['DocumentSet']['id']);

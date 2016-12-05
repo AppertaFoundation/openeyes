@@ -138,22 +138,19 @@ var docman = (function() {
                             //electronic_sending_method_label is coming from config
                             electronic_sending_method_label = electronic_sending_method_label ? electronic_sending_method_label : 'Electronic';
                             
-                            /* Can't send electronically if no GP or Practice */
-                            if( OE_patient_has_gp_or_practice ){
-                                delivery_methods = '<label><input value="Docman" name="DocumentTarget_' + row + '_DocumentOutput_0_output_type" type="checkbox" disabled checked>' + electronic_sending_method_label;
-                                delivery_methods += '<input type="hidden" value="Docman" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]"></label><br>';
-                            }
+                            delivery_methods = '<label><input value="Docman" name="DocumentTarget_' + row + '_DocumentOutput_0_output_type" type="checkbox" disabled checked> ' + electronic_sending_method_label;
+                            delivery_methods += '<input type="hidden" value="Docman" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]"></label>';
 
                             // if the print option is not set we will not display the button
                             if( $('button#et_saveprint').length ){
-                                delivery_methods += '<label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox">Print</label>';
+                                delivery_methods += '<label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox"> Print</label>';
                             }
 
                     }else
                     {
                         // if the print option is not set we will not display the button
                         if( $('button#et_saveprint').length ){
-                            delivery_methods = '<label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]" type="checkbox" checked>Print</label>';
+                            delivery_methods = '<label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]" type="checkbox" checked> Print</label>';
                         }
                     }
                     $(this).find('.docman_delivery_method').html(delivery_methods);
