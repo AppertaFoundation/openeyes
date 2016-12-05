@@ -156,7 +156,7 @@ class ElementLetter extends BaseEventTypeElement
 
         $options = array($patient->contact->id => $patient->fullname.' (Patient)');
         if (!isset($patient->contact->address)) {
-            $options['Patient'.$patient->id] .= ' - NO ADDRESS';
+            $options[$patient->contact->id] .= ' - NO ADDRESS';
         }
 
         if ($patient->gp) {
