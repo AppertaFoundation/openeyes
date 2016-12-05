@@ -29,8 +29,13 @@ $macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : (isset($element->ma
 if( !$macro_id ){
     $macro_id = isset($element->document_instance[0]->document_instance_data[0]->macro_id) ? $element->document_instance[0]->document_instance_data[0]->macro_id : null;
 }
+$macro_name = null;
+if($macro_id){
+    $macro = LetterMacro::model()->findByPk($macro_id);
+    $macro_name = $macro ? $macro->name : null;
+}
 
-$element->letter_type = ($element->letter_type ? $element->letter_type : ( $macro_id == 2 ? 2 : null  ) );
+$element->letter_type = ($element->letter_type ? $element->letter_type : ( $macro_name == 'Post-op' ? 2 : null  ) );
 $patient_id = Yii::app()->request->getQuery('patient_id', null);
 $patient = Patient::model()->findByPk($patient_id);
 

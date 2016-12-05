@@ -324,6 +324,7 @@ class DocmanController extends BaseController
                 'macro_data' => $macro_data,
                 'macro_id' => $macro_id,
                 'element' => (new ElementLetter()),
+                'can_send_electronically' => true
             )
         );
     }

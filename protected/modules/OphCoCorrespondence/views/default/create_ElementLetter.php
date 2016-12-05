@@ -23,10 +23,15 @@
 <?php
 $layoutColumns = $form->layoutColumns;
 $macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : (isset($element->macro->id) ? $element->macro->id : null);
+$macro_name = null;
+if($macro_id){
+    $macro = LetterMacro::model()->findByPk($macro_id);
+    $macro_name = $macro ? $macro->name : null;
+}
 $patient_id = Yii::app()->request->getQuery('patient_id', null);
 $patient = Patient::model()->findByPk($patient_id);
 
-$element->letter_type = ($element->letter_type ? $element->letter_type : ( $macro_id == 2 ? 2 : null  ) );
+$element->letter_type = ($element->letter_type ? $element->letter_type : ( $macro_name == 'Post-op' ? 2 : null  ) );
 ?>
 <div class="element-fields">
     <div class="row field-row">

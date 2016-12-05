@@ -161,18 +161,20 @@ var docman = (function() {
         fetchDocumentRecipients: function (macroId, element) {
             // perform AJAX call to fetch recipients, target options and output statuses
             // write data to DOM
-            $.ajax(
-                {
-                    'type': 'GET',
-                    'url': this.baseUrl + 'ajaxGetMacroTargets?macro_id='+macroId+'&patient_id='+OE_patient_id,
-                    'data':  null,
-                    context: this,
-                    async: false,
-                    'success': function(resp) {                       
-                        $('#dm_table').replaceWith(resp);
+            if(macroId){
+                $.ajax(
+                    {
+                        'type': 'GET',
+                        'url': this.baseUrl + 'ajaxGetMacroTargets?macro_id='+macroId+'&patient_id='+OE_patient_id,
+                        'data':  null,
+                        context: this,
+                        async: false,
+                        'success': function(resp) {                       
+                            $('#dm_table').replaceWith(resp);
+                        }
                     }
-                }
-            );
+                );
+            }
         },
 
 

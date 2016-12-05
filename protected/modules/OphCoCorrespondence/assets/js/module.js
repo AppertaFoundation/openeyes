@@ -44,7 +44,7 @@ function updateCorrespondence( macro_id)
                 obj.val('');
                 
                 //set letter type
-                if(macro_id == 2){
+                if('Post-op' == $('#macro_id option:selected').text()) ){
                     $('#ElementLetter_letter_type').val(2);
                 }
             }
