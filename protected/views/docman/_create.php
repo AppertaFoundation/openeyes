@@ -102,50 +102,63 @@
     <tbody>
     <?php /* Generate recipients by macro */ ?>
     <?php if (!empty($macro_data)):?>
-      <?php if (array_key_exists('to', $macro_data)):?>
+        <?php if (array_key_exists('to', $macro_data)):?>
        
-        <tr class="rowindex-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
-            <td> To <?php echo CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][ToCc]", 'To'); ?> </td>
-            <td>
-                <?php 
-                   
-                    $contact_type = isset($macro_data["to"]["contact_type"]) ? $macro_data["to"]["contact_type"] : null;
-                    
-                    $this->renderPartial('//docman/table/contact_name_address', array(
-                                'contact_id' => $macro_data["to"]["contact_id"],
-                                'contact_name' => $macro_data["to"]["contact_name"],
-                                'address_targets' => $element->address_targets,
+            <tr class="rowindex-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
+                <td> To <?php echo CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][ToCc]", 'To'); ?> </td>
+                <td>
+                    <?php 
 
-                                'contact_type' => $contact_type,
-                                'row_index' => $row_index,
-                                'address' => $macro_data["to"]["address"],
-                                'is_editable' => true));
+                        $contact_type = isset($macro_data["to"]["contact_type"]) ? $macro_data["to"]["contact_type"] : null;
+
+                        $this->renderPartial('//docman/table/contact_name_address', array(
+                                    'contact_id' => $macro_data["to"]["contact_id"],
+                                    'contact_name' => $macro_data["to"]["contact_name"],
+                                    'address_targets' => $element->address_targets,
+
+                                    'contact_type' => $contact_type,
+                                    'row_index' => $row_index,
+                                    'address' => $macro_data["to"]["address"],
+                                    'is_editable' => true));
+                    ?>
+
+
+                </td>
+                <td>
+                    <?php $this->renderPartial('//docman/table/contact_type', array(
+                        'contact_type' => strtoupper($macro_data["to"]["contact_type"]),
+                        'row_index' => $row_index,
+                    ));
+                    ?>
+                </td>
+                <td class="docman_delivery_method">
+                    <?php $this->renderPartial('//docman/table/delivery_methods', array(
+                        'is_draft' => $element->draft,
+                        'contact_type' => strtoupper($macro_data["to"]["contact_type"]),
+                        'row_index' => $row_index,
+                        'can_send_electronically' => $can_send_electronically
+                    ));
+                    ?>
+                </td>
+                <td></td>
+            </tr>
+            <?php $row_index++; ?>
+        <?php else: ?>
+            <?php
+                // if no To was set in the macro we just display an empty row
+                $this->renderPartial(
+                        '//docman/document_row_recipient',
+                        array(
+                            'contact_id' => null, 
+                            'address' => null, 
+                            'row_index' => 0,
+                            'selected_contact_type' => null, 
+                            'contact_name' => null, 
+                            'can_send_electronically' => $can_send_electronically,
+                        )
+                    );
                 ?>
-                
-                
-            </td>
-            <td>
-                <?php $this->renderPartial('//docman/table/contact_type', array(
-                    'contact_type' => strtoupper($macro_data["to"]["contact_type"]),
-                    'row_index' => $row_index,
-                ));
-                ?>
-            </td>
-            <td class="docman_delivery_method">
-                <?php $this->renderPartial('//docman/table/delivery_methods', array(
-                    'is_draft' => $element->draft,
-                    'contact_type' => strtoupper($macro_data["to"]["contact_type"]),
-                    'row_index' => $row_index,
-                    'can_send_electronically' => $can_send_electronically
-                ));
-                ?>
-            </td>
-            <td></td>
-        </tr>
-        <?php
-            $row_index++;
-            endif;
-        ?>
+        <?php endif; ?>
 
         <?php if( isset($macro_data['cc']) ): ?>
             <?php foreach ($macro_data['cc'] as $cc_index => $macro): ?>

@@ -67,10 +67,10 @@ class ElementLetter extends BaseEventTypeElement
                 'print_all, letter_type, is_signed_off',
                 'safe'
             ),
-            array('use_nickname, site_id, date, introduction, body, footer, letter_type', 'required'),
+            array('use_nickname, site_id, date, introduction, body, footer, letter_type', 'requiredIfNotDraft'),
             array('date', 'OEDateValidator'),
             array('clinic_date', 'OEDateValidatorNotFuture'),
-            //array('is_signed_off', 'isDraftValidator'), // they do not want this at the moment - waiting for the demo/feedback
+            //array('is_signed_off', 'isSignedOffValidator'), // they do not want this at the moment - waiting for the demo/feedback
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, site_id, use_nickname, date, introduction, re, body, footer, draft, direct_line, letter_type', 'safe', 'on' => 'search'),
@@ -156,7 +156,14 @@ class ElementLetter extends BaseEventTypeElement
     }
     
     
-    public function isDraftValidator($attribute, $params)
+    public function requiredIfNotDraft($attribute, $params)
+    {
+        if( $this->draft != 1 && !$this->$attribute){
+            $this->addError($attribute, $this->getAttributeLabel($attribute) . ": Cannot be empty");
+        }
+    }
+    
+    public function isSignedOffValidator($attribute, $params)
     {    
         if( $this->draft != 1 && !$this->$attribute){
             $this->addError($attribute, 'You have to check the following checkbox: Approved by a clinician');
