@@ -106,9 +106,9 @@ $element->letter_type = ($element->letter_type ? $element->letter_type : ( $macr
                     }
                 }
             }
-            $gp_address = isset($patient->gp->contact->correspondAddress) ? $patient->gp->contact->correspondAddress : $patient->gp->contact->address;
+            $gp_address = isset($patient->gp->contact->correspondAddress) ? $patient->gp->contact->correspondAddress : (isset($patient->gp->contact->address) ? $patient->gp->contact->address : null);
             if (!$gp_address) {
-                $gp_address = isset($patient->practice->contact->correspondAddress) ? $patient->practice->contact->correspondAddress : $patient->practice->contact->address;
+                $gp_address = isset($patient->practice->contact->correspondAddress) ? $patient->practice->contact->correspondAddress : (isset($patient->practice->contact->address) ? $patient->practice->contact->address : null);
             }
 
             if (!$gp_address) {
@@ -134,14 +134,14 @@ $element->letter_type = ($element->letter_type ? $element->letter_type : ( $macr
                 'element' => $element,
                 'defaults' => array(
                     'To' => array(
-                        'contact_id' => $patient->gp->contact->id,
+                        'contact_id' => isset($patient->gp->contact->id) ? $patient->gp->contact->id : null,
                         'contact_type' => 'GP',
-                        'contact_name' => $patient->gp->contact->getFullName(),
+                        'contact_name' => isset($patient->gp->contact->id) ? $patient->gp->contact->getFullName() : null,
                         'address' => $gp_address
                     ),
                     'Cc' => array(
-                        'contact_id' => $patient->contact->id,
-                        'contact_name' => $patient->contact->getFullName(),
+                        'contact_id' => isset($patient->contact->id) ? $patient->contact->id : null,
+                        'contact_name' => isset($patient->contact->id) ? $patient->contact->getFullName() : null,
                         'contact_type' => 'PATIENT',
                         'address' => $patient_address
                         
