@@ -102,6 +102,7 @@ button.green { background-color:green; color: white; }
                                         'is_draft' => $element->draft,
                                         'contact_type' => $target->contact_type,
                                         'target' => $target,
+                                        'can_send_electronically' => $can_send_electronically,
                                         'row_index' => $row_index));
                         ?>
                     </td>

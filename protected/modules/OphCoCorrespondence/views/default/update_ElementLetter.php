@@ -31,6 +31,8 @@ if( !$macro_id ){
 }
 
 $element->letter_type = ($element->letter_type ? $element->letter_type : ( $macro_id == 2 ? 2 : null  ) );
+$patient_id = Yii::app()->request->getQuery('patient_id', null);
+$patient = Patient::model()->findByPk($patient_id);
 
 ?>
 
@@ -88,6 +90,7 @@ $element->letter_type = ($element->letter_type ? $element->letter_type : ( $macr
                         'document_set' => $document_set,
                         'macro_id' => $macro_id,
                         'element' => $element,
+                        'can_send_electronically' => isset($patient->gp) || isset($patient->practice),
                     ));
                 }
             ?>

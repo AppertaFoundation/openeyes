@@ -75,7 +75,6 @@ $element->letter_type = ($element->letter_type ? $element->letter_type : ( $macr
         <div id="docman_block" class="large-12 column">
             <?php
             $macro_data = array();
-            $patient_id = Yii::app()->request->getQuery('patient_id');
 
             if (isset($element->macro) && !isset($_POST['DocumentTarget'])) {
                 $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
@@ -118,12 +117,22 @@ $element->letter_type = ($element->letter_type ? $element->letter_type : ( $macr
             }
             
             
-            $patient_address = isset($patient->contact->correspondAddress) ? $patient->contact->correspondAddress : $patient->contact->address;
+            $patient_address = isset($patient->contact->correspondAddress) ? $patient->contact->correspondAddress : (isset($patient->contact->address) ? $patient->contact->address : null);
 
             if (!$patient_address) {
                 $patient_address = "N/A";
             } else {
                 $patient_address = implode("\n", $patient_address->getLetterArray());
+            }
+            
+            $contact_id = isset($patient->gp->contact->id) ? $patient->gp->contact->id : null;
+            if(!$contact_id){
+                $contact_id = isset($patient->practice->contact->id) ? $patient->practice->contact->id : null;
+            }
+            
+            $contact_name = isset($patient->gp->contact->id) ? $patient->gp->contact->getFullName() : null;
+            if(!$contact_name){
+                $contact_name = isset($patient->practice->contact) ? $patient->practice->contact->getFullName() : null;
             }
             
 
@@ -132,11 +141,12 @@ $element->letter_type = ($element->letter_type ? $element->letter_type : ( $macr
                 'macro_data' => $macro_data,
                 'macro_id' => $macro_id,
                 'element' => $element,
+                'can_send_electronically' => isset($patient->gp) || isset($patient->practice),
                 'defaults' => array(
                     'To' => array(
-                        'contact_id' => isset($patient->gp->contact->id) ? $patient->gp->contact->id : null,
+                        'contact_id' => $contact_id,
                         'contact_type' => 'GP',
-                        'contact_name' => isset($patient->gp->contact->id) ? $patient->gp->contact->getFullName() : null,
+                        'contact_name' => $contact_name,
                         'address' => $gp_address
                     ),
                     'Cc' => array(

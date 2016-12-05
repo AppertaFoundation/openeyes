@@ -137,9 +137,12 @@ var docman = (function() {
                     {
                             //electronic_sending_method_label is coming from config
                             electronic_sending_method_label = electronic_sending_method_label ? electronic_sending_method_label : 'Electronic';
-
-                            delivery_methods = '<label><input value="Docman" name="DocumentTarget_' + row + '_DocumentOutput_0_output_type" type="checkbox" disabled checked>' + electronic_sending_method_label;
-                            delivery_methods += '<input type="hidden" value="Docman" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]"></label><br>';
+                            
+                            /* Can't send electronically if no GP or Practice */
+                            if( OE_patient_has_gp_or_practice ){
+                                delivery_methods = '<label><input value="Docman" name="DocumentTarget_' + row + '_DocumentOutput_0_output_type" type="checkbox" disabled checked>' + electronic_sending_method_label;
+                                delivery_methods += '<input type="hidden" value="Docman" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]"></label><br>';
+                            }
 
                             // if the print option is not set we will not display the button
                             if( $('button#et_saveprint').length ){

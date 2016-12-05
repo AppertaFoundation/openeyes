@@ -136,6 +136,7 @@
                     'is_draft' => $element->draft,
                     'contact_type' => strtoupper($macro_data["to"]["contact_type"]),
                     'row_index' => $row_index,
+                    'can_send_electronically' => $can_send_electronically
                 ));
                 ?>
             </td>
@@ -179,6 +180,7 @@
                                 'is_draft' => $element->draft,
                                 'contact_type' => strtoupper($macro["contact_type"]),
                                 'row_index' => $index,
+                                'can_send_electronically' => $can_send_electronically,
                             ));
                         ?>
 
@@ -216,7 +218,13 @@
                 
                 echo $this->renderPartial(
                     '//docman/document_row_recipient',
-                    array('contact_id' => $contact_id, 'address' => $address, 'row_index' => 0, 'selected_contact_type' => $contact_type, 'contact_name' => $contact_name)
+                    array(
+                        'contact_id' => $contact_id, 
+                        'address' => $address, 'row_index' => 0, 
+                        'selected_contact_type' => $contact_type, 
+                        'contact_name' => $contact_name, 
+                        'can_send_electronically' => $can_send_electronically,
+                    )
                 );
             }
         ?>
@@ -245,7 +253,14 @@
                 /* generates a default 'To' and 'Cc' rows */
                 echo $this->renderPartial(
                     '//docman/document_row_recipient',
-                    array('contact_id' => $contact_id, 'address' => $address, 'row_index' => 1, 'selected_contact_type' => $contact_type, 'contact_name' => $contact_name)
+                    array(
+                        'contact_id' => $contact_id, 
+                        'address' => $address, 
+                        'row_index' => 1, 
+                        'selected_contact_type' => $contact_type, 
+                        'contact_name' => $contact_name,
+                        'can_send_electronically' => $can_send_electronically,
+                    )
                 );
             }
         ?>

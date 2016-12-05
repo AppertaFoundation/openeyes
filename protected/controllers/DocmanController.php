@@ -175,7 +175,14 @@ class DocmanController extends BaseController
 
         $this->renderPartial(
             '/docman/document_row_recipient',
-            array('contact_id' => $contact_id, 'address' => $address, 'row_index' => $last_row_index + 1, 'selected_contact_type' => $selected_contact_type, 'contact_name' => $contact_name)
+            array(
+                'contact_id' => $contact_id, 
+                'address' => $address, 
+                'row_index' => $last_row_index + 1, 
+                'selected_contact_type' => $selected_contact_type, 
+                'contact_name' => $contact_name,
+                'can_send_electronically' => isset($patient->gp) || isset($patient->practice),
+            )
         );
         $this->getApp()->end();
     }
@@ -194,8 +201,7 @@ class DocmanController extends BaseController
         $patient = Patient::model()->findByPk($patient_id);
         $contact_id = Yii::app()->request->getQuery('contact_id');
         $document_set_id = Yii::app()->request->getQuery('document_set_id');
-        if ($contact_id) {
-            $contact = Contact::model()->findByPk($contact_id);
+        if ($contact_id && $contact = Contact::model()->findByPk($contact_id)) {
             $data["contact_name"] = $contact ? $contact->getFullName() : '';
             $data["contact_id"] = $contact_id;
                     
@@ -229,7 +235,8 @@ class DocmanController extends BaseController
             // if the contact type is GP it's possible that it has no address, so we have to look for practice
             if (!$address) {
                 if ($data["contact_type"] == 'Gp') {
-                    $address = isset($patient->practice->contact->correspondAddress) ? $patient->practice->contact->correspondAddress : $patient->practice->contact->address;
+                    $address = isset($patient->practice->contact->correspondAddress) ? $patient->practice->contact->correspondAddress : isset($patient->practice->contact->address) ? $patient->practice->contact->address : null;
+                    $data["contact_type"] = isset($patient->practice->contact) ? 'GP' : '';
                 }
             }
 
@@ -237,6 +244,12 @@ class DocmanController extends BaseController
                 $data["address"] = "N/A";
             } else {
                 $data["address"] = implode("\n", $address->getLetterArray());
+            }
+            
+            // if no contact id check if it is a practice
+            if(!$data["contact_type"]){
+                $practice = Practice::model()->find('contact_id=?', array($contact_id));
+                $data["contact_type"] = $practice ? 'GP' : '';
             }
 
             //check if there are saved outputs for the contact

@@ -35,6 +35,7 @@
                     'is_draft' => $element->draft,
                     'contact_type' => $selected_contact_type,
                     'row_index' => $row_index,
+                    'can_send_electronically' => $can_send_electronically,
                 ));
                 ?>
         
