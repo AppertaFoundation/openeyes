@@ -122,34 +122,16 @@ class Pedigree extends BaseActiveRecord
     public function updateDiagnosis()
     {
         $sql = 'SELECT
-                  count(all_diagnoses.id) AS occurances,
-                  all_diagnoses.id,
-                  all_diagnoses.term
-                FROM
-                  (SELECT
-                     disorder.id,
-                     disorder.term
-                   FROM pedigree
-                     JOIN genetics_patient_pedigree ON pedigree.id = genetics_patient_pedigree.pedigree_id
-                     JOIN genetics_patient ON genetics_patient.id = genetics_patient_pedigree.patient_id
-                     JOIN patient ON genetics_patient.patient_id = patient.id
-                     JOIN episode ON patient.id = episode.patient_id
-                     JOIN disorder ON episode.disorder_id = disorder.id
-                   WHERE pedigree.id = ' . $this->id . '
-                   UNION ALL
-                   SELECT
-                     disorder.id,
-                     disorder.term
-                   FROM pedigree
-                     JOIN genetics_patient_pedigree ON pedigree.id = genetics_patient_pedigree.pedigree_id
-                     JOIN genetics_patient ON genetics_patient.id = genetics_patient_pedigree.patient_id
-                     JOIN patient ON genetics_patient.patient_id = patient.id
-                     JOIN secondary_diagnosis ON patient.id = secondary_diagnosis.patient_id
-                     JOIN disorder ON secondary_diagnosis.disorder_id = disorder.id
-                   WHERE pedigree.id = ' . $this->id . ') AS all_diagnoses
-                GROUP BY all_diagnoses.term
-                ORDER BY occurances DESC
-                LIMIT 1;';
+                 count(disorder.id),
+                 disorder.term
+                FROM pedigree
+                 JOIN genetics_patient_pedigree ON pedigree.id = genetics_patient_pedigree.pedigree_id
+                 JOIN genetics_patient ON genetics_patient.id = genetics_patient_pedigree.patient_id
+                 JOIN genetics_patient_diagnosis on genetics_patient_pedigree.patient_id = genetics_patient_diagnosis.patient_id
+                 JOIN disorder ON genetics_patient_diagnosis.disorder_id = disorder.id
+                WHERE pedigree.id = 1
+                GROUP BY disorder.id
+                LIMIT 1';
 
         $query = $this->getDbConnection()->createCommand($sql);
         $diagnosis = $query->queryRow();
