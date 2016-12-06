@@ -187,91 +187,91 @@ class DocmanController extends BaseController
         $this->getApp()->end();
     }
 
-    public function actionAjaxGetContactData()
-    {
-        if (!Yii::app()->request->isAjaxRequest) {
-            return;
-        }
-        
-        $data = array();
-        $data["contact_name"] = '';
-        $data["contact_type"] = 'Other';
-                
-        $patient_id = Yii::app()->request->getQuery('patient_id');
-        $patient = Patient::model()->findByPk($patient_id);
-        $contact_id = Yii::app()->request->getQuery('contact_id');
-        $document_set_id = Yii::app()->request->getQuery('document_set_id');
-        if ($contact_id && $contact = Contact::model()->findByPk($contact_id)) {
-            $data["contact_name"] = $contact ? $contact->getFullName() : '';
-            $data["contact_id"] = $contact_id;
-                    
-            $address = isset($contact->correspondAddress) ? $contact->correspondAddress : $contact->address;
-            $contact_type = $contact->getType();
-            $data["contact_type"] = $contact_type ? $contact_type : '';
-            if(!$contact_type){
-
-                $comission_body = $patient->getDistinctCommissioningBodiesByType();
-                        
-                foreach ($comission_body as $cb_type_id => $cb_list) {
-                    foreach ($cb_list as $cb) {
-                        if ($services = $cb->services) {
-                            foreach ($services as $svc) {
-                                if($svc->contact && $svc->contact->id == $contact_id && $svc->type->shortname == 'DRSS'){
-                                    $data["contact_type"] = 'DRSS';
-                                    $data["contact_name"] = $svc->name;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            
-            if($data["contact_type"] == 'Gp'){
-                $data["introduction"] = $patient->gp->getLetterIntroduction();
-            } else if($data["contact_type"] == 'Patient'){
-                $data["introduction"] = $patient->getLetterIntroduction();
-            }
-            
-            // if the contact type is GP it's possible that it has no address, so we have to look for practice
-            if (!$address) {
-                if ($data["contact_type"] == 'Gp') {
-                    $address = isset($patient->practice->contact->correspondAddress) ? $patient->practice->contact->correspondAddress : isset($patient->practice->contact->address) ? $patient->practice->contact->address : null;
-                    $data["contact_type"] = isset($patient->practice->contact) ? 'GP' : '';
-                }
-            }
-
-            if (!$address) {
-                $data["address"] = "N/A";
-            } else {
-                $data["address"] = implode("\n", $address->getLetterArray());
-            }
-            
-            // if no contact id check if it is a practice
-            if(!$data["contact_type"]){
-                $practice = Practice::model()->find('contact_id=?', array($contact_id));
-                $data["contact_type"] = $practice ? 'GP' : '';
-            }
-
-            //check if there are saved outputs for the contact
-            if ($document_set_id) {
-                $document_set = DocumentSet::model()->findByPk($document_set_id);
-            }
-
-            if (isset($document_set->document_instance[0]->document_target)) {
-                foreach ($document_set->document_instance[0]->document_target as $target) {
-                    if ($target->contact_id == $contact_id && isset($target->document_output)) {
-                        foreach ($target->document_output as $output) {
-                            $data["DocumentOutputs"][] = array(
-                                'output_id' => $output->id,
-                                'output_type' => $output->output_type,
-                            );
-                        }
-                    }
-                }
-            }
-            echo json_encode($data);
-        }
-    }
+//    public function actionAjaxGetContactData()
+//    {
+//        if (!Yii::app()->request->isAjaxRequest) {
+//            return;
+//        }
+//        
+//        $data = array();
+//        $data["contact_name"] = '';
+//        $data["contact_type"] = 'Other';
+//                
+//        $patient_id = Yii::app()->request->getQuery('patient_id');
+//        $patient = Patient::model()->findByPk($patient_id);
+//        $contact_id = Yii::app()->request->getQuery('contact_id');
+//        $document_set_id = Yii::app()->request->getQuery('document_set_id');
+//        if ($contact_id && $contact = Contact::model()->findByPk($contact_id)) {
+//            $data["contact_name"] = $contact ? $contact->getFullName() : '';
+//            $data["contact_id"] = $contact_id;
+//                    
+//            $address = isset($contact->correspondAddress) ? $contact->correspondAddress : $contact->address;
+//            $contact_type = $contact->getType();
+//            $data["contact_type"] = $contact_type ? $contact_type : '';
+//            if(!$contact_type){
+//
+//                $comission_body = $patient->getDistinctCommissioningBodiesByType();
+//                        
+//                foreach ($comission_body as $cb_type_id => $cb_list) {
+//                    foreach ($cb_list as $cb) {
+//                        if ($services = $cb->services) {
+//                            foreach ($services as $svc) {
+//                                if($svc->contact && $svc->contact->id == $contact_id && $svc->type->shortname == 'DRSS'){
+//                                    $data["contact_type"] = 'DRSS';
+//                                    $data["contact_name"] = $svc->name;
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//            
+//            if($data["contact_type"] == 'Gp'){
+//                $data["introduction"] = $patient->gp->getLetterIntroduction();
+//            } else if($data["contact_type"] == 'Patient'){
+//                $data["introduction"] = $patient->getLetterIntroduction();
+//            }
+//            
+//            // if the contact type is GP it's possible that it has no address, so we have to look for practice
+//            if (!$address) {
+//                if ($data["contact_type"] == 'Gp') {
+//                    $address = isset($patient->practice->contact->correspondAddress) ? $patient->practice->contact->correspondAddress : isset($patient->practice->contact->address) ? $patient->practice->contact->address : null;
+//                    $data["contact_type"] = isset($patient->practice->contact) ? 'GP' : '';
+//                }
+//            }
+//
+//            if (!$address) {
+//                $data["address"] = "N/A";
+//            } else {
+//                $data["address"] = implode("\n", $address->getLetterArray());
+//            }
+//            
+//            // if no contact id check if it is a practice
+//            if(!$data["contact_type"]){
+//                $practice = Practice::model()->find('contact_id=?', array($contact_id));
+//                $data["contact_type"] = $practice ? 'GP' : '';
+//            }
+//
+//            //check if there are saved outputs for the contact
+//            if ($document_set_id) {
+//                $document_set = DocumentSet::model()->findByPk($document_set_id);
+//            }
+//
+//            if (isset($document_set->document_instance[0]->document_target)) {
+//                foreach ($document_set->document_instance[0]->document_target as $target) {
+//                    if ($target->contact_id == $contact_id && isset($target->document_output)) {
+//                        foreach ($target->document_output as $output) {
+//                            $data["DocumentOutputs"][] = array(
+//                                'output_id' => $output->id,
+//                                'output_type' => $output->output_type,
+//                            );
+//                        }
+//                    }
+//                }
+//            }
+//            echo json_encode($data);
+//        }
+//    }
     
     public function actionAjaxGetMacros()
     {

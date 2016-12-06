@@ -52,17 +52,6 @@
         font-size: 13px;
     }
 
-    table.docman tbody tr td img {
-        vertical-align: text-top;
-        height: 13px;
-        width: 13px;
-    }
-
-    table.docman > tbody > tr > td:first-child {
-        width: 200px;
-        max-width: 200px;
-    }
-
     button.docman {
         width: 80px;
         background: none;
@@ -85,6 +74,9 @@
     }
     th.actions{
         min-width: 113px;
+    }
+    .docman_delivery_method{
+        min-width: 156px;
     }
 </style>
 

@@ -24,8 +24,9 @@ tr { background-color: #eee; color: black; padding:2px 5px; }
 th.actions {padding:0 10px}
 select.addr { width:200px !important; max-width:200px; }
 div#docman_block select.macro { max-width:220px; }
-table.docman tbody tr td img { vertical-align: text-top; height:13px; width:13px; }
-table.docman > tbody > tr > td:first-child { width:200px; max-width:200px; }
+.docman_delivery_method{
+        min-width: 156px;
+    }
 button.docman { width:80px; background: none; font-size:13px; line-height:20px; height:20px; margin:5px 0; padding:0; text-align:center; }
 button.red { background-color:red; color: white; }
 button.green { background-color:green; color: white; }

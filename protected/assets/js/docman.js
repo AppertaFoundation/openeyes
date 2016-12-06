@@ -238,11 +238,11 @@ var docman = (function() {
                 document_set_id_param = '&document_set_id=' + document_set_id;
             }
             
-            if( $.isNumeric(contact_id) ){
+            if(contact_id != 'OTHER' ){
                 $('#dm_table .docman_loader').show();
                 $.ajax({
                     'type': 'GET',
-                    'url': this.baseUrl + 'ajaxGetContactData?contact_id='+contact_id+'&patient_id='+OE_patient_id + document_set_id_param,
+                    'url': '/' + moduleName  + '/default/getAddress?contact='+contact_id+'&patient_id='+OE_patient_id + document_set_id_param,
                     context: this,
                     dataType: 'json',
                     'success': function(resp) {
@@ -286,7 +286,7 @@ var docman = (function() {
                                     docman.createNewRecipientEntry('GP');
                                 }
                             }
-                            $("#ElementLetter_introduction").val( resp.introduction );
+                            $("#ElementLetter_introduction").val( resp.text_ElementLetter_introduction );
                         }
 
                         $('#docman_recipient_' + rowindex).val('');

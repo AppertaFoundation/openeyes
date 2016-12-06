@@ -202,33 +202,37 @@ class ElementLetter extends BaseEventTypeElement
 
     public function getAddress_targets()
     {
-        if (Yii::app()->getController()->getAction()->id == 'create' || !isset($this->event)) {
-            if (!$patient = Patient::model()->with(array('gp', 'practice'))->findByPk(@$_GET['patient_id'])) {
-                throw new Exception('patient not found: '.@$_GET['patient_id']);
-            }
-        } else {
+
+        $patient_id = Yii::app()->request->getQuery('patient_id');
+        $patient = null;
+        
+        if($patient_id){
+            $patient = Patient::model()->with(array('gp', 'practice'))->findByPk($patient_id);
+        } else if( isset($this->event->episode->patient) ) {
             $patient = $this->event->episode->patient;
+        } else {
+            throw new Exception('patient not found: '.patient_id);
         }
 
-        $options = array($patient->contact->id => $patient->fullname.' (Patient)');
+        $options = array('Patient'.$patient->id => $patient->fullname.' (Patient)');
         if (!isset($patient->contact->address)) {
-            $options[$patient->contact->id] .= ' - NO ADDRESS';
+            $options['Patient'.$patient->id] .= ' - NO ADDRESS';
         }
 
         if ($patient->gp) {
             if (@$patient->gp->contact) {
-                $options[$patient->gp->contact->id] = $patient->gp->contact->fullname.' (GP)';
+                $options['Gp'.$patient->gp_id] = $patient->gp->contact->fullname.' (GP)';
             } else {
-                $options[$patient->gp->contact->id] = Gp::UNKNOWN_NAME.' (GP)';
+                $options['Gp'.$patient->gp_id] = Gp::UNKNOWN_NAME.' (GP)';
             }
             if (!$patient->practice || !@$patient->practice->contact->address) {
-                $options[$patient->gp->contact->id] .= ' - NO ADDRESS';
+                $options['Gp'.$patient->gp_id] .= ' - NO ADDRESS';
             }
         } else {
             if ($patient->practice) {
-                $options[$patient->practice->contact->id] = Gp::UNKNOWN_NAME.' (GP)';
+                $options['Practice'.$patient->practice_id] = Gp::UNKNOWN_NAME.' (GP)';
                 if (@$patient->practice->contact && !@$patient->practice->contact->address) {
-                    $options[$patient->practice->contact->id] .= ' - NO ADDRESS';
+                    $options['Practice'.$patient->practice_id] .= ' - NO ADDRESS';
                 }
             }
         }
@@ -247,7 +251,7 @@ class ElementLetter extends BaseEventTypeElement
             foreach ($cbs as $cb_type_id => $cb_list) {
                 foreach ($cb_list as $cb) {
                     if (in_array($cb_type_id, $cbt_ids)) {
-                        $options[$cb->contact->id] = $cb->name.' ('.$cbtype_lookup[$cb_type_id].')';
+                        $options['CommissioningBody'.$cb->id] = $cb->name.' ('.$cbtype_lookup[$cb_type_id].')';
                         if (!$cb->getAddress()) {
                             $options['CommissioningBody'.$cb->id] .= ' - NO ADDRESS';
                         }
@@ -256,13 +260,11 @@ class ElementLetter extends BaseEventTypeElement
                     // include all services at the moment, regardless of whether the commissioning body type is filtered
                     if ($services = $cb->services) {
                         foreach ($services as $svc) {
-                            if($svc->contact){
-                            $options[$svc->contact->id] = $svc->name.' ('.$svc->getTypeShortName().')';
+                            $options['CommissioningBodyService'.$svc->id] = $svc->name.' ('.$svc->getTypeShortName().')';
                         }
                     }
                 }
             }
-        }
         }
 
         foreach (PatientContactAssignment::model()->with(array(
@@ -281,7 +283,7 @@ class ElementLetter extends BaseEventTypeElement
             ),
         ))->findAll('patient_id=?', array($patient->id)) as $pca) {
             if ($pca->location) {
-                $options['ContactLocation'.$pca->location_id] = $pca->location->contact->fullName.' ('.$pca->location->contact->label->name.', '.$pca->location.')';
+                $options['ContactLocation'.$pca->location_id] = $pca->location->contact->fullName.' ('.$pca->location->contact->label->name . ')';
             } else {
                 // Note that this index will always be the basis for a Person model search - if PCA has a wider use case than this,
                 // this will need to be revisited

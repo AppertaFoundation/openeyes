@@ -138,19 +138,46 @@ class DefaultController extends BaseEventTypeController
             return;
         }
 
+        $text_ElementLetter_address = $contact->getLetterAddress(array(
+            'patient' => $patient,
+            'include_name' => true,
+            'include_label' => true,
+            'delimiter' => "\n",
+        ));
+        
         $address = $contact->getLetterAddress(array(
-                'patient' => $patient,
-                'include_name' => true,
-                'include_label' => true,
-                'delimiter' => "\n",
-            ));
+            'patient' => $patient,
+            'include_name' => false,
+            'include_label' => true,
+            'delimiter' => "\n",
+        ));
+        
 
         if (!$address) {
             $address = '';
         }
 
+        if (!$text_ElementLetter_address) {
+            $text_ElementLetter_address = '';
+        }
+        
+        if (method_exists($contact, 'getCorrespondenceName')) {
+            $correspondence_name = $contact->correspondenceName;
+        } else {
+            $correspondence_name = $contact->fullName;
+        }
+        
+        if($m[1] == 'CommissioningBodyService'){
+            $address = $correspondence_name[1];
+            $correspondence_name = $correspondence_name[0];
+        }
+
         $data = array(
-            'text_ElementLetter_address' => $address,
+            'contact_type' => $m[1] == 'CommissioningBodyService' ? 'DRSS' : $m[1],
+            'contact_id' => isset($contact->contact->id) ? $contact->contact->id : null,
+            'contact_name' => $correspondence_name,
+            'address' => $address,
+            'text_ElementLetter_address' => $text_ElementLetter_address,
             'text_ElementLetter_introduction' => $contact->getLetterIntroduction(array(
                 'nickname' => (boolean) @$_GET['nickname'],
             )),
