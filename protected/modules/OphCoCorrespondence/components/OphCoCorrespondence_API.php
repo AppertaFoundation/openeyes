@@ -381,7 +381,7 @@ class OphCoCorrespondence_API extends BaseAPI
         }
 
         return $data = array(
-            'contact_type' => $m[1] == 'CommissioningBodyService' ? 'DRSS' : $m[1],
+            'contact_type' => $contact_type,
             'contact_id' => isset($contact->contact->id) ? $contact->contact->id : null,
             'contact_name' => $correspondence_name,
             'address' => $address ? $address : "The contact does not have a valid address.",
