@@ -100,7 +100,7 @@ class DocManDeliveryCommand extends CConsoleCommand
             curl_close($ch);
 
             if (!isset(Yii::app()->params['docman_filename_format']) || Yii::app()->params['docman_filename_format'] == 'format1') {
-                $filename = "OPENEYES_" . $this->event->id . "_" . rand();
+                $filename = "OPENEYES_" . $this->event->episode->patient->hos_num . '_' . $this->event->id . "_" . rand();
             } else if (Yii::app()->params['docman_filename_format'] == 'format2') {
                 $filename = $this->event->episode->patient->hos_num . '_' . date('YmdHi',
                         strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
