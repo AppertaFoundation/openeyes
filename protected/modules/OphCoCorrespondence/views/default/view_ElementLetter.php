@@ -62,22 +62,27 @@
                 ?>
 	</header>
 
-	<?php $this->renderPartial('reply_address', array(
-            'site' => $element->site,
-    ))?>
+	<?php 
+            $this->renderPartial('reply_address', array(
+                'site' => $element->site,
+            ));
 
-	<?php $this->renderPartial('print_ElementLetter', array(
-            'element' => $element,
-            'toAddress' => $toAddress,
-            'ccString' => $ccString,
-            'no_header' => true,
-    ))?>
+            $this->renderPartial('print_ElementLetter', array(
+                'element' => $element,
+                'toAddress' => $toAddress,
+                'ccString' => $ccString,
+                'no_header' => true,
+            ));
+            
+            $is_document = isset($element->document_instance);
+            
+        ?>
     
 	<input type="hidden" name="OphCoCorrespondence_printLetter" id="OphCoCorrespondence_printLetter" value="<?php echo $element->print?>" />
 
         <?php if(Yii::app()->user->getState('correspondece_element_letter_saved', true)): ?>
             <?php Yii::app()->user->setState('correspondece_element_letter_saved', false); ?>
-            <input type="hidden" name="OphCoCorrespondence_print_checked" id="OphCoCorrespondence_print_checked" value="1" />
+        <input type="hidden" name="OphCoCorrespondence_print_checked" id="OphCoCorrespondence_print_checked" value="<?php $is_document ? '1' : '0'; ?>" />
         <?php else: ?>
             <input type="hidden" name="OphCoCorrespondence_printLetter" id="OphCoCorrespondence_printLetter_all" value="<?php echo $element->print_all?>" />
         <?php endif; ?>
