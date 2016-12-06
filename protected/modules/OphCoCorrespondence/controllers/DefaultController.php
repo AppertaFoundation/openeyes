@@ -115,6 +115,8 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionGetAddress()
     {
+        
+        
         if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
             throw new Exception('Unknown patient: '.@$_GET['patient_id']);
         }
@@ -122,68 +124,12 @@ class DefaultController extends BaseEventTypeController
         if (!preg_match('/^([a-zA-Z]+)([0-9]+)$/', @$_GET['contact'], $m)) {
             throw new Exception('Invalid contact format: '.@$_GET['contact']);
         }
-
-        if ($m[1] == 'Contact') {
-            // NOTE we are assuming that Contact must be a Person model here
-            $contact = Person::model()->find('contact_id=?', array($m[2]));
-        } else {
-            if (!$contact = $m[1]::model()->findByPk($m[2])) {
-                throw new Exception("{$m[1]} not found: {$m[2]}");
-            }
-        }
-
-        if (method_exists($contact, 'isDeceased') && $contact->isDeceased()) {
-            echo json_encode(array('errors' => 'DECEASED'));
-
-            return;
-        }
-
-        $text_ElementLetter_address = $contact->getLetterAddress(array(
-            'patient' => $patient,
-            'include_name' => true,
-            'include_label' => true,
-            'delimiter' => "\n",
-        ));
         
-        $address = $contact->getLetterAddress(array(
-            'patient' => $patient,
-            'include_name' => false,
-            'include_label' => true,
-            'delimiter' => "\n",
-        ));
-        
-
-        if (!$address) {
-            $address = '';
-        }
-
-        if (!$text_ElementLetter_address) {
-            $text_ElementLetter_address = '';
-        }
-        
-        if (method_exists($contact, 'getCorrespondenceName')) {
-            $correspondence_name = $contact->correspondenceName;
-        } else {
-            $correspondence_name = $contact->fullName;
-        }
-        
-        if($m[1] == 'CommissioningBodyService'){
-            $address = $correspondence_name[1];
-            $correspondence_name = $correspondence_name[0];
-        }
-
-        $data = array(
-            'contact_type' => $m[1] == 'CommissioningBodyService' ? 'DRSS' : $m[1],
-            'contact_id' => isset($contact->contact->id) ? $contact->contact->id : null,
-            'contact_name' => $correspondence_name,
-            'address' => $address,
-            'text_ElementLetter_address' => $text_ElementLetter_address,
-            'text_ElementLetter_introduction' => $contact->getLetterIntroduction(array(
-                'nickname' => (boolean) @$_GET['nickname'],
-            )),
-        );
-
+        $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
+        $data = $api->getAddress($_GET['patient_id'], $_GET['contact']);
         echo json_encode($data);
+        
+        return;
     }
 
     /**

@@ -21,6 +21,8 @@
 
 <?php echo $form->hiddenInput($element, 'draft', 1) ?>
 <?php
+$api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
+
 $layoutColumns = $form->layoutColumns;
 $macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : (isset($element->macro->id) ? $element->macro->id : null);
 $macro_name = null;
@@ -82,7 +84,6 @@ $element->letter_type = ($element->letter_type ? $element->letter_type : ( $macr
             $macro_data = array();
 
             if (isset($element->macro) && !isset($_POST['DocumentTarget'])) {
-                $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
                 $macro_data = $api->getMacroTargets($patient_id, $macro_id);
             }
 
@@ -121,25 +122,24 @@ $element->letter_type = ($element->letter_type ? $element->letter_type : ( $macr
                 $gp_address = implode("\n", $gp_address->getLetterArray());
             }
             
+            if($patient->practice){
+                $contact_string = 'Practice' . $patient->practice->id;
+            } else if($patient->gp){
+                $contact_string = 'Gp' . $patient->gp->id;
+            }
             
             $patient_address = isset($patient->contact->correspondAddress) ? $patient->contact->correspondAddress : (isset($patient->contact->address) ? $patient->contact->address : null);
 
             if (!$patient_address) {
-                $patient_address = "N/A";
+                $patient_address = "The contact does not have a valid address.";
             } else {
                 $patient_address = implode("\n", $patient_address->getLetterArray());
             }
             
-            $contact_id = isset($patient->gp->contact->id) ? $patient->gp->contact->id : null;
-            if(!$contact_id){
-                $contact_id = isset($patient->practice->contact->id) ? $patient->practice->contact->id : null;
-            }
+            $address_data = $api->getAddress($patient_id, $contact_string);
             
-            $contact_name = isset($patient->gp->contact->id) ? $patient->gp->contact->getFullName() : null;
-            if(!$contact_name){
-                $contact_name = isset($patient->practice->contact) ? $patient->practice->contact->getFullName() : null;
-            }
-            
+            $contact_id = $address_data['contact_id'];
+            $contact_name = $address_data['contact_name'];
 
             $this->renderPartial('//docman/_create', array(
                 'row_index' => (isset($row_index) ? $row_index : 0),
@@ -152,14 +152,13 @@ $element->letter_type = ($element->letter_type ? $element->letter_type : ( $macr
                         'contact_id' => $contact_id,
                         'contact_type' => 'GP',
                         'contact_name' => $contact_name,
-                        'address' => $gp_address
+                        'address' => $address_data['address']
                     ),
                     'Cc' => array(
                         'contact_id' => isset($patient->contact->id) ? $patient->contact->id : null,
                         'contact_name' => isset($patient->contact->id) ? $patient->contact->getFullName() : null,
                         'contact_type' => 'PATIENT',
                         'address' => $patient_address
-                        
                     ),
                 )
             ));

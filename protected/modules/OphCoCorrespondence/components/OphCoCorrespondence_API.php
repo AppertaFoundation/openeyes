@@ -315,4 +315,80 @@ class OphCoCorrespondence_API extends BaseAPI
         $element_letter = ElementLetter::model()->findByPk($id);
         return $element_letter->letter_targets;
     }
+    
+    public function getAddress($patient_id, $contact_string, $nickname = false)
+    {
+        if (!$patient = Patient::model()->findByPk($patient_id)) {
+            throw new Exception('Unknown patient: '.$patient_id);
+        }
+
+        if (!preg_match('/^([a-zA-Z]+)([0-9]+)$/', $contact_string, $m)) {
+            throw new Exception('Invalid contact format: '.$contact_string);
+        }
+
+        if ($m[1] == 'Contact') {
+            // NOTE we are assuming that Contact must be a Person model here
+            $contact = Person::model()->find('contact_id=?', array($m[2]));
+        } else {
+            if (!$contact = $m[1]::model()->findByPk($m[2])) {
+                throw new Exception("{$m[1]} not found: {$m[2]}");
+            }
+        }
+
+        if (method_exists($contact, 'isDeceased') && $contact->isDeceased()) {
+            return json_encode(array('errors' => 'DECEASED'));
+        }
+
+        $text_ElementLetter_address = $contact->getLetterAddress(array(
+            'patient' => $patient,
+            'include_name' => true,
+            'include_label' => true,
+            'delimiter' => "\n",
+        ));
+        
+        $address = $contact->getLetterAddress(array(
+            'patient' => $patient,
+            'include_name' => false,
+            'include_label' => true,
+            'delimiter' => "\n",
+        ));
+        
+
+        if (!$address) {
+            $address = '';
+        }
+
+        if (!$text_ElementLetter_address) {
+            $text_ElementLetter_address = '';
+        }
+        
+        if (method_exists($contact, 'getCorrespondenceName')) {
+            $correspondence_name = $contact->correspondenceName;
+        } else {
+            $correspondence_name = $contact->fullName;
+        }
+        
+        if($m[1] == 'CommissioningBodyService'){
+            $address = $correspondence_name[1];
+            $correspondence_name = $correspondence_name[0];
+        }
+        
+        $contact_type = $m[1];
+        if($m[1] == 'CommissioningBodyService'){
+            $contact_type = 'DRSS';
+        } else if($m[1] == 'Practice'){
+            $contact_type = 'Gp';
+        }
+
+        return $data = array(
+            'contact_type' => $m[1] == 'CommissioningBodyService' ? 'DRSS' : $m[1],
+            'contact_id' => isset($contact->contact->id) ? $contact->contact->id : null,
+            'contact_name' => $correspondence_name,
+            'address' => $address ? $address : "The contact does not have a valid address.",
+            'text_ElementLetter_address' => $text_ElementLetter_address,
+            'text_ElementLetter_introduction' => $contact->getLetterIntroduction(array(
+                'nickname' => (boolean) $nickname,
+            )),
+        );
+    }
 }
