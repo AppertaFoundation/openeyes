@@ -68,7 +68,8 @@ class ElementLetter extends BaseEventTypeElement
                 'safe'
             ),
             array('letter_type', 'letterTypeValidator'),
-            array('use_nickname, site_id, date, introduction, body, footer', 'requiredIfNotDraft'),
+            array('site_id, date, introduction, body, footer', 'requiredIfNotDraft'),
+            array('use_nickname', 'required'),
             array('date', 'OEDateValidator'),
             array('clinic_date', 'OEDateValidatorNotFuture'),
             //array('is_signed_off', 'isSignedOffValidator'), // they do not want this at the moment - waiting for the demo/feedback
