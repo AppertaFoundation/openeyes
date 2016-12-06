@@ -406,7 +406,7 @@ class DefaultController extends BaseEventTypeController
             $print_outputs = $letter->getOutputByType("Print");
             if($print_outputs){
                 foreach($print_outputs as $print_output){
-                    $document_target = $print_output->document_target;
+                    $document_target = DocumentTarget::model()->findByPk($print_output->document_target_id);
                     $this->render('print', array('element' => $letter, 'letter_address' => ($document_target->contact_name . "\n" . $document_target->address)));
                 }
             }
@@ -439,9 +439,8 @@ class DefaultController extends BaseEventTypeController
             $this->pdf_print_documents = count($print_outputs);
         }
         
-        $outputs = $letter->getOutputByType("Print");
-        if( $outputs ){
-            foreach($outputs as $output){
+        if( $print_outputs ){
+            foreach($print_outputs as $output){
                 $output->output_status = "COMPLETE";
                 $output->save();
             }
