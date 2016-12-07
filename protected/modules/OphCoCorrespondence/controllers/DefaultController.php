@@ -53,6 +53,25 @@ class DefaultController extends BaseEventTypeController
     {
         parent::initAction($action);
         $this->jsVars['electronic_sending_method_label'] = Yii::app()->params['electronic_sending_method_label'];
+        
+        $event_id = Yii::app()->request->getQuery('id');
+        if($event_id){
+            $letter = ElementLetter::model()->find('event_id=?', array($event_id));
+            $this->editable = $letter->isEditable();
+            $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
+
+
+            if($action == 'update'){
+                if( !Yii::app()->request->isPostRequest && $letter->draft){
+                    
+                    $gp_targets = $letter->getTargetByContactType("GP");
+              
+                    foreach($gp_targets as $gp_target){
+                        $api->updateDocumentTargetAddressFromContact($gp_target->id, $letter->id);
+                    }
+                }
+            }
+        }
 
         if (in_array($action, array('create', 'update'))) {
             $this->jsVars['OE_gp_id'] = $this->patient->gp_id;
@@ -61,13 +80,7 @@ class DefaultController extends BaseEventTypeController
             $this->getApp()->assetManager->registerScriptFile('js/docman.js');
             
             $this->loadDirectLines();
-        }
-
-        $event_id = Yii::app()->request->getQuery('id');
-        if($event_id){
-            $letter = ElementLetter::model()->find('event_id=?', array($event_id));
-            $this->editable = $letter->isEditable();
-        }
+        }       
         
     }
 
@@ -426,13 +439,14 @@ class DefaultController extends BaseEventTypeController
             $this->pdf_print_suffix = 'all';
             $this->pdf_print_documents = count($print_outputs);
         }
-        
+
         if( $print_outputs ){
             foreach($print_outputs as $output){
                 $output->output_status = "COMPLETE";
                 $output->save();
             }
         }
+
 
         return parent::actionPDFPrint($id);
     }

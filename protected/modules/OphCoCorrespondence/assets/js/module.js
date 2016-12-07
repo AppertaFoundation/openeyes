@@ -18,7 +18,7 @@
 
 var correspondence_markprinted_url, correspondence_print_url;
 
-function updateCorrespondence( macro_id)
+function updateCorrespondence(macro_id)
 {
     var nickname = $('input[id="ElementLetter_use_nickname"][type="checkbox"]').is(':checked') ? '1' : '0';
     var obj = $(this);
@@ -137,6 +137,9 @@ $(document).ready(function() {
 				'dataType': 'json',
 				'url': baseUrl+'/OphCoCorrespondence/Default/getAddress?patient_id='+OE_patient_id+'&contact='+val+'&nickname='+nickname,
 				'success': function(data) {
+
+					$('#ElementLetter_address').attr('readonly', (data['contact_type'] == 'Gp'));
+
 					if (data['error'] == 'DECEASED') {
 
 						new OpenEyes.UI.Dialog.Alert({

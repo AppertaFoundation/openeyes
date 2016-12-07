@@ -76,7 +76,9 @@ var docman = (function() {
 
 
         addMacroHandler: function(){
-            $('#macro_id').on('change', function(){ docman2.changeSelectedMacro($('#macro_id').val(), $('#macro_id'));});
+            $('#macro_id').on('change', function(){ 
+                docman2.changeSelectedMacro($('#macro_id').val(), $('#macro_id'));
+            });
         },
 
         addNewRecipientHandler: function()
@@ -262,6 +264,12 @@ var docman = (function() {
                         $('#DocumentTarget_' + rowindex + '_attributes_contact_name').val(resp.contact_name);
                         $('#DocumentTarget_' + rowindex + '_attributes_contact_id').val(resp.contact_id);
                         $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val(resp.contact_type.toUpperCase()).trigger('change');
+                        
+                        //set readonly
+                        $('#DocumentTarget_' + rowindex + '_attributes_contact_name').attr('readonly', (resp.contact_type.toUpperCase() === 'GP'));
+                        $('#Document_Target_Address_' + rowindex).attr('readonly', (resp.contact_type.toUpperCase() === 'GP'));
+                        $('#DocumentTarget_' + other_rowindex + '_attributes_contact_name').attr('readonly', (this_contact_type === 'GP'));
+                        $('#Document_Target_Address_' + other_rowindex).attr('readonly', (this_contact_type === 'GP'));
 
                         if((resp.contact_type.toUpperCase() === 'GP' || resp.contact_type.toUpperCase() === 'PATIENT') && rowindex !== other_rowindex){
                             $other_docman_recipient.val(this_recipient);
@@ -301,6 +309,10 @@ var docman = (function() {
                 $('#Document_Target_Address_' + rowindex ).val('');
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_id').val('');
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val('OTHER').trigger('change');
+                
+                //set readonly
+                $('#DocumentTarget_' + rowindex + '_attributes_contact_name').attr('readonly', false);
+                $('#Document_Target_Address_' + rowindex).attr('readonly', false);
             }
         },
         

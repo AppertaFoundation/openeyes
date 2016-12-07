@@ -582,8 +582,8 @@ class ElementLetter extends BaseEventTypeElement
     public function getCcTargets()
     {
         $targets = array();
-        
-        if( isset($this->document_instance) ){
+
+        if( $this->document_instance ){
             if( isset($this->document_instance[0]->document_target) ){
                 foreach($this->document_instance[0]->document_target as $target){
                     if($target->ToCc == 'Cc'){
@@ -607,7 +607,7 @@ class ElementLetter extends BaseEventTypeElement
                 }
             }
         }
-
+        
         return $targets;
     }
 
@@ -757,4 +757,18 @@ class ElementLetter extends BaseEventTypeElement
         return DocumentOutput::model()->findAll($criteria);
 
     }
+    
+    public function getTargetByContactType($type = 'GP')
+    {
+        $criteria = new CDbCriteria();
+        $criteria->join = "JOIN document_instance instance ON t.document_instance_id = instance.id ";
+
+        $criteria->compare('instance.correspondence_event_id', $this->event->id);
+        if($type){
+            $criteria->compare('t.contact_type', $type);
+        }
+
+        return DocumentTarget::model()->findAll($criteria);
+    }
+    
 }

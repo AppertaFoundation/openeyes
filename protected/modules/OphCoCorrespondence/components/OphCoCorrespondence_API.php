@@ -390,4 +390,26 @@ class OphCoCorrespondence_API extends BaseAPI
             )),
         );
     }
+    
+    public function updateDocumentTargetAddressFromContact($document_target_id, $letter_id)
+    {
+        $document_target = DocumentTarget::model()->findByPk($document_target_id);
+        $contact = Contact::model()->findByPk($document_target->contact_id);
+        $patient = $document_target->document_instance->correspondence_event->episode->patient;
+     
+        $letter = ElementLetter::model()->findByPk($letter_id);
+        
+        if($letter){
+            foreach(array_keys($letter->address_targets) as $contact_string){
+
+                $address = $this->getAddress($patient->id, $contact_string);
+                if($address['contact_id'] == $document_target->contact_id){
+                    $document_target->contact_name = $address['contact_name'];
+                    $document_target->address = $address['address'];
+                }
+            }
+        }
+        
+        $document_target->save();
+    }
 }

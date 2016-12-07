@@ -107,11 +107,11 @@
                                     'contact_id' => $macro_data["to"]["contact_id"],
                                     'contact_name' => $macro_data["to"]["contact_name"],
                                     'address_targets' => $element->address_targets,
-
+                                    'is_editable' => $contact_type != 'Gp',
                                     'contact_type' => $contact_type,
                                     'row_index' => $row_index,
                                     'address' => $macro_data["to"]["address"],
-                                    'is_editable' => true));
+                                ));
                     ?>
 
 
@@ -166,11 +166,11 @@
                                         'contact_id' => $macro["contact_id"],
                                         'contact_name' => $contact_name,
                                         'address_targets' => $element->address_targets,
-
+                                        'is_editable' => $contact_type != 'GP',
                                         'contact_type' => $contact_type,
                                         'row_index' => $index,
                                         'address' => $macro["address"],
-                                        'is_editable' => true));
+                                    ));
                         ?>
                     </td>
                     <td>

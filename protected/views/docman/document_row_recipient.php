@@ -11,15 +11,17 @@
     </td>
     <td>
         
-        <?php $this->renderPartial('//docman/table/contact_name_address', array(
+        <?php 
+            $contact_type = ( isset($selected_contact_type) ? $selected_contact_type : null );
+            $this->renderPartial('//docman/table/contact_name_address', array(
                 'contact_id' => $contact_id,
                 'contact_name' => $contact_name,
                 'address_targets' => $element->address_targets,
-
-                'contact_type' => ( isset($selected_contact_type) ? $selected_contact_type : null ),
+                'is_editable' => $contact_type != 'GP',
+                'contact_type' => $contact_type,
                 'row_index' => $row_index,
                 'address' => $address,
-                'is_editable' => true));
+            ));
         
             echo CHtml::hiddenField("DocumentTarget[$row_index][attributes][contact_id]", $contact_id);
         ?>

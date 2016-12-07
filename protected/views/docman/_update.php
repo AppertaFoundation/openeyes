@@ -54,7 +54,7 @@ button.green { background-color:green; color: white; }
             <?php 
                     $document_targets = $document_set->document_instance[0]->document_target;
 
-                    if( Yii::app()->request->isPostRequest ){                  
+                    if( Yii::app()->request->isPostRequest ){
                         $document_targets = array();
                         $post_targets = Yii::app()->request->getPost('DocumentTarget');
 
@@ -79,14 +79,15 @@ button.green { background-color:green; color: white; }
                     </td>
                     <td>
                         <?php $this->renderPartial('//docman/table/contact_name_address', array(
-                                'contact_id' => $target->contact_id,
-                                'contact_name' => $target->contact_name,
-                                'address_targets' => $element->address_targets,
-                                'target' => $target,
-                                'contact_type' => $target->contact_type,
-                                'row_index' => $row_index,
-                                'address' => $target->address,
-                                'is_editable' => true));
+                                    'contact_id' => $target->contact_id,
+                                    'contact_name' => $target->contact_name,
+                                    'address_targets' => $element->address_targets,
+                                    'target' => $target,
+                                    'contact_type' => $target->contact_type,
+                                    'row_index' => $row_index,
+                                    'address' => $target->address,
+                                    'is_editable' => $target->contact_type != 'GP',
+                                ));
                         ?>
                     </td>
                     <td>
