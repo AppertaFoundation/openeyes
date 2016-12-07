@@ -122,10 +122,11 @@ $element->letter_type = ($element->letter_type ? $element->letter_type : ( $macr
                 $gp_address = implode("\n", $gp_address->getLetterArray());
             }
             
-            if($patient->practice){
-                $contact_string = 'Practice' . $patient->practice->id;
-            } else if($patient->gp){
+            $contact_string = '';
+            if($patient->gp){
                 $contact_string = 'Gp' . $patient->gp->id;
+            } else if($patient->practice){
+                $contact_string = 'Practice' . $patient->practice->id;
             }
             
             $patient_address = isset($patient->contact->correspondAddress) ? $patient->contact->correspondAddress : (isset($patient->contact->address) ? $patient->contact->address : null);
@@ -135,12 +136,16 @@ $element->letter_type = ($element->letter_type ? $element->letter_type : ( $macr
             } else {
                 $patient_address = implode("\n", $patient_address->getLetterArray());
             }
-            
-            $address_data = $api->getAddress($patient_id, $contact_string);
-            
-            $contact_id = $address_data['contact_id'];
-            $contact_name = $address_data['contact_name'];
 
+            $address_data = array();
+            if($contact_string){
+                $address_data = $api->getAddress($patient_id, $contact_string);
+            }
+            
+            $contact_id = isset($address_data['contact_id']) ? $address_data['contact_id'] : null;
+            $contact_name = isset($address_data['contact_name']) ? $address_data['contact_name'] : null;
+            $address = isset($address_data['address']) ? $address_data['address'] : null;
+            
             $this->renderPartial('//docman/_create', array(
                 'row_index' => (isset($row_index) ? $row_index : 0),
                 'macro_data' => $macro_data,
@@ -152,7 +157,7 @@ $element->letter_type = ($element->letter_type ? $element->letter_type : ( $macr
                         'contact_id' => $contact_id,
                         'contact_type' => 'GP',
                         'contact_name' => $contact_name,
-                        'address' => $address_data['address']
+                        'address' => $address
                     ),
                     'Cc' => array(
                         'contact_id' => isset($patient->contact->id) ? $patient->contact->id : null,
