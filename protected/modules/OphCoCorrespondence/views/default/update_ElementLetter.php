@@ -102,15 +102,17 @@ $patient = Patient::model()->findByPk($patient_id);
         </div>
     </div>
 
-    <div class="row field-row">
-        <div class="large-<?php echo $layoutColumns['label']; ?> column">
-            <?php //echo $form->dropDownListNoPost('address_target', $element->address_targets, $element->address_target, array('empty' => '- Recipient -', 'nowrapper' => true, 'class' => 'full-width'))?>
-        </div>
-        <div class="large-6 column end">
-            <?php echo $form->hiddenField($element, 'address', array('rows' => 7, 'label' => false, 'nowrapper' => true), false, array('class' => 'address')) ?>
-        </div>
-    </div>
-
+    <?php if(!$element->document_instance): ?>
+        <div class="row field-row">
+		<div class="large-<?php echo $layoutColumns['label'];?> column">
+			<?php echo $form->dropDownListNoPost('address_target', $element->address_targets, $element->address_target, array('empty' => '- Recipient -', 'nowrapper' => true, 'class' => 'full-width'))?>
+		</div>
+		<div class="large-6 column end">
+			<?php echo $form->textArea($element, 'address', array('rows' => 7, 'label' => false, 'nowrapper' => true), false, array('class' => 'address'))?>
+		</div>
+	</div>
+    <?php endif; ?>
+    
     <div class="row field-row">
         <div class="large-<?php echo $layoutColumns['label']; ?> column OphCoCorrespondence_footerLabel">
             <label for="<?php echo get_class($element) . '_clinic_date_0'; ?>">
@@ -250,17 +252,23 @@ $patient = Patient::model()->findByPk($patient_id);
         </div>
     </div>
 
-    <div class="row field-row">
-        <div class="large-<?php echo $layoutColumns['label']; ?> column">
-            <?php //echo $form->dropDownListNoPost('cc', $element->address_targets, '', array('empty' => '- Cc -', 'nowrapper' => true))?>
+    <?php if(!$element->document_instance): ?>
+        <div class="row field-row">
+                <div class="large-<?php echo $layoutColumns['label'];?> column">
+                        <?php echo $form->dropDownListNoPost('cc', $element->address_targets, '', array('empty' => '- Cc -', 'nowrapper' => true))?>
+                </div>
+                <div class="large-<?php echo $layoutColumns['field'];?> column end">
+                        <?php echo $form->textArea($element, 'cc', array('rows' => 8, 'label' => false, 'nowrapper' => true), false, array('class' => 'address'))?>
+                </div>
+                <div id="cc_targets">
+                        <?php foreach ($element->cc_targets as $cc_target) {
+    ?>
+                                <input type="hidden" name="CC_Targets[]" value="<?php echo $cc_target?>" />
+                        <?php 
+    }?>
+                </div>
         </div>
-        <div class="large-<?php echo $layoutColumns['field']; ?> column end">
-            <?php echo $form->hiddenField($element, 'cc', array('rows' => 8, 'label' => false, 'nowrapper' => true), false, array('class' => 'address')) ?>
-        </div>
-        <div id="cc_targets">
-        </div>
-    </div>
-
+    <?php endif; ?>
 
     <!--		<div class="eventDetail row enclosures">
 		<input type="hidden" name="update_enclosures" value="1" />
@@ -287,8 +295,7 @@ $patient = Patient::model()->findByPk($patient_id);
 		</div>
 	</div> -->
 
-
-    <fieldset class="row field-row enclosures">
+    <div class="row field-row enclosures">
         <legend class="large-<?php echo $layoutColumns['label']; ?> column OphCoCorrespondence_footerLabel">
             Enclosures:
         </legend>
@@ -325,7 +332,7 @@ $patient = Patient::model()->findByPk($patient_id);
                 </button>
             </div>
         </div>
-    </fieldset>
+    </div>
     <div class="row field-row">
         <div class="large-<?php echo $layoutColumns['label']; ?> column">
             <label for="<?php echo get_class($element) . '_is_signed_off'; ?>">

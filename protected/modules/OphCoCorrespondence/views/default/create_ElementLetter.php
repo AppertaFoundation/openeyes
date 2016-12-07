@@ -316,7 +316,7 @@ $element->letter_type = ($element->letter_type ? $element->letter_type : ( $macr
         </div>
     </div>
 
-    <fieldset class="row field-row enclosures">
+    <div class="row field-row enclosures">
         <legend class="large-<?php echo $layoutColumns['label']; ?> column OphCoCorrespondence_footerLabel">
             Enclosures:
         </legend>
@@ -347,7 +347,7 @@ $element->letter_type = ($element->letter_type ? $element->letter_type : ( $macr
                 </button>
             </div>
         </div>
-    </fieldset>
+    </div>
     <div class="row field-row">
         <div class="large-<?php echo $layoutColumns['label']; ?> column">
             <label for="<?php echo get_class($element) . '_is_signed_off'; ?>">
