@@ -375,12 +375,27 @@ class DefaultController extends BaseEventTypeController
         
         // after "Save and Print" button clicked we only print out what the user checked
         if( isset($_GET['OphCoCorrespondence_print_checked']) && $_GET['OphCoCorrespondence_print_checked'] == "1" ){
+            
+            // check if the first recipient is GP
+            $docunemt_instance = $letter->document_instance[0];
+            $to_recipient_gp = DocumentTarget::model()->find('document_instance_id=:id AND ToCc=:ToCc AND contact_type=:type',array(
+                ':id' => $docunemt_instance->id, ':ToCc' => 'To', ':type' => 'GP'));
+            
+            if($to_recipient_gp){
+                // print an extra copy to note
+                $this->render('print', array('element' => $letter, 'letter_address' => ($to_recipient_gp->contact_name . "\n" . $to_recipient_gp->address)));
+            }
 
             $print_outputs = $letter->getOutputByType("Print");
             if($print_outputs){
                 foreach($print_outputs as $print_output){
                     $document_target = DocumentTarget::model()->findByPk($print_output->document_target_id);
                     $this->render('print', array('element' => $letter, 'letter_address' => ($document_target->contact_name . "\n" . $document_target->address)));
+                    
+                    //extra printout for note
+                    if($document_target->ToCc == 'To' && $document_target->contact_type != 'GP'){
+                        $this->render('print', array('element' => $letter, 'letter_address' => ($document_target->contact_name . "\n" . $document_target->address)));
+                    }
                 }
             }
 
