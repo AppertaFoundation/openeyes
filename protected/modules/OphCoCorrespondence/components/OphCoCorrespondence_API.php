@@ -369,8 +369,7 @@ class OphCoCorrespondence_API extends BaseAPI
         }
         
         if($m[1] == 'CommissioningBodyService'){
-            $address = $correspondence_name[1];
-            $correspondence_name = $correspondence_name[0];
+            $correspondence_name = implode(',', $correspondence_name);
         }
         
         $contact_type = $m[1];
