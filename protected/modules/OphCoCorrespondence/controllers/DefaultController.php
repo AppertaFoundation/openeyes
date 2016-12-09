@@ -67,7 +67,7 @@ class DefaultController extends BaseEventTypeController
                     $gp_targets = $letter->getTargetByContactType("GP");
               
                     foreach($gp_targets as $gp_target){
-                        $api->updateDocumentTargetAddressFromContact($gp_target->id, $letter->id);
+                        $api->updateDocumentTargetAddressFromContact($gp_target->id, 'Gp', $letter->id);
                     }
                 }
             }

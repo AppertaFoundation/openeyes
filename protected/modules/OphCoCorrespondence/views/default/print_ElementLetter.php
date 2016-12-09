@@ -22,7 +22,7 @@
 	<?php 
         $ccString = "";
         $toAddress = "";
-
+        
         if($element->document_instance && $element->document_instance[0]->document_target) {
             
             foreach ($element->document_instance as $instance) {
@@ -72,21 +72,17 @@
 	<?php echo $element->renderFooter() ?>
 </p>
 
-<?php if ($element->cc || $element->enclosures) {?>
 <p nobr="true">
-	<?php if ($element->cc) {?>
-		To:
-		<?php
-			echo $element->renderSourceAddress($toAddress);
-		?>
-		<br/>
-		<?php
-			echo $ccString;
-		?>
-	<?php
-    }
+<?php 
+    echo ($toAddress ? ('To: ' . $element->renderSourceAddress($toAddress) . '<br/>' ) : '');
+    echo ($ccString ? $ccString : '');
+    ?>
+
+<?php if ($element->enclosures) {?>
+<?php
     foreach ($element->enclosures as $enclosure) {?>
 		<br/>Enc: <?php echo $enclosure->content?>
 	<?php }?>
-</p>
+
 <?php }?>
+</p>
