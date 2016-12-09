@@ -378,6 +378,10 @@ class OphCoCorrespondence_API extends BaseAPI
         } else if($m[1] == 'Practice'){
             $contact_type = 'Gp';
         }
+        
+        if( !in_array($contact_type, array('Gp','Patient','DRSS')) ){
+            $contact_type = 'Other';
+        }
 
         return $data = array(
             'contact_type' => $contact_type,
