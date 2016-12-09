@@ -24,8 +24,9 @@ tr { background-color: #eee; color: black; padding:2px 5px; }
 th.actions {padding:0 10px}
 select.addr { width:200px !important; max-width:200px; }
 div#docman_block select.macro { max-width:220px; }
-table.docman tbody tr td img { vertical-align: text-top; height:13px; width:13px; }
-table.docman > tbody > tr > td:first-child { width:200px; max-width:200px; }
+.docman_delivery_method{
+        min-width: 156px;
+    }
 button.docman { width:80px; background: none; font-size:13px; line-height:20px; height:20px; margin:5px 0; padding:0; text-align:center; }
 button.red { background-color:red; color: white; }
 button.green { background-color:green; color: white; }
@@ -40,7 +41,7 @@ button.green { background-color:green; color: white; }
 <?php $element->draft = 1; ?>
 
     <table id="dm_table" data-macro_id="<?php echo $macro_id; ?>">
-        <tbody>
+        <thead>
             <tr id="dm_0">
                 <th>To/CC</th>
                 <th>Recipient/Address</th>
@@ -48,19 +49,23 @@ button.green { background-color:green; color: white; }
                 <th>Delivery Method(s)</th>
                 <th class="actions"><img class="docman_loader right" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;"></th>
             </tr>
-            
+        </thead>
+        <tbody>
             <?php 
                     $document_targets = $document_set->document_instance[0]->document_target;
 
-                    if( Yii::app()->request->isPostRequest ){                  
+                    if( Yii::app()->request->isPostRequest ){
                         $document_targets = array();
                         $post_targets = Yii::app()->request->getPost('DocumentTarget');
 
-                        foreach($post_targets as $post_target){
-                            $target = new DocumentTarget();
-                            $target->attributes = $post_target['attributes'];
-                            $document_targets[] = $target;
+                        if($post_targets){
+                            foreach($post_targets as $post_target){
+                                $target = new DocumentTarget();
+                                $target->attributes = $post_target['attributes'];
+                                $document_targets[] = $target;
+                            }
                         }
+                        
                     }
                 ?>
 
@@ -74,14 +79,15 @@ button.green { background-color:green; color: white; }
                     </td>
                     <td>
                         <?php $this->renderPartial('//docman/table/contact_name_address', array(
-                                'contact_id' => $target->contact_id,
-                                'contact_name' => $target->contact_name,
-                                'address_targets' => $element->address_targets,
-                                'target' => $target,
-                                'contact_type' => $target->contact_type,
-                                'row_index' => $row_index,
-                                'address' => $target->address,
-                                'is_editable' => true));
+                                    'contact_id' => $target->contact_id,
+                                    'contact_name' => $target->contact_name,
+                                    'address_targets' => $element->address_targets,
+                                    'target' => $target,
+                                    'contact_type' => $target->contact_type,
+                                    'row_index' => $row_index,
+                                    'address' => $target->address,
+                                    'is_editable' => $target->contact_type != 'GP',
+                                ));
                         ?>
                     </td>
                     <td>
@@ -101,6 +107,7 @@ button.green { background-color:green; color: white; }
                                         'is_draft' => $element->draft,
                                         'contact_type' => $target->contact_type,
                                         'target' => $target,
+                                        'can_send_electronically' => $can_send_electronically,
                                         'row_index' => $row_index));
                         ?>
                     </td>
@@ -112,7 +119,7 @@ button.green { background-color:green; color: white; }
                 </tr>
             <?php endforeach; ?>
             <tr class="new_entry_row">
-                <td colspan="6">
+                <td colspan="5">
                     <button class="button small secondary" id="docman_add_new_recipient">Add new recipient</button>
                 </td>
             </tr>

@@ -52,15 +52,36 @@ class DefaultController extends BaseEventTypeController
     protected function initAction($action)
     {
         parent::initAction($action);
+        $this->jsVars['electronic_sending_method_label'] = Yii::app()->params['electronic_sending_method_label'];
+        
+        $event_id = Yii::app()->request->getQuery('id');
+        if($event_id){
+            $letter = ElementLetter::model()->find('event_id=?', array($event_id));
+            $this->editable = $letter->isEditable();
+            $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
+
+
+            if($action == 'update'){
+                if( !Yii::app()->request->isPostRequest && $letter->draft){
+                    
+                    $gp_targets = $letter->getTargetByContactType("GP");
+              
+                    foreach($gp_targets as $gp_target){
+                        $api->updateDocumentTargetAddressFromContact($gp_target->id, $letter->id);
+                    }
+                }
+            }
+        }
 
         if (in_array($action, array('create', 'update'))) {
             $this->jsVars['OE_gp_id'] = $this->patient->gp_id;
             $this->jsVars['OE_practice_id'] = $this->patient->practice_id;
 
             $this->getApp()->assetManager->registerScriptFile('js/docman.js');
-
+            
             $this->loadDirectLines();
-        }
+        }       
+        
     }
 
     /**
@@ -91,6 +112,15 @@ class DefaultController extends BaseEventTypeController
         parent::actionView($id);
     }
     
+    public function actionUpdate($id)
+    {
+        $letter = ElementLetter::model()->find('event_id=?', array($id));
+        if(!$letter->isEditable()){
+            $this->redirect(array('default/view/'.$id));
+        }
+        parent::actionUpdate($id);
+    }
+    
     /**
      * Ajax action to get the address for a contact.
      *
@@ -98,6 +128,8 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionGetAddress()
     {
+        
+        
         if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
             throw new Exception('Unknown patient: '.@$_GET['patient_id']);
         }
@@ -105,41 +137,12 @@ class DefaultController extends BaseEventTypeController
         if (!preg_match('/^([a-zA-Z]+)([0-9]+)$/', @$_GET['contact'], $m)) {
             throw new Exception('Invalid contact format: '.@$_GET['contact']);
         }
-
-        if ($m[1] == 'Contact') {
-            // NOTE we are assuming that Contact must be a Person model here
-            $contact = Person::model()->find('contact_id=?', array($m[2]));
-        } else {
-            if (!$contact = $m[1]::model()->findByPk($m[2])) {
-                throw new Exception("{$m[1]} not found: {$m[2]}");
-            }
-        }
-
-        if (method_exists($contact, 'isDeceased') && $contact->isDeceased()) {
-            echo json_encode(array('errors' => 'DECEASED'));
-
-            return;
-        }
-
-        $address = $contact->getLetterAddress(array(
-                'patient' => $patient,
-                'include_name' => true,
-                'include_label' => true,
-                'delimiter' => "\n",
-            ));
-
-        if (!$address) {
-            $address = '';
-        }
-
-        $data = array(
-            'text_ElementLetter_address' => $address,
-            'text_ElementLetter_introduction' => $contact->getLetterIntroduction(array(
-                'nickname' => (boolean) @$_GET['nickname'],
-            )),
-        );
-
+        
+        $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
+        $data = $api->getAddress($_GET['patient_id'], $_GET['contact']);
         echo json_encode($data);
+        
+        return;
     }
 
     /**
@@ -382,14 +385,43 @@ class DefaultController extends BaseEventTypeController
 
         $this->printInit($id);
         $this->layout = '//layouts/print';
-
-        $this->render('print', array('element' => $letter));
         
-        if ($this->pdf_print_suffix == 'all' || @$_GET['all']) {
+        // after "Save and Print" button clicked we only print out what the user checked
+        if( isset($_GET['OphCoCorrespondence_print_checked']) && $_GET['OphCoCorrespondence_print_checked'] == "1" ){
+            
+            // check if the first recipient is GP
+            $docunemt_instance = $letter->document_instance[0];
+            $to_recipient_gp = DocumentTarget::model()->find('document_instance_id=:id AND ToCc=:ToCc AND contact_type=:type',array(
+                ':id' => $docunemt_instance->id, ':ToCc' => 'To', ':type' => 'GP'));
+            
+            if($to_recipient_gp){
+                // print an extra copy to note
+                $this->render('print', array('element' => $letter, 'letter_address' => ($to_recipient_gp->contact_name . "\n" . $to_recipient_gp->address)));
+            }
+
+            $print_outputs = $letter->getOutputByType("Print");
+            if($print_outputs){
+                foreach($print_outputs as $print_output){
+                    $document_target = DocumentTarget::model()->findByPk($print_output->document_target_id);
+                    $this->render('print', array('element' => $letter, 'letter_address' => ($document_target->contact_name . "\n" . $document_target->address)));
+                    
+                    //extra printout for note
+                    if($document_target->ToCc == 'To' && $document_target->contact_type != 'GP'){
+                        $this->render('print', array('element' => $letter, 'letter_address' => ($document_target->contact_name . "\n" . $document_target->address)));
+                    }
+                }
+            }
+
+        } else {
+
             $this->render('print', array('element' => $letter));
 
-            foreach ($letter->getCcTargets() as $letter_address) {
-                $this->render('print', array('element' => $letter, 'letter_address' => $letter_address));
+            if ($this->pdf_print_suffix == 'all' || @$_GET['all']) {
+                $this->render('print', array('element' => $letter));
+
+                foreach ($letter->getCcTargets() as $letter_address) {
+                    $this->render('print', array('element' => $letter, 'letter_address' => $letter_address));
+                }
             }
         }
     }
@@ -397,19 +429,24 @@ class DefaultController extends BaseEventTypeController
     public function actionPDFPrint($id)
     {
         $letter = ElementLetter::model()->find('event_id=?', array($id));
+        $print_outputs = $letter->getOutputByType("Print");
 
         if (Yii::app()->request->getQuery('all', false)) {
             $this->pdf_print_suffix = 'all';
             $this->pdf_print_documents = 2 + count($letter->getCcTargets());
         }
-        
-        $outputs = $letter->getOutputByType("Print");
-        if( $outputs ){
-            foreach($outputs as $output){
+        if (Yii::app()->request->getQuery('OphCoCorrespondence_print_checked', false)) {
+            $this->pdf_print_suffix = 'all';
+            $this->pdf_print_documents = count($print_outputs);
+        }
+
+        if( $print_outputs ){
+            foreach($print_outputs as $output){
                 $output->output_status = "COMPLETE";
                 $output->save();
             }
         }
+
 
         return parent::actionPDFPrint($id);
     }

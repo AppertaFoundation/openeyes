@@ -32,22 +32,26 @@
     }
     ?>
     <?php if($contact_type == 'GP'): ?>
-        <label>
-            <?php 
-                $is_checked = $is_draft == 1 ? 'checked disabled' : ''; 
-                
-                //now, docman cannot be unchecked when the recipient is GP
-                // if we want to allow users to tick/untick DocMan chcbox remove the following line
-                $is_checked = 'checked disabled';
-            ?>
-            <input type="checkbox" value="Docman" name="DocumentTarget_<?php echo $row_index; ?>_DocumentOutput_<?php echo $pre_output_key; ?>_output_type" 
-                <?php echo $is_checked; ?>>  Electronic (DocMan)
-            <input type="hidden" value="Docman" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][<?php echo $pre_output_key; ?>][output_type]" >
-        </label>
-        <?php if($docnam_output):?>
-            <?php echo CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $docnam_output->id, array('class'=>'document_target_' . $row_index . '_document_output_id')); ?>
+        
+        <?php if($can_send_electronically): ?>
+            <label>
+                <?php 
+                    $is_checked = $is_draft == 1 ? 'checked disabled' : ''; 
+
+                    //now, docman cannot be unchecked when the recipient is GP
+                    // if we want to allow users to tick/untick DocMan chcbox remove the following line
+                    $is_checked = 'checked disabled';
+                ?>
+                <input type="checkbox" value="Docman" name="DocumentTarget_<?php echo $row_index; ?>_DocumentOutput_<?php echo $pre_output_key; ?>_output_type"
+                    <?php echo $is_checked; ?>> <?php echo (isset(Yii::app()->params['electronic_sending_method_label']) ? Yii::app()->params['electronic_sending_method_label'] : 'Electronic'); ?>
+                <input type="hidden" value="Docman" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][<?php echo $pre_output_key; ?>][output_type]" >
+            </label>
+
+            <?php if($docnam_output):?>
+                <?php echo CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $docnam_output->id, array('class'=>'document_target_' . $row_index . '_document_output_id')); ?>
+            <?php endif; ?>
+            <?php $pre_output_key++; ?>
         <?php endif; ?>
-        <?php $pre_output_key++; ?>
     <?php endif; ?>    
 
     <label>
@@ -61,8 +65,11 @@
                 $is_checked = (Yii::app()->request->isPostRequest && !$is_post_checked) ? '' : 'checked';
             }
         ?>
+        <?php 
+        if( isset(Yii::app()->params['OphCoCorrespondence_event_actions']['create']['saveprint']) && Yii::app()->params['OphCoCorrespondence_event_actions']['create']['saveprint'] ): ?>
         <input type="checkbox" value="Print" 
                name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][<?php echo $pre_output_key; ?>][output_type]" <?php echo $is_checked?>>  Print
+        <?php endif; ?>
     </label>
     <?php if($print_output): ?>
         <?php echo CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $print_output->id); ?>

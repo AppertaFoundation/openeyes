@@ -18,7 +18,7 @@
 
 var correspondence_markprinted_url, correspondence_print_url;
 
-function updateCorrespondence( macro_id)
+function updateCorrespondence(macro_id)
 {
     var nickname = $('input[id="ElementLetter_use_nickname"][type="checkbox"]').is(':checked') ? '1' : '0';
     var obj = $(this);
@@ -42,6 +42,11 @@ function updateCorrespondence( macro_id)
                 correspondence_load_data(data);
                 et_oph_correspondence_body_cursor_position = $('#ElementLetter_body').val().length;
                 obj.val('');
+                
+                //set letter type
+                if('Post-op' == $('#macro_id option:selected').text() ){
+                    $('#ElementLetter_letter_type').val(2);
+                }
             }
         });
     }
@@ -65,11 +70,11 @@ $(document).ready(function() {
 		}
 	});
 
-	handleButton($('#et_save_draft'),function() {
+	handleButton($('#et_savedraft'),function() {
 		$('#ElementLetter_draft').val(1);
 	});
 
-	handleButton($('#et_save_print'),function() {
+	handleButton($('#et_saveprint'),function() {
 		$('#ElementLetter_draft').val(0);
 	});
 
@@ -132,6 +137,9 @@ $(document).ready(function() {
 				'dataType': 'json',
 				'url': baseUrl+'/OphCoCorrespondence/Default/getAddress?patient_id='+OE_patient_id+'&contact='+val+'&nickname='+nickname,
 				'success': function(data) {
+
+					$('#ElementLetter_address').attr('readonly', (data['contact_type'] == 'Gp'));
+
 					if (data['error'] == 'DECEASED') {
 
 						new OpenEyes.UI.Dialog.Alert({
@@ -539,7 +547,6 @@ $(document).ready(function() {
             docman2.module_correspondence = 1;
             
             docman2.init();
-            //docman2.getDocTable(OE_event_id, $('#dm_table').data('macro_id'));
         }
 });
 
@@ -654,15 +661,25 @@ function inArray(needle, haystack) {
 }
 
 function OphCoCorrespondence_do_print(all) {
+        
+        var data = {};
+        if(all){
+            data['all'] = 1;
+        }
+
+        if( $('#OphCoCorrespondence_print_checked').length && $('#OphCoCorrespondence_print_checked').val() == 1 ){
+            data['OphCoCorrespondence_print_checked'] = 1;
+            
+            // remove OphCoCorrespondence_print_checked, so Print and Print all will do what it says
+            $('#OphCoCorrespondence_print_checked').remove();
+            
+        }
+        
 	$.ajax({
 		'type': 'GET',
 		'url': correspondence_markprinted_url,
 		'success': function(html) {
-			if (all) {
-				printEvent({"all":1});
-			} else {
-				printEvent(null);
-			}
+			printEvent(data);
 			enableButtons();
 		}
 	});

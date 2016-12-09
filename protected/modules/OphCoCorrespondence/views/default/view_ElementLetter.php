@@ -17,18 +17,14 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<section class="element">
-    <h3 class="element-title highlight">Other information</h3>
-    <div class="element-data">
-        <div class="row data-row">
-            <div class="large-2 column">
-                <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('is_signed_off')) . ': '; ?></h4>
-                <div class="data-value"><?php echo $element->is_signed_off == 1 ? 'Yes' : ( $element->is_signed_off === 0 ? 'No' : 'N/A' ); ?></div>
-            </div>
+<div class="row data-row">
+        <div class="large-2 column" style="margin-left: 10px;">
+                <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('is_signed_off')) . ': '; ?></div>
         </div>
-    </div>
-</section>
-<br>
+        <div class="large-9 column end">
+                <div class="data-value"><?php echo $element->is_signed_off == 1 ? 'Yes' : ( $element->is_signed_off === 0 ? 'No' : 'N/A' ); ?></div>
+        </div>
+</div>
         
 <div id="correspondence_out" class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?>">
 	<header>
@@ -66,17 +62,28 @@
                 ?>
 	</header>
 
-	<?php $this->renderPartial('reply_address', array(
-            'site' => $element->site,
-    ))?>
+	<?php 
+            $this->renderPartial('reply_address', array(
+                'site' => $element->site,
+            ));
 
-	<?php $this->renderPartial('print_ElementLetter', array(
-            'element' => $element,
-            'toAddress' => $toAddress,
-            'ccString' => $ccString,
-            'no_header' => true,
-    ))?>
+            $this->renderPartial('print_ElementLetter', array(
+                'element' => $element,
+                'toAddress' => $toAddress,
+                'ccString' => $ccString,
+                'no_header' => true,
+            ));
+            
+            $is_document = isset($element->document_instance);
+        ?>
     
 	<input type="hidden" name="OphCoCorrespondence_printLetter" id="OphCoCorrespondence_printLetter" value="<?php echo $element->print?>" />
-	<input type="hidden" name="OphCoCorrespondence_printLetter" id="OphCoCorrespondence_printLetter_all" value="<?php echo $element->print_all?>" />
+
+        <?php if(Yii::app()->user->getState('correspondece_element_letter_saved', true)): ?>
+            <?php Yii::app()->user->setState('correspondece_element_letter_saved', false); ?>
+        <input type="hidden" name="OphCoCorrespondence_print_checked" id="OphCoCorrespondence_print_checked" value="<?php echo $is_document ? '1' : '0'; ?>" />
+        <?php else: ?>
+            <input type="hidden" name="OphCoCorrespondence_printLetter" id="OphCoCorrespondence_printLetter_all" value="<?php echo $element->print_all?>" />
+        <?php endif; ?>
+            
 </div>

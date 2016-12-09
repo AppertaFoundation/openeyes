@@ -52,17 +52,6 @@
         font-size: 13px;
     }
 
-    table.docman tbody tr td img {
-        vertical-align: text-top;
-        height: 13px;
-        width: 13px;
-    }
-
-    table.docman > tbody > tr > td:first-child {
-        width: 200px;
-        max-width: 200px;
-    }
-
     button.docman {
         width: 80px;
         background: none;
@@ -86,10 +75,13 @@
     th.actions{
         min-width: 113px;
     }
+    .docman_delivery_method{
+        min-width: 156px;
+    }
 </style>
 
 <table id="dm_table" data-macro_id="<?php echo $macro_id; ?>">
-    <tbody>
+    
     <tr id="dm_0">
         <th>To/CC</th>
         <th>Recipient/Address</th>
@@ -99,54 +91,66 @@
             <img class="docman_loader right" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..." style="display: none;">
         </th>
     </tr>
-
+    <tbody>
     <?php /* Generate recipients by macro */ ?>
     <?php if (!empty($macro_data)):?>
-      <?php if (array_key_exists('to', $macro_data)):?>
+        <?php if (array_key_exists('to', $macro_data)):?>
        
-        <tr class="rowindex-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
-            <td> To <?php echo CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][ToCc]", 'To'); ?> </td>
-            <td>
-                <?php 
-                    $target = new DocumentTarget();
-                    $target->contact_id = $macro_data["to"]["contact_id"];
-                    $target->contact_name = $macro_data["to"]["contact_name"];
-                    $target->address = $macro_data["to"]["address"];
-                  
-                    $this->renderPartial('//docman/table/contact_name_address', array(
-                                'contact_id' => $target->contact_id,
-                                'contact_name' => $target->contact_name,
-                                'address_targets' => $element->address_targets,
-                                'target' => $target,
-                                'contact_type' => $target->contact_type,
-                                'row_index' => $row_index,
-                                'address' => $target->address,
-                                'is_editable' => true));
+            <tr class="rowindex-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
+                <td> To <?php echo CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][ToCc]", 'To'); ?> </td>
+                <td>
+                    <?php 
+
+                        $contact_type = isset($macro_data["to"]["contact_type"]) ? $macro_data["to"]["contact_type"] : null;
+
+                        $this->renderPartial('//docman/table/contact_name_address', array(
+                                    'contact_id' => $macro_data["to"]["contact_id"],
+                                    'contact_name' => $macro_data["to"]["contact_name"],
+                                    'address_targets' => $element->address_targets,
+                                    'is_editable' => $contact_type != 'Gp',
+                                    'contact_type' => $contact_type,
+                                    'row_index' => $row_index,
+                                    'address' => $macro_data["to"]["address"],
+                                ));
+                    ?>
+
+
+                </td>
+                <td>
+                    <?php $this->renderPartial('//docman/table/contact_type', array(
+                        'contact_type' => strtoupper($macro_data["to"]["contact_type"]),
+                        'row_index' => $row_index,
+                    ));
+                    ?>
+                </td>
+                <td class="docman_delivery_method">
+                    <?php $this->renderPartial('//docman/table/delivery_methods', array(
+                        'is_draft' => $element->draft,
+                        'contact_type' => strtoupper($macro_data["to"]["contact_type"]),
+                        'row_index' => $row_index,
+                        'can_send_electronically' => $can_send_electronically
+                    ));
+                    ?>
+                </td>
+                <td></td>
+            </tr>
+            <?php $row_index++; ?>
+        <?php else: ?>
+            <?php
+                // if no To was set in the macro we just display an empty row
+                $this->renderPartial(
+                        '//docman/document_row_recipient',
+                        array(
+                            'contact_id' => null, 
+                            'address' => null, 
+                            'row_index' => 0,
+                            'selected_contact_type' => null, 
+                            'contact_name' => null, 
+                            'can_send_electronically' => $can_send_electronically,
+                        )
+                    );
                 ?>
-                
-                
-            </td>
-            <td>
-                <?php $this->renderPartial('//docman/table/contact_type', array(
-                    'contact_type' => strtoupper($macro_data["to"]["contact_type"]),
-                    'row_index' => $row_index,
-                ));
-                ?>
-            </td>
-            <td class="docman_delivery_method">
-                <?php $this->renderPartial('//docman/table/delivery_methods', array(
-                    'is_draft' => $element->draft,
-                    'contact_type' => strtoupper($macro_data["to"]["contact_type"]),
-                    'row_index' => $row_index,
-                ));
-                ?>
-            </td>
-            <td></td>
-        </tr>
-        <?php
-            $row_index++;
-            endif;
-        ?>
+        <?php endif; ?>
 
         <?php if( isset($macro_data['cc']) ): ?>
             <?php foreach ($macro_data['cc'] as $cc_index => $macro): ?>
@@ -155,20 +159,18 @@
                     <td> Cc <?php echo CHtml::hiddenField("DocumentTarget[" . $index . "][attributes][ToCc]", 'Cc'); ?> </td>
                     <td>
                         <?php 
-                            $target = new DocumentTarget();
-                            $target->contact_id = $macro["contact_id"];
-                            $target->contact_name = isset($macro["contact_name"]) ? $macro["contact_name"] : null;
-                            $target->address = $macro["address"];
+                            $contact_name = isset($macro["contact_name"]) ? $macro["contact_name"] : null;
+                            $contact_type = isset($macro["contact_type"]) ? $macro["contact_type"] : null;
                             
                             $this->renderPartial('//docman/table/contact_name_address', array(
-                                        'contact_id' => $target->contact_id,
-                                        'contact_name' => $target->contact_name,
+                                        'contact_id' => $macro["contact_id"],
+                                        'contact_name' => $contact_name,
                                         'address_targets' => $element->address_targets,
-                                        'target' => $target,
-                                        'contact_type' => $target->contact_type,
+                                        'is_editable' => $contact_type != 'GP',
+                                        'contact_type' => $contact_type,
                                         'row_index' => $index,
-                                        'address' => $target->address,
-                                        'is_editable' => true));
+                                        'address' => $macro["address"],
+                                    ));
                         ?>
                     </td>
                     <td>
@@ -178,28 +180,16 @@
                         ));
                         ?>
                     </td>
-                    <td class="docman_delivery_method">
-                        <?php $output_index = 0; ?>
-                        <?php if (strtoupper($macro["contact_type"]) == 'GP'): ?>
-                            <label>
-                                <input type="checkbox" value="Docman" class="docman_delivery" name="DocumentTarget_<?php echo $index; ?>_DocumentOutput_0_[output_type"
-                                       data-rowindex="<?php echo $index ?>" checked disabled>DocMan
-                                <input type="hidden" value="Docman" class="docman_delivery hidden" name="DocumentTarget[<?php echo $index; ?>][DocumentOutput][0][output_type]"
-                                       data-rowindex="<?php echo $index ?>">
-                            </label>
-                            <?php $output_index++; ?>
-                            <br>
-                        <?php endif; ?>
-                        <label>
-                            <?php
-                            $is_checked = $macro["contact_type"] == 'Gp' ? '' : 'checked';
-                            if (Yii::app()->request->isPostRequest) {
-                                $is_checked = isset($_POST["DocumentTarget"][$index]['DocumentOutput'][$output_index]['output_type']) ? 'checked' : '';
-                            }
-                            ?>
-                            <input type="checkbox" value="Print"
-                                   name="DocumentTarget[<?php echo $index; ?>][DocumentOutput][<?php echo $output_index ?>][output_type]" <?php echo $is_checked; ?>>Print
-                        </label>
+                    <td class="docman_delivery_method">           
+                        <?php $this->renderPartial('//docman/table/delivery_methods', array(
+                                'is_draft' => $element->draft,
+                                'contact_type' => strtoupper($macro["contact_type"]),
+                                'row_index' => $index,
+                                'can_send_electronically' => $can_send_electronically,
+                            ));
+                        ?>
+
+
                     </td>
                     <td>
                         <a class="remove_recipient removeItem" data-rowindex="<?php echo $index ?>">Remove</a>
@@ -233,7 +223,13 @@
                 
                 echo $this->renderPartial(
                     '//docman/document_row_recipient',
-                    array('contact_id' => $contact_id, 'address' => $address, 'row_index' => 0, 'selected_contact_type' => $contact_type, 'contact_name' => $contact_name)
+                    array(
+                        'contact_id' => $contact_id, 
+                        'address' => $address, 'row_index' => 0, 
+                        'selected_contact_type' => $contact_type, 
+                        'contact_name' => $contact_name, 
+                        'can_send_electronically' => $can_send_electronically,
+                    )
                 );
             }
         ?>
@@ -262,12 +258,19 @@
                 /* generates a default 'To' and 'Cc' rows */
                 echo $this->renderPartial(
                     '//docman/document_row_recipient',
-                    array('contact_id' => $contact_id, 'address' => $address, 'row_index' => 1, 'selected_contact_type' => $contact_type, 'contact_name' => $contact_name)
+                    array(
+                        'contact_id' => $contact_id, 
+                        'address' => $address, 
+                        'row_index' => 1, 
+                        'selected_contact_type' => $contact_type, 
+                        'contact_name' => $contact_name,
+                        'can_send_electronically' => $can_send_electronically,
+                    )
                 );
             }
         ?>
         
-        <td colspan="6">
+        <td colspan="5">
             <button class="button small secondary" id="docman_add_new_recipient">Add new recipient</button>
         </td>
     </tr>

@@ -21,10 +21,19 @@
 
 <?php echo $form->hiddenInput($element, 'draft', 1) ?>
 <?php
+$api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
+
 $layoutColumns = $form->layoutColumns;
 $macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : (isset($element->macro->id) ? $element->macro->id : null);
+$macro_name = null;
+if($macro_id){
+    $macro = LetterMacro::model()->findByPk($macro_id);
+    $macro_name = $macro ? $macro->name : null;
+}
 $patient_id = Yii::app()->request->getQuery('patient_id', null);
 $patient = Patient::model()->findByPk($patient_id);
+
+$element->letter_type = ($element->letter_type ? $element->letter_type : ( $macro_name == 'Post-op' ? 2 : null  ) );
 ?>
 <div class="element-fields">
     <div class="row field-row">
@@ -60,19 +69,21 @@ $patient = Patient::model()->findByPk($patient_id);
             <label>Letter type:</label>
         </div>
         <div class="large-2 column end">
-            <?php echo $form->dropDownList($element, 'letter_type', array('1' => 'Clinic discharge letter', '2' => 'Post-op letter', '3' => 'Clinic letter', '4' => 'Other letter'),
+            <?php echo $form->dropDownList($element, 'letter_type', 
+                    array(  '1' => 'Clinic discharge letter',
+                            '2' => 'Post-op letter',
+                            '3' => 'Clinic letter',
+                            '4' => 'Other letter'),
                 array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'full-width')) ?>
         </div>
     </div>
 
     <div class="row field-row">
-        <div id="docman_block">
+        <div id="docman_block" class="large-12 column">
             <?php
             $macro_data = array();
-            $patient_id = Yii::app()->request->getQuery('patient_id');
 
             if (isset($element->macro) && !isset($_POST['DocumentTarget'])) {
-                $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
                 $macro_data = $api->getMacroTargets($patient_id, $macro_id);
             }
 
@@ -100,9 +111,9 @@ $patient = Patient::model()->findByPk($patient_id);
                     }
                 }
             }
-            $gp_address = isset($patient->gp->contact->correspondAddress) ? $patient->gp->contact->correspondAddress : $patient->gp->contact->address;
+            $gp_address = isset($patient->gp->contact->correspondAddress) ? $patient->gp->contact->correspondAddress : (isset($patient->gp->contact->address) ? $patient->gp->contact->address : null);
             if (!$gp_address) {
-                $gp_address = isset($patient->practice->contact->correspondAddress) ? $patient->practice->contact->correspondAddress : $patient->practice->contact->address;
+                $gp_address = isset($patient->practice->contact->correspondAddress) ? $patient->practice->contact->correspondAddress : (isset($patient->practice->contact->address) ? $patient->practice->contact->address : null);
             }
 
             if (!$gp_address) {
@@ -111,34 +122,48 @@ $patient = Patient::model()->findByPk($patient_id);
                 $gp_address = implode("\n", $gp_address->getLetterArray());
             }
             
+            $contact_string = '';
+            if($patient->gp){
+                $contact_string = 'Gp' . $patient->gp->id;
+            } else if($patient->practice){
+                $contact_string = 'Practice' . $patient->practice->id;
+            }
             
-            $patient_address = isset($patient->contact->correspondAddress) ? $patient->contact->correspondAddress : $patient->contact->address;
+            $patient_address = isset($patient->contact->correspondAddress) ? $patient->contact->correspondAddress : (isset($patient->contact->address) ? $patient->contact->address : null);
 
             if (!$patient_address) {
-                $patient_address = "N/A";
+                $patient_address = "The contact does not have a valid address.";
             } else {
                 $patient_address = implode("\n", $patient_address->getLetterArray());
             }
-            
 
+            $address_data = array();
+            if($contact_string){
+                $address_data = $api->getAddress($patient_id, $contact_string);
+            }
+            
+            $contact_id = isset($address_data['contact_id']) ? $address_data['contact_id'] : null;
+            $contact_name = isset($address_data['contact_name']) ? $address_data['contact_name'] : null;
+            $address = isset($address_data['address']) ? $address_data['address'] : null;
+            
             $this->renderPartial('//docman/_create', array(
                 'row_index' => (isset($row_index) ? $row_index : 0),
                 'macro_data' => $macro_data,
                 'macro_id' => $macro_id,
                 'element' => $element,
+                'can_send_electronically' => true,
                 'defaults' => array(
                     'To' => array(
-                        'contact_id' => $patient->gp->contact->id,
+                        'contact_id' => $contact_id,
                         'contact_type' => 'GP',
-                        'contact_name' => $patient->gp->contact->getFullName(),
-                        'address' => $gp_address
+                        'contact_name' => $contact_name,
+                        'address' => $address
                     ),
                     'Cc' => array(
-                        'contact_id' => $patient->contact->id,
-                        'contact_name' => $patient->contact->getFullName(),
+                        'contact_id' => isset($patient->contact->id) ? $patient->contact->id : null,
+                        'contact_name' => isset($patient->contact->id) ? $patient->contact->getFullName() : null,
                         'contact_type' => 'PATIENT',
                         'address' => $patient_address
-                        
                     ),
                 )
             ));
@@ -291,7 +316,7 @@ $patient = Patient::model()->findByPk($patient_id);
         </div>
     </div>
 
-    <fieldset class="row field-row enclosures">
+    <div class="row field-row enclosures">
         <legend class="large-<?php echo $layoutColumns['label']; ?> column OphCoCorrespondence_footerLabel">
             Enclosures:
         </legend>
@@ -322,7 +347,7 @@ $patient = Patient::model()->findByPk($patient_id);
                 </button>
             </div>
         </div>
-    </fieldset>
+    </div>
     <div class="row field-row">
         <div class="large-<?php echo $layoutColumns['label']; ?> column">
             <label for="<?php echo get_class($element) . '_is_signed_off'; ?>">

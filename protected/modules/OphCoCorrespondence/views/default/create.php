@@ -29,23 +29,22 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     ),
 ));
 
-// Event actions
-$this->event_actions[] = EventAction::button(
-    'Save draft',
-    'savedraft',
-    array('level' => 'secondary'),
-    array('id' => 'et_save_draft', 'class' => 'button small', 'form' => 'correspondence-create')
-);
-$this->event_actions[] = EventAction::button(
-    'Save and print',
-    'saveprint',
-    array('level' => 'secondary'),
-    array(
-        'id' => 'et_save_print',
-        'class' => 'button small',
-        'form' => 'correspondence-create',
-    )
-);
+$actions = array('savedraft' => 'Save draft', 'saveprint' => 'Save and print');
+if( isset(Yii::app()->params['OphCoCorrespondence_event_actions']['create']) ){
+    $actions = Yii::app()->params['OphCoCorrespondence_event_actions']['create'];
+}
+
+foreach($actions as $action_id => $action){
+    if($action){
+        $this->event_actions[] = EventAction::button(
+            $action,
+            $action_id,
+            array('level' => 'secondary'),
+            array('id' => 'et_' . $action_id, 'class' => 'button small', 'form' => 'correspondence-create')
+        );
+    }
+}
+
 ?>
 
 <?php if (!$this->patient->practice || !$this->patient->practice->contact->address) { ?>

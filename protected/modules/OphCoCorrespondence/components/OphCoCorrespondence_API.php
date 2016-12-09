@@ -315,4 +315,105 @@ class OphCoCorrespondence_API extends BaseAPI
         $element_letter = ElementLetter::model()->findByPk($id);
         return $element_letter->letter_targets;
     }
+    
+    public function getAddress($patient_id, $contact_string, $nickname = false)
+    {
+        if (!$patient = Patient::model()->findByPk($patient_id)) {
+            throw new Exception('Unknown patient: '.$patient_id);
+        }
+
+        if (!preg_match('/^([a-zA-Z]+)([0-9]+)$/', $contact_string, $m)) {
+            throw new Exception('Invalid contact format: '.$contact_string);
+        }
+
+        if ($m[1] == 'Contact') {
+            // NOTE we are assuming that Contact must be a Person model here
+            $contact = Person::model()->find('contact_id=?', array($m[2]));
+        } else {
+            if (!$contact = $m[1]::model()->findByPk($m[2])) {
+                throw new Exception("{$m[1]} not found: {$m[2]}");
+            }
+        }
+
+        if (method_exists($contact, 'isDeceased') && $contact->isDeceased()) {
+            return json_encode(array('errors' => 'DECEASED'));
+        }
+
+        $text_ElementLetter_address = $contact->getLetterAddress(array(
+            'patient' => $patient,
+            'include_name' => true,
+            'include_label' => true,
+            'delimiter' => "\n",
+        ));
+        
+        $address = $contact->getLetterAddress(array(
+            'patient' => $patient,
+            'include_name' => false,
+            'include_label' => true,
+            'delimiter' => "\n",
+        ));
+        
+
+        if (!$address) {
+            $address = '';
+        }
+
+        if (!$text_ElementLetter_address) {
+            $text_ElementLetter_address = '';
+        }
+        
+        if (method_exists($contact, 'getCorrespondenceName')) {
+            $correspondence_name = $contact->correspondenceName;
+        } else {
+            $correspondence_name = $contact->fullName;
+        }
+        
+        if($m[1] == 'CommissioningBodyService'){
+            $correspondence_name = implode(',', $correspondence_name);
+        }
+        
+        $contact_type = $m[1];
+        if($m[1] == 'CommissioningBodyService'){
+            $contact_type = 'DRSS';
+        } else if($m[1] == 'Practice'){
+            $contact_type = 'Gp';
+        }
+        
+        if( !in_array($contact_type, array('Gp','Patient','DRSS')) ){
+            $contact_type = 'Other';
+        }
+
+        return $data = array(
+            'contact_type' => $contact_type,
+            'contact_id' => isset($contact->contact->id) ? $contact->contact->id : null,
+            'contact_name' => $correspondence_name,
+            'address' => $address ? $address : "The contact does not have a valid address.",
+            'text_ElementLetter_address' => $text_ElementLetter_address,
+            'text_ElementLetter_introduction' => $contact->getLetterIntroduction(array(
+                'nickname' => (boolean) $nickname,
+            )),
+        );
+    }
+    
+    public function updateDocumentTargetAddressFromContact($document_target_id, $letter_id)
+    {
+        $document_target = DocumentTarget::model()->findByPk($document_target_id);
+        $contact = Contact::model()->findByPk($document_target->contact_id);
+        $patient = $document_target->document_instance->correspondence_event->episode->patient;
+     
+        $letter = ElementLetter::model()->findByPk($letter_id);
+        
+        if($letter){
+            foreach(array_keys($letter->address_targets) as $contact_string){
+
+                $address = $this->getAddress($patient->id, $contact_string);
+                if($address['contact_id'] == $document_target->contact_id){
+                    $document_target->contact_name = $address['contact_name'];
+                    $document_target->address = $address['address'];
+                }
+            }
+        }
+        
+        $document_target->save();
+    }
 }
