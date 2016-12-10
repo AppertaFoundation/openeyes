@@ -17,23 +17,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<style type='text/css'>
-table { border:1px solid black; cell-spacing:0; cell-padding:0; }
-td { border:1px solid black; border-collapse: 1; vertical-align:top; }
-tr { background-color: #eee; color: black; padding:2px 5px; }
-th.actions {padding:0 10px}
-select.addr { width:200px !important; max-width:200px; }
-div#docman_block select.macro { max-width:220px; }
-.docman_delivery_method{
-        min-width: 156px;
-    }
-button.docman { width:80px; background: none; font-size:13px; line-height:20px; height:20px; margin:5px 0; padding:0; text-align:center; }
-button.red { background-color:red; color: white; }
-button.green { background-color:green; color: white; }
-    th.actions{
-        min-width: 113px;
-    }
-</style>
 
     <?php echo CHtml::activeHiddenField($document_set, 'id') ?>
     <?php echo CHtml::activeHiddenField($document_set->document_instance[0], 'id') ?>
