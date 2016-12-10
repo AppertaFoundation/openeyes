@@ -117,7 +117,7 @@ $element->letter_type = ($element->letter_type ? $element->letter_type : ( $macr
             }
 
             if (!$gp_address) {
-                $gp_address = "N/A";
+                $gp_address = "The contact does not have a valid address.";
             } else {
                 $gp_address = implode("\n", $gp_address->getLetterArray());
             }
