@@ -32,10 +32,10 @@
         $ccString = "";
         $toAddress = "";
 
-        if($element->document_instance) {
+        if($element->document_instance) {            
             
             foreach ($element->document_instance as $instance) {
-                foreach ($instance->document_target as $target) {
+                foreach ($instance->document_target as $target) {                    
                     if($target->ToCc == 'To'){
                         $toAddress = $target->contact_name . "\n" . $target->address;
                     } else {
@@ -51,7 +51,7 @@
                     $ccString .= "CC: " . str_replace(';', ',', $line)."<br/>";
                 }
             }
-        }
+        }        
         $this->renderPartial('letter_start', array(
             'toAddress' => $toAddress,
             'patient' => $this->patient,
@@ -65,7 +65,7 @@
 	<?php 
             $this->renderPartial('reply_address', array(
                 'site' => $element->site,
-            ));
+            ));  
 
             $this->renderPartial('print_ElementLetter', array(
                 'element' => $element,

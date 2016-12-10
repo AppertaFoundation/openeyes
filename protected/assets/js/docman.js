@@ -106,6 +106,13 @@ var docman = (function() {
             this.addNewRecipientHandler();
             this.addRemoveHandler();
             this.addDocmanMethodMandatory();
+            this.addContactNameUpdate();
+        },
+        
+        addContactNameUpdate: function(){
+            $('#dm_table').on('keyup', '#DocumentTarget_0_attributes_contact_name',function(){
+                $('#ElementLetter_introduction').val( 'Dear ' + $(this).val() );
+            });
         },
 
         addDocmanMethodMandatory: function()
