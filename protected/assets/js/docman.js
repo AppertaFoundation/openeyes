@@ -261,6 +261,7 @@ var docman = (function() {
                         var this_address = $('#Document_Target_Address_' + rowindex).val();
                         var this_contact_id = $('#DocumentTarget_' + rowindex + '_attributes_contact_id').val();
                         var this_contact_type = $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val();
+                        var other_contact_type = $('#DocumentTarget_' + other_rowindex + '_attributes_contact_type').val();
                         var other_rowindex = $('#docman_block select option[value="' + resp.contact_type.toUpperCase() + '"]:selected').closest('tr').data('rowindex');
                         var $other_docman_recipient = $('tr.rowindex-' + other_rowindex + ' .docman_recipient');
 
@@ -275,8 +276,8 @@ var docman = (function() {
                         //set readonly
                         $('#DocumentTarget_' + rowindex + '_attributes_contact_name').attr('readonly', (resp.contact_type.toUpperCase() === 'GP'));
                         $('#Document_Target_Address_' + rowindex).attr('readonly', (resp.contact_type.toUpperCase() === 'GP'));
-                        $('#DocumentTarget_' + other_rowindex + '_attributes_contact_name').attr('readonly', (this_contact_type === 'GP'));
-                        $('#Document_Target_Address_' + other_rowindex).attr('readonly', (this_contact_type === 'GP'));
+                        $('#DocumentTarget_' + other_rowindex + '_attributes_contact_name').attr('readonly', (other_contact_type === 'GP'));
+                        $('#Document_Target_Address_' + other_rowindex).attr('readonly', (other_contact_type === 'GP'));
 
                         if((resp.contact_type.toUpperCase() === 'GP' || resp.contact_type.toUpperCase() === 'PATIENT') && rowindex !== other_rowindex){
                             $other_docman_recipient.val(this_recipient);

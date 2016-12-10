@@ -104,7 +104,7 @@
                                         'contact_id' => $macro["contact_id"],
                                         'contact_name' => $contact_name,
                                         'address_targets' => $element->address_targets,
-                                        'is_editable' => ucfirst(strtolower($contact_type)) != 'GP',
+                                        'is_editable' => ucfirst(strtolower($contact_type)) != 'Gp',
                                         'contact_type' => $contact_type,
                                         'row_index' => $index,
                                         'address' => $macro["address"],
