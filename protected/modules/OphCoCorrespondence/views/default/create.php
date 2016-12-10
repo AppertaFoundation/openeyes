@@ -54,6 +54,22 @@ foreach($actions as $action_id => $action){
 <?php } ?>
 
 <?php $this->displayErrors($errors) ?>
+
+<?php
+    $correspondence_create_banner = SettingMetadata::model()->findByAttributes(array('key' => 'correspondence_create_banner'));
+    $banner_text = $correspondence_create_banner ? $correspondence_create_banner->getSettingName() : false;
+?>
+    
+<?php if($banner_text): ?>
+<div class="row data-row">
+    <div class="large-10 correspondence_create_banner column">
+        <div class="data-label">
+            <?php echo $banner_text; ?>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
 <?php $this->renderOpenElements($this->action->id, $form); ?>
 <?php $this->renderOptionalElements($this->action->id, $form); ?>
 <?php $this->displayErrors($errors, true) ?>
