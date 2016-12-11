@@ -16,6 +16,20 @@
 
 .event-content {
 	textarea {
-		font-size: rem-calc(16px);
+            font-size: rem-calc(16px);
 	}
+        
+        form#correspondence-create{
+            .correspondence_create_banner{
+                margin-left: 12px;
+                border: 1px solid red;
+                padding: 10px;
+                font-weight: 700;
+                color: red;
+                
+                .data-label{
+                    font-size:17px;
+                }
+            }
+        }
 }
