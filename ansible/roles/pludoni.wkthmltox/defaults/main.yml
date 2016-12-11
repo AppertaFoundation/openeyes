@@ -1,6 +1,0 @@
----
-wkhtmltox_install_fonts: true
-wkhtmltox_base_version: 0.12
-wkhtmltox_main_version: 0.12.2.1
-wkhtmltox_minor_version: 0.12.2.1
-wkhtmltox_download_url: 'http://download.gna.org/wkhtmltopdf/{{wkhtmltox_base_version}}/{{wkhtmltox_main_version}}/wkhtmltox-{{wkhtmltox_minor_version}}_linux-{{ansible_lsb.codename}}-amd64.deb'

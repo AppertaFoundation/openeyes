@@ -371,6 +371,7 @@ return array(
         'event_lock_disable' => false,
         'reports' => array(
         ),
+        'opbooking_disable_both_eyes' => false,
         'html_autocomplete' => 'off',
         // html|pdf, pdf requires wkhtmltopdf with patched QT
         'event_print_method' => 'pdf',
@@ -395,6 +396,28 @@ return array(
                 // otherwise ignored and will be overwritten on then next download
                 'temp_path' => realpath(dirname(__FILE__).'/../..').'/data/hscic/temp',
             ),
+        ),
+        /**
+         * Text to be displayed for sending correspondence electronically e.g.: 'Electronic (DocMan)'
+         * To be overriden in local config
+         */
+        'electronic_sending_method_label' => 'Electronic',
+        
+        /**
+         * Action buttons to be displayed when create/update a correspondence letter
+         * Available actions
+         *      - 'savedraft' => 'Save draft',
+         *      - 'save' => 'Save',
+         *      - 'saveprint' => 'Save and print'
+         * To remove an option set it to NULL 
+         * e.g: saveprint' => null,
+         */
+        'OphCoCorrespondence_event_actions' => array(
+                'create' => array(
+                    'savedraft' => 'Save draft',
+                    'save' => null,
+                    'saveprint' => 'Save and print'
+            )
         ),
     ),
 );

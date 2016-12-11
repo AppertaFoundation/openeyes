@@ -253,7 +253,7 @@ class BaseEventTypeCActiveForm extends FormLayout
      * @param array $htmlOptions
      * @param array $layoutColumns
      */
-    public function passwordConfirmField($element, $label, $name, $htmlOptions = array(), $layoutColumns = array())
+    public function passwordChangeField($element, $label, $name, $htmlOptions = array(), $layoutColumns = array())
     {
         $htmlOptions = array_merge(array(
             'label' => $label,

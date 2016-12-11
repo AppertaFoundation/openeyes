@@ -12,16 +12,16 @@
   pre_tasks:
     - include: tasks/init-debian.yml
       when: ansible_os_family == 'Debian'
-    - include: tasks/init-redhat.yml
-      when: ansible_os_family == 'RedHat'
 
   roles:
     - server
     - vagrant_local
+    - franklinkim.environment
     - geerlingguy.apache
     - geerlingguy.mysql
     - geerlingguy.nodejs
     - geerlingguy.php
+    - geerlingguy.php-xdebug
     - geerlingguy.composer
-    - pludoni.wkthmltox
+    - zealot128.wkhtmltox
     - app

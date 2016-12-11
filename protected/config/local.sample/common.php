@@ -16,15 +16,16 @@
 * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 */
+
 if (file_exists('/etc/openeyes/db.conf')) {
     $db = parse_ini_file('/etc/openeyes/db.conf');
 } else {
     $db = array(
-        'host' => '127.0.0.1',
-        'port' => '=3306',
-        'dbname' => 'openeyes',
-        'username' => 'openeyes',
-        'password' => 'oe_test',
+        'host' => getenv('DATABASE_HOST') ? getenv('DATABASE_HOST') : '127.0.0.1',
+        'port' => getenv('DATABASE_PORT') ? getenv('DATABASE_PORT') : '3306',
+        'dbname' => getenv('DATABASE_NAME') ? getenv('DATABASE_NAME') : 'openeyes',
+        'username' => getenv('DATABASE_USER') ? getenv('DATABASE_USER') : 'openeyes',
+        'password' => getenv('DATABASE_PASS') ? getenv('DATABASE_PASS') : 'openeyes',
     );
 }
 
@@ -172,7 +173,20 @@ $config = array(
                 'client_secret' => '4c7f6f8fa93d59c45502c0ae8c4a95b',
             ),
         ),
-        'signature_app_url' => 'http://tiny.cc/oe-sign'
+        'signature_app_url' => 'http://tiny.cc/oe-sign',
+        'docman_export_dir' => '/tmp/docman',
+        'docman_login_url' => 'http://localhost/site/login',
+        'docman_user' => 'admin',
+        'docman_password' => 'admin',
+        'docman_print_url' => 'http://localhost/OphCoCorrespondence/default/PDFprint/',
+        // possible values:
+        // none => XML output is suppressed
+        // format1 => OPENEYES_<eventId>_<randomInteger>.pdf [current format, default if parameter not specified]
+        // format2 => <hosnum>_<yyyyMMddhhmm>_<eventId>.pdf
+        // format3 => <hosnum>_edtdep-OEY_yyyyMMdd_hhmmss_<eventId>.pdf
+        'docman_filename_format' => 'format1',
+        // set this to none if you want to suppress XML output
+        'docman_xml_format' => 'none'
     ),
 );
 

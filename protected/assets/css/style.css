@@ -3835,8 +3835,13 @@ button:active, .button:active, input[type="submit"]:active {
   background: -webkit-linear-gradient(#145ea9, #104d8b);
   background: linear-gradient(#145ea9, #104d8b);
   border-color: #0f467e;
+  color: #FFFFFF;
 }
-/* line 55, ../sass/openeyes/components/_buttons.scss */
+/* line 56, ../sass/openeyes/components/_buttons.scss */
+button:visited, .button:visited, input[type="submit"]:visited {
+  color: #FFFFFF;
+}
+/* line 59, ../sass/openeyes/components/_buttons.scss */
 button.long, .button.long, input[type="submit"].long {
   padding-left: 34px;
   padding-right: 34px;
@@ -3849,7 +3854,7 @@ button.long, .button.long, input[type="submit"].long {
   }
 }
 
-/* line 79, ../sass/openeyes/components/_buttons.scss */
+/* line 83, ../sass/openeyes/components/_buttons.scss */
 button.secondary, .button.secondary, input[type="submit"].secondary {
   background: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgeDE9IjAuNSIgeTE9IjAuMCIgeDI9IjAuNSIgeTI9IjEuMCI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzQzYTg0NCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzU1YTI1NiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #43a844), color-stop(100%, #55a256));
@@ -3859,7 +3864,7 @@ button.secondary, .button.secondary, input[type="submit"].secondary {
   border-color: #3fa522;
   text-shadow: 1px 1px 0 #427d42, 2px 2px 0 #43727f;
 }
-/* line 83, ../sass/openeyes/components/_buttons.scss */
+/* line 87, ../sass/openeyes/components/_buttons.scss */
 button.secondary:hover, .button.secondary:hover, input[type="submit"].secondary:hover {
   background: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgeDE9IjAuNSIgeTE9IjAuMCIgeDI9IjAuNSIgeTI9IjEuMCI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzQ4YmQyNyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzNmYTUyMiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #48bd27), color-stop(100%, #3fa522));
@@ -3868,7 +3873,7 @@ button.secondary:hover, .button.secondary:hover, input[type="submit"].secondary:
   background: linear-gradient(#48bd27, #3fa522);
   border-color: #569b42;
 }
-/* line 87, ../sass/openeyes/components/_buttons.scss */
+/* line 91, ../sass/openeyes/components/_buttons.scss */
 button.secondary:active, .button.secondary:active, input[type="submit"].secondary:active {
   background: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgeDE9IjAuNSIgeTE9IjAuMCIgeDI9IjAuNSIgeTI9IjEuMCI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzQ1ODQ0NiIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzM5NmMzOSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #458446), color-stop(100%, #396c39));
@@ -3878,7 +3883,7 @@ button.secondary:active, .button.secondary:active, input[type="submit"].secondar
   border-color: #336234;
 }
 
-/* line 108, ../sass/openeyes/components/_buttons.scss */
+/* line 112, ../sass/openeyes/components/_buttons.scss */
 button.warning, button.cancel.event-action, .button.cancel.event-action, button.delete, button.delete.disabled, button.delete.inactive, .delete.button.inactive, input.delete[type="submit"].inactive, button.delete[disabled], .button.delete, .button.delete.disabled, .button.delete[disabled], input[type="submit"].delete, input[type="submit"].delete.disabled, input[type="submit"].delete[disabled], input[type="submit"].cancel.event-action, .button.warning, input[type="submit"].warning {
   background: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgeDE9IjAuNSIgeTE9IjAuMCIgeDI9IjAuNSIgeTI9IjEuMCI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2NmMGQyNyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2I4MTUyYiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #cf0d27), color-stop(100%, #b8152b));
@@ -3888,7 +3893,7 @@ button.warning, button.cancel.event-action, .button.cancel.event-action, button.
   border-color: #9a091c;
   text-shadow: 1px 1px 0 #9a091c, 2px 2px 0 #851616;
 }
-/* line 112, ../sass/openeyes/components/_buttons.scss */
+/* line 116, ../sass/openeyes/components/_buttons.scss */
 button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-action:hover, button.delete:hover, button.delete.disabled:hover, button.delete.inactive:hover, button.delete[disabled]:hover, .button.delete:hover, input[type="submit"].delete:hover, input[type="submit"].cancel.event-action:hover, .button.warning:hover, input[type="submit"].warning:hover {
   background: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgeDE9IjAuNSIgeTE9IjAuMCIgeDI9IjAuNSIgeTI9IjEuMCI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2U4MTUxNSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2UwMWExYSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #e81515), color-stop(100%, #e01a1a));
@@ -3897,7 +3902,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   background: linear-gradient(#e81515, #e01a1a);
   border-color: #ad1515;
 }
-/* line 116, ../sass/openeyes/components/_buttons.scss */
+/* line 120, ../sass/openeyes/components/_buttons.scss */
 button.warning:active, button.cancel.event-action:active, .button.cancel.event-action:active, button.delete:active, button.delete.disabled:active, button.delete.inactive:active, button.delete[disabled]:active, .button.delete:active, input[type="submit"].delete:active, input[type="submit"].cancel.event-action:active, .button.warning:active, input[type="submit"].warning:active {
   background: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgeDE9IjAuNSIgeTE9IjAuMCIgeDI9IjAuNSIgeTI9IjEuMCI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzkwMTgyOCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzc2MTQyMSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #901828), color-stop(100%, #761421));
@@ -3907,7 +3912,7 @@ button.warning:active, button.cancel.event-action:active, .button.cancel.event-a
   border-color: #6b121e;
 }
 
-/* line 137, ../sass/openeyes/components/_buttons.scss */
+/* line 141, ../sass/openeyes/components/_buttons.scss */
 button.cancel.event-action, .button.cancel.event-action, button.delete, button.delete.disabled, button.delete.inactive, .delete.button.inactive, button.delete[disabled], .button.delete, .button.delete.disabled, .button.delete[disabled], input[type="submit"].delete, input[type="submit"].delete.disabled, input[type="submit"].delete[disabled], input[type="submit"].cancel.event-action {
   -moz-box-shadow: none;
   -webkit-box-shadow: none;
@@ -3919,7 +3924,7 @@ button.cancel.event-action, .button.cancel.event-action, button.delete, button.d
   padding-right: 10px;
   text-shadow: none;
 }
-/* line 146, ../sass/openeyes/components/_buttons.scss */
+/* line 150, ../sass/openeyes/components/_buttons.scss */
 button.cancel.event-action:active, button.cancel.event-action:hover, .button.cancel.event-action:active, button.delete:active, .button.delete:active, input[type="submit"].delete:active, .button.cancel.event-action:hover, button.delete:hover, .button.delete:hover, input[type="submit"].delete:hover, input[type="submit"].cancel.event-action:active, input[type="submit"].cancel.event-action:hover {
   -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
   -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
@@ -3930,18 +3935,18 @@ button.cancel.event-action:active, button.cancel.event-action:hover, .button.can
   color: #fff;
 }
 
-/* line 172, ../sass/openeyes/components/_buttons.scss */
+/* line 176, ../sass/openeyes/components/_buttons.scss */
 button.delete, button.delete.disabled, button.delete.inactive, .delete.button.inactive, input.delete[type="submit"].inactive, button.delete[disabled], .button.delete, .button.delete.disabled, .button.delete[disabled], input[type="submit"].delete, input[type="submit"].delete.disabled, input[type="submit"].delete[disabled] {
   border: 0;
 }
 
-/* line 195, ../sass/openeyes/components/_buttons.scss */
+/* line 199, ../sass/openeyes/components/_buttons.scss */
 button.small, .button.small, input[type="submit"].small {
   padding: 4px 16px;
   font-size: 0.8125rem;
   letter-spacing: 1px;
 }
-/* line 200, ../sass/openeyes/components/_buttons.scss */
+/* line 204, ../sass/openeyes/components/_buttons.scss */
 button.tiny, .button.tiny, input[type="submit"].tiny {
   padding: 3px 14px 4px 14px;
   font-size: 0.6875rem;
@@ -3949,35 +3954,35 @@ button.tiny, .button.tiny, input[type="submit"].tiny {
   line-height: 1.4;
 }
 
-/* line 229, ../sass/openeyes/components/_buttons.scss */
+/* line 233, ../sass/openeyes/components/_buttons.scss */
 button [class*="icon-button-small-"], .button [class*="icon-button-small-"], input[type="submit"] [class*="icon-button-small-"] {
   margin: -6px -2px -5px -14px;
 }
-/* line 233, ../sass/openeyes/components/_buttons.scss */
+/* line 237, ../sass/openeyes/components/_buttons.scss */
 button.button-icon.small, .button.button-icon.small, input[type="submit"].button-icon.small {
   padding-right: 1px;
   padding-left: 1px;
 }
-/* line 236, ../sass/openeyes/components/_buttons.scss */
+/* line 240, ../sass/openeyes/components/_buttons.scss */
 button.button-icon.small [class*="icon-button-small-"], .button.button-icon.small [class*="icon-button-small-"], input[type="submit"].button-icon.small [class*="icon-button-small-"] {
   margin: -7px 0 -5px 0;
 }
-/* line 239, ../sass/openeyes/components/_buttons.scss */
+/* line 243, ../sass/openeyes/components/_buttons.scss */
 button.button-icon.small.delete, .button.button-icon.small.delete, input[type="submit"].button-icon.small.delete {
   padding-right: 4px;
   padding-left: 4px;
   padding-bottom: 6px;
 }
-/* line 243, ../sass/openeyes/components/_buttons.scss */
+/* line 247, ../sass/openeyes/components/_buttons.scss */
 button.button-icon.small.delete [class*="icon-button-small-"], .button.button-icon.small.delete [class*="icon-button-small-"], input[type="submit"].button-icon.small.delete [class*="icon-button-small-"] {
   margin-top: -6px;
 }
-/* line 249, ../sass/openeyes/components/_buttons.scss */
+/* line 253, ../sass/openeyes/components/_buttons.scss */
 button.button-icon.small.delete:hover .icon-button-small-trash-can, button.button-icon.small.delete:focus .icon-button-small-trash-can, button.button-icon.small.delete:active .icon-button-small-trash-can, .button.button-icon.small.delete:hover .icon-button-small-trash-can, .button.button-icon.small.delete:focus .icon-button-small-trash-can, .button.button-icon.small.delete:active .icon-button-small-trash-can, input[type="submit"].button-icon.small.delete:hover .icon-button-small-trash-can, input[type="submit"].button-icon.small.delete:focus .icon-button-small-trash-can, input[type="submit"].button-icon.small.delete:active .icon-button-small-trash-can {
   background-position: 0 -72px;
 }
 
-/* line 273, ../sass/openeyes/components/_buttons.scss */
+/* line 277, ../sass/openeyes/components/_buttons.scss */
 .button-group {
   list-style: none;
   margin: 0;
@@ -3992,7 +3997,7 @@ button.button-icon.small.delete:hover .icon-button-small-trash-can, button.butto
 .button-group:after {
   clear: both;
 }
-/* line 275, ../sass/openeyes/components/_buttons.scss */
+/* line 279, ../sass/openeyes/components/_buttons.scss */
 .button-group > li {
   margin: 0 -2px;
   display: inline-block;
@@ -4010,7 +4015,7 @@ button.button-icon.small.delete:hover .icon-button-small-trash-can, button.butto
 .button-group > li button, .button-group > li .button, .button-group > li input[type="submit"] {
   border-color: #105dae;
 }
-/* line 279, ../sass/openeyes/components/_buttons.scss */
+/* line 283, ../sass/openeyes/components/_buttons.scss */
 .button-group > li button.disabled, .button-group > li button.inactive, .button-group > li .button.inactive, .button-group > li input[type="submit"].inactive, .button-group > li .button.disabled, .button-group > li input[type="submit"].disabled {
   border-color: #999;
 }
@@ -4040,7 +4045,7 @@ button.button-icon.small.delete:hover .icon-button-small-trash-can, button.butto
   font-size: 0.6875rem;
 }
 
-/* line 312, ../sass/openeyes/components/_buttons.scss */
+/* line 316, ../sass/openeyes/components/_buttons.scss */
 button.disabled, button.inactive, .button.inactive, input[type="submit"].inactive, button.disabled:hover, button.inactive:hover, .button.inactive:hover, input[type="submit"].inactive:hover, button.disabled:active, button.inactive:active, .button.inactive:active, input[type="submit"].inactive:active, button[disabled], button[disabled]:hover, button[disabled]:active, .button.disabled, .button.disabled:hover, .button.disabled:active, .button[disabled], .button[disabled]:hover, .button[disabled]:active, input[type="submit"].disabled, input[type="submit"].disabled:hover, input[type="submit"].disabled:active, input[type="submit"][disabled], input[type="submit"][disabled]:hover, input[type="submit"][disabled]:active {
   background: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgeDE9IjAuNSIgeTE9IjAuMCIgeDI9IjAuNSIgeTI9IjEuMCI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2FhYWFhYSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzk5OTk5OSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #aaaaaa), color-stop(100%, #999999));
@@ -4716,49 +4721,57 @@ tfoot.pagination-container .pagination-view-all {
     page-break-inside: avoid;
   }
 }
+/* line 96, ../sass/openeyes/components/boxes/_patient-info.scss */
+.box.patient-info.internalreferral.internalreferral-doclist span {
+  background-color: #4D1F77;
+  color: #F47B20;
+  display: inline-block;
+  float: right;
+  padding: 3px 15px;
+}
 
-/* line 138, ../sass/openeyes/components/boxes/_patient-info.scss */
+/* line 150, ../sass/openeyes/components/boxes/_patient-info.scss */
 .box.patient-info.episodes {
   background: #dae6f1;
 }
-/* line 140, ../sass/openeyes/components/boxes/_patient-info.scss */
+/* line 152, ../sass/openeyes/components/boxes/_patient-info.scss */
 .box.patient-info.episodes .box-title {
   color: #4d5155;
   font-weight: bold;
   float: left;
   padding: 0;
 }
-/* line 146, ../sass/openeyes/components/boxes/_patient-info.scss */
+/* line 158, ../sass/openeyes/components/boxes/_patient-info.scss */
 .box.patient-info.episodes .box-info {
   float: right;
   font-size: 0.8125rem;
 }
-/* line 150, ../sass/openeyes/components/boxes/_patient-info.scss */
+/* line 162, ../sass/openeyes/components/boxes/_patient-info.scss */
 .box.patient-info.episodes .summary {
   font-size: 0.8125rem;
 }
 @media print {
-  /* line 138, ../sass/openeyes/components/boxes/_patient-info.scss */
+  /* line 150, ../sass/openeyes/components/boxes/_patient-info.scss */
   .box.patient-info.episodes {
     padding: 0;
   }
 }
-/* line 158, ../sass/openeyes/components/boxes/_patient-info.scss */
+/* line 170, ../sass/openeyes/components/boxes/_patient-info.scss */
 .box.patient-info.episode-links a {
   font-size: 0.8125rem;
 }
 @media print {
-  /* line 157, ../sass/openeyes/components/boxes/_patient-info.scss */
+  /* line 169, ../sass/openeyes/components/boxes/_patient-info.scss */
   .box.patient-info.episode-links {
     padding: 0;
   }
 }
 
-/* line 200, ../sass/openeyes/components/boxes/_patient-info.scss */
+/* line 212, ../sass/openeyes/components/boxes/_patient-info.scss */
 .box.patient-info.associated-data {
   border: 1px solid #999;
 }
-/* line 202, ../sass/openeyes/components/boxes/_patient-info.scss */
+/* line 214, ../sass/openeyes/components/boxes/_patient-info.scss */
 .box.patient-info.associated-data .box-title {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
@@ -4770,24 +4783,24 @@ tfoot.pagination-container .pagination-view-all {
   position: relative;
   font-size: 0.75rem;
 }
-/* line 210, ../sass/openeyes/components/boxes/_patient-info.scss */
+/* line 222, ../sass/openeyes/components/boxes/_patient-info.scss */
 .box.patient-info.associated-data .box-title [class*="icon-"] {
   position: absolute;
   left: 0;
   top: -1px;
 }
 @media print {
-  /* line 202, ../sass/openeyes/components/boxes/_patient-info.scss */
+  /* line 214, ../sass/openeyes/components/boxes/_patient-info.scss */
   .box.patient-info.associated-data .box-title {
     padding-left: 0;
   }
 }
-/* line 220, ../sass/openeyes/components/boxes/_patient-info.scss */
+/* line 232, ../sass/openeyes/components/boxes/_patient-info.scss */
 .box.patient-info.associated-data .form .buttons {
   text-align: right;
 }
 
-/* line 232, ../sass/openeyes/components/boxes/_patient-info.scss */
+/* line 244, ../sass/openeyes/components/boxes/_patient-info.scss */
 .box.patient-info.patient-contacts .data-label {
   color: black;
 }
@@ -7441,3 +7454,49 @@ tfoot.pagination-container .pagination-view-all {
 .ui-autocomplete.ui-menu.patient-ajax-list .ui-menu-item a .nhs-number, .ui-autocomplete.ui-menu.patient-ajax-list .ui-menu-item a.ui-state-focus .nhs-number {
   float: right;
 }
+
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Dec 9, 2016, 11:56:22 AM
+    Author     : sabi
+*/
+/* line 13, ../sass/openeyes/components/_docman.scss */
+div#docman_block select.macro {
+  max-width: 220px;
+}
+/* line 17, ../sass/openeyes/components/_docman.scss */
+div#docman_block textarea {
+  font-size: 13px;
+}
+/* line 21, ../sass/openeyes/components/_docman.scss */
+div#docman_block #dm_table {
+  border: 1px solid black;
+  cell-spacing: 0;
+  cell-padding: 0;
+}
+/* line 26, ../sass/openeyes/components/_docman.scss */
+div#docman_block #dm_table th.actions {
+  padding: 0 10px;
+  min-width: 113px;
+}
+/* line 31, ../sass/openeyes/components/_docman.scss */
+div#docman_block #dm_table tr {
+  background-color: #eee;
+  color: black;
+  padding: 2px 5px;
+}
+/* line 36, ../sass/openeyes/components/_docman.scss */
+div#docman_block #dm_table tr td {
+  border: 1px solid black;
+  border-collapse: 1;
+  vertical-align: top;
+}
+/* line 37, ../sass/openeyes/components/_docman.scss */
+div#docman_block #dm_table tr td.docman_delivery_method {
+  min-width: 156px;
+}
+

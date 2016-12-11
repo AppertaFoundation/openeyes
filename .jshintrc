@@ -24,6 +24,7 @@
     "OpenEyes": true,
     "Mustache": true,
     "sinon": true,
-    "expect": true
+    "expect": true,
+    "dialogPolyfill": true
   }
 }

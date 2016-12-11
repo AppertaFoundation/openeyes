@@ -21,12 +21,17 @@ use \OEModule\OphCoCvi\models;
 use \OEModule\OphCoCvi\components\OphCoCvi_Manager;
 use \OEModule\OphCoCvi\components\LabelManager;
 
+/**
+ * Class DefaultController
+ *
+ * @package OEModule\OphCoCvi\controllers
+ */
 class DefaultController extends \BaseEventTypeController
 {
     public $event_prompt;
     public $cvi_limit = 1;
     protected $cvi_manager;
-    
+
     public $demographicsData;
 
     const ACTION_TYPE_LIST = 'List';
@@ -39,7 +44,7 @@ class DefaultController extends \BaseEventTypeController
         'issue' => self::ACTION_TYPE_EDIT,
         'signCVI' => self::ACTION_TYPE_EDIT,
         'list' => self::ACTION_TYPE_LIST,
-        'LabelPDFprint'=> self::ACTION_TYPE_VIEW
+        'LabelPDFprint' => self::ACTION_TYPE_VIEW,
     );
 
     /** @var string label used in session storage for the list filter values */
@@ -47,6 +52,7 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * Create Form with check for the cvi existing events count
+     *
      * @throws \Exception
      */
     public function actionCreate()
@@ -71,7 +77,7 @@ class DefaultController extends \BaseEventTypeController
             if (count($current_cvis) >= $this->cvi_limit) {
                 $this->render('select_event', array(
                     'current_cvis' => $current_cvis,
-                    'can_create' => $this->getManager()->canCreateEventForPatient($this->patient)
+                    'can_create' => $this->getManager()->canCreateEventForPatient($this->patient),
                 ), false);
             } else {
                 parent::actionCreate();
@@ -100,6 +106,7 @@ class DefaultController extends \BaseEventTypeController
             //TODO: consider encapsulating this in biz rule for edit clerical
             return true;
         }
+
         return $this->checkAccess('OprnEditClericalCvi', $this->getApp()->user->id);
     }
 
@@ -125,7 +132,7 @@ class DefaultController extends \BaseEventTypeController
             return !$this->getManager()->isIssued($this->event) && $this->checkAccess('OprnEditCvi',
                 $this->getApp()->user->id, array(
                     'firm' => $this->firm,
-                    'event' => $this->event
+                    'event' => $this->event,
                 ));
         }
     }
@@ -137,7 +144,7 @@ class DefaultController extends \BaseEventTypeController
     {
         return $this->checkAccess('OprnCreateCvi', $this->getApp()->user->id, array(
             'firm' => $this->firm,
-            'episode' => $this->episode
+            'episode' => $this->episode,
         ));
     }
 
@@ -217,7 +224,7 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * @param models\Element_OphCoCvi_ClinicalInfo $element
-     * @param $action
+     * @param                                      $action
      */
     protected function setElementDefaultOptions_Element_OphCoCvi_ClinicalInfo(
         models\Element_OphCoCvi_ClinicalInfo $element,
@@ -268,8 +275,8 @@ class DefaultController extends \BaseEventTypeController
      * <<<  * This just sets assignments for validation and the re-use in forms if a form submit does not validate
      *
      * @param models\Element_OphCoCvi_ClinicalInfo $element
-     * @param $data
-     * @param $index
+     * @param                                      $data
+     * @param                                      $index
      */
     protected function setComplexAttributes_Element_OphCoCvi_ClinicalInfo($element, $data, $index)
     {
@@ -306,8 +313,8 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * @param models\Element_OphCoCvi_ClinicalInfo $element
-     * @param $data
-     * @param $index
+     * @param                                      $data
+     * @param                                      $index
      * @throws \Exception
      */
     protected function saveComplexAttributes_Element_OphCoCvi_ClinicalInfo(
@@ -328,7 +335,7 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * @param models\Element_OphCoCvi_ClericalInfo $element
-     * @param $action
+     * @param                                      $action
      */
     protected function setElementDefaultOptions_Element_OphCoCvi_ClericalInfo(
         models\Element_OphCoCvi_ClericalInfo $element,
@@ -345,8 +352,8 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * @param models\Element_OphCoCvi_ClericalInfo $element
-     * @param $data
-     * @param $index
+     * @param                                      $data
+     * @param                                      $index
      */
     protected function setComplexAttributes_Element_OphCoCvi_ClericalInfo(
         models\Element_OphCoCvi_ClericalInfo $element,
@@ -372,8 +379,8 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * @param models\Element_OphCoCvi_ClericalInfo $element
-     * @param $data
-     * @param $index
+     * @param                                      $data
+     * @param                                      $index
      * @throws \Exception
      */
     public function saveComplexAttributes_Element_OphCoCvi_ClericalInfo(
@@ -383,8 +390,7 @@ class DefaultController extends \BaseEventTypeController
     ) {
         $model_name = \CHtml::modelName($element);
         if (array_key_exists($model_name, $data)) {
-            $answer_data = array_key_exists('patient_factors',
-                $data[$model_name]) ? $data[$model_name]['patient_factors'] : array();
+            $answer_data = array_key_exists('patient_factors', $data[$model_name]) ? $data[$model_name]['patient_factors'] : array();
             $element->updatePatientFactorAnswers($answer_data);
         }
 
@@ -438,7 +444,7 @@ class DefaultController extends \BaseEventTypeController
 
         // if POST, then a new filter is to be applied, otherwise retrieve from the session
         if ($this->request->isPostRequest) {
-            foreach (array('date_from', 'date_to', 'subspecialty_id', 'site_id', 'consultant_ids', 'show_issued') as $key) {
+            foreach (array('date_from', 'date_to', 'subspecialty_id', 'site_id', 'consultant_ids', 'show_issued', 'issue_status', 'issue_complete', 'issue_incomplete', 'createdby_ids') as $key) {
                 $val = $this->request->getPost($key, null);
                 $filter[$key] = $val;
             }
@@ -512,8 +518,8 @@ class DefaultController extends \BaseEventTypeController
     {
         parent::initActionView();
         $this->setTitle($this->getManager()->getTitle($this->event));
-        $this->jsVars['cvi_print_url'] = $this->getApp()->createUrl($this->getModule()->name.'/default/PDFprint/'.$this->event->id);
-        $this->jsVars['label_print_url'] = $this->getApp()->createUrl($this->getModule()->name.'/default/LabelPDFprint/'.$this->event->id);
+        $this->jsVars['cvi_print_url'] = $this->getApp()->createUrl($this->getModule()->name . '/default/PDFprint/' . $this->event->id);
+        $this->jsVars['label_print_url'] = $this->getApp()->createUrl($this->getModule()->name . '/default/LabelPDFprint/' . $this->event->id);
         if ($this->getApp()->request->getParam('print', null) == 1) {
             $this->jsVars['cvi_do_print'] = 1;
         }
@@ -554,6 +560,7 @@ class DefaultController extends \BaseEventTypeController
 
             $final_elements[] = $el;
         }
+
         return $final_elements;
     }
 
@@ -579,8 +586,10 @@ class DefaultController extends \BaseEventTypeController
     {
         if (!$this->checkClinicalEditAccess()) {
             $el = $this->event->isNewRecord ? null : $this->getManager()->getClinicalElementForEvent($this->event);
+
             return (!is_null($el)) ? array($el) : null;
         }
+
         return false;
     }
 
@@ -594,8 +603,10 @@ class DefaultController extends \BaseEventTypeController
     {
         if (!$this->checkClericalEditAccess()) {
             $el = $this->event->isNewRecord ? null : $this->getManager()->getClericalElementForEvent($this->event);
+
             return (!is_null($el)) ? array($el) : null;
         }
+
         return false;
     }
 
@@ -603,7 +614,7 @@ class DefaultController extends \BaseEventTypeController
      * Override to support the fact that users might not have permission to edit specific event elements.
      *
      * @param \ElementType $element_type
-     * @param $data
+     * @param              $data
      * @return array
      * @throws \Exception
      */
@@ -613,7 +624,7 @@ class DefaultController extends \BaseEventTypeController
 
         $map = array(
             'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo' => 'Clinical',
-            'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo' => 'Clerical'
+            'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo' => 'Clerical',
         );
 
         if (array_key_exists($cls, $map)) {
@@ -695,10 +706,11 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * @param $id
+     * @throws \CHttpException
      */
     public function actionRemoveConsentSignature($id)
     {
-        $signature_file_id = (int) $this->request->getParam('signature_file_id');
+        $signature_file_id = (int)$this->request->getParam('signature_file_id');
         if ($signature_file_id) {
             $user = \User::model()->findByPk($this->getApp()->user->id);
             if ($this->getManager()->removeConsentSignature($this->event, $user, $signature_file_id)) {
@@ -757,53 +769,64 @@ class DefaultController extends \BaseEventTypeController
      */
     public function actionPDFPrint($id)
     {
-        $this->redirect('/file/view/' . $this->getManager()->getEventInfoElementForEvent($this->event)->generated_document_id . '/' . $this->getManager()->getEventInfoElementForEvent($this->event)->generated_document->name);
+        $this->redirect(
+            '/file/view/' . $this->getManager()->getEventInfoElementForEvent($this->event)->generated_document_id . '/'
+            . $this->getManager()->getEventInfoElementForEvent($this->event)->generated_document->name
+        );
     }
-    
+
+    /**
+     * init action
+     */
     public function initActionLabelPDFprint()
     {
         $this->initWithEventId($this->request->getParam('id'));
     }
-    
+
+    /**
+     * @return bool
+     */
     public function checkLabelPrintAccess()
     {
         $this->demographicsData = $this->getManager()->getDemographicsElementForEvent($this->event);
-        if((empty($this->demographicsData['address'])) &&
-           (empty($this->demographicsData['gp_address'])) &&
-           (empty($this->demographicsData['la_address'])))
-        {
-            return FALSE;
+        if ((empty($this->demographicsData['address'])) &&
+            (empty($this->demographicsData['gp_address'])) &&
+            (empty($this->demographicsData['la_address']))
+        ) {
+            return false;
         }
-        
-        return TRUE;
+
+        return true;
     }
+
     /**
      * @param $id
+     * @throws \CHttpException
      */
     public function actionLabelPDFprint($id)
     {
-        
-        $firstLabel = (int)$_GET['firstLabel'];
-        
-        $labelClass = new LabelManager( 
-                'labels.odt' ,
-                realpath(__DIR__ . '/..').'/views/odtTemplate',
-                \Yii::app()->basePath.'/runtime/cache/cvi',
-                'labels_'.mt_rand().'.odt'
+
+        $firstLabel = (int)$this->request->getParam('firstLabel');
+
+        $labelClass = new LabelManager(
+            'labels.odt',
+            realpath(__DIR__ . '/..') . '/views/odtTemplate',
+            \Yii::app()->basePath . '/runtime/cache/cvi',
+            'labels_' . mt_rand() . '.odt'
         );
-        
-        if(!$this->checkLabelPrintAccess()){
+
+        if (!$this->checkLabelPrintAccess()) {
             throw new \CHttpException(404);
         }
-      
+
         $labelAddress = array(
             $this->demographicsData['address'],
             $this->demographicsData['gp_address'],
-            $this->demographicsData['la_address']
+            $this->demographicsData['la_address'],
         );
-       
-        $labelClass->fillLabelsInTable( 'LabelsTable', $labelAddress , $firstLabel);
-        
+
+        $labelClass->fillLabelsInTable('LabelsTable', $labelAddress, $firstLabel);
+
         $labelClass->saveContentXML();
         $labelClass->generatePDF();
         $labelClass->getPDF();
@@ -857,8 +880,7 @@ class DefaultController extends \BaseEventTypeController
             } else {
                 $this->getApp()->user->setFlash('error.cvi_consultant_signature', 'Unable to sign the CVI');
             }
-        }
-        else {
+        } else {
             throw new \CHttpException(403, "Invalid Request");
         }
 
@@ -896,5 +918,4 @@ class DefaultController extends \BaseEventTypeController
             return false;
         }
     }
-
 }

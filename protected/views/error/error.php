@@ -16,22 +16,13 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-?>
-<?php
-    $helpdesk_phone = Yii::app()->params['helpdesk_phone'];
-    $helpdesk_email = Yii::app()->params['helpdesk_email'];
-    $this->layout = '//layouts/error';
+
+$this->layout = '//layouts/error';
 ?>
 <h2>OpenEyes is broken</h2>
 <p class="panel">
-	<strong>There has been a problem trying to access OpenEyes, please try again in a moment</strong>
+    <strong>There has been a problem trying to access OpenEyes, please try again in a moment</strong>
 </p>
 <p class="panel">If there continues to be a problem please contact support.</p>
-<h3>Support Options</h3>
-<ul>
-	<li>Immediate support (8:00am to 8:00pm) - Phone <?php echo @$helpdesk_phone?></li>
-	<li>Less urgent issues email <a
-		href="mailto:<?php echo @$helpdesk_email?>"><?php echo @$helpdesk_email?>
-	</a></li>
-</ul>
+<?php echo $this->renderPartial('//error/support') ?>
 <p class="date"><?php echo date('r'); ?></p>

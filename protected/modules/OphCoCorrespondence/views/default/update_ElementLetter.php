@@ -19,22 +19,91 @@
 ?>
 
 
-<?php echo $form->hiddenInput($element, 'draft', 1)?>
+<?php echo $form->hiddenInput($element, 'draft', 1) ?>
 <?php
 $layoutColumns = $form->layoutColumns;
+
+$macro_id = null;
+$macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : (isset($element->macro->id) ? $element->macro->id : null);
+
+if( !$macro_id ){
+    $macro_id = isset($element->document_instance[0]->document_instance_data[0]->macro_id) ? $element->document_instance[0]->document_instance_data[0]->macro_id : null;
+}
+$macro_name = null;
+if($macro_id){
+    $macro = LetterMacro::model()->findByPk($macro_id);
+    $macro_name = $macro ? $macro->name : null;
+}
+
+$element->letter_type = ($element->letter_type ? $element->letter_type : ( $macro_name == 'Post-op' ? 2 : null  ) );
+$patient_id = Yii::app()->request->getQuery('patient_id', null);
+$patient = Patient::model()->findByPk($patient_id);
+
 ?>
 
-<input type="hidden" id="re_default" value="<?php echo $element->calculateRe($element->event->episode->patient)?>" />
+<input type="hidden" id="re_default" value="<?php echo $element->calculateRe($element->event->episode->patient) ?>"/>
 
 <div class="element-fields">
 
-	<div class="row field-row">
-		<div class="large-4 column large-offset-<?php echo $layoutColumns['label'];?> end">
-			<?php echo $form->dropDownList($element, 'site_id', Site::model()->getLongListForCurrentInstitution(), array('nowrapper' => true))?>
-		</div>
-	</div>
+    <div class="row field-row">
+        <div class="large-<?php echo $layoutColumns['label']; ?> column">
+            <label>Site:</label>
+        </div>
+        <div class="large-3 column end">
+            <?php echo $form->dropDownList($element, 'site_id', Site::model()->getLongListForCurrentInstitution(), array('empty' => '- Please select -', 'nowrapper' => true)) ?>
+        </div>
+    </div>
 
-	<div class="row field-row">
+    <div class="row field-row">
+        <div class="large-<?php echo $layoutColumns['label']; ?> column">
+            <label>Date:</label>
+        </div>
+        <div class="large-2 column end">
+            <?php echo $form->datePicker($element, 'date', array('maxDate' => 'today'), array('nowrapper' => true)) ?>
+        </div>
+    </div>
+
+    <div class="row field-row">
+        <div class="large-<?php echo $layoutColumns['label']; ?> column">
+            <label>Macro:</label>
+        </div>
+        <div class="large-2 column end">
+            <?php echo CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros, array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'full-width')); ?>
+        </div>
+    </div>
+
+    <div class="row field-row">
+        <div class="large-<?php echo $layoutColumns['label']; ?> column">
+            <label>Letter type:</label>
+        </div>
+        <div class="large-2 column end">
+            <?php echo $form->dropDownList($element, 'letter_type', array('1' => 'Clinic discharge letter', '2' => 'Post-op letter', '3' => 'Clinic letter', '4' => 'Other letter'),
+                array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'full-width')) ?>
+        </div>
+    </div>
+
+
+    <div class="row field-row">
+        <div id="docman_block" class="large-12 column">
+            <?php
+
+                $document_set = DocumentSet::model()->findByAttributes(array('event_id' => $element->event_id));
+
+                if($document_set){
+                    $this->renderPartial('//docman/_update', array(
+                        'row_index' => (isset($row_index) ? $row_index : 0),
+                        'document_set' => $document_set,
+                        'macro_id' => $macro_id,
+                        'element' => $element,
+                        'can_send_electronically' => true,
+                    ));
+                }
+            ?>
+        </div>
+    </div>
+
+    <?php if(!$element->document_instance): ?>
+        <div class="row field-row">
 		<div class="large-<?php echo $layoutColumns['label'];?> column">
 			<?php echo $form->dropDownListNoPost('address_target', $element->address_targets, $element->address_target, array('empty' => '- Recipient -', 'nowrapper' => true, 'class' => 'full-width'))?>
 		</div>
@@ -42,58 +111,50 @@ $layoutColumns = $form->layoutColumns;
 			<?php echo $form->textArea($element, 'address', array('rows' => 7, 'label' => false, 'nowrapper' => true), false, array('class' => 'address'))?>
 		</div>
 	</div>
+    <?php endif; ?>
+    
+    <div class="row field-row">
+        <div class="large-<?php echo $layoutColumns['label']; ?> column OphCoCorrespondence_footerLabel">
+            <label for="<?php echo get_class($element) . '_clinic_date_0'; ?>">
+                <?php echo $element->getAttributeLabel('clinic_date') ?>:
+            </label>
+        </div>
+        <div class="large-2 column end">
+            <?php echo $form->datePicker($element, 'clinic_date', array('maxDate' => 'today'), array('nowrapper' => true, 'null' => true)) ?>
+        </div>
+    </div>
 
-	<div class="row field-row">
-		<div class="large-<?php echo $layoutColumns['label'];?> column">
-			<?php echo $form->dropDownListNoPost('macro', $element->letter_macros, '', array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'full-width'))?>
-		</div>
-		<div class="large-2 column end">
-			<?php echo $form->datePicker($element, 'date', array('maxDate' => 'today'), array('nowrapper' => true))?>
-		</div>
-	</div>
+    <?php echo $form->textField($element, 'direct_line', array(), array(), array_merge($layoutColumns, array('field' => 2))) ?>
+    <?php echo $form->textField($element, 'fax', array(), array(), array_merge($layoutColumns, array('field' => 2))) ?>
 
-	<div class="row field-row">
-		<div class="large-<?php echo $layoutColumns['label'];?> column OphCoCorrespondence_footerLabel">
-			<label for="<?php echo get_class($element).'_clinic_date_0';?>">
-				<?php echo $element->getAttributeLabel('clinic_date')?>:
-			</label>
-		</div>
-		<div class="large-2 column end">
-			<?php echo $form->datePicker($element, 'clinic_date', array('maxDate' => 'today'), array('nowrapper' => true, 'null' => true))?>
-		</div>
-	</div>
+    <div class="row field-row">
+        <div class="large-7 column large-offset-<?php echo $layoutColumns['label']; ?>">
+            <?php echo $form->textArea($element, 'introduction', array('rows' => 2, 'label' => false, 'nowrapper' => true), false, array('class' => 'address')) ?>
+        </div>
+        <div class="large-3 column">
+            <label>
+                <?php echo $form->checkBox($element, 'use_nickname', array('nowrapper' => true)) ?>
+            </label>
+        </div>
+    </div>
 
-	<?php echo $form->textField($element, 'direct_line', array(), array(), array_merge($layoutColumns, array('field' => 2)))?>
-	<?php echo $form->textField($element, 'fax', array(), array(), array_merge($layoutColumns, array('field' => 2)))?>
-
-	<div class="row field-row">
-		<div class="large-7 column large-offset-<?php echo $layoutColumns['label'];?>">
-			<?php echo $form->textArea($element, 'introduction', array('rows' => 2, 'label' => false, 'nowrapper' => true), false, array('class' => 'address'))?>
-		</div>
-		<div class="large-3 column">
-			<label>
-				<?php echo $form->checkBox($element, 'use_nickname', array('nowrapper' => true))?>
-				<?php echo $element->getAttributeLabel('use_nickname')?>
-			</label>
-		</div>
-	</div>
-
-	<div class="row field-row"<?php if ((empty($_POST) && strlen($element->re) < 1) || (!empty($_POST) && strlen(@$_POST['ElementLetter']['re']) < 1)) {?> style="display: none;"<?php }?>>
-		<div class="large-<?php echo $layoutColumns['field'];?> column large-offset-<?php echo $layoutColumns['label'];?> end">
-			<?php echo $form->textArea(
+    <div
+        class="row field-row"<?php if ((empty($_POST) && strlen($element->re) < 1) || (!empty($_POST) && strlen(@$_POST['ElementLetter']['re']) < 1)) { ?> style="display: none;"<?php } ?>>
+        <div class="large-<?php echo $layoutColumns['field']; ?> column large-offset-<?php echo $layoutColumns['label']; ?> end">
+            <?php echo $form->textArea(
                 $element,
                 're',
                 array('rows' => 2, 'label' => false, 'nowrapper' => true),
                 empty($_POST) ? strlen($element->re) == 0 : strlen(@$_POST['ElementLetter']['re']) == 0,
                 array('class' => 'address')
-            )?>
-		</div>
-	</div>
+            ) ?>
+        </div>
+    </div>
 
 
-	<div class="row field-row">
-		<div class="large-<?php echo $layoutColumns['label'];?> column">
-			<?php
+    <div class="row field-row">
+        <div class="large-<?php echo $layoutColumns['label']; ?> column">
+            <?php
             $firm = Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(Yii::app()->session['selected_firm_id']);
 
             $event_types = array();
@@ -138,85 +199,93 @@ $layoutColumns = $form->layoutColumns;
             foreach (LetterStringGroup::model()->with($with)->findAll(array('order' => 't.display_order')) as $string_group) {
                 $strings = $string_group->getStrings($patient, $event_types);
                 ?>
-				<div class="field-row">
-					<?php echo $form->dropDownListNoPost(strtolower($string_group->name), $strings, '', array(
-                        'empty' => '- '.$string_group->name.' -',
+                <div class="field-row">
+                    <?php echo $form->dropDownListNoPost(strtolower($string_group->name), $strings, '', array(
+                        'empty' => '- ' . $string_group->name . ' -',
                         'nowrapper' => true,
                         'class' => 'stringgroup full-width',
                         'disabled' => empty($strings),
-                    ))?>
-				</div>
-			<?php }?>
-		</div>
-		<div class="large-<?php echo $layoutColumns['field'];?> column end">
-			<?php echo $form->textArea($element, 'body', array('rows' => 20, 'label' => false, 'nowrapper' => true), false, array('class' => 'address'))?>
-		</div>
-	</div>
+                    )) ?>
+                </div>
+            <?php } ?>
+        </div>
+        <div class="large-<?php echo $layoutColumns['field']; ?> column end">
+            <?php echo $form->textArea($element, 'body', array('rows' => 20, 'label' => false, 'nowrapper' => true), false, array('class' => 'address')) ?>
+        </div>
+    </div>
 
-	<div class="row field-row">
-		<div class="large-<?php echo $layoutColumns['label'];?> column OphCoCorrespondence_footerLabel">
-			<label for="OphCoCorrespondence_footerAutoComplete">
-				From:
-			</label>
-		</div>
-		<div class="large-<?php echo $layoutColumns['field'];?> column end">
-			<div class="row field-row">
-				<div class="large-6 column end">
-					<?php
-                        $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                            'id' => 'OphCoCorrespondence_footerAutoComplete',
-                            'name' => 'OphCoCorrespondence_footerAutoComplete',
-                            'value' => '',
-                            'sourceUrl' => array('default/users'),
-                            'options' => array(
-                                'minLength' => '3',
-                                'select' => "js:function(event, ui) {
+    <div class="row field-row">
+        <div class="large-<?php echo $layoutColumns['label']; ?> column OphCoCorrespondence_footerLabel">
+            <label for="OphCoCorrespondence_footerAutoComplete">
+                From:
+            </label>
+        </div>
+        <div class="large-<?php echo $layoutColumns['field']; ?> column end">
+            <div class="row field-row">
+                <div class="large-6 column end">
+                    <?php
+                    $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+                        'id' => 'OphCoCorrespondence_footerAutoComplete',
+                        'name' => 'OphCoCorrespondence_footerAutoComplete',
+                        'value' => '',
+                        'sourceUrl' => array('default/users'),
+                        'options' => array(
+                            'minLength' => '3',
+                            'select' => "js:function(event, ui) {
 									$('#ElementLetter_footer').val(\"Yours sincerely\\n\\n\\n\\n\\n\"+ui.item.fullname+\"\\n\"+ui.item.role+\"\\n\"+(ui.item.consultant?\"Consultant: \"+ui.item.consultant:''));
 									$('#OphCoCorrespondence_footerAutoComplete').val('');
 									return false;
 								}",
-                            ),
-                            'htmlOptions' => array(
-                                'placeholder' => 'type to search for users',
-                            ),
-                        ));
+                        ),
+                        'htmlOptions' => array(
+                            'placeholder' => 'type to search for users',
+                        ),
+                    ));
                     ?>
-				</div>
-			</div>
-			<div class="row field-row" id="OphCoCorrespondence_footerDiv">
-				<div class="large-8 column end">
-					<?php echo $form->textArea($element, 'footer', array('rows' => 9, 'label' => false, 'nowrapper' => true), false, array('class' => 'address'))?>
-				</div>
-			</div>
-		</div>
-	</div>
+                </div>
+            </div>
+            <div class="row field-row" id="OphCoCorrespondence_footerDiv">
+                <div class="large-8 column end">
+                    <?php echo $form->textArea($element, 'footer', array('rows' => 9, 'label' => false, 'nowrapper' => true), false, array('class' => 'address')) ?>
+                </div>
+            </div>
+        </div>
+    </div>
 
-	<div class="row field-row">
-		<div class="large-<?php echo $layoutColumns['label'];?> column">
-			<?php echo $form->dropDownListNoPost('cc', $element->address_targets, '', array('empty' => '- Cc -', 'nowrapper' => true))?>
-		</div>
-		<div class="large-<?php echo $layoutColumns['field'];?> column end">
-			<?php echo $form->textArea($element, 'cc', array('rows' => 8, 'label' => false, 'nowrapper' => true), false, array('class' => 'address'))?>
-		</div>
-		<div id="cc_targets">
-		</div>
-	</div>
+    <?php if(!$element->document_instance): ?>
+        <div class="row field-row">
+                <div class="large-<?php echo $layoutColumns['label'];?> column">
+                        <?php echo $form->dropDownListNoPost('cc', $element->address_targets, '', array('empty' => '- Cc -', 'nowrapper' => true))?>
+                </div>
+                <div class="large-<?php echo $layoutColumns['field'];?> column end">
+                        <?php echo $form->textArea($element, 'cc', array('rows' => 8, 'label' => false, 'nowrapper' => true), false, array('class' => 'address'))?>
+                </div>
+                <div id="cc_targets">
+                        <?php foreach ($element->cc_targets as $cc_target) {
+    ?>
+                                <input type="hidden" name="CC_Targets[]" value="<?php echo $cc_target?>" />
+                        <?php 
+    }?>
+                </div>
+        </div>
+    <?php endif; ?>
 
-
-<!--		<div class="eventDetail row enclosures">
+    <!--		<div class="eventDetail row enclosures">
 		<input type="hidden" name="update_enclosures" value="1" />
 		<div class="label OphCoCorrespondence_footerLabel">Enclosures:</div>
 		<div class="right">
 			<div id="enclosureItems">
-				<?php if (is_array(@$_POST['EnclosureItems'])) {?>
-					<?php foreach ($_POST['EnclosureItems'] as $key => $value) {?>
-						<div class="enclosureItem"><?php echo CHtml::textField("EnclosureItems[$key]", $value, array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 60))?><a href="#" class="removeEnclosure">Remove</a></div>
-					<?php }?>
-				<?php } else {?>
-					<?php foreach ($element->enclosures as $i => $item) {?>
-						<div class="enclosureItem"><?php echo CHtml::textField("EnclosureItems[enclosure$i]", $item->content, array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 60))?><a href="#" class="removeEnclosure">Remove</a></div>
-					<?php }?>
-				<?php }?>
+				<?php if (is_array(@$_POST['EnclosureItems'])) { ?>
+					<?php foreach ($_POST['EnclosureItems'] as $key => $value) { ?>
+						<div class="enclosureItem"><?php echo CHtml::textField("EnclosureItems[$key]", $value,
+        array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 60)) ?><a href="#" class="removeEnclosure">Remove</a></div>
+					<?php } ?>
+				<?php } else { ?>
+					<?php foreach ($element->enclosures as $i => $item) { ?>
+						<div class="enclosureItem"><?php echo CHtml::textField("EnclosureItems[enclosure$i]", $item->content,
+        array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 60)) ?><a href="#" class="removeEnclosure">Remove</a></div>
+					<?php } ?>
+				<?php } ?>
 			</div>
 			<div>
 				<button class="addEnclosure classy green mini" type="button">
@@ -226,44 +295,59 @@ $layoutColumns = $form->layoutColumns;
 		</div>
 	</div> -->
 
-
-	<fieldset class="row field-row enclosures">
-		<legend class="large-<?php echo $layoutColumns['label'];?> column OphCoCorrespondence_footerLabel">
-			Enclosures:
-		</legend>
-		<div class="large-<?php echo $layoutColumns['field'];?> column end">
-			<input type="hidden" name="update_enclosures" value="1" />
-			<div id="enclosureItems" class="field-row<?php echo !is_array(@$_POST['EnclosureItems']) && empty($element->enclosures) ? ' hide' : '';?>">
-				<?php if (is_array(@$_POST['EnclosureItems'])) {?>
-					<?php foreach ($_POST['EnclosureItems'] as $key => $value) {?>
-						<div class="field-row row collapse enclosureItem">
-							<div class="large-8 column">
-								<?php echo CHtml::textField("EnclosureItems[$key]", $value, array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-							</div>
-							<div class="large-4 column end">
-								<div class="postfix align"><a href="#" class="field-info removeEnclosure">Remove</a></div>
-							</div>
-						</div>
-					<?php }?>
-				<?php } else {?>
-					<?php foreach ($element->enclosures as $i => $item) {?>
-						<div class="field-row row collapse enclosureItem">
-							<div class="large-8 column">
-								<?php echo CHtml::textField("EnclosureItems[enclosure$i]", $item->content, array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-							</div>
-							<div class="large-4 column end">
-								<div class="postfix align"><a href="#" class="field-info removeEnclosure">Remove</a></div>
-							</div>
-						</div>
-					<?php }?>
-				<?php }?>
-			</div>
-			<div class="field-row">
-				<button class="addEnclosure secondary small" type="button">
-					Add
-				</button>
-			</div>
-		</div>
-	</fieldset>
-
+    <div class="row field-row enclosures">
+        <legend class="large-<?php echo $layoutColumns['label']; ?> column OphCoCorrespondence_footerLabel">
+            Enclosures:
+        </legend>
+        <div class="large-<?php echo $layoutColumns['field']; ?> column end">
+            <input type="hidden" name="update_enclosures" value="1"/>
+            <div id="enclosureItems" class="field-row<?php echo !is_array(@$_POST['EnclosureItems']) && empty($element->enclosures) ? ' hide' : ''; ?>">
+                <?php if (is_array(@$_POST['EnclosureItems'])) { ?>
+                    <?php foreach ($_POST['EnclosureItems'] as $key => $value) { ?>
+                        <div class="field-row row collapse enclosureItem">
+                            <div class="large-8 column">
+                                <?php echo CHtml::textField("EnclosureItems[$key]", $value, array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+                            </div>
+                            <div class="large-4 column end">
+                                <div class="postfix align"><a href="#" class="field-info removeEnclosure">Remove</a></div>
+                            </div>
+                        </div>
+                    <?php } ?>
+                <?php } else { ?>
+                    <?php foreach ($element->enclosures as $i => $item) { ?>
+                        <div class="field-row row collapse enclosureItem">
+                            <div class="large-8 column">
+                                <?php echo CHtml::textField("EnclosureItems[enclosure$i]", $item->content, array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+                            </div>
+                            <div class="large-4 column end">
+                                <div class="postfix align"><a href="#" class="field-info removeEnclosure">Remove</a></div>
+                            </div>
+                        </div>
+                    <?php } ?>
+                <?php } ?>
+            </div>
+            <div class="field-row">
+                <button class="addEnclosure secondary small" type="button">
+                    Add
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="row field-row">
+        <div class="large-<?php echo $layoutColumns['label']; ?> column">
+            <label for="<?php echo get_class($element) . '_is_signed_off'; ?>">
+                <?php echo $element->getAttributeLabel('is_signed_off') ?>:
+            </label>
+        </div>
+        <div class="large-8 column end">
+            <?php echo $form->radioButtons($element, 'is_signed_off', array(
+                    1 => 'Yes',
+                    0 => 'No',
+                ),
+                    $element->is_signed_off,
+                    false, false, false, false,
+                    array('nowrapper' => true)
+                ); ?>
+        </div>
+    </div>
 </div>

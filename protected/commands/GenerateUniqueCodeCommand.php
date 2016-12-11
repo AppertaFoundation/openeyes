@@ -33,7 +33,9 @@ class GenerateUniqueCodeCommand extends CConsoleCommand
     }
 
     /**
-     * Generate six characters unique code, and store them into the db.
+     * Generate six characters unique code, and store them into the db. Only generate
+     * new codes such that the prescribed number of codes are free upon completion. This
+     * is to allow the command to be run every day and only generate codes when necessary.
      */
     public function run($args)
     {
@@ -45,7 +47,15 @@ class GenerateUniqueCodeCommand extends CConsoleCommand
             $this->limit = (int) $args[0];
         }
 
-        for ($generation = 1; $generation <= $this->limit; ++$generation) {
+        $unusedCount = Yii::app()->db->createCommand()
+            ->select('count(*)')
+            ->from('unique_codes')
+            ->leftJoin('unique_codes_mapping', 'unique_code_id=unique_codes.id')
+            ->where('unique_codes_mapping.id is null')
+            ->andWhere('active = 1')
+            ->queryScalar();
+
+        for ($generation = 1; $generation <= ($this->limit - $unusedCount); ++$generation) {
             $values = $this->generate(self::UNIQUE_CODE_LENGTH);
             $this->insert($values);
         }

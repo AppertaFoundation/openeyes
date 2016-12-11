@@ -79,6 +79,7 @@ class OphDrPrescription_API extends BaseAPI
     {
         $prescriptionCriteria = new CDbCriteria(array('order' => 'event_date DESC'));
         $prescriptionCriteria->addCondition('episode.patient_id = :id');
+        $prescriptionCriteria->addCondition('prescription.draft = 0');
         $prescriptionCriteria->addNotInCondition('t.id', $exclude);
         $prescriptionCriteria->params = array_merge($prescriptionCriteria->params, array(':id' => $patient->id));
         $prescriptionItems = OphDrPrescription_Item::model()->with('prescription', 'drug', 'duration', 'prescription.event', 'prescription.event.episode')->findAll($prescriptionCriteria);

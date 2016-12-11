@@ -43,7 +43,7 @@
                         <?php
                             // set name to null as it is not required to send this value to the server
                             echo CHtml::dropDownList(null, null,
-                                CHtml::listData($drugs, 'id', 'name'), array('empty' => '-- Select --', 'id' => 'drug_id'));
+                                CHtml::listData($drugs, 'id', 'tallmanlabel'), array('empty' => '-- Select --', 'id' => 'drug_id'));
                         ?>
                     </div>
                 </div>

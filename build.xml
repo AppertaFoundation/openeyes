@@ -2,13 +2,24 @@
 <project name="OpenEyes" default="build">
     <property name="toolsdir" value="${basedir}/bin/"/>
     <property name="prefer" value="dist"/>
-    <property name="dockerName" value="docker"/>
+    <property name="MYSQLDRIVER" value="/usr/share/java/mysql-connector-java.jar"/>
+    <property environment="env"/>
+
+    <path id="CLASSPATH">
+        <pathelement location="${MYSQLDRIVER}"/>
+    </path>
+
+    <property name="DATABASE_TEST_NAME" value="${env.DATABASE_TEST_NAME}"/>
+    <property name="DATABASE_TEST_HOST" value="${env.DATABASE_TEST_HOST}"/>
+    <property name="DATABASE_TEST_PORT" value="${env.DATABASE_TEST_PORT}"/>
+    <property name="DATABASE_TEST_USER" value="${env.DATABASE_TEST_USER}"/>
+    <property name="DATABASE_TEST_PASS" value="${env.DATABASE_TEST_PASS}"/>
 
     <!-- Uncomment the following when the tools are in ${basedir}/vendor/bin -->
     <!-- <property name="toolsdir" value="${basedir}/vendor/bin/"/> -->
 
     <target name="build"
-            depends="prepare,composer,npm,bower,grunt,docker,migrate,migrate-modules,lint,mocha,phploc-ci,pdepend,phpmd-ci,phpcs-ci,phpcpd-ci,phpunit"
+            depends="prepare,composer,npm,bower,grunt,database-populate,migrate,migrate-modules,lint,mocha,phploc-ci,pdepend,phpmd-ci,phpcs-ci,phpcpd-ci,phpunit"
             description=""/>
 
     <target name="build-parallel"
@@ -20,7 +31,7 @@
             description=""/>
 
     <target name="run-tests"
-            depends="prepare,composer,npm,bower,grunt,docker,migrate,migrate-modules,lint,mocha,phpunit"
+            depends="prepare,composer,npm,bower,grunt,database-populate,migrate,migrate-modules,lint,mocha,phpunit"
             description="" />
 
     <target name="tools-parallel" description="Run tools in parallel">
@@ -59,22 +70,19 @@
         <mkdir dir="${basedir}/build/pdepend"/>
         <mkdir dir="${basedir}/build/phpdox"/>
         <mkdir dir="${basedir}/protected/runtime"/>
+        <mkdir dir="${basedir}/protected/runtime/cache"/>
         <mkdir dir="${basedir}/cache"/>
         <mkdir dir="${basedir}/protected/cache"/>
-        <chmod file="${toolsdir}spin_up_docker_db.sh" perm="+x" />
         <copy file="${basedir}/protected/config/local.sample/common.sample.php" tofile="${basedir}/protected/config/local/common.php" overwrite="false" />
         <copy file="${basedir}/protected/config/local.sample/test.php" tofile="${basedir}/protected/config/local/test.php" overwrite="false" />
         <copy file="${basedir}/protected/config/local.sample/console.sample.php" tofile="${basedir}/protected/config/local/console.php" overwrite="false" />
         <property name="prepare.done" value="true"/>
     </target>
 
-    <!-- This task is used for creating a docker container with the DB in it so that unit tests which access it can
-    do so without conflicting with each other. For that purporse it should only be run as part of an automated build task-->
-    <target name="docker" description="Run up a docker container with the DB in it for unit testing against" depends="prepare">
-        <exec executable="/bin/bash" failonerror="true">
-            <arg value="-c" />
-            <arg value="${toolsdir}spin_up_docker_db.sh '${dockerName}'" />
-        </exec>
+    <target name="database-populate" description="Populates an existing MySQL / MariaDB database with the test database" depends="prepare">
+        <sql driver="com.mysql.jdbc.Driver" url="jdbc:mysql://${DATABASE_TEST_HOST}:${DATABASE_TEST_PORT}/${DATABASE_TEST_NAME}" userid="${DATABASE_TEST_USER}" password="${DATABASE_TEST_PASS}" classpathref="CLASSPATH" onerror="continue">
+            <transaction src="${basedir}/features/vagrant_openeyes.sql"/>
+        </sql>
     </target>
 
     <target name="composer" description="Install composer packages">
@@ -106,6 +114,7 @@
             <arg value="${basedir}/protected/yiic" />
             <arg value="migrate" />
             <arg value="--interactive=0" />
+            <arg value="--connectionID=testdb" />
         </exec>
     </target>
 
@@ -114,6 +123,7 @@
             <arg value="${basedir}/protected/yiic" />
             <arg value="migratemodules" />
             <arg value="--interactive=0" />
+            <arg value="--connectionID=testdb" />
         </exec>
     </target>
 

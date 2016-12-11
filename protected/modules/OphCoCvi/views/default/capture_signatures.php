@@ -62,7 +62,7 @@ if ($this->checkUserSigned()) {
                                 <label for="signature_pin">Consultant's signature - please enter your PIN:</label>
                             </div>
                             <div class="large-2 column">
-                                <input type="text" maxlength="4" name="signature_pin" id="signature_pin">
+                                <input type="password" maxlength="4" name="signature_pin" id="signature_pin">
                             </div>
                             <div class="large-4 column end">
                                 <?php echo CHtml::button('Sign this eCVI', array(

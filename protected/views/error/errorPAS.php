@@ -16,21 +16,12 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-?>
-<?php
-    $helpdesk_phone = Yii::app()->params['helpdesk_phone'];
-    $helpdesk_email = Yii::app()->params['helpdesk_email'];
-    $this->layout = '//layouts/error';
+
+$this->layout = '//layouts/error';
 ?>
 <h2>Merged patient record</h2>
 <p class="panel"><strong>The patient record you requested cannot be accessed due to an inconsistency in the PAS system.</strong></p>
 <p class="panel">Please contact OpenEyes support for assistance:</p>
-<h3>Support Options</h3>
-<ul>
-	<li>Immediate support (8:00am to 8:00pm) - Phone <?php echo @$helpdesk_phone?></li>
-	<li>Less urgent issues email <a
-		href="mailto:<?php echo @$helpdesk_email?>"><?php echo @$helpdesk_email?>
-	</a></li>
-</ul>
-<p class="panel"><?php echo CHtml::link('Click here to go back to the search page', Yii::app()->baseUrl.'/')?></p>
+<?php echo $this->renderPartial('//error/support') ?>
+<p class="panel"><?php echo CHtml::link('Click here to go back to the search page', Yii::app()->baseUrl . '/') ?></p>
 <p class="date"><?php echo date('r'); ?></p>

@@ -10,8 +10,16 @@ namespace OEModule\OphCoCvi\controllers;
 
 use OEModule\OphCoCvi\components\SignatureQRCodeGenerator;
 
+/**
+ * Class QRSignatureController
+ *
+ * @package OEModule\OphCoCvi\controllers
+ */
 class QRSignatureController extends \BaseController
 {
+    /**
+     * @return array
+     */
     public function accessRules()
     {
         return array_merge(
@@ -26,6 +34,9 @@ class QRSignatureController extends \BaseController
         );
     }
 
+    /**
+     * @param $QRContent
+     */
     public function actionGenerateQRSignature($QRContent){
         $QRHelper = new SignatureQRCodeGenerator();
         $QRHelper->generateQRSignatureBox($QRContent);

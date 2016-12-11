@@ -51,6 +51,10 @@
 	&:active {
 		@include background(linear-gradient(#145ea9, #104d8b));
 		border-color: #0f467e;
+		color: $button-font-color;
+	}
+	&:visited {
+		color: $button-font-color;
 	}
 	&.long {
 		padding-left: 34px;

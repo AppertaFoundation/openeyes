@@ -969,7 +969,15 @@ FROM event ev
 JOIN episode ep ON ev.episode_id = ep.id
 JOIN event_type et ON ev.event_type_id = et.id 
 WHERE et.name = 'Operation Note'
-AND DATE(ev.event_date) BETWEEN STR_TO_DATE('2015-09-01', '%Y-%m-%d') AND STR_TO_DATE('2016-08-31', '%Y-%m-%d')
+
+EOL;
+
+    if( $this->startDate && $this->endDate ){
+        $query .= " AND DATE(ev.event_date) BETWEEN STR_TO_DATE('{$this->startDate}', '%Y-%m-%d') AND STR_TO_DATE('{$this->endDate}', '%Y-%m-%d') ";
+    }
+
+    $query .= <<<EOL
+
 AND ev.deleted = 0;
 
 #Load main control table with ALL examination events (using previously identified patients in control table)
