@@ -94,12 +94,12 @@ class PatientMergeRequestController extends BaseController
             $criteria->params[':status'] = PatientMergeRequest::STATUS_NOT_PROCESSED;
         }
 
-        $itemsCount = PatientMergeRequest::model()->count($criteria);
-        $pagination = new CPagination($itemsCount);
+        $items_count = PatientMergeRequest::model()->count($criteria);
+        $pagination = new CPagination($items_count);
         $pagination->pageSize = 15;
         $pagination->applyLimit($criteria);
 
-        $dataProvider = new CActiveDataProvider('PatientMergeRequest', array(
+        $data_provider = new CActiveDataProvider('PatientMergeRequest', array(
             'criteria' => $criteria,
             'pagination' => $pagination,
             'sort' => array(
@@ -108,7 +108,7 @@ class PatientMergeRequestController extends BaseController
         ));
 
         $this->render('//patientmergerequest/index', array(
-            'dataProvider' => $dataProvider,
+            'data_provider' => $data_provider,
             'filters' => $filters,
         ));
     }
@@ -116,19 +116,17 @@ class PatientMergeRequestController extends BaseController
     public function actionCreate()
     {
         $model = new PatientMergeRequest();
-        $mergeHandler = new PatientMerge();
-        $patientMergeRequest = Yii::app()->request->getParam('PatientMergeRequest', null);
-        $personalDetailsConflictConfirm = null;
+        $merge_handler = new PatientMerge();
+        $patient_merge_request = Yii::app()->request->getParam('PatientMergeRequest', null);
+        $personal_details_conflict_confirm = null;
 
-        if ($patientMergeRequest && isset($patientMergeRequest['primary_id']) && isset($patientMergeRequest['secondary_id'])) {
-            $primaryPatient = Patient::model()->findByPk($patientMergeRequest['primary_id']);
-            $secondaryPatient = Patient::model()->findByPk($patientMergeRequest['secondary_id']);
+        if ($patient_merge_request && isset($patient_merge_request['primary_id']) && isset($patient_merge_request['secondary_id'])) {
+            $primary_patient = Patient::model()->findByPk($patient_merge_request['primary_id']);
+            $secondary_patient = Patient::model()->findByPk($patient_merge_request['secondary_id']);
 
             //check if the patients' ids are already submited
             // we do not allow the same patient id in the list multiple times
             $criteria = new CDbCriteria();
-
-            //$criteria->condition = '((primary_id=:primary_id OR primary_id=:secondary_id OR secondary_id=:secondary_id OR secondary_id=:primary_id) AND ( deleted = 0))';
 
             // as secondary records will be deleted the numbers cannot be in the secondry columns
             $criteria->condition = '(secondary_id=:secondary_id OR secondary_id=:primary_id) ';
@@ -136,37 +134,37 @@ class PatientMergeRequestController extends BaseController
             //we allow primary patients only if it has no active/unmerged requests
             $criteria->condition .= 'AND ( (primary_id=@primary AND STATUS != 20) OR (primary_id=@secondary AND STATUS != 20) )';
 
-            $criteria->params = array(':primary_id' => $patientMergeRequest['primary_id'], ':secondary_id' => $patientMergeRequest['secondary_id']);
+            $criteria->params = array(':primary_id' => $patient_merge_request['primary_id'], ':secondary_id' => $patient_merge_request['secondary_id']);
 
-            $numbersNotUnique = PatientMergeRequest::model()->find($criteria);
+            $numbers_not_unique = PatientMergeRequest::model()->find($criteria);
 
-            $personalDetailsConflictConfirm = $mergeHandler->comparePatientDetails($primaryPatient, $secondaryPatient);
+            $personal_details_conflict_confirm = $merge_handler->comparePatientDetails($primary_patient, $secondary_patient);
 
-            if (empty($numbersNotUnique) && (!$personalDetailsConflictConfirm['isConflict'] || ($personalDetailsConflictConfirm['isConflict'] && isset($patientMergeRequest['personalDetailsConflictConfirm'])))) {
+            if (empty($numbers_not_unique) && (!$personal_details_conflict_confirm['is_conflict'] || ($personal_details_conflict_confirm['is_conflict'] && isset($patient_merge_request['personal_details_conflict_confirm'])))) {
 
                 // the Primary and Secondary user cannot be the same user , same database record I mean
-                if ((!empty($patientMergeRequest['secondary_id']) && !empty($patientMergeRequest['primary_id'])) && $patientMergeRequest['secondary_id'] == $patientMergeRequest['primary_id']) {
+                if ((!empty($patient_merge_request['secondary_id']) && !empty($patient_merge_request['primary_id'])) && $patient_merge_request['secondary_id'] == $patient_merge_request['primary_id']) {
                     Yii::app()->user->setFlash('warning.merge_error', 'The Primary and Secondary patient cannot be the same. Record cannot be merged into itself.');
                 } else {
-                    if (empty($patientMergeRequest['secondary_id']) || empty($patientMergeRequest['primary_id'])) {
+                    if (empty($patient_merge_request['secondary_id']) || empty($patient_merge_request['primary_id'])) {
                         Yii::app()->user->setFlash('warning.merge_error', 'Both Primary and Secondary patients have to be selected.');
                     } else {
-                        $model->attributes = $patientMergeRequest;
+                        $model->attributes = $patient_merge_request;
                         if ($model->save()) {
                             $this->redirect(array('index'));
                         }
                     }
                 }
-            } elseif ($personalDetailsConflictConfirm['isConflict'] && !isset($patientMergeRequest['personalDetailsConflictConfirm'])) {
+            } elseif ($personal_details_conflict_confirm['is_conflict'] && !isset($patient_merge_request['personal_details_conflict_confirm'])) {
                 Yii::app()->user->setFlash('warning.user_error', 'Please tick the checkboxes.');
-            } elseif ($numbersNotUnique) {
+            } elseif ($numbers_not_unique) {
                 Yii::app()->user->setFlash('warning.merge_error_duplicate', 'One of the Hospital Numbers are already in the Patient Merge Request list, please merge them first.');
                 $this->redirect(array('index'));
             }
         }
 
-        if ($personalDetailsConflictConfirm && $personalDetailsConflictConfirm['isConflict'] == true) {
-            foreach ($personalDetailsConflictConfirm['details'] as $conflict) {
+        if ($personal_details_conflict_confirm && $personal_details_conflict_confirm['is_conflict'] == true) {
+            foreach ($personal_details_conflict_confirm['details'] as $conflict) {
                 Yii::app()->user->setFlash('warning.merge_error_'.$conflict['column'], 'Patients have different personal details : '.$conflict['column']);
             }
         }
@@ -195,7 +193,7 @@ class PatientMergeRequestController extends BaseController
 
         $this->render('//patientmergerequest/log', array(
             'model' => $model,
-            'dataProvider' => new CArrayDataProvider($log),
+            'data_provider' => new CArrayDataProvider($log),
         ));
     }
 
@@ -221,37 +219,37 @@ class PatientMergeRequestController extends BaseController
     */
    public function actionUpdate($id)
    {
-       $mergeRequest = $this->loadModel($id);
-       $mergeHandler = new PatientMerge();
+       $merge_request = $this->loadModel($id);
+       $merge_handler = new PatientMerge();
 
         // if the personal details are conflictng (DOB and Gender at the moment) we need extra confirmation
-        $personalDetailsConflictConfirm = $mergeHandler->comparePatientDetails($mergeRequest->primaryPatient, $mergeRequest->secondaryPatient);
-       if ($personalDetailsConflictConfirm && $personalDetailsConflictConfirm['isConflict'] == true) {
-           foreach ($personalDetailsConflictConfirm['details'] as $conflict) {
+        $personal_details_conflict_confirm = $merge_handler->comparePatientDetails($merge_request->primaryPatient, $merge_request->secondaryPatient);
+       if ($personal_details_conflict_confirm && $personal_details_conflict_confirm['is_conflict'] == true) {
+           foreach ($personal_details_conflict_confirm['details'] as $conflict) {
                Yii::app()->user->setFlash('warning.merge_error_'.$conflict['column'], 'Patients have different personal details : '.$conflict['column']);
            }
        }
 
        if (isset($_POST['PatientMergeRequest'])) {
-           if (!$personalDetailsConflictConfirm['isConflict'] || ($personalDetailsConflictConfirm['isConflict'] && isset($_POST['PatientMergeRequest']['personalDetailsConflictConfirm']))) {
-               $mergeRequest->attributes = $_POST['PatientMergeRequest'];
-               if ($mergeRequest->status == PatientMergeRequest::STATUS_MERGED) {
-                   $this->redirect(array('view', 'id' => $mergeRequest->id));
-               } elseif ($mergeRequest->save()) {
+           if (!$personal_details_conflict_confirm['is_conflict'] || ($personal_details_conflict_confirm['is_conflict'] && isset($_POST['PatientMergeRequest']['personal_details_conflict_confirm']))) {
+               $merge_request->attributes = $_POST['PatientMergeRequest'];
+               if ($merge_request->status == PatientMergeRequest::STATUS_MERGED) {
+                   $this->redirect(array('view', 'id' => $merge_request->id));
+               } elseif ($merge_request->save()) {
                    $this->redirect(array('index'));
                }
-           } elseif ($personalDetailsConflictConfirm['isConflict'] && !isset($_POST['PatientMergeRequest']['personalDetailsConflictConfirm'])) {
+           } elseif ($personal_details_conflict_confirm['is_conflict'] && !isset($_POST['PatientMergeRequest']['personal_details_conflict_confirm'])) {
                Yii::app()->user->setFlash('warning.user_error', 'Please tick the checkboxes.');
            }
        }
 
-       $primary = Patient::model()->findByPk($mergeRequest->primary_id);
-       $secondary = Patient::model()->findByPk($mergeRequest->secondary_id);
+       $primary = Patient::model()->findByPk($merge_request->primary_id);
+       $secondary = Patient::model()->findByPk($merge_request->secondary_id);
 
        $this->render('//patientmergerequest/update', array(
-            'model' => $mergeRequest,
-            'personalDetailsConflictConfirm' => $personalDetailsConflictConfirm['isConflict'],
-            'primaryPatientJSON' => CJavaScript::jsonEncode(array(
+            'model' => $merge_request,
+            'personal_details_conflict_confirm' => $personal_details_conflict_confirm['is_conflict'],
+            'primary_patient_JSON' => CJavaScript::jsonEncode(array(
                             'id' => $primary->id,
                             'first_name' => $primary->first_name,
                             'last_name' => $primary->last_name,
@@ -265,7 +263,7 @@ class PatientMergeRequestController extends BaseController
                         )
                     ),
 
-            'secondaryPatientJSON' => CJavaScript::jsonEncode(array(
+            'secondary_patient_JSON' => CJavaScript::jsonEncode(array(
                             'id' => $secondary->id,
                             'first_name' => $secondary->first_name,
                             'last_name' => $secondary->last_name,
@@ -288,19 +286,19 @@ class PatientMergeRequestController extends BaseController
      */
     public function actionMerge($id)
     {
-        $mergeRequest = $this->loadModel($id);
+        $merge_request = $this->loadModel($id);
 
         //if the model already merged we just redirect to the index page
-        if ($mergeRequest->status == PatientMergeRequest::STATUS_MERGED) {
+        if ($merge_request->status == PatientMergeRequest::STATUS_MERGED) {
             $this->redirect(array('index'));
         }
 
-        $mergeHandler = new PatientMerge();
+        $merge_handler = new PatientMerge();
 
         // if the personal details are conflictng (DOB and Gender at the moment) we need extra confirmation
-        $personalDetailsConflictConfirm = $mergeHandler->comparePatientDetails($mergeRequest->primaryPatient, $mergeRequest->secondaryPatient);
-        if ($personalDetailsConflictConfirm && $personalDetailsConflictConfirm['isConflict'] == true) {
-            foreach ($personalDetailsConflictConfirm['details'] as $conflict) {
+        $personal_details_conflict_confirm = $merge_handler->comparePatientDetails($merge_request->primaryPatient, $merge_request->secondaryPatient);
+        if ($personal_details_conflict_confirm && $personal_details_conflict_confirm['is_conflict'] == true) {
+            foreach ($personal_details_conflict_confirm['details'] as $conflict) {
                 Yii::app()->user->setFlash('warning.merge_error_'.$conflict['column'], 'Patients have different personal details : '.$conflict['column']);
             }
         }
@@ -309,54 +307,52 @@ class PatientMergeRequestController extends BaseController
 
             // if personal details are not conflictin than its fine, 
             // but if there is a conflict we need the extra confirmation
-            if (!$personalDetailsConflictConfirm['isConflict'] || ($personalDetailsConflictConfirm['isConflict'] && isset($_POST['PatientMergeRequest']['personalDetailsConflictConfirm']))) {
+            if (!$personal_details_conflict_confirm['is_conflict'] || ($personal_details_conflict_confirm['is_conflict'] && isset($_POST['PatientMergeRequest']['personal_details_conflict_confirm']))) {
 
                 // Load data from PatientMergeRequest AR record
-                $mergeHandler->load($mergeRequest);
+                $merge_handler->load($merge_request);
 
-                if ($mergeHandler->merge()) {
-                    $msg = 'Merge Request '.$mergeRequest->secondaryPatient->hos_num.' INTO '.$mergeRequest->primaryPatient->hos_num.'(hos_num) successfully done.';
-                    $mergeHandler->addLog($msg);
-                    $mergeRequest->status = $mergeRequest::STATUS_MERGED;
-                    $mergeRequest->merge_json = json_encode(array('log' => $mergeHandler->getLog()));
-                    $mergeRequest->save();
-                    Audit::add('Patient Merge', $msg);
-                    $this->redirect(array('log', 'id' => $mergeRequest->id));
+                if ($merge_handler->merge()) {
+                    $msg = 'Merge Request '.$merge_request->secondaryPatient->hos_num.' INTO '.$merge_request->primaryPatient->hos_num.'(hos_num) successfully done.';
+                    $merge_handler->addLog($msg);
+                    $merge_request->status = $merge_request::STATUS_MERGED;
+                    $merge_request->merge_json = json_encode(array('log' => $merge_handler->getLog()));
+                    $merge_request->save();
+                    Audit::add('Patient Merge', 'Patient Merge Request successfully done.', $msg);
+                    $this->redirect(array('log', 'id' => $merge_request->id));
                 } else {
-                    $msg = 'Merge Request '.$mergeRequest->secondaryPatient->hos_num.' INTO '.$mergeRequest->primaryPatient->hos_num.' FAILED.';
-                    $mergeHandler->addLog($msg);
-                    $mergeRequest->status = $mergeRequest::STATUS_CONFLICT;
-                    $mergeRequest->merge_json = json_encode(array('log' => $mergeHandler->getLog()));
-                    $mergeRequest->save();
+                    $msg = 'Merge Request '.$merge_request->secondaryPatient->hos_num.' INTO '.$merge_request->primaryPatient->hos_num.' FAILED.';
+                    $merge_handler->addLog($msg);
+                    $merge_request->status = $merge_request::STATUS_CONFLICT;
+                    $merge_request->merge_json = json_encode(array('log' => $merge_handler->getLog()));
+                    $merge_request->save();
                     Yii::app()->user->setFlash('warning.search_error', 'Merge failed.');
                     $this->redirect(array('index'));
                 }
             }
         }
 
-        $primary = Patient::model()->findByPk($mergeRequest->primary_id);
-        $secondary = Patient::model()->findByPk($mergeRequest->secondary_id);
 
         $this->render('//patientmergerequest/merge', array(
-            'model' => $mergeRequest,
-            'personalDetailsConflictConfirm' => $personalDetailsConflictConfirm['isConflict'],
+            'model' => $merge_request,
+            'personal_details_conflict_confirm' => $personal_details_conflict_confirm['is_conflict'],
 
         ));
     }
 
     public function actionDelete()
     {
-        if (isset($_POST['patientMergeRequestIds'])) {
+        if (isset($_POST['patient_merge_request_ids'])) {
             $criteria = new CDbCriteria();
             $criteria->condition = 't.status = '.PatientMergeRequest::STATUS_NOT_PROCESSED;
 
-            $requests = PatientMergeRequest::model()->findAllByPk($_POST['patientMergeRequestIds'], $criteria);
+            $requests = PatientMergeRequest::model()->findAllByPk($_POST['patient_merge_request_ids'], $criteria);
 
             foreach ($requests as $request) {
                 $request->deleted = 1;
 
                 if ($request->save()) {
-                    Audit::add('Patient Merge', 'Patient Merge Request flagged as deleted. id: '.$request->id);
+                    Audit::add('Patient Merge', 'Patient Merge Request flagged as deleted.', "Patient merge request id:{$request->id} deleted.");
                 } else {
                     throw new Exception('Unable to save Patient Merge Request: '.print_r($request->getErrors(), true));
                 }
@@ -402,9 +398,9 @@ class PatientMergeRequestController extends BaseController
 
         $criteria->params = array(':patient_id' => $patientId);
 
-        $mergeRequest = PatientMergeRequest::model()->find($criteria);
+        $merge_request = PatientMergeRequest::model()->find($criteria);
 
-        return $mergeRequest ? ($mergeRequest->primary_id == $patientId ? 'primary' : 'secondary') : null;
+        return $merge_request ? ($merge_request->primary_id == $patientId ? 'primary' : 'secondary') : null;
     }
 
     public function actionSearch()
@@ -412,17 +408,17 @@ class PatientMergeRequestController extends BaseController
         $term = trim(\Yii::app()->request->getParam('term', ''));
         $result = array();
 
-        $patientSearch = new PatientSearch();
+        $patient_search = new PatientSearch();
 
-        if ($patientSearch->isValidSearchTerm($term)) {
-            $dataProvider = $patientSearch->search($term);
-            foreach ($dataProvider->getData() as $patient) {
+        if ($patient_search->isValidSearchTerm($term)) {
+            $data_provider = $patient_search->search($term);
+            foreach ($data_provider->getData() as $patient) {
 
                 // check if the patient is already in the Request List
                 $warning = '';
-                $isInList = $this->isPatientInRequestList($patient->id);
-                if ($isInList) {
-                    $warning = "This patient is already requested for merge as $isInList patient.";
+                $is_in_list = $this->isPatientInRequestList($patient->id);
+                if ($is_in_list) {
+                    $warning = "This patient is already requested for merge as $is_in_list patient.";
                 }
 
                 $result[] = array(

@@ -131,18 +131,33 @@ class UniqueCodes extends BaseActiveRecord
         return Event::model()->findByPk($eventId['id']);
     }
 
+    /**
+     * @param $code
+     * @return mixed
+     */
     public function examinationEventCheckFromUniqueCode($code)
     {
-        return $this->dbConnection->createCommand()
-                                ->select('count(*) as count, automatic_examination_event_log.*')
+        $logs = $this->dbConnection->createCommand()
+                                ->select('automatic_examination_event_log.*')
                                 ->from('automatic_examination_event_log')
-                                ->join('event', 'event.id = automatic_examination_event_log.event_id and event.deleted !=1')
+                                ->join('event', 'event.id = automatic_examination_event_log.event_id and event.deleted <> 1')
                                 ->join('import_status', 'import_status.id = automatic_examination_event_log.import_success')
                                 ->where('unique_code = ? ', array($code))
                                 ->andWhere('import_status.status_value <> "Import Failure"')
-                                ->queryRow();
+                                ->order('created_date ASC')
+                                ->queryAll();
+
+        $count = count($logs);
+        $log = array_pop($logs);
+        $log['count'] = $count;
+
+        return $log;
     }
 
+    /**
+     * @param $code
+     * @return mixed
+     */
     public function getEpisodeIdFromCode($code)
     {
         $episodeId = $this->dbConnection->createCommand()
@@ -155,6 +170,11 @@ class UniqueCodes extends BaseActiveRecord
         return $episodeId;
     }
 
+    /**
+     * @param $episode_id
+     * @param $event_type_id
+     * @return mixed
+     */
     public function getEventFromEpisode($episode_id, $event_type_id)
     {
         $event_id = $this->dbConnection->createCommand()

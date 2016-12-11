@@ -57,14 +57,14 @@
                 </div>
             </div>
             <br>
-            <?php if ($personalDetailsConflictConfirm && Yii::app()->user->checkAccess('Patient Merge')):?>
+            <?php if ($personal_details_conflict_confirm && Yii::app()->user->checkAccess('Patient Merge')):?>
                 <div id="patientDataConflictConfirmation" class="row">
                     <div class="large-10 large-offset-1 column alert-box with-icon warning">
                         <h2> Personal details are conflicting. </h2>
                         Please confirm you selected the right patients. <br>
                         Note, the primary patient's personal details will <strong>NOT</strong> be overwritten.<br><br>
                         <label>
-                        <?php echo CHTML::checkBox('PatientMergeRequest[personalDetailsConflictConfirm]', false); ?> I hereby confirm that I selected the right patients.</label>
+                        <?php echo CHTML::checkBox('PatientMergeRequest[personal_details_conflict_confirm]', false); ?> I hereby confirm that I selected the right patients.</label>
                     </div>
                 </div>
                 <div class="row">

@@ -48,9 +48,14 @@ class Medication extends BaseActiveRecordVersioned
      */
     public function rules()
     {
+        $required_fields = 'route_id, start_date';
+        if (!isset(Yii::app()->params['enable_concise_med_history']) || !Yii::app()->params['enable_concise_med_history'])
+        {
+            $required_fields .= ', frequency_id';
+        }
         return array(
             array('medication_drug_id, drug_id, route_id, option_id, dose, frequency_id, start_date, end_date, stop_reason_id, prescription_item_id', 'safe'),
-            array('route_id, frequency_id, start_date', 'required'),
+            array($required_fields, 'required'),
             array('start_date', 'OEFuzzyDateValidatorNotFuture'),
             array('end_date', 'OEFuzzyDateValidator'),
             array('option_id', 'validateOptionId'),

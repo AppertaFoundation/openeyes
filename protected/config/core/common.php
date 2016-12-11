@@ -419,5 +419,6 @@ return array(
                     'saveprint' => 'Save and print'
             )
         ),
+        'clinical_management_pcr' => true,
     ),
 );
