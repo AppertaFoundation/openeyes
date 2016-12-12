@@ -30,6 +30,7 @@ class MultiSelectList extends BaseFieldWidget
     public $noSelectionsMessage;
     public $sortable;
     public $auto_data_order = false;
+    public $through = false;
 
     public function init()
     {

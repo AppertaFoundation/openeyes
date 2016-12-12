@@ -384,6 +384,7 @@ class BaseEventTypeCActiveForm extends FormLayout
      * @param bool  $showRemoveAllLink
      * @param bool  $sorted
      * @param array $layoutColumns
+     * @param array $through
      */
     public function multiSelectList(
         $element,
@@ -398,7 +399,8 @@ class BaseEventTypeCActiveForm extends FormLayout
         $noSelectionsMessage = null,
         $showRemoveAllLink = false,
         $sorted = false,
-        $layoutColumns = array()
+        $layoutColumns = array(),
+        $through = array()
     ) {
         $this->widget('application.widgets.MultiSelectList', array(
             'element' => $element,
@@ -414,6 +416,7 @@ class BaseEventTypeCActiveForm extends FormLayout
             'showRemoveAllLink' => $showRemoveAllLink,
             'sorted' => $sorted,
             'layoutColumns' => $layoutColumns,
+            'through' => $through,
         ));
     }
 

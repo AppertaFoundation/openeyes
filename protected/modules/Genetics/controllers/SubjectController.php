@@ -103,6 +103,18 @@ class SubjectController extends BaseModuleController
                         'gene_transcript'
                     )
                 ),
+                'through' => array(
+                    'current' => GeneticsPatientPedigree::model()->findAllByAttributes(array('patient_id' => $id)),
+                    'related_by' => 'pedigree_id',
+                    'field' => 'status_id',
+                    'options' => CHtml::encodeArray(
+                        CHtml::listData(
+                            PedigreeStatus::model()->findAll(),
+                            'id',
+                            'name'
+                        )
+                    ),
+                )
             ),
             'previous_studies' => array(
                 'widget' => 'CustomView',
@@ -148,14 +160,28 @@ class SubjectController extends BaseModuleController
 
         $valid = $admin->editModel(false);
 
-        if(Yii::app()->request->isPostRequest){
-            if($valid){
-                $relationshipPost = Yii::app()->request->getPost('GeneticsPatient', array());
-                if(isset($relationshipPost['relationships'])){
+        if (Yii::app()->request->isPostRequest) {
+            if ($valid) {
+                $post = Yii::app()->request->getPost('GeneticsPatient', array());
+                if(isset($post['relationships'])){
                     foreach ($admin->getModel()->relationships as $relationship) {
-                        if(array_key_exists($relationship->related_to_id, $relationshipPost['relationships'])){
-                            $relationship->relationship_id = $relationshipPost['relationships'][$relationship->related_to_id]['relationship_id'];
+                        if(array_key_exists($relationship->related_to_id, $post['relationships'])){
+                            $relationship->relationship_id = $post['relationships'][$relationship->related_to_id]['relationship_id'];
                             $relationship->save();
+                        }
+                    }
+                }
+                if(isset($post['pedigrees_through'])){
+                    foreach ($admin->getModel()->pedigrees as $pedigree) {
+                        if(array_key_exists($pedigree->id, $post['pedigrees_through'])){
+                            $pedigreeStatus = GeneticsPatientPedigree::model()->findByAttributes(array(
+                                'patient_id' => $id,
+                                'pedigree_id' => $pedigree->id
+                            ));
+                            if($pedigreeStatus){
+                                $pedigreeStatus->status_id = $post['pedigrees_through'][$pedigree->id]['status_id'];
+                                $pedigreeStatus->save();
+                            }
                         }
                     }
                 }

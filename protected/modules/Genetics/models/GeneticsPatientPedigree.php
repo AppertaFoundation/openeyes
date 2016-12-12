@@ -73,7 +73,8 @@ class GeneticsPatientPedigree extends BaseActiveRecord
      */
     public function getHoverText()
     {
-        if ($api = Yii::app()->moduleAPI->get('OphInGenetictest')) {
+        $api = Yii::app()->moduleAPI->get('OphInGenetictest');
+        if ($api) {
             $text = '';
 
             foreach ($api->getGeneticTestsForPatient($this->patient) as $i => $genetic_test) {

@@ -119,6 +119,9 @@ class Pedigree extends BaseActiveRecord
         return range($this->lowest_version, $this->highest_version);
     }
 
+    /**
+     * Updates the diagnosis of the pedigree to be the most common diagnosis of the pedigrees members.
+     */
     public function updateDiagnosis()
     {
         $sql = 'SELECT
@@ -129,7 +132,7 @@ class Pedigree extends BaseActiveRecord
                  JOIN genetics_patient ON genetics_patient.id = genetics_patient_pedigree.patient_id
                  JOIN genetics_patient_diagnosis on genetics_patient_pedigree.patient_id = genetics_patient_diagnosis.patient_id
                  JOIN disorder ON genetics_patient_diagnosis.disorder_id = disorder.id
-                WHERE pedigree.id = 1
+                WHERE pedigree.id = ' . $this->id . '
                 GROUP BY disorder.id
                 LIMIT 1';
 

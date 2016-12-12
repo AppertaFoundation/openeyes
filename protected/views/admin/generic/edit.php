@@ -52,6 +52,10 @@ $assetManager = Yii::app()->getAssetManager();
                     ?>
                     <div class="field-row furtherfindings-multi-select">
                         <?php
+                        $through = array();
+                        if(array_key_exists('through', $type) && is_array($type['through'])){
+                            $through = $type['through'];
+                        }
                         echo $form->multiSelectList(
                             $admin->getModel(),
                             $admin->getModelName() . '[' . $field . ']',
@@ -65,7 +69,12 @@ $assetManager = Yii::app()->getAssetManager();
                                 'searchable' => true,
                             ),
                             false,
-                            true
+                            true,
+                            null,
+                            false,
+                            false,
+                            array(),
+                            $through
                         );
                         ?>
                     </div>
