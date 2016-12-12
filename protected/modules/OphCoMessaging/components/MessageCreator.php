@@ -182,7 +182,11 @@ class MessageCreator
         $message->setSubject($subject);
         $message->setBody($content);
 
-        return \Yii::app()->mailer->sendMessage($message);
+        try {
+            return \Yii::app()->mailer->sendMessage($message);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
 }

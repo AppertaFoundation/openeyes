@@ -309,6 +309,10 @@ function pupilListener(_drawing) {
 
 $(document).ready(function() {
 
+    if(!$('#OphCiExamination_allergy').find('tr').length) {
+      $('.allergies_confirm_no').show();
+    }
+
     /**
      * Save event
      */

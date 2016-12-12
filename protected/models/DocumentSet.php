@@ -63,7 +63,8 @@ class DocumentSet extends BaseActiveRecord
 	{
 		return array(
 			'created_user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+                        'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+                        'document_instance' => array(self::HAS_MANY, 'DocumentInstance', 'document_set_id'),
 		);
 	}
 

@@ -22,19 +22,19 @@ use \RRule\RRule;
  *
  * The followings are the available columns in table:
  *
- * @property int $id
- * @property string $name
- * @property string $rrule
- * @property string $description
- * @property string $worklist_name
- * @property string $start_time
- * @property string $end_time
- * @property DateTime $active_from
- * @property DateTime $active_until
- * @property Worklist[] $worklists
- * @property WorklistDefinitionMapping[] $mappings
- * @property WorklistDefinitionMappingp[] $displayed_mappings
- * @property WorklistDefinitionMappingp[] $hidden_mappings
+ * @property int                                $id
+ * @property string                             $name
+ * @property string                             $rrule
+ * @property string                             $description
+ * @property string                             $worklist_name
+ * @property string                             $start_time
+ * @property string                             $end_time
+ * @property DateTime                           $active_from
+ * @property DateTime                           $active_until
+ * @property Worklist[]                         $worklists
+ * @property WorklistDefinitionMapping[]        $mappings
+ * @property WorklistDefinitionMappingp[]       $displayed_mappings
+ * @property WorklistDefinitionMappingp[]       $hidden_mappings
  * @property WorklistDefinitionDisplayContext[] $display_contexts
  */
 class WorklistDefinition extends BaseActiveRecordVersioned
@@ -54,7 +54,7 @@ class WorklistDefinition extends BaseActiveRecordVersioned
      */
     public function defaultScope()
     {
-        return array('order' => $this->getTableAlias(true, false).'.display_order');
+        return array('order' => $this->getTableAlias(true, false) . '.display_order');
     }
 
     /**
@@ -79,7 +79,7 @@ class WorklistDefinition extends BaseActiveRecordVersioned
                 'allowEmpty' => true,
                 'allowCompareEmpty' => true,
                 'operator' => '<=',
-                'message' => '{attribute} must be on or before {compareAttribute}'
+                'message' => '{attribute} must be on or before {compareAttribute}',
             ),
             array('active_from', 'default', 'setOnEmpty' => true, 'value' => date("Y-m-d H:i:s", time())),
             array('active_until', 'default', 'setOnEmpty' => true, 'value' => null),
@@ -90,7 +90,7 @@ class WorklistDefinition extends BaseActiveRecordVersioned
             array(
                 'id, name, rrule, worklist_name, start_time, end_time, description, scheduled',
                 'safe',
-                'on' => 'search'
+                'on' => 'search',
             ),
         );
     }
@@ -110,15 +110,15 @@ class WorklistDefinition extends BaseActiveRecordVersioned
                 'WorklistDefinitionMapping',
                 'worklist_definition_id',
                 'on' => 'display_order is NOT NULL',
-                'order' => 'display_order ASC'
+                'order' => 'display_order ASC',
             ),
             'hidden_mappings' => array(
                 self::HAS_MANY,
                 'WorklistDefinitionMapping',
                 'worklist_definition_id',
-                'on' => 'display_order is NULL'
+                'on' => 'display_order is NULL',
             ),
-            'display_contexts' => array(self::HAS_MANY, 'WorklistDefinitionDisplayContext', 'worklist_definition_id')
+            'display_contexts' => array(self::HAS_MANY, 'WorklistDefinitionDisplayContext', 'worklist_definition_id'),
         );
     }
 
@@ -190,7 +190,7 @@ class WorklistDefinition extends BaseActiveRecordVersioned
             $valid = false;
         }
         if (!$valid) {
-            $this->addError($attribute, $this->getAttributeLabel($attribute).' is not valid');
+            $this->addError($attribute, $this->getAttributeLabel($attribute) . ' is not valid');
         }
     }
 
@@ -198,7 +198,7 @@ class WorklistDefinition extends BaseActiveRecordVersioned
      * Check whether the given key would be unique on the Definition
      * (optional id indicates the current mapping the key is from so it is not checked against itself).
      *
-     * @param $key
+     * @param     $key
      * @param int $id
      *
      * @return bool
@@ -251,11 +251,42 @@ class WorklistDefinition extends BaseActiveRecordVersioned
             }
 
             $final_rrule = new RRule($rrule_str);
+
             return $final_rrule->humanReadable(array(
                 'date_formatter' => function ($d) {
                     return $d->format(Helper::NHS_DATE_FORMAT);
-                }
+                },
             ));
         }
+    }
+
+    /**
+     * @return CDbDataReader|mixed|string
+     */
+    public function getWorklistCount()
+    {
+        $sql = 'SELECT COUNT(id) FROM worklist where worklist_definition_id = ' . $this->id;
+
+        return $this->getDbConnection()->createCommand($sql)->queryScalar();
+    }
+
+    /**
+     * @return CDbDataReader|mixed|string
+     */
+    public function getMappingCount()
+    {
+        $sql = 'SELECT COUNT(id) FROM worklist_definition_mapping where worklist_definition_id = ' . $this->id;
+
+        return $this->getDbConnection()->createCommand($sql)->queryScalar();
+    }
+
+    /**
+     * @return CDbDataReader|mixed|string
+     */
+    public function getdisplayContextCount()
+    {
+        $sql = 'SELECT COUNT(id) FROM worklist_definition_display_context where worklist_definition_id = ' . $this->id;
+
+        return $this->getDbConnection()->createCommand($sql)->queryScalar();
     }
 }
