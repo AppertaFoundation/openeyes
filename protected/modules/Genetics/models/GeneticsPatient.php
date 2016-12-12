@@ -193,6 +193,10 @@ class GeneticsPatient extends BaseActiveRecord
         }
     }
 
+    /**
+     * Should only be called for a new genetic patient record as it doesn't check for duplication or anything along
+     * those lines.
+     */
     protected function updateDiagnoses()
     {
         $diagnoses = $this->patient->getAllDisorders();

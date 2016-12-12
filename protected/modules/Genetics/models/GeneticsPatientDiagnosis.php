@@ -1,4 +1,4 @@
-<?php
+    <?php
 /**
  * OpenEyes.
  *
@@ -63,7 +63,7 @@ class GeneticsPatientDiagnosis extends BaseActiveRecord
     {
         return array(
             'patient' => array(self::BELONGS_TO, 'GeneticsPatient', 'patient_id'),
-            'diagnosis' => array(self::BELONGS_TO, 'Diagnosis', 'diagnosis_id'),
+            'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id'),
         );
     }
 }

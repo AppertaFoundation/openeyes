@@ -29,7 +29,8 @@ if(is_array($value)):
     $new.text(ui.item.value).append($clear);
     $('#enteredDiagnosisText').append($new.append('<br>'));
     $('#enteredDiagnosisText').show();
-    $('.multiDiagnosis:last').after('<input type="hidden" name="<?=$class ?>[<?=$name ?>][]" class="multiDiagnosis" value="' + ui.item.id + '">');
+      console.log(ui.item);
+    $(event.target).parent().append('<input type="hidden" name="<?=$class ?>[<?=$name ?>][]" class="multiDiagnosis" value="' + ui.item.id + '">');
     $('#<?=$class?>_<?=$name?>').focus();
 
     return false;
