@@ -181,7 +181,7 @@ class DocManDeliveryCommand extends CConsoleCommand
      */
     private function cleanXML($xml)
     {
-        return str_replace ("&", "&amp;", $xml);
+        return str_replace ("&", "and", $xml);
     }
 
     private function updateDelivery($output_id)
