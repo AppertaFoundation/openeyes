@@ -170,7 +170,18 @@ class DocManDeliveryCommand extends CConsoleCommand
             <SubLocationName></SubLocationName>
             </DocumentInformation>";
 
-        file_put_contents($this->path."/".$filename.".XML", $xml);
+        file_put_contents($this->path."/".$filename.".XML", $this->cleanXML($xml) );
+    }
+    
+    /**
+     * Special function to sanitize XML
+     * 
+     * @param type $xml
+     * @return type
+     */
+    private function cleanXML($xml)
+    {
+        return str_replace ("&", "&amp;", $xml);
     }
 
     private function updateDelivery($output_id)
