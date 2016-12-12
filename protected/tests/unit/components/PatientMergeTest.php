@@ -198,10 +198,10 @@ class PatientMergeTest extends CDbTestCase
         $this->assertEquals(count($primary_patient->episodes), 2);
 
         $event16 = $this->events('event16');
-        $this->assertEquals($event16->episode_id, 7);
+        $this->assertEquals($event16->episode_id, 9);
 
         $event17 = $this->events('event17');
-        $this->assertEquals($event17->episode_id, 7);
+        $this->assertEquals($event17->episode_id, 9);
 
         $episode8 = $this->episodes('episode8');
         $episode8->refresh();
@@ -209,13 +209,13 @@ class PatientMergeTest extends CDbTestCase
 
         $episode9 = $this->episodes('episode9');
         $episode9->refresh();
-        $this->assertEquals($episode9->patient_id, 8); // will be deleted
+        $this->assertEquals($episode9->patient_id, 7); // will be deleted
 
         $event20 = $this->events('event20');
-        $this->assertEquals($event20->episode_id, 7);
+        $this->assertEquals($event20->episode_id, 9);
 
         $event21 = $this->events('event21');
-        $this->assertEquals($event21->episode_id, 7);
+        $this->assertEquals($event21->episode_id, 9);
 
         $episode10 = $this->episodes('episode10');
         $episode10->refresh();
@@ -267,19 +267,19 @@ class PatientMergeTest extends CDbTestCase
         $this->assertTrue($result, 'Merge result FALSE.');
 
         $event16 = $this->events('event16');
-        $this->assertEquals($event16->episode_id, 9);
+        $this->assertEquals($event16->episode_id, 7);
 
         $event17 = $this->events('event17');
-        $this->assertEquals($event17->episode_id, 9);
+        $this->assertEquals($event17->episode_id, 7);
 
         $event20 = $this->events('event20');
-        $this->assertEquals($event20->episode_id, 9);
+        $this->assertEquals($event20->episode_id, 7);
 
         $event21 = $this->events('event21');
-        $this->assertEquals($event21->episode_id, 9);
+        $this->assertEquals($event21->episode_id, 7);
 
         $episode7->refresh();
-        $this->assertEquals(count($episode7->events), 0);
+        $this->assertEquals(count($episode7->events), 4);
 
         $episode10 = $this->episodes('episode10');
         $this->assertEquals($episode10->patient_id, 7);

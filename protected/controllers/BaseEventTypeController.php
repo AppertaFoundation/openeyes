@@ -1596,7 +1596,7 @@ class BaseEventTypeController extends BaseModuleController
             $wk->setDocref($event->docref);
             $wk->setPatient($event->episode->patient);
             $wk->setBarcode($event->barcodeHTML);
-
+            
             foreach (array('left', 'middle', 'right') as $section) {
                 if (isset(Yii::app()->params['wkhtmltopdf_footer_'.$section.'_'.$this->event_type->class_name])) {
                     $setMethod = 'set'.ucfirst($section);
@@ -1616,7 +1616,7 @@ class BaseEventTypeController extends BaseModuleController
                     $wk->setCustomTag($pdf_footer_tag->tag_name, $api->{$pdf_footer_tag->method}($event->id));
                 }
             }
-
+            
             $wk->generatePDF($event->imageDirectory, 'event', $this->pdf_print_suffix, $this->pdf_print_html, (boolean) @$_GET['html']);
         }
 

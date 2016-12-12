@@ -100,7 +100,7 @@ class DocManDeliveryCommand extends CConsoleCommand
             curl_close($ch);
 
             if (!isset(Yii::app()->params['docman_filename_format']) || Yii::app()->params['docman_filename_format'] == 'format1') {
-                $filename = "OPENEYES_" . $this->event->id . "_" . rand();
+                $filename = "OPENEYES_" . $this->event->episode->patient->hos_num . '_' . $this->event->id . "_" . rand();
             } else if (Yii::app()->params['docman_filename_format'] == 'format2') {
                 $filename = $this->event->episode->patient->hos_num . '_' . date('YmdHi',
                         strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
@@ -120,6 +120,18 @@ class DocManDeliveryCommand extends CConsoleCommand
     {
         $element_letter = ElementLetter::model()->findByAttributes(array("event_id"=>$this->event->id));
         $letter_types = array("0"=>"","1"=>"Clinic discharge letter","2"=>"Post-op letter","3"=>"Clinic letter","4"=>"Other letter");
+        
+        $subspeciality = isset($this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->ref_spec) ? $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->ref_spec : 'SS';
+        $subspeciality_name = isset($this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name) ? $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name : 'Support Services';
+        $nat_id = isset($this->event->episode->patient->gp->nat_id) ? $this->event->episode->patient->gp->nat_id : null;
+        $gp_name = isset($this->event->episode->patient->gp->contact) ? $this->event->episode->patient->gp->contact->getFullName() : null;
+        $practice_code = isset($this->event->episode->patient->practice->code) ? $this->event->episode->patient->practice->code : '';
+        $address = isset($this->event->episode->patient->contact->address) ? $this->event->episode->patient->contact->address->getLetterArray() : array();
+        $address1 = isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->address1) : '';
+        $city = isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->city) : '';
+        $county = isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->county) : '';
+        $city = isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->city) : '';
+        $post_code = isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->postcode) : '';
 
         $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
             <DocumentInformation>
@@ -132,30 +144,30 @@ class DocManDeliveryCommand extends CConsoleCommand
             <Title>".$this->event->episode->patient->contact->title."</Title>
             <DateOfBirth>".$this->event->episode->patient->dob."</DateOfBirth>
             <Sex>".$this->event->episode->patient->gender."</Sex>
-            <Address>".implode(", ", $this->event->episode->patient->contact->address->getLetterArray())."</Address>
+            <Address>".implode(", ", $address)."</Address>
             <AddressName></AddressName>
             <AddressNumber></AddressNumber>
-            <AddressStreet>".$this->event->episode->patient->contact->address->address1."</AddressStreet>
+            <AddressStreet>" . $address1 . "</AddressStreet>
             <AddressDistrict></AddressDistrict>
-            <AddressTown>".$this->event->episode->patient->contact->address->city."</AddressTown>
-            <AddressCounty>".$this->event->episode->patient->contact->address->county."</AddressCounty>
-            <AddressPostcode>".$this->event->episode->patient->contact->address->postcode."</AddressPostcode>
-            <GP>".$this->event->episode->patient->gp->nat_id."</GP>
-            <GPName>".$this->event->episode->patient->gp->contact->getFullName()."</GPName>
-            <Surgery>XXXXXX</Surgery>
-            <SurgeryName>XXXXXXXXX</SurgeryName>
+            <AddressTown>".$city."</AddressTown>
+            <AddressCounty>".$county."</AddressCounty>
+            <AddressPostcode>".$post_code."</AddressPostcode>
+            <GP>" . $nat_id . "</GP>
+            <GPName>" . $gp_name . "</GPName>
+            <Surgery>" . $practice_code . "</Surgery>
+            <SurgeryName></SurgeryName>
             <LetterType>".$letter_types[$element_letter->letter_type]."</LetterType>
             <ActivityID>".$this->event->id."</ActivityID>
             <ActivityDate>".$this->event->event_date."</ActivityDate>
-            <ClinicianType>OMED</ClinicianType>
-            <Clinician>XXXXXXXXXX</Clinician>
-            <ClinicianName>XXXXXXXXXXX</ClinicianName>
-            <Specialty>".$this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->ref_spec."</Specialty>
-            <SpecialtyName>".$this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name."</SpecialtyName>
-            <Location>CR</Location>
-            <LocationName>Moorfields Eye Hospital</LocationName>
-            <SubLocation>A&amp;E</SubLocation>
-            <SubLocationName>A&amp;E Department</SubLocationName>
+            <ClinicianType></ClinicianType>
+            <Clinician></Clinician>
+            <ClinicianName></ClinicianName>
+            <Specialty>".$subspeciality."</Specialty>
+            <SpecialtyName>".$subspeciality_name."</SpecialtyName>
+            <Location>" . $element_letter->site->short_name . "</Location>
+            <LocationName>" . $element_letter->site->name . "</LocationName>
+            <SubLocation></SubLocation>
+            <SubLocationName></SubLocationName>
             </DocumentInformation>";
 
         file_put_contents($this->path."/".$filename.".XML", $xml);

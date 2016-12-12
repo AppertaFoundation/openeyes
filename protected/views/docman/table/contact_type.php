@@ -16,10 +16,16 @@
  */
 ?>
 
-<br clear="all"/><div class="cvi-alert alert-box warning round <?= $visible ? '': ' hidden' ?>" data-alert="CVI may be applicable" data-threshold="<?= $threshold ?>">
-    CVI may be applicable
-    <a class="dismiss_cva_alert dismiss right" href="javascript:void(0)">dismiss</a>
-    <?php if($show_create): ?>
-        <a class="create-cvi create right" href="<?php echo Yii::app()->createUrl('/OphCoCvi/Default/create', array('patient_id' => $this->patient->id) ); ?>">create</a>
-    <?php endif; ?>
-</div>
+<?php
+    echo CHtml::dropDownList('DocumentTarget['.$row_index.'][attributes][contact_type]', $contact_type, array(
+        'GP' => 'GP',
+        'PATIENT' => 'Patient',
+        'DRSS' => 'DRSS',
+        'OTHER' => 'Other'
+        ), 
+        array(  'empty' => '- Type -',
+                'nowrapper' => true,
+                'class' => 'full-width docman_contact_type',
+                'data-rowindex' => $row_index
+            )
+    );?>

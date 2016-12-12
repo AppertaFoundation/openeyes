@@ -39,6 +39,18 @@ textarea[name="LetterMacro[body]"], textarea[name="LetterString[body]"] {
 .event-content textarea {
   font-size: 1rem;
 }
+/* line 23, ../sass/components/_forms.scss */
+.event-content form#correspondence-create .correspondence_create_banner {
+  margin-left: 12px;
+  border: 1px solid red;
+  padding: 10px;
+  font-weight: 700;
+  color: red;
+}
+/* line 30, ../sass/components/_forms.scss */
+.event-content form#correspondence-create .correspondence_create_banner .data-label {
+  font-size: 17px;
+}
 
 /* line 17, ../sass/components/_letter.scss */
 .correspondence-letter {
