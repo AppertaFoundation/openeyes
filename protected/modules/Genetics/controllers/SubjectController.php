@@ -19,11 +19,13 @@ class SubjectController extends BaseModuleController
     public function accessRules()
     {
         return array(
-            array('allow',
+            array(
+                'allow',
                 'actions' => array('Edit', 'EditStudyStatus'),
                 'roles' => array('OprnEditGeneticPatient'),
             ),
-            array('allow',
+            array(
+                'allow',
                 'actions' => array('List'),
                 'roles' => array('OprnViewGeneticPatient'),
             ),
@@ -36,7 +38,7 @@ class SubjectController extends BaseModuleController
      */
     public function beforeAction($action)
     {
-        if($action->id === "edit") {
+        if ($action->id === "edit") {
             $relations = CHtml::listData(GeneticsRelationship::model()->findAll(), 'id', 'relationship');
             $relationsForJson = array();
             foreach ($relations as $key => $relation) {
@@ -47,7 +49,8 @@ class SubjectController extends BaseModuleController
             }
             $this->jsVars['geneticsRelationships'] = $relationsForJson;
         }
-
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->getModule()->name . '.assets'));
+        Yii::app()->clientScript->registerScriptFile($assetPath . '/js/subjects.js');
         Yii::app()->assetManager->registerCssFile('/components/font-awesome/css/font-awesome.css', null, 10);
 
         return parent::beforeAction($action);
@@ -114,7 +117,7 @@ class SubjectController extends BaseModuleController
                             'name'
                         )
                     ),
-                )
+                ),
             ),
             'previous_studies' => array(
                 'widget' => 'CustomView',
@@ -163,22 +166,22 @@ class SubjectController extends BaseModuleController
         if (Yii::app()->request->isPostRequest) {
             if ($valid) {
                 $post = Yii::app()->request->getPost('GeneticsPatient', array());
-                if(isset($post['relationships'])){
+                if (isset($post['relationships'])) {
                     foreach ($admin->getModel()->relationships as $relationship) {
-                        if(array_key_exists($relationship->related_to_id, $post['relationships'])){
+                        if (array_key_exists($relationship->related_to_id, $post['relationships'])) {
                             $relationship->relationship_id = $post['relationships'][$relationship->related_to_id]['relationship_id'];
                             $relationship->save();
                         }
                     }
                 }
-                if(isset($post['pedigrees_through'])){
+                if (isset($post['pedigrees_through'])) {
                     foreach ($admin->getModel()->pedigrees as $pedigree) {
-                        if(array_key_exists($pedigree->id, $post['pedigrees_through'])){
+                        if (array_key_exists($pedigree->id, $post['pedigrees_through'])) {
                             $pedigreeStatus = GeneticsPatientPedigree::model()->findByAttributes(array(
                                 'patient_id' => $id,
-                                'pedigree_id' => $pedigree->id
+                                'pedigree_id' => $pedigree->id,
                             ));
-                            if($pedigreeStatus){
+                            if ($pedigreeStatus) {
                                 $pedigreeStatus->status_id = $post['pedigrees_through'][$pedigree->id]['status_id'];
                                 $pedigreeStatus->save();
                             }
@@ -217,22 +220,22 @@ class SubjectController extends BaseModuleController
     public function actionEditStudyStatus($id)
     {
         $pivot = GeneticsStudySubject::model()->findByPk($id);
-        if(!$pivot){
+        if (!$pivot) {
             throw new CHttpException(404, 'No pivot found for relationship');
         }
 
-        if( Yii::app()->request->isPostRequest) {
+        if (Yii::app()->request->isPostRequest) {
             $pivot->attributes = Yii::app()->request->getPost('GeneticsStudySubject');
-            if($pivot->is_consent_given){
+            if ($pivot->is_consent_given) {
                 $pivot->consent_given_on = date_create('now')->format('Y-m-d H:i:s');
             }
-            if($pivot->save() && Yii::app()->request->getPost('return')) {
+            if ($pivot->save() && Yii::app()->request->getPost('return')) {
                 $this->redirect(Yii::app()->request->getPost('return'));
             }
         }
 
         $this->render('//studies/editStatus', array(
-            'pivot' => $pivot
+            'pivot' => $pivot,
         ));
     }
 }
