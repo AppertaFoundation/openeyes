@@ -28,43 +28,74 @@ if ($element->event != null && $element->event->id > 0) {
 } else {
     $iolRefValues = array();
 }
+
+if ($eventtype = EventType::model()->find('class_name = "OphCiExamination"')){
+    $eventtypeid = $eventtype->id;
+}
+
 ?>
 <?php
 $VAdate = " - (Not Recorded)";
-foreach ($this->patient->episodes as $episode) {
-//					echo $episode->id;
-}
+$episode = $this->episode;
 if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-    if ($api->getLetterVisualAcuityRight($this->patient) || $api->getLetterVisualAcuityLeft($this->patient)) {
 
-        $VAid = $api->getVAId($this->patient, $episode);
-        $unitId = $api->getUnitId($VAid->id, $episode);
+    $chosenVA[] = array('');
 
-        $VAright = $api->getVARight($VAid->id);
-        for ($i = 0; $i < count($VAright); ++$i) {
-            $VAfinalright = $api->getVAvalue($VAright[$i]->value, $unitId);
+    //Get All Events for episode.
+    $criteria = new CDbCriteria();
+    $criteria->condition = 'episode_id = :e_id AND event_type_id = :e_typeid';
+    $criteria->order = ' event_date DESC';
+    $criteria->params = array(':e_id' => $episode->id, ':e_typeid' => $eventtypeid);
+
+    //For each event, check if =event_id in _visualacuity.
+
+    if($events = Event::model()->findAll($criteria)){
+        for ($i = 0; $i < count($events); ++$i) {
+            // Get Most Recent VA
+            $vaID = $api->getMostRecentVA($events[$i]->id);
+            if($vaID && !$data){
+                $data = $api->getMostRecentVAData($vaID->id);
+                $chosenVA = $vaID;
+                $VAdate = "- (exam date " . date("d M Y", strtotime($events[$i]->event_date)) . ")";
+            }
+        }
+    }
+
+    for ($i = 0; $i < count($data); ++$i) {
+        if($data[$i]->side == 0){
+            $rightData[] = $data[$i];
+        }
+        if($data[$i]->side == 1){
+            $leftData[] = $data[$i];
+        }
+    }
+
+    if($data){
+        $unitId = $chosenVA->unit_id;
+
+
+        for ($i = 0; $i < count($rightData); ++$i) {
+            $VAfinalright = $api->getVAvalue($rightData[$i]->value, $unitId);
         }
 
-        $VAleft = $api->getVALeft($VAid->id);
-        for ($i = 0; $i < count($VAright); ++$i) {
-            $VAfinalleft = $api->getVAvalue($VAleft[$i]->value, $unitId);
+        for ($i = 0; $i < count($leftData); ++$i) {
+            $VAfinalleft = $api->getVAvalue($leftData[$i]->value, $unitId);
         }
-        $VAdate = "- (exam date " . date("d M Y h:ia", strtotime($VAid->last_modified_date)) . ")";
 
-        $methodIdRight = $api->getMethodIdRight($VAid->id, $episode);
+        $methodIdRight = $api->getMethodIdRight($chosenVA->id, $episode);
         for ($i = 0; $i < count($methodIdRight); ++$i) {
             $methodnameRight[$i] = $api->getMethodName($methodIdRight[$i]->method_id);
         }
 
-        $methodIdLeft = $api->getMethodIdLeft($VAid->id, $episode);
+        $methodIdLeft = $api->getMethodIdLeft($chosenVA->id, $episode);
         for ($i = 0; $i < count($methodIdLeft); ++$i) {
             $methodnameLeft[$i] = $api->getMethodName($methodIdLeft[$i]->method_id);
         }
 
-        $unitnameRight = $api->getUnitName($unitId);
-        $unitnameLeft = $unitnameRight;
+        $unitname = $api->getUnitName($unitId);
     }
 }
+
 ?>
 
 <div class="element-fields element-eyes row">
@@ -78,18 +109,18 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
     <div class="element-fields element-eyes row">
         <div class="element-eye right-eye column">
             <?php if ($element->hasRight()) {
-                if ($api->getLetterVisualAcuityRight($this->patient)) {
+                if($data){
                     ?>
                     <div class="data-row">
                         <div class="data-value">
-                            <?php echo $unitnameRight ?>
+                            <?php echo $unitname ?>
                         </div>
                     </div>
                     <div class="data-row">
                         <div class="data-value">
                             <?php
                             for ($i = 0; $i < count($methodnameRight); ++$i) {
-                                echo $api->getVAvalue($VAright[$i]->value, $unitId) . " " . $methodnameRight[$i];
+                                echo $api->getVAvalue($rightData[$i]->value, $unitId) . " " . $methodnameRight[$i];
                                 if ($i != (count($methodnameRight) - 1)) {
                                     echo ", ";
                                 }
@@ -111,18 +142,18 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
         </div>
         <div class="element-eye left-eye column">
             <?php
-            if ($api->getLetterVisualAcuityLeft($this->patient)) {
+            if($data){
                 ?>
                 <div class="data-row">
                     <div class="data-value">
-                        <?php echo $unitnameLeft ?>
+                        <?php echo $unitname ?>
                     </div>
                 </div>
                 <div class="data-row">
                     <div class="data-value">
                         <?php
                         for ($i = 0; $i < count($methodnameLeft); ++$i) {
-                            echo $api->getVAvalue($VAleft[$i]->value, $unitId) . " " . $methodnameLeft[$i];
+                            echo $api->getVAvalue($leftData[$i]->value, $unitId) . " " . $methodnameLeft[$i];
                             if ($i != (count($methodnameLeft) - 1)) {
                                 echo ", ";
                             }
@@ -146,60 +177,80 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
 
 <?php
 // Near VA
+$NearVAdate = " - (Not Recorded)";
+$NearVAFound = false;
 if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-    if ($api->getBestNearVisualAcuity($this->patient, $episode,
-            'right') || $api->getBestNearVisualAcuity($this->patient, $episode, 'left')
-    ) {
+    for ($i = 0; $i < count($events); ++$i) {
+        // Get Most Recent VA
+        $vaID = $api->getMostRecentNearVA($events[$i]->id);
+        // Loop through $data and separate into different eyes
+        if ($vaID && !$NearVAFound) {
+            $neardata = $api->getMostRecentNearVAData($vaID->id);
+            $chosenNearVA = $vaID;
+            $NearVAFound = true;
+            $NearVAdate = "- (exam date " . date("d M Y", strtotime($events[$i]->event_date)) . ")";
+        }
+    }
 
-        $VAid = $api->getNearVAId($this->patient, $episode);
-        $unitId = $api->getNearUnitId($VAid, $episode);
-
-        $VAright = $api->getNearVARight($VAid);
-        for ($i = 0; $i < count($VAright); ++$i) {
-            $VAfinalright = $api->getVAvalue($VAright[$i]->value, $unitId);
+    if($NearVAFound){
+        for ($i = 0; $i < count($neardata); ++$i) {
+            if($neardata[$i]->side == 0){
+                $rightNearData[] = $neardata[$i];
+            }
+            if($neardata[$i]->side == 1){
+                $leftNearData[] = $neardata[$i];
+            }
         }
 
-        $VAleft = $api->getNearVALeft($VAid);
-        for ($i = 0; $i < count($VAright); ++$i) {
-            $VAfinalleft = $api->getVAvalue($VAleft[$i]->value, $unitId);
+        $unitId = $chosenNearVA->unit_id;
+
+
+
+
+        for ($i = 0; $i < count($rightNearData); ++$i) {
+            $VAfinalright = $api->getVAvalue($rightNearData[$i]->value, $unitId);
         }
 
-        $methodIdRight = $api->getMethodIdNearRight($VAid);
-        for ($i = 0; $i < count($methodIdRight); ++$i) {
-            $methodnameRight[$i] = $api->getMethodName($methodIdRight[$i]->method_id);
+        for ($i = 0; $i < count($leftNearData); ++$i) {
+            $VAfinalleft = $api->getVAvalue($leftNearData[$i]->value, $unitId);
         }
 
-        $methodIdLeft = $api->getMethodIdNearLeft($VAid);
-        for ($i = 0; $i < count($methodIdLeft); ++$i) {
-            $methodnameLeft[$i] = $api->getMethodName($methodIdLeft[$i]->method_id);
+        $methodIdRight = $api->getMethodIdNearRight($chosenNearVA->id);
+        for ($i = 0; $i < count($rightNearData); ++$i) {
+            $methodnameRight[$i] = $api->getMethodName($rightNearData[$i]->method_id);
         }
 
-        $unitnameRight = $api->getUnitName($unitId);
-        $unitnameLeft = $unitnameRight;
+        $methodIdLeft = $api->getMethodIdNearLeft($chosenNearVA->id);
+        for ($i = 0; $i < count($leftNearData); ++$i) {
+            $methodnameLeft[$i] = $api->getMethodName($leftNearData[$i]->method_id);
+        }
+
+        $unitname = $api->getUnitName($unitId);
     }
 }
 ?>
 
 <section>
     <header class="sub-element-header">
-        <h3 class="element-title">Near Visual Acuity</h3>
+        <h3 class="element-title">Near Visual Acuity <?php echo $NearVAdate; ?></h3>
     </header>
     <div class="element-fields element-eyes row">
         <div class="element-eye right-eye column">
             <?php if ($element->hasRight()) {
-                if ($api->getBestNearVisualAcuity($this->patient, $episode, 'left')) {
+                if ($NearVAFound) {
                     ?>
                     <div class="data-row">
                         <div class="data-value">
-                            <?php echo $unitnameRight ?>
+                            <?php echo $unitname ?>
                         </div>
                     </div>
                     <div class="data-row">
                         <div class="data-value">
+
                             <?php
-                            for ($i = 0; $i < count($methodnameRight); ++$i) {
-                                echo $api->getVAvalue($VAright[$i]->value, $unitId) . " " . $methodnameRight[$i];
-                                if ($i != (count($methodnameRight) - 1)) {
+                            for ($i = 0; $i < count($rightNearData); ++$i) {
+                                echo $api->getVAvalue($rightNearData[$i]->value, $unitId). " " . $methodnameRight[$i];
+                                if ($i != (count($rightNearData) - 1)) {
                                     echo ", ";
                                 }
                             }
@@ -220,19 +271,19 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
         </div>
         <div class="element-eye left-eye column">
             <?php
-            if ($api->getBestNearVisualAcuity($this->patient, $episode, 'right')) {
+            if ($NearVAFound) {
                 ?>
                 <div class="data-row">
                     <div class="data-value">
-                        <?php echo $unitnameLeft ?>
+                        <?php echo $unitname ?>
                     </div>
                 </div>
                 <div class="data-row">
                     <div class="data-value">
                         <?php
-                        for ($i = 0; $i < count($methodnameLeft); ++$i) {
-                            echo $api->getVAvalue($VAleft[$i]->value, $unitId) . " " . $methodnameLeft[$i];
-                            if ($i != (count($methodnameLeft) - 1)) {
+                        for ($i = 0; $i < count($leftNearData); ++$i) {
+                            echo $api->getVAvalue($leftNearData[$i]->value, $unitId) . " " . $methodnameLeft[$i];
+                            if ($i != (count($leftNearData) - 1)) {
                                 echo ", ";
                             }
                         }
@@ -255,25 +306,39 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
 </div>
 <?php
 // Refraction here
-if ($eventtype = EventType::model()->find('class_name = "OphCiExamination"')){
-    $eventtypeid = $eventtype->id;
+$refractfound = false;
+
+if ($eventid = Event::model()->findAll(array(
+    'condition' => 'event_type_id = ' . $eventtypeid . ' AND episode_id = ' . $episode->id,
+    'order' => 'event_date DESC',
+))){
+// Loop through responses, for ones that have RefractionValues
+for ($i = 0; $i < count($eventid); ++$i) {
+    if ($api->getRefractionValues($eventid[$i]->id)) {
+        if (!$refractfound){
+            $refractelement = $api->getRefractionValues($eventid[$i]->id);
+            $refract_event_date = $eventid[$i]->event_date;
+            $refractfound = true;
+        }
+    }
 }
 
-if ($eventid = Event::model()->find('event_type_id = ' . $eventtypeid . ' AND episode_id = ' . $episode->id)){
-if ($refractelement = $api->getRefractionValues($eventid->id)) {
+if ($refractfound) {
 ?>
 <section>
     <header class="sub-element-header">
-        <h3 class="element-title">Refraction - (exam date <?php echo date("d M Y h:ia",
-                strtotime($refractelement->last_modified_date)); ?>)</h3>
+        <h3 class="element-title">Refraction - (exam date <?php echo date("d M Y",
+                strtotime($refract_event_date)); ?>)</h3>
     </header>
     <div class="element-fields element-eyes row">
         <div class="element-eye right-eye column">
             <?php if ($refractelement->hasRight()) {
                 ?>
-                <?php $this->renderPartial($element->view_view . '_OEEyeDraw',
-                    array('side' => 'right', 'element' => $refractelement));
-                ?>
+                <div class="row refraction">
+                    <?php $this->renderPartial($element->view_view . '_OEEyeDraw',
+                        array('side' => 'right', 'element' => $refractelement));
+                    ?>
+                </div>
                 <?php
             } else {
                 ?>
@@ -296,6 +361,20 @@ if ($refractelement = $api->getRefractionValues($eventid->id)) {
         </div>
     </div>
     <?php
+    } else {?>
+    <section>
+    <header class="sub-element-header">
+        <h3 class="element-title">Refraction - (Not Recorded)</h3>
+    </header>
+    <div class="element-fields element-eyes row">
+        <div class="element-eye right-eye column">
+            <div class="row refraction">Not recorded</div>
+        </div>
+        <div class="element-eye left-eye column">
+            <div class="row refraction">Not recorded</div>
+        </div>
+    </div>
+        <?php
     }
     }
     ?>
@@ -368,24 +447,28 @@ if ($refractelement = $api->getRefractionValues($eventid->id)) {
     </section>
     <script type="text/javascript">
         function switchSides(element) {
-            // swith from right active to left
+            // switch from right active to left
             if ($(element).hasClass('left-eye')) {
                 $('#right-eye-lens').addClass('disabled').removeClass('highlighted-lens');
                 $('#right-eye-selection').addClass('disabled').removeClass('highlighted-selection');
                 $('#right-eye-calculation').addClass('disabled').removeClass('highlighted-calculation');
+                $('#right-eye-comments').addClass('disabled').removeClass('highlighted-comments');
 
                 $('#left-eye-lens').removeClass('disabled').addClass('highlighted-lens');
                 $('#left-eye-selection').removeClass('disabled').addClass('highlighted-selection');
                 $('#left-eye-calculation').removeClass('disabled').addClass('highlighted-calculation');
+                $('#left-eye-comments').removeClass('disabled').addClass('highlighted-comments');
 
             } else if ($(element).hasClass('right-eye')) {
                 $('#left-eye-lens').addClass('disabled').removeClass('highlighted-lens');
                 $('#left-eye-selection').addClass('disabled').removeClass('highlighted-selection');
                 $('#left-eye-calculation').addClass('disabled').removeClass('highlighted-calculation');
+                $('#left-eye-comments').addClass('disabled').removeClass('highlighted-comments');
 
                 $('#right-eye-lens').removeClass('disabled').addClass('highlighted-lens');
                 $('#right-eye-selection').removeClass('disabled').addClass('highlighted-selection');
                 $('#right-eye-calculation').removeClass('disabled').addClass('highlighted-calculation');
+                $('#right-eye-comments').removeClass('disabled').addClass('highlighted-comments');
             }
         }
     </script>
