@@ -91,12 +91,20 @@ class PedigreeController extends BaseModuleController
             'genomic_coordinate' => 'text',
             'genome_version'=> array(
                 'widget' => 'DropDownList',
-                'options' => array_combine($admin->getModel()->genomeVersions(), $admin->getModel()->genomeVersions()),
+                'options' => array_combine($admin->getModel()->genomeVersions(), $admin->getModel()->genomeVersions()), //get the versions as key and value for the dropdown
                 'htmlOptions' => null,
                 'hidden' => false,
                 'layoutColumns' => null,
             ),
             'gene_transcript' => 'text',
+            'subjects' => array(
+                'widget' => 'CustomView',
+                'viewName' => 'subjectList',
+                'viewArguments' => array(
+                    'subjects' => $admin->getModel()->subjects,
+                    'pedigree_id' => $id
+                ),
+            ),
         ));
 
         $admin->editModel();
