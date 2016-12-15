@@ -14,29 +14,65 @@
  */
 ?>
 <div class="row">
-	<div class="large-12 column">
-		<?php echo $form->dropDownList($element, 'conjunctival_flap_type_id', 'OphTrOperationnote_Trabeculectomy_Conjunctival_Flap_Type', array('textAttribute' => 'data-value'), false, array('field' => 4))?>
-		<?php echo $form->checkBox($element, 'stay_suture', array('text-align' => 'right'), array('field' => 4))?>
-		<?php echo $form->dropDownList($element, 'site_id', 'OphTrOperationnote_Trabeculectomy_Site', array('textAttribute' => 'data-value'), false, array('field' => 4))?>
-		<?php echo $form->dropDownList($element, 'size_id', 'OphTrOperationnote_Trabeculectomy_Size', array('textAttribute' => 'data-value'), false, array('field' => 4))?>
-		<?php echo $form->dropDownList($element, 'sclerostomy_type_id', 'OphTrOperationnote_Trabeculectomy_Sclerostomy_Type', array('textAttribute' => 'data-value'), false, array('field' => 4))?>
-		<?php echo $form->dropDownList($element, 'viscoelastic_type_id', 'OphTrOperationnote_Trabeculectomy_Viscoelastic_Type', array(), false, array('field' => 4))?>
-		<?php echo $form->checkBox($element, 'viscoelastic_removed', array('text-align' => 'right'), array('field' => 4))?>
-		<?php echo $form->dropDownList($element, 'viscoelastic_flow_id', 'OphTrOperationnote_Trabeculectomy_Viscoelastic_Flow', array(), false, array('field' => 4))?>
-		<?php echo $form->textArea($element, 'report', array(), false, array(), array('field' => 9))?>
-		<div class="row field-row">
-			<div class="large-offset-3 large-9 column end">
-				<button id="btn-trabeculectomy-report" class="secondary small ed_report">
-					Report
-				</button>
-				<button id="btn-trabeculectomy-clear" class="secondary small ed_clear">
-					Clear
-				</button>
-			</div>
-		</div>
-		<?php echo $form->multiSelectList($element, 'MultiSelect_Difficulties', 'difficulty_assignments', 'difficulty_id', CHtml::listData(OphTrOperationnote_Trabeculectomy_Difficulty::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'), array(), array('empty' => '- Select -', 'label' => 'Operative difficulties', 'class' => 'linked-fields', 'data-linked-fields' => 'difficulty_other', 'data-linked-values' => 'Other'), false, false, null, false, false, array('field' => 4))?>
-		<?php echo $form->textArea($element, 'difficulty_other', array(), !$element->hasMultiSelectValue('difficulties', 'Other'), array(), array('field' => 6))?>
-		<?php echo $form->multiSelectList($element, 'MultiSelect_Complications', 'complication_assignments', 'complication_id', CHtml::listData(OphTrOperationnote_Trabeculectomy_Complication::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'), array(), array('empty' => '- Select -', 'label' => 'Complications', 'class' => 'linked-fields', 'data-linked-fields' => 'complication_other', 'data-linked-values' => 'Other'), false, false, null, false, false, array('field' => 4))?>
-		<?php echo $form->textArea($element, 'complication_other', array(), !$element->hasMultiSelectValue('complications', 'Other'), array(), array('field' => 6))?>
-	</div>
+  <div class="large-12 column">
+      <?php echo $form->dropDownList($element, 'conjunctival_flap_type_id', 'OphTrOperationnote_Trabeculectomy_Conjunctival_Flap_Type', array('textAttribute' => 'data-value'),
+          false, array('field' => 4)) ?>
+      <?php echo $form->checkBox($element, 'stay_suture', array('text-align' => 'right'), array('field' => 4)) ?>
+      <?php echo $form->dropDownList($element, 'site_id', 'OphTrOperationnote_Trabeculectomy_Site', array('textAttribute' => 'data-value'), false, array('field' => 4)) ?>
+      <?php echo $form->dropDownList($element, 'size_id', 'OphTrOperationnote_Trabeculectomy_Size', array('textAttribute' => 'data-value'), false, array('field' => 4)) ?>
+      <?php echo $form->dropDownList($element, 'sclerostomy_type_id', 'OphTrOperationnote_Trabeculectomy_Sclerostomy_Type', array('textAttribute' => 'data-value'), false,
+          array('field' => 4)) ?>
+      <?php echo $form->dropDownList($element, 'viscoelastic_type_id', 'OphTrOperationnote_Trabeculectomy_Viscoelastic_Type', array(), false, array('field' => 4)) ?>
+      <?php echo $form->checkBox($element, 'viscoelastic_removed', array('text-align' => 'right'), array('field' => 4)) ?>
+      <?php echo $form->dropDownList($element, 'viscoelastic_flow_id', 'OphTrOperationnote_Trabeculectomy_Viscoelastic_Flow', array(), false, array('field' => 4)) ?>
+      <?php echo $form->textArea($element, 'report', array(), false, array(), array('field' => 9)) ?>
+    <div class="row field-row">
+      <div class="large-offset-3 large-9 column end">
+        <button id="btn-trabeculectomy-report" class="secondary small ed_report">
+          Report
+        </button>
+        <button id="btn-trabeculectomy-clear" class="secondary small ed_clear">
+          Clear
+        </button>
+      </div>
+    </div>
+      <?php echo $form->multiSelectList(
+          $element,
+          'MultiSelect_Difficulties',
+          'difficulty_assignments',
+          'difficulty_id',
+          CHtml::listData(OphTrOperationnote_Trabeculectomy_Difficulty::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'),
+          array(),
+          array(
+              'empty' => '- Select -',
+              'label' => 'Operative difficulties',
+              'class' => 'linked-fields',
+              'data-linked-fields' => 'difficulty_other',
+              'data-linked-values' => 'Other',
+          ),
+          false,
+          false,
+          null,
+          false,
+          false,
+          array('field' => 4)
+      ) ?>
+      <?php echo $form->textArea($element, 'difficulty_other', array(), !$element->hasMultiSelectValue('difficulties', 'Other'), array(), array('field' => 6)) ?>
+      <?php echo $form->multiSelectList(
+          $element,
+          'MultiSelect_Complications',
+          'complication_assignments',
+          'complication_id',
+          CHtml::listData(OphTrOperationnote_Trabeculectomy_Complication::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'),
+          array(),
+          array('empty' => '- Select -', 'label' => 'Complications', 'class' => 'linked-fields', 'data-linked-fields' => 'complication_other', 'data-linked-values' => 'Other'),
+          false,
+          false,
+          null,
+          false,
+          false,
+          array('field' => 4)
+      ) ?>
+      <?php echo $form->textArea($element, 'complication_other', array(), !$element->hasMultiSelectValue('complications', 'Other'), array(), array('field' => 6)) ?>
+  </div>
 </div>

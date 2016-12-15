@@ -57,34 +57,38 @@ foreach ($skin_drugs as $drug) {
 
 <div id="div_<?php echo get_class($element) ?>_<?php echo $side ?>_pre_antisept_drug_id"
      class="row field-row">
-    <div class="<?php echo $form->columns('label'); ?>">
-        <label for="<?php echo get_class($element) ?>_<?php echo $side ?>_pre_antisept_drug_id">
-            <?php echo $element->getAttributeLabel($side . '_pre_antisept_drug_id') ?>:
-        </label>
+  <div class="<?php echo $form->columns('label'); ?>">
+    <label for="<?php echo get_class($element) ?>_<?php echo $side ?>_pre_antisept_drug_id">
+        <?php echo $element->getAttributeLabel($side . '_pre_antisept_drug_id') ?>:
+    </label>
+  </div>
+  <div class="large-6 column end">
+    <div class="wrapper<?php if ($antiseptic_allergic) {
+        echo ' allergyWarning';
+    } ?>">
+        <?php
+        echo $form->dropDownList($element, $side . '_pre_antisept_drug_id', CHtml::listData($antiseptic_drugs, 'id', 'name'), $antiseptic_drugs_opts);
+        ?>
     </div>
-    <div class="large-6 column end">
-        <div class="wrapper<?php if ($antiseptic_allergic) { echo ' allergyWarning';} ?>">
-            <?php
-            echo $form->dropDownList($element, $side . '_pre_antisept_drug_id', CHtml::listData($antiseptic_drugs, 'id', 'name'), $antiseptic_drugs_opts);
-            ?>
-        </div>
-    </div>
+  </div>
 </div>
 
 <div id="div_<?php echo get_class($element) ?>_<?php echo $side ?>_pre_skin_drug_id"
      class="row field-row">
-    <div class="<?php echo $form->columns('label'); ?>">
-        <label for="<?php echo get_class($element) ?>_<?php echo $side ?>_pre_skin_drug_id">
-            <?php echo $element->getAttributeLabel($side . '_pre_skin_drug_id') ?>:
-        </label>
+  <div class="<?php echo $form->columns('label'); ?>">
+    <label for="<?php echo get_class($element) ?>_<?php echo $side ?>_pre_skin_drug_id">
+        <?php echo $element->getAttributeLabel($side . '_pre_skin_drug_id') ?>:
+    </label>
+  </div>
+  <div class="large-6 column end">
+    <div class="wrapper<?php if ($skin_allergic) {
+        echo ' allergyWarning';
+    } ?>">
+        <?php
+        echo $form->dropDownList($element, $side . '_pre_skin_drug_id', CHtml::listData($skin_drugs, 'id', 'name'), $skin_drugs_opts);
+        ?>
     </div>
-    <div class="large-6 column end">
-        <div class="wrapper<?php if ($skin_allergic) { echo ' allergyWarning';} ?>">
-            <?php
-            echo $form->dropDownList($element, $side . '_pre_skin_drug_id', CHtml::listData($skin_drugs, 'id', 'name'), $skin_drugs_opts);
-            ?>
-        </div>
-    </div>
+  </div>
 </div>
 
 <?php
@@ -119,7 +123,8 @@ foreach ($ioplowering_drugs as $drug) {
 
 echo $form->multiSelectList(
     $element,
-    get_class($element) . '[' . $side . '_pre_ioploweringdrugs]', $side . '_pre_ioploweringdrugs',
+    get_class($element) . '[' . $side . '_pre_ioploweringdrugs]',
+    $side . '_pre_ioploweringdrugs',
     'id',
     CHtml::listData($ioplowering_drugs, 'id', 'name'),
     array(),
@@ -175,46 +180,44 @@ if (@$_POST['Element_OphTrIntravitrealinjection_Treatment']) {
 ?>
 
 <div id="div_<?php echo get_class($element); ?>_<?php echo $side ?>_number" class="row field-row">
-    <div class="<?php echo $form->columns('label'); ?>">
-        <label for="<?php echo get_class($element); ?>_<?php echo $side ?>_number">
-            <?php echo $element->getAttributeLabel($side . '_number'); ?>:
-        </label>
-    </div>
-    <div class="<?php echo $form->columns('field'); ?>">
-        <div class="row collapse">
-            <div class="large-3 column">
-                <?php echo $form->textField($element, $side . '_number', array('size' => '10', 'nowrapper' => true)) ?>
-            </div>
-            <div class="large-9 column">
-				<span id="<?php echo $side; ?>_number_history_icon" class="postfix number-history-icon<?php if (!$selected_drug) {
+  <div class="<?php echo $form->columns('label'); ?>">
+    <label for="<?php echo get_class($element); ?>_<?php echo $side ?>_number">
+        <?php echo $element->getAttributeLabel($side . '_number'); ?>:
+    </label>
+  </div>
+  <div class="<?php echo $form->columns('field'); ?>">
+    <div class="row collapse">
+      <div class="large-3 column">
+          <?php echo $form->textField($element, $side . '_number', array('size' => '10', 'nowrapper' => true)) ?>
+      </div>
+      <div class="large-9 column">
+      <span id="<?php echo $side; ?>_number_history_icon" class="postfix number-history-icon<?php if (!$selected_drug) {echo ' hidden';} ?>">
+        <img src="<?php echo $this->assetPath ?>/img/icon_info.png" style="height:20px"/>
+      </span>
+        <div class="quicklook number-history" style="display: none;">
+            <?php
+            foreach ($drugs as $drug) {
+                echo '<div class="number-history-item';
+                if ($drug->id != $selected_drug) {
                     echo ' hidden';
-                } ?>">
-					<img src="<?php echo $this->assetPath ?>/img/icon_info.png" style="height:20px"/>
-				</span>
-                <div class="quicklook number-history" style="display: none;">
-                    <?php
-                    foreach ($drugs as $drug) {
-                        echo '<div class="number-history-item';
-                        if ($drug->id != $selected_drug) {
-                            echo ' hidden';
-                        }
-                        echo '" id="div_' . get_class($element) . '_' . $side . '_history_' . $drug->id . '">';
-                        if (count($drug_history[$drug->id])) {
-                            echo '<b>Previous ' . $drug->name . ' treatments</b><br />';
-                            echo '<dl style="margin-top: 0px; margin-bottom: 2px;">';
-                            foreach ($drug_history[$drug->id] as $previous) {
-                                echo '<dt>' . Helper::convertDate2NHS($previous['date']) . ' (' . $previous[$side . '_number'] . ')</dt>';
-                            }
-                            echo '</dl>';
-                        } else {
-                            echo 'No previous ' . $drug->name . ' treatments';
-                        }
-                        echo '</div>';
-                    } ?>
-                </div>
-            </div>
+                }
+                echo '" id="div_' . get_class($element) . '_' . $side . '_history_' . $drug->id . '">';
+                if (count($drug_history[$drug->id])) {
+                    echo '<b>Previous ' . $drug->name . ' treatments</b><br />';
+                    echo '<dl style="margin-top: 0px; margin-bottom: 2px;">';
+                    foreach ($drug_history[$drug->id] as $previous) {
+                        echo '<dt>' . Helper::convertDate2NHS($previous['date']) . ' (' . $previous[$side . '_number'] . ')</dt>';
+                    }
+                    echo '</dl>';
+                } else {
+                    echo 'No previous ' . $drug->name . ' treatments';
+                }
+                echo '</div>';
+            } ?>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <?php echo $form->textField($element, $side . '_batch_number', array(), array(), array('field' => 6)) ?>
@@ -238,25 +241,25 @@ if (!$element->getIsNewRecord()) {
 
 <div id="div_<?php echo get_class($element) ?>_<?php echo $side ?>_injection_time"
      class="row field-row">
-    <div class="<?php echo $form->columns('label'); ?>">
-        <label for="<?php echo get_class($element) ?>_<?php echo $side ?>_injection_time">
-            <?php echo $element->getAttributeLabel($side . '_injection_time') ?>:
-        </label>
-    </div>
-    <div class="<?php echo $form->columns(3, true); ?>">
-        <?php
-        if ($element->{$side . '_injection_time'} != null) {
-            $val = date('H:i', strtotime($element->{$side . '_injection_time'}));
-        } else {
-            $val = date('H:i');
-        }
+  <div class="<?php echo $form->columns('label'); ?>">
+    <label for="<?php echo get_class($element) ?>_<?php echo $side ?>_injection_time">
+        <?php echo $element->getAttributeLabel($side . '_injection_time') ?>:
+    </label>
+  </div>
+  <div class="<?php echo $form->columns(3, true); ?>">
+      <?php
+      if ($element->{$side . '_injection_time'} != null) {
+          $val = date('H:i', strtotime($element->{$side . '_injection_time'}));
+      } else {
+          $val = date('H:i');
+      }
 
-        if (isset($_POST[get_class($element)])) {
-            $val = $_POST[get_class($element)][$side . '_injection_time'];
-        }
-        echo CHtml::textField(get_class($element) . '[' . $side . '_injection_time]', $val, array('autocomplete' => Yii::app()->params['html_autocomplete']));
-        ?>
-    </div>
+      if (isset($_POST[get_class($element)])) {
+          $val = $_POST[get_class($element)][$side . '_injection_time'];
+      }
+      echo CHtml::textField(get_class($element) . '[' . $side . '_injection_time]', $val, array('autocomplete' => Yii::app()->params['html_autocomplete']));
+      ?>
+  </div>
 </div>
 
 <?php
@@ -299,6 +302,19 @@ $ioplowering_drugs = OphTrIntravitrealinjection_IOPLoweringDrug::model()->active
 foreach ($ioplowering_drugs as $drug) {
     $html_options['options'][(string)$drug->id] = array('data-order' => $drug->display_order);
 }
-echo $form->multiSelectList($element, get_class($element) . '[' . $side . '_post_ioploweringdrugs]', $side . '_post_ioploweringdrugs', 'id',
-    CHtml::listData($ioplowering_drugs, 'id', 'name'), array(), $html_options, false, false, null, false, false, array('field' => 6));
+echo $form->multiSelectList(
+    $element,
+    get_class($element) . '[' . $side . '_post_ioploweringdrugs]',
+    $side . '_post_ioploweringdrugs',
+    'id',
+    CHtml::listData($ioplowering_drugs, 'id', 'name'),
+    array(),
+    $html_options,
+    false,
+    false,
+    null,
+    false,
+    false,
+    array('field' => 6)
+);
 ?>
