@@ -95,7 +95,7 @@ class DocManDeliveryCommand extends CConsoleCommand
             
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POST, false);
-            curl_setopt($ch, CURLOPT_URL, $print_url . $this->event->id . '?auto_print=' . (int)$inject_autoprint_js);
+            curl_setopt($ch, CURLOPT_URL, $print_url . $this->event->id . '?auto_print=' . (int)$inject_autoprint_js . '&print_only_gp=1');
             $content = curl_exec($ch);
 
             curl_close($ch);
