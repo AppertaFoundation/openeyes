@@ -17,10 +17,11 @@ class BloodSampleAdminController extends BaseAdminController{
     public function actionList()
     {
         $admin = new Admin(OphInBloodsample_Sample_Type::model(), $this);
-        $admin->setModelDisplayName('Blood Sample Change');
+        $admin->setModelDisplayName('DNA sample type change');
         $admin->setListFields(array(
             'id',
             'name',
+            'display_order',
         ));
         $admin->searchAll();
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
@@ -33,7 +34,7 @@ class BloodSampleAdminController extends BaseAdminController{
         if ($id) {
             $admin->setModelId($id);
         }
-        $admin->setModelDisplayName('Blood sample type');
+        $admin->setModelDisplayName('DNA sample type change');
         $admin->setEditFields(array(
             'name' => 'text',
         ));
@@ -44,5 +45,10 @@ class BloodSampleAdminController extends BaseAdminController{
     {
         $admin = new Admin(OphInBloodsample_Sample_Type::model(), $this);
         $admin->deleteModel();
+    }
+    
+    public function actionSort()
+    {
+        
     }
 }

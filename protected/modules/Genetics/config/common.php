@@ -34,7 +34,7 @@ return array(
         'admin_menu' => array(
             'Base Change Type' => '/Genetics/baseChangeAdmin/list',
             'Amino Acid Change Type' => '/Genetics/aminoAcidChangeAdmin/list',
-            'Blood Sample Change' => '/OphInBloodsample/BloodSampleAdmin/list',
+            'DNA sample change' => '/OphInBloodsample/BloodSampleAdmin/list',
         ),
     ),
     'components' => array(
