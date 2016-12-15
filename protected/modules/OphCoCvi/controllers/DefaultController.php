@@ -820,9 +820,9 @@ class DefaultController extends \BaseEventTypeController
         }
 
         $labelAddress = array(
-            $this->demographicsData['address'],
-            $this->demographicsData['gp_address'],
-            $this->demographicsData['la_address'],
+            $this->demographicsData['title_surname'] . "," . $this->demographicsData['address'],
+            $this->demographicsData['gp_name'] . "," . $this->demographicsData['gp_address'],
+            $this->demographicsData['la_name'] . "," . $this->demographicsData['la_address'],
         );
 
         $labelClass->fillLabelsInTable('LabelsTable', $labelAddress, $firstLabel);
