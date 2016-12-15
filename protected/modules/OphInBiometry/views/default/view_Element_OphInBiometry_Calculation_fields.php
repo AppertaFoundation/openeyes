@@ -5,7 +5,11 @@
                 class="field-info"><b><?php echo CHtml::encode($element->getAttributeLabel('comments_'.$side)) ?></b>:</div>
         </div>
         <div class="large-6 column end">
-            <div class="field-info"><?php echo CHtml::encode($element->{'comments_'.$side}) ?></div>
+            <div class="field-info<?php
+            if ($element->{'comments_'.$side}){
+                ?> iolDisplay<?php
+            }
+?>"><?php echo CHtml::encode($element->{'comments_'.$side}) ?></div>
         </div>
     </div>
 </div>
