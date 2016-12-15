@@ -206,7 +206,11 @@ class SubjectController extends BaseModuleController
             'id',
             'patient.fullName',
         ));
-        $admin->getSearch()->addSearchItem('patient.contact.first_name', array('type' => 'compare', 'compare_to' => array('patient.contact.last_name')));
+        $admin->getSearch()->addSearchItem('patient.contact.first_name');
+        $admin->getSearch()->addSearchItem('patient.contact.last_name');
+        $admin->getSearch()->addSearchItem('patient.dob');
+        $admin->getSearch()->addSearchItem('comments');
+        $admin->getSearch()->addSearchItem('diagnoses.id', array('type' => 'disorder'));
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
         $admin->listModel();
     }

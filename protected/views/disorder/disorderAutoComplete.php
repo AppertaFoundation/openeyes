@@ -25,11 +25,10 @@ if(is_array($value)):
       $new= $('<span></span>');
 
     $clear.data('diagnosisId', ui.item.id);
-    $('#<?=$class?>_<?=$name?>_0').val('');
+    $('#<?=$class . '_' . str_replace('.', '', $name)?>_0').val('');
     $new.text(ui.item.value).append($clear);
     $('#enteredDiagnosisText').append($new.append('<br>'));
     $('#enteredDiagnosisText').show();
-      console.log(ui.item);
     $(event.target).parent().append('<input type="hidden" name="<?=$class ?>[<?=$name ?>][]" class="multiDiagnosis" value="' + ui.item.id + '">');
     $('#<?=$class?>_<?=$name?>').focus();
 
@@ -37,12 +36,12 @@ if(is_array($value)):
   };
 <?php else: ?>
   var select = function(event, ui) {
-    $('#<?=$class?>_<?=$name?>_0').val('');
+    $('#<?=$class . '_' . str_replace('.', '', $name)?>_0').val('');
     $('#enteredDiagnosisText').html(ui.item.value + ' <?=$clear_diagnosis?> ');
     $('#enteredDiagnosisText').show();
     $('input[id=savedDiagnosisText]').val(ui.item.value);
     $('input[id=savedDiagnosis]').val(ui.item.id);
-    $('#<?=$class?>_<?=$name?>').focus();
+    $('#<?=$class . '_' . str_replace('.', '', $name)?>_0').focus();
 
     return false;
   };
@@ -51,7 +50,7 @@ if(is_array($value)):
 <?php
 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
     'name' => "{$class}[$name]",
-    'id' => "{$class}_{$name}_0",
+    'id' => $class . '_' . str_replace('.', '', $name) . '_0',
     'value' => '',
     'source' => "js:source",
     'options' => array(

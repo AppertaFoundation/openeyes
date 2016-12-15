@@ -93,7 +93,7 @@ if ($search->getSearchItems() && is_array($search->getSearchItems())):
                             <?php
                                 $this->controller->renderPartial('//disorder/disorderAutoComplete', array(
                                     'class' => 'search',
-                                    'name' => 'disorder_id',
+                                    'name' => $key,
                                     'code' => '',
                                     'value' => Yii::app()->request->getQuery('search[disorder_id]', ''),
                                     'clear_diagnosis' => '<i class="fa fa-times" aria-hidden="true" id="clear-diagnosis-widget"></i>',
