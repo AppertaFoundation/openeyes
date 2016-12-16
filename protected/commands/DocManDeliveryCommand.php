@@ -62,6 +62,7 @@ class DocManDeliveryCommand extends CConsoleCommand
             $username = Yii::app()->params['docman_user'];
             $password = Yii::app()->params['docman_password'];
             $print_url = Yii::app()->params['docman_print_url'];
+            $inject_autoprint_js = Yii::app()->params['docman_inject_autoprint_js'];
 
             $ch = curl_init();
 
@@ -91,10 +92,10 @@ class DocManDeliveryCommand extends CConsoleCommand
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
 
             curl_exec($ch);
-
+            
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POST, false);
-            curl_setopt($ch, CURLOPT_URL, $print_url . $this->event->id);
+            curl_setopt($ch, CURLOPT_URL, $print_url . $this->event->id . '?auto_print=' . (int)$inject_autoprint_js . '&print_only_gp=1');
             $content = curl_exec($ch);
 
             curl_close($ch);
@@ -170,7 +171,18 @@ class DocManDeliveryCommand extends CConsoleCommand
             <SubLocationName></SubLocationName>
             </DocumentInformation>";
 
-        file_put_contents($this->path."/".$filename.".XML", $xml);
+        file_put_contents($this->path."/".$filename.".XML", $this->cleanXML($xml) );
+    }
+    
+    /**
+     * Special function to sanitize XML
+     * 
+     * @param type $xml
+     * @return type
+     */
+    private function cleanXML($xml)
+    {
+        return str_replace ("&", "and", $xml);
     }
 
     private function updateDelivery($output_id)
