@@ -16,6 +16,7 @@ class BloodSampleAdminController extends BaseAdminController{
     
     public function actionList()
     {
+        
         $admin = new Admin(OphInBloodsample_Sample_Type::model(), $this);
         $admin->setModelDisplayName('DNA sample type change');
         $admin->setListFields(array(
@@ -26,6 +27,7 @@ class BloodSampleAdminController extends BaseAdminController{
         $admin->searchAll();
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
         $admin->listModel();
+
     }
     
     public function actionEdit($id = false)
@@ -49,6 +51,15 @@ class BloodSampleAdminController extends BaseAdminController{
     
     public function actionSort()
     {
-        
+        if (!empty($_POST['OphInBloodsample_Sample_Type']['display_order'])) {
+            foreach ($_POST['OphInBloodsample_Sample_Type']['display_order'] as $i => $id) {
+                if ($dnaName = OphInBloodsample_Sample_Type::model()->findByPk($id)) {
+                    $dnaName->display_order = $i + 1;
+                    if (!$dnaName->save()) {
+                        throw new Exception('Unable to save dna: '.print_r($dnaName->getErrors(), true));
+                    }
+                }
+            }
+        }
     }
 }

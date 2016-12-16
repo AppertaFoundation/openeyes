@@ -69,7 +69,7 @@ class Element_OphInBloodsample_Sample extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, old_dna_no, subject_id, blood_date, comments, type_id, volume', 'safe'),
+            array('event_id, old_dna_no,subject_id, blood_date, comments, type_id, volume', 'safe'),
             array('type_id', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
@@ -100,13 +100,14 @@ class Element_OphInBloodsample_Sample extends BaseEventTypeElement
     public function attributeLabels()
     {
         return array(
-            'id' => 'ID',
-            'event_id' => 'Event',
-            'old_dna_no' => 'Old DNA no',
-            'subject_id' => 'Subject',
-            'blood_date' => 'Blood date',
-            'comments' => 'Comments',
-            'type_id' => 'Type',
+            'id'            => 'ID',
+            'event_id'      => 'Event',
+            'old_dna_no'    => 'Old DNA no',
+            'subject_id'    => 'Subject',
+            'blood_date'    => 'Blood date',
+            'comments'      => 'Comments',
+            'type_id'       => 'Type',
+           // 'other_type'    => 'Other type'
         );
     }
 
