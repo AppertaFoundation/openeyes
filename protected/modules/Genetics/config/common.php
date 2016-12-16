@@ -21,11 +21,6 @@ return array(
                 ),
             ),
         ),
-        'advanced_search' => array(
-            'Genetics' => array(
-                'Advanced Patient Search' => 'geneticPatients',
-            ),
-        ),
         'admin_structure' => array(
             'Studies' => array(
                 'Genetics' => '/Genetics/studyAdmin/list',
@@ -36,22 +31,4 @@ return array(
             'Amino Acid Change Type' => '/Genetics/aminoAcidChangeAdmin/list',
         ),
     ),
-    'components' => array(
-    'event' => array(
-        'observers' => array(
-            'patient_add_diagnosis' => array(
-                array(
-                    'class' => 'DiagnosisObserver',
-                    'method' => 'patientAddDiagnosis',
-                ),
-            ),
-            'patient_remove_diagnosis' => array(
-                array(
-                    'class' => 'DiagnosisObserver',
-                    'method' => 'patientRemoveDiagnosis',
-                ),
-            ),
-        ),
-    ),
-),
 );
