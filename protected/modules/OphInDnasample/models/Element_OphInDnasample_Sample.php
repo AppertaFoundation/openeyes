@@ -18,12 +18,18 @@
  */
 
 /**
- * This is the model class for table "ophinbloodsample_sample_type".
+ * This is the model class for table "et_ophindnasample_sample".
  *
  * The followings are the available columns in table:
  *
  * @property string $id
- * @property string $name
+ * @property int $event_id
+ * @property int $old_dna_no
+ * @property string $subject_id
+ * @property string $dna_date
+ * @property string $dna_location
+ * @property string $comments
+ * @property int $type_id
  *
  * The followings are the available model relations:
  * @property ElementType $element_type
@@ -31,9 +37,12 @@
  * @property Event $event
  * @property User $user
  * @property User $usermodified
+ * @property OphInDnasample_Sample_Type $type
  */
-class OphInBloodsample_Sample_Type extends BaseActiveRecord
+class Element_OphInDnasample_Sample extends BaseEventTypeElement
 {
+    public $service;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -49,7 +58,7 @@ class OphInBloodsample_Sample_Type extends BaseActiveRecord
      */
     public function tableName()
     {
-        return 'ophinbloodsample_sample_type';
+        return 'et_ophindnasample_sample';
     }
 
     /**
@@ -60,11 +69,11 @@ class OphInBloodsample_Sample_Type extends BaseActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name', 'safe'),
-            array('name', 'required'),
+            array('event_id, old_dna_no,subject_id, dna_date, comments, type_id, volume', 'safe'),
+            array('type_id', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, name', 'safe', 'on' => 'search'),
+            array('id, event_id, old_dna_no, subject_id, dna_date, comments, type_id, ', 'safe', 'on' => 'search'),
         );
     }
 
@@ -81,6 +90,7 @@ class OphInBloodsample_Sample_Type extends BaseActiveRecord
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'type' => array(self::BELONGS_TO, 'OphInDnasample_Sample_Type', 'type_id'),
         );
     }
 
@@ -90,8 +100,14 @@ class OphInBloodsample_Sample_Type extends BaseActiveRecord
     public function attributeLabels()
     {
         return array(
-            'id' => 'ID',
-            'name' => 'Name',
+            'id'            => 'ID',
+            'event_id'      => 'Event',
+            'old_dna_no'    => 'Old DNA no',
+            'subject_id'    => 'Subject',
+            'dna_date'      => 'Dna date',
+            'comments'      => 'Comments',
+            'type_id'       => 'Type',
+           // 'other_type'    => 'Other type'
         );
     }
 
@@ -108,18 +124,16 @@ class OphInBloodsample_Sample_Type extends BaseActiveRecord
         $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
-        $criteria->compare('name', $this->name, true);
+        $criteria->compare('event_id', $this->event_id, true);
+        $criteria->compare('old_dna_no', $this->old_dna_no);
+        $criteria->compare('subject_id', $this->subject_id);
+        $criteria->compare('dna_date', $this->dna_date);
+        $criteria->compare('comments', $this->comments);
+        $criteria->compare('type_id', $this->type_id);
 
         return new CActiveDataProvider(get_class($this), array(
-                'criteria' => $criteria,
-            ));
-    }
-
-    /**
-     * Set default values for forms on create.
-     */
-    public function setDefaultOptions()
-    {
+            'criteria' => $criteria,
+        ));
     }
 
     protected function beforeSave()

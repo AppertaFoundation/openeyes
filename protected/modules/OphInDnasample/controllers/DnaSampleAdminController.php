@@ -7,17 +7,17 @@
  */
 
 /**
- * Description of BloodSampleAdminController
+ * Description of DnaSampleAdminController
  *
  */
-class BloodSampleAdminController extends BaseAdminController{
+class DnaSampleAdminController extends BaseAdminController{
     
     protected $itemsPerPage = 100;
     
     public function actionList()
     {
         
-        $admin = new Admin(OphInBloodsample_Sample_Type::model(), $this);
+        $admin = new Admin(OphInDnasample_Sample_Type::model(), $this);
         $admin->setModelDisplayName('DNA sample type change');
         $admin->setListFields(array(
             'id',
@@ -32,7 +32,7 @@ class BloodSampleAdminController extends BaseAdminController{
     
     public function actionEdit($id = false)
     {
-        $admin = new Admin(OphInBloodsample_Sample_Type::model(), $this);
+        $admin = new Admin(OphInDnasample_Sample_Type::model(), $this);
         if ($id) {
             $admin->setModelId($id);
         }
@@ -45,15 +45,15 @@ class BloodSampleAdminController extends BaseAdminController{
     
     public function actionDelete()
     {
-        $admin = new Admin(OphInBloodsample_Sample_Type::model(), $this);
+        $admin = new Admin(OphInDnasample_Sample_Type::model(), $this);
         $admin->deleteModel();
     }
     
     public function actionSort()
     {
-        if (!empty($_POST['OphInBloodsample_Sample_Type']['display_order'])) {
-            foreach ($_POST['OphInBloodsample_Sample_Type']['display_order'] as $i => $id) {
-                if ($dnaName = OphInBloodsample_Sample_Type::model()->findByPk($id)) {
+        if (!empty($_POST['OphInDnasample_Sample_Type']['display_order'])) {
+            foreach ($_POST['OphInDnasample_Sample_Type']['display_order'] as $i => $id) {
+                if ($dnaName = OphInDnasample_Sample_Type::model()->findByPk($id)) {
                     $dnaName->display_order = $i + 1;
                     if (!$dnaName->save()) {
                         throw new Exception('Unable to save dna: '.print_r($dnaName->getErrors(), true));

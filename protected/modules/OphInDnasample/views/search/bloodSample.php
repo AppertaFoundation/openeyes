@@ -67,7 +67,7 @@
                                     ))?>
 								</td>
 								<td>
-									<?php echo CHtml::dropDownList('sample-type', @$_GET['sample-type'], CHtml::listData(OphInBloodsample_Sample_Type::model()->findAll(array('order' => 'name asc')), 'id', 'name'), array('empty' => '- All -'))?>
+									<?php echo CHtml::dropDownList('sample-type', @$_GET['sample-type'], CHtml::listData(OphInDnasample_Sample_Type::model()->findAll(array('order' => 'name asc')), 'id', 'name'), array('empty' => '- All -'))?>
 								</td>
 								<td>
 									<?php echo CHtml::textField('comment', @$_GET['comment'])?>
@@ -161,7 +161,7 @@
 				<tbody>
 					<?php
 					foreach ($results as $result) {?>
-						<tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/OphInBloodsample/default/view/'.$result['id'])?>">
+						<tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/OphInDnasample/default/view/'.$result['id'])?>">
 							<td><?php echo $result['hos_num']?></td>
 							<td><?php echo strtoupper($result['last_name'])?>, <?php echo $result['first_name']?></td>
 							<td><?php echo $result['event_date']?></td>

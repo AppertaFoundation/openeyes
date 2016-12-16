@@ -16,21 +16,18 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-?>
-<fieldset class="element-fields">
-	<?php
-    $form->activeWidget('DropDownList', $element, 'type_id',
-        array(
-            'data' => CHtml::listData(OphInBloodsample_Sample_Type::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'),
-            'htmlOptions' => array('empty' => '- Please select -'),
-        ));
+class OphInDnasample_API extends BaseAPI
+{
+    public function getEventsByPatient($patient)
+    {
+        $events = array();
+        $episodes = $patient->episodes;
+        foreach ($episodes as $episode) {
+            foreach ($this->getEventsInEpisode($patient, $episode) as $key => $event) {
+                $events[] = $event;
+            }
+        }
 
-    $form->activeWidget('DatePicker', $element, 'blood_date',
-        array(
-            'options' => array('maxDate' => 'today'),
-        ));
-
-    $form->activeWidget('TextField', $element, 'volume');
-
-    $form->activeWidget('TextField', $element, 'comments')?>
-</fieldset>
+        return $events;
+    }
+}

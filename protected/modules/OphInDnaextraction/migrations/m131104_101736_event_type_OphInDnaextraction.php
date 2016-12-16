@@ -4,8 +4,8 @@ class m131104_101736_event_type_OphInDnaextraction extends CDbMigration
 {
     public function up()
     {
-        if (!$parent_event = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name = :class_name', array(':class_name' => 'OphInBloodsample'))->queryRow()) {
-            throw new Exception("Parent event type 'OphInBloodsample' not found, please install the parent module first.");
+        if (!$parent_event = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name = :class_name', array(':class_name' => 'OphInDnasample'))->queryRow()) {
+            throw new Exception("Parent event type 'OphInDnasample' not found, please install the parent module first.");
         }
         $parent_id = $parent_event['id'];
 

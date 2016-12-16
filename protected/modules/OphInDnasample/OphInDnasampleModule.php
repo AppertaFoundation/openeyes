@@ -24,7 +24,7 @@
  *
  * @property string $moduleShortSuffix
  */
-class OphInBloodsampleModule extends BaseEventTypeModule
+class OphInDnasampleModule extends BaseEventTypeModule
 {
     // this property is really only relevant to gii auto-generation, specifically
     // for updates to the module through gii
@@ -37,11 +37,11 @@ class OphInBloodsampleModule extends BaseEventTypeModule
 
         // import the module-level models and components
         $this->setImport(array(
-            'OphInBloodsample.models.*',
-            'OphInBloodsample.components.*',
+            'OphInDnasample.models.*',
+            'OphInDnasample.components.*',
         ));
 
-        $this->moduleShortSuffix = 'bloodsample';
+        $this->moduleShortSuffix = 'dnasample';
     }
 
     public function beforeControllerAction($controller, $action)

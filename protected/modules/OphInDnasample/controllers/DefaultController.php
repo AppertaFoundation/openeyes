@@ -17,11 +17,11 @@ class DefaultController extends BaseEventTypeController
         return array(
             array('allow',
                 'actions' => array('Create', 'Update', 'View', 'Print'),
-                'roles' => array('OprnEditBloodSample'),
+                'roles' => array('OprnEditDnaSample'),
             ),
             array('allow',
                 'actions' => array('View', 'Print'),
-                'roles' => array('OprnViewBloodSample'),
+                'roles' => array('OprnViewDnaSample'),
             ),
         );
     }

@@ -25,7 +25,7 @@ class SearchController extends BaseController
     {
         return array(
             array('allow',
-                'actions' => array('BloodSample'),
+                'actions' => array('DnaSample'),
                 'roles' => array('OprnSearchPedigree'),
             ), );
     }
@@ -37,7 +37,7 @@ class SearchController extends BaseController
         return parent::beforeAction($action);
     }
 
-    public function actionBloodSample()
+    public function actionDnaSample()
     {
         $pages = 1;
         $page = 1;
@@ -50,7 +50,7 @@ class SearchController extends BaseController
         if (@$_GET['search']) {
             $page = 1;
 
-            $count_command = $this->buildSearchCommand('count(et_ophinbloodsample_sample.id) as count');
+            $count_command = $this->buildSearchCommand('count(et_ophindnasample_sample.id) as count');
             $total_items = $count_command->queryScalar();
             $pages = ceil($total_items / $this->items_per_page);
 
@@ -58,7 +58,7 @@ class SearchController extends BaseController
                 $page = $_GET['page'];
             }
 
-            $search_command = $this->buildSearchCommand('event.id,patient.hos_num,contact.first_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,patient.yob,ophinbloodsample_sample_type.name,et_ophinbloodsample_sample.volume,et_ophinbloodsample_sample.comments', $page);
+            $search_command = $this->buildSearchCommand('event.id,patient.hos_num,contact.first_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,patient.yob,ophindnasample_sample_type.name,et_ophindnasample_sample.volume,et_ophindnasample_sample.comments', $page);
 
             $dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
 
@@ -70,10 +70,10 @@ class SearchController extends BaseController
                     $order = "last_name $dir, first_name $dir";
                     break;
                 case 'date_taken':
-                    $order = "blood_date $dir";
+                    $order = "dna_date $dir";
                     break;
                 case 'sample_type':
-                    $order = "ophinbloodsample_sample_type.name $dir";
+                    $order = "ophindnasample_sample_type.name $dir";
                     break;
                 case 'volume':
                     $order = "volume $dir";
@@ -96,7 +96,7 @@ class SearchController extends BaseController
         $pagination = new CPagination($total_items);
         $pagination->setPageSize($this->items_per_page);
 
-        $this->render('bloodSample', array(
+        $this->render('dnaSample', array(
             'results' => $results,
             'pagination' => $pagination,
             'page' => $page,
@@ -114,20 +114,20 @@ class SearchController extends BaseController
 
         $command = Yii::app()->db->createCommand()
             ->select($select)
-            ->from('et_ophinbloodsample_sample')
-            ->join('event', 'et_ophinbloodsample_sample.event_id = event.id')
+            ->from('et_ophindnasample_sample')
+            ->join('event', 'et_ophindnasample_sample.event_id = event.id')
             ->join('episode', 'event.episode_id = episode.id')
             ->join('patient', 'episode.patient_id = patient.id')
-            ->join('ophinbloodsample_sample_type', 'et_ophinbloodsample_sample.type_id = ophinbloodsample_sample_type.id')
+            ->join('ophindnasample_sample_type', 'et_ophindnasample_sample.type_id = ophindnasample_sample_type.id')
             ->join('contact', 'patient.contact_id = contact.id')
             ->leftJoin('secondary_diagnosis', 'secondary_diagnosis.patient_id = patient.id');
 
         if ($date_from) {
-            $command->andWhere('blood_date <= :date_from', array(':date_from' => Helper::convertNHS2MySQL($date_from)));
+            $command->andWhere('dna_date <= :date_from', array(':date_from' => Helper::convertNHS2MySQL($date_from)));
         }
 
         if ($date_to) {
-            $command->andWhere('blood_date >= :date_to', array(':date_to' => Helper::convertNHS2MySQL($date_to)));
+            $command->andWhere('dna_date >= :date_to', array(':date_to' => Helper::convertNHS2MySQL($date_to)));
         }
 
         if ($sample_type) {

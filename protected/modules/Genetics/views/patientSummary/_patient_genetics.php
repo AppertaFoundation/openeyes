@@ -52,7 +52,7 @@
 			</div>
 		<?php }?>
 		<?php
-		if ($api = Yii::app()->moduleAPI->get('OphInBloodsample')) {
+		if ($api = Yii::app()->moduleAPI->get('OphInDnasample')) {
 			if($events = $api->getEventsByPatient($this->patient)) {?>
 				<div class="row data-row">
 					<div class="large-4 column">
