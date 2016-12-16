@@ -31,7 +31,7 @@
 					<div class="data-label">Pedigree ID:</div>
 				</div>
 				<div class="large-8 column">
-					<div class="data-value"><?php echo $pp->pedigree_id?> (<?php echo CHtml::link('View',Yii::app()->createUrl('/Genetics/default/viewPedigree/'.$pp->pedigree_id))?>)</div>
+					<div class="data-value"><?php echo $pp->pedigree_id?> (<?php echo CHtml::link('View',Yii::app()->createUrl('/Genetics/pedigree/edit/'.$pp->pedigree_id))?>)</div>
 				</div>
 			</div>
 			<?php if ($genetics_patient = GeneticsPatient::model()->find('patient_id=?',array($patient->id))) {?>
@@ -65,13 +65,13 @@
 								echo ' '.Helper::convertMySQL2NHS($event->event_date);
 								?>
 								<br />
-							<?php
+								<?php
 							}
 							?>
 						</div>
 					</div>
 				</div>
-			<?php
+				<?php
 			}
 		}
 		?>
@@ -89,13 +89,13 @@
 								echo ' '.Helper::convertMySQL2NHS($event->event_date);
 								?>
 								<br />
-							<?php
+								<?php
 							}
 							?>
 						</div>
 					</div>
 				</div>
-			<?php
+				<?php
 			}
 		}
 		?>
@@ -113,13 +113,13 @@
 								echo ' '.Helper::convertMySQL2NHS($event->event_date);
 								?>
 								<br />
-							<?php
+								<?php
 							}
 							?>
 						</div>
 					</div>
 				</div>
-			<?php
+				<?php
 			}
 		}
 		?>
