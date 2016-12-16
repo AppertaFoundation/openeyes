@@ -303,9 +303,45 @@ class OphCiExamination_API extends \BaseAPI
         if ($unit = models\Element_OphCiExamination_Refraction::model()->find('event_id = ' . $eventid)) {
             return $unit;
         }
-
         return;
+    }
 
+    public function getMostRecentVA($eventid)
+    {
+        if($vaevents = models\Element_OphCiExamination_VisualAcuity::model()->findAll('event_id = ' . $eventid)) {
+            for ($i = 0; $i < count($vaevents); ++$i) {
+                if($vaevents){
+                    return $vaevents[$i];
+                }
+            }
+        }
+    }
+
+
+    public function getMostRecentVAData($id)
+    {
+        if ($unit = models\OphCiExamination_VisualAcuity_Reading::model()->findAll('element_id = ' . $id)) {
+            return $unit;
+        }
+    }
+
+
+    public function getMostRecentNearVA($eventid)
+    {
+        if($vaevents = models\Element_OphCiExamination_NearVisualAcuity::model()->findAll('event_id = ' . $eventid)) {
+            for ($i = 0; $i < count($vaevents); ++$i) {
+                return $vaevents[$i];
+            }
+        }
+    }
+
+
+    public function getMostRecentNearVAData($id)
+    {
+        // Then findAll data from va_reading for that element_id. Most recent.
+        if ($unit = models\OphCiExamination_NearVisualAcuity_Reading::model()->findAll('element_id = ' . $id)) {
+            return $unit;
+            }
     }
 
 
@@ -353,7 +389,7 @@ class OphCiExamination_API extends \BaseAPI
     public function getNearVAId($patient, $episode)
     {
         if ($va = $this->getElementForLatestEventInEpisode($episode, 'models\Element_OphCiExamination_NearVisualAcuity')) {
-            return $va->id;
+            return $va;
         }
     }
     public function getVAvalue($vareading, $unitId)
@@ -361,9 +397,7 @@ class OphCiExamination_API extends \BaseAPI
         if ($unit = models\OphCiExamination_VisualAcuityUnitValue::model()->find('base_value = ' . $vareading . ' AND unit_id = ' . $unitId)) {
             return $unit->value;
         }
-
         return;
-
     }
 
     public function getVARight($vaid)
@@ -372,9 +406,7 @@ class OphCiExamination_API extends \BaseAPI
             . $vaid . ' AND side = ' . self::RIGHT)) {
             return $unit;
         }
-
         return;
-
     }
 
     public function getVALeft($vaid)
@@ -383,9 +415,7 @@ class OphCiExamination_API extends \BaseAPI
             . $vaid . ' AND side = ' . self::LEFT)) {
             return $unit;
         }
-
         return;
-
     }
 
 
@@ -395,9 +425,7 @@ class OphCiExamination_API extends \BaseAPI
             . $vaid . ' AND side = ' . self::RIGHT)) {
             return $unit;
         }
-
         return;
-
     }
 
     public function getNearVALeft($vaid)
@@ -406,9 +434,7 @@ class OphCiExamination_API extends \BaseAPI
             . $vaid . ' AND side = ' . self::LEFT)) {
             return $unit;
         }
-
         return;
-
     }
 
 
@@ -418,7 +444,6 @@ class OphCiExamination_API extends \BaseAPI
             . $vaid . ' AND side = ' . self::RIGHT)) {
             return $unit;
         }
-
         return;
     }
 
@@ -428,10 +453,8 @@ class OphCiExamination_API extends \BaseAPI
             . ' AND side = ' . self::RIGHT)) {
             return $unit;
         }
-
         return;
     }
-
 
     public function getMethodIdLeft($vaid, $episode)
     {
@@ -439,7 +462,6 @@ class OphCiExamination_API extends \BaseAPI
             . ' AND side = ' . self::LEFT)) {
             return $unit;
         }
-
         return;
     }
 
@@ -449,7 +471,6 @@ class OphCiExamination_API extends \BaseAPI
             . ' AND side = ' . self::LEFT)) {
             return $unit;
         }
-
         return;
     }
 
@@ -459,7 +480,6 @@ class OphCiExamination_API extends \BaseAPI
         if ($unit = models\Element_OphCiExamination_VisualAcuity::model()->find('id = ?', array($vaid))) {
             return $unit->unit_id;
         }
-
         return;
     }
 
@@ -468,9 +488,9 @@ class OphCiExamination_API extends \BaseAPI
         if ($unit = models\Element_OphCiExamination_NearVisualAcuity::model()->find('id = ?', array($vaid))) {
             return $unit->unit_id;
         }
-
         return;
     }
+
     /**
      * gets the id for the Snellen Metre unit type for VA.
      *
@@ -507,7 +527,6 @@ class OphCiExamination_API extends \BaseAPI
         if ($unit = models\OphCiExamination_VisualAcuityUnit::model()->find('id = ?', array($unitId))) {
             return $unit->name;
         }
-
         return;
     }
 
@@ -516,7 +535,6 @@ class OphCiExamination_API extends \BaseAPI
         if ($unit = models\OphCiExamination_VisualAcuity_Method::model()->find('id = ?', array($methodId))) {
             return $unit->name;
         }
-
         return;
     }
 
@@ -531,6 +549,7 @@ class OphCiExamination_API extends \BaseAPI
     public function getLetterVisualAcuityRight($patient)
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+//            var_dump($episode);
             return ($best = $this->getBestVisualAcuity($patient, $episode, 'right')) ? $best->convertTo($best->value,
                 $this->getSnellenUnitId()) : null;
         }
@@ -600,11 +619,11 @@ class OphCiExamination_API extends \BaseAPI
      * get the va from the given episode for the left side of the episode patient.
      * @param Episode $episode
      * @param bool $include_nr_values
-<<<<<<< HEAD
+    <<<<<<< HEAD
      *
-=======
+    =======
      * @param string $before_date
->>>>>>> develop
+    >>>>>>> develop
      * @return OphCiExamination_VisualAcuity_Reading
      */
     public function getLetterVisualAcuityForEpisodeLeft($episode, $include_nr_values = false, $before_date = '')
@@ -629,13 +648,13 @@ class OphCiExamination_API extends \BaseAPI
     /**
      * get the va from the given episode for the right side of the episode patient.
      * @param Episode $episode
-<<<<<<< HEAD
+    <<<<<<< HEAD
      * @param bool $include_nr_values
      *
-=======
+    =======
      * @param bool    $include_nr_values
      * @param string $before_date
->>>>>>> develop
+    >>>>>>> develop
      * @return OphCiExamination_VisualAcuity_Reading
      */
     public function getLetterVisualAcuityForEpisodeRight($episode, $include_nr_values = false, $before_date = '')

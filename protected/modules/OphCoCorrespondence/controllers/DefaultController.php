@@ -414,6 +414,20 @@ class DefaultController extends BaseEventTypeController
 
         } else {
 
+            /**
+             * this is a hotfix for DocMan, when we generate correspondences
+             * where the main recipient is NOT the GP the than we need to cherrypick it
+             */
+            if( isset($_GET['print_only_gp']) && $_GET['print_only_gp'] == "1" ){
+
+                $gp_targets = $letter->getTargetByContactType("GP");
+                foreach($gp_targets as $gp_target){
+                    $this->render('print', array('element' => $letter, 'letter_address' => $gp_target->contact_name . "\n" . $gp_target->address ));
+                }
+
+                return;
+            }
+            
             $this->render('print', array('element' => $letter));
 
             if ($this->pdf_print_suffix == 'all' || @$_GET['all']) {
