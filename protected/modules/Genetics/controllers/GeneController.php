@@ -5,9 +5,9 @@
  *
  * Contains the actions pertaining to genes
  */
-class GeneController extends BaseModuleController
+class GeneController extends BaseAdminController
 {
-    public $layout = 'genetics';
+    public $layout = '//layouts/admin';
 
     protected $itemsPerPage = 20;
 
@@ -38,7 +38,7 @@ class GeneController extends BaseModuleController
      */
     public function actionEdit($id = false)
     {
-        $admin = new Crud(PedigreeGene::model(), $this);
+        $admin = new Admin(PedigreeGene::model(), $this);
         if ($id) {
             $admin->setModelId($id);
         }
