@@ -85,6 +85,8 @@ class OphInGenetictest_Test_Effect extends BaseEventTypeElement
     public function attributeLabels()
     {
         return array(
+            'id' => 'ID',
+            'name' => 'Name',
         );
     }
 

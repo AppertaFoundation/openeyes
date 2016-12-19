@@ -35,7 +35,9 @@ return array(
             'Base Change Type' => '/Genetics/baseChangeAdmin/list',
             'Amino Acid Change Type' => '/Genetics/aminoAcidChangeAdmin/list',
             'DNA Sample Change' => '/OphInDnasample/DnaSampleAdmin/list',
-            'Genome Versions' => '/Genetics/Gene/list'
+            'Genome Versions' => '/Genetics/Gene/list',
+            'Genetic Method' => '/OphInGenetictest/GeneticMethodAdmin/list',
+            'Genetic Effect' => '/OphInGenetictest/GeneticEffectAdmin/list'
         ),
     ),
     'components' => array(
