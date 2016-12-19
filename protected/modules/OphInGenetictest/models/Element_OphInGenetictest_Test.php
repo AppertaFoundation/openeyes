@@ -64,6 +64,7 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
         // will receive user inputs.
         return array(
             array('event_id, gene_id, method_id, comments, exon, dna_quality, dna_quantity, prime_rf, prime_rr, base_change, amino_acid_change, assay, effect_id, homo, result, result_date', 'safe'),
+            array('dna_quality','checkNumericRangeIfSide','side' => 'left', 'max' => 0.2, 'min' => 2.5),
             array('gene_id, homo', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
