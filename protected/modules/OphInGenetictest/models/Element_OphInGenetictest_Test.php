@@ -87,6 +87,7 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
             'gene' => array(self::BELONGS_TO, 'PedigreeGene', 'gene_id'),
             'effect' => array(self::BELONGS_TO, 'OphInGenetictest_Test_Effect', 'effect_id'),
             'method' => array(self::BELONGS_TO, 'OphInGenetictest_Test_Method', 'method_id'),
+            'external_source' => array(self::BELONGS_TO, 'OphInGenetictest_External_Source', 'external_source_id'),
         );
     }
 
@@ -111,6 +112,7 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
             'homo' => 'Homo',
             'result' => 'Result',
             'result_date' => 'Result date',
+            'external_source_id' => 'External Source'
         );
     }
 

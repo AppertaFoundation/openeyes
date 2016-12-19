@@ -33,12 +33,12 @@
  * @property User $user
  * @property User $usermodified
  */
-class OphInGenetictest_Test_Method extends BaseActiveRecord
+class OphInGenetictest_External_Source extends BaseActiveRecord
 {
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return OphInGenetictest_Test_Method the static model class
+     * @return OphInGenetictest_External_Source the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -50,7 +50,7 @@ class OphInGenetictest_Test_Method extends BaseActiveRecord
      */
     public function tableName()
     {
-        return 'ophingenetictest_test_method';
+        return 'ophingenetictest_external_source';
     }
 
     /**
@@ -104,5 +104,4 @@ class OphInGenetictest_Test_Method extends BaseActiveRecord
             'criteria' => $criteria,
         ));
     }
-
 }

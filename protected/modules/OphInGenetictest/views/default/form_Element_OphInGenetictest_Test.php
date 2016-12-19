@@ -25,28 +25,36 @@
          data-element-display-order="<?php echo $element->elementType->display_order ?>">
 
   <div class="element-fields">
-      <?php echo $form->dropDownList(
+      <?php $form->dropDownList(
           $element,
           'gene_id',
           CHtml::listData(PedigreeGene::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
           array('empty' => '- Select -'),
           false,
-          array('label' => 3, 'field' => 9)
+          array('label' => 3, 'field' => 3)
       ) ?>
-      <?php echo $form->dropDownList(
+      <?php $form->dropDownList(
           $element,
           'method_id',
           CHtml::listData(OphInGenetictest_Test_Method::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
           array('empty' => '- Select -'),
           false,
-          array('label' => 3, 'field' => 9)
+          array('label' => 3, 'field' => 3)
       ) ?>
-      <?php echo $form->dropDownList(
+      <?php $form->dropDownList(
           $element,
           'effect_id',
           CHtml::listData(OphInGenetictest_Test_Effect::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
           array('empty' => '- Select -'),
-          false, array('label' => 3, 'field' => 9)
+          false, array('label' => 3, 'field' => 3)
+      ) ?>
+      <?php $form->dropDownList(
+          $element,
+          'external_source_id',
+          CHtml::listData(OphInGenetictest_External_Source::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
+          array('empty' => '- Select -'),
+          false,
+          array('label' => 3, 'field' => 3)
       ) ?>
       <?php echo $form->textField($element, 'exon', array(), array(), array('label' => 3, 'field' => 3)) ?>
       <?php echo $form->textField($element, 'prime_rf', array(), array(), array('label' => 3, 'field' => 3)) ?>

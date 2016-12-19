@@ -62,9 +62,6 @@ class OphInGenetictest_Test_Effect extends BaseActiveRecord
         // will receive user inputs.
         return array(
             array('name', 'safe'),
-            // The following rule is used by search().
-            // Please remove those attributes that should not be searched.
-            array('id, event_id, result, ', 'safe', 'on' => 'search'),
         );
     }
 
@@ -108,18 +105,4 @@ class OphInGenetictest_Test_Effect extends BaseActiveRecord
         ));
     }
 
-    protected function beforeSave()
-    {
-        return parent::beforeSave();
-    }
-
-    protected function afterSave()
-    {
-        return parent::afterSave();
-    }
-
-    protected function beforeValidate()
-    {
-        return parent::beforeValidate();
-    }
 }
