@@ -415,4 +415,25 @@ class BaseEventTypeElement extends BaseElement
 
         $model::model()->deleteAll($criteria);
     }
+    
+    public function checkNumericRange($attribute, $params)
+    {
+        if ($this->$attribute != null) {
+            if ($this->$attribute < $params['min']) {
+                if (!@$params['message']) {
+                    $params['message'] = ucfirst($params['side']).' {attribute} is too small (need to be more than '.$params['min'].').';
+                }
+                $params['{attribute}'] = $this->getAttributeLabel($attribute);
+            } elseif ($this->$attribute > $params['max']) {
+                if (!@$params['message']) {
+                    $params['message'] = ucfirst($params['side']).' {attribute} is too big (need to be less than '.$params['max'].').';
+                }
+                $params['{attribute}'] = $this->getAttributeLabel($attribute);
+            }
+            if (isset($params['message'])) {
+                $this->addError($attribute, strtr($params['message'], $params));
+            }
+        }
+        
+    }
 }
