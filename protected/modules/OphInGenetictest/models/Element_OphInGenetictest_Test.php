@@ -63,7 +63,7 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, gene_id, method_id, comments, exon, prime_rf, prime_rr, base_change, amino_acid_change, assay, effect_id, homo, result, result_date', 'safe'),
+            array('event_id, gene_id, method_id, comments, exon, dna_quality, dna_quantity, prime_rf, prime_rr, base_change, amino_acid_change, assay, effect_id, homo, result, result_date', 'safe'),
             array('gene_id, homo', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
@@ -102,6 +102,8 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
             'method_id' => 'Method',
             'comments' => 'Comments',
             'exon' => 'Exon',
+            'dna_quality' => 'DNA quality',
+            'dna_quantity' => 'DNA quantity',
             'prime_rf' => 'Prime RF',
             'prime_rr' => 'Prime RR',
             'base_change' => 'Base change',

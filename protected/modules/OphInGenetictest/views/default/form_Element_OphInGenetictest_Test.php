@@ -29,6 +29,8 @@
 		<?php echo $form->dropDownList($element, 'method_id', CHtml::listData(OphInGenetictest_Test_Method::model()->findAll(array('order' => 'name asc')), 'id', 'name'), array('empty' => '- Select -'), false, array('label' => 3, 'field' => 9))?>
 		<?php echo $form->dropDownList($element, 'effect_id', CHtml::listData(OphInGenetictest_Test_Effect::model()->findAll(array('order' => 'name asc')), 'id', 'name'), array('empty' => '- Select -'), false, array('label' => 3, 'field' => 9))?>
 		<?php echo $form->textField($element, 'exon', array(), array(), array('label' => 3, 'field' => 3))?>
+		<?php echo $form->textField($element, 'dna_quality', array(), array(), array('label' => 3, 'field' => 1))?>
+		<?php echo $form->textField($element, 'dna_quantity', array(), array(), array('label' => 3, 'field' => 1))?>
 		<?php echo $form->textField($element, 'prime_rf', array(), array(), array('label' => 3, 'field' => 3))?>
 		<?php echo $form->textField($element, 'prime_rr', array(), array(), array('label' => 3, 'field' => 3))?>
 		<?php echo $form->textField($element, 'base_change', array(), array(), array('label' => 3, 'field' => 3))?>
