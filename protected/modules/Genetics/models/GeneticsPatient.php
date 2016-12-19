@@ -208,4 +208,27 @@ class GeneticsPatient extends BaseActiveRecord
             $geneticsDiagnosis->save();
         }
     }
+
+    /**
+     * @param int $pedigree_id
+     *
+     * @return bool|string
+     */
+    public function statusForPedigree($pedigree_id)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->condition = 'pedigree_id = :pedigree_id AND patient_id = :patient_id';
+        $criteria->params = array(
+            'pedigree_id' => $pedigree_id,
+            'patient_id' => $this->id,
+        );
+
+        $patientPedigree = GeneticsPatientPedigree::model()->find($criteria);
+
+        if(!$patientPedigree) {
+            return false;
+        }
+
+        return $patientPedigree->status->name;
+    }
 }

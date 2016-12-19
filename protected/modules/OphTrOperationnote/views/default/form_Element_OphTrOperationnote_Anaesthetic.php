@@ -18,15 +18,44 @@
  */
 ?>
 <div class="element-fields">
-	<?php echo $form->radioButtons($element, 'anaesthetic_type_id', 'AnaestheticType')?>
-	<?php echo $form->radioButtons($element, 'anaesthetist_id', 'Anaesthetist')?>
-	<?php if ($element->getSetting('fife')) {?>
-		<?php echo $form->dropDownList($element, 'anaesthetic_witness_id', CHtml::listData($element->surgeons, 'id', 'FullName'), array('empty' => '- Please select -'), $element->witness_hidden, array('field' => 3));?>
-	<?php }?>
-	<?php echo $form->radioButtons($element, 'anaesthetic_delivery_id', 'AnaestheticDelivery')?>
-	<?php echo $form->multiSelectList($element, 'AnaestheticAgent', 'anaesthetic_agents', 'id', $this->getAnaesthetic_agent_list($element), null, array('empty' => '- Anaesthetic agents -', 'label' => 'Agents'), false, false, null, false, false, array('field' => 3))?>
-	<div id="Element_OphTrOperationnote_Anaesthetic_anaesthetic_complications">
-		<?php echo $form->multiSelectList($element, 'OphTrOperationnote_AnaestheticComplications', 'anaesthetic_complications', 'id', CHtml::listData(OphTrOperationnote_AnaestheticComplications::model()->activeOrPk($element->anaestheticComplicationValues)->findAll(), 'id', 'name'), array(), array('empty' => '- Complications -', 'label' => 'Complications'), false, false, null, false, false, array('field' => 3))?>
-	</div>
-	<?php echo $form->textArea($element, 'anaesthetic_comment', array(), false, array('rows' => 4))?>
+    <?php echo $form->radioButtons($element, 'anaesthetic_type_id', 'AnaestheticType') ?>
+    <?php echo $form->radioButtons($element, 'anaesthetist_id', 'Anaesthetist') ?>
+    <?php if ($element->getSetting('fife')) { ?>
+        <?php echo $form->dropDownList($element, 'anaesthetic_witness_id', CHtml::listData($element->surgeons, 'id', 'FullName'), array('empty' => '- Please select -'),
+            $element->witness_hidden, array('field' => 3)); ?>
+    <?php } ?>
+    <?php echo $form->radioButtons($element, 'anaesthetic_delivery_id', 'AnaestheticDelivery') ?>
+    <?php echo $form->multiSelectList(
+        $element,
+        'AnaestheticAgent',
+        'anaesthetic_agents',
+        'id',
+        $this->getAnaesthetic_agent_list($element),
+        null,
+        array('empty' => '- Anaesthetic agents -', 'label' => 'Agents'),
+        false,
+        false,
+        null,
+        false,
+        false,
+        array('field' => 3)
+    ) ?>
+  <div id="Element_OphTrOperationnote_Anaesthetic_anaesthetic_complications">
+      <?php echo $form->multiSelectList(
+          $element,
+          'OphTrOperationnote_AnaestheticComplications',
+          'anaesthetic_complications',
+          'id',
+          CHtml::listData(OphTrOperationnote_AnaestheticComplications::model()->activeOrPk($element->anaestheticComplicationValues)->findAll(), 'id', 'name'),
+          array(),
+          array('empty' => '- Complications -', 'label' => 'Complications'),
+          false,
+          false,
+          null,
+          false,
+          false,
+          array('field' => 3)
+      ) ?>
+  </div>
+    <?php echo $form->textArea($element, 'anaesthetic_comment', array(), false, array('rows' => 4)) ?>
 </div>

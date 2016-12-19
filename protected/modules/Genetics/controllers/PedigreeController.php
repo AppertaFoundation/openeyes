@@ -19,13 +19,20 @@ class PedigreeController extends BaseModuleController
     public function accessRules()
     {
         return array(
-            array('allow',
+            array(
+                'allow',
                 'actions' => array('Edit', 'EditStudyStatus'),
                 'roles' => array('OprnEditPedigree'),
             ),
-            array('allow',
+            array(
+                'allow',
                 'actions' => array('List'),
                 'roles' => array('OprnSearchPedigree'),
+            ),
+            array(
+                'allow',
+                'actions' => array('PedigreeDisorder'),
+                'roles' => array('OprnSearchPedigree', 'OprnEditGeneticPatient'),
             ),
         );
     }
@@ -89,14 +96,22 @@ class PedigreeController extends BaseModuleController
             ),
             'amino_acid_change' => 'text',
             'genomic_coordinate' => 'text',
-            'genome_version'=> array(
+            'genome_version' => array(
                 'widget' => 'DropDownList',
-                'options' => array_combine($admin->getModel()->genomeVersions(), $admin->getModel()->genomeVersions()),
+                'options' => array_combine($admin->getModel()->genomeVersions(), $admin->getModel()->genomeVersions()), //get the versions as key and value for the dropdown
                 'htmlOptions' => null,
                 'hidden' => false,
                 'layoutColumns' => null,
             ),
             'gene_transcript' => 'text',
+            'subjects' => array(
+                'widget' => 'CustomView',
+                'viewName' => 'subjectList',
+                'viewArguments' => array(
+                    'subjects' => $admin->getModel()->subjects,
+                    'pedigree_id' => $id,
+                ),
+            ),
         ));
 
         $admin->editModel();
@@ -130,5 +145,29 @@ class PedigreeController extends BaseModuleController
         $admin->getSearch()->addSearchItem('disorder_id', array('type' => 'disorder'));
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
         $admin->listModel();
+    }
+
+    /**
+     * @param $id
+     * @throws CHttpException
+     */
+    public function actionPedigreeDisorder($id)
+    {
+        $pedigree = Pedigree::model()->findByPk($id);
+
+        if (!$pedigree) {
+            throw new CHttpException(404);
+        }
+
+        if (!$pedigree->disorder_id) {
+            throw new CHttpException(400);
+        }
+
+        $this->renderJSON(
+            array(
+                'id' => $pedigree->disorder_id,
+                'disorder' => $pedigree->disorder->term,
+            )
+        );
     }
 }
