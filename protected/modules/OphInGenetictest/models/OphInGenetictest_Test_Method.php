@@ -33,7 +33,7 @@
  * @property User $user
  * @property User $usermodified
  */
-class OphInGenetictest_Test_Method extends BaseEventTypeElement
+class OphInGenetictest_Test_Method extends BaseActiveRecord
 {
     /**
      * Returns the static model of the specified AR class.
@@ -108,18 +108,4 @@ class OphInGenetictest_Test_Method extends BaseEventTypeElement
         ));
     }
 
-    protected function beforeSave()
-    {
-        return parent::beforeSave();
-    }
-
-    protected function afterSave()
-    {
-        return parent::afterSave();
-    }
-
-    protected function beforeValidate()
-    {
-        return parent::beforeValidate();
-    }
 }
