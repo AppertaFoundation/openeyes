@@ -18,110 +18,110 @@
  */
 ?>
 <section class="box patient-info js-toggle-container">
-	<h3 class="box-title">Genetics:</h3>
-	<a href="#" class="toggle-trigger toggle-hide js-toggle">
+  <h3 class="box-title">Genetics:</h3>
+  <a href="#" class="toggle-trigger toggle-hide js-toggle">
 		<span class="icon-showhide">
 			Show/hide this section
 		</span>
-	</a>
-	<div class="js-toggle-body">
-		<?php if ($pp = $api->findPatientPedigree($patient->id)) {?>
-			<div class="row data-row">
-				<div class="large-4 column">
-					<div class="data-label">Pedigree ID:</div>
-				</div>
-				<div class="large-8 column">
-					<div class="data-value"><?php echo $pp->pedigree_id?> (<?php echo CHtml::link('View',Yii::app()->createUrl('/Genetics/pedigree/edit/'.$pp->pedigree_id))?>)</div>
-				</div>
-			</div>
-			<?php if ($genetics_patient = GeneticsPatient::model()->find('patient_id=?',array($patient->id))) {?>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label"><?php echo $genetics_patient->getAttributeLabel('comments')?>:</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value"><?php echo  Yii::app()->format->ntext($genetics_patient->comments)?></div>
-					</div>
-				</div>
-			<?php } ?>
-		<?php }else{?>
-			<div class="row data-row">
-				<div class="large-12 column">
-					<div class="data-label">This patient has no recorded pedigree.</div>
-				</div>
-			</div>
-		<?php }?>
-		<?php
-		if ($api = Yii::app()->moduleAPI->get('OphInBloodsample')) {
-			if($events = $api->getEventsByPatient($this->patient)) {?>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label">DNA Sample Events:</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value">
-							<?php foreach ($events as $event) {
-								echo EventNavigation::SmallIcon($event);
-								echo ' '.Helper::convertMySQL2NHS($event->event_date);
-								?>
-								<br />
-								<?php
-							}
-							?>
-						</div>
-					</div>
-				</div>
-				<?php
-			}
-		}
-		?>
-		<?php
-		if ($api = Yii::app()->moduleAPI->get('OphInDnaextraction')) {
-			if($events = $api->getEventsByPatient($this->patient)) {?>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label">DNA Extraction Events:</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value">
-							<?php foreach ($events as $event) {
-								echo EventNavigation::SmallIcon($event);
-								echo ' '.Helper::convertMySQL2NHS($event->event_date);
-								?>
-								<br />
-								<?php
-							}
-							?>
-						</div>
-					</div>
-				</div>
-				<?php
-			}
-		}
-		?>
-		<?php
-		if ($api = Yii::app()->moduleAPI->get('OphInGenetictest')) {
-			if($events = $api->getEventsByPatient($this->patient)) {?>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label">Genetic Result Events:</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value">
-							<?php foreach ($events as $event) {
-								echo EventNavigation::SmallIcon($event);
-								echo ' '.Helper::convertMySQL2NHS($event->event_date);
-								?>
-								<br />
-								<?php
-							}
-							?>
-						</div>
-					</div>
-				</div>
-				<?php
-			}
-		}
-		?>
-	</div>
+  </a>
+  <div class="js-toggle-body">
+      <?php if ($pp = $api->findPatientPedigree($patient->id)) { ?>
+        <div class="row data-row">
+          <div class="large-4 column">
+            <div class="data-label">Pedigree ID:</div>
+          </div>
+          <div class="large-8 column">
+            <div class="data-value"><?php echo $pp->pedigree_id ?> (<?php echo CHtml::link('View', Yii::app()->createUrl('/Genetics/pedigree/edit/' . $pp->pedigree_id)) ?>)</div>
+          </div>
+        </div>
+          <?php if ($genetics_patient = GeneticsPatient::model()->find('patient_id=?', array($patient->id))) { ?>
+          <div class="row data-row">
+            <div class="large-4 column">
+              <div class="data-label"><?php echo $genetics_patient->getAttributeLabel('comments') ?>:</div>
+            </div>
+            <div class="large-8 column">
+              <div class="data-value"><?php echo Yii::app()->format->ntext($genetics_patient->comments) ?></div>
+            </div>
+          </div>
+          <?php } ?>
+      <?php } else { ?>
+        <div class="row data-row">
+          <div class="large-12 column">
+            <div class="data-label">This patient has no recorded pedigree.</div>
+          </div>
+        </div>
+      <?php } ?>
+      <?php
+      if ($api = Yii::app()->moduleAPI->get('OphInBloodsample')) {
+          if ($events = $api->getEventsByPatient($this->patient)) { ?>
+            <div class="row data-row">
+              <div class="large-4 column">
+                <div class="data-label">DNA Sample Events:</div>
+              </div>
+              <div class="large-8 column">
+                <div class="data-value">
+                    <?php foreach ($events as $event) {
+                        echo EventNavigation::SmallIcon($event);
+                        echo ' ' . Helper::convertMySQL2NHS($event->event_date);
+                        ?>
+                      <br/>
+                        <?php
+                    }
+                    ?>
+                </div>
+              </div>
+            </div>
+              <?php
+          }
+      }
+      ?>
+      <?php
+      if ($api = Yii::app()->moduleAPI->get('OphInDnaextraction')) {
+          if ($events = $api->getEventsByPatient($this->patient)) { ?>
+            <div class="row data-row">
+              <div class="large-4 column">
+                <div class="data-label">DNA Extraction Events:</div>
+              </div>
+              <div class="large-8 column">
+                <div class="data-value">
+                    <?php foreach ($events as $event) {
+                        echo EventNavigation::SmallIcon($event);
+                        echo ' ' . Helper::convertMySQL2NHS($event->event_date);
+                        ?>
+                      <br/>
+                        <?php
+                    }
+                    ?>
+                </div>
+              </div>
+            </div>
+              <?php
+          }
+      }
+      ?>
+      <?php
+      if ($api = Yii::app()->moduleAPI->get('OphInGenetictest')) {
+          if ($events = $api->getEventsByPatient($this->patient)) { ?>
+            <div class="row data-row">
+              <div class="large-4 column">
+                <div class="data-label">Genetic Result Events:</div>
+              </div>
+              <div class="large-8 column">
+                <div class="data-value">
+                    <?php foreach ($events as $event) {
+                        echo EventNavigation::SmallIcon($event);
+                        echo ' ' . Helper::convertMySQL2NHS($event->event_date);
+                        ?>
+                      <br/>
+                        <?php
+                    }
+                    ?>
+                </div>
+              </div>
+            </div>
+              <?php
+          }
+      }
+      ?>
+  </div>
 </section>

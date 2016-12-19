@@ -68,27 +68,4 @@ class GeneticsPatientPedigree extends BaseActiveRecord
         );
     }
 
-    /**
-     * @return string
-     */
-    public function getHoverText()
-    {
-        $api = Yii::app()->moduleAPI->get('OphInGenetictest');
-        if ($api) {
-            $text = '';
-
-            foreach ($api->getGeneticTestsForPatient($this->patient) as $i => $genetic_test) {
-                if ($i > 0) {
-                    $text .= "\r\n";
-                }
-                $text .= $genetic_test->getHoverText();
-            }
-
-            if ($text) {
-                return $text;
-            }
-        }
-
-        return 'No genetic tests recorded';
-    }
 }

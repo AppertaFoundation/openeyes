@@ -38,7 +38,7 @@ class OphInGenetictest_Test_Effect extends BaseEventTypeElement
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return the static model class
+     * @return OphInGenetictest_Test_Effect the static model class
      */
     public static function model($className = __CLASS__)
     {

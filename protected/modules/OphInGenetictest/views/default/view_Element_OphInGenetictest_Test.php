@@ -19,172 +19,172 @@
 ?>
 
 <section class="element">
-	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-2 column">
-				<div class="data-label">
-					<?php echo CHtml::encode($element->getAttributeLabel('gene_id'))?>
-				</div>
-			</div>
-			<div class="large-10 column end">
-				<div class="data-value">
-					<?php echo CHtml::encode($element->gene ? $element->gene->name : 'None')?>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-2 column">
-				<div class="data-label">
-					<?php echo CHtml::encode($element->getAttributeLabel('method_id'))?>
-				</div>
-			</div>
-			<div class="large-10 column end">
-				<div class="data-value">
-					<?php echo CHtml::encode($element->method ? $element->method->name : 'None')?>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-2 column">
-				<div class="data-label">
-					<?php echo CHtml::encode($element->getAttributeLabel('effect_id'))?>
-				</div>
-			</div>
-			<div class="large-10 column end">
-				<div class="data-value">
-					<?php echo CHtml::encode($element->effect ? $element->effect->name : 'None')?>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-2 column">
-				<div class="data-label">
-					<?php echo CHtml::encode($element->getAttributeLabel('exon'))?>
-				</div>
-			</div>
-			<div class="large-10 column end">
-				<div class="data-value">
-					<?php echo CHtml::encode($element->exon)?>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-2 column">
-				<div class="data-label">
-					<?php echo CHtml::encode($element->getAttributeLabel('prime_rf'))?>
-				</div>
-			</div>
-			<div class="large-10 column end">
-				<div class="data-value">
-					<?php echo CHtml::encode($element->prime_rf)?>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-2 column">
-				<div class="data-label">
-					<?php echo CHtml::encode($element->getAttributeLabel('prime_rr'))?>
-				</div>
-			</div>
-			<div class="large-10 column end">
-				<div class="data-value">
-					<?php echo CHtml::encode($element->prime_rr)?>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-2 column">
-				<div class="data-label">
-					<?php echo CHtml::encode($element->getAttributeLabel('base_change'))?>
-				</div>
-			</div>
-			<div class="large-10 column end">
-				<div class="data-value">
-					<?php echo CHtml::encode($element->base_change)?>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-2 column">
-				<div class="data-label">
-					<?php echo CHtml::encode($element->getAttributeLabel('amino_acid_change'))?>
-				</div>
-			</div>
-			<div class="large-10 column end">
-				<div class="data-value">
-					<?php echo CHtml::encode($element->amino_acid_change)?>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-2 column">
-				<div class="data-label">
-					<?php echo CHtml::encode($element->getAttributeLabel('assay'))?>
-				</div>
-			</div>
-			<div class="large-10 column end">
-				<div class="data-value">
-					<?php echo CHtml::encode($element->assay)?>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-2 column">
-				<div class="data-label">
-					<?php echo CHtml::encode($element->getAttributeLabel('homo'))?>
-				</div>
-			</div>
-			<div class="large-10 column end">
-				<div class="data-value">
-					<?php echo CHtml::encode($element->homo)?>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-2 column">
-				<div class="data-label">
-					<?php echo CHtml::encode($element->getAttributeLabel('result'))?>
-				</div>
-			</div>
-			<div class="large-10 column end">
-				<div class="data-value">
-					<?php echo CHtml::encode($element->result)?>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-2 column">
-				<div class="data-label">
-					<?php echo CHtml::encode($element->getAttributeLabel('result_date'))?>
-				</div>
-			</div>
-			<div class="large-10 column end">
-				<div class="data-value">
-					<?php echo CHtml::encode($element->NHSDate('result_date'))?>
-				</div>
-			</div>
-		</div>
-	</div>
+  <div class="element-data">
+    <div class="row data-row">
+      <div class="large-2 column">
+        <div class="data-label">
+            <?php echo CHtml::encode($element->getAttributeLabel('gene_id')) ?>
+        </div>
+      </div>
+      <div class="large-10 column end">
+        <div class="data-value">
+            <?php echo CHtml::encode($element->gene ? $element->gene->name : 'None') ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="element-data">
+    <div class="row data-row">
+      <div class="large-2 column">
+        <div class="data-label">
+            <?php echo CHtml::encode($element->getAttributeLabel('method_id')) ?>
+        </div>
+      </div>
+      <div class="large-10 column end">
+        <div class="data-value">
+            <?php echo CHtml::encode($element->method ? $element->method->name : 'None') ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="element-data">
+    <div class="row data-row">
+      <div class="large-2 column">
+        <div class="data-label">
+            <?php echo CHtml::encode($element->getAttributeLabel('effect_id')) ?>
+        </div>
+      </div>
+      <div class="large-10 column end">
+        <div class="data-value">
+            <?php echo CHtml::encode($element->effect ? $element->effect->name : 'None') ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="element-data">
+    <div class="row data-row">
+      <div class="large-2 column">
+        <div class="data-label">
+            <?php echo CHtml::encode($element->getAttributeLabel('exon')) ?>
+        </div>
+      </div>
+      <div class="large-10 column end">
+        <div class="data-value">
+            <?php echo CHtml::encode($element->exon) ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="element-data">
+    <div class="row data-row">
+      <div class="large-2 column">
+        <div class="data-label">
+            <?php echo CHtml::encode($element->getAttributeLabel('prime_rf')) ?>
+        </div>
+      </div>
+      <div class="large-10 column end">
+        <div class="data-value">
+            <?php echo CHtml::encode($element->prime_rf) ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="element-data">
+    <div class="row data-row">
+      <div class="large-2 column">
+        <div class="data-label">
+            <?php echo CHtml::encode($element->getAttributeLabel('prime_rr')) ?>
+        </div>
+      </div>
+      <div class="large-10 column end">
+        <div class="data-value">
+            <?php echo CHtml::encode($element->prime_rr) ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="element-data">
+    <div class="row data-row">
+      <div class="large-2 column">
+        <div class="data-label">
+            <?php echo CHtml::encode($element->getAttributeLabel('base_change')) ?>
+        </div>
+      </div>
+      <div class="large-10 column end">
+        <div class="data-value">
+            <?php echo CHtml::encode($element->base_change) ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="element-data">
+    <div class="row data-row">
+      <div class="large-2 column">
+        <div class="data-label">
+            <?php echo CHtml::encode($element->getAttributeLabel('amino_acid_change')) ?>
+        </div>
+      </div>
+      <div class="large-10 column end">
+        <div class="data-value">
+            <?php echo CHtml::encode($element->amino_acid_change) ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="element-data">
+    <div class="row data-row">
+      <div class="large-2 column">
+        <div class="data-label">
+            <?php echo CHtml::encode($element->getAttributeLabel('assay')) ?>
+        </div>
+      </div>
+      <div class="large-10 column end">
+        <div class="data-value">
+            <?php echo CHtml::encode($element->assay) ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="element-data">
+    <div class="row data-row">
+      <div class="large-2 column">
+        <div class="data-label">
+            <?php echo CHtml::encode($element->getAttributeLabel('homo')) ?>
+        </div>
+      </div>
+      <div class="large-10 column end">
+        <div class="data-value">
+            <?php echo CHtml::encode($element->homo) ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="element-data">
+    <div class="row data-row">
+      <div class="large-2 column">
+        <div class="data-label">
+            <?php echo CHtml::encode($element->getAttributeLabel('result')) ?>
+        </div>
+      </div>
+      <div class="large-10 column end">
+        <div class="data-value">
+            <?php echo CHtml::encode($element->result) ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="element-data">
+    <div class="row data-row">
+      <div class="large-2 column">
+        <div class="data-label">
+            <?php echo CHtml::encode($element->getAttributeLabel('result_date')) ?>
+        </div>
+      </div>
+      <div class="large-10 column end">
+        <div class="data-value">
+            <?php echo CHtml::encode($element->NHSDate('result_date')) ?>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>

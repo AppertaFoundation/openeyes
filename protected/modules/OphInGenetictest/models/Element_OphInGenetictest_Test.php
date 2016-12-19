@@ -1,4 +1,4 @@
-	<?php
+<?php
 /**
  * OpenEyes.
  *
@@ -40,7 +40,7 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return the static model class
+     * @return Element_OphInGenetictest_Test the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -133,11 +133,6 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
-    }
-
-    public function getHoverText()
-    {
-        return $this->gene->name.', result: '.$this->result;
     }
 }
 ?>

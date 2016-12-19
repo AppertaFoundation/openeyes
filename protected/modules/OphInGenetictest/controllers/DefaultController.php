@@ -2,6 +2,9 @@
 
 class DefaultController extends BaseEventTypeController
 {
+    /**
+     * @return array
+     */
     public function accessRules()
     {
         return array(
@@ -16,26 +19,10 @@ class DefaultController extends BaseEventTypeController
         );
     }
 
-    public function actionCreate()
-    {
-        parent::actionCreate();
-    }
-
-    public function actionUpdate($id)
-    {
-        parent::actionUpdate($id);
-    }
-
-    public function actionView($id)
-    {
-        parent::actionView($id);
-    }
-
-    public function actionPrint($id)
-    {
-        parent::actionPrint($id);
-    }
-
+    /**
+     * @param BaseEventTypeElement $element
+     * @return bool
+     */
     public function isRequiredInUI(BaseEventTypeElement $element)
     {
         return true;
