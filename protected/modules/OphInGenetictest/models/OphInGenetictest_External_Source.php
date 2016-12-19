@@ -33,14 +33,12 @@
  * @property User $user
  * @property User $usermodified
  */
-class Element_OphInGenetictest_Test extends BaseEventTypeElement
+class OphInGenetictest_External_Source extends BaseActiveRecord
 {
-    public $service;
-
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return Element_OphInGenetictest_Test the static model class
+     * @return OphInGenetictest_External_Source the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -52,7 +50,7 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
      */
     public function tableName()
     {
-        return 'et_ophingenetictest_test';
+        return 'ophingenetictest_external_source';
     }
 
     /**
@@ -63,11 +61,7 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, gene_id, method_id, comments, exon, dna_quality, dna_quantity, prime_rf, prime_rr, base_change, amino_acid_change, assay, effect_id, homo, result, result_date', 'safe'),
-            array('gene_id, homo', 'required'),
-            // The following rule is used by search().
-            // Please remove those attributes that should not be searched.
-            array('id, event_id, result, ', 'safe', 'on' => 'search'),
+            array('name', 'safe'),
         );
     }
 
@@ -79,15 +73,6 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='".get_class($this)."'"),
-            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
-            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'gene' => array(self::BELONGS_TO, 'PedigreeGene', 'gene_id'),
-            'effect' => array(self::BELONGS_TO, 'OphInGenetictest_Test_Effect', 'effect_id'),
-            'method' => array(self::BELONGS_TO, 'OphInGenetictest_Test_Method', 'method_id'),
-            'external_source' => array(self::BELONGS_TO, 'OphInGenetictest_External_Source', 'external_source_id'),
         );
     }
 
@@ -97,24 +82,6 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
     public function attributeLabels()
     {
         return array(
-            'id' => 'ID',
-            'event_id' => 'Event',
-            'gene_id' => 'Gene',
-            'method_id' => 'Method',
-            'comments' => 'Comments',
-            'exon' => 'Exon',
-            'dna_quality' => 'DNA quality',
-            'dna_quantity' => 'DNA quantity',
-            'prime_rf' => 'Prime RF',
-            'prime_rr' => 'Prime RR',
-            'base_change' => 'Base change',
-            'amino_acid_change' => 'Amino acid change',
-            'assay' => 'Assay',
-            'effect_id' => 'Effect',
-            'homo' => 'Homo',
-            'result' => 'Result',
-            'result_date' => 'Result date',
-            'external_source_id' => 'External Source'
         );
     }
 
@@ -131,12 +98,10 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
         $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
-        $criteria->compare('event_id', $this->event_id, true);
-        $criteria->compare('result', $this->result);
+        $criteria->compare('name', $this->name);
 
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
     }
 }
-?>

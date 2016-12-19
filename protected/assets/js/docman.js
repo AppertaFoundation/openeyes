@@ -274,7 +274,7 @@ var docman = (function() {
                         $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val(resp.contact_type.toUpperCase()).trigger('change');
 
                         //set readonly
-                        $('#DocumentTarget_' + rowindex + '_attributes_contact_name').attr('readonly', (resp.contact_type.toUpperCase() === 'GP'));
+                        //$('#DocumentTarget_' + rowindex + '_attributes_contact_name').attr('readonly', (resp.contact_type.toUpperCase() === 'GP'));
                         $('#Document_Target_Address_' + rowindex).attr('readonly', (resp.contact_type.toUpperCase() === 'GP'));
 
                         if((resp.contact_type.toUpperCase() === 'GP' || resp.contact_type.toUpperCase() === 'PATIENT') && rowindex !== other_rowindex){
@@ -289,7 +289,7 @@ var docman = (function() {
                         }
                         
                         var other_contact_type = $('#DocumentTarget_' + other_rowindex + '_attributes_contact_type').val();
-                        $('#DocumentTarget_' + other_rowindex + '_attributes_contact_name').attr('readonly', (other_contact_type === 'GP'));
+                        //$('#DocumentTarget_' + other_rowindex + '_attributes_contact_name').attr('readonly', (other_contact_type === 'GP'));
                         $('#Document_Target_Address_' + other_rowindex).attr('readonly', (other_contact_type === 'GP'));
                         
                         // if the 'To' dropdown has changed we check the Cc and add recipients
@@ -322,7 +322,7 @@ var docman = (function() {
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val('OTHER').trigger('change');
                 
                 //set readonly
-                $('#DocumentTarget_' + rowindex + '_attributes_contact_name').attr('readonly', false);
+                //$('#DocumentTarget_' + rowindex + '_attributes_contact_name').attr('readonly', false);
                 $('#Document_Target_Address_' + rowindex).attr('readonly', false);
             }
         },

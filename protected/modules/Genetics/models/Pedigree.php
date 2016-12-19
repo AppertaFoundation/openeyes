@@ -88,6 +88,11 @@ class Pedigree extends BaseActiveRecord
             'inheritance' => array(self::BELONGS_TO, 'PedigreeInheritance', 'inheritance_id'),
             'gene' => array(self::BELONGS_TO, 'PedigreeGene', 'gene_id'),
             'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id'),
+            'subjects' =>  array(
+                self::MANY_MANY,
+                'GeneticsPatient',
+                'genetics_patient_pedigree(patient_id, pedigree_id)',
+            ),
             'members' => array(self::HAS_MANY, 'GeneticsPatientPedigree', 'pedigree_id', 'with' => array('patient')),
         );
     }

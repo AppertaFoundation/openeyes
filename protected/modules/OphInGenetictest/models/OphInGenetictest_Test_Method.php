@@ -33,12 +33,12 @@
  * @property User $user
  * @property User $usermodified
  */
-class OphInGenetictest_Test_Method extends BaseEventTypeElement
+class OphInGenetictest_Test_Method extends BaseActiveRecord
 {
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return the static model class
+     * @return OphInGenetictest_Test_Method the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -62,9 +62,6 @@ class OphInGenetictest_Test_Method extends BaseEventTypeElement
         // will receive user inputs.
         return array(
             array('name', 'safe'),
-            // The following rule is used by search().
-            // Please remove those attributes that should not be searched.
-            array('id, event_id, result, ', 'safe', 'on' => 'search'),
         );
     }
 
@@ -108,18 +105,4 @@ class OphInGenetictest_Test_Method extends BaseEventTypeElement
         ));
     }
 
-    protected function beforeSave()
-    {
-        return parent::beforeSave();
-    }
-
-    protected function afterSave()
-    {
-        return parent::afterSave();
-    }
-
-    protected function beforeValidate()
-    {
-        return parent::beforeValidate();
-    }
 }

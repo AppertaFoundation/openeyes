@@ -18,33 +18,33 @@
  */
 ?>
 <ul class="pagination right">
-	<?php
-	if (@$onePageOnly && $page >10) {?>
-		<li><a href="<?php echo Yii::app()->createUrl($this->getUri(array('page'=>$page-10)))?>">&laquo;10</a></li>
-	<?php }
-	if ($page > 1) {?>
-		<li><a href="<?php echo Yii::app()->createUrl($this->getUri(array('page'=>$page-1)))?>">&laquo; back</a></li>
-	<?php } else {?>
-		<li class="unavailable"><a href="">&laquo; back</a></li>
-	<?php }?>
-	<?php for ($i=1; $i<=$pages;$i++) {?>
-		<?php if ($i == $page) {?>
-			<li class="current"><a href=""><?php echo $i?></a></li>
-		<?php } else {?>
-			<?php if (!@$onePageOnly) {?>
-				<li><a href="<?php echo Yii::app()->createUrl($this->getUri(array('page'=>$i)))?>"><?php echo $i?></a></li>
-			<?php }?>
-		<?php }?>
-	<?php }?>
-	<?php if ($page < $pages) {?>
-		<li><a href="<?php echo Yii::app()->createUrl($this->getUri(array('page'=>$page+1)))?>">next &raquo;</a></li>
-	<?php } else {?>
-		<li class="unavailable"><a href="">next &raquo;</a></li>
-	<?php }
-	if (@$onePageOnly && $page < $pages-9) {?>
-	  <li><a href="<?php echo Yii::app()->createUrl($this->getUri(array('page'=>$page+10)))?>">10 &raquo;</a></li>
-	<?php }
-	if (@$onePageOnly) {?>
-		<li><?php echo $page?>/<?php echo $pages?></li>
-	<?php }?>
+    <?php
+    if (@$onePageOnly && $page > 10) { ?>
+      <li><a href="<?php echo Yii::app()->createUrl($this->getUri(array('page' => $page - 10))) ?>">&laquo;10</a></li>
+    <?php }
+    if ($page > 1) { ?>
+      <li><a href="<?php echo Yii::app()->createUrl($this->getUri(array('page' => $page - 1))) ?>">&laquo; back</a></li>
+    <?php } else { ?>
+      <li class="unavailable"><a href="">&laquo; back</a></li>
+    <?php } ?>
+    <?php for ($i = 1; $i <= $pages; $i++) { ?>
+        <?php if ($i == $page) { ?>
+        <li class="current"><a href=""><?php echo $i ?></a></li>
+        <?php } else { ?>
+            <?php if (!@$onePageOnly) { ?>
+          <li><a href="<?php echo Yii::app()->createUrl($this->getUri(array('page' => $i))) ?>"><?php echo $i ?></a></li>
+            <?php } ?>
+        <?php } ?>
+    <?php } ?>
+    <?php if ($page < $pages) { ?>
+      <li><a href="<?php echo Yii::app()->createUrl($this->getUri(array('page' => $page + 1))) ?>">next &raquo;</a></li>
+    <?php } else { ?>
+      <li class="unavailable"><a href="">next &raquo;</a></li>
+    <?php }
+    if (@$onePageOnly && $page < $pages - 9) { ?>
+      <li><a href="<?php echo Yii::app()->createUrl($this->getUri(array('page' => $page + 10))) ?>">10 &raquo;</a></li>
+    <?php }
+    if (@$onePageOnly) { ?>
+      <li><?php echo $page ?>/<?php echo $pages ?></li>
+    <?php } ?>
 </ul>
