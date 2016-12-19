@@ -33,7 +33,7 @@
  * @property User $user
  * @property User $usermodified
  */
-class OphInGenetictest_Test_Effect extends BaseEventTypeElement
+class OphInGenetictest_Test_Effect extends BaseActiveRecord
 {
     /**
      * Returns the static model of the specified AR class.
