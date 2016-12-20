@@ -43,6 +43,39 @@
 				<div class="data-value"><?php echo CHtml::encode($element->volume)?></div>
 			</div>
 		</div>
+		
+      <div class="row data-row">
+			<div class="large-2 column">
+				<div class="data-label"><?php echo $element->getAttributeLabel('is_local')?>:</div>
+			</div>
+			<div class="large-10 column">
+				<div class="data-value"><?php echo CHtml::encode($element->is_local)?></div>
+			</div>
+		</div>		
+
+      <div class="row data-row">
+			<div class="large-2 column">
+				<div class="data-label"><?php echo $element->getAttributeLabel('destination')?>:</div>
+			</div>
+			<div class="large-10 column">
+				<div class="data-value"><?php echo CHtml::encode($element->destination)?></div>
+			</div>
+		</div>	
+
+      <div class="row data-row">
+			<div class="large-2 column">
+				<div class="data-label"><?php echo $element->getAttributeLabel('consented_by')?>:</div>
+			</div>
+			<div class="large-10 column">
+				<div class="data-value">
+				    <?php 
+				        $user = User::model()->findByPk($element->consented_by);
+				        echo $user['first_name'].' '.$user['last_name'];
+				    ?>
+				</div>
+			</div>
+		</div>
+		
 		<div class="row data-row">
 			<div class="large-2 column">
 				<div class="data-label"><?php echo $element->getAttributeLabel('comments')?>:</div>

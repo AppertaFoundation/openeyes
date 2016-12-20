@@ -74,9 +74,10 @@ class Element_OphInDnasample_Sample extends BaseEventTypeElement
         return array(
             array('event_id, old_dna_no,subject_id, dna_date, comments, type_id, volume', 'safe'),
             array('type_id', 'required'),
+            array('consented_by, is_local, destination','safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, event_id, old_dna_no, subject_id, dna_date, comments, type_id, consented_by, is_local, destination', 'safe', 'on' => 'search'),
+            array('id, event_id, old_dna_no, subject_id, dna_date, comments', 'safe', 'on' => 'search'),
         );
     }
 

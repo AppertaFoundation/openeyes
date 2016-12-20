@@ -31,6 +31,19 @@
         ));
 
     $form->activeWidget('TextField', $element, 'volume');
-
-    $form->activeWidget('TextField', $element, 'comments')?>
+    $form->radioBoolean($element, 'is_local', array(), array('label' => 3, 'field' => 9));
+    $form->activeWidget('TextField', $element, 'destination');
+    $form->dropDownList(
+        $element,
+        'consented_by',
+        CHtml::listData(User::model()->findAll(array('order' => 'first_name asc')), 'id', 'username'),
+        array('empty' => '- Select -')
+    );
+    
+    $user = User::model()->findByPk(Yii::app()->user->id);
+    //$user['first_name'].' '.$user['last_name'];
+    $form->activeWidget('TextField', $element, 'comments');
+    
+    ?>
+    
 </fieldset>
