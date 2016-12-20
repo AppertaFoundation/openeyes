@@ -54,7 +54,11 @@ class OphInDnaextraction_DnaTests_Investigator extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('value, display_order', 'safe'),
+            array('name', 'safe'),
+            array('name', 'required'),
+            // The following rule is used by search().
+            // Please remove those attributes that should not be searched.
+            array('id, name', 'safe', 'on' => 'search'),
         );
     }
 

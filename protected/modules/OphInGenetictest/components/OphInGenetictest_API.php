@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -21,13 +22,12 @@ class OphInGenetictest_API extends BaseAPI
     public function getGeneticTestsForPatient($patient)
     {
         return Element_OphInGenetictest_Test::model()->with(array(
-                'event' => array(
-                    'with' => array(
-                        'episode',
-                    ),
+            'event' => array(
+                'with' => array(
+                    'episode',
                 ),
-            ))
-            ->findAll(array(
+            ),
+        ))->findAll(array(
                 'order' => 'event.created_date',
                 'condition' => 'patient_id = :patient_id',
                 'params' => array(

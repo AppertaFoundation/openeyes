@@ -1,4 +1,4 @@
-	<?php
+<?php
 /**
  * OpenEyes.
  *
@@ -40,7 +40,7 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return the static model class
+     * @return Element_OphInGenetictest_Test the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -63,7 +63,8 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, gene_id, method_id, comments, exon, prime_rf, prime_rr, base_change, amino_acid_change, assay, effect_id, homo, result, result_date', 'safe'),
+            array('event_id, gene_id, method_id, comments, exon, dna_quality, dna_quantity, prime_rf, prime_rr, base_change, amino_acid_change, assay, effect_id, homo, result, result_date', 'safe'),
+            array('dna_quality','checkNumericRange', 'min' => 0.2, 'max' => 2.5),
             array('gene_id, homo', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
@@ -87,6 +88,7 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
             'gene' => array(self::BELONGS_TO, 'PedigreeGene', 'gene_id'),
             'effect' => array(self::BELONGS_TO, 'OphInGenetictest_Test_Effect', 'effect_id'),
             'method' => array(self::BELONGS_TO, 'OphInGenetictest_Test_Method', 'method_id'),
+            'external_source' => array(self::BELONGS_TO, 'OphInGenetictest_External_Source', 'external_source_id'),
         );
     }
 
@@ -102,6 +104,8 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
             'method_id' => 'Method',
             'comments' => 'Comments',
             'exon' => 'Exon',
+            'dna_quality' => 'DNA quality',
+            'dna_quantity' => 'DNA quantity',
             'prime_rf' => 'Prime RF',
             'prime_rr' => 'Prime RR',
             'base_change' => 'Base change',
@@ -111,6 +115,7 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
             'homo' => 'Homo',
             'result' => 'Result',
             'result_date' => 'Result date',
+            'external_source_id' => 'External Source'
         );
     }
 
@@ -133,11 +138,6 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
-    }
-
-    public function getHoverText()
-    {
-        return $this->gene->name.', result: '.$this->result;
     }
 }
 ?>

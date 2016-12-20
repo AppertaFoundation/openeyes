@@ -1573,6 +1573,9 @@ class BaseEventTypeController extends BaseModuleController
             throw new Exception("Event not found: $id");
         }
 
+        $auto_print = Yii::app()->request->getParam('auto_print', true);
+        $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
+
         $event->lock();
 
         // Ensure exclusivity of PDF to avoid race conditions
@@ -1618,7 +1621,7 @@ class BaseEventTypeController extends BaseModuleController
                 }
             }
             
-            $wk->generatePDF($event->imageDirectory, 'event', $this->pdf_print_suffix, $this->pdf_print_html, (boolean) @$_GET['html']);
+            $wk->generatePDF($event->imageDirectory, 'event', $this->pdf_print_suffix, $this->pdf_print_html, (boolean) @$_GET['html'], $inject_autoprint_js);
         }
 
         $event->unlock();

@@ -18,5 +18,19 @@
  */
 ?>
 <div class="element-fields">
-	<?php echo $form->multiSelectList($element, 'Drug', 'drugs', 'id', $this->getPostOpDrugList($element), null, array('empty' => '- Drugs -', 'label' => 'Drugs'), false, false, null, false, false, array('field' => 3))?>
+    <?php echo $form->multiSelectList(
+        $element,
+        'Drug',
+        'drugs',
+        'id',
+        $this->getPostOpDrugList($element),
+        null,
+        array('empty' => '- Drugs -', 'label' => 'Drugs'),
+        false,
+        false,
+        null,
+        false,
+        false,
+        array('field' => 3)
+    ) ?>
 </div>

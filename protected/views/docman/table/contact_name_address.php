@@ -34,7 +34,7 @@
     echo CHtml::hiddenField('DocumentTarget['.$row_index.'][attributes][contact_id]', $contact_id);
 ?>
 <br><br>
-<?php echo CHtml::textField('DocumentTarget['.$row_index.'][attributes][contact_name]', $contact_name, array('readonly' => !$is_editable)); ?>
+<?php echo CHtml::textField('DocumentTarget['.$row_index.'][attributes][contact_name]', $contact_name); ?>
 <div>
     <textarea rows="4" cols="10" <?php echo $is_editable ? '' : 'readonly'; ?> name="DocumentTarget[<?php echo $row_index;?>][attributes][address]" id="Document_Target_Address_<?php echo $row_index;?>" data-rowindex="<?php echo $row_index ?>"><?php echo $address; ?></textarea>
 </div>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -24,10 +25,12 @@ class SearchController extends BaseController
     public function accessRules()
     {
         return array(
-            array('allow',
+            array(
+                'allow',
                 'actions' => array('GeneticTests'),
                 'roles' => array('OprnSearchPedigree'),
-            ), );
+            ),
+        );
     }
 
     public function getUri($elements)
@@ -65,8 +68,8 @@ class SearchController extends BaseController
 
     public function actionGeneticTests()
     {
-        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'));
-        Yii::app()->clientScript->registerScriptFile($assetPath.'/js/module.js');
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->getModule()->name . '.assets'));
+        Yii::app()->clientScript->registerScriptFile($assetPath . '/js/module.js');
         Yii::app()->assetManager->registerCssFile('css/admin.css', null, 10);
 
         $tests = array();
@@ -109,17 +112,17 @@ class SearchController extends BaseController
 
             if (strlen(@$_GET['query']) > 0) {
                 $where .= ' and ( comments like :query or exon like :query or prime_rf like :query or prime_rr like :query or base_change like :query or amino_acid_change like :query or assay like :query or result like :query)';
-                $whereParams[':query'] = '%'.$_GET['query'].'%';
+                $whereParams[':query'] = '%' . $_GET['query'] . '%';
             }
 
             $total_items = Yii::app()->db->createCommand()
-            ->select('count(gt.id) as count')
-            ->from('et_ophingenetictest_test gt')
-            ->join('event e', 'gt.event_id = e.id')
-            ->join('episode ep', 'e.episode_id = ep.id')
-            ->join('patient p', 'ep.patient_id = p.id')
-            ->where($where, $whereParams)
-            ->queryScalar();
+                ->select('count(gt.id) as count')
+                ->from('et_ophingenetictest_test gt')
+                ->join('event e', 'gt.event_id = e.id')
+                ->join('episode ep', 'e.episode_id = ep.id')
+                ->join('patient p', 'ep.patient_id = p.id')
+                ->where($where, $whereParams)
+                ->queryScalar();
 
             $pages = ceil($total_items / $this->items_per_page);
             $page = 1;
@@ -131,53 +134,53 @@ class SearchController extends BaseController
             $dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
 
             switch (@$_GET['sortby']) {
-            case 'date':
-                $order = "result_date $dir";
-                break;
-            case 'hos_num':
-                $order = "hos_num $dir";
-                break;
-            case 'gene':
-                $order = "g.name $dir";
-                break;
-            case 'method':
-                $order = "m.name $dir";
-                break;
-            case 'homo':
-                $order = "homo $dir";
-                break;
-            case 'base_change':
-                $order = "base_change $dir";
-                break;
-            case 'amino_acid_change':
-                $order = "amino_acid_change $dir";
-                break;
-            case 'result':
-                $order = "result $dir";
-                break;
-            case 'patient_name':
-            default:
-                $order = "last_name $dir, first_name $dir";
-                break;
-        }
+                case 'date':
+                    $order = "result_date $dir";
+                    break;
+                case 'hos_num':
+                    $order = "hos_num $dir";
+                    break;
+                case 'gene':
+                    $order = "g.name $dir";
+                    break;
+                case 'method':
+                    $order = "m.name $dir";
+                    break;
+                case 'homo':
+                    $order = "homo $dir";
+                    break;
+                case 'base_change':
+                    $order = "base_change $dir";
+                    break;
+                case 'amino_acid_change':
+                    $order = "amino_acid_change $dir";
+                    break;
+                case 'result':
+                    $order = "result $dir";
+                    break;
+                case 'patient_name':
+                default:
+                    $order = "last_name $dir, first_name $dir";
+                    break;
+            }
 
             $test_ids = array();
 
             foreach (Yii::app()->db->createCommand()
-            ->select('gt.id')
-            ->from('et_ophingenetictest_test gt')
-            ->join('event e', 'gt.event_id = e.id')
-            ->join('episode ep', 'e.episode_id = ep.id')
-            ->join('patient p', 'ep.patient_id = p.id')
-            ->join('contact c', 'p.contact_id = c.id')
-            ->leftJoin('ophingenetictest_test_method m', 'gt.method_id = m.id')
-            ->join('pedigree_gene g', 'gt.gene_id = g.id')
-            ->leftJoin('ophingenetictest_test_effect ef', 'gt.effect_id = ef.id')
-            ->where($where, $whereParams)
-            ->order($order)
-            ->offset(($page - 1) * $this->items_per_page)
-            ->limit($this->items_per_page)
-            ->queryAll() as $row) {
+                         ->select('gt.id')
+                         ->from('et_ophingenetictest_test gt')
+                         ->join('event e', 'gt.event_id = e.id')
+                         ->join('episode ep', 'e.episode_id = ep.id')
+                         ->join('patient p', 'ep.patient_id = p.id')
+                         ->join('contact c', 'p.contact_id = c.id')
+                         ->leftJoin('ophingenetictest_test_method m', 'gt.method_id = m.id')
+                         ->join('pedigree_gene g', 'gt.gene_id = g.id')
+                         ->leftJoin('ophingenetictest_test_effect ef', 'gt.effect_id = ef.id')
+                         ->where($where, $whereParams)
+                         ->order($order)
+                         ->offset(($page - 1) * $this->items_per_page)
+                         ->limit($this->items_per_page)
+                         ->queryAll() as $row) {
                 $test_ids[] = $row['id'];
             }
 
@@ -187,20 +190,20 @@ class SearchController extends BaseController
             $criteria->addInCondition('t.id', $test_ids);
 
             foreach (Element_OphInGenetictest_Test::model()
-            ->with(array(
-                'event' => array(
-                    'with' => array(
-                        'episode' => array(
-                            'with' => array(
-                                'patient' => array(
-                                    'with' => array('contact'),
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
-            ))
-            ->findAll($criteria) as $test) {
+                         ->with(array(
+                             'event' => array(
+                                 'with' => array(
+                                     'episode' => array(
+                                         'with' => array(
+                                             'patient' => array(
+                                                 'with' => array('contact'),
+                                             ),
+                                         ),
+                                     ),
+                                 ),
+                             ),
+                         ))
+                         ->findAll($criteria) as $test) {
                 $test_map[$test->id] = $test;
             }
 
