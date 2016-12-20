@@ -774,6 +774,7 @@ class BaseEventTypeController extends BaseModuleController
             $this->setOpenElementsFromCurrentEvent('create');
         }
 
+
         $this->editable = false;
         $this->event_tabs = array(
                 array(

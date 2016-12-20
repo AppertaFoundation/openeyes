@@ -18,7 +18,7 @@
  */
 
 /**
- * This is the model class for table "et_ophindnasample_sample".
+ * This is the model class for table "et_ophinbloodsample_sample".
  *
  * The followings are the available columns in table:
  *
@@ -26,8 +26,8 @@
  * @property int $event_id
  * @property int $old_dna_no
  * @property string $subject_id
- * @property string $dna_date
- * @property string $dna_location
+ * @property string $blood_date
+ * @property string $blood_location
  * @property string $comments
  * @property int $type_id
  *
@@ -38,6 +38,9 @@
  * @property User $user
  * @property User $usermodified
  * @property OphInDnasample_Sample_Type $type
+ * @property mixed destination
+ * @property mixed is_local
+ * @property mixed consented_by
  */
 class Element_OphInDnasample_Sample extends BaseEventTypeElement
 {
@@ -73,7 +76,7 @@ class Element_OphInDnasample_Sample extends BaseEventTypeElement
             array('type_id', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, event_id, old_dna_no, subject_id, dna_date, comments, type_id, ', 'safe', 'on' => 'search'),
+            array('id, event_id, old_dna_no, subject_id, dna_date, comments, type_id, consented_by, is_local, destination', 'safe', 'on' => 'search'),
         );
     }
 
@@ -90,6 +93,7 @@ class Element_OphInDnasample_Sample extends BaseEventTypeElement
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'studies' => array(self::MANY_MANY, 'Genetics_study', 'et_ophindnasample_sample_genetics_studies(et_ophindnasample_sample_id, genetics_study_id)'),
             'type' => array(self::BELONGS_TO, 'OphInDnasample_Sample_Type', 'type_id'),
         );
     }
@@ -107,7 +111,10 @@ class Element_OphInDnasample_Sample extends BaseEventTypeElement
             'dna_date'      => 'Dna date',
             'comments'      => 'Comments',
             'type_id'       => 'Type',
-           // 'other_type'    => 'Other type'
+            'other_sample_type' => 'Type (if \'other\')',
+            'consented_by' => 'Consented By',
+            'is_local' => 'Local',
+            'destination' => 'Destination',
         );
     }
 
@@ -130,6 +137,9 @@ class Element_OphInDnasample_Sample extends BaseEventTypeElement
         $criteria->compare('dna_date', $this->dna_date);
         $criteria->compare('comments', $this->comments);
         $criteria->compare('type_id', $this->type_id);
+        $criteria->compare('consented_by', $this->consented_by);
+        $criteria->compare('is_local', $this->is_local);
+        $criteria->compare('destination', $this->destination);
 
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
