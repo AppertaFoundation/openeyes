@@ -79,14 +79,13 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='".get_class($this)."'"),
-            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'gene' => array(self::BELONGS_TO, 'PedigreeGene', 'gene_id'),
             'effect' => array(self::BELONGS_TO, 'OphInGenetictest_Test_Effect', 'effect_id'),
             'method' => array(self::BELONGS_TO, 'OphInGenetictest_Test_Method', 'method_id'),
+            'withdrawal_source' => array(self::BELONGS_TO, 'Element_OphInDnaextraction_DnaTests', 'withdrawal_source_id'),
             'external_source' => array(self::BELONGS_TO, 'OphInGenetictest_External_Source', 'external_source_id'),
         );
     }
@@ -112,7 +111,8 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
             'homo' => 'Homo',
             'result' => 'Result',
             'result_date' => 'Result date',
-            'external_source_id' => 'External Source'
+            'external_source_id' => 'External Source',
+            'withdrawal_source_id' => 'Withdrawal Source',
         );
     }
 
@@ -135,6 +135,27 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
+    }
+
+
+    /**
+     * @param Patient $patient
+     *
+     * @return CActiveRecord[]
+     */
+    public function possibleWithdrawalEvents(Patient $patient)
+    {
+        if(!Yii::app()->modules['OphInDnaextraction']) {
+            return array();
+        }
+
+        $criteria = new CDbCriteria();
+        $criteria->condition = 'episode.patient_id = :patient_id';
+        $criteria->params = array(
+            'patient_id' => $patient->id,
+        );
+
+        return Element_OphInDnaextraction_DnaTests::model()->with('event', 'event.episode')->findAll($criteria);
     }
 }
 ?>

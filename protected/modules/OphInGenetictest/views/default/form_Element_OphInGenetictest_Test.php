@@ -16,6 +16,18 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+$patient_id = null;
+$withdrawals = array();
+
+if($element->event) {
+  $patient_id = $element->event->episode->patient_id;
+} elseif(Yii::app()->request->getQuery('patient_id', '0')){
+  $patient_id = Yii::app()->request->getQuery('patient_id');
+}
+
+if($patient_id){
+    $withdrawals = $element->possibleWithdrawalEvents(Patient::model()->findByPk($patient_id));
+}
 ?>
 
 <section class="element <?php echo $element->elementType->class_name ?>"
@@ -25,6 +37,21 @@
          data-element-display-order="<?php echo $element->elementType->display_order ?>">
 
   <div class="element-fields">
+      <?php $form->widget('application.widgets.ElementSelection', array(
+          'element' => $element,
+          'field' => 'withdrawal_source_id',
+          'relatedElements' => $withdrawals,
+          'htmlOptions' =>  array('empty' => '- Select -'),
+          'layoutColumns' => array('label' => 3, 'field' => 3),
+      )); ?>
+      <?php $form->dropDownList(
+          $element,
+          'external_source_id',
+          CHtml::listData(OphInGenetictest_External_Source::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
+          array('empty' => '- Select -'),
+          false,
+          array('label' => 3, 'field' => 3)
+      ) ?>
       <?php $form->dropDownList(
           $element,
           'gene_id',
@@ -48,14 +75,7 @@
           array('empty' => '- Select -'),
           false, array('label' => 3, 'field' => 3)
       ) ?>
-      <?php $form->dropDownList(
-          $element,
-          'external_source_id',
-          CHtml::listData(OphInGenetictest_External_Source::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
-          array('empty' => '- Select -'),
-          false,
-          array('label' => 3, 'field' => 3)
-      ) ?>
+
       <?php echo $form->textField($element, 'exon', array(), array(), array('label' => 3, 'field' => 3)) ?>
       <?php echo $form->textField($element, 'prime_rf', array(), array(), array('label' => 3, 'field' => 3)) ?>
       <?php echo $form->textField($element, 'prime_rr', array(), array(), array('label' => 3, 'field' => 3)) ?>
