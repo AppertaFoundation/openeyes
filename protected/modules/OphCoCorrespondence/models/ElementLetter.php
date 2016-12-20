@@ -62,10 +62,17 @@ class ElementLetter extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, site_id, print, address, use_nickname, date, introduction, cc, re, body, footer, draft, direct_line, fax, clinic_date, print_all, letter_type', 'safe'),
-            array('use_nickname, site_id, date, introduction, body, footer, letter_type', 'required'),
+            array(
+                'event_id, site_id, print, address, use_nickname, date, introduction, cc, re, body, footer, draft, direct_line, fax, clinic_date,' .
+                'print_all, is_signed_off',
+                'safe'
+            ),
+            array('letter_type', 'letterTypeValidator'),
+            array('site_id, date, introduction, body, footer', 'requiredIfNotDraft'),
+            array('use_nickname', 'required'),
             array('date', 'OEDateValidator'),
             array('clinic_date', 'OEDateValidatorNotFuture'),
+            //array('is_signed_off', 'isSignedOffValidator'), // they do not want this at the moment - waiting for the demo/feedback
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, site_id, use_nickname, date, introduction, re, body, footer, draft, direct_line, letter_type', 'safe', 'on' => 'search'),
@@ -87,6 +94,8 @@ class ElementLetter extends BaseEventTypeElement
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
             'enclosures' => array(self::HAS_MANY, 'LetterEnclosure', 'element_letter_id', 'order' => 'display_order'),
+            'document_instance' => array(self::HAS_MANY, 'DocumentInstance', array( 'correspondence_event_id' => 'event_id')),
+            
         );
     }
 
@@ -105,6 +114,7 @@ class ElementLetter extends BaseEventTypeElement
             'draft' => 'Draft',
             'direct_line' => 'Direct line',
             'fax' => 'Direct fax',
+            'is_signed_off' => 'Approved by a clinician'
         );
     }
 
@@ -130,12 +140,58 @@ class ElementLetter extends BaseEventTypeElement
 
     public function afterValidate()
     {
-
-        if(!is_array(@$_POST['target_type']) && Yii::app()->getController()->getAction()->id == 'create')
-        {
+        $document_target = Yii::app()->request->getPost('DocumentTarget', null);
+        if(!isset($document_target[0]['attributes']['ToCc']) && Yii::app()->getController()->getAction()->id == 'create'){
             $this->addError('toAddress', 'Please add at least one recipient!');
         }
+        if(isset($document_target)){
+            foreach($document_target as $target){
+                if( !isset($target['attributes']['address']) || empty($target['attributes']['address']) ){
+                    $this->addError('toAddress', 'Address cannot be empty!');
+                }
+            }
+        }
+        
+        
+
         parent::afterValidate();
+    }
+    
+    
+    public function requiredIfNotDraft($attribute, $params)
+    {
+        if( $this->draft != 1 && !$this->$attribute){
+            $this->addError($attribute, $this->getAttributeLabel($attribute) . ": Cannot be empty");
+        }
+    }
+    
+    /**
+     * This attribute only required when Document is posted, so old correspondece will save without letter type
+     * @param type $attribute
+     * @param type $params
+     */
+    public function requiredIfDocumentPosted($attribute, $params)
+    {
+        $post_document_targets = Yii::app()->request->getPost('DocumentTarget', null);
+        if($post_document_targets && !$this->$attribute){
+            $this->addError($attribute, $this->getAttributeLabel($attribute) . ": Cannot be empty");
+        }
+    }
+    
+    public function letterTypeValidator($attribute, $params)
+    {
+        if( $this->draft == 1 ){
+            //if it's a draft we do not validate
+        } else {
+            $this->requiredIfDocumentPosted($attribute, $params);
+        }
+    }
+    
+    public function isSignedOffValidator($attribute, $params)
+    {    
+        if( $this->draft != 1 && !$this->$attribute){
+            $this->addError($attribute, 'You have to check the following checkbox: Approved by a clinician');
+        }
     }
 
     public function afterFind()
@@ -146,33 +202,37 @@ class ElementLetter extends BaseEventTypeElement
 
     public function getAddress_targets()
     {
-        if (Yii::app()->getController()->getAction()->id == 'create' || !isset($this->event)) {
-            if (!$patient = Patient::model()->with(array('gp', 'practice'))->findByPk(@$_GET['patient_id'])) {
-                throw new Exception('patient not found: '.@$_GET['patient_id']);
-            }
-        } else {
+
+        $patient_id = Yii::app()->request->getQuery('patient_id');
+        $patient = null;
+        
+        if($patient_id){
+            $patient = Patient::model()->with(array('gp', 'practice'))->findByPk($patient_id);
+        } else if( isset($this->event->episode->patient) ) {
             $patient = $this->event->episode->patient;
+        } else {
+            throw new Exception('patient not found: '.patient_id);
         }
 
-        $options = array($patient->contact->id => $patient->fullname.' (Patient)');
+        $options = array('Patient'.$patient->id => $patient->fullname.' (Patient)');
         if (!isset($patient->contact->address)) {
             $options['Patient'.$patient->id] .= ' - NO ADDRESS';
         }
 
         if ($patient->gp) {
             if (@$patient->gp->contact) {
-                $options[$patient->gp->contact->id] = $patient->gp->contact->fullname.' (GP)';
+                $options['Gp'.$patient->gp_id] = $patient->gp->contact->fullname.' (GP)';
             } else {
-                $options[$patient->gp->contact->id] = Gp::UNKNOWN_NAME.' (GP)';
+                $options['Gp'.$patient->gp_id] = Gp::UNKNOWN_NAME.' (GP)';
             }
             if (!$patient->practice || !@$patient->practice->contact->address) {
-                $options[$patient->gp->contact->id] .= ' - NO ADDRESS';
+                $options['Gp'.$patient->gp_id] .= ' - NO ADDRESS';
             }
         } else {
             if ($patient->practice) {
-                $options[$patient->practice->contact->id] = Gp::UNKNOWN_NAME.' (GP)';
+                $options['Practice'.$patient->practice_id] = Gp::UNKNOWN_NAME.' (GP)';
                 if (@$patient->practice->contact && !@$patient->practice->contact->address) {
-                    $options[$patient->practice->contact->id] .= ' - NO ADDRESS';
+                    $options['Practice'.$patient->practice_id] .= ' - NO ADDRESS';
                 }
             }
         }
@@ -191,7 +251,7 @@ class ElementLetter extends BaseEventTypeElement
             foreach ($cbs as $cb_type_id => $cb_list) {
                 foreach ($cb_list as $cb) {
                     if (in_array($cb_type_id, $cbt_ids)) {
-                        $options[$cb->contact->id] = $cb->name.' ('.$cbtype_lookup[$cb_type_id].')';
+                        $options['CommissioningBody'.$cb->id] = $cb->name.' ('.$cbtype_lookup[$cb_type_id].')';
                         if (!$cb->getAddress()) {
                             $options['CommissioningBody'.$cb->id] .= ' - NO ADDRESS';
                         }
@@ -200,13 +260,11 @@ class ElementLetter extends BaseEventTypeElement
                     // include all services at the moment, regardless of whether the commissioning body type is filtered
                     if ($services = $cb->services) {
                         foreach ($services as $svc) {
-                            if($svc->contact){
-                            $options[$svc->contact->id] = $svc->name.' ('.$svc->getTypeShortName().')';
+                            $options['CommissioningBodyService'.$svc->id] = $svc->name.' ('.$svc->getTypeShortName().')';
                         }
                     }
                 }
             }
-        }
         }
 
         foreach (PatientContactAssignment::model()->with(array(
@@ -225,7 +283,7 @@ class ElementLetter extends BaseEventTypeElement
             ),
         ))->findAll('patient_id=?', array($patient->id)) as $pca) {
             if ($pca->location) {
-                $options['ContactLocation'.$pca->location_id] = $pca->location->contact->fullName.' ('.$pca->location->contact->label->name.', '.$pca->location.')';
+                $options['ContactLocation'.$pca->location_id] = $pca->location->contact->fullName.' ('.$pca->location->contact->label->name . ')';
             } else {
                 // Note that this index will always be the basis for a Person model search - if PCA has a wider use case than this,
                 // this will need to be revisited
@@ -268,6 +326,11 @@ class ElementLetter extends BaseEventTypeElement
 
             if (!$patient = Patient::model()->with(array('contact' => array('with' => array('address'))))->findByPk(@$_GET['patient_id'])) {
                 throw new Exception('Patient not found: '.@$_GET['patient_id']);
+            }
+            
+            // default to GP
+            if( isset($patient->gp) ){
+                $this->introduction = $patient->gp->getLetterIntroduction();
             }
 
             $this->re = $patient->first_name.' '.$patient->last_name;
@@ -447,9 +510,9 @@ class ElementLetter extends BaseEventTypeElement
     }
 
     public function beforeSave()
-    {
+    {        
         if (in_array(Yii::app()->getController()->getAction()->id, array('create', 'update'))) {
-            if (!$this->draft) {
+            if (isset($_POST['saveprint'])) {
                 $this->print = 1;
                 $this->print_all = 1;
             }
@@ -489,11 +552,21 @@ class ElementLetter extends BaseEventTypeElement
                 }
             }
         }
-        if(Yii::app()->getController()->getAction()->id == 'create' || Yii::app()->getController()->getAction()->id == 'update')
-        {
+        if(Yii::app()->getController()->getAction()->id == 'create' || Yii::app()->getController()->getAction()->id == 'update'){
             $document = new Document();
             $document->event_id = $this->event_id;
+            $document->is_draft = $this->draft;
             $document->createNewDocSet();
+        }
+        
+        if( $this->draft ){
+            $this->event->addIssue('Draft');
+        } else {
+            $this->event->deleteIssue('Draft');
+        }
+        
+        if(isset($_POST['saveprint'])){
+            Yii::app()->user->setState('correspondece_element_letter_saved', true);
         }
 
         return parent::afterSave();
@@ -510,25 +583,57 @@ class ElementLetter extends BaseEventTypeElement
     {
         $targets = array();
 
-        if (trim($this->cc)) {
-            foreach (explode("\n", trim($this->cc)) as $cc) {
-                $ex = explode(', ', trim($cc));
-
-                if (isset($ex[1]) && (ctype_digit($ex[1]) || is_int($ex[1]))) {
-                    $ex[1] .= ' '.$ex[2];
-                    unset($ex[2]);
+        if( $this->document_instance ){
+            if( isset($this->document_instance[0]->document_target) ){
+                foreach($this->document_instance[0]->document_target as $target){
+                    if($target->ToCc == 'Cc'){
+                        $targets[] = $target->contact_name . "\n" . $target->address;
+                    }
                 }
+            }
+        } else {
 
-                $targets[] = explode(',', implode(',', $ex));
+            if (trim($this->cc)) {
+                foreach (explode("\n", trim($this->cc)) as $cc) {
+                    $ex = explode(', ', trim($cc));
+
+                    if (isset($ex[1]) && (ctype_digit($ex[1]) || is_int($ex[1]))) {
+                        $ex[1] .= ' '.$ex[2];
+                        unset($ex[2]);
+                    }
+
+                    $cc = explode(',', implode(',', $ex));
+                    $targets[] = implode("\n", preg_replace('/^[a-zA-Z]+: /', '', str_replace(';', ',', $cc)));
+                }
             }
         }
-
+        
         return $targets;
     }
 
     public function isEditable()
     {
-        return $this->draft;
+        return !$this->isGeneratedForDocMan();
+    }
+    
+    
+    /**
+     * Determinate if wheter PDF and XML files are generated for the DocMan
+     * @return type
+     */
+    public function isGeneratedForDocMan()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->join =   "JOIN document_instance ins ON t.id = ins.document_set_id " .
+                            "JOIN document_target tar ON ins.id = tar.document_instance_id " .
+                            "JOIN document_output output ON tar.id = output.document_target_id";
+
+        $criteria->compare('t.event_id', $this->event_id);
+        $criteria->compare('output.output_type', 'Docman');
+        $criteria->compare('output.output_status', 'COMPLETE');
+
+        return DocumentSet::model()->find($criteria) ? true : false;
+        
     }
 
     public function getFirm_members()
@@ -629,5 +734,41 @@ class ElementLetter extends BaseEventTypeElement
     public function getDocumentInstance()
     {
         return \DocumentInstance::model()->findByAttributes(array('correspondence_event_id' => $this->event_id));
-}
+    }
+    
+    /**
+     * 
+     * @param type $type
+   
+     * @param type $type
+     * @return \typeReturns  * @return typeReturns the Outputs by type
+     */
+    public function getOutputByType($type = 'Print')
+    {
+        $criteria = new CDbCriteria();
+        $criteria->join =   "JOIN document_target target ON t.document_target_id = target.id " .
+                            "JOIN document_instance instance ON target.document_instance_id = instance.id ";
+
+        $criteria->compare('instance.correspondence_event_id', $this->event->id);
+        if($type){
+            $criteria->compare('t.output_type', $type);
+        }
+
+        return DocumentOutput::model()->findAll($criteria);
+
+    }
+    
+    public function getTargetByContactType($type = 'GP')
+    {
+        $criteria = new CDbCriteria();
+        $criteria->join = "JOIN document_instance instance ON t.document_instance_id = instance.id ";
+
+        $criteria->compare('instance.correspondence_event_id', $this->event->id);
+        if($type){
+            $criteria->compare('t.contact_type', $type);
+        }
+
+        return DocumentTarget::model()->findAll($criteria);
+    }
+    
 }

@@ -13,111 +13,111 @@
  */
 
 $(document).ready(function () {
-	$('#no_allergies').bind('change', function() {
-		if ($(this)[0].checked) {
-			$('.allergy_field').hide().find('select').attr('disabled', 'disabled');
-		}
-		else {
-			$('.allergy_field').show().find('select').removeAttr('disabled');
-		}
-	});
+  $('#no_allergies').bind('change', function () {
+    if ($(this)[0].checked) {
+      $('.allergy_field').hide().find('select').attr('disabled', 'disabled');
+    }
+    else {
+      $('.allergy_field').show().find('select').removeAttr('disabled');
+    }
+  });
 
-	$('#allergy_id').change(function () {
-		if ($(this).find(':selected').text() == 'Other') {
-			$('#allergy_other').slideDown('fast');
-		} else {
-			$('#allergy_other').slideUp('fast');
-		}
-	});
+  $('#allergy_id').change(function () {
+    if ($(this).find(':selected').text() == 'Other') {
+      $('#allergy_other').slideDown('fast');
+    } else {
+      $('#allergy_other').slideUp('fast');
+    }
+  });
 
-	$('#btn-add_allergy').click(function() {
-		$('#add_allergy').slideToggle('fast');
-		$('#btn-add_allergy').attr('disabled',true);
-		$('#btn-add_allergy').addClass('disabled');
-	});
-	$('button.btn_cancel_allergy').click(function(e) {
-		$('#add_allergy').slideToggle('fast');
-		$('#btn-add_allergy').attr('disabled',false);
-		$('#btn-add_allergy').removeClass('disabled');
-        OpenEyes.Form.reset($(e.target).closest('form'));
-		return false;
-	});
-	$('button.btn_save_allergy').click(function() {
-		if ($('#allergy_id').val() == '' && !$('#no_allergies')[0].checked) {
-			new OpenEyes.UI.Dialog.Alert({
-				content: "Please select an allergy or confirm patient has no allergies"
-			}).open();
-			return false;
-		}
-		if ($('#allergy_id :selected').text() == 'Other' && $('#allergy_other input').val().trim() == '') {
-			new OpenEyes.UI.Dialog.Alert({
-				content: "Please enter an allergy"
-			}).open();
-			return false;
-		}
-		$('img.add_allergy_loader').show();
-		return true;
-	});
+  $('#btn-add_allergy').click(function () {
+    $('#add_allergy').slideToggle('fast');
+    $('#btn-add_allergy').attr('disabled', true);
+    $('#btn-add_allergy').addClass('disabled');
+  });
+  $('button.btn_cancel_allergy').click(function (e) {
+    $('#add_allergy').slideToggle('fast');
+    $('#btn-add_allergy').attr('disabled', false);
+    $('#btn-add_allergy').removeClass('disabled');
+    OpenEyes.Form.reset($(e.target).closest('form'));
+    return false;
+  });
+  $('button.btn_save_allergy').click(function () {
+    if ($('#allergy_id').val() == '' && !$('#no_allergies')[0].checked) {
+      new OpenEyes.UI.Dialog.Alert({
+        content: "Please select an allergy or confirm patient has no allergies"
+      }).open();
+      return false;
+    }
+    if ($('#allergy_id :selected').text() == 'Other' && $('#allergy_other input').val().trim() == '') {
+      new OpenEyes.UI.Dialog.Alert({
+        content: "Please enter an allergy"
+      }).open();
+      return false;
+    }
+    $('img.add_allergy_loader').show();
+    return true;
+  });
 
 
-	$('.removeAllergy').live('click',function() {
-		$('#remove_allergy_id').val($(this).attr('rel'));
+  $('.removeAllergy').live('click', function () {
+    $('#remove_allergy_id').val($(this).attr('rel'));
 
-		$('#confirm_remove_allergy_dialog').dialog({
-			resizable: false,
-			modal: true,
-			width: 560
-		});
+    $('#confirm_remove_allergy_dialog').dialog({
+      resizable: false,
+      modal: true,
+      width: 560
+    });
 
-		return false;
-	});
+    return false;
+  });
 
-	$('button.btn_remove_allergy').click(function() {
-		$("#confirm_remove_allergy_dialog").dialog("close");
+  $('button.btn_remove_allergy').click(function () {
+    $("#confirm_remove_allergy_dialog").dialog("close");
 
-		var aa_id = $('#remove_allergy_id').val();
+    var aa_id = $('#remove_allergy_id').val();
 
-		$.ajax({
-			'type': 'GET',
-			'url': baseUrl+'/patient/removeAllergy?patient_id=' + OE_patient_id + '&assignment_id=' + aa_id,
-			'success': function(html) {
-				if (html == 'success') {
-					var row = $('#currentAllergies tr[data-assignment-id="' + aa_id + '"]');
-					var allergy_id = row.data('allergy-id');
-					var allergy_name = row.data('allergy-name');
-					row.remove();
-					if($('.removeAllergy').length == 0) {
-						$('#currentAllergies').hide();
-						$('.allergy-status-unknown').show();
-						$('.allergies_confirm_no').show();
-					}
-					if (allergy_name != "Other") {
-                        $.ajax({
-                            'type': 'GET',
-                            'url': baseUrl + '/patient/generateAllergySelect?patient_id=' + OE_patient_id,
-                            'success': function (response) {
-                                $('#allergy_id').html(response);
-                            }
-                        });
-					}
-				} else {
-					new OpenEyes.UI.Dialog.Alert({
-						content: "Sorry, an internal error occurred and we were unable to remove the allergy.\n\nPlease contact support for assistance."
-					}).open();
-				}
-			},
-			'error': function() {
-				new OpenEyes.UI.Dialog.Alert({
-					content: "Sorry, an internal error occurred and we were unable to remove the allergy.\n\nPlease contact support for assistance."
-				}).open();
-			}
-		});
+    $.ajax({
+      'type': 'GET',
+      'url': baseUrl + '/patient/removeAllergy?patient_id=' + OE_patient_id + '&assignment_id=' + aa_id,
+      'success': function (html) {
+        if (html == 'success') {
+          var row = $('#currentAllergies tr[data-assignment-id="' + aa_id + '"]');
+          var allergy_id = row.data('allergy-id');
+          var allergy_name = row.data('allergy-name');
+          row.remove();
+          if ($('.removeAllergy').length == 0) {
+            $('#currentAllergies').hide();
+            $('.allergy-status-unknown').show();
+            $('.allergies_confirm_no').show();
+          }
+          if (allergy_name != "Other") {
+            $.ajax({
+              'type': 'GET',
+              'url': baseUrl + '/patient/generateAllergySelect?patient_id=' + OE_patient_id,
+              'success': function (response) {
+                $('#allergy_id').html(response);
+              }
+            });
+          }
+        } else {
+          new OpenEyes.UI.Dialog.Alert({
+            content: "Sorry, an internal error occurred and we were unable to remove the allergy.\n\nPlease contact support for assistance."
+          }).open();
+        }
+      },
+      'error': function () {
+        new OpenEyes.UI.Dialog.Alert({
+          content: "Sorry, an internal error occurred and we were unable to remove the allergy.\n\nPlease contact support for assistance."
+        }).open();
+      }
+    });
 
-		return false;
-	});
+    return false;
+  });
 
-	$('button.btn_cancel_remove_allergy').click(function() {
-		$("#confirm_remove_allergy_dialog").dialog("close");
-		return false;
-	});
+  $('button.btn_cancel_remove_allergy').click(function () {
+    $("#confirm_remove_allergy_dialog").dialog("close");
+    return false;
+  });
 });
