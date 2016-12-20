@@ -691,7 +691,7 @@ class DefaultController extends \BaseEventTypeController
 
         $this->allergies = $allergies;
 
-        if (isset($data['no_allergies']) && $data['no_allergies']) {
+        if (isset($data['no_allergies']) && $data['no_allergies'] && !$this->patient->no_allergies_date) {
             $this->patient->no_allergies_date = date('Y-m-d');
         }
     }
