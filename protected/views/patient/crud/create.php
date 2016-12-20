@@ -30,7 +30,7 @@
 </style>
 <h1 class="badge">Patient</h1>
 <div class="box content admin-content">
-    <div class="large-6 column content admin large-centered">
+    <div class="large-10 column content admin large-centered">
 
         <div class="box admin">
             <h1 class="text-center">Create Patient</h1>

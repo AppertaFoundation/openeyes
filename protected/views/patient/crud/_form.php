@@ -60,140 +60,183 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
 	<?php echo $form->errorSummary($patient); ?>
 
         <div class="row field-row">
-            <div class="large-3 column"><?php echo $form->labelEx($patient,'hos_num'); ?></div>
-            <div class="large-4 column end">
-                <?php echo $form->textField($patient,'hos_num',array('size'=>40,'maxlength'=>40)); ?>
-                <?php echo $form->error($patient,'hos_num'); ?>
-            </div>
-	</div>
-	<div class="row field-row">
-            <div class="large-3 column nhs-number-wrapper">
-                <div class="nhs-number warning">
-                    <span class="hide-text print-only">NHS Number:</span>
+            <div class="large-6 column">
+                <div class="row field-row">
+            
+                    <div class="large-4 column"><?php echo $form->labelEx($patient,'hos_num'); ?></div>
+                    <div class="large-4 column end">
+                        <?php echo $form->textField($patient,'hos_num',array('size'=>40,'maxlength'=>40)); ?>
+
+                    </div>
+                     <?php echo $form->error($patient,'hos_num'); ?>
                 </div>
-                <div>Number</div>
             </div>
-            <div class="large-4 column end">
-                <?php echo $form->textField($patient,'nhs_num',array('size' => 40,'maxlength' => 40, 'data-child_row' => '.nhs-num-status')); ?>
-                <?php echo $form->error($patient,'nhs_num'); ?>
-            </div>
-	</div>
-        <div class="row field-row nhs-num-status <?php echo (!$patient->nhs_num ? 'hide':''); ?>">
-            <div class="large-3 column"><?php echo $form->labelEx($patient,'nhs_num_status_id'); ?></div>
-            <div class="large-4 column end">
-                <?php echo $form->dropDownList($patient,'nhs_num_status_id', $nhs_num_statuses, array('empty'=>'-- select --')); ?>
-                <?php echo $form->error($patient,'nhs_num_status_id'); ?>
-            </div>
-	</div>
-        <hr>
-        <!-- -->
-        <div class="row field-row">
-            <div class="large-3 column"><?php echo $form->labelEx($contact,'title'); ?></div>
-            <div class="large-4 column end">
-                <?php echo $form->textField($contact,'title',array('size'=>40,'maxlength'=>40)); ?>
-                <?php echo $form->error($contact,'title'); ?>
-            </div>
-	</div>
-        <div class="row field-row">
-            <div class="large-3 column"><?php echo $form->labelEx($contact,'first_name'); ?></div>
-            <div class="large-4 column end">
-                <?php echo $form->textField($contact,'first_name',array('size'=>40,'maxlength'=>40)); ?>
-                <?php echo $form->error($contact,'first_name'); ?>
+        </div>
+	<div class="row field-row">
+            <div class="large-6 column">
+                <div class="row field-row">
+                    <div class="large-4 column nhs-number-wrapper">
+                        <div class="nhs-number warning">
+                            <span class="hide-text print-only">NHS Number:</span>
+                        </div>
+                        <div>Number</div>
+                    </div>
+                    
+                    <div class="large-4 column end">
+                        <?php echo $form->textField($patient,'nhs_num',array('size' => 40,'maxlength' => 40, 'data-child_row' => '.nhs-num-status')); ?>
+                    </div>
+                    <?php echo $form->error($patient,'nhs_num'); ?>
+                </div>
             </div>
 	</div>
         
         <div class="row field-row">
-            <div class="large-3 column"><?php echo $form->labelEx($contact,'last_name'); ?></div>
-            <div class="large-4 column end">
-                <?php echo $form->textField($contact,'last_name',array('size'=>40,'maxlength'=>40)); ?>
-                <?php echo $form->error($contact,'last_name'); ?>
+            <div class="large-6 column">
+                <div class="row field-row nhs-num-status <?php echo (!$patient->nhs_num ? 'hide':''); ?>">
+                    <div class="large-4 column"><?php echo $form->labelEx($patient,'nhs_num_status_id'); ?></div>
+                    <div class="large-7 column end">
+                        <?php echo $form->dropDownList($patient,'nhs_num_status_id', $nhs_num_statuses, array('empty'=>'-- select --')); ?>
+                        <?php echo $form->error($patient,'nhs_num_status_id'); ?>
+                    </div>
+                </div>
             </div>
-	</div>
+        </div>
+
+        <hr>
+        <!-- -->
+        
+        <div class="row field-row">
+            <div class="large-6 column">
+
+                <div class="row field-row">
+                    <div class="large-3 column"><?php echo $form->labelEx($contact,'title'); ?></div>
+                    <div class="large-4 column end">
+                        <?php echo $form->textField($contact,'title',array('size'=>40,'maxlength'=>40)); ?>
+                        <?php echo $form->error($contact,'title'); ?>
+                    </div>
+                </div>
+                <div class="row field-row">
+                    <div class="large-3 column"><?php echo $form->labelEx($contact,'first_name'); ?></div>
+                    <div class="large-4 column end">
+                        <?php echo $form->textField($contact,'first_name',array('size'=>40,'maxlength'=>40)); ?>
+                        <?php echo $form->error($contact,'first_name'); ?>
+                    </div>
+                </div>
+
+                <div class="row field-row">
+                    <div class="large-3 column"><?php echo $form->labelEx($contact,'last_name'); ?></div>
+                    <div class="large-4 column end">
+                        <?php echo $form->textField($contact,'last_name',array('size'=>40,'maxlength'=>40)); ?>
+                        <?php echo $form->error($contact,'last_name'); ?>
+                    </div>
+                </div>
        
-        <!-- -->
-        
-        <div class="row field-row">
-            <div class="large-3 column"><?php echo $form->labelEx($patient,'dob'); ?></div>
-            <div class="large-4 column end">
-                <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-                        'name' => 'Patient[dob]',
-                        'id' => 'date_from',
-                        'options' => array(
-                            'showAnim' => 'fold',
-                            'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
-                        ),
-                        'value' => Helper::convertMySQL2NHS($patient->dob, ''),
-                        'htmlOptions' => array(
-                            'class' => 'small fixed-width',
-                        ),
-                    ))?>
-                <?php echo $form->error($patient,'dob'); ?>
+                <!-- -->
+
+                <div class="row field-row">
+                    <div class="large-3 column"><?php echo $form->labelEx($patient,'dob'); ?></div>
+                    <div class="large-4 column end">
+                        <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+                                'name' => 'Patient[dob]',
+                                'id' => 'date_from',
+                                'options' => array(
+                                    'showAnim' => 'fold',
+                                    'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
+                                ),
+                                'value' => Helper::convertMySQL2NHS($patient->dob, ''),
+                                'htmlOptions' => array(
+                                    'class' => 'small fixed-width',
+                                ),
+                            ))?>
+                        <?php echo $form->error($patient,'dob'); ?>
+                    </div>
+                </div>
+                <div class="row field-row">
+                    <div class="large-3 column"><?php echo $form->labelEx($patient,'gender'); ?></div>
+                    <div class="large-4 column end">
+                        <?php echo $form->dropDownList($patient,'gender', $genders, array('empty'=>'-- select --')); ?>
+                        <?php echo $form->error($patient,'gender'); ?>
+                    </div>
+                </div>
+
+                <div class="row field-row">
+                    <div class="large-3 column"><?php echo $form->labelEx($patient,'ethnic_group_id'); ?></div>
+                    <div class="large-4 column end">
+                        <?php echo $form->dropDownList($patient,'ethnic_group_id', $ethnic_groups, array('empty'=>'-- select --')); ?>
+                        <?php echo $form->error($patient,'ethnic_group_id'); ?>
+                    </div>
+                </div>
             </div>
-	</div>
-        <div class="row field-row">
-            <div class="large-3 column"><?php echo $form->labelEx($patient,'gender'); ?></div>
-            <div class="large-4 column end">
-                <?php echo $form->dropDownList($patient,'gender', $genders, array('empty'=>'-- select --')); ?>
-                <?php echo $form->error($patient,'gender'); ?>
-            </div>
-	</div>
         
-        <div class="row field-row">
-            <div class="large-3 column"><?php echo $form->labelEx($patient,'ethnic_group_id'); ?></div>
-            <div class="large-4 column end">
-                <?php echo $form->dropDownList($patient,'ethnic_group_id', $ethnic_groups, array('empty'=>'-- select --')); ?>
-                <?php echo $form->error($patient,'ethnic_group_id'); ?>
-            </div>
-	</div>
+            
+            <div class="large-6 column">  
+                <?php $this->renderPartial('_form_address', array('form' => $form, 'address' => $address, 'countries' => $countries, 'address_type_ids' => $address_type_ids)); ?>
+            </div> 
         
-        <hr>
-        
-        <?php $this->renderPartial('_form_address', array('form' => $form, 'address' => $address, 'countries' => $countries, 'address_type_ids' => $address_type_ids)); ?>
-        
-        <hr>
-        <div class="row field-row">
-            <div class="large-3 column"><?php echo $form->labelEx($contact,'primary_phone'); ?></div>
-            <div class="large-4 column end">
-                <?php echo $form->telField($contact,'primary_phone',array('size'=>15,'maxlength'=>20)); ?>
-                <?php echo $form->error($contact,'primary_phone'); ?>
-            </div>
-	</div>
-        
-        <div class="row field-row">
-            <div class="large-3 column"><?php echo $form->labelEx($address,'email'); ?></div>
-            <div class="large-4 column end">
-                <?php echo $form->emailField($address,'email',array('size'=>15, 'maxlength'=>255)); ?>
-                <?php echo $form->error($address,'email'); ?>
-            </div>
-	</div>
+        </div>
         
         <hr>
         
         <div class="row field-row">
-            <div class="large-3 column"><?php echo $form->labelEx($patient,'is_deceased'); ?></div>
-            <div class="large-4 column end">
-                <?php echo $form->checkBox($patient,'is_deceased', array('data-child_row' => '.date_of_death')); ?>
-                <?php echo $form->error($patient,'is_deceased'); ?>
+            <div class="large-6 column">
+                <div class="row field-row">
+                    <div class="large-3 column"><?php echo $form->labelEx($contact,'primary_phone'); ?></div>
+                    <div class="large-4 column end">
+                        <?php echo $form->telField($contact,'primary_phone',array('size'=>15,'maxlength'=>20)); ?>
+                        <?php echo $form->error($contact,'primary_phone'); ?>
+                    </div>
+                </div>
             </div>
 	</div>
-        <div class="row field-row date_of_death <?php echo ($patient->is_deceased == 0 ? 'hide':''); ?>">
-            <div class="large-3 column"><?php echo $form->labelEx($patient,'date_of_death'); ?></div>
-            <div class="large-4 column end">
-            <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-                        'name' => 'Patient[date_of_death]',
-                        'id' => 'date_to',
-                        'options' => array(
-                            'showAnim' => 'fold',
-                            'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
-                        ),
-                        'value' => Helper::convertMySQL2NHS($patient->date_of_death, ''),
-                        'htmlOptions' => array(
-                            'class' => 'small fixed-width',
-                        ),
-                    ))?>
-                <?php echo $form->error($patient,'date_of_death'); ?>
+        
+        <div class="row field-row">
+            <div class="large-6 column">
+                <div class="row field-row">
+                    <div class="large-3 column"><?php echo $form->labelEx($address,'email'); ?></div>
+                    <div class="large-4 column end">
+                        <?php echo $form->emailField($address,'email',array('size'=>15, 'maxlength'=>255)); ?>
+                        <?php echo $form->error($address,'email'); ?>
+                    </div>
+                </div>
             </div>
-	</div>
+        </div>
+        
+        <hr>
+        
+        <div class="row field-row">
+            <div class="large-6 column">
+                <div class="row field-row">
+                    <div class="large-3 column"><?php echo $form->labelEx($patient,'is_deceased'); ?></div>
+                    <div class="large-4 column end">
+                        <?php echo $form->checkBox($patient,'is_deceased', array('data-child_row' => '.date_of_death')); ?>
+                        <?php echo $form->error($patient,'is_deceased'); ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row field-row">
+            <div class="large-6 column">
+                <div class="row field-row date_of_death <?php echo ($patient->is_deceased == 0 ? 'hide':''); ?>">
+                    <div class="large-3 column"><?php echo $form->labelEx($patient,'date_of_death'); ?></div>
+                    <div class="large-4 column end">
+                    <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+                                'name' => 'Patient[date_of_death]',
+                                'id' => 'date_to',
+                                'options' => array(
+                                    'showAnim' => 'fold',
+                                    'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
+                                ),
+                                'value' => Helper::convertMySQL2NHS($patient->date_of_death, ''),
+                                'htmlOptions' => array(
+                                    'class' => 'small fixed-width',
+                                ),
+                            ))?>
+                        <?php echo $form->error($patient,'date_of_death'); ?>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <hr>
         
@@ -207,20 +250,28 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
 	</div>
 -->
         <div class="row field-row">
-            <div class="large-3 column"><?php echo $form->labelEx($patient,'gp_id'); ?></div>
-            <div class="large-4 column end">
-                <?php echo $form->dropDownList($patient,'gp_id', $general_practitioners, array('empty'=>'-- select --')); ?>
-                <?php echo $form->error($patient,'gp_id'); ?>
+            <div class="large-6 column">
+                <div class="row field-row">
+                    <div class="large-4 column"><?php echo $form->labelEx($patient,'gp_id'); ?></div>
+                    <div class="large-4 column end">
+                        <?php echo $form->dropDownList($patient,'gp_id', $general_practitioners, array('empty'=>'-- select --')); ?>
+                        <?php echo $form->error($patient,'gp_id'); ?>
+                    </div>
+                </div>
             </div>
-	</div>
+        </div>
 
         <div class="row field-row">
-            <div class="large-3 column"><?php echo $form->labelEx($patient,'practice_id'); ?></div>
-            <div class="large-4 column end">
-                <?php echo $form->dropDownList($patient,'practice_id', $practices, array('empty'=>'-- select --')); ?>
-                <?php echo $form->error($patient,'practice_id'); ?>
+            <div class="large-6 column">
+                <div class="row field-row">
+                    <div class="large-4 column"><?php echo $form->labelEx($patient,'practice_id'); ?></div>
+                    <div class="large-7 column end">
+                        <?php echo $form->dropDownList($patient,'practice_id', $practices, array('empty'=>'-- select --')); ?>
+                        <?php echo $form->error($patient,'practice_id'); ?>
+                    </div>
+                </div>
             </div>
-	</div>
+        </div>
 
 	<div class="row buttons text-right">
             <?php echo CHtml::submitButton($patient->isNewRecord ? 'Create' : 'Save'); ?>
