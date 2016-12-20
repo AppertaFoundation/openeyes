@@ -57,7 +57,7 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
 
 	<p class="note text-right">Fields with <span class="required">*</span> are required.</p>
 
-	<?php echo $form->errorSummary($patient); ?>
+	<?php echo $form->errorSummary(array($patient,$address,$contact)); ?>
 
         <div class="row field-row">
             <div class="large-6 column">
