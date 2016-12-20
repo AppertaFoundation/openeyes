@@ -68,7 +68,11 @@ class Element_OphInDnaextraction_DnaExtraction extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, box, letter, number, extracted_date, extracted_by, comments, dna_concentration, volume, dna_quantity, dna_quality ', 'safe'),
+            array('event_id, box, letter, number, extracted_date, extracted_by, comments, dna_concentration, volume,', 'safe'),
+            array('dna_quantity', 'safe'),
+            
+            //array('dna_quality','checkNumericRangeIfSide','side' => 'left', 'max' => 0.2, 'min' => 2.5),
+            array('dna_quality', 'numerical', 'min' => 0.2, 'max' => 2.5),
             array('box_id, letter_id, number_id', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
