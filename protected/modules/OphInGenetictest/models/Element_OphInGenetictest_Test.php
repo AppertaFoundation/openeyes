@@ -158,4 +158,4 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
         return Element_OphInDnaextraction_DnaTests::model()->with('event', 'event.episode')->findAll($criteria);
     }
 }
-?>
+

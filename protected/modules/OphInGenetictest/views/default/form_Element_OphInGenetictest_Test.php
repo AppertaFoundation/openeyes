@@ -19,13 +19,13 @@
 $patient_id = null;
 $withdrawals = array();
 
-if($element->event) {
-  $patient_id = $element->event->episode->patient_id;
-} elseif(Yii::app()->request->getQuery('patient_id', '0')){
-  $patient_id = Yii::app()->request->getQuery('patient_id');
+if ($element->event) {
+    $patient_id = $element->event->episode->patient_id;
+} elseif (Yii::app()->request->getQuery('patient_id', '0')) {
+    $patient_id = Yii::app()->request->getQuery('patient_id');
 }
 
-if($patient_id){
+if ($patient_id) {
     $withdrawals = $element->possibleWithdrawalEvents(Patient::model()->findByPk($patient_id));
 }
 ?>
@@ -41,7 +41,7 @@ if($patient_id){
           'element' => $element,
           'field' => 'withdrawal_source_id',
           'relatedElements' => $withdrawals,
-          'htmlOptions' =>  array('empty' => '- Select -'),
+          'htmlOptions' => array('empty' => '- Select -'),
           'layoutColumns' => array('label' => 3, 'field' => 3),
       )); ?>
       <?php $form->dropDownList(
