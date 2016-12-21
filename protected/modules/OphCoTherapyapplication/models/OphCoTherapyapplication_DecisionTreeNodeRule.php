@@ -91,11 +91,15 @@ class OphCoTherapyapplication_DecisionTreeNodeRule extends BaseActiveRecordVersi
      */
     public function displayParentCheckValue()
     {
-        if ($choices = $this->node->parent->response_type->getChoices()) {
-            if (key_exists($this->parent_check_value, $choices)) {
-                return $choices[$this->parent_check_value];
+        if(get_class($this->node->parent->response_type) === 'OphCoTherapyapplication_DecisionTreeNode_ResponseType') {
+            $choices = $this->node->parent->response_type->getChoices();
+            if ($choices) {
+                if (array_key_exists($this->parent_check_value, $choices)) {
+                    return $choices[$this->parent_check_value];
+                }
             }
         }
+
         // default to just displaying the check value
         return $this->parent_check_value;
     }
