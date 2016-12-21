@@ -16,8 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-$this->beginContent('//patient/event_container') 
-// $element->elementType->id;
+    $this->beginContent('//patient/event_container');
 ?>
 <?php
 // Event actions
@@ -26,7 +25,7 @@ if ($this->checkPrintAccess()) {
     $this->event_actions[] = EventAction::button('Print all', 'printall', null, array('id' => 'et_print_all', 'class' => 'small'));
 }
 
-if ($this->event_type->children) {
+if ($this->event_type->children && $elements[0]->is_local) {
     $this->event_actions[] = EventAction::button('Add child', 'add_test', null, array('class' => 'button small'));
 }
 ?>
