@@ -89,7 +89,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
     {
         return array();
     }
-
+    
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
