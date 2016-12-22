@@ -7,9 +7,5 @@ return array(
                 'Genetic tests' => 'geneticTests',
             ),
         ),
-        'admin_menu' => array(
-            'Genetic Test Method' => '/OphInGenetictest/methodAdmin/list',
-            'Genetic Test Effect' => '/OphInGenetictest/effectAdmin/list',
-        ),
     ),
 );
