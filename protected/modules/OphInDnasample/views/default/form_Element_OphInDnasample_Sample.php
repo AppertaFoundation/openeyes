@@ -25,6 +25,8 @@
             'htmlOptions' => array('empty' => '- Please select -'),
         ));
 
+    $form->activeWidget('TextField', $element, 'other_sample_type');
+
     $form->activeWidget('DatePicker', $element, 'blood_date',
         array(
             'options' => array('maxDate' => 'today'),
@@ -33,13 +35,14 @@
     $form->activeWidget('TextField', $element, 'volume');
     $form->radioBoolean($element, 'is_local', array(), array('label' => 3, 'field' => 9));
     $form->activeWidget('TextField', $element, 'destination');
+
     $form->dropDownList(
         $element,
         'consented_by',
-        CHtml::listData(User::model()->findAll(array('order' => 'first_name asc')), 'id', 'username'),
-        array('empty' => '- Select -')
+        CHtml::listData(User::model()->findAll(array('order' => 'last_name asc')), 'id', function($row){return $row->last_name.', '.$row->first_name;}),
+        array('empty' => '- Select -', 'options'=>array(Yii::app()->user->id => array("selected"=>true)))
     );
-    
+
     $user = User::model()->findByPk(Yii::app()->user->id);
     //$user['first_name'].' '.$user['last_name'];
     $form->activeWidget('TextField', $element, 'comments');
