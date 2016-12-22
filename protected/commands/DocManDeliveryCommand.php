@@ -17,47 +17,57 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class DocManDeliveryCommand extends CConsoleCommand
 {
     private $path;
 
     private $event;
 
+    /**
+     * DocManDeliveryCommand constructor.
+     */
     public function __construct()
     {
         $this->path = Yii::app()->params['docman_export_dir'];
         // check if directory is exists
 
-        if(!is_dir($this->path))
-        {
+        if (!is_dir($this->path)) {
             mkdir($this->path);
-            echo "ALERT! Directory ".$this->path." has been created!";
+            echo "ALERT! Directory " . $this->path . " has been created!";
         }
         parent::__construct(null, null);
     }
 
-    public function actionIndex()
+
+    /**
+     * Run the command.
+     */
+    public function run()
     {
         $pending_documents = $this->getPendingDocuments();
-        foreach($pending_documents as $document)
-        {
-            $event_id = $document->document_target->document_instance->correspondence_event_id;
-            //var_dump($event_id);
-            $this->savePDFFile($event_id, $document->id);
+
+        foreach ($pending_documents as $document) {
+            echo 'Processing event ' . $document->document_target->document_instance->correspondence_event_id . PHP_EOL;
+            $this->savePDFFile($document->document_target->document_instance->correspondence_event_id, $document->id);
         }
     }
 
+    /**
+     * @return CActiveRecord[]
+     */
     private function getPendingDocuments()
     {
-        $documents = DocumentOutput::model()->findAllByAttributes(array("output_status"=>"PENDING","output_type"=>"Docman"));
-        return $documents;
+        return DocumentOutput::model()->findAllByAttributes(array("output_status" => "PENDING", "output_type" => "Docman"));
     }
 
+    /**
+     * @param $event_id
+     * @param $output_id
+     */
     private function savePDFFile($event_id, $output_id)
     {
-        if($this->event = Event::model()->findByPk($event_id)) {
-
+        $this->event = Event::model()->findByPk($event_id);
+        if ($this->event) {
             $login_page = Yii::app()->params['docman_login_url'];
             $username = Yii::app()->params['docman_user'];
             $password = Yii::app()->params['docman_password'];
@@ -92,7 +102,7 @@ class DocManDeliveryCommand extends CConsoleCommand
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
 
             curl_exec($ch);
-            
+
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POST, false);
             curl_setopt($ch, CURLOPT_URL, $print_url . $this->event->id . '?auto_print=' . (int)$inject_autoprint_js . '&print_only_gp=1');
@@ -100,28 +110,35 @@ class DocManDeliveryCommand extends CConsoleCommand
 
             curl_close($ch);
 
-            if (!isset(Yii::app()->params['docman_filename_format']) || Yii::app()->params['docman_filename_format'] == 'format1') {
+            if (!isset(Yii::app()->params['docman_filename_format']) || Yii::app()->params['docman_filename_format'] === 'format1') {
                 $filename = "OPENEYES_" . $this->event->episode->patient->hos_num . '_' . $this->event->id . "_" . rand();
-            } else if (Yii::app()->params['docman_filename_format'] == 'format2') {
-                $filename = $this->event->episode->patient->hos_num . '_' . date('YmdHi',
-                        strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
-            } else if (Yii::app()->params['docman_filename_format'] == 'format3') {
-                $filename = $this->event->episode->patient->hos_num . '_edtdep-OEY_' . date('Ymd_His',
-                        strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
+            } else {
+                if (Yii::app()->params['docman_filename_format'] === 'format2') {
+                    $filename = $this->event->episode->patient->hos_num . '_' . date('YmdHi',
+                            strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
+                } else {
+                    if (Yii::app()->params['docman_filename_format'] === 'format3') {
+                        $filename = $this->event->episode->patient->hos_num . '_edtdep-OEY_' .
+                            date('Ymd_His', strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
+                    }
+                }
             }
             file_put_contents($this->path . "/" . $filename . ".pdf", $content);
-            if (!isset(Yii::app()->params['docman_xml_format']) || Yii::app()->params['docman_xml_format'] != 'none') {
+            if (!isset(Yii::app()->params['docman_xml_format']) || Yii::app()->params['docman_xml_format'] !== 'none') {
                 $this->generateXMLOutput($filename, $output_id);
             }
             $this->updateDelivery($output_id);
         }
     }
 
+    /**
+     * @param string $filename
+     */
     private function generateXMLOutput($filename)
     {
-        $element_letter = ElementLetter::model()->findByAttributes(array("event_id"=>$this->event->id));
-        $letter_types = array("0"=>"","1"=>"Clinic discharge letter","2"=>"Post-op letter","3"=>"Clinic letter","4"=>"Other letter");
-        
+        $element_letter = ElementLetter::model()->findByAttributes(array("event_id" => $this->event->id));
+        $letter_types = array("0" => "", "1" => "Clinic discharge letter", "2" => "Post-op letter", "3" => "Clinic letter", "4" => "Other letter");
+
         $subspeciality = isset($this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->ref_spec) ? $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->ref_spec : 'SS';
         $subspeciality_name = isset($this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name) ? $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name : 'Support Services';
         $nat_id = isset($this->event->episode->patient->gp->nat_id) ? $this->event->episode->patient->gp->nat_id : null;
@@ -136,55 +153,58 @@ class DocManDeliveryCommand extends CConsoleCommand
 
         $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
             <DocumentInformation>
-            <PatientNumber>".$this->event->episode->patient->hos_num."</PatientNumber>
-            <NhsNumber>".$this->event->episode->patient->nhs_num."</NhsNumber>
-            <Name>".$this->event->episode->patient->contact->getFullName()."</Name>
-            <Surname>".$this->event->episode->patient->contact->last_name."</Surname>
-            <FirstForename>".$this->event->episode->patient->contact->first_name."</FirstForename>
+            <PatientNumber>" . $this->event->episode->patient->hos_num . "</PatientNumber>
+            <NhsNumber>" . $this->event->episode->patient->nhs_num . "</NhsNumber>
+            <Name>" . $this->event->episode->patient->contact->getFullName() . "</Name>
+            <Surname>" . $this->event->episode->patient->contact->last_name . "</Surname>
+            <FirstForename>" . $this->event->episode->patient->contact->first_name . "</FirstForename>
             <SecondForename></SecondForename>
-            <Title>".$this->event->episode->patient->contact->title."</Title>
-            <DateOfBirth>".$this->event->episode->patient->dob."</DateOfBirth>
-            <Sex>".$this->event->episode->patient->gender."</Sex>
-            <Address>".implode(", ", $address)."</Address>
+            <Title>" . $this->event->episode->patient->contact->title . "</Title>
+            <DateOfBirth>" . $this->event->episode->patient->dob . "</DateOfBirth>
+            <Sex>" . $this->event->episode->patient->gender . "</Sex>
+            <Address>" . implode(", ", $address) . "</Address>
             <AddressName></AddressName>
             <AddressNumber></AddressNumber>
             <AddressStreet>" . $address1 . "</AddressStreet>
             <AddressDistrict></AddressDistrict>
-            <AddressTown>".$city."</AddressTown>
-            <AddressCounty>".$county."</AddressCounty>
-            <AddressPostcode>".$post_code."</AddressPostcode>
+            <AddressTown>" . $city . "</AddressTown>
+            <AddressCounty>" . $county . "</AddressCounty>
+            <AddressPostcode>" . $post_code . "</AddressPostcode>
             <GP>" . $nat_id . "</GP>
             <GPName>" . $gp_name . "</GPName>
             <Surgery>" . $practice_code . "</Surgery>
             <SurgeryName></SurgeryName>
-            <LetterType>".$letter_types[$element_letter->letter_type]."</LetterType>
-            <ActivityID>".$this->event->id."</ActivityID>
-            <ActivityDate>".$this->event->event_date."</ActivityDate>
+            <LetterType>" . $letter_types[$element_letter->letter_type] . "</LetterType>
+            <ActivityID>" . $this->event->id . "</ActivityID>
+            <ActivityDate>" . $this->event->event_date . "</ActivityDate>
             <ClinicianType></ClinicianType>
             <Clinician></Clinician>
             <ClinicianName></ClinicianName>
-            <Specialty>".$subspeciality."</Specialty>
-            <SpecialtyName>".$subspeciality_name."</SpecialtyName>
+            <Specialty>" . $subspeciality . "</Specialty>
+            <SpecialtyName>" . $subspeciality_name . "</SpecialtyName>
             <Location>" . $element_letter->site->short_name . "</Location>
             <LocationName>" . $element_letter->site->name . "</LocationName>
             <SubLocation></SubLocation>
             <SubLocationName></SubLocationName>
             </DocumentInformation>";
 
-        file_put_contents($this->path."/".$filename.".XML", $this->cleanXML($xml) );
+        file_put_contents($this->path . "/" . $filename . ".XML", $this->cleanXML($xml));
     }
-    
+
     /**
      * Special function to sanitize XML
-     * 
-     * @param type $xml
-     * @return type
+     *
+     * @param string $xml
+     * @return string
      */
     private function cleanXML($xml)
     {
-        return str_replace ("&", "and", $xml);
+        return str_replace("&", "and", $xml);
     }
 
+    /**
+     * @param int $output_id
+     */
     private function updateDelivery($output_id)
     {
         $output = DocumentOutput::model()->findByPk($output_id);
