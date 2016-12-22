@@ -60,7 +60,7 @@ $element->letter_type = ($element->letter_type ? $element->letter_type : ( $macr
             <label>Macro:</label>
         </div>
         <div class="large-5 column end">
-            <?php echo CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros, array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'full-width resizeselect')); ?>
+            <?php echo CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros, '', array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'full-width resizeselect')); ?>
         </div>
     </div>
 
