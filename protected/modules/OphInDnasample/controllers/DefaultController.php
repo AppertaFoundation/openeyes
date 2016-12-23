@@ -23,6 +23,10 @@ class DefaultController extends BaseEventTypeController
                 'actions' => array('View', 'Print'),
                 'roles' => array('OprnViewDnaSample'),
             ),
+            array('allow',
+                'actions' => array('View'),
+                'expression' => 'Yii::app()->user->isTechnician()',
+            ),
         );
     }
 
