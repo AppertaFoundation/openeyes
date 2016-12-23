@@ -112,7 +112,7 @@ class Element_OphInDnasample_Sample extends BaseEventTypeElement
             'dna_date'      => 'Dna date',
             'comments'      => 'Comments',
             'type_id'       => 'Type',
-            'other_sample_type' => 'Type (if \'other\')',
+            'other_sample_type' => '(if other, please specify)',
             'consented_by' => 'Consented By',
             'is_local' => 'Local',
             'destination' => 'Destination',
