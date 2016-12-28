@@ -27,8 +27,7 @@ return array(
             ),
         ),
         'admin_menu' => array(
-            'Base Change Type' => '/Genetics/baseChangeAdmin/list',
-            'Amino Acid Change Type' => '/Genetics/aminoAcidChangeAdmin/list',
+
         ),
     ),
 );

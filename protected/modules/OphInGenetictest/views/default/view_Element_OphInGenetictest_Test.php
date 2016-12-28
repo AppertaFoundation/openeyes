@@ -23,6 +23,52 @@
     <div class="row data-row">
       <div class="large-2 column">
         <div class="data-label">
+            <?php echo CHtml::encode($element->getAttributeLabel('withdrawal_source_id')) ?>
+        </div>
+      </div>
+      <div class="large-10 column end">
+        <div class="data-value">
+            <?php echo CHtml::encode(
+                $element->withdrawal_source ? $element->withdrawal_source->getElementType()->name . ' ' . Helper::convertMySQL2NHS($element->event->event_date) : 'None'
+            ) ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="element-data">
+    <div class="row data-row">
+      <div class="large-2 column">
+        <div class="data-label">
+            <?php echo CHtml::encode($element->getAttributeLabel('external_source_id')) ?>
+        </div>
+      </div>
+      <div class="large-10 column end">
+        <div class="data-value">
+            <?php echo CHtml::encode(
+                $element->external_source ? $element->external_source->name : ''
+            ) ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="element-data">
+    <div class="row data-row">
+      <div class="large-2 column">
+        <div class="data-label">
+            <?php echo CHtml::encode($element->getAttributeLabel('external_source_identifier')) ?>
+        </div>
+      </div>
+      <div class="large-10 column end">
+        <div class="data-value">
+            <?php echo CHtml::encode($element->external_source_identifier ? $element->external_source_identifier : 'None') ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="element-data">
+    <div class="row data-row">
+      <div class="large-2 column">
+        <div class="data-label">
             <?php echo CHtml::encode($element->getAttributeLabel('gene_id')) ?>
         </div>
       </div>
@@ -107,6 +153,20 @@
     <div class="row data-row">
       <div class="large-2 column">
         <div class="data-label">
+            <?php echo CHtml::encode($element->getAttributeLabel('base_change_id')) ?>
+        </div>
+      </div>
+      <div class="large-10 column end">
+        <div class="data-value">
+            <?php echo CHtml::encode($element->base_change_type ? $element->base_change_type->change : '') ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="element-data">
+    <div class="row data-row">
+      <div class="large-2 column">
+        <div class="data-label">
             <?php echo CHtml::encode($element->getAttributeLabel('base_change')) ?>
         </div>
       </div>
@@ -121,12 +181,68 @@
     <div class="row data-row">
       <div class="large-2 column">
         <div class="data-label">
+            <?php echo CHtml::encode($element->getAttributeLabel('amino_acid_change_id')) ?>
+        </div>
+      </div>
+      <div class="large-10 column end">
+        <div class="data-value">
+            <?php echo CHtml::encode($element->amino_acid_change_type ? $element->amino_acid_change_type->change : '') ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="element-data">
+    <div class="row data-row">
+      <div class="large-2 column">
+        <div class="data-label">
             <?php echo CHtml::encode($element->getAttributeLabel('amino_acid_change')) ?>
         </div>
       </div>
       <div class="large-10 column end">
         <div class="data-value">
             <?php echo CHtml::encode($element->amino_acid_change) ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="element-data">
+    <div class="row data-row">
+      <div class="large-2 column">
+        <div class="data-label">
+            <?php echo CHtml::encode($element->getAttributeLabel('genomic_coordinate')) ?>
+        </div>
+      </div>
+      <div class="large-10 column end">
+        <div class="data-value">
+            <?php echo CHtml::encode($element->genomic_coordinate) ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="element-data">
+    <div class="row data-row">
+      <div class="large-2 column">
+        <div class="data-label">
+            <?php echo CHtml::encode($element->getAttributeLabel('genome_version')) ?>
+        </div>
+      </div>
+      <div class="large-10 column end">
+        <div class="data-value">
+            <?php echo CHtml::encode($element->genome_version) ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="element-data">
+    <div class="row data-row">
+      <div class="large-2 column">
+        <div class="data-label">
+            <?php echo CHtml::encode($element->getAttributeLabel('gene_transcript')) ?>
+        </div>
+      </div>
+      <div class="large-10 column end">
+        <div class="data-value">
+            <?php echo CHtml::encode($element->gene_transcript) ?>
         </div>
       </div>
     </div>

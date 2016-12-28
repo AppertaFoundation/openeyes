@@ -28,6 +28,8 @@ if ($element->event) {
 if ($patient_id) {
     $withdrawals = $element->possibleWithdrawalEvents(Patient::model()->findByPk($patient_id));
 }
+
+$pedigree = new Pedigree();
 ?>
 
 <section class="element <?php echo $element->elementType->class_name ?>"
@@ -80,8 +82,32 @@ if ($patient_id) {
       <?php $form->textField($element, 'exon', array(), array(), array('label' => 3, 'field' => 3)) ?>
       <?php $form->textField($element, 'prime_rf', array(), array(), array('label' => 3, 'field' => 3)) ?>
       <?php $form->textField($element, 'prime_rr', array(), array(), array('label' => 3, 'field' => 3)) ?>
+      <?php $form->dropDownList(
+          $element,
+          'base_change_id',
+          CHtml::listData(PedigreeBaseChangeType::model()->findAll(array('order' => '`change` asc')), 'id', 'change'),
+          array('empty' => '- Select -'),
+          false, array('label' => 3, 'field' => 3)
+      ) ?>
       <?php $form->textField($element, 'base_change', array(), array(), array('label' => 3, 'field' => 3)) ?>
+      <?php $form->dropDownList(
+          $element,
+          'amino_acid_change_id',
+          CHtml::listData(PedigreeAminoAcidChangeType::model()->findAll(array('order' => '`change` asc')), 'id', 'change'),
+          array('empty' => '- Select -'),
+          false, array('label' => 3, 'field' => 3)
+      ) ?>
       <?php $form->textField($element, 'amino_acid_change', array(), array(), array('label' => 3, 'field' => 3)) ?>
+      <?php $form->textField($element, 'genomic_coordinate', array(), array(), array('label' => 3, 'field' => 3)) ?>
+      <?php $form->dropDownList(
+          $element,
+          'genome_version',
+          array_combine($pedigree->genomeVersions(), $pedigree->genomeVersions()),
+          array('empty' => '- Select -'),
+          false, array('label' => 3, 'field' => 3)
+      ) ?>
+      <?php $form->textField($element, 'gene_transcript', array(), array(), array('label' => 3, 'field' => 3)) ?>
+
       <?php $form->textField($element, 'assay', array(), array(), array('label' => 3, 'field' => 3)) ?>
       <?php $form->radioBoolean($element, 'homo', array(), array('label' => 3, 'field' => 9)) ?>
       <?php $form->textField($element, 'result', array(), array(), array('label' => 3, 'field' => 5)) ?>

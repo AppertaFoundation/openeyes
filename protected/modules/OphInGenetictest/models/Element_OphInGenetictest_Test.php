@@ -63,8 +63,9 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, gene_id, method_id, comments, exon, prime_rf, prime_rr, base_change, method_id
-                 amino_acid_change, assay, effect_id, method_id homo, result, result_date, external_source_identifier, withdrawal_source_id, external_source_id',
+            array('event_id, gene_id, method_id, comments, exon, prime_rf, prime_rr, base_change, method_id, amino_acid_change_id, base_change_id,
+                 amino_acid_change, assay, effect_id, method_id homo, result, result_date, external_source_identifier, withdrawal_source_id, external_source_id,
+                 genomic_coordinate, genome_version, gene_transcript',
                 'safe'),
             array('gene_id, homo, method_id, effect_id, result', 'required'),
             array('withdrawal_source_id', 'validateSource'),
@@ -91,6 +92,8 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
             'method' => array(self::BELONGS_TO, 'OphInGenetictest_Test_Method', 'method_id'),
             'withdrawal_source' => array(self::BELONGS_TO, 'Element_OphInDnaextraction_DnaTests', 'withdrawal_source_id'),
             'external_source' => array(self::BELONGS_TO, 'OphInGenetictest_External_Source', 'external_source_id'),
+            'base_change_type' => array(self::BELONGS_TO, 'PedigreeBaseChangeType', 'base_change_id'),
+            'amino_acid_change_type' => array(self::BELONGS_TO, 'PedigreeAminoAcidChangeType', 'amino_acid_change_id'),
         );
     }
 
@@ -118,6 +121,8 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
             'external_source_id' => 'External Source',
             'withdrawal_source_id' => 'Withdrawal Source',
             'external_source_identifier' => 'External Source ID',
+            'base_change_id' => 'Base Change Type',
+            'amino_acid_change_id' => 'Amino Acid Chane Type'
         );
     }
 
